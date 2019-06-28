@@ -183,7 +183,7 @@ export default {
           <span v-if="userHasTaggedPosts" @click.prevent="purgeTagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</span>
         </li>
         <li>
-          <span>Växla användare</span>
+          <!-- <span>Växla användare</span> -->
           <span @click="logout">{{"Log out" | translatePhrase}}</span>
         </li>
       </ul>
@@ -276,7 +276,9 @@ export default {
     position: absolute;
     right: auto;
     left: 0;
-    z-index: 4;
+    z-index: @dropdown-z;
+    padding-top: 0.25em;
+    padding-left: 0;
 
     & ul {
       padding: 0;

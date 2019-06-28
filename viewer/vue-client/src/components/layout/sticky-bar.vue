@@ -132,7 +132,7 @@ export default {
   &-envLabel {
     display: block;
     color: @text-brand-env;
-    font-size: 0.5em;
+    font-size: 0.9rem;
     font-weight: bold;
     float: right;
     margin: -1em 0px 0px 0em;

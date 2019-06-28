@@ -87,6 +87,7 @@ export default {
             <span class="MainNav-linkText userName">
             {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
             </span>
+            <i class="fa fa-fw" :class="{ 'fa-caret-down': !showUserMenu && !isUserPage }"></i>
           </span>
           <user-settings v-if="showUserMenu && !isUserPage" compact v-on-clickaway="hideUserMenu"/>
         </li>
@@ -154,6 +155,8 @@ export default {
     position: relative;
     text-transform: none;
     cursor: pointer;
+    color: @white;
+    list-style-type: none;
 
     &:last-of-type a {
       padding-right: 0;

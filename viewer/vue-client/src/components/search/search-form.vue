@@ -218,42 +218,40 @@ export default {
 <template>
   <div class="SearchBar">
     <form id="searchForm" class="SearchBar-form">
-      <div class="SearchBar-formContent">
-        <div ref="formGroup" class="SearchBar-formGroup">
-          <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
-            {{"Search" | translatePhrase}}
-          </label>
-          <div class="SearchBar-selectWrapper" v-if="searchPerimeter === 'libris'">
-            <select
-              class="SearchBar-select customSelect"
-              v-model="activeSearchParam"
-              @change="setPrefSearchParam">
-              <option 
-                v-for="prop in searchParams"
-                :key="prop.key"
-                :value="prop">
-                {{prop.key | translatePhrase}}
-              </option>
-            </select>
-          </div>
-          <input type="text"
-            class="SearchBar-input form-control customInput"
-            v-model="searchPhrase"
-            aria-labelledby="searchlabel"
-            :placeholder="inputPlaceholder | translatePhrase"
-            ref="searchBarInput">
-          <span class="SearchBar-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
-            <i class="fa fa-fw fa-close"></i>
-          </span>
-          <button 
-            class="SearchBar-submit btn btn-primary icon icon--white icon--md" 
-            :aria-label="'Search' | translatePhrase"
-            @click.prevent="doSearch"
-            :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
-            :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0" >
-            <i class="fa fa-search"></i>
-          </button>
+      <div ref="formGroup" class="SearchBar-formGroup">
+        <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
+          {{"Search" | translatePhrase}}
+        </label>
+        <div class="SearchBar-selectWrapper" v-if="searchPerimeter === 'libris'">
+          <select
+            class="SearchBar-select customSelect"
+            v-model="activeSearchParam"
+            @change="setPrefSearchParam">
+            <option 
+              v-for="prop in searchParams"
+              :key="prop.key"
+              :value="prop">
+              {{prop.key | translatePhrase}}
+            </option>
+          </select>
         </div>
+        <input type="text"
+          class="SearchBar-input form-control customInput"
+          v-model="searchPhrase"
+          aria-labelledby="searchlabel"
+          :placeholder="inputPlaceholder | translatePhrase"
+          ref="searchBarInput">
+        <span class="SearchBar-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
+          <i class="fa fa-fw fa-close"></i>
+        </span>
+        <button 
+          class="SearchBar-submit btn btn-primary icon icon--white icon--md" 
+          :aria-label="'Search' | translatePhrase"
+          @click.prevent="doSearch"
+          :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
+          :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0" >
+          <i class="fa fa-search"></i>
+        </button>
       </div>
       <!-- <div class="SearchBar-typeButtons" 
         v-if="searchPerimeter === 'libris'"
@@ -311,6 +309,8 @@ export default {
   align-items: center;
 
   &-formGroup {
+    width: 100%;
+    display: flex;
     position: relative;
   }
   &-form {
