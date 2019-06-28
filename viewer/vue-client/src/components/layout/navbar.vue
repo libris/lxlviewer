@@ -27,7 +27,7 @@ export default {
       'user',
     ]),
     tabs() {
-      const $directoryCareBadge = this.userCare.length === 0 ? '' : `<span class="badge badge-accent">${this.userCare.length}</badge>`;
+      const $directoryCareBadge = this.userCare.length === 0 ? '' : `<span class="badge badge-accent UserCare-badge">${this.userCare.length}</badge>`;
       const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language)} ${$directoryCareBadge}`;
       const tabs = [
         { id: 'Home', text: 'Start', link: '/' },
@@ -220,4 +220,10 @@ export default {
     }
   }
 }
+.UserCare {
+  &-badge {
+    margin-top: -0.3em;
+  }
+}
+
 </style>
