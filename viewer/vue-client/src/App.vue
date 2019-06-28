@@ -2,11 +2,11 @@
   <div id="app" class="App">
     <global-message />
     <navbar-component />
-    <sticky-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
+    <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
     <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
       {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
     </div>
-    <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${navBarBottomPos+12}px` : '0px' }" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen, 'debug-mode': user.settings.appTech }" role="main">
+    <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen, 'debug-mode': user.settings.appTech }" role="main">
         <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
           <vue-simple-spinner size="large" :message="status.loadingIndicators[0] | translatePhrase"></vue-simple-spinner>
         </div>
@@ -28,7 +28,7 @@
 
 <script>
 import Navbar from '@/components/layout/navbar';
-import StickyBar from '@/components/layout/sticky-bar';
+import SearchBar from '@/components/layout/search-bar';
 import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import GlobalMessage from '@/components/layout/global-msg';
@@ -41,7 +41,8 @@ export default {
   data() {
     return {
       stickToTop: false,
-      navBarBottomPos: 40,
+      navBarBottomPos: 0,
+      searchBarHeight: 0,
     };
   },
   computed: {
@@ -61,27 +62,38 @@ export default {
       userObj.settings.appTech = false;
       this.$store.dispatch('setUser', userObj);
     },
-    checkStickyBar(event) {
-      if (event.target.scrollingElement && event.target.scrollingElement.scrollTop > this.navBarBottomPos) {
-        this.stickToTop = true;
-      } else {
-        this.stickToTop = false;
+    checkSearchBar(event) {
+      const $SearchBar = document.getElementById('SearchBar');
+      const $NavBar = document.getElementById('NavBar');
+      if ($SearchBar) {
+        this.searchBarHeight = $SearchBar.getBoundingClientRect().height;
+      }
+      if ($NavBar) {
+        this.navBarBottomPos = $NavBar.offsetHeight;
+      }
+      if (event) {
+        if (event.target.scrollingElement && event.target.scrollingElement.scrollTop > this.navBarBottomPos) {
+          this.stickToTop = true;
+        } else {
+          this.stickToTop = false;
+        }
       }
     },
   },
   mounted() {
     this.$nextTick(() => {
+      this.checkSearchBar();
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'default', 
       });
     });
     window.addEventListener('scroll', (e) => {
-      this.checkStickyBar(e);
+      this.checkSearchBar(e);
     });
   },
   components: {
-    StickyBar,
+    SearchBar,
     'navbar-component': Navbar,
     'footer-component': Footer,
     'notification-list': NotificationList,
@@ -173,7 +185,6 @@ h4 {
 
 .MainContent {
   flex: 1 0 auto;
-  padding-top: 3rem;
   &.sticky-is-active {
   }
 

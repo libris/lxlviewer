@@ -149,8 +149,8 @@ export default {
     padding: 5px @tabPadding;
     color: @grey;
     font-weight: 600;
-    font-size: 16px;
-    font-size: 1.6rem;
+    font-size: 14px;
+    font-size: 1.4rem;
     margin: 5px 0px;
     transition: color 0.2s ease;
     border: dashed transparent;
@@ -158,8 +158,8 @@ export default {
     white-space: nowrap;
 
     @media (min-width: 768px) {
-      font-size: 18px;
-      font-size: 1.8rem;
+      font-size: 14px;
+      font-size: 1.4rem;
     }
 
     &:hover,

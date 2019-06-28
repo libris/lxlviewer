@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     focusSearchInput() {
-      this.$refs.searchBarInput.focus();
+      this.$refs.searchFormInput.focus();
     },
     removeTags(html) {
       let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig, '').replace(/<h2.*>.*?<\/h2>/ig, '');
@@ -216,15 +216,15 @@ export default {
 </script>
 
 <template>
-  <div class="SearchBar">
-    <form id="searchForm" class="SearchBar-form">
-      <div ref="formGroup" class="SearchBar-formGroup">
-        <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
+  <div class="SearchForm">
+    <form id="searchForm" class="SearchForm-form">
+      <div ref="formGroup" class="SearchForm-formGroup">
+        <label class="SearchForm-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
           {{"Search" | translatePhrase}}
         </label>
-        <div class="SearchBar-selectWrapper" v-if="searchPerimeter === 'libris'">
+        <div class="SearchForm-selectWrapper" v-if="searchPerimeter === 'libris'">
           <select
-            class="SearchBar-select customSelect"
+            class="SearchForm-select customSelect"
             v-model="activeSearchParam"
             @change="setPrefSearchParam">
             <option 
@@ -236,16 +236,16 @@ export default {
           </select>
         </div>
         <input type="text"
-          class="SearchBar-input form-control customInput"
+          class="SearchForm-input form-control customInput"
           v-model="searchPhrase"
           aria-labelledby="searchlabel"
           :placeholder="inputPlaceholder | translatePhrase"
-          ref="searchBarInput">
-        <span class="SearchBar-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
+          ref="searchFormInput">
+        <span class="SearchForm-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
           <i class="fa fa-fw fa-close"></i>
         </span>
         <button 
-          class="SearchBar-submit btn btn-primary icon icon--white icon--md" 
+          class="SearchForm-submit btn btn-primary icon icon--white icon--md" 
           :aria-label="'Search' | translatePhrase"
           @click.prevent="doSearch"
           :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
@@ -253,18 +253,18 @@ export default {
           <i class="fa fa-search"></i>
         </button>
       </div>
-      <!-- <div class="SearchBar-typeButtons" 
+      <!-- <div class="SearchForm-typeButtons" 
         v-if="searchPerimeter === 'libris'"
         :aria-label="'Choose type' | translatePhrase">
-        <label class="SearchBar-typeLabel" 
+        <label class="SearchForm-typeLabel" 
           :for="filter['@id']"
           v-for="filter in dataSetFilters" 
           :key="filter['@id']">
-          <input type="checkbox" class="SearchBar-typeInput customCheckbox-input"
+          <input type="checkbox" class="SearchForm-typeInput customCheckbox-input"
             :id="filter['@id']"
             v-model="activeTypes"
             :value="filter['@id']"/>
-            <span class="SearchBar-typeText customCheckbox-icon">
+            <span class="SearchForm-typeText customCheckbox-icon">
               {{ filter.label }}
             </span>
         </label>
@@ -275,15 +275,15 @@ export default {
         @panelClosed="focusSearchInput"
         ref="dbComponent"></remote-databases>
     </form>
-    <div class="SearchBar-perimeterControl"> 
+    <div class="SearchForm-perimeterControl"> 
       <switch-toggle :link="true" :options="[
         { 'id': 'libris', 'text': 'Libris', link: '/search/libris'},
         { 'id': 'remote', 'text': 'Other sources', link: '/search/remote' },
       ]" :active="searchPerimeter" />
     </div>
-    <div class="SearchBar-help">
-      <div class="SearchBar-helpBox dropdown" v-if="searchPerimeter === 'libris'">
-        <span class="SearchBar-helpIcon icon icon--md">
+    <div class="SearchForm-help">
+      <div class="SearchForm-helpBox dropdown" v-if="searchPerimeter === 'libris'">
+        <span class="SearchForm-helpIcon icon icon--md">
           <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
             ref="helpIcon"
             @mouseover="helpHover = true"
@@ -291,9 +291,9 @@ export default {
             @click="toggleHelp"
             @keyup.enter="toggleHelp"></i>
         </span>
-        <div class="SearchBar-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled"> 
-          <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchBar-closeHelp" @click="toggleHelp"></i>
-          <div class="SearchBar-helpContent" v-html="searchHelpDocs"></div>
+        <div class="SearchForm-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled"> 
+          <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchForm-closeHelp" @click="toggleHelp"></i>
+          <div class="SearchForm-helpContent" v-html="searchHelpDocs"></div>
         </div>
       </div>
     </div>
@@ -302,7 +302,7 @@ export default {
 
 <style lang="less">
 
-.SearchBar {
+.SearchForm {
   margin-top: 0vh;
   transition: 0.3s ease margin-top;
   display: flex;

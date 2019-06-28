@@ -274,14 +274,15 @@ export default {
   &.in-menu {
     cursor: initial;
     position: absolute;
-    right: auto;
-    left: 0;
+    right: 0;
+    left: auto;
     z-index: @dropdown-z;
     padding-top: 0.25em;
     padding-left: 0;
 
     & ul {
       padding: 0;
+      width: 25rem;
       list-style-type: none;
     }
 

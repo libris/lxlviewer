@@ -5,7 +5,7 @@ import UserAvatar from '@/components/shared/user-avatar';
 import SearchForm from '@/components/search/search-form';
 
 export default {
-  name: 'sticky-bar',
+  name: 'search-bar',
   data() {
     return {
       hasAvatar: true,
@@ -36,34 +36,38 @@ export default {
 </script>
 
 <template>
-  <div class="StickyBar" aria-labelledby="service-name">
-    <div class="StickyBar-container container">
-      <div class="StickyBar-brand col-md-3">
-        <router-link to="/" class="StickyBar-brandLink">
-          <img class="StickyBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
+  <div class="SearchBar" id="SearchBar" aria-labelledby="service-name">
+    <div class="SearchBar-container container">
+      <div class="SearchBar-brand col-md-3">
+        <router-link to="/" class="SearchBar-brandLink">
+          <img class="SearchBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
         </router-link>
-        <router-link to="/" class="StickyBar-brandTitle" :title="`Version ${settings.version}`">
+        <router-link to="/" class="SearchBar-brandTitle" :title="`Version ${settings.version}`">
           <span id="service-name">{{ settings.title }}</span>
-          <span class="StickyBar-envLabel">
+          <span class="SearchBar-envLabel">
           {{ environmentLabel }} {{ settings.version }}
           </span>
         </router-link>
       </div>
-      <search-form class="StickyBar-searchForm col-md-9" :search-perimeter="$route.params.perimeter" />
+      <search-form class="SearchBar-searchForm col-md-9" :search-perimeter="$route.params.perimeter" />
     </div>
   </div>
 </template>
 
 
 <style lang="less">
-.StickyBar {
+.SearchBar {
   &.stick-to-top {
     position: fixed;
     top: 0;
   }
-  will-change: transform;
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  // will-change: transform;
   z-index: @sticky-bar-z;
   width: 100%;
+  padding: 1rem 0 0.5rem 0;
   background-color: @bg-sticky-bar;
   border: solid @grey-lighter;
   border-width: 0px 0px 3px 0px;

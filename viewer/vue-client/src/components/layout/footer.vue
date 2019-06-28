@@ -124,6 +124,8 @@ export default {
   padding: 25px 10px;
   background-color: @bg-footer;
   color: @text-footer;
+  border: solid #4e4e4e;
+  border-width: 3px 0px 0px 0px;
 
   &-content {
     display: flex;
