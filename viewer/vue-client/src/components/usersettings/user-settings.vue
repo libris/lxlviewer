@@ -1,6 +1,7 @@
 <script>
 import * as StringUtil from '@/utils/string';
 import UserAvatar from '@/components/shared/user-avatar';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'user-settings',
@@ -23,9 +24,23 @@ export default {
       return label.length > len ? `${label.substr(0, len - 2)}...` : label;
     },
     updateSigel(e) {
-      const userObj = this.user;
-      userObj.settings.activeSigel = e.target.value;
-      this.setUser(userObj);
+      const doUpdate = () => {
+        const userObj = this.user;
+        userObj.settings.activeSigel = e.target.value;
+        this.setUser(userObj);
+      }
+      if (this.inspector.data.mainEntity && this.inspector.data.mainEntity['@type'] === 'Item') {
+        // If editing a holding, the user must accept a cancel dialog before sigel can be changed
+        this.$store.dispatch('pushInspectorEvent', { 
+          name: 'post-control',
+          value: 'cancel',
+          callback: () => {
+            doUpdate();
+          },
+        });
+      } else {
+        doUpdate();
+      }
     },
     updateLanguage(e) {
       const userObj = this.user;
@@ -47,15 +62,12 @@ export default {
     },
   },
   computed: {
-    user() {
-      return this.$store.getters.user;
-    },
-    userStorage() {
-      return this.$store.getters.userStorage;
-    },
-    settings() {
-      return this.$store.getters.settings;
-    },
+    ...mapGetters([
+      'inspector',
+      'user',
+      'userStorage',
+      'settings',
+    ]),
     userHasTaggedPosts() {
       return Object.keys(this.userStorage.list).length > 0;
     },
