@@ -64,11 +64,14 @@ export default {
     },
     checkSearchBar(event) {
       const $SearchBar = document.getElementById('SearchBar');
+      const $GlobalMessage = document.getElementById('GlobalMessage');
       const $NavBar = document.getElementById('NavBar');
       if ($SearchBar) {
         this.searchBarHeight = $SearchBar.getBoundingClientRect().height;
       }
-      if ($NavBar) {
+      if ($GlobalMessage) {
+        this.navBarBottomPos = $GlobalMessage.offsetHeight+$NavBar.offsetHeight;
+      } else {
         this.navBarBottomPos = $NavBar.offsetHeight;
       }
       if (event) {

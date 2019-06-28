@@ -23,7 +23,7 @@ export default {
 </script>
 
 <template>
-  <div class="GlobalMessage" 
+  <div class="GlobalMessage" id="GlobalMessage"
     v-html="message" 
     v-bind:class="{'GlobalMessage--warning':this.settings.environment === 'stg'}"
     v-if="message && message.length > 0">
