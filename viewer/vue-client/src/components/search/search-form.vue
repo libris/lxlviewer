@@ -110,7 +110,7 @@ export default {
         return 'Instance'; // initial value
       }
       if (!performedQuery.hasOwnProperty('@type')) {
-        return '*'; // explicitly no types
+        return ''; // explicitly no types
       }
       if (typeof performedQuery['@type'] === 'string') { 
         return performedQuery['@type']; // put a single @type into an array
@@ -203,15 +203,23 @@ export default {
       }
     },
     '$route.fullPath'() {
-      this.activeSearchType = this.setType();
-      this.activeSearchParam = this.setSearch();
+      if (!this.activeSearchParam) {
+        this.activeSearchParam = this.setSearch();
+      }
+      if (!this.activeSearchType) {
+        this.activeSearchType = this.setType();
+      }
     },
   },
   mounted() {
     this.$nextTick(() => {
       this.focusSearchInput();
-      this.activeSearchParam = this.setSearch();
-      this.activeSearchType = this.setType();
+      if (!this.activeSearchParam) {
+        this.activeSearchParam = this.setSearch();
+      }
+      if (!this.activeSearchType) {
+        this.activeSearchType = this.setType();
+      }
     });
   },
 };
