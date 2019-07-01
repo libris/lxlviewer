@@ -150,10 +150,26 @@ const store = new Vuex.Store({
       ],
       dataSetFilters: {
         libris: [
-          'https://id.kb.se/vocab/Instance',
-          'https://id.kb.se/vocab/Work',
-          'https://id.kb.se/vocab/Agent',
-          'https://id.kb.se/vocab/Concept',
+          {
+            value: 'Instance',
+            label: 'Instance',
+          },
+          {
+            value: 'Work',
+            label: 'Work',
+          },
+          {
+            value: 'Agent',
+            label: 'Agent',
+          },
+          {
+            value: 'Concept',
+            label: 'Concept',
+          },
+          {
+            value: '',
+            label: 'All',
+          },
         ],
       },
       warnOnSave: {

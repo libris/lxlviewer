@@ -244,7 +244,6 @@ button {
 .btn,
 .btn[disabled] {
   border: 0;
-  box-shadow: @shadow-panel;
   transition: background-color 0.1s ease;
 }
 
@@ -602,26 +601,25 @@ h1 {
 
 // SELECT
 .customSelect {
-  min-width: 150px;
   line-height: 3.2rem;
   font-weight: 500;
   font-size: 16px;
   font-size: 1.6rem;
-  background-color: rgba(115, 115, 115, 0.08);
   color: @black;
   border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  border-radius: 3px 3px 0 0;
+  border-radius: 0;
+  // border-bottom: 1px solid rgba(0, 0, 0, 0.07);
   text-align: left;
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
+  background-color: @grey-lightest;
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'%3E%3Ctext x='0' y='10' fill='gray'%3E%E2%96%BE%3C/text%3E%3C/svg%3E");
   background-repeat: no-repeat, repeat;
   background-position: right 0.5em top 50%, 0 0;
   background-size: 1em auto, 100%;
   padding-left: 0.8em;
-  padding-right: 2em;
+  padding-right: 1.8em;
 
   &::-ms-expand{
     display: none;
@@ -638,9 +636,8 @@ h1 {
   font-size: 1.8rem;
   line-height: 1.2;
   color: @black;
-  border: 1px solid @gray-light;
-  border-radius: 4px;
-  box-shadow: inset 0 0.25rem 0.125rem 0 rgba(0,0,0,0.05);
+  border: none;
+  padding: 0 0.5em;
 
   &::placeholder,
   input::placeholder  {
@@ -648,9 +645,9 @@ h1 {
   }
 
   &:focus {
-    border: 1px solid @brand-primary;
-    outline: 0;
-    box-shadow: none;
+    // border: 1px solid @brand-primary;
+    // outline: 0;
+    // box-shadow: none;
   }
 
   &::-ms-clear {

@@ -24,7 +24,7 @@ export default {
       searchPhrase: '',
       searchParams: PropertyMappings,
       activeSearchParam: null,
-      activeTypes: null,
+      activeSearchType: null,
     };
   },
   methods: {
@@ -104,18 +104,23 @@ export default {
       // return fallback value
       return PropertyMappings[0];
     },
-    setTypes() {
+    setType() {
       const performedQuery = cloneDeep(this.$route.query);
       if (isEmpty(performedQuery)) {
-        return ['Instance']; // initial value
+        return 'Instance'; // initial value
       }
       if (!performedQuery.hasOwnProperty('@type')) {
-        return []; // explicitly no types
+        return '*'; // explicitly no types
       }
       if (typeof performedQuery['@type'] === 'string') { 
-        return [performedQuery['@type']]; // put a single @type into an array
+        return performedQuery['@type']; // put a single @type into an array
       }
       return performedQuery['@type'];
+    },
+    setPrefSearchType() {
+      const user = this.user;
+      user.settings.searchType = this.activeSearchType;
+      this.$store.dispatch('setUser', user);
     },
     setPrefSearchParam() {
       const user = this.user;
@@ -153,10 +158,7 @@ export default {
       'user',
     ]),
     dataSetFilters() {
-      return this.settings.dataSetFilters.libris.map(term => ({
-        '@id': StringUtil.getCompactUri(term, this.resources.context),
-        label: StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.resources.context),
-      }));
+      return this.settings.dataSetFilters.libris;
     },
     hasInput() {
       return this.searchPhrase.length > 0;
@@ -170,7 +172,7 @@ export default {
       return composed;
     },
     composedTypes() {
-      return this.activeTypes.length > 0 ? { '@type': this.activeTypes } : {};
+      return this.activeSearchType.length > 0 ? { '@type': this.activeSearchType } : {};
     },
     prefSort() {
       if (this.user && this.user.settings.sort) {
@@ -201,7 +203,7 @@ export default {
       }
     },
     '$route.fullPath'() {
-      this.activeTypes = this.setTypes();
+      this.activeSearchType = this.setType();
       this.activeSearchParam = this.setSearch();
     },
   },
@@ -209,7 +211,7 @@ export default {
     this.$nextTick(() => {
       this.focusSearchInput();
       this.activeSearchParam = this.setSearch();
-      this.activeTypes = this.setTypes();
+      this.activeSearchType = this.setType();
     });
   },
 };
@@ -218,13 +220,35 @@ export default {
 <template>
   <div class="SearchForm">
     <form id="searchForm" class="SearchForm-form">
+      <label class="SearchForm-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
+        {{"Search" | translatePhrase}}
+      </label>
       <div ref="formGroup" class="SearchForm-formGroup">
-        <label class="SearchForm-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
-          {{"Search" | translatePhrase}}
-        </label>
         <div class="SearchForm-selectWrapper" v-if="searchPerimeter === 'libris'">
           <select
-            class="SearchForm-select customSelect"
+            class="SearchForm-typeSelect customSelect"
+            v-model="activeSearchType"
+            @change="setPrefSearchType">
+            <option 
+              v-for="filter in dataSetFilters" 
+              :key="filter.value"
+              :value="filter.value">
+              {{filter.label | translatePhrase}}
+            </option>
+          </select>
+        </div>
+        <input type="text"
+          class="SearchForm-input customInput"
+          v-model="searchPhrase"
+          aria-labelledby="searchlabel"
+          :placeholder="inputPlaceholder | translatePhrase"
+          ref="searchFormInput">
+        <span class="SearchForm-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
+          <i class="fa fa-fw fa-close"></i>
+        </span>
+        <div class="SearchForm-selectWrapper" v-if="searchPerimeter === 'libris'">
+          <select
+            class="SearchForm-paramSelect customSelect"
             v-model="activeSearchParam"
             @change="setPrefSearchParam">
             <option 
@@ -235,15 +259,6 @@ export default {
             </option>
           </select>
         </div>
-        <input type="text"
-          class="SearchForm-input form-control customInput"
-          v-model="searchPhrase"
-          aria-labelledby="searchlabel"
-          :placeholder="inputPlaceholder | translatePhrase"
-          ref="searchFormInput">
-        <span class="SearchForm-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
-          <i class="fa fa-fw fa-close"></i>
-        </span>
         <button 
           class="SearchForm-submit btn btn-primary icon icon--white icon--md" 
           :aria-label="'Search' | translatePhrase"
@@ -253,22 +268,6 @@ export default {
           <i class="fa fa-search"></i>
         </button>
       </div>
-      <!-- <div class="SearchForm-typeButtons" 
-        v-if="searchPerimeter === 'libris'"
-        :aria-label="'Choose type' | translatePhrase">
-        <label class="SearchForm-typeLabel" 
-          :for="filter['@id']"
-          v-for="filter in dataSetFilters" 
-          :key="filter['@id']">
-          <input type="checkbox" class="SearchForm-typeInput customCheckbox-input"
-            :id="filter['@id']"
-            v-model="activeTypes"
-            :value="filter['@id']"/>
-            <span class="SearchForm-typeText customCheckbox-icon">
-              {{ filter.label }}
-            </span>
-        </label>
-      </div> -->
       <remote-databases 
         v-if="searchPerimeter === 'remote'" 
         :remoteSearch="searchPhrase"
@@ -301,6 +300,7 @@ export default {
 </template>
 
 <style lang="less">
+@formradius: 0.2em;
 
 .SearchForm {
   margin-top: 0vh;
@@ -312,6 +312,23 @@ export default {
     width: 100%;
     display: flex;
     position: relative;
+    border-radius: @formradius;
+    background-color: @grey-lightest;
+    > * {
+      display: flex;
+      background-color: @grey-lightest;
+      border-radius: 0;
+      margin-left: 0.05em;
+      &:first-child {
+        overflow: hidden;
+        border-radius: @formradius 0 0 @formradius;
+      }
+      &:last-child {
+        margin-left: 0;
+        overflow: hidden;
+        border-radius: 0 @formradius @formradius 0;
+      }
+    }
   }
   &-form {
     flex-grow: 1;
@@ -378,20 +395,21 @@ export default {
 
   &-selectWrapper {
     flex: 1 0 auto;
-    border: 1px solid @grey-light;
-    border-right: 0;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border: solid @grey-lighter;
+    border-width: 0px 1px 0px 1px;
+    // border: 1px solid @grey-light;
+    // border-right: 0;
 
-    & + input {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
+    // border-top-left-radius: 4px;
+    // border-bottom-left-radius: 4px;
+    // & + input {
+    //   border-top-left-radius: 0;
+    //   border-bottom-left-radius: 0;
+    // }
   }
 
   &-select {
     background-color: @white;
-    border-radius: 4px;
     height: 100%;
     min-width: unset;
     box-shadow: none;
@@ -403,12 +421,12 @@ export default {
     min-width: 100px;
     width: 100%;
     color: @black;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: 0;
-    &:focus {
-      border-right: none;
-    }
+    // border-top-right-radius: 0;
+    // border-bottom-right-radius: 0;
+    // border-right: 0;
+    // &:focus {
+    //   border-right: none;
+    // }
   }
 
   &-inputLabel {
@@ -417,17 +435,15 @@ export default {
   }
 
   &-clear {
-    position: absolute;
-    right: 9rem;
     height: 42px;
     display: flex;
     align-items: center;
   }
 
   &-submit {
-    height: 42px;
-    border: 0;
-    border-radius: 0 4px 4px 0;
+    // height: 42px;
+    // border: 0;
+    // border-radius: 0 4px 4px 0;
     box-shadow: none;
 
     @media (min-width: @screen-sm) {
