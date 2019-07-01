@@ -38,18 +38,20 @@ export default {
 <template>
   <div class="SearchBar" id="SearchBar" aria-labelledby="service-name">
     <div class="SearchBar-container container">
-      <div class="SearchBar-brand col-md-3">
-        <router-link to="/" class="SearchBar-brandLink">
-          <img class="SearchBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
-        </router-link>
-        <router-link to="/" class="SearchBar-brandTitle" :title="`Version ${settings.version}`">
-          <span id="service-name">{{ settings.title }}</span>
-          <span class="SearchBar-envLabel">
-          {{ environmentLabel }} {{ settings.version }}
-          </span>
-        </router-link>
+      <div class="row">
+        <div class="SearchBar-brand col-md-3">
+          <router-link to="/" class="SearchBar-brandLink">
+            <img class="SearchBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
+          </router-link>
+          <router-link to="/" class="SearchBar-brandTitle" :title="`Version ${settings.version}`">
+            <span id="service-name">{{ settings.title }}</span>
+            <span class="SearchBar-envLabel">
+            {{ environmentLabel }} {{ settings.version }}
+            </span>
+          </router-link>
+        </div>
+        <search-form class="SearchBar-searchForm col-md-9" :search-perimeter="$route.params.perimeter" />
       </div>
-      <search-form class="SearchBar-searchForm col-md-9" :search-perimeter="$route.params.perimeter" />
     </div>
   </div>
 </template>

@@ -66,37 +66,39 @@ export default {
 <template>
   <nav class="NavBar" id="NavBar" role="navigation" aria-labelledby="service-name">
     <div class="NavBar-container container">
-      <div class="MainNav col-md-6 col-md-push-3">
-      <tab-menu
-        v-if="user.isLoggedIn"
-        :tabs="tabs"
-        :active="$route.name"
-        :link="true"
-        lookStyle="background"
-        />
-      </div>
-      <ul class="MainNav-userWrapper col-md-3">
-        <li class="MainNav-item">
-          <router-link to="/help" class="MainNav-link">
-            <span class="MainNav-linkText">{{"Help" | translatePhrase}}</span>
-          </router-link>
-        </li>
-        <li class="MainNav-item" v-if="user.isLoggedIn">
-          <span @click="toggleUserMenu">
-            <user-avatar :size="24" />
-            <span class="MainNav-linkText userName">
-            {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
+      <div class="row">
+        <div class="MainNav col-md-6 col-md-push-3">
+        <tab-menu
+          v-if="user.isLoggedIn"
+          :tabs="tabs"
+          :active="$route.name"
+          :link="true"
+          lookStyle="background"
+          />
+        </div>
+        <ul class="MainNav-userWrapper col-md-3 col-md-push-3">
+          <li class="MainNav-item">
+            <router-link to="/help" class="MainNav-link">
+              <span class="MainNav-linkText">{{"Help" | translatePhrase}}</span>
+            </router-link>
+          </li>
+          <li class="MainNav-item" v-if="user.isLoggedIn">
+            <span @click="toggleUserMenu">
+              <user-avatar :size="24" />
+              <span class="MainNav-linkText userName">
+              {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
+              </span>
+              <i class="fa fa-fw" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
             </span>
-            <i class="fa fa-fw" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
-          </span>
-          <user-settings v-if="showUserMenu && !isUserPage" compact v-on-clickaway="hideUserMenu"/>
-        </li>
-        <li class="MainNav-item" v-if="!user.isLoggedIn">
-          <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
-            <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
-          </a>
-        </li>
-      </ul>
+            <user-settings v-if="showUserMenu && !isUserPage" compact v-on-clickaway="hideUserMenu"/>
+          </li>
+          <li class="MainNav-item" v-if="!user.isLoggedIn">
+            <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
+              <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
 </template>
@@ -113,9 +115,7 @@ export default {
 
   &-container {
     padding: 0 25px;
-    display: flex;
     height: 100%;
-    align-items: center;
     
     @media screen and (min-width: @screen-sm){
       padding: 0 15px;
@@ -144,6 +144,7 @@ export default {
     flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
+    height: 100%;
     margin: 0px;
 
     @media (max-width: @screen-sm) {
