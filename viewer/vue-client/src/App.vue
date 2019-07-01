@@ -632,8 +632,8 @@ h1 {
   justify-content: space-between;
   height: 42px;
   flex-grow: 1;
-  font-size: 18px;
-  font-size: 1.8rem;
+  font-size: 16px;
+  font-size: 1.6rem;
   line-height: 1.2;
   color: @black;
   border: none;

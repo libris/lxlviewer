@@ -321,6 +321,7 @@ export default {
       margin-left: 0.05em;
       &:first-child {
         overflow: hidden;
+        border-left: none;
         border-radius: @formradius 0 0 @formradius;
       }
       &:last-child {
