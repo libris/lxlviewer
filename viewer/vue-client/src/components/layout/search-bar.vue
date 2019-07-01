@@ -39,7 +39,7 @@ export default {
   <div class="SearchBar" id="SearchBar" aria-labelledby="service-name">
     <div class="SearchBar-container container">
       <div class="row">
-        <div class="SearchBar-brand col-md-3">
+        <div class="SearchBar-brand hidden-sm hidden-xs col-md-3">
           <router-link to="/" class="SearchBar-brandLink">
             <img class="SearchBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
           </router-link>
@@ -50,7 +50,7 @@ export default {
             </span>
           </router-link>
         </div>
-        <search-form class="SearchBar-searchForm col-md-9" :search-perimeter="$route.params.perimeter" />
+        <search-form class="SearchBar-searchForm col-sm-12 col-md-9" :search-perimeter="$route.params.perimeter" />
       </div>
     </div>
   </div>
@@ -69,7 +69,10 @@ export default {
   // will-change: transform;
   z-index: @sticky-bar-z;
   width: 100%;
-  padding: 1rem 0 0.5rem 0;
+  padding: 0 0 0.5rem 0;
+  @media screen and (min-width: @screen-sm){
+    padding: 1rem 0 0.5rem 0;
+  }
   background-color: @bg-sticky-bar;
   border: solid @grey-lighter;
   border-width: 0px 0px 3px 0px;
@@ -101,7 +104,10 @@ export default {
   }
 
   &-brandLogo {
-    display: inline-block;
+    display: none;
+    @media screen and (min-width: @screen-md){
+      display: inline-block;
+    }
     margin: 4px 0 0;
     vertical-align: middle;
     width: 80%;
@@ -113,6 +119,10 @@ export default {
   }
 
   &-brandTitle {
+    display: none;
+    @media screen and (min-width: @screen-md){
+      display: inline-block;
+    }
     color: @black;
     cursor: pointer;
     float: right;

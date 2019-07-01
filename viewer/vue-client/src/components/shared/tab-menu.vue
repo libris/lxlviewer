@@ -133,8 +133,9 @@ export default {
         @keyup.enter="go(item.id)"
         :class="{'is-active': active === item.id }"
         role="tab">
-          <span v-if="item.html" v-html="item.html"></span>
-          <span v-else>{{item.text | translatePhrase}}</span>
+          <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
+          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
+          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
       </li>
       <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
     </ul>
@@ -145,8 +146,9 @@ export default {
         <router-link class="TabMenu-tab" 
           :class="{'is-active': active === item.id }" 
           :to="item.link">
-          <span v-if="item.html" v-html="item.html"></span>
-          <span v-else>{{item.text | translatePhrase}}</span>
+          <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
+          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
+          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
         </router-link>
       </li>
       <hr v-show="hasActive" v-if="lookStyle === 'underline'" class="TabMenu-underline" ref="underline">
@@ -168,17 +170,21 @@ export default {
     position: relative;
     display: inline-block;
     font-weight: 600;
-    font-size: 16px;
-    font-size: 1.6rem;
     margin: 5px 0px;
     text-transform: uppercase;
     transition: color 0.2s ease;
-    border: dashed transparent;
-    border-width: 1px 0px 1px 0px;
     white-space: nowrap;
 
     .style-background & {
-      padding: 5px 20px;
+      font-size: unset;
+      padding: 5px 0.5em;
+      @media screen and (min-width: @screen-sm) {
+        font-size: 16px;
+        font-size: 1.6rem;
+        padding: 5px 1em;
+      }
+      margin: 0;
+      color: @white;
       transition: background-color 0.25s ease;
       &:hover {
         background-color: darken(@brand-primary, 15%);
@@ -211,14 +217,16 @@ export default {
   }
 
   &.lookStyle-background {
-    
+
   }
   &.lookStyle-underline {
     
   }
 
   &-tabList {
-    margin: 10px 0 10px -10px;
+    .style-underline & {
+      margin: 10px 0 10px -10px;
+    }
     padding: 0;
     white-space: nowrap;
   }

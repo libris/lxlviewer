@@ -17,6 +17,7 @@ export default {
       result: null,
       importData: [],
       searchInProgress: false,
+      hideFacetColumn: true,
       query: '',
     };
   },
@@ -174,8 +175,8 @@ export default {
 <template>
   <div class="row">
     <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
-      <div class="Find-facetHeading uppercaseHeading--large">{{ $route.params.perimeter === 'libris' ? 'Filter' : 'Databaser' }}</div>
-      <facet-controls :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
+      <div @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--large">{{ $route.params.perimeter === 'libris' ? 'Filter' : 'Databaser' }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
+      <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
       <span v-if="result === null && $route.params.perimeter === 'libris' && searchInProgress === false">{{ 'No results' | translatePhrase }}</span>
       <portal-target name="facetColumn" />
     </div>
@@ -216,12 +217,17 @@ export default {
 }
 .Column {
   &-facets {
+    height: unset;
+    min-height: unset;
+    padding-bottom: 0;
+    @media (min-width: @screen-md) {
+      padding-bottom: 5rem;
+      height: 100%;
+      min-height: 50vh;
+    }
     padding-top: 2rem;
     border: solid @grey-lighter;
     border-width: 0px 1px 0px 0px;
-    height: 100%;
-    min-height: 50vh;
-    padding-bottom: 5rem;
   }
   &-searchForm {
 

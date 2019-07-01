@@ -114,6 +114,14 @@ export default {
 }
 // BOOTSTRAP UNSET END
 
+// BOOTSTRAP OVERRIDE START
+@media (max-width: 992px) {
+   .container {
+      width: 100%;
+   }
+}
+// BOOTSTRAP OVERRIDE END
+
 .row {
   height: 100%;
 }

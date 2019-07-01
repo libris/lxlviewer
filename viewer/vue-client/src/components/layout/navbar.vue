@@ -30,10 +30,10 @@ export default {
       const $directoryCareBadge = this.userCare.length === 0 ? '' : `<span class="badge badge-accent UserCare-badge">${this.userCare.length}</badge>`;
       const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language)} ${$directoryCareBadge}`;
       const tabs = [
-        { id: 'Home', text: 'Start', link: '/' },
-        { id: 'Search', text: 'Search', link: '/search/libris' },
-        { id: 'Create new', text: 'Create new', link: '/create' },
-        { id: 'Directory care', html: $directoryCare, link: '/directory-care' }, 
+        { id: 'Home', text: 'Start', link: '/', icon: 'home' },
+        { id: 'Search', text: 'Search', link: '/search/libris', icon: 'search' },
+        { id: 'Create new', text: 'Create new', link: '/create', icon: 'plus-square-o' },
+        { id: 'Directory care', html: $directoryCare, link: '/directory-care', icon: 'flag' }, 
       ];
       return tabs;
     },
@@ -67,7 +67,12 @@ export default {
   <nav class="NavBar" id="NavBar" role="navigation" aria-labelledby="service-name">
     <div class="NavBar-container container">
       <div class="row">
-        <div class="MainNav col-md-6 col-md-push-3">
+        <div class="NavBar-brand col-xs-1 hidden-md hidden-lg">
+          <router-link to="/" class="NavBar-brandLink">
+            <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
+          </router-link>
+        </div>
+        <div class="MainNav col-xs-7 col-md-6 col-md-push-3">
         <tab-menu
           v-if="user.isLoggedIn"
           :tabs="tabs"
@@ -76,7 +81,7 @@ export default {
           lookStyle="background"
           />
         </div>
-        <ul class="MainNav-userWrapper col-md-3 col-md-push-3">
+        <ul class="MainNav-userWrapper col-xs-4 col-md-3 col-md-push-3">
           <li class="MainNav-item">
             <router-link to="/help" class="MainNav-link">
               <span class="MainNav-linkText">{{"Help" | translatePhrase}}</span>
@@ -85,7 +90,7 @@ export default {
           <li class="MainNav-item" v-if="user.isLoggedIn">
             <span @click="toggleUserMenu">
               <user-avatar :size="24" />
-              <span class="MainNav-linkText userName">
+              <span class="MainNav-linkText userName hidden-xs">
               {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </span>
               <i class="fa fa-fw" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
@@ -107,23 +112,30 @@ export default {
 <style lang="less">
 .NavBar {
   width: 100%;
-  height: 40px;
   background-color: @bg-navbar;
   flex-shrink: 0; // fix ie flexbox height bug
   border: solid @brand-primary;
   border-width: 0px 0px 3px 0px;
+  line-height: 1.2;
+  font-size: 3rem;
+  @media screen and (min-width: @screen-sm) {
+    font-size: unset;
+    line-height: unset;
+  }
 
+  &-brand {
+    text-align: center;
+  }
+  &-brandLogo {
+    height: 1em;
+    @media screen and (min-width: @screen-sm){
+      height: 2em;
+      margin-top: 0.1em;
+    }
+  }
   &-container {
     padding: 0 25px;
     height: 100%;
-    
-    @media screen and (min-width: @screen-sm){
-      padding: 0 15px;
-    }
-    @media screen and (max-width: @screen-lg){
-      flex-wrap: wrap;
-      width: 100% !important;
-    }
   }
 }
 
@@ -133,8 +145,6 @@ export default {
   list-style: none;
 
   @media screen and (max-width: @screen-md){
-    min-width: 100%;
-    border-top: 1px solid @gray-light;
     align-items: flex-start;
     order: 3;
   }
@@ -213,12 +223,6 @@ export default {
       margin-top: 0;
     }
 
-    &-tab {
-      margin: 0;
-      font-size: 16px;
-      font-size: 1.6rem;
-      color: @white;
-    }
   }
 }
 .UserCare {

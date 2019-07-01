@@ -314,7 +314,12 @@ export default {
   margin-top: 0vh;
   transition: 0.3s ease margin-top;
   display: flex;
+  flex-direction: row;
   align-items: center;
+  flex-wrap: wrap;
+  @media all and (min-width: @screen-sm) {
+    flex-wrap: unset;
+  }
 
   &-formGroup {
     width: 100%;
@@ -340,15 +345,25 @@ export default {
     }
   }
   &-form {
+    order: 2;
     flex-grow: 1;
+    flex-basis: 80%;
+    @media all and (min-width: @screen-sm) {
+      order: 1;
+      flex-basis: unset;
+    }
   }
 
   &-perimeterControl {
-
+    order: 1;
+    @media all and (min-width: @screen-sm) {
+      order: 2;
+    }
   }
 
   &-help {
     width: 2em;
+    order: 3;
   }
 
   &-helpContainer {
@@ -406,15 +421,6 @@ export default {
     flex: 1 0 auto;
     border: solid @grey-lighter;
     border-width: 0px 1px 0px 1px;
-    // border: 1px solid @grey-light;
-    // border-right: 0;
-
-    // border-top-left-radius: 4px;
-    // border-bottom-left-radius: 4px;
-    // & + input {
-    //   border-top-left-radius: 0;
-    //   border-bottom-left-radius: 0;
-    // }
   }
 
   &-select {
@@ -430,12 +436,6 @@ export default {
     min-width: 100px;
     width: 100%;
     color: @black;
-    // border-top-right-radius: 0;
-    // border-bottom-right-radius: 0;
-    // border-right: 0;
-    // &:focus {
-    //   border-right: none;
-    // }
   }
 
   &-inputLabel {
@@ -450,9 +450,7 @@ export default {
   }
 
   &-submit {
-    // height: 42px;
-    // border: 0;
-    // border-radius: 0 4px 4px 0;
+    min-width: 2.4em;
     box-shadow: none;
 
     @media (min-width: @screen-sm) {
