@@ -115,7 +115,7 @@ export default {
 // BOOTSTRAP UNSET END
 
 // BOOTSTRAP OVERRIDE START
-@media (max-width: 992px) {
+@media (max-width: @screen-md-min) {
    .container {
       width: 100%;
    }

@@ -29,11 +29,15 @@ export default {
     tabs() {
       const $directoryCareBadge = this.userCare.length === 0 ? '' : `<span class="badge badge-accent UserCare-badge">${this.userCare.length}</badge>`;
       const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language)} ${$directoryCareBadge}`;
+      const loggedInTabs = this.user.isLoggedIn ? [
+        { id: 'Create new', text: 'Create new', link: '/create', icon: 'plus-square-o' },
+        { id: 'Directory care', html: $directoryCare, link: '/directory-care', icon: 'flag' }, 
+      ] : [];
       const tabs = [
         { id: 'Home', text: 'Start', link: '/', icon: 'home' },
         { id: 'Search', text: 'Search', link: '/search/libris', icon: 'search' },
-        { id: 'Create new', text: 'Create new', link: '/create', icon: 'plus-square-o' },
-        { id: 'Directory care', html: $directoryCare, link: '/directory-care', icon: 'flag' }, 
+        ...loggedInTabs,
+        { id: 'Help', text: 'Help', link: '/help', icon: 'question' }, 
       ];
       return tabs;
     },
@@ -67,33 +71,28 @@ export default {
   <nav class="NavBar" id="NavBar" role="navigation" aria-labelledby="service-name">
     <div class="NavBar-container container">
       <div class="row">
-        <div class="NavBar-brand col-xs-1 hidden-md hidden-lg">
+        <div class="NavBar-brand col-xs-2 col-sm-1 hidden-md hidden-lg">
           <router-link to="/" class="NavBar-brandLink">
             <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
           </router-link>
         </div>
-        <div class="MainNav col-xs-7 col-md-6 col-md-push-3">
+        <div class="MainNav col-xs-8 col-sm-7 col-md-6 col-md-push-3">
         <tab-menu
-          v-if="user.isLoggedIn"
           :tabs="tabs"
           :active="$route.name"
           :link="true"
           lookStyle="background"
           />
         </div>
-        <ul class="MainNav-userWrapper col-xs-4 col-md-3 col-md-push-3">
-          <li class="MainNav-item">
-            <router-link to="/help" class="MainNav-link">
-              <span class="MainNav-linkText">{{"Help" | translatePhrase}}</span>
-            </router-link>
-          </li>
+        <ul class="MainNav-userWrapper col-xs-2 col-xs-push-0 col-sm-push-0 col-sm-4 col-md-3 col-md-push-3">
           <li class="MainNav-item" v-if="user.isLoggedIn">
             <span @click="toggleUserMenu">
-              <user-avatar :size="24" />
+              <user-avatar class="hidden-xs" :size="24" />
+              <user-avatar class="visible-xs-block" :size="32" />
               <span class="MainNav-linkText userName hidden-xs">
               {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </span>
-              <i class="fa fa-fw" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
+              <i class="fa fa-fw hidden-xs" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
             </span>
             <user-settings v-if="showUserMenu && !isUserPage" compact v-on-clickaway="hideUserMenu"/>
           </li>
@@ -116,7 +115,7 @@ export default {
   flex-shrink: 0; // fix ie flexbox height bug
   border: solid @brand-primary;
   border-width: 0px 0px 3px 0px;
-  line-height: 1.2;
+  // line-height: 1.2;
   font-size: 3rem;
   @media screen and (min-width: @screen-sm) {
     font-size: unset;
@@ -124,24 +123,37 @@ export default {
   }
 
   &-brand {
-    text-align: center;
+    height: 100%;
+  }
+  &-brandLink {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   &-brandLogo {
-    height: 1em;
+    height: 1.6em;
+    padding: 0.1em;
     @media screen and (min-width: @screen-sm){
       height: 2em;
+      padding: 0;
       margin-top: 0.1em;
     }
   }
   &-container {
     padding: 0 25px;
     height: 100%;
+    @media screen and (max-width: @screen-lg){
+      flex-wrap: wrap;
+      width: 100% !important;
+    }
   }
 }
 
 .MainNav {
   display: flex;
   flex: 1;
+  height: 100%;
   list-style: none;
 
   @media screen and (max-width: @screen-md){
@@ -153,7 +165,7 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     height: 100%;
     margin: 0px;
 

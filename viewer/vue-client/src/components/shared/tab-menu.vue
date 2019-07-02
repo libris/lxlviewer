@@ -140,17 +140,14 @@ export default {
       <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
     </ul>
     <ul v-else class="TabMenu-tabList" ref="tablist">
-      <li v-for="item in tabs" 
-        class="TabMenu-linkContainer"
-        :key="item.id">
-        <router-link class="TabMenu-tab" 
-          :class="{'is-active': active === item.id }" 
-          :to="item.link">
-          <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
-        </router-link>
-      </li>
+      <router-link tag="li" class="TabMenu-tab" 
+        v-for="item in tabs" :key="item.id"
+        :class="{'is-active': active === item.id }" 
+        :to="item.link">
+        <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
+        <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
+        <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
+      </router-link>
       <hr v-show="hasActive" v-if="lookStyle === 'underline'" class="TabMenu-underline" ref="underline">
     </ul>
   </div>
@@ -160,6 +157,7 @@ export default {
 
 .TabMenu {
   display: inline-block;
+  height: 100%;
   opacity: 1;
   transition: opacity 0.25s ease;
   position: relative;
@@ -169,6 +167,7 @@ export default {
     text-decoration: none;
     position: relative;
     display: inline-block;
+    height: 100%;
     font-weight: 600;
     margin: 5px 0px;
     text-transform: uppercase;
@@ -176,8 +175,12 @@ export default {
     white-space: nowrap;
 
     .style-background & {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: unset;
-      padding: 5px 0.5em;
+      flex-grow: 1;
+      padding: 0;
       @media screen and (min-width: @screen-sm) {
         font-size: 16px;
         font-size: 1.6rem;
@@ -216,8 +219,8 @@ export default {
     }
   }
 
-  &.lookStyle-background {
-
+  &.style-background {
+    width: 100%;
   }
   &.lookStyle-underline {
     
@@ -227,6 +230,12 @@ export default {
     .style-underline & {
       margin: 10px 0 10px -10px;
     }
+    .style-background & {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    height: 100%;
     padding: 0;
     white-space: nowrap;
   }
