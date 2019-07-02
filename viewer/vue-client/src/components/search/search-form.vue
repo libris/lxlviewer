@@ -345,7 +345,7 @@ export default {
     }
   }
   &-form {
-    order: 2;
+    order: 3;
     flex-grow: 1;
     flex-basis: 80%;
     @media all and (min-width: @screen-sm) {
@@ -363,7 +363,10 @@ export default {
 
   &-help {
     width: 2em;
-    order: 3;
+    order: 2;
+    @media all and (min-width: @screen-sm) {
+      order: 3;
+    }
   }
 
   &-helpContainer {
