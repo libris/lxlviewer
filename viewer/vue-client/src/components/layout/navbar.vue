@@ -37,7 +37,7 @@ export default {
         { id: 'Home', text: 'Start', link: '/', icon: 'home' },
         { id: 'Search', text: 'Search', link: '/search/libris', icon: 'search' },
         ...loggedInTabs,
-        { id: 'Help', text: 'Help', link: '/help', icon: 'question' }, 
+        { id: 'Help', text: 'Help', link: '/help', icon: 'question-circle' }, 
       ];
       return tabs;
     },
