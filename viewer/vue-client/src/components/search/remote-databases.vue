@@ -236,7 +236,7 @@ export default {
     <portal to="facetColumn">
       <div class="RemoteDatabases-listFilter form-group panel">
         <input 
-          class="RemoteDatabases-listFilterInput customInput form-control mousetrap" 
+          class="RemoteDatabases-listFilterInput customInput mousetrap" 
           type="text" 
           v-model="filterKey"
           :aria-label="'Filter by' | translatePhrase"

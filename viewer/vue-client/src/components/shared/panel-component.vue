@@ -229,6 +229,13 @@ export default {
       background-color: @brand-danger;
       color: @neutral-color;
     }
+    input {
+      background-color: #fff;
+      border: 1px solid @grey-lighter;
+      &:focus {
+        border-color: @brand-primary;
+      }
+    }
   }
 
   &-header {

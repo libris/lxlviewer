@@ -615,7 +615,8 @@ h1 {
   font-size: 1.6rem;
   color: @black;
   border: none;
-  border-radius: 0;
+  width: 100%;
+  border-radius: @form-radius;
   // border-bottom: 1px solid rgba(0, 0, 0, 0.07);
   text-align: left;
   -moz-appearance: none;
@@ -628,7 +629,10 @@ h1 {
   background-size: 1em auto, 100%;
   padding-left: 0.8em;
   padding-right: 1.8em;
-
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
   &::-ms-expand{
     display: none;
   }
@@ -642,6 +646,9 @@ h1 {
   flex-grow: 1;
   font-size: 16px;
   font-size: 1.6rem;
+  width: 100%;
+  border-radius: @form-radius;
+  background-color: @grey-lightest;
   line-height: 1.2;
   color: @black;
   border: none;

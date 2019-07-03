@@ -137,11 +137,12 @@ export default {
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
       </li>
-      <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
+      <hr v-show="hasActive" v-if="lookStyle === 'underline'" class="TabMenu-underline" ref="underline">
     </ul>
     <ul v-else class="TabMenu-tabList" ref="tablist">
       <router-link tag="li" class="TabMenu-tab" 
         v-for="item in tabs" :key="item.id"
+        tabindex="0"
         :class="{'is-active': active === item.id }" 
         :to="item.link">
         <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>

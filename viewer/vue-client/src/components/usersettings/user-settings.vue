@@ -273,12 +273,17 @@ export default {
 
   &.in-menu {
     cursor: initial;
+    top: 3em;
     position: absolute;
     right: 0;
     left: auto;
     z-index: @dropdown-z;
     padding-top: 0.25em;
     padding-left: 0;
+
+    @media (min-width: @screen-sm) {
+      top: 2em;
+    }
 
     & ul {
       padding: 0;

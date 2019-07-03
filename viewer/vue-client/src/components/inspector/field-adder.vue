@@ -321,7 +321,7 @@ export default {
           <input id="field-adder-input"
             type="text" 
             ref="input"
-            class="FieldAdderPanel-filterInput customInput form-control mousetrap" 
+            class="FieldAdderPanel-filterInput customInput mousetrap" 
             :placeholder="'Filter by' | translatePhrase"
             :aria-label="'Filter by' | translatePhrase"
             v-model="filterKey">

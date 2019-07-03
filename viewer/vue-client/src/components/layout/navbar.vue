@@ -52,6 +52,13 @@ export default {
     },
   },
   methods: {
+    navigate(id) {
+      for (const tab of this.tabs) {
+        if (tab.id === id) {
+          this.$router.push({ path: tab.link });
+        }
+      }
+    },
     toggleUserMenu() {
       this.showUserMenu = !this.showUserMenu;
     },
@@ -80,20 +87,20 @@ export default {
         <tab-menu
           :tabs="tabs"
           :active="$route.name"
-          :link="true"
+          @go="navigate"
           lookStyle="background"
           />
         </div>
         <ul class="MainNav-userWrapper col-xs-2 col-xs-push-0 col-sm-push-0 col-sm-4 col-md-3 col-md-push-3">
-          <li class="MainNav-item" v-if="user.isLoggedIn">
-            <span @click="toggleUserMenu">
+          <li class="MainNav-item" :class="{ 'active': showUserMenu && !isUserPage }" v-if="user.isLoggedIn">
+            <div tabindex="0" @click="toggleUserMenu" @keyup.enter="toggleUserMenu">
               <user-avatar class="hidden-xs" :size="24" />
               <user-avatar class="visible-xs-block" :size="32" />
               <span class="MainNav-linkText userName hidden-xs">
               {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </span>
               <i class="fa fa-fw hidden-xs" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
-            </span>
+            </div>
             <user-settings v-if="showUserMenu && !isUserPage" compact v-on-clickaway="hideUserMenu"/>
           </li>
           <li class="MainNav-item" v-if="!user.isLoggedIn">
@@ -154,6 +161,7 @@ export default {
 .MainNav {
   display: flex;
   flex: 1;
+  align-items: center;
   height: 100%;
   list-style: none;
 
@@ -176,19 +184,22 @@ export default {
   }
 
   &-item {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 0.2em;
     position: relative;
     text-transform: none;
     cursor: pointer;
     color: @white;
     list-style-type: none;
-
+    &.active {
+      background-color: @brand-primary;
+    }
     &:last-of-type a {
       padding-right: 0;
     }
-      
-    @media screen and (max-width: @screen-sm-min) {
-      display: inline;
-    }
+    
     @media (max-width: @screen-sm) {
       & .userName {
         display: none;

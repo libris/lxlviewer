@@ -234,7 +234,7 @@ export default {
       <div ref="formGroup" class="SearchForm-formGroup">
         <div class="SearchForm-selectWrapper" v-if="searchPerimeter === 'libris'">
           <select
-            class="SearchForm-typeSelect customSelect"
+            class="SearchForm-typeSelect SearchForm-select customSelect"
             v-model="activeSearchType"
             @change="setPrefSearchType">
             <option 
@@ -256,7 +256,7 @@ export default {
         </span>
         <div class="SearchForm-selectWrapper" v-if="searchPerimeter === 'libris'">
           <select
-            class="SearchForm-paramSelect customSelect"
+            class="SearchForm-paramSelect SearchForm-select customSelect"
             v-model="activeSearchParam"
             @change="setPrefSearchParam">
             <option 
@@ -308,7 +308,6 @@ export default {
 </template>
 
 <style lang="less">
-@formradius: 0.2em;
 
 .SearchForm {
   margin-top: 0vh;
@@ -325,7 +324,7 @@ export default {
     width: 100%;
     display: flex;
     position: relative;
-    border-radius: @formradius;
+    border-radius: @form-radius;
     background-color: @grey-lightest;
     > * {
       display: flex;
@@ -335,12 +334,12 @@ export default {
       &:first-child {
         overflow: hidden;
         border-left: none;
-        border-radius: @formradius 0 0 @formradius;
+        border-radius: @form-radius 0 0 @form-radius;
       }
       &:last-child {
         margin-left: 0;
         overflow: hidden;
-        border-radius: 0 @formradius @formradius 0;
+        border-radius: 0 @form-radius @form-radius 0;
       }
     }
   }
@@ -427,12 +426,7 @@ export default {
   }
 
   &-select {
-    background-color: @white;
-    height: 100%;
-    min-width: unset;
-    box-shadow: none;
-    text-align: left;
-    border: none;
+    
   }
 
   &-input {
