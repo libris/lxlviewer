@@ -133,6 +133,7 @@ export default {
   }
   &-brandLogo {
     height: 1.6em;
+    width: 1.6em;
     padding: 0.1em;
     @media screen and (min-width: @screen-sm){
       height: 2em;
