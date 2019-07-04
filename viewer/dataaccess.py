@@ -2,7 +2,10 @@
 from __future__ import unicode_literals
 import re
 import json
-from urlparse import urlparse, urljoin
+try:
+    from urllib.parse import urlparse, urljoin
+except ImportError:
+    from urlparse import urlparse, urljoin
 from collections import namedtuple
 
 import requests
