@@ -31,9 +31,9 @@ export default {
       return initials;
     },
     fontSize() {
-      const calcSize = this.size * 0.4;
-      if (calcSize <= 12) {
-        return 12;
+      const calcSize = parseInt(this.size * 0.35);
+      if (calcSize <= 8) {
+        return 8;
       }
       return calcSize;
     },
@@ -58,16 +58,20 @@ export default {
   flex-direction: column;
   align-items: center;
   border-radius: 50%;
-  background-color: @brand-primary;
+  background-color: @brand-accent2;
 
   &-gravatar {
-    line-height: 1.8em;
   }
   &-no-gravatar {
+    height: 100%;
+    width: 100%;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     user-select: none;
     text-transform: uppercase;
     color: #fff;
-    line-height: 1.8em;
   }
 }
 
