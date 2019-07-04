@@ -83,7 +83,7 @@ export default {
             <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
           </router-link>
         </div>
-        <div class="MainNav col-xs-8 col-sm-7 col-md-6 col-md-push-3">
+        <div class="MainNav col-xs-8 col-sm-7 col-md-5 col-md-push-3">
         <tab-menu
           :tabs="tabs"
           :active="$route.name"
@@ -91,7 +91,7 @@ export default {
           lookStyle="background"
           />
         </div>
-        <ul class="MainNav-userWrapper col-xs-2 col-xs-push-0 col-sm-push-0 col-sm-4 col-md-3 col-md-push-3">
+        <ul class="MainNav-userWrapper col-xs-2 col-xs-push-0 col-sm-push-0 col-sm-4 col-md-3 col-md-push-4">
           <li class="MainNav-item" :class="{ 'active': showUserMenu && !isUserPage }" v-if="user.isLoggedIn">
             <div tabindex="0" @click="toggleUserMenu" @keyup.enter="toggleUserMenu">
               <user-avatar class="hidden-xs" :size="24" />
