@@ -262,9 +262,6 @@ export default {
     }
     .value {
       width: 50%;
-      input {
-        width: 100%;
-      }
       select {
         width: 100%;
       }

@@ -578,6 +578,7 @@ h1 {
     margin-right: 0.2em;
     position: absolute;
     opacity: 0;
+    height: 1.6em;
 
     &:checked + .customCheckbox-icon::before {
       content: "\f14a";
