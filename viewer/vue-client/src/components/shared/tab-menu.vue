@@ -183,9 +183,9 @@ export default {
       flex-grow: 1;
       padding: 0;
       @media screen and (min-width: @screen-sm) {
-        font-size: 16px;
-        font-size: 1.6rem;
-        padding: 5px 1em;
+        font-size: 15px;
+        font-size: 1.5rem;
+        padding: 8px 1em;
       }
       margin: 0;
       color: @white;
