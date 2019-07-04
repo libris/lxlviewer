@@ -203,10 +203,10 @@ export default {
       }
     },
     '$route.fullPath'() {
-      if (!this.activeSearchParam) {
+      if (this.activeSearchParam === null) {
         this.activeSearchParam = this.setSearch();
       }
-      if (!this.activeSearchType) {
+      if (this.activeSearchType === null) {
         this.activeSearchType = this.setType();
       }
     },
@@ -214,10 +214,10 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.focusSearchInput();
-      if (!this.activeSearchParam) {
+      if (this.activeSearchParam === null) {
         this.activeSearchParam = this.setSearch();
       }
-      if (!this.activeSearchType) {
+      if (this.activeSearchType === null) {
         this.activeSearchType = this.setType();
       }
     });
