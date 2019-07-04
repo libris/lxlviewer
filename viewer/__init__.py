@@ -429,11 +429,6 @@ def thingnewp():
 def maintenance():
     return render_template('maintenance.html')
 
-# TODO: remove (unused and deprecated)
-@app.route('/sys/forcedsetterms.json')
-def forcedsetterms():
-    return _proxy_request(request, session, None)
-
 @app.route('/_compilemarc')
 def _compilemarc():
     return _proxy_request(request, session, query_params=['id', 'library'])
