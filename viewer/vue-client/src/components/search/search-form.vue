@@ -210,6 +210,15 @@ export default {
         this.activeSearchType = this.setType();
       }
     },
+    '$route.params.perimeter'(value, oldValue) {
+      if (value === 'remote') {
+        if (this.status.remoteDatabases.length > 0) {
+          if (this.composedSearchParam.q !== '' && this.composedSearchParam.q !== '*') {
+            this.doSearch();
+          }
+        }
+      }
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -282,12 +291,6 @@ export default {
         @panelClosed="focusSearchInput"
         ref="dbComponent"></remote-databases>
     </form>
-    <div class="SearchForm-perimeterControl"> 
-      <switch-toggle :link="true" :options="[
-        { 'id': 'libris', 'text': 'Libris', link: '/search/libris'},
-        { 'id': 'remote', 'text': 'Other sources', link: '/search/remote' },
-      ]" :active="searchPerimeter" />
-    </div>
     <div class="SearchForm-help">
       <div class="SearchForm-helpBox dropdown" v-if="searchPerimeter === 'libris'">
         <span class="SearchForm-helpIcon icon icon--md">
@@ -344,27 +347,20 @@ export default {
     }
   }
   &-form {
-    order: 3;
+    order: 1;
     flex-grow: 1;
     flex-basis: 80%;
     @media all and (min-width: @screen-sm) {
-      order: 1;
       flex-basis: unset;
-    }
-  }
-
-  &-perimeterControl {
-    order: 1;
-    @media all and (min-width: @screen-sm) {
-      order: 2;
     }
   }
 
   &-help {
     width: 2em;
-    order: 2;
+    display: none;
     @media all and (min-width: @screen-sm) {
-      order: 3;
+      order: 2;
+      display: block;
     }
   }
 

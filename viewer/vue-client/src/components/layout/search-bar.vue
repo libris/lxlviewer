@@ -69,8 +69,8 @@ export default {
   // will-change: transform;
   z-index: @sticky-bar-z;
   width: 100%;
-  padding: 0 0 0.5rem 0;
-  @media screen and (min-width: @screen-sm){
+  padding: 0.5rem 0 0.5rem 0;
+  @media screen and (min-width: @screen-md){
     padding: 1rem 0 0.5rem 0;
   }
   background-color: @bg-sticky-bar;

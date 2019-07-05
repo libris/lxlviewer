@@ -6,10 +6,12 @@ import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Copy from '@/resources/json/copy.json';
 import FacetControls from '@/components/search/facet-controls';
 import SearchResult from '@/components/search/search-result';
+import TabMenu from '@/components/shared/tab-menu';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
+  name: 'Find',
   data() {
     return {
       initialized: false,
@@ -30,8 +32,21 @@ export default {
         this.getResult();
       }
     },
+    '$route.params.perimeter'(value, oldValue) {
+      this.searchInProgress = false;
+      this.emptyResults();
+      this.hideFacetColumn = true;
+      if (value === 'remote') {
+        if (this.status.remoteDatabases.length === 0) {
+          this.hideFacetColumn = false;
+        }
+      }
+    },
   },
   methods: {
+    setSearchPerimeter(id) {
+      this.$router.push({ 'path': `/search/${id}` });
+    },
     getResult() {
       this.emptyResults();
       if (typeof this.query !== 'undefined') {
@@ -70,6 +85,7 @@ export default {
     },
     getRemoteResult() {
       const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.query}`;
+      this.hideFacetColumn = true;
       
       fetch(fetchUrl).then(response => response.json(), (error) => {
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
@@ -131,6 +147,10 @@ export default {
     copy() {
       return Copy;
     },
+    remoteDbChosenStatusString() {
+      const amountChosen = this.status.remoteDatabases.length;
+      return amountChosen === 1 ? `(${amountChosen} vald)` : `(${amountChosen} valda)`;
+    },
   },
   beforeCreate() {
   },
@@ -164,6 +184,7 @@ export default {
     next();
   },
   components: {
+    TabMenu,
     'facet-controls': FacetControls,
     'search-result': SearchResult,
     'vue-simple-spinner': VueSimpleSpinner,
@@ -175,10 +196,19 @@ export default {
 <template>
   <div class="row">
     <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
-      <div @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--large">{{ $route.params.perimeter === 'libris' ? 'Filter' : 'Databaser' }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
+      <tab-menu
+        @go="setSearchPerimeter"
+        :active="$route.params.perimeter"
+        :tabs="[
+          { id: 'libris', text: 'Libris' },
+          { id: 'remote', text: 'Andra källor' },
+        ]"
+      />
+      <div @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ $route.params.perimeter === 'libris' ? 'Filter' : `Databaser ${remoteDbChosenStatusString}` }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
+      <hr class="Find-facetHeadingDivider">
       <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
       <span v-if="result === null && $route.params.perimeter === 'libris' && searchInProgress === false">{{ 'No results' | translatePhrase }}</span>
-      <portal-target name="facetColumn" />
+      <portal-target :class="{'hidden-xs hidden-sm': hideFacetColumn }" name="facetColumn" />
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">
         <div class="Find-progressText">
@@ -206,7 +236,9 @@ export default {
 
 .Find {
   &-facetHeading {
-    margin-bottom: 2.2rem;
+  }
+  &-facetHeadingDivider {
+    margin: 0px 0px 1em 0px;
   }
   &-progressText {
     margin-top: 20px;
@@ -225,9 +257,16 @@ export default {
       height: 100%;
       min-height: 50vh;
     }
-    padding-top: 2rem;
     border: solid @grey-lighter;
     border-width: 0px 1px 0px 0px;
+    input {
+      background-color: #fff;
+      border: 1px solid @grey-lighter;
+      margin: 0.5em 0;
+      &:focus {
+        border-color: @brand-primary;
+      }
+    }
   }
   &-searchForm {
 

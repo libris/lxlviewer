@@ -60,7 +60,6 @@ export default {
 
   @media (min-width: @screen-md) {
     padding: 0;
-    margin-top: 2rem;
   }
 }
 </style>

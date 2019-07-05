@@ -158,7 +158,6 @@ export default {
 
 .TabMenu {
   display: inline-block;
-  height: 100%;
   opacity: 1;
   transition: opacity 0.25s ease;
   position: relative;
@@ -222,6 +221,7 @@ export default {
 
   &.style-background {
     width: 100%;
+    height: 100%;
   }
   &.lookStyle-underline {
     

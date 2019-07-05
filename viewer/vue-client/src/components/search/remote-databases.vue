@@ -234,15 +234,13 @@ export default {
       </div>
     </div> -->
     <portal to="facetColumn">
-      <div class="RemoteDatabases-listFilter form-group panel">
-        <input 
-          class="RemoteDatabases-listFilterInput customInput mousetrap" 
-          type="text" 
-          v-model="filterKey"
-          :aria-label="'Filter by' | translatePhrase"
-          :placeholder="'Filter by' | translatePhrase"
-          ref="listFilterInput">
-      </div>
+      <input 
+        class="RemoteDatabases-listFilterInput customInput mousetrap" 
+        type="text" 
+        v-model="filterKey"
+        :aria-label="'Filter by' | translatePhrase"
+        :placeholder="'Filter by' | translatePhrase"
+        ref="listFilterInput">
       <ul class="RemoteDatabases-list"
         v-show="remoteDatabases.state == 'complete'">
         <li 
