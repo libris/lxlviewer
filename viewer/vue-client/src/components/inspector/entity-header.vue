@@ -128,11 +128,11 @@ export default {
         </div>
       </div>
     </div>
-    <div class="EntityHeader-body HeaderComponent-body is-compact">
+    <!-- <div class="EntityHeader-body HeaderComponent-body is-compact">
       <div class="compact-header" :class="{ 'show-compact': showCompact }">
       {{ compactSummary }}
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
