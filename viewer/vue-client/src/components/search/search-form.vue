@@ -245,8 +245,36 @@ export default {
       <label class="SearchForm-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
         {{"Search" | translatePhrase}}
       </label>
+      <div class="SearchForm-formGroup SearchForm-selectGroup hidden-sm hidden-md hidden-lg">
+        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper" v-if="searchPerimeter === 'libris'">
+          <select
+            class="SearchForm-typeSelect SearchForm-select customSelect"
+            v-model="activeSearchType"
+            @change="setPrefSearchType">
+            <option 
+              v-for="filter in dataSetFilters" 
+              :key="filter.value"
+              :value="filter.value">
+              {{filter.label | translatePhrase}}
+            </option>
+          </select>
+        </div>
+        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper" v-if="searchPerimeter === 'libris'">
+          <select
+            class="SearchForm-paramSelect SearchForm-select customSelect"
+            v-model="activeSearchParam"
+            @change="setPrefSearchParam">
+            <option 
+              v-for="prop in searchParams"
+              :key="prop.key"
+              :value="prop">
+              {{prop.key | translatePhrase}}
+            </option>
+          </select>
+        </div>
+      </div>
       <div ref="formGroup" class="SearchForm-formGroup">
-        <div class="SearchForm-selectWrapper" v-if="searchPerimeter === 'libris'">
+        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-typeSelect SearchForm-select customSelect"
             v-model="activeSearchType"
@@ -268,7 +296,7 @@ export default {
         <span class="SearchForm-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
           <i class="fa fa-fw fa-close"></i>
         </span>
-        <div class="SearchForm-selectWrapper" v-if="searchPerimeter === 'libris'">
+        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-paramSelect SearchForm-select customSelect"
             v-model="activeSearchParam"
@@ -327,7 +355,9 @@ export default {
   @media all and (min-width: @screen-sm) {
     flex-wrap: unset;
   }
-
+  &-selectGroup {
+    margin-bottom: 0.5em;
+  }
   &-formGroup {
     width: 100%;
     display: flex;
@@ -425,35 +455,44 @@ export default {
     border: solid @grey-lighter;
     border-width: 0px 1px 0px 1px;
   }
-
-  &-select {
-    
+  &-typeSelectWrapper {
+    order: 1;
+  }
+  &-paramSelectWrapper {
+    order: 4;
   }
 
   &-input {
+    order: 2;
     min-width: 100px;
     width: 100%;
     color: @black;
   }
 
-  &-inputLabel {
-    display: block;
-    text-transform: uppercase;
-  }
-
   &-clear {
+    order: 3;
     height: 42px;
     display: flex;
     align-items: center;
   }
 
   &-submit {
+    order: 5;
     min-width: 2.4em;
     box-shadow: none;
 
     @media (min-width: @screen-sm) {
       min-width: 84px;
     }
+  }
+
+  &-select {
+    
+  }
+
+  &-inputLabel {
+    display: block;
+    text-transform: uppercase;
   }
 
   &-typeLabel {
