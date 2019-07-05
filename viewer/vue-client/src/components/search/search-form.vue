@@ -202,7 +202,12 @@ export default {
         });
       }
     },
-    '$route.fullPath'() {
+    '$route.name'(val, oldValue) {
+      if (val === 'Search' && oldValue !== 'Search') {
+        this.focusSearchInput();
+      }
+    },
+    '$route.fullPath'(val, oldValue) {
       if (this.activeSearchParam === null) {
         this.activeSearchParam = this.setSearch();
       }
