@@ -202,11 +202,8 @@ export default {
     .style-underline & {
       padding: 5px 10px;
       color: @grey;
-  
-      @media (min-width: 768px) {
-        font-size: 18px;
-        font-size: 1.8rem;
-      }
+      font-size: 18px;
+      font-size: 1.6rem;
   
       &:hover,
       &:focus {

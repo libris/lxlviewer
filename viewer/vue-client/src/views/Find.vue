@@ -205,7 +205,6 @@ export default {
         ]"
       />
       <div @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ $route.params.perimeter === 'libris' ? 'Filter' : `Databaser ${remoteDbChosenStatusString}` }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
-      <hr class="Find-facetHeadingDivider">
       <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
       <span v-if="result === null && $route.params.perimeter === 'libris' && searchInProgress === false">{{ 'No results' | translatePhrase }}</span>
       <portal-target :class="{'hidden-xs hidden-sm': hideFacetColumn }" name="facetColumn" />
@@ -237,9 +236,6 @@ export default {
 .Find {
   &-facetHeading {
     user-select: none;
-  }
-  &-facetHeadingDivider {
-    margin: 0px 0px 1em 0px;
   }
   &-progressText {
     margin-top: 20px;

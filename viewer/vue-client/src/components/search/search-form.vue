@@ -467,6 +467,10 @@ export default {
     min-width: 100px;
     width: 100%;
     color: @black;
+    &:focus {
+      box-shadow: inset 0px 0px 1em #0000000a;
+      border-radius: 0;
+    }
   }
 
   &-clear {

@@ -164,16 +164,14 @@ export default {
 <template>
   <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
-      <div class="ResultControls-resultDescr">
-        <p class="ResultControls-resultText" id="resultDescr">
-          <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
-          <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
-          <span v-else class="ResultControls-numTotal">{{'No hits' | translatePhrase }}</span>
-        </p>
-        <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
-          {{ 'The search gave more results than can be displayed' | translatePhrase }}.
-        </p>
-      </div>
+      <p class="ResultControls-resultText" id="resultDescr">
+        <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
+        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
+        <span v-else class="ResultControls-numTotal">{{'No hits' | translatePhrase }}</span>
+      </p>
+      <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
+        {{ 'The search gave more results than can be displayed' | translatePhrase }}.
+      </p>
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
         <sort 
           v-if="searchedTypes && $route.params.perimeter != 'remote'"
@@ -204,12 +202,6 @@ export default {
           <i class="fa fa-fw fa-close icon"></i>
         </router-link>
       </div>
-      <!-- <button class="ResultControls-filterBadge clear-all" // introduce when we have 'type' radio buttons
-        v-if="filters.length > 1"
-        @click="clearAllFilters">
-        {{ 'Clear all' | translatePhrase }}
-        <i class="fa fa-fw fa-close icon"></i>
-      </button> -->
     </div>
     <nav v-if="hasPagination && showPages">
       <ul class="ResultControls-pagList">
@@ -253,14 +245,16 @@ export default {
 @buttoncolor: darken(@neutral-color, 10%);
 
 .ResultControls {
-  margin: 10px 0px 20px 0;
+  margin: 1em 0;
 
   &-searchDetails {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    min-height: 2.8em;
     color: @gray-dark;
+    border-bottom: 1px solid @gray-lighter;
 
     @media (max-width: @screen-sm) {
       flex-direction: column;
@@ -292,8 +286,6 @@ export default {
 
   &-listType {
     background-color: transparent;
-    height: 20px;
-    margin-bottom: 10px;
 
     &:hover, 
     &:focus {
@@ -319,7 +311,6 @@ export default {
     padding-top: 5px;
     display: flex;
     flex-wrap: wrap;
-    border-top: 1px solid @gray-lighter;
   }
 
   &-filterBadge {
