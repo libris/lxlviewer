@@ -236,6 +236,7 @@ export default {
 
 .Find {
   &-facetHeading {
+    user-select: none;
   }
   &-facetHeadingDivider {
     margin: 0px 0px 1em 0px;

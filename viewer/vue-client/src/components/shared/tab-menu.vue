@@ -164,6 +164,7 @@ export default {
 
   &-tab {
     cursor: pointer;
+    user-select: none;
     text-decoration: none;
     position: relative;
     display: inline-block;
