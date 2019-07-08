@@ -170,6 +170,12 @@ h4 {
     display: flex;
     align-items: center;
     justify-content: center;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffffeb;
+    left: 0;
+    position: fixed;
     i {
       margin-right: 0.5em;
     }
