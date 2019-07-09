@@ -167,7 +167,7 @@ const store = new Vuex.Store({
             label: 'Concept',
           },
           {
-            value: '',
+            value: '*',
             label: 'All',
           },
         ],

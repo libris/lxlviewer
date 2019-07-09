@@ -51,9 +51,15 @@ export default {
         Object.keys(this.mergedParams).forEach((param) => {
           if (Array.isArray(this.mergedParams[param])) {
             this.mergedParams[param].forEach((el) => {
-              queryArr.push(`${param}=${el}`);
+              if (el !== null) {
+                queryArr.push(`${param}=${el}`);
+              }
             });
-          } else queryArr.push(`${param}=${this.mergedParams[param]}`);
+          } else {
+            if (this.mergedParams[param] !== null) {
+              queryArr.push(`${param}=${this.mergedParams[param]}`);
+            }
+          }
         });
         query = queryArr.join('&');
       } else {
@@ -64,8 +70,8 @@ export default {
     },
     doSearch() {
       this.helpToggled = false;
-      this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}` });
-        
+      const path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
+      this.$router.push({ path });
       if (this.searchPerimeter === 'remote') {
         this.$refs.dbComponent.showList = false;
       }
@@ -172,7 +178,7 @@ export default {
       return composed;
     },
     composedTypes() {
-      return this.activeSearchType.length > 0 ? { '@type': this.activeSearchType } : {};
+      return this.activeSearchType.length > 0 ? { '@type': this.activeSearchType } : { '@type': null };
     },
     prefSort() {
       if (this.user && this.user.settings.sort) {
@@ -228,12 +234,14 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.focusSearchInput();
-      if (this.activeSearchParam === null) {
-        this.activeSearchParam = this.setSearch();
-      }
-      if (this.activeSearchType === null) {
-        this.activeSearchType = this.setType();
-      }
+      this.$router.onReady(() => {
+        if (this.activeSearchParam === null) {
+          this.activeSearchParam = this.setSearch();
+        }
+        if (this.activeSearchType === null) {
+          this.activeSearchType = this.setType();
+        }
+      });
     });
   },
 };

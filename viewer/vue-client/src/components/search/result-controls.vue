@@ -38,9 +38,10 @@ export default {
       return this.$store.getters.user;
     },
     filters() {
+      let filters = [];
       if (typeof this.pageData.search !== 'undefined') {
         // remove search-by filters, ISBN etc
-        return this.pageData.search.mapping.filter(item => this.excludeFilters.every(el => el !== item.variable))
+        filters = this.pageData.search.mapping.filter(item => this.excludeFilters.every(el => el !== item.variable))
           .map((item) => {
             let label = '';
             if (item.hasOwnProperty('value')) { // Try to use item value to get label
@@ -51,7 +52,7 @@ export default {
               if (match.length === 1) {
                 const prop = match[0].object.prefLabelByLang || match[0].object.labelByLang;
                 label = prop[this.settings.language];
-              } else label = item.object['@id'];        
+              } else label = item.object['@id'];
             } else if (item.hasOwnProperty('object')) label = item.object['@id']; // else try to translate object[@id]...
             return {
               label,
@@ -59,7 +60,9 @@ export default {
               up: item.up['@id'],
             };
           });
-      } return [];
+      };
+      const filtersWithoutWildcard = filters.filter(item => item.label !== '*'); // Remove any filters that's just a wildcard
+      return filtersWithoutWildcard;
     },
     queryText() {
       if (this.pageData.first) {
