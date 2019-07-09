@@ -1,5 +1,8 @@
 # -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals, print_function
+if bytes is not str:
+    unicode = str
+
 import json
 import operator
 import os
@@ -8,7 +11,10 @@ import re
 import string
 import time
 import requests
-from urlparse import urljoin
+try:
+    from urllib.parse import urlparse, urljoin
+except ImportError:
+    from urlparse import urlparse, urljoin
 from datetime import datetime, timedelta
 
 from flask import Flask, Response
@@ -67,13 +73,19 @@ app.config.from_pyfile('config.cfg', silent=True)
 CORS(app, methods=HTTP_METHODS, expose_headers=['ETag', 'Location'])
 
 
-import __builtin__
-for name, obj in vars(__builtin__).items():
+try:
+    import builtins
+except ImportError:
+    import __builtin__ as builtins
+
+for name, obj in vars(builtins).items():
     if callable(obj):
         app.add_template_global(obj, name)
 
 for func in [operator.itemgetter]:
     app.add_template_global(func, func.__name__)
+
+app.add_template_global(unicode, 'unicode')
 
 @app.template_global()
 def union(*args):
@@ -392,7 +404,7 @@ def _get_template_for(data):
 
 ##
 # Admin
-os.environ[b'OAUTHLIB_INSECURE_TRANSPORT'] = str(app.config.get('OAUTHLIB_INSECURE_TRANSPORT') or '0')
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = unicode(app.config.get('OAUTHLIB_INSECURE_TRANSPORT') or '0')
 app.secret_key = app.config.get('SESSION_SECRET_KEY') or ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 app.remember_cookie_duration = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
 app.permanent_session_lifetime = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)

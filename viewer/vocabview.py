@@ -1,6 +1,8 @@
 # -*- coding: UTF-8 -*-
 from __future__ import unicode_literals, print_function
 __metaclass__ = type
+if bytes is not str:
+    unicode = str
 
 import json
 
