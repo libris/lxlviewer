@@ -132,6 +132,7 @@ export function getItemObject(itemOf, heldBy, instance) {
         {
           '@type': 'MediaObject',
           uri: [''],
+          'marc:publicNote': [''], 
         },
       ],
       'marc:hasTextualHoldingsBasicBibliographicUnit': [
