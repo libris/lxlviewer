@@ -658,7 +658,7 @@ h1 {
   background-color: @grey-lightest;
   line-height: 1.2;
   color: @black;
-  border: none;
+  border-color: transparent;
   padding: 0 0.5em;
 
   &::placeholder,

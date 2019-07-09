@@ -80,6 +80,11 @@ export default {
       this.searchPhrase = '';
       this.focusSearchInput();
     },
+    resetSearchParam() {
+      this.activeSearchParam = PropertyMappings.find(mapping => {
+        return mapping.searchProp === 'q';
+      });
+    },
     setSearch() {
       let match = PropertyMappings.filter((prop) => {
         const keys = Object.keys(prop.mappings);
@@ -135,6 +140,11 @@ export default {
     },
   },
   computed: {
+    availableSearchParams() {
+      return PropertyMappings.filter(mapping => {
+        return mapping.types.indexOf(this.activeSearchType) > -1;
+      });
+    },
     helpContainerBoundaryStyles() {
       const $icon = this.$refs.helpIcon;
       const $formGroup = this.$refs.formGroup;
@@ -200,6 +210,11 @@ export default {
     'switch-toggle': SwitchToggle,
   },
   watch: {
+    activeSearchType(val, oldVal) {
+      if (val !== oldVal && oldVal) {
+        this.resetSearchParam();
+      }
+    },
     searchPerimeter(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.$nextTick(() => {
@@ -273,7 +288,7 @@ export default {
             v-model="activeSearchParam"
             @change="setPrefSearchParam">
             <option 
-              v-for="prop in searchParams"
+              v-for="prop in availableSearchParams"
               :key="prop.key"
               :value="prop">
               {{prop.key | translatePhrase}}
@@ -301,7 +316,7 @@ export default {
           aria-labelledby="searchlabel"
           :placeholder="inputPlaceholder | translatePhrase"
           ref="searchFormInput">
-        <span class="SearchForm-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
+        <span class="SearchForm-clear icon icon--md" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
           <i class="fa fa-fw fa-close"></i>
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
@@ -310,7 +325,7 @@ export default {
             v-model="activeSearchParam"
             @change="setPrefSearchParam">
             <option 
-              v-for="prop in searchParams"
+              v-for="prop in availableSearchParams"
               :key="prop.key"
               :value="prop">
               {{prop.key | translatePhrase}}
@@ -365,6 +380,9 @@ export default {
   }
   &-selectGroup {
     margin-bottom: 0.5em;
+    > * {
+      flex-basis: 50%;
+    }
   }
   &-formGroup {
     width: 100%;
@@ -372,11 +390,15 @@ export default {
     position: relative;
     border-radius: @form-radius;
     background-color: @grey-lightest;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0), 0 1px 2px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.25s ease;
+    &:focus-within {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    }
     > * {
       display: flex;
       background-color: @grey-lightest;
       border-radius: 0;
-      margin-left: 0.05em;
       &:first-child {
         overflow: hidden;
         border-left: none;
@@ -453,13 +475,10 @@ export default {
     }
   }
 
-  &-formGroup {
-    width: 100%;
-    display: flex;
-  }
-
   &-selectWrapper {
-    flex: 1 0 auto;
+    @media (min-width: @screen-sm) {
+      flex-basis: 30%;
+    }
     border: solid @grey-lighter;
     border-width: 0px 1px 0px 1px;
   }
@@ -476,7 +495,7 @@ export default {
     width: 100%;
     color: @black;
     &:focus {
-      box-shadow: inset 0px 0px 1em #0000000a;
+      background-color: @white;
       border-radius: 0;
     }
   }
