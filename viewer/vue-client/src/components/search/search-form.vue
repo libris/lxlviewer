@@ -502,7 +502,19 @@ export default {
 
   &-clear {
     order: 3;
-    height: 42px;
+    position: absolute;
+    right: 2.5em;
+    @media (min-width: @screen-sm) {
+      right: 28%;
+    }
+    @media (min-width: @screen-md) {
+      right: 28.5%;
+    }
+    @media (min-width: @screen-lg) {
+      right: 27%;
+    }
+    height: 2em;
+    background-color: transparent;
     display: flex;
     align-items: center;
   }
