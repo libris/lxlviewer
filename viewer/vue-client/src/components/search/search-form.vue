@@ -72,9 +72,6 @@ export default {
       this.helpToggled = false;
       const path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
       this.$router.push({ path });
-      if (this.searchPerimeter === 'remote') {
-        this.$refs.dbComponent.showList = false;
-      }
     },
     clearInputs() {
       this.searchPhrase = '';
@@ -213,6 +210,12 @@ export default {
     'switch-toggle': SwitchToggle,
   },
   watch: {
+    'status.keyActions'(actions) {
+      const lastAction = actions.slice(-1).join();
+      if (lastAction === 'focus-main-search') {
+        this.focusSearchInput();
+      }
+    },
     activeSearchType(val, oldVal) {
       if (val !== oldVal && oldVal) {
         this.resetSearchParam();

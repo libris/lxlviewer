@@ -16,6 +16,7 @@
     "ctrl+shift+right": "admin-data-on",
     "ctrl+shift+left": "admin-data-off",
     "esc": "close-modals",
-    "alt+b": "add-holding"
+    "alt+b": "add-holding",
+    "alt+s": "focus-main-search"
   }
 }
