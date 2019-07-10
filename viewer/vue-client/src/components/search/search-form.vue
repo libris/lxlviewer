@@ -141,6 +141,9 @@ export default {
   },
   computed: {
     availableSearchParams() {
+      if (this.activeSearchType === '*') {
+        return PropertyMappings;
+      }
       return PropertyMappings.filter(mapping => {
         return mapping.types.indexOf(this.activeSearchType) > -1;
       });
