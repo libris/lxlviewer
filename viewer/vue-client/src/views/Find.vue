@@ -84,6 +84,12 @@ export default {
       });
     },
     getRemoteResult() {
+      const dbsParam = this.$route.query.databases;
+      const usedDbs = dbsParam.split(',');
+      this.$store.dispatch('setStatusValue', { 
+        property: 'usedRemoteDatabases', 
+        value: usedDbs,
+      });
       const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.query}`;
       this.hideFacetColumn = true;
       
@@ -147,10 +153,6 @@ export default {
     copy() {
       return Copy;
     },
-    remoteDbChosenStatusString() {
-      const amountChosen = this.status.remoteDatabases.length;
-      return amountChosen === 1 ? `(${amountChosen} vald)` : `(${amountChosen} valda)`;
-    },
   },
   beforeCreate() {
   },
@@ -204,7 +206,7 @@ export default {
           { id: 'remote', text: 'Andra källor' },
         ]"
       />
-      <div @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ $route.params.perimeter === 'libris' ? 'Filter' : `Databaser ${remoteDbChosenStatusString}` }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
+      <div @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ $route.params.perimeter === 'libris' ? 'Filter' : `Valda databaser (${status.remoteDatabases.length})` }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
       <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
       <span v-if="result === null && $route.params.perimeter === 'libris' && searchInProgress === false">{{ 'No results' | translatePhrase }}</span>
       <portal-target :class="{'hidden-xs hidden-sm': hideFacetColumn }" name="facetColumn" />
@@ -263,6 +265,9 @@ export default {
       &:focus {
         border-color: @brand-primary;
       }
+    }
+    .sectionDivider {
+      margin: 0.5em 0;
     }
   }
   &-searchForm {

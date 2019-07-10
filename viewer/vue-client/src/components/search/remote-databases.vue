@@ -41,14 +41,15 @@ export default {
     activeDatabases() {
       const selected = [];
       const dbs = this.remoteDatabases.list;
+      const active = {};
       for (const key in dbs) {
-        if (dbs.hasOwnProperty(key)) {
-          if (dbs[key].active) {
-            selected.push(key);
-          }
+        if (
+          dbs[key].active === true
+        ) {
+          active[key] = dbs[key];
         }
       }
-      return selected;
+      return active;
     },
     filteredDatabases() {
       const dbs = this.remoteDatabases.list;
@@ -86,13 +87,19 @@ export default {
   watch: {
     activeDatabases(val, oldVal) {
       if (val !== oldVal) {
+        const activeIds = [];
+        for (const key in val) {
+          if (val[key].active === true) {
+            activeIds.push(key);
+          }
+        }
         this.$store.dispatch('setStatusValue', { 
           property: 'remoteDatabases', 
-          value: val,
+          value: activeIds,
         });
 
         if (this.user) {
-          this.updateUserDbs(val);
+          this.updateUserDbs(activeIds);
         }
       }
     },
@@ -234,12 +241,60 @@ export default {
       </div>
     </div> -->
     <portal to="facetColumn">
+      <ul class="RemoteDatabases-list"
+        v-show="remoteDatabases.state == 'complete'">
+        <li 
+          class="RemoteDatabases-listItem"
+          :class="{'is-active': db.active, 'is-disabled': db.disabled }" 
+          v-for="(db, index) in activeDatabases" 
+          :key="index"
+          :aria-label="db.database">
+          <div class="RemoteDatabases-addControl">
+            <i v-show="db.disabled" class="fa fa-ban icon icon--sm is-disabled"></i>
+            <i 
+              v-show="!db.disabled" 
+              class="fa icon icon--sm" 
+              :class="{ 'fa-square-o': !db.active, 'fa-check-square-o': db.active, 'is-active': db.active }"
+              :title="db.active ? 'Remove' : 'Add' | translatePhrase"
+              tabindex="0"
+              role="button"
+              @click="toggleDatabase(db.database)"
+              @keyup.enter="toggleDatabase(db.database)">
+            </i>
+          </div>
+          <div class="RemoteDatabases-dbInfo">
+            <div class="RemoteDatabases-dbLabel">
+              {{db.database}} 
+              <span v-show="db.disabled" class="RemoteDatabases-dbUnavailable">
+                ({{'unavailable' | translatePhrase}})
+              </span>
+              <div class="RemoteDatabases-dbExtraInfo" v-show="db.about">
+                <i class="fa fa-question-circle fa-fw icon"></i>
+                <span class="RemoteDatabases-dbExtrainfoText">{{ db.about }}</span>
+              </div>
+              <div class="RemoteDatabases-dbExtraInfo" v-show="db.comment">
+                <i class="fa fa-info-circle fa-fw icon"></i>
+                <span class="RemoteDatabases-dbExtrainfoText">{{ db.comment }}</span>
+              </div>
+            </div>
+            <div class="RemoteDatabases-dbName" 
+              v-show="db.database !== db.name" 
+              :title="db.name">{{db.name}}
+            </div>
+          </div>
+        </li>
+      </ul>
+      <hr class="sectionDivider">
+      <span class="uppercaseHeading--light">
+        Databaser
+      </span>
       <input 
         class="RemoteDatabases-listFilterInput customInput mousetrap" 
         type="text" 
+        v-show="remoteDatabases.state == 'complete'"
         v-model="filterKey"
-        :aria-label="'Filter by' | translatePhrase"
-        :placeholder="'Filter by' | translatePhrase"
+        :aria-label="'Search for database' | translatePhrase"
+        :placeholder="'Search for database' | translatePhrase"
         ref="listFilterInput">
       <ul class="RemoteDatabases-list"
         v-show="remoteDatabases.state == 'complete'">
@@ -332,7 +387,7 @@ export default {
   &-list {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 0.5em 0 0 0;
     width: 100%;
   }
 

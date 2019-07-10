@@ -1,8 +1,8 @@
 <script>
+import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import * as httpUtil from '@/utils/http';
 import Sort from '@/components/search/sort';
-// import { pickBy } from 'lodash-es';
 
 export default {
   name: 'result-controls',
@@ -28,15 +28,12 @@ export default {
     };
   },
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
-    resources() {
-      return this.$store.getters.resources;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
+    ...mapGetters([
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
     filters() {
       let filters = [];
       if (typeof this.pageData.search !== 'undefined') {
@@ -171,6 +168,8 @@ export default {
         <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
         <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
         <span v-else class="ResultControls-numTotal">{{'No hits' | translatePhrase }}</span>
+        
+        <span v-if="$route.params.perimeter === 'remote'">{{ 'from' | translatePhrase }} <span v-for="(db, index) in status.usedRemoteDatabases"><span class="ResultControls-dbLabel">{{ db }}</span>{{ index !== status.usedRemoteDatabases.length - 1 ? ', ' : '' }}</span></span>
       </p>
       <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
         {{ 'The search gave more results than can be displayed' | translatePhrase }}.
@@ -273,7 +272,7 @@ export default {
     padding-right: 20px;
   }
 
-  &-numTotal {
+  &-numTotal, &-dbLabel {
     color: @black;
   }
 

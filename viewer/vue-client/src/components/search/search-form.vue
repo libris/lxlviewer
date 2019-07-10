@@ -135,6 +135,10 @@ export default {
       user.settings.searchParam = this.activeSearchParam;
       this.$store.dispatch('setUser', user);
     },
+    setActiveSelectValues() {
+      this.activeSearchParam = this.setSearch();
+      this.activeSearchType = this.setType();
+    },
   },
   computed: {
     availableSearchParams() {
@@ -234,14 +238,6 @@ export default {
         this.focusSearchInput();
       }
     },
-    '$route.fullPath'(val, oldValue) {
-      if (this.activeSearchParam === null) {
-        this.activeSearchParam = this.setSearch();
-      }
-      if (this.activeSearchType === null) {
-        this.activeSearchType = this.setType();
-      }
-    },
     '$route.params.perimeter'(value, oldValue) {
       if (value === 'remote') {
         if (this.status.remoteDatabases.length > 0) {
@@ -249,6 +245,8 @@ export default {
             this.doSearch();
           }
         }
+      } else {
+        this.setActiveSelectValues();
       }
     },
   },
@@ -256,12 +254,7 @@ export default {
     this.$nextTick(() => {
       this.focusSearchInput();
       this.$router.onReady(() => {
-        if (this.activeSearchParam === null) {
-          this.activeSearchParam = this.setSearch();
-        }
-        if (this.activeSearchType === null) {
-          this.activeSearchType = this.setType();
-        }
+        this.setActiveSelectValues();
       });
     });
   },

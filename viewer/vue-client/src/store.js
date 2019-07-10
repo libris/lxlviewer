@@ -62,6 +62,7 @@ const store = new Vuex.Store({
       notifications: [],
       helpSectionTitle: '',
       remoteDatabases: [],
+      usedRemoteDatabases: '',
     },
     user: User.getUserObject(),
     userStorage: {
