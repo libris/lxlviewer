@@ -319,7 +319,7 @@ export default {
           aria-labelledby="searchlabel"
           :placeholder="inputPlaceholder | translatePhrase"
           ref="searchFormInput">
-        <span class="SearchForm-clear icon icon--md" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
+        <span class="SearchForm-clear icon icon--md" :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
           <i class="fa fa-fw fa-close"></i>
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
@@ -509,6 +509,9 @@ export default {
     right: 2.5em;
     @media (min-width: @screen-sm) {
       right: 28%;
+      &.in-remote {
+        right: 4.5em;
+      }
     }
     @media (min-width: @screen-md) {
       right: 28.5%;
