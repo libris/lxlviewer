@@ -503,6 +503,10 @@ body {
       }
     }
 
+    &--xs {
+      font-size: 12px;
+    }
+
     &--sm {
         font-size: 16px;
     }
