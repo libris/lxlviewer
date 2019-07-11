@@ -295,7 +295,7 @@ export default {
               <i 
                 v-show="!db.disabled" 
                 class="fa icon icon--sm" 
-                :class="{ 'fa-square-o': !db.active, 'fa-check-square-o': db.active, 'is-active': db.active }"
+                :class="{ 'fa-plus-circle': !db.active, 'fa-check-circle': db.active, 'is-inactive': !db.active }"
                 :title="db.active ? 'Remove' : 'Add' | translatePhrase"
                 tabindex="0"
                 role="button"
@@ -447,7 +447,7 @@ export default {
     width: 2rem;
     line-height: 1.6rem;
     display: inline-block;
-    i.is-active {
+    i.is-inactive {
       color: @brand-primary;
     }
   }
