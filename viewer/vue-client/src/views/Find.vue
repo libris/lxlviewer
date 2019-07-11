@@ -6,11 +6,12 @@ import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Copy from '@/resources/json/copy.json';
 import FacetControls from '@/components/search/facet-controls';
 import SearchResult from '@/components/search/search-result';
-import SearchForm from '@/components/search/search-form';
+import TabMenu from '@/components/shared/tab-menu';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
+  name: 'Find',
   data() {
     return {
       initialized: false,
@@ -18,6 +19,7 @@ export default {
       result: null,
       importData: [],
       searchInProgress: false,
+      hideFacetColumn: true,
       query: '',
     };
   },
@@ -30,8 +32,21 @@ export default {
         this.getResult();
       }
     },
+    '$route.params.perimeter'(value, oldValue) {
+      this.searchInProgress = false;
+      this.emptyResults();
+      this.hideFacetColumn = true;
+      if (value === 'remote') {
+        if (this.status.remoteDatabases.length === 0) {
+          this.hideFacetColumn = false;
+        }
+      }
+    },
   },
   methods: {
+    setSearchPerimeter(id) {
+      this.$router.push({ 'path': `/search/${id}` });
+    },
     getResult() {
       this.emptyResults();
       if (typeof this.query !== 'undefined') {
@@ -69,7 +84,14 @@ export default {
       });
     },
     getRemoteResult() {
+      const dbsParam = this.$route.query.databases;
+      const usedDbs = dbsParam.split(',');
+      this.$store.dispatch('setStatusValue', { 
+        property: 'usedRemoteDatabases', 
+        value: usedDbs,
+      });
       const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.query}`;
+      this.hideFacetColumn = true;
       
       fetch(fetchUrl).then(response => response.json(), (error) => {
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
@@ -164,9 +186,9 @@ export default {
     next();
   },
   components: {
+    TabMenu,
     'facet-controls': FacetControls,
     'search-result': SearchResult,
-    'search-form': SearchForm,
     'vue-simple-spinner': VueSimpleSpinner,
   },
 };
@@ -176,13 +198,18 @@ export default {
 <template>
   <div class="row">
     <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
-      <div class="Find-facetHeading uppercaseHeading--large">{{ $route.params.perimeter === 'libris' ? 'Filter' : 'Databaser' }}</div>
-      <facet-controls :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
+      <tab-menu
+        @go="setSearchPerimeter"
+        :active="$route.params.perimeter"
+        :tabs="[
+          { id: 'libris', text: 'Libris' },
+          { id: 'remote', text: 'Andra källor' },
+        ]"
+      />
+      <div v-if="$route.params.perimeter === 'libris'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ 'Filter' | translatePhrase }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
+      <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
       <span v-if="result === null && $route.params.perimeter === 'libris' && searchInProgress === false">{{ 'No results' | translatePhrase }}</span>
       <portal-target name="facetColumn" />
-    </div>
-    <div class="Find col-sm-12 Column-searchForm" :class="{'col-md-9': !status.panelOpen, 'col-md-7': status.panelOpen }" ref="Find">
-      <search-form :search-perimeter="$route.params.perimeter" />
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">
         <div class="Find-progressText">
@@ -210,7 +237,7 @@ export default {
 
 .Find {
   &-facetHeading {
-    margin-bottom: 2.2rem;
+    user-select: none;
   }
   &-progressText {
     margin-top: 20px;
@@ -221,12 +248,27 @@ export default {
 }
 .Column {
   &-facets {
-    padding-top: 2rem;
+    height: unset;
+    min-height: unset;
+    padding-bottom: 0;
+    @media (min-width: @screen-md) {
+      padding-bottom: 5rem;
+      height: 100%;
+      min-height: 50vh;
+    }
     border: solid @grey-lighter;
     border-width: 0px 1px 0px 0px;
-    height: 100%;
-    min-height: 50vh;
-    padding-bottom: 5rem;
+    input {
+      background-color: #fff;
+      border: 1px solid @grey-lighter;
+      margin: 0.5em 0;
+      &:focus {
+        border-color: @brand-primary;
+      }
+    }
+    .sectionDivider {
+      margin: 0.5em 0;
+    }
   }
   &-searchForm {
 

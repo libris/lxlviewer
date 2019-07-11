@@ -1,6 +1,5 @@
 <script>
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
-import SearchForm from '@/components/search/search-form';
 import LinkCardComponent from '@/components/search/link-card';
 import Copy from '@/resources/json/copy.json';
 
@@ -33,7 +32,6 @@ export default {
     },
   },
   components: {
-    'search-form': SearchForm,
     'link-card': LinkCardComponent,
   },
 };
@@ -42,7 +40,6 @@ export default {
 <template>
   <div class="row">
     <div class="col-md-12">
-      <search-form class="LandingPage-searchBar"></search-form>
       <div class="LandingPage-linkCards">
         <link-card v-if="widgetShouldBeShown('about-xl')" 
           :image="copy['about-xl'].image" 
@@ -84,6 +81,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 .LandingPage-linkCards {
+  padding-top: 2rem;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;

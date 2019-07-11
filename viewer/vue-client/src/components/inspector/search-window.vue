@@ -389,7 +389,7 @@ export default {
             <div class="SearchWindow-search search">
               <div class="SearchWindow-inputContainer input-container form-group">
                 <input 
-                  class="SearchWindow-input SearchWindow-entity-search-keyword-input customInput form-control"
+                  class="SearchWindow-input SearchWindow-entity-search-keyword-input customInput"
                   v-model="keyword"
                   ref="input"
                   autofocus

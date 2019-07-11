@@ -4,6 +4,7 @@ import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
 import TabMenu from '@/components/shared/tab-menu';
+import SwitchToggle from '@/components/shared/switch-toggle';
 import marked from 'marked';
 import { mapGetters } from 'vuex';
 
@@ -17,18 +18,25 @@ export default {
   },
   data() {
     return {
+      searchGroupFocus: {
+        typeSelect: false,
+        input: false,
+        paramSelect: false,
+        clear: false,
+        submit: false,
+      },
       helpToggled: false,
       vocabUrl: 'https://id.kb.se/vocab/',
       staticProps: { _limit: 20 },
       searchPhrase: '',
       searchParams: PropertyMappings,
       activeSearchParam: null,
-      activeTypes: null,
+      activeSearchType: null,
     };
   },
   methods: {
     focusSearchInput() {
-      this.$refs.searchBarInput.focus();
+      this.$refs.searchFormInput.focus();
     },
     removeTags(html) {
       let regexHtml = html.replace(/<h1.*>.*?<\/h1>/ig, '').replace(/<h2.*>.*?<\/h2>/ig, '');
@@ -50,9 +58,15 @@ export default {
         Object.keys(this.mergedParams).forEach((param) => {
           if (Array.isArray(this.mergedParams[param])) {
             this.mergedParams[param].forEach((el) => {
-              queryArr.push(`${param}=${el}`);
+              if (el !== null) {
+                queryArr.push(`${param}=${el}`);
+              }
             });
-          } else queryArr.push(`${param}=${this.mergedParams[param]}`);
+          } else {
+            if (this.mergedParams[param] !== null) {
+              queryArr.push(`${param}=${this.mergedParams[param]}`);
+            }
+          }
         });
         query = queryArr.join('&');
       } else {
@@ -63,15 +77,17 @@ export default {
     },
     doSearch() {
       this.helpToggled = false;
-      this.$router.push({ path: `/search/${this.searchPerimeter}?${this.composeQuery()}` });
-        
-      if (this.searchPerimeter === 'remote') {
-        this.$refs.dbComponent.showList = false;
-      }
+      const path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
+      this.$router.push({ path });
     },
     clearInputs() {
       this.searchPhrase = '';
       this.focusSearchInput();
+    },
+    resetSearchParam() {
+      this.activeSearchParam = PropertyMappings.find(mapping => {
+        return mapping.searchProp === 'q';
+      });
     },
     setSearch() {
       let match = PropertyMappings.filter((prop) => {
@@ -103,30 +119,55 @@ export default {
       // return fallback value
       return PropertyMappings[0];
     },
-    setTypes() {
+    setType() {
       const performedQuery = cloneDeep(this.$route.query);
       if (isEmpty(performedQuery)) {
-        return ['Instance']; // initial value
+        return 'Instance'; // initial value
       }
       if (!performedQuery.hasOwnProperty('@type')) {
-        return []; // explicitly no types
+        return ''; // explicitly no types
       }
       if (typeof performedQuery['@type'] === 'string') { 
-        return [performedQuery['@type']]; // put a single @type into an array
+        return performedQuery['@type']; // put a single @type into an array
       }
       return performedQuery['@type'];
+    },
+    setPrefSearchType() {
+      const user = this.user;
+      user.settings.searchType = this.activeSearchType;
+      this.$store.dispatch('setUser', user);
     },
     setPrefSearchParam() {
       const user = this.user;
       user.settings.searchParam = this.activeSearchParam;
       this.$store.dispatch('setUser', user);
     },
+    setActiveSelectValues() {
+      this.activeSearchParam = this.setSearch();
+      this.activeSearchType = this.setType();
+    },
   },
   computed: {
+    searchIsFocused() {
+      for (const element in this.searchGroupFocus) {
+        if (this.searchGroupFocus[element] === true) {
+          return true;
+        }
+      }
+      return false;
+    },
+    availableSearchParams() {
+      if (this.activeSearchType === '*') {
+        return PropertyMappings;
+      }
+      return PropertyMappings.filter(mapping => {
+        return mapping.types.indexOf(this.activeSearchType) > -1;
+      });
+    },
     helpContainerBoundaryStyles() {
       const $icon = this.$refs.helpIcon;
       const $formGroup = this.$refs.formGroup;
-      const styles = { top: `${$icon.clientHeight + $formGroup.clientHeight + 50}px` };
+      const styles = { top: `${$icon.clientHeight + 12}px` };
       return styles;
     },
     searchHelpTooltip() {
@@ -152,10 +193,7 @@ export default {
       'user',
     ]),
     dataSetFilters() {
-      return this.settings.dataSetFilters.libris.map(term => ({
-        '@id': StringUtil.getCompactUri(term, this.resources.context),
-        label: StringUtil.getLabelByLang(term, this.settings.language, this.resources.vocab, this.resources.context),
-      }));
+      return this.settings.dataSetFilters.libris;
     },
     hasInput() {
       return this.searchPhrase.length > 0;
@@ -169,7 +207,7 @@ export default {
       return composed;
     },
     composedTypes() {
-      return this.activeTypes.length > 0 ? { '@type': this.activeTypes } : {};
+      return this.activeSearchType.length > 0 ? { '@type': this.activeSearchType } : { '@type': null };
     },
     prefSort() {
       if (this.user && this.user.settings.sort) {
@@ -188,8 +226,20 @@ export default {
   components: {
     'remote-databases': RemoteDatabases,
     'tab-menu': TabMenu,
+    'switch-toggle': SwitchToggle,
   },
   watch: {
+    'status.keyActions'(actions) {
+      const lastAction = actions.slice(-1).join();
+      if (lastAction === 'focus-main-search') {
+        this.focusSearchInput();
+      }
+    },
+    activeSearchType(val, oldVal) {
+      if (val !== oldVal && oldVal) {
+        this.resetSearchParam();
+      }
+    },
     searchPerimeter(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.$nextTick(() => {
@@ -198,96 +248,123 @@ export default {
         });
       }
     },
-    '$route.fullPath'() {
-      this.activeTypes = this.setTypes();
-      this.activeSearchParam = this.setSearch();
+    '$route.name'(val, oldValue) {
+      if (val === 'Search' && oldValue !== 'Search') {
+        this.focusSearchInput();
+      }
+    },
+    '$route.params.perimeter'(value, oldValue) {
+      if (value === 'remote') {
+        if (this.status.remoteDatabases.length > 0) {
+          if (this.composedSearchParam.q !== '' && this.composedSearchParam.q !== '*') {
+            this.doSearch();
+          }
+        }
+      } else {
+        this.setActiveSelectValues();
+      }
     },
   },
   mounted() {
     this.$nextTick(() => {
       this.focusSearchInput();
-      this.activeSearchParam = this.setSearch();
-      this.activeTypes = this.setTypes();
+      this.$router.onReady(() => {
+        this.setActiveSelectValues();
+      });
     });
   },
 };
 </script>
 
 <template>
-  <div class="SearchBar">
-    <div class="SearchBar-topControl"> 
-      <tab-menu :link="true" :tabs="[
-        { 'id': 'libris', 'text': 'Libris', link: '/search/libris'},
-        { 'id': 'remote', 'text': 'Other sources', link: '/search/remote' },
-      ]" :active="searchPerimeter"></tab-menu>
-      <div  v-if="searchPerimeter === 'libris'"  class="SearchBar-help">
-        <div class="SearchBar-helpBox dropdown" >
-          <span class="SearchBar-helpIcon icon icon--md">
-            <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
-              ref="helpIcon"
-              @mouseover="helpHover = true"
-              @mouseleave="helpHover = false"
-              @click="toggleHelp"
-              @keyup.enter="toggleHelp"></i>
-          </span>
-          <div class="SearchBar-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled"> 
-            <strong class="SearchBar-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchBar-closeHelp" @click="toggleHelp"></i>
-            <div class="SearchBar-helpContent" v-html="searchHelpDocs"></div>
-          </div>
+  <div class="SearchForm">
+    <form id="searchForm" class="SearchForm-form">
+      <label class="SearchForm-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
+        {{"Search" | translatePhrase}}
+      </label>
+      <div class="SearchForm-formGroup SearchForm-selectGroup hidden-sm hidden-md hidden-lg">
+        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper" v-if="searchPerimeter === 'libris'">
+          <select
+            class="SearchForm-typeSelect SearchForm-select customSelect"
+            v-model="activeSearchType"
+            @change="setPrefSearchType">
+            <option 
+              v-for="filter in dataSetFilters" 
+              :key="filter.value"
+              :value="filter.value">
+              {{filter.label | translatePhrase}}
+            </option>
+          </select>
+        </div>
+        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper" v-if="searchPerimeter === 'libris'">
+          <select
+            class="SearchForm-paramSelect SearchForm-select customSelect"
+            v-model="activeSearchParam"
+            @change="setPrefSearchParam">
+            <option 
+              v-for="prop in availableSearchParams"
+              :key="prop.key"
+              :value="prop">
+              {{prop.key | translatePhrase}}
+            </option>
+          </select>
         </div>
       </div>
-    </div>
-    <form id="searchForm" class="SearchBar-form">
-        <div ref="formGroup" class="SearchBar-formGroup form-group">
-          <label class="SearchBar-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
-            {{"Search" | translatePhrase}}
-          </label>
-          <div class="SearchBar-selectWrapper" v-if="searchPerimeter === 'libris'">
-            <select
-              class="SearchBar-select customSelect"
-              v-model="activeSearchParam"
-              @change="setPrefSearchParam">
-              <option 
-                v-for="prop in searchParams"
-                :key="prop.key"
-                :value="prop">
-                {{prop.key | translatePhrase}}
-              </option>
-            </select>
-          </div>
-          <input type="text"
-            class="SearchBar-input customInput form-control"
-            v-model="searchPhrase"
-            aria-labelledby="searchlabel"
-            :placeholder="inputPlaceholder | translatePhrase"
-            ref="searchBarInput">
-          <span class="SearchBar-clear icon icon--md" v-show="hasInput" @click="clearInputs()">
-            <i class="fa fa-fw fa-close"></i>
-          </span>
-          <button 
-            class="SearchBar-submit btn btn-primary icon icon--white icon--md" 
-            :aria-label="'Search' | translatePhrase"
-            @click.prevent="doSearch"
-            :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
-            :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0" >
-            <i class="fa fa-search"></i>
-          </button>
+      <div ref="formGroup" class="SearchForm-formGroup" :class="{ 'is-focused': searchIsFocused }">
+        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
+          <select
+            class="SearchForm-typeSelect SearchForm-select customSelect"
+            v-model="activeSearchType"
+            @focus="searchGroupFocus.typeSelect = true"
+            @blur="searchGroupFocus.typeSelect = false"
+            @change="setPrefSearchType">
+            <option 
+              v-for="filter in dataSetFilters" 
+              :key="filter.value"
+              :value="filter.value">
+              {{filter.label | translatePhrase}}
+            </option>
+          </select>
         </div>
-      <div class="SearchBar-typeButtons" 
-        v-if="searchPerimeter === 'libris'"
-        :aria-label="'Choose type' | translatePhrase">
-        <label class="SearchBar-typeLabel" 
-          :for="filter['@id']"
-          v-for="filter in dataSetFilters" 
-          :key="filter['@id']">
-          <input type="checkbox" class="SearchBar-typeInput customCheckbox-input"
-            :id="filter['@id']"
-            v-model="activeTypes"
-            :value="filter['@id']"/>
-            <span class="SearchBar-typeText customCheckbox-icon">
-              {{ filter.label }}
-            </span>
-        </label>
+        <input type="text"
+          @focus="searchGroupFocus.input = true"
+          @blur="searchGroupFocus.input = false"
+          class="SearchForm-input customInput"
+          v-model="searchPhrase"
+          aria-labelledby="searchlabel"
+          :placeholder="inputPlaceholder | translatePhrase"
+          ref="searchFormInput">
+        <span class="SearchForm-clear icon icon--md"
+          @focus="searchGroupFocus.clear = true"
+          @blur="searchGroupFocus.clear = false"
+          :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
+          <i class="fa fa-fw fa-close"></i>
+        </span>
+        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
+          <select
+            class="SearchForm-paramSelect SearchForm-select customSelect"
+            v-model="activeSearchParam"
+            @focus="searchGroupFocus.paramSelect = true"
+            @blur="searchGroupFocus.paramSelect = false"
+            @change="setPrefSearchParam">
+            <option 
+              v-for="prop in availableSearchParams"
+              :key="prop.key"
+              :value="prop">
+              {{prop.key | translatePhrase}}
+            </option>
+          </select>
+        </div>
+        <button 
+          class="SearchForm-submit btn btn-primary icon icon--white icon--md" 
+          :aria-label="'Search' | translatePhrase"
+          @click.prevent="doSearch"
+          @focus="searchGroupFocus.submit = true"
+          @blur="searchGroupFocus.submit = false"
+          :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
+          :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0" >
+          <i class="fa fa-search"></i>
+        </button>
       </div>
       <remote-databases 
         v-if="searchPerimeter === 'remote'" 
@@ -295,32 +372,86 @@ export default {
         @panelClosed="focusSearchInput"
         ref="dbComponent"></remote-databases>
     </form>
+    <div class="SearchForm-help">
+      <div class="SearchForm-helpBox dropdown" v-if="searchPerimeter === 'libris'">
+        <span class="SearchForm-helpIcon icon icon--md">
+          <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
+            ref="helpIcon"
+            @mouseover="helpHover = true"
+            @mouseleave="helpHover = false"
+            @click="toggleHelp"
+            @keyup.enter="toggleHelp"></i>
+        </span>
+        <div class="SearchForm-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled"> 
+          <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchForm-closeHelp" @click="toggleHelp"></i>
+          <div class="SearchForm-helpContent" v-html="searchHelpDocs"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="less">
 
-.SearchBar {
+.SearchForm {
   margin-top: 0vh;
-  padding: 10px;
   transition: 0.3s ease margin-top;
-
-  @media (min-width: @screen-md) {
-    padding: 0 0 20px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  @media all and (min-width: @screen-sm) {
+    flex-wrap: unset;
   }
-
-  &-topControl {
+  &-selectGroup {
+    margin-bottom: 0.5em;
+    > * {
+      flex-basis: 50%;
+    }
+  }
+  &-formGroup {
+    width: 100%;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    position: relative;
+    border-radius: @form-radius;
+    background-color: @grey-lightest;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0), 0 1px 2px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.25s ease;
+    &.is-focused {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    }
+    > * {
+      display: flex;
+      background-color: @grey-lightest;
+      border-radius: 0;
+      &:first-child {
+        overflow: hidden;
+        border-left: none;
+        border-radius: @form-radius 0 0 @form-radius;
+      }
+      &:last-child {
+        margin-left: 0;
+        overflow: hidden;
+        border-radius: 0 @form-radius @form-radius 0;
+      }
+    }
   }
-
-  &.is-landing-page {
-    margin-top: 10vh;
+  &-form {
+    order: 1;
+    flex-grow: 1;
+    flex-basis: 80%;
+    @media all and (min-width: @screen-sm) {
+      flex-basis: unset;
+    }
   }
 
   &-help {
-    margin-left: auto;
+    width: 2em;
+    display: none;
+    @media all and (min-width: @screen-sm) {
+      order: 2;
+      display: block;
+    }
   }
 
   &-helpContainer {
@@ -358,6 +489,7 @@ export default {
   &-helpIcon {
     float: right;
     clear: right;
+    display: flex;
 
     & > i {
       vertical-align: bottom;
@@ -368,44 +500,75 @@ export default {
     }
   }
 
-  &-formGroup {
-    width: 100%;
-    display: flex;
+  &-selectWrapper {
+    @media (min-width: @screen-sm) {
+      flex-basis: 30%;
+    }
+    border: solid @grey-lighter;
+    border-width: 0px 1px 0px 1px;
+  }
+  &-typeSelectWrapper {
+    order: 1;
+  }
+  &-paramSelectWrapper {
+    order: 4;
   }
 
-  &-selectWrapper {
-    flex: 1 0 auto;
-    border: 1px solid @grey-light;
-    border-right: 0;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+  &-input {
+    order: 2;
+    min-width: 100px;
+    width: 100%;
+    color: @black;
+    transition: background-color 0.2s ease;
+    &:focus {
+      background-color: @white;
+      border-radius: 0;
+      @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+        /* IE10+ CSS styles go here */
+        border: solid @grey-lighter;
+        border-width: 1px 0px 0px 0px;
+      }
+    }
+  }
 
-    & + input {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
+  &-clear {
+    order: 3;
+    position: absolute;
+    right: 2.5em;
+    @media (min-width: @screen-sm) {
+      right: 28%;
+      &.in-remote {
+        right: 4.5em;
+      }
+    }
+    @media (min-width: @screen-md) {
+      right: 28.5%;
+    }
+    @media (min-width: @screen-lg) {
+      right: 27%;
+    }
+    height: 2em;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+  }
+
+  &-submit {
+    order: 5;
+    min-width: 2.4em;
+    box-shadow: none;
+
+    @media (min-width: @screen-sm) {
+      min-width: 84px;
+    }
+
+    .is-focused & {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
   }
 
   &-select {
-    background-color: @white;
-    border-radius: 4px;
-    height: 100%;
-    min-width: unset;
-    box-shadow: none;
-    text-align: left;
-    border: none;
-  }
-
-  &-input {
-    min-width: 100px;
-    width: 100%;
-    color: @black;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: 0;
-    &:focus {
-      border-right: none;
-    }
+    
   }
 
   &-inputLabel {
@@ -413,39 +576,10 @@ export default {
     text-transform: uppercase;
   }
 
-  &-clear {
-    position: absolute;
-    right: 75px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-
-    @media (min-width: 768px) {
-      right: 110px;
-    }
-  }
-
-  &-submit {
-    height: 42px;
-    border: 0;
-    border-radius: 0 4px 4px 0;
-    box-shadow: none;
-
-    @media (min-width: @screen-sm) {
-      min-width: 84px;
-    }
-  }
-
   &-typeLabel {
     padding-right: 10px;
     font-weight: normal;
     position: relative;
-  }
-
-  &-typeInput {
-  }
-
-  &-typeText {
   }
 }
 </style>

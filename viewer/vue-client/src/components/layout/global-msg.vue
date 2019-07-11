@@ -23,7 +23,7 @@ export default {
 </script>
 
 <template>
-  <div class="GlobalMessage" 
+  <div class="GlobalMessage" id="GlobalMessage"
     v-html="message" 
     v-bind:class="{'GlobalMessage--warning':this.settings.environment === 'stg'}"
     v-if="message && message.length > 0">
@@ -35,11 +35,15 @@ export default {
 .GlobalMessage {
   text-align: center;
   color: white;
+  position: fixed;
+  width: 100%;
+  z-index: 9999;
+  bottom: 0;
   text-shadow: 0px 1px 1px #00000054;
   font-weight: bold;
   background-color: darken(@brand-primary, 5%);
   border: 1px solid darken(@brand-primary, 10%);
-  border-width: 0px 0px 1px 0px;
+  border-width: 1px 0px 0px 0px;
   a {
     color: white;
   }

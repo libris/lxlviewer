@@ -183,7 +183,7 @@ export default {
           <span v-if="userHasTaggedPosts" @click.prevent="purgeTagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</span>
         </li>
         <li>
-          <span>Växla användare</span>
+          <!-- <span>Växla användare</span> -->
           <span @click="logout">{{"Log out" | translatePhrase}}</span>
         </li>
       </ul>
@@ -262,9 +262,6 @@ export default {
     }
     .value {
       width: 50%;
-      input {
-        width: 100%;
-      }
       select {
         width: 100%;
       }
@@ -273,13 +270,21 @@ export default {
 
   &.in-menu {
     cursor: initial;
+    top: 3em;
     position: absolute;
-    right: auto;
-    left: 0;
-    z-index: 4;
+    right: 0;
+    left: auto;
+    z-index: @dropdown-z;
+    padding-top: 0.25em;
+    padding-left: 0;
+
+    @media (min-width: @screen-sm) {
+      top: 2em;
+    }
 
     & ul {
       padding: 0;
+      width: 25rem;
       list-style-type: none;
     }
 

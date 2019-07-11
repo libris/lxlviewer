@@ -21,6 +21,7 @@ export default {
       importData: [],
       importJson: '',
       filterKey: '',
+      hideFacetColumn: true,
       remoteDatabases: {
         state: '',
         list: [],
@@ -41,14 +42,15 @@ export default {
     activeDatabases() {
       const selected = [];
       const dbs = this.remoteDatabases.list;
+      const active = {};
       for (const key in dbs) {
-        if (dbs.hasOwnProperty(key)) {
-          if (dbs[key].active) {
-            selected.push(key);
-          }
+        if (
+          dbs[key].active === true
+        ) {
+          active[key] = dbs[key];
         }
       }
-      return selected;
+      return active;
     },
     filteredDatabases() {
       const dbs = this.remoteDatabases.list;
@@ -86,13 +88,19 @@ export default {
   watch: {
     activeDatabases(val, oldVal) {
       if (val !== oldVal) {
+        const activeIds = [];
+        for (const key in val) {
+          if (val[key].active === true) {
+            activeIds.push(key);
+          }
+        }
         this.$store.dispatch('setStatusValue', { 
           property: 'remoteDatabases', 
-          value: val,
+          value: activeIds,
         });
 
         if (this.user) {
-          this.updateUserDbs(val);
+          this.updateUserDbs(activeIds);
         }
       }
     },
@@ -205,10 +213,10 @@ export default {
 </script>
 
 <template>
-  <div class="RemoteDatabases" v-show="remoteDatabases.state == 'complete'">
-    <p v-if="activeDatabases.length === 0" class="RemoteDatabases-activeInfo no-sources">{{'No sources chosen' | translatePhrase}}</p> 
-    <p v-else class="RemoteDatabases-activeInfo">{{'Databases' | translatePhrase}}:</p>
-    <div class="ResultControls-filterWrapper">
+  <div class="RemoteDatabases">
+    <!-- <p v-if="activeDatabases.length === 0" class="RemoteDatabases-activeInfo no-sources">{{'No sources chosen' | translatePhrase}}</p>  -->
+    <!-- <p v-else class="RemoteDatabases-activeInfo">{{'Databases' | translatePhrase}}:</p> -->
+    <!-- <div class="ResultControls-filterWrapper">
       <div class="ResultControls-filterBadge" v-for="(db, index) in activeDatabases" :key="index">
         <span>{{db}}</span>
         <i 
@@ -232,63 +240,8 @@ export default {
         {{ 'Clear all' | translatePhrase }}
         <i class="fa fa-times-circle icon"></i>
       </div>
-    </div>
+    </div> -->
     <portal to="facetColumn">
-      <div class="RemoteDatabases-listFilter form-group panel">
-        <input 
-          class="RemoteDatabases-listFilterInput customInput form-control mousetrap" 
-          type="text" 
-          v-model="filterKey"
-          :aria-label="'Filter by' | translatePhrase"
-          :placeholder="'Filter by' | translatePhrase"
-          ref="listFilterInput">
-      </div>
-      <ul class="RemoteDatabases-list"
-        v-show="remoteDatabases.state == 'complete'">
-        <li 
-          class="RemoteDatabases-listItem"
-          :class="{'is-active': db.active, 'is-disabled': db.disabled }" 
-          v-for="(db, index) in filteredDatabases" 
-          :key="index"
-          :aria-label="db.database">
-          <div class="RemoteDatabases-addControl">
-            <i v-show="db.disabled" class="fa fa-ban icon icon--sm is-disabled"></i>
-            <i 
-              v-show="!db.disabled" 
-              class="fa icon icon--sm" 
-              :class="{ 'fa-square-o': !db.active, 'fa-check-square-o': db.active, 'is-active': db.active }"
-              :title="db.active ? 'Remove' : 'Add' | translatePhrase"
-              tabindex="0"
-              role="button"
-              @click="toggleDatabase(db.database)"
-              @keyup.enter="toggleDatabase(db.database)">
-            </i>
-          </div>
-          <div class="RemoteDatabases-dbInfo">
-            <div class="RemoteDatabases-dbLabel">
-              {{db.database}} 
-              <span v-show="db.disabled" class="RemoteDatabases-dbUnavailable">
-                ({{'unavailable' | translatePhrase}})
-              </span>
-              <div class="RemoteDatabases-dbExtraInfo" v-show="db.about">
-                <i class="fa fa-question-circle fa-fw icon"></i>
-                <span class="RemoteDatabases-dbExtrainfoText">{{ db.about }}</span>
-              </div>
-              <div class="RemoteDatabases-dbExtraInfo" v-show="db.comment">
-                <i class="fa fa-info-circle fa-fw icon"></i>
-                <span class="RemoteDatabases-dbExtrainfoText">{{ db.comment }}</span>
-              </div>
-            </div>
-            <div class="RemoteDatabases-dbName" 
-              v-show="db.database !== db.name" 
-              :title="db.name">{{db.name}}
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div v-show="numOfFilteredDatabases === 0 && remoteDatabases.state !== 'loading'" class="RemoteDatabases-searchStatus">
-        <span>{{'No results' | translatePhrase}}</span>
-      </div>
       <div v-show="remoteDatabases.state == 'loading'" class="RemoteDatabases-searchStatus">
         <vue-simple-spinner size="medium" :message="'Loading external databases' | translatePhrase"></vue-simple-spinner>
       </div>
@@ -297,6 +250,84 @@ export default {
           {{"Did not find any external databases" | translatePhrase}}
         </p>
         <button class="btn btn-primary btn--sm" v-on:click.prevent="loadRemoteDatabases()">{{"Try again" | translatePhrase}}</button>
+      </div>
+      <div v-if="remoteDatabases.state == 'complete'" class="Find-facetHeading uppercaseHeading--light"><span @click="hideFacetColumn = !hideFacetColumn">{{ 'Valda databaser' | translatePhrase }} ({{ status.remoteDatabases.length }}) <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></span><a class="pull-right" v-if="status.remoteDatabases.length > 0" @click="clearDatabases()">{{ 'Clear' | translatePhrase }}</a></div>
+      <div v-if="remoteDatabases.state == 'complete'" :class="{ 'hidden-xs hidden-sm': hideFacetColumn }">
+        <ul class="RemoteDatabases-activeList">
+          <li 
+            class="RemoteDatabases-activeListItem"
+            v-for="(db, index) in activeDatabases" 
+            :key="index"
+            :aria-label="db.database">
+              {{db.database}} 
+              <i 
+                v-show="!db.disabled" 
+                class="fa icon icon--xs fa-times-circle" 
+                :title="db.active ? 'Remove' : 'Add' | translatePhrase"
+                tabindex="0"
+                role="button"
+                @click="toggleDatabase(db.database)"
+                @keyup.enter="toggleDatabase(db.database)">
+              </i>
+          </li>
+        </ul>
+        <hr class="sectionDivider">
+        <span class="uppercaseHeading--light">
+          Databaser
+        </span>
+        <input 
+          class="RemoteDatabases-listFilterInput customInput mousetrap" 
+          type="text" 
+          v-if="remoteDatabases.state == 'complete'"
+          v-model="filterKey"
+          :aria-label="'Search for database' | translatePhrase"
+          :placeholder="'Search for database' | translatePhrase"
+          ref="listFilterInput">
+        <ul class="RemoteDatabases-list" v-if="remoteDatabases.state == 'complete'">
+          <li 
+            class="RemoteDatabases-listItem"
+            :class="{'is-active': db.active, 'is-disabled': db.disabled }" 
+            v-for="(db, index) in filteredDatabases" 
+            :key="index"
+            :aria-label="db.database">
+            <div class="RemoteDatabases-addControl">
+              <i v-show="db.disabled" class="fa fa-ban icon icon--sm is-disabled"></i>
+              <i 
+                v-show="!db.disabled" 
+                class="fa icon icon--sm" 
+                :class="{ 'fa-plus-circle': !db.active, 'fa-check-circle': db.active, 'is-inactive': !db.active }"
+                :title="db.active ? 'Remove' : 'Add' | translatePhrase"
+                tabindex="0"
+                role="button"
+                @click="toggleDatabase(db.database)"
+                @keyup.enter="toggleDatabase(db.database)">
+              </i>
+            </div>
+            <div class="RemoteDatabases-dbInfo">
+              <div class="RemoteDatabases-dbLabel">
+                {{db.database}} 
+                <span v-show="db.disabled" class="RemoteDatabases-dbUnavailable">
+                  ({{'unavailable' | translatePhrase}})
+                </span>
+                <div class="RemoteDatabases-dbExtraInfo" v-show="db.about">
+                  <i class="fa fa-question-circle fa-fw icon"></i>
+                  <span class="RemoteDatabases-dbExtrainfoText">{{ db.about }}</span>
+                </div>
+                <div class="RemoteDatabases-dbExtraInfo" v-show="db.comment">
+                  <i class="fa fa-info-circle fa-fw icon"></i>
+                  <span class="RemoteDatabases-dbExtrainfoText">{{ db.comment }}</span>
+                </div>
+              </div>
+              <div class="RemoteDatabases-dbName" 
+                v-show="db.database !== db.name" 
+                :title="db.name">{{db.name}}
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div v-show="numOfFilteredDatabases === 0 && remoteDatabases.state !== 'loading'" class="RemoteDatabases-searchStatus">
+          <span>{{'No results' | translatePhrase}}</span>
+        </div>
       </div>
     </portal>
 </div>
@@ -334,7 +365,7 @@ export default {
   &-list {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 0.5em 0 0 0;
     width: 100%;
   }
 
@@ -354,6 +385,24 @@ export default {
       color: @gray-dark-transparent;
       cursor: initial;
     }
+  }
+  &-activeList {
+    list-style: none;
+    padding: 0;
+    margin: 0.5em 0 0 0;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  &-activeListItem {
+    display: inline-block;
+    border-radius: 2em;
+    border: 1px solid @brand-primary;
+    color: @brand-primary;
+    padding: 0 0.4em;
+    margin: 0 0.2em 0.2em 0;
+    font-size: 1.4rem;
+    font-weight: 600;
   }
 
   &-dbInfo {
@@ -398,7 +447,7 @@ export default {
     width: 2rem;
     line-height: 1.6rem;
     display: inline-block;
-    i.is-active {
+    i.is-inactive {
       color: @brand-primary;
     }
   }

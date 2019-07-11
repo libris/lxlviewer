@@ -4,7 +4,13 @@
     "searchProp": "q",
     "mappings": {
       "q": ""
-    }
+    },
+    "types": [
+      "Instance",
+      "Agent",
+      "Concept",
+      "Work"
+    ]
   },
   {
     "key": "ISBN",
@@ -12,7 +18,10 @@
     "mappings": {
       "identifiedBy.value": "",
       "identifiedBy.@type": "ISBN"
-    }
+    },
+    "types": [
+      "Instance"
+    ]
   },
   {
     "key": "ISSN",
@@ -20,13 +29,19 @@
     "mappings": {
       "identifiedBy.value": "",
       "identifiedBy.@type": "ISSN"
-    }
+    },
+    "types": [
+      "Instance"
+    ]
   },
   {
     "key": "Main title",
     "searchProp": "hasTitle.mainTitle",
     "mappings": {
       "hasTitle.mainTitle": ""
-    }
+    },
+    "types": [
+      "Instance"
+    ]
   }
 ]

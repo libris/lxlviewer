@@ -634,7 +634,7 @@ export default {
               <div class="EntityAdder-search">
                 <label for="entityKeywordInput" class="EntityAdder-searchLabel">{{ "Search" | translatePhrase }}</label>
                 <div class="EntityAdder-searchInputContainer">
-                  <input class="EntityAdder-searchInput entity-search-keyword-input customInput form-control"
+                  <input class="EntityAdder-searchInput entity-search-keyword-input customInput"
                     name="entityKeywordInput"
                     v-model="keyword"
                     ref="input"

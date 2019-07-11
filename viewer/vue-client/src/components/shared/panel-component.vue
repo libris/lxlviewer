@@ -185,7 +185,7 @@ export default {
   &-container {
     opacity: 0;
     transition: opacity 0.5s ease;
-    z-index: @popover-z;
+    z-index: @sidepanel-z;
     box-shadow: @shadow-card-elevated;
     position: fixed;
     width: 35%;
@@ -228,6 +228,13 @@ export default {
     .is-danger & {
       background-color: @brand-danger;
       color: @neutral-color;
+    }
+    input {
+      background-color: #fff;
+      border: 1px solid @grey-lighter;
+      &:focus {
+        border-color: @brand-primary;
+      }
     }
   }
 

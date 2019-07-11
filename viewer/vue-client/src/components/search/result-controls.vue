@@ -1,8 +1,8 @@
 <script>
+import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import * as httpUtil from '@/utils/http';
 import Sort from '@/components/search/sort';
-// import { pickBy } from 'lodash-es';
 
 export default {
   name: 'result-controls',
@@ -28,19 +28,17 @@ export default {
     };
   },
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
-    resources() {
-      return this.$store.getters.resources;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
+    ...mapGetters([
+      'resources',
+      'user',
+      'settings',
+      'status',
+    ]),
     filters() {
+      let filters = [];
       if (typeof this.pageData.search !== 'undefined') {
         // remove search-by filters, ISBN etc
-        return this.pageData.search.mapping.filter(item => this.excludeFilters.every(el => el !== item.variable))
+        filters = this.pageData.search.mapping.filter(item => this.excludeFilters.every(el => el !== item.variable))
           .map((item) => {
             let label = '';
             if (item.hasOwnProperty('value')) { // Try to use item value to get label
@@ -51,7 +49,7 @@ export default {
               if (match.length === 1) {
                 const prop = match[0].object.prefLabelByLang || match[0].object.labelByLang;
                 label = prop[this.settings.language];
-              } else label = item.object['@id'];        
+              } else label = item.object['@id'];
             } else if (item.hasOwnProperty('object')) label = item.object['@id']; // else try to translate object[@id]...
             return {
               label,
@@ -59,7 +57,9 @@ export default {
               up: item.up['@id'],
             };
           });
-      } return [];
+      };
+      const filtersWithoutWildcard = filters.filter(item => item.label !== '*'); // Remove any filters that's just a wildcard
+      return filtersWithoutWildcard;
     },
     queryText() {
       if (this.pageData.first) {
@@ -164,16 +164,16 @@ export default {
 <template>
   <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
-      <div class="ResultControls-resultDescr">
-        <p class="ResultControls-resultText" id="resultDescr">
-          <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
-          <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
-          <span v-else class="ResultControls-numTotal">{{'No hits' | translatePhrase }}</span>
-        </p>
-        <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
-          {{ 'The search gave more results than can be displayed' | translatePhrase }}.
-        </p>
-      </div>
+      <p class="ResultControls-resultText" id="resultDescr">
+        <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
+        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
+        <span v-else class="ResultControls-numTotal">{{'No hits' | translatePhrase }}</span>
+        
+        <span v-if="$route.params.perimeter === 'remote'">{{ 'from' | translatePhrase }} <span v-for="(db, index) in status.usedRemoteDatabases"><span class="ResultControls-dbLabel">{{ db }}</span>{{ index !== status.usedRemoteDatabases.length - 1 ? ', ' : '' }}</span></span>
+      </p>
+      <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
+        {{ 'The search gave more results than can be displayed' | translatePhrase }}.
+      </p>
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
         <sort 
           v-if="searchedTypes && $route.params.perimeter != 'remote'"
@@ -204,12 +204,6 @@ export default {
           <i class="fa fa-fw fa-close icon"></i>
         </router-link>
       </div>
-      <!-- <button class="ResultControls-filterBadge clear-all" // introduce when we have 'type' radio buttons
-        v-if="filters.length > 1"
-        @click="clearAllFilters">
-        {{ 'Clear all' | translatePhrase }}
-        <i class="fa fa-fw fa-close icon"></i>
-      </button> -->
     </div>
     <nav v-if="hasPagination && showPages">
       <ul class="ResultControls-pagList">
@@ -253,14 +247,16 @@ export default {
 @buttoncolor: darken(@neutral-color, 10%);
 
 .ResultControls {
-  margin: 10px 0px 20px 0;
+  margin: 1em 0;
 
   &-searchDetails {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    min-height: 2.8em;
     color: @gray-dark;
+    border-bottom: 1px solid @gray-lighter;
 
     @media (max-width: @screen-sm) {
       flex-direction: column;
@@ -276,7 +272,7 @@ export default {
     padding-right: 20px;
   }
 
-  &-numTotal {
+  &-numTotal, &-dbLabel {
     color: @black;
   }
 
@@ -292,8 +288,6 @@ export default {
 
   &-listType {
     background-color: transparent;
-    height: 20px;
-    margin-bottom: 10px;
 
     &:hover, 
     &:focus {
@@ -319,7 +313,6 @@ export default {
     padding-top: 5px;
     display: flex;
     flex-wrap: wrap;
-    border-top: 1px solid @gray-lighter;
   }
 
   &-filterBadge {
