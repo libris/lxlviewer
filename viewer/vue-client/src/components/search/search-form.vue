@@ -1,5 +1,5 @@
 <script>
-import { isEmpty, cloneDeep } from 'lodash-es';
+import { isEmpty, cloneDeep, isArray } from 'lodash-es';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
@@ -121,10 +121,22 @@ export default {
     },
     setType() {
       const performedQuery = cloneDeep(this.$route.query);
+      let type;
       if (isEmpty(performedQuery)) {
-        return this.user.settings.searchType || 'Instance';
+        type = this.user.settings.searchType || 'Instance';
+      } else {
+        type = performedQuery['@type'];
       }
-      return performedQuery['@type'];
+      if (isArray(type)) {
+        for (let i = 0; i < type.length; i++) {
+          for (let x = 0; x < this.dataSetFilters.length; x++) {
+            if (type[i] === this.dataSetFilters[x].value) {
+              return type[i];
+            }
+          }
+        }
+      }
+      return type;
     },
     setPrefSearchType() {
       const user = this.user;
