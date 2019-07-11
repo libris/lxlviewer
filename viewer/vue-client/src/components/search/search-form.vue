@@ -122,13 +122,7 @@ export default {
     setType() {
       const performedQuery = cloneDeep(this.$route.query);
       if (isEmpty(performedQuery)) {
-        return 'Instance'; // initial value
-      }
-      if (!performedQuery.hasOwnProperty('@type')) {
-        return ''; // explicitly no types
-      }
-      if (typeof performedQuery['@type'] === 'string') { 
-        return performedQuery['@type']; // put a single @type into an array
+        return this.user.settings.searchType || 'Instance';
       }
       return performedQuery['@type'];
     },
@@ -237,6 +231,7 @@ export default {
     },
     activeSearchType(val, oldVal) {
       if (val !== oldVal && oldVal) {
+        this.setPrefSearchType();
         this.resetSearchParam();
       }
     },
