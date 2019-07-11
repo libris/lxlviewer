@@ -18,6 +18,13 @@ export default {
   },
   data() {
     return {
+      searchGroupFocus: {
+        typeSelect: false,
+        input: false,
+        paramSelect: false,
+        clear: false,
+        submit: false,
+      },
       helpToggled: false,
       vocabUrl: 'https://id.kb.se/vocab/',
       staticProps: { _limit: 20 },
@@ -141,6 +148,14 @@ export default {
     },
   },
   computed: {
+    searchIsFocused() {
+      for (const element in this.searchGroupFocus) {
+        if (this.searchGroupFocus[element] === true) {
+          return true;
+        }
+      }
+      return false;
+    },
     availableSearchParams() {
       if (this.activeSearchType === '*') {
         return PropertyMappings;
@@ -295,11 +310,13 @@ export default {
           </select>
         </div>
       </div>
-      <div ref="formGroup" class="SearchForm-formGroup">
+      <div ref="formGroup" class="SearchForm-formGroup" :class="{ 'is-focused': searchIsFocused }">
         <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-typeSelect SearchForm-select customSelect"
             v-model="activeSearchType"
+            @focus="searchGroupFocus.typeSelect = true"
+            @blur="searchGroupFocus.typeSelect = false"
             @change="setPrefSearchType">
             <option 
               v-for="filter in dataSetFilters" 
@@ -310,18 +327,25 @@ export default {
           </select>
         </div>
         <input type="text"
+          @focus="searchGroupFocus.input = true"
+          @blur="searchGroupFocus.input = false"
           class="SearchForm-input customInput"
           v-model="searchPhrase"
           aria-labelledby="searchlabel"
           :placeholder="inputPlaceholder | translatePhrase"
           ref="searchFormInput">
-        <span class="SearchForm-clear icon icon--md" :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
+        <span class="SearchForm-clear icon icon--md"
+          @focus="searchGroupFocus.clear = true"
+          @blur="searchGroupFocus.clear = false"
+          :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
           <i class="fa fa-fw fa-close"></i>
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-paramSelect SearchForm-select customSelect"
             v-model="activeSearchParam"
+            @focus="searchGroupFocus.paramSelect = true"
+            @blur="searchGroupFocus.paramSelect = false"
             @change="setPrefSearchParam">
             <option 
               v-for="prop in availableSearchParams"
@@ -335,6 +359,8 @@ export default {
           class="SearchForm-submit btn btn-primary icon icon--white icon--md" 
           :aria-label="'Search' | translatePhrase"
           @click.prevent="doSearch"
+          @focus="searchGroupFocus.submit = true"
+          @blur="searchGroupFocus.submit = false"
           :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
           :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0" >
           <i class="fa fa-search"></i>
@@ -391,7 +417,7 @@ export default {
     background-color: @grey-lightest;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0), 0 1px 2px rgba(0, 0, 0, 0);
     transition: box-shadow 0.25s ease;
-    &:focus-within {
+    &.is-focused {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
     > * {
@@ -493,9 +519,15 @@ export default {
     min-width: 100px;
     width: 100%;
     color: @black;
+    transition: background-color 0.2s ease;
     &:focus {
       background-color: @white;
       border-radius: 0;
+      @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+        /* IE10+ CSS styles go here */
+        border: solid @grey-lighter;
+        border-width: 1px 0px 0px 0px;
+      }
     }
   }
 
