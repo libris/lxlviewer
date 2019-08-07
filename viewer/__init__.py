@@ -473,7 +473,8 @@ def convert():
 
 @app.route('/_remotesearch')
 def _remotesearch():
-    return _proxy_request(request, session, query_params=['q', 'databases'])
+    return _proxy_request(request, session, 
+                          query_params=['q', 'databases', 'n', 'start'])
 
 
 def _proxy_request(request, session, json_data=None, query_params=[],
