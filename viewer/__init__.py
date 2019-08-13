@@ -42,7 +42,7 @@ HTTP_METHODS = R_METHODS + ['PUT', 'POST', 'DELETE']
 JSONLD_MIMETYPE = 'application/ld+json'
 
 KEEP_HEADERS = ['ETag', 'Location', 'Content-Location', 'Expires', 'Document',
-                'Link', 'Server-Start-Time', 'Cache-Control']
+                'Link', 'Server-Start-Time', 'Cache-Control', 'Vary']
 
 CONTEXT_PATH = '/context.jsonld'
 
@@ -250,9 +250,11 @@ def _get_view_data_accept_header(request, suffix):
 
 def _filter_query_params(request_args):
     params = MultiDict([])
-    version = request_args.get('version')
-    if version:
-        params.add('version', version)
+
+    for p in ['version', 'embellished', 'framed', 'lens']:
+        value = request_args.get(p)
+        if value:
+            params.add(p, value)
 
     return params
 
