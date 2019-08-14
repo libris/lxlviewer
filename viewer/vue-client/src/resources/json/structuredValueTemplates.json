@@ -476,6 +476,7 @@
   },
   "MediaObject": {
     "@type": "MediaObject",
-    "uri": [""]
+    "uri": [""],
+    "marc:publicNote": [""]
   }
 }
