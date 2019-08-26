@@ -83,7 +83,8 @@
       ],
       "global-require": "off",
       "radix": "off",
-      "no-alert": "off"
+      "no-alert": "off",
+      "no-continue": "off"
     },
     "parserOptions": {
       "parser": "babel-eslint"
