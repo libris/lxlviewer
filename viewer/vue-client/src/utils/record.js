@@ -243,7 +243,7 @@ export function convertToMarc(inspectorData, settings, user) {
 }
 
 export function prepareDuplicateFor(inspectorData, user, keysToClear) {
-  const userSigelObj = { '@id': `https://libris.kb.se/library/${user.settings.activeSigel}` };
+  const userSigelObj = { '@id': user.getActiveLibraryUri() };
 
   // Removes fields that we do not want to import or copy
   let newData = cloneDeep(inspectorData);

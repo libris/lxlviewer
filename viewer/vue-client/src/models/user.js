@@ -90,6 +90,10 @@ export class User {
     return find(this.collections, o => o.code === this.settings.activeSigel);
   }
 
+  getActiveLibraryUri() {
+    return `https://libris.kb.se/library/${this.settings.activeSigel}`;
+  }
+
   verifySigel(sigelCode) {
     // Check if the chosen sigel is in list of permissions.
     let verified = false;

@@ -77,7 +77,7 @@ export default {
         '@type': 'Record',
         '@id': 'https://id.kb.se/TEMPID',
         descriptionCreator: {
-          '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
+          '@id': this.user.getActiveLibraryUri(),
         },
         mainEntity: {
           '@id': 'https://id.kb.se/TEMPID#it',

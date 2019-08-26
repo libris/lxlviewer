@@ -391,7 +391,7 @@ export default {
       return typeof a.download !== 'undefined';
     },
     activeSigelId() {
-      return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
+      return this.user.getActiveLibraryUri();
     },
     compileMARCUrl() {
       let focusId = this.inspector.data.record['@id'];
