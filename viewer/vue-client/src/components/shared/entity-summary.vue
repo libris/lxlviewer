@@ -15,7 +15,7 @@ export default {
   props: {
     focusData: {
       type: Object,
-      defualt: null,
+      default: null,
     },
     actions: {
       type: Boolean,
