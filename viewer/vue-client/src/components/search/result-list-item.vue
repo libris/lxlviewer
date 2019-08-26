@@ -90,12 +90,10 @@ export default {
       @hiddenDetailsNumber="setHiddenDetailsNumber"
       :focus-data="focusData" 
       :database="database" 
-      :router-path="focusData['@id'] | asFnurgelLink" 
       :is-import="isImport" 
       :import-item="importItem" 
       :exclude-components="isImport ? ['id'] : []"
       :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
-      :add-link="true" 
       @import-this="importThis()"
       :valueDisplayLimit=3
       :encodingLevel="encodingLevel">
