@@ -2440,7 +2440,6 @@
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "GenreForm",
           "closeMatch": [{
-            "@id": "https://id.kb.se/term/saogf/",
             "@type": "GenreForm",
             "inScheme": {
               "@id": "https://id.kb.se/term/lcsh",
