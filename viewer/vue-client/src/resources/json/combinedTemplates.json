@@ -2570,7 +2570,7 @@
     },
     "chronologicalTerm": {
       "label": "Kronologiskt ämnesord",
-      "description": "saogf",
+      "description": "sao",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
