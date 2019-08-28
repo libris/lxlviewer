@@ -126,9 +126,17 @@ export default {
       });
       return value;
     },
+    uri() {
+      let uri = this.focusData['@id'];
+      const meta = this.focusData.meta;
+      if (meta && meta.hasOwnProperty('@id')) {
+        uri = meta['@id'];
+      }
+      return uri;
+    },
     routerPath() {
-      if (this.focusData.hasOwnProperty('@id')) {
-        const uriParts = this.focusData['@id'].split('/');
+      if (this.uri) {
+        const uriParts = this.uri.split('/');
         const fnurgel = uriParts[uriParts.length - 1];
         return `/${fnurgel}`;
       }
@@ -138,7 +146,7 @@ export default {
       return this.$store.getters.settings;
     },
     isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings);
+      return StringUtil.isLibrisResourceUri(this.uri, this.settings);
     },
     totalInfo() {
       const total = this.getSummary.info.concat(this.getSummary.sub);
