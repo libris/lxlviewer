@@ -90,6 +90,13 @@ export class User {
     return find(this.collections, o => o.code === this.settings.activeSigel);
   }
 
+  isGlobalRegistrant() {
+    if (this.getPermissions().global_registrant !== true) {
+      return false;
+    }
+    return true;
+  }
+
   verifySigel(sigelCode) {
     // Check if the chosen sigel is in list of permissions.
     let verified = false;

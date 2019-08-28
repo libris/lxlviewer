@@ -374,7 +374,7 @@ export default {
         return false;
       }
       if (this.inspector.data.mainEntity['@type'] === 'Item') {
-        if (this.isMyHolding) {
+        if (this.isMyHolding || this.user.isGlobalRegistrant()) {
           return true;
         } else {
           return false;
