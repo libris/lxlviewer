@@ -52,6 +52,7 @@ export default {
       this.helpToggled = !this.helpToggled;
     },
     composeQuery() {
+      let enc = encodeURIComponent;
       let query = '';
       if (this.searchPerimeter === 'libris') {
         const queryArr = [];
@@ -59,21 +60,21 @@ export default {
           if (Array.isArray(this.mergedParams[param])) {
             this.mergedParams[param].forEach((el) => {
               if (el !== null) {
-                queryArr.push(`${param}=${el}`);
+                queryArr.push(`${enc(param)}=${enc(el)}`);
               }
             });
           } else {
             if (this.mergedParams[param] !== null) {
-              queryArr.push(`${param}=${this.mergedParams[param]}`);
+              queryArr.push(`${enc(param)}=${enc(this.mergedParams[param])}`);
             }
           }
         });
         query = queryArr.join('&');
       } else {
         const databases = this.status.remoteDatabases.join();
-        query = `q=${this.searchPhrase}&databases=${databases}`;
+        query = `q=${enc(this.searchPhrase)}&databases=${enc(databases)}`;
       }
-      return encodeURI(query);
+      return query;
     },
     doSearch() {
       this.helpToggled = false;
