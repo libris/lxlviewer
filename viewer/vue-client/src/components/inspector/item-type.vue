@@ -64,7 +64,7 @@ export default {
       this.checkingRelations = true;
       const query = {
         _limit: 0,
-        q: this.inspector.data.mainEntity['@id'],
+        o: this.inspector.data.mainEntity['@id'],
       };
       HttpUtil.getRelatedPosts(query, this.settings.apiPath)
         .then((response) => {
@@ -122,7 +122,7 @@ export default {
       v-if="unlockModalOpen">
       <div slot="modal-body" class="ChangeTypeWarningModal-body">
         <p>
-          Posten används som länk i <strong>{{ numberOfRelations }}</strong> {{ numberOfRelations === 1 ? 'annan post' : 'andra poster' }}. (TODO: Fixa korrekt siffra)
+          Posten används som länk i <strong>{{ numberOfRelations }}</strong> {{ numberOfRelations === 1 ? 'annan post' : 'andra poster' }}.
         </p>
         <p>
           Observera att byte av typ kan påverka datan hos dessa andra entiter. Om du är osäker på konsekvenserna av detta, tryck avbryt.
