@@ -448,12 +448,6 @@ export default {
       const RecordId = this.inspector.data.record['@id'];
       const recordCopy = cloneDeep(this.inspector.data.record);
 
-      if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
-        recordCopy.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
-      } else { // ID exists -> update
-        recordCopy.descriptionLastModifier = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
-      }
-
       let obj = null;
       if (keepEmpty) {
         obj = DataUtil.getMergedItems(
