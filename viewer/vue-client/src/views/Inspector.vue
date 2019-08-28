@@ -346,9 +346,7 @@ export default {
         this.$store.dispatch('updateInspectorData', {
           changeList: [{
             path: 'mainEntity.heldBy',
-            value: {
-            '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
-            },
+            value: { '@id': this.user.getActiveLibraryUri() },
           }],
           addToHistory: false,
         });
@@ -449,9 +447,9 @@ export default {
       const recordCopy = cloneDeep(this.inspector.data.record);
 
       if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
-        recordCopy.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+        recordCopy.descriptionCreator = { '@id': this.user.getActiveLibraryUri() };
       } else { // ID exists -> update
-        recordCopy.descriptionLastModifier = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+        recordCopy.descriptionLastModifier = { '@id': this.user.getActiveLibraryUri() };
       }
 
       let obj = null;
