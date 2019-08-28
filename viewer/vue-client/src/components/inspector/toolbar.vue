@@ -370,15 +370,22 @@ export default {
       );
     },
     userIsPermittedToEdit() {
+      const mainEntity = this.inspector.data.mainEntity;
       if (this.user.isLoggedIn === false) {
         return false;
       }
-      if (this.inspector.data.mainEntity['@type'] === 'Item') {
+      if (mainEntity['@type'] === 'Item') {
         if (this.isMyHolding) {
           return true;
         } else {
           return false;
         }
+      } else if (VocabUtil.isSubClassOf(mainEntity['@type'], 'Concept',
+                  this.resources.vocab, this.resources.context) &&
+        (!this.user.uriMinter ||
+          !this.user.uriMinter.findContainerForEntity(mainEntity,
+            { '@id': this.user.getActiveLibraryUri() }))) {
+        return false;
       } else {
         return true;
       }
