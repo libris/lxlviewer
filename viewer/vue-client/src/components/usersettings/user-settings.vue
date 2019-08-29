@@ -175,7 +175,7 @@ export default {
             @change="updateSigel">
             <option v-for="sigel in user.collections" 
               :key="sigel.code" 
-              :value="sigel.code">{{ getSigelLabel(sigel, 50) }}</option>
+              :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}</option>
           </select>
         </li>
         <li>
