@@ -2,10 +2,11 @@
   <div id="app" class="App">
     <global-message />
     <navbar-component />
-    <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
-      {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
-    </div>
-    <main class="MainContent" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen, 'debug-mode': user.settings.appTech }" role="main">
+    <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
+    <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen, 'debug-mode': user.settings.appTech }" role="main">
+      <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
+        {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
+      </div>
         <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
           <vue-simple-spinner size="large" :message="status.loadingIndicators[0] | translatePhrase"></vue-simple-spinner>
         </div>
@@ -27,14 +28,23 @@
 
 <script>
 import Navbar from '@/components/layout/navbar';
+import SearchBar from '@/components/layout/search-bar';
 import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import GlobalMessage from '@/components/layout/global-msg';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import LayoutUtil from '@/utils/layout';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'App',
+  data() {
+    return {
+      stickToTop: false,
+      navBarBottomPos: 0,
+      searchBarHeight: 0,
+    };
+  },
   computed: {
     ...mapGetters([
       'settings',
@@ -52,16 +62,38 @@ export default {
       userObj.settings.appTech = false;
       this.$store.dispatch('setUser', userObj);
     },
+    checkSearchBar(event) {
+      const $SearchBar = document.getElementById('SearchBar');
+      const $NavBar = document.getElementById('NavBar');
+      if ($SearchBar) {
+        this.searchBarHeight = $SearchBar.getBoundingClientRect().height;
+      }
+      if ($NavBar) {
+        this.navBarBottomPos = $NavBar.offsetHeight;
+      }
+      if (event) {
+        if (event.target.scrollingElement && event.target.scrollingElement.scrollTop > this.navBarBottomPos) {
+          this.stickToTop = true;
+        } else {
+          this.stickToTop = false;
+        }
+      }
+    },
   },
   mounted() {
     this.$nextTick(() => {
+      this.checkSearchBar();
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'default', 
       });
     });
+    window.addEventListener('scroll', (e) => {
+      this.checkSearchBar(e);
+    });
   },
   components: {
+    SearchBar,
     'navbar-component': Navbar,
     'footer-component': Footer,
     'notification-list': NotificationList,
@@ -81,6 +113,18 @@ export default {
   font-weight: unset;
 }
 // BOOTSTRAP UNSET END
+
+// BOOTSTRAP OVERRIDE START
+@media (max-width: @screen-md-min) {
+   .container {
+      width: 100%;
+   }
+}
+// BOOTSTRAP OVERRIDE END
+
+.row {
+  height: 100%;
+}
 
 body {
   line-height: 1.6;
@@ -126,6 +170,12 @@ h4 {
     display: flex;
     align-items: center;
     justify-content: center;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffffeb;
+    left: 0;
+    position: fixed;
     i {
       margin-right: 0.5em;
     }
@@ -149,6 +199,8 @@ h4 {
 
 .MainContent {
   flex: 1 0 auto;
+  &.sticky-is-active {
+  }
 
   &.container-fluid {
     margin-right: 0px;
@@ -206,7 +258,6 @@ button {
 .btn,
 .btn[disabled] {
   border: 0;
-  box-shadow: @shadow-panel;
   transition: background-color 0.1s ease;
 }
 
@@ -304,6 +355,7 @@ button {
 .btn--sm {
   .btn-mixin(150px, 26px, 13px);
   padding: 3px 10px;
+  box-shadow: none;
 }
 
 @import (css) url(//fonts.googleapis.com/css?family=Open+Sans:600);
@@ -335,8 +387,9 @@ html {
 }
 
 main {
-  margin-top: 30px;
-  margin-bottom: 100px;
+  // margin-top: 30px;
+  // margin-bottom: 100px;
+  min-height: 100%;
 }
 
 #oldbrowsermsg {
@@ -428,7 +481,6 @@ body {
 .icon {
     color: @gray;
     color: @gray-transparent;
-    cursor: pointer;
     transition: color .2s ease, background-color .2s ease;
 
     &:hover {
@@ -449,6 +501,10 @@ body {
       &:hover {
         color: @white;
       }
+    }
+
+    &--xs {
+      font-size: 12px;
     }
 
     &--sm {
@@ -518,6 +574,10 @@ h1 {
       &:extend(.uppercaseHeading);
       font-weight: 700;
     }
+    &--large {
+      &:extend(.uppercaseHeading);
+      font-size: 1.8rem;
+    }
 }
 
 // -------- FORM -------------
@@ -528,6 +588,7 @@ h1 {
     margin-right: 0.2em;
     position: absolute;
     opacity: 0;
+    height: 1.6em;
 
     &:checked + .customCheckbox-icon::before {
       content: "\f14a";
@@ -559,16 +620,33 @@ h1 {
 
 // SELECT
 .customSelect {
-  height: 30px;
-  min-width: 150px;
+  line-height: 3.2rem;
+  font-weight: 500;
   font-size: 16px;
   font-size: 1.6rem;
-  font-weight: 500;
-  background-color: @white;
   color: @black;
-  border: 1px solid @gray-light;
-  box-shadow: @shadow-panel;
+  border: none;
+  width: 100%;
+  border-radius: @form-radius;
+  // border-bottom: 1px solid rgba(0, 0, 0, 0.07);
   text-align: left;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: @grey-lightest;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'%3E%3Ctext x='0' y='10' fill='gray'%3E%E2%96%BE%3C/text%3E%3C/svg%3E");
+  background-repeat: no-repeat, repeat;
+  background-position: right 0.5em top 50%, 0 0;
+  background-size: 1em auto, 100%;
+  padding-left: 0.8em;
+  padding-right: 1.8em;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  &::-ms-expand{
+    display: none;
+  }
 }
 
 //TEXT INPUT
@@ -576,25 +654,26 @@ h1 {
   display: flex;
   justify-content: space-between;
   height: 42px;
-  min-width: 75%;
   flex-grow: 1;
-  font-size: 20px;
-  font-size: 2rem;
+  font-size: 16px;
+  font-size: 1.6rem;
+  width: 100%;
+  border-radius: @form-radius;
+  background-color: @grey-lightest;
   line-height: 1.2;
   color: @black;
-  border: 1px solid @gray-light;
-  border-radius: 4px;
+  border-color: transparent;
+  padding: 0 0.5em;
 
   &::placeholder,
   input::placeholder  {
-    font-style: italic;
     color: @gray;
   }
 
   &:focus {
-    border: 1px solid @brand-primary;
-    outline: 0;
-    box-shadow: none;
+    // border: 1px solid @brand-primary;
+    // outline: 0;
+    // box-shadow: none;
   }
 
   &::-ms-clear {

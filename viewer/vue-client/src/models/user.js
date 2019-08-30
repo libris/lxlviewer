@@ -18,6 +18,7 @@ export class User {
       defaultDatabases: ['OCLC'],
       forceFullViewPanel: false,
       searchParam: false,
+      searchType: null,
       sort: false,
     };
   }
@@ -87,6 +88,13 @@ export class User {
       return this.collections[0];
     }
     return find(this.collections, o => o.code === this.settings.activeSigel);
+  }
+
+  isGlobalRegistrant() {
+    if (this.getPermissions().global_registrant !== true) {
+      return false;
+    }
+    return true;
   }
 
   verifySigel(sigelCode) {

@@ -306,7 +306,7 @@ export default {
     },
     loadDocument() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
-      this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
+      this.stopEditing();
       this.fetchDocument();
     },
     loadNewDocument() {
@@ -318,7 +318,7 @@ export default {
         console.warn('New document called without input data, routing user back.');
       } else {
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
-        this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: true });
+        this.startEditing();
         this.onPostLoaded();
       }
     },
@@ -335,25 +335,62 @@ export default {
         });
       });
     },
-    doCancel() {
+    checkForAutomaticFixes() {
+      // If this is a holding, add the heldBy property
+      if (this.inspector.data.mainEntity['@type'] === 'Item' && !this.inspector.data.mainEntity.hasOwnProperty('heldBy')) {
+        window.lxlWarning(`🚑 Found holding without heldBy property. Adding heldBy value according to active sigel (${this.user.settings.activeSigel}).`);
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'lastAdded', 
+          value: 'mainEntity.heldBy',
+        });
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [{
+            path: 'mainEntity.heldBy',
+            value: {
+            '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
+            },
+          }],
+          addToHistory: false,
+        });
+      }
+    },
+    startEditing() {
+      this.loadingEdit = true;
+      this.$store.dispatch('setInspectorStatusValue', { 
+        property: 'editing', 
+        value: true, 
+      });
+      this.checkForAutomaticFixes();
+    },
+    stopEditing() {
+      // THIS IS NOT THE SAME AS THE "CANCEL"-EVENT
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'editing', 
         value: false, 
       });
+    },
+    doCancel() {
+      this.stopEditing();
       // Restore post
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.$store.dispatch('flushChangeHistory');
     },
-    cancelEditing() {
+    cancelEditing(callback) {
       if (!this.inspector.status.isNew) {
         if (this.shouldWarnOnUnload()) {
           const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.settings.language);
           const answer = window.confirm(confString); // eslint-disable-line no-alert
           if (answer) {
             this.doCancel();
+            if (callback) {
+              callback();
+            }
           } 
         } else {
           this.doCancel();
+          if (callback) {
+            callback();
+          }
         }
       } else {
         this.$router.go(-1);
@@ -410,12 +447,6 @@ export default {
     getPackagedItem(keepEmpty = false) {
       const RecordId = this.inspector.data.record['@id'];
       const recordCopy = cloneDeep(this.inspector.data.record);
-
-      if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
-        recordCopy.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
-      } else { // ID exists -> update
-        recordCopy.descriptionLastModifier = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
-      }
 
       let obj = null;
       if (keepEmpty) {
@@ -483,7 +514,7 @@ export default {
           }, 10);
           this.warnOnSave();
           if (done) {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: false });
+            this.stopEditing();
           }
         }
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
@@ -554,7 +585,10 @@ export default {
       if (val.name === 'post-control') {
         switch (val.value) {
           case 'cancel':
-            this.cancelEditing();
+            this.cancelEditing(val.callback);
+            break;
+          case 'start-edit':
+            this.startEditing();
             break;
           case 'download-json':
             this.downloadJson();
@@ -734,6 +768,9 @@ export default {
 
 .Inspector {
 
+  &-entity {
+    padding: 3rem 0;
+  }
   &-spinner {
     margin-top: 2em;
   }

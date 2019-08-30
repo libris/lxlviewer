@@ -99,6 +99,9 @@ export default {
       return false;
     },
     activeSectionTitle() {
+      if (this.activeSectionData === null) {
+        return '';
+      }
       return this.activeSectionData.title;
     },
     activeSectionData() {
@@ -129,6 +132,9 @@ export default {
     },
     docs() {
       const json = this.resources.helpDocs;
+      if (json === null) {
+        return {};
+      }
       delete json.default;
       delete json.readme;
       return json;

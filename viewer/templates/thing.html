@@ -381,7 +381,7 @@
             % set label = vocab.get_label_for(thing)
             % if len(label) == 0
               {Etikett saknas}
-            % elif isinstance(label, basestring)
+            % elif isinstance(label, unicode)
               ${label}
             % else
               {# label is sometimes an object, resolve this in a propper way when data content is known #}
@@ -437,7 +437,7 @@
 
 {# Macro to render random json to a html list #}
 % macro jsonToList(json)
-  % if isinstance(value, basestring)
+  % if isinstance(value, unicode)
     ${json}
   % else
     % for key, value in json.items()

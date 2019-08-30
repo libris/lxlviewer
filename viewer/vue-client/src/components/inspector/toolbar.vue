@@ -258,13 +258,10 @@ export default {
       this.$store.dispatch('undoInspectorChange');
     },
     edit() {
-      if (this.user.isLoggedIn && !this.inspector.status.editing && this.canEditThisType) {
-        this.loadingEdit = true;
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'editing', 
-          value: true, 
-        });
-      }
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'post-control', 
+        value: 'start-edit', 
+      });
     },
     navigateFormChanges(direction) {
       this.navigateChangeHistory(this.inspector.status.focus, direction);
@@ -319,8 +316,20 @@ export default {
       'status',
     ]),
     isMyHolding() {
-      if (this.recordType === 'Item' && this.inspector.data.mainEntity.heldBy['@id'] === this.libraryUrl) {
+      if (this.recordType !== 'Item') {
+        return false;
+      }
+      if (this.inspector.data.mainEntity.heldBy && this.inspector.data.mainEntity.heldBy['@id'] === this.activeSigelId) {
         return true;
+      } else {
+        const componentList = this.inspector.data.mainEntity.hasComponent;
+        if (typeof componentList !== 'undefined') {
+          for (const component of componentList) {
+            if (component.heldBy && component.heldBy['@id'] === this.activeSigelId) {
+              return true;
+            }
+          }
+        }
       }
       return false;
     },
@@ -360,18 +369,19 @@ export default {
         this.resources.context,
       );
     },
-    canEditThisType() {
-      return true;
-      // if (this.user.hasAnyCollections() === false) {
-      //   return false;
-      // }
-      // const permission = this.user.getPermissions();
-      // if (this.inspector.data.mainEntity['@type'] === 'Item' && permission.registrant === true) {
-      //   return true;
-      // } if (permission.cataloger === true) {
-      //   return true;
-      // }
-      // return false;
+    userIsPermittedToEdit() {
+      if (this.user.isLoggedIn === false) {
+        return false;
+      }
+      if (this.inspector.data.mainEntity['@type'] === 'Item') {
+        if (this.isMyHolding || this.user.isGlobalRegistrant()) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
     },
     showRecord() {
       return this.status.showRecord;
@@ -380,7 +390,7 @@ export default {
       const a = document.createElement('a');
       return typeof a.download !== 'undefined';
     },
-    libraryUrl() {
+    activeSigelId() {
       return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
     compileMARCUrl() {
@@ -388,7 +398,7 @@ export default {
       if (this.recordType === 'Item') {
         focusId = this.inspector.data.mainEntity.itemOf['@id'].split('#')[0];
       }
-      return `/_compilemarc?library=${this.libraryUrl}&id=${focusId}`;
+      return `/_compilemarc?library=${this.activeSigelId}&id=${focusId}`;
     },
     hasSigel() {
       return typeof this.user.settings.activeSigel !== 'undefined';
@@ -562,13 +572,13 @@ export default {
             {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindingText('preview-marc') ? ` (${getKeybindingText('preview-marc')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew">
+        <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToEdit">
           <a class="Toolbar-menuLink"  @click="postControl('remove-post')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
           {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
           </a>
         </li>
-        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech">
+        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech && userIsPermittedToEdit">
           <a class="Toolbar-menuLink" @click="openOverridePicker">
           <i class="fa fa-fw fa-upload"></i>
           {{ 'Overwrite data' | translatePhrase }}
@@ -663,7 +673,7 @@ export default {
 
     <button class="Toolbar-btn btn btn-primary edit-button" id="editButton" 
       v-on:click="edit()" 
-      v-show="user.isLoggedIn && !inspector.status.editing && canEditThisType" 
+      v-show="!inspector.status.editing && userIsPermittedToEdit" 
       @mouseover="showEdit = true" 
       @mouseout="showEdit = false"
       :aria-label="'Edit' | translatePhrase">
@@ -700,6 +710,7 @@ export default {
     box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.2);
 
     @media (min-width: 992px) {
+      top: 11em;
       bottom: auto;
       width: 65px;
     }

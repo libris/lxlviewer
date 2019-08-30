@@ -87,13 +87,14 @@ export default {
 <style lang="less">
 
 .CreationCard  {
-  min-width: 250px;
-  max-width: 250px;
-  margin-right: 20px;
+  flex-basis: 100%;
 
-  @media screen and (max-width: @screen-xs-min){
-    flex-basis: 100%;
-    max-width: 100%;
+  @media screen and (min-width: @screen-sm-min){
+    flex-basis: 49%;
+    margin-right: 1%;
+  }
+  @media screen and (min-width: @screen-md-min){
+    flex-basis: 24%;
   }
 
   &-title {
@@ -110,6 +111,8 @@ export default {
 
   &-select {
     width: 100%;
+    font-size: 14px;
+    font-size: 1.4rem;
   }
 
   &-option {

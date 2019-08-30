@@ -317,11 +317,11 @@ export default {
       :title="modalTitle"
       @close="hide">
       <template slot="panel-header-extra">
-        <div class="FieldAdderPanel-filterContainer form-group panel">
+        <div class="FieldAdderPanel-filterContainer form-group">
           <input id="field-adder-input"
             type="text" 
             ref="input"
-            class="FieldAdderPanel-filterInput customInput form-control mousetrap" 
+            class="FieldAdderPanel-filterInput customInput mousetrap" 
             :placeholder="'Filter by' | translatePhrase"
             :aria-label="'Filter by' | translatePhrase"
             v-model="filterKey">
@@ -343,7 +343,7 @@ export default {
           <span class="FieldAdderPanel-fieldLabel uppercaseHeading">
             {{ "Field label" | translatePhrase }}
           </span>
-          <span class="FieldAdderPanel-classInfo uppercaseHeading">
+          <span class="uppercaseHeading">
             {{ "Can contain" | translatePhrase }}
           </span>
         </div>

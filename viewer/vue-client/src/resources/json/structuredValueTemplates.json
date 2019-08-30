@@ -244,6 +244,10 @@
     "@type": "Copyright",
     "date": ""
   },
+  "AcquisitionSource": {
+    "@type": "AcquisitionSource",
+    "label": ""
+  },
   "Extent": {
     "@type": "Extent",
     "label": ""
@@ -472,6 +476,7 @@
   },
   "MediaObject": {
     "@type": "MediaObject",
-    "uri": [""]
+    "uri": [""],
+    "marc:publicNote": [""]
   }
 }

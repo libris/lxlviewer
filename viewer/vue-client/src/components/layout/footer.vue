@@ -67,7 +67,7 @@ export default {
                 <a href="https://www.youtube.com/watch?v=p2vcgoTfNpw&list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link">{{ "Instruction videos" | translatePhrase }}</a>
               </li>
               <li>
-                <a href="http://librisbloggen.kb.se/" class="Footer-link">{{ "Librisbloggen" | translatePhrase }}</a>
+                <a href="https://www.kb.se/samverkan-och-utveckling/libris.html" class="Footer-link">{{ "Libris news" | translatePhrase }}</a>
               </li>
               <li>
                 <a href="http://kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/" class="Footer-link">{{ "Introduction material" | translatePhrase }}</a>
@@ -124,6 +124,8 @@ export default {
   padding: 25px 10px;
   background-color: @bg-footer;
   color: @text-footer;
+  border: solid #4e4e4e;
+  border-width: 3px 0px 0px 0px;
 
   &-content {
     display: flex;

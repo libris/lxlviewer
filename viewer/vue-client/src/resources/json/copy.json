@@ -34,11 +34,11 @@
     "linkText": "Om nya Libris och XL"
   },
   "blog": {
-    "image": "librisbloggen.png",
-    "header": "Librisbloggen",
-    "text": "Librisbloggen är Libris främsta kommunikationskanal och här informerar vi om alla aspekter – allt från utveckling till samarbete inom Libris-projektet.",
-    "linkUrl": "http://librisbloggen.kb.se/",
-    "linkText": "Till Librisbloggen"
+    "image": "libris_nyheter.png",
+    "header": "Libris nyheter",
+    "text": "Libris nyheter är Libris främsta kommunikationskanal och här informerar vi om alla aspekter – allt från utveckling till samarbete inom Libris-projektet.",
+    "linkUrl": "https://www.kb.se/samverkan-och-utveckling/libris.html",
+    "linkText": "Till Libris nyheter"
   },
   "supportforum": {
     "image": "supportforum.png",

@@ -162,7 +162,7 @@ export default {
 <style lang="less">
 
 .DirectoryCare {
-
+  margin-bottom: 2em;
   &-modalBody {
     width: 100%;
     padding: 20px;

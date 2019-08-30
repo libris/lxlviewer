@@ -132,6 +132,7 @@ export function getItemObject(itemOf, heldBy, instance) {
         {
           '@type': 'MediaObject',
           uri: [''],
+          'marc:publicNote': [''], 
         },
       ],
       'marc:hasTextualHoldingsBasicBibliographicUnit': [
@@ -172,14 +173,12 @@ export function moveHolding(holdingId, destinationId, user) {
       reject('Error moving holding (fetching data)', holdingId, error);
     }).then((json) => {
       const splitData = splitJson(json);
-      const sigelUrlParts = splitData.mainEntity.heldBy['@id'].split('/');
-      const sigel = sigelUrlParts[sigelUrlParts.length - 1];
       const newMainEntity = DataUtil.rewriteValueOfKey(splitData.mainEntity, 'itemOf', { '@id': destinationId });
       const packagedData = DataUtil.getMergedItems(splitData.record, newMainEntity);
       httpUtil.put({
         url: holdingId,
         ETag: ETag,
-        activeSigel: sigel,
+        activeSigel: user.settings.activeSigel,
         token: user.token,
       }, packagedData).then((result) => {
         resolve(result);

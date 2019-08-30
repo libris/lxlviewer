@@ -71,6 +71,7 @@ export default {
 .Facet {
   display: flex;
   align-items: center;
+  font-size: 1.4rem;
 
   &-link {
     width: 100%;
@@ -97,7 +98,6 @@ export default {
     cursor: pointer;
     margin-right: 10px;
     color: @black;
-    line-height: 1.8em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

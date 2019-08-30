@@ -1,5 +1,8 @@
 # -*- coding: UTF-8 -*-
 from __future__ import absolute_import, unicode_literals, print_function
+if bytes is not str:
+    unicode = str
+
 import json
 import operator
 import os
@@ -8,7 +11,10 @@ import re
 import string
 import time
 import requests
-from urlparse import urljoin
+try:
+    from urllib.parse import urlparse, urljoin
+except ImportError:
+    from urlparse import urlparse, urljoin
 from datetime import datetime, timedelta
 
 from flask import Flask, Response
@@ -67,13 +73,19 @@ app.config.from_pyfile('config.cfg', silent=True)
 CORS(app, methods=HTTP_METHODS, expose_headers=['ETag', 'Location'])
 
 
-import __builtin__
-for name, obj in vars(__builtin__).items():
+try:
+    import builtins
+except ImportError:
+    import __builtin__ as builtins
+
+for name, obj in vars(builtins).items():
     if callable(obj):
         app.add_template_global(obj, name)
 
 for func in [operator.itemgetter]:
     app.add_template_global(func, func.__name__)
+
+app.add_template_global(unicode, 'unicode')
 
 @app.template_global()
 def union(*args):
@@ -104,6 +116,18 @@ def show_help():
 @app.route('/releasefeed', methods=['GET'])
 def get_release_feed():
     return requests.get('https://github.com/libris/lxlviewer/releases.atom').content
+
+# Setup proxy for analytics "active users"
+@app.route('/activeusers', methods=['GET'])
+def get_active_users():
+    return requests.get('https://analytics.kb.se/index.php?module=API&method=Live.getCounters&idSite=65&lastMinutes={lastMinutes}&format=json&token_auth={token}'.format(lastMinutes=5, token=app.config.get('MATOMO_READ_TOKEN'))).content
+
+# Setup blog feed
+@app.route('/blogfeed', methods=['GET'])
+def get_blog_feed():
+    return requests.get('https://www.kb.se/rest-api/RSS%20Genererare/rss?keywords=Libris').content
+
+
 
 ##
 # Setup basic views
@@ -380,7 +404,7 @@ def _get_template_for(data):
 
 ##
 # Admin
-os.environ[b'OAUTHLIB_INSECURE_TRANSPORT'] = str(app.config.get('OAUTHLIB_INSECURE_TRANSPORT') or '0')
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = unicode(app.config.get('OAUTHLIB_INSECURE_TRANSPORT') or '0')
 app.secret_key = app.config.get('SESSION_SECRET_KEY') or ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 app.remember_cookie_duration = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
 app.permanent_session_lifetime = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
@@ -417,11 +441,6 @@ def thingnewp():
 def maintenance():
     return render_template('maintenance.html')
 
-# TODO: remove (unused and deprecated)
-@app.route('/sys/forcedsetterms.json')
-def forcedsetterms():
-    return _proxy_request(request, session, None)
-
 @app.route('/_compilemarc')
 def _compilemarc():
     return _proxy_request(request, session, query_params=['id', 'library'])
@@ -454,7 +473,8 @@ def convert():
 
 @app.route('/_remotesearch')
 def _remotesearch():
-    return _proxy_request(request, session, query_params=['q', 'databases'])
+    return _proxy_request(request, session, 
+                          query_params=['q', 'databases', 'n', 'start'])
 
 
 def _proxy_request(request, session, json_data=None, query_params=[],

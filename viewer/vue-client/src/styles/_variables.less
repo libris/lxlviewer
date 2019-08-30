@@ -12,6 +12,7 @@
 @brand-faded: fadeout(@brand-primary, 85%);
 @brand-success: #29A1A2;
 @brand-accent: #D56381;
+@brand-accent2: #697bc8;
 
 
 @brand-id: #547e91;
@@ -58,8 +59,8 @@
 // @black: #333;
 @black: #222;
 @gray: #949A9E;
-@gray-light: #C4C7CA;
-@gray-lighter: #E0E6E9;
+@gray-light: rgb(202, 202, 202);
+@gray-lighter: rgb(231, 231, 231);
 // @gray-dark: #6F767B;
 @gray-dark: #6B7476;
 
@@ -74,6 +75,7 @@
 @gray-darker-transparent: rgba(0, 0, 0, 0.68);
 @gray-very-dark-transparent: rgba(0, 0, 0, 0.85);
 
+@grey-lightest: lighten(@grey-lighter, 5%);
 @grey-lighter: @gray-lighter;
 @grey-light: @gray-light;
 @grey: @gray;
@@ -130,7 +132,7 @@
 @shadow-card-elevated: 0px -1px 5px 2px rgba(0, 0, 0, 0.2);
 // @shadow-select: 0px 5px 13px 2px rgba(0, 0, 0, 0.3);
 @shadow-panel: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.1);
-@shadow-navbar: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+@shadow-sticky-bar: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 
 // MISC
 // @panel-border-radius: 3px;
@@ -150,10 +152,12 @@
 
 // ----------- COMPONENTS ------------
 
-// NAVBAR
-@bg-navbar: @white;
+// STICKY BAR
+@bg-sticky-bar: @white;
 @text-brand-env: @brand-darker;
-@text-alt-navbar: @gray-darker;
+@text-alt-sticky-bar: @gray-darker;
+// NAVBAR
+@bg-navbar: #3a3a3a;
 // @bg-navbar-hover: rgba(199, 226, 224, 0.27);
 // @shadow-navbar: none;
 // @text-navbar: #505050;
@@ -180,6 +184,7 @@
 // @border-footer: @gray-light;
 
 // FORM
+@form-radius: 0.2em;
 @form-border: @gray-lighter;
 @form-border-alt: @gray-lighter-transparent;
 @field-path: @gray-light;
@@ -195,7 +200,10 @@
 // ----------- VALUES ------------
 
 // Z-index
+@sidepanel-z: 998;
+@dropdown-z: 997;
 @header-z: 900;
+@sticky-bar-z: 995;
 @modal-z: 999;
 @popover-z: 900;
 @notification-z: 1000;

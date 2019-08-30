@@ -9,6 +9,7 @@ if ENVIRONMENT != 'prod':
     BASE_URI_ALIAS = {'https://id.kb.se/': 'https://id-{}.kb.se/'.format(ENVIRONMENT)}
 VERSION = '%(releasetag)s'
 PIWIK_ID = '%(piwikid)s'
+MATOMO_READ_TOKEN = '%(matomo_read_token)s'
 WHELK_REST_API_URL='%(whelk_rest_api_url)s'
 SESSION_SECRET_KEY='%(session_secret_key)s'
 AUTHORIZED_ROLES=['cataloger', 'registrant']

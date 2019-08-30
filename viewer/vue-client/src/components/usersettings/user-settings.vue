@@ -1,9 +1,16 @@
 <script>
 import * as StringUtil from '@/utils/string';
 import UserAvatar from '@/components/shared/user-avatar';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'user-settings',
+  props: {
+    compact: {
+      type: Boolean,
+      default: false,
+    },
+  },
   methods: {
     setUser(userObj) {
       this.$store.dispatch('setUser', userObj);
@@ -17,9 +24,23 @@ export default {
       return label.length > len ? `${label.substr(0, len - 2)}...` : label;
     },
     updateSigel(e) {
-      const userObj = this.user;
-      userObj.settings.activeSigel = e.target.value;
-      this.setUser(userObj);
+      const doUpdate = () => {
+        const userObj = this.user;
+        userObj.settings.activeSigel = e.target.value;
+        this.setUser(userObj);
+      }
+      if (this.inspector.data.mainEntity && this.inspector.data.mainEntity['@type'] === 'Item') {
+        // If editing a holding, the user must accept a cancel dialog before sigel can be changed
+        this.$store.dispatch('pushInspectorEvent', { 
+          name: 'post-control',
+          value: 'cancel',
+          callback: () => {
+            doUpdate();
+          },
+        });
+      } else {
+        doUpdate();
+      }
     },
     updateLanguage(e) {
       const userObj = this.user;
@@ -41,15 +62,12 @@ export default {
     },
   },
   computed: {
-    user() {
-      return this.$store.getters.user;
-    },
-    userStorage() {
-      return this.$store.getters.userStorage;
-    },
-    settings() {
-      return this.$store.getters.settings;
-    },
+    ...mapGetters([
+      'inspector',
+      'user',
+      'userStorage',
+      'settings',
+    ]),
     userHasTaggedPosts() {
       return Object.keys(this.userStorage.list).length > 0;
     },
@@ -67,8 +85,8 @@ export default {
 </script>
 
 <template>
-  <section class="UserSettings">
-    <div class="UserSettings-content">
+  <section class="UserSettings" :class="{'in-menu' : compact}">
+    <div class="UserSettings-content" v-if="!compact">
       <div class="UserSettings-info UserInfo">
         <div class="UserInfo-avatar">
           <user-avatar :size="150" />
@@ -84,7 +102,7 @@ export default {
         <div class="UserInfo-meta">
           <p>Din användarprofil är hämtad från <a href="https://login.libris.kb.se">Libris Login</a>.
             <br>Vid frågor om rättigheter för sigel kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.
-            <br>Bild hämtad från <a href="https://www.gravatar.com">gravatar</a>.
+            <br>Profilbild sätts via <a href="https://www.gravatar.com">gravatar</a>.
           </p>
         </div>
       </div>
@@ -103,7 +121,7 @@ export default {
                     @change="updateSigel">
                     <option v-for="sigel in user.collections" 
                       :key="sigel.code" 
-                      :value="sigel.code">{{ getSigelLabel(sigel, 50) }}</option>
+                      :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}</option>
                   </select>
               </td>
             </tr>
@@ -147,6 +165,29 @@ export default {
         <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{"Log out" | translatePhrase}}</button>
       </div>
     </div>
+    <div v-else class="UserSettings-content">
+      <ul>
+        <li>
+          <label class="uppercaseHeading">Sigel</label>
+          <select id="UserConfig-sigel"
+            class="UserConfig-select customSelect" 
+            :value="user.settings.activeSigel" 
+            @change="updateSigel">
+            <option v-for="sigel in user.collections" 
+              :key="sigel.code" 
+              :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}</option>
+          </select>
+        </li>
+        <li>
+          <router-link to="/user">{{"Settings" | translatePhrase}}</router-link>
+          <span v-if="userHasTaggedPosts" @click.prevent="purgeTagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</span>
+        </li>
+        <li>
+          <!-- <span>Växla användare</span> -->
+          <span @click="logout">{{"Log out" | translatePhrase}}</span>
+        </li>
+      </ul>
+    </div>
   </section>
 </template>
 
@@ -172,6 +213,20 @@ export default {
     background-color: @white;
     border-radius: 4px;
     box-shadow: @shadow-panel;
+
+    .in-menu & {
+      padding: 0 10px;
+      border-radius: 0;
+      font-size: 14px;
+      font-size: 1.4rem;
+      box-shadow: none;
+      border: 1px solid @grey-lighter;
+
+      & select {
+        font-size: 14px;
+        font-size: 1.4rem;
+      }
+    }
 
     @media (min-width: @screen-sm) {
       flex-direction: row;
@@ -207,12 +262,57 @@ export default {
     }
     .value {
       width: 50%;
-      input {
-        width: 100%;
-      }
       select {
         width: 100%;
       }
+    }
+  }
+
+  &.in-menu {
+    cursor: initial;
+    top: 3em;
+    position: absolute;
+    right: 0;
+    left: auto;
+    z-index: @dropdown-z;
+    padding-top: 0.25em;
+    padding-left: 0;
+
+    @media (min-width: @screen-sm) {
+      top: 2em;
+    }
+
+    & ul {
+      padding: 0;
+      width: 25rem;
+      list-style-type: none;
+    }
+
+    & li {
+      padding: 10px 0;
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid @grey-lighter;
+
+      &:last-of-type {
+        border: 0px;
+      }
+
+      & span, 
+      & a {
+        color: @black;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+    }
+
+  @media (max-width: @screen-sm) {
+    left: auto;
+    right: 0;
     }
   }
 }
