@@ -15,6 +15,13 @@ export default {
     };
   },
   methods: {
+    getByLang(object, property, lang) {
+      const langDict = object[`${property}ByLang`];
+      if (typeof langDict === 'object' && typeof langDict[lang] === 'string') {
+        return langDict[lang];
+      }
+      return object[property];
+    }
   },
   computed: {
     user() {
@@ -28,15 +35,16 @@ export default {
       if (object.hasOwnProperty('mainEntity')) {
         object = object.mainEntity;
       }
-      if (typeof object.label !== 'undefined') {
-        return object.label;
-      } if (typeof object.prefLabelByLang !== 'undefined' && typeof object.prefLabelByLang[this.user.settings.language] !== 'undefined') {
-        return object.prefLabelByLang[this.user.settings.language];
-      } if (typeof object.labelByLang !== 'undefined' && typeof object.labelByLang[this.user.settings.language] !== 'undefined') {
-        return object.labelByLang[this.user.settings.language];
-      } 
+      const lang = this.user.settings.language;
+      const label =
+        this.getByLang(object, 'prefLabel', lang) ||
+        this.getByLang(object, 'label', lang) ||
+        this.getByLang(object, 'title', lang)
+      if (label) {
+        return label;
+      }
       const idArray = object['@id'].split('/');
-      return `${idArray[idArray.length - 1]} (has no label)`;
+      return `${idArray[idArray.length - 1]} [has no label]`;
     },
     getCompactNumber() {
       return MathUtil.getCompactNumber(this.observation.totalItems);

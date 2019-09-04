@@ -38,7 +38,9 @@ ui_defs = {
         'issuanceType': 'Utgivningssätt',
         'instanceOf.contentType': 'Verksinnehållstyp',
         'instanceOf.language': 'Verksspråk',
-        'publication.date': 'Utgivningsdatum'
+        'publication.date': 'Utgivningsdatum',
+        'inScheme.@id': 'Termsystem',
+        'inCollection.@id': 'Termsamling'
     }
 }
 
@@ -101,6 +103,16 @@ sites = {
                     "size":100
                 },
                 "@type":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
+                },
+                "inScheme.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
+                },
+                "inCollection.@id":{
                     "sort":"value",
                     "sortOrder":"desc",
                     "size":100

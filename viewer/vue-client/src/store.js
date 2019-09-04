@@ -233,7 +233,20 @@ const store = new Vuex.Store({
             order: false,
           },
         },
-
+        inScheme: {
+          sv: 'Termsystem',
+          en: 'Term System',
+          facet: {
+            order: 6,
+          },
+        },
+        inCollection: {
+          sv: 'Termsamling',
+          en: 'Term Collection',
+          facet: {
+            order: 7,
+          },
+        },
       },
       sortOptions: {
         Instance: [
