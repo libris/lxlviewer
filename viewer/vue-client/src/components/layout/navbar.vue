@@ -88,6 +88,7 @@ export default {
           :tabs="tabs"
           :active="$route.name"
           @go="navigate"
+          :link="true"
           lookStyle="background"
           />
         </div>
