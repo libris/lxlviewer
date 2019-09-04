@@ -170,47 +170,6 @@ class DataAccess(object):
         results = self.find_in_whelk(limit=0, stats=statstree)
         return results.get('stats')
 
-    def find_ambiguity(self, request):
-        raise NotImplementedError # FIXME: implement
-        #kws = dict(request.args)
-        #rtype = kws.pop('type', None)
-        #q = kws.pop('q', None)
-        #if q:
-        #    q = " ".join(q)
-        #    #parts = _tokenize(q)
-        #example = {}
-        #if rtype:
-        #    rtype = rtype[0]
-        #    example['@type'] = rtype
-        #if q:
-        #    example['label'] = q
-        #if kws:
-        #    example.update({k: v[0] for k, v in kws.items()})
-        #
-        #def pick_thing(rec):
-        #    for item in rec.data[GRAPH]:
-        #        if rtype in as_iterable(item[TYPE]):
-        #            return item
-        #
-        #maybes  = [pick_thing(rec) #self.get_decorated_data(rec)
-        #           for rec in self.storage.find_by_example(example, # FIXME: use find_in_whelk
-        #                   limit=MAX_LIMIT)]
-        #
-        #some_id = '%s?%s' % (request.path, request.query_string)
-        #item = {
-        #    "@id": some_id,
-        #    "@type": "Ambiguity",
-        #    "label": q or ",".join(example.values()),
-        #    "maybe": maybes
-        #}
-        #
-        #references = self._get_references_to(item)
-        #
-        #if not maybes and not references:
-        #    return None
-        #
-        #return {GRAPH: [item] + references}
-
     def get_site(self, site_id):
         site = sites.get(site_id)
         if not site:
