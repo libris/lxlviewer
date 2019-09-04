@@ -140,7 +140,7 @@ export default {
       <hr v-show="hasActive" v-if="lookStyle === 'underline'" class="TabMenu-underline" ref="underline">
     </ul>
     <ul v-else class="TabMenu-tabList" ref="tablist">
-      <router-link tag="li" class="TabMenu-tab" 
+      <router-link tag="a" class="TabMenu-tab" 
         v-for="item in tabs" :key="item.id"
         tabindex="0"
         :class="{'is-active': active === item.id }" 
