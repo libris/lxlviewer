@@ -113,6 +113,13 @@ export class User {
     this.uriMinter = uriMinter;
   }
 
+  isGlobalRegistrant() {
+    if (this.getPermissions().global_registrant !== true) {
+      return false;
+    }
+    return true;
+  }
+
   verifySigel(sigelCode) {
     // Check if the chosen sigel is in list of permissions.
     let verified = false;

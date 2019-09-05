@@ -61,7 +61,7 @@ export default {
     },
     checkAllDone() {
       const selected = this.directoryCare.selectedHoldings;
-      if (filter(this.progress, o => o !== 'loading').length === selected.length) {
+      if (filter(this.progress, o => o === 'done').length === selected.length) {
         this.allDone();
       }
     },

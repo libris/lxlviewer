@@ -129,6 +129,9 @@ export default {
       return null;
     },
     userHasPermission(holding) {
+      if (this.user.isGlobalRegistrant()) {
+        return true;
+      }
       let heldBy = '';
       if (isObject(holding)) {
         heldBy = holding.heldBy['@id'];

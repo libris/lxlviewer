@@ -445,13 +445,7 @@ export default {
     getPackagedItem(keepEmpty = false) {
       const RecordId = this.inspector.data.record['@id'];
       const recordCopy = cloneDeep(this.inspector.data.record);
-
-      if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
-        recordCopy.descriptionCreator = { '@id': this.user.getActiveLibraryUri() };
-      } else { // ID exists -> update
-        recordCopy.descriptionLastModifier = { '@id': this.user.getActiveLibraryUri() };
-      }
-
+      
       let obj = null;
       if (keepEmpty) {
         obj = DataUtil.getMergedItems(

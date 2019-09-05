@@ -5,6 +5,7 @@ if bytes is not str:
 
 import json
 import operator
+import functools
 import os
 import random
 import re
@@ -89,7 +90,7 @@ app.add_template_global(unicode, 'unicode')
 
 @app.template_global()
 def union(*args):
-    return reduce(lambda a, b: a | b, args)
+    return functools.reduce(lambda a, b: a | b, args)
 
 @app.template_global()
 def format_number(n):
@@ -473,7 +474,8 @@ def convert():
 
 @app.route('/_remotesearch')
 def _remotesearch():
-    return _proxy_request(request, session, query_params=['q', 'databases'])
+    return _proxy_request(request, session, 
+                          query_params=['q', 'databases', 'n', 'start'])
 
 
 def _proxy_request(request, session, json_data=None, query_params=[],

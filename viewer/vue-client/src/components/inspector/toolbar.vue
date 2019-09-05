@@ -375,7 +375,7 @@ export default {
         return false;
       }
       if (mainEntity['@type'] === 'Item') {
-        if (this.isMyHolding) {
+        if (this.isMyHolding || this.user.isGlobalRegistrant()) {
           return true;
         } else {
           return false;
@@ -579,13 +579,13 @@ export default {
             {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindingText('preview-marc') ? ` (${getKeybindingText('preview-marc')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew">
+        <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToEdit">
           <a class="Toolbar-menuLink"  @click="postControl('remove-post')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
           {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
           </a>
         </li>
-        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech">
+        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech && userIsPermittedToEdit">
           <a class="Toolbar-menuLink" @click="openOverridePicker">
           <i class="fa fa-fw fa-upload"></i>
           {{ 'Overwrite data' | translatePhrase }}
