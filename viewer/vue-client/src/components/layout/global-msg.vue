@@ -2,6 +2,11 @@
 
 export default {
   name: 'global-message',
+  data() {
+    return {
+      closedByUser: false,
+    };
+  },
   computed: {
     user() {
       return this.$store.getters.user;
@@ -23,44 +28,62 @@ export default {
 </script>
 
 <template>
-  <div class="GlobalMessage" id="GlobalMessage"
-    v-html="message" 
-    v-bind:class="{'GlobalMessage--warning':this.settings.environment === 'stg'}"
-    v-if="message && message.length > 0">
+  <div class="GlobalMessage" id="GlobalMessage">
+    <div class="GlobalMessage-banner" v-bind:class="{'warning':this.settings.environment === 'stg'}" v-if="!closedByUser && message && message.length > 0">
+      <button @click="closedByUser = true" @keyup.enter="closedByUser = true" class="btn btn-default">{{ 'Close' | translatePhrase }}</button>
+      <div v-html="message"></div>
+    </div>
+    
+    <div class="GlobalMessage-corner" v-if="closedByUser">
+      {{ settings.environment }}
+    </div>
   </div>
 </template>
 
 
 <style lang="less">
 .GlobalMessage {
-  text-align: center;
-  color: white;
-  position: fixed;
-  width: 100%;
-  z-index: 9999;
-  bottom: 0;
-  text-shadow: 0px 1px 1px #00000054;
-  font-weight: bold;
-  background-color: darken(@brand-primary, 5%);
-  border: 1px solid darken(@brand-primary, 10%);
-  border-width: 1px 0px 0px 0px;
-  a {
-    color: white;
+  &-corner {
+    position: fixed;
+    bottom: 0;
+    left: 0.3em;
+    font-size: 5rem;
+    text-shadow: 0.05em 0 #ffffff, 0 0.05em #ffffff, -0.05em 0 #ffffff, 0 -0.05em #ffffff;
+    z-index: 9999;
   }
-
-  &--warning {
-    background-color: @warning;
-    border: @warning-alter;
-    font-size: 20px;
-    font-size: 2.0rem;
-    font-weight: normal;
-    padding: 10px 5px;
-    color: @black;
-    text-shadow: none;
-
+  &-banner {
+    text-align: center;
+    color: white;
+    position: fixed;
+    width: 100%;
+    z-index: 9999;
+    bottom: 0;
+    text-shadow: 0px 1px 1px #00000054;
+    font-weight: bold;
+    background-color: darken(@brand-primary, 5%);
+    border: 1px solid darken(@brand-primary, 10%);
+    border-width: 1px 0px 0px 0px;
     a {
+      color: white;
+    }
+    button {
+      float: right;
+    }
+  
+    & .warning {
+      background-color: @warning;
+      border: @warning-alter;
+      font-size: 20px;
+      font-size: 2.0rem;
+      font-weight: normal;
+      padding: 10px 5px;
       color: @black;
-      text-decoration: underline;
+      text-shadow: none;
+  
+      a {
+        color: @black;
+        text-decoration: underline;
+      }
     }
   }
 }
