@@ -337,8 +337,19 @@ export default {
     },
     checkForAutomaticFixes() {
       // If this is a holding, add the heldBy property
-      if (this.inspector.data.mainEntity['@type'] === 'Item' && !this.inspector.data.mainEntity.hasOwnProperty('heldBy')) {
-        window.lxlWarning(`🚑 Found holding without heldBy property. Adding heldBy value according to active sigel (${this.user.settings.activeSigel}).`);
+      if (this.inspector.data.mainEntity['@type'] === 'Item') {
+        this.checkForMissingHeldBy();
+      }
+    },
+    checkForMissingHeldBy() {
+      const mainEntity = this.inspector.data.mainEntity;
+      if (
+        mainEntity.hasOwnProperty('heldBy') === false
+        && mainEntity.hasOwnProperty('hasComponent') === true
+        && mainEntity.hasComponent.length !== 0
+        && mainEntity.hasComponent[0].hasOwnProperty('heldBy') === true
+      ) {
+        window.lxlWarning(`🚑 Found holding without heldBy property. Adding heldBy found in hasComponent (${this.user.settings.activeSigel}).`);
         this.$store.dispatch('setInspectorStatusValue', {
           property: 'lastAdded', 
           value: 'mainEntity.heldBy',
@@ -346,7 +357,7 @@ export default {
         this.$store.dispatch('updateInspectorData', {
           changeList: [{
             path: 'mainEntity.heldBy',
-            value: { '@id': this.user.getActiveLibraryUri() },
+            value: mainEntity.hasComponent[0].heldBy,
           }],
           addToHistory: false,
         });
