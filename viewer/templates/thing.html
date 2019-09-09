@@ -357,7 +357,7 @@
   % else
     % set t = g.vocab.index[typename] or {}
   % endif
-  % set as_chip = rev or (rel and 'quotedFromGraph' in thing or len(thing) < 2)
+  % set as_chip = (rev or rel) and thing_id
   <${element} class="${classes}{% if as_chip%} link-item{% endif %}"
 
       {% if rel %} property="${rel}"{% endif %}
@@ -406,7 +406,7 @@
               <td>
                 % if k == ID and v[0] != '_'
                   <a href="${view_url(v)}">&lt;${v}&gt;</a>
-                % elif isinstance(v, dict) and len(v) > 1
+                % elif isinstance(v, dict)
                   ${viewthing(v, rel=k)}
                 % elif isinstance(v, list)
                   <ul>
