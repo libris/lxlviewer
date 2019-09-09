@@ -2,7 +2,7 @@
 % import 'search.html' as search
 
 {% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="pagedcollection"{% endblock %}
-{% block title %}${ui.SEARCH_RESULTS.label}{% endblock %}
+{% block title %}${g.ui.SEARCH_RESULTS.label}{% endblock %}
 
 % block content
   % set items = thing['items']
@@ -11,7 +11,7 @@
     <!--% if not request.args.get('@type')-->
     <div class="panel panel-default">
       <div class="panel-body facet-controls">
-      ${ search.facet_controls(thing, ui) }
+      ${ search.facet_controls(thing, g.ui) }
       </div>
     </div>
     <!--% endif-->
@@ -22,7 +22,7 @@
     % if not request.args.get('@type')
     <div class="panel panel-default hidden-md hidden-lg">
       <div class="panel-body facet-controls">
-      ${ search.facet_controls(thing, ui) }
+      ${ search.facet_controls(thing, g.ui) }
       </div>
     </div>
     % endif

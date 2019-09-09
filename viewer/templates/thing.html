@@ -3,7 +3,7 @@
 {% from 'toolbar.html' import toolbar %}
 % from "termutils.html" import vocab_term, termref
 
-{% block title %}${vocab.get_label_for(thing)}{% endblock %}
+{% block title %}${g.vocab.get_label_for(thing)}{% endblock %}
 
 {% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="thing"{% endblock %}
 {% block navcontainerclass %} container {% endblock %}
@@ -21,7 +21,7 @@
         <a href="https://www.kb.se" class="pull-right">
           <img src="/assets/img/kb_logo_black.svg" class="logo-medium" alt="" />
         </a>
-        <h1>${vocab.get_label_for(thing)}</h1>
+        <h1>${g.vocab.get_label_for(thing)}</h1>
         <h3>Andra vyer för samma resurs:</h3>
         <ul>
           % if thing.mainEntity['@id'].startswith('https://id.kb.se/')
@@ -86,7 +86,7 @@
 <div class="thing thing-full">
   ${toolbar(thing, current_user.is_authenticated)}
   <div class="header">
-    <h1>${vocab.get_label_for(thing)}</h1>
+    <h1>${g.vocab.get_label_for(thing)}</h1>
   </div>
   <div class="body">
     ${ thing_data_list(thing) }
@@ -97,7 +97,7 @@
 
 % macro thing_summary(thing)
 
-% set title = vocab.get_label_for(thing)
+% set title = g.vocab.get_label_for(thing)
 % set subtitle = ''
 % if thing.responsibilityStatement
   % set subtitle = thing.responsibilityStatement
@@ -155,7 +155,7 @@
 
 % macro thing_list_item(thing)
 <div class="thing thing-list-item">
-  <span class="title"><a href="${view_url(thing[ID])}">${vocab.get_label_for(thing)}</a></span>
+  <span class="title"><a href="${view_url(thing[ID])}">${g.vocab.get_label_for(thing)}</a></span>
   <span class="class">
     % if isinstance(thing[TYPE], list)
       % for t in thing[TYPE]
@@ -171,7 +171,7 @@
 % macro thing_data_list(thing)
 
 % set node = thing
-% for k in vocab.sortedkeys(node)
+% for k in g.vocab.sortedkeys(node)
 % set v = node[k]
 % set expandedProp = 'instanceOf'
 <div class="data-node rows">
@@ -227,7 +227,7 @@
   <div class="card">
     <div class="header">
       <span class="title">
-        <a href="${object[ID]}">${vocab.get_label_for(object)}</a>
+        <a href="${object[ID]}">${g.vocab.get_label_for(object)}</a>
       </span>
       <span class="type">
         ${vocab_term(object[TYPE])}
@@ -235,14 +235,14 @@
     </div>
     <ul class="card-data">
       % set node = object
-      % for k in vocab.sortedkeys(node)
+      % for k in g.vocab.sortedkeys(node)
       % set v = node[k]
       <li>
         <span class="key">${vocab_term(k)}</span>
           % if isinstance(v, dict) and len(v) > 1
             <span class="value">
               % if not ID in v.keys()
-                ${vocab.get_label_for(v)}
+                ${g.vocab.get_label_for(v)}
               % elif expanded
                 ${thing_chip(v)}
               % else
@@ -255,7 +255,7 @@
                 <li class="card-data-value-row">
                   % if isinstance(sub, dict)
                     % if not ID in sub.keys()
-                      ${vocab.get_label_for(sub)}
+                      ${g.vocab.get_label_for(sub)}
                     % elif expanded
                       ${thing_chip(sub)}
                     % else
@@ -291,7 +291,7 @@
 <div class="chip-container">
   <div class="chip">
     <span class="chip-label">
-      % set label = vocab.get_label_for(object)
+      % set label = g.vocab.get_label_for(object)
       % if ID in object
         <a href="${view_url(object[ID])}">
           ${label}
@@ -353,9 +353,9 @@
   % set thing_id = thing[ID]
   % set typename = thing[TYPE]
   % if isinstance(typename, list)
-    % set t = vocab.index[typename[0]] or vocab.index[typename[1]] or {}
+    % set t = g.vocab.index[typename[0]] or g.vocab.index[typename[1]] or {}
   % else
-    % set t = vocab.index[typename] or {}
+    % set t = g.vocab.index[typename] or {}
   % endif
   % set as_chip = rev or (rel and 'quotedFromGraph' in thing or len(thing) < 2)
   <${element} class="${classes}{% if as_chip%} link-item{% endif %}"
@@ -378,7 +378,7 @@
         </a>
         <h1 class="panel-title">
           <a href="${thing_url}" class="thing-label">
-            % set label = vocab.get_label_for(thing)
+            % set label = g.vocab.get_label_for(thing)
             % if len(label) == 0
               {Etikett saknas}
             % elif isinstance(label, unicode)
@@ -395,10 +395,10 @@
     % if not as_chip
       <div class="panel-body">
         <table class="table">
-          % for k in vocab.sortedkeys(thing)
+          % for k in g.vocab.sortedkeys(thing)
             % set v = thing[k]
-            % if (k in vocab.index or k != REVERSE)
-              % set p = vocab.index[k] or {'curie': k}
+            % if (k in g.vocab.index or k != REVERSE)
+              % set p = g.vocab.index[k] or {'curie': k}
               <tr>
               <td class="term-label">
                 ${termref(p)}

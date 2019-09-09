@@ -182,12 +182,15 @@ daccess = DataAccess(app.config)
 
 app.jinja_env.globals.update({
         'ID': ID,'TYPE': TYPE, 'REVERSE': REVERSE,
-        'vocab': daccess.vocab,
-        'ui': daccess.ui_defs,
-        'lang': daccess.vocab.lang,
-        'page_limit': 50,
         'view_url': lambda uri: daccess.urimap.to_view_url(request.url_root, uri)
-    })
+     })
+
+@app.before_request
+def default_context():
+    g.vocab = daccess.vocab
+    g.ui = daccess.ui_defs
+    g.lang = daccess.vocab.lang
+    g.page_limit = 50
 
 @app.before_request
 def handle_base():
