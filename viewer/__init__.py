@@ -276,15 +276,6 @@ def find(suffix=None):
     return rendered_response('/find', suffix, response)
 
 
-@app.route('/some', methods=R_METHODS)
-@app.route('/some.<suffix>', methods=R_METHODS)
-def some(suffix=None):
-    ambiguity = daccess.find_ambiguity(request)
-    if not ambiguity:
-        return abort(404)
-    return rendered_response('/some', suffix, ambiguity)
-
-
 @app.route('/', methods=R_METHODS)
 @app.route('/data', methods=R_METHODS)
 @app.route('/data.<suffix>', methods=R_METHODS)
