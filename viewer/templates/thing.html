@@ -379,13 +379,11 @@
         <h1 class="panel-title">
           <a href="${thing_url}" class="thing-label">
             % set label = g.vocab.get_label_for(thing)
-            % if len(label) == 0
-              {Etikett saknas}
-            % elif isinstance(label, unicode)
+            % if isinstance(label, unicode)
               ${label}
             % else
               {# label is sometimes an object, resolve this in a propper way when data content is known #}
-              ${jsonToList(label)}
+              ${show_json(label)}
             % endif
           </a>
         </h1>
@@ -436,10 +434,10 @@
 % endmacro
 
 {# Macro to render random json to a html list #}
-% macro jsonToList(json)
+% macro show_json(json)
   % if isinstance(value, unicode)
     ${json}
-  % else
+  % elif isinstance(value, dict)
     % for key, value in json.items()
       <dl class="raw-json-list">
       % if isinstance(value, dict)
@@ -447,7 +445,7 @@
           ${key}
         </dt>
         <dd>
-          ${jsonToList(value)}
+          ${show_json(value)}
         </dd>
       % elif isinstance(value, list)
         <dt>
