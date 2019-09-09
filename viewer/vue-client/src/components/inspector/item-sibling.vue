@@ -115,7 +115,7 @@ export default {
     },
     extractedItem() {
       const newRecord = {};
-      newRecord.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+      newRecord.descriptionCreator = { '@id': this.user.getActiveLibraryUri() };
       const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity, newRecord);
       return objAsRecord;
     },

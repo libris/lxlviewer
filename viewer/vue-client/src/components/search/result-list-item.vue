@@ -60,7 +60,7 @@ export default {
       );
     },
     isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.focusData['@id'], this.settings);
+      return StringUtil.isLibrisResourceUri(this.focusData.meta['@id'], this.settings);
     },
     encodingLevel() {
       if (this.focusData.hasOwnProperty('meta')) {
@@ -90,12 +90,10 @@ export default {
       @hiddenDetailsNumber="setHiddenDetailsNumber"
       :focus-data="focusData" 
       :database="database" 
-      :router-path="focusData['@id'] | asFnurgelLink" 
       :is-import="isImport" 
       :import-item="importItem" 
       :exclude-components="isImport ? ['id'] : []"
       :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
-      :add-link="true" 
       @import-this="importThis()"
       :valueDisplayLimit=3
       :encodingLevel="encodingLevel">
@@ -128,7 +126,7 @@ export default {
       <router-link class="ResultItem-link"
         v-if="isLibrisResource && !isImport"  
         :title="header.join(', ')" 
-        :to="focusData['@id'] | asFnurgelLink">{{ header.join(', ') }}
+        :to="focusData.meta['@id'] | asFnurgelLink">{{ header.join(', ') }}
       </router-link>
       <a class="ResultItem-link"
         v-if="!isLibrisResource && !isImport" 

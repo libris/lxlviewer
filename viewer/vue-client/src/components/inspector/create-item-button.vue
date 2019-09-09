@@ -53,7 +53,7 @@ export default {
 
       this.itemData = RecordUtil.getItemObject(
         this.mainEntity['@id'],
-        `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
+        this.user.getActiveLibraryUri(),
         embellishedReference,
       );
 

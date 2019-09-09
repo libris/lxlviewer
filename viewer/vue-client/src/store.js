@@ -233,7 +233,20 @@ const store = new Vuex.Store({
             order: false,
           },
         },
-
+        inScheme: {
+          sv: 'Termsystem',
+          en: 'Term System',
+          facet: {
+            order: 6,
+          },
+        },
+        inCollection: {
+          sv: 'Termsamling',
+          en: 'Term Collection',
+          facet: {
+            order: 7,
+          },
+        },
       },
       sortOptions: {
         Instance: [
@@ -510,23 +523,26 @@ const store = new Vuex.Store({
     verifyUser({ commit, state }) {
       return new Promise((resolve, reject) => {
         if (state.user.isLoggedIn === true && state.user.hasTokenExpired() === false) {
-          return resolve();
+          resolve();
+          return;
         }
         const token = localStorage.getItem('at');
         let userObj = User.getUserObject();
         if (token !== null) {
           const headers = new Headers();
-          const url = state.settings.authPath;
+          const authUrl = state.settings.authPath;
           headers.append('Authorization', `Bearer ${token}`);
-          fetch(url, {
+          fetch(authUrl, {
             headers,
             method: 'GET',
           }).then(response => response.json()).then((result) => {
             userObj = User.getUserObject(result.user);
             userObj.token = token;
             userObj.token_expires_at = result.expires_at;
-            commit('setUser', userObj);
-            return resolve();
+            userObj.loadUserData(state.settings.apiPath).then(() => {
+              commit('setUser', userObj);
+              resolve();
+            });
           }, (error) => {
             localStorage.removeItem('at');
             commit('setUser', userObj);
@@ -539,7 +555,7 @@ const store = new Vuex.Store({
         }
       });
     },
-    logoutUser({ commit, state }) {
+    logoutUser({ commit }) {
       const userObj = User.getUserObject();
       localStorage.removeItem('at');
       localStorage.removeItem('lastPath');

@@ -79,7 +79,7 @@ export default {
           // Check if my sigel has holding
           const myHoldingQuery = Object.assign({}, query);
           myHoldingQuery._limit = 1;
-          myHoldingQuery['heldBy.@id'] = `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
+          myHoldingQuery['heldBy.@id'] = this.user.getActiveLibraryUri();
           this.getRelatedPosts(myHoldingQuery)
             .then((response) => {
               if (response.totalItems > 0) {
@@ -132,7 +132,7 @@ export default {
       return this.myHolding !== null;
     },
     libraryUrl() {
-      return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
+      return this.user.getActiveLibraryUri();
     },
     recordType() {
       return VocabUtil.getRecordType(

@@ -370,15 +370,22 @@ export default {
       );
     },
     userIsPermittedToEdit() {
+      const mainEntity = this.inspector.data.mainEntity;
       if (this.user.isLoggedIn === false) {
         return false;
       }
-      if (this.inspector.data.mainEntity['@type'] === 'Item') {
+      if (mainEntity['@type'] === 'Item') {
         if (this.isMyHolding || this.user.isGlobalRegistrant()) {
           return true;
         } else {
           return false;
         }
+      } else if (VocabUtil.isSubClassOf(mainEntity['@type'], 'Concept',
+                  this.resources.vocab, this.resources.context) &&
+        (!this.user.uriMinter ||
+          !this.user.uriMinter.findContainerForEntity(mainEntity,
+            { '@id': this.user.getActiveLibraryUri() }))) {
+        return false;
       } else {
         return true;
       }
@@ -391,7 +398,7 @@ export default {
       return typeof a.download !== 'undefined';
     },
     activeSigelId() {
-      return `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
+      return this.user.getActiveLibraryUri();
     },
     compileMARCUrl() {
       let focusId = this.inspector.data.record['@id'];
@@ -458,7 +465,7 @@ export default {
         v-show="otherFormatMenuActive"
         @click="hideOtherFormatMenu" >
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="focusData['@id']" target="_blank">
+          <a class="Toolbar-menuLink" :href="focusData.mainEntity['@id']" target="_blank">
             <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
             Formell resurs</a>
         </li>

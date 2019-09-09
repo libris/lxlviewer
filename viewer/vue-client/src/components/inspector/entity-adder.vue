@@ -468,7 +468,7 @@ export default {
       // If this is a holding, add the heldBy property
       if (obj['@type'] === 'Item') {
         obj.heldBy = {
-          '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
+          '@id': this.user.getActiveLibraryUri(),
         };
       }
 

@@ -1,5 +1,15 @@
 import { each, find } from 'lodash-es';
 import * as md5 from 'md5';
+import URIMinter from '@/utils/uriminter';
+
+async function createUriMinter(findContainerUrl) {
+  const found = await (await fetch(findContainerUrl)).json();
+  return found.items ? new URIMinter(found.items) : null;
+}
+
+function getLibraryUri(sigel) {
+  return `https://libris.kb.se/library/${sigel}`;
+}
 
 export class User {
   constructor(fullName = 'anonymous', shortName = '', email = '', collections = []) {
@@ -21,6 +31,7 @@ export class User {
       searchType: null,
       sort: false,
     };
+    this.uriMinter = null;
   }
 
   hasAnyCollections() {
@@ -88,6 +99,18 @@ export class User {
       return this.collections[0];
     }
     return find(this.collections, o => o.code === this.settings.activeSigel);
+  }
+
+  getActiveLibraryUri() {
+    return getLibraryUri(this.settings.activeSigel);
+  }
+
+  async loadUserData(apiPath) {
+    const findUrl = `${apiPath}/find.json?@type=EntityContainer&${
+      this.collections.map(it => `administeredBy.@id=${getLibraryUri(it.code)}`).join('&')
+    }`;
+    const uriMinter = await createUriMinter(findUrl);
+    this.uriMinter = uriMinter;
   }
 
   isGlobalRegistrant() {

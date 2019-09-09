@@ -346,9 +346,7 @@ export default {
         this.$store.dispatch('updateInspectorData', {
           changeList: [{
             path: 'mainEntity.heldBy',
-            value: {
-            '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
-            },
+            value: { '@id': this.user.getActiveLibraryUri() },
           }],
           addToHistory: false,
         });
@@ -447,7 +445,7 @@ export default {
     getPackagedItem(keepEmpty = false) {
       const RecordId = this.inspector.data.record['@id'];
       const recordCopy = cloneDeep(this.inspector.data.record);
-
+      
       let obj = null;
       if (keepEmpty) {
         obj = DataUtil.getMergedItems(
@@ -462,6 +460,10 @@ export default {
           DataUtil.removeNullValues(this.inspector.data.work),
         );
       }
+      if (this.user.uriMinter) {
+        this.user.uriMinter.assignUri(obj, { '@id': this.user.getActiveLibraryUri() });
+      }
+
       return obj;
     },
     duplicateItem() {
@@ -475,7 +477,17 @@ export default {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
 
       const RecordId = this.inspector.data.record['@id'];
-      const obj = this.getPackagedItem();
+      let obj = null;
+      try {
+        obj = this.getPackagedItem();
+      } catch (e) {
+        const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.settings.language);
+        const errorMessage = `${StringUtil.getUiPhraseByLang(e.message, this.settings.language)}`;
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        return;
+      }
+
       const ETag = this.documentETag;
 
       if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
