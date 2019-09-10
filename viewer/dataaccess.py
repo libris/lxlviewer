@@ -142,8 +142,13 @@ class DataAccess(object):
         self.ui_defs = ui_defs
         self.urimap = UriMap(config.get('BASE_URI_ALIAS') or {})
         self._api_base = config['WHELK_REST_API_URL']
+        self._vocab = None
 
-        self.vocab = self.setup_vocab_view()
+    @property
+    def vocab(self):
+        if not self._vocab: # TODO: or cache time is up...
+            self._vocab = self.setup_vocab_view()
+        return self._vocab
 
     @property
     def jsonld_context_data(self):

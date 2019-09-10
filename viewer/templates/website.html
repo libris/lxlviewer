@@ -52,7 +52,7 @@
                   % set ref = obs.object.label
                 % endif
                 <a class="list-group-item" href="#${ref}">
-                  ${obs.object.label or obs.object.titleByLang[lang]}
+                  ${obs.object.label or obs.object.titleByLang[g.lang]}
                 </a>
               % endif
             % endfor
@@ -141,7 +141,7 @@
       <div class="panel-body container-fluid">
         <!-- <p class="description collapsed">
           % if 'descriptionByLang' in obs.object
-          ${ obs.object.descriptionByLang[lang].strip().replace('\n','<br/>') | safe }
+          ${ obs.object.descriptionByLang[g.lang].strip().replace('\n','<br/>') | safe }
           % endif
         </p> -->
         % if obs.sliceByDimension
@@ -175,11 +175,11 @@
 % endmacro
 
 % macro show_label(obj)
-  % set obj = vocab.get_term_dfn(obj[ID]) or obj
+  % set obj = g.vocab.get_term_dfn(obj[ID]) or obj
   % if obj.titleByLang
-    ${obj.titleByLang[lang]}
+    ${obj.titleByLang[g.lang]}
   % elif obj.labelByLang
-    ${obj.labelByLang[lang]}
+    ${obj.labelByLang[g.lang]}
   % elif obj.label
     ${obj.label}
   % elif obj.notation
