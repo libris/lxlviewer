@@ -2582,6 +2582,107 @@
           "scopeNote": [""]
         }
       }
+    },
+    "children-GenreForm": {
+      "label": "Genre/form",
+      "description": "saogf",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }]
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "GenreForm",
+          "closeMatch": [{
+            "@type": "GenreForm",
+            "inScheme": {
+              "@id": "https://id.kb.se/term/lcsh"
+            },
+            "prefLabel": "",
+            "termComponentList": [{
+              "@type": "GenreForm",
+              "prefLabel": ""
+            }]
+          }],
+          "inScheme": {
+            "@id": "https://id.kb.se/term/barngf"
+          },
+          "prefLabel": "",
+          "scopeNote": [
+            "Genre/formterm."
+          ]
+        }
+      }
+    },
+    "children-Topic": {
+      "label": "Allmänt ämnesord",
+      "description": "barn",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionConventions": {
+            "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
+          },
+          "marc:level": {
+            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
+          },
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }],
+          "sourceConsulted": []
+        },
+        "mainEntity": {
+          "@type": "Topic",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/barn"
+          },
+          "prefLabel": "",
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "http://dewey.info/scheme/edition/e23/swe/",
+                "version": "23",
+                "language": "swe"
+              }
+            },
+            {
+              "@type": "Topic",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/lcsh"
+              },
+              "prefLabel": "",
+              "@id": "http://id.loc.gov/authorities/label/LCSH"
+            }
+          ],
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "related": [],
+          "scopeNote": [
+            ""
+          ],
+          "historyNote": [
+            ""
+          ]
+        }
+      }
     }
   }
 }
