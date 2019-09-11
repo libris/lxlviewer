@@ -2436,11 +2436,7 @@
           },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
-          }],
-          "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:subjectHeading": {
-            "@id": "https://id.kb.se/marc/Other"
-          }
+          }]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
@@ -2448,9 +2444,7 @@
           "closeMatch": [{
             "@type": "GenreForm",
             "inScheme": {
-              "@id": "https://id.kb.se/term/lcsh",
-              "@type": "ConceptScheme",
-              "code": "lcsh"
+              "@id": "https://id.kb.se/term/lcsh"
             },
             "prefLabel": "",
             "termComponentList": [{
@@ -2479,13 +2473,8 @@
             "@id": "https://id.kb.se/TEMPID#it"
           },
           "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
-          }],
-          "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:subjectHeading": {
-            "@id": "https://id.kb.se/marc/Other"
-          }
+            "@id": "https://id.kb.se/language/swe"
+          }]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
@@ -2493,9 +2482,7 @@
           "prefLabel": "",
           "closeMatch": [],
           "inScheme": {
-            "@id": "https://id.kb.se/term/sao",
-            "@type": "ConceptScheme",
-            "notation": "sao"
+            "@id": "https://id.kb.se/term/sao"
           },
           "scopeNote": [""]
         }
@@ -2511,12 +2498,8 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "encodingLevel": "marc:CompleteAuthorityRecord",
           "descriptionConventions": {
             "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
-          },
-          "marc:subjectHeading": {
-            "@id": "https://id.kb.se/marc/Other"
           },
           "marc:level": {
             "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
@@ -2524,10 +2507,7 @@
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
-          "source": [{
-            "@type": "Instance",
-            "label": "Källa"
-          }]
+          "sourceConsulted": []
         },
         "mainEntity": {
           "@type": "Topic",
@@ -2536,7 +2516,7 @@
             "@id": "https://id.kb.se/term/sao"
           },
           "inCollection": [{
-            "@id": "https://id.kb.se/term/Fack"
+            "@id": "https://id.kb.se/term/fack"
           }],
           "prefLabel": "",
           "closeMatch": [{
@@ -2553,8 +2533,7 @@
               "@type": "Topic",
               "inScheme": {
                 "@type": "ConceptScheme",
-                "@id": "https://id.kb.se/term/lcsh",
-                "code": "lcsh"
+                "@id": "https://id.kb.se/term/lcsh"
               },
               "prefLabel": "",
               "@id": "http://id.loc.gov/authorities/label/LCSH"
@@ -2589,14 +2568,7 @@
           },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
-          }],
-          "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:subjectSubdivision": {
-            "@id": "https://id.kb.se/marc/Topical"
-          },
-          "marc:subjectHeading": {
-            "@id": "https://id.kb.se/marc/Other"
-          }
+          }]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
