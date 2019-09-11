@@ -256,6 +256,10 @@
     "@type": "Dimensions",
     "label": ""
   },
+  "Duration": {
+    "@type": "Duration",
+    "value": ""
+  },
   "Note": {
     "@type": "Note",
     "label": ""
