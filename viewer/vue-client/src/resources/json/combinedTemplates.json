@@ -2498,12 +2498,6 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionConventions": {
-            "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
-          },
-          "marc:level": {
-            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
-          },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
@@ -2519,7 +2513,8 @@
             "@id": "https://id.kb.se/term/fack"
           }],
           "prefLabel": "",
-          "closeMatch": [{
+          "closeMatch": [
+            {
               "@type": "ClassificationDdc",
               "code": "",
               "inScheme": {
@@ -2562,9 +2557,6 @@
           "@type": "Record",
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
-          },
-          "descriptionConventions": {
-            "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
           },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
@@ -2622,7 +2614,7 @@
       }
     },
     "children-Topic": {
-      "label": "Allmänt ämnesord",
+      "label": "Barnämnesord",
       "description": "barn",
       "value": {
         "record": {
@@ -2631,16 +2623,9 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionConventions": {
-            "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
-          },
-          "marc:level": {
-            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
-          },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
-          }],
-          "sourceConsulted": []
+          }]
         },
         "mainEntity": {
           "@type": "Topic",
