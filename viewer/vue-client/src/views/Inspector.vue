@@ -460,7 +460,9 @@ export default {
           DataUtil.removeNullValues(this.inspector.data.work),
         );
       }
-      if (this.user.uriMinter) {
+      if (this.user.uriMinter &&
+          VocabUtil.isSubClassOf(this.inspector.data.mainEntity['@type'], 'Concept',
+                                 this.resources.vocab, this.resources.context)) {
         this.user.uriMinter.assignUri(obj, { '@id': this.user.getActiveLibraryUri() });
       }
 
