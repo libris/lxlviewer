@@ -2425,7 +2425,7 @@
   },
   "concept": {
     "genreForm": {
-      "label": "Genre/form",
+      "label": "Genre och form",
       "description": "saogf",
       "value": {
         "record": {
@@ -2575,8 +2575,8 @@
       }
     },
     "children-GenreForm": {
-      "label": "Genre/form",
-      "description": "saogf",
+      "label": "Barn - Genre och form",
+      "description": "barngf",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
