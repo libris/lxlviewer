@@ -2530,8 +2530,7 @@
                 "@type": "ConceptScheme",
                 "@id": "https://id.kb.se/term/lcsh"
               },
-              "prefLabel": "",
-              "@id": "http://id.loc.gov/authorities/label/LCSH"
+              "prefLabel": ""
             }
           ],
           "altLabel": [
@@ -2651,8 +2650,7 @@
                 "@type": "ConceptScheme",
                 "@id": "https://id.kb.se/term/lcsh"
               },
-              "prefLabel": "",
-              "@id": "http://id.loc.gov/authorities/label/LCSH"
+              "prefLabel": ""
             }
           ],
           "altLabel": [
