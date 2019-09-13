@@ -2436,11 +2436,7 @@
           },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
-          }],
-          "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:subjectHeading": {
-            "@id": "https://id.kb.se/marc/Other"
-          }
+          }]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
@@ -2448,9 +2444,7 @@
           "closeMatch": [{
             "@type": "GenreForm",
             "inScheme": {
-              "@id": "https://id.kb.se/term/lcsh",
-              "@type": "ConceptScheme",
-              "code": "lcsh"
+              "@id": "https://id.kb.se/term/lcsh"
             },
             "prefLabel": "",
             "termComponentList": [{
@@ -2479,13 +2473,8 @@
             "@id": "https://id.kb.se/TEMPID#it"
           },
           "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
-          }],
-          "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:subjectHeading": {
-            "@id": "https://id.kb.se/marc/Other"
-          }
+            "@id": "https://id.kb.se/language/swe"
+          }]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
@@ -2493,9 +2482,7 @@
           "prefLabel": "",
           "closeMatch": [],
           "inScheme": {
-            "@id": "https://id.kb.se/term/sao",
-            "@type": "ConceptScheme",
-            "notation": "sao"
+            "@id": "https://id.kb.se/term/sao"
           },
           "scopeNote": [""]
         }
@@ -2511,23 +2498,10 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "encodingLevel": "marc:CompleteAuthorityRecord",
-          "descriptionConventions": {
-            "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
-          },
-          "marc:subjectHeading": {
-            "@id": "https://id.kb.se/marc/Other"
-          },
-          "marc:level": {
-            "@id": "https://id.kb.se/marc/FullyEstablishedHeading"
-          },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
-          "source": [{
-            "@type": "Instance",
-            "label": "Källa"
-          }]
+          "sourceConsulted": []
         },
         "mainEntity": {
           "@type": "Topic",
@@ -2536,10 +2510,11 @@
             "@id": "https://id.kb.se/term/sao"
           },
           "inCollection": [{
-            "@id": "https://id.kb.se/term/Fack"
+            "@id": "https://id.kb.se/term/fack"
           }],
           "prefLabel": "",
-          "closeMatch": [{
+          "closeMatch": [
+            {
               "@type": "ClassificationDdc",
               "code": "",
               "inScheme": {
@@ -2553,11 +2528,9 @@
               "@type": "Topic",
               "inScheme": {
                 "@type": "ConceptScheme",
-                "@id": "https://id.kb.se/term/lcsh",
-                "code": "lcsh"
+                "@id": "https://id.kb.se/term/lcsh"
               },
-              "prefLabel": "",
-              "@id": "http://id.loc.gov/authorities/label/LCSH"
+              "prefLabel": ""
             }
           ],
           "altLabel": [
@@ -2584,19 +2557,9 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionConventions": {
-            "@id": "https://id.kb.se/marc/CatalogingRulesType-c"
-          },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
-          }],
-          "encodingLevel": "marc:CompleteAuthorityRecord",
-          "marc:subjectSubdivision": {
-            "@id": "https://id.kb.se/marc/Topical"
-          },
-          "marc:subjectHeading": {
-            "@id": "https://id.kb.se/marc/Other"
-          }
+          }]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
@@ -2608,6 +2571,99 @@
             "@id": "https://id.kb.se/term/sao"
           },
           "scopeNote": [""]
+        }
+      }
+    },
+    "children-GenreForm": {
+      "label": "Genre/form",
+      "description": "saogf",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }]
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "GenreForm",
+          "closeMatch": [{
+            "@type": "GenreForm",
+            "inScheme": {
+              "@id": "https://id.kb.se/term/lcsh"
+            },
+            "prefLabel": "",
+            "termComponentList": [{
+              "@type": "GenreForm",
+              "prefLabel": ""
+            }]
+          }],
+          "inScheme": {
+            "@id": "https://id.kb.se/term/barngf"
+          },
+          "prefLabel": "",
+          "scopeNote": [
+            "Genre/formterm."
+          ]
+        }
+      }
+    },
+    "children-Topic": {
+      "label": "Barnämnesord",
+      "description": "barn",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": [{
+            "@id": "https://id.kb.se/language/swe"
+          }]
+        },
+        "mainEntity": {
+          "@type": "Topic",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/barn"
+          },
+          "prefLabel": "",
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "http://dewey.info/scheme/edition/e23/swe/",
+                "version": "23",
+                "language": "swe"
+              }
+            },
+            {
+              "@type": "Topic",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/lcsh"
+              },
+              "prefLabel": ""
+            }
+          ],
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "related": [],
+          "scopeNote": [
+            ""
+          ],
+          "historyNote": [
+            ""
+          ]
         }
       }
     }
