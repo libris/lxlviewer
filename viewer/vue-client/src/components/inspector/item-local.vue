@@ -156,10 +156,6 @@ export default {
     formObj() {
       return this.item;
     },
-    typeLabel() {
-      const label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
-      return label;
-    },
     isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
@@ -435,7 +431,7 @@ export default {
         <i class="ItemLocal-arrow fa fa-chevron-right" 
           :class="{'icon is-disabled' : isEmpty}"></i>
         <span class="ItemLocal-type"
-          :title="typeLabel">{{ typeLabel | capitalize }}:</span>
+          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
         <span class="ItemLocal-collapsedLabel">
           <span class="ItemLocal-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>
