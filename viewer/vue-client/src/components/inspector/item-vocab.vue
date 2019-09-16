@@ -25,6 +25,10 @@ export default {
       type: String,
       default: '',
     },
+    asDropdown: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {
@@ -116,7 +120,9 @@ export default {
 <template>
   <div class="ItemVocab" :id="`formPath-${path}`" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked && possibleValues.length > 0">
+
       <select 
+        v-if="asDropdown"
         v-model="selected" 
         class="ItemVocab-select customSelect" 
         :aria-label="fieldKey | labelByLang">
@@ -125,7 +131,25 @@ export default {
           :key="option"
           v-bind:value="option">{{ option | labelByLang }}</option>
       </select>
-    </div>
+
+      <div class="ItemVocab-radioPills" v-else>
+        <span
+          v-for="option in possibleValues"
+          :key="option"
+          class="RadioPillsItem">
+          <input 
+            v-model="selected"
+            v-bind:value="option"
+            v-bind:id="option"
+            type="radio" 
+            name="radios">
+          <label
+            v-bind:for="option">{{ option | labelByLang }}</label>
+          <br>
+        </span>
+      </div>
+
+    </div>    
     <span class="ItemVocab-text" 
       v-if="isLocked">{{fieldValue | labelByLang}}</span>
   </div>
@@ -147,6 +171,15 @@ export default {
     width: 100%;
     margin-top: 0.2em;
   }
+
+  &-radioPills {
+
+  }
+}
+
+.RadioPillsItem {
+
+
 }
 
 </style>
