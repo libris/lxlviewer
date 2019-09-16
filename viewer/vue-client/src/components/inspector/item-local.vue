@@ -255,21 +255,21 @@ export default {
           }, (error) => {
             this.$store.dispatch('pushNotification', { 
               type: 'danger', 
-              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`,
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error}`,
             });
             this.closeExtractDialog();
           });
         } else {
           this.$store.dispatch('pushNotification', { 
             type: 'danger', 
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)}`,
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}`,
           });
           this.closeExtractDialog();
         }
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
           type: 'danger', 
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`,
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error}`,
         });
         this.closeExtractDialog();
       });
@@ -308,7 +308,7 @@ export default {
         ],
         addToHistory: false,
       });
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language)}` });
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
@@ -350,7 +350,7 @@ export default {
       const userStorage = cloneDeep(this.userStorage);
       userStorage.copyClipboard = this.item;
       this.$store.dispatch('setUserStorage', userStorage);
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.settings.language)}` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.user.settings.language)}` });
     },
   },
   watch: {

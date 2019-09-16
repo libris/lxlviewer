@@ -227,8 +227,8 @@ export default {
     },
     propertyComment() {
       if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
-        if (this.keyAsVocabProperty.commentByLang[this.settings.language]) {
-          return this.keyAsVocabProperty.commentByLang[this.settings.language];
+        if (this.keyAsVocabProperty.commentByLang[this.user.settings.language]) {
+          return this.keyAsVocabProperty.commentByLang[this.user.settings.language];
         } 
         return this.keyAsVocabProperty.commentByLang[0];
       } 

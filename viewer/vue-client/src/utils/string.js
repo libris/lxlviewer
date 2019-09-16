@@ -235,11 +235,11 @@ export function formatLabel(obj) {
   return label;
 }
 
-export function getFormattedEntries(list, vocab, settings, context) {
+export function getFormattedEntries(list, vocab, language, context) {
   let formatted = [];
   for (const entry of list) {
     if (translateable(entry.property)) {
-      formatted = formatted.concat(entry.value.map(obj => getLabelByLang(obj, settings.language, vocab, context)));
+      formatted = formatted.concat(entry.value.map(obj => getLabelByLang(obj, language, vocab, context)));
     } else {
       formatted = formatted.concat(entry.value);
     }

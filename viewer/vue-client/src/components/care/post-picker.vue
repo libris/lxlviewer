@@ -43,6 +43,7 @@ export default {
     ...mapGetters([
       'directoryCare',
       'userCare',
+      'user',
       'resources',
       'inspector',
       'settings',
@@ -61,7 +62,7 @@ export default {
         const header = StringUtil.getFormattedEntries(
           headerList, 
           this.resources.vocab, 
-          this.settings, 
+          this.user.settings.language,
           this.resources.context,
         ).join(', ');
         return { '@id': instance['@id'], header };
