@@ -93,7 +93,7 @@ export default {
       const possibleValues = [];
       each(this.range, (item) => {
         const type = StringUtil.getCompactUri(item, this.resources.context);
-        values = values.concat(VocabUtil.getTermByType(type, this.resources.vocab, this.resources.context, this.settings));
+        values = values.concat(VocabUtil.getTermByType(type, this.resources.vocab, this.resources.context, this.settings));        
       });
       values = uniq(values);
       each(values, (value) => {
@@ -113,6 +113,7 @@ export default {
     },
   },
   components: {
+
   },
 };
 </script>
@@ -131,25 +132,29 @@ export default {
           :key="option"
           v-bind:value="option">{{ option | labelByLang }}</option>
       </select>
-
-      <div class="ItemVocab-radioPills" v-else>
-        <span
+      <fieldset v-else>
+        <div
           v-for="option in possibleValues"
           :key="option"
-          class="RadioPillsItem">
+          v-tooltip.top="option"
+          class="RadioPill">          
           <input 
             v-model="selected"
             v-bind:value="option"
             v-bind:id="option"
+            class="RadioPill-input"
             type="radio" 
             name="radios">
           <label
-            v-bind:for="option">{{ option | labelByLang }}</label>
-          <br>
-        </span>
-      </div>
+            v-bind:for="option"            
+            class="RadioPill-label">
+            <i class="fa fa-check icon icon--sm"></i>
+            {{ option | labelByLang }}</label>
+        </div>
+      </fieldset>
 
-    </div>    
+    </div>  
+
     <span class="ItemVocab-text" 
       v-if="isLocked">{{fieldValue | labelByLang}}</span>
   </div>
@@ -171,15 +176,57 @@ export default {
     width: 100%;
     margin-top: 0.2em;
   }
-
-  &-radioPills {
-
-  }
 }
 
-.RadioPillsItem {
+.RadioPill {
+  display: inline-block;
+  position: relative;
+  margin: 2px 5px 5px 0px;
 
+  &-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: none;
+    cursor: pointer;
+    border: 2px solid;
+    height: 100%;
+    left: 0;
+    opacity: .00001;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+  }
 
+  &-label {
+    display: block;    
+    height: 33px;
+    background-color: @grey-lightest;
+    border: 1px solid transparent;
+    color: @grey-dark;
+    border-radius: 2em;
+    line-height: 1.6;
+    padding: 3px 14px;
+    margin: 0;    
+    font-weight: 400;
+
+    .icon {
+      display: none;
+    }
+  }
+
+  
+  &-input:checked + &-label:hover,
+  &-input:checked + &-label {
+    background: @brand-primary;
+    color: @grey-lightest;
+
+    .icon {
+      display: inline-block;
+      color: @grey-lightest !important;
+    }
+  }
 }
 
 </style>
