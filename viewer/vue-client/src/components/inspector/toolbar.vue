@@ -110,7 +110,7 @@ export default {
       } else {
         this.$store.dispatch('pushNotification', {
           type: 'danger',
-          message: StringUtil.getUiPhraseByLang('New data @id does not match existing @id', this.settings.language),
+          message: StringUtil.getUiPhraseByLang('New data @id does not match existing @id', this.user.settings.language),
         });
       }
     },
@@ -297,7 +297,7 @@ export default {
       HttpUtil.get({ url: this.compileMARCUrl }).then((response) => {
         this.download(response);
       }, (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.settings.language)}` });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.user.settings.language)}` });
       });
     },
     handleCopy() {

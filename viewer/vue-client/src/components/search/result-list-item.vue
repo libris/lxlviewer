@@ -47,7 +47,7 @@ export default {
       return StringUtil.getFormattedEntries(
         this.getSummary.categorization, 
         this.resources.vocab, 
-        this.settings, 
+        this.user.settings.language,
         this.resources.context,
       );
     },
@@ -55,7 +55,7 @@ export default {
       return StringUtil.getFormattedEntries(
         this.getSummary.header, 
         this.resources.vocab, 
-        this.settings, 
+        this.user.settings.language,
         this.resources.context,
       );
     },

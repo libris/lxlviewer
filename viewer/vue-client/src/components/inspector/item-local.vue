@@ -156,10 +156,6 @@ export default {
     formObj() {
       return this.item;
     },
-    typeLabel() {
-      const label = StringUtil.getLabelByLang(this.item['@type'], this.settings.language, this.resources.vocab, this.resources.context);
-      return label;
-    },
     isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
@@ -259,21 +255,21 @@ export default {
           }, (error) => {
             this.$store.dispatch('pushNotification', { 
               type: 'danger', 
-              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`,
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error}`,
             });
             this.closeExtractDialog();
           });
         } else {
           this.$store.dispatch('pushNotification', { 
             type: 'danger', 
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)}`,
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}`,
           });
           this.closeExtractDialog();
         }
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
           type: 'danger', 
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}`,
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error}`,
         });
         this.closeExtractDialog();
       });
@@ -312,7 +308,7 @@ export default {
         ],
         addToHistory: false,
       });
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language)}` });
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
@@ -354,7 +350,7 @@ export default {
       const userStorage = cloneDeep(this.userStorage);
       userStorage.copyClipboard = this.item;
       this.$store.dispatch('setUserStorage', userStorage);
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.settings.language)}` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.user.settings.language)}` });
     },
   },
   watch: {
@@ -435,7 +431,7 @@ export default {
         <i class="ItemLocal-arrow fa fa-chevron-right" 
           :class="{'icon is-disabled' : isEmpty}"></i>
         <span class="ItemLocal-type"
-          :title="typeLabel">{{ typeLabel | capitalize }}:</span>
+          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
         <span class="ItemLocal-collapsedLabel">
           <span class="ItemLocal-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
           <span class="placeholder"> </span>

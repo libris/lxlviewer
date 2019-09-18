@@ -76,7 +76,7 @@ export default {
     compactSummary() {
       let summary = [];
       each(this.getSummary, (summaryArray) => {
-        summary = summary.concat(StringUtil.getFormattedEntries(summaryArray, this.resources.vocab, this.settings, this.resources.context));
+        summary = summary.concat(StringUtil.getFormattedEntries(summaryArray, this.resources.vocab, this.user.settings.language, this.resources.context));
       });
       return summary.join(' • ');
     },

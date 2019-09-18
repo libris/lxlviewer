@@ -48,7 +48,7 @@ export default {
                 .filter(obs => obs.object['@id'] === item.object['@id']);
               if (match.length === 1) {
                 const prop = match[0].object.prefLabelByLang || match[0].object.labelByLang;
-                label = prop[this.settings.language];
+                label = prop[this.user.settings.language];
               } else label = item.object['@id'];
             } else if (item.hasOwnProperty('object')) label = item.object['@id']; // else try to translate object[@id]...
             return {

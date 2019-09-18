@@ -93,16 +93,16 @@ export default {
     },
     windowTitle() {
       if (this.listContextType === 'Item') {
-        return StringUtil.getUiPhraseByLang('All holdings', this.settings.language);
+        return StringUtil.getUiPhraseByLang('All holdings', this.user.settings.language);
       } if (this.listContextType === 'Instance') {
-        let windowTitle = StringUtil.getUiPhraseByLang('Holdings of', this.settings.language);
+        let windowTitle = StringUtil.getUiPhraseByLang('Holdings of', this.user.settings.language);
         windowTitle += ` ${this.itemOfTitle}`;
         return windowTitle;
       } if (this.listContextType === 'Agent') {
-        return StringUtil.getUiPhraseByLang('Contribution', this.settings.language);
+        return StringUtil.getUiPhraseByLang('Contribution', this.user.settings.language);
       }
-      const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.settings.language, this.resources.vocab, this.resources.context);
-      return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.settings.language)}`;
+      const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.user.settings.language, this.resources.vocab, this.resources.context);
+      return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.user.settings.language)}`;
     },
     itemOfTitle() {
       return DisplayUtil.getItemLabel(this.itemOf, this.resources.display, null, this.resources.vocab, this.settings, this.resources.context);

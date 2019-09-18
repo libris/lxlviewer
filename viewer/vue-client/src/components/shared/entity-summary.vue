@@ -177,7 +177,7 @@ export default {
       return StringUtil.getFormattedEntries(
         this.getSummary.categorization, 
         this.resources.vocab, 
-        this.settings, 
+        this.user.settings.language,
         this.resources.context,
       );
     },
@@ -185,7 +185,7 @@ export default {
       return StringUtil.getFormattedEntries(
         this.getSummary.header, 
         this.resources.vocab, 
-        this.settings, 
+        this.user.settings.language,
         this.resources.context,
       );
     },
@@ -193,7 +193,7 @@ export default {
       return StringUtil.getFormattedEntries(
         this.getSummary.info, 
         this.resources.vocab, 
-        this.settings, 
+        this.user.settings.language,
         this.resources.context,
       );
     },
@@ -201,13 +201,13 @@ export default {
       let allThings = StringUtil.getFormattedEntries(
         this.getSummary.info, 
         this.resources.vocab, 
-        this.settings, 
+        this.user.settings.language,
         this.resources.context,
       );
       allThings = allThings.concat(StringUtil.getFormattedEntries(
         this.getSummary.sub, 
         this.resources.vocab, 
-        this.settings, 
+        this.user.settings.language,
         this.resources.context,
       ));
       return allThings;
