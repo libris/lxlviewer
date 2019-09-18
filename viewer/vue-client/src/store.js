@@ -394,6 +394,9 @@ const store = new Vuex.Store({
     },
     setUser(state, userObj) {
       state.user = userObj;
+      // Sync user language with app language
+      state.settings.language = state.user.settings.language;
+      // Sync user settings with localstorage
       state.user.saveSettings();
     },
     setUserStorage(state, data) {
