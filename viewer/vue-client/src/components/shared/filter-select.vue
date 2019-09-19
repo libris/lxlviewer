@@ -58,7 +58,7 @@ export default {
       return this.$store.getters.settings;
     },
     translatedPlaceholder() {
-      return StringUtil.getUiPhraseByLang(this.customPlaceholder, this.user.settings.language);
+      return StringUtil.getUiPhraseByLang(this.customPlaceholder, this.settings.language);
     },
   },
   methods: {
