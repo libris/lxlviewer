@@ -27,8 +27,8 @@ export default {
     },
     asDropdown: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   data() {
     return {
