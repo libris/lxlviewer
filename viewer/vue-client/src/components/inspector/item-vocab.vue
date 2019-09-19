@@ -241,7 +241,8 @@ export default {
   }
 
   .user-is-tabbing &-input:focus + label { 
-    box-shadow: 0px 0px 12px @brand-primary;
+    outline: 2px solid #8cc9c9;
+    outline: auto darkcyan;
   }
 }
 
