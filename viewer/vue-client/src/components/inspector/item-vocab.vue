@@ -85,7 +85,7 @@ export default {
           addToHistory: true,
         });
       }
-    },
+    },    
   },
   methods: {
     getPossibleValues() {
@@ -106,6 +106,18 @@ export default {
         this.resources.context,
       ));
     },
+    setTooltipComment(value) {      
+      const termObject = VocabUtil.getTermObject(value, this.resources.vocab, this.resources.context);      
+
+      if (termObject && termObject.commentByLang) {
+        if (termObject.commentByLang[this.settings.language]) {
+          return termObject.commentByLang[this.settings.language];
+        } 
+        return termObject.commentByLang[0];
+      }
+
+      return '';
+    },
     setInitialValue() {
       // if (this.possibleValues.indexOf(this.fieldValue) > -1) {
       //   this.selected = this.fieldValue;
@@ -121,7 +133,7 @@ export default {
 <template>
   <div class="ItemVocab" :id="`formPath-${path}`" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked && possibleValues.length > 0">
-
+      <!-- render as dropdown -->
       <select 
         v-if="asDropdown"
         v-model="selected" 
@@ -132,21 +144,22 @@ export default {
           :key="option"
           v-bind:value="option">{{ option | labelByLang }}</option>
       </select>
+      <!-- render as radiobuttons -->
       <fieldset v-else>
         <div
           v-for="option in possibleValues"
           :key="option"
-          v-tooltip.top="option"
+          v-tooltip.top="setTooltipComment(option)"
           class="RadioPill">          
           <input 
             v-model="selected"
             v-bind:value="option"
-            v-bind:id="option"
+            v-bind:id="option"                 
             class="RadioPill-input"
             type="radio" 
             name="radios">
           <label
-            v-bind:for="option"            
+            v-bind:for="option"                
             class="RadioPill-label">
             <i class="fa fa-check icon icon--sm"></i>
             {{ option | labelByLang }}</label>
@@ -216,7 +229,6 @@ export default {
     }
   }
 
-  
   &-input:checked + &-label:hover,
   &-input:checked + &-label {
     background: @brand-primary;
@@ -226,6 +238,10 @@ export default {
       display: inline-block;
       color: @grey-lightest !important;
     }
+  }
+
+  .user-is-tabbing &-input:focus + label { 
+    box-shadow: 0px 0px 12px @brand-primary;
   }
 }
 
