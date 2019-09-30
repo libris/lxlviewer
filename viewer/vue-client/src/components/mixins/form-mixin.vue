@@ -32,7 +32,7 @@ export default {
       return this.formObj['@type'];
     },
     showTypeChanger() {
-      if (typeof this.item !== 'undefined' && this.item['@id'] === this.inspector.data.work['@id']) {
+      if (typeof this.item !== 'undefined' && this.inspector.data.work && this.item['@id'] === this.inspector.data.work['@id']) {
         return true;
       }
       if (this.isMainEntityForm === false || this.isHolding) {
