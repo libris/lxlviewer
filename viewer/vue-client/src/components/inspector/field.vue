@@ -697,6 +697,7 @@ export default {
         <!-- Other linked resources -->
         <item-vocab
           v-if="getDatatype(item) == 'vocab'" 
+          :as-dropdown="fieldKey !== 'encodingLevel'"
           :is-locked="locked" 
           :field-key="fieldKey" 
           :parent-range="rangeFull"
@@ -765,6 +766,7 @@ export default {
         <!-- Other linked resources -->
         <item-vocab 
           v-if="getDatatype(item) == 'vocab'" 
+          :as-dropdown="fieldKey !== 'encodingLevel'"
           :is-locked="locked" :field-key="fieldKey" 
           :field-value="item" 
           :entity-type="entityType" 
