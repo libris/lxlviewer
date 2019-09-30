@@ -102,7 +102,7 @@ export default {
     <div v-if="!isLocked && checkingRelations">
       <vue-simple-spinner size="small"></vue-simple-spinner>
     </div>
-    <div v-if="!isLocked && !checkingRelations && possibleValues.length > 0">
+    <div class="ItemType-selectContainer" v-if="!isLocked && !checkingRelations && possibleValues.length > 0">
       <select 
         :disabled="isDisabled"
         v-model="selected" 
@@ -113,7 +113,7 @@ export default {
           :key="option"
           v-bind:value="option">{{ option | labelByLang }}</option>
       </select>
-      <i class="fa fa-lock icon icon-sm" tabindex="0" v-tooltip.top="unlockTooltip" @keyup.enter="openUnlockModal()" @click="openUnlockModal()" v-if="isDisabled"></i>
+      <i class="ItemType-lockIcon fa fa-lock icon icon-sm" tabindex="0" v-tooltip.top="unlockTooltip" @keyup.enter="openUnlockModal()" @click="openUnlockModal()" v-if="isDisabled"></i>
     </div>
     <span class="ItemType-text" 
       v-if="isLocked">{{fieldValue | labelByLang}}
@@ -149,8 +149,19 @@ export default {
     word-break: break-word;
   }
 
+  &-selectContainer {
+    display: flex;
+    align-items: center;
+  }
+
+  &-lockIcon {
+    flex-grow: 1;
+  }
+
   &-select {
+    flex-grow: 1;
     margin-top: 0.2em;
+    margin-right: 0.5em;
     display: inline-block;
     &:disabled {
       opacity: 0.5;
