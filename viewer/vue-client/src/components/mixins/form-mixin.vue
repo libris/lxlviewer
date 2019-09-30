@@ -75,7 +75,7 @@ export default {
         }
       });
       remove(propertyList, k => (this.settings.hiddenProperties.indexOf(k) !== -1));
-      if (this.isMainEntityForm) {
+      if (this.showTypeChanger) {
         propertyList = ['@type'].concat(propertyList);
       }
       return propertyList;
