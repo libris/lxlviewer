@@ -2452,9 +2452,7 @@
             "@id": "https://id.kb.se/term/saogf"
           },
           "prefLabel": "",
-          "scopeNote": [
-            "Genre/formterm."
-          ]
+          "scopeNote": [""]
         }
       }
     },
@@ -2626,9 +2624,7 @@
             "@id": "https://id.kb.se/term/barngf"
           },
           "prefLabel": "",
-          "scopeNote": [
-            "Genre/formterm."
-          ]
+          "scopeNote": [""]
         }
       }
     },
