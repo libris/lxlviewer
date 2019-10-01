@@ -2414,7 +2414,7 @@
   },
   "concept": {
     "genreForm": {
-      "label": "Genre och form",
+      "label": "Genre/formterm",
       "description": "saogf",
       "value": {
         "record": {
@@ -2586,7 +2586,7 @@
       }
     },
     "children-GenreForm": {
-      "label": "Barn - Genre och form",
+      "label": "Barn - Genre/formterm",
       "description": "barngf",
       "value": {
         "record": {
