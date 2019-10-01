@@ -2447,6 +2447,7 @@
           "inScheme": {
             "@id": "https://id.kb.se/term/saogf"
           },
+          "inCollection": [],
           "prefLabel": "",
           "broader": [],
           "scopeNote": [""]
