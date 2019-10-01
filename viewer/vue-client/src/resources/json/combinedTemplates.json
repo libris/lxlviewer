@@ -2653,26 +2653,6 @@
             "@id": "https://id.kb.se/term/barn"
           },
           "prefLabel": "",
-          "closeMatch": [
-            {
-              "@type": "ClassificationDdc",
-              "code": "",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "http://dewey.info/scheme/edition/e23/swe/",
-                "version": "23",
-                "language": "swe"
-              }
-            },
-            {
-              "@type": "Topic",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "https://id.kb.se/term/lcsh"
-              },
-              "prefLabel": ""
-            }
-          ],
           "altLabel": [
             ""
           ],
