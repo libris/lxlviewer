@@ -2440,7 +2440,7 @@
           "closeMatch": [{
             "@type": "GenreForm",
             "inScheme": {
-              "@id": "https://id.kb.se/term/lcsh"
+              "@id": "https://id.kb.se/term/lcgft"
             },
             "prefLabel": "",
             "termComponentList": [{
@@ -2612,13 +2612,9 @@
           "closeMatch": [{
             "@type": "GenreForm",
             "inScheme": {
-              "@id": "https://id.kb.se/term/lcsh"
+              "@id": "https://id.kb.se/term/lcgft"
             },
-            "prefLabel": "",
-            "termComponentList": [{
-              "@type": "GenreForm",
-              "prefLabel": ""
-            }]
+            "prefLabel": ""
           }],
           "inScheme": {
             "@id": "https://id.kb.se/term/barngf"
