@@ -2425,7 +2425,14 @@
           },
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
-          }]
+          }],
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
@@ -2490,7 +2497,13 @@
           "descriptionLanguage": [{
             "@id": "https://id.kb.se/language/swe"
           }],
-          "sourceConsulted": []
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
         },
         "mainEntity": {
           "@type": "Topic",
@@ -2546,9 +2559,18 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe"
-          }]
+          "descriptionLanguage": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
@@ -2573,9 +2595,18 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionLanguage": [{
+          "descriptionLanguage": [
+            {
             "@id": "https://id.kb.se/language/swe"
-          }]
+            }
+          ],
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
@@ -2611,9 +2642,18 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionLanguage": [{
+          "descriptionLanguage": [
+            {
             "@id": "https://id.kb.se/language/swe"
-          }]
+            }
+          ],
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
         },
         "mainEntity": {
           "@type": "Topic",
