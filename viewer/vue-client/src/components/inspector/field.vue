@@ -449,6 +449,7 @@ export default {
           return true;
         }
         if (o['@id'] === `${this.inspector.data.record['@id']}#it`) {
+          // Check if entity link points to local mainEntity by fnurgel
           return true;
         }
         if (o['@id'].indexOf(recordId) > -1) {
