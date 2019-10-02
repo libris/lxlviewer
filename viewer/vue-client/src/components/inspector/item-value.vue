@@ -109,8 +109,13 @@ export default {
       e.target.blur();
       return false;
     },
+    readyForSave(value) {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
+    },
     update(newValue) {
       const oldValue = cloneDeep(get(this.inspector.data, this.path));
+
+      this.readyForSave(true);
       if (newValue !== oldValue) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
@@ -175,7 +180,9 @@ export default {
       rows="1" 
       v-model="value"
       :aria-label="fieldKey | labelByLang"
+      @focus="readyForSave(false)"
       @blur="update($event.target.value)"
+      @keydown.exact="readyForSave(false)"
       @keydown.enter.prevent="handleEnter"
       v-if="!isLocked"
       ref="textarea"></textarea>
