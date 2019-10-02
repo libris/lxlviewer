@@ -105,7 +105,11 @@ export default {
       return item;
     },
     suffix() {
-      return this.id.split('#')[1];
+      const s = this.id.split('#')[1];
+      if (s === 'it') {
+        return 'mainEntity';
+      }
+      return s;
     },
     canCopyTitle() {
       if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
@@ -409,7 +413,7 @@ export default {
             role="button"
             :aria-label="'Link entity' | translatePhrase"
             tabindex="0"
-            v-if="inspector.status.editing && !isEmbedded"
+            v-if="inspector.status.editing && !isEmbedded && !isLocked"
             @click="openExtractDialog(), expand()"
             @keyup.enter="openExtractDialog(), expand()"
             @focus="showLinkAction = true, actionHighlight($event, true)"
