@@ -25,11 +25,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -224,11 +222,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -397,11 +393,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -599,11 +593,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -803,11 +795,9 @@
               "@id": "https://id.kb.se/marc/Isbd"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "encodingLevel": "marc:MinimalLevel",
           "hasNote": [
             {
@@ -995,11 +985,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -1201,11 +1189,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -1379,11 +1365,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -1510,11 +1494,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -1850,11 +1832,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -2059,11 +2039,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
@@ -2241,10 +2219,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
-          }],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "cataloguersNote": [""],
           "sourceConsulted": []
         },
@@ -2306,10 +2283,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [{
-            "@id": "https://id.kb.se/language/swe",
-            "code": "swe"
-          }],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "cataloguersNote": [""],
           "sourceConsulted": []
         },
@@ -2371,9 +2347,9 @@
               "code": "rda"
             }
           ],
-          "descriptionLanguage": [{
+          "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
-          }],
+          },
           "cataloguersNote": [""],
           "sourceConsulted": [],
           "marc:personalName": {
@@ -2423,9 +2399,9 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionLanguage": [{
+          "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
-          }],
+          },
           "sourceConsulted": [
             {
               "@type": "SourceData",
@@ -2467,9 +2443,9 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionLanguage": [{
+          "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
-          }]
+          }
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
@@ -2493,9 +2469,9 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionLanguage": [{
+          "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
-          }],
+          },
           "sourceConsulted": [
             {
               "@type": "SourceData",
@@ -2558,11 +2534,9 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionLanguage": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
           "sourceConsulted": [
             {
               "@type": "SourceData",
@@ -2594,11 +2568,9 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionLanguage": [
-            {
+          "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          },
           "sourceConsulted": [
             {
               "@type": "SourceData",
@@ -2639,11 +2611,9 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionLanguage": [
-            {
+          "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          },
           "sourceConsulted": [
             {
               "@type": "SourceData",
