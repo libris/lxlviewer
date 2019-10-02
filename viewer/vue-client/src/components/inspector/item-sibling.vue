@@ -94,7 +94,7 @@ export default {
       'status',
     ]),
     item() {
-      const item = cloneDeep(this.inspector.data[this.suffix]);
+      const item = cloneDeep(this.inspector.data[this.fragmentId]);
       if (typeof item === 'undefined' || item === null) {
         this.$store.dispatch('pushNotification', {
           type: 'danger',
@@ -104,7 +104,7 @@ export default {
       }
       return item;
     },
-    suffix() {
+    fragmentId() {
       const s = this.id.split('#')[1];
       if (s === 'it') {
         return 'mainEntity';
@@ -148,7 +148,7 @@ export default {
       return false;
     },
     getPath() {
-      return this.suffix;
+      return this.fragmentId;
     },
     isEmpty() {
       let bEmpty = true;
