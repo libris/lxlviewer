@@ -413,13 +413,11 @@ export default {
       if (VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
+      if (this.isPlainObject(o) && o.hasOwnProperty('@id') && this.isInGraph(o)) {
+        return 'sibling';
+      }
       if (this.isPlainObject(o) && this.isLinked(o)) {
         return 'entity';
-      }
-      if (
-        this.isPlainObject(o) && o.hasOwnProperty('@id') && o['@id'].indexOf(this.inspector.data.record['@id']) > -1
-      ) {
-        return 'sibling';
       }
       if (this.isPlainObject(o) && !this.isLinked(o)) {
         return 'local';
@@ -438,10 +436,15 @@ export default {
       }
       const recordId = this.inspector.data.record['@id'];
       if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
-        if (o['@id'].indexOf(recordId) > -1) {
-          return false;
-        }
         return true;
+      }
+      return false;
+    },
+    isInGraph(o) {
+      for (const point in this.inspector.data) {
+        if (this.inspector.data[point]['@id'] === o['@id']) {
+          return true;
+        }
       }
       return false;
     },
