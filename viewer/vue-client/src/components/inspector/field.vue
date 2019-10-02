@@ -448,6 +448,9 @@ export default {
         if (o['@id'] === this.inspector.data.mainEntity['@id']) {
           return true;
         }
+        if (o['@id'] === `${this.inspector.data.record['@id']}#it`) {
+          return true;
+        }
         if (o['@id'].indexOf(recordId) > -1) {
           return false;
         }
