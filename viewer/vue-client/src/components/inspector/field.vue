@@ -414,7 +414,6 @@ export default {
         return 'vocab';
       }
       if (this.isPlainObject(o) && this.isLinked(o)) {
-      // if (this.isPlainObject(o) && this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) === -1) {
         return 'entity';
       }
       if (
@@ -422,13 +421,7 @@ export default {
       ) {
         return 'sibling';
       }
-      if (
-        this.isPlainObject(o)
-        && (
-          !this.isLinked(o)
-        // || (this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) !== -1)
-        )
-      ) {
+      if (this.isPlainObject(o) && !this.isLinked(o)) {
         return 'local';
       }
       if (!this.isPlainObject(o) && !this.isLinked(o)) {
@@ -445,13 +438,6 @@ export default {
       }
       const recordId = this.inspector.data.record['@id'];
       if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
-        if (o['@id'] === this.inspector.data.mainEntity['@id']) {
-          return true;
-        }
-        if (o['@id'] === `${this.inspector.data.record['@id']}#it`) {
-          // Check if entity link points to local mainEntity by fnurgel
-          return true;
-        }
         if (o['@id'].indexOf(recordId) > -1) {
           return false;
         }
