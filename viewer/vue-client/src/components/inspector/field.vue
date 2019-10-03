@@ -441,9 +441,12 @@ export default {
       return false;
     },
     isInGraph(o) {
-      for (const point in this.inspector.data) {
-        if (this.inspector.data[point]['@id'] === o['@id']) {
-          return true;
+      const data = this.inspector.data;
+      for (const point in data) {
+        if (data[point] !== null) {
+          if (data[point]['@id'] === o['@id']) {
+            return true;
+          }
         }
       }
       return false;
