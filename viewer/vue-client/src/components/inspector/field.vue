@@ -413,22 +413,13 @@ export default {
       if (VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
-      if (this.isPlainObject(o) && this.isLinked(o)) {
-      // if (this.isPlainObject(o) && this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) === -1) {
-        return 'entity';
-      }
-      if (
-        this.isPlainObject(o) && o.hasOwnProperty('@id') && o['@id'].indexOf(this.inspector.data.record['@id']) > -1
-      ) {
+      if (this.isPlainObject(o) && o.hasOwnProperty('@id') && this.isInGraph(o)) {
         return 'sibling';
       }
-      if (
-        this.isPlainObject(o)
-        && (
-          !this.isLinked(o)
-        // || (this.isLinked(o) && o['@id'].indexOf(this.editorData.record['@id']) !== -1)
-        )
-      ) {
+      if (this.isPlainObject(o) && this.isLinked(o)) {
+        return 'entity';
+      }
+      if (this.isPlainObject(o) && !this.isLinked(o)) {
         return 'local';
       }
       if (!this.isPlainObject(o) && !this.isLinked(o)) {
@@ -445,13 +436,18 @@ export default {
       }
       const recordId = this.inspector.data.record['@id'];
       if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
-        if (o['@id'] === this.inspector.data.mainEntity['@id']) {
-          return true;
-        }
-        if (o['@id'].indexOf(recordId) > -1) {
-          return false;
-        }
         return true;
+      }
+      return false;
+    },
+    isInGraph(o) {
+      const data = this.inspector.data;
+      for (const point in data) {
+        if (data[point] !== null) {
+          if (data[point]['@id'] === o['@id']) {
+            return true;
+          }
+        }
       }
       return false;
     },
