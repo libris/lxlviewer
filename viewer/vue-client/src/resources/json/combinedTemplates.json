@@ -2548,11 +2548,35 @@
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Temporal",
           "prefLabel": "",
+          "altLabel": [
+            ""
+          ],
           "broadMatch": [],
-          "closeMatch": [],
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "http://dewey.info/scheme/edition/e23/swe/",
+                "version": "23",
+                "language": "swe"
+              }
+            },
+            {
+              "@type": "Topic",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/lcsh"
+              },
+              "prefLabel": ""
+            }
+          ],
           "inScheme": {
             "@id": "https://id.kb.se/term/sao"
           },
+          "historyNote": [
+            ""
+          ],
           "scopeNote": [""]
         }
       }
@@ -2581,13 +2605,6 @@
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "GenreForm",
-          "closeMatch": [{
-            "@type": "GenreForm",
-            "inScheme": {
-              "@id": "https://id.kb.se/term/lcgft"
-            },
-            "prefLabel": ""
-          }],
           "inScheme": {
             "@id": "https://id.kb.se/term/barngf"
           },
@@ -2595,7 +2612,9 @@
           "altLabel": [
             ""
           ],
-          "broader": [],
+          "historyNote": [
+            ""
+          ],
           "scopeNote": [""]
         }
       }
