@@ -2605,13 +2605,6 @@
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "GenreForm",
-          "closeMatch": [{
-            "@type": "GenreForm",
-            "inScheme": {
-              "@id": "https://id.kb.se/term/lcgft"
-            },
-            "prefLabel": ""
-          }],
           "inScheme": {
             "@id": "https://id.kb.se/term/barngf"
           },
@@ -2619,7 +2612,9 @@
           "altLabel": [
             ""
           ],
-          "broader": [],
+          "historyNote": [
+            ""
+          ],
           "scopeNote": [""]
         }
       }
