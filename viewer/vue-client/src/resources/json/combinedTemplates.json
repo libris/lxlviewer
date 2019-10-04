@@ -2504,7 +2504,6 @@
             {
               "@type": "Topic",
               "inScheme": {
-                "@type": "ConceptScheme",
                 "@id": "https://id.kb.se/term/lcsh"
               },
               "prefLabel": ""
