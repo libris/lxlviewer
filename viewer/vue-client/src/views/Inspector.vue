@@ -613,11 +613,9 @@ export default {
             break;
           case 'save-record':
             this.saveQueued = () => {this.saveItem()};
-            // this.saveItem();
             break;
           case 'save-record-done':
             this.saveQueued = () => {this.saveItem(true)};
-            // this.saveItem(true);
             break;
           case 'open-marc-preview':
             this.openMarcPreview();
