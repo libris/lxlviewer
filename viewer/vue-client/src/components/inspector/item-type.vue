@@ -113,7 +113,11 @@ export default {
           :key="option"
           v-bind:value="option">{{ option | labelByLang }}</option>
       </select>
-      <i class="ItemType-lockIcon fa fa-lock icon icon-sm" tabindex="0" v-tooltip.top="unlockTooltip" @keyup.enter="openUnlockModal()" @click="openUnlockModal()" v-if="isDisabled"></i>
+      <div class="ItemType-actions">
+        <div class="ItemType-action UnlockAction">
+          <i role="button" class="fa fa-lock icon icon--sm" tabindex="0" aria-label="Unlock" v-tooltip.top="unlockTooltip" @keyup.enter="openUnlockModal()" @click="openUnlockModal()" v-if="isDisabled"></i>
+        </div>
+      </div>
     </div>
     <span class="ItemType-text" 
       v-if="isLocked">{{fieldValue | labelByLang}}
@@ -140,6 +144,7 @@ export default {
 <style lang="less">
 
 .ItemType {
+  flex-grow: 1;
   &.is-locked {
     line-height: 2;
     // padding-left: 5px;
@@ -154,17 +159,22 @@ export default {
     align-items: center;
   }
 
-  &-lockIcon {
+  &-actions {
     flex-grow: 1;
+    text-align: right;
+  }
+  &-action {
+    display: inline-block;
+    padding: 0 0.25em;
   }
 
   &-select {
-    flex-grow: 1;
+    width: auto;
     margin-top: 0.2em;
     margin-right: 0.5em;
     display: inline-block;
     &:disabled {
-      opacity: 0.5;
+      opacity: 0.7;
     }
   }
 }
