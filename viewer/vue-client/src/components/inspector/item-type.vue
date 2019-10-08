@@ -45,7 +45,7 @@ export default {
     openUnlockModal() {
       this.unlockModalOpen = true;
       setTimeout(() => {
-        this.$refs.cancelUnlockButton.focus();
+        this.$refs.unlockButton.focus();
       }, 200);
     },
     closeUnlockModal() {
@@ -122,19 +122,28 @@ export default {
     <span class="ItemType-text" 
       v-if="isLocked">{{fieldValue | labelByLang}}
     </span>
-    <modal-component title="Warning" modal-type="warning" @close="closeUnlockModal()" class="ChangeTypeWarningModal" 
+    <modal-component 
+      title="Byte av typ" 
+      modal-type="warning" 
+      class="ChangeTypeWarningModal" 
+      :width="'570px'"
+      @close="closeUnlockModal()"
       v-if="unlockModalOpen">
       <div slot="modal-body" class="ChangeTypeWarningModal-body">
         <p>
-          Posten används som länk i <strong>{{ numberOfRelations }}</strong> {{ numberOfRelations === 1 ? 'annan post' : 'andra poster' }}.
+          <strong>{{ numberOfRelations }} {{ numberOfRelations === 1 ? 'annan entitet' : 'andra entiteter' }}</strong> länkar till denna entitet.
         </p>
         <p>
-          Observera att byte av typ kan påverka datan hos dessa andra entiter. Om du är osäker på konsekvenserna av detta, tryck avbryt.
+          Observera att byte av typ kommer att påverka betydelsen av de beskrivningar som länkar hit.
         </p>
-        <p><strong>Vill du låsa upp byte av typ för denna post?</strong></p>
-        <div class="ChangeTypeWarningModal-buttonContainer">
-          <button class="btn btn-warning btn--md" @click="unlockEdit()">{{ 'Yes' | translatePhrase }}, {{ 'Unlock' | translatePhrase | lowercase }}</button>
-          <button class="btn btn-gray btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ 'No' | translatePhrase }}, {{ 'Cancel' | translatePhrase | lowercase }}</button>
+        <p><a href="https://libris.kb.se/katalogisering/help" target="_blank">Läs mer om byte av typ på hjälpsidorna</a></p>
+        <div class="ChangeTypeWarningModal-buttonContainer">          
+          <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">{{ 'Cancel' | translatePhrase }}</button>
+          <!-- <button class="btn btn-gray btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ 'Cancel' | translatePhrase }}</button> -->
+          <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
+            <i class="icon icon--white fa fa-unlock-alt"></i>
+            {{ 'Unlock' | translatePhrase }}
+          </button>
         </div>
       </div>
     </modal-component>
@@ -185,12 +194,13 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 15px 45px;
+    padding: 24px 16px 15px 16px;
   }
   &-buttonContainer {
-    margin: 10px 0;
+    text-align: right;
+    margin: 20px 0 0 0;
     & > * {
-      margin-right: 15px;
+      margin-left: 12px;
     }
   }
 }
