@@ -55,6 +55,7 @@ export default {
       postLoaded: false,
       modalOpen: false,
       removeInProgress: false,
+      saveQueued: null,
       loadFailure: null,
       marcPreview: {
         data: null,
@@ -622,10 +623,10 @@ export default {
             this.openRemoveModal();
             break;
           case 'save-record':
-            this.saveItem();
+            this.saveQueued = () => {this.saveItem()};
             break;
           case 'save-record-done':
-            this.saveItem(true);
+            this.saveQueued = () => {this.saveItem(true)};
             break;
           case 'open-marc-preview':
             this.openMarcPreview();
@@ -638,6 +639,12 @@ export default {
         this.toggleEmbellishFromIdModal(true);
       } else if (val.name === 'apply-override') {
         this.applyOverride(val.value);
+      }
+    },
+    isReadyForSave: function(val) {
+      if (val) {
+        this.saveQueued();
+        this.saveQueued = null;
       }
     },
   },
@@ -654,6 +661,12 @@ export default {
       'userCare',
       'userFavorites',
     ]),
+    isReadyForSave() {
+      if (this.saveQueued && this.inspector.status.readyForSave) {
+        return true;
+      }
+      return false;
+    },
     unsavedChanges() {
       if (this.$route.name === 'NewDocument') {
         return true;
