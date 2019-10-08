@@ -229,7 +229,10 @@ export default {
     }
   }
 
-  &-input:checked + &-label:hover,
+  &-input:hover + &-label {
+    color: @black;
+  }
+  
   &-input:checked + &-label {
     background: @brand-primary;
     color: @grey-lightest;
