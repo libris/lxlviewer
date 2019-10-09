@@ -134,9 +134,9 @@ export default {
           <strong>{{ numberOfRelations }} {{ numberOfRelations === 1 ? 'annan entitet' : 'andra entiteter' }}</strong> länkar till denna entitet.
         </p>
         <p>
-          Observera att byte av typ kommer att påverka betydelsen av de beskrivningar som länkar hit.
+          Observera att byte av typ kan påverka de beskrivningar som länkar hit. Om du är osäker på konsekvenserna bör du ta del av hjälptexten innan du fortsätter.
         </p>
-        <p><a href="https://libris.kb.se/katalogisering/help" target="_blank">Läs mer om byte av typ på hjälpsidorna</a></p>
+        <p><a href="https://libris.kb.se/katalogisering/help/use-the-editor" target="_blank">Läs mer om byte av typ</a></p>
         <div class="ChangeTypeWarningModal-buttonContainer">          
           <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">{{ 'Cancel' | translatePhrase }}</button>
           <!-- <button class="btn btn-gray btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ 'Cancel' | translatePhrase }}</button> -->
