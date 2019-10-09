@@ -754,6 +754,7 @@ export default {
           v-for="tab in editorTabs"
           :editing-object="tab.id" 
           :key="tab.id"
+          :is-main-entity-form="tab.id === 'mainEntity'"
           :locked="!inspector.status.editing">
         </entity-form>
       </div>

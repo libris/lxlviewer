@@ -2,6 +2,7 @@
 import { each } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as MathUtil from '@/utils/math';
+import * as HttpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 import CreateItemButton from '@/components/inspector/create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
@@ -42,26 +43,6 @@ export default {
       this.relationsListOpen = false;
       this.$parent.$el.classList.remove('is-highlighted');
     },
-    getRelatedPosts(queryPairs) {
-      // Returns a list of posts that links to <id> with <property>
-      return new Promise((resolve, reject) => {
-        let relatedPosts = `${this.settings.apiPath}/find.json?`;
-        each(queryPairs, (v, k) => {
-          relatedPosts += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
-        });
-        fetch(relatedPosts)
-          .then((response) => {
-            if (response.status === 200) {
-              resolve(response.json());
-            } else {
-              reject();
-            }
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
-    },
     getRelationsInfo() {
       this.checkingRelations = true;
       const timeoutLength = 1100; // Needed so that the index has time to update 
@@ -80,7 +61,7 @@ export default {
           const myHoldingQuery = Object.assign({}, query);
           myHoldingQuery._limit = 1;
           myHoldingQuery['heldBy.@id'] = this.user.getActiveLibraryUri();
-          this.getRelatedPosts(myHoldingQuery)
+          HttpUtil.getRelatedPosts(myHoldingQuery, this.settings.apiPath)
             .then((response) => {
               if (response.totalItems > 0) {
                 this.myHolding = response.items[0]['@id'];
@@ -102,7 +83,8 @@ export default {
           // Sort panel query by alphabetical order of sigel id
           this.panelQuery._sort = 'heldBy.@id';
         }
-        this.getRelatedPosts(query).then((response) => {
+        HttpUtil.getRelatedPosts(query, this.settings.apiPath)
+          .then((response) => {
           this.relationInfo = response.items;
           this.numberOfRelations = response.totalItems;
           this.checkingRelations = false;
