@@ -255,6 +255,12 @@ button {
   }
 }
 
+.btn {
+  .icon {
+    color: @white !important;
+  }
+}
+
 .btn,
 .btn[disabled] {
   border: 0;
@@ -282,7 +288,7 @@ button {
   &.btn-light {
     opacity: 0.7;
     box-shadow: none;
-  }
+  }  
 }
 
 .btn-primary {
@@ -313,6 +319,15 @@ button {
   &:hover {
     color: lighten(@black, 15%);
     background-color: darken(@white, 10%);
+  }
+}
+
+&.btn-hollow {
+  background-color: transparent;
+  &:focus,
+  &:hover {
+    color: lighten(@black, 15%);
+    background-color: darken(@white, 5%);
   }
 }
 
@@ -347,6 +362,11 @@ button {
     padding: 0.25em 0.5em;
     min-width: 0;
   }
+
+  .icon {
+    margin-right: 8px;
+  }
+
   @media screen and (max-width: @screen-sm-min){
     .btn--sm
   }
@@ -356,6 +376,10 @@ button {
   .btn-mixin(150px, 26px, 13px);
   padding: 3px 10px;
   box-shadow: none;
+}
+
+.btn--auto {
+  min-width: auto;
 }
 
 @import (css) url(//fonts.googleapis.com/css?family=Open+Sans:600);

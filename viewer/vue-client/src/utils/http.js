@@ -1,3 +1,5 @@
+import { each } from 'lodash-es';
+
 function request(opts, data) {
   // method, url, token, accept
   const options = opts;
@@ -77,6 +79,27 @@ function request(opts, data) {
     } else {
       req.send(JSON.stringify(data));
     }
+  });
+}
+
+export function getRelatedPosts(queryPairs, apiPath) {
+  // Returns a list of posts that links to <id> with <property>
+  return new Promise((resolve, reject) => {
+    let relatedPosts = `${apiPath}/find.json?`;
+    each(queryPairs, (v, k) => {
+      relatedPosts += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
+    });
+    fetch(relatedPosts)
+      .then((response) => {
+        if (response.status === 200) {
+          resolve(response.json());
+        } else {
+          reject();
+        }
+      })
+      .catch((error) => {
+        reject(error);
+      });
   });
 }
 

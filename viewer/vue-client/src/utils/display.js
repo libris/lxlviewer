@@ -241,7 +241,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
             vocab,
             context,
           );
-          result[property] = `{${expectedClassName} saknas}`;
+          result[property] = `{${expectedClassName} ${StringUtil.getUiPhraseByLang('missing', settings.language)}}`;
         }
       }
     }

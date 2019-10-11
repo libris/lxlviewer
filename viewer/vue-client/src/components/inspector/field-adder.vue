@@ -64,17 +64,17 @@ export default {
       'status',
     ]),
     modalTitle() {
-      const title = StringUtil.getUiPhraseByLang('Add field in', this.settings.language);
+      const title = StringUtil.getUiPhraseByLang('Add field in', this.user.settings.language);
       const contextString = StringUtil.getLabelByLang(
         this.entityType, 
-        this.settings.language, 
+        this.user.settings.language, 
         this.resources.vocab, 
         this.resources.context,
       );
       return `${title}: ${contextString}`;
     },
     filteredResults() {
-      const lang = this.settings.language;
+      const lang = this.user.settings.language;
       if (!this.allowed || this.allowed.length === 0) {
         return [];
       }
@@ -142,18 +142,18 @@ export default {
     getPropClassInfo(termObj) {
       if (isArray(termObj['@type'])) {
         if (termObj['@type'].indexOf('DatatypeProperty') > -1 && termObj['@type'].indexOf('DatatypeProperty') > -1) {
-          return StringUtil.getUiPhraseByLang('Literals and entities', this.settings.language);
+          return StringUtil.getUiPhraseByLang('Literals and entities', this.user.settings.language);
         } if (termObj['@type'].indexOf('DatatypeProperty') > -1) {
-          return StringUtil.getUiPhraseByLang('Literals', this.settings.language);
+          return StringUtil.getUiPhraseByLang('Literals', this.user.settings.language);
         } if (termObj['@type'].indexOf('ObjectProperty') > -1) {
-          return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
+          return StringUtil.getUiPhraseByLang('Entities', this.user.settings.language);
         } 
         return '';
       } 
       if (termObj['@type'] === 'DatatypeProperty') {
-        return StringUtil.getUiPhraseByLang('Literals', this.settings.language);
+        return StringUtil.getUiPhraseByLang('Literals', this.user.settings.language);
       } if (termObj['@type'] === 'ObjectProperty') {
-        return StringUtil.getUiPhraseByLang('Entities', this.settings.language);
+        return StringUtil.getUiPhraseByLang('Entities', this.user.settings.language);
       }
       return '';
     },

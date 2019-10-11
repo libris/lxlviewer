@@ -200,14 +200,14 @@ export default {
         tree,
         this.resources.vocab, 
         this.resources.context, 
-        this.settings.language,
+        this.user.settings.language,
       );
     },
     tooltipText() {
-      const addText = StringUtil.getUiPhraseByLang('Add', this.settings.language);
+      const addText = StringUtil.getUiPhraseByLang('Add', this.user.settings.language);
       const label = StringUtil.getLabelByLang(
         this.addLabel, 
-        this.settings.language, 
+        this.user.settings.language, 
         this.resources.vocab, 
         this.resources.context,
       );
@@ -228,7 +228,7 @@ export default {
         return this.rangeFull[0];
       }
       if (this.rangeFull.length > 1) {
-        return StringUtil.getUiPhraseByLang('entity', this.settings.language);
+        return StringUtil.getUiPhraseByLang('entity', this.user.settings.language);
       }
       return this.fieldKey;
     },
@@ -468,7 +468,7 @@ export default {
       // If this is a holding, add the heldBy property
       if (obj['@type'] === 'Item') {
         obj.heldBy = {
-          '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
+          '@id': this.user.getActiveLibraryUri(),
         };
       }
 

@@ -44,12 +44,17 @@ export default {
             if (item.hasOwnProperty('value')) { // Try to use item value to get label
               label = item.value;
             } else if (item.hasOwnProperty('object') && this.pageData.hasOwnProperty('stats')) { // else look for preflabel in stats (if there are results)
-              const match = this.pageData.stats.sliceByDimension[item.variable].observation
-                .filter(obs => obs.object['@id'] === item.object['@id']);
+              const sliceByDimension = this.pageData.stats.sliceByDimension[item.variable];
+              let match = [];
+              if (typeof sliceByDimension !== 'undefined' && sliceByDimension.hasOwnProperty('observation')) {
+                match = sliceByDimension.observation.filter(obs => obs.object['@id'] === item.object['@id']);
+              }
               if (match.length === 1) {
                 const prop = match[0].object.prefLabelByLang || match[0].object.labelByLang;
                 label = prop[this.settings.language];
-              } else label = item.object['@id'];
+              } else {
+                label = item.object['@id'];
+              }
             } else if (item.hasOwnProperty('object')) label = item.object['@id']; // else try to translate object[@id]...
             return {
               label,

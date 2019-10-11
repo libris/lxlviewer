@@ -5,6 +5,7 @@ if bytes is not str:
 
 import json
 import operator
+import functools
 import os
 import random
 import re
@@ -89,7 +90,7 @@ app.add_template_global(unicode, 'unicode')
 
 @app.template_global()
 def union(*args):
-    return reduce(lambda a, b: a | b, args)
+    return functools.reduce(lambda a, b: a | b, args)
 
 @app.template_global()
 def format_number(n):
@@ -181,12 +182,15 @@ daccess = DataAccess(app.config)
 
 app.jinja_env.globals.update({
         'ID': ID,'TYPE': TYPE, 'REVERSE': REVERSE,
-        'vocab': daccess.vocab,
-        'ui': daccess.ui_defs,
-        'lang': daccess.vocab.lang,
-        'page_limit': 50,
         'view_url': lambda uri: daccess.urimap.to_view_url(request.url_root, uri)
-    })
+     })
+
+@app.before_request
+def default_context():
+    g.vocab = daccess.vocab
+    g.ui = daccess.ui_defs
+    g.lang = daccess.vocab.lang
+    g.page_limit = 50
 
 @app.before_request
 def handle_base():
@@ -270,15 +274,6 @@ def find(suffix=None):
                               url_path='/find',
                               query_params=arguments)
     return rendered_response('/find', suffix, response)
-
-
-@app.route('/some', methods=R_METHODS)
-@app.route('/some.<suffix>', methods=R_METHODS)
-def some(suffix=None):
-    ambiguity = daccess.find_ambiguity(request)
-    if not ambiguity:
-        return abort(404)
-    return rendered_response('/some', suffix, ambiguity)
 
 
 @app.route('/', methods=R_METHODS)

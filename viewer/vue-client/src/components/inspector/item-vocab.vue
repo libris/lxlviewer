@@ -25,6 +25,10 @@ export default {
       type: String,
       default: '',
     },
+    asDropdown: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -81,7 +85,7 @@ export default {
           addToHistory: true,
         });
       }
-    },
+    },    
   },
   methods: {
     getPossibleValues() {
@@ -89,7 +93,7 @@ export default {
       const possibleValues = [];
       each(this.range, (item) => {
         const type = StringUtil.getCompactUri(item, this.resources.context);
-        values = values.concat(VocabUtil.getTermByType(type, this.resources.vocab, this.resources.context, this.settings));
+        values = values.concat(VocabUtil.getTermByType(type, this.resources.vocab, this.resources.context, this.settings));        
       });
       values = uniq(values);
       each(values, (value) => {
@@ -97,10 +101,22 @@ export default {
       });
       return sortBy(possibleValues, value => StringUtil.getLabelByLang(
         value, 
-        this.settings.language, 
+        this.user.settings.language, 
         this.resources.vocab, 
         this.resources.context,
       ));
+    },
+    setTooltipComment(value) {      
+      const termObject = VocabUtil.getTermObject(value, this.resources.vocab, this.resources.context);      
+
+      if (termObject && termObject.commentByLang) {
+        if (termObject.commentByLang[this.settings.language]) {
+          return termObject.commentByLang[this.settings.language];
+        } 
+        return termObject.commentByLang[0];
+      }
+
+      return '';
     },
     setInitialValue() {
       // if (this.possibleValues.indexOf(this.fieldValue) > -1) {
@@ -109,6 +125,7 @@ export default {
     },
   },
   components: {
+
   },
 };
 </script>
@@ -116,7 +133,9 @@ export default {
 <template>
   <div class="ItemVocab" :id="`formPath-${path}`" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked && possibleValues.length > 0">
+      <!-- render as dropdown -->
       <select 
+        v-if="asDropdown"
         v-model="selected" 
         class="ItemVocab-select customSelect" 
         :aria-label="fieldKey | labelByLang">
@@ -125,7 +144,30 @@ export default {
           :key="option"
           v-bind:value="option">{{ option | labelByLang }}</option>
       </select>
-    </div>
+      <!-- render as radiobuttons -->
+      <fieldset v-else>
+        <div
+          v-for="option in possibleValues"
+          :key="option"
+          v-tooltip.top="setTooltipComment(option)"
+          class="RadioPill">          
+          <input 
+            v-model="selected"
+            v-bind:value="option"
+            v-bind:id="option"                 
+            class="RadioPill-input"
+            type="radio" 
+            name="radios">
+          <label
+            v-bind:for="option"                
+            class="RadioPill-label">
+            <i class="fa fa-check icon icon--sm"></i>
+            {{ option | labelByLang }}</label>
+        </div>
+      </fieldset>
+
+    </div>  
+
     <span class="ItemVocab-text" 
       v-if="isLocked">{{fieldValue | labelByLang}}</span>
   </div>
@@ -146,6 +188,64 @@ export default {
   &-select {
     width: 100%;
     margin-top: 0.2em;
+  }
+}
+
+.RadioPill {
+  display: inline-block;
+  position: relative;
+  margin: 2px 5px 5px 0px;
+
+  &-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: none;
+    cursor: pointer;
+    border: 2px solid;
+    height: 100%;
+    left: 0;
+    opacity: .00001;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+  }
+
+  &-label {
+    display: block;    
+    height: 33px;
+    background-color: @grey-lightest;
+    border: 1px solid transparent;
+    color: @grey-dark;
+    border-radius: 2em;
+    line-height: 1.6;
+    padding: 3px 14px;
+    margin: 0;    
+    font-weight: 400;
+
+    .icon {
+      display: none;
+    }
+  }
+
+  &-input:hover + &-label {
+    color: @black;
+  }
+  
+  &-input:checked + &-label {
+    background: @brand-primary;
+    color: @grey-lightest;
+
+    .icon {
+      display: inline-block;
+      color: @grey-lightest !important;
+    }
+  }
+
+  .user-is-tabbing &-input:focus + label { 
+    outline: 2px solid #8cc9c9;
+    outline: auto darkcyan;
   }
 }
 

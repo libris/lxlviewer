@@ -1,6 +1,7 @@
 <script>
 import { sortBy } from 'lodash-es';
 import * as RecordUtil from '@/utils/record';
+import * as VocabUtil from '@/utils/vocab';
 import CreationCard from '@/components/create/creation-card';
 import FileAdder from '@/components/create/file-adder';
 import TabMenu from '@/components/shared/tab-menu';
@@ -9,17 +10,10 @@ export default {
   name: 'create-new-form',
   data() {
     return {
-      creationList: [
-        { id: 'Instance', text: 'Instance' },
-        { id: 'Work', text: 'Work' },
-        { id: 'Agent', text: 'Agent' },
-        { id: 'File', text: 'From file' },
-      ],
       chosenType: '',
       selectedCreation: 'Instance',
       thingData: {},
       activeIndex: -1,
-      excludeBases: ['Agent'],
     };
   },
   methods: {
@@ -55,10 +49,37 @@ export default {
     setActiveIndex(index) {
       this.activeIndex = index;
     },
+    templateIsAllowed(template) {
+      return this.selectedCreation != 'Concept' ||
+        (this.user.uriMinter &&
+          this.user.uriMinter.findContainerForEntity(template.value.mainEntity,
+            {'@id': this.user.getActiveLibraryUri()}))
+    },
+    userIsAllowedToEditConcepts() {
+      if (!this.user.uriMinter) {
+        return false;
+      }
+      const {vocab, context} = this.$store.getters.resources;
+      return Object.keys(this.user.uriMinter.containerMap).find(
+        it => VocabUtil.isSubClassOf(it, 'Concept', vocab, context));
+    },
   },
   events: {
   },
   computed: {
+    creationList() {
+      const list = [
+        { id: 'Instance', text: 'Instance' },
+        { id: 'Work', text: 'Work' },
+        { id: 'Agent', text: 'Agent', excludeBase: true },
+      ];
+      if (this.userIsAllowedToEditConcepts()) {
+        list.push({ id: 'Concept', text: 'Concept', excludeBase: true });
+      }
+      list.push({ id: 'File', text: 'From file' });
+
+      return list;
+    },
     user() {
       return this.$store.getters.user;
     },
@@ -77,7 +98,7 @@ export default {
         '@type': 'Record',
         '@id': 'https://id.kb.se/TEMPID',
         descriptionCreator: {
-          '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`,
+          '@id': this.user.getActiveLibraryUri(),
         },
         mainEntity: {
           '@id': 'https://id.kb.se/TEMPID#it',
@@ -93,7 +114,7 @@ export default {
       return this.activeIndex > 0 || (this.activeIndex === 0 && this.chosenType);
     },
     isExcludedBase() {
-      return this.excludeBases.indexOf(this.selectedCreation) > -1;
+      return this.creationList.find(it => it.id === this.selectedCreation).excludeBase;
     },
   },
   components: {
@@ -135,6 +156,7 @@ export default {
           @set-active-index="setActiveIndex" />
         <creation-card
           v-for="(template, index) in combinedTemplates"
+          v-if="templateIsAllowed(template)"
           :key="index"
           :is-base="false"
           :template="template"

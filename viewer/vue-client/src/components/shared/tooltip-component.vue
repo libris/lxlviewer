@@ -37,11 +37,14 @@ export default {
     resources() {
       return this.$store.getters.resources;
     },
+    user() {
+      return this.$store.getters.user;
+    },
     compShowTooltip() {
       return !this.hoverTooltip && this.showTooltip;
     },
     translatedText() {
-      return StringUtil.getUiPhraseByLang(this.tooltipText, this.settings.language);
+      return StringUtil.getUiPhraseByLang(this.tooltipText, this.user.settings.language);
     },
     keybindingText() {
       let str = '';

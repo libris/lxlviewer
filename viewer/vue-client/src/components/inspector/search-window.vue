@@ -191,7 +191,7 @@ export default {
         tree,
         this.resources.vocab, 
         this.resources.context, 
-        this.settings.language,
+        this.user.settings.language,
       );
     },
   },

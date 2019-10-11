@@ -94,18 +94,22 @@ export default {
       'status',
     ]),
     item() {
-      const item = cloneDeep(this.inspector.data[this.suffix]);
+      const item = cloneDeep(this.inspector.data[this.fragmentId]);
       if (typeof item === 'undefined' || item === null) {
         this.$store.dispatch('pushNotification', {
           type: 'danger',
-          message: `${StringUtil.getUiPhraseByLang('Data is missing a reference, please verify file', this.settings.language)}`,
+          message: `${StringUtil.getUiPhraseByLang('Data is missing a reference, please verify file', this.user.settings.language)}`,
         });
         throw new Error('A sibling-item was undefined. This is probably a reference error in the data.');
       }
       return item;
     },
-    suffix() {
-      return this.id.split('#')[1];
+    fragmentId() {
+      const s = this.id.split('#')[1];
+      if (s === 'it') {
+        return 'mainEntity';
+      }
+      return s;
     },
     canCopyTitle() {
       if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
@@ -115,7 +119,7 @@ export default {
     },
     extractedItem() {
       const newRecord = {};
-      newRecord.descriptionCreator = { '@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}` };
+      newRecord.descriptionCreator = { '@id': this.user.getActiveLibraryUri() };
       const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity, newRecord);
       return objAsRecord;
     },
@@ -144,13 +148,13 @@ export default {
       return false;
     },
     getPath() {
-      return this.suffix;
+      return this.fragmentId;
     },
     isEmpty() {
       let bEmpty = true;
       // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
       each(this.item, (value, key) => {
-        if (key !== '@type' && key !== '_uid') {
+        if (key !== '_uid') {
           if (key !== '@id') {
             if (typeof value !== 'undefined') {
               bEmpty = false;
@@ -251,15 +255,15 @@ export default {
             this.replaceWith(mainEntity);
             this.closeExtractDialog();
           }, (error) => {
-            this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error}` });
             this.closeExtractDialog();
           });
         } else {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)}` });
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}` });
           this.closeExtractDialog();
         }
       }, (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language)} - ${error}` });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error}` });
         this.closeExtractDialog();
       });
     },
@@ -303,7 +307,7 @@ export default {
         addToHistory: true,
         changeList: changeList,
       });
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.settings.language)}` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language)}` });
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
@@ -409,7 +413,7 @@ export default {
             role="button"
             :aria-label="'Link entity' | translatePhrase"
             tabindex="0"
-            v-if="inspector.status.editing && !isEmbedded"
+            v-if="inspector.status.editing && !isEmbedded && !isLocked"
             @click="openExtractDialog(), expand()"
             @keyup.enter="openExtractDialog(), expand()"
             @focus="showLinkAction = true, actionHighlight($event, true)"

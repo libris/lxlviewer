@@ -37,7 +37,7 @@
 
     % if filter_param
       <div class="type-buttons" aria-label="Välj typ">
-        % if len(result.statistics) > 0
+        % if result.statistics and len(result.statistics) > 0
           % for value in result.statistics.sliceByDimension.values()
             % for obs in value.observation
               <label class="">

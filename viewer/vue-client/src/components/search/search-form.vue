@@ -184,7 +184,7 @@ export default {
       if (this.docs && this.docs.hasOwnProperty('search-01-queries')) {
         return this.transformMarkdownToHTML(this.docs['search-01-queries'].content);
       }
-      return StringUtil.getUiPhraseByLang('Something went wrong', this.settings.language);
+      return StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language);
     },
     docs() {
       if (this.resources.helpDocs != null) {

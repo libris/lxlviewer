@@ -106,7 +106,7 @@ export default {
 </script>
 
 <template>
-  <div class="ModalComponent" :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}">
+  <div class="ModalComponent" :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger', 'is-warning': modalType === 'warning'}">
     <div class="ModalComponent-backdrop" @click="close"></div>
     <div class="ModalComponent-container" :style="{ 'width': width }">
       <div class="ModalComponent-header">
@@ -182,6 +182,9 @@ export default {
 
     .is-danger & {
       background-color: @brand-danger;
+    }
+    .is-warning & {
+      background-color: @brand-warning;
     }
 
     header {
