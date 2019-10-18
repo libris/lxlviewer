@@ -502,7 +502,7 @@
         },
         "work": {
           "@id": "https://id.kb.se/TEMPID#work",
-          "@type": "ProjectedImage",
+          "@type": "MovingImage",
           "classification": [{
               "@type": "ClassificationDdc",
               "code": "",
