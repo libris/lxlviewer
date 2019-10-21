@@ -31,11 +31,14 @@ export default {
     formType() {
       return this.formObj['@type'];
     },
+    recordType() {
+      return VocabUtil.getRecordType(this.formType, this.resources.vocab, this.resources.context);
+    },
     showTypeChanger() {
       if (typeof this.item !== 'undefined' && this.inspector.data.work && this.item['@id'] === this.inspector.data.work['@id']) {
         return true;
       }
-      if (this.isMainEntityForm === false || this.isHolding) {
+      if (this.isMainEntityForm === false || this.isHolding || this.recordType === 'Concept') {
         return false;
       }
       return true;
