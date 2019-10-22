@@ -80,9 +80,9 @@ export default {
       }
       return `${this.parentPath}`;
     },
-    recordType() {
-      return VocabUtil.getRecordType(this.item['@type'], this.resources.vocab, this.settings);
-    },
+    // recordType() {
+    //   return VocabUtil.getRecordType(this.item['@type'], this.resources.vocab, this.settings);
+    // },
     isEmbedded() {
       return VocabUtil.isEmbedded(this.item['@type'], this.resources.vocab, this.settings, this.resources.context);
     },
