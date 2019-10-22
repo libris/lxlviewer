@@ -62,6 +62,7 @@ export default {
             v-for="(term, index) in getClassTree" 
             :value="term.id" 
             :key="index" 
+            :disabled="term.abstract"
             v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)">
           </option>
         </select>

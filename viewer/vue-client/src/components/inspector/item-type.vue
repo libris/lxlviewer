@@ -1,6 +1,7 @@
 <script>
-import { uniq, sortBy } from 'lodash-es';
+import { uniq, sortBy, filter } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
+import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import * as HttpUtil from '@/utils/http';
 import ItemVocab from '@/components/inspector/item-vocab';
@@ -21,9 +22,19 @@ export default {
     };
   },
   computed: {
+    getClassTree() {
+      const docType = VocabUtil.getRecordType(this.entityType, this.resources.vocab, this.resources.context);
+      const tree = [docType].map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
+      return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
+    },
     range() {
       const docType = VocabUtil.getRecordType(this.entityType, this.resources.vocab, this.resources.context);
-      return [docType].concat(VocabUtil.getSubClasses(docType, this.resources.vocabClasses, this.resources.context));
+      const combined = [docType].concat(VocabUtil.getAllSubClasses(docType, this.resources.vocabClasses, this.resources.context));
+      const filtered = filter(combined, (o) => {
+        const term = VocabUtil.getTermObject(o, this.resources.vocabClasses, this.resources.context);
+        return term.abstract !== true;
+      });
+      return filtered;
     },
     onMainEntity() {
       return this.path === 'mainEntity.@type';
@@ -38,6 +49,12 @@ export default {
     },
   },
   methods: {
+    getFormattedSelectOption(term) {
+      return DisplayUtil.getFormattedSelectOption(term, this.settings, this.resources.vocab, this.resources.context);
+    },
+    onTypeChange(type) {
+
+    },
     unlockEdit() {
       this.unlockedByUser = true;
       this.closeUnlockModal();
@@ -50,15 +67,6 @@ export default {
     },
     closeUnlockModal() {
       this.unlockModalOpen = false;
-    },
-    getPossibleValues() {
-      let values = uniq(this.range);
-      return sortBy(values, value => StringUtil.getLabelByLang(
-        value, 
-        this.settings.language, 
-        this.resources.vocab, 
-        this.resources.context,
-      ));
     },
     getRelationsInfo() {
       this.checkingRelations = true;
@@ -102,16 +110,20 @@ export default {
     <div v-if="!isLocked && checkingRelations">
       <vue-simple-spinner size="small"></vue-simple-spinner>
     </div>
-    <div class="ItemType-selectContainer" v-if="!isLocked && !checkingRelations && possibleValues.length > 0">
+    <div class="ItemType-selectContainer" v-if="!isLocked && !checkingRelations && getClassTree.length > 0">
       <select 
         :disabled="isDisabled"
+        @change="onTypeChange($event)"
         v-model="selected" 
         class="ItemType-select customSelect" 
         :aria-label="fieldKey | labelByLang">
         <option 
-          v-for="option in possibleValues" 
-          :key="option"
-          v-bind:value="option">{{ option | labelByLang }}</option>
+          v-for="(term, index) in getClassTree" 
+          :value="term.id"
+          :key="index"
+          :disabled="term.abstract"
+          v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"
+          ></option>
       </select>
       <div class="ItemType-actions">
         <div class="ItemType-action UnlockAction">
