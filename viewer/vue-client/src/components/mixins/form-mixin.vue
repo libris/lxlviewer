@@ -78,8 +78,15 @@ export default {
         }
       });
       remove(propertyList, k => (this.settings.hiddenProperties.indexOf(k) !== -1));
+
       if (this.showTypeChanger) {
-        propertyList = ['@type'].concat(propertyList);
+        // move instanceOf field to top
+        if(this.recordType === 'Instance') {
+          propertyList.splice(1, 0, '@type');
+        }
+        else {
+          propertyList.splice(0, 0, '@type');
+        }
       }
       return propertyList;
     },
