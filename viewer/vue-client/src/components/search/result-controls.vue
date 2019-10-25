@@ -131,7 +131,7 @@ export default {
     },
     resultRange() {
       if (this.$route.params.perimeter === 'remote') {
-        return `1-${this.limit}`;
+        return `1-${this.pageData.itemsPerPage}`;
       } 
       const first = this.pageData.itemOffset + 1;
       let last = this.pageData.itemOffset + this.pageData.itemsPerPage;
