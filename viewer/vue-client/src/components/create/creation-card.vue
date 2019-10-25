@@ -8,6 +8,7 @@ export default {
     creation: String,
     template: Object,
     isBase: Boolean,
+    isAllowed: [Boolean, Object],
     index: Number,
     activeIndex: Number,
   },
@@ -45,7 +46,7 @@ export default {
 </script>
 
 <template>
-  <div class="CreationCard panel card" :class="{'is-active': isActive}">
+  <div class="CreationCard panel card" :class="{'is-active': isActive, 'is-disabled': !isAllowed}">
     <div v-if="isBase" class="CreationCard-content card-content" @click="setIndex()">
       <div class="card-text">
         <h2 class="CreationCard-title card-title">{{'Baspost'}}</h2>
@@ -73,11 +74,22 @@ export default {
         <div class="CreationCard-descr card-descr">{{template.description}}</div>
       </div>
       <div class="card-link">
-        <button class="CreationCard-select btn btn-primary btn--md" tabindex="0" v-show="!isActive" @keyup.enter="useTemplate(template.value)" @click="useTemplate(template.value)">
-          {{ 'Choose' | translatePhrase }}
+        <button 
+          class="CreationCard-select btn btn-primary btn--md" 
+          tabindex="0" 
+          v-show="!isActive" 
+          :disabled="!isAllowed"
+          @keyup.enter="useTemplate(template.value)" 
+          @click="useTemplate(template.value)">
+            {{ 'Choose' | translatePhrase }}
         </button>
-        <a class="CreationCard-select" tabindex="0" v-show="isActive" @keyup.enter="useTemplate(template.value)" @click="useTemplate(template.value)">
-          {{ 'Chosen' | translatePhrase }}
+        <a 
+          class="CreationCard-select" 
+          tabindex="0" 
+          v-show="isActive" 
+          @keyup.enter="useTemplate(template.value)" 
+          @click="useTemplate(template.value)">
+            {{ 'Chosen' | translatePhrase }}
         </a>
       </div>
     </div>
@@ -95,6 +107,16 @@ export default {
   }
   @media screen and (min-width: @screen-md-min){
     flex-basis: 24%;
+  }
+
+  &.is-disabled {
+    cursor: not-allowed;
+    background-color: #efeded;
+    box-shadow: none;
+
+    .btn {
+      background-color: #d8d8d8;
+    }
   }
 
   &-title {
