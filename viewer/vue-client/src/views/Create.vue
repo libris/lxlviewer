@@ -5,7 +5,6 @@ import * as VocabUtil from '@/utils/vocab';
 import CreationCard from '@/components/create/creation-card';
 import FileAdder from '@/components/create/file-adder';
 import TabMenu from '@/components/shared/tab-menu';
-import ModalComponent from '@/components/shared/modal-component';
 import SelectSigel from '@/components/usersettings/select-sigel';
 
 export default {
@@ -16,7 +15,7 @@ export default {
       selectedCreation: 'Instance',
       thingData: {},
       activeIndex: -1,
-      modalOpen: false,
+      hintSigelChange: false,
       hasAllowedTemplates: false,
     };
   },
@@ -80,9 +79,6 @@ export default {
 
       
     },
-    closeModal() {
-      this.modalOpen = false;
-    },
   },
   events: {
   },
@@ -141,7 +137,6 @@ export default {
     'creation-card': CreationCard,
     'file-adder': FileAdder,
     'tab-menu': TabMenu,
-    'modal-component': ModalComponent,
     'select-sigel': SelectSigel,
   },
   watch: {
@@ -153,9 +148,10 @@ export default {
       this.hasAllowedTemplates = true;  
     },
     hasAllowedTemplates(val) {
-      if  (!val) {
-        this.modalOpen = true;
-      }
+      this.$store.dispatch('setStatusValue', { 
+        property: 'hintSigelChange',
+        value: !val,
+      });
     }
   },
   created() {
@@ -174,26 +170,11 @@ export default {
 <template>
   <div class="Create" id="create-new-post">
     <div class="Create-body">
-      <tab-menu @go="setCreation" :tabs="creationList" :active="selectedCreation"></tab-menu>
-      <modal-component 
-        v-if="modalOpen"        
-        class="SelectSigelModal" 
-        :title="'Switch sigel' | translatePhrase"
-        :top="'28rem'"
-        :width="'570px'"        
-        @close="closeModal">
-        <div slot="modal-body" class="SelectSigelModal-body">
-          <p>
-            {{ "To create concepts, you need to switch to a seal with correct authority." | translatePhrase }}
-          </p>          
-          <div class="SelectSigelModal-buttonContainer">          
-            <select-sigel 
-              id="UserConfig-sigel"
-              :update-on-change="false" 
-              @changed="closeModal" />            
-          </div>
-        </div>
-      </modal-component>
+      <tab-menu 
+        @go="setCreation" 
+        :tabs="creationList" 
+        :active="selectedCreation"/>
+
       <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card
           v-if="!isExcludedBase"
