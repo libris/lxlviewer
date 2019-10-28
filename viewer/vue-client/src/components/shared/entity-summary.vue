@@ -3,6 +3,7 @@ import { each, isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
+import SummaryNode from '@/components/shared/summary-node';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
 
@@ -11,11 +12,16 @@ export default {
   name: 'entity-summary',
   components: {
     EncodingLevelIcon,
+    SummaryNode,
   },
   props: {
     focusData: {
       type: Object,
       default: null,
+    },
+    hoverLinks: {
+      type: Boolean,
+      default: true,
     },
     actions: {
       type: Boolean,
@@ -115,7 +121,7 @@ export default {
       return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language);
     },
     isReplacedBy() {
-      const info = this.getSummary.info.concat(this.getSummary.sub);
+      const info = this.getSummary.info;
       const infoObj = {};
       let value = '';
       each(info, (node) => {
@@ -149,7 +155,7 @@ export default {
       return StringUtil.isLibrisResourceUri(this.uri, this.settings);
     },
     totalInfo() {
-      const total = this.getSummary.info.concat(this.getSummary.sub);
+      const total = this.getSummary.info;
       return total.filter((prop) => {
         if (isArray(prop.value)) {
           return prop.value.join('').length > 0;
@@ -162,13 +168,7 @@ export default {
       const infoObj = {};
       each(info, (node, index) => {
         if (Object.keys(infoObj).length < this.keyDisplayLimit || this.showAllKeys) {
-          // const limit = node.property === 'identifiedBy' ? 1 : this.valueDisplayLimit;
           infoObj[node.property] = node.value.join(', ');
-          // const remainder = node.value.length > limit ? ` <span class="badge">+${node.value.length - limit}</span>` : '';
-          // const trimmed = node.value.slice(0, limit).join(', ') + remainder;
-          // if (trimmed.length > 0) {
-          //   infoObj[node.property] = trimmed;
-          // }
         }
       });
       return infoObj;
@@ -188,29 +188,6 @@ export default {
         this.user.settings.language,
         this.resources.context,
       );
-    },
-    info() {
-      return StringUtil.getFormattedEntries(
-        this.getSummary.info, 
-        this.resources.vocab, 
-        this.user.settings.language,
-        this.resources.context,
-      );
-    },
-    sub() {
-      let allThings = StringUtil.getFormattedEntries(
-        this.getSummary.info, 
-        this.resources.vocab, 
-        this.user.settings.language,
-        this.resources.context,
-      );
-      allThings = allThings.concat(StringUtil.getFormattedEntries(
-        this.getSummary.sub, 
-        this.resources.vocab, 
-        this.user.settings.language,
-        this.resources.context,
-      ));
-      return allThings;
     },
     isItem() {
       if (this.getCard['@type'] === 'Item') {
@@ -307,12 +284,13 @@ export default {
     </h3>
     <ul class="EntitySummary-details" v-show="!isCompact">
       <li class="EntitySummary-detailsItem" 
-        v-show="v.length !== 0" 
-        v-for="(v, k) in infoWithKeys" 
-        :key="k">
+        v-for="node in getSummary.info" 
+        :key="node.property">
         <template v-if="isReplacedBy === ''">
-          <span class="EntitySummary-detailsKey" :title="k | labelByLang">{{ k | labelByLang | capitalize }}</span>
-          <span class="EntitySummary-detailsValue" :title="v" v-html="v"></span>
+          <span class="EntitySummary-detailsKey" :title="node.property | labelByLang">{{ node.property | labelByLang | capitalize }}</span>
+          <span class="EntitySummary-detailsValue">
+            <SummaryNode :hover-links="hoverLinks" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" />
+          </span>
         </template>
         <template v-else>
           <span  class="EntitySummary-detailsKey">Ersatt av</span>
@@ -404,7 +382,7 @@ export default {
 
   &-info {
     overflow: hidden;
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
   &-title {
@@ -458,6 +436,7 @@ export default {
   &-details {
     list-style-type: none;
     padding: 0px;
+    margin: 0px;
     // max-height: 175px;
   }
 
@@ -491,7 +470,7 @@ export default {
     color: #000;
     white-space: nowrap;
     align-self: flex-end;
-    overflow: hidden;
+    overflow-x: hidden;
     text-overflow: ellipsis;
   }
 

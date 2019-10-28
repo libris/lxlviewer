@@ -2,7 +2,7 @@
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import { cloneDeep, isArray, get, isObject } from 'lodash-es';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   props: {
@@ -18,14 +18,56 @@ export default {
       type: Boolean,
       default: false,
     },
+    hoverLinks: {
+      type: Boolean,
+      default: false,
+    },
     index: Number,
   },
   data() {
     return {
       removed: false,
+      previewPending: false,
     };
   },
   methods: {
+    ...mapActions([
+      'setPreviewCard',
+    ]),
+    hoverIn() {
+      const self = this;
+      if (this.previewCard.cardHoverActive) {
+        this.triggerPreviewCard();
+      } else {
+        self.previewPending = true;
+        setTimeout(() => {
+          if (self.previewPending === true) {
+            this.triggerPreviewCard();
+          }
+        }, 100);
+      }
+    },
+    hoverOut() {
+      const self = this;
+      self.previewPending = false;
+      this.untriggerPreviewCard();
+    },
+    triggerPreviewCard() {
+      if (this.hoverLinks) {
+        const previewCard = this.previewCard;
+        previewCard.triggerElem = this.$el;
+        previewCard.data = this.focusData;
+        this.setPreviewCard(previewCard);
+      }
+    },
+    untriggerPreviewCard() {
+      if (this.previewCard.triggerElem === this.$el) {
+        const previewCard = this.previewCard;
+        previewCard.triggerElem = null;
+        previewCard.data = this.focusData;
+        this.setPreviewCard(previewCard);
+      }
+    },
     removeThis(animate = false) {
       let parentValue = cloneDeep(get(this.inspector.data, this.parentPath));
       if (isArray(parentValue)) {
@@ -72,6 +114,7 @@ export default {
       'user',
       'settings',
       'status',
+      'previewCard',
     ]),
     path() {
       const parentValue = get(this.inspector.data, this.parentPath);

@@ -17,6 +17,7 @@ const store = new Vuex.Store({
       display: {},
       context: {},
       helpDocs: null,
+      cachedCards: {},
     },
     directoryCare: {
       sender: null,
@@ -52,6 +53,11 @@ const store = new Vuex.Store({
       event: [],
     },
     status: {
+      previewCard: {
+        triggerElem: null,
+        data: null,
+        cardHoverActive: false,
+      },
       panelOpen: false,
       keybindState: '',
       fullWidth: false,
@@ -322,6 +328,12 @@ const store = new Vuex.Store({
     pushInspectorEvent(state, payload) {
       state.inspector.event = payload;
     },
+    addCardToCache(state, card) {
+      state.resources.cachedCards[card.id] = card.data;
+    },
+    flushCardCache(state) {
+      state.resources.cachedCards = {};
+    },
     pushNotification(state, content) {
       const date = new Date();
       content.id = StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`);
@@ -404,6 +416,9 @@ const store = new Vuex.Store({
         };
       }
     },
+    setPreviewCard(state, obj) {
+      state.previewCard = obj;
+    },
     flushChangeHistory(state) {
       state.inspector.changeHistory = [];
     },
@@ -482,6 +497,7 @@ const store = new Vuex.Store({
     vocab: state => state.resources.vocab,
     display: state => state.resources.display,
     context: state => state.resources.context,
+    previewCard: state => state.status.previewCard,
   },
   actions: {
     mark({ commit, state }, payload) {
@@ -645,6 +661,12 @@ const store = new Vuex.Store({
     addToQuoted({ commit }, data) {
       commit('addToQuoted', data);
     },
+    addCardToCache({ commit }, card) {
+      commit('addCardToCache', card);
+    },
+    flushCardCache({ commit }) {
+      commit('flushCardCache');
+    },
     setInspectorStatusValue({ commit }, payload) {
       commit('setInspectorStatusValue', payload);
     },
@@ -659,6 +681,9 @@ const store = new Vuex.Store({
     },
     pushNotification({ commit }, content) {
       commit('pushNotification', content);
+    },
+    setPreviewCard({ commit }, data) {
+      commit('setPreviewCard', data);
     },
     changeResourcesStatus({ commit }, status) {
       commit('changeResourcesStatus', status);

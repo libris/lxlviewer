@@ -19,6 +19,7 @@ import * as LayoutUtil from '@/utils/layout';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import Field from '@/components/inspector/field';
+import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
 // import MockDisplay from '@/resources/json/display.json';
 
@@ -28,6 +29,7 @@ Vue.use(PortalVue);
 Vue.use(VTooltip);
 Vue.use(VueClipboard);
 Vue.component('field', Field);
+Vue.component('entity-summary', EntitySummary);
 
 Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context));
 

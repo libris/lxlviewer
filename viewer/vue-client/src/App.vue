@@ -23,6 +23,7 @@
     <portal-target name="sidebar" multiple />
     <footer-component></footer-component>
     <notification-list></notification-list>
+    <preview-card />
   </div>
 </template>
 
@@ -32,6 +33,7 @@ import SearchBar from '@/components/layout/search-bar';
 import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import GlobalMessage from '@/components/layout/global-msg';
+import PreviewCard from '@/components/shared/preview-card';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import LayoutUtil from '@/utils/layout';
 import { mapGetters } from 'vuex';
@@ -99,6 +101,7 @@ export default {
     'notification-list': NotificationList,
     'global-message': GlobalMessage,
     'vue-simple-spinner': VueSimpleSpinner,
+    PreviewCard,
   },
 };
 </script>
