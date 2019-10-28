@@ -52,6 +52,16 @@ export default {
     isUserPage() {
       return this.$route.path === '/user';
     },
+    tooltipOptions() {
+      const options = {
+        content: `${StringUtil.getUiPhraseByLang('To create concepts, you need to switch to a seal with correct authority.', this.user.settings.language)}`,
+        show: this.showSigelHint,
+        trigger: 'manual',
+        placement: 'bottom',
+        classes: 'with-accent'
+      }
+      return options;
+    }
   },
   methods: {
     navigate(id) {
@@ -102,13 +112,7 @@ export default {
             class="MainNav-item" 
             :class="{ 'active': showUserMenu && !isUserPage }" 
             v-if="user.isLoggedIn"
-            v-tooltip="{
-                  content: 'To create concepts, you need to switch to a seal with correct authority.',
-                  show: showSigelHint,
-                  trigger: 'manual',
-                  placement: 'bottom',
-                  classes: 'with-accent'
-                }" >
+            v-tooltip="tooltipOptions" >
             <div tabindex="0" @click="toggleUserMenu" @keyup.enter="toggleUserMenu">
               <user-avatar 
                 class="hidden-xs" 
