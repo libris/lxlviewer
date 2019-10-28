@@ -222,8 +222,24 @@ export default {
   }
 
   &-item.is-distinguished {
-    border-bottom: 2px solid @form-border;
-    margin-bottom: 2rem;
+    border: 1px solid rgba(@brand-success, 23%);
+    border-bottom-width: 2px;
+    margin-bottom: 1rem;
+    background-color: rgba(@brand-success, 4%);
+
+    &:hover {
+      & .icon:not(.is-disabled) {
+        color: rgba(@brand-success, 80%);
+      }
+    }
+    & .icon {
+      color: rgba(@brand-success, 40%);
+
+      &:hover:not(.is-disabled),
+      &:focus {
+        color: @brand-darker;
+      }
+    }
   }
 }
 
