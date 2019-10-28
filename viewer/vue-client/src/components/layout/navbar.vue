@@ -101,7 +101,6 @@ export default {
           <li 
             class="MainNav-item" 
             :class="{ 'active': showUserMenu && !isUserPage }" 
-            @click="showSigelHint = false"
             v-if="user.isLoggedIn"
             v-tooltip="{
                   content: 'To create concepts, you need to switch to a seal with correct authority.',

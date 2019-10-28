@@ -1,5 +1,6 @@
 <script>
 import { sortBy } from 'lodash-es';
+import { mixin as clickaway } from 'vue-clickaway';
 import * as RecordUtil from '@/utils/record';
 import * as VocabUtil from '@/utils/vocab';
 import CreationCard from '@/components/create/creation-card';
@@ -9,13 +10,18 @@ import SelectSigel from '@/components/usersettings/select-sigel';
 
 export default {
   name: 'create-new-form',
+  mixins: [clickaway],
+  beforeRouteLeave(to, from, next) {
+    this.setHintSigelChange(false);
+
+    next();
+  },
   data() {
     return {
       chosenType: '',
       selectedCreation: 'Instance',
       thingData: {},
       activeIndex: -1,
-      hintSigelChange: false,
       hasAllowedTemplates: false,
     };
   },
@@ -79,6 +85,15 @@ export default {
 
       
     },
+    setHintSigelChange(val) {
+      this.$store.dispatch('setStatusValue', { 
+        property: 'hintSigelChange',
+        value: val,
+      });
+    },
+    hideSigelHint() {
+      this.setHintSigelChange(false);
+    }
   },
   events: {
   },
@@ -148,10 +163,7 @@ export default {
       this.hasAllowedTemplates = true;  
     },
     hasAllowedTemplates(val) {
-      this.$store.dispatch('setStatusValue', { 
-        property: 'hintSigelChange',
-        value: !val,
-      });
+      this.setHintSigelChange(!val);
     }
   },
   created() {
@@ -173,7 +185,8 @@ export default {
       <tab-menu 
         @go="setCreation" 
         :tabs="creationList" 
-        :active="selectedCreation"/>
+        :active="selectedCreation"
+        v-on-clickaway="hideSigelHint" />
 
       <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card
