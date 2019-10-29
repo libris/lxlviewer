@@ -38,6 +38,9 @@ export default {
     },
     paginationData() {
       const page = Object.assign({}, this.result);
+      if (!page.itemsPerPage) {
+        page.itemsPerPage = page.items.length;
+      }
       delete page.items;
       return page;
     },

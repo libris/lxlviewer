@@ -97,7 +97,6 @@ export default {
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
         this.searchInProgress = false;
       }).then((result) => {
-        console.log(result);
         this.result = this.convertRemoteResult(result);
         this.importData = result.items;
         this.searchInProgress = false;
