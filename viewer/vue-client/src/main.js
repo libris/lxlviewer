@@ -38,7 +38,7 @@ const TooltipOptions = {
     defaultArrowClass: 'tooltip-arrow popover-arrow',
     // Class added when popover is open
     defaultOpenClass: 'open',
-    defaultDelay: { show: 500, hide: 100 },
+    defaultDelay: { show: 300, hide: 0 },
     defaultTrigger: 'hover focus',
     defaultOffset: 0,
     defaultContainer: 'body',
