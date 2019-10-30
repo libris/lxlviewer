@@ -741,7 +741,6 @@ export default {
           v-if="getDatatype(item) == 'entity'" 
           :is-locked="locked" 
           :item="item" 
-          :hover-links="true"
           :field-key="fieldKey" 
           :index="index" 
           :parent-path="path"></item-entity>

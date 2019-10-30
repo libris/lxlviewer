@@ -20,7 +20,7 @@
         </div>
         <router-view v-if="resourcesLoaded" />
     </main>
-    <portal-target id="SidebarPortal" name="sidebar" multiple />
+    <portal-target name="sidebar" multiple />
     <footer-component></footer-component>
     <notification-list></notification-list>
   </div>
