@@ -1,5 +1,5 @@
 <script>
-import { each, isArray } from 'lodash-es';
+import { each, isArray, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
@@ -115,7 +115,7 @@ export default {
       return null;
     },
     hiddenDetailsNumber() {
-      return this.totalInfo.length - this.keyDisplayLimit;
+      return this.getSummary.info.length - this.keyDisplayLimit;
     },
     idTooltipText() {
       return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language);
@@ -163,15 +163,12 @@ export default {
         return prop.value.length > 0;
       });
     },
-    infoWithKeys() {
-      const info = this.totalInfo;
-      const infoObj = {};
-      each(info, (node, index) => {
-        if (Object.keys(infoObj).length < this.keyDisplayLimit || this.showAllKeys) {
-          infoObj[node.property] = node.value.join(', ');
-        }
-      });
-      return infoObj;
+    limitedInfo() {
+      let limited = cloneDeep(this.getSummary.info);
+      if (!this.showAllKeys && limited.length > this.keyDisplayLimit) {
+        limited.length = this.keyDisplayLimit;
+      }
+      return limited;
     },
     categorization() {
       return StringUtil.getFormattedEntries(
@@ -284,7 +281,7 @@ export default {
     </h3>
     <ul class="EntitySummary-details" v-show="!isCompact">
       <li class="EntitySummary-detailsItem" 
-        v-for="node in getSummary.info" 
+        v-for="node in limitedInfo" 
         :key="node.property">
         <template v-if="node.value !== null">
           <span class="EntitySummary-detailsKey" :title="node.property | labelByLang">{{ node.property | labelByLang | capitalize }}</span>

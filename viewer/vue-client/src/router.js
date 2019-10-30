@@ -100,7 +100,6 @@ router.beforeEach((to, from, next) => {
   if (newToken) {
     localStorage.setItem('at', newToken);
   }
-  store.dispatch('flushCardCache');
   store.dispatch('verifyUser').then(() => {
     // authed
     next();
