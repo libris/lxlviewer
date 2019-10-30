@@ -108,12 +108,12 @@ span.disabled {
   }
 
   &.popover {
-    @color: #f9f9f9;
+    @color: @white;
     max-width: 650px;
     margin: 0;
     .popover-inner {
       max-width: 650px;
-      background: @white;
+      background: @color;
       text-align: unset;
       color: black;
       padding: 0.2em;
@@ -131,12 +131,12 @@ span.disabled {
   &[aria-hidden='true'] {
     visibility: hidden;
     opacity: 0;
-    transition: opacity .15s, visibility .15s;
+    transition: opacity .25s ease, visibility .25s ease;
   }
 
   &[aria-hidden='false'] {
     visibility: visible;
     opacity: 1;
-    transition: opacity .15s;
+    transition: opacity .25s ease;
   }
 }

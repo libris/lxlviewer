@@ -58,9 +58,8 @@ export default {
     fullData() {
       if (this.fetchedData !== null) {
         return this.fetchedData;
-      } else {
-        return this.focusData;
       }
+      return this.focusData;
     },
   },
   watch: {
