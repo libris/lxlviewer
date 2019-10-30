@@ -49,6 +49,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isDistinguished: {
+      type: Boolean,
+      default: false,
+    },
     asColumns: {
       default: true,
       type: Boolean,
@@ -538,7 +542,8 @@ export default {
       'is-lastAdded': isLastAdded, 
       'is-removed': removed,
       'is-highlighted': embellished,
-      'has-failed-validations': failedValidations.length > 0 }" 
+      'has-failed-validations': failedValidations.length > 0,
+      'is-distinguished': isDistinguished }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
