@@ -22,18 +22,15 @@ export default {
       'addCardToCache',
     ]),
     populateData() {
-      const self = this;
-      const fnurgel = self.previewCard.data['@id'].split('#')[0];
-      if (this.resources.cachedCards.hasOwnProperty(fnurgel)) {
-        self.fetchedData = this.resources.cachedCards[fnurgel];
-      } else {
+      if (this.fetchedData === null) { // Only fetch if we need to
+        const self = this;
+        const fnurgel = self.focusData['@id'].split('#')[0];
         self.fetchMore(fnurgel).then((result) => {
           let simplifiedResult = result;
           if (result.hasOwnProperty('mainEntity')) {
             simplifiedResult = result.mainEntity;
           }
           self.fetchedData = simplifiedResult;
-          self.addCardToCache({ id: fnurgel, data: simplifiedResult });
         });
       }
     },
@@ -70,7 +67,6 @@ export default {
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
-      // Do stuff
     });
   },
 };

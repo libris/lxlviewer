@@ -107,7 +107,7 @@ export default {
 <template>
   <div class="ItemEntity-container" 
     :id="`formPath-${path}`">
-    <v-popover placement="bottom-start">
+    <v-popover placement="bottom-start" @show="$refs.previewCard.populateData()">
     <div class="ItemEntity chip" 
       tabindex="0"
       v-if="!expanded" 
@@ -132,7 +132,7 @@ export default {
       </div>
     </div>
     <template slot="popover">
-      <PreviewCard :focus-data="focusData" />
+      <PreviewCard ref="previewCard" :focus-data="focusData" />
     </template>
     </v-popover>
   </div>

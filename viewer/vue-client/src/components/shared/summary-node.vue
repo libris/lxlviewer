@@ -65,13 +65,13 @@ export default {
     <span class="SummaryNode-label" v-if="!isLinked">
       {{ typeof item === 'string' ? item : getItemLabel }}{{ isLast ? '' : ',&nbsp;' }}
     </span>
-    <v-popover v-if="isLinked" :disabled="!hoverLinks" placement="bottom-start">
+    <v-popover v-if="isLinked" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
         <a v-if="!isLibrisResource" :href="item['@id']">{{getItemLabel}}</a>
       </span>
       <template slot="popover">
-        <PreviewCard :focus-data="focusData" />
+        <PreviewCard ref="previewCard" :focus-data="focusData" />
       </template>
     </v-popover>
   </div>

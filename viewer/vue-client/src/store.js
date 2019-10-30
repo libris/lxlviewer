@@ -17,7 +17,6 @@ const store = new Vuex.Store({
       display: {},
       context: {},
       helpDocs: null,
-      cachedCards: {},
     },
     directoryCare: {
       sender: null,
@@ -322,12 +321,6 @@ const store = new Vuex.Store({
     },
     pushInspectorEvent(state, payload) {
       state.inspector.event = payload;
-    },
-    addCardToCache(state, card) {
-      state.resources.cachedCards[card.id] = card.data;
-    },
-    flushCardCache(state) {
-      state.resources.cachedCards = {};
     },
     pushNotification(state, content) {
       const date = new Date();
@@ -651,12 +644,6 @@ const store = new Vuex.Store({
     },
     addToQuoted({ commit }, data) {
       commit('addToQuoted', data);
-    },
-    addCardToCache({ commit }, card) {
-      commit('addCardToCache', card);
-    },
-    flushCardCache({ commit }) {
-      commit('flushCardCache');
     },
     setInspectorStatusValue({ commit }, payload) {
       commit('setInspectorStatusValue', payload);
