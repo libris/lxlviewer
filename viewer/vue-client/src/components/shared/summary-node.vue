@@ -5,6 +5,7 @@
 import LensMixin from '@/components/mixins/lens-mixin';
 import ItemMixin from '@/components/mixins/item-mixin';
 import * as StringUtil from '@/utils/string';
+import PreviewCard from '@/components/shared/preview-card';
 
 export default {
   name: 'summary-node',
@@ -49,6 +50,7 @@ export default {
     },
   },
   components: {
+    PreviewCard,
   },
   watch: {
   },
@@ -63,10 +65,15 @@ export default {
     <span class="SummaryNode-label" v-if="!isLinked">
       {{ typeof item === 'string' ? item : getItemLabel }}{{ isLast ? '' : ',&nbsp;' }}
     </span>
-    <span v-if="isLinked" class="SummaryNode-link tooltip-target" @mouseover="hoverIn" @mouseout="hoverOut">
-      <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
-      <a v-if="!isLibrisResource" :href="item['@id']">{{getItemLabel}}</a>
-    </span>
+    <v-popover v-if="isLinked" :disabled="!hoverLinks" placement="bottom-start">
+      <span class="SummaryNode-link tooltip-target">
+        <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
+        <a v-if="!isLibrisResource" :href="item['@id']">{{getItemLabel}}</a>
+      </span>
+      <template slot="popover">
+        <PreviewCard :focus-data="focusData" />
+      </template>
+    </v-popover>
   </div>
 </template>
 

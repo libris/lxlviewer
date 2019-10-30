@@ -286,16 +286,18 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
   };
   each(card, (value, key) => {
     let v = value;
-    if (!isArray(value)) {
-      v = [value];
-    }
-    if (displayGroups.header.indexOf(key) !== -1) {
-      summary.header.push({ property: key, value: v });
-    } else if (displayGroups.categorization.indexOf(key) !== -1) {
-      summary.categorization.push({ property: key, value: v });
-    } else {
-      const valueAsArray = isArray(item[key]) ? item[key] : [item[key]];
-      summary.info.push({ property: key, value: valueAsArray });
+    if (v !== null) {
+      if (!isArray(value)) {
+        v = [value];
+      }
+      if (displayGroups.header.indexOf(key) !== -1) {
+        summary.header.push({ property: key, value: v });
+      } else if (displayGroups.categorization.indexOf(key) !== -1) {
+        summary.categorization.push({ property: key, value: v });
+      } else {
+        const valueAsArray = isArray(item[key]) ? item[key] : [item[key]];
+        summary.info.push({ property: key, value: valueAsArray });
+      }
     }
   });
   if (summary.header.length === 0) {

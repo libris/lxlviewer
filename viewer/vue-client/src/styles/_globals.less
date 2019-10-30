@@ -109,16 +109,21 @@ span.disabled {
 
   &.popover {
     @color: #f9f9f9;
-
+    max-width: 650px;
+    margin: 0;
     .popover-inner {
+      max-width: 650px;
       background: @color;
+      text-align: unset;
       color: black;
-      padding: 24px;
+      padding: 0.2em;
+      font-weight: unset;
       border-radius: 5px;
       box-shadow: 0 5px 30px rgba(black, .1);
     }
 
     .popover-arrow {
+      display: none;
       border-color: @color;
     }
   }

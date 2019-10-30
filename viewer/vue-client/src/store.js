@@ -53,11 +53,6 @@ const store = new Vuex.Store({
       event: [],
     },
     status: {
-      previewCard: {
-        triggerElem: null,
-        data: null,
-        cardHoverActive: false,
-      },
       panelOpen: false,
       keybindState: '',
       fullWidth: false,
@@ -416,9 +411,6 @@ const store = new Vuex.Store({
         };
       }
     },
-    setPreviewCard(state, obj) {
-      state.previewCard = obj;
-    },
     flushChangeHistory(state) {
       state.inspector.changeHistory = [];
     },
@@ -497,7 +489,6 @@ const store = new Vuex.Store({
     vocab: state => state.resources.vocab,
     display: state => state.resources.display,
     context: state => state.resources.context,
-    previewCard: state => state.status.previewCard,
   },
   actions: {
     mark({ commit, state }, payload) {
@@ -681,9 +672,6 @@ const store = new Vuex.Store({
     },
     pushNotification({ commit }, content) {
       commit('pushNotification', content);
-    },
-    setPreviewCard({ commit }, data) {
-      commit('setPreviewCard', data);
     },
     changeResourcesStatus({ commit }, status) {
       commit('changeResourcesStatus', status);

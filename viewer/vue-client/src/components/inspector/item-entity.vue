@@ -5,6 +5,7 @@ import * as StringUtil from '@/utils/string';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
+import PreviewCard from '@/components/shared/preview-card';
 
 export default {
   name: 'item-entity',
@@ -82,6 +83,7 @@ export default {
   },
   components: {
     'tooltip-component': TooltipComponent,
+    PreviewCard,
   },
   mounted() {
     this.$nextTick(() => {
@@ -104,8 +106,8 @@ export default {
 
 <template>
   <div class="ItemEntity-container" 
-    :id="`formPath-${path}`"
-    @mouseover="hoverIn" @mouseout="hoverOut">
+    :id="`formPath-${path}`">
+    <v-popover placement="bottom-start">
     <div class="ItemEntity chip" 
       tabindex="0"
       v-if="!expanded" 
@@ -129,6 +131,10 @@ export default {
         </i>
       </div>
     </div>
+    <template slot="popover">
+      <PreviewCard :focus-data="focusData" />
+    </template>
+    </v-popover>
   </div>
 </template>
 
