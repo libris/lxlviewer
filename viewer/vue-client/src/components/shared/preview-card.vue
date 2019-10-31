@@ -49,7 +49,7 @@ export default {
         }, (error) => {
           self.fetching = false;
           self.triedFetching = true;
-          reject('Error fetching breadcrumb data', error);
+          reject('Error fetching card info', error);
         });
       });
     },

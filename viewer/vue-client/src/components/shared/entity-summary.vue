@@ -283,7 +283,7 @@ export default {
       </a>
       
     </h3>
-    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ height: animate ? `${ (limitedInfo.length * 1.8) + 0.2 }rem` : 'auto' }">
+    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ height: animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }">
       <li class="EntitySummary-detailsItem" 
         v-for="node in limitedInfo" 
         :key="node.property">
