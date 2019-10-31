@@ -19,6 +19,10 @@ export default {
       type: Object,
       default: null,
     },
+    animate: {
+      type: Boolean,
+      default: false,
+    },
     hoverLinks: {
       type: Boolean,
       default: true,
@@ -279,7 +283,7 @@ export default {
       </a>
       
     </h3>
-    <ul class="EntitySummary-details" v-show="!isCompact">
+    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ height: animate ? `${ (limitedInfo.length * 1.8) + 0.2 }rem` : 'auto' }">
       <li class="EntitySummary-detailsItem" 
         v-for="node in limitedInfo" 
         :key="node.property">
@@ -434,7 +438,7 @@ export default {
     list-style-type: none;
     padding: 0px;
     margin: 0px;
-    // max-height: 175px;
+    transition: height 0.2s ease-out;
   }
 
   &-id {
@@ -447,7 +451,7 @@ export default {
     display: flex;
     min-width: 0;
     font-size: 1.4rem;
-    padding: 0.2em 0;
+    padding: 0.2rem 0;
   }
 
   &-detailsKey {
