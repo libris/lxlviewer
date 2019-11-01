@@ -6,6 +6,7 @@ import CardComponent from '../shared/card-component';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
+import EntitySummary from '../shared/entity-summary';
 
 export default {
   name: 'item-entity',
@@ -13,6 +14,10 @@ export default {
   props: {
     item: {},
     isLocked: {
+      type: Boolean,
+      default: false,
+    },
+    isDistinguished: {
       type: Boolean,
       default: false,
     },
@@ -85,6 +90,7 @@ export default {
   components: {
     'card-component': CardComponent,
     'tooltip-component': TooltipComponent,
+    'entity-summary': EntitySummary,
   },
   mounted() {
     this.$nextTick(() => {
@@ -106,45 +112,65 @@ export default {
 </script>
 
 <template>
-  <div class="ItemEntity-container" 
-    :id="`formPath-${path}`"
-    @keyup.enter="showCardInfo=true"
-    @mouseenter="showCardInfo=true"
-    @mouseleave="showCardInfo=false">
-    <div class="ItemEntity chip" 
+  <div 
+    class="ItemEntity-wrapper"
+    :class="{ 'is-expanded': expanded }">
+    <div 
+      v-if="isDistinguished"
+      class="ItemEntity-label"
       tabindex="0"
-      v-if="!expanded" 
-      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
-      <span class="ItemEntity-label chip-label">
-        <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-        <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
-        <span class="placeholder"></span></span>
-      <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
-        <i class="fa fa-times-circle icon icon--sm" 
-          v-if="!isLocked"
-          role="button"
-          tabindex="0"
-          :aria-label="'Remove' | translatePhrase"
-          @click="removeThis(true)"
-          @keyup.enter="removeThis(true)"
-          @mouseover="removeHover = true, showCardInfo = false"
-          @mouseout="removeHover = false, showCardInfo = true">
-
-          <tooltip-component 
-            :show-tooltip="removeHover" 
-            tooltip-text="Remove"></tooltip-component>
-        </i>
-      </div>
+      @click="toggleExpanded()"
+      @keyup.enter="toggleExpanded()">
+      <i class="ItemEntity-arrow fa fa-chevron-right"></i>
     </div>
-    <card-component 
-      :title="getItemLabel" 
-      :focus-data="item" 
-      :uri="item['@id']" 
-      :is-local="false" 
-      :is-locked="isLocked" 
-      :should-show="showCardInfo" 
-      :floating="!expanded" 
-      :field-key="fieldKey"></card-component>
+    <div class="ItemEntity-container">
+      <div
+        :id="`formPath-${path}`"
+        @keyup.enter="showCardInfo=true"
+        @mouseenter="showCardInfo=true"
+        @mouseleave="showCardInfo=false">
+        <div class="ItemEntity chip" 
+          tabindex="0"
+          v-if="!expanded" 
+          :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
+          <span class="ItemEntity-label chip-label">
+            <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
+            <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
+            <span class="placeholder"></span></span>
+          <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
+            <i class="fa fa-times-circle icon icon--sm" 
+              v-if="!isLocked"
+              role="button"
+              tabindex="0"
+              :aria-label="'Remove' | translatePhrase"
+              @click="removeThis(true)"
+              @keyup.enter="removeThis(true)"
+              @mouseover="removeHover = true, showCardInfo = false"
+              @mouseout="removeHover = false, showCardInfo = true">
+
+              <tooltip-component 
+                :show-tooltip="removeHover" 
+                tooltip-text="Remove"></tooltip-component>
+            </i>
+          </div>
+        </div>      
+      </div>
+      <card-component 
+        :title="getItemLabel" 
+        :focus-data="item" 
+        :uri="item['@id']" 
+        :is-local="false" 
+        :is-locked="isLocked" 
+        :should-show="showCardInfo" 
+        :floating="!expanded" 
+        :field-key="fieldKey"></card-component>
+
+      <entity-summary 
+        v-if="isDistinguished && expanded"
+        :focus-data="item" 
+        :should-link="true"
+        :valueDisplayLimit=100></entity-summary>
+    </div>
   </div>
 </template>
 
@@ -153,6 +179,30 @@ export default {
 @linked-color: #daefec;
 
 .ItemEntity {
+
+  &-wrapper {
+    display: flex;
+    width: 100%;
+
+
+    &.is-expanded > 
+    .ItemEntity-label >
+    .ItemEntity-arrow {
+      transform:rotate(90deg);
+      transform-origin: center;
+    }
+  }
+
+  &-arrow {
+    transition: all 0.2s ease;
+    padding: 0 2px;
+    font-size: 14px;
+    color: @gray-darker-transparent;
+
+    .ItemLocal-label:hover & {
+      color: @black
+    }
+  }
 
   &-container {
     display: flex;

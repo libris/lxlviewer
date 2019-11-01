@@ -87,6 +87,7 @@ export default {
       foundChip: false,
       removed: false,
       uniqueIds: [],
+      hasLinkedObjects: true,
     };
   },
   components: {
@@ -432,7 +433,7 @@ export default {
       }
       if (typeof o === 'boolean') {
         return 'boolean';
-      }
+      }      
       if (this.fieldKey === '@type' ||  VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
@@ -458,7 +459,7 @@ export default {
         throw new Error('Cannot check link status of undefined object.');
       }
       const recordId = this.inspector.data.record['@id'];
-      if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
+      if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {        
         return true;
       }
       return false;
@@ -543,7 +544,8 @@ export default {
       'is-removed': removed,
       'is-highlighted': embellished,
       'has-failed-validations': failedValidations.length > 0,
-      'is-distinguished': isDistinguished }" 
+      'is-distinguished': isDistinguished,
+      'is-linked': hasLinkedObjects, }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
@@ -745,6 +747,7 @@ export default {
         <item-entity 
           v-if="getDatatype(item) == 'entity'" 
           :is-locked="locked" 
+          :is-distinguished="isDistinguished"
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 
