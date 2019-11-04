@@ -136,6 +136,9 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
 /* eslint-disable no-use-before-define */
 export function getItemLabel(item, displayDefs, quoted, vocab, settings, context, inProp = '') {
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
+  if (Object.keys(displayObject).length === 0) {
+    return JSON.stringify(item);
+  }
   let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
     if (inProp.toLowerCase() !== item['@type'].toLowerCase()) {
