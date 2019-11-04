@@ -35,17 +35,14 @@ export default {
       return this.$store.getters.inspector;
     },
     getItemLabel() {
-      // const label = this.getLabel(this.focusData);
-      const labelArray = [];
-      for (const key of Object.keys(this.getChip)) {
-        labelArray.push(this.getChip[key]);
-      }
-      labelArray.forEach((el, i) => {
-        if (Array.isArray(el) && (el.length > 1)) {
-          labelArray[i] = labelArray[i].join(', ');
-        }
-      });
-      return labelArray.join(' • ');
+      return DisplayUtil.getItemLabel(
+        this.focusData,
+        this.resources.display,
+        this.inspector.data.quoted,
+        this.resources.vocab,
+        this.settings,
+        this.resources.context,
+      );
     },
     getChip() {
       const chip = DisplayUtil.getChip(
