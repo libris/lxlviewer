@@ -13,9 +13,8 @@ export default {
   },
   data() {
     return {
-      fetching: false,
+      fetchStatus: null,
       fetchedData: null,
-      triedFetching: false,
     };
   },
   methods: {
@@ -23,7 +22,7 @@ export default {
       'addCardToCache',
     ]),
     populateData() {
-      if (this.fetchedData === null && this.triedFetching === false) { // Only fetch if we need to
+      if (this.fetchedData === null) { // Only fetch if we need to
         const self = this;
         const fnurgel = self.focusData['@id'].split('#')[0];
         self.fetchMore(fnurgel).then((result) => {
@@ -37,18 +36,18 @@ export default {
     },
     fetchMore(id) {
       const self = this;
-      self.fetching = true;
+      self.fetchStatus = 'fetching';
       return new Promise((resolve, reject) => {
         const url = `${id}/data.json?lens=card`;
         fetch(url).then((res) => {
           if (res.status === 200) {
-            self.fetching = false;
-            self.triedFetching = true;
+            self.fetchStatus = null;
             resolve(res.json());
+          } else {
+            self.fetchStatus = 'error';
           }
         }, (error) => {
-          self.fetching = false;
-          self.triedFetching = true;
+          self.fetchStatus = 'error';
           reject('Error fetching card info', error);
         });
       });
@@ -76,8 +75,9 @@ export default {
 
 <template>
   <div class="PreviewCard">
-    <div class="PreviewCard-spinner" :class="{ 'is-active' : fetching }">
-      Laddar <i class="fa-spin fa fa-circle-o-notch"></i>
+    <div class="PreviewCard-spinner" :class="{ 'is-active' : fetchStatus !== null }">
+      <span v-if="fetchStatus === 'loading'">Laddar <i class="fa-spin fa fa-circle-o-notch"></i></span>
+      <span v-if="fetchStatus === 'error'" class="fetchError">Laddningsfel <i class="fa fa-times"></i></span>
     </div>
     <entity-summary :animate="true" :focus-data="fullData" :hover-links="false" />
   </div>
@@ -97,6 +97,9 @@ export default {
     position: absolute;
     right: 0.25em;
     bottom: 0.25em;
+    .fetchError i {
+      color: @brand-danger;
+    }
   }
 }
 </style>
