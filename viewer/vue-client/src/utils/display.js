@@ -134,11 +134,14 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
 }
 
 /* eslint-disable no-use-before-define */
-export function getItemLabel(item, displayDefs, quoted, vocab, settings, context, inProp = '') {
+export function getItemLabel(item, displayDefs, quoted, vocab, settings, context, inClass = '') {
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
+  if (Object.keys(displayObject).length === 0) {
+    return JSON.stringify(item);
+  }
   let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
-    if (inProp.toLowerCase() !== item['@type'].toLowerCase()) {
+    if (inClass.toLowerCase() !== item['@type'].toLowerCase()) {
       const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, vocab, context);
       rendered = `${translatedType} ${rendered}`;
     }
@@ -283,21 +286,21 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
     categorization: [],
     header: [],
     info: [],
-    sub: [],
   };
   each(card, (value, key) => {
     let v = value;
-    if (!isArray(value)) {
-      v = [value];
-    }
-    if (displayGroups.header.indexOf(key) !== -1) {
-      summary.header.push({ property: key, value: v });
-    } else if (displayGroups.info.indexOf(key) !== -1) {
-      summary.info.push({ property: key, value: v });
-    } else if (displayGroups.categorization.indexOf(key) !== -1) {
-      summary.categorization.push({ property: key, value: v });
-    } else {
-      summary.sub.push({ property: key, value: v });
+    if (v !== null) {
+      if (!isArray(value)) {
+        v = [value];
+      }
+      if (displayGroups.header.indexOf(key) !== -1) {
+        summary.header.push({ property: key, value: v });
+      } else if (displayGroups.categorization.indexOf(key) !== -1) {
+        summary.categorization.push({ property: key, value: v });
+      } else {
+        const valueAsArray = isArray(item[key]) ? item[key] : [item[key]];
+        summary.info.push({ property: key, value: valueAsArray });
+      }
     }
   });
   if (summary.header.length === 0) {

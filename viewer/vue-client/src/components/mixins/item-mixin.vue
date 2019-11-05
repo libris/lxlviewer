@@ -18,6 +18,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hoverLinks: {
+      type: Boolean,
+      default: false,
+    },
     index: Number,
   },
   data() {

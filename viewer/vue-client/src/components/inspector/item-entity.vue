@@ -2,10 +2,10 @@
 import { size } from 'lodash-es';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
-import CardComponent from '../shared/card-component';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
+import PreviewCard from '@/components/shared/preview-card';
 
 export default {
   name: 'item-entity',
@@ -24,7 +24,6 @@ export default {
       searchDelay: 2,
       formObj: {},
       expanded: false,
-      showCardInfo: false,
       removeHover: false,
     };
   },
@@ -83,8 +82,8 @@ export default {
     },
   },
   components: {
-    'card-component': CardComponent,
     'tooltip-component': TooltipComponent,
+    PreviewCard,
   },
   mounted() {
     this.$nextTick(() => {
@@ -107,14 +106,12 @@ export default {
 
 <template>
   <div class="ItemEntity-container" 
-    :id="`formPath-${path}`"
-    @keyup.enter="showCardInfo=true"
-    @mouseenter="showCardInfo=true"
-    @mouseleave="showCardInfo=false">
+    :id="`formPath-${path}`">
+    <v-popover placement="bottom-start" @show="$refs.previewCard.populateData()">
     <div class="ItemEntity chip" 
       tabindex="0"
       v-if="!expanded" 
-      :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
+      :class="{ 'is-locked': isLocked, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
       <span class="ItemEntity-label chip-label">
         <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
         <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
@@ -126,9 +123,7 @@ export default {
           tabindex="0"
           :aria-label="'Remove' | translatePhrase"
           @click="removeThis(true)"
-          @keyup.enter="removeThis(true)"
-          @mouseover="removeHover = true, showCardInfo = false"
-          @mouseout="removeHover = false, showCardInfo = true">
+          @keyup.enter="removeThis(true)">
 
           <tooltip-component 
             :show-tooltip="removeHover" 
@@ -136,15 +131,10 @@ export default {
         </i>
       </div>
     </div>
-    <card-component 
-      :title="getItemLabel" 
-      :focus-data="item" 
-      :uri="item['@id']" 
-      :is-local="false" 
-      :is-locked="isLocked" 
-      :should-show="showCardInfo" 
-      :floating="!expanded" 
-      :field-key="fieldKey"></card-component>
+    <template slot="popover">
+      <PreviewCard ref="previewCard" :focus-data="focusData" />
+    </template>
+    </v-popover>
   </div>
 </template>
 

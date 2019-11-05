@@ -147,7 +147,7 @@ export default {
     display: flex;
     flex-direction: column;
     list-style: none;
-    margin-bottom: 15px;
+    margin-bottom: 0.5em;
     padding: 0.5em 1em 0.25em 1em;
     background-color: @white;
     border: 1px solid @gray-lighter;
