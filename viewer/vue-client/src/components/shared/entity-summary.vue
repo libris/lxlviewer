@@ -438,6 +438,8 @@ export default {
     list-style-type: none;
     padding: 0px;
     margin: 0px;
+    // height is set in style-bindings,
+    // see template in this file
     transition: height 0.2s ease-out;
   }
 
