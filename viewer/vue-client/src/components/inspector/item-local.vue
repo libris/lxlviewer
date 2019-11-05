@@ -87,6 +87,17 @@ export default {
       'status',
       'userStorage',
     ]),
+    getItemLabel() {
+      return DisplayUtil.getItemLabel(
+        this.focusData,
+        this.resources.display,
+        this.inspector.data.quoted,
+        this.resources.vocab,
+        this.settings,
+        this.resources.context,
+        this.focusData['@type'],
+      );
+    },
     failedValidations() {
       const failedValidations = [];
       if (this.user.settings.appTech === false) {
