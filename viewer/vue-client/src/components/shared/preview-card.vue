@@ -24,19 +24,21 @@ export default {
     populateData() {
       if (this.fetchedData === null) { // Only fetch if we need to
         const self = this;
-        const fnurgel = self.focusData['@id'].split('#')[0];
-        self.fetchMore(fnurgel).then((result) => {
+        const id = self.focusData['@id'].split('#')[0];
+        self.fetchMore(id).then((result) => {
           let simplifiedResult = result;
           if (result.hasOwnProperty('mainEntity')) {
             simplifiedResult = result.mainEntity;
           }
           self.fetchedData = simplifiedResult;
+        }).catch((e) => {
+          console.log(`Couldn't fetch data for: ${id}`);
         });
       }
     },
     fetchMore(id) {
       const self = this;
-      self.fetchStatus = 'fetching';
+      self.fetchStatus = 'loading';
       return new Promise((resolve, reject) => {
         const url = `${id}/data.json?lens=card`;
         fetch(url).then((res) => {
@@ -45,6 +47,7 @@ export default {
             resolve(res.json());
           } else {
             self.fetchStatus = 'error';
+            reject('Error fetching card info', error);
           }
         }, (error) => {
           self.fetchStatus = 'error';
