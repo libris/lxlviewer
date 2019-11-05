@@ -2,7 +2,7 @@
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import { cloneDeep, isArray, get, isObject } from 'lodash-es';
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
   props: {
