@@ -27,12 +27,9 @@ export default {
   data() {
     return {
       removed: false,
-      previewPending: false,
     };
   },
   methods: {
-    ...mapActions([
-    ]),
     removeThis(animate = false) {
       let parentValue = cloneDeep(get(this.inspector.data, this.parentPath));
       if (isArray(parentValue)) {
