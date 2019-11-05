@@ -86,8 +86,7 @@ export default {
       pasteHover: false,
       foundChip: false,
       removed: false,
-      uniqueIds: [],
-      hasLinkedObjects: true,
+      uniqueIds: [],      
     };
   },
   components: {
@@ -341,6 +340,14 @@ export default {
     forcedToArray() {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
+    isLinkedInstanceOf() {
+      if (this.fieldKey === 'instanceOf' && this.fieldValue['@id']) {
+        if (this.fieldValue['@id'].split('#')[0] !== this.inspector.data.record['@id']) {
+          return true;
+        }
+      }
+      return false;
+    },
   },
   methods: {
     pasteClipboardItem() {
@@ -545,7 +552,8 @@ export default {
       'is-highlighted': embellished,
       'has-failed-validations': failedValidations.length > 0,
       'is-distinguished': isDistinguished,
-      'is-linked': hasLinkedObjects, }" 
+      'is-linked': isLinkedInstanceOf, 
+    }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
