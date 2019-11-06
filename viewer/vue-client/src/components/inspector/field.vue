@@ -340,8 +340,8 @@ export default {
     forcedToArray() {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
-    isLinkedInstanceOf() {
-      if (this.fieldKey === 'instanceOf' && this.fieldValue['@id']) {
+    isLinkedInstanceOf() {      
+      if (this.fieldKey === 'instanceOf' && this.parentPath === "mainEntity") {        
         if (this.fieldValue['@id'].split('#')[0] !== this.inspector.data.record['@id']) {
           return true;
         }
@@ -730,7 +730,7 @@ export default {
       <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
         :key="index"
-        v-bind:class="{'is-entityContent': getDatatype(item) == 'entity'}">
+        v-bind:class="{'is-entityContent': getDatatype(item) == 'entity' && !isLinkedInstanceOf}">
 
         <item-error 
           v-if="getDatatype(item) == 'error'" 
