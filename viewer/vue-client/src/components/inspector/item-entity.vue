@@ -112,55 +112,55 @@ export default {
 
 <template>
   <div 
-    class="ItemEntity-wrapper"
+    class="ItemEntity-container"
     :class="{ 'is-expanded': expanded }">
     <div 
       v-if="isDistinguished"
-      class="ItemEntity-label"
+      class="ItemEntity-expander"
       tabindex="0"
       @click="toggleExpanded()"
       @keyup.enter="toggleExpanded()">
       <i class="ItemEntity-arrow fa fa-chevron-right"></i>
     </div>
-    <div class="ItemEntity-container">
-      <div
-        :id="`formPath-${path}`">
-        <v-popover placement="bottom-start" @show="$refs.previewCard.populateData()">
-          <div class="ItemEntity chip" 
-            tabindex="0"
-            v-if="!expanded" 
-            :class="{ 'is-locked': isLocked, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
-            <span class="ItemEntity-label chip-label">
-              <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-              <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
-              <span class="placeholder"></span></span>
-            <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
-              <i class="fa fa-times-circle icon icon--sm" 
-                v-if="!isLocked"
-                role="button"
-                tabindex="0"
-                :aria-label="'Remove' | translatePhrase"
-                @click="removeThis(true)"
-                @keyup.enter="removeThis(true)">
+    <div
+      :id="`formPath-${path}`"
+      v-show="!expanded">
+      <v-popover placement="bottom-start" @show="$refs.previewCard.populateData()">
+        <div class="ItemEntity chip" 
+          tabindex="0"
+          v-if="!expanded" 
+          :class="{ 'is-locked': isLocked, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
+          <span class="ItemEntity-label chip-label">
+            <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
+            <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
+            <span class="placeholder"></span></span>
+          <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
+            <i class="fa fa-times-circle icon icon--sm" 
+              v-if="!isLocked"
+              role="button"
+              tabindex="0"
+              :aria-label="'Remove' | translatePhrase"
+              @click="removeThis(true)"
+              @keyup.enter="removeThis(true)">
 
-                <tooltip-component 
-                  :show-tooltip="removeHover" 
-                  tooltip-text="Remove"></tooltip-component>
-              </i>
-            </div>
+              <tooltip-component 
+                :show-tooltip="removeHover" 
+                tooltip-text="Remove"></tooltip-component>
+            </i>
           </div>
-          <template slot="popover">
-            <PreviewCard ref="previewCard" :focus-data="focusData" />
-          </template>
-        </v-popover> 
-      </div>
-      
-      <entity-summary 
-        v-if="isDistinguished && expanded"
-        :focus-data="item" 
-        :should-link="true"
-        :valueDisplayLimit=100></entity-summary>
+        </div>
+        <template slot="popover">
+          <PreviewCard ref="previewCard" :focus-data="focusData" />
+        </template>
+      </v-popover> 
     </div>
+    
+    <entity-summary 
+      v-if="isDistinguished && expanded"
+      :focus-data="focusData" 
+      :should-link="true"
+      :should-open-tab="true"
+      :show-all-keys="true"></entity-summary>
   </div>
 </template>
 
@@ -170,13 +170,20 @@ export default {
 
 .ItemEntity {
 
-  &-wrapper {
+  &-container {
     display: flex;
+    position: relative;
     width: 100%;
 
 
+    .ItemEntity-expander {
+      cursor: pointer;
+      padding: 0.3em 0.5em 0 0;
+    }
+
+
     &.is-expanded > 
-    .ItemEntity-label >
+    .ItemEntity-expander >
     .ItemEntity-arrow {
       transform:rotate(90deg);
       transform-origin: center;
@@ -189,8 +196,8 @@ export default {
     font-size: 14px;
     color: @gray-darker-transparent;
 
-    .ItemLocal-label:hover & {
-      color: @black
+    .ItemEntity-expander:hover & {
+      color: @black;
     }
   }
 
@@ -228,6 +235,7 @@ export default {
     }
   }
   &-label {
+    cursor: pointer;
     a {
       color: @link-color;
       &:hover {
