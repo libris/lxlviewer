@@ -2,11 +2,11 @@
 import { size } from 'lodash-es';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
-import CardComponent from '../shared/card-component';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
 import EntitySummary from '../shared/entity-summary';
+import PreviewCard from '@/components/shared/preview-card';
 
 export default {
   name: 'item-entity',
@@ -29,7 +29,6 @@ export default {
       searchDelay: 2,
       formObj: {},
       expanded: false,
-      showCardInfo: false,
       removeHover: false,
     };
   },
@@ -88,9 +87,9 @@ export default {
     },
   },
   components: {
-    'card-component': CardComponent,
     'tooltip-component': TooltipComponent,
     'entity-summary': EntitySummary,
+    PreviewCard,
   },
   mounted() {
     this.$nextTick(() => {
@@ -125,46 +124,37 @@ export default {
     </div>
     <div class="ItemEntity-container">
       <div
-        :id="`formPath-${path}`"
-        @keyup.enter="showCardInfo=true"
-        @mouseenter="showCardInfo=true"
-        @mouseleave="showCardInfo=false">
-        <div class="ItemEntity chip" 
-          tabindex="0"
-          v-if="!expanded" 
-          :class="{ 'is-locked': isLocked, 'is-highlighted': showCardInfo, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
-          <span class="ItemEntity-label chip-label">
-            <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-            <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
-            <span class="placeholder"></span></span>
-          <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
-            <i class="fa fa-times-circle icon icon--sm" 
-              v-if="!isLocked"
-              role="button"
-              tabindex="0"
-              :aria-label="'Remove' | translatePhrase"
-              @click="removeThis(true)"
-              @keyup.enter="removeThis(true)"
-              @mouseover="removeHover = true, showCardInfo = false"
-              @mouseout="removeHover = false, showCardInfo = true">
+        :id="`formPath-${path}`">
+        <v-popover placement="bottom-start" @show="$refs.previewCard.populateData()">
+          <div class="ItemEntity chip" 
+            tabindex="0"
+            v-if="!expanded" 
+            :class="{ 'is-locked': isLocked, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
+            <span class="ItemEntity-label chip-label">
+              <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
+              <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
+              <span class="placeholder"></span></span>
+            <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
+              <i class="fa fa-times-circle icon icon--sm" 
+                v-if="!isLocked"
+                role="button"
+                tabindex="0"
+                :aria-label="'Remove' | translatePhrase"
+                @click="removeThis(true)"
+                @keyup.enter="removeThis(true)">
 
-              <tooltip-component 
-                :show-tooltip="removeHover" 
-                tooltip-text="Remove"></tooltip-component>
-            </i>
+                <tooltip-component 
+                  :show-tooltip="removeHover" 
+                  tooltip-text="Remove"></tooltip-component>
+              </i>
+            </div>
           </div>
-        </div>      
+          <template slot="popover">
+            <PreviewCard ref="previewCard" :focus-data="focusData" />
+          </template>
+        </v-popover> 
       </div>
-      <card-component 
-        :title="getItemLabel" 
-        :focus-data="item" 
-        :uri="item['@id']" 
-        :is-local="false" 
-        :is-locked="isLocked" 
-        :should-show="showCardInfo" 
-        :floating="!expanded" 
-        :field-key="fieldKey"></card-component>
-
+      
       <entity-summary 
         v-if="isDistinguished && expanded"
         :focus-data="item" 

@@ -2,12 +2,13 @@
 import { each, cloneDeep, get } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
-import * as httpUtil from '../../utils/http';
-import * as LayoutUtil from '../../utils/layout';
-import * as VocabUtil from '../../utils/vocab';
-import * as RecordUtil from '../../utils/record';
-import * as StringUtil from '../../utils/string';
-import * as DataUtil from '../../utils/data';
+import * as httpUtil from '@/utils/http';
+import * as LayoutUtil from '@/utils/layout';
+import * as VocabUtil from '@/utils/vocab';
+import * as RecordUtil from '@/utils/record';
+import * as DisplayUtil from '@/utils/display';
+import * as StringUtil from '@/utils/string';
+import * as DataUtil from '@/utils/data';
 import ToolTipComponent from '../shared/tooltip-component';
 import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from './search-window';
@@ -86,6 +87,17 @@ export default {
       'status',
       'userStorage',
     ]),
+    getItemLabel() {
+      return DisplayUtil.getItemLabel(
+        this.focusData,
+        this.resources.display,
+        this.inspector.data.quoted,
+        this.resources.vocab,
+        this.settings,
+        this.resources.context,
+        this.focusData['@type'],
+      );
+    },
     failedValidations() {
       const failedValidations = [];
       if (this.user.settings.appTech === false) {
