@@ -160,7 +160,8 @@ export default {
       :focus-data="focusData" 
       :should-link="true"
       :should-open-tab="true"
-      :show-all-keys="true"></entity-summary>
+      :show-all-keys="true"
+      :no-side-padding="true"></entity-summary>
   </div>
 </template>
 
