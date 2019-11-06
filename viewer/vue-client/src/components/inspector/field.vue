@@ -465,7 +465,6 @@ export default {
       if (typeof o === 'undefined') {
         throw new Error('Cannot check link status of undefined object.');
       }
-      const recordId = this.inspector.data.record['@id'];
       if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {        
         return true;
       }
