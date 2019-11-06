@@ -1,19 +1,28 @@
 <script>
 import { sortBy } from 'lodash-es';
+import { mixin as clickaway } from 'vue-clickaway';
 import * as RecordUtil from '@/utils/record';
 import * as VocabUtil from '@/utils/vocab';
 import CreationCard from '@/components/create/creation-card';
 import FileAdder from '@/components/create/file-adder';
 import TabMenu from '@/components/shared/tab-menu';
+import SelectSigel from '@/components/usersettings/select-sigel';
 
 export default {
   name: 'create-new-form',
+  mixins: [clickaway],
+  beforeRouteLeave(to, from, next) {
+    this.setHintSigelChange(false);
+
+    next();
+  },
   data() {
     return {
       chosenType: '',
       selectedCreation: 'Instance',
       thingData: {},
       activeIndex: -1,
+      hasAllowedTemplates: false,
     };
   },
   methods: {
@@ -49,11 +58,19 @@ export default {
     setActiveIndex(index) {
       this.activeIndex = index;
     },
-    templateIsAllowed(template) {
-      return this.selectedCreation != 'Concept' ||
+    templateIsAllowed(template) {      
+      const isAllowed = this.selectedCreation != 'Concept' ||
         (this.user.uriMinter &&
           this.user.uriMinter.findContainerForEntity(template.value.mainEntity,
-            {'@id': this.user.getActiveLibraryUri()}))
+            {'@id': this.user.getActiveLibraryUri()}));
+
+      this.hasAllowedTemplates = false;
+
+      if (isAllowed) {
+        this.hasAllowedTemplates = true;
+      }
+      
+      return isAllowed;
     },
     userIsAllowedToEditConcepts() {
       if (!this.user.uriMinter) {
@@ -63,6 +80,20 @@ export default {
       return Object.keys(this.user.uriMinter.containerMap).find(
         it => VocabUtil.isSubClassOf(it, 'Concept', vocab, context));
     },
+    getUserRecordType() {
+      const {vocab, context} = this.$store.getters.resources;
+
+      
+    },
+    setHintSigelChange(val) {
+      this.$store.dispatch('setStatusValue', { 
+        property: 'hintSigelChange',
+        value: val,
+      });
+    },
+    hideSigelHint() {
+      this.setHintSigelChange(false);
+    }
   },
   events: {
   },
@@ -72,7 +103,7 @@ export default {
         { id: 'Instance', text: 'Instance' },
         { id: 'Work', text: 'Work' },
         { id: 'Agent', text: 'Agent', excludeBase: true },
-      ];
+      ];      
       if (this.userIsAllowedToEditConcepts()) {
         list.push({ id: 'Concept', text: 'Concept', excludeBase: true });
       }
@@ -121,12 +152,19 @@ export default {
     'creation-card': CreationCard,
     'file-adder': FileAdder,
     'tab-menu': TabMenu,
+    'select-sigel': SelectSigel,
   },
   watch: {
     thingData() {
       this.$store.dispatch('setInsertData', this.thingData);
       this.$router.push({ path: '/new' });
     },
+    selectedCreation() {
+      this.hasAllowedTemplates = true;  
+    },
+    hasAllowedTemplates(val) {
+      this.setHintSigelChange(!val);
+    }
   },
   created() {
 
@@ -135,7 +173,7 @@ export default {
     this.$nextTick(() => {
       this.activeForm = '';
       this.transition = false;
-      this.initialized = true;
+      this.initialized = true;      
     });
   },
 };
@@ -144,11 +182,17 @@ export default {
 <template>
   <div class="Create" id="create-new-post">
     <div class="Create-body">
-      <tab-menu @go="setCreation" :tabs="creationList" :active="selectedCreation"></tab-menu>
+      <tab-menu 
+        @go="setCreation" 
+        :tabs="creationList" 
+        :active="selectedCreation"
+        v-on-clickaway="hideSigelHint" />
+
       <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card
           v-if="!isExcludedBase"
           :is-base="true"
+          :is-allowed="true"
           :creation="selectedCreation"
           :index="0"
           :active-index="activeIndex"
@@ -156,16 +200,16 @@ export default {
           @set-active-index="setActiveIndex" />
         <creation-card
           v-for="(template, index) in combinedTemplates"
-          v-if="templateIsAllowed(template)"
           :key="index"
           :is-base="false"
+          :is-allowed="templateIsAllowed(template)"
           :template="template"
           :index="index + 1"
           :active-index="activeIndex"
           @use-template="useTemplate"
-          @set-active-index="setActiveIndex" />
+          @set-active-index="setActiveIndex" />        
       </div>
-      <file-adder type="new" v-if="selectedCreation === 'File'" @output="recieveFileData" />
+      <file-adder type="new" v-if="selectedCreation === 'File'" @output="recieveFileData" />      
     </div>
   </div>
 </template>
@@ -178,6 +222,23 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
+  }
+}
+
+.SelectSigelModal {
+  &-body {
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 24px 16px 15px 16px;
+  }
+  &-buttonContainer {
+    text-align: right;
+    margin: 20px 0 0 0;
+    .btn {
+      margin-left: 12px;
+    }
   }
 }
 

@@ -47,6 +47,15 @@ span.disabled {
     z-index: 1;
   }
 
+  &.with-accent {
+    .tooltip-arrow {
+      border-color: @brand-accent2;
+    }
+    .tooltip-inner {
+      background: @brand-accent2;
+    }
+  }
+
   &[x-placement^="top"] {
     margin-bottom: 10px;
 

@@ -333,6 +333,9 @@
     "The search gave more results than can be displayed": "Sökningen gav fler träffar än vad som kan visas",
     "No hits": "Inga träffar",
     "Attention": "OBS",
-    "To result list": "Till träfflistan"
+    "To result list": "Till träfflistan",
+    "Create concept": "Skapa koncept",
+    "To create concepts, you need to switch to a seal with correct authority.": "För att skapa koncept behöver du växla till ett sigel med rättigheter.",
+    "Switch sigel": "Växla sigel"
     }
 }
