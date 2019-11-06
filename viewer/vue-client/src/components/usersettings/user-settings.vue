@@ -16,33 +16,6 @@ export default {
     setUser(userObj) {
       this.$store.dispatch('setUser', userObj);
     },
-    // getSigelLabel(sigel, len) {
-    //   let label = '';
-    //   label += sigel.code;
-    //   if (sigel.friendly_name) {
-    //     label += ` - ${sigel.friendly_name}`;
-    //   }
-    //   return label.length > len ? `${label.substr(0, len - 2)}...` : label;
-    // },
-    // updateSigel(e) {
-    //   const doUpdate = () => {
-    //     const userObj = this.user;
-    //     userObj.settings.activeSigel = e.target.value;
-    //     this.setUser(userObj);
-    //   }
-    //   if (this.inspector.data.mainEntity && this.inspector.data.mainEntity['@type'] === 'Item') {
-    //     // If editing a holding, the user must accept a cancel dialog before sigel can be changed
-    //     this.$store.dispatch('pushInspectorEvent', { 
-    //       name: 'post-control',
-    //       value: 'cancel',
-    //       callback: () => {
-    //         doUpdate();
-    //       },
-    //     });
-    //   } else {
-    //     doUpdate();
-    //   }
-    // },
     updateLanguage(e) {
       const userObj = this.user;
       userObj.settings.language = e.target.value;
@@ -119,14 +92,6 @@ export default {
               <td class="value">
                   <select-sigel
                     id="UserConfig-sigel" />
-                  <!-- <select id="UserConfig-sigel" 
-                    class="UserConfig-select customSelect" 
-                    :value="user.settings.activeSigel" 
-                    @change="updateSigel">
-                    <option v-for="sigel in user.collections" 
-                      :key="sigel.code" 
-                      :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}</option>
-                  </select> -->
               </td>
             </tr>
             <tr>
@@ -175,14 +140,6 @@ export default {
           <label class="uppercaseHeading">Sigel</label>
           <select-sigel
             id="UserConfig-sigel" />
-          <!-- <select id="UserConfig-sigel"
-            class="UserConfig-select customSelect" 
-            :value="user.settings.activeSigel" 
-            @change="updateSigel">
-            <option v-for="sigel in user.collections" 
-              :key="sigel.code" 
-              :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}</option>
-          </select> -->
         </li>
         <li>
           <router-link to="/user">{{"Settings" | translatePhrase}}</router-link>
@@ -373,10 +330,6 @@ export default {
     width: auto;
     float: right;
   }
-
-  // &-select {
-  //   width: 100%;
-  // }
 
   &-formGroup {
     padding: 10px 0 5px;
