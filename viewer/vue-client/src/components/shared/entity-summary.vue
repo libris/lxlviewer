@@ -83,10 +83,6 @@ export default {
       type: [String, Boolean], 
       default: false,
     },
-    encodingLevel: {
-      type: [String, Boolean],
-      default: false,
-    },
   },
   data() {
     return {
@@ -106,6 +102,15 @@ export default {
     ...mapGetters([
       'user',
     ]),
+    encodingLevel() {
+      if (this.inspector.data.hasOwnProperty('record') && this.focusData['@id'] === this.inspector.data.record.mainEntity['@id']) {
+        return this.inspector.data.record.encodingLevel;
+      }
+      if (this.focusData.hasOwnProperty('meta')) {
+        return this.focusData.meta.encodingLevel;
+      }
+      return false;
+    },
     idAsFnurgel() {
       if (this.focusData.hasOwnProperty('@id')) {
         const id = this.focusData['@id'];
