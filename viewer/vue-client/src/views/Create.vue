@@ -64,8 +64,6 @@ export default {
           this.user.uriMinter.findContainerForEntity(template.value.mainEntity,
             {'@id': this.user.getActiveLibraryUri()}));
 
-      this.hasAllowedTemplates = false;
-
       if (isAllowed) {
         this.hasAllowedTemplates = true;
       }
@@ -159,8 +157,14 @@ export default {
       this.$store.dispatch('setInsertData', this.thingData);
       this.$router.push({ path: '/new' });
     },
-    selectedCreation() {
-      this.hasAllowedTemplates = true;  
+    selectedCreation(val) {
+      // restrict hasAllowedTemplates check to Concept only
+      if (val === 'Concept') {
+        this.hasAllowedTemplates = false;
+      }
+      else {
+        this.hasAllowedTemplates = true;
+      }
     },
     hasAllowedTemplates(val) {
       this.setHintSigelChange(!val);
