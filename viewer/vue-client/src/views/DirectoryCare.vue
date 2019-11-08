@@ -79,7 +79,8 @@ export default {
       });
       Promise.all(promiseArray)
         .then((result) => {
-          this.getMainEntities(result);
+          this.fetchedItems = result;
+          this.allDone();
         })
         .catch(() => {
           this.$store.dispatch('pushNotification',
@@ -91,10 +92,6 @@ export default {
               this.allDone();
             });
         });
-    },
-    getMainEntities(data) {
-      this.fetchedItems = data.filter((item => !!item)).map(item => ({ ...item.mainEntity, encodingLevel: item.encodingLevel }));
-      this.allDone();
     },
     allDone() {
       this.$store.dispatch('removeLoadingIndicator', 'Loading')
