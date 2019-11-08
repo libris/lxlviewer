@@ -737,9 +737,9 @@ export default {
         <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" /> 
         <div class="Inspector-admin">
           <div class="Inspector-header">
-            <h1 class="Inspector-title mainTitle" :title="recordType">
-              <span>{{ recordType | labelByLang }}</span>
-              <span v-if="inspector.status.isNew"> - [{{ "New record" | translatePhrase }}]</span>
+            <h1>
+              <span class="type" :title="recordType">{{ recordType | labelByLang }}</span>
+              <span class="badge badge-accent2" v-if="inspector.status.isNew">{{ "New record" | translatePhrase }}</span>
             </h1>
             <entity-changelog v-if="inspector.status.isNew === false" />
           </div>
@@ -837,6 +837,13 @@ export default {
     margin-bottom: 0.25em;
     @media (min-width: @screen-md) {
       flex-direction: row;
+    }
+    h1 {
+      margin: 0;
+    }
+    .type {
+      font-size: 3rem;
+      text-transform: uppercase;
     }
   }
 
