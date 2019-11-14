@@ -70,7 +70,7 @@ export default {
         <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
         <a v-if="!isLibrisResource" :href="item['@id']">{{getItemLabel}}</a>
       </span>
-      <template slot="popover">
+      <template slot="popover" v-if="hoverLinks">
         <PreviewCard ref="previewCard" :focus-data="focusData" />
       </template>
     </v-popover>
