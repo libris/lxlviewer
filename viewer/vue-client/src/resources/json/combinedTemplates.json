@@ -818,8 +818,7 @@
             {
               "@type": "Title",
               "mainTitle": "",
-              "subtitle": "",
-              "marc:nonfilingChars": ""
+              "subtitle": ""
             }
           ],
           "responsibilityStatement": "",
@@ -922,7 +921,8 @@
               }
             }
           ],
-          "contribution": [{
+          "contribution": [
+            {
               "@type": "PrimaryContribution",
               "agent": null,
               "role": [{
@@ -942,15 +942,7 @@
               "label": ""
             }
           ],
-          "subject": [
-            {
-              "@type": "ComplexSubject",
-              "inScheme": {
-                "@id": "https://id.kb.se/term/sao"
-              },
-              "termComponentList": []
-            }
-          ],
+          "subject": [],
           "summary": [
             {
               "@type": "Summary",
