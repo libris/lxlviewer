@@ -108,32 +108,32 @@ export default {
   <div class="ItemEntity-container" 
     :id="`formPath-${path}`">
     <v-popover placement="bottom-start" @show="$refs.previewCard.populateData()">
-    <div class="ItemEntity chip" 
-      tabindex="0"
-      v-if="!expanded" 
-      :class="{ 'is-locked': isLocked, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
-      <span class="ItemEntity-label chip-label">
-        <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-        <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
-        <span class="placeholder"></span></span>
-      <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
-        <i class="fa fa-times-circle icon icon--sm" 
-          v-if="!isLocked"
-          role="button"
-          tabindex="0"
-          :aria-label="'Remove' | translatePhrase"
-          @click="removeThis(true)"
-          @keyup.enter="removeThis(true)">
+      <div class="ItemEntity chip" 
+        tabindex="0"
+        v-if="!expanded" 
+        :class="{ 'is-locked': isLocked, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
+        <span class="ItemEntity-label chip-label">
+          <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
+          <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
+          <span class="placeholder"></span></span>
+        <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
+          <i class="fa fa-times-circle icon icon--sm" 
+            v-if="!isLocked"
+            role="button"
+            tabindex="0"
+            :aria-label="'Remove' | translatePhrase"
+            @click="removeThis(true)"
+            @keyup.enter="removeThis(true)">
 
-          <tooltip-component 
-            :show-tooltip="removeHover" 
-            tooltip-text="Remove"></tooltip-component>
-        </i>
+            <tooltip-component 
+              :show-tooltip="removeHover" 
+              tooltip-text="Remove"></tooltip-component>
+          </i>
+        </div>
       </div>
-    </div>
-    <template slot="popover">
-      <PreviewCard ref="previewCard" :focus-data="focusData" />
-    </template>
+      <template slot="popover">
+        <PreviewCard ref="previewCard" :focus-data="focusData" />
+      </template>
     </v-popover>
   </div>
 </template>
