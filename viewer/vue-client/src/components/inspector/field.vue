@@ -1077,10 +1077,13 @@ export default {
     flex: 1 100%;
     margin: 0;
     padding: 0.25em 1em;
+    max-width: 100%;
+    width: 0;
 
     .Field--inner & {
       border: 0;
       padding: 0 0 0 10px;
+      width: auto;
     }
 
     @media (min-width: 768px) {
