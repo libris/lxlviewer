@@ -161,7 +161,7 @@ export default {
       :should-link="true"
       :should-open-tab="true"
       :show-all-keys="true"
-      :no-side-padding="true"></entity-summary>
+      :embedded-in-field="true"></entity-summary>
   </div>
 </template>
 

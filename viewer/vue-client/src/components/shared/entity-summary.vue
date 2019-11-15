@@ -87,7 +87,7 @@ export default {
       type: [String, Boolean],
       default: false,
     },
-    noSidePadding: {
+    embeddedInField: {
       type: Boolean,
       default: false,
     }
@@ -239,7 +239,7 @@ export default {
 <template>
 <section 
   class="EntitySummary"
-  v-bind:class="{'no-side-padding': noSidePadding}">
+  v-bind:class="{'is-embedded-in-field': embeddedInField}">
   <div class="EntitySummary-meta">
     <encoding-level-icon
       v-if="encodingLevel && !isItem"
@@ -320,7 +320,7 @@ export default {
   min-width: 0%;
   padding: 0.5em 0.75em 0.5em 0.75em;
 
-  &.no-side-padding {
+  &.is-embedded-in-field {
     padding: 0.5em 0 0.5em 0;
   }
 
