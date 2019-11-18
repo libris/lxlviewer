@@ -1,6 +1,7 @@
 <script>
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
+import * as StringUtil from '@/utils/string';
 import { cloneDeep, isArray, get, isObject } from 'lodash-es';
 import { mapGetters } from 'vuex';
 
@@ -102,6 +103,34 @@ export default {
         this.item['@id'],
         this.inspector.data.quoted,
       );
+    },
+    routerPath() {
+      let id = '';
+      if (this.recordObject) {
+        id = this.recordObject['@id'];
+      } else {
+        id = this.item['@id'];
+      }
+      const uriParts = id.split('/');
+      const fnurgel = uriParts[uriParts.length - 1];
+      return `/${fnurgel}`;
+    },
+    recordObject() {
+      const quoted = this.inspector.data.quoted;
+      const keys = Object.keys(quoted);
+      for (const key of keys) {
+        const graphNode = quoted[key];
+        if (graphNode.hasOwnProperty('mainEntity') && graphNode.mainEntity['@id'] === this.item['@id']) {
+          return graphNode;
+        }
+      }
+      return null;
+    },
+    isLibrisResource() {
+      if (this.recordObject) {
+        return StringUtil.isLibrisResourceUri(this.recordObject['@id'], this.settings);
+      }
+      return StringUtil.isLibrisResourceUri(this.item['@id'], this.settings);
     },
   },
   watch: {
