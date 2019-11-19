@@ -62,11 +62,6 @@ export default {
     isLibrisResource() {
       return StringUtil.isLibrisResourceUri(this.focusData.meta['@id'], this.settings);
     },
-    encodingLevel() {
-      if (this.focusData.hasOwnProperty('meta')) {
-        return this.focusData.meta.encodingLevel;
-      } return false;
-    },
   },
   methods: {
     setHiddenDetailsNumber(value) {
@@ -95,8 +90,7 @@ export default {
       :exclude-components="isImport ? ['id'] : []"
       :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
       @import-this="importThis()"
-      :valueDisplayLimit=3
-      :encodingLevel="encodingLevel">
+      :valueDisplayLimit=3>
     </entity-summary>
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">

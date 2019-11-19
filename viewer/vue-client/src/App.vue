@@ -355,7 +355,7 @@ button {
 }
 
 .btn--md {
-  .btn-mixin(150px, 30px, 14px);
+  .btn-mixin(150px, 32px, 14px);
   padding: 0 15px;
 
   &-icon {

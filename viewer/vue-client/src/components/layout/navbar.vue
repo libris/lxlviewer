@@ -13,6 +13,7 @@ export default {
     return {
       hasAvatar: true,
       showUserMenu: false,
+      showSigelHint: false,
     };
   },
   components: {
@@ -24,6 +25,7 @@ export default {
     ...mapGetters([
       'userCare',
       'settings',
+      'status',
       'user',
     ]),
     tabs() {
@@ -50,6 +52,16 @@ export default {
     isUserPage() {
       return this.$route.path === '/user';
     },
+    tooltipOptions() {
+      const options = {
+        content: `${StringUtil.getUiPhraseByLang('To create concepts, you need to switch to a seal with correct authority.', this.user.settings.language)}`,
+        show: this.showSigelHint,
+        trigger: 'manual',
+        placement: 'bottom',
+        classes: 'with-accent'
+      }
+      return options;
+    }
   },
   methods: {
     navigate(id) {
@@ -69,6 +81,9 @@ export default {
   watch: {
     '$route.path'() {
       this.hideUserMenu();
+    },
+    'status.hintSigelChange'(val) {
+      this.showSigelHint = val;
     },
   },
 };
@@ -93,16 +108,27 @@ export default {
           />
         </div>
         <ul class="MainNav-userWrapper col-xs-2 col-xs-push-0 col-sm-push-0 col-sm-4 col-md-3 col-md-push-3">
-          <li class="MainNav-item" :class="{ 'active': showUserMenu && !isUserPage }" v-if="user.isLoggedIn">
+          <li 
+            class="MainNav-item" 
+            :class="{ 'active': showUserMenu && !isUserPage }" 
+            v-if="user.isLoggedIn"
+            v-tooltip="tooltipOptions" >
             <div tabindex="0" @click="toggleUserMenu" @keyup.enter="toggleUserMenu">
-              <user-avatar class="hidden-xs" :size="24" />
-              <user-avatar class="visible-xs-block" :size="32" />
+              <user-avatar 
+                class="hidden-xs" 
+                :size="24" />
+              <user-avatar 
+                class="visible-xs-block" 
+                :size="32" />
               <span class="MainNav-linkText userName hidden-xs">
               {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </span>
               <i class="fa fa-fw hidden-xs" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
             </div>
-            <user-settings v-if="showUserMenu && !isUserPage" compact v-on-clickaway="hideUserMenu"/>
+            <user-settings 
+              v-if="showUserMenu && !isUserPage" 
+              compact 
+              v-on-clickaway="hideUserMenu" />
           </li>
           <li class="MainNav-item" v-if="!user.isLoggedIn">
             <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">

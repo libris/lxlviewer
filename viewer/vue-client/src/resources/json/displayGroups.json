@@ -22,7 +22,6 @@
     "marc:fullerFormName",
     "lifeSpan",
     "marc:attributionQualifier",
-    "code",
     "isPartOf",
     "marc:subordinateUnit"
   ]

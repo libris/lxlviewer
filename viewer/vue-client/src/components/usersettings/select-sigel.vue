@@ -1,0 +1,117 @@
+<script>
+import { mapGetters } from 'vuex';
+
+export default {
+  name: 'select-sigel',
+  props: {
+    id: String,
+    preselectedValue: String,
+    updateOnChange: {
+      default: true,
+      type: Boolean,
+    },
+  },
+  methods: {
+    getSigelLabel(sigel, len) {
+      let label = '';
+      label += sigel.code;
+      if (sigel.friendly_name) {
+        label += ` - ${sigel.friendly_name}`;
+      }
+      return label.length > len ? `${label.substr(0, len - 2)}...` : label;
+    },
+    updateSigel(value) {
+      const doUpdate = () => {
+        const userObj = this.user;
+        userObj.settings.activeSigel = value;
+        this.$store.dispatch('setUser', userObj);
+      }
+      if (this.inspector.data.mainEntity && this.inspector.data.mainEntity['@type'] === 'Item') {
+        // If editing a holding, the user must accept a cancel dialog before sigel can be changed
+        this.$store.dispatch('pushInspectorEvent', { 
+          name: 'post-control',
+          value: 'cancel',
+          callback: () => {
+            doUpdate();
+          },
+        });
+      } else {
+        doUpdate();
+      }
+
+      this.$emit("changed");
+    },
+    onChange(e) {
+      if (this.updateOnChange) {
+        this.updateSigel(e.target.value);
+      }
+    },
+    onSubmit(e) {
+      this.updateSigel(this.$refs.selectSigel.value);
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'inspector',
+      'user',
+    ]),
+    selectValue() {
+      return this.preselectedValue ? this.preselectedValue : this.user.settings.activeSigel;
+    },
+  },
+};
+</script>
+
+<template>
+  <form 
+    class="SelectSigelForm"
+    :class="{'displayInRow': !updateOnChange}"    
+    @submit.prevent="onSubmit">
+    <select 
+      :id="id" 
+      class="customSelect" 
+      ref="selectSigel"
+      :value="selectValue" 
+      @change="onChange">
+      <option v-for="sigel in user.collections" 
+        :key="sigel.code" 
+        :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}</option>
+    </select>
+    <button      
+      v-if="!updateOnChange"
+      type="submit"
+      class="btn btn-primary btn--md">
+        <i class="icon icon--white fa fa-exchange"></i>
+        {{ 'Växla sigel' | translatePhrase }}
+    </button>
+  </form>
+</template>
+
+<style lang="less">
+
+.SelectSigelForm {
+  &.displayInRow {
+    display: flex;
+    flex-direction: column;
+    
+    @media screen and (min-width: @screen-sm-min){
+      flex-direction: row;
+      justify-content: flex-end;      
+    }
+
+    @media screen and (max-width: @screen-sm-min){
+      .btn {
+        margin-left: 0;
+      }
+    }
+
+    .customSelect {
+      font-size: 1.4rem;
+      @media screen and (max-width: @screen-sm-min){
+        margin-bottom: 1.4rem;
+      }
+    }    
+  }
+}
+
+</style>

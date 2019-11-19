@@ -308,6 +308,8 @@
     "Publication year (ascending)": "Utgivningsår (äldst först)",
     "Main title (A-Z)": "Huvudtitel (A-Ö)",
     "Main title (Z-A)": "Huvudtitel (Ö-A)",
+    "Preferred label (A-Z)": "Föredragen benämning (A-Ö)",
+    "Preferred label (Z-A)": "Föredragen benämning (Ö-A)",
     "Sigel (A-Z)": "Sigel (A-Ö)",
     "Sigel (Z-A)": "Sigel (Ö-A)",
     "Free text": "Fritext",
@@ -333,6 +335,9 @@
     "The search gave more results than can be displayed": "Sökningen gav fler träffar än vad som kan visas",
     "No hits": "Inga träffar",
     "Attention": "OBS",
-    "To result list": "Till träfflistan"
+    "To result list": "Till träfflistan",
+    "Create concept": "Skapa koncept",
+    "To create concepts, you need to switch to a seal with correct authority.": "För att skapa koncept behöver du växla till ett sigel med rättigheter.",
+    "Switch sigel": "Växla sigel"
     }
 }
