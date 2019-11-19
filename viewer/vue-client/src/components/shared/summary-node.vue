@@ -79,7 +79,7 @@ export default {
 
 <style lang="less">
 .SummaryNode {
-  display: inline-block;
+  display: inline;
   &-link {
     margin-right: 0.5em;
     > a {
