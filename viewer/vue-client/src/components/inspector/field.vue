@@ -86,7 +86,7 @@ export default {
       pasteHover: false,
       foundChip: false,
       removed: false,
-      uniqueIds: [],
+      uniqueIds: [],      
     };
   },
   components: {
@@ -340,6 +340,14 @@ export default {
     forcedToArray() {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
+    isLinkedInstanceOf() {      
+      if (this.fieldKey === 'instanceOf' && this.parentPath === "mainEntity") {        
+        if (this.fieldValue['@id'].split('#')[0] !== this.inspector.data.record['@id']) {
+          return true;
+        }
+      }
+      return false;
+    },
   },
   methods: {
     pasteClipboardItem() {
@@ -432,7 +440,7 @@ export default {
       }
       if (typeof o === 'boolean') {
         return 'boolean';
-      }
+      }      
       if (this.fieldKey === '@type' ||  VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
@@ -457,8 +465,7 @@ export default {
       if (typeof o === 'undefined') {
         throw new Error('Cannot check link status of undefined object.');
       }
-      const recordId = this.inspector.data.record['@id'];
-      if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
+      if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {        
         return true;
       }
       return false;
@@ -543,7 +550,9 @@ export default {
       'is-removed': removed,
       'is-highlighted': embellished,
       'has-failed-validations': failedValidations.length > 0,
-      'is-distinguished': isDistinguished }" 
+      'is-distinguished': isDistinguished,
+      'is-linked': isLinkedInstanceOf, 
+    }" 
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()">
 
@@ -720,7 +729,7 @@ export default {
       <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
         :key="index"
-        v-bind:class="{'is-entityContent': getDatatype(item) == 'entity'}">
+        v-bind:class="{'is-entityContent': getDatatype(item) == 'entity' && !isLinkedInstanceOf}">
 
         <item-error 
           v-if="getDatatype(item) == 'error'" 
@@ -745,6 +754,7 @@ export default {
         <item-entity 
           v-if="getDatatype(item) == 'entity'" 
           :is-locked="locked" 
+          :is-distinguished="isDistinguished"
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 
@@ -1067,10 +1077,13 @@ export default {
     flex: 1 100%;
     margin: 0;
     padding: 0.25em 1em;
+    max-width: 100%;
+    width: 0;
 
     .Field--inner & {
       border: 0;
       padding: 0 0 0 10px;
+      width: auto;
     }
 
     @media (min-width: 768px) {

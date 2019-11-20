@@ -5,6 +5,7 @@ import * as StringUtil from '@/utils/string';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
+import EntitySummary from '../shared/entity-summary';
 import PreviewCard from '@/components/shared/preview-card';
 
 export default {
@@ -13,6 +14,10 @@ export default {
   props: {
     item: {},
     isLocked: {
+      type: Boolean,
+      default: false,
+    },
+    isDistinguished: {
       type: Boolean,
       default: false,
     },
@@ -53,6 +58,9 @@ export default {
     },
   },
   watch: {
+    'inspector.event'(val) {
+      this.$emit(`${val.value}`);
+    },
   },
   methods: {
     expand() {
@@ -83,7 +91,16 @@ export default {
   },
   components: {
     'tooltip-component': TooltipComponent,
+    'entity-summary': EntitySummary,
     PreviewCard,
+  },
+  created() {
+    this.$on('collapse-item', () => {
+      this.collapse();      
+    });
+    this.$on('expand-item', () => {
+      this.expand();
+    });
   },
   mounted() {
     this.$nextTick(() => {
@@ -105,36 +122,57 @@ export default {
 </script>
 
 <template>
-  <div class="ItemEntity-container" 
-    :id="`formPath-${path}`">
-    <v-popover placement="bottom-start" @show="$refs.previewCard.populateData()">
-      <div class="ItemEntity chip" 
-        tabindex="0"
-        v-if="!expanded" 
-        :class="{ 'is-locked': isLocked, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
-        <span class="ItemEntity-label chip-label">
-          <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-          <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
-          <span class="placeholder"></span></span>
-        <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
-          <i class="fa fa-times-circle icon icon--sm" 
-            v-if="!isLocked"
-            role="button"
-            tabindex="0"
-            :aria-label="'Remove' | translatePhrase"
-            @click="removeThis(true)"
-            @keyup.enter="removeThis(true)">
+  <div 
+    class="ItemEntity-container"
+    :class="{ 'is-expanded': expanded }">
+    <div 
+      v-if="isDistinguished"
+      class="ItemEntity-expander"
+      tabindex="0"
+      @click="toggleExpanded()"
+      @keyup.enter="toggleExpanded()">
+      <i class="ItemEntity-arrow fa fa-chevron-right"></i>
+    </div>
+    <div
+      :id="`formPath-${path}`"
+      v-show="!expanded">
+      <v-popover placement="bottom-start" @show="$refs.previewCard.populateData()">
+        <div class="ItemEntity chip" 
+          tabindex="0"
+          v-if="!expanded" 
+          :class="{ 'is-locked': isLocked, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
+          <span class="ItemEntity-label chip-label">
+            <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
+            <span v-if="!expanded && !isLibrisResource"><a :href="item['@id']">{{getItemLabel}}</a></span>
+            <span class="placeholder"></span></span>
+          <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
+            <i class="fa fa-times-circle icon icon--sm" 
+              v-if="!isLocked"
+              role="button"
+              tabindex="0"
+              :aria-label="'Remove' | translatePhrase"
+              @click="removeThis(true)"
+              @keyup.enter="removeThis(true)">
 
-            <tooltip-component 
-              :show-tooltip="removeHover" 
-              tooltip-text="Remove"></tooltip-component>
-          </i>
+              <tooltip-component 
+                :show-tooltip="removeHover" 
+                tooltip-text="Remove"></tooltip-component>
+            </i>
+          </div>
         </div>
-      </div>
-      <template slot="popover">
-        <PreviewCard ref="previewCard" :focus-data="focusData" />
-      </template>
-    </v-popover>
+        <template slot="popover">
+          <PreviewCard ref="previewCard" :focus-data="focusData" />
+        </template>
+      </v-popover> 
+    </div>
+    
+    <entity-summary 
+      v-if="isDistinguished && expanded"
+      :focus-data="focusData" 
+      :should-link="true"
+      :should-open-tab="true"
+      :show-all-keys="true"
+      :embedded-in-field="true"></entity-summary>
   </div>
 </template>
 
@@ -148,6 +186,31 @@ export default {
     display: flex;
     position: relative;
     width: 100%;
+
+
+    .ItemEntity-expander {
+      cursor: pointer;
+      padding: 0.3em 0.5em 0 0;
+    }
+
+
+    &.is-expanded > 
+    .ItemEntity-expander >
+    .ItemEntity-arrow {
+      transform:rotate(90deg);
+      transform-origin: center;
+    }
+  }
+
+  &-arrow {
+    transition: all 0.2s ease;
+    padding: 0 2px;
+    font-size: 14px;
+    color: @gray-darker-transparent;
+
+    .ItemEntity-expander:hover & {
+      color: @black;
+    }
   }
 
   &.is-newlyAdded {
@@ -178,6 +241,7 @@ export default {
     }
   }
   &-label {
+    cursor: pointer;
     a {
       color: @link-color;
       &:hover {

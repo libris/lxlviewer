@@ -83,6 +83,10 @@ export default {
       type: [String, Boolean], 
       default: false,
     },
+    embeddedInField: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -238,7 +242,9 @@ export default {
 </script>
 
 <template>
-<section class="EntitySummary">
+<section 
+  class="EntitySummary"
+  v-bind:class="{'is-embedded-in-field': embeddedInField}">
   <div class="EntitySummary-meta">
     <encoding-level-icon
       v-if="encodingLevel && !isItem"
@@ -318,6 +324,10 @@ export default {
   width: 100%;
   min-width: 0%;
   padding: 0.5em 0.75em 0.5em 0.75em;
+
+  &.is-embedded-in-field {
+    padding: 0.5em 0 0.5em 0;
+  }
 
   .EntityHeader & {
     padding: 0;

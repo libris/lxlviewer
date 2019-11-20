@@ -189,7 +189,7 @@ export default {
     color: @black;
     background-color: @form-field;
     border: 1px solid @form-border;
-    border-bottom: none;
+    border-bottom-width: 0;
     flex-direction: row;
     list-style: none;
     width: 100%;
@@ -221,9 +221,28 @@ export default {
     }
   }
 
-  &-item.is-distinguished {
-    border-bottom: 2px solid @form-border;
-    margin-bottom: 2rem;
+  &-item.is-distinguished {    
+    border-bottom-width: 2px;
+    margin-bottom: 1rem;
+  }
+
+  &-item.is-distinguished.is-linked {
+    border-color: rgba(@brand-success, 23%);
+    background-color: rgba(@brand-success, 4%);
+    
+    &:hover {
+      & .icon:not(.is-disabled) {
+        color: rgba(@brand-success, 80%);
+      }
+    }
+    & .icon {
+      color: rgba(@brand-success, 40%);
+
+      &:hover:not(.is-disabled),
+      &:focus {
+        color: @brand-darker;
+      }
+    }
   }
 }
 
