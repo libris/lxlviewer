@@ -85,7 +85,7 @@ function request(opts, data) {
 export function getRelatedPosts(queryPairs, apiPath) {
   // Returns a list of posts that links to <id> with <property>
   return new Promise((resolve, reject) => {
-    let relatedPosts = `${apiPath}/find.json?`;
+    let relatedPosts = `${apiPath}/find.jsonld?`;
     each(queryPairs, (v, k) => {
       relatedPosts += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
     });

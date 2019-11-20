@@ -106,7 +106,7 @@ export class User {
   }
 
   async loadUserData(apiPath) {
-    const findUrl = `${apiPath}/find.json?@type=EntityContainer&${
+    const findUrl = `${apiPath}/find.jsonld?@type=EntityContainer&${
       this.collections.map(it => `administeredBy.@id=${getLibraryUri(it.code)}`).join('&')
     }`;
     const uriMinter = await createUriMinter(findUrl);
