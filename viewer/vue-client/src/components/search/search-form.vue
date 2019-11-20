@@ -219,9 +219,12 @@ export default {
     prefSort() {
       if (this.user && this.user.settings.sort) {
         const availableSorts = this.settings.sortOptions[this.user.settings.searchType];
-        for (let i = 0; i < availableSorts.length; i++) {
-          if (availableSorts[i].query === this.user.settings.sort) {
-            return { _sort: this.user.settings.sort };
+        
+        if (availableSorts) {
+          for (let i = 0; i < availableSorts.length; i++) {
+            if (availableSorts[i].query === this.user.settings.sort) {
+              return { _sort: this.user.settings.sort };
+            }
           }
         }
       }
