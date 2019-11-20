@@ -32,7 +32,7 @@ export default {
           }
           self.fetchedData = simplifiedResult;
         }).catch((e) => {
-          console.log(`Couldn't fetch data for: ${id}`);
+          console.log(`Couldn't fetch data for: ${id}`, e);
         });
       }
     },
@@ -47,7 +47,7 @@ export default {
             resolve(res.json());
           } else {
             self.fetchStatus = 'error';
-            reject('Error fetching card info', error);
+            reject('Error fetching card info');
           }
         }, (error) => {
           self.fetchStatus = 'error';
