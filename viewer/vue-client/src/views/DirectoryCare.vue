@@ -55,7 +55,7 @@ export default {
     },
     fetchOne(item) {
       return new Promise((resolve, reject) => {
-        HttpUtil.getDocument(item['@id'], 'application/json') // Should be JSON, not JSON-LD
+        HttpUtil.getDocument(`${item['@id'].split('#')[0]}/data.jsonld?lens=card`)
           .then((responseObject) => {
             if (responseObject.status === 200) {
               resolve(responseObject.data);

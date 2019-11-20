@@ -522,7 +522,7 @@ export default {
         // Add wildcard if user is not using operators
         q = `${keyword} | ${keyword}*`;
       }
-      let searchUrl = `${this.settings.apiPath}/find.json?q=${q}`;
+      let searchUrl = `${this.settings.apiPath}/find.jsonld?q=${q}`;
       if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
         for (const type of typeArray) {
           searchUrl += `&@type=${type}`;

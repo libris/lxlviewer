@@ -207,7 +207,7 @@ export default {
         'itemOf.@id': bibId,
         '@type': 'Item',
       };
-      let url = `${this.settings.apiPath}/find.json?`;
+      let url = `${this.settings.apiPath}/find.jsonld?`;
       each(queryPairs, (v, k) => {
         url += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
       });

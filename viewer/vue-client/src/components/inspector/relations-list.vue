@@ -85,7 +85,7 @@ export default {
       }
       queryPairs._offset = this.currentPage * this.maxResults;
       queryPairs._limit = this.maxResults;
-      let q = `${this.settings.apiPath}/find.json?`;
+      let q = `${this.settings.apiPath}/find.jsonld?`;
       each(queryPairs, (v, k) => {
         q += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
       });

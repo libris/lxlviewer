@@ -40,7 +40,7 @@ export default {
       const self = this;
       self.fetchStatus = 'loading';
       return new Promise((resolve, reject) => {
-        const url = `${id}/data.json?lens=card`;
+        const url = `${id}/data.jsonld?lens=card`;
         fetch(url).then((res) => {
           if (res.status === 200) {
             self.fetchStatus = null;
