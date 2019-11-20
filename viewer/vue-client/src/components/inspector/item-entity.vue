@@ -1,5 +1,6 @@
 <script>
 import { size } from 'lodash-es';
+import { mapGetters } from 'vuex';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
 import TooltipComponent from '../shared/tooltip-component';
@@ -33,9 +34,11 @@ export default {
     };
   },
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
+    ...mapGetters([
+      'settings',
+      'user',
+      'inspector',
+    ]),
     isNewlyAdded() {
       if (this.inspector.status.lastAdded === this.fullPath) {
         return true;
@@ -44,17 +47,6 @@ export default {
     },
     fullPath() {
       return `${this.parentPath}.{"@id":"${this.item['@id']}"}`;
-    },
-    routerPath() {
-      if (this.item.hasOwnProperty('@id')) {
-        const uriParts = this.item['@id'].split('/');
-        const fnurgel = uriParts[uriParts.length - 1];
-        return `/${fnurgel}`;
-      }
-      return '';
-    },
-    isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.item['@id'], this.settings);
     },
   },
   watch: {

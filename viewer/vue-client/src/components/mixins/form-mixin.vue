@@ -38,7 +38,7 @@ export default {
       if (typeof this.item !== 'undefined' && this.inspector.data.work && this.item['@id'] === this.inspector.data.work['@id']) {
         return true;
       }
-      if (this.isMainEntityForm === false || this.isHolding || this.recordType === 'Concept') {
+      if (this.isMainEntityForm === false || this.isHolding || this.recordType === 'Concept' || this.recordType === 'Other') {
         return false;
       }
       return true;
