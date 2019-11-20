@@ -337,6 +337,11 @@
     "@type": "Place",
     "label": ""
   },
+  "marc:AddedEntryHierarchicalPlaceName": {
+    "@type": "marc:AddedEntryHierarchicalPlaceName",
+    "countryOrLargerEntity": "",
+    "city": ""
+  },
   "Agent": {
     "@type": "Agent",
     "label": ""
