@@ -65,15 +65,28 @@
   },
   "Identifier": {
     "@type": "Identifier",
-    "value": ""
+    "value": "",
+    "typeNote": ""
   },
   "AudioIssueNumber": {
     "@type": "AudioIssueNumber",
-    "value": ""
+    "value": "",
+    "agent": {
+        "@type": "Organization",
+        "name": ""
+    }
   },
   "CODEN": {
     "@type": "CODEN",
     "value": ""
+  },
+  "CopyrightNumber": {
+    "@type": "CopyrightNumber",
+    "value": "",
+    "source": {
+      "@type": "Source",
+      "code": ""
+    }
   },
   "EAN": {
     "@type": "EAN",
@@ -96,9 +109,25 @@
     "@type": "ISRC",
     "value": ""
   },
+  "LCCN": {
+    "@type": "LCCN",
+    "value": ""
+  },
+  "LcOverseasAcq": {
+    "@type": "LcOverseasAcq",
+    "value": ""
+  },
+  "Local": {
+    "@type": "Local",
+    "value": ""
+  },
   "MatrixNumber": {
     "@type": "MatrixNumber",
-    "value": ""
+    "value": "",
+    "agent": {
+        "@type": "Organization",
+        "name": ""
+    }
   },
   "MusicPlate": {
     "@type": "MusicPlate",
@@ -118,10 +147,23 @@
   },
   "NBN": {
     "@type": "NBN",
-    "value": ""
+    "value": "",
+    "qualifier": [""],
+    "source": {
+      "@type": "Source",
+      "code": ""
+    }
   },
   "PublisherNumber": {
     "@type": "PublisherNumber",
+    "value": "",
+    "agent": {
+        "@type": "Organization",
+        "name": ""
+    }
+  },
+  "ReportNumber": {
+    "@type": "ReportNumber",
     "value": ""
   },
   "SICI": {
@@ -130,15 +172,29 @@
   },
   "STRN": {
     "@type": "STRN",
+    "value": "",
+    "qualifier": [""]
+  },
+  "SystemNumber": {
+    "@type": "SystemNumber",
     "value": ""
   },
   "UPC": {
     "@type": "UPC",
+    "value": "",
+    "qualifier": [""]
+  },
+  "URN": {
+    "@type": "URN",
     "value": ""
   },
   "VideoRecordingNumber": {
     "@type": "VideoRecordingNumber",
-    "value": ""
+    "value": "",
+    "agent": {
+        "@type": "Organization",
+        "name": ""
+    }
   },
   "PrimaryProduction": {
     "@type": "PrimaryProduction",
@@ -336,6 +392,11 @@
   "Place": {
     "@type": "Place",
     "label": ""
+  },
+  "marc:AddedEntryHierarchicalPlaceName": {
+    "@type": "marc:AddedEntryHierarchicalPlaceName",
+    "countryOrLargerEntity": "",
+    "city": ""
   },
   "Agent": {
     "@type": "Agent",
