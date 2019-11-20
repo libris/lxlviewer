@@ -58,6 +58,9 @@ export default {
     },
   },
   watch: {
+    'inspector.event'(val) {
+      this.$emit(`${val.value}`);
+    },
   },
   methods: {
     expand() {
@@ -90,6 +93,14 @@ export default {
     'tooltip-component': TooltipComponent,
     'entity-summary': EntitySummary,
     PreviewCard,
+  },
+  created() {
+    this.$on('collapse-item', () => {
+      this.collapse();      
+    });
+    this.$on('expand-item', () => {
+      this.expand();
+    });
   },
   mounted() {
     this.$nextTick(() => {
