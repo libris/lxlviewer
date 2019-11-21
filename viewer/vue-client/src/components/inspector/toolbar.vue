@@ -465,22 +465,22 @@ export default {
         v-show="otherFormatMenuActive"
         @click="hideOtherFormatMenu" >
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="focusData.mainEntity['@id']" target="_blank">
+          <a class="Toolbar-menuLink" :href="focusData.mainEntity['@id'] | convertResourceLink" target="_blank">
             <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
             Formell resurs</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld')" target="_blank">
+          <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld') | convertResourceLink" target="_blank">
             <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
             JSON-LD</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl')" target="_blank">
+          <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl') | convertResourceLink" target="_blank">
             <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
             Turtle</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('rdf')">
+          <a class="Toolbar-menuLink" :href="getOtherDataFormat('rdf') | convertResourceLink">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
             RDF/XML</a>
         </li>
@@ -562,7 +562,7 @@ export default {
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
               {{"Download compiled" | translatePhrase}} MARC21
           </a>
-          <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl">
+          <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl | convertResourceLink">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
               {{"Download compiled" | translatePhrase}} MARC21
           </a>

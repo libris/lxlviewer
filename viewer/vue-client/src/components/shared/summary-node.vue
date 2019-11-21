@@ -68,7 +68,7 @@ export default {
     <v-popover v-if="isLinked" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
-        <a v-if="!isLibrisResource" :href="item['@id']">{{getItemLabel}}</a>
+        <a v-if="!isLibrisResource" :href="item['@id'] | convertResourceLink">{{getItemLabel}}</a>
       </span>
       <template slot="popover" v-if="hoverLinks">
         <PreviewCard ref="previewCard" :focus-data="focusData" />
