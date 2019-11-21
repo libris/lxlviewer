@@ -55,21 +55,21 @@ export default {
     },
     fetchOne(item) {
       return new Promise((resolve, reject) => {
-        HttpUtil.getDocument(`${item['@id'].split('#')[0]}/data.jsonld?lens=card`)
-          .then((responseObject) => {
-            if (responseObject.status === 200) {
-              resolve(responseObject.data);
-            } else if (responseObject.status === 410) {
-              this.errors.removed.push(item);
-              this.$store.dispatch('unmark', { tag: 'Directory care', documentId: item['@id'] });
-              resolve();
-            } else {
-              this.errors.other.push(item);
-              resolve();
-            }
-          }, (error) => {
-            reject(error);
-          });
+        const url = `${item['@id'].split('#')[0]}/data.jsonld?lens=card`;
+        HttpUtil.getDocument(url).then((res) => {
+          if (res.status === 200) {
+            resolve(res.data);
+          } else if (res.status === 410) {
+            this.errors.removed.push(item);
+            this.$store.dispatch('unmark', { tag: 'Directory care', documentId: item['@id'] });
+            resolve();
+          } else {
+            this.errors.other.push(item);
+            resolve();
+          }
+        }, (error) => {
+          reject(error);
+        });
       });
     },
     fetchAllFlagged() {

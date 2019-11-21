@@ -71,6 +71,14 @@ Vue.filter('asAppPath', (path) => {
   return newPath;
 });
 
+Vue.filter('convertResourceLink', (uri) => {
+  let translatedUri = uri;
+  if (uri.startsWith('https://id.kb.se')) {
+    translatedUri = uri.replace('https://id.kb.se', process.env.VUE_APP_ID_PATH);
+  }
+  return translatedUri;
+});
+
 Vue.filter('asFnurgelLink', (id) => {
   if (!id || typeof id === 'undefined') {
     return '';

@@ -190,7 +190,7 @@ export default {
       v-if="isLocked && !shouldLink">{{fieldValue}}</span>
     <a class="ItemValue-text"
       v-if="isLocked && shouldLink"
-      :href="fieldValue" 
+      :href="fieldValue | convertResourceLink" 
       target="_blank" 
       :title="`${fieldValue} (${newWindowText})`">
         {{fieldValue}} 
