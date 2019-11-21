@@ -1,6 +1,7 @@
 <script>
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import { mapGetters, mapActions } from 'vuex';
+import * as HttpUtil from '@/utils/http';
 
 export default {
   name: 'preview-card',
@@ -25,35 +26,24 @@ export default {
       if (this.fetchedData === null) { // Only fetch if we need to
         const self = this;
         const id = self.focusData['@id'].split('#')[0];
-        self.fetchMore(id).then((result) => {
-          let simplifiedResult = result;
-          if (result.hasOwnProperty('mainEntity')) {
-            simplifiedResult = result.mainEntity;
-          }
-          self.fetchedData = simplifiedResult;
-        }).catch((e) => {
-          console.log(`Couldn't fetch data for: ${id}`, e);
-        });
-      }
-    },
-    fetchMore(id) {
-      const self = this;
-      self.fetchStatus = 'loading';
-      return new Promise((resolve, reject) => {
         const url = `${id}/data.jsonld?lens=card`;
-        fetch(url).then((res) => {
+        self.fetchStatus = 'loading';
+
+        HttpUtil.getDocument(url).then((res) => {
           if (res.status === 200) {
             self.fetchStatus = null;
-            resolve(res.json());
+            let simplifiedResult = res;
+            if (res.hasOwnProperty('mainEntity')) {
+              simplifiedResult = res.mainEntity;
+            }
           } else {
             self.fetchStatus = 'error';
-            reject('Error fetching card info');
           }
         }, (error) => {
           self.fetchStatus = 'error';
-          reject('Error fetching card info', error);
+          reject(error);
         });
-      });
+      }
     },
   },
   computed: {
