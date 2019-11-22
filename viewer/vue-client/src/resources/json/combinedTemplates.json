@@ -874,10 +874,11 @@
           "marc:hasAddedEntryHierarchicalPlaceName": [
             {
               "@type": "marc:AddedEntryHierarchicalPlaceName",
-              "marc:city": "",
               "marc:countryOrLargerEntity": [
                 ""
-              ]
+              ],
+              "marc:city": ""
+
             }
           ],
           "tableOfContents": [

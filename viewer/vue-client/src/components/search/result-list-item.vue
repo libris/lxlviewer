@@ -125,7 +125,7 @@ export default {
       <a class="ResultItem-link"
         v-if="!isLibrisResource && !isImport" 
         :title="header.join(', ')" 
-        :href="focusData['@id']">{{ header.join(', ') }}
+        :href="focusData['@id'] | convertResourceLink">{{ header.join(', ') }}
       </a>
     </h3>
     <span class="ResultItem-category uppercaseHeading--light" :title="categorization.join(', ')">

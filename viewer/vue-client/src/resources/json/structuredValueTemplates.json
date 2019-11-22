@@ -395,8 +395,8 @@
   },
   "marc:AddedEntryHierarchicalPlaceName": {
     "@type": "marc:AddedEntryHierarchicalPlaceName",
-    "countryOrLargerEntity": "",
-    "city": ""
+    "marc:countryOrLargerEntity": "",
+    "marc:city": ""
   },
   "Agent": {
     "@type": "Agent",

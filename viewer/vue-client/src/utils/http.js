@@ -104,13 +104,19 @@ export function getRelatedPosts(queryPairs, apiPath) {
 }
 
 export async function getDocument(uri, contentType = 'application/ld+json') {
+
+  let translatedUri = uri;
+  if (uri.startsWith('https://id.kb.se')) {
+    translatedUri = uri.replace('https://id.kb.se', process.env.VUE_APP_ID_PATH);
+  }
+
   const headers = new Headers();
   headers.append('Accept', contentType);
   const responseObject = {};
   const options = {
     headers,
   };
-  const response = await fetch(uri, options);
+  const response = await fetch(translatedUri, options);
   responseObject.status = response.status;
   if (response.status !== 200) {
     console.warn('HttpUtil.getDocument failed to fetch any data for:', uri);

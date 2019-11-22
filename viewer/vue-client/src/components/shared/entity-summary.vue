@@ -116,8 +116,8 @@ export default {
       return false;
     },
     idAsFnurgel() {
-      if (this.focusData.hasOwnProperty('@id')) {
-        const id = this.focusData['@id'];
+      if (this.uri) {
+        const id = this.uri;
         const fnurgel = RecordUtil.extractFnurgel(id);
         if (fnurgel && this.isLibrisResource) {
           return fnurgel;
@@ -146,7 +146,7 @@ export default {
       return value;
     },
     uri() {
-      let uri = this.focusData['@id'];
+      let uri = this.$options.filters.convertResourceLink(this.focusData['@id']);
       const meta = this.focusData.meta;
       if (meta && meta.hasOwnProperty('@id')) {
         uri = meta['@id'];
@@ -213,7 +213,7 @@ export default {
   methods: {
     copyFnurgel() {
       const self = this;
-      this.$copyText(this.focusData['@id']).then(() => {
+      this.$copyText(this.uri).then(() => {
         self.recentlyCopiedId = true;
         setTimeout(() => {
           self.recentlyCopiedId = false;
@@ -286,7 +286,7 @@ export default {
       </router-link>
       <a class="EntitySummary-titleLink"
         v-if="!isLibrisResource && !isImport && shouldLink" 
-        :href="focusData['@id']" 
+        :href="focusData['@id'] | convertResourceLink" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
         <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
