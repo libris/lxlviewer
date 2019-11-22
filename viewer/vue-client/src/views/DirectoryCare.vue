@@ -55,21 +55,21 @@ export default {
     },
     fetchOne(item) {
       return new Promise((resolve, reject) => {
-        HttpUtil.getDocument(item['@id'], 'application/json') // Should be JSON, not JSON-LD
-          .then((responseObject) => {
-            if (responseObject.status === 200) {
-              resolve(responseObject.data);
-            } else if (responseObject.status === 410) {
-              this.errors.removed.push(item);
-              this.$store.dispatch('unmark', { tag: 'Directory care', documentId: item['@id'] });
-              resolve();
-            } else {
-              this.errors.other.push(item);
-              resolve();
-            }
-          }, (error) => {
-            reject(error);
-          });
+        const url = `${item['@id'].split('#')[0]}/data.jsonld?lens=card`;
+        HttpUtil.getDocument(url).then((res) => {
+          if (res.status === 200) {
+            resolve(res.data);
+          } else if (res.status === 410) {
+            this.errors.removed.push(item);
+            this.$store.dispatch('unmark', { tag: 'Directory care', documentId: item['@id'] });
+            resolve();
+          } else {
+            this.errors.other.push(item);
+            resolve();
+          }
+        }, (error) => {
+          reject(error);
+        });
       });
     },
     fetchAllFlagged() {
@@ -79,7 +79,8 @@ export default {
       });
       Promise.all(promiseArray)
         .then((result) => {
-          this.getMainEntities(result);
+          this.fetchedItems = result;
+          this.allDone();
         })
         .catch(() => {
           this.$store.dispatch('pushNotification',
@@ -91,10 +92,6 @@ export default {
               this.allDone();
             });
         });
-    },
-    getMainEntities(data) {
-      this.fetchedItems = data.filter((item => !!item)).map(item => ({ ...item.mainEntity, encodingLevel: item.encodingLevel }));
-      this.allDone();
     },
     allDone() {
       this.$store.dispatch('removeLoadingIndicator', 'Loading')

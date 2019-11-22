@@ -50,12 +50,23 @@ export default {
                 match = sliceByDimension.observation.filter(obs => obs.object['@id'] === item.object['@id']);
               }
               if (match.length === 1) {
-                const prop = match[0].object.prefLabelByLang || match[0].object.labelByLang;
-                label = prop[this.settings.language];
+                const matchObj = match[0].object;
+                const tryProps = ['prefLabelByLang', 'labelByLang', 'titleByLang', 'label'];
+                for (const prop in tryProps) {
+                  if (label === '' && matchObj.hasOwnProperty(tryProps[prop])) {
+                    if (tryProps[prop].endsWith('ByLang')) {
+                      label = matchObj[tryProps[prop]][this.settings.language];
+                    } else {
+                      label = matchObj[tryProps[prop]];
+                    }
+                  }
+                }
               } else {
                 label = item.object['@id'];
               }
-            } else if (item.hasOwnProperty('object')) label = item.object['@id']; // else try to translate object[@id]...
+            } else if (item.hasOwnProperty('object')) {
+              label = item.object['@id']; // else try to translate object[@id]...
+            }
             return {
               label,
               variable: item.variable,
@@ -120,7 +131,7 @@ export default {
     },
     resultRange() {
       if (this.$route.params.perimeter === 'remote') {
-        return `1-${this.limit}`;
+        return `1-${this.pageData.itemsPerPage}`;
       } 
       const first = this.pageData.itemOffset + 1;
       let last = this.pageData.itemOffset + this.pageData.itemsPerPage;

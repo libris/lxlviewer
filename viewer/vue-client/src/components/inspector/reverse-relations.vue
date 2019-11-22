@@ -76,7 +76,7 @@ export default {
         } else if (this.recordType === 'Agent') {
           query['instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
         } else {
-          query.q = this.mainEntity['@id'];
+          query.o = this.mainEntity['@id'];
         }
         this.panelQuery = Object.assign({}, query);
         if (this.recordType === 'Item' || this.recordType === 'Instance') {

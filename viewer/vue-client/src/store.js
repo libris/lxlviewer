@@ -64,6 +64,7 @@ const store = new Vuex.Store({
       helpSectionTitle: '',
       remoteDatabases: [],
       usedRemoteDatabases: '',
+      hintSigelChange: false,
     },
     user: User.getUserObject(),
     userStorage: {
@@ -245,7 +246,7 @@ const store = new Vuex.Store({
       },
       sortOptions: {
         Instance: [
-          { 
+          {
             query: '',
             label: 'Relevance', 
           },
@@ -266,16 +267,44 @@ const store = new Vuex.Store({
             label: 'Publication year (ascending)',
           },
         ],
-        Item: [
-          { 
+        Work: [
+          {
             query: '',
             label: 'Relevance', 
           },
-          { 
+          {
+            query: 'hasTitle.mainTitle',
+            label: 'Main title (A-Z)',
+          },
+          {
+            query: '-hasTitle.mainTitle',
+            label: 'Main title (Z-A)',
+          },
+        ],
+        Concept: [
+          {
+            query: '',
+            label: 'Relevance', 
+          },
+          {
+            query: 'prefLabel',
+            label: 'Preferred label (A-Z)',
+          },
+          {
+            query: '-prefLabel',
+            label: 'Preferred label (Z-A)',
+          },
+        ],
+        Item: [
+          {
+            query: '',
+            label: 'Relevance', 
+          },
+          {
             query: 'heldBy.@id',
             label: 'Sigel (A-Z)', 
           },
-          { 
+          {
             query: '-heldBy.@id',
             label: 'Sigel (Z-A)', 
           },

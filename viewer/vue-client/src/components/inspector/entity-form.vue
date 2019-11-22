@@ -119,6 +119,7 @@ export default {
         :is-inner="false" 
         :is-removable="true" 
         :is-locked="keyIsLocked(k)" 
+        :is-distinguished="k === 'instanceOf'"
         :key="k" 
         :field-key="k" 
         :field-value="v" 
@@ -145,8 +146,6 @@ export default {
 }
 
 .EntityForm {
-  background-color: @form-field;
-  border: 1px solid @form-border;
   padding: 0;
 
   &-fieldList {
@@ -184,8 +183,13 @@ export default {
 .FieldList {
   padding-left: 0px;
   margin: 0px;
+  border-bottom: 2px solid @form-border;
+
   &-item {
     color: @black;
+    background-color: @form-field;
+    border: 1px solid @form-border;
+    border-bottom-width: 0;
     flex-direction: row;
     list-style: none;
     width: 100%;
@@ -213,6 +217,30 @@ export default {
       &:hover:not(.is-disabled),
       &:focus {
         color: @gray-very-dark-transparent;
+      }
+    }
+  }
+
+  &-item.is-distinguished {    
+    border-bottom-width: 2px;
+    margin-bottom: 1rem;
+  }
+
+  &-item.is-distinguished.is-linked {
+    border-color: rgba(@brand-success, 23%);
+    background-color: rgba(@brand-success, 4%);
+    
+    &:hover {
+      & .icon:not(.is-disabled) {
+        color: rgba(@brand-success, 80%);
+      }
+    }
+    & .icon {
+      color: rgba(@brand-success, 40%);
+
+      &:hover:not(.is-disabled),
+      &:focus {
+        color: @brand-darker;
       }
     }
   }

@@ -62,11 +62,6 @@ export default {
     isLibrisResource() {
       return StringUtil.isLibrisResourceUri(this.focusData.meta['@id'], this.settings);
     },
-    encodingLevel() {
-      if (this.focusData.hasOwnProperty('meta')) {
-        return this.focusData.meta.encodingLevel;
-      } return false;
-    },
   },
   methods: {
     setHiddenDetailsNumber(value) {
@@ -95,8 +90,7 @@ export default {
       :exclude-components="isImport ? ['id'] : []"
       :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
       @import-this="importThis()"
-      :valueDisplayLimit=3
-      :encodingLevel="encodingLevel">
+      :valueDisplayLimit=3>
     </entity-summary>
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
@@ -131,7 +125,7 @@ export default {
       <a class="ResultItem-link"
         v-if="!isLibrisResource && !isImport" 
         :title="header.join(', ')" 
-        :href="focusData['@id']">{{ header.join(', ') }}
+        :href="focusData['@id'] | convertResourceLink">{{ header.join(', ') }}
       </a>
     </h3>
     <span class="ResultItem-category uppercaseHeading--light" :title="categorization.join(', ')">
@@ -147,7 +141,7 @@ export default {
     display: flex;
     flex-direction: column;
     list-style: none;
-    margin-bottom: 15px;
+    margin-bottom: 0.5em;
     padding: 0.5em 1em 0.25em 1em;
     background-color: @white;
     border: 1px solid @gray-lighter;

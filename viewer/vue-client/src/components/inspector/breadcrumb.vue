@@ -76,7 +76,7 @@ export default {
         default:
           break;
       }
-      let queryString = `${this.settings.apiPath}/find.json?`;
+      let queryString = `${this.settings.apiPath}/find.jsonld?`;
       each(queryObj, (v, k) => {
         queryString += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
       });

@@ -63,7 +63,7 @@ export default {
       this.importData = [];
     },
     getLocalResult() {
-      const fetchUrl = `${this.settings.apiPath}/find.json?${this.query}`;
+      const fetchUrl = `${this.settings.apiPath}/find.jsonld?${this.query}`;
       fetch(fetchUrl).then(response => response.text(), (error) => {
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
         this.searchInProgress = false;
@@ -97,7 +97,6 @@ export default {
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
         this.searchInProgress = false;
       }).then((result) => {
-        console.log(result);
         this.result = this.convertRemoteResult(result);
         this.importData = result.items;
         this.searchInProgress = false;

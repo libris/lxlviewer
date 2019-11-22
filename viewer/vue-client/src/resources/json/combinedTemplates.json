@@ -502,7 +502,7 @@
         },
         "work": {
           "@id": "https://id.kb.se/TEMPID#work",
-          "@type": "ProjectedImage",
+          "@type": "MovingImage",
           "classification": [{
               "@type": "ClassificationDdc",
               "code": "",
@@ -818,8 +818,7 @@
             {
               "@type": "Title",
               "mainTitle": "",
-              "subtitle": "",
-              "marc:nonfilingChars": ""
+              "subtitle": ""
             }
           ],
           "responsibilityStatement": "",
@@ -875,10 +874,11 @@
           "marc:hasAddedEntryHierarchicalPlaceName": [
             {
               "@type": "marc:AddedEntryHierarchicalPlaceName",
-              "marc:city": "",
               "marc:countryOrLargerEntity": [
                 ""
-              ]
+              ],
+              "marc:city": ""
+
             }
           ],
           "tableOfContents": [
@@ -922,7 +922,8 @@
               }
             }
           ],
-          "contribution": [{
+          "contribution": [
+            {
               "@type": "PrimaryContribution",
               "agent": null,
               "role": [{
@@ -942,15 +943,7 @@
               "label": ""
             }
           ],
-          "subject": [
-            {
-              "@type": "ComplexSubject",
-              "inScheme": {
-                "@id": "https://id.kb.se/term/sao"
-              },
-              "termComponentList": []
-            }
-          ],
+          "subject": [],
           "summary": [
             {
               "@type": "Summary",
@@ -2445,17 +2438,46 @@
           },
           "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
-          }
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Geographic",
-          "prefLabel": "",
-          "closeMatch": [],
+          "@id": "https://id.kb.se/TEMPID#it",
           "inScheme": {
             "@id": "https://id.kb.se/term/sao"
           },
-          "scopeNote": [""]
+          "prefLabel": "",
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "http://dewey.info/scheme/edition/e23/swe/",
+                "version": "23",
+                "language": "swe"
+              }
+            }
+          ],
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "related": [],
+          "scopeNote": [
+            ""
+          ],
+          "historyNote": [
+            ""
+          ]
         }
       }
     },

@@ -19,15 +19,46 @@ import * as LayoutUtil from '@/utils/layout';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import Field from '@/components/inspector/field';
+import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
 // import MockDisplay from '@/resources/json/display.json';
+
+const TooltipOptions = {
+  popover: {
+    defaultPlacement: 'bottom',
+    // Use the `popoverClass` prop for theming
+    defaultClass: 'vue-popover-theme',
+    // Base class (change if conflicts with other libraries)
+    defaultBaseClass: 'tooltip popover',
+    // Wrapper class (contains arrow and inner)
+    defaultWrapperClass: 'wrapper',
+    // Inner content class
+    defaultInnerClass: 'tooltip-inner popover-inner',
+    // Arrow class
+    defaultArrowClass: 'tooltip-arrow popover-arrow',
+    // Class added when popover is open
+    defaultOpenClass: 'open',
+    defaultDelay: { show: 300, hide: 0 },
+    defaultTrigger: 'hover focus',
+    defaultOffset: 0,
+    defaultContainer: 'body',
+    defaultBoundariesElement: 'viewport',
+    defaultPopperOptions: {},
+    // Hides if clicked outside of popover
+    defaultAutoHide: false,
+    // Update popper on content resize
+    defaultHandleResize: true,
+  },
+};
 
 Vue.config.productionTip = false;
 Vue.use(Vuex);
 Vue.use(PortalVue);
-Vue.use(VTooltip);
+Vue.use(VTooltip, TooltipOptions);
 Vue.use(VueClipboard);
+Vue.component('v-popover', VTooltip.VPopover);
 Vue.component('field', Field);
+Vue.component('entity-summary', EntitySummary);
 
 Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context));
 
@@ -38,6 +69,14 @@ Vue.filter('asAppPath', (path) => {
     newPath = path.replace(key, appPaths[key]);
   }
   return newPath;
+});
+
+Vue.filter('convertResourceLink', (uri) => {
+  let translatedUri = uri;
+  if (uri.startsWith('https://id.kb.se')) {
+    translatedUri = uri.replace('https://id.kb.se', process.env.VUE_APP_ID_PATH);
+  }
+  return translatedUri;
 });
 
 Vue.filter('asFnurgelLink', (id) => {

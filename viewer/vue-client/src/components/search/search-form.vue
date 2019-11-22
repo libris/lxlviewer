@@ -218,8 +218,17 @@ export default {
     },
     prefSort() {
       if (this.user && this.user.settings.sort) {
-        return { _sort: this.user.settings.sort };
-      } return false;
+        const availableSorts = this.settings.sortOptions[this.user.settings.searchType];
+        
+        if (availableSorts) {
+          for (let i = 0; i < availableSorts.length; i++) {
+            if (availableSorts[i].query === this.user.settings.sort) {
+              return { _sort: this.user.settings.sort };
+            }
+          }
+        }
+      }
+      return { _sort: '' };
     },
     mergedParams() {
       return Object.assign(

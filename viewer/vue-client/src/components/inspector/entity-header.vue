@@ -109,8 +109,7 @@ export default {
         :focus-data="focusData"
         :should-link="false"
         :exclude-components="inspector.status.isNew ? ['id'] : []"
-        :valueDisplayLimit=3
-        :encodingLevel="inspector.data.record.encodingLevel">
+        :valueDisplayLimit=3>
       </entity-summary>
       <div class="HeaderComponent-bottomBar">
         <div class="HeaderComponent-controls">
