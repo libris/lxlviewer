@@ -41,7 +41,8 @@
       "hasTitle.mainTitle": ""
     },
     "types": [
-      "Instance"
+      "Instance",
+      "Work"
     ]
   }
 ]
