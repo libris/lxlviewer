@@ -24,6 +24,16 @@
     ]
   },
   {
+    "key": "Preferred label",
+    "searchProp": "prefLabel",
+    "mappings": {
+      "prefLabel": ""
+    },
+    "types": [
+      "Concept"
+    ]
+  },
+  {
     "key": "ISSN",
     "searchProp": "identifiedBy.value",
     "mappings": {
