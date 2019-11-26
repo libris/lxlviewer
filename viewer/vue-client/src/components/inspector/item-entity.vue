@@ -6,7 +6,6 @@ import * as StringUtil from '@/utils/string';
 import TooltipComponent from '../shared/tooltip-component';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
-import EntitySummary from '../shared/entity-summary';
 import PreviewCard from '@/components/shared/preview-card';
 
 export default {
@@ -83,7 +82,6 @@ export default {
   },
   components: {
     'tooltip-component': TooltipComponent,
-    'entity-summary': EntitySummary,
     PreviewCard,
   },
   created() {
