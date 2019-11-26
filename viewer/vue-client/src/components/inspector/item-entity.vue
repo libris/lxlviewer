@@ -88,7 +88,7 @@ export default {
   },
   created() {
     this.$on('collapse-item', () => {
-      this.collapse();      
+      this.collapse();
     });
     this.$on('expand-item', () => {
       this.expand();
@@ -127,15 +127,15 @@ export default {
     </div>
     <div
       :id="`formPath-${path}`"
-      v-show="!expanded">
+      v-show="!isDistinguished || !expanded">
       <v-popover placement="bottom-start" @show="$refs.previewCard.populateData()">
         <div class="ItemEntity chip" 
           tabindex="0"
-          v-if="!expanded" 
+          v-if="!isDistinguished || !expanded" 
           :class="{ 'is-locked': isLocked, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
           <span class="ItemEntity-label chip-label">
-            <span v-if="!expanded && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-            <span v-if="!expanded && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}}</a></span>
+            <span v-if="(!isDistinguished || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
+            <span v-if="(!isDistinguished || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}}</a></span>
             <span class="placeholder"></span></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
             <i class="fa fa-times-circle icon icon--sm" 
