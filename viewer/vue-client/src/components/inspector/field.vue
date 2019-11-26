@@ -340,8 +340,8 @@ export default {
     forcedToArray() {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
-    isLinkedInstanceOf() {      
-      if (this.fieldKey === 'instanceOf' && this.parentPath === "mainEntity") {        
+    isLinkedInstanceOf() {
+      if (this.fieldKey === 'instanceOf' && this.fieldValue !== null && this.parentPath === "mainEntity") {        
         if (this.fieldValue['@id'].split('#')[0] !== this.inspector.data.record['@id']) {
           return true;
         }
