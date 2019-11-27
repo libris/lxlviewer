@@ -37,7 +37,7 @@ export default {
       searchDelay: 2,
       removeHover: false,
       selected: '',
-      disableDataSync: false, // Used to prevent data sync when setting state from code
+      initialized: false,
     };
   },
   computed: {
@@ -61,6 +61,9 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.selected = this.fieldValue;
+      this.$nextTick(() => {
+        this.initialized = true
+      });
     });
   },
   watch: {
@@ -70,7 +73,7 @@ export default {
       }
     },
     selected(value, oldValue) {
-      if (value !== oldValue) {
+      if (value !== oldValue && this.initialized) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
@@ -93,14 +96,14 @@ export default {
 <template>
   <div class="ItemBoolean" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked">
-      <input type="checkbox" 
-        class="customCheckbox-input" 
-        v-model="selected" 
+      <input type="checkbox"
+        class="customCheckbox-input"
+        v-model="selected"
         :disabled="isLocked"
         :aria-label="fieldKey | labelByLang" />
       <div class="customCheckbox-icon"></div>
     </div>
-    <span class="ItemVocab-text" 
+    <span class="ItemVocab-text"
       v-if="isLocked">{{fieldValue ? 'Yes' : 'No' | translatePhrase}}</span>
   </div>
 </template>
