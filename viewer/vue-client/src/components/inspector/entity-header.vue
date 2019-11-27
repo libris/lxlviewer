@@ -7,7 +7,6 @@
 import { each, throttle } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
-import EntitySummary from '@/components/shared/entity-summary';
 import TagSwitch from '@/components/shared/tag-switch';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import LensMixin from '@/components/mixins/lens-mixin';
@@ -93,7 +92,6 @@ export default {
     });
   },
   components: {
-    EntitySummary,
     TagSwitch,
     ReverseRelations,
   },

@@ -303,7 +303,6 @@ export default {
     handleCopy() {
       if (this.user.isLoggedIn) {
         this.$parent.$emit('duplicate-item');
-        this.hideToolsMenu();
       }
     },
   },
@@ -520,7 +519,7 @@ export default {
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
-          <a class="Toolbar-menuLink"  @click="handleCopy">
+          <a class="Toolbar-menuLink"  @click="formControl('duplicate-item'), hideToolsMenu()">
           <i class="fa fa-fw fa-files-o"></i>
           {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item') ? ` (${getKeybindingText('duplicate-item')})` : ''}}
           </a>

@@ -2,7 +2,6 @@
 import { merge, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
-import EntitySummary from '../shared/entity-summary';
 import SummaryAction from '../inspector/summary-action';
 
 export default {
@@ -93,7 +92,6 @@ export default {
     },
   },
   components: {
-    EntitySummary,
     SummaryAction,
   },
   mounted() { 

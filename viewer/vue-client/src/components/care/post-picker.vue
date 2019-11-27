@@ -1,6 +1,5 @@
 <script>
 import { mapGetters } from 'vuex';
-import EntitySummary from '@/components/shared/entity-summary';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 
@@ -29,7 +28,6 @@ export default {
     },
   },
   components: {
-    EntitySummary,
   },
   data() {
     return {

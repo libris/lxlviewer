@@ -1,7 +1,6 @@
 <script>
 import LensMixin from '../mixins/lens-mixin';
 import ResultMixin from '../mixins/result-mixin';
-import EntitySummary from '../shared/entity-summary';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import TagSwitch from '@/components/shared/tag-switch';
 import * as StringUtil from '@/utils/string';
@@ -70,7 +69,6 @@ export default {
   },
   components: {
     TagSwitch,
-    EntitySummary,
     ReverseRelations,
   },
   mounted() { 
