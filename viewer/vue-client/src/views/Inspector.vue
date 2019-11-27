@@ -72,9 +72,9 @@ export default {
   methods: {
     applyOverride(data) {
       this.$store.dispatch('setInspectorData', data);
-      this.$store.dispatch('pushNotification', { 
-        type: 'success', 
-        message: `${StringUtil.getUiPhraseByLang('Formulär uppdaterat, glöm inte att spara posten', this.user.settings.language)}`, 
+      this.$store.dispatch('pushNotification', {
+        type: 'success',
+        message: `${StringUtil.getUiPhraseByLang('Formulär uppdaterat, glöm inte att spara posten', this.user.settings.language)}`,
       });
     },
     shouldWarnOnUnload() {
@@ -91,7 +91,7 @@ export default {
           const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.user.settings.language);
           (e || window.event).returnValue = confirmationMessage; // Gecko + IE
           return confirmationMessage; // Gecko + Webkit, Safari, Chrome etc.
-        } 
+        }
         return undefined;
       });
     },
@@ -124,8 +124,8 @@ export default {
       }
     },
     openMarcPreview() {
-      this.$store.dispatch('pushInspectorEvent', { 
-        name: 'form-control', 
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'form-control',
         value: 'close-modals',
       })
         .then(() => {
@@ -151,17 +151,17 @@ export default {
           };
           this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         } else {
-          this.$store.dispatch('pushNotification', { 
-            type: 'danger', 
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`, 
+          this.$store.dispatch('pushNotification', {
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`,
           });
           this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         }
         return null;
       }, (error) => {
-        this.$store.dispatch('pushNotification', { 
-          type: 'danger', 
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`, 
+        this.$store.dispatch('pushNotification', {
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`,
         });
       }).then((result) => {
         if (typeof result !== 'undefined') {
@@ -202,21 +202,21 @@ export default {
         if (response.status === 200) {
           return response.json();
         } if (response.status === 404 || response.status === 410) {
-          this.$store.dispatch('pushNotification', { 
-            type: 'danger', 
-            message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language)}. ${response.status} ${response.statusText}`, 
+          this.$store.dispatch('pushNotification', {
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language)}. ${response.status} ${response.statusText}`,
           });
         } else {
-          this.$store.dispatch('pushNotification', { 
-            type: 'danger', 
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`, 
+          this.$store.dispatch('pushNotification', {
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`,
           });
         }
         return false;
       }, (error) => {
-        this.$store.dispatch('pushNotification', { 
-          type: 'danger', 
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`, 
+        this.$store.dispatch('pushNotification', {
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`,
         });
       }).then((result) => {
         if (typeof result !== 'undefined') {
@@ -268,19 +268,19 @@ export default {
           changeList: changeList,
           addToHistory: false,
         });
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'embellished', 
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'embellished',
           value: changeList,
         });
         this.justEmbellished = true;
-        this.$store.dispatch('pushNotification', { 
-          type: 'success', 
-          message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}`, 
+        this.$store.dispatch('pushNotification', {
+          type: 'success',
+          message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}`,
         });
       } else {
-        this.$store.dispatch('pushNotification', { 
-          type: 'info', 
-          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language)}`, 
+        this.$store.dispatch('pushNotification', {
+          type: 'info',
+          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language)}`,
         });
       }
     },
@@ -325,13 +325,12 @@ export default {
     },
     onPostLoaded() {
       this.$store.dispatch('setInsertData', '');
-      this.$store.dispatch('setOriginalData', this.inspector.data);
       this.$store.dispatch('flushChangeHistory');
       this.postLoaded = true;
       this.$store.dispatch('removeLoadingIndicator', 'Loading document');
       this.$nextTick(() => {
-        this.$store.dispatch('pushInspectorEvent', { 
-          name: 'post-events', 
+        this.$store.dispatch('pushInspectorEvent', {
+          name: 'post-events',
           value: 'on-post-loaded',
         });
       });
@@ -352,7 +351,7 @@ export default {
       ) {
         window.lxlWarning(`🚑 Found holding without heldBy property. Adding heldBy found in hasComponent (${this.user.settings.activeSigel}).`);
         this.$store.dispatch('setInspectorStatusValue', {
-          property: 'lastAdded', 
+          property: 'lastAdded',
           value: 'mainEntity.heldBy',
         });
         this.$store.dispatch('updateInspectorData', {
@@ -365,18 +364,19 @@ export default {
       }
     },
     startEditing() {
+      this.$store.dispatch('setOriginalData', this.inspector.data);
       this.loadingEdit = true;
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'editing', 
-        value: true, 
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'editing',
+        value: true,
       });
       this.checkForAutomaticFixes();
     },
     stopEditing() {
       // THIS IS NOT THE SAME AS THE "CANCEL"-EVENT
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'editing', 
-        value: false, 
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'editing',
+        value: false,
       });
     },
     doCancel() {
@@ -395,7 +395,7 @@ export default {
             if (callback) {
               callback();
             }
-          } 
+          }
         } else {
           this.doCancel();
           if (callback) {
@@ -409,17 +409,17 @@ export default {
     setTitle() {
       if (typeof this.inspector.data.mainEntity !== 'undefined') {
         const headerList = DisplayUtil.getItemSummary(
-          this.inspector.data.mainEntity, 
-          this.resources.display, 
-          this.inspector.data.quoted, 
-          this.resources.vocab, 
-          this.settings, 
+          this.inspector.data.mainEntity,
+          this.resources.display,
+          this.inspector.data.quoted,
+          this.resources.vocab,
+          this.settings,
           this.resources.context,
         ).header;
         const header = StringUtil.getFormattedEntries(
-          headerList, 
-          this.resources.vocab, 
-          this.user.settings.language, 
+          headerList,
+          this.resources.vocab,
+          this.user.settings.language,
           this.resources.context,
         ).join(', ');
         if (header.length > 0 && header !== '{Unknown}') {
@@ -457,7 +457,7 @@ export default {
     getPackagedItem(keepEmpty = false) {
       const RecordId = this.inspector.data.record['@id'];
       const recordCopy = cloneDeep(this.inspector.data.record);
-      
+
       let obj = null;
       if (keepEmpty) {
         obj = DataUtil.getMergedItems(
@@ -515,13 +515,13 @@ export default {
       this.doSaveRequest(HttpUtil.put, obj, { url, ETag }, done);
     },
     doCreate(obj, done) {
-      this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done); 
+      this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
     doSaveRequest(requestMethod, obj, opts, done) {
-      requestMethod({ 
-        url: opts.url, 
-        ETag: opts.ETag, 
-        activeSigel: this.user.settings.activeSigel, 
+      requestMethod({
+        url: opts.url,
+        ETag: opts.ETag,
+        activeSigel: this.user.settings.activeSigel,
         token: this.user.token,
       }, obj).then((result) => {
         if (!this.documentId) {
@@ -569,17 +569,17 @@ export default {
         const value = get(this.inspector.data, element);
         const warning = this.settings.warnOnSave[element].some(el => el === value);
         if (warning) {
-          this.$store.dispatch('pushNotification', { 
-            type: 'warning', 
-            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources.vocab, this.resources.context)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources.vocab, this.resources.context)}`, 
+          this.$store.dispatch('pushNotification', {
+            type: 'warning',
+            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources.vocab, this.resources.context)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources.vocab, this.resources.context)}`,
           });
         }
       });
     },
     removeEmbellishedHighlight() {
       if (this.inspector.status.embellished.length > 0 && !this.justEmbellished) {
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'embellished', 
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'embellished',
           value: [],
         });
       }
@@ -686,8 +686,8 @@ export default {
     },
     recordType() {
       return VocabUtil.getRecordType(
-        this.inspector.data.mainEntity['@type'], 
-        this.resources.vocab, 
+        this.inspector.data.mainEntity['@type'],
+        this.resources.vocab,
         this.resources.context,
       );
     },
@@ -734,7 +734,7 @@ export default {
         </router-link>
       </div>
       <div v-if="postLoaded" class="Inspector-entity">
-        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" /> 
+        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" />
         <div class="Inspector-admin">
           <div class="Inspector-header">
             <h1>
@@ -744,15 +744,15 @@ export default {
             <entity-changelog v-if="inspector.status.isNew === false" />
           </div>
         </div>
-        <entity-header id="main-header" 
-          :full="true" 
+        <entity-header id="main-header"
+          :full="true"
           v-if="!isItem">
         </entity-header>
         <validation-summary v-if="user.settings.appTech" />
         <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
-        <entity-form 
+        <entity-form
           v-for="tab in editorTabs"
-          :editing-object="tab.id" 
+          :editing-object="tab.id"
           :key="tab.id"
           :is-main-entity-form="tab.id === 'mainEntity'"
           :locked="!inspector.status.editing">
@@ -768,7 +768,7 @@ export default {
     <portal to="sidebar" v-if="marcPreview.active">
       <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active"></marc-preview>
     </portal>
-    <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemovePostModal" 
+    <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemovePostModal"
       v-if="removeInProgress">
       <div slot="modal-header" class="RemovePostModal-header">
         <header>
