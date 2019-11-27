@@ -30,11 +30,14 @@ export function splitJson(json) {
   if (dataObj.mainEntity && dataObj.mainEntity.instanceOf && dataObj.mainEntity.instanceOf['@id']) {
     for (let i = 0; i < original.length; i++) {
       if (dataObj.mainEntity.instanceOf['@id'] === original[i]['@id']) {
-        dataObj.work = original[i];
-        // pushing work to quoted list so that references to it will work for now.
-        // TODO: do something else
-        dataObj.quoted[dataObj.work['@id']] = dataObj.work;
-        original.splice(i, 1);
+        const recordId = dataObj.record['@id'];
+        const workIdWithoutSuffix = original[i]['@id'].split('#')[0];
+        if (recordId === workIdWithoutSuffix) { // Only proceed if the work is local
+          dataObj.work = original[i];
+          // pushing work to quoted list so that references to it will work for now.
+          dataObj.quoted[dataObj.work['@id']] = dataObj.work;
+          original.splice(i, 1);
+        }
         break;
       }
     }

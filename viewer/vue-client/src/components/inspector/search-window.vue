@@ -8,7 +8,6 @@ import VueSimpleSpinner from 'vue-simple-spinner';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
-import EntitySummary from '../shared/entity-summary';
 import FilterSelect from '@/components/shared/filter-select.vue';
 import SummaryAction from './summary-action';
 import LensMixin from '../mixins/lens-mixin';
@@ -103,7 +102,6 @@ export default {
   },
   components: {
     'panel-search-list': PanelSearchList,
-    'entity-summary': EntitySummary,
     'summary-action': SummaryAction,
     'panel-component': PanelComponent,
     'modal-pagination': ModalPagination,

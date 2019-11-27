@@ -2,7 +2,6 @@
 import { mapGetters } from 'vuex';
 import { each, isObject, orderBy } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
-import EntitySummary from '@/components/shared/entity-summary';
 
 export default {
   name: 'holding-list',
@@ -25,7 +24,6 @@ export default {
     },
   },
   components: {
-    'entity-summary': EntitySummary,
   },
   data() {
     return {
