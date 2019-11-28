@@ -25,7 +25,7 @@ export default {
         const userObj = this.user;
         userObj.settings.activeSigel = value;
         this.$store.dispatch('setUser', userObj);
-      }
+      };
       if (this.inspector.data.mainEntity && this.inspector.data.mainEntity['@type'] === 'Item') {
         // If editing a holding, the user must accept a cancel dialog before sigel can be changed
         this.$store.dispatch('pushInspectorEvent', { 
@@ -39,16 +39,16 @@ export default {
         doUpdate();
       }
 
-      this.$emit("changed");
+      this.$emit('changed');
     },
     onChange(e) {
       if (this.updateOnChange) {
         this.updateSigel(e.target.value);
       }
     },
-    onSubmit(e) {
+    onSubmit() {
       this.updateSigel(this.$refs.selectSigel.value);
-    }
+    },
   },
   computed: {
     ...mapGetters([

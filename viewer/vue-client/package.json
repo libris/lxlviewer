@@ -75,6 +75,7 @@
       "no-cond-assign": "off",
       "object-shorthand": "off",
       "import/extensions": "off",
+      "no-param-reassign": "off",
       "import/no-dynamic-require": "off",
       "object-curly-newline": [
         "error",

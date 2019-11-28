@@ -22,7 +22,7 @@ export default {
     isLast: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {

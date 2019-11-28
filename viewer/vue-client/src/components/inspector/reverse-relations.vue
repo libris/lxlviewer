@@ -1,5 +1,4 @@
 <script>
-import { each } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as MathUtil from '@/utils/math';
 import * as HttpUtil from '@/utils/http';
@@ -85,12 +84,12 @@ export default {
         }
         HttpUtil.getRelatedPosts(query, this.settings.apiPath)
           .then((response) => {
-          this.relationInfo = response.items;
-          this.numberOfRelations = response.totalItems;
-          this.checkingRelations = false;
-        }, (error) => {
-          console.log('Error checking for relations', error);
-        });
+            this.relationInfo = response.items;
+            this.numberOfRelations = response.totalItems;
+            this.checkingRelations = false;
+          }, (error) => {
+            console.log('Error checking for relations', error);
+          });
       }, timeoutLength);
     },
     gotoHolding() {

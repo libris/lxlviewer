@@ -21,7 +21,7 @@ export default {
         return langDict[lang];
       }
       return object[property];
-    }
+    },
   },
   computed: {
     user() {
@@ -36,10 +36,9 @@ export default {
         object = object.mainEntity;
       }
       const lang = this.user.settings.language;
-      const label =
-        this.getByLang(object, 'prefLabel', lang) ||
-        this.getByLang(object, 'label', lang) ||
-        this.getByLang(object, 'title', lang)
+      const label = this.getByLang(object, 'prefLabel', lang)
+        || this.getByLang(object, 'label', lang)
+        || this.getByLang(object, 'title', lang);
       if (label) {
         return label;
       }

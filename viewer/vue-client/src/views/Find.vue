@@ -32,7 +32,7 @@ export default {
         this.getResult();
       }
     },
-    '$route.params.perimeter'(value, oldValue) {
+    '$route.params.perimeter'(value) {
       this.searchInProgress = false;
       this.emptyResults();
       this.hideFacetColumn = true;
@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     setSearchPerimeter(id) {
-      this.$router.push({ 'path': `/search/${id}` });
+      this.$router.push({ path: `/search/${id}` });
     },
     getResult() {
       this.emptyResults();

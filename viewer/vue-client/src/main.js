@@ -3,8 +3,8 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import 'whatwg-fetch';
 import Vue from 'vue';
-import Vuex from 'vuex'; // eslint-disable-line no-duplicate-imports
-import { mapGetters } from 'vuex'; // eslint-disable-line no-duplicate-imports
+import Vuex from 'vuex'; // eslint-disable-line import/no-duplicates
+import { mapGetters } from 'vuex'; // eslint-disable-line import/no-duplicates
 import { each } from 'lodash-es';
 import VTooltip from 'v-tooltip';
 import PortalVue from 'portal-vue';

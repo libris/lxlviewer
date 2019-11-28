@@ -177,7 +177,7 @@ export default {
       });
     },
     limitedInfo() {
-      let limited = cloneDeep(this.getSummary.info);
+      const limited = cloneDeep(this.getSummary.info);
       if (!this.showAllKeys && limited.length > this.keyDisplayLimit) {
         limited.length = this.keyDisplayLimit;
       }

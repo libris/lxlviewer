@@ -1,7 +1,5 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as StringUtil from '@/utils/string';
-import UserAvatar from '@/components/shared/user-avatar';
 import SearchForm from '@/components/search/search-form';
 
 export default {
@@ -12,7 +10,6 @@ export default {
     };
   },
   components: {
-    'user-avatar': UserAvatar,
     'search-form': SearchForm,
   },
   methods: {
