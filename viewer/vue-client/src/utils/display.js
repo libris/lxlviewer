@@ -298,7 +298,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
       } else if (displayGroups.categorization.indexOf(key) !== -1) {
         summary.categorization.push({ property: key, value: v });
       } else {
-        const valueAsArray = isArray(item[key]) ? item[key] : [item[key]];
+        const valueAsArray = isArray(value) ? value : [value];
         summary.info.push({ property: key, value: valueAsArray });
       }
     }
