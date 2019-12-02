@@ -1,11 +1,8 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('Cataloging a book', () => {
-  
-  
   context('desktop resolution', () => {
     beforeEach(() => {
-
       cy.viewport('macbook-15');
       cy.login();
     });
