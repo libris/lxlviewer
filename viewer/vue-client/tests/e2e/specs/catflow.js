@@ -1,9 +1,13 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('Cataloging a book', () => {
+  
+  
   context('desktop resolution', () => {
     beforeEach(() => {
+
       cy.viewport('macbook-15');
+      cy.login();
     });
 
     it('Launch the site', () => {
@@ -11,14 +15,9 @@ describe('Cataloging a book', () => {
       cy.contains('#service-name', 'Libris katalogisering');
     });
 
-    // it('Login', () => {
-    //   cy.get('.MainNav [href$="authorize"]').click();
-    //   cy.contains('#service-name', 'Libris katalogisering');
-    // });
-
     it('Navigate to Create new page', () => {
-      // cy.get('.MainNav [href$="create"]').click();
-      cy.visit('/create');
+      cy.get('.MainNav [href$="create"]').click();
+      // cy.visit('/create');
       cy.get('.CreationCard').its('length').should('be.gte', 1);
     });
 

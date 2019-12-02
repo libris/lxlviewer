@@ -1,0 +1,31 @@
+{
+  "app_version": "1.5.0", 
+  "expires_at": "2099-12-02T23:50:02.399526Z", 
+  "user": {
+    "email": "test@testbibblan.test", 
+    "full_name": "Test Svensson", 
+    "permissions": [
+      {
+        "cataloger": true, 
+        "code": "S", 
+        "friendly_name": "Kungliga biblioteket", 
+        "global_registrant": false, 
+        "registrant": true
+      }, 
+      {
+        "cataloger": false, 
+        "code": "Utb2", 
+        "friendly_name": "Utbildning 2", 
+        "global_registrant": false, 
+        "registrant": true
+      }, 
+      {
+        "cataloger": true, 
+        "code": "Utb1", 
+        "friendly_name": "Utbildning 1", 
+        "global_registrant": false, 
+        "registrant": true
+      }
+    ]
+  }
+}
