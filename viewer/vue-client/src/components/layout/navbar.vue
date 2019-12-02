@@ -58,10 +58,10 @@ export default {
         show: this.showSigelHint,
         trigger: 'manual',
         placement: 'bottom',
-        classes: 'with-accent'
-      }
+        classes: 'with-accent',
+      };
       return options;
-    }
+    },
   },
   methods: {
     navigate(id) {

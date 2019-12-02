@@ -2,10 +2,9 @@
 import { size } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LayoutUtil from '@/utils/layout';
-import * as StringUtil from '@/utils/string';
-import TooltipComponent from '../shared/tooltip-component';
-import ItemMixin from '../mixins/item-mixin';
-import LensMixin from '../mixins/lens-mixin';
+import TooltipComponent from '@/components/shared/tooltip-component';
+import ItemMixin from '@/components/mixins/item-mixin';
+import LensMixin from '@/components/mixins/lens-mixin';
 import PreviewCard from '@/components/shared/preview-card';
 
 export default {

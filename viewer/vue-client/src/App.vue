@@ -33,7 +33,6 @@ import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import GlobalMessage from '@/components/layout/global-msg';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import LayoutUtil from '@/utils/layout';
 import { mapGetters } from 'vuex';
 
 export default {

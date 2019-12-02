@@ -36,12 +36,13 @@ export default {
             if (res.hasOwnProperty('mainEntity')) {
               simplifiedResult = res.mainEntity;
             }
+            this.fetchedData = simplifiedResult;
           } else {
             self.fetchStatus = 'error';
           }
         }, (error) => {
           self.fetchStatus = 'error';
-          reject(error);
+          console.log(error);
         });
       }
     },

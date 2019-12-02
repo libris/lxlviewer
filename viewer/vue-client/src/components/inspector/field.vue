@@ -192,11 +192,14 @@ export default {
     entityTypeArchLabel() {
       if (this.archType === 'Instance') {
         return 'Instance type';
-      } else if (this.archType === 'Work') {
+      }
+      if (this.archType === 'Work') {
         return 'Work type';
-      } else if (this.archType === 'Agent') {
+      }
+      if (this.archType === 'Agent') {
         return 'Agent type';
-      } else if (this.archType === 'Concept') {
+      }
+      if (this.archType === 'Concept') {
         return 'Concept type';
       }
       return 'Type';
@@ -341,7 +344,7 @@ export default {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
     isLinkedInstanceOf() {
-      if (this.fieldKey === 'instanceOf' && this.fieldValue !== null && this.parentPath === "mainEntity") {        
+      if (this.fieldKey === 'instanceOf' && this.fieldValue !== null && this.parentPath === 'mainEntity') {
         if (this.fieldValue['@id'].split('#')[0] !== this.inspector.data.record['@id']) {
           return true;
         }
@@ -441,7 +444,7 @@ export default {
       if (typeof o === 'boolean') {
         return 'boolean';
       }      
-      if (this.fieldKey === '@type' ||  VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
+      if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
       if (this.isPlainObject(o) && o.hasOwnProperty('@id') && this.isInGraph(o)) {
