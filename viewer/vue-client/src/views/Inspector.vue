@@ -455,7 +455,6 @@ export default {
       }
     },
     getPackagedItem(keepEmpty = false) {
-      const RecordId = this.inspector.data.record['@id'];
       const recordCopy = cloneDeep(this.inspector.data.record);
 
       let obj = null;
@@ -472,9 +471,7 @@ export default {
           DataUtil.removeNullValues(this.inspector.data.work),
         );
       }
-      if (this.user.uriMinter &&
-          VocabUtil.isSubClassOf(this.inspector.data.mainEntity['@type'], 'Concept',
-                                 this.resources.vocab, this.resources.context)) {
+      if (this.user.uriMinter && VocabUtil.isSubClassOf(this.inspector.data.mainEntity['@type'], 'Concept', this.resources.vocab, this.resources.context)) {
         this.user.uriMinter.assignUri(obj, { '@id': this.user.getActiveLibraryUri() });
       }
 
@@ -623,10 +620,10 @@ export default {
             this.openRemoveModal();
             break;
           case 'save-record':
-            this.saveQueued = () => {this.saveItem()};
+            this.saveQueued = () => this.saveItem();
             break;
           case 'save-record-done':
-            this.saveQueued = () => {this.saveItem(true)};
+            this.saveQueued = () => this.saveItem(true);
             break;
           case 'open-marc-preview':
             this.openMarcPreview();
@@ -641,7 +638,7 @@ export default {
         this.applyOverride(val.value);
       }
     },
-    isReadyForSave: function(val) {
+    isReadyForSave(val) {
       if (val) {
         this.saveQueued();
         this.saveQueued = null;

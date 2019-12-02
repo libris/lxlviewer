@@ -186,9 +186,9 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     const labelValue = getValueByLang(trueItem, 'label', displayDefs, settings.language, context);
     const prefLabelValue = getValueByLang(trueItem, 'prefLabel', displayDefs, settings.language, context);
     if (typeof prefLabelValue !== 'undefined') {
-      result['prefLabel'] = prefLabelValue;
+      result.prefLabel = prefLabelValue;
     } else if (labelValue !== 'undefined') {
-      result['label'] = labelValue;
+      result.label = labelValue;
     }
   } else {
     for (let i = 0; i < properties.length; i++) {

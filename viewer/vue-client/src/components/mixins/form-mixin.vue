@@ -64,7 +64,7 @@ export default {
     },
     sortedProperties() {
       const formObj = this.formObj;
-      let propertyList = DisplayUtil.getDisplayProperties(
+      const propertyList = DisplayUtil.getDisplayProperties(
         this.formType,
         this.resources.display,
         this.resources.vocab,
@@ -81,10 +81,9 @@ export default {
 
       if (this.showTypeChanger) {
         // move instanceOf field to top
-        if(this.recordType === 'Instance') {
+        if (this.recordType === 'Instance') {
           propertyList.splice(1, 0, '@type');
-        }
-        else {
+        } else {
           propertyList.splice(0, 0, '@type');
         }
       }

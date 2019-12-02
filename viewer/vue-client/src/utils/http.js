@@ -5,15 +5,6 @@ function request(opts, data) {
   const options = opts;
   options.method = options.method || 'GET';
 
-  // Fix baseUri
-  // const baseUriJson = document.getElementById('baseUriAlias').innerHTML;
-  // const baseUriAlias = JSON.parse(baseUriJson);
-  // for (const key in baseUriAlias) {
-  //   if (options.url[0] !== '/') {
-  //     options.url = options.url.replace(key, baseUriAlias[key]);
-  //   }
-  // }
-
   return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
 
@@ -104,7 +95,6 @@ export function getRelatedPosts(queryPairs, apiPath) {
 }
 
 export async function getDocument(uri, contentType = 'application/ld+json') {
-
   let translatedUri = uri;
   if (uri.startsWith('https://id.kb.se')) {
     translatedUri = uri.replace('https://id.kb.se', process.env.VUE_APP_ID_PATH);

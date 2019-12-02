@@ -2,10 +2,8 @@
 import { isPlainObject, each } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import * as httpUtil from '../../utils/http';
-import * as RecordUtil from '../../utils/record';
-import PanelComponent from '@/components/shared/panel-component';
-import TooltipComponent from '../shared/tooltip-component';
+import * as httpUtil from '@/utils/http';
+import * as RecordUtil from '@/utils/record';
 
 export default {
   name: 'remote-databases',
@@ -40,7 +38,6 @@ export default {
       'status',
     ]),
     activeDatabases() {
-      const selected = [];
       const dbs = this.remoteDatabases.list;
       const active = {};
       for (const key in dbs) {
@@ -201,8 +198,6 @@ export default {
     // },
   },
   components: {
-    'panel-component': PanelComponent,
-    'tooltip-component': TooltipComponent,
     'vue-simple-spinner': VueSimpleSpinner,
   },
   mounted() {

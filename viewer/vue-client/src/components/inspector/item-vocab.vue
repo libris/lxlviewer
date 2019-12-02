@@ -65,7 +65,7 @@ export default {
       this.possibleValues = this.getPossibleValues();
       this.selected = this.fieldValue;
       this.$nextTick(() => {
-        this.initialized = true
+        this.initialized = true;
       });
     });
   },
