@@ -1077,7 +1077,7 @@ export default {
   }
 
   &-content {
-    flex: 1 100%;
+    flex: 1 auto;
     margin: 0;
     padding: 0.25em 1em;
     max-width: 100%;
