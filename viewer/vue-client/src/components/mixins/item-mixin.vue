@@ -85,6 +85,33 @@ export default {
       }
       return `${this.parentPath}`;
     },
+    extractedMainEntity() {
+      const cleanObj = DataUtil.removeNullValues(this.item);
+      if (this.copyTitle) {
+        cleanObj.hasTitle = this.inspector.data.mainEntity.hasTitle;
+      }
+      return cleanObj;
+    },
+    extractedItem() {
+      if (this.focusData.hasOwnProperty('@type') === false) {
+        return null;
+      }
+      const newRecord = {};
+      newRecord.descriptionCreator = { '@id': this.user.getActiveLibraryUri() };
+      newRecord.derivedFrom = { '@id': this.inspector.data.record['@id'] };
+      const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity, newRecord);
+      return objAsRecord;
+    },
+    isExtractable() {
+      if (this.isCompositional === true) {
+        return false;
+      }
+      const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
+      if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
+        return true;
+      }
+      return false;
+    },
     isEmbedded() {
       return VocabUtil.isEmbedded(this.item['@type'], this.resources.vocab, this.settings, this.resources.context);
     },

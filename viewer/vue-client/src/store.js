@@ -144,6 +144,7 @@ const store = new Vuex.Store({
         'modified',
         'descriptionCreator',
         'descriptionLastModifier',
+        'derivedFrom',
       ],
       dataSetFilters: {
         libris: [
