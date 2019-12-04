@@ -397,6 +397,7 @@ const store = new Vuex.Store({
         // console.log("DATA_UPDATE:", JSON.stringify(node));
         set(state.inspector.data, node.path, node.value);
       });
+      state.inspector.data = Object.assign({}, inspectorData);
     },
     setInspectorTitle(state, str) {
       state.inspector.title = str;
