@@ -578,7 +578,8 @@ app.context_processor(lambda: RDFNS)
 def vocabview(suffix=None):
     voc = daccess.vocab.get_util()
 
-    if request.headers.get('if-none-match') == daccess.vocab.vocab_etag:
+    etag = request.headers.get('if-none-match', default = '').replace('-gzip', '')
+    if etag == daccess.vocab.vocab_etag:
         return Response(status=304)
 
     def link(obj):
