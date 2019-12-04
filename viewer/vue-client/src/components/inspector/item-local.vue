@@ -8,7 +8,6 @@ import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
-import * as DataUtil from '@/utils/data';
 import ToolTipComponent from '../shared/tooltip-component';
 import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from './search-window';

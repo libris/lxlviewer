@@ -9,18 +9,16 @@
 import { cloneDeep, each } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
-import * as httpUtil from '../../utils/http';
-import * as LayoutUtil from '../../utils/layout';
-import * as VocabUtil from '../../utils/vocab';
-import * as RecordUtil from '../../utils/record';
-import * as StringUtil from '../../utils/string';
-import * as DataUtil from '../../utils/data';
-import ToolTipComponent from '../shared/tooltip-component';
+import * as httpUtil from '@/utils/http';
+import * as LayoutUtil from '@/utils/layout';
+import * as RecordUtil from '@/utils/record';
+import * as StringUtil from '@/utils/string';
+import ItemMixin from '@/components/mixins/item-mixin';
+import LensMixin from '@/components/mixins/lens-mixin';
+import FormMixin from '@/components/mixins/form-mixin';
+import ToolTipComponent from '@/components/shared/tooltip-component';
 import FieldAdder from '@/components/inspector/field-adder';
-import SearchWindow from './search-window';
-import ItemMixin from '../mixins/item-mixin';
-import LensMixin from '../mixins/lens-mixin';
-import FormMixin from '../mixins/form-mixin';
+import SearchWindow from '@/components/inspector/search-window';
 
 export default {
   name: 'item-sibling',
