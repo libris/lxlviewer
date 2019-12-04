@@ -135,30 +135,6 @@ export default {
       }
       return false;
     },
-    extractedItem() {
-      const newRecord = {};
-      newRecord.descriptionCreator = { '@id': this.user.getActiveLibraryUri() };
-      const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity, newRecord);
-      return objAsRecord;
-    },
-    extractedMainEntity() {
-      const cleanObj = DataUtil.removeNullValues(this.item);
-
-      if (this.copyTitle) {
-        cleanObj.hasTitle = this.editorData.mainEntity.hasTitle;
-      }
-      return cleanObj;
-    },
-    isExtractable() {
-      if (this.isCompositional === true) {
-        return false;
-      }
-      const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
-      if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
-        return true;
-      }
-      return false;
-    },
     getPath() {
       if (this.inArray) {
         return `${this.parentPath}[${this.index}]`;
