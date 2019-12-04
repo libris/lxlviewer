@@ -39,7 +39,7 @@ export default {
       removeHover: false,
       possibleValues: [],
       selected: '',
-      disableDataSync: false, // Used to prevent data sync when setting dropdown selected state from code
+      initialized: false,
     };
   },
   computed: {
@@ -64,7 +64,9 @@ export default {
     this.$nextTick(() => {
       this.possibleValues = this.getPossibleValues();
       this.selected = this.fieldValue;
-      // this.setInitialValue();
+      this.$nextTick(() => {
+        this.initialized = true
+      });
     });
   },
   watch: {
@@ -74,7 +76,7 @@ export default {
       }
     },
     selected(value, oldValue) {
-      if (value !== oldValue) {
+      if (value !== oldValue && this.initialized) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
@@ -85,7 +87,7 @@ export default {
           addToHistory: true,
         });
       }
-    },    
+    },
   },
   methods: {
     getPossibleValues() {
@@ -93,35 +95,30 @@ export default {
       const possibleValues = [];
       each(this.range, (item) => {
         const type = StringUtil.getCompactUri(item, this.resources.context);
-        values = values.concat(VocabUtil.getTermByType(type, this.resources.vocab, this.resources.context, this.settings));        
+        values = values.concat(VocabUtil.getTermByType(type, this.resources.vocab, this.resources.context, this.settings));
       });
       values = uniq(values);
       each(values, (value) => {
         possibleValues.push(StringUtil.getCompactUri(value['@id'], this.resources.context));
       });
       return sortBy(possibleValues, value => StringUtil.getLabelByLang(
-        value, 
-        this.user.settings.language, 
-        this.resources.vocab, 
+        value,
+        this.user.settings.language,
+        this.resources.vocab,
         this.resources.context,
       ));
     },
-    setTooltipComment(value) {      
-      const termObject = VocabUtil.getTermObject(value, this.resources.vocab, this.resources.context);      
+    setTooltipComment(value) {
+      const termObject = VocabUtil.getTermObject(value, this.resources.vocab, this.resources.context);
 
       if (termObject && termObject.commentByLang) {
         if (termObject.commentByLang[this.settings.language]) {
           return termObject.commentByLang[this.settings.language];
-        } 
+        }
         return termObject.commentByLang[0];
       }
 
       return '';
-    },
-    setInitialValue() {
-      // if (this.possibleValues.indexOf(this.fieldValue) > -1) {
-      //   this.selected = this.fieldValue;
-      // }
     },
   },
   components: {
@@ -134,13 +131,13 @@ export default {
   <div class="ItemVocab" :id="`formPath-${path}`" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked && possibleValues.length > 0">
       <!-- render as dropdown -->
-      <select 
+      <select
         v-if="asDropdown"
-        v-model="selected" 
-        class="ItemVocab-select customSelect" 
+        v-model="selected"
+        class="ItemVocab-select customSelect"
         :aria-label="fieldKey | labelByLang">
-        <option 
-          v-for="option in possibleValues" 
+        <option
+          v-for="option in possibleValues"
           :key="option"
           v-bind:value="option">{{ option | labelByLang }}</option>
       </select>
@@ -150,25 +147,25 @@ export default {
           v-for="option in possibleValues"
           :key="option"
           v-tooltip.top="setTooltipComment(option)"
-          class="RadioPill">          
-          <input 
+          class="RadioPill">
+          <input
             v-model="selected"
             v-bind:value="option"
-            v-bind:id="option"                 
+            v-bind:id="option"
             class="RadioPill-input"
-            type="radio" 
+            type="radio"
             name="radios">
           <label
-            v-bind:for="option"                
+            v-bind:for="option"
             class="RadioPill-label">
             <i class="fa fa-check icon icon--sm"></i>
             {{ option | labelByLang }}</label>
         </div>
       </fieldset>
 
-    </div>  
+    </div>
 
-    <span class="ItemVocab-text" 
+    <span class="ItemVocab-text"
       v-if="isLocked">{{fieldValue | labelByLang}}</span>
   </div>
 </template>
@@ -213,7 +210,7 @@ export default {
   }
 
   &-label {
-    display: block;    
+    display: block;
     height: 33px;
     background-color: @grey-lightest;
     border: 1px solid transparent;
@@ -221,7 +218,7 @@ export default {
     border-radius: 2em;
     line-height: 1.6;
     padding: 3px 14px;
-    margin: 0;    
+    margin: 0;
     font-weight: 400;
 
     .icon {
@@ -232,7 +229,7 @@ export default {
   &-input:hover + &-label {
     color: @black;
   }
-  
+
   &-input:checked + &-label {
     background: @brand-primary;
     color: @grey-lightest;
@@ -243,7 +240,7 @@ export default {
     }
   }
 
-  .user-is-tabbing &-input:focus + label { 
+  .user-is-tabbing &-input:focus + label {
     outline: 2px solid #8cc9c9;
     outline: auto darkcyan;
   }

@@ -248,7 +248,7 @@ const store = new Vuex.Store({
         Instance: [
           {
             query: '',
-            label: 'Relevance', 
+            label: 'Relevance',
           },
           {
             query: 'hasTitle.mainTitle',
@@ -270,7 +270,7 @@ const store = new Vuex.Store({
         Work: [
           {
             query: '',
-            label: 'Relevance', 
+            label: 'Relevance',
           },
           {
             query: 'hasTitle.mainTitle',
@@ -284,7 +284,7 @@ const store = new Vuex.Store({
         Concept: [
           {
             query: '',
-            label: 'Relevance', 
+            label: 'Relevance',
           },
           {
             query: 'prefLabel',
@@ -298,17 +298,17 @@ const store = new Vuex.Store({
         Item: [
           {
             query: '',
-            label: 'Relevance', 
+            label: 'Relevance',
           },
           {
             query: 'heldBy.@id',
-            label: 'Sigel (A-Z)', 
+            label: 'Sigel (A-Z)',
           },
           {
             query: '-heldBy.@id',
-            label: 'Sigel (Z-A)', 
+            label: 'Sigel (Z-A)',
           },
-        ],  
+        ],
       },
       availableUserSettings: {
         languages: [
@@ -364,7 +364,7 @@ const store = new Vuex.Store({
       }
     },
     setOriginalData(state, data) {
-      state.inspector.originalData = data;
+      state.inspector.originalData = cloneDeep(data);
     },
     setInspectorData(state, data) {
       state.inspector.data = data;
@@ -397,7 +397,7 @@ const store = new Vuex.Store({
         // console.log("DATA_UPDATE:", JSON.stringify(node));
         set(inspectorData, node.path, node.value);
       });
-      state.inspector.data = inspectorData;
+      state.inspector.data = Object.assign({}, inspectorData);
     },
     setInspectorTitle(state, str) {
       state.inspector.title = str;
@@ -488,7 +488,7 @@ const store = new Vuex.Store({
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
         const listItem = list[ids[i]];
-        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Favorite') > -1) {  
+        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Favorite') > -1) {
           collection.push({ [ids[i]]: [ids[i]].label });
         }
       }

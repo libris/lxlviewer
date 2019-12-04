@@ -1078,7 +1078,9 @@ export default {
     margin: 0;
     padding: 0.25em 1em;
     max-width: 100%;
-    width: 0;
+    @media (min-width: @screen-sm) {
+      width: 0;
+    }
 
     .Field--inner & {
       border: 0;
