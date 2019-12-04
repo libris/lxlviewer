@@ -508,11 +508,11 @@ export function isExtractable(classId, vocab, settings, context) {
 
 export function getMappedPropertyByContainer(property, container, context) {
   const computed = context[2];
-  const containerMap = computed['containerMap'];
+  const containerMap = computed.containerMap;
   if (containerMap[container]) {
     return containerMap[container][property];
   }
-  return false;
+  return null;
 }
 
 export function getBaseUriFromPrefix(prefix, context) {
@@ -609,7 +609,7 @@ export function printTree(term, vocab, context) {
 }
 
 export function preprocessContext(context) {
-  const computed = {'containerMap': computeContainerMap(context['@context'][1])};
+  const computed = { containerMap: computeContainerMap(context['@context'][1]) };
   context['@context'].push(computed);
   return context;
 }
@@ -618,29 +618,29 @@ export function computeContainerMap(contextList) {
   function forContextList(closure) {
     forOwn(contextList, (value, key) => {
       if (typeof value !== 'undefined' && value !== null && value['@id']) {
-        closure(key, value['@id'], value)
+        closure(key, value['@id'], value);
       }
     });
   }
 
-  let containerMap = {};
-  let containers = ['@language'];
-  each(containers, container => {
-    let idToProperty = {};
-    forContextList( (property, id, value) => {
+  const containerMap = {};
+  const containers = ['@language'];
+  each(containers, (container) => {
+    const idToProperty = {};
+    forContextList((property, id, value) => {
       if (value['@container'] && value['@container'] === container) {
-        idToProperty[id] = property
+        idToProperty[id] = property;
       }
     });
 
-    let propertyToProperty = {};
-    forContextList( (property, id) => {
+    const propertyToProperty = {};
+    forContextList((property, id) => {
       if (idToProperty[id]) {
         propertyToProperty[property] = idToProperty[id];
       }
     });
     containerMap[container] = propertyToProperty;
-  })
+  });
   
   return containerMap;
 }

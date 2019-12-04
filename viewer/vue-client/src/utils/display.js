@@ -36,7 +36,7 @@ function getValueByLang(item, propertyId, displayDefs, langCode, context) {
     throw new Error('getValueByLang was called with an undefined language code.');
   }
   let translatedValue = item[propertyId]; // Set original value
-  let byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
+  const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
   if (byLangKey && item[byLangKey] && item[byLangKey][langCode]) {
     translatedValue = item[byLangKey][langCode];
   }
