@@ -15,7 +15,7 @@ export function getVocab(apiPath) {
 export function getContext(apiPath) {
   return new Promise((resolve, reject) => {
     httpUtil.getResourceFromCache(`${apiPath}/context.jsonld`).then((result) => {
-      resolve(result);
+      resolve(preprocessContext(result));
     }, (error) => {
       reject(error);
     });
@@ -506,34 +506,13 @@ export function isExtractable(classId, vocab, settings, context) {
   return false;
 }
 
-export function getContextProperty(propertyId, context) {
-  const originalKey = propertyId;
-  const contextProperty = originalKey;
-  const contextList = context[1];
-  let resultProp = originalKey;
-
-  if (contextList.hasOwnProperty(contextProperty)) {
-    if (!isPlainObject(contextList[contextProperty])) {
-      resultProp = originalKey;
-    } else {
-      resultProp = contextList[contextProperty]['@id'];
-    }
+export function getMappedPropertyByContainer(property, container, context) {
+  const computed = context[2];
+  const containerMap = computed.containerMap;
+  if (containerMap[container]) {
+    return containerMap[container][property];
   }
-  return resultProp;
-}
-
-export function getContextWithContainer(propertyId, container, context) {
-  const contextList = context[1];
-
-  let contextObj;
-  forOwn(contextList, (value, key) => {
-    if (typeof value !== 'undefined' && value !== null) {
-      if (value.hasOwnProperty('@id') && value['@id'] === propertyId && value.hasOwnProperty('@container') && value['@container'] === container) {
-        contextObj = { '@id': key, '@container': value['@container'] };
-      }
-    }
-  });
-  return contextObj;
+  return null;
 }
 
 export function getBaseUriFromPrefix(prefix, context) {
@@ -627,4 +606,41 @@ export function printTree(term, vocab, context) {
     }
   }
   printNode(getTree(term, vocab, context), '', true);
+}
+
+export function preprocessContext(context) {
+  const computed = { containerMap: computeContainerMap(context['@context'][1]) };
+  context['@context'].push(computed);
+  return context;
+}
+
+export function computeContainerMap(contextList) {
+  function forContextList(closure) {
+    forOwn(contextList, (value, key) => {
+      if (typeof value !== 'undefined' && value !== null && value['@id']) {
+        closure(key, value['@id'], value);
+      }
+    });
+  }
+
+  const containerMap = {};
+  const containers = ['@language'];
+  each(containers, (container) => {
+    const idToProperty = {};
+    forContextList((property, id, value) => {
+      if (value['@container'] && value['@container'] === container) {
+        idToProperty[id] = property;
+      }
+    });
+
+    const propertyToProperty = {};
+    forContextList((property, id) => {
+      if (idToProperty[id]) {
+        propertyToProperty[property] = idToProperty[id];
+      }
+    });
+    containerMap[container] = propertyToProperty;
+  });
+  
+  return containerMap;
 }
