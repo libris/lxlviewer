@@ -32,8 +32,8 @@ export default {
         HttpUtil.getDocument(url).then((res) => {
           if (res.status === 200) {
             self.fetchStatus = null;
-            let simplifiedResult = res;
-            if (res.hasOwnProperty('mainEntity')) {
+            let simplifiedResult = res.data;
+            if (simplifiedResult.hasOwnProperty('mainEntity')) {
               simplifiedResult = res.mainEntity;
             }
             this.fetchedData = simplifiedResult;
