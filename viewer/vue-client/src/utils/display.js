@@ -32,15 +32,26 @@ export function getDisplayDefinitions(baseUri) {
 }
 
 function getValueByLang(item, propertyId, displayDefs, langCode, context) {
+  const translatedValue = tryGetValueByLang(item, propertyId, langCode, context);
+  return translatedValue != null ? translatedValue : item[propertyId];
+}
+
+function tryGetValueByLang(item, propertyId, langCode, context) {
   if (!langCode || typeof langCode === 'undefined') {
-    throw new Error('getValueByLang was called with an undefined language code.');
+    throw new Error('tryGetValueByLang was called with an undefined language code.');
   }
-  let translatedValue = item[propertyId]; // Set original value
   const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
-  if (byLangKey && item[byLangKey] && item[byLangKey][langCode]) {
-    translatedValue = item[byLangKey][langCode];
+  
+  let result = null;
+  if (byLangKey && item[byLangKey]) {
+    if (item[byLangKey][langCode]) {
+      result = item[byLangKey][langCode];
+    } else {
+      const langKeys = Object.keys(item[byLangKey]);
+      result = item[byLangKey][langKeys[0]];
+    }
   }
-  return translatedValue;
+  return result;
 }
 
 export function getLensById(id, displayDefs) {
@@ -290,7 +301,9 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
       } else if (displayGroups.categorization.indexOf(key) !== -1) {
         summary.categorization.push({ property: key, value: v });
       } else {
-        summary.info.push({ property: key, value: v });
+        const translated = tryGetValueByLang(item, key, settings.language, context);
+        const itemValue = translated !== null ? translated : item[key];
+        summary.info.push({ property: key, value: isArray(itemValue) ? itemValue : [itemValue] });
       }
     }
   });
