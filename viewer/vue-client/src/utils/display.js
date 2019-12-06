@@ -250,7 +250,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
             vocab,
             context,
           );
-          result[property] = `{${expectedClassName} ${StringUtil.getUiPhraseByLang('missing', settings.language)}}`;
+          result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, vocab, context)} ${StringUtil.getUiPhraseByLang('without', settings.language)} ${expectedClassName.toLowerCase()}}`;
         }
       }
     }
