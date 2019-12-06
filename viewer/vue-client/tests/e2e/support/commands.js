@@ -38,3 +38,8 @@ Cypress.Commands.add('login', () => {
     });
   });
 });
+
+Cypress.Commands.add('gotoNewDocument', () => {
+  cy.visit('/create');
+  cy.get('.CreationCard-select.btn-primary').eq(2).click();
+});
