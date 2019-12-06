@@ -124,8 +124,9 @@ export default {
     </div>
     <div
       :id="`formPath-${path}`"
+      class="ItemEntity-content"
       v-show="!isDistinguished || !expanded">
-      <v-popover placement="bottom-start" @show="$refs.previewCard.populateData()">
+      <v-popover class="ItemEntity-popover" placement="bottom-start" @show="$refs.previewCard.populateData()">
         <div class="ItemEntity chip" 
           tabindex="0"
           v-if="!isDistinguished || !expanded" 
@@ -176,19 +177,27 @@ export default {
     position: relative;
     width: 100%;
 
-
-    .ItemEntity-expander {
-      cursor: pointer;
-      padding: 0.3em 0.5em 0 0;
-    }
-
-
     &.is-expanded > 
     .ItemEntity-expander >
     .ItemEntity-arrow {
       transform:rotate(90deg);
       transform-origin: center;
     }
+  }
+
+  &-expander {
+    cursor: pointer;
+    padding: 0.3em 0 0 0;
+    flex: 0 0 22px;
+  }
+
+  &-content {
+    flex: 0 1 auto;
+    min-width: 0; //prevent flex overflow
+  }
+
+  &-popover > .trigger {
+    max-width: 100%;
   }
 
   &-arrow {
@@ -257,7 +266,7 @@ export default {
   padding: 3px 5px 3px 10px;
   margin: 2px 5px 5px 0px;
   transition: .3s ease, background-color 0.3s ease;
-  max-width: 300px;
+  max-width: 100%;
 
   &-label {
     font-weight: 600;
