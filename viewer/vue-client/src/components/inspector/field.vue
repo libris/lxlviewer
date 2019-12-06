@@ -1076,14 +1076,10 @@ export default {
     }
   }
 
-  &-content {
-    flex: 1 100%;
+  &-content {    
     margin: 0;
     padding: 0.25em 1em;
-    max-width: 100%;
-    @media (min-width: @screen-sm) {
-      width: 0;
-    }
+    max-width: 100%;    
 
     .Field--inner & {
       border: 0;
@@ -1092,6 +1088,8 @@ export default {
     }
 
     @media (min-width: 768px) {
+      flex: 1 auto;
+      width: 0;
       border-left: 1px solid;
       border-color: @form-border;
       border-color: @form-border-alt;
