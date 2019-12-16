@@ -1,5 +1,5 @@
 # LXL Viewer
-The frontend of Libris XL project. Serves several purposes, including the frontend for id.kb.se and libris cataloging.
+The frontend of Libris XL project. Serves several purposes, including the frontend for [id.kb.se](#the-static-client-idkbse) and [libris cataloging](#the-vue-client-libris-cat).
 
 ## Getting started
 
@@ -50,7 +50,7 @@ No action required here, this is just information.
 
 #### Coding Standard
 * [SUIT CSS](https://suitcss.github.io/)
-* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see `package.json` in `./viewer/vue-client`)
+* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`package.json`](/viewer/vue-client/package.json) in `./viewer/vue-client`)
 
 #### Requirements
 * A flask app serving the resources (see above)
