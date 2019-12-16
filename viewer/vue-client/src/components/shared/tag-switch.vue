@@ -54,7 +54,7 @@ export default {
       'inspector',
     ]),
     documentId() {
-      return this.document['@id'].split('#')[0] || '';
+      return this.document['@id'];
     },
     documentTitle() {
       return DisplayUtil.getItemLabel(
