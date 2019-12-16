@@ -136,64 +136,60 @@
             }
           ],
           "instanceOf": {
-            "@id": "https://id.kb.se/TEMPID#work"
-          }
-        },
-        "work": {
-          "@id": "https://id.kb.se/TEMPID#work",
-          "@type": "Audio",
-          "language": [{
-            "@id": "https://id.kb.se/language/swe"
-          }],
-          "classification": [{
-              "@type": "ClassificationDdc",
-              "code": "",
-              "edition": "full",
-              "editionEnumeration": "23/swe"
-            },
-            {
-              "@type": "Classification",
-              "code": "",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "https://id.kb.se/term/kssb/8",
-                "code": "kssb",
-                "version": "8"
+            "@type": "Audio",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
               }
-            }
-          ],
-          "contribution": [{
-              "@type": "PrimaryContribution",
-              "agent": null,
-              "role": [{
-                "@id": "https://id.kb.se/relator/author"
-              }]
-            },
-            {
-              "@type": "Contribution",
-              "agent": null,
-              "role": [{
-                "@id": "https://id.kb.se/relator/nrt"
-              }]
-            }
-          ],
-          "contentType": [
-            {
-              "@id": "https://id.kb.se/term/rda/SpokenWord"
-            }
-          ],
-          "genreForm": [
-            {
-              "@id": "https://id.kb.se/term/saogf/Ljudb%C3%B6cker"
-            }
-          ],
-          "subject": [],
-          "hasNote": [
-            {
-              "@type": "marc:ParticipantOrPerformerNote",
-              "label": ""
-            }
-          ]
+            ],
+            "contribution": [{
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/author"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/nrt"
+                }]
+              }
+            ],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/SpokenWord"
+              }
+            ],
+            "genreForm": [
+              {
+                "@id": "https://id.kb.se/term/saogf/Ljudb%C3%B6cker"
+              }
+            ],
+            "subject": [],
+            "hasNote": [
+              {
+                "@type": "marc:ParticipantOrPerformerNote",
+                "label": ""
+              }
+            ]
+          }
         }
       }
     },
