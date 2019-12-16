@@ -89,13 +89,16 @@ The e2e tests have a separate file with environment variables. This should just 
 yarn test:e2e
 ```
 
-or
+or run it headless with
 
 ```
-yarn test:e2e --headless
+yarn test:e2e_ci
 ```
 
 #### Lint
+
+Will only generate warnings/errors, will not attempt to fix them.
+
 ```
 yarn lint
 ```
