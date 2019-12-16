@@ -116,6 +116,16 @@ sites = {
                     "sort":"value",
                     "sortOrder":"desc",
                     "size":100
+                },
+                "genreForm.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
+                },
+                "language.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
                 }
             }
         """,
