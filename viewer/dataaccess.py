@@ -77,7 +77,7 @@ sites = {
                     "sortOrder":"desc",
                     "size":100
                 },
-                "carrierType":{
+                "carrierType.@id":{
                     "sort":"value",
                     "sortOrder":"desc",
                     "size":100
@@ -120,6 +120,16 @@ sites = {
                 "genreForm.@id":{
                     "sort":"value",
                     "sortOrder":"desc",
+                    "size":100
+                },
+                "contentType.@id": {
+                    "sort":"value",
+                    "sortOrder": "desc",
+                    "size":100
+                },
+                "nationality.@id": {
+                    "sort":"value",
+                    "sortOrder": "desc",
                     "size":100
                 },
                 "language.@id":{

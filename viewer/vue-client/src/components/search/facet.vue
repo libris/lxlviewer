@@ -36,12 +36,15 @@ export default {
         object = object.mainEntity;
       }
       const lang = this.user.settings.language;
+
+      // TODO: Add chip functionality instead?
       const label = this.getByLang(object, 'prefLabel', lang)
         || this.getByLang(object, 'label', lang)
         || this.getByLang(object, 'title', lang);
       if (label) {
         return label;
       }
+      
       const idArray = object['@id'].split('/');
       return `${idArray[idArray.length - 1]} [has no label]`;
     },
