@@ -2,7 +2,6 @@
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import { mapGetters, mapActions } from 'vuex';
 import * as HttpUtil from '@/utils/http';
-import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'preview-card',
