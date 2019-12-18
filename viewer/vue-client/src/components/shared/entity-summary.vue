@@ -147,25 +147,24 @@ export default {
     },
     uri() {
       let uri = this.$options.filters.convertResourceLink(this.focusData['@id']);
-      const meta = this.focusData.meta;
-      if (meta && meta.hasOwnProperty('@id')) {
-        uri = meta['@id'];
-      }
       return uri;
     },
-    routerPath() {
-      if (this.uri) {
-        const uriParts = this.uri.split('/');
-        const fnurgel = uriParts[uriParts.length - 1];
-        return `/${fnurgel}`;
+    link() {
+      if (this.focusData.hasOwnProperty('meta') && this.focusData.meta.hasOwnProperty('@id')) {
+        return this.focusData.meta['@id'];
       }
-      return '';
+      return this.focusData['@id'];
+    },
+    routerPath() {
+      const uriParts = this.link.split('/');
+      const fnurgel = uriParts[uriParts.length - 1];
+      return `/${fnurgel}`;
     },
     settings() {
       return this.$store.getters.settings;
     },
     isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.uri, this.settings);
+      return StringUtil.isLibrisResourceUri(this.link, this.settings);
     },
     totalInfo() {
       const total = this.getSummary.info;
