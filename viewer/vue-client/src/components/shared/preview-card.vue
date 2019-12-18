@@ -2,6 +2,7 @@
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import { mapGetters, mapActions } from 'vuex';
 import * as HttpUtil from '@/utils/http';
+import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'preview-card',
@@ -23,7 +24,7 @@ export default {
       'addCardToCache',
     ]),
     populateData() {
-      if (this.fetchedData === null) { // Only fetch if we need to
+      if (this.shouldFetch) { // Only fetch if we need to
         const self = this;
         const id = self.focusData['@id'].split('#')[0];
         const url = `${id}/data.jsonld?lens=card`;
@@ -50,7 +51,14 @@ export default {
   computed: {
     ...mapGetters([
       'resources',
+      'settings',
     ]),
+    shouldFetch() {
+      if (this.focusData['@id'].startsWith(this.settings.dataPath) || (this.focusData.hasOwnProperty('meta') &&  this.focusData.meta['@id'].startsWith(this.settings.dataPath))) {
+        return this.fetchedData === null;
+      }
+      return false;
+    },
     fullData() {
       if (this.fetchedData !== null) {
         return this.fetchedData;
