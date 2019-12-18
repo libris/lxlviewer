@@ -4,6 +4,7 @@
 */
 import LensMixin from '@/components/mixins/lens-mixin';
 import ItemMixin from '@/components/mixins/item-mixin';
+import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
 import PreviewCard from '@/components/shared/preview-card';
 
@@ -38,15 +39,13 @@ export default {
       return false;
     },
     isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.item['@id'], this.settings);
+      const recordId = this.item.hasOwnProperty('meta') ? this.item.meta['@id'] : this.recordObject['@id'];
+      return StringUtil.isLibrisResourceUri(recordId, this.settings);
     },
     routerPath() {
-      if (this.focusData.hasOwnProperty('@id')) {
-        const uriParts = this.item['@id'].split('/');
-        const fnurgel = uriParts[uriParts.length - 1];
-        return `/${fnurgel}`;
-      }
-      return '';
+      const recordId = this.item.hasOwnProperty('meta') ? this.item.meta['@id'] : this.recordObject['@id'];
+      const fnurgel = RecordUtil.extractFnurgel(recordId);
+      return `/${fnurgel}`;
     },
   },
   components: {
