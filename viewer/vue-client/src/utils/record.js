@@ -69,9 +69,8 @@ export function getRecordId(data, quoted) {
   }
   if (recordObj.hasOwnProperty('@id')) {
     return recordObj['@id'];
-  } else {
-    return recordObj['@graph'][0]['@id'];
   }
+  return recordObj['@graph'][0]['@id'];
 }
 
 export function recordObjectFromGraph(id, quoted) {

@@ -79,7 +79,7 @@ Vue.filter('convertResourceLink', (uri) => {
   if (uri.startsWith('https://id.kb.se')) {
     translatedUri = uri.replace('https://id.kb.se', store.getters.settings.idPath);
   } else if (uri.startsWith('https://libris.kb.se')) {
-    translatedUri = uri.replace ('https://libris.kb.se', store.getters.settings.dataPath);
+    translatedUri = uri.replace('https://libris.kb.se', store.getters.settings.dataPath);
   }
   return translatedUri;
 });

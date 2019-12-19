@@ -237,14 +237,14 @@ const store = new Vuex.Store({
             order: 7,
           },
         },
-        'language': {
+        language: {
           sv: 'Språk',
           en: 'Language',
           facet: {
             order: 8,
           },
         },
-        'genreForm': {
+        genreForm: {
           sv: 'Genre/form',
           en: 'Genre/form',
           facet: {
@@ -258,14 +258,14 @@ const store = new Vuex.Store({
             order: 9,
           },
         },
-        'contentType': {
+        contentType: {
           sv: 'Innehållstyp',
           en: 'Content type',
           facet: {
             order: 10,
           },
         },
-        'carrierType': {
+        carrierType: {
           sv: 'Bärartyp',
           en: 'Carrier type',
           facet: {

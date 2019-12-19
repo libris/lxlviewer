@@ -4,7 +4,6 @@
 */
 import LensMixin from '@/components/mixins/lens-mixin';
 import ItemMixin from '@/components/mixins/item-mixin';
-import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
 import PreviewCard from '@/components/shared/preview-card';
 

@@ -146,8 +146,8 @@ export default {
       return value;
     },
     uri() {
-      let uri = this.focusData.hasOwnProperty('@id') ? this.focusData['@id'] : this.focusData['@graph'][0].mainEntity['@id'];
-      let convertedUri = this.$options.filters.convertResourceLink(uri);
+      const uri = this.focusData.hasOwnProperty('@id') ? this.focusData['@id'] : this.focusData['@graph'][0].mainEntity['@id'];
+      const convertedUri = this.$options.filters.convertResourceLink(uri);
       return convertedUri;
     },
     settings() {
