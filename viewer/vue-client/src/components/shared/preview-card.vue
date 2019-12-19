@@ -11,6 +11,10 @@ export default {
       type: Object,
       default: null,
     },
+    recordId: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
@@ -25,25 +29,27 @@ export default {
     populateData() {
       if (this.shouldFetch) { // Only fetch if we need to
         const self = this;
-        const id = self.focusData['@id'].split('#')[0];
-        const url = `${id}/data.jsonld?lens=card`;
-        self.fetchStatus = 'loading';
+        const id = self.recordId;
+        if (id !== null) {
+          const url = `${id}/data.jsonld?lens=card`;
+          self.fetchStatus = 'loading';
 
-        HttpUtil.getDocument(url).then((res) => {
-          if (res.status === 200) {
-            self.fetchStatus = null;
-            let simplifiedResult = res.data;
-            if (simplifiedResult.hasOwnProperty('mainEntity')) {
-              simplifiedResult = res.mainEntity;
+          HttpUtil.getDocument(url).then((res) => {
+            if (res.status === 200) {
+              self.fetchStatus = null;
+              let simplifiedResult = res.data;
+              if (simplifiedResult.hasOwnProperty('mainEntity')) {
+                simplifiedResult = res.mainEntity;
+              }
+              this.fetchedData = simplifiedResult;
+            } else {
+              self.fetchStatus = 'error';
             }
-            this.fetchedData = simplifiedResult;
-          } else {
+          }, (error) => {
             self.fetchStatus = 'error';
-          }
-        }, (error) => {
-          self.fetchStatus = 'error';
-          console.log(error);
-        });
+            console.log(error);
+          });
+        }
       }
     },
   },

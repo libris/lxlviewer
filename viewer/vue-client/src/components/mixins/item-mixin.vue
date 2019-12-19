@@ -132,33 +132,16 @@ export default {
         this.inspector.data.quoted,
       );
     },
-    routerPath() {
-      let id = '';
-      if (this.recordObject) {
-        id = this.recordObject['@id'];
-      } else {
-        id = this.item['@id'];
-      }
-      const uriParts = id.split('/');
-      const fnurgel = uriParts[uriParts.length - 1];
-      return `/${fnurgel}`;
-    },
-    recordObject() {
-      const quoted = this.inspector.data.quoted;
-      const keys = Object.keys(quoted);
-      for (const key of keys) {
-        const graphNode = quoted[key];
-        if (graphNode.hasOwnProperty('mainEntity') && graphNode.mainEntity['@id'] === this.item['@id']) {
-          return graphNode;
-        }
-      }
-      return null;
+    recordId() {
+      return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
     },
     isLibrisResource() {
-      if (this.recordObject) {
-        return StringUtil.isLibrisResourceUri(this.recordObject['@id'], this.settings);
-      }
-      return StringUtil.isLibrisResourceUri(this.item['@id'], this.settings);
+      return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
+    },
+    routerPath() {
+      const uriParts = this.recordId.split('/');
+      const fnurgel = uriParts[uriParts.length - 1];
+      return `/${fnurgel}`;
     },
   },
   watch: {
