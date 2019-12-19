@@ -1,7 +1,7 @@
 ## Checklist:
-- [ ] I have ran the unit tests. `yarn test:unit`
-- [ ] I have ran the e2e test. `yarn test:e2e_ci` or `yarn test:e2e` (if you don't have a frontend, ask someone who does)
-- [ ] I have ran the linter. `yarn lint`
+- [ ] I have run the unit tests. `yarn test:unit`
+- [ ] I have run the e2e test. `yarn test:e2e_ci` or `yarn test:e2e` (if you don't have a frontend, ask someone who does)
+- [ ] I have run the linter. `yarn lint`
 
 ## Description
 
