@@ -58,6 +58,35 @@ export function splitJson(json) {
   return dataObj;
 }
 
+export function getRecordId(data, quoted) {
+  let recordObj = recordObjectFromGraph(data['@id'], quoted);
+  if (recordObj === null) {
+    if (data.hasOwnProperty('meta')) {
+      recordObj = data.meta;
+    } else {
+      recordObj = data;
+    }
+  }
+  if (recordObj.hasOwnProperty('@id')) {
+    return recordObj['@id'];
+  }
+  return recordObj['@graph'][0]['@id'];
+}
+
+export function recordObjectFromGraph(id, quoted) {
+  if (typeof quoted === 'undefined' || quoted === null) {
+    return null;
+  }
+  const keys = Object.keys(quoted);
+  for (const key of keys) {
+    const graphNode = quoted[key];
+    if (graphNode.hasOwnProperty('mainEntity') && graphNode.mainEntity['@id'] === id) {
+      return graphNode;
+    }
+  }
+  return null;
+}
+
 export function extractFnurgel(uri) {
   // TODO: Make more checks before returning something
   const recordUri = uri.split('#')[0];

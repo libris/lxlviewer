@@ -4,7 +4,6 @@
 */
 import LensMixin from '@/components/mixins/lens-mixin';
 import ItemMixin from '@/components/mixins/item-mixin';
-import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
 import PreviewCard from '@/components/shared/preview-card';
 
@@ -39,12 +38,11 @@ export default {
       return false;
     },
     isLibrisResource() {
-      const recordId = this.item.hasOwnProperty('meta') ? this.item.meta['@id'] : this.recordObject['@id'];
-      return StringUtil.isLibrisResourceUri(recordId, this.settings);
+      return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
     },
     routerPath() {
-      const recordId = this.item.hasOwnProperty('meta') ? this.item.meta['@id'] : this.recordObject['@id'];
-      const fnurgel = RecordUtil.extractFnurgel(recordId);
+      const uriParts = this.recordId.split('/');
+      const fnurgel = uriParts[uriParts.length - 1];
       return `/${fnurgel}`;
     },
   },
@@ -67,10 +65,10 @@ export default {
     <v-popover v-if="isLinked" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
-        <a v-if="!isLibrisResource" :href="item['@id'] | convertResourceLink">{{getItemLabel}}</a>
+        <a v-if="!isLibrisResource" :href="focusData['@id'] | convertResourceLink">{{getItemLabel}}</a>
       </span>
       <template slot="popover" v-if="hoverLinks">
-        <PreviewCard ref="previewCard" :focus-data="focusData" />
+        <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
       </template>
     </v-popover>
   </div>

@@ -146,25 +146,23 @@ export default {
       return value;
     },
     uri() {
-      let uri = this.$options.filters.convertResourceLink(this.focusData['@id']);
-      return uri;
-    },
-    link() {
-      if (this.focusData.hasOwnProperty('meta') && this.focusData.meta.hasOwnProperty('@id')) {
-        return this.focusData.meta['@id'];
-      }
-      return this.focusData['@id'];
-    },
-    routerPath() {
-      const uriParts = this.link.split('/');
-      const fnurgel = uriParts[uriParts.length - 1];
-      return `/${fnurgel}`;
+      const uri = this.focusData.hasOwnProperty('@id') ? this.focusData['@id'] : this.focusData['@graph'][0].mainEntity['@id'];
+      const convertedUri = this.$options.filters.convertResourceLink(uri);
+      return convertedUri;
     },
     settings() {
       return this.$store.getters.settings;
     },
+    recordId() {
+      return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
+    },
     isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.link, this.settings);
+      return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
+    },
+    routerPath() {
+      const uriParts = this.recordId.split('/');
+      const fnurgel = uriParts[uriParts.length - 1];
+      return `/${fnurgel}`;
     },
     totalInfo() {
       const total = this.getSummary.info;
@@ -285,7 +283,7 @@ export default {
       </router-link>
       <a class="EntitySummary-titleLink"
         v-if="!isLibrisResource && !isImport && shouldLink" 
-        :href="focusData['@id'] | convertResourceLink" 
+        :href="uri | convertResourceLink" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
         <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
