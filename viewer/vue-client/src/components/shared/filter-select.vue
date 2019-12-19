@@ -158,7 +158,7 @@ export default {
     },
     clear() {
       const allObj = {};
-      let allValue = this.optionsAll;
+      const allValue = this.optionsAll;
 
       const inputContSel = document.getElementsByClassName(this.className);
       const inputContEl = inputContSel[0];
