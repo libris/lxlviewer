@@ -157,9 +157,6 @@ export default {
       return this.$store.getters.inspector;
     },
     filterPlaceHolder() {
-      if (this.someValuesFrom.length > 0) {
-        return 'Suggested types';
-      }
       return 'All types';
     },
     selectOptions() {
@@ -354,9 +351,7 @@ export default {
             this.active = true;
             this.$nextTick(() => {
               this.resetSearch();
-              if (this.someValuesFrom.length > 0) {
-                this.search();
-              }
+              this.search();
               if (this.$refs.input) {
                 this.$refs.input.focus();
               }
@@ -371,11 +366,7 @@ export default {
     resetSearch() {
       this.keyword = '';
       this.searchMade = false;
-      if (this.someValuesFrom.length > 0) {
-        this.currentSearchTypes = this.someValuesFrom;
-      } else {
-        this.currentSearchTypes = this.allSearchTypes;
-      }
+      this.currentSearchTypes = this.allSearchTypes;
       this.searchResult = [];
     },
     addLinkedItem(obj) {

@@ -180,7 +180,7 @@ export default {
       if (this.allValuesFrom.length > 0) {
         return this.allValuesFrom;
       }
-      return this.someValuesFrom.concat(this.range);
+      return this.range;
     },
     archType() {
       return VocabUtil.getRecordType(
