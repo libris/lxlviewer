@@ -5,6 +5,7 @@ import ReverseRelations from '@/components/inspector/reverse-relations';
 import TagSwitch from '@/components/shared/tag-switch';
 import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
+import * as RecordUtil from '@/utils/record';
 
 export default {
   name: 'result-list-item',
@@ -58,8 +59,11 @@ export default {
         this.resources.context,
       );
     },
+    recordId() {
+      return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
+    },
     isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.focusData.meta['@id'], this.settings);
+      return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
     },
   },
   methods: {
