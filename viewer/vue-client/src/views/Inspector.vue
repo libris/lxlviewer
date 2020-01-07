@@ -294,7 +294,10 @@ export default {
       this.closeRemoveModal();
       const url = `${this.settings.apiPath}/${this.documentId}`;
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
-        this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was deleted', this.user.settings.language)}!` });
+        this.$store.dispatch('pushNotification', { 
+          type: 'success', 
+          message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('has been removed', this.user.settings.language)}!`, 
+        });
         // Force reload
         this.$router.go(-1);
       }, (error) => {
@@ -777,7 +780,7 @@ export default {
           {{ 'This operation can\'t be reverted' | translatePhrase }}
         </p>
         <div class="RemovePostModal-buttonContainer">
-          <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove the record' | translatePhrase }}</button>
+          <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang | lowercase }}</button>
           <button class="btn btn-gray btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
         </div>
       </div>
