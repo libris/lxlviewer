@@ -489,7 +489,7 @@ def _proxy_request(request, session, json_data=None, query_params=[],
     url_path = url_path or request.path
 
     headers = dict(request.headers)
-    accept_header = accept_header or headers['Accept']
+    accept_header = accept_header or headers.get('Accept')
     adjusted_accept_header = _adjust_accept_header(accept_header)
     if adjusted_accept_header:
         headers['Accept'] = adjusted_accept_header
