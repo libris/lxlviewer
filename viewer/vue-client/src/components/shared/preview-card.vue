@@ -59,7 +59,7 @@ export default {
       'settings',
     ]),
     shouldFetch() {
-      if (this.focusData['@id'].startsWith(this.settings.dataPath) || (this.focusData.hasOwnProperty('meta') && this.focusData.meta['@id'].startsWith(this.settings.dataPath))) {
+      if (this.focusData['@id'].startsWith(this.settings.dataPath) || this.recordId.startsWith(this.settings.dataPath) || (this.focusData.hasOwnProperty('meta') && this.focusData.meta['@id'].startsWith(this.settings.dataPath))) {
         return this.fetchedData === null;
       }
       return false;
