@@ -24,7 +24,7 @@
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
     "bootstrap": "https://github.com/twbs/bootstrap/archive/v3.3.7.tar.gz",
-    "combokeys": "^3.0.0",
+    "combokeys": "https://github.com/avocode/combokeys/archive/v3.1.0.tar.gz",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0-0",
     "font-awesome": "4.7.0",
