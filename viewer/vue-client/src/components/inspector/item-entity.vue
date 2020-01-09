@@ -151,7 +151,7 @@ export default {
           </div>
         </div>
         <template slot="popover">
-          <PreviewCard ref="previewCard" :focus-data="focusData" />
+          <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
         </template>
       </v-popover> 
     </div>
