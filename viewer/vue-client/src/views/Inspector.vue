@@ -296,7 +296,7 @@ export default {
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
         this.$store.dispatch('pushNotification', { 
           type: 'success', 
-          message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('has been deleted', this.user.settings.language)}!`, 
+          message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language)}!`, 
         });
         // Force reload
         this.$router.go(-1);
@@ -529,14 +529,20 @@ export default {
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
           setTimeout(() => {
-            this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was created', this.user.settings.language)}!` });
+            this.$store.dispatch('pushNotification', { 
+              type: 'success', 
+              message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language)}!`,
+            });
           }, 10);
           this.warnOnSave();
           this.$router.push({ path: `/${fnurgel}` });
         } else {
           this.fetchDocument();
           setTimeout(() => {
-            this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.user.settings.language)}!` });
+            this.$store.dispatch('pushNotification', {
+              type: 'success', 
+              message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language)}!`,
+            });
           }, 10);
           this.warnOnSave();
           if (done) {
