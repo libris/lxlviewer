@@ -59,7 +59,6 @@ export default {
 
 <template>
   <div class="ItemError" :id="`formPath-${path}`" :class="{ 'has-failed-validations': failedValidations.length > 0 }">
-    <i v-if="!isLocked" class="fa fa-question-circle" />
     <table>
       <tr v-for="(value, key) in itemAsJson" :key="key">
         <td class="ItemError-key">{{ key }}</td><td class="ItemError-value">{{ value }}</td>
