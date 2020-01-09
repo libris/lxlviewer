@@ -579,7 +579,7 @@ export default {
         <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToEdit">
           <a class="Toolbar-menuLink"  @click="postControl('remove-post')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
-          {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
+          {{"Remove" | translatePhrase}} {{ recordType | labelByLang | lowercase }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech && userIsPermittedToEdit">
