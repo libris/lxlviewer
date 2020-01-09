@@ -3,7 +3,6 @@ import { each, isArray, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
-import SummaryNode from '@/components/shared/summary-node';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
 
@@ -12,7 +11,6 @@ export default {
   name: 'entity-summary',
   components: {
     EncodingLevelIcon,
-    SummaryNode,
   },
   props: {
     focusData: {
@@ -261,17 +259,17 @@ export default {
     <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink, 'showAll': showAllKeys }">
       <span v-if="highlightStr && !shouldLink" 
         v-html="highlight(header.join(', '))"
-        :title="header.join(', ')">
+        :title="header.join(', ')">{{ header | displayLabel }}
       </span>
       <span 
         v-if="!highlightStr && !shouldLink" 
-        :title="header.join(', ')">{{ header.join(', ') }}</span>
+        :title="header.join(', ')">{{ header | displayLabel }}</span>
       <span
         v-if="isImport && shouldLink" 
         :title="header.join(', ')" 
         v-on:click="importThis()">
         <i class="fa fa-external-link" aria-hidden="true"></i>
-        {{ header.join(', ') }}
+        {{ header | displayLabel }}
       </span>
       <router-link class="EntitySummary-titleLink"
         v-if="isLibrisResource && !isImport && shouldLink" 
@@ -279,7 +277,7 @@ export default {
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
         <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
-        {{ header.join(', ') }}
+        {{ header | displayLabel }}
       </router-link>
       <a class="EntitySummary-titleLink"
         v-if="!isLibrisResource && !isImport && shouldLink" 
@@ -287,7 +285,7 @@ export default {
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
         <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
-        {{ header.join(', ') }}
+        {{ header | displayLabel }}
       </a>
       
     </h3>

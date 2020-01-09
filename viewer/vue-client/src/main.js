@@ -20,6 +20,7 @@ import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import Field from '@/components/inspector/field';
 import EntitySummary from '@/components/shared/entity-summary';
+import SummaryNode from '@/components/shared/summary-node';
 import KeyBindings from '@/resources/json/keybindings.json';
 // import MockDisplay from '@/resources/json/display.json';
 
@@ -59,8 +60,11 @@ Vue.use(VueClipboard);
 Vue.component('v-popover', VTooltip.VPopover);
 Vue.component('field', Field);
 Vue.component('entity-summary', EntitySummary);
+Vue.component('SummaryNode', SummaryNode);
 
 Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context));
+
+Vue.filter('displayLabel', item => DisplayUtil.getItemLabel(item, store.getters.resources.display, store.getters.inspector.data.quoted, store.getters.resources.vocab, store.getters.settings, store.getters.resources.context))
 
 Vue.filter('asAppPath', (path) => {
   const appPaths = store.getters.settings.appPaths;

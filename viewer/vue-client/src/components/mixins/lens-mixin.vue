@@ -1,4 +1,5 @@
 <script>
+import { mapGetters } from 'vuex';
 import * as DisplayUtil from '@/utils/display';
 
 export default {
@@ -10,7 +11,7 @@ export default {
   },
   methods: {
     getLabel(item) {
-      if (!this.display || !this.inspector.data || !this.resources.vocab || !this.settings || !this.resources.context) {
+      if (!this.resources.display || !this.inspector.data || !this.resources.vocab || !this.settings || !this.resources.context) {
         throw new Error('Missing display/vocab/settings or similar. Did you set up Vuex getters for this component?');
       }
       const label = DisplayUtil.getItemLabel(
@@ -25,15 +26,11 @@ export default {
     },
   },
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
-    resources() {
-      return this.$store.getters.resources;
-    },
-    inspector() {
-      return this.$store.getters.inspector;
-    },
+    ...mapGetters([
+      'settings',
+      'resources',
+      'inspector',
+    ]),
     getItemLabel() {
       return DisplayUtil.getItemLabel(
         this.focusData,

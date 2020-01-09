@@ -31,7 +31,7 @@ export function getDisplayDefinitions(baseUri) {
   });
 }
 
-function getValueByLang(item, propertyId, displayDefs, langCode, context) {
+export function getValueByLang(item, propertyId, displayDefs, langCode, context) {
   const translatedValue = tryGetValueByLang(item, propertyId, langCode, context);
   return translatedValue != null ? translatedValue : item[propertyId];
 }
@@ -141,15 +141,26 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
 
 /* eslint-disable no-use-before-define */
 export function getItemLabel(item, displayDefs, quoted, vocab, settings, context, inClass = '') {
-  const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
-  if (Object.keys(displayObject).length === 0) {
-    return JSON.stringify(item);
-  }
-  let rendered = StringUtil.formatLabel(displayObject).trim();
-  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
-    if (inClass.toLowerCase() !== item['@type'].toLowerCase()) {
-      const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, vocab, context);
-      rendered = `${translatedType} ${rendered}`;
+  let rendered = '';
+  if (isArray(item)) {
+    const renderedList = [];
+    for (let i = 0; i < item.length; i++) {
+      renderedList.push(getItemLabel(item[i], displayDefs, quoted, vocab, settings, context, inClass = ''));
+    }
+    rendered = renderedList.join(', ');
+  } else if (typeof(item) === 'string') {
+    return item;
+  } else {
+    const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
+    if (Object.keys(displayObject).length === 0) {
+      return JSON.stringify(item);
+    }
+    rendered = StringUtil.formatLabel(displayObject).trim();
+    if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
+      if (inClass.toLowerCase() !== item['@type'].toLowerCase()) {
+        const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, vocab, context);
+        rendered = `${translatedType} ${rendered}`;
+      }
     }
   }
   return rendered;
@@ -165,102 +176,149 @@ export function getItemToken(item, displayDefs, quoted, vocab, settings, context
   return rendered;
 }
 
-export function getDisplayObject(item, level, displayDefs, quoted, vocab, settings, context) {
-  if (!item || typeof item === 'undefined') {
+export function getDisplayObject(originalObj, level, displayDefs, quoted, vocab, settings, context) {
+  if (!originalObj || typeof originalObj === 'undefined') {
     throw new Error('getDisplayObject was called with an undefined object.');
   }
-  if (!isObject(item)) {
+  if (!isObject(originalObj)) {
     throw new Error('getDisplayObject was called with a non-object.');
   }
-  let result = {};
-  let trueItem = Object.assign({}, item);
 
-  if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
-    trueItem = DataUtil.getEmbellished(trueItem['@id'], quoted);
-    if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
-      return { label: StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
-    }
+  // Setup
+  let embellishedObj = Object.assign({}, originalObj);
+  if (originalObj.hasOwnProperty('@id')) {
+    // Get data from quoted if @id is present
+    embellishedObj = DataUtil.getEmbellished(originalObj['@id'], quoted) || originalObj;
   }
-  if (!trueItem.hasOwnProperty('@type') || typeof trueItem['@type'] === 'undefined') {
-    return {}; // Early fail
+  let result = {};
+
+  // What properties should our object have?
+  let displayProperties = [];
+  if (embellishedObj.hasOwnProperty('@type') === false) {
+    return embellishedObj;
   }
-  // Get the list of properties we want to show
-  const displayType = isArray(trueItem['@type']) ? trueItem['@type'][0] : trueItem['@type']; // If more than one type, choose the first
-  const properties = getDisplayProperties(displayType, displayDefs, vocab, settings, context, level);
-  // Start filling the object with the selected properties
-  if (properties.length === 2 && properties.indexOf('label') > -1 && properties.indexOf('prefLabel') > -1) {
-    const labelValue = getValueByLang(trueItem, 'label', displayDefs, settings.language, context);
-    const prefLabelValue = getValueByLang(trueItem, 'prefLabel', displayDefs, settings.language, context);
-    if (typeof prefLabelValue !== 'undefined') {
-      result.prefLabel = prefLabelValue;
-    } else if (labelValue !== 'undefined') {
-      result.label = labelValue;
-    }
-  } else {
-    for (let i = 0; i < properties.length; i++) {
-      const property = properties[i];
-      if (!isObject(property)) {
-        let valueOnItem = '';
-        if (property === 'created' || property === 'modified') {
-          valueOnItem = moment(item[property]).format('lll');
-        } else {
-          valueOnItem = getValueByLang(trueItem, property, displayDefs, settings.language, context);
-        }
-        if (typeof valueOnItem !== 'undefined') {
-          let value = valueOnItem;
-          if (isObject(value) && !isArray(value)) {
-            if (level === 'chips') {
-              value = getItemToken(value, displayDefs, quoted, vocab, settings, context);
-            } else {
-              value = getItemLabel(value, displayDefs, quoted, vocab, settings, context, property);
-            }
-          } else if (isArray(value)) {
-            const newArray = [];
-            for (const arrayItem of value) {
-              if (typeof arrayItem === 'undefined' || arrayItem === null) {
-                throw new Error('getDisplayObject encountered an undefined or null item in an array.');
-              }
-              if (isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
-                if (level === 'chips') {
-                  newArray.push(getItemToken(arrayItem, displayDefs, quoted, vocab, settings, context));
-                } else {
-                  newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings, context, property));
-                }
-              } else if (arrayItem.length > 0) {
-                newArray.push(arrayItem);
-              } else {
-                // console.warn("Array contained unknown item", arrayItem);
-              }
-            }
-            value = newArray;
-          }
-          result[property] = value;
-        } else if (properties.length < 3 && i === 0) {
-          const rangeOfMissingProp = VocabUtil.getRange(property, vocab, context);
-          let propMissing = property;
-          if (
-            rangeOfMissingProp.length > 1
-            || (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
-          ) {
-            propMissing = rangeOfMissingProp[0];
-          }
-          const expectedClassName = StringUtil.getLabelByLang(
-            propMissing, // Get the first one just to show something
-            settings.language,
-            vocab,
-            context,
-          );
-          result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, vocab, context)} ${StringUtil.getUiPhraseByLang('without', settings.language)} ${expectedClassName.toLowerCase()}}`;
-        }
+  const typeAsArray = isArray(embellishedObj['@type']) ? embellishedObj['@type'] : [embellishedObj['@type']]; // Handles objects with multiple types
+  for (let i = 0; i < typeAsArray.length && displayProperties.length === 0; i++) {
+    displayProperties = getDisplayProperties(typeAsArray[i], displayDefs, vocab, settings, context, level);
+  }
+
+  // Copy the wanted properties from full object to display object
+  for (let i = 0; i < displayProperties.length; i++) {
+    const prop = displayProperties[i];
+    if (embellishedObj.hasOwnProperty(prop)) {
+      result[prop] = embellishedObj[prop];
+    } else if (displayProperties.length < 3 && i === 0) {
+      const rangeOfMissingProp = VocabUtil.getRange(prop, vocab, context);
+      let propMissing = prop;
+      if (
+        rangeOfMissingProp.length > 1
+        || (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
+      ) {
+        propMissing = rangeOfMissingProp[0];
       }
+      result[prop] = `{${StringUtil.getLabelByLang(embellishedObj['@type'], settings.language, vocab, context)} ${StringUtil.getUiPhraseByLang('without', settings.language)} ${StringUtil.getLabelByLang(propMissing, settings.language, vocab, context).toLowerCase()}}`;
     }
   }
-  if (isEmpty(result)) {
-    window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}.`, 'Item data:', trueItem);
-    result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
-  }
+
   return result;
 }
+
+// export function getDisplayObject(item, level, displayDefs, quoted, vocab, settings, context) {
+//   if (!item || typeof item === 'undefined') {
+//     throw new Error('getDisplayObject was called with an undefined object.');
+//   }
+//   if (!isObject(item)) {
+//     throw new Error('getDisplayObject was called with a non-object.');
+//   }
+//   let result = {};
+//   let trueItem = Object.assign({}, item);
+
+//   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
+//     trueItem = DataUtil.getEmbellished(trueItem['@id'], quoted);
+//     if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
+//       return { label: StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
+//     }
+//   }
+//   if (!trueItem.hasOwnProperty('@type') || typeof trueItem['@type'] === 'undefined') {
+//     return {}; // Early fail
+//   }
+//   // Get the list of properties we want to show
+//   const displayType = isArray(trueItem['@type']) ? trueItem['@type'][0] : trueItem['@type']; // If more than one type, choose the first
+//   const properties = getDisplayProperties(displayType, displayDefs, vocab, settings, context, level);
+//   // Start filling the object with the selected properties
+//   if (properties.length === 2 && properties.indexOf('label') > -1 && properties.indexOf('prefLabel') > -1) {
+//     const labelValue = getValueByLang(trueItem, 'label', displayDefs, settings.language, context);
+//     const prefLabelValue = getValueByLang(trueItem, 'prefLabel', displayDefs, settings.language, context);
+//     if (typeof prefLabelValue !== 'undefined') {
+//       result.prefLabel = prefLabelValue;
+//     } else if (labelValue !== 'undefined') {
+//       result.label = labelValue;
+//     }
+//   } else {
+//     for (let i = 0; i < properties.length; i++) {
+//       const property = properties[i];
+//       if (!isObject(property)) {
+//         let valueOnItem = '';
+//         if (property === 'created' || property === 'modified') {
+//           valueOnItem = moment(item[property]).format('lll');
+//         } else {
+//           valueOnItem = getValueByLang(trueItem, property, displayDefs, settings.language, context);
+//         }
+//         if (typeof valueOnItem !== 'undefined') {
+//           let value = valueOnItem;
+//           if (isObject(value) && !isArray(value)) {
+//             if (level === 'chips') {
+//               value = getItemToken(value, displayDefs, quoted, vocab, settings, context);
+//             } else {
+//               value = getItemLabel(value, displayDefs, quoted, vocab, settings, context, property);
+//             }
+//           } else if (isArray(value)) {
+//             const newArray = [];
+//             for (const arrayItem of value) {
+//               if (typeof arrayItem === 'undefined' || arrayItem === null) {
+//                 throw new Error('getDisplayObject encountered an undefined or null item in an array.');
+//               }
+//               if (isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
+//                 if (level === 'chips') {
+//                   newArray.push(getItemToken(arrayItem, displayDefs, quoted, vocab, settings, context));
+//                 } else {
+//                   newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings, context, property));
+//                 }
+//               } else if (arrayItem.length > 0) {
+//                 newArray.push(arrayItem);
+//               } else {
+//                 // console.warn("Array contained unknown item", arrayItem);
+//               }
+//             }
+//             value = newArray;
+//           }
+//           result[property] = value;
+//         } else if (properties.length < 3 && i === 0) {
+//           const rangeOfMissingProp = VocabUtil.getRange(property, vocab, context);
+//           let propMissing = property;
+//           if (
+//             rangeOfMissingProp.length > 1
+//             || (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
+//           ) {
+//             propMissing = rangeOfMissingProp[0];
+//           }
+//           const expectedClassName = StringUtil.getLabelByLang(
+//             propMissing, // Get the first one just to show something
+//             settings.language,
+//             vocab,
+//             context,
+//           );
+//           result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, vocab, context)} ${StringUtil.getUiPhraseByLang('without', settings.language)} ${expectedClassName.toLowerCase()}}`;
+//         }
+//       }
+//     }
+//   }
+//   if (isEmpty(result)) {
+//     window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}.`, 'Item data:', trueItem);
+//     result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
+//   }
+//   return result;
+// }
 
 export function getChip(item, displayDefs, quoted, vocab, settings, context) {
   return getDisplayObject(item, 'chips', displayDefs, quoted, vocab, settings, context);

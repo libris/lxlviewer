@@ -94,7 +94,7 @@ export default {
       return cleanObj;
     },
     extractedItem() {
-      if (this.focusData.hasOwnProperty('@type') === false) {
+      if (typeof this.inspector.data.record === 'undefined' || this.focusData.hasOwnProperty('@type') === false) {
         return null;
       }
       const newRecord = {};
@@ -142,6 +142,25 @@ export default {
       const uriParts = this.recordId.split('/');
       const fnurgel = uriParts[uriParts.length - 1];
       return `/${fnurgel}`;
+    },
+    recordObject() {
+      const quoted = this.inspector.data.quoted;
+      if (typeof quoted !== 'undefined') {
+        const keys = Object.keys(quoted);
+        for (const key of keys) {
+          const graphNode = quoted[key];
+          if (graphNode.hasOwnProperty('mainEntity') && graphNode.mainEntity['@id'] === this.item['@id']) {
+            return graphNode;
+          }
+        }
+      }
+      return null;
+    },
+    isLibrisResource() {
+      if (this.recordObject) {
+        return StringUtil.isLibrisResourceUri(this.recordObject['@id'], this.settings);
+      }
+      return StringUtil.isLibrisResourceUri(this.item['@id'], this.settings);
     },
   },
   watch: {

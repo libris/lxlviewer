@@ -1,10 +1,10 @@
 <script>
-/*
-
-*/
+import { cloneDeep, isArray } from 'lodash-es';
 import LensMixin from '@/components/mixins/lens-mixin';
 import ItemMixin from '@/components/mixins/item-mixin';
 import * as StringUtil from '@/utils/string';
+import * as VocabUtil from '@/utils/vocab';
+import * as DisplayUtil from '@/utils/display';
 import PreviewCard from '@/components/shared/preview-card';
 
 export default {
@@ -12,7 +12,7 @@ export default {
   mixins: [LensMixin, ItemMixin],
   props: {
     item: {
-      type: [Object, String],
+      type: [Object, String, Array],
       default: null,
     },
     parentId: {
@@ -31,6 +31,32 @@ export default {
   methods: {
   },
   computed: {
+    isEmbedded() {
+      if (this.item.hasOwnProperty('@type') === false) {
+        return false;
+      }
+      let type = isArray(this.item['@type']) ? this.item['@type'][0] : this.item['@type'];
+      return VocabUtil.isEmbedded(
+        type,
+        this.resources.vocab, 
+        this.settings, 
+        this.resources.context,
+      );
+    },
+    isArray() {
+      return isArray(this.item);
+    },
+    concatenatedArray() {
+      let str = '';
+      for (let i = 0; i < this.item.length; i++) {
+        const token = DisplayUtil.getToken(this.item[i], this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context);
+        str += token.rendered.trim();
+        if (i < this.item.length - 1) {
+          str += ', ';
+        }
+      }
+      return `(${str})`;
+    },
     isLinked() {
       if (this.focusData.hasOwnProperty('@id') && this.focusData['@id'].split('#')[0] !== this.parentId.split('#')[0]) {
         return true;
@@ -62,7 +88,7 @@ export default {
     <span class="SummaryNode-label" v-if="!isLinked">
       {{ typeof item === 'string' ? item : getItemLabel }}{{ isLast ? '' : ',&nbsp;' }}
     </span>
-    <v-popover v-if="isLinked" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
+    <v-popover v-else tabindex="-1" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
         <a v-if="!isLibrisResource" :href="focusData['@id'] | convertResourceLink">{{getItemLabel}}</a>
@@ -77,8 +103,11 @@ export default {
 <style lang="less">
 .SummaryNode {
   display: inline-block;
-  &-link {
+  &-embedded {
     margin-right: 0.5em;
+  }
+  &-link {
+    margin-right: 0.25em;
     > a {
       border-color: @brand-primary;
       color: darken(@brand-primary, 10%);

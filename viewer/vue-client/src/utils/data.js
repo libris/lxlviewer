@@ -10,7 +10,7 @@ export function getEmbellished(id, quotedIndex = {}) {
   }
   if (obj === null) {
     window.lxlWarning(`🔍 Couldn't find embellished data for: ${id}`);
-    obj = { '@id': id };
+    return obj;
   }
   if (obj !== null && !obj.hasOwnProperty('@type')) {
     window.lxlWarning('👽 Embellished entity has an unknown type (missing @type). ID:', id);
