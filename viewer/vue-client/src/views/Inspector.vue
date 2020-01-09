@@ -531,7 +531,7 @@ export default {
           setTimeout(() => {
             this.$store.dispatch('pushNotification', { 
               type: 'success', 
-              message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language)}!`
+              message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language)}!`,
             });
           }, 10);
           this.warnOnSave();
@@ -541,7 +541,7 @@ export default {
           setTimeout(() => {
             this.$store.dispatch('pushNotification', {
               type: 'success', 
-              message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language)}!` 
+              message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language)}!`,
             });
           }, 10);
           this.warnOnSave();
