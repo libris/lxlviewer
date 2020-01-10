@@ -150,10 +150,13 @@ export default {
       'status',
     ]),
     findTabs() {
-      return [
+      const tabs = [
         { id: 'libris', text: StringUtil.getUiPhraseByLang('Libris', this.user.settings.language) },
-        { id: 'remote', text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language) },
       ];
+      if(this.user.isLoggedIn) {
+        tabs.push({ id: 'remote', text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language) });
+      }
+      return tabs;
     },
     copy() {
       return Copy;
