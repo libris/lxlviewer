@@ -169,6 +169,9 @@ export default {
       if (this.$route.params.perimeter !== 'libris' && this.$route.params.perimeter !== 'remote') {
         this.$router.push({ path: '/search/' });
       }
+      if (!this.user.isLoggedIn && this.$route.params.perimeter === 'remote') {
+        this.$router.push({ path: '/search/' });
+      }
       this.query = this.$route.fullPath.split('?')[1];
       this.getResult();
       this.initialized = true;
