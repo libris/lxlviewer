@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     setSearchPerimeter(id) {
-      this.$router.push({ path: `/search/${id}` }).catch(err => {});
+      this.$router.push({ path: `/search/${id}` }).catch(() => {});
     },
     getResult() {
       this.emptyResults();
@@ -153,7 +153,7 @@ export default {
       const tabs = [
         { id: 'libris', text: StringUtil.getUiPhraseByLang('Libris', this.user.settings.language) },
       ];
-      if(this.user.isLoggedIn) {
+      if (this.user.isLoggedIn) {
         tabs.push({ id: 'remote', text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language) });
       }
       return tabs;
