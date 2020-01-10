@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     setSearchPerimeter(id) {
-      this.$router.push({ path: `/search/${id}` });
+      this.$router.push({ path: `/search/${id}` }).catch(err => {});
     },
     getResult() {
       this.emptyResults();
