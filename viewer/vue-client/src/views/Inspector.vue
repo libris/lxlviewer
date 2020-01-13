@@ -730,10 +730,10 @@ export default {
       <div v-if="!postLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
         <p v-if="loadFailure.status === 404">
-          {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
+          {{ 'The resource' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
         </p>
         <p v-if="loadFailure.status === 410">
-          {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
+          {{ 'The resource' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
         </p>
         <router-link to="/">
           {{ 'Back to home page' | translatePhrase }}
