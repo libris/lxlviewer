@@ -151,11 +151,17 @@ export default {
     ]),
     findTabs() {
       const tabs = [
-        { id: 'libris', text: StringUtil.getUiPhraseByLang('Libris', this.user.settings.language) },
+        { 
+          id: 'libris', 
+          text: StringUtil.getUiPhraseByLang('Libris', this.user.settings.language),
+        },
+        { 
+          id: 'remote', 
+          text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language),
+          disabled: !this.user.isLoggedIn,
+          tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('You need to be logged in to perform this action', this.user.settings.language) : null,
+        },
       ];
-      if (this.user.isLoggedIn) {
-        tabs.push({ id: 'remote', text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language) });
-      }
       return tabs;
     },
     copy() {
