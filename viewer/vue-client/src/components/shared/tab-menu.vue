@@ -13,14 +13,18 @@
 
   Tab-Objects:
     A tab object needs two things.
-      * id   -  Just an identifier, it is used when emitting the go-event and to match against the "active" prop.
-      * text -  A fancy text for your tab, which should be in english. The component will automatically try to
-                translate this text to the users language, based on the i18n file.
-      * html -  (Optional) Raw html for the item, will replace 'text'
+      * id          -  Just an identifier, it is used when emitting the go-event and to match against the "active" prop.
+      * text        -  A fancy text for your tab, which should be in english. The component will automatically try to
+                        translate this text to the users language, based on the i18n file.
+      * icon        -  (Optional) The tab icon                        
+      * html        -  (Optional) Raw html for the item, will replace 'text'
+      * disabled    -  (Optional) Boolean - disables the tab
+      * tooltipText -  (Optional) Display given text on tab hover or focus
 
     Example tab-object:
       {'id': 'MyTab1', 'text': 'My tab text' }
       {'id': 'MyTab1', 'html': 'My <strong>tab</strong> text' }
+      {'id': 'MyTab1', 'text': 'My tab text', 'disabled': true, 'tooltipText': 'Access denied' }
 
   The go-event:
     If a tab is clicked, it will emit an event with the id on the tab.
@@ -129,9 +133,13 @@ export default {
         v-for="item in tabs" 
         tabindex="0"
         :key="item.id" 
-        @click="go(item.id)" 
-        @keyup.enter="go(item.id)"
-        :class="{'is-active': active === item.id }"
+        @click="item.disabled ? null : go(item.id)" 
+        @keyup.enter="item.disabled ? null : go(item.id)"
+        v-tooltip="{
+          trigger: 'hover focus',
+          content: item.tooltipText
+        }"
+        :class="{'is-active': active === item.id, 'is-disabled': item.disabled }"
         role="tab">
           <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
@@ -143,8 +151,13 @@ export default {
       <router-link tag="a" class="TabMenu-tab" 
         v-for="item in tabs" :key="item.id"
         tabindex="0"
-        :class="{'is-active': active === item.id }" 
-        :to="item.link">
+        :event="item.disabled ? null : 'click'"
+        :class="{'is-active': active === item.id, 'is-disabled': item.disabled }" 
+        :to="item.link"
+        v-tooltip="{
+          trigger: 'hover focus',
+          content: item.tooltipText
+        }">        
         <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
         <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
         <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
@@ -190,13 +203,21 @@ export default {
       margin: 0;
       color: @white;
       transition: background-color 0.25s ease;
-      &:hover {
-        background-color: darken(@brand-primary, 15%);
-        text-decoration: none;
-      }
+      text-decoration: none;
+
       &.is-active {
-        background-color: @brand-primary;
-        text-decoration: none;
+        background-color: @brand-primary;        
+      }
+
+      &:not(.is-disabled) {
+        &:hover {
+          background-color: darken(@brand-primary, 15%);
+        }
+      }
+
+      &.is-disabled {
+        color: @grey;
+        cursor: not-allowed;
       }
     }
     .style-underline & {
@@ -205,14 +226,22 @@ export default {
       font-size: 18px;
       font-size: 1.6rem;
   
-      &:hover,
-      &:focus {
-        color: @brand-primary;
-        text-decoration: none;
-      }
       &.is-active {
         color: @black;
         text-decoration: none;
+      }
+
+      &:not(.is-disabled) {
+        &:hover,
+        &:focus {
+          color: @brand-primary;
+          text-decoration: none;
+        }
+      }
+
+      &.is-disabled {
+        color: @grey-light;
+        cursor: not-allowed;
       }
     }
   }

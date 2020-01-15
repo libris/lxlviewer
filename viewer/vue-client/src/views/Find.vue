@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     setSearchPerimeter(id) {
-      this.$router.push({ path: `/search/${id}` });
+      this.$router.push({ path: `/search/${id}` }).catch(() => {});
     },
     getResult() {
       this.emptyResults();
@@ -150,10 +150,19 @@ export default {
       'status',
     ]),
     findTabs() {
-      return [
-        { id: 'libris', text: StringUtil.getUiPhraseByLang('Libris', this.user.settings.language) },
-        { id: 'remote', text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language) },
+      const tabs = [
+        { 
+          id: 'libris', 
+          text: StringUtil.getUiPhraseByLang('Libris', this.user.settings.language),
+        },
+        { 
+          id: 'remote', 
+          text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language),
+          disabled: !this.user.isLoggedIn,
+          tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('Sign in to search other sources', this.user.settings.language) : null,
+        },
       ];
+      return tabs;
     },
     copy() {
       return Copy;
@@ -164,6 +173,9 @@ export default {
   mounted() {
     this.$nextTick(() => {
       if (this.$route.params.perimeter !== 'libris' && this.$route.params.perimeter !== 'remote') {
+        this.$router.push({ path: '/search/' });
+      }
+      if (!this.user.isLoggedIn && this.$route.params.perimeter === 'remote') {
         this.$router.push({ path: '/search/' });
       }
       this.query = this.$route.fullPath.split('?')[1];
