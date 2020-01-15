@@ -159,7 +159,7 @@ export default {
           id: 'remote', 
           text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language),
           disabled: !this.user.isLoggedIn,
-          tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('You need to be logged in to perform this action', this.user.settings.language) : null,
+          tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('Sign in to search other sources', this.user.settings.language) : null,
         },
       ];
       return tabs;
