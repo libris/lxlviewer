@@ -389,26 +389,14 @@ export default {
       userStorage.copyClipboard = null;
       this.$store.dispatch('setUserStorage', userStorage);
     },
-    actionHighlight(active, event) {
+    highlight(active, event, cssClass) {
+      let item = event.target;
       if (active) {
-        let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
-        item.classList.add('is-marked');
+        item.classList.add(cssClass);
       } else {
-        let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
-        item.classList.remove('is-marked');
-      }
-    },
-    removeHighlight(active, event) {
-      if (active) {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-field'));
-        item.classList.add('is-removeable');
-      } else {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-field'));
-        item.classList.remove('is-removeable');
+        item.classList.remove(cssClass);
       }
     },
     removeThis() {
@@ -573,10 +561,10 @@ export default {
               tabindex="0"
               v-on:click="removeThis(true)"
               @keyup.enter="removeThis(true)"
-              @focus="removeHover = true, removeHighlight(true, $event)" 
-              @blur="removeHover = false, removeHighlight(false, $event)"
-              @mouseover="removeHover = true, removeHighlight(true, $event)" 
-              @mouseout="removeHover = false, removeHighlight(false, $event)">
+              @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
+              @blur="removeHover = false, highlight(false, $event, 'is-removeable')"
+              @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
+              @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
               <tooltip-component 
                 :show-tooltip="removeHover" 
                 tooltip-text="Remove"></tooltip-component>
@@ -617,10 +605,10 @@ export default {
               :aria-label="'Paste entity' | translatePhrase"
               @click="pasteClipboardItem"
               @keyup.enter="pasteClipboardItem"
-              @focus="pasteHover = true, actionHighlight(true, $event)" 
-              @blur="pasteHover = false, actionHighlight(false, $event)"
-              @mouseover="pasteHover = true, actionHighlight(true, $event)" 
-              @mouseout="pasteHover = false, actionHighlight(false, $event)">
+              @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
+              @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
+              @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
+              @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
               <tooltip-component 
                 :show-tooltip="pasteHover" 
                 tooltip-text="Paste entity"></tooltip-component>
@@ -677,10 +665,10 @@ export default {
             :aria-label="'Remove' | translatePhrase"
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
-            @focus="removeHover = true, removeHighlight(true, $event)" 
-            @blur="removeHover = false, removeHighlight(false, $event)" 
-            @mouseover="removeHover = true, removeHighlight(true, $event)" 
-            @mouseout="removeHover = false, removeHighlight(false, $event)"  >
+            @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
+            @blur="removeHover = false, highlight(false, $event, 'is-removeable')" 
+            @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
+            @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
             <tooltip-component
               :show-tooltip="removeHover" 
               tooltip-text="Remove"></tooltip-component>
@@ -695,10 +683,10 @@ export default {
             :aria-label="'Paste entity' | translatePhrase"
             @click="pasteClipboardItem"
             @keyup.enter="pasteClipboardItem"
-            @focus="pasteHover = true, actionHighlight(true, $event)" 
-            @blur="pasteHover = false, actionHighlight(false, $event)"
-            @mouseover="pasteHover = true, actionHighlight(true, $event)" 
-            @mouseout="pasteHover = false, actionHighlight(false, $event)">
+            @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
+            @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
+            @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
+            @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
             <tooltip-component 
               :show-tooltip="pasteHover" 
               tooltip-text="Paste entity"></tooltip-component>
@@ -934,8 +922,8 @@ export default {
       }
     }
   }
-
-    &-labelContainer {
+    
+  &-labelContainer {
     display: flex;
     flex: 0 0 225px;
     flex-direction: column;
@@ -1147,16 +1135,13 @@ export default {
     display: inline-block;
     margin-right: 5px;
   
-  &.placeholder {
-    width: 20px;
-    display: none;
+    &.placeholder {
+      width: 20px;
+      display: none;
 
-    @media (min-width: @screen-sm) {
-      display: block;
-    }
-  }
-
-    &:hover {
+      @media (min-width: @screen-sm) {
+        display: block;
+      }
     }
   }
 
