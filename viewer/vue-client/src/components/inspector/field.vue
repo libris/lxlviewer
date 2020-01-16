@@ -1023,7 +1023,7 @@ export default {
         color: @field-path-alt;
         position: absolute;
         left: 0px;
-        top: -1px;
+        top: 0px;
       }
     } 
 
