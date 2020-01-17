@@ -539,6 +539,7 @@ export default {
       'Field--inner': !asColumns,
       'is-lastAdded': isLastAdded, 
       'is-removed': removed,
+      'is-locked': locked,
       'is-highlighted': embellished,
       'has-failed-validations': failedValidations.length > 0,
       'is-distinguished': isDistinguished,
@@ -883,6 +884,19 @@ export default {
     overflow: visible;
     display: block;
 
+    .icon-hover();
+        
+    &:hover {
+      background: @bg-site;
+      box-shadow: inset 0 0 0 1px @gray-lighter;
+    }
+
+    &.is-locked,
+    .Field--inner & {
+      background: none;
+      box-shadow: none;
+    }
+
     &.is-marked {
       background-color: @add;
     }
@@ -941,6 +955,8 @@ export default {
     &.is-hovered * {
       z-index: 1;
     }
+
+    .icon-hover();
 
     pre {
       margin-top: 5px;

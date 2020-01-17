@@ -569,7 +569,7 @@ export default {
   position: relative;
   flex: 1 100%;
   transition: background-color .5s ease;
-  border-radius: 4px;
+  border-radius: 4px;  
 
   &.has-failed-validations {
     outline: 1px dotted red;
@@ -579,7 +579,9 @@ export default {
     display: block;
     flex: 1 100%;
     font-weight: normal;
-    position: relative;
+    position: relative;    
+
+    .icon-hover();
   }
 
   &-label {
