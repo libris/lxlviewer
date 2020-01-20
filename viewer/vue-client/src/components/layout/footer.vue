@@ -52,7 +52,7 @@ export default {
                 <a href="https://goo.gl/forms/xJ837GVLmG6IHwsu2" class="Footer-link">{{ "Report error" | translatePhrase }}</a>
               </li>
               <li>
-                <a href="https://www.kb.se/libris/Om-Libris/Versionsinformation/" class="Footer-link">{{ "Release notes" | translatePhrase }}</a>
+                <a href="https://www.kb.se/libris-versionsinformation" class="Footer-link">{{ "Release notes" | translatePhrase }}</a>
               </li>
               <li>
                 <a href="https://www.kb.se/omoss/dataskydd.html#XLkat" class="Footer-link">{{ "GDPR compliance" | translatePhrase }}</a>
