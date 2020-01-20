@@ -29,7 +29,7 @@ export default {
       localEntitySettings: {
         text: 'Create and link entity',
         styling: 'brand',
-        icon: 'chain',
+        icon: 'plus',
         show: true,
         inspectAction: false,
       },
