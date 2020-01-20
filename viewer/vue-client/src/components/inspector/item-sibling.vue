@@ -494,6 +494,8 @@ export default {
     flex: 1 100%;
     font-weight: normal;
     position: relative;
+
+    .icon-hover();
   }
 
   &-label {

@@ -194,31 +194,6 @@ export default {
     list-style: none;
     width: 100%;
     box-shadow: none;
-
-    &:hover {
-      & .icon:not(.is-disabled) {
-        color: @gray-dark-transparent;
-      }
-
-      &:not(.locked) >.actions {
-        opacity: 1;
-      }
-    }
-
-    .user-is-tabbing &:focus-within { // icon 'hover-effect' when tabbing 
-      & .icon:not(.is-disabled) {
-        color: @gray-dark-transparent;
-      }
-    }
-
-    & .icon {
-      color: @gray-light-transparent;
-
-      &:hover:not(.is-disabled),
-      &:focus {
-        color: @gray-very-dark-transparent;
-      }
-    }
   }
 
   &-item.is-distinguished {    
