@@ -1,6 +1,8 @@
 <script>
 import { merge, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
+import * as MathUtil from '@/utils/math';
+import * as StringUtil from '@/utils/string';
 import LensMixin from '../mixins/lens-mixin';
 import SummaryAction from '../inspector/summary-action';
 
@@ -90,6 +92,12 @@ export default {
       const updatedListItemSettings = merge({ payload: this.focusData }, cloneDeep(this.settings));
       return updatedListItemSettings;
     },
+    reverseLinksAmount() {
+      return this.focusData.reverseLinks ? MathUtil.getCompactNumber(this.focusData.reverseLinks.totalItems) : 0;
+    },
+    translatedTooltip() {
+      return StringUtil.getUiPhraseByLang('Number of links to entity', this.user.settings.language);
+    },
   },
   components: {
     SummaryAction,
@@ -102,13 +110,25 @@ export default {
 <template>
   <li class="PanelSearch-listItem PanelComponent-listItem"
     :class="{ 'is-added' : isDisabled, 'is-replaced' : isReplaced }">
-    <summary-action 
-      :disabled="isDisabled" 
-      :replaced="isReplaced"
-      :options="addPayload" 
-      @action="useItem()"
+    <div 
+      class="PanelSearch-action"
       v-if="hasAction">
-    </summary-action>
+      <summary-action 
+        :disabled="isDisabled" 
+        :replaced="isReplaced"
+        :options="addPayload" 
+        @action="useItem()">
+      </summary-action>
+      <div 
+        class="PanelSearch-link-count"
+        :class="{'has-links' : reverseLinksAmount !== 0}"
+        v-tooltip="{
+          placement: 'right',
+          content: translatedTooltip,
+        }">
+        {{ reverseLinksAmount }}
+      </div>
+    </div>
     <div class="PanelSearch-itemContainer" 
       :class="{'has-action' : hasAction}">
       <entity-summary 
@@ -178,6 +198,27 @@ export default {
         font-size: 1.8rem;
         font-weight: 600;
       }
+    }
+  }
+
+  &-action {    
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-link-count {
+    border: 2px solid #29A1A2;
+    width: 100%;
+    text-align: center;
+    margin-top: -4px;
+    border-radius: 0 0 4px 4px;
+    border-top-width: 4px;
+    color: @gray;
+    font-weight: 600;
+    font-size: 1.4rem;
+
+    &.has-links {
+      color: @brand-primary;
     }
   }
 
