@@ -136,7 +136,7 @@ export default {
             <span v-if="(!isDistinguished || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}}</a></span>
             <span class="placeholder"></span></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
-            <i class="fa fa-times-circle icon icon--sm" 
+            <i class="fa fa-times-circle icon icon--sm chip-icon" 
               v-if="!isLocked"
               role="button"
               tabindex="0"
