@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import RoundButton from '@/components/shared/round-button.vue';
+import Button from '@/components/shared/button.vue';
 import TooltipComponent from '@/components/shared/tooltip-component';
 
 export default {
@@ -51,7 +51,7 @@ export default {
     },
   },
   components: {
-    'round-button': RoundButton,
+    'button-component': Button,
     'tooltip-component': TooltipComponent,
   },
   watch: {
@@ -66,13 +66,14 @@ export default {
 
 <template>
   <div class="SummaryAction">
-    <div class="SummaryAction-roundButton">
-      <round-button 
+    <div class="SummaryAction-button">
+      <button-component 
         :disabled="disabled || replaced || extracting"
         :color="options.styling"
         :icon="getIcon"
         :indicator="!disabled || !replaced"
         :label="getTooltipText" 
+        size="large"
         @click="action()"
         @keyup.enter="action()">
         <template slot="tooltip" v-if="getTooltipText">
@@ -82,7 +83,7 @@ export default {
             :show-tooltip="true"
             :tooltip-text="getTooltipText"></tooltip-component>
         </template>
-      </round-button>
+      </button-component>
     </div>
   </div>
 </template>
@@ -93,7 +94,7 @@ export default {
   display: flex;
   align-items: baseline;
 
-  &-roundButton {
+  &-button {
     margin-top: 5px;
 
     .fa-stack-1x {

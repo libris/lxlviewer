@@ -201,6 +201,7 @@
     "Warning": "Varning",
     "This entity may have active links": "Den här entiteten kan ha aktiva länkningar",
     "This entity has active links": "Den här entiteten har aktiva länkningar",
+    "Number of links to entity": "Antalet länkningar till entiteten",
     "The entity was removed": "Entiteten blev raderad",
     "The record": "Posten",
     "The resource": "Resursen",
