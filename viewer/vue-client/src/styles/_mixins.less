@@ -11,7 +11,7 @@
 
 .icon-hover {
   &:hover {
-    & .icon:not(.is-disabled) {
+    & .icon:not(.chip-icon):not(.is-disabled) {
       color: @gray-dark-transparent;
     }
 
@@ -21,7 +21,7 @@
   }
 
   .user-is-tabbing &:focus-within { // icon 'hover-effect' when tabbing 
-    & .icon:not(.is-disabled) {
+    & .icon:not(.chip-icon):not(.is-disabled) {
       color: @gray-dark-transparent;
     }
   }
