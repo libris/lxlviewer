@@ -1,5 +1,4 @@
 <script>
-import Button from '@/components/shared/button.vue';
 
 export default {
   name: 'link-card',
@@ -21,7 +20,7 @@ export default {
           show: false,
           styling: 'green',
           text: 'button',
-        }
+        },
       },
     };
   },
@@ -33,7 +32,6 @@ export default {
     },
   },
   components: {
-    'button-component': Button,
   },
   watch: {
   },
