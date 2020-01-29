@@ -1,12 +1,12 @@
 <script>
 import { filter } from 'lodash-es';
+import VueSimpleSpinner from 'vue-simple-spinner';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import * as HttpUtil from '@/utils/http';
 import ItemVocab from '@/components/inspector/item-vocab';
 import ModalComponent from '@/components/shared/modal-component';
-import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'item-type',

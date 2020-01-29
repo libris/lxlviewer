@@ -5,9 +5,9 @@
   and makes changes to the bound 'focus' object accordingly.
 */
 
+import { mapGetters } from 'vuex';
 import * as VocabUtil from '@/utils/vocab';
 import FormMixin from '@/components/mixins/form-mixin';
-import { mapGetters } from 'vuex';
 
 export default {
   mixins: [FormMixin],

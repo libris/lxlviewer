@@ -3,10 +3,10 @@
   Controls add new entity button and add entity modal with it's content
 */
 import { cloneDeep, isArray, get } from 'lodash-es';
+import VueSimpleSpinner from 'vue-simple-spinner';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import ToolTipComponent from '../shared/tooltip-component.vue';
 import PanelSearchList from '../search/panel-search-list.vue';
 import PanelComponent from '@/components/shared/panel-component.vue';

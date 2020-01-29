@@ -1,12 +1,12 @@
 <script>
 import { each } from 'lodash-es';
+import { mapGetters } from 'vuex';
+import VueSimpleSpinner from 'vue-simple-spinner';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import * as StringUtil from '@/utils/string';
 import * as DisplayUtil from '@/utils/display';
-import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'relations-list',

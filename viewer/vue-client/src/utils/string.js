@@ -1,6 +1,6 @@
 import { isObject, isArray, uniqBy, each, remove } from 'lodash-es';
 import translationsFile from '@/resources/json/i18n.json';
-import * as VocabUtil from './vocab';
+import * as VocabUtil from '@/utils/vocab';
 
 export function removeDomain(string, removableBaseUriArray) {
   const removable = removableBaseUriArray;

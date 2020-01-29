@@ -1,6 +1,6 @@
 <script>
-import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import { mapGetters, mapActions } from 'vuex';
+import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import * as HttpUtil from '@/utils/http';
 
 export default {

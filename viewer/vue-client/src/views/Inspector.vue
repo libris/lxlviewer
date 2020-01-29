@@ -1,13 +1,14 @@
 
 <script>
 import { cloneDeep, each, get } from 'lodash-es';
+import * as md5 from 'md5';
+import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import * as HttpUtil from '@/utils/http';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
-import * as md5 from 'md5';
 import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
@@ -17,7 +18,6 @@ import ModalComponent from '@/components/shared/modal-component';
 import MarcPreview from '@/components/inspector/marc-preview';
 import TabMenu from '@/components/shared/tab-menu';
 import ValidationSummary from '@/components/inspector/validation-summary';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'Inspector',

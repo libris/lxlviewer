@@ -1,10 +1,10 @@
 <script>
+import { cloneDeep, isArray, get, isObject } from 'lodash-es';
+import { mapGetters } from 'vuex';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
 import * as RecordUtil from '@/utils/record';
-import { cloneDeep, isArray, get, isObject } from 'lodash-es';
-import { mapGetters } from 'vuex';
 
 export default {
   props: {

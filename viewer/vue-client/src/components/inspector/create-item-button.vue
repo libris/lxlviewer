@@ -1,11 +1,11 @@
 <script>
+import { mapGetters } from 'vuex';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
 import * as StringUtil from '@/utils/string';
 import * as LayoutUtil from '@/utils/layout';
 import RoundedButton from '@/components/shared/rounded-button.vue';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'create-item-button',

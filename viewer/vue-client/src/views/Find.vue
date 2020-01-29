@@ -1,5 +1,7 @@
 <script>
 import { each, isArray, isPlainObject } from 'lodash-es';
+import { mapGetters } from 'vuex';
+import VueSimpleSpinner from 'vue-simple-spinner';
 import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
@@ -7,8 +9,6 @@ import Copy from '@/resources/json/copy.json';
 import FacetControls from '@/components/search/facet-controls';
 import SearchResult from '@/components/search/search-result';
 import TabMenu from '@/components/shared/tab-menu';
-import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'Find',
