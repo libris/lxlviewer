@@ -75,6 +75,7 @@
       "prefer-promise-reject-errors": "off",
       "no-cond-assign": "off",
       "object-shorthand": "off",
+      "import/no-cycle": "off",
       "import/extensions": "off",
       "no-param-reassign": "off",
       "import/no-dynamic-require": "off",
