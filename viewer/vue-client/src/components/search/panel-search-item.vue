@@ -220,6 +220,10 @@ export default {
     &.has-links {
       color: @brand-primary;
     }
+
+    .is-added & {
+      border-color: @gray-lighter;
+    }
   }
 
   &-itemContainer {
