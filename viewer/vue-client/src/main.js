@@ -117,7 +117,7 @@ new Vue({
   store,
   render: h => h(App),
   created() {
-    store.dispatch('verifyUser');
+    store.dispatch('verifyUser').catch(() => {});
     this.initWarningFunc();
     this.fetchHelpDocs();
     store.dispatch('pushLoadingIndicator', 'Loading application');
