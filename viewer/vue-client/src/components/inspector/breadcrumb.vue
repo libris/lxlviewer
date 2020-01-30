@@ -1,8 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import { each } from 'lodash-es';
-import * as RecordUtil from '@/utils/record';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import * as RecordUtil from '@/utils/record';
 
 export default {
   name: 'breadcrumb',

@@ -1,4 +1,6 @@
 <script>
+import VueSimpleSpinner from 'vue-simple-spinner';
+import { mapGetters } from 'vuex';
 import * as VocabUtil from '@/utils/vocab';
 import * as MathUtil from '@/utils/math';
 import * as HttpUtil from '@/utils/http';
@@ -6,8 +8,6 @@ import * as StringUtil from '@/utils/string';
 import CreateItemButton from '@/components/inspector/create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
 import RoundedButton from '@/components/shared/rounded-button.vue';
-import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'reverse-relations',

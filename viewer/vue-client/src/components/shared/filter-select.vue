@@ -3,9 +3,9 @@
   Adds custom select menu with searchable options
 */
 import { forEach } from 'lodash-es';
+import { mixin as clickaway } from 'vue-clickaway';
 import * as StringUtil from '@/utils/string';
 import * as LayoutUtil from '@/utils/layout';
-import { mixin as clickaway } from 'vue-clickaway';
 
 export default {
   mixins: [clickaway],

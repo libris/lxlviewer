@@ -1,10 +1,10 @@
 <script>
 import { isEmpty, cloneDeep, isArray } from 'lodash-es';
+import marked from 'marked';
+import { mapGetters } from 'vuex';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
-import marked from 'marked';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'search-form',

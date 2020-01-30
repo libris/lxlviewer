@@ -1,7 +1,7 @@
 <script>
+import { mapGetters } from 'vuex';
 import * as RecordUtil from '@/utils/record';
 import * as StringUtil from '@/utils/string';
-import { mapGetters } from 'vuex';
 
 export default {
   data() {

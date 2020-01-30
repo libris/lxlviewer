@@ -27,13 +27,13 @@
 </template>
 
 <script>
+import VueSimpleSpinner from 'vue-simple-spinner';
+import { mapGetters } from 'vuex';
 import Navbar from '@/components/layout/navbar';
 import SearchBar from '@/components/layout/search-bar';
 import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import GlobalMessage from '@/components/layout/global-msg';
-import VueSimpleSpinner from 'vue-simple-spinner';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'App',

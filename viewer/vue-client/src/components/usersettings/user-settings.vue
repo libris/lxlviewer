@@ -1,8 +1,8 @@
 <script>
+import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import SelectSigel from './select-sigel';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'user-settings',

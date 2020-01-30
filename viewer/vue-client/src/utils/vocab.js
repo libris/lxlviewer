@@ -1,6 +1,6 @@
 import { isObject, uniq, isArray, find, each, isPlainObject, cloneDeep, uniqBy, forOwn } from 'lodash-es';
-import * as httpUtil from './http';
-import * as StringUtil from './string';
+import * as httpUtil from '@/utils/http';
+import * as StringUtil from '@/utils/string';
 
 export function getVocab(apiPath) {
   return new Promise((resolve, reject) => {
