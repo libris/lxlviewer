@@ -96,9 +96,7 @@ export default {
       if (typeof this.focusData.reverseLinks === 'undefined') {
         return null;
       }
-      else {
-        return this.focusData.reverseLinks ? MathUtil.getCompactNumber(this.focusData.reverseLinks.totalItems) : 0;
-      }      
+      return this.focusData.reverseLinks ? MathUtil.getCompactNumber(this.focusData.reverseLinks.totalItems) : 0;
     },
     translatedTooltip() {
       return StringUtil.getUiPhraseByLang('Number of links to entity', this.user.settings.language);
