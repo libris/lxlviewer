@@ -93,7 +93,12 @@ export default {
       return updatedListItemSettings;
     },
     reverseLinksAmount() {
-      return this.focusData.reverseLinks ? MathUtil.getCompactNumber(this.focusData.reverseLinks.totalItems) : 0;
+      if (typeof this.focusData.reverseLinks === 'undefined') {
+        return null;
+      }
+      else {
+        return this.focusData.reverseLinks ? MathUtil.getCompactNumber(this.focusData.reverseLinks.totalItems) : 0;
+      }      
     },
     translatedTooltip() {
       return StringUtil.getUiPhraseByLang('Number of links to entity', this.user.settings.language);
@@ -121,7 +126,8 @@ export default {
       </summary-action>
       <div 
         class="PanelSearch-link-count"
-        :class="{'has-links' : reverseLinksAmount !== 0}"
+        v-if="reverseLinksAmount !== null"
+        :class="{'has-links' : reverseLinksAmount > 0}"
         v-tooltip="{
           placement: 'right',
           content: translatedTooltip,
