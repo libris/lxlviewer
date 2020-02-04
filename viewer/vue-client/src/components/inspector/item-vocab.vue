@@ -65,7 +65,7 @@ export default {
       this.possibleValues = this.getPossibleValues();
       this.selected = this.fieldValue;
       this.$nextTick(() => {
-        this.initialized = true
+        this.initialized = true;
       });
     });
   },
@@ -185,6 +185,8 @@ export default {
   &-select {
     width: 100%;
     margin-top: 0.2em;
+    border: 1px solid @gray-light;
+    background-color: @white;
   }
 }
 

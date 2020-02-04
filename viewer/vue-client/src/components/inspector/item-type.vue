@@ -1,12 +1,12 @@
 <script>
-import { uniq, sortBy, filter } from 'lodash-es';
+import { filter } from 'lodash-es';
+import VueSimpleSpinner from 'vue-simple-spinner';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import * as HttpUtil from '@/utils/http';
 import ItemVocab from '@/components/inspector/item-vocab';
 import ModalComponent from '@/components/shared/modal-component';
-import VueSimpleSpinner from 'vue-simple-spinner';
 
 export default {
   name: 'item-type',
@@ -52,9 +52,6 @@ export default {
     getFormattedSelectOption(term) {
       return DisplayUtil.getFormattedSelectOption(term, this.settings, this.resources.vocab, this.resources.context);
     },
-    onTypeChange(type) {
-
-    },
     unlockEdit() {
       this.unlockedByUser = true;
       this.closeUnlockModal();
@@ -76,11 +73,11 @@ export default {
       };
       HttpUtil.getRelatedPosts(query, this.settings.apiPath)
         .then((response) => {
-        this.numberOfRelations = response.totalItems;
-        this.checkingRelations = false;
-      }, (error) => {
-        console.log('Error checking for relations', error);
-      });
+          this.numberOfRelations = response.totalItems;
+          this.checkingRelations = false;
+        }, (error) => {
+          console.log('Error checking for relations', error);
+        });
     },
   },
   watch: {
@@ -88,7 +85,7 @@ export default {
       if (newVal === false && oldVal === true) {
         this.unlockedByUser = false;
       }
-    }
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -113,7 +110,6 @@ export default {
     <div class="ItemType-selectContainer" v-if="!isLocked && !checkingRelations && getClassTree.length > 0">
       <select 
         :disabled="isDisabled"
-        @change="onTypeChange($event)"
         v-model="selected" 
         class="ItemType-select customSelect" 
         :aria-label="fieldKey | labelByLang">
@@ -194,6 +190,8 @@ export default {
     margin-top: 0.2em;
     margin-right: 0.5em;
     display: inline-block;
+    border: 1px solid @gray-light;
+    background-color: @white;
     &:disabled {
       opacity: 0.7;
     }

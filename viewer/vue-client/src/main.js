@@ -3,8 +3,8 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import 'whatwg-fetch';
 import Vue from 'vue';
-import Vuex from 'vuex'; // eslint-disable-line no-duplicate-imports
-import { mapGetters } from 'vuex'; // eslint-disable-line no-duplicate-imports
+import Vuex from 'vuex'; // eslint-disable-line import/no-duplicates
+import { mapGetters } from 'vuex'; // eslint-disable-line import/no-duplicates
 import { each } from 'lodash-es';
 import VTooltip from 'v-tooltip';
 import PortalVue from 'portal-vue';
@@ -72,9 +72,14 @@ Vue.filter('asAppPath', (path) => {
 });
 
 Vue.filter('convertResourceLink', (uri) => {
+  if (uri === null || typeof uri === 'undefined' || uri.length === 0) {
+    throw new Error('Filter "convertResourceLink" was called without input');
+  }
   let translatedUri = uri;
   if (uri.startsWith('https://id.kb.se')) {
-    translatedUri = uri.replace('https://id.kb.se', process.env.VUE_APP_ID_PATH);
+    translatedUri = uri.replace('https://id.kb.se', store.getters.settings.idPath);
+  } else if (uri.startsWith('https://libris.kb.se')) {
+    translatedUri = uri.replace('https://libris.kb.se', store.getters.settings.dataPath);
   }
   return translatedUri;
 });
@@ -112,7 +117,7 @@ new Vue({
   store,
   render: h => h(App),
   created() {
-    store.dispatch('verifyUser');
+    store.dispatch('verifyUser').catch(() => {});
     this.initWarningFunc();
     this.fetchHelpDocs();
     store.dispatch('pushLoadingIndicator', 'Loading application');

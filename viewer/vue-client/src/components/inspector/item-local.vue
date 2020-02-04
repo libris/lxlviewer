@@ -8,7 +8,6 @@ import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
-import * as DataUtil from '@/utils/data';
 import ToolTipComponent from '../shared/tooltip-component';
 import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from './search-window';
@@ -131,30 +130,6 @@ export default {
     },
     canCopyTitle() {
       if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
-        return true;
-      }
-      return false;
-    },
-    extractedItem() {
-      const newRecord = {};
-      newRecord.descriptionCreator = { '@id': this.user.getActiveLibraryUri() };
-      const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity, newRecord);
-      return objAsRecord;
-    },
-    extractedMainEntity() {
-      const cleanObj = DataUtil.removeNullValues(this.item);
-
-      if (this.copyTitle) {
-        cleanObj.hasTitle = this.editorData.mainEntity.hasTitle;
-      }
-      return cleanObj;
-    },
-    isExtractable() {
-      if (this.isCompositional === true) {
-        return false;
-      }
-      const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
-      if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
         return true;
       }
       return false;
@@ -594,7 +569,7 @@ export default {
   position: relative;
   flex: 1 100%;
   transition: background-color .5s ease;
-  border-radius: 4px;
+  border-radius: 4px;  
 
   &.has-failed-validations {
     outline: 1px dotted red;
@@ -604,7 +579,9 @@ export default {
     display: block;
     flex: 1 100%;
     font-weight: normal;
-    position: relative;
+    position: relative;    
+
+    .icon-hover();
   }
 
   &-label {

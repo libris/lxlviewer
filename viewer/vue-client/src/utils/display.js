@@ -32,20 +32,26 @@ export function getDisplayDefinitions(baseUri) {
 }
 
 function getValueByLang(item, propertyId, displayDefs, langCode, context) {
+  const translatedValue = tryGetValueByLang(item, propertyId, langCode, context);
+  return translatedValue != null ? translatedValue : item[propertyId];
+}
+
+function tryGetValueByLang(item, propertyId, langCode, context) {
   if (!langCode || typeof langCode === 'undefined') {
-    throw new Error('getValueByLang was called with an undefined language code.');
+    throw new Error('tryGetValueByLang was called with an undefined language code.');
   }
-  let translatedValue = item[propertyId]; // Set original value
-  const contextKey = VocabUtil.getContextProperty(propertyId, context);
-  const langPropObject = VocabUtil.getContextWithContainer(contextKey, '@language', context);
-  let byLangKey = '';
-  if (typeof langPropObject !== 'undefined') {
-    byLangKey = langPropObject['@id'];
+  const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
+  
+  let result = null;
+  if (byLangKey && item[byLangKey]) {
+    if (item[byLangKey][langCode]) {
+      result = item[byLangKey][langCode];
+    } else {
+      const langKeys = Object.keys(item[byLangKey]);
+      result = item[byLangKey][langKeys[0]];
+    }
   }
-  if (item[byLangKey] && item[byLangKey][langCode]) {
-    translatedValue = item[byLangKey][langCode];
-  }
-  return translatedValue;
+  return result;
 }
 
 export function getLensById(id, displayDefs) {
@@ -186,9 +192,9 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     const labelValue = getValueByLang(trueItem, 'label', displayDefs, settings.language, context);
     const prefLabelValue = getValueByLang(trueItem, 'prefLabel', displayDefs, settings.language, context);
     if (typeof prefLabelValue !== 'undefined') {
-      result['prefLabel'] = prefLabelValue;
+      result.prefLabel = prefLabelValue;
     } else if (labelValue !== 'undefined') {
-      result['label'] = labelValue;
+      result.label = labelValue;
     }
   } else {
     for (let i = 0; i < properties.length; i++) {
@@ -244,7 +250,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
             vocab,
             context,
           );
-          result[property] = `{${expectedClassName} ${StringUtil.getUiPhraseByLang('missing', settings.language)}}`;
+          result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, vocab, context)} ${StringUtil.getUiPhraseByLang('without', settings.language)} ${expectedClassName.toLowerCase()}}`;
         }
       }
     }
@@ -288,18 +294,16 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
     info: [],
   };
   each(card, (value, key) => {
-    let v = value;
-    if (v !== null) {
-      if (!isArray(value)) {
-        v = [value];
-      }
+    if (value !== null) {
+      const v = isArray(value) ? value : [value];
       if (displayGroups.header.indexOf(key) !== -1) {
         summary.header.push({ property: key, value: v });
       } else if (displayGroups.categorization.indexOf(key) !== -1) {
         summary.categorization.push({ property: key, value: v });
       } else {
-        const valueAsArray = isArray(item[key]) ? item[key] : [item[key]];
-        summary.info.push({ property: key, value: valueAsArray });
+        const translated = tryGetValueByLang(item, key, settings.language, context);
+        const itemValue = translated !== null ? translated : item[key];
+        summary.info.push({ property: key, value: isArray(itemValue) ? itemValue : [itemValue] });
       }
     }
   });

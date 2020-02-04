@@ -1,6 +1,6 @@
 <script>
-import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import { mapGetters, mapActions } from 'vuex';
+import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import * as HttpUtil from '@/utils/http';
 
 export default {
@@ -9,6 +9,10 @@ export default {
   props: {
     focusData: {
       type: Object,
+      default: null,
+    },
+    recordId: {
+      type: String,
       default: null,
     },
   },
@@ -23,33 +27,43 @@ export default {
       'addCardToCache',
     ]),
     populateData() {
-      if (this.fetchedData === null) { // Only fetch if we need to
+      if (this.shouldFetch) { // Only fetch if we need to
         const self = this;
-        const id = self.focusData['@id'].split('#')[0];
-        const url = `${id}/data.jsonld?lens=card`;
-        self.fetchStatus = 'loading';
+        const id = self.recordId;
+        if (id !== null) {
+          const url = `${id}/data.jsonld?lens=card`;
+          self.fetchStatus = 'loading';
 
-        HttpUtil.getDocument(url).then((res) => {
-          if (res.status === 200) {
-            self.fetchStatus = null;
-            let simplifiedResult = res;
-            if (res.hasOwnProperty('mainEntity')) {
-              simplifiedResult = res.mainEntity;
+          HttpUtil.getDocument(url).then((res) => {
+            if (res.status === 200) {
+              self.fetchStatus = null;
+              let simplifiedResult = res.data;
+              if (simplifiedResult.hasOwnProperty('mainEntity')) {
+                simplifiedResult = res.mainEntity;
+              }
+              this.fetchedData = simplifiedResult;
+            } else {
+              self.fetchStatus = 'error';
             }
-          } else {
+          }, (error) => {
             self.fetchStatus = 'error';
-          }
-        }, (error) => {
-          self.fetchStatus = 'error';
-          reject(error);
-        });
+            console.log(error);
+          });
+        }
       }
     },
   },
   computed: {
     ...mapGetters([
       'resources',
+      'settings',
     ]),
+    shouldFetch() {
+      if (this.focusData['@id'].startsWith(this.settings.dataPath) || this.recordId.startsWith(this.settings.dataPath) || (this.focusData.hasOwnProperty('meta') && this.focusData.meta['@id'].startsWith(this.settings.dataPath))) {
+        return this.fetchedData === null;
+      }
+      return false;
+    },
     fullData() {
       if (this.fetchedData !== null) {
         return this.fetchedData;

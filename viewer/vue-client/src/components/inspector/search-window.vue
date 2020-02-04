@@ -1,10 +1,10 @@
 <script>
 import { merge, cloneDeep } from 'lodash-es';
-import * as VocabUtil from '@/utils/vocab';
-import * as DisplayUtil from '@/utils/display';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import * as DisplayUtil from '@/utils/display';
+import * as VocabUtil from '@/utils/vocab';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
@@ -29,7 +29,7 @@ export default {
       localEntitySettings: {
         text: 'Create and link entity',
         styling: 'brand',
-        icon: 'chain',
+        icon: 'plus',
         show: true,
         inspectAction: false,
       },

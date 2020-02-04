@@ -1,12 +1,10 @@
 <script>
 import { isEmpty, cloneDeep, isArray } from 'lodash-es';
+import marked from 'marked';
+import { mapGetters } from 'vuex';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
-import TabMenu from '@/components/shared/tab-menu';
-import SwitchToggle from '@/components/shared/switch-toggle';
-import marked from 'marked';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'search-form',
@@ -52,7 +50,7 @@ export default {
       this.helpToggled = !this.helpToggled;
     },
     composeQuery() {
-      let enc = encodeURIComponent;
+      const enc = encodeURIComponent;
       let query = '';
       if (this.searchPerimeter === 'libris') {
         const queryArr = [];
@@ -63,10 +61,8 @@ export default {
                 queryArr.push(`${enc(param)}=${enc(el)}`);
               }
             });
-          } else {
-            if (this.mergedParams[param] !== null) {
-              queryArr.push(`${enc(param)}=${enc(this.mergedParams[param])}`);
-            }
+          } else if (this.mergedParams[param] !== null) {
+            queryArr.push(`${enc(param)}=${enc(this.mergedParams[param])}`);
           }
         });
         query = queryArr.join('&');
@@ -86,9 +82,7 @@ export default {
       this.focusSearchInput();
     },
     resetSearchParam() {
-      this.activeSearchParam = PropertyMappings.find(mapping => {
-        return mapping.searchProp === 'q';
-      });
+      this.activeSearchParam = PropertyMappings.find(mapping => mapping.searchProp === 'q');
     },
     setSearch() {
       let match = PropertyMappings.filter((prop) => {
@@ -167,13 +161,10 @@ export default {
       if (this.activeSearchType === '*') {
         return PropertyMappings;
       }
-      return PropertyMappings.filter(mapping => {
-        return mapping.types.indexOf(this.activeSearchType) > -1;
-      });
+      return PropertyMappings.filter(mapping => mapping.types.indexOf(this.activeSearchType) > -1);
     },
     helpContainerBoundaryStyles() {
       const $icon = this.$refs.helpIcon;
-      const $formGroup = this.$refs.formGroup;
       const styles = { top: `${$icon.clientHeight + 12}px` };
       return styles;
     },
@@ -241,8 +232,6 @@ export default {
   },
   components: {
     'remote-databases': RemoteDatabases,
-    'tab-menu': TabMenu,
-    'switch-toggle': SwitchToggle,
   },
   watch: {
     'status.keyActions'(actions) {
@@ -270,7 +259,7 @@ export default {
         this.focusSearchInput();
       }
     },
-    '$route.params.perimeter'(value, oldValue) {
+    '$route.params.perimeter'(value) {
       if (value === 'remote') {
         if (this.status.remoteDatabases.length > 0) {
           if (this.composedSearchParam.q !== '' && this.composedSearchParam.q !== '*') {

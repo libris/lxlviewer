@@ -144,6 +144,9 @@ const store = new Vuex.Store({
         'modified',
         'descriptionCreator',
         'descriptionLastModifier',
+        'derivedFrom',
+        'generationDate',
+        'generationProcess',
       ],
       dataSetFilters: {
         libris: [
@@ -202,7 +205,7 @@ const store = new Vuex.Store({
           },
         },
         'instanceOf.language': {
-          sv: 'Språk',
+          sv: 'Verksspråk',
           en: 'Language of work',
           facet: {
             order: 4,
@@ -213,20 +216,6 @@ const store = new Vuex.Store({
           en: 'Type',
           facet: {
             order: 5,
-          },
-        },
-        carrierType: {
-          sv: 'Bärartyp',
-          en: 'Carrier type',
-          facet: {
-            order: false,
-          },
-        },
-        'instanceOf.contentType': {
-          sv: 'Verksinnehållstyp',
-          en: 'Content type of work',
-          facet: {
-            order: false,
           },
         },
         inScheme: {
@@ -241,6 +230,48 @@ const store = new Vuex.Store({
           en: 'Term Collection',
           facet: {
             order: 7,
+          },
+        },
+        nationality: {
+          sv: 'Nationalitet',
+          en: 'Nationality',
+          facet: {
+            order: 7,
+          },
+        },
+        language: {
+          sv: 'Språk',
+          en: 'Language',
+          facet: {
+            order: 8,
+          },
+        },
+        genreForm: {
+          sv: 'Genre/form',
+          en: 'Genre/form',
+          facet: {
+            order: 9,
+          },
+        },
+        'contribution.agent': {
+          sv: 'Medverkan',
+          en: 'Contribution',
+          facet: {
+            order: 9,
+          },
+        },
+        contentType: {
+          sv: 'Innehållstyp',
+          en: 'Content type',
+          facet: {
+            order: 10,
+          },
+        },
+        carrierType: {
+          sv: 'Bärartyp',
+          en: 'Carrier type',
+          facet: {
+            order: 10,
           },
         },
       },

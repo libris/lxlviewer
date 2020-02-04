@@ -6,7 +6,6 @@ import * as VocabUtil from '@/utils/vocab';
 import CreationCard from '@/components/create/creation-card';
 import FileAdder from '@/components/create/file-adder';
 import TabMenu from '@/components/shared/tab-menu';
-import SelectSigel from '@/components/usersettings/select-sigel';
 
 export default {
   name: 'create-new-form',
@@ -59,10 +58,10 @@ export default {
       this.activeIndex = index;
     },
     templateIsAllowed(template) {      
-      const isAllowed = this.selectedCreation != 'Concept' ||
-        (this.user.uriMinter &&
-          this.user.uriMinter.findContainerForEntity(template.value.mainEntity,
-            {'@id': this.user.getActiveLibraryUri()}));
+      const isAllowed = this.selectedCreation !== 'Concept'
+      || (this.user.uriMinter
+        && this.user.uriMinter.findContainerForEntity(template.value.mainEntity,
+          { '@id': this.user.getActiveLibraryUri() }));
 
       if (isAllowed) {
         this.hasAllowedTemplates = true;
@@ -74,14 +73,10 @@ export default {
       if (!this.user.uriMinter) {
         return false;
       }
-      const {vocab, context} = this.$store.getters.resources;
+      const { vocab, context } = this.$store.getters.resources;
       return Object.keys(this.user.uriMinter.containerMap).find(
-        it => VocabUtil.isSubClassOf(it, 'Concept', vocab, context));
-    },
-    getUserRecordType() {
-      const {vocab, context} = this.$store.getters.resources;
-
-      
+        it => VocabUtil.isSubClassOf(it, 'Concept', vocab, context),
+      );
     },
     setHintSigelChange(val) {
       this.$store.dispatch('setStatusValue', { 
@@ -91,7 +86,7 @@ export default {
     },
     hideSigelHint() {
       this.setHintSigelChange(false);
-    }
+    },
   },
   events: {
   },
@@ -150,7 +145,6 @@ export default {
     'creation-card': CreationCard,
     'file-adder': FileAdder,
     'tab-menu': TabMenu,
-    'select-sigel': SelectSigel,
   },
   watch: {
     thingData() {
@@ -161,14 +155,13 @@ export default {
       // restrict hasAllowedTemplates check to Concept only
       if (val === 'Concept') {
         this.hasAllowedTemplates = false;
-      }
-      else {
+      } else {
         this.hasAllowedTemplates = true;
       }
     },
     hasAllowedTemplates(val) {
       this.setHintSigelChange(!val);
-    }
+    },
   },
   created() {
 

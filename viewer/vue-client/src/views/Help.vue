@@ -1,9 +1,9 @@
 <script>
 import { orderBy } from 'lodash-es';
-import * as StringUtil from '@/utils/string';
 import marked from 'marked';
 import moment from 'moment';
 import { mapGetters } from 'vuex';
+import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'help-component',

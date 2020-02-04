@@ -5,9 +5,9 @@
   and makes changes to the bound 'focus' object accordingly.
 */
 
+import { mapGetters } from 'vuex';
 import * as VocabUtil from '@/utils/vocab';
 import FormMixin from '@/components/mixins/form-mixin';
-import { mapGetters } from 'vuex';
 
 export default {
   mixins: [FormMixin],
@@ -194,31 +194,6 @@ export default {
     list-style: none;
     width: 100%;
     box-shadow: none;
-
-    &:hover {
-      & .icon:not(.is-disabled) {
-        color: @gray-dark-transparent;
-      }
-
-      &:not(.locked) >.actions {
-        opacity: 1;
-      }
-    }
-
-    .user-is-tabbing &:focus-within { // icon 'hover-effect' when tabbing 
-      & .icon:not(.is-disabled) {
-        color: @gray-dark-transparent;
-      }
-    }
-
-    & .icon {
-      color: @gray-light-transparent;
-
-      &:hover:not(.is-disabled),
-      &:focus {
-        color: @gray-very-dark-transparent;
-      }
-    }
   }
 
   &-item.is-distinguished {    

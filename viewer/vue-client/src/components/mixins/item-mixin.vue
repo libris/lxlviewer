@@ -1,9 +1,10 @@
 <script>
+import { cloneDeep, isArray, get, isObject } from 'lodash-es';
+import { mapGetters } from 'vuex';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
-import { cloneDeep, isArray, get, isObject } from 'lodash-es';
-import { mapGetters } from 'vuex';
+import * as RecordUtil from '@/utils/record';
 
 export default {
   props: {
@@ -85,6 +86,33 @@ export default {
       }
       return `${this.parentPath}`;
     },
+    extractedMainEntity() {
+      const cleanObj = DataUtil.removeNullValues(this.item);
+      if (this.copyTitle) {
+        cleanObj.hasTitle = this.inspector.data.mainEntity.hasTitle;
+      }
+      return cleanObj;
+    },
+    extractedItem() {
+      if (this.focusData.hasOwnProperty('@type') === false) {
+        return null;
+      }
+      const newRecord = {};
+      newRecord.descriptionCreator = { '@id': this.user.getActiveLibraryUri() };
+      newRecord.derivedFrom = { '@id': this.inspector.data.record['@id'] };
+      const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity, newRecord);
+      return objAsRecord;
+    },
+    isExtractable() {
+      if (this.isCompositional === true) {
+        return false;
+      }
+      const classId = StringUtil.getCompactUri(this.item['@type'], this.resources.context);
+      if (VocabUtil.isExtractable(classId, this.resources.vocab, this.settings, this.resources.context)) {
+        return true;
+      }
+      return false;
+    },
     isEmbedded() {
       return VocabUtil.isEmbedded(this.item['@type'], this.resources.vocab, this.settings, this.resources.context);
     },
@@ -104,33 +132,16 @@ export default {
         this.inspector.data.quoted,
       );
     },
-    routerPath() {
-      let id = '';
-      if (this.recordObject) {
-        id = this.recordObject['@id'];
-      } else {
-        id = this.item['@id'];
-      }
-      const uriParts = id.split('/');
-      const fnurgel = uriParts[uriParts.length - 1];
-      return `/${fnurgel}`;
-    },
-    recordObject() {
-      const quoted = this.inspector.data.quoted;
-      const keys = Object.keys(quoted);
-      for (const key of keys) {
-        const graphNode = quoted[key];
-        if (graphNode.hasOwnProperty('mainEntity') && graphNode.mainEntity['@id'] === this.item['@id']) {
-          return graphNode;
-        }
-      }
-      return null;
+    recordId() {
+      return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
     },
     isLibrisResource() {
-      if (this.recordObject) {
-        return StringUtil.isLibrisResourceUri(this.recordObject['@id'], this.settings);
-      }
-      return StringUtil.isLibrisResourceUri(this.item['@id'], this.settings);
+      return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
+    },
+    routerPath() {
+      const uriParts = this.recordId.split('/');
+      const fnurgel = uriParts[uriParts.length - 1];
+      return `/${fnurgel}`;
     },
   },
   watch: {

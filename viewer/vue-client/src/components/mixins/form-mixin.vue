@@ -1,9 +1,9 @@
 <script>
+import { cloneDeep, each, includes, remove, isArray, sortBy } from 'lodash-es';
+import { mapGetters } from 'vuex';
 import * as DisplayUtil from '@/utils/display';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
-import { cloneDeep, each, includes, remove, isArray, sortBy } from 'lodash-es';
-import { mapGetters } from 'vuex';
 
 export default {
   props: {
@@ -64,7 +64,7 @@ export default {
     },
     sortedProperties() {
       const formObj = this.formObj;
-      let propertyList = DisplayUtil.getDisplayProperties(
+      const propertyList = DisplayUtil.getDisplayProperties(
         this.formType,
         this.resources.display,
         this.resources.vocab,
@@ -81,10 +81,9 @@ export default {
 
       if (this.showTypeChanger) {
         // move instanceOf field to top
-        if(this.recordType === 'Instance') {
+        if (this.recordType === 'Instance') {
           propertyList.splice(1, 0, '@type');
-        }
-        else {
+        } else {
           propertyList.splice(0, 0, '@type');
         }
       }

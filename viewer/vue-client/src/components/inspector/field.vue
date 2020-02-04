@@ -180,7 +180,7 @@ export default {
       if (this.allValuesFrom.length > 0) {
         return this.allValuesFrom;
       }
-      return this.someValuesFrom.concat(this.range);
+      return this.range;
     },
     archType() {
       return VocabUtil.getRecordType(
@@ -192,11 +192,14 @@ export default {
     entityTypeArchLabel() {
       if (this.archType === 'Instance') {
         return 'Instance type';
-      } else if (this.archType === 'Work') {
+      }
+      if (this.archType === 'Work') {
         return 'Work type';
-      } else if (this.archType === 'Agent') {
+      }
+      if (this.archType === 'Agent') {
         return 'Agent type';
-      } else if (this.archType === 'Concept') {
+      }
+      if (this.archType === 'Concept') {
         return 'Concept type';
       }
       return 'Type';
@@ -341,8 +344,8 @@ export default {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
     isLinkedInstanceOf() {
-      if (this.fieldKey === 'instanceOf' && this.fieldValue !== null && this.parentPath === "mainEntity") {        
-        if (this.fieldValue['@id'].split('#')[0] !== this.inspector.data.record['@id']) {
+      if (this.fieldKey === 'instanceOf' && this.fieldValue !== null && this.parentPath === 'mainEntity') {
+        if (this.fieldValue.hasOwnProperty('@id') && this.fieldValue['@id'].split('#')[0] !== this.inspector.data.record['@id']) {
           return true;
         }
       }
@@ -386,26 +389,14 @@ export default {
       userStorage.copyClipboard = null;
       this.$store.dispatch('setUserStorage', userStorage);
     },
-    actionHighlight(active, event) {
+    highlight(active, event, cssClass) {
+      let item = event.target;
       if (active) {
-        let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
-        item.classList.add('is-marked');
+        item.classList.add(cssClass);
       } else {
-        let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
-        item.classList.remove('is-marked');
-      }
-    },
-    removeHighlight(active, event) {
-      if (active) {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-field'));
-        item.classList.add('is-removeable');
-      } else {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-field'));
-        item.classList.remove('is-removeable');
+        item.classList.remove(cssClass);
       }
     },
     removeThis() {
@@ -441,7 +432,7 @@ export default {
       if (typeof o === 'boolean') {
         return 'boolean';
       }      
-      if (this.fieldKey === '@type' ||  VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
+      if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
       if (this.isPlainObject(o) && o.hasOwnProperty('@id') && this.isInGraph(o)) {
@@ -548,6 +539,7 @@ export default {
       'Field--inner': !asColumns,
       'is-lastAdded': isLastAdded, 
       'is-removed': removed,
+      'is-locked': locked,
       'is-highlighted': embellished,
       'has-failed-validations': failedValidations.length > 0,
       'is-distinguished': isDistinguished,
@@ -570,10 +562,10 @@ export default {
               tabindex="0"
               v-on:click="removeThis(true)"
               @keyup.enter="removeThis(true)"
-              @focus="removeHover = true, removeHighlight(true, $event)" 
-              @blur="removeHover = false, removeHighlight(false, $event)"
-              @mouseover="removeHover = true, removeHighlight(true, $event)" 
-              @mouseout="removeHover = false, removeHighlight(false, $event)">
+              @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
+              @blur="removeHover = false, highlight(false, $event, 'is-removeable')"
+              @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
+              @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
               <tooltip-component 
                 :show-tooltip="removeHover" 
                 tooltip-text="Remove"></tooltip-component>
@@ -614,10 +606,10 @@ export default {
               :aria-label="'Paste entity' | translatePhrase"
               @click="pasteClipboardItem"
               @keyup.enter="pasteClipboardItem"
-              @focus="pasteHover = true, actionHighlight(true, $event)" 
-              @blur="pasteHover = false, actionHighlight(false, $event)"
-              @mouseover="pasteHover = true, actionHighlight(true, $event)" 
-              @mouseout="pasteHover = false, actionHighlight(false, $event)">
+              @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
+              @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
+              @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
+              @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
               <tooltip-component 
                 :show-tooltip="pasteHover" 
                 tooltip-text="Paste entity"></tooltip-component>
@@ -674,10 +666,10 @@ export default {
             :aria-label="'Remove' | translatePhrase"
             v-on:click="removeThis(true)"
             @keyup.enter="removeThis(true)"
-            @focus="removeHover = true, removeHighlight(true, $event)" 
-            @blur="removeHover = false, removeHighlight(false, $event)" 
-            @mouseover="removeHover = true, removeHighlight(true, $event)" 
-            @mouseout="removeHover = false, removeHighlight(false, $event)"  >
+            @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
+            @blur="removeHover = false, highlight(false, $event, 'is-removeable')" 
+            @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
+            @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
             <tooltip-component
               :show-tooltip="removeHover" 
               tooltip-text="Remove"></tooltip-component>
@@ -692,10 +684,10 @@ export default {
             :aria-label="'Paste entity' | translatePhrase"
             @click="pasteClipboardItem"
             @keyup.enter="pasteClipboardItem"
-            @focus="pasteHover = true, actionHighlight(true, $event)" 
-            @blur="pasteHover = false, actionHighlight(false, $event)"
-            @mouseover="pasteHover = true, actionHighlight(true, $event)" 
-            @mouseout="pasteHover = false, actionHighlight(false, $event)">
+            @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
+            @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
+            @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
+            @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
             <tooltip-component 
               :show-tooltip="pasteHover" 
               tooltip-text="Paste entity"></tooltip-component>
@@ -892,6 +884,19 @@ export default {
     overflow: visible;
     display: block;
 
+    .icon-hover();
+        
+    &:hover {
+      background: @bg-site;
+      box-shadow: inset 0 0 0 1px @gray-lighter;
+    }
+
+    &.is-locked,
+    .Field--inner & {
+      background: none;
+      box-shadow: none;
+    }
+
     &.is-marked {
       background-color: @add;
     }
@@ -931,8 +936,8 @@ export default {
       }
     }
   }
-
-    &-labelContainer {
+    
+  &-labelContainer {
     display: flex;
     flex: 0 0 225px;
     flex-direction: column;
@@ -950,6 +955,8 @@ export default {
     &.is-hovered * {
       z-index: 1;
     }
+
+    .icon-hover();
 
     pre {
       margin-top: 5px;
@@ -1020,7 +1027,7 @@ export default {
         color: @field-path-alt;
         position: absolute;
         left: 0px;
-        top: -1px;
+        top: 0px;
       }
     } 
 
@@ -1073,14 +1080,10 @@ export default {
     }
   }
 
-  &-content {
-    flex: 1 100%;
+  &-content {    
     margin: 0;
     padding: 0.25em 1em;
-    max-width: 100%;
-    @media (min-width: @screen-sm) {
-      width: 0;
-    }
+    max-width: 100%;    
 
     .Field--inner & {
       border: 0;
@@ -1089,6 +1092,8 @@ export default {
     }
 
     @media (min-width: 768px) {
+      flex: 1 auto;
+      width: 0;
       border-left: 1px solid;
       border-color: @form-border;
       border-color: @form-border-alt;
@@ -1146,16 +1151,13 @@ export default {
     display: inline-block;
     margin-right: 5px;
   
-  &.placeholder {
-    width: 20px;
-    display: none;
+    &.placeholder {
+      width: 20px;
+      display: none;
 
-    @media (min-width: @screen-sm) {
-      display: block;
-    }
-  }
-
-    &:hover {
+      @media (min-width: @screen-sm) {
+        display: block;
+      }
     }
   }
 

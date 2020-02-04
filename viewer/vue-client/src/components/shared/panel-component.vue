@@ -20,9 +20,9 @@
       <panel-component title="My nice panel" v-if="panelActive" @close="panelActive=false"></panel-component>
 
 */
+import { mapGetters } from 'vuex';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'panel-component',

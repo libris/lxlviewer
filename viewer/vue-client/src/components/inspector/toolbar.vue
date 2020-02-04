@@ -320,13 +320,12 @@ export default {
       }
       if (this.inspector.data.mainEntity.heldBy && this.inspector.data.mainEntity.heldBy['@id'] === this.activeSigelId) {
         return true;
-      } else {
-        const componentList = this.inspector.data.mainEntity.hasComponent;
-        if (typeof componentList !== 'undefined') {
-          for (const component of componentList) {
-            if (component.heldBy && component.heldBy['@id'] === this.activeSigelId) {
-              return true;
-            }
+      }
+      const componentList = this.inspector.data.mainEntity.hasComponent;
+      if (typeof componentList !== 'undefined') {
+        for (const component of componentList) {
+          if (component.heldBy && component.heldBy['@id'] === this.activeSigelId) {
+            return true;
           }
         }
       }
@@ -376,18 +375,17 @@ export default {
       if (mainEntity['@type'] === 'Item') {
         if (this.isMyHolding || this.user.isGlobalRegistrant()) {
           return true;
-        } else {
-          return false;
         }
-      } else if (VocabUtil.isSubClassOf(mainEntity['@type'], 'Concept',
-                  this.resources.vocab, this.resources.context) &&
-        (!this.user.uriMinter ||
-          !this.user.uriMinter.findContainerForEntity(mainEntity,
-            { '@id': this.user.getActiveLibraryUri() }))) {
         return false;
-      } else {
-        return true;
       }
+      if (VocabUtil.isSubClassOf(mainEntity['@type'], 'Concept',
+        this.resources.vocab, this.resources.context)
+        && (!this.user.uriMinter
+        || !this.user.uriMinter.findContainerForEntity(mainEntity,
+          { '@id': this.user.getActiveLibraryUri() }))) {
+        return false;
+      }
+      return true;
     },
     showRecord() {
       return this.status.showRecord;
@@ -581,7 +579,7 @@ export default {
         <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToEdit">
           <a class="Toolbar-menuLink"  @click="postControl('remove-post')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
-          {{"Remove" | translatePhrase}} {{ recordType | labelByLang }}
+          {{"Remove" | translatePhrase}} {{ recordType | labelByLang | lowercase }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech && userIsPermittedToEdit">

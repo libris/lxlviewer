@@ -1,6 +1,6 @@
 import { isObject, isArray, uniqBy, each, remove } from 'lodash-es';
 import translationsFile from '@/resources/json/i18n.json';
-import * as VocabUtil from './vocab';
+import * as VocabUtil from '@/utils/vocab';
 
 export function removeDomain(string, removableBaseUriArray) {
   const removable = removableBaseUriArray;
@@ -138,8 +138,14 @@ export function getNumberOfVowels(str) {
 
 export function isLibrisResourceUri(uri, settings) {
   const baseUri = settings.dataPath;
-  if (uri) {
-    if (uri.startsWith(baseUri)) {
+  
+  let translatedUri = uri;
+  if (uri.startsWith('https://id.kb.se')) {
+    translatedUri = uri.replace('https://id.kb.se', settings.idPath);
+  }
+
+  if (translatedUri) {
+    if (translatedUri.startsWith(baseUri)) {
       const uriWithoutPath = uri.replace(`${baseUri}/`, '');
       const uriWithoutEnd = uriWithoutPath.split('/')[0].split('#')[0];
       if (uriWithoutEnd.length > 10 && getNumberOfVowels(uriWithoutEnd) === 0) {

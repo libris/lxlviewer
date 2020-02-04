@@ -4,8 +4,8 @@
     * document  - The mainEntity from which to extract id and title
     * tag         - String, what tag we are operating on
 */
-import * as StringUtil from '@/utils/string';
 import { mapGetters } from 'vuex';
+import * as StringUtil from '@/utils/string';
 import * as DisplayUtil from '@/utils/display';
 
 export default {
@@ -54,7 +54,7 @@ export default {
       'inspector',
     ]),
     documentId() {
-      return this.document['@id'].split('#')[0] || '';
+      return this.document['@id'];
     },
     documentTitle() {
       return DisplayUtil.getItemLabel(

@@ -1,13 +1,14 @@
 
 <script>
 import { cloneDeep, each, get } from 'lodash-es';
+import * as md5 from 'md5';
+import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
 import * as HttpUtil from '@/utils/http';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
-import * as md5 from 'md5';
 import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
 import EntityChangelog from '@/components/inspector/entity-changelog';
@@ -17,7 +18,6 @@ import ModalComponent from '@/components/shared/modal-component';
 import MarcPreview from '@/components/inspector/marc-preview';
 import TabMenu from '@/components/shared/tab-menu';
 import ValidationSummary from '@/components/inspector/validation-summary';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'Inspector',
@@ -228,9 +228,15 @@ export default {
         }
       });
     },
-    applyFieldsFromTemplate(templateJson) {
+    applyFieldsFromTemplate(template) {
+      if (template.hasOwnProperty('work')) {
+        // DO NOT switch order of these lines :)
+        delete template.work['@id'];
+        template.mainEntity.instanceOf = template.work;
+        delete template.work;
+      }
       const basePostType = this.inspector.data.mainEntity['@type'];
-      const tempPostType = templateJson.mainEntity['@type'];
+      const tempPostType = template.mainEntity['@type'];
       const matching = (
         VocabUtil.isSubClassOf(tempPostType, basePostType, this.resources.vocab, this.resources.context)
         || VocabUtil.isSubClassOf(basePostType, tempPostType, this.resources.vocab, this.resources.context)
@@ -246,23 +252,38 @@ export default {
 
       const basePostData = cloneDeep(this.inspector.data);
       const changeList = [];
-      function applyChangeList(objectKey) {
-        each(templateJson[objectKey], (value, key) => {
-          if (!basePostData.hasOwnProperty(objectKey) || basePostData[objectKey] === null) {
-            basePostData[objectKey] = {};
-          }
-          if (!basePostData[objectKey].hasOwnProperty(key) || basePostData[objectKey][key] === null) {
-            // console.log("Applied ->", `${objectKey}.${key}`);
+
+      function applyChangeList(templatePath, targetPath = null) {
+        if (targetPath === null) {
+          // targetPath is used when the target path differs from the templatePath
+          targetPath = templatePath;
+        }
+        const templateObject = get(template, templatePath);
+        let targetObject = get(basePostData, targetPath);
+        if (targetObject === null || typeof targetObject === 'undefined') {
+          targetObject = {};
+        }
+        each(templateObject, (value, key) => {
+          if (!targetObject.hasOwnProperty(key) || targetObject[key] === null) {
             changeList.push({
-              path: `${objectKey}.${key}`,
+              path: `${targetPath}.${key}`,
               value: value,
             });
           }
         });
       }
+
       applyChangeList('record');
       applyChangeList('mainEntity');
-      applyChangeList('work');
+      if (basePostData.hasOwnProperty('work') && basePostData.work === null) {
+        delete basePostData.work;
+      }
+      if (!basePostData.hasOwnProperty('work')) {
+        applyChangeList('mainEntity.instanceOf');
+        } else {
+        // If work property exists, put the work entity there
+        applyChangeList('mainEntity.instanceOf', 'work');
+      }
       if (changeList.length !== 0) {
         this.$store.dispatch('updateInspectorData', {
           changeList: changeList,
@@ -294,7 +315,10 @@ export default {
       this.closeRemoveModal();
       const url = `${this.settings.apiPath}/${this.documentId}`;
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
-        this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was deleted', this.user.settings.language)}!` });
+        this.$store.dispatch('pushNotification', { 
+          type: 'success', 
+          message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language)}!`, 
+        });
         // Force reload
         this.$router.go(-1);
       }, (error) => {
@@ -455,7 +479,6 @@ export default {
       }
     },
     getPackagedItem(keepEmpty = false) {
-      const RecordId = this.inspector.data.record['@id'];
       const recordCopy = cloneDeep(this.inspector.data.record);
 
       let obj = null;
@@ -472,9 +495,7 @@ export default {
           DataUtil.removeNullValues(this.inspector.data.work),
         );
       }
-      if (this.user.uriMinter &&
-          VocabUtil.isSubClassOf(this.inspector.data.mainEntity['@type'], 'Concept',
-                                 this.resources.vocab, this.resources.context)) {
+      if (this.user.uriMinter && VocabUtil.isSubClassOf(this.inspector.data.mainEntity['@type'], 'Concept', this.resources.vocab, this.resources.context)) {
         this.user.uriMinter.assignUri(obj, { '@id': this.user.getActiveLibraryUri() });
       }
 
@@ -529,18 +550,27 @@ export default {
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
           setTimeout(() => {
-            this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was created', this.user.settings.language)}!` });
+            this.$store.dispatch('pushNotification', { 
+              type: 'success', 
+              message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language)}!`,
+            });
           }, 10);
           this.warnOnSave();
           this.$router.push({ path: `/${fnurgel}` });
         } else {
           this.fetchDocument();
           setTimeout(() => {
-            this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('The post was saved', this.user.settings.language)}!` });
+            this.$store.dispatch('pushNotification', {
+              type: 'success', 
+              message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language)}!`,
+            });
           }, 10);
           this.warnOnSave();
           if (done) {
             this.stopEditing();
+          } else {
+            // Reset original data that should be restored when you click cancel
+            this.$store.dispatch('setOriginalData', RecordUtil.splitJson(obj));
           }
         }
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
@@ -623,10 +653,10 @@ export default {
             this.openRemoveModal();
             break;
           case 'save-record':
-            this.saveQueued = () => {this.saveItem()};
+            this.saveQueued = () => this.saveItem();
             break;
           case 'save-record-done':
-            this.saveQueued = () => {this.saveItem(true)};
+            this.saveQueued = () => this.saveItem(true);
             break;
           case 'open-marc-preview':
             this.openMarcPreview();
@@ -641,7 +671,7 @@ export default {
         this.applyOverride(val.value);
       }
     },
-    isReadyForSave: function(val) {
+    isReadyForSave(val) {
       if (val) {
         this.saveQueued();
         this.saveQueued = null;
@@ -724,10 +754,10 @@ export default {
       <div v-if="!postLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
         <p v-if="loadFailure.status === 404">
-          {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
+          {{ 'The resource' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
         </p>
         <p v-if="loadFailure.status === 410">
-          {{ 'The record' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
+          {{ 'The resource' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
         </p>
         <router-link to="/">
           {{ 'Back to home page' | translatePhrase }}
@@ -780,7 +810,7 @@ export default {
           {{ 'This operation can\'t be reverted' | translatePhrase }}
         </p>
         <div class="RemovePostModal-buttonContainer">
-          <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove the record' | translatePhrase }}</button>
+          <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang | lowercase }}</button>
           <button class="btn btn-gray btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
         </div>
       </div>

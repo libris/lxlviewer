@@ -22,7 +22,7 @@ export default {
     isLast: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {
@@ -38,15 +38,12 @@ export default {
       return false;
     },
     isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.item['@id'], this.settings);
+      return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
     },
     routerPath() {
-      if (this.focusData.hasOwnProperty('@id')) {
-        const uriParts = this.item['@id'].split('/');
-        const fnurgel = uriParts[uriParts.length - 1];
-        return `/${fnurgel}`;
-      }
-      return '';
+      const uriParts = this.recordId.split('/');
+      const fnurgel = uriParts[uriParts.length - 1];
+      return `/${fnurgel}`;
     },
   },
   components: {
@@ -68,10 +65,10 @@ export default {
     <v-popover v-if="isLinked" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
-        <a v-if="!isLibrisResource" :href="item['@id'] | convertResourceLink">{{getItemLabel}}</a>
+        <a v-if="!isLibrisResource" :href="focusData['@id'] | convertResourceLink">{{getItemLabel}}</a>
       </span>
       <template slot="popover" v-if="hoverLinks">
-        <PreviewCard ref="previewCard" :focus-data="focusData" />
+        <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
       </template>
     </v-popover>
   </div>
