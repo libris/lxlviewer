@@ -223,20 +223,20 @@ export default {
           const splitFetched = RecordUtil.splitJson(result);
           const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings.keysToClear.duplication);
           const template = RecordUtil.splitJson(templateJson);
-          if (template.hasOwnProperty('work')) {
-            // DO NOT switch order of these lines :)
-            delete template.work['@id'];
-            template.mainEntity.instanceOf = template.work;
-            delete template.work;
-          }
           this.applyFieldsFromTemplate(template);
           this.embellishFromIdModal.open = false;
         }
       });
     },
-    applyFieldsFromTemplate(templateJson) {
+    applyFieldsFromTemplate(template) {
+      if (template.hasOwnProperty('work')) {
+        // DO NOT switch order of these lines :)
+        delete template.work['@id'];
+        template.mainEntity.instanceOf = template.work;
+        delete template.work;
+      }
       const basePostType = this.inspector.data.mainEntity['@type'];
-      const tempPostType = templateJson.mainEntity['@type'];
+      const tempPostType = template.mainEntity['@type'];
       const matching = (
         VocabUtil.isSubClassOf(tempPostType, basePostType, this.resources.vocab, this.resources.context)
         || VocabUtil.isSubClassOf(basePostType, tempPostType, this.resources.vocab, this.resources.context)
@@ -258,9 +258,9 @@ export default {
           // targetPath is used when the target path differs from the templatePath
           targetPath = templatePath;
         }
-        const templateObject = get(templateJson, templatePath);
+        const templateObject = get(template, templatePath);
         let targetObject = get(basePostData, targetPath);
-        if (targetObject === null) {
+        if (targetObject === null || typeof targetObject === 'undefined') {
           targetObject = {};
         }
         each(templateObject, (value, key) => {
