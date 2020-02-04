@@ -223,6 +223,12 @@ export default {
           const splitFetched = RecordUtil.splitJson(result);
           const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings.keysToClear.duplication);
           const template = RecordUtil.splitJson(templateJson);
+          if (template.hasOwnProperty('work')) {
+            // DO NOT switch order of these lines :)
+            delete template.work['@id'];
+            template.mainEntity.instanceOf = template.work;
+            delete template.work;
+          }
           this.applyFieldsFromTemplate(template);
           this.embellishFromIdModal.open = false;
         }
