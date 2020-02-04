@@ -639,8 +639,8 @@ export function computeContainerMap(contextList) {
         propertyToProperty[property] = idToProperty[id];
       }
     });
-    containerMap[container] = propertyToProperty;
+    containerMap[container] = Object.assign(propertyToProperty, idToProperty);
   });
-  
+
   return containerMap;
 }
