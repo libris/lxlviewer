@@ -556,6 +556,9 @@ export default {
           this.warnOnSave();
           if (done) {
             this.stopEditing();
+          } else {
+            // Reset original data that should be restored when you click cancel
+            this.$store.dispatch('setOriginalData', RecordUtil.splitJson(obj));
           }
         }
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
