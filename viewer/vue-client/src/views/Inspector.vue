@@ -259,7 +259,10 @@ export default {
           targetPath = templatePath;
         }
         const templateObject = get(templateJson, templatePath);
-        const targetObject = get(basePostData, targetPath);
+        let targetObject = get(basePostData, targetPath);
+        if (targetObject === null) {
+          targetObject = {};
+        }
         each(templateObject, (value, key) => {
           if (!targetObject.hasOwnProperty(key) || targetObject[key] === null) {
             changeList.push({
@@ -272,11 +275,14 @@ export default {
 
       applyChangeList('record');
       applyChangeList('mainEntity');
-      if (basePostData.hasOwnProperty('work')) {
+      if (basePostData.hasOwnProperty('work') && basePostData.work === null) {
+        delete basePostData.work;
+      }
+      if (!basePostData.hasOwnProperty('work')) {
+        applyChangeList('mainEntity.instanceOf');
+        } else {
         // If work property exists, put the work entity there
         applyChangeList('mainEntity.instanceOf', 'work');
-      } else {
-        applyChangeList('mainEntity.instanceOf');
       }
       if (changeList.length !== 0) {
         this.$store.dispatch('updateInspectorData', {
