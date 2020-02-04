@@ -246,23 +246,32 @@ export default {
 
       const basePostData = cloneDeep(this.inspector.data);
       const changeList = [];
-      function applyChangeList(objectKey) {
-        each(templateJson[objectKey], (value, key) => {
-          if (!basePostData.hasOwnProperty(objectKey) || basePostData[objectKey] === null) {
-            basePostData[objectKey] = {};
-          }
-          if (!basePostData[objectKey].hasOwnProperty(key) || basePostData[objectKey][key] === null) {
-            // console.log("Applied ->", `${objectKey}.${key}`);
+
+      function applyChangeList(templatePath, targetPath = null) {
+        if (targetPath === null) {
+          // targetPath is used when the target path differs from the templatePath
+          targetPath = templatePath;
+        }
+        const templateObject = get(templateJson, templatePath);
+        const targetObject = get(basePostData, targetPath);
+        each(templateObject, (value, key) => {
+          if (!targetObject.hasOwnProperty(key) || targetObject[key] === null) {
             changeList.push({
-              path: `${objectKey}.${key}`,
+              path: `${targetPath}.${key}`,
               value: value,
             });
           }
         });
       }
+
       applyChangeList('record');
       applyChangeList('mainEntity');
-      applyChangeList('work');
+      if (basePostData.hasOwnProperty('work')) {
+        // If work property exists, put the work entity there
+        applyChangeList('mainEntity.instanceOf', 'work');
+      } else {
+        applyChangeList('mainEntity.instanceOf');
+      }
       if (changeList.length !== 0) {
         this.$store.dispatch('updateInspectorData', {
           changeList: changeList,
