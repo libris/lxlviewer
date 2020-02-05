@@ -38,6 +38,14 @@ export default {
       type: Boolean,
       default: true,
     },
+    styleVariant: {
+      type: String,
+      default: '',
+    },
+    label: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -208,81 +216,107 @@ export default {
 
 <template>
   <div class="FilterSelect" 
-    :class="className" 
+    :class="[{'variantMaterial' : styleVariant === 'material'}, className]" 
     v-on-clickaway="close"
     :tabindex="0"
     @keydown.space="preventBodyScroll"
     @keyup.space="focusOnInput">
-    <input class="FilterSelect-input js-filterSelectInput" 
-      type="text" 
-      v-bind:placeholder="translatedPlaceholder"
-      :aria-label="translatedPlaceholder"
-      @keyup.exact="filter()"
-      @keyup.space="checkInput($event)"
-      @click="filterVisible = !filterVisible"
-      ref="filterselectInput"
-      :tabindex="-1">
-    <ul class="FilterSelect-dropdown js-filterSelectDropdown"
-      :class="{'is-visible': filterVisible}" v-show="filterVisible">
-      <li class="FilterSelect-dropdownHeader" v-show="options.priority.length > 0">
-        {{ 'Suggested' | translatePhrase }}:
-      </li>
-      <li class="FilterSelect-dropdownItem js-filterSelectItem"
-        :class="{ 'is-abstract': option.abstract, 'is-concrete': !option.abstract }"
-        @click="selectOption"
-        @keyup.enter="selectOption"
-        v-for="option in options.priority"
-        :key="option">
-        <span class="FilterSelect-dropdownText js-filterSelectText" 
-          tabindex="-1"
-          :data-filter="option"
-          :data-abstract="option.abstract"
-          :data-key="option">{{ option | labelByLang }}</span >
-      </li>
-      <hr class="FilterSelect-dropdownDivider" v-show="options.priority.length > 0">
-      <li class="FilterSelect-dropdownHeader" v-show="options.tree.length > 0 && options.priority.length > 0">
-        {{ 'All' | translatePhrase }}:
-      </li>
-      <li class="FilterSelect-dropdownItem js-filterSelectItem"
-        :class="{ 'is-abstract': option.abstract && !isFilter, 'is-concrete': !option.abstract || isFilter }"
-        @click="selectOption"
-        @keyup.enter="selectOption"
-        v-for="option in options.tree"
-        :key="option.key">
-        <span class="FilterSelect-dropdownText js-filterSelectText" 
-          tabindex="-1"
-          :data-filter="option.value"
-          :data-abstract="option.abstract"
-          :data-key="option.key">{{ option.label }}</span>
-      </li>
-    </ul>
-    <i
-      class="fa icon icon--sm FilterSelect-open"
-      :class="{'fa-angle-up': filterVisible, 'fa-angle-down': !filterVisible}"
-      role="button"
-      :title="!filterVisible ? 'Expand' : 'Minimize' | translatePhrase"
-      @click="filterVisible = !filterVisible"
-      @keyup.enter="filterVisible = !filterVisible"></i>
-    <i v-if="isFilter"
-      class="fa fa-close icon icon--sm FilterSelect-clear"
-      :title="'Close' | translatePhrase"
-      role="button"
-      @click="clear()"
-      @keyup.enter="clear()"></i>
+    <label
+      class="FilterSelect-label" 
+      for="filterselectInput">{{ label }}{{ styleVariant !== 'material' && label ? ':' : '' }}</label>
+    <div class="FilterSelect-inputContainer">
+      <input class="FilterSelect-input js-filterSelectInput" 
+        type="text" 
+        v-bind:placeholder="translatedPlaceholder"
+        :aria-label="translatedPlaceholder"
+        @keyup.exact="filter()"
+        @keyup.space="checkInput($event)"
+        @click="filterVisible = !filterVisible"
+        ref="filterselectInput"
+        :tabindex="-1">
+      <ul class="FilterSelect-dropdown js-filterSelectDropdown"
+        :class="{'is-visible': filterVisible}" v-show="filterVisible">
+        <li class="FilterSelect-dropdownHeader" v-show="options.priority.length > 0">
+          {{ 'Suggested' | translatePhrase }}:
+        </li>
+        <li class="FilterSelect-dropdownItem js-filterSelectItem"
+          :class="{ 'is-abstract': option.abstract, 'is-concrete': !option.abstract }"
+          @click="selectOption"
+          @keyup.enter="selectOption"
+          v-for="option in options.priority"
+          :key="option">
+          <span class="FilterSelect-dropdownText js-filterSelectText" 
+            tabindex="-1"
+            :data-filter="option"
+            :data-abstract="option.abstract"
+            :data-key="option">{{ option | labelByLang }}</span >
+        </li>
+        <hr class="FilterSelect-dropdownDivider" v-show="options.priority.length > 0">
+        <li class="FilterSelect-dropdownHeader" v-show="options.tree.length > 0 && options.priority.length > 0">
+          {{ 'All' | translatePhrase }}:
+        </li>
+        <li class="FilterSelect-dropdownItem js-filterSelectItem"
+          :class="{ 'is-abstract': option.abstract && !isFilter, 'is-concrete': !option.abstract || isFilter }"
+          @click="selectOption"
+          @keyup.enter="selectOption"
+          v-for="option in options.tree"
+          :key="option.key">
+          <span class="FilterSelect-dropdownText js-filterSelectText" 
+            tabindex="-1"
+            :data-filter="option.value"
+            :data-abstract="option.abstract"
+            :data-key="option.key">{{ option.label }}</span>
+        </li>
+      </ul>
+      <i
+        class="FilterSelect-open"
+        :class="{'is-opened': filterVisible}"
+        role="button"
+        :title="!filterVisible ? 'Expand' : 'Minimize' | translatePhrase"
+        @click="filterVisible = !filterVisible"
+        @keyup.enter="filterVisible = !filterVisible"></i>
+
+      <i v-if="isFilter"
+        class="fa fa-close icon icon--sm FilterSelect-clear"
+        :title="'Close' | translatePhrase"
+        role="button"
+        @click="clear()"
+        @keyup.enter="clear()"></i>
+    </div>
   </div>
 </template>
 
 <style lang="less">
-.FilterSelect {
-  position: relative;
-  display: inline-block;
+.FilterSelect {  
+  display: flex;
   font-weight: normal;
   width: 100%;
   border-radius: 10px;
-  box-shadow: @shadow-panel;
   text-align: left;
 
+  &-inputContainer {
+    position: relative;
+    flex: 1;
+  }
+
+  &-label {
+    font-weight: normal;
+    margin: 3px 10px 0 0;
+
+    .FilterSelect.variantMaterial & {
+      position: absolute;
+      font-size: 1.2rem;
+      font-weight: 600;
+      left: 1rem;
+      top: 0.4rem;
+      color: @brand-darker;
+      z-index: 10;
+      margin: 0;
+    }
+  }
+
   &-input {
+    flex: 1;
     padding: 5px 40px 5px 10px;
     border: none;
     border-bottom: 1px solid #ddd;
@@ -291,12 +325,22 @@ export default {
     font-size: 1.6rem;
     width: 100%;
     height: 30px;
-    background-color: @white;
-    border: 1px solid @gray-light;
-    border-radius: 5px;
+    background-color: @white;    
     z-index: 2;
     position: relative;
     text-overflow: ellipsis;
+    border: 1px solid @gray-light;    
+    border-radius: 5px;
+    box-shadow: @shadow-panel;  
+
+    .FilterSelect.variantMaterial & {
+      box-shadow: none;
+      border-radius: 0.2em;
+      border: 1px solid @gray-lighter;
+      background-color: @white;
+      height: 4.8rem;
+      padding: 1.8rem 6rem 0 1rem;
+    }
 
     &::placeholder {
       color: @black;
@@ -319,7 +363,7 @@ export default {
     position: absolute;
     top: auto;
     min-width: 100%;
-    right: 0px;
+    left: 0px;
     bottom: 28px;
     background-color: @panel-header-bg;
     border: 1px solid @gray-light;
@@ -347,6 +391,11 @@ export default {
       border-radius: 10px;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
+    }
+
+    .FilterSelect--openDown.variantMaterial & {
+      top: 5rem;
+      border-radius: 2px;
     }
   }
 
@@ -389,20 +438,43 @@ export default {
 
   &-clear,
   &-open {
-    position: absolute;
-    top: 7px;
-    right: 24px;
+    position: absolute;    
     cursor: pointer;
     z-index: 3;
     font-weight: 300;
+  }
+
+  &-clear {
+    top: 7px;
+    right: 24px;
+
+    .FilterSelect.variantMaterial & {
+      right: 34px;
+      top: 16px;
+    }
   }
 
   &-open {
     font-size: 18px;
     font-size: 1.8rem;
     font-weight: 700;
-    right: 8px;
-    top: 6px;
+    right: 6px;
+    top: 5px;
+    width: 20px;
+    height: 20px;
+    background-position: 5px center;
+    background-repeat: no-repeat;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'%3E%3Ctext x='0' y='10' fill='gray'%3E%E2%96%BE%3C/text%3E%3C/svg%3E");
+
+    &.is-opened {
+      transform:rotate(180deg);
+      transform-origin: center;
+    }
+
+    .FilterSelect.variantMaterial & {
+      right: 10px;
+      top: 14px;
+    }
   }
 }
 </style>
