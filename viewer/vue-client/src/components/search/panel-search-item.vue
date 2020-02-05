@@ -120,7 +120,7 @@ export default {
         @action="useItem()">
       </summary-action>
       <div 
-        class="PanelSearch-link-count"
+        class="PanelSearch-linkCount"
         :class="{'has-links' : reverseLinksAmount !== 0}"
         v-tooltip="{
           placement: 'right',
@@ -206,7 +206,7 @@ export default {
     flex-direction: column;
   }
 
-  &-link-count {
+  &-linkCount {
     border: 2px solid #29A1A2;
     width: 100%;
     text-align: center;
@@ -221,7 +221,8 @@ export default {
       color: @brand-primary;
     }
 
-    .is-added & {
+    .PanelComponent-listItem.is-added &,
+    .PanelComponent-listItem.is-replaced & {
       border-color: @gray-lighter;
     }
   }
