@@ -796,7 +796,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Instance",
+          "@type": "Print",
           "issuanceType": "Monograph",
           "hasTitle": [
             {
@@ -1169,7 +1169,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Instance",
+          "@type": "Print",
           "issuanceType": "Monograph",
           "hasTitle": [{
               "@type": "Title",
@@ -1341,7 +1341,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Instance",
+          "@type": "Print",
           "issuanceType": "Serial",
           "frequency": [],
           "hasTitle": [{
@@ -1466,7 +1466,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Instance",
+          "@type": "Print",
           "issuanceType": "Monograph",
           "hasTitle": [{
               "@type": "Title",
