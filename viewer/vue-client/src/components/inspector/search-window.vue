@@ -535,16 +535,6 @@ export default {
     }
   }
 
-  &-input {
-    // color: @black;
-    // background-color: #fff;
-    // border: 1px solid @grey-lighter;
-    // &:focus {
-    //   border-color: @brand-primary;
-    // }
-  }
-
-
   &-filterSearchContainer {
     width: 100%;
     display: flex;
