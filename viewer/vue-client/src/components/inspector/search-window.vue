@@ -7,6 +7,7 @@ import * as DisplayUtil from '@/utils/display';
 import * as VocabUtil from '@/utils/vocab';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
+import Sort from '@/components/search/sort';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import FilterSelect from '@/components/shared/filter-select.vue';
 import SummaryAction from './summary-action';
@@ -42,6 +43,7 @@ export default {
       active: false,
       currentPage: 0,
       maxResults: 20,
+      sort: '',
       isCompact: false,
     };
   },
@@ -107,6 +109,7 @@ export default {
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
     'vue-simple-spinner': VueSimpleSpinner,
+    sort: Sort,
   },
   watch: {
     keyword(value) {
@@ -226,6 +229,11 @@ export default {
       this.currentSearchTypes = valuesArray;
       this.handleChange(keyword);
     },
+    setSort($event, keyword) {
+      this.sort = $event;
+
+      this.handleChange(keyword);
+    },
     handleChange(value) {
       this.searchMade = false;
       if (value) {
@@ -323,6 +331,7 @@ export default {
       }
       const offset = this.currentPage * this.maxResults;
       searchUrl += `&_limit=${this.maxResults}&_offset=${offset}`;
+      searchUrl += `&_sort=${this.sort}`;
       searchUrl = encodeURI(searchUrl);
       return new Promise((resolve, reject) => {
         fetch(searchUrl).then((response) => {
@@ -395,15 +404,26 @@ export default {
                   :aria-label="'Search' | translatePhrase">
               </div>
               <div class="SearchWindow-filterSearchContainer">
-                <span class="SearchWindow-filterSearchLabel">{{ 'Show' | translatePhrase }}</span>
-                <filter-select class="SearchWindow-filterSearchInput FilterSelect--openDown"
-                  :class-name="'js-filterSelect'"
-                  :custom-placeholder="filterPlaceHolder"
-                  :options="{ tree: selectOptions, priority: priorityOptions }"
-                  :options-all="allSearchTypes"
-                  :options-all-suggested="someValuesFrom"
-                  :is-filter="true"
-                  v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                <div class="SearchWindow-filterSearchContainerItem">                
+                  <filter-select class="SearchWindow-filterSearchInput FilterSelect--openDown"
+                    :class-name="'js-filterSelect'"
+                    :label="'Show' | translatePhrase"
+                    :custom-placeholder="filterPlaceHolder"
+                    :options="{ tree: selectOptions, priority: priorityOptions }"
+                    :options-all="allSearchTypes"
+                    :options-all-suggested="someValuesFrom"
+                    :is-filter="true"
+                    :styleVariant="'material'"
+                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                </div>
+                <div class="SearchWindow-filterSearchContainerItem">
+                  <sort
+                    :recordTypes="currentSearchTypes"
+                    :currentSort="''"
+                    :commonSort="true"
+                    :styleVariant="'material'"
+                    @change="setSort($event, keyword)" />
+                </div>                
               </div>
             </div>
           </div>
@@ -460,22 +480,22 @@ export default {
             >
             </modal-pagination>
             <div class="SearchWindow-listTypes">
-              <i class="fa fa-th-list icon icon--sm"
+              <i class="fa fa-th-list icon icon--md"
                 role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
                 :title="'Detailed view' | translatePhrase"
                 tabindex="0"></i>
-              <i class="fa fa-list icon icon--sm"
+              <i class="fa fa-list icon icon--md"
                 role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"
                 :title="'Compact view' | translatePhrase"
                 tabindex="0"></i>
-              </div>
             </div>
+          </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
             <p class="preview-entity-text uppercaseHeading">{{ "Create link from local entity" | translatePhrase }}:</p>
             <div class="SearchWindow-summaryContainer">
@@ -515,29 +535,36 @@ export default {
     }
   }
 
-  &-input {
-    color: @black;
-  }
-
-
   &-filterSearchContainer {
     width: 100%;
-    margin-top: 0.5em;
-    text-align: right;
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: @screen-xs) {
+      flex-direction: row;
+    }
   }
 
-  &-filterSearchLabel {
+  &-filterSearchContainerItem {
+    width: 100%;
+    margin: 0.5em 1em 0 0;
 
+    @media (min-width: @screen-xs) {
+      width: 50%;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 
   &-filterSearchInput {
     position: relative;
-    width: 50%;
   }
 
   &-header {
     width: 100%;
-    margin: 0 0 0.7em 0;
+    margin: 0 0 0.5em 0;
   }
 
   &-inputContainer {
@@ -570,9 +597,9 @@ export default {
   &-listTypes {
     display: flex;
     justify-content: space-between;
-    height: 20px;
-    height: fit-content;
-    width: 45px;
+    align-items: center;
+    height: 54px;
+    width: 54px;
   }
 
   &-footerContainer {

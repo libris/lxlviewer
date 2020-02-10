@@ -311,6 +311,14 @@ const store = new Vuex.Store({
             query: '-hasTitle.mainTitle',
             label: 'Main title (Z-A)',
           },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
+          },
+          {
+            query: '-reverseLinks.totalItems',
+            label: 'Most linked',
+          },
         ],
         Concept: [
           {
@@ -338,6 +346,34 @@ const store = new Vuex.Store({
           {
             query: '-heldBy.@id',
             label: 'Sigel (Z-A)',
+          },
+        ],
+        Other: [
+          {
+            query: '',
+            label: 'Relevance',
+          },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
+          },
+          {
+            query: '-reverseLinks.totalItems',
+            label: 'Most linked',
+          },
+        ],
+        Common: [
+          {
+            query: '',
+            label: 'Relevance',
+          },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
+          },
+          {
+            query: '-reverseLinks.totalItems',
+            label: 'Most linked',
           },
         ],
       },

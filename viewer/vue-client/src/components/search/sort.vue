@@ -12,6 +12,14 @@ export default {
     currentSort: { // sortparam-value to set initial select option
       type: String,
     },
+    commonSort: {
+      type: Boolean,
+      default: false,
+    },
+    styleVariant: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -33,17 +41,17 @@ export default {
       const sortOptions = this.$store.getters.settings.sortOptions[this.commonBaseType];
       if (sortOptions) {
         return sortOptions;
-      }
+      }      
       return false;
     },
-    commonBaseType() {
+    commonBaseType() {      
       if (typeof this.recordTypes === 'string') {
         return VocabUtil.getRecordType(
           this.recordTypes,
           this.resources.vocab, 
           this.resources.context,
         );
-      }
+      }      
       if (Array.isArray(this.recordTypes)) {
         const baseTypes = this.recordTypes.reduce((accumulator, currType) => {
           const baseType = VocabUtil.getRecordType(currType, this.resources.vocab, this.resources.context);
@@ -55,7 +63,11 @@ export default {
         }, []);
         if (baseTypes.length === 1) { // same base class -> check sort options
           return baseTypes.join();
-        } return false; // different base classes -> disallow sort
+        } 
+        if (this.commonSort) {
+          return 'Common'; // different base classes -> fall back to a common sort definition
+        }
+        return false; // different base classes -> disallow sort
       }
       return false;
     },
@@ -74,8 +86,11 @@ export default {
 </script>
 
 <template>
-  <div class="Sort" v-if="options">
-    <label class="Sort-label" for="sort-select">{{ 'Sorting' | translatePhrase }}:</label>
+  <div 
+    class="Sort" 
+    :class="{ 'variantMaterial' : styleVariant === 'material' }"
+    v-if="options">
+    <label class="Sort-label" for="sort-select">{{ 'Sorting' | translatePhrase }}{{ styleVariant === 'material' ? '' : ':' }}</label>
     <select id="sort-select"
       class="Sort-select customSelect" 
       v-model="boundVal" 
@@ -96,13 +111,35 @@ export default {
   flex-wrap: nowrap;
   align-items: center;
 
+  &.variantMaterial {
+    flex-direction: column;
+    align-items: start;
+    position: relative;
+  }
+
   &-label {
     margin: 0 10px 10px 0;
     font-weight: 600;
+
+    .Sort.variantMaterial & {
+      position: absolute;
+      font-size: 1.2rem;
+      left: 1rem;
+      top: 0.4rem;
+      color: @brand-darker;
+    }
   }
   &-select {
     text-align: start;
     margin: 0 10px 10px 0;
+
+    .Sort.variantMaterial & {
+      margin: 0;
+      padding: 1.8rem 3.5rem 0 1rem;
+      background-color: @white;
+      border: 1px solid @gray-lighter;
+      line-height: 2.8rem;
+    }
   }
 }
 </style>

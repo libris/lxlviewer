@@ -9,6 +9,7 @@ import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import ToolTipComponent from '../shared/tooltip-component.vue';
 import PanelSearchList from '../search/panel-search-list.vue';
+import Sort from '@/components/search/sort';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination.vue';
 import FilterSelect from '@/components/shared/filter-select.vue';
@@ -31,6 +32,7 @@ export default {
       active: false,
       currentPage: 0,
       maxResults: 20,
+      sort: '',
       isCompact: false,
     };
   },
@@ -110,6 +112,7 @@ export default {
     'filter-select': FilterSelect,
     'type-select': TypeSelect,
     'vue-simple-spinner': VueSimpleSpinner,
+    sort: Sort,
   },
   watch: {
     'inspector.event'(val) {
@@ -521,6 +524,7 @@ export default {
       }
       const offset = this.currentPage * this.maxResults;
       searchUrl += `&_limit=${this.maxResults}&_offset=${offset}`;
+      searchUrl += `&_sort=${this.sort}`;
       searchUrl = encodeURI(searchUrl);
       return new Promise((resolve, reject) => {
         fetch(searchUrl).then((response) => {
@@ -529,6 +533,11 @@ export default {
           reject('Error searching...', error);
         });
       });
+    },
+    setSort($event, keyword) {
+      this.sort = $event;
+
+      this.handleChange(keyword);
     },
   },
 };
@@ -634,15 +643,26 @@ export default {
                     autofocus />
                 </div>
                 <div class="EntityAdder-filterSearchContainer">
-                  <span class="EntityAdder-filterSearchLabel">{{ 'Show' | translatePhrase }}</span>
-                  <filter-select class="EntityAdder-filterSearchInput FilterSelect--openDown"
-                    :class-name="'js-filterSelect'"
-                    :custom-placeholder="filterPlaceHolder"
-                    :options="{ tree: selectOptions, priority: priorityOptions }"
-                    :options-all="allSearchTypes"
-                    :options-all-suggested="someValuesFrom"
-                    :is-filter="true"
-                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                  <div class="EntityAdder-filterSearchContainerItem">
+                    <filter-select class="EntityAdder-filterSearchInput FilterSelect--openDown"
+                      :class-name="'js-filterSelect'"
+                      :label="'Show' | translatePhrase"
+                      :custom-placeholder="filterPlaceHolder"
+                      :options="{ tree: selectOptions, priority: priorityOptions }"
+                      :options-all="allSearchTypes"
+                      :options-all-suggested="someValuesFrom"                    
+                      :is-filter="true"
+                      :styleVariant="'material'"
+                      v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                  </div>
+                  <div class="EntityAdder-filterSearchContainerItem">
+                    <sort
+                      :recordTypes="currentSearchTypes"
+                      :commonSort="true"
+                      :currentSort="''"
+                      :styleVariant="'material'"
+                      @change="setSort($event, keyword)" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -764,9 +784,9 @@ export default {
 
 
   &-controls {
-    line-height: 1.2;
+    // line-height: 1.2;
     width: 100%;
-    margin: 0 0 0.7em 0;
+    margin: 0 0 0.5em 0;
   }
 
   &-controlForm {
@@ -792,8 +812,25 @@ export default {
 
   &-filterSearchContainer {
     width: 100%;
-    margin-top: 0.5em;
-    text-align: right;
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: @screen-xs) {
+      flex-direction: row;
+    }
+  }
+
+  &-filterSearchContainerItem {
+    width: 100%;
+    margin: 0.5em 1em 0 0;
+
+    @media (min-width: @screen-xs) {
+      width: 50%;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 
   &-filterSearchLabel {
@@ -802,11 +839,12 @@ export default {
 
   &-filterSearchInput {
     position: relative;
-    width: 50%;
   }
 
   &-searchInput {
     color: @black;
+    background-color: @white;
+    border: 1px solid @gray-lighter;
   }
 
   &-searchSelect {
