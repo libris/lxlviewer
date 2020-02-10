@@ -228,9 +228,15 @@ export default {
         }
       });
     },
-    applyFieldsFromTemplate(templateJson) {
+    applyFieldsFromTemplate(template) {
+      if (template.hasOwnProperty('work')) {
+        // DO NOT switch order of these lines :)
+        delete template.work['@id'];
+        template.mainEntity.instanceOf = template.work;
+        delete template.work;
+      }
       const basePostType = this.inspector.data.mainEntity['@type'];
-      const tempPostType = templateJson.mainEntity['@type'];
+      const tempPostType = template.mainEntity['@type'];
       const matching = (
         VocabUtil.isSubClassOf(tempPostType, basePostType, this.resources.vocab, this.resources.context)
         || VocabUtil.isSubClassOf(basePostType, tempPostType, this.resources.vocab, this.resources.context)
@@ -246,23 +252,38 @@ export default {
 
       const basePostData = cloneDeep(this.inspector.data);
       const changeList = [];
-      function applyChangeList(objectKey) {
-        each(templateJson[objectKey], (value, key) => {
-          if (!basePostData.hasOwnProperty(objectKey) || basePostData[objectKey] === null) {
-            basePostData[objectKey] = {};
-          }
-          if (!basePostData[objectKey].hasOwnProperty(key) || basePostData[objectKey][key] === null) {
-            // console.log("Applied ->", `${objectKey}.${key}`);
+
+      function applyChangeList(templatePath, targetPath = null) {
+        if (targetPath === null) {
+          // targetPath is used when the target path differs from the templatePath
+          targetPath = templatePath;
+        }
+        const templateObject = get(template, templatePath);
+        let targetObject = get(basePostData, targetPath);
+        if (targetObject === null || typeof targetObject === 'undefined') {
+          targetObject = {};
+        }
+        each(templateObject, (value, key) => {
+          if (!targetObject.hasOwnProperty(key) || targetObject[key] === null) {
             changeList.push({
-              path: `${objectKey}.${key}`,
+              path: `${targetPath}.${key}`,
               value: value,
             });
           }
         });
       }
+
       applyChangeList('record');
       applyChangeList('mainEntity');
-      applyChangeList('work');
+      if (basePostData.hasOwnProperty('work') && basePostData.work === null) {
+        delete basePostData.work;
+      }
+      if (!basePostData.hasOwnProperty('work')) {
+        applyChangeList('mainEntity.instanceOf');
+        } else {
+        // If work property exists, put the work entity there
+        applyChangeList('mainEntity.instanceOf', 'work');
+      }
       if (changeList.length !== 0) {
         this.$store.dispatch('updateInspectorData', {
           changeList: changeList,
@@ -547,6 +568,9 @@ export default {
           this.warnOnSave();
           if (done) {
             this.stopEditing();
+          } else {
+            // Reset original data that should be restored when you click cancel
+            this.$store.dispatch('setOriginalData', RecordUtil.splitJson(obj));
           }
         }
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
