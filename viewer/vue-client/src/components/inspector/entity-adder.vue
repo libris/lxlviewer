@@ -727,6 +727,7 @@ export default {
             </button>
             <filter-select
               v-if="!hasSingleRange" 
+              :input-id="'createselectInput'"
               :class-name="'js-createSelect'"
               :options="{ tree: selectOptions, priority: priorityOptions }"
               :options-all="allSearchTypes"
