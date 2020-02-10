@@ -125,7 +125,7 @@ export default {
       <div 
         class="PanelSearch-linkCount"
         v-if="reverseLinksAmount !== null"
-        :class="{'has-links' : reverseLinksAmount > 0}"
+        :class="{'has-links' : reverseLinksAmount !== 0}"
         v-tooltip="{
           placement: 'right',
           content: translatedTooltip,
