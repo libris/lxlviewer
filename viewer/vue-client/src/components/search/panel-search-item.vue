@@ -123,9 +123,9 @@ export default {
         @action="useItem()">
       </summary-action>
       <div 
-        class="PanelSearch-link-count"
+        class="PanelSearch-linkCount"
         v-if="reverseLinksAmount !== null"
-        :class="{'has-links' : reverseLinksAmount > 0}"
+        :class="{'has-links' : reverseLinksAmount != 0}"
         v-tooltip="{
           placement: 'right',
           content: translatedTooltip,
@@ -219,10 +219,10 @@ export default {
     border-top-width: 4px;
     color: @gray;
     font-weight: 600;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
 
     &.has-links {
-      color: @brand-primary;
+      color: @brand-darker;
     }
 
     .PanelComponent-listItem.is-added &,

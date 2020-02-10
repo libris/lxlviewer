@@ -46,6 +46,10 @@ export default {
       type: String,
       default: '',
     },
+    inputId: {
+      type: String,
+      default: 'filterselectInput',
+    },
   },
   data() {
     return {
@@ -223,10 +227,13 @@ export default {
     @keyup.space="focusOnInput">
     <label
       class="FilterSelect-label" 
-      for="filterselectInput">{{ label }}{{ styleVariant !== 'material' && label ? ':' : '' }}</label>
+      :for="inputId">
+      {{ label }}{{ styleVariant !== 'material' && label ? ':' : '' }}
+    </label>
     <div class="FilterSelect-inputContainer">
       <input class="FilterSelect-input js-filterSelectInput" 
         type="text" 
+        :id="inputId"
         v-bind:placeholder="translatedPlaceholder"
         :aria-label="translatedPlaceholder"
         @keyup.exact="filter()"
