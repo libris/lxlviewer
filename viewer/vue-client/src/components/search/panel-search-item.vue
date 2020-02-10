@@ -123,7 +123,7 @@ export default {
         @action="useItem()">
       </summary-action>
       <div 
-        class="PanelSearch-link-count"
+        class="PanelSearch-linkCount"
         v-if="reverseLinksAmount !== null"
         :class="{'has-links' : reverseLinksAmount > 0}"
         v-tooltip="{
