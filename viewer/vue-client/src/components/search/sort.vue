@@ -139,6 +139,7 @@ export default {
       background-color: @white;
       border: 1px solid @gray-lighter;
       line-height: 2.8rem;
+      height: 4.8rem;
     }
   }
 }
