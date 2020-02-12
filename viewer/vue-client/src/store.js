@@ -333,6 +333,10 @@ const store = new Vuex.Store({
             query: '-prefLabel',
             label: 'Preferred label (Z-A)',
           },
+          {
+            query: '-reverseLinks.totalItems',
+            label: 'Most linked',
+          },
         ],
         Item: [
           {
@@ -346,6 +350,20 @@ const store = new Vuex.Store({
           {
             query: '-heldBy.@id',
             label: 'Sigel (Z-A)',
+          },
+        ],
+        Agent: [
+          {
+            query: '',
+            label: 'Relevance',
+          },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
+          },
+          {
+            query: '-reverseLinks.totalItems',
+            label: 'Most linked',
           },
         ],
         Other: [
