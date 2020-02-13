@@ -2300,11 +2300,7 @@
             "@id": "https://id.kb.se/language/swe"
           },
           "cataloguersNote": [""],
-          "sourceConsulted": [],
-          "marc:personalName": {
-            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
-          }
-
+          "sourceConsulted": []
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
