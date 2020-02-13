@@ -2326,8 +2326,7 @@
             "value": ""
           }],
           "nationality": [{
-            "@id": "https://id.kb.se/nationality/e-sw---",
-            "code": "e-sw---"
+            "@id": "https://id.kb.se/nationality/e-sw---"
           }]
         }
       }
