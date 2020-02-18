@@ -28,7 +28,6 @@ export default {
       return this.editingObject === 'mainEntity';
     },
     formType() {
-      debugger;
       return this.formObj['@type'];
     },
     recordType() {
