@@ -428,7 +428,7 @@ export default {
       <div class="ItemLocal-actions">
         <div class="ItemLocal-action LinkAction">
           <i class="fa fa-link fa-fw icon icon--sm"
-            v-if="inspector.status.editing && !isEmbedded && !isCompositional"
+            v-if="!isLocked && !isEmbedded && !isCompositional"
             role="button"
             tabindex="0"
             :aria-label="'Link entity' | translatePhrase"
