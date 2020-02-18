@@ -658,7 +658,7 @@ export default {
                   <div class="EntityAdder-filterSearchContainerItem">
                     <sort
                       :recordTypes="currentSearchTypes"
-                      :commonSort="true"
+                      :commonSortFallback="true"
                       :currentSort="''"
                       :styleVariant="'material'"
                       @change="setSort($event, keyword)" />
