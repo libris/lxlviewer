@@ -2,7 +2,7 @@
 <script>
 import { cloneDeep, each, get } from 'lodash-es';
 import * as md5 from 'md5';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
@@ -11,6 +11,7 @@ import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
+import DetailedEnrichment from '@/components/care/detailed-enrichment';
 import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
 import Breadcrumb from '@/components/inspector/breadcrumb';
@@ -62,14 +63,21 @@ export default {
         active: false,
         error: null,
       },
+      detailedEnrichmentModal: {
+        open: false,
+      },
       embellishFromIdModal: {
         open: false,
         inputValue: '',
+        detailed: false,
       },
       justEmbellished: false,
     };
   },
   methods: {
+    ...mapActions([
+      'setEnrichmentSource',
+    ]),
     applyOverride(data) {
       this.$store.dispatch('setInspectorData', data);
       this.$store.dispatch('pushNotification', {
@@ -112,10 +120,11 @@ export default {
         toolbarTestEl.style.width = `${width}px`;
       }
     },
-    toggleEmbellishFromIdModal(open = true) {
+    toggleEmbellishFromIdModal(open = true, detailed = false) {
       if (open) {
         this.embellishFromIdModal.inputValue = '';
         this.embellishFromIdModal.open = true;
+        this.embellishFromIdModal.detailed = detailed;
         this.$nextTick(() => {
           this.$refs.EmbellishFromIdModalInput.focus();
         });
@@ -191,10 +200,10 @@ export default {
     confirmApplyPostAsTemplate() {
       const id = this.embellishFromIdModal.inputValue;
       if (id.length > 0) {
-        this.applyPostAsTemplate(id);
+        this.applyPostAsTemplate(id, this.embellishFromIdModal.detailed);
       }
     },
-    applyPostAsTemplate(id) {
+    applyPostAsTemplate(id, detailed = false) {
       const fixedId = RecordUtil.extractFnurgel(id);
       const randomHash = md5(new Date());
       const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld?${randomHash}`;
@@ -223,7 +232,12 @@ export default {
           const splitFetched = RecordUtil.splitJson(result);
           const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings.keysToClear.duplication);
           const template = RecordUtil.splitJson(templateJson);
-          this.applyFieldsFromTemplate(template);
+          if (detailed) {
+            this.setEnrichmentSource(template);
+            this.detailedEnrichmentModal.open = true;
+          } else {
+            this.applyFieldsFromTemplate(template);
+          }
           this.embellishFromIdModal.open = false;
         }
       });
@@ -667,6 +681,8 @@ export default {
         this.applyFieldsFromTemplate(val.value);
       } else if (val.name === 'open-embellish-from-id') {
         this.toggleEmbellishFromIdModal(true);
+      } else if (val.name === 'open-detailed-embellish-from-id') {
+        this.toggleEmbellishFromIdModal(true, true);
       } else if (val.name === 'apply-override') {
         this.applyOverride(val.value);
       }
@@ -690,6 +706,7 @@ export default {
       'status',
       'userCare',
       'userFavorites',
+      'enrichment',
     ]),
     isReadyForSave() {
       if (this.saveQueued && this.inspector.status.readyForSave) {
@@ -733,6 +750,7 @@ export default {
     toolbar: Toolbar,
     'entity-changelog': EntityChangelog,
     breadcrumb: Breadcrumb,
+    DetailedEnrichment,
     'marc-preview': MarcPreview,
     'tab-menu': TabMenu,
     'validation-summary': ValidationSummary,
@@ -795,7 +813,8 @@ export default {
           v-for="tab in editorTabs"
           :editing-object="tab.id"
           :key="tab.id"
-          :is-main-entity-form="tab.id === 'mainEntity'"
+          :is-active="inspector.status.focus === tab.id"
+          :form-data="inspector.data[tab.id]"
           :locked="!inspector.status.editing">
         </entity-form>
       </div>
@@ -820,9 +839,18 @@ export default {
         </div>
       </div>
     </modal-component>
-    <modal-component class="EmbellishFromIdModal" :title="['Embellish', 'From ID']" v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false">
+    <modal-component class="EmbellishFromIdModal" :title="['Embellish', embellishFromIdModal.detailed ? 'From ID (detailed)' : 'From ID']" v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false">
       <div slot="modal-body" class="EmbellishFromIdModal-body">
-        <div class="EmbellishFromIdModal-infoText">
+        <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === true">
+          <p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>
+          <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>
+          <p>
+            Du kan välja mellan att <strong>utöka</strong> (<i class="fa text-success fa-plus-square"></i>) eller <strong>ersätta</strong> (<i class="fa text-warning fa-arrow-circle-o-right"></i>) en egenskap.
+            Att <strong>utöka</strong> innebär att information läggs till i den berikade posten.
+            <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.
+          </p>
+        </div>
+        <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === false">
           Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.
         </div>
         <div class="input-group EmbellishFromIdModal-form">
@@ -833,6 +861,10 @@ export default {
           </span>
         </div>
       </div>
+    </modal-component>
+
+    <modal-component class="DetailedEnrichmentModal" title="Enrichment" v-if="detailedEnrichmentModal.open === true" @close="detailedEnrichmentModal.open = false">
+      <DetailedEnrichment slot="modal-body" />
     </modal-component>
   </div>
 </template>

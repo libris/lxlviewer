@@ -7,10 +7,6 @@ import * as StringUtil from '@/utils/string';
 
 export default {
   props: {
-    isMainEntityForm: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -28,7 +24,11 @@ export default {
       'settings',
       'status',
     ]),
+    isMainEntityForm() {
+      return this.editingObject === 'mainEntity';
+    },
     formType() {
+      debugger;
       return this.formObj['@type'];
     },
     recordType() {

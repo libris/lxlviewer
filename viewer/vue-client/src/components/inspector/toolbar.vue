@@ -131,6 +131,12 @@ export default {
         name: 'open-embellish-from-id',
       });
     },
+    detailedApplyPostAsTemplate() {
+      this.hideToolsMenu();
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'open-detailed-embellish-from-id',
+      });
+    },
     initOverridePicker() {
       this.hideToolsMenu();
       const self = this;
@@ -543,15 +549,21 @@ export default {
           </a>
         </li>
         <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromPostSubMenu">
-          <a class="Toolbar-menuLink" @click="openTemplatePicker">
-          <i class="fa fa-fw fa-upload"></i>
-            {{ 'From file' | translatePhrase }}
-          </a>
-        </li>
-        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromPostSubMenu">
           <a class="Toolbar-menuLink" @click="applyPostAsTemplate">
           <i class="fa fa-fw fa-chain"></i>
           {{ 'From ID' | translatePhrase }}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromPostSubMenu">
+          <a class="Toolbar-menuLink" @click="detailedApplyPostAsTemplate">
+          <i class="fa fa-fw fa-chain"></i>
+          {{ 'From ID (detailed)' | translatePhrase }}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromPostSubMenu">
+          <a class="Toolbar-menuLink" @click="openTemplatePicker">
+          <i class="fa fa-fw fa-upload"></i>
+            {{ 'From file' | translatePhrase }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="compiledIsAvailable">

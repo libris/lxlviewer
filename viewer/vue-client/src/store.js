@@ -26,6 +26,13 @@ const store = new Vuex.Store({
       selectedHoldings: [],
       holdingsMoved: [],
     },
+    enrichment: {
+      data: {
+        source: null,
+        target: null,
+        result: null,
+      },
+    },
     inspector: {
       data: {},
       insertData: {},
@@ -525,6 +532,15 @@ const store = new Vuex.Store({
       // Sync user settings with localstorage
       state.user.saveSettings();
     },
+    setEnrichmentTarget(state, data) {
+      state.enrichment.data.target = data;
+    },
+    setEnrichmentSource(state, data) {
+      state.enrichment.data.source = data;
+    },
+    setEnrichmentResult(state, data) {
+      state.enrichment.data.result = data;
+    },
     setUserStorage(state, data) {
       if (data) {
         state.userStorage = data;
@@ -584,6 +600,7 @@ const store = new Vuex.Store({
     settings: state => state.settings,
     user: state => state.user,
     userStorage: state => state.userStorage,
+    enrichment: state => state.enrichment,
     userFavorites: (state, getters) => {
       const collection = [];
       const list = getters.userStorage.list;
@@ -629,6 +646,15 @@ const store = new Vuex.Store({
         userStorage.list[id] = { tags: [tag], label };
       }
       commit('setUserStorage', userStorage);
+    },
+    setEnrichmentTarget({ commit, state }, data) {
+      commit('setEnrichmentTarget', data);
+    },
+    setEnrichmentSource({ commit, state }, data) {
+      commit('setEnrichmentSource', data);
+    },
+    setEnrichmentResult({ commit, state }, data) {
+      commit('setEnrichmentResult', data);
     },
     unmark({ commit, state }, payload) {
       const userStorage = cloneDeep(state.userStorage);
