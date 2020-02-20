@@ -1,4 +1,4 @@
-import { cloneDeep, each, isObject, uniq, remove, isArray, isEmpty } from 'lodash-es';
+import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty } from 'lodash-es';
 import moment from 'moment';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
@@ -146,6 +146,24 @@ export function getItemLabel(item, displayDefs, quoted, vocab, settings, context
     }
   }
   return rendered;
+}
+
+export function getSortedProperties(formType, formObj, settings, resources) {
+  const propertyList = getDisplayProperties(
+    formType,
+    resources.display,
+    resources.vocab,
+    settings,
+    resources.context,
+    'full',
+  );
+  each(formObj, (v, k) => {
+    if (!includes(propertyList, k)) {
+      propertyList.push(k);
+    }
+  });
+  remove(propertyList, k => (settings.hiddenProperties.indexOf(k) !== -1));
+  return propertyList;
 }
 
 export function getItemToken(item, displayDefs, quoted, vocab, settings, context) {

@@ -258,7 +258,7 @@ export default {
   </div>
 
   <div class="EntitySummary-info">
-    <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink, 'showAll': showAllKeys }">
+    <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink, 'showAll': showAllKeys }" v-if="excludeComponents.indexOf('header') < 0">
       <span v-if="highlightStr && !shouldLink" 
         v-html="highlight(header.join(', '))"
         :title="header.join(', ')">
@@ -291,7 +291,7 @@ export default {
       </a>
       
     </h3>
-    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ height: animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }">
+    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ height: animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
       <li class="EntitySummary-detailsItem" 
         v-for="node in limitedInfo" 
         :key="node.property">

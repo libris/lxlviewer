@@ -77,6 +77,7 @@ export default {
   methods: {
     ...mapActions([
       'setEnrichmentSource',
+      'setEnrichmentTarget',
     ]),
     applyOverride(data) {
       this.$store.dispatch('setInspectorData', data);
@@ -197,11 +198,58 @@ export default {
         this.loadNewDocument();
       }
     },
-    confirmApplyPostAsTemplate() {
+    confirmApplyPostAsTemplate(detailed = false) {
+      this.embellishFromIdModal.open = false;
       const id = this.embellishFromIdModal.inputValue;
-      if (id.length > 0) {
-        this.applyPostAsTemplate(id, this.embellishFromIdModal.detailed);
+      if (detailed) {
+        this.prepareDetailedEnrichment(id);
+      } else {
+        if (id.length > 0) {
+          this.applyPostAsTemplate(id, this.embellishFromIdModal.detailed);
+        }
       }
+    },
+    prepareDetailedEnrichment(id = null, data = null) {
+      if (id !== null) {
+        const fixedId = RecordUtil.extractFnurgel(id);
+        const randomHash = md5(new Date());
+        const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld?${randomHash}`;
+        fetch(fetchUrl).then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          } if (response.status === 404 || response.status === 410) {
+            this.$store.dispatch('pushNotification', {
+              type: 'danger',
+              message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language)}. ${response.status} ${response.statusText}`,
+            });
+          } else {
+            this.$store.dispatch('pushNotification', {
+              type: 'danger',
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`,
+            });
+          }
+          return false;
+        }, (error) => {
+          this.$store.dispatch('pushNotification', {
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`,
+          });
+        }).then((result) => {
+          if (typeof result !== 'undefined') {
+            const template = RecordUtil.splitJson(result);
+            this.applyAsDetailedEnrichment(template);
+          }
+        });
+      } else if (data !== null) {
+        this.applyAsDetailedEnrichment(data);
+      } else {
+        throw new Error('Failed to prepare data for detailed enrichment.')
+      }
+    },
+    applyAsDetailedEnrichment(data) {
+      this.setEnrichmentTarget(this.inspector.data);
+      this.setEnrichmentSource(data);
+      this.detailedEnrichmentModal.open = true;
     },
     applyPostAsTemplate(id, detailed = false) {
       const fixedId = RecordUtil.extractFnurgel(id);
@@ -232,13 +280,7 @@ export default {
           const splitFetched = RecordUtil.splitJson(result);
           const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings.keysToClear.duplication);
           const template = RecordUtil.splitJson(templateJson);
-          if (detailed) {
-            this.setEnrichmentSource(template);
-            this.detailedEnrichmentModal.open = true;
-          } else {
-            this.applyFieldsFromTemplate(template);
-          }
-          this.embellishFromIdModal.open = false;
+          this.applyFieldsFromTemplate(template);
         }
       });
     },
@@ -855,9 +897,9 @@ export default {
         </div>
         <div class="input-group EmbellishFromIdModal-form">
           <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ 'ID' | translatePhrase }}/{{ 'Link' | translatePhrase }}</label>
-          <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyPostAsTemplate" />
+          <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" />
           <span class="input-group-btn">
-            <button class="btn btn-primary EmbellishFromIdModal-confirmButton" @click="confirmApplyPostAsTemplate" @keyup.enter="confirmApplyPostAsTemplate">{{ 'Embellish' | translatePhrase }}</button>
+            <button class="btn btn-primary EmbellishFromIdModal-confirmButton" @click="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)">{{ 'Embellish' | translatePhrase }}</button>
           </span>
         </div>
       </div>
@@ -1000,6 +1042,10 @@ export default {
 .RemovePostModal .ModalComponent-container {
   width: 600px;
   height: 175px;
+}
+
+.DetailedEnrichmentModal .ModalComponent-container {
+  width: 90vw;
 }
 
 .RemovePostModal {

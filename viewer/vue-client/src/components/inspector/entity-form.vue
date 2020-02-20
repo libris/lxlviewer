@@ -128,7 +128,7 @@ export default {
         :key="k" 
         :field-key="k" 
         :field-value="v" 
-        :parent-path="editingObject"></field>
+        :parent-path="editingObject" />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
           {{ formObj }}
