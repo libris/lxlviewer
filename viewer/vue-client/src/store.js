@@ -297,6 +297,10 @@ const store = new Vuex.Store({
             query: 'publication.year',
             label: 'Publication year (ascending)',
           },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
+          },
         ],
         Work: [
           {
@@ -332,6 +336,10 @@ const store = new Vuex.Store({
           {
             query: '-prefLabel',
             label: 'Preferred label (Z-A)',
+          },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
           },
           {
             query: '-reverseLinks.totalItems',
@@ -384,6 +392,14 @@ const store = new Vuex.Store({
           {
             query: '',
             label: 'Relevance',
+          },
+          {
+            query: 'prefLabel',
+            label: 'Preferred label (A-Z)',
+          },
+          {
+            query: '-prefLabel',
+            label: 'Preferred label (Z-A)',
           },
           {
             query: '-meta.modified',

@@ -420,7 +420,7 @@ export default {
                   <sort
                     :recordTypes="currentSearchTypes"
                     :currentSort="''"
-                    :commonSort="true"
+                    :commonSortFallback="true"
                     :styleVariant="'material'"
                     @change="setSort($event, keyword)" />
                 </div>                

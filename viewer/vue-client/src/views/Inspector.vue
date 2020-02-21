@@ -280,7 +280,7 @@ export default {
       }
       if (!basePostData.hasOwnProperty('work')) {
         applyChangeList('mainEntity.instanceOf');
-        } else {
+      } else {
         // If work property exists, put the work entity there
         applyChangeList('mainEntity.instanceOf', 'work');
       }

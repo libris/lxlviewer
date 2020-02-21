@@ -12,7 +12,7 @@ export default {
     currentSort: { // sortparam-value to set initial select option
       type: String,
     },
-    commonSort: {
+    commonSortFallback: {
       type: Boolean,
       default: false,
     },
@@ -64,7 +64,7 @@ export default {
         if (baseTypes.length === 1) { // same base class -> check sort options
           return baseTypes.join();
         } 
-        if (this.commonSort) {
+        if (this.commonSortFallback) {
           return 'Common'; // different base classes -> fall back to a common sort definition
         }
         return false; // different base classes -> disallow sort
