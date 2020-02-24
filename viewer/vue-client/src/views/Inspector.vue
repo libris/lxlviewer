@@ -74,7 +74,7 @@ export default {
       this.$store.dispatch('setInspectorData', data);
       this.$store.dispatch('pushNotification', {
         type: 'success',
-        message: `${StringUtil.getUiPhraseByLang('Formulär uppdaterat, glöm inte att spara posten', this.user.settings.language)}`,
+        message: `${StringUtil.getUiPhraseByLang('Form updated, don\'t forget to save', this.user.settings.language)}`,
       });
     },
     shouldWarnOnUnload() {
