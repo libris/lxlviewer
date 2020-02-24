@@ -70,7 +70,7 @@ export default {
                 <a href="https://www.kb.se/samverkan-och-utveckling/libris.html" class="Footer-link">{{ "Libris news" | translatePhrase }}</a>
               </li>
               <li>
-                <a href="http://kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/" class="Footer-link">{{ "Introduction material" | translatePhrase }}</a>
+                <a href="https://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/" class="Footer-link">{{ "Introduction material" | translatePhrase }}</a>
               </li>
               <li>
                 <a href="http://www.kb.se/libris/" class="Footer-link">{{ "kb.se/libris" | translatePhrase }}</a>
