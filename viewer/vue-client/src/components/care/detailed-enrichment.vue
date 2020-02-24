@@ -1,6 +1,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { difference, intersection, cloneDeep, isArray, union, isEqual, uniq } from 'lodash-es';
+import { difference, intersection, cloneDeep, isArray, union, isEqual, uniqWith } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
@@ -101,6 +101,18 @@ export default {
       }
       return diffList;
     },
+    modifiedKeys() {
+      const resultKeys = Object.keys(this.result);
+      const list = [];
+      for (let i = 0; i < resultKeys.length; i++) {
+        if (this.target.hasOwnProperty(resultKeys[i]) === false) {
+          list.push(resultKeys[i]);
+        } else if (isEqual(this.target[resultKeys[i]], this.result[resultKeys[i]]) === false) {
+          list.push(resultKeys[i]);
+        }
+      }
+      return list;
+    },
     changedKeys() {
       const changedKeyList = [];
       for (let i = 0; i < this.allKeys.length; i++) {
@@ -145,6 +157,13 @@ export default {
       const equal = isEqual(this.target[key], this.result[key]);
       return equal === false;
     },
+    undo(key) {
+      if (this.target.hasOwnProperty(key)) {
+        this.$set(this.resultObject[this.formFocus], key, this.target[key]);
+      } else {
+        this.$delete(this.resultObject[this.formFocus], key);
+      }
+    },
     addValue(key) {
       console.log("Add value:", key);
       const source = this.enrichment.data.source;
@@ -159,7 +178,8 @@ export default {
         if (isArray(sourceValue) === false) {
           sourceValue = [sourceValue];
         }
-        const concatenatedUnique = uniq(resultValue.concat(sourceValue));
+        const concatenatedList = resultValue.concat(sourceValue);
+        const concatenatedUnique = uniqWith(concatenatedList, isEqual);
         this.$set(this.resultObject[this.formFocus], key, concatenatedUnique);
       }
     },
@@ -229,13 +249,17 @@ export default {
           </div>
           <div class="DetailedEnrichment-buttonContainer">
             <div class="Field-actions">
-              <div class="Field-action">
-                <i role="button" tabindex="0" v-if="canBeDiffAdded(key)" @click="addValue(key)" class="fa fa-fw text-success fa-plus-square action-button icon icon--sm"></i>
+              <div class="Field-action" tabindex="0" v-if="modifiedKeys.indexOf(key) === -1 && canBeDiffAdded(key)" @click="addValue(key)" @keyup.enter="addValue(key)">
                 Utöka
+                <i role="button" class="fa fa-fw fa-plus action-button icon icon--xs"></i>
               </div>
-              <div class="Field-action">
-                <i role="button" tabindex="0" v-if="canBeDiffReplaced(key)" @click="replaceValue(key)" class="fa fa-fw fa-arrow-circle-o-right text-warning action-button icon icon--sm"></i>
+              <div class="Field-action" tabindex="0" v-if="modifiedKeys.indexOf(key) === -1 && canBeDiffReplaced(key)" @click="replaceValue(key)" @keyup.enter="replaceValue(key)">
                 Ersätt
+                <i role="button" class="fa fa-fw fa-arrow-right action-button icon icon--xs"></i>
+              </div>
+              <div class="Field-action" tabindex="0" v-if="modifiedKeys.indexOf(key) > -1" @click="undo(key)" @keyup.enter="undo(key)">
+                Ångra
+                <i role="button" class="fa fa-fw fa-undo action-button icon icon--xs"></i>
               </div>
             </div>
           </div>
@@ -283,27 +307,49 @@ export default {
   }
   &-row {
     width: 100%;
+    margin-bottom: 1rem;
   }
   &-fieldRow {
     width: 100%;
     display: flex;
-    border: 1px solid;
+    .Field, .Field-content {
+      border: 0;
+    }
   }
-  &-sourceField, &-resultField {
-    flex-basis: 45%;
+  &-resultField {
+    width: 47%;
   }
+  &-sourceField {
+    width: 47%;
+  }
+
   &-sourceField, &-resultField, &-buttonContainer {
-    border: 1px solid;
     display: flex;
+    border: 1px solid @grey-light;
+    margin: -1px -1px -1px 0px; // Fakes collapse on the "cells"
   }
   &-buttonContainer {
-    flex-basis: 10%;
+    flex-basis: 6%;
     .Field-actions {
       display: flex;
+      margin: 0.5em 0;
       flex-direction: column;
       .Field-action {
+        align-items: baseline;
+        justify-content: center;
+        display: flex;
+        color: @brand-primary;
+        i {
+          color: @brand-primary;
+        }
+        font-weight: bold;
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        cursor: pointer;
         width: 100%;
-        border: 1px solid;
+        border: solid @grey-light;
+        border-width: 1px 0px 1px 0px;
+        margin: -1px -4px 0px 0px;
       }
     }
   }
