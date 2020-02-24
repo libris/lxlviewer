@@ -248,7 +248,7 @@ export default {
               :parent-path="formFocus" />
           </div>
           <div class="DetailedEnrichment-buttonContainer">
-            <div class="Field-actions">
+            <div class="Field-actions" v-if="settings.lockedProperties.indexOf(key) === -1">
               <div class="Field-action" tabindex="0" v-if="modifiedKeys.indexOf(key) === -1 && canBeDiffAdded(key)" @click="addValue(key)" @keyup.enter="addValue(key)">
                 Utöka
                 <i role="button" class="fa fa-fw fa-plus action-button icon icon--xs"></i>
