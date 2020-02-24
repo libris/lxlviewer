@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { cloneDeep, each, set, get } from 'lodash-es';
+import { cloneDeep, each, set, get, assign } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
@@ -536,6 +536,7 @@ const store = new Vuex.Store({
       state.enrichment.data.target = data;
     },
     setEnrichmentSource(state, data) {
+      state.inspector.data.quoted = assign(data.quoted, state.inspector.data.quoted);
       state.enrichment.data.source = data;
     },
     setEnrichmentResult(state, data) {

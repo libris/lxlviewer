@@ -1,6 +1,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { difference, intersection, cloneDeep, isArray, union, isEqual, uniqWith } from 'lodash-es';
+import { difference, differenceWith, intersection, cloneDeep, isArray, union, isEqual, uniqWith } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
@@ -126,7 +126,13 @@ export default {
       return difference(Object.keys(this.source), Object.keys(this.target));
     },
     equalKeys() {
-      return difference(this.existingKeys, this.diffingKeys);
+      const list = [];
+      for (let i = 0; i < this.existingKeys.length; i++) {
+        if (isEqual(this.source[this.existingKeys[i]], this.result[this.existingKeys[i]])) {
+          list.push(this.existingKeys[i]);
+        }
+      }
+      return list;
     },
     existingKeys() {
       return intersection(Object.keys(this.source), Object.keys(this.target));
@@ -189,6 +195,9 @@ export default {
       this.resultObject[this.formFocus][key] = source[this.formFocus][key];
     },
     canBeDiffReplaced(key) {
+      if (this.equalKeys.indexOf(key) > -1) {
+        return false;
+      }
       if (this.diff.diffingKeys.indexOf(key) > -1) {
         return true;
       }
@@ -203,7 +212,9 @@ export default {
       return false;
     },
     canBeDiffAdded(key) {
-      const test = this.diff.missingKeys.indexOf(key);
+      if (this.equalKeys.indexOf(key) > -1) {
+        return false;
+      }
       if (this.diff.missingKeys.indexOf(key) > - 1) {
         return true;
       }
