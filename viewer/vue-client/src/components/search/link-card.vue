@@ -59,7 +59,7 @@ export default {
         </div>
       </div>
       <div class="LinkCard-video Video" v-if="videoUrl.indexOf('youtube') ==! -1 || youtube.accepted">
-        <iframe :src="videoUrl" frameborder="0" allow="autoplay" allowfullscreen :title="header"></iframe>
+        <iframe :src="videoUrl" allow="autoplay" allowfullscreen :title="header"></iframe>
       </div>
     </div> 
     <div class="LinkCard-content card-content">
@@ -144,6 +144,7 @@ export default {
       left: 0;
       width: 100%;
       height: 100%;
+      border: none;
     }
   }
 
