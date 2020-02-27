@@ -90,7 +90,7 @@ export default {
 </script>
 
 <template>
-  <nav class="NavBar" id="NavBar" role="navigation" aria-labelledby="service-name">
+  <nav class="NavBar" id="NavBar" aria-labelledby="service-name">
     <div class="NavBar-container container">
       <div class="row">
         <div class="NavBar-brand col-xs-2 col-sm-1 hidden-md hidden-lg">
