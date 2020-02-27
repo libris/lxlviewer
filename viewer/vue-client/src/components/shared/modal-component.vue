@@ -11,6 +11,7 @@
   The slots are:
     * modal-header  - If no content, will just show the "title"-prop and a close-button, explained below.
     * modal-body    - Just a container for your content. Supports highly customized layout.
+    * modal-fooder  - Will not render anything if not provided
 
   Close-event:
     The default close button (and click on backdrop) will emit an event called "close".
@@ -128,6 +129,10 @@ export default {
           <code>No content recieved from parent</code>
         </slot>
       </div>
+      <div class="ModalComponent-footer">
+        <slot name="modal-footer">
+        </slot>
+      </div>
     </div>
   </div>
 </template>
@@ -180,21 +185,23 @@ export default {
     flex-wrap: nowrap;
     flex-direction: row;
     justify-content: space-between;
-    background-color: @brand-primary;
-    color: @white;
-    padding: 10px 15px;
+    border: solid @grey-light;
+    border-width: 0px 0px 1px 0px;
+    background-color: @neutral-color;
+    color: @black;
+    padding: 1.5rem 2rem;
 
     .is-danger & {
-      background-color: @brand-danger;
+      background-color: @neutral-color;
     }
     .is-warning & {
-      background-color: @brand-warning;
+      background-color: @neutral-color;
     }
 
     header {
+      font-size: 1.8rem;
       display: inline-block;
       font-weight: 600;
-      text-transform: uppercase;
     }
   }
 
@@ -202,10 +209,19 @@ export default {
     overflow-y: auto;
     height: 100%;
     display: flex;
+    background-color: @grey-lightest;
     flex-direction: column;
     align-items: center;
     z-index: 5;
   }
+
+  &-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 6;
+  }
+
   &-windowControl {
     i:hover {
       cursor: pointer;

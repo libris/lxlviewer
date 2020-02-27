@@ -145,7 +145,7 @@ export default {
   }
 
   &.disabled { //can't be SUIT-ified because inherits from Bootstrap .disabled
-    color: @white;
+    color: @grey;
     border: none;
   }
 
