@@ -905,8 +905,8 @@ export default {
       </div>
     </modal-component>
 
-    <modal-component class="DetailedEnrichmentModal" title="Enrichment" v-if="detailedEnrichmentModal.open === true" @close="detailedEnrichmentModal.open = false">
-      <DetailedEnrichment slot="modal-body" />
+    <modal-component class="DetailedEnrichmentModal" :title="'Detailed enrichment' | translatePhrase" v-if="detailedEnrichmentModal.open === true" @close="detailedEnrichmentModal.open = false">
+      <DetailedEnrichment slot="modal-body" :floating-dialogs="true" />
     </modal-component>
   </div>
 </template>
@@ -1041,7 +1041,6 @@ export default {
 
 .RemovePostModal .ModalComponent-container {
   width: 600px;
-  height: 175px;
 }
 
 .DetailedEnrichmentModal .ModalComponent-container {

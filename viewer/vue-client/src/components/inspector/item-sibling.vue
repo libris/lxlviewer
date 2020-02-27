@@ -369,7 +369,7 @@ export default {
 
     <strong class="ItemSibling-heading">
       <div class="ItemSibling-label"
-        :class="{'is-inactive': isEmpty}"
+        :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
         @click="toggleExpanded()">
         <i class="ItemSibling-arrow fa fa-chevron-right" 
           :class="{'icon is-disabled' : isEmpty}"></i>
@@ -431,7 +431,7 @@ export default {
       </div>
     </strong>
   
-    <ul class="ItemSibling-list js-itemLocalFields">      
+    <ul class="ItemSibling-list js-itemLocalFields" v-show="expanded">
       <!-- <field-adder 
         v-if="!isLocked && isEmpty" 
         :entity-type="item['@type']" 
@@ -439,7 +439,7 @@ export default {
         :inner="true" 
         :path="getPath"></field-adder> -->
       <field
-        v-show="expanded && k !== '_uid'" 
+        v-show="k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
         :parent-path="getPath" 
         :entity-type="item['@type']" 
@@ -499,6 +499,9 @@ export default {
   }
 
   &-label {
+    &.is-locked {
+      margin: 0;
+    }
     margin-right: 120px;
     cursor: pointer;
     

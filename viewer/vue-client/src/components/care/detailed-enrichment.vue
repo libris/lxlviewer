@@ -5,17 +5,23 @@ import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import Field from '@/components/inspector/field';
+import Button from '@/components/shared/button';
 import TabMenu from '@/components/shared/tab-menu';
 import EntitySummary from '@/components/shared/entity-summary';
 
 export default {
   name: 'DetailedEnrichment',
   props: {
+    floatingDialogs: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     'field': Field,
     'tab-menu': TabMenu,
     'entity-summary': EntitySummary,
+    'button-component': Button,
   },
   data() {
     return {
@@ -212,6 +218,9 @@ export default {
       return false;
     },
     canBeDiffAdded(key) {
+      if (this.source.hasOwnProperty(key) === false) {
+        return false;
+      }
       if (this.equalKeys.indexOf(key) > -1) {
         return false;
       }
@@ -237,15 +246,46 @@ export default {
 </script>
 
 <template>
-  <div class="DetailedEnrichment">
+  <div class="DetailedEnrichment" :class="{ 'with-floating-dialog': floatingDialogs }">
     <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
     <div class="DetailedEnrichment-rowContainer" v-if="resultObject">
+      <div class="DetailedEnrichment-row">
+        <div class="DetailedEnrichment-fieldRow">
+          <div class="DetailedEnrichment-sourceField no-border">
+            <h2>{{ 'Source' | translatePhrase }}</h2>
+          </div>
+          <div class="DetailedEnrichment-buttonContainer">
+          </div>
+          <div class="DetailedEnrichment-resultField no-border">
+            <h2>{{ 'Result' | translatePhrase }}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="DetailedEnrichment-row">
+        <div class="DetailedEnrichment-fieldRow">
+          <div class="DetailedEnrichment-sourceField">
+            <entity-summary
+              :focus-data="enrichment.data.source['mainEntity']"
+              :should-link="false"
+              :exclude-components="['details', 'id']">
+            </entity-summary>
+          </div>
+          <div class="DetailedEnrichment-buttonContainer"></div>
+          <div class="DetailedEnrichment-resultField">
+            <entity-summary
+              :focus-data="resultObject['mainEntity']"
+              :should-link="false"
+              :exclude-components="['details', 'id']">
+            </entity-summary>
+          </div>
+        </div>
+      </div>
       <div class="DetailedEnrichment-row" v-for="key in sortedKeys" :key="key">
         <div class="DetailedEnrichment-labelContainer uppercaseHeading">
           {{ key | labelByLang | capitalize }}
         </div>
         <div class="DetailedEnrichment-fieldRow">
-          <div class="DetailedEnrichment-sourceField">
+          <div class="DetailedEnrichment-sourceField" :class="{ 'no-border': source.hasOwnProperty(key) === false }">
             <field class="FieldList-item"
               v-if="enrichment.data.source[formFocus].hasOwnProperty(key)"
               v-bind:class="{ 'locked': true }" 
@@ -259,22 +299,13 @@ export default {
               :parent-path="formFocus" />
           </div>
           <div class="DetailedEnrichment-buttonContainer">
-            <div class="Field-actions" v-if="settings.lockedProperties.indexOf(key) === -1">
-              <div class="Field-action" tabindex="0" v-if="modifiedKeys.indexOf(key) === -1 && canBeDiffAdded(key)" @click="addValue(key)" @keyup.enter="addValue(key)">
-                Utöka
-                <i role="button" class="fa fa-fw fa-plus action-button icon icon--xs"></i>
-              </div>
-              <div class="Field-action" tabindex="0" v-if="modifiedKeys.indexOf(key) === -1 && canBeDiffReplaced(key)" @click="replaceValue(key)" @keyup.enter="replaceValue(key)">
-                Ersätt
-                <i role="button" class="fa fa-fw fa-arrow-right action-button icon icon--xs"></i>
-              </div>
-              <div class="Field-action" tabindex="0" v-if="modifiedKeys.indexOf(key) > -1" @click="undo(key)" @keyup.enter="undo(key)">
-                Ångra
-                <i role="button" class="fa fa-fw fa-undo action-button icon icon--xs"></i>
-              </div>
+            <div class="DetailedEnrichment-buttons" v-if="settings.lockedProperties.indexOf(key) === -1">
+              <button-component @click="addValue(key)" :label="'Extend' | translatePhrase" icon="plus" size="large" :disabled="canBeDiffAdded(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
+              <button-component @click="replaceValue(key)" icon="arrow-right" size="large" :disabled="canBeDiffReplaced(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
+              <button-component @click="undo(key)" icon="undo" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
             </div>
           </div>
-          <div class="DetailedEnrichment-resultField">
+          <div class="DetailedEnrichment-resultField" :class="{ 'no-border': result.hasOwnProperty(key) === false }">
             <field class="FieldList-item"
               v-if="resultObject !== null && resultObject[formFocus].hasOwnProperty(key)"
               v-bind:class="{ 'locked': true }" 
@@ -294,6 +325,10 @@ export default {
         </div>
       </div>
     </div>
+    <div class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
+      <button class="btn btn-default">{{ 'Cancel' | translatePhrase }}</button>
+      <button class="btn btn-primary">{{ 'Accept' | translatePhrase }}</button>
+    </div>
   </div>
 </template>
 
@@ -304,6 +339,29 @@ export default {
   height: 80vh;
   padding: 0 1em;
   overflow-y: scroll;
+  &.with-floating-dialog {
+    padding-bottom: 5em;
+  }
+
+  &-dialog {
+    background-color: @neutral-color;
+    margin: 0 -1em;
+    padding: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    border: solid @grey-light;
+    border-width: 1px 0px 0px 0px;
+    button {
+      margin-left: 1rem;
+    }
+    &.is-floating {
+      position: fixed;
+      bottom: 0px;
+      width: 100%;
+    }
+  }
+
   &-table {
     width: 100%;
     td {
@@ -312,6 +370,11 @@ export default {
     .Field {
       border-width: 1px;
     }
+  }
+  &-labelContainer {
+    border: dotted @grey-lighter;
+    border-width: 0px 0px 1px 0px;
+    margin-bottom: 0.5rem;
   }
   &-rowContainer {
     width: 100%;
@@ -323,45 +386,50 @@ export default {
   &-fieldRow {
     width: 100%;
     display: flex;
+    align-items: flex-start;
     .Field, .Field-content {
       border: 0;
     }
   }
   &-resultField {
-    width: 47%;
+    width: 45%;
+    border: 1px solid @grey-light;
   }
   &-sourceField {
-    width: 47%;
+    width: 45%;
+    border: 1px solid @grey-light;
   }
 
   &-sourceField, &-resultField, &-buttonContainer {
+    &.no-border {
+      border: none;
+    }
+    min-height: 2em;
     display: flex;
-    border: 1px solid @grey-light;
-    margin: -1px -1px -1px 0px; // Fakes collapse on the "cells"
   }
   &-buttonContainer {
-    flex-basis: 6%;
-    .Field-actions {
+    width: 10%;
+    padding: 0 1%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    .Field-action {
+      background-color: @white;
+      align-items: baseline;
+      justify-content: center;
       display: flex;
-      margin: 0.5em 0;
-      flex-direction: column;
-      .Field-action {
-        align-items: baseline;
-        justify-content: center;
-        display: flex;
+      color: @brand-primary;
+      i {
         color: @brand-primary;
-        i {
-          color: @brand-primary;
-        }
-        font-weight: bold;
-        font-size: 1.2rem;
-        padding: 0.5rem;
-        cursor: pointer;
-        width: 100%;
-        border: solid @grey-light;
-        border-width: 1px 0px 1px 0px;
-        margin: -1px -4px 0px 0px;
       }
+      font-weight: bold;
+      font-size: 1.2rem;
+      padding: 0.5rem;
+      cursor: pointer;
+      width: 100%;
+      border: solid @grey-light;
+      border-width: 1px;
+      margin: -1px -4px 0px 0px;
     }
   }
 
