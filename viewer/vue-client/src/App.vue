@@ -18,7 +18,7 @@
             <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
           </div>
         </div>
-        <router-view v-if="resourcesLoaded" />
+        <router-view ref="routerView" v-if="resourcesLoaded"></router-view>
     </main>
     <portal-target name="sidebar" multiple />
     <footer-component></footer-component>
@@ -53,7 +53,32 @@ export default {
       'status',
     ]),
   },
-  watch: {
+  watch: {    
+    '$route'(to, from) {
+      this.$nextTick(() => {
+        if (from.name !== null && to.name !== 'Search') {
+          setTimeout(() => {
+            // get component's "routeFocusTarget" ref
+            // if not existent, use router view container
+            const focusTarget = (this.$refs.routerView.$refs.componentFocusTarget !== undefined) 
+              ? this.$refs.routerView.$refs.componentFocusTarget
+              : this.$refs.routerView.$el;
+
+            // make focustarget programmatically focussable
+            focusTarget.setAttribute('tabindex', '-1');
+
+            // focus element
+            focusTarget.focus({
+              preventScroll: true,
+            });
+
+            // remove tabindex from focustarget. 
+            // reason: https://axesslab.com/skip-links/#update-3-a-comment-from-gov-uk
+            focusTarget.removeAttribute('tabindex');
+          }, 0);
+        }
+      });
+    },
   },
   methods: {
     disableDebugMode() {
