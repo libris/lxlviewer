@@ -63,9 +63,6 @@ export default {
         active: false,
         error: null,
       },
-      detailedEnrichmentModal: {
-        open: false,
-      },
       embellishFromIdModal: {
         open: false,
         inputValue: '',
@@ -79,6 +76,19 @@ export default {
       'setEnrichmentSource',
       'setEnrichmentTarget',
     ]),
+    replaceData(data) {
+      this.$store.dispatch('setInspectorData', data);
+    },
+    openDetailedEnrichmentModal() {
+      const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
+      detailedEnrichmentModal.open = true;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+    },
+    closeDetailedEnrichmentModal() {
+      const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
+      detailedEnrichmentModal.open = false;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+    },
     applyOverride(data) {
       this.$store.dispatch('setInspectorData', data);
       this.$store.dispatch('pushNotification', {
@@ -249,7 +259,7 @@ export default {
     applyAsDetailedEnrichment(data) {
       this.setEnrichmentTarget(this.inspector.data);
       this.setEnrichmentSource(data);
-      this.detailedEnrichmentModal.open = true;
+      this.openDetailedEnrichmentModal();
     },
     applyPostAsTemplate(id, detailed = false) {
       const fixedId = RecordUtil.extractFnurgel(id);
@@ -725,6 +735,8 @@ export default {
         this.toggleEmbellishFromIdModal(true);
       } else if (val.name === 'open-detailed-embellish-from-id') {
         this.toggleEmbellishFromIdModal(true, true);
+      } else if (val.name === 'replace-data') {
+        this.replaceData(val.value);
       } else if (val.name === 'apply-override') {
         this.applyOverride(val.value);
       }
@@ -905,7 +917,7 @@ export default {
       </div>
     </modal-component>
 
-    <modal-component class="DetailedEnrichmentModal" :title="'Detailed enrichment' | translatePhrase" v-if="detailedEnrichmentModal.open === true" @close="detailedEnrichmentModal.open = false">
+    <modal-component class="DetailedEnrichmentModal" :title="'Detailed enrichment' | translatePhrase" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal">
       <DetailedEnrichment slot="modal-body" :floating-dialogs="true" />
     </modal-component>
   </div>

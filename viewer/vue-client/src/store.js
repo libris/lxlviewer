@@ -39,6 +39,9 @@ const store = new Vuex.Store({
       originalData: {},
       title: '',
       status: {
+        detailedEnrichmentModal: {
+          open: false,
+        },
         saving: false,
         opening: false,
         lastAdded: '',

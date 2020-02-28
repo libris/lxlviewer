@@ -34,6 +34,7 @@ export default {
     ...mapGetters([
       'enrichment',
       'settings',
+      'inspector',
       'user',
       'resources',
     ]),
@@ -160,7 +161,19 @@ export default {
       'setEnrichmentResult',
     ]),
     confirm() {
-      this.setEnrichmentResult(this.resultObject);
+      this.$store.dispatch('pushInspectorEvent', { 
+        name: 'replace-data', 
+        value: this.resultObject,
+      });
+      this.close();
+    },
+    close() {
+      const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
+      detailedEnrichmentModal.open = false;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+    },
+    cancel() {
+      this.close();
     },
     setFocus(focus) {
       this.formFocus = focus;
@@ -324,8 +337,8 @@ export default {
       </div>
     </div>
     <div class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
-      <button class="btn btn-default">{{ 'Cancel' | translatePhrase }}</button>
-      <button class="btn btn-primary">{{ 'Accept' | translatePhrase }}</button>
+      <button class="btn btn-default" @click="cancel" @keyup.enter="cancel">{{ 'Cancel' | translatePhrase }}</button>
+      <button class="btn btn-primary" @click="confirm" @keyup.enter="confirm">{{ 'Enrich' | translatePhrase }}</button>
     </div>
   </div>
 </template>
