@@ -247,45 +247,43 @@ export default {
 
 <template>
   <div class="DetailedEnrichment" :class="{ 'with-floating-dialog': floatingDialogs }">
-    <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
     <div class="DetailedEnrichment-rowContainer" v-if="resultObject">
       <div class="DetailedEnrichment-row">
         <div class="DetailedEnrichment-fieldRow">
-          <div class="DetailedEnrichment-sourceField no-border">
-            <h2>{{ 'Source' | translatePhrase }}</h2>
+          <div class="DetailedEnrichment-columnHeader sourceColumn">
+            <div class="DetailedEnrichment-summaryLabel">
+              {{ 'Enrich from' | translatePhrase }}
+            </div>
+            <div class="DetailedEnrichment-summaryContainer">
+              <entity-summary
+                :focus-data="enrichment.data.source['mainEntity']"
+                :should-link="false"
+                :exclude-components="[]">
+              </entity-summary>
+            </div>
           </div>
-          <div class="DetailedEnrichment-buttonContainer">
-          </div>
-          <div class="DetailedEnrichment-resultField no-border">
-            <h2>{{ 'Result' | translatePhrase }}</h2>
-          </div>
-        </div>
-      </div>
-      <div class="DetailedEnrichment-row">
-        <div class="DetailedEnrichment-fieldRow">
-          <div class="DetailedEnrichment-sourceField">
-            <entity-summary
-              :focus-data="enrichment.data.source['mainEntity']"
-              :should-link="false"
-              :exclude-components="['details', 'id']">
-            </entity-summary>
-          </div>
-          <div class="DetailedEnrichment-buttonContainer"></div>
-          <div class="DetailedEnrichment-resultField">
-            <entity-summary
-              :focus-data="resultObject['mainEntity']"
-              :should-link="false"
-              :exclude-components="['details', 'id']">
-            </entity-summary>
+          <div class="DetailedEnrichment-actionHeader actionColumn"></div>
+          <div class="DetailedEnrichment-columnHeader resultColumn no-border">
+            <div class="DetailedEnrichment-summaryLabel">
+              {{ 'Result' | translatePhrase }}
+            </div>
+            <div class="DetailedEnrichment-summaryContainer">
+              <entity-summary
+                :focus-data="resultObject['mainEntity']"
+                :should-link="false"
+                :exclude-components="[]">
+              </entity-summary>
+            </div>
           </div>
         </div>
       </div>
+      <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
       <div class="DetailedEnrichment-row" v-for="key in sortedKeys" :key="key">
         <div class="DetailedEnrichment-labelContainer uppercaseHeading">
           {{ key | labelByLang | capitalize }}
         </div>
         <div class="DetailedEnrichment-fieldRow">
-          <div class="DetailedEnrichment-sourceField" :class="{ 'no-border': source.hasOwnProperty(key) === false }">
+          <div class="DetailedEnrichment-sourceField sourceColumn" :class="{ 'no-border': source.hasOwnProperty(key) === false }">
             <field class="FieldList-item"
               v-if="enrichment.data.source[formFocus].hasOwnProperty(key)"
               v-bind:class="{ 'locked': true }" 
@@ -298,14 +296,14 @@ export default {
               :field-value="enrichment.data.source[formFocus][key]" 
               :parent-path="formFocus" />
           </div>
-          <div class="DetailedEnrichment-buttonContainer">
+          <div class="DetailedEnrichment-buttonContainer actionColumn">
             <div class="DetailedEnrichment-buttons" v-if="settings.lockedProperties.indexOf(key) === -1">
               <button-component @click="addValue(key)" :label="'Extend' | translatePhrase" icon="plus" size="large" :disabled="canBeDiffAdded(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
               <button-component @click="replaceValue(key)" icon="arrow-right" size="large" :disabled="canBeDiffReplaced(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
               <button-component @click="undo(key)" icon="undo" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
             </div>
           </div>
-          <div class="DetailedEnrichment-resultField" :class="{ 'no-border': result.hasOwnProperty(key) === false }">
+          <div class="DetailedEnrichment-resultField resultColumn" :class="{ 'no-border': result.hasOwnProperty(key) === false }">
             <field class="FieldList-item"
               v-if="resultObject !== null && resultObject[formFocus].hasOwnProperty(key)"
               v-bind:class="{ 'locked': true }" 
@@ -337,7 +335,7 @@ export default {
 .DetailedEnrichment {
   width: 100%;
   height: 80vh;
-  padding: 0 1em;
+  padding: 2rem 1em 0 1em;
   overflow-y: scroll;
   &.with-floating-dialog {
     padding-bottom: 5em;
@@ -372,9 +370,25 @@ export default {
     }
   }
   &-labelContainer {
-    border: dotted @grey-lighter;
-    border-width: 0px 0px 1px 0px;
     margin-bottom: 0.5rem;
+  }
+  &-columnHeader {
+    display: block;
+  }
+
+  &-summaryLabel {
+    background-color: @grey-lighter;
+    color: @grey-darker;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    display: inline-block;
+    border: 1px solid @grey-lighter;
+  }
+  &-summaryContainer {
+    border: 1px solid @grey-lighter;
+    background-color: @neutral-color;
   }
   &-rowContainer {
     width: 100%;
@@ -392,11 +406,15 @@ export default {
     }
   }
   &-resultField {
-    width: 45%;
     border: 1px solid @grey-light;
   }
-  &-sourceField {
+  .sourceColumn, .resultColumn {
     width: 45%;
+  }
+  .actionColumn {
+    width: 10%;
+  }
+  &-sourceField {
     border: 1px solid @grey-light;
   }
 
@@ -408,7 +426,6 @@ export default {
     display: flex;
   }
   &-buttonContainer {
-    width: 10%;
     padding: 0 1%;
     display: flex;
     flex-direction: row;

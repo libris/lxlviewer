@@ -187,6 +187,7 @@
     "Could not process server response": "Kunde inte hantera svaret från servern",
     "Data is missing a reference, please verify file": "Datan saknar en referens, var god verifiera filen",
     "Detailed enrichment": "Detaljerad berikning",
+    "Enrich from": "Berika från",
     "Embellish from template": "Berika från mall",
     "Embellish from post": "Berika från post",
     "Embellish": "Berika",
