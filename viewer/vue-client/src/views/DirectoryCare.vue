@@ -126,33 +126,35 @@ export default {
 </script>
 
 <template>
-  <div class="DirectoryCare" v-if="fetchComplete">
-    <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
-    <holding-mover 
-      v-if="$route.params.tool === 'holdings'"
-      :flaggedInstances="flaggedInstances"/>
-    <div class="" v-if="$route.params.tool === 'merge'">
-      <h1>merge posts</h1>
-      <!-- replace this whole div with the component -->
-    </div>
-    <modal-component 
-      v-if="showModal"
-      title="Directory care list adjusted" 
-      modal-type="info" 
-      @close="closeModal">
-      <div slot="modal-body" class="DirectoryCare-modalBody">
-        <p>{{ ['The following resources could not be retrieved', 
-          'because they no longer exist. They have been removed from the directory care list'] | translatePhrase }}:</p>
-        <ul>
-          <li v-for="error in errors.removed" :key="error['@id']">
-            {{error.label}}
-          </li>
-        </ul>
-        <div class="DirectoryCare-modalBtnContainer">
-          <button class="btn btn-primary btn--md" @click="closeModal">OK</button>
-        </div>
+  <div class="DirectoryCare">
+    <div v-if="fetchComplete">
+      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
+      <holding-mover 
+        v-if="$route.params.tool === 'holdings'"
+        :flaggedInstances="flaggedInstances"/>
+      <div class="" v-if="$route.params.tool === 'merge'">
+        <h1>merge posts</h1>
+        <!-- replace this whole div with the component -->
       </div>
-    </modal-component>
+      <modal-component 
+        v-if="showModal"
+        title="Directory care list adjusted" 
+        modal-type="info" 
+        @close="closeModal">
+        <div slot="modal-body" class="DirectoryCare-modalBody">
+          <p>{{ ['The following resources could not be retrieved', 
+            'because they no longer exist. They have been removed from the directory care list'] | translatePhrase }}:</p>
+          <ul>
+            <li v-for="error in errors.removed" :key="error['@id']">
+              {{error.label}}
+            </li>
+          </ul>
+          <div class="DirectoryCare-modalBtnContainer">
+            <button class="btn btn-primary btn--md" @click="closeModal">OK</button>
+          </div>
+        </div>
+      </modal-component>
+    </div>
   </div>
 </template>
 
