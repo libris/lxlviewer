@@ -931,11 +931,15 @@ export default {
   }
 
   &.is-diff {
-    background-color: fadeout(@brand-warning, 50%);
+    &:not(.is-new) {
+      border-color: @brand-warning;
+      background-color: lighten(@brand-warning, 50%, relative);
+    }
   }
 
   &.is-new {
-    background-color: fadeout(@brand-success, 50%);
+    border-color: @brand-success;
+    background-color: fadeout(@brand-success, 90%);
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
@@ -1181,17 +1185,25 @@ export default {
     }
   }
 
+
+
   &-contentItem {
     display: flex;
     flex: 1;
     max-width: 100%;
 
     &.is-new {
-      background-color: fadeout(@brand-success, 50%);
-      border-radius: 0.25em;
+      border: 1px solid;
+      border-color: @brand-success;
+      background-color: fadeout(@brand-success, 90%, relative);
+      border-radius: 0;
     }
     &.is-entityContent {
       display: inline-flex;
+      &.is-new {
+        padding: 0.25em;
+        margin-right: 0.5em;
+      }
     }
   }
 

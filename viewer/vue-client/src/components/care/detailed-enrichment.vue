@@ -311,12 +311,12 @@ export default {
           </div>
           <div class="DetailedEnrichment-buttonContainer actionColumn">
             <div class="DetailedEnrichment-buttons" v-if="settings.lockedProperties.indexOf(key) === -1">
-              <button-component @click="addValue(key)" :label="'Extend' | translatePhrase" icon="plus" size="large" :disabled="canBeDiffAdded(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
-              <button-component @click="replaceValue(key)" icon="arrow-right" size="large" :disabled="canBeDiffReplaced(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
-              <button-component @click="undo(key)" icon="undo" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
+              <button-component class="btn-success" @click="addValue(key)" :label="'Extend' | translatePhrase" icon="plus" size="large" :disabled="canBeDiffAdded(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
+              <button-component class="btn-warning" @click="replaceValue(key)" icon="arrow-right" size="large" :disabled="canBeDiffReplaced(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
+              <button-component class="btn-info" @click="undo(key)" icon="undo" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
             </div>
           </div>
-          <div class="DetailedEnrichment-resultField resultColumn" :class="{ 'no-border': result.hasOwnProperty(key) === false }">
+          <div class="DetailedEnrichment-resultField resultColumn" :class="{ 'no-border': result.hasOwnProperty(key) === false, 'is-diff': isDiffing(key), 'is-new': newKeys.indexOf(key) > -1 }">
             <field class="FieldList-item"
               v-if="resultObject !== null && resultObject[formFocus].hasOwnProperty(key)"
               v-bind:class="{ 'locked': true }" 
@@ -420,6 +420,14 @@ export default {
   }
   &-resultField {
     border: 1px solid @grey-light;
+    &.is-diff {
+      border-color: @brand-warning;
+      background-color: lighten(@brand-warning, 50%, relative);
+    }
+    &.is-new {
+      border-color: @brand-success;
+      background-color: fadeout(@brand-success, 90%, relative);
+    }
   }
   .sourceColumn, .resultColumn {
     width: 45%;

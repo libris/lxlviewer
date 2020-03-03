@@ -192,7 +192,11 @@ export default {
 
   &-item {
     color: @black;
-    background-color: @form-field;
+    &:not(.is-diff) {
+      &:not(.is-new) {
+        background-color: @form-field;
+      }
+    }
     border: 1px solid @form-border;
     border-bottom-width: 0;
     flex-direction: row;
