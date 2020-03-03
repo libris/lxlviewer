@@ -917,7 +917,7 @@ export default {
       </div>
     </modal-component>
 
-    <modal-component class="DetailedEnrichmentModal" :title="'Detailed enrichment' | translatePhrase" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal">
+    <modal-component class="DetailedEnrichmentModal" :title="'Detailed enrichment' | translatePhrase" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
       <DetailedEnrichment slot="modal-body" :floating-dialogs="true" />
     </modal-component>
   </div>

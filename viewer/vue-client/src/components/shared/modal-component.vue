@@ -46,6 +46,10 @@ export default {
       default: '',
       type: String,
     },
+    backdropClose: {
+      type: Boolean,
+      default: true,
+    },
     top: {
       default: '',
       type: String,
@@ -112,7 +116,7 @@ export default {
 
 <template>
   <div class="ModalComponent" :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger', 'is-warning': modalType === 'warning'}">
-    <div class="ModalComponent-backdrop" @click="close"></div>
+    <div class="ModalComponent-backdrop" @click="backdropClose ? close() : null"></div>
     <div class="ModalComponent-container" :style="{ 'width': width, 'top': top }">
       <div class="ModalComponent-header">
         <slot name="modal-header">
