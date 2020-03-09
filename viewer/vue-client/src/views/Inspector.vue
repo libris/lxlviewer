@@ -749,14 +749,20 @@ export default {
 };
 </script>
 <template>
-  <div class="row">
-    <div v-if="postLoaded" class="col-12 col-sm-12" :class="{'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
-      <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
-      <div class="Toolbar-container" ref="ToolbarTest">
+  <div class="Inspector row">
+    <div 
+      v-if="postLoaded" 
+      class="col-sm-12" 
+      :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}">
+        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" />
+    </div>
+    <div ref="componentFocusTarget" class="col-12 col-sm-12" :class="{'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
+      <div v-if="postLoaded" class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
+      <div v-if="postLoaded" class="Toolbar-container" ref="ToolbarTest">
         <toolbar></toolbar>
       </div>
     </div>
-    <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
+    <div class="col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
       <div v-if="!postLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
         <p v-if="loadFailure.status === 404">
@@ -769,8 +775,7 @@ export default {
           {{ 'Back to home page' | translatePhrase }}
         </router-link>
       </div>
-      <div v-if="postLoaded" class="Inspector-entity">
-        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" />
+      <div v-if="postLoaded" class="Inspector-entity">        
         <div class="Inspector-admin">
           <div class="Inspector-header">
             <h1>
@@ -836,10 +841,8 @@ export default {
 <style lang="less">
 
 .Inspector {
+  padding: 3rem 0;
 
-  &-entity {
-    padding: 3rem 0;
-  }
   &-spinner {
     margin-top: 2em;
   }
