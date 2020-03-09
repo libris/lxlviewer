@@ -185,7 +185,7 @@ export default {
   &-select {
     width: 100%;
     margin-top: 0.2em;
-    border: 1px solid @gray-light;
+    border: 1px solid @grey-light;
     background-color: @white;
   }
 }

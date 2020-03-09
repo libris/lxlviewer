@@ -5,7 +5,7 @@ Listen to the 'click' event in the parent as usual.
 
   Available props:
     * size  - 'medium' (default, 32px x 32px). TODO: 'small' & 'large'
-    * color - 'gray' (default), 'primary', 'danger' & 'warning'.
+    * color - 'grey' (default), 'primary', 'danger' & 'warning'.
     * disabled - bool, true will not emit the action.
     * icon - pass in a fa-name, i.e 'check'. Otherwise child node will render as text content
     * indicator - true gets an 'active' look
@@ -74,7 +74,7 @@ export default {
 
 <template>
   <button class="RoundButton btn"
-    :class="{'btn-gray disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled, 'is-active': active}"
+    :class="{'btn-grey disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled, 'is-active': active}"
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false"

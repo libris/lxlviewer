@@ -62,7 +62,7 @@ export default {
 @success-color: @brand-primary;
 @success-color-text: @white;
 @info-color: @white;
-@info-color-text: @gray-darker;
+@info-color-text: @grey-darker;
 @error-color: @danger-alter;
 @error-color-text: @white;
 @warning-color: @brand-warning;

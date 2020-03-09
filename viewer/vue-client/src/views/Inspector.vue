@@ -889,7 +889,7 @@ export default {
         </p>
         <div class="RemovePostModal-buttonContainer">
           <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang | lowercase }}</button>
-          <button class="btn btn-gray btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
+          <button class="btn btn-grey btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
         </div>
       </div>
     </modal-component>
@@ -943,7 +943,7 @@ export default {
   }
 
   &-breadcrumb {
-    border-bottom:  1px solid @gray-lighter;
+    border-bottom:  1px solid @grey-lighter;
     padding-bottom: 10px;
   }
 
@@ -982,7 +982,7 @@ export default {
   &-code {
     padding: 10px 20px;
     background-color: @white;
-    border: 1px solid @gray-lighter;
+    border: 1px solid @grey-lighter;
   }
 
   &.hideOnPrint {
@@ -1038,7 +1038,7 @@ export default {
   }
   &-reference {
     margin-top: 1em;
-    border: 1px solid @gray;
+    border: 1px solid @grey;
     border-radius: 0.5em;
     padding: 1em;
   }

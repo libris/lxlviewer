@@ -138,7 +138,7 @@ export default {
     &.has-scroll {
       max-height: 437px;
       overflow-y: scroll;
-      border-bottom: 1px solid @gray-light;
+      border-bottom: 1px solid @grey-light;
     }
   }
 

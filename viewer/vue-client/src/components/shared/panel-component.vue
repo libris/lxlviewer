@@ -222,7 +222,7 @@ export default {
     flex-direction: column;
     flex-shrink: 0;
     background-color: @panel-header-bg;
-    border-bottom: 1px solid @gray-lighter;
+    border-bottom: 1px solid @grey-lighter;
     padding: 20px 15px 0 15px;
 
     .is-danger & {
@@ -255,7 +255,7 @@ export default {
     max-height: 100%;
     overflow: scroll;
     background-color: @white;
-    border: 1px solid @gray-light;
+    border: 1px solid @grey-light;
     border-radius: 4px;
     box-shadow: @shadow-panel;
     padding: 10px;
@@ -281,7 +281,7 @@ export default {
     font-size: 1.8rem;
     display: block;
     text-transform: uppercase;
-    color: @gray-darker;
+    color: @grey-darker;
     margin-top: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -321,7 +321,7 @@ export default {
     transition: background-color 0.2s ease;
 
     &:only-child {
-      border: solid @gray-lighter;
+      border: solid @grey-lighter;
       border-width: 0px 0px 1px 0px;
     }
     &:nth-child(odd) {
@@ -331,7 +331,7 @@ export default {
 
   &-footer {
     background-color: @panel-header-bg;
-    border-top: 1px solid @gray-lighter;
+    border-top: 1px solid @grey-lighter;
   }
 
   &-windowControl {

@@ -166,7 +166,7 @@ export default {
     width: 25%;
   }
   .Dropzone {
-    border: 3px solid @gray;
+    border: 3px solid @grey;
     border-radius: 1em;
     height: 25vh;
     width: 80%;

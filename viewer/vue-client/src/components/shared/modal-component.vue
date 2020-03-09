@@ -158,7 +158,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.25);
+    background-color: @modal-backdrop-background;
   }
 
   &-container {
@@ -168,10 +168,8 @@ export default {
     opacity: 0;
     transition: opacity 0.5s ease;
     z-index: @modal-z;
-    box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.4);
+    box-shadow: @modal-container-shadow;
     position: fixed;
-    // display: flex;
-    // flex-direction: column;
     width: 900px;
     max-width: 100%;
     top: 50%;
@@ -179,7 +177,7 @@ export default {
     transform: translate(-50%, -50%);
     text-align: left;
     border-radius: 4px;
-    background-color: @neutral-color;
+    background-color: @modal-body-background;
     overflow: hidden;
     line-height: 1.6;
   }
@@ -191,16 +189,9 @@ export default {
     justify-content: space-between;
     border: solid @grey-light;
     border-width: 0px 0px 1px 0px;
-    background-color: @neutral-color;
+    background-color: @modal-header-background;
     color: @black;
     padding: 1.5rem 2rem;
-
-    .is-danger & {
-      background-color: @neutral-color;
-    }
-    .is-warning & {
-      background-color: @neutral-color;
-    }
 
     header {
       font-size: 1.8rem;
@@ -213,7 +204,7 @@ export default {
     overflow-y: auto;
     height: 100%;
     display: flex;
-    background-color: @grey-lightest;
+    background-color: @modal-body-background;
     flex-direction: column;
     align-items: center;
     z-index: 5;

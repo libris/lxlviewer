@@ -603,7 +603,7 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    color: @gray-darker-transparent;
+    color: @grey-darker-transparent;
 
     .ItemLocal-label:hover & {
       color: @black

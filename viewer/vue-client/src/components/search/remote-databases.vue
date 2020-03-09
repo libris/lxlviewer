@@ -377,7 +377,7 @@ export default {
     display: flex;
     margin-bottom: 1rem;
     &.is-disabled {
-      color: @gray-dark-transparent;
+      color: @grey-dark-transparent;
       cursor: initial;
     }
   }
@@ -432,7 +432,7 @@ export default {
     text-align: left;
     white-space: normal;
     background-color: @white;
-    border: 1px solid @gray-lighter;
+    border: 1px solid @grey-lighter;
     border-radius: 4px;
     box-shadow: @shadow-panel;
     z-index: 3;

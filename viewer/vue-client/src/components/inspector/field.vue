@@ -962,8 +962,8 @@ export default {
     .icon-hover();
         
     &:hover {
-      background: @bg-site;
-      box-shadow: inset 0 0 0 1px @gray-lighter;
+      background: @field-background-hover;
+      box-shadow: inset 0 0 0 1px @grey-lighter;
     }
 
     &.is-locked,
@@ -1138,7 +1138,7 @@ export default {
     white-space: normal;
     color: @black;
     background-color: @white;
-    border: 1px solid @gray-lighter;
+    border: 1px solid @grey-lighter;
     border-radius: 4px;
     box-shadow: @shadow-panel;
     z-index: 3;

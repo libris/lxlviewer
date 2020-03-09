@@ -5,10 +5,11 @@ Listen to the 'click' event in the parent as usual.
 
   Available props:
     * size  - 'medium' (default, 32px x 32px). TODO: 'small'
-    * color - 'gray' (default), 'primary', 'danger' & 'warning'.
+    * color - 'grey' (default), 'primary', 'danger' & 'warning'.
     * disabled - bool, true will not emit the action.
     * icon - pass in a fa-name, i.e 'check'. Otherwise child node will render as text content
     * indicator - true gets an 'active' look
+    * inverted - inverts the colors (so that main color is border and text instead of background)
     * active - true gives primary a permanent 'focused' look
     * label - (if icon) provide a string that will be translated & used as accessible label
     * shadow - (default: false) show a shadow under the button
@@ -29,6 +30,10 @@ export default {
       default: false,
     },
     shadow: {
+      type: Boolean,
+      default: false,
+    },
+    inverted: {
       type: Boolean,
       default: false,
     },
@@ -78,16 +83,16 @@ export default {
 </script>
 
 <template>
-  <button class="Button btn"
+  <button class="Button"
     :class="[
       {
         'has-shadow': shadow, 
-        'btn-gray disabled' : disabled, 
-        'default': !indicator && !disabled, 
-        'btn-primary': indicator && !disabled, 
-        'is-active': active,      
+        'disabled' : disabled, 
+        'Button-primary': indicator && !disabled, 
+        'is-active': active,
+        'is-inverted': inverted,
       },
-      this.size ? 'btn-' + this.size : '',
+      this.size ? 'Button-' + this.size : '',
     ]"
     @click="action()"
     @mouseover="mouseOver = true"
@@ -114,12 +119,12 @@ export default {
   transition: all 0.25s ease;
   box-shadow: none;
 
-  &.btn-medium {
+  &-medium {
     width: 32px;
     height: 32px;
   }
 
-  &.btn-large {
+  &-large {
     width: 36px;
     height: 36px;
   }
@@ -128,25 +133,79 @@ export default {
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.1);
   }
 
-  &.default {
-  background-color: @neutral-color;
-  color: @btn-primary;
-  border: 2px solid @btn-primary;
-
-    &:hover {
-      border-color: @btn-primary--hover; 
-      color: @btn-primary--hover;
+  // BUTTON COLOR MIXIN
+  .ButtonMixin(@color) {
+    border: 1px solid;
+    border-color: transparent;
+    background-color: @color;
+    color: if((luma(@color) < 50), @white, @black);
+    &:hover, &:active, &:focus {
+      @hover-color: hsl(hue(@color), saturation(@color), lightness(@color)-5%);
+      color: if((luma(@hover-color) < 50), @white, @black);
+      background-color: @hover-color;
+    }
+    &:active {
+      box-shadow: inset 0em 0em 0.75rem 0em fadeout(darken(@color, 60%), 75%);
+    }
+    &.is-inverted {
+      border-color: @color;
+      color: @color;
+      background-color: @neutral-color;
+      &:hover, &:active {
+        @hover-color: hsl(hue(@color), saturation(@color), lightness(@color)-5%);
+        color: @color;
+        background-color: fadeout(@hover-color, 85%);
+      }
+      &:active {
+        box-shadow: inset 0em 0em 0.75rem 0em fadeout(darken(@color, 60%), 75%);
+      }
+    }
+    &.disabled {
+      border-color: @grey-lighter !important;
+      color: @grey !important;
+      background-color: @grey-lighter !important;
+      cursor: forbidden !important;
+      &:hover, &:active {
+        border-color: @grey-lighter !important;
+        color: @grey !important;
+        background-color: @grey-lighter !important;
+        box-shadow: none !important;
+      }
+      &.is-inverted {
+        border-color: @grey-lighter !important;
+        color: @grey !important;
+        background-color: @grey-lighter !important;
+        &:hover, &:active {
+          border-color: @grey-lighter !important;
+          color: @grey !important;
+          background-color: @grey-lighter !important;
+          box-shadow: none !important;
+        }
+      }
     }
   }
 
-  &.btn-primary.is-active {
-    background-color: @btn-primary--hover; 
-    border: @btn-primary--hover;
+  // Color
+  &-default {
+    .ButtonMixin(@brand-primary);
   }
-
-  &.disabled { //can't be SUIT-ified because inherits from Bootstrap .disabled
-    color: @grey;
-    border: none;
+  &-warning {
+    .ButtonMixin(@brand-warning);
+  }
+  &-primary {
+    .ButtonMixin(@brand-primary);
+  }
+  &-accent {
+    .ButtonMixin(@brand-accent);
+  }
+  &-danger {
+    .ButtonMixin(@brand-danger);
+  }
+  &-success {
+    .ButtonMixin(@brand-success);
+  }
+  &-info {
+    .ButtonMixin(@brand-info);
   }
 
   &-buttonText {

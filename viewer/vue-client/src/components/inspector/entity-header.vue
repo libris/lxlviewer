@@ -137,7 +137,7 @@ export default {
 
 .HeaderComponent {
   display: flex;
-  border: 1px solid @gray-lighter;
+  border: 1px solid @grey-lighter;
   border-radius: 4px;
   padding: 0.5em 1em 0.25em 1em;
 

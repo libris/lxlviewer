@@ -95,7 +95,7 @@ export default {
       failedCopyId: false,
       defaultSettings: {
         show: false,
-        styling: 'gray',
+        styling: 'grey',
         text: '',
         payload: {},
         event: '',
@@ -342,7 +342,7 @@ export default {
     white-space: nowrap;
 
     .database {
-      border: 1px solid @gray;
+      border: 1px solid @grey;
       border-radius: 0.3em;
       float: right;
       line-height: 1;
@@ -358,7 +358,7 @@ export default {
     flex-grow: 0;
     text-align: right;
     text-transform: none;
-    color: @gray-very-dark-transparent;
+    color: @grey-very-dark-transparent;
     background-color: @badge-color-transparent;
     transition: background-color 0.5s ease;
     letter-spacing: 0.5px;
@@ -473,7 +473,7 @@ export default {
     flex-grow: 1;
     font-weight: 600;
     margin-right: 0.5em;
-    color: @gray-darker;
+    color: @grey-darker;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;

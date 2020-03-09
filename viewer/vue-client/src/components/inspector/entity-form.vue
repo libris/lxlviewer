@@ -166,7 +166,7 @@ export default {
       font-size: 1em;
     }
     &.record-style {
-      .ribbon-mixin(@gray);
+      .ribbon-mixin(@grey);
     }
     &.bib-style {
       .ribbon-mixin(@bib-color);

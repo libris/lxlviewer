@@ -293,6 +293,7 @@ export default {
       <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
       <div class="DetailedEnrichment-row" v-for="key in sortedKeys" :key="key">
         <div class="DetailedEnrichment-labelContainer uppercaseHeading">
+
           {{ key | labelByLang | capitalize }}
         </div>
         <div class="DetailedEnrichment-fieldRow">
@@ -311,9 +312,9 @@ export default {
           </div>
           <div class="DetailedEnrichment-buttonContainer actionColumn">
             <div class="DetailedEnrichment-buttons" v-if="settings.lockedProperties.indexOf(key) === -1">
-              <button-component class="btn-success" @click="addValue(key)" :label="'Extend' | translatePhrase" icon="plus" size="large" :disabled="canBeDiffAdded(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
-              <button-component class="btn-warning" @click="replaceValue(key)" icon="arrow-right" size="large" :disabled="canBeDiffReplaced(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
-              <button-component class="btn-info" @click="undo(key)" icon="undo" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
+              <button-component :inverted="true" class="Button-default" @click="addValue(key)" :label="'Extend' | translatePhrase" icon="plus" size="large" :disabled="canBeDiffAdded(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
+              <button-component :inverted="true" class="Button-warning" @click="replaceValue(key)" icon="arrow-right" size="large" :disabled="canBeDiffReplaced(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
+              <button-component :inverted="true" class="Button-info" @click="undo(key)" icon="undo" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
             </div>
           </div>
           <div class="DetailedEnrichment-resultField resultColumn" :class="{ 'no-border': result.hasOwnProperty(key) === false, 'is-diff': isDiffing(key), 'is-new': newKeys.indexOf(key) > -1 }">
@@ -344,6 +345,9 @@ export default {
 </template>
 
 <style lang="less">
+
+@fieldCol: 46%;
+@actionCol: 8%;
 
 .DetailedEnrichment {
   width: 100%;
@@ -430,10 +434,10 @@ export default {
     }
   }
   .sourceColumn, .resultColumn {
-    width: 45%;
+    width: @fieldCol;
   }
   .actionColumn {
-    width: 10%;
+    width: @actionCol;
   }
   &-sourceField {
     border: 1px solid @grey-light;

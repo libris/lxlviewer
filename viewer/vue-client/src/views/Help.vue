@@ -215,7 +215,7 @@ export default {
       table {
         font-size: 12px;
         font-size: 1.2rem;
-        border: 1px solid @gray-lighter;
+        border: 1px solid @grey-lighter;
         width: 100%;
       }
 
@@ -232,7 +232,7 @@ export default {
       }
 
       th {
-        background: @gray-lighter;
+        background: @grey-lighter;
         padding: 5px;
         text-transform: uppercase;
         line-height: 1.2;

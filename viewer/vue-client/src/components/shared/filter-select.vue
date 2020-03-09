@@ -336,14 +336,14 @@ export default {
     z-index: 2;
     position: relative;
     text-overflow: ellipsis;
-    border: 1px solid @gray-light;    
+    border: 1px solid @grey-light;    
     border-radius: 5px;
     box-shadow: @shadow-panel;  
 
     .FilterSelect.variantMaterial & {
       box-shadow: none;
       border-radius: 0.2em;
-      border: 1px solid @gray-lighter;
+      border: 1px solid @grey-lighter;
       background-color: @white;
       height: 4.8rem;
       padding: 1.8rem 6rem 0 1rem;
@@ -373,7 +373,7 @@ export default {
     left: 0px;
     bottom: 28px;
     background-color: @panel-header-bg;
-    border: 1px solid @gray-light;
+    border: 1px solid @grey-light;
     border-radius: 10px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
@@ -386,7 +386,7 @@ export default {
       max-height: 400px;
       opacity: 1;
       overflow-y: scroll;
-      border: 1px solid @gray-light;
+      border: 1px solid @grey-light;
       box-shadow: @shadow-panel;
       z-index: 4;
       padding: 5px 0;
@@ -413,14 +413,14 @@ export default {
     line-height: 1.2;
 
     &.is-abstract {
-      color: @gray;
+      color: @grey;
       cursor: default;
     }
     &.is-concrete {
       cursor: pointer;
       &:hover,
       &.isActive {
-        background-color: @gray-light;
+        background-color: @grey-light;
         color: @white;
       }
     }
