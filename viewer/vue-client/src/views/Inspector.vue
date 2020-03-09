@@ -750,6 +750,12 @@ export default {
 </script>
 <template>
   <div class="row">
+    <div v-if="postLoaded" class="col-12 col-sm-12" :class="{'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
+      <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
+      <div class="Toolbar-container" ref="ToolbarTest">
+        <toolbar></toolbar>
+      </div>
+    </div>
     <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
       <div v-if="!postLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
@@ -787,12 +793,6 @@ export default {
           :is-main-entity-form="tab.id === 'mainEntity'"
           :locked="!inspector.status.editing">
         </entity-form>
-      </div>
-    </div>
-    <div v-if="postLoaded" class="col-12 col-sm-12" :class="{'col-md-1': !status.panelOpen, 'col-md-5': status.panelOpen }">
-      <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
-      <div class="Toolbar-container" ref="ToolbarTest">
-        <toolbar></toolbar>
       </div>
     </div>
     <portal to="sidebar" v-if="marcPreview.active">

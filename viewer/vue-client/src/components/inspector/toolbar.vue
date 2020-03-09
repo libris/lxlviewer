@@ -435,8 +435,8 @@ export default {
 
 <template>
   <div class="Toolbar" id="editor-container">
-    <input type="file" class="TemplatePicker" ref="TemplatePicker" accept=".jsonld,application/ld+json,text/*" aria-hidden="true"/>
-    <input type="file" class="OverridePicker" ref="OverridePicker" accept=".jsonld,application/ld+json,text/*" aria-hidden="true"/>
+    <input type="file" class="TemplatePicker" ref="TemplatePicker" accept=".jsonld,application/ld+json,text/*" tabindex="-1" aria-hidden="true"/>
+    <input type="file" class="OverridePicker" ref="OverridePicker" accept=".jsonld,application/ld+json,text/*" tabindex="-1" aria-hidden="true"/>
     <div class="dropdown Toolbar-menu OtherFormatMenu"
       v-if="!inspector.status.editing" 
       v-on-clickaway="hideOtherFormatMenu">
