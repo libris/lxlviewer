@@ -42,16 +42,9 @@ function tryGetValueByLang(item, propertyId, langCode, context) {
   }
   const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
   
-  let result = null;
-  if (byLangKey && item[byLangKey]) {
-    if (item[byLangKey][langCode]) {
-      result = item[byLangKey][langCode];
-    } else {
-      const langKeys = Object.keys(item[byLangKey]);
-      result = item[byLangKey][langKeys[0]];
-    }
-  }
-  return result;
+  return byLangKey && item[byLangKey] && item[byLangKey][langCode]
+    ? item[byLangKey][langCode]
+    : null;
 }
 
 export function getLensById(id, displayDefs) {
