@@ -99,7 +99,7 @@ export default {
     @mouseout="mouseOver = false"
     :aria-label="label | translatePhrase">
     <span v-if="icon">
-      <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
+      <i :class="`fa fa-fw fa-${icon}`" aria-hidden="true"></i>
     </span>
     <span class="Button-buttonText" :class="{'small-text': smallText }" v-else>{{ buttonText }}</span>
     <slot name="tooltip" v-if="mouseOver"></slot>
@@ -125,6 +125,9 @@ export default {
   }
 
   &-large {
+    i.fa {
+      font-size: 1.6rem;
+    }
     width: 36px;
     height: 36px;
   }
@@ -197,6 +200,12 @@ export default {
   }
   &-accent {
     .ButtonMixin(@brand-accent);
+  }
+  &-accent2 {
+    .ButtonMixin(@brand-accent2);
+  }
+  &-accent3 {
+    .ButtonMixin(@brand-accent3);
   }
   &-danger {
     .ButtonMixin(@brand-danger);

@@ -302,8 +302,14 @@ export default {
       <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
       <div class="DetailedEnrichment-row" v-for="key in sortedKeys" :key="key">
         <div class="DetailedEnrichment-labelContainer uppercaseHeading">
-
-          {{ key | labelByLang | capitalize }}
+          <div class="DetailedEnrichment-label sourceColumn">
+            {{ key | labelByLang | capitalize }}
+          </div>
+          <div class="DetailedEnrichment-label actionColumn">
+          </div>
+          <div class="DetailedEnrichment-label resultColumn">
+            {{ key | labelByLang | capitalize }}
+          </div>
         </div>
         <div class="DetailedEnrichment-fieldRow">
           <div class="DetailedEnrichment-sourceField sourceColumn" :class="{ 'no-border': source.hasOwnProperty(key) === false }">
@@ -322,7 +328,7 @@ export default {
           <div class="DetailedEnrichment-buttonContainer actionColumn">
             <div class="DetailedEnrichment-buttons" v-if="settings.lockedProperties.indexOf(key) === -1">
               <button-component :inverted="true" class="Button-default" @click="addValue(key)" :label="'Extend' | translatePhrase" icon="plus" size="large" :disabled="canBeDiffAdded(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
-              <button-component :inverted="true" class="Button-warning" @click="replaceValue(key)" icon="arrow-right" size="large" :disabled="canBeDiffReplaced(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
+              <button-component :inverted="true" class="Button-accent3" @click="replaceValue(key)" icon="arrow-right" size="large" :disabled="canBeDiffReplaced(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
               <button-component :inverted="true" class="Button-info" @click="undo(key)" icon="undo" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
             </div>
           </div>
@@ -361,7 +367,7 @@ export default {
 .DetailedEnrichment {
   width: 100%;
   height: 80vh;
-  padding: 2rem 1em 0 1em;
+  padding: 2rem 2rem 0 2rem;
   overflow-y: scroll;
   &.with-floating-dialog {
     padding-bottom: 5em;
@@ -396,7 +402,8 @@ export default {
     }
   }
   &-labelContainer {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
+    display: flex;
   }
   &-columnHeader {
     display: block;
@@ -434,8 +441,9 @@ export default {
   &-resultField {
     border: 1px solid @grey-light;
     &.is-diff {
-      border-color: @brand-warning;
-      background-color: lighten(@brand-warning, 50%, relative);
+      @base-color: @brand-accent3;
+      border-color: @base-color;
+      background-color: hsl(hue(@base-color), saturation(@base-color), lightness(@base-color)+45);
     }
     &.is-new {
       border-color: @brand-success;

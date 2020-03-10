@@ -932,8 +932,10 @@ export default {
 
   &.is-diff {
     &:not(.is-new) {
-      border-color: @brand-warning;
-      background-color: lighten(@brand-warning, 50%, relative);
+      background-color: transparent;
+      // @base-color: @brand-warning;
+      // border-color: @base-color;
+      // background-color: hsl(hue(@base-color), saturation(@base-color), lightness(@base-color)+50);
     }
   }
 

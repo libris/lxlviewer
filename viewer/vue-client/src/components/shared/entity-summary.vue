@@ -105,13 +105,22 @@ export default {
   computed: {
     ...mapGetters([
       'user',
+      'enrichment',
     ]),
     encodingLevel() {
+      /*
+        TODO:
+        Tidy this up... WAAAY to tied to specific data sources instead of just
+        recieving all the data it needs through property.
+      */
       if (this.inspector.data.hasOwnProperty('record') && this.focusData['@id'] === this.inspector.data.record.mainEntity['@id']) {
         return this.inspector.data.record.encodingLevel;
       }
       if (this.focusData.hasOwnProperty('meta')) {
         return this.focusData.meta.encodingLevel;
+      }
+      if (this.enrichment.data.source && this.enrichment.data.source.hasOwnProperty('record')) {
+        return this.enrichment.data.source.record.encodingLevel;
       }
       return false;
     },
