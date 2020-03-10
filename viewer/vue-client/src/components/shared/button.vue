@@ -14,6 +14,7 @@ Listen to the 'click' event in the parent as usual.
     * label - (if icon) provide a string that will be translated & used as accessible label
     * shadow - (default: false) show a shadow under the button
 */
+
 export default {
   name: 'button-component',
   props: {
@@ -65,6 +66,9 @@ export default {
     },
   },
   computed: {
+    computedLabel() {
+      return this.disabled ? '' : this.$options.filters.translatePhrase(this.label);
+    },
     smallText() {
       if (this.buttonText && this.buttonText.length > 3) {
         return true;
@@ -83,7 +87,7 @@ export default {
 </script>
 
 <template>
-  <button class="Button"
+  <button class="Button" v-tooltip.top="computedLabel"
     :class="[
       {
         'has-shadow': shadow, 
@@ -95,14 +99,11 @@ export default {
       this.size ? 'Button-' + this.size : '',
     ]"
     @click="action()"
-    @mouseover="mouseOver = true"
-    @mouseout="mouseOver = false"
-    :aria-label="label | translatePhrase">
+    :aria-label="computedLabel">
     <span v-if="icon">
       <i :class="`fa fa-fw fa-${icon}`" aria-hidden="true"></i>
     </span>
     <span class="Button-buttonText" :class="{'small-text': smallText }" v-else>{{ buttonText }}</span>
-    <slot name="tooltip" v-if="mouseOver"></slot>
   </button>
 </template>
 

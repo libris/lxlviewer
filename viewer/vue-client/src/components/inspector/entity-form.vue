@@ -212,6 +212,7 @@ export default {
   &-item.is-distinguished {    
     border-bottom-width: 2px;
     margin-bottom: 1rem;
+    background-color: @form-field;
   }
 
   &-item.is-distinguished.is-linked {
