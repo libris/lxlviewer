@@ -3,7 +3,7 @@
   The field component is responsible for a specific key value pair.
   It's responsible for its own data, and dispatches all changes to the form component.
 */
-import { isArray, isPlainObject, isObject, cloneDeep, get, differenceWith, isEqual, intersection } from 'lodash-es';
+import { isArray, isPlainObject, isObject, cloneDeep, get, differenceWith, isEqual } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import EntityAdder from './entity-adder';
@@ -1185,8 +1185,6 @@ export default {
       padding-top: 0;
     }
   }
-
-
 
   &-contentItem {
     display: flex;

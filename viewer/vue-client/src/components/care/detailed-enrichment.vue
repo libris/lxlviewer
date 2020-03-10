@@ -1,7 +1,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { difference, differenceWith, intersection, cloneDeep, isArray, union, isEqual, uniqWith } from 'lodash-es';
-import * as StringUtil from '@/utils/string';
+import { difference, intersection, cloneDeep, isArray, union, isEqual, uniqWith } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import Field from '@/components/inspector/field';
@@ -18,7 +17,7 @@ export default {
     },
   },
   components: {
-    'field': Field,
+    field: Field,
     'tab-menu': TabMenu,
     'entity-summary': EntitySummary,
     'button-component': Button,
@@ -195,7 +194,7 @@ export default {
       }
     },
     addValue(key) {
-      console.log("Add value:", key);
+      // console.log("Add value:", key);
       const source = this.enrichment.data.source;
       if (this.resultObject[this.formFocus].hasOwnProperty(key) === false) {
         this.$set(this.resultObject[this.formFocus], key, source[this.formFocus][key]);
@@ -214,7 +213,7 @@ export default {
       }
     },
     replaceValue(key) {
-      console.log("Replace value:", key);
+      // console.log("Replace value:", key);
       const source = this.enrichment.data.source;
       this.resultObject[this.formFocus][key] = source[this.formFocus][key];
     },
@@ -242,7 +241,7 @@ export default {
       if (this.equalKeys.indexOf(key) > -1) {
         return false;
       }
-      if (this.diff.missingKeys.indexOf(key) > - 1) {
+      if (this.diff.missingKeys.indexOf(key) > -1) {
         return true;
       }
       if (this.isRepeatable(key)) {

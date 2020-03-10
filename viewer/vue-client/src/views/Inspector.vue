@@ -213,10 +213,8 @@ export default {
       const id = this.embellishFromIdModal.inputValue;
       if (detailed) {
         this.prepareDetailedEnrichment(id);
-      } else {
-        if (id.length > 0) {
-          this.applyPostAsTemplate(id, this.embellishFromIdModal.detailed);
-        }
+      } else if (id.length > 0) {
+        this.applyPostAsTemplate(id, this.embellishFromIdModal.detailed);
       }
     },
     prepareDetailedEnrichment(id = null, data = null) {
@@ -253,7 +251,7 @@ export default {
       } else if (data !== null) {
         this.applyAsDetailedEnrichment(data);
       } else {
-        throw new Error('Failed to prepare data for detailed enrichment.')
+        throw new Error('Failed to prepare data for detailed enrichment.');
       }
     },
     applyAsDetailedEnrichment(data) {
@@ -261,7 +259,7 @@ export default {
       this.setEnrichmentSource(data);
       this.openDetailedEnrichmentModal();
     },
-    applyPostAsTemplate(id, detailed = false) {
+    applyPostAsTemplate(id) {
       const fixedId = RecordUtil.extractFnurgel(id);
       const randomHash = md5(new Date());
       const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld?${randomHash}`;

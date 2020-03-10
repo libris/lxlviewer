@@ -666,13 +666,13 @@ const store = new Vuex.Store({
       }
       commit('setUserStorage', userStorage);
     },
-    setEnrichmentTarget({ commit, state }, data) {
+    setEnrichmentTarget({ commit }, data) {
       commit('setEnrichmentTarget', data);
     },
-    setEnrichmentSource({ commit, state }, data) {
+    setEnrichmentSource({ commit }, data) {
       commit('setEnrichmentSource', data);
     },
-    setEnrichmentResult({ commit, state }, data) {
+    setEnrichmentResult({ commit }, data) {
       commit('setEnrichmentResult', data);
     },
     unmark({ commit, state }, payload) {
