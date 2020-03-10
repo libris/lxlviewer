@@ -191,14 +191,13 @@ export default {
         padding: 8px 1em;
       }
 
-      &.is-active {
-        background-color: @brand-primary;        
-      }
-
       &:not(.is-disabled) {
         &:hover {
           background-color: darken(@brand-primary, 15%);
         }
+      }
+      &.is-active {
+        background-color: @brand-primary !important;
       }
 
       &.is-disabled {
