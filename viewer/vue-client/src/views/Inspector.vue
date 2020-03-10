@@ -889,7 +889,7 @@ export default {
         </p>
         <div class="RemovePostModal-buttonContainer">
           <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang | lowercase }}</button>
-          <button class="btn btn-grey btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
+          <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
         </div>
       </div>
     </modal-component>
@@ -911,7 +911,7 @@ export default {
           <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ 'ID' | translatePhrase }}/{{ 'Link' | translatePhrase }}</label>
           <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" />
           <span class="input-group-btn">
-            <button class="btn btn-primary EmbellishFromIdModal-confirmButton" @click="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)">{{ 'Continue' | translatePhrase }}</button>
+            <button class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton" @click="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)">{{ 'Continue' | translatePhrase }}</button>
           </span>
         </div>
       </div>

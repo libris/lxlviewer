@@ -933,15 +933,14 @@ export default {
   &.is-diff {
     &:not(.is-new) {
       background-color: transparent;
-      // @base-color: @brand-warning;
-      // border-color: @base-color;
-      // background-color: hsl(hue(@base-color), saturation(@base-color), lightness(@base-color)+50);
     }
   }
 
   &.is-new {
-    border-color: @brand-success;
-    background-color: fadeout(@brand-success, 90%);
+    @base-color: @brand-success;
+    border: 1px solid;
+    border-color: @base-color;
+    background-color: hsl(hue(@base-color), saturation(@base-color)-25, lightness(@base-color)+55);
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
@@ -1044,7 +1043,7 @@ export default {
     pre {
       margin-top: 5px;
       max-width: 260px;
-    }
+    } 
   }
 
   &-labelWrapper {
@@ -1195,10 +1194,10 @@ export default {
     max-width: 100%;
 
     &.is-new {
+      @base-color: @brand-success;
       border: 1px solid;
-      border-color: @brand-success;
-      background-color: fadeout(@brand-success, 90%, relative);
-      border-radius: 0;
+      border-color: @base-color;
+      background-color: hsl(hue(@base-color), saturation(@base-color)-25, lightness(@base-color)+55);
     }
     &.is-entityContent {
       display: inline-flex;

@@ -281,7 +281,7 @@ export default {
             </div>
           </div>
           <div class="DetailedEnrichment-actionHeader actionColumn"></div>
-          <div class="DetailedEnrichment-columnHeader resultColumn no-border">
+          <div class="DetailedEnrichment-columnHeader resultColumn non-existing">
             <div class="DetailedEnrichment-summaryLabel">
               {{ 'Result' | translatePhrase }}
             </div>
@@ -308,7 +308,7 @@ export default {
           </div>
         </div>
         <div class="DetailedEnrichment-fieldRow">
-          <div class="DetailedEnrichment-sourceField sourceColumn" :class="{ 'no-border': source.hasOwnProperty(key) === false }">
+          <div class="DetailedEnrichment-sourceField sourceColumn" :class="{ 'non-existing': source.hasOwnProperty(key) === false }">
             <field class="FieldList-item"
               v-if="enrichment.data.source[formFocus].hasOwnProperty(key)"
               v-bind:class="{ 'locked': true }" 
@@ -328,7 +328,7 @@ export default {
               <button-component :inverted="true" class="Button-info" @click="undo(key)" icon="undo" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
             </div>
           </div>
-          <div class="DetailedEnrichment-resultField resultColumn" :class="{ 'no-border': result.hasOwnProperty(key) === false, 'is-diff': isDiffing(key), 'is-new': newKeys.indexOf(key) > -1 }">
+          <div class="DetailedEnrichment-resultField resultColumn" :class="{ 'non-existing': result.hasOwnProperty(key) === false, 'is-diff': isDiffing(key), 'is-new': newKeys.indexOf(key) > -1 }">
             <field class="FieldList-item"
               v-if="resultObject !== null && resultObject[formFocus].hasOwnProperty(key)"
               v-bind:class="{ 'locked': true }" 
@@ -349,8 +349,8 @@ export default {
       </div>
     </div>
     <div class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
-      <button class="btn btn-default" @click="cancel" @keyup.enter="cancel">{{ 'Cancel' | translatePhrase }}</button>
-      <button class="btn btn-primary" @click="confirm" @keyup.enter="confirm">{{ 'Enrich' | translatePhrase }}</button>
+      <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ 'Cancel' | translatePhrase }}</button>
+      <button class="btn btn--md btn-primary" @click="confirm" @keyup.enter="confirm">{{ 'Enrich' | translatePhrase }}</button>
     </div>
   </div>
 </template>
@@ -372,7 +372,7 @@ export default {
   &-dialog {
     background-color: @neutral-color;
     margin: 0 -1em;
-    padding: 1em;
+    padding: 1.5rem 2.5rem;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -409,9 +409,9 @@ export default {
     background-color: @grey-lighter;
     color: @grey-darker;
     padding: 0.15rem 0.5rem;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     text-transform: uppercase;
-    font-weight: 800;
+    font-weight: 600;
     display: inline-block;
     border: 1px solid @grey-lighter;
   }
@@ -435,15 +435,17 @@ export default {
     }
   }
   &-resultField {
-    border: 1px solid @grey-light;
+    border: 1px solid @grey-lighter;
     &.is-diff {
       @base-color: @brand-accent3;
       border-color: @base-color;
-      background-color: hsl(hue(@base-color), saturation(@base-color), lightness(@base-color)+45);
+      background-color: hsl(hue(@base-color), saturation(@base-color), lightness(@base-color)+51);
     }
     &.is-new {
-      border-color: @brand-success;
-      background-color: fadeout(@brand-success, 90%, relative);
+      @base-color: @brand-success;
+      border: 1px solid;
+      border-color: @base-color;
+      background-color: hsl(hue(@base-color), saturation(@base-color)-25, lightness(@base-color)+55);
     }
   }
   .sourceColumn, .resultColumn {
@@ -453,12 +455,12 @@ export default {
     width: @actionCol;
   }
   &-sourceField {
-    border: 1px solid @grey-light;
+    border: 1px solid @grey-lighter;
   }
 
   &-sourceField, &-resultField, &-buttonContainer {
-    &.no-border {
-      border: none;
+    &.non-existing {
+      background-color: @grey-lightest;
     }
     min-height: 2em;
     display: flex;

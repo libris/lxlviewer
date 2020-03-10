@@ -231,7 +231,7 @@ export default {
     }
     .style-underline & {
       padding: 5px 10px;
-      color: @grey;
+      color: @grey-dark;
       font-size: 18px;
       font-size: 1.6rem;
   

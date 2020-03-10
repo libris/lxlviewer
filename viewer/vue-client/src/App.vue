@@ -315,6 +315,26 @@ button {
   }  
 }
 
+.btn-info {
+  @base-color: @brand-info;
+  background-color: @white;
+  border: 1px solid;
+  border-color: @base-color;
+  color: @black;
+  &:focus {
+    background-color: @white;
+    color: @black;
+  }
+  &:hover, &:active {
+    background-color: darken(@white, 5%) !important;
+    color: @black !important;
+  }
+  &:active {
+    box-shadow: inset 0 0 0.5rem 0 rgba(0, 0, 0, 0.4);
+    color: @black;
+  }
+}
+
 .btn-primary {
   background-color: @btn-primary;
   &:hover {

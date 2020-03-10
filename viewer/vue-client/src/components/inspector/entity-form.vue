@@ -194,7 +194,11 @@ export default {
     color: @black;
     &:not(.is-diff) {
       &:not(.is-new) {
-        background-color: @form-field;
+        &:not(.is-highlighted) {
+          &:not(.is-distinguished) {
+            background-color: @form-field;
+          }
+        }
       }
     }
     border: 1px solid @form-border;
