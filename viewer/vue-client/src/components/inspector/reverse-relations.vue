@@ -82,14 +82,20 @@ export default {
           // Sort panel query by alphabetical order of sigel id
           this.panelQuery._sort = 'heldBy.@id';
         }
-        HttpUtil.getRelatedPosts(query, this.settings.apiPath)
-          .then((response) => {
-            this.relationInfo = response.items;
-            this.numberOfRelations = response.totalItems;
-            this.checkingRelations = false;
-          }, (error) => {
-            console.log('Error checking for relations', error);
-          });
+
+        if (this.mainEntity.reverseLinks && this.recordType === 'Instance') {
+          this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
+          this.checkingRelations = false;
+        } else {
+          HttpUtil.getRelatedPosts(query, this.settings.apiPath)
+            .then((response) => {
+              this.relationInfo = response.items;
+              this.numberOfRelations = response.totalItems;
+              this.checkingRelations = false;
+            }, (error) => {
+              console.log('Error checking for relations', error);
+            });
+        }
       }, timeoutLength);
     },
     gotoHolding() {
