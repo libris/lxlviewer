@@ -357,7 +357,13 @@ export default {
 <style lang="less">
 
 @fieldCol: 46%;
+@fieldColMd: 45%;
+@fieldColSm: 44%;
+@fieldColXs: 42%;
 @actionCol: 8%;
+@actionColMd: 10%;
+@actionColSm: 12%;
+@actionColXs: 14%;
 
 .DetailedEnrichment {
   width: 100%;
@@ -448,10 +454,28 @@ export default {
     }
   }
   .sourceColumn, .resultColumn {
-    width: @fieldCol;
+    width: @fieldColXs;
+    @media (min-width: 900px) {
+      width: @fieldColSm;
+    }
+    @media (min-width: 1200px) {
+      width: @fieldColMd;
+    }
+    @media (min-width: 1500px) {
+      width: @fieldCol;
+    }
   }
   .actionColumn {
-    width: @actionCol;
+    width: @actionColXs;
+    @media (min-width: 900px) {
+      width: @actionColSm;
+    }
+    @media (min-width: 1200px) {
+      width: @actionColMd;
+    }
+    @media (min-width: 1500px) {
+      width: @actionCol;
+    }
   }
   &-sourceField {
     border: 1px solid @grey-lighter;

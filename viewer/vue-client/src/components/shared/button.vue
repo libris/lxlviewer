@@ -168,7 +168,7 @@ export default {
       border-color: @grey-lighter !important;
       color: @grey !important;
       background-color: @grey-lighter !important;
-      cursor: forbidden !important;
+      cursor: not-allowed !important;
       &:hover, &:active {
         border-color: @grey-lighter !important;
         color: @grey !important;
