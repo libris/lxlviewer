@@ -161,9 +161,18 @@ export default {
       'setEnrichmentResult',
     ]),
     confirm() {
-      this.$store.dispatch('pushInspectorEvent', { 
-        name: 'replace-data', 
-        value: this.resultObject,
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: 'record',
+            value: this.resultObject.record,
+          },
+          {
+            path: 'mainEntity',
+            value: this.resultObject.mainEntity,
+          },
+        ],
+        addToHistory: true,
       });
       this.close();
     },
