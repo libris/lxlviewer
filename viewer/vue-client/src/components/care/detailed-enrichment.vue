@@ -164,12 +164,8 @@ export default {
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
-            path: 'record',
-            value: this.resultObject.record,
-          },
-          {
-            path: 'mainEntity',
-            value: this.resultObject.mainEntity,
+            path: '',
+            value: this.resultObject,
           },
         ],
         addToHistory: true,

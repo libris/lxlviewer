@@ -492,23 +492,38 @@ const store = new Vuex.Store({
     updateInspectorData(state, payload) {
       state.inspector.status.updating = true;
       // Clone inspectorData so we can manipulate it before setting it
-      const inspectorData = cloneDeep(state.inspector.data);
+      let inspectorData = cloneDeep(state.inspector.data);
       // Push old value to history
       if (payload.addToHistory) {
         const changes = [];
         each(payload.changeList, (node) => {
-          const oldValue = cloneDeep(get(inspectorData, node.path));
+          let oldValue;
+          if (node.path === '') {
+            oldValue = inspectorData;
+          } else {
+            oldValue = cloneDeep(get(inspectorData, node.path));
+          }
           const historyNode = { path: node.path, value: oldValue };
           changes.push(historyNode);
         });
         state.inspector.changeHistory.push(changes);
       }
-
       // Set the new values
       each(payload.changeList, (node) => {
         // console.log("DATA_UPDATE:", JSON.stringify(node));
-        set(inspectorData, node.path, node.value);
+        if (node.path === '') {
+          inspectorData = node.value;
+        } else {
+          set(inspectorData, node.path, node.value);
+        }
       });
+      // Check if we should remove work node (if it went from local to being linked)
+      if (inspectorData.mainEntity.hasOwnProperty('instanceOf') && inspectorData.mainEntity.instanceOf['@id'].indexOf('#work') === -1) {
+        if (state.inspector.data.hasOwnProperty('work')) {
+          delete inspectorData.work;
+        }
+      }
+      // Apply everything
       state.inspector.data = Object.assign({}, inspectorData);
     },
     setInspectorTitle(state, str) {
