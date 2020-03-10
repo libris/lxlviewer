@@ -893,13 +893,13 @@ export default {
         </div>
       </div>
     </modal-component>
-    <modal-component class="EmbellishFromIdModal" :title="['Embellish', embellishFromIdModal.detailed ? 'From ID (detailed)' : 'From ID']" v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false">
+    <modal-component class="EmbellishFromIdModal" :title="[embellishFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']" v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false">
       <div slot="modal-body" class="EmbellishFromIdModal-body">
         <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === true">
           <p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>
           <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>
           <p>
-            Du kan välja mellan att <strong>utöka</strong> (<i class="fa text-success fa-plus-square"></i>) eller <strong>ersätta</strong> (<i class="fa text-warning fa-arrow-circle-o-right"></i>) en egenskap.
+            Du kan välja mellan att <strong>utöka</strong> (<i class="fa text-success fa-plus-square"></i>) eller <strong>ersätta</strong> (<i class="fa text-accent3 fa-arrow-circle-o-right"></i>) en egenskap.
             Att <strong>utöka</strong> innebär att information läggs till i den berikade posten.
             <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.
           </p>
@@ -911,7 +911,7 @@ export default {
           <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ 'ID' | translatePhrase }}/{{ 'Link' | translatePhrase }}</label>
           <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" />
           <span class="input-group-btn">
-            <button class="btn btn-primary EmbellishFromIdModal-confirmButton" @click="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)">{{ 'Embellish' | translatePhrase }}</button>
+            <button class="btn btn-primary EmbellishFromIdModal-confirmButton" @click="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)">{{ 'Continue' | translatePhrase }}</button>
           </span>
         </div>
       </div>
