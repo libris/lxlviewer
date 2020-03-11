@@ -11,6 +11,7 @@
   The slots are:
     * modal-header  - If no content, will just show the "title"-prop and a close-button, explained below.
     * modal-body    - Just a container for your content. Supports highly customized layout.
+    * modal-fooder  - Will not render anything if not provided
 
   Close-event:
     The default close button (and click on backdrop) will emit an event called "close".
@@ -44,6 +45,10 @@ export default {
     width: {
       default: '',
       type: String,
+    },
+    backdropClose: {
+      type: Boolean,
+      default: true,
     },
     top: {
       default: '',
@@ -111,7 +116,7 @@ export default {
 
 <template>
   <div class="ModalComponent" :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger', 'is-warning': modalType === 'warning'}">
-    <div class="ModalComponent-backdrop" @click="close"></div>
+    <div class="ModalComponent-backdrop" @click="backdropClose ? close() : null"></div>
     <div class="ModalComponent-container" :style="{ 'width': width, 'top': top }">
       <div class="ModalComponent-header">
         <slot name="modal-header">
@@ -126,6 +131,10 @@ export default {
       <div class="ModalComponent-body">
         <slot name="modal-body">
           <code>No content recieved from parent</code>
+        </slot>
+      </div>
+      <div class="ModalComponent-footer">
+        <slot name="modal-footer">
         </slot>
       </div>
     </div>
@@ -149,7 +158,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.25);
+    background-color: @modal-backdrop-background;
   }
 
   &-container {
@@ -159,10 +168,8 @@ export default {
     opacity: 0;
     transition: opacity 0.5s ease;
     z-index: @modal-z;
-    box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.4);
+    box-shadow: @modal-container-shadow;
     position: fixed;
-    // display: flex;
-    // flex-direction: column;
     width: 900px;
     max-width: 100%;
     top: 50%;
@@ -170,7 +177,7 @@ export default {
     transform: translate(-50%, -50%);
     text-align: left;
     border-radius: 4px;
-    background-color: @neutral-color;
+    background-color: @modal-body-background;
     overflow: hidden;
     line-height: 1.6;
   }
@@ -180,21 +187,16 @@ export default {
     flex-wrap: nowrap;
     flex-direction: row;
     justify-content: space-between;
-    background-color: @brand-primary;
-    color: @white;
-    padding: 10px 15px;
-
-    .is-danger & {
-      background-color: @brand-danger;
-    }
-    .is-warning & {
-      background-color: @brand-warning;
-    }
+    border: solid @grey-light;
+    border-width: 0px 0px 1px 0px;
+    background-color: @modal-header-background;
+    color: @black;
+    padding: 1.5rem 2rem;
 
     header {
+      font-size: 1.8rem;
       display: inline-block;
       font-weight: 600;
-      text-transform: uppercase;
     }
   }
 
@@ -202,10 +204,19 @@ export default {
     overflow-y: auto;
     height: 100%;
     display: flex;
+    background-color: @modal-body-background;
     flex-direction: column;
     align-items: center;
     z-index: 5;
   }
+
+  &-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 6;
+  }
+
   &-windowControl {
     i:hover {
       cursor: pointer;

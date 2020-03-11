@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, each, includes, remove, isArray, sortBy } from 'lodash-es';
+import { cloneDeep, isArray, sortBy } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from '@/utils/display';
 import * as VocabUtil from '@/utils/vocab';
@@ -7,10 +7,6 @@ import * as StringUtil from '@/utils/string';
 
 export default {
   props: {
-    isMainEntityForm: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -28,6 +24,9 @@ export default {
       'settings',
       'status',
     ]),
+    isMainEntityForm() {
+      return this.editingObject === 'mainEntity';
+    },
     formType() {
       return this.formObj['@type'];
     },
@@ -63,21 +62,7 @@ export default {
       return sortedForm;
     },
     sortedProperties() {
-      const formObj = this.formObj;
-      const propertyList = DisplayUtil.getDisplayProperties(
-        this.formType,
-        this.resources.display,
-        this.resources.vocab,
-        this.settings,
-        this.resources.context,
-        'full',
-      );
-      each(formObj, (v, k) => {
-        if (!includes(propertyList, k)) {
-          propertyList.push(k);
-        }
-      });
-      remove(propertyList, k => (this.settings.hiddenProperties.indexOf(k) !== -1));
+      const propertyList = DisplayUtil.getSortedProperties(this.formType, this.formObj, this.settings, this.resources);
 
       if (this.showTypeChanger) {
         // move instanceOf field to top

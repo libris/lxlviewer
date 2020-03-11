@@ -221,7 +221,7 @@ export default {
 
   &-label {
     padding: 5px 10px;
-    background-color: @gray-lighter;
+    background-color: @grey-lighter;
     display: table; // ie fallback
     width: fit-content;
     transition: background-color 0.3s ease;
@@ -251,7 +251,7 @@ export default {
   &-dropdownContainer,
   &-selectedContainer {
     position: relative;
-    border: 1px solid @gray-lighter;
+    border: 1px solid @grey-lighter;
     box-shadow: @shadow-panel;
     background-color: @white;
     margin-top: 20px;
@@ -305,7 +305,7 @@ export default {
 
   &-inputContainer {
     padding: 0 15px;
-    border-bottom: 1px solid @gray-lighter;
+    border-bottom: 1px solid @grey-lighter;
   }
 
   &-input {
@@ -330,7 +330,7 @@ export default {
 
   &-item {
     cursor: pointer;
-    border-top: 1px solid @gray-lighter;
+    border-top: 1px solid @grey-lighter;
     background-color: @white;
     transition: background-color 0.2s ease;
     padding: 0 15px;

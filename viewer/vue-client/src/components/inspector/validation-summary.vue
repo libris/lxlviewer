@@ -75,11 +75,11 @@ export default {
   table {
     background-color: #fff;
     thead {
-      border: 1px solid @gray;
+      border: 1px solid @grey;
       border-width: 0px 0px 1px 0px;
     }
     .Violation {
-      border: 1px solid @gray-light;
+      border: 1px solid @grey-light;
       border-width: 0px 0px 1px 0px;
       &-nav {
         text-align: center;

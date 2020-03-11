@@ -146,7 +146,7 @@ export default {
     margin-bottom: 0.5em;
     padding: 0.5em 1em 0.25em 1em;
     background-color: @white;
-    border: 1px solid @gray-lighter;
+    border: 1px solid @grey-lighter;
     transform: translateX(0);
     transition: transform .2s cubic-bezier(0.21, 0.21, 0.62, 1.23);
 
@@ -167,7 +167,7 @@ export default {
     align-items: center;
     margin: -1px 0 0 0;
     background-color: @white;
-    border: 1px solid @gray-lighter;
+    border: 1px solid @grey-lighter;
     padding: 0.5em 1em;
     line-height: 1.2em;
 

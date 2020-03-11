@@ -137,7 +137,7 @@ export default {
       margin: 0;
       padding: 1.8rem 3.5rem 0 1rem;
       background-color: @white;
-      border: 1px solid @gray-lighter;
+      border: 1px solid @grey-lighter;
       line-height: 2.8rem;
       height: 4.8rem;
     }

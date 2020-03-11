@@ -274,7 +274,7 @@ export default {
       width: 100%;
     }
     .iconCircle {
-      border: 1px solid @gray-lighter;
+      border: 1px solid @grey-lighter;
       border-radius: 1em;
       width: 2em;
       height: 2em;

@@ -12,11 +12,19 @@ import FormMixin from '@/components/mixins/form-mixin';
 export default {
   mixins: [FormMixin],
   props: {
+    formData: {
+      type: Object,
+      default: null,
+    },
     editingObject: {
       type: String,
       default: '',
     },
     locked: {
+      type: Boolean,
+      default: false,
+    },
+    isActive: {
       type: Boolean,
       default: false,
     },
@@ -38,9 +46,6 @@ export default {
       'settings',
       'status',
     ]),
-    isActive() {
-      return this.inspector.status.focus === this.editingObject;
-    },
     isHolding() {
       return this.inspector.data[this.editingObject]['@type'] === 'Item';
     },
@@ -88,9 +93,9 @@ export default {
     formObj() {
       return this.formData;
     },
-    formData() {
-      return this.inspector.data[this.editingObject];
-    },
+    // formData() {
+    //   return this.inspector.data[this.editingObject];
+    // },
   },
   watch: {
   },
@@ -115,7 +120,7 @@ export default {
       <field class="FieldList-item"
         v-for="(v,k) in filteredItem" 
         v-bind:class="{ 'locked': isLocked }" 
-        :entity-type="inspector.data[editingObject]['@type']" 
+        :entity-type="formObj['@type']" 
         :is-inner="false" 
         :is-removable="true" 
         :is-locked="keyIsLocked(k)" 
@@ -123,10 +128,10 @@ export default {
         :key="k" 
         :field-key="k" 
         :field-value="v" 
-        :parent-path="editingObject"></field>
+        :parent-path="editingObject" />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
-          {{ formData }}
+          {{ formObj }}
         </pre>
       </div>
     </ul>
@@ -161,7 +166,7 @@ export default {
       font-size: 1em;
     }
     &.record-style {
-      .ribbon-mixin(@gray);
+      .ribbon-mixin(@grey);
     }
     &.bib-style {
       .ribbon-mixin(@bib-color);
@@ -187,7 +192,15 @@ export default {
 
   &-item {
     color: @black;
-    background-color: @form-field;
+    &:not(.is-diff) {
+      &:not(.is-new) {
+        &:not(.is-highlighted) {
+          &:not(.is-distinguished) {
+            background-color: @form-field;
+          }
+        }
+      }
+    }
     border: 1px solid @form-border;
     border-bottom-width: 0;
     flex-direction: row;
@@ -199,6 +212,7 @@ export default {
   &-item.is-distinguished {    
     border-bottom-width: 2px;
     margin-bottom: 1rem;
+    background-color: @form-field;
   }
 
   &-item.is-distinguished.is-linked {

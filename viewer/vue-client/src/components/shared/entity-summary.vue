@@ -95,7 +95,7 @@ export default {
       failedCopyId: false,
       defaultSettings: {
         show: false,
-        styling: 'gray',
+        styling: 'grey',
         text: '',
         payload: {},
         event: '',
@@ -105,13 +105,22 @@ export default {
   computed: {
     ...mapGetters([
       'user',
+      'enrichment',
     ]),
     encodingLevel() {
+      /*
+        TODO:
+        Tidy this up... WAAAY to tied to specific data sources instead of just
+        recieving all the data it needs through property.
+      */
       if (this.inspector.data.hasOwnProperty('record') && this.focusData['@id'] === this.inspector.data.record.mainEntity['@id']) {
         return this.inspector.data.record.encodingLevel;
       }
       if (this.focusData.hasOwnProperty('meta')) {
         return this.focusData.meta.encodingLevel;
+      }
+      if (this.enrichment.data.source && this.enrichment.data.source.hasOwnProperty('record')) {
+        return this.enrichment.data.source.record.encodingLevel;
       }
       return false;
     },
@@ -258,7 +267,7 @@ export default {
   </div>
 
   <div class="EntitySummary-info">
-    <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink, 'showAll': showAllKeys }">
+    <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink, 'showAll': showAllKeys }" v-if="excludeComponents.indexOf('header') < 0">
       <span v-if="highlightStr && !shouldLink" 
         v-html="highlight(header.join(', '))"
         :title="header.join(', ')">
@@ -291,7 +300,7 @@ export default {
       </a>
       
     </h3>
-    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ height: animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }">
+    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ height: animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
       <li class="EntitySummary-detailsItem" 
         v-for="node in limitedInfo" 
         :key="node.property">
@@ -342,7 +351,7 @@ export default {
     white-space: nowrap;
 
     .database {
-      border: 1px solid @gray;
+      border: 1px solid @grey;
       border-radius: 0.3em;
       float: right;
       line-height: 1;
@@ -358,7 +367,7 @@ export default {
     flex-grow: 0;
     text-align: right;
     text-transform: none;
-    color: @gray-very-dark-transparent;
+    color: @grey-very-dark-transparent;
     background-color: @badge-color-transparent;
     transition: background-color 0.5s ease;
     letter-spacing: 0.5px;
@@ -473,7 +482,7 @@ export default {
     flex-grow: 1;
     font-weight: 600;
     margin-right: 0.5em;
-    color: @gray-darker;
+    color: @grey-darker;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;

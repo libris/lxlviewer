@@ -228,14 +228,14 @@ export default {
   &-input {
     width: 100%;
     display: block;
-    border: 1px solid @gray-light;
+    border: 1px solid @grey-light;
     border-radius: 2px;
     padding: 2px 10px;
     resize: none;
     transition: border .25s ease-out;
 
     &:focus {
-      border: 1px solid @gray-dark;
+      border: 1px solid @grey-dark;
     }
   }
 
@@ -258,7 +258,7 @@ export default {
     float: right;
     display: inline-block;
     cursor: pointer;
-    color: @gray;
+    color: @grey;
     min-width: 20px;
     margin-left: 5px;
 

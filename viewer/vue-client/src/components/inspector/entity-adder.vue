@@ -768,7 +768,7 @@ export default {
   }
 
   &-add {
-    color: @gray-dark;
+    color: @grey-dark;
     cursor: pointer;
     display: inline-block;
     opacity: 1;
@@ -845,7 +845,7 @@ export default {
   &-searchInput {
     color: @black;
     background-color: @white;
-    border: 1px solid @gray-lighter;
+    border: 1px solid @grey-lighter;
   }
 
   &-searchSelect {

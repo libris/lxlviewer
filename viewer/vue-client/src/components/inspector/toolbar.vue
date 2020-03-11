@@ -131,6 +131,12 @@ export default {
         name: 'open-embellish-from-id',
       });
     },
+    detailedApplyPostAsTemplate() {
+      this.hideToolsMenu();
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'open-detailed-embellish-from-id',
+      });
+    },
     initOverridePicker() {
       this.hideToolsMenu();
       const self = this;
@@ -543,15 +549,21 @@ export default {
           </a>
         </li>
         <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromPostSubMenu">
+          <a class="Toolbar-menuLink" @click="applyPostAsTemplate">
+          <i class="fa fa-fw fa-chain"></i>
+          {{ 'From ID' | translatePhrase }}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromPostSubMenu">
           <a class="Toolbar-menuLink" @click="openTemplatePicker">
           <i class="fa fa-fw fa-upload"></i>
             {{ 'From file' | translatePhrase }}
           </a>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromPostSubMenu">
-          <a class="Toolbar-menuLink" @click="applyPostAsTemplate">
-          <i class="fa fa-fw fa-chain"></i>
-          {{ 'From ID' | translatePhrase }}
+        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing">
+          <a class="Toolbar-menuLink" @click="detailedApplyPostAsTemplate">
+          <i class="fa fa-fw fa-clipboard"></i>
+          {{ 'Detailed enrichment' | translatePhrase }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
@@ -710,7 +722,7 @@ export default {
     background-color: #ecececd1;
     padding: 6px;
     border-radius: 0.5em;
-    box-shadow: 0px 0px 15px 0px @gray;
+    box-shadow: 0px 0px 15px 0px @grey;
     box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.2);
 
     @media (min-width: 992px) {
@@ -774,9 +786,9 @@ export default {
         font-weight: bold;
       }
       &.inSubMenu {
-        background-color: @gray-lighter;
+        background-color: @grey-lighter;
         & a:hover {
-          background-color: darken(@gray-lighter, 5%);
+          background-color: darken(@grey-lighter, 5%);
         }
       }
       & a {

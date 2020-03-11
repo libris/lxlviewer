@@ -3,7 +3,7 @@
   The field component is responsible for a specific key value pair.
   It's responsible for its own data, and dispatches all changes to the form component.
 */
-import { isArray, isPlainObject, isObject, cloneDeep, get } from 'lodash-es';
+import { isArray, isPlainObject, isObject, cloneDeep, get, differenceWith, isEqual } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import EntityAdder from './entity-adder';
@@ -48,6 +48,34 @@ export default {
     isLocked: {
       type: Boolean,
       default: false,
+    },
+    showKey: {
+      type: Boolean,
+      default: true,
+    },
+    inEnrichment: {
+      type: Boolean,
+      default: false,
+    },
+    showDiffs: {
+      type: Boolean,
+      default: false,
+    },
+    isDiff: {
+      type: Boolean,
+      default: false,
+    },
+    isNew: {
+      type: Boolean,
+      default: false,
+    },
+    oldValue: {
+      type: [Array, String, Object],
+      default: null,
+    },
+    diff: {
+      type: Object,
+      default: null,
     },
     isDistinguished: {
       type: Boolean,
@@ -104,6 +132,32 @@ export default {
   watch: {
   },
   computed: {
+    isFieldDiff() {
+      return this.isDiff && this.newDiffValues.length === 0;
+    },
+    isFieldNew() {
+      return this.isNew && this.newDiffValues.length === 0;
+    },
+    newDiffValues() {
+      if (this.showDiffs && isArray(this.fieldValue)) {
+        if (this.containsOldValue === false) {
+          return [];
+        }
+        const diff = differenceWith(this.fieldValue, this.oldValue, isEqual);
+        return diff;
+      }
+      return [];
+    },
+    containsOldValue() {
+      const oldValue = isArray(this.oldValue) ? this.oldValue : [this.oldValue];
+      let oldFound = false;
+      for (let i = 0; i < this.fieldValue.length; i++) {
+        if (isEqual(this.fieldValue[i], oldValue[0])) {
+          oldFound = true;
+        }
+      }
+      return oldFound;
+    },
     isRemovable() {
       if (this.fieldKey !== '@type') {
         return true;
@@ -540,6 +594,8 @@ export default {
       'is-lastAdded': isLastAdded, 
       'is-removed': removed,
       'is-locked': locked,
+      'is-diff': isFieldDiff,
+      'is-new': isFieldNew,
       'is-highlighted': embellished,
       'has-failed-validations': failedValidations.length > 0,
       'is-distinguished': isDistinguished,
@@ -550,9 +606,9 @@ export default {
 
     <div class="Field-labelContainer" 
       :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}"
-      v-if="!isInner" >
+      v-if="showKey && !isInner" >
       <div class="Field-labelWrapper">
-        <div v-if="this.inspector.status.editing" class="Field-actions">
+        <div v-if="!isLocked" class="Field-actions">
           <div class="Field-action Field-remove" 
             v-show="!locked && isRemovable" 
             :class="{'disabled': activeModal}">
@@ -721,7 +777,10 @@ export default {
       <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
         :key="index"
-        v-bind:class="{'is-entityContent': getDatatype(item) == 'entity' && !isLinkedInstanceOf}">
+        v-bind:class="{
+          'is-entityContent': getDatatype(item) == 'entity' && !isLinkedInstanceOf,
+          'is-new': newDiffValues.indexOf(item) > -1,
+        }">
 
         <item-error 
           v-if="getDatatype(item) == 'error'" 
@@ -867,6 +926,23 @@ export default {
     background-color: @add;
   }
 
+  &.has-no-diff {
+    opacity: 0.4;
+  }
+
+  &.is-diff {
+    &:not(.is-new) {
+      background-color: transparent;
+    }
+  }
+
+  &.is-new {
+    @base-color: @brand-success;
+    border: 1px solid;
+    border-color: @base-color;
+    background-color: hsl(hue(@base-color), saturation(@base-color)-25, lightness(@base-color)+55);
+  }
+
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
     background-color: @highlight-color;
   }
@@ -887,8 +963,8 @@ export default {
     .icon-hover();
         
     &:hover {
-      background: @bg-site;
-      box-shadow: inset 0 0 0 1px @gray-lighter;
+      background: @field-background-hover;
+      box-shadow: inset 0 0 0 1px @grey-lighter;
     }
 
     &.is-locked,
@@ -937,6 +1013,12 @@ export default {
     }
   }
     
+  &-enrichmentButtonContainer {
+    display: flex;
+    flex-basis: 7%;
+    padding: 0.75em 1em 0.25em 1em;
+  }
+
   &-labelContainer {
     display: flex;
     flex: 0 0 225px;
@@ -961,7 +1043,7 @@ export default {
     pre {
       margin-top: 5px;
       max-width: 260px;
-    }
+    } 
   }
 
   &-labelWrapper {
@@ -1057,7 +1139,7 @@ export default {
     white-space: normal;
     color: @black;
     background-color: @white;
-    border: 1px solid @gray-lighter;
+    border: 1px solid @grey-lighter;
     border-radius: 4px;
     box-shadow: @shadow-panel;
     z-index: 3;
@@ -1109,8 +1191,18 @@ export default {
     flex: 1;
     max-width: 100%;
 
+    &.is-new {
+      @base-color: @brand-success;
+      border: 1px solid;
+      border-color: @base-color;
+      background-color: hsl(hue(@base-color), saturation(@base-color)-25, lightness(@base-color)+55);
+    }
     &.is-entityContent {
       display: inline-flex;
+      &.is-new {
+        padding: 0.25em;
+        margin-right: 0.5em;
+      }
     }
   }
 

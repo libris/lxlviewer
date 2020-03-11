@@ -191,14 +191,13 @@ export default {
         padding: 8px 1em;
       }
 
-      &.is-active {
-        background-color: @brand-primary;        
-      }
-
       &:not(.is-disabled) {
         &:hover {
           background-color: darken(@brand-primary, 15%);
         }
+      }
+      &.is-active {
+        background-color: @brand-primary !important;
       }
 
       &.is-disabled {
@@ -232,7 +231,7 @@ export default {
     }
     .style-underline & {
       padding: 5px 10px;
-      color: @grey;
+      color: @grey-dark;
       font-size: 18px;
       font-size: 1.6rem;
   

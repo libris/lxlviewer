@@ -346,7 +346,7 @@ export default {
   &-itemIndex {
     padding: 0.5em;
     flex-basis: 8%;
-    color: @gray-dark;
+    color: @grey-dark;
   }
   &-itemBody {
     flex-direction: row;

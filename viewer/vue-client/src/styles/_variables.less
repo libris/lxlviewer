@@ -7,27 +7,25 @@
 
 // ----------- COLORS ------------
 
-@brand-primary: #29A1A2;
-@brand-darker: #207E7E;
-@brand-faded: fadeout(@brand-primary, 85%);
+@brand-primary: #058194;
+@brand-darker: #207E7E; // Maybe deprecate? should use L-5
+@brand-faded: fadeout(@brand-primary, 85%);  // Maybe deprecate? should use L-5
 @brand-success: #29A1A2;
 @brand-accent: #D56381;
+@brand-info: #767676;
 @brand-accent2: #697bc8;
+@brand-accent3: #8A4B98;
 @brand-warning: #E79A4A;
+@brand-danger: #FF7373;
 
 
 @brand-id: #547e91;
 
-@neutral-color: #FCFCFC;
+@neutral-color: @white;
 
 @sec: #e0e9ee;
 @sec: rgba(135, 170, 187, 0.3);
 
-// @sec-contrast: #74aac3;
-// @sec-alter: #629fbc;
-// @sec-alter-contrast: #4b8faf;
-
-@brand-danger: #FF7373;
 @danger: rgba(255, 115, 115, 0.3);
 @danger-alter: #C85151;
 
@@ -37,63 +35,38 @@
 @bg-site: #F9F9F9;
 @test-color: pink;
 
-
 @holding-color: #ac82b5;
 @bib-color: #009788;
 
 @badge-color: #ebeef1;
 @badge-color-transparent: rgba(191, 198, 202, 0.15);
 
-
-// @success: #d4edda;
-// @success-alt: #c3e6cb;
-
-// @color-headers: @brand-primary;
-// @color-headers-text: #fff;
-
-// @orange: #CA9543;
-// @green: #009788;
-// @gray-very-dark: #191913; // font-color
-
-// GRAYSCALE
-@white: #ffffff;
-// @black: #333;
+// greySCALE
+@white: #FFFFFF;
 @black: #222;
-@gray: #949A9E;
-@gray-light: rgb(202, 202, 202);
-@gray-lighter: rgb(231, 231, 231);
-// @gray-dark: #6F767B;
-@gray-dark: #6B7476;
 
-@gray-darker: #595D61;
-
-@gray-transparent: rgba(0, 0, 0, 0.45);
-@gray-light-transparent: rgba(0, 0, 0, 0.25);
-@gray-lighter-transparent: rgba(0, 0, 0, 0.12);
-@gray-very-light-transparent: rgba(0, 0, 0, 0.07);
-@gray-extra-light-transparent: rgba(0, 0, 0, 0.025);
-@gray-dark-transparent: rgba(0, 0, 0, 0.58);
-@gray-darker-transparent: rgba(0, 0, 0, 0.68);
-@gray-very-dark-transparent: rgba(0, 0, 0, 0.85);
 
 @grey-lightest: lighten(@grey-lighter, 5%);
-@grey-lighter: @gray-lighter;
-@grey-light: @gray-light;
-@grey: @gray;
-@grey-dark: @gray-dark;
-@grey-darker: @gray-darker;
+@grey-lighter: #E7E7E7;
+@grey-light: #D8D8D8;
+@grey: #949A9E;
+@grey-dark: #737373;
+@grey-darker: #595D61;
+
+@grey-transparent: rgba(0, 0, 0, 0.45);
+@grey-light-transparent: rgba(0, 0, 0, 0.25);
+@grey-lighter-transparent: rgba(0, 0, 0, 0.12);
+@grey-very-light-transparent: rgba(0, 0, 0, 0.07);
+@grey-extra-light-transparent: rgba(0, 0, 0, 0.025);
+@grey-dark-transparent: rgba(0, 0, 0, 0.58);
+@grey-darker-transparent: rgba(0, 0, 0, 0.68);
+@grey-very-dark-transparent: rgba(0, 0, 0, 0.85);
 
 
 // ----------- GLOBAL ------------
 
-// BACKGROUNDS
-@bg-img: none;
-// @bg-content: @white;
-// @bg-content-alt: @white;
-
-// HEADERS
-// @color-headers: @brand-primary;
-// @color-headers-text: #fff;
+// BODY
+@site-body-background: @bg-site;
 
 // LINKS
 @link-color: @brand-darker;
@@ -105,26 +78,10 @@
 @btn-primary--hover: darken(@btn-primary,17%);
 
 // ICONS
-// @icon-default: @gray;
-// @icon-default--hover: @gray-darker;
-
-// @icon-alt: @gray-transparent;
-// @icon-alt--hover: @gray-darker-transparent;
-
-// @icon-primary: @btn-primary;
-// @icon-primary--hover: @btn-primary--hover;
-
-// @icon-added: @gray-light;
-// @icon-disabled: @gray-lighter-transparent;
-
-// @icon-sm: 16px;
-// @icon-md: 20px;
-// @icon-lg: 30px;
 
 // CHIPS
 @chip-color: @link-color;
 @chip-color-hover: @link-hover-color;
-// @chip-background: transparent;
 @chip-background: @white;
 
 // SHADOWS
@@ -137,66 +94,49 @@
 @shadow-sticky-bar: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 
 // MISC
-// @panel-border-radius: 3px;
-// @thing-header-bg: @brand-primary;
-// @thing-header-text: @white;
 
-// @bg-jumbotron: transparent;
-// @bg-jumbotron-image: none;
 
-// @color-id: #c7254e;
-// @color-class: @gray;
-// @color-prop: @brand-primary;
-// @color-prop-list: @gray;
-// @color-ext: #d51;
-
-// @color-local: @white;
 
 // ----------- COMPONENTS ------------
+
+// MODAL
+@modal-body-background: @bg-site;
+@modal-container-background: @modal-body-background;
+@modal-header-background: @white;
+@modal-backdrop-background: @grey-light-transparent;
+@modal-container-shadow: 0px 5px 15px 0px @grey-transparent;
 
 // STICKY BAR
 @bg-sticky-bar: @white;
 @text-brand-env: @brand-darker;
-@text-alt-sticky-bar: @gray-darker;
+@text-alt-sticky-bar: @grey-darker;
 // NAVBAR
 @bg-navbar: #3a3a3a;
-// @bg-navbar-hover: rgba(199, 226, 224, 0.27);
-// @shadow-navbar: none;
-// @text-navbar: #505050;
-// @text-brand: #505050;
-
-// @border-navbar: @gray-light;
-// @border-navbar-width: 1px;
 
 // SIDEBAR
-@list-item-bg-even: @bg-site;
-@list-item-bg-odd: @white;
+@list-item-bg-even: @white;
+@list-item-bg-odd: darken(@list-item-bg-even, 5%);
 @list-item-bg-hover: darken(@list-item-bg-even, 6%);
 @panel-header-bg: @bg-site;
 
 // TOOLBAR
-// @text-toolbar: fade(@white, 55%);
-// @bg-sidebars: darken(@white, 5%);
 
 // FOOTER
-@bg-footer: @gray-darker;
+@bg-footer: @grey-darker;
 @text-footer: #fff;
 @text-alt-footer: #fff;
-// @shadow-footer: inset 0px 1px 0px 0px @gray;
-// @border-footer: @gray-light;
 
 // FORM
+@field-background-hover: #f9f9f9;
 @form-radius: 0.2em;
-@form-border: @gray-lighter;
-@form-border-alt: @gray-lighter-transparent;
-@field-path: @gray-light;
-@field-path-alt: @gray-light-transparent;
+@form-border: @grey-lighter;
+@form-border-alt: @grey-lighter-transparent;
+@field-path: @grey-light;
+@field-path-alt: @grey-light-transparent;
 @remove: @danger;
 @add: @sec; //switch for 'highlight-color' & then remove
 @highlight-color: @sec;
-// @highlight-color: @brand-primary;
 @form-field: @white;
-// @node-bg: #fafafa;
 
 
 // ----------- VALUES ------------

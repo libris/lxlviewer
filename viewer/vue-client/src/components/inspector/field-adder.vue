@@ -425,7 +425,7 @@ export default {
   }
 
   &-filterInfo {
-    color: @gray-darker;
+    color: @grey-darker;
     margin-bottom: 10px;
   }
 
@@ -439,7 +439,7 @@ export default {
     background-color: @white;
     width: 100%;
     padding: 5px 15px;
-    border-bottom: 1px solid @gray-lighter;
+    border-bottom: 1px solid @grey-lighter;
 
     & .FieldAdderPanel-fieldLabel {
       padding-left: 0;

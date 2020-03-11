@@ -440,21 +440,6 @@ export default {
             :has-action="true"
             @use-item="replaceWith"
           />
-          <!-- <div class="SearchWindow-resultListContainer">
-            <ul v-show="displaySearchList" class="SearchWindow-resultList">
-              <li class="PanelComponent-listItem SearchWindow-resultItem"
-                :class="{'is-compact' : isCompact}"
-                v-for="item in searchResult" 
-                :key="item['@id']" >
-                <entity-summary class="SearchWindow-entitySummary"
-                  :focus-data="item" 
-                  :lines="4" 
-                  :should-open-tab="true"
-                  :isCompact="isCompact"></entity-summary>
-                <summary-action class="SearchWindow-listItemControls" :options="addPayload(item)" @action="replaceWith(item)"></summary-action>
-              </li>
-            </ul>
-          </div> -->
           <div class="PanelComponent-searchStatus" v-show="keyword.length === 0 && !extracting">
             <p> {{ "Search for existing linked entities to replace your local entity" | translatePhrase }}.</p>
             <p v-if="itemInfo && extractable"> {{ "If you can't find an existing link, you can create one using your local entity below" | translatePhrase }}.</p>
@@ -612,7 +597,7 @@ export default {
       max-height: fit-content;
       overflow: auto;
       padding: 0 0 0 15px;
-      border-left: 1px solid @gray-lighter;
+      border-left: 1px solid @grey-lighter;
       margin-left: 15px;
     }
   }
@@ -620,7 +605,7 @@ export default {
   &-summaryContainer {
     display: flex;
     flex-direction: row;
-    border: 1px solid @gray-lighter;
+    border: 1px solid @grey-lighter;
     background: @white;
     border-radius: 4px;
     padding: 15px;
