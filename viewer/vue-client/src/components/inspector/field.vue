@@ -940,7 +940,7 @@ export default {
     @base-color: @brand-success;
     border: 1px solid;
     border-color: @base-color;
-    background-color: hsl(hue(@base-color), saturation(@base-color)-25, lightness(@base-color)+55);
+    background-color: hsl(hue(@base-color), 50%, 95%);
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
@@ -1195,7 +1195,7 @@ export default {
       @base-color: @brand-success;
       border: 1px solid;
       border-color: @base-color;
-      background-color: hsl(hue(@base-color), saturation(@base-color)-25, lightness(@base-color)+55);
+      background-color: hsl(hue(@base-color), 50%, 95%);
     }
     &.is-entityContent {
       display: inline-flex;
