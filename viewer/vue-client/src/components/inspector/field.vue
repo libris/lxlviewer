@@ -915,15 +915,15 @@ export default {
   }
 
   &.is-marked {
-    background-color: @add;
+    background-color: @form-mark;
   }
 
   &.is-removeable {
-    background-color: @remove;
+    background-color: @form-remove;
   }
 
   &.is-lastAdded {
-    background-color: @add;
+    background-color: @form-add;
   }
 
   &.has-no-diff {
@@ -944,7 +944,7 @@ export default {
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
-    background-color: @highlight-color;
+    background-color: @form-highlight;
   }
   
   @media (min-width: 768px) {
@@ -974,11 +974,11 @@ export default {
     }
 
     &.is-marked {
-      background-color: @add;
+      background-color: @form-mark;
     }
 
     &.is-removeable {
-      background-color: @remove;
+      background-color: @form-remove;
     }
 
     &:before, 

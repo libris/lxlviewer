@@ -63,7 +63,7 @@ export default {
 @success-color-text: @white;
 @info-color: @white;
 @info-color-text: @grey-darker;
-@error-color: @danger-alter;
+@error-color: @brand-danger;
 @error-color-text: @white;
 @warning-color: @brand-warning;
 @warning-color-text: @white;

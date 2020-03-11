@@ -285,7 +285,7 @@ export default {
   }
 
   &-toggleLabel {
-    color: @brand-darker;
+    color: @brand-primary;
     font-weight: 600;
   }
 

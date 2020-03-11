@@ -662,11 +662,11 @@ export default {
   }
 
   &.is-marked {
-    background-color: @sec;
+    background-color: @form-mark;
   }
   
   &.is-removeable {
-    background-color: @danger;
+    background-color: @form-remove;
   }
 
   &-collapsedLabel {
@@ -694,7 +694,7 @@ export default {
   }
 
   &.is-highlighted {
-    background-color: @sec;
+    background-color: @form-highlight;
   }
 }
 </style>

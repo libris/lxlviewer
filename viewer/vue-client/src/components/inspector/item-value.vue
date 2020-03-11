@@ -269,11 +269,11 @@ export default {
   }
 
   &.is-removeable {
-    background-color: @danger;
+    background-color: @form-remove;
   }
 
   &.is-lastAdded {
-    background-color: @add;
+    background-color: @form-add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;

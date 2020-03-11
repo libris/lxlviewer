@@ -565,11 +565,11 @@ export default {
   }
 
   &.is-marked {
-    background-color: @sec;
+    background-color: @form-mark;
   }
   
   &.is-removeable {
-    background-color: @danger;
+    background-color: @form-remove;
   }
 
   &.is-expanded > 

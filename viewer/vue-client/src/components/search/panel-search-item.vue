@@ -222,7 +222,7 @@ export default {
     font-size: 1.3rem;
 
     &.has-links {
-      color: @brand-darker;
+      color: @brand-primary;
     }
 
     .PanelComponent-listItem.is-added &,

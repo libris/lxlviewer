@@ -374,13 +374,6 @@ button {
     background-color: darken(@white, 5%);
   }
 }
-
-.btn-danger {
-  &:hover {
-    background-color: @danger-alter;
-  }
-}
-
 //btn sizes
 
 .btn-mixin(@width, @height, @fsize){

@@ -316,7 +316,7 @@ export default {
       font-weight: 600;
       left: 1rem;
       top: 0.4rem;
-      color: @brand-darker;
+      color: @brand-primary;
       z-index: 10;
       margin: 0;
     }

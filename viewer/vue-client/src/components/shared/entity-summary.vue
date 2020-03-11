@@ -425,7 +425,7 @@ export default {
     }
 
     .ResultList & {
-      color: @brand-darker;
+      color: @brand-primary;
     }
 
     &--imported {

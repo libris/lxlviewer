@@ -212,7 +212,7 @@ export default {
   }
 
   &.is-newlyAdded {
-    background-color: @add;
+    background-color: @form-add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;
@@ -288,7 +288,7 @@ export default {
   }
 
   &.is-removeable {
-    background-color: @danger;
+    background-color: @form-remove;
   }
 
   @media (max-width: @screen-sm) {

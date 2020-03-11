@@ -161,20 +161,6 @@ export default {
 }
 
 .form-component {
-  .form-label {
-    .new-indicator {
-      font-size: 1em;
-    }
-    &.record-style {
-      .ribbon-mixin(@grey);
-    }
-    &.bib-style {
-      .ribbon-mixin(@bib-color);
-    }
-    &.holding-style {
-      .ribbon-mixin(desaturate(darken(@holding-color, 10%), 10%));
-    }
-  }
   .field-container-toggle {
     text-align: center;
     font-weight: bold;
@@ -195,8 +181,12 @@ export default {
     &:not(.is-diff) {
       &:not(.is-new) {
         &:not(.is-highlighted) {
-          &:not(.is-distinguished) {
-            background-color: @form-field;
+          &:not(.is-removeable) {
+            &:not(.is-marked) {
+              &:not(.is-linked) {
+                background-color: @form-field;
+              }
+            }
           }
         }
       }
@@ -212,24 +202,23 @@ export default {
   &-item.is-distinguished {    
     border-bottom-width: 2px;
     margin-bottom: 1rem;
-    background-color: @form-field;
   }
 
-  &-item.is-distinguished.is-linked {
-    border-color: rgba(@brand-success, 23%);
-    background-color: rgba(@brand-success, 4%);
+  &-item.is-linked {
+    border-color: rgba(@brand-primary, 23%);
+    background-color: lighten(@form-add, 5%);
     
     &:hover {
       & .icon:not(.is-disabled) {
-        color: rgba(@brand-success, 80%);
+        color: rgba(@brand-primary, 80%);
       }
     }
     & .icon {
-      color: rgba(@brand-success, 40%);
+      color: rgba(@brand-primary, 40%);
 
       &:hover:not(.is-disabled),
       &:focus {
-        color: @brand-darker;
+        color: @brand-primary;
       }
     }
   }

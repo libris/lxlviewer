@@ -8,9 +8,8 @@
 // ----------- COLORS ------------
 
 @brand-primary: #058194;
-@brand-darker: #207E7E; // Maybe deprecate? should use L-5
 @brand-faded: fadeout(@brand-primary, 85%);  // Maybe deprecate? should use L-5
-@brand-success: #29A1A2;
+@brand-success: @brand-primary;
 @brand-info: #767676;
 @brand-accent: #c1516c;   // aka "flag"
 @brand-accent2: #697bc8;
@@ -22,20 +21,8 @@
 
 @neutral-color: @white;
 
-@sec: #e0e9ee;
-@sec: rgba(135, 170, 187, 0.3);
-
-@danger: rgba(255, 115, 115, 0.3);
-@danger-alter: #C85151;
-
-@warning: rgba(254, 212, 129, 0.5);
-@warning-alter: #CA9543;
-
 @bg-site: #F9F9F9;
 @test-color: pink;
-
-@holding-color: #ac82b5;
-@bib-color: #009788;
 
 @badge-color: #ebeef1;
 @badge-color-transparent: rgba(191, 198, 202, 0.15);
@@ -68,7 +55,7 @@
 @site-body-background: @bg-site;
 
 // LINKS
-@link-color: @brand-darker;
+@link-color: @brand-primary;
 @link-hover-color: darken(@link-color,17%);
 @link-visited-color: #663399;
 
@@ -107,7 +94,7 @@
 
 // STICKY BAR
 @bg-sticky-bar: @white;
-@text-brand-env: @brand-darker;
+@text-brand-env: @brand-primary;
 @text-alt-sticky-bar: @grey-darker;
 // NAVBAR
 @bg-navbar: #3a3a3a;
@@ -127,14 +114,18 @@
 
 // FORM
 @field-background-hover: #f9f9f9;
+
 @form-radius: 0.2em;
 @form-border: @grey-lighter;
 @form-border-alt: @grey-lighter-transparent;
+@form-add: hsl(hue(@brand-primary), 25%, 90%);
+@form-remove: hsl(hue(@brand-danger), 80%, 90%);
+@form-highlight: hsl(hue(@brand-primary), 25%, 90%);
+@form-mark: @form-add;
+
 @field-path: @grey-light;
 @field-path-alt: @grey-light-transparent;
-@remove: @danger;
-@add: @sec; //switch for 'highlight-color' & then remove
-@highlight-color: @sec;
+@remove: @brand-danger;
 @form-field: @white;
 
 

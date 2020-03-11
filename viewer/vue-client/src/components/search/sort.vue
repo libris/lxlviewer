@@ -126,7 +126,7 @@ export default {
       font-size: 1.2rem;
       left: 1rem;
       top: 0.4rem;
-      color: @brand-darker;
+      color: @brand-primary;
     }
   }
   &-select {
