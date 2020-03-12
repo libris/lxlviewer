@@ -75,7 +75,10 @@ export default {
         if (isArray(this.source[this.existingKeys[i]])) {
           // Case for arrays
           const nodeSourceArray = this.source[this.existingKeys[i]];
-          const nodeTargetArray = this.target[this.existingKeys[i]];
+          let nodeTargetArray = this.target[this.existingKeys[i]];
+          if (isArray(nodeTargetArray) === false) {
+            nodeTargetArray = [nodeTargetArray];
+          }
           for (let x = 0; x < nodeSourceArray.length; x++) {
             // Loop over a value that is an array
             const nodeValue = nodeSourceArray[x];
