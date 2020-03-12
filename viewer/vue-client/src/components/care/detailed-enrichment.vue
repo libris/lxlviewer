@@ -371,7 +371,7 @@ export default {
   padding: 2rem 2rem 0 2rem;
   overflow-y: scroll;
   &.with-floating-dialog {
-    padding-bottom: 5em;
+    margin-bottom: 5em;
   }
 
   &-dialog {
@@ -387,9 +387,11 @@ export default {
       margin-left: 1rem;
     }
     &.is-floating {
-      position: fixed;
+      position: absolute;
       bottom: 0px;
-      width: 100%;
+      left: 0;
+      right: 0;
+      margin: 0;
     }
   }
 
