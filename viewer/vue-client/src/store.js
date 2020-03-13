@@ -518,9 +518,8 @@ const store = new Vuex.Store({
         }
       });
       // Check if we should remove work node (if it went from local to being linked)
-      const noWork = inspectorData.mainEntity.hasOwnProperty('instanceOf') && inspectorData.mainEntity.instanceOf === null;
-      const localWork = inspectorData.mainEntity.hasOwnProperty('instanceOf') && inspectorData.mainEntity.instanceOf.hasOwnProperty('@id') && inspectorData.mainEntity.instanceOf['@id'].indexOf('#work') === -1;
-      if (noWork || localWork) {
+      if (inspectorData.mainEntity.hasOwnProperty('instanceOf') && (inspectorData.mainEntity.instanceOf === null || inspectorData.mainEntity.instanceOf.hasOwnProperty('@id') && inspectorData.mainEntity.instanceOf['@id'].indexOf('#work') === -1)) {
+      //if (noWork || localWork) {
         if (state.inspector.data.hasOwnProperty('work')) {
           delete inspectorData.work;
         }
