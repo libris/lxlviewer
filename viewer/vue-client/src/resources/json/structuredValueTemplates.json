@@ -25,6 +25,10 @@
     "mainTitle": "",
     "coverage": ""
   },
+  "FormerTitle": {
+    "@type": "FormerTitle",
+    "mainTitle": ""
+  },
   "KeyTitle": {
     "@type": "KeyTitle",
     "mainTitle": "",

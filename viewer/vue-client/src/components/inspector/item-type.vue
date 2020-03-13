@@ -147,7 +147,7 @@ export default {
         <p><a href="https://libris.kb.se/katalogisering/help/use-the-editor" target="_blank">Läs mer om byte av typ</a></p>
         <div class="ChangeTypeWarningModal-buttonContainer">          
           <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">{{ 'Cancel' | translatePhrase }}</button>
-          <!-- <button class="btn btn-gray btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ 'Cancel' | translatePhrase }}</button> -->
+          <!-- <button class="btn btn-grey btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ 'Cancel' | translatePhrase }}</button> -->
           <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
             <i class="icon icon--white fa fa-unlock-alt"></i>
             {{ 'Unlock' | translatePhrase }}
@@ -190,7 +190,7 @@ export default {
     margin-top: 0.2em;
     margin-right: 0.5em;
     display: inline-block;
-    border: 1px solid @gray-light;
+    border: 1px solid @grey-light;
     background-color: @white;
     &:disabled {
       opacity: 0.7;
@@ -201,6 +201,7 @@ export default {
 .ChangeTypeWarningModal {
   &-body {
     height: 80%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;

@@ -148,20 +148,23 @@ export default {
       <hr v-show="hasActive" v-if="lookStyle === 'underline'" class="TabMenu-underline" ref="underline">
     </ul>
     <ul v-else class="TabMenu-tabList" ref="tablist">
-      <router-link tag="a" class="TabMenu-tab" 
-        v-for="item in tabs" :key="item.id"
-        tabindex="0"
-        :event="item.disabled ? null : 'click'"
-        :class="{'is-active': active === item.id, 'is-disabled': item.disabled }" 
-        :to="item.link"
-        v-tooltip="{
-          trigger: 'hover focus',
-          content: item.tooltipText
-        }">        
-        <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
-        <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-        <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
-      </router-link>
+      <li class="TabMenu-tab" 
+        v-for="item in tabs" 
+        :key="item.id">
+          <router-link class="TabMenu-link"
+            :event="item.disabled ? null : 'click'"
+            :class="{'is-active': active === item.id, 'is-disabled': item.disabled }" 
+            :to="item.link"
+            tabindex="0"
+            v-tooltip="{
+              trigger: 'hover focus',
+              content: item.tooltipText
+            }">        
+            <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
+            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
+            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
+          </router-link>
+      </li>
       <hr v-show="hasActive" v-if="lookStyle === 'underline'" class="TabMenu-underline" ref="underline">
     </ul>
   </div>
@@ -174,6 +177,35 @@ export default {
   opacity: 1;
   transition: opacity 0.25s ease;
   position: relative;
+
+  &-link {
+    .style-background & {
+      color: @white;
+      text-decoration: none;
+      font-size: unset;
+      text-align: center;
+      width: 100%;
+      @media screen and (min-width: @screen-sm) {
+        font-size: 15px;
+        font-size: 1.5rem;
+        padding: 8px 1em;
+      }
+
+      &:not(.is-disabled) {
+        &:hover {
+          background-color: darken(@brand-primary, 15%);
+        }
+      }
+      &.is-active {
+        background-color: @brand-primary !important;
+      }
+
+      &.is-disabled {
+        color: @grey;
+        cursor: not-allowed;
+      }
+    }
+  }
 
   &-tab {
     cursor: pointer;
@@ -191,38 +223,15 @@ export default {
     .style-background & {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: unset;
+      justify-content: center;      
       flex-grow: 1;
-      padding: 0;
-      @media screen and (min-width: @screen-sm) {
-        font-size: 15px;
-        font-size: 1.5rem;
-        padding: 8px 1em;
-      }
+      padding: 0;      
       margin: 0;
-      color: @white;
       transition: background-color 0.25s ease;
-      text-decoration: none;
-
-      &.is-active {
-        background-color: @brand-primary;        
-      }
-
-      &:not(.is-disabled) {
-        &:hover {
-          background-color: darken(@brand-primary, 15%);
-        }
-      }
-
-      &.is-disabled {
-        color: @grey;
-        cursor: not-allowed;
-      }
     }
     .style-underline & {
       padding: 5px 10px;
-      color: @grey;
+      color: @grey-dark;
       font-size: 18px;
       font-size: 1.6rem;
   
@@ -249,9 +258,6 @@ export default {
   &.style-background {
     width: 100%;
     height: 100%;
-  }
-  &.lookStyle-underline {
-    
   }
 
   &-tabList {

@@ -137,7 +137,7 @@ export default {
 
 .HeaderComponent {
   display: flex;
-  border: 1px solid @gray-lighter;
+  border: 1px solid @grey-lighter;
   border-radius: 4px;
   padding: 0.5em 1em 0.25em 1em;
 
@@ -170,7 +170,7 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        background: @brand-darker;
+        background: @brand-primary;
         color: @white;
         padding: 0.5em;
         box-shadow: 0 2px 5px rgba(0,0,0,.26);

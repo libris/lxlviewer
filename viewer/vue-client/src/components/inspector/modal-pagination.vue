@@ -157,13 +157,13 @@ export default {
     }
 
     .is-disabled & {
-      color: @gray-light;
+      color: @grey-light;
       cursor: initial;
 
       &:hover, 
       &:active, 
       &:focus {
-        color: @gray-light;
+        color: @grey-light;
         text-decoration: none;
       }
     }

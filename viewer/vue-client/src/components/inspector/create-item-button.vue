@@ -193,7 +193,7 @@ export default {
       &:hover, 
       &:focus,
       &:active {
-        background-color: @gray-lighter;
+        background-color: @grey-lighter;
         color: @white;
       }
     }

@@ -214,7 +214,7 @@ export default {
       padding: 0.5em;
     }
     tr {
-      border: solid @gray-lighter;
+      border: solid @grey-lighter;
       border-width: 0px 0px 1px 0px;
     }
     .key {
@@ -287,11 +287,11 @@ export default {
   padding: 20px;
 
   @media (min-width: @screen-sm) {
-    border-right: 1px solid @gray-lighter;
+    border-right: 1px solid @grey-lighter;
   }
 
   &-img {
-    border: 1px solid @gray;
+    border: 1px solid @grey;
     border-radius: 50%;
     width: 150px;
     height: 150px;

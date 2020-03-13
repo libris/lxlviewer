@@ -204,7 +204,7 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    color: @gray-darker-transparent;
+    color: @grey-darker-transparent;
 
     .ItemEntity-expander:hover & {
       color: @black;
@@ -212,7 +212,7 @@ export default {
   }
 
   &.is-newlyAdded {
-    background-color: @add;
+    background-color: @form-add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;
@@ -288,7 +288,7 @@ export default {
   }
 
   &.is-removeable {
-    background-color: @danger;
+    background-color: @form-remove;
   }
 
   @media (max-width: @screen-sm) {

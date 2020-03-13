@@ -71,8 +71,8 @@ export default {
     }
   
     & .warning {
-      background-color: @warning;
-      border: @warning-alter;
+      background-color: @brand-warning;
+      border: @brand-warning;
       font-size: 20px;
       font-size: 2.0rem;
       font-weight: normal;

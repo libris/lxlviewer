@@ -413,7 +413,7 @@ export default {
 
     <strong class="ItemLocal-heading">
       <div class="ItemLocal-label"
-        :class="{'is-inactive': isEmpty}"
+        :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
         @click="toggleExpanded()">
         <i class="ItemLocal-arrow fa fa-chevron-right" 
           :class="{'icon is-disabled' : isEmpty}"></i>
@@ -428,7 +428,7 @@ export default {
       <div class="ItemLocal-actions">
         <div class="ItemLocal-action LinkAction">
           <i class="fa fa-link fa-fw icon icon--sm"
-            v-if="inspector.status.editing && !isEmbedded && !isCompositional"
+            v-if="!isLocked && !isEmbedded && !isCompositional"
             role="button"
             tabindex="0"
             :aria-label="'Link entity' | translatePhrase"
@@ -516,7 +516,7 @@ export default {
       </div>
     </strong>
   
-    <ul class="ItemLocal-list js-itemLocalFields">      
+    <ul class="ItemLocal-list js-itemLocalFields" v-show="expanded">
       <!-- <field-adder 
         v-if="!isLocked && isEmpty" 
         :entity-type="item['@type']" 
@@ -524,7 +524,7 @@ export default {
         :inner="true" 
         :path="getPath"></field-adder> -->
       <field
-        v-show="expanded && k !== '_uid'" 
+        v-show="k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
         :parent-path="getPath" 
         :entity-type="item['@type']" 
@@ -585,6 +585,9 @@ export default {
   }
 
   &-label {
+    &.is-locked {
+      margin: 0;
+    }
     margin-right: 120px;
     cursor: pointer;
     
@@ -600,7 +603,7 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    color: @gray-darker-transparent;
+    color: @grey-darker-transparent;
 
     .ItemLocal-label:hover & {
       color: @black
@@ -659,11 +662,11 @@ export default {
   }
 
   &.is-marked {
-    background-color: @sec;
+    background-color: @form-mark;
   }
   
   &.is-removeable {
-    background-color: @danger;
+    background-color: @form-remove;
   }
 
   &-collapsedLabel {
@@ -691,7 +694,7 @@ export default {
   }
 
   &.is-highlighted {
-    background-color: @sec;
+    background-color: @form-highlight;
   }
 }
 </style>

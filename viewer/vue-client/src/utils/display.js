@@ -1,4 +1,4 @@
-import { cloneDeep, each, isObject, uniq, remove, isArray, isEmpty } from 'lodash-es';
+import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty } from 'lodash-es';
 import moment from 'moment';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
@@ -42,16 +42,9 @@ function tryGetValueByLang(item, propertyId, langCode, context) {
   }
   const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
   
-  let result = null;
-  if (byLangKey && item[byLangKey]) {
-    if (item[byLangKey][langCode]) {
-      result = item[byLangKey][langCode];
-    } else {
-      const langKeys = Object.keys(item[byLangKey]);
-      result = item[byLangKey][langKeys[0]];
-    }
-  }
-  return result;
+  return byLangKey && item[byLangKey] && item[byLangKey][langCode]
+    ? item[byLangKey][langCode]
+    : null;
 }
 
 export function getLensById(id, displayDefs) {
@@ -153,6 +146,24 @@ export function getItemLabel(item, displayDefs, quoted, vocab, settings, context
     }
   }
   return rendered;
+}
+
+export function getSortedProperties(formType, formObj, settings, resources) {
+  const propertyList = getDisplayProperties(
+    formType,
+    resources.display,
+    resources.vocab,
+    settings,
+    resources.context,
+    'full',
+  );
+  each(formObj, (v, k) => {
+    if (!includes(propertyList, k)) {
+      propertyList.push(k);
+    }
+  });
+  remove(propertyList, k => (settings.hiddenProperties.indexOf(k) !== -1));
+  return propertyList;
 }
 
 export function getItemToken(item, displayDefs, quoted, vocab, settings, context) {

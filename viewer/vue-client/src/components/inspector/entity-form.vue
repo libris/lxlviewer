@@ -12,11 +12,19 @@ import FormMixin from '@/components/mixins/form-mixin';
 export default {
   mixins: [FormMixin],
   props: {
+    formData: {
+      type: Object,
+      default: null,
+    },
     editingObject: {
       type: String,
       default: '',
     },
     locked: {
+      type: Boolean,
+      default: false,
+    },
+    isActive: {
       type: Boolean,
       default: false,
     },
@@ -38,9 +46,6 @@ export default {
       'settings',
       'status',
     ]),
-    isActive() {
-      return this.inspector.status.focus === this.editingObject;
-    },
     isHolding() {
       return this.inspector.data[this.editingObject]['@type'] === 'Item';
     },
@@ -88,9 +93,9 @@ export default {
     formObj() {
       return this.formData;
     },
-    formData() {
-      return this.inspector.data[this.editingObject];
-    },
+    // formData() {
+    //   return this.inspector.data[this.editingObject];
+    // },
   },
   watch: {
   },
@@ -115,7 +120,7 @@ export default {
       <field class="FieldList-item"
         v-for="(v,k) in filteredItem" 
         v-bind:class="{ 'locked': isLocked }" 
-        :entity-type="inspector.data[editingObject]['@type']" 
+        :entity-type="formObj['@type']" 
         :is-inner="false" 
         :is-removable="true" 
         :is-locked="keyIsLocked(k)" 
@@ -123,10 +128,10 @@ export default {
         :key="k" 
         :field-key="k" 
         :field-value="v" 
-        :parent-path="editingObject"></field>
+        :parent-path="editingObject" />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
-          {{ formData }}
+          {{ formObj }}
         </pre>
       </div>
     </ul>
@@ -156,20 +161,6 @@ export default {
 }
 
 .form-component {
-  .form-label {
-    .new-indicator {
-      font-size: 1em;
-    }
-    &.record-style {
-      .ribbon-mixin(@gray);
-    }
-    &.bib-style {
-      .ribbon-mixin(@bib-color);
-    }
-    &.holding-style {
-      .ribbon-mixin(desaturate(darken(@holding-color, 10%), 10%));
-    }
-  }
   .field-container-toggle {
     text-align: center;
     font-weight: bold;
@@ -187,7 +178,19 @@ export default {
 
   &-item {
     color: @black;
-    background-color: @form-field;
+    &:not(.is-diff) {
+      &:not(.is-new) {
+        &:not(.is-highlighted) {
+          &:not(.is-removeable) {
+            &:not(.is-marked) {
+              &:not(.is-linked) {
+                background-color: @form-field;
+              }
+            }
+          }
+        }
+      }
+    }
     border: 1px solid @form-border;
     border-bottom-width: 0;
     flex-direction: row;
@@ -201,21 +204,21 @@ export default {
     margin-bottom: 1rem;
   }
 
-  &-item.is-distinguished.is-linked {
-    border-color: rgba(@brand-success, 23%);
-    background-color: rgba(@brand-success, 4%);
+  &-item.is-linked {
+    border-color: rgba(@brand-primary, 23%);
+    background-color: lighten(@form-add, 5%);
     
     &:hover {
       & .icon:not(.is-disabled) {
-        color: rgba(@brand-success, 80%);
+        color: rgba(@brand-primary, 80%);
       }
     }
     & .icon {
-      color: rgba(@brand-success, 40%);
+      color: rgba(@brand-primary, 40%);
 
       &:hover:not(.is-disabled),
       &:focus {
-        color: @brand-darker;
+        color: @brand-primary;
       }
     }
   }

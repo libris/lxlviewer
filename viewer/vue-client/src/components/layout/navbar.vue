@@ -90,7 +90,7 @@ export default {
 </script>
 
 <template>
-  <nav class="NavBar" id="NavBar" role="navigation" aria-labelledby="service-name">
+  <nav class="NavBar" id="NavBar" aria-labelledby="service-name">
     <div class="NavBar-container container">
       <div class="row">
         <div class="NavBar-brand col-xs-2 col-sm-1 hidden-md hidden-lg">
@@ -99,13 +99,13 @@ export default {
           </router-link>
         </div>
         <div class="MainNav col-xs-8 col-sm-7 col-md-6">
-        <tab-menu
-          :tabs="tabs"
-          :active="$route.name"
-          @go="navigate"
-          :link="true"
-          lookStyle="background"
-          />
+          <tab-menu
+            :tabs="tabs"
+            :active="$route.name"
+            @go="navigate"
+            :link="true"
+            lookStyle="background"
+            />
         </div>
         <ul class="MainNav-userWrapper col-xs-2 col-xs-push-0 col-sm-push-0 col-sm-4 col-md-3 col-md-push-3">
           <li 

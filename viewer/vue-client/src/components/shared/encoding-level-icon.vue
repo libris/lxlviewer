@@ -109,8 +109,8 @@ export default {
 
 <style lang="less">
 .EncodingLevelIcon {
-  background-color: @gray-very-light-transparent;
-  color: @gray-transparent;
+  background-color: @grey-very-light-transparent;
+  color: @grey-transparent;
   display: flex;
   justify-content: center;
   align-items: baseline;

@@ -369,7 +369,7 @@ export default {
 
     <strong class="ItemSibling-heading">
       <div class="ItemSibling-label"
-        :class="{'is-inactive': isEmpty}"
+        :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
         @click="toggleExpanded()">
         <i class="ItemSibling-arrow fa fa-chevron-right" 
           :class="{'icon is-disabled' : isEmpty}"></i>
@@ -431,7 +431,7 @@ export default {
       </div>
     </strong>
   
-    <ul class="ItemSibling-list js-itemLocalFields">      
+    <ul class="ItemSibling-list js-itemLocalFields" v-show="expanded">
       <!-- <field-adder 
         v-if="!isLocked && isEmpty" 
         :entity-type="item['@type']" 
@@ -439,7 +439,7 @@ export default {
         :inner="true" 
         :path="getPath"></field-adder> -->
       <field
-        v-show="expanded && k !== '_uid'" 
+        v-show="k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
         :parent-path="getPath" 
         :entity-type="item['@type']" 
@@ -499,6 +499,9 @@ export default {
   }
 
   &-label {
+    &.is-locked {
+      margin: 0;
+    }
     margin-right: 120px;
     cursor: pointer;
     
@@ -514,7 +517,7 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    color: @gray-darker-transparent;
+    color: @grey-darker-transparent;
 
     .ItemSibling-label:hover & {
       color: @black;
@@ -562,11 +565,11 @@ export default {
   }
 
   &.is-marked {
-    background-color: @sec;
+    background-color: @form-mark;
   }
   
   &.is-removeable {
-    background-color: @danger;
+    background-color: @form-remove;
   }
 
   &.is-expanded > 
@@ -588,10 +591,10 @@ export default {
     background: green;
     display: flex;
     align-items: center;
-    background: @gray-darker;
+    background: @grey-darker;
     color: @white;
     &.active {
-      background: lighten(@gray-darker, 15%);
+      background: lighten(@grey-darker, 15%);
       cursor: pointer;
     }
   }

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { cloneDeep, each, set, get } from 'lodash-es';
+import { cloneDeep, each, set, get, assign } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
@@ -26,12 +26,22 @@ const store = new Vuex.Store({
       selectedHoldings: [],
       holdingsMoved: [],
     },
+    enrichment: {
+      data: {
+        source: null,
+        target: null,
+        result: null,
+      },
+    },
     inspector: {
       data: {},
       insertData: {},
       originalData: {},
       title: '',
       status: {
+        detailedEnrichmentModal: {
+          open: false,
+        },
         saving: false,
         opening: false,
         lastAdded: '',
@@ -132,6 +142,7 @@ const store = new Vuex.Store({
         'created',
         'modified',
         'mainEntity',
+        '@reverse',
       ],
       lockedProperties: [
         'sameAs',
@@ -297,6 +308,10 @@ const store = new Vuex.Store({
             query: 'publication.year',
             label: 'Publication year (ascending)',
           },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
+          },
         ],
         Work: [
           {
@@ -310,6 +325,14 @@ const store = new Vuex.Store({
           {
             query: '-hasTitle.mainTitle',
             label: 'Main title (Z-A)',
+          },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
+          },
+          {
+            query: '-reverseLinks.totalItems',
+            label: 'Most linked',
           },
         ],
         Concept: [
@@ -325,6 +348,14 @@ const store = new Vuex.Store({
             query: '-prefLabel',
             label: 'Preferred label (Z-A)',
           },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
+          },
+          {
+            query: '-reverseLinks.totalItems',
+            label: 'Most linked',
+          },
         ],
         Item: [
           {
@@ -338,6 +369,56 @@ const store = new Vuex.Store({
           {
             query: '-heldBy.@id',
             label: 'Sigel (Z-A)',
+          },
+        ],
+        Agent: [
+          {
+            query: '',
+            label: 'Relevance',
+          },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
+          },
+          {
+            query: '-reverseLinks.totalItems',
+            label: 'Most linked',
+          },
+        ],
+        Other: [
+          {
+            query: '',
+            label: 'Relevance',
+          },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
+          },
+          {
+            query: '-reverseLinks.totalItems',
+            label: 'Most linked',
+          },
+        ],
+        Common: [
+          {
+            query: '',
+            label: 'Relevance',
+          },
+          {
+            query: 'prefLabel',
+            label: 'Preferred label (A-Z)',
+          },
+          {
+            query: '-prefLabel',
+            label: 'Preferred label (Z-A)',
+          },
+          {
+            query: '-meta.modified',
+            label: 'Last updated',
+          },
+          {
+            query: '-reverseLinks.totalItems',
+            label: 'Most linked',
           },
         ],
       },
@@ -411,23 +492,39 @@ const store = new Vuex.Store({
     updateInspectorData(state, payload) {
       state.inspector.status.updating = true;
       // Clone inspectorData so we can manipulate it before setting it
-      const inspectorData = cloneDeep(state.inspector.data);
+      let inspectorData = cloneDeep(state.inspector.data);
       // Push old value to history
       if (payload.addToHistory) {
         const changes = [];
         each(payload.changeList, (node) => {
-          const oldValue = cloneDeep(get(inspectorData, node.path));
+          let oldValue;
+          if (node.path === '') {
+            oldValue = inspectorData;
+          } else {
+            oldValue = cloneDeep(get(inspectorData, node.path));
+          }
           const historyNode = { path: node.path, value: oldValue };
           changes.push(historyNode);
         });
         state.inspector.changeHistory.push(changes);
       }
-
       // Set the new values
       each(payload.changeList, (node) => {
         // console.log("DATA_UPDATE:", JSON.stringify(node));
-        set(inspectorData, node.path, node.value);
+        if (node.path === '') {
+          inspectorData = node.value;
+        } else {
+          set(inspectorData, node.path, node.value);
+        }
       });
+      // Check if we should remove work node (if it went from local to being linked)
+      if (inspectorData.mainEntity.hasOwnProperty('instanceOf') && (inspectorData.mainEntity.instanceOf === null || inspectorData.mainEntity.instanceOf.hasOwnProperty('@id') && inspectorData.mainEntity.instanceOf['@id'].indexOf('#work') === -1)) {
+      //if (noWork || localWork) {
+        if (state.inspector.data.hasOwnProperty('work')) {
+          delete inspectorData.work;
+        }
+      }
+      // Apply everything
       state.inspector.data = Object.assign({}, inspectorData);
     },
     setInspectorTitle(state, str) {
@@ -453,6 +550,16 @@ const store = new Vuex.Store({
       state.settings.language = state.user.settings.language;
       // Sync user settings with localstorage
       state.user.saveSettings();
+    },
+    setEnrichmentTarget(state, data) {
+      state.enrichment.data.target = data;
+    },
+    setEnrichmentSource(state, data) {
+      state.inspector.data.quoted = assign(data.quoted, state.inspector.data.quoted);
+      state.enrichment.data.source = data;
+    },
+    setEnrichmentResult(state, data) {
+      state.enrichment.data.result = data;
     },
     setUserStorage(state, data) {
       if (data) {
@@ -513,6 +620,7 @@ const store = new Vuex.Store({
     settings: state => state.settings,
     user: state => state.user,
     userStorage: state => state.userStorage,
+    enrichment: state => state.enrichment,
     userFavorites: (state, getters) => {
       const collection = [];
       const list = getters.userStorage.list;
@@ -558,6 +666,15 @@ const store = new Vuex.Store({
         userStorage.list[id] = { tags: [tag], label };
       }
       commit('setUserStorage', userStorage);
+    },
+    setEnrichmentTarget({ commit }, data) {
+      commit('setEnrichmentTarget', data);
+    },
+    setEnrichmentSource({ commit }, data) {
+      commit('setEnrichmentSource', data);
+    },
+    setEnrichmentResult({ commit }, data) {
+      commit('setEnrichmentResult', data);
     },
     unmark({ commit, state }, payload) {
       const userStorage = cloneDeep(state.userStorage);

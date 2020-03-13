@@ -71,7 +71,7 @@ export default {
   &-created {
     margin-right: 10px;
     padding-right: 10px;
-    border-right: 1px solid @gray-light;
+    border-right: 1px solid @grey-light;
 
     @media screen and (max-width: @screen-sm) {
       border-right: none;

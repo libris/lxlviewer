@@ -271,8 +271,8 @@ export default {
     align-items: center;
     width: 100%;
     min-height: 2.8em;
-    color: @gray-dark;
-    border-bottom: 1px solid @gray-lighter;
+    color: @grey-dark;
+    border-bottom: 1px solid @grey-lighter;
 
     @media (max-width: @screen-sm) {
       flex-direction: column;
@@ -308,7 +308,7 @@ export default {
     &:hover, 
     &:focus {
       background-color: transparent;
-      color: @gray-darker;
+      color: @grey-darker;
     }
 
     i {
@@ -372,7 +372,7 @@ export default {
   }
 
   &-pagDecor {
-    color: @gray;
+    color: @grey;
     cursor: initial;
   }
 
@@ -410,11 +410,11 @@ export default {
     }
 
     .is-disabled & {
-      color: @gray-light;
+      color: @grey-light;
       cursor: initial;
 
       &:hover {
-        color: @gray-light;
+        color: @grey-light;
       }
     }
 

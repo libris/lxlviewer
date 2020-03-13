@@ -2,7 +2,7 @@
 <script>
 import { cloneDeep, each, get } from 'lodash-es';
 import * as md5 from 'md5';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
@@ -11,6 +11,7 @@ import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
+import DetailedEnrichment from '@/components/care/detailed-enrichment';
 import EntityChangelog from '@/components/inspector/entity-changelog';
 import EntityHeader from '@/components/inspector/entity-header';
 import Breadcrumb from '@/components/inspector/breadcrumb';
@@ -65,16 +66,34 @@ export default {
       embellishFromIdModal: {
         open: false,
         inputValue: '',
+        detailed: false,
       },
       justEmbellished: false,
     };
   },
   methods: {
+    ...mapActions([
+      'setEnrichmentSource',
+      'setEnrichmentTarget',
+    ]),
+    replaceData(data) {
+      this.$store.dispatch('setInspectorData', data);
+    },
+    openDetailedEnrichmentModal() {
+      const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
+      detailedEnrichmentModal.open = true;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+    },
+    closeDetailedEnrichmentModal() {
+      const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
+      detailedEnrichmentModal.open = false;
+      this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+    },
     applyOverride(data) {
       this.$store.dispatch('setInspectorData', data);
       this.$store.dispatch('pushNotification', {
         type: 'success',
-        message: `${StringUtil.getUiPhraseByLang('Formulär uppdaterat, glöm inte att spara posten', this.user.settings.language)}`,
+        message: `${StringUtil.getUiPhraseByLang('Form updated, don\'t forget to save', this.user.settings.language)}`,
       });
     },
     shouldWarnOnUnload() {
@@ -112,10 +131,11 @@ export default {
         toolbarTestEl.style.width = `${width}px`;
       }
     },
-    toggleEmbellishFromIdModal(open = true) {
+    toggleEmbellishFromIdModal(open = true, detailed = false) {
       if (open) {
         this.embellishFromIdModal.inputValue = '';
         this.embellishFromIdModal.open = true;
+        this.embellishFromIdModal.detailed = detailed;
         this.$nextTick(() => {
           this.$refs.EmbellishFromIdModalInput.focus();
         });
@@ -188,11 +208,56 @@ export default {
         this.loadNewDocument();
       }
     },
-    confirmApplyPostAsTemplate() {
+    confirmApplyPostAsTemplate(detailed = false) {
+      this.embellishFromIdModal.open = false;
       const id = this.embellishFromIdModal.inputValue;
-      if (id.length > 0) {
-        this.applyPostAsTemplate(id);
+      if (detailed) {
+        this.prepareDetailedEnrichment(id);
+      } else if (id.length > 0) {
+        this.applyPostAsTemplate(id, this.embellishFromIdModal.detailed);
       }
+    },
+    prepareDetailedEnrichment(id = null, data = null) {
+      if (id !== null) {
+        const fixedId = RecordUtil.extractFnurgel(id);
+        const randomHash = md5(new Date());
+        const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld?${randomHash}`;
+        fetch(fetchUrl).then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          } if (response.status === 404 || response.status === 410) {
+            this.$store.dispatch('pushNotification', {
+              type: 'danger',
+              message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language)}. ${response.status} ${response.statusText}`,
+            });
+          } else {
+            this.$store.dispatch('pushNotification', {
+              type: 'danger',
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`,
+            });
+          }
+          return false;
+        }, (error) => {
+          this.$store.dispatch('pushNotification', {
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`,
+          });
+        }).then((result) => {
+          if (typeof result !== 'undefined') {
+            const template = RecordUtil.splitJson(result);
+            this.applyAsDetailedEnrichment(template);
+          }
+        });
+      } else if (data !== null) {
+        this.applyAsDetailedEnrichment(data);
+      } else {
+        throw new Error('Failed to prepare data for detailed enrichment.');
+      }
+    },
+    applyAsDetailedEnrichment(data) {
+      this.setEnrichmentTarget(this.inspector.data);
+      this.setEnrichmentSource(data);
+      this.openDetailedEnrichmentModal();
     },
     applyPostAsTemplate(id) {
       const fixedId = RecordUtil.extractFnurgel(id);
@@ -224,7 +289,6 @@ export default {
           const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings.keysToClear.duplication);
           const template = RecordUtil.splitJson(templateJson);
           this.applyFieldsFromTemplate(template);
-          this.embellishFromIdModal.open = false;
         }
       });
     },
@@ -280,7 +344,7 @@ export default {
       }
       if (!basePostData.hasOwnProperty('work')) {
         applyChangeList('mainEntity.instanceOf');
-        } else {
+      } else {
         // If work property exists, put the work entity there
         applyChangeList('mainEntity.instanceOf', 'work');
       }
@@ -667,6 +731,10 @@ export default {
         this.applyFieldsFromTemplate(val.value);
       } else if (val.name === 'open-embellish-from-id') {
         this.toggleEmbellishFromIdModal(true);
+      } else if (val.name === 'open-detailed-embellish-from-id') {
+        this.toggleEmbellishFromIdModal(true, true);
+      } else if (val.name === 'replace-data') {
+        this.replaceData(val.value);
       } else if (val.name === 'apply-override') {
         this.applyOverride(val.value);
       }
@@ -690,6 +758,7 @@ export default {
       'status',
       'userCare',
       'userFavorites',
+      'enrichment',
     ]),
     isReadyForSave() {
       if (this.saveQueued && this.inspector.status.readyForSave) {
@@ -733,6 +802,7 @@ export default {
     toolbar: Toolbar,
     'entity-changelog': EntityChangelog,
     breadcrumb: Breadcrumb,
+    DetailedEnrichment,
     'marc-preview': MarcPreview,
     'tab-menu': TabMenu,
     'validation-summary': ValidationSummary,
@@ -749,8 +819,20 @@ export default {
 };
 </script>
 <template>
-  <div class="row">
-    <div class="Inspector col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
+  <div class="Inspector row">
+    <div 
+      v-if="postLoaded" 
+      class="col-sm-12" 
+      :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}">
+        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" />
+    </div>
+    <div ref="componentFocusTarget" class="col-12 col-sm-12" :class="{'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
+      <div v-if="postLoaded" class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
+      <div v-if="postLoaded" class="Toolbar-container" ref="ToolbarTest">
+        <toolbar></toolbar>
+      </div>
+    </div>
+    <div class="col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
       <div v-if="!postLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
         <p v-if="loadFailure.status === 404">
@@ -763,8 +845,7 @@ export default {
           {{ 'Back to home page' | translatePhrase }}
         </router-link>
       </div>
-      <div v-if="postLoaded" class="Inspector-entity">
-        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" />
+      <div v-if="postLoaded" class="Inspector-entity">        
         <div class="Inspector-admin">
           <div class="Inspector-header">
             <h1>
@@ -784,15 +865,10 @@ export default {
           v-for="tab in editorTabs"
           :editing-object="tab.id"
           :key="tab.id"
-          :is-main-entity-form="tab.id === 'mainEntity'"
+          :is-active="inspector.status.focus === tab.id"
+          :form-data="inspector.data[tab.id]"
           :locked="!inspector.status.editing">
         </entity-form>
-      </div>
-    </div>
-    <div v-if="postLoaded" class="col-12 col-sm-12" :class="{'col-md-1': !status.panelOpen, 'col-md-5': status.panelOpen }">
-      <div class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
-      <div class="Toolbar-container" ref="ToolbarTest">
-        <toolbar></toolbar>
       </div>
     </div>
     <portal to="sidebar" v-if="marcPreview.active">
@@ -811,23 +887,36 @@ export default {
         </p>
         <div class="RemovePostModal-buttonContainer">
           <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang | lowercase }}</button>
-          <button class="btn btn-gray btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
+          <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
         </div>
       </div>
     </modal-component>
-    <modal-component class="EmbellishFromIdModal" :title="['Embellish', 'From ID']" v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false">
+    <modal-component class="EmbellishFromIdModal" :title="[embellishFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']" v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false">
       <div slot="modal-body" class="EmbellishFromIdModal-body">
-        <div class="EmbellishFromIdModal-infoText">
+        <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === true">
+          <p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>
+          <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>
+          <p>
+            Du kan välja mellan att <strong>utöka</strong> (<i class="fa text-success fa-plus"></i>) eller <strong>ersätta</strong> (<i class="fa text-accent3 fa-arrow-right"></i>) en egenskap.
+            Att <strong>utöka</strong> innebär att information läggs till i den berikade posten.
+            <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.
+          </p>
+        </div>
+        <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === false">
           Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.
         </div>
         <div class="input-group EmbellishFromIdModal-form">
           <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ 'ID' | translatePhrase }}/{{ 'Link' | translatePhrase }}</label>
-          <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyPostAsTemplate" />
+          <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" />
           <span class="input-group-btn">
-            <button class="btn btn-primary EmbellishFromIdModal-confirmButton" @click="confirmApplyPostAsTemplate" @keyup.enter="confirmApplyPostAsTemplate">{{ 'Embellish' | translatePhrase }}</button>
+            <button class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton" @click="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)">{{ 'Continue' | translatePhrase }}</button>
           </span>
         </div>
       </div>
+    </modal-component>
+
+    <modal-component class="DetailedEnrichmentModal" :title="'Detailed enrichment' | translatePhrase" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
+      <DetailedEnrichment slot="modal-body" :floating-dialogs="true" />
     </modal-component>
   </div>
 </template>
@@ -836,10 +925,8 @@ export default {
 <style lang="less">
 
 .Inspector {
+  padding: 3rem 0;
 
-  &-entity {
-    padding: 3rem 0;
-  }
   &-spinner {
     margin-top: 2em;
   }
@@ -854,7 +941,7 @@ export default {
   }
 
   &-breadcrumb {
-    border-bottom:  1px solid @gray-lighter;
+    border-bottom:  1px solid @grey-lighter;
     padding-bottom: 10px;
   }
 
@@ -893,7 +980,7 @@ export default {
   &-code {
     padding: 10px 20px;
     background-color: @white;
-    border: 1px solid @gray-lighter;
+    border: 1px solid @grey-lighter;
   }
 
   &.hideOnPrint {
@@ -949,7 +1036,7 @@ export default {
   }
   &-reference {
     margin-top: 1em;
-    border: 1px solid @gray;
+    border: 1px solid @grey;
     border-radius: 0.5em;
     padding: 1em;
   }
@@ -964,7 +1051,10 @@ export default {
 
 .RemovePostModal .ModalComponent-container {
   width: 600px;
-  height: 175px;
+}
+
+.DetailedEnrichmentModal .ModalComponent-container {
+  width: 90vw;
 }
 
 .RemovePostModal {

@@ -3,7 +3,7 @@
     <global-message />
     <navbar-component />
     <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
-    <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen, 'debug-mode': user.settings.appTech }" role="main">
+    <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen, 'debug-mode': user.settings.appTech }">
       <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
         {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
       </div>
@@ -18,7 +18,7 @@
             <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
           </div>
         </div>
-        <router-view v-if="resourcesLoaded" />
+        <router-view ref="routerView" v-if="resourcesLoaded"></router-view>
     </main>
     <portal-target name="sidebar" multiple />
     <footer-component></footer-component>
@@ -53,7 +53,32 @@ export default {
       'status',
     ]),
   },
-  watch: {
+  watch: {    
+    '$route'(to, from) {
+      this.$nextTick(() => {
+        if (from.name !== null && to.name !== 'Search') {
+          setTimeout(() => {
+            // get component's "routeFocusTarget" ref
+            // if not existent, use router view container
+            const focusTarget = (this.$refs.routerView.$refs.componentFocusTarget !== undefined) 
+              ? this.$refs.routerView.$refs.componentFocusTarget
+              : this.$refs.routerView.$el;
+
+            // make focustarget programmatically focussable
+            focusTarget.setAttribute('tabindex', '-1');
+
+            // focus element
+            focusTarget.focus({
+              preventScroll: true,
+            });
+
+            // remove tabindex from focustarget. 
+            // reason: https://axesslab.com/skip-links/#update-3-a-comment-from-gov-uk
+            focusTarget.removeAttribute('tabindex');
+          }, 0);
+        }
+      });
+    },
   },
   methods: {
     disableDebugMode() {
@@ -273,11 +298,11 @@ button {
 
 .btn[disabled],
 .btn.disabled {
-  background-color: @gray-lighter;
+  background-color: @grey-lighter;
   opacity: 1;
   &:hover, 
   &:focus {
-    background-color: @gray-lighter;
+    background-color: @grey-lighter;
   }
 
   &.btn-primary {
@@ -290,6 +315,26 @@ button {
   }  
 }
 
+.btn-info {
+  @base-color: @brand-info;
+  background-color: @white;
+  border: 1px solid;
+  border-color: @base-color;
+  color: @black;
+  &:focus {
+    background-color: @white;
+    color: @black;
+  }
+  &:hover, &:active {
+    background-color: darken(@white, 5%) !important;
+    color: @black !important;
+  }
+  &:active {
+    box-shadow: inset 0 0 0.5rem 0 rgba(0, 0, 0, 0.4);
+    color: @black;
+  }
+}
+
 .btn-primary {
   background-color: @btn-primary;
   &:hover {
@@ -298,13 +343,13 @@ button {
   }
 }
 
-.btn-gray {
+.btn-grey {
   color: white;
-  background-color: @gray;
+  background-color: @grey;
   &:hover, 
   &:focus {
     color: white;
-    background-color: @gray-darker;
+    background-color: @grey-darker;
   }
 }
 
@@ -329,13 +374,6 @@ button {
     background-color: darken(@white, 5%);
   }
 }
-
-.btn-danger {
-  &:hover {
-    background-color: @danger-alter;
-  }
-}
-
 //btn sizes
 
 .btn-mixin(@width, @height, @fsize){
@@ -387,7 +425,7 @@ html {
   height: 100%;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: greyscale;
   overflow-y: scroll;
   &.ie11 {
     main {
@@ -419,8 +457,8 @@ main {
   width: 100%;
   padding: 3em 0em;
   div {
-    border: 1px solid @gray;
-    background-color: @gray-lighter;
+    border: 1px solid @grey;
+    background-color: @grey-lighter;
     padding: 25px;
     width: 800px;
     margin: auto;
@@ -429,7 +467,7 @@ main {
 }
 
 .vue-simple-spinner {
-  border-color: @brand-primary @gray-lighter @gray-lighter !important;
+  border-color: @brand-primary @grey-lighter @grey-lighter !important;
 }
 
 #body-blocker {
@@ -448,8 +486,7 @@ html.scroll-lock {
 
 body {
   position: relative;
-  background-color: @bg-site;
-  background-image: @bg-img;
+  background-color: @site-body-background;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -502,13 +539,13 @@ body {
 
 // ------------- ICONS ----------------
 .icon {
-    color: @gray;
-    color: @gray-transparent;
+    color: @grey;
+    color: @grey-transparent;
     transition: color .2s ease, background-color .2s ease;
 
     &:hover {
-        color: @gray-darker;
-        color: @gray-darker-transparent;
+        color: @grey-darker;
+        color: @grey-darker-transparent;
     }
 
     &--primary {
@@ -543,12 +580,12 @@ body {
     }
 
     &.is-disabled {
-        color: @gray-lighter-transparent;
+        color: @grey-lighter-transparent;
         cursor: not-allowed;
     }
 
     &.is-added {
-        color: @gray-light;
+        color: @grey-light;
         cursor: not-allowed;
     }
 }
@@ -558,8 +595,8 @@ body {
 .badge {
   background-color: @badge-color;
   background-color: @badge-color-transparent;
-  color: @gray-darker;
-  color: @gray-darker-transparent;
+  color: @grey-darker;
+  color: @grey-darker-transparent;
 }
 
 // ---------- TYPOGRAPHY -------------
@@ -580,7 +617,7 @@ h1 {
 // smaller uppercase headings
 .uppercaseHeading {
     text-transform: uppercase;
-    color: @gray-darker;
+    color: @grey-darker;
     font-size: 13px;
     font-size: 1.3rem;
     font-weight: 600;
@@ -589,8 +626,8 @@ h1 {
       &:extend(.uppercaseHeading);
       font-size: 12px;
       font-size: 1.2rem;
-      color: @gray-dark;
-      color: @gray-dark-transparent;
+      color: @grey-dark;
+      color: @grey-dark-transparent;
     }
 
     &--bold {
@@ -635,7 +672,7 @@ h1 {
       display: inline-block;
       font-size: 18px;
       font-size: 1.8rem;
-      color: @gray-darker;
+      color: @grey-darker;
       width: 18px;
     }
   }
@@ -690,7 +727,7 @@ h1 {
 
   &::placeholder,
   input::placeholder  {
-    color: @gray;
+    color: @grey;
   }
 
   &:focus {
@@ -707,7 +744,7 @@ h1 {
 // ------------ CARDS --------------
 
 .card {
-  border: 1px solid @gray-lighter;
+  border: 1px solid @grey-lighter;
 
   &-content {
     display: flex;

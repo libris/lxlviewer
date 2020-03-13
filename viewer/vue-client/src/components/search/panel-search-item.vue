@@ -123,9 +123,9 @@ export default {
         @action="useItem()">
       </summary-action>
       <div 
-        class="PanelSearch-link-count"
+        class="PanelSearch-linkCount"
         v-if="reverseLinksAmount !== null"
-        :class="{'has-links' : reverseLinksAmount > 0}"
+        :class="{'has-links' : reverseLinksAmount != 0}"
         v-tooltip="{
           placement: 'right',
           content: translatedTooltip,
@@ -210,23 +210,24 @@ export default {
     flex-direction: column;
   }
 
-  &-link-count {
+  &-linkCount {
     border: 2px solid #29A1A2;
     width: 100%;
     text-align: center;
     margin-top: -4px;
     border-radius: 0 0 4px 4px;
     border-top-width: 4px;
-    color: @gray;
+    color: @grey;
     font-weight: 600;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
 
     &.has-links {
       color: @brand-primary;
     }
 
-    .is-added & {
-      border-color: @gray-lighter;
+    .PanelComponent-listItem.is-added &,
+    .PanelComponent-listItem.is-replaced & {
+      border-color: @grey-lighter;
     }
   }
 
@@ -235,7 +236,7 @@ export default {
     overflow: hidden;
 
     &.has-action {
-      border: solid @gray-lighter-transparent;
+      border: solid @grey-lighter-transparent;
       border-width: 0px 0px 0px 1px;
       padding: 0 15px;
       margin-left: 15px;

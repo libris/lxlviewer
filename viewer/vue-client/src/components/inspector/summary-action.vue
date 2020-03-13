@@ -8,7 +8,7 @@ export default {
   props: {
     options: {
       show: false,
-      styling: 'gray',
+      styling: 'grey',
       text: 'button',
     },
     disabled: {

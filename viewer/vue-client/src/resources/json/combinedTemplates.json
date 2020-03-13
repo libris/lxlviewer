@@ -796,7 +796,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Instance",
+          "@type": "Print",
           "issuanceType": "Monograph",
           "hasTitle": [
             {
@@ -1169,7 +1169,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Instance",
+          "@type": "Print",
           "issuanceType": "Monograph",
           "hasTitle": [{
               "@type": "Title",
@@ -1341,7 +1341,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Instance",
+          "@type": "Print",
           "issuanceType": "Serial",
           "frequency": [],
           "hasTitle": [{
@@ -1466,7 +1466,7 @@
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
-          "@type": "Instance",
+          "@type": "Print",
           "issuanceType": "Monograph",
           "hasTitle": [{
               "@type": "Title",
@@ -2300,11 +2300,7 @@
             "@id": "https://id.kb.se/language/swe"
           },
           "cataloguersNote": [""],
-          "sourceConsulted": [],
-          "marc:personalName": {
-            "@id": "https://id.kb.se/marc/DifferentiatedPersonalName"
-          }
-
+          "sourceConsulted": []
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
@@ -2330,8 +2326,7 @@
             "value": ""
           }],
           "nationality": [{
-            "@id": "https://id.kb.se/nationality/e-sw---",
-            "code": "e-sw---"
+            "@id": "https://id.kb.se/nationality/e-sw---"
           }]
         }
       }
