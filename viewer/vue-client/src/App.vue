@@ -376,12 +376,14 @@ button {
 }
 
 &.btn--as-link {
+  color: @link-color;
   text-align: left;
   padding: 0;
   background: transparent;
   font-weight: normal;
   &:focus,
   &:hover {
+    color: @link-hover-color;
     background-color: transparent;
     text-decoration: underline;
   }
