@@ -374,8 +374,20 @@ button {
     background-color: darken(@white, 5%);
   }
 }
-//btn sizes
 
+&.btn--as-link {
+  text-align: left;
+  padding: 0;
+  background: transparent;
+  font-weight: normal;
+  &:focus,
+  &:hover {
+    background-color: transparent;
+    text-decoration: underline;
+  }
+}
+
+//btn sizes
 .btn-mixin(@width, @height, @fsize){
   min-width: @width;
   height: @height;
