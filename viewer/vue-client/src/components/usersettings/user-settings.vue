@@ -143,11 +143,11 @@ export default {
         </li>
         <li>
           <router-link to="/user">{{"Settings" | translatePhrase}}</router-link>
-          <span v-if="userHasTaggedPosts" @click.prevent="purgeTagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</span>
+          <button class="btn--as-link" v-if="userHasTaggedPosts" @click.prevent="purgeTagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</button>
         </li>
         <li>
           <!-- <span>Växla användare</span> -->
-          <span @click="logout">{{"Log out" | translatePhrase}}</span>
+          <button class="btn--as-link" @click="logout">{{"Log out" | translatePhrase}}</button>
         </li>
       </ul>
     </div>
@@ -261,7 +261,7 @@ export default {
         border: 0px;
       }
 
-      & span, 
+      & .btn--as-link, 
       & a {
         color: @black;
         cursor: pointer;
