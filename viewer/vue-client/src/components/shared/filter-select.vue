@@ -259,9 +259,7 @@ export default {
             tabindex="-1"
             :data-filter="option"
             :data-abstract="option.abstract"
-            :data-key="option">{{ option | labelByLang }}</span >
-            v-html="getLabelWithTreeDepth(option, settings, resources.vocab, resources.context)"
-            ></span>
+            :data-key="option">{{ option | labelByLang }}</span>
         </li>
         <hr class="FilterSelect-dropdownDivider" v-show="options.priority.length > 0">
         <li class="FilterSelect-dropdownHeader" v-show="options.tree.length > 0 && options.priority.length > 0">
@@ -278,8 +276,6 @@ export default {
             :data-filter="option.value"
             :data-abstract="option.abstract"
             :data-key="option.key">{{ option.label }}</span>
-            v-html="getLabelWithTreeDepth(option, settings, resources.vocab, resources.context)"
-            ></span>
         </li>
       </ul>
       <i
