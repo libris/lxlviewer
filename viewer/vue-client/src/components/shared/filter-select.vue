@@ -74,9 +74,6 @@ export default {
     },
   },
   methods: {
-    getLabelWithTreeDepth(term) {
-      return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources.vocab, this.resources.context);
-    },
     preventBodyScroll(e) {
       const keys = this.keyEnums;
       if ([
