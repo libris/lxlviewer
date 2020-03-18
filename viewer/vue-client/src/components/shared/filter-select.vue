@@ -74,6 +74,9 @@ export default {
     },
   },
   methods: {
+    getLabelWithTreeDepth(term) {
+      return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources.vocab, this.resources.context);
+    },
     preventBodyScroll(e) {
       const keys = this.keyEnums;
       if ([
@@ -257,6 +260,8 @@ export default {
             :data-filter="option"
             :data-abstract="option.abstract"
             :data-key="option">{{ option | labelByLang }}</span >
+            v-html="getLabelWithTreeDepth(option, settings, resources.vocab, resources.context)"
+            ></span>
         </li>
         <hr class="FilterSelect-dropdownDivider" v-show="options.priority.length > 0">
         <li class="FilterSelect-dropdownHeader" v-show="options.tree.length > 0 && options.priority.length > 0">
@@ -273,6 +278,8 @@ export default {
             :data-filter="option.value"
             :data-abstract="option.abstract"
             :data-key="option.key">{{ option.label }}</span>
+            v-html="getLabelWithTreeDepth(option, settings, resources.vocab, resources.context)"
+            ></span>
         </li>
       </ul>
       <i
