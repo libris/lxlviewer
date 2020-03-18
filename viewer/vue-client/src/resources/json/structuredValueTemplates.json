@@ -489,12 +489,16 @@
     "@type": "SourceDataNotFound",
     "citationSource": ""
   },
+  "Affiliation": {
+    "@type": "Affiliation",
+    "label": ""
+  },
   "AdministrativeHistoryNote": {
     "@type": "AdministrativeHistoryNote",
     "label": ""
   },
-  "BiographicalInformation": {
-    "@type": "BiographicalInformation",
+  "BiographicalNote": {
+    "@type": "BiographicalNote",
     "label": ""
   },
   "BiographicalOrHistoricalData": {
