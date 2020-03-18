@@ -243,7 +243,7 @@
             "value": "",
             "qualifier": ""
           }],
-          "editionStatement": "",
+          "editionStatement": [""],
           "publication": [
             {
               "@type": "PrimaryPublication",
@@ -658,7 +658,7 @@
             }
           ],
           "marc:otherPhysicalDetails": "",
-          "editionStatement": "",
+          "editionStatement": [""],
           "accompaniedBy": [
             {
               "@type": "Instance",
@@ -806,7 +806,7 @@
             }
           ],
           "responsibilityStatement": "",
-          "editionStatement": "",
+          "editionStatement": [""],
           "publication": [
             {
               "@type": "PrimaryPublication",
@@ -983,7 +983,7 @@
             "value": "",
             "qualifier": ""
           }],
-          "editionStatement": "",
+          "editionStatement": [""],
           "publication": [],
           "marc:primaryProvisionActivity": {
             "@type": "PrimaryPublication",
@@ -1183,7 +1183,7 @@
             "value": "",
             "qualifier": ""
           }],
-          "editionStatement": "",
+          "editionStatement": [""],
           "publication": [
             {
               "@type": "PrimaryPublication",
@@ -1498,8 +1498,8 @@
               }
             }
           ],
-          "editionStatement": "",
-          "editionStatementRemainder": "",
+          "editionStatement": [""],
+          "editionStatementRemainder": [""],
           "marc:otherPhysicalDetails": "",
           "publication": [
             {
@@ -2401,7 +2401,6 @@
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Geographic",
-          "@id": "https://id.kb.se/TEMPID#it",
           "inScheme": {
             "@id": "https://id.kb.se/term/sao"
           },
