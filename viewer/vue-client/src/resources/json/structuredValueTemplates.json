@@ -505,6 +505,18 @@
     "@type": "BiographicalOrHistoricalData",
     "label": ""
   },
+  "FieldOfActivity": {
+    "@type": "FieldOfActivity",
+    "label": ""
+  },
+  "Occupation": {
+    "@type": "Occupation",
+    "label": ""
+  },
+  "marc:OtherAttributes": {
+    "@type": "marc:OtherAttributes",
+    "label": ""
+  },
   "IntendedAudience": {
     "@type": "IntendedAudience",
     "label": ""
