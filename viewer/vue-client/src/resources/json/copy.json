@@ -1,6 +1,7 @@
 {
   "about-xl-full": {
     "image": "omxllarge_new.png",
+    "image_alt_text": "Två kvinnor framför en datorskärm",
     "header": "Om nya Libris och XL",
     "text": {
       "abstract": "Libris katalogisering är den nya katalogiseringstjänsten. I verktyget är gränssnittet anpassat för att ta tillvara de möjligheter som nytt format och ny systemarkitektur erbjuder. För att göra katalogiseringen så smidig som möjligt finns hjälp och stöd inbyggt i systemet.",
@@ -28,6 +29,7 @@
   },
   "about-xl": {
     "image": "omxl_new.png",
+    "image_alt_text": "Ett nav av tekniska produkter som är kopplade till ett moln",
     "header": "Om nya Libris och XL",
     "text": "Nya Libris och XL är baserat på ett nytt format, ny vokabulär och öppna länkade data. På den nya tekniska plattformen blir systemet mer flexibelt och erbjuder god potential till utveckling av framtida tjänster.",
     "linkUrl": "/about",
@@ -35,6 +37,7 @@
   },
   "blog": {
     "image": "libris_nyheter.png",
+    "image_alt_text": "Två kvinnor framför en datorskärm",
     "header": "Libris nyheter",
     "text": "Libris nyheter är Libris främsta kommunikationskanal och här informerar vi om alla aspekter – allt från utveckling till samarbete inom Libris-projektet.",
     "linkUrl": "https://www.kb.se/samverkan-och-utveckling/libris.html",
@@ -42,6 +45,7 @@
   },
   "supportforum": {
     "image": "supportforum.png",
+    "image_alt_text": "Skärmdump av supportforumet",
     "header": "Supportforum",
     "text": "På Supportforum för nya Libris kan ni söka bland tidigare besvarade frågor och ställa egna. Forumet behandlar både teknisk- och förändringsrelaterad information.",
     "linkUrl": "https://kundo.se/org/librisxl/",
@@ -56,6 +60,7 @@
   },
   "studies": {
     "image": "studiematerial_new.png",
+    "image_alt_text": "En glödlampa",
     "header": "Introduktionsmaterial",
     "text": "På Libris underwebb finns introduktionsmaterial för självstudier till dig som vill fördjupa dina kunskaper inom länkade data, format och vokabulär, med mera.",
     "linkUrl": "https://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/",
