@@ -518,9 +518,20 @@ body {
 * {
   outline: none;
 }
+
+.focus-mixin() {
+  @focus-color: #FFDD02;
+  outline: 2px solid @focus-color; //fallback for IE & Edge
+  outline: auto @focus-color;
+  background-color: @focus-color !important;
+  color: black !important;
+}
+
 .user-is-tabbing *:focus {
-  outline: 2px solid #8cc9c9; //fallback for IE & Edge
-  outline: auto darkcyan;
+  .focus-mixin();
+  * {
+    .focus-mixin();
+  }
 }
 
 // ------------ UTILS ------------------
