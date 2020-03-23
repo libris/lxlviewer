@@ -62,8 +62,8 @@ export default {
     getDateString(date) {
       return moment(date).format('YYYY-MM-DD');
     },
-    changeSection(value) {
-      this.$router.push({ path: `/help/${value}` });
+    getSectionUri(value) {
+      return `/help/${value}`;
     },
   },
   updated() {
@@ -162,8 +162,9 @@ export default {
               <ul class="HelpSection-categoryList">
                 <li class="HelpSection-categoryListItem" v-for="(section, index) in value" 
                   :key="index" 
-                  v-bind:class="{'active': section.basename == activeSection }" 
-                  v-on:click="changeSection(section.basename)">{{section.title}}</li>
+                  v-bind:class="{'active': section.basename == activeSection }">
+                  <router-link :to="getSectionUri(section.basename)">{{section.title}}</router-link>
+                </li>
               </ul>
             </li>
           </ul>
