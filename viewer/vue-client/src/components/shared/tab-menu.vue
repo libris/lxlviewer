@@ -174,6 +174,17 @@ export default {
 
 <style lang="less">
 
+
+.user-is-tabbing {
+  .TabMenu {
+    &-tab a {
+      &:focus {
+        .focus-mixin-bg();
+      }
+    }
+  }
+}
+
 .TabMenu {
   display: inline-block;
   opacity: 1;
