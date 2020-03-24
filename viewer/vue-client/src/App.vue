@@ -519,18 +519,19 @@ body {
   outline: none;
 }
 
-.focus-mixin() {
-  @focus-color: #FFDD02;
-  outline: 2px solid @focus-color; //fallback for IE & Edge
-  outline: auto @focus-color;
-  background-color: @focus-color !important;
-  color: black !important;
-}
-
-.user-is-tabbing *:focus {
-  .focus-mixin();
-  * {
-    .focus-mixin();
+.user-is-tabbing {
+  a, button {
+    &:focus {
+      .focus-mixin-bg();
+      * {
+        .focus-mixin-bg();
+      }
+    }
+  }
+  input, textarea, img, select, .ItemEntity, .ItemLocal, .ItemSibling, .icon, .icon i, li {
+    &:focus {
+      .focus-mixin-border();
+    }
   }
 }
 
