@@ -520,7 +520,7 @@ body {
 }
 
 .user-is-tabbing {
-  a, button {
+  button, .MainNav-userDropdown, a, h1, h2, h3, h4, h5, span {
     &:focus {
       .focus-mixin-bg();
       * {
@@ -528,7 +528,7 @@ body {
       }
     }
   }
-  input, textarea, img, select, .ItemEntity, .ItemLocal, .ItemSibling, .icon, .icon i, li {
+  input, textarea, img, select, .ItemEntity, .ItemLocal, .ItemSibling, .icon, .icon i, li, i.fa {
     &:focus {
       .focus-mixin-border();
     }

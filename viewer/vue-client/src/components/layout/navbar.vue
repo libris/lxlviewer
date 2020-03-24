@@ -96,7 +96,6 @@ export default {
 <template>
   <nav class="NavBar" id="NavBar" aria-labelledby="service-name">
     <div class="NavBar-container container">
-      
       <div class="NavBar-brand">
         <router-link to="/" class="NavBar-brandLink">
           <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
