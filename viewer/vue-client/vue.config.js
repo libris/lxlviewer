@@ -1,6 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
+const {gitDescribe, gitDescribeSync} = require('git-describe');
 process.env.VUE_APP_VERSION = require('./package.json').version;
+process.env.VUE_APP_GIT_TAG = gitDescribeSync().tag;
+process.env.VUE_APP_GIT_HASH = gitDescribeSync().hash;
 
 module.exports = {
   publicPath: '/katalogisering/',

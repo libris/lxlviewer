@@ -20,6 +20,12 @@ export default {
       'settings',
       'user',
     ]),
+    version() {
+      return this.settings.gitInfo.tag !== 'null' ? this.settings.gitInfo.tag : this.settings.gitInfo.hash;
+    },
+    versionInfo() {
+      return `${this.environmentLabel.toUpperCase()} ${this.version}`;
+    },
     environmentLabel() {
       if (this.settings.environment !== 'prod') {
         return this.settings.environment;
@@ -40,10 +46,10 @@ export default {
           <router-link to="/" class="SearchBar-brandLink">
             <img class="SearchBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
           </router-link>
-          <router-link to="/" class="SearchBar-brandTitle" :title="`Version ${settings.version}`">
+          <router-link to="/" class="SearchBar-brandTitle" :title="`Version ${version}`">
             <span id="service-name">{{ settings.title }}</span>
             <span class="SearchBar-envLabel">
-            {{ environmentLabel }} {{ settings.version }}
+            {{ versionInfo }}
             </span>
           </router-link>
         </div>
@@ -149,7 +155,6 @@ export default {
     font-weight: bold;
     float: right;
     margin: -1em 0px 0px 0em;
-    text-transform: uppercase;
   }
 }
 
