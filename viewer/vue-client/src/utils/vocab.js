@@ -1,4 +1,4 @@
-import { isObject, uniq, isArray, find, each, isPlainObject, cloneDeep, uniqBy, forOwn } from 'lodash-es';
+import { isObject, uniq, isArray, find, sortBy, each, isPlainObject, cloneDeep, uniqBy, forOwn } from 'lodash-es';
 import * as httpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 
@@ -573,6 +573,7 @@ export function getTree(term, vocab, context, counter = 0, parentChainString = '
   const termObj = getTermObject(term, vocab, context);
   const treeNode = {
     id: term,
+    labels: termObj.labelByLang,
     sub: [],
     abstract: isAbstract(termObj, vocab, context),
     depth: counter,
@@ -588,10 +589,14 @@ export function getTree(term, vocab, context, counter = 0, parentChainString = '
 }
 
 export function flattenTree(termArray, vocab, context, language) {
-  return termArray.reduce((acc, current) => acc.concat(
-    [current],
-    flattenTree(current.sub, vocab, context, language),
-  ), []);
+  const flat = termArray.reduce((acc, current) => {
+    const sortedSub = sortBy(current.sub, o => o.labels[language]);
+    return acc.concat(
+      [current],
+      flattenTree(sortedSub, vocab, context, language),
+    );
+  }, []);
+  return flat;
 }
 
 export function printTree(term, vocab, context) {

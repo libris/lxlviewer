@@ -256,7 +256,7 @@ export default {
             tabindex="-1"
             :data-filter="option"
             :data-abstract="option.abstract"
-            :data-key="option">{{ option | labelByLang }}</span >
+            :data-key="option">{{ option | labelByLang }}</span>
         </li>
         <hr class="FilterSelect-dropdownDivider" v-show="options.priority.length > 0">
         <li class="FilterSelect-dropdownHeader" v-show="options.tree.length > 0 && options.priority.length > 0">

@@ -49,8 +49,8 @@ export default {
     },
   },
   methods: {
-    getFormattedSelectOption(term) {
-      return DisplayUtil.getFormattedSelectOption(term, this.settings, this.resources.vocab, this.resources.context);
+    getLabelWithTreeDepth(term) {
+      return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources.vocab, this.resources.context);
     },
     unlockEdit() {
       this.unlockedByUser = true;
@@ -118,7 +118,7 @@ export default {
           :value="term.id"
           :key="index"
           :disabled="term.abstract"
-          v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)"
+          v-html="getLabelWithTreeDepth(term, settings, resources.vocab, resources.context)"
           ></option>
       </select>
       <div class="ItemType-actions">

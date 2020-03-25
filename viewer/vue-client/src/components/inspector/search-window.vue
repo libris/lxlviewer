@@ -161,7 +161,7 @@ export default {
         const term = {};
         term.depth = classTree[i].depth;
         term.abstract = classTree[i].abstract;
-        term.label = this.getFormattedSelectOption(classTree[i]);
+        term.label = this.getLabelWithTreeDepth(classTree[i]);
         term.value = classTree[i].id;
         term.key = `${classTree[i].id}-${i}`;
         options.push(term);
@@ -203,8 +203,8 @@ export default {
     extract() {
       this.$emit('extract');
     },
-    getFormattedSelectOption(term) {
-      return DisplayUtil.getFormattedSelectOption(
+    getLabelWithTreeDepth(term) {
+      return DisplayUtil.getLabelWithTreeDepth(
         term, 
         this.settings, 
         this.resources.vocab, 
