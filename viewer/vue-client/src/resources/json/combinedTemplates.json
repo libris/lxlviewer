@@ -193,6 +193,151 @@
         }
       }
     },
+    "electronicComponentPartText": {
+      "label": "E-Artikel(?)",
+      "description": "Elektroniskt bidrag - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "technicalNote": [
+            {
+              "@type": "TechnicalNote",
+              "label": [ "" ]
+            }
+          ],
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Electronic",
+          "isPartOf": [
+            {
+              "@type": "Instance",
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": ""
+                }
+              ],
+              "provisionActivityStatement": "",
+              "instanceOf": {
+                "@type": "Work",
+                "contribution": [
+                  {
+                    "@type": "PrimaryContribution",
+                    "agent": {
+                      "@type": "Agent",
+                      "label": ""
+                    },
+                    "role": []
+                  }
+                ]
+              },
+              "identifiedBy": [
+                {
+                  "@type": "ISBN",
+                  "value": "",
+                  "qualifier": [ "" ]
+                },
+                {
+                  "@type": "ISSN",
+                  "value": ""
+                }
+              ]
+            }
+          ],
+          "issuanceType": "ComponentPart",
+          "mediaType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Unmediated"
+            }
+          ],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/OnlineResource"
+            },
+            {
+              "@id": "https://id.kb.se/marc/Online"
+            },
+            {
+              "@id": "https://id.kb.se/marc/OnlineResource"
+            }
+          ],
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "part": [ "" ],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "country": null,
+              "year": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Text",
+            "classification": [],
+            "contribution": [
+              {
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": []
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "genreForm": [],
+            "language": [],
+            "subject": [],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/Text"
+              }
+            ],
+            "intendedAudience": [],
+            "summary": [
+              {
+                "@type": "Summary",
+                "label": ""
+              }
+            ]
+          }
+        }
+      }
+    },
     "electronicMonographText": {
       "label": "E-bok",
       "description": "Elektroniskt utgiven monografi - RDA",
@@ -1129,6 +1274,147 @@
               "@type": "marc:LanguageNote",
               "label": ""
             }]
+          }
+        }
+      }
+    },
+    "printedComponentPartText": {
+      "label": "Artikel(?)",
+      "description": "Tryckt bidrag - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": [""]
+            }
+          ],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "technicalNote": [
+            {
+              "@type": "TechnicalNote",
+              "label": [
+                ""
+              ]
+            }
+          ],
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Print",
+          "isPartOf": [
+            {
+              "@type": "Instance",
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": ""
+                }
+              ],
+              "provisionActivityStatement": "",
+              "instanceOf": {
+                "@type": "Work",
+                "contribution": [
+                  {
+                    "@type": "PrimaryContribution",
+                    "agent": {
+                      "@type": "Agent",
+                      "label": ""
+                    },
+                    "role": []
+                  }
+                ]
+              },
+              "identifiedBy": [
+                {
+                  "@type": "ISBN",
+                  "value": "",
+                  "qualifier": [ "" ]
+                },
+                {
+                  "@type": "ISSN",
+                  "value": ""
+                }
+              ]
+            }
+          ],
+          "issuanceType": "ComponentPart",
+          "mediaType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Unmediated"
+            }
+          ],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Volume"
+            }
+          ],
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "part": [ "" ],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "country": null,
+              "year": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Text",
+            "classification": [],
+            "contribution": [
+              {
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": []
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "genreForm": [],
+            "language": [],
+            "subject": [],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/Text"
+              }
+            ],
+            "intendedAudience": [],
+            "summary": [
+              {
+                "@type": "Summary",
+                "label": ""
+              }
+            ]
           }
         }
       }
