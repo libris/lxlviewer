@@ -590,9 +590,7 @@ export function getTree(term, vocab, context, counter = 0, parentChainString = '
 
 export function flattenTree(termArray, vocab, context, language) {
   const flat = termArray.reduce((acc, current) => {
-    const sortedSub = sortBy(current.sub, (o) => {
-      return o.labels && o.labels[language]
-    });
+    const sortedSub = sortBy(current.sub, o => o.labels && o.labels[language]);
     return acc.concat(
       [current],
       flattenTree(sortedSub, vocab, context, language),
