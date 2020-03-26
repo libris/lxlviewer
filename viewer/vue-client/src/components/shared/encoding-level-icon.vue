@@ -47,28 +47,28 @@ export default {
         case 'https://id.kb.se/marc/MinimalLevel':
           icon.label = 'B';
           icon.style = {
-            color: '#0076BA',
+            color: '#205999',
             'background-color': '#D4E3EF',
           };
           break;
         case 'https://id.kb.se/marc/AbbreviatedLevel':
           icon.label = 'M';
           icon.style = {
-            color: '#3B8D47',
+            color: '#196f25',
             'background-color': '#D9EBDC',
           };
           break;
         case 'https://id.kb.se/marc/PrepublicationLevel':
           icon.label = 'F';
           icon.style = {
-            color: '#d46126',
+            color: '#a14311',
             'background-color': '#FAE9DB',
           };
           break;
         case 'https://id.kb.se/marc/PartialPreliminaryLevel':
           icon.label = 'P';
           icon.style = {
-            color: '#CD534C',
+            color: '#972222',
             'background-color': '#F5DDDC',
           };
           break;
@@ -109,8 +109,8 @@ export default {
 
 <style lang="less">
 .EncodingLevelIcon {
-  background-color: @grey-very-light-transparent;
-  color: @grey-transparent;
+  background-color: @grey-lighter;
+  color: #444;
   display: flex;
   justify-content: center;
   align-items: baseline;
