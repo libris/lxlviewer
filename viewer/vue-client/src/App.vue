@@ -680,8 +680,8 @@ h1 {
     }
 
     .user-is-tabbing &:focus + .customCheckbox-icon {
-      outline: 2px solid #8cc9c9; //fallback for IE & Edge
-      outline: auto darkcyan;
+      outline: 2px solid @focus-color-border; //fallback for IE & Edge
+      outline: auto @focus-color-border;
     }
   }
 

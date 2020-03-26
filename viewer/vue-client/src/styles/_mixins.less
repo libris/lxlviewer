@@ -1,12 +1,16 @@
 
 .focus-mixin-border() {
-  outline: 2px solid @focus-color !important; //fallback for IE & Edge
+  outline: 2px solid @focus-color-border !important; //fallback for IE & Edge
   background-color: unset !important;
 }
 
 .focus-mixin-bg() {
-  background-color: @focus-color !important;
+  border-color: @focus-color-bg !important;
+  background-color: @focus-color-bg !important;
   color: black !important;
+  * {
+    color: black !important;
+  }
 }
 
 .panel-mixin(@color) {
