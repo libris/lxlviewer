@@ -573,7 +573,7 @@ export function getTree(term, vocab, context, counter = 0, parentChainString = '
   const termObj = getTermObject(term, vocab, context);
   const treeNode = {
     id: term,
-    labels: termObj.labelByLang,
+    labels: termObj.labelByLang || termObj.prefLabelByLang,
     sub: [],
     abstract: isAbstract(termObj, vocab, context),
     depth: counter,
@@ -590,7 +590,7 @@ export function getTree(term, vocab, context, counter = 0, parentChainString = '
 
 export function flattenTree(termArray, vocab, context, language) {
   const flat = termArray.reduce((acc, current) => {
-    const sortedSub = sortBy(current.sub, o => o.labels[language]);
+    const sortedSub = sortBy(current.sub, o => o.labels && o.labels[language]);
     return acc.concat(
       [current],
       flattenTree(sortedSub, vocab, context, language),
