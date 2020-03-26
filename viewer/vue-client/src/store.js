@@ -87,7 +87,7 @@ const store = new Vuex.Store({
       environment: process.env.VUE_APP_ENV_LABEL || 'local',
       version: process.env.VUE_APP_VERSION,
       gitInfo: {
-        tag: process.env.VUE_APP_GIT_TAG,
+        tag: process.env.VUE_APP_GIT_TAG !== 'null' ? process.env.VUE_APP_GIT_TAG : null,
         hash: process.env.VUE_APP_GIT_HASH,
       },
       dataPath: process.env.VUE_APP_DATA_PATH || process.env.VUE_APP_API_PATH,
