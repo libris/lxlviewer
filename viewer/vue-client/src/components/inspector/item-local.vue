@@ -1,5 +1,5 @@
 <script>
-import { each, cloneDeep, get } from 'lodash-es';
+import { cloneDeep, get } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as httpUtil from '@/utils/http';
@@ -144,16 +144,14 @@ export default {
       return this.item;
     },
     isEmpty() {
-      let bEmpty = true;
-      // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
-      each(this.item, (value, key) => {
-        if (key !== '@type' && key !== '_uid') {
-          if (typeof value !== 'undefined') {
-            bEmpty = false;
-          }
-        }
-      });
-      return bEmpty;
+      const itemKeys = Object.keys(this.item);
+      if (itemKeys.length > 1) {
+        return false;
+      }
+      if (itemKeys.length === 1 && this.showTypeChanger) {
+        return false;
+      }
+      return true;
     },
     isLastAdded() {
       if (this.inspector.status.lastAdded === this.getPath) {

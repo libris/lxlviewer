@@ -465,12 +465,7 @@ export default {
           '@id': this.user.getActiveLibraryUri(),
         };
       }
-
-      if (this.path === 'mainEntity.instanceOf') {
-        this.addSibling(obj);
-      } else {
-        this.addItem(obj);
-      }
+      this.addItem(obj);
     },
     addType(typeId) {
       const shortenedType = StringUtil.convertToPrefix(typeId, this.resources.context);
