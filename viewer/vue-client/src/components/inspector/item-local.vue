@@ -1,5 +1,5 @@
 <script>
-import { each, cloneDeep, get } from 'lodash-es';
+import { cloneDeep, get } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as httpUtil from '@/utils/http';
@@ -147,7 +147,8 @@ export default {
       const itemKeys = Object.keys(this.item);
       if (itemKeys.length > 1) {
         return false;
-      } else if (itemKeys.length === 1 && this.showTypeChanger) {
+      }
+      if (itemKeys.length === 1 && this.showTypeChanger) {
         return false;
       }
       return true;
