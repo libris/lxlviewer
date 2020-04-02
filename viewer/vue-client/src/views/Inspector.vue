@@ -925,7 +925,7 @@ export default {
 <style lang="less">
 
 .Inspector {
-  padding: 3rem 0;
+  padding: 4rem 0;
 
   &-spinner {
     margin-top: 2em;

@@ -121,7 +121,7 @@ export default {
 <style lang="less">
 
 .Footer {
-  padding: 25px 10px;
+  padding: 2em 10px;
   background-color: @bg-footer;
   color: @text-footer;  
 

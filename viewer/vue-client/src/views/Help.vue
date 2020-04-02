@@ -188,6 +188,8 @@ export default {
 <style lang="less">
 
 .HelpSection {
+  padding-bottom: 2rem;
+  
   &-article {
     padding: 30px;
     height: 100%;

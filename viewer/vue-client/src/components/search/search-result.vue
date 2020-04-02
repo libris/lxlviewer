@@ -106,10 +106,10 @@ export default {
 
 <style lang="less">
 .SearchResult {
-  padding: 10px;
+  padding: 2rem 0;
 
   @media (min-width: @screen-md) {
-    padding: 0;
+    padding: 0 0 2rem 0;
   }
 
   &-loadingText {
