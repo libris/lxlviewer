@@ -200,7 +200,7 @@
       <tr>
         <th><div id="${cat}-${tag}-${key}">${key}</div></th>
         <td>
-          % for k, v in sorted((subdfn or {'': 'ignored'}).items())
+          % for k, v in sorted((subdfn or {'ignored': True}).items())
             % if not k.startswith('TODO') and v
               <i>${k}</i>: ${show_value(cat, key, k, v)}
               <br />
