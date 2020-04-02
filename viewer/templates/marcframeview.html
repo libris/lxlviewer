@@ -154,7 +154,8 @@
 % endblock
 
 % macro show_value(cat, tag_or_code, key, value)
-  % if (not isinstance(value, unicode) or not value.startswith(('@', '_'))
+  % if (key.startswith('TODO'))
+  % elif (not isinstance(value, unicode) or not value.startswith(('@', '_'))
       ) and not isinstance(value, bool) and key in (
         'aboutType', 'link', 'addLink', 'property', 'addProperty', 'resourceType')
     <a href="/vocab/#${value}" class="${key}">${value}</a>
@@ -169,21 +170,23 @@
   % elif isinstance(value, dict)
     <table class="table table-condensed table-striped">
         % for key, val in sorted(value.items())
-        <tr>
-            <th>${key}</th>
-            <td>
-              % if isinstance(val, dict)
-                % for k, v in sorted(val.items())
-                  % if not k.startswith('TODO:')
-                  <i>${k}</i>: ${show_value(cat, key, k, v)}
-                  <br />
-                  % endif
-                % endfor
-              % else
-                ${show_value(None, None, key, val)}
-              % endif
-            </td>
-        </tr>
+          % if not key.startswith('TODO')
+          <tr>
+              <th>${key}</th>
+              <td>
+                % if isinstance(val, dict)
+                  % for k, v in sorted(val.items())
+                    % if not k.startswith('TODO')
+                    <i>${k}</i>: ${show_value(cat, key, k, v)}
+                    <br />
+                    % endif
+                  % endfor
+                % else
+                  ${show_value(None, None, key, val)}
+                % endif
+              </td>
+          </tr>
+          % endif
         % endfor
     </table>
   % else
@@ -197,8 +200,8 @@
       <tr>
         <th><div id="${cat}-${tag}-${key}">${key}</div></th>
         <td>
-          %for k, v in sorted((subdfn or {'': 'ignored'}).items())
-            % if not k.startswith('TODO:') and v
+          % for k, v in sorted((subdfn or {'': 'ignored'}).items())
+            % if not k.startswith('TODO') and v
               <i>${k}</i>: ${show_value(cat, key, k, v)}
               <br />
             % endif
