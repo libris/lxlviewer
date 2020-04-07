@@ -2651,10 +2651,7 @@
           "marc:subordinateUnit": [ "" ],
           "activityStartDate": "",
           "activityEndDate": "",
-          "hasHistoricalData": [{
-            "@type": "AdministrativeHistoryNote",
-            "label": ""
-          }],
+          "description": [""],
           "hasVariant": [
             {
               "@type": "Jurisdiction",
@@ -2715,10 +2712,7 @@
           "marc:subordinateUnit": [ "" ],
           "activityStartDate": "",
           "activityEndDate": "",
-          "hasHistoricalData": [{
-            "@type": "AdministrativeHistoryNote",
-            "label": ""
-          }],
+          "description": [""],
           "hasVariant": [
             {
             "@type": "Organization",
@@ -2786,6 +2780,7 @@
           "seeAlso": [],
           "fieldOfActivity": [],
           "hasOccupation": [],
+          "description": [""],
           "identifiedBy": [{
             "@type": "Identifier",
             "typeNote": "isni",
