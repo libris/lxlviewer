@@ -440,16 +440,14 @@
                     "agent": {
                       "@type": "Agent",
                       "label": ""
-                    },
-                    "role": []
+                    }
                   }
                 ]
               },
               "identifiedBy": [
                 {
                   "@type": "ISBN",
-                  "value": "",
-                  "qualifier": [ "" ]
+                  "value": ""
                 },
                 {
                   "@type": "ISSN",
@@ -513,7 +511,6 @@
                 "@id": "https://id.kb.se/term/rda/Text"
               }
             ],
-            "intendedAudience": [],
             "summary": [
               {
                 "@type": "Summary",
@@ -1527,16 +1524,14 @@
                     "agent": {
                       "@type": "Agent",
                       "label": ""
-                    },
-                    "role": []
+                    }
                   }
                 ]
               },
               "identifiedBy": [
                 {
                   "@type": "ISBN",
-                  "value": "",
-                  "qualifier": [ "" ]
+                  "value": ""
                 },
                 {
                   "@type": "ISSN",
@@ -1594,7 +1589,6 @@
                 "@id": "https://id.kb.se/term/rda/Text"
               }
             ],
-            "intendedAudience": [],
             "summary": [
               {
                 "@type": "Summary",
