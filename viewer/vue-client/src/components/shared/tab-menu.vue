@@ -9,7 +9,7 @@
     * active    - Expects a string that it will match against the id on the tab-object and put as active.
     * link      - If true, component expects tab-objects to have a link prop. 
                   It will then render a <router-link> instead of emitting an event.
-    * lookStyle - Expects a string which will be used to "theme" the component.
+    * lookStyle - Expects a string which will be used to "theme" the component (dark/light).    
 
   Tab-Objects:
     A tab object needs two things.
@@ -20,11 +20,16 @@
       * html        -  (Optional) Raw html for the item, will replace 'text'
       * disabled    -  (Optional) Boolean - disables the tab
       * tooltipText -  (Optional) Display given text on tab hover or focus
+      * badge       -  (Optional) An object containing badge parameters to be displayed next to a tab
 
     Example tab-object:
       {'id': 'MyTab1', 'text': 'My tab text' }
       {'id': 'MyTab1', 'html': 'My <strong>tab</strong> text' }
       {'id': 'MyTab1', 'text': 'My tab text', 'disabled': true, 'tooltipText': 'Access denied' }
+      {'id': 'MyTab1', 'text': 'My tab text', 'badge': {
+        value: 2,
+        type: 'accent'
+      } }
 
   The go-event:
     If a tab is clicked, it will emit an event with the id on the tab.
@@ -47,7 +52,7 @@ export default {
     },
     lookStyle: {
       type: String,
-      default: 'underline',
+      default: 'light',
     },
     active: {
       type: String,
@@ -67,9 +72,6 @@ export default {
       this.$emit('go', name);
     },
     moveUnderline() {
-      if (this.lookStyle !== 'underline') {
-        return;
-      }
       this.$nextTick(() => {
         const $activeTab = this.$el.querySelector('.is-active');
         const $tabList = this.$refs.tablist;
@@ -80,9 +82,10 @@ export default {
           for (let i = 0; i < listElements.length; i++) {
             listWidth += listElements[i].clientWidth;
           }
-          const padding = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
-          const left = `${parseInt((listWidth * -1) + $activeTab.offsetLeft + (padding * 2) - 4)}px`;
-          const width = `${parseInt($activeTab.clientWidth - (padding * 2))}px`;
+          const paddingLeft = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
+          const paddingRight = parseInt(window.getComputedStyle($activeTab).paddingRight.replace('px', ''));
+          const left = `${parseInt((listWidth * -1) + $activeTab.offsetLeft + paddingLeft + 5)}px`;
+          const width = `${parseInt($activeTab.clientWidth - (paddingLeft + paddingRight))}px`;
           $underline.style.width = width;
           $underline.style.left = left;
         }
@@ -95,6 +98,7 @@ export default {
     },
   },
   components: {
+
   },
   watch: {
     '$route.fullPath'(value, oldValue) {
@@ -104,7 +108,7 @@ export default {
         });
       }
     },
-    tabs() {
+    tabs() {      
       this.moveUnderline();
     },
     active(value, oldValue) {
@@ -145,15 +149,15 @@ export default {
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
       </li>
-      <hr v-show="hasActive" v-if="lookStyle === 'underline'" class="TabMenu-underline" ref="underline">
+      <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
     </ul>
     <ul v-else class="TabMenu-tabList" ref="tablist">
       <li class="TabMenu-tab" 
-        v-for="item in tabs" 
+        v-for="item in tabs"
+        :class="{'is-active': active === item.id, 'is-disabled': item.disabled, 'has-badge': item.badge && item.badge.value }"
         :key="item.id">
           <router-link class="TabMenu-link"
-            :event="item.disabled ? null : 'click'"
-            :class="{'is-active': active === item.id, 'is-disabled': item.disabled }" 
+            :event="item.disabled ? null : 'click'"            
             :to="item.link"
             tabindex="0"
             v-tooltip="{
@@ -164,8 +168,9 @@ export default {
             <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
             <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
           </router-link>
+          <span v-if="item.badge" class="badge UserCare-badge" :class="'badge-' + item.badge.type">{{ item.badge.value }}</span>
       </li>
-      <hr v-show="hasActive" v-if="lookStyle === 'underline'" class="TabMenu-underline" ref="underline">
+      <hr v-show="hasActive" class="TabMenu-underline hidden-xs" ref="underline">
     </ul>
   </div>
 </template>
@@ -178,33 +183,55 @@ export default {
   transition: opacity 0.25s ease;
   position: relative;
 
-  &-link {
-    .style-background & {
-      color: @white;
-      text-decoration: none;
-      font-size: unset;
-      text-align: center;
-      width: 100%;
-      @media screen and (min-width: @screen-sm) {
-        font-size: 15px;
-        font-size: 1.5rem;
-        padding: 8px 1em;
-      }
+  &-link,
+  &-tabText {
+    color: @grey-dark;
+    
+    .style-dark & {
+      color: @grey-light;
+    }
 
-      &:not(.is-disabled) {
-        &:hover {
-          background-color: darken(@brand-primary, 15%);
+    .TabMenu-tab:not(.is-disabled) & {
+      &:hover,
+      &:focus {
+        color: @brand-primary;
+        .style-dark & {
+          color: @white;
         }
       }
-      &.is-active {
-        background-color: @brand-primary !important;
-      }
-
-      &.is-disabled {
-        color: @grey;
-        cursor: not-allowed;
+    }
+    .is-active & {
+      color: @black;
+      .style-dark & {
+        color: @white;
       }
     }
+
+    .TabMenu-tab.is-disabled & {
+      color: @grey-light;
+      cursor: not-allowed;      
+      .style-dark & {
+        color: @grey-darker;
+      }
+      
+    }
+  }
+
+  &-link {    
+    display: inline-block;
+    text-decoration: none;
+    font-size: unset;
+    position: relative;
+
+    &:hover,
+    &:focus {
+      text-decoration: none;
+    }
+    
+    @media screen and (min-width: @screen-sm) {
+      font-size: 15px;
+      font-size: 1.5rem;
+    }    
   }
 
   &-tab {
@@ -213,62 +240,43 @@ export default {
     text-decoration: none;
     position: relative;
     display: inline-block;
-    height: 100%;
-    font-weight: 600;
-    margin: 5px 0px;
+    height: 100%;    
     text-transform: uppercase;
     transition: color 0.2s ease;
     white-space: nowrap;
-
-    .style-background & {
-      display: flex;
-      align-items: center;
-      justify-content: center;      
-      flex-grow: 1;
-      padding: 0;      
-      margin: 0;
-      transition: background-color 0.25s ease;
+    margin: 5px 0;
+    padding: 0 4px;
+    
+    @media screen and (min-width: @screen-sm) {
+      padding: 0 10px;
+      
+      &.has-badge {
+        padding-right: 30px;
+      }
     }
-    .style-underline & {
-      padding: 5px 10px;
-      color: @grey-dark;
-      font-size: 18px;
-      font-size: 1.6rem;
-  
-      &.is-active {
-        color: @black;
-        text-decoration: none;
-      }
 
-      &:not(.is-disabled) {
-        &:hover,
-        &:focus {
-          color: @brand-primary;
-          text-decoration: none;
-        }
-      }
+    .badge {
+      position: absolute;
+      top: 3px;
+      right: -5px;
 
-      &.is-disabled {
-        color: @grey-light;
-        cursor: not-allowed;
+      @media screen and (min-width: @screen-sm) {
+        top: calc(50% - 15px);
+        right: 6px;
       }
     }
   }
 
-  &.style-background {
-    width: 100%;
-    height: 100%;
+  &-tabText {
+    display: inline-block;
+    margin: 5px 0;
+    font-weight: 600;
+    font-size: 18px;
+    font-size: 1.6rem;
   }
 
   &-tabList {
-    .style-underline & {
-      margin: 10px 0 10px -10px;
-    }
-    .style-background & {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
+    margin: 10px 0 10px -10px;    
     height: 100%;
     padding: 0;
     white-space: nowrap;
@@ -284,6 +292,9 @@ export default {
     min-width: 5px;
     border: none;
     background-color: @brand-primary;
+    .style-dark & {
+      background-color: #f7a07b;
+    }    
   }
 
   &-linkContainer {
