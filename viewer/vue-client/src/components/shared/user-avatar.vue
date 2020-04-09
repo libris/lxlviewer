@@ -7,6 +7,14 @@ export default {
       type: Number,
       default: 32,
     },
+    appearance: {
+      type: String,
+      default: 'light',
+    },
+    highlight: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -32,8 +40,8 @@ export default {
     },
     fontSize() {
       const calcSize = parseInt(this.size * 0.35);
-      if (calcSize <= 8) {
-        return 8;
+      if (calcSize <= 10) {
+        return 10;
       }
       return calcSize;
     },
@@ -41,9 +49,22 @@ export default {
 };
 </script>
 <template>
-  <div class="UserAvatar" :style="{ width: `${size}px`, height: `${size}px` }">
-    <img v-if="hasAvatar" :style="{ width: `${size}px`, height: `${size}px` }" class="UserAvatar-gravatar" @error="hasAvatar = false" :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=404&s=${size*2}`" alt="Avatar" />
-    <span v-if="!hasAvatar" class="UserAvatar-no-gravatar" :style="{ fontSize: `${fontSize}pt` }">
+  <div 
+    class="UserAvatar" 
+    :class="[this.appearance]"
+    :style="{ width: `${size}px`, height: `${size}px` }">
+    <img 
+      v-if="hasAvatar" 
+      class="UserAvatar-gravatar" 
+      alt="Avatar" 
+      :style="{ width: `${size}px`, height: `${size}px` }" 
+      :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=404&s=${size*2}`" 
+      @error="hasAvatar = false" />
+    <span 
+      v-if="!hasAvatar" 
+      class="UserAvatar-no-gravatar" 
+      :class="{'highlight': this.highlight}"
+      :style="{ fontSize: `${fontSize}pt` }">
       {{ initials }}
     </span>
   </div>
@@ -58,10 +79,13 @@ export default {
   flex-direction: column;
   align-items: center;
   border-radius: 50%;
-  background-color: @brand-accent2;
+  border: 1px solid @grey-light;
+  margin-right: 4px;
 
-  &-gravatar {
+  &.dark {
+    border-color: @grey-dark;
   }
+
   &-no-gravatar {
     height: 100%;
     width: 100%;
@@ -71,7 +95,18 @@ export default {
     justify-content: center;
     user-select: none;
     text-transform: uppercase;
-    color: #fff;
+    border-color: @grey-light;
+    color: @grey-light;
+    
+    &.highlight {
+      color: @white;
+      border-color: @white;
+    }
+
+    .dark & {
+      border-color: @grey-dark;
+      color: @grey-dark;
+    }
   }
 }
 
