@@ -416,6 +416,10 @@
     "agent": null,
     "role": []
   },
+  "Role": {
+    "@type": "Role",
+    "label": ""
+  },
   "ComplexSubject": {
     "@type": "ComplexSubject",
     "termComponentList": [],
