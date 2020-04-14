@@ -47,7 +47,7 @@
     "mainTitle": ""
   },
   "RunningTitle": {
-    "@type": "AbbreviatedTitle",
+    "@type": "RunningTitle",
     "mainTitle": ""
   },
   "SpineTitle": {
