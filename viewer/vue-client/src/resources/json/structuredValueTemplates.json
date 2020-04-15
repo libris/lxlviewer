@@ -16,6 +16,10 @@
     "@type": "CaptionTitle",
     "mainTitle": ""
   },
+  "CollectiveTitle": {
+    "@type": "CollectiveTitle",
+    "mainTitle": ""
+  },
   "CoverTitle": {
     "@type": "CoverTitle",
     "mainTitle": ""
@@ -43,7 +47,7 @@
     "mainTitle": ""
   },
   "RunningTitle": {
-    "@type": "AbbreviatedTitle",
+    "@type": "RunningTitle",
     "mainTitle": ""
   },
   "SpineTitle": {
@@ -66,6 +70,10 @@
     "partNumber": [
       ""
     ]
+  },
+  "TranslatedTitle": {
+    "@type": "TranslatedTitle",
+    "mainTitle": ""
   },
   "Identifier": {
     "@type": "Identifier",
