@@ -98,7 +98,7 @@ export default {
     },
     hasIcons() {
       return this.tabs.some(el => el.icon);
-    }
+    },
   },
   components: {
 
