@@ -96,6 +96,9 @@ export default {
     hasActive() {
       return this.tabs.some(el => el.id === this.active);
     },
+    hasIcons() {
+      return this.tabs.some(el => el.icon);
+    }
   },
   components: {
 
@@ -131,7 +134,7 @@ export default {
 </script>
 
 <template>
-  <div class="TabMenu" :class="`style-${lookStyle}`">
+  <div class="TabMenu" :class="[`style-${lookStyle}`, {'has-icons': hasIcons }]">
     <ul v-if="!link" class="TabMenu-tabList" role="tablist" ref="tablist">
       <li class="TabMenu-tab"
         v-for="item in tabs" 
@@ -245,11 +248,24 @@ export default {
     transition: color 0.2s ease;
     white-space: nowrap;
     margin: 5px 0;
-    padding: 0 4px;
+    padding: 0 10px;
+
+    .has-icons & {
+      padding: 0 5px;
+      &.is-active {
+        background-color: @brand-primary;
+        border-radius: 4px;
+      }
+    }
     
     @media screen and (min-width: @screen-sm) {
-      padding: 0 10px;
-      
+      .has-icons & {
+        padding: 0 10px;        
+        &.is-active {        
+          background-color: transparent;
+          border-radius: 0;
+        }
+      }
       &.has-badge {
         padding-right: 30px;
       }
@@ -257,8 +273,8 @@ export default {
 
     .badge {
       position: absolute;
-      top: 3px;
-      right: -5px;
+      top: 1px;
+      right: 1px;
 
       @media screen and (min-width: @screen-sm) {
         top: calc(50% - 15px);
@@ -280,6 +296,12 @@ export default {
     height: 100%;
     padding: 0;
     white-space: nowrap;
+
+    @media screen and (max-width: @screen-sm) {
+      .has-icons & {
+        margin-left: -15px;
+      }
+    }
   }
 
   &-underline {
