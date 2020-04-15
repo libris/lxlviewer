@@ -80,7 +80,10 @@ export default {
   align-items: center;
   border-radius: 50%;
   border: 1px solid @grey-light;
-  margin-right: 4px;
+
+  @media screen and (min-width: @screen-md) {
+    margin-right: 4px;
+  }
 
   &.dark {
     border-color: @grey-dark;
