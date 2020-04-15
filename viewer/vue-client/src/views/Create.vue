@@ -213,6 +213,8 @@ export default {
 
 <style lang="less">
 .Create {
+  padding-bottom: 2rem;
+
   &-title {
   }
   &-cards {

@@ -223,9 +223,7 @@ h4 {
 
 .MainContent {
   flex: 1 0 auto;
-  &.sticky-is-active {
-  }
-
+  
   &.container-fluid {
     margin-right: 0px;
     margin-left: 0px;
