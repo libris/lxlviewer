@@ -1299,39 +1299,50 @@
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Map",
           "issuanceType": "Monograph",
-          "hasTitle": [{
+          "hasTitle": [
+            {
               "@type": "Title",
               "mainTitle": "",
               "subtitle": ""
             }
           ],
           "responsibilityStatement": "",
-          "identifiedBy": [{
-            "@type": "ISBN",
-            "value": "",
-            "qualifier": ""
-          }],
-          "editionStatement": [""],
-          "publication": [],
-          "marc:primaryProvisionActivity": {
-            "@type": "PrimaryPublication",
-            "country": null,
-            "marc:publicationStatus": null,
-            "otherYear": "",
-            "year": ""
-          },
-          "manufacture": [{
-            "@type": "Manufacture",
-            "agent": {
-              "@type": "Agent",
-              "label": ""
-            },
-            "date": "",
-            "place": {
-              "@type": "Place",
-              "label": ""
+          "identifiedBy": [
+            {
+              "@type": "ISBN",
+              "value": "",
+              "qualifier": ""
             }
-          }],
+          ],
+          "editionStatement": [""],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              },
+              "date": "",
+              "place": {
+                "@type": "Place",
+                "label": ""
+              }
+            }
+          ],
+          "manufacture": [
+            {
+              "@type": "Manufacture",
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              },
+              "date": "",
+              "place": {
+                "@type": "Place",
+                "label": ""
+              }
+            }
+          ],
           "marc:relief": [],
           "productionMethod": [
             {
@@ -1351,10 +1362,12 @@
               "@id": "https://id.kb.se/marc/Multicolored"
             }
           ],
-          "extent": [{
-            "@type": "Extent",
-            "label": "1 karta"
-          }],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": "1 karta"
+            }
+          ],
           "genreForm": [
             {
               "@id": "https://id.kb.se/marc/MapATwoDimensionalMap"
@@ -1368,10 +1381,12 @@
             "@type": "Dimensions",
             "label": ""
           },
-          "hasNote": [{
-            "@type": "Note",
-            "label": ""
-          }],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
           "tableOfContents": [
             {
               "@type": "TableOfContents",
