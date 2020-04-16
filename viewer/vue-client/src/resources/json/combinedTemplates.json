@@ -633,6 +633,17 @@
             "@type": "Note",
             "label": ""
           }],
+          "associatedMedia": [
+            {
+              "@type": "MediaObject",
+              "uri": [
+                ""
+              ],
+              "marc:publicNote": [
+                ""
+              ]
+            }
+          ],
           "digitalCharacteristic": [
             {
               "@type": "EncodingFormat",
