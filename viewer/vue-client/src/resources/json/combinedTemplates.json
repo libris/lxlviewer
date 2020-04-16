@@ -1934,7 +1934,8 @@
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Print",
           "issuanceType": "Monograph",
-          "hasTitle": [{
+          "hasTitle": [
+            {
               "@type": "Title",
               "mainTitle": "",
               "subtitle": ""
@@ -1983,7 +1984,8 @@
               }
             }
           ],
-          "manufacture": [{
+          "manufacture": [
+            {
             "@type": "Manufacture",
             "agent": [{
               "@type": "Agent",
@@ -1994,17 +1996,22 @@
               "@type": "Place",
               "label": ""
             }]
-          }],
-          "copyright": [{
+          }
+        ],
+          "copyright": [
+            {
             "@type": "Copyright",
             "date": ""
-          }],
+          }
+        ],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
-          "extent": [{
-            "@type": "Extent",
-            "label": ""
-          }],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
           "hasDuration": [
             {
               "@type": "Duration",
@@ -2047,10 +2054,12 @@
               "seriesStatement": [""]
             }
           ],
-          "hasNote": [{
+          "hasNote": [
+            {
               "@type": "Note",
               "label": ""
-          }],
+            }
+          ],
           "musicFormat": [
             {
               "@type": "MusicFormat",
