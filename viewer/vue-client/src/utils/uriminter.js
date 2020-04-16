@@ -7,6 +7,12 @@ function asArray(value) {
   return value != null ? [value] : [];
 }
 
+// Additional encoding for following special chars: []()!'*
+// in order to sync with backend encoded uris
+function fixedEncodeURIComponent(str) {
+  return encodeURIComponent(str).replace(/[!'()*]/g, c => `%${c.charCodeAt(0).toString(16)}`);
+}
+
 export default class URIMinter {
   constructor(containers) {
     this.containerMap = {};
@@ -71,7 +77,7 @@ export default class URIMinter {
       throw new Error(`Missing slugProperty ${container.slugProperty} for ${mainEntity[ID]}`);
     }
 
-    const uri = container[ID] + encodeURIComponent(slugValue);
+    const uri = container[ID] + fixedEncodeURIComponent(slugValue);
 
     let sameAs = mainEntity.sameAs ? asArray(mainEntity.sameAs) : [];
     if (!sameAs.find(it => it[ID] === mainEntity[ID])) {
