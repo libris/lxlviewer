@@ -64,7 +64,7 @@ export default {
     <div class="UserSettings-content" v-if="!compact">
       <div class="UserSettings-info UserInfo">
         <div class="UserInfo-avatar">
-          <user-avatar :size="150" />
+          <user-avatar :size="150" :appearance="'dark'" />
         </div>
         <p class="UserInfo-name">
           <strong class="UserInfo-label uppercaseHeading--bold">{{"Name" | translatePhrase}}</strong><br/>
@@ -160,7 +160,7 @@ export default {
   padding: 0;
 
   @media (min-width: @screen-sm) {
-    padding: 1em 0 1em 1em;
+    padding: 1em 0 1em 0;
   }
 
   &-title {
@@ -182,7 +182,6 @@ export default {
       border-radius: 0;
       font-size: 14px;
       font-size: 1.4rem;
-      box-shadow: none;
       border: 1px solid @grey-lighter;
 
       & select {
@@ -233,17 +232,13 @@ export default {
 
   &.in-menu {
     cursor: initial;
-    top: 3em;
+    top: 4rem;
     position: absolute;
     right: 0;
     left: auto;
     z-index: @dropdown-z;
     padding-top: 0.25em;
     padding-left: 0;
-
-    @media (min-width: @screen-sm) {
-      top: 2em;
-    }
 
     & ul {
       padding: 0;
