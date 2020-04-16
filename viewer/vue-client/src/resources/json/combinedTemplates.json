@@ -559,18 +559,21 @@
           "@id": "https://id.kb.se/TEMPID#it",
           "@type": "Electronic",
           "issuanceType": "Monograph",
-          "hasTitle": [{
+          "hasTitle": [
+            {
               "@type": "Title",
               "mainTitle": "",
               "subtitle": ""
             }
           ],
           "responsibilityStatement": "",
-          "identifiedBy": [{
-            "@type": "ISBN",
-            "value": "",
-            "qualifier": ""
-          }],
+          "identifiedBy": [
+            {
+              "@type": "ISBN",
+              "value": "",
+              "qualifier": ""
+            }
+          ],
           "editionStatement": [""],
           "publication": [
             {
@@ -588,20 +591,24 @@
               }
             }
           ],
-          "copyright": [{
-            "@type": "Copyright",
-            "date": ""
-          }],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": ""
+            }
+          ],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Computer"}],
           "carrierType": [
             {"@id": "https://id.kb.se/term/rda/OnlineResource"},
             {"@id": "https://id.kb.se/marc/Online"},
             {"@id": "https://id.kb.se/marc/OnlineResource"}
           ],
-          "extent": [{
-            "@type": "Extent",
-            "label": ""
-          }],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
           "marc:otherPhysicalDetails": "",
           "seriesMembership": [
             {
@@ -629,10 +636,12 @@
               "seriesStatement": [""]
             }
           ],
-          "hasNote": [{
-            "@type": "Note",
-            "label": ""
-          }],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
           "associatedMedia": [
             {
               "@type": "MediaObject",
@@ -657,7 +666,8 @@
               "@id": "https://id.kb.se/language/swe"
             }],
             "genreForm": [],
-            "classification": [{
+            "classification": [
+              {
                 "@type": "ClassificationDdc",
                 "code": "",
                 "edition": "full",
@@ -674,7 +684,8 @@
                 }
               }
             ],
-            "contribution": [{
+            "contribution": [
+              {
                 "@type": "PrimaryContribution",
                 "agent": null,
                 "role": [{
