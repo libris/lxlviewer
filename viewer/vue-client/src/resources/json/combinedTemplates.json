@@ -2013,7 +2013,7 @@
           ],
           "accompaniedBy": [
             {
-              "@type": "Resource",
+              "@type": "Instance",
               "label": ""
             }
           ],
