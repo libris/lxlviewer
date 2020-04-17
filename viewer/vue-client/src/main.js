@@ -172,6 +172,7 @@ new Vue({
   mounted() {
     this.$nextTick(() => {
       this.verifyConfig();
+      this.loadTemplates();
       window.addEventListener('focus', () => {
         this.syncUserStorage();
       });
@@ -286,6 +287,13 @@ new Vue({
       }, (error) => {
         console.log(error);
       });
+    },
+    loadTemplates() {
+      const templates = {
+        base: require('@/resources/json/baseTemplates'),
+        combined: require('@/resources/json/combinedTemplates'),
+      };
+      store.dispatch('setTemplates', templates);
     },
     getLdDependencies() {
       const promiseArray = [];

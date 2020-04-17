@@ -1,6 +1,7 @@
 <script>
 import { sortBy } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
+import { mapGetters } from 'vuex';
 import * as RecordUtil from '@/utils/record';
 import * as VocabUtil from '@/utils/vocab';
 import CreationCard from '@/components/create/creation-card';
@@ -34,7 +35,7 @@ export default {
     },
     useBase(type) {
       this.chosenType = type;
-      const BaseTemplates = require('@/resources/json/baseTemplates');
+      const BaseTemplates = this.templates.base;
       const baseRecord = Object.assign(this.baseRecord, BaseTemplates[this.selectedCreation.toLowerCase()].record);
       const baseMainEntity = Object.assign(this.baseMainEntity, BaseTemplates[this.selectedCreation.toLowerCase()].mainEntity);
       const templateValue = {
@@ -91,6 +92,11 @@ export default {
   events: {
   },
   computed: {
+    ...mapGetters([
+      'settings',
+      'user',
+      'templates',
+    ]),
     creationList() {
       const list = [
         { id: 'Instance', text: 'Instance' },
@@ -131,8 +137,8 @@ export default {
       return baseRecord;
     },
     combinedTemplates() {
-      const CombinedTemplates = require('@/resources/json/combinedTemplates');
-      return sortBy(CombinedTemplates[this.selectedCreation.toLowerCase()], template => template.label);
+      const sorted = sortBy(this.templates.combined[this.selectedCreation.toLowerCase()], template => template.label);
+      return sorted;
     },
     hasChosen() {
       return this.activeIndex > 0 || (this.activeIndex === 0 && this.chosenType);

@@ -316,6 +316,7 @@ export default {
     ...mapGetters([
       'inspector',
       'resources',
+      'templates',
       'user',
       'settings',
       'status',
@@ -350,9 +351,8 @@ export default {
     },
     validTemplates() {
       const type = this.inspector.data.mainEntity['@type'];
-      const CombinedTemplates = require('@/resources/json/combinedTemplates');
       const baseType = VocabUtil.getRecordType(type, this.resources.vocab, this.resources.context);
-      const templates = VocabUtil.getValidTemplates(type, CombinedTemplates[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
+      const templates = VocabUtil.getValidTemplates(type, this.templates[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
       return templates;
     },
     formObj() {
