@@ -196,6 +196,7 @@
     "digitizedMonographText": {
       "label": "Digitaliserad bok",
       "description": "Elektroniskt reproducerad monografi - RDA",
+      "status": "draft",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
