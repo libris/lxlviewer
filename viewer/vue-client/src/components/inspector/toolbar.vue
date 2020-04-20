@@ -4,13 +4,11 @@
 */
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
-import * as LayoutUtil from '../../utils/layout';
 import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 import * as HttpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 import FieldAdder from '@/components/inspector/field-adder';
-import TooltipComponent from '@/components/shared/tooltip-component';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
 
@@ -176,9 +174,6 @@ export default {
         };
         reader.readAsText(e.target.files[0]);
       });
-    },
-    getKeybindingText(eventName) {
-      return LayoutUtil.getKeybindingText(eventName);
     },
     openFieldAdder() {
       if (!this.fieldAdderActive) {
@@ -428,7 +423,6 @@ export default {
   },
   components: {
     'field-adder': FieldAdder,
-    'tooltip-component': TooltipComponent,
   },
   mounted() {
     this.$nextTick(() => {
@@ -450,17 +444,13 @@ export default {
         @click="showOtherFormatMenu" 
         aria-haspopup="true" 
         aria-expanded="true" 
+        v-tooltip.left="translate('Show as')"
         @focus="showDisplayAs = true"
         @blur="showDisplayAs = false"
         @mouseover="showDisplayAs = true" 
         @mouseout="showDisplayAs = false"
         :aria-label="'Show as' | translatePhrase">
         <i class="fa fa-fw fa-eye" aria-hidden="true">
-          <tooltip-component 
-            class="Toolbar-tooltipContainer"
-            :show-tooltip="showDisplayAs" 
-            position="left"
-            tooltip-text="Show as"></tooltip-component>
         </i>
         <span class="Toolbar-caret caret"></span>
       </button>
@@ -496,15 +486,11 @@ export default {
         @click="showToolsMenu" 
         aria-haspopup="true" 
         aria-expanded="true" 
+        v-tooltip.left="translate('Tools')"
         @mouseover="showTools = true" 
         @mouseout="showTools = false"
         :aria-label="'Tools' | translatePhrase">
         <i class="fa fa-fw fa-wrench" aria-hidden="true">
-          <tooltip-component 
-            class="Toolbar-tooltipContainer"
-            :show-tooltip="showTools" 
-            position="left"
-            tooltip-text="Tools"></tooltip-component>
         </i>
         <span class="Toolbar-caret caret"></span>
       </button>
@@ -513,25 +499,25 @@ export default {
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" @click="formControl('expand-item'), hideToolsMenu()">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
-          {{"Expand all" | translatePhrase}}{{ getKeybindingText('expand-item') ? ` (${getKeybindingText('expand-item')})` : ''}}
+          {{"Expand all" | translatePhrase}}{{ getKeybindText('expand-item') ? ` (${getKeybindText('expand-item')})` : ''}}
           </a>
         </li>
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" @click="formControl('collapse-item'), hideToolsMenu()">
           <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
-          {{"Collapse all" | translatePhrase}}{{ getKeybindingText('collapse-item') ? ` (${getKeybindingText('collapse-item')})` : ''}}
+          {{"Collapse all" | translatePhrase}}{{ getKeybindText('collapse-item') ? ` (${getKeybindText('collapse-item')})` : ''}}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
           <a class="Toolbar-menuLink"  @click="formControl('duplicate-item'), hideToolsMenu()">
           <i class="fa fa-fw fa-files-o"></i>
-          {{ "Make copy" | translatePhrase }}{{ getKeybindingText('duplicate-item') ? ` (${getKeybindingText('duplicate-item')})` : ''}}
+          {{ "Make copy" | translatePhrase }}{{ getKeybindText('duplicate-item') ? ` (${getKeybindText('duplicate-item')})` : ''}}
           </a>
         </li>
         <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishTemplateSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
           <a class="Toolbar-menuLink" @click="showEmbellishTemplateSubMenu = !showEmbellishTemplateSubMenu">
             <i class="fa fa-fw fa-clipboard"></i>
-            <span>{{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}</span>
+            <span>{{ "Embellish from template" | translatePhrase }}{{ getKeybindText('embellish-from-template') ? ` (${getKeybindText('embellish-from-template')})` : ''}}</span>
             <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishTemplateSubMenu, 'fa-caret-right': !showEmbellishTemplateSubMenu }"></i></span>
           </a>
         </li>
@@ -550,7 +536,7 @@ export default {
         <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishFromPostSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
           <a class="Toolbar-menuLink" @click="showEmbellishFromPostSubMenu = !showEmbellishFromPostSubMenu">
             <i class="fa fa-fw fa-clipboard"></i>
-            <span>{{ "Embellish from post" | translatePhrase }}{{ getKeybindingText('embellish-from-post') ? ` (${getKeybindingText('embellish-from-post')})` : ''}}</span>
+            <span>{{ "Embellish from post" | translatePhrase }}{{ getKeybindText('embellish-from-post') ? ` (${getKeybindText('embellish-from-post')})` : ''}}</span>
             <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishFromPostSubMenu, 'fa-caret-right': !showEmbellishFromPostSubMenu }"></i></span>
           </a>
         </li>
@@ -591,7 +577,7 @@ export default {
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" @click="openMarc()">
             <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
-            {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindingText('preview-marc') ? ` (${getKeybindingText('preview-marc')})` : ''}}
+            {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindText('preview-marc') ? ` (${getKeybindText('preview-marc')})` : ''}}
           </a>
         </li>
         <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToEdit">
@@ -622,33 +608,23 @@ export default {
     <button class="Toolbar-btn btn btn-default toolbar-button" 
       :disabled="inspector.changeHistory.length === 0" 
       v-show="inspector.status.editing" 
+      v-tooltip.left="`${translate('Undo')} (${getKeybindText('undo')})`"
       @click="undo" 
       @mouseover="showUndo = true" 
       @mouseout="showUndo = false"
       :aria-label="'Undo' | translatePhrase">
       <i class="fa fa-undo" aria-hidden="true">
-        <tooltip-component 
-          class="Toolbar-tooltipContainer"
-          :show-tooltip="showUndo" 
-          position="left"
-          tooltip-text="Undo" 
-          keybind-name="undo"></tooltip-component>
       </i>
     </button>
 
     <button class="Toolbar-btn btn btn-default toolbar-button" 
       v-show="inspector.status.editing" 
       @click="cancel" 
+      v-tooltip.left="`${translate('Cancel')} (${getKeybindText('cancel-edit')})`"
       @mouseover="showCancel = true" 
       @mouseout="showCancel = false"
       :aria-label="'Cancel' | translatePhrase">
       <i class="fa fa-close" aria-hidden="true">
-        <tooltip-component 
-          class="Toolbar-tooltipContainer"
-          :show-tooltip="showCancel" 
-          position="left"
-          tooltip-text="Cancel" 
-          keybind-name="cancel-edit"></tooltip-component>
       </i>
     </button>
 
@@ -657,55 +633,32 @@ export default {
       v-if="inspector.status.editing && !isNewRecord" 
       @mouseover="showSave = true" 
       @mouseout="showSave = false"
+      v-tooltip.left="`${translate('Save')} (${getKeybindText('save-item')})`"
       :aria-label="'Save' | translatePhrase">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
-        <tooltip-component 
-          class="Toolbar-tooltipContainer"
-          :show-tooltip="showSave" 
-          position="left"
-          tooltip-text="Save" 
-          keybind-name="save-item"></tooltip-component>
       </i>
     </button>
     <button class="Toolbar-btn btn btn-primary" id="saveDoneButton" 
       @click="postControl('save-record-done')"
       v-if="inspector.status.editing"
+      v-tooltip.left="`${ isNewRecord ? translate('Create record') : translate('Save and stop editing') } (${ isNewRecord ? getKeybindText('save-item') : getKeybindText('save-item-done') })`"
       @mouseover="showClarifySave = true"
       @mouseout="showClarifySave = false"
       :aria-label="'Save and stop editing' | translatePhrase">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-check" v-show="!inspector.status.saving">
-        <tooltip-component 
-          class="Toolbar-tooltipContainer"
-          tooltip-text="Save and stop editing" 
-          keybind-name="save-item-done"
-          position="left"
-          v-if="!isNewRecord"
-          :show-tooltip="showClarifySave"></tooltip-component>
-        <tooltip-component 
-          tooltip-text="Create record" 
-          keybind-name="save-item"
-          position="left"
-          class="Toolbar-tooltipContainer"
-          v-if="isNewRecord"
-          :show-tooltip="showClarifySave"></tooltip-component>
       </i>
     </button>
 
     <button class="Toolbar-btn btn btn-primary edit-button" id="editButton" 
       v-on:click="edit()" 
       v-show="!inspector.status.editing && userIsPermittedToEdit" 
+      v-tooltip.left="`${ translate('Edit') } (${ getKeybindText('edit-item') })`"
       @mouseover="showEdit = true" 
       @mouseout="showEdit = false"
       :aria-label="'Edit' | translatePhrase">
-      <i class="fa fa-fw fa-pencil-square-o" v-show="!inspector.status.opening">
-        <tooltip-component 
-        class="Toolbar-tooltipContainer"
-        tooltip-text="Edit" 
-        position="left"
-        keybind-name="edit-item" 
-        :show-tooltip="showEdit"></tooltip-component></i>
+      <i class="fa fa-fw fa-pencil-square-o" v-show="!inspector.status.opening"></i>
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
     </button>
   </div> 

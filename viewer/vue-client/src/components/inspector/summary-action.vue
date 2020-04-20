@@ -1,7 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import Button from '@/components/shared/button.vue';
-import TooltipComponent from '@/components/shared/tooltip-component';
 
 export default {
   name: 'summary-action-button',
@@ -52,7 +51,6 @@ export default {
   },
   components: {
     'button-component': Button,
-    'tooltip-component': TooltipComponent,
   },
   watch: {
   },
@@ -74,15 +72,9 @@ export default {
         :indicator="!disabled || !replaced"
         :label="getTooltipText" 
         size="large"
+        v-tooltip.right="translate(getTooltipText)"
         @click="action()"
         @keyup.enter="action()">
-        <template slot="tooltip" v-if="getTooltipText">
-          <tooltip-component
-            class="Toolbar-tooltipContainer"
-            position="right"
-            :show-tooltip="true"
-            :tooltip-text="getTooltipText"></tooltip-component>
-        </template>
       </button-component>
     </div>
   </div>
