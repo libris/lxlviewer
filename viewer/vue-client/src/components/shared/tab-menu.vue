@@ -76,13 +76,7 @@ export default {
         const $activeTab = this.$el.querySelector('.is-active');
         const $tabList = this.$refs.tablist;
         if ($activeTab && $tabList) {
-          const $underline = this.$refs.underline;
-          const listElements = $tabList.getElementsByTagName('li');
-          let listWidth = 0;
-          for (let i = 0; i < listElements.length; i++) {
-            listWidth += listElements[i].clientWidth;
-          }
-          
+          const $underline = this.$refs.underline;          
           const paddingLeft = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
           const paddingRight = parseInt(window.getComputedStyle($activeTab).paddingRight.replace('px', ''));
           const left = `${$activeTab.offsetLeft + paddingLeft}px`;
