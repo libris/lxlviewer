@@ -106,6 +106,7 @@ export default {
         <tab-menu
           :tabs="tabs"
           :active="$route.name"
+          :class="'extra-spacing'"
           @go="navigate"
           :link="true"
           lookStyle="dark"
@@ -278,11 +279,8 @@ export default {
   }
 
   & .TabMenu {
-
-    &-tabList {
-      margin-bottom: 0;
-      margin-top: 0;
-    }
+    margin-bottom: 0;
+    margin-top: 0;
   }
 }
 
