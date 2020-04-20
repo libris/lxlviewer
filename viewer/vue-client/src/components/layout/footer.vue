@@ -57,6 +57,9 @@ export default {
               <li>
                 <a href="https://www.kb.se/omoss/dataskydd.html#XLkat" class="Footer-link">{{ "GDPR compliance" | translatePhrase }}</a>
               </li>
+              <li>
+                <a href="https://www.kb.se/digital-tillganglighet" class="Footer-link">{{ "Accessibility statement" | translatePhrase }}</a>
+              </li>
             </ul>
           </nav>
 
