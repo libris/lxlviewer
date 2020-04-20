@@ -33,9 +33,9 @@ export function splitJson(json) {
         const recordId = dataObj.record['@id'];
         const workIdWithoutSuffix = original[i]['@id'].split('#')[0];
         if (recordId === workIdWithoutSuffix) { // Only proceed if the work is local
-          dataObj.work = original[i];
-          // pushing work to quoted list so that references to it will work for now.
-          dataObj.quoted[dataObj.work['@id']] = dataObj.work;
+          // Replace internal linked work so it's a native local entity instead
+          dataObj.mainEntity.instanceOf = original[i];
+          delete dataObj.mainEntity.instanceOf['@id'];
           original.splice(i, 1);
         }
         break;
