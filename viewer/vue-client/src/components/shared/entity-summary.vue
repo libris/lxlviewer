@@ -155,7 +155,15 @@ export default {
       return value;
     },
     uri() {
-      const uri = this.focusData.hasOwnProperty('@id') ? this.focusData['@id'] : this.focusData['@graph'][0].mainEntity['@id'];
+      let uri = null;
+      if (this.focusData.hasOwnProperty('@id')) {
+        uri = this.focusData['@id'];
+      } else if (this.focusData.hasOwnProperty('@graph')) {
+        uri = this.focusData['@graph'][0].mainEntity['@id'];
+      }
+      if (uri === null) {
+        return null;
+      }
       const convertedUri = this.$options.filters.convertResourceLink(uri);
       return convertedUri;
     },
@@ -163,10 +171,16 @@ export default {
       return this.$store.getters.settings;
     },
     recordId() {
-      return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
+      if (this.focusData.hasOwnProperty('@id')) {
+        return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
+      }
+      return null;
     },
     isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
+      if (this.recordId) {
+        return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
+      }
+      return true;
     },
     routerPath() {
       const uriParts = this.recordId.split('/');
