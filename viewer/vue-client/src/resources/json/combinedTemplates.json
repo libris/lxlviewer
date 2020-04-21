@@ -381,8 +381,8 @@
       }
     },
     "electronicComponentPartText": {
-      "label": "E-Artikel(?)",
-      "description": "Elektroniskt bidrag - RDA",
+      "label": "Elektroniskt bidrag",
+      "description": "RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -410,12 +410,6 @@
           },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
-          "technicalNote": [
-            {
-              "@type": "TechnicalNote",
-              "label": [ "" ]
-            }
-          ],
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           }
@@ -477,7 +471,8 @@
           "hasTitle": [
             {
               "@type": "Title",
-              "mainTitle": ""
+              "mainTitle": "",
+              "subtitle": ""
             }
           ],
           "responsibilityStatement": "",
@@ -1500,8 +1495,8 @@
       }
     },
     "printedComponentPartText": {
-      "label": "Artikel(?)",
-      "description": "Tryckt bidrag - RDA",
+      "label": "Tryckt bidrag",
+      "description": "RDA",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -1529,14 +1524,6 @@
           },
           "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
-          "technicalNote": [
-            {
-              "@type": "TechnicalNote",
-              "label": [
-                ""
-              ]
-            }
-          ],
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
           }
@@ -1592,7 +1579,8 @@
           "hasTitle": [
             {
               "@type": "Title",
-              "mainTitle": ""
+              "mainTitle": "",
+              "subtitle": ""
             }
           ],
           "responsibilityStatement": "",
