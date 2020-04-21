@@ -352,7 +352,7 @@ export default {
     validTemplates() {
       const type = this.inspector.data.mainEntity['@type'];
       const baseType = VocabUtil.getRecordType(type, this.resources.vocab, this.resources.context);
-      const templates = VocabUtil.getValidTemplates(type, this.templates[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
+      const templates = VocabUtil.getValidTemplates(type, this.templates.combined[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
       return templates;
     },
     formObj() {
@@ -534,6 +534,12 @@ export default {
             <span>{{ "Embellish from template" | translatePhrase }}{{ getKeybindingText('embellish-from-template') ? ` (${getKeybindingText('embellish-from-template')})` : ''}}</span>
             <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishTemplateSubMenu, 'fa-caret-right': !showEmbellishTemplateSubMenu }"></i></span>
           </a>
+        </li>
+        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishTemplateSubMenu && validTemplates.length === 0">
+          <span class="Toolbar-menuLink">
+            <i class="fa fa-fw fa-exclamation"></i>
+            {{ "No matching templates" | translatePhrase }}
+          </span>
         </li>
         <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showEmbellishTemplateSubMenu" :key="key">
           <a class="Toolbar-menuLink" @click="applyTemplate(value)">
@@ -761,8 +767,6 @@ export default {
   }
 
   &-menuLink {
-    cursor: pointer;
-
     & i {
       margin-right: 5px;
     }
@@ -791,7 +795,7 @@ export default {
           background-color: darken(@grey-lighter, 5%);
         }
       }
-      & a {
+      & .Toolbar-menuLink {
         display: flex;
         align-items: center;
         padding: 5px 15px;
