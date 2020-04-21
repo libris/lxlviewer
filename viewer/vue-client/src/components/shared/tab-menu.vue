@@ -277,6 +277,10 @@ export default {
       @media screen and (min-width: @screen-sm) {
         top: calc(50% - 15px);
         right: 6px;
+
+        .TabMenu.extra-spacing & {
+          right: -4px;
+        }
       }
     }
   }
