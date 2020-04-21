@@ -76,15 +76,10 @@ export default {
         const $activeTab = this.$el.querySelector('.is-active');
         const $tabList = this.$refs.tablist;
         if ($activeTab && $tabList) {
-          const $underline = this.$refs.underline;
-          const listElements = $tabList.getElementsByTagName('li');
-          let listWidth = 0;
-          for (let i = 0; i < listElements.length; i++) {
-            listWidth += listElements[i].clientWidth;
-          }
+          const $underline = this.$refs.underline;          
           const paddingLeft = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
           const paddingRight = parseInt(window.getComputedStyle($activeTab).paddingRight.replace('px', ''));
-          const left = `${parseInt((listWidth * -1) + $activeTab.offsetLeft + paddingLeft + 5)}px`;
+          const left = `${$activeTab.offsetLeft + paddingLeft}px`;
           const width = `${parseInt($activeTab.clientWidth - (paddingLeft + paddingRight))}px`;
           $underline.style.width = width;
           $underline.style.left = left;
@@ -151,8 +146,7 @@ export default {
           <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
-      </li>
-      <hr v-show="hasActive" class="TabMenu-underline" ref="underline">
+      </li>      
     </ul>
     <ul v-else class="TabMenu-tabList" ref="tablist">
       <li class="TabMenu-tab" 
@@ -173,8 +167,8 @@ export default {
           </router-link>
           <span v-if="item.badge" class="badge UserCare-badge" :class="'badge-' + item.badge.type">{{ item.badge.value }}</span>
       </li>
-      <hr v-show="hasActive" class="TabMenu-underline hidden-xs" ref="underline">
     </ul>
+    <hr v-show="hasActive" class="TabMenu-underline" :class="{'hidden-xs' : hasIcons}" ref="underline">
   </div>
 </template>
 
@@ -185,6 +179,7 @@ export default {
   opacity: 1;
   transition: opacity 0.25s ease;
   position: relative;
+  margin: 10px 0;
 
   &-link,
   &-tabText {
@@ -269,6 +264,9 @@ export default {
       &.has-badge {
         padding-right: 30px;
       }
+      .TabMenu.extra-spacing & {
+        padding: 0 20px;
+      }
     }
 
     .badge {
@@ -292,10 +290,14 @@ export default {
   }
 
   &-tabList {
-    margin: 10px 0 10px -10px;    
+    margin: 0 0 0 -10px;    
     height: 100%;
     padding: 0;
     white-space: nowrap;
+
+    .TabMenu.extra-spacing & {
+      margin-left: -20px;
+    }
 
     @media screen and (max-width: @screen-sm) {
       .has-icons & {
@@ -305,11 +307,12 @@ export default {
   }
 
   &-underline {
+    position: absolute;
     display: inline-block;
-    transition: all 0.25s ease .025s;
-    position: relative;
+    transition: all 0.25s ease .025s;    
     height: 3px;
-    top: 0.5em;
+    left: 0;
+    bottom: 8px;
     margin: 0px;
     min-width: 5px;
     border: none;
