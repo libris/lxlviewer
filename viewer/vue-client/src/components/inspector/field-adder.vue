@@ -10,7 +10,6 @@ import * as StringUtil from '@/utils/string';
 import * as VocabUtil from '@/utils/vocab';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import RoundButton from '@/components/shared/round-button.vue';
-import ToolTipComponent from '../shared/tooltip-component';
 
 export default {
   mixins: [clickaway],
@@ -266,7 +265,6 @@ export default {
   },
   components: {
     'panel-component': PanelComponent,
-    'tooltip-component': ToolTipComponent,
     'round-button': RoundButton,
   },
 };
@@ -283,13 +281,11 @@ export default {
         :aria-label="modalTitle | translatePhrase"
         @click="show(), expand()" 
         @keyup.enter="show"
-        @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
-        @mouseleave="showToolTip = false, actionHighlight(false, $event)"
-        @focus="showToolTip = true, actionHighlight(true, $event)"
-        @blur="showToolTip = false, actionHighlight(false, $event)">
-        <tooltip-component 
-          :show-tooltip="showToolTip" 
-          :tooltip-text="modalTitle"></tooltip-component>
+        v-tooltip.top="modalTitle"
+        @mouseenter="actionHighlight(true, $event)" 
+        @mouseleave="actionHighlight(false, $event)"
+        @focus="actionHighlight(true, $event)"
+        @blur="actionHighlight(false, $event)">
       </i>
       <span class="FieldAdder-innerLabel">{{ "Add field" | translatePhrase }}</span>
     </span>
@@ -298,16 +294,9 @@ export default {
       v-on:click="show" 
       ref="adderButton"
       @keyup.enter="show"
-      @mouseenter="showToolTip = true" 
-      @mouseleave="showToolTip = false"
+      v-tooltip.left="`${translate(modalTitle)} (${getKeybindText('open-field-adder')})`"
       :aria-label="modalTitle | translatePhrase">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
-        <tooltip-component 
-          class="Toolbar-tooltipContainer"
-          :tooltip-text="modalTitle"
-          :position="inToolbar ? 'left' : 'top'"
-          keybind-name="open-field-adder"
-          :show-tooltip="showToolTip"></tooltip-component>
       </i>
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
     </button>

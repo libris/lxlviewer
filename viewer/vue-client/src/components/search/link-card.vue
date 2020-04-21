@@ -7,6 +7,7 @@ export default {
     'image',
     'linkUrl',
     'linkText',
+    'imageAltText',
     'header',
     'text',
     'html',
@@ -45,7 +46,7 @@ export default {
 
 <template>
   <div class="panel panel-default LinkCard" v-bind:class="{'no-link': !linkUrl, 'LinkCard--large': videoUrl}">
-    <img v-if="image" :src="resolvedImage" class="LinkCard-img" :alt="header"/>
+    <img v-if="image" :src="resolvedImage" class="LinkCard-img" :alt="imageAltText"/>
 
     <div v-else-if="videoUrl" class="LinkCard-videoWrap">
       <div class="LinkCard-youtubeDialog" v-if="videoUrl.indexOf('youtube') > -1 && !youtube.accepted"

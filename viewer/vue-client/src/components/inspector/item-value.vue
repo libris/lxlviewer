@@ -3,7 +3,6 @@ import AutoSize from 'autosize';
 import { isArray, debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
-import TooltipComponent from '@/components/shared/tooltip-component';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 
@@ -155,7 +154,6 @@ export default {
     },
   },
   components: {
-    'tooltip-component': TooltipComponent,
   },
   mounted() {
     this.$nextTick(() => {
@@ -201,14 +199,12 @@ export default {
       role="button"
       :aria-label="'Remove' | translatePhrase"
       v-on:click="removeThis()"
+      v-tooltip.top="translate('Remove')"
       @focus="removeHover = true, removeHighlight($event, true)"
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)">
       <i class="fa fa-trash-o icon icon--sm">
-        <tooltip-component
-          :show-tooltip="removeHover"
-          tooltip-text="Remove"></tooltip-component>
       </i>
     </div>
   </div>

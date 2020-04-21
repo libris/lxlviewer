@@ -15,7 +15,6 @@ import ItemVocab from './item-vocab';
 import ItemType from './item-type';
 import ItemSibling from './item-sibling';
 import ItemBoolean from './item-boolean';
-import TooltipComponent from '../shared/tooltip-component';
 import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
@@ -127,7 +126,6 @@ export default {
     'item-vocab': ItemVocab,
     'item-boolean': ItemBoolean,
     'entity-adder': EntityAdder,
-    'tooltip-component': TooltipComponent,
   },
   watch: {
   },
@@ -618,13 +616,11 @@ export default {
               tabindex="0"
               v-on:click="removeThis(true)"
               @keyup.enter="removeThis(true)"
+              v-tooltip.top="translate('Remove')"
               @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
               @blur="removeHover = false, highlight(false, $event, 'is-removeable')"
               @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
               @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
-              <tooltip-component 
-                :show-tooltip="removeHover" 
-                tooltip-text="Remove"></tooltip-component>
             </i>
           </div>
           <entity-adder class="Field-entityAdder Field-action"
@@ -662,13 +658,11 @@ export default {
               :aria-label="'Paste entity' | translatePhrase"
               @click="pasteClipboardItem"
               @keyup.enter="pasteClipboardItem"
+              v-tooltip.top="translate('Paste entity')"
               @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
               @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
               @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
               @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
-              <tooltip-component 
-                :show-tooltip="pasteHover" 
-                tooltip-text="Paste entity"></tooltip-component>
             </i>
           </div>
         </div>
@@ -721,14 +715,12 @@ export default {
             role="button"
             :aria-label="'Remove' | translatePhrase"
             v-on:click="removeThis(true)"
+            v-tooltip.top="translate('Remove')"
             @keyup.enter="removeThis(true)"
             @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
             @blur="removeHover = false, highlight(false, $event, 'is-removeable')" 
             @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
             @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
-            <tooltip-component
-              :show-tooltip="removeHover" 
-              tooltip-text="Remove"></tooltip-component>
           </i>
         </div>
 
@@ -740,13 +732,11 @@ export default {
             :aria-label="'Paste entity' | translatePhrase"
             @click="pasteClipboardItem"
             @keyup.enter="pasteClipboardItem"
+            v-tooltip.top="translate('Paste entity')"
             @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
             @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
             @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
             @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
-            <tooltip-component 
-              :show-tooltip="pasteHover" 
-              tooltip-text="Paste entity"></tooltip-component>
           </i>
         </div>
       </div>

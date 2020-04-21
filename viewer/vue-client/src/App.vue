@@ -518,9 +518,21 @@ body {
 * {
   outline: none;
 }
-.user-is-tabbing *:focus {
-  outline: 2px solid #8cc9c9; //fallback for IE & Edge
-  outline: auto darkcyan;
+
+.user-is-tabbing {
+  button, .MainNav-userDropdown, a, h1, h2, h3, h4, h5, span {
+    &:focus {
+      .focus-mixin-bg();
+      * {
+        .focus-mixin-bg();
+      }
+    }
+  }
+  input, textarea, img, select, .ItemEntity, .ItemLocal, .ItemSibling, .icon, .icon i, li, i.fa {
+    &:focus {
+      .focus-mixin-border();
+    }
+  }
 }
 
 // ------------ UTILS ------------------
@@ -668,8 +680,8 @@ h1 {
     }
 
     .user-is-tabbing &:focus + .customCheckbox-icon {
-      outline: 2px solid #8cc9c9; //fallback for IE & Edge
-      outline: auto darkcyan;
+      outline: 2px solid @focus-color-border; //fallback for IE & Edge
+      outline: auto @focus-color-border;
     }
   }
 
