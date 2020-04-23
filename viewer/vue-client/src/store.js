@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { cloneDeep, each, set, get, assign } from 'lodash-es';
+import { cloneDeep, each, set, get, assign, filter } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
@@ -16,6 +16,7 @@ const store = new Vuex.Store({
       vocab: {},
       display: {},
       context: {},
+      templates: {},
       helpDocs: null,
     },
     directoryCare: {
@@ -86,6 +87,10 @@ const store = new Vuex.Store({
       language: 'sv',
       environment: process.env.VUE_APP_ENV_LABEL || 'local',
       version: process.env.VUE_APP_VERSION,
+      gitInfo: {
+        tag: process.env.VUE_APP_GIT_TAG !== 'null' ? process.env.VUE_APP_GIT_TAG : null,
+        hash: process.env.VUE_APP_GIT_HASH,
+      },
       dataPath: process.env.VUE_APP_DATA_PATH || process.env.VUE_APP_API_PATH,
       apiPath: process.env.VUE_APP_API_PATH,
       authPath: process.env.VUE_APP_AUTH_PATH,
@@ -518,8 +523,7 @@ const store = new Vuex.Store({
         }
       });
       // Check if we should remove work node (if it went from local to being linked)
-      if (inspectorData.mainEntity.hasOwnProperty('instanceOf') && (inspectorData.mainEntity.instanceOf === null || inspectorData.mainEntity.instanceOf.hasOwnProperty('@id') && inspectorData.mainEntity.instanceOf['@id'].indexOf('#work') === -1)) {
-      //if (noWork || localWork) {
+      if (inspectorData.mainEntity.hasOwnProperty('instanceOf') && (inspectorData.mainEntity.instanceOf === null || (inspectorData.mainEntity.instanceOf.hasOwnProperty('@id') && inspectorData.mainEntity.instanceOf['@id'].indexOf('#work') === -1))) {
         if (state.inspector.data.hasOwnProperty('work')) {
           delete inspectorData.work;
         }
@@ -599,6 +603,9 @@ const store = new Vuex.Store({
     setVocabClasses(state, data) {
       state.resources.vocabClasses = data;
     },
+    setTemplates(state, data) {
+      state.resources.templates = data;
+    },
     setContext(state, data) {
       state.resources.context = data;
     },
@@ -617,6 +624,7 @@ const store = new Vuex.Store({
     resources: state => state.resources,
     resourcesLoaded: state => state.resources.resourcesLoaded,
     resourcesLoadingError: state => state.resources.loadingError,
+    templates: state => state.resources.templates,
     settings: state => state.settings,
     user: state => state.user,
     userStorage: state => state.userStorage,
@@ -851,6 +859,22 @@ const store = new Vuex.Store({
     },
     setDirectoryCare({ commit }, obj) {
       commit('setDirectoryCare', obj);
+    },
+    setTemplates({ commit }, data) {
+      const templates = {
+        base: data.base,
+        combined: {},
+      };
+      const combinedBaseTypes = Object.keys(data.combined);
+      for (let i = 0; i < combinedBaseTypes.length; i++) {
+        templates.combined[combinedBaseTypes[i]] = filter(data.combined[combinedBaseTypes[i]], (o) => {
+          if (o.hasOwnProperty('status') && o.status === 'draft') {
+            return false;
+          }
+          return true;
+        });
+      }
+      commit('setTemplates', templates);
     },
     setHelpDocs({ commit }, helpDocsJson) {
       commit('setHelpDocs', helpDocsJson);

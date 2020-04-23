@@ -362,7 +362,7 @@ export default {
           </select>
         </div>
         <button 
-          class="SearchForm-submit btn btn-primary icon icon--white icon--md" 
+          class="SearchForm-submit btn btn-primary icon--white icon--md" 
           :aria-label="'Search' | translatePhrase"
           @click.prevent="doSearch"
           @focus="searchGroupFocus.submit = true"
@@ -380,8 +380,8 @@ export default {
     </form>
     <div class="SearchForm-help">
       <div class="SearchForm-helpBox dropdown" v-if="searchPerimeter === 'libris'">
-        <span class="SearchForm-helpIcon icon icon--md">
-          <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
+        <span class="SearchForm-helpIcon">
+          <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle icon icon--md" tabindex="0" aria-haspopup="true"
             ref="helpIcon"
             @mouseover="helpHover = true"
             @mouseleave="helpHover = false"

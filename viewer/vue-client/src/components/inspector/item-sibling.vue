@@ -16,7 +16,6 @@ import * as StringUtil from '@/utils/string';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
-import ToolTipComponent from '@/components/shared/tooltip-component';
 import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from '@/components/inspector/search-window';
 
@@ -352,7 +351,6 @@ export default {
 
   components: {
     'field-adder': FieldAdder,
-    'tooltip-component': ToolTipComponent,
     'search-window': SearchWindow,
   },
 };
@@ -388,15 +386,13 @@ export default {
             :aria-label="'Link entity' | translatePhrase"
             tabindex="0"
             v-if="inspector.status.editing && !isEmbedded && !isLocked"
+            v-tooltip.top="translate('Link entity')"
             @click="openExtractDialog(), expand()"
             @keyup.enter="openExtractDialog(), expand()"
             @focus="showLinkAction = true, actionHighlight($event, true)"
             @blur="showLinkAction = false, actionHighlight($event, false)"
             @mouseover="showLinkAction = true, actionHighlight($event, true)" 
             @mouseout="showLinkAction = false, actionHighlight($event, false)">
-            <tooltip-component 
-              :show-tooltip="showLinkAction" 
-              tooltip-text="Link entity"></tooltip-component>
           </i>
         </div>
 
@@ -415,14 +411,12 @@ export default {
             tabindex="0"
             :aria-label="'Remove' | translatePhrase"
             v-on:click="removeThis(true)"
+            v-tooltip.top="translate('Remove')"
             @keyup.enter="removeThis(true)"
             @focus="removeHover = true, removeHighlight($event, true)" 
             @blur="removeHover = false, removeHighlight($event, false)"
             @mouseover="removeHover = true, removeHighlight($event, true)" 
             @mouseout="removeHover = false, removeHighlight($event, false)">
-            <tooltip-component 
-              :show-tooltip="removeHover" 
-              tooltip-text="Remove"></tooltip-component>
           </i>
         </div>
         <div class="ItemSibling-action">

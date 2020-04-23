@@ -223,9 +223,7 @@ h4 {
 
 .MainContent {
   flex: 1 0 auto;
-  &.sticky-is-active {
-  }
-
+  
   &.container-fluid {
     margin-right: 0px;
     margin-left: 0px;
@@ -374,8 +372,22 @@ button {
     background-color: darken(@white, 5%);
   }
 }
-//btn sizes
 
+&.btn--as-link {
+  color: @link-color;
+  text-align: left;
+  padding: 0;
+  background: transparent;
+  font-weight: normal;
+  &:focus,
+  &:hover {
+    color: @link-hover-color;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+}
+
+//btn sizes
 .btn-mixin(@width, @height, @fsize){
   min-width: @width;
   height: @height;
@@ -506,9 +518,21 @@ body {
 * {
   outline: none;
 }
-.user-is-tabbing *:focus {
-  outline: 2px solid #8cc9c9; //fallback for IE & Edge
-  outline: auto darkcyan;
+
+.user-is-tabbing {
+  button, .MainNav-userDropdown, a, h1, h2, h3, h4, h5, span {
+    &:focus {
+      .focus-mixin-bg();
+      * {
+        .focus-mixin-bg();
+      }
+    }
+  }
+  input, textarea, img, select, .ItemEntity, .ItemLocal, .ItemSibling, .icon, .icon i, li, i.fa {
+    &:focus {
+      .focus-mixin-border();
+    }
+  }
 }
 
 // ------------ UTILS ------------------
@@ -656,8 +680,8 @@ h1 {
     }
 
     .user-is-tabbing &:focus + .customCheckbox-icon {
-      outline: 2px solid #8cc9c9; //fallback for IE & Edge
-      outline: auto darkcyan;
+      outline: 2px solid @focus-color-border; //fallback for IE & Edge
+      outline: auto @focus-color-border;
     }
   }
 

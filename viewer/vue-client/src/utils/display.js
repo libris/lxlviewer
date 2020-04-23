@@ -324,7 +324,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
   return summary;
 }
 
-export function getFormattedSelectOption(term, settings, vocab, context) {
+export function getLabelWithTreeDepth(term, settings, vocab, context) {
   const maxLength = 43;
   let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
   if (labelByLang.length > maxLength) {

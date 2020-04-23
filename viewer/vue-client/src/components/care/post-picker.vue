@@ -207,6 +207,16 @@ export default {
 
 <style lang="less">
 
+.user-is-tabbing {
+  .PostPicker {
+    &-toggle, &-item {
+      &:focus {
+        .focus-mixin-bg();
+      }
+    }
+  }
+}
+
 .PostPicker  {
   max-width: @directorycare-sidewidth;
   display: flex;
@@ -344,8 +354,7 @@ export default {
       cursor: not-allowed;
     }
 
-    &:hover:not(.is-disabled),
-    &:focus:not(.is-disabled) {
+    &:hover:not(.is-disabled) {
       background-color: @brand-faded;
     }
   }

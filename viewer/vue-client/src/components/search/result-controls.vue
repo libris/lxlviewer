@@ -99,7 +99,7 @@ export default {
       }
       const first = this.pageData.first['@id'];
       const offset = this.pageData.itemOffset;
-      const noOfPages = parseInt(this.pageData.totalItems / this.limit) + 1 || 1;
+      const noOfPages = Math.ceil(this.pageData.totalItems / parseInt(this.limit)) || 1;
       const currentPage = parseInt(offset / this.limit);
       let paddedPages = 3;
       if (currentPage < paddedPages) {
@@ -112,6 +112,7 @@ export default {
       if (minPage > 0) {
         list.push({ pageLabel: '...' });
       }
+
       for (let i = 0; i < noOfPages; i++) {
         const pageOffset = i * this.limit;
         if (i >= minPage && i <= maxPage) {
@@ -121,6 +122,7 @@ export default {
       if (noOfPages > maxPage) {
         list.push({ pageLabel: '...' });
       }
+
       return list;
     },
     searchedTypes() {

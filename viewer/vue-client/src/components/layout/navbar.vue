@@ -14,6 +14,7 @@ export default {
       hasAvatar: true,
       showUserMenu: false,
       showSigelHint: false,
+      highlightNavItem: false,
     };
   },
   components: {
@@ -29,11 +30,14 @@ export default {
       'user',
     ]),
     tabs() {
-      const $directoryCareBadge = this.userCare.length === 0 ? '' : `<span class="badge badge-accent UserCare-badge">${this.userCare.length}</badge>`;
-      const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language)} ${$directoryCareBadge}`;
+      const directoryCareBadge = {
+        value: this.userCare.length === 0 ? '' : this.userCare.length,
+        type: 'accent',
+      };
+      const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language)}`;
       const loggedInTabs = this.user.isLoggedIn ? [
         { id: 'Create new', text: 'Create new', link: '/create', icon: 'plus-square-o' },
-        { id: 'Directory care', html: $directoryCare, link: '/directory-care', icon: 'flag' }, 
+        { id: 'Directory care', html: $directoryCare, link: '/directory-care', icon: 'flag', badge: directoryCareBadge }, 
       ] : [];
       const tabs = [
         { id: 'Home', text: 'Start', link: '/', icon: 'home' },
@@ -92,51 +96,56 @@ export default {
 <template>
   <nav class="NavBar" id="NavBar" aria-labelledby="service-name">
     <div class="NavBar-container container">
-      <div class="row">
-        <div class="NavBar-brand col-xs-2 col-sm-1 hidden-md hidden-lg">
-          <router-link to="/" class="NavBar-brandLink">
-            <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
-          </router-link>
-        </div>
-        <div class="MainNav col-xs-8 col-sm-7 col-md-6">
-          <tab-menu
-            :tabs="tabs"
-            :active="$route.name"
-            @go="navigate"
-            :link="true"
-            lookStyle="background"
-            />
-        </div>
-        <ul class="MainNav-userWrapper col-xs-2 col-xs-push-0 col-sm-push-0 col-sm-4 col-md-3 col-md-push-3">
-          <li 
-            class="MainNav-item" 
-            :class="{ 'active': showUserMenu && !isUserPage }" 
-            v-if="user.isLoggedIn"
-            v-tooltip="tooltipOptions" >
-            <div tabindex="0" @click="toggleUserMenu" @keyup.enter="toggleUserMenu">
-              <user-avatar 
-                class="hidden-xs" 
-                :size="24" />
-              <user-avatar 
-                class="visible-xs-block" 
-                :size="32" />
-              <span class="MainNav-linkText userName hidden-xs">
-              {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
-              </span>
-              <i class="fa fa-fw hidden-xs" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
-            </div>
-            <user-settings 
-              v-if="showUserMenu && !isUserPage" 
-              compact 
-              v-on-clickaway="hideUserMenu" />
-          </li>
-          <li class="MainNav-item" v-if="!user.isLoggedIn">
-            <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
-              <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
-            </a>
-          </li>
-        </ul>
+      <div class="NavBar-brand">
+        <router-link to="/" class="NavBar-brandLink">
+          <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
+        </router-link>
       </div>
+      <div class="MainNav">
+        <tab-menu
+          :tabs="tabs"
+          :active="$route.name"
+          :class="'extra-spacing'"
+          @go="navigate"
+          :link="true"
+          lookStyle="dark"
+          />
+      </div>
+      <ul class="MainNav-userWrapper">
+        <li 
+          class="MainNav-item" 
+          :class="{ 'active': showUserMenu && !isUserPage, 'highlight': highlightNavItem && !isUserPage }" 
+          @mouseover="highlightNavItem = true"
+          @mouseleave="highlightNavItem = false"
+          @focus="highlightNavItem = true"
+          @blur="highlightNavItem = false"
+          v-if="user.isLoggedIn"
+          v-tooltip="tooltipOptions" >
+          <div tabindex="0" @click="toggleUserMenu" @keyup.enter="toggleUserMenu">
+            <user-avatar 
+              class="hidden-xs" 
+              :highlight="highlightNavItem && !isUserPage"
+              :size="30" />
+            <user-avatar 
+              class="visible-xs-block" 
+              :highlight="highlightNavItem && !isUserPage"
+              :size="32" />
+            <span class="MainNav-linkText userName hidden-sm">
+            {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
+            </span>
+            <i class="fa fa-fw hidden-xs" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
+          </div>
+          <user-settings 
+            v-if="showUserMenu && !isUserPage" 
+            compact 
+            v-on-clickaway="hideUserMenu" />
+        </li>
+        <li class="MainNav-item" v-if="!user.isLoggedIn">
+          <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
+            <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
+          </a>
+        </li>
+      </ul>
     </div>
   </nav>
 </template>
@@ -145,19 +154,21 @@ export default {
 <style lang="less">
 .NavBar {
   width: 100%;
+  height: 4.8rem;
   background-color: @bg-navbar;
   flex-shrink: 0; // fix ie flexbox height bug
-  border: solid @brand-primary;
-  border-width: 0px 0px 3px 0px;
-  // line-height: 1.2;
-  font-size: 3rem;
+  font-size: 2.4rem;
+
   @media screen and (min-width: @screen-sm) {
     font-size: unset;
     line-height: unset;
   }
 
-  &-brand {
-    height: 100%;
+  &-brand {    
+    margin-right: 2rem;
+    @media screen and (min-width: @screen-sm) {
+      display: none;
+    }
   }
   &-brandLink {
     height: 100%;
@@ -176,6 +187,7 @@ export default {
     }
   }
   &-container {
+    display: flex;
     padding: 0 25px;
     height: 100%;
     @media screen and (max-width: @screen-lg){
@@ -191,11 +203,6 @@ export default {
   align-items: center;
   height: 100%;
   list-style: none;
-
-  @media screen and (max-width: @screen-md){
-    align-items: flex-start;
-    order: 3;
-  }
 
   &-userWrapper {
     display: flex;
@@ -218,10 +225,12 @@ export default {
     position: relative;
     text-transform: none;
     cursor: pointer;
-    color: @white;
+    color: @grey-light;
     list-style-type: none;
+
+    &.highlight,
     &.active {
-      background-color: @brand-primary;
+      color: @white;
     }
     &:last-of-type a {
       padding-right: 0;
@@ -238,13 +247,14 @@ export default {
       font-size: 1.6rem;
     }
   }
+
   &-link, &-linkText {
-    color: @white;
     font-size: 1.4rem;
     font-weight: 600;
   }
   &-link {
     display: block;
+    color: @grey-light;
 
     &:hover, 
     &:focus {
@@ -268,17 +278,8 @@ export default {
   }
 
   & .TabMenu {
-
-    &-tabList {
-      margin-bottom: 0;
-      margin-top: 0;
-    }
-
-  }
-}
-.UserCare {
-  &-badge {
-    margin-top: -0.3em;
+    margin-bottom: 0;
+    margin-top: 0;
   }
 }
 

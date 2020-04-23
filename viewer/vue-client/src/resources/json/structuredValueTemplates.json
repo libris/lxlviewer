@@ -16,6 +16,10 @@
     "@type": "CaptionTitle",
     "mainTitle": ""
   },
+  "CollectiveTitle": {
+    "@type": "CollectiveTitle",
+    "mainTitle": ""
+  },
   "CoverTitle": {
     "@type": "CoverTitle",
     "mainTitle": ""
@@ -43,7 +47,7 @@
     "mainTitle": ""
   },
   "RunningTitle": {
-    "@type": "AbbreviatedTitle",
+    "@type": "RunningTitle",
     "mainTitle": ""
   },
   "SpineTitle": {
@@ -67,10 +71,18 @@
       ""
     ]
   },
+  "TranslatedTitle": {
+    "@type": "TranslatedTitle",
+    "mainTitle": ""
+  },
   "Identifier": {
     "@type": "Identifier",
     "value": "",
     "typeNote": ""
+  },
+  "Ansi": {
+    "@type": "Ansi",
+    "value": ""
   },
   "AudioIssueNumber": {
     "@type": "AudioIssueNumber",
@@ -79,6 +91,10 @@
         "@type": "Organization",
         "name": ""
     }
+  },
+  "AudioTake": {
+    "@type": "AudioTake",
+    "value": ""
   },
   "CODEN": {
     "@type": "CODEN",
@@ -92,8 +108,36 @@
       "code": ""
     }
   },
+  "DissertationIdentifier": {
+    "@type": "DissertationIdentifier",
+    "value": ""
+  },
+  "DOI": {
+    "@type": "DOI",
+    "value": ""
+  },
   "EAN": {
     "@type": "EAN",
+    "value": ""
+  },
+  "EIDR": {
+    "@type": "EIDR",
+    "value": ""
+  },
+  "Fingerprint": {
+    "@type": "Fingerprint",
+    "value": ""
+  },
+  "Hdl": {
+    "@type": "Hdl",
+    "value": ""
+  },
+  "GTIN14": {
+    "@type": "GTIN14",
+    "value": ""
+  },
+  "ISAN": {
+    "@type": "ISAN",
     "value": ""
   },
   "ISBN": {
@@ -105,12 +149,32 @@
     "@type": "ISMN",
     "value": ""
   },
-  "ISSN": {
-    "@type": "ISSN",
+  "ISNI": {
+    "@type": "ISNI",
+    "value": ""
+  },
+  "ISO": {
+    "@type": "ISO",
     "value": ""
   },
   "ISRC": {
     "@type": "ISRC",
+    "value": ""
+  },
+  "ISSN": {
+    "@type": "ISSN",
+    "value": ""
+  },
+  "ISSNL": {
+    "@type": "ISSNL",
+    "value": ""
+  },
+  "ISTC": {
+    "@type": "ISTC",
+    "value": ""
+  },
+  "ISWC": {
+    "@type": "ISWC",
     "value": ""
   },
   "LCCN": {
@@ -132,6 +196,10 @@
         "@type": "Organization",
         "name": ""
     }
+  },
+  "MusicDistributorNumber": {
+    "@type": "MusicDistributorNumber",
+    "value": ""
   },
   "MusicPlate": {
     "@type": "MusicPlate",
@@ -158,6 +226,10 @@
       "code": ""
     }
   },
+  "PostalRegistration": {
+    "@type": "PostalRegistration",
+    "value": ""
+  },
   "PublisherNumber": {
     "@type": "PublisherNumber",
     "value": "",
@@ -174,10 +246,18 @@
     "@type": "SICI",
     "value": ""
   },
+  "StockNumber": {
+    "@type": "StockNumber",
+    "value": ""
+  },
   "STRN": {
     "@type": "STRN",
     "value": "",
     "qualifier": [""]
+  },
+  "StudyNumber": {
+    "@type": "StudyNumber",
+    "value": ""
   },
   "SystemNumber": {
     "@type": "SystemNumber",
@@ -416,6 +496,10 @@
     "agent": null,
     "role": []
   },
+  "Role": {
+    "@type": "Role",
+    "label": ""
+  },
   "ComplexSubject": {
     "@type": "ComplexSubject",
     "termComponentList": [],
@@ -489,16 +573,32 @@
     "@type": "SourceDataNotFound",
     "citationSource": ""
   },
+  "Affiliation": {
+    "@type": "Affiliation",
+    "label": ""
+  },
   "AdministrativeHistoryNote": {
     "@type": "AdministrativeHistoryNote",
     "label": ""
   },
-  "BiographicalInformation": {
-    "@type": "BiographicalInformation",
+  "BiographicalNote": {
+    "@type": "BiographicalNote",
     "label": ""
   },
   "BiographicalOrHistoricalData": {
     "@type": "BiographicalOrHistoricalData",
+    "label": ""
+  },
+  "FieldOfActivity": {
+    "@type": "FieldOfActivity",
+    "label": ""
+  },
+  "Occupation": {
+    "@type": "Occupation",
+    "label": ""
+  },
+  "marc:OtherAttributes": {
+    "@type": "marc:OtherAttributes",
     "label": ""
   },
   "IntendedAudience": {

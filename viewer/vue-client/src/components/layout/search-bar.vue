@@ -20,6 +20,12 @@ export default {
       'settings',
       'user',
     ]),
+    version() {
+      return this.settings.gitInfo.tag !== null ? this.settings.gitInfo.tag : this.settings.gitInfo.hash;
+    },
+    versionInfo() {
+      return `${this.environmentLabel.toUpperCase()} ${this.version}`;
+    },
     environmentLabel() {
       if (this.settings.environment !== 'prod') {
         return this.settings.environment;
@@ -40,12 +46,15 @@ export default {
           <router-link to="/" class="SearchBar-brandLink">
             <img class="SearchBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
           </router-link>
-          <router-link to="/" class="SearchBar-brandTitle" :title="`Version ${settings.version}`">
+          <router-link to="/" class="SearchBar-brandTitle" :title="`Version ${version}`">
             <span id="service-name">{{ settings.title }}</span>
-            <span class="SearchBar-envLabel">
-            {{ environmentLabel }} {{ settings.version }}
-            </span>
           </router-link>
+          <span class="SearchBar-envLabel" v-if="this.settings.gitInfo.tag !== null">
+            {{ versionInfo }}
+          </span>
+          <a class="SearchBar-envLabel" v-if="this.settings.gitInfo.tag === null" target="_blank" :href="`https://github.com/libris/lxlviewer/commit/${this.settings.gitInfo.hash}`">
+            {{ versionInfo }}
+          </a>
         </div>
         <search-form class="SearchBar-searchForm col-sm-12 col-md-9" :search-perimeter="$route.params.perimeter" />
       </div>
@@ -148,8 +157,9 @@ export default {
     font-size: 0.9rem;
     font-weight: bold;
     float: right;
-    margin: -1em 0px 0px 0em;
-    text-transform: uppercase;
+    position: relative;
+    top: 0.9rem;
+    left: -0.5rem;
   }
 }
 

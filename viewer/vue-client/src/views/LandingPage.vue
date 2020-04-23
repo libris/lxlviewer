@@ -39,22 +39,25 @@ export default {
 
 <template>
   <div class="row">
-    <div class="col-md-12">
+    <div class="LandingPage col-md-12">
       <div class="LandingPage-linkCards">
         <link-card v-if="widgetShouldBeShown('about-xl')" 
           :image="copy['about-xl'].image" 
+          :image-alt-text="copy['about-xl'].image_alt_text"
           :header="copy['about-xl'].header" 
           :text="copy['about-xl'].text" 
           :link-text="copy['about-xl'].linkText" 
           :link-url="copy['about-xl'].linkUrl"></link-card>
         <link-card v-if="widgetShouldBeShown('link-blog')" 
           :image="copy['blog'].image" 
+          :image-alt-text="copy['blog'].image_alt_text"
           :header="copy['blog'].header" 
           :text="copy['blog'].text" 
           :link-text="copy['blog'].linkText" 
           :link-url="copy['blog'].linkUrl"></link-card>
         <link-card v-if="widgetShouldBeShown('link-studies')" 
           :image="copy['studies'].image" 
+          :image-alt-text="copy['studies'].image_alt_text"
           :header="copy['studies'].header" 
           :text="copy['studies'].text" 
           :link-text="copy['studies'].linkText" 
@@ -62,6 +65,7 @@ export default {
         <link-card 
           v-if="widgetShouldBeShown('link-supportforum')"
           :image="copy['supportforum'].image" 
+          :image-alt-text="copy['supportforum'].image_alt_text"
           :header="copy['supportforum'].header" 
           :text="copy['supportforum'].text" 
           :link-text="copy['supportforum'].linkText" 
@@ -80,10 +84,13 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-.LandingPage-linkCards {
-  padding-top: 2rem;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+.LandingPage {
+  padding-bottom: 2rem;
+  &-linkCards {
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
 }
 </style>

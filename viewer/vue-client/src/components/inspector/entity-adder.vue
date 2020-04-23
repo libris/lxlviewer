@@ -7,7 +7,6 @@ import VueSimpleSpinner from 'vue-simple-spinner';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
-import ToolTipComponent from '../shared/tooltip-component.vue';
 import PanelSearchList from '../search/panel-search-list.vue';
 import Sort from '@/components/search/sort';
 import PanelComponent from '@/components/shared/panel-component.vue';
@@ -24,7 +23,6 @@ export default {
       keyword: '',
       loading: false,
       debounceTimer: 500,
-      showToolTip: false,
       rangeInfo: false,
       addEmbedded: false,
       searchMade: false,
@@ -106,7 +104,6 @@ export default {
   },
   components: {
     'panel-component': PanelComponent,
-    'tooltip-component': ToolTipComponent,
     'panel-search-list': PanelSearchList,
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
@@ -170,7 +167,7 @@ export default {
         const term = {};
         term.depth = classTree[i].depth;
         term.abstract = classTree[i].abstract;
-        term.label = this.getFormattedSelectOption(classTree[i]);
+        term.label = this.getLabelWithTreeDepth(classTree[i]);
         term.value = classTree[i].id;
         term.key = `${classTree[i].id}-${i}`;
         options.push(term);
@@ -285,8 +282,8 @@ export default {
         item.classList.remove('is-marked');
       }
     },
-    getFormattedSelectOption(term) {
-      return DisplayUtil.getFormattedSelectOption(
+    getLabelWithTreeDepth(term) {
+      return DisplayUtil.getLabelWithTreeDepth(
         term, 
         this.settings, 
         this.resources.vocab, 
@@ -323,7 +320,6 @@ export default {
       if (this.valueList.length > 0) {
         this.addEmbedded = false;
       }
-      this.showToolTip = false;
     },
     add(event) {
       this.actionHighlight(false, event);
@@ -465,12 +461,7 @@ export default {
           '@id': this.user.getActiveLibraryUri(),
         };
       }
-
-      if (this.path === 'mainEntity.instanceOf') {
-        this.addSibling(obj);
-      } else {
-        this.addItem(obj);
-      }
+      this.addItem(obj);
     },
     addType(typeId) {
       const shortenedType = StringUtil.convertToPrefix(typeId, this.resources.context);
@@ -554,15 +545,13 @@ export default {
           role="button"
           :aria-label="tooltipText | translatePhrase"
           ref="adderFocusElement"
+          v-tooltip.left="tooltipText"
           @click="add($event)" 
           @keyup.enter="add($event)"
-          @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
-          @mouseleave="showToolTip = false, actionHighlight(false, $event)"
-          @focus="showToolTip = true, actionHighlight(true, $event)"
-          @blur="showToolTip = false, actionHighlight(false, $event)">
-          <tooltip-component 
-            :show-tooltip="showToolTip" 
-            :tooltip-text="tooltipText"></tooltip-component>
+          @mouseenter="actionHighlight(true, $event)" 
+          @mouseleave="actionHighlight(false, $event)"
+          @focus="actionHighlight(true, $event)"
+          @blur="actionHighlight(false, $event)">
         </i>
         <i class="fa fa-plus-circle fa-fw icon icon--sm is-disabled"
           v-else-if="addEmbedded"
@@ -582,13 +571,11 @@ export default {
         :aria-label="tooltipText | translatePhrase"
         v-on:click="add($event)" 
         @keyup.enter="add($event)"
-        @mouseenter="showToolTip = true, actionHighlight(true, $event)" 
-        @mouseleave="showToolTip = false, actionHighlight(false, $event)"
-        @focus="showToolTip = true, actionHighlight(true, $event)"
-        @blur="showToolTip = false, actionHighlight(false, $event)">
-        <tooltip-component 
-          :show-tooltip="showToolTip" 
-          :tooltip-text="tooltipText"></tooltip-component>
+        v-tooltip.top="tooltipText"
+        @mouseenter="actionHighlight(true, $event)" 
+        @mouseleave="actionHighlight(false, $event)"
+        @focus="actionHighlight(true, $event)"
+        @blur="actionHighlight(false, $event)">
       </i>
       <i
         class="fa fa-plus-circle fa-fw icon icon--sm is-disabled"

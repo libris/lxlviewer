@@ -93,6 +93,17 @@ Vue.filter('asFnurgelLink', (id) => {
   return fnurgel;
 });
 
+Vue.mixin({
+  methods: {
+    translate(string) {
+      return StringUtil.getUiPhraseByLang(string, this.settings.language);
+    },
+    getKeybindText(eventName) {
+      return LayoutUtil.getKeybindingText(eventName);
+    },
+  },
+});
+
 Vue.filter('removeDomain', value => StringUtil.removeDomain(value, store.getters.settings.removableBaseUris));
 Vue.filter('translatePhrase', string => StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language));
 Vue.filter('capitalize', (value) => {
@@ -172,6 +183,7 @@ new Vue({
   mounted() {
     this.$nextTick(() => {
       this.verifyConfig();
+      this.loadTemplates();
       window.addEventListener('focus', () => {
         this.syncUserStorage();
       });
@@ -286,6 +298,13 @@ new Vue({
       }, (error) => {
         console.log(error);
       });
+    },
+    loadTemplates() {
+      const templates = {
+        base: require('@/resources/json/baseTemplates'),
+        combined: require('@/resources/json/combinedTemplates'),
+      };
+      store.dispatch('setTemplates', templates);
     },
     getLdDependencies() {
       const promiseArray = [];

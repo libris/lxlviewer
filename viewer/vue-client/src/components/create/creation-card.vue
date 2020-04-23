@@ -23,8 +23,8 @@ export default {
     setIndex() {
       this.$emit('set-active-index', this.index);
     },
-    getFormattedSelectOption(term, settings, vocab, context) {
-      return DisplayUtil.getFormattedSelectOption(term, settings, vocab, context);
+    getLabelWithTreeDepth(term, settings, vocab, context) {
+      return DisplayUtil.getLabelWithTreeDepth(term, settings, vocab, context);
     },
   },
   computed: {
@@ -64,7 +64,7 @@ export default {
             :value="term.id" 
             :key="index" 
             :disabled="term.abstract"
-            v-html="getFormattedSelectOption(term, settings, resources.vocab, resources.context)">
+            v-html="getLabelWithTreeDepth(term, settings, resources.vocab, resources.context)">
           </option>
         </select>
       </div>

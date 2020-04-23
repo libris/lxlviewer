@@ -32,7 +32,7 @@ export default {
   <footer class="Footer">
       <div class="Footer-content">
         <div class="Footer-serviceName">
-          <img src="~kungbib-styles/dist/assets/kb_logo_white.svg" class="Footer-serviceLogo" alt="Kungliga bibliotekets logotyp" />
+          <img src="~kungbib-styles/dist/assets/kb_logo_black.svg" class="Footer-serviceLogo" alt="Kungliga bibliotekets logotyp" />
           <a class="Footer-link" href="http://www.kb.se" alt="Länk till Kungliga bibliotekets webbplats">
             {{ "National Library of Sweden" | translatePhrase }}
           </a>
@@ -56,6 +56,9 @@ export default {
               </li>
               <li>
                 <a href="https://www.kb.se/omoss/dataskydd.html#XLkat" class="Footer-link">{{ "GDPR compliance" | translatePhrase }}</a>
+              </li>
+              <li>
+                <a href="https://www.kb.se/digital-tillganglighet" class="Footer-link">{{ "Accessibility statement" | translatePhrase }}</a>
               </li>
             </ul>
           </nav>
@@ -121,11 +124,9 @@ export default {
 <style lang="less">
 
 .Footer {
-  padding: 25px 10px;
+  padding: 2em 10px;
   background-color: @bg-footer;
-  color: @text-footer;
-  border: solid #4e4e4e;
-  border-width: 3px 0px 0px 0px;
+  color: @text-footer;  
 
   &-content {
     display: flex;
@@ -142,7 +143,6 @@ export default {
     flex-direction: column;
     justify-content: center;
     justify-content: flex-start;
-    font-weight: 700;
     display: block;
 
    @media (min-width: 768px) {
@@ -204,30 +204,16 @@ export default {
     }
   }
 
-  &-link {
-    color: @text-footer;
-    text-transform:none;
-    &:hover, 
-    &:focus {
-      color: @text-footer;
-    }
-  }
-
   &-listTitle {
-    color: @white;
     font-size: 14px;
     font-size: 1.4rem;
     font-weight: 600;
-    margin: 0 0 5px 0;
+    margin: 0 0 0.8rem 0;
 
     @media (min-width: @screen-md) {
       font-size: 16px;
       font-size: 1.6rem;
     }
-  }
-
-  i {
-    color: @text-alt-footer;
   }
 
   @media print {

@@ -34,13 +34,10 @@ export default {
       return VocabUtil.getRecordType(this.formType, this.resources.vocab, this.resources.context);
     },
     showTypeChanger() {
-      if (typeof this.item !== 'undefined' && this.inspector.data.work && this.item['@id'] === this.inspector.data.work['@id']) {
+      if (this.recordType === 'Work' || this.recordType === 'Instance' || this.isMainEntityForm) {
         return true;
       }
-      if (this.isMainEntityForm === false || this.isHolding || this.recordType === 'Concept' || this.recordType === 'Other') {
-        return false;
-      }
-      return true;
+      return false;
     },
     filteredItem() {
       const fItem = cloneDeep(this.sortedFormData);

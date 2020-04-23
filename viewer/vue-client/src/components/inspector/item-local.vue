@@ -1,5 +1,5 @@
 <script>
-import { each, cloneDeep, get } from 'lodash-es';
+import { cloneDeep, get } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as httpUtil from '@/utils/http';
@@ -8,7 +8,6 @@ import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
-import ToolTipComponent from '../shared/tooltip-component';
 import FieldAdder from '@/components/inspector/field-adder';
 import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
@@ -144,16 +143,14 @@ export default {
       return this.item;
     },
     isEmpty() {
-      let bEmpty = true;
-      // Check if item has any keys besides @type and _uid. If not, we'll consider it empty.
-      each(this.item, (value, key) => {
-        if (key !== '@type' && key !== '_uid') {
-          if (typeof value !== 'undefined') {
-            bEmpty = false;
-          }
-        }
-      });
-      return bEmpty;
+      const itemKeys = Object.keys(this.item);
+      if (itemKeys.length > 1) {
+        return false;
+      }
+      if (itemKeys.length === 1 && this.showTypeChanger) {
+        return false;
+      }
+      return true;
     },
     isLastAdded() {
       if (this.inspector.status.lastAdded === this.getPath) {
@@ -396,7 +393,6 @@ export default {
 
   components: {
     'field-adder': FieldAdder,
-    'tooltip-component': ToolTipComponent,
     'search-window': SearchWindow,
   },
 };
@@ -433,14 +429,12 @@ export default {
             tabindex="0"
             :aria-label="'Link entity' | translatePhrase"
             @click="openExtractDialog(), expand()" 
+            v-tooltip.top="translate('Link entity')"
             @focus="showLinkAction = true, actionHighlight(true, $event)"
             @blur="showLinkAction = false, actionHighlight(false, $event)"
             @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
             @mouseout="showLinkAction = false, actionHighlight(false, $event)"
             @keyup.enter="openExtractDialog(), expand()">
-            <tooltip-component 
-              :show-tooltip="showLinkAction" 
-              tooltip-text="Link entity"></tooltip-component>
           </i>
         </div>
 
@@ -459,15 +453,13 @@ export default {
             role="button"
             tabindex="0"
             :aria-label="'Remove' | translatePhrase"
+            v-tooltip.top="translate('Remove')"
             v-on:click="removeThis(true)" 
             @keyup.enter="removeThis(true)"
             @focus="removeHover = true, removeHighlight(true, $event)"
             @blur="removeHover = false, removeHighlight(false, $event)"
             @mouseover="removeHover = true, removeHighlight(true, $event)"
             @mouseout="removeHover = false, removeHighlight(false, $event)">
-            <tooltip-component 
-              :show-tooltip="removeHover" 
-              tooltip-text="Remove"></tooltip-component>
           </i>
         </div>
 
@@ -479,14 +471,12 @@ export default {
             tabindex="0"
             :aria-label="'Manage' | translatePhrase"
             v-on:click="managerMenuOpen ? closeManagerMenu() : openManagerMenu()" 
+            v-tooltip.top="translate('Manage')"
             @keyup.enter="managerMenuOpen ? closeManagerMenu() : openManagerMenu()"
             @focus="manageHover = true, actionHighlight(true, $event)"
             @blur="manageHover = false, actionHighlight(false, $event)"
             @mouseover="manageHover = true, actionHighlight(true, $event)"
             @mouseout="manageHover = false, actionHighlight(false, $event)">
-            <tooltip-component 
-              :show-tooltip="manageHover" 
-              tooltip-text="Manage"></tooltip-component>
           </i>
         </div>
         <div class="dropdown ManagerMenu" v-on-clickaway="closeManagerMenu" v-if="managerMenuOpen"

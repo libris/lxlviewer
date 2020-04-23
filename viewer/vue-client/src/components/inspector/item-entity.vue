@@ -2,7 +2,6 @@
 import { size } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LayoutUtil from '@/utils/layout';
-import TooltipComponent from '@/components/shared/tooltip-component';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 import PreviewCard from '@/components/shared/preview-card';
@@ -80,7 +79,6 @@ export default {
     },
   },
   components: {
-    'tooltip-component': TooltipComponent,
     PreviewCard,
   },
   created() {
@@ -141,12 +139,9 @@ export default {
               role="button"
               tabindex="0"
               :aria-label="'Remove' | translatePhrase"
+              v-tooltip.top="translate('Remove')"
               @click="removeThis(true)"
               @keyup.enter="removeThis(true)">
-
-              <tooltip-component 
-                :show-tooltip="removeHover" 
-                tooltip-text="Remove"></tooltip-component>
             </i>
           </div>
         </div>
