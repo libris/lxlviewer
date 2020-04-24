@@ -28,6 +28,7 @@ export default {
       formObj: {},
       expanded: false,
       removeHover: false,
+      animateNewlyAdded: false,
     };
   },
   computed: {
@@ -35,6 +36,7 @@ export default {
       'settings',
       'user',
       'inspector',
+      'status',
     ]),
     isNewlyAdded() {
       if (this.inspector.status.lastAdded === this.fullPath) {
@@ -49,6 +51,12 @@ export default {
   watch: {
     'inspector.event'(val) {
       this.$emit(`${val.value}`);
+    },
+    'status.panelOpen'(val) {
+      if (this.isNewlyAdded && !val) {        
+        this.$refs.chip.focus();
+        this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+      }
     },
   },
   methods: {
@@ -94,11 +102,10 @@ export default {
       if (this.isNewlyAdded) {
         setTimeout(() => {
           const element = this.$el;
-          LayoutUtil.ensureInViewport(element).then(() => {
+          LayoutUtil.ensureInViewport(element).then(() => {                        
+            this.animateNewlyAdded = true;
             setTimeout(() => {
-              if (this.isNewlyAdded) {
-                this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
-              }
+              this.animateNewlyAdded = false;
             }, 1000);
           });
         }, 200);
@@ -127,8 +134,9 @@ export default {
       <v-popover class="ItemEntity-popover" placement="bottom-start" @show="$refs.previewCard.populateData()">
         <div class="ItemEntity chip" 
           tabindex="0"
+          ref="chip"
           v-if="!isDistinguished || !expanded" 
-          :class="{ 'is-locked': isLocked, 'is-newlyAdded': isNewlyAdded, 'is-removeable': removeHover}">
+          :class="{ 'is-locked': isLocked, 'is-newlyAdded': animateNewlyAdded, 'is-removeable': removeHover}">
           <span class="ItemEntity-label chip-label">
             <span v-if="(!isDistinguished || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
             <span v-if="(!isDistinguished || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}}</a></span>
