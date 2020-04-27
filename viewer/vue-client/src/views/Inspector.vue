@@ -777,18 +777,24 @@ export default {
       return false;
     },
     isItem() {
-      return this.inspector.data.mainEntity['@type'] === 'Item';
+      if (this.inspector.data.hasOwnProperty('mainEntity')) {
+        return this.inspector.data.mainEntity['@type'] === 'Item';
+      }
+      return false;
     },
     downloadIsSupported() {
       const a = document.createElement('a');
       return typeof a.download !== 'undefined';
     },
     recordType() {
-      return VocabUtil.getRecordType(
-        this.inspector.data.mainEntity['@type'],
-        this.resources.vocab,
-        this.resources.context,
-      );
+      if (this.inspector.data.hasOwnProperty('mainEntity')) {
+        return VocabUtil.getRecordType(
+          this.inspector.data.mainEntity['@type'],
+          this.resources.vocab,
+          this.resources.context,
+        );
+      }
+      return null;
     },
     editorTabs() {
       return [{ id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
