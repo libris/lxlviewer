@@ -21,7 +21,7 @@ export default {
       'user',
     ]),
     version() {
-      return this.settings.gitInfo.tag !== null ? this.settings.gitInfo.tag : this.settings.gitInfo.hash;
+      return this.settings.gitDescribe.distance !== 0 ? this.settings.gitDescribe.hash : this.settings.gitDescribe.tag;
     },
     versionInfo() {
       return `${this.environmentLabel.toUpperCase()} ${this.version}`;
@@ -49,10 +49,10 @@ export default {
           <router-link to="/" class="SearchBar-brandTitle" :title="`Version ${version}`">
             <span id="service-name">{{ settings.title }}</span>
           </router-link>
-          <span class="SearchBar-envLabel" v-if="this.settings.gitInfo.tag !== null">
+          <span class="SearchBar-envLabel" v-if="this.settings.gitDescribe.distance == 0">
             {{ versionInfo }}
           </span>
-          <a class="SearchBar-envLabel" v-if="this.settings.gitInfo.tag === null" target="_blank" :href="`https://github.com/libris/lxlviewer/commit/${this.settings.gitInfo.hash}`">
+          <a class="SearchBar-envLabel" v-if="this.settings.gitDescribe.distance !== 0" target="_blank" :href="`https://github.com/libris/lxlviewer/commit/${this.settings.gitDescribe.hash}`">
             {{ versionInfo }}
           </a>
         </div>

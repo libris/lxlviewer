@@ -87,10 +87,7 @@ const store = new Vuex.Store({
       language: 'sv',
       environment: process.env.VUE_APP_ENV_LABEL || 'local',
       version: process.env.VUE_APP_VERSION,
-      gitInfo: {
-        tag: process.env.VUE_APP_GIT_TAG !== 'null' ? process.env.VUE_APP_GIT_TAG : null,
-        hash: process.env.VUE_APP_GIT_HASH,
-      },
+      gitDescribe: JSON.parse(process.env.VUE_APP_GIT_DESCRIBE),
       dataPath: process.env.VUE_APP_DATA_PATH || process.env.VUE_APP_API_PATH,
       apiPath: process.env.VUE_APP_API_PATH,
       authPath: process.env.VUE_APP_AUTH_PATH,
