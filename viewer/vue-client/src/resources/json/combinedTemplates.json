@@ -454,7 +454,7 @@
           "issuanceType": "ComponentPart",
           "mediaType": [
             {
-              "@id": "https://id.kb.se/term/rda/Unmediated"
+              "@id": "https://id.kb.se/term/rda/Computer"
             }
           ],
           "carrierType": [
