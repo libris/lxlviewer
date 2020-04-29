@@ -117,8 +117,8 @@ export default {
     v-show="isActive">
     <ul class="FieldList" 
       v-bind:class="{'collapsed': collapsed }">
-      <field class="FieldList-item"
-        v-for="(v,k) in filteredItem" 
+      <field class="FieldList-item"        
+        v-for="(v,k) in filteredItem"         
         v-bind:class="{ 'locked': isLocked }" 
         :entity-type="formObj['@type']" 
         :is-inner="false" 
@@ -128,12 +128,27 @@ export default {
         :key="k" 
         :field-key="k" 
         :field-value="v" 
-        :parent-path="editingObject" />
+        :parent-path="editingObject" />      
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
           {{ formObj }}
         </pre>
       </div>
+    </ul>
+    <ul class="FieldList"
+      style="margin-top: 30px"
+      v-if="reverseItem">
+      <field class="FieldList-item"        
+      v-for="(v,k) in reverseItem"         
+      v-bind:class="{ 'locked': isLocked }" 
+      :entity-type="formObj['@type']" 
+      :is-inner="false" 
+      :is-removable="true" 
+      :is-locked="true" 
+      :key="k" 
+      :field-key="k" 
+      :field-value="v" 
+      :parent-path="editingObject" />
     </ul>
   </div>
 </template>
