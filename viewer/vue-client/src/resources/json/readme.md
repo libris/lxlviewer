@@ -14,7 +14,7 @@ Templates for different cataloging profiles based on three categories:
 - agent
 - concept
 
-They are all formatted the same with each template being assigned the following:
+They are all formatted in the same way with each template being assigned the following:
 
 `"label": "name used in gui",`
 
