@@ -127,6 +127,29 @@ export function getMainEntity(graph) {
   return mainEntity;
 }
 
+export function getDigitalReproductionObject(original, resources) {
+  const instanceTemplates = resources.templates.combined.instance;
+  let digitalReproTemplate;
+  for (let i = 0; i < instanceTemplates.length; i++) {
+    if (instanceTemplates[i].key === 'digitizedMonographText') {
+      digitalReproTemplate = instanceTemplates[i].value;
+    }
+  }
+  if (original.mainEntity.hasOwnProperty('instanceOf')) {
+    if (original.mainEntity.instanceOf['@id'].indexOf('#work') > -1) {
+      // Work was local
+      digitalReproTemplate.work = Object.assign({}, original.work);
+      digitalReproTemplate.work['@id'] = 'https://id.kb.se/TEMPID#work';
+      digitalReproTemplate.mainEntity.instanceOf = 'https://id.kb.se/TEMPID#work'
+    } else {
+      // Work was linked
+      digitalReproTemplate.mainEntity.instanceOf = original.mainEntity.instanceOf;
+    }
+  }
+  digitalReproTemplate.quoted = original.quoted;
+  return digitalReproTemplate;
+}
+
 export function getItemObject(itemOf, heldBy, instance) {
   const itemObj = {
     record: {

@@ -572,6 +572,12 @@ export default {
         this.$router.push({ path: '/new' });
       }
     },
+    createDigitalReproduction() {
+      const repro = RecordUtil.getDigitalReproductionObject(this.inspector.data, this.resources);
+      const cleanedRepro = RecordUtil.prepareDuplicateFor(repro, this.user, this.settings.keysToClear.duplication);
+      this.$store.dispatch('setInsertData', cleanedRepro);
+      this.$router.push({ path: '/new' });
+    },
     saveItem(done = false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
 
@@ -709,6 +715,9 @@ export default {
             break;
           case 'start-edit':
             this.startEditing();
+            break;
+          case 'create-digital-reproduction':
+            this.createDigitalReproduction();
             break;
           case 'download-json':
             this.downloadJson();
