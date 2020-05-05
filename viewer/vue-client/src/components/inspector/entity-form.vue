@@ -4,13 +4,14 @@
   It recieves modification events from other components through $dispatch calls
   and makes changes to the bound 'focus' object accordingly.
 */
-
+import { cloneDeep, groupBy } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from '@/utils/vocab';
+import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
 
 export default {
-  mixins: [FormMixin],
+  mixins: [FormMixin, LensMixin],
   props: {
     formData: {
       type: Object,
@@ -93,9 +94,35 @@ export default {
     formObj() {
       return this.formData;
     },
-    // formData() {
-    //   return this.inspector.data[this.editingObject];
-    // },
+    reverseItemSorted() {
+      // WIP: for now, sorting and grouping broader only
+
+      let groupedReverseItem = {};
+      const reverseItem = cloneDeep(this.reverseItem);
+      const reverseItemSorted = {};
+
+      // get label and add it to the object for sorting
+      reverseItem.broader.map(obj => obj.label = this.getLabel(obj));
+
+      // sort aplphabetically
+      reverseItem.broader.sort(function (a,b) {
+        return a['label'].localeCompare(b['label'], 'sv');
+      });
+
+      // group by first letter
+      groupedReverseItem = groupBy(reverseItem.broader, function(item) {
+        return item.label.substring(0, 1);
+      });
+
+      // delete label
+      Object.keys(groupedReverseItem).forEach(key => {
+        groupedReverseItem[key].forEach(v => delete v.label);
+      });
+
+      reverseItemSorted.broader = groupedReverseItem;
+
+      return  reverseItemSorted;
+    },
   },
   watch: {
   },
@@ -139,11 +166,11 @@ export default {
       style="margin-top: 30px"
       v-if="reverseItem">
       <field class="FieldList-item"        
-      v-for="(v,k) in reverseItem"         
+      v-for="(v,k) in reverseItemSorted"         
       v-bind:class="{ 'locked': isLocked }" 
       :entity-type="formObj['@type']" 
       :is-inner="false" 
-      :is-removable="true" 
+      :is-removable="false" 
       :is-locked="true" 
       :key="k" 
       :field-key="k" 
