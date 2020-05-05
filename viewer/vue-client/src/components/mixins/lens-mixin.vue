@@ -10,7 +10,7 @@ export default {
   },
   methods: {
     getLabel(item) {
-      if (!this.display || !this.inspector.data || !this.resources.vocab || !this.settings || !this.resources.context) {
+      if (!this.resources.display || !this.inspector.data || !this.resources.vocab || !this.settings || !this.resources.context) {
         throw new Error('Missing display/vocab/settings or similar. Did you set up Vuex getters for this component?');
       }
       const label = DisplayUtil.getItemLabel(
