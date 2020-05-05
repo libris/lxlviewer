@@ -50,8 +50,7 @@ export default {
 
       return fItem;
     },
-    reverseItem() {
-      console.log(this.sortedFormData['@reverse']);
+    reverseItem() {      
       return this.sortedFormData['@reverse'];
     },
     sortedFormData() {
