@@ -19,7 +19,7 @@
     "marc:numeration",
     "marc:titlesAndOtherWordsAssociatedWithAName",
     "qualifyingNote",
-    "marc:fullerFormName",
+    "fullerFormOfName",
     "lifeSpan",
     "marc:attributionQualifier",
     "isPartOf",
