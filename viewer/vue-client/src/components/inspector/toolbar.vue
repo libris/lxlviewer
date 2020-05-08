@@ -514,7 +514,7 @@ export default {
           {{ "Make copy" | translatePhrase }}{{ getKeybindText('duplicate-item') ? ` (${getKeybindText('duplicate-item')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
+        <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && isSubClassOf('Instance')">
           <a class="Toolbar-menuLink"  @click="postControl('create-digital-reproduction'), hideToolsMenu()">
           <i class="fa fa-fw fa-files-o"></i>
           {{ "Create digital reproduction" | translatePhrase }}{{ getKeybindText('create-digital-reproduction') ? ` (${getKeybindText('create-digital-reproduction')})` : ''}}
