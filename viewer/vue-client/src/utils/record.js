@@ -127,8 +127,7 @@ export function getMainEntity(graph) {
   return mainEntity;
 }
 
-export function getDigitalReproductionObject(original, resources, settings) {
-
+export function getDigitalReproductionObject(original, resources) {
   // Get the template
   const instanceTemplates = resources.templates.combined.instance;
   let digitalReproTemplate;
@@ -144,7 +143,7 @@ export function getDigitalReproductionObject(original, resources, settings) {
       // Work was local
       digitalReproTemplate.work = Object.assign({}, original.work);
       digitalReproTemplate.work['@id'] = 'https://id.kb.se/TEMPID#work';
-      digitalReproTemplate.mainEntity.instanceOf = 'https://id.kb.se/TEMPID#work'
+      digitalReproTemplate.mainEntity.instanceOf = 'https://id.kb.se/TEMPID#work';
     } else {
       // Work was linked
       digitalReproTemplate.mainEntity.instanceOf = original.mainEntity.instanceOf;
