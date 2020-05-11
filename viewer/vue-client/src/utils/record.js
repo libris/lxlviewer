@@ -152,7 +152,10 @@ export function getDigitalReproductionObject(original, resources, settings) {
   }
 
   // Copy the other keys we want to copy
-  const keysToCopy = settings.digitalReproduction.keysToCopy;
+  const keysToCopy = [
+    'mainEntity.hasTitle',
+    'mainEntity.responsibilityStatement',
+  ];
   for (let i = 0; i < keysToCopy.length; i++) {
     const originalValue = get(original, keysToCopy[i]);
     if (typeof originalValue !== 'undefined') {
