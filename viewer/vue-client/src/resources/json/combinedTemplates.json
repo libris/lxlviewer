@@ -328,6 +328,20 @@
               "label": [""]
             }
           ],
+          "associatedMedia": [
+            {
+              "@type": "MediaObject",
+              "cataloguersNote": [
+                ""
+              ],
+              "marc:publicNote": [
+                ""
+              ],
+              "uri": [
+                ""
+              ]
+            }
+          ],
           "reproductionOf": [],
           "instanceOf": {
             "@type": "Text",
