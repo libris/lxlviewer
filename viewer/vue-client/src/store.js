@@ -107,6 +107,13 @@ const store = new Vuex.Store({
         // 'Concept', - Blocking this per request of MSS
         'Work',
       ],
+      digitalReproduction: {
+        keysToCopy: [
+          //'mainEntity.instanceOf', HANDLED EXPLICITLY in routine
+          'mainEntity.hasTitle',
+          'mainEntity.responsibilityStatement',
+        ],
+      },
       keysToClear: {
         duplication: [
           'record.controlNumber',

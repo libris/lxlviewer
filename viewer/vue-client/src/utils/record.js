@@ -1,4 +1,4 @@
-import { cloneDeep, each, unset } from 'lodash-es';
+import { cloneDeep, each, unset, get, set } from 'lodash-es';
 import * as md5 from 'md5';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
@@ -127,7 +127,9 @@ export function getMainEntity(graph) {
   return mainEntity;
 }
 
-export function getDigitalReproductionObject(original, resources) {
+export function getDigitalReproductionObject(original, resources, settings) {
+
+  // Get the template
   const instanceTemplates = resources.templates.combined.instance;
   let digitalReproTemplate;
   for (let i = 0; i < instanceTemplates.length; i++) {
@@ -135,6 +137,8 @@ export function getDigitalReproductionObject(original, resources) {
       digitalReproTemplate = instanceTemplates[i].value;
     }
   }
+
+  // Handle instanceOf separately cause of how #work works
   if (original.mainEntity.hasOwnProperty('instanceOf')) {
     if (original.mainEntity.instanceOf['@id'].indexOf('#work') > -1) {
       // Work was local
@@ -146,7 +150,21 @@ export function getDigitalReproductionObject(original, resources) {
       digitalReproTemplate.mainEntity.instanceOf = original.mainEntity.instanceOf;
     }
   }
+
+  // Copy the other keys we want to copy
+  const keysToCopy = settings.digitalReproduction.keysToCopy;
+  for (let i = 0; i < keysToCopy.length; i++) {
+    const originalValue = get(original, keysToCopy[i]);
+    if (typeof originalValue !== 'undefined') {
+      set(digitalReproTemplate, keysToCopy[i], originalValue);
+    }
+  }
+
+  digitalReproTemplate.mainEntity.reproductionOf = { '@id': original.mainEntity['@id'] };
+
+  // Toss in the quoted list
   digitalReproTemplate.quoted = original.quoted;
+
   return digitalReproTemplate;
 }
 

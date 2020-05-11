@@ -573,7 +573,7 @@ export default {
       }
     },
     createDigitalReproduction() {
-      const repro = RecordUtil.getDigitalReproductionObject(this.inspector.data, this.resources);
+      const repro = RecordUtil.getDigitalReproductionObject(this.inspector.data, this.resources, this.settings);
       const cleanedRepro = RecordUtil.prepareDuplicateFor(repro, this.user, this.settings.keysToClear.duplication);
       this.$store.dispatch('setInsertData', cleanedRepro);
       this.$router.push({ path: '/new' });
