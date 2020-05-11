@@ -163,6 +163,11 @@ export function getDigitalReproductionObject(original, resources, settings) {
     }
   }
 
+  // Copy identifier
+  if (original.mainEntity.hasOwnProperty('identifiedBy')) {
+    digitalReproTemplate.mainEntity.indirectlyIdentifiedBy = original.mainEntity.identifiedBy;
+  }
+
   digitalReproTemplate.mainEntity.reproductionOf = { '@id': original.mainEntity['@id'] };
 
   // Toss in the quoted list
