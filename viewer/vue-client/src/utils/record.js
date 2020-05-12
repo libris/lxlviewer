@@ -128,28 +128,26 @@ export function getMainEntity(graph) {
 }
 
 export function getDigitalReproductionObject(original, resources) {
-  // Get the template
+  // Select the template
   const instanceTemplates = resources.templates.combined.instance;
-  let digitalReproTemplate;
+  let digitalReproObject;
   for (let i = 0; i < instanceTemplates.length; i++) {
     if (instanceTemplates[i].key === 'digitizedMonographText') {
-      digitalReproTemplate = instanceTemplates[i].value;
+      digitalReproObject = instanceTemplates[i].value;
     }
   }
-
-  // Handle instanceOf separately cause of how #work works
+  // Copying instanceOf explicitly cause of how #work works
   if (original.mainEntity.hasOwnProperty('instanceOf')) {
     if (original.mainEntity.instanceOf['@id'].indexOf('#work') > -1) {
       // Work was local
-      digitalReproTemplate.work = Object.assign({}, original.work);
-      digitalReproTemplate.work['@id'] = 'https://id.kb.se/TEMPID#work';
-      digitalReproTemplate.mainEntity.instanceOf = 'https://id.kb.se/TEMPID#work';
+      digitalReproObject.work = Object.assign({}, original.work);
+      digitalReproObject.work['@id'] = 'https://id.kb.se/TEMPID#work';
+      digitalReproObject.mainEntity.instanceOf = 'https://id.kb.se/TEMPID#work';
     } else {
       // Work was linked
-      digitalReproTemplate.mainEntity.instanceOf = original.mainEntity.instanceOf;
+      digitalReproObject.mainEntity.instanceOf = original.mainEntity.instanceOf;
     }
   }
-
   // Copy the other keys we want to copy
   const keysToCopy = [
     'mainEntity.hasTitle',
@@ -158,21 +156,22 @@ export function getDigitalReproductionObject(original, resources) {
   for (let i = 0; i < keysToCopy.length; i++) {
     const originalValue = get(original, keysToCopy[i]);
     if (typeof originalValue !== 'undefined') {
-      set(digitalReproTemplate, keysToCopy[i], originalValue);
+      set(digitalReproObject, keysToCopy[i], originalValue);
     }
   }
-
-  // Copy identifier
+  // Add "indirectly identified by" with the "identified by" value from original
   if (original.mainEntity.hasOwnProperty('identifiedBy')) {
-    digitalReproTemplate.mainEntity.indirectlyIdentifiedBy = original.mainEntity.identifiedBy;
+    digitalReproObject.mainEntity.indirectlyIdentifiedBy = original.mainEntity.identifiedBy;
   }
+  // Add "reproduction of" and link it to original document
+  digitalReproObject.mainEntity.reproductionOf = { '@id': original.mainEntity['@id'] };
+  // Copy in the quoted documents
+  digitalReproObject.quoted = original.quoted;
+  // Add the original to the quoted documents
+  digitalReproObject.quoted[original.record['@id']] = original.record;
+  digitalReproObject.quoted[original.mainEntity['@id']] = original.mainEntity;
 
-  digitalReproTemplate.mainEntity.reproductionOf = { '@id': original.mainEntity['@id'] };
-
-  // Toss in the quoted list
-  digitalReproTemplate.quoted = original.quoted;
-
-  return digitalReproTemplate;
+  return digitalReproObject;
 }
 
 export function getItemObject(itemOf, heldBy, instance) {
