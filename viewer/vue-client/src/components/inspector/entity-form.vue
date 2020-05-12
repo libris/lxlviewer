@@ -119,7 +119,13 @@ export default {
         groupedReverseItem[key].forEach(v => delete v.label);
       });
 
-      reverseItemSorted.broader = groupedReverseItem;
+      reverseItemSorted.broader = {};
+
+      reverseItemSorted.broader.items = groupedReverseItem;
+
+      reverseItemSorted.broader.isGrouped = true;
+
+      reverseItemSorted.broader.totalItems = reverseItem.broader.length;  
 
       return  reverseItemSorted;
     },
