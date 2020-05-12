@@ -162,21 +162,24 @@ export default {
         </pre>
       </div>
     </ul>
-    <ul class="FieldList"
-      style="margin-top: 30px"
-      v-if="reverseItem">
-      <field class="FieldList-item"        
-      v-for="(v,k) in reverseItemSorted"         
-      v-bind:class="{ 'locked': isLocked }" 
-      :entity-type="formObj['@type']" 
-      :is-inner="false" 
-      :is-removable="false" 
-      :is-locked="true" 
-      :key="k" 
-      :field-key="k" 
-      :field-value="v" 
-      :parent-path="editingObject" />
-    </ul>
+
+    <div class="EntityForm-reverse">
+      <h6 class="uppercaseHeading">Resurser som länkar hit</h6>
+      <ul class="FieldList"
+        v-if="reverseItem">
+        <field class="FieldList-item"        
+          v-for="(v,k) in reverseItemSorted"
+          v-bind:class="{ 'locked': isLocked }" 
+          :entity-type="formObj['@type']" 
+          :is-inner="false" 
+          :is-removable="false" 
+          :is-locked="true" 
+          :key="k" 
+          :field-key="k" 
+          :field-value="v" 
+          :parent-path="editingObject" />
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -199,6 +202,10 @@ export default {
     padding: 0;
     border-width: 1px 0px 0px 0px;
     transition: 2s ease max-height;
+  }
+
+  &-reverse {
+    margin-top: 2.4rem;
   }
 }
 
