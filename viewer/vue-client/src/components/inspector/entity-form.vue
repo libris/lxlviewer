@@ -4,7 +4,7 @@
   It recieves modification events from other components through $dispatch calls
   and makes changes to the bound 'focus' object accordingly.
 */
-import { cloneDeep, groupBy } from 'lodash-es';
+import { cloneDeep, groupBy, each } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from '@/utils/vocab';
 import LensMixin from '@/components/mixins/lens-mixin';
@@ -95,37 +95,35 @@ export default {
       return this.formData;
     },
     reverseItemSorted() {
-      // WIP: for now, sorting and grouping broader only
-
-      let groupedReverseItem = {};
       const reverseItem = cloneDeep(this.reverseItem);
       const reverseItemSorted = {};
 
-      // get label and add it to the object for sorting
-      reverseItem.broader.map(obj => obj.label = this.getLabel(obj));
+      each(reverseItem, (item, key) => {
+        let groupedReverseItems = {};
 
-      // sort aplphabetically
-      reverseItem.broader.sort(function (a,b) {
-        return a['label'].localeCompare(b['label'], 'sv');
+        // get label and add it to the object for sorting        
+        item.map(obj => obj.label = this.getLabel(obj));         
+
+        // sort aplphabetically
+        item.sort(function (a,b) {
+          return a['label'].localeCompare(b['label'], 'sv');
+        });
+
+        // group by first letter
+        groupedReverseItems = groupBy(item, function(i) {
+          return i.label.substring(0, 1);
+        });
+
+        // delete label
+        Object.keys(groupedReverseItems).forEach(key => {
+          groupedReverseItems[key].forEach(v => delete v.label);
+        });        
+
+        reverseItemSorted[key] = {};
+        reverseItemSorted[key].items = groupedReverseItems;
+        reverseItemSorted[key].isGrouped = true;
+        reverseItemSorted[key].totalItems = item.length;
       });
-
-      // group by first letter
-      groupedReverseItem = groupBy(reverseItem.broader, function(item) {
-        return item.label.substring(0, 1);
-      });
-
-      // delete label
-      Object.keys(groupedReverseItem).forEach(key => {
-        groupedReverseItem[key].forEach(v => delete v.label);
-      });
-
-      reverseItemSorted.broader = {};
-
-      reverseItemSorted.broader.items = groupedReverseItem;
-
-      reverseItemSorted.broader.isGrouped = true;
-
-      reverseItemSorted.broader.totalItems = reverseItem.broader.length;  
 
       return  reverseItemSorted;
     },
@@ -169,10 +167,11 @@ export default {
       </div>
     </ul>
 
-    <div class="EntityForm-reverse">
+    <div 
+      v-if="reverseItem && editingObject === 'mainEntity'"
+      class="EntityForm-reverse">
       <h6 class="uppercaseHeading">Resurser som länkar hit</h6>
-      <ul class="FieldList"
-        v-if="reverseItem">
+      <ul class="FieldList">
         <field class="FieldList-item"        
           v-for="(v,k) in reverseItemSorted"
           v-bind:class="{ 'locked': isLocked }" 
