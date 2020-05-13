@@ -15,6 +15,7 @@ import ItemVocab from './item-vocab';
 import ItemType from './item-type';
 import ItemSibling from './item-sibling';
 import ItemBoolean from './item-boolean';
+import ItemGrouped from './item-grouped';
 import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
@@ -80,11 +81,11 @@ export default {
       type: Boolean,
       default: false,
     },
-    asColumns: {
-      default: true,
-      type: Boolean,
-    },
     isInner: {
+      type: Boolean,
+      default: false,
+    },
+    isGrouped: {
       type: Boolean,
       default: false,
     },
@@ -125,6 +126,7 @@ export default {
     'item-error': ItemError,
     'item-vocab': ItemVocab,
     'item-boolean': ItemBoolean,
+    'item-grouped': ItemGrouped,
     'entity-adder': EntityAdder,
   },
   watch: {
@@ -478,8 +480,11 @@ export default {
       if (typeof o === 'undefined') {
         throw new Error('Cannot check data type of undefined object.');
       }
+      if (this.isPlainObject(o) && o.hasOwnProperty('isGrouped')) {
+        return 'grouped';
+      }
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
-        return 'error';
+        return 'error'; 
       }
       if (typeof o === 'boolean') {
         return 'boolean';
@@ -588,13 +593,14 @@ export default {
   <li class="Field js-field" 
     :id="`formPath-${path}`"
     v-bind:class="{
-      'Field--inner': !asColumns,
+      'Field--inner': isInner,
       'is-lastAdded': isLastAdded, 
       'is-removed': removed,
       'is-locked': locked,
       'is-diff': isFieldDiff,
       'is-new': isFieldNew,
       'is-highlighted': embellished,
+      'is-grouped': isGrouped,
       'has-failed-validations': failedValidations.length > 0,
       'is-distinguished': isDistinguished,
       'is-linked': isLinkedInstanceOf, 
@@ -779,6 +785,14 @@ export default {
           :index="index" 
           :item="item"></item-error>
 
+        <item-grouped 
+          v-if="getDatatype(item) == 'grouped'"
+          :field-key="fieldKey" 
+          :entity-type="entityType" 
+          :parent-path="path"
+          :index="index" 
+          :item="item"></item-grouped>
+
         <!-- Other linked resources -->
         <item-vocab
           v-if="getDatatype(item) == 'vocab'" 
@@ -936,6 +950,10 @@ export default {
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
     background-color: @form-highlight;
   }
+
+  &.is-grouped {
+    border-width: 0;
+  }
   
   @media (min-width: 768px) {
     display: flex;
@@ -1028,6 +1046,12 @@ export default {
       z-index: 1;
     }
 
+    .Field.is-grouped & {
+      padding: 0.75em 0 0.25em 0;
+      max-width: none;
+      flex-basis: 1.5rem;
+    }
+
     .icon-hover();
 
     pre {
@@ -1090,6 +1114,10 @@ export default {
       justify-content: flex-start;
       display: flex;
       margin-bottom: 2px;
+    }
+
+    .Field.is-grouped & {
+      text-align: left;
     }
 
     &:before {
@@ -1173,6 +1201,10 @@ export default {
 
     @media print and (max-width: 768px) {
       padding-top: 0;
+    }
+
+    .Field.is-grouped & {
+      border-width: 0;
     }
   }
 

@@ -88,7 +88,7 @@ export default {
       :is-inner="false" 
       :is-locked="true" 
       :is-removable="false" 
-      :as-index="true"
+      :is-grouped="true"
       :field-key="key"
       :field-value="value"></field>
     </ul>  
