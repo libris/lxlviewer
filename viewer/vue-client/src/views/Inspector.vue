@@ -567,16 +567,24 @@ export default {
     },
     duplicateItem() {
       if (!this.status.inEdit && !this.isItem) {
+        this.$store.dispatch('pushLoadingIndicator', 'Preparing copy');
         const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user, this.settings.keysToClear.duplication);
         this.$store.dispatch('setInsertData', duplicate);
-        this.$router.push({ path: '/new' });
+        setTimeout(() => {
+          this.$store.dispatch('removeLoadingIndicator', 'Preparing copy');
+          this.$router.push({ path: '/new' });
+        }, 0);
       }
     },
     createDigitalReproduction() {
+      this.$store.dispatch('pushLoadingIndicator', 'Preparing reproduction');
       const repro = RecordUtil.getDigitalReproductionObject(this.inspector.data, this.resources, this.settings);
       const cleanedRepro = RecordUtil.prepareDuplicateFor(repro, this.user, this.settings.keysToClear.duplication);
       this.$store.dispatch('setInsertData', cleanedRepro);
-      this.$router.push({ path: '/new' });
+      setTimeout(() => {
+        this.$store.dispatch('removeLoadingIndicator', 'Preparing reproduction');
+        this.$router.push({ path: '/new' });
+      }, 0);
     },
     saveItem(done = false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
