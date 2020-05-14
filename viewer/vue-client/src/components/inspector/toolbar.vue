@@ -516,7 +516,7 @@ export default {
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && isSubClassOf('Instance') && !isSubClassOf('Electronic')">
           <a class="Toolbar-menuLink"  @click="postControl('create-digital-reproduction'), hideToolsMenu()">
-          <i class="fa fa-fw fa-files-o"></i>
+          <i class="fa fa-fw fa-wpforms"></i>
           {{ "Create digital reproduction" | translatePhrase }}{{ getKeybindText('create-digital-reproduction') ? ` (${getKeybindText('create-digital-reproduction')})` : ''}}
           </a>
         </li>
