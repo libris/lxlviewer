@@ -49,10 +49,6 @@
     "mainTitle": "",
     "qualifier": ""
   },
-  "marc:OtherTitle": {
-    "@type": "marc:OtherTitle",
-    "mainTitle": ""
-  },
   "ParallelTitle": {
     "@type": "ParallelTitle",
     "mainTitle": ""
@@ -586,18 +582,6 @@
   },
   "Affiliation": {
     "@type": "Affiliation",
-    "label": ""
-  },
-  "AdministrativeHistoryNote": {
-    "@type": "AdministrativeHistoryNote",
-    "label": ""
-  },
-  "BiographicalNote": {
-    "@type": "BiographicalNote",
-    "label": ""
-  },
-  "BiographicalOrHistoricalData": {
-    "@type": "BiographicalOrHistoricalData",
     "label": ""
   },
   "FieldOfActivity": {
