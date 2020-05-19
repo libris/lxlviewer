@@ -1,4 +1,15 @@
 {
+  "Work": {
+    "@type": "Work",
+    "hasTitle": [
+      {
+        "@type": "Title",
+        "mainTitle": ""
+      }
+    ],
+    "contribution": null,
+    "language": null
+  },
   "Title": {
     "@type": "Title",
     "mainTitle": "",
