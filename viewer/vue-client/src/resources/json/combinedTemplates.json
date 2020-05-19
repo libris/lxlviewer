@@ -206,7 +206,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ["DIGI"]
             }
           ],
           "descriptionConventions": [
@@ -239,11 +239,7 @@
             }
           ],
           "responsibilityStatement": "",
-          "identifiedBy": [{
-            "@type": "ISBN",
-            "value": "",
-            "qualifier": ""
-          }],
+          "identifiedBy": [],
           "editionStatement": [""],
           "publication": [
             {
@@ -261,12 +257,11 @@
               }
             }
           ],
-          "manufacture": [
+          "production": [
             {
-              "@type": "DigitizedReproduction",
+              "@type": "DigitalReproduction",
               "year": "",
               "date": "",
-              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
                 "label": ""
