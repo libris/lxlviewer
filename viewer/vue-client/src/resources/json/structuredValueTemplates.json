@@ -1,4 +1,15 @@
 {
+  "Work": {
+    "@type": "Work",
+    "hasTitle": [
+      {
+        "@type": "Title",
+        "mainTitle": ""
+      }
+    ],
+    "contribution": null,
+    "language": null
+  },
   "Title": {
     "@type": "Title",
     "mainTitle": "",
@@ -37,10 +48,6 @@
     "@type": "KeyTitle",
     "mainTitle": "",
     "qualifier": ""
-  },
-  "marc:OtherTitle": {
-    "@type": "marc:OtherTitle",
-    "mainTitle": ""
   },
   "ParallelTitle": {
     "@type": "ParallelTitle",
@@ -564,6 +571,20 @@
     "edition": "full",
     "editionEnumeration": "23/swe"
   },
+  "ClassificationLcc": {
+    "@type": "ClassificationLcc",
+    "code": "",
+    "itemPortion": ""
+  },
+  "ClassificationNlm": {
+    "@type": "ClassificationNlm",
+    "code": "",
+    "itemPortion": ""
+  },
+  "ClassificationUdc": {
+    "@type": "ClassificationUdc",
+    "code": ""
+  },
   "SourceData": {
     "@type": "SourceData",
     "label": "",
@@ -575,18 +596,6 @@
   },
   "Affiliation": {
     "@type": "Affiliation",
-    "label": ""
-  },
-  "AdministrativeHistoryNote": {
-    "@type": "AdministrativeHistoryNote",
-    "label": ""
-  },
-  "BiographicalNote": {
-    "@type": "BiographicalNote",
-    "label": ""
-  },
-  "BiographicalOrHistoricalData": {
-    "@type": "BiographicalOrHistoricalData",
     "label": ""
   },
   "FieldOfActivity": {
@@ -633,6 +642,10 @@
     "@type": "MusicMedium",
     "label": ""
   },
+  "Scale": {
+    "@type": "Scale",
+    "label": ""
+  },
   "ToCEntry": {
     "@type": "ToCEntry",
     "label": "",
@@ -642,6 +655,10 @@
   "EncodingFormat": {
     "@type": "EncodingFormat",
     "label": ""
+  },
+  "ImageBitDepth": {
+    "@type": "ImageBitDepth",
+    "value": ""
   },
   "MediaObject": {
     "@type": "MediaObject",
