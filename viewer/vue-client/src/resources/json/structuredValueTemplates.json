@@ -571,6 +571,20 @@
     "edition": "full",
     "editionEnumeration": "23/swe"
   },
+  "ClassificationLcc": {
+    "@type": "ClassificationLcc",
+    "code": "",
+    "itemPortion": ""
+  },
+  "ClassificationNlm": {
+    "@type": "ClassificationNlm",
+    "code": "",
+    "itemPortion": ""
+  },
+  "ClassificationUdc": {
+    "@type": "ClassificationUdc",
+    "code": ""
+  },
   "SourceData": {
     "@type": "SourceData",
     "label": "",
