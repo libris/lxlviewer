@@ -654,6 +654,10 @@
     "@type": "EncodingFormat",
     "label": ""
   },
+  "ImageBitDepth": {
+    "@type": "ImageBitDepth",
+    "value": ""
+  },
   "MediaObject": {
     "@type": "MediaObject",
     "uri": [""],
