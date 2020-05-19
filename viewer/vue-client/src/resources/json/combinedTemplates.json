@@ -2837,6 +2837,108 @@
     }
   },
   "concept": {
+    "complexSubject": {
+      "label": "Sammansatt ämnesord",
+      "description": "sao",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@type": "ComplexSubject",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao"
+          },
+          "inCollection": [{
+            "@id": "https://id.kb.se/term/fack"
+          }],
+          "prefLabel": "",
+          "termComponentList": [
+            {
+              "@type": "Topic",
+              "prefLabel": ""
+            },
+            {
+              "@type": "TopicSubdivision",
+              "prefLabel": ""
+            }
+          ],
+          "broadMatch": [
+            {
+              "@type": "Classification",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "code": "kssb",
+                "sameAs": [
+                  {
+                    "@id": "https://id.kb.se/term/kssb%2F8/"
+                  }
+                ],
+                "version": "8"
+              }
+            }
+          ],
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "http://dewey.info/scheme/edition/e23/swe/",
+                "version": "23",
+                "language": "swe"
+              }
+            },
+            {
+              "@type": "ComplexSubject",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/lcsh"
+              },
+              "prefLabel": "",
+              "sameAs": [
+                {
+                  "@id": "http://id.loc.gov/authorities/label/African%20literature"
+                }
+              ],
+              "termComponentList": [
+                {
+                  "@type": "TopicSubdivision",
+                  "prefLabel": ""
+                }
+              ]
+            }
+          ],
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "related": [],
+
+          "scopeNote": [
+            ""
+          ],
+          "historyNote": [
+            ""
+          ]
+        }
+      }
+    },
     "genreForm": {
       "label": "Genre/formterm",
       "description": "saogf",
