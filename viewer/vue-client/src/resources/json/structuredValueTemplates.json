@@ -644,6 +644,10 @@
     "@type": "MusicMedium",
     "label": ""
   },
+  "Scale": {
+    "@type": "Scale",
+    "label": ""
+  },
   "ToCEntry": {
     "@type": "ToCEntry",
     "label": "",
