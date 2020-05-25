@@ -67,7 +67,7 @@ export default {
             <h4 id="footer-libris-nav" class="Footer-listTitle">{{ "New Libris and XL" | translatePhrase }}</h4>
             <ul class="Footer-navList">
               <li>
-                <a href="https://www.youtube.com/watch?v=p2vcgoTfNpw&list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link">{{ "Instruction videos" | translatePhrase }}</a>
+                <a href="https://www.youtube.com/playlist?list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link">{{ "Instruction videos" | translatePhrase }}</a>
               </li>
               <li>
                 <a href="https://www.kb.se/samverkan-och-utveckling/libris.html" class="Footer-link">{{ "Libris news" | translatePhrase }}</a>
