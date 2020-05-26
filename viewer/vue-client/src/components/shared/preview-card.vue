@@ -72,6 +72,11 @@ export default {
     },
   },
   watch: {
+    focusData(oldValue, newValue) {
+      if (oldValue !== newValue) {
+        this.fetchedData = null;
+      }
+    },
   },
   mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
     this.$nextTick(() => {
