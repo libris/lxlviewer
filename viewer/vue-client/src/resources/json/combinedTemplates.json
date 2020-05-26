@@ -2919,13 +2919,8 @@
           ],
           "broader": [],
           "related": [],
-
-          "scopeNote": [
-            ""
-          ],
-          "historyNote": [
-            ""
-          ]
+          "scopeNote": [""],
+          "historyNote": [""]
         }
       }
     },
