@@ -2885,11 +2885,6 @@
               "inScheme": {
                 "@type": "ConceptScheme",
                 "code": "kssb",
-                "sameAs": [
-                  {
-                    "@id": "https://id.kb.se/term/kssb%2F8/"
-                  }
-                ],
                 "version": "8"
               }
             }
@@ -2907,12 +2902,11 @@
                 "@id": "https://id.kb.se/term/lcsh"
               },
               "prefLabel": "",
-              "sameAs": [
-                {
-                  "@id": "http://id.loc.gov/authorities/label/African%20literature"
-                }
-              ],
               "termComponentList": [
+                {
+                  "@type": "Topic",
+                  "prefLabel": ""
+                },
                 {
                   "@type": "TopicSubdivision",
                   "prefLabel": ""
