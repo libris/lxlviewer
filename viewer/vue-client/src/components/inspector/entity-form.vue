@@ -102,21 +102,20 @@ export default {
         let groupedReverseItems = {};
 
         // get label and add it to the object for sorting        
-        item.map(obj => obj.label = this.getLabel(obj));         
+        item.map((obj) => {
+          obj.label = this.getLabel(obj);
+          return obj;
+        });         
 
         // sort aplphabetically
-        item.sort(function (a,b) {
-          return a['label'].localeCompare(b['label'], 'sv');
-        });
+        item.sort((a, b) => a.label.localeCompare(b.label, 'sv'));
 
         // group by first letter
-        groupedReverseItems = groupBy(item, function(i) {
-          return i.label.substring(0, 1);
-        });
+        groupedReverseItems = groupBy(item, i => i.label.substring(0, 1));
 
         // delete label
-        Object.keys(groupedReverseItems).forEach(key => {
-          groupedReverseItems[key].forEach(v => delete v.label);
+        Object.keys(groupedReverseItems).forEach((k) => {
+          groupedReverseItems[k].forEach(v => delete v.label);
         });        
 
         reverseItemSorted[key] = {};
@@ -125,7 +124,7 @@ export default {
         reverseItemSorted[key].totalItems = item.length;
       });
 
-      return  reverseItemSorted;
+      return reverseItemSorted;
     },
   },
   watch: {
