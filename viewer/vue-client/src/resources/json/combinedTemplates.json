@@ -2903,7 +2903,8 @@
                 "@id": "http://dewey.info/scheme/edition/e23/swe/",
                 "version": "23",
                 "language": "swe"
-              }
+              },
+              "marc:explanatoryTerm": ""
             },
             {
               "@type": "ComplexSubject",
@@ -3020,7 +3021,8 @@
                 "@id": "http://dewey.info/scheme/edition/e23/swe/",
                 "version": "23",
                 "language": "swe"
-              }
+              },
+              "marc:explanatoryTerm": ""
             }
           ],
           "altLabel": [
@@ -3077,7 +3079,8 @@
                 "@id": "http://dewey.info/scheme/edition/e23/swe/",
                 "version": "23",
                 "language": "swe"
-              }
+              },
+              "marc:explanatoryTerm": ""
             },
             {
               "@type": "Topic",
@@ -3139,7 +3142,8 @@
                 "@id": "http://dewey.info/scheme/edition/e23/swe/",
                 "version": "23",
                 "language": "swe"
-              }
+              },
+              "marc:explanatoryTerm": ""
             },
             {
               "@type": "Topic",
