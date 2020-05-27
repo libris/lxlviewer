@@ -2885,11 +2885,6 @@
               "inScheme": {
                 "@type": "ConceptScheme",
                 "code": "kssb",
-                "sameAs": [
-                  {
-                    "@id": "https://id.kb.se/term/kssb%2F8/"
-                  }
-                ],
                 "version": "8"
               }
             }
@@ -2898,12 +2893,7 @@
             {
               "@type": "ClassificationDdc",
               "code": "",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "http://dewey.info/scheme/edition/e23/swe/",
-                "version": "23",
-                "language": "swe"
-              },
+              "edition": "",
               "marc:explanatoryTerm": ""
             },
             {
@@ -2912,12 +2902,11 @@
                 "@id": "https://id.kb.se/term/lcsh"
               },
               "prefLabel": "",
-              "sameAs": [
-                {
-                  "@id": "http://id.loc.gov/authorities/label/African%20literature"
-                }
-              ],
               "termComponentList": [
+                {
+                  "@type": "Topic",
+                  "prefLabel": ""
+                },
                 {
                   "@type": "TopicSubdivision",
                   "prefLabel": ""
@@ -2930,13 +2919,8 @@
           ],
           "broader": [],
           "related": [],
-
-          "scopeNote": [
-            ""
-          ],
-          "historyNote": [
-            ""
-          ]
+          "scopeNote": [""],
+          "historyNote": [""]
         }
       }
     },
@@ -3016,12 +3000,7 @@
             {
               "@type": "ClassificationDdc",
               "code": "",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "http://dewey.info/scheme/edition/e23/swe/",
-                "version": "23",
-                "language": "swe"
-              },
+              "edition": "",
               "marc:explanatoryTerm": ""
             }
           ],
@@ -3074,12 +3053,7 @@
             {
               "@type": "ClassificationDdc",
               "code": "",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "http://dewey.info/scheme/edition/e23/swe/",
-                "version": "23",
-                "language": "swe"
-              },
+              "edition": "",
               "marc:explanatoryTerm": ""
             },
             {
