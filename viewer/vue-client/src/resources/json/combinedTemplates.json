@@ -207,6 +207,10 @@
             {
               "@type": "Library",
               "sigel": "DIGI"
+            },
+            {
+              "@type": "Library",
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
