@@ -4,13 +4,14 @@
   It recieves modification events from other components through $dispatch calls
   and makes changes to the bound 'focus' object accordingly.
 */
-
+import { cloneDeep, groupBy, each } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from '@/utils/vocab';
+import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
 
 export default {
-  mixins: [FormMixin],
+  mixins: [FormMixin, LensMixin],
   props: {
     formData: {
       type: Object,
@@ -93,9 +94,38 @@ export default {
     formObj() {
       return this.formData;
     },
-    // formData() {
-    //   return this.inspector.data[this.editingObject];
-    // },
+    reverseItemSorted() {
+      const reverseItem = cloneDeep(this.reverseItem);
+      const reverseItemSorted = {};
+
+      each(reverseItem, (item, key) => {
+        let groupedReverseItems = {};
+
+        // get label and add it to the object for sorting        
+        item.map((obj) => {
+          obj.label = this.getLabel(obj);
+          return obj;
+        });         
+
+        // sort aplphabetically
+        item.sort((a, b) => a.label.localeCompare(b.label, 'sv'));
+
+        // group by first letter
+        groupedReverseItems = groupBy(item, i => i.label.substring(0, 1));
+
+        // delete label
+        Object.keys(groupedReverseItems).forEach((k) => {
+          groupedReverseItems[k].forEach(v => delete v.label);
+        });        
+
+        reverseItemSorted[key] = {};
+        reverseItemSorted[key].items = groupedReverseItems;
+        reverseItemSorted[key].isGrouped = true;
+        reverseItemSorted[key].totalItems = item.length;
+      });
+
+      return reverseItemSorted;
+    },
   },
   watch: {
   },
@@ -117,8 +147,8 @@ export default {
     v-show="isActive">
     <ul class="FieldList" 
       v-bind:class="{'collapsed': collapsed }">
-      <field class="FieldList-item"
-        v-for="(v,k) in filteredItem" 
+      <field class="FieldList-item"        
+        v-for="(v,k) in filteredItem"         
         v-bind:class="{ 'locked': isLocked }" 
         :entity-type="formObj['@type']" 
         :is-inner="false" 
@@ -128,13 +158,32 @@ export default {
         :key="k" 
         :field-key="k" 
         :field-value="v" 
-        :parent-path="editingObject" />
+        :parent-path="editingObject" />      
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
           {{ formObj }}
         </pre>
       </div>
     </ul>
+
+    <div 
+      v-if="reverseItem && editingObject === 'mainEntity'"
+      class="EntityForm-reverse">
+      <h6 class="uppercaseHeading">Resurser som länkar hit</h6>
+      <ul class="FieldList">
+        <field class="FieldList-item"        
+          v-for="(v,k) in reverseItemSorted"
+          v-bind:class="{ 'locked': isLocked }" 
+          :entity-type="formObj['@type']" 
+          :is-inner="false" 
+          :is-removable="false" 
+          :is-locked="true" 
+          :key="k" 
+          :field-key="'@reverse/' + k" 
+          :field-value="v" 
+          :parent-path="editingObject" />
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -157,6 +206,10 @@ export default {
     padding: 0;
     border-width: 1px 0px 0px 0px;
     transition: 2s ease max-height;
+  }
+
+  &-reverse {
+    margin-top: 2.4rem;
   }
 }
 

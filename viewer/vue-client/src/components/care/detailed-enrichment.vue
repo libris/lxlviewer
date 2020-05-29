@@ -1,6 +1,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { difference, intersection, cloneDeep, isArray, union, isEqual, uniqWith } from 'lodash-es';
+import { difference, intersection, cloneDeep, isArray, union, isEqual, uniqWith, remove } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import Field from '@/components/inspector/field';
@@ -58,6 +58,12 @@ export default {
       const bothSorted = union(sourceDisplay, targetDisplay);
 
       return intersection(bothSorted, this.allKeys); // Important not to switch order of these params, since we sort on the first
+    },
+    filteredKeys() {      
+      const filteredKeys = this.sortedKeys;
+      // filter out keys we don't want in enrichment form
+      remove(filteredKeys, e => e === '@reverse');      
+      return filteredKeys;
     },
     source() {
       return this.enrichment.data.source[this.formFocus];
@@ -298,7 +304,7 @@ export default {
         </div>
       </div>
       <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
-      <div class="DetailedEnrichment-row" v-for="key in sortedKeys" :key="key">
+      <div class="DetailedEnrichment-row" v-for="key in filteredKeys" :key="key">
         <div class="DetailedEnrichment-labelContainer uppercaseHeading">
           <div class="DetailedEnrichment-label sourceColumn">
             {{ key | labelByLang | capitalize }}

@@ -440,7 +440,6 @@ export default {
         :is-inner="true" 
         :is-locked="isLocked" 
         :is-removable="false" 
-        :as-columns="false" 
         :parent-key="fieldKey" 
         :parent-index="index" 
         :field-key="k" 
