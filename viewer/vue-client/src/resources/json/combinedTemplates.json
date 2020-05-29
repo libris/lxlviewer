@@ -102,7 +102,7 @@
               "@id": "https://id.kb.se/term/rda/Audio"
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "seriesMembership": [
             {
               "@type": "SeriesMembership",
@@ -291,7 +291,7 @@
             "@type": "Extent",
             "label": ""
           }],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "seriesMembership": [
             {
               "@type": "SeriesMembership",
@@ -618,7 +618,7 @@
               "label": ""
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "seriesMembership": [
             {
               "@type": "SeriesMembership",
@@ -811,7 +811,7 @@
               "label": ""
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "carrierType": [
             {
               "@id": "https://id.kb.se/term/rda/Videodisc"
@@ -1016,7 +1016,7 @@
               "@id": "https://id.kb.se/term/rda/Audio"
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "editionStatement": [""],
           "accompaniedBy": [
             {
@@ -1188,7 +1188,7 @@
             "@type": "Extent",
             "label": ""
           }],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -1407,7 +1407,7 @@
               "@id": "https://id.kb.se/marc/SingleMap"
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -1727,7 +1727,7 @@
             "@type": "Extent",
             "label": ""
           }],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -2006,7 +2006,7 @@
           ],
           "editionStatement": [""],
           "editionStatementRemainder": [""],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "publication": [
             {
               "@type": "PrimaryPublication",
@@ -2396,7 +2396,7 @@
             "@type": "Extent",
             "label": ""
           }],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -2591,7 +2591,7 @@
               "label": ""
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "systemRequirement": [
             {
               "@type": "MachineModel",
