@@ -355,6 +355,40 @@
     ],
     "date": ""
   },
+  "Reproduction": {
+    "@type": "Reproduction",
+    "typeNote": "",
+    "place": [
+      {
+        "@type": "Place",
+        "label": ""
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": ""
+      }
+    ],
+    "date": ""
+  },
+  "DigitalReproduction": {
+    "@type": "DigitalReproduction",
+    "typeNote": "",
+    "place": [
+      {
+        "@type": "Place",
+        "label": ""
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": ""
+      }
+    ],
+    "date": ""
+  },
   "Manufacture": {
     "@type": "Manufacture",
     "place": [

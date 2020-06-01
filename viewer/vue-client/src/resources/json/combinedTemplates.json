@@ -271,16 +271,20 @@
           "production": [
             {
               "@type": "DigitalReproduction",
-              "year": "",
+              "typeNote": "",
               "date": "",
-              "place": {
-                "@type": "Place",
-                "label": ""
-              },
-              "agent": {
-                "@type": "Agent",
-                "label": ""
-              }
+              "place": [
+                {
+                  "@type": "Place",
+                  "label": ""
+                }
+              ],
+              "agent": [
+                {
+                  "@type": "Agent",
+                  "label": ""
+                }
+              ]
             }
           ],
           "copyright": [{
