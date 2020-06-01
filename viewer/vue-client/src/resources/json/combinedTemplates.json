@@ -2867,7 +2867,7 @@
   },
   "concept": {
     "complexSubject": {
-      "label": "Sammansatt ämnesord",
+      "label": "Sammansatt term",
       "description": "sao",
       "value": {
         "record": {
@@ -2908,6 +2908,12 @@
             }
           ],
           "broadMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "",
+              "marc:explanatoryTerm": ""
+            },
             {
               "@type": "Classification",
               "code": "",
