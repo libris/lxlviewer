@@ -352,7 +352,9 @@
           "isPrimaryTopicOf": [
             {
               "@type": "Document",
-              "cataloguersNote": [""]
+              "cataloguersNote": [""],
+              "marc:publicNote": [""],
+              "uri": [""]
             }
           ],
           "usageAndAccessPolicy": [
