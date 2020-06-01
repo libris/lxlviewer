@@ -142,6 +142,11 @@ export default {
     keyword(value) {
       this.handleChange(value);
     },
+    active(value) {
+      if (!value) {
+        this.$refs.adderFocusElement.focus();
+      }
+    },
   },
   computed: {
     settings() {

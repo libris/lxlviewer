@@ -124,7 +124,12 @@ export default {
             {{ translatedTitle }}
           </header>
           <span class="ModalComponent-windowControl" v-if="closeable">
-            <i @click="close" class="fa fa-close icon--md"></i>
+            <i 
+              @click="close" 
+              role="button"
+              tabindex="0"
+              class="fa fa-close icon--md">
+            </i>
           </span>
         </slot>
       </div>

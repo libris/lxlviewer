@@ -128,15 +128,18 @@ export default {
               <i class="fullview-toggle-button fa fa-compress icon icon--md"
                 v-show="user.settings.forceFullViewPanel"
                 role="button"
+                tabindex="0"
                 @click="toggleFullView" 
                 :title="'Minimize' | translatePhrase"></i>
               <i class="fullview-toggle-button fa fa-expand icon icon--md"
                 v-show="!user.settings.forceFullViewPanel"
                 role="button"
+                tabindex="0"
                 @click="toggleFullView" 
                 :title="'Expand' | translatePhrase"></i>
               <i class="fa fa-close icon icon--md"
                 role="button"
+                tabindex="0"
                 @click="close"
                 :title="'Close' | translatePhrase"></i>
             </span>

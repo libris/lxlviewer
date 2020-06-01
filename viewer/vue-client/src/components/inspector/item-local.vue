@@ -347,6 +347,11 @@ export default {
         this.expandChildren = true;
       }
     },
+    extractDialogActive(val) {
+      if (!val) {
+        this.$refs.linkAction.focus();
+      }
+    },
   },
   beforeDestroy() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
@@ -427,6 +432,7 @@ export default {
             v-if="!isLocked && !isEmbedded && !isCompositional"
             role="button"
             tabindex="0"
+            ref="linkAction"
             :aria-label="'Link entity' | translatePhrase"
             @click="openExtractDialog(), expand()" 
             v-tooltip.top="translate('Link entity')"
