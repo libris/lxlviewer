@@ -152,6 +152,7 @@ export function getDigitalReproductionObject(original, resources) {
   const keysToCopy = [
     'mainEntity.hasTitle',
     'mainEntity.responsibilityStatement',
+    'mainEntity.extent',
   ];
   for (let i = 0; i < keysToCopy.length; i++) {
     const originalValue = get(original, keysToCopy[i]);
