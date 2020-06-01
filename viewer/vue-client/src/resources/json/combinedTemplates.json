@@ -227,6 +227,12 @@
             "@id": "https://id.kb.se/language/swe"
           },
           "encodingLevel": "marc:MinimalLevel",
+          "hasNote": [
+            {
+              "@type": "marc:SourceOfDescriptionNote",
+              "label": ""
+            }
+          ],
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -343,6 +349,18 @@
             }
           ],
           "reproductionOf": [],
+          "isPrimaryTopicOf": [
+            {
+              "@type": "Document",
+              "cataloguersNote": [""]
+            }
+          ],
+          "usageAndAccessPolicy": [
+            {
+              "@type": "UsePolicy",
+              "label": ""
+            }
+          ],
           "instanceOf": {
             "@type": "Text",
             "language": [{
