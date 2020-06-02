@@ -103,6 +103,12 @@
             }
           ],
           "physicalDetailsNote": "",
+          "digitalCharacteristic": [
+            {
+              "@type": "EncodingFormat",
+              "label": ""
+            }
+          ],
           "seriesMembership": [
             {
               "@type": "SeriesMembership",
@@ -335,7 +341,7 @@
           "digitalCharacteristic": [
             {
               "@type": "EncodingFormat",
-              "label": [""]
+              "label": ""
             }
           ],
           "associatedMedia": [
@@ -689,7 +695,7 @@
           "digitalCharacteristic": [
             {
               "@type": "EncodingFormat",
-              "label": [""]
+              "label": ""
             }
           ],
           "otherPhysicalFormat": [],
