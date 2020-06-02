@@ -348,6 +348,7 @@ export function prepareDuplicateFor(inspectorData, user, keysToClear) {
 
   // Remove the @reverse part, this is only to prevent visual bugs since it will be generated automatically anyway
   delete newData.mainEntity['@reverse'];
+  delete newData.record['@reverse'];
 
   // Replace @id and internal @id references
   if (newData.mainEntity) {
