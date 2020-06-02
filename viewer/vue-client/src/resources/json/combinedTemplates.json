@@ -2959,6 +2959,67 @@
         }
       }
     },
+    "complexSubjectGeographic": {
+      "label": "Sammansatt geografisk term",
+      "description": "sao",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@type": "ComplexSubject",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao"
+          },
+          "inCollection": [{
+            "@id": "https://id.kb.se/term/fack"
+          }],
+          "prefLabel": "",
+          "termComponentList": [
+            {
+              "@type": "Geographic",
+              "prefLabel": ""
+            },
+            {
+              "@type": "GeographicSubdivision",
+              "prefLabel": ""
+            }
+          ],
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "23/swe",
+              "marc:explanatoryTerm": ""
+            },
+            {
+              "@type": "Geographic",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/lcsh"
+              },
+              "prefLabel": ""
+            }
+          ],
+          "scopeNote": [""],
+          "historyNote": [""]
+        }
+      }
+    },
     "genreForm": {
       "label": "Genre/formterm",
       "description": "saogf",
