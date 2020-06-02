@@ -200,8 +200,8 @@
       }
     },
     "digitizedMonographText": {
-      "label": "Digitaliserad bok",
-      "description": "Elektroniskt reproducerad monografi - RDA",
+      "label": "Digital reproduktion - bok",
+      "description": "Digitalt reproducerad monografi - RDA",
       "key": "digitizedMonographText",
       "value": {
         "record": {
