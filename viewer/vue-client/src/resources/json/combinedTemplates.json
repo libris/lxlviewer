@@ -2919,15 +2919,6 @@
               "code": "",
               "edition": "",
               "marc:explanatoryTerm": ""
-            },
-            {
-              "@type": "Classification",
-              "code": "",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "code": "kssb",
-                "version": "8"
-              }
             }
           ],
           "closeMatch": [
