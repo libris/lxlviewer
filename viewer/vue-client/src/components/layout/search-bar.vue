@@ -20,8 +20,12 @@ export default {
       'settings',
       'user',
     ]),
+    hash() {
+      const hash = this.settings.gitDescribe.hash;
+      return hash.substr(1, hash.length);
+    },
     version() {
-      return this.settings.gitDescribe.distance !== 0 ? this.settings.gitDescribe.hash : this.settings.gitDescribe.tag;
+      return this.settings.gitDescribe.distance !== 0 ? this.hash : this.settings.gitDescribe.tag;
     },
     versionInfo() {
       return `${this.environmentLabel.toUpperCase()} ${this.version}`;
@@ -52,7 +56,7 @@ export default {
           <span class="SearchBar-envLabel" v-if="this.settings.gitDescribe.distance == 0">
             {{ versionInfo }}
           </span>
-          <a class="SearchBar-envLabel" v-if="this.settings.gitDescribe.distance !== 0" target="_blank" :href="`https://github.com/libris/lxlviewer/commit/${this.settings.gitDescribe.hash}`">
+          <a class="SearchBar-envLabel" v-if="this.settings.gitDescribe.distance !== 0" target="_blank" :href="`https://github.com/libris/lxlviewer/commit/${this.hash}`">
             {{ versionInfo }}
           </a>
         </div>
