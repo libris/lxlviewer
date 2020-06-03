@@ -148,6 +148,23 @@ export function getDigitalReproductionObject(original, resources) {
       digitalReproObject.mainEntity.instanceOf = original.mainEntity.instanceOf;
     }
   }
+
+  // Copy the PrimaryPublication if there is one
+  function getPrimaryPublication(mainEntity) {
+    if (mainEntity.hasOwnProperty('publication')) {
+      for (let i = 0; i < mainEntity.publication.length; i++) {
+        if (mainEntity.publication[i]['@type'] === 'PrimaryPublication') {
+          return mainEntity.publication[i];
+        }
+      }
+    }
+    return null;
+  }
+  const primaryPublication = getPrimaryPublication(original.mainEntity);
+  if (primaryPublication !== null) {
+    digitalReproObject.mainEntity.publication = [primaryPublication];
+  }
+
   // Copy the other keys we want to copy
   const keysToCopy = [
     'mainEntity.hasTitle',
