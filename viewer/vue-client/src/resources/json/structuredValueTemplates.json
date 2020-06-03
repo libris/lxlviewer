@@ -550,12 +550,20 @@
     "@type": "GenreSubdivision",
     "prefLabel": ""
   },
+  "Geographic": {
+    "@type": "Geographic",
+    "prefLabel": ""
+  },
   "GeographicSubdivision": {
     "@type": "GeographicSubdivision",
     "prefLabel": ""
   },
   "TemporalSubdivision": {
     "@type": "TemporalSubdivision",
+    "prefLabel": ""
+  },
+  "Topic": {
+    "@type": "Topic",
     "prefLabel": ""
   },
   "TopicSubdivision": {
