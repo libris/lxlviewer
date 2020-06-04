@@ -13,7 +13,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -102,7 +102,13 @@
               "@id": "https://id.kb.se/term/rda/Audio"
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
+          "digitalCharacteristic": [
+            {
+              "@type": "EncodingFormat",
+              "label": ""
+            }
+          ],
           "seriesMembership": [
             {
               "@type": "SeriesMembership",
@@ -194,9 +200,9 @@
       }
     },
     "digitizedMonographText": {
-      "label": "Digitaliserad bok",
-      "description": "Elektroniskt reproducerad monografi - RDA",
-      "status": "draft",
+      "label": "Digital reproduktion - bok",
+      "description": "Digitalt reproducerad monografi - RDA",
+      "key": "digitizedMonographText",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -207,7 +213,11 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": "DIGI"
+            },
+            {
+              "@type": "Library",
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -223,6 +233,12 @@
             "@id": "https://id.kb.se/language/swe"
           },
           "encodingLevel": "marc:MinimalLevel",
+          "hasNote": [
+            {
+              "@type": "marc:SourceOfDescriptionNote",
+              "label": ""
+            }
+          ],
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
@@ -240,11 +256,7 @@
             }
           ],
           "responsibilityStatement": "",
-          "identifiedBy": [{
-            "@type": "ISBN",
-            "value": "",
-            "qualifier": ""
-          }],
+          "identifiedBy": null,
           "editionStatement": [""],
           "publication": [
             {
@@ -262,20 +274,23 @@
               }
             }
           ],
-          "manufacture": [
+          "production": [
             {
-              "@type": "DigitizedReproduction",
-              "year": "",
+              "@type": "DigitalReproduction",
+              "typeNote": "",
               "date": "",
-              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
-              "place": {
-                "@type": "Place",
-                "label": ""
-              },
-              "agent": {
-                "@type": "Agent",
-                "label": ""
-              }
+              "place": [
+                {
+                  "@type": "Place",
+                  "label": ""
+                }
+              ],
+              "agent": [
+                {
+                  "@type": "Agent",
+                  "label": ""
+                }
+              ]
             }
           ],
           "copyright": [{
@@ -292,7 +307,7 @@
             "@type": "Extent",
             "label": ""
           }],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "seriesMembership": [
             {
               "@type": "SeriesMembership",
@@ -326,10 +341,38 @@
           "digitalCharacteristic": [
             {
               "@type": "EncodingFormat",
-              "label": [""]
+              "label": ""
+            }
+          ],
+          "associatedMedia": [
+            {
+              "@type": "MediaObject",
+              "cataloguersNote": [
+                ""
+              ],
+              "marc:publicNote": [
+                ""
+              ],
+              "uri": [
+                ""
+              ]
             }
           ],
           "reproductionOf": [],
+          "isPrimaryTopicOf": [
+            {
+              "@type": "Document",
+              "cataloguersNote": [""],
+              "marc:publicNote": [""],
+              "uri": [""]
+            }
+          ],
+          "usageAndAccessPolicy": [
+            {
+              "@type": "UsePolicy",
+              "label": ""
+            }
+          ],
           "instanceOf": {
             "@type": "Text",
             "language": [{
@@ -393,7 +436,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -454,7 +497,7 @@
           "issuanceType": "ComponentPart",
           "mediaType": [
             {
-              "@id": "https://id.kb.se/term/rda/Unmediated"
+              "@id": "https://id.kb.se/term/rda/Computer"
             }
           ],
           "carrierType": [
@@ -530,7 +573,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -605,7 +648,7 @@
               "label": ""
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "seriesMembership": [
             {
               "@type": "SeriesMembership",
@@ -652,7 +695,7 @@
           "digitalCharacteristic": [
             {
               "@type": "EncodingFormat",
-              "label": [""]
+              "label": ""
             }
           ],
           "otherPhysicalFormat": [],
@@ -719,7 +762,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -798,7 +841,7 @@
               "label": ""
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "carrierType": [
             {
               "@id": "https://id.kb.se/term/rda/Videodisc"
@@ -915,7 +958,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -1003,7 +1046,7 @@
               "@id": "https://id.kb.se/term/rda/Audio"
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "editionStatement": [""],
           "accompaniedBy": [
             {
@@ -1117,7 +1160,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -1175,7 +1218,7 @@
             "@type": "Extent",
             "label": ""
           }],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -1394,7 +1437,7 @@
               "@id": "https://id.kb.se/marc/SingleMap"
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -1507,7 +1550,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -1638,7 +1681,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -1714,7 +1757,7 @@
             "@type": "Extent",
             "label": ""
           }],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -1810,7 +1853,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -1935,7 +1978,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -1993,7 +2036,7 @@
           ],
           "editionStatement": [""],
           "editionStatementRemainder": [""],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "publication": [
             {
               "@type": "PrimaryPublication",
@@ -2383,7 +2426,7 @@
             "@type": "Extent",
             "label": ""
           }],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "hasDimensions": {
             "@type": "Dimensions",
             "label": ""
@@ -2481,7 +2524,7 @@
           "bibliography": [
             {
               "@type": "Library",
-              "sigel": [""]
+              "sigel": ""
             }
           ],
           "descriptionConventions": [
@@ -2578,7 +2621,7 @@
               "label": ""
             }
           ],
-          "marc:otherPhysicalDetails": "",
+          "physicalDetailsNote": "",
           "systemRequirement": [
             {
               "@type": "MachineModel",
@@ -2829,6 +2872,151 @@
     }
   },
   "concept": {
+    "complexSubject": {
+      "label": "Sammansatt term",
+      "description": "sao",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@type": "ComplexSubject",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao"
+          },
+          "inCollection": [{
+            "@id": "https://id.kb.se/term/fack"
+          }],
+          "prefLabel": "",
+          "termComponentList": [
+            {
+              "@type": "Topic",
+              "prefLabel": ""
+            },
+            {
+              "@type": "TopicSubdivision",
+              "prefLabel": ""
+            }
+          ],
+          "broadMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "",
+              "marc:explanatoryTerm": ""
+            }
+          ],
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "",
+              "marc:explanatoryTerm": ""
+            },
+            {
+              "@type": "ComplexSubject",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/lcsh"
+              },
+              "prefLabel": "",
+              "termComponentList": [
+                {
+                  "@type": "Topic",
+                  "prefLabel": ""
+                },
+                {
+                  "@type": "TopicSubdivision",
+                  "prefLabel": ""
+                }
+              ]
+            }
+          ],
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "related": [],
+          "scopeNote": [""],
+          "historyNote": [""]
+        }
+      }
+    },
+    "complexSubjectGeographic": {
+      "label": "Sammansatt geografisk term",
+      "description": "sao",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@type": "ComplexSubject",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao"
+          },
+          "inCollection": [{
+            "@id": "https://id.kb.se/term/fack"
+          }],
+          "prefLabel": "",
+          "termComponentList": [
+            {
+              "@type": "Geographic",
+              "prefLabel": ""
+            },
+            {
+              "@type": "GeographicSubdivision",
+              "prefLabel": ""
+            }
+          ],
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "23/swe",
+              "marc:explanatoryTerm": ""
+            },
+            {
+              "@type": "Geographic",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/lcsh"
+              },
+              "prefLabel": ""
+            }
+          ],
+          "scopeNote": [""],
+          "historyNote": [""]
+        }
+      }
+    },
     "genreForm": {
       "label": "Genre/formterm",
       "description": "saogf",
@@ -2905,12 +3093,8 @@
             {
               "@type": "ClassificationDdc",
               "code": "",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "http://dewey.info/scheme/edition/e23/swe/",
-                "version": "23",
-                "language": "swe"
-              }
+              "edition": "",
+              "marc:explanatoryTerm": ""
             }
           ],
           "altLabel": [
@@ -2962,12 +3146,8 @@
             {
               "@type": "ClassificationDdc",
               "code": "",
-              "inScheme": {
-                "@type": "ConceptScheme",
-                "@id": "http://dewey.info/scheme/edition/e23/swe/",
-                "version": "23",
-                "language": "swe"
-              }
+              "edition": "",
+              "marc:explanatoryTerm": ""
             },
             {
               "@type": "Topic",
@@ -3029,7 +3209,8 @@
                 "@id": "http://dewey.info/scheme/edition/e23/swe/",
                 "version": "23",
                 "language": "swe"
-              }
+              },
+              "marc:explanatoryTerm": ""
             },
             {
               "@type": "Topic",

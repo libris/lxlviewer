@@ -567,10 +567,24 @@ export default {
     },
     duplicateItem() {
       if (!this.status.inEdit && !this.isItem) {
+        this.$store.dispatch('pushLoadingIndicator', 'Preparing copy');
         const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user, this.settings.keysToClear.duplication);
         this.$store.dispatch('setInsertData', duplicate);
-        this.$router.push({ path: '/new' });
+        setTimeout(() => {
+          this.$store.dispatch('removeLoadingIndicator', 'Preparing copy');
+          this.$router.push({ path: '/new' });
+        }, 0);
       }
+    },
+    createDigitalReproduction() {
+      this.$store.dispatch('pushLoadingIndicator', 'Preparing reproduction');
+      const repro = RecordUtil.getDigitalReproductionObject(this.inspector.data, this.resources, this.settings);
+      const cleanedRepro = RecordUtil.prepareDuplicateFor(repro, this.user, this.settings.keysToClear.duplication);
+      this.$store.dispatch('setInsertData', cleanedRepro);
+      setTimeout(() => {
+        this.$store.dispatch('removeLoadingIndicator', 'Preparing reproduction');
+        this.$router.push({ path: '/new' });
+      }, 0);
     },
     saveItem(done = false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
@@ -710,6 +724,9 @@ export default {
           case 'start-edit':
             this.startEditing();
             break;
+          case 'create-digital-reproduction':
+            this.createDigitalReproduction();
+            break;
           case 'download-json':
             this.downloadJson();
             break;
@@ -777,18 +794,24 @@ export default {
       return false;
     },
     isItem() {
-      return this.inspector.data.mainEntity['@type'] === 'Item';
+      if (this.inspector.data.hasOwnProperty('mainEntity')) {
+        return this.inspector.data.mainEntity['@type'] === 'Item';
+      }
+      return false;
     },
     downloadIsSupported() {
       const a = document.createElement('a');
       return typeof a.download !== 'undefined';
     },
     recordType() {
-      return VocabUtil.getRecordType(
-        this.inspector.data.mainEntity['@type'],
-        this.resources.vocab,
-        this.resources.context,
-      );
+      if (this.inspector.data.hasOwnProperty('mainEntity')) {
+        return VocabUtil.getRecordType(
+          this.inspector.data.mainEntity['@type'],
+          this.resources.vocab,
+          this.resources.context,
+        );
+      }
+      return null;
     },
     editorTabs() {
       return [{ id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },

@@ -1,4 +1,4 @@
-import { cloneDeep, each, unset } from 'lodash-es';
+import { cloneDeep, each, unset, get, set } from 'lodash-es';
 import * as md5 from 'md5';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
@@ -125,6 +125,71 @@ export function getMainEntity(graph) {
     }
   });
   return mainEntity;
+}
+
+export function getDigitalReproductionObject(original, resources) {
+  // Select the template
+  const instanceTemplates = resources.templates.combined.instance;
+  let digitalReproObject;
+  for (let i = 0; i < instanceTemplates.length; i++) {
+    if (instanceTemplates[i].key === 'digitizedMonographText') {
+      digitalReproObject = instanceTemplates[i].value;
+    }
+  }
+  // Copying instanceOf explicitly cause of how #work works
+  if (original.mainEntity.hasOwnProperty('instanceOf')) {
+    if (original.mainEntity.instanceOf['@id'].indexOf('#work') > -1) {
+      // Work was local
+      digitalReproObject.work = Object.assign({}, original.work);
+      digitalReproObject.work['@id'] = 'https://id.kb.se/TEMPID#work';
+      digitalReproObject.mainEntity.instanceOf = 'https://id.kb.se/TEMPID#work';
+    } else {
+      // Work was linked
+      digitalReproObject.mainEntity.instanceOf = original.mainEntity.instanceOf;
+    }
+  }
+
+  // Copy the PrimaryPublication if there is one
+  function getPrimaryPublication(mainEntity) {
+    if (mainEntity.hasOwnProperty('publication')) {
+      for (let i = 0; i < mainEntity.publication.length; i++) {
+        if (mainEntity.publication[i]['@type'] === 'PrimaryPublication') {
+          return mainEntity.publication[i];
+        }
+      }
+    }
+    return null;
+  }
+  const primaryPublication = getPrimaryPublication(original.mainEntity);
+  if (primaryPublication !== null) {
+    digitalReproObject.mainEntity.publication = [primaryPublication];
+  }
+
+  // Copy the other keys we want to copy
+  const keysToCopy = [
+    'mainEntity.hasTitle',
+    'mainEntity.responsibilityStatement',
+    'mainEntity.extent',
+  ];
+  for (let i = 0; i < keysToCopy.length; i++) {
+    const originalValue = get(original, keysToCopy[i]);
+    if (typeof originalValue !== 'undefined') {
+      set(digitalReproObject, keysToCopy[i], originalValue);
+    }
+  }
+  // Add "indirectly identified by" with the "identified by" value from original
+  if (original.mainEntity.hasOwnProperty('identifiedBy')) {
+    digitalReproObject.mainEntity.indirectlyIdentifiedBy = original.mainEntity.identifiedBy;
+  }
+  // Add "reproduction of" and link it to original document
+  digitalReproObject.mainEntity.reproductionOf = { '@id': original.mainEntity['@id'] };
+  // Copy in the quoted documents
+  digitalReproObject.quoted = original.quoted;
+  // Add the original to the quoted documents
+  digitalReproObject.quoted[original.record['@id']] = original.record;
+  digitalReproObject.quoted[original.mainEntity['@id']] = original.mainEntity;
+
+  return digitalReproObject;
 }
 
 export function getItemObject(itemOf, heldBy, instance) {
@@ -297,6 +362,10 @@ export function prepareDuplicateFor(inspectorData, user, keysToClear) {
   each(keysToClear, (property) => {
     unset(newData, property);
   });
+
+  // Remove the @reverse part, this is only to prevent visual bugs since it will be generated automatically anyway
+  delete newData.mainEntity['@reverse'];
+  delete newData.record['@reverse'];
 
   // Replace @id and internal @id references
   if (newData.mainEntity) {

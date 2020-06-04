@@ -45,8 +45,13 @@ export default {
         delete fItem['@type'];
       }
       delete fItem['@id'];
+      delete fItem['@reverse'];
       delete fItem._uid;
+
       return fItem;
+    },
+    reverseItem() {      
+      return this.sortedFormData['@reverse'];
     },
     sortedFormData() {
       const sortedForm = {};

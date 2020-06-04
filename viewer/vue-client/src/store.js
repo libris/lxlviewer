@@ -144,7 +144,6 @@ const store = new Vuex.Store({
         'created',
         'modified',
         'mainEntity',
-        '@reverse',
       ],
       lockedProperties: [
         'sameAs',

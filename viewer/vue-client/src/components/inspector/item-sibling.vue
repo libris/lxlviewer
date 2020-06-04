@@ -308,6 +308,11 @@ export default {
         this.expandChildren = true;
       }
     },
+    extractDialogActive(val) {
+      if (!val) {
+        this.$refs.linkAction.focus();
+      }
+    },
   },
   created() {
     this.$on('collapse-item', () => {
@@ -385,6 +390,7 @@ export default {
             role="button"
             :aria-label="'Link entity' | translatePhrase"
             tabindex="0"
+            ref="linkAction"
             v-if="inspector.status.editing && !isEmbedded && !isLocked"
             v-tooltip.top="translate('Link entity')"
             @click="openExtractDialog(), expand()"
@@ -440,7 +446,6 @@ export default {
         :is-inner="true" 
         :is-locked="isLocked" 
         :is-removable="false" 
-        :as-columns="false" 
         :parent-key="fieldKey" 
         :parent-index="index" 
         :field-key="k" 

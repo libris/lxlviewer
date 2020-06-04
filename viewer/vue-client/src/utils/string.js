@@ -184,7 +184,18 @@ export function getLabelByLang(string, lang, vocab, context) {
       JSON.stringify(string),
     );
   }
-  const item = VocabUtil.getTermObject(string, vocab, context);
+
+  let item = VocabUtil.getTermObject(string, vocab, context);
+  
+  if (string.indexOf('@reverse/') >= 0){
+    const reverseLabel = string.split('/').pop();
+    const reverseItem = VocabUtil.getTermObject(reverseLabel, vocab, context);
+
+    if (reverseItem.hasOwnProperty('owl:inverseOf') && reverseItem['owl:inverseOf'].hasOwnProperty('@id')) {
+      item = VocabUtil.getTermObject(reverseItem['owl:inverseOf']['@id'], vocab, context);
+    }
+  }
+
   let labelByLang = '';
   if (typeof item !== 'undefined') {
     if (item.labelByLang) {

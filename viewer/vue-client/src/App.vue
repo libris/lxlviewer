@@ -18,7 +18,7 @@
             <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
           </div>
         </div>
-        <router-view ref="routerView" v-if="resourcesLoaded"></router-view>
+        <router-view ref="routerView" v-if="resourcesLoaded" v-show="status.loadingIndicators.length === 0"></router-view>
     </main>
     <portal-target name="sidebar" multiple />
     <footer-component></footer-component>

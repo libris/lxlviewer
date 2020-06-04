@@ -1,4 +1,15 @@
 {
+  "Work": {
+    "@type": "Work",
+    "hasTitle": [
+      {
+        "@type": "Title",
+        "mainTitle": ""
+      }
+    ],
+    "contribution": null,
+    "language": null
+  },
   "Title": {
     "@type": "Title",
     "mainTitle": "",
@@ -37,10 +48,6 @@
     "@type": "KeyTitle",
     "mainTitle": "",
     "qualifier": ""
-  },
-  "marc:OtherTitle": {
-    "@type": "marc:OtherTitle",
-    "mainTitle": ""
   },
   "ParallelTitle": {
     "@type": "ParallelTitle",
@@ -348,6 +355,40 @@
     ],
     "date": ""
   },
+  "Reproduction": {
+    "@type": "Reproduction",
+    "typeNote": "",
+    "place": [
+      {
+        "@type": "Place",
+        "label": ""
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": ""
+      }
+    ],
+    "date": ""
+  },
+  "DigitalReproduction": {
+    "@type": "DigitalReproduction",
+    "typeNote": "",
+    "place": [
+      {
+        "@type": "Place",
+        "label": ""
+      }
+    ],
+    "agent": [
+      {
+        "@type": "Agent",
+        "label": ""
+      }
+    ],
+    "date": ""
+  },
   "Manufacture": {
     "@type": "Manufacture",
     "place": [
@@ -509,12 +550,20 @@
     "@type": "GenreSubdivision",
     "prefLabel": ""
   },
+  "Geographic": {
+    "@type": "Geographic",
+    "prefLabel": ""
+  },
   "GeographicSubdivision": {
     "@type": "GeographicSubdivision",
     "prefLabel": ""
   },
   "TemporalSubdivision": {
     "@type": "TemporalSubdivision",
+    "prefLabel": ""
+  },
+  "Topic": {
+    "@type": "Topic",
     "prefLabel": ""
   },
   "TopicSubdivision": {
@@ -564,6 +613,20 @@
     "edition": "full",
     "editionEnumeration": "23/swe"
   },
+  "ClassificationLcc": {
+    "@type": "ClassificationLcc",
+    "code": "",
+    "itemPortion": ""
+  },
+  "ClassificationNlm": {
+    "@type": "ClassificationNlm",
+    "code": "",
+    "itemPortion": ""
+  },
+  "ClassificationUdc": {
+    "@type": "ClassificationUdc",
+    "code": ""
+  },
   "SourceData": {
     "@type": "SourceData",
     "label": "",
@@ -575,18 +638,6 @@
   },
   "Affiliation": {
     "@type": "Affiliation",
-    "label": ""
-  },
-  "AdministrativeHistoryNote": {
-    "@type": "AdministrativeHistoryNote",
-    "label": ""
-  },
-  "BiographicalNote": {
-    "@type": "BiographicalNote",
-    "label": ""
-  },
-  "BiographicalOrHistoricalData": {
-    "@type": "BiographicalOrHistoricalData",
     "label": ""
   },
   "FieldOfActivity": {
@@ -633,6 +684,10 @@
     "@type": "MusicMedium",
     "label": ""
   },
+  "Scale": {
+    "@type": "Scale",
+    "label": ""
+  },
   "ToCEntry": {
     "@type": "ToCEntry",
     "label": "",
@@ -642,6 +697,10 @@
   "EncodingFormat": {
     "@type": "EncodingFormat",
     "label": ""
+  },
+  "ImageBitDepth": {
+    "@type": "ImageBitDepth",
+    "value": ""
   },
   "MediaObject": {
     "@type": "MediaObject",
