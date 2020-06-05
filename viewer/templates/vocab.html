@@ -198,7 +198,7 @@
       <dl>
         % for prop in [DCTERMS.description, SKOS.scopeNote]
           % set value = rprop.value(prop)
-          % if value
+          % if value and extgraph
             <dt>${extgraph.preferredLabel(prop, lang='en')[0][1].title()}</dt>
             <dd>
               % if value.datatype == RDF.HTML
