@@ -138,7 +138,7 @@ export function getDigitalReproductionObject(original, resources) {
   }
   // Copying instanceOf explicitly cause of how #work works
   if (original.mainEntity.hasOwnProperty('instanceOf')) {
-    if (original.mainEntity.instanceOf['@id'].indexOf('#work') > -1) {
+    if (original.mainEntity.instanceOf.hasOwnProperty('@id') && original.mainEntity.instanceOf['@id'].indexOf('#work') > -1) {
       // Work was local
       digitalReproObject.work = Object.assign({}, original.work);
       digitalReproObject.work['@id'] = 'https://id.kb.se/TEMPID#work';
