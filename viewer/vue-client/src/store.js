@@ -103,7 +103,7 @@ const store = new Vuex.Store({
       extractableTypes: [
         'Item',
         'Instance',
-        // 'Agent', - Blocking this per request of MSS
+        'Agent',
         // 'Concept', - Blocking this per request of MSS
         'Work',
       ],
