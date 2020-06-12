@@ -1070,7 +1070,11 @@ export default {
     min-height: 30px;
 
     @media (min-width: @screen-sm) {
-      flex-direction: row;
+      flex-direction: row;      
+    }
+
+    @media (min-width: @screen-md) {
+      top: 75px;
     }
   }
 
