@@ -1,6 +1,5 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as VocabUtil from '../../utils/vocab';
 import ItemMixin from '../mixins/item-mixin';
 
 export default {
@@ -9,7 +8,7 @@ export default {
   props: {
     item: {
       type: Object,
-      default: {},
+      default: () => {},
     },
     fieldKey: {
       type: String,
