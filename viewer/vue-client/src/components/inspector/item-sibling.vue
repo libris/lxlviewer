@@ -576,10 +576,7 @@ export default {
   .ItemSibling-label >
   .ItemSibling-arrow {
     transform:rotate(90deg);
-
-    &::before {
-      vertical-align: sub;
-    }
+    transform-origin: center;    
   }
 }
 
