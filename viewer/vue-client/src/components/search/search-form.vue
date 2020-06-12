@@ -336,6 +336,7 @@ export default {
           @focus="searchGroupFocus.input = true"
           @blur="searchGroupFocus.input = false"
           class="SearchForm-input customInput"
+          id="q"
           v-model="searchPhrase"
           aria-labelledby="searchlabel"
           :placeholder="inputPlaceholder | translatePhrase"
