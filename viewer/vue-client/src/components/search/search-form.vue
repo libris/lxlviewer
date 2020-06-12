@@ -285,7 +285,7 @@ export default {
 <template>
   <div class="SearchForm">
     <form id="searchForm" class="SearchForm-form">
-      <label class="SearchForm-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
+      <label class="SearchForm-inputLabel sr-only" id="searchlabel" for="q" aria-hidden="false">
         {{"Search" | translatePhrase}}
       </label>
       <div class="SearchForm-formGroup SearchForm-selectGroup hidden-sm hidden-md hidden-lg">
