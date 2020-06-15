@@ -749,6 +749,215 @@
         }
       }
     },
+    "electronicIntegratingText": {
+      "label": "Utkast: Databas / Webbplats",
+      "description": "Elektronisk integrerande resurs - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": ""
+            }
+          ],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Electronic",
+          "issuanceType": "Integrating",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            },
+            {
+              "@type": "KeyTitle",
+              "mainTitle": "",
+              "qualifier": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [
+            {
+              "@type": "ISSN",
+              "value": "",
+              "marc:internationalInterest": true,
+              "source": [
+                {
+                  "@type": "marc:NationalIssnCentre",
+                  "code": "f"
+                }
+              ]
+            }
+          ],
+          "editionStatement": [""],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": ""
+            }
+          ],
+          "mediaType": [
+            {"@id": "https://id.kb.se/term/rda/Computer"}
+          ],
+          "carrierType": [
+            {"@id": "https://id.kb.se/term/rda/OnlineResource"},
+            {"@id": "https://id.kb.se/marc/Online"},
+            {"@id": "https://id.kb.se/marc/OnlineResource"}
+          ],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
+          "physicalDetailsNote": "",
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
+          "frequency": [
+            {
+              "@id": "https://id.kb.se/marc/ContinuouslyUpdated"
+            },
+            {
+              "@id": "https://id.kb.se/marc/Regular"
+            }
+          ],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "associatedMedia": [
+            {
+              "@type": "MediaObject",
+              "uri": [
+                ""
+              ],
+              "marc:publicNote": [
+                ""
+              ]
+            }
+          ],
+          "otherPhysicalFormat": [],
+          "marc:alphabet": {
+            "@id": "https://id.kb.se/marc/ExtendedRoman"
+          },
+          "marc:typeOfEntry": {
+            "@id": "https://id.kb.se/marc/IntegratingEntry"
+          },
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "genreForm": [],
+            "classification": [
+              {
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [
+              {
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/issuingBody"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "hasNote": [
+              {
+                "@type": "marc:LanguageNote",
+                "label": ""
+              }
+            ],
+            "subject": []
+          }
+        }
+      }
+    },
     "movie": {
       "label": "Film",
       "description": "Videoinspelning - RDA",
