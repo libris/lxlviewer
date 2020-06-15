@@ -244,9 +244,9 @@ def thingview(path, suffix=None):
 # FIXME make this less sketcy
 def _get_view_data_accept_header(request, suffix):
     mimetype, _ = negotiator.negotiate(request, suffix)
-    if mimetype in ('application/json'):
+    if mimetype and mimetype in ('application/json'):
         return 'application/json'
-    elif mimetype in ('text/html', 'application/xhtml+xml'):
+    elif mimetype and mimetype in ('text/html', 'application/xhtml+xml'):
         return 'application/json'
     else:
         return None
