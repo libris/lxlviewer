@@ -3,13 +3,13 @@
   "@context": "/context.jsonld",
   "@graph": [
     {
-      "@id": "https://libris.kb.se/00nj5pg320rmk5gx",
+      "@id": "https://libris-qa.kb.se/00nj5pg320rmk5gx",
       "@type": "Record",
-      "created": "2020-04-29T16:15:28.88+02:00",
+      "created": "2020-06-17T11:33:20.927+02:00",
       "mainEntity": {
         "@id": "https://id.kb.se/vocab/display"
       },
-      "modified": "2020-04-29T16:15:28.88+02:00",
+      "modified": "2020-06-17T11:33:20.927+02:00",
       "recordStatus": "marc:New"
     },
     {
@@ -45,7 +45,9 @@
             "marc:westernmostLongitudeCoordinates",
             "marc:easternmostLongitudeCoordinates",
             "marc:northernmostLatitudeCoordinates",
-            "marc:southernmostLatitudeCoordinates"
+            "marc:southernmostLatitudeCoordinates",
+            "coordinates",
+            "scale"
           ]
         },
         "Classification": {
@@ -54,6 +56,16 @@
           },
           "showProperties": [
             "fresnel:super"
+          ]
+        },
+        "ClassificationDdc": {
+          "@id": "ClassificationDdc-cards",
+          "fresnel:extends": {
+            "@id": "ClassificationDdc-chips"
+          },
+          "showProperties": [
+            "fresnel:super",
+            "marc:explanatoryTerm"
           ]
         },
         "Concept": {
@@ -202,16 +214,19 @@
             "distribution",
             "copyright",
             "copyrightDate",
+            "projectedProvisionDate",
             "indirectlyIdentifiedBy",
             "extent",
             "hasDimensions",
             "hasDuration",
-            "marc:otherPhysicalDetails",
+            "physicalDetailsNote",
+            "digitalCharacteristic",
             "genreForm",
             "accompaniedBy",
             "seriesMembership",
             "intendedAudience",
             "associatedMedia",
+            "usageAndAccessPolicy",
             {
               "inverseOf": "itemOf"
             }
@@ -372,7 +387,7 @@
             "name",
             "marc:numeration",
             "marc:titlesAndOtherWordsAssociatedWithAName",
-            "marc:fullerFormName",
+            "fullerFormOfName",
             "lifeSpan",
             "hasVariant",
             "seeAlso",
@@ -393,8 +408,7 @@
           },
           "showProperties": [
             "fresnel:super",
-            "marc:sequenceStatus",
-            "hasPart"
+            "marc:sequenceStatus"
           ]
         },
         "Record": {
@@ -419,6 +433,18 @@
             "generationDate",
             "generationProcess",
             "sourceConsulted"
+          ]
+        },
+        "Reproduction": {
+          "@id": "Reproduction-cards",
+          "@type": "fresnel:Lens",
+          "classLensDomain": "Reproduction",
+          "fresnel:extends": {
+            "@id": "Reproduction-chips"
+          },
+          "showProperties": [
+            "fresnel:super",
+            "hasNote"
           ]
         },
         "Resource": {
@@ -491,6 +517,7 @@
             "intendedAudience",
             "contentType",
             "illustrativeContent",
+            "cartographicAttributes",
             "isPartOf"
           ]
         },
@@ -533,6 +560,16 @@
             "code",
             "inScheme",
             "edition"
+          ]
+        },
+        "ClassificationDdc": {
+          "@id": "ClassificationDdc-chips",
+          "@type": "fresnel:Lens",
+          "classLensDomain": "ClassificationDdc",
+          "showProperties": [
+            "code",
+            "edition",
+            "editionEnumeration"
           ]
         },
         "Concept": {
@@ -731,7 +768,7 @@
             "name",
             "marc:numeration",
             "marc:titlesAndOtherWordsAssociatedWithAName",
-            "marc:fullerFormName",
+            "fullerFormOfName",
             "lifeSpan"
           ]
         },
@@ -740,9 +777,10 @@
           "@type": "fresnel:Lens",
           "classLensDomain": "ProvisionActivity",
           "showProperties": [
-            "place",
             "country",
+            "place",
             "agent",
+            "hasPart",
             "year",
             "startYear",
             "endYear",
@@ -755,8 +793,10 @@
           "@type": "fresnel:Lens",
           "classLensDomain": "Publication",
           "showProperties": [
+            "country",
             "place",
             "agent",
+            "hasPart",
             "year",
             "startYear",
             "endYear",
@@ -781,6 +821,17 @@
           "showProperties": [
             "entity",
             "relation"
+          ]
+        },
+        "Reproduction": {
+          "@id": "Reproduction-chips",
+          "@type": "fresnel:Lens",
+          "classLensDomain": "Reproduction",
+          "showProperties": [
+            "typeNote",
+            "place",
+            "agent",
+            "date"
           ]
         },
         "Resource": {
@@ -946,6 +997,14 @@
             "fresnel:super"
           ]
         },
+        "ClassificationDdc": {
+          "fresnel:extends": {
+            "@id": "ClassificationDdc-cards"
+          },
+          "showProperties": [
+            "fresnel:super"
+          ]
+        },
         "Concept": {
           "fresnel:extends": {
             "@id": "Concept-cards"
@@ -1021,7 +1080,11 @@
           "showProperties": [
             "instanceOf",
             "fresnel:super",
+            "isPrimaryTopicOf",
+            "electronicLocator",
+            "hasNote",
             "tableOfContents",
+            "relationship",
             {
               "inverseOf": "itemOf"
             }
@@ -1100,9 +1163,7 @@
           "showProperties": [
             "fresnel:super",
             "establishDate",
-            "terminateDate",
-            "activityStartDate",
-            "activityEndDate"
+            "terminateDate"
           ]
         },
         "Person": {
@@ -1134,6 +1195,14 @@
         "Relationship": {
           "fresnel:extends": {
             "@id": "Relationship-chips"
+          },
+          "showProperties": [
+            "fresnel:super"
+          ]
+        },
+        "Reproduction": {
+          "fresnel:extends": {
+            "@id": "Reproduction-cards"
           },
           "showProperties": [
             "fresnel:super"
@@ -1200,7 +1269,10 @@
             "@id": "Work-cards"
           },
           "showProperties": [
-            "fresnel:super"
+            "fresnel:super",
+            {
+              "inverseOf": "instanceOf"
+            }
           ]
         }
       }
