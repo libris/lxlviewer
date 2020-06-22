@@ -187,7 +187,7 @@ export function getLabelByLang(string, lang, vocab, context) {
 
   let item = VocabUtil.getTermObject(string, vocab, context);
   
-  if (string.indexOf('@reverse/') >= 0){
+  if (string.indexOf('@reverse/') >= 0) {
     const reverseLabel = string.split('/').pop();
     const reverseItem = VocabUtil.getTermObject(reverseLabel, vocab, context);
 
