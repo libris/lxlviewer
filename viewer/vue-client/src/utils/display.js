@@ -75,6 +75,22 @@ export function getLensPropertiesDeep(className, displayDefinitions, vocab, sett
   const lensGroups = displayDefinitions.lensGroups;
   if (lensGroups.hasOwnProperty(level) && lensGroups[level].lenses.hasOwnProperty(className)) {
     props = lensGroups[level].lenses[className].showProperties;
+    // Add extensions
+    let extension = [];
+    for (let i = 0; i < props.length; i++) {
+      if (props[i] === 'fresnel:super') {
+        if (lensGroups[level].lenses.hasOwnProperty(className) && lensGroups[level].lenses[className].hasOwnProperty('fresnel:extends')) {
+          const extensionLensId = lensGroups[level].lenses[className]['fresnel:extends']['@id'];
+          const extensionLens = getLensById(extensionLensId, displayDefinitions);
+          extension = extensionLens.showProperties;
+          // window.lxlWarning(`👁️ Lens for class '${className}' (${level}) was extended from '${extensionLensId}' with properties: ${extension}`);
+          props.splice(i, 1, ...extension);
+        } else {
+          window.lxlWarning(`👁️ Lens for class '${className}' was asked to extend another lens with 'fresnel:super', but is missing the 'fresnel:extends' property.`);
+        }
+        break;
+      }
+    }
   } else {
     const termObj = VocabUtil.getTermObject(className, vocab, context);
     if (typeof termObj !== 'undefined' && termObj.hasOwnProperty('subClassOf')) {
@@ -117,15 +133,6 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
   // Add @type
   if (level === 'cards') {
     props = ['@type'].concat(props);
-  }
-  // Add extensions
-  let extension = [];
-  for (let i = 0; i < props.length; i++) {
-    if (props[i] === 'fresnel:super') {
-      extension = getLensById(lensGroups[level].lenses[cn]['fresnel:extends']['@id'], displayDefinitions).showProperties;
-      props.splice(i, 1, ...extension);
-      break;
-    }
   }
   props = uniq(props);
   remove(props, x => isObject(x));
