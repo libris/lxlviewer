@@ -166,7 +166,7 @@ export default {
       </div>
     </ul>
 
-    <!-- <div 
+    <div 
       v-if="reverseItem && editingObject === 'mainEntity'"
       class="EntityForm-reverse">
       <h6 class="uppercaseHeading">Resurser som länkar hit</h6>
@@ -183,7 +183,7 @@ export default {
           :field-value="v" 
           :parent-path="editingObject" />
       </ul>
-    </div> -->
+    </div>
   </div>
 </template>
 

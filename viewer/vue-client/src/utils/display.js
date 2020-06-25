@@ -311,7 +311,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
       delete card[excludeProperties[i]];
     }
   }
-  const displayGroups = require('@/resources/json/displayGroups.json');
+  const cardDisplayGroups = require('@/resources/json/displayGroups.json').card;
   const summary = {
     categorization: [],
     header: [],
@@ -320,9 +320,9 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
   each(card, (value, key) => {
     if (value !== null) {
       const v = isArray(value) ? value : [value];
-      if (displayGroups.header.indexOf(key) !== -1) {
+      if (cardDisplayGroups.header.indexOf(key) !== -1) {
         summary.header.push({ property: key, value: v });
-      } else if (displayGroups.categorization.indexOf(key) !== -1) {
+      } else if (cardDisplayGroups.categorization.indexOf(key) !== -1) {
         summary.categorization.push({ property: key, value: v });
       } else {
         const translated = tryGetValueByLang(item, key, settings.language, context);
