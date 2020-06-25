@@ -8,26 +8,32 @@ import 'moment/locale/sv';
 
 moment.locale('sv');
 
-export function getDisplayDefinitions(baseUri) {
+export function getDisplayDefinitions(settings) {
+  const baseUri = settings.idPath;
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
-      const clonedResult = cloneDeep(result);
-      each(clonedResult.lensGroups, (lensGroup) => {
-        each(lensGroup.lenses, (lens) => {
-          if (lens.hasOwnProperty('fresnel:extends')) {
-            const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
-            lens.showProperties.splice(
-              lens.showProperties.indexOf('fresnel:super'),
-              1,
-              ...result.lensGroups[extendLevel].lenses[extendLens].showProperties,
-            );
-          }
+    if (settings.mockDisplay === true) {
+      window.lxlWarning(`🎭 MOCKING DISPLAY FILE - Using local file instead of live version`);
+      resolve(require('@/resources/json/mockDisplay.json'))
+    } else {
+      httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
+        const clonedResult = cloneDeep(result);
+        each(clonedResult.lensGroups, (lensGroup) => {
+          each(lensGroup.lenses, (lens) => {
+            if (lens.hasOwnProperty('fresnel:extends')) {
+              const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
+              lens.showProperties.splice(
+                lens.showProperties.indexOf('fresnel:super'),
+                1,
+                ...result.lensGroups[extendLevel].lenses[extendLens].showProperties,
+              );
+            }
+          });
         });
+        resolve(clonedResult);
+      }, (error) => {
+        reject(error);
       });
-      resolve(clonedResult);
-    }, (error) => {
-      reject(error);
-    });
+    }
   });
 }
 

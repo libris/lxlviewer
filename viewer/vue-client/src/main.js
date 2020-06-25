@@ -21,7 +21,6 @@ import * as StringUtil from '@/utils/string';
 import Field from '@/components/inspector/field';
 import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
-// import MockDisplay from '@/resources/json/display.json';
 
 const TooltipOptions = {
   popover: {
@@ -133,10 +132,9 @@ new Vue({
     this.fetchHelpDocs();
     store.dispatch('pushLoadingIndicator', 'Loading application');
     Promise.all(this.getLdDependencies()).then((resources) => {
-      store.dispatch('setContext', resources[2]['@context']);
+      store.dispatch('setContext', resources[1]['@context']);
       store.dispatch('setupVocab', resources[0]['@graph']);
-      store.dispatch('setDisplay', resources[1]);
-      // store.dispatch('setDisplay', MockDisplay);
+      store.dispatch('setDisplay', resources[2]);
       store.dispatch('changeResourcesStatus', true);
       store.dispatch('removeLoadingIndicator', 'Loading application');
     }, (error) => {
@@ -310,10 +308,10 @@ new Vue({
       const promiseArray = [];
       const vocabPromise = VocabUtil.getVocab(this.settings.apiPath);
       promiseArray.push(vocabPromise);
-      const displayPromise = DisplayUtil.getDisplayDefinitions(this.settings.idPath);
-      promiseArray.push(displayPromise);
       const contextPromise = VocabUtil.getContext(this.settings.idPath);
       promiseArray.push(contextPromise);
+      const displayPromise = DisplayUtil.getDisplayDefinitions(this.settings);
+      promiseArray.push(displayPromise);
       return promiseArray;
     },
   },
