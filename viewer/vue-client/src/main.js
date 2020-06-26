@@ -269,7 +269,14 @@ new Vue({
         };
         return;
       }
-      window.lxlWarnStack = [];
+      window.lxlInfoStack = [];
+      window.lxlInfo = (...strings) => {
+        if (window.lxlInfoStack.indexOf(JSON.stringify(strings.join())) === -1) {
+          window.lxlInfoStack.push(JSON.stringify(strings.join()));
+          return console.log('%c LXL ', 'background: #009788; color: #fff;', ...strings);
+        }
+        return false;
+      };      window.lxlWarnStack = [];
       window.lxlWarning = (...strings) => {
         if (window.lxlWarnStack.indexOf(JSON.stringify(strings.join())) === -1) {
           window.lxlWarnStack.push(JSON.stringify(strings.join()));

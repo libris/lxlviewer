@@ -12,7 +12,7 @@ export function getDisplayDefinitions(settings) {
   const baseUri = settings.idPath;
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
-      window.lxlWarning(`🎭 MOCKING DISPLAY FILE - Using local file instead of live version`);
+      window.lxlInfo(`🎭 MOCKING DISPLAY FILE - Using local file instead of live version`);
       resolve(require('@/resources/json/mockDisplay.json'))
     } else {
       httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
