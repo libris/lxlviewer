@@ -4,7 +4,6 @@
   It recieves modification events from other components through $dispatch calls
   and makes changes to the bound 'focus' object accordingly.
 */
-import { cloneDeep, groupBy, each } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from '@/utils/vocab';
 import LensMixin from '@/components/mixins/lens-mixin';

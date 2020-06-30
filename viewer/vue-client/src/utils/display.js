@@ -1,4 +1,4 @@
-import { cloneDeep, each, isObject, uniq, includes, remove, isArray, filter, isEmpty } from 'lodash-es';
+import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty } from 'lodash-es';
 import moment from 'moment';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
@@ -12,8 +12,8 @@ export function getDisplayDefinitions(settings) {
   const baseUri = settings.idPath;
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
-      window.lxlInfo(`🎭 MOCKING DISPLAY FILE - Using local file instead of live version`);
-      resolve(require('@/resources/json/mockDisplay.json'))
+      window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using local file instead of live version');
+      resolve(require('@/resources/json/mockDisplay.json'));
     } else {
       httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
         const clonedResult = cloneDeep(result);
@@ -121,7 +121,6 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
   const cn = StringUtil.getCompactUri(className, context);
   let level = inputLevel;
   let props = [];
-  const lensGroups = displayDefinitions.lensGroups;
 
   // If we want tokens, we traverse them first, since they can "fail"
   if (level === 'tokens') {
@@ -157,7 +156,7 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
 
 export function translateObjectProp(object) {
   if (object.hasOwnProperty('inverseOf')) {
-    return `@reverse/${object['inverseOf']}`;
+    return `@reverse/${object.inverseOf}`;
   }
   return null;
 }
