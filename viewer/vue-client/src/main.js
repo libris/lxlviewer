@@ -276,7 +276,8 @@ new Vue({
           return console.log('%c LXL ', 'background: #009788; color: #fff;', ...strings);
         }
         return false;
-      };      window.lxlWarnStack = [];
+      };
+      window.lxlWarnStack = [];
       window.lxlWarning = (...strings) => {
         if (window.lxlWarnStack.indexOf(JSON.stringify(strings.join())) === -1) {
           window.lxlWarnStack.push(JSON.stringify(strings.join()));

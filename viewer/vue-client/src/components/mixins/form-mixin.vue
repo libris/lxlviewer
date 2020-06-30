@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, isArray, sortBy } from 'lodash-es';
+import { cloneDeep, isArray, sortBy, each, groupBy } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from '@/utils/display';
 import * as VocabUtil from '@/utils/vocab';
@@ -50,15 +50,67 @@ export default {
 
       return fItem;
     },
-    reverseItem() {      
-      return this.sortedFormData['@reverse'];
+    reverseItem() {
+      return this.formObj['@reverse'];
+    },
+    reverseItemInForm() {
+      const reverseItem = cloneDeep(this.reverseItem);
+      const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
+      const objToMainForm = {};
+      each(reverseItem, (item, key) => {
+        if (propsInMainForm.indexOf(`@reverse/${key}`) > -1) {
+          objToMainForm[`@reverse/${key}`] = item;
+        }
+      });
+      return objToMainForm;
+    },
+    reverseItemSorted() {
+      const reverseItem = cloneDeep(this.reverseItem);
+      const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
+      for (let i = 0; i < propsInMainForm.length; i++) {
+        const key = propsInMainForm[i].replace('@reverse/', '');
+        if (reverseItem.hasOwnProperty(key)) {
+          delete reverseItem[key];
+        }
+      }
+      const reverseItemSorted = {};
+
+      each(reverseItem, (item, key) => {
+        let groupedReverseItems = {};
+
+        // get label and add it to the object for sorting        
+        item.map((obj) => {
+          obj.label = this.getLabel(obj);
+          return obj;
+        });
+
+        // sort aplphabetically
+        item.sort((a, b) => a.label.localeCompare(b.label, 'sv'));
+
+        // group by first letter
+        groupedReverseItems = groupBy(item, i => i.label.substring(0, 1));
+
+        // delete label
+        Object.keys(groupedReverseItems).forEach((k) => {
+          groupedReverseItems[k].forEach(v => delete v.label);
+        });        
+
+        reverseItemSorted[key] = {};
+        reverseItemSorted[key].items = groupedReverseItems;
+        reverseItemSorted[key].isGrouped = true;
+        reverseItemSorted[key].totalItems = item.length;
+      });
+
+      return reverseItemSorted;
     },
     sortedFormData() {
+      const formObj = cloneDeep(this.formObj);
+      const formObjWithReverse = Object.assign(formObj, this.reverseItemInForm);
       const sortedForm = {};
       for (const property of this.sortedProperties) {
         const k = property;
-        if (typeof this.formObj[k] !== 'undefined' || this.formObj[k] === '') {
-          sortedForm[k] = this.formObj[k];
+        if (typeof formObjWithReverse[k] !== 'undefined' || formObjWithReverse[k] === '') {
+          sortedForm[k] = formObjWithReverse[k];
         }
       }
       return sortedForm;

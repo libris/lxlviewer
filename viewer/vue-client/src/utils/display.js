@@ -12,8 +12,8 @@ export function getDisplayDefinitions(settings) {
   const baseUri = settings.idPath;
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
-      window.lxlInfo(`🎭 MOCKING DISPLAY FILE - Using local file instead of live version`);
-      resolve(require('@/resources/json/mockDisplay.json'))
+      window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using local file instead of live version');
+      resolve(require('@/resources/json/mockDisplay.json'));
     } else {
       httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
         const clonedResult = cloneDeep(result);
@@ -121,7 +121,6 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
   const cn = StringUtil.getCompactUri(className, context);
   let level = inputLevel;
   let props = [];
-  const lensGroups = displayDefinitions.lensGroups;
 
   // If we want tokens, we traverse them first, since they can "fail"
   if (level === 'tokens') {
@@ -141,8 +140,25 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
     props = ['@type'].concat(props);
   }
   props = uniq(props);
-  remove(props, x => isObject(x));
-  return props;
+  const propsWithTranslatedObjects = [];
+  for (let i = 0; i < props.length; i++) {
+    if (isObject(props[i])) {
+      const translated = translateObjectProp(props[i], context);
+      if (translated !== null) {
+        propsWithTranslatedObjects[i] = translated;
+      }
+    } else {
+      propsWithTranslatedObjects[i] = props[i];
+    }
+  }
+  return propsWithTranslatedObjects;
+}
+
+export function translateObjectProp(object) {
+  if (object.hasOwnProperty('inverseOf')) {
+    return `@reverse/${object.inverseOf}`;
+  }
+  return null;
 }
 
 /* eslint-disable no-use-before-define */
@@ -311,7 +327,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
       delete card[excludeProperties[i]];
     }
   }
-  const displayGroups = require('@/resources/json/displayGroups.json');
+  const cardDisplayGroups = require('@/resources/json/displayGroups.json').card;
   const summary = {
     categorization: [],
     header: [],
@@ -320,9 +336,9 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
   each(card, (value, key) => {
     if (value !== null) {
       const v = isArray(value) ? value : [value];
-      if (displayGroups.header.indexOf(key) !== -1) {
+      if (cardDisplayGroups.header.indexOf(key) !== -1) {
         summary.header.push({ property: key, value: v });
-      } else if (displayGroups.categorization.indexOf(key) !== -1) {
+      } else if (cardDisplayGroups.categorization.indexOf(key) !== -1) {
         summary.categorization.push({ property: key, value: v });
       } else {
         const translated = tryGetValueByLang(item, key, settings.language, context);
