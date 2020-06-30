@@ -141,7 +141,7 @@ export default {
       class="EntityForm-reverse">
       <h6 class="uppercaseHeading">{{ 'A selection of resources linking to this resource' | translatePhrase }}</h6>
       <ul class="FieldList">
-        <field class="FieldList-item"        
+        <field class="FieldList-item"
           v-for="(v,k) in reverseItemSorted"
           v-bind:class="{ 'locked': isLocked }" 
           :entity-type="formObj['@type']" 
@@ -158,16 +158,6 @@ export default {
 </template>
 
 <style lang="less">
-
-.ribbon-mixin(@ribbon-color) {
-  // padding: 0 10px 0 10px;
-  // position: relative;
-  // margin: 0 -10px 0 -10px;
-  // box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
-  background-color: @ribbon-color;
-  border: solid darken(@ribbon-color, 3%);
-  border-width: 0px 0px 1px 0px;
-}
 
 .EntityForm {
   padding: 0;
