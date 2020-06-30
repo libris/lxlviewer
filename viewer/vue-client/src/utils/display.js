@@ -12,8 +12,8 @@ export function getDisplayDefinitions(settings) {
   const baseUri = settings.idPath;
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
-      window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using local file instead of live version');
-      resolve(require('@/resources/json/mockDisplay.json'));
+      window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using file from local definitions repository');
+      resolve(require('@/../../../../definitions/source/vocab/display.jsonld'));
     } else {
       httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
         const clonedResult = cloneDeep(result);
