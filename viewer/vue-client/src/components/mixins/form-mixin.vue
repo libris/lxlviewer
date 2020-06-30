@@ -104,12 +104,13 @@ export default {
       return reverseItemSorted;
     },
     sortedFormData() {
-      const formObjConcatenated = Object.assign(this.formObj, this.reverseItemInForm);
+      const formObj = cloneDeep(this.formObj);
+      const formObjWithReverse = Object.assign(formObj, this.reverseItemInForm);
       const sortedForm = {};
       for (const property of this.sortedProperties) {
         const k = property;
-        if (typeof this.formObj[k] !== 'undefined' || this.formObj[k] === '') {
-          sortedForm[k] = this.formObj[k];
+        if (typeof formObjWithReverse[k] !== 'undefined' || formObjWithReverse[k] === '') {
+          sortedForm[k] = formObjWithReverse[k];
         }
       }
       return sortedForm;
