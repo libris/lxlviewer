@@ -1,4 +1,4 @@
-import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty } from 'lodash-es';
+import { cloneDeep, each, isObject, uniq, includes, remove, isArray, filter, isEmpty } from 'lodash-es';
 import moment from 'moment';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
@@ -141,8 +141,25 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
     props = ['@type'].concat(props);
   }
   props = uniq(props);
-  remove(props, x => isObject(x));
-  return props;
+  const propsWithTranslatedObjects = [];
+  for (let i = 0; i < props.length; i++) {
+    if (isObject(props[i])) {
+      const translated = translateObjectProp(props[i], context);
+      if (translated !== null) {
+        propsWithTranslatedObjects[i] = translated;
+      }
+    } else {
+      propsWithTranslatedObjects[i] = props[i];
+    }
+  }
+  return propsWithTranslatedObjects;
+}
+
+export function translateObjectProp(object) {
+  if (object.hasOwnProperty('inverseOf')) {
+    return `@reverse/${object['inverseOf']}`;
+  }
+  return null;
 }
 
 /* eslint-disable no-use-before-define */

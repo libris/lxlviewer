@@ -200,7 +200,7 @@ export default {
       return this.searchPerimeter === 'remote' ? 'ISBN eller valfria sökord' : 'Search';
     },
     composedSearchParam() { // pair current search param with searchphrase
-      const composed = Object.assign({}, this.activeSearchParam.mappings);
+      const composed = Object.assign({}, this.activeSearchParam.mappings || {});
       composed[this.activeSearchParam.searchProp] = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
       return composed;
     },

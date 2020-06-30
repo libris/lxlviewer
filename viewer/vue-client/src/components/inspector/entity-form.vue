@@ -91,40 +91,11 @@ export default {
       }
       return false;
     },
+    showIncomingLinksSection() {
+      return Object.keys(this.reverseItemSorted).length > 0;
+    },
     formObj() {
       return this.formData;
-    },
-    reverseItemSorted() {
-      const reverseItem = cloneDeep(this.reverseItem);
-      const reverseItemSorted = {};
-
-      each(reverseItem, (item, key) => {
-        let groupedReverseItems = {};
-
-        // get label and add it to the object for sorting        
-        item.map((obj) => {
-          obj.label = this.getLabel(obj);
-          return obj;
-        });         
-
-        // sort aplphabetically
-        item.sort((a, b) => a.label.localeCompare(b.label, 'sv'));
-
-        // group by first letter
-        groupedReverseItems = groupBy(item, i => i.label.substring(0, 1));
-
-        // delete label
-        Object.keys(groupedReverseItems).forEach((k) => {
-          groupedReverseItems[k].forEach(v => delete v.label);
-        });        
-
-        reverseItemSorted[key] = {};
-        reverseItemSorted[key].items = groupedReverseItems;
-        reverseItemSorted[key].isGrouped = true;
-        reverseItemSorted[key].totalItems = item.length;
-      });
-
-      return reverseItemSorted;
     },
   },
   watch: {
@@ -167,9 +138,9 @@ export default {
     </ul>
 
     <div 
-      v-if="reverseItem && editingObject === 'mainEntity'"
+      v-if="reverseItem && editingObject === 'mainEntity' && showIncomingLinksSection"
       class="EntityForm-reverse">
-      <h6 class="uppercaseHeading">Resurser som länkar hit</h6>
+      <h6 class="uppercaseHeading">{{ 'A selection of resources linking to this resource' | translatePhrase }}</h6>
       <ul class="FieldList">
         <field class="FieldList-item"        
           v-for="(v,k) in reverseItemSorted"
