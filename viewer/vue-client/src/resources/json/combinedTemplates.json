@@ -791,32 +791,19 @@
             {
               "@type": "Title",
               "mainTitle": ""
-            },
-            {
-              "@type": "KeyTitle",
-              "mainTitle": "",
-              "qualifier": ""
             }
           ],
           "responsibilityStatement": "",
           "identifiedBy": [
             {
               "@type": "ISSN",
-              "value": "",
-              "marc:internationalInterest": true,
-              "source": [
-                {
-                  "@type": "marc:NationalIssnCentre",
-                  "code": "f"
-                }
-              ]
+              "value": ""
             }
           ],
-          "editionStatement": [""],
           "publication": [
             {
               "@type": "PrimaryPublication",
-              "year": "",
+              "startYear": "",
               "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
@@ -829,12 +816,6 @@
               }
             }
           ],
-          "copyright": [
-            {
-              "@type": "Copyright",
-              "date": ""
-            }
-          ],
           "mediaType": [
             {"@id": "https://id.kb.se/term/rda/Computer"}
           ],
@@ -843,45 +824,9 @@
             {"@id": "https://id.kb.se/marc/Online"},
             {"@id": "https://id.kb.se/marc/OnlineResource"}
           ],
-          "extent": [
-            {
-              "@type": "Extent",
-              "label": ""
-            }
-          ],
-          "physicalDetailsNote": "",
-          "seriesMembership": [
-            {
-              "@type": "SeriesMembership",
-              "inSeries": {
-                "@type": "Instance",
-                "identifiedBy": [
-                  {
-                    "@type": "ISSN",
-                    "value": ""
-                  }
-                ],
-                "instanceOf": {
-                  "@type": "Work",
-                  "hasTitle": [
-                    {
-                      "@type": "Title",
-                      "mainTitle": ""
-                    }
-                  ]
-                }
-              },
-              "marc:seriesTracingPolicy": "",
-              "seriesEnumeration": "",
-              "seriesStatement": [""]
-            }
-          ],
           "frequency": [
             {
               "@id": "https://id.kb.se/marc/ContinuouslyUpdated"
-            },
-            {
-              "@id": "https://id.kb.se/marc/Regular"
             }
           ],
           "hasNote": [
@@ -901,7 +846,6 @@
               ]
             }
           ],
-          "otherPhysicalFormat": [],
           "marc:alphabet": {
             "@id": "https://id.kb.se/marc/ExtendedRoman"
           },
@@ -934,25 +878,12 @@
             ],
             "contribution": [
               {
-                "@type": "PrimaryContribution",
-                "agent": null,
-                "role": [{
-                  "@id": "https://id.kb.se/relator/issuingBody"
-                }]
-              },
-              {
                 "@type": "Contribution",
                 "agent": null,
                 "role": []
               }
             ],
             "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
-            "hasNote": [
-              {
-                "@type": "marc:LanguageNote",
-                "label": ""
-              }
-            ],
             "subject": []
           }
         }
