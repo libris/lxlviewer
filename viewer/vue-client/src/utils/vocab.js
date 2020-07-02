@@ -1,6 +1,7 @@
-import { isObject, uniq, isArray, find, sortBy, each, isPlainObject, cloneDeep, uniqBy, forOwn } from 'lodash-es';
+import { isObject, uniq, isArray, find, sortBy, each, isPlainObject, cloneDeep, uniqBy, forOwn, groupBy } from 'lodash-es';
 import * as httpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
+import * as DisplayUtil from '@/utils/display';
 
 export function getVocab(apiPath) {
   return new Promise((resolve, reject) => {
@@ -74,6 +75,38 @@ export function filterOwnClasses(classArray, context) {
     throw new Error('filterOwnClasses was called with a param which is not an array (should be an array of term objects).');
   }
   return classArray.filter(term => (term.hasOwnProperty('@id') && (term['@id'].startsWith(context[0]['@vocab']) || term['@id'].startsWith(context[0].marc))));
+}
+
+export function mapObjectAsAlphabetical(sourceObject, quoted, resources, settings) {
+  const objectSorted = {};
+
+  each(sourceObject, (item, key) => {
+    let groupedReverseItems = {};
+
+    // get label and add it to the object for sorting        
+    item.map((obj) => {
+      obj.label = DisplayUtil.getItemLabel(obj, resources.display, quoted, resources.vocab, settings, resources.context);
+      return obj;
+    });
+
+    // sort aplphabetically
+    item.sort((a, b) => a.label.localeCompare(b.label, 'sv'));
+
+    // group by first letter
+    groupedReverseItems = groupBy(item, i => i.label.substring(0, 1));
+
+    // delete label
+    Object.keys(groupedReverseItems).forEach((k) => {
+      groupedReverseItems[k].forEach(v => delete v.label);
+    });        
+
+    objectSorted[key] = {};
+    objectSorted[key].items = groupedReverseItems;
+    objectSorted[key].isGrouped = true;
+    objectSorted[key].totalItems = item.length;
+  });
+
+  return objectSorted;
 }
 
 export function getBaseClasses(classId, vocab, context) {

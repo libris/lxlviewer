@@ -62,7 +62,7 @@ export default {
           objToMainForm[`@reverse/${key}`] = item;
         }
       });
-      return objToMainForm;
+      return VocabUtil.mapObjectAsAlphabetical(objToMainForm, this.inspector.data.quoted, this.resources, this.settings);
     },
     reverseItemSorted() {
       const reverseItem = cloneDeep(this.reverseItem);
@@ -73,35 +73,7 @@ export default {
           delete reverseItem[key];
         }
       }
-      const reverseItemSorted = {};
-
-      each(reverseItem, (item, key) => {
-        let groupedReverseItems = {};
-
-        // get label and add it to the object for sorting        
-        item.map((obj) => {
-          obj.label = this.getLabel(obj);
-          return obj;
-        });
-
-        // sort aplphabetically
-        item.sort((a, b) => a.label.localeCompare(b.label, 'sv'));
-
-        // group by first letter
-        groupedReverseItems = groupBy(item, i => i.label.substring(0, 1));
-
-        // delete label
-        Object.keys(groupedReverseItems).forEach((k) => {
-          groupedReverseItems[k].forEach(v => delete v.label);
-        });        
-
-        reverseItemSorted[key] = {};
-        reverseItemSorted[key].items = groupedReverseItems;
-        reverseItemSorted[key].isGrouped = true;
-        reverseItemSorted[key].totalItems = item.length;
-      });
-
-      return reverseItemSorted;
+      return VocabUtil.mapObjectAsAlphabetical(reverseItem, this.inspector.data.quoted, this.resources, this.settings);
     },
     sortedFormData() {
       const formObj = cloneDeep(this.formObj);
