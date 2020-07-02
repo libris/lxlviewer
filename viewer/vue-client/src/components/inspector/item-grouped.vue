@@ -14,6 +14,10 @@ export default {
       type: String,
       default: '',
     },
+    alwaysExpanded: {
+      type: Boolean,
+      default: true,
+    },
     index: Number,
     isLocked: {
       type: Boolean,
@@ -70,7 +74,7 @@ export default {
     @focus="addFocus()"
     @blur="removeFocus()">
 
-    <strong class="ItemGrouped-heading">
+    <strong class="ItemGrouped-heading" v-if="alwaysExpanded === false">
       <div class="ItemGrouped-label"
         :class="{'is-locked': isLocked }"
         @click="toggleExpanded()">
@@ -79,7 +83,7 @@ export default {
       </div>
     </strong>
 
-    <ul class="ItemGrouped-list">
+    <ul class="ItemGrouped-list" v-show="expanded || alwaysExpanded">
       <field
       v-for="(value, key) in item.items"
       :key="key"
@@ -146,14 +150,9 @@ export default {
   }
 
   &-list {
-    display: none;
     flex: 1 100%;
     position: relative;
     padding: 0 0 0 4px;
-
-    .is-expanded & {
-      display: block;
-    }
   }
 }
 

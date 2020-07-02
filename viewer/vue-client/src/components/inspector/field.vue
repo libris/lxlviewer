@@ -45,6 +45,10 @@ export default {
       type: [Object, String, Array, Boolean, Number],
       default: null,
     },
+    isReverse: {
+      type: Boolean,
+      default: false,
+    },
     isLocked: {
       type: Boolean,
       default: false,
@@ -803,6 +807,7 @@ export default {
           :entity-type="entityType" 
           :parent-path="path"
           :index="index" 
+          :always-expanded="isReverse === false"
           :item="item"></item-grouped>
 
         <!-- Other linked resources -->

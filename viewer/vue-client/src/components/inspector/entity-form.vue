@@ -149,6 +149,7 @@ export default {
           :is-removable="false" 
           :is-locked="true" 
           :key="k" 
+          :is-reverse="true"
           :field-key="'@reverse/' + k" 
           :field-value="v" 
           :parent-path="editingObject" />
