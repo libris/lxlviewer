@@ -505,7 +505,7 @@ export default {
       let q = '';
       if (keyword === '') {
         q = '*';
-      } else if (keyword.match(/[|~*+\-"]/)) {
+      } else if (keyword.match(/[|~*+"]/) || keyword.match(/^-| -/)) {
         // User is using operators, accept their keyword as-is
         q = keyword;
       } else {
