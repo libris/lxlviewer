@@ -68,6 +68,9 @@ export default {
     },
     reverseItemSorted() {
       const reverseItem = cloneDeep(this.reverseItem);
+      if (typeof reverseItem === 'undefined') {
+        return {};
+      }
       const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
       for (let i = 0; i < propsInMainForm.length; i++) {
         const key = propsInMainForm[i].replace('@reverse/', '');

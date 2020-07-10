@@ -13,13 +13,13 @@ import RoundButton from '@/components/shared/round-button.vue';
 
 export default {
   mixins: [clickaway],
-  name: 'field-adder',
+  name: 'property-adder',
   props: {
     allowed: {
       type: Array,
       default: () => [],
     },
-    inner: {
+    isActive: {
       type: Boolean,
       default: false,
     },
@@ -35,10 +35,6 @@ export default {
     entityType: {
       type: String,
       default: '',
-    },
-    inToolbar: {
-      type: Boolean,
-      default: false,
     },
     forceActive: {
       type: Boolean,
@@ -212,10 +208,6 @@ export default {
           this.$nextTick(() => {
             this.active = true;
             this.$nextTick(() => {
-            // this.$store.dispatch('setStatusValue', { 
-            //   property: 'keybindState', 
-            //   value: 'field-adder' 
-            // });
               if (this.$refs.input) {
                 this.$refs.input.focus();
               }
@@ -230,10 +222,7 @@ export default {
       if (!this.active) return;
       this.active = false;
       this.filterKey = '';
-      // this.$store.dispatch('setStatusValue', {
-      //  property: 'keybindState',
-      //  value: 'overview'
-      // });
+      this.$parent.closePropertyAdder();
     },
   },
   watch: {
@@ -256,10 +245,12 @@ export default {
           default:
         }
       }
-    }, 
-    active(val) {
-      if (!val) {
-        this.$refs.adderButton.focus();
+    },
+    isActive(value) {
+      if (value) {
+        this.show();
+      } else {
+        this.hide();
       }
     },
   },
@@ -276,52 +267,23 @@ export default {
 </script>
 
 <template>
-  <div class="FieldAdder">
-    <span v-if="inner" class="FieldAdder-innerAdd"
-        role="button"
-        tabindex="0"
-        ref="adderButton"
-        :aria-label="modalTitle | translatePhrase"
-        @click="show(), expand()" 
-        @keyup.enter="show"
-        v-tooltip.top="modalTitle"
-        @mouseenter="actionHighlight(true, $event)" 
-        @mouseleave="actionHighlight(false, $event)"
-        @focus="actionHighlight(true, $event)"
-        @blur="actionHighlight(false, $event)"
-    >
-      <i 
-        class="FieldAdder-innerIcon fa fa-plus-circle fa-fw icon icon--sm">
-      </i>
-      <span class="action-label">{{ "Add field" | translatePhrase }}</span>
-    </span>
-
-    <button v-if="!inner" class="FieldAdder-add btn btn-default toolbar-button" 
-      v-on:click="show" 
-      ref="adderButton"
-      @keyup.enter="show"
-      v-tooltip.left="`${translate(modalTitle)} (${getKeybindText('open-field-adder')})`"
-      :aria-label="modalTitle | translatePhrase">
-      <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
-      </i>
-      <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
-    </button>
+  <div class="PropertyAdder">
     <portal to="sidebar" v-if="active">
-    <panel-component class="FieldAdder-panel FieldAdderPanel"
+    <panel-component class="PropertyAdder-panel PropertyAdderPanel"
       v-if="active"
       :title="modalTitle"
       @close="hide">
       <template slot="panel-header-extra">
-        <div class="FieldAdderPanel-filterContainer form-group">
+        <div class="PropertyAdderPanel-filterContainer form-group">
           <input id="field-adder-input"
             type="text" 
             ref="input"
-            class="FieldAdderPanel-filterInput customInput mousetrap" 
+            class="PropertyAdderPanel-filterInput customInput mousetrap" 
             :placeholder="'Filter by' | translatePhrase"
             :aria-label="'Filter by' | translatePhrase"
             v-model="filterKey">
         </div>
-        <div class="FieldAdderPanel-filterInfo uppercaseHeading">
+        <div class="PropertyAdderPanel-filterInfo uppercaseHeading">
           <span>
             {{ "Showing" | translatePhrase }} 
             {{ filteredResults.length }} 
@@ -332,10 +294,10 @@ export default {
         </div>
       </template>
       <template slot="panel-header-after">
-        <div class="FieldAdderPanel-columnHeaders">
-          <!-- <span class="FieldAdderPanel-addControl">
+        <div class="PropertyAdderPanel-columnHeaders">
+          <!-- <span class="PropertyAdderPanel-addControl">
           </span> -->
-          <span class="FieldAdderPanel-fieldLabel uppercaseHeading">
+          <span class="PropertyAdderPanel-fieldLabel uppercaseHeading">
             {{ "Field label" | translatePhrase }}
           </span>
           <span class="uppercaseHeading">
@@ -345,15 +307,15 @@ export default {
       </template>
       <template slot="panel-body">
         <div>
-          <ul class="FieldAdderPanel-fieldList js-fieldlist">
+          <ul class="PropertyAdderPanel-fieldList js-fieldlist">
             <li
-              class="FieldAdderPanel-fieldItem PanelComponent-listItem"
+              class="PropertyAdderPanel-fieldItem PanelComponent-listItem"
               v-bind:class="{ 'is-added': prop.added, 'available': !prop.added }" 
               v-for="(prop) in filteredResults" 
               @click="addField(prop, false)"
               @keyup.enter="addField(prop, false)" 
               :key="prop['@id']">
-              <span class="FieldAdderPanel-addControl">
+              <span class="PropertyAdderPanel-addControl">
                 <round-button
                   :tabindex="prop.added ? -1 : 0"
                   :icon="prop.added ? 'check' : 'plus'"
@@ -361,11 +323,11 @@ export default {
                   :disabled="prop.added"
                   :label="prop.added ? 'Added' : 'Add'"/>
               </span>
-              <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
+              <span class="PropertyAdderPanel-fieldLabel" :title="prop.label | capitalize">
                 {{prop.label | capitalize }}
                 <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
               </span>
-              <span class="FieldAdderPanel-classInfo">
+              <span class="PropertyAdderPanel-classInfo">
                 {{ getPropClassInfo(prop.item) }}
               </span>
             </li>
@@ -382,7 +344,7 @@ export default {
 
 <style lang="less">
 
-.FieldAdder {
+.PropertyAdder {
   &-innerAdd {
     .action-label {
       display: none;
@@ -392,7 +354,7 @@ export default {
     font-size: 14px;
     font-size: 1.4rem;
 
-    .FieldAdder--inToolbar & {
+    .PropertyAdder--inToolbar & {
       border-radius: 100%;
       font-size: 22px;
       font-size: 2.2rem;
@@ -411,7 +373,7 @@ export default {
   }
 }
 
-.FieldAdderPanel {
+.PropertyAdderPanel {
   &-filterContainer {
     min-height: 40px;
     flex: 1;
@@ -437,7 +399,7 @@ export default {
     padding: 5px 15px;
     border-bottom: 1px solid @grey-lighter;
 
-    & .FieldAdderPanel-fieldLabel {
+    & .PropertyAdderPanel-fieldLabel {
       padding-left: 0;
     }
   }
