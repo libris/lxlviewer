@@ -1,20 +1,23 @@
 // ----------- IMPORT CORES ---------
 // Import standard bootstrap
 @import '../../node_modules/bootstrap/less/bootstrap.less';
-// Import KB styles
-@import '../../node_modules/kungbib-styles/dist/less/kb-style.less';
+
 // Import Font Awesome
 @import (css) url(//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css);
+
+// Import Open Sans
+@import (css) url(//fonts.googleapis.com/css?family=Open+Sans:400italic,700,600,400);
 
 // ----------- IMPORT SHARED COMPONENTS ----
 @import '../less/shared/main.less';
 
 // ----------- VARIABLES ------------
+@font-family-base: 'Open Sans', sans-serif;
+
 @brand-primary: @happy-muted-denim;
 @bg-site: #E5E5E5;
 @bg-img: none;
 @bg-content: @white;
-@bg-content-alt: @happy-muted-light-blue;
 @bg-navbar: @happy-muted-denim;
 @bg-navbar-hover: darken(@bg-navbar, 10%);
 @shadow-navbar: none;
