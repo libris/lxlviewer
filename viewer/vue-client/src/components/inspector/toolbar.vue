@@ -739,10 +739,14 @@ export default {
 
   &-menuList {
     display: block;
-    top: -250%;
+    top: auto;
     left: 50px;
     bottom: 0;
     padding: 10px 0;
+    min-height: 250px;
+    max-height: 300px;
+    overflow: hidden;
+    overflow-y: auto;
 
     & .Toolbar-menuItem {
       &.is-active {
@@ -775,7 +779,19 @@ export default {
       bottom: auto;
       right: 0;
     }
-  }
+
+    @media (min-height: 650px) {
+      max-height: 400px;
+    }
+
+    @media (min-height: 850px) {
+      max-height: 550px;
+    }
+
+    @media (min-height: 1000px) {
+      max-height: none;
+    }
+  } 
   .TemplatePicker, .OverridePicker {
     width: 1px;
     height: 1px;
