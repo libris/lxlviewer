@@ -6,11 +6,11 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "concat-cli": "^4.0.0",
-    "less": "~2.3.1",
+    "less": "^3.12.2",
     "less-plugin-clean-css": "^1.5.1",
     "natives": "~1.1.6",
     "parallelshell": "~1.0.4",
-    "uglify-js": "^2.4.24"
+    "uglify-js": "^2.8.29"
   },
   "devDependencies": {
     "watch": "~0.13.0"
