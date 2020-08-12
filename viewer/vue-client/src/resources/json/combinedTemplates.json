@@ -790,6 +790,11 @@
           "hasTitle": [
             {
               "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            },
+            {
+              "@type": "VariantTitle",
               "mainTitle": ""
             }
           ],
