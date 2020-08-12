@@ -70,8 +70,10 @@ export function getRecordId(data, quoted) {
   let recordId;
   if (recordObj.hasOwnProperty('@id')) {
     recordId = recordObj['@id'];
-  } else {
+  } else if (recordObj.hasOwnProperty('@graph')) {
     recordId = recordObj['@graph'][0]['@id'];
+  } else {
+    return null;
   }
   recordId = recordId.split('#')[0];
   return recordId;
