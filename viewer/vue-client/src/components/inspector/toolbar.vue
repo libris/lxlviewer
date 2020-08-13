@@ -743,7 +743,7 @@ export default {
     left: 50px;
     bottom: 0;
     padding: 10px 0;
-    min-height: 250px;
+    min-height: 52px;
     max-height: 300px;
     overflow: hidden;
     overflow-y: auto;
