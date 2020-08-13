@@ -1,28 +1,36 @@
 {
-  "categorization": [
-    "@type",
-    "issuanceType",
-    "inCollection",
-    "inScheme",
-    "mediaType",
-    "carrierType"
-  ],
-  "header": [
-    "hasTitle",
-    "title",
-    "prefLabel",
-    "label",
-    "heldBy",
-    "familyName",
-    "givenName",
-    "name",
-    "marc:numeration",
-    "marc:titlesAndOtherWordsAssociatedWithAName",
-    "qualifyingNote",
-    "fullerFormOfName",
-    "lifeSpan",
-    "marc:attributionQualifier",
-    "isPartOf",
-    "marc:subordinateUnit"
-  ]
+  "card": {
+    "categorization": [
+      "@type",
+      "issuanceType",
+      "inCollection",
+      "inScheme",
+      "mediaType",
+      "carrierType"
+    ],
+    "header": [
+      "hasTitle",
+      "title",
+      "prefLabel",
+      "label",
+      "heldBy",
+      "familyName",
+      "givenName",
+      "name",
+      "marc:numeration",
+      "marc:titlesAndOtherWordsAssociatedWithAName",
+      "qualifyingNote",
+      "fullerFormOfName",
+      "lifeSpan",
+      "marc:attributionQualifier",
+      "isPartOf",
+      "marc:subordinateUnit"
+    ]
+  },
+  "reverse": {
+    "mainForm": [
+      "@reverse/broader"
+    ]
+  }
 }
+

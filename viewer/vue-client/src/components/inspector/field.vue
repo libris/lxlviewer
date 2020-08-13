@@ -132,6 +132,9 @@ export default {
   watch: {
   },
   computed: {
+    isReverseProperty() {
+      return this.fieldKey.indexOf('@reverse') > -1;
+    },
     isFieldDiff() {
       return this.isDiff && this.newDiffValues.length === 0;
     },
@@ -283,6 +286,9 @@ export default {
     },
     locked() {
       if (this.settings.lockedProperties.indexOf(this.fieldKey) !== -1) {
+        return true;
+      }
+      if (this.isReverseProperty) {
         return true;
       }
       return this.isLocked;
@@ -613,6 +619,12 @@ export default {
       v-if="showKey && !isInner" >
       <div class="Field-labelWrapper">
         <div v-if="!isLocked" class="Field-actions">
+          <div class="Field-reverse" v-if="isReverseProperty">
+            <i class="fa fa-exchange fa-fw icon icon--sm"
+              v-tooltip.top="translate('Incoming link')"
+            ></i>
+          </div>
+
           <div class="Field-action Field-remove" 
             v-show="!locked && isRemovable" 
             :class="{'disabled': activeModal}">
@@ -1070,7 +1082,11 @@ export default {
     min-height: 30px;
 
     @media (min-width: @screen-sm) {
-      flex-direction: row;
+      flex-direction: row;      
+    }
+
+    @media (min-width: @screen-md) {
+      top: 75px;
     }
   }
 

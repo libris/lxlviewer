@@ -200,7 +200,7 @@ export default {
       return this.searchPerimeter === 'remote' ? 'ISBN eller valfria sökord' : 'Search';
     },
     composedSearchParam() { // pair current search param with searchphrase
-      const composed = Object.assign({}, this.activeSearchParam.mappings);
+      const composed = Object.assign({}, this.activeSearchParam.mappings || {});
       composed[this.activeSearchParam.searchProp] = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
       return composed;
     },
@@ -285,7 +285,7 @@ export default {
 <template>
   <div class="SearchForm">
     <form id="searchForm" class="SearchForm-form">
-      <label class="SearchForm-inputLabel hidden" id="searchlabel" for="q" aria-hidden="false">
+      <label class="SearchForm-inputLabel sr-only" id="searchlabel" for="q">
         {{"Search" | translatePhrase}}
       </label>
       <div class="SearchForm-formGroup SearchForm-selectGroup hidden-sm hidden-md hidden-lg">
@@ -336,6 +336,7 @@ export default {
           @focus="searchGroupFocus.input = true"
           @blur="searchGroupFocus.input = false"
           class="SearchForm-input customInput"
+          id="q"
           v-model="searchPhrase"
           aria-labelledby="searchlabel"
           :placeholder="inputPlaceholder | translatePhrase"

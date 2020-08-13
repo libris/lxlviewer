@@ -8,26 +8,32 @@ import 'moment/locale/sv';
 
 moment.locale('sv');
 
-export function getDisplayDefinitions(baseUri) {
+export function getDisplayDefinitions(settings) {
+  const baseUri = settings.idPath;
   return new Promise((resolve, reject) => {
-    httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
-      const clonedResult = cloneDeep(result);
-      each(clonedResult.lensGroups, (lensGroup) => {
-        each(lensGroup.lenses, (lens) => {
-          if (lens.hasOwnProperty('fresnel:extends')) {
-            const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
-            lens.showProperties.splice(
-              lens.showProperties.indexOf('fresnel:super'),
-              1,
-              ...result.lensGroups[extendLevel].lenses[extendLens].showProperties,
-            );
-          }
+    if (settings.mockDisplay === true) {
+      window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using file from local definitions repository');
+      resolve(require('@/../../../../definitions/source/vocab/display.jsonld'));
+    } else {
+      httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
+        const clonedResult = cloneDeep(result);
+        each(clonedResult.lensGroups, (lensGroup) => {
+          each(lensGroup.lenses, (lens) => {
+            if (lens.hasOwnProperty('fresnel:extends')) {
+              const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
+              lens.showProperties.splice(
+                lens.showProperties.indexOf('fresnel:super'),
+                1,
+                ...result.lensGroups[extendLevel].lenses[extendLens].showProperties,
+              );
+            }
+          });
         });
+        resolve(clonedResult);
+      }, (error) => {
+        reject(error);
       });
-      resolve(clonedResult);
-    }, (error) => {
-      reject(error);
-    });
+    }
   });
 }
 
@@ -75,6 +81,22 @@ export function getLensPropertiesDeep(className, displayDefinitions, vocab, sett
   const lensGroups = displayDefinitions.lensGroups;
   if (lensGroups.hasOwnProperty(level) && lensGroups[level].lenses.hasOwnProperty(className)) {
     props = lensGroups[level].lenses[className].showProperties;
+    // Add extensions
+    let extension = [];
+    for (let i = 0; i < props.length; i++) {
+      if (props[i] === 'fresnel:super') {
+        if (lensGroups[level].lenses.hasOwnProperty(className) && lensGroups[level].lenses[className].hasOwnProperty('fresnel:extends')) {
+          const extensionLensId = lensGroups[level].lenses[className]['fresnel:extends']['@id'];
+          const extensionLens = getLensById(extensionLensId, displayDefinitions);
+          extension = extensionLens.showProperties;
+          // window.lxlWarning(`👁️ Lens for class '${className}' (${level}) was extended from '${extensionLensId}' with properties: ${extension}`);
+          props.splice(i, 1, ...extension);
+        } else {
+          window.lxlWarning(`👁️ Lens for class '${className}' was asked to extend another lens with 'fresnel:super', but is missing the 'fresnel:extends' property.`);
+        }
+        break;
+      }
+    }
   } else {
     const termObj = VocabUtil.getTermObject(className, vocab, context);
     if (typeof termObj !== 'undefined' && termObj.hasOwnProperty('subClassOf')) {
@@ -99,7 +121,6 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
   const cn = StringUtil.getCompactUri(className, context);
   let level = inputLevel;
   let props = [];
-  const lensGroups = displayDefinitions.lensGroups;
 
   // If we want tokens, we traverse them first, since they can "fail"
   if (level === 'tokens') {
@@ -118,18 +139,26 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
   if (level === 'cards') {
     props = ['@type'].concat(props);
   }
-  // Add extensions
-  let extension = [];
+  props = uniq(props);
+  const propsWithTranslatedObjects = [];
   for (let i = 0; i < props.length; i++) {
-    if (props[i] === 'fresnel:super') {
-      extension = getLensById(lensGroups[level].lenses[cn]['fresnel:extends']['@id'], displayDefinitions).showProperties;
-      props.splice(i, 1, ...extension);
-      break;
+    if (isObject(props[i])) {
+      const translated = translateObjectProp(props[i], context);
+      if (translated !== null) {
+        propsWithTranslatedObjects[i] = translated;
+      }
+    } else {
+      propsWithTranslatedObjects[i] = props[i];
     }
   }
-  props = uniq(props);
-  remove(props, x => isObject(x));
-  return props;
+  return propsWithTranslatedObjects;
+}
+
+export function translateObjectProp(object) {
+  if (object.hasOwnProperty('inverseOf')) {
+    return `@reverse/${object.inverseOf}`;
+  }
+  return null;
 }
 
 /* eslint-disable no-use-before-define */
@@ -298,7 +327,7 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
       delete card[excludeProperties[i]];
     }
   }
-  const displayGroups = require('@/resources/json/displayGroups.json');
+  const cardDisplayGroups = require('@/resources/json/displayGroups.json').card;
   const summary = {
     categorization: [],
     header: [],
@@ -307,9 +336,9 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
   each(card, (value, key) => {
     if (value !== null) {
       const v = isArray(value) ? value : [value];
-      if (displayGroups.header.indexOf(key) !== -1) {
+      if (cardDisplayGroups.header.indexOf(key) !== -1) {
         summary.header.push({ property: key, value: v });
-      } else if (displayGroups.categorization.indexOf(key) !== -1) {
+      } else if (cardDisplayGroups.categorization.indexOf(key) !== -1) {
         summary.categorization.push({ property: key, value: v });
       } else {
         const translated = tryGetValueByLang(item, key, settings.language, context);

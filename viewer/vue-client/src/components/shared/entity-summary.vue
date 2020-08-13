@@ -155,18 +155,27 @@ export default {
       return value;
     },
     uri() {
-      const uri = this.focusData.hasOwnProperty('@id') ? this.focusData['@id'] : this.focusData['@graph'][0].mainEntity['@id'];
-      const convertedUri = this.$options.filters.convertResourceLink(uri);
-      return convertedUri;
+      if (this.focusData.hasOwnProperty('@id') || this.focusData.hasOwnProperty('@graph')) {
+        const uri = this.focusData.hasOwnProperty('@id') ? this.focusData['@id'] : this.focusData['@graph'][0].mainEntity['@id'];
+        const convertedUri = this.$options.filters.convertResourceLink(uri);
+        return convertedUri;
+      }
+      return null;
     },
     settings() {
       return this.$store.getters.settings;
     },
     recordId() {
-      return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
+      if (this.focusData.hasOwnProperty('@id')) {
+        return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
+      }
+      return null;
     },
     isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
+      if (this.recordId) {
+        return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
+      }
+      return false;
     },
     routerPath() {
       const uriParts = this.recordId.split('/');
