@@ -64,10 +64,16 @@
               </span>
             </a>
           </div>
-          <ul class="nav navbar-nav pull-right">
+          <ul class="nav navbar-nav pull-right flex wrap">
           % for item in g.site.itemList
-            <li class="navbar-item"><a href="${item[ID]}"><i
-                class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
+            <li class="navbar-item">
+              <a href="${item[ID]}">
+                ${item.title}
+                {% if request.path == item[ID] %}
+                <span role="presentation" class="navbar-underline"></span>
+                {% endif %}
+              </a>
+            </li>
           % endfor
           % if g.site.title == 'libris.kb.se'
           <li class="navbar-item">

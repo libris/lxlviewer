@@ -1,89 +1,64 @@
 body > .navbar {
   width: 100%;
+  min-height: auto;
+  margin: 0;
   z-index: 900;
-  border: solid @border-navbar;
   background-color: @bg-navbar;
-  border-width: 0px 0px @border-navbar-width 0px;
-  box-shadow: @shadow-navbar;
+  font-weight: 600;
+  border: 0;
+  border-radius: 0;
+
   @media screen and (max-width: @screen-sm-min) {
     padding: 0 20px;
   }
-  .navbar-circle {
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: @grey-lighter;
-    line-height: 2em;
-    margin-right: 0.25em;
-    text-align: center;
-    .user-gravatar {
-      border-radius: 50%;
+
+  .navbar-header {
+    .navbar-brand {
+      color: @text-brand;
+      font-size: 20px;
+      margin: 0!important;
+    }
+  
+    .navbar-logo {
+      padding: 0;
+  
+      img {
+        margin: .2em 0;
+        height: 80%;
+      }
+    }
+
+    .environment-label {
+      text-transform: uppercase;
+      font-size: 0.5em;
+      color: @text-brand-env;
+      font-weight: bold;
+      display: block;
+      margin: -0.5em 0px 0px 0.5em;
+      float: right;
     }
   }
-  .container-fluid {
-    padding: 0 30px 0 15px;
-  }
+
   .navbar-nav {
     .navbar-item {
-      text-transform: none;
-      &.user-settings {
-        .navbar-circle {
-          width: 2.2em;
-        }
-      }
-      .navbar-circle {
-        width: 0.8em;
-        background-color: transparent;
-      }
+      display: inline-block;
     }
+
     a {
+      color: @text-navbar;
+      white-space: nowrap;
       cursor: pointer;
       &:hover, &:focus {
-        background-color: @bg-navbar-hover;
-      }
-      i {
-        color: @text-alt-navbar;
+        color: @text-navbar-hover;
       }
     }
-    text-transform: uppercase;
-    font-weight: 600;
-    font-size: 14px;
-    .dropdown {
-      text-shadow: none;
-      .dropdown-menu {
-        li {
-          a {
-            color: @text-alt-navbar;
-            i {
-              color: @green;
-            }
-          }
-        }
-        font-size: 12px;
-      }
-      li:hover {
-        a {
-          color: @text-alt-navbar;
-        }
-      }
-    }
-  }
-}
 
-.navbar-header {
-  margin-left: 1em;
-  .navbar-brand {
-    font-size: 18px;
-    color: @text-brand;
-  }
-  .environment-label {
-    text-transform: uppercase;
-    font-size: 0.5em;
-    color: @text-brand-env;
-    font-weight: bold;
-    display: block;
-    margin: -0.5em 0px 0px 0.5em;
-    float: right;
+    .navbar-underline {
+      display: block;
+      background-color: @navbar-active-color;
+      height: 2px;
+      margin-top: 2px;
+      width: 100%;
+    }
   }
 }
