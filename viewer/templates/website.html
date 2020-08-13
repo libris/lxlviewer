@@ -74,46 +74,6 @@
 
 % endblock
 
-% block footer
-
-    <div class="footer-container">
-      <div class="container">
-          <div class="col-md-3 col-md-offset-3 col-md-push-3">
-            <h1>Kontakt</h1>
-            <ul class="list-unstyled">
-              <li class=""><a
-                  href="mailto:libris@kb.se?Subject=${thing.title or thing[ID]}"><i
-                  class="fa fa-fw fa-envelope"></i> libris@kb.se</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3 col-md-push-2">
-            % if g.site.itemList
-              <h1>Resurser</h1>
-              <ul class="list-unstyled">
-                % for item in g.site.itemList
-                  <li class=""><a href="${item[ID]}"><i
-                      class="fa fa-fw fa-${item.icon}"></i> ${item.title}</a></li>
-                % endfor
-              </ul>
-            % endif
-          </div>
-          <div class="text-center col-md-3 col-md-pull-8">
-            <div class="">
-              <img src="/assets/img/kb_logo_white.svg" class="logo-medium" alt="" />
-            </div>
-            <div>
-              <p><br/>
-                <strong><a href="http://www.kb.se" alt="Länk till Kungliga bibliotekets webbplats">
-                  KUNGLIGA BIBLIOTEKET
-                </a></strong>
-              </p>
-            </div>
-          </div>
-      </div>
-    </div>
-
-% endblock
-
 % block scripts
 
 % endblock

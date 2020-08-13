@@ -25,6 +25,7 @@
 
 @shadow-panel: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
 
+// ----------- LAYOUT ----------------
 // Column widths
 @col-label: 200px;
 @col-value: 620px;
@@ -95,26 +96,9 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  .facet-container {
-    opacity: 1;
-    transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
-    &.facet-hidden {
-      width: 0%;
-      opacity: 0;
-    }
-  }
-
-  .search-content-container {
-    transition: 0.3s ease width;
-  }
-
-  .link-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15vh;
-  }
 }
 
+// ----------- TYPOGRAPHY ----------------
 h2 {
   font-weight: normal;
 }
@@ -126,61 +110,55 @@ h2 {
   a:hover { color: #333; }
 }
 
+// ----------- FOOTER ----------------
 footer {
   background-color: @bg-footer;
-  border: 0px solid @border-footer;
   color: @text-footer;
-  box-shadow: @shadow-footer;
-  // text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
+  padding: 2em 0;
+  line-height: 2.7rem;
 
-  .content-container {
-    display: flex;
-    justify-content: center;
-    .header {
-      font-weight: bold;
+  .footer-container {
+    > * {
+      margin: 0 3em 1em 0;
     }
-    .item {
-      font-size: 14px;
-    }
-    > div {
-      display: flex;
-      padding: 0 1em;
-    }
-    .service-name {
-      flex: 20% 1 1;
-      align-items: center;
+
+    @media screen and (max-width: @screen-xs-min) {
       flex-direction: column;
-      justify-content: center;
-      font-weight: bold;
-      > a {
-        text-align: center;
-      }
-    }
-    .link-list {
-      flex: 25% 2 2;
-      flex-direction: column;
-    }
-    .social-media {
-      flex: 20% 1 1;
-      flex-direction: column;
-      align-items: center;
-      a {
-        margin: 0 5px;
-      }
+      align-items: flex-start;
     }
   }
+
+  .header {
+    font-weight: bold;
+  }
+
+  .service-name {
+    font-weight: 600;
+  }
+
+  .link-list {
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .footer-divider {
+      border-top: 1px solid @text-alt-footer;    
+      margin: 1rem 0;
+    }
+  }
+
   a {
     color: @text-footer;
-    text-transform:none;
     &:hover {
       color: @text-footer;
     }
   }
-  i {
-    color: @text-alt-footer;
-  }
 }
 
+// ----------- LINKS ----------------
 a {
   color: @link-color;
   text-decoration: none;
