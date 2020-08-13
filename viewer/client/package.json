@@ -10,17 +10,21 @@
     "less-plugin-clean-css": "^1.5.1",
     "natives": "~1.1.6",
     "parallelshell": "~1.0.4",
+    "run-script-os": "^1.1.1",
     "uglify-js": "^2.8.29"
   },
   "devDependencies": {
     "watch": "~0.13.0"
   },
   "scripts": {
-    "postinstall": "mkdir -p static/build && npm run uglify && npm run app",
+    "make_build_folder": "run-script-os",
+    "make_build_folder:win32": "if not exist static\\build mkdir static\\build",
+    "make_build_folder:nix": "mkdir -p static/build",
+    "postinstall": "npm run make_build_folder && npm run uglify && npm run app",
     "uglify": "uglifyjs static/js/*.js -c -m -o static/build/idkbse.min.js --source-map",
-    "watch": "parallelshell 'npm run watch:id:less'",
+    "watch": "npm run watch:id:less",
     "watch:id:less": "watch 'npm run app:id:less' static/less/",
-    "app": "parallelshell 'npm run app:id:less'",
+    "app": "npm run app:id:less",
     "app:id:less": "lessc --clean-css='--advanced' static/less/main_id.less static/build/id.css --source-map=static/build/id.css.map"
   }
 }
