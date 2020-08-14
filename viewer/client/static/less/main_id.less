@@ -12,7 +12,6 @@
 @import '../less/shared/main.less';
 
 // ----------- VARIABLES ------------
-@font-family-base: 'Open Sans', sans-serif;
 
 @brand-primary: #4A7682;
 @brand-contrast: #F7A07B;
@@ -41,8 +40,6 @@
 @color-prop-list: @grey;
 @color-ext: #d51;
 @color-id: #c7254e;
-@link-color: #288DC1;
-@link-hover-color: darken(@link-color,15%);
 @panel-border-radius: 0px;
 @thing-header-bg: lighten(@bg-navbar,15%);
 @thing-header-text: @white;
@@ -50,3 +47,37 @@
 
 @color-headers: #555;
 @color-headers-text: #fff;
+
+@badge-color: @grey;
+
+// website.html styles
+
+.scheme-item {
+
+  .scheme-item-container {
+    margin-bottom: 1em;
+    padding-left: 0;
+  }
+
+  .list-group-item {
+    font-weight: 600;
+
+    &:hover {
+      .scheme-item-label {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .badge {
+    background-color: @grey-lighter;
+    color: @grey-darker;
+    margin-left: 5px;
+  }
+
+  .scheme-item-info {
+    padding: 5px 15px;
+    display: block;
+    font-size: 14px;
+  }
+}

@@ -13,76 +13,76 @@
 % endif
 
 % set vocab_url = 'https://id.kb.se/vocab/'
+<div class="row">
+  <div class="search-controls col-md-10 col-lg-8">
+      <form action="/find" method="GET" id="searchForm">
 
-<div class="panel panel-default search-controls">
-    <form action="/find" method="GET" id="searchForm">
+        <div class="form">
+          <div class="form-group">
+            % for param, value in request.args.items(multi=True)
+              % if param != 'q'
+                <input type="hidden" name="${param}" value="${value}" />
+              % endif
+            % endfor
 
-      <div class="form">
-        <div class="form-group">
-          % for param, value in request.args.items(multi=True)
-            % if param != 'q'
-              <input type="hidden" name="${param}" value="${value}" />
-            % endif
-          % endfor
-          <label class="search-label" id="searchlabel" for="q">
-            Sök
-          </label>
-
-          <div id="searchFieldContainer">
-            <input aria-labelledby="searchlabel" class="form-control search-input tagInput" name="q" id="searchQ" value="${q | safe | trim }" ></input>
-            <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+            <div id="searchFieldContainer" class="searchFieldContainer flex align-center">
+              <i class="fa fa-search" role="presentation"></i>
+              <input aria-labelledby="searchlabel" class="form-control search-input tagInput" name="q" id="searchQ" value="${q | safe | trim }" autofocus></input>
+              <button id="searchSubmit" class="search-button btn btn-primary">Sök</button>
+            </div>
           </div>
         </div>
-      </div>
 
-    % if filter_param
-      <div class="type-buttons" aria-label="Välj typ">
-        % if result.statistics and len(result.statistics) > 0
-          % for value in result.statistics.sliceByDimension.values()
-            % for obs in value.observation
-              <label class="">
-                <input name="${filter_param}" value="${obs.object['curie'] or obs.object['@id'].replace(vocab_url, '')}" type="checkbox" checked>
-                % if obs.object.titleByLang
-                  ${obs.object.titleByLang['sv']}
-                % elif obs.object.label
-                  ${obs.object.label}
-                % elif obs.object.notation
-                  ${obs.object.notation|join(', ')}
-                % else
-                  ${obs.object['@id'].replace(vocab_url, '')}
-                % endif
-              </label>
+      % if filter_param
+        <fieldset class="type-buttons">
+          <legend class="sr-only">Välj typ</legend>
+          % if result.statistics and len(result.statistics) > 0
+            % for value in result.statistics.sliceByDimension.values()
+              % for obs in value.observation
+                <label class="checkbox-inline">
+                  <input name="${filter_param}" value="${obs.object['curie'] or obs.object['@id'].replace(vocab_url, '')}" type="checkbox" checked>
+                  % if obs.object.titleByLang
+                    ${obs.object.titleByLang['sv']}
+                  % elif obs.object.label
+                    ${obs.object.label}
+                  % elif obs.object.notation
+                    ${obs.object.notation|join(', ')}
+                  % else
+                    ${obs.object['@id'].replace(vocab_url, '')}
+                  % endif
+                </label>
+              % endfor
             % endfor
-          % endfor
-        % endif
-      </div>
-    % endif
-
-    % if len(mapping) > 1
-      <div class="activated-facets">
-        <label>
-          Aktiv filtrering (klicka för att ta bort)
-        </label>
-        <ul>
-        % for item in mapping
-          % if item.variable != 'q'
-          <li>
-            % if item.object
-              % set label = item.object['@id']
-            % else
-              % set label = item.value
-            % endif
-            <a href="${item.up['@id']}">
-              ${vocab_term(label)}<i class="fa fa-remove"></i>
-            </a>
-          </li>
           % endif
-        % endfor
-        </ul>
-      </div>
-    % endif
+        </fieldset>
+      % endif
 
-  </form>
+      % if len(mapping) > 1
+        <div class="activated-facets">
+          <label>
+            Aktiv filtrering (klicka för att ta bort)
+          </label>
+          <ul>
+          % for item in mapping
+            % if item.variable != 'q'
+            <li>
+              % if item.object
+                % set label = item.object['@id']
+              % else
+                % set label = item.value
+              % endif
+              <a href="${item.up['@id']}">
+                ${vocab_term(label)}<i class="fa fa-remove"></i>
+              </a>
+            </li>
+            % endif
+          % endfor
+          </ul>
+        </div>
+      % endif
+
+    </form>
+  </div>
 </div>
 % endmacro
 

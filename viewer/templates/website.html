@@ -26,7 +26,7 @@
   ${ libris.redirect_page() }
 % else
 <div class="row">
-  <div class="col-md-4">
+  <!-- <div class="col-md-4">
     <div class="panel panel-default intro-text">
       % if thing.summary
         ${thing.summary.articleBody|safe}
@@ -34,8 +34,8 @@
         ${thing.description|safe}
       % endif
     </div>
-  </div>
-  <div class="col-md-8">
+  </div> -->
+  <div class="col-sm-12">
     ${ search.search_controls(thing, g.site.filter_param) }
 
   % if thing.statistics.sliceByDimension
@@ -81,24 +81,11 @@
 % macro view_observation(obs)
   % if obs.object is not none
     % if obs.object.notation
-    <div id="${obs.object.notation[0].replace('/','-')}" class="panel panel-default scheme-item">
+    <div id="${obs.object.notation[0].replace('/','-')}" class="scheme-item">
     % else
-    <div class="panel panel-default scheme-item">
+    <div class="scheme-item">
     % endif
-      <header class="panel-heading">
-        <h1 class="panel-title">
-          % if g.site.title == 'id.kb.se'
-          <a href="${ obs.object['@id'] }">
-              ${show_label(obs.object)}
-          </a>
-          % else
-          <a href="https://id.kb.se/vocab/#${ obs.object['@id'] }">
-            ${vocab_term(obs.object['@id'])}
-          </a>
-          % endif
-        </h1>
-      </header>
-      <div class="panel-body container-fluid">
+      <div class="col-xs-12 col-sm-6 col-md-4 scheme-item-container">
         <!-- <p class="description collapsed">
           % if 'descriptionByLang' in obs.object
           ${ obs.object.descriptionByLang[g.lang].strip().replace('\n','<br/>') | safe }
@@ -107,13 +94,13 @@
         % if obs.sliceByDimension
           <div>
             <!-- First item is "all" -->
-            <a class="list-group-item" href="${ obs.view['@id'] }">Visa alla <span class="badge">${format_number(obs.totalItems)} st.</span></a>
+            <a class="list-group-item flex align-center" href="${ obs.view['@id'] }">Visa alla <span class="badge">${format_number(obs.totalItems)}</span></a>
             % for dimension in obs.sliceByDimension
               % for item in obs.sliceByDimension[dimension].observation
-                <a class="list-group-item"
+                <a class="list-group-item flex align-center"
                     href="${item.view['@id']}">
-                    ${show_label(item.object)}
-                    <span class="badge">${format_number(item.totalItems)} st.</span>
+                    <span class="scheme-item-label">${show_label(item.object)}</span>
+                    <span class="badge">${format_number(item.totalItems)}</span>
                 </a>
               % endfor
             % endfor
@@ -129,6 +116,17 @@
         % else
           ${view_observation_item(obs)}
         % endif
+        <span class="scheme-item-info">
+          % if g.site.title == 'id.kb.se'
+          <a href="${ obs.object['@id'] }">
+              Mer om ${show_label(obs.object)}
+          </a>
+          % else
+          <a href="https://id.kb.se/vocab/#${ obs.object['@id'] }">
+            ${vocab_term(obs.object['@id'])}
+          </a>
+          % endif
+        </span>
       </div>
   </div>
   % endif
@@ -150,14 +148,14 @@
 % endmacro
 
 % macro view_observation_item(item)
-  <a class="list-group-item"
+  <a class="list-group-item flex align-center"
     href="${item.view[ID]}">
       % set o = item.object
       % if o
-        ${o.label or (o.titleByLang and o.titleByLang.sv) or o.prefLabelByLang and o.prefLabelByLang.sv}
+        <span class="scheme-item-label">${o.label or (o.titleByLang and o.titleByLang.sv) or o.prefLabelByLang and o.prefLabelByLang.sv}</span>
       % else
         <code>${item.view[ID]}</code>
       % endif
-      <span class="badge">${format_number(item.totalItems)} st.</span>
+      <span class="badge">${format_number(item.totalItems)}</span>
   </a>
 % endmacro

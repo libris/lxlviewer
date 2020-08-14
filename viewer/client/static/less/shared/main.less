@@ -10,14 +10,32 @@
 @import '../shared/login.less';
 @import '../shared/thing.less';
 @import '../shared/button-and-links.less';
-@import '../shared/kungbib.less';
 @import '../shared/flexbox.less';
 
 // ----------- BASE STYLES ----------
+@white: #ffffff;
+@black: #191913;
+@grey: #949A9E;
+@grey-dark: #6F767B;
+@grey-darker: #636363;
+@grey-light: #C4C7CA;
+@grey-lighter:#EFEFEF;
+
+@happy-blue: #5DC4ED;
+@happy-magenta: rgb(255, 154, 255);
 
 @orange: #CA9543;
 @green: #009788;
-@grey-very-dark: #191913; // font-color
+
+
+@font-family-base: 'Open Sans', sans-serif;
+@text-color: @black;
+@base-font-size: 16px;
+@base-line-height: 1.6;
+@small-font-size: 14px;
+
+@link-color: @brand-primary;
+@link-hover-color: darken(@link-color,15%);
 
 @modal-z: 999;
 @active-component-z: 99;
@@ -59,7 +77,7 @@ html {
 
 main {
   margin-top: 30px;
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 }
 
 #oldbrowsermsg {
@@ -93,9 +111,12 @@ body {
   position: relative;
   background-color: @bg-site;
   background-image: @bg-img;
+  color: @text-color;
   height: 100vh;
   display: flex;
   flex-direction: column;
+  font-size: @base-font-size;
+  line-height: @base-line-height;
 }
 
 // ----------- TYPOGRAPHY ----------------
@@ -108,6 +129,10 @@ h2 {
   h1 { font-size: 50px; }
   a { color: @brand-primary; }
   a:hover { color: #333; }
+}
+
+a {
+  color: @link-color;
 }
 
 // ----------- FOOTER ----------------
@@ -158,6 +183,10 @@ footer {
   }
 }
 
+.logo-medium {
+  width: 75px;
+}
+
 // ----------- LINKS ----------------
 a {
   color: @link-color;
@@ -170,24 +199,20 @@ a {
 }
 
 
-// ----------- BUTTONS ----------------
+// ----------- FORM ELEMENTS ----------------
 button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
     color: #ffffff;
+    border: 0;
+    font-size: @base-font-size;
+    font-weight: 600;
+    padding: 0.5em 1.2em;
+    border-radius: 10px;
+    outline-offset: 0;
 }
 
-button {
-  color:#444;
-  border:none;
-  border-radius: 2px;
-  background:#ccc;
-  padding: 0 0.4em;
-  font-weight:bold;
-  &:hover {
-  background: #ddd;
-  color:#222;
-  }
-  &:focus {
-  background:#bbb;
-  }
+input[type=checkbox]:focus, 
+a:focus {
+  outline-offset: 2px;
 }
+
 // ----------- VARIOUS ----------------
