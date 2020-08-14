@@ -136,7 +136,7 @@ export default {
       </div>
     </ul>
 
-    <!-- <div 
+    <div 
       v-if="reverseItem && editingObject === 'mainEntity' && showIncomingLinksSection"
       class="EntityForm-reverse">
       <h6 class="uppercaseHeading">{{ 'A selection of resources linking to this resource' | translatePhrase }}</h6>
@@ -153,7 +153,7 @@ export default {
           :field-value="v" 
           :parent-path="editingObject" />
       </ul>
-    </div> -->
+    </div>
   </div>
 </template>
 

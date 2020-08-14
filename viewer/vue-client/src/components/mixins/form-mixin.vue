@@ -54,17 +54,15 @@ export default {
       return this.formObj['@reverse'];
     },
     reverseItemInForm() {
-      // Disabled for the time being
-      return {};
-      // const reverseItem = cloneDeep(this.reverseItem);
-      // const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
-      // const objToMainForm = {};
-      // each(reverseItem, (item, key) => {
-      //   if (propsInMainForm.indexOf(`@reverse/${key}`) > -1) {
-      //     objToMainForm[`@reverse/${key}`] = item;
-      //   }
-      // });
-      // return objToMainForm;
+      const reverseItem = cloneDeep(this.reverseItem);
+      const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
+      const objToMainForm = {};
+      each(reverseItem, (item, key) => {
+        if (propsInMainForm.indexOf(`@reverse/${key}`) > -1) {
+          objToMainForm[`@reverse/${key}`] = item;
+        }
+      });
+      return objToMainForm;
     },
     reverseItemSorted() {
       const reverseItem = cloneDeep(this.reverseItem);
