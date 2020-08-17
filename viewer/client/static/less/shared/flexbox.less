@@ -9,11 +9,25 @@
     flex-wrap: wrap;
   }
 
-  &.fill-available {
+  .fill-available {
     flex: 1;
   }
 
   &.align-center {
     align-items: center;
+  }
+
+  &.align-baseline {
+    align-items: baseline;
+  }
+
+  &.justify-between {
+    justify-content: space-between;
+  }
+
+  &.column-sm-min {
+    @media screen and (max-width: @screen-sm-min) {
+      flex-direction: column;
+    }
   }
 }

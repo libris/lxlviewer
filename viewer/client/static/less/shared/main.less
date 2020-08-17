@@ -133,6 +133,12 @@ h2 {
 
 a {
   color: @link-color;
+  text-decoration: none;
+
+  &:hover {
+    color: @link-hover-color;
+    text-decoration: underline;
+  }
 }
 
 // ----------- FOOTER ----------------
@@ -186,18 +192,6 @@ footer {
 .logo-medium {
   width: 75px;
 }
-
-// ----------- LINKS ----------------
-a {
-  color: @link-color;
-  text-decoration: none;
-
-  &:hover {
-    color: @link-hover-color;
-    text-decoration: underline;
-  }
-}
-
 
 // ----------- FORM ELEMENTS ----------------
 button, .btn-primary, .btn-primary:hover, .btn-primary:focus {

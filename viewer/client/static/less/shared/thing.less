@@ -37,10 +37,19 @@
 }
 
 .thing-list-item {
-  .panel-mixin(@neutral-color);
-  padding: 0.5em;
+  padding: 0.5em 1em;
+  border-bottom: 1px solid @grey-lighter;
+
+  .title {
+    font-weight: 600;
+  }
   .class {
-    float: right;
+    text-align: right;
+    color: @grey-dark;
+
+    @media screen and (max-width: @screen-sm-min) {
+      text-align: initial;
+    }
   }
 }
 

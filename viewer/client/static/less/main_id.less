@@ -61,8 +61,13 @@
 
   .list-group-item {
     font-weight: 600;
+    color: @link-color;
 
-    &:hover {
+    &:hover,
+    &:focus {
+      color: @link-hover-color;
+      background-color: @white;
+
       .scheme-item-label {
         text-decoration: underline;
       }
