@@ -5,8 +5,10 @@ import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import * as DisplayUtil from '@/utils/display';
 import * as VocabUtil from '@/utils/vocab';
+import * as StringUtil from '@/utils/string';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
+import Button from '@/components/shared/button';
 import Sort from '@/components/search/sort';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import FilterSelect from '@/components/shared/filter-select.vue';
@@ -25,15 +27,9 @@ export default {
       loading: false,
       debounceTimer: 500,
       showHelp: false,
+      showExtractSummary: false,
       searchMade: false,
       currentSearchTypes: [],
-      localEntitySettings: {
-        text: 'Create and link entity',
-        styling: 'brand',
-        icon: 'plus',
-        show: true,
-        inspectAction: false,
-      },
       listItemSettings: {
         text: 'Replace local entity',
         styling: 'brand',
@@ -109,6 +105,7 @@ export default {
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
     'vue-simple-spinner': VueSimpleSpinner,
+    'button-component': Button,
     sort: Sort,
   },
   watch: {
@@ -147,6 +144,9 @@ export default {
       'settings',
       'status',
     ]),
+    typeOfExtractingEntity() {
+      return StringUtil.getLabelByLang(this.itemInfo['@type'], this.user.settings.language, this.resources.vocab, this.resources.context);
+    },
     filterPlaceHolder() {
       if (this.someValuesFrom.length > 0) {
         return 'Suggested types';
@@ -482,17 +482,33 @@ export default {
             </div>
           </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
+            <div class="SearchWindow-summaryContainer" v-show="showExtractSummary">
+              <entity-summary 
+                :action-settings="localEntitySettings" 
+                :focus-data="itemInfo" 
+                :should-link="false"
+                :valueDisplayLimit=1></entity-summary>
+            </div>
             <p class="preview-entity-text uppercaseHeading">{{ "Create link from local entity" | translatePhrase }}:</p>
-            <div class="SearchWindow-summaryContainer">
-              <summary-action 
-                :extracting="extracting"
-                :options="localEntitySettings" 
-                @action="extract()"></summary-action>
-            <entity-summary 
-              :action-settings="localEntitySettings" 
-              :focus-data="itemInfo" 
-              :should-link="false"
-              :valueDisplayLimit=1></entity-summary>
+            <div class="SearchWindow-dialogContainer">
+              <p>
+                En liten text som förklarar saker.
+              </p>
+              <button-component
+                :button-text="['Create', typeOfExtractingEntity ]"
+                icon="plus-circle"
+                :variant="'primary'"
+                :inverted="true"
+                @click="extract()"
+              />
+              <button-component
+                :button-text="showExtractSummary ? 'Hide' : 'Preview'"
+                :transparent="true"
+                :variant="'primary'"
+                :inverted="true"
+                :border="false"
+                @click="showExtractSummary = !showExtractSummary"
+              />
             </div>
           </div>
         </template>
@@ -596,9 +612,7 @@ export default {
       max-height: inherit;
       max-height: fit-content;
       overflow: auto;
-      padding: 0 0 0 15px;
-      border-left: 1px solid @grey-lighter;
-      margin-left: 15px;
+      padding: 0;
     }
   }
 
@@ -609,6 +623,12 @@ export default {
     background: @white;
     border-radius: 4px;
     padding: 15px;
+  }
+
+  &-dialogContainer {
+    .Button:not(:first-of-type) {
+      margin-left: 1em;
+    }
   }
 
   &-panel {
