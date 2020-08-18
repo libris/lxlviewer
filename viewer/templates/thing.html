@@ -54,30 +54,24 @@
     </div>
   </div>
   % else
-  <div class="col-md-9 thing">
+  <div class="col-lg-10 thing">
     ${viewthing(thing.mainEntity or thing)}
   </div>
-  <div class="col-md-3">
+  <aside class="col-lg-2">
     % set thingId = thing.mainEntity['@id'] or thing['@id']
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        Visa som:
-      </div>
-      <div class="panel-body">
-        <ul>
-          <li>
-            <a href="${thingId}/data.jsonld">JSON-LD</a>
-          </li>
-          <li>
-            <a href="${thingId}/data.ttl">Turtle</a>
-          </li>
-          <li>
-            <a href="${thingId}/data.rdf">RDF/XML</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
+    <h2 class="aside-header">Visa som:</h2>
+    <ul class="list-unstyled">
+      <li>
+        <a href="${thingId}/data.jsonld">JSON-LD</a>
+      </li>
+      <li>
+        <a href="${thingId}/data.ttl">Turtle</a>
+      </li>
+      <li>
+        <a href="${thingId}/data.rdf">RDF/XML</a>
+      </li>
+    </ul>
+  </aside>
   % endif
 </div>
 % endblock
@@ -132,12 +126,12 @@
       % if loop.index < 5
         % if i[TYPE]
         <li>${i[TYPE]}
-           % if isinstance(i.value, list)
-           ${ ", ".join(i.value)}
-           % else
-           ${i.value}
-           % endif
-         </li>
+          % if isinstance(i.value, list)
+          ${ ", ".join(i.value)}
+          % else
+          ${i.value}
+          % endif
+        </li>
         % else
         <li>${i[ID]}</li>
         % endif
@@ -154,7 +148,7 @@
 % endmacro
 
 % macro thing_list_item(thing)
-<div class="thing thing-list-item flex wrap column-sm-min">
+<div class="thing-list-item flex wrap column-sm-min">
   <span class="title fill-available"><a href="${view_url(thing[ID])}">${g.vocab.get_label_for(thing)}</a></span>
   <span class="class">
     % if isinstance(thing[TYPE], list)
@@ -351,7 +345,7 @@
   % endfor
 % endmacro
 
-% macro viewthing(thing, element='div', classes='panel panel-default', rel=None, rev=None)
+% macro viewthing(thing, element='div', classes='thing-container', rel=None, rev=None)
   % set thing_id = thing[ID]
   % set typename = thing[TYPE]
   % if isinstance(typename, list)
@@ -371,29 +365,40 @@
       % set thing_url = view_url(thing_id)
       ${toolbar_old(thing_url, current_user.is_authenticated, typename, element)}
 
-      <header class="panel-heading">
         % if t
           ${termref(t, classes='', labeltype='label-class')}
         % endif
-        <a href="${thing_url}" class="toolbar-button id-label thing-id">
-            <small><code>${thing_id}</code></small>
-        </a>
-        <h1 class="panel-title">
-          <a href="${thing_url}" class="thing-label">
+        % if as_chip 
+        <div class="flex">
+          <a href="${thing_url}" class="thing-link">
             % set label = g.vocab.get_label_for(thing)
-            % if isinstance(label, unicode)
-              ${label}
-            % else
-              {# label is sometimes an object, resolve this in a propper way when data content is known #}
-              ${show_json(label)}
+            % if label 
+              % if isinstance(label, unicode)
+                ${label}
+              % else
+                {# label is sometimes an object, resolve this in a propper way when data content is known #}
+                ${show_json(label)}
+              % endif
+            % else 
+              ${thing_id}
             % endif
           </a>
+        </div>
+        % else
+        <h1 class="thing-header">
+          % set label = g.vocab.get_label_for(thing)
+          % if isinstance(label, unicode)
+            ${label}
+          % else
+            {# label is sometimes an object, resolve this in a propper way when data content is known #}
+            ${show_json(label)}
+          % endif
         </h1>
-      </header>
+      % endif
     % endif
 
     % if not as_chip
-      <div class="panel-body">
+      <div class="thing-body">
         <table class="table">
           % for k in g.vocab.sortedkeys(thing)
             % set v = thing[k]
@@ -409,7 +414,7 @@
                 % elif isinstance(v, dict)
                   ${viewthing(v, rel=k)}
                 % elif isinstance(v, list)
-                  <ul>
+                  <ul class="list-unstyled">
                     % for sub in v
                       <li>
                         % if isinstance(sub, dict)
