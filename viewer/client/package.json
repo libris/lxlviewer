@@ -6,25 +6,25 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "concat-cli": "^4.0.0",
-    "jquery": "^3.3.1",
-    "kungbib-styles": "^1.2.4",
-    "less": "~2.3.1",
+    "less": "^3.12.2",
     "less-plugin-clean-css": "^1.5.1",
     "natives": "~1.1.6",
     "parallelshell": "~1.0.4",
-    "uglify-js": "^2.4.24"
+    "run-script-os": "^1.1.1",
+    "uglify-js": "^2.8.29"
   },
   "devDependencies": {
     "watch": "~0.13.0"
   },
   "scripts": {
-    "postinstall": "mkdir -p static/build && npm run vendor && npm run app",
-    "vendor": "npm run copyvendor && npm run vendor:js",
-    "copyvendor": "mkdir -p static/vendor/{jquery,bootstrap}/js && cp -r node_modules/jquery/dist/* static/vendor/jquery/js/ && cp -r node_modules/bootstrap/dist/* static/vendor/bootstrap/",
-    "vendor:js": "uglifyjs static/vendor/{jquery,bootstrap}/js/*.min.js -o static/build/vendor.min.js --source-map static/build/vendor.min.js.map --source-map-url ./vendor.min.js.map --source-map-root /",
-    "watch": "parallelshell 'npm run watch:id:less'",
+    "make_build_folder": "run-script-os",
+    "make_build_folder:win32": "if not exist static\\build mkdir static\\build",
+    "make_build_folder:nix": "mkdir -p static/build",
+    "postinstall": "npm run make_build_folder && npm run uglify && npm run app",
+    "uglify": "uglifyjs static/js/*.js -c -m -o static/build/idkbse.min.js --source-map",
+    "watch": "npm run watch:id:less",
     "watch:id:less": "watch 'npm run app:id:less' static/less/",
-    "app": "parallelshell 'npm run app:id:less'",
+    "app": "npm run app:id:less",
     "app:id:less": "lessc --clean-css='--advanced' static/less/main_id.less static/build/id.css --source-map=static/build/id.css.map"
   }
 }
