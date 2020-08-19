@@ -152,7 +152,7 @@
   <span class="title fill-available"><a href="${view_url(thing[ID])}">${g.vocab.get_label_for(thing)}</a></span>
   <span class="class">
     % if isinstance(thing[TYPE], list)
-    <ul>
+    <ul class="list-unstyled">
       % for t in thing[TYPE]
       <li>${vocab_term(t)}</li>
     % endfor

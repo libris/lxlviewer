@@ -35,7 +35,7 @@
 @small-font-size: 14px;
 
 @link-color: @brand-primary;
-@link-hover-color: darken(@link-color,15%);
+@link-hover-color: darken(@link-color, 15%);
 
 @modal-z: 999;
 @active-component-z: 99;
@@ -76,6 +76,7 @@ html {
 }
 
 main {
+  flex: 1;
   margin-top: 30px;
   margin-bottom: 60px;
 }
@@ -113,10 +114,13 @@ body {
   background-image: @bg-img;
   color: @text-color;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
   font-size: @base-font-size;
   line-height: @base-line-height;
+
+  @supports (display:flex) {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 // ----------- TYPOGRAPHY ----------------

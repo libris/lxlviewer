@@ -13,6 +13,7 @@ body > .navbar {
   }
 
   .navbar-header {
+
     .navbar-brand {
       color: @text-brand;
       font-size: 20px;
@@ -41,7 +42,22 @@ body > .navbar {
 
   .navbar-nav {
     .navbar-item {
-      display: inline-block;
+      display: flex;
+    }
+
+    .navbar-item-text {
+      position: relative;
+
+      hr {
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        margin: 0;
+        border: 0;
+        background-color: @navbar-active-color;
+        height: 2px;
+        width: 100%;
+      }
     }
 
     a {
@@ -53,12 +69,22 @@ body > .navbar {
       }
     }
 
-    .navbar-underline {
-      display: block;
-      background-color: @navbar-active-color;
-      height: 2px;
-      margin-top: 2px;
-      width: 100%;
+  }
+
+  .navbar-toggle {
+    border-color: @brand-darker;
+    &:hover, 
+    &:focus {
+      background-color: @brand-darker;
     }
+
+    .icon-bar {
+      background-color: @white;
+    } 
+  }
+
+  .navbar-collapse {
+    border: 0;
+    box-shadow: none;
   }
 }
