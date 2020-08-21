@@ -516,9 +516,14 @@ export default {
   padding: 0;
   position: relative;
   flex: 1 100%;
-  background-color: #fff;
   transition: background-color .2s ease;
   border-radius: 4px;
+
+  &.highlight-info, &.highlight-info, &.highlight-remove {
+    .is-stuck, .is-sticky {
+      background-color: inherit;
+    }
+  }
 
   &-heading {
     display: flex;
@@ -533,6 +538,7 @@ export default {
     &.is-stuck, &.is-sticky {
       box-shadow: 0px 6px 5px -5px #0000002b;
       position: sticky;
+      background-color: #fff;
       z-index: 850;
     }
     .icon-hover();
