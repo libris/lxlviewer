@@ -90,9 +90,8 @@ export default {
           buttonText += ' ';
         }
         return buttonText;
-      } else {
-        return this.$options.filters.translatePhrase(this.buttonText);
       }
+      return this.$options.filters.translatePhrase(this.buttonText);
     },
   },
   components: {

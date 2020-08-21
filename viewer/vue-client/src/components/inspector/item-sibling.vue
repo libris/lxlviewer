@@ -95,6 +95,15 @@ export default {
       'user',
       'status',
     ]),
+    isSpecialHeading() {
+      return this.path === 'mainEntity.instanceOf';
+    },
+    largerActions() {
+      if (this.isSpecialHeading && this.expanded === true) {
+        return true;
+      }
+      return false;
+    },
     item() {
       const item = cloneDeep(this.inspector.data[this.fragmentId]);
       if (typeof item === 'undefined' || item === null) {
@@ -105,12 +114,6 @@ export default {
         throw new Error('A sibling-item was undefined. This is probably a reference error in the data.');
       }
       return item;
-    },
-    largerActions() {
-      if (this.fieldKey === 'instanceOf' && this.expanded === true) {
-        return true;
-      }
-      return false;
     },
     fragmentId() {
       const s = this.id.split('#')[1];
@@ -302,6 +305,23 @@ export default {
         firstInput.focus();
       }
     },
+    attachHeadingStickyFunctionality() {
+      document.addEventListener('scroll', () => {
+        const scrolled = document.scrollingElement.scrollTop;
+        const heading = this.$refs.heading;
+        const container = this.$refs.container;
+        if (!heading || !container) return;
+        const position = LayoutUtil.getPosition(container).y;
+        const searchBarHeight = document.getElementById('SearchBar').offsetHeight;
+        heading.style.top = `${searchBarHeight}px`;
+
+        if (scrolled > position - searchBarHeight) {
+          heading.classList.add('is-stuck');
+        } else {
+          heading.classList.remove('is-stuck');
+        }
+      });
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -334,6 +354,9 @@ export default {
     });
   },
   mounted() {
+    if (this.isSpecialHeading) {
+      this.attachHeadingStickyFunctionality();
+    }
     if (this.isLastAdded) {
       this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
@@ -369,6 +392,7 @@ export default {
 
 <template>
   <div class="ItemSibling js-itemLocal"
+    ref="container"
     :id="`formPath-${path}`"
     :class="{'is-highlighted': isNewlyAdded, 'highlight-info': highlights.indexOf('info') > -1, 'highlight-remove': highlights.indexOf('remove') > -1, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
     :tabindex="isEmpty ? -1 : 0"
@@ -376,7 +400,7 @@ export default {
     @focus="addFocus()"
     @blur="removeFocus()">
 
-    <strong class="ItemSibling-heading"
+    <div class="ItemSibling-heading" ref="heading"
       @mouseover="isHovered = true"
       @mouseout="isHovered = false"
     >
@@ -435,7 +459,7 @@ export default {
           <div class="ItemSibling-placeHolder"></div>
         </div>
       </div>
-    </strong>
+    </div>
   
     <ul class="ItemSibling-list js-itemLocalFields" v-show="expanded">
       <field
@@ -489,18 +513,28 @@ export default {
 
 .ItemSibling {
   width: 100%;
-  padding: 5px 0;
+  padding: 0;
   position: relative;
   flex: 1 100%;
+  background-color: #fff;
   transition: background-color .2s ease;
   border-radius: 4px;
 
   &-heading {
-    display: block;
+    display: flex;
     flex: 1 100%;
+    justify-content: space-between;
+    align-items: center;
+    height: 2.5em;
     font-weight: normal;
-    position: relative;
-
+    background-color: inherit;
+    box-shadow: 0px 6px 5px -5px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.25s ease;
+    &.is-stuck, &.is-sticky {
+      box-shadow: 0px 6px 5px -5px #0000002b;
+      position: sticky;
+      z-index: 850;
+    }
     .icon-hover();
   }
 
@@ -538,9 +572,6 @@ export default {
   }
 
   &-actions {
-    top: 0;
-    right: 0;
-    position: absolute;
 
     @media (max-width: @screen-sm) {
       display: flex;

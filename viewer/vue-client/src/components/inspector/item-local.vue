@@ -90,8 +90,11 @@ export default {
       'status',
       'userStorage',
     ]),
+    isSpecialHeading() {
+      return this.path === 'mainEntity.instanceOf';
+    },
     largerActions() {
-      if (this.fieldKey === 'instanceOf' && this.expanded === true) {
+      if (this.isSpecialHeading && this.expanded === true) {
         return true;
       }
       return false;
@@ -341,6 +344,23 @@ export default {
       this.$store.dispatch('setUserStorage', userStorage);
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.user.settings.language)}` });
     },
+    attachHeadingStickyFunctionality() {
+      document.addEventListener('scroll', () => {
+        const scrolled = document.scrollingElement.scrollTop;
+        const heading = this.$refs.heading;
+        const container = this.$refs.container;
+        if (!heading || !container) return;
+        const position = LayoutUtil.getPosition(container).y;
+        const searchBarHeight = document.getElementById('SearchBar').offsetHeight;
+        heading.style.top = `${searchBarHeight}px`;
+
+        if (scrolled > position - searchBarHeight) {
+          heading.classList.add('is-stuck');
+        } else {
+          heading.classList.remove('is-stuck');
+        }
+      });
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -376,6 +396,9 @@ export default {
     });
   },
   mounted() {
+    if (this.isSpecialHeading) {
+      this.attachHeadingStickyFunctionality();
+    }
     if (this.isLastAdded) {
       this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
@@ -411,6 +434,7 @@ export default {
 
 <template>
   <div class="ItemLocal js-itemLocal"
+    ref="container"
     :id="`formPath-${path}`"
     :class="{'is-highlighted': isLastAdded, 'highlight-info': highlights.indexOf('info') > -1, 'highlight-remove': highlights.indexOf('remove') > -1, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable, 'has-failed-validations': failedValidations.length > 0 }"
     :tabindex="isEmpty ? -1 : 0"
@@ -418,7 +442,7 @@ export default {
     @focus="addFocus()"
     @blur="removeFocus()">
 
-    <strong class="ItemLocal-heading"
+    <div class="ItemLocal-heading" ref="heading"
       @mouseover="isHovered = true"
       @mouseout="isHovered = false"
     >
@@ -506,7 +530,7 @@ export default {
           </ul>
         </div>
       </div>
-    </strong>
+    </div>
   
     <ul class="ItemLocal-list js-itemLocalFields" v-show="expanded">
       <field
@@ -558,11 +582,30 @@ export default {
 <style lang="less">
 .ItemLocal {
   width: 100%;
-  padding: 5px 0;
+  padding: 0;
   position: relative;
   flex: 1 100%;
+  background-color: #fff;
   transition: background-color .5s ease;
   border-radius: 4px;  
+
+  &-heading {
+    display: flex;
+    flex: 1 100%;
+    justify-content: space-between;
+    align-items: center;
+    height: 2.5em;
+    font-weight: normal;
+    background-color: inherit;
+    box-shadow: 0px 6px 5px -5px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.25s ease;
+    &.is-stuck, &.is-sticky {
+      box-shadow: 0px 6px 5px -5px #0000002b;
+      position: sticky;
+      z-index: 850;
+    }
+    .icon-hover();
+  }
 
   &.highlight-info {
     background-color: @form-mark;
@@ -573,15 +616,6 @@ export default {
 
   &.has-failed-validations {
     outline: 1px dotted red;
-  }
-
-  &-heading {
-    display: block;
-    flex: 1 100%;
-    font-weight: normal;
-    position: relative;    
-
-    .icon-hover();
   }
 
   &-label {

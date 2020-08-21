@@ -12,7 +12,6 @@ import Button from '@/components/shared/button';
 import Sort from '@/components/search/sort';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import FilterSelect from '@/components/shared/filter-select.vue';
-import SummaryAction from './summary-action';
 import LensMixin from '../mixins/lens-mixin';
 
 export default {
@@ -100,7 +99,6 @@ export default {
   },
   components: {
     'panel-search-list': PanelSearchList,
-    'summary-action': SummaryAction,
     'panel-component': PanelComponent,
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
@@ -484,7 +482,6 @@ export default {
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
             <div class="SearchWindow-summaryContainer" v-show="showExtractSummary">
               <entity-summary 
-                :action-settings="localEntitySettings" 
                 :focus-data="itemInfo" 
                 :should-link="false"
                 :valueDisplayLimit=1></entity-summary>
