@@ -588,6 +588,8 @@ export default {
     justify-content: space-between;
     align-items: baseline;
     margin: 0 10px;
+    border: solid @grey-lighter;
+    border-width: 0 0 1px 0;
   }
 
   &-listTypes {
@@ -614,7 +616,7 @@ export default {
     display: flex;
     flex-direction: row;
     border: solid @grey-lighter;
-    border-width: 1px 0 1px 0;
+    border-width: 0 0 1px 0;
     background: @white;
     padding: 1rem 2rem;
   }
