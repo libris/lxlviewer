@@ -232,11 +232,13 @@ export default {
       }
     },
     openMarc() {
-      this.hideToolsMenu();
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'post-control',
-        value: 'open-marc-preview',
-      });
+      if (this.enableMarcPreview) {
+        this.hideToolsMenu();
+        this.$store.dispatch('pushInspectorEvent', {
+          name: 'post-control',
+          value: 'open-marc-preview',
+        });
+      }      
     },
     applyTemplate(template) {
       this.hideToolsMenu();
@@ -404,6 +406,12 @@ export default {
         focusId = this.inspector.data.mainEntity.itemOf['@id'].split('#')[0];
       }
       return `/_compilemarc?library=${this.activeSigelId}&id=${focusId}`;
+    },
+    enableMarcPreview() {
+      if (this.recordType === 'Work') {
+        return false;
+      }
+      return true;
     },
     hasSigel() {
       return typeof this.user.settings.activeSigel !== 'undefined';
@@ -580,7 +588,7 @@ export default {
             {{"Download" | translatePhrase}} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{'Incl. unsaved changes' | translatePhrase}})</span>
           </a>
         </li>
-        <li class="Toolbar-menuItem">
+        <li class="Toolbar-menuItem" v-if="enableMarcPreview">
           <a class="Toolbar-menuLink" @click="openMarc()">
             <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
             {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindText('preview-marc') ? ` (${getKeybindText('preview-marc')})` : ''}}
