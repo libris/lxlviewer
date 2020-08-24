@@ -55,9 +55,10 @@ sites = {
         "statsfind": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
         "filter_param": "inScheme.@id",
         "itemList": [
-            {ID: "/doc/about", "title": "Om id.kb.se", "icon": "info-circle"},
-            {ID: "/marcframe", "title": "MARC-mappningar", "icon": "exchange"},
-            {ID: "/vocab", "title": "Basvokabulär", "icon": "book"}
+            {ID: "/", "title": "Sök"},
+            {ID: "/marcframe/", "title": "MARC-mappningar"},
+            {ID: "/vocab/", "title": "Basvokabulär"},
+            {ID: "/doc/about", "title": "Om id.kb.se"},
         ]
     },
     LIBRIS: {

@@ -13,77 +13,77 @@
 % endif
 
 % set vocab_url = 'https://id.kb.se/vocab/'
+<div class="row">
+  <div class="search-controls col-md-10 col-lg-8">
+      <form action="/find" method="GET" id="searchForm">
 
-<div class="panel panel-default search-controls">
-    <form action="/find" method="GET" id="searchForm">
+        <div class="form">
+          <div class="form-group">
+            % for param, value in request.args.items(multi=True)
+              % if param != 'q'
+                <input type="hidden" name="${param}" value="${value}" />
+              % endif
+            % endfor
 
-      <div class="form">
-        <div class="form-group">
-          % for param, value in request.args.items(multi=True)
-            % if param != 'q'
-              <input type="hidden" name="${param}" value="${value}" />
-            % endif
-          % endfor
-          <label class="search-label" id="searchlabel" for="q">
-            Sök
-          </label>
-
-          <div id="searchFieldContainer">
-            <input aria-labelledby="searchlabel" class="form-control search-input tagInput" name="q" id="searchQ" value="${q | safe | trim }" ></input>
-            <button id="searchSubmit" class="search-button btn btn-primary"><i class="fa fa-search"></i> Sök</button>
+            <div id="searchFieldContainer" class="searchFieldContainer flex">
+              <i class="fa fa-search" role="presentation"></i>
+              <input aria-labelledby="searchlabel" class="form-control search-input tagInput" name="q" id="searchQ" value="${q | safe | trim }" autofocus></input>
+              <button id="searchSubmit" class="search-button btn btn-primary">Sök</button>
+            </div>
           </div>
         </div>
-      </div>
 
-    % if filter_param
-      <div class="type-buttons" aria-label="Välj typ">
-        % if result.statistics and len(result.statistics) > 0
-          % for value in result.statistics.sliceByDimension.values()
-            % for obs in value.observation
-              <label class="">
-                <input name="${filter_param}" value="${obs.object['curie'] or obs.object['@id'].replace(vocab_url, '')}" type="checkbox" checked>
-                % if obs.object.titleByLang
-                  ${obs.object.titleByLang['sv']}
-                % elif obs.object.label
-                  ${obs.object.label}
-                % elif obs.object.notation
-                  ${obs.object.notation|join(', ')}
-                % else
-                  ${obs.object['@id'].replace(vocab_url, '')}
-                % endif
-              </label>
+      % if filter_param
+        <fieldset class="type-buttons">
+          <legend class="sr-only">Välj typ</legend>
+          % if result.statistics and len(result.statistics) > 0
+            % for value in result.statistics.sliceByDimension.values()
+              % for obs in value.observation
+                <label class="checkbox-inline">
+                  <input name="${filter_param}" value="${obs.object['curie'] or obs.object['@id'].replace(vocab_url, '')}" type="checkbox" checked>
+                  % if obs.object.titleByLang
+                    ${obs.object.titleByLang['sv']}
+                  % elif obs.object.label
+                    ${obs.object.label}
+                  % elif obs.object.notation
+                    ${obs.object.notation|join(', ')}
+                  % else
+                    ${obs.object['@id'].replace(vocab_url, '')}
+                  % endif
+                </label>
+              % endfor
             % endfor
-          % endfor
-        % endif
-      </div>
-    % endif
-
-    % if len(mapping) > 1
-      <div class="activated-facets">
-        <label>
-          Aktiv filtrering (klicka för att ta bort)
-        </label>
-        <ul>
-        % for item in mapping
-          % if item.variable != 'q'
-          <li>
-            % if item.object
-              % set label = item.object['@id']
-            % else
-              % set label = item.value
-            % endif
-            <a href="${item.up['@id']}">
-              ${vocab_term(label)}<i class="fa fa-remove"></i>
-            </a>
-          </li>
           % endif
-        % endfor
-        </ul>
-      </div>
-    % endif
+        </fieldset>
+      % endif
 
-  </form>
+    </form>
+  </div>
 </div>
+% if len(mapping) > 1
+  <div class="activated-facets">
+    <p class="facet-label">
+      Vald filtrering:
+    </p>
+    <ul class="list-unstyled">
+    % for item in mapping
+      % if item.variable != 'q'
+      <li>
+        <a href="${item.up['@id']}" class="activated-facet" title="Klicka för att ta bort">
+        % if item.object
+          % set label = item.object['@id']
+        % else
+          % set label = item.value
+        % endif
+          ${vocab_term(label)}
+          <i class="fa fa-fw fa-times-circle"></i>
+        </a>
+      </li>
+      % endif
+    % endfor
+    </ul>
+  </div>
+% endif
 % endmacro
 
 % macro result_controls(result, details)
@@ -96,49 +96,41 @@
     ${ mapping | selectattr("variable", "equalto", "q") | map(attribute='value') | first }
   % endset
 
-  <div class="panel panel-default result-controls">
+  <div class="result-controls flex wrap align-center justify-between">
     % if details
     <div class="search-details">
-      <span class="search-keyword">
-        % if q and result.totalItems > 0
-          Sökning på <span class="query">${q | safe | trim}</span>
-          % if result.totalItems
-            gav ${result.totalItems} träffar.
-          % endif
+      <p class="search-keyword">
+        % if q and result.totalItems and result.totalItems > 0
+          Visar ${result.itemOffset + 1}-${min(result.totalItems, result.itemOffset + len(items))} av ${result.totalItems} träffar
         % elif result.value
           Sökning ${result.value}
         % else
-          Sökning på <span class="query">${q | safe | trim}</span> gav inga träffar.
+          Sökning på <span class="query">'${q | safe | trim}'</span> gav inga träffar.
         % endif
-      </span>
-      <span class="search-items-per-page pull-right">
-        % if result.totalItems
-        Visar resultat
-          ${result.itemOffset + 1}-${min(result.totalItems, result.itemOffset + len(items))}.
-        % endif
-      </span>
+      </p>
     </div>
     % endif
 
+    % if result.totalItems > 0 and (result.previous or result.next)
     <div class="search-buttons">
       <nav>
       <ul class="pagination">
       % if result.first and result.previous
       <li>
-        <a href="${result.first['@id']}"><i class="fa fa-fast-backward" aria-hidden="true"></i> Första</a>
+        <a href="${result.first['@id']}"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Första</a>
       </li>
       % else
       <li class="disabled">
-        <a><i class="fa fa-fast-backward" aria-hidden="true"></i> Första</a>
+        <a><i class="fa fa-angle-double-left" aria-hidden="true"></i> Första</a>
       </li>
       % endif
       % if result.previous
       <li>
-        <a href="${result.previous['@id']}"><i class="fa fa-backward" aria-hidden="true"></i> Föregående</a>
+        <a href="${result.previous['@id']}"><i class="fa fa-angle-left " aria-hidden="true"></i> Föregående</a>
       </li>
       % else
       <li class="disabled">
-        <a><i class="fa fa-backward" aria-hidden="true"></i> Föregående</a>
+        <a><i class="fa fa-angle-left" aria-hidden="true"></i> Föregående</a>
       </li>
       % endif
 
@@ -189,26 +181,27 @@
 
       % if result.next
       <li>
-        <a href="${result.next['@id']}">Nästa <i class="fa fa-forward" aria-hidden="true"></i></a>
+        <a href="${result.next['@id']}">Nästa <i class="fa fa-angle-right" aria-hidden="true"></i></a>
       </li>
       % else
       <li class="disabled">
-        <a>Nästa <i class="fa fa-forward" aria-hidden="true"></i></a>
+        <a>Nästa <i class="fa fa-angle-right" aria-hidden="true"></i></a>
       </li>
       % endif
       % if result.last and result.next
       <li>
-        <a href="${result.last['@id']}">Sista <i class="fa fa-fast-forward" aria-hidden="true"></i></a>
+        <a href="${result.last['@id']}">Sista <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
       </li>
       % else
       <li class="disabled">
-        <a>Sista <i class="fa fa-fast-forward" aria-hidden="true"></i></a>
+        <a>Sista <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
       </li>
       % endif
       </ul>
     </nav>
 
     </div>
+    % endif
   </div>
 % endmacro
 

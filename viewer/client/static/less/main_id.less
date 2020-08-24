@@ -12,26 +12,29 @@
 @import '../less/shared/main.less';
 
 // ----------- VARIABLES ------------
-@font-family-base: 'Open Sans', sans-serif;
 
-@brand-primary: @happy-muted-denim;
-@bg-site: #E5E5E5;
+@brand-primary: #4A7682;
+@brand-darker: darken(@brand-primary, 10%);
+@brand-faded: fade(@brand-primary, 10%);
+
+@brand-contrast: #F7A07B;
+@bg-site: #F9F9F9;
 @bg-img: none;
 @bg-content: @white;
-@bg-navbar: @happy-muted-denim;
-@bg-navbar-hover: darken(@bg-navbar, 10%);
-@shadow-navbar: none;
-@text-navbar: @white;
+
+@bg-navbar: @brand-primary;
+@text-navbar: fade(@white, 90%);
+@text-navbar-hover: @white;
 @text-brand: @white;
 @text-brand-env: @white;
-@text-alt-navbar: fade(@white, 55%);
+@navbar-active-color: @brand-contrast;
+
 @bg-sidebars: darken(@white, 5%);
-@border-navbar: fadeout(#fff, 100%);
-@border-navbar-width: 0px;
-@bg-footer: @bg-navbar;
-@shadow-footer: 0px;
-@text-footer: @text-navbar;
-@text-alt-footer: @text-alt-navbar;
+
+@bg-footer: #10100D;
+@text-footer: @white;
+@text-alt-footer: fade(@white, 40%);
+
 @bg-jumbotron: transparent;
 @bg-jumbotron-image: none;
 @border-footer: @grey-light;
@@ -40,8 +43,6 @@
 @color-prop-list: @grey;
 @color-ext: #d51;
 @color-id: #c7254e;
-@link-color: #288DC1;
-@link-hover-color: darken(@link-color,15%);
 @panel-border-radius: 0px;
 @thing-header-bg: lighten(@bg-navbar,15%);
 @thing-header-text: @white;
@@ -49,3 +50,42 @@
 
 @color-headers: #555;
 @color-headers-text: #fff;
+
+@badge-color: @grey;
+
+// website.html styles
+
+.scheme-item {
+
+  .scheme-item-container {
+    margin-bottom: 1em;
+    padding-left: 0;
+  }
+
+  .list-group-item {
+    font-weight: 600;
+    color: @link-color;
+
+    &:hover,
+    &:focus {
+      color: @link-hover-color;
+      background-color: @white;
+
+      .scheme-item-label {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .badge {
+    background-color: @grey-lighter;
+    color: @grey-darker;
+    margin-left: 5px;
+  }
+
+  .scheme-item-info {
+    padding: 5px 15px;
+    display: block;
+    font-size: 14px;
+  }
+}

@@ -1,13 +1,11 @@
 % extends "base.html"
 
-{% block title %}${voc.label(voc.vocab, lang=LANG)} - Vocab View{% endblock %}
+{% block title %}${voc.label(voc.vocab, lang=LANG)}{% endblock %}
 
 {% block bodyattrs %}id="vocab"{% endblock %}
 
 {% block containerclass %}container-fluid{% endblock %}
-{% block navcontainerclass %} container-fluid {% endblock %}
-
-{% block wrapper %}<div class="show-content" id="page-content-wrapper"> {% endblock %}
+{% block navcontainerclass %} container {% endblock %}
 
 % set DOMAIN = union(SCHEMA.domainIncludes, RDFS.domain)
 % set RANGE = union(SCHEMA.rangeIncludes, RDFS.range)
@@ -16,7 +14,7 @@
 
 % block content
   <div class="row">
-    <div class="col-sm-3 col-md-3 col-lg-2 hidden-xs menu-col">
+    <div class="col-sm-3 hidden-xs menu-col">
       <nav>
         <section class="nav-classes">
           <b>Classes</b>
@@ -33,7 +31,7 @@
       </nav>
     </div>
     
-    <div class="col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-3 col-lg-7 col-lg-offset-2 content-col">
+    <div class="col-sm-9 col-sm-offset-3 content-col">
       <header>
       % for vocab in voc.vocabs
         <h1><a href="${vocab}">
