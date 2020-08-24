@@ -486,8 +486,8 @@ export default {
                 :should-link="false"
                 :valueDisplayLimit=1></entity-summary>
             </div>
-            <p class="preview-entity-text uppercaseHeading">{{ "Create link from local entity" | translatePhrase }}:</p>
             <div class="SearchWindow-dialogContainer">
+              <p class="preview-entity-text uppercaseHeading">{{ "Create link from local entity" | translatePhrase }}:</p>
               <p>
                 En liten text som förklarar saker.
               </p>
@@ -573,8 +573,6 @@ export default {
   }
 
   &-extractControls {
-    .preview-entity-text {
-    }
 
     .copy-title {
       float: right;
@@ -603,7 +601,6 @@ export default {
   &-footerContainer {
     display: flex;
     flex-direction: column;
-    padding: 10px 15px;
 
     .EntitySummary {
       max-height: inherit;
@@ -616,13 +613,17 @@ export default {
   &-summaryContainer {
     display: flex;
     flex-direction: row;
-    border: 1px solid @grey-lighter;
+    border: solid @grey-lighter;
+    border-width: 1px 0 1px 0;
     background: @white;
-    border-radius: 4px;
-    padding: 15px;
+    padding: 1rem 2rem;
   }
 
   &-dialogContainer {
+    padding: 1rem 2rem;
+    .preview-entity-text {
+      margin: 0;
+    }
     .Button:not(:first-of-type) {
       margin-left: 1em;
     }
