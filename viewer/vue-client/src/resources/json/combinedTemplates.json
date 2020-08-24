@@ -1659,6 +1659,8 @@
                 "label": ""
               },
               "date": "",
+              "year": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
                 "label": ""
