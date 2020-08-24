@@ -143,7 +143,7 @@ export default {
       'status',
     ]),
     typeOfExtractingEntity() {
-      return StringUtil.getLabelByLang(this.itemInfo['@type'], this.user.settings.language, this.resources.vocab, this.resources.context);
+      return StringUtil.getLabelByLang(VocabUtil.getRecordType(this.itemInfo['@type'], this.resources.vocab, this.resources.context), this.user.settings.language, this.resources.vocab, this.resources.context).toLowerCase();
     },
     filterPlaceHolder() {
       if (this.someValuesFrom.length > 0) {
@@ -487,12 +487,12 @@ export default {
                 :valueDisplayLimit=1></entity-summary>
             </div>
             <div class="SearchWindow-dialogContainer">
-              <p class="preview-entity-text uppercaseHeading">{{ "Create link from local entity" | translatePhrase }}:</p>
+              <p class="preview-entity-text uppercaseHeading">Vill du skapa {{ typeOfExtractingEntity }} av lokal entitet?</p>
               <p>
-                En liten text som förklarar saker.
+                Den lokala entiteten bryts ut och länkas. Förhandsgranska för att se hur den kommer att se ut.
               </p>
               <button-component
-                :button-text="['Create', typeOfExtractingEntity ]"
+                :button-text="['Yes, create', typeOfExtractingEntity ]"
                 icon="plus-circle"
                 :variant="'primary'"
                 :inverted="true"
