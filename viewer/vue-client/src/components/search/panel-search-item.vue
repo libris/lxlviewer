@@ -71,7 +71,7 @@ export default {
     settings() {
       const settings = {
         text: this.text,
-        styling: 'brand',
+        styling: 'primary',
         inspectAction: true,
         path: this.path,
         icon: this.icon,
