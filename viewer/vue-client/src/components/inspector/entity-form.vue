@@ -139,7 +139,7 @@ export default {
     <div 
       v-if="reverseItem && editingObject === 'mainEntity' && showIncomingLinksSection"
       class="EntityForm-reverse">
-      <h6 class="uppercaseHeading">{{ 'A selection of resources linking to this resource' | translatePhrase }}</h6>
+      <h6 class="uppercaseHeading">{{ 'Incoming links' | translatePhrase }}</h6>
       <ul class="FieldList">
         <field class="FieldList-item"
           v-for="(v,k) in reverseItemSorted"
