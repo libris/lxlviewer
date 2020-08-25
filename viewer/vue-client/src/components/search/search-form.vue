@@ -173,7 +173,7 @@ export default {
     },
     searchHelpDocs() {
       if (this.docs && this.docs.hasOwnProperty('search')) {
-        return this.transformMarkdownToHTML(this.docs['search'].content);
+        return this.transformMarkdownToHTML(this.docs.search.content);
       }
       return StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language);
     },
