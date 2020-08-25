@@ -172,8 +172,8 @@ export default {
       return StringUtil.getUiPhraseByLang('Show search help', this.user.settings.language);
     },
     searchHelpDocs() {
-      if (this.docs && this.docs.hasOwnProperty('search-01-queries')) {
-        return this.transformMarkdownToHTML(this.docs['search-01-queries'].content);
+      if (this.docs && this.docs.hasOwnProperty('search')) {
+        return this.transformMarkdownToHTML(this.docs['search'].content);
       }
       return StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language);
     },
