@@ -21,13 +21,15 @@
 
 .vocab-item-style(@color, @border-style) {
   text-align: left !important;
-  background-color: fadeout(@color, 90%);
+  background-color: fadeout(@color, 92%);
   border: solid fadeout(@color, 85%);
   border-width: 0px 1px 1px 1px;
   border-radius: 5px;
-  padding: 0px 5px;
+  padding: 1px 6px;
+  margin: 0 2px;
   font-weight: normal;
   color: @color;
+
   &:hover {
     color: darken(@color, 10%);
   }

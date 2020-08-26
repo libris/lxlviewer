@@ -18,15 +18,11 @@
 @grey: #949A9E;
 @grey-dark: #6F767B;
 @grey-darker: #636363;
-@grey-light: #C4C7CA;
+@grey-light: #DDD;
 @grey-lighter:#EFEFEF;
-
-@happy-blue: #5DC4ED;
-@happy-magenta: rgb(255, 154, 255);
 
 @orange: #CA9543;
 @green: #009788;
-
 
 @font-family-base: 'Open Sans', sans-serif;
 @text-color: @black;
@@ -40,7 +36,6 @@
 @modal-z: 999;
 @active-component-z: 99;
 @backdrop-z: 950;
-
 @shadow-panel: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
 
 // ----------- LAYOUT ----------------
@@ -113,7 +108,7 @@ body {
   background-color: @bg-site;
   background-image: @bg-img;
   color: @text-color;
-  height: 100vh;
+  // height: 100vh;
   font-size: @base-font-size;
   line-height: @base-line-height;
 
@@ -162,6 +157,10 @@ a {
   }
 }
 
+.semibold {
+  font-weight: 600;
+}
+
 // ----------- FOOTER ----------------
 footer {
   background-color: @bg-footer;
@@ -184,14 +183,9 @@ footer {
     font-weight: bold;
   }
 
-  .service-name {
-    font-weight: 600;
-  }
-
   .link-list {
     h2 {
       font-size: 18px;
-      font-weight: 600;
       text-transform: uppercase;
       margin: 0;
     }
