@@ -105,6 +105,7 @@ export default {
     border: 1px solid;
     border-radius: 2rem;
     padding: 0rem 1rem 0rem 0.5rem;
+    margin: 0 0.2rem;
     .action-label {
       font-size: 1.3rem;
       display: inline-block;

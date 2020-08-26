@@ -453,9 +453,8 @@ export default {
           :class="{'icon is-disabled' : isEmpty}"></i>
         <span class="ItemLocal-type"
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-        <span class="ItemLocal-collapsedLabel">
-          <span class="ItemLocal-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
-          <span class="placeholder"> </span>
+        <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
+          {{getItemLabel}}
         </span>
       </div>
       
@@ -585,30 +584,33 @@ export default {
   padding: 0;
   position: relative;
   flex: 1 100%;
-  transition: background-color .2s ease;
   border-radius: 4px;
 
-  &.highlight-info, &.highlight-info, &.highlight-remove {
+  &.highlight-info {
     .is-stuck, .is-sticky {
-      background-color: inherit;
+      background-color: @form-mark;
+    }
+  }
+  &.highlight-remove {
+    .is-stuck, .is-sticky {
+      background-color: @form-remove;
     }
   }
 
   &-heading {
     display: flex;
-    flex: 1 100%;
-    justify-content: space-between;
     align-items: center;
     height: 2.5em;
+    width: 100%;
     font-weight: normal;
     background-color: inherit;
     box-shadow: 0px 6px 5px -5px rgba(0, 0, 0, 0);
     transition: box-shadow 0.25s ease;
+    z-index: 850;
     &.is-stuck, &.is-sticky {
       box-shadow: 0px 6px 5px -5px #0000002b;
       position: sticky;
       background-color: #fff;
-      z-index: 850;
     }
     .icon-hover();
   }
@@ -628,15 +630,33 @@ export default {
     &.is-locked {
       margin: 0;
     }
-    margin-right: 120px;
     cursor: pointer;
-    
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    overflow: hidden;
+
     &.is-inactive {
       pointer-events: none;
     }
   }
 
   &-type {
+    margin: 0 0.5rem;
+    white-space: nowrap;
+  }
+
+
+  &-collapsedLabel {
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-collapsedText {
+    display: inline;
   }
 
   &-arrow {
@@ -661,11 +681,8 @@ export default {
   }
 
   &-actions {
-    right: 0;
-    position: absolute;
-
+    display: flex;
     @media (max-width: @screen-sm) {
-      display: flex;
       align-items: baseline;
     }
   }
@@ -706,22 +723,6 @@ export default {
   
   &.is-removeable {
     background-color: @form-remove;
-  }
-
-  &-collapsedLabel {
-    justify-content: space-between;
-    align-items: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding-right: 40px;
-
-    & .placeholder {
-      visibility: hidden;
-    }
-  }
-
-  &-collapsedText {
-    display: inline;
   }
 
   &.is-expanded > 

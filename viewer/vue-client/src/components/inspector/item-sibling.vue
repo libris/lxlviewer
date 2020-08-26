@@ -411,9 +411,8 @@ export default {
           :class="{'icon is-disabled' : isEmpty}"></i>
         <span class="ItemSibling-type"
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
-        <span class="ItemSibling-collapsedLabel">
-          <span class="ItemSibling-collapsedText" v-show="!expanded || isEmpty">{{getItemLabel}}</span>
-          <span class="placeholder"> </span>
+        <span class="ItemSibling-collapsedLabel" v-show="!expanded || isEmpty">
+          {{getItemLabel}}
         </span>
       </div>
       
@@ -516,44 +515,79 @@ export default {
   padding: 0;
   position: relative;
   flex: 1 100%;
-  transition: background-color .2s ease;
   border-radius: 4px;
 
-  &.highlight-info, &.highlight-info, &.highlight-remove {
+  &.highlight-info {
     .is-stuck, .is-sticky {
-      background-color: inherit;
+      background-color: @form-mark;
+    }
+  }
+  &.highlight-remove {
+    .is-stuck, .is-sticky {
+      background-color: @form-remove;
     }
   }
 
   &-heading {
     display: flex;
-    flex: 1 100%;
-    justify-content: space-between;
     align-items: center;
     height: 2.5em;
+    width: 100%;
     font-weight: normal;
     background-color: inherit;
     box-shadow: 0px 6px 5px -5px rgba(0, 0, 0, 0);
     transition: box-shadow 0.25s ease;
+    z-index: 850;
     &.is-stuck, &.is-sticky {
       box-shadow: 0px 6px 5px -5px #0000002b;
       position: sticky;
       background-color: #fff;
-      z-index: 850;
     }
     .icon-hover();
+  }
+
+  &.highlight-info {
+    background-color: @form-mark;
+  }
+  &.highlight-remove {
+    background-color: @form-remove;
+  }
+
+  &.has-failed-validations {
+    outline: 1px dotted red;
   }
 
   &-label {
     &.is-locked {
       margin: 0;
     }
-    margin-right: 120px;
     cursor: pointer;
-    
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    overflow: hidden;
+
     &.is-inactive {
       pointer-events: none;
     }
+  }
+
+  &-type {
+    margin: 0 0.5rem;
+    white-space: nowrap;
+  }
+
+
+  &-collapsedLabel {
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-collapsedText {
+    display: inline;
   }
 
   &-arrow {
@@ -562,8 +596,8 @@ export default {
     font-size: 14px;
     color: @grey-darker-transparent;
 
-    .ItemSibling-label:hover & {
-      color: @black;
+    .ItemLocal-label:hover & {
+      color: @black
     }
   }
 
@@ -572,39 +606,46 @@ export default {
     position: relative;
     padding: 0 0 0 20px;
 
-    .locked & {
-      padding: 0 0 0 20px;
+    > .is-expanded & {
+      margin: 10px 0 0;
     }
   }
 
   &-actions {
-
+    display: flex;
     @media (max-width: @screen-sm) {
-      display: flex;
       align-items: baseline;
     }
   }
 
-  &-placeHolder {
-    width: 20px;
-  }
+  .ManagerMenu {
+    li > a {
+      cursor: pointer;
+      padding: 3px 5px;
+    }
+    &-menuList {
+      display: block;
+      padding: 5px 0;
+    }
+    &-menuItem {
+      & a {
+        display: flex;
+        align-items: center;
+        padding: 5px 15px;
+        color: @grey-darker;
+      }
 
-  &-collapsedLabel {
-    justify-content: space-between;
-    align-items: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    & .placeholder {
-      visibility: hidden;
+    }
+    &-menuLink {
+      cursor: pointer;
+      & i {
+        margin-right: 5px;
+      }
     }
   }
 
-  &.highlight-info {
-    background-color: @form-mark;
-  }
-  &.highlight-remove {
-    background-color: @form-remove;
+  &-action {
+    display: inline-block;
   }
 
   &.is-marked {
@@ -616,81 +657,15 @@ export default {
   }
 
   &.is-expanded > 
-  .ItemSibling-heading > 
-  .ItemSibling-label >
-  .ItemSibling-arrow {
+  .ItemLocal-heading >
+  .ItemLocal-label > 
+  .ItemLocal-arrow {
     transform:rotate(90deg);
-    transform-origin: center;    
+    transform-origin: center;
   }
-}
 
-.item-local-container {
-
-  .link-indicator {
-    padding: 0em 0.6em;
-    background: green;
-    display: flex;
-    align-items: center;
-    background: @grey-darker;
-    color: @white;
-    &.active {
-      background: lighten(@grey-darker, 15%);
-      cursor: pointer;
-    }
-  }
   &.is-highlighted {
-    transition: 0s ease;
-    transition-property: outline, box-shadow;
-    outline: 2px solid @brand-primary;
-    box-shadow: 0px 0px 1em 0px @brand-primary;
-  }
-  &.is-expanded {
-    margin: 0 0 2em 0;
-  }
-  .item-local {
-
-    &.is-expanded {
-      max-height: 400vh;
-      box-shadow: @shadow-chip-elevated;
-    }
-    &.removed {
-      transition: all 0.5s ease;
-      max-height: 0px;
-      margin: 0px;
-      border: none;
-    }
-    > div {
-      padding: 5px;
-      border: 1px solid transparent;
-    }
-    > .topbar {
-      display: flex;
-      align-items: center;
-      padding: 5px 0;
-      background: @white;
-      white-space: nowrap;
-      overflow: hidden;
-      cursor: pointer;
-      > .actions {
-        display: flex;
-        flex-basis: 4em;
-        flex-direction: row-reverse;
-        .confirm-remove-box {
-          transform: translate(16px, 0px);
-        }
-      }
-
-      .type {
-        // text-transform: uppercase;
-        font-weight: bold;
-        font-size: 85%;
-        a {
-          text-decoration: none;
-          cursor: help;
-          color: @black;
-        }
-      }
-    }
+    background-color: @form-highlight;
   }
 }
 
