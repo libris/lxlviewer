@@ -26,7 +26,7 @@ export default {
     parentPath: {
       type: String,
       default: '',
-    }
+    },
   },
   data() {
     return {
@@ -45,7 +45,7 @@ export default {
       return this.item.items;
     },
     showKeys() {
-      if (Object.keys(this.groupedItems).length > 1){
+      if (Object.keys(this.groupedItems).length > 1) {
         return true;
       }
       return false;
