@@ -67,7 +67,7 @@ export default {
     <div class="SummaryAction-button">
       <button-component 
         :disabled="disabled || replaced || extracting"
-        :color="options.styling"
+        :variant="options.styling"
         :icon="getIcon"
         :indicator="!disabled || !replaced"
         :label="getTooltipText" 

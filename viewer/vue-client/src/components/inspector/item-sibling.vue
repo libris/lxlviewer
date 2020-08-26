@@ -16,8 +16,9 @@ import * as StringUtil from '@/utils/string';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
-import FieldAdder from '@/components/inspector/field-adder';
+import PropertyAdder from '@/components/inspector/property-adder';
 import SearchWindow from '@/components/inspector/search-window';
+import EntityAction from '@/components/inspector/entity-action';
 
 export default {
   name: 'item-sibling',
@@ -74,12 +75,16 @@ export default {
       showCardInfo: false,
       isNewlyAdded: false,
       extractDialogActive: false,
+      propertyAdderOpened: false,
       extracting: false,
       expanded: false,
+      focused: false,
+      isHovered: false,
       removeHover: false,
       showLinkAction: false,
       copyTitle: false,
       expandChildren: false,
+      highlights: [],
     };
   },
   computed: {
@@ -90,6 +95,15 @@ export default {
       'user',
       'status',
     ]),
+    isSpecialHeading() {
+      return this.path === 'mainEntity.instanceOf';
+    },
+    largerActions() {
+      if (this.isSpecialHeading && this.expanded === true) {
+        return true;
+      }
+      return false;
+    },
     item() {
       const item = cloneDeep(this.inspector.data[this.fragmentId]);
       if (typeof item === 'undefined' || item === null) {
@@ -164,27 +178,11 @@ export default {
         changeList: changeList,
       });
     },
-    actionHighlight(event, active) {
-      if (active) {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-        item.classList.add('is-marked');
-      } else {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-        item.classList.remove('is-marked');
-      }
+    addHighlight(type) {
+      this.highlights.push(type);
     },
-    removeHighlight(event, active) {
-      if (active) {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-        item.classList.add('is-removeable');
-      } else {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-        item.classList.remove('is-removeable');
-      }
+    removeHighlight(type) {
+      this.highlights.splice(this.highlights.indexOf(type));
     },
     expand() {
       this.expanded = true;
@@ -197,6 +195,16 @@ export default {
         this.collapse();
       } else {   
         this.expand();
+      }
+    },
+    openPropertyAdder() {
+      if (this.inspector.status.editing) {
+        this.propertyAdderOpened = true;
+      }
+    },
+    closePropertyAdder() {
+      if (this.inspector.status.editing) {
+        this.propertyAdderOpened = false;
       }
     },
     openExtractDialog() {
@@ -297,6 +305,23 @@ export default {
         firstInput.focus();
       }
     },
+    attachHeadingStickyFunctionality() {
+      document.addEventListener('scroll', () => {
+        const scrolled = document.scrollingElement.scrollTop;
+        const heading = this.$refs.heading;
+        const container = this.$refs.container;
+        if (!heading || !container) return;
+        const position = LayoutUtil.getPosition(container).y;
+        const searchBarHeight = document.getElementById('SearchBar').offsetHeight;
+        heading.style.top = `${searchBarHeight}px`;
+
+        if (scrolled > position - searchBarHeight) {
+          heading.classList.add('is-stuck');
+        } else {
+          heading.classList.remove('is-stuck');
+        }
+      });
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -329,6 +354,9 @@ export default {
     });
   },
   mounted() {
+    if (this.isSpecialHeading) {
+      this.attachHeadingStickyFunctionality();
+    }
     if (this.isLastAdded) {
       this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
@@ -355,22 +383,27 @@ export default {
   },
 
   components: {
-    'field-adder': FieldAdder,
     'search-window': SearchWindow,
+    'property-adder': PropertyAdder,
+    'entity-action': EntityAction,
   },
 };
 </script>
 
 <template>
   <div class="ItemSibling js-itemLocal"
+    ref="container"
     :id="`formPath-${path}`"
-    :class="{'is-highlighted': isNewlyAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
+    :class="{'is-highlighted': isNewlyAdded, 'highlight-info': highlights.indexOf('info') > -1, 'highlight-remove': highlights.indexOf('remove') > -1, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()" 
     @focus="addFocus()"
     @blur="removeFocus()">
 
-    <strong class="ItemSibling-heading">
+    <div class="ItemSibling-heading" ref="heading"
+      @mouseover="isHovered = true"
+      @mouseout="isHovered = false"
+    >
       <div class="ItemSibling-label"
         :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
         @click="toggleExpanded()">
@@ -385,59 +418,50 @@ export default {
       </div>
       
       <div class="ItemSibling-actions">
-        <div class="ItemSibling-action LinkAction">
-          <i class="fa fa-link fa-fw icon icon--sm"
-            role="button"
-            :aria-label="'Link entity' | translatePhrase"
-            tabindex="0"
-            ref="linkAction"
-            v-if="inspector.status.editing && !isEmbedded && !isLocked"
-            v-tooltip.top="translate('Link entity')"
-            @click="openExtractDialog(), expand()"
-            @keyup.enter="openExtractDialog(), expand()"
-            @focus="showLinkAction = true, actionHighlight($event, true)"
-            @blur="showLinkAction = false, actionHighlight($event, false)"
-            @mouseover="showLinkAction = true, actionHighlight($event, true)" 
-            @mouseout="showLinkAction = false, actionHighlight($event, false)">
-          </i>
-        </div>
 
-        <field-adder ref="fieldAdder" class="ItemSibling-action"
-          v-if="!isLocked" 
-          :entity-type="item['@type']" 
-          :allowed="allowedProperties" 
-          :inner="true" 
-          :path="getPath">
-        </field-adder>
-        <div class="ItemSibling-action RemoveAction">
-          <i class="fa fa-trash-o fa-fw icon icon--sm" 
-            v-if="!isLocked" 
-            :class="{'show-icon': showActionButtons}"
-            role="button"
-            tabindex="0"
-            :aria-label="'Remove' | translatePhrase"
-            v-on:click="removeThis(true)"
-            v-tooltip.top="translate('Remove')"
-            @keyup.enter="removeThis(true)"
-            @focus="removeHover = true, removeHighlight($event, true)" 
-            @blur="removeHover = false, removeHighlight($event, false)"
-            @mouseover="removeHover = true, removeHighlight($event, true)" 
-            @mouseout="removeHover = false, removeHighlight($event, false)">
-          </i>
-        </div>
+        <entity-action
+          v-if="inspector.status.editing && !isEmbedded && !isLocked"
+          @action="openExtractDialog(), expand()"
+          @highlight="addHighlight('info')"
+          @dehighlight="removeHighlight('info')"
+          label="Create/link"
+          description="Create/link"
+          icon="link"
+          :parent-hovered="isHovered"
+          :is-large="largerActions"
+        />
+
+        <entity-action
+          v-if="!isLocked && !isEmbedded && !isCompositional"
+          @action="openPropertyAdder(), expand()"
+          @highlight="addHighlight('info')"
+          @dehighlight="removeHighlight('info')"
+          label="Property"
+          description="Add property"
+          icon="plus-circle"
+          :parent-hovered="isHovered"
+          :is-large="largerActions"
+        />
+
+        <entity-action
+          v-if="inspector.status.editing && !isLocked"
+          @action="removeThis(true)"
+          @highlight="addHighlight('remove')"
+          @dehighlight="removeHighlight('remove')"
+          label="Remove"
+          description="Remove"
+          icon="trash-o"
+          :parent-hovered="isHovered"
+          :is-large="false"
+        />
+
         <div class="ItemSibling-action">
           <div class="ItemSibling-placeHolder"></div>
         </div>
       </div>
-    </strong>
+    </div>
   
     <ul class="ItemSibling-list js-itemLocalFields" v-show="expanded">
-      <!-- <field-adder 
-        v-if="!isLocked && isEmpty" 
-        :entity-type="item['@type']" 
-        :allowed="allowedProperties" 
-        :inner="true" 
-        :path="getPath"></field-adder> -->
       <field
         v-show="k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
@@ -454,6 +478,13 @@ export default {
         :expand-children="expandChildren"
         :show-action-buttons="showActionButtons"></field>
     </ul>
+
+    <property-adder
+      :entity-type="item['@type']" 
+      :allowed="allowedProperties" 
+      :isActive="propertyAdderOpened"
+      :path="getPath"
+    />
 
     <search-window 
       :isActive="extractDialogActive" 
@@ -472,7 +503,7 @@ export default {
       :index="index"
       @extract="extract"
       @replace-with="replaceWith"
-      ></search-window>
+    />
     </div>
 
 
@@ -482,18 +513,34 @@ export default {
 
 .ItemSibling {
   width: 100%;
-  padding: 5px 0;
+  padding: 0;
   position: relative;
   flex: 1 100%;
   transition: background-color .2s ease;
   border-radius: 4px;
 
-  &-heading {
-    display: block;
-    flex: 1 100%;
-    font-weight: normal;
-    position: relative;
+  &.highlight-info, &.highlight-info, &.highlight-remove {
+    .is-stuck, .is-sticky {
+      background-color: inherit;
+    }
+  }
 
+  &-heading {
+    display: flex;
+    flex: 1 100%;
+    justify-content: space-between;
+    align-items: center;
+    height: 2.5em;
+    font-weight: normal;
+    background-color: inherit;
+    box-shadow: 0px 6px 5px -5px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.25s ease;
+    &.is-stuck, &.is-sticky {
+      box-shadow: 0px 6px 5px -5px #0000002b;
+      position: sticky;
+      background-color: #fff;
+      z-index: 850;
+    }
     .icon-hover();
   }
 
@@ -507,9 +554,6 @@ export default {
     &.is-inactive {
       pointer-events: none;
     }
-  }
-
-  &-type {
   }
 
   &-arrow {
@@ -534,18 +578,11 @@ export default {
   }
 
   &-actions {
-    top: 0;
-    right: 0;
-    position: absolute;
 
     @media (max-width: @screen-sm) {
       display: flex;
       align-items: baseline;
     }
-  }
-
-  &-action {
-    display: inline-block;
   }
 
   &-placeHolder {
@@ -561,6 +598,13 @@ export default {
     & .placeholder {
       visibility: hidden;
     }
+  }
+
+  &.highlight-info {
+    background-color: @form-mark;
+  }
+  &.highlight-remove {
+    background-color: @form-remove;
   }
 
   &.is-marked {

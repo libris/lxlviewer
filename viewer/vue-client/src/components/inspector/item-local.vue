@@ -8,7 +8,8 @@ import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
-import FieldAdder from '@/components/inspector/field-adder';
+import PropertyAdder from '@/components/inspector/property-adder';
+import EntityAction from '@/components/inspector/entity-action';
 import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
@@ -65,15 +66,19 @@ export default {
       inEdit: false,
       showCardInfo: false,
       extractDialogActive: false,
+      propertyAdderOpened: false,
       extracting: false,
       expanded: false,
       removeHover: false,
+      focused: false,
+      isHovered: false,
       managerMenuOpen: false,
       manageHover: false,
       showLinkAction: false,
       copyTitle: false,
       expandChildren: false,
       cloned: false,
+      highlights: [],
     };
   },
   computed: {
@@ -85,6 +90,15 @@ export default {
       'status',
       'userStorage',
     ]),
+    isSpecialHeading() {
+      return this.path === 'mainEntity.instanceOf';
+    },
+    largerActions() {
+      if (this.isSpecialHeading && this.expanded === true) {
+        return true;
+      }
+      return false;
+    },
     getItemLabel() {
       return DisplayUtil.getItemLabel(
         this.focusData,
@@ -170,27 +184,11 @@ export default {
       const element = this.$el;
       LayoutUtil.ensureInViewport(element);
     },
-    actionHighlight(active, event) {
-      if (active) {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-        item.classList.add('is-marked');
-      } else {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-        item.classList.remove('is-marked');
-      }
+    addHighlight(type) {
+      this.highlights.push(type);
     },
-    removeHighlight(active, event) {
-      if (active) {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-        item.classList.add('is-removeable');
-      } else {
-        let item = event.target;
-        while ((item = item.parentElement) && !item.classList.contains('js-itemLocal'));
-        item.classList.remove('is-removeable');
-      }
+    removeHighlight(type) {
+      this.highlights.splice(this.highlights.indexOf(type));
     },
     expand() {
       this.expanded = true;
@@ -207,6 +205,16 @@ export default {
     },
     isHolding() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
+    },
+    openPropertyAdder() {
+      if (this.inspector.status.editing) {
+        this.propertyAdderOpened = true;
+      }
+    },
+    closePropertyAdder() {
+      if (this.inspector.status.editing) {
+        this.propertyAdderOpened = false;
+      }
     },
     openExtractDialog() {
       if (this.inspector.status.editing) {
@@ -336,6 +344,23 @@ export default {
       this.$store.dispatch('setUserStorage', userStorage);
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.user.settings.language)}` });
     },
+    attachHeadingStickyFunctionality() {
+      document.addEventListener('scroll', () => {
+        const scrolled = document.scrollingElement.scrollTop;
+        const heading = this.$refs.heading;
+        const container = this.$refs.container;
+        if (!heading || !container) return;
+        const position = LayoutUtil.getPosition(container).y;
+        const searchBarHeight = document.getElementById('SearchBar').offsetHeight;
+        heading.style.top = `${searchBarHeight}px`;
+
+        if (scrolled > position - searchBarHeight) {
+          heading.classList.add('is-stuck');
+        } else {
+          heading.classList.remove('is-stuck');
+        }
+      });
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -371,6 +396,9 @@ export default {
     });
   },
   mounted() {
+    if (this.isSpecialHeading) {
+      this.attachHeadingStickyFunctionality();
+    }
     if (this.isLastAdded) {
       this.highLightLastAdded();
       const fieldAdder = this.$refs.fieldAdder;
@@ -397,22 +425,27 @@ export default {
   },
 
   components: {
-    'field-adder': FieldAdder,
+    'property-adder': PropertyAdder,
     'search-window': SearchWindow,
+    'entity-action': EntityAction,
   },
 };
 </script>
 
 <template>
   <div class="ItemLocal js-itemLocal"
+    ref="container"
     :id="`formPath-${path}`"
-    :class="{'is-highlighted': isLastAdded, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable, 'has-failed-validations': failedValidations.length > 0 }"
+    :class="{'is-highlighted': isLastAdded, 'highlight-info': highlights.indexOf('info') > -1, 'highlight-remove': highlights.indexOf('remove') > -1, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable, 'has-failed-validations': failedValidations.length > 0 }"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
     @blur="removeFocus()">
 
-    <strong class="ItemLocal-heading">
+    <div class="ItemLocal-heading" ref="heading"
+      @mouseover="isHovered = true"
+      @mouseout="isHovered = false"
+    >
       <div class="ItemLocal-label"
         :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
         @click="toggleExpanded()">
@@ -427,82 +460,69 @@ export default {
       </div>
       
       <div class="ItemLocal-actions">
-        <div class="ItemLocal-action LinkAction">
-          <i class="fa fa-link fa-fw icon icon--sm"
-            v-if="!isLocked && !isEmbedded && !isCompositional"
-            role="button"
-            tabindex="0"
-            ref="linkAction"
-            :aria-label="'Link entity' | translatePhrase"
-            @click="openExtractDialog(), expand()" 
-            v-tooltip.top="translate('Link entity')"
-            @focus="showLinkAction = true, actionHighlight(true, $event)"
-            @blur="showLinkAction = false, actionHighlight(false, $event)"
-            @mouseover="showLinkAction = true, actionHighlight(true, $event)" 
-            @mouseout="showLinkAction = false, actionHighlight(false, $event)"
-            @keyup.enter="openExtractDialog(), expand()">
-          </i>
-        </div>
+        <entity-action
+          v-if="inspector.status.editing && !isEmbedded && !isLocked"
+          @action="openExtractDialog(), expand()"
+          @highlight="addHighlight('info')"
+          @dehighlight="removeHighlight('info')"
+          label="Create/link"
+          description="Create/link"
+          icon="link"
+          :parent-hovered="isHovered"
+          :is-large="largerActions"
+        />
 
-        <field-adder ref="fieldAdder" class="ItemLocal-action"
-          v-if="!isLocked" 
-          :entity-type="item['@type']" 
-          :allowed="allowedProperties" 
-          :inner="true" 
-          :path="getPath">
-        </field-adder>
+        <entity-action
+          v-if="!isLocked && !isEmbedded && !isCompositional"
+          @action="openPropertyAdder(), expand()"
+          @highlight="addHighlight('info')"
+          @dehighlight="removeHighlight('info')"
+          label="Property"
+          description="Add property"
+          icon="plus-circle"
+          :parent-hovered="isHovered"
+          :is-large="largerActions"
+        />
 
-        <div class="ItemLocal-action RemoveAction">
-          <i class="fa fa-trash-o fa-fw icon icon--sm"
-            v-if="!isLocked" 
-            :class="{'show-icon': showActionButtons}"
-            role="button"
-            tabindex="0"
-            :aria-label="'Remove' | translatePhrase"
-            v-tooltip.top="translate('Remove')"
-            v-on:click="removeThis(true)" 
-            @keyup.enter="removeThis(true)"
-            @focus="removeHover = true, removeHighlight(true, $event)"
-            @blur="removeHover = false, removeHighlight(false, $event)"
-            @mouseover="removeHover = true, removeHighlight(true, $event)"
-            @mouseout="removeHover = false, removeHighlight(false, $event)">
-          </i>
-        </div>
+        <entity-action
+          v-if="!isLocked"
+          @action="removeThis(true)"
+          @highlight="addHighlight('remove')"
+          @dehighlight="removeHighlight('remove')"
+          label="Remove"
+          description="Remove"
+          icon="trash-o"
+          :parent-hovered="isHovered"
+          :is-large="false"
+        />
 
-        <div class="ItemLocal-action OptionAction">
-          <i class="icon icon--sm fa fa-fw fa-ellipsis-v"
-            v-if="!isLocked"
-            :class="{'show-icon': showActionButtons}" 
-            role="button"
-            tabindex="0"
-            :aria-label="'Manage' | translatePhrase"
-            v-on:click="managerMenuOpen ? closeManagerMenu() : openManagerMenu()" 
-            v-tooltip.top="translate('Manage')"
-            @keyup.enter="managerMenuOpen ? closeManagerMenu() : openManagerMenu()"
-            @focus="manageHover = true, actionHighlight(true, $event)"
-            @blur="manageHover = false, actionHighlight(false, $event)"
-            @mouseover="manageHover = true, actionHighlight(true, $event)"
-            @mouseout="manageHover = false, actionHighlight(false, $event)">
-          </i>
-        </div>
+        <entity-action
+          v-if="!isLocked"
+          @action="managerMenuOpen ? closeManagerMenu() : openManagerMenu()"
+          @highlight="addHighlight('info')"
+          @dehighlight="removeHighlight('info')"
+          label="Manage"
+          description="Manage"
+          icon="ellipsis-v"
+          :parent-hovered="isHovered"
+          :is-large="false"
+        />
         <div class="dropdown ManagerMenu" v-on-clickaway="closeManagerMenu" v-if="managerMenuOpen"
-          @mouseover="actionHighlight(true, $event)"
-          @mouseout="actionHighlight(false, $event)">
+          @mouseover="addHighlight('info')"
+          @mouseout="removeHighlight('info')">
           <ul class="dropdown-menu ManagerMenu-menuList">
             <li class="ManagerMenu-menuItem">
               <a tabindex="0" class="ManagerMenu-menuLink"
-              @focus="actionHighlight(true, $event)"
-              @keyup.enter="copyThis(), closeManagerMenu(), actionHighlight(false, $event)"
-              @click="copyThis(), closeManagerMenu(), actionHighlight(false, $event)">
+              @keyup.enter="copyThis(), closeManagerMenu()"
+              @click="copyThis(), closeManagerMenu()">
               <i class="fa fa-fw fa-copy" aria-hidden="true"></i>
               {{"Copy to clipboard" | translatePhrase}}
               </a>
             </li>
             <li class="ManagerMenu-menuItem" v-if="inArray">
               <a tabindex="0" class="ManagerMenu-menuLink"
-              @focus="actionHighlight(true, $event)"
-              @keyup.enter="cloneThis(), closeManagerMenu(), actionHighlight(false, $event)"
-              @click="cloneThis(), closeManagerMenu(), actionHighlight(false, $event)">
+              @keyup.enter="cloneThis(), closeManagerMenu()"
+              @click="cloneThis(), closeManagerMenu()">
               <i class="fa fa-fw fa-clone" aria-hidden="true"></i>
               {{"Duplicate entity" | translatePhrase}}
               </a>
@@ -510,15 +530,9 @@ export default {
           </ul>
         </div>
       </div>
-    </strong>
+    </div>
   
     <ul class="ItemLocal-list js-itemLocalFields" v-show="expanded">
-      <!-- <field-adder 
-        v-if="!isLocked && isEmpty" 
-        :entity-type="item['@type']" 
-        :allowed="allowedProperties" 
-        :inner="true" 
-        :path="getPath"></field-adder> -->
       <field
         v-show="k !== '_uid'" 
         v-for="(v, k) in filteredItem" 
@@ -537,6 +551,13 @@ export default {
         :is-expanded="expanded"></field> 
     </ul>
 
+    <property-adder
+      :entity-type="item['@type']" 
+      :allowed="allowedProperties" 
+      :isActive="propertyAdderOpened"
+      :path="getPath"
+    />
+
     <search-window 
       :isActive="extractDialogActive" 
       :can-copy-title="canCopyTitle" 
@@ -553,30 +574,54 @@ export default {
       :item-info="extractedMainEntity"
       :index="index"
       @extract="extract"
-      @replace-with="replaceWith"></search-window>
-    </div>
+      @replace-with="replaceWith"
+    />
+  </div>
 </template>
 
 <style lang="less">
 .ItemLocal {
   width: 100%;
-  padding: 5px 0;
+  padding: 0;
   position: relative;
   flex: 1 100%;
-  transition: background-color .5s ease;
-  border-radius: 4px;  
+  transition: background-color .2s ease;
+  border-radius: 4px;
 
-  &.has-failed-validations {
-    outline: 1px dotted red;
+  &.highlight-info, &.highlight-info, &.highlight-remove {
+    .is-stuck, .is-sticky {
+      background-color: inherit;
+    }
   }
 
   &-heading {
-    display: block;
+    display: flex;
     flex: 1 100%;
+    justify-content: space-between;
+    align-items: center;
+    height: 2.5em;
     font-weight: normal;
-    position: relative;    
-
+    background-color: inherit;
+    box-shadow: 0px 6px 5px -5px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.25s ease;
+    &.is-stuck, &.is-sticky {
+      box-shadow: 0px 6px 5px -5px #0000002b;
+      position: sticky;
+      background-color: #fff;
+      z-index: 850;
+    }
     .icon-hover();
+  }
+
+  &.highlight-info {
+    background-color: @form-mark;
+  }
+  &.highlight-remove {
+    background-color: @form-remove;
+  }
+
+  &.has-failed-validations {
+    outline: 1px dotted red;
   }
 
   &-label {

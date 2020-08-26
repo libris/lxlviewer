@@ -14,6 +14,7 @@ Listen to the 'click' event in the parent as usual.
     * label - (if icon) provide a string that will be translated & used as accessible label
     * shadow - (default: false) show a shadow under the button
 */
+import { isArray } from 'lodash-es';
 
 export default {
   name: 'button-component',
@@ -25,6 +26,10 @@ export default {
     indicator: {
       type: Boolean,
       default: false,
+    },
+    variant: {
+      type: String,
+      default: 'info',
     },
     disabled: {
       type: Boolean,
@@ -38,8 +43,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    transparent: {
+      type: Boolean,
+      default: false,
+    },
+    border: {
+      type: [Boolean, String],
+      default: true,
+    },
     buttonText: {
-      type: String,
+      type: [String, Array],
       default: '',
     },
     icon: {
@@ -69,11 +82,16 @@ export default {
     computedLabel() {
       return this.disabled ? '' : this.$options.filters.translatePhrase(this.label);
     },
-    smallText() {
-      if (this.buttonText && this.buttonText.length > 3) {
-        return true;
+    computedButtonText() {
+      if (isArray(this.buttonText)) {
+        let buttonText = '';
+        for (let i = 0; i < this.buttonText.length; i++) {
+          buttonText += this.$options.filters.translatePhrase(this.buttonText[i]);
+          buttonText += ' ';
+        }
+        return buttonText;
       }
-      return false;
+      return this.$options.filters.translatePhrase(this.buttonText);
     },
   },
   components: {
@@ -91,19 +109,23 @@ export default {
     :class="[
       {
         'has-shadow': shadow, 
+        'has-no-border': border === false,
         'disabled' : disabled, 
-        'Button-primary': indicator && !disabled, 
+        'Button-primary': indicator && !disabled,
         'is-active': active,
         'is-inverted': inverted,
+        'is-transparent': transparent,
+        'is-wide': buttonText,
       },
       this.size ? 'Button-' + this.size : '',
+      this.variant ? 'Button-' + this.variant : '',
     ]"
     @click="action()"
     :aria-label="computedLabel">
     <span v-if="icon">
       <i :class="`fa fa-fw fa-${icon}`" aria-hidden="true"></i>
     </span>
-    <span class="Button-buttonText" :class="{'small-text': smallText }" v-else>{{ buttonText }}</span>
+    <span class="Button-buttonText" v-if="computedButtonText">{{ computedButtonText }}</span>
   </button>
 </template>
 
@@ -131,6 +153,15 @@ export default {
     }
     width: 36px;
     height: 36px;
+  }
+
+  &.is-wide {
+    width: auto;
+    padding: 0 0.5em;
+  }
+
+  &.has-no-border {
+    border: 0;
   }
 
   &.has-shadow {
@@ -163,6 +194,9 @@ export default {
       &:active {
         box-shadow: inset 0em 0em 0.75rem 0em fadeout(darken(@color, 60%), 75%);
       }
+    }
+    &.is-transparent {
+      background-color: transparent;
     }
     &.disabled {
       border-color: @grey-lighter !important;
@@ -216,12 +250,6 @@ export default {
   }
   &-info {
     .ButtonMixin(@brand-info);
-  }
-
-  &-buttonText {
-    &.small-text {
-      font-size: 85%;
-    }
   }
   
   i {
