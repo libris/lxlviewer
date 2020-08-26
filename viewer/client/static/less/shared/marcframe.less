@@ -1,56 +1,42 @@
 body#marcframeview {
-  
+  @menu-col-width: 200px;
   
   main {
     margin-top: @navbar-height;
+
+    @supports(position: sticky) {
+      margin-top: 0;
+    }
   }
-  
+
+  .navbar {
+    position: fixed; // fallback for IE11
+    position: sticky;
+    top: 0;
+  }
+
   .menu-col {
-    position: fixed;
-    left: 0px;
-    top: 0px;
+    position: fixed; // fallback for IE11
+    position: sticky;
+    top: @navbar-height;
     height: 100vh;
+    max-height: 100vh;
     padding: 0px;
-    z-index: 0;
-  }
-  .content-col {
-    z-index: 0;
-    background-color: @bg-content;
-    padding-left: 3em;
-    > header {
-      margin-top: 50px;
-    }
-  }
-  .menu-col {
-    width: 230px;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    background-color: @bg-sidebars;
-    border: 1px solid #e3e3e3;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    height: 100%;
-    margin-top: @navbar-height;
-    padding: 1em 0 8em 0.2em;
-    a {
-      color: @black;
-    }
-    > ul li {
-      &:first-child {
-        margin-left: 10%;
-      }
-      &.active a {
-        background-color: @gray-lighter;
-      }
-    }
+    min-width: @menu-col-width;
+    max-width: @menu-col-width;
+    padding: 1em 0 8em 0;
+    margin-right: 2em;
+
     .tab-content {
       height: 100%;
-      border: solid @gray-lighter;
-      border-width: 0px 0px 1px 0px;
-      // max-height: 800px;
+      background-color: @white;
+      border: solid @grey-light;
+      border-width: 0 1px 1px 1px;
       overflow-y: scroll;
       padding-top: 1em;
+
       ul {
-        padding: 0px 0px 0px 2em;
+        padding: 0 0 0 1em;
         li {
           display: inline-block;
           width: 20%;
@@ -65,39 +51,107 @@ body#marcframeview {
       }  
     }
   }
-  .menu-col nav a {
-    display: block;
-    font-size: 0.8em;
-    margin: 0 0 0.05em;
-  }
-  
-  .has-navbar [id]:before {
-    display: block;
-    content: " ";
-    height: 50px;
-    margin-top: -50px;
+
+  .content-col {
+    margin-left: @menu-col-width;
+    
+    @supports(position:sticky){
+      margin-left: 0;
+    }
   }
 
-  .navbar {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    z-index: 998;
-    li.active > a {
-      background-color: darken(@brand-primary, 20%) !important;
+  table {
+    th, td {
+      vertical-align: baseline;
     }
   }
-  .marcframetable {
+
+  .table-main {
     background-color: @white;
-    td {
-      padding: 10px 0;
+  }
+
+  .table-inner {
+    margin: 0;
+
+    th, td {
+      border-color: @grey-lighter;
     }
-    ul.example {
-      list-style: none;
-      padding: 0px 1em;
+
+    th {
+      width: 130px;
+      max-width: 130px;
+      word-break: break-word;
+      hyphens: auto;
+    }
+
+    tr:first-of-type > th, tr:first-of-type > td {
+      border-top: 0;
     }
   }
+
+  .marc-tag {
+    background-color: @grey-lighter;
+
+    .marc-anchor {
+      display: block;
+      position: relative;
+      top: calc(0px - @navbar-height - 1em);
+      visibility: hidden;
+    }
+  }
+
+  .marc-tag, .marc-dfn, .marc-example {
+    padding: 1em;
+    border-width: 2px;
+  }
+
+  .marc-dfn {
+    border-bottom: 0;
+  }
+
+  .marc-example {
+    border-top: 0;
+    padding-top: 0;
+
+    .toggle-example-btn {
+      float: right;
+      border: 1px solid @black;
+
+      i {
+        transition: transform 0.2s ease;
+      }
+    }
+
+    .example-list {
+      display: none;
+      clear: both;
+    }
+
+    &.expanded {
+      .example-list {
+        display: block;
+      }
+
+      .toggle-example-btn i {
+        transform: rotate(90deg);
+      }
+    }
+
+    pre {
+      margin-bottom: 2em;
+    }
+
+    h4 {
+      margin-top: 0;
+    }
+  }
+
+  dl {
+    dd {
+      padding-left: 10px;
+    }
+  }
+
   dd, td {
     .resourceType {
       .chip-class();

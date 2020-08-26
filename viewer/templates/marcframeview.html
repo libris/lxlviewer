@@ -4,7 +4,7 @@
 
 {% block bodyattrs %}class="has-navbar" data-spy="scroll" data-target="#marcnavbar" id="marcframeview"{% endblock %}
 
-{% block containerclass %}container-fluid{% endblock %}
+{% block containerclass %}container-fluid flex{% endblock %}
 {% block navcontainerclass %} container {% endblock %}
 
 
@@ -12,58 +12,65 @@
 % endblock
 
 % block content
-<div class="row">
-  <div class="col-sm-3 col-md-3 col-lg-2 hidden-xs menu-col">
-
-    <ul class="nav nav-tabs" role="tablist">
-    % for cat, catdfn in mf.marc_categories()
-      {% if cat == 'bib' %}
-        <li role="presentation" class="active">
-      {% else %}
-        <li role="presentation">
-      {% endif %}
-        <a href="#tab-${cat}" aria-controls="tab-${cat}" role="tab" data-toggle="tab">${cat}</a>
-      </li>
-    % endfor
+  <nav class="menu-col">
+    <ul class="nav nav-tabs semibold" role="tablist">
+      % for cat, catdfn in mf.marc_categories()
+        {% if cat == 'bib' %}
+          <li role="presentation" class="nav-tab js-nav-tab active">
+        {% else %}
+          <li role="presentation" class="nav-tab js-nav-tab">
+        {% endif %}
+          <a href="#tab-${cat}" aria-controls="tab-${cat}" role="tab" data-toggle="tab">${cat}</a>
+        </li>
+      % endfor
     </ul>
     <div class="tab-content">
-    % for cat, catdfn in mf.marc_categories()
-      {% if cat == 'bib' %}
-        <div role="tabpanel" class="tab-pane active" id="tab-${cat}">
-      {% else %}
-        <div role="tabpanel" class="tab-pane" id="tab-${cat}">
-      {% endif %}
-        <ul>
-          % for tag, kind, dfn in mf.fields(catdfn)
-          <li>
-            <a href="#${cat}-${tag}">${tag}</a>
-          </li>
-          % endfor
-        </ul>
+      % for cat, catdfn in mf.marc_categories()
+        {% if cat == 'bib' %}
+          <div role="tabpanel" class="tab-pane active" id="tab-${cat}">
+        {% else %}
+          <div role="tabpanel" class="tab-pane" id="tab-${cat}">
+        {% endif %}
+          <ul>
+            % for tag, kind, dfn in mf.fields(catdfn)
+              <li>
+                <a href="#${cat}-${tag}">${tag}</a>
+              </li>
+            % endfor
+          </ul>
+        </div>
+      % endfor
+    </div>
+  </nav>
+
+  <div class="content-col">
+    <div class="row">
+      <header class="col-md-6">
+        <h1>Marc-mappningar</h1>
+        <p>KB/Libris mappningar av MARC till RDF-vokabulär</p>
+      </header>
+      <div class="col-md-6">
+        <label class="semibold">
+          <input type="checkbox" id="js-toggle-all-checkbox">
+          Visa alla kodexempel</label>
       </div>
-    % endfor
     </div>
 
-  </div>
-</div>
-
-<div class="col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-3 col-lg-10 col-lg-offset-2 content-col">
-  <section>
-    <h1>MARCFrame</h1>
-    <p>KB/LIBRIS mappings of MARC to RDF vocabulary terms.</p>
     % for cat, catdfn in mf.marc_categories()
       <div class="cat" id="${cat}">
-        <h3>${cat}</h3>
-        <p>thingLink: ${catdfn.thingLink}</p>
-        <table class="table table-bordered marcframetable">
+        <h2>${cat}</h2>
+        <table class="table table-bordered table-main">
           % for tag, kind, dfn in mf.fields(catdfn)
             <tr>
-              <th><div id="${cat}-${tag}">${tag}</div></th>
-              <td>
+              <th class="marc-tag semibold" rowspan="2">
+                <span id="${cat}-${tag}" class="marc-anchor"></span>
+                <span>${tag}</span>
+              </th>
+              <td class="marc-dfn">
                 % for key in ['inherit', 'aboutType', 'link', 'addLink', 'resourceType', 'property', 'addProperty', 'i1', 'i2', 'match-i1', 'match-i2']
                   % if dfn.get(key)
-                    <dl class="dl-horizontal">
-                      <dt>${key}:</dt>
+                    <dl>
+                      <dt class="semibold">${key}:</dt>
                       <dd>
                         ${show_value(cat, tag, key, dfn[key])}
                       </dd>
@@ -73,12 +80,13 @@
                 % if kind == 'field'
                   ${show_dfn(cat, tag, mf.codes(dfn))}
                 % elif kind == 'fixed'
-                  <table class="">
+                  <table class="table table-inner">
                     % for key, subdfn in sorted(dfn.items())
                       % if key[0] != '_' and not key.startswith('TODO:')
                         <tr>
-                          <th><div id="${cat}-${tag}-${key}"
-                                    >${show_value(cat, tag, 'aboutType', key)}</div></th>
+                          <th class="semibold"><span id="${cat}-${tag}-${key}">
+                            ${show_value(cat, tag, 'aboutType', key)}</span>
+                          </th>
                           <td>
                             % if key[0].isupper() and isinstance(subdfn, dict)
                               ${show_dfn(cat, tag, sorted(subdfn.items()))}
@@ -97,28 +105,42 @@
                   </table>
                 % endif
               </td>
-              <td class="col-md-6">
-                % if dfn._spec
-                  <ul class="example">
-                    % for spec in dfn._spec
-                      % if spec.source and spec.result
-                        <li>
-                          <p>Example{% if spec.name %}: <i>${spec.name}</i>{% endif %}</p>
-                          <b>MARC</b>
-                          <pre><code>${pretty_json(spec.source)}</code></pre>
-                          % if spec.normalized
-                            <i>Normalized when converted back from JSON-LD:</i>
-                            <pre><code>${pretty_json(spec.normalized)}</code></pre>
-                          % endif
-                          <b>JSON-LD</b>
-                          <pre><code>${pretty_json(spec.result)}</code></pre>
-                        </li>
-                      % endif
-                    % endfor
-                  </ul>
-                % endif
-              </td>
             </tr>
+            <tr>
+            % if dfn._spec
+            <td class="marc-example" aria-expanded="false">
+              <button class="btn-default toggle-example-btn js-toggle-example-btn">Visa kodexempel
+                <i class="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
+              </button>
+              <ul class="example-list js-example-list" aria-hidden="true">
+                % for spec in dfn._spec
+                  % if spec.source and spec.result
+                    {% set example_col = 4 if spec.normalized else 6  %}
+                    <li>
+                      <p>Example{% if spec.name %}: <i>${spec.name}</i>{% endif %}</p>
+                      <div class="row">
+                        <div class="col-lg-${example_col}">
+                          <h4>MARC</h4>
+                          <pre><code>${pretty_json(spec.source)}</code></pre>
+                        </div>
+                        % if spec.normalized
+                          <div class="col-lg-${example_col}">
+                            <p><i>Normalized when converted back from JSON-LD:</i></p>
+                            <pre><code>${pretty_json(spec.normalized)}</code></pre>
+                          </div>
+                        % endif
+                        <div class="col-lg-${example_col}">
+                          <h4>JSON-LD</h4>
+                          <pre><code>${pretty_json(spec.result)}</code></pre>
+                        </div>
+                      </div>
+                    </li>
+                  % endif
+                % endfor
+              </ul>
+            </td>
+            % endif
+          </tr>
           % endfor
         </table>
         {#% if catdfn.postProcessing
@@ -126,7 +148,6 @@
         % endif#}
       </div>
     % endfor
-  </section>
   {#
   <section>
     <h2>Token Maps</h2>
@@ -164,26 +185,26 @@
   % elif key == 'inherit'
     <a href="#${value}-${tag_or_code}" class="chip-marc">${value} ${tag_or_code}</a>
   % elif isinstance(value, dict)
-    <table class="table table-condensed table-striped">
-        % for key, val in sorted(value.items())
-          % if not key.startswith('TODO')
+    <table class="table table-inner">
+      % for key, val in sorted(value.items())
+        % if not key.startswith('TODO')
           <tr>
-              <th>${key}</th>
-              <td>
-                % if isinstance(val, dict)
-                  % for k, v in sorted(val.items())
-                    % if not k.startswith('TODO')
-                    <i>${k}</i>: ${show_value(cat, key, k, v)}
-                    <br />
-                    % endif
-                  % endfor
-                % else
-                  ${show_value(None, None, key, val)}
-                % endif
-              </td>
+            <th class="semibold">${key}</th>
+            <td>
+              % if isinstance(val, dict)
+                % for k, v in sorted(val.items())
+                  % if not k.startswith('TODO')
+                  <i>${k}</i>: ${show_value(cat, key, k, v)}
+                  <br />
+                  % endif
+                % endfor
+              % else
+                ${show_value(None, None, key, val)}
+              % endif
+            </td>
           </tr>
-          % endif
-        % endfor
+        % endif
+      % endfor
     </table>
   % else
     ${value}
@@ -191,10 +212,10 @@
 % endmacro
 
 % macro show_dfn(cat, tag, items)
-  <table class="table table-condensed table-striped">
+  <table class="table table-inner">
     % for key, subdfn in items
       <tr>
-        <th><div id="${cat}-${tag}-${key}">${key}</div></th>
+        <th class="semibold"><span id="${cat}-${tag}-${key}">${key}</span></th>
         <td>
           % for k, v in sorted((subdfn or {'ignored': True}).items())
             % if not k.startswith('TODO') and v
