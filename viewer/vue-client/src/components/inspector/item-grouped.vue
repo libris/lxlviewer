@@ -37,6 +37,15 @@ export default {
       'settings',
       'status',
     ]),
+    groupedItems() {
+      return this.item.items;
+    },
+    showKeys() {
+      if (Object.keys(this.groupedItems).length > 1){
+        return true;
+      }
+      return false;
+    }
   },
   mounted() {
   },
@@ -81,13 +90,14 @@ export default {
 
     <ul class="ItemGrouped-list">
       <field
-      v-for="(value, key) in item.items"
+      v-for="(value, key) in groupedItems"
       :key="key"
       :entity-type="entityType" 
       :is-inner="false" 
       :is-locked="true" 
       :is-removable="false" 
       :is-grouped="true"
+      :show-key="showKeys"
       :field-key="key"
       :field-value="value"></field>
     </ul>  
