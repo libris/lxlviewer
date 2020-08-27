@@ -13,6 +13,9 @@ export default {
     image() {
       return require(`@/assets/img/${this.copy.image}`);
     },
+    imageAltText() {
+      return this.copy.image_alt_text;
+    },
     text() {
       return this.copy.text;
     },
@@ -22,7 +25,7 @@ export default {
 
 <template>
   <article class="panel panel-default Article">
-    <img :src="image" class="Article-featuredImg" title="Abstract XL Graphics"/>
+    <img :src="image" class="Article-featuredImg" :alt="imageAltText" title="Abstract XL Graphics"/>
     <div class="Article-content">
       <header class="Article-header">
         <h1 class="Article-title">{{ header }}</h1>
