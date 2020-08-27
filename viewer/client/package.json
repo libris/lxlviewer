@@ -26,6 +26,6 @@
     "watch": "npm run watch:id:less",
     "watch:id:less": "watch 'npm run app:id:less' static/less/",
     "app": "parallelshell 'npm run app:id:less'",
-    "app:id:less": "lessc --clean-css='--advanced' --autoprefix='defaults' static/less/main_id.less static/build/id.css"
+    "app:id:less": "lessc --clean-css='--advanced' --autoprefix='defaults' static/less/main_id.less static/build/id.css --source-map-map-inline"
   }
 }
