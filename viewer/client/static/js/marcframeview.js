@@ -1,7 +1,7 @@
 var isMarc = document.getElementById('marcframeview');
 
 if (isMarc) {
-  // TABS
+  // NAV-TABS
   var myTabs = document.querySelectorAll(".js-nav-tab");
 
   function myTabClicks(tabClickEvent) {
@@ -30,6 +30,26 @@ if (isMarc) {
     myTabs[i].addEventListener("click", myTabClicks)
   }
 
+  // RESPONSIVE NAV-TABS TOGGLE
+  var marcMain = document.querySelector('.js-marc-main');
+  var toggleNavTabsBtn = document.querySelector('.js-toggle-tabs-btn');
+  toggleNavTabsBtn.addEventListener('click', toggleNavTabs);
+  
+  function toggleNavTabs(e) {
+    var tabContent = document.querySelector('.js-tab-content');
+
+    function clickBtn() {
+      toggleNavTabsBtn.click();
+      tabContent.removeEventListener('click', clickBtn);
+    }
+
+    marcMain.classList.toggle('nav-tabs-open');
+    toggleAttribute('aria-expanded', toggleNavTabsBtn);
+    if (marcMain.classList.contains('nav-tabs-open')) {
+      // add listener to tab content to close it on click
+      tabContent.addEventListener('click', clickBtn);
+    }
+  }
 
   // TOGGLE EXAMPLES
   var allExamplesCheckbox = document.getElementById('js-toggle-all-checkbox');

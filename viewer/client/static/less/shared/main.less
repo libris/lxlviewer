@@ -10,7 +10,6 @@
 @import '../shared/login.less';
 @import '../shared/thing.less';
 @import '../shared/button-and-links.less';
-@import '../shared/flexbox.less';
 
 // ----------- BASE STYLES ----------
 @white: #ffffff;
@@ -209,14 +208,15 @@ footer {
 }
 
 // ----------- FORM ELEMENTS ----------------
-button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
-    color: #ffffff;
-    border: 0;
-    font-size: @base-font-size;
-    font-weight: 600;
-    padding: 0.5em 1.2em;
-    border-radius: 10px;
-    outline-offset: 0;
+button, .btn-primary, .btn-primary:hover, .btn-primary:focus,
+.btn-info, .btn-info:hover, .btn-info:focus {
+  color: #ffffff;
+  border: 0;
+  font-size: @base-font-size;
+  font-weight: 600;
+  padding: 0.5em 1.2em;
+  border-radius: 10px;
+  outline-offset: 2px;
 }
 
 input[type=checkbox]:focus, 

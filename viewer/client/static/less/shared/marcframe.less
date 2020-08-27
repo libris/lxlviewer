@@ -2,6 +2,7 @@ body#marcframeview {
   @menu-col-width: 200px;
   
   main {
+    width: 100%;
     margin-top: @navbar-height;
 
     @supports(position: sticky) {
@@ -21,7 +22,6 @@ body#marcframeview {
     top: @navbar-height;
     height: 100vh;
     max-height: 100vh;
-    padding: 0px;
     min-width: @menu-col-width;
     max-width: @menu-col-width;
     padding: 1em 0 8em 0;
@@ -52,7 +52,20 @@ body#marcframeview {
     }
   }
 
+  .toggle-tabs-btn {
+    display: none;
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+
+    i {
+      height: 20px;
+      transition: transform 0.2s ease;
+    }
+  }
+
   .content-col {
+    width: 100%;
     margin-left: @menu-col-width;
     
     @supports(position:sticky){
@@ -60,7 +73,19 @@ body#marcframeview {
     }
   }
 
+  .toggle-all-container {
+    padding: 0.5em 1em;
+    border: 1px solid @grey-light;
+    border-radius: 4px;
+
+    label {
+      margin: 0;
+    }
+  }
+
   table {
+    table-layout: fixed;
+  
     th, td {
       vertical-align: baseline;
     }
@@ -79,9 +104,11 @@ body#marcframeview {
 
     th {
       width: 130px;
-      max-width: 130px;
-      word-break: break-word;
       hyphens: auto;
+    }
+
+    td {
+      width: 100%;
     }
 
     tr:first-of-type > th, tr:first-of-type > td {
@@ -90,6 +117,7 @@ body#marcframeview {
   }
 
   .marc-tag {
+    width: 4em;
     background-color: @grey-lighter;
 
     .marc-anchor {
@@ -100,7 +128,7 @@ body#marcframeview {
     }
   }
 
-  .marc-tag, .marc-dfn, .marc-example {
+  .marc-tag, .marc-dfn {
     padding: 1em;
     border-width: 2px;
   }
@@ -110,12 +138,11 @@ body#marcframeview {
   }
 
   .marc-example {
-    border-top: 0;
-    padding-top: 0;
 
     .toggle-example-btn {
       float: right;
       border: 1px solid @black;
+      margin: 1em 0;
 
       i {
         transition: transform 0.2s ease;
@@ -149,6 +176,8 @@ body#marcframeview {
   dl {
     dd {
       padding-left: 10px;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
 
@@ -161,6 +190,82 @@ body#marcframeview {
     }
     a {
       line-height: 1.8;
+    }
+  }
+
+  @media screen and (max-width: @screen-md-min) {
+    .table-main > tbody > tr > th, 
+    .table-main > tbody > tr > td {
+      display: block;
+    }
+
+    .table-inner > tbody {
+      th {
+        width: 75px;
+        padding: 5px 2px;
+      }
+
+      td {
+        word-break: break-all;
+        padding: 5px 2px;
+      }
+    }
+
+    .marc-tag, .marc-dfn, .marc-example {
+      border-width: 0;
+    }
+
+    .marc-tag {
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: @screen-sm-min) {
+
+    .example-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .toggle-tabs-btn {
+      display: block;
+      z-index: 10;
+    }
+
+    .menu-col {
+      display: none;
+    }
+
+    .content-col {
+      margin-left: 0;
+    }
+
+    // small-screen tab-nav open state
+    .nav-tabs-open {
+      height: 75vh;
+
+      .toggle-tabs-btn > i {
+        transform: rotate(180deg);
+      }
+
+      .menu-col {
+        display: block;
+        min-width: 100%;
+        max-height: 100%;
+        padding: 0;
+      }
+
+      .content-col {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        max-height: 100vh;
+        overflow: hidden;
+      }
+
+      + footer {
+        display: none;
+      }
     }
   }
 }
