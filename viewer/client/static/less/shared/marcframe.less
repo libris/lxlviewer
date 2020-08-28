@@ -1,56 +1,42 @@
 body#marcframeview {
-  
+  @menu-col-width: 200px;
   
   main {
+    width: 100%;
     margin-top: @navbar-height;
+
+    @supports(position: sticky) {
+      margin-top: 0;
+    }
   }
-  
+
+  .navbar {
+    position: fixed; // fallback for IE11
+    position: sticky;
+    top: 0;
+  }
+
   .menu-col {
-    position: fixed;
-    left: 0px;
-    top: 0px;
+    position: fixed; // fallback for IE11
+    position: sticky;
+    top: @navbar-height;
     height: 100vh;
-    padding: 0px;
-    z-index: 0;
-  }
-  .content-col {
-    z-index: 0;
-    background-color: @bg-content;
-    padding-left: 3em;
-    > header {
-      margin-top: 50px;
-    }
-  }
-  .menu-col {
-    width: 230px;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    background-color: @bg-sidebars;
-    border: 1px solid #e3e3e3;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    height: 100%;
-    margin-top: @navbar-height;
-    padding: 1em 0 8em 0.2em;
-    a {
-      color: @black;
-    }
-    > ul li {
-      &:first-child {
-        margin-left: 10%;
-      }
-      &.active a {
-        background-color: @gray-lighter;
-      }
-    }
+    max-height: 100vh;
+    min-width: @menu-col-width;
+    max-width: @menu-col-width;
+    padding: 1em 0 8em 0;
+    margin-right: 2em;
+
     .tab-content {
       height: 100%;
-      border: solid @gray-lighter;
-      border-width: 0px 0px 1px 0px;
-      // max-height: 800px;
+      background-color: @white;
+      border: solid @grey-light;
+      border-width: 0 1px 1px 1px;
       overflow-y: scroll;
       padding-top: 1em;
+
       ul {
-        padding: 0px 0px 0px 2em;
+        padding: 0 0 0 1em;
         li {
           display: inline-block;
           width: 20%;
@@ -65,39 +51,136 @@ body#marcframeview {
       }  
     }
   }
-  .menu-col nav a {
-    display: block;
-    font-size: 0.8em;
-    margin: 0 0 0.05em;
-  }
-  
-  .has-navbar [id]:before {
-    display: block;
-    content: " ";
-    height: 50px;
-    margin-top: -50px;
+
+  .toggle-tabs-btn {
+    display: none;
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+
+    i {
+      height: 20px;
+      transition: transform 0.2s ease;
+    }
   }
 
-  .navbar {
-    position: fixed;
-    top: 0px;
-    left: 0px;
+  .content-col {
     width: 100%;
-    z-index: 998;
-    li.active > a {
-      background-color: darken(@brand-primary, 20%) !important;
+    margin-left: @menu-col-width;
+    
+    @supports(position:sticky){
+      margin-left: 0;
     }
   }
-  .marcframetable {
+
+  .toggle-all-container {
+    padding: 0.5em 1em;
+    border: 1px solid @grey-light;
+    border-radius: 4px;
+
+    label {
+      margin: 0;
+    }
+  }
+
+  table {
+    table-layout: fixed;
+  
+    th, td {
+      vertical-align: baseline;
+    }
+  }
+
+  .table-main {
     background-color: @white;
-    td {
-      padding: 10px 0;
+  }
+
+  .table-inner {
+    margin: 0;
+
+    th, td {
+      border-color: @grey-lighter;
     }
-    ul.example {
-      list-style: none;
-      padding: 0px 1em;
+
+    th {
+      width: 130px;
+      hyphens: auto;
+    }
+
+    td {
+      width: 100%;
+    }
+
+    tr:first-of-type > th, tr:first-of-type > td {
+      border-top: 0;
     }
   }
+
+  .marc-tag {
+    width: 4em;
+    background-color: @grey-lighter;
+
+    .marc-anchor {
+      display: block;
+      position: relative;
+      top: calc(0px - @navbar-height - 1em);
+      visibility: hidden;
+    }
+  }
+
+  .marc-tag, .marc-dfn {
+    padding: 1em;
+    border-width: 2px;
+  }
+
+  .marc-dfn {
+    border-bottom: 0;
+  }
+
+  .marc-example {
+
+    .toggle-example-btn {
+      float: right;
+      border: 1px solid @black;
+      margin: 1em 0;
+
+      i {
+        transition: transform 0.2s ease;
+      }
+    }
+
+    .example-list {
+      display: none;
+      clear: both;
+    }
+
+    &.expanded {
+      .example-list {
+        display: block;
+      }
+
+      .toggle-example-btn i {
+        transform: rotate(90deg);
+      }
+    }
+
+    pre {
+      margin-bottom: 2em;
+    }
+
+    h4 {
+      margin-top: 0;
+    }
+  }
+
+  dl {
+    dd {
+      padding-left: 10px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
   dd, td {
     .resourceType {
       .chip-class();
@@ -107,6 +190,82 @@ body#marcframeview {
     }
     a {
       line-height: 1.8;
+    }
+  }
+
+  @media screen and (max-width: @screen-md-min) {
+    .table-main > tbody > tr > th, 
+    .table-main > tbody > tr > td {
+      display: block;
+    }
+
+    .table-inner > tbody {
+      th {
+        width: 75px;
+        padding: 5px 2px;
+      }
+
+      td {
+        word-break: break-all;
+        padding: 5px 2px;
+      }
+    }
+
+    .marc-tag, .marc-dfn, .marc-example {
+      border-width: 0;
+    }
+
+    .marc-tag {
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: @screen-sm-min) {
+
+    .example-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .toggle-tabs-btn {
+      display: block;
+      z-index: 10;
+    }
+
+    .menu-col {
+      display: none;
+    }
+
+    .content-col {
+      margin-left: 0;
+    }
+
+    // small-screen tab-nav open state
+    .nav-tabs-open {
+      height: 75vh;
+
+      .toggle-tabs-btn > i {
+        transform: rotate(180deg);
+      }
+
+      .menu-col {
+        display: block;
+        min-width: 100%;
+        max-height: 100%;
+        padding: 0;
+      }
+
+      .content-col {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        max-height: 100vh;
+        overflow: hidden;
+      }
+
+      + footer {
+        display: none;
+      }
     }
   }
 }

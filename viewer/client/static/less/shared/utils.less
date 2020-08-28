@@ -25,3 +25,38 @@
 .u-pos-absolute {
   position: absolute;
 }
+
+// FLEXBOX
+.flex {
+  display: flex;
+
+  &.column {
+    flex-direction: column;
+  }
+
+  &.wrap {
+    flex-wrap: wrap;
+  }
+
+  .fill-available {
+    flex: 1;
+  }
+
+  &.align-center {
+    align-items: center;
+  }
+
+  &.align-baseline {
+    align-items: baseline;
+  }
+
+  &.justify-between {
+    justify-content: space-between;
+  }
+
+  &.column-sm-min {
+    @media screen and (max-width: @screen-sm-min) {
+      flex-direction: column;
+    }
+  }
+}
