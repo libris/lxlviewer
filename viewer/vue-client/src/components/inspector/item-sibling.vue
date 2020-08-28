@@ -454,9 +454,9 @@ export default {
           :is-large="false"
         />
 
-        <div class="ItemSibling-action">
-          <div class="ItemSibling-placeHolder"></div>
-        </div>
+        <entity-action
+          :placeholder="true"
+        />
       </div>
     </div>
   
@@ -612,6 +612,9 @@ export default {
   }
 
   &-actions {
+    div:not(:first-child) {
+      margin-left: 0.4rem;
+    }
     display: flex;
     @media (max-width: @screen-sm) {
       align-items: baseline;

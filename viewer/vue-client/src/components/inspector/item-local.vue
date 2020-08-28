@@ -681,6 +681,9 @@ export default {
   }
 
   &-actions {
+    div:not(:first-child) {
+      margin-left: 0.4rem;
+    }
     display: flex;
     @media (max-width: @screen-sm) {
       align-items: baseline;

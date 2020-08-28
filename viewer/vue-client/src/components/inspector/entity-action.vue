@@ -9,6 +9,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    placeholder: {
+      type: Boolean,
+      default: false,
+    },
     description: {
       type: String,
       default: '',
@@ -66,7 +70,7 @@ export default {
 </script>
 
 <template>
-  <div class="EntityAction" :class="{'action-larger': isLarge, 'has-parent-hovered': parentHovered }"
+  <div class="EntityAction" :class="{'action-larger': isLarge, 'has-parent-hovered': parentHovered, 'is-placeholder': placeholder }"
     role="button"
     :aria-label="label | translatePhrase"
     tabindex="0"
@@ -92,10 +96,14 @@ export default {
 .EntityAction {
   display: inline-block;
   transition: color .25s ease;
-  color: @grey-light;
+  color: @grey-light-transparent;
   .action-label {
     display: none;
     color: inherit;
+  }
+  &.is-placeholder {
+    opacity: 0;
+    cursor: default;
   }
   &.has-parent-hovered {
     color: @grey-darker;
