@@ -7,9 +7,9 @@
     "bootstrap": "^3.3.7",
     "concat-cli": "^4.0.0",
     "less": "^3.12.2",
+    "less-plugin-autoprefix": "^2.0.0",
     "less-plugin-clean-css": "^1.5.1",
     "natives": "~1.1.6",
-    "parallelshell": "~1.0.4",
     "run-script-os": "^1.1.1",
     "uglify-js": "^2.8.29"
   },
@@ -25,6 +25,6 @@
     "watch": "npm run watch:id:less",
     "watch:id:less": "watch 'npm run app:id:less' static/less/",
     "app": "npm run app:id:less",
-    "app:id:less": "lessc --clean-css='--advanced' static/less/main_id.less static/build/id.css --source-map=static/build/id.css.map"
+    "app:id:less": "lessc --clean-css='--advanced' --autoprefix='defaults' static/less/main_id.less static/build/id.css --source-map-map-inline"
   }
 }

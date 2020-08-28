@@ -4,16 +4,15 @@ body > .navbar {
   margin: 0;
   z-index: 900;
   background-color: @bg-navbar;
-  font-weight: 600;
   border: 0;
   border-radius: 0;
+  &:extend(.semibold);
 
   @media screen and (max-width: @screen-sm-min) {
     padding: 0 20px;
   }
 
   .navbar-header {
-
     .navbar-brand {
       color: @text-brand;
       font-size: 20px;
@@ -68,7 +67,6 @@ body > .navbar {
         color: @text-navbar-hover;
       }
     }
-
   }
 
   .navbar-toggle {

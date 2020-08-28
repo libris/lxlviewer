@@ -17,19 +17,22 @@
 @brand-darker: darken(@brand-primary, 10%);
 @brand-faded: fade(@brand-primary, 10%);
 
-@brand-contrast: #F7A07B;
+@brand-info: #F7A07B;
 @bg-site: #F9F9F9;
 @bg-img: none;
 @bg-content: @white;
+
+@color-class: #1278A1;
+@color-prop: #1F7A7A;
+@color-prop-list: @grey;
+@color-ext: #d51;
 
 @bg-navbar: @brand-primary;
 @text-navbar: fade(@white, 90%);
 @text-navbar-hover: @white;
 @text-brand: @white;
 @text-brand-env: @white;
-@navbar-active-color: @brand-contrast;
-
-@bg-sidebars: darken(@white, 5%);
+@navbar-active-color: @brand-info;
 
 @bg-footer: #10100D;
 @text-footer: @white;
@@ -37,19 +40,11 @@
 
 @bg-jumbotron: transparent;
 @bg-jumbotron-image: none;
-@border-footer: @grey-light;
-@color-class: @happy-blue;
-@color-prop: @happy-magenta;
-@color-prop-list: @grey;
-@color-ext: #d51;
-@color-id: #c7254e;
+
 @panel-border-radius: 0px;
 @thing-header-bg: lighten(@bg-navbar,15%);
 @thing-header-text: @white;
 @neutral-color: @white;
-
-@color-headers: #555;
-@color-headers-text: #fff;
 
 @badge-color: @grey;
 
@@ -63,8 +58,9 @@
   }
 
   .list-group-item {
-    font-weight: 600;
     color: @link-color;
+    &:extend(.semibold);
+
 
     &:hover,
     &:focus {

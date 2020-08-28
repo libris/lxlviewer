@@ -15,19 +15,21 @@
   background-color: #ffe;
   border: 1px dotted #ccc;
   font-family: Consolas, Lucida Console, monospace;
-  padding: 0 0.2em;
+  padding: 0 0.5em;
   margin: 0.1em 0;
 }
 
 .vocab-item-style(@color, @border-style) {
   text-align: left !important;
-  background-color: fadeout(@color, 90%);
+  background-color: fadeout(@color, 92%);
   border: solid fadeout(@color, 85%);
   border-width: 0px 1px 1px 1px;
   border-radius: 5px;
-  padding: 0px 5px;
+  padding: 1px 6px;
+  margin: 0 2px;
   font-weight: normal;
   color: @color;
+
   &:hover {
     color: darken(@color, 10%);
   }

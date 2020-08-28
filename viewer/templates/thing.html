@@ -149,7 +149,7 @@
 
 % macro thing_list_item(thing)
 <div class="thing-list-item flex wrap column-sm-min">
-  <span class="title fill-available"><a href="${view_url(thing[ID])}">${g.vocab.get_label_for(thing)}</a></span>
+  <span class="semibold fill-available"><a href="${view_url(thing[ID])}">${g.vocab.get_label_for(thing)}</a></span>
   <span class="class">
     % if isinstance(thing[TYPE], list)
     <ul class="list-unstyled">
@@ -370,7 +370,7 @@
         % endif
         % if as_chip 
         <div class="flex">
-          <a href="${thing_url}" class="thing-link">
+          <a href="${thing_url}" class="thing-link semibold">
             % set label = g.vocab.get_label_for(thing)
             % if label 
               % if isinstance(label, unicode)
@@ -405,7 +405,7 @@
             % if (k in g.vocab.index or k != REVERSE)
               % set p = g.vocab.index[k] or {'curie': k}
               <tr>
-              <td class="term-label">
+              <td class="term-label semibold">
                 ${termref(p)}
               </td>
               <td>
