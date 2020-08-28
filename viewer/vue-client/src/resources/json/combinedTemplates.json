@@ -529,7 +529,24 @@
           ],
           "instanceOf": {
             "@type": "Text",
-            "classification": [],
+            "classification": [
+              {
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
             "contribution": [
               {
                 "@type": "PrimaryContribution",
@@ -1914,7 +1931,24 @@
           ],
           "instanceOf": {
             "@type": "Text",
-            "classification": [],
+            "classification": [
+              {
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
             "contribution": [
               {
                 "@type": "PrimaryContribution",
@@ -2482,16 +2516,6 @@
                 "code": "",
                 "edition": "full",
                 "editionEnumeration": "23/swe"
-              },
-              {
-                "@type": "Classification",
-                "code": "",
-                "inScheme": {
-                  "@type": "ConceptScheme",
-                  "@id": "https://id.kb.se/term/kssb/8",
-                  "code": "kssb",
-                  "version": "8"
-                }
               },
               {
                 "@type": "Classification",
