@@ -74,7 +74,6 @@ export default {
     role="button"
     :aria-label="label | translatePhrase"
     tabindex="0"
-    ref="linkAction"
     v-tooltip.top="translate(description)"
     @click="action()"
     @keyup.enter="action()"

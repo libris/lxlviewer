@@ -374,7 +374,7 @@ export default {
     },
     extractDialogActive(val) {
       if (!val) {
-        this.$refs.linkAction.focus();
+        this.$refs.linkAction.$el.focus();
       }
     },
   },
@@ -467,6 +467,7 @@ export default {
           label="Create/link"
           description="Create/link"
           icon="link"
+          ref="linkAction"
           :parent-hovered="isHovered"
           :is-large="largerActions"
         />
