@@ -30,6 +30,9 @@
   "reverse": {
     "mainForm": [
       "@reverse/broader"
+    ],
+    "hidden": [
+      "@reverse/itemOf"
     ]
   }
 }
