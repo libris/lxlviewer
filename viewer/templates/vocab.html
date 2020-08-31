@@ -2,9 +2,9 @@
 
 {% block title %}${voc.label(voc.vocab, lang=LANG)}{% endblock %}
 
-{% block bodyattrs %}id="vocab"{% endblock %}
+{% block bodyattrs %}class="nav-sticky" id="vocab"{% endblock %}
 
-{% block containerclass %}container-fluid{% endblock %}
+{% block containerclass %}container-fluid flex js-nav-tabs{% endblock %}
 {% block navcontainerclass %} container {% endblock %}
 
 % set DOMAIN = union(SCHEMA.domainIncludes, RDFS.domain)
@@ -13,53 +13,73 @@
 
 
 % block content
-  <div class="row">
-    <div class="col-sm-3 hidden-xs menu-col">
-      <nav>
-        <section class="nav-classes">
-          <b>Classes</b>
+  <nav class="nav-col" id="nav-tabs">
+    <ul class="nav nav-tabs semibold" role="tablist">
+      <li role="presentation" class="nav-tab js-nav-tab active">
+        <a href="#tab-classes" aria-controls="tab-classes" role="tab" data-toggle="tab">Classes</a>
+      </li>
+      <li role="presentation" class="nav-tab js-nav-tab">
+        <a href="#tab-props" aria-controls="tab-props" role="tab" data-toggle="tab">Properties</a>
+      </li>
+    </ul>
+    <div class="tab-content js-tab-content">
+      <div role="tabpanel" class="tab-pane active" id="tab-classes">
+        <ul class="list-unstyled">
           % for rclass in voc.classes
-          <a href="${link(rclass)}">${rclass.qname()}</a>
+            <li>
+              <a href="${link(rclass)}">${rclass.qname()}</a>
+            </li>
           % endfor
-        </section>
-        <section class="nav-properties">
-          <b>Properties</b>
+        </ul>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="tab-props">
+        <ul class="list-unstyled">
           % for rprop in voc.properties
-          <a href="${link(rprop)}">${rprop.qname()}</a>
+            <li>
+              <a href="${link(rprop)}">${rprop.qname()}</a>
+            </li>
           % endfor
-        </section>
-      </nav>
+        </ul>
+      </div>
     </div>
-    
-    <div class="col-sm-9 col-sm-offset-3 content-col">
-      <header>
-      % for vocab in voc.vocabs
-        <h1><a href="${vocab}">
-            ${voc.label(voc.resource(vocab)) or "&lt;%s>" % vocab}</a>
-        </h1>
-        <p>${voc.value(voc.resource(vocab), union(DCTERMS.description, RDFS.comment))}</p>
+  </nav>
+
+  <button class="toggle-tabs-btn js-toggle-tabs-btn btn btn-info" 
+    aria-label="visa eller dölj navigation" 
+    aria-controls="nav-tabs" 
+    aria-expanded="false">
+    <i class="fa fa-fw fa-chevron-up"></i>
+  </button>
+  
+  <div class="content-col flex column">
+    <header>
+    % for vocab in voc.vocabs
+      <h1>
+          ${voc.label(voc.resource(vocab)) or "&lt;%s>" % vocab}
+      </h1>
+      <p>${voc.value(voc.resource(vocab), union(DCTERMS.description, RDFS.comment))}</p>
+    % endfor
+    </header>
+
+    <section>
+      <h2>Classes</h2>
+      % for rclass in voc.classes
+        ${classdefinition(rclass)}
       % endfor
-      </header>
+    </section>
 
-      <section>
-        <h2 class="page-header">Classes</h2>
-        % for rclass in voc.classes
-          ${classdefinition(rclass)}
-        % endfor
-      </section>
-
-      <section>
-        <h2 class="page-header">Properties</h2>
-        % for rprop in voc.properties
-          ${propertydefinition(rprop)}
-        % endfor
-      </section>
-    </div>
+    <section>
+      <h2>Properties</h2>
+      % for rprop in voc.properties
+        ${propertydefinition(rprop)}
+      % endfor
+    </section>
   </div>
 % endblock
 
 % macro classdefinition(rclass)
-  <article id="${rclass.qname()}" class="panel panel-default rdf-class">
+  <article class="panel panel-default rdf-class">
+    <span id="${rclass.qname()}" class="vocab-anchor class-anchor" aria-hidden="true"></span>
     <header class="panel-heading">
       <h3 class="panel-title ${rclass.value(VS.term_status)}">${rclass.qname()}</h3>
     </header>
@@ -141,7 +161,7 @@
         % if any(rclass.subjects(RDF.type))
           <dt>Instances</dt>
           <dd>
-            <ul class="items rdf-instances">
+            <ul class="list-unstyled items rdf-instances">
               % for i in sorted(rclass.subjects(RDF.type))
               <li><a href="${link(i)}">${i.qname()}</a></li>
               % endfor
@@ -182,7 +202,8 @@
 % endmacro
 
 % macro propertydefinition(rprop)
-  <article id="${rprop.qname()}" class="panel panel-default rdf-property">
+  <article class="panel panel-default rdf-property">
+    <span id="${rprop.qname()}" class="vocab-anchor property-anchor" aria-hidden="true"></span>
     <header class="panel-heading">
       <h2 class="panel-title ${rprop.value(VS.term_status) or ''}">${rprop.qname()}</h2>
     </header>

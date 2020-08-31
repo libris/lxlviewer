@@ -42,6 +42,10 @@
   i, p {
     color: @gray-darker;
   }
+
+  @media screen and (max-width: @screen-sm-min) {
+    overflow-wrap: break-word;
+  }
 }
 
 .items .ext a:after {
@@ -54,21 +58,20 @@
 .items > li {
   list-style: none;
   display: inline;
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
-.items > li {
+.items > li a {
   .vocab-item-style(@color-class, solid);
-  display: inline-block;
   margin-bottom: 4px;
 }
 
 .items {
   &.baseproperties, &.subproperties {
-    li {
+    li a {
       .vocab-item-style(@color-prop, solid);
     }
   }
-  li.ext {
+  li.ext a {
     .vocab-item-style(@color-ext, dashed);
   }
   .ext p, .baseproperties p, .loc p {
