@@ -315,8 +315,16 @@ export default {
       }
 
       const basePostData = cloneDeep(this.inspector.data);
-      const changeList = [];
 
+      // This part checks if the template should include the work or not (to not overwrite a link)
+      if (basePostData.mainEntity.hasOwnProperty('instanceOf')) {
+        const basePostWork = basePostData.mainEntity.instanceOf;
+        if (Object.keys(basePostWork).length === 1 && basePostWork.hasOwnProperty('@id')) {
+          delete template.mainEntity.instanceOf;
+        }
+      }
+
+      const changeList = [];
       function applyChangeList(templatePath, targetPath = null) {
         if (targetPath === null) {
           // targetPath is used when the target path differs from the templatePath
