@@ -619,12 +619,6 @@ export default {
       v-if="showKey && !isInner" >
       <div class="Field-labelWrapper">
         <div v-if="!isLocked" class="Field-actions">
-          <div class="Field-reverse" v-if="isReverseProperty">
-            <i class="fa fa-exchange fa-fw icon icon--sm"
-              v-tooltip.top="translate('Incoming link')"
-            ></i>
-          </div>
-
           <div class="Field-action Field-remove" 
             v-show="!locked && isRemovable" 
             :class="{'disabled': activeModal}">

@@ -23,6 +23,10 @@ export default {
       type: String,
       default: '',
     },
+    parentPath: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -37,8 +41,26 @@ export default {
       'settings',
       'status',
     ]),
+    groupedItems() {
+      return this.item.items;
+    },
+    showKeys() {
+      if (Object.keys(this.groupedItems).length > 1) {
+        return true;
+      }
+      return false;
+    },
+    isInForm() {
+      if (this.parentPath.indexOf('mainEntity') === 0) {
+        return true;
+      }
+      return false;
+    },
   },
   mounted() {
+    if (this.isInForm) {
+      this.expand();
+    }
   },
   watch: {
   },
@@ -70,7 +92,7 @@ export default {
     @focus="addFocus()"
     @blur="removeFocus()">
 
-    <strong class="ItemGrouped-heading">
+    <strong class="ItemGrouped-heading" v-if="!isInForm">
       <div class="ItemGrouped-label"
         :class="{'is-locked': isLocked }"
         @click="toggleExpanded()">
@@ -79,15 +101,17 @@ export default {
       </div>
     </strong>
 
-    <ul class="ItemGrouped-list">
+    <ul class="ItemGrouped-list"
+      :class="{'has-hidden-keys' : !showKeys}">
       <field
-      v-for="(value, key) in item.items"
+      v-for="(value, key) in groupedItems"
       :key="key"
       :entity-type="entityType" 
       :is-inner="false" 
       :is-locked="true" 
       :is-removable="false" 
       :is-grouped="true"
+      :show-key="showKeys"
       :field-key="key"
       :field-value="value"></field>
     </ul>  
@@ -153,6 +177,10 @@ export default {
 
     .is-expanded & {
       display: block;
+    }
+
+    &.has-hidden-keys {
+      margin-left: -1em;
     }
   }
 }
