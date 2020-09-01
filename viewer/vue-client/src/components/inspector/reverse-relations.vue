@@ -84,7 +84,7 @@ export default {
           this.panelQuery._sort = 'heldBy.@id';
         }
 
-        if (this.mainEntity.reverseLinks && this.recordType !== 'Agent') {
+        if (this.mainEntity.reverseLinks && (this.recordType === 'Work' || this.recordType === 'Concept')) {
           this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
           this.checkingRelations = false;
         } else {
