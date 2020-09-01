@@ -858,6 +858,18 @@
               "label": ""
             }
           ],
+          "associatedMedia": [
+            {
+              "@type": "MediaObject",
+              "uri": [
+                ""
+              ],
+              "marc:publicNote": [
+                ""
+              ]
+            }
+          ],
+          "otherPhysicalFormat": [],
           "instanceOf": {
             "@type": "Text",
             "language": [{
