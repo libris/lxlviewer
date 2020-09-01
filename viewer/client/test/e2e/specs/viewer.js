@@ -121,11 +121,11 @@ describe('LXL viewer', () => {
       })
 
       it('Sidenav Should show a menu of categories', (client) => {
-        client.expect.element('.menu-col .nav-tabs').to.be.present
+        client.expect.element('.nav-col .nav-tabs').to.be.present
       })
 
       it('Sidenav Should initially show BIB fields', (client) => {
-        client.expect.element('.menu-col .nav-tabs .active a').text.to.equal('bib')
+        client.expect.element('.nav-col .nav-tabs .active a').text.to.equal('bib')
         client.expect.element('#tab-bib').to.be.visible
         client.expect.element('#tab-auth').to.not.be.visible
         client.expect.element('#tab-hold').to.not.be.visible
@@ -150,11 +150,11 @@ describe('LXL viewer', () => {
       })
 
       it('Sidenav should show classes', (client) => {
-        client.expect.element('.menu-col .nav-classes').to.be.present
+        client.expect.element('.nav-col .nav-classes').to.be.present
       })
 
       it('Sidenav should show properties', (client) => {
-        client.expect.element('.menu-col .nav-properties').to.be.present
+        client.expect.element('.nav-col .nav-properties').to.be.present
       })
 
     })

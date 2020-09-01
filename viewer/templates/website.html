@@ -118,7 +118,7 @@
         % endif
         <span class="scheme-item-info">
           % if g.site.title == 'id.kb.se'
-          <a href="${ obs.object['@id'] }">
+          <a href="${ view_url(obs.object['@id']) }">
               Mer om ${show_label(obs.object)}
           </a>
           % else

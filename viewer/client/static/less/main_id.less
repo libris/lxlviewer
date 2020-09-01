@@ -25,7 +25,7 @@
 @color-class: #1278A1;
 @color-prop: #1F7A7A;
 @color-prop-list: @grey;
-@color-ext: #d51;
+@color-ext: #7537AB;
 
 @bg-navbar: @brand-primary;
 @text-navbar: fade(@white, 90%);
@@ -47,6 +47,114 @@
 @neutral-color: @white;
 
 @badge-color: @grey;
+
+// SHARED LAYOUT STYLES
+
+.nav-sticky {
+  main {
+    width: 100%;
+    margin-top: @navbar-height;
+
+    @supports(position: sticky) {
+      margin-top: 0;
+    }
+  }
+
+  .navbar {
+    position: fixed; // fallback for IE11
+    position: sticky;
+    top: 0;
+  }
+}
+
+// nav-tabs
+
+.nav-col {
+  position: fixed; // fallback for IE11
+  position: sticky;
+  top: @navbar-height;
+  height: 100vh;
+  max-height: 100vh;
+  padding: 1em 0 8em 0;
+  margin-right: 2em;
+
+  .tab-content {
+    height: 100%;
+    background-color: @white;
+    border: solid @grey-light;
+    border-width: 0 1px 1px 1px;
+    overflow-y: scroll;
+    padding-top: 1em;
+
+    ul {
+      padding: 0 0 0 1em;
+      li {
+        a {
+          padding: 0px;
+          text-align: center;
+        }
+        &.active {
+          background-color: @gray-lighter;
+        }
+      }  
+    }  
+  }
+}
+
+.toggle-tabs-btn {
+  display: none;
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+
+  i {
+    height: 20px;
+    transition: transform 0.2s ease;
+  }
+}
+
+@media screen and (max-width: @screen-sm-min) {
+  .nav-col {
+    display: none;
+  }
+
+  .content-col {
+    margin-left: 0!important;
+  }
+
+  .toggle-tabs-btn {
+    display: block;
+    z-index: 10;
+  }
+
+  // small-screen tab-nav open state
+  .nav-tabs-open {
+    height: 75vh;
+  
+    .toggle-tabs-btn > i {
+      transform: rotate(180deg);
+    }
+  
+    .nav-col {
+      display: block;
+      min-width: 100%!important;
+      max-height: 100%;
+      padding-bottom: 0;
+    }
+  
+    .content-col {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+  
+    + footer {
+      display: none;
+    }
+  }
+}
 
 // website.html styles
 
