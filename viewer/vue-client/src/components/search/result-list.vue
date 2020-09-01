@@ -61,7 +61,7 @@ export default {
     v-if="results.length > 0">
     <result-list-item class="ResultList-item"
       :database="getDatabase(index)" 
-      :show-detailed="!compact"
+      :show-compact="compact"
       :focus-data="item" 
       :import-item="getImportItem(index)" v-for="(item, index) in results" 
       :key="item['@id']"

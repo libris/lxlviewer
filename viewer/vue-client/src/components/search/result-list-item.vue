@@ -12,7 +12,7 @@ export default {
   mixins: [LensMixin, ResultMixin],
   props: {
     focusData: {},
-    showDetailed: {
+    showCompact: {
       type: Boolean,
       default: false,
     },
@@ -65,24 +65,30 @@ export default {
     isLibrisResource() {
       return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
     },
+    showKeysText() {
+      if (this.showCompact) {
+        return this.showAllKeys ? 'Hide properties' : 'Show properties';
+      }      
+      return this.showAllKeys ? 'Show fewer' : 'Show more';
+    },
   },
   methods: {
     setHiddenDetailsNumber(value) {
       this.hiddenDetailsNumber = value;
+    },
+    toggleShowKeys() {
+      this.showAllKeys = !this.showAllKeys;
     },
   },
   components: {
     TagSwitch,
     ReverseRelations,
   },
-  mounted() { 
-  },
 };
 </script>
 
 <template>
-  <li class="ResultItem ResultItem--detailed" 
-    v-if="showDetailed">
+  <li class="ResultItem" :class="{'ResultItem--compact' : showCompact}">
     <entity-summary 
       @hiddenDetailsNumber="setHiddenDetailsNumber"
       :focus-data="focusData" 
@@ -91,12 +97,15 @@ export default {
       :import-item="importItem" 
       :exclude-components="isImport ? ['id'] : []"
       :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
+      :key-display-limit="showCompact ? 0 : 5"
       @import-this="importThis()"
       :valueDisplayLimit=3>
     </entity-summary>
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
-        <span v-if="hiddenDetailsNumber > 1" class="ResultItem-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
+        <span v-if="hiddenDetailsNumber > 1" class="ResultItem-showMore" @click="toggleShowKeys">
+          {{ showKeysText | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}
+        </span>
       </div>
       <div class="ResultItem-tags" v-if="user.isLoggedIn && isImport === false && recordType === 'Instance'">
         <tag-switch :document="focusData" class="" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
@@ -109,62 +118,36 @@ export default {
         </reverse-relations>
       </div>
     </div>
-  </li>
-  <li class="ResultItem ResultItem--compact" v-else-if="!showDetailed">
-    <h3 class="ResultItem-title" 
-      :class="{'ResultItem-title--imported' : isImport}"
-      :title="header.join(', ')" 
-      v-on:click="importThis()" 
-      v-if="isImport">
-      <i class="fa fa-external-link" aria-hidden="true"></i> {{ header.join(', ') }}
-    </h3>
-    <h3 class="ResultItem-title header">
-      <router-link class="ResultItem-link"
-        v-if="isLibrisResource && !isImport"  
-        :title="header.join(', ')" 
-        :to="focusData.meta['@id'] | asFnurgelLink">{{ header.join(', ') }}
-      </router-link>
-      <a class="ResultItem-link"
-        v-if="!isLibrisResource && !isImport" 
-        :title="header.join(', ')" 
-        :href="focusData['@id'] | convertResourceLink">{{ header.join(', ') }}
-      </a>
-    </h3>
-    <span class="ResultItem-category uppercaseHeading--light" :title="categorization.join(', ')">
-      {{categorization.join(', ')}}
-    </span>
-  </li>
+  </li>  
 </template>
 
 <style lang="less">
 
 .ResultItem {
-  &--detailed {
-    display: flex;
-    flex-direction: column;
-    list-style: none;
-    margin-bottom: 0.5em;
-    padding: 0.5em 1em 0.25em 1em;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
-    transform: translateX(0);
-    transition: transform .2s cubic-bezier(0.21, 0.21, 0.62, 1.23);
 
-    & .EntitySummary {
-      justify-content: start;
-      padding: 0;
-      min-width: 0;
-    }
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin-bottom: 0.5em;
+  padding: 0.5em 1em 0.25em 1em;
+  background-color: @white;
+  border: 1px solid @grey-lighter;
+  transform: translateX(0);
+  transition: transform .2s cubic-bezier(0.21, 0.21, 0.62, 1.23);
 
-    &.is-highlighted {
-      transform: translateX(25px);
-      border: 1px solid @grey-light;  
-    }
+  & .EntitySummary {
+    justify-content: start;
+    padding: 0;
+    min-width: 0;
+  }
+
+  &.is-highlighted {
+    transform: translateX(25px);
+    border: 1px solid @grey-light;  
   }
 
   &--compact {
     display: flex;
-    align-items: center;
     margin: -1px 0 0 0;
     background-color: @white;
     border: 1px solid @grey-lighter;

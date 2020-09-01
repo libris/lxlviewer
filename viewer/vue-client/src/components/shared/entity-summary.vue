@@ -220,6 +220,11 @@ export default {
       } return false;
     },
   },
+  watch: {
+    hiddenDetailsNumber(newValue) {
+      this.$emit('hiddenDetailsNumber', newValue);
+    },
+  },
   mounted() {
     this.$nextTick(() => {
       this.$emit('hiddenDetailsNumber', this.hiddenDetailsNumber);
