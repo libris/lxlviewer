@@ -2538,6 +2538,16 @@
                   "code": "kssb",
                   "version": "8"
                 }
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
               }
             ],
             "additionalClassificationDdc": [{
