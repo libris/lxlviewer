@@ -6,6 +6,7 @@
 
 {% block containerclass %}container-fluid flex js-nav-tabs{% endblock %}
 {% block navcontainerclass %} container {% endblock %}
+{% block skiplinktarget %} #content-col {% endblock %}
 
 % block scripts
 % endblock
@@ -19,18 +20,18 @@
         {% else %}
           <li role="presentation" class="nav-tab js-nav-tab">
         {% endif %}
-          <a href="#tab-${cat}" aria-controls="tab-${cat}" role="tab" data-toggle="tab">${cat}</a>
+          <a href="#tabpanel-${cat}" aria-controls="tabpanel-${cat}" role="tab" data-toggle="tab" id="tab-${cat}">${cat}</a>
         </li>
       % endfor
     </ul>
     <div class="tab-content js-tab-content">
       % for cat, catdfn in mf.marc_categories()
         {% if cat == 'bib' %}
-          <div role="tabpanel" class="tab-pane active" id="tab-${cat}">
+          <div role="tabpanel" class="tab-pane active" id="tabpanel-${cat}">
         {% else %}
-          <div role="tabpanel" class="tab-pane" id="tab-${cat}">
+          <div role="tabpanel" class="tab-pane" id="tabpanel-${cat}">
         {% endif %}
-          <ul>
+          <ul aria-labelledby="tab-${cat}">
             % for tag, kind, dfn in mf.fields(catdfn)
               <li>
                 <a href="#${cat}-${tag}">${tag}</a>
@@ -46,10 +47,10 @@
     aria-label="visa eller dölj navigation" 
     aria-controls="nav-tabs" 
     aria-expanded="false">
-    <i class="fa fa-fw fa-chevron-up"></i>
+    <span class="fa fa-fw fa-chevron-up" aria-hidden="true"></span>
   </button>
 
-  <div class="content-col">
+  <div class="content-col" id="content-col">
     <div class="flex wrap justify-between align-baseline">
       <header>
         <h1>MARC-mappningar</h1>
@@ -99,7 +100,7 @@
                                 ${show_dfn(cat, tag, sorted(subdfn.items()))}
                               % elif isinstance(subdfn, dict)
                                 % for k, v in sorted(subdfn.items())
-                                  <i>${k}</i>: ${show_value(cat, code, k, v)}
+                                  <span class="italic">${k}</span>: ${show_value(cat, code, k, v)}
                                   <br />
                                 % endfor
                               % else
@@ -115,14 +116,14 @@
                 % if dfn._spec
                   <div class="marc-example" aria-expanded="false">
                     <button class="btn-default toggle-example-btn js-toggle-example-btn">Visa kodexempel
-                      <i class="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
+                      <span class="fa fa-fw fa-chevron-right" aria-hidden="true"></span>
                     </button>
                     <ul class="example-list js-example-list" aria-hidden="true">
                       % for spec in dfn._spec
                         % if spec.source and spec.result
                           {% set example_col = 4 if spec.normalized else 6  %}
                           <li>
-                            <p>Example{% if spec.name %}: <i>${spec.name}</i>{% endif %}</p>
+                            <p>Example{% if spec.name %}: <span class="italic">${spec.name}</span>{% endif %}</p>
                             <div class="row">
                               <div class="col-lg-${example_col}">
                                 <h4>MARC</h4>
@@ -130,7 +131,7 @@
                               </div>
                               % if spec.normalized
                                 <div class="col-lg-${example_col}">
-                                  <p><i>Normalized when converted back from JSON-LD:</i></p>
+                                  <p><span class="italic">Normalized when converted back from JSON-LD:</span></p>
                                   <pre><code>${pretty_json(spec.normalized)}</code></pre>
                                 </div>
                               % endif
@@ -200,7 +201,7 @@
               % if isinstance(val, dict)
                 % for k, v in sorted(val.items())
                   % if not k.startswith('TODO')
-                  <i>${k}</i>: ${show_value(cat, key, k, v)}
+                  <span class="italic">${k}</span>: ${show_value(cat, key, k, v)}
                   <br />
                   % endif
                 % endfor
@@ -225,7 +226,7 @@
         <td>
           % for k, v in sorted((subdfn or {'ignored': True}).items())
             % if not k.startswith('TODO') and v
-              <i>${k}</i>: ${show_value(cat, key, k, v)}
+            <span class="italic">${k}</span>: ${show_value(cat, key, k, v)}
               <br />
             % endif
           % endfor

@@ -6,6 +6,7 @@
 
 {% block containerclass %}container-fluid flex js-nav-tabs{% endblock %}
 {% block navcontainerclass %} container {% endblock %}
+{% block skiplinktarget %} #content-col {% endblock %}
 
 % set DOMAIN = union(SCHEMA.domainIncludes, RDFS.domain)
 % set RANGE = union(SCHEMA.rangeIncludes, RDFS.range)
@@ -16,15 +17,15 @@
   <nav class="nav-col" id="nav-tabs">
     <ul class="nav nav-tabs semibold" role="tablist">
       <li role="presentation" class="nav-tab js-nav-tab active">
-        <a href="#tab-classes" aria-controls="tab-classes" role="tab" data-toggle="tab">Classes</a>
+        <a href="#tabpanel-classes" aria-controls="tabpanel-classes" role="tab" data-toggle="tab" id="tab-classes">Classes</a>
       </li>
       <li role="presentation" class="nav-tab js-nav-tab">
-        <a href="#tab-props" aria-controls="tab-props" role="tab" data-toggle="tab">Properties</a>
+        <a href="#tabpanel-props" aria-controls="tabpanel-props" role="tab" data-toggle="tab" id="tab-props">Properties</a>
       </li>
     </ul>
     <div class="tab-content js-tab-content">
-      <div role="tabpanel" class="tab-pane active" id="tab-classes">
-        <ul class="list-unstyled">
+      <div role="tabpanel" class="tab-pane active" id="tabpanel-classes">
+        <ul class="list-unstyled" aria-labelledby="tab-classes">
           % for rclass in voc.classes
             <li>
               <a href="${link(rclass)}">${rclass.qname()}</a>
@@ -32,8 +33,8 @@
           % endfor
         </ul>
       </div>
-      <div role="tabpanel" class="tab-pane" id="tab-props">
-        <ul class="list-unstyled">
+      <div role="tabpanel" class="tab-pane" id="tabpanel-props">
+        <ul class="list-unstyled" aria-labelledby="tab-props">
           % for rprop in voc.properties
             <li>
               <a href="${link(rprop)}">${rprop.qname()}</a>
@@ -48,10 +49,10 @@
     aria-label="visa eller dölj navigation" 
     aria-controls="nav-tabs" 
     aria-expanded="false">
-    <i class="fa fa-fw fa-chevron-up"></i>
+    <span class="fa fa-fw fa-chevron-up" aria-hidden="true"></span>
   </button>
   
-  <div class="content-col flex column">
+  <div class="content-col flex column" id="content-col">
     <header>
     % for vocab in voc.vocabs
       <h1>
@@ -78,7 +79,7 @@
 % endblock
 
 % macro classdefinition(rclass)
-  <article class="panel panel-default rdf-class">
+  <article class="panel panel-default rdf-class" aria-label="${rclass.qname()}">
     <span id="${rclass.qname()}" class="vocab-anchor class-anchor" aria-hidden="true"></span>
     <header class="panel-heading">
       <h3 class="panel-title ${rclass.value(VS.term_status)}">${rclass.qname()}</h3>
@@ -100,7 +101,7 @@
                 % if prop.value(SKOS.notation)
                 <span>(${prop.value(SKOS.notation)})</span>
                 % endif
-                <i>${(voc.label(prop) or '')}</i>
+                <span class="italic">${(voc.label(prop) or '')}</span>
                 % set ranges = sorted(set(voc.find_references(prop.objects(RANGE))))
                 % if ranges
                   <span>&rarr;
@@ -202,7 +203,7 @@
 % endmacro
 
 % macro propertydefinition(rprop)
-  <article class="panel panel-default rdf-property">
+  <article class="panel panel-default rdf-property" aria-label="${rprop.qname()}">
     <span id="${rprop.qname()}" class="vocab-anchor property-anchor" aria-hidden="true"></span>
     <header class="panel-heading">
       <h2 class="panel-title ${rprop.value(VS.term_status) or ''}">${rprop.qname()}</h2>
@@ -257,7 +258,7 @@
           <dt>Inverse of</dt>
           <dd>
             <a href="${link(inverse)}">${inverse.qname()}</a>
-            <i>${(voc.label(inverse) or '')}</i>
+            <span class="italic">${(voc.label(inverse) or '')}</span>
           </dd>
         % endif
         % set domains = sorted(set(rprop.objects(DOMAIN)))
@@ -268,7 +269,7 @@
               % for c in domains
               <li class="${listclass(c)}">
                 <a href="${link(c)}">${c.qname()}</a>
-                <i>${(voc.label(c) or '')}</i>
+                <span class="italic">${(voc.label(c) or '')}</span>
               </li>
               % endfor
             </ul>
@@ -282,7 +283,7 @@
               % for c in ranges
               <li class="${listclass(c)}">
                 <a href="${link(c)}">${c.qname()}</a>
-                <i>${(voc.label(c) or '')}</i>
+                <span class="italic">${(voc.label(c) or '')}</span>
               </li>
               % endfor
             </ul>

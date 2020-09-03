@@ -148,9 +148,9 @@
 % endmacro
 
 % macro thing_list_item(thing)
-<div class="thing-list-item flex wrap column-sm-min">
-  <span class="semibold fill-available"><a href="${view_url(thing[ID])}">${g.vocab.get_label_for(thing)}</a></span>
-  <span class="class">
+<a href="${view_url(thing[ID])}" class="thing-list-item flex wrap column-sm-min">
+  <span class="thing-label semibold fill-available">${g.vocab.get_label_for(thing)}</span>
+  <span class="thing-class">
     % if isinstance(thing[TYPE], list)
     <ul class="list-unstyled">
       % for t in thing[TYPE]
@@ -161,7 +161,7 @@
       ${vocab_term(thing[TYPE])}
     % endif
   </span>
-</div>
+</a>
 % endmacro
 
 % macro thing_data_list(thing)

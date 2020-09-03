@@ -26,8 +26,8 @@
             % endfor
 
             <div id="searchFieldContainer" class="searchFieldContainer flex">
-              <i class="fa fa-search" role="presentation"></i>
-              <input aria-labelledby="searchlabel" class="form-control search-input tagInput" name="q" id="searchQ" value="${q | safe | trim }" autofocus></input>
+              <span class="fa fa-search" aria-hidden="true"></span>
+              <input type="search" aria-labelledby="searchSubmit" class="form-control search-input tagInput" name="q" id="searchQ" value="${q | safe | trim }" autofocus></input>
               <button id="searchSubmit" class="search-button btn btn-primary">Sök</button>
             </div>
           </div>
@@ -62,21 +62,21 @@
 </div>
 % if len(mapping) > 1
   <div class="activated-facets">
-    <p class="facet-label">
+    <p class="facet-label" id="facet-label">
       Vald filtrering:
     </p>
-    <ul class="list-unstyled">
+    <ul class="list-unstyled" aria-labelledby="facet-label">
     % for item in mapping
       % if item.variable != 'q'
       <li>
-        <a href="${item.up['@id']}" class="activated-facet semibold" title="Klicka för att ta bort">
         % if item.object
           % set label = item.object['@id']
         % else
           % set label = item.value
         % endif
+          <a href="${item.up['@id']}" class="activated-facet semibold" title="Ta bort filter">
           ${vocab_term(label)}
-          <i class="fa fa-fw fa-times-circle"></i>
+          <span class="fa fa-fw fa-times-circle" aria-label="Ta bort filter"></span>
         </a>
       </li>
       % endif
@@ -97,6 +97,7 @@
   % endset
 
   <div class="result-controls flex wrap align-center justify-between">
+    <h1 class="sr-only">Sökresultat</h1>
     % if details
     <div class="search-details">
       <p class="search-keyword semibold">
@@ -113,107 +114,106 @@
 
     % if result.totalItems > 0 and (result.previous or result.next)
     <div class="search-buttons">
-      <nav>
-        <ul class="pagination">
-          % if result.first and result.previous
-          <li>
-            <a aria-label="Första" href="${result.first['@id']}">
-              <i class="fa fa-angle-double-left" aria-label="Första"></i>
-              <span class="hidden-xs">Första</span></a>
-          </li>
-          % else
-          <li class="disabled">
-            <a><i class="fa fa-angle-double-left" aria-hidden="true"></i>
-            <span class="hidden-xs">Första</span></a>
-          </li>
-          % endif
-          % if result.previous
-          <li>
-            <a href="${result.previous['@id']}">
-              <i class="fa fa-angle-left " aria-label="Föregående"></i>
-              <span class="hidden-xs">Föregående</span></a>
-              </a>
-          </li>
-          % else
-          <li class="disabled">
-            <a><i class="fa fa-angle-left" aria-hidden="true"></i> 
-            <span class="hidden-xs">Föregående</span></a>
-          </li>
-          % endif
+      <ul class="pagination" aria-label="Paginering">
+        % if result.first and result.previous
+        <li>
+          <a aria-label="Första" href="${result.first['@id']}">
+            <span class="fa fa-angle-double-left" aria-label="Första"></span>
+            <span class="hidden-xs" aria-hidden="true">Första</span></a>
+        </li>
+        % else
+        <li class="disabled" aria-disabled="true">
+          <a>
+            <span class="fa fa-angle-double-left" aria-label="Första"></span>
+            <span class="hidden-xs" aria-hidden="true">Första</span></a>
+        </li>
+        % endif
+        % if result.previous
+        <li>
+          <a href="${result.previous['@id']}">
+            <span class="fa fa-angle-left" aria-label="Föregående"></span>
+            <span class="hidden-xs" aria-hidden="true">Föregående</span></a>
+        </li>
+        % else
+        <li class="disabled" aria-disabled="true">
+          <a>
+            <span class="fa fa-angle-left" aria-label="Föregående"></span>
+            <span class="hidden-xs" aria-hidden="true">Föregående</span></a>
+        </li>
+        % endif
 
-          % set limit = int(request.args.get('limit')) if request.args.get('limit') else int(200)
-          % set offset = result.itemOffset
+        % set limit = int(request.args.get('limit')) if request.args.get('limit') else int(200)
+        % set offset = result.itemOffset
 
-          % if result.totalItems
-            % set pages = int(result.totalItems / limit) + 1
-          % else
-            % set pages = 1
-          % endif
+        % if result.totalItems
+          % set pages = int(result.totalItems / limit) + 1
+        % else
+          % set pages = 1
+        % endif
 
-          % set currentpage = int(offset / limit)
-          % set paddedpages = 4
+        % set currentpage = int(offset / limit)
+        % set paddedpages = 4
 
-          % if currentpage < paddedpages
-            % set paddedpages = paddedpages + (paddedpages - currentpage - 1)
-          % elif currentpage + paddedpages > pages
-            % set paddedpages = paddedpages + (currentpage + paddedpages - pages)
-          % endif
+        % if currentpage < paddedpages
+          % set paddedpages = paddedpages + (paddedpages - currentpage - 1)
+        % elif currentpage + paddedpages > pages
+          % set paddedpages = paddedpages + (currentpage + paddedpages - pages)
+        % endif
 
-          % if currentpage - paddedpages > -1
-          <li>
-            <a>..</a>
-          </li>
-          % endif
+        % if currentpage - paddedpages > -1
+        <li>
+          <a>..</a>
+        </li>
+        % endif
 
-          % for num in range(pages)
-            % if (num == currentpage) or (num == pages) or (num < currentpage and (num - currentpage) > -paddedpages) or (num > currentpage and (num - currentpage) < paddedpages)
+        % for num in range(pages)
+          % if (num == currentpage) or (num == pages) or (num < currentpage and (num - currentpage) > -paddedpages) or (num > currentpage and (num - currentpage) < paddedpages)
 
-              % if currentpage == num
-                <li class="active">
-                  <a>${num +1}</a>
-                </li>
-              % else
-              <li>
-                <a href="${result.first['@id'] + '&_offset=' + str(limit * num) }">${num +1}</a>
+            % if currentpage == num
+              <li class="active">
+                <a>${num +1}</a>
               </li>
-              % endif
+            % else
+            <li>
+              <a href="${result.first['@id'] + '&_offset=' + str(limit * num) }">${num +1}</a>
+            </li>
             % endif
-          % endfor
+          % endif
+        % endfor
 
-          % if currentpage + paddedpages < (pages)
-          <li>
-            <a>..</a>
-          </li>
-          % endif
+        % if currentpage + paddedpages < (pages)
+        <li>
+          <a>..</a>
+        </li>
+        % endif
 
-          % if result.next
-          <li>
-            <a href="${result.next['@id']}">
-              <span class="hidden-xs">Nästa</span>
-              <i class="fa fa-angle-right" aria-label="Nästa"></i></a>
-          </li>
-          % else
-          <li class="disabled">
-            <a>
-              <span class="hidden-xs">Nästa</span>
-              <i class="fa fa-angle-right" aria-hidden="true"></i></a>
-          </li>
-          % endif
-          % if result.last and result.next
-          <li>
-            <a href="${result.last['@id']}">
-              <span class="hidden-xs">Sista</span>
-              <i class="fa fa-angle-double-right" aria-label="Sista"></i></a>
-          </li>
-          % else
-          <li class="disabled">
-            <a>
-              <span class="hidden-xs">Sista</span>
-              <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
-          </li>
-          % endif
-        </ul>
-      </nav>
+        % if result.next
+        <li>
+          <a href="${result.next['@id']}">
+            <span class="hidden-xs" aria-hidden="true">Nästa</span>
+            <span class="fa fa-angle-right" aria-label="Nästa"></span></a>
+        </li>
+        % else
+        <li class="disabled" aria-disabled="true">
+          <a>
+            <span class="hidden-xs" aria-hidden="true">Nästa</span>
+            <span class="fa fa-angle-right" aria-label="Nästa"></span></a>
+        </li>
+        % endif
+        % if result.last and result.next
+        <li>
+          <a href="${result.last['@id']}">
+            <span class="hidden-xs" aria-hidden="true">Sista</span>
+            <span class="fa fa-angle-double-right" aria-label="Sista"></span></a>
+        </li>
+        % else
+        <li class="disabled" aria-disabled="true">
+          <a>
+            <span class="hidden-xs" aria-hidden="true">Sista</span>
+            <span class="fa fa-angle-double-right" aria-label="Sista"></span></a>
+        </li>
+        % endif
+      </ul>
     </div>
     % endif
   </div>
