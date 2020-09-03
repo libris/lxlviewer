@@ -193,3 +193,18 @@
     font-size: 14px;
   }
 }
+
+// article pages
+
+.article-text {
+  @media screen and (max-width: @screen-sm-min) {
+    ol, ul {
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+  
+    code {
+      word-break: break-all;
+    }
+  }
+}
