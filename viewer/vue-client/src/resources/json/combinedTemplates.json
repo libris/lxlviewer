@@ -3062,11 +3062,7 @@
               "role": []
             }
           ],
-          "language": [
-            {
-              "@id": "https://id.kb.se/language/swe"
-            }
-          ],
+          "language": [],
           "genreForm": [],
           "classification": [
             {
@@ -3093,8 +3089,7 @@
               "@type": "marc:LanguageNote",
               "label": ""
             }
-          ],
-          "translationOf": []
+          ]
         }
       }
     }
