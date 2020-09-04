@@ -74,7 +74,7 @@
                 <span>${tag}</span>
               </th>
               <td class="marc-dfn">
-                <div>
+                <div lang="en">
                   % for key in ['inherit', 'aboutType', 'link', 'addLink', 'resourceType', 'property', 'addProperty', 'i1', 'i2', 'match-i1', 'match-i2']
                     % if dfn.get(key)
                       <dl>
@@ -118,7 +118,7 @@
                     <button class="btn-default toggle-example-btn js-toggle-example-btn">Visa kodexempel
                       <span class="fa fa-fw fa-chevron-right" aria-hidden="true"></span>
                     </button>
-                    <ul class="example-list js-example-list" aria-hidden="true">
+                    <ul class="example-list js-example-list" aria-hidden="true" lang="en">
                       % for spec in dfn._spec
                         % if spec.source and spec.result
                           {% set example_col = 4 if spec.normalized else 6  %}
