@@ -31,13 +31,13 @@
     % if g.site.title != 'libris.kb.se'
       {% block navigation %}
       % if g.site.stylesheet
-        <header class="navbar navbar-inverse" role="banner" aria-label="huvudmeny" id="main-header">
+        <header class="navbar navbar-inverse" aria-label="huvudmeny" id="main-header">
       % else
         <header class="navbar" aria-label="huvudmeny" id="main-header">
       % endif
         <div class="{% block navcontainerclass %}container{% endblock %}">
           <a id="skip-link" href="{% block skiplinktarget %}#main{% endblock %}"><span>Till innehållet</span></a>
-          <div class="navbar-header">
+          <div class="navbar-header" role="banner">
             <div class="navbar-brand navbar-logo">
               <a href="/">
                 % if g.site.stylesheet
@@ -74,12 +74,12 @@
             % for item in g.site.itemList
               <li class="navbar-item">
                 <a href="${item[ID]}">
-                  <span class="navbar-item-text">
+                  <div class="navbar-item-text">
                     ${item.title}
                     {% if request.path == item[ID] %}
                       <hr></hr>
                     {% endif %}
-                  </span>
+                  </div>
                 </a>
               </li>
             % endfor
@@ -144,9 +144,7 @@
                 % else
                 <img src="/assets/img/kb_logo_white.svg" class="logo-medium" alt="Kungliga biblioteket" />
                 % endif
-                <a href="http://www.kb.se" alt="Länk till Kungliga bibliotekets webbplats">
-                  <span class="brand-text js-translateable" data-translateable="National Library of Sweden">Kungliga biblioteket</span>
-                </a>
+                <a href="http://www.kb.se">Kungliga biblioteket</a>
               </div>
               % if g.site.title == 'libris.kb.se'
               <div class="link-list">

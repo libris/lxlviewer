@@ -19,7 +19,7 @@ if (isMarc) {
       parent.classList.toggle('expanded');
       e.target.classList.toggle('js-expanded');
       // toggle aria-attributes
-      toggleAttribute('aria-expanded', parent);
+      toggleAttribute('aria-expanded', e.target);
       var list = parent.querySelector('.js-example-list');
       if (list) {
         toggleAttribute('aria-hidden', list);

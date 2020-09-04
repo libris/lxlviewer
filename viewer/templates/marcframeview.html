@@ -114,11 +114,12 @@
                   % endif
                 </div>
                 % if dfn._spec
-                  <div class="marc-example" aria-expanded="false">
-                    <button class="btn-default toggle-example-btn js-toggle-example-btn">Visa kodexempel
+                  <div class="marc-example">
+                    <button class="btn-default toggle-example-btn js-toggle-example-btn" aria-expanded="false" aria-controls="example-${cat}-${tag}">
+                      Visa kodexempel
                       <span class="fa fa-fw fa-chevron-right" aria-hidden="true"></span>
                     </button>
-                    <ul class="example-list js-example-list" aria-hidden="true" lang="en">
+                    <ul class="example-list js-example-list" id="example-${cat}-${tag}" aria-hidden="true" lang="en">
                       % for spec in dfn._spec
                         % if spec.source and spec.result
                           {% set example_col = 4 if spec.normalized else 6  %}

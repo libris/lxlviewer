@@ -25,7 +25,7 @@
       </div>
     </div> -->
     % endif
-    ${ search.result_controls(thing, True) }
+    ${ search.result_controls(thing, True, 'top') }
     % if items
       <div class="result-list">
         % for item in items
@@ -33,6 +33,6 @@
         % endfor
       </div>
     % endif
-    ${ search.result_controls(thing, False) }
+    ${ search.result_controls(thing, False, 'bottom') }
 </div>
 % endblock
