@@ -302,7 +302,7 @@ new Vue({
           });
         }
       }, (error) => {
-        console.log(error);
+        console.log('Couldn\'t fetch help documentation.', error);
       });
     },
     loadTemplates() {

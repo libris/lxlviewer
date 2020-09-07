@@ -202,7 +202,7 @@ export default {
     composedSearchParam() { // pair current search param with searchphrase
       let composed = {};
       if (this.activeSearchParam !== null) {
-        const composed = Object.assign({}, this.activeSearchParam.mappings || {});
+        composed = Object.assign({}, this.activeSearchParam.mappings || {});
         composed[this.activeSearchParam.searchProp] = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
       }
       return composed;
