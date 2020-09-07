@@ -150,7 +150,7 @@
 
 % macro view_observation_item(item)
   <a class="list-group-item flex align-center"
-    href="${item.view[ID]}">
+    href="${item.view[ID]}&_sort=prefLabel">
       % set o = item.object
       % if o
         <span class="scheme-item-label">${o.label or (o.titleByLang and o.titleByLang.sv) or o.prefLabelByLang and o.prefLabelByLang.sv}</span>
