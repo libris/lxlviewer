@@ -3029,7 +3029,12 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionConventions": [],
+          "descriptionConventions": [
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
           "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
           },
