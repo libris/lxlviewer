@@ -1,10 +1,6 @@
 .thing {
   margin-bottom: 2em;
 
-  .thing-container {
-    margin-bottom: 10px;
-  }
-
   h1, h2, h3, h4, h5, h6 {
     margin: 0 0 1em;
   }
@@ -17,11 +13,15 @@
     margin: 0px;
   }
 
+  .list-unstyled {
+    margin: 0;
+  }
+
   .table {
     table-layout: fixed;
     background-color: @white;
     border: 1px solid @grey-lighter;
-    margin-bottom: 0;
+    margin-bottom: 10px;
 
     tr {
       border-top: 1px solid @grey-lighter;
@@ -49,7 +49,8 @@
       display: block;
     }
 
-    .term-label {
+    .term-label, 
+    .is-inner .term-label {
       width: auto;
     }
   }
@@ -85,4 +86,8 @@
   text-transform: uppercase;
   overflow-wrap: break-word;
   hyphens: auto;
+
+  .is-inner & {
+    width: 33%;
+  }
 }

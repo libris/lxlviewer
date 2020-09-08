@@ -424,7 +424,7 @@
                     % for sub in v
                       <li>
                         % if isinstance(sub, dict)
-                          ${viewthing(sub, rel=k)}
+                          ${viewthing(sub, rel=k, classes='thing-container is-inner')}
                         % else
                         <span {% if p.curie %} property="${p.curie}"{% endif %}>${sub}</span>
                         % endif
