@@ -7,7 +7,7 @@
       margin-right: 10px;
     }
 
-    i {
+    .fa {
       position: absolute;
       left: 15px;
       bottom: 12px;
@@ -62,11 +62,11 @@
     font-size: @small-font-size;
     transition: background-color 0.2s ease, transform 0.2s ease;
 
-    &:hover {
+    &:hover, &:focus {
       text-decoration: none;
       background-color: @link-hover-color;
 
-      i {
+      .fa {
         transform: scale(1.2);
       }
     }

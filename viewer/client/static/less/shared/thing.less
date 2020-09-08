@@ -59,7 +59,15 @@
   padding: 0.5em 1em;
   border-bottom: 1px solid @grey-lighter;
 
-  .class {
+  &:hover, &:focus {
+    text-decoration: none;
+
+    .thing-label {
+      text-decoration: underline;
+    }
+  }
+
+  .thing-class {
     text-align: right;
     color: @grey-dark;
 

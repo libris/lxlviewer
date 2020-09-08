@@ -6,6 +6,7 @@
 
 {% block containerclass %}container-fluid flex js-nav-tabs{% endblock %}
 {% block navcontainerclass %} container {% endblock %}
+{% block skiplinktarget %} #content-col {% endblock %}
 
 % set DOMAIN = union(SCHEMA.domainIncludes, RDFS.domain)
 % set RANGE = union(SCHEMA.rangeIncludes, RDFS.range)
@@ -13,18 +14,18 @@
 
 
 % block content
-  <nav class="nav-col" id="nav-tabs">
+  <nav class="nav-col" id="nav-tabs" lang="en">
     <ul class="nav nav-tabs semibold" role="tablist">
       <li role="presentation" class="nav-tab js-nav-tab active">
-        <a href="#tab-classes" aria-controls="tab-classes" role="tab" data-toggle="tab">Classes</a>
+        <a href="#tabpanel-classes" aria-controls="tabpanel-classes" role="tab" data-toggle="tab" id="tab-classes">Classes</a>
       </li>
       <li role="presentation" class="nav-tab js-nav-tab">
-        <a href="#tab-props" aria-controls="tab-props" role="tab" data-toggle="tab">Properties</a>
+        <a href="#tabpanel-props" aria-controls="tabpanel-props" role="tab" data-toggle="tab" id="tab-props">Properties</a>
       </li>
     </ul>
     <div class="tab-content js-tab-content">
-      <div role="tabpanel" class="tab-pane active" id="tab-classes">
-        <ul class="list-unstyled">
+      <div role="tabpanel" class="tab-pane active" id="tabpanel-classes">
+        <ul class="list-unstyled" aria-labelledby="tab-classes">
           % for rclass in voc.classes
             <li>
               <a href="${link(rclass)}">${rclass.qname()}</a>
@@ -32,8 +33,8 @@
           % endfor
         </ul>
       </div>
-      <div role="tabpanel" class="tab-pane" id="tab-props">
-        <ul class="list-unstyled">
+      <div role="tabpanel" class="tab-pane" id="tabpanel-props">
+        <ul class="list-unstyled" aria-labelledby="tab-props">
           % for rprop in voc.properties
             <li>
               <a href="${link(rprop)}">${rprop.qname()}</a>
@@ -48,10 +49,10 @@
     aria-label="visa eller dölj navigation" 
     aria-controls="nav-tabs" 
     aria-expanded="false">
-    <i class="fa fa-fw fa-chevron-up"></i>
+    <span class="fa fa-fw fa-chevron-up" aria-hidden="true"></span>
   </button>
   
-  <div class="content-col flex column">
+  <div class="content-col flex column" id="content-col">
     <header>
     % for vocab in voc.vocabs
       <h1>
@@ -78,10 +79,10 @@
 % endblock
 
 % macro classdefinition(rclass)
-  <article class="panel panel-default rdf-class">
+  <article class="panel panel-default rdf-class" aria-label="${rclass.qname()}">
     <span id="${rclass.qname()}" class="vocab-anchor class-anchor" aria-hidden="true"></span>
     <header class="panel-heading">
-      <h3 class="panel-title ${rclass.value(VS.term_status)}">${rclass.qname()}</h3>
+      <h3 class="panel-title ${rclass.value(VS.term_status)}" lang="en">${rclass.qname()}</h3>
     </header>
     <div class="panel-body">
       ${terminfo(rclass, "...")}
@@ -91,21 +92,21 @@
         ${itemsblock(rclass.subjects(RDFS.subClassOf), "Subclasses", 'rdf-subclasses')}
         % set props = sorted(set(rclass.subjects(DOMAIN)))
         % if props
-          <dt>Properties</dt>
+          <dt lang="en">Properties</dt>
           <dd>
             <ul class="list-unstyled">
               % for prop in props
               <li class="${listclass(prop)}">
-                <a href="${link(prop)}" class="chip-prop">${prop.qname()}</a>
+                <a href="${link(prop)}" class="chip-prop" lang="en">${prop.qname()}</a>
                 % if prop.value(SKOS.notation)
                 <span>(${prop.value(SKOS.notation)})</span>
                 % endif
-                <i>${(voc.label(prop) or '')}</i>
+                <span class="italic">${(voc.label(prop) or '')}</span>
                 % set ranges = sorted(set(voc.find_references(prop.objects(RANGE))))
                 % if ranges
                   <span>&rarr;
                     % for c in ranges
-                      <a href="${link(c)}" class="chip-class">${c.qname()}</a>
+                      <a href="${link(c)}" class="chip-class" lang="en">${c.qname()}</a>
                     % endfor
                   </span>
                 % endif
@@ -121,16 +122,16 @@
         % endif
         % set restrictions = sorted(voc.getrestrictions(rclass))
         % if restrictions
-          <dt>Restrictions</dt>
+          <dt lang="en">Restrictions</dt>
           <dd>
             <ul class="list-unstyled">
               % for restr in restrictions
                 % set prop = restr.value(OWL.onProperty)
                 % set rtype = restr.value(OWL.allValuesFrom)
                 <li>
-                  <a href="${link(prop)}">${prop.qname()}</a>
+                  <a href="${link(prop)}" lang="en">${prop.qname()}</a>
                   % if isinstance(rtype.identifier, URIRef)
-                    &rarr; <a href="${link(rtype)}">${rtype.qname()}</a>
+                    &rarr; <a href="${link(rtype)}" lang="en">${rtype.qname()}</a>
                   % endif
                 </li>
               % endfor
@@ -139,17 +140,17 @@
         % endif
         % set rangeprops = sorted(no_bnodes(set(rclass.subjects(RANGE))))
         % if rangeprops
-          <dt>In range of properties</dt>
+          <dt lang="en">In range of properties</dt>
           <dd>
             <ul class="list-unstyled">
               % for prop in rangeprops
                 <li class="${listclass(prop)}">
-                &larr; <a href="${link(prop)}" class="chip-prop">${prop.qname()}</a>
+                &larr; <a href="${link(prop)}" class="chip-prop" lang="en">${prop.qname()}</a>
                 % set domains = sorted(set(voc.find_references(prop.objects(DOMAIN))))
                 % if domains
                     <span>&larr;
                     % for domain in domains
-                        <a href="${link(domain)}" class="chip-class">${domain.qname()}</a>
+                        <a href="${link(domain)}" class="chip-class" lang="en">${domain.qname()}</a>
                     % endfor
                     </span>
                 % endif
@@ -159,11 +160,11 @@
           </dd>
         % endif
         % if any(rclass.subjects(RDF.type))
-          <dt>Instances</dt>
+          <dt lang="en">Instances</dt>
           <dd>
             <ul class="list-unstyled items rdf-instances">
               % for i in sorted(rclass.subjects(RDF.type))
-              <li><a href="${link(i)}">${i.qname()}</a></li>
+              <li><a href="${link(i)}" lang="en">${i.qname()}</a></li>
               % endfor
             </ul>
           </dd>
@@ -176,12 +177,12 @@
 % macro itemsblock(items, label, classname, iteminfo=False)
   % set itemlist = sorted(set(voc.find_references(items)))
   % if itemlist
-    <dt>${label}</dt>
+    <dt lang="en">${label}</dt>
     <dd>
       <ul class="list-unstyled items ${classname}">
         % for item in itemlist
           <li class="${listclass(item)}">
-            <a href="${link(item)}">${item.qname()}</a>
+            <a href="${link(item)}" lang="en">${item.qname()}</a>
             % if iteminfo and extgraph
               ${terminfo(extgraph.resource(item.identifier))}
             % endif
@@ -202,10 +203,10 @@
 % endmacro
 
 % macro propertydefinition(rprop)
-  <article class="panel panel-default rdf-property">
+  <article class="panel panel-default rdf-property" aria-label="${rprop.qname()}">
     <span id="${rprop.qname()}" class="vocab-anchor property-anchor" aria-hidden="true"></span>
     <header class="panel-heading">
-      <h2 class="panel-title ${rprop.value(VS.term_status) or ''}">${rprop.qname()}</h2>
+      <h2 class="panel-title ${rprop.value(VS.term_status) or ''}" lang="en">${rprop.qname()}</h2>
     </header>
     <div class="panel-body">
       <p>
@@ -218,7 +219,7 @@
         % for prop in [DCTERMS.description, SKOS.scopeNote]
           % set value = rprop.value(prop)
           % if value and extgraph
-            <dt>${extgraph.preferredLabel(prop, lang='en')[0][1].title()}</dt>
+            <dt lang="en">${extgraph.preferredLabel(prop, lang='en')[0][1].title()}</dt>
             <dd>
               % if value.datatype == RDF.HTML
                 ${value | safe}
@@ -229,7 +230,7 @@
           % endif
         % endfor
         % if rprop.value(SKOS.example)
-          <dt>Example Values</dt>
+          <dt lang="en">Example Values</dt>
           <dd>
             <ul class="list-inline">
               % for example in rprop.objects(SKOS.example)
@@ -240,11 +241,11 @@
         % endif
         % set notes = sorted(rprop.objects(SKOS.note))
         % if notes
-          <dt>Related MARC notation</dt>
+          <dt lang="en">Related MARC notation</dt>
           <dd>
             <ul class="list-inline">
               % for note in notes
-                <li class="chip-marc">${note}</li>
+                <li class="chip-marc" lang="en">${note}</li>
               % endfor
             </ul>
           </dd>
@@ -254,21 +255,21 @@
         ${itemsblock(rprop.subjects(union(RDFS.subPropertyOf, OWL.equivalentProperty)), "Subproperties", 'subproperties')}
         % set inverse = rprop.value(OWL.inverseOf)
         % if inverse
-          <dt>Inverse of</dt>
+          <dt lang="en">Inverse of</dt>
           <dd>
-            <a href="${link(inverse)}">${inverse.qname()}</a>
-            <i>${(voc.label(inverse) or '')}</i>
+            <a href="${link(inverse)}" lang="en">${inverse.qname()}</a>
+            <span class="italic">${(voc.label(inverse) or '')}</span>
           </dd>
         % endif
         % set domains = sorted(set(rprop.objects(DOMAIN)))
         % if domains
-          <dt>Domain(s)</dt>
+          <dt lang="en">Domain(s)</dt>
           <dd>
             <ul class="list-unstyled items ${classname}">
               % for c in domains
               <li class="${listclass(c)}">
-                <a href="${link(c)}">${c.qname()}</a>
-                <i>${(voc.label(c) or '')}</i>
+                <a href="${link(c)}" lang="en">${c.qname()}</a>
+                <span class="italic">${(voc.label(c) or '')}</span>
               </li>
               % endfor
             </ul>
@@ -276,13 +277,13 @@
         % endif
         % set ranges = sorted(set(voc.find_references(rprop.objects(RANGE))))
         % if ranges
-          <dt>Range(s)</dt>
+          <dt lang="en">Range(s)</dt>
           <dd>
             <ul class="list-unstyled items ${classname}">
               % for c in ranges
               <li class="${listclass(c)}">
-                <a href="${link(c)}">${c.qname()}</a>
-                <i>${(voc.label(c) or '')}</i>
+                <a href="${link(c)}" lang="en">${c.qname()}</a>
+                <span class="italic">${(voc.label(c) or '')}</span>
               </li>
               % endfor
             </ul>
