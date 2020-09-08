@@ -151,14 +151,20 @@
 <a href="${view_url(thing[ID])}" class="thing-list-item flex wrap column-sm-min">
   <span class="thing-label semibold fill-available">${g.vocab.get_label_for(thing)}</span>
   <span class="thing-class">
+    % if thing.inScheme 
+      % set scheme = ', ' + g.vocab.get_label_for(thing.inScheme)
+    % else
+      % set scheme = ''
+    % endif
+
     % if isinstance(thing[TYPE], list)
     <ul class="list-unstyled">
       % for t in thing[TYPE]
-      <li>${vocab_term(t)}</li>
+      <li>${vocab_term(t)}${scheme}</li>
     % endfor
     </ul>
     % else
-      ${vocab_term(thing[TYPE])}
+      ${vocab_term(thing[TYPE])}${scheme}
     % endif
   </span>
 </a>
