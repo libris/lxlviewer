@@ -229,10 +229,20 @@
             </dd>
           % endif
         % endfor
+        % if rprop.value(SKOS.definition)
+          <dt lang="en">Definition</dt>
+          <dd>
+            <ul class="list-unstyled">
+              % for definition in rprop.objects(SKOS.definition)
+                <li class="note">${definition}</li>
+              %endfor
+            </ul>
+          </dd>
+        % endif
         % if rprop.value(SKOS.example)
           <dt lang="en">Example Values</dt>
           <dd>
-            <ul class="list-inline">
+            <ul class="list-unstyled">
               % for example in rprop.objects(SKOS.example)
                 <li class="note">${example}</li>
               %endfor
