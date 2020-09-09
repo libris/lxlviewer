@@ -13,10 +13,6 @@
     margin: 0px;
   }
 
-  .list-unstyled {
-    margin: 0;
-  }
-
   .table {
     table-layout: fixed;
     background-color: @white;
@@ -33,15 +29,29 @@
     }
   }
 
-  .thing-link {
-    display: block;
-    margin: 5px 0;
-    padding: 5px 10px;
-    background-color: @brand-faded;
-    border: 1px solid @brand-faded;
-    border-radius: 20px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .thing-list {
+    margin: 0;
+
+    li.is-inline {
+      display: inline-block;
+    }
+  } 
+
+  .link-item {
+    .label-class {
+      display: none;
+    }
+
+    .thing-link {
+      display: block;
+      margin: 5px 0;
+      padding: 5px 10px;
+      background-color: @brand-faded;
+      border: 1px solid @brand-faded;
+      border-radius: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   @media screen and (max-width: @screen-sm-min) {

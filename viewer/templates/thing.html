@@ -420,9 +420,9 @@
                 % elif isinstance(v, dict)
                   ${viewthing(v, rel=k)}
                 % elif isinstance(v, list)
-                  <ul class="list-unstyled">
+                  <ul class="thing-list list-unstyled">
                     % for sub in v
-                      <li>
+                      <li {% if sub[ID] and v|length > 1  %} class="is-inline" {% endif %}>
                         % if isinstance(sub, dict)
                           ${viewthing(sub, rel=k, classes='thing-container is-inner')}
                         % else
