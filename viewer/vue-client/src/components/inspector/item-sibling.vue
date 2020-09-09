@@ -432,7 +432,7 @@ export default {
         />
 
         <entity-action
-          v-if="!isLocked && !isEmbedded && !isCompositional"
+          v-if="!isLocked && !isCompositional"
           @action="openPropertyAdder(), expand()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
