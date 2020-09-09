@@ -100,7 +100,7 @@ export default {
     creationList() {
       const list = [
         { id: 'Instance', text: 'Instance' },
-        { id: 'Work', text: 'Work' },
+        { id: 'Work', text: 'Work', excludeBase: true },
         { id: 'Agent', text: 'Agent', excludeBase: true },
       ];      
       if (this.userIsAllowedToEditConcepts()) {
