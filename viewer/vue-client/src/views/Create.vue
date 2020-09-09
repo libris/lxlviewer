@@ -99,7 +99,7 @@ export default {
     ]),
     creationList() {
       const list = [
-        { id: 'Instance', text: 'Instance' },
+        { id: 'Instance', text: 'Instance', excludeBase: true },
         { id: 'Work', text: 'Work', excludeBase: true },
         { id: 'Agent', text: 'Agent', excludeBase: true },
       ];      
