@@ -689,8 +689,7 @@ export default {
               <i class="fa fa-question-circle-o icon icon--sm"></i>
               <span class="Field-commentText">{{ 'Non editable incoming link' | translatePhrase }}.
                 <br />
-                <!-- Uncomment link below when the url has been updated with info about inoming links -->
-                <!-- <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ 'Read more about incoming links' | translatePhrase }}.</a> -->
+                <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ 'Read more about incoming links' | translatePhrase }}.</a>
               </span>
             </div>
           </div>
