@@ -662,6 +662,9 @@ h1 {
       &:extend(.uppercaseHeading);
       font-size: 1.8rem;
     }
+    &--secondary {
+      color: @grey;
+    }
 }
 
 // -------- FORM -------------
