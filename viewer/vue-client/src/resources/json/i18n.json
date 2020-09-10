@@ -82,6 +82,8 @@
     "Add field in" : "Lägg till egenskaper under",
     "Incoming link": "Inkommande länk",
     "Incoming links": "Inkommande länkar",
+    "Non editable incoming link": "Inkommande och ej redigerbar länk",
+    "Read more about incoming links": "Läs mer om inkommande länkar",
     "A selection of resources linking to this resource": "Urval av resurser som länkar hit",
     "The property is not repeatable": "Egenskapen är ej repeterbar",
     "The property is not recognized": "Egenskapen känns inte igen",
