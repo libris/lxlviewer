@@ -184,8 +184,6 @@
       ) and not isinstance(value, bool) and key in (
         'aboutType', 'link', 'addLink', 'property', 'addProperty', 'resourceType')
     <a href="/vocab/#${value}" class="${key}">${value}</a>
-  % elif key == 'tokenMap'
-    <a href="#map-${value}">${value}</a>
   % elif key == 'inherit' and value.isdigit()
     <a href="#${cat}-${value}" class="chip-marc">${cat} ${value}</a>
   % elif key == 'inherit' and ':' in value
