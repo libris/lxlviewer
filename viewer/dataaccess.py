@@ -137,7 +137,13 @@ sites = {
                     "sort":"value",
                     "sortOrder":"desc",
                     "size":100
+                },
+                "contribution.agent.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":20
                 }
+
             }
         """,
         "itemList": [
