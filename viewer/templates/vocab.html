@@ -85,7 +85,7 @@
       <h3 class="panel-title ${rclass.value(VS.term_status)}" lang="en">${rclass.qname()}</h3>
     </header>
     <div class="panel-body">
-      ${terminfo(rclass, "...")}
+      ${terminfo(rclass, "Svensk benämning saknas")}
       <dl>
         ${itemsblock(rclass.objects(OWL.equivalentClass), "Equivalent classes", 'rdf-baseclasses', True)}
         ${itemsblock(rclass.objects(RDFS.subClassOf), "Base classes", 'rdf-baseclasses')}
@@ -195,7 +195,11 @@
 
 % macro terminfo(term, nolabel='')
   <p>
-    ${(voc.label(term) or nolabel)}
+    % if voc.label(term)
+      ${voc.label(term)}
+    % else
+      <span class="nolabel">${nolabel}</span>
+    % endif
     % if term.value(RDFS.comment)
       <em>&mdash; ${(term.value(RDFS.comment))}</em>
     % endif
@@ -210,7 +214,11 @@
     </header>
     <div class="panel-body">
       <p>
-        ${(voc.label(rprop) or '...')}
+        % if voc.label(rprop)
+          ${voc.label(rprop)}
+        % else
+          <span class="nolabel">Svensk benämning saknas</span>
+        % endif
         % if rprop.value(RDFS.comment)
           <em>&mdash; ${(rprop.value(RDFS.comment))}</em>
         % endif
