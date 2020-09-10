@@ -3038,7 +3038,6 @@
           "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
           },
-          "encodingLevel": "marc:MinimalLevel",
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
