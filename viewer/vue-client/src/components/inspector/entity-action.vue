@@ -110,7 +110,7 @@ export default {
   &.action-larger {
     background-color: @white;
     border: 1px solid;
-    border-radius: 2rem;
+    border-radius: 0.25rem;
     padding: 0rem 1rem 0rem 0.5rem;
     margin: 0 0.2rem;
     .action-label {
