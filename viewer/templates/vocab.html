@@ -87,6 +87,16 @@
     <div class="panel-body">
       ${terminfo(rclass, "Svensk benämning saknas")}
       <dl>
+        % if rclass.value(SKOS.definition)
+          <dt lang="en">Definition</dt>
+          <dd>
+            <ul class="list-unstyled">
+              % for definition in rclass.objects(SKOS.definition)
+                <li class="definition">${definition}</li>
+              %endfor
+            </ul>
+          </dd>
+        % endif
         ${itemsblock(rclass.objects(OWL.equivalentClass), "Equivalent classes", 'rdf-baseclasses', True)}
         ${itemsblock(rclass.objects(RDFS.subClassOf), "Base classes", 'rdf-baseclasses')}
         ${itemsblock(rclass.subjects(RDFS.subClassOf), "Subclasses", 'rdf-subclasses')}
@@ -242,7 +252,7 @@
           <dd>
             <ul class="list-unstyled">
               % for definition in rprop.objects(SKOS.definition)
-                <li class="note">${definition}</li>
+                <li class="definition">${definition}</li>
               %endfor
             </ul>
           </dd>
