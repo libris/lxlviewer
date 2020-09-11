@@ -54,6 +54,7 @@ sites = {
         "statsindex": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
         "statsfind": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
         "filter_param": "inScheme.@id",
+        "applyInverseOf": True,
         "itemList": [
             {ID: "/", "title": "Sök"},
             {ID: "/marcframe/", "title": "MARC-mappningar"},
