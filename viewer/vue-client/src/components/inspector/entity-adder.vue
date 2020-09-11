@@ -375,12 +375,12 @@ export default {
     },
     addLinkedItem(obj) {
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
-      const linkObj = { '@id': obj['@id'] };
       if (!isArray(currentValue)) {
-        currentValue = linkObj;
-      } else {
-        currentValue.push(linkObj);
+        // Converting value to array if it isn't already
+        currentValue = [currentValue];
       }
+      const linkObj = { '@id': obj['@id'] };
+      currentValue.push(linkObj);
       this.$store.dispatch('addToQuoted', obj);
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
