@@ -51,6 +51,7 @@ body#marcframeview {
 
     th {
       width: 130px;
+      overflow-wrap: break-word;
       hyphens: auto;
     }
 
@@ -148,13 +149,11 @@ body#marcframeview {
 
     .table-inner > tbody {
       th {
-        width: 75px;
-        padding: 5px 2px;
+        width: 100px;
       }
 
       td {
-        overflow-wrap: break-word;
-        padding: 5px 2px;
+        word-break: break-word;
       }
     }
 
@@ -168,6 +167,21 @@ body#marcframeview {
   }
 
   @media screen and (max-width: @screen-sm-min) {
+    .table-main > tbody > tr > th {
+      background-color: @grey-light;
+    }
+
+    .table-inner > tbody {
+      tr {
+        display: block;
+      }
+
+      th {
+        display: block;
+        background: @grey-lighter;
+        width: 100%;
+      }
+    }
 
     .example-list {
       list-style-type: none;

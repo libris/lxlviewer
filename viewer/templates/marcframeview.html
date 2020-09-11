@@ -51,7 +51,7 @@
   </button>
 
   <div class="content-col" id="content-col">
-    <div class="flex wrap justify-between align-baseline">
+    <div class="flex wrap justify-between align-end">
       <header>
         <h1>MARC-mappningar</h1>
         <p>KB/Libris mappningar av MARC till RDF-vokabulär</p>
@@ -93,7 +93,7 @@
                         % if key[0] != '_' and not key.startswith('TODO:')
                           <tr>
                             <th class="semibold"><span id="${cat}-${tag}-${key}">
-                              ${show_value(cat, tag, 'aboutType', key)}</span>
+                              ${show_value(cat, tag, '', key)}</span>
                             </th>
                             <td>
                               % if key[0].isupper() and isinstance(subdfn, dict)
@@ -184,8 +184,6 @@
       ) and not isinstance(value, bool) and key in (
         'aboutType', 'link', 'addLink', 'property', 'addProperty', 'resourceType')
     <a href="/vocab/#${value}" class="${key}">${value}</a>
-  % elif key == 'tokenMap'
-    <a href="#map-${value}">${value}</a>
   % elif key == 'inherit' and value.isdigit()
     <a href="#${cat}-${value}" class="chip-marc">${cat} ${value}</a>
   % elif key == 'inherit' and ':' in value
