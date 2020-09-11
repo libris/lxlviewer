@@ -230,8 +230,11 @@ def thingview(path, suffix=None):
 
     whelk_accept_header = _get_view_data_accept_header(request, suffix)
     query_params = _filter_query_params(request.args)
-
     resource_id = _get_served_uri(request.url_root, path)
+
+    if g.site.get('applyInverseOf', False):
+        query_params['_applyInverseOf'] = 'true'
+    
     resp = _proxy_request(request, session, accept_header=whelk_accept_header,
             url_path=resource_id, query_params=query_params)
 
