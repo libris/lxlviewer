@@ -683,7 +683,7 @@ export default {
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
             :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>          
-          <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty">
+          <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
             <div class="Field-comment">
               <i class="fa fa-question-circle-o icon icon--sm"></i>
