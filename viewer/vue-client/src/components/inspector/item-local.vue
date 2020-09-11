@@ -686,9 +686,7 @@ export default {
       margin-left: 0.4rem;
     }
     display: flex;
-    @media (max-width: @screen-sm) {
-      align-items: baseline;
-    }
+    align-items: baseline;
   }
 
   .ManagerMenu {
