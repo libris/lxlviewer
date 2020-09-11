@@ -582,6 +582,7 @@ export default {
 <style lang="less">
 .ItemLocal {
   width: 100%;
+  min-width: 0;
   padding: 0;
   position: relative;
   flex: 1 100%;
