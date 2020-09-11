@@ -1,10 +1,6 @@
 .thing {
   margin-bottom: 2em;
 
-  .thing-container {
-    margin-bottom: 10px;
-  }
-
   h1, h2, h3, h4, h5, h6 {
     margin: 0 0 1em;
   }
@@ -21,7 +17,7 @@
     table-layout: fixed;
     background-color: @white;
     border: 1px solid @grey-lighter;
-    margin-bottom: 0;
+    margin-bottom: 10px;
 
     tr {
       border-top: 1px solid @grey-lighter;
@@ -33,15 +29,29 @@
     }
   }
 
-  .thing-link {
-    display: block;
-    margin: 5px 0;
-    padding: 5px 10px;
-    background-color: @brand-faded;
-    border: 1px solid @brand-faded;
-    border-radius: 20px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .thing-list {
+    margin: 0;
+
+    li.is-inline {
+      display: inline-block;
+    }
+  } 
+
+  .link-item {
+    .label-class {
+      display: none;
+    }
+
+    .thing-link {
+      display: block;
+      margin: 5px 0;
+      padding: 5px 10px;
+      background-color: @brand-faded;
+      border: 1px solid @brand-faded;
+      border-radius: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   @media screen and (max-width: @screen-sm-min) {
@@ -49,13 +59,15 @@
       display: block;
     }
 
-    .term-label {
+    .term-label, 
+    .is-inner .term-label {
       width: auto;
     }
   }
 }
 
 .thing-list-item {
+  overflow: hidden;
   padding: 0.5em 1em;
   border-bottom: 1px solid @grey-lighter;
 
@@ -84,4 +96,8 @@
   text-transform: uppercase;
   overflow-wrap: break-word;
   hyphens: auto;
+
+  .is-inner & {
+    width: 33%;
+  }
 }
