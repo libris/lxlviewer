@@ -36,7 +36,10 @@ export default {
         'Multimedia': 'laptop',
         'NotatedMusic': 'music',
         'ManuscriptNotatedMusic': 'music',
-      }
+      },
+      forcedUnspecified: [
+        'Work',
+      ],
     };
   },
   methods: {
@@ -47,6 +50,9 @@ export default {
     ]),
     convertedType() {
       return this.type.replace('https://id.kb.se/vocab/', '');
+    },
+    isForcedUnspecified() {
+      return this.forcedUnspecified.indexOf(this.convertedType) > -1;
     },
     iconClass() {
       let iconName = '';
@@ -67,8 +73,8 @@ export default {
 </script>
 
 <template>
-  <div class="TypeIcon" v-if="showIconless === true || iconClass !== ''">
-    <span class="TypeIcon-label" v-if="iconClass === ''">/</span>
+  <div class="TypeIcon" v-if="showIconless === true || iconClass !== '' || isForcedUnspecified">
+    <span class="TypeIcon-label" v-if="iconClass === '' || isForcedUnspecified">/</span>
     <i :class="iconClass" v-if="iconClass !== ''"></i>
   </div>
 </template>
