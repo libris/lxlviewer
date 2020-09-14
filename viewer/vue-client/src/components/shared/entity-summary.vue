@@ -213,7 +213,7 @@ export default {
         this.resources.context,
       );
       if (type === this.recordType) {
-        return `Ospecifierad, ${translatedBaseType}`;
+        return `${this.$options.filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
       }
       let translatedType = '';
       if (isArray(type)) {
@@ -305,7 +305,7 @@ export default {
       :encodingLevel="encodingLevel"
       :tooltipText="encodingLevel | labelByLang"/>
     <div :title="categorization.join(', ')" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
-      {{typeLabel}}{{ categorization.length > 0 ? ' • ' : '' }}{{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
+      {{ typeLabel }}{{ categorization.length > 0 ? ' • ' : '' }}{{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
     <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
