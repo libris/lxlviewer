@@ -13,7 +13,7 @@ body#marcframeview {
 
   .content-col {
     width: 100%;
-    margin-left: @nav-col-width;
+    margin-left: calc(@nav-col-width + 2em);
     
     @supports(position:sticky) {
       margin-left: 0;
@@ -139,6 +139,12 @@ body#marcframeview {
     a {
       line-height: 1.8;
     }
+  }
+
+  .ext:before {
+    font-family: FontAwesome;
+    font-size: 85%;
+    content: " \f08e";
   }
 
   @media screen and (max-width: @screen-md-min) {
