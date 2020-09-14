@@ -377,8 +377,12 @@ export default {
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
       if (!isArray(currentValue)) {
         // Converting value to array if it isn't already
-        currentValue = [currentValue];
-      }
+        if (currentValue !== null) {
+          currentValue = [currentValue];
+        } else {
+          currentValue = [];
+        }
+      }      
       const linkObj = { '@id': obj['@id'] };
       currentValue.push(linkObj);
       this.$store.dispatch('addToQuoted', obj);
