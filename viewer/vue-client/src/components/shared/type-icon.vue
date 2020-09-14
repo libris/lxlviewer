@@ -13,6 +13,10 @@ export default {
       type: String,
       default: '',
     },
+    showIconless: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -41,10 +45,13 @@ export default {
     ...mapGetters([
       'resources',
     ]),
+    convertedType() {
+      return this.type.replace('https://id.kb.se/vocab/', '');
+    },
     iconClass() {
       let iconName = '';
-      if (this.iconMap.hasOwnProperty(this.type)) {
-        iconName = this.iconMap[this.type];
+      if (this.iconMap.hasOwnProperty(this.convertedType)) {
+        iconName = this.iconMap[this.convertedType];
       } else {
         return '';
       }
@@ -60,9 +67,9 @@ export default {
 </script>
 
 <template>
-  <div class="TypeIcon">
+  <div class="TypeIcon" v-if="showIconless === true || iconClass !== ''">
     <span class="TypeIcon-label" v-if="iconClass === ''">/</span>
-    <i :class="iconClass" v-else></i>
+    <i :class="iconClass" v-if="iconClass !== ''"></i>
   </div>
 </template>
 
