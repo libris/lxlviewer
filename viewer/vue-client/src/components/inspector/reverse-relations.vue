@@ -74,7 +74,8 @@ export default {
           query.o = this.mainEntity['@id'];
           query['@type'] = 'Instance';
         } else if (this.recordType === 'Agent') {
-          query['instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
+          query['or-instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
+          query['or-contribution.agent.@id'] = this.mainEntity['@id'];
         } else {
           query.o = this.mainEntity['@id'];
         }
