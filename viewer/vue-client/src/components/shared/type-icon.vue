@@ -22,7 +22,7 @@ export default {
     return {
       iconMap: {
         'Text': 'file-text',
-        'Text': 'file-text',
+        'ManuscriptText': 'file-text',
         'Audio': 'volume-up',
         'Music': 'volume-up',
         'Kit': 'archive',
