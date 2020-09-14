@@ -1,6 +1,5 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as VocabUtil from '@/utils/vocab';
 
 export default {
   name: 'type-icon',
@@ -21,21 +20,21 @@ export default {
   data() {
     return {
       iconMap: {
-        'Text': 'file-text',
-        'ManuscriptText': 'file-text',
-        'Audio': 'volume-up',
-        'Music': 'volume-up',
-        'Kit': 'archive',
-        'StillImage': 'picture-o',
-        'MixedMaterial': 'cubes',
-        'Object': 'cube',
-        'MovingImage': 'film',
-        'Cartography': 'map',
-        'ManuscriptCartography': 'map',
-        'Dataset': 'database',
-        'Multimedia': 'laptop',
-        'NotatedMusic': 'music',
-        'ManuscriptNotatedMusic': 'music',
+        Text: 'file-text',
+        ManuscriptText: 'file-text',
+        Audio: 'volume-up',
+        Music: 'volume-up',
+        Kit: 'archive',
+        StillImage: 'picture-o',
+        MixedMaterial: 'cubes',
+        Object: 'cube',
+        MovingImage: 'film',
+        Cartography: 'map',
+        ManuscriptCartography: 'map',
+        Dataset: 'database',
+        Multimedia: 'laptop',
+        NotatedMusic: 'music',
+        ManuscriptNotatedMusic: 'music',
       },
       forcedUnspecified: [
         'Work',
