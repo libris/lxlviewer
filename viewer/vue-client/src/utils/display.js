@@ -135,10 +135,6 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
   if (level !== 'tokens') {
     props = getLensPropertiesDeep(cn, displayDefinitions, vocab, settings, context, level, depth);
   }
-  // Add @type
-  if (level === 'cards') {
-    props = ['@type'].concat(props);
-  }
   props = uniq(props);
   const propsWithTranslatedObjects = [];
   for (let i = 0; i < props.length; i++) {

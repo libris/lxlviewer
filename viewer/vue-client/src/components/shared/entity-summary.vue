@@ -3,8 +3,10 @@ import { each, isArray, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import LensMixin from '../mixins/lens-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
+import TypeIcon from '@/components/shared/type-icon';
 import SummaryNode from '@/components/shared/summary-node';
 import * as StringUtil from '@/utils/string';
+import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 
 export default {
@@ -13,6 +15,7 @@ export default {
   components: {
     EncodingLevelIcon,
     SummaryNode,
+    TypeIcon,
   },
   props: {
     focusData: {
@@ -198,6 +201,36 @@ export default {
       }
       return limited;
     },
+    recordType() {
+      return VocabUtil.getRecordType(this.focusData['@type'], this.resources.vocab, this.resources.context);
+    },
+    typeLabel() {
+      const type = this.focusData['@type'];
+      const translatedBaseType = StringUtil.getLabelByLang(
+        this.recordType,
+        this.user.settings.language, 
+        this.resources.vocab, 
+        this.resources.context,
+      );
+      if (type === this.recordType) {
+        return `${this.$options.filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
+      }
+      let translatedType = '';
+      if (isArray(type)) {
+        translatedType = type.join(', ');
+      } else {
+        translatedType = StringUtil.getLabelByLang(
+          type,
+          this.user.settings.language, 
+          this.resources.vocab, 
+          this.resources.context,
+        );
+      }
+      return `${translatedType}, ${translatedBaseType}`;
+    },
+    topBarInformation() {
+      return `${ this.typeLabel }${ this.categorization.length > 0 ? ' • ' : '' }${ this.categorization.join(', ') }`
+    },
     categorization() {
       return StringUtil.getFormattedEntries(
         this.getSummary.categorization, 
@@ -266,12 +299,16 @@ export default {
   class="EntitySummary"
   v-bind:class="{'is-embedded-in-field': embeddedInField}">
   <div class="EntitySummary-meta">
+    <type-icon
+      v-if="recordType === 'Work'"
+      :type="focusData['@type']"
+    />
     <encoding-level-icon
-      v-if="encodingLevel && !isItem"
+      v-if="encodingLevel && recordType === 'Instance'"
       :encodingLevel="encodingLevel"
       :tooltipText="encodingLevel | labelByLang"/>
-    <div :title="categorization.join(', ')" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
-      {{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
+    <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
+      {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
     <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">

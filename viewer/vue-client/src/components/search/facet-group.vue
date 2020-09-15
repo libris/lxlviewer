@@ -1,6 +1,7 @@
 <script>
 import Facet from './facet.vue';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
+import TypeIcon from '@/components/shared/type-icon';
 
 export default {
   name: 'facet-group',
@@ -60,6 +61,7 @@ export default {
   components: {
     Facet,
     EncodingLevelIcon,
+    TypeIcon,
   },
 };
 </script>
@@ -84,7 +86,12 @@ export default {
         <encoding-level-icon
           slot="icon"
           v-if="group.dimension === 'meta.encodingLevel'"
-          :encodingLevel="observation.object['@id']"></encoding-level-icon>
+          :encodingLevel="observation.object['@id']" />
+        <type-icon
+          slot="icon"
+          :show-iconless="false"
+          v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
+          :type="observation.object['@id']" />
       </facet>
     </ul>
     <span 

@@ -1,7 +1,6 @@
 {
   "card": {
     "categorization": [
-      "@type",
       "issuanceType",
       "inCollection",
       "inScheme",
