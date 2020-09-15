@@ -212,6 +212,9 @@ export default {
         this.resources.vocab, 
         this.resources.context,
       );
+      if (this.recordType === 'Item') {
+        return translatedBaseType;
+      }
       if (type === this.recordType) {
         return `${this.$options.filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
       }
