@@ -1,8 +1,12 @@
 <script>
+import { mapGetters } from 'vuex';
 import * as MathUtil from '@/utils/math';
+import * as VocabUtil from '@/utils/vocab';
+import LensMixin from '@/components/mixins/lens-mixin';
 
 export default {
   name: 'facet',
+  mixins: [LensMixin],
   props: {
     active: {
       type: Boolean,
@@ -22,8 +26,18 @@ export default {
       }
       return object[property];
     },
+    getRecordType(object) {
+      return VocabUtil.getRecordType(
+        object['@type'], 
+        this.resources.vocab, 
+        this.resources.context,
+      );
+    },
   },
   computed: {
+    ...mapGetters([
+      'resources',
+    ]),
     user() {
       return this.$store.getters.user;
     },
@@ -41,10 +55,15 @@ export default {
       const label = this.getByLang(object, 'prefLabel', lang)
         || this.getByLang(object, 'label', lang)
         || this.getByLang(object, 'title', lang);
+      
       if (label) {
         return label;
+      }  
+
+      if (this.getRecordType(object) === 'Agent') {
+        return this.getLabel(object);
       }
-      
+
       const idArray = object['@id'].split('/');
       return `${idArray[idArray.length - 1]} [has no label]`;
     },
