@@ -228,6 +228,9 @@ export default {
       }
       return `${translatedType}, ${translatedBaseType}`;
     },
+    topBarInformation() {
+      return `${ this.typeLabel }${ this.categorization.length > 0 ? ' • ' : '' }${ this.categorization.join(', ') }`
+    },
     categorization() {
       return StringUtil.getFormattedEntries(
         this.getSummary.categorization, 
@@ -304,8 +307,8 @@ export default {
       v-if="encodingLevel && recordType === 'Instance'"
       :encodingLevel="encodingLevel"
       :tooltipText="encodingLevel | labelByLang"/>
-    <div :title="categorization.join(', ')" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
-      {{ typeLabel }}{{ categorization.length > 0 ? ' • ' : '' }}{{categorization.join(', ')}} {{ isLocal ? '{lokal entitet}' : '' }}
+    <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
+      {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
     <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
