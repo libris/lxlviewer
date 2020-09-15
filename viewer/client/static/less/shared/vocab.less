@@ -5,14 +5,29 @@ body#vocab { // Opening bracket for body#vocab, everything in this file should b
     min-width: @nav-col-width;
     max-width: @nav-col-width;
 
-    .tab-content ul {
-      padding: 0 1em;
+    .toggle-container {
+      display: inline-block;
+      padding: .5em 1em;
+      margin-bottom: 5px;
+      border: 1px solid @grey-light;
+      border-radius: 4px;
 
-      li {
-        overflow: hidden;
-        text-overflow: ellipsis;
+      label {
+        margin: 0;
       }
     }
+
+    .tab-content {
+      height: calc(100% - 50px);
+      ul {
+        padding: 0 1em;
+  
+        li {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    } 
   }
 
   .content-col {
@@ -98,6 +113,12 @@ body#vocab { // Opening bracket for body#vocab, everything in this file should b
     .panel-body {
       border: 1px solid @grey-light;
       border-top: 0;
+    }
+  }
+
+  .is-marc {
+    &.js-hidden {
+      display: none;
     }
   }
 

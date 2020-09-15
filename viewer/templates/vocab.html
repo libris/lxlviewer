@@ -14,7 +14,13 @@
 
 
 % block content
-  <nav class="nav-col" id="nav-tabs" lang="en">
+  <nav class="nav-col" id="nav-tabs" lang="en" aria-label="Sidopanel">
+    <div class="toggle-container">
+      <label class="semibold">
+        <input id="js-toggle-marc" type="checkbox" checked>
+        Visa MARC-termer
+      </label>
+    </div>
     <ul class="nav nav-tabs semibold" role="tablist">
       <li role="presentation" class="nav-tab js-nav-tab active">
         <a href="#tabpanel-classes" aria-controls="tabpanel-classes" role="tab" data-toggle="tab" id="tab-classes">Classes</a>
@@ -27,7 +33,7 @@
       <div role="tabpanel" class="tab-pane active" id="tabpanel-classes">
         <ul class="list-unstyled" aria-labelledby="tab-classes">
           % for rclass in voc.classes
-            <li>
+            <li class="{% if rclass.qname().startswith('marc:')%}is-marc{% endif %}">
               <a href="${link(rclass)}">${rclass.qname()}</a>
             </li>
           % endfor
@@ -36,7 +42,7 @@
       <div role="tabpanel" class="tab-pane" id="tabpanel-props">
         <ul class="list-unstyled" aria-labelledby="tab-props">
           % for rprop in voc.properties
-            <li>
+            <li class="{% if rprop.qname().startswith('marc:')%}is-marc{% endif %}">
               <a href="${link(rprop)}">${rprop.qname()}</a>
             </li>
           % endfor
@@ -65,21 +71,29 @@
     <section>
       <h2>Classes</h2>
       % for rclass in voc.classes
-        ${classdefinition(rclass)}
+        % if rclass.qname().startswith('marc:')
+          ${classdefinition(rclass, 'is-marc')}
+        % else
+          ${classdefinition(rclass)}
+        % endif
       % endfor
     </section>
 
     <section>
       <h2>Properties</h2>
       % for rprop in voc.properties
-        ${propertydefinition(rprop)}
+        % if rprop.qname().startswith('marc:')
+          ${propertydefinition(rprop, 'is-marc')}
+        % else
+          ${propertydefinition(rprop)}
+        % endif
       % endfor
     </section>
   </div>
 % endblock
 
-% macro classdefinition(rclass)
-  <article class="panel panel-default rdf-class" aria-label="${rclass.qname()}">
+% macro classdefinition(rclass, cssclass='')
+  <article class="panel panel-default rdf-class ${cssclass}" aria-label="${rclass.qname()}">
     <span id="${rclass.qname()}" class="vocab-anchor class-anchor" aria-hidden="true"></span>
     <header class="panel-heading">
       <h3 class="panel-title ${rclass.value(VS.term_status)}" lang="en">${rclass.qname()}</h3>
@@ -216,8 +230,8 @@
   </p>
 % endmacro
 
-% macro propertydefinition(rprop)
-  <article class="panel panel-default rdf-property" aria-label="${rprop.qname()}">
+% macro propertydefinition(rprop, cssclass='')
+  <article class="panel panel-default rdf-property  ${cssclass}" aria-label="${rprop.qname()}">
     <span id="${rprop.qname()}" class="vocab-anchor property-anchor" aria-hidden="true"></span>
     <header class="panel-heading">
       <h2 class="panel-title ${rprop.value(VS.term_status) or ''}" lang="en">${rprop.qname()}</h2>
@@ -273,7 +287,7 @@
           <dd>
             <ul class="list-inline">
               % for note in notes
-                <li class="chip-marc" lang="en">${note}</li>
+                <li class="note" lang="en">${note}</li>
               % endfor
             </ul>
           </dd>
