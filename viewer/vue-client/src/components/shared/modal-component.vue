@@ -183,7 +183,6 @@ export default {
     text-align: left;
     border-radius: 4px;
     background-color: @modal-body-background;
-    overflow: hidden;
     line-height: 1.6;
   }
 
@@ -207,6 +206,7 @@ export default {
 
   &-body {
     overflow-y: auto;
+    overflow-x: hidden;
     height: 100%;
     display: flex;
     background-color: @modal-body-background;
