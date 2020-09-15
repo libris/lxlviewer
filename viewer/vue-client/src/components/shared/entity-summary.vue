@@ -229,7 +229,7 @@ export default {
       return `${translatedType}, ${translatedBaseType}`;
     },
     topBarInformation() {
-      return `${ this.typeLabel }${ this.categorization.length > 0 ? ' • ' : '' }${ this.categorization.join(', ') }`
+      return `${this.typeLabel}${this.categorization.length > 0 ? ' • ' : ''}${this.categorization.join(', ')}`;
     },
     categorization() {
       return StringUtil.getFormattedEntries(
