@@ -256,21 +256,21 @@ const store = new Vuex.Store({
           sv: 'Språk',
           en: 'Language',
           facet: {
-            order: 8,
+            order: 6,
           },
         },
         genreForm: {
           sv: 'Genre/form',
           en: 'Genre/form',
           facet: {
-            order: 9,
+            order: 7,
           },
         },
         'contribution.agent': {
           sv: 'Medverkan',
           en: 'Contribution',
           facet: {
-            order: 9,
+            order: 7,
           },
         },
         contentType: {
