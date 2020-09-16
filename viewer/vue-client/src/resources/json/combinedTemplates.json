@@ -3023,7 +3023,7 @@
   "work": {
     "Text": {
       "label": "Text",
-      "description": "Verk Text",
+      "description": "Verk",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
