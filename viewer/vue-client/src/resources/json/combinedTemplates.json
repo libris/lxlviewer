@@ -1048,7 +1048,13 @@
               }
             ],
             "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
-            "subject": []
+            "subject": [],
+            "summary": [
+              {
+                "@type": "Summary",
+                "label": ""
+              }
+            ]
           }
         }
       }
@@ -1240,9 +1246,7 @@
             "summary": [
               {
                 "@type": "Summary",
-                "label": [
-                  ""
-                ]
+                "label": ""
               }
             ]
           }
@@ -3008,9 +3012,7 @@
             "summary": [
               {
                 "@type": "Summary",
-                "label": [
-                  ""
-                ]
+                "label": ""
               }
             ]
           }
