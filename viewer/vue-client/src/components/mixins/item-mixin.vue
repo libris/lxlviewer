@@ -99,7 +99,9 @@ export default {
       }
       const newRecord = {};
       newRecord.descriptionCreator = { '@id': this.user.getActiveLibraryUri() };
-      newRecord.derivedFrom = { '@id': this.inspector.data.record['@id'] };
+      if (this.inspector.data.record['@id'] !== 'https://id.kb.se/TEMPID') {
+        newRecord.derivedFrom = { '@id': this.inspector.data.record['@id'] };
+      }
       const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity, newRecord);
       return objAsRecord;
     },
