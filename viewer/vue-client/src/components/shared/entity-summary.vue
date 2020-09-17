@@ -206,6 +206,9 @@ export default {
     },
     typeLabel() {
       const type = this.focusData['@type'];
+      if (typeof type === 'undefined') {
+        return '';
+      }
       const translatedBaseType = StringUtil.getLabelByLang(
         this.recordType,
         this.user.settings.language, 
