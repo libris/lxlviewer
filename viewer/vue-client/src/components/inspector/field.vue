@@ -619,12 +619,6 @@ export default {
       v-if="showKey && !isInner" >
       <div class="Field-labelWrapper">
         <div v-if="!isLocked" class="Field-actions">
-          <div class="Field-reverse" v-if="isReverseProperty">
-            <i class="fa fa-exchange fa-fw icon icon--sm"
-              v-tooltip.top="translate('Incoming link')"
-            ></i>
-          </div>
-
           <div class="Field-action Field-remove" 
             v-show="!locked && isRemovable" 
             :class="{'disabled': activeModal}">
@@ -688,7 +682,17 @@ export default {
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-            :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>    
+            :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>          
+          <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
+            <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
+            <div class="Field-comment">
+              <i class="fa fa-question-circle-o icon icon--sm"></i>
+              <span class="Field-commentText">{{ 'Non editable incoming link' | translatePhrase }}.
+                <br />
+                <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ 'Read more about incoming links' | translatePhrase }}.</a>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
       <code class="path-code" v-show="user.settings.appTech && !isInner">{{path}}</code>
@@ -1288,6 +1292,15 @@ export default {
       @media (min-width: @screen-sm) {
         display: block;
       }
+    }
+  }
+
+  &-reverse {    
+    .Field-comment {
+      display: inline-block;
+      min-height: 30px;
+      width: auto;
+      margin-right: 0;
     }
   }
 

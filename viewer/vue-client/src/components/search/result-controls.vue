@@ -3,9 +3,11 @@ import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import * as httpUtil from '@/utils/http';
 import Sort from '@/components/search/sort';
+import LensMixin from '@/components/mixins/lens-mixin';
 
 export default {
   name: 'result-controls',
+  mixins: [LensMixin],
   props: {
     pageData: {},
     showDetails: {
@@ -41,6 +43,7 @@ export default {
         filters = this.pageData.search.mapping.filter(item => this.excludeFilters.every(el => el !== item.variable))
           .map((item) => {
             let label = '';
+
             if (item.hasOwnProperty('value')) { // Try to use item value to get label
               label = item.value;
             } else if (item.hasOwnProperty('object') && this.pageData.hasOwnProperty('stats')) { // else look for preflabel in stats (if there are results)
@@ -60,6 +63,9 @@ export default {
                       label = matchObj[tryProps[prop]];
                     }
                   }
+                }
+                if (label === '') {
+                  label = this.getLabel(matchObj);
                 }
               } else {
                 label = item.object['@id'];

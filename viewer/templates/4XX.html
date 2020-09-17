@@ -12,17 +12,14 @@
 
 {% block title %}${status_code} - ${status_msg}{% endblock %}
 
-{% block wrapper %}<div class="show-content" id="page-content-wrapper"> {% endblock %}
 
 % block content
-  <div class="panel panel-default article-text">
-    <div class="panel-body container-fluid">
-      <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-          <h3>${status_msg} <small>(${status_code})</small></h3>
-          <p>${info_msg}</p>
-          <a href="/">Tillbaka till startsidan</a>
-        </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <h1>${status_msg} <small>(${status_code})</small></h1>
+        <p>${info_msg}</p>
+        <a href="/">Tillbaka till startsidan</a>
       </div>
     </div>
   </div>

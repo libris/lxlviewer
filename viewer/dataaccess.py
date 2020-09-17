@@ -54,10 +54,12 @@ sites = {
         "statsindex": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
         "statsfind": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
         "filter_param": "inScheme.@id",
+        "applyInverseOf": True,
         "itemList": [
-            {ID: "/doc/about", "title": "Om id.kb.se", "icon": "info-circle"},
-            {ID: "/marcframe", "title": "MARC-mappningar", "icon": "exchange"},
-            {ID: "/vocab", "title": "Basvokabulär", "icon": "book"}
+            {ID: "/", "title": "Sök"},
+            {ID: "/marcframe/", "title": "MARC-mappningar"},
+            {ID: "/vocab/", "title": "Basvokabulär"},
+            {ID: "/doc/about", "title": "Om id.kb.se"},
         ]
     },
     LIBRIS: {
@@ -136,6 +138,11 @@ sites = {
                     "sort":"value",
                     "sortOrder":"desc",
                     "size":100
+                },
+                "contribution.agent.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":20
                 }
             }
         """,

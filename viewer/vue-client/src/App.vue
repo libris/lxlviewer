@@ -528,7 +528,7 @@ body {
       }
     }
   }
-  input, textarea, img, select, .ItemEntity, .ItemLocal, .ItemSibling, .icon, .icon i, li, i.fa {
+  input, textarea, img, select, .ItemEntity, .ItemLocal, .EntityAction, .ItemSibling, .icon, .icon i, li, i.fa {
     &:focus {
       .focus-mixin-border();
     }
@@ -661,6 +661,9 @@ h1 {
     &--large {
       &:extend(.uppercaseHeading);
       font-size: 1.8rem;
+    }
+    &--secondary {
+      color: @grey;
     }
 }
 

@@ -5,12 +5,13 @@ import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import * as DisplayUtil from '@/utils/display';
 import * as VocabUtil from '@/utils/vocab';
+import * as StringUtil from '@/utils/string';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
+import Button from '@/components/shared/button';
 import Sort from '@/components/search/sort';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import FilterSelect from '@/components/shared/filter-select.vue';
-import SummaryAction from './summary-action';
 import LensMixin from '../mixins/lens-mixin';
 
 export default {
@@ -25,15 +26,9 @@ export default {
       loading: false,
       debounceTimer: 500,
       showHelp: false,
+      showExtractSummary: false,
       searchMade: false,
       currentSearchTypes: [],
-      localEntitySettings: {
-        text: 'Create and link entity',
-        styling: 'brand',
-        icon: 'plus',
-        show: true,
-        inspectAction: false,
-      },
       listItemSettings: {
         text: 'Replace local entity',
         styling: 'brand',
@@ -104,11 +99,11 @@ export default {
   },
   components: {
     'panel-search-list': PanelSearchList,
-    'summary-action': SummaryAction,
     'panel-component': PanelComponent,
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
     'vue-simple-spinner': VueSimpleSpinner,
+    'button-component': Button,
     sort: Sort,
   },
   watch: {
@@ -147,6 +142,9 @@ export default {
       'settings',
       'status',
     ]),
+    typeOfExtractingEntity() {
+      return StringUtil.getLabelByLang(VocabUtil.getRecordType(this.itemInfo['@type'], this.resources.vocab, this.resources.context), this.user.settings.language, this.resources.vocab, this.resources.context).toLowerCase();
+    },
     filterPlaceHolder() {
       if (this.someValuesFrom.length > 0) {
         return 'Suggested types';
@@ -482,17 +480,32 @@ export default {
             </div>
           </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
-            <p class="preview-entity-text uppercaseHeading">{{ "Create link from local entity" | translatePhrase }}:</p>
-            <div class="SearchWindow-summaryContainer">
-              <summary-action 
-                :extracting="extracting"
-                :options="localEntitySettings" 
-                @action="extract()"></summary-action>
-            <entity-summary 
-              :action-settings="localEntitySettings" 
-              :focus-data="itemInfo" 
-              :should-link="false"
-              :valueDisplayLimit=1></entity-summary>
+            <div class="SearchWindow-summaryContainer" v-show="showExtractSummary">
+              <entity-summary 
+                :focus-data="itemInfo" 
+                :should-link="false"
+                :valueDisplayLimit=1></entity-summary>
+            </div>
+            <div class="SearchWindow-dialogContainer">
+              <p class="preview-entity-text uppercaseHeading">Vill du skapa {{ typeOfExtractingEntity }} av lokal entitet?</p>
+              <p>
+                Den lokala entiteten bryts ut och länkas. Förhandsgranska för att se hur den kommer att se ut.
+              </p>
+              <button-component
+                :button-text="['Yes, create', typeOfExtractingEntity ]"
+                icon="plus-circle"
+                :variant="'primary'"
+                :inverted="true"
+                @click="extract()"
+              />
+              <button-component
+                :button-text="showExtractSummary ? 'Hide' : 'Preview'"
+                :transparent="true"
+                :variant="'primary'"
+                :inverted="true"
+                :border="false"
+                @click="showExtractSummary = !showExtractSummary"
+              />
             </div>
           </div>
         </template>
@@ -560,8 +573,6 @@ export default {
   }
 
   &-extractControls {
-    .preview-entity-text {
-    }
 
     .copy-title {
       float: right;
@@ -577,6 +588,8 @@ export default {
     justify-content: space-between;
     align-items: baseline;
     margin: 0 10px;
+    border: solid @grey-lighter;
+    border-width: 0 0 1px 0;
   }
 
   &-listTypes {
@@ -590,25 +603,32 @@ export default {
   &-footerContainer {
     display: flex;
     flex-direction: column;
-    padding: 10px 15px;
 
     .EntitySummary {
       max-height: inherit;
       max-height: fit-content;
       overflow: auto;
-      padding: 0 0 0 15px;
-      border-left: 1px solid @grey-lighter;
-      margin-left: 15px;
+      padding: 0;
     }
   }
 
   &-summaryContainer {
     display: flex;
     flex-direction: row;
-    border: 1px solid @grey-lighter;
+    border: solid @grey-lighter;
+    border-width: 0 0 1px 0;
     background: @white;
-    border-radius: 4px;
-    padding: 15px;
+    padding: 1rem 2rem;
+  }
+
+  &-dialogContainer {
+    padding: 1rem 2rem;
+    .preview-entity-text {
+      margin: 0;
+    }
+    .Button:not(:first-of-type) {
+      margin-left: 1em;
+    }
   }
 
   &-panel {

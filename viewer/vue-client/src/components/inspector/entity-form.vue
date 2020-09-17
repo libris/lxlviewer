@@ -91,7 +91,7 @@ export default {
       return false;
     },
     showIncomingLinksSection() {
-      return Object.keys(this.reverseItemSorted).length > 0;
+      return Object.keys(this.reverseItemStandalone).length > 0;
     },
     formObj() {
       return this.formData;
@@ -128,7 +128,7 @@ export default {
         :key="k" 
         :field-key="k" 
         :field-value="v" 
-        :parent-path="editingObject" />      
+        :parent-path="editingObject" />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
           {{ formObj }}
@@ -136,24 +136,24 @@ export default {
       </div>
     </ul>
 
-    <!-- <div 
+    <div 
       v-if="reverseItem && editingObject === 'mainEntity' && showIncomingLinksSection"
       class="EntityForm-reverse">
-      <h6 class="uppercaseHeading">{{ 'A selection of resources linking to this resource' | translatePhrase }}</h6>
+      <h6 class="uppercaseHeading">{{ 'Incoming links' | translatePhrase }}</h6>
       <ul class="FieldList">
         <field class="FieldList-item"
-          v-for="(v,k) in reverseItemSorted"
+          v-for="(v,k) in reverseItemStandalone"
           v-bind:class="{ 'locked': isLocked }" 
           :entity-type="formObj['@type']" 
           :is-inner="false" 
           :is-removable="false" 
           :is-locked="true" 
           :key="k" 
-          :field-key="'@reverse/' + k" 
+          :field-key="k" 
           :field-value="v" 
-          :parent-path="editingObject" />
+          :parent-path="'reverseItems'" />
       </ul>
-    </div> -->
+    </div>
   </div>
 </template>
 

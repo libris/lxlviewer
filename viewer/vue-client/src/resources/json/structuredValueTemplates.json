@@ -8,7 +8,7 @@
       }
     ],
     "contribution": null,
-    "language": null
+    "language": []
   },
   "Title": {
     "@type": "Title",
@@ -615,13 +615,11 @@
   },
   "ClassificationLcc": {
     "@type": "ClassificationLcc",
-    "code": "",
-    "itemPortion": ""
+    "code": ""
   },
   "ClassificationNlm": {
     "@type": "ClassificationNlm",
-    "code": "",
-    "itemPortion": ""
+    "code": ""
   },
   "ClassificationUdc": {
     "@type": "ClassificationUdc",

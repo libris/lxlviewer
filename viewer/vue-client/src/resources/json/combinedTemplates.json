@@ -529,7 +529,24 @@
           ],
           "instanceOf": {
             "@type": "Text",
-            "classification": [],
+            "classification": [
+              {
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
             "contribution": [
               {
                 "@type": "PrimaryContribution",
@@ -749,6 +766,148 @@
         }
       }
     },
+    "electronicPeriodicalText": {
+      "label": "Elektronisk seriell resurs",
+      "description": "RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [
+            {
+              "@type": "Library",
+              "sigel": ""
+            }
+          ],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Electronic",
+          "issuanceType": "Serial",
+          "frequency": [],
+          "hasTitle": [
+            {
+              "@type": "KeyTitle",
+              "mainTitle": ""
+            },
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ],
+          "marc:alphabet": {
+            "@id": "https://id.kb.se/marc/SerialsAlphabetType-b"
+          },
+          "marc:typeOfEntry": {
+            "@id": "https://id.kb.se/marc/SerialsTypeOfEntryType-0"
+          },
+          "identifiedBy": [{
+            "@type": "ISSN",
+            "value": ""
+          }],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "date": "",
+              "startYear": "",
+              "endYear": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Computer"}],
+          "carrierType": [
+            {"@id": "https://id.kb.se/term/rda/OnlineResource"},
+            {"@id": "https://id.kb.se/marc/Online"},
+            {"@id": "https://id.kb.se/marc/OnlineResource"}
+          ],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "hasNumberingOfSerials": [
+            {
+              "@type": "NumberingOfSerials",
+              "label": ""
+            }
+          ],
+          "associatedMedia": [
+            {
+              "@type": "MediaObject",
+              "uri": [
+                ""
+              ],
+              "marc:publicNote": [
+                ""
+              ]
+            }
+          ],
+          "otherPhysicalFormat": [],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "contribution": [
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "genreForm": [{
+              "@id": "https://id.kb.se/marc/Periodical"
+            }],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "subject": []
+          }
+        }
+      }
+    },
     "electronicIntegratingText": {
       "label": "Databas / Webbplats",
       "description": "Elektronisk integrerande resurs - RDA",
@@ -889,7 +1048,13 @@
               }
             ],
             "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
-            "subject": []
+            "subject": [],
+            "summary": [
+              {
+                "@type": "Summary",
+                "label": ""
+              }
+            ]
           }
         }
       }
@@ -1081,9 +1246,7 @@
             "summary": [
               {
                 "@type": "Summary",
-                "label": [
-                  ""
-                ]
+                "label": ""
               }
             ]
           }
@@ -1529,6 +1692,8 @@
                 "label": ""
               },
               "date": "",
+              "year": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
                 "@type": "Place",
                 "label": ""
@@ -1782,7 +1947,24 @@
           ],
           "instanceOf": {
             "@type": "Text",
-            "classification": [],
+            "classification": [
+              {
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
             "contribution": [
               {
                 "@type": "PrimaryContribution",
@@ -2830,12 +3012,90 @@
             "summary": [
               {
                 "@type": "Summary",
-                "label": [
-                  ""
-                ]
+                "label": ""
               }
             ]
           }
+        }
+      }
+    }
+  },
+  "work": {
+    "Text": {
+      "label": "Text",
+      "description": "Verk",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionConventions": [
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Text",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ],
+          "contribution": [
+            {
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            },
+            {
+              "@type": "Contribution",
+              "agent": null,
+              "role": []
+            }
+          ],
+          "language": [],
+          "genreForm": [],
+          "classification": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
+            {
+              "@type": "Classification",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb",
+                "version": "8"
+              }
+            }
+          ],
+          "subject": [],
+          "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+          "hasNote": [
+            {
+              "@type": "marc:LanguageNote",
+              "label": ""
+            }
+          ]
         }
       }
     }

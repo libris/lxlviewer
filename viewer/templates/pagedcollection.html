@@ -6,35 +6,33 @@
 
 % block content
   % set items = thing['items']
-<div class="row">
-  <div class="col-md-3 hidden-xs hidden-sm">
+<div>
+  <!-- <div class="col-md-3 hidden-xs hidden-sm"> -->
     <!--% if not request.args.get('@type')-->
-    <div class="panel panel-default">
+    <!-- <div class="panel panel-default">
       <div class="panel-body facet-controls">
       ${ search.facet_controls(thing, g.ui) }
       </div>
-    </div>
+    </div> -->
     <!--% endif-->
-  </div>
-  <div class="col-md-9">
+  <!-- </div> -->
 
     ${ search.search_controls(thing) }
     % if not request.args.get('@type')
-    <div class="panel panel-default hidden-md hidden-lg">
+    <!-- <div class="panel panel-default hidden-md hidden-lg">
       <div class="panel-body facet-controls">
       ${ search.facet_controls(thing, g.ui) }
       </div>
-    </div>
+    </div> -->
     % endif
-    ${ search.result_controls(thing, True) }
+    ${ search.result_controls(thing, True, 'top') }
     % if items
-      <div class="panel panel-default result-list">
+      <div class="result-list">
         % for item in items
           ${thing_list_item(item)}
         % endfor
       </div>
     % endif
-    ${ search.result_controls(thing, False) }
-  </div>
+    ${ search.result_controls(thing, False, 'bottom') }
 </div>
 % endblock

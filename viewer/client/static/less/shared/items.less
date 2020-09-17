@@ -1,33 +1,28 @@
 
 .chip-class {
-  .vocab-item-style(@color-class, solid);
+  .vocab-item-style(@color-class);
 }
 .chip-prop {
-  .vocab-item-style(@color-prop, solid);
+  .vocab-item-style(@color-prop);
 }
 .chip-ext {
-  .vocab-item-style(@color-ext, dashed);
+  .vocab-item-style(@color-ext);
 }
-
 .chip-marc {
-  display: inline-block;
-  color: #333;
-  background-color: #ffe;
-  border: 1px dotted #ccc;
-  font-family: Consolas, Lucida Console, monospace;
-  padding: 0 0.2em;
-  margin: 0.1em 0;
+  .vocab-item-style(@color-marc);
 }
 
-.vocab-item-style(@color, @border-style) {
+.vocab-item-style(@color) {
   text-align: left !important;
-  background-color: fadeout(@color, 90%);
+  background-color: fadeout(@color, 93%);
   border: solid fadeout(@color, 85%);
   border-width: 0px 1px 1px 1px;
   border-radius: 5px;
-  padding: 0px 5px;
+  padding: 1px 6px;
+  margin: 0 2px;
   font-weight: normal;
   color: @color;
+
   &:hover {
     color: darken(@color, 10%);
   }
@@ -39,6 +34,10 @@
   }
   i, p {
     color: @gray-darker;
+  }
+
+  @media screen and (max-width: @screen-sm-min) {
+    overflow-wrap: break-word;
   }
 }
 
@@ -52,22 +51,21 @@
 .items > li {
   list-style: none;
   display: inline;
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
-.items > li {
-  .vocab-item-style(@color-class, solid);
-  display: inline-block;
+.items > li a {
+  .vocab-item-style(@color-class);
   margin-bottom: 4px;
 }
 
 .items {
   &.baseproperties, &.subproperties {
-    li {
-      .vocab-item-style(@color-prop, solid);
+    li a {
+      .vocab-item-style(@color-prop);
     }
   }
-  li.ext {
-    .vocab-item-style(@color-ext, dashed);
+  li.ext a {
+    .vocab-item-style(@color-ext);
   }
   .ext p, .baseproperties p, .loc p {
     font-size: 0.8em;

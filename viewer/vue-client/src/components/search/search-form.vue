@@ -172,8 +172,8 @@ export default {
       return StringUtil.getUiPhraseByLang('Show search help', this.user.settings.language);
     },
     searchHelpDocs() {
-      if (this.docs && this.docs.hasOwnProperty('search-01-queries')) {
-        return this.transformMarkdownToHTML(this.docs['search-01-queries'].content);
+      if (this.docs && this.docs.hasOwnProperty('search')) {
+        return this.transformMarkdownToHTML(this.docs.search.content);
       }
       return StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language);
     },
@@ -200,8 +200,11 @@ export default {
       return this.searchPerimeter === 'remote' ? 'ISBN eller valfria sökord' : 'Search';
     },
     composedSearchParam() { // pair current search param with searchphrase
-      const composed = Object.assign({}, this.activeSearchParam.mappings || {});
-      composed[this.activeSearchParam.searchProp] = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
+      let composed = {};
+      if (this.activeSearchParam !== null) {
+        composed = Object.assign({}, this.activeSearchParam.mappings || {});
+        composed[this.activeSearchParam.searchProp] = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
+      }
       return composed;
     },
     composedTypes() {

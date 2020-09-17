@@ -12,17 +12,29 @@
 @import '../shared/button-and-links.less';
 
 // ----------- BASE STYLES ----------
+@white: #ffffff;
+@black: #191913;
+@grey: #949A9E;
+@grey-dark: #6F767B;
+@grey-darker: #636363;
+@grey-light: #DDD;
+@grey-lighter:#EFEFEF;
 
-@orange: #CA9543;
-@green: #009788;
-@grey-very-dark: #191913; // font-color
+@font-family-base: 'Open Sans', sans-serif;
+@text-color: @black;
+@base-font-size: 16px;
+@base-line-height: 1.6;
+@small-font-size: 14px;
+
+@link-color: @brand-primary;
+@link-hover-color: darken(@link-color, 15%);
 
 @modal-z: 999;
 @active-component-z: 99;
 @backdrop-z: 950;
-
 @shadow-panel: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
 
+// ----------- LAYOUT ----------------
 // Column widths
 @col-label: 200px;
 @col-value: 620px;
@@ -55,8 +67,10 @@ html {
 }
 
 main {
+  max-width: 100%;
+  flex: 1;
   margin-top: 30px;
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 }
 
 #oldbrowsermsg {
@@ -90,31 +104,50 @@ body {
   position: relative;
   background-color: @bg-site;
   background-image: @bg-img;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  .facet-container {
-    opacity: 1;
-    transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
-    &.facet-hidden {
-      width: 0%;
-      opacity: 0;
-    }
-  }
+  color: @text-color;
+  min-height: 100vh;
+  font-size: @base-font-size;
+  line-height: @base-line-height;
 
-  .search-content-container {
-    transition: 0.3s ease width;
-  }
-
-  .link-container {
+  @supports (display:flex) {
     display: flex;
-    justify-content: space-between;
-    margin-top: 15vh;
+    flex-direction: column;
   }
 }
 
+#skip-link {
+  background: @white;
+  padding: 5px;
+  border-radius: 4px;
+  position: absolute;
+  top: 5px;
+  left: -100%;
+
+  &:focus, &:active {
+    left: 0;
+  }
+}
+
+// ----------- TYPOGRAPHY ----------------
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 1.7em;
+}
+
 h2 {
-  font-weight: normal;
+  font-size: 1.4em;
+}
+
+h3 {
+  font-size: 1.2em;
+}
+
+h4 {
+  font-size: 1.1em;
 }
 
 .libris-redirect-page {
@@ -122,61 +155,6 @@ h2 {
   h1 { font-size: 50px; }
   a { color: @brand-primary; }
   a:hover { color: #333; }
-}
-
-footer {
-  background-color: @bg-footer;
-  border: 0px solid @border-footer;
-  color: @text-footer;
-  box-shadow: @shadow-footer;
-  // text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
-
-  .content-container {
-    display: flex;
-    justify-content: center;
-    .header {
-      font-weight: bold;
-    }
-    .item {
-      font-size: 14px;
-    }
-    > div {
-      display: flex;
-      padding: 0 1em;
-    }
-    .service-name {
-      flex: 20% 1 1;
-      align-items: center;
-      flex-direction: column;
-      justify-content: center;
-      font-weight: bold;
-      > a {
-        text-align: center;
-      }
-    }
-    .link-list {
-      flex: 25% 2 2;
-      flex-direction: column;
-    }
-    .social-media {
-      flex: 20% 1 1;
-      flex-direction: column;
-      align-items: center;
-      a {
-        margin: 0 5px;
-      }
-    }
-  }
-  a {
-    color: @text-footer;
-    text-transform:none;
-    &:hover {
-      color: @text-footer;
-    }
-  }
-  i {
-    color: @text-alt-footer;
-  }
 }
 
 a {
@@ -189,25 +167,88 @@ a {
   }
 }
 
-
-// ----------- BUTTONS ----------------
-button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
-    color: #ffffff;
+.semibold {
+  font-weight: 600;
 }
 
-button {
-  color:#444;
-  border:none;
-  border-radius: 2px;
-  background:#ccc;
-  padding: 0 0.4em;
-  font-weight:bold;
-  &:hover {
-  background: #ddd;
-  color:#222;
+.italic {
+  font-style: italic;
+}
+
+// ----------- FOOTER ----------------
+footer {
+  background-color: @bg-footer;
+  color: @text-footer;
+  padding: 2em 0;
+  line-height: 2.7rem;
+
+  .footer-container {
+    > * {
+      margin: 0 3em 1em 0;
+    }
+
+    @media screen and (max-width: @screen-xs-min) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
-  &:focus {
-  background:#bbb;
+
+  .header {
+    font-weight: bold;
+  }
+
+  .link-list {
+    h2 {
+      font-size: 18px;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .footer-divider {
+      border-top: 1px solid @text-alt-footer;    
+      margin: 1rem 0;
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  a {
+    color: @text-footer;
+    &:hover, &:focus {
+      color: @text-footer;
+    }
   }
 }
+
+.logo-medium {
+  width: 75px;
+}
+
+// ----------- FORM ELEMENTS ----------------
+button, .btn-primary, .btn-primary:hover, .btn-primary:focus,
+.btn-info, .btn-info:hover, .btn-info:focus {
+  color: #ffffff;
+  border: 0;
+  font-size: @base-font-size;
+  font-weight: 600;
+  padding: 0.5em 1.2em;
+  border-radius: 10px;
+  outline-offset: 2px;
+}
+
+input[type=checkbox]:focus, 
+a:focus {
+  outline-offset: 2px;
+}
+
 // ----------- VARIOUS ----------------
+
+#article {
+  background-color: @white;
+
+  main a {
+    text-decoration: underline;
+  }
+}

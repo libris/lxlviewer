@@ -70,10 +70,12 @@ export default {
               console.log(error);
             });
         } else if (this.recordType === 'Work') {
-          query['instanceOf.@id'] = this.mainEntity['@id'];
+          // query['instanceOf.@id'] = this.mainEntity['@id'];
+          query.o = this.mainEntity['@id'];
           query['@type'] = 'Instance';
         } else if (this.recordType === 'Agent') {
-          query['instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
+          query['or-instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
+          query['or-contribution.agent.@id'] = this.mainEntity['@id'];
         } else {
           query.o = this.mainEntity['@id'];
         }
@@ -83,7 +85,7 @@ export default {
           this.panelQuery._sort = 'heldBy.@id';
         }
 
-        if (this.mainEntity.reverseLinks && this.recordType === 'Instance') {
+        if (this.mainEntity.reverseLinks && (this.recordType === 'Work' || this.recordType === 'Concept')) {
           this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
           this.checkingRelations = false;
         } else {

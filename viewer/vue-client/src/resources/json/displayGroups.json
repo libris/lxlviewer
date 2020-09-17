@@ -1,7 +1,6 @@
 {
   "card": {
     "categorization": [
-      "@type",
       "issuanceType",
       "inCollection",
       "inScheme",
@@ -30,6 +29,9 @@
   "reverse": {
     "mainForm": [
       "@reverse/broader"
+    ],
+    "hidden": [
+      "@reverse/itemOf"
     ]
   }
 }
