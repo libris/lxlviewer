@@ -419,7 +419,7 @@ export default {
       <div class="ItemSibling-actions">
 
         <entity-action
-          v-if="inspector.status.editing && !isEmbedded && !isLocked"
+          v-if="inspector.status.editing && !isEmbedded && !isLocked && !isCompositional"
           @action="openExtractDialog(), expand()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
@@ -432,7 +432,7 @@ export default {
         />
 
         <entity-action
-          v-if="!isLocked && !isCompositional"
+          v-if="!isLocked"
           @action="openPropertyAdder(), expand()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
