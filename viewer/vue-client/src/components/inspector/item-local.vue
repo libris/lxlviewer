@@ -460,7 +460,7 @@ export default {
       
       <div class="ItemLocal-actions">
         <entity-action
-          v-if="inspector.status.editing && !isEmbedded && !isLocked"
+          v-if="inspector.status.editing && !isEmbedded && !isLocked && !isCompositional"
           @action="openExtractDialog(), expand()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
@@ -473,7 +473,7 @@ export default {
         />
 
         <entity-action
-          v-if="!isLocked && !isCompositional"
+          v-if="!isLocked"
           @action="openPropertyAdder(), expand()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
@@ -485,7 +485,7 @@ export default {
         />
 
         <entity-action
-          v-if="!isLocked"
+          v-if="inspector.status.editing && !isLocked"
           @action="removeThis(true)"
           @highlight="addHighlight('remove')"
           @dehighlight="removeHighlight('remove')"
@@ -497,7 +497,7 @@ export default {
         />
 
         <entity-action
-          v-if="!isLocked"
+          v-if="inspector.status.editing && !isLocked"
           @action="managerMenuOpen ? closeManagerMenu() : openManagerMenu()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
