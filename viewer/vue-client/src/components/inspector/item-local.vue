@@ -227,11 +227,7 @@ export default {
     },
     doExtract() {
       this.extracting = true;
-
-      // TODO: Remove this when Summary isn't broken
-      const hackedObject = this.extractedItem;
-      delete hackedObject['@graph'][1].summary;
-      this.doCreateRequest(httpUtil.post, hackedObject, `${this.settings.apiPath}/data`);
+      this.doCreateRequest(httpUtil.post, this.extractedItem, `${this.settings.apiPath}/data`);
     },
     doCreateRequest(requestMethod, obj, url) {
       requestMethod({ url, token: this.user.token, activeSigel: this.user.settings.activeSigel }, obj).then((result) => {
