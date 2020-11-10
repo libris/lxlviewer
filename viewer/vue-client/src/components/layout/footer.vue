@@ -85,7 +85,7 @@ export default {
                 <a class="Footer-link" href="https://kundo.se/org/librisxl/">{{ "Forum of support for new Libris" | translatePhrase }}</a>
               </li>
               <li>
-                <a class="Footer-link" href="http://www.kb.se/libris/kontakta/">{{ "Libris customer service" | translatePhrase }}</a>
+                <a class="Footer-link" href="https://www.kb.se/om-oss/kontakta-oss/">{{ "Libris customer service" | translatePhrase }}</a>
               </li>
             </ul>
           </nav>
