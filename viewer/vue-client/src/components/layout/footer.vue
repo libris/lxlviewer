@@ -46,12 +46,6 @@ export default {
                 <router-link class="Footer-link" to="/about" >{{ "About XL" | translatePhrase }}</router-link>
               </li>
               <li>
-                <a href="https://goo.gl/forms/TSCafatX9qKyMqK02" class="Footer-link">{{ "Suggest change" | translatePhrase }}</a>
-              </li>
-              <li>
-                <a href="https://goo.gl/forms/xJ837GVLmG6IHwsu2" class="Footer-link">{{ "Report error" | translatePhrase }}</a>
-              </li>
-              <li>
                 <a href="https://www.kb.se/libris-versionsinformation" class="Footer-link">{{ "Release notes" | translatePhrase }}</a>
               </li>
               <li>
