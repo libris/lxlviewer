@@ -553,8 +553,7 @@
         "prefLabel": ""
       },
       {
-        "@type": "TopicSubdivision",
-        "prefLabel": ""
+        "@type": "TopicSubdivision"
       }
     ]
   },
