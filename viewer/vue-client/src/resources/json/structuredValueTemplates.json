@@ -546,14 +546,14 @@
     "inScheme": {
       "@id": "https://id.kb.se/term/sao"
     },
-    "prefLabel": "",
     "termComponentList": [
       {
         "@type": "Topic",
         "prefLabel": ""
       },
       {
-        "@type": "TopicSubdivision"
+        "@type": "TopicSubdivision",
+        "prefLabel": ""
       }
     ]
   },
