@@ -64,35 +64,40 @@ export default {
     },
     getLocalResult() {
       const fetchUrl = `${this.settings.apiPath}/find.jsonld?${this.query}`;
-      fetch(fetchUrl).then(response => response.text(), (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
-        this.searchInProgress = false;
-      }).then((result) => {
-        try {
-          this.result = JSON.parse(result);
-        } catch (e) {
-          const msg = [
-            `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}`,
-            `${StringUtil.getUiPhraseByLang('Could not process server response', this.user.settings.language)}`,
-          ];
-          this.$store.dispatch('pushNotification', {
-            type: 'danger',
-            message: msg.join('. '),
+      fetch(fetchUrl).then((response) => {
+        if (response.status === 400) {
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Invalid query', this.user.settings.language)}` });
+        } else {
+          response.json().then((result) => {
+            this.result = result;
+          }, () => {
+            const msg = [
+              `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}`,
+              `${StringUtil.getUiPhraseByLang('Could not process server response', this.user.settings.language)}`,
+            ];
+            this.$store.dispatch('pushNotification', {
+              type: 'danger',
+              message: msg.join('. '),
+            });
           });
         }
+
+        this.searchInProgress = false;
+      }, (error) => {
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
         this.searchInProgress = false;
       });
     },
     getRemoteResult() {
       const dbsParam = this.$route.query.databases;
       const usedDbs = dbsParam.split(',');
-      this.$store.dispatch('setStatusValue', { 
-        property: 'usedRemoteDatabases', 
+      this.$store.dispatch('setStatusValue', {
+        property: 'usedRemoteDatabases',
         value: usedDbs,
       });
       const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.query}`;
       this.hideFacetColumn = true;
-      
+
       fetch(fetchUrl).then(response => response.json(), (error) => {
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
         this.searchInProgress = false;
