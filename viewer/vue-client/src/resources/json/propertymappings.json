@@ -1,7 +1,7 @@
 [
   {
     "key": "Free text",
-    "searchProp": "q",
+    "searchProps": ["q"],
     "mappings": {
       "q": ""
     },
@@ -14,7 +14,7 @@
   },
   {
     "key": "ISBN",
-    "searchProp": "identifiedBy.value",
+    "searchProps": ["identifiedBy.value"],
     "mappings": {
       "identifiedBy.value": "",
       "identifiedBy.@type": "ISBN"
@@ -25,7 +25,7 @@
   },
   {
     "key": "Preferred label",
-    "searchProp": "prefLabel",
+    "searchProps": ["prefLabel"],
     "mappings": {
       "prefLabel": ""
     },
@@ -34,8 +34,20 @@
     ]
   },
   {
+    "key": "Label",
+    "searchProps": ["or-prefLabel", "or-altLabel", "or-hasVariant.prefLabel"],
+    "mappings": {
+      "or-prefLabel": "",
+      "or-altLabel": "",
+      "or-hasVariant.prefLabel": ""
+    },
+    "types": [
+      "Concept"
+    ]
+  },
+  {
     "key": "ISSN",
-    "searchProp": "identifiedBy.value",
+    "searchProps": ["identifiedBy.value"],
     "mappings": {
       "identifiedBy.value": "",
       "identifiedBy.@type": "ISSN"
@@ -46,7 +58,7 @@
   },
   {
     "key": "Main title",
-    "searchProp": "hasTitle.mainTitle",
+    "searchProps": ["hasTitle.mainTitle"],
     "mappings": {
       "hasTitle.mainTitle": ""
     },

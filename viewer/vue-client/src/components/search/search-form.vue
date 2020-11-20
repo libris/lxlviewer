@@ -82,7 +82,7 @@ export default {
       this.focusSearchInput();
     },
     resetSearchParam() {
-      this.activeSearchParam = PropertyMappings.find(mapping => mapping.searchProp === 'q');
+      this.activeSearchParam = PropertyMappings.find(mapping => mapping.searchProps.includes('q'));
     },
     setSearch() {
       let match = PropertyMappings.filter((prop) => {
@@ -101,7 +101,7 @@ export default {
       if (match.length > 0) {
         const matchObj = match[0];
         this.$nextTick(() => {
-          this.searchPhrase = this.$route.query[matchObj.searchProp];
+          this.searchPhrase = this.$route.query[matchObj.searchProps[0]];
         });
         return matchObj;
       }
@@ -203,7 +203,10 @@ export default {
       let composed = {};
       if (this.activeSearchParam !== null) {
         composed = Object.assign({}, this.activeSearchParam.mappings || {});
-        composed[this.activeSearchParam.searchProp] = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
+        const phrase = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
+        this.activeSearchParam.searchProps.forEach((param) => {
+          composed[param] = phrase;
+        });
       }
       return composed;
     },

@@ -4,6 +4,7 @@ import * as StringUtil from '@/utils/string';
 import * as httpUtil from '@/utils/http';
 import Sort from '@/components/search/sort';
 import LensMixin from '@/components/mixins/lens-mixin';
+import PropertyMappings from '@/resources/json/propertymappings.json';
 
 export default {
   name: 'result-controls',
@@ -26,7 +27,7 @@ export default {
   data() {
     return {
       keyword: '',
-      excludeFilters: ['q', 'identifiedBy.value', 'identifiedBy.@type', 'hasTitle.mainTitle'],
+      excludeFilters: PropertyMappings.flatMap(prop => Object.keys(prop.mappings)),
     };
   },
   computed: {
