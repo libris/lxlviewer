@@ -13,6 +13,10 @@ export default {
     reset: {
       type: Number,
     },
+    contextName: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -23,16 +27,30 @@ export default {
   methods: {
     handleChange() {
       this.$emit('param-selected', this.selectedParam);
+      this.setUserPref(this.selectedParam);
     },
     resetSelectValue() {
       if (!this.availableSearchParams.includes(this.selectedParam)) {
-        this.selectedParam = this.availableSearchParams[0];
+        const pref = this.getUserPref();
+        if (this.availableSearchParams.includes(pref)) {
+          this.selectedParam = pref;
+        } else {
+          this.selectedParam = this.availableSearchParams[0];
+        }
       }
+    },
+    setUserPref(param) {
+      this.user.settings[`searchParam-${this.contextName}`] = param;
+      this.$store.dispatch('setUser', this.user);
+    },
+    getUserPref() {
+      return this.user.settings[`searchParam-${this.contextName}`];
     },
   },
   computed: {
     ...mapGetters([
       'resources',
+      'user',
     ]),
     availableSearchParams() {
       const intersects = ((a1, a2) => a1.find(value => a2.includes(value)) !== undefined);

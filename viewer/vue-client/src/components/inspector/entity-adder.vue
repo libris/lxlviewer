@@ -300,7 +300,7 @@ export default {
         this.resources.context,
       );
     },
-    setFilter($event, keyword) {
+    setFilter($event) {
       let valuesArray = [];
       let values;
 
@@ -312,11 +312,16 @@ export default {
       }
 
       this.currentSearchTypes = valuesArray;
-      this.handleChange(keyword);
+
+      if (this.keyword) {
+        this.search();
+      }
     },
-    setParam($event, keyword) {
+    setParam($event) {
       this.currentSearchParam = $event;
-      this.handleChange(keyword);
+      if (this.keyword) {
+        this.search();
+      }
     },
     handleChange(value) {
       this.searchMade = false;
@@ -557,10 +562,11 @@ export default {
         });
       });
     },
-    setSort($event, keyword) {
+    setSort($event) {
       this.sort = $event;
-
-      this.handleChange(keyword);
+      if (this.keyword) {
+        this.search();
+      }
     },
   },
 };
@@ -663,7 +669,7 @@ export default {
                       :options-all-suggested="someValuesFrom"
                       :is-filter="true"
                       :styleVariant="'material'"
-                      v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                      v-on:filter-selected="setFilter($event)"></filter-select>
                   </div>
                   <div class="EntityAdder-filterSearchContainerItem">
                     <sort
@@ -671,7 +677,7 @@ export default {
                       :commonSortFallback="true"
                       :currentSort="''"
                       :styleVariant="'material'"
-                      @change="setSort($event, keyword)" />
+                      @change="setSort($event)" />
                   </div>
                 </div>
                 <div class="EntityAdder-searchInputContainer">
@@ -686,7 +692,8 @@ export default {
                   <param-select class="EntityAdder-paramSelect"
                                 :types="currentSearchTypes"
                                 :reset="reset"
-                                v-on:param-selected="setParam($event, keyword)"></param-select>
+                                :contextName="'EntityAdder'"
+                                v-on:param-selected="setParam($event)"></param-select>
                 </div>
               </div>
             </div>
@@ -841,6 +848,7 @@ export default {
   &-searchInput {
     color: @black;
     background-color: @white;
+    border: unset;
     border-radius: unset;
   }
 
