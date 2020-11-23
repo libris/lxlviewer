@@ -13,7 +13,9 @@ import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination.vue';
 import FilterSelect from '@/components/shared/filter-select.vue';
 import TypeSelect from '@/components/inspector/type-select.vue';
+import ParamSelect from '@/components/inspector/param-select.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
+import { buildQueryString } from '@/utils/http';
 
 export default {
   mixins: [LensMixin],
@@ -27,6 +29,8 @@ export default {
       addEmbedded: false,
       searchMade: false,
       currentSearchTypes: [],
+      currentSearchParam: null,
+      reset: 0,
       active: false,
       currentPage: 0,
       maxResults: 20,
@@ -108,6 +112,7 @@ export default {
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
     'type-select': TypeSelect,
+    'param-select': ParamSelect,
     'vue-simple-spinner': VueSimpleSpinner,
     sort: Sort,
   },
@@ -194,23 +199,23 @@ export default {
         treeSource = this.allValuesFrom;
       }
       const tree = treeSource.map(type => VocabUtil.getTree(
-        type, 
-        this.resources.vocab, 
+        type,
+        this.resources.vocab,
         this.resources.context,
       ));
       return VocabUtil.flattenTree(
         tree,
-        this.resources.vocab, 
-        this.resources.context, 
+        this.resources.vocab,
+        this.resources.context,
         this.user.settings.language,
       );
     },
     tooltipText() {
       const addText = StringUtil.getUiPhraseByLang('Add', this.user.settings.language);
       const label = StringUtil.getLabelByLang(
-        this.addLabel, 
-        this.user.settings.language, 
-        this.resources.vocab, 
+        this.addLabel,
+        this.user.settings.language,
+        this.resources.vocab,
         this.resources.context,
       );
 
@@ -242,8 +247,8 @@ export default {
       for (const classId of range) {
         if (!VocabUtil.isEmbedded(
           classId,
-          this.resources.vocab, 
-          this.settings, 
+          this.resources.vocab,
+          this.settings,
           this.resources.context,
         )) {
           return false;
@@ -289,9 +294,9 @@ export default {
     },
     getLabelWithTreeDepth(term) {
       return DisplayUtil.getLabelWithTreeDepth(
-        term, 
-        this.settings, 
-        this.resources.vocab, 
+        term,
+        this.settings,
+        this.resources.vocab,
         this.resources.context,
       );
     },
@@ -305,8 +310,12 @@ export default {
       } else {
         valuesArray.push($event.value);
       }
-      
+
       this.currentSearchTypes = valuesArray;
+      this.handleChange(keyword);
+    },
+    setParam($event, keyword) {
+      this.currentSearchParam = $event;
       this.handleChange(keyword);
     },
     handleChange(value) {
@@ -346,8 +355,8 @@ export default {
       }
     },
     show() {
-      this.$store.dispatch('pushInspectorEvent', { 
-        name: 'form-control', 
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'form-control',
         value: 'close-modals',
       })
         .then(() => {
@@ -372,6 +381,8 @@ export default {
       this.searchMade = false;
       this.currentSearchTypes = this.allSearchTypes;
       this.searchResult = [];
+      // TODO: other way force param-select to set select value?
+      this.reset += 1;
     },
     addLinkedItem(obj) {
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
@@ -382,12 +393,12 @@ export default {
         } else {
           currentValue = [];
         }
-      }      
+      }
       const linkObj = { '@id': obj['@id'] };
       currentValue.push(linkObj);
       this.$store.dispatch('addToQuoted', obj);
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'lastAdded',
         value: `${this.path}.{"@id":"${obj['@id']}"}`,
       });
       this.$store.dispatch('updateInspectorData', {
@@ -419,8 +430,8 @@ export default {
       if (currentValue.length) {
         index = `[${currentValue.length - 1}]`;
       }
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'lastAdded',
         value: `${this.path}${index}`,
       });
       this.$store.dispatch('updateInspectorData', {
@@ -438,8 +449,8 @@ export default {
       const workObj = obj;
       workObj['@id'] = linkObj['@id'];
 
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'lastAdded',
         value: 'work',
       });
       this.$store.dispatch('updateInspectorData', {
@@ -503,9 +514,7 @@ export default {
       self.searchMade = true;
       this.fetch(0);
     },
-    getItems(keyword) {
-      // TODO: Support asking for more items
-      const typeArray = this.typeArray;
+    getSearchPhrase(keyword) {
       let q = '';
       if (keyword === '') {
         q = '*';
@@ -516,16 +525,30 @@ export default {
         // Add wildcard if user is not using operators
         q = `${keyword} | ${keyword}*`;
       }
-      let searchUrl = `${this.settings.apiPath}/find.jsonld?q=${q}`;
-      if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
-        for (const type of typeArray) {
-          searchUrl += `&@type=${type}`;
-        }
+      return q;
+    },
+    getSearchParams(searchPhrase) {
+      if (this.currentSearchParam == null) {
+        return { q: searchPhrase };
       }
-      const offset = this.currentPage * this.maxResults;
-      searchUrl += `&_limit=${this.maxResults}&_offset=${offset}`;
-      searchUrl += `&_sort=${this.sort}`;
-      searchUrl = encodeURI(searchUrl);
+
+      const params = Object.assign({}, this.currentSearchParam.mappings || {});
+      this.currentSearchParam.searchProps.forEach((param) => { params[param] = searchPhrase; });
+      return params;
+    },
+    getItems(keyword) {
+      let params = this.getSearchParams(this.getSearchPhrase(keyword));
+      params = Object.assign(params, {
+        _limit: this.maxResults,
+        _offset: this.currentPage * this.maxResults,
+        _sort: this.sort,
+      });
+
+      if (typeof this.typeArray !== 'undefined' && this.typeArray.length > 0) {
+        params['@type'] = this.typeArray;
+      }
+
+      const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
       return new Promise((resolve, reject) => {
         fetch(searchUrl).then((response) => {
           resolve(response.json());
@@ -555,9 +578,9 @@ export default {
           :aria-label="tooltipText | translatePhrase"
           ref="adderFocusElement"
           v-tooltip.left="tooltipText"
-          @click="add($event)" 
+          @click="add($event)"
           @keyup.enter="add($event)"
-          @mouseenter="actionHighlight(true, $event)" 
+          @mouseenter="actionHighlight(true, $event)"
           @mouseleave="actionHighlight(false, $event)"
           @focus="actionHighlight(true, $event)"
           @blur="actionHighlight(false, $event)">
@@ -567,21 +590,21 @@ export default {
           tabindex="-1"
           aria-hidden="true">
         </i>
-    </div>      
+    </div>
 
     <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" v-if="!isPlaceholder">
-      <i 
+      <i
         class="fa fa-fw fa-plus-circle icon icon--sm"
         v-if="!addEmbedded"
         tabindex="0"
         role="button"
         ref="adderFocusElement"
         :aria-label="tooltipText | translatePhrase"
-        v-on:click="add($event)" 
+        v-on:click="add($event)"
         @keyup.enter="add($event)"
         v-tooltip.top="tooltipText"
-        @mouseenter="actionHighlight(true, $event)" 
+        @mouseenter="actionHighlight(true, $event)"
         @mouseleave="actionHighlight(false, $event)"
         @focus="actionHighlight(true, $event)"
         @blur="actionHighlight(false, $event)">
@@ -603,14 +626,14 @@ export default {
         @dismiss="dismissTypeChooser()" />
     </portal>
     <portal to="sidebar" v-if="active">
-      <panel-component class="EntityAdder-panel EntityAdderPanel" 
+      <panel-component class="EntityAdder-panel EntityAdderPanel"
         v-if="active"
         :title="computedTitle"
         @close="hide">
         <template slot="panel-header-info">
-          <div 
-            class="PanelComponent-headerInfo" 
-            v-if="rangeFull.length > 0" 
+          <div
+            class="PanelComponent-headerInfo"
+            v-if="rangeFull.length > 0"
             @mouseleave="rangeInfo = false">
             <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
             <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
@@ -629,16 +652,6 @@ export default {
             <div class="EntityAdder-controlForm">
               <div class="EntityAdder-search">
                 <label for="entityKeywordInput" class="EntityAdder-searchLabel sr-only">{{ "Search" | translatePhrase }}</label>
-                <div class="EntityAdder-searchInputContainer">
-                  <input class="EntityAdder-searchInput entity-search-keyword-input customInput"
-                    id="entityKeywordInput"
-                    name="entityKeywordInput"
-                    v-model="keyword"
-                    ref="input"
-                    :aria-label="'Sök' | translatePhrase"
-                    :placeholder="'Sök' | translatePhrase"
-                    autofocus />
-                </div>
                 <div class="EntityAdder-filterSearchContainer">
                   <div class="EntityAdder-filterSearchContainerItem">
                     <filter-select class="EntityAdder-filterSearchInput FilterSelect--openDown"
@@ -647,7 +660,7 @@ export default {
                       :custom-placeholder="filterPlaceHolder"
                       :options="{ tree: selectOptions, priority: priorityOptions }"
                       :options-all="allSearchTypes"
-                      :options-all-suggested="someValuesFrom"                    
+                      :options-all-suggested="someValuesFrom"
                       :is-filter="true"
                       :styleVariant="'material'"
                       v-on:filter-selected="setFilter($event, keyword)"></filter-select>
@@ -661,16 +674,29 @@ export default {
                       @change="setSort($event, keyword)" />
                   </div>
                 </div>
+                <div class="EntityAdder-searchInputContainer">
+                  <input class="EntityAdder-searchInput entity-search-keyword-input customInput"
+                         id="entityKeywordInput"
+                         name="entityKeywordInput"
+                         v-model="keyword"
+                         ref="input"
+                         :aria-label="'Sök' | translatePhrase"
+                         :placeholder="'Sök' | translatePhrase"
+                         autofocus />
+                  <param-select class="EntityAdder-paramSelect"
+                                :types="currentSearchTypes"
+                                :reset="reset"
+                                v-on:param-selected="setParam($event, keyword)"></param-select>
+                </div>
               </div>
             </div>
-            
           </div>
         </template>
         <template slot="panel-body">
           <panel-search-list class="EntityAdder-searchResult"
-            v-if="!loading && searchMade" 
-            :path="path" 
-            :results="searchResult" 
+            v-if="!loading && searchMade"
+            :path="path"
+            :results="searchResult"
             :disabled-ids="alreadyAdded"
             :is-compact="isCompact"
             icon="plus"
@@ -691,11 +717,11 @@ export default {
         <!-- </div> -->
         </template>
         <template slot="panel-footer">
-          
+
           <div class="EntityAdder-resultControls" v-if="!loading && searchResult.length > 0">
             <modal-pagination
-              @go="go" 
-              :total-items="totalItems" 
+              @go="go"
+              :total-items="totalItems"
               :max-per-page="maxResults"
               :current-page="currentPage"
             >
@@ -719,11 +745,11 @@ export default {
           </div>
           <div class="EntityAdder-create">
             <button class="EntityAdder-createBtn btn btn-primary btn--sm"
-              v-if="hasSingleRange" 
+              v-if="hasSingleRange"
               v-on:click="addEmpty(rangeFull[0])">{{ "Create local entity" | translatePhrase }}
             </button>
             <filter-select
-              v-if="!hasSingleRange" 
+              v-if="!hasSingleRange"
               :input-id="'createselectInput'"
               :class-name="'js-createSelect'"
               :options="{ tree: selectOptions, priority: priorityOptions }"
@@ -803,9 +829,24 @@ export default {
   }
 
   &-searchInputContainer {
+    display: flex;
     flex: 1;
+    flex-direction: row;
     position: relative;
-    margin-bottom: 0;
+    margin-top: 0.5em;
+    border: 1px solid @grey-lighter;
+    border-radius: 0.2em;
+  }
+
+  &-searchInput {
+    color: @black;
+    background-color: @white;
+    border-radius: unset;
+  }
+
+  &-paramSelect {
+    border-left: 1px solid @grey-lighter;
+    flex-basis: 30%;
   }
 
   &-filterSearchContainer {
@@ -820,7 +861,7 @@ export default {
 
   &-filterSearchContainerItem {
     width: 100%;
-    margin: 0.5em 1em 0 0;
+    margin: 0 1em 0 0;
 
     @media (min-width: @screen-xs) {
       width: 50%;
@@ -839,19 +880,6 @@ export default {
     position: relative;
   }
 
-  &-searchInput {
-    color: @black;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
-  }
-
-  &-searchSelect {
-    position: absolute;
-    right: 0;
-    margin: 6px 25px;
-    max-width: 200px;
-  }
-
   &-create {
     width: 100%;
     display: flex;
@@ -867,8 +895,8 @@ export default {
   }
 
   &-searchStatusIcon {
-    font-size: 80px; 
-    font-size: 8rem; 
+    font-size: 80px;
+    font-size: 8rem;
     margin: 10px 0 0;
   }
 
