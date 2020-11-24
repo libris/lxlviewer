@@ -841,6 +841,7 @@ export default {
     flex-direction: row;
     position: relative;
     margin-top: 0.5em;
+    background-color: @white;
     border: 1px solid @grey-lighter;
     border-radius: 0.2em;
   }
@@ -849,12 +850,17 @@ export default {
     color: @black;
     background-color: @white;
     border: none;
+    margin-right: 2px; // make tab-focus border look ok
+    border-radius: 0;
+  }
+
+  &-searchInputContainer select {
     border-radius: 0;
   }
 
   &-paramSelect {
     border-left: 1px solid @grey-lighter;
-    flex-basis: 30%;
+    flex-basis: 33%;
   }
 
   &-filterSearchContainer {
