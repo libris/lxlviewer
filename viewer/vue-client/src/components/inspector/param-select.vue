@@ -21,7 +21,6 @@ export default {
   data() {
     return {
       selectedParam: '',
-      baseClasses: [],
     };
   },
   methods: {
@@ -52,6 +51,17 @@ export default {
       'resources',
       'user',
     ]),
+    baseClasses() {
+      if (this.types === undefined || this.types.includes(undefined)) {
+        return [];
+      }
+
+      return VocabUtil.getBaseClassesFromArray(
+        this.types,
+        this.resources.vocab,
+        this.resources.context,
+      );
+    },
     availableSearchParams() {
       const intersects = ((a1, a2) => a1.find(value => a2.includes(value)) !== undefined);
 
@@ -66,17 +76,7 @@ export default {
   components: {
   },
   watch: {
-    types(newVal) {
-      if (newVal !== undefined && !newVal.includes(undefined)) {
-        this.baseClasses = VocabUtil.getBaseClassesFromArray(
-          newVal,
-          this.resources.vocab,
-          this.resources.context,
-        );
-      } else {
-        this.baseClasses = [];
-      }
-
+    types() {
       this.resetSelectValue();
     },
     reset() {
