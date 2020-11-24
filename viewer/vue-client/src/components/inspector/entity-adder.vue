@@ -845,11 +845,11 @@ export default {
     border-radius: 0.2em;
   }
 
-  &-searchInput {
+  &-searchInputContainer input {
     color: @black;
     background-color: @white;
-    border: unset;
-    border-radius: unset;
+    border: none;
+    border-radius: 0;
   }
 
   &-paramSelect {
