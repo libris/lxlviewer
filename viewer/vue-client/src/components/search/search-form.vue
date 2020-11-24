@@ -5,6 +5,7 @@ import { mapGetters } from 'vuex';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
+import { buildQueryString } from '@/utils/http';
 
 export default {
   name: 'search-form',
@@ -50,27 +51,9 @@ export default {
       this.helpToggled = !this.helpToggled;
     },
     composeQuery() {
-      const enc = encodeURIComponent;
-      let query = '';
-      if (this.searchPerimeter === 'libris') {
-        const queryArr = [];
-        Object.keys(this.mergedParams).forEach((param) => {
-          if (Array.isArray(this.mergedParams[param])) {
-            this.mergedParams[param].forEach((el) => {
-              if (el !== null) {
-                queryArr.push(`${enc(param)}=${enc(el)}`);
-              }
-            });
-          } else if (this.mergedParams[param] !== null) {
-            queryArr.push(`${enc(param)}=${enc(this.mergedParams[param])}`);
-          }
-        });
-        query = queryArr.join('&');
-      } else {
-        const databases = this.status.remoteDatabases.join();
-        query = `q=${enc(this.searchPhrase)}&databases=${enc(databases)}`;
-      }
-      return query;
+      return buildQueryString(this.searchPerimeter === 'libris'
+        ? this.mergedParams
+        : { q: this.searchPhrase, databases: this.status.remoteDatabases.join() });
     },
     doSearch() {
       this.helpToggled = false;
