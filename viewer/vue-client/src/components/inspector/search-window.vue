@@ -12,14 +12,16 @@ import Button from '@/components/shared/button';
 import Sort from '@/components/search/sort';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import FilterSelect from '@/components/shared/filter-select.vue';
+import ParamSelect from '@/components/inspector/param-select.vue';
 import LensMixin from '../mixins/lens-mixin';
+import { buildQueryString } from '@/utils/http';
 
 export default {
   name: 'search-window',
   mixins: [clickaway, LensMixin],
   data() {
     return {
-      searchResult: {},
+      searchResult: [],
       searchDelay: 2,
       extractDialogActive: false,
       keyword: '',
@@ -29,6 +31,8 @@ export default {
       showExtractSummary: false,
       searchMade: false,
       currentSearchTypes: [],
+      currentSearchParam: null,
+      resetParamSelect: 0,
       listItemSettings: {
         text: 'Replace local entity',
         styling: 'brand',
@@ -102,6 +106,7 @@ export default {
     'panel-component': PanelComponent,
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
+    'param-select': ParamSelect,
     'vue-simple-spinner': VueSimpleSpinner,
     'button-component': Button,
     sort: Sort,
@@ -182,14 +187,14 @@ export default {
         treeSource = this.allValuesFrom;
       }
       const tree = treeSource.map(type => VocabUtil.getTree(
-        type, 
-        this.resources.vocab, 
+        type,
+        this.resources.vocab,
         this.resources.context,
       ));
       return VocabUtil.flattenTree(
         tree,
-        this.resources.vocab, 
-        this.resources.context, 
+        this.resources.vocab,
+        this.resources.context,
         this.user.settings.language,
       );
     },
@@ -203,9 +208,9 @@ export default {
     },
     getLabelWithTreeDepth(term) {
       return DisplayUtil.getLabelWithTreeDepth(
-        term, 
-        this.settings, 
-        this.resources.vocab, 
+        term,
+        this.settings,
+        this.resources.vocab,
         this.resources.context,
       );
     },
@@ -213,7 +218,7 @@ export default {
       const updatedListItemSettings = merge({ payload: item }, cloneDeep(this.listItemSettings));
       return updatedListItemSettings;
     },
-    setFilter($event, keyword) {
+    setFilter($event) {
       let valuesArray = [];
       let values;
 
@@ -223,14 +228,26 @@ export default {
       } else {
         valuesArray.push($event.value);
       }
-      
+
       this.currentSearchTypes = valuesArray;
-      this.handleChange(keyword);
+
+      if (this.keyword) {
+        this.search();
+      }
     },
-    setSort($event, keyword) {
+    setSort($event) {
       this.sort = $event;
 
-      this.handleChange(keyword);
+      if (this.keyword) {
+        this.search();
+      }
+    },
+    setParam($event) {
+      this.currentSearchParam = $event;
+
+      if (this.keyword) {
+        this.search();
+      }
     },
     handleChange(value) {
       this.searchMade = false;
@@ -245,15 +262,15 @@ export default {
       }
     },
     show() {
-      this.resetSearch();
-      this.$store.dispatch('pushInspectorEvent', { 
-        name: 'form-control', 
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'form-control',
         value: 'close-modals',
       })
         .then(() => {
           this.$nextTick(() => {
             this.active = true;
             this.$nextTick(() => {
+              this.resetSearch();
               if (this.itemInfo !== null) {
                 const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).replace(/#|_|•|\[|\]/g, ' ').replace(/  +/g, ' ');
                 this.keyword = cleanedChipString;
@@ -280,6 +297,7 @@ export default {
         this.currentSearchTypes = this.allSearchTypes;
       }
       this.searchResult = [];
+      this.resetParamSelect += 1;
     },
     loadResults(result) {
       this.searchResult = result.items;
@@ -308,29 +326,41 @@ export default {
       self.searchMade = true;
       this.fetch(0);
     },
-    getItems(keyword) {
-      // TODO: Support asking for more items
-      const typeArray = this.typeArray;
+    getSearchPhrase(keyword) {
       let q = '';
       if (keyword === '') {
         q = '*';
-      } else if (keyword.match(/[|~*+\-"]/)) {
+      } else if (keyword.match(/[|~*+"]/) || keyword.match(/^-| -/)) {
         // User is using operators, accept their keyword as-is
         q = keyword;
       } else {
         // Add wildcard if user is not using operators
         q = `${keyword} | ${keyword}*`;
       }
-      let searchUrl = `${this.settings.apiPath}/find.jsonld?q=${q}`;
-      if (typeof typeArray !== 'undefined' && typeArray.length > 0) {
-        for (const type of typeArray) {
-          searchUrl += `&@type=${type}`;
-        }
+      return q;
+    },
+    getSearchParams(searchPhrase) {
+      if (this.currentSearchParam == null) {
+        return { q: searchPhrase };
       }
-      const offset = this.currentPage * this.maxResults;
-      searchUrl += `&_limit=${this.maxResults}&_offset=${offset}`;
-      searchUrl += `&_sort=${this.sort}`;
-      searchUrl = encodeURI(searchUrl);
+
+      const params = Object.assign({}, this.currentSearchParam.mappings || {});
+      this.currentSearchParam.searchProps.forEach((param) => { params[param] = searchPhrase; });
+      return params;
+    },
+    getItems(keyword) {
+      let params = this.getSearchParams(this.getSearchPhrase(keyword));
+      params = Object.assign(params, {
+        _limit: this.maxResults,
+        _offset: this.currentPage * this.maxResults,
+        _sort: this.sort,
+      });
+
+      if (typeof this.typeArray !== 'undefined' && this.typeArray.length > 0) {
+        params['@type'] = this.typeArray;
+      }
+
+      const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
       return new Promise((resolve, reject) => {
         fetch(searchUrl).then((response) => {
           resolve(response.json());
@@ -351,9 +381,9 @@ export default {
         :title="'Link entity' | translatePhrase"
         @close="hide()">
         <template slot="panel-header-info">
-          <div class="PanelComponent-headerInfo help-tooltip-container" 
+          <div class="PanelComponent-headerInfo help-tooltip-container"
             @mouseleave="showHelp = false">
-            <i class="fa fa-question-circle icon icon--md" 
+            <i class="fa fa-question-circle icon icon--md"
               @mouseenter="showHelp = true">
             </i>
             <div class="PanelComponent-headerInfoBox help-tooltip" v-show="showHelp">
@@ -386,23 +416,14 @@ export default {
             <div class="SearchWindow-extractControls">
               <div class="copy-title" v-if="canCopyTitle">
                 <label>
-                  <input type="checkbox" name="copyTitle" v-model="copyTitle" /> 
+                  <input type="checkbox" name="copyTitle" v-model="copyTitle" />
                   {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}
                 </label>
               </div>
             </div>
             <div class="SearchWindow-search search">
-              <div class="SearchWindow-inputContainer input-container form-group">
-                <input 
-                  class="SearchWindow-input SearchWindow-entity-search-keyword-input customInput"
-                  v-model="keyword"
-                  ref="input"
-                  autofocus
-                  :placeholder="'Search' | translatePhrase"
-                  :aria-label="'Search' | translatePhrase">
-              </div>
               <div class="SearchWindow-filterSearchContainer">
-                <div class="SearchWindow-filterSearchContainerItem">                
+                <div class="SearchWindow-filterSearchContainerItem">
                   <filter-select class="SearchWindow-filterSearchInput FilterSelect--openDown"
                     :class-name="'js-filterSelect'"
                     :label="'Show' | translatePhrase"
@@ -412,7 +433,7 @@ export default {
                     :options-all-suggested="someValuesFrom"
                     :is-filter="true"
                     :styleVariant="'material'"
-                    v-on:filter-selected="setFilter($event, keyword)"></filter-select>
+                    v-on:filter-selected="setFilter($event)"></filter-select>
                 </div>
                 <div class="SearchWindow-filterSearchContainerItem">
                   <sort
@@ -420,8 +441,21 @@ export default {
                     :currentSort="''"
                     :commonSortFallback="true"
                     :styleVariant="'material'"
-                    @change="setSort($event, keyword)" />
-                </div>                
+                    @change="setSort($event)" />
+                </div>
+              </div>
+              <div class="SearchWindow-inputContainer input-container form-group">
+                <input
+                  class="SearchWindow-input SearchWindow-entity-search-keyword-input customInput"
+                  v-model="keyword"
+                  ref="input"
+                  autofocus
+                  :placeholder="'Search' | translatePhrase"
+                  :aria-label="'Search' | translatePhrase">
+                <param-select class="SearchWindow-paramSelect"
+                              :types="currentSearchTypes"
+                              :reset="resetParamSelect"
+                              v-on:param-selected="setParam($event)"></param-select>
               </div>
             </div>
           </div>
@@ -455,9 +489,9 @@ export default {
         </template>
         <template slot="panel-footer">
           <div class="SearchWindow-resultControls" v-if="!loading && searchResult.length > 0" >
-            <modal-pagination 
-              @go="go" 
-              :total-items="totalItems" 
+            <modal-pagination
+              @go="go"
+              :total-items="totalItems"
               :max-per-page="maxResults"
               :current-page="currentPage"
             >
@@ -481,8 +515,8 @@ export default {
           </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
             <div class="SearchWindow-summaryContainer" v-show="showExtractSummary">
-              <entity-summary 
-                :focus-data="itemInfo" 
+              <entity-summary
+                :focus-data="itemInfo"
                 :should-link="false"
                 :valueDisplayLimit=1></entity-summary>
             </div>
@@ -570,6 +604,27 @@ export default {
     display: flex;
     position: relative;
     margin-bottom: 0;
+    margin-top: 0.5em;
+    background-color: @white;
+    border: 1px solid @grey-lighter;
+    border-radius: 0.2em;
+  }
+
+  &-inputContainer input {
+    color: @black;
+    background-color: @white;
+    border: none;
+    margin-right: 2px; // make tab-focus border look ok
+    border-radius: 0;
+  }
+
+  &-inputContainer select {
+    border-radius: 0;
+  }
+
+  &-paramSelect {
+    border-left: 1px solid @grey-lighter;
+    flex-basis: 33%;
   }
 
   &-extractControls {

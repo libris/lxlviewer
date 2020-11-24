@@ -13,7 +13,7 @@ export default {
     reset: {
       type: Number,
     },
-    contextName: {
+    userPrefKey: {
       type: String,
       default: '',
     },
@@ -29,21 +29,31 @@ export default {
       this.setUserPref(this.selectedParam);
     },
     resetSelectValue() {
+      console.log('RESET', this.availableSearchParams, this.selectedParam);
       if (!this.availableSearchParams.includes(this.selectedParam)) {
         const pref = this.getUserPref();
         if (this.availableSearchParams.includes(pref)) {
           this.selectedParam = pref;
-        } else {
+        } else if (this.availableSearchParams.length > 0) {
           this.selectedParam = this.availableSearchParams[0];
         }
       }
     },
     setUserPref(param) {
-      this.user.settings[`searchParam-${this.contextName}`] = param;
-      this.$store.dispatch('setUser', this.user);
+      if (this.isUserPrefEnabled()) {
+        this.user.settings[`searchParam-${this.userPrefKey}`] = param;
+        this.$store.dispatch('setUser', this.user);
+      }
     },
     getUserPref() {
-      return this.user.settings[`searchParam-${this.contextName}`];
+      return this.isUserPrefEnabled()
+        ? this.user.settings[`searchParam-${this.userPrefKey}`]
+        : undefined;
+    },
+    isUserPrefEnabled() {
+      return this.userPrefKey !== undefined
+        && this.userPrefKey !== null
+        && this.userPrefKey.length > 0;
     },
   },
   computed: {
@@ -52,7 +62,7 @@ export default {
       'user',
     ]),
     baseClasses() {
-      if (this.types === undefined || this.types.includes(undefined)) {
+      if (this.types === undefined || this.types.includes(undefined) || this.types.length === 0) {
         return [];
       }
 

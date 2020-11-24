@@ -30,7 +30,7 @@ export default {
       searchMade: false,
       currentSearchTypes: [],
       currentSearchParam: null,
-      reset: 0,
+      resetParamSelect: 0,
       active: false,
       currentPage: 0,
       maxResults: 20,
@@ -387,7 +387,7 @@ export default {
       this.currentSearchTypes = this.allSearchTypes;
       this.searchResult = [];
       // TODO: other way force param-select to set select value?
-      this.reset += 1;
+      this.resetParamSelect += 1;
     },
     addLinkedItem(obj) {
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
@@ -691,8 +691,8 @@ export default {
                          autofocus />
                   <param-select class="EntityAdder-paramSelect"
                                 :types="currentSearchTypes"
-                                :reset="reset"
-                                :contextName="'EntityAdder'"
+                                :reset="resetParamSelect"
+                                :userPrefKey="'EntityAdder'"
                                 v-on:param-selected="setParam($event)"></param-select>
                 </div>
               </div>
