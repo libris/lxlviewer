@@ -29,7 +29,6 @@ export default {
       this.setUserPref(this.selectedParam);
     },
     resetSelectValue() {
-      console.log('RESET', this.availableSearchParams, this.selectedParam);
       if (!this.availableSearchParams.includes(this.selectedParam)) {
         const pref = this.getUserPref();
         if (this.availableSearchParams.includes(pref)) {

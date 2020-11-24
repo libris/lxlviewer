@@ -44,6 +44,7 @@ export default {
       maxResults: 20,
       sort: '',
       isCompact: false,
+      setSearchType: '',
     };
   },
   props: {
@@ -269,6 +270,7 @@ export default {
         .then(() => {
           this.$nextTick(() => {
             this.active = true;
+            this.setSearchType = '';
             this.$nextTick(() => {
               this.resetSearch();
               if (this.itemInfo !== null) {
@@ -295,6 +297,9 @@ export default {
         this.currentSearchTypes = this.someValuesFrom;
       } else {
         this.currentSearchTypes = this.allSearchTypes;
+      }
+      if (this.itemInfo !== undefined && this.itemInfo['@type'] !== undefined) {
+        this.setSearchType = this.itemInfo['@type'];
       }
       this.searchResult = [];
       this.resetParamSelect += 1;
@@ -433,6 +438,7 @@ export default {
                     :options-all-suggested="someValuesFrom"
                     :is-filter="true"
                     :styleVariant="'material'"
+                    :setValue="setSearchType"
                     v-on:filter-selected="setFilter($event)"></filter-select>
                 </div>
                 <div class="SearchWindow-filterSearchContainerItem">
