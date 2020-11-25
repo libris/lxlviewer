@@ -5,6 +5,7 @@ import { mapGetters } from 'vuex';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
+import { buildQueryString } from '@/utils/http';
 
 export default {
   name: 'search-form',
@@ -50,27 +51,9 @@ export default {
       this.helpToggled = !this.helpToggled;
     },
     composeQuery() {
-      const enc = encodeURIComponent;
-      let query = '';
-      if (this.searchPerimeter === 'libris') {
-        const queryArr = [];
-        Object.keys(this.mergedParams).forEach((param) => {
-          if (Array.isArray(this.mergedParams[param])) {
-            this.mergedParams[param].forEach((el) => {
-              if (el !== null) {
-                queryArr.push(`${enc(param)}=${enc(el)}`);
-              }
-            });
-          } else if (this.mergedParams[param] !== null) {
-            queryArr.push(`${enc(param)}=${enc(this.mergedParams[param])}`);
-          }
-        });
-        query = queryArr.join('&');
-      } else {
-        const databases = this.status.remoteDatabases.join();
-        query = `q=${enc(this.searchPhrase)}&databases=${enc(databases)}`;
-      }
-      return query;
+      return buildQueryString(this.searchPerimeter === 'libris'
+        ? this.mergedParams
+        : { q: this.searchPhrase, databases: this.status.remoteDatabases.join() });
     },
     doSearch() {
       this.helpToggled = false;
@@ -82,7 +65,7 @@ export default {
       this.focusSearchInput();
     },
     resetSearchParam() {
-      this.activeSearchParam = PropertyMappings.find(mapping => mapping.searchProp === 'q');
+      this.activeSearchParam = PropertyMappings.find(mapping => mapping.searchProps.includes('q'));
     },
     setSearch() {
       let match = PropertyMappings.filter((prop) => {
@@ -101,7 +84,7 @@ export default {
       if (match.length > 0) {
         const matchObj = match[0];
         this.$nextTick(() => {
-          this.searchPhrase = this.$route.query[matchObj.searchProp];
+          this.searchPhrase = this.$route.query[matchObj.searchProps[0]];
         });
         return matchObj;
       }
@@ -181,7 +164,7 @@ export default {
       if (this.resources.helpDocs != null) {
         const json = this.resources.helpDocs;
         return json;
-      } 
+      }
       return null;
     },
     ...mapGetters([
@@ -203,7 +186,10 @@ export default {
       let composed = {};
       if (this.activeSearchParam !== null) {
         composed = Object.assign({}, this.activeSearchParam.mappings || {});
-        composed[this.activeSearchParam.searchProp] = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
+        const phrase = this.searchPhrase.length > 0 ? this.searchPhrase : '*';
+        this.activeSearchParam.searchProps.forEach((param) => {
+          composed[param] = phrase;
+        });
       }
       return composed;
     },
@@ -213,7 +199,7 @@ export default {
     prefSort() {
       if (this.user && this.user.settings.sort) {
         const availableSorts = this.settings.sortOptions[this.user.settings.searchType];
-        
+
         if (availableSorts) {
           for (let i = 0; i < availableSorts.length; i++) {
             if (availableSorts[i].query === this.user.settings.sort) {
@@ -297,8 +283,8 @@ export default {
             class="SearchForm-typeSelect SearchForm-select customSelect"
             v-model="activeSearchType"
             @change="setPrefSearchType">
-            <option 
-              v-for="filter in dataSetFilters" 
+            <option
+              v-for="filter in dataSetFilters"
               :key="filter.value"
               :value="filter.value">
               {{filter.label | translatePhrase}}
@@ -310,7 +296,7 @@ export default {
             class="SearchForm-paramSelect SearchForm-select customSelect"
             v-model="activeSearchParam"
             @change="setPrefSearchParam">
-            <option 
+            <option
               v-for="prop in availableSearchParams"
               :key="prop.key"
               :value="prop">
@@ -327,8 +313,8 @@ export default {
             @focus="searchGroupFocus.typeSelect = true"
             @blur="searchGroupFocus.typeSelect = false"
             @change="setPrefSearchType">
-            <option 
-              v-for="filter in dataSetFilters" 
+            <option
+              v-for="filter in dataSetFilters"
               :key="filter.value"
               :value="filter.value">
               {{filter.label | translatePhrase}}
@@ -357,7 +343,7 @@ export default {
             @focus="searchGroupFocus.paramSelect = true"
             @blur="searchGroupFocus.paramSelect = false"
             @change="setPrefSearchParam">
-            <option 
+            <option
               v-for="prop in availableSearchParams"
               :key="prop.key"
               :value="prop">
@@ -365,8 +351,8 @@ export default {
             </option>
           </select>
         </div>
-        <button 
-          class="SearchForm-submit btn btn-primary icon--white icon--md" 
+        <button
+          class="SearchForm-submit btn btn-primary icon--white icon--md"
           :aria-label="'Search' | translatePhrase"
           @click.prevent="doSearch"
           @focus="searchGroupFocus.submit = true"
@@ -376,8 +362,8 @@ export default {
           <i class="fa fa-search"></i>
         </button>
       </div>
-      <remote-databases 
-        v-if="searchPerimeter === 'remote'" 
+      <remote-databases
+        v-if="searchPerimeter === 'remote'"
         :remoteSearch="searchPhrase"
         @panelClosed="focusSearchInput"
         ref="dbComponent"></remote-databases>
@@ -392,7 +378,7 @@ export default {
             @click="toggleHelp"
             @keyup.enter="toggleHelp"></i>
         </span>
-        <div class="SearchForm-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled"> 
+        <div class="SearchForm-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled">
           <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchForm-closeHelp" @click="toggleHelp"></i>
           <div class="SearchForm-helpContent" v-html="searchHelpDocs"></div>
         </div>
@@ -578,7 +564,7 @@ export default {
   }
 
   &-select {
-    
+
   }
 
   &-inputLabel {

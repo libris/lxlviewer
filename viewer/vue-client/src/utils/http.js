@@ -1,5 +1,22 @@
 import { each } from 'lodash-es';
 
+export function buildQueryString(params) {
+  const enc = encodeURIComponent;
+  const queryArr = [];
+  Object.keys(params).forEach((key) => {
+    if (Array.isArray(params[key])) {
+      params[key].forEach((el) => {
+        if (el !== null) {
+          queryArr.push(`${enc(key)}=${enc(el)}`);
+        }
+      });
+    } else if (params[key] !== null) {
+      queryArr.push(`${enc(key)}=${enc(params[key])}`);
+    }
+  });
+  return queryArr.join('&');
+}
+
 function request(opts, data) {
   // method, url, token, accept
   const options = opts;
