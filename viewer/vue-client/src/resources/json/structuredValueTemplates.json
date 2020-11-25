@@ -484,6 +484,11 @@
     "@type": "Dissertation",
     "label": ""
   },
+  "Frequency": {
+    "@type": "Frequency",
+    "label": "",
+    "date": ""
+  },
   "SeriesMembership": [
     {
       "@type": "SeriesMembership",
