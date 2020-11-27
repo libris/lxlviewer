@@ -46,12 +46,6 @@ export default {
                 <router-link class="Footer-link" to="/about" >{{ "About XL" | translatePhrase }}</router-link>
               </li>
               <li>
-                <a href="https://goo.gl/forms/TSCafatX9qKyMqK02" class="Footer-link">{{ "Suggest change" | translatePhrase }}</a>
-              </li>
-              <li>
-                <a href="https://goo.gl/forms/xJ837GVLmG6IHwsu2" class="Footer-link">{{ "Report error" | translatePhrase }}</a>
-              </li>
-              <li>
                 <a href="https://www.kb.se/libris-versionsinformation" class="Footer-link">{{ "Release notes" | translatePhrase }}</a>
               </li>
               <li>
@@ -91,7 +85,7 @@ export default {
                 <a class="Footer-link" href="https://kundo.se/org/librisxl/">{{ "Forum of support for new Libris" | translatePhrase }}</a>
               </li>
               <li>
-                <a class="Footer-link" href="http://www.kb.se/libris/kontakta/">{{ "Libris customer service" | translatePhrase }}</a>
+                <a class="Footer-link" href="https://www.kb.se/om-oss/kontakta-oss/">{{ "Libris customer service" | translatePhrase }}</a>
               </li>
             </ul>
           </nav>

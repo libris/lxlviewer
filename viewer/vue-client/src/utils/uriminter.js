@@ -80,7 +80,7 @@ export default class URIMinter {
       throw new Error(`Missing slugProperty ${container.slugProperty} for ${mainEntity[ID]}`);
     }
 
-    const uri = container[ID] + fixedEncodeURIComponent(slugValue);
+    const uri = container[ID] + fixedEncodeURIComponent(slugValue.trim());
 
     let sameAs = mainEntity.sameAs ? asArray(mainEntity.sameAs) : [];
     if (!sameAs.find(it => it[ID] === mainEntity[ID])) {

@@ -50,6 +50,10 @@ export default {
       type: String,
       default: 'filterselectInput',
     },
+    setValue: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -84,7 +88,7 @@ export default {
         keys.down,
       ].indexOf(e.keyCode) > -1) {
         e.preventDefault();
-      } 
+      }
     },
     checkInput(event) {
       if (event.keyCode === 32) {
@@ -161,7 +165,7 @@ export default {
       inputEl.value = label;
     },
     focusOnInput(event) {
-      if (event.target.classList.contains('js-filterSelect') 
+      if (event.target.classList.contains('js-filterSelect')
       || event.target.classList.contains('js-createSelect')) {
         const input = this.$refs.filterselectInput;
         this.filterVisible = !this.filterVisible;
@@ -175,7 +179,7 @@ export default {
       const inputContSel = document.getElementsByClassName(this.className);
       const inputContEl = inputContSel[0];
       const texts = inputContEl.getElementsByClassName('js-filterSelectText');
-      
+
       // Make all options visible again
       forEach(texts, (text) => {
         text.removeAttribute('style');
@@ -202,6 +206,17 @@ export default {
         LayoutUtil.scrollLock(val);
       }
     },
+    setValue(value) {
+      this.clear();
+      const option = this.options.tree.find(o => o.value === value);
+      if (option !== undefined) {
+        this.selectedObject = {
+          value: option.value,
+          key: option.key,
+          label: option.label,
+        };
+      }
+    },
   },
   beforeDestroy() {
     if (this.filterVisible === true) { // Make sure we unlock the scroll lock
@@ -212,27 +227,27 @@ export default {
     this.$el.addEventListener('keyup', this.nextItem);
     this.$el.addEventListener('keyup', this.handleKeys);
 
-    this.$nextTick(() => { 
+    this.$nextTick(() => {
     });
   },
 };
 </script>
 
 <template>
-  <div class="FilterSelect" 
-    :class="[{'variantMaterial' : styleVariant === 'material'}, className]" 
+  <div class="FilterSelect"
+    :class="[{'variantMaterial' : styleVariant === 'material'}, className]"
     v-on-clickaway="close"
     :tabindex="0"
     @keydown.space="preventBodyScroll"
     @keyup.space="focusOnInput">
     <label
-      class="FilterSelect-label" 
+      class="FilterSelect-label"
       :for="inputId">
       {{ label }}{{ styleVariant !== 'material' && label ? ':' : '' }}
     </label>
     <div class="FilterSelect-inputContainer">
-      <input class="FilterSelect-input js-filterSelectInput" 
-        type="text" 
+      <input class="FilterSelect-input js-filterSelectInput"
+        type="text"
         :id="inputId"
         v-bind:placeholder="translatedPlaceholder"
         :aria-label="translatedPlaceholder"
@@ -252,7 +267,7 @@ export default {
           @keyup.enter="selectOption"
           v-for="option in options.priority"
           :key="option">
-          <span class="FilterSelect-dropdownText js-filterSelectText" 
+          <span class="FilterSelect-dropdownText js-filterSelectText"
             tabindex="-1"
             :data-filter="option"
             :data-abstract="option.abstract"
@@ -268,7 +283,7 @@ export default {
           @keyup.enter="selectOption"
           v-for="option in options.tree"
           :key="option.key">
-          <span class="FilterSelect-dropdownText js-filterSelectText" 
+          <span class="FilterSelect-dropdownText js-filterSelectText"
             tabindex="-1"
             :data-filter="option.value"
             :data-abstract="option.abstract"
@@ -294,7 +309,7 @@ export default {
 </template>
 
 <style lang="less">
-.FilterSelect {  
+.FilterSelect {
   display: flex;
   font-weight: normal;
   width: 100%;
@@ -332,13 +347,13 @@ export default {
     font-size: 1.6rem;
     width: 100%;
     height: 30px;
-    background-color: @white;    
+    background-color: @white;
     z-index: 2;
     position: relative;
     text-overflow: ellipsis;
-    border: 1px solid @grey-light;    
+    border: 1px solid @grey-light;
     border-radius: 5px;
-    box-shadow: @shadow-panel;  
+    box-shadow: @shadow-panel;
 
     .FilterSelect.variantMaterial & {
       box-shadow: none;
@@ -445,7 +460,7 @@ export default {
 
   &-clear,
   &-open {
-    position: absolute;    
+    position: absolute;
     cursor: pointer;
     z-index: 3;
     font-weight: 300;

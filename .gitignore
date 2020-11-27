@@ -23,5 +23,5 @@ npm-debug.log
 *.pyc
 selenium-debug.log
 *venv/
-
+.idea
 viewer/helpdocs/helpdocs\.json

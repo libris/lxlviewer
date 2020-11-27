@@ -484,6 +484,11 @@
     "@type": "Dissertation",
     "label": ""
   },
+  "Frequency": {
+    "@type": "Frequency",
+    "label": "",
+    "date": ""
+  },
   "SeriesMembership": [
     {
       "@type": "SeriesMembership",
@@ -543,8 +548,19 @@
   },
   "ComplexSubject": {
     "@type": "ComplexSubject",
-    "termComponentList": [],
-    "inScheme": null
+    "inScheme": {
+      "@id": "https://id.kb.se/term/sao"
+    },
+    "termComponentList": [
+      {
+        "@type": "Topic",
+        "prefLabel": ""
+      },
+      {
+        "@type": "TopicSubdivision",
+        "prefLabel": ""
+      }
+    ]
   },
   "GenreSubdivision": {
     "@type": "GenreSubdivision",
