@@ -130,7 +130,6 @@ export default {
 <style lang="less">
 @import "~bootstrap/less/bootstrap";
 @import "~font-awesome/css/font-awesome.css";
-@import (css) url(//fonts.googleapis.com/css?family=Open+Sans:400italic,700,400);
 
 // BOOTSTRAP UNSET START
 .dropdown-menu > li > a {
