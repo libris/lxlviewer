@@ -298,7 +298,7 @@ export default {
       } else {
         this.currentSearchTypes = this.allSearchTypes;
       }
-      if (this.itemInfo !== undefined && this.itemInfo['@type'] !== undefined) {
+      if (this.itemInfo !== undefined && this.itemInfo != null && this.itemInfo['@type'] !== undefined) {
         this.setSearchType = this.itemInfo['@type'];
       }
       this.searchResult = [];
