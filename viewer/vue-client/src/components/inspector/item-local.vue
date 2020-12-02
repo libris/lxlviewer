@@ -563,7 +563,7 @@ export default {
       :all-values-from="allValuesFrom"
       :some-values-from="someValuesFrom"
       :all-search-types="allSearchTypes"
-      :entity-type="entityType" 
+      :entity-type="item['@type']"
       :field-key="fieldKey" 
       :extractable="isExtractable"
       :extracting="extracting" 
