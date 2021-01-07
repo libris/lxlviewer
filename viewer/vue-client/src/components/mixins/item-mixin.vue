@@ -129,12 +129,20 @@ export default {
       if (Object.keys(this.item).length > 1) {
         return this.item;
       }
+      // Is link to self
+      if (this.item['@id'] === this.inspector.data.mainEntity['@id']) {
+        return this.inspector.data.mainEntity;
+      }
+      // Is link to other
       return DataUtil.getEmbellished(
         this.item['@id'],
         this.inspector.data.quoted,
       );
     },
     recordId() {
+      if (this.inspector.data.mainEntity['@id'] === this.focusData['@id']) {
+        return this.inspector.data.record['@id'];
+      }
       return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
     },
     isLibrisResource() {

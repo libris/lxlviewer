@@ -498,11 +498,11 @@ export default {
       if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
-      if (this.isPlainObject(o) && o.hasOwnProperty('@id') && this.isInGraph(o)) {
-        return 'sibling';
-      }
       if (this.isPlainObject(o) && this.isLinked(o)) {
         return 'entity';
+      }
+      if (this.isPlainObject(o) && o.hasOwnProperty('@id') && this.isInGraph(o)) {
+        return 'sibling';
       }
       if (this.isPlainObject(o) && !this.isLinked(o)) {
         return 'local';
