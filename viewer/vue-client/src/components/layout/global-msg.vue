@@ -46,7 +46,7 @@ export default {
   &-corner {
     position: fixed;
     bottom: 0;
-    left: 0.3em;
+    right: 0.3em;
     font-size: 5rem;
     text-shadow: 0.05em 0 #ffffff, 0 0.05em #ffffff, -0.05em 0 #ffffff, 0 -0.05em #ffffff;
     z-index: 9999;
