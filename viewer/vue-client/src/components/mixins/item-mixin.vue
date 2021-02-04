@@ -130,7 +130,8 @@ export default {
         return this.item;
       }
       // Is link to self
-      if (this.item['@id'] === this.inspector.data.mainEntity['@id']) {
+      if (this.inspector.data.hasOwnProperty('mainEntity')
+        && this.item['@id'] === this.inspector.data.mainEntity['@id']) {
         return this.inspector.data.mainEntity;
       }
       // Is link to other
@@ -140,7 +141,8 @@ export default {
       );
     },
     recordId() {
-      if (this.inspector.data.mainEntity['@id'] === this.focusData['@id']) {
+      if (this.inspector.data.hasOwnProperty('mainEntity')
+        && this.inspector.data.mainEntity['@id'] === this.focusData['@id']) {
         return this.inspector.data.record['@id'];
       }
       return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
