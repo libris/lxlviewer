@@ -350,7 +350,7 @@ export default {
       const type = this.inspector.data.mainEntity['@type'];
       const baseType = VocabUtil.getRecordType(type, this.resources.vocab, this.resources.context);
       const templates = VocabUtil.getValidTemplates(type, this.templates.combined[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
-      return templates;
+      return templates.sort((a, b) => a.label.localeCompare(b.label));
     },
     formObj() {
       return this.inspector.data[this.inspector.status.focus];
