@@ -436,6 +436,10 @@ export default {
       if (this.inspector.data.mainEntity['@type'] === 'Item') {
         this.checkForMissingHeldBy();
       }
+      // If this is a *new* work, add an empty cataloguersNote property to the record
+      if (this.recordType === 'Work' && this.inspector.data.record.recordStatus === 'marc:New') {
+        this.addCataloguersNote();
+      }
     },
     checkForMissingHeldBy() {
       const mainEntity = this.inspector.data.mainEntity;
@@ -454,6 +458,22 @@ export default {
           changeList: [{
             path: 'mainEntity.heldBy',
             value: mainEntity.hasComponent[0].heldBy,
+          }],
+          addToHistory: false,
+        });
+      }
+    },
+    addCataloguersNote() {
+      const record = this.inspector.data.record;
+      if (record.hasOwnProperty('cataloguersNote') === false) {
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'lastAdded',
+          value: 'record.cataloguersNote',
+        });
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [{
+            path: 'record.cataloguersNote',
+            value: [''],
           }],
           addToHistory: false,
         });

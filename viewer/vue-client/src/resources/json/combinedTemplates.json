@@ -3043,7 +3043,8 @@
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
-          }
+          },
+          "cataloguersNote": [""]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
