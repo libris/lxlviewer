@@ -1,12 +1,9 @@
 <script>
-import { mapGetters } from 'vuex';
-import * as MathUtil from '@/utils/math';
-import * as VocabUtil from '@/utils/vocab';
-import LensMixin from '@/components/mixins/lens-mixin';
+import FacetMixin from '@/components/mixins/facet-mixin';
 
 export default {
   name: 'facet',
-  mixins: [LensMixin],
+  mixins: [FacetMixin],
   props: {
     active: {
       type: Boolean,
@@ -19,56 +16,13 @@ export default {
     };
   },
   methods: {
-    getByLang(object, property, lang) {
-      const langDict = object[`${property}ByLang`];
-      if (typeof langDict === 'object' && typeof langDict[lang] === 'string') {
-        return langDict[lang];
-      }
-      return object[property];
-    },
-    getRecordType(object) {
-      return VocabUtil.getRecordType(
-        object['@type'], 
-        this.resources.vocab, 
-        this.resources.context,
-      );
-    },
   },
   computed: {
-    ...mapGetters([
-      'resources',
-    ]),
-    user() {
-      return this.$store.getters.user;
+    label() {
+      return this.determineLabel(this.observation.object);
     },
-    settings() {
-      return this.$store.getters.settings;
-    },
-    determinedLabel() {
-      let object = this.observation.object;
-      if (object.hasOwnProperty('mainEntity')) {
-        object = object.mainEntity;
-      }
-      const lang = this.user.settings.language;
-
-      // TODO: Add chip functionality instead?
-      const label = this.getByLang(object, 'prefLabel', lang)
-        || this.getByLang(object, 'label', lang)
-        || this.getByLang(object, 'title', lang);
-      
-      if (label) {
-        return label;
-      }  
-
-      if (this.getRecordType(object) === 'Agent') {
-        return this.getLabel(object);
-      }
-
-      const idArray = object['@id'].split('/');
-      return `${idArray[idArray.length - 1]} [has no label]`;
-    },
-    getCompactNumber() {
-      return MathUtil.getCompactNumber(this.observation.totalItems);
+    compactNumber() {
+      return this.getCompactNumber(this.observation);
     },
   },
   components: {
@@ -86,11 +40,11 @@ export default {
     <slot name="icon"></slot>
     <router-link class="Facet-link"
       :to="observation.view['@id'] | asAppPath" 
-      :title="determinedLabel | capitalize">
+      :title="label | capitalize">
       <span class="Facet-label"
-        :title="determinedLabel | capitalize">
-        {{determinedLabel | capitalize}}</span>
-      <span class="Facet-badge badge">{{getCompactNumber}}</span>
+        :title="label | capitalize">
+        {{label | capitalize}}</span>
+      <span class="Facet-badge badge">{{compactNumber}}</span>
     </router-link>
   </li>
 </template>

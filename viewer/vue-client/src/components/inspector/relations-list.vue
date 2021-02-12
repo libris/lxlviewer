@@ -4,14 +4,14 @@ import VueSimpleSpinner from 'vue-simple-spinner';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
+import FacetMixin from '@/components/mixins/facet-mixin';
 import * as StringUtil from '@/utils/string';
 import * as DisplayUtil from '@/utils/display';
-import * as MathUtil from '@/utils/math';
-import * as VocabUtil from '@/utils/vocab';
 import * as httpUtil from '@/utils/http';
 
 export default {
   name: 'relations-list',
+  mixins: [FacetMixin],
   props: {
     query: null,
     listContextType: {
@@ -78,7 +78,8 @@ export default {
             name: d.dimension,
             facets: d.observation.map(o => ({
               query: httpUtil.decomposeQueryString(o.view['@id']),
-              label: this.determinedLabel(o.object),
+              label: this.determineLabel(o.object),
+              totalItems: o.totalItems,
             })).sort((a, b) => a.label.localeCompare(b.label)),
           }));
       }
@@ -100,53 +101,6 @@ export default {
       }
       
       return key;
-    },
-    getByLang(object, property, lang) {
-      const langDict = object[`${property}ByLang`];
-      if (typeof langDict === 'object' && typeof langDict[lang] === 'string') {
-        return langDict[lang];
-      }
-      return object[property];
-    },
-    getRecordType(object) {
-      return VocabUtil.getRecordType(
-        object['@type'],
-        this.resources.vocab,
-        this.resources.context,
-      );
-    },
-    determinedLabel(object) {
-      if (object.hasOwnProperty('mainEntity')) {
-        object = object.mainEntity;
-      }
-      const lang = this.user.settings.language;
-
-      if (object.hasOwnProperty('@id')) {
-        const chains = this.settings.propertyChains;
-        const id = object['@id'];
-        if (chains.hasOwnProperty(id)) {
-          return chains[id][this.user.settings.language];
-        }
-      }
-      
-      // TODO: Add chip functionality instead?
-      const label = this.getByLang(object, 'prefLabel', lang)
-        || this.getByLang(object, 'label', lang)
-        || this.getByLang(object, 'title', lang);
-
-      if (label) {
-        return label;
-      }
-
-      if (this.getRecordType(object) === 'Agent') {
-        return this.getLabel(object);
-      }
-
-      const idArray = object['@id'].split('/');
-      return `${idArray[idArray.length - 1]} [has no label]`;
-    },
-    getCompactNumber(observation) {
-      return MathUtil.getCompactNumber(observation.totalItems);
     },
     handleFacetSelected() {
       if (this.selectedFacet) {
@@ -243,8 +197,8 @@ export default {
               <option :value="allOption">
                 {{ "All" | translatePhrase }} ({{ getCompactNumber(allOption) }})
               </option>
-              <optgroup v-for="group in facets" :key="group" :label="facetGroupLabelByLang(group.name)">
-                <option v-for="option in group.facets" :key="option" :value="option">
+              <optgroup v-for="(group, index) in facets" :key="`group-${index}`" :label="facetGroupLabelByLang(group.name)">
+                <option v-for="(option, index) in group.facets" :key="`option-${index}`" :value="option">
                   {{ option.label | capitalize }} ({{ getCompactNumber(option) }})
                 </option>
               </optgroup>
