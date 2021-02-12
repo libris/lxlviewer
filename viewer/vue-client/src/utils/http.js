@@ -17,6 +17,25 @@ export function buildQueryString(params) {
   return queryArr.join('&');
 }
 
+export function decomposeQueryString(q) {
+  if (q.includes('?')) {
+    q = q.split('?')[1];
+  }
+
+  const params = {};
+
+  q.split('&').forEach((param) => {
+    const keyVal = param.split('=');
+    const key = decodeURIComponent(keyVal[0]);
+    const val = decodeURIComponent(keyVal[1]);
+    if (!param.hasOwnProperty(key)) {
+      params[key] = [];
+    }
+    params[key].push(val);
+  });
+  return params;
+}
+
 function request(opts, data) {
   // method, url, token, accept
   const options = opts;

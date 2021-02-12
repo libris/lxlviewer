@@ -1,5 +1,4 @@
 <script>
-import { each } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import PanelComponent from '@/components/shared/panel-component';
@@ -7,6 +6,9 @@ import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import * as StringUtil from '@/utils/string';
 import * as DisplayUtil from '@/utils/display';
+import * as MathUtil from '@/utils/math';
+import * as VocabUtil from '@/utils/vocab';
+import * as httpUtil from '@/utils/http';
 
 export default {
   name: 'relations-list',
@@ -30,6 +32,11 @@ export default {
       embellishedList: [],
       showInstances: false,
       hideByContext: {},
+      displayFacets: ['@reverse', '@type'],
+      facets: {},
+      allOption: {},
+      selectedFacet: null,
+      selectedQuery: this.query,
     };
   },
   methods: {
@@ -44,6 +51,11 @@ export default {
             response.json().then((result) => {
               this.searchResult = result;
               this.totalItems = result.totalItems;
+              if (this.selectedQuery === this.query) {
+                this.allOption = this.buildAllOption();
+                this.selectedFacet = this.allOption;
+                this.facets = this.buildFacets(result);
+              }
               this.loading = false;
             });
           }
@@ -56,6 +68,92 @@ export default {
     hide() {
       this.$emit('close');
     },
+    buildFacets(searchResult) {
+      if (searchResult) {
+        const dimensions = searchResult.stats.sliceByDimension;
+        return this.displayFacets
+          .filter(key => dimensions.hasOwnProperty(key))
+          .map(key => dimensions[key])
+          .map(d => ({
+            name: d.dimension,
+            facets: d.observation.map(o => ({
+              query: httpUtil.decomposeQueryString(o.view['@id']),
+              label: this.determinedLabel(o.object),
+            })).sort((a, b) => a.label.localeCompare(b.label)),
+          }));
+      }
+      
+      return {};
+    },
+    buildAllOption() {
+      const all = {};
+      if (this.searchResult) {
+        all.totalItems = this.searchResult.totalItems;
+        all.query = this.query;
+      }
+      return all;
+    },
+    facetGroupLabelByLang(facetType) {
+      const key = facetType.endsWith('@id') ? facetType.slice(0, -4) : facetType;
+      if (this.settings.propertyChains.hasOwnProperty(key)) {
+        return this.settings.propertyChains[key][this.user.settings.language];
+      }
+      
+      return key;
+    },
+    getByLang(object, property, lang) {
+      const langDict = object[`${property}ByLang`];
+      if (typeof langDict === 'object' && typeof langDict[lang] === 'string') {
+        return langDict[lang];
+      }
+      return object[property];
+    },
+    getRecordType(object) {
+      return VocabUtil.getRecordType(
+        object['@type'],
+        this.resources.vocab,
+        this.resources.context,
+      );
+    },
+    determinedLabel(object) {
+      if (object.hasOwnProperty('mainEntity')) {
+        object = object.mainEntity;
+      }
+      const lang = this.user.settings.language;
+
+      if (object.hasOwnProperty('@id')) {
+        const chains = this.settings.propertyChains;
+        const id = object['@id'];
+        if (chains.hasOwnProperty(id)) {
+          return chains[id][this.user.settings.language];
+        }
+      }
+      
+      // TODO: Add chip functionality instead?
+      const label = this.getByLang(object, 'prefLabel', lang)
+        || this.getByLang(object, 'label', lang)
+        || this.getByLang(object, 'title', lang);
+
+      if (label) {
+        return label;
+      }
+
+      if (this.getRecordType(object) === 'Agent') {
+        return this.getLabel(object);
+      }
+
+      const idArray = object['@id'].split('/');
+      return `${idArray[idArray.length - 1]} [has no label]`;
+    },
+    getCompactNumber(observation) {
+      return MathUtil.getCompactNumber(observation.totalItems);
+    },
+    handleFacetSelected() {
+      if (this.selectedFacet) {
+        this.currentPage = 0;
+        this.selectedQuery = this.selectedFacet.query;
+      }
+    },
   },
   computed: {
     ...mapGetters([
@@ -65,6 +163,9 @@ export default {
       'settings',
       'status',
     ]),
+    settings() {
+      return this.$store.getters.settings;
+    },
     resultItems() {
       if (this.searchResult) {
         return this.searchResult.items;
@@ -79,17 +180,14 @@ export default {
       return [];
     },
     builtQuery() {
-      const queryPairs = this.query;
+      const queryPairs = this.selectedQuery;
       if (queryPairs === null) {
         return '';
       }
       queryPairs._offset = this.currentPage * this.maxResults;
       queryPairs._limit = this.maxResults;
-      let q = `${this.settings.apiPath}/find.jsonld?`;
-      each(queryPairs, (v, k) => {
-        q += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
-      });
-      return q;
+      const q = `${this.settings.apiPath}/find.jsonld?`;
+      return q + httpUtil.buildQueryString(queryPairs);
     },
     windowTitle() {
       if (this.listContextType === 'Item') {
@@ -98,8 +196,6 @@ export default {
         let windowTitle = StringUtil.getUiPhraseByLang('Holdings of', this.user.settings.language);
         windowTitle += ` ${this.itemOfTitle}`;
         return windowTitle;
-      } if (this.listContextType === 'Agent') {
-        return StringUtil.getUiPhraseByLang('Contribution', this.user.settings.language);
       }
       const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.user.settings.language, this.resources.vocab, this.resources.context);
       return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.user.settings.language)}`;
@@ -133,6 +229,28 @@ export default {
   <div class="RelationsList">
     <panel-component :title="windowTitle" @close="hide()">
       <template slot="panel-header-extra">
+        <div class="RelationsList-searchHeader">
+          <div
+            class="Filter"
+          >
+            <label class="Filter-label" for="filter-select">{{ 'Filter' | translatePhrase }}</label>
+            <select id="filter-select"
+                    class="Filter-select customSelect"
+                    v-model="selectedFacet"
+                    @change="handleFacetSelected"
+                    :aria-label="'Filter' | translatePhrase">
+              >
+              <option :value="allOption">
+                {{ "All" | translatePhrase }} ({{ getCompactNumber(allOption) }})
+              </option>
+              <optgroup v-for="group in facets" :key="group" :label="facetGroupLabelByLang(group.name)">
+                <option v-for="option in group.facets" :key="option" :value="option">
+                  {{ option.label | capitalize }} ({{ getCompactNumber(option) }})
+                </option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
       </template>
       <template slot="panel-body">
         <div class="PanelComponent-searchStatus" v-show="loading">
@@ -170,7 +288,10 @@ export default {
 <style lang="less">
 
 .RelationsList {
-
+  &-searchHeader {
+    margin: 0 0 0.5em 0;
+  }
+  
   &-resultControls {
     display: flex;
     justify-content: space-between;
@@ -195,6 +316,33 @@ export default {
         }
       }
     }
+  }
+}
+
+.Filter {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+
+  &-label {
+    margin: 0 10px 10px 0;
+    font-weight: 600;
+    position: absolute;
+    font-size: 1.2rem;
+    left: 1rem;
+    top: 0.4rem;
+    color: @brand-primary;
+  }
+  &-select {
+    text-align: start;
+    margin: 0 10px 10px 0;
+    padding: 1.8rem 3.5rem 0 1rem;
+    background-color: @white;
+    border: 1px solid @grey-lighter;
+    line-height: 2.8rem;
+    height: 4.8rem;
   }
 }
 </style>

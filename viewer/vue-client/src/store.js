@@ -286,6 +286,13 @@ const store = new Vuex.Store({
             order: 10,
           },
         },
+        '@reverse': {
+          sv: 'Relation',
+          en: 'Relation',
+          facet: {
+            order: 0,
+          },
+        },
       },
       sortOptions: {
         Instance: [
