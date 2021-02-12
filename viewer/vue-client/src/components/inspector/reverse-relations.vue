@@ -43,12 +43,21 @@ export default {
       this.$parent.$el.classList.remove('is-highlighted');
     },
     getRelationsInfo() {
+      const query = {
+        _limit: 0,
+      };
+      
+      if (this.recordType !==  'Item' && this.recordType !== 'Instance' && this.mainEntity.reverseLinks) {
+        this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
+        this.checkingRelations = false;
+        query.o = this.mainEntity['@id'];
+        this.panelQuery = Object.assign({}, query);
+        return
+      }
+      
       this.checkingRelations = true;
       const timeoutLength = 1100; // Needed so that the index has time to update 
-      setTimeout(() => { // 
-        const query = {
-          _limit: 0,
-        };
+      setTimeout(() => { //
         if (this.recordType === 'Item') {
           query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
           query['@type'] = 'Item';
@@ -69,13 +78,6 @@ export default {
             .catch((error) => {
               console.log(error);
             });
-        } else if (this.recordType === 'Work') {
-          // query['instanceOf.@id'] = this.mainEntity['@id'];
-          query.o = this.mainEntity['@id'];
-          query['@type'] = 'Instance';
-        } else if (this.recordType === 'Agent') {
-          query['or-instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
-          query['or-contribution.agent.@id'] = this.mainEntity['@id'];
         } else {
           query.o = this.mainEntity['@id'];
         }
@@ -85,10 +87,7 @@ export default {
           this.panelQuery._sort = 'heldBy.@id';
         }
 
-        if (this.mainEntity.reverseLinks && (this.recordType === 'Work' || this.recordType === 'Concept')) {
-          this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
-          this.checkingRelations = false;
-        } else {
+        {
           HttpUtil.getRelatedPosts(query, this.settings.apiPath)
             .then((response) => {
               this.relationInfo = response.items;
@@ -144,13 +143,6 @@ export default {
           return 'Holdings could not be loaded';
         } 
         return 'Show all holdings';
-      } if (this.recordType === 'Agent') {
-        if (this.numberOfRelations === 0) {
-          return 'No contributions';
-        } if (Number.isNaN(this.numberOfRelations)) {
-          return 'Contribution could not be loaded';
-        } 
-        return 'Show all contributions';
       } 
       if (this.numberOfRelations === 0) {
         return 'No uses';
@@ -216,7 +208,6 @@ export default {
     <div class="ReverseRelations">
       <div class="ReverseRelations-header uppercaseHeading--light">
         <span v-if="recordType === 'Instance' || recordType === 'Item'">{{"Holding" | translatePhrase}}</span>
-        <span v-else-if="recordType === 'Agent'">{{ "Contribution" | translatePhrase }}</span>
         <span v-else>{{"Used in" | translatePhrase}}</span>
       </div>
       <div class="ReverseRelations-btnContainer">
