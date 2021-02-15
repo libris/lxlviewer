@@ -53,12 +53,9 @@ export default {
       if (this.getRecordType(object) === 'Agent') {
         return this.getLabel(object);
       }
-
-      if (object.hasOwnProperty('@id')) {
-        const idArray = object['@id'].split('/');
-        return `${idArray[idArray.length - 1]} [has no label]`;
-      }
-      return object;
+      
+      const idArray = object['@id'].split('/');
+      return `${idArray[idArray.length - 1]} [has no label]`;
     },
     getCompactNumber(observation) {
       return MathUtil.getCompactNumber(observation.totalItems);

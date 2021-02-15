@@ -47,12 +47,12 @@ export default {
         _limit: 0,
       };
       
-      if (this.recordType !==  'Item' && this.recordType !== 'Instance' && this.mainEntity.reverseLinks) {
+      if (this.recordType !== 'Item' && this.recordType !== 'Instance' && this.mainEntity.reverseLinks) {
         this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
         this.checkingRelations = false;
         query.o = this.mainEntity['@id'];
         this.panelQuery = Object.assign({}, query);
-        return
+        return;
       }
       
       this.checkingRelations = true;
@@ -69,7 +69,7 @@ export default {
           const myHoldingQuery = Object.assign({}, query);
           myHoldingQuery._limit = 1;
           myHoldingQuery['heldBy.@id'] = this.user.getActiveLibraryUri();
-          HttpUtil.getRelatedPosts(myHoldingQuery, this.settings.apiPath)
+          HttpUtil.getRelatedRecords(myHoldingQuery, this.settings.apiPath)
             .then((response) => {
               if (response.totalItems > 0) {
                 this.myHolding = response.items[0]['@id'];
@@ -86,17 +86,15 @@ export default {
           // Sort panel query by alphabetical order of sigel id
           this.panelQuery._sort = 'heldBy.@id';
         }
-
-        {
-          HttpUtil.getRelatedPosts(query, this.settings.apiPath)
-            .then((response) => {
-              this.relationInfo = response.items;
-              this.numberOfRelations = response.totalItems;
-              this.checkingRelations = false;
-            }, (error) => {
-              console.log('Error checking for relations', error);
-            });
-        }
+        
+        HttpUtil.getRelatedRecords(query, this.settings.apiPath)
+          .then((response) => {
+            this.relationInfo = response.items;
+            this.numberOfRelations = response.totalItems;
+            this.checkingRelations = false;
+          }, (error) => {
+            console.log('Error checking for relations', error);
+          });
       }, timeoutLength);
     },
     gotoHolding() {
@@ -118,9 +116,6 @@ export default {
     },
     hasRelation() {
       return this.myHolding !== null;
-    },
-    libraryUrl() {
-      return this.user.getActiveLibraryUri();
     },
     recordType() {
       return VocabUtil.getRecordType(

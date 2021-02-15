@@ -71,7 +71,7 @@ export default {
         _limit: 0,
         o: this.inspector.data.mainEntity['@id'],
       };
-      HttpUtil.getRelatedPosts(query, this.settings.apiPath)
+      HttpUtil.getRelatedRecords(query, this.settings.apiPath)
         .then((response) => {
           this.numberOfRelations = response.totalItems;
           this.checkingRelations = false;

@@ -109,14 +109,14 @@ function request(opts, data) {
   });
 }
 
-export function getRelatedPosts(queryPairs, apiPath) {
-  // Returns a list of posts that links to <id> with <property>
+export function getRelatedRecords(queryPairs, apiPath) {
+  // Returns a list of records that links to <id> with <property>
   return new Promise((resolve, reject) => {
-    let relatedPosts = `${apiPath}/find.jsonld?`;
+    let relatedRecords = `${apiPath}/find.jsonld?`;
     each(queryPairs, (v, k) => {
-      relatedPosts += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
+      relatedRecords += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
     });
-    fetch(relatedPosts)
+    fetch(relatedRecords)
       .then((response) => {
         if (response.status === 200) {
           resolve(response.json());
