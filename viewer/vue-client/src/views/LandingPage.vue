@@ -62,14 +62,6 @@ export default {
           :text="copy['studies'].text" 
           :link-text="copy['studies'].linkText" 
           :link-url="copy['studies'].linkUrl"></link-card>
-        <link-card 
-          v-if="widgetShouldBeShown('link-supportforum')"
-          :image="copy['supportforum'].image" 
-          :image-alt-text="copy['supportforum'].image_alt_text"
-          :header="copy['supportforum'].header" 
-          :text="copy['supportforum'].text" 
-          :link-text="copy['supportforum'].linkText" 
-          :link-url="copy['supportforum'].linkUrl"></link-card>
       </div>
       <link-card 
         v-if="widgetShouldBeShown('intro-component')" 
