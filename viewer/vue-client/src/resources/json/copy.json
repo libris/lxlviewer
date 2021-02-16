@@ -43,14 +43,6 @@
     "linkUrl": "https://www.kb.se/samverkan-och-utveckling/libris.html",
     "linkText": "Till Libris nyheter"
   },
-  "supportforum": {
-    "image": "supportforum.png",
-    "image_alt_text": "Skärmdump av supportforumet",
-    "header": "Supportforum",
-    "text": "På Supportforum för nya Libris kan ni söka bland tidigare besvarade frågor och ställa egna. Forumet behandlar både teknisk- och förändringsrelaterad information.",
-    "linkUrl": "https://kundo.se/org/librisxl/",
-    "linkText": "Supportforum"
-  },
   "instructional-videos": {
     "video": "https://www.youtube-nocookie.com/embed/?listType=playlist&list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy&html5=1&rel=0&showinfo=0&autoplay=1",
     "header": "Instruktionsfilmer",

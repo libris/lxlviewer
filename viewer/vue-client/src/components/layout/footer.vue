@@ -82,9 +82,6 @@ export default {
             <h4 id="footer-support-nav" class="Footer-listTitle">{{ "Support" | translatePhrase }}</h4>
             <ul class="Footer-navList">
               <li>
-                <a class="Footer-link" href="https://kundo.se/org/librisxl/">{{ "Forum of support for new Libris" | translatePhrase }}</a>
-              </li>
-              <li>
                 <a class="Footer-link" href="https://www.kb.se/om-oss/kontakta-oss/">{{ "Libris customer service" | translatePhrase }}</a>
               </li>
             </ul>
