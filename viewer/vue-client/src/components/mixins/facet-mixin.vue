@@ -32,15 +32,23 @@ export default {
         object = object.mainEntity;
       }
       const lang = this.user.settings.language;
-
-      if (object.hasOwnProperty('@id')) {
-        const chains = this.settings.propertyChains;
-        const id = object['@id'];
-        if (chains.hasOwnProperty(id)) {
-          return chains[id][this.user.settings.language];
+      
+      for (const prop of ['@id', '_key']) {
+        if (object.hasOwnProperty(prop)) {
+          const chains = this.settings.propertyChains;
+          const id = object[prop];
+          if (chains.hasOwnProperty(id)) {
+            return chains[id][this.user.settings.language];
+          }
         }
       }
 
+      if (object.hasOwnProperty('propertyChainAxiom')) {
+        return object.propertyChainAxiom
+          .map(o => this.$options.filters.capitalize(this.determineLabel(o)))
+          .join('/');
+      } 
+      
       // TODO: Add chip functionality instead?
       const label = this.getByLang(object, 'prefLabel', lang)
         || this.getByLang(object, 'label', lang)
