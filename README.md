@@ -21,7 +21,7 @@ Get variables from a developer at KB for `config.cfg`.
 
     $ python serve.py
 
-### The static client (id.kb.se)
+### The static client ([id.kb.se](https://id.kb.se/))
 
 #### Requirements
 * A flask app serving the resources (see above)
@@ -40,7 +40,7 @@ or
 
     $ npm run watch
 
-### The vue client (libris cat)
+### The vue client ([libris cataloging](https://libris.kb.se/katalogisering))
 
 #### Tools and Frameworks used
 
