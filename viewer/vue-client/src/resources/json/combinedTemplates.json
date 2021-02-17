@@ -3548,11 +3548,19 @@
             "@id": "https://id.kb.se/term/fack"
           }],
           "prefLabel": "",
+          "broadMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "23/swe",
+              "marc:explanatoryTerm": ""
+            }
+          ],
           "closeMatch": [
             {
               "@type": "ClassificationDdc",
               "code": "",
-              "edition": "",
+              "edition": "23/swe",
               "marc:explanatoryTerm": ""
             },
             {
