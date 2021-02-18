@@ -43,12 +43,21 @@ export default {
       this.$parent.$el.classList.remove('is-highlighted');
     },
     getRelationsInfo() {
+      const query = {
+        _limit: 0,
+      };
+      
+      if (this.recordType !== 'Item' && this.recordType !== 'Instance' && this.mainEntity.reverseLinks) {
+        this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
+        this.checkingRelations = false;
+        query.o = this.mainEntity['@id'];
+        this.panelQuery = Object.assign({}, query);
+        return;
+      }
+      
       this.checkingRelations = true;
       const timeoutLength = 1100; // Needed so that the index has time to update 
-      setTimeout(() => { // 
-        const query = {
-          _limit: 0,
-        };
+      setTimeout(() => { //
         if (this.recordType === 'Item') {
           query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
           query['@type'] = 'Item';
@@ -60,7 +69,7 @@ export default {
           const myHoldingQuery = Object.assign({}, query);
           myHoldingQuery._limit = 1;
           myHoldingQuery['heldBy.@id'] = this.user.getActiveLibraryUri();
-          HttpUtil.getRelatedPosts(myHoldingQuery, this.settings.apiPath)
+          HttpUtil.getRelatedRecords(myHoldingQuery, this.settings.apiPath)
             .then((response) => {
               if (response.totalItems > 0) {
                 this.myHolding = response.items[0]['@id'];
@@ -69,13 +78,6 @@ export default {
             .catch((error) => {
               console.log(error);
             });
-        } else if (this.recordType === 'Work') {
-          // query['instanceOf.@id'] = this.mainEntity['@id'];
-          query.o = this.mainEntity['@id'];
-          query['@type'] = 'Instance';
-        } else if (this.recordType === 'Agent') {
-          query['or-instanceOf.contribution.agent.@id'] = this.mainEntity['@id'];
-          query['or-contribution.agent.@id'] = this.mainEntity['@id'];
         } else {
           query.o = this.mainEntity['@id'];
         }
@@ -84,20 +86,15 @@ export default {
           // Sort panel query by alphabetical order of sigel id
           this.panelQuery._sort = 'heldBy.@id';
         }
-
-        if (this.mainEntity.reverseLinks && (this.recordType === 'Work' || this.recordType === 'Concept')) {
-          this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
-          this.checkingRelations = false;
-        } else {
-          HttpUtil.getRelatedPosts(query, this.settings.apiPath)
-            .then((response) => {
-              this.relationInfo = response.items;
-              this.numberOfRelations = response.totalItems;
-              this.checkingRelations = false;
-            }, (error) => {
-              console.log('Error checking for relations', error);
-            });
-        }
+        
+        HttpUtil.getRelatedRecords(query, this.settings.apiPath)
+          .then((response) => {
+            this.relationInfo = response.items;
+            this.numberOfRelations = response.totalItems;
+            this.checkingRelations = false;
+          }, (error) => {
+            console.log('Error checking for relations', error);
+          });
       }, timeoutLength);
     },
     gotoHolding() {
@@ -120,9 +117,6 @@ export default {
     hasRelation() {
       return this.myHolding !== null;
     },
-    libraryUrl() {
-      return this.user.getActiveLibraryUri();
-    },
     recordType() {
       return VocabUtil.getRecordType(
         this.mainEntity['@type'], 
@@ -144,13 +138,6 @@ export default {
           return 'Holdings could not be loaded';
         } 
         return 'Show all holdings';
-      } if (this.recordType === 'Agent') {
-        if (this.numberOfRelations === 0) {
-          return 'No contributions';
-        } if (Number.isNaN(this.numberOfRelations)) {
-          return 'Contribution could not be loaded';
-        } 
-        return 'Show all contributions';
       } 
       if (this.numberOfRelations === 0) {
         return 'No uses';
@@ -216,7 +203,6 @@ export default {
     <div class="ReverseRelations">
       <div class="ReverseRelations-header uppercaseHeading--light">
         <span v-if="recordType === 'Instance' || recordType === 'Item'">{{"Holding" | translatePhrase}}</span>
-        <span v-else-if="recordType === 'Agent'">{{ "Contribution" | translatePhrase }}</span>
         <span v-else>{{"Used in" | translatePhrase}}</span>
       </div>
       <div class="ReverseRelations-btnContainer">
