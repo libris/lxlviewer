@@ -266,8 +266,8 @@ const store = new Vuex.Store({
           },
         },
         'contribution.agent': {
-          sv: 'Medverkan',
-          en: 'Contribution',
+          sv: 'Medverkan eller primär medverkan',
+          en: 'Contribution or primary contribution',
           facet: {
             order: 7,
           },
