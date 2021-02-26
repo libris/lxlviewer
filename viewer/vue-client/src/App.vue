@@ -430,8 +430,6 @@ button {
   min-width: auto;
 }
 
-@import (css) url(//fonts.googleapis.com/css?family=Open+Sans:600);
-
 html {
   height: 100%;
   text-rendering: optimizeLegibility;
