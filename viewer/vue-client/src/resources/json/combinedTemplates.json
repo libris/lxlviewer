@@ -3724,5 +3724,30 @@
         }
       }
     }
+  },
+  "other": {
+    "shelfMarkSequence": {
+      "label": "Hyllkodssvit",
+      "description": "Hyllkodssvit med automatiskt löpnummer",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        },
+        "mainEntity": {
+          "@type": "ShelfMarkSequence",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "heldBy": "",
+          "label": "",
+          "description": "",
+          "shelfMarkStatus": "ActiveShelfMark",
+          "nextShelfControlNumber": 1,
+          "qualifier": ""
+        }
+      }
+    }
   }
 }

@@ -433,7 +433,7 @@ export default {
     },
     checkForAutomaticFixes() {
       // If this is a holding, add the heldBy property
-      if (this.inspector.data.mainEntity['@type'] === 'Item') {
+      if (this.inspector.data.mainEntity['@type'] === 'Item' || this.inspector.data.mainEntity['@type'] === 'ShelfMarkSequence') {
         this.checkForMissingHeldBy();
       }
       // If this is a *new* work, add an empty cataloguersNote property to the record

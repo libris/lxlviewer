@@ -170,6 +170,9 @@ export function getRecordType(mainEntityType, vocab, context) {
   if (isSubClassOf(mainEntityType, 'Concept', vocab, context)) {
     return 'Concept';
   }
+  if (isSubClassOf(mainEntityType, 'ShelfMarkSequence', vocab, context)) {
+    return 'ShelfMarkSequence';
+  }
   return 'Other';
 }
 
