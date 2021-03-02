@@ -294,6 +294,12 @@ const store = new Vuex.Store({
           },
         },
       },
+      interestingFacets: {
+        '@reverse': [
+          'contribution.agent',
+          'https://id.kb.se/vocab/subject',
+        ],
+      },
       sortOptions: {
         Instance: [
           {

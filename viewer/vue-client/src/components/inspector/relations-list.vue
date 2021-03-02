@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import { partition } from 'lodash-es';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
@@ -8,6 +9,7 @@ import FacetMixin from '@/components/mixins/facet-mixin';
 import * as StringUtil from '@/utils/string';
 import * as DisplayUtil from '@/utils/display';
 import * as httpUtil from '@/utils/http';
+import { getCompactNumber } from '@/utils/math';
 
 export default {
   name: 'relations-list',
@@ -68,6 +70,25 @@ export default {
     hide() {
       this.$emit('close');
     },
+    toFacets(observations) {
+      return observations.map(o => ({
+        query: httpUtil.decomposeQueryString(o.view['@id']),
+        label: this.determineLabel(o.object),
+        count: `(${getCompactNumber(o.totalItems)})`,
+      })).sort((a, b) => a.label.localeCompare(b.label));
+    },
+    facetsForDimension(d) {
+      const i = this.settings.interestingFacets[d.dimension] || [];
+      // partition into "interesting" and less interesting facets   
+      const s = partition(d.observation, o => o.object && (i.includes(o.object._key) || i.includes(o.object['@id'])))
+        .map(observations => this.toFacets(observations));
+      // insert divider if there are any "interesting" facets
+      if (s[0].length > 0) {
+        s.splice(1, 0, [{ disabled: true, label: '────────────────────' }]);
+      }
+      
+      return s.flat();
+    },
     buildFacets(searchResult) {
       if (searchResult) {
         const dimensions = searchResult.stats.sliceByDimension;
@@ -76,11 +97,7 @@ export default {
           .map(key => dimensions[key])
           .map(d => ({
             name: d.dimension,
-            facets: d.observation.map(o => ({
-              query: httpUtil.decomposeQueryString(o.view['@id']),
-              label: this.determineLabel(o.object),
-              totalItems: o.totalItems,
-            })).sort((a, b) => a.label.localeCompare(b.label)),
+            facets: this.facetsForDimension(d),
           }));
       }
       return {};
@@ -197,8 +214,8 @@ export default {
                 {{ "All" | translatePhrase }} ({{ getCompactNumber(allOption) }})
               </option>
               <optgroup v-for="(group, index) in facets" :key="`group-${index}`" :label="facetGroupLabelByLang(group.name)">
-                <option v-for="(option, index) in group.facets" :key="`option-${index}`" :value="option">
-                  {{ option.label | capitalize }} ({{ getCompactNumber(option) }})
+                <option v-for="(option, index) in group.facets" :key="`option-${index}`" :value="option" :disabled="option.disabled">
+                  {{ option.label | capitalize }} {{ option.count }}
                 </option>
               </optgroup>
             </select>
