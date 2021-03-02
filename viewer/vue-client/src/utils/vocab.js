@@ -474,16 +474,37 @@ export function getPropertiesFromArray(typeArray, vocabClasses, vocabProperties,
 
 export function isEmbedded(classId, vocab, settings, context) {
   if (!classId || typeof classId === 'undefined') {
-    throw new Error('isEmbedded was called with an undedfined class id');
+    throw new Error('isEmbedded was called with an undefined class id');
   }
   if (isObject(classId)) {
     throw new Error('isEmbedded was called with an object as class id (should be a string)');
+  }
+  if (isDistinct(classId, vocab, settings, context)) {
+    return false;
   }
   const embeddedTypes = settings.embeddedTypes;
   const typeChain = getBaseClasses(classId, vocab, context);
   if (typeChain.length > 0) {
     for (const item of embeddedTypes) {
       if (typeChain.indexOf(item) > -1) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+export function isDistinct(classId, vocab, settings, context) {
+  if (!classId || typeof classId === 'undefined') {
+    throw new Error('isDistinct was called with an undefined class id');
+  }
+  if (isObject(classId)) {
+    throw new Error('isDistinct was called with an object as class id (should be a string)');
+  }
+  const typeChain = getBaseClasses(classId, vocab, context);
+  if (typeChain.length > 0) {
+    for (const termObj of typeChain.map(t => getTermObject(t, vocab, context))) {
+      if (termObj.hasOwnProperty('category') && termObj.category['@id'] === 'https://id.kb.se/vocab/distinct') {
         return true;
       }
     }
