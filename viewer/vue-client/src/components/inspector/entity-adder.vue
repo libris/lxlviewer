@@ -224,6 +224,17 @@ export default {
     hasSingleRange() {
       return this.rangeFull.length === 1;
     },
+    rangeCreatable() {
+      return this.rangeFull.filter(type => !VocabUtil.isDistinct(
+        type, 
+        this.resources.vocab,
+        this.settings,
+        this.resources.context,
+      ));
+    },
+    hasSingleCreatable() {
+      return this.rangeCreatable.length === 1;
+    },
     isVocabField() {
       return VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab';
     },
@@ -757,16 +768,16 @@ export default {
           </div>
           <div class="EntityAdder-create">
             <button class="EntityAdder-createBtn btn btn-primary btn--sm"
-              v-if="hasSingleRange"
-              v-on:click="addEmpty(rangeFull[0])">{{ "Create local entity" | translatePhrase }}
+              v-if="hasSingleCreatable"
+              v-on:click="addEmpty(rangeCreatable[0])">{{ "Create local entity" | translatePhrase }}
             </button>
             <filter-select
-              v-if="!hasSingleRange"
+              v-if="!hasSingleCreatable"
               :input-id="'createselectInput'"
               :class-name="'js-createSelect'"
               :options="{ tree: selectOptions, priority: priorityOptions }"
-              :options-all="allSearchTypes"
-              :options-all-suggested="someValuesFrom"
+              :options-all="rangeCreatable"
+              :options-all-suggested="rangeCreatable"
               :is-filter="false"
               :custom-placeholder="'Create local entity:'"
               v-on:filter-selected="addType($event.value)"></filter-select>
