@@ -504,7 +504,7 @@ export function isDistinct(classId, vocab, settings, context) {
   const typeChain = getBaseClasses(classId, vocab, context);
   if (typeChain.length > 0) {
     for (const termObj of typeChain.map(t => getTermObject(t, vocab, context))) {
-      if (termObj.hasOwnProperty('category') && termObj.category['@id'] === 'https://id.kb.se/vocab/distinct') {
+      if (termObj.category && [].concat(termObj.category).some(c => c['@id'] === 'https://id.kb.se/vocab/distinct')) {
         return true;
       }
     }
