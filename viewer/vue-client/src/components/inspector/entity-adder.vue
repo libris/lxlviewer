@@ -262,7 +262,7 @@ export default {
       }
       return false;
     },
-    canRecieveObjects() {
+    canReceiveObjects() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
     isLiteral() {
@@ -346,7 +346,7 @@ export default {
         this.addItem({ '@id': '' });
       } else if (this.isVocabField) {
         this.addItem('');
-      } else if (this.canRecieveObjects) {
+      } else if (this.canReceiveObjects) {
         const range = this.rangeFull;
         if (range.length === 1 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
