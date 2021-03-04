@@ -924,14 +924,14 @@ export default {
       this.initJsonOutput();
     });
     
-    this.$root.$on('create-maybe-magic-shelf-mark', (data) => {
+    this.$root.$on('maybe-magic-shelf-mark-created', (data) => {
       this.hasAutomaticShelfControlNumber(data.id).then((result) => {
         if (result) {
           this.$store.commit('addMagicShelfMark', data.path);
         }
       }).catch(error => console.error(error));
     });
-    this.$root.$on('remove-maybe-magic-shelf-mark', (data) => {
+    this.$root.$on('maybe-magic-shelf-mark-removed', (data) => {
       this.$store.commit('removeMagicShelfMark', data.path);
     });
   },

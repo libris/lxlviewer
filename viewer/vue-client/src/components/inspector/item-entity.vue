@@ -103,7 +103,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       if (this.isMaybeMagicShelfMark) {
-        this.$root.$emit('create-maybe-magic-shelf-mark', { path: this.actualParentPath, id: this.item['@id'] });
+        this.$root.$emit('maybe-magic-shelf-mark-created', { path: this.actualParentPath, id: this.item['@id'] });
       }
       if (this.isNewlyAdded) {
         setTimeout(() => {
@@ -120,7 +120,7 @@ export default {
   },
   beforeDestroy() {
     if (this.isMaybeMagicShelfMark) {
-      this.$root.$emit('remove-maybe-magic-shelf-mark', { path: this.actualParentPath, id: this.item['@id'] });
+      this.$root.$emit('maybe-magic-shelf-mark-removed', { path: this.actualParentPath, id: this.item['@id'] });
     }
   },
 };
