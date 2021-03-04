@@ -374,6 +374,8 @@
     "Create concept": "Skapa koncept",
     "To create concepts, you need to switch to a seal with correct authority.": "För att skapa koncept behöver du växla till ett sigel med rättigheter.",
     "Switch sigel": "Växla sigel",
-    "Accessibility statement": "Tillgänglighetsredogörelse"
+    "Accessibility statement": "Tillgänglighetsredogörelse",
+    "Generate control number when item is saved": "Generera löpnummer när bestånd sparas",
+    "Enter manual control number": "Ange löpnummer manuellt"
     }
 }

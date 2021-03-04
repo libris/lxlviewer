@@ -16,6 +16,7 @@ import ItemType from './item-type';
 import ItemSibling from './item-sibling';
 import ItemBoolean from './item-boolean';
 import ItemGrouped from './item-grouped';
+import ItemShelfControlNumber from './item-shelf-control-number';
 import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
@@ -127,6 +128,7 @@ export default {
     'item-vocab': ItemVocab,
     'item-boolean': ItemBoolean,
     'item-grouped': ItemGrouped,
+    'item-shelf-control-number': ItemShelfControlNumber,
     'entity-adder': EntityAdder,
   },
   watch: {
@@ -494,7 +496,10 @@ export default {
       }
       if (typeof o === 'boolean') {
         return 'boolean';
-      }      
+      }
+      if (this.fieldKey === 'shelfControlNumber') {
+        return 'shelfControlNumber';
+      }
       if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
@@ -912,6 +917,17 @@ export default {
           :parent-path="path" 
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
+
+        <!-- shelfControlNumber -->
+        <item-shelf-control-number
+          v-if="getDatatype(item) == 'shelfControlNumber'"
+          :is-last-added="isLastAdded"
+          :is-locked="locked"
+          :field-value="item"
+          :field-key="fieldKey"
+          :index="index"
+          :parent-path="path"
+          :is-expanded="isExpanded"></item-shelf-control-number>
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>

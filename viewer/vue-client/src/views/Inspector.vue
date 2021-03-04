@@ -741,7 +741,7 @@ export default {
       return obj;
     },
     async insertShelfControlNumber(item) {
-      if (item.shelfControlNumber || !item.shelfMark || !item.shelfMark[0] || !item.shelfMark[0]['@id']) {
+      if (item.shelfControlNumber || !get(item, ['shelfMark', 0, '@id'])) {
         return;
       }
       
@@ -764,17 +764,18 @@ export default {
         url: fetchUrl, 
         accept: 'application/ld+json',
       }).then((response) => {
-        const number = response['@graph'][1].nextShelfControlNumber;
-        response['@graph'][1].nextShelfControlNumber = Number(number) + 1;
-        const prefix = response['@graph'][1].qualifier;
+        const newDoc = { '@graph': response['@graph'] };
+        const number = newDoc['@graph'][1].nextShelfControlNumber;
+        newDoc['@graph'][1].nextShelfControlNumber = Number(number) + 1;
+        const prefix = newDoc['@graph'][1].qualifier;
         result = prefix ? `${prefix} ${number}` : number;
-        
+                
         return HttpUtil.put({
           url: shelfMarkId,
           ETag: response.ETag,
           activeSigel: this.user.settings.activeSigel,
           token: this.user.token,
-        }, response);
+        }, newDoc);
       });
       return result;
     },
@@ -921,6 +922,17 @@ export default {
       }
       this.initializeWarnBeforeUnload();
       this.initJsonOutput();
+    });
+    
+    this.$root.$on('create-maybe-magic-shelf-mark', (data) => {
+      this.hasAutomaticShelfControlNumber(data.id).then((result) => {
+        if (result) {
+          this.$store.commit('addMagicShelfMark', data.path);
+        }
+      }).catch(error => console.error(error));
+    });
+    this.$root.$on('remove-maybe-magic-shelf-mark', (data) => {
+      this.$store.commit('removeMagicShelfMark', data.path);
     });
   },
 };

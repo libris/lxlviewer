@@ -47,6 +47,9 @@ export default {
     fullPath() {
       return `${this.parentPath}.{"@id":"${this.item['@id']}"}`;
     },
+    isMaybeMagicShelfMark() {
+      return this.focusData['@type'] === 'ShelfMarkSequence';
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -99,6 +102,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      if (this.isMaybeMagicShelfMark) {
+        this.$root.$emit('create-maybe-magic-shelf-mark', { path: this.actualParentPath, id: this.item['@id'] });
+      }
       if (this.isNewlyAdded) {
         setTimeout(() => {
           const element = this.$el;
@@ -111,6 +117,11 @@ export default {
         }, 200);
       }
     });
+  },
+  beforeDestroy() {
+    if (this.isMaybeMagicShelfMark) {
+      this.$root.$emit('remove-maybe-magic-shelf-mark', { path: this.actualParentPath, id: this.item['@id'] });
+    }
   },
 };
 </script>
