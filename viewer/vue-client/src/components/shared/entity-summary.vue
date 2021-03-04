@@ -364,7 +364,7 @@ export default {
         <template v-if="node.value !== null">
           <span class="EntitySummary-detailsKey" :title="node.property | labelByLang">{{ node.property | labelByLang | capitalize }}</span>
           <span class="EntitySummary-detailsValue">
-            <SummaryNode :hover-links="hoverLinks" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" />
+            <SummaryNode :hover-links="hoverLinks" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>
         <template v-else-if="isReplacedBy !== ''">
