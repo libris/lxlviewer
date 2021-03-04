@@ -552,6 +552,11 @@ export default {
       if (typeof this.typeArray !== 'undefined' && this.typeArray.length > 0) {
         params['@type'] = this.typeArray;
       }
+      
+      if (this.fieldKey === 'shelfMark') {
+        params['meta.descriptionCreator.@id'] = this.user.getActiveLibraryUri();
+        params['shelfMarkStatus'] = 'ActiveShelfMark';
+      }
 
       const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
       return new Promise((resolve, reject) => {
