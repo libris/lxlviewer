@@ -9,6 +9,7 @@ import * as VocabUtil from '@/utils/vocab';
 import * as HttpUtil from '@/utils/http';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
+import { checkAutoShelfControlNumber } from '@/utils/shelfmark';
 import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
 import DetailedEnrichment from '@/components/care/detailed-enrichment';
@@ -724,60 +725,8 @@ export default {
       }, 300);
     },
     async preSaveHook(obj) {
-      await this.checkAutoShelfMarkSequence(obj);
+      await checkAutoShelfControlNumber(obj, this.settings, this.user);
       return obj;
-    },
-    async checkAutoShelfMarkSequence(obj) {
-      const mainEntity = obj['@graph'][1]; 
-       
-      if (mainEntity['@type'] === 'Item') {
-        const items = (mainEntity.hasComponent || []).filter(c => c['@type'] === 'Item');
-        items.push(mainEntity);
-        for (const item of items) {
-          // we actually want to do these sequentially in case they link to the same shelf mark
-          await this.insertShelfControlNumber(item); // eslint-disable-line no-await-in-loop
-        }
-      } 
-      return obj;
-    },
-    async insertShelfControlNumber(item) {
-      if (item.shelfControlNumber || !get(item, ['shelfMark', 0, '@id'])) {
-        return;
-      }
-      
-      const id = item.shelfMark[0]['@id'].split('#')[0];
-      if (await this.hasAutomaticShelfControlNumber(id)) {
-        item.shelfControlNumber = await this.generateShelfControlNumber(id);
-      }
-    },
-    async hasAutomaticShelfControlNumber(shelfMarkId) {
-      return HttpUtil.get({
-        url: `${this.settings.apiPath}/${shelfMarkId}`,
-        accept: 'application/ld+json',
-      }).then(shelfMark => Promise.resolve(shelfMark['@graph'][1].hasOwnProperty('nextShelfControlNumber')));
-    },
-    async generateShelfControlNumber(shelfMarkId) {
-      let result = -1;
-      const noCache = md5(Math.random() * 100000000);
-      const fetchUrl = `${this.settings.apiPath}/${shelfMarkId}?${noCache}`;
-      await HttpUtil.get({
-        url: fetchUrl, 
-        accept: 'application/ld+json',
-      }).then((response) => {
-        const newDoc = { '@graph': response['@graph'] };
-        const number = newDoc['@graph'][1].nextShelfControlNumber;
-        newDoc['@graph'][1].nextShelfControlNumber = Number(number) + 1;
-        const prefix = newDoc['@graph'][1].qualifier;
-        result = prefix ? `${prefix} ${number}` : number;
-                
-        return HttpUtil.put({
-          url: shelfMarkId,
-          ETag: response.ETag,
-          activeSigel: this.user.settings.activeSigel,
-          token: this.user.token,
-        }, newDoc);
-      });
-      return result;
     },
   },
   
@@ -922,17 +871,6 @@ export default {
       }
       this.initializeWarnBeforeUnload();
       this.initJsonOutput();
-    });
-    
-    this.$root.$on('maybe-magic-shelf-mark-created', (data) => {
-      this.hasAutomaticShelfControlNumber(data.id).then((result) => {
-        if (result) {
-          this.$store.commit('addMagicShelfMark', data.path);
-        }
-      }).catch(error => console.error(error));
-    });
-    this.$root.$on('maybe-magic-shelf-mark-removed', (data) => {
-      this.$store.commit('removeMagicShelfMark', data.path);
     });
   },
 };

@@ -51,7 +51,7 @@ export default {
         this.user.settings.language,
         this.resources.vocab,
         this.resources.context,
-      )
+      );
     },
     getChip() {
       const chip = DisplayUtil.getChip(

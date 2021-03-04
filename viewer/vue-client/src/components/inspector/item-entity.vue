@@ -1,6 +1,7 @@
 <script>
 import { size } from 'lodash-es';
 import { mapGetters } from 'vuex';
+import { hasAutomaticShelfControlNumber } from '@/utils/shelfmark';
 import * as LayoutUtil from '@/utils/layout';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
@@ -103,7 +104,11 @@ export default {
   mounted() {
     this.$nextTick(() => {
       if (this.isMaybeMagicShelfMark) {
-        this.$root.$emit('maybe-magic-shelf-mark-created', { path: this.actualParentPath, id: this.item['@id'] });
+        hasAutomaticShelfControlNumber(this.item['@id'], this.settings).then((hasAutomatic) => {
+          if (hasAutomatic) {
+            this.$store.commit('addMagicShelfMark', this.actualParentPath);
+          }
+        }).catch(error => console.error(error));
       }
       if (this.isNewlyAdded) {
         setTimeout(() => {
@@ -120,7 +125,7 @@ export default {
   },
   beforeDestroy() {
     if (this.isMaybeMagicShelfMark) {
-      this.$root.$emit('maybe-magic-shelf-mark-removed', { path: this.actualParentPath, id: this.item['@id'] });
+      this.$store.commit('removeMagicShelfMark', this.actualParentPath);
     }
   },
 };

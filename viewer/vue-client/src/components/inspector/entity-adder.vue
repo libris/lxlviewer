@@ -555,7 +555,7 @@ export default {
       
       if (this.fieldKey === 'shelfMark') {
         params['meta.descriptionCreator.@id'] = this.user.getActiveLibraryUri();
-        params['shelfMarkStatus'] = 'ActiveShelfMark';
+        params.shelfMarkStatus = 'ActiveShelfMark';
       }
 
       const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
