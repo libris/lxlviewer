@@ -3740,7 +3740,6 @@
         "mainEntity": {
           "@type": "ShelfMarkSequence",
           "@id": "https://id.kb.se/TEMPID#it",
-          "heldBy": "",
           "label": "",
           "description": "",
           "shelfMarkStatus": "ActiveShelfMark",
