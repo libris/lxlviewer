@@ -39,6 +39,15 @@ export default {
     mode() {
       this.update(this.value);
     },
+    hasAutomaticCounter(val) {
+      // if we get linked to another counter we should switch mode to 'generate' 
+      if (!val) {
+        this.shelfMarkUnlinkedAtLeastOnce = true;
+      }
+      if (val && this.shelfMarkUnlinkedAtLeastOnce) {
+        this.mode = 'generate';
+      }
+    }
   },
   data() {
     return {
@@ -46,6 +55,7 @@ export default {
       removeHover: false,
       manualValue: '',
       mode: undefined,
+      shelfMarkUnlinkedAtLeastOnce: false,
     };
   },
   computed: {
@@ -192,7 +202,7 @@ export default {
                 @blur="update($event.target.value)"
                 @keydown.exact="readyForSave(false)"
                 @keydown.enter.prevent="handleEnter"
-                :disabled="hasAutomaticCounter && mode == 'generate'"
+                :disabled="hasAutomaticCounter && mode === 'generate'"
                 ref="textarea"></textarea>
     </div>
     <span class="ItemShelfControlNumber-text"
