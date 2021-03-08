@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, isArray, get, isObject } from 'lodash-es';
+import { cloneDeep, isArray, get, isObject, dropRight } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
@@ -154,6 +154,9 @@ export default {
       const uriParts = this.recordId.split('/');
       const fnurgel = uriParts[uriParts.length - 1];
       return `/${fnurgel}`;
+    },
+    actualParentPath() {
+      return dropRight(this.path.split('.')).join('.');
     },
   },
   watch: {

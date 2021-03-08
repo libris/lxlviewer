@@ -222,7 +222,7 @@ export function getItemObject(itemOf, heldBy, instance) {
           heldBy: {
             '@id': heldBy,
           },
-          shelfMark: {
+          shelfMark: heldBy === 'https://libris.kb.se/library/S' ? null : {
             '@type': 'ShelfMark',
             label: [''],
           },

@@ -4,6 +4,7 @@
 */
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
+import { get } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 import * as HttpUtil from '@/utils/http';
@@ -387,6 +388,10 @@ export default {
         || !this.user.uriMinter.findContainerForEntity(mainEntity,
           { '@id': this.user.getActiveLibraryUri() }))) {
         return false;
+      }
+      if (mainEntity['@type'] === 'ShelfMarkSequence') {
+        const ownedBy = get(this.inspector, ['data', 'record', 'descriptionCreator', '@id']);
+        return this.user.getActiveLibraryUri() === ownedBy;
       }
       return true;
     },

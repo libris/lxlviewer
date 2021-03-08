@@ -61,6 +61,7 @@ const store = new Vuex.Store({
       clipboard: null,
       changeHistory: [],
       event: [],
+      magicShelfMarks: [], 
     },
     status: {
       panelOpen: false,
@@ -626,6 +627,12 @@ const store = new Vuex.Store({
     },
     setDirectoryCare(state, data) {
       state.directoryCare = data;
+    },
+    addMagicShelfMark(state, path) {
+      state.inspector.magicShelfMarks.push(path);
+    },
+    removeMagicShelfMark(state, path) {
+      state.inspector.magicShelfMarks = state.inspector.magicShelfMarks.filter(p => p !== path);
     },
   },
   getters: {

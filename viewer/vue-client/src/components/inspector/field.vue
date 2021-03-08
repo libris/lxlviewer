@@ -15,7 +15,9 @@ import ItemVocab from './item-vocab';
 import ItemType from './item-type';
 import ItemSibling from './item-sibling';
 import ItemBoolean from './item-boolean';
+import ItemNumeric from './item-numeric';
 import ItemGrouped from './item-grouped';
+import ItemShelfControlNumber from './item-shelf-control-number';
 import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
@@ -126,7 +128,9 @@ export default {
     'item-error': ItemError,
     'item-vocab': ItemVocab,
     'item-boolean': ItemBoolean,
+    'item-numeric': ItemNumeric,
     'item-grouped': ItemGrouped,
+    'item-shelf-control-number': ItemShelfControlNumber,
     'entity-adder': EntityAdder,
   },
   watch: {
@@ -494,7 +498,10 @@ export default {
       }
       if (typeof o === 'boolean') {
         return 'boolean';
-      }      
+      }
+      if (this.fieldKey === 'shelfControlNumber') {
+        return 'shelfControlNumber';
+      }
       if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
@@ -506,6 +513,9 @@ export default {
       }
       if (this.isPlainObject(o) && !this.isLinked(o)) {
         return 'local';
+      }
+      if (this.range && this.range.length > 0 && this.range.every(r => Object.keys(VocabUtil.XSD_NUMERIC_TYPES).includes(r))) {
+        return 'numeric';
       }
       if (!this.isPlainObject(o) && !this.isLinked(o)) {
         return 'value';
@@ -899,6 +909,17 @@ export default {
           :index="index" 
           :parent-path="path"></item-boolean>
 
+        <!-- Numeric value -->
+        <item-numeric
+          v-if="getDatatype(item) == 'numeric'"
+          :is-locked="locked"
+          :field-key="fieldKey"
+          :field-value="item"
+          :entity-type="entityType"
+          :index="index"
+          :parent-path="path"
+          :range="range"/>
+
         <!-- Not linked, local child strings -->
         <item-value 
           v-if="getDatatype(item) == 'value'" 
@@ -912,6 +933,17 @@ export default {
           :parent-path="path" 
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
+
+        <!-- shelfControlNumber -->
+        <item-shelf-control-number
+          v-if="getDatatype(item) == 'shelfControlNumber'"
+          :is-last-added="isLastAdded"
+          :is-locked="locked"
+          :field-value="item"
+          :field-key="fieldKey"
+          :index="index"
+          :parent-path="path"
+          :is-expanded="isExpanded"></item-shelf-control-number>
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>

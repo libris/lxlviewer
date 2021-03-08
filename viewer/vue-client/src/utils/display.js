@@ -332,10 +332,12 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
   each(card, (value, key) => {
     if (value !== null) {
       const v = isArray(value) ? value : [value];
-      if (cardDisplayGroups.header.indexOf(key) !== -1) {
+      if (cardDisplayGroups.header.includes(key)) {
         summary.header.push({ property: key, value: v });
-      } else if (cardDisplayGroups.categorization.indexOf(key) !== -1) {
+      } else if (cardDisplayGroups.categorization.includes(key)) {
         summary.categorization.push({ property: key, value: v });
+      } else if (cardDisplayGroups.hidden.includes(key)) {
+        // drop it
       } else {
         const translated = tryGetValueByLang(item, key, settings.language, context);
         const itemValue = translated !== null ? translated : item[key];

@@ -190,6 +190,7 @@
     "Select sources": "Välj källor",
     "Databases": "Databaser",
     "Other sources": "Andra källor",
+    "Other": "Övrigt",
     "No sources chosen": "Inga källor valda",
     "Something went wrong": "Något gick snett",
     "Verify structure in template": "Kontrollera strukturen i mallen",
@@ -373,6 +374,8 @@
     "Create concept": "Skapa koncept",
     "To create concepts, you need to switch to a seal with correct authority.": "För att skapa koncept behöver du växla till ett sigel med rättigheter.",
     "Switch sigel": "Växla sigel",
-    "Accessibility statement": "Tillgänglighetsredogörelse"
+    "Accessibility statement": "Tillgänglighetsredogörelse",
+    "Generate control number when item is saved": "Generera löpnummer när bestånd sparas",
+    "Enter manual control number": "Ange löpnummer manuellt"
     }
 }

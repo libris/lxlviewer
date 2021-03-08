@@ -60,7 +60,7 @@ export default {
 <template>
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked">
-      {{ typeof item === 'string' ? item : getItemLabel }}{{ isLast ? '' : ',&nbsp;' }}
+      {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ',&nbsp;' }}
     </span>
     <v-popover v-if="isLinked" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
