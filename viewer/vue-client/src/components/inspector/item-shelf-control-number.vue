@@ -47,7 +47,7 @@ export default {
       if (val && this.shelfMarkUnlinkedAtLeastOnce) {
         this.mode = 'generate';
       }
-    }
+    },
   },
   data() {
     return {

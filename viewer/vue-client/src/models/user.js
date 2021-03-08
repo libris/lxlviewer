@@ -30,6 +30,7 @@ export class User {
       searchParam: false,
       searchType: null,
       sort: false,
+      shelfMarkSearch: '',
     };
     this.uriMinter = null;
   }

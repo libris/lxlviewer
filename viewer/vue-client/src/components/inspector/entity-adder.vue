@@ -394,6 +394,9 @@ export default {
     },
     resetSearch() {
       this.keyword = '';
+      if (this.fieldKey === 'shelfMark') {
+        this.keyword = this.user ? this.user.settings.shelfMarkSearch : '';
+      }
       this.searchMade = false;
       this.currentSearchTypes = this.allSearchTypes;
       this.searchResult = [];
@@ -523,6 +526,10 @@ export default {
       });
     },
     search() {
+      if (this.fieldKey === 'shelfMark' && this.user) {
+        this.user.settings.shelfMarkSearch = this.keyword;
+        this.$store.dispatch('setUser', this.user);
+      }
       const self = this;
       this.loading = true;
       this.typeArray = [].concat(this.currentSearchTypes);
