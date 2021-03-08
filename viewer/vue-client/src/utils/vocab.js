@@ -2,6 +2,23 @@ import { isObject, uniq, isArray, find, sortBy, each, isPlainObject, cloneDeep, 
 import * as httpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 
+export const XSD_NUMERIC_TYPES = Object.freeze({
+  'xsd:byte': { min: -128, max: 127 },
+  'xsd:decimal': { decimal: true },
+  'xsd:int': { min: -2147483649, max: 2147483648 },
+  'xsd:integer': {},
+  'xsd:long': { min: -9223372036854775809, max: 9223372036854775808 },
+  'xsd:negativeInteger': { max: -1 },
+  'xsd:nonNegativeInteger': { min: 0 },
+  'xsd:nonPositiveInteger': { max: 0 },
+  'xsd:positiveInteger': { min: 1 },
+  'xsd:short': { min: -32768, max: 32767 },
+  'xsd:unsignedLong': { min: 0, max: 18446744073709551616 },
+  'xsd:unsignedInt': { min: 0, max: 4294967296 },
+  'xsd:unsignedShort': { min: 0, max: 65536 },
+  'xsd:unsignedByte': { min: 0, max: 255 },
+});
+
 export function getVocab(apiPath) {
   return new Promise((resolve, reject) => {
     httpUtil.getResourceFromCache(`${apiPath}/vocab/data.jsonld`).then((result) => {

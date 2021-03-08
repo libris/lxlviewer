@@ -15,6 +15,7 @@ import ItemVocab from './item-vocab';
 import ItemType from './item-type';
 import ItemSibling from './item-sibling';
 import ItemBoolean from './item-boolean';
+import ItemNumeric from './item-numeric';
 import ItemGrouped from './item-grouped';
 import ItemShelfControlNumber from './item-shelf-control-number';
 import * as VocabUtil from '@/utils/vocab';
@@ -127,6 +128,7 @@ export default {
     'item-error': ItemError,
     'item-vocab': ItemVocab,
     'item-boolean': ItemBoolean,
+    'item-numeric': ItemNumeric,
     'item-grouped': ItemGrouped,
     'item-shelf-control-number': ItemShelfControlNumber,
     'entity-adder': EntityAdder,
@@ -511,6 +513,9 @@ export default {
       }
       if (this.isPlainObject(o) && !this.isLinked(o)) {
         return 'local';
+      }
+      if (this.range && this.range.length > 0 && this.range.every(r => Object.keys(VocabUtil.XSD_NUMERIC_TYPES).includes(r))) {
+        return 'numeric';
       }
       if (!this.isPlainObject(o) && !this.isLinked(o)) {
         return 'value';
@@ -903,6 +908,17 @@ export default {
           :entity-type="entityType" 
           :index="index" 
           :parent-path="path"></item-boolean>
+
+        <!-- Numeric value -->
+        <item-numeric
+          v-if="getDatatype(item) == 'numeric'"
+          :is-locked="locked"
+          :field-key="fieldKey"
+          :field-value="item"
+          :entity-type="entityType"
+          :index="index"
+          :parent-path="path"
+          :range="range"/>
 
         <!-- Not linked, local child strings -->
         <item-value 
