@@ -83,7 +83,7 @@ export default {
       const s = partition(d.observation, o => o.object && (i.includes(o.object._key) || i.includes(o.object['@id'])))
         .map(observations => this.toFacets(observations));
       // insert divider if there are any "interesting" facets
-      if (s[0].length > 0) {
+      if (s[0].length > 0 && s[1] && s[1].length > 0) {
         s.splice(1, 0, [{ disabled: true, label: '────────────────────' }]);
       }
       
