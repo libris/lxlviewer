@@ -130,12 +130,17 @@ export function getRelatedRecords(queryPairs, apiPath) {
   });
 }
 
-export async function getDocument(uri, contentType = 'application/ld+json') {
+export async function getDocument(uri, contentType = 'application/ld+json', embellished = true) {
   let translatedUri = uri;
   if (uri.startsWith('https://id.kb.se')) {
     translatedUri = uri.replace('https://id.kb.se', process.env.VUE_APP_ID_PATH);
   }
 
+  if (!uri.includes('embellished=')) {
+    const query = `${uri.includes('?') ? '&' : '?'}embellished=${embellished}`;
+    translatedUri = `${translatedUri}${query}`;
+  }
+  
   const headers = new Headers();
   headers.append('Accept', contentType);
   const responseObject = {};
