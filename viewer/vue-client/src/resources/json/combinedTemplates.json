@@ -3727,8 +3727,8 @@
   },
   "other": {
     "shelfMarkSequence": {
-      "label": "Hyllkodssvit",
-      "description": "Hyllkodssvit med automatiskt löpnummer",
+      "label": "Signumsvit",
+      "description": "Signumsvit med automatiskt löpnummer",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
