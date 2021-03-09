@@ -85,7 +85,7 @@ export default {
     },
     isDecimal() {
       return this.range.map(r => XSD_NUMERIC_TYPES[r]).some(t => (t.decimal));
-    }
+    },
   },
   methods: {
     removeHighlight(event, active) {
