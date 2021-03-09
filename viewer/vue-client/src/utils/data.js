@@ -1,4 +1,4 @@
-import { isEmpty, cloneDeep, isArray, isObject, forEach, uniq } from 'lodash-es';
+import { isEmpty, cloneDeep, isArray, isObject, forEach, uniq, difference } from 'lodash-es';
 import * as HttpUtil from '@/utils/http';
 
 export function getEmbellished(id, quotedIndex = {}) {
@@ -106,7 +106,7 @@ export function getExternalLinks(obj) {
       }
     });
   }
-  return uniq(links).filter(l => !entities.includes(l)); // # entities should be small...
+  return difference(uniq(links), entities);
 }
 
 export async function fetchMissingLinkedToQuoted(obj, store) {
