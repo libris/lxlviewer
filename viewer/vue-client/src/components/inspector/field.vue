@@ -421,7 +421,6 @@ export default {
     pasteClipboardItem() {
       const obj = this.clipboardValue;
       DataUtil.fetchMissingLinkedToQuoted(obj, this.$store)
-        .catch(e => console.log(e))
         .finally(() => this._pasteClipboardItem(obj));
     },
     _pasteClipboardItem(obj) {

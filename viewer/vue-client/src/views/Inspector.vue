@@ -418,6 +418,7 @@ export default {
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
         this.startEditing();
         this.onPostLoaded();
+        DataUtil.fetchMissingLinkedToQuoted(insertData, this.$store);
       }
     },
     onPostLoaded() {

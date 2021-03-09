@@ -1,4 +1,4 @@
-import { isEmpty, cloneDeep, isArray, isObject, forEach } from 'lodash-es';
+import { isEmpty, cloneDeep, isArray, isObject, forEach, uniq } from 'lodash-es';
 import * as HttpUtil from '@/utils/http';
 
 export function getEmbellished(id, quotedIndex = {}) {
@@ -106,18 +106,22 @@ export function getExternalLinks(obj) {
       }
     });
   }
-  return links.filter(l => !entities.includes(l)); // # entities should be small...
+  return uniq(links).filter(l => !entities.includes(l)); // # entities should be small...
 }
 
 export async function fetchMissingLinkedToQuoted(obj, store) {
   const quoted = store.state.inspector.data.quoted || {};
   const missingLinks = getExternalLinks(obj).filter(l => !quoted.hasOwnProperty(l));
-  Promise.allSettled(missingLinks.map(l => HttpUtil.getDocument(l, undefined, false))).then((results) => {
-    results
-      .filter(r => r.status === 'fulfilled')
-      .map(r => r.value.data)
-      .forEach(doc => doc['@graph'].forEach(o => store.commit('addToQuoted', o)));
-  });
+  const embellished = false;
+  return Promise
+    .allSettled(missingLinks.map(l => HttpUtil.getDocument(l, undefined, embellished)))
+    .then((results) => {
+      results
+        .filter(r => r.status === 'fulfilled')
+        .map(r => r.value.data)
+        .forEach(doc => doc['@graph'].forEach(o => store.commit('addToQuoted', o)));
+    })
+    .catch(e => console.log(e));
 }
 
 // Changes XML to JSON
