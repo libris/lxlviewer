@@ -160,6 +160,7 @@ const store = new Vuex.Store({
         'descriptionLastModifier',
         'generationDate',
         'generationProcess',
+        'recordStatus',
       ],
       dataSetFilters: {
         libris: [
