@@ -21,6 +21,7 @@ import ItemShelfControlNumber from './item-shelf-control-number';
 import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from '@/utils/string';
+import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 
 export default {
@@ -419,6 +420,10 @@ export default {
   methods: {
     pasteClipboardItem() {
       const obj = this.clipboardValue;
+      DataUtil.fetchMissingLinkedToQuoted(obj, this.$store)
+        .finally(() => this._pasteClipboardItem(obj));
+    },
+    _pasteClipboardItem(obj) {
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
       if (currentValue === null) {
         currentValue = obj;

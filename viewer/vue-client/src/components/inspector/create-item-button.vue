@@ -50,6 +50,7 @@ export default {
         this.resources.context,
       );
       embellishedReference['@id'] = this.mainEntity['@id'];
+      embellishedReference['@type'] = this.mainEntity['@type']; // fixes broken itemOf chip FIXME: why does getCard drop @type?
 
       this.itemData = RecordUtil.getItemObject(
         this.mainEntity['@id'],
