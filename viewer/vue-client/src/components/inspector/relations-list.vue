@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import { partition } from 'lodash-es';
+import { partition, flatten } from 'lodash-es';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
@@ -87,7 +87,7 @@ export default {
         s.splice(1, 0, [{ disabled: true, label: '────────────────────' }]);
       }
       
-      return s.flat();
+      return flatten(s);
     },
     buildFacets(searchResult) {
       if (searchResult) {
