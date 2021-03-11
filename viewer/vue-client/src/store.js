@@ -162,6 +162,11 @@ const store = new Vuex.Store({
         'generationProcess',
         'recordStatus',
       ],
+      defaultExpandedProperties: [
+        'hasComponent',
+        '@reverse/reproductionOf',
+        '@reverse/supplementTo',
+      ],
       dataSetFilters: {
         libris: [
           {
