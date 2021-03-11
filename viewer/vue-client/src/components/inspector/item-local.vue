@@ -390,6 +390,9 @@ export default {
         this.expand();
       }
     });
+    if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
+      this.expand();
+    }
   },
   mounted() {
     if (this.isSpecialHeading) {

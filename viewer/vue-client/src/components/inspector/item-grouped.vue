@@ -58,7 +58,7 @@ export default {
     },
   },
   mounted() {
-    if (this.isInForm) {
+    if (this.isInForm || this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
       this.expand();
     }
   },

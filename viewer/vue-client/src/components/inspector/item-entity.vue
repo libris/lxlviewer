@@ -100,6 +100,9 @@ export default {
     this.$on('expand-item', () => {
       this.expand();
     });
+    if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
+      this.expand();
+    }
   },
   mounted() {
     this.$nextTick(() => {
