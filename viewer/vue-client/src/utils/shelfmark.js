@@ -46,7 +46,7 @@ async function _generateShelfControlNumber(shelfMarkId, settings, user) {
     const number = newDoc['@graph'][1].nextShelfControlNumber;
     newDoc['@graph'][1].nextShelfControlNumber = Number(number) + 1;
     const prefix = newDoc['@graph'][1].qualifier;
-    result = prefix ? `${prefix} ${number}` : number;
+    result = prefix ? `${prefix} ${number}` : `${number}`;
 
     return HttpUtil.put({
       url: shelfMarkId,
