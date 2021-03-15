@@ -37,12 +37,12 @@ async function _insertShelfControlNumber(item, settings, user) {
 async function _generateShelfControlNumber(shelfMarkId, settings, user) {
   let result = -1;
   const noCache = md5(Math.random() * 100000000);
-  const fetchUrl = `${settings.apiPath}/${shelfMarkId}?${noCache}`;
+  const fetchUrl = `${settings.apiPath}/${shelfMarkId}?embellished=false&${noCache}`;
   await HttpUtil.get({
     url: fetchUrl,
     accept: 'application/ld+json',
   }).then((response) => {
-    const newDoc = { '@graph': response['@graph'] };
+    const newDoc = { '@graph': [response['@graph'][0], response['@graph'][1]] };
     const number = newDoc['@graph'][1].nextShelfControlNumber;
     newDoc['@graph'][1].nextShelfControlNumber = Number(number) + 1;
     const prefix = newDoc['@graph'][1].qualifier;
