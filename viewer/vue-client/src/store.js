@@ -182,10 +182,6 @@ const store = new Vuex.Store({
             label: 'Agent',
           },
           {
-            value: 'Subject',
-            label: 'Subject',
-          },
-          {
             value: 'Concept',
             label: 'Concept',
           },
@@ -361,28 +357,6 @@ const store = new Vuex.Store({
           },
         ],
         Concept: [
-          {
-            query: '',
-            label: 'Relevance',
-          },
-          {
-            query: 'prefLabel',
-            label: 'Preferred label (A-Z)',
-          },
-          {
-            query: '-prefLabel',
-            label: 'Preferred label (Z-A)',
-          },
-          {
-            query: '-meta.modified',
-            label: 'Last updated',
-          },
-          {
-            query: '-reverseLinks.totalItems',
-            label: 'Most linked',
-          },
-        ],
-        Subject: [
           {
             query: '',
             label: 'Relevance',

@@ -9,7 +9,6 @@
       "Instance",
       "Agent",
       "Concept",
-      "Subject",
       "Work",
       "Resource"
     ]
@@ -32,8 +31,7 @@
       "prefLabel": ""
     },
     "types": [
-      "Concept",
-      "Subject"
+      "Concept"
     ]
   },
   {
@@ -45,8 +43,7 @@
       "or-hasVariant.prefLabel": ""
     },
     "types": [
-      "Concept",
-      "Subject"
+      "Concept"
     ]
   },
   {
