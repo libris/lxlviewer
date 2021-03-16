@@ -234,7 +234,7 @@ def thingview(path, suffix=None):
 
     if g.site.get('applyInverseOf', False):
         query_params['_applyInverseOf'] = 'true'
-    
+
     resp = _proxy_request(request, session, accept_header=whelk_accept_header,
             url_path=resource_id, query_params=query_params)
 
@@ -273,6 +273,8 @@ def find(suffix=None):
 
     if not arguments.get('_statsrepr') and g.site.get('statsfind'):
         arguments.add('_statsrepr', g.site['statsfind'])
+    if not arguments.get('_boost') and g.site.get('boost'):
+        arguments.add('_boost', g.site['boost'])
     if g.site['title'] == 'id.kb.se':
         arguments.add('_site_base_uri', 'https://id.kb.se')
     response = _proxy_request(request, session,
@@ -473,7 +475,7 @@ def convert():
 
 @app.route('/_remotesearch')
 def _remotesearch():
-    return _proxy_request(request, session, 
+    return _proxy_request(request, session,
                           query_params=['q', 'databases', 'n', 'start'])
 
 
