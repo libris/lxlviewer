@@ -190,6 +190,7 @@
     "Select sources": "Välj källor",
     "Databases": "Databaser",
     "Other sources": "Andra källor",
+    "The following database(s) could not be reached, try again later:": "Följande databas(er) svarar inte just nu, försök igen lite senare:",
     "Other": "Övrigt",
     "No sources chosen": "Inga källor valda",
     "Something went wrong": "Något gick snett",

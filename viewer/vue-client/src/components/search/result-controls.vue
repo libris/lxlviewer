@@ -194,7 +194,7 @@ export default {
         <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
         <span v-else class="ResultControls-numTotal">{{'No hits' | translatePhrase }}</span>
         
-        <span v-if="$route.params.perimeter === 'remote'">{{ 'from' | translatePhrase }} <span v-for="(db, index) in status.usedRemoteDatabases" :key="index"><span class="ResultControls-dbLabel">{{ db }}</span>{{ index !== status.usedRemoteDatabases.length - 1 ? ', ' : '' }}</span></span>
+        <span v-if="$route.params.perimeter === 'remote' && status.workingRemoteDatabases.length > 0">{{ 'from' | translatePhrase }} <span v-for="(db, index) in status.workingRemoteDatabases" :key="index"><span class="ResultControls-dbLabel">{{ db }}</span>{{ index !== status.workingRemoteDatabases.length - 1 ? ', ' : '' }}</span></span>
       </p>
       <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
         {{ 'The search gave more results than can be displayed' | translatePhrase }}.
