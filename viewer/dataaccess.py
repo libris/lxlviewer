@@ -53,6 +53,7 @@ sites = {
         "stylesheet": {"name": "id.css"},
         "statsindex": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
         "statsfind": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
+        "boost": 'id.kb.se',
         "filter_param": "inScheme.@id",
         "applyInverseOf": True,
         "itemList": [
