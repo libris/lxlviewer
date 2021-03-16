@@ -131,7 +131,6 @@ class VocabView:
         # TODO:
         # - replace hardcoded rules with vocab rules and/or chips logic
         # - if the Term type is to be kept, put 'focus' in its lens (after prefLabel)
-
         if 'prefLabel' not in node: # ComplexTerm in types
             node = node.get('focus') or node
             termparts = node.get('termParts', [])
@@ -179,8 +178,9 @@ class VocabView:
                 label = [self._label_from_chips(l) if isinstance(l, dict) else l
                         for l in as_iterable(label) if not is_ref(l)]
 
-            for l in as_iterable(label):
-                return l
+            ll = list(as_iterable(label))
+            if ll:
+                return '--'.join(ll)
 
         return ""
 
