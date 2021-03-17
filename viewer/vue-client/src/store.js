@@ -509,6 +509,12 @@ const store = new Vuex.Store({
     addToQuoted(state, data) {
       const quoted = cloneDeep(state.inspector.data.quoted);
       quoted[data['@id']] = data;
+      (data.sameAs || []).forEach((sameAs) => {
+        if (sameAs.hasOwnProperty('@id')) {
+          quoted[sameAs['@id']] = data;
+        }
+      });
+      
       state.inspector.data.quoted = quoted;
     },
     updateInspectorData(state, payload) {
