@@ -26,7 +26,6 @@
     "Flag for": "Flagga för",
     "Unflag for": "Avflagga för",
     "Favorite": "Favorit",
-    "Forum of support for new Libris": "Supportforum för nya Libris",
     "Libris customer service": "Libris kundservice",
     "Social media": "Sociala medier",
     "All": "Alla",
@@ -191,6 +190,8 @@
     "Select sources": "Välj källor",
     "Databases": "Databaser",
     "Other sources": "Andra källor",
+    "The following database(s) could not be reached, try again later:": "Följande databas(er) svarar inte just nu, försök igen lite senare:",
+    "Other": "Övrigt",
     "No sources chosen": "Inga källor valda",
     "Something went wrong": "Något gick snett",
     "Verify structure in template": "Kontrollera strukturen i mallen",
@@ -374,6 +375,8 @@
     "Create concept": "Skapa koncept",
     "To create concepts, you need to switch to a seal with correct authority.": "För att skapa koncept behöver du växla till ett sigel med rättigheter.",
     "Switch sigel": "Växla sigel",
-    "Accessibility statement": "Tillgänglighetsredogörelse"
+    "Accessibility statement": "Tillgänglighetsredogörelse",
+    "Generate control number when item is saved": "Generera löpnummer när bestånd sparas",
+    "Enter manual control number": "Ange löpnummer manuellt"
     }
 }

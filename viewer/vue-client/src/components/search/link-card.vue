@@ -88,7 +88,7 @@ export default {
   }
 
   @media (min-width: 992px) {
-    flex-basis: 24%; 
+    flex-basis: 32%; 
   }
 
   &-img {

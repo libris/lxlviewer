@@ -1,5 +1,6 @@
 <script>
 import * as DisplayUtil from '@/utils/display';
+import * as StringUtil from '@/utils/string';
 
 export default {
   props: {
@@ -41,6 +42,14 @@ export default {
         this.inspector.data.quoted,
         this.resources.vocab,
         this.settings,
+        this.resources.context,
+      );
+    },
+    getStringLabel() {
+      return StringUtil.getLabelByLang(
+        this.focusData,
+        this.user.settings.language,
+        this.resources.vocab,
         this.resources.context,
       );
     },

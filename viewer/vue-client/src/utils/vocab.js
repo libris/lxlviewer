@@ -2,6 +2,23 @@ import { isObject, uniq, isArray, find, sortBy, each, isPlainObject, cloneDeep, 
 import * as httpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 
+export const XSD_NUMERIC_TYPES = Object.freeze({
+  'xsd:byte': { min: -128, max: 127 },
+  'xsd:decimal': { decimal: true },
+  'xsd:int': { min: -2147483649, max: 2147483648 },
+  'xsd:integer': {},
+  'xsd:long': { min: -9223372036854775809, max: 9223372036854775808 },
+  'xsd:negativeInteger': { max: -1 },
+  'xsd:nonNegativeInteger': { min: 0 },
+  'xsd:nonPositiveInteger': { max: 0 },
+  'xsd:positiveInteger': { min: 1 },
+  'xsd:short': { min: -32768, max: 32767 },
+  'xsd:unsignedLong': { min: 0, max: 18446744073709551616 },
+  'xsd:unsignedInt': { min: 0, max: 4294967296 },
+  'xsd:unsignedShort': { min: 0, max: 65536 },
+  'xsd:unsignedByte': { min: 0, max: 255 },
+});
+
 export function getVocab(apiPath) {
   return new Promise((resolve, reject) => {
     httpUtil.getResourceFromCache(`${apiPath}/vocab/data.jsonld`).then((result) => {
@@ -169,6 +186,9 @@ export function getRecordType(mainEntityType, vocab, context) {
   }
   if (isSubClassOf(mainEntityType, 'Concept', vocab, context)) {
     return 'Concept';
+  }
+  if (isSubClassOf(mainEntityType, 'ShelfMarkSequence', vocab, context)) {
+    return 'ShelfMarkSequence';
   }
   return 'Other';
 }
@@ -471,16 +491,37 @@ export function getPropertiesFromArray(typeArray, vocabClasses, vocabProperties,
 
 export function isEmbedded(classId, vocab, settings, context) {
   if (!classId || typeof classId === 'undefined') {
-    throw new Error('isEmbedded was called with an undedfined class id');
+    throw new Error('isEmbedded was called with an undefined class id');
   }
   if (isObject(classId)) {
     throw new Error('isEmbedded was called with an object as class id (should be a string)');
+  }
+  if (isDistinct(classId, vocab, settings, context)) {
+    return false;
   }
   const embeddedTypes = settings.embeddedTypes;
   const typeChain = getBaseClasses(classId, vocab, context);
   if (typeChain.length > 0) {
     for (const item of embeddedTypes) {
       if (typeChain.indexOf(item) > -1) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+export function isDistinct(classId, vocab, settings, context) {
+  if (!classId || typeof classId === 'undefined') {
+    throw new Error('isDistinct was called with an undefined class id');
+  }
+  if (isObject(classId)) {
+    throw new Error('isDistinct was called with an object as class id (should be a string)');
+  }
+  const typeChain = getBaseClasses(classId, vocab, context);
+  if (typeChain.length > 0) {
+    for (const termObj of typeChain.map(t => getTermObject(t, vocab, context))) {
+      if (termObj.category && [].concat(termObj.category).some(c => c['@id'] === 'https://id.kb.se/vocab/distinct')) {
         return true;
       }
     }

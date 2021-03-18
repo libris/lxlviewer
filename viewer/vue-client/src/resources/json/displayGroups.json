@@ -23,7 +23,11 @@
       "lifeSpan",
       "marc:attributionQualifier",
       "isPartOf",
-      "marc:subordinateUnit"
+      "marc:subordinateUnit",
+      "qualifier"
+    ],
+    "hidden": [
+      "shelfMarkStatus"
     ]
   },
   "reverse": {

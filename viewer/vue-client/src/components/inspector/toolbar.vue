@@ -4,6 +4,7 @@
 */
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
+import { get } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 import * as HttpUtil from '@/utils/http';
@@ -350,7 +351,7 @@ export default {
       const type = this.inspector.data.mainEntity['@type'];
       const baseType = VocabUtil.getRecordType(type, this.resources.vocab, this.resources.context);
       const templates = VocabUtil.getValidTemplates(type, this.templates.combined[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
-      return templates;
+      return templates.sort((a, b) => a.label.localeCompare(b.label));
     },
     formObj() {
       return this.inspector.data[this.inspector.status.focus];
@@ -387,6 +388,10 @@ export default {
         || !this.user.uriMinter.findContainerForEntity(mainEntity,
           { '@id': this.user.getActiveLibraryUri() }))) {
         return false;
+      }
+      if (mainEntity['@type'] === 'ShelfMarkSequence') {
+        const ownedBy = get(this.inspector, ['data', 'record', 'descriptionCreator', '@id']);
+        return this.user.getActiveLibraryUri() === ownedBy;
       }
       return true;
     },

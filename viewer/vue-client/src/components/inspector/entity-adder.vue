@@ -224,6 +224,17 @@ export default {
     hasSingleRange() {
       return this.rangeFull.length === 1;
     },
+    rangeCreatable() {
+      return this.rangeFull.filter(type => !VocabUtil.isDistinct(
+        type, 
+        this.resources.vocab,
+        this.settings,
+        this.resources.context,
+      ));
+    },
+    hasSingleCreatable() {
+      return this.rangeCreatable.length === 1;
+    },
     isVocabField() {
       return VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab';
     },
@@ -262,7 +273,7 @@ export default {
       }
       return false;
     },
-    canRecieveObjects() {
+    canReceiveObjects() {
       return (this.propertyTypes.indexOf('DatatypeProperty') === -1);
     },
     isLiteral() {
@@ -346,7 +357,7 @@ export default {
         this.addItem({ '@id': '' });
       } else if (this.isVocabField) {
         this.addItem('');
-      } else if (this.canRecieveObjects) {
+      } else if (this.canReceiveObjects) {
         const range = this.rangeFull;
         if (range.length === 1 && this.onlyEmbedded) {
           this.addEmpty(range[0]);
@@ -383,6 +394,9 @@ export default {
     },
     resetSearch() {
       this.keyword = '';
+      if (this.fieldKey === 'shelfMark') {
+        this.keyword = this.user ? this.user.settings.shelfMarkSearch : '';
+      }
       this.searchMade = false;
       this.currentSearchTypes = this.allSearchTypes;
       this.searchResult = [];
@@ -512,6 +526,10 @@ export default {
       });
     },
     search() {
+      if (this.fieldKey === 'shelfMark' && this.user) {
+        this.user.settings.shelfMarkSearch = this.keyword;
+        this.$store.dispatch('setUser', this.user);
+      }
       const self = this;
       this.loading = true;
       this.typeArray = [].concat(this.currentSearchTypes);
@@ -551,6 +569,11 @@ export default {
 
       if (typeof this.typeArray !== 'undefined' && this.typeArray.length > 0) {
         params['@type'] = this.typeArray;
+      }
+      
+      if (this.fieldKey === 'shelfMark') {
+        params['meta.descriptionCreator.@id'] = this.user.getActiveLibraryUri();
+        params.shelfMarkStatus = 'ActiveShelfMark';
       }
 
       const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
@@ -752,16 +775,16 @@ export default {
           </div>
           <div class="EntityAdder-create">
             <button class="EntityAdder-createBtn btn btn-primary btn--sm"
-              v-if="hasSingleRange"
-              v-on:click="addEmpty(rangeFull[0])">{{ "Create local entity" | translatePhrase }}
+              v-if="hasSingleCreatable"
+              v-on:click="addEmpty(rangeCreatable[0])">{{ "Create local entity" | translatePhrase }}
             </button>
             <filter-select
-              v-if="!hasSingleRange"
+              v-if="!hasSingleCreatable"
               :input-id="'createselectInput'"
               :class-name="'js-createSelect'"
               :options="{ tree: selectOptions, priority: priorityOptions }"
-              :options-all="allSearchTypes"
-              :options-all-suggested="someValuesFrom"
+              :options-all="rangeCreatable"
+              :options-all-suggested="rangeCreatable"
               :is-filter="false"
               :custom-placeholder="'Create local entity:'"
               v-on:filter-selected="addType($event.value)"></filter-select>

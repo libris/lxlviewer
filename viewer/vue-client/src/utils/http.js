@@ -17,6 +17,25 @@ export function buildQueryString(params) {
   return queryArr.join('&');
 }
 
+export function decomposeQueryString(q) {
+  if (q.includes('?')) {
+    q = q.split('?')[1];
+  }
+
+  const params = {};
+
+  q.split('&').forEach((param) => {
+    const keyVal = param.split('=');
+    const key = decodeURIComponent(keyVal[0]);
+    const val = decodeURIComponent(keyVal[1]);
+    if (!param.hasOwnProperty(key)) {
+      params[key] = [];
+    }
+    params[key].push(val);
+  });
+  return params;
+}
+
 function request(opts, data) {
   // method, url, token, accept
   const options = opts;
@@ -90,14 +109,14 @@ function request(opts, data) {
   });
 }
 
-export function getRelatedPosts(queryPairs, apiPath) {
-  // Returns a list of posts that links to <id> with <property>
+export function getRelatedRecords(queryPairs, apiPath) {
+  // Returns a list of records that links to <id> with <property>
   return new Promise((resolve, reject) => {
-    let relatedPosts = `${apiPath}/find.jsonld?`;
+    let relatedRecords = `${apiPath}/find.jsonld?`;
     each(queryPairs, (v, k) => {
-      relatedPosts += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
+      relatedRecords += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
     });
-    fetch(relatedPosts)
+    fetch(relatedRecords)
       .then((response) => {
         if (response.status === 200) {
           resolve(response.json());
@@ -111,12 +130,17 @@ export function getRelatedPosts(queryPairs, apiPath) {
   });
 }
 
-export async function getDocument(uri, contentType = 'application/ld+json') {
+export async function getDocument(uri, contentType = 'application/ld+json', embellished = true) {
   let translatedUri = uri;
   if (uri.startsWith('https://id.kb.se')) {
     translatedUri = uri.replace('https://id.kb.se', process.env.VUE_APP_ID_PATH);
   }
 
+  if (!uri.includes('embellished=')) {
+    const query = `${uri.includes('?') ? '&' : '?'}embellished=${embellished}`;
+    translatedUri = `${translatedUri}${query}`;
+  }
+  
   const headers = new Headers();
   headers.append('Accept', contentType);
   const responseObject = {};

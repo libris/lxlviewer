@@ -9,6 +9,7 @@ import * as VocabUtil from '@/utils/vocab';
 import * as HttpUtil from '@/utils/http';
 import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
+import { checkAutoShelfControlNumber } from '@/utils/shelfmark';
 import EntityForm from '@/components/inspector/entity-form';
 import Toolbar from '@/components/inspector/toolbar';
 import DetailedEnrichment from '@/components/care/detailed-enrichment';
@@ -389,7 +390,7 @@ export default {
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
         this.$store.dispatch('pushNotification', { 
           type: 'success', 
-          message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language)}!`, 
+          message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language)}!`, 
         });
         // Force reload
         this.$router.go(-1);
@@ -417,6 +418,7 @@ export default {
         this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
         this.startEditing();
         this.onPostLoaded();
+        DataUtil.fetchMissingLinkedToQuoted(insertData, this.$store);
       }
     },
     onPostLoaded() {
@@ -436,6 +438,10 @@ export default {
       if (this.inspector.data.mainEntity['@type'] === 'Item') {
         this.checkForMissingHeldBy();
       }
+      // If this is a *new* work, add an empty cataloguersNote property to the record
+      if (this.recordType === 'Work' && this.inspector.data.record.recordStatus === 'marc:New') {
+        this.addCataloguersNote();
+      }
     },
     checkForMissingHeldBy() {
       const mainEntity = this.inspector.data.mainEntity;
@@ -454,6 +460,22 @@ export default {
           changeList: [{
             path: 'mainEntity.heldBy',
             value: mainEntity.hasComponent[0].heldBy,
+          }],
+          addToHistory: false,
+        });
+      }
+    },
+    addCataloguersNote() {
+      const record = this.inspector.data.record;
+      if (record.hasOwnProperty('cataloguersNote') === false) {
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'lastAdded',
+          value: 'record.cataloguersNote',
+        });
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [{
+            path: 'record.cataloguersNote',
+            value: [''],
           }],
           addToHistory: false,
         });
@@ -625,12 +647,12 @@ export default {
       this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
     doSaveRequest(requestMethod, obj, opts, done) {
-      requestMethod({
+      this.preSaveHook(obj).then(obj2 => requestMethod({
         url: opts.url,
         ETag: opts.ETag,
         activeSigel: this.user.settings.activeSigel,
         token: this.user.token,
-      }, obj).then((result) => {
+      }, obj2)).then((result) => {
         if (!this.documentId) {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
@@ -638,7 +660,7 @@ export default {
           setTimeout(() => {
             this.$store.dispatch('pushNotification', { 
               type: 'success', 
-              message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language)}!`,
+              message: `${this.$options.filters.labelByLang(this.recordType)}  ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language)}!`,
             });
           }, 10);
           this.warnOnSave();
@@ -648,7 +670,7 @@ export default {
           setTimeout(() => {
             this.$store.dispatch('pushNotification', {
               type: 'success', 
-              message: `${StringUtil.getUiPhraseByLang(this.recordType, this.user.settings.language)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language)}!`,
+              message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language)}!`,
             });
           }, 10);
           this.warnOnSave();
@@ -703,7 +725,12 @@ export default {
         this.justEmbellished = false;
       }, 300);
     },
+    async preSaveHook(obj) {
+      await checkAutoShelfControlNumber(obj, this.settings, this.user);
+      return obj;
+    },
   },
+  
   watch: {
     'inspector.data'(val, oldVal) {
       if (val !== oldVal) {

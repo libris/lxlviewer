@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, isArray, get, isObject } from 'lodash-es';
+import { cloneDeep, isArray, get, isObject, dropRight } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as DataUtil from '@/utils/data';
 import * as VocabUtil from '@/utils/vocab';
@@ -129,12 +129,22 @@ export default {
       if (Object.keys(this.item).length > 1) {
         return this.item;
       }
+      // Is link to self
+      if (this.inspector.data.hasOwnProperty('mainEntity')
+        && this.item['@id'] === this.inspector.data.mainEntity['@id']) {
+        return this.inspector.data.mainEntity;
+      }
+      // Is link to other
       return DataUtil.getEmbellished(
         this.item['@id'],
         this.inspector.data.quoted,
       );
     },
     recordId() {
+      if (this.inspector.data.hasOwnProperty('mainEntity')
+        && this.inspector.data.mainEntity['@id'] === this.focusData['@id']) {
+        return this.inspector.data.record['@id'];
+      }
       return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
     },
     isLibrisResource() {
@@ -144,6 +154,9 @@ export default {
       const uriParts = this.recordId.split('/');
       const fnurgel = uriParts[uriParts.length - 1];
       return `/${fnurgel}`;
+    },
+    actualParentPath() {
+      return dropRight(this.path.split('.')).join('.');
     },
   },
   watch: {

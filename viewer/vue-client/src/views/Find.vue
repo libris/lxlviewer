@@ -89,12 +89,6 @@ export default {
       });
     },
     getRemoteResult() {
-      const dbsParam = this.$route.query.databases;
-      const usedDbs = dbsParam.split(',');
-      this.$store.dispatch('setStatusValue', {
-        property: 'usedRemoteDatabases',
-        value: usedDbs,
-      });
       const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.query}`;
       this.hideFacetColumn = true;
 
@@ -103,18 +97,37 @@ export default {
         this.searchInProgress = false;
       }).then((result) => {
         this.result = this.convertRemoteResult(result);
+
+        this.$store.dispatch('setStatusValue', { property: 'workingRemoteDatabases', value: this.result.workingDbs });
+        this.$store.dispatch('setStatusValue', { property: 'failedRemoteDatabases', value: this.result.failedDbs });
+
+        if (this.result.failedDbs.length > 0) {
+          const errorBase = StringUtil.getUiPhraseByLang('The following database(s) could not be reached, try again later:', this.user.settings.language);
+          const errorMessage = `${errorBase} ${this.result.failedDbs.join(', ')}`;
+          this.$store.dispatch('pushNotification', { type: 'danger', message: errorMessage });
+        }
+
         this.importData = result.items;
         this.searchInProgress = false;
       });
     },
     convertRemoteResult(result) {
       let totalResults = 0;
+
+      let failedDbs = [];
+      if (result.hasOwnProperty('errors')) {
+        failedDbs = Object.keys(result.errors);
+      }
+
+      const workingDbs = [];
       for (const db in result.totalResults) {
-        if (result.totalResults.hasOwnProperty(db)) {
+        if (result.totalResults.hasOwnProperty(db) && !failedDbs.includes(db)) {
           totalResults += result.totalResults[db];
+          workingDbs.push(db);
         }
       }
-      const convertedList = { totalItems: totalResults, items: [], first: { '@id': this.query } };
+
+      const convertedList = { totalItems: totalResults, items: [], first: { '@id': this.query }, workingDbs: workingDbs, failedDbs: failedDbs };
       each(result.items, (item) => {
         const convertedItem = RecordUtil.getMainEntity(item.data['@graph']);
         convertedList.items.push(convertedItem);

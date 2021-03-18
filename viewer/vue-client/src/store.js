@@ -61,6 +61,7 @@ const store = new Vuex.Store({
       clipboard: null,
       changeHistory: [],
       event: [],
+      magicShelfMarks: [], 
     },
     status: {
       panelOpen: false,
@@ -74,7 +75,8 @@ const store = new Vuex.Store({
       notifications: [],
       helpSectionTitle: '',
       remoteDatabases: [],
-      usedRemoteDatabases: '',
+      workingRemoteDatabases: '',
+      failedRemoteDatabases: '',
       hintSigelChange: false,
     },
     user: User.getUserObject(),
@@ -159,6 +161,12 @@ const store = new Vuex.Store({
         'descriptionLastModifier',
         'generationDate',
         'generationProcess',
+        'recordStatus',
+      ],
+      defaultExpandedProperties: [
+        'hasComponent',
+        '@reverse/reproductionOf',
+        '@reverse/supplementTo',
       ],
       dataSetFilters: {
         libris: [
@@ -266,8 +274,8 @@ const store = new Vuex.Store({
           },
         },
         'contribution.agent': {
-          sv: 'Medverkan',
-          en: 'Contribution',
+          sv: 'Medverkan eller primär medverkan',
+          en: 'Contribution or primary contribution',
           facet: {
             order: 7,
           },
@@ -286,6 +294,19 @@ const store = new Vuex.Store({
             order: 10,
           },
         },
+        '@reverse': {
+          sv: 'Relation',
+          en: 'Relation',
+          facet: {
+            order: 0,
+          },
+        },
+      },
+      interestingFacets: {
+        '@reverse': [
+          'contribution.agent',
+          'https://id.kb.se/vocab/subject',
+        ],
       },
       sortOptions: {
         Instance: [
@@ -488,6 +509,12 @@ const store = new Vuex.Store({
     addToQuoted(state, data) {
       const quoted = cloneDeep(state.inspector.data.quoted);
       quoted[data['@id']] = data;
+      (data.sameAs || []).forEach((sameAs) => {
+        if (sameAs.hasOwnProperty('@id')) {
+          quoted[sameAs['@id']] = data;
+        }
+      });
+      
       state.inspector.data.quoted = quoted;
     },
     updateInspectorData(state, payload) {
@@ -613,6 +640,12 @@ const store = new Vuex.Store({
     },
     setDirectoryCare(state, data) {
       state.directoryCare = data;
+    },
+    addMagicShelfMark(state, path) {
+      state.inspector.magicShelfMarks.push(path);
+    },
+    removeMagicShelfMark(state, path) {
+      state.inspector.magicShelfMarks = state.inspector.magicShelfMarks.filter(p => p !== path);
     },
   },
   getters: {

@@ -1,6 +1,7 @@
 <script>
 import { size } from 'lodash-es';
 import { mapGetters } from 'vuex';
+import { hasAutomaticShelfControlNumber } from '@/utils/shelfmark';
 import * as LayoutUtil from '@/utils/layout';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
@@ -46,6 +47,9 @@ export default {
     },
     fullPath() {
       return `${this.parentPath}.{"@id":"${this.item['@id']}"}`;
+    },
+    isMaybeMagicShelfMark() {
+      return this.focusData['@type'] === 'ShelfMarkSequence';
     },
   },
   watch: {
@@ -96,9 +100,19 @@ export default {
     this.$on('expand-item', () => {
       this.expand();
     });
+    if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
+      this.expand();
+    }
   },
   mounted() {
     this.$nextTick(() => {
+      if (this.isMaybeMagicShelfMark) {
+        hasAutomaticShelfControlNumber(this.item['@id'], this.settings).then((hasAutomatic) => {
+          if (hasAutomatic) {
+            this.$store.commit('addMagicShelfMark', this.actualParentPath);
+          }
+        }).catch(error => console.error(error));
+      }
       if (this.isNewlyAdded) {
         setTimeout(() => {
           const element = this.$el;
@@ -111,6 +125,11 @@ export default {
         }, 200);
       }
     });
+  },
+  beforeDestroy() {
+    if (this.isMaybeMagicShelfMark) {
+      this.$store.commit('removeMagicShelfMark', this.actualParentPath);
+    }
   },
 };
 </script>

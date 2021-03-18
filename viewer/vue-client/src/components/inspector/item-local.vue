@@ -390,6 +390,9 @@ export default {
         this.expand();
       }
     });
+    if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
+      this.expand();
+    }
   },
   mounted() {
     if (this.isSpecialHeading) {
@@ -531,7 +534,7 @@ export default {
     <ul class="ItemLocal-list js-itemLocalFields" v-show="expanded">
       <field
         v-show="k !== '_uid'" 
-        v-for="(v, k) in filteredItem" 
+        v-for="(v, k) in filteredItem"
         :parent-path="getPath" 
         :entity-type="item['@type']" 
         :is-inner="true" 

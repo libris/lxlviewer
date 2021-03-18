@@ -256,7 +256,7 @@
             }
           ],
           "responsibilityStatement": "",
-          "identifiedBy": null,
+          "identifiedBy": [],
           "editionStatement": [""],
           "publication": [
             {
@@ -3043,7 +3043,8 @@
           "recordStatus": "",
           "marc:catalogingSource": {
             "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
-          }
+          },
+          "cataloguersNote": [""]
         },
         "mainEntity": {
           "@id": "https://id.kb.se/TEMPID#it",
@@ -3547,11 +3548,19 @@
             "@id": "https://id.kb.se/term/fack"
           }],
           "prefLabel": "",
+          "broadMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "23/swe",
+              "marc:explanatoryTerm": ""
+            }
+          ],
           "closeMatch": [
             {
               "@type": "ClassificationDdc",
               "code": "",
-              "edition": "",
+              "edition": "23/swe",
               "marc:explanatoryTerm": ""
             },
             {
@@ -3712,6 +3721,30 @@
           "historyNote": [
             ""
           ]
+        }
+      }
+    }
+  },
+  "other": {
+    "shelfMarkSequence": {
+      "label": "Signumsvit",
+      "description": "Signumsvit med automatiskt löpnummer",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        },
+        "mainEntity": {
+          "@type": "ShelfMarkSequence",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "description": "",
+          "shelfMarkStatus": "ActiveShelfMark",
+          "nextShelfControlNumber": 1,
+          "qualifier": ""
         }
       }
     }

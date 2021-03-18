@@ -106,6 +106,7 @@ export default {
       if (this.userIsAllowedToEditConcepts()) {
         list.push({ id: 'Concept', text: 'Concept', excludeBase: true });
       }
+      list.push({ id: 'Other', text: 'Other', excludeBase: true });
       list.push({ id: 'File', text: 'From file' });
 
       return list;
