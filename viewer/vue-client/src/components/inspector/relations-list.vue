@@ -34,7 +34,7 @@ export default {
       embellishedList: [],
       showInstances: false,
       hideByContext: {},
-      displayFacets: ['@reverse', '@type'],
+      displayFacets: ['@reverse', '@type', 'instanceOf.@type'],
       facets: {},
       allOption: {},
       selectedFacet: null,
