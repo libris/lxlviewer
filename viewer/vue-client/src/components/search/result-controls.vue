@@ -38,11 +38,11 @@ export default {
     ]),
     excludeFilters() {
       const filtersToBeExcluded = PropertyMappings.flatMap(prop => Object.keys(prop.mappings));
-      filtersToBeExcluded.push("@reverse.heldBy.@id");
+      filtersToBeExcluded.push("@reverse.itemOf.heldBy.@id");
       return filtersToBeExcluded;
     },
     filteredByHasItem() {
-      return this.$route.query.hasOwnProperty('@reverse.heldBy.@id') && this.$route.query['@reverse.heldBy.@id'] == `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
+      return this.$route.query.hasOwnProperty('@reverse.itemOf.heldBy.@id') && this.$route.query['@reverse.itemOf.heldBy.@id'] == `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
     filters() {
       let filters = [];
@@ -160,9 +160,9 @@ export default {
   methods: {
     toggleFilterByHasItem() {
       if (this.filteredByHasItem) {
-        this.removeFilter('@reverse.heldBy.@id');
+        this.removeFilter('@reverse.itemOf.heldBy.@id');
       } else {
-        this.addFilter('@reverse.heldBy.@id', `https://libris.kb.se/library/${this.user.settings.activeSigel}`)
+        this.addFilter('@reverse.itemOf.heldBy.@id', `https://libris.kb.se/library/${this.user.settings.activeSigel}`)
       }
     },
     addFilter(key, value) {
