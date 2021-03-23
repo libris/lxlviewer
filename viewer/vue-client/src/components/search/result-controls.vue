@@ -375,9 +375,10 @@ export default {
   }
 
   &-hasItemFilter {
-    padding: 0.25em;
+    padding: 0.25em 0.5em;
     border-radius: 2px;
     font-size: 1.4rem;
+    background-color: @neutral-color;
     border: 1px solid @grey-lighter;
     display: flex;
     align-items: center;
