@@ -27,7 +27,6 @@ export default {
   data() {
     return {
       keyword: '',
-      excludeFilters: PropertyMappings.flatMap(prop => Object.keys(prop.mappings)),
     };
   },
   computed: {
@@ -37,6 +36,14 @@ export default {
       'settings',
       'status',
     ]),
+    excludeFilters() {
+      const filtersToBeExcluded = PropertyMappings.flatMap(prop => Object.keys(prop.mappings));
+      filtersToBeExcluded.push("@reverse.heldBy.@id");
+      return filtersToBeExcluded;
+    },
+    filteredByHasItem() {
+      return this.$route.query.hasOwnProperty('@reverse.heldBy.@id') && this.$route.query['@reverse.heldBy.@id'] == `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
+    },
     filters() {
       let filters = [];
       if (typeof this.pageData.search !== 'undefined') {
@@ -151,6 +158,25 @@ export default {
     },
   },
   methods: {
+    toggleFilterByHasItem() {
+      if (this.filteredByHasItem) {
+        this.removeFilter('@reverse.heldBy.@id');
+      } else {
+        this.addFilter('@reverse.heldBy.@id', `https://libris.kb.se/library/${this.user.settings.activeSigel}`)
+      }
+    },
+    addFilter(key, value) {
+      const newQuery = Object.assign({}, this.$route.query);
+      newQuery[key] = value;
+      this.$router.push({ path: this.$route.currentPath, query: newQuery })
+    },
+    removeFilter(key) {
+      const newQuery = Object.assign({}, this.$route.query);
+      if (newQuery.hasOwnProperty(key)) {
+        delete newQuery[key];
+        this.$router.push({ path: this.$route.currentPath, query: newQuery })
+      }
+    },
     setCompact() {
       const user = this.user;
       user.settings.resultListType = 'compact';
@@ -221,13 +247,21 @@ export default {
         </div>
       </div>
     </div>
-    <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0">
-      <div class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index">
-        <span>{{filter.label | labelByLang }}</span>
-        <router-link
-          :to="filter.up | asAppPath">
-          <i class="fa fa-fw fa-close icon"></i>
-        </router-link>
+    <div class="ResultControls-secondary">
+      <!-- <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0"> -->
+      <div class="ResultControls-filterWrapper" v-if="showDetails">
+        <div class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index">
+          <span>{{filter.label | labelByLang }}</span>
+          <router-link
+            :to="filter.up | asAppPath">
+            <i class="fa fa-fw fa-close icon"></i>
+          </router-link>
+        </div>
+      </div>
+      <div class="ResultControls-hasItemFilter" v-if="user.isLoggedIn" @click="toggleFilterByHasItem" @keyup.enter="toggleFilterByHasItem" tabindex="0" :aria-description="filteredByHasItem ? 'Remove filter by held items for active sigel' : 'Filter by held items for active sigel' | translatePhrase">
+        <i v-if="filteredByHasItem" class="fa fa-check-square"></i>
+        <i v-if="!filteredByHasItem" class="fa fa-square-o"></i>
+        {{ 'hasItem' | labelByLang }} ({{ user.settings.activeSigel }})
       </div>
     </div>
     <nav v-if="hasPagination && showPages">
@@ -334,8 +368,29 @@ export default {
     }
   }
 
+  &-secondary {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25em 0;
+  }
+
+  &-hasItemFilter {
+    padding: 0.25em;
+    border-radius: 2px;
+    font-size: 1.4rem;
+    border: 1px solid @grey-lighter;
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    i {
+      margin-right: 0.2em;
+    }
+    .fa-check-square {
+      color: @brand-primary;
+    }
+  }
+
   &-filterWrapper {
-    padding-top: 5px;
     display: flex;
     flex-wrap: wrap;
   }

@@ -525,7 +525,7 @@ body {
       }
     }
   }
-  input, textarea, img, select, .ItemEntity, .ItemLocal, .EntityAction, .ItemSibling, .icon, .icon i, li, i.fa {
+  input, textarea, img, select, .ItemEntity, .ItemLocal, .EntityAction, .ItemSibling, .icon, .icon i, li, i.fa, div {
     &:focus {
       .focus-mixin-border();
     }
