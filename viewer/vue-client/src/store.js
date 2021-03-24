@@ -196,6 +196,13 @@ const store = new Vuex.Store({
         'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
       },
       propertyChains: {
+        '@reverse.itemOf.heldBy': {
+          sv: 'Bestånd',
+          en: 'Holdings',
+          facet: {
+            order: -1,
+          },
+        },
         'instanceOf.@type': {
           sv: 'Verkstyp',
           en: 'Type of work',

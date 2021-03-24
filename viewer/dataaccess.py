@@ -70,11 +70,15 @@ sites = {
         "summary": {"articleBody": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>"},
         "statsindex": '{"@type": []}',
         "filter_param": "@type",
-            # TODO: + @reverse.itemOf.heldBy.@id (and/or count)?
         #"stats": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
         "statsfind":
         """
             {
+                "@reverse.itemOf.heldBy.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":1000
+                },
                 "instanceOf.language.@id":{
                     "sort":"value",
                     "sortOrder":"desc",
