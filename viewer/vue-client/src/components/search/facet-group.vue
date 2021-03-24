@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     facetLabelByLang(facetType) {
-      return this.settings.propertyChains[facetType][this.user.settings.language];
+      return (this.settings.propertyChains[facetType] || {})[this.user.settings.language] || facetType;
     },
     toggleExpanded() {
       this.isExpanded = !this.isExpanded;
