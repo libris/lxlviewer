@@ -231,10 +231,10 @@ class VocabUtil:
             if isinstance(cid, URIRef)]
 
     def _get_properties(self):
-        return map(self.graph.resource, sorted(
+        return list(map(self.graph.resource, sorted(
             set(self.graph.subjects(RDF.type, RDF.Property))
             | set(self.graph.subjects(RDF.type, OWL.ObjectProperty))
-            | set(self.graph.subjects(RDF.type, OWL.DatatypeProperty))))
+            | set(self.graph.subjects(RDF.type, OWL.DatatypeProperty)))))
 
     def getrestrictions(self, rclass):
         for c in rclass.objects(RDFS.subClassOf):
