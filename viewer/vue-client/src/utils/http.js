@@ -134,6 +134,8 @@ export async function getDocument(uri, contentType = 'application/ld+json', embe
   let translatedUri = uri;
   if (uri.startsWith('https://id.kb.se')) {
     translatedUri = uri.replace('https://id.kb.se', process.env.VUE_APP_ID_PATH);
+  } else if (uri.startsWith('https://libris.kb.se')) {
+    translatedUri = uri.replace('https://libris.kb.se', process.env.VUE_APP_API_PATH);
   }
 
   if (!uri.includes('embellished=')) {
@@ -150,7 +152,11 @@ export async function getDocument(uri, contentType = 'application/ld+json', embe
   const response = await fetch(translatedUri, options);
   responseObject.status = response.status;
   if (response.status !== 200) {
-    console.warn('HttpUtil.getDocument failed to fetch any data for:', uri);
+    if (translatedUri === uri) {
+      console.warn('HttpUtil.getDocument failed to fetch any data for:', uri);
+    } else {
+      console.warn('HttpUtil.getDocument failed to fetch any data for:', uri, `(as ${translatedUri})`);
+    }
     responseObject.data = null;
     return responseObject;
   }
