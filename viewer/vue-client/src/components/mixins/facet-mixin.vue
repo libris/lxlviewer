@@ -48,16 +48,12 @@ export default {
           .map(o => this.$options.filters.capitalize(this.determineLabel(o)))
           .join('/');
       } 
-      
-      // TODO: Add chip functionality instead?
-      const label = this.getByLang(object, 'prefLabel', lang)
-        || this.getByLang(object, 'label', lang)
-        || this.getByLang(object, 'title', lang);
+
+      const label = this.getItemLabel;
 
       if (label) {
         return label;
       }
-
       if (this.getRecordType(object) === 'Agent') {
         return this.getLabel(object);
       }

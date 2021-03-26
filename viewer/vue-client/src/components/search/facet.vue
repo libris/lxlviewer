@@ -18,6 +18,9 @@ export default {
   methods: {
   },
   computed: {
+    focusData() {
+      return this.observation.object;
+    },
     label() {
       return this.determineLabel(this.observation.object);
     },

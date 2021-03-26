@@ -247,7 +247,9 @@ export function formatLabel(obj) {
       label.push(extractStrings(value));
     }
   });
-  label = [].concat.apply([], label); // eslint-disable-line prefer-spread
+  label = [].concat.apply([], label).filter((el) => {
+    return el.length > 0;
+  }); // eslint-disable-line prefer-spread
   label = label.join(' • ');
   return label;
 }
