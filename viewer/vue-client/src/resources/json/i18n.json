@@ -263,6 +263,7 @@
     "Contribution": "Medverkan",
     "Continue": "Fortsätt",
     "No contributions": "Ingen medverkan",
+    "The document was found but failed to load": "Dokumentet hittades men kunde inte visas",
     "Contributions could not be loaded": "Medverkan kunde inte laddas",
     "Show all contributions": "Visa all medverkan",
     "Instances": "Instanser",

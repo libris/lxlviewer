@@ -20,6 +20,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    focusData: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -43,7 +47,9 @@ export default {
     },
     setHeaderThreshold() {
       const headerContainer = document.getElementById('main-header');
-      this.headerThreshold = headerContainer.offsetTop + headerContainer.offsetHeight - 20;
+      if (headerContainer !== null) {
+        this.headerThreshold = headerContainer.offsetTop + headerContainer.offsetHeight - 20;
+      }
     },
   },
   computed: {
@@ -68,9 +74,6 @@ export default {
         return 'Work';
       }
       return 'Unknown';
-    },
-    focusData() {
-      return this.inspector.data.mainEntity;
     },
     compactSummary() {
       let summary = [];
