@@ -196,9 +196,9 @@ const store = new Vuex.Store({
         'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
       },
       propertyChains: {
-        '@reverse.itemOf.heldBy': {
-          sv: 'Bestånd',
-          en: 'Holdings',
+        '@reverse.itemOf.heldBy.@id': {
+          sv: 'Har bestånd',
+          en: 'Has holding',
           facet: {
             order: -1,
           },
@@ -231,7 +231,7 @@ const store = new Vuex.Store({
             order: 3,
           },
         },
-        'instanceOf.language': {
+        'instanceOf.language.@id': {
           sv: 'Verksspråk',
           en: 'Language of work',
           facet: {
@@ -245,56 +245,56 @@ const store = new Vuex.Store({
             order: 5,
           },
         },
-        inScheme: {
+        'inScheme.@id': {
           sv: 'Termsystem',
           en: 'Term System',
           facet: {
             order: 6,
           },
         },
-        inCollection: {
+        'inCollection.@id': {
           sv: 'Termsamling',
           en: 'Term Collection',
           facet: {
             order: 7,
           },
         },
-        nationality: {
+        'nationality.@id': {
           sv: 'Nationalitet',
           en: 'Nationality',
           facet: {
             order: 7,
           },
         },
-        language: {
+        'language.@id': {
           sv: 'Språk',
           en: 'Language',
           facet: {
             order: 6,
           },
         },
-        genreForm: {
+        'genreForm.@id': {
           sv: 'Genre/form',
           en: 'Genre/form',
           facet: {
             order: 7,
           },
         },
-        'contribution.agent': {
+        'contribution.agent.@id': {
           sv: 'Medverkan eller primär medverkan',
           en: 'Contribution or primary contribution',
           facet: {
             order: 7,
           },
         },
-        contentType: {
+        'contentType.@id': {
           sv: 'Innehållstyp',
           en: 'Content type',
           facet: {
             order: 10,
           },
         },
-        carrierType: {
+        'carrierType.@id': {
           sv: 'Bärartyp',
           en: 'Carrier type',
           facet: {
