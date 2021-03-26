@@ -158,7 +158,7 @@ sites = {
                     "sort":"value",
                     "sortOrder":"desc",
                     "size":100
-                },
+                }
             }
         """,
         "itemList": [
