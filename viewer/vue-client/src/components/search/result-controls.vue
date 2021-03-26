@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import * as httpUtil from '@/utils/http';
 import Sort from '@/components/search/sort';
+import FilterBadge from '@/components/search/filter-badge';
 import LensMixin from '@/components/mixins/lens-mixin';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 
@@ -38,7 +39,7 @@ export default {
     ]),
     excludeFilters() {
       const filtersToBeExcluded = PropertyMappings.flatMap(prop => Object.keys(prop.mappings));
-      filtersToBeExcluded.push('@reverse.itemOf.heldBy.@id');
+      // filtersToBeExcluded.push('@reverse.itemOf.heldBy.@id');
       return filtersToBeExcluded;
     },
     filteredByHasItem() {
@@ -208,6 +209,7 @@ export default {
   },
   components: {
     sort: Sort,
+    FilterBadge,
   },
 };
 </script>
@@ -248,20 +250,8 @@ export default {
       </div>
     </div>
     <div class="ResultControls-secondary">
-      <!-- <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0"> -->
-      <div class="ResultControls-filterWrapper" v-if="showDetails">
-        <div class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index">
-          <span>{{filter.label | labelByLang }}</span>
-          <router-link
-            :to="filter.up | asAppPath">
-            <i class="fa fa-fw fa-close icon"></i>
-          </router-link>
-        </div>
-      </div>
-      <div class="ResultControls-hasItemFilter" v-if="user.isLoggedIn" @click="toggleFilterByHasItem" @keyup.enter="toggleFilterByHasItem" tabindex="0" :aria-description="filteredByHasItem ? 'Remove filter by held items for active sigel' : 'Filter by held items for active sigel' | translatePhrase">
-        <i v-if="filteredByHasItem" class="fa fa-check-square"></i>
-        <i v-if="!filteredByHasItem" class="fa fa-square-o"></i>
-        {{ 'hasItem' | labelByLang }} ({{ user.settings.activeSigel }})
+      <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0">
+        <FilterBadge class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index" :filter="filter" />
       </div>
     </div>
     <nav v-if="hasPagination && showPages">
@@ -396,45 +386,45 @@ export default {
     flex-wrap: wrap;
   }
 
-  &-filterBadge {
-    background-color: #364a4c;
-    border: 1px solid #364a4c;
-    color: @white;
-    font-weight: 600;
-    font-size: 1.4rem;
-    padding: 2px 5px 2px 10px;
-    margin: 5px 5px 0 0;
-    border-radius: 4px;
-    white-space: nowrap;
-    &--inverted {
-      background-color: transparent;
-      border: 1px solid #364a4c;
-      color: #364a4c;
-      font-weight: 600;
-      font-size: 1.4rem;
-      padding: 2px 5px 2px 10px;
-      margin: 5px 5px 0 0;
-      border-radius: 4px;
-      white-space: nowrap;
-    }
+  // &-filterBadge {
+  //   background-color: #364a4c;
+  //   border: 1px solid #364a4c;
+  //   color: @white;
+  //   font-weight: 600;
+  //   font-size: 1.4rem;
+  //   padding: 2px 5px 2px 10px;
+  //   margin: 5px 5px 0 0;
+  //   border-radius: 4px;
+  //   white-space: nowrap;
+  //   &--inverted {
+  //     background-color: transparent;
+  //     border: 1px solid #364a4c;
+  //     color: #364a4c;
+  //     font-weight: 600;
+  //     font-size: 1.4rem;
+  //     padding: 2px 5px 2px 10px;
+  //     margin: 5px 5px 0 0;
+  //     border-radius: 4px;
+  //     white-space: nowrap;
+  //   }
 
-    & i,
-    & i:hover {
-      color: @white;
-    }
+  //   & i,
+  //   & i:hover {
+  //     color: @white;
+  //   }
 
-    &.clear-all {
-      color: inherit;
-      background-color: @white;
-      border: 1px solid @grey-lighter;
+  //   &.clear-all {
+  //     color: inherit;
+  //     background-color: @white;
+  //     border: 1px solid @grey-lighter;
 
-      & i,
-      & i:hover {
-        color: inherit;
-      }
-    }
+  //     & i,
+  //     & i:hover {
+  //       color: inherit;
+  //     }
+  //   }
 
-  }
+  // }
 
   &-pagDecor {
     color: @grey;
