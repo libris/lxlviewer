@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import * as DisplayUtil from '@/utils/display';
 import * as MathUtil from '@/utils/math';
 import * as VocabUtil from '@/utils/vocab';
 import LensMixin from '@/components/mixins/lens-mixin';
@@ -31,8 +32,7 @@ export default {
       if (object.hasOwnProperty('mainEntity')) {
         object = object.mainEntity;
       }
-      const lang = this.user.settings.language;
-      
+  
       for (const prop of ['@id', '_key']) {
         if (object.hasOwnProperty(prop)) {
           const chains = this.settings.propertyChains;
@@ -49,7 +49,15 @@ export default {
           .join('/');
       } 
 
-      const label = this.getItemLabel;
+      const label = DisplayUtil.getItemLabel(
+        object,
+        this.resources.display,
+        this.inspector.data.quoted,
+        this.resources.vocab,
+        this.settings,
+        this.resources.context,
+        object['@type'],
+      );
 
       if (label) {
         return label;

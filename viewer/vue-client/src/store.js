@@ -301,6 +301,20 @@ const store = new Vuex.Store({
             order: 10,
           },
         },
+        'instanceOf.subject.@id': {
+          sv: 'Ämne',
+          en: 'Subject',
+          facet: {
+            order: 11,
+          },
+        },
+        'meta.bibliography.@id': {
+          sv: 'Ingår i bibliografi',
+          en: 'In bibliography',
+          facet: {
+            order: 12,
+          },
+        },
         '@reverse': {
           sv: 'Relation',
           en: 'Relation',

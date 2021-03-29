@@ -148,6 +148,16 @@ sites = {
                     "sort":"value",
                     "sortOrder":"desc",
                     "size":20
+                },
+                "instanceOf.subject.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
+                },
+                "meta.bibliography.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
                 }
             }
         """,
