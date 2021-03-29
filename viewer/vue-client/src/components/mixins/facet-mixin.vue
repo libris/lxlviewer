@@ -40,6 +40,9 @@ export default {
           if (chains.hasOwnProperty(id)) {
             return chains[id][this.user.settings.language];
           }
+          if (chains.hasOwnProperty(`${id}.@id`)) {
+            return chains[`${id}.@id`][this.user.settings.language];
+          }
         }
       }
 
