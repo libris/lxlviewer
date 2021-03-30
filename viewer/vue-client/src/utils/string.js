@@ -254,7 +254,11 @@ export function formatLabel(obj) {
     }
   });
   label = [].concat.apply([], label).filter((el) => {
-    return el.length > 0;
+    if (el) {
+      return el.length > 0;
+    } else {
+      return false;
+    }
   }); // eslint-disable-line prefer-spread
   label = label.join(' • ');
   return label;
