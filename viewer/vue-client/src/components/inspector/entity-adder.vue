@@ -24,7 +24,7 @@ export default {
       searchResult: [],
       keyword: '',
       loading: false,
-      debounceTimer: 500,
+      loadingMinimum: false,
       rangeInfo: false,
       addEmbedded: false,
       searchMade: false,
@@ -165,6 +165,9 @@ export default {
     },
     inspector() {
       return this.$store.getters.inspector;
+    },
+    searchInProgress() {
+      return this.loading || this.loadingMinimum;
     },
     filterPlaceHolder() {
       return 'All types';
@@ -341,7 +344,7 @@ export default {
           if (this.keyword === value) {
             this.search();
           }
-        }, this.debounceTimer);
+        }, this.settings.debounceTimer);
       } else {
         this.searchResult = [];
       }
@@ -525,6 +528,12 @@ export default {
         self.loading = false;
       });
     },
+    startMinimumLoading() {
+      this.loadingMinimum = true;
+      setTimeout(() => {
+        this.loadingMinimum = false;
+      }, this.settings.minimumLoadingTime);
+    },
     search() {
       if (this.fieldKey === 'shelfMark' && this.user) {
         this.user.settings.shelfMarkSearch = this.keyword;
@@ -532,6 +541,7 @@ export default {
       }
       const self = this;
       this.loading = true;
+      this.startMinimumLoading();
       this.typeArray = [].concat(this.currentSearchTypes);
       self.searchResult = [];
       self.searchMade = true;
@@ -724,7 +734,7 @@ export default {
         </template>
         <template slot="panel-body">
           <panel-search-list class="EntityAdder-searchResult"
-            v-if="!loading && searchMade"
+            v-if="!searchInProgress && searchMade"
             :path="path"
             :results="searchResult"
             :disabled-ids="alreadyAdded"
@@ -734,21 +744,21 @@ export default {
             :has-action="true"
             @use-item="addLinkedItem">
           </panel-search-list>
-          <div class="PanelComponent-searchStatus" v-if="!loading && !searchMade" >
+          <div class="PanelComponent-searchStatus" v-if="!searchInProgress && !searchMade" >
             {{ "Start writing to begin search" | translatePhrase }}...
           </div>
-          <div v-if="loading" class="PanelComponent-searchStatus">
+          <div v-if="searchInProgress" class="PanelComponent-searchStatus">
             <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
           </div>
           <div class="PanelComponent-searchStatus"
-            v-if="!loading && searchResult.length === 0 && searchMade">
+            v-if="!searchInProgress && searchResult.length === 0 && searchMade">
             {{ "No results" | translatePhrase }}
           </div>
         <!-- </div> -->
         </template>
         <template slot="panel-footer">
 
-          <div class="EntityAdder-resultControls" v-if="!loading && searchResult.length > 0">
+          <div class="EntityAdder-resultControls" v-if="!searchInProgress && searchResult.length > 0">
             <modal-pagination
               @go="go"
               :total-items="totalItems"

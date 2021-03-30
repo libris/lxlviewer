@@ -26,7 +26,7 @@ export default {
       extractDialogActive: false,
       keyword: '',
       loading: false,
-      debounceTimer: 500,
+      loadingMinimum: false,
       showHelp: false,
       showExtractSummary: false,
       searchMade: false,
@@ -148,6 +148,9 @@ export default {
       'settings',
       'status',
     ]),
+    searchInProgress() {
+      return this.loading || this.loadingMinimum;
+    },
     typeOfExtractingEntity() {
       return StringUtil.getLabelByLang(VocabUtil.getRecordType(this.itemInfo['@type'], this.resources.vocab, this.resources.context), this.user.settings.language, this.resources.vocab, this.resources.context).toLowerCase();
     },
@@ -177,10 +180,10 @@ export default {
       return list;
     },
     displaySearchList() {
-      return !this.loading && !this.extracting && this.keyword.length > 0 && this.searchResult.length > 0;
+      return !this.searchInProgress && !this.extracting && this.keyword.length > 0 && this.searchResult.length > 0;
     },
     foundNoResult() {
-      return !this.loading && this.searchResult.length === 0 && this.keyword.length > 0 && this.searchMade;
+      return !this.searchInProgress && this.searchResult.length === 0 && this.keyword.length > 0 && this.searchMade;
     },
     getClassTree() {
       let treeSource = this.range;
@@ -257,7 +260,7 @@ export default {
           if (this.keyword === value) {
             this.search();
           }
-        }, this.debounceTimer);
+        }, this.settings.debounceTimer);
       } else {
         this.searchResult = [];
       }
@@ -321,9 +324,16 @@ export default {
         self.loading = false;
       });
     },
+    startMinimumLoading() {
+      this.loadingMinimum = true;
+      setTimeout(() => {
+        this.loadingMinimum = false;
+      }, this.settings.minimumLoadingTime);
+    },
     search() {
       const self = this;
       this.loading = true;
+      this.startMinimumLoading();
       this.typeArray = [].concat(this.currentSearchTypes);
       self.searchResult = [];
       self.searchMade = true;
@@ -467,7 +477,7 @@ export default {
 
         <template slot="panel-body">
           <panel-search-list
-            v-if="!loading"
+            v-if="!searchInProgress"
             class="SearchWindow-resultListContainer"
             :results="searchResult"
             :is-compact="isCompact"
@@ -480,7 +490,7 @@ export default {
             <p> {{ "Search for existing linked entities to replace your local entity" | translatePhrase }}.</p>
             <p v-if="itemInfo && extractable"> {{ "If you can't find an existing link, you can create one using your local entity below" | translatePhrase }}.</p>
           </div>
-          <div class="PanelComponent-searchStatus" v-show="loading">
+          <div class="PanelComponent-searchStatus" v-show="searchInProgress">
             <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
           </div>
           <div class="PanelComponent-searchStatus" v-show="foundNoResult">
@@ -492,7 +502,7 @@ export default {
           </div>
         </template>
         <template slot="panel-footer">
-          <div class="SearchWindow-resultControls" v-if="!loading && searchResult.length > 0" >
+          <div class="SearchWindow-resultControls" v-if="!searchInProgress && searchResult.length > 0" >
             <modal-pagination
               @go="go"
               :total-items="totalItems"
