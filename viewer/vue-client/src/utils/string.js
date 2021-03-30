@@ -226,6 +226,9 @@ function translateable(type) {
 }
 
 export function extractStrings(obj) {
+  if (obj == null || typeof obj === 'undefined') {
+    throw new Error("StringUtil.extractStrings was called with a null/undefined object");
+  }
   let label = '';
   each(obj, (value) => {
     if (!isObject(value)) {
@@ -239,6 +242,9 @@ export function extractStrings(obj) {
 }
 
 export function formatLabel(obj) {
+  if (obj == null || typeof obj === 'undefined') {
+    throw new Error("StringUtil.formatLabel was called with a null/undefined object");
+  }
   let label = [];
   each(obj, (value) => {
     if (!isObject(value)) {
