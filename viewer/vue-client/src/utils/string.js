@@ -227,7 +227,7 @@ function translateable(type) {
 
 export function extractStrings(obj) {
   if (obj == null || typeof obj === 'undefined') {
-    throw new Error("StringUtil.extractStrings was called with a null/undefined object");
+    throw new Error('StringUtil.extractStrings was called with a null/undefined object');
   }
   let label = '';
   each(obj, (value) => {
@@ -243,7 +243,7 @@ export function extractStrings(obj) {
 
 export function formatLabel(obj) {
   if (obj == null || typeof obj === 'undefined') {
-    throw new Error("StringUtil.formatLabel was called with a null/undefined object");
+    throw new Error('StringUtil.formatLabel was called with a null/undefined object');
   }
   let label = [];
   each(obj, (value) => {
@@ -253,13 +253,7 @@ export function formatLabel(obj) {
       label.push(extractStrings(value));
     }
   });
-  label = [].concat.apply([], label).filter((el) => {
-    if (el) {
-      return el.length > 0;
-    } else {
-      return false;
-    }
-  }); // eslint-disable-line prefer-spread
+  label = [].concat.apply([], label).filter(el => el && el.length > 0); // eslint-disable-line prefer-spread
   label = label.join(' • ');
   return label;
 }
