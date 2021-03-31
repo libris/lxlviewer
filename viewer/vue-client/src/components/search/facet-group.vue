@@ -1,4 +1,5 @@
 <script>
+import { sortBy } from 'lodash-es';
 import Facet from './facet.vue';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
@@ -36,20 +37,37 @@ export default {
     user() {
       return this.$store.getters.user;
     },
+    sorted() {
+      let sorted = this.group.observation;
+      if (this.group.dimension === '@reverse.itemOf.heldBy.@id') {
+        const userSigels = this.user.collections.map((item) => {
+          return item.code;
+        });
+        sorted = sortBy(sorted, (o) => {
+          // Put all the users sigels on top
+          return userSigels.indexOf(o.object.sigel) < 0;
+        });
+        sorted = sortBy(sorted, (o) => {
+          // Put the active sigel on top
+          return o.object.sigel !== this.user.settings.activeSigel;
+        });
+      }
+      return sorted;
+    },
     slicedObservations() {
       let limit = this.revealLevels[this.currentLevel];
 
-      if (this.group.observation.length - limit === 1) {
+      if (this.sorted.length - limit === 1) {
         limit = false; // if only one remains hidden we might as well show all
       }
-      return limit ? this.group.observation.slice(0, limit) : this.group.observation;
+      return limit ? this.sorted.slice(0, limit) : this.sorted;
     },
     revealText() {
-      if (this.slicedObservations.length >= this.group.observation.length) {
+      if (this.slicedObservations.length >= this.sorted.length) {
         return false;
       } 
       if (this.revealLevels[this.currentLevel + 1] 
-        && this.revealLevels[this.currentLevel + 1] < this.group.observation.length) {
+        && this.revealLevels[this.currentLevel + 1] < this.sorted.length) {
         return 'Show more';
       } 
       return 'Show all';
