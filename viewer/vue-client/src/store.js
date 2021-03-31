@@ -97,6 +97,7 @@ const store = new Vuex.Store({
       authPath: process.env.VUE_APP_AUTH_PATH,
       idPath: process.env.VUE_APP_ID_PATH,
       mockDisplay: Boolean(process.env.VUE_APP_MOCK_DISPLAY_BOOL) || false,
+      mockHelp: Boolean(process.env.VUE_APP_MOCK_HELP_BOOL) || false,
       matomoId: process.env.VUE_APP_MATOMO_ID,
       appPaths: {
         '/find?': '/search/libris?',

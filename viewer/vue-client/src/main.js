@@ -295,15 +295,20 @@ new Vue({
       };
     },
     fetchHelpDocs() {
-      fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
-        if (result.status === 200) {
-          result.json().then((body) => {
-            store.dispatch('setHelpDocs', body);
-          });
-        }
-      }, (error) => {
-        console.log('Couldn\'t fetch help documentation.', error);
-      });
+      if (this.settings.mockHelp) {
+        window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
+        store.dispatch('setHelpDocs', require('@/../../../../lxl-helpdocs/build/help.json'));
+      } else {
+        fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
+          if (result.status === 200) {
+            result.json().then((body) => {
+              store.dispatch('setHelpDocs', body);
+            });
+          }
+        }, (error) => {
+          console.log('Couldn\'t fetch help documentation.', error);
+        });
+      }
     },
     loadTemplates() {
       const templates = {

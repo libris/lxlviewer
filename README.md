@@ -105,4 +105,10 @@ yarn lint
 
 #### Problems / Troubleshooting
 
+##### Local displayfile
+
 If you can't load the display file or want to use a local version for any other reason, it's possible to mock it by adding `VUE_APP_MOCK_DISPLAY_BOOL=true` as a row in `.env.development` and it will use the display file in your local definitions repository. If you want to use the live version, remove the row or set it to `false`.
+
+##### Local help documentation
+
+It is also recommended to use a local version for `lxl-helpdocs` to be able to see the help documentation in your local environment. Just add `VUE_APP_MOCK_HELP_BOOL=true` for this. It will use the local file in your lxl-helpdocs repository.
