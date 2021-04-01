@@ -77,6 +77,10 @@ export default {
   display: flex;
   line-height: 1;
   font-size: 1.4rem;
+  flex-direction: column;
+  @media (min-width: @screen-md-min) {
+    flex-direction: row;
+  }
   
   &-item {
     display: flex;
