@@ -24,7 +24,6 @@ export default {
       searchResult: [],
       keyword: '',
       loading: false,
-      loadingMinimum: false,
       rangeInfo: false,
       addEmbedded: false,
       searchMade: false,
@@ -528,12 +527,6 @@ export default {
         self.loading = false;
       });
     },
-    startMinimumLoading() {
-      this.loadingMinimum = true;
-      setTimeout(() => {
-        this.loadingMinimum = false;
-      }, this.settings.minimumLoadingTime);
-    },
     search() {
       if (this.fieldKey === 'shelfMark' && this.user) {
         this.user.settings.shelfMarkSearch = this.keyword;
@@ -541,7 +534,6 @@ export default {
       }
       const self = this;
       this.loading = true;
-      this.startMinimumLoading();
       this.typeArray = [].concat(this.currentSearchTypes);
       self.searchResult = [];
       self.searchMade = true;

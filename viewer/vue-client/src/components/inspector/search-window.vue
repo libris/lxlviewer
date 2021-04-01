@@ -26,7 +26,6 @@ export default {
       extractDialogActive: false,
       keyword: '',
       loading: false,
-      loadingMinimum: false,
       showHelp: false,
       showExtractSummary: false,
       searchMade: false,
@@ -324,16 +323,9 @@ export default {
         self.loading = false;
       });
     },
-    startMinimumLoading() {
-      this.loadingMinimum = true;
-      setTimeout(() => {
-        this.loadingMinimum = false;
-      }, this.settings.minimumLoadingTime);
-    },
     search() {
       const self = this;
       this.loading = true;
-      this.startMinimumLoading();
       this.typeArray = [].concat(this.currentSearchTypes);
       self.searchResult = [];
       self.searchMade = true;
