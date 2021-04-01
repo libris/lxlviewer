@@ -38,18 +38,22 @@ export default {
 
 <template>
   <div class="EntityChangelog">
-    <p class="EntityChangelog-created">
+    <div class="EntityChangelog-item">
       <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Created' | translatePhrase}}:</span> 
-      {{ getCard.created }} {{ 'by' | translatePhrase}} 
-      <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionCreator" :item="inspector.data.record.descriptionCreator" :is-last="true" :field-key="'descriptionCreator'"/>
-      <span v-else>okänd</span>
-    </p>
-    <p class="EntityChangelog-changed">
+      <span class="EntityChangelog-value">
+        {{ getCard.created }} {{ 'by' | translatePhrase}} 
+        <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionCreator" :item="inspector.data.record.descriptionCreator" :is-last="true" :field-key="'descriptionCreator'"/>
+        <span v-else>okänd</span>
+      </span>
+    </div>
+    <div class="EntityChangelog-item">
       <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Changed' | translatePhrase}}:</span> 
-      {{ getCard.modified }} {{ 'by' | translatePhrase}}
-      <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionLastModifier" :item="inspector.data.record.descriptionLastModifier" :is-last="true" :field-key="'descriptionLastModifier'"/>
-      <span v-else>okänd</span>
-    </p>
+      <span class="EntityChangelog-value">
+        {{ getCard.modified }} {{ 'by' | translatePhrase}}
+        <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionLastModifier" :item="inspector.data.record.descriptionLastModifier" :is-last="true" :field-key="'descriptionLastModifier'"/>
+        <span v-else>okänd</span>
+      </span>
+    </div>
       <!--| <span class="show-record-toggle" v-show="!showRecord" v-on:click="toggleRecord">{{'Show admin metadata' | translatePhrase}}</span>
       <span class="show-record-toggle" v-show="showRecord" v-on:click="toggleRecord">{{'Hide admin metadata' | translatePhrase}}</span> -->
     <!-- <div class="container-wrapper" v-if="showFull">
@@ -71,21 +75,14 @@ export default {
 
 .EntityChangelog {
   display: flex;
-  flex-wrap: wrap;
   line-height: 1;
   font-size: 1.4rem;
-
-  &-created {
-    margin-right: 10px;
-    padding-right: 10px;
-    border-right: 1px solid @grey-light;
-
-    @media screen and (max-width: @screen-sm) {
-      border-right: none;
-    }
-  }
   
+  &-item {
+    display: flex;
+  }
   &-key {
+    margin-right: 0.5em;
   }
 }
 

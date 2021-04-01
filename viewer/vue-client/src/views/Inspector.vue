@@ -1021,13 +1021,10 @@ export default {
   &-header {
     flex: 3;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-    align-items: baseline;
-    flex-direction: column;
     margin-bottom: 0.25em;
-    @media (min-width: @screen-md) {
-      flex-direction: row;
-    }
+    align-items: flex-end;
     h1 {
       margin: 0;
     }
