@@ -95,7 +95,7 @@ sites = {
                     "size":100
                 },
                 "publication.year":{
-                    "sort":"key",
+                    "sort":"value",
                     "sortOrder":"desc",
                     "size":500
                 },
