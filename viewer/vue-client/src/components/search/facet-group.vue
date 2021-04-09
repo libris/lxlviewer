@@ -48,9 +48,11 @@ export default {
         if (facet.object.hasOwnProperty('sigel')) {
           return userSigels.indexOf(facet.object.sigel) > -1;
         }
-        const keyParts = facet.object._key.split('/');
-        const label = keyParts[keyParts.length - 1];
-        return userSigels.indexOf(label) > -1;
+        if (facet.object.hasOwnProperty('_key')) {
+          const keyParts = facet.object._key.split('/');
+          const label = keyParts[keyParts.length - 1];
+          return userSigels.indexOf(label) > -1;
+        }
       }
       return false;
     },
