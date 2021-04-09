@@ -138,10 +138,10 @@ export default {
             </tr>
             <tr>
               <td class="key">
-                <label for="detailsCheckbox">{{"Use full site width" | translatePhrase}}</label>
+                <label for="siteWidthCheckbox">{{"Use full site width" | translatePhrase}}</label>
               </td>
               <td class="value">
-                <input id="detailsCheckbox" class="customCheckbox-input" type="checkbox" @change="updateFullSiteWidth" :checked="user.settings.fullSiteWidth">
+                <input id="siteWidthCheckbox" class="customCheckbox-input" type="checkbox" @change="updateFullSiteWidth" :checked="user.settings.fullSiteWidth">
                 <div class="customCheckbox-icon"></div>
               </td>
             </tr>
