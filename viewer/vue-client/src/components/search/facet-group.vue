@@ -1,5 +1,6 @@
 <script>
 import { sortBy, orderBy } from 'lodash-es';
+import { mixin as clickaway } from 'vue-clickaway';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import Facet from './facet.vue';
@@ -8,6 +9,7 @@ import TypeIcon from '@/components/shared/type-icon';
 
 export default {
   name: 'facet-group',
+  mixins: [clickaway],
   props: {
     group: {
       type: Object,
@@ -35,6 +37,9 @@ export default {
     },
     toggleSortDropDown() {
       this.sortDropDownActive = !this.sortDropDownActive;
+    },
+    hideSortDropDown() {
+      this.sortDropDownActive = false;
     },
     selectSortDropDownItem(item) {
       const userObj = this.user;
@@ -177,7 +182,15 @@ export default {
         :id="facetLabelByLang(group.dimension)">
         {{facetLabelByLang(group.dimension) | capitalize}}
       </h4>
-      <div class="FacetGroup-sortSelect" tabindex="0" v-show="isExpanded" @click="toggleSortDropDown" @keyup.enter="toggleSortDropDown" :class="{'active': sortDropDownActive}">
+      <div
+        class="FacetGroup-sortSelect" 
+        tabindex="0"
+        v-show="isExpanded"
+        @click="toggleSortDropDown"
+        @keyup.enter="toggleSortDropDown"
+        v-on-clickaway="hideSortDropDown"
+        :class="{'active': sortDropDownActive}"
+      >
         <i v-if="chosenSort == 'amount.desc'" class="fa fa-fw fa-sort-amount-desc"></i>
         <i v-if="chosenSort == 'amount.asc'" class="fa fa-fw fa-sort-amount-asc"></i>
         <i v-if="chosenSort == 'alpha.asc'" class="fa fa-fw fa-sort-alpha-asc"></i>
