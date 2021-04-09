@@ -44,7 +44,7 @@ export default {
 
 <template>
   <div class="SearchBar" id="SearchBar" aria-labelledby="service-name">
-    <div class="SearchBar-container container">
+    <div class="SearchBar-container" :class="{ 'container': user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
       <div class="row">
         <div class="SearchBar-brand hidden-sm hidden-xs col-md-3">
           <router-link to="/" class="SearchBar-brandLink">

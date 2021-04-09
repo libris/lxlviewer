@@ -26,6 +26,11 @@ export default {
       userObj.settings.appTech = e.target.checked;
       this.setUser(userObj);
     },
+    updateFullSiteWidth(e) {
+      const userObj = this.user;
+      userObj.settings.fullSiteWidth = e.target.checked;
+      this.setUser(userObj);
+    },
     logout() {
       this.$store.dispatch('logoutUser');
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged out', this.user.settings.language)}!` });
@@ -96,6 +101,20 @@ export default {
             </tr>
             <tr>
               <td class="key">
+                <label for="clearFlagged"> 
+                  {{ "Clear my flagged posts" | translatePhrase}}
+                </label>
+              </td>
+              <td class="value">
+                <button name="clearFlagged" v-if="userHasTaggedPosts" class="btn btn--sm btn-danger" @click.prevent="purgeTagged" @keyup.enter.prevent="purgeTagged">{{ 'Clear' | translatePhrase }}</button>
+                <span v-if="!userHasTaggedPosts" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
+              </td>
+            </tr>
+          </table>
+          <h5 class="FacetGroup-title uppercaseHeading--bold">{{ 'Experimental settings' | translatePhrase }}</h5>
+          <table class="UserSettings-configTable table table-striped">
+            <tr>
+              <td class="key">
                 <label for="UserConfig-lang">{{"Language" | translatePhrase}}</label>
               </td>
               <td class="value">
@@ -119,13 +138,11 @@ export default {
             </tr>
             <tr>
               <td class="key">
-                <label for="clearFlagged"> 
-                  {{ "Clear my flagged posts" | translatePhrase}}
-                </label>
+                <label for="detailsCheckbox">{{"Use full site width" | translatePhrase}}</label>
               </td>
               <td class="value">
-                <button name="clearFlagged" v-if="userHasTaggedPosts" class="btn btn--sm btn-danger" @click.prevent="purgeTagged" @keyup.enter.prevent="purgeTagged">{{ 'Clear' | translatePhrase }}</button>
-                <span v-if="!userHasTaggedPosts" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
+                <input id="detailsCheckbox" class="customCheckbox-input" type="checkbox" @change="updateFullSiteWidth" :checked="user.settings.fullSiteWidth">
+                <div class="customCheckbox-icon"></div>
               </td>
             </tr>
           </table>
