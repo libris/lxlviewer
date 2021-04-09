@@ -111,7 +111,7 @@ export default {
               </td>
             </tr>
           </table>
-          <h5 class="FacetGroup-title uppercaseHeading--bold">{{ 'Experimental settings' | translatePhrase }}</h5>
+          <h5 class="uppercaseHeading--bold">{{ 'Experimental settings' | translatePhrase }}</h5>
           <table class="UserSettings-configTable table table-striped">
             <tr>
               <td class="key">
