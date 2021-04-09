@@ -1,6 +1,7 @@
 <script>
 import { sortBy, orderBy } from 'lodash-es';
 import * as DisplayUtil from '@/utils/display';
+import * as StringUtil from '@/utils/string';
 import Facet from './facet.vue';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
@@ -181,10 +182,10 @@ export default {
         <i v-if="chosenSort == 'alpha.desc'" class="fa fa-fw fa-sort-alpha-desc"></i>
         <i class="fa fa-caret-down"></i>
         <ul class="FacetGroup-sortSelectDropdown" v-show="sortDropDownActive">
-          <li @click="selectSortDropDownItem('amount.desc')" @keyup.enter="selectSortDropDownItem('amount.desc')"><i class="fa fa-fw fa-sort-amount-desc"></i> Antal träffar (fallande)</li>
-          <li @click="selectSortDropDownItem('amount.asc')" @keyup.enter="selectSortDropDownItem('amount.asc')"><i class="fa fa-fw fa-sort-amount-asc"></i> Antal träffar (stigande)</li>
-          <li @click="selectSortDropDownItem('alpha.asc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-asc"></i> A-Ö</li>
-          <li @click="selectSortDropDownItem('alpha.desc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-desc"></i> Ö-A</li>
+          <li :class="{'active': chosenSort == 'amount.desc'}" @click="selectSortDropDownItem('amount.desc')" @keyup.enter="selectSortDropDownItem('amount.desc')"><i class="fa fa-fw fa-sort-amount-desc"></i> Antal träffar (fallande)</li>
+          <li :class="{'active': chosenSort == 'amount.asc'}" @click="selectSortDropDownItem('amount.asc')" @keyup.enter="selectSortDropDownItem('amount.asc')"><i class="fa fa-fw fa-sort-amount-asc"></i> Antal träffar (stigande)</li>
+          <li :class="{'active': chosenSort == 'alpha.asc'}" @click="selectSortDropDownItem('alpha.asc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-asc"></i> A-Ö</li>
+          <li :class="{'active': chosenSort == 'alpha.desc'}" @click="selectSortDropDownItem('alpha.desc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-desc"></i> Ö-A</li>
         </ul>
       </div>
     </div>
@@ -192,7 +193,7 @@ export default {
       :class="{'is-expanded' : isExpanded, 'has-scroll' : hasScroll}">
       <facet v-for="facetItem in featuredFacets"
         :facet="facetItem" 
-        :key="'featured_'+facetItem.label">
+        :key="'featured_'+facetItem.link">
         <encoding-level-icon
           slot="icon"
           v-if="group.dimension === 'meta.encodingLevel'"
@@ -206,7 +207,7 @@ export default {
       <hr v-show="featuredFacets.length > 0">
       <facet v-for="facetItem in normalFacets"
         :facet="facetItem" 
-        :key="facetItem.label">
+        :key="facetItem.link">
         <encoding-level-icon
           slot="icon"
           v-if="group.dimension === 'meta.encodingLevel'"
@@ -241,6 +242,8 @@ export default {
   }
 
   &-sortSelect {
+    min-width: 3em;
+    height: 1.8em;
     background-color: @grey-lighter;
     border: 1px solid @grey-lighter;
     transition: border-color 0.25s ease;
@@ -267,6 +270,9 @@ export default {
       background-color: @neutral-color;
       padding: 0.5em;
       white-space: nowrap;
+      &.active {
+        font-weight: bold;
+      }
       &:hover {
         background-color: @grey-lighter;
       }
