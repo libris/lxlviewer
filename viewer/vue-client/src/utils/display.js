@@ -159,6 +159,9 @@ export function translateObjectProp(object) {
 
 /* eslint-disable no-use-before-define */
 export function getItemLabel(item, displayDefs, quoted, vocab, settings, context, inClass = '') {
+  if (!item || typeof item === 'undefined') {
+    throw new Error('getItemLabel was called with an undefined object.');
+  }
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
   if (Object.keys(displayObject).length === 0) {
     return JSON.stringify(item);
@@ -291,9 +294,15 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       }
     }
   }
-  if (isEmpty(result)) {
+  const itemKeys = Object.keys(result);
+  if (isEmpty(result) || (itemKeys.length === 1 && result[itemKeys[0]].length === 0)) {
     window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}.`, 'Item data:', trueItem);
-    result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
+    if (trueItem.hasOwnProperty('@id')) {
+      const idParts = item['@id'].split('/');
+      result = { label: idParts[idParts.length - 1] };
+    } else {
+      result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
+    }
   }
   return result;
 }
