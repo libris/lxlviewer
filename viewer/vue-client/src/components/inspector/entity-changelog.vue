@@ -54,20 +54,6 @@ export default {
         <span v-else>okänd</span>
       </span>
     </div>
-      <!--| <span class="show-record-toggle" v-show="!showRecord" v-on:click="toggleRecord">{{'Show admin metadata' | translatePhrase}}</span>
-      <span class="show-record-toggle" v-show="showRecord" v-on:click="toggleRecord">{{'Hide admin metadata' | translatePhrase}}</span> -->
-    <!-- <div class="container-wrapper" v-if="showFull">
-      <div class="full-info-container" v-on-clickaway="showFull = false">
-        <div v-for="(k, v) in getCard">
-          <span class="record-key">
-            {{ k | labelByLang | capitalize }}
-          </span>
-          <span class="record-value">
-            {{v}}
-          </span>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
