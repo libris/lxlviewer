@@ -1,7 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from '@/utils/display';
-import * as MathUtil from '@/utils/math';
 import * as VocabUtil from '@/utils/vocab';
 import LensMixin from '@/components/mixins/lens-mixin';
 
@@ -71,9 +70,6 @@ export default {
       
       const idArray = object['@id'].split('/');
       return `${idArray[idArray.length - 1]} [has no label]`;
-    },
-    getCompactNumber(observation) {
-      return MathUtil.getCompactNumber(observation.totalItems);
     },
   },
   computed: {

@@ -1,4 +1,5 @@
 <script>
+import * as MathUtil from '@/utils/math';
 import FacetMixin from '@/components/mixins/facet-mixin';
 
 export default {
@@ -9,7 +10,10 @@ export default {
       type: Boolean,
       default: false,
     },
-    observation: {},
+    facet: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -18,14 +22,8 @@ export default {
   methods: {
   },
   computed: {
-    focusData() {
-      return this.observation.object;
-    },
-    label() {
-      return this.determineLabel(this.observation.object);
-    },
     compactNumber() {
-      return this.getCompactNumber(this.observation);
+      return MathUtil.getCompactNumber(this.facet.amount);
     },
   },
   components: {
@@ -42,11 +40,11 @@ export default {
   <li class="Facet">
     <slot name="icon"></slot>
     <router-link class="Facet-link"
-      :to="observation.view['@id'] | asAppPath" 
-      :title="label | capitalize">
+      :to="facet.link | asAppPath" 
+      :title="facet.label | capitalize">
       <span class="Facet-label"
-        :title="label | capitalize">
-        {{label | capitalize}}</span>
+        :title="facet.label | capitalize">
+        {{facet.label | capitalize}}</span>
       <span class="Facet-badge badge">{{compactNumber}}</span>
     </router-link>
   </li>
