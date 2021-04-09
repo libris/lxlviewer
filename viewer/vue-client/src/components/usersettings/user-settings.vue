@@ -296,6 +296,7 @@ export default {
   flex-grow: 1;
   flex-basis: 50%;
   min-width: 250px;
+  max-width: 500px;
   padding: 20px;
 
   @media (min-width: @screen-sm) {
