@@ -2,6 +2,7 @@
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from '@/utils/display';
 import * as VocabUtil from '@/utils/vocab';
+import * as MathUtil from '@/utils/math';
 import LensMixin from '@/components/mixins/lens-mixin';
 
 export default {
@@ -26,6 +27,9 @@ export default {
         this.resources.vocab,
         this.resources.context,
       );
+    },
+    getCompactNumber(observation) {
+      return MathUtil.getCompactNumber(observation.totalItems);
     },
     determineLabel(object) {
       if (object.hasOwnProperty('mainEntity')) {
