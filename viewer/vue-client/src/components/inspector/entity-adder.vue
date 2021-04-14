@@ -23,7 +23,8 @@ export default {
     return {
       searchResult: [],
       keyword: '',
-      loading: false,
+      activeSearches: 0,
+      searchAbortController: new AbortController(),
       rangeInfo: false,
       addEmbedded: false,
       searchMade: false,
@@ -166,7 +167,7 @@ export default {
       return this.$store.getters.inspector;
     },
     searchInProgress() {
-      return this.loading || this.loadingMinimum;
+      return this.activeSearches > 0;
     },
     filterPlaceHolder() {
       return 'All types';
@@ -512,7 +513,6 @@ export default {
     loadResults(result) {
       this.searchResult = result.items;
       this.totalItems = result.totalItems;
-      this.loading = false;
     },
     go(n) {
       this.fetch(n);
@@ -520,11 +520,13 @@ export default {
     fetch(pageNumber) {
       const self = this;
       self.currentPage = pageNumber;
-      self.loading = true;
+      self.activeSearches += 1;
       this.getItems(this.keyword).then((result) => {
         self.loadResults(result);
       }, () => {
-        self.loading = false;
+        console.log(error);
+      }).then(() => {
+        self.activeSearches -= 1;
       });
     },
     search() {
@@ -533,7 +535,6 @@ export default {
         this.$store.dispatch('setUser', this.user);
       }
       const self = this;
-      this.loading = true;
       this.typeArray = [].concat(this.currentSearchTypes);
       self.searchResult = [];
       self.searchMade = true;
@@ -579,8 +580,13 @@ export default {
       }
 
       const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
+
       return new Promise((resolve, reject) => {
-        fetch(searchUrl).then((response) => {
+        this.searchAbortController.abort();
+        const controller = new AbortController();
+        const signal = controller.signal;
+        this.searchAbortController = controller;
+        fetch(searchUrl, { signal }).then((response) => {
           resolve(response.json());
         }, (error) => {
           reject('Error searching...', error);

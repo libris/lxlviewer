@@ -88,7 +88,6 @@ const store = new Vuex.Store({
       title: 'Libris katalogisering',
       language: 'sv',
       debounceTimer: 500, // Wait this long for input to stop before reacting
-      minimumLoadingTime: 500, // Makes loaders always show for this long
       environment: process.env.VUE_APP_ENV_LABEL || 'local',
       version: process.env.VUE_APP_VERSION,
       gitDescribe: JSON.parse(process.env.VUE_APP_GIT_DESCRIBE),

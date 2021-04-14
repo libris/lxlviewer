@@ -22,10 +22,10 @@ export default {
   data() {
     return {
       searchResult: [],
-      searchDelay: 2,
       extractDialogActive: false,
       keyword: '',
-      loading: false,
+      activeSearches: 0,
+      searchAbortController: new AbortController(),
       showHelp: false,
       showExtractSummary: false,
       searchMade: false,
@@ -148,7 +148,7 @@ export default {
       'status',
     ]),
     searchInProgress() {
-      return this.loading || this.loadingMinimum;
+      return this.activeSearches > 0;
     },
     typeOfExtractingEntity() {
       return StringUtil.getLabelByLang(VocabUtil.getRecordType(this.itemInfo['@type'], this.resources.vocab, this.resources.context), this.user.settings.language, this.resources.vocab, this.resources.context).toLowerCase();
@@ -307,7 +307,6 @@ export default {
     loadResults(result) {
       this.searchResult = result.items;
       this.totalItems = result.totalItems;
-      this.loading = false;
     },
     go(n) {
       this.fetch(n);
@@ -315,17 +314,17 @@ export default {
     fetch(pageNumber) {
       const self = this;
       self.currentPage = pageNumber;
-      self.loading = true;
+      self.activeSearches += 1;
       this.getItems(this.keyword).then((result) => {
         self.loadResults(result);
       }, (error) => {
         console.log(error);
-        self.loading = false;
+      }).then(() => {
+        self.activeSearches -= 1;
       });
     },
     search() {
       const self = this;
-      this.loading = true;
       this.typeArray = [].concat(this.currentSearchTypes);
       self.searchResult = [];
       self.searchMade = true;
@@ -366,8 +365,13 @@ export default {
       }
 
       const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
+      
       return new Promise((resolve, reject) => {
-        fetch(searchUrl).then((response) => {
+        this.searchAbortController.abort();
+        const controller = new AbortController();
+        const signal = controller.signal;
+        this.searchAbortController = controller;
+        fetch(searchUrl, { signal }).then((response) => {
           resolve(response.json());
         }, (error) => {
           reject('Error searching...', error);
