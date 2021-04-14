@@ -132,7 +132,7 @@ export default {
       let featured = this.facets.filter(o => o.featured === true);
       if (this.group.dimension === '@reverse.itemOf.heldBy.@id') {
         const activeSigel = this.user.settings.activeSigel;
-        featured = sortBy(featured, o => o.object.sigel !== activeSigel && o.label !== activeSigel);
+        featured = sortBy(featured, o => o.object.sigel !== activeSigel && o.label !== activeSigel && o.label !== `library/${activeSigel}`);
       }
       return featured;
     },
