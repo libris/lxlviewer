@@ -52,8 +52,8 @@ export default {
         if (facet.object.hasOwnProperty('sigel')) {
           return userSigels.indexOf(facet.object.sigel) > -1;
         }
-        if (facet.object.hasOwnProperty('_key')) {
-          const keyParts = facet.object._key.split('/');
+        if (facet.object.hasOwnProperty('@id')) {
+          const keyParts = facet.object['@id'].split('/');
           const label = keyParts[keyParts.length - 1];
           return userSigels.indexOf(label) > -1;
         }
@@ -85,7 +85,7 @@ export default {
             this.resources.context,
           );
         } else {
-          const keyParts = o.object._key.split('/');
+          const keyParts = o.object['@id'].split('/');
           label = keyParts[keyParts.length - 1];
         }
         return {
