@@ -107,7 +107,7 @@ yarn lint
 
 ##### Local displayfile
 
-If you can't load the display file or want to use a local version for any other reason, it's possible to mock it by adding `VUE_APP_MOCK_DISPLAY_BOOL=true` as a row in `.env.development` and it will use the display file in your local definitions repository. If you want to use the live version, remove the row or set it to `false`.
+If you can't load the display file or want to use a local version for any other reason, it's possible to mock it by adding `VUE_APP_MOCK_DISPLAY_BOOL=true` as a row in `.env.development` (in the `vue-client`-folder) and it will use the display file in your local definitions repository. If you want to use the live version, remove the row or set it to `false`.
 
 ##### Local help documentation
 
