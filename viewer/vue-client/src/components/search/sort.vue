@@ -97,7 +97,7 @@ export default {
       @change="handleSortChange">
       <option 
         v-for="(option, index) in options" 
-        :value="option.query"
+        :value="option.query.endsWith('_sortKeyByLang') ? `${option.query}.${user.settings.language || 'sv'}` : option.query"
         :key="index">
         {{ option.label | translatePhrase }}
       </option>

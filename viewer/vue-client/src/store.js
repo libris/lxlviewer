@@ -387,12 +387,12 @@ const store = new Vuex.Store({
             label: 'Relevance',
           },
           {
-            query: 'prefLabel',
-            label: 'Preferred label (A-Z)',
+            query: '_sortKeyByLang',
+            label: 'A-Z',
           },
           {
-            query: '-prefLabel',
-            label: 'Preferred label (Z-A)',
+            query: '-_sortKeyByLang',
+            label: 'Z-A',
           },
           {
             query: '-meta.modified',
@@ -423,6 +423,14 @@ const store = new Vuex.Store({
             label: 'Relevance',
           },
           {
+            query: '_sortKeyByLang',
+            label: 'A-Z',
+          },
+          {
+            query: '-_sortKeyByLang',
+            label: 'Z-A',
+          },
+          {
             query: '-meta.modified',
             label: 'Last updated',
           },
@@ -435,6 +443,14 @@ const store = new Vuex.Store({
           {
             query: '',
             label: 'Relevance',
+          },
+          {
+            query: '_sortKeyByLang',
+            label: 'A-Z',
+          },
+          {
+            query: '-_sortKeyByLang',
+            label: 'Z-A',
           },
           {
             query: '-meta.modified',
@@ -451,12 +467,12 @@ const store = new Vuex.Store({
             label: 'Relevance',
           },
           {
-            query: 'prefLabel',
-            label: 'Preferred label (A-Z)',
+            query: '_sortKeyByLang',
+            label: 'A-Z',
           },
           {
-            query: '-prefLabel',
-            label: 'Preferred label (Z-A)',
+            query: '-_sortKeyByLang',
+            label: 'Z-A',
           },
           {
             query: '-meta.modified',
