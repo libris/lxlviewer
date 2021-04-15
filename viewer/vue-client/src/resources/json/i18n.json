@@ -351,6 +351,8 @@
     "Label": "Benämning",
     "Sigel (A-Z)": "Sigel (A-Ö)",
     "Sigel (Z-A)": "Sigel (Ö-A)",
+    "A-Z": "A-Ö",
+    "Z-A": "Ö-A",
     "Free text": "Fritext",
     "Title": "Titel",
     "Main title": "Huvudtitel",
