@@ -190,10 +190,10 @@ export default {
         v-on-clickaway="hideSortDropDown"
         :class="{'active': sortDropDownActive}"
       >
-        <i v-if="chosenSort == 'amount.desc'" class="fa fa-fw fa-sort-amount-desc"></i>
-        <i v-if="chosenSort == 'amount.asc'" class="fa fa-fw fa-sort-amount-asc"></i>
-        <i v-if="chosenSort == 'alpha.asc'" class="fa fa-fw fa-sort-alpha-asc"></i>
-        <i v-if="chosenSort == 'alpha.desc'" class="fa fa-fw fa-sort-alpha-desc"></i>
+        <i v-if="chosenSort == 'amount.desc'" class="icon-selected fa fa-fw fa-sort-amount-desc"></i>
+        <i v-if="chosenSort == 'amount.asc'" class="icon-selected fa fa-fw fa-sort-amount-asc"></i>
+        <i v-if="chosenSort == 'alpha.asc'" class="icon-selected fa fa-fw fa-sort-alpha-asc"></i>
+        <i v-if="chosenSort == 'alpha.desc'" class="icon-selected fa fa-fw fa-sort-alpha-desc"></i>
         <i class="fa fa-caret-down"></i>
         <ul class="FacetGroup-sortSelectDropdown" v-show="sortDropDownActive">
           <li :class="{'active': chosenSort == 'amount.desc'}" @click="selectSortDropDownItem('amount.desc')" @keyup.enter="selectSortDropDownItem('amount.desc')"><i class="fa fa-fw fa-sort-amount-desc"></i> Antal träffar (fallande)</li>
@@ -249,7 +249,8 @@ export default {
 
   &-header {
     display: flex;
-    margin: 10px 0 5px 0;
+    margin: 10px 0 8px 0;
+    align-items: center;
     line-height: 1;
     justify-content: space-between;
     padding: 0 15px 0 0;
@@ -258,14 +259,15 @@ export default {
   &-sortSelect {
     min-width: 3em;
     height: 1.8em;
-    background-color: @grey-lighter;
-    border: 1px solid @grey-lighter;
+    background-color: @grey-lightest;
+    border: 1px solid @grey-lightest;
+    border-radius: 2px;
     transition: border-color 0.25s ease;
     padding: 0.25em 0.25em;
     font-size: 1rem;
     user-select: none;
-    &.active {
-      border: 1px solid @grey;
+    .icon-selected {
+      color: @brand-primary;
     }
   }
   &-sortSelectDropdown {
@@ -285,10 +287,11 @@ export default {
       padding: 0.5em;
       white-space: nowrap;
       &.active {
-        font-weight: bold;
+        color: @brand-primary;
       }
       &:hover {
-        background-color: @grey-lighter;
+        background-color: @brand-primary;
+        color: @neutral-color;
       }
     }
   }
