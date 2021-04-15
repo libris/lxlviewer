@@ -346,6 +346,9 @@ export default {
       }
       return `${this.parentPath}.${this.fieldKey}`;
     },
+    isMarc() {
+      return this.fieldKey.startsWith('marc:');
+    },
     isChild() {
       if (this.parentPath !== 'mainEntity') {
         return true;
