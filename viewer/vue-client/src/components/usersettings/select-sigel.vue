@@ -26,7 +26,7 @@ export default {
         userObj.settings.activeSigel = value;
         this.$store.dispatch('setUser', userObj);
       };
-      if (this.inspector.data.mainEntity && this.inspector.data.mainEntity['@type'] === 'Item') {
+      if (this.$route.name === 'Inspector' && this.inspector.data.mainEntity && this.inspector.data.mainEntity['@type'] === 'Item') {
         // If editing a holding, the user must accept a cancel dialog before sigel can be changed
         this.$store.dispatch('pushInspectorEvent', { 
           name: 'post-control',
