@@ -39,7 +39,6 @@ export default {
     ]),
     excludeFilters() {
       const filtersToBeExcluded = PropertyMappings.flatMap(prop => Object.keys(prop.mappings));
-      // filtersToBeExcluded.push('@reverse.itemOf.heldBy.@id');
       return filtersToBeExcluded;
     },
     filteredByHasItem() {
@@ -55,32 +54,8 @@ export default {
 
             if (item.hasOwnProperty('value')) { // Try to use item value to get label
               label = item.value;
-            } else if (item.hasOwnProperty('object') && this.pageData.hasOwnProperty('stats')) { // else look for preflabel in stats (if there are results)
-              const sliceByDimension = this.pageData.stats.sliceByDimension[item.variable];
-              let match = [];
-              if (typeof sliceByDimension !== 'undefined' && sliceByDimension.hasOwnProperty('observation')) {
-                match = sliceByDimension.observation.filter(obs => obs.object['@id'] === item.object['@id']);
-              }
-              if (match.length === 1) {
-                const matchObj = match[0].object;
-                const tryProps = ['prefLabelByLang', 'labelByLang', 'titleByLang', 'label'];
-                for (const prop in tryProps) {
-                  if (label === '' && matchObj.hasOwnProperty(tryProps[prop])) {
-                    if (tryProps[prop].endsWith('ByLang')) {
-                      label = matchObj[tryProps[prop]][this.settings.language];
-                    } else {
-                      label = matchObj[tryProps[prop]];
-                    }
-                  }
-                }
-                if (label === '') {
-                  label = this.getLabel(matchObj);
-                }
-              } else {
-                label = item.object['@id'];
-              }
-            } else if (item.hasOwnProperty('object')) {
-              label = item.object['@id']; // else try to translate object[@id]...
+            } else if (item.hasOwnProperty('object')) { 
+              label = this.getLabel(item.object);
             }
             return {
               label,
