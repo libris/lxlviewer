@@ -48,7 +48,8 @@ export default {
     isMarc() {
       if (this.item.hasOwnProperty('@type') && this.item['@type'].startsWith('marc:')) {
         return true;
-      } else if (this.item['@id'].includes('/marc/')) {
+      }
+      if (this.item['@id'].includes('/marc/')) {
         return true;
       }
       return false;
