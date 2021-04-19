@@ -5,7 +5,6 @@
 import { cloneDeep, isArray, get } from 'lodash-es';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import * as VocabUtil from '@/utils/vocab';
-import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import PanelSearchList from '../search/panel-search-list.vue';
 import Sort from '@/components/search/sort';
@@ -15,57 +14,20 @@ import FilterSelect from '@/components/shared/filter-select.vue';
 import TypeSelect from '@/components/inspector/type-select.vue';
 import ParamSelect from '@/components/inspector/param-select.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
-import { buildQueryString } from '@/utils/http';
+import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
 
 export default {
-  mixins: [LensMixin],
+  mixins: [LensMixin, SideSearchMixin],
   data() {
     return {
-      searchResult: [],
-      keyword: '',
-      activeSearches: 0,
-      searchAbortController: new AbortController(),
       rangeInfo: false,
       addEmbedded: false,
-      searchMade: false,
-      currentSearchTypes: [],
-      currentSearchParam: null,
-      resetParamSelect: 0,
-      active: false,
-      currentPage: 0,
-      maxResults: 20,
-      sort: '',
-      isCompact: false,
     };
   },
   props: {
-    fieldKey: {
-      type: String,
-      default: '',
-    },
     allowLocal: {
       type: Boolean,
       default: true,
-    },
-    allSearchTypes: {
-      type: Array,
-      default: () => [],
-    },
-    allValuesFrom: {
-      type: Array,
-      default: () => [],
-    },
-    someValuesFrom: {
-      type: Array,
-      default: () => [],
-    },
-    range: {
-      type: Array,
-      default: () => [],
-    },
-    rangeFull: {
-      type: Array,
-      default: () => [],
     },
     propertyTypes: {
       type: Array,
@@ -101,10 +63,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    entityType: {
-      type: String,
-      default: '',
-    },
   },
   components: {
     'panel-component': PanelComponent,
@@ -117,35 +75,12 @@ export default {
     sort: Sort,
   },
   watch: {
-    'inspector.event'(val) {
-      if (val.name === 'modal-control') {
-        switch (val.value) {
-          case 'close-entity-adder':
-            this.hide();
-            break;
-          default:
-        }
-      } else if (val.name === 'form-control') {
-        switch (val.value) {
-          case 'close-modals':
-            this.hide();
-            break;
-          case 'focus-changed':
-            this.hide();
-            break;
-          default:
-        }
-      }
-    },
     valueList(newVal) {
       if (newVal.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1) {
         this.addEmbedded = true;
       } else {
         this.addEmbedded = false;
       }
-    },
-    keyword(value) {
-      this.handleChange(value);
     },
     active(value) {
       if (!value) {
@@ -154,64 +89,10 @@ export default {
     },
   },
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    resources() {
-      return this.$store.getters.resources;
-    },
-    inspector() {
-      return this.$store.getters.inspector;
-    },
-    searchInProgress() {
-      return this.activeSearches > 0;
-    },
-    filterPlaceHolder() {
-      return 'All types';
-    },
-    selectOptions() {
-      const classTree = this.getClassTree;
-      const options = [];
-
-      for (let i = 0; i < classTree.length; i++) {
-        const term = {};
-        term.depth = classTree[i].depth;
-        term.abstract = classTree[i].abstract;
-        term.label = this.getLabelWithTreeDepth(classTree[i]);
-        term.value = classTree[i].id;
-        term.key = `${classTree[i].id}-${i}`;
-        options.push(term);
-      }
-      return options;
-    },
-    priorityOptions() {
-      const list = this.allValuesFrom.length > 1 ? this.allValuesFrom : this.someValuesFrom;
-      return list;
-    },
     computedTitle() {
       const modalStr = StringUtil.getUiPhraseByLang('Add entity', this.user.settings.language);
       const addLabelStr = StringUtil.getLabelByLang(this.addLabel, this.user.settings.language, this.resources.vocab, this.resources.context);
       return `${modalStr} | ${addLabelStr}`;
-    },
-    getClassTree() {
-      let treeSource = this.range;
-      if (this.allValuesFrom.length > 0) {
-        treeSource = this.allValuesFrom;
-      }
-      const tree = treeSource.map(type => VocabUtil.getTree(
-        type,
-        this.resources.vocab,
-        this.resources.context,
-      ));
-      return VocabUtil.flattenTree(
-        tree,
-        this.resources.vocab,
-        this.resources.context,
-        this.user.settings.language,
-      );
     },
     tooltipText() {
       const addText = StringUtil.getUiPhraseByLang('Add', this.user.settings.language);
@@ -295,6 +176,21 @@ export default {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1);
   },
   methods: {
+    getSearchParams(searchPhrase) {
+      if (this.currentSearchParam == null) {
+        return { q: searchPhrase };
+      }
+
+      const params = Object.assign({}, this.currentSearchParam.mappings || {});
+      this.currentSearchParam.searchProps.forEach((param) => { params[param] = searchPhrase; });
+
+      if (this.fieldKey === 'shelfMark') {
+        params['meta.descriptionCreator.@id'] = this.user.getActiveLibraryUri();
+        params.shelfMarkStatus = 'ActiveShelfMark';
+      }
+
+      return params;
+    },
     actionHighlight(active, event) {
       if (active) {
         let item = event.target;
@@ -304,49 +200,6 @@ export default {
         let item = event.target;
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
         item.classList.remove('is-marked');
-      }
-    },
-    getLabelWithTreeDepth(term) {
-      return DisplayUtil.getLabelWithTreeDepth(
-        term,
-        this.settings,
-        this.resources.vocab,
-        this.resources.context,
-      );
-    },
-    setFilter($event) {
-      let valuesArray = [];
-      let values;
-
-      if ($event.value !== null && typeof $event.value === 'object') {
-        values = Object.assign({}, { value: $event.value });
-        valuesArray = Object.values(values.value);
-      } else {
-        valuesArray.push($event.value);
-      }
-
-      this.currentSearchTypes = valuesArray;
-
-      if (this.keyword) {
-        this.search();
-      }
-    },
-    setParam($event) {
-      this.currentSearchParam = $event;
-      if (this.keyword) {
-        this.search();
-      }
-    },
-    handleChange(value) {
-      this.searchMade = false;
-      if (value) {
-        setTimeout(() => {
-          if (this.keyword === value) {
-            this.search();
-          }
-        }, this.settings.debounceTimer);
-      } else {
-        this.searchResult = [];
       }
     },
     dismissTypeChooser() {
@@ -510,25 +363,6 @@ export default {
       this.addEmpty(shortenedType);
       this.dismissTypeChooser();
     },
-    loadResults(result) {
-      this.searchResult = result.items;
-      this.totalItems = result.totalItems;
-    },
-    go(n) {
-      this.fetch(n);
-    },
-    fetch(pageNumber) {
-      const self = this;
-      self.currentPage = pageNumber;
-      self.activeSearches += 1;
-      this.getItems(this.keyword).then((result) => {
-        self.loadResults(result);
-      }, () => {
-        console.log(error);
-      }).then(() => {
-        self.activeSearches -= 1;
-      });
-    },
     search() {
       if (this.fieldKey === 'shelfMark' && this.user) {
         this.user.settings.shelfMarkSearch = this.keyword;
@@ -539,59 +373,6 @@ export default {
       self.searchResult = [];
       self.searchMade = true;
       this.fetch(0);
-    },
-    getSearchPhrase(keyword) {
-      let q = '';
-      if (keyword === '') {
-        q = '*';
-      } else if (keyword.match(/[|~*+"]/) || keyword.match(/^-| -/)) {
-        // User is using operators, accept their keyword as-is
-        q = keyword;
-      } else {
-        // Add wildcard if user is not using operators
-        q = `${keyword} | ${keyword}*`;
-      }
-      return q;
-    },
-    getSearchParams(searchPhrase) {
-      if (this.currentSearchParam == null) {
-        return { q: searchPhrase };
-      }
-
-      const params = Object.assign({}, this.currentSearchParam.mappings || {});
-      this.currentSearchParam.searchProps.forEach((param) => { params[param] = searchPhrase; });
-      return params;
-    },
-    getItems(keyword) {
-      let params = this.getSearchParams(this.getSearchPhrase(keyword));
-      params = Object.assign(params, {
-        _limit: this.maxResults,
-        _offset: this.currentPage * this.maxResults,
-        _sort: this.sort,
-      });
-
-      if (typeof this.typeArray !== 'undefined' && this.typeArray.length > 0) {
-        params['@type'] = this.typeArray;
-      }
-      
-      if (this.fieldKey === 'shelfMark') {
-        params['meta.descriptionCreator.@id'] = this.user.getActiveLibraryUri();
-        params.shelfMarkStatus = 'ActiveShelfMark';
-      }
-
-      const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
-
-      return new Promise((resolve, reject) => {
-        this.searchAbortController.abort();
-        const controller = new AbortController();
-        const signal = controller.signal;
-        this.searchAbortController = controller;
-        fetch(searchUrl, { signal }).then((response) => {
-          resolve(response.json());
-        }, (error) => {
-          reject('Error searching...', error);
-        });
-      });
     },
     setSort($event) {
       this.sort = $event;
