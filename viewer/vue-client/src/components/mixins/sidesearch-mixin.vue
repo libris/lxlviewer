@@ -10,7 +10,7 @@ export default {
       searchResult: [],
       keyword: '',
       activeSearches: 0,
-      searchAbortController: new AbortController(),
+      searchAbortController: null,
       searchMade: false,
       currentSearchTypes: [],
       currentSearchParam: null,
@@ -149,15 +149,30 @@ export default {
       }
       const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
       return new Promise((resolve, reject) => {
-        this.searchAbortController.abort();
-        const controller = new AbortController();
-        const signal = controller.signal;
-        this.searchAbortController = controller;
-        fetch(searchUrl, { signal }).then((response) => {
-          resolve(response.json());
-        }, (error) => {
-          reject('Error searching...', error);
-        });
+        // Check if abortcontroller is available
+        // ie11 doesn't have it atm so they don't get cancellable fetches...
+        if (typeof AbortController !== 'undefined') {
+          // Here is fetch that IS cancellable
+          if (this.searchAbortController !== null) {
+            // If search exists, abort it
+            this.searchAbortController.abort();
+          }
+          const controller = new AbortController();
+          const signal = controller.signal;
+          this.searchAbortController = controller;
+          fetch(searchUrl, { signal }).then((response) => {
+            resolve(response.json());
+          }, (error) => {
+            reject('Error searching...', error);
+          });
+        } else {
+          // Here is fetch that is NOT cancellable (ie11)
+          fetch(searchUrl).then((response) => {
+            resolve(response.json());
+          }, (error) => {
+            reject('Error searching...', error);
+          });
+        }
       });
     },
   },
