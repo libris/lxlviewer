@@ -432,7 +432,6 @@ def import_post():
 # So rethink the flow for new records
 # or maybe its not that stupid after all?
 @app.route('/edit', methods=['POST'])
-@admin.login_required
 def thingnewp():
     record = json.loads(request.form['data'])
     app.logger.debug('Posting data to editor:\n %s',
