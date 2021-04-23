@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="App">
-    <global-message />
+    <GlobalMessage :key="message.id" :message="message.content" v-for="message in activeGlobalMessages" />
+    <EnvironmentBanner />
     <navbar-component />
     <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
     <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': (!status.panelOpen && user.settings.fullSiteWidth === false), 'container-fluid': (status.panelOpen || user.settings.fullSiteWidth), 'debug-mode': user.settings.appTech }">
@@ -28,12 +29,14 @@
 
 <script>
 import VueSimpleSpinner from 'vue-simple-spinner';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import Navbar from '@/components/layout/navbar';
 import SearchBar from '@/components/layout/search-bar';
 import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
-import GlobalMessage from '@/components/layout/global-msg';
+import EnvironmentBanner from '@/components/layout/environment-banner';
+import GlobalMessage from '@/components/layout/global-message';
+import MockedGlobalMessages from '@/resources/json/mockedGlobalMsg.json';
 
 export default {
   name: 'App',
@@ -51,6 +54,7 @@ export default {
       'resourcesLoaded',
       'resourcesLoadingError',
       'status',
+      'activeGlobalMessages',
     ]),
   },
   watch: {    
@@ -81,6 +85,12 @@ export default {
     },
   },
   methods: {
+    ...mapActions([
+      'setGlobalMessages',
+    ]),
+    fetchGlobalMessages() {
+      this.setGlobalMessages(MockedGlobalMessages);
+    },
     disableDebugMode() {
       const userObj = this.user;
       userObj.settings.appTech = false;
@@ -88,15 +98,17 @@ export default {
     },
     checkSearchBar(event) {
       const $SearchBar = document.getElementById('SearchBar');
-      const $NavBar = document.getElementById('NavBar');
+      const elementsAboveSearchBar = document.getElementsByClassName('top-scroll-past');
+      let margin = 0;
+      console.log('top-scroll-past height', margin);
+      for (let i = 0; i < elementsAboveSearchBar.length; i++) {
+        margin += elementsAboveSearchBar[i].getBoundingClientRect().height;
+      }
       if ($SearchBar) {
         this.searchBarHeight = $SearchBar.getBoundingClientRect().height;
       }
-      if ($NavBar) {
-        this.navBarBottomPos = $NavBar.offsetHeight;
-      }
       if (event) {
-        if (event.target.scrollingElement && event.target.scrollingElement.scrollTop > this.navBarBottomPos) {
+        if (event.target.scrollingElement && event.target.scrollingElement.scrollTop > margin) {
           this.stickToTop = true;
         } else {
           this.stickToTop = false;
@@ -107,6 +119,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.checkSearchBar();
+      this.fetchGlobalMessages();
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'default', 
@@ -121,7 +134,8 @@ export default {
     'navbar-component': Navbar,
     'footer-component': Footer,
     'notification-list': NotificationList,
-    'global-message': GlobalMessage,
+    EnvironmentBanner,
+    GlobalMessage,
     'vue-simple-spinner': VueSimpleSpinner,
   },
 };
@@ -257,7 +271,7 @@ a:focus {
 // ----------- BUTTON ----------------
 
 button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
-    color: @white;
+  color: @white;
 }
 
 button {
@@ -329,6 +343,15 @@ button {
   &:active {
     box-shadow: inset 0 0 0.5rem 0 rgba(0, 0, 0, 0.4);
     color: @black;
+  }
+}
+
+.btn-transparent, .btn-transparent:focus, .btn-transparent:active {
+  border: 1px solid @black;
+  font-weight: 700;
+  background-color: transparent;
+  &:hover {
+    background-color: fadeout(@neutral-color, 70%);
   }
 }
 

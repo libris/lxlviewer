@@ -94,7 +94,7 @@ export default {
 </script>
 
 <template>
-  <nav class="NavBar" id="NavBar" aria-labelledby="service-name">
+  <nav class="NavBar top-scroll-past" id="NavBar" aria-labelledby="service-name">
     <div class="NavBar-container" :class="{ 'container': user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
       <div class="NavBar-brand">
         <router-link to="/" class="NavBar-brandLink">

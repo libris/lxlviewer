@@ -18,6 +18,7 @@ const store = new Vuex.Store({
       context: {},
       templates: {},
       helpDocs: null,
+      globalMessages: null,
     },
     directoryCare: {
       sender: null,
@@ -508,6 +509,9 @@ const store = new Vuex.Store({
     },
   },
   mutations: {
+    setGlobalMessages(state, payload) {
+      state.resources.globalMessages = payload;
+    },
     setValidation(state, payload) {
       if (payload.validates) {
         if (state.inspector.validation.violations[payload.path]) {
@@ -697,6 +701,21 @@ const store = new Vuex.Store({
     user: state => state.user,
     userStorage: state => state.userStorage,
     enrichment: state => state.enrichment,
+    activeGlobalMessages: (state) => {
+      const now = new Date();
+      const activeMessages = [];
+      const messages = state.resources.globalMessages;
+      if (messages && messages.length > 0) {
+        for (let i = 0; i < messages.length; i++) {
+          const startTime = new Date(messages[i].startTime*1000);
+          const endTime = new Date(messages[i].endTime*1000);
+          if (startTime < now && endTime > now) {
+            activeMessages.push(messages[i]);
+          }
+        }
+      }
+      return activeMessages;
+    },
     userFavorites: (state, getters) => {
       const collection = [];
       const list = getters.userStorage.list;
@@ -751,6 +770,9 @@ const store = new Vuex.Store({
     },
     setEnrichmentResult({ commit }, data) {
       commit('setEnrichmentResult', data);
+    },
+    setGlobalMessages({ commit }, data) {
+      commit('setGlobalMessages', data);
     },
     unmark({ commit, state }, payload) {
       const userStorage = cloneDeep(state.userStorage);
