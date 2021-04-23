@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="App">
-    <GlobalMessage :key="message.id" :message="message.content" v-for="message in activeGlobalMessages" />
+    <GlobalMessages />
     <EnvironmentBanner />
     <navbar-component />
     <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
@@ -29,14 +29,13 @@
 
 <script>
 import VueSimpleSpinner from 'vue-simple-spinner';
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 import Navbar from '@/components/layout/navbar';
 import SearchBar from '@/components/layout/search-bar';
 import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import EnvironmentBanner from '@/components/layout/environment-banner';
-import GlobalMessage from '@/components/layout/global-message';
-import MockedGlobalMessages from '@/resources/json/mockedGlobalMsg.json';
+import GlobalMessages from '@/components/layout/global-messages';
 
 export default {
   name: 'App',
@@ -54,7 +53,6 @@ export default {
       'resourcesLoaded',
       'resourcesLoadingError',
       'status',
-      'activeGlobalMessages',
     ]),
   },
   watch: {    
@@ -85,12 +83,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      'setGlobalMessages',
-    ]),
-    fetchGlobalMessages() {
-      this.setGlobalMessages(MockedGlobalMessages);
-    },
     disableDebugMode() {
       const userObj = this.user;
       userObj.settings.appTech = false;
@@ -119,7 +111,6 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.checkSearchBar();
-      this.fetchGlobalMessages();
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
         value: 'default', 
@@ -135,7 +126,7 @@ export default {
     'footer-component': Footer,
     'notification-list': NotificationList,
     EnvironmentBanner,
-    GlobalMessage,
+    GlobalMessages,
     'vue-simple-spinner': VueSimpleSpinner,
   },
 };
