@@ -48,11 +48,7 @@
               </a>
             </div>
             <a class="navbar-brand" href="/" title="Version ${ config.VERSION }">
-              % if g.site.title == 'libris.kb.se'
-                Libris katalogisering
-              % else
                 ${g.site.title}
-              % endif
               <span class="environment-label">
                 {% if config.ENVIRONMENT == 'prod' %}
                 {% elif config.ENVIRONMENT %}
@@ -83,47 +79,6 @@
                 </a>
               </li>
             % endfor
-            % if g.site.title == 'libris.kb.se'
-            <li class="navbar-item">
-              <a href="/help">
-                <div class="navbar-circle">
-                  <i class="fa fa-question-circle" aria-hidden="true"></i>
-                </div>
-                <span class="js-translateable" data-translateable="Hjälp">Help</a></a>
-            </li>
-            <li class="navbar-item">
-              <a href="/">
-                <div class="navbar-circle">
-                  <i class="fa fa-search" aria-hidden="true"></i>
-                </div>
-                <span class="js-translateable" data-translateable="Sök">Search</span></a>
-              </li>
-              % if current_user.is_authenticated
-                <li v-if="initialized == true && user.getPermissions().cataloger == true" class="navbar-item">
-                  <a href="/createnew">
-                    <div class="navbar-circle">
-                      <i class="fa fa-file-text" aria-hidden="true"></i>
-                    </div>
-                    <span class="js-translateable" data-translateable="Create new">Create new</span>
-                  </a>
-                </li>
-                <li class="navbar-item user-settings">
-                  <a href="/usersettings">
-                    <div class="navbar-circle">
-                      <img class="user-gravatar" src="${current_user.get_gravatar_url()}" />
-                    </div>
-                    ${current_user.get_short_name()} <span v-cloak class="sigelLabel" v-if="initialized === true">({{user.settings.activeSigel}})</span>
-                  </a>
-                </li>
-              % else
-                  <li class="navbar-item"><a href="/login">
-                    <div class="navbar-circle">
-                    <i class="fa fa-fw fa-sign-in"></i>
-                    </div>
-                    <span class="js-translateable" data-translateable="Log in">Log in</span></a>
-                  </li>
-              % endif
-            % endif
             </ul>
           </nav>
         </div>
@@ -139,41 +94,9 @@
           % block footer
             <div class="footer-container container flex">
               <div class="service-name flex column align-center semibold">
-                % if g.site.title == 'libris.kb.se'
-                <img src="/assets/img/kb_logo_black.svg" class="logo-medium" alt="Kungliga biblioteket" />
-                % else
                 <img src="/assets/img/kb_logo_white.svg" class="logo-medium" alt="Kungliga biblioteket" />
-                % endif
                 <a href="http://www.kb.se">Kungliga biblioteket</a>
               </div>
-              % if g.site.title == 'libris.kb.se'
-              <div class="link-list">
-                <div class="header" data-translateable="XL">XL</div>
-                <div class="item"><a href="/about" class="js-translateable" data-translateable="About XL">About XL</a></div>
-                <div class="item"><a href="https://goo.gl/forms/dPxkhMqE10RvKQFE2" class="js-translateable" data-translateable="Suggest change">Suggest change</a></div>
-                <div class="item"><a href="https://goo.gl/forms/3mL7jTlEpbU3BQM13" class="js-translateable" data-translateable="Report error">Report error</a></div>
-              </div>
-              <div class="link-list">
-                <div class="header js-translateable" data-translateable="New Libris and XL">New Libris and XL</div>
-                <div class="item"><a href="https://www.youtube.com/playlist?list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="js-translateable" data-translateable="Instruction videos">Instruction videos</a></div>
-                <div class="item"><a href="http://librisbloggen.kb.se/" class="js-translateable" data-translateable="Librisbloggen">Librisbloggen</a></div>
-                <div class="item"><a href="http://kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/" class="js-translateable" data-translateable="Introduction material">Introduktionsmaterial</a></div>
-                <div class="item"><a href="http://www.kb.se/libris/" class="js-translateable">kb.se/libris</a></div>
-                <div class="item"><a href="https://libris.kb.se/" class="js-translateable">libris.kb.se</a></div>
-              </div>
-              <div class="link-list">
-                <div class="header" data-translateable="Support">Support</div>
-                <div class="item"><a class="js-translateable" href="http://www.kb.se/libris/kontakta/" data-translateable="Libris customer service">Libris customer service</a></div>
-              </div>
-              <div class="social-media">
-                <div class="header js-translateable" data-translateable="Social media">Social media</div>
-                <div>
-                  <a href="https://www.youtube.com/user/KunglBiblioteket/"><i class="fa fa-2x fa-youtube-play" aria-hidden="true"></i></a>
-                  <a href="https://twitter.com/librisnytt/"><i class="fa fa-2x fa-twitter-square" aria-hidden="true"></i></a>
-                  <a href="https://www.facebook.com/LibrisNytt/"><i class="fa fa-2x fa-facebook-square" aria-hidden="true"></i></a>
-                </div>
-              </div>
-              % endif
               <div class="link-list">
                 <h2>Information</h2>
                 <hr class="footer-divider">
@@ -192,12 +115,6 @@
     <script src="/assets/build/idkbse.min.js" type="text/javascript"></script>
 
       <script type="text/javascript">
-        % if g.site.title == 'libris.kb.se'
-          window.userInfo = {};
-          % if current_user.is_authenticated
-            window.userInfo = ${current_user.get_as_json() | safe};
-          % endif
-        % endif
         window.siteInfo = {}
         % if g.site
           window.siteInfo.title = "${g.site.title}"

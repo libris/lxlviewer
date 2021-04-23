@@ -1,6 +1,4 @@
 % extends "base.html"
-{% from 'toolbar.html' import toolbar_old %}
-{% from 'toolbar.html' import toolbar %}
 % from "termutils.html" import vocab_term, termref
 
 {% block title %}${g.vocab.get_label_for(thing)}{% endblock %}
@@ -78,7 +76,6 @@
 
 % macro thing_full(thing)
 <div class="thing thing-full">
-  ${toolbar(thing, current_user.is_authenticated)}
   <div class="header">
     <h1>${g.vocab.get_label_for(thing)}</h1>
   </div>
@@ -369,8 +366,6 @@
 
     % if ID in thing
       % set thing_url = view_url(thing_id)
-      ${toolbar_old(thing_url, current_user.is_authenticated, typename, element)}
-
         % if t
           ${termref(t, classes='', labeltype='label-class')}
         % endif
