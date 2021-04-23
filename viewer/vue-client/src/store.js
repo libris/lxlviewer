@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { cloneDeep, each, set, get, assign, filter } from 'lodash-es';
+import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
@@ -93,8 +94,12 @@ const store = new Vuex.Store({
       gitDescribe: JSON.parse(process.env.VUE_APP_GIT_DESCRIBE),
       dataPath: process.env.VUE_APP_DATA_PATH || process.env.VUE_APP_API_PATH,
       apiPath: process.env.VUE_APP_API_PATH,
-      authPath: process.env.VUE_APP_AUTH_PATH,
+      verifyPath: process.env.VUE_APP_VERIFY_PATH,
       idPath: process.env.VUE_APP_ID_PATH,
+      authPath: process.env.VUE_APP_AUTHORIZE_PATH,
+      redirectPath: process.env.VUE_APP_REDIRECT_PATH,
+      clientId: process.env.VUE_APP_CLIENT_ID,
+      scopes: process.env.VUE_APP_SCOPES,
       mockDisplay: Boolean(process.env.VUE_APP_MOCK_DISPLAY_BOOL) || false,
       mockHelp: Boolean(process.env.VUE_APP_MOCK_HELP_BOOL) || false,
       matomoId: process.env.VUE_APP_MATOMO_ID,
@@ -506,6 +511,7 @@ const store = new Vuex.Store({
         ],
       },
     },
+    oauth2Client: {},
   },
   mutations: {
     setValidation(state, payload) {
@@ -603,6 +609,9 @@ const store = new Vuex.Store({
         throw new Error(`Trying to set unknown status property "${payload.property}". Is it defined in the store?`);
       }
     },
+    setOauth2Client(state, client) {
+      state.oauth2Client = client;
+    },
     setInspectorStatusValue(state, payload) {
       if (state.inspector.status.hasOwnProperty(payload.property)) {
         state.inspector.status[payload.property] = payload.value;
@@ -694,6 +703,7 @@ const store = new Vuex.Store({
     resourcesLoadingError: state => state.resources.loadingError,
     templates: state => state.resources.templates,
     settings: state => state.settings,
+    oauth2Client: state => state.oauth2Client,
     user: state => state.user,
     userStorage: state => state.userStorage,
     enrichment: state => state.enrichment,
@@ -781,9 +791,9 @@ const store = new Vuex.Store({
         let userObj = User.getUserObject();
         if (token !== null) {
           const headers = new Headers();
-          const authUrl = state.settings.authPath;
+          const verifyUrl = state.settings.verifyPath;
           headers.append('Authorization', `Bearer ${token}`);
-          fetch(authUrl, {
+          fetch(verifyUrl, {
             headers,
             method: 'GET',
           }).then(response => response.json()).then((result) => {
@@ -867,6 +877,15 @@ const store = new Vuex.Store({
         property: 'loadingIndicators',
         value: loaders,
       });
+    },
+    initOauth2Client({ commit, state }) {
+      const client = new ClientOAuth2({
+        clientId: state.settings.clientId,
+        authorizationUri: state.settings.authPath,
+        redirectUri: state.settings.redirectPath,
+        scopes: state.settings.scopes,
+      });
+      commit('setOauth2Client', client);
     },
     pushKeyAction({ commit }, keyAction) {
       commit('pushKeyAction', keyAction);

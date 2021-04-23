@@ -81,6 +81,9 @@ export default {
     hideUserMenu() {
       this.showUserMenu = false;
     },
+    login() {
+      window.location = this.$store.getters.oauth2Client.token.getUri();
+    },
   },
   watch: {
     '$route.path'() {
@@ -141,9 +144,9 @@ export default {
             v-on-clickaway="hideUserMenu" />
         </li>
         <li class="MainNav-item" v-if="!user.isLoggedIn">
-          <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
-            <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
-          </a>
+            <span class="MainNav-link" @click="login" @keyup.enter="login">
+              {{"Log in" | translatePhrase}}
+            </span>
         </li>
       </ul>
     </div>
