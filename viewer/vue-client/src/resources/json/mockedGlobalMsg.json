@@ -5,7 +5,7 @@
     "endTime": 	"1624368359",
     "content":  {
       "title": "Exempel på varning",
-      "text": "Test test. För tillfället driftstopp.",
+      "text": "Test test. För tillfället driftstopp. <b>Stödjer</b> <u>inline</u> <i>styles</i>",
       "type": "warning"
     }
   },
@@ -15,7 +15,7 @@
     "endTime": 1624368359,
     "content": {
       "title": "Exempel på information",
-      "text": "Test test. Planerat underhåll snart.",
+      "text": "Test test. Planerat underhåll snart. <a href=\"/katalogisering#\">testlänk</a>.",
       "type": "info"
     }
   }

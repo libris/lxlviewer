@@ -73,7 +73,7 @@ export default {
         </div>
         <div class="GlobalMessage-content">
           <span class="GlobalMessage-title">{{ message.content.title }}</span>
-          <span class="GlobalMessage-text">{{ message.content.text }}</span>
+          <span class="GlobalMessage-text" v-html="message.content.text"></span>
         </div>
         <div class="GlobalMessage-action">
           <button @click="closeMessage(message.id)" @keyup.enter="closeMessage(message.id)" class="btn btn-transparent">{{ 'Close' | translatePhrase }}</button>
