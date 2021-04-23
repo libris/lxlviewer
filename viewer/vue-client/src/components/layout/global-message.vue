@@ -30,7 +30,8 @@ export default {
       <div class="GlobalMessage-icon">
         <span class="fa-stack fa-md">
           <i class="icon-backplate fa fa-circle fa-stack-2x"></i>
-          <i class="icon-symbol fa fa-exclamation fa-stack-1x fa-inverse"></i>
+          <i v-if="this.message.type == 'warning'" class="icon-symbol fa fa-exclamation fa-stack-1x fa-inverse"></i>
+          <i v-if="this.message.type == 'info'" class="icon-symbol fa fa-info fa-stack-1x fa-inverse"></i>
         </span>
       </div>
       <div class="GlobalMessage-content">
