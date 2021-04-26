@@ -25,14 +25,11 @@ from flask_cors import CORS
 from werkzeug.urls import url_quote
 from werkzeug.datastructures import MultiDict
 
-from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
-
 from rdflib import ConjunctiveGraph
 
 from .util import as_iterable
 from .dataaccess import CONTEXT, GRAPH, ID, TYPE, REVERSE, DataAccess, IDKBSE, LIBRIS
 from .marcframeview import MarcFrameView, pretty_json
-from . import admin
 from . import conneg
 
 
@@ -410,8 +407,6 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = unicode(app.config.get('OAUTHLIB_INS
 app.secret_key = app.config.get('SESSION_SECRET_KEY') or ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
 app.remember_cookie_duration = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
 app.permanent_session_lifetime = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
-
-app.register_blueprint(admin.admin_app)
 
 
 ##
