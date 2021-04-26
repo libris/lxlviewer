@@ -54,7 +54,7 @@ No action required here, this is just information.
 
 #### Requirements
 * A flask app serving the resources (see above)
-* [node.js](http://nodejs.org/) >=8.0.0
+* [node.js](http://nodejs.org/) >=8.16.2
 * [yarn](https://yarnpkg.com/en/docs/install)
 
 #### Setup
