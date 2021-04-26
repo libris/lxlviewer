@@ -4,5 +4,3 @@ flask-cors==3.0.2
 rdflib==4.2.2
 rdflib-jsonld==0.5
 requests==2.20.0
-requests-oauthlib==0.8.0
-oauthlib==2.0.1

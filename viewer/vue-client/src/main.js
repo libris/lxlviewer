@@ -128,6 +128,7 @@ new Vue({
   render: h => h(App),
   created() {
     store.dispatch('verifyUser').catch(() => {});
+    store.dispatch('initOauth2Client').catch(() => {});
     this.initWarningFunc();
     this.fetchHelpDocs();
     store.dispatch('pushLoadingIndicator', 'Loading application');
@@ -222,7 +223,7 @@ new Vue({
       if (!this.settings.apiPath || typeof this.settings.apiPath === 'undefined') {
         throw new Error('Missing API path in app-config');
       }
-      if (!this.settings.authPath || typeof this.settings.authPath === 'undefined') {
+      if (!this.settings.verifyPath || typeof this.settings.verifyPath === 'undefined') {
         throw new Error('Missing AUTH path in app-config');
       }
       if (!this.settings.idPath || typeof this.settings.idPath === 'undefined') {

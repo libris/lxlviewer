@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     renewLogin() {
-      window.location = `${this.settings.apiPath}/login/authorize`;
+      window.location = this.$store.getters.oauth2Client.token.getUri();
     },
   },
   mounted() {
@@ -34,7 +34,7 @@ export default {
       } else if (this.user.isLoggedIn && token !== null) {
         const path = localStorage.getItem('lastPath') || '/';
         this.$router.push({ path: path });
-      } else window.location = `${this.settings.apiPath}/login/authorize`;
+      } else window.location = this.$store.getters.oauth2Client.token.getUri();
     });
   },
 };

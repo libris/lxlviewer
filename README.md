@@ -54,14 +54,16 @@ No action required here, this is just information.
 
 #### Requirements
 * A flask app serving the resources (see above)
-* [node.js](http://nodejs.org/) >=8.0.0
+* [node.js](http://nodejs.org/) >=8.16.2
 * [yarn](https://yarnpkg.com/en/docs/install)
 
 #### Setup
 
     $ cd viewer/vue-client && yarn install
 
-In `./viewer/vue-client/.env.development`, input the path to your REST-API (if not standard) and auth URL.
+    $ cp .env.development.in .env.development
+
+In `.env.development`, input the path to your flask app REST-API (if not standard). Get `VUE_APP_CLIENT_ID` for local development from a Libris developer.
 
 
 #### Building
