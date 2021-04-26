@@ -12,7 +12,4 @@ PIWIK_ID = '%(piwikid)s'
 MATOMO_READ_TOKEN = '%(matomo_read_token)s'
 WHELK_REST_API_URL='%(whelk_rest_api_url)s'
 SESSION_SECRET_KEY='%(session_secret_key)s'
-OAUTH_AUTHORIZATION_URL='%(oauth_authorization_url)s'
 OAUTH_VERIFY_URL='%(oauth2verifyurl)s'
-OAUTH_CLIENT_ID='%(oauth_client_id)s'
-OAUTH_SCOPES=['read', 'write']
