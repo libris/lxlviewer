@@ -85,6 +85,7 @@ const store = new Vuex.Store({
     userStorage: {
       list: {},
       copyClipboard: null,
+      dismissedMessages: [],
     },
     settings: {
       title: 'Libris katalogisering',
@@ -717,8 +718,11 @@ const store = new Vuex.Store({
       const messages = state.resources.globalMessages;
       if (messages && messages.length > 0) {
         for (let i = 0; i < messages.length; i++) {
-          const startTime = new Date(messages[i].startTime*1000);
-          const endTime = new Date(messages[i].endTime*1000);
+          if (state.userStorage.hasOwnProperty('dismissedMessages') && state.userStorage.dismissedMessages.includes(messages[i].id)) {
+            continue;
+          }
+          const startTime = new Date(messages[i].startTime * 1000);
+          const endTime = new Date(messages[i].endTime * 1000);
           if (startTime < now && endTime > now) {
             activeMessages.push(messages[i]);
           }
@@ -802,6 +806,32 @@ const store = new Vuex.Store({
       const userStorage = cloneDeep(state.userStorage);
       userStorage.list = {};
       commit('setUserStorage', userStorage);
+    },
+    dismissMessage({ commit, state }, id) {
+      const userStorage = cloneDeep(state.userStorage);
+      if (userStorage.hasOwnProperty('dismissedMessages') === false) {
+        userStorage.dismissedMessages = [];
+      }
+      userStorage.dismissedMessages.push(id);
+      commit('setUserStorage', userStorage);
+    },
+    cleanupDismissedList({ commit, state }) {
+      if (state.resources.globalMessages.length > 0) {
+        const userStorage = cloneDeep(state.userStorage);
+        const keepInList = [];
+        if (userStorage.hasOwnProperty('dismissedMessages') && userStorage.dismissedMessages.length > 0) {
+          for (let i = 0; i < userStorage.dismissedMessages.length; i++) {
+            const item = userStorage.dismissedMessages[i];
+            for (let x = 0; x < state.resources.globalMessages.length; x++) {
+              if (state.resources.globalMessages[x].id === item) {
+                keepInList.push(item);
+              }
+            }
+          }
+        }
+        userStorage.dismissedMessages = keepInList;
+        commit('setUserStorage', userStorage);
+      }
     },
     verifyUser({ commit, state }) {
       return new Promise((resolve, reject) => {

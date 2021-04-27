@@ -5,7 +5,6 @@ export default {
   name: 'GlobalMessages',
   data() {
     return {
-      closedMessages: [],
     };
   },
   props: {
@@ -17,13 +16,11 @@ export default {
   computed: {
     ...mapGetters([
       'settings',
+      'user',
       'activeGlobalMessages',
     ]),
     shownMessages() {
-      return this.activeGlobalMessages.filter(o => !this.closedMessages.includes(o.id));
-    },
-    user() {
-      return this.$store.getters.user;
+      return this.activeGlobalMessages;
     },
     settings() {
       return this.$store.getters.settings;
@@ -32,9 +29,12 @@ export default {
   methods: {
     ...mapActions([
       'setGlobalMessages',
+      'dismissMessage',
+      'cleanupDismissedList',
     ]),
     closeMessage(id) {
-      this.closedMessages.push(id);
+      this.dismissMessage(id);
+      this.cleanupDismissedList();
     },
     fetchGlobalMessages() {
       fetch(`${this.settings.apiPath}/feed/status`).then((result) => {
@@ -50,7 +50,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.fetchGlobalMessages();
+      setTimeout(() => {
+        this.fetchGlobalMessages();
+      }, 250);
     });
   },
 };
@@ -84,7 +86,7 @@ export default {
           <span class="GlobalMessage-text" v-html="message.content.text"></span>
         </div>
         <div class="GlobalMessage-action">
-          <button @click="closeMessage(message.id)" @keyup.enter="closeMessage(message.id)" class="btn btn-transparent">{{ 'Close' | translatePhrase }}</button>
+          <button v-if="message.dismissable" @click="closeMessage(message.id)" @keyup.enter="closeMessage(message.id)" class="btn btn-transparent">{{ 'Close' | translatePhrase }}</button>
         </div>
       </div>
     </div>
