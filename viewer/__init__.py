@@ -111,18 +111,23 @@ def show_help():
 
 ##
 # Setup Github rss
-@app.route('/releasefeed', methods=['GET'])
+@app.route('/feed/release', methods=['GET'])
 def get_release_feed():
     return requests.get('https://github.com/libris/lxlviewer/releases.atom').content
 
 # Setup proxy for analytics "active users"
-@app.route('/activeusers', methods=['GET'])
+@app.route('/feed/activeusers', methods=['GET'])
 def get_active_users():
     return requests.get('https://analytics.kb.se/index.php?module=API&method=Live.getCounters&idSite=65&lastMinutes={lastMinutes}&format=json&token_auth={token}'.format(lastMinutes=5, token=app.config.get('MATOMO_READ_TOKEN'))).content
 
+# Setup status feed
+@app.route('/feed/status', methods=['GET'])
+def get_status_feed():
+    return requests.get('http://multiweb.kb.se/libris/status.json').content
+
 # Setup news feed
-@app.route('/newsfeed', methods=['GET'])
-def get_blog_feed():
+@app.route('/feed/news', methods=['GET'])
+def get_news_feed():
     return requests.get('https://www.kb.se/rest-api/RSS%20Genererare/news-rss?keywords=Libris').content
 
 

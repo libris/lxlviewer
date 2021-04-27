@@ -1,6 +1,5 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import MockedGlobalMessages from '@/resources/json/mockedGlobalMsg.json';
 
 export default {
   name: 'GlobalMessages',
@@ -17,6 +16,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'settings',
       'activeGlobalMessages',
     ]),
     shownMessages() {
@@ -37,7 +37,15 @@ export default {
       this.closedMessages.push(id);
     },
     fetchGlobalMessages() {
-      this.setGlobalMessages(MockedGlobalMessages);
+      fetch(`${this.settings.apiPath}/feed/status`).then((result) => {
+        if (result.status === 200) {
+          result.json().then((body) => {
+            this.setGlobalMessages(body);
+          });
+        }
+      }, (error) => {
+        console.log('Couldn\'t fetch status feed.', error);
+      });
     },
   },
   mounted() {
