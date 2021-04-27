@@ -92,7 +92,6 @@ export default {
       const $SearchBar = document.getElementById('SearchBar');
       const elementsAboveSearchBar = document.getElementsByClassName('top-scroll-past');
       let margin = 0;
-      console.log('top-scroll-past height', margin);
       for (let i = 0; i < elementsAboveSearchBar.length; i++) {
         margin += elementsAboveSearchBar[i].getBoundingClientRect().height;
       }
