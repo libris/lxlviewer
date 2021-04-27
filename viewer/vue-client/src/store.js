@@ -444,28 +444,6 @@ const store = new Vuex.Store({
             label: 'Most linked',
           },
         ],
-        Other: [
-          {
-            query: '',
-            label: 'Relevance',
-          },
-          {
-            query: '_sortKeyByLang',
-            label: 'A-Z',
-          },
-          {
-            query: '-_sortKeyByLang',
-            label: 'Z-A',
-          },
-          {
-            query: '-meta.modified',
-            label: 'Last updated',
-          },
-          {
-            query: '-reverseLinks.totalItems',
-            label: 'Most linked',
-          },
-        ],
         Common: [
           {
             query: '',

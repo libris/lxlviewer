@@ -41,16 +41,20 @@ export default {
       const sortOptions = this.$store.getters.settings.sortOptions[this.commonBaseType];
       if (sortOptions) {
         return sortOptions;
-      }      
+      }
       return false;
     },
     commonBaseType() {      
       if (typeof this.recordTypes === 'string') {
-        return VocabUtil.getRecordType(
+        const type = VocabUtil.getRecordType(
           this.recordTypes,
           this.resources.vocab, 
           this.resources.context,
         );
+        if (this.$store.getters.settings.sortOptions[type]) {
+          return type;
+        }
+        return this.commonSortFallback ? 'Common' : false;
       }      
       if (Array.isArray(this.recordTypes)) {
         const baseTypes = this.recordTypes.reduce((accumulator, currType) => {
