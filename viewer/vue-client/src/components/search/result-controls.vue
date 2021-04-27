@@ -206,6 +206,7 @@ export default {
         <sort 
           v-if="searchedTypes && $route.params.perimeter != 'remote'"
           :currentSort="currentSortOrder ? currentSortOrder : ''"
+          :common-sort-fallback="true"
           :recordTypes="searchedTypes"
           @change="$emit('sortChange', $event)"/>
         <div class="ResultControls-listTypes">
