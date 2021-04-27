@@ -5,6 +5,7 @@ export default {
   name: 'GlobalMessages',
   data() {
     return {
+      secondsBetweenUpdates: 300,
     };
   },
   props: {
@@ -32,6 +33,14 @@ export default {
       'dismissMessage',
       'cleanupDismissedList',
     ]),
+    initializeTimers() {
+      setTimeout(() => {
+        this.fetchGlobalMessages();
+      }, 250);
+      setInterval(() => {
+        this.fetchGlobalMessages();
+      }, this.secondsBetweenUpdates * 1000);
+    },
     closeMessage(id) {
       this.dismissMessage(id);
       this.cleanupDismissedList();
@@ -50,9 +59,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      setTimeout(() => {
-        this.fetchGlobalMessages();
-      }, 250);
+      this.initializeTimers()
     });
   },
 };
