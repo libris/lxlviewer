@@ -215,11 +215,11 @@ export default {
         this.resources.vocab, 
         this.resources.context,
       );
-      if (this.recordType === 'Item') {
-        return translatedBaseType;
+      if (type === this.recordType && ['Instance', 'Work'].indexOf(type) !== -1) {
+        return `${this.$options.filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
       }
       if (type === this.recordType) {
-        return `${this.$options.filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
+        return translatedBaseType;
       }
       let translatedType = '';
       if (isArray(type)) {
