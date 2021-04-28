@@ -89,11 +89,12 @@ export default {
     ]),
     setupIdleTimer() {
       // USER IDLE TIMER
+      const updateTimer = 5;
       const resetTimer = () => {
         this.userIdleTimer = 0;
       }
       setInterval(() => {
-        this.userIdleTimer += 1;
+        this.userIdleTimer += updateTimer;
         if (this.userIdleTimer > 5 && this.status.userIdle === false) {
           this.setStatusValue({ 
             property: 'userIdle',
@@ -105,7 +106,7 @@ export default {
             value: false,
           });
         }
-      }, 1000);
+      }, updateTimer * 1000);
       window.addEventListener('load', resetTimer, true);
       var events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
       events.forEach(function(name) {
