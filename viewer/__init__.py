@@ -123,7 +123,10 @@ def get_active_users():
 # Setup status feed
 @app.route('/feed/status', methods=['GET'])
 def get_status_feed():
-    return requests.get('http://multiweb.kb.se/libris/status.json').content
+    env = app.config.get('ENVIRONMENT')
+    if env == 'local':
+        env = 'dev'
+    return requests.get(f"http://multiweb.kb.se/libris/status-{env}.json").content
 
 # Setup news feed
 @app.route('/feed/news', methods=['GET'])
