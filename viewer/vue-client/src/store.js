@@ -66,6 +66,7 @@ const store = new Vuex.Store({
       magicShelfMarks: [], 
     },
     status: {
+      userIdle: false,
       panelOpen: false,
       keybindState: '',
       fullWidth: false,

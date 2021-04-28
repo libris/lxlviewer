@@ -1,11 +1,14 @@
 <script>
+import moment from 'moment';
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'GlobalMessages',
   data() {
     return {
-      secondsBetweenUpdates: 300,
+      secondsBetweenUpdates: 60,
+      timeForLastFetch: null,
+      shouldFetch: false,
     };
   },
   props: {
@@ -18,6 +21,7 @@ export default {
     ...mapGetters([
       'settings',
       'user',
+      'status',
       'activeGlobalMessages',
     ]),
     shownMessages() {
@@ -27,25 +31,41 @@ export default {
       return this.$store.getters.settings;
     },
   },
+  watch: {
+    shouldFetch(val, oldVal) {
+      if (val !== oldVal && val === true) {
+        this.fetchGlobalMessages();
+      }
+    },
+  },
   methods: {
     ...mapActions([
       'setGlobalMessages',
       'dismissMessage',
       'cleanupDismissedList',
     ]),
-    initializeTimers() {
+    getTimeSinceLastUpdate() {
+      const now = moment();
+      const lastUpdate = moment(this.timeForLastFetch);
+      return now.diff(lastUpdate, 'seconds');
+    },
+    initializeUpdateTriggers() {
       setTimeout(() => {
-        this.fetchGlobalMessages();
+        this.shouldFetch = true;
       }, 250);
       setInterval(() => {
-        this.fetchGlobalMessages();
-      }, this.secondsBetweenUpdates * 1000);
+        if (this.status.userIdle === false && this.getTimeSinceLastUpdate() > this.secondsBetweenUpdates) {
+          this.shouldFetch = true;
+        }
+      }, 10000);
     },
     closeMessage(id) {
       this.dismissMessage(id);
       this.cleanupDismissedList();
     },
     fetchGlobalMessages() {
+      this.shouldFetch = false;
+      this.timeForLastFetch = new Date();
       fetch(`${this.settings.apiPath}/feed/status`).then((result) => {
         if (result.status === 200) {
           result.json().then((body) => {
@@ -59,7 +79,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.initializeTimers()
+      this.initializeUpdateTriggers()
     });
   },
 };

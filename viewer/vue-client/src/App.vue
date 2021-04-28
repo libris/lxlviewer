@@ -29,7 +29,7 @@
 
 <script>
 import VueSimpleSpinner from 'vue-simple-spinner';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import Navbar from '@/components/layout/navbar';
 import SearchBar from '@/components/layout/search-bar';
 import Footer from '@/components/layout/footer';
@@ -44,6 +44,7 @@ export default {
       stickToTop: false,
       navBarBottomPos: 0,
       searchBarHeight: 0,
+      userIdleTimer: 0,
     };
   },
   computed: {
@@ -83,6 +84,34 @@ export default {
     },
   },
   methods: {
+    ...mapActions([
+      'setStatusValue',
+    ]),
+    setupIdleTimer() {
+      // USER IDLE TIMER
+      const resetTimer = () => {
+        this.userIdleTimer = 0;
+      }
+      setInterval(() => {
+        this.userIdleTimer += 1;
+        if (this.userIdleTimer > 5 && this.status.userIdle === false) {
+          this.setStatusValue({ 
+            property: 'userIdle',
+            value: true,
+          });
+        } else if (this.userIdleTimer <= 5 && this.status.userIdle === true) {
+          this.setStatusValue({ 
+            property: 'userIdle',
+            value: false,
+          });
+        }
+      }, 1000);
+      window.addEventListener('load', resetTimer, true);
+      var events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+      events.forEach(function(name) {
+        document.addEventListener(name, resetTimer, true); 
+      });
+    },
     disableDebugMode() {
       const userObj = this.user;
       userObj.settings.appTech = false;
@@ -109,6 +138,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      this.setupIdleTimer();
       this.checkSearchBar();
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
