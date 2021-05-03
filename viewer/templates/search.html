@@ -20,7 +20,7 @@
       <div class="form">
         <div class="form-group">
           % for param, value in request.args.items(multi=True)
-            % if param != 'q' and param != '_sort'
+            % if param != 'q' and param != '_sort' and param != "_offset"
               <input type="hidden" name="${param}" value="${value}" />
             % endif
           % endfor
@@ -72,7 +72,7 @@
             % else
               % set label = item.value
             % endif
-              <a href="${item.up['@id']}" class="activated-facet semibold" title="Ta bort filter" aria-label="Ta bort filter ${vocab_term(label)}">
+              <a href="${item.up['@id'] | modify_query({'_offset': 0})}" class="activated-facet semibold" title="Ta bort filter" aria-label="Ta bort filter ${vocab_term(label)}">
               ${vocab_term(label)}
               <span class="fa fa-fw fa-times-circle" aria-hidden="true"></span>
             </a>

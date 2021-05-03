@@ -12,10 +12,7 @@ import re
 import string
 import time
 import requests
-try:
-    from urllib.parse import urlparse, urljoin
-except ImportError:
-    from urlparse import urlparse, urljoin
+from urllib.parse import urlparse, urljoin, urlencode, unquote, parse_qs, ParseResult
 from datetime import datetime, timedelta
 
 from flask import Flask, Response
@@ -70,7 +67,6 @@ app.config.from_pyfile('config.cfg', silent=True)
 
 CORS(app, methods=HTTP_METHODS, expose_headers=['ETag', 'Location'])
 
-
 try:
     import builtins
 except ImportError:
@@ -97,6 +93,18 @@ def format_number(n):
 def first(value):
     for v in as_iterable(value):
         return v
+
+@app.template_filter('modify_query')
+def modify_query(url, new_params):
+    parsed_url = urlparse(unquote(url))
+    parsed_qs = parse_qs(parsed_url.query)
+    parsed_qs.update(new_params)
+    encoded_qs = urlencode(parsed_qs, doseq=True)
+
+    return ParseResult(
+        parsed_url.scheme, parsed_url.netloc, parsed_url.path,
+        parsed_url.params, encoded_qs, parsed_url.fragment
+    ).geturl()
 
 ##
 # About XL
