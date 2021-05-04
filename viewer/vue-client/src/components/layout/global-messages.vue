@@ -79,7 +79,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.initializeUpdateTriggers()
+      this.initializeUpdateTriggers();
     });
   },
 };
