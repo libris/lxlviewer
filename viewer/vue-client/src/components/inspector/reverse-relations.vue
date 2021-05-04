@@ -45,6 +45,7 @@ export default {
     getRelationsInfo() {
       const query = {
         _limit: 0,
+        _sort: `_sortKeyByLang.${this.user.settings.language || 'sv'}`
       };
       
       if (this.recordType !== 'Item' && this.recordType !== 'Instance' && this.mainEntity.reverseLinks) {
