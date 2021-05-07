@@ -376,9 +376,7 @@ export default {
     },
     setSort($event) {
       this.sort = $event;
-      if (this.keyword) {
-        this.search();
-      }
+      this.search();
     },
   },
 };
@@ -487,7 +485,7 @@ export default {
                     <sort
                       :recordTypes="currentSearchTypes"
                       :commonSortFallback="true"
-                      :currentSort="''"
+                      :currentSort="sort"
                       :styleVariant="'material'"
                       @change="setSort($event)" />
                   </div>
