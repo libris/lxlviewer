@@ -3135,7 +3135,7 @@
           "marc:subordinateUnit": [ "" ],
           "activityStartDate": "",
           "activityEndDate": "",
-          "description": [""],
+          "description": "",
           "hasVariant": [
             {
               "@type": "Jurisdiction",
@@ -3196,7 +3196,7 @@
           "marc:subordinateUnit": [ "" ],
           "activityStartDate": "",
           "activityEndDate": "",
-          "description": [""],
+          "description": "",
           "hasVariant": [
             {
             "@type": "Organization",
@@ -3264,7 +3264,7 @@
           "seeAlso": [],
           "fieldOfActivity": [],
           "hasOccupation": [],
-          "description": [""],
+          "description": "",
           "identifiedBy": [{
             "@type": "Identifier",
             "typeNote": "isni",
