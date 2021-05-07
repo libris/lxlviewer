@@ -38,7 +38,13 @@ export default {
       } return '';
     },
     options() {
-      const sortOptions = this.$store.getters.settings.sortOptions[this.commonBaseType];
+      let sortOptions = this.$store.getters.settings.sortOptions[this.commonBaseType];
+      if (sortOptions) {
+        return sortOptions;
+      }
+      if (this.commonSortFallback) {
+        sortOptions = this.$store.getters.settings.sortOptions['Common']
+      }
       if (sortOptions) {
         return sortOptions;
       }
@@ -46,15 +52,11 @@ export default {
     },
     commonBaseType() {      
       if (typeof this.recordTypes === 'string') {
-        const type = VocabUtil.getRecordType(
+        return VocabUtil.getRecordType(
           this.recordTypes,
           this.resources.vocab, 
           this.resources.context,
         );
-        if (this.$store.getters.settings.sortOptions[type]) {
-          return type;
-        }
-        return this.commonSortFallback ? 'Common' : false;
       }      
       if (Array.isArray(this.recordTypes)) {
         const baseTypes = this.recordTypes.reduce((accumulator, currType) => {
@@ -67,11 +69,8 @@ export default {
         }, []);
         if (baseTypes.length === 1) { // same base class -> check sort options
           return baseTypes.join();
-        } 
-        if (this.commonSortFallback) {
-          return 'Common'; // different base classes -> fall back to a common sort definition
         }
-        return false; // different base classes -> disallow sort
+        return false;
       }
       return false;
     },
