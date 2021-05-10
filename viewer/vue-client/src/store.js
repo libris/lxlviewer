@@ -346,12 +346,12 @@ const store = new Vuex.Store({
             label: 'Relevance',
           },
           {
-            query: 'hasTitle.mainTitle',
-            label: 'Main title (A-Z)',
+            query: '_sortKeyByLang',
+            label: 'A-Z',
           },
           {
-            query: '-hasTitle.mainTitle',
-            label: 'Main title (Z-A)',
+            query: '-_sortKeyByLang',
+            label: 'Z-A',
           },
           {
             query: '-publication.year',
@@ -372,12 +372,12 @@ const store = new Vuex.Store({
             label: 'Relevance',
           },
           {
-            query: 'hasTitle.mainTitle',
-            label: 'Main title (A-Z)',
+            query: '_sortKeyByLang',
+            label: 'A-Z',
           },
           {
-            query: '-hasTitle.mainTitle',
-            label: 'Main title (Z-A)',
+            query: '-_sortKeyByLang',
+            label: 'Z-A',
           },
           {
             query: '-meta.modified',
