@@ -88,6 +88,7 @@ export default {
           const keyParts = o.object['@id'].split('/');
           label = keyParts[keyParts.length - 1];
         }
+        label = this.$options.filters.capitalize(label);
         return {
           label,
           object: o.object,
