@@ -1,6 +1,8 @@
 # LXL Viewer
 This repository contains the code used for two services; [*id.kb.se*](https://id.kb.se) and [*libris cataloging*](https://libris.kb.se/katalogisering). They are both based off a Flask layer, with the difference that the id.kb.se-client is being rendered with jinja templates, and the libris cataloging-service is being rendered into an SPA by VueJS.
 
+The services are built to work on top of the [Libris XL](https://github.com/libris/librisxl) API:s.
+
 ## Getting started
 
 ### Flask app
