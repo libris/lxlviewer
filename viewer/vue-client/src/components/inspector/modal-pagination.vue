@@ -7,6 +7,10 @@ export default {
       default: 0,
       type: Number,
     },
+    maxItems: {
+      default: Number.MAX_VALUE,
+      type: Number,
+    },
     maxPerPage: {
       default: 10,
       type: Number,
@@ -25,7 +29,7 @@ export default {
   },
   computed: {
     numberOfPages() {
-      return Math.ceil(this.totalItems / this.maxPerPage);
+      return Math.ceil(Math.min(this.totalItems, this.maxItems) / this.maxPerPage);
     },
     lastPageIndex() {
       return this.numberOfPages - 1;

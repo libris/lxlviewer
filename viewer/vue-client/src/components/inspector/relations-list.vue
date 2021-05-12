@@ -53,6 +53,7 @@ export default {
             response.json().then((result) => {
               this.searchResult = result;
               this.totalItems = result.totalItems;
+              this.maxItems = result.maxItems;
               if (this.selectedQuery === this.query) {
                 this.allOption = this.buildAllOption();
                 this.selectedFacet = this.allOption;
@@ -244,7 +245,8 @@ export default {
           <modal-pagination 
             v-if="searchResult.totalItems > maxResults"
             @go="go" 
-            :total-items="totalItems" 
+            :total-items="totalItems"
+            :max-items="maxItems" 
             :max-per-page="maxResults"
             :current-page="currentPage"
           >
