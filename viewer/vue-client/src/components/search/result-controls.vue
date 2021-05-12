@@ -89,7 +89,8 @@ export default {
       }
       const first = this.pageData.first['@id'];
       const offset = this.pageData.itemOffset;
-      const noOfPages = Math.ceil(this.pageData.totalItems / parseInt(this.limit)) || 1;
+      const maxResult = Math.min(this.pageData.totalItems, this.pageData.maxItems);
+      const noOfPages = Math.ceil(maxResult / parseInt(this.limit)) || 1;
       const currentPage = parseInt(offset / this.limit);
       let paddedPages = 3;
       if (currentPage < paddedPages) {

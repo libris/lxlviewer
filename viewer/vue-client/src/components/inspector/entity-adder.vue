@@ -539,6 +539,7 @@ export default {
             <modal-pagination
               @go="go"
               :total-items="totalItems"
+              :max-items="maxItems"
               :max-per-page="maxResults"
               :current-page="currentPage"
             >

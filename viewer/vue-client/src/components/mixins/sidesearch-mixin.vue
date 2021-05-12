@@ -18,6 +18,8 @@ export default {
       active: false,
       currentPage: 0,
       maxResults: 20,
+      totalItems: 0,
+      maxItems: 0,
       sort: '',
       isCompact: false,
     };
@@ -133,6 +135,7 @@ export default {
     loadResults(result) {
       this.searchResult = result.items;
       this.totalItems = result.totalItems;
+      this.maxItems = result.maxItems;
     },
     go(n) {
       this.fetch(n);
