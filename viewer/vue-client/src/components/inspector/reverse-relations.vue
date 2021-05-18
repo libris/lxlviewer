@@ -83,10 +83,6 @@ export default {
           query.o = this.mainEntity['@id'];
         }
         this.panelQuery = Object.assign({}, query);
-        if (this.recordType === 'Item' || this.recordType === 'Instance') {
-          // Sort panel query by alphabetical order of sigel id
-          this.panelQuery._sort = 'heldBy.@id';
-        }
         
         HttpUtil.getRelatedRecords(query, this.settings.apiPath)
           .then((response) => {
