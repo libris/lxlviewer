@@ -694,14 +694,25 @@ export default {
         switch (error.status) {
           case 412:
             errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.user.settings.language)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             break;
           case 401:
+            localStorage.removeItem('lastPath');
             errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', 
+              message: `${errorBase}. ${errorMessage}.`, 
+              sticky: true, 
+              link: { 
+                to: this.$store.getters.oauth2Client.token.getUri(), 
+                title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language)}`, 
+                newTab: false, 
+                external: true,
+              } });
             break;
           default:
             errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
         }
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
       });
     },
     warnOnSave() {

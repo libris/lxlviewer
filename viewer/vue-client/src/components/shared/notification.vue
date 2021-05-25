@@ -16,12 +16,14 @@ export default {
       setTimeout(() => {
         this.shouldShow = true;
       }, 1);
-      setTimeout(() => {
-        this.shouldShow = false;
-      }, this.TTL - 500);
-      setTimeout(() => {
-        this.remove();
-      }, this.TTL);
+      if (!this.content.sticky) {
+        setTimeout(() => {
+          this.shouldShow = false;
+        }, this.TTL - 500);
+        setTimeout(() => {
+          this.remove();
+        }, this.TTL);
+      }
     });
   },
   methods: {
@@ -53,7 +55,26 @@ export default {
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-info fa-stack-1x Notification-icon"></i>
       </span>
-    {{ content.message }}
+      
+      {{ content.message }}
+    
+      <router-link class="Notification-link"
+                   v-if="content.link && !content.link.external"
+                   :to="content.link.to"
+                   :title="content.link.title"
+                   :target="content.link.newTab ? '_blank' : '' ">
+        {{ content.link.title }}
+        <i v-if="content.link.newTab" class="fa fa-external-link" aria-hidden="true"></i>
+      </router-link>
+      <a
+        class="Notification-link"
+        v-if="content.link && content.link.external"
+        :href="content.link.to" 
+        :target="content.link.newTab ? '_blank' : '' ">
+        {{ content.link.title }}
+        <i v-if="content.link.newTab" class="fa fa-external-link" aria-hidden="true"></i>
+      </a>
+      
   </div>
 </template>
 
@@ -81,6 +102,19 @@ export default {
   color: @info-color-text;
   .notification-icon {
     color: @info-color;
+  }
+  
+  &-link {
+    color: @info-color-text;
+    text-decoration: underline;
+
+    .Notification--error & {
+      color: @error-color-text;
+    }
+
+    .Notification--success & {
+      color: @success-color-text;
+    }
   }
 
   &--error {
