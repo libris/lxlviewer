@@ -315,7 +315,7 @@ export default {
           <div class="DetailedEnrichment-label actionColumn">
           </div>
           <div v-show="key !== '@type'" class="DetailedEnrichment-label resultColumn">
-            {{ key | labelByLang | translatePhrase | capitalize }}
+            {{ key | labelByLang | capitalize }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label resultColumn">
             {{ 'Type' | translatePhrase | capitalize }}
