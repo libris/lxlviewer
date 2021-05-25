@@ -705,7 +705,7 @@ export default {
               link: { 
                 to: this.$store.getters.oauth2Client.token.getUri(), 
                 title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language)}`, 
-                newTab: false, 
+                newTab: true, 
                 external: true,
               } });
             break;
