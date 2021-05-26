@@ -3152,8 +3152,7 @@
           ],
           "seeAlso": [],
           "identifiedBy": [{
-            "@type": "Identifier",
-            "typeNote": "isni",
+            "@type": "ISNI",
             "value": ""
           }],
           "nationality": [{
@@ -3213,8 +3212,7 @@
         ],
           "seeAlso": [],
           "identifiedBy": [{
-            "@type": "Identifier",
-            "typeNote": "isni",
+            "@type": "ISNI",
             "value": ""
           }],
           "nationality": [{
@@ -3266,8 +3264,7 @@
           "hasOccupation": [],
           "description": "",
           "identifiedBy": [{
-            "@type": "Identifier",
-            "typeNote": "isni",
+            "@type": "ISNI",
             "value": ""
           }],
           "nationality": [{
