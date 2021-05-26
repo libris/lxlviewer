@@ -233,6 +233,10 @@
       "code": ""
     }
   },
+  "ORCID": {
+    "@type": "ORCID",
+    "value": ""
+  },
   "PostalRegistration": {
     "@type": "PostalRegistration",
     "value": ""
@@ -279,6 +283,10 @@
     "@type": "URN",
     "value": ""
   },
+  "VIAF": {
+    "@type": "VIAF",
+    "value": ""
+  },
   "VideoRecordingNumber": {
     "@type": "VideoRecordingNumber",
     "value": "",
@@ -286,6 +294,10 @@
         "@type": "Organization",
         "name": ""
     }
+  },
+  "WikidataID": {
+    "@type": "WikidataID",
+    "value": ""
   },
   "PrimaryProduction": {
     "@type": "PrimaryProduction",
