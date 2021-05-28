@@ -2511,16 +2511,10 @@
               "@id": "https://id.kb.se/language/zxx"
             }],
             "genreForm": [],
+            "hasNotation": [
+              {"@id": "https://id.kb.se/term/rda/musnotation/StaffNotation"}
+            ],
             "hasNote": [
-              {
-                "@type": "marc:LanguageNote",
-                "hasNotation": [
-                  {
-                    "@type": "Notation",
-                    "label": "Traditionell västerländsk notskrift"
-                  }
-                ]
-              },
               {
                 "@type": "marc:LanguageNote",
                 "label": ""
