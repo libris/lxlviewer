@@ -458,7 +458,7 @@
    "label": ""
  },
  "MusicNotation": {
-   "@type": "MusiceNotation",
+   "@type": "MusicNotation",
    "label": ""
  },
  "Notation": {
