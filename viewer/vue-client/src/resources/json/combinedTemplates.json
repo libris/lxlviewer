@@ -2512,7 +2512,7 @@
             }],
             "genreForm": [],
             "hasNotation": [
-              {"@id": "https://id-dev.kb.se/term/rda/musnotation/StaffNotation"}
+              {"@id": "https://id.kb.se/term/rda/musnotation/StaffNotation"}
             ],
             "hasNote": [
               {
