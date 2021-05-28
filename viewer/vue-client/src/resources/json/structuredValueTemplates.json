@@ -453,6 +453,26 @@
     "@type": "Duration",
     "value": ""
   },
+"MovementNotation": {
+   "@type": "MovementNotation",
+   "label": ""
+ },
+ "MusicNotation": {
+   "@type": "MusiceNotation",
+   "label": ""
+ },
+ "Notation": {
+   "@type": "Notation",
+   "label": ""
+ },
+ "Script": {
+   "@type": "Script",
+   "label": ""
+ },
+ "TactileNotation": {
+   "@type": "TactileNotation",
+   "label": ""
+ },
   "Note": {
     "@type": "Note",
     "label": ""
