@@ -43,7 +43,7 @@ export default {
         return sortOptions;
       }
       if (this.commonSortFallback) {
-        sortOptions = this.$store.getters.settings.sortOptions['Common']
+        sortOptions = this.$store.getters.settings.sortOptions.Common;
       }
       if (sortOptions) {
         return sortOptions;

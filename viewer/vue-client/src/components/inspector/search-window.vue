@@ -12,8 +12,8 @@ import Sort from '@/components/search/sort';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import FilterSelect from '@/components/shared/filter-select.vue';
 import ParamSelect from '@/components/inspector/param-select.vue';
-import LensMixin from '../mixins/lens-mixin';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
+import LensMixin from '../mixins/lens-mixin';
 
 export default {
   name: 'search-window',

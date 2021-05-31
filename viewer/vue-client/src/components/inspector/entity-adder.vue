@@ -6,7 +6,6 @@ import { cloneDeep, isArray, get } from 'lodash-es';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
-import PanelSearchList from '../search/panel-search-list.vue';
 import Sort from '@/components/search/sort';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination.vue';
@@ -15,6 +14,7 @@ import TypeSelect from '@/components/inspector/type-select.vue';
 import ParamSelect from '@/components/inspector/param-select.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
+import PanelSearchList from '../search/panel-search-list.vue';
 
 export default {
   mixins: [LensMixin, SideSearchMixin],

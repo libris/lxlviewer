@@ -2,9 +2,9 @@
 import { sortBy, orderBy } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import * as DisplayUtil from '@/utils/display';
-import Facet from './facet.vue';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
+import Facet from './facet.vue';
 
 export default {
   name: 'facet-group',
