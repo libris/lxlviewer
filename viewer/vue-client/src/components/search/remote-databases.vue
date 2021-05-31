@@ -139,7 +139,7 @@ export default {
     },
     fetchDatabases() {
       return new Promise((resolve, reject) => {
-        httpUtil.get({ url: `${this.settings.apiPath}/_remotesearch?databases=list` })
+        httpUtil.get({ url: `${this.settings.apiPath}/_remotesearch?databases=list`, token: this.user.token })
           .then((response) => {
             resolve(response);
           }, (error) => {

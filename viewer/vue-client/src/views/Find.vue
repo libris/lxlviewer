@@ -92,7 +92,7 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.query}`;
       this.hideFacetColumn = true;
 
-      fetch(fetchUrl).then(response => response.json(), (error) => {
+      fetch(fetchUrl, { headers: { Authorization: `Bearer ${this.user.token}` } }).then(response => response.json(), (error) => {
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
         this.searchInProgress = false;
       }).then((result) => {
