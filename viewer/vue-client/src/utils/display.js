@@ -305,7 +305,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     }
   }
   const itemKeys = Object.keys(result);
-  if (isEmpty(result) || (itemKeys.length === 1 && (typeof result[itemKeys[0]] === 'undefined' || result[itemKeys[0]].length === 0))) {
+  if (isEmpty(result) || (itemKeys.length === 1 && (typeof result[itemKeys[0]] === 'undefined' || result[itemKeys[0]] === null || result[itemKeys[0]].length === 0))) {
     window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}.`, 'Item data:', trueItem);
     if (trueItem.hasOwnProperty('@id')) {
       const idParts = item['@id'].split('/');
