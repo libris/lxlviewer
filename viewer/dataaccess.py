@@ -129,6 +129,12 @@ sites = {
                     "sortOrder":"desc",
                     "size":100
                 },
+                "instanceOf.genreForm.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
+                },
+
                 "contentType.@id": {
                     "sort":"value",
                     "sortOrder": "desc",

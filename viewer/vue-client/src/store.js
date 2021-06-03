@@ -273,56 +273,63 @@ const store = new Vuex.Store({
           sv: 'Nationalitet',
           en: 'Nationality',
           facet: {
-            order: 7,
+            order: 8,
           },
         },
         'language.@id': {
           sv: 'Språk',
           en: 'Language',
           facet: {
-            order: 6,
+            order: 9,
           },
         },
         'genreForm.@id': {
           sv: 'Genre/form',
           en: 'Genre/form',
           facet: {
-            order: 7,
+            order: 10,
+          },
+        },
+        'instanceOf.genreForm.@id': {
+          sv: 'Genre/form på verket',
+          en: 'Genre/form of work',
+          facet: {
+            order: 11,
           },
         },
         'contribution.agent.@id': {
           sv: 'Medverkan eller primär medverkan',
           en: 'Contribution or primary contribution',
           facet: {
-            order: 7,
+            order: 12,
           },
         },
         'contentType.@id': {
           sv: 'Innehållstyp',
           en: 'Content type',
           facet: {
-            order: 10,
+            order: 13,
           },
         },
         'carrierType.@id': {
           sv: 'Bärartyp',
           en: 'Carrier type',
           facet: {
-            order: 10,
+            order: 14,
           },
         },
         'instanceOf.subject.@id': {
           sv: 'Ämne',
           en: 'Subject',
           facet: {
-            order: 11,
+            order: 15,
           },
         },
         'meta.bibliography.@id': {
           sv: 'Ingår i bibliografi',
           en: 'In bibliography',
           facet: {
-            order: 12,
+            order: 16,
           },
         },
         '@reverse': {
