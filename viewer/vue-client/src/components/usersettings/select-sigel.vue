@@ -58,6 +58,9 @@ export default {
     selectValue() {
       return this.preselectedValue ? this.preselectedValue : this.user.settings.activeSigel;
     },
+    sortedSigels() {
+      return [...this.user.collections].sort((a, b) => this.getSigelLabel(a).localeCompare(this.getSigelLabel(b)));
+    },
   },
 };
 </script>
@@ -73,7 +76,7 @@ export default {
       ref="selectSigel"
       :value="selectValue" 
       @change="onChange">
-      <option v-for="sigel in user.collections" 
+      <option v-for="sigel in sortedSigels"
         :key="sigel.code" 
         :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}</option>
     </select>
