@@ -14,9 +14,10 @@ export default {
   methods: {
     getSigelLabel(sigel, len) {
       let label = '';
-      label += sigel.code;
       if (sigel.friendly_name) {
-        label += ` - ${sigel.friendly_name}`;
+        label += `${sigel.friendly_name} (${sigel.code})`;
+      } else {
+        label += sigel.code;
       }
       return label.length > len ? `${label.substr(0, len - 2)}...` : label;
     },
