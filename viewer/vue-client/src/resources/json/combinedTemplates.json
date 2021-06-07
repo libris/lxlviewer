@@ -10,12 +10,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -212,12 +207,7 @@
           },
           "bibliography": [
             {
-              "@type": "Library",
-              "sigel": "DIGI"
-            },
-            {
-              "@type": "Library",
-              "sigel": ""
+              "@id": "https://libris.kb.se/library/DIGI"
             }
           ],
           "descriptionConventions": [
@@ -433,12 +423,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -587,12 +572,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -776,12 +756,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -918,12 +893,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -1069,12 +1039,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -1263,12 +1228,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -1465,12 +1425,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -1640,12 +1595,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -1857,12 +1807,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -2005,12 +1950,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -2177,12 +2117,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -2302,12 +2237,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -2639,12 +2569,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -2842,12 +2767,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
