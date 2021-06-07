@@ -402,6 +402,7 @@ export default {
   & .EntitySummary-title {
     font-size: 18px;
     font-size: 1.8rem;
+    white-space: unset;
   }
 
   & .EntitySummary-info {
