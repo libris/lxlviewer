@@ -135,7 +135,7 @@ export function getDigitalReproductionObject(original, resources) {
   let digitalReproObject;
   for (let i = 0; i < instanceTemplates.length; i++) {
     if (instanceTemplates[i].key === 'digitizedMonographText') {
-      digitalReproObject = instanceTemplates[i].value;
+      digitalReproObject = cloneDeep(instanceTemplates[i].value);
     }
   }
   // Copying instanceOf explicitly cause of how #work works
