@@ -28,7 +28,7 @@ export function decomposeQueryString(q) {
     const keyVal = param.split('=');
     const key = decodeURIComponent(keyVal[0]);
     const val = decodeURIComponent(keyVal[1]);
-    if (!param.hasOwnProperty(key)) {
+    if (!params.hasOwnProperty(key)) {
       params[key] = [];
     }
     params[key].push(val);
