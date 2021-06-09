@@ -92,7 +92,7 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.query}`;
       this.hideFacetColumn = true;
 
-      fetch(fetchUrl).then(response => response.json(), (error) => {
+      fetch(fetchUrl, { headers: { Authorization: `Bearer ${this.user.token}` } }).then(response => response.json(), (error) => {
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
         this.searchInProgress = false;
       }).then((result) => {
@@ -240,7 +240,6 @@ export default {
       />
       <div v-if="$route.params.perimeter === 'libris'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ 'Filter' | translatePhrase }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
       <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
-      <span v-if="result === null && $route.params.perimeter === 'libris' && searchInProgress === false">{{ 'No results' | translatePhrase }}</span>
       <portal-target name="facetColumn" />
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">

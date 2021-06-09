@@ -27,9 +27,11 @@ export class User {
       language: 'sv',
       defaultDatabases: ['OCLC'],
       forceFullViewPanel: false,
+      fullSiteWidth: false,
       searchParam: false,
       searchType: null,
       sort: false,
+      facetSortings: {},
       shelfMarkSearch: '',
     };
     this.uriMinter = null;

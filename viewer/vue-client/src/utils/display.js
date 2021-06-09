@@ -159,18 +159,31 @@ export function translateObjectProp(object) {
 
 /* eslint-disable no-use-before-define */
 export function getItemLabel(item, displayDefs, quoted, vocab, settings, context, inClass = '') {
+  if (!item || typeof item === 'undefined') {
+    throw new Error('getItemLabel was called with an undefined object.');
+  }
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
   if (Object.keys(displayObject).length === 0) {
     return JSON.stringify(item);
   }
   let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
+    if (item['@type'] === 'ISNI' || item['@type'] === 'ORCID') { 
+      rendered = formatIsni(rendered);
+    }
+
     if (inClass.toLowerCase() !== item['@type'].toLowerCase()) {
       const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, vocab, context);
       rendered = `${translatedType} ${rendered}`;
     }
   }
   return rendered;
+}
+
+export function formatIsni(isni) {
+  return typeof isni === 'string' && isni.length === 16
+    ? `${isni.slice(0, 4)} ${isni.slice(4, 8)} ${isni.slice(8, 12)} ${isni.slice(12, 16)}`
+    : isni;
 }
 
 export function getSortedProperties(formType, formObj, settings, resources) {
@@ -291,9 +304,15 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       }
     }
   }
-  if (isEmpty(result)) {
+  const itemKeys = Object.keys(result);
+  if (isEmpty(result) || (itemKeys.length === 1 && (typeof result[itemKeys[0]] === 'undefined' || result[itemKeys[0]] === null || result[itemKeys[0]].length === 0))) {
     window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}.`, 'Item data:', trueItem);
-    result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
+    if (trueItem.hasOwnProperty('@id')) {
+      const idParts = item['@id'].split('/');
+      result = { label: idParts[idParts.length - 1] };
+    } else {
+      result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
+    }
   }
   return result;
 }

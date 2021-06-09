@@ -6,12 +6,7 @@
       "mainEntity": {
         "@id": "https://id.kb.se/TEMPID#it"
       },
-      "bibliography": [
-        {
-          "@type": "Library",
-          "sigel": [""]
-        }
-      ],
+      "bibliography": [],
       "descriptionConventions": [{
           "@id": "https://id.kb.se/marc/Isbd"
         },

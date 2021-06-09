@@ -101,6 +101,7 @@ export default {
 
 .CreationCard  {
   flex-basis: 100%;
+  max-width: 27rem;
 
   @media screen and (min-width: @screen-sm-min){
     flex-basis: 49%;

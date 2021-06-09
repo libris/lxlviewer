@@ -16,4 +16,4 @@ args = argp.parse_args()
 # Warning from rdfxml that should be ignored
 warnings.filterwarnings('ignore', message = 'Assertions on rdflib.term.BNode')
 
-app.run(port=args.port,host='0.0.0.0')
+app.run(port=args.port,host='0.0.0.0',threaded=True)

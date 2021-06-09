@@ -1,9 +1,10 @@
 <template>
   <div id="app" class="App">
-    <global-message />
+    <GlobalMessages />
+    <EnvironmentBanner />
     <navbar-component />
     <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
-    <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': !status.panelOpen, 'container-fluid': status.panelOpen, 'debug-mode': user.settings.appTech }">
+    <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': (!status.panelOpen && user.settings.fullSiteWidth === false), 'container-fluid': (status.panelOpen || user.settings.fullSiteWidth), 'debug-mode': user.settings.appTech }">
       <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
         {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
       </div>
@@ -28,12 +29,13 @@
 
 <script>
 import VueSimpleSpinner from 'vue-simple-spinner';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import Navbar from '@/components/layout/navbar';
 import SearchBar from '@/components/layout/search-bar';
 import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
-import GlobalMessage from '@/components/layout/global-msg';
+import EnvironmentBanner from '@/components/layout/environment-banner';
+import GlobalMessages from '@/components/layout/global-messages';
 
 export default {
   name: 'App',
@@ -42,6 +44,7 @@ export default {
       stickToTop: false,
       navBarBottomPos: 0,
       searchBarHeight: 0,
+      userIdleTimer: 0,
     };
   },
   computed: {
@@ -81,6 +84,35 @@ export default {
     },
   },
   methods: {
+    ...mapActions([
+      'setStatusValue',
+    ]),
+    setupIdleTimer() {
+      // USER IDLE TIMER
+      const updateTimer = 5;
+      const resetTimer = () => {
+        this.userIdleTimer = 0;
+      };
+      setInterval(() => {
+        this.userIdleTimer += updateTimer;
+        if (this.userIdleTimer > 5 && this.status.userIdle === false) {
+          this.setStatusValue({ 
+            property: 'userIdle',
+            value: true,
+          });
+        } else if (this.userIdleTimer <= 5 && this.status.userIdle === true) {
+          this.setStatusValue({ 
+            property: 'userIdle',
+            value: false,
+          });
+        }
+      }, updateTimer * 1000);
+      window.addEventListener('load', resetTimer, true);
+      const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+      events.forEach((name) => {
+        document.addEventListener(name, resetTimer, true); 
+      });
+    },
     disableDebugMode() {
       const userObj = this.user;
       userObj.settings.appTech = false;
@@ -88,15 +120,16 @@ export default {
     },
     checkSearchBar(event) {
       const $SearchBar = document.getElementById('SearchBar');
-      const $NavBar = document.getElementById('NavBar');
+      const elementsAboveSearchBar = document.getElementsByClassName('top-scroll-past');
+      let margin = 0;
+      for (let i = 0; i < elementsAboveSearchBar.length; i++) {
+        margin += elementsAboveSearchBar[i].getBoundingClientRect().height;
+      }
       if ($SearchBar) {
         this.searchBarHeight = $SearchBar.getBoundingClientRect().height;
       }
-      if ($NavBar) {
-        this.navBarBottomPos = $NavBar.offsetHeight;
-      }
       if (event) {
-        if (event.target.scrollingElement && event.target.scrollingElement.scrollTop > this.navBarBottomPos) {
+        if (event.target.scrollingElement && event.target.scrollingElement.scrollTop > margin) {
           this.stickToTop = true;
         } else {
           this.stickToTop = false;
@@ -106,6 +139,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      this.setupIdleTimer();
       this.checkSearchBar();
       this.$store.dispatch('setStatusValue', { 
         property: 'keybindState', 
@@ -121,7 +155,8 @@ export default {
     'navbar-component': Navbar,
     'footer-component': Footer,
     'notification-list': NotificationList,
-    'global-message': GlobalMessage,
+    EnvironmentBanner,
+    GlobalMessages,
     'vue-simple-spinner': VueSimpleSpinner,
   },
 };
@@ -257,7 +292,7 @@ a:focus {
 // ----------- BUTTON ----------------
 
 button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
-    color: @white;
+  color: @white;
 }
 
 button {
@@ -329,6 +364,15 @@ button {
   &:active {
     box-shadow: inset 0 0 0.5rem 0 rgba(0, 0, 0, 0.4);
     color: @black;
+  }
+}
+
+.btn-transparent, .btn-transparent:focus, .btn-transparent:active {
+  border: 1px solid @black;
+  font-weight: 700;
+  background-color: transparent;
+  &:hover {
+    background-color: fadeout(@neutral-color, 70%);
   }
 }
 
@@ -525,7 +569,7 @@ body {
       }
     }
   }
-  input, textarea, img, select, .ItemEntity, .ItemLocal, .EntityAction, .ItemSibling, .icon, .icon i, li, i.fa {
+  input, textarea, img, select, .ItemEntity, .ItemLocal, .EntityAction, .ItemSibling, .icon, .icon i, li, i.fa, div {
     &:focus {
       .focus-mixin-border();
     }

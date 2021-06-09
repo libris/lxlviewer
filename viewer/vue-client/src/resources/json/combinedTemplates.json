@@ -10,12 +10,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -212,12 +207,7 @@
           },
           "bibliography": [
             {
-              "@type": "Library",
-              "sigel": "DIGI"
-            },
-            {
-              "@type": "Library",
-              "sigel": ""
+              "@id": "https://libris.kb.se/library/DIGI"
             }
           ],
           "descriptionConventions": [
@@ -433,12 +423,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -587,12 +572,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -776,12 +756,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -918,12 +893,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -1069,12 +1039,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -1263,12 +1228,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -1465,12 +1425,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -1640,12 +1595,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -1797,7 +1747,7 @@
             ],
             "genreForm": [
               {
-                "@id": "https://id.kb.se/term/gmgpc%2F%2Fswe/Kartor"
+                "@id": "https://id.kb.se/term/gmgpc/swe/Kartor"
               }
             ],
             "contribution": [{
@@ -1857,12 +1807,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -2005,12 +1950,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -2177,12 +2117,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -2302,12 +2237,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -2511,16 +2441,10 @@
               "@id": "https://id.kb.se/language/zxx"
             }],
             "genreForm": [],
+            "hasNotation": [
+              {"@id": "https://id.kb.se/term/rda/musnotation/StaffNotation"}
+            ],
             "hasNote": [
-              {
-                "@type": "marc:LanguageNote",
-                "hasNotation": [
-                  {
-                    "@type": "Notation",
-                    "label": "Traditionell västerländsk notskrift"
-                  }
-                ]
-              },
               {
                 "@type": "marc:LanguageNote",
                 "label": ""
@@ -2645,12 +2569,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -2789,7 +2708,7 @@
                 "@id": "https://id.kb.se/marc/Picture"
               },
               {
-                "@id": "https://id.kb.se/term/gmgpc%2F%2Fswe/Bilder"
+                "@id": "https://id.kb.se/term/gmgpc/swe/Bilder"
               }
             ],
             "contribution": [{
@@ -2848,12 +2767,7 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "bibliography": [
-            {
-              "@type": "Library",
-              "sigel": ""
-            }
-          ],
+          "bibliography": [],
           "descriptionConventions": [
             {
               "@id": "https://id.kb.se/marc/Isbd"
@@ -3135,7 +3049,7 @@
           "marc:subordinateUnit": [ "" ],
           "activityStartDate": "",
           "activityEndDate": "",
-          "description": [""],
+          "description": "",
           "hasVariant": [
             {
               "@type": "Jurisdiction",
@@ -3152,8 +3066,7 @@
           ],
           "seeAlso": [],
           "identifiedBy": [{
-            "@type": "Identifier",
-            "typeNote": "isni",
+            "@type": "ISNI",
             "value": ""
           }],
           "nationality": [{
@@ -3196,7 +3109,7 @@
           "marc:subordinateUnit": [ "" ],
           "activityStartDate": "",
           "activityEndDate": "",
-          "description": [""],
+          "description": "",
           "hasVariant": [
             {
             "@type": "Organization",
@@ -3213,8 +3126,7 @@
         ],
           "seeAlso": [],
           "identifiedBy": [{
-            "@type": "Identifier",
-            "typeNote": "isni",
+            "@type": "ISNI",
             "value": ""
           }],
           "nationality": [{
@@ -3264,10 +3176,9 @@
           "seeAlso": [],
           "fieldOfActivity": [],
           "hasOccupation": [],
-          "description": [""],
+          "description": "",
           "identifiedBy": [{
-            "@type": "Identifier",
-            "typeNote": "isni",
+            "@type": "ISNI",
             "value": ""
           }],
           "nationality": [{

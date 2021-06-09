@@ -45,6 +45,15 @@ export default {
       }
       return false;
     },
+    isMarc() {
+      if (this.item.hasOwnProperty('@type') && this.item['@type'].startsWith('marc:')) {
+        return true;
+      }
+      if (this.item['@id'].includes('/marc/')) {
+        return true;
+      }
+      return false;
+    },
     fullPath() {
       return `${this.parentPath}.{"@id":"${this.item['@id']}"}`;
     },
@@ -155,7 +164,7 @@ export default {
           tabindex="0"
           ref="chip"
           v-if="!isDistinguished || !expanded" 
-          :class="{ 'is-locked': isLocked, 'is-newlyAdded': animateNewlyAdded, 'is-removeable': removeHover}">
+          :class="{ 'is-locked': isLocked, 'is-marc': isMarc, 'is-newlyAdded': animateNewlyAdded, 'is-removeable': removeHover}">
           <span class="ItemEntity-label chip-label">
             <span v-if="(!isDistinguished || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
             <span v-if="(!isDistinguished || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}}</a></span>

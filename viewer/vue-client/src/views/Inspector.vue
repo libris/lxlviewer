@@ -504,24 +504,28 @@ export default {
       this.$store.dispatch('flushChangeHistory');
     },
     cancelEditing(callback) {
-      if (!this.inspector.status.isNew) {
-        if (this.shouldWarnOnUnload()) {
-          const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.user.settings.language);
-          const answer = window.confirm(confString); // eslint-disable-line no-alert
-          if (answer) {
+      if (this.inspector.status.editing) {
+        if (!this.inspector.status.isNew) {
+          if (this.shouldWarnOnUnload()) {
+            const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.user.settings.language);
+            const answer = window.confirm(confString); // eslint-disable-line no-alert
+            if (answer) {
+              this.doCancel();
+              if (callback) {
+                callback();
+              }
+            }
+          } else {
             this.doCancel();
             if (callback) {
               callback();
             }
           }
         } else {
-          this.doCancel();
-          if (callback) {
-            callback();
-          }
+          this.$router.go(-1);
         }
       } else {
-        this.$router.go(-1);
+        callback();
       }
     },
     setTitle() {
@@ -690,14 +694,25 @@ export default {
         switch (error.status) {
           case 412:
             errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.user.settings.language)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             break;
           case 401:
+            localStorage.removeItem('lastPath');
             errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', 
+              message: `${errorBase}. ${errorMessage}.`, 
+              sticky: true, 
+              link: { 
+                to: this.$store.getters.oauth2Client.token.getUri(), 
+                title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language)}`, 
+                newTab: true, 
+                external: true,
+              } });
             break;
           default:
             errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
         }
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
       });
     },
     warnOnSave() {
@@ -812,6 +827,9 @@ export default {
       'userFavorites',
       'enrichment',
     ]),
+    isDocumentAvailable() {
+      return this.inspector.data.hasOwnProperty('record');
+    },
     isReadyForSave() {
       if (this.saveQueued && this.inspector.status.readyForSave) {
         return true;
@@ -885,8 +903,8 @@ export default {
         <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" />
     </div>
     <div ref="componentFocusTarget" class="col-12 col-sm-12" :class="{'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
-      <div v-if="postLoaded" class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
-      <div v-if="postLoaded" class="Toolbar-container" ref="ToolbarTest">
+      <div v-if="postLoaded && isDocumentAvailable" class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
+      <div v-if="postLoaded && isDocumentAvailable" class="Toolbar-container" ref="ToolbarTest">
         <toolbar></toolbar>
       </div>
     </div>
@@ -903,7 +921,14 @@ export default {
           {{ 'Back to home page' | translatePhrase }}
         </router-link>
       </div>
-      <div v-if="postLoaded" class="Inspector-entity">        
+      <div v-if="postLoaded && isDocumentAvailable == false">
+        <h2>{{ 'Something went wrong' | translatePhrase }}</h2>
+        <p>{{ 'The document was found but failed to load' | translatePhrase }}.</p>
+        <router-link to="/">
+          {{ 'Back to home page' | translatePhrase }}
+        </router-link>
+      </div>
+      <div v-if="postLoaded && isDocumentAvailable" class="Inspector-entity">
         <div class="Inspector-admin">
           <div class="Inspector-header">
             <h1>
@@ -915,6 +940,7 @@ export default {
         </div>
         <entity-header id="main-header"
           :full="true"
+          :focus-data="inspector.data.mainEntity"
           v-if="!isItem">
         </entity-header>
         <validation-summary v-if="user.settings.appTech" />
@@ -1006,13 +1032,10 @@ export default {
   &-header {
     flex: 3;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-    align-items: baseline;
-    flex-direction: column;
     margin-bottom: 0.25em;
-    @media (min-width: @screen-md) {
-      flex-direction: row;
-    }
+    align-items: flex-end;
     h1 {
       margin: 0;
     }

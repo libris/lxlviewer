@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import * as httpUtil from '@/utils/http';
 import Sort from '@/components/search/sort';
+import FilterBadge from '@/components/search/filter-badge';
 import LensMixin from '@/components/mixins/lens-mixin';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 
@@ -27,7 +28,6 @@ export default {
   data() {
     return {
       keyword: '',
-      excludeFilters: PropertyMappings.flatMap(prop => Object.keys(prop.mappings)),
     };
   },
   computed: {
@@ -37,6 +37,13 @@ export default {
       'settings',
       'status',
     ]),
+    excludeFilters() {
+      const filtersToBeExcluded = PropertyMappings.flatMap(prop => Object.keys(prop.mappings));
+      return filtersToBeExcluded;
+    },
+    filteredByHasItem() {
+      return this.$route.query.hasOwnProperty('@reverse.itemOf.heldBy.@id') && this.$route.query['@reverse.itemOf.heldBy.@id'] === `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
+    },
     filters() {
       let filters = [];
       if (typeof this.pageData.search !== 'undefined') {
@@ -47,32 +54,8 @@ export default {
 
             if (item.hasOwnProperty('value')) { // Try to use item value to get label
               label = item.value;
-            } else if (item.hasOwnProperty('object') && this.pageData.hasOwnProperty('stats')) { // else look for preflabel in stats (if there are results)
-              const sliceByDimension = this.pageData.stats.sliceByDimension[item.variable];
-              let match = [];
-              if (typeof sliceByDimension !== 'undefined' && sliceByDimension.hasOwnProperty('observation')) {
-                match = sliceByDimension.observation.filter(obs => obs.object['@id'] === item.object['@id']);
-              }
-              if (match.length === 1) {
-                const matchObj = match[0].object;
-                const tryProps = ['prefLabelByLang', 'labelByLang', 'titleByLang', 'label'];
-                for (const prop in tryProps) {
-                  if (label === '' && matchObj.hasOwnProperty(tryProps[prop])) {
-                    if (tryProps[prop].endsWith('ByLang')) {
-                      label = matchObj[tryProps[prop]][this.settings.language];
-                    } else {
-                      label = matchObj[tryProps[prop]];
-                    }
-                  }
-                }
-                if (label === '') {
-                  label = this.getLabel(matchObj);
-                }
-              } else {
-                label = item.object['@id'];
-              }
-            } else if (item.hasOwnProperty('object')) {
-              label = item.object['@id']; // else try to translate object[@id]...
+            } else if (item.hasOwnProperty('object')) { 
+              label = this.getLabel(item.object);
             }
             return {
               label,
@@ -106,7 +89,8 @@ export default {
       }
       const first = this.pageData.first['@id'];
       const offset = this.pageData.itemOffset;
-      const noOfPages = Math.ceil(this.pageData.totalItems / parseInt(this.limit)) || 1;
+      const maxResult = Math.min(this.pageData.totalItems, this.pageData.maxItems);
+      const noOfPages = Math.ceil(maxResult / parseInt(this.limit)) || 1;
       const currentPage = parseInt(offset / this.limit);
       let paddedPages = 3;
       if (currentPage < paddedPages) {
@@ -151,6 +135,25 @@ export default {
     },
   },
   methods: {
+    toggleFilterByHasItem() {
+      if (this.filteredByHasItem) {
+        this.removeFilter('@reverse.itemOf.heldBy.@id');
+      } else {
+        this.addFilter('@reverse.itemOf.heldBy.@id', `https://libris.kb.se/library/${this.user.settings.activeSigel}`);
+      }
+    },
+    addFilter(key, value) {
+      const newQuery = Object.assign({}, this.$route.query);
+      newQuery[key] = value;
+      this.$router.push({ path: this.$route.currentPath, query: newQuery });
+    },
+    removeFilter(key) {
+      const newQuery = Object.assign({}, this.$route.query);
+      if (newQuery.hasOwnProperty(key)) {
+        delete newQuery[key];
+        this.$router.push({ path: this.$route.currentPath, query: newQuery });
+      }
+    },
     setCompact() {
       const user = this.user;
       user.settings.resultListType = 'compact';
@@ -182,6 +185,7 @@ export default {
   },
   components: {
     sort: Sort,
+    FilterBadge,
   },
 };
 </script>
@@ -203,6 +207,7 @@ export default {
         <sort 
           v-if="searchedTypes && $route.params.perimeter != 'remote'"
           :currentSort="currentSortOrder ? currentSortOrder : ''"
+          :common-sort-fallback="true"
           :recordTypes="searchedTypes"
           @change="$emit('sortChange', $event)"/>
         <div class="ResultControls-listTypes">
@@ -221,13 +226,9 @@ export default {
         </div>
       </div>
     </div>
-    <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0">
-      <div class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index">
-        <span>{{filter.label | labelByLang }}</span>
-        <router-link
-          :to="filter.up | asAppPath">
-          <i class="fa fa-fw fa-close icon"></i>
-        </router-link>
+    <div class="ResultControls-secondary">
+      <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0">
+        <FilterBadge class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index" :filter="filter" />
       </div>
     </div>
     <nav v-if="hasPagination && showPages">
@@ -334,51 +335,73 @@ export default {
     }
   }
 
+  &-secondary {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25em 0;
+  }
+
+  &-hasItemFilter {
+    padding: 0.25em 0.5em;
+    border-radius: 2px;
+    font-size: 1.4rem;
+    background-color: @neutral-color;
+    border: 1px solid @grey-lighter;
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    i {
+      margin-right: 0.2em;
+    }
+    .fa-check-square {
+      color: @brand-primary;
+    }
+  }
+
   &-filterWrapper {
-    padding-top: 5px;
     display: flex;
     flex-wrap: wrap;
   }
 
-  &-filterBadge {
-    background-color: #364a4c;
-    border: 1px solid #364a4c;
-    color: @white;
-    font-weight: 600;
-    font-size: 1.4rem;
-    padding: 2px 5px 2px 10px;
-    margin: 5px 5px 0 0;
-    border-radius: 4px;
-    white-space: nowrap;
-    &--inverted {
-      background-color: transparent;
-      border: 1px solid #364a4c;
-      color: #364a4c;
-      font-weight: 600;
-      font-size: 1.4rem;
-      padding: 2px 5px 2px 10px;
-      margin: 5px 5px 0 0;
-      border-radius: 4px;
-      white-space: nowrap;
-    }
+  // &-filterBadge {
+  //   background-color: #364a4c;
+  //   border: 1px solid #364a4c;
+  //   color: @white;
+  //   font-weight: 600;
+  //   font-size: 1.4rem;
+  //   padding: 2px 5px 2px 10px;
+  //   margin: 5px 5px 0 0;
+  //   border-radius: 4px;
+  //   white-space: nowrap;
+  //   &--inverted {
+  //     background-color: transparent;
+  //     border: 1px solid #364a4c;
+  //     color: #364a4c;
+  //     font-weight: 600;
+  //     font-size: 1.4rem;
+  //     padding: 2px 5px 2px 10px;
+  //     margin: 5px 5px 0 0;
+  //     border-radius: 4px;
+  //     white-space: nowrap;
+  //   }
 
-    & i,
-    & i:hover {
-      color: @white;
-    }
+  //   & i,
+  //   & i:hover {
+  //     color: @white;
+  //   }
 
-    &.clear-all {
-      color: inherit;
-      background-color: @white;
-      border: 1px solid @grey-lighter;
+  //   &.clear-all {
+  //     color: inherit;
+  //     background-color: @white;
+  //     border: 1px solid @grey-lighter;
 
-      & i,
-      & i:hover {
-        color: inherit;
-      }
-    }
+  //     & i,
+  //     & i:hover {
+  //       color: inherit;
+  //     }
+  //   }
 
-  }
+  // }
 
   &-pagDecor {
     color: @grey;

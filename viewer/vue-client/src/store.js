@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { cloneDeep, each, set, get, assign, filter } from 'lodash-es';
+import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from '@/utils/vocab';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
@@ -18,6 +19,7 @@ const store = new Vuex.Store({
       context: {},
       templates: {},
       helpDocs: null,
+      globalMessages: null,
     },
     directoryCare: {
       sender: null,
@@ -64,6 +66,7 @@ const store = new Vuex.Store({
       magicShelfMarks: [], 
     },
     status: {
+      userIdle: false,
       panelOpen: false,
       keybindState: '',
       fullWidth: false,
@@ -83,18 +86,25 @@ const store = new Vuex.Store({
     userStorage: {
       list: {},
       copyClipboard: null,
+      dismissedMessages: [],
     },
     settings: {
       title: 'Libris katalogisering',
       language: 'sv',
+      debounceTimer: 500, // Wait this long for input to stop before reacting
       environment: process.env.VUE_APP_ENV_LABEL || 'local',
       version: process.env.VUE_APP_VERSION,
       gitDescribe: JSON.parse(process.env.VUE_APP_GIT_DESCRIBE),
       dataPath: process.env.VUE_APP_DATA_PATH || process.env.VUE_APP_API_PATH,
       apiPath: process.env.VUE_APP_API_PATH,
-      authPath: process.env.VUE_APP_AUTH_PATH,
+      verifyPath: process.env.VUE_APP_VERIFY_PATH,
       idPath: process.env.VUE_APP_ID_PATH,
+      authPath: process.env.VUE_APP_AUTHORIZE_PATH,
+      redirectPath: process.env.VUE_APP_REDIRECT_PATH,
+      clientId: process.env.VUE_APP_CLIENT_ID,
+      scopes: process.env.VUE_APP_SCOPES,
       mockDisplay: Boolean(process.env.VUE_APP_MOCK_DISPLAY_BOOL) || false,
+      mockHelp: Boolean(process.env.VUE_APP_MOCK_HELP_BOOL) || false,
       matomoId: process.env.VUE_APP_MATOMO_ID,
       appPaths: {
         '/find?': '/search/libris?',
@@ -196,6 +206,13 @@ const store = new Vuex.Store({
         'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
       },
       propertyChains: {
+        '@reverse.itemOf.heldBy.@id': {
+          sv: 'Har bestånd',
+          en: 'Has holding',
+          facet: {
+            order: -1,
+          },
+        },
         'instanceOf.@type': {
           sv: 'Verkstyp',
           en: 'Type of work',
@@ -224,7 +241,7 @@ const store = new Vuex.Store({
             order: 3,
           },
         },
-        'instanceOf.language': {
+        'instanceOf.language.@id': {
           sv: 'Verksspråk',
           en: 'Language of work',
           facet: {
@@ -238,60 +255,81 @@ const store = new Vuex.Store({
             order: 5,
           },
         },
-        inScheme: {
+        'inScheme.@id': {
           sv: 'Termsystem',
           en: 'Term System',
           facet: {
             order: 6,
           },
         },
-        inCollection: {
+        'inCollection.@id': {
           sv: 'Termsamling',
           en: 'Term Collection',
           facet: {
             order: 7,
           },
         },
-        nationality: {
+        'nationality.@id': {
           sv: 'Nationalitet',
           en: 'Nationality',
           facet: {
-            order: 7,
+            order: 8,
           },
         },
-        language: {
+        'language.@id': {
           sv: 'Språk',
           en: 'Language',
           facet: {
-            order: 6,
+            order: 9,
           },
         },
-        genreForm: {
+        'genreForm.@id': {
           sv: 'Genre/form',
           en: 'Genre/form',
           facet: {
-            order: 7,
+            order: 10,
           },
         },
-        'contribution.agent': {
+        'instanceOf.genreForm.@id': {
+          sv: 'Genre/form på verket',
+          en: 'Genre/form of work',
+          facet: {
+            order: 11,
+          },
+        },
+        'contribution.agent.@id': {
           sv: 'Medverkan eller primär medverkan',
           en: 'Contribution or primary contribution',
           facet: {
-            order: 7,
+            order: 12,
           },
         },
-        contentType: {
+        'contentType.@id': {
           sv: 'Innehållstyp',
           en: 'Content type',
           facet: {
-            order: 10,
+            order: 13,
           },
         },
-        carrierType: {
+        'carrierType.@id': {
           sv: 'Bärartyp',
           en: 'Carrier type',
           facet: {
-            order: 10,
+            order: 14,
+          },
+        },
+        'instanceOf.subject.@id': {
+          sv: 'Ämne',
+          en: 'Subject',
+          facet: {
+            order: 15,
+          },
+        },
+        'meta.bibliography.@id': {
+          sv: 'Ingår i bibliografi',
+          en: 'In bibliography',
+          facet: {
+            order: 16,
           },
         },
         '@reverse': {
@@ -315,12 +353,12 @@ const store = new Vuex.Store({
             label: 'Relevance',
           },
           {
-            query: 'hasTitle.mainTitle',
-            label: 'Main title (A-Z)',
+            query: '_sortKeyByLang',
+            label: 'A-Z',
           },
           {
-            query: '-hasTitle.mainTitle',
-            label: 'Main title (Z-A)',
+            query: '-_sortKeyByLang',
+            label: 'Z-A',
           },
           {
             query: '-publication.year',
@@ -341,12 +379,12 @@ const store = new Vuex.Store({
             label: 'Relevance',
           },
           {
-            query: 'hasTitle.mainTitle',
-            label: 'Main title (A-Z)',
+            query: '_sortKeyByLang',
+            label: 'A-Z',
           },
           {
-            query: '-hasTitle.mainTitle',
-            label: 'Main title (Z-A)',
+            query: '-_sortKeyByLang',
+            label: 'Z-A',
           },
           {
             query: '-meta.modified',
@@ -363,12 +401,12 @@ const store = new Vuex.Store({
             label: 'Relevance',
           },
           {
-            query: 'prefLabel',
-            label: 'Preferred label (A-Z)',
+            query: '_sortKeyByLang',
+            label: 'A-Z',
           },
           {
-            query: '-prefLabel',
-            label: 'Preferred label (Z-A)',
+            query: '-_sortKeyByLang',
+            label: 'Z-A',
           },
           {
             query: '-meta.modified',
@@ -399,18 +437,12 @@ const store = new Vuex.Store({
             label: 'Relevance',
           },
           {
-            query: '-meta.modified',
-            label: 'Last updated',
+            query: '_sortKeyByLang',
+            label: 'A-Z',
           },
           {
-            query: '-reverseLinks.totalItems',
-            label: 'Most linked',
-          },
-        ],
-        Other: [
-          {
-            query: '',
-            label: 'Relevance',
+            query: '-_sortKeyByLang',
+            label: 'Z-A',
           },
           {
             query: '-meta.modified',
@@ -427,12 +459,12 @@ const store = new Vuex.Store({
             label: 'Relevance',
           },
           {
-            query: 'prefLabel',
-            label: 'Preferred label (A-Z)',
+            query: '_sortKeyByLang',
+            label: 'A-Z',
           },
           {
-            query: '-prefLabel',
-            label: 'Preferred label (Z-A)',
+            query: '-_sortKeyByLang',
+            label: 'Z-A',
           },
           {
             query: '-meta.modified',
@@ -467,8 +499,12 @@ const store = new Vuex.Store({
         ],
       },
     },
+    oauth2Client: {},
   },
   mutations: {
+    setGlobalMessages(state, payload) {
+      state.resources.globalMessages = payload;
+    },
     setValidation(state, payload) {
       if (payload.validates) {
         if (state.inspector.validation.violations[payload.path]) {
@@ -564,6 +600,9 @@ const store = new Vuex.Store({
         throw new Error(`Trying to set unknown status property "${payload.property}". Is it defined in the store?`);
       }
     },
+    setOauth2Client(state, client) {
+      state.oauth2Client = client;
+    },
     setInspectorStatusValue(state, payload) {
       if (state.inspector.status.hasOwnProperty(payload.property)) {
         state.inspector.status[payload.property] = payload.value;
@@ -655,9 +694,28 @@ const store = new Vuex.Store({
     resourcesLoadingError: state => state.resources.loadingError,
     templates: state => state.resources.templates,
     settings: state => state.settings,
+    oauth2Client: state => state.oauth2Client,
     user: state => state.user,
     userStorage: state => state.userStorage,
     enrichment: state => state.enrichment,
+    activeGlobalMessages: (state) => {
+      const now = new Date();
+      const activeMessages = [];
+      const messages = state.resources.globalMessages;
+      if (messages && messages.length > 0) {
+        for (let i = 0; i < messages.length; i++) {
+          if (state.userStorage.hasOwnProperty('dismissedMessages') && state.userStorage.dismissedMessages.includes(messages[i].id)) {
+            continue;
+          }
+          const startTime = new Date(messages[i].startTime * 1000);
+          const endTime = new Date(messages[i].endTime * 1000);
+          if (startTime < now && endTime > now) {
+            activeMessages.push(messages[i]);
+          }
+        }
+      }
+      return activeMessages;
+    },
     userFavorites: (state, getters) => {
       const collection = [];
       const list = getters.userStorage.list;
@@ -713,6 +771,9 @@ const store = new Vuex.Store({
     setEnrichmentResult({ commit }, data) {
       commit('setEnrichmentResult', data);
     },
+    setGlobalMessages({ commit }, data) {
+      commit('setGlobalMessages', data);
+    },
     unmark({ commit, state }, payload) {
       const userStorage = cloneDeep(state.userStorage);
       const tag = payload.tag;
@@ -732,6 +793,32 @@ const store = new Vuex.Store({
       userStorage.list = {};
       commit('setUserStorage', userStorage);
     },
+    dismissMessage({ commit, state }, id) {
+      const userStorage = cloneDeep(state.userStorage);
+      if (userStorage.hasOwnProperty('dismissedMessages') === false) {
+        userStorage.dismissedMessages = [];
+      }
+      userStorage.dismissedMessages.push(id);
+      commit('setUserStorage', userStorage);
+    },
+    cleanupDismissedList({ commit, state }) {
+      if (state.resources.globalMessages.length > 0) {
+        const userStorage = cloneDeep(state.userStorage);
+        const keepInList = [];
+        if (userStorage.hasOwnProperty('dismissedMessages') && userStorage.dismissedMessages.length > 0) {
+          for (let i = 0; i < userStorage.dismissedMessages.length; i++) {
+            const item = userStorage.dismissedMessages[i];
+            for (let x = 0; x < state.resources.globalMessages.length; x++) {
+              if (state.resources.globalMessages[x].id === item) {
+                keepInList.push(item);
+              }
+            }
+          }
+        }
+        userStorage.dismissedMessages = keepInList;
+        commit('setUserStorage', userStorage);
+      }
+    },
     verifyUser({ commit, state }) {
       return new Promise((resolve, reject) => {
         if (state.user.isLoggedIn === true && state.user.hasTokenExpired() === false) {
@@ -742,9 +829,9 @@ const store = new Vuex.Store({
         let userObj = User.getUserObject();
         if (token !== null) {
           const headers = new Headers();
-          const authUrl = state.settings.authPath;
+          const verifyUrl = state.settings.verifyPath;
           headers.append('Authorization', `Bearer ${token}`);
-          fetch(authUrl, {
+          fetch(verifyUrl, {
             headers,
             method: 'GET',
           }).then(response => response.json()).then((result) => {
@@ -828,6 +915,15 @@ const store = new Vuex.Store({
         property: 'loadingIndicators',
         value: loaders,
       });
+    },
+    initOauth2Client({ commit, state }) {
+      const client = new ClientOAuth2({
+        clientId: state.settings.clientId,
+        authorizationUri: state.settings.authPath,
+        redirectUri: state.settings.redirectPath,
+        scopes: state.settings.scopes,
+      });
+      commit('setOauth2Client', client);
     },
     pushKeyAction({ commit }, keyAction) {
       commit('pushKeyAction', keyAction);

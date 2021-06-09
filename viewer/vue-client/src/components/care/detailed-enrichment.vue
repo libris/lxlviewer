@@ -306,13 +306,19 @@ export default {
       <tab-menu @go="setFocus" :tabs="formTabs" :active="formFocus" />
       <div class="DetailedEnrichment-row" v-for="key in filteredKeys" :key="key">
         <div class="DetailedEnrichment-labelContainer uppercaseHeading">
-          <div class="DetailedEnrichment-label sourceColumn">
+          <div v-show="key !== '@type'" class="DetailedEnrichment-label sourceColumn">
             {{ key | labelByLang | capitalize }}
+          </div>
+          <div v-show="key === '@type'" class="DetailedEnrichment-label sourceColumn">
+            {{ 'Type' | translatePhrase | capitalize }}
           </div>
           <div class="DetailedEnrichment-label actionColumn">
           </div>
-          <div class="DetailedEnrichment-label resultColumn">
+          <div v-show="key !== '@type'" class="DetailedEnrichment-label resultColumn">
             {{ key | labelByLang | capitalize }}
+          </div>
+          <div v-show="key === '@type'" class="DetailedEnrichment-label resultColumn">
+            {{ 'Type' | translatePhrase | capitalize }}
           </div>
         </div>
         <div class="DetailedEnrichment-fieldRow">

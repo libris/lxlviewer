@@ -81,6 +81,9 @@ export default {
     hideUserMenu() {
       this.showUserMenu = false;
     },
+    login() {
+      window.location = this.$store.getters.oauth2Client.token.getUri();
+    },
   },
   watch: {
     '$route.path'() {
@@ -94,8 +97,8 @@ export default {
 </script>
 
 <template>
-  <nav class="NavBar" id="NavBar" aria-labelledby="service-name">
-    <div class="NavBar-container container">
+  <nav class="NavBar top-scroll-past" id="NavBar" aria-labelledby="service-name">
+    <div class="NavBar-container" :class="{ 'container': user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
       <div class="NavBar-brand">
         <router-link to="/" class="NavBar-brandLink">
           <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
@@ -141,9 +144,9 @@ export default {
             v-on-clickaway="hideUserMenu" />
         </li>
         <li class="MainNav-item" v-if="!user.isLoggedIn">
-          <a :href="`${settings.apiPath}/login/authorize`" class="MainNav-link">
-            <span class="MainNav-linkText">{{"Log in" | translatePhrase}}</span>
-          </a>
+            <span class="MainNav-link" @click="login" @keyup.enter="login">
+              {{"Log in" | translatePhrase}}
+            </span>
         </li>
       </ul>
     </div>

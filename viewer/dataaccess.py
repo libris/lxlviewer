@@ -70,11 +70,15 @@ sites = {
         "summary": {"articleBody": "<p>Data på <b>LIBRIS.KB.SE</b>.</p>"},
         "statsindex": '{"@type": []}',
         "filter_param": "@type",
-            # TODO: + @reverse.itemOf.heldBy.@id (and/or count)?
         #"stats": {"@type":{"meta.bibliography.@id":{"publication.providerDate":[]}}}
         "statsfind":
         """
             {
+                "@reverse.itemOf.heldBy.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":1000
+                },
                 "instanceOf.language.@id":{
                     "sort":"value",
                     "sortOrder":"desc",
@@ -91,7 +95,7 @@ sites = {
                     "size":100
                 },
                 "publication.year":{
-                    "sort":"key",
+                    "sort":"value",
                     "sortOrder":"desc",
                     "size":500
                 },
@@ -125,6 +129,12 @@ sites = {
                     "sortOrder":"desc",
                     "size":100
                 },
+                "instanceOf.genreForm.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
+                },
+
                 "contentType.@id": {
                     "sort":"value",
                     "sortOrder": "desc",
@@ -144,6 +154,16 @@ sites = {
                     "sort":"value",
                     "sortOrder":"desc",
                     "size":20
+                },
+                "instanceOf.subject.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
+                },
+                "meta.bibliography.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
                 }
             }
         """,

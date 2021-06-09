@@ -2,6 +2,7 @@
 import { mapGetters } from 'vuex';
 import { each, isObject, orderBy } from 'lodash-es';
 import * as StringUtil from '@/utils/string';
+import * as DisplayUtil from '@/utils/display';
 
 export default {
   name: 'holding-list',
@@ -35,6 +36,7 @@ export default {
     ...mapGetters([
       'directoryCare',
       'settings',
+      'resources',
       'user',
     ]),
     registrantPermissions() {
@@ -73,11 +75,22 @@ export default {
     },
     sortedHoldings() {
       const holdings = this.directoryCare[`${this.name}Holdings`];
+      each(holdings, (h) => { 
+        h._label = DisplayUtil.getItemLabel(
+          h,
+          this.resources.display,
+          [],
+          this.resources.vocab,
+          this.settings,
+          this.resources.context,
+        );
+      });
+      
       const sorted = orderBy(holdings, [(o) => {
         const parts = o.heldBy['@id'].split('/');
         const code = parts[parts.length - 1];
         return this.registrantPermissions.indexOf(code) > -1;
-      }, o => o.heldBy['@id']], ['desc', 'asc']);
+      }, o => o._label], ['desc', 'asc']);
       return sorted;
     },
   },
@@ -400,8 +413,8 @@ export default {
   }
 
   & .EntitySummary-title {
-    font-size: 18px;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+    white-space: unset;
   }
 
   & .EntitySummary-info {

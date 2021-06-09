@@ -128,6 +128,7 @@ new Vue({
   render: h => h(App),
   created() {
     store.dispatch('verifyUser').catch(() => {});
+    store.dispatch('initOauth2Client').catch(() => {});
     this.initWarningFunc();
     this.fetchHelpDocs();
     store.dispatch('pushLoadingIndicator', 'Loading application');
@@ -222,7 +223,7 @@ new Vue({
       if (!this.settings.apiPath || typeof this.settings.apiPath === 'undefined') {
         throw new Error('Missing API path in app-config');
       }
-      if (!this.settings.authPath || typeof this.settings.authPath === 'undefined') {
+      if (!this.settings.verifyPath || typeof this.settings.verifyPath === 'undefined') {
         throw new Error('Missing AUTH path in app-config');
       }
       if (!this.settings.idPath || typeof this.settings.idPath === 'undefined') {
@@ -295,15 +296,20 @@ new Vue({
       };
     },
     fetchHelpDocs() {
-      fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
-        if (result.status === 200) {
-          result.json().then((body) => {
-            store.dispatch('setHelpDocs', body);
-          });
-        }
-      }, (error) => {
-        console.log('Couldn\'t fetch help documentation.', error);
-      });
+      if (this.settings.mockHelp) {
+        window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
+        store.dispatch('setHelpDocs', require('@/../../../../lxl-helpdocs/build/help.json'));
+      } else {
+        fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
+          if (result.status === 200) {
+            result.json().then((body) => {
+              store.dispatch('setHelpDocs', body);
+            });
+          }
+        }, (error) => {
+          console.log('Couldn\'t fetch help documentation.', error);
+        });
+      }
     },
     loadTemplates() {
       const templates = {

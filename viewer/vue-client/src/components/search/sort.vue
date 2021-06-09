@@ -38,10 +38,16 @@ export default {
       } return '';
     },
     options() {
-      const sortOptions = this.$store.getters.settings.sortOptions[this.commonBaseType];
+      let sortOptions = this.$store.getters.settings.sortOptions[this.commonBaseType];
       if (sortOptions) {
         return sortOptions;
-      }      
+      }
+      if (this.commonSortFallback) {
+        sortOptions = this.$store.getters.settings.sortOptions.Common;
+      }
+      if (sortOptions) {
+        return sortOptions;
+      }
       return false;
     },
     commonBaseType() {      
@@ -63,11 +69,8 @@ export default {
         }, []);
         if (baseTypes.length === 1) { // same base class -> check sort options
           return baseTypes.join();
-        } 
-        if (this.commonSortFallback) {
-          return 'Common'; // different base classes -> fall back to a common sort definition
         }
-        return false; // different base classes -> disallow sort
+        return false;
       }
       return false;
     },
@@ -97,7 +100,7 @@ export default {
       @change="handleSortChange">
       <option 
         v-for="(option, index) in options" 
-        :value="option.query"
+        :value="option.query.endsWith('_sortKeyByLang') ? `${option.query}.${user.settings.language || 'sv'}` : option.query"
         :key="index">
         {{ option.label | translatePhrase }}
       </option>

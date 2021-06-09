@@ -12,10 +12,7 @@ import re
 import string
 import time
 import requests
-try:
-    from urllib.parse import urlparse, urljoin
-except ImportError:
-    from urlparse import urlparse, urljoin
+from urllib.parse import urlparse, urljoin, urlencode, unquote, parse_qs, ParseResult
 from datetime import datetime, timedelta
 
 from flask import Flask, Response
@@ -25,14 +22,11 @@ from flask_cors import CORS
 from werkzeug.urls import url_quote
 from werkzeug.datastructures import MultiDict
 
-from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
-
 from rdflib import ConjunctiveGraph
 
 from .util import as_iterable
 from .dataaccess import CONTEXT, GRAPH, ID, TYPE, REVERSE, DataAccess, IDKBSE, LIBRIS
 from .marcframeview import MarcFrameView, pretty_json
-from . import admin
 from . import conneg
 
 
@@ -73,7 +67,6 @@ app.config.from_pyfile('config.cfg', silent=True)
 
 CORS(app, methods=HTTP_METHODS, expose_headers=['ETag', 'Location'])
 
-
 try:
     import builtins
 except ImportError:
@@ -101,6 +94,18 @@ def first(value):
     for v in as_iterable(value):
         return v
 
+@app.template_filter('modify_query')
+def modify_query(url, new_params):
+    parsed_url = urlparse(unquote(url))
+    parsed_qs = parse_qs(parsed_url.query)
+    parsed_qs.update(new_params)
+    encoded_qs = urlencode(parsed_qs, doseq=True)
+
+    return ParseResult(
+        parsed_url.scheme, parsed_url.netloc, parsed_url.path,
+        parsed_url.params, encoded_qs, parsed_url.fragment
+    ).geturl()
+
 ##
 # About XL
 @app.route("/about")
@@ -114,19 +119,27 @@ def show_help():
 
 ##
 # Setup Github rss
-@app.route('/releasefeed', methods=['GET'])
+@app.route('/feed/release', methods=['GET'])
 def get_release_feed():
     return requests.get('https://github.com/libris/lxlviewer/releases.atom').content
 
 # Setup proxy for analytics "active users"
-@app.route('/activeusers', methods=['GET'])
+@app.route('/feed/activeusers', methods=['GET'])
 def get_active_users():
     return requests.get('https://analytics.kb.se/index.php?module=API&method=Live.getCounters&idSite=65&lastMinutes={lastMinutes}&format=json&token_auth={token}'.format(lastMinutes=5, token=app.config.get('MATOMO_READ_TOKEN'))).content
 
-# Setup blog feed
-@app.route('/blogfeed', methods=['GET'])
-def get_blog_feed():
-    return requests.get('https://www.kb.se/rest-api/RSS%20Genererare/rss?keywords=Libris').content
+# Setup status feed
+@app.route('/feed/status', methods=['GET'])
+def get_status_feed():
+    env = app.config.get('ENVIRONMENT')
+    if env == 'local':
+        env = 'dev'
+    return requests.get(f"http://multiweb.kb.se/libris/status-{env}.json").content
+
+# Setup news feed
+@app.route('/feed/news', methods=['GET'])
+def get_news_feed():
+    return requests.get('https://www.kb.se/rest-api/RSS%20Genererare/news-rss?keywords=Libris').content
 
 
 
@@ -411,8 +424,6 @@ app.secret_key = app.config.get('SESSION_SECRET_KEY') or ''.join(random.SystemRa
 app.remember_cookie_duration = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
 app.permanent_session_lifetime = timedelta(days=app.config.get('SESSION_COOKIE_LIFETIME') or 31)
 
-app.register_blueprint(admin.admin_app)
-
 
 ##
 # Data Editing (depends on Admin)
@@ -432,7 +443,6 @@ def import_post():
 # So rethink the flow for new records
 # or maybe its not that stupid after all?
 @app.route('/edit', methods=['POST'])
-@admin.login_required
 def thingnewp():
     record = json.loads(request.form['data'])
     app.logger.debug('Posting data to editor:\n %s',

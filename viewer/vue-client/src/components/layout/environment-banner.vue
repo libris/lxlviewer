@@ -1,7 +1,7 @@
 <script>
 
 export default {
-  name: 'global-message',
+  name: 'EnvironmentBanner',
   data() {
     return {
       closedByUser: false,
@@ -28,13 +28,13 @@ export default {
 </script>
 
 <template>
-  <div class="GlobalMessage" id="GlobalMessage">
-    <div class="GlobalMessage-banner" v-bind:class="{'warning':this.settings.environment === 'stg'}" v-if="!closedByUser && message && message.length > 0">
+  <div class="EnvironmentBanner" id="EnvironmentBanner">
+    <div class="EnvironmentBanner-banner" v-bind:class="{'warning':this.settings.environment === 'stg'}" v-if="!closedByUser && message && message.length > 0">
       <button @click="closedByUser = true" @keyup.enter="closedByUser = true" class="btn btn-default">{{ 'Close' | translatePhrase }}</button>
       <div v-html="message"></div>
     </div>
     
-    <div class="GlobalMessage-corner" v-if="closedByUser">
+    <div class="EnvironmentBanner-corner" v-if="closedByUser">
       {{ settings.environment }}
     </div>
   </div>
@@ -42,7 +42,7 @@ export default {
 
 
 <style lang="less">
-.GlobalMessage {
+.EnvironmentBanner {
   &-corner {
     position: fixed;
     bottom: 0;

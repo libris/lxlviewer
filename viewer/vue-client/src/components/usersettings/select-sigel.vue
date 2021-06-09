@@ -14,9 +14,10 @@ export default {
   methods: {
     getSigelLabel(sigel, len) {
       let label = '';
-      label += sigel.code;
       if (sigel.friendly_name) {
-        label += ` - ${sigel.friendly_name}`;
+        label += `${sigel.friendly_name} (${sigel.code})`;
+      } else {
+        label += sigel.code;
       }
       return label.length > len ? `${label.substr(0, len - 2)}...` : label;
     },
@@ -26,7 +27,7 @@ export default {
         userObj.settings.activeSigel = value;
         this.$store.dispatch('setUser', userObj);
       };
-      if (this.inspector.data.mainEntity && this.inspector.data.mainEntity['@type'] === 'Item') {
+      if (this.$route.name === 'Inspector' && this.inspector.data.mainEntity && this.inspector.data.mainEntity['@type'] === 'Item') {
         // If editing a holding, the user must accept a cancel dialog before sigel can be changed
         this.$store.dispatch('pushInspectorEvent', { 
           name: 'post-control',
@@ -58,6 +59,9 @@ export default {
     selectValue() {
       return this.preselectedValue ? this.preselectedValue : this.user.settings.activeSigel;
     },
+    sortedSigels() {
+      return [...this.user.collections].sort((a, b) => this.getSigelLabel(a).localeCompare(this.getSigelLabel(b)));
+    },
   },
 };
 </script>
@@ -73,7 +77,7 @@ export default {
       ref="selectSigel"
       :value="selectValue" 
       @change="onChange">
-      <option v-for="sigel in user.collections" 
+      <option v-for="sigel in sortedSigels"
         :key="sigel.code" 
         :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}</option>
     </select>
