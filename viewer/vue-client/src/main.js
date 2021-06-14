@@ -4,6 +4,7 @@
 import 'whatwg-fetch';
 import Vue from 'vue';
 import Vuex from 'vuex'; // eslint-disable-line import/no-duplicates
+import VueMeta from 'vue-meta';
 import { mapGetters } from 'vuex'; // eslint-disable-line import/no-duplicates
 import { each } from 'lodash-es';
 import VTooltip from 'v-tooltip';
@@ -55,6 +56,7 @@ Vue.use(Vuex);
 Vue.use(PortalVue);
 Vue.use(VTooltip, TooltipOptions);
 Vue.use(VueClipboard);
+Vue.use(VueMeta);
 Vue.component('v-popover', VTooltip.VPopover);
 Vue.component('field', Field);
 Vue.component('entity-summary', EntitySummary);

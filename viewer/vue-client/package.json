@@ -48,6 +48,7 @@
     "vue-cli-plugin-style-resources-loader": "^0.1.4",
     "vue-clickaway": "https://github.com/silverspectro/vue-clickaway/archive/2.2.3.tar.gz",
     "vue-clipboard2": "^0.3.0",
+    "vue-meta": "^2.4.0",
     "vue-router": "^3.1.5",
     "vue-simple-spinner": "^1.2.8",
     "vue-template-compiler": "^2.6.11",
