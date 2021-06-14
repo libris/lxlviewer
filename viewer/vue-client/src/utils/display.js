@@ -1,4 +1,4 @@
-import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty } from 'lodash-es';
+import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual } from 'lodash-es';
 import moment from 'moment';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
@@ -13,28 +13,65 @@ export function getDisplayDefinitions(settings) {
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
       window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using file from local definitions repository');
-      resolve(require('@/../../../../definitions/source/vocab/display.jsonld'));
+      resolve(expandInherited(require('@/../../../../definitions/source/vocab/display.jsonld')));
     } else {
       httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
-        const clonedResult = cloneDeep(result);
-        each(clonedResult.lensGroups, (lensGroup) => {
-          each(lensGroup.lenses, (lens) => {
-            if (lens.hasOwnProperty('fresnel:extends')) {
-              const [extendLens, extendLevel] = lens['fresnel:extends']['@id'].split('-');
-              lens.showProperties.splice(
-                lens.showProperties.indexOf('fresnel:super'),
-                1,
-                ...result.lensGroups[extendLevel].lenses[extendLens].showProperties,
-              );
-            }
-          });
-        });
-        resolve(clonedResult);
+        resolve(expandInherited(result));
       }, (error) => {
         reject(error);
       });
     }
   });
+}
+
+function expandInherited(display) {
+  const cloned = cloneDeep(display);
+
+  const lensesById = {};
+  each(cloned.lensGroups, (lensGroup) => {
+    each(lensGroup.lenses, (lens) => {
+      if (lens.hasOwnProperty('@id')) {
+        lensesById[lens['@id']] = lens;
+      }
+    });
+  });
+
+  const flattenedProps = (lens, hierarchy) => {
+    if (lens['@id'] && hierarchy.indexOf(lens['@id']) !== -1) {
+      throw new Error(`fresnel:extends inheritance loop: ${hierarchy}`);
+    }
+
+    if (lens.showProperties.indexOf('fresnel:super') === -1) {
+      return lens.showProperties;
+    }
+    
+    if (!lens['fresnel:extends'] || !lens['fresnel:extends']['@id']) {
+      window.lxlWarning(`👁️ Use of 'fresnel:super' without 'fresnel:extends': ${JSON.stringify(lens)}.`);
+      return lens.showProperties;
+    }
+    const extendId = lens['fresnel:extends']['@id'];
+    if (!lensesById[extendId]) {
+      window.lxlWarning(`👁️ Could not find lens with id '${extendId}' used in 'fresnel:extends': ${JSON.stringify(lens)}.`);
+      return lens.showProperties;
+    }
+      
+    if (lens['@id']) {
+      hierarchy.push(lens['@id']);
+    }
+    lens.showProperties.splice(
+      lens.showProperties.indexOf('fresnel:super'),
+      1,
+      ...flattenedProps(lensesById[extendId], hierarchy),
+    );
+    return lens.showProperties;
+  };
+
+  each(cloned.lensGroups, (lensGroup) => {
+    each(lensGroup.lenses, (lens) => {
+      lens.showProperties = uniqWith(flattenedProps(lens, []), isEqual);
+    });
+  });
+  return cloned;
 }
 
 function getValueByLang(item, propertyId, displayDefs, langCode, context) {
@@ -81,22 +118,6 @@ export function getLensPropertiesDeep(className, displayDefinitions, vocab, sett
   const lensGroups = displayDefinitions.lensGroups;
   if (lensGroups.hasOwnProperty(level) && lensGroups[level].lenses.hasOwnProperty(className)) {
     props = lensGroups[level].lenses[className].showProperties;
-    // Add extensions
-    let extension = [];
-    for (let i = 0; i < props.length; i++) {
-      if (props[i] === 'fresnel:super') {
-        if (lensGroups[level].lenses.hasOwnProperty(className) && lensGroups[level].lenses[className].hasOwnProperty('fresnel:extends')) {
-          const extensionLensId = lensGroups[level].lenses[className]['fresnel:extends']['@id'];
-          const extensionLens = getLensById(extensionLensId, displayDefinitions);
-          extension = extensionLens.showProperties;
-          // window.lxlWarning(`👁️ Lens for class '${className}' (${level}) was extended from '${extensionLensId}' with properties: ${extension}`);
-          props.splice(i, 1, ...extension);
-        } else {
-          window.lxlWarning(`👁️ Lens for class '${className}' was asked to extend another lens with 'fresnel:super', but is missing the 'fresnel:extends' property.`);
-        }
-        break;
-      }
-    }
   } else {
     const termObj = VocabUtil.getTermObject(className, vocab, context);
     if (typeof termObj !== 'undefined' && termObj.hasOwnProperty('subClassOf')) {
