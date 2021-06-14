@@ -10,7 +10,7 @@
     <meta property="og:title" content="Libris katalogisering">
     <meta property="og:site_name" content="Libris katalogisering">
     <meta property="og:description" content="Cataloguing interface for the Swedish National Union Catalogue">
-    <meta property="og:image" content="<%= BASE_URL %>opengraph.png">
+    <meta property="og:image" content="https://libris<%= process.env.VUE_APP_ENV_LABEL ? '-' : '' %><%= process.env.VUE_APP_ENV_LABEL %>.kb.se<%= BASE_URL %>opengraph.png">
     <meta name="twitter:card" content="summary_large_image">
   </head>
   <body>
