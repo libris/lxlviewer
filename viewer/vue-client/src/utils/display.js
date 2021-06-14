@@ -71,7 +71,6 @@ function expandInherited(display) {
       lens.showProperties = uniqWith(flattenedProps(lens, []), isEqual);
     });
   });
-  debugger;
   return cloned;
 }
 
