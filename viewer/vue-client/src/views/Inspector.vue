@@ -23,15 +23,6 @@ import ValidationSummary from '@/components/inspector/validation-summary';
 
 export default {
   name: 'Inspector',
-  metaInfo() {
-    return {
-      meta: [
-        {
-          property: 'og:title', content: this.documentTitle,
-        },
-      ],
-    };
-  },
   beforeRouteLeave(to, from, next) {
     if (this.shouldWarnOnUnload()) {
       const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.user.settings.language);

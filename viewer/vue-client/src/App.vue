@@ -39,33 +39,6 @@ import GlobalMessages from '@/components/layout/global-messages';
 
 export default {
   name: 'App',
-  metaInfo() {
-    return {
-      meta: [
-        {
-          property: 'og:title', content: 'Libris katalogisering',
-        },
-        {
-          property: 'og:site_name', content: 'Libris katalogisering',
-        },
-        {
-          property: 'og:description', content: 'Cataloguing interface for the Swedish National Union Catalogue',
-        },
-        {
-          property: 'og:image', content: `${this.settings.apiPath}/katalogisering/opengraph.png`,
-        },
-        {
-          property: 'og:image:width', content: '1200',
-        },
-        {
-          property: 'og:image:height', content: '600',
-        },
-        {
-          name: 'twitter:card', content: 'summary_large_image',
-        },
-      ],
-    };
-  },
   data() {
     return {
       stickToTop: false,
