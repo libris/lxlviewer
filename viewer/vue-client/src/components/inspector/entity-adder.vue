@@ -177,13 +177,14 @@ export default {
   },
   methods: {
     getSearchParams(searchPhrase) {
+      let params;
       if (this.currentSearchParam == null) {
-        return { q: searchPhrase };
+        params = { q: searchPhrase };
+      } else {
+        params = Object.assign({}, this.currentSearchParam.mappings || {});
+        this.currentSearchParam.searchProps.forEach((param) => { params[param] = searchPhrase; });
       }
-
-      const params = Object.assign({}, this.currentSearchParam.mappings || {});
-      this.currentSearchParam.searchProps.forEach((param) => { params[param] = searchPhrase; });
-
+      
       if (this.fieldKey === 'shelfMark') {
         params['meta.descriptionCreator.@id'] = this.user.getActiveLibraryUri();
         params.shelfMarkStatus = 'ActiveShelfMark';
