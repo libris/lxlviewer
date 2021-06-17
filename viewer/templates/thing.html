@@ -1,6 +1,8 @@
 % extends "base.html"
 % from "termutils.html" import vocab_term, termref
 
+{% block meta %}
+{% endblock %}
 {% block title %}${g.vocab.get_label_for(thing)}{% endblock %}
 
 {% block bodyattrs %}vocab="${config.VOCAB_IRI}" id="thing"{% endblock %}
