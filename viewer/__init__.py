@@ -141,7 +141,11 @@ def get_status_feed():
 def get_news_feed():
     return requests.get('https://www.kb.se/rest-api/RSS%20Genererare/news-rss?keywords=Libris').content
 
-
+##
+# Setup user data paths
+@app.route('/user/<email_hash>', methods=['GET', 'PUT'])
+def forward_request_user_data(email_hash):
+    return _simple_forward('_userdata/'+str(email_hash), request, session, query_params=MultiDict([]), url_path='/_userdata/'+str(email_hash))
 
 ##
 # Setup basic views
@@ -488,6 +492,25 @@ def _remotesearch():
     return _proxy_request(request, session,
                           query_params=['q', 'databases', 'n', 'start'])
 
+
+def _simple_forward(endpoint, *args, **kwargs):
+    forward_to = app.config.get('WHELK_REST_API_URL') + '/' + endpoint
+    print(f"[Forwarding] {request.url} => {forward_to}")
+    request.url = forward_to
+    resp = requests.request(
+        method=request.method,
+        url=request.url,
+        headers={key: value for (key, value) in request.headers if key != 'Host'},
+        data=request.get_data(),
+        cookies=request.cookies,
+        allow_redirects=False)
+
+    excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
+    headers = [(name, value) for (name, value) in resp.raw.headers.items()
+               if name.lower() not in excluded_headers]
+
+    response = Response(resp.content, resp.status_code, headers)
+    return response
 
 def _proxy_request(request, session, json_data=None, query_params=[],
                    accept_header=None, url_path=None):

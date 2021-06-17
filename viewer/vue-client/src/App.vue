@@ -51,6 +51,7 @@ export default {
     ...mapGetters([
       'settings',
       'user',
+      'userDatabase',
       'resourcesLoaded',
       'resourcesLoadingError',
       'status',

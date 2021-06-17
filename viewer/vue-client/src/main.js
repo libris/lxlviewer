@@ -127,7 +127,9 @@ new Vue({
   store,
   render: h => h(App),
   created() {
-    store.dispatch('verifyUser').catch(() => {});
+    store.dispatch('verifyUser').then(() => {
+      store.dispatch('loadUserDatabase');
+    }).catch(() => {});
     store.dispatch('initOauth2Client').catch(() => {});
     this.initWarningFunc();
     this.fetchHelpDocs();
@@ -185,6 +187,7 @@ new Vue({
       this.loadTemplates();
       window.addEventListener('focus', () => {
         this.syncUserStorage();
+        this.$store.dispatch('loadUserDatabase');
       });
       window.addEventListener('keydown', LayoutUtil.handleFirstTab);
       this.updateTitle();

@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { cloneDeep, each, set, get, assign, filter } from 'lodash-es';
+import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
+import sjcl from 'sjcl';
 import * as VocabUtil from '@/utils/vocab';
+import * as httpUtil from '@/utils/http';
 import * as StringUtil from '@/utils/string';
 import * as User from '@/models/user';
 
@@ -83,6 +85,7 @@ const store = new Vuex.Store({
       hintSigelChange: false,
     },
     user: User.getUserObject(),
+    userDatabase: null,
     userStorage: {
       list: {},
       copyClipboard: null,
@@ -533,6 +536,21 @@ const store = new Vuex.Store({
         }
       }
     },
+    setUserDatabase(state, data) {
+      // Sets the userDatabase to *state*
+      // this should only be called after an API call to the user database has been successful
+      // Usually it would be set after a load from the database,
+      // or if you modify something and get a 200 response.
+      let recievedData = data;
+      if (isObject(recievedData) === false) {
+        if (recievedData.length === 0) {
+          recievedData = {};
+        } else {
+          recievedData = JSON.parse(recievedData);
+        }
+      }
+      state.userDatabase = recievedData;
+    },
     setOriginalData(state, data) {
       state.inspector.originalData = cloneDeep(data);
     },
@@ -718,7 +736,10 @@ const store = new Vuex.Store({
     },
     userFavorites: (state, getters) => {
       const collection = [];
-      const list = getters.userStorage.list;
+      if (getters.userDatabase == null || getters.userDatabase.markedDocuments == null) {
+        return collection;
+      }
+      const list = getters.userDatabase.markedDocuments;
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
         const listItem = list[ids[i]];
@@ -730,7 +751,10 @@ const store = new Vuex.Store({
     },
     userCare: (state, getters) => {
       const collection = [];
-      const list = getters.userStorage.list;
+      if (getters.userDatabase == null || getters.userDatabase.markedDocuments == null) {
+        return collection;
+      }
+      const list = getters.userDatabase.markedDocuments;
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
         const listItem = list[ids[i]];
@@ -741,26 +765,70 @@ const store = new Vuex.Store({
       return collection;
     },
     status: state => state.status,
+    userDatabase: state => state.userDatabase,
     directoryCare: state => state.directoryCare,
     vocab: state => state.resources.vocab,
     display: state => state.resources.display,
     context: state => state.resources.context,
   },
   actions: {
-    mark({ commit, state }, payload) {
-      const userStorage = cloneDeep(state.userStorage);
+    mark({ dispatch, state }, payload) {
+      const markedDocuments = cloneDeep(state.userDatabase.markedDocuments) || {};
       const tag = payload.tag;
       const id = payload.documentId;
       const label = payload.documentTitle;
-      if (userStorage.list.hasOwnProperty(id)) {
-        if (userStorage.list[id].tags.indexOf(tag) < 0) {
-          userStorage.list[id].tags.push(tag);
-          userStorage.list[id].label = label;
+      if (markedDocuments.hasOwnProperty(id)) {
+        if (markedDocuments[id].tags.indexOf(tag) < 0) {
+          markedDocuments[id].tags.push(tag);
+          markedDocuments[id].label = label;
         }
       } else {
-        userStorage.list[id] = { tags: [tag], label };
+        markedDocuments[id] = { tags: [tag], label };
       }
-      commit('setUserStorage', userStorage);
+      dispatch('modifyUserDatabase', { property: 'markedDocuments', value: markedDocuments });
+    },
+    unmark({ dispatch, state }, payload) {
+      const markedDocuments = cloneDeep(state.userData.markedDocuments);
+      const tag = payload.tag;
+      const id = payload.documentId;
+      if (markedDocuments.hasOwnProperty(id)) {
+        if (markedDocuments[id].tags.indexOf(tag) >= 0) {
+          markedDocuments[id].tags.splice(markedDocuments[id].tags.indexOf(tag), 1);
+          if (markedDocuments[id].tags.length === 0) {
+            delete markedDocuments[id];
+          }
+        }
+      }
+      dispatch('modifyUserDatabase', { property: 'markedDocuments', value: markedDocuments });
+    },
+    purgeUserTagged({ dispatch }) {
+      dispatch('modifyUserDatabase', { property: 'markedDocuments', value: {} });
+    },
+    loadUserDatabase({ commit, state }) {
+      // Call this when you need to load the userDatabase from the server.
+      const bitArray = sjcl.hash.sha256.hash(state.user.email);
+      const emailHash = sjcl.codec.hex.fromBits(bitArray);
+      httpUtil.get({ url: `${state.settings.apiPath}/user/${emailHash}`, token: state.user.token, contentType: 'text/plain' }).then((result) => {
+        commit('setUserDatabase', result);
+      }, (error) => {
+        console.error(error);
+      });
+    },
+    modifyUserDatabase({ commit, state }, payload) {
+      // Modifies a propery in the userDatabase
+      const userDatabase = cloneDeep(state.userDatabase);
+      if (payload.value == null) {
+        delete userDatabase[payload.property];
+      } else {
+        userDatabase[payload.property] = payload.value;
+      }
+      const bitArray = sjcl.hash.sha256.hash(state.user.email);
+      const emailHash = sjcl.codec.hex.fromBits(bitArray);
+      httpUtil.put({ url: `${state.settings.apiPath}/user/${emailHash}`, token: state.user.token, contentType: 'text/plain' }, userDatabase).then((result) => {
+        commit('setUserDatabase', userDatabase);
+      }, (error) => {
+        console.error(error);
+      });
     },
     setEnrichmentTarget({ commit }, data) {
       commit('setEnrichmentTarget', data);
@@ -773,25 +841,6 @@ const store = new Vuex.Store({
     },
     setGlobalMessages({ commit }, data) {
       commit('setGlobalMessages', data);
-    },
-    unmark({ commit, state }, payload) {
-      const userStorage = cloneDeep(state.userStorage);
-      const tag = payload.tag;
-      const id = payload.documentId;
-      if (userStorage.list.hasOwnProperty(id)) {
-        if (userStorage.list[id].tags.indexOf(tag) >= 0) {
-          userStorage.list[id].tags.splice(userStorage.list[id].tags.indexOf(tag), 1);
-          if (userStorage.list[id].tags.length === 0) {
-            delete userStorage.list[id];
-          }
-        }
-      }
-      commit('setUserStorage', userStorage);
-    },
-    purgeUserTagged({ commit, state }) {
-      const userStorage = cloneDeep(state.userStorage);
-      userStorage.list = {};
-      commit('setUserStorage', userStorage);
     },
     dismissMessage({ commit, state }, id) {
       const userStorage = cloneDeep(state.userStorage);

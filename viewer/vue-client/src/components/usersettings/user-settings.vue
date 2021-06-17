@@ -46,10 +46,8 @@ export default {
       'user',
       'userStorage',
       'settings',
+      'userCare'
     ]),
-    userHasTaggedPosts() {
-      return Object.keys(this.userStorage.list).length > 0;
-    },
   },
   components: {
     'user-avatar': UserAvatar,
@@ -106,8 +104,8 @@ export default {
                 </label>
               </td>
               <td class="value">
-                <button name="clearFlagged" v-if="userHasTaggedPosts" class="btn btn--sm btn-danger" @click.prevent="purgeTagged" @keyup.enter.prevent="purgeTagged">{{ 'Clear' | translatePhrase }}</button>
-                <span v-if="!userHasTaggedPosts" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
+                <button name="clearFlagged" v-if="userCare.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeTagged" @keyup.enter.prevent="purgeTagged">{{ 'Clear' | translatePhrase }}</button>
+                <span v-if="userCare.length === 0" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
               </td>
             </tr>
           </table>
@@ -148,6 +146,7 @@ export default {
           </table>
 
         </form>
+        
         <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{"Log out" | translatePhrase}}</button>
       </div>
     </div>
@@ -160,7 +159,7 @@ export default {
         </li>
         <li>
           <router-link to="/user">{{"Settings" | translatePhrase}}</router-link>
-          <button class="btn--as-link" v-if="userHasTaggedPosts" @click.prevent="purgeTagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</button>
+          <button class="btn--as-link" v-if="userCare.length > 0" @click.prevent="purgeTagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</button>
         </li>
         <li>
           <!-- <span>Växla användare</span> -->
