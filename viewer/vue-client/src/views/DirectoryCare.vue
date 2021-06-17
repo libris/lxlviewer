@@ -34,7 +34,7 @@ export default {
   computed: {
     ...mapGetters([
       'settings',
-      'userCare',
+      'userFlagged',
       'user',
       'resources',
     ]),
@@ -43,7 +43,7 @@ export default {
     },
   },
   watch: {
-    userCare(newValue, oldValue) {
+    userFlagged(newValue, oldValue) {
       if (newValue !== oldValue) {
         this.fetchAllFlagged();
       }
@@ -61,7 +61,7 @@ export default {
             resolve(res.data);
           } else if (res.status === 410) {
             this.errors.removed.push(item);
-            this.$store.dispatch('unmark', { tag: 'Directory care', documentId: item['@id'] });
+            this.$store.dispatch('unmark', { tag: 'Flagged', documentId: item['@id'] });
             resolve();
           } else {
             this.errors.other.push(item);
@@ -74,7 +74,7 @@ export default {
     },
     fetchAllFlagged() {
       const promiseArray = [];
-      this.userCare.forEach((item) => {
+      this.userFlagged.forEach((item) => {
         promiseArray.push(this.fetchOne(item));
       });
       Promise.all(promiseArray)

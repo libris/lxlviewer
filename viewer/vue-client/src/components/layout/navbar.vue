@@ -24,14 +24,14 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userCare',
+      'userFlagged',
       'settings',
       'status',
       'user',
     ]),
     tabs() {
       const directoryCareBadge = {
-        value: this.userCare.length === 0 ? '' : this.userCare.length,
+        value: this.userFlagged.length === 0 ? '' : this.userFlagged.length,
         type: 'accent',
       };
       const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language)}`;

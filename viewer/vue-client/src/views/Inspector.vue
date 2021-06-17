@@ -825,8 +825,8 @@ export default {
       'user',
       'settings',
       'status',
-      'userCare',
-      'userFavorites',
+      'userFlagged',
+      'userBookmarks',
       'enrichment',
     ]),
     isDocumentAvailable() {

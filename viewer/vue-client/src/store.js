@@ -734,31 +734,31 @@ const store = new Vuex.Store({
       }
       return activeMessages;
     },
-    userFavorites: (state, getters) => {
+    userBookmarks: (state) => {
       const collection = [];
-      if (getters.userDatabase == null || getters.userDatabase.markedDocuments == null) {
+      if (state.userDatabase == null || state.userDatabase.markedDocuments == null) {
         return collection;
       }
-      const list = getters.userDatabase.markedDocuments;
+      const list = state.userDatabase.markedDocuments;
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
         const listItem = list[ids[i]];
-        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Favorite') > -1) {
-          collection.push({ [ids[i]]: [ids[i]].label });
+        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Bookmark') > -1) {
+          collection.push({ '@id': ids[i], label: list[ids[i]].label });
         }
       }
       return collection;
     },
-    userCare: (state, getters) => {
+    userFlagged: (state) => {
       const collection = [];
-      if (getters.userDatabase == null || getters.userDatabase.markedDocuments == null) {
+      if (state.userDatabase == null || state.userDatabase.markedDocuments == null) {
         return collection;
       }
-      const list = getters.userDatabase.markedDocuments;
+      const list = state.userDatabase.markedDocuments;
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
         const listItem = list[ids[i]];
-        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Directory care') > -1) {
+        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Flagged') > -1) {
           collection.push({ '@id': ids[i], label: list[ids[i]].label });
         }
       }
@@ -788,7 +788,7 @@ const store = new Vuex.Store({
       dispatch('modifyUserDatabase', { property: 'markedDocuments', value: markedDocuments });
     },
     unmark({ dispatch, state }, payload) {
-      const markedDocuments = cloneDeep(state.userData.markedDocuments);
+      const markedDocuments = cloneDeep(state.userDatabase.markedDocuments);
       const tag = payload.tag;
       const id = payload.documentId;
       if (markedDocuments.hasOwnProperty(id)) {
@@ -801,8 +801,12 @@ const store = new Vuex.Store({
       }
       dispatch('modifyUserDatabase', { property: 'markedDocuments', value: markedDocuments });
     },
-    purgeUserTagged({ dispatch }) {
-      dispatch('modifyUserDatabase', { property: 'markedDocuments', value: {} });
+    purgeUserTagged({ dispatch, state }, tagName) {
+      const markedDocuments = cloneDeep(state.userDatabase.markedDocuments);
+      each(markedDocuments, (o) => {
+        o.tags.splice(o.tags.indexOf(tagName), 1);
+      });
+      dispatch('modifyUserDatabase', { property: 'markedDocuments', value: markedDocuments });
     },
     loadUserDatabase({ commit, state }) {
       // Call this when you need to load the userDatabase from the server.
@@ -824,7 +828,7 @@ const store = new Vuex.Store({
       }
       const bitArray = sjcl.hash.sha256.hash(state.user.email);
       const emailHash = sjcl.codec.hex.fromBits(bitArray);
-      httpUtil.put({ url: `${state.settings.apiPath}/user/${emailHash}`, token: state.user.token, contentType: 'text/plain' }, userDatabase).then((result) => {
+      httpUtil.put({ url: `${state.settings.apiPath}/user/${emailHash}`, token: state.user.token, contentType: 'text/plain' }, userDatabase).then(() => {
         commit('setUserDatabase', userDatabase);
       }, (error) => {
         console.error(error);
