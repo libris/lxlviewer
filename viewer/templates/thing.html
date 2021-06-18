@@ -13,21 +13,21 @@
 % endblock
 
 % block content
-<div class="row">
-  % if g.site.title == 'libris.kb.se'
-  <div class="col-md-12">
-    <div class="panel panel-default">
-      <div class="panel-body">
-        <a href="https://www.kb.se" class="pull-right">
-          <img src="/assets/img/kb_logo_black.svg" class="logo-medium" alt="" />
-        </a>
-        <h1>${g.vocab.get_label_for(thing)}</h1>
-        <h3>Andra vyer för samma resurs:</h3>
+% if g.site.title == 'libris.kb.se'
+<div>
+  <div>
+    <div class="thing-panel">
+      <div class="panel-header row">
+        <div class="col-md-12">
+          <h1>${g.vocab.get_label_for(thing)}</h1>
+        </div>
+        <div class="col-md-6">
+        <h2>Andra vyer för samma resurs:</h2>
         <ul>
           % if thing.mainEntity['@id'].startswith('https://id.kb.se/')
           <li><a href="${thing.mainEntity['@id']}">Visa denna resurs på id.kb.se</a></li>
           % endif
-
+  
           % for same in thing.sameAs
             % if same[ID].startswith('http://libris.kb.se/bib/')
               <li><a href="${same[ID]}">Visa denna resurs på Libris Webbsök</a></li>
@@ -38,22 +38,37 @@
           <li><a href="/katalogisering/${thing_slug}">Visa denna resurs på Libris Katalogisering</a></li>
           % endif
         </ul>
-        <h3>Visa som:</h3>
-        <ul>
-          <li>
-            <a href="${thing['@id']}/data.jsonld">JSON-LD</a>
-          </li>
-          <li>
-            <a href="${thing['@id']}/data.ttl">Turtle</a>
-          </li>
-          <li>
-            <a href="${thing['@id']}/data.rdf">RDF/XML</a>
-          </li>
-        </ul>
+        </div>
+        <div class="col-md-6">
+          <h2>Visa som:</h2>
+          <ul class="inline-list">
+            <li>
+              <a href="${thing['@id']}/data.jsonld">JSON-LD</a>
+            </li>
+            <li>
+              <a href="${thing['@id']}/data.ttl">Turtle</a>
+            </li>
+            <li>
+              <a href="${thing['@id']}/data.rdf">RDF/XML</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel-body row">
+        <div class="col-md-12 thing">
+          ${viewthing(thing.mainEntity or thing)}
+        </div>
       </div>
     </div>
   </div>
+  <div class="col-xs-2 col-xs-push-10 col-md-1 col-md-push-11">
+    <a href="https://www.kb.se">
+      <img src="/assets/img/kb_logo_black.svg" alt="" />
+    </a>
+  </div>
+</div>
   % else
+<div class="row">
   <div class="col-lg-10 thing">
     ${viewthing(thing.mainEntity or thing)}
   </div>
