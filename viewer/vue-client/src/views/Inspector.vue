@@ -889,6 +889,7 @@ export default {
     this.$nextTick(() => {
       if (!this.postLoaded) {
         this.initializeRecord();
+        this.$emit('ready');
       }
       this.initializeWarnBeforeUnload();
       this.initJsonOutput();
