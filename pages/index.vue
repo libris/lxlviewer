@@ -1,45 +1,32 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <div>
-      <Logo />
-      <h1 class="title">
-        id.kb.se
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+      <h1>Listor</h1>
+      <p>Current API path is: {{$config.apiPath}}</p>
+      <div class="Collections row" v-if="pageData">
+        <CollectionCard v-for="collection in pageData.statistics.sliceByDimension['inScheme.@id'].observation" :collection-data="collection" :key="collection['@id']" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+    }
+  },
+  async asyncData({ $config, params, $http }) {
+    const pageData = await $http.$get(`${$config.apiPath}/data.jsonld`)
+    return { pageData }
+  },
+  // call fetch only on client-side
+  fetchOnServer: false
+}
 </script>
 
 <style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
+
 
 .title {
   font-family:

@@ -1,20 +1,16 @@
 <template>
-  <div>
-    <Nuxt />
+  <div class="layout">
+    <Navbar />
+    <SearchBar />
+    <main>
+      <Nuxt />
+    </main>
+    <Footer />
   </div>
 </template>
 
-<style>
+<style lang="scss">
 html {
-  font-family:
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
   font-size: 16px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
@@ -29,6 +25,16 @@ html {
 *::after {
   box-sizing: border-box;
   margin: 0;
+}
+
+main {
+  flex-grow: 1;
+  background-color: $kb-primary-white;
+}
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .button--green {
