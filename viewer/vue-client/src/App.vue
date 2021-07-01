@@ -60,7 +60,7 @@ export default {
     '$route'(to, from) {
       this.$nextTick(() => {
         if (from.name !== null && to.name !== 'Search') {
-          setFocusTarget();
+          this.setFocusTarget();
         }
       });
     },
@@ -70,26 +70,26 @@ export default {
       'setStatusValue',
     ]),
     onRouterViewReady() {
-        this.setFocusTarget();
+      this.setFocusTarget();
     },
     setFocusTarget() {
-        // get component's "routeFocusTarget" ref
-        // if not existent, use router view container
-        const focusTarget = (this.$refs.routerView.$refs.componentFocusTarget !== undefined) 
-          ? this.$refs.routerView.$refs.componentFocusTarget
-          : this.$refs.routerView.$el;
+      // get component's "routeFocusTarget" ref
+      // if not existent, use router view container
+      const focusTarget = (this.$refs.routerView.$refs.componentFocusTarget !== undefined) 
+        ? this.$refs.routerView.$refs.componentFocusTarget
+        : this.$refs.routerView.$el;
 
-        // make focustarget programmatically focussable
-        focusTarget.setAttribute('tabindex', '-1');
+      // make focustarget programmatically focussable
+      focusTarget.setAttribute('tabindex', '-1');
 
-        // focus element
-        focusTarget.focus({
-          preventScroll: true,
-        });
+      // focus element
+      focusTarget.focus({
+        preventScroll: true,
+      });
 
-        // remove tabindex from focustarget. 
-        // reason: https://axesslab.com/skip-links/#update-3-a-comment-from-gov-uk
-        focusTarget.removeAttribute('tabindex');
+      // remove tabindex from focustarget. 
+      // reason: https://axesslab.com/skip-links/#update-3-a-comment-from-gov-uk
+      focusTarget.removeAttribute('tabindex');
     },
     setupIdleTimer() {
       // USER IDLE TIMER
