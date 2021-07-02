@@ -3378,7 +3378,7 @@
         }
       }
     },
-    "genreForm": {
+    "graphic-genreForm": {
       "label": "TGM - Genre/formterm",
       "description": "gmgpc/swe",
       "value": {
