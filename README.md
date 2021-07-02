@@ -10,6 +10,14 @@ Server-side rendered Vue.js application (using [NuxtJS](https://nuxtjs.org/)).
 
 ## Build Setup
 
+Create an `.env` config in the root of this repo:   
+<sup>If you are serving the API on http://localhost:5000 you can skip this.</sup>
+```
+$ echo API_PATH=YOUR_URL > .env
+```
+
+Yarn commands
+
 ```bash
 # install dependencies
 $ yarn install
