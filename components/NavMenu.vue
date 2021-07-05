@@ -11,7 +11,7 @@
         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Basvokabulär</a>
       </li>
       <li class="nav-item">
-        <NuxtLink to="/about" class="nav-link">Om id.kb.se</NuxtLink>
+        <NuxtLink to="/doc/about" class="nav-link">Om id.kb.se</NuxtLink>
       </li>
     </ul>
   </div>
