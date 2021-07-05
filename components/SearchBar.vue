@@ -3,15 +3,43 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-8 col-md-4">
-          <i class="bi-search SearchInput-icon"></i><input type="text" id="search" class="form-control SearchInput-input">
+          <i class="bi-search SearchInput-icon"></i><input type="text" v-model="keyword" id="search" @keyup.enter="submit()" class="form-control SearchInput-input">
         </div>
         <div class="col-4 col-md-2">
-          <button type="button" class="btn btn-kb-secondary-turquoise">sök</button>
+          <button type="button" @keyup.enter="submit()" @click="submit()" class="btn btn-kb-secondary-turquoise">sök</button>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      keyword: '',
+    }
+  },
+  methods: {
+    submit() {
+      this.$router.push({
+        name: 'find',
+        query: Object.assign({}, this.query),
+      });
+    },
+  },
+  computed: {
+    query() {
+      const queryObj = {
+        'q': this.keyword,
+      }
+      return queryObj;
+    },
+  },
+  props: {
+  },
+}
+</script>
 
 <style lang="scss">
   .SearchBar {

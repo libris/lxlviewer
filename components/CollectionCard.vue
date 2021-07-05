@@ -1,7 +1,7 @@
 <template>
   <div class="CollectionCard col-4">
     <b><a :href="collectionData.view['@id']">{{ collectionData.object.titleByLang['sv'] }}</a> <span class="badge bg-kb-primary-grey text-dark">{{ collectionData.totalItems }}</span></b>
-    <p><a :href="collectionData.object['@id']">Mer om {{collectionData.object.titleByLang['sv']}}</a></p>
+    <p><a :href="collectionData.object['@id'] | filterBaseUri">Mer om {{collectionData.object.titleByLang['sv']}}</a></p>
   </div>
 </template>
 
