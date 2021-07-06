@@ -4,13 +4,20 @@
       <SchemeFilters :schemes="pageData.stats.sliceByDimension['inScheme.@id'].observation" v-if="pageData.stats && pageData.stats.sliceByDimension && pageData.stats.sliceByDimension['inScheme.@id']" />
     </div>
     <div class="row">
-      <div class="DetailedFilters col-lg-4 col-xl-3 col-xxl-2">
+      <div class="DetailedFilters col-md-4 col-lg-4 col-xl-3 col-xxl-2">
         <FacetList :stats="pageData.stats" v-if="pageData.stats" />
       </div>
-      <div class="SearchResults col-lg-8 col-xl-9 col-xxl-10 p-2">
-        <ResultItem v-for="resultItem in pageData.items" :item-data="resultItem" :key="resultItem['@id']" />
+      <div class="SearchResults col-md-8 col-lg-8 col-xl-9 col-xxl-10 p-2">
+        <div class="SearchResults-statusRow">
+          <SortSelect />
+          <PageStatus :page-data="pageData" />
+        </div>
+        <div class="SearchResult-resultList">
+          <ResultItem v-for="resultItem in pageData.items" :item-data="resultItem" :key="resultItem['@id']" />
+        </div>
+        <Pagination :result-data="pageData" />
       </div>
-      <div class="SearchStatus col-lg-8 col-xl-9 col-xxl-10" v-if="pageData.totalItems == 0">
+      <div class="SearchStatus col-md-8 col-lg-8 col-xl-9 col-xxl-10" v-if="pageData.totalItems == 0">
         Inga resultat.
       </div>
     </div>
@@ -45,7 +52,11 @@ export default {
 <style lang="scss">
 
 .SearchResults {
-
+  &-statusRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em 1.5em;
+  }
 }
 .DetailedFilters {
   border: solid $gray-200;

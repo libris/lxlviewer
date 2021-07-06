@@ -43,6 +43,7 @@ export default {
     &::before {
       content: ' • ';
     }
+    margin-left: 0.4em;
   }
 }
 </style>

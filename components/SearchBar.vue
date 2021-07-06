@@ -22,6 +22,7 @@ export default {
   },
   methods: {
     submit() {
+      if (this.keyword.length === 0) return;
       this.$router.push({
         name: 'find',
         query: Object.assign({}, this.query),

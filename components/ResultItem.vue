@@ -1,7 +1,7 @@
 <template>
   <div class="ResultItem" :class="{ 'hovered': hovered }" @mouseover="hovered = true" @mouseout="hovered = false">
-    <div class="ResultItem-header" @click="expanded = !expanded">
-      <span class="ResultItem-title"><a :href="itemData['@id'] | filterBaseUri">{{ itemData.prefLabel }}</a></span>
+    <div class="ResultItem-header" @click="toggle" @keyup.enter="toggle(true)" tabindex="0">
+      <span class="ResultItem-title"><a ref="titleLink" :href="itemData['@id'] | filterBaseUri" :tabindex="expanded ? 0 : -1">{{ itemData.prefLabel }}</a></span>
       <span class="ResultItem-scheme chip">{{ itemData['inScheme'].titleByLang['sv'] }}</span>
       <span class="ResultItem-type chip">{{ itemData['@type'] }}</span>
     </div>
@@ -17,7 +17,7 @@
       </div>
       <div class="ResultItem-bodyRow">
         <span class="ResultItem-bodyKey">Ladda ner</span>
-        <span class="ResultItem-bodyValue"><a :href="`${itemData['@id']}/data.jsonld`">JSON-LD</a> • <a :href="`${itemData['@id']}/data.ttl`">Turtle</a> • <a :href="`${itemData['@id']}/data.rdf`">RDF/XML</a></span>
+        <span class="ResultItem-bodyValue"><a :href="`${itemData['@id']}/data.jsonld` | replaceBaseUri">JSON-LD</a> • <a :href="`${itemData['@id']}/data.ttl` | replaceBaseUri">Turtle</a> • <a :href="`${itemData['@id']}/data.rdf` | replaceBaseUri">RDF/XML</a></span>
       </div>
     </div>
   </div>
@@ -33,6 +33,22 @@ export default {
     }
   },
   methods: {
+    toggle(withEnter = false) {
+      if (this.expanded) {
+        this.collapse(withEnter);
+      } else {
+        this.expand(withEnter);
+      }
+    },
+    expand(withEnter) {
+      this.expanded = true;
+      if (withEnter) {
+        this.$refs.titleLink.focus();
+      }
+    },
+    collapse(withEnter) {
+      this.expanded = false;
+    },
   },
   computed: {
     filteredItem() {
