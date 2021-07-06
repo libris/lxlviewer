@@ -1,7 +1,7 @@
 <template>
-  <div class="CollectionFilter">
+  <div class="SchemeFilter">
     <span v-if="noFilter == false">
-      {{ collection.object.titleByLang['sv'] }} ({{ collection.totalItems }})
+      {{ scheme.object.titleByLang['sv'] }} ({{ scheme.totalItems }})
     </span>
     <span v-else>
       Alla
@@ -17,7 +17,7 @@ export default {
     }
   },
   props: {
-    collection: {
+    scheme: {
       type: Object,
       default: null,
     },
@@ -30,7 +30,7 @@ export default {
 </script>
 
 <style lang="scss">
-.CollectionFilter {
+.SchemeFilter {
 
 }
 </style>

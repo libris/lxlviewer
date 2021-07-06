@@ -1,7 +1,11 @@
 <template>
-  <div class="CollectionCard col-4">
-    <b><a :href="collectionData.view['@id']">{{ collectionData.object.titleByLang['sv'] }}</a> <span class="badge bg-kb-primary-grey text-dark">{{ collectionData.totalItems }}</span></b>
-    <p><a :href="collectionData.object['@id'] | filterBaseUri">Mer om {{collectionData.object.titleByLang['sv']}}</a></p>
+  <div class="CollectionCard">
+    <div class="CollectionCard-header">
+      <a :href="collectionData.view['@id']">{{ collectionData.object.titleByLang['sv'] }}</a> <span class="CollectionCard-badge">{{ collectionData.totalItems }}</span>
+    </div>
+    <div class="CollectionCard-body">
+      <a :href="collectionData.object['@id'] | filterBaseUri">Mer om {{collectionData.object.titleByLang['sv']}}</a>
+    </div>
   </div>
 </template>
 
@@ -23,8 +27,32 @@ export default {
 
 <style lang="scss">
 .CollectionCard {
-  border: 1px solid $kb-primary-grey;
-  border-radius: 2px;
+  margin: 0.5em 0.5em 0 0;
+  a {
+    color: $kb-secondary-turquoise;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  &-badge {
+    background-color: $gray-200;
+    color: $gray-700 !important;
+    font-weight: 500;
+    font-size: 75%;
+    border-radius: 2em;
+    padding: 0.2em 0.5em;
+  }
+  &-header {
+    border: 1px solid $gray-500;
+    border-radius: 3px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+  }
+  &-body {
+    font-size: 85%;
+    padding: 0.5rem 1rem;
+  }
 }
 
 </style>

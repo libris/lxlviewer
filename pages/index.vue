@@ -1,9 +1,8 @@
 <template>
   <div class="container-fluid">
-    <div>
-      <h1>Listor</h1>
+    <div class="col-12 col-lg-12 col-xl-10 col-xxl-9">
       <p>Current API path is: {{$config.apiPath}}</p>
-      <div class="Collections row" v-if="pageData">
+      <div class="Collections" v-if="pageData">
         <CollectionCard v-for="collection in pageData.statistics.sliceByDimension['inScheme.@id'].observation" :collection-data="collection" :key="collection['@id']" />
       </div>
     </div>
@@ -25,8 +24,18 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 
+.Collections {
+  display: grid;
+  grid-template-columns: 1fr;
+  @include media-breakpoint-up(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @include media-breakpoint-up(lg) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
 
 .title {
   font-family:

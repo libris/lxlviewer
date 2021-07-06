@@ -8,7 +8,12 @@
     <div class="ResultItem-body" v-if="expanded">
       <div class="ResultItem-bodyRow" v-for="(value, key) in filteredItem" :key="key">
         <span class="ResultItem-bodyKey">{{ key }}</span>
-        <span class="ResultItem-bodyValue">{{ value }}</span>
+        <span class="ResultItem-bodyValue single" v-if="!Array.isArray(value)">
+          <EntityNode :entity="value" />
+        </span>
+        <span class="ResultItem-bodyValue multiple" v-if="Array.isArray(value)">
+          <EntityNode :entity="node" v-for="(node, index) in value" :key="index" />
+        </span>
       </div>
       <div class="ResultItem-bodyRow">
         <span class="ResultItem-bodyKey">Ladda ner</span>
@@ -52,6 +57,9 @@ export default {
 .ResultItem {
   border: solid $gray-200;
   border-width: 0px 1px 1px 1px;
+  &:first-child {
+    border-width: 1px 1px 1px 1px;
+  }
   &-header {
     width: 100%;
     display: flex;
