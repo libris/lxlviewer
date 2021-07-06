@@ -1,11 +1,11 @@
 <template>
-  <div class="Facet" @click="toggle">
+  <div class="Facet" @click="toggle" @keyup.enter="toggle" tabindex="0" :title="label">
     <span class="Facet-check">
       <i class="bi-square" v-if="!checked"></i>
       <i class="bi-check-square-fill" v-if="checked"></i>
     </span>
     <span class="Facet-label">
-      {{ facet.object.labelByLang['sv'] }}
+      {{ label }}
     </span>
     <span class="Facet-count">
       {{ facet.totalItems }}
@@ -49,6 +49,15 @@ export default {
         return true;
       }
       return false;
+    },
+    label() {
+      let prop = '';
+      if (this.facet.object.hasOwnProperty('labelByLang')) {
+        prop = 'labelByLang';
+      } else if (this.facet.object.hasOwnProperty('titleByLang')) {
+        prop = 'titleByLang';
+      }
+      return this.facet.object[prop]['sv'];
     }
   }
 }
@@ -56,6 +65,7 @@ export default {
 
 <style lang="scss">
 .Facet {
+  cursor: pointer;
   display: flex;
   padding: 0.2em 0;
   &-check {
