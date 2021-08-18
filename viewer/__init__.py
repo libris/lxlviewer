@@ -561,8 +561,10 @@ def _map_response(response):
                     mimetype=response.headers.get('content-type'),
                     headers=_map_headers(response.headers))
 
-    return resp
-
+    if resp.status_code < 400:
+        return resp
+    else:
+        abort(resp)
 
 
 def _write_data(request, query_params=[]):
