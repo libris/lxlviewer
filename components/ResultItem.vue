@@ -5,7 +5,7 @@
       <span class="ResultItem-scheme chip">{{ itemData['inScheme'].titleByLang['sv'] }}</span>
       <span class="ResultItem-type chip">{{ translateKey(itemData['@type']) }}</span>
     </div>
-    <EntityTable v-if="expanded" :item-data="itemData" />
+    <EntityTable v-if="expanded" :item-data="filteredItem" />
   </div>
 </template>
 
@@ -40,6 +40,7 @@ export default {
       const filtered = Object.assign({}, this.itemData);
       delete filtered['@id'];
       delete filtered['@type'];
+      delete filtered['@reverse'];
       delete filtered.reverseLinks;
       delete filtered.meta;
       return filtered;
