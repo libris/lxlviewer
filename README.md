@@ -9,7 +9,7 @@ The services are built to work on top of the [Libris XL](https://github.com/libr
 
 #### Requirements
 
-* A functional REST-API for the resources (check out [xl_vagrant_up](https://github.com/libris/xl_vagrant_up))
+* A functional REST-API for the resources ([Libris XL](https://github.com/libris/librisxl))
 
 #### Setup
 
