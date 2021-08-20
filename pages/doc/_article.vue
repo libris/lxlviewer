@@ -6,6 +6,14 @@
 
 <script>
 export default {
+  head() {
+    return {
+      title: `${this.pageData['@graph'][1].title} | ${this.$config.siteName}`,
+      meta: [
+        { hid:'og:title', property:'og:title', content: this.pageData['@graph'][1].title },
+      ],
+    };
+  },
   data() {
     return {
     }

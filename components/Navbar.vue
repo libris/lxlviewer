@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <NuxtLink to="/" class="Navbar-brand navbar-brand">
         <Logo />
-        id.kb.se
+        id.kb.se <sup class="environment-label">{{ $config.environment }}</sup>
       </NuxtLink>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -24,6 +24,11 @@
       align-items: center;
       img {
         margin-right: 0.5em;
+      }
+      .environment-label {
+        font-size: 50%;
+        left: 0.25em;
+        text-transform: uppercase;
       }
     }
   }

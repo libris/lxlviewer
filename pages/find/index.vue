@@ -9,7 +9,7 @@
       </div>
       <div class="SearchResults col-md-8 col-lg-8 col-xl-9 col-xxl-10 p-2">
         <div class="SearchResults-statusRow">
-          <SortSelect />
+          <SortSelect @change="sortChange" />
           <PageStatus :page-data="pageData" />
         </div>
         <div class="SearchResult-resultList">
@@ -26,9 +26,26 @@
 
 <script>
 export default {
+  head() {
+    return {
+      title: `Sökresultat | ${this.$config.siteName}`,
+      meta: [
+        { hid:'og:title', property:'og:title', content:`Sökresultat` },
+      ],
+    };
+  },
   data() {
     return {
     }
+  },
+  methods: {
+    sortChange(value) {
+      const query = Object.assign({}, this.$route.query);
+      query['_sort'] = value;
+      this.$router.push({
+        query
+      });
+    },
   },
   async asyncData({ $config, route, params, $http }) {
     const query = route.query;

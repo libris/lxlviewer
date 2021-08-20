@@ -1,7 +1,9 @@
 <template>
   <div class="layout">
-    <Navbar />
-    <SearchBar />
+    <div class="position-sticky top-0">
+      <Navbar />
+      <SearchBar />
+    </div>
     <main>
       <Nuxt />
     </main>

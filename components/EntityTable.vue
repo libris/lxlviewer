@@ -1,39 +1,30 @@
 <template>
-  <div class="ResultItem" :class="{ 'hovered': hovered }" @mouseover="hovered = true" @mouseout="hovered = false">
-    <div class="ResultItem-header" @click="toggle" @keyup.enter="toggle(true)" tabindex="0">
-      <span class="ResultItem-title"><a ref="titleLink" :href="itemData['@id'] | removeBaseUri" :tabindex="expanded ? 0 : -1">{{ itemData.prefLabel }}</a></span>
-      <span class="ResultItem-scheme chip">{{ itemData['inScheme'].titleByLang['sv'] }}</span>
-      <span class="ResultItem-type chip">{{ translateKey(itemData['@type']) }}</span>
+  <div class="EntityTable-body">
+    <div class="EntityTable-bodyRow" v-for="(value, key) in filteredItem" :key="key">
+      <span class="EntityTable-bodyKey">{{ translateKey(key) }}</span>
+      <span class="EntityTable-bodyValue single" v-if="!Array.isArray(value)">
+        <EntityNode :entity="value" />
+      </span>
+      <span class="EntityTable-bodyValue multiple" v-if="Array.isArray(value)">
+        <EntityNode :entity="node" v-for="(node, index) in value" :key="index" />
+      </span>
     </div>
-    <EntityTable v-if="expanded" :item-data="itemData" />
+    <div class="EntityTable-bodyRow">
+      <span class="EntityTable-bodyKey">Ladda ner</span>
+      <span class="EntityTable-bodyValue"><a :href="`${itemData['@id']}/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${itemData['@id']}/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${itemData['@id']}/data.rdf` | replaceBaseWithApi">RDF/XML</a></span>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
-      hovered: false,
-      expanded: false,
     }
   },
   methods: {
-    toggle(withEnter = false) {
-      if (this.expanded) {
-        this.collapse(withEnter);
-      } else {
-        this.expand(withEnter);
-      }
-    },
-    expand(withEnter) {
-      this.expanded = true;
-      if (withEnter) {
-        this.$refs.titleLink.focus();
-      }
-    },
-    collapse(withEnter) {
-      this.expanded = false;
-    },
   },
   computed: {
     filteredItem() {
@@ -55,7 +46,7 @@ export default {
 </script>
 
 <style lang="scss">
-.ResultItem {
+.EntityTable {
   border: solid $gray-200;
   border-width: 0px 1px 1px 1px;
   &:first-child {
@@ -99,6 +90,12 @@ export default {
   &-bodyKey {
     color: $gray-700;
     flex-basis: 15em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    &:first-letter {
+      text-transform: uppercase;
+    }
   }
   &-bodyValue {
     flex-grow: 0;

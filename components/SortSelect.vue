@@ -1,7 +1,7 @@
 <template>
   <div class="SortSelect">
     <select v-model="selectedSort">
-      <option v-for="option in options" :key="option">{{ option }}</option>
+      <option v-for="option in options" :key="option.value" :value="option.value">{{ option.label }}</option>
     </select>
   </div>
 </template>
@@ -10,11 +10,12 @@
 export default {
   data() {
     return {
-      selectedSort: 'relevans',
+      selectedSort: '',
       options: [
-        'relevans',
-        'prefLabel',
-      ]
+        {value: '', label: 'Relevans'},
+        {value: 'prefLabel', label: 'Föredragen benämning (A-Ö)'},
+        {value: '-prefLabel', label: 'Föredragen benämning (Ö-A)'},
+      ],
     }
   },
   props: {
@@ -22,6 +23,20 @@ export default {
       type: Object,
       default: null,
     },
+  },
+  watch: {
+    selectedSort(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.$emit('change', this.selectedSort);
+      }
+    },
+  },
+  methods: {
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.selectedSort = this.$route.query['_sort'] || '';
+    });
   },
 }
 </script>

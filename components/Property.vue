@@ -4,15 +4,15 @@
       {{ itemKey }}
     </div>
     <div class="Property-value">
-      <div class="Property-textValue" v-if="isString">
+      <template v-if="isString">
         {{ itemValue }}
-      </div>
-      <div class="Property-valueList" v-if="!isString && isArray">
+      </template>
+      <template v-if="!isString && isArray">
         <ItemLocal :value="node" :key="node" v-for="node in itemValue" />
-      </div>
-      <span v-if="!isArray && !isString">
+      </template>
+      <template v-if="!isArray && !isString">
         <ItemLocal :value="itemValue" />
-      </span>
+      </template>
     </div>
   </div>
 </template>
@@ -56,9 +56,8 @@ export default {
   display: flex;
   flex-direction: row;
   &-key {
-    width: 10em;
+    flex-basis: 15em;
     font-weight: 600;
-    text-transform: uppercase;
     font-size: 85%;
     white-space: nowrap;
     overflow: hidden;
@@ -67,6 +66,7 @@ export default {
     color: $gray-800;
   }
   &-value {
+    flex-basis: 100%;
     padding: 0.5em;
   }
 }

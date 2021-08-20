@@ -6,7 +6,7 @@
       <template v-else-if="entity.hasOwnProperty('titleByLang')">{{ entity.titleByLang['sv'] }}</template>
       <template v-else>{{ entity }}</template>
     </span>
-    <a v-else-if="entity.hasOwnProperty('@id')" :href="entity['@id'] | filterBaseUri">
+    <a v-else-if="entity.hasOwnProperty('@id')" :href="entity['@id'] | removeBaseUri">
       <template v-if="entity.hasOwnProperty('prefLabel')">{{ entity.prefLabel }}</template>
       <template v-else-if="entity.hasOwnProperty('titleByLang')">{{ entity.titleByLang['sv'] }}</template>
       <template v-else>{{ entity['@id'] }}</template>

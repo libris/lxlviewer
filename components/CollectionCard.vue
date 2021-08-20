@@ -4,7 +4,7 @@
       <a :href="collectionData.view['@id']">{{ collectionData.object.titleByLang['sv'] }}</a> <span class="CollectionCard-badge">{{ collectionData.totalItems }}</span>
     </div>
     <div class="CollectionCard-body">
-      <a :href="collectionData.object['@id'] | filterBaseUri">Mer om {{collectionData.object.titleByLang['sv']}}</a>
+      <a :href="collectionData.object['@id'] | removeBaseUri">Mer om {{collectionData.object.titleByLang['sv']}}</a>
     </div>
   </div>
 </template>
