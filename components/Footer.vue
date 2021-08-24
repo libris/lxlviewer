@@ -6,17 +6,15 @@
           <Logo />
         </div>
         <div class="col-md-5 d-flex flex-column">
-          <h4>Stilguide</h4>
+          <h4>Information</h4>
           <ul class="bd-footer-links ps-0 mb-3 text-light">
-            <li class="d-block"><a class="text-light" href="#">Link 1</a></li>
-            <li class="d-block"><a class="text-light" href="#">Link 2</a></li>
-            <li class="d-block"><a class="text-light" href="#">Link 3</a></li>
+            <li class="d-block"><a class="text-light" href="https://www.kb.se/digital-tillganglighet">Tillgänglighetsredogörelse</a></li>
           </ul>
         </div>
         <div class="col-md-5 d-flex flex-column">
-          <h4>Om KB</h4>
+          <h4>Kontakt</h4>
           <ul class="bd-footer-links ps-0 mb-3 text-light">
-            <li class="d-block"><a class="text-light" href="https://www.kb.se">Mer om KB</a></li>
+            <li class="d-block"><a class="text-light" href="mailto:libris@kb.se">libris@kb.se</a></li>
           </ul>
         </div>
       </div>
