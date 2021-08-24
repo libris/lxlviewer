@@ -31,6 +31,9 @@ if (!Vue.__lxl_global_mixin__) {
         if (entity.labelByLang) {
           return entity.labelByLang['sv'] || entity.labelByLang['en'];
         }
+        if (entity.titleByLang) {
+          return entity.titleByLang['sv'] || entity.titleByLang['en'];
+        }
         return 'Unnamed';
       },
     },
