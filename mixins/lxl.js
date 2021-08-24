@@ -21,6 +21,18 @@ if (!Vue.__lxl_global_mixin__) {
         const labelByLangObj = term ? term.labelByLang : null;
         return labelByLangObj ? labelByLangObj['sv'] || labelByLangObj['en'] : key;
       },
+      getEntityTitle(entity) {
+        if (entity.prefLabel) {
+          return entity.prefLabel;
+        }
+        if (entity.label) {
+          return entity.label;
+        }
+        if (entity.labelByLang) {
+          return entity.labelByLang['sv'] || entity.labelByLang['en'];
+        }
+        return 'Unnamed';
+      },
     },
   });
 }

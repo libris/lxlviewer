@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="Document">
       <h1>{{ documentTitle }}</h1>
-      <EntityTable :item-data="pageData['@graph'][1]" />
+      <EntityTable :item-data="pageData['@graph'][1]" :show-download="true" />
     </div>
   </div>
 </template>
@@ -22,14 +22,11 @@ export default {
     }
   },
   computed: {
+    documentTitle() {
+      return this.getEntityTitle(this.itemData);
+    },
     itemData() {
       return this.pageData['@graph'][1];
-    },
-    documentTitle() {
-      if (this.itemData.prefLabel) {
-        return this.itemData.prefLabel;
-      }
-      return 'Unnamed';
     },
   },
   methods: {
@@ -43,8 +40,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .Document {
-
+  h1 {
+    padding: 0.5rem 1rem 0.5rem 1.5rem;
+    font-size: 3rem;
+  }
 }
 </style>

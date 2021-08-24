@@ -22,6 +22,7 @@
       </div>
       <div class="Vocab-termDetailsColumn col-md-8 col-lg-8 col-xl-9 col-xxl-10">
         <div class="Vocab-termDetails" v-if="termData != null">
+          <h1>{{ getEntityTitle(termData) }}</h1>
           <EntityTable :item-data="termData" />
         </div>
         <div class="Vocab-termDetails" v-if="termData == null">
@@ -119,7 +120,10 @@ export default {
     overflow-x: hidden;
   }
   &-termDetails {
-
+    h1 {
+      padding: 0.5rem 1rem 0.5rem 1.5rem;
+      font-size: 3rem;
+    }
   }
 }
 </style>

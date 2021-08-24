@@ -5,7 +5,7 @@
       <span class="ResultItem-scheme chip">{{ itemData['inScheme'].titleByLang['sv'] }}</span>
       <span class="ResultItem-type chip">{{ translateKey(itemData['@type']) }}</span>
     </div>
-    <EntityTable v-if="expanded" :item-data="filteredItem" />
+    <EntityTable v-if="expanded" :item-data="filteredItem" :show-download="true" />
   </div>
 </template>
 

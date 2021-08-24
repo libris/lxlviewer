@@ -1,7 +1,7 @@
 <template>
   <div class="EntityTable-body">
-    <div class="EntityTable-bodyRow" v-for="(value, key) in filteredItem" :key="key">
-      <span class="EntityTable-bodyKey">{{ translateKey(key) }}</span>
+    <div class="EntityTable-bodyRow d-md-flex" v-for="(value, key) in filteredItem" :key="key">
+      <span class="EntityTable-bodyKey d-block d-md-inline" :title="translateKey(key)">{{ translateKey(key) }}</span>
       <span class="EntityTable-bodyValue single" v-if="!Array.isArray(value)">
         <EntityNode :entity="value" />
       </span>
@@ -9,8 +9,8 @@
         <EntityNode :entity="node" v-for="(node, index) in value" :key="index" />
       </span>
     </div>
-    <div class="EntityTable-bodyRow">
-      <span class="EntityTable-bodyKey">Ladda ner</span>
+    <div class="EntityTable-bodyRow d-md-flex" v-if="showDownload">
+      <span class="EntityTable-bodyKey d-block d-md-inline">Ladda ner</span>
       <span class="EntityTable-bodyValue"><a :href="`${itemData['@id']}/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${itemData['@id']}/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${itemData['@id']}/data.rdf` | replaceBaseWithApi">RDF/XML</a></span>
     </div>
   </div>
@@ -40,6 +40,10 @@ export default {
     itemData: {
       type: Object,
       default: null,
+    },
+    showDownload: {
+      type: Boolean,
+      default: false,
     },
   },
 }
@@ -76,13 +80,12 @@ export default {
     }
   }
   &-body {
-    padding: 0.5em 1em 0.5em 1.5em;
+    padding: 0.5rem 1rem 0.5rem 1.5rem;
   }
   &-bodyRow {
     border: solid $gray-200;
     border-width: 0px 0px 1px 0px;
-    display: flex;
-    padding: 0.5em 0;
+    padding: 0.5rem 0;
     &:last-child {
       border-width: 0px;
     }
