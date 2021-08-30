@@ -1,5 +1,5 @@
 import { mapGetters } from 'vuex';
-
+import * as StringUtil from '@/utils/string';
 import Vue from "vue"
 
 // Make sure to pick a unique name for the flag
@@ -13,26 +13,26 @@ if (!Vue.__lxl_global_mixin__) {
       };
     },
     computed: {
-      ...mapGetters(['vocab', 'vocabMap']),
+      ...mapGetters(['vocab', 'settings', 'vocabContext']),
     },
     methods: {
       translateKey(key) {
-        const term = this.vocabMap[`https://id.kb.se/vocab/${key}`];
-        const labelByLangObj = term ? term.labelByLang : null;
-        return labelByLangObj ? labelByLangObj['sv'] || labelByLangObj['en'] : key;
+        return StringUtil.getLabelByLang(key, this.settings.language, this.vocab, this.vocabContext);
       },
       getEntityTitle(entity) {
-        if (entity.prefLabel) {
-          return entity.prefLabel;
-        }
-        if (entity.label) {
-          return entity.label;
-        }
-        if (entity.labelByLang) {
-          return entity.labelByLang['sv'] || entity.labelByLang['en'];
-        }
-        if (entity.titleByLang) {
-          return entity.titleByLang['sv'] || entity.titleByLang['en'];
+        if (entity != null) {
+          if (entity.prefLabel) {
+            return entity.prefLabel;
+          }
+          if (entity.label) {
+            return entity.label;
+          }
+          if (entity.labelByLang) {
+            return entity.labelByLang['sv'] || entity.labelByLang['en'];
+          }
+          if (entity.titleByLang) {
+            return entity.titleByLang['sv'] || entity.titleByLang['en'];
+          }
         }
         return 'Unnamed';
       },

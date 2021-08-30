@@ -1,15 +1,12 @@
 <template>
   <div class="EntityNode">
-    <span class="" v-if="typeof entity == 'string'">{{ entity }}</span>
-    <span class="" v-else-if="!entity.hasOwnProperty('@id')">
-      <template v-if="entity.hasOwnProperty('prefLabel')">{{ entity.prefLabel }}</template>
-      <template v-else-if="entity.hasOwnProperty('titleByLang')">{{ entity.titleByLang['sv'] }}</template>
-      <template v-else>{{ entity }}</template>
+    <span class="" v-if="typeof entityData == 'string'">{{ entityData }}</span>
+    <span class="" v-else-if="entityData && !entityData.hasOwnProperty('@id')">
+      {{ getItemLabel }}
     </span>
-    <a v-else-if="entity.hasOwnProperty('@id')" :href="entity['@id'] | removeBaseUri">
-      <template v-if="entity.hasOwnProperty('prefLabel')">{{ entity.prefLabel }}</template>
-      <template v-else-if="entity.hasOwnProperty('titleByLang')">{{ entity.titleByLang['sv'] }}</template>
-      <template v-else>{{ entity['@id'] }}</template>
+    <a v-else-if="entityData && entityData.hasOwnProperty('@id')" :href="entityData['@id'] | removeBaseUri">
+      <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+      <template v-else>{{ entityData['@id'] }}</template>
     </a>
     <span v-else>
       <template>{{ entity }}</template>
@@ -18,7 +15,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import LensMixin from '@/mixins/lens';
+
 export default {
+  mixins: [LensMixin],
   data() {
     return {
       show: false
@@ -32,6 +33,16 @@ export default {
   methods: {
   },
   computed: {
+    ...mapGetters(['entityReferences']),
+    entityData() {
+      if (this.entity) {
+        if (this.entity.hasOwnProperty('@id') && this.entityReferences.hasOwnProperty(this.entity['@id'])) {
+          return this.entityReferences[this.entity['@id']];
+        }
+        return this.entity;
+      }
+      return null;
+    }
   }
 }
 </script>

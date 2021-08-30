@@ -2,12 +2,14 @@
   <div class="container-fluid">
     <div class="Document">
       <h1>{{ documentTitle }}</h1>
-      <EntityTable :item-data="pageData['@graph'][1]" :show-download="true" />
+      <EntityTable v-if="itemData != null" :item-data="itemData" :show-download="true" />
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   head() {
     return {
@@ -26,13 +28,18 @@ export default {
       return this.getEntityTitle(this.itemData);
     },
     itemData() {
-      return this.pageData['@graph'][1];
+      if (this.pageData['@graph']) {
+        return this.pageData['@graph'][1];
+      }
+      return null;
     },
   },
   methods: {
+    ...mapActions(['setCurrentDocument']),
   },
-  async asyncData({ $config, route, params, $http }) {
-    const pageData = await $http.$get(`${$config.apiPath}/${route.path}/data.jsonld`)
+  async asyncData({ $config, route, params, $http, store }) {
+    const pageData = await $http.$get(`${$config.apiPath}/${route.path}/data.jsonld`);
+    store.commit('SET_CURRENT_DOCUMENT', pageData);
     return { pageData }
   },
   // call fetch only on client-side
