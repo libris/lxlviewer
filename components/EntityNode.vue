@@ -26,6 +26,10 @@ export default {
     }
   },
   props: {
+    parentKey: {
+      type: String,
+      default: '',
+    },
     entity: {
       type: [Object, String, Number],
     },
@@ -33,7 +37,10 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters(['entityReferences']),
+    ...mapGetters(['entityReferences', 'settings']),
+    isByLangValue() {
+      return this.parentKey.includes('ByLang');
+    },
     entityData() {
       if (this.entity.hasOwnProperty('@id') && this.entityReferences.hasOwnProperty(this.entity['@id'])) {
         return this.entityReferences[this.entity['@id']];

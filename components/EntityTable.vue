@@ -1,17 +1,9 @@
 <template>
   <div class="EntityTable-body">
-    <div class="EntityTable-bodyRow d-md-flex" v-for="(value, key) in filteredItem" :key="key">
-      <span class="EntityTable-bodyKey d-block d-md-inline" :title="translateKey(key)">{{ translateKey(key) }}</span>
-      <span class="EntityTable-bodyValue single" v-if="!Array.isArray(value)">
-        <EntityNode :entity="value" />
-      </span>
-      <span class="EntityTable-bodyValue multiple" v-if="Array.isArray(value)">
-        <EntityNode :entity="node" v-for="(node, index) in value" :key="index" />
-      </span>
-    </div>
-    <div class="EntityTable-bodyRow d-md-flex" v-if="showDownload">
-      <span class="EntityTable-bodyKey d-block d-md-inline">Ladda ner</span>
-      <span class="EntityTable-bodyValue"><a :href="`${itemData['@id']}/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${itemData['@id']}/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${itemData['@id']}/data.rdf` | replaceBaseWithApi">RDF/XML</a></span>
+    <PropertyRow :property="key" :key="key" :value="value" v-for="(value, key) in filteredItem" />
+    <div class="PropertyRow d-md-flex" v-if="showDownload">
+      <span class="PropertyRow-bodyKey d-block d-md-inline">Ladda ner</span>
+      <span class="PropertyRow-bodyValue"><a :href="`${itemData['@id']}/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${itemData['@id']}/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${itemData['@id']}/data.rdf` | replaceBaseWithApi">RDF/XML</a></span>
     </div>
   </div>
 </template>
@@ -24,6 +16,9 @@ export default {
     }
   },
   methods: {
+    isByLangKey(key) {
+      return key.endsWith('ByLang');
+    },
   },
   computed: {
     filteredItem() {
@@ -80,35 +75,6 @@ export default {
   }
   &-body {
     padding: 0.5rem 1rem 0.5rem 1.5rem;
-  }
-  &-bodyRow {
-    border: solid $gray-200;
-    border-width: 0px 0px 1px 0px;
-    padding: 0.5rem 0;
-    &:last-child {
-      border-width: 0px;
-    }
-  }
-  &-bodyKey {
-    color: $gray-700;
-    flex-basis: 15em;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    &:first-letter {
-      text-transform: uppercase;
-    }
-  }
-  &-bodyValue {
-    flex-grow: 0;
-    flex-basis: 100%;
-    a {
-      color: $kb-secondary-turquoise;
-      text-decoration: none;
-      &:hover {
-        text-decoration: underline;
-      }
-    }
   }
   &.hovered {
     box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);

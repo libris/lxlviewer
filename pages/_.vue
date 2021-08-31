@@ -1,16 +1,19 @@
 <template>
   <div class="container-fluid">
     <div class="Document">
-      <h1>{{ documentTitle }}</h1>
-      <EntityTable v-if="itemData != null" :item-data="itemData" :show-download="true" />
+      <h2 class="text-muted">{{ translateKey(entityData['@type']) }}</h2>
+      <h1>{{ getItemLabel }}</h1>
+      <EntityTable v-if="entityData != null" :item-data="entityData" :show-download="true" />
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex';
+import LensMixin from '@/mixins/lens';
 
 export default {
+  mixins: [LensMixin],
   head() {
     return {
       title: `${this.documentTitle} | ${this.$config.siteName}`,
@@ -27,7 +30,7 @@ export default {
     documentTitle() {
       return this.getEntityTitle(this.itemData);
     },
-    itemData() {
+    entityData() {
       if (this.pageData['@graph']) {
         return this.pageData['@graph'][1];
       }
@@ -49,9 +52,23 @@ export default {
 
 <style lang="scss">
 .Document {
-  h1 {
+  padding-top: 2rem;
+  h1, h2 {
     padding: 0.5rem 1rem 0.5rem 1.5rem;
-    font-size: 3rem;
+    margin: 0;
+  }
+  h1 {
+    font-size: 2.5rem;
+    @media (min-width: 768px) {
+      font-size: 3rem;
+    }
+  }
+  h2 {
+    margin-bottom: -0.8em;
+    font-size: 1.5rem;
+    @media (min-width: 768px) {
+      font-size: 2rem;
+    }
   }
 }
 </style>

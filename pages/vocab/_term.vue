@@ -36,6 +36,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import * as VocabUtil from '@/utils/vocab';
 
 export default {
   head() {
@@ -53,12 +54,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['vocab']),
+    ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'context']),
     termData() {
-      const termData = this.vocab['@graph'].find((o) => {
-        return o['@id'] === `https://id.kb.se/vocab/${this.$route.params.term}`;
-      });
-      return termData;
+      return VocabUtil.getTermObject(this.$route.params.term, this.vocab, this.context);
     },
     chosenList() {
       if (this.listShown === 'Classes') {
@@ -68,18 +66,10 @@ export default {
       }
     },
     classes() {
-      return this.vocab['@graph'].filter((o) => {
-        if (this.showMarc) {
-          return o['@type'] === 'Class' || o['@type'] === 'marc:CollectionClass';
-        } else {
-          return o['@type'] === 'Class';
-        }
-      });
+      return this.vocabClasses;
     },
     properties() {
-      return this.vocab['@graph'].filter((o) => {
-        return o['@type'] === 'Property' || o['@type'] === 'ObjectProperty' || o['@type'] === 'DatatypeProperty' || o['@type'] === 'owl:SymmetricProperty';
-      });
+      return this.vocabProperties;
     },
   },
   methods: {
