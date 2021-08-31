@@ -31,6 +31,7 @@ html {
 
 main {
   flex-grow: 1;
+  padding-bottom: 5em;
   background-color: $kb-primary-white;
 }
 .layout {
