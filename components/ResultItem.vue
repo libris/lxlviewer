@@ -2,8 +2,9 @@
   <div class="ResultItem" :class="{ 'hovered': hovered }" @mouseover="hovered = true" @mouseout="hovered = false">
     <div class="ResultItem-header" @click="toggle" @keyup.enter="toggle(true)" tabindex="0">
       <span class="ResultItem-title"><a ref="titleLink" :href="itemData['@id'] | removeBaseUri" :tabindex="expanded ? 0 : -1">{{ itemData.prefLabel }}</a></span>
-      <span class="ResultItem-scheme chip">{{ itemData['inScheme'].titleByLang['sv'] }}</span>
-      <span class="ResultItem-type chip">{{ translateKey(itemData['@type']) }}</span>
+      <span class="ResultItem-scheme chip d-none d-sm-block">{{ itemData['inScheme'].titleByLang['sv'] }}</span>
+      <span class="ResultItem-scheme chip d-block d-sm-none">{{ itemData['inScheme'].code }}</span>
+      <span class="ResultItem-type chip d-none d-xl-block">{{ translateKey(itemData['@type']) }}</span>
     </div>
     <EntityTable v-if="expanded" :item-data="filteredItem" :show-download="true" />
   </div>
@@ -66,10 +67,20 @@ export default {
     width: 100%;
     display: flex;
     flex-direction: row;
-    padding: 0.5em 1em;
+    padding: 0.5rem 0.25rem;
     gap: 1em;
+    line-height: 1.2;
+    @media (min-width: 768px) {
+      line-height: auto;
+      padding: 0.5em 1em;
+    }
     > span {
-      padding: 0.5em;
+      padding: 0.1rem;
+      align-items: center;
+      display: flex;
+      @media (min-width: 768px) {
+        padding: 0.5em;
+      }
       &:first-child {
         flex-grow: 1;
       }
@@ -113,7 +124,9 @@ export default {
     }
   }
   &.hovered {
-    box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);
+    @media (min-width: 768px) {
+      box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);
+    }
     .chip {
       border-color: $gray-500;
       color: $black;
@@ -125,7 +138,14 @@ export default {
     background-color: $gray-100;
     border-radius: 2em;
     color: $gray-600;
-    padding: 0.5em 0.75em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.25rem 0.4rem;
+    @media (min-width: 768px) {
+      padding: 0.5em 0.75em;
+    }
+    font-size: 1rem;
   }
 
 }

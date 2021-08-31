@@ -57,6 +57,8 @@ export default {
 <style lang="scss">
 .EntityNode {
   display: block;
+  min-width: 0;
+  overflow: hidden;
   // display: inline-block;
   // &:not(:first-child) {
   //   &::before {

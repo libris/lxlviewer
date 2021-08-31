@@ -70,12 +70,16 @@ export default {
   &-bodyValue {
     flex-grow: 0;
     flex-basis: 100%;
+    min-width: 0;
     @media (min-width: 768px) {
       padding-left: 1rem;
     }
     a {
       color: $kb-secondary-turquoise;
       text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       &:hover {
         text-decoration: underline;
       }
