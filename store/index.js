@@ -10,7 +10,7 @@ export const state = () => ({
   display: null,
   vocabContext: null,
   currentDocument: null,
-  entityReferences: null,
+  entityReferences: {},
   settings: {
     language: 'sv',
     idPath: process.env.API_PATH,

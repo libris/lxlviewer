@@ -1,5 +1,5 @@
 <template>
-  <div class="EntityNode">
+  <div class="EntityNode" v-if="entityData != null">
     <span class="" v-if="typeof entityData == 'string'">{{ entityData }}</span>
     <span class="" v-else-if="entityData && !entityData.hasOwnProperty('@id')">
       {{ getItemLabel }}
@@ -35,13 +35,10 @@ export default {
   computed: {
     ...mapGetters(['entityReferences']),
     entityData() {
-      if (this.entity) {
-        if (this.entity.hasOwnProperty('@id') && this.entityReferences.hasOwnProperty(this.entity['@id'])) {
-          return this.entityReferences[this.entity['@id']];
-        }
-        return this.entity;
+      if (this.entity.hasOwnProperty('@id') && this.entityReferences.hasOwnProperty(this.entity['@id'])) {
+        return this.entityReferences[this.entity['@id']];
       }
-      return null;
+      return this.entity;
     }
   }
 }
