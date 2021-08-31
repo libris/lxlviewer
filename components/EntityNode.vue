@@ -46,12 +46,13 @@ export default {
 
 <style lang="scss">
 .EntityNode {
-  display: inline-block;
-  &:not(:first-child) {
-    &::before {
-      content: ' • ';
-    }
-    margin-left: 0.4em;
-  }
+  display: block;
+  // display: inline-block;
+  // &:not(:first-child) {
+  //   &::before {
+  //     content: ' • ';
+  //   }
+  //   margin-left: 0.4em;
+  // }
 }
 </style>
