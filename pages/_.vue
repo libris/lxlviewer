@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="Document">
       <h2 class="text-muted">{{ translateKey(entityData['@type']) }}</h2>
-      <h1>{{ getItemLabel }}</h1>
+      <h1>{{ documentTitle }}</h1>
       <EntityTable v-if="entityData != null" :item-data="entityData" :show-download="true" />
     </div>
   </div>
@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     documentTitle() {
-      return this.getEntityTitle(this.itemData);
+      return this.getItemLabel;
     },
     entityData() {
       if (this.pageData['@graph']) {
@@ -54,20 +54,23 @@ export default {
 .Document {
   padding-top: 2rem;
   h1, h2 {
-    padding: 0.5rem 1rem 0.5rem 1.5rem;
+    padding: 0.5rem 0.25rem 0.5rem 0.25rem;
+    @media (min-width: 768px) {
+      padding: 0.5rem 1rem 0.5rem 1.5rem;
+    }
     margin: 0;
   }
   h1 {
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     @media (min-width: 768px) {
-      font-size: 3rem;
+      font-size: 2.5rem;
     }
   }
   h2 {
-    margin-bottom: -0.8em;
-    font-size: 1.5rem;
+    margin-bottom: -1rem;
+    font-size: 1rem;
     @media (min-width: 768px) {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
   }
 }

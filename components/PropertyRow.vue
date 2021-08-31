@@ -70,6 +70,9 @@ export default {
   &-bodyValue {
     flex-grow: 0;
     flex-basis: 100%;
+    @media (min-width: 768px) {
+      padding-left: 1rem;
+    }
     a {
       color: $kb-secondary-turquoise;
       text-decoration: none;

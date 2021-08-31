@@ -74,7 +74,10 @@ export default {
     }
   }
   &-body {
-    padding: 0.5rem 1rem 0.5rem 1.5rem;
+    padding: 0.5rem 0.25rem 0.5rem 0.25rem;
+    @media (min-width: 768px) {
+      padding: 0.5rem 1rem 0.5rem 1.5rem;
+    }
   }
   &.hovered {
     box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);

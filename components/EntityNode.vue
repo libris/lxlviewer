@@ -1,10 +1,10 @@
 <template>
   <div class="EntityNode" v-if="entityData != null">
     <span class="" v-if="typeof entityData == 'string'">{{ entityData }}</span>
-    <span class="" v-else-if="entityData && !entityData.hasOwnProperty('@id')">
+    <span class="" v-else-if="entityData && !entityData['@id']">
       {{ getItemLabel }}
     </span>
-    <a v-else-if="entityData && entityData.hasOwnProperty('@id')" :href="entityData['@id'] | removeBaseUri">
+    <a v-else-if="entityData && entityData['@id']" :href="entityData['@id'] | removeBaseUri">
       <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
       <template v-else>{{ entityData['@id'] }}</template>
     </a>
@@ -42,6 +42,9 @@ export default {
       return this.parentKey.includes('ByLang');
     },
     entityData() {
+      if (!this.entity) {
+        return {};
+      }
       if (this.entity.hasOwnProperty('@id') && this.entityReferences.hasOwnProperty(this.entity['@id'])) {
         return this.entityReferences[this.entity['@id']];
       }
