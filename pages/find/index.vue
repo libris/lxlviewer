@@ -13,7 +13,7 @@
           <PageStatus :page-data="pageData" />
         </div>
         <div class="SearchResult-resultList">
-          <ResultItem v-for="resultItem in pageData.items" :item-data="resultItem" :key="resultItem['@id']" />
+          <ResultItem v-for="resultItem in pageData.items" :entity="resultItem" :key="resultItem['@id']" />
         </div>
         <Pagination :result-data="pageData" />
       </div>

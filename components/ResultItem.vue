@@ -4,19 +4,22 @@
       <span class="ResultItem-title">
         <i class="bi bi-chevron-right" v-if="!expanded"></i>
         <i class="bi bi-chevron-down" v-if="expanded"></i>
-        {{ itemData.prefLabel }}
-        <a class="ResultItem-link" v-show="expanded" @click.stop ref="titleLink" :href="itemData['@id'] | removeBaseUri" :tabindex="expanded ? 0 : -1">Gå till <i class="bi bi-arrow-right-short"></i></a>
+        {{ getItemLabel }}
+        <a class="ResultItem-link" v-show="expanded" @click.stop ref="titleLink" :href="entity['@id'] | removeBaseUri" :tabindex="expanded ? 0 : -1">Gå till <i class="bi bi-arrow-right-short"></i></a>
       </span>
-      <span class="ResultItem-scheme chip d-none d-sm-block">{{ itemData['inScheme'].titleByLang['sv'] }}</span>
-      <span class="ResultItem-scheme chip d-block d-sm-none">{{ itemData['inScheme'].code }}</span>
-      <span class="ResultItem-type chip d-none d-xl-block">{{ translateKey(itemData['@type']) }}</span>
+      <span class="ResultItem-scheme chip d-none d-sm-block">{{ entity['inScheme'].titleByLang['sv'] }}</span>
+      <span class="ResultItem-scheme chip d-block d-sm-none">{{ entity['inScheme'].code }}</span>
+      <span class="ResultItem-type chip d-none d-xl-block">{{ translateKey(entity['@type']) }}</span>
     </div>
     <EntityTable v-if="expanded" :item-data="filteredItem" :show-download="true" />
   </div>
 </template>
 
 <script>
+import LensMixin from '@/mixins/lens';
+
 export default {
+  mixins: [LensMixin],
   data() {
     return {
       hovered: false,
@@ -42,8 +45,11 @@ export default {
     },
   },
   computed: {
+    entityData() {
+      return this.entity;
+    },
     filteredItem() {
-      const filtered = Object.assign({}, this.itemData);
+      const filtered = Object.assign({}, this.entity);
       delete filtered['@id'];
       delete filtered['@type'];
       delete filtered['@reverse'];
@@ -53,7 +59,7 @@ export default {
     },
   },
   props: {
-    itemData: {
+    entity: {
       type: Object,
       default: null,
     },
