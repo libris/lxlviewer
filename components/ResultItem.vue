@@ -1,7 +1,12 @@
 <template>
   <div class="ResultItem" :class="{ 'hovered': hovered }" @mouseover="hovered = true" @mouseout="hovered = false">
     <div class="ResultItem-header" @click="toggle" @keyup.enter="toggle(true)" tabindex="0">
-      <span class="ResultItem-title"><a ref="titleLink" :href="itemData['@id'] | removeBaseUri" :tabindex="expanded ? 0 : -1">{{ itemData.prefLabel }}</a></span>
+      <span class="ResultItem-title">
+        <i class="bi bi-chevron-right" v-if="!expanded"></i>
+        <i class="bi bi-chevron-down" v-if="expanded"></i>
+        {{ itemData.prefLabel }}
+        <a class="ResultItem-link" v-show="expanded" @click.stop ref="titleLink" :href="itemData['@id'] | removeBaseUri" :tabindex="expanded ? 0 : -1">Gå till <i class="bi bi-arrow-right-short"></i></a>
+      </span>
       <span class="ResultItem-scheme chip d-none d-sm-block">{{ itemData['inScheme'].titleByLang['sv'] }}</span>
       <span class="ResultItem-scheme chip d-block d-sm-none">{{ itemData['inScheme'].code }}</span>
       <span class="ResultItem-type chip d-none d-xl-block">{{ translateKey(itemData['@type']) }}</span>
@@ -67,6 +72,7 @@ export default {
     width: 100%;
     display: flex;
     flex-direction: row;
+    align-items: center;
     padding: 0.5rem 0.25rem;
     gap: 1em;
     line-height: 1.2;
@@ -87,6 +93,8 @@ export default {
     }
   }
   &-title {
+    display: flex;
+    gap: 0.5em;
     a {
       color: $kb-secondary-turquoise;
       font-weight: 500;
@@ -95,6 +103,15 @@ export default {
         text-decoration: underline;
       }
     }
+  }
+  &-link {
+    font-size: 85%;
+    font-weight: 500;
+    color: $gray-600;
+    padding: 0.1em 0.25em;
+    border-radius: 0.5em;
+    background-color: $gray-200;
+    text-decoration: none;
   }
   &-body {
     padding: 0.5em 1em 0.5em 1.5em;
@@ -130,6 +147,7 @@ export default {
     .chip {
       border-color: $gray-500;
       color: $black;
+      background-color: $white;
     }
   }
   .chip {
