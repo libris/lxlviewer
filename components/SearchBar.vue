@@ -2,7 +2,7 @@
   <div class="SearchBar">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-8 col-md-4">
+        <div class="col-8 col-md-5">
           <i class="bi-search SearchInput-icon"></i><input type="text" v-model="keyword" id="search" @keyup.enter="submit()" class="form-control SearchInput-input">
         </div>
         <div class="col-4 col-md-2">
