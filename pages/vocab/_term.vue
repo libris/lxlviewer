@@ -42,9 +42,9 @@ import * as VocabUtil from '@/utils/vocab';
 export default {
   head() {
     return {
-      title: `${this.$route.params.term || 'Basvokabulär'} | ${this.$config.siteName}`,
+      title: `${this.termTitle || 'Basvokabulär'} | ${this.$config.siteName}`,
       meta: [
-        { hid:'og:title', property:'og:title', content: this.$route.params.term || 'Basvokabulär' },
+        { hid:'og:title', property:'og:title', content: this.termTitle || 'Basvokabulär' },
       ],
     };
   },
@@ -56,6 +56,9 @@ export default {
   },
   computed: {
     ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext']),
+    termTitle() {
+      return this.getEntityTitle(this.termData);
+    },
     termData() {
       if (this.$route.params.term) {
         return VocabUtil.getTermObject(this.$route.params.term, this.vocab, this.vocabContext);
