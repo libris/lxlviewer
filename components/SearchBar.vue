@@ -25,15 +25,14 @@ export default {
       if (this.keyword.length === 0) return;
       this.$router.push({
         name: 'find',
-        query: Object.assign({}, this.query),
+        query: this.queryObject,
       });
     },
   },
   computed: {
-    query() {
-      const queryObj = {
-        'q': this.keyword,
-      }
+    queryObject() {
+      const queryObj = Object.assign({}, this.$route.query);
+      queryObj.q = this.keyword;
       return queryObj;
     },
   },
