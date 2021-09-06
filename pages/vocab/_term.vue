@@ -120,6 +120,12 @@ export default {
       font-size: 3rem;
     }
   }
+  p {
+    padding: 0.5rem 0.25rem 0.5rem 0.25rem;
+    @media (min-width: 768px) {
+      padding: 0.5rem 1rem 0.5rem 1.5rem;
+    }
+  }
   h1, h2 {
     padding: 0.5rem 0.25rem 0.5rem 0.25rem;
     @media (min-width: 768px) {
