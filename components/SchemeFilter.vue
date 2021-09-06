@@ -59,6 +59,10 @@ export default {
 
 <style lang="scss">
 .SchemeFilter {
+  user-select: none;
+  @media (hover: hover) {
+    user-select: unset;
+  }
   cursor: pointer;
   border-width: 0px 0px 3px 0px;
   border-style: solid;
