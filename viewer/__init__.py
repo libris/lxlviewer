@@ -563,10 +563,8 @@ def _map_response(response):
 
     if resp.status_code < 400:
         return resp
-    elif resp.status_code < 500:
-        abort(resp)
     else:
-        abort(resp.status_code)
+        abort(resp)
 
 
 def _write_data(request, query_params=[]):

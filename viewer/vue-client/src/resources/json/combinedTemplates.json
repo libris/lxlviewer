@@ -3378,6 +3378,49 @@
         }
       }
     },
+    "graphic-genreForm": {
+      "label": "TGM - Genre/formterm",
+      "description": "gmgpc/swe",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "GenreForm",
+          "closeMatch": [{
+            "@type": "GenreForm",
+            "inScheme": {
+              "@id": "https://id.kb.se/term/gmgpc"
+            },
+            "prefLabel": ""
+          }],
+          "inScheme": {
+            "@id": "https://id.kb.se/term/gmgpc/swe"
+          },
+          "prefLabel": "",
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "scopeNote": [""]
+        }
+      }
+    },
     "geographic": {
       "label": "Geografiskt ämnesord",
       "description": "sao",
