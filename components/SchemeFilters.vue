@@ -1,5 +1,6 @@
 <template>
   <div class="SchemeFilters col-md-12">
+    <SchemeFilter :no-filter="true" />
     <SchemeFilter v-for="scheme in schemes" :scheme="scheme" :key="scheme['@id']" />
   </div>
 </template>

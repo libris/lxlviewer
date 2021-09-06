@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <SchemeFilters :schemes="pageData.stats.sliceByDimension['inScheme.@id'].observation" v-if="pageData.stats && pageData.stats.sliceByDimension && pageData.stats.sliceByDimension['inScheme.@id']" />
+      <SchemeFilters :schemes="collections" />
     </div>
     <div class="row">
       <div class="DetailedFilters col-md-4 col-lg-4 col-xl-3 col-xxl-2">
@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   head() {
     return {
@@ -47,12 +49,17 @@ export default {
       });
     },
   },
-  async asyncData({ $config, route, params, $http }) {
+  computed: {
+    ...mapGetters(['collections']),
+  },
+  async asyncData({ $config, route, params, $http, store }) {
     const query = route.query;
     let queryString = '';
+    const collections = await $http.$get(`${$config.apiPath}/data.jsonld`);
+    store.commit('SET_COLLECTIONS', collections.statistics.sliceByDimension['inScheme.@id'].observation);
+
     Object.entries(query).forEach(([key, val]) => queryString += `${key}=${val}&`);
     const pageData = await $http.$get(`${$config.apiPath}/find.jsonld?${queryString}`)
-
     return {
       pageData
       // items: pageData.items,

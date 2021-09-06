@@ -1,7 +1,8 @@
 <template>
   <div class="SchemeFilter">
     <span v-if="noFilter == false">
-      {{ scheme.object.titleByLang['sv'] }} ({{ scheme.totalItems }})
+      {{ scheme.object.titleByLang['sv'] }}
+      <!-- ({{ scheme.totalItems }}) -->
     </span>
     <span v-else>
       Alla

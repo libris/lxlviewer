@@ -11,6 +11,7 @@ export const state = () => ({
   vocabContext: null,
   currentDocument: null,
   entityReferences: {},
+  collections: null,
   settings: {
     language: 'sv',
     idPath: process.env.API_PATH,
@@ -24,6 +25,9 @@ export const state = () => ({
 })
 
 export const mutations = {
+  SET_COLLECTIONS(state, data) {
+    state.collections = data;
+  },
   SET_VOCAB(state, data) {
     const vocabMap = new Map(data['@graph'].map(entry => [entry['@id'], entry]));
     state.vocab = vocabMap;
@@ -108,6 +112,9 @@ export const actions = {
     const expanded = DisplayUtil.expandInherited(display);
     commit('SET_DISPLAY', expanded);
   },
+  setCollections(data) {
+    commmit('SET_COLLECTIONS', data);
+  },
 };
 
 export const getters = {
@@ -134,5 +141,8 @@ export const getters = {
   },
   entityReferences: state => {
     return state.entityReferences;
+  },
+  collections: state => {
+    return state.collections;
   },
 };
