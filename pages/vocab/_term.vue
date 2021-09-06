@@ -11,17 +11,18 @@
         </div>
         <div class="Vocab-termList" v-if="vocab && listShown == 'Classes'">
           <ul>
-            <li v-for="item in classes" :key="item['@id']"><NuxtLink :to="item['@id'] | removeBaseUri">{{ item['@id'] }}</NuxtLink></li>
+            <li v-for="item in classes" :key="item[0]"><NuxtLink v-if="item[0]" :to="item[0] | replaceBaseWithApi">{{ item[0].split('/').pop() }}</NuxtLink></li>
           </ul>
         </div>
         <div class="Vocab-termList" v-if="vocab && listShown == 'Properties'">
           <ul>
-            <li v-for="item in properties" :key="item['@id']"><NuxtLink :to="item['@id'] | removeBaseUri">{{ item['@id'] }}</NuxtLink></li>
+            <li v-for="item in properties" :key="item[0]"><NuxtLink v-if="item[0]" :to="item[0] | replaceBaseWithApi">{{ item[0].split('/').pop() }}</NuxtLink></li>
           </ul>
         </div>
       </div>
       <div class="Vocab-termDetailsColumn col-md-8 col-lg-8 col-xl-9 col-xxl-10">
         <div class="Vocab-termDetails" v-if="termData != null">
+          <h2 class="text-muted">{{ termData['@id'].split('/').pop() }}</h2>
           <h1>{{ getEntityTitle(termData) }}</h1>
           <EntityTable :item-data="termData" />
         </div>
@@ -54,9 +55,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'context']),
+    ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext']),
     termData() {
-      return VocabUtil.getTermObject(this.$route.params.term, this.vocab, this.context);
+      if (this.$route.params.term) {
+        return VocabUtil.getTermObject(this.$route.params.term, this.vocab, this.vocabContext);
+      }
+      return null;
     },
     chosenList() {
       if (this.listShown === 'Classes') {
@@ -95,6 +99,7 @@ export default {
     height: 80vh;
   }
   &-termDetailsColumn {
+      padding-top: 2rem;
   }
   &-termListControllers {
     border: solid $gray-500;
@@ -113,6 +118,26 @@ export default {
     h1 {
       padding: 0.5rem 1rem 0.5rem 1.5rem;
       font-size: 3rem;
+    }
+  }
+  h1, h2 {
+    padding: 0.5rem 0.25rem 0.5rem 0.25rem;
+    @media (min-width: 768px) {
+      padding: 0.5rem 1rem 0.5rem 1.5rem;
+    }
+    margin: 0;
+  }
+  h1 {
+    font-size: 1.5rem;
+    @media (min-width: 768px) {
+      font-size: 2.5rem;
+    }
+  }
+  h2 {
+    margin-bottom: -1rem;
+    font-size: 1rem;
+    @media (min-width: 768px) {
+      font-size: 1.5rem;
     }
   }
 }
