@@ -19,11 +19,13 @@ export default {
   },
   methods: {
     setAsFilter() {
+      let newQuery = Object.assign({}, this.$route.query);
       if (this.noFilter) {
-        this.$router.push({path: this.$route.path, query: {}});
+        delete newQuery['inScheme.@id'];
       } else {
-        this.$router.push({path: this.$route.path, query: { 'inScheme.@id': this.scheme.object['@id'] }});
+        newQuery['inScheme.@id'] = this.scheme.object['@id'];
       }
+      this.$router.push({ path: this.$route.path, query: newQuery });
     },
   },
   computed: {
