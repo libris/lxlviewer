@@ -1,7 +1,8 @@
 <template>
   <div class="SchemeFilter" :class="{ 'is-active': isActive }" @click="setAsFilter">
     <span v-if="noFilter == false">
-      {{ scheme.object.titleByLang['sv'] }}
+      <span class="d-none d-sm-block">{{ scheme.object.titleByLang['sv'] }}</span>
+      <span class="d-block d-sm-none">{{ scheme.object.code }}</span>
       <!-- ({{ scheme.totalItems }}) -->
     </span>
     <span v-else>

@@ -25,6 +25,7 @@ export default {
 <style lang="scss">
 .SchemeFilters {
   display: flex;
+  flex-wrap: wrap;
   gap: 1em;
   background-color: $gray-100;
   padding: 1em 0;
