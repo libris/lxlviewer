@@ -44,9 +44,11 @@ export default {
 <style lang="scss">
 .SortSelect {
   select {
-    border: 0;
+    border: 1px solid $gray-300;
     background-color: transparent;
     font-weight: 500;
+    padding: 0.25em;
+    border-radius: 4px;
   }
 }
 

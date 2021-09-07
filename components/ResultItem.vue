@@ -1,5 +1,5 @@
 <template>
-  <div class="ResultItem" :class="{ 'hovered': hovered }" @mouseover="hovered = true" @mouseout="hovered = false">
+  <div class="ResultItem" :class="{ 'hovered': hovered, 'expanded': expanded }" @mouseover="hovered = true" @mouseout="hovered = false">
     <div class="ResultItem-header" @click="toggle" @keyup.enter="toggle(true)" tabindex="0">
       <span class="ResultItem-title">
         <i class="bi bi-chevron-right" v-if="!expanded"></i>
@@ -69,6 +69,7 @@ export default {
 
 <style lang="scss">
 .ResultItem {
+  background-color: $gray-100;
   border: solid $gray-200;
   border-width: 0px 1px 1px 1px;
   &:first-child {
@@ -146,15 +147,25 @@ export default {
       }
     }
   }
-  &.hovered {
+  &.expanded, &.hovered {
+    background-color: $white;
+    position:relative;
+    z-index: 500;
+    background-color: $white;
     @media (min-width: 768px) {
-      box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);
+      box-shadow: 0 0.15em 0.25em 0 rgba(0, 0, 0, 0.25);
     }
     .chip {
       border-color: $gray-500;
       color: $black;
       background-color: $white;
     }
+  }
+  &.expanded {
+
+  }
+  &.hovered {
+
   }
   .chip {
     transition: 0.25s ease all;
