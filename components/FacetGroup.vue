@@ -1,7 +1,7 @@
 <template>
   <div class="FacetGroup">
     <div class="FacetGroup-header">
-      {{ group.dimension }}
+      {{ groupLabel }}
     </div>
     <div class="FacetGroup-list">
       <Facet v-for="facet in group.observation" :dimension="group.dimension" :facet="facet" :key="facet.object['@id']" />
@@ -10,11 +10,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
       show: false
     }
+  },
+  methods: {
   },
   props: {
     group: {
@@ -22,8 +26,11 @@ export default {
     },
   },
   computed: {
-
-  }
+    ...mapGetters(['settings']),
+    groupLabel() {
+      return (this.settings.propertyChains[this.group.dimension] || {})[this.settings.language] || this.group.dimension;
+    },
+  },
 }
 </script>
 
