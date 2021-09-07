@@ -1,13 +1,13 @@
 <template>
   <div class="SchemeFilter" :class="{ 'is-active': isActive }" @click="setAsFilter">
-    <span v-if="noFilter == false">
+    <template v-if="noFilter == false">
       <span class="d-none d-sm-block">{{ scheme.object.titleByLang['sv'] }}</span>
       <span class="d-block d-sm-none">{{ scheme.object.code }}</span>
-      <!-- ({{ scheme.totalItems }}) -->
-    </span>
-    <span v-else>
+      <span>({{ scheme.totalItems }})</span>
+    </template>
+    <template v-else>
       Alla
-    </span>
+    </template>
   </div>
 </template>
 
@@ -64,6 +64,8 @@ export default {
   @media (hover: hover) {
     user-select: unset;
   }
+  display: flex;
+  gap: 0.25em;
   cursor: pointer;
   border-width: 0px 0px 3px 0px;
   border-style: solid;

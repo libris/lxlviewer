@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <SchemeFilters :schemes="collections" />
+      <SchemeFilters :schemes="collectionResults.stats.sliceByDimension['inScheme.@id'].observation" />
     </div>
     <div class="row">
       <div class="DetailedFilters col-md-4 col-lg-4 col-xl-3 col-xxl-2">
@@ -57,13 +57,15 @@ export default {
   async asyncData({ $config, route, params, $http, store }) {
     const query = route.query;
     let queryString = '';
-    const collections = await $http.$get(`${$config.apiPath}/data.jsonld`);
-    store.commit('SET_COLLECTIONS', collections.statistics.sliceByDimension['inScheme.@id'].observation);
+    // const collections = await $http.$get(`${$config.apiPath}/data.jsonld`);
+    // store.commit('SET_COLLECTIONS', collections.statistics.sliceByDimension['inScheme.@id'].observation);
 
     Object.entries(query).forEach(([key, val]) => queryString += `${key}=${val}&`);
-    const pageData = await $http.$get(`${$config.apiPath}/find.jsonld?${queryString}`)
+    const pageData = await $http.$get(`${$config.apiPath}/find.jsonld?${queryString}`);
+    const collectionResults = await $http.$get(`${$config.apiPath}/find.jsonld?q=${route.query.q}`);
     return {
-      pageData
+      pageData,
+      collectionResults,
       // items: pageData.items,
       // stats: pageData.stats,
       // schemes: pageData.stats.sliceByDimension['inScheme.@id'].observation
