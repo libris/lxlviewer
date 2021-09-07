@@ -20,13 +20,14 @@ export default {
   },
   methods: {
     setAsFilter() {
-      let newQuery = Object.assign({}, this.$route.query);
-      if (this.noFilter) {
-        delete newQuery['inScheme.@id'];
-      } else {
-        newQuery['inScheme.@id'] = this.scheme.object['@id'];
+      const queryObj = {};
+      if (this.$route.query.hasOwnProperty('q')) {
+        queryObj.q = this.$route.query.q;
       }
-      this.$router.push({ path: this.$route.path, query: newQuery });
+      if (this.noFilter == false) {
+        queryObj['inScheme.@id'] = this.scheme.object['@id'];
+      }
+      this.$router.push({ path: this.$route.path, query: queryObj });
     },
   },
   computed: {

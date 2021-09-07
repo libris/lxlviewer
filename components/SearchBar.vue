@@ -31,7 +31,10 @@ export default {
   },
   computed: {
     queryObject() {
-      const queryObj = Object.assign({}, this.$route.query);
+      const queryObj = {};
+      if (this.$route.query.hasOwnProperty('inScheme.@id')) {
+        queryObj['inScheme.@id'] = this.$route.query['inScheme.@id'];
+      }
       queryObj.q = this.keyword;
       return queryObj;
     },
