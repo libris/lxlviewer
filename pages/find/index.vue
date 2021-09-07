@@ -12,13 +12,15 @@
           <SortSelect @change="sortChange" />
           <PageStatus :page-data="pageData" />
         </div>
+        <div class="SearchStatus col-md-8 col-lg-8 col-xl-9 col-xxl-10" v-if="pageData.totalItems == 0">
+          <p>
+            Inga resultat.
+          </p>
+        </div>
         <div class="SearchResult-resultList">
           <ResultItem v-for="resultItem in pageData.items" :entity="resultItem" :key="resultItem['@id']" />
         </div>
-        <Pagination :result-data="pageData" />
-      </div>
-      <div class="SearchStatus col-md-8 col-lg-8 col-xl-9 col-xxl-10" v-if="pageData.totalItems == 0">
-        Inga resultat.
+        <Pagination :result-data="pageData" v-if="pageData.totalItems > 0" />
       </div>
     </div>
   </div>
@@ -81,6 +83,9 @@ export default {
     justify-content: space-between;
     padding: 1em 1.5em;
   }
+}
+.SearchStatus {
+  padding: 1em 1.5em;
 }
 .DetailedFilters {
   border: solid $gray-200;
