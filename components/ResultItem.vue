@@ -2,13 +2,15 @@
   <div class="ResultItem" :class="{ 'hovered': hovered, 'expanded': expanded }" @mouseover="hovered = true" @mouseout="hovered = false">
     <div class="ResultItem-header" @click="toggle" @keyup.enter="toggle(true)" tabindex="0">
       <span class="ResultItem-title">
-        <i class="bi bi-chevron-right" v-if="!expanded"></i>
-        <i class="bi bi-chevron-down" v-if="expanded"></i>
+        <template v-if="!forceExpanded">
+          <i class="bi bi-chevron-right" v-if="!expanded"></i>
+          <i class="bi bi-chevron-down" v-if="expanded"></i>
+        </template>
         {{ getItemLabel }}
-        <a class="ResultItem-link" v-show="expanded" @click.stop ref="titleLink" :href="entity['@id'] | removeBaseUri" :tabindex="expanded ? 0 : -1">Gå till <i class="bi bi-arrow-right-short"></i></a>
+        <a class="ResultItem-link" v-if="showGotoLink" v-show="expanded" @click.stop ref="titleLink" :href="thingUrl" :tabindex="expanded ? 0 : -1">Gå till <i class="bi bi-arrow-right-short"></i></a>
       </span>
-      <span class="ResultItem-scheme chip d-none d-sm-block">{{ entity['inScheme'].titleByLang['sv'] }}</span>
-      <span class="ResultItem-scheme chip d-block d-sm-none">{{ entity['inScheme'].code }}</span>
+      <span class="ResultItem-scheme chip d-none d-sm-block" v-if="entity.inScheme.hasOwnProperty('titleByLang')">{{ entity['inScheme'].titleByLang['sv'] }}</span>
+      <span class="ResultItem-scheme chip d-block d-sm-none" v-if="entity.inScheme.hasOwnProperty('code')">{{ entity['inScheme'].code }}</span>
       <span class="ResultItem-type chip d-none d-xl-block">{{ translateKey(entity['@type']) }}</span>
     </div>
     <EntityTable v-if="expanded" :item-data="entityData" :show-download="true" />
@@ -23,36 +25,52 @@ export default {
   data() {
     return {
       hovered: false,
-      expanded: false,
+      userExpanded: false,
     }
   },
   methods: {
     toggle(withEnter = false) {
-      if (this.expanded) {
+      if (this.userExpanded) {
         this.collapse(withEnter);
       } else {
         this.expand(withEnter);
       }
     },
     expand(withEnter) {
-      this.expanded = true;
+      this.userExpanded = true;
       if (withEnter) {
         this.$refs.titleLink.focus();
       }
     },
     collapse(withEnter) {
-      this.expanded = false;
+      this.userExpanded = false;
     },
   },
   computed: {
+    thingUrl() {
+      return this.entity['@id'].replace('https://id.kb.se/', '/');
+    },
+    showGotoLink() {
+      if (this.thingUrl == this.$route.path) {
+        return false;
+      }
+      return true;
+    },
     entityData() {
       return this.entity;
+    },
+    expanded() {
+      return this.forceExpanded || this.userExpanded;
     },
   },
   props: {
     entity: {
       type: Object,
       default: null,
+    },
+    forceExpanded: {
+      type: Boolean,
+      default: false,
     },
   },
 }

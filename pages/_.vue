@@ -1,9 +1,12 @@
 <template>
   <div class="container-fluid">
     <div class="Document">
+      <ResultItem :entity="entityData" :force-expanded="true" />
+      <!-- <div class="Document-header">
+      </div>
       <h2 class="text-muted">{{ translateKey(entityData['@type']) }}</h2>
       <h1>{{ documentTitle }}</h1>
-      <EntityTable v-if="entityData != null" :item-data="entityData" :show-download="true" />
+      <EntityTable v-if="entityData != null" :item-data="entityData" :show-download="true" /> -->
     </div>
   </div>
 </template>
