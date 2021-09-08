@@ -84,6 +84,7 @@ export default {
     display: flex;
     justify-content: space-between;
     padding: 1em 1.5em 1em 0;
+    flex-wrap: wrap;
   }
 }
 .SearchStatus {
