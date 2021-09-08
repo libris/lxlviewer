@@ -9,8 +9,10 @@
         {{ getItemLabel }}
         <a class="ResultItem-link" v-if="showGotoLink" v-show="expanded" @click.stop ref="titleLink" :href="thingUrl" :tabindex="expanded ? 0 : -1">Gå till <i class="bi bi-arrow-right-short"></i></a>
       </span>
-      <span class="ResultItem-scheme chip d-none d-sm-block" v-if="entity.inScheme.hasOwnProperty('titleByLang')">{{ entity['inScheme'].titleByLang['sv'] }}</span>
-      <span class="ResultItem-scheme chip d-block d-sm-none" v-if="entity.inScheme.hasOwnProperty('code')">{{ entity['inScheme'].code }}</span>
+      <template v-if="entity.hasOwnProperty('inScheme')">
+        <span class="ResultItem-scheme chip d-none d-sm-block" v-if="entity.inScheme.hasOwnProperty('titleByLang')">{{ entity['inScheme'].titleByLang['sv'] }}</span>
+        <span class="ResultItem-scheme chip d-block d-sm-none" v-if="entity.inScheme.hasOwnProperty('code')">{{ entity['inScheme'].code }}</span>
+      </template>
       <span class="ResultItem-type chip d-none d-xl-block">{{ translateKey(entity['@type']) }}</span>
     </div>
     <EntityTable v-if="expanded" :item-data="entityData" :show-download="true" />
