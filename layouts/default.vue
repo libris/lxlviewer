@@ -1,9 +1,9 @@
 <template>
   <div class="layout">
-    <div class="position-sticky top-0">
+    <header class="position-sticky top-0">
       <Navbar />
       <SearchBar />
-    </div>
+    </header>
     <main>
       <Nuxt />
     </main>
@@ -27,6 +27,10 @@ html {
 *::after {
   box-sizing: border-box;
   margin: 0;
+}
+
+header {
+  z-index: 999;
 }
 
 main {
