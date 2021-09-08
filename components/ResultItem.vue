@@ -11,7 +11,7 @@
       <span class="ResultItem-scheme chip d-block d-sm-none">{{ entity['inScheme'].code }}</span>
       <span class="ResultItem-type chip d-none d-xl-block">{{ translateKey(entity['@type']) }}</span>
     </div>
-    <EntityTable v-if="expanded" :item-data="filteredItem" :show-download="true" />
+    <EntityTable v-if="expanded" :item-data="entityData" :show-download="true" />
   </div>
 </template>
 
@@ -47,15 +47,6 @@ export default {
   computed: {
     entityData() {
       return this.entity;
-    },
-    filteredItem() {
-      const filtered = Object.assign({}, this.entity);
-      delete filtered['@id'];
-      delete filtered['@type'];
-      delete filtered['@reverse'];
-      delete filtered.reverseLinks;
-      delete filtered.meta;
-      return filtered;
     },
   },
   props: {

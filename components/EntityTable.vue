@@ -1,6 +1,6 @@
 <template>
   <div class="EntityTable-body">
-    <PropertyRow :property="key" :key="key" :value="value" v-for="(value, key) in filteredItem" />
+    <PropertyRow :property="prop" :key="prop" :value="itemData[prop]" v-for="prop in sortedProperties" />
     <div class="PropertyRow d-md-flex" v-if="showDownload">
       <span class="PropertyRow-bodyKey d-block d-md-inline">Ladda ner</span>
       <span class="PropertyRow-bodyValue"><a :href="`${itemData['@id']}/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${itemData['@id']}/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${itemData['@id']}/data.rdf` | replaceBaseWithApi">RDF/XML</a></span>
@@ -9,11 +9,20 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import * as DisplayUtil from '@/utils/display';
+import * as VocabUtil from '@/utils/vocab';
 
 export default {
   data() {
     return {
-    }
+      hiddenProperties: [
+        '@type',
+        '@id',
+        'reverseLinks',
+        'meta',
+      ],
+    };
   },
   methods: {
     isByLangKey(key) {
@@ -21,13 +30,26 @@ export default {
     },
   },
   computed: {
-    filteredItem() {
-      const filtered = Object.assign({}, this.itemData);
-      delete filtered['@id'];
-      delete filtered['@type'];
-      delete filtered.reverseLinks;
-      delete filtered.meta;
-      return filtered;
+    ...mapGetters(['display', 'vocabContext', 'settings', 'vocab']),
+    sortedProperties() {
+      const propertyOrder = DisplayUtil.getDisplayProperties(this.itemData['@type'], this.display, this.vocab, this.settings, this.vocabContext, 'full');
+      const translatedOrder = [];
+      propertyOrder.forEach((prop) => {
+        let currentProp = prop;
+        if (prop.includes('@reverse')) {
+          const termObj = VocabUtil.getTermObject(prop.split('/').pop(), this.vocab, this.vocabContext);
+          currentProp = termObj['owl:inverseOf']['@id'].split('/').pop();
+        }
+        if (this.itemData.hasOwnProperty(currentProp)) {
+          translatedOrder.push(currentProp);
+        }
+      });
+      Object.keys(this.itemData).forEach((prop) => {
+        if (translatedOrder.includes(prop) == false && this.hiddenProperties.includes(prop) == false) {
+          translatedOrder.push(prop);
+        }
+      });
+      return translatedOrder;
     },
   },
   props: {
