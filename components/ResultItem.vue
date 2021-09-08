@@ -83,6 +83,7 @@ export default {
     padding: 0.5rem 0.25rem;
     gap: 1em;
     line-height: 1.2;
+    cursor: pointer;
     @media (min-width: 768px) {
       line-height: auto;
       padding: 0.5em 1em;
@@ -102,6 +103,8 @@ export default {
   &-title {
     display: flex;
     gap: 0.5em;
+    color: $kb-secondary-turquoise;
+    font-weight: 500;
     a {
       color: $kb-secondary-turquoise;
       font-weight: 500;
