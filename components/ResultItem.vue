@@ -39,7 +39,9 @@ export default {
     expand(withEnter) {
       this.userExpanded = true;
       if (withEnter) {
-        this.$refs.titleLink.focus();
+        if (this.$refs.titleLink) {
+          this.$refs.titleLink.focus();
+        }
       }
     },
     collapse(withEnter) {
