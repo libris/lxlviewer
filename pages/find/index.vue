@@ -62,7 +62,7 @@ export default {
 
     Object.entries(query).forEach(([key, val]) => queryString += `${key}=${val}&`);
     const pageData = await $http.$get(`${$config.apiPath}/find.jsonld?${queryString}`);
-    const collectionResults = await $http.$get(`${$config.apiPath}/find.jsonld?q=${route.query.q}`);
+    const collectionResults = await $http.$get(`${$config.apiPath}/find.jsonld?q=${route.query.q}&_limit=0`);
     return {
       pageData,
       collectionResults,
