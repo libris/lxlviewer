@@ -5,9 +5,9 @@
         <div class="Vocab-termListControllers">
           <button class="btn" :class="{'btn-dark': listShown == 'Classes', 'btn-kb-primary-grey': listShown != 'Classes' }" @click="listShown = 'Classes'">Classes</button>
           <button class="btn" :class="{'btn-dark': listShown == 'Properties', 'btn-kb-primary-grey': listShown != 'Properties' }" @click="listShown = 'Properties'">Properties</button>
-          <div>
-            <input type="checkbox" id="showMarc" v-model="showMarc" /> <label for="showMarc">Visa marc-termer</label>
-          </div>
+        </div>
+        <div class="Vocab-termListControllers">
+          <input type="checkbox" id="showMarc" v-model="showMarc" /> <label for="showMarc">Visa marc-termer</label>
         </div>
         <div class="Vocab-termList" v-if="vocab && listShown == 'Classes'">
           <ul>
@@ -114,6 +114,18 @@ export default {
     flex-grow: 1;
     overflow-y: scroll;
     overflow-x: hidden;
+    ul {
+      padding: 1em 0em;
+      li {
+        list-style: none;
+        a {
+          text-decoration: none;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
   }
   &-termDetails {
     h1 {

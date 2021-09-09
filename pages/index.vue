@@ -1,7 +1,6 @@
 <template>
   <div class="container-fluid">
-    <div class="col-12 col-lg-12 col-xl-10 col-xxl-9">
-      <p>Current API path is: {{$config.apiPath}}</p>
+    <div class="col-12 col-lg-12 col-xl-10 col-xxl-9 py-4">
       <h3>Listor</h3>
       <div class="Collections" v-if="pageData">
         <CollectionCard v-for="collection in pageData.statistics.sliceByDimension['inScheme.@id'].observation" :collection-data="collection" :key="collection['@id']" />
