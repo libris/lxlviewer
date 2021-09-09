@@ -11,6 +11,31 @@
   </div>
 </template>
 
+<script>
+import Navbar from '@/components/Navbar';
+import SearchBar from '@/components/SearchBar';
+import Footer from '@/components/Footer';
+
+
+export default {
+  data() {
+    return {
+    }
+  },
+  computed: {
+  },
+  methods: {
+  },
+  props: {
+  },
+  components: {
+    Navbar,
+    SearchBar,
+    Footer,
+  }
+}
+</script>
+
 <style lang="scss">
 html {
   font-size: 16px;

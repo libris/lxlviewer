@@ -20,6 +20,7 @@
 
 <script>
 // import mockSuggest from '@/resources/json/mockSuggest.json';
+import SuggestItem from '@/components/SuggestItem';
 
 export default {
   data() {
@@ -147,6 +148,9 @@ export default {
     },
   },
   props: {
+  },
+  components: {
+    SuggestItem,
   },
 }
 </script>

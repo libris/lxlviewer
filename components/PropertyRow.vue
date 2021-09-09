@@ -14,6 +14,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import LensMixin from '@/mixins/lens';
+import EntityNode from '@/components/EntityNode';
 
 export default {
   mixins: [LensMixin],
@@ -38,7 +39,10 @@ export default {
     isByLangProperty() {
       return this.property.includes('ByLang');
     },
-  }
+  },
+  components: {
+    EntityNode,
+  },
 }
 </script>
 

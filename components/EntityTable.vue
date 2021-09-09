@@ -12,6 +12,7 @@
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from '@/utils/display';
 import * as VocabUtil from '@/utils/vocab';
+import PropertyRow from '@/components/PropertyRow';
 
 export default {
   data() {
@@ -61,6 +62,9 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  components: {
+    PropertyRow,
   },
 }
 </script>

@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import SchemeFilter from '@/components/SchemeFilter';
+
 export default {
   data() {
     return {
@@ -18,7 +20,10 @@ export default {
     },
   },
   computed: {
-  }
+  },
+  components: {
+    SchemeFilter,
+  },
 }
 </script>
 

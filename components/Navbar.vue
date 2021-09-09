@@ -13,6 +13,29 @@
   </nav>
 </template>
 
+<script>
+import NavMenu from '@/components/NavMenu';
+import Logo from '@/components/Logo';
+
+
+export default {
+  data() {
+    return {
+    }
+  },
+  computed: {
+  },
+  methods: {
+  },
+  props: {
+  },
+  components: {
+    NavMenu,
+    Logo,
+  }
+}
+</script>
+
 <style lang="scss">
   .Navbar {
     padding: 0 !important;

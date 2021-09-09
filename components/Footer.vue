@@ -22,6 +22,27 @@
   </footer>
 </template>
 
+<script>
+import Logo from '@/components/Logo';
+
+
+export default {
+  data() {
+    return {
+    }
+  },
+  computed: {
+  },
+  methods: {
+  },
+  props: {
+  },
+  components: {
+    Logo,
+  }
+}
+</script>
+
 <style lang="scss">
   footer {
     .Logo {

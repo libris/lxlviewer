@@ -11,6 +11,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import Facet from '@/components/Facet';
 
 export default {
   data() {
@@ -30,6 +31,9 @@ export default {
     groupLabel() {
       return (this.settings.propertyChains[this.group.dimension] || {})[this.settings.language] || this.group.dimension;
     },
+  },
+  components: {
+    Facet,
   },
 }
 </script>

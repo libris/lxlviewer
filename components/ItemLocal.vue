@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import Property from '@/components/Property';
+
 export default {
   data() {
     return {
@@ -50,6 +52,9 @@ export default {
       type: [Object, String, Array],
       default: null,
     },
+  },
+  components: {
+    Property,
   },
 }
 </script>

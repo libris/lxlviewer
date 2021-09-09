@@ -20,6 +20,8 @@
 
 <script>
 import LensMixin from '@/mixins/lens';
+import EntityNode from '@/components/EntityNode';
+import EntityTable from '@/components/EntityTable';
 
 export default {
   mixins: [LensMixin],
@@ -79,6 +81,10 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  components: {
+    EntityNode,
+    EntityTable,
   },
 }
 </script>

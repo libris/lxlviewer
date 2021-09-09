@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import ItemLocal from '@/components/ItemLocal';
+
 export default {
   data() {
     return {
@@ -41,6 +43,9 @@ export default {
       type: [Object, String, Number],
       default: null,
     },
+  },
+  components: {
+    ItemLocal,
   },
 }
 </script>

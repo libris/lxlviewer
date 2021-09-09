@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import FacetGroup from '@/components/FacetGroup';
+
 export default {
   data() {
     return {
@@ -25,7 +27,10 @@ export default {
       }
       return {};
     },
-  }
+  },
+  components: {
+    FacetGroup,
+  },
 }
 </script>
 

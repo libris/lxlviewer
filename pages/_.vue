@@ -14,6 +14,7 @@
 <script>
 import { mapActions } from 'vuex';
 import LensMixin from '@/mixins/lens';
+import ResultItem from '@/components/ResultItem';
 
 export default {
   mixins: [LensMixin],
@@ -49,7 +50,10 @@ export default {
     return { pageData }
   },
   // call fetch only on client-side
-  fetchOnServer: false
+  fetchOnServer: false,
+  components: {
+    ResultItem,
+  },
 }
 </script>
 

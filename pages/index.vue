@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import CollectionCard from '@/components/CollectionCard';
+
 export default {
   data() {
     return {
@@ -23,7 +25,10 @@ export default {
     return { pageData, summary }
   },
   // call fetch only on client-side
-  fetchOnServer: false
+  fetchOnServer: false,
+  components: {
+    CollectionCard,
+  },
 }
 </script>
 

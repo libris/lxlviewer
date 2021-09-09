@@ -28,6 +28,12 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import SchemeFilters from '@/components/SchemeFilters';
+import FacetList from '@/components/FacetList';
+import SortSelect from '@/components/SortSelect';
+import PageStatus from '@/components/PageStatus';
+import ResultItem from '@/components/ResultItem';
+import Pagination from '@/components/Pagination';
 
 export default {
   head() {
@@ -74,6 +80,14 @@ export default {
   // call fetch only on client-side
   fetchOnServer: false,
   watchQuery: true,
+  components: {
+    SchemeFilters,
+    FacetList,
+    SortSelect,
+    PageStatus,
+    ResultItem,
+    Pagination,
+  },
 }
 </script>
 

@@ -36,6 +36,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as VocabUtil from '@/utils/vocab';
+import ResultItem from '@/components/ResultItem';
 
 export default {
   head() {
@@ -88,6 +89,9 @@ export default {
   // call fetch only on client-side
   fetchOnServer: false,
   watchQuery: true,
+  components: {
+    ResultItem,
+  },
 }
 </script>
 
