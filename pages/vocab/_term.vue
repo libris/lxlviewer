@@ -22,9 +22,7 @@
       </div>
       <div class="Vocab-termDetailsColumn col-md-8 col-lg-8 col-xl-9 col-xxl-10">
         <div class="Vocab-termDetails" v-if="termData != null">
-          <h2 class="text-muted">{{ termData['@id'].split('/').pop() }}</h2>
-          <h1>{{ getEntityTitle(termData) }}</h1>
-          <EntityTable :item-data="termData" />
+          <ResultItem :entity="termData" :force-expanded="true" :show-download="false" />
         </div>
         <div class="Vocab-termDetails" v-if="termData == null">
           <h1>Basvokabulär</h1>

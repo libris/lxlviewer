@@ -226,8 +226,10 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   }
   let result = {};
   let trueItem = Object.assign({}, item);
-
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
+    if (trueItem['@id'] == 'https://id.kb.se/vocab/') {
+      return {};
+    }
     trueItem = quoted[trueItem['@id']];
     // trueItem = DataUtil.getEmbellished(trueItem['@id'], quoted);
     if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {

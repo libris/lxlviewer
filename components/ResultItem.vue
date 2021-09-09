@@ -1,6 +1,6 @@
 <template>
   <div class="ResultItem" :class="{ 'hovered': hovered, 'expanded': expanded }" @mouseover="hovered = true" @mouseout="hovered = false">
-    <div class="ResultItem-header" @click="toggle" @keyup.enter="toggle(true)" tabindex="0">
+    <div class="ResultItem-header" :class="{ 'cursor-pointer': !forceExpanded }" @click="toggle" @keyup.enter="toggle(true)" tabindex="0">
       <span class="ResultItem-title">
         <template v-if="!forceExpanded">
           <i class="bi bi-chevron-right" v-if="!expanded"></i>
@@ -10,12 +10,11 @@
         <a class="ResultItem-link" v-if="showGotoLink" v-show="expanded" @click.stop ref="titleLink" :href="thingUrl" :tabindex="expanded ? 0 : -1">Gå till <i class="bi bi-arrow-right-short"></i></a>
       </span>
       <template v-if="entity.hasOwnProperty('inScheme')">
-        <span class="ResultItem-scheme chip d-none d-sm-block" v-if="entity.inScheme.hasOwnProperty('titleByLang')">{{ entity['inScheme'].titleByLang['sv'] }}</span>
-        <span class="ResultItem-scheme chip d-block d-sm-none" v-if="entity.inScheme.hasOwnProperty('code')">{{ entity['inScheme'].code }}</span>
+        <EntityNode :is-chip="true" v-if="entity.inScheme" :parent-key="'inScheme'" :entity="entity.inScheme" />
       </template>
-      <span class="ResultItem-type chip d-none d-xl-block">{{ translateKey(entity['@type']) }}</span>
+      <EntityNode :is-chip="true" v-if="entity['@type']" :parent-key="'@type'" :entity="entity['@type']" />
     </div>
-    <EntityTable v-if="expanded" :item-data="entityData" :show-download="true" />
+    <EntityTable v-if="expanded" :item-data="entityData" :show-download="showDownload" />
   </div>
 </template>
 
@@ -76,6 +75,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showDownload: {
+      type: Boolean,
+      default: false,
+    },
   },
 }
 </script>
@@ -96,7 +99,9 @@ export default {
     padding: 0.5rem 0.25rem;
     gap: 1em;
     line-height: 1.2;
-    cursor: pointer;
+    &.cursor-pointer {
+      cursor: pointer;
+    }
     @media (min-width: 768px) {
       line-height: auto;
       padding: 0.5em 1em;

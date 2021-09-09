@@ -1,5 +1,5 @@
 <template>
-  <div class="EntityNode" v-if="entityData != null">
+  <div class="EntityNode" :class="{ 'chip': isChip }" v-if="entityData != null">
     <span class="" v-if="typeof entityData == 'string'">{{ entityData }}</span>
     <span class="" v-else-if="entityData && !entityData['@id']">
       {{ getItemLabel }}
@@ -16,6 +16,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import * as VocabUtil from '@/utils/vocab';
 import LensMixin from '@/mixins/lens';
 
 export default {
@@ -33,11 +34,15 @@ export default {
     entity: {
       type: [Object, String, Number],
     },
+    isChip: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
   },
   computed: {
-    ...mapGetters(['entityReferences', 'settings']),
+    ...mapGetters(['entityReferences', 'settings', 'vocab', 'vocabContext']),
     isByLangValue() {
       return this.parentKey.includes('ByLang');
     },
@@ -47,6 +52,9 @@ export default {
       }
       if (this.entity.hasOwnProperty('@id') && this.entityReferences.hasOwnProperty(this.entity['@id'])) {
         return this.entityReferences[this.entity['@id']];
+      }
+      if (this.parentKey == '@type') {
+        return VocabUtil.getTermObject(this.entity, this.vocab, this.vocabContext);
       }
       return this.entity;
     }
@@ -59,12 +67,23 @@ export default {
   display: block;
   min-width: 0;
   overflow: hidden;
-  // display: inline-block;
-  // &:not(:first-child) {
-  //   &::before {
-  //     content: ' • ';
-  //   }
-  //   margin-left: 0.4em;
-  // }
+  &.chip {
+    transition: 0.25s ease all;
+    border: 1px solid $gray-100;
+    background-color: $gray-100;
+    border-radius: 2em;
+    color: $gray-600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.25rem 0.4rem;
+    a {
+      text-decoration: none;
+    }
+    @media (min-width: 768px) {
+      padding: 0.5em 0.75em;
+    }
+    font-size: 1rem;
+  }
 }
 </style>
