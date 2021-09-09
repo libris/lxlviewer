@@ -230,7 +230,9 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     if (trueItem['@id'] == 'https://id.kb.se/vocab/') {
       return {};
     }
-    trueItem = quoted[trueItem['@id']];
+    if (quoted.hasOwnProperty(trueItem['@id'])) {
+      trueItem = quoted[trueItem['@id']];
+    }
     // trueItem = DataUtil.getEmbellished(trueItem['@id'], quoted);
     if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
       return { label: StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };

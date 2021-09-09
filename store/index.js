@@ -21,6 +21,14 @@ export const state = () => ({
       'shorthand',
       'unstable',
     ],
+    removableBaseUris: [
+      'http://libris.kb.se/',
+      'https://libris.kb.se/',
+      'http://id.kb.se/vocab/',
+      'https://id.kb.se/vocab/',
+      'http://id.kb.se/',
+      'https://id.kb.se/',
+    ],
     propertyChains: {
       '@reverse.itemOf.heldBy.@id': {
         sv: 'Har bestånd',

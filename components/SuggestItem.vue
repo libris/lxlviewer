@@ -1,5 +1,5 @@
 <template>
-  <li class="SuggestItem" @click="suggest" @keyup.enter="suggest">
+  <li class="SuggestItem" :class="{ 'is-selected': selected }" @click="suggest">
     <i class="bi-search"></i>
     <span>{{ getItemLabel }}</span>
   </li>
@@ -22,13 +22,17 @@ export default {
   },
   methods: {
     suggest() {
-      this.$emit('suggest', this.item['@id']);
+      this.$emit('suggest', this.item['@id'].replace('https://id.kb.se/', '/'));
     },
   },
   props: {
     item: {
       type: Object,
       default: null,
+    },
+    selected: {
+      type: Boolean,
+      default: false,
     },
   },
 }
@@ -45,7 +49,7 @@ export default {
     margin-right: 0.4em;
     font-size: 125%;
   }
-  &:hover {
+  &:hover, &.is-selected {
     background-color: $gray-200;
   }
 }
