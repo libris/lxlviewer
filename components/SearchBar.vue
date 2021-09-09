@@ -2,8 +2,8 @@
   <div class="SearchBar">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-8 col-md-5">
-          <i class="bi-search SearchInput-icon"></i><input type="text" v-model="keyword" @blur="clearSuggest" @keyup.down="selectNextSuggestion" @keyup.up="selectPreviousSuggestion"  id="search" @keyup.enter="submit()" class="form-control SearchInput-input">
+        <div class="col-8 col-md-5" v-click-outside="clickOutside">
+          <i class="bi-search SearchInput-icon"></i><input type="text" v-model="keyword" @keyup.down="selectNextSuggestion" @keyup.up="selectPreviousSuggestion"  id="search" @keyup.enter="submit()" class="form-control SearchInput-input">
           <div class="SearchBar-suggestContainer" v-if="suggestedItems && suggestedItems.length > 0">
             <ul>
               <SuggestItem v-for="item in suggestedItems" :selected="selectedSuggestionItem == item['@id']" :item="item" :key="item['@id']" @suggest="recieveSuggest" />
@@ -32,6 +32,9 @@ export default {
     }
   },
   methods: {
+    clickOutside() {
+      this.clearSuggest();
+    },
     recieveSuggest(value) {
       this.suggestedItems = null;
       this.$router.push({
@@ -74,7 +77,6 @@ export default {
     },
     async doSuggestSearch() {
       this.clearSuggest();
-      console.log("Getting suggested items");
       const searchPath = `find.jsonld?q=${this.keyword}&_lens=chips&_suggest=sv&_limit=7`;
       const suggestData = await fetch(`${process.env.API_PATH}/${searchPath}`).then(res => res.json());
       this.suggestedItems = suggestData.items;
@@ -96,10 +98,41 @@ export default {
       }
     },
   },
+  directives: {
+    'click-outside': {
+      bind: function(el, binding, vNode) {
+        // Provided expression must evaluate to a function.
+        if (typeof binding.value !== 'function') {
+        	const compName = vNode.context.name
+          let warn = `[Vue-click-outside:] provided expression '${binding.expression}' is not a function, but has to be`
+          if (compName) { warn += `Found in component '${compName}'` }
+          
+          console.warn(warn)
+        }
+        // Define Handler and cache it on the element
+        const bubble = binding.modifiers.bubble
+        const handler = (e) => {
+          if (bubble || (!el.contains(e.target) && el !== e.target)) {
+          	binding.value(e)
+          }
+        }
+        el.__vueClickOutside__ = handler
+
+        // add Event Listeners
+        document.addEventListener('click', handler)
+			},
+      
+      unbind: function(el, binding) {
+        // Remove Event Listeners
+        document.removeEventListener('click', el.__vueClickOutside__)
+        el.__vueClickOutside__ = null
+
+      }
+    }
+  },
   computed: {
     selectedSuggestionItem() {
       if (this.selectedSuggestion != null) {
-        console.log("Reading selection", this.selectedSuggestion);
         return this.suggestedItems[this.selectedSuggestion]['@id'];
       }
       return '';
