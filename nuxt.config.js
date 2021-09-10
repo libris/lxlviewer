@@ -39,9 +39,7 @@ export default {
   components: false,
 
   parallel: true,
-
-  cache: true,
-
+  
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     '@nuxtjs/dotenv'
