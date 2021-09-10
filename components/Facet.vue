@@ -5,7 +5,12 @@
       <i class="bi-check-square-fill" v-if="checked"></i>
     </span>
     <span class="Facet-label">
-      {{ label }}
+      <template v-if="Array.isArray(label)">
+        {{ label.join() }}
+      </template>
+      <template v-else>
+        {{ label }}
+      </template>
     </span>
     <span class="Facet-count">
       {{ facet.totalItems }}
@@ -56,8 +61,20 @@ export default {
         prop = 'labelByLang';
       } else if (this.facet.object.hasOwnProperty('titleByLang')) {
         prop = 'titleByLang';
+      } else if (this.facet.object.hasOwnProperty('prefLabelByLang')) {
+        prop = 'prefLabelByLang';
+      } else if (this.facet.object.hasOwnProperty('label')) {
+        prop = 'label';
+      } else if (this.facet.object.hasOwnProperty('code')) {
+        prop = 'code';
       }
-      return this.facet.object[prop]['sv'];
+      if (this.facet.object[prop]) {
+        if (prop.includes('ByLang')) {
+          return this.facet.object[prop]['sv'] || this.facet.object[prop]['en'];
+        }
+        return this.facet.object[prop];
+      }
+      return '<NO LABEL>';
     }
   }
 }
