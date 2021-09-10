@@ -12,7 +12,12 @@
       <template v-if="entity.hasOwnProperty('inScheme')">
         <EntityNode :is-chip="true" v-if="entity.inScheme" :parent-key="'inScheme'" :entity="entity.inScheme" />
       </template>
-      <EntityNode :is-chip="true" v-if="entity['@type']" :parent-key="'@type'" :entity="entity['@type']" />
+      <template v-if="Array.isArray(entity['@type'])">
+        <EntityNode :is-chip="true" v-for="type in entity['@type']" :parent-key="'@type'" :key="type" :entity="type" />
+      </template>
+      <template v-else>
+        <EntityNode :is-chip="true" :parent-key="'@type'" :entity="entity['@type']" />
+      </template>
     </div>
     <EntityTable v-if="expanded" :item-data="entityData" :show-download="showDownload" />
   </div>
