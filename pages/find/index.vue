@@ -5,7 +5,7 @@
     </div>
     <div class="row">
       <div class="DetailedFilters col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-        <FacetList :stats="pageData.stats" v-if="pageData.stats" />
+        <FacetList :page-data="pageData" v-if="pageData" />
       </div>
       <div class="SearchResults col-md-8 col-lg-8 col-xl-9 col-xxl-10 p-2">
         <div class="SearchResults-statusRow">
