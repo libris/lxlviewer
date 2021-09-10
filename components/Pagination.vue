@@ -52,7 +52,6 @@ export default {
       const paddedPages = parseInt(this.numberOfItems * 0.5);
       const minPage = this.currentPage - paddedPages < 0 ? 0 : this.currentPage - paddedPages;
       let maxPage = this.currentPage + paddedPages > this.lastPage ? this.lastPage : this.currentPage + paddedPages;
-      console.log('min', minPage, 'max', maxPage);
       if (minPage === 0) {
         maxPage += (this.currentPage - paddedPages) * -1;
       }
