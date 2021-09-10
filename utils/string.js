@@ -33,18 +33,19 @@ export function convertToPrefix(uri, context) {
 }
 
 export function getCompactUri(uri, context) {
+  let singleUri = Array.isArray(uri) ? uri[0] : uri;
   if (typeof context === 'undefined') {
     throw new Error('getCompactUri was called without context.');
   }
-  if (typeof uri !== 'string') {
+  if (typeof singleUri !== 'string') {
     throw new Error('getCompactUri was called with an URI that was not a string (should be a string).');
   }
   let compactUri = '';
   const vocabBase = context[0]['@vocab'];
-  if (uri.startsWith(vocabBase)) {
-    compactUri = uri.replace(vocabBase, '');
+  if (singleUri.startsWith(vocabBase)) {
+    compactUri = singleUri.replace(vocabBase, '');
   } else {
-    compactUri = convertToPrefix(uri, context);
+    compactUri = convertToPrefix(singleUri, context);
   }
   return compactUri;
 }
