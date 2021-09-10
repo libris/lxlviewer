@@ -11,12 +11,12 @@
         </div>
         <div class="Vocab-termList" v-if="vocab && listShown == 'Classes'">
           <ul>
-            <li v-for="item in classes" :key="item[0]"><NuxtLink v-if="item[0]" :to="item[0] | replaceBaseWithApi">{{ item[0].split('/').pop() }}</NuxtLink></li>
+            <li v-for="item in classes" :key="item[0]"><NuxtLink v-if="item[0]" :to="item[0] | removeBaseUri">{{ item[0].split('/').pop() }}</NuxtLink></li>
           </ul>
         </div>
         <div class="Vocab-termList" v-if="vocab && listShown == 'Properties'">
           <ul>
-            <li v-for="item in properties" :key="item[0]"><NuxtLink v-if="item[0]" :to="item[0] | replaceBaseWithApi">{{ item[0].split('/').pop() }}</NuxtLink></li>
+            <li v-for="item in properties" :key="item[0]"><NuxtLink v-if="item[0]" :to="item[0] | removeBaseUri">{{ item[0].split('/').pop() }}</NuxtLink></li>
           </ul>
         </div>
       </div>
