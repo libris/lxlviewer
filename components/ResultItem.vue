@@ -84,7 +84,7 @@ export default {
     },
     showDownload: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   components: {
