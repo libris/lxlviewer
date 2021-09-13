@@ -1,6 +1,13 @@
 <template>
-  <div class="FacetList">
-    <FacetGroup v-for="(group, k) in filteredGroups" :group="group" :key="k" />
+  <div class="FacetList pt-4">
+    <span @click="toggleExpand" class="FacetList-expandControls d-md-none">
+      Filter
+      <i class="bi bi-chevron-right" v-if="!expanded"></i>
+      <i class="bi bi-chevron-down" v-if="expanded"></i>
+    </span>
+    <div class="FacetList-expandable d-md-block" :class="{ 'd-block': expanded, 'd-none': !expanded }">
+      <FacetGroup v-for="(group, k) in filteredGroups" :group="group" :key="k" />
+    </div>
   </div>
 </template>
 
@@ -10,12 +17,17 @@ import FacetGroup from '@/components/FacetGroup';
 export default {
   data() {
     return {
-      show: false
+      expanded: false,
     }
   },
   props: {
     pageData: {
       type: Object,
+    },
+  },
+  methods: {
+    toggleExpand() {
+      this.expanded = !this.expanded;
     },
   },
   computed: {
@@ -60,6 +72,9 @@ export default {
 
 <style lang="scss">
 .FacetList {
-
+ &-expandControls {
+  font-weight: 500;
+  padding: 0.5em 0;
+ }
 }
 </style>
