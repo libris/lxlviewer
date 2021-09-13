@@ -96,7 +96,7 @@ export default {
   }
   &-label {
     flex-grow: 1;
-    font-weight: 500;
+    font-weight: 400;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
