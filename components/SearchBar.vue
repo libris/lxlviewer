@@ -62,6 +62,7 @@ export default {
       this.suggestedItems = null;
     },
     submit() {
+      clearTimeout(this.debounce);
       if (this.selectedSuggestion != null) {
         this.$router.push({
           path: this.selectedSuggestionItem.replace('https://id.kb.se/', '/'),
