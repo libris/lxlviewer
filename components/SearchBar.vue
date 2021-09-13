@@ -29,8 +29,20 @@ export default {
       suggestKeyword: '',
       suggestedItems: null,
       debounce: null,
+      disableSuggestion: false,
       selectedSuggestion: null,
     }
+  },
+  mounted: function () {
+    this.$nextTick(function () {
+      if (this.$route.query.hasOwnProperty('q')) {
+        this.disableSuggestion = true;
+        this.keyword = this.$route.query.q;
+        setTimeout(() => {
+          this.disableSuggestion = false;
+        }, 200);
+      }
+    })
   },
   methods: {
     clickOutside() {
@@ -89,6 +101,7 @@ export default {
   },
   watch: {
     keyword(newValue, oldValue) {
+      if (this.disableSuggestion) return;
       if (newValue != oldValue && newValue.length > 0) {
         this.suggestKeyword = newValue;
         clearTimeout(this.debounce);
