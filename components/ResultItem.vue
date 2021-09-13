@@ -110,8 +110,12 @@ export default {
     padding: 0.5rem 0.25rem;
     gap: 1em;
     line-height: 1.2;
+    flex-wrap: wrap;
     &.cursor-pointer {
       cursor: pointer;
+    }
+    @media (min-width: 992px) {
+      flex-wrap: unset;
     }
     @media (min-width: 768px) {
       line-height: auto;
@@ -134,6 +138,10 @@ export default {
     gap: 0.5em;
     color: $kb-secondary-turquoise;
     font-weight: 500;
+    width: 100%;
+    @media (min-width: 992px) {
+      width: unset;
+    }
     a {
       color: $kb-secondary-turquoise;
       font-weight: 500;
