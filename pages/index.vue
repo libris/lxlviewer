@@ -6,7 +6,7 @@
         <CollectionCard v-for="collection in pageData.statistics.sliceByDimension['inScheme.@id'].observation" :collection-data="collection" :key="collection['@id']" />
       </div>
       <h3>Om tjänsten</h3>
-      <div class="col-12 col-md-11 col-lg-10 col-xl-9 col-xxl-8 lead" v-html="summary['@graph'][1].articleBody"></div>
+      <div class="col-12 col-md-10 col-lg-9 col-xl-8 col-xxl-7" v-html="summary['@graph'][1].articleBody"></div>
     </div>
   </div>
 </template>
