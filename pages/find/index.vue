@@ -1,26 +1,30 @@
 <template>
-  <div class="container-fluid FilterContainer">
-    <div class="row">
-      <SchemeFilters :slices="collectionResults.stats.sliceByDimension" />
-    </div>
-    <div class="row">
-      <div class="DetailedFilters col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-        <FacetList :page-data="pageData" v-if="pageData" />
+  <div class="Find">
+    <div class="container-fluid FilterContainer">
+      <div class="row">
+        <SchemeFilters :slices="collectionResults.stats.sliceByDimension" />
       </div>
-      <div class="SearchResults col-md-8 col-lg-8 col-xl-9 col-xxl-10 p-2">
-        <div class="SearchResults-statusRow">
-          <SortSelect @change="sortChange" />
-          <PageStatus :page-data="pageData" />
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="DetailedFilters col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+          <FacetList :page-data="pageData" v-if="pageData" />
         </div>
-        <div class="SearchStatus col-md-8 col-lg-8 col-xl-9 col-xxl-10" v-if="pageData.totalItems == 0">
-          <p>
-            Inga resultat.
-          </p>
+        <div class="SearchResults col-md-8 col-lg-8 col-xl-9 col-xxl-10 p-2">
+          <div class="SearchResults-statusRow">
+            <SortSelect @change="sortChange" />
+            <PageStatus :page-data="pageData" />
+          </div>
+          <div class="SearchStatus col-md-8 col-lg-8 col-xl-9 col-xxl-10" v-if="pageData.totalItems == 0">
+            <p>
+              Inga resultat.
+            </p>
+          </div>
+          <div class="SearchResult-resultList">
+            <ResultItem v-for="resultItem in pageData.items" :entity="resultItem" :key="resultItem['@id']" />
+          </div>
+          <Pagination :result-data="pageData" v-if="pageData.totalItems > 0" />
         </div>
-        <div class="SearchResult-resultList">
-          <ResultItem v-for="resultItem in pageData.items" :entity="resultItem" :key="resultItem['@id']" />
-        </div>
-        <Pagination :result-data="pageData" v-if="pageData.totalItems > 0" />
       </div>
     </div>
   </div>
