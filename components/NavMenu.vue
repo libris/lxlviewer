@@ -1,5 +1,5 @@
 <template>
-  <div class="collapse navbar-collapse" id="navbarNav">
+  <div class="collapse navbar-collapse NavMenu" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
         <NuxtLink to="/" class="nav-link">Sök</NuxtLink>
@@ -30,7 +30,9 @@ export default {
 </script>
 
 <style lang="scss">
-
+.NavMenu {
+  padding: 0.5em 0;
+}
 .nav-item {
   font-weight: 500;
 }

@@ -49,6 +49,7 @@ export default {
       font-weight: 500;
       img {
         margin-right: 0.5em;
+        width: 2.5rem;
       }
       .environment-label {
         font-size: 50%;
