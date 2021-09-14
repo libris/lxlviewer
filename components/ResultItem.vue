@@ -7,7 +7,7 @@
           <i class="bi bi-chevron-down" v-if="expanded"></i>
         </template>
         {{ getItemLabel }}
-        <a class="ResultItem-link" v-if="showGotoLink" v-show="expanded" @click.stop ref="titleLink" :href="thingUrl" :tabindex="expanded ? 0 : -1">Gå till <i class="bi bi-arrow-right-short"></i></a>
+        <a class="ResultItem-link" v-if="showGotoLink" v-show="expanded" @click.stop ref="titleLink" :href="thingUrl" :tabindex="expanded ? 0 : -1">Visa fullständig <i class="bi bi-arrow-right-short"></i></a>
       </span>
       <template v-if="entity.hasOwnProperty('inScheme')">
         <EntityNode :is-chip="true" v-if="entity.inScheme" :parent-key="'inScheme'" :entity="entity.inScheme" />
