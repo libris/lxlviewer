@@ -108,7 +108,6 @@ export default {
       this.suggestedItems = suggestData.items;
       // const suggestData = mockSuggest;
       // this.suggestedItems = suggestData;
-      this.selectedSuggestion = -1;
     },
   },
   watch: {
@@ -116,6 +115,7 @@ export default {
       if (this.disableSuggestion) return;
       if (newValue != oldValue && newValue.length > 0) {
         this.searchChangeDetected = true;
+        this.selectedSuggestion = -1;
         this.suggestedItems = null;
         this.suggestKeyword = newValue;
         clearTimeout(this.debounce);
