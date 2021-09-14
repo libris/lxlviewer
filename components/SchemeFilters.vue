@@ -1,7 +1,9 @@
 <template>
   <div class="SchemeFilters col-md-12">
     <SchemeFilter :no-filter="true" />
-    <SchemeFilter v-for="scheme in schemes" :scheme="scheme" :key="scheme['@id']" />
+    <template v-if="slices.hasOwnProperty('inScheme.@id')">
+      <SchemeFilter v-for="scheme in slices['inScheme.@id'].observation" :scheme="scheme" :key="scheme['@id']" />
+    </template>
   </div>
 </template>
 
@@ -18,6 +20,9 @@ export default {
     schemes: {
       type: Array,
     },
+    slices: {
+      type: Object,
+    }
   },
   computed: {
   },

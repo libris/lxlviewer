@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <SchemeFilters :schemes="collectionResults.stats.sliceByDimension['inScheme.@id'].observation" />
+      <SchemeFilters :slices="collectionResults.stats.sliceByDimension" />
     </div>
     <div class="row">
       <div class="DetailedFilters col-md-4 col-lg-4 col-xl-3 col-xxl-2">
