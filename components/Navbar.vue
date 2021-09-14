@@ -45,6 +45,8 @@ export default {
       display: flex;
       flex-direction: row;
       align-items: center;
+      font-size: 1rem;
+      font-weight: 500;
       img {
         margin-right: 0.5em;
       }

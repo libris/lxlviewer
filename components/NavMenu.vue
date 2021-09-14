@@ -31,4 +31,8 @@ export default {
 
 <style lang="scss">
 
+.nav-item {
+  font-weight: 500;
+}
+
 </style>
