@@ -3,10 +3,17 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-8 col-md-5" v-click-outside="clickOutside">
-          <i class="bi-search SearchInput-icon"></i><input type="text" v-model="keyword" @keyup.down="selectNextSuggestion" @keyup.up="selectPreviousSuggestion"  id="search" @keyup.enter="submit()" class="form-control SearchInput-input" autocomplete="off">
-          <div class="SearchBar-suggestContainer" v-if="suggestedItems && suggestedItems.length > 0">
+          <i class="bi-search SearchInput-icon"></i><input type="text" v-model="keyword" @keydown.down.prevent="selectNextSuggestion" @keydown.up.prevent="selectPreviousSuggestion"  id="search" @keyup.enter="submit()" class="form-control SearchInput-input" autocomplete="off">
+          <div class="SearchBar-suggestContainer" v-if="searchChangeDetected && keyword.length > 0">
             <ul>
-              <SuggestItem v-for="item in suggestedItems" :selected="selectedSuggestionItem == item['@id']" :item="item" :key="item['@id']" @suggest="recieveSuggest" />
+              <li class="SuggestItem" :class="{'is-selected': selectedSuggestion == -1 }" @mouseenter="selectedSuggestion = -1" @click="submit">
+                <i class="bi-arrow-return-left"></i>
+                <span><strong>{{ keyword }}</strong> <span class="text-muted">sök i hela id.kb.se</span></span>
+              </li>
+              <template v-if="suggestedItems && suggestedItems.length > 0">
+                <li class="SuggestItem-divider">förslag<hr></li>
+                <SuggestItem v-for="(item, index) in suggestedItems" :selected="selectedSuggestionItem == item['@id']" @hovered="selectedSuggestion = index" :item="item" :key="item['@id']" @suggest="recieveSuggest" />
+              </template>
             </ul>
           </div>
         </div>
@@ -31,6 +38,7 @@ export default {
       debounce: null,
       disableSuggestion: false,
       selectedSuggestion: null,
+      searchChangeDetected: false,
     }
   },
   mounted: function () {
@@ -49,23 +57,25 @@ export default {
       this.clearSuggest();
     },
     recieveSuggest(value) {
+      this.searchChangeDetected = false;
       this.suggestedItems = null;
       this.$router.push({
         path: value,
       });
+      this.selectedSuggestion = null;
     },
     selectNextSuggestion() {
       if (this.selectedSuggestion == null) {
-        this.selectedSuggestion = 0;
-      } else if (this.selectedSuggestion == this.suggestedItems.length - 1) {
+        this.selectedSuggestion = -1;
+      } else if (this.suggestedItems && this.selectedSuggestion == this.suggestedItems.length - 1) {
         this.selectedSuggestion = this.selectedSuggestion;
       } else {
         this.selectedSuggestion += 1;
       }
     },
     selectPreviousSuggestion() {
-      if (this.selectedSuggestion == 0 || this.selectedSuggestion == null) {
-        this.selectedSuggestion = null;
+      if (this.selectedSuggestion <= 0 || this.selectedSuggestion == null) {
+        this.selectedSuggestion = -1;
       } else {
         this.selectedSuggestion -= 1;
       }
@@ -75,7 +85,8 @@ export default {
     },
     submit() {
       clearTimeout(this.debounce);
-      if (this.selectedSuggestion != null) {
+      this.searchChangeDetected = false;
+      if (this.selectedSuggestion != null && this.selectedSuggestion != -1) {
         this.$router.push({
           path: this.selectedSuggestionItem.replace('https://id.kb.se/', '/'),
         });
@@ -96,13 +107,15 @@ export default {
       this.suggestedItems = suggestData.items;
       // const suggestData = mockSuggest;
       // this.suggestedItems = suggestData;
-      this.selectedSuggestion = null;
+      this.selectedSuggestion = -1;
     },
   },
   watch: {
     keyword(newValue, oldValue) {
       if (this.disableSuggestion) return;
       if (newValue != oldValue && newValue.length > 0) {
+        this.searchChangeDetected = true;
+        this.suggestedItems = null;
         this.suggestKeyword = newValue;
         clearTimeout(this.debounce);
         this.debounce = setTimeout(() => {
@@ -147,7 +160,7 @@ export default {
   },
   computed: {
     selectedSuggestionItem() {
-      if (this.selectedSuggestion != null) {
+      if (this.selectedSuggestion != null && this.selectedSuggestion >= 0) {
         return this.suggestedItems[this.selectedSuggestion]['@id'];
       }
       return '';

@@ -1,5 +1,5 @@
 <template>
-  <li class="SuggestItem" :class="{ 'is-selected': selected }" @click="suggest">
+  <li class="SuggestItem" @mouseenter="onHover" :class="{ 'is-selected': selected }" @click="suggest">
     <i class="bi-search"></i>
     <span>{{ getItemLabel }}</span>
   </li>
@@ -21,6 +21,9 @@ export default {
     },
   },
   methods: {
+    onHover() {
+      this.$emit('hovered');
+    },
     suggest() {
       this.$emit('suggest', this.item['@id'].replace('https://id.kb.se/', '/'));
     },
@@ -51,6 +54,20 @@ export default {
   }
   &:hover, &.is-selected {
     background-color: $gray-200;
+  }
+  &-divider {
+    color: $gray-600;
+    display: flex;
+    font-weight: 400;
+    padding: 0em 0.5em 0em 0.85em;
+    align-items: center;
+    gap: 0.25em;
+    hr {
+      color: $gray-600;
+      border: solid $gray-600;
+      border-width: 1px;
+      flex-grow: 1;
+    }
   }
 }
 </style>
