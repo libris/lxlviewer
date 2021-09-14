@@ -47,6 +47,17 @@ html {
   box-sizing: border-box;
 }
 
+:root {
+  --site-padding-x: 2rem;
+}
+
+.container-fluid {
+  @media (min-width: 992px) {
+    padding-left: var(--site-padding-x) !important;
+    padding-right: var(--site-padding-x) !important;
+  }
+}
+
 *,
 *::before,
 *::after {

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid FilterContainer">
     <div class="row">
       <SchemeFilters :slices="collectionResults.stats.sliceByDimension" />
     </div>
@@ -92,6 +92,12 @@ export default {
 </script>
 
 <style lang="scss">
+
+.FilterContainer {
+  background-color: $gray-100;
+  border: solid $gray-200;
+  border-width: 0px 0px 1px 0px;
+}
 
 .SearchResults {
   &-statusRow {

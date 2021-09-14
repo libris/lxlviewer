@@ -34,12 +34,9 @@ export default {
 
 <style lang="scss">
 .SchemeFilters {
+  padding: 1em 0;
   display: flex;
   flex-wrap: wrap;
   gap: 1em;
-  background-color: $gray-100;
-  padding: 1em 0;
-  border: solid $gray-200;
-  border-width: 0px 0px 1px 0px;
 }
 </style>
