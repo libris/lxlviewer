@@ -41,7 +41,7 @@ import ResultItem from '@/components/ResultItem';
 export default {
   head() {
     return {
-      title: `${this.termTitle || 'Basvokabulär'} | ${this.$config.siteName}`,
+      title: `${this.pageTitle} | ${this.$config.siteName}`,
       meta: [
         { hid:'og:title', property:'og:title', content: this.termTitle || 'Basvokabulär' },
       ],
@@ -55,6 +55,12 @@ export default {
   },
   computed: {
     ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext']),
+    pageTitle() {
+      if (this.termData) {
+        return `${ this.termTitle || 'Basvokabulär'}`
+      }
+      return 'Basvokabulär';
+    },
     termTitle() {
       return this.getEntityTitle(this.termData);
     },
