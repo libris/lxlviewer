@@ -5,10 +5,10 @@
         <Logo />
         id.kb.se <sup class="environment-label">{{ $config.environment }}</sup>
       </NuxtLink>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" @click="toggleExpanded" @keyup.enter="toggleExpanded" aria-controls="navbarNav" :aria-expanded="expanded" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <NavMenu />
+      <NavMenu :expanded="expanded" />
     </div>
   </nav>
 </template>
@@ -21,11 +21,15 @@ import Logo from '@/components/Logo';
 export default {
   data() {
     return {
+      expanded: false,
     }
   },
   computed: {
   },
   methods: {
+    toggleExpanded() {
+      this.expanded = !this.expanded;
+    },
   },
   props: {
   },

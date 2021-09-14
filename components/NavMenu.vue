@@ -1,5 +1,5 @@
 <template>
-  <div class="collapse navbar-collapse NavMenu" id="navbarNav">
+  <div :class="{ 'collapse': !expanded }" class="navbar-collapse NavMenu" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
         <NuxtLink to="/" class="nav-link">Sök</NuxtLink>
@@ -25,6 +25,10 @@ export default {
     }
   },
   props: {
+    expanded: {
+      type: Boolean,
+      default: false,
+    },
   },
 }
 </script>
@@ -32,6 +36,11 @@ export default {
 <style lang="scss">
 .NavMenu {
   padding: 0.5em 0;
+  &:not(.collapse) {
+    .nav-item {
+      text-align: center;
+    }
+  }
 }
 .nav-item {
   font-weight: 500;
