@@ -55,6 +55,7 @@ export default {
   methods: {
     clickOutside() {
       this.clearSuggest();
+      this.searchChangeDetected = false;
     },
     recieveSuggest(value) {
       this.searchChangeDetected = false;
