@@ -97,7 +97,7 @@ export default {
   &-statusRow {
     display: flex;
     justify-content: space-between;
-    padding: 1em 1.5em 1em 0;
+    padding: 0.5em 1.5em 1em 0;
     flex-wrap: wrap;
   }
 }
