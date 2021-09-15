@@ -1,5 +1,5 @@
 <template>
-  <div class="SchemeFilter" :class="{ 'is-active': isActive }" @click="setAsFilter">
+  <div class="SchemeFilter" tabindex="0" :class="{ 'is-active': isActive }" @click="setAsFilter" @keyup.enter="setAsFilter">
     <template v-if="noFilter == false">
       <span class="d-none d-sm-block">{{ scheme.object.titleByLang['sv'] }}</span>
       <span class="d-block d-sm-none">{{ scheme.object.code }}</span>
@@ -63,6 +63,9 @@ export default {
   user-select: none;
   @media (hover: hover) {
     user-select: unset;
+  }
+  span {
+    white-space: nowrap;
   }
   display: flex;
   gap: 0.25em;
