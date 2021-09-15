@@ -94,7 +94,9 @@ export default {
         this.clearSuggest();
         return;
       }
-      if (this.keyword.length === 0) return;
+      if (this.keyword.length === 0) {
+        this.keyword = '*';
+      };
       this.clearSuggest();
       this.$router.push({
         name: 'find',
@@ -112,6 +114,10 @@ export default {
   },
   watch: {
     keyword(newValue, oldValue) {
+      if (newValue == '*') {
+        this.keyword = '';
+        return;
+      }
       if (this.disableSuggestion) return;
       if (newValue != oldValue && newValue.length > 0) {
         this.searchChangeDetected = true;
