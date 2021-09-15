@@ -46,8 +46,13 @@ export default {
   padding: 0.5em 0.5em 0.5em 0;
   list-style: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  span {
+    white-space: nowrap;
+  }
   i {
-    margin-top: 0.6rem;
     margin-left: 1rem;
     margin-right: 0.4em;
     font-size: 125%;
@@ -59,10 +64,11 @@ export default {
     color: $gray-600;
     display: flex;
     font-weight: 400;
-    padding: 0em 0.5em 0em 0.85em;
+    padding: 0.25em 0.5em 0em 0.85em;
     align-items: center;
     gap: 0.25em;
     hr {
+      margin: 0;
       color: $gray-600;
       border: solid $gray-600;
       border-width: 1px;

@@ -196,10 +196,13 @@ export default {
     border: solid $gray-200;
     border-width: 0px 0px 1px 0px;
     &-suggestContainer {
+      width: 90%;
+      @media (min-width: 576px) {
+        width: inherit;
+      }
       position: absolute;
       background-color: $white;
-      width: inherit;
-      border: 1px solid $gray-200;
+      border: 1px solid $gray-400;
       border-radius: 4px;
       ul {
         padding: 0;
