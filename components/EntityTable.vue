@@ -1,5 +1,13 @@
 <template>
   <div class="EntityTable-body">
+    <div class="PropertyRow d-md-flex" v-if="showUri">
+      <span class="PropertyRow-bodyKey d-block d-md-inline">URI</span>
+      <span class="PropertyRow-bodyValue">
+        <a :href="itemData['@id'] | removeBaseUri">
+          {{ itemData['@id'] }}
+        </a>
+        </span>
+    </div>
     <PropertyRow :property="prop" :key="prop" :value="itemData[prop]" v-for="prop in sortedProperties" />
     <div class="PropertyRow d-md-flex" v-if="showDownload">
       <span class="PropertyRow-bodyKey d-block d-md-inline">Ladda ner</span>
@@ -62,6 +70,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showUri: {
+      type: Boolean,
+      default: true,
+    }
   },
   components: {
     PropertyRow,
