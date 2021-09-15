@@ -53,12 +53,24 @@ export default {
           translatedOrder.push(currentProp);
         }
       });
-      Object.keys(this.itemData).forEach((prop) => {
+      const objectToInject = this.itemData.hasOwnProperty('@reverse') ? this.afterInverseReverse : this.itemData;
+      Object.keys(objectToInject).forEach((prop) => {
         if (translatedOrder.includes(prop) == false && this.hiddenProperties.includes(prop) == false) {
           translatedOrder.push(prop);
         }
       });
       return translatedOrder;
+    },
+    afterInverseReverse() {
+      const extracted = {};
+      for (const [key, value] of Object.entries(this.itemData['@reverse'])) {
+        const termObj = VocabUtil.getTermObject(key, this.vocab, this.vocabContext);
+        const reverseKey = termObj['owl:inverseOf']['@id'].split('/').pop();
+        extracted[reverseKey] = value;
+      }
+      const combinedData = Object.assign(this.itemData, extracted);
+      delete combinedData['@reverse'];
+      return combinedData;
     },
   },
   props: {
