@@ -59,7 +59,10 @@ export default {
   border: 1px solid $gray-200;
   border-radius: 3px;
   padding: 1em;
-  margin: 0em 1em 1em 0;
+  margin: 0em 0em 1em 0;
+  @media (min-width: 768px) {
+    margin: 0em 1em 1em 0;
+  }
   display: flex;
   flex-direction: row;
   &-arrow {
