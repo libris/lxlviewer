@@ -65,7 +65,9 @@ export default {
     }
     &.active {
       color: $light !important;
-      border-bottom-color: $kb-secondary-turquoise;
+      @media (min-width: 992px) {
+        border-bottom-color: $kb-secondary-turquoise;
+      }
     }
   }
 }
