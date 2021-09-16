@@ -53,9 +53,10 @@ export default {
       color: $gray-600;
     }
   }
+  transition: box-shadow 0.25s ease;
   box-shadow: 0px 2px 4px 0 rgb(0, 0, 0, 0.08);
-  // background-color: $white;
-  background-color: $gray-100;
+  background-color: $white;
+  // background-color: $gray-100;
   border: 1px solid $gray-200;
   border-radius: 3px;
   padding: 1em;
@@ -66,6 +67,7 @@ export default {
   display: flex;
   flex-direction: row;
   &-arrow {
+    transition: color 0.25s ease;
     font-size: 2rem;
     display: flex;
     align-items: center;
