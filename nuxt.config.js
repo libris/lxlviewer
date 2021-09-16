@@ -1,3 +1,5 @@
+const HOST_PATH = `https://id${ process.env.ENV != 'prod' ? `-${process.env.ENV}` : '' }.kb.se`;
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -12,10 +14,10 @@ export default {
       { hid:'og:title', property:'og:title', content:'id.kb.se' },
       { hid:'og:site_name', property:'og:site_name', content:'id.kb.se' },
       { hid:'og:description', property:'og:description', content:'Building blocks for linked data at the National Library of Sweden' },
-      { hid:'og:image', property:'og:image', content:`${process.env.API_PATH}/opengraph.png` },
+      { hid:'og:image', property:'og:image', content:`${HOST_PATH}/opengraph.png` },
       { hid:'og:image:width', property:'og:image:width', content:'1200' },
       { hid:'og:image:height', property:'og:image:height', content:'600' },
-      { hid:'twitter:image', property:'twitter:image', content:`${process.env.API_PATH}/opengraph.png` },
+      { hid:'twitter:image', property:'twitter:image', content:`${HOST_PATH}/opengraph.png` },
       { hid:'twitter:card', name:'twitter:card', content:'summary_large_image' },
     ],
     link: [
