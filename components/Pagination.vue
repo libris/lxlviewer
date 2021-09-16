@@ -58,6 +58,9 @@ export default {
       if (maxPage === 0) {
         return [createPage(0)];
       }
+      if (maxPage > this.lastPage) {
+        maxPage = this.lastPage;
+      }
       
       for (let i = minPage; i <= maxPage; i++) {
         pages.push(createPage(i));
