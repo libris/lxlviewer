@@ -1,10 +1,22 @@
 <template>
-  <div class="CollectionCard">
-    <div class="CollectionCard-header">
-      <a :href="collectionData.view['@id']">{{ collectionData.object.titleByLang['sv'] }}</a> <span class="CollectionCard-badge">{{ collectionData.totalItems }}</span>
+  <div class="CollectionCard" @click="navigateToSearch">
+    <div class="CollectionCard-content">
+      <div class="CollectionCard-header">
+        <span class="CollectionCard-title">
+          <a onclick="event.stopPropagation()" :href="collectionData.view['@id']">
+            {{ collectionData.object.titleByLang['sv'] }}
+          </a>
+        </span>
+        <span class="CollectionCard-counter">
+          {{ collectionData.totalItems }} termer
+        </span>
+      </div>
+      <div class="CollectionCard-body">
+        <a onclick="event.stopPropagation()" :href="collectionData.object['@id'] | removeBaseUri">Mer om {{collectionData.object.titleByLang['sv']}}</a>
+      </div>
     </div>
-    <div class="CollectionCard-body">
-      <a :href="collectionData.object['@id'] | removeBaseUri">Mer om {{collectionData.object.titleByLang['sv']}}</a>
+    <div class="CollectionCard-arrow">
+      <i class="bi-chevron-right"></i>
     </div>
   </div>
 </template>
@@ -22,36 +34,79 @@ export default {
       default: null,
     },
   },
+  methods: {
+    navigateToSearch() {
+      this.$router.push({
+        path: this.collectionData.view['@id'],
+      });
+    },
+  },
 }
 </script>
 
 <style lang="scss">
 .CollectionCard {
-  margin: 0.5em 0.5em 0 0;
-  a {
-    color: $kb-secondary-turquoise;
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0px 2px 6px 2px rgb(0, 0, 0, 0.08);
+    .CollectionCard-arrow {
+      color: $gray-600;
     }
   }
-  &-badge {
-    background-color: $gray-200;
-    color: $gray-700 !important;
-    font-weight: 500;
-    font-size: 75%;
-    border-radius: 2em;
-    padding: 0.2em 0.5em;
+  box-shadow: 0px 2px 4px 0 rgb(0, 0, 0, 0.08);
+  // background-color: $white;
+  background-color: $gray-100;
+  border: 1px solid $gray-200;
+  border-radius: 3px;
+  padding: 1em;
+  margin: 0em 1em 1em 0;
+  display: flex;
+  flex-direction: row;
+  &-arrow {
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    color: $gray-400;
+  }
+  &-content {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 1em;
   }
   &-header {
-    border: 1px solid $gray-500;
-    border-radius: 3px;
+    display: flex;
+    flex-direction: column; 
+  }
+  &-title {
     font-weight: 500;
-    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    a {
+      text-decoration: none;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+  &-counter {
+    font-size: 0.9rem;
+    color: $gray-600;
   }
   &-body {
-    font-size: 85%;
-    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    a {
+      color: $kb-secondary-turquoise;
+      text-decoration: none;
+      white-space: nowrap;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 }
 

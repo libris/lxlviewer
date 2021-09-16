@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <div class="col-12 col-lg-12 col-xl-10 col-xxl-9 py-4">
+    <div class="col-12 col-lg-12 col-xl-12 col-xxl-10 py-4">
       <h3>Listor</h3>
       <div class="Collections" v-if="pageData">
         <CollectionCard v-for="collection in pageData.statistics.sliceByDimension['inScheme.@id'].observation" :collection-data="collection" :key="collection['@id']" />
@@ -38,10 +38,10 @@ export default {
   display: grid;
   grid-template-columns: 1fr;
   @include media-breakpoint-up(md) {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
-  @include media-breakpoint-up(lg) {
-    grid-template-columns: 1fr 1fr 1fr;
+  @include media-breakpoint-up(xl) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 
