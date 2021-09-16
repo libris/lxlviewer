@@ -95,16 +95,6 @@ export default {
                   <i class="fa fa-2x fa-youtube-play" aria-hidden="true"></i>
                 </a>
               </li>
-              <li class="Footer-navItem">
-                <a class="Footer-link" href="https://twitter.com/librisnytt/" :title="'LibrisNytt on Twitter'| translatePhrase" >
-                  <i class="fa fa-2x fa-twitter-square" aria-hidden="true"></i>
-                </a>
-              </li>
-              <li class="Footer-navItem">
-                <a class="Footer-link" href="https://www.facebook.com/LibrisNytt/" :title="'LibrisNytt on Facebook'| translatePhrase" >
-                  <i class="fa fa-2x fa-facebook-square" aria-hidden="true"></i>
-                </a>
-              </li>
             </ul>
           </nav>
         </div>
