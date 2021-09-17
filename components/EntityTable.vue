@@ -4,7 +4,7 @@
       <span class="PropertyRow-bodyKey d-block d-md-inline">URI</span>
       <span class="PropertyRow-bodyValue">
         <a :href="itemData['@id'] | removeBaseUri">
-          {{ itemData['@id'] }}
+          {{ decodeURI(itemData['@id']) }}
         </a>
         </span>
     </div>
