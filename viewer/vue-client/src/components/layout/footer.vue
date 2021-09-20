@@ -89,11 +89,9 @@ export default {
 
           <nav class="Footer-nav" aria-labelledby="footer-sm-nav">
             <h4 id="footer-sm-nav" class="Footer-listTitle">{{ "Social media" | translatePhrase }}</h4>
-            <ul class="Footer-navList Footer-navList--socialMedia">
+            <ul class="Footer-navList">
               <li class="Footer-navItem">
-                <a class="Footer-link" href="https://www.youtube.com/user/KunglBiblioteket/" :title="'National Library of Sweden on Youtube' | translatePhrase">
-                  <i class="fa fa-2x fa-youtube-play" aria-hidden="true"></i>
-                </a>
+                <a class="Footer-link" href="https://www.youtube.com/user/KunglBiblioteket/">{{ "National Library of Sweden on Youtube" | translatePhrase }}</a>
               </li>
             </ul>
           </nav>
@@ -175,13 +173,6 @@ export default {
     @media (min-width: @screen-md) {
       font-size: 16px;
       font-size: 1.6rem;
-    }
-  }
-
-  &-navItem {
-    .Footer-navList--socialMedia & {
-       display: inline;
-       margin: 0 5px;
     }
   }
 
