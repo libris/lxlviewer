@@ -121,9 +121,6 @@ export default {
     a {
       color: $kb-secondary-turquoise;
       text-decoration: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
       &:hover {
         text-decoration: underline;
       }
