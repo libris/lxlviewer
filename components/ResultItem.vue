@@ -12,10 +12,10 @@
         <EntityNode :is-chip="true" class="d-none d-lg-block" v-if="entity.inScheme" :parent-key="'inScheme'" :entity="entity.inScheme" />
       </template>
       <template v-if="Array.isArray(entity['@type'])">
-        <EntityNode :is-chip="true" class="d-none" :class="{'d-xl-block': entity.inScheme, 'd-md-block': !entity.inScheme }" :parent-key="'@type'" :key="type" :entity="entity['@id'][0]" />
+        <EntityNode :is-chip="true" class="d-none" :class="{'d-xl-block': entity.inScheme, 'd-lg-block': !entity.inScheme }" :parent-key="'@type'" :key="type" :entity="entity['@id'][0]" />
       </template>
       <template v-else>
-        <EntityNode :is-chip="true" :parent-key="'@type'" class="d-none" :class="{'d-xl-block': entity.inScheme, 'd-md-block': !entity.inScheme }" :entity="entity['@type']" />
+        <EntityNode :is-chip="true" :parent-key="'@type'" class="d-none" :class="{'d-xl-block': entity.inScheme, 'd-lg-block': !entity.inScheme }" :entity="entity['@type']" />
       </template>
     </div>
     <EntityTable v-if="expanded" :item-data="entityData" :show-download="showDownload" />
