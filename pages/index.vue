@@ -1,13 +1,13 @@
 <template>
   <div class="container-fluid">
-    <div class="col-12 col-lg-12 col-xl-10 col-xxl-9 py-4">
-      <h3>Listor</h3>
+    <div class="col-12 col-lg-12 col-xl-12 col-xxl-10 py-4">
+      <h4>Listor</h4>
       <div class="Collections" v-if="pageData">
         <CollectionCard v-for="collection in pageData.statistics.sliceByDimension['inScheme.@id'].observation" :collection-data="collection" :key="collection['@id']" />
       </div>
-      <h3>Om tjänsten</h3>
-      <div class="col-12 col-md-10 col-lg-9 col-xl-8 col-xxl-7" v-html="summary['@graph'][1].articleBody"></div>
     </div>
+    <h4>Om tjänsten</h4>
+    <div class="col-12 col-md-10 col-lg-9 col-xl-8 col-xxl-7" v-html="summary['@graph'][1].articleBody"></div>
   </div>
 </template>
 
@@ -36,12 +36,12 @@ export default {
 
 .Collections {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   @include media-breakpoint-up(md) {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
-  @include media-breakpoint-up(lg) {
-    grid-template-columns: 1fr 1fr 1fr;
+  @include media-breakpoint-up(xl) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 

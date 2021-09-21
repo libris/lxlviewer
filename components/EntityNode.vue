@@ -6,7 +6,7 @@
     </span>
     <a v-else-if="entityData && entityData['@id']" :href="entityData['@id'] | removeBaseUri">
       <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
-      <template v-else>{{ entityData['@id'] }}</template>
+      <template v-else>{{ decodeURI(entityData['@id']) }}</template>
     </a>
     <span v-else>
       <template>{{ entity }}</template>
