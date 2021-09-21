@@ -174,7 +174,12 @@ def make_find_url(**kws):
 def _get_served_uri(url, path):
     # TODO: why is Flask unquoting url and path values?
     url_base = url_quote(url)
-    path = url_quote(path, safe='/:+')
+    # Some things have '+' in their URIs, some have '%2B'.
+    # Workaround to make Flask not mess with that.
+    if '+' in request.environ['REQUEST_URI']:
+        path = url_quote(path, safe='/:+')
+    else:
+        path = url_quote(path)
     # we need to do this to handle e.g. gmgpc//swe, since flask is a bit heavy
     # handed when it comes to slashes in paths
     # TODO: https://jira.kb.se/browse/LXL-1469
