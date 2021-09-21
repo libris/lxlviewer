@@ -1,12 +1,12 @@
 <template>
-  <div class="PropertyRow d-md-flex">
+  <div class="PropertyRow d-md-flex" :data-property="property">
     <span class="PropertyRow-bodyKey d-block d-md-inline" :title="translateKey(property)">{{ translateKey(property) }}</span>
     <span class="PropertyRow-bodyValue single" v-if="!Array.isArray(value)">
       <EntityNode :parent-key="property" :entity="value" v-if="!isByLangProperty" />
       <span v-else>{{ value[settings.language] }}</span>
     </span>
     <span class="PropertyRow-bodyValue multiple" v-if="Array.isArray(value)">
-      <EntityNode :parent-key="property" :entity="node" v-for="(node, index) in value" :key="index" />
+      <EntityNode :parent-key="property" :entity="node" v-for="(node, index) in valueSorted" :key="index" />
     </span>
   </div>
 </template>
@@ -15,6 +15,7 @@
 import { mapGetters } from 'vuex';
 import LensMixin from '@/mixins/lens';
 import EntityNode from '@/components/EntityNode';
+import * as DisplayUtil from '@/utils/display';
 
 export default {
   mixins: [LensMixin],
@@ -35,9 +36,48 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters(['entityReferences', 'settings']),
+    ...mapGetters(['entityReferences', 'settings', 'vocabContext', 'display', 'vocab']),
     isByLangProperty() {
       return this.property.includes('ByLang');
+    },
+    containerType() {
+      if (this.vocabContext[1].hasOwnProperty(this.property) && this.vocabContext[1][this.property].hasOwnProperty('@container')) {
+        return this.vocabContext[1][this.property]['@container'];
+      }
+      return null;
+    },
+    objectLabelReference() {
+      // Returns a map with objects as keys and labels as values
+      const refMap = new Map();
+      this.value.forEach((o) => {
+        refMap.set(o,
+          DisplayUtil.getItemLabel(
+            o,
+            this.display,
+            this.entityReferences,
+            this.vocab,
+            this.settings,
+            this.vocabContext,
+          )
+        );
+      });
+      return refMap;
+    },
+    valueSorted() {
+      if (this.containerType == '@set') {
+        const ref = this.objectLabelReference;
+        const value = this.value.slice(0);
+        if (this.containerType == '@set') {
+          return value.sort((a, b) => {
+              if(ref.get(a) < ref.get(b)) { return -1; }
+              if(ref.get(a) > ref.get(b)) { return 1; }
+              return 0;
+          });
+        }
+        return value;
+      } else {
+        return this.value;
+      }
     },
   },
   components: {
