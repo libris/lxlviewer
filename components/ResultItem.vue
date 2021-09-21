@@ -9,13 +9,13 @@
         {{ getItemLabel }}
       </span>
       <template v-if="entity.hasOwnProperty('inScheme')">
-        <EntityNode :is-chip="true" v-if="entity.inScheme" :parent-key="'inScheme'" :entity="entity.inScheme" />
+        <EntityNode :is-chip="true" class="d-none d-lg-block" v-if="entity.inScheme" :parent-key="'inScheme'" :entity="entity.inScheme" />
       </template>
       <template v-if="Array.isArray(entity['@type'])">
-        <EntityNode :is-chip="true" v-for="type in entity['@type']" :parent-key="'@type'" :key="type" :entity="type" />
+        <EntityNode :is-chip="true" class="d-none d-xl-block" :parent-key="'@type'" :key="type" :entity="entity['@id'][0]" />
       </template>
       <template v-else>
-        <EntityNode :is-chip="true" :parent-key="'@type'" :entity="entity['@type']" />
+        <EntityNode :is-chip="true" :parent-key="'@type'" class="d-none d-xl-block" :entity="entity['@type']" />
       </template>
     </div>
     <EntityTable v-if="expanded" :item-data="entityData" :show-download="showDownload" />
@@ -106,10 +106,9 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0.5rem 0.25rem;
+    padding: 1em 0.25em;
     gap: 1em;
     line-height: 1.2;
-    flex-wrap: wrap;
     &.cursor-pointer {
       cursor: pointer;
     }
