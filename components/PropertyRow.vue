@@ -2,7 +2,9 @@
   <div class="PropertyRow d-md-flex" :data-property="property">
     <span class="PropertyRow-bodyKey d-block d-md-inline" :title="translateKey(property)">{{ translateKey(property) }}</span>
     <span class="PropertyRow-bodyValue single" v-if="!Array.isArray(value)">
-      <EntityNode :parent-key="property" :entity="value" v-if="!isByLangProperty" />
+      <span class="" v-if="typeof value == 'boolean'">{{ value == true ? 'Ja' : 'Nej' }}</span>
+      <span v-else-if="typeof value !== 'object'">{{ value }}</span>
+      <EntityNode :parent-key="property" :entity="value" v-else-if="!isByLangProperty" />
       <span v-else>{{ value[settings.language] }}</span>
     </span>
     <span class="PropertyRow-bodyValue multiple" v-if="Array.isArray(value)">
@@ -30,7 +32,7 @@ export default {
       default: '',
     },
     value: {
-      type: [Object, String, Number, Array],
+      type: [Object, String, Number, Array, Boolean],
     },
   },
   methods: {
@@ -49,17 +51,16 @@ export default {
     objectLabelReference() {
       // Returns a map with objects as keys and labels as values
       const refMap = new Map();
-      this.value.forEach((o) => {
-        refMap.set(o,
-          DisplayUtil.getItemLabel(
-            o,
+      this.value.forEach((item) => {
+        const sortValue = typeof item === 'object' ? DisplayUtil.getItemLabel(
+            item,
             this.display,
             this.entityReferences,
             this.vocab,
             this.settings,
             this.vocabContext,
-          )
-        );
+          ) : item;
+        refMap.set(item, sortValue);
       });
       return refMap;
     },

@@ -6,7 +6,7 @@
           <i class="bi bi-chevron-right" v-if="!expanded"></i>
           <i class="bi bi-chevron-down" v-if="expanded"></i>
         </template>
-        {{ getItemLabel }}
+        {{ getItemLabel }} <span v-if="isVocabTerm" class="ResultItem-titleTerm">{{ entityData['@id'].split('/').pop() }}</span>
       </span>
       <template v-if="entity.hasOwnProperty('inScheme')">
         <EntityNode :is-chip="true" class="d-none d-lg-block" v-if="entity.inScheme" :parent-key="'inScheme'" :entity="entity.inScheme" />
@@ -56,6 +56,10 @@ export default {
     },
   },
   computed: {
+    isVocabTerm() {
+      const type = this.entityData['@type'];
+      return type === 'Property' || type === 'Class' || type === 'DatatypeProperty';
+    },
     thingUrl() {
       return this.entity['@id'].replace('https://id.kb.se/', '/');
     },
@@ -148,6 +152,13 @@ export default {
         text-decoration: underline;
       }
     }
+  }
+  &-titleTerm {
+    color: $gray-700;
+    font-weight: 400;
+    font-family: monospace;
+    font-size: 0.9em;
+    margin-left: 1em;
   }
   &-link {
     font-size: 85%;

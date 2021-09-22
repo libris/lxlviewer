@@ -32,7 +32,7 @@ export default {
       default: '',
     },
     entity: {
-      type: [Object, String, Number],
+      type: [Object, String, Number, Boolean],
     },
     isChip: {
       type: Boolean,

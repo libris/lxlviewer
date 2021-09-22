@@ -162,8 +162,15 @@ export function translateObjectProp(object) {
 
 /* eslint-disable no-use-before-define */
 export function getItemLabel(item, displayDefs, quoted, vocab, settings, context, inClass = '') {
+  if (typeof item === 'string') {
+    // Assume this is already a label.
+    return item;
+  }
   if (!item || typeof item === 'undefined') {
     throw new Error('getItemLabel was called with an undefined object.');
+  }
+  if (!isObject(item)) {
+    throw new Error(`getItemLabel was called with a non-object. Type: ${typeof item}. Value: ${item}`);
   }
   const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
   if (Object.keys(displayObject).length === 0) {
@@ -222,7 +229,7 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
     throw new Error('getDisplayObject was called with an undefined object.');
   }
   if (!isObject(item)) {
-    throw new Error('getDisplayObject was called with a non-object.');
+    throw new Error(`getDisplayObject was called with a non-object. (Was ${typeof item})`);
   }
   let result = {};
   let trueItem = Object.assign({}, item);
