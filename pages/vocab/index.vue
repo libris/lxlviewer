@@ -1,6 +1,7 @@
 <template>
   <div class="Vocab-termDetails">
-    <ResultItem :entity="termData" :force-expanded="true" :show-download="false" />
+    <h1>Basvokabulär</h1>
+    <p>Välj en term i listan för att se detaljer.</p>
   </div>
 </template>
 
@@ -35,11 +36,18 @@ export default {
     termTitle() {
       return this.getEntityTitle(this.termData);
     },
-    termData() {
-      if (this.$route.params.term) {
-        return VocabUtil.getTermObject(this.$route.params.term, this.vocab, this.vocabContext);
+    chosenList() {
+      if (this.listShown === 'Classes') {
+        return this.classes;
+      } else {
+        return this.properties;
       }
-      return null;
+    },
+    classes() {
+      return this.vocabClasses;
+    },
+    properties() {
+      return this.vocabProperties;
     },
   },
   methods: {

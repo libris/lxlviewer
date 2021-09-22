@@ -8,7 +8,7 @@
         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">MARC-mappningar</a>
       </li>
       <li class="nav-item">
-        <NuxtLink to="/vocab/" class="nav-link" :class="{'active': $route.name == 'vocab-term' }">Basvokabulär</NuxtLink>
+        <NuxtLink to="/vocab/" class="nav-link" :class="{'active': $route.name == 'vocab-term' || $route.name == 'vocab' }">Basvokabulär</NuxtLink>
       </li>
       <li class="nav-item">
         <NuxtLink to="/doc/about" class="nav-link" :class="{'active': $route.path == '/doc/about' }">Om id.kb.se</NuxtLink>
