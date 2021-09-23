@@ -183,9 +183,13 @@ new Vue({
     this.$nextTick(() => {
       this.verifyConfig();
       this.loadTemplates();
+      
+      // Sync user storage initially and trigger it again every focus event
+      this.syncUserStorage();
       window.addEventListener('focus', () => {
         this.syncUserStorage();
       });
+      
       window.addEventListener('keydown', LayoutUtil.handleFirstTab);
       this.updateTitle();
       this.injectAnalytics();
