@@ -18,8 +18,10 @@ export const state = () => ({
   },
   settings: {
     language: 'sv',
+    gitDescribe: process.env.GIT_DESCRIBE,
     idPath: process.env.API_PATH,
     dataPath: process.env.API_PATH,
+    environment: process.env.ENV || 'local',
     filteredCategories: [
       'pending',
       'shorthand',

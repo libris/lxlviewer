@@ -1,4 +1,12 @@
 const HOST_PATH = `https://id${ process.env.ENV != 'prod' ? `-${process.env.ENV}` : '' }.kb.se`;
+const { gitDescribeSync } = require('git-describe');
+
+process.env.GIT_DESCRIBE = JSON.stringify(gitDescribeSync({
+  longSemver: true,
+  dirtySemver: false,
+  requireAnnotated: false,
+  match: '*',
+}));
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
