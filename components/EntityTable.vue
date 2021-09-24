@@ -121,7 +121,7 @@ export default {
     top: 0em;
     &.bi-clipboard-check {
       color: $kb-secondary-turquoise;
-      transition: all 0.15s bounce;
+      transition: all .75s ease;
       top: -0.35em;
     }
     &:hover {
