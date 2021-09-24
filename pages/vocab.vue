@@ -36,9 +36,6 @@ export default {
   head() {
     return {
       title: `${this.pageTitle} | ${this.$config.siteName}`,
-      meta: [
-        { hid:'og:title', property:'og:title', content: this.termTitle || 'Basvokabulär' },
-      ],
     };
   },
   data() {

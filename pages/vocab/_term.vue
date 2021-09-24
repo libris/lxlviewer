@@ -15,6 +15,8 @@ export default {
       title: `${this.pageTitle} | ${this.$config.siteName}`,
       meta: [
         { hid:'og:title', property:'og:title', content: this.termTitle || 'Basvokabulär' },
+        { hid: 'description', name: 'description', content: this.documentDescription },
+        { hid:'og:description', property:'og:description', content: this.documentDescription },
       ],
     };
   },
@@ -31,6 +33,18 @@ export default {
         return `${ this.termTitle || 'Basvokabulär'}`
       }
       return 'Basvokabulär';
+    },
+    documentDescription() {
+      if (this.termData.hasOwnProperty('@type')) {
+        let type = '';
+        if (Array.isArray(this.termData['@type'])) {
+          type = this.termData['@type'][0];
+        } else {
+          type = this.termData['@type'];
+        }
+        return this.translateKey(type);
+      }
+      return '';
     },
     termTitle() {
       return this.getEntityTitle(this.termData);

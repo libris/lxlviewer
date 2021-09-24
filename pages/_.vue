@@ -23,6 +23,8 @@ export default {
       title: `${this.documentTitle} | ${this.$config.siteName}`,
       meta: [
         { hid:'og:title', property:'og:title', content:`${this.documentTitle}` },
+        { hid: 'description', name: 'description', content: this.documentDescription },
+        { hid:'og:description', property:'og:description', content: this.documentDescription },
       ],
     };
   },
@@ -33,6 +35,18 @@ export default {
   computed: {
     documentTitle() {
       return this.getItemLabel;
+    },
+    documentDescription() {
+      if (this.entityData.hasOwnProperty('@type')) {
+        let type = '';
+        if (Array.isArray(this.entityData['@type'])) {
+          type = this.entityData['@type'][0];
+        } else {
+          type = this.entityData['@type'];
+        }
+        return this.translateKey(type);
+      }
+      return '';
     },
     entityData() {
       if (this.pageData['@graph']) {
