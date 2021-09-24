@@ -3,8 +3,23 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
-    <title>${g.site.title} - {% block title %}{% endblock %}</title>
-    <link rel="shortcut icon" href="/assets/img/favicon.ico">
+    % if g.site.title == 'libris.kb.se'
+    <meta property="og:site_name" content="Libris">
+    % else
+    <meta property="og:site_name" content="id.kb.se">
+    <meta property="og:description" content="The building blocks for linked data at the National Library of Sweden">
+    <meta property="og:image" content="https://id{% if config.ENVIRONMENT != 'prod' %}-${config.ENVIRONMENT}{% endif %}.kb.se/assets/img/opengraph_id.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="600">
+    <meta property="twitter:image" content="https://id{% if config.ENVIRONMENT != 'prod' %}-${config.ENVIRONMENT}{% endif %}.kb.se/assets/img/opengraph_id.png">
+    <meta name="twitter:card" content="summary_large_image">
+    % endif
+    <meta property="og:title" content="{% block title %}{% endblock %}">
+    {% block meta %}
+    {% endblock %}
+    <title>${self.title()} | ${g.site.title}</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg" />
+    <link rel="alternate icon" href="/assets/img/favicon.ico">
     % if g.site.stylesheet
       <link rel="stylesheet" href="/assets/build/${g.site.stylesheet.name}" />
     % else

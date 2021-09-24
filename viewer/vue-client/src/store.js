@@ -130,6 +130,8 @@ const store = new Vuex.Store({
           'record.sameAs',
           'mainEntity.sameAs',
           'work.sameAs',
+          "record['@reverse']", // prevent visual bugs
+          "mainEntity['@reverse']", // prevent visual bugs
         ],
         remoteImport: [
           'record.generationProcess',

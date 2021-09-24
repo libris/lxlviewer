@@ -85,8 +85,7 @@ export default {
             this.resources.context,
           );
         } else {
-          const keyParts = o.object['@id'].split('/');
-          label = keyParts[keyParts.length - 1];
+          label = o.object.label;
         }
         label = this.$options.filters.capitalize(label);
         return {

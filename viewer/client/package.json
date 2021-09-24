@@ -24,7 +24,8 @@
     "uglify": "uglifyjs static/js/*.js -c -m -o static/build/idkbse.min.js --source-map",
     "watch": "npm run watch:id:less",
     "watch:id:less": "watch 'npm run app:id:less' static/less/",
-    "app": "npm run app:id:less",
-    "app:id:less": "lessc --clean-css='--advanced' --autoprefix='defaults' static/less/main_id.less static/build/id.css --source-map-map-inline"
+    "app": "npm run app:id:less && npm run app:libris:less",
+    "app:id:less": "lessc static/less/main_id.less static/build/id.css --source-map-map-inline",
+    "app:libris:less": "lessc static/less/main_libris.less static/build/libris.css --source-map-map-inline"
   }
 }

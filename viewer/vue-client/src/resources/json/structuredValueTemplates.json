@@ -87,6 +87,10 @@
     "value": "",
     "typeNote": ""
   },
+  "AccessionNumber": {
+    "@type": "AccessionNumber",
+    "value": ""
+  },
   "Ansi": {
     "@type": "Ansi",
     "value": ""
@@ -637,13 +641,13 @@
     "@type": "Availability",
     "label": ""
   },
-  "marc:TextualHoldingsBasicBibliographicUnit": [ 
-    { 
-      "@type": "marc:TextualHoldingsBasicBibliographicUnit", 
+  "marc:TextualHoldingsBasicBibliographicUnit": [
+    {
+      "@type": "marc:TextualHoldingsBasicBibliographicUnit",
       "marc:textualString": "",
       "marc:cataloguersNote": [""],
       "marc:publicNote": [""]
-    } 
+    }
   ],
   "Classification": {
     "@type": "Classification",

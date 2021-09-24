@@ -52,7 +52,26 @@ sites = {
         "summary": {ID: "/doc/summary"},
         "stylesheet": {"name": "id.css"},
         "statsindex": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
-        "statsfind": '{"inScheme.@id":{"inCollection.@id":["@type"], "@type":[]}}',
+        "statsfind": 
+        """ 
+            {
+                "inScheme.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":1000
+                },
+                "@type":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
+                },
+                "inCollection.@id":{
+                    "sort":"value",
+                    "sortOrder":"desc",
+                    "size":100
+                }
+            }
+        """,
         "boost": 'id.kb.se',
         "filter_param": "inScheme.@id",
         "applyInverseOf": True,
@@ -134,7 +153,6 @@ sites = {
                     "sortOrder":"desc",
                     "size":100
                 },
-
                 "contentType.@id": {
                     "sort":"value",
                     "sortOrder": "desc",

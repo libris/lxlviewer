@@ -1,0 +1,135 @@
+.thing-panel {
+  @media screen and (min-width: @screen-sm-min) {
+    margin: 1em 0;
+  }
+  .panel-header {
+    background-color: #2d2d2d;
+    color: white;
+    padding-bottom: 1em;
+    a, a:hover {
+      color: white;
+    }
+    h1 {
+      word-break: break-word;
+    }
+    h2 {
+      font-size: 16px;
+    }
+    .inline-list {
+      display: inline;
+      padding: 0;
+      li {
+        display: inline;
+        padding-right: 1em;
+      }
+    }
+  }
+  .panel-body {
+    border: 1px solid #2d2d2d;
+  }
+}
+
+.thing {
+  margin-bottom: 2em;
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 1em;
+  }
+
+  td {
+    padding: 5px;
+  }
+
+  hr {
+    margin: 0px;
+  }
+
+  .table {
+    table-layout: fixed;
+    background-color: @white;
+    border: 1px solid @grey-lighter;
+    margin-bottom: 10px;
+
+    tr {
+      border-top: 1px solid @grey-lighter;
+    }
+
+    td {
+      border: 0;
+      padding: 10px;
+    }
+  }
+
+  .thing-list {
+    margin: 0;
+
+    li.is-inline {
+      display: inline-block;
+    }
+  } 
+
+  .link-item {
+    .label-class {
+      display: none;
+    }
+
+    .thing-link {
+      display: inline-block;
+      margin: 5px 0;
+      padding: 5px 10px;
+      background-color: @brand-faded;
+      border: 1px solid @brand-faded;
+      border-radius: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  @media screen and (max-width: @screen-sm-min) {
+    table td {
+      display: block;
+    }
+
+    .term-label, 
+    .is-inner .term-label {
+      width: auto;
+    }
+  }
+}
+
+.thing-list-item {
+  overflow: hidden;
+  padding: 0.5em 1em;
+  border-bottom: 1px solid @grey-lighter;
+
+  &:hover, &:focus {
+    text-decoration: none;
+
+    .thing-label {
+      text-decoration: underline;
+    }
+  }
+
+  .thing-class {
+    text-align: right;
+    color: @grey-dark;
+
+    @media screen and (max-width: @screen-sm-min) {
+      text-align: initial;
+    }
+  }
+}
+
+.term-label {
+  width: 15%;
+  min-width: 120px;
+  font-size: @small-font-size;
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  font-weight: bold;
+
+  .is-inner & {
+    width: 33%;
+  }
+}

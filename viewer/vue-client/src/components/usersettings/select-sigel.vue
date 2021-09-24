@@ -13,13 +13,16 @@ export default {
   },
   methods: {
     getSigelLabel(sigel, len) {
-      let label = '';
-      if (sigel.friendly_name) {
-        label += `${sigel.friendly_name} (${sigel.code})`;
-      } else {
-        label += sigel.code;
+      if (!sigel.friendly_name) {
+        return sigel.code;
       }
-      return label.length > len ? `${label.substr(0, len - 2)}...` : label;
+      
+      const sigelPart = ` (${sigel.code})`;
+      const fName = sigel.friendly_name.length + sigelPart.length > len
+        ? `${sigel.friendly_name.substr(0, len - sigelPart.length - 3)}...`
+        : sigel.friendly_name;
+      
+      return `${fName}${sigelPart}`;
     },
     updateSigel(value) {
       const doUpdate = () => {

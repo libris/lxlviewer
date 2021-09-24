@@ -53,6 +53,7 @@ export default {
     return {
       documentId: null,
       documentETag: null,
+      documentTitle: null,
       result: {},
       postLoaded: false,
       modalOpen: false,
@@ -547,6 +548,7 @@ export default {
         if (header.length > 0 && header !== '{Unknown}') {
           const title = header;
           this.$store.dispatch('setInspectorTitle', title);
+          this.documentTitle = title;
         }
       }
     },
@@ -887,6 +889,7 @@ export default {
     this.$nextTick(() => {
       if (!this.postLoaded) {
         this.initializeRecord();
+        this.$emit('ready');
       }
       this.initializeWarnBeforeUnload();
       this.initJsonOutput();

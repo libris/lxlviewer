@@ -43,7 +43,7 @@ export default {
       <span class="EntityChangelog-value">
         {{ getCard.created }} {{ 'by' | translatePhrase}} 
         <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionCreator" :item="inspector.data.record.descriptionCreator" :is-last="true" :field-key="'descriptionCreator'"/>
-        <span v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
+        <span class="EntityChangelog-unknown" v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
       </span>
     </div>
     <div class="EntityChangelog-item">
@@ -51,7 +51,7 @@ export default {
       <span class="EntityChangelog-value">
         {{ getCard.modified }} {{ 'by' | translatePhrase}}
         <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionLastModifier" :item="inspector.data.record.descriptionLastModifier" :is-last="true" :field-key="'descriptionLastModifier'"/>
-        <span v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
+        <span class="EntityChangelog-unknown" v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
       </span>
     </div>
   </div>
@@ -67,7 +67,11 @@ export default {
   @media (min-width: @screen-md-min) {
     flex-direction: row;
   }
-  
+  &-unknown {
+    @media (min-width: @screen-md-min) {
+      margin-right: 0.5em;
+    }
+  }
   &-item {
     display: flex;
   }
