@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-8 col-md-5" v-click-outside="clickOutside">
-          <i class="bi-search SearchInput-icon"></i><input type="text" v-model="keyword" @keydown.down.prevent="selectNextSuggestion" @keydown.up.prevent="selectPreviousSuggestion"  id="search" @keyup.enter="submit()" class="form-control SearchInput-input" autocomplete="off">
+          <i class="bi-search SearchInput-icon"></i><input type="text" aria-label="Sök" v-model="keyword" @keydown.down.prevent="selectNextSuggestion" @keydown.up.prevent="selectPreviousSuggestion"  id="search" @keyup.enter="submit()" class="form-control SearchInput-input" autocomplete="off">
           <div class="SearchBar-suggestContainer" v-if="searchChangeDetected && keyword.length > 0">
             <ul>
               <li class="SuggestItem" :class="{'is-selected': selectedSuggestion == -1 }" @mouseenter="selectedSuggestion = -1" @click="submit">
