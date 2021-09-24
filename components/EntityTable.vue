@@ -119,13 +119,13 @@ export default {
 .PropertyRow {
   &-idCopyButton {
     margin-left: 0.5em;
-    transition: all .50s linear;
+    transition: top .50s linear;
     position: relative;
     cursor: pointer;
     top: 0em;
     &.bi-clipboard-check {
       color: $kb-secondary-turquoise;
-      transition: all .15s ease-in-out;
+      transition: top .15s ease-in-out;
       top: -0.35em;
     }
     &:hover {
