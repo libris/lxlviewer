@@ -122,6 +122,7 @@ export default {
     a {
       color: $kb-secondary-turquoise;
       text-decoration: none;
+      word-break: break-all;
       &:hover {
         text-decoration: underline;
       }
