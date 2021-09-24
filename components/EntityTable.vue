@@ -3,7 +3,7 @@
     <div class="PropertyRow d-md-flex" v-if="showUri">
       <span class="PropertyRow-bodyKey d-block d-md-inline">URI (länk till resurs)</span>
       <span class="PropertyRow-bodyValue">
-        <i class="PropertyRow-idCopyButton bi" v-if="hasClipboardFunction" title="Kopiera URI" :class="{ 'bi-clipboard': !idCopied, 'bi-clipboard-check': idCopied }" @click="copyId"></i>
+        <i class="PropertyRow-idCopyButton bi" v-show="clipboardAvailable" title="Kopiera URI" :class="{ 'bi-clipboard': !idCopied, 'bi-clipboard-check': idCopied }" @click="copyId"></i>
         <NuxtLink :to="ownPath">
           {{ decodeURI(itemData['@id']) }}
         </NuxtLink>
@@ -33,7 +33,11 @@ export default {
         'meta',
       ],
       idCopied: false,
+      clipboardAvailable: false,
     };
+  },
+  mounted() {
+    this.clipboardAvailable = typeof navigator !== 'undefined' && typeof navigator.clipboard !== 'undefined';
   },
   methods: {
     isByLangKey(key) {
@@ -55,9 +59,6 @@ export default {
     ...mapGetters(['display', 'vocabContext', 'settings', 'vocab']),
     ownPath() {
       return decodeURI(this.itemData['@id']);
-    },
-    hasClipboardFunction() {
-      return typeof navigator !== 'undefined' && typeof navigator.clipboard !== 'undefined';
     },
     sortedProperties() {
       const propertyOrder = DisplayUtil.getDisplayProperties(this.itemData['@type'], this.display, this.vocab, this.settings, this.vocabContext, 'full');
