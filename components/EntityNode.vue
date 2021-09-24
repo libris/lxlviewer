@@ -4,10 +4,10 @@
     <span class="" v-else-if="entityData && !entityData['@id']">
       {{ getItemLabel }}
     </span>
-    <a v-else-if="entityData && entityData['@id']" :href="entityData['@id'] | removeBaseUri">
+    <NuxtLink v-else-if="entityData && entityData['@id']" :to="entityData['@id'] | removeBaseUri">
       <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
       <template v-else>{{ decodeURI(entityData['@id']) }}</template>
-    </a>
+    </NuxtLink>
     <span v-else>
       <template>{{ entity }}</template>
     </span>

@@ -1,11 +1,12 @@
 <template>
   <div class="EntityTable-body">
     <div class="PropertyRow d-md-flex" v-if="showUri">
-      <span class="PropertyRow-bodyKey d-block d-md-inline">URI</span>
+      <span class="PropertyRow-bodyKey d-block d-md-inline">URI (länk till resurs)</span>
       <span class="PropertyRow-bodyValue">
-        <a :href="itemData['@id'] | removeBaseUri">
+        <i class="PropertyRow-idCopyButton bi" v-if="hasClipboardFunction" title="Kopiera URI" :class="{ 'bi-clipboard': !idCopied, 'bi-clipboard-check': idCopied }" @click="copyId"></i>
+        <NuxtLink :to="ownPath">
           {{ decodeURI(itemData['@id']) }}
-        </a>
+        </NuxtLink>
         </span>
     </div>
     <PropertyRow :property="prop" :key="prop" :value="itemData[prop]" v-for="prop in sortedProperties" />
@@ -31,15 +32,33 @@ export default {
         'reverseLinks',
         'meta',
       ],
+      idCopied: false,
     };
   },
   methods: {
     isByLangKey(key) {
       return key.endsWith('ByLang');
     },
+    copyId() {
+      const self = this;
+      navigator.clipboard.writeText(this.ownPath).then(function() {
+        self.idCopied = true;
+        setTimeout(() => {
+          self.idCopied = false;
+        }, 1000);
+      }, function(err) {
+        console.error('Async: Could not copy text: ', err);
+      });
+    },
   },
   computed: {
     ...mapGetters(['display', 'vocabContext', 'settings', 'vocab']),
+    ownPath() {
+      return decodeURI(this.itemData['@id']);
+    },
+    hasClipboardFunction() {
+      return typeof navigator !== 'undefined' && typeof navigator.clipboard !== 'undefined';
+    },
     sortedProperties() {
       const propertyOrder = DisplayUtil.getDisplayProperties(this.itemData['@type'], this.display, this.vocab, this.settings, this.vocabContext, 'full');
       const translatedOrder = [];
@@ -94,6 +113,23 @@ export default {
 </script>
 
 <style lang="scss">
+.PropertyRow {
+  &-idCopyButton {
+    transition: all .15s ease;
+    position: relative;
+    cursor: pointer;
+    top: 0em;
+    &.bi-clipboard-check {
+      color: $kb-secondary-turquoise;
+      transition: all 0.15s bounce;
+      top: -0.35em;
+    }
+    &:hover {
+      color: $kb-secondary-turquoise;
+    }
+  }
+}
+
 .EntityTable {
   border: solid $gray-200;
   border-width: 0px 1px 1px 1px;
