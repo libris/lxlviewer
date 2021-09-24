@@ -88,10 +88,15 @@ export default {
       clearTimeout(this.debounce);
       this.searchChangeDetected = false;
       if (this.selectedSuggestion != null && this.selectedSuggestion != -1) {
-        this.$router.push({
-          path: this.selectedSuggestionItem.replace('https://id.kb.se/', '/'),
-        });
+        this.$store.dispatch('setAppState', { property: 'navigatingFromSearchBar', value: true });
+        this.$store.dispatch('setAppState', { property: 'navigatingWithFacetColumn', value: false });
+        const selectedPath = this.selectedSuggestionItem.replace('https://id.kb.se/', '/');
         this.clearSuggest();
+        this.$nextTick(() => {
+          this.$router.push({
+            path: selectedPath,
+          });
+        });
         return;
       }
       if (this.keyword.length === 0) {
