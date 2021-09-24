@@ -5,8 +5,8 @@
         URI (länk till resurs)
       </span>
       <span class="PropertyRow-bodyValue">
-        <NuxtLink :to="ownPath | removeBaseUri">
-          {{ decodeURI(itemData['@id']) }}
+        <NuxtLink :to="itemData['@id'] | removeBaseUri">
+          {{ decodeURI(itemData['@id']) | translateUriEnv }}
         </NuxtLink>
         <i class="PropertyRow-idCopyButton bi" v-show="clipboardAvailable" title="Kopiera URI" :class="{ 'bi-clipboard': !idCopied, 'bi-clipboard-check': idCopied }" @click="copyId"></i>
       </span>
@@ -60,7 +60,7 @@ export default {
   computed: {
     ...mapGetters(['display', 'vocabContext', 'settings', 'vocab']),
     ownPath() {
-      return this.itemData['@id'];
+      return this.translateUriEnv(this.itemData['@id']);
     },
     sortedProperties() {
       const propertyOrder = DisplayUtil.getDisplayProperties(this.itemData['@type'], this.display, this.vocab, this.settings, this.vocabContext, 'full');

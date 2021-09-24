@@ -2,6 +2,7 @@ import { each } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
+import envComputer from '@/plugins/env';
 
 export const state = () => ({
   vocab: null,
@@ -18,6 +19,7 @@ export const state = () => ({
   },
   settings: {
     language: 'sv',
+    hostPath: envComputer(process.env.ENV),
     gitDescribe: process.env.GIT_DESCRIBE,
     idPath: process.env.API_PATH,
     dataPath: process.env.API_PATH,

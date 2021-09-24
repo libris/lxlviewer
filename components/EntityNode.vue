@@ -4,10 +4,13 @@
     <span class="" v-else-if="entityData && !entityData['@id']">
       {{ getItemLabel }}
     </span>
-    <NuxtLink v-else-if="entityData && entityData['@id']" :to="entityData['@id'] | removeBaseUri">
-      <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
-      <template v-else>{{ decodeURI(entityData['@id']) }}</template>
-    </NuxtLink>
+    <template v-else-if="entityData && entityData['@id']">
+      <NuxtLink v-if="entityData['@id'].startsWith('https://id.kb.se')" :to="entityData['@id'] | removeBaseUri">
+        <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+        <template v-else>{{ decodeURI(entityData['@id']) | translateUriEnv }}</template>
+      </NuxtLink>
+      <a v-else :href="entityData['@id']">{{ decodeURI(entityData['@id']) }}</a>
+    </template>
     <span v-else>
       <template>{{ entity }}</template>
     </span>
