@@ -1,14 +1,14 @@
 <template>
   <div class="Pagination">
     <ul>
-      <li class="Pagination-item" v-if="resultData.hasOwnProperty('first') && currentPage != 0"><a :href="resultData.first['@id']"><i class="bi-chevron-double-left"></i></a></li>
-      <li class="Pagination-item" v-if="resultData.hasOwnProperty('previous')"><a :href="resultData.previous['@id']"><i class="bi-chevron-left"></i></a></li>
+      <li class="Pagination-item" v-if="resultData.hasOwnProperty('first') && currentPage != 0"><a aria-label="Första resultatsidan" :href="resultData.first['@id']"><i class="bi-chevron-double-left"></i></a></li>
+      <li class="Pagination-item" v-if="resultData.hasOwnProperty('previous')"><a aria-label="Förra resultatsidan" :href="resultData.previous['@id']"><i class="bi-chevron-left"></i></a></li>
       <li class="Pagination-item" :class="{'active': page.number == currentPage }" v-for="page in pageItems" :key="page.number">
-        <a v-if="page.number != currentPage" :href="page['@id']">{{ page.number + 1 }}</a>
+        <a :aria-label="`Resultatsida ${page.number + 1}`" v-if="page.number != currentPage" :href="page['@id']">{{ page.number + 1 }}</a>
         <span v-else>{{ page.number + 1 }}</span>
       </li>
-      <li class="Pagination-item" v-if="resultData.hasOwnProperty('next')"><a :href="resultData.next['@id']"><i class="bi-chevron-right"></i></a></li>
-      <li class="Pagination-item" v-if="resultData.hasOwnProperty('last') && currentPage != lastPage"><a :href="resultData.last['@id']"><i class="bi-chevron-double-right"></i></a></li>
+      <li class="Pagination-item" v-if="resultData.hasOwnProperty('next')"><a aria-label="Nästa resultatsida" :href="resultData.next['@id']"><i class="bi-chevron-right"></i></a></li>
+      <li class="Pagination-item" v-if="resultData.hasOwnProperty('last') && currentPage != lastPage"><a aria-label="Sista resultatsidan" :href="resultData.last['@id']"><i class="bi-chevron-double-right"></i></a></li>
     </ul>
   </div>
 </template>
