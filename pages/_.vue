@@ -9,7 +9,7 @@
         <template v-if="appState.navigatingWithFacetColumn">
           <div class="col-md-4 col-lg-4 col-xl-3 col-xxl-2 pt-4">
             <div class="Document-backButton">
-              <a @click="$router.go(-1)">Tillbaka</a>
+              <a @click="$router.go(-1)"><i class="bi bi-chevron-double-left"></i> Tillbaka</a>
             </div>
           </div>
           <div class="col-md-8 col-lg-8 col-xl-9 col-xxl-10 p-2">
@@ -93,6 +93,18 @@ export default {
     cursor: pointer;
     font-weight: 500;
     padding: 0.5em 0;
+    user-select: none;
+    @media (hover: hover) {
+      user-select: unset;
+    }
+    display: inline-block;
+    border: 1px solid $gray-300;
+    border-radius: 4px;
+    padding: 0.25em 1em;
+    @media (min-width: 768px) {
+      border: none;
+      padding: unset;
+    }
     &:hover {
       text-decoration: underline;
     }
