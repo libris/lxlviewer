@@ -1,7 +1,7 @@
 <template>
   <div class="EntityTable-body">
     <div class="PropertyRow d-md-flex" v-if="showUri">
-      <span class="PropertyRow-bodyKey">
+      <span class="PropertyRow-bodyKey d-block d-md-inline">
         URI (länk till resurs)
       </span>
       <span class="PropertyRow-bodyValue">
