@@ -2,6 +2,7 @@ import { each } from 'lodash-es';
 import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
+import envComputer from '@/plugins/env';
 
 export const state = () => ({
   vocab: null,
@@ -12,10 +13,17 @@ export const state = () => ({
   currentDocument: null,
   entityReferences: {},
   collections: null,
+  appState: {
+    navigatingWithFacetColumn: false,
+    navigatingFromSearchBar: false,
+  },
   settings: {
     language: 'sv',
+    hostPath: envComputer(process.env.ENV),
+    gitDescribe: process.env.GIT_DESCRIBE,
     idPath: process.env.API_PATH,
     dataPath: process.env.API_PATH,
+    environment: process.env.ENV || 'local',
     filteredCategories: [
       'pending',
       'shorthand',
@@ -168,6 +176,14 @@ export const state = () => ({
 })
 
 export const mutations = {
+  SET_APP_STATE(state, payload) {
+    const property = payload.property;
+    if (state.appState.hasOwnProperty(property)) {
+      state.appState[property] = payload.value;
+    } else {
+      throw new Error(`Trying to set an app state property that does not exist. Has it been setup in store? Trying to modify: ${property}`);
+    }
+  },
   SET_COLLECTIONS(state, data) {
     state.collections = data;
   },
@@ -258,9 +274,15 @@ export const actions = {
   setCollections(data) {
     commmit('SET_COLLECTIONS', data);
   },
+  setAppState({ commit }, payload) {
+    commit('SET_APP_STATE', payload);
+  }
 };
 
 export const getters = {
+  appState: state => {
+    return state.appState;
+  },
   settings: state => {
     return state.settings;
   },

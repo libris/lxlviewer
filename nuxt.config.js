@@ -1,4 +1,13 @@
-const HOST_PATH = `https://id${ process.env.ENV != 'prod' ? `-${process.env.ENV}` : '' }.kb.se`;
+const { gitDescribeSync } = require('git-describe');
+import envComputer from './plugins/env.js';
+const HOST_PATH = envComputer(process.env.ENV);
+
+process.env.GIT_DESCRIBE = JSON.stringify(gitDescribeSync({
+  longSemver: true,
+  dirtySemver: false,
+  requireAnnotated: false,
+  match: '*',
+}));
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -10,10 +19,10 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Building blocks for linked data at the National Library of Sweden' },
+      { hid: 'description', name: 'description', content: 'Grundstenar för länkade data hos Kungliga biblioteket.' },
       { hid:'og:title', property:'og:title', content:'id.kb.se' },
       { hid:'og:site_name', property:'og:site_name', content:'id.kb.se' },
-      { hid:'og:description', property:'og:description', content:'Building blocks for linked data at the National Library of Sweden' },
+      { hid:'og:description', property:'og:description', content:'Grundstenar för länkade data hos Kungliga biblioteket.' },
       { hid:'og:image', property:'og:image', content:`${HOST_PATH}/opengraph.png` },
       { hid:'og:image:width', property:'og:image:width', content:'1200' },
       { hid:'og:image:height', property:'og:image:height', content:'600' },

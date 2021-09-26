@@ -62,7 +62,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['collections']),
+    ...mapGetters(['collections', 'appState']),
   },
   async asyncData({ $config, route, params, $http, store }) {
     const query = route.query;
@@ -80,6 +80,17 @@ export default {
       // stats: pageData.stats,
       // schemes: pageData.stats.sliceByDimension['inScheme.@id'].observation
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.appState.navigatingFromSearchBar) {
+      console.log("Navigating from search bar");
+      this.$store.dispatch('setAppState', { property: 'navigatingWithFacetColumn', value: false });
+      this.$store.dispatch('setAppState', { property: 'navigatingFromSearchBar', value: false });
+    } else {
+      console.log("Navigating from link");
+      this.$store.dispatch('setAppState', { property: 'navigatingWithFacetColumn', value: true });
+    }
+    next();
   },
   // call fetch only on client-side
   fetchOnServer: false,
@@ -101,6 +112,7 @@ export default {
   background-color: $gray-100;
   border: solid $gray-200;
   border-width: 0px 0px 1px 0px;
+  min-height: 3.5em;
 }
 
 .SearchResults {

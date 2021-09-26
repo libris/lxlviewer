@@ -1,12 +1,15 @@
 <template>
   <div class="EntityTable-body">
     <div class="PropertyRow d-md-flex" v-if="showUri">
-      <span class="PropertyRow-bodyKey d-block d-md-inline">URI</span>
+      <span class="PropertyRow-bodyKey">
+        URI (länk till resurs)
+      </span>
       <span class="PropertyRow-bodyValue">
-        <a :href="itemData['@id'] | removeBaseUri">
-          {{ decodeURI(itemData['@id']) }}
-        </a>
-        </span>
+        <NuxtLink :to="itemData['@id'] | removeBaseUri">
+          {{ decodeURI(itemData['@id']) | translateUriEnv }}
+        </NuxtLink>
+        <i class="PropertyRow-idCopyButton bi" v-show="clipboardAvailable" title="Kopiera URI" :class="{ 'bi-clipboard': !idCopied, 'bi-clipboard-check': idCopied }" @click="copyId"></i>
+      </span>
     </div>
     <PropertyRow :property="prop" :key="prop" :value="itemData[prop]" v-for="prop in sortedProperties" />
     <div class="PropertyRow d-md-flex" v-if="showDownload">
@@ -31,15 +34,34 @@ export default {
         'reverseLinks',
         'meta',
       ],
+      idCopied: false,
+      clipboardAvailable: false,
     };
+  },
+  mounted() {
+    this.clipboardAvailable = typeof navigator !== 'undefined' && typeof navigator.clipboard !== 'undefined';
   },
   methods: {
     isByLangKey(key) {
       return key.endsWith('ByLang');
     },
+    copyId() {
+      const self = this;
+      navigator.clipboard.writeText(this.ownPath).then(function() {
+        self.idCopied = true;
+        setTimeout(() => {
+          self.idCopied = false;
+        }, 1000);
+      }, function(err) {
+        console.error('Async: Could not copy text: ', err);
+      });
+    },
   },
   computed: {
     ...mapGetters(['display', 'vocabContext', 'settings', 'vocab']),
+    ownPath() {
+      return this.translateUriEnv(this.itemData['@id']);
+    },
     sortedProperties() {
       const propertyOrder = DisplayUtil.getDisplayProperties(this.itemData['@type'], this.display, this.vocab, this.settings, this.vocabContext, 'full');
       const translatedOrder = [];
@@ -94,6 +116,24 @@ export default {
 </script>
 
 <style lang="scss">
+.PropertyRow {
+  &-idCopyButton {
+    margin-left: 0.5em;
+    transition: top .50s linear;
+    position: relative;
+    cursor: pointer;
+    top: 0em;
+    &.bi-clipboard-check {
+      color: $kb-secondary-turquoise;
+      transition: top .15s ease-in-out;
+      top: -0.35em;
+    }
+    &:hover {
+      color: $kb-secondary-turquoise;
+    }
+  }
+}
+
 .EntityTable {
   border: solid $gray-200;
   border-width: 0px 1px 1px 1px;
@@ -124,7 +164,7 @@ export default {
     }
   }
   &-body {
-    padding: 0.5rem 0.25rem 0.5rem 0.25rem;
+    padding: 0.5rem 0.25rem 0.5rem 1rem;
     @media (min-width: 768px) {
       padding: 0.5rem 1rem 0.5rem 1.5rem;
     }
@@ -144,7 +184,6 @@ export default {
     color: $gray-600;
     padding: 0.5em 0.75em;
   }
-
 }
 
 </style>

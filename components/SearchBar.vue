@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-8 col-md-5" v-click-outside="clickOutside">
-          <i class="bi-search SearchInput-icon"></i><input type="text" v-model="keyword" @keydown.down.prevent="selectNextSuggestion" @keydown.up.prevent="selectPreviousSuggestion"  id="search" @keyup.enter="submit()" class="form-control SearchInput-input" autocomplete="off">
+          <i class="bi-search SearchInput-icon"></i><input type="text" aria-label="Sök" v-model="keyword" @keydown.down.prevent="selectNextSuggestion" @keydown.up.prevent="selectPreviousSuggestion"  id="search" @keyup.enter="submit()" class="form-control SearchInput-input" autocomplete="off">
           <div class="SearchBar-suggestContainer" v-if="searchChangeDetected && keyword.length > 0">
             <ul>
               <li class="SuggestItem" :class="{'is-selected': selectedSuggestion == -1 }" @mouseenter="selectedSuggestion = -1" @click="submit">
@@ -88,10 +88,15 @@ export default {
       clearTimeout(this.debounce);
       this.searchChangeDetected = false;
       if (this.selectedSuggestion != null && this.selectedSuggestion != -1) {
-        this.$router.push({
-          path: this.selectedSuggestionItem.replace('https://id.kb.se/', '/'),
-        });
+        this.$store.dispatch('setAppState', { property: 'navigatingFromSearchBar', value: true });
+        this.$store.dispatch('setAppState', { property: 'navigatingWithFacetColumn', value: false });
+        const selectedPath = this.selectedSuggestionItem.replace('https://id.kb.se/', '/');
         this.clearSuggest();
+        this.$nextTick(() => {
+          this.$router.push({
+            path: selectedPath,
+          });
+        });
         return;
       }
       if (this.keyword.length === 0) {

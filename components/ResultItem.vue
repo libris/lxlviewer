@@ -6,16 +6,16 @@
           <i class="bi bi-chevron-right" v-if="!expanded"></i>
           <i class="bi bi-chevron-down" v-if="expanded"></i>
         </template>
-        {{ getItemLabel }}
+        {{ getItemLabel }} <span v-if="isVocabTerm" class="ResultItem-titleTerm">{{ entityData['@id'].split('/').pop() }}</span>
       </span>
       <template v-if="entity.hasOwnProperty('inScheme')">
-        <EntityNode :is-chip="true" v-if="entity.inScheme" :parent-key="'inScheme'" :entity="entity.inScheme" />
+        <EntityNode :is-chip="true" class="d-none d-lg-block" v-if="entity.inScheme" :parent-key="'inScheme'" :entity="entity.inScheme" />
       </template>
       <template v-if="Array.isArray(entity['@type'])">
-        <EntityNode :is-chip="true" v-for="type in entity['@type']" :parent-key="'@type'" :key="type" :entity="type" />
+        <EntityNode :is-chip="true" class="d-none" :class="{'d-xl-block': entity.inScheme, 'd-lg-block': !entity.inScheme }" :parent-key="'@type'" :entity="entity['@id'][0]" />
       </template>
       <template v-else>
-        <EntityNode :is-chip="true" :parent-key="'@type'" :entity="entity['@type']" />
+        <EntityNode :is-chip="true" :parent-key="'@type'" class="d-none" :class="{'d-xl-block': entity.inScheme, 'd-lg-block': !entity.inScheme }" :entity="entity['@type']" />
       </template>
     </div>
     <EntityTable v-if="expanded" :item-data="entityData" :show-download="showDownload" />
@@ -56,6 +56,10 @@ export default {
     },
   },
   computed: {
+    isVocabTerm() {
+      const type = this.entityData['@type'];
+      return type === 'Property' || type === 'Class' || type === 'DatatypeProperty';
+    },
     thingUrl() {
       return this.entity['@id'].replace('https://id.kb.se/', '/');
     },
@@ -106,10 +110,9 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0.5rem 0.25rem;
+    padding: 1em 0.25em;
     gap: 1em;
     line-height: 1.2;
-    flex-wrap: wrap;
     &.cursor-pointer {
       cursor: pointer;
     }
@@ -149,6 +152,13 @@ export default {
         text-decoration: underline;
       }
     }
+  }
+  &-titleTerm {
+    color: $gray-700;
+    font-weight: 400;
+    font-family: monospace;
+    font-size: 0.9em;
+    margin-left: 1em;
   }
   &-link {
     font-size: 85%;

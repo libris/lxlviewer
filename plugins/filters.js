@@ -1,4 +1,9 @@
 import Vue from 'vue'
+import envComputer from '@/plugins/env';
+
+Vue.filter('translateUriEnv', (uri) => {
+  return uri.replace('https://id.kb.se', envComputer(process.env.ENV));
+});
 
 Vue.filter('removeBaseUri', (uri) => {
   return uri.replace('https://id.kb.se/', '/');

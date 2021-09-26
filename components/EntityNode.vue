@@ -4,10 +4,13 @@
     <span class="" v-else-if="entityData && !entityData['@id']">
       {{ getItemLabel }}
     </span>
-    <a v-else-if="entityData && entityData['@id']" :href="entityData['@id'] | removeBaseUri">
-      <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
-      <template v-else>{{ decodeURI(entityData['@id']) }}</template>
-    </a>
+    <template v-else-if="entityData && entityData['@id']">
+      <NuxtLink v-if="entityData['@id'].startsWith('https://id.kb.se')" :to="entityData['@id'] | removeBaseUri">
+        <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+        <template v-else>{{ decodeURI(entityData['@id']) | translateUriEnv }}</template>
+      </NuxtLink>
+      <a v-else :href="entityData['@id']">{{ decodeURI(entityData['@id']) }}</a>
+    </template>
     <span v-else>
       <template>{{ entity }}</template>
     </span>
@@ -32,7 +35,7 @@ export default {
       default: '',
     },
     entity: {
-      type: [Object, String, Number],
+      type: [Object, String, Number, Boolean],
     },
     isChip: {
       type: Boolean,

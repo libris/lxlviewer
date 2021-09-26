@@ -1,18 +1,33 @@
 <template>
-  <div class="container-fluid">
-    <div class="Document">
-      <ResultItem :entity="entityData" :force-expanded="true" />
-      <!-- <div class="Document-header">
+  <div clas="Document">
+    <div class="container-fluid FilterContainer">
+      <div class="row">
       </div>
-      <h2 class="text-muted">{{ translateKey(entityData['@type']) }}</h2>
-      <h1>{{ documentTitle }}</h1>
-      <EntityTable v-if="entityData != null" :item-data="entityData" :show-download="true" /> -->
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <template v-if="appState.navigatingWithFacetColumn">
+          <div class="col-md-4 col-lg-4 col-xl-3 col-xxl-2 pt-4">
+            <div class="Document-backButton">
+              <a @click="$router.go(-1)">Tillbaka</a>
+            </div>
+          </div>
+          <div class="col-md-8 col-lg-8 col-xl-9 col-xxl-10 p-2">
+            <ResultItem :entity="entityData" :force-expanded="true" />
+          </div>
+        </template>
+        <template v-else>
+        <div class="p-2">
+          <ResultItem :entity="entityData" :force-expanded="true" />
+        </div>
+        </template>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import LensMixin from '@/mixins/lens';
 import ResultItem from '@/components/ResultItem';
 
@@ -23,6 +38,8 @@ export default {
       title: `${this.documentTitle} | ${this.$config.siteName}`,
       meta: [
         { hid:'og:title', property:'og:title', content:`${this.documentTitle}` },
+        { hid: 'description', name: 'description', content: this.documentDescription },
+        { hid:'og:description', property:'og:description', content: this.documentDescription },
       ],
     };
   },
@@ -31,8 +48,21 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['appState']),
     documentTitle() {
       return this.getItemLabel;
+    },
+    documentDescription() {
+      if (this.entityData.hasOwnProperty('@type')) {
+        let type = '';
+        if (Array.isArray(this.entityData['@type'])) {
+          type = this.entityData['@type'][0];
+        } else {
+          type = this.entityData['@type'];
+        }
+        return this.translateKey(type);
+      }
+      return '';
     },
     entityData() {
       if (this.pageData['@graph']) {
@@ -59,6 +89,14 @@ export default {
 
 <style lang="scss">
 .Document {
+  &-backButton {
+    cursor: pointer;
+    font-weight: 500;
+    padding: 0.5em 0;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
   padding-top: 2rem;
   h1, h2 {
     padding: 0.5rem 0.25rem 0.5rem 0.25rem;

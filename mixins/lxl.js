@@ -16,6 +16,9 @@ if (!Vue.__lxl_global_mixin__) {
       ...mapGetters(['vocab', 'settings', 'vocabContext']),
     },
     methods: {
+      translateUriEnv(uri) {
+        return uri.replace('https://id.kb.se', this.settings.hostPath);
+      },
       translateKey(key) {
         return StringUtil.getLabelByLang(key, this.settings.language, this.vocab, this.vocabContext);
       },

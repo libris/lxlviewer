@@ -1,6 +1,7 @@
 <template>
   <div class="Vocab-termDetails">
-    <ResultItem :entity="termData" :force-expanded="true" :show-download="false" />
+    <h1>Basvokabulär</h1>
+    <p>Välj en term i listan för att se detaljer.</p>
   </div>
 </template>
 
@@ -14,9 +15,7 @@ export default {
     return {
       title: `${this.pageTitle} | ${this.$config.siteName}`,
       meta: [
-        { hid:'og:title', property:'og:title', content: this.termTitle || 'Basvokabulär' },
-        { hid: 'description', name: 'description', content: this.documentDescription },
-        { hid:'og:description', property:'og:description', content: this.documentDescription },
+        { hid:'og:title', property:'og:title', content: this.pageTitle },
       ],
     };
   },
@@ -34,26 +33,21 @@ export default {
       }
       return 'Basvokabulär';
     },
-    documentDescription() {
-      if (this.termData.hasOwnProperty('@type')) {
-        let type = '';
-        if (Array.isArray(this.termData['@type'])) {
-          type = this.termData['@type'][0];
-        } else {
-          type = this.termData['@type'];
-        }
-        return this.translateKey(type);
-      }
-      return '';
-    },
     termTitle() {
       return this.getEntityTitle(this.termData);
     },
-    termData() {
-      if (this.$route.params.term) {
-        return VocabUtil.getTermObject(this.$route.params.term, this.vocab, this.vocabContext);
+    chosenList() {
+      if (this.listShown === 'Classes') {
+        return this.classes;
+      } else {
+        return this.properties;
       }
-      return null;
+    },
+    classes() {
+      return this.vocabClasses;
+    },
+    properties() {
+      return this.vocabProperties;
     },
   },
   methods: {
