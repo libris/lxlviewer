@@ -16,7 +16,7 @@
       <button class="navbar-toggler" type="button" @click="toggleExpanded" @keyup.enter="toggleExpanded" aria-controls="navbarNav" :aria-expanded="expanded" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <NavMenu :expanded="expanded" />
+      <NavMenu :expanded="expanded" @nav="collapse" />
     </div>
   </nav>
 </template>
@@ -56,6 +56,12 @@ export default {
     },
   },
   methods: {
+    expand() {
+      this.expanded = true;
+    },
+    collapse() {
+      this.expanded = false;
+    },
     toggleExpanded() {
       this.expanded = !this.expanded;
     },

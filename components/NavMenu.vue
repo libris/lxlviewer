@@ -2,16 +2,16 @@
   <div :class="{ 'collapse': !expanded }" class="navbar-collapse NavMenu" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <NuxtLink to="/" class="nav-link" :class="{'active': $route.name == 'find' || $route.name == 'index' }">Sök</NuxtLink>
+        <NuxtLink @click.native="linkActivated" to="/" class="nav-link" :class="{'active': $route.name == 'find' || $route.name == 'index' }">Sök</NuxtLink>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">MARC-mappningar</a>
+        <NuxtLink @click.native="linkActivated" class="nav-link disabled" to="/marcframe/" tabindex="-1" aria-disabled="true">MARC-mappningar</NuxtLink>
       </li>
       <li class="nav-item">
-        <NuxtLink to="/vocab/" class="nav-link" :class="{'active': $route.name == 'vocab-term' || $route.name == 'vocab' }">Basvokabulär</NuxtLink>
+        <NuxtLink @click.native="linkActivated" to="/vocab/" class="nav-link" :class="{'active': $route.name == 'vocab-term' || $route.name == 'vocab' }">Basvokabulär</NuxtLink>
       </li>
       <li class="nav-item">
-        <NuxtLink to="/doc/about" class="nav-link" :class="{'active': $route.path == '/doc/about' }">Om id.kb.se</NuxtLink>
+        <NuxtLink @click.native="linkActivated" to="/doc/about" class="nav-link" :class="{'active': $route.path == '/doc/about' }">Om id.kb.se</NuxtLink>
       </li>
     </ul>
   </div>
@@ -28,6 +28,11 @@ export default {
     expanded: {
       type: Boolean,
       default: false,
+    },
+  },
+  methods: {
+    linkActivated() {
+      this.$emit('nav');
     },
   },
 }
