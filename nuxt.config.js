@@ -63,7 +63,16 @@ export default {
   ],
 
   styleResources: {
-    scss: ['~/assets/scss/*.scss']
+    hoistUseStatements: true,
+    scss: [
+      '~/assets/scss/_variables.scss',
+      '~/node_modules/kungbib-styles/lib/scss/_variables.scss',
+      '~/node_modules/bootstrap/scss/_functions.scss',
+      '~/node_modules/bootstrap/scss/_variables.scss',
+      '~/node_modules/bootstrap/scss/_mixins.scss',
+      '~/node_modules/bootstrap/scss/_containers.scss',
+      '~/node_modules/bootstrap/scss/_grid.scss'
+    ],
   },
 
   publicRuntimeConfig: {
