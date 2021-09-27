@@ -43,7 +43,9 @@ export default {
     }
   },
   mounted() {
-    this.listShown = this.category;
+    if (this.category) {
+      this.listShown = this.category;
+    }
   },
   computed: {
     ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext', 'resources']),
