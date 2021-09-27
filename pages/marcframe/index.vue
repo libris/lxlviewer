@@ -1,7 +1,10 @@
 <template>
   <div class="Vocab-termDetails">
-    <h1>Marcframe</h1>
-    <p>Välj en kod i listan för att se detaljer.</p>
+    <h1>MARC-mappningar</h1>
+    <p>KB/Libris mappningar av MARC till RDF-vokabulär. För mer information, se 
+      <a class="ext" target="_blank" rel="noopener noreferrer" href="https://github.com/libris/librisxl/blob/master/whelk-core/src/main/resources/ext/marcframe.json">källfil</a>
+      och <a class="ext" target="_blank" rel="noopener noreferrer" href="https://github.com/libris/librisxl/blob/master/whelk-core/src/main/resources/ext/marcframe.md">dokumentation</a>.
+    </p>
   </div>
 </template>
 
@@ -28,10 +31,7 @@ export default {
   computed: {
     ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext']),
     pageTitle() {
-      if (this.termData) {
-        return `${ this.termTitle || 'Marcframe'}`
-      }
-      return 'Marcframe';
+      return 'MARC-mappningar';
     },
     termTitle() {
       return this.getEntityTitle(this.termData);

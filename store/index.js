@@ -13,6 +13,9 @@ export const state = () => ({
   currentDocument: null,
   entityReferences: {},
   collections: null,
+  resources: {
+    marcframe: null,
+  },
   appState: {
     navigatingWithFacetColumn: false,
     navigatingFromSearchBar: false,
@@ -230,6 +233,12 @@ export const mutations = {
   SET_VOCAB_CONTEXT(state, data) {
     state.vocabContext = data;
   },
+  SET_MARCFRAME_DATA(state, data) {
+    if (state.hasOwnProperty('resources') == false) {
+      state.resources = {};
+    }
+    state.resources.marcframe = data;
+  },
   SET_CURRENT_DOCUMENT(state, data) {
     state.currentDocument = data;
     const entityReferences = {};
@@ -254,7 +263,7 @@ export const actions = {
     ).then(res => res.json());
     const processed = VocabUtil.preprocessContext(contextData);
     commit('SET_VOCAB_CONTEXT', processed['@context']);
-
+  
     const vocabPath = `${process.env.API_PATH}/vocab/data.jsonld`;
     const vocab = await fetch(
       vocabPath
@@ -262,14 +271,19 @@ export const actions = {
     commit('SET_VOCAB', vocab);
     commit('SET_VOCAB_CLASSES', vocab);
     commit('SET_VOCAB_PROPERTIES', vocab);
-
+  
     const displayPath = `${process.env.API_PATH}/vocab/display/data.jsonld`;
     const display = await fetch(
       displayPath
     ).then(res => res.json());
-
     const expanded = DisplayUtil.expandInherited(display);
     commit('SET_DISPLAY', expanded);
+  
+    const marcframePath = 'https://raw.githubusercontent.com/libris/librisxl/master/whelk-core/src/main/resources/ext/marcframe.json';
+    const marcframe = await fetch(
+      marcframePath
+    ).then(res => res.json());
+    commit('SET_MARCFRAME_DATA', marcframe);
   },
   setCollections(data) {
     commmit('SET_COLLECTIONS', data);
@@ -285,6 +299,9 @@ export const getters = {
   },
   settings: state => {
     return state.settings;
+  },
+  resources: state => {
+    return state.resources;
   },
   display: state => {
     return state.display;

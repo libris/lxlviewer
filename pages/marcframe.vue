@@ -1,26 +1,23 @@
 <template>
   <div class="container-fluid Marcframe">
     <div class="row">
-      <div class="Marcframe-termListColumn col-md-4 col-lg-4 col-xl-3 col-xxl-2">
-        <div class="Vocab-termListControllers">
-          <button class="btn" :class="{'btn-dark': listShown == 'Classes', 'btn-kb-primary-grey': listShown != 'Classes' }" @click="listShown = 'Classes'">Klasser</button>
-          <button class="btn" :class="{'btn-dark': listShown == 'Properties', 'btn-kb-primary-grey': listShown != 'Properties' }" @click="listShown = 'Properties'">Egenskaper</button>
+      <div class="Marcframe-codeListColumn col-md-5 col-lg-5 col-xl-4 col-xxl-3">
+        <div class="Marcframe-codeListControllers">
+          <button class="btn" :class="{'btn-dark': listShown == 'bib', 'btn-kb-primary-grey': listShown != 'bib' }" @click="listShown = 'bib'">bib</button>
+          <button class="btn" :class="{'btn-dark': listShown == 'auth', 'btn-kb-primary-grey': listShown != 'auth' }" @click="listShown = 'auth'">auth</button>
+          <button class="btn" :class="{'btn-dark': listShown == 'hold', 'btn-kb-primary-grey': listShown != 'hold' }" @click="listShown = 'hold'">hold</button>
         </div>
-        <div class="Marcframe-termListControllers">
-          <input type="checkbox" id="showMarc" v-model="showMarc" /> <label for="showMarc">Visa marc-termer</label>
-        </div>
-        <div class="Marcframe-termList" v-if="vocab && listShown == 'Classes'">
+        <div class="Marcframe-codeList">
           <ul>
-            <li v-for="item in classes" :key="item[0]"><NuxtLink v-if="item[0]" :to="item[0] | removeBaseUri">{{ item[0].split('/').pop() }}</NuxtLink></li>
-          </ul>
-        </div>
-        <div class="Marcframe-termList" v-if="vocab && listShown == 'Properties'">
-          <ul>
-            <li v-for="item in properties" :key="item[0]"><NuxtLink v-if="item[0]" :to="item[0] | removeBaseUri">{{ item[0].split('/').pop() }}</NuxtLink></li>
+            <NuxtLink :to="`/marcframe/${listShown}/${key}`" v-for="(value, key) in codeLists[listShown]" :key="key">
+            <li>
+              {{key }}
+            </li>
+            </NuxtLink>
           </ul>
         </div>
       </div>
-      <div class="Marcframe-termDetailsColumn col-md-8 col-lg-8 col-xl-9 col-xxl-10">
+      <div class="Marcframe-codeDetailsColumn col-md-7 col-lg-7 col-xl-8 col-xxl-7">
         <NuxtChild  />
       </div>
     </div>
@@ -40,17 +37,21 @@ export default {
   },
   data() {
     return {
-      listShown: 'Classes',
+      listShown: 'bib',
+      chosenCode: null,
       showMarc: false,
     }
   },
+  mounted() {
+    this.listShown = this.category;
+  },
   computed: {
-    ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext']),
+    ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext', 'resources']),
     pageTitle() {
       if (this.termData) {
-        return `${ this.termTitle || 'Basvokabulär'}`
+        return `${ this.termTitle || 'MARC-mappningar'}`
       }
-      return 'Basvokabulär';
+      return 'MARC-mappningar';
     },
     termTitle() {
       return this.getEntityTitle(this.termData);
@@ -61,28 +62,49 @@ export default {
       }
       return null;
     },
-    chosenList() {
-      if (this.listShown === 'Classes') {
-        return this.classes;
-      } else {
-        return this.properties;
-      }
+    marcframe() {
+      return this.resources.marcframe;
     },
-    classes() {
-      return this.vocabClasses;
+    category() {
+      return this.$route.params.category;
     },
-    properties() {
-      return this.vocabProperties;
+    bib() {
+      return Object.keys(this.marcframe.bib).sort((a, b) => a-b).reduce(
+        (obj, key) => { 
+          obj[key] = this.marcframe.bib[key]; 
+          return obj;
+        }, 
+        {}
+      );
+    },
+    auth() {
+      return Object.keys(this.marcframe.auth).sort((a, b) => a-b).reduce(
+        (obj, key) => { 
+          obj[key] = this.marcframe.auth[key]; 
+          return obj;
+        }, 
+        {}
+      );
+    },
+    hold() {
+      return Object.keys(this.marcframe.hold).sort((a, b) => a-b).reduce(
+        (obj, key) => { 
+          obj[key] = this.marcframe.hold[key]; 
+          return obj;
+        }, 
+        {}
+      );
+    },
+    codeLists() {
+      return {
+        bib: this.bib,
+        auth: this.auth,
+        hold: this.hold,
+      };
     },
   },
   methods: {
   },
-  // async asyncData({ $config, route, params, $http }) {
-  //   const pageData = await $http.$get(`${$config.apiPath}/vocab/data.jsonld`);
-  //   return {
-  //     pageData,
-  //   };
-  // },
   // call fetch only on client-side
   fetchOnServer: false,
   watchQuery: true,
@@ -95,15 +117,15 @@ export default {
 <style lang="scss">
 
 .Marcframe {
-  &-termListColumn {
+  &-codeListColumn {
     display: flex;
     flex-direction: column;
     height: 80vh;
   }
-  &-termDetailsColumn {
+  &-codeDetailsColumn {
       padding-top: 2rem;
   }
-  &-termListControllers {
+  &-codeListControllers {
     border: solid $gray-500;
     border-width: 0px 0px 1px 0px;
     display: flex;
@@ -111,24 +133,42 @@ export default {
     align-items: center;
     padding: 0.5em 0;
   }
-  &-termList {
+  &-codeList {
     flex-grow: 1;
     overflow-y: scroll;
     overflow-x: hidden;
     ul {
-      padding: 1em 0em;
-      li {
-        list-style: none;
-        a {
-          text-decoration: none;
-          &:hover {
-            text-decoration: underline;
-          }
+      margin: 0.25em;
+      display: grid;
+      grid-template-columns: repeat(8,  minmax(0, 1fr));
+      @media (min-width: 768px) {
+        grid-template-columns: repeat(6,  minmax(0, 1fr));
+      }
+      @media (min-width: 1200px) {
+        grid-template-columns: repeat(8,  minmax(0, 1fr));
+      }
+      @media (min-width: 1400px) {
+        grid-template-columns: repeat(7,  minmax(0, 1fr));
+      }
+      list-style-type: none;
+      a {
+        &:hover {
+          background-color: $gray-300;
         }
+        text-decoration: none;
+        border-radius: 3px;
+        &.nuxt-link-active {
+          background-color: $dark;
+          color: $light;
+        }
+      }
+      li {
+        padding: 0.25em;
+        text-align: center;
       }
     }
   }
-  &-termDetails {
+  &-codeDetails {
     h1 {
       padding: 0.5rem 1rem 0.5rem 1.5rem;
       font-size: 3rem;
