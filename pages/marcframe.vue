@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid Marcframe">
     <div class="row">
-      <div class="Marcframe-codeListColumn col-md-4 col-lg-4 col-xl-4 col-xxl-3">
+      <div class="Marcframe-codeListColumn col-md-4 col-lg-3 col-xl-4 col-xxl-3">
         <div class="Marcframe-codeListControllers">
           <button class="btn" :class="{'btn-dark': listShown == 'bib', 'btn-kb-primary-grey': listShown != 'bib' }" @click="listShown = 'bib'">bib</button>
           <button class="btn" :class="{'btn-dark': listShown == 'auth', 'btn-kb-primary-grey': listShown != 'auth' }" @click="listShown = 'auth'">auth</button>
@@ -21,7 +21,7 @@
           </div>
         </div>
       </div>
-      <div class="Marcframe-codeDetailsColumn col-md-8 col-lg-8 col-xl-8 col-xxl-9">
+      <div class="Marcframe-codeDetailsColumn col-md-8 col-lg-9 col-xl-8 col-xxl-9">
         <NuxtChild  />
       </div>
     </div>
@@ -166,7 +166,7 @@ export default {
         grid-template-columns: repeat(4,  minmax(0, 1fr));
       }
       @media (min-width: 992px) {
-        grid-template-columns: repeat(5,  minmax(0, 1fr));
+        grid-template-columns: repeat(4,  minmax(0, 1fr));
       }
       @media (min-width: 1200px) {
         grid-template-columns: repeat(6,  minmax(0, 1fr));
@@ -223,7 +223,7 @@ export default {
     }
   }
   h2 {
-    margin-bottom: -1rem;
+    margin-bottom: 1rem;
     font-size: 1rem;
     @media (min-width: 768px) {
       font-size: 1.5rem;

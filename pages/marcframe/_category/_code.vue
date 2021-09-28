@@ -4,12 +4,16 @@
       <h1>{{ category.toUpperCase() }}-{{ code }}</h1>
       <div class="Marcframe-termDetailsBody">
         <MarcframeObject :value="codeData" />
-        <hr>
-        <button class="btn btn-dark" @click="showFullData = !showFullData">json</button>
-        <hr>
-        <code v-if="showFullData">
-          {{ codeData }}
-        </code>
+        <div class="Marcframe-termExamples">
+          <hr>
+          <h2>Examples:</h2>
+            <template v-if="codeData.hasOwnProperty('_spec')">
+              <MarcframeExample :example="example" v-for="(example, index) in codeData['_spec']" :key="index" />
+            </template>
+            <p v-else>
+              No examples.
+            </p>
+        </div>
       </div>
     </template>
     <template v-else>
@@ -22,6 +26,7 @@
 import { mapGetters } from 'vuex';
 import ResultItem from '@/components/ResultItem';
 import EntityNode from '@/components/EntityNode';
+import MarcframeExample from '@/components/MarcframeExample';
 
 export default {
   head() {
@@ -38,7 +43,7 @@ export default {
     return {
       listShown: 'Classes',
       showMarc: false,
-      showFullData: false,
+      showExamples: true,
     }
   },
   computed: {
@@ -73,6 +78,7 @@ export default {
   components: {
     ResultItem,
     EntityNode,
+    MarcframeExample,
     MarcframeObject: () => import('@/components/MarcframeObject.vue'),
   },
 }

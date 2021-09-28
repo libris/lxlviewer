@@ -63,10 +63,15 @@ export default {
   }
   > div {
     &:first-of-type {
-      width: 10em;
+      width: 5em;
+      word-break: break-all;
+      @media (min-width: 992px) {
+        width: 10em;
+      }
     }
     &:not(:first-of-type) {
       flex-grow: 1;
+      word-break: break-all;
     }
   }
 }
