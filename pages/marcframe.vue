@@ -8,13 +8,17 @@
           <button class="btn" :class="{'btn-dark': listShown == 'hold', 'btn-kb-primary-grey': listShown != 'hold' }" @click="listShown = 'hold'">hold</button>
         </div>
         <div class="Marcframe-codeList">
-          <ul>
-            <NuxtLink :to="`/marcframe/${listShown}/${key}`" v-for="(value, key) in codeLists[listShown]" :key="key">
-            <li>
-              {{key }}
-            </li>
-            </NuxtLink>
-          </ul>
+          <div class="Marcframe-codeListSection" :key="key" v-for="(value, key) in codeLists[listShown]">
+            <span class="Marcframe-codeListInitial">{{ key !== '?' ? `${key}xx` : `?` }}</span>
+            <ul :class="{'otherKey': key === '?'}">
+              <NuxtLink @click.native="onCodeSelect" :to="`/marcframe/${listShown}/${subkey}`" v-for="(subvalue, subkey) in value" :key="subkey">
+              <li>
+                {{ subkey }}
+              </li>
+              </NuxtLink>
+            </ul>
+            <hr>
+          </div>
         </div>
       </div>
       <div class="Marcframe-codeDetailsColumn col-md-7 col-lg-7 col-xl-8 col-xxl-7">
@@ -70,42 +74,44 @@ export default {
     category() {
       return this.$route.params.category;
     },
-    bib() {
-      return Object.keys(this.marcframe.bib).sort((a, b) => a-b).reduce(
-        (obj, key) => { 
-          obj[key] = this.marcframe.bib[key]; 
-          return obj;
-        }, 
-        {}
-      );
+    bibList() {
+      return this.getSplitOnNumeric(this.marcframe.bib);
     },
-    auth() {
-      return Object.keys(this.marcframe.auth).sort((a, b) => a-b).reduce(
-        (obj, key) => { 
-          obj[key] = this.marcframe.auth[key]; 
-          return obj;
-        }, 
-        {}
-      );
+    bibKeys() {
+      return Object.keys(this.marcframe.bib).sort((a, b) => parseInt(a)-parseInt(b));
     },
-    hold() {
-      return Object.keys(this.marcframe.hold).sort((a, b) => a-b).reduce(
-        (obj, key) => { 
-          obj[key] = this.marcframe.hold[key]; 
-          return obj;
-        }, 
-        {}
-      );
+    authKeys() {
+      return Object.keys(this.marcframe.auth).sort((a, b) => a-b);
+    },
+    holdKeys() {
+      return Object.keys(this.marcframe.hold).sort((a, b) => a-b);
     },
     codeLists() {
       return {
-        bib: this.bib,
-        auth: this.auth,
-        hold: this.hold,
+        bib: this.getSplitOnNumeric(this.marcframe.bib),
+        auth: this.getSplitOnNumeric(this.marcframe.auth),
+        hold: this.getSplitOnNumeric(this.marcframe.hold),
       };
     },
   },
   methods: {
+    onCodeSelect() {
+      if (this.category) {
+        this.listShown = this.category;
+      }
+    },
+    getSplitOnNumeric(objectList) {
+      const splitObject = {};
+      for (const [key, value] of Object.entries(objectList)) {
+        const sortNumber = key.length <= 3 ? `${key[0]}` : '?';
+        console.log("Sortnumber:", sortNumber);
+        if (splitObject.hasOwnProperty(sortNumber) == false) {
+          splitObject[sortNumber] = {};
+        }
+        splitObject[sortNumber][key] = value;
+      }
+      return splitObject;
+    },
   },
   // call fetch only on client-side
   fetchOnServer: false,
@@ -135,13 +141,24 @@ export default {
     align-items: center;
     padding: 0.5em 0;
   }
+  &-codeListSection {
+    display: flex;
+    border: solid $gray-200;
+    border-width: 0px 0px 1px 0px;
+  }
   &-codeList {
     flex-grow: 1;
     overflow-y: scroll;
     overflow-x: hidden;
     ul {
+      &.otherKey {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      flex-grow: 1;
+      padding: 0;
       margin: 0.25em;
-      display: grid;
+      display: inline-grid;
       grid-template-columns: repeat(8,  minmax(0, 1fr));
       @media (min-width: 768px) {
         grid-template-columns: repeat(6,  minmax(0, 1fr));
@@ -169,6 +186,11 @@ export default {
         text-align: center;
       }
     }
+  }
+  &-codeListInitial {
+    padding: 0.5em 0.25em;
+    font-weight: 500;
+    color: $gray-500;
   }
   &-codeDetails {
     h1 {

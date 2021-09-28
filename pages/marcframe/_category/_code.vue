@@ -18,8 +18,11 @@
           <td>{{ value }}</td>
         </tr>
       </table>
-      <code>
-        {{ codeData }}
+      <hr>
+      <button class="btn btn-dark" @click="showFullData = !showFullData">json</button>
+      <hr>
+      <code v-if="showFullData">
+        {{ codeData | json }}
       </code>
     </template>
     <template v-else>
@@ -48,6 +51,7 @@ export default {
     return {
       listShown: 'Classes',
       showMarc: false,
+      showFullData: false,
     }
   },
   computed: {
@@ -119,6 +123,15 @@ export default {
 .Marcframe-termDetails {
   table {
     margin: 0.5rem 1rem 0.5rem 1.5rem;
+    tr {
+      &:nth-child(odd) {
+        background-color: $gray-100;
+      }
+    }
+    td {
+      vertical-align: top;
+      padding: 0.5em;
+    }
   }
 }
 
