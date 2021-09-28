@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid Marcframe">
     <div class="row">
-      <div class="Marcframe-codeListColumn col-md-5 col-lg-4 col-xl-4 col-xxl-3">
+      <div class="Marcframe-codeListColumn col-md-4 col-lg-4 col-xl-4 col-xxl-3">
         <div class="Marcframe-codeListControllers">
           <button class="btn" :class="{'btn-dark': listShown == 'bib', 'btn-kb-primary-grey': listShown != 'bib' }" @click="listShown = 'bib'">bib</button>
           <button class="btn" :class="{'btn-dark': listShown == 'auth', 'btn-kb-primary-grey': listShown != 'auth' }" @click="listShown = 'auth'">auth</button>
@@ -21,7 +21,7 @@
           </div>
         </div>
       </div>
-      <div class="Marcframe-codeDetailsColumn col-md-7 col-lg-8 col-xl-8 col-xxl-9">
+      <div class="Marcframe-codeDetailsColumn col-md-8 col-lg-8 col-xl-8 col-xxl-9">
         <NuxtChild  />
       </div>
     </div>
@@ -104,7 +104,6 @@ export default {
       const splitObject = {};
       for (const [key, value] of Object.entries(objectList)) {
         const sortNumber = key.length <= 3 ? `${key[0]}` : '?';
-        console.log("Sortnumber:", sortNumber);
         if (splitObject.hasOwnProperty(sortNumber) == false) {
           splitObject[sortNumber] = {};
         }
@@ -161,13 +160,16 @@ export default {
       display: inline-grid;
       grid-template-columns: repeat(8,  minmax(0, 1fr));
       @media (min-width: 768px) {
-        grid-template-columns: repeat(6,  minmax(0, 1fr));
+        grid-template-columns: repeat(4,  minmax(0, 1fr));
+      }
+      @media (min-width: 992px) {
+        grid-template-columns: repeat(5,  minmax(0, 1fr));
       }
       @media (min-width: 1200px) {
-        grid-template-columns: repeat(8,  minmax(0, 1fr));
+        grid-template-columns: repeat(6,  minmax(0, 1fr));
       }
       @media (min-width: 1400px) {
-        grid-template-columns: repeat(7,  minmax(0, 1fr));
+        grid-template-columns: repeat(6,  minmax(0, 1fr));
       }
       list-style-type: none;
       a {
