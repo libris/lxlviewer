@@ -147,8 +147,8 @@ export default {
   }
   &-codeList {
     flex-grow: 1;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    // overflow-y: scroll;
+    // overflow-x: hidden;
     ul {
       &.otherKey {
         display: flex;
