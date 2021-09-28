@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid Marcframe">
     <div class="row">
-      <div class="Marcframe-codeListColumn col-md-5 col-lg-5 col-xl-4 col-xxl-3">
+      <div class="Marcframe-codeListColumn col-md-5 col-lg-4 col-xl-4 col-xxl-3">
         <div class="Marcframe-codeListControllers">
           <button class="btn" :class="{'btn-dark': listShown == 'bib', 'btn-kb-primary-grey': listShown != 'bib' }" @click="listShown = 'bib'">bib</button>
           <button class="btn" :class="{'btn-dark': listShown == 'auth', 'btn-kb-primary-grey': listShown != 'auth' }" @click="listShown = 'auth'">auth</button>
@@ -21,7 +21,7 @@
           </div>
         </div>
       </div>
-      <div class="Marcframe-codeDetailsColumn col-md-7 col-lg-7 col-xl-8 col-xxl-7">
+      <div class="Marcframe-codeDetailsColumn col-md-7 col-lg-8 col-xl-8 col-xxl-9">
         <NuxtChild  />
       </div>
     </div>
