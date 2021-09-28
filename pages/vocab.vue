@@ -6,9 +6,9 @@
           <button class="btn" :class="{'btn-dark': listShown == 'Classes', 'btn-kb-primary-grey': listShown != 'Classes' }" @click="listShown = 'Classes'">Klasser</button>
           <button class="btn" :class="{'btn-dark': listShown == 'Properties', 'btn-kb-primary-grey': listShown != 'Properties' }" @click="listShown = 'Properties'">Egenskaper</button>
         </div>
-        <div class="Vocab-termListControllers">
+        <!-- <div class="Vocab-termListControllers">
           <input type="checkbox" id="showMarc" v-model="showMarc" /> <label for="showMarc">Visa marc-termer</label>
-        </div>
+        </div> -->
         <div class="Vocab-termList" v-if="vocab && listShown == 'Classes'">
           <ul>
             <li v-for="item in classes" :key="item[0]"><NuxtLink v-if="item[0]" :to="item[0] | removeBaseUri">{{ item[0].split('/').pop() }}</NuxtLink></li>
@@ -98,7 +98,7 @@ export default {
   &-termListColumn {
     display: flex;
     flex-direction: column;
-    height: 80vh;
+    height: 100%;
   }
   &-termDetailsColumn {
       padding-top: 2rem;
@@ -112,7 +112,7 @@ export default {
     padding: 0.5em 0;
   }
   &-termList {
-    flex-grow: 1;
+    height: 60vh;
     overflow-y: scroll;
     overflow-x: hidden;
     ul {

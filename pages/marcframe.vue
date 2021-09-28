@@ -127,13 +127,13 @@ export default {
   &-codeListColumn {
     display: flex;
     flex-direction: column;
-    height: 80vh;
+    height: 100%;
   }
   &-codeDetailsColumn {
       padding-top: 2rem;
   }
   &-codeListControllers {
-    border: solid $gray-500;
+    border: solid $gray-300;
     border-width: 0px 0px 1px 0px;
     display: flex;
     justify-content: space-evenly;
@@ -147,8 +147,11 @@ export default {
   }
   &-codeList {
     flex-grow: 1;
-    // overflow-y: scroll;
-    // overflow-x: hidden;
+    border: solid $gray-300;
+    border-width: 0px 0px 1px 0px;
+    height: 60vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
     ul {
       &.otherKey {
         display: flex;

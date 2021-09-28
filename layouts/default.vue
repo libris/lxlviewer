@@ -38,6 +38,7 @@ export default {
 
 <style lang="scss">
 html {
+  height: 100%;
   font-size: 16px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
@@ -45,6 +46,10 @@ html {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
+}
+
+body {
+  height: 100%;
 }
 
 :root {
@@ -78,6 +83,10 @@ main {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+footer {
+
 }
 
 .button--green {
