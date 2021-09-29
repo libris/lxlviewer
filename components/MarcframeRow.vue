@@ -55,6 +55,9 @@ export default {
   width: 100%;
   border: solid $gray-400;
   border-width: 0px 0px 1px 0px;
+  a {
+    color: $kb-secondary-turquoise;
+  }
   &:last-child {
     border-width: 0px;
   }
