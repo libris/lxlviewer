@@ -30,9 +30,9 @@ export default {
   data() {
     return {
       jsonColors: {
-        keyColor: 'black',
+        keyColor: '#af7a00',
         numberColor: 'blue',
-        stringColor: '#0B7500',
+        stringColor: '#058194',
         trueColor: '#00cc00',
         falseColor: '#ff8080',
         nullColor: 'cornflowerblue'
