@@ -1,19 +1,22 @@
 <template>
-  <div class="Marcframe-termDetails">
+  <div class="Marcframe-codeDetails">
     <template v-if="codeData">
-      <h1>{{ category.toUpperCase() }}-{{ code }}</h1>
-      <div class="Marcframe-termDetailsBody">
+      <div class="Marcframe-codeHeader" id="code-section">
+        <h1>{{ category.toUpperCase() }}-{{ code }}</h1> <a href="#example-section">Gå till kodexempel</a>
+      </div>
+      <div class="Marcframe-codeBody">
         <MarcframeObject :value="codeData" />
-        <div class="Marcframe-termExamples">
-          <hr>
-          <h2>Examples:</h2>
-            <template v-if="codeData.hasOwnProperty('_spec')">
-              <MarcframeExample :example="example" v-for="(example, index) in codeData['_spec']" :key="index" />
-            </template>
-            <p v-else>
-              No examples.
-            </p>
-        </div>
+      </div>
+      <div class="Marcframe-codeHeader" id="example-section">
+        <h2>Examples</h2> <a href="#code-section">Gå till toppen av sidan</a>
+      </div>
+      <div class="Marcframe-codeBody">
+        <template v-if="codeData.hasOwnProperty('_spec')">
+          <MarcframeExample :example="example" v-for="(example, index) in codeData['_spec']" :key="index" />
+        </template>
+        <p v-else>
+          No examples.
+        </p>
       </div>
     </template>
     <template v-else>
@@ -87,7 +90,7 @@ export default {
 <style lang="scss">
 
 .Marcframe {
-  &-termDetailsBody {
+  &-codeBody {
     padding: 0.5rem 1rem 0.5rem 1.5rem;
     > .MarcframeObject {
       border: 1px solid $gray-300;
@@ -100,6 +103,11 @@ export default {
         }
       }
     }
+  }
+  &-codeHeader {
+    display: flex;
+    align-items: baseline;
+    scroll-margin-top: 10em;
   }
 }
 
