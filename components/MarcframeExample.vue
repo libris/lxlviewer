@@ -4,16 +4,16 @@
     <div class="MarcframeExample-body">
       <div v-if="source != null">
         <div class="MarcframeExample-label">MARC</div>
-        <pre>{{ source }}</pre>
+        <pre v-html="formatHighlight(source, jsonColors)"></pre>
       </div>
       <div v-if="normalized != null">
         <div class="MarcframeExample-label">Normalized MARC:<br>
         </div>
-        <pre>{{ normalized }}</pre>
+        <pre v-html="formatHighlight(normalized, jsonColors)"></pre>
       </div>
       <div v-if="result != null">
         <div class="MarcframeExample-label">JSON-LD</div>
-        <pre>{{ result }}</pre>
+        <pre v-html="formatHighlight(result, jsonColors)"></pre>
       </div>
     </div>
   </div>
@@ -22,12 +22,21 @@
 <script>
 import { mapGetters } from 'vuex';
 import LensMixin from '@/mixins/lens';
+import formatHighlight from 'json-format-highlight';
 
 export default {
   name: 'MarcframeExample',
   mixins: [LensMixin],
   data() {
     return {
+      jsonColors: {
+        keyColor: 'black',
+        numberColor: 'blue',
+        stringColor: '#0B7500',
+        trueColor: '#00cc00',
+        falseColor: '#ff8080',
+        nullColor: 'cornflowerblue'
+      },
     }
   },
   props: {
@@ -37,6 +46,9 @@ export default {
     },
   },
   methods: {
+    formatHighlight(json, options) {
+      return formatHighlight(json, options);
+    },
   },
   computed: {
     ...mapGetters(['entityReferences', 'settings', 'vocabContext', 'display', 'vocab']),
