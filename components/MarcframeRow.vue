@@ -59,7 +59,7 @@ export default {
     border-width: 0px;
   }
   &-cell {
-    padding: 0.5em;
+    padding: 0 0.5em 0.5em 0;
   }
   > div {
     &:first-of-type {

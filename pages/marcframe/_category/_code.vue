@@ -92,6 +92,9 @@ export default {
     > .MarcframeObject {
       border: 1px solid $gray-300;
       > .MarcframeRow {
+        > div {
+          padding: 0.25em;
+        }
         &:nth-child(odd) {
           background-color: $gray-100;
         }
