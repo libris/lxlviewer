@@ -56,6 +56,13 @@ export default {
       if (this.entity.hasOwnProperty('@id') && this.entityReferences.hasOwnProperty(this.entity['@id'])) {
         return this.entityReferences[this.entity['@id']];
       }
+      if (this.entity.hasOwnProperty('@id') && this.entity['@id'].startsWith('https://id.kb.se')) {
+        if (this.entity['@id'].includes('marc:')) {
+          return VocabUtil.getTermObject(this.entity['@id'].split('/').pop(), this.vocab, this.vocabContext);
+        } else {
+          return VocabUtil.getTermObject(this.entity['@id'], this.vocab, this.vocabContext);
+        }
+      }
       if (this.parentKey == '@type') {
         return VocabUtil.getTermObject(this.entity, this.vocab, this.vocabContext);
       }
