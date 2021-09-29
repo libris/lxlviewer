@@ -14,9 +14,9 @@
         <template v-if="codeData.hasOwnProperty('_spec')">
           <MarcframeExample :example="example" v-for="(example, index) in codeData['_spec']" :key="index" />
         </template>
-        <p v-else>
+        <template v-else>
           No examples.
-        </p>
+        </template>
       </div>
     </template>
     <template v-else>

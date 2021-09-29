@@ -21,7 +21,7 @@
           </div>
         </div>
       </div>
-      <div class="Marcframe-codeDetailsColumn col-md-8 col-lg-9 col-xl-8 col-xxl-9">
+      <div class="Marcframe-codeDetailsColumn offset-md-4 offset-lg-3 offset-xl-4 offset-xxl-3 col-md col-md-8 col-lg-9 col-xl-8 col-xxl-9">
         <NuxtChild  />
       </div>
     </div>
@@ -128,6 +128,16 @@ export default {
     display: flex;
     flex-direction: column;
     height: 100%;
+    background-color: $white;
+    @media (min-width: 768px) {
+      position: fixed;
+      height: calc(100vh - 50px - 81px);
+      padding-left: 2em !important;
+      padding-right: 0em !important;
+      left: 0;
+      border: solid $gray-300;
+      border-width: 0px 1px 0px 0px;
+    }
   }
   &-codeDetailsColumn {
       padding-top: 2rem;
@@ -151,9 +161,9 @@ export default {
     border-width: 0px 0px 1px 0px;
     height: 25vh;
     @media (min-width: 768px) {
-      height: 60vh;
+      height: 100%;
     }
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     ul {
       &.otherKey {
