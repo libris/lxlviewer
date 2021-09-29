@@ -149,7 +149,10 @@ export default {
     flex-grow: 1;
     border: solid $gray-300;
     border-width: 0px 0px 1px 0px;
-    height: 60vh;
+    height: 25vh;
+    @media (min-width: 768px) {
+      height: 60vh;
+    }
     overflow-y: scroll;
     overflow-x: hidden;
     ul {
@@ -161,7 +164,10 @@ export default {
       padding: 0;
       margin: 0.25em;
       display: inline-grid;
-      grid-template-columns: repeat(8,  minmax(0, 1fr));
+      grid-template-columns: repeat(5,  minmax(0, 1fr));
+      @media (min-width: 576px) {
+        grid-template-columns: repeat(8,  minmax(0, 1fr));
+      }
       @media (min-width: 768px) {
         grid-template-columns: repeat(4,  minmax(0, 1fr));
       }

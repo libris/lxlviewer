@@ -1,5 +1,5 @@
 <template>
-  <div class="Vocab-termDetails">
+  <div class="Marcframe-codeDetails">
     <h1>MARC-mappningar</h1>
     <p>KB/Libris mappningar av MARC till RDF-vokabulär. För mer information, se 
       <a class="ext" target="_blank" rel="noopener noreferrer" href="https://github.com/libris/librisxl/blob/master/whelk-core/src/main/resources/ext/marcframe.json">källfil</a>
