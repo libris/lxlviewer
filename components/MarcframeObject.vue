@@ -28,6 +28,7 @@ export default {
         'resourceType',
         'property',
         'addProperty',
+        'link',
       ],
       hiddenProps: [
         'onRevertPrefer',
