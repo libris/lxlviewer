@@ -34,6 +34,9 @@ export default {
         'include',
         'groupId',
         'subfieldOrder',
+        'pendingResources',
+        'uriTemplate',
+        'aboutEntity',
       ],
     }
   },
@@ -50,9 +53,10 @@ export default {
       const mainProperties = {};
       for (const [key, value] of Object.entries(this.value)) {
         if (key.startsWith('$') == false && key.startsWith('_') == false) {
-          if (this.hiddenProps.includes(key) === false) {
-            mainProperties[key] = value;
-          }
+          if (value == null) continue;
+          if (this.hiddenProps.includes(key)) continue;
+
+          mainProperties[key] = value;
         }
       }
       return mainProperties;
