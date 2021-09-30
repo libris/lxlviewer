@@ -5,7 +5,7 @@
       <span class="" v-if="typeof value == 'boolean'">{{ value == true ? 'Ja' : 'Nej' }}</span>
       <span v-else-if="typeof value !== 'object'">{{ value }}</span>
       <EntityNode :parent-key="property" :entity="value" v-else-if="!isByLangProperty" />
-      <span v-else>{{ value[settings.language] }}</span>
+      <span v-else>{{ value[settings.language] ? value[settings.language] : value[Object.keys(value)[0]] }}</span>
     </span>
     <span class="PropertyRow-bodyValue multiple" v-if="Array.isArray(value)">
       <EntityNode :parent-key="property" :entity="node" v-for="(node, index) in valueSorted" :key="index" />
