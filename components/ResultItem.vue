@@ -141,7 +141,7 @@ export default {
   &-title {
     &.as-header {
       font-size: 2rem;
-      padding: 0.5em 0.5em 0.5em 1.5rem;
+      padding: 0.5em 0.5em 0 1.5rem;
     }
     display: flex;
     gap: 0.5em;
