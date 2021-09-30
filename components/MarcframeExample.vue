@@ -30,12 +30,12 @@ export default {
   data() {
     return {
       jsonColors: {
-        keyColor: '#af7a00',
-        numberColor: 'blue',
-        stringColor: '#058194',
-        trueColor: '#00cc00',
-        falseColor: '#ff8080',
-        nullColor: 'cornflowerblue'
+        keyColor: '#6b4a00',
+        numberColor: '#045b69',
+        stringColor: '#045b69',
+        trueColor: '#045b69',
+        falseColor: '#045b69',
+        nullColor: '#045b69'
       },
     }
   },
@@ -110,7 +110,8 @@ export default {
       flex-grow: 1;
       margin: 0.25em 0 0 0.25em;
       display: block;
-      background-color: $gray-100;
+      background-color: $white;
+      box-shadow: inset 0em 0em 1em #0000000d;
     }
   }
 }

@@ -99,7 +99,7 @@ export default {
           padding: 0.25em;
         }
         &:nth-child(odd) {
-          background-color: $gray-100;
+          background-color: rgba($gray-100, .5);
         }
       }
     }
