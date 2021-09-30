@@ -6,7 +6,8 @@
     </span>
     <template v-else-if="entityData && entityData['@id']">
       <NuxtLink v-if="entityData['@id'].startsWith('https://id.kb.se')" :to="entityData['@id'] | removeBaseUri">
-        <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+        <template v-if="entityData['@id'] === 'https://id.kb.se/vocab/'">https://id.kb.se/vocab/</template>
+        <template v-else-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
         <template v-else>{{ decodeURI(entityData['@id']) | translateUriEnv }}</template>
       </NuxtLink>
       <a v-else :href="entityData['@id']">{{ decodeURI(entityData['@id']) }}</a>
