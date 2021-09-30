@@ -7,17 +7,17 @@
     <div class="container-fluid">
       <div class="row">
         <template v-if="appState.navigatingWithFacetColumn">
-          <div class="col-md-4 col-lg-4 col-xl-3 col-xxl-2 pt-4">
+          <div class="DetailedFilters col-md-4 col-lg-4 col-xl-3 col-xxl-2 pt-4">
             <div class="Document-backButton">
               <a @click="$router.go(-1)"><i class="bi bi-chevron-double-left"></i> Tillbaka</a>
             </div>
           </div>
-          <div class="col-md-8 col-lg-8 col-xl-9 col-xxl-10 p-2">
+          <div class="p-2" :class="termCols">
             <ResultItem :entity="entityData" :force-expanded="true" />
           </div>
         </template>
         <template v-else>
-        <div class="p-2">
+        <div class="p-2" :class="termCols">
           <ResultItem :entity="entityData" :force-expanded="true" />
         </div>
         </template>
@@ -49,6 +49,13 @@ export default {
   },
   computed: {
     ...mapGetters(['appState']),
+    termCols() {
+      if (this.appState.navigatingWithFacetColumn) {
+        //col-md-4 col-lg-4 col-xl-3 col-xxl-2
+        return "col-md-8 col-lg-8 col-xl-9 col-xxl-9";
+      }
+      return "col-md-12 col-lg-12 col-xl-10 col-xxl-9";
+    },
     documentTitle() {
       return this.getItemLabel;
     },
