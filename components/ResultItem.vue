@@ -6,7 +6,7 @@
           <i class="bi bi-chevron-right" v-if="!expanded"></i>
           <i class="bi bi-chevron-down" v-if="expanded"></i>
         </template>
-        {{ getItemLabel }} <span v-if="isVocabTerm" class="ResultItem-titleTerm">{{ entityData['@id'].split('/').pop() }}</span>
+        {{ getItemLabel }}<span v-if="isVocabTerm" class="ResultItem-titleTerm">{{ entityData['@id'].split('/').pop() }}</span>
       </span>
       <template v-if="entity.hasOwnProperty('inScheme')">
         <EntityNode :is-chip="true" class="d-none d-lg-block" v-if="entity.inScheme" :parent-key="'inScheme'" :entity="entity.inScheme" />
@@ -164,11 +164,11 @@ export default {
     }
   }
   &-titleTerm {
-    color: $gray-700;
+    border: solid $gray-300;
+    border-width: 0px 0px 0px 2px;
+    padding-left: 0.5em;
+    color: $gray-600;
     font-weight: 400;
-    font-family: monospace;
-    font-size: 0.6em;
-    margin-left: 1em;
   }
   &-link {
     font-size: 85%;

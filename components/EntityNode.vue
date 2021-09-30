@@ -27,7 +27,12 @@ export default {
   mixins: [LensMixin],
   data() {
     return {
-      show: false
+      show: false,
+      vocabLinkProperties: [
+        '@type',
+        'baseClassOf',
+        'baseClassChain',
+      ],
     }
   },
   props: {
@@ -64,7 +69,7 @@ export default {
           return VocabUtil.getTermObject(this.entity['@id'], this.vocab, this.vocabContext);
         }
       }
-      if (this.parentKey == '@type') {
+      if (this.vocabLinkProperties.includes(this.parentKey)) {
         return VocabUtil.getTermObject(this.entity, this.vocab, this.vocabContext);
       }
       return this.entity;
