@@ -1,7 +1,7 @@
 <template>
   <div class="ResultItem" :class="{ 'hovered': hovered, 'expanded': expanded }" @mouseover="hovered = true" @mouseout="hovered = false">
     <div class="ResultItem-header" :class="{ 'cursor-pointer': !forceExpanded }" @click="toggle" @keyup.enter="toggle(true)" tabindex="0">
-      <span class="ResultItem-title">
+      <span class="ResultItem-title" :class="{'as-header': isDocumentView }">
         <template v-if="!forceExpanded">
           <i class="bi bi-chevron-right" v-if="!expanded"></i>
           <i class="bi bi-chevron-down" v-if="expanded"></i>
@@ -56,6 +56,9 @@ export default {
     },
   },
   computed: {
+    isDocumentView() {
+      return this.$route.name == 'all' || this.$route.name == 'vocab-term';
+    },
     isVocabTerm() {
       const type = this.entityData['@type'];
       return type === 'Property' || type === 'Class' || type === 'DatatypeProperty';
@@ -110,7 +113,7 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 1em 0.25em;
+    padding: 1em 0.25em 1em 0;
     gap: 1em;
     line-height: 1.2;
     &.cursor-pointer {
@@ -121,7 +124,7 @@ export default {
     }
     @media (min-width: 768px) {
       line-height: auto;
-      padding: 0.5em 1em;
+      padding: 0.5em 1em 0.5em 0;
     }
     > span {
       padding: 0.1rem;
@@ -136,6 +139,10 @@ export default {
     }
   }
   &-title {
+    &.as-header {
+      font-size: 2rem;
+      padding: 0.5em 0.5em 0.5em 1.5rem;
+    }
     display: flex;
     gap: 0.5em;
     color: $kb-secondary-turquoise;
@@ -157,7 +164,7 @@ export default {
     color: $gray-700;
     font-weight: 400;
     font-family: monospace;
-    font-size: 0.9em;
+    font-size: 0.6em;
     margin-left: 1em;
   }
   &-link {
