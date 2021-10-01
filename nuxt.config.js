@@ -46,6 +46,10 @@ export default {
     '~mixins/lxl.js',
   ],
 
+  router: {
+    middleware: ['marc'],
+  },
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: false,
 
