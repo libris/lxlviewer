@@ -1,6 +1,7 @@
 import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import Vue from "vue"
+import rdfTranslations from '@/resources/json/rdfTranslations.json';
 
 // Make sure to pick a unique name for the flag
 // so it won't conflict with any other mixin.
@@ -16,11 +17,14 @@ if (!Vue.__lxl_global_mixin__) {
       ...mapGetters(['vocab', 'settings', 'vocabContext']),
     },
     methods: {
-      translateUriEnv(uri) {
-        return uri.replace('https://id.kb.se', this.settings.hostPath);
-      },
       translateKey(key) {
-        return StringUtil.getLabelByLang(key, this.settings.language, this.vocab, this.vocabContext);
+        const labelByLang = StringUtil.getLabelByLang(key, this.settings.language, this.vocab, this.vocabContext);
+        if (labelByLang === key) {
+          if (rdfTranslations[this.settings.language].hasOwnProperty(key)) {
+            return rdfTranslations[this.settings.language][key];
+          }
+        }
+        return labelByLang;
       },
       getEntityTitle(entity) {
         if (entity != null) {

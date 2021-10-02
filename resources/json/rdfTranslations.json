@@ -1,0 +1,16 @@
+{
+  "sv": {
+    "baseClassOf": "Härleds till",
+    "basePropertyOf": "Härleds till",
+    "subClassOf": "Härledd från",
+    "subPropertyOf": "Härledd från",
+    "isDefinedBy": "Definieras av",
+    "abstract": "Abstrakt",
+    "equivalentClass": "Motsvarar",
+    "domain": "Förekommer på",
+    "domainIncludes": "Förekommer på",
+    "range": "Urval",
+    "rangeIncludes": "Urval",
+    "equivalentProperty": "Motsvarar"
+  }
+}
