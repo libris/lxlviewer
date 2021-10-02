@@ -8,7 +8,7 @@
       <span v-else>{{ value[settings.language] ? value[settings.language] : value[Object.keys(value)[0]] }}</span>
     </span>
     <span class="PropertyRow-bodyValue multiple" v-if="Array.isArray(value)">
-      <EntityNode :parent-key="property" :entity="node" v-for="(node, index) in valueSorted" :key="index" />
+      <EntityNode :parent-key="property" :entity="node" v-for="(node, index) in finalizedValue" :key="index" />
     </span>
   </div>
 </template>
@@ -23,7 +23,10 @@ export default {
   mixins: [LensMixin],
   data() {
     return {
-      show: false
+      show: false,
+      filteredTypes: [
+        'Restriction',
+      ],
     }
   },
   props: {
@@ -47,6 +50,19 @@ export default {
         return this.vocabContext[1][this.property]['@container'];
       }
       return null;
+    },
+    finalizedValue() {
+      return this.withoutFilteredTypes;
+    },
+    withoutFilteredTypes() {
+      const original = this.valueSorted;
+      return original.filter((item) => {
+        if (item.hasOwnProperty('@type') == false) {
+          return true;
+        } else {
+          return this.filteredTypes.includes(item['@type']) == false;
+        }
+      });
     },
     objectLabelReference() {
       // Returns a map with objects as keys and labels as values
