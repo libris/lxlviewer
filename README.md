@@ -1,48 +1,9 @@
-# LXL Viewer
-This repository contains the code used for two services; [*id.kb.se*](https://id.kb.se) and [*libris cataloging*](https://libris.kb.se/katalogisering). They are both based off a Flask layer, with the difference that the id.kb.se-client is being rendered with jinja templates, and the libris cataloging-service is being rendered into an SPA by VueJS.
+# Libris cataloging client
+This repository contains the code used for [*libris cataloging*](https://libris.kb.se/katalogisering).
 
-The services are built to work on top of the [Libris XL](https://github.com/libris/librisxl) API:s.
+It is a VueJS single page application (SPA) that uses the [Libris XL](https://github.com/libris/librisxl) API:s.
 
 ## Getting started
-
-### Flask app
-
-#### Requirements
-
-* A functional REST-API for the resources ([Libris XL](https://github.com/libris/librisxl))
-
-#### Setup
-
-    $ pip install requirements.txt -r
-
-    $ cp instance/config.cfg.in instance/config.cfg
-
-Get variables from a developer at KB for `config.cfg`.
-
-#### Running
-
-    $ python serve.py
-
-### The static client ([id.kb.se](https://id.kb.se/))
-
-#### Requirements
-* A flask app serving the resources (see above)
-* [node.js](http://nodejs.org/)
-* [npm](https://www.npmjs.com/get-npm) (should already be included with node)
-
-#### Setup
-
-    $ cd viewer/client && npm install
-
-#### Building
-
-    $ npm run build
-
-or
-
-    $ npm run watch
-
-### The vue client ([libris cataloging](https://libris.kb.se/katalogisering))
 
 #### Tools and Frameworks used
 
@@ -55,7 +16,6 @@ No action required here, this is just information.
 * [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`package.json`](/viewer/vue-client/package.json) in `./viewer/vue-client`)
 
 #### Requirements
-* A flask app serving the resources (see above)
 * [node.js](http://nodejs.org/) >=8.16.2
 * [yarn](https://yarnpkg.com/en/docs/install)
 
