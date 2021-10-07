@@ -1,5 +1,4 @@
 import { cloneDeep, each, unset, get, set } from 'lodash-es';
-import * as md5 from 'md5';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
 
@@ -265,8 +264,7 @@ export function getItemObject(itemOf, heldBy, instance) {
 }
 
 export function moveHolding(holdingId, destinationId, user) {
-  const randomHash = md5(new Date());
-  const getUrl = `${holdingId.replace('#it', '')}/data.jsonld?${randomHash}`;
+  const getUrl = `${holdingId.replace('#it', '')}/data.jsonld`;
   let ETag = '';
   return new Promise((resolve, reject) => {
     fetch(getUrl).then((response) => {

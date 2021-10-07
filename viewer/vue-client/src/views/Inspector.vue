@@ -1,7 +1,6 @@
 
 <script>
 import { cloneDeep, each, get } from 'lodash-es';
-import * as md5 from 'md5';
 import { mapGetters, mapActions } from 'vuex';
 import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
@@ -161,8 +160,7 @@ export default {
         });
     },
     fetchDocument() {
-      const randomHash = md5(new Date());
-      const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld?${randomHash}`;
+      const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
           this.documentETag = response.headers.get('ETag');
@@ -222,8 +220,7 @@ export default {
     prepareDetailedEnrichment(id = null, data = null) {
       if (id !== null) {
         const fixedId = RecordUtil.extractFnurgel(id);
-        const randomHash = md5(new Date());
-        const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld?${randomHash}`;
+        const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
         fetch(fetchUrl).then((response) => {
           if (response.status === 200) {
             return response.json();
@@ -263,8 +260,7 @@ export default {
     },
     applyPostAsTemplate(id) {
       const fixedId = RecordUtil.extractFnurgel(id);
-      const randomHash = md5(new Date());
-      const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld?${randomHash}`;
+      const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
           return response.json();
