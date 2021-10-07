@@ -13,7 +13,7 @@ No action required here, this is just information.
 
 #### Coding Standard
 * [SUIT CSS](https://suitcss.github.io/)
-* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`package.json`](/viewer/vue-client/package.json) in `./viewer/vue-client`)
+* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`package.json`](/vue-client/package.json) in `./vue-client`)
 
 #### Requirements
 * [node.js](http://nodejs.org/) >=8.16.2
@@ -21,7 +21,7 @@ No action required here, this is just information.
 
 #### Setup
 
-    $ cd viewer/vue-client && yarn install
+    $ cd vue-client && yarn install
 
     $ cp .env.development.in .env.development
 
