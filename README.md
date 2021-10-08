@@ -4,7 +4,7 @@ Server-side rendered Vue.js application (using [NuxtJS](https://nuxtjs.org/)).
 
 ## Requirements
 
-* This application requires a JSON-LD API to connect to. See [lxlviewer](libris/librisxl).
+* This application requires a JSON-LD API to connect to. See [librisxl](libris/librisxl).
 
 ## Build Setup
 
