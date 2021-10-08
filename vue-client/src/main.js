@@ -302,7 +302,7 @@ new Vue({
     fetchHelpDocs() {
       if (this.settings.mockHelp) {
         window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
-        store.dispatch('setHelpDocs', require('@/../../../../lxl-helpdocs/build/help.json'));
+        store.dispatch('setHelpDocs', require('@/../../../lxl-helpdocs/build/help.json'));
       } else {
         fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
           if (result.status === 200) {

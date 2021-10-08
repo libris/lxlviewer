@@ -13,7 +13,7 @@ export function getDisplayDefinitions(settings) {
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
       window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using file from local definitions repository');
-      resolve(expandInherited(require('@/../../../../definitions/source/vocab/display.jsonld')));
+      resolve(expandInherited(require('@/../../../definitions/source/vocab/display.jsonld')));
     } else {
       httpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
         resolve(expandInherited(result));
