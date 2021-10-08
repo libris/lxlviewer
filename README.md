@@ -4,9 +4,7 @@ Server-side rendered Vue.js application (using [NuxtJS](https://nuxtjs.org/)).
 
 ## Requirements
 
-* This application requires a JSON-LD API to connect to. For the time being, that is the flask-layer of [lxlviewer](libris/lxlviewer).
-  * The purpose of this application *at this point* is to replace the templating layer of the static parts of lxlviewer.
-
+* This application requires a JSON-LD API to connect to. See [lxlviewer](libris/librisxl).
 
 ## Build Setup
 
