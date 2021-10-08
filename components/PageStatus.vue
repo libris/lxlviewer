@@ -1,6 +1,6 @@
 <template>
   <div class="PageStatus">
-    {{ pageData.itemOffset + 1 }}-{{ (pageData.itemOffset + pageData.items.length) }} av {{ pageData.totalItems }}
+    {{ pageData.itemOffset + 1 }}-{{ (pageData.itemOffset + pageData.items.length) }} {{ translateUi('of') }} {{ pageData.totalItems }}
   </div>
 </template>
 

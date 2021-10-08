@@ -4,15 +4,15 @@
       <div class="CollectionCard-header">
         <span class="CollectionCard-title">
           <a onclick="event.stopPropagation()" :href="collectionData.view['@id']">
-            {{ collectionData.object.titleByLang['sv'] }}
+            {{ title }}
           </a>
         </span>
         <span class="CollectionCard-counter">
-          {{ collectionData.totalItems }} termer
+          {{ collectionData.totalItems }} {{ translateUi('terms') }}
         </span>
       </div>
       <div class="CollectionCard-body">
-        <a onclick="event.stopPropagation()" :href="collectionData.object['@id'] | removeBaseUri">Mer om {{collectionData.object.titleByLang['sv']}}</a>
+        <a onclick="event.stopPropagation()" :href="collectionData.object['@id'] | removeBaseUri">{{ translateUi('More about') }} {{ title }}</a>
       </div>
     </div>
     <div class="CollectionCard-arrow">
@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
@@ -32,6 +34,12 @@ export default {
     collectionData: {
       type: Object,
       default: null,
+    },
+  },
+  computed: {
+    ...mapGetters(['settings']),
+    title() {
+      return this.collectionData.object.titleByLang[this.settings.language] || this.collectionData.object.titleByLang[Object.keys(this.collectionData.object.titleByLang)[0]];
     },
   },
   methods: {

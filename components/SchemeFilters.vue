@@ -4,8 +4,8 @@
     <template v-if="slices.hasOwnProperty('inScheme.@id')">
       <SchemeFilter v-for="scheme in shownObservations" :scheme="scheme" :key="scheme['@id']" />
     </template>
-    <span class="SchemeFilters-showMore" ref="showMore" tabindex="0" v-show="!showMore && observations.length > limitedObservations.length" @click="toggleShowMore" @keyup.enter="toggleShowMore(true)">Visa fler... ({{ observations.length - limitedObservations.length }})</span>
-    <span class="SchemeFilters-showLess" ref="showLess" tabindex="0" v-show="showMore" @click="toggleShowMore" @keyup.enter="toggleShowMore(true)">Visa färre</span>
+    <span class="SchemeFilters-showMore" ref="showMore" tabindex="0" v-show="!showMore && observations.length > limitedObservations.length" @click="toggleShowMore" @keyup.enter="toggleShowMore(true)">{{ translateUi('Show more') }}... ({{ observations.length - limitedObservations.length }})</span>
+    <span class="SchemeFilters-showLess" ref="showLess" tabindex="0" v-show="showMore" @click="toggleShowMore" @keyup.enter="toggleShowMore(true)">{{ translateUi('Show less') }}</span>
   </div>
 </template>
 

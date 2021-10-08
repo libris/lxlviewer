@@ -1,12 +1,12 @@
 <template>
   <div class="SchemeFilter" tabindex="0" :class="{ 'is-active': isActive }" @click="setAsFilter" @keyup.enter="setAsFilter">
     <template v-if="noFilter == false">
-      <span class="d-none d-sm-block">{{ scheme.object.titleByLang['sv'] }}</span>
+      <span class="d-none d-sm-block">{{ scheme.object.titleByLang[settings.language] || Object.values(scheme.object.titleByLang)[0] }}</span>
       <span class="d-block d-sm-none">{{ scheme.object.code }}</span>
       <span>({{ scheme.totalItems }})</span>
     </template>
     <template v-else>
-      Alla
+      {{ translateUi('All') }}
     </template>
   </div>
 </template>

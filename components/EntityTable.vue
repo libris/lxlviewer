@@ -2,7 +2,7 @@
   <div class="EntityTable-body">
     <div class="PropertyRow d-md-flex" v-if="showUri">
       <span class="PropertyRow-bodyKey d-block d-md-inline">
-        URI (länk till resurs)
+        URI ({{ translateUi('link to resource') }})
       </span>
       <span class="PropertyRow-bodyValue">
         <NuxtLink :to="itemData['@id'] | removeBaseUri">
@@ -13,7 +13,7 @@
     </div>
     <PropertyRow :property="prop" :key="prop" :value="itemData[prop]" v-for="prop in sortedProperties" />
     <div class="PropertyRow d-md-flex" v-if="showDownload">
-      <span class="PropertyRow-bodyKey d-block d-md-inline">Ladda ner</span>
+      <span class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Download') }}</span>
       <span class="PropertyRow-bodyValue"><a :href="`${itemData['@id']}/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${itemData['@id']}/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${itemData['@id']}/data.rdf` | replaceBaseWithApi">RDF/XML</a></span>
     </div>
   </div>

@@ -187,6 +187,9 @@ export const mutations = {
       throw new Error(`Trying to set an app state property that does not exist. Has it been setup in store? Trying to modify: ${property}`);
     }
   },
+  SET_LANGUAGE(state, langCode) {
+    state.settings.language = langCode;
+  },
   SET_COLLECTIONS(state, data) {
     state.collections = data;
   },
@@ -290,7 +293,10 @@ export const actions = {
   },
   setAppState({ commit }, payload) {
     commit('SET_APP_STATE', payload);
-  }
+  },
+  setLanguage({ commit }, langCode) {
+    commit('SET_LANGUAGE', langCode);
+  },
 };
 
 export const getters = {

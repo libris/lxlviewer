@@ -1,7 +1,7 @@
 <template>
   <div class="SortSelect">
     <select v-model="selectedSort">
-      <option v-for="option in options" :key="option.value" :value="option.value">{{ option.label }}</option>
+      <option v-for="option in options" :key="option.value" :value="option.value">{{ translateUi(option.label) }}</option>
     </select>
   </div>
 </template>
@@ -12,9 +12,9 @@ export default {
     return {
       selectedSort: '',
       options: [
-        {value: '', label: 'Relevans'},
-        {value: 'prefLabel', label: 'Föredragen benämning (A-Ö)'},
-        {value: '-prefLabel', label: 'Föredragen benämning (Ö-A)'},
+        {value: '', label: 'Relevance' },
+        {value: 'prefLabel', label: 'Preferred label (A-Z)' },
+        {value: '-prefLabel', label: 'Preferred label (Z-A)' },
       ],
     }
   },

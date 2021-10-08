@@ -17,7 +17,7 @@
           </div>
           <div class="SearchStatus col-md-8 col-lg-8 col-xl-9 col-xxl-10" v-if="pageData.totalItems == 0">
             <p>
-              Inga resultat.
+              {{ translateUi('No results') }}.
             </p>
           </div>
           <div class="SearchResult-resultList">

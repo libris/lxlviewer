@@ -3,8 +3,8 @@
     <div class="row">
       <div class="Vocab-termListColumn col-md-4 col-lg-4 col-xl-3 col-xxl-2">
         <div class="Vocab-termListControllers">
-          <button class="btn" :class="{'btn-dark': listShown == 'Classes', 'btn-kb-primary-grey': listShown != 'Classes' }" @click="listShown = 'Classes'">Klasser</button>
-          <button class="btn" :class="{'btn-dark': listShown == 'Properties', 'btn-kb-primary-grey': listShown != 'Properties' }" @click="listShown = 'Properties'">Egenskaper</button>
+          <button class="btn" :class="{'btn-dark': listShown == 'Classes', 'btn-kb-primary-grey': listShown != 'Classes' }" @click="listShown = 'Classes'">{{ translateUi('Classes') }}</button>
+          <button class="btn" :class="{'btn-dark': listShown == 'Properties', 'btn-kb-primary-grey': listShown != 'Properties' }" @click="listShown = 'Properties'">{{ translateUi('Properties') }}</button>
         </div>
         <!-- <div class="Vocab-termListControllers">
           <input type="checkbox" id="showMarc" v-model="showMarc" /> <label for="showMarc">Visa marc-termer</label>

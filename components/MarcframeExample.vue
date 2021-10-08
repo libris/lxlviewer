@@ -1,6 +1,6 @@
 <template>
   <div class="MarcframeExample">
-    <div class="MarcframeExample-header">Example: {{ example.name ? example.name : '-' }}</div>
+    <div class="MarcframeExample-header">{{ translateUi('Example') }}: {{ example.name ? example.name : '-' }}</div>
     <div class="MarcframeExample-body">
       <div v-if="source != null">
         <div class="MarcframeExample-label">MARC</div>

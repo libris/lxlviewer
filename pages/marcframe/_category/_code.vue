@@ -2,25 +2,25 @@
   <div class="Marcframe-codeDetails">
     <template v-if="codeData">
       <div class="Marcframe-codeHeader" id="code-section">
-        <h1>{{ category.toUpperCase() }}-{{ code }}</h1> <a href="#example-section">Gå till kodexempel</a>
+        <h1>{{ category.toUpperCase() }}-{{ code }}</h1> <a href="#example-section">{{ translateUi('Go to examples') }}</a>
       </div>
       <div class="Marcframe-codeBody">
         <MarcframeObject :value="codeData" />
       </div>
       <div class="Marcframe-codeHeader" id="example-section">
-        <h2>Examples</h2> <a href="#code-section">Gå till toppen av sidan</a>
+        <h2>{{ translateUi('Examples') }}</h2> <a href="#code-section">{{ translateUi('Go to top of page') }}</a>
       </div>
       <div class="Marcframe-codeBody">
         <template v-if="codeData.hasOwnProperty('_spec')">
           <MarcframeExample :example="example" v-for="(example, index) in codeData['_spec']" :key="index" />
         </template>
         <template v-else>
-          No examples.
+          {{ translateUi('No examples') }}.
         </template>
       </div>
     </template>
     <template v-else>
-      <h1>Hittade inte mappning för kod {{ category }}-{{ code }}</h1>
+      <h1>{{ translateUi('Did not find mapping for code') }} {{ category }}-{{ code }}</h1>
     </template>
   </div>
 </template>

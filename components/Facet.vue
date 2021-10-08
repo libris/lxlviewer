@@ -70,7 +70,7 @@ export default {
       }
       if (this.facet.object[prop]) {
         if (prop.includes('ByLang')) {
-          return this.facet.object[prop]['sv'] || this.facet.object[prop]['en'];
+          return this.facet.object[prop][this.settings.language] || Object.values(this.facet.object[prop])[0];
         }
         return this.facet.object[prop];
       }

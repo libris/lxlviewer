@@ -12,5 +12,19 @@
     "range": "Urval",
     "rangeIncludes": "Urval",
     "equivalentProperty": "Motsvarar"
+  },
+  "en": {
+    "baseClassOf": "Base class of",
+    "basePropertyOf": "Base property of",
+    "subClassOf": "Sub class of",
+    "subPropertyOf": "Sub property of",
+    "isDefinedBy": "Is defined by",
+    "abstract": "Abstract",
+    "equivalentClass": "Equivalent class",
+    "domain": "Domain",
+    "domainIncludes": "Domain",
+    "range": "Range",
+    "rangeIncludes": "Range",
+    "equivalentProperty": "Equivalent property"
   }
 }

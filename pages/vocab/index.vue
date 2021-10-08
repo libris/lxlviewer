@@ -1,7 +1,10 @@
 <template>
   <div class="Vocab-termDetails">
-    <h1>Basvokabulär</h1>
-    <p>Välj en term i listan för att se detaljer.</p>
+    <h1>{{ translateUi('Vocabulary') }}</h1>
+    <p v-if="settings.language == 'sv'">Välj en term i listan för att se detaljer.</p>
+    <p v-else>
+      Choose a term in the list to see details.
+    </p>
   </div>
 </template>
 
@@ -26,7 +29,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext']),
+    ...mapGetters(['vocab', 'settings', 'vocabClasses', 'vocabProperties', 'vocabContext']),
     pageTitle() {
       if (this.termData) {
         return `${ this.termTitle || 'Basvokabulär'}`

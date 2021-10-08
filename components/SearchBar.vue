@@ -8,17 +8,17 @@
             <ul>
               <li class="SuggestItem" :class="{'is-selected': selectedSuggestion == -1 }" @mouseenter="selectedSuggestion = -1" @click="submit">
                 <i class="bi-arrow-return-left"></i>
-                <span><strong>{{ keyword }}</strong> <span class="text-muted">sök i hela id.kb.se</span></span>
+                <span><strong>{{ keyword }}</strong> <span class="text-muted">{{ translateUi('search all of id.kb.se') }}</span></span>
               </li>
               <template v-if="suggestedItems && suggestedItems.length > 0">
-                <li class="SuggestItem-divider">förslag<hr></li>
+                <li class="SuggestItem-divider">{{ translateUi('suggested') }}<hr></li>
                 <SuggestItem v-for="(item, index) in suggestedItems" :selected="selectedSuggestionItem == item['@id']" @hovered="selectedSuggestion = index" :item="item" :key="item['@id']" @suggest="recieveSuggest" />
               </template>
             </ul>
           </div>
         </div>
         <div class="col-4 col-md-2">
-          <button type="button" @keyup.enter="submit()" @click="submit()" class="btn btn-kb-secondary-turquoise">sök</button>
+          <button type="button" @keyup.enter="submit()" @click="submit()" class="btn btn-kb-secondary-turquoise">{{ translateUi('Search') }}</button>
         </div>
       </div>
     </div>

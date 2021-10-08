@@ -2,7 +2,7 @@
   <div class="PropertyRow d-md-flex" :data-property="property">
     <span class="PropertyRow-bodyKey d-block d-md-inline" :title="translateKey(property)">{{ translateKey(property) }}</span>
     <span class="PropertyRow-bodyValue single" v-if="!Array.isArray(value)">
-      <span class="" v-if="typeof value == 'boolean'">{{ value == true ? 'Ja' : 'Nej' }}</span>
+      <span class="" v-if="typeof value == 'boolean'">{{ translateUi(value == true ? 'Yes' : 'No') }}</span>
       <span v-else-if="typeof value !== 'object'">{{ value }}</span>
       <EntityNode :parent-key="property" :entity="value" v-else-if="!isByLangProperty" />
       <span v-else>{{ value[settings.language] ? value[settings.language] : value[Object.keys(value)[0]] }}</span>
