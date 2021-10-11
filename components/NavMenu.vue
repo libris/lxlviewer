@@ -13,6 +13,8 @@
       <li class="nav-item">
         <NuxtLink @click.native="linkActivated" to="/doc/about" class="nav-link" :class="{'active': $route.path == '/doc/about' }">{{ translateUi('About id.kb.se') }}</NuxtLink>
       </li>
+    </ul>
+    <ul class="navbar-nav">
       <li class="nav-item LanguageSelect">
         <i class="bi bi-globe"></i>
         <a class="LanguageSelect-item" :class="{ 'active': settings.language == 'sv' }" href="#" @click="setSwedish">sv</a>
@@ -77,6 +79,7 @@ export default {
 <style lang="scss">
 .NavMenu {
   padding: 0.5em 0;
+  justify-content: space-between;
   &:not(.collapse) {
     .nav-item {
       text-align: center;
