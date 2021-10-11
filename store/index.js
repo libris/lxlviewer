@@ -13,9 +13,6 @@ export const state = () => ({
   currentDocument: null,
   entityReferences: {},
   collections: null,
-  resources: {
-    marcframe: null,
-  },
   appState: {
     navigatingWithFacetColumn: false,
     navigatingFromSearchBar: false,
@@ -237,10 +234,7 @@ export const mutations = {
     state.vocabContext = data;
   },
   SET_MARCFRAME_DATA(state, data) {
-    if (state.hasOwnProperty('resources') == false) {
-      state.resources = {};
-    }
-    state.resources.marcframe = data;
+    state.marcframe = data;
   },
   SET_CURRENT_DOCUMENT(state, data) {
     state.currentDocument = data;
@@ -307,7 +301,12 @@ export const getters = {
     return state.settings;
   },
   resources: state => {
-    return state.resources;
+    return {
+      vocab: state.vocab,
+      display: state.display,
+      context: state.vocabContext,
+      marcframe: state.marcframe,
+    };
   },
   display: state => {
     return state.display;
