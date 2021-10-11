@@ -5,7 +5,16 @@
       <span class="" v-if="typeof value == 'boolean'">{{ translateUi(value == true ? 'Yes' : 'No') }}</span>
       <span v-else-if="typeof value !== 'object'">{{ value }}</span>
       <EntityNode :parent-key="property" :entity="value" v-else-if="!isByLangProperty" />
-      <span v-else>{{ value[settings.language] ? value[settings.language] : value[Object.keys(value)[0]] }}</span>
+      <div class="PropertyRow-grid" v-else>
+        <template v-for="(v, lang) in value">
+          <div class="PropertyRow-gridKey" :key="lang">
+            {{ lang }}
+          </div>
+          <div class="PropertyRow-gridValue"  :key="lang">
+            {{ v }}
+          </div>
+        </template>
+      </div>
     </span>
     <span class="PropertyRow-bodyValue multiple" v-if="Array.isArray(value)">
       <EntityNode :parent-key="property" :entity="node" v-for="(node, index) in finalizedValue" :key="index" />
@@ -112,6 +121,16 @@ export default {
     border-width: 0px;
   }
 
+  &-grid {
+    display: grid;
+    grid-template-columns: 2em 1fr;
+  }
+  &-gridKey {
+    font-family: monospace;
+  }
+  &-gridValue {
+
+  }
   &-bodyKey {
     color: $gray-700;
     flex-basis: 15em;
