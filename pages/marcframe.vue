@@ -160,11 +160,11 @@ export default {
     border: solid $gray-300;
     border-width: 0px 0px 1px 0px;
     height: 25vh;
+    overflow-y: auto;
+    overflow-x: hidden;
     @media (min-width: 768px) {
       height: 100%;
     }
-    overflow-y: auto;
-    overflow-x: hidden;
     ul {
       &.otherKey {
         display: flex;

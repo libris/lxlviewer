@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid Vocab">
     <div class="row">
-      <div class="Vocab-termListColumn col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+      <div class="Vocab-termListColumn col-md-4 col-lg-4 col-xl-3 col-xxl-3">
         <div class="Vocab-termListControllers">
           <button class="btn" :class="{'btn-dark': listShown == 'Classes', 'btn-kb-primary-grey': listShown != 'Classes' }" @click="listShown = 'Classes'">{{ translateUi('Classes') }}</button>
           <button class="btn" :class="{'btn-dark': listShown == 'Properties', 'btn-kb-primary-grey': listShown != 'Properties' }" @click="listShown = 'Properties'">{{ translateUi('Properties') }}</button>
@@ -20,7 +20,7 @@
           </ul>
         </div>
       </div>
-      <div class="Vocab-termDetailsColumn col-md-8 col-lg-8 col-xl-9 col-xxl-10">
+      <div class="Vocab-termDetailsColumn offset-md-4 offset-lg-4 offset-xl-3 offset-xxl-3 col-md-8 col-lg-8 col-xl-9 col-xxl-9">
         <NuxtChild  />
       </div>
     </div>
@@ -99,6 +99,16 @@ export default {
     display: flex;
     flex-direction: column;
     height: 100%;
+    background-color: $white;
+    @media (min-width: 768px) {
+      position: fixed;
+      height: calc(100vh - 50px - 81px);
+      padding-left: 2em !important;
+      padding-right: 0em !important;
+      left: 0;
+      border: solid $gray-300;
+      border-width: 0px 1px 0px 0px;
+    }
   }
   &-termDetailsColumn {
       padding-top: 2rem;
@@ -112,9 +122,15 @@ export default {
     padding: 0.5em 0;
   }
   &-termList {
-    height: 60vh;
-    overflow-y: scroll;
+    flex-grow: 1;
+    border: solid $gray-300;
+    border-width: 0px 0px 1px 0px;
+    height: 25vh;
+    overflow-y: auto;
     overflow-x: hidden;
+    @media (min-width: 768px) {
+      height: 100%;
+    }
     ul {
       padding: 1em 0em;
       li {
