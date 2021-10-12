@@ -1,5 +1,6 @@
 import { mapGetters } from 'vuex';
 import * as StringUtil from '@/utils/string';
+import envComputer from '@/plugins/env';
 import Vue from "vue"
 import rdfTranslations from '@/resources/json/rdfTranslations.json';
 import i18n from '@/resources/json/i18n.json';
@@ -32,6 +33,9 @@ if (!Vue.__lxl_global_mixin__) {
           return i18n[this.settings.language][phrase];
         }
         return phrase;
+      },
+      translateUriEnv(uri) {
+        return uri.replace('https://id.kb.se', envComputer(process.env.ENV));
       },
       getEntityTitle(entity) {
         if (entity != null) {
