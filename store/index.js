@@ -3,6 +3,7 @@ import * as VocabUtil from '@/utils/vocab';
 import * as DisplayUtil from '@/utils/display';
 import * as StringUtil from '@/utils/string';
 import envComputer from '@/plugins/env';
+import translationsFile from '@/resources/json/i18n.json';
 
 export const state = () => ({
   vocab: null,
@@ -306,6 +307,7 @@ export const getters = {
       display: state.display,
       context: state.vocabContext,
       marcframe: state.marcframe,
+      i18n: translationsFile,
     };
   },
   display: state => {

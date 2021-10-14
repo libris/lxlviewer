@@ -58,12 +58,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['display', 'vocabContext', 'settings', 'vocab']),
+    ...mapGetters(['display', 'resources', 'vocabContext', 'settings', 'vocab']),
     ownPath() {
       return this.translateUriEnv(this.itemData['@id']);
     },
     sortedProperties() {
-      const propertyOrder = DisplayUtil.getDisplayProperties(this.itemData['@type'], this.display, this.vocab, this.settings, this.vocabContext, 'full');
+      const propertyOrder = DisplayUtil.getDisplayProperties(this.itemData['@type'], this.resources, this.settings, 'full');
       const translatedOrder = [];
       propertyOrder.forEach((prop) => {
         let currentProp = prop;

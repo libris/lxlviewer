@@ -1,5 +1,4 @@
 import { isObject, isArray, uniqBy, each, remove } from 'lodash-es';
-import translationsFile from '@/resources/json/i18n.json';
 import * as VocabUtil from '@/utils/vocab';
 
 export function removeDomain(string, removableBaseUriArray) {
@@ -79,7 +78,7 @@ export function convertToVocabKey(str, context) {
   return `${context[0]['@vocab']}${str}`;
 }
 
-export function getUiPhraseByLang(phrase, langcode) {
+export function getUiPhraseByLang(phrase, langcode, translationsFile) {
   if (typeof phrase === 'string') {
     if (translationsFile[langcode] && translationsFile[langcode][phrase]) {
       return translationsFile[langcode][phrase];

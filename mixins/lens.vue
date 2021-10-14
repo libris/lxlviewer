@@ -26,47 +26,39 @@ export default {
   //   },
   },
   computed: {
-    ...mapGetters(['vocab', 'display', 'entityReferences', 'vocabContext', 'settings']),
+    ...mapGetters(['vocab', 'display', 'entityReferences', 'resources', 'vocabContext', 'settings']),
     getItemLabel() {
       return DisplayUtil.getItemLabel(
         this.entityData,
-        this.display,
+        this.resources,
         this.entityReferences,
-        this.vocab,
         this.settings,
-        this.vocabContext,
       );
     },
     getChip() {
       const chip = DisplayUtil.getChip(
         this.entityData,
-        this.display,
+        this.resources,
         this.entityReferences,
-        this.vocab,
         this.settings,
-        this.vocabContext,
       );
       return chip;
     },
     getCard() {
       const card = DisplayUtil.getCard(
         this.entityData,
-        this.display,
+        this.resources,
         this.entityReferences,
-        this.vocab,
         this.settings,
-        this.vocabContext,
       );
       return card;
     },
     getSummary() {
       const summary = DisplayUtil.getItemSummary(
         this.entityData,
-        this.display,
+        this.resources,
         this.entityReferences,
-        this.vocab,
         this.settings,
-        this.vocabContext,
         this.excludeProperties,
       );
       return summary;

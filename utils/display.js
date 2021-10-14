@@ -1,10 +1,6 @@
 import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual } from 'lodash-es';
-// import moment from 'moment';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
-// import 'moment/locale/sv';
-
-// moment.locale('sv');
 
 export function expandInherited(display) {
   const cloned = cloneDeep(display);
@@ -56,7 +52,7 @@ export function expandInherited(display) {
   return cloned;
 }
 
-function getValueByLang(item, propertyId, displayDefs, langCode, context) {
+function getValueByLang(item, propertyId, langCode, context) {
   const translatedValue = tryGetValueByLang(item, propertyId, langCode, context);
   return translatedValue != null ? translatedValue : item[propertyId];
 }
@@ -95,24 +91,24 @@ export function getLensById(id, displayDefs) {
 }
 
 /* eslint-disable no-use-before-define */
-export function getLensPropertiesDeep(className, displayDefinitions, vocab, settings, context, level, depth) {
+export function getLensPropertiesDeep(className, resources, settings, level, depth) {
   let props = [];
-  const lensGroups = displayDefinitions.lensGroups;
+  const lensGroups = resources.display.lensGroups;
   if (lensGroups.hasOwnProperty(level) && lensGroups[level].lenses.hasOwnProperty(className)) {
     props = lensGroups[level].lenses[className].showProperties;
   } else {
-    const termObj = VocabUtil.getTermObject(className, vocab, context);
+    const termObj = VocabUtil.getTermObject(className, resources.vocab, resources.context);
     if (typeof termObj !== 'undefined' && termObj.hasOwnProperty('subClassOf')) {
-      const ownClasses = VocabUtil.filterOwnClasses(termObj.subClassOf, context);
+      const ownClasses = VocabUtil.filterOwnClasses(termObj.subClassOf, resources.context);
       if (ownClasses.length > 0) {
-        props = getDisplayProperties(ownClasses[0]['@id'], displayDefinitions, vocab, settings, context, level, depth + 1);
+        props = getDisplayProperties(ownClasses[0]['@id'], resources, settings, level, depth + 1);
       }
     }
   }
   return props;
 }
 
-export function getDisplayProperties(className, displayDefinitions, vocab, settings, context, inputLevel, depth = 0) {
+export function getDisplayProperties(className, resources, settings, inputLevel, depth = 0) {
   if (!className || typeof className === 'undefined') {
     throw new Error('getDisplayProperties was called with an undefined type.');
   }
@@ -121,13 +117,13 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
       'getDisplayProperties was called with an object as type parameter (should be a string).',
     );
   }
-  const cn = StringUtil.getCompactUri(className, context);
+  const cn = StringUtil.getCompactUri(className, resources.context);
   let level = inputLevel;
   let props = [];
 
   // If we want tokens, we traverse them first, since they can "fail"
   if (level === 'tokens') {
-    props = getLensPropertiesDeep(cn, displayDefinitions, vocab, settings, context, level, depth);
+    props = getLensPropertiesDeep(cn, resources, settings, level, depth);
     if (props.length === 0 && depth === 0) {
       // If we wanted tokens and got nothing, change level to "chips"
       // We only want to "sidestep" if depth is 0.
@@ -136,13 +132,13 @@ export function getDisplayProperties(className, displayDefinitions, vocab, setti
   }
   // If level is not tokens 
   if (level !== 'tokens') {
-    props = getLensPropertiesDeep(cn, displayDefinitions, vocab, settings, context, level, depth);
+    props = getLensPropertiesDeep(cn, resources, settings, level, depth);
   }
   props = uniq(props);
   const propsWithTranslatedObjects = [];
   for (let i = 0; i < props.length; i++) {
     if (isObject(props[i])) {
-      const translated = translateObjectProp(props[i], context);
+      const translated = translateObjectProp(props[i]);
       if (translated !== null) {
         propsWithTranslatedObjects[i] = translated;
       }
@@ -161,7 +157,7 @@ export function translateObjectProp(object) {
 }
 
 /* eslint-disable no-use-before-define */
-export function getItemLabel(item, displayDefs, quoted, vocab, settings, context, inClass = '') {
+export function getItemLabel(item, resources, quoted, settings, inClass = '') {
   if (typeof item === 'string') {
     // Assume this is already a label.
     return item;
@@ -172,18 +168,18 @@ export function getItemLabel(item, displayDefs, quoted, vocab, settings, context
   if (!isObject(item)) {
     throw new Error(`getItemLabel was called with a non-object. Type: ${typeof item}. Value: ${item}`);
   }
-  const displayObject = getChip(item, displayDefs, quoted, vocab, settings, context);
+  const displayObject = getChip(item, resources, quoted, settings);
   if (Object.keys(displayObject).length === 0) {
     return JSON.stringify(item);
   }
   let rendered = StringUtil.formatLabel(displayObject).trim();
-  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
+  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', resources.vocab, resources.context)) {
     if (item['@type'] === 'ISNI' || item['@type'] === 'ORCID') { 
       rendered = formatIsni(rendered);
     }
 
     if (inClass.toLowerCase() !== item['@type'].toLowerCase()) {
-      const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, vocab, context);
+      const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, resources.vocab, resources.context);
       rendered = `${translatedType} ${rendered}`;
     }
   }
@@ -214,17 +210,17 @@ export function getSortedProperties(formType, formObj, settings, resources) {
   return propertyList;
 }
 
-export function getItemToken(item, displayDefs, quoted, vocab, settings, context) {
-  const displayObject = getToken(item, displayDefs, quoted, vocab, settings, context);
+export function getItemToken(item, resources, quoted, settings) {
+  const displayObject = getToken(item, resources, quoted, settings);
   let rendered = StringUtil.formatLabel(displayObject).trim();
-  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', vocab, context)) {
-    const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, vocab, context);
+  if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', resources.vocab, resources.context)) {
+    const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, resources.vocab, resources.context);
     rendered = `${translatedType} ${rendered}`;
   }
   return rendered;
 }
 
-export function getDisplayObject(item, level, displayDefs, quoted, vocab, settings, context) {
+export function getDisplayObject(item, level, resources, quoted, settings) {
   if (!item || typeof item === 'undefined') {
     throw new Error('getDisplayObject was called with an undefined object.');
   }
@@ -250,11 +246,11 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
   }
   // Get the list of properties we want to show
   const displayType = isArray(trueItem['@type']) ? trueItem['@type'][0] : trueItem['@type']; // If more than one type, choose the first
-  const properties = getDisplayProperties(displayType, displayDefs, vocab, settings, context, level);
+  const properties = getDisplayProperties(displayType, resources, settings, level);
   // Start filling the object with the selected properties
   if (properties.length === 2 && properties.indexOf('label') > -1 && properties.indexOf('prefLabel') > -1) {
-    const labelValue = getValueByLang(trueItem, 'label', displayDefs, settings.language, context);
-    const prefLabelValue = getValueByLang(trueItem, 'prefLabel', displayDefs, settings.language, context);
+    const labelValue = getValueByLang(trueItem, 'label', settings.language, resources.context);
+    const prefLabelValue = getValueByLang(trueItem, 'prefLabel', settings.language, resources.context);
     if (typeof prefLabelValue !== 'undefined') {
       result.prefLabel = prefLabelValue;
     } else if (labelValue !== 'undefined') {
@@ -266,18 +262,17 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       if (!isObject(property)) {
         let valueOnItem = '';
         if (property === 'created' || property === 'modified') {
-          // valueOnItem = moment(item[property]).format('lll');
-          valueOnItem = 'MOMENT';
+          valueOnItem = item[property];
         } else {
-          valueOnItem = getValueByLang(trueItem, property, displayDefs, settings.language, context);
+          valueOnItem = getValueByLang(trueItem, property, settings.language, resources.context);
         }
         if (typeof valueOnItem !== 'undefined') {
           let value = valueOnItem;
           if (isObject(value) && !isArray(value)) {
             if (level === 'chips') {
-              value = getItemToken(value, displayDefs, quoted, vocab, settings, context);
+              value = getItemToken(value, resources, quoted, settings);
             } else {
-              value = getItemLabel(value, displayDefs, quoted, vocab, settings, context, property);
+              value = getItemLabel(value, resources, quoted, settings, property);
             }
           } else if (isArray(value)) {
             const newArray = [];
@@ -287,9 +282,9 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
               }
               if (isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
                 if (level === 'chips') {
-                  newArray.push(getItemToken(arrayItem, displayDefs, quoted, vocab, settings, context));
+                  newArray.push(getItemToken(arrayItem, resources, quoted, settings));
                 } else {
-                  newArray.push(getItemLabel(arrayItem, displayDefs, quoted, vocab, settings, context, property));
+                  newArray.push(getItemLabel(arrayItem, resources, quoted, settings, property));
                 }
               } else if (arrayItem.length > 0) {
                 newArray.push(arrayItem);
@@ -327,18 +322,18 @@ export function getDisplayObject(item, level, displayDefs, quoted, vocab, settin
       const idParts = item['@id'].split('/');
       result = { label: idParts[idParts.length - 1] };
     } else {
-      result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` };
+      result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language, resources.i18n)}}` };
     }
   }
   return result;
 }
 
-export function getChip(item, displayDefs, quoted, vocab, settings, context) {
-  return getDisplayObject(item, 'chips', displayDefs, quoted, vocab, settings, context);
+export function getChip(item, resources, quoted, settings) {
+  return getDisplayObject(item, 'chips', resources, quoted, settings);
 }
 
-export function getToken(item, displayDefs, quoted, vocab, settings, context) {
-  const tokenObj = getDisplayObject(item, 'tokens', displayDefs, quoted, vocab, settings, context);
+export function getToken(item, resources, quoted, settings) {
+  const tokenObj = getDisplayObject(item, 'tokens', resources, quoted, settings);
   const token = { rendered: '' };
   Object.keys(tokenObj).forEach((key) => {
     token.rendered += ` ${tokenObj[key]}`;
@@ -346,13 +341,13 @@ export function getToken(item, displayDefs, quoted, vocab, settings, context) {
   return token;
 }
 
-export function getCard(item, displayDefs, quoted, vocab, settings, context) {
-  return getDisplayObject(item, 'cards', displayDefs, quoted, vocab, settings, context);
+export function getCard(item, resources, quoted, settings) {
+  return getDisplayObject(item, 'cards', resources, quoted, settings);
 }
 /* eslint-enable no-use-before-define */
 
-export function getItemSummary(item, displayDefs, quoted, vocab, settings, context, excludeProperties = []) {
-  const card = getCard(item, displayDefs, quoted, vocab, settings, context);
+export function getItemSummary(item, resources, quoted, settings, excludeProperties = []) {
+  const card = getCard(item, resources, quoted, settings);
   if (excludeProperties.length > 0) {
     for (let i = 0; i < excludeProperties.length; i++) {
       delete card[excludeProperties[i]];
@@ -374,25 +369,25 @@ export function getItemSummary(item, displayDefs, quoted, vocab, settings, conte
       } else if (cardDisplayGroups.hidden.includes(key)) {
         // drop it
       } else {
-        const translated = tryGetValueByLang(item, key, settings.language, context);
+        const translated = tryGetValueByLang(item, key, settings.language, resources.context);
         const itemValue = translated !== null ? translated : item[key];
         summary.info.push({ property: key, value: isArray(itemValue) ? itemValue : [itemValue] });
       }
     }
   });
   if (summary.header.length === 0) {
-    summary.header.push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language)}}` });
+    summary.header.push({ property: 'error', value: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language, resources.i18n)}}` });
   }
   return summary;
 }
 
-export function getLabelWithTreeDepth(term, settings, vocab, context) {
+export function getLabelWithTreeDepth(term, settings, resources) {
   const maxLength = 43;
-  let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, vocab, context);
+  let labelByLang = StringUtil.getLabelByLang(term.id, settings.language, resources);
   if (labelByLang.length > maxLength) {
     labelByLang = `${labelByLang.substr(0, maxLength - 2)}...`;
   }
-  const abstractIndicator = ` {${StringUtil.getUiPhraseByLang('Abstract', settings.language)}}`;
+  const abstractIndicator = ` {${StringUtil.getUiPhraseByLang('Abstract', settings.language, resources.i18n)}}`;
   const indent = Array(term.depth + 1).join('- ');
   return `${indent}${labelByLang} ${term.abstract ? abstractIndicator : ''}`;
 }

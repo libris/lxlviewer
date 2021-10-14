@@ -50,7 +50,7 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters(['entityReferences', 'settings', 'vocabContext', 'display', 'vocab']),
+    ...mapGetters(['entityReferences', 'settings', 'resources', 'vocabContext', 'display', 'vocab']),
     isByLangProperty() {
       return this.property.includes('ByLang');
     },
@@ -79,11 +79,9 @@ export default {
       this.value.forEach((item) => {
         const sortValue = typeof item === 'object' ? DisplayUtil.getItemLabel(
             item,
-            this.display,
+            this.resources,
             this.entityReferences,
-            this.vocab,
             this.settings,
-            this.vocabContext,
           ) : item;
         refMap.set(item, sortValue);
       });
