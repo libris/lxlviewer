@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "git@github.com:libris/lxltools-js.git",
   "author": "Ola Blissing <ola.blissing@gmail.com>",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "lodash-es": "^4.17.21"
+  }
 }
