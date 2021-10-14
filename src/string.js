@@ -1,5 +1,5 @@
-import * as _ from 'lodash';
-import * as VocabUtil from './vocab';
+import { isObject, isArray, uniqBy, each, remove } from 'lodash-es';
+import * as VocabUtil from '@/utils/vocab';
 
 export function removeDomain(string, removableBaseUriArray) {
   const removable = removableBaseUriArray;
@@ -10,16 +10,41 @@ export function removeDomain(string, removableBaseUriArray) {
   return newValue;
 }
 
+export function convertToPrefix(uri, context) {
+  if (typeof context === 'undefined') {
+    throw new Error('convertToPrefix was called without context');
+  }
+  const hashParts = uri.split('#');
+  let suffix = '';
+  let baseUri = '';
+  if (hashParts.length > 1) {
+    suffix = hashParts[1];
+    baseUri = `${hashParts[0]}#`;
+  } else {
+    const uriParts = uri.split('/');
+    suffix = uriParts[uriParts.length - 1];
+    uriParts.splice(uriParts.length - 1, 1);
+    baseUri = `${uriParts.join('/')}/`;
+  }
+  const prefix = VocabUtil.getPrefixFromBaseUri(baseUri, context);
+  const withPrefix = prefix !== '' ? `${prefix}:${suffix}` : suffix;
+  return withPrefix;
+}
+
 export function getCompactUri(uri, context) {
+  let singleUri = Array.isArray(uri) ? uri[0] : uri;
   if (typeof context === 'undefined') {
     throw new Error('getCompactUri was called without context.');
   }
+  if (typeof singleUri !== 'string') {
+    throw new Error('getCompactUri was called with an URI that was not a string (should be a string).');
+  }
   let compactUri = '';
   const vocabBase = context[0]['@vocab'];
-  if (uri.startsWith(vocabBase)) {
-    compactUri = uri.replace(vocabBase, '');
+  if (singleUri.startsWith(vocabBase)) {
+    compactUri = singleUri.replace(vocabBase, '');
   } else {
-    compactUri = convertToPrefix(uri, context);
+    compactUri = convertToPrefix(singleUri, context);
   }
   return compactUri;
 }
@@ -43,27 +68,6 @@ export function convertToBaseUri(str, context) {
   return withBaseUri;
 }
 
-export function convertToPrefix(uri, context) {
-  if (typeof context === 'undefined') {
-    throw new Error('convertToPrefix was called without context');
-  }
-  let hashParts = uri.split('#');
-  let suffix = '';
-  let baseUri = '';
-  if (hashParts.length > 1) {
-    suffix = hashParts[1];
-    baseUri = hashParts[0] + '#';
-  } else {
-    const uriParts = uri.split('/');
-    suffix = uriParts[uriParts.length-1];
-    uriParts.splice(uriParts.length-1, 1);
-    baseUri = uriParts.join('/') + '/';
-  }
-  const prefix = VocabUtil.getPrefixFromBaseUri(baseUri, context);
-  const withPrefix = prefix !== '' ? `${prefix}:${suffix}` : suffix;
-  return withPrefix;
-}
-
 export function convertToVocabKey(str, context) {
   if (typeof context === 'undefined') {
     throw new Error('convertVocabGettableId was called without context');
@@ -74,30 +78,75 @@ export function convertToVocabKey(str, context) {
   return `${context[0]['@vocab']}${str}`;
 }
 
+export function getUiPhraseByLang(phrase, langcode, translationsFile) {
+  if (typeof phrase === 'string') {
+    if (translationsFile[langcode] && translationsFile[langcode][phrase]) {
+      return translationsFile[langcode][phrase];
+    }
+  } else if (Array.isArray(phrase)) {
+    const translated = phrase.map((el) => {
+      if (translationsFile[langcode] && translationsFile[langcode][el]) {
+        return translationsFile[langcode][el];
+      } return el;
+    });
+    return translated.join(' ');
+  }
+  return phrase;
+}
+
+export function getParamValueFromUrl(url, param) {
+  if (!url || url.length === 0) {
+    return null;
+  }
+
+  const splitUrl = url.split('&');
+  let paramString;
+  for (let i = 0; i < splitUrl.length; i++) {
+    if (splitUrl[i].indexOf(param) !== -1) {
+      paramString = splitUrl[i];
+      break;
+    }
+  }
+  if (typeof paramString === 'undefined') {
+    return null;
+  }
+  const value = paramString.split('=')[1];
+  return value;
+}
+
 export function getHash(str) {
-  let hash = 0, i, chr;
+  let hash = 0; let i; let 
+    chr;
   if (str.length === 0) return hash;
   for (i = 0; i < str.length; i++) {
-    chr   = str.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
+    chr = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr; // eslint-disable-line no-bitwise
+    // Convert to 32bit integer
+    hash |= 0; // eslint-disable-line no-bitwise
   }
   return hash;
-};
+}
 
 export function isNumeric(num) {
-  return !isNaN(num);
+  return !Number.isNaN(num);
 }
 
 export function getNumberOfVowels(str) {
-  var m = str.match(/[aeiouy]/gi);
+  const m = str.match(/[aeiouy]/gi);
   return m === null ? 0 : m.length;
 }
 
-export function isLibrisResourceUri(uri, apiPath) {
-  if (uri) {
-    if (uri.startsWith(apiPath)) {
-      const uriWithoutPath = uri.replace(apiPath + '/', '');
+export function isLibrisResourceUri(uri, settings) {
+  const baseUri = settings.dataPath;
+  
+  let translatedUri = uri;
+  if (uri.startsWith('https://id.kb.se')) {
+    translatedUri = uri.replace('https://id.kb.se', settings.idPath);
+  }
+
+  if (translatedUri) {
+    if (translatedUri.startsWith(baseUri)) {
+      const uriWithoutPath = uri.replace(`${baseUri}/`, '');
       const uriWithoutEnd = uriWithoutPath.split('/')[0].split('#')[0];
       if (uriWithoutEnd.length > 10 && getNumberOfVowels(uriWithoutEnd) === 0) {
         return true;
@@ -127,16 +176,26 @@ export function getLabelFromObject(object, language) {
 
 export function getLabelByLang(string, lang, vocab, context) {
   if (!string) {
-    return '{FAILED LABEL}';
+    return null;
   }
-  if (_.isObject(string)) {
+  if (isObject(string)) {
     throw new Error(
       'getLabelByLang was called with an object (should be a string).',
-      JSON.stringify(string)
+      JSON.stringify(string),
     );
   }
+
   let item = VocabUtil.getTermObject(string, vocab, context);
-  let note = '';
+  
+  if (string.indexOf('@reverse/') >= 0) {
+    const reverseLabel = string.split('/').pop();
+    const reverseItem = VocabUtil.getTermObject(reverseLabel, vocab, context);
+
+    if (reverseItem.hasOwnProperty('owl:inverseOf') && reverseItem['owl:inverseOf'].hasOwnProperty('@id')) {
+      item = VocabUtil.getTermObject(reverseItem['owl:inverseOf']['@id'], vocab, context);
+    }
+  }
+
   let labelByLang = '';
   if (typeof item !== 'undefined') {
     if (item.labelByLang) {
@@ -146,21 +205,17 @@ export function getLabelByLang(string, lang, vocab, context) {
     } else if (item.label) {
       labelByLang = item.label;
     }
-  } else {
-    note = ' (unhandled term)';
   }
   // Check if we have something of value
-  if (_.isArray(labelByLang)) {
-    labelByLang = _.uniqBy(labelByLang, (i) => {
-      return i.toLowerCase();
-    });
+  if (isArray(labelByLang)) {
+    labelByLang = uniqBy(labelByLang, i => i.toLowerCase());
     labelByLang = labelByLang.join(', ');
   }
 
   if (labelByLang && labelByLang.length > 0) {
     return labelByLang;
   }
-  return `${string}${note}`;
+  return string;
 }
 
 function translateable(type) {
@@ -171,9 +226,12 @@ function translateable(type) {
 }
 
 export function extractStrings(obj) {
+  if (obj == null || typeof obj === 'undefined') {
+    throw new Error('StringUtil.extractStrings was called with a null/undefined object');
+  }
   let label = '';
-  _.each(obj, (value, key) => {
-    if (!_.isObject(value)) {
+  each(obj, (value) => {
+    if (!isObject(value)) {
       label += value;
     } else {
       label += extractStrings(value);
@@ -183,17 +241,32 @@ export function extractStrings(obj) {
   return label;
 }
 
-export function getFormattedEntries(list, vocab, settings, context) {
+export function formatLabel(obj) {
+  if (obj == null || typeof obj === 'undefined') {
+    throw new Error('StringUtil.formatLabel was called with a null/undefined object');
+  }
+  let label = [];
+  each(obj, (value) => {
+    if (!isObject(value)) {
+      label.push(value);
+    } else {
+      label.push(extractStrings(value));
+    }
+  });
+  label = [].concat.apply([], label).filter(el => el && el.length > 0); // eslint-disable-line prefer-spread
+  label = label.join(' • ');
+  return label;
+}
+
+export function getFormattedEntries(list, vocab, language, context) {
   let formatted = [];
   for (const entry of list) {
     if (translateable(entry.property)) {
-      formatted = formatted.concat(entry.value.map((obj) => {
-        return getLabelByLang(obj, settings.language, vocab, context);
-      }));
+      formatted = formatted.concat(entry.value.map(obj => getLabelByLang(obj, language, vocab, context)));
     } else {
       formatted = formatted.concat(entry.value);
     }
   }
-  _.remove(formatted, value => value === ''); // Remove empty strings
+  remove(formatted, value => value === '' || value === null); // Remove empty strings
   return formatted;
 }
