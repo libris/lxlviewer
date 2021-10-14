@@ -24,6 +24,10 @@ export default {
       type: Object,
       default: null,
     },
+    recordData: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -108,6 +112,7 @@ export default {
         @hiddenDetailsNumber="setHiddenDetailsNumber"
         :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
         :focus-data="focusData"
+        :record-data="recordData"
         :should-link="false"
         :exclude-components="inspector.status.isNew ? ['id'] : []"
         :valueDisplayLimit=3>

@@ -211,7 +211,7 @@ export default {
   }
 
   &-linkCount {
-    border: 2px solid #29A1A2;
+    border: 2px solid @brand-primary;
     width: 100%;
     text-align: center;
     margin-top: -4px;

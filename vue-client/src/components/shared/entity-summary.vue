@@ -22,6 +22,10 @@ export default {
       type: Object,
       default: null,
     },
+    recordData: {
+      type: Object,
+      default: null,
+    },
     animate: {
       type: Boolean,
       default: false,
