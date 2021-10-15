@@ -27,6 +27,7 @@
 
 <script>
 // import mockSuggest from '@/resources/json/mockSuggest.json';
+import { mapGetters } from 'vuex';
 import SuggestItem from '@/components/SuggestItem';
 
 export default {
@@ -110,7 +111,7 @@ export default {
     },
     async doSuggestSearch() {
       this.clearSuggest();
-      const searchPath = `find.jsonld?q=${this.keyword}&_lens=chips&_suggest=sv&_limit=7`;
+      const searchPath = `find.jsonld?q=${this.keyword}&_lens=chips&_suggest=${this.settings.language}&_limit=7`;
       const suggestData = await fetch(`${process.env.API_PATH}/${searchPath}`).then(res => res.json());
       this.suggestedItems = suggestData.items;
       // const suggestData = mockSuggest;
@@ -171,6 +172,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['settings']),
     selectedSuggestionItem() {
       if (this.selectedSuggestion != null && this.selectedSuggestion >= 0) {
         return this.suggestedItems[this.selectedSuggestion]['@id'];
