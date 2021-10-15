@@ -1,5 +1,5 @@
 {
-  "name": "@libris/lxltools-js",
+  "name": "lxltools",
   "version": "1.0.0",
   "description": "JavaScript tools for the Libris XL infrastructure.",
   "main": "index.js",
