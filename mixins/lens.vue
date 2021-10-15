@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as DisplayUtil from '@/utils/display';
+import * as DisplayUtil from 'lxltools/display';
 
 export default {
   props: {
@@ -27,6 +27,10 @@ export default {
   },
   computed: {
     ...mapGetters(['vocab', 'display', 'entityReferences', 'resources', 'vocabContext', 'settings']),
+    getTestMetod() {
+      testMetod();
+      return "hmm";
+    },
     getItemLabel() {
       return DisplayUtil.getItemLabel(
         this.entityData,

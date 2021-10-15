@@ -20,7 +20,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import * as VocabUtil from '@/utils/vocab';
+import * as VocabUtil from 'lxltools/vocab';
 import LensMixin from '@/mixins/lens';
 
 export default {

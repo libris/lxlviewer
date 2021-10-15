@@ -14,7 +14,7 @@ import { mapGetters } from 'vuex';
 import LensMixin from '@/mixins/lens';
 import EntityNode from '@/components/EntityNode';
 import MarcframeObject from '@/components/MarcframeObject';
-import * as DisplayUtil from '@/utils/display';
+import * as DisplayUtil from 'lxltools/display';
 
 export default {
   name: 'MarcframeRow',
