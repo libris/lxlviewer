@@ -7,10 +7,10 @@
       <EntityNode :parent-key="property" :entity="value" v-else-if="!isByLangProperty" />
       <div class="PropertyRow-grid" v-else>
         <template v-for="(v, lang) in value">
-          <div class="PropertyRow-gridKey" :key="`${property}-${lang}`">
+          <div class="PropertyRow-gridKey" :key="`${property}-${lang}-key`">
             {{ lang }}
           </div>
-          <div class="PropertyRow-gridValue"  :key="`${property}-${lang}`">
+          <div class="PropertyRow-gridValue"  :key="`${property}-${lang}-value`">
             {{ v }}
           </div>
         </template>
