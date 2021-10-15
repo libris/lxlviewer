@@ -14,6 +14,10 @@ yarn add libris/lxltools-js --save
 ```
 <sup>Specifiy version as usual if needed</sup>
 
+## Development
+
+When developing these files and testing changes to this repo in the applications that depend on it, use [`yarn link`]((https://classic.yarnpkg.com/en/docs/cli/link)) or [`npm link`](https://docs.npmjs.com/cli/v7/commands/npm-link).
+
 ## Contents
 
 ### Display
