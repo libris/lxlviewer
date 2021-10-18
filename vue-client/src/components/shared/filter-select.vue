@@ -4,6 +4,7 @@
 */
 import { forEach } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
+import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxltools/string';
 import * as LayoutUtil from '@/utils/layout';
 
@@ -70,11 +71,14 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'resources',
+    ]),
     settings() {
       return this.$store.getters.settings;
     },
     translatedPlaceholder() {
-      return StringUtil.getUiPhraseByLang(this.customPlaceholder, this.settings.language);
+      return StringUtil.getUiPhraseByLang(this.customPlaceholder, this.settings.language, this.resources.i18n);
     },
   },
   methods: {

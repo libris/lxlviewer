@@ -162,14 +162,14 @@ export default {
     },
     windowTitle() {
       if (this.listContextType === 'Item') {
-        return StringUtil.getUiPhraseByLang('All holdings', this.user.settings.language);
+        return StringUtil.getUiPhraseByLang('All holdings', this.user.settings.language, this.resources.i18n);
       } if (this.listContextType === 'Instance') {
-        let windowTitle = StringUtil.getUiPhraseByLang('Holdings of', this.user.settings.language);
+        let windowTitle = StringUtil.getUiPhraseByLang('Holdings of', this.user.settings.language, this.resources.i18n);
         windowTitle += ` ${this.itemOfTitle}`;
         return windowTitle;
       }
       const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.user.settings.language, this.resources.vocab, this.resources.context);
-      return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.user.settings.language)}`;
+      return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.user.settings.language, this.resources.i18n)}`;
     },
     itemOfTitle() {
       return DisplayUtil.getItemLabel(this.itemOf, this.resources.display, null, this.resources.vocab, this.settings, this.resources.context);

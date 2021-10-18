@@ -56,6 +56,7 @@ export default {
   computed: {
     ...mapGetters([
       'user',
+      'resources',
     ]),
     value: {
       get() {
@@ -76,7 +77,7 @@ export default {
       return this.isUriType && this.fieldValue.startsWith('http');
     },
     newWindowText() {
-      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language, this.resources.i18n);
     },
     shouldFocus() {
       const lastAdded = this.inspector.status.lastAdded;

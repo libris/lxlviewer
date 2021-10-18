@@ -109,7 +109,7 @@ export default {
       if (typeof item === 'undefined' || item === null) {
         this.$store.dispatch('pushNotification', {
           type: 'danger',
-          message: `${StringUtil.getUiPhraseByLang('Data is missing a reference, please verify file', this.user.settings.language)}`,
+          message: `${StringUtil.getUiPhraseByLang('Data is missing a reference, please verify file', this.user.settings.language, this.resources.i18n)}`,
         });
         throw new Error('A sibling-item was undefined. This is probably a reference error in the data.');
       }
@@ -232,15 +232,15 @@ export default {
             this.replaceWith(mainEntity);
             this.closeExtractDialog();
           }, (error) => {
-            this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error}` });
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}` });
             this.closeExtractDialog();
           });
         } else {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}` });
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}` });
           this.closeExtractDialog();
         }
       }, (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error}` });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}` });
         this.closeExtractDialog();
       });
     },
@@ -284,7 +284,7 @@ export default {
         addToHistory: true,
         changeList: changeList,
       });
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language)}` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language, this.resources.i18n)}` });
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,

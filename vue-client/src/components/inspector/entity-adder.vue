@@ -4,6 +4,7 @@
 */
 import { cloneDeep, isArray, get } from 'lodash-es';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxltools/vocab';
 import * as StringUtil from 'lxltools/string';
 import Sort from '@/components/search/sort';
@@ -89,13 +90,16 @@ export default {
     },
   },
   computed: {
+    ...mapGetters([
+      'resources',
+    ]),
     computedTitle() {
-      const modalStr = StringUtil.getUiPhraseByLang('Add entity', this.user.settings.language);
+      const modalStr = StringUtil.getUiPhraseByLang('Add entity', this.user.settings.language, this.resources.i18n);
       const addLabelStr = StringUtil.getLabelByLang(this.addLabel, this.user.settings.language, this.resources.vocab, this.resources.context);
       return `${modalStr} | ${addLabelStr}`;
     },
     tooltipText() {
-      const addText = StringUtil.getUiPhraseByLang('Add', this.user.settings.language);
+      const addText = StringUtil.getUiPhraseByLang('Add', this.user.settings.language, this.resources.i18n);
       const label = StringUtil.getLabelByLang(
         this.addLabel,
         this.user.settings.language,
@@ -130,7 +134,7 @@ export default {
         return this.rangeFull[0];
       }
       if (this.rangeFull.length > 1) {
-        return StringUtil.getUiPhraseByLang('entity', this.user.settings.language);
+        return StringUtil.getUiPhraseByLang('entity', this.user.settings.language, this.resources.i18n);
       }
       return this.fieldKey;
     },

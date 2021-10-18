@@ -6724,7 +6724,7 @@ lru-cache@^5.1.1:
 
 lxltools@libris/lxltools-js:
   version "1.0.0"
-  resolved "https://codeload.github.com/libris/lxltools-js/tar.gz/49f58dd0d524893d53c014c08490274731823773"
+  resolved "https://codeload.github.com/libris/lxltools-js/tar.gz/3cad266d59907c9a997bf9792611ec6084efec36"
   dependencies:
     lodash-es "^4.17.21"
 

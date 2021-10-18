@@ -20,6 +20,7 @@ const store = new Vuex.Store({
       templates: {},
       helpDocs: null,
       globalMessages: null,
+      i18n: null,
     },
     directoryCare: {
       sender: null,

@@ -99,7 +99,7 @@ export default {
       return this.focusData.reverseLinks ? MathUtil.getCompactNumber(this.focusData.reverseLinks.totalItems) : 0;
     },
     translatedTooltip() {
-      return StringUtil.getUiPhraseByLang('Number of links to entity', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Number of links to entity', this.user.settings.language, this.resources.i18n);
     },
   },
   components: {

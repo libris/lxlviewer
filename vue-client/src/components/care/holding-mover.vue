@@ -117,13 +117,14 @@ export default {
       'userCare',
       'directoryCare',
       'settings',
+      'resources',
       'user',
     ]),
     infoBoxTooltip() {
       if (this.showInfoBox) {
-        return StringUtil.getUiPhraseByLang('Hide instructions', this.user.settings.language);   
+        return StringUtil.getUiPhraseByLang('Hide instructions', this.user.settings.language, this.resources.i18n);   
       }
-      return StringUtil.getUiPhraseByLang('Show instructions', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Show instructions', this.user.settings.language, this.resources.i18n);
     },
     anySelected() {
       return !!(this.directoryCare.sender || this.directoryCare.reciever);

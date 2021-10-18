@@ -87,7 +87,7 @@ export default {
     ]),
     tooltipText() {
       const str = this.hasHolding ? [this.user.settings.activeSigel, 'has holding'] : ['Add holding for', this.user.settings.activeSigel];
-      return StringUtil.getUiPhraseByLang(str, this.user.settings.language);
+      return StringUtil.getUiPhraseByLang(str, this.user.settings.language, this.resources.i18n);
     },
     keyBindText() {
       return LayoutUtil.getKeybindingText('add-holding');

@@ -103,7 +103,7 @@ Vue.mixin({
 });
 
 Vue.filter('removeDomain', value => StringUtil.removeDomain(value, store.getters.settings.removableBaseUris));
-Vue.filter('translatePhrase', string => StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language));
+Vue.filter('translatePhrase', string => StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language, store.getters.resources.i18n));
 Vue.filter('capitalize', (value) => {
   if (!value) return '';
   let newValue = value;
@@ -199,6 +199,7 @@ new Vue({
       'settings',
       'user',
       'inspector',
+      'resources',
       'status',
       'userStorage',
     ]),
@@ -244,17 +245,17 @@ new Vue({
           }
         }
       } else if (route.name === 'NewDocument') {
-        title += StringUtil.getUiPhraseByLang('New record', this.user.settings.language);
+        title += StringUtil.getUiPhraseByLang('New record', this.user.settings.language, this.resources.i18n);
       } else if (route.name === 'Inspector') {
         if (this.inspector.title && this.inspector.title.length > 0) {
           title += this.inspector.title;
         } else {
-          title += StringUtil.getUiPhraseByLang('Loading document', this.user.settings.language);
+          title += StringUtil.getUiPhraseByLang('Loading document', this.user.settings.language, this.resources.i18n);
         }
       } else if (route.name === 'Help') {
         title += this.status.helpSectionTitle;
       } else {
-        title += StringUtil.getUiPhraseByLang(route.name, this.user.settings.language);
+        title += StringUtil.getUiPhraseByLang(route.name, this.user.settings.language, this.resources.i18n);
       }
       if (route.name === 'Home' || route.name === null) {
         title = this.settings.title;

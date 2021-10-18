@@ -1,6 +1,7 @@
 <script>
 import { filter } from 'lodash-es';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxltools/vocab';
 import * as DisplayUtil from 'lxltools/display';
 import * as StringUtil from 'lxltools/string';
@@ -22,6 +23,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'resources',
+    ]),
     getClassTree() {
       const docType = VocabUtil.getRecordType(this.entityType, this.resources.vocab, this.resources.context);
       const tree = [docType].map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
@@ -40,8 +44,8 @@ export default {
       return this.path === 'mainEntity.@type';
     },
     unlockTooltip() {
-      const activeLinks = StringUtil.getUiPhraseByLang('This entity has active links', this.user.settings.language);
-      const clickToUnlock = StringUtil.getUiPhraseByLang('Click to unlock editing', this.user.settings.language);
+      const activeLinks = StringUtil.getUiPhraseByLang('This entity has active links', this.user.settings.language, this.resources.i18n);
+      const clickToUnlock = StringUtil.getUiPhraseByLang('Click to unlock editing', this.user.settings.language, this.resources.i18n);
       return `${activeLinks}. ${clickToUnlock}.`;
     },
     isDisabled() {

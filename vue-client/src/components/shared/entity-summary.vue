@@ -109,6 +109,7 @@ export default {
     ...mapGetters([
       'user',
       'enrichment',
+      'resources',
     ]),
     encodingLevel() {
       /*
@@ -143,7 +144,7 @@ export default {
       return this.getSummary.info.length - this.keyDisplayLimit;
     },
     idTooltipText() {
-      return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language, this.resources.i18n);
     },
     isReplacedBy() {
       const info = this.getSummary.info;

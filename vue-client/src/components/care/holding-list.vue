@@ -65,13 +65,13 @@ export default {
       return permitted;
     },
     noPermissionTooltip() {
-      return StringUtil.getUiPhraseByLang('You don\'t have permission', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('You don\'t have permission', this.user.settings.language, this.resources.i18n);
     },
     foundOnDestinationTooltip() {
-      return StringUtil.getUiPhraseByLang('Holding already exists on the reciever', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Holding already exists on the reciever', this.user.settings.language, this.resources.i18n);
     },
     noRecieverTooltip() {
-      return StringUtil.getUiPhraseByLang('No reciever chosen', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('No reciever chosen', this.user.settings.language, this.resources.i18n);
     },
     sortedHoldings() {
       const holdings = this.directoryCare[`${this.name}Holdings`];

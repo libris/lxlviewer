@@ -44,6 +44,7 @@ export default {
   computed: {
     ...mapGetters([
       'user',
+      'resources',
     ]),
     value: {
       get() {
@@ -61,7 +62,7 @@ export default {
       }, 1000),
     },
     newWindowText() {
-      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language, this.resources.i18n);
     },
     shouldFocus() {
       const lastAdded = this.inspector.status.lastAdded;
