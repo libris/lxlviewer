@@ -79,6 +79,8 @@ export function convertToVocabKey(str, context) {
 }
 
 export function getUiPhraseByLang(phrase, langcode, translationsFile) {
+  if (translationsFile == null || typeof translationsFile == 'undefined') return phrase; // Fallback if no translations
+
   if (typeof phrase === 'string') {
     if (translationsFile[langcode] && translationsFile[langcode][phrase]) {
       return translationsFile[langcode][phrase];
