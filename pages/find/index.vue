@@ -7,10 +7,10 @@
     </div>
     <div class="container-fluid">
       <div class="row">
-        <div class="DetailedFilters col-md-4 col-lg-4 col-xl-3 col-xxl-2">
+        <div class="DetailedFilters col-md-4 col-lg-3 col-xl-4 col-xxl-3">
           <FacetList :page-data="pageData" v-if="pageData" />
         </div>
-        <div class="SearchResults col-md-8 col-lg-8 col-xl-9 col-xxl-10 p-2">
+        <div class="SearchResults col-md-8 col-lg-9 col-xl-8 col-xxl-9 p-2">
           <div class="SearchResults-statusRow">
             <SortSelect @change="sortChange" />
             <PageStatus :page-data="pageData" />
