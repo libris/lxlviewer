@@ -4,8 +4,8 @@
 */
 import { cloneDeep, isArray, get } from 'lodash-es';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import * as VocabUtil from '@/utils/vocab';
-import * as StringUtil from '@/utils/string';
+import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxltools/string';
 import Sort from '@/components/search/sort';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination.vue';

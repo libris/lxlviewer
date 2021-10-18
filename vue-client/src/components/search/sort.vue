@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as VocabUtil from '@/utils/vocab';
+import * as VocabUtil from 'lxltools/vocab';
 
 export default {
   name: 'sort',

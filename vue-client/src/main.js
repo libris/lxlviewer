@@ -11,13 +11,12 @@ import PortalVue from 'portal-vue';
 import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
 import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
+import * as StringUtil from 'lxltools/string';
 import App from './App';
 import router from './router';
 import store from './store';
-import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
-import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
+import * as DataUtil from '@/utils/data';
 import Field from '@/components/inspector/field';
 import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
@@ -324,11 +323,11 @@ new Vue({
     },
     getLdDependencies() {
       const promiseArray = [];
-      const vocabPromise = VocabUtil.getVocab(this.settings.apiPath);
+      const vocabPromise = DataUtil.getVocab(this.settings.apiPath);
       promiseArray.push(vocabPromise);
-      const contextPromise = VocabUtil.getContext(this.settings.idPath);
+      const contextPromise = DataUtil.getContext(this.settings.idPath);
       promiseArray.push(contextPromise);
-      const displayPromise = DisplayUtil.getDisplayDefinitions(this.settings);
+      const displayPromise = DataUtil.getDisplayDefinitions(this.settings);
       promiseArray.push(displayPromise);
       return promiseArray;
     },

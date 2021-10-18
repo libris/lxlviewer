@@ -2,8 +2,8 @@
 import { isEmpty, cloneDeep, isArray } from 'lodash-es';
 import marked from 'marked';
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxltools/string';
 import PropertyMappings from '@/resources/json/propertymappings.json';
-import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
 import { buildQueryString } from '@/utils/http';
 

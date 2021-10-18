@@ -2,8 +2,8 @@
 import { sortBy } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
+import * as VocabUtil from 'lxltools/vocab';
 import * as RecordUtil from '@/utils/record';
-import * as VocabUtil from '@/utils/vocab';
 import CreationCard from '@/components/create/creation-card';
 import FileAdder from '@/components/create/file-adder';
 import TabMenu from '@/components/shared/tab-menu';

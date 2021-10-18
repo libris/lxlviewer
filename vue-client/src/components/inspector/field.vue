@@ -6,6 +6,8 @@
 import { isArray, isPlainObject, isObject, cloneDeep, get, differenceWith, isEqual } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
+import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxltools/string';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
@@ -18,9 +20,7 @@ import ItemBoolean from './item-boolean';
 import ItemNumeric from './item-numeric';
 import ItemGrouped from './item-grouped';
 import ItemShelfControlNumber from './item-shelf-control-number';
-import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
-import * as StringUtil from '@/utils/string';
 import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 

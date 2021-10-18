@@ -1,8 +1,8 @@
 <script>
 import { each, uniq, sortBy } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as VocabUtil from '../../utils/vocab';
-import * as StringUtil from '../../utils/string';
+import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxltools/string';
 import ItemMixin from '../mixins/item-mixin';
 
 export default {

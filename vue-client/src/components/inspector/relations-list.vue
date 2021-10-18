@@ -2,12 +2,12 @@
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import { partition, flatten } from 'lodash-es';
+import * as StringUtil from 'lxltools/string';
+import * as DisplayUtil from 'lxltools/display';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
 import FacetMixin from '@/components/mixins/facet-mixin';
-import * as StringUtil from '@/utils/string';
-import * as DisplayUtil from '@/utils/display';
 import * as httpUtil from '@/utils/http';
 import { getCompactNumber } from '@/utils/math';
 

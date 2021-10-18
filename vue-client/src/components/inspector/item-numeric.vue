@@ -1,10 +1,10 @@
 <script>
 import { isArray, debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as StringUtil from '@/utils/string';
+import * as StringUtil from 'lxltools/string';
+import { XSD_NUMERIC_TYPES } from 'lxltools/vocab';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
-import { XSD_NUMERIC_TYPES } from '@/utils/vocab';
 
 export default {
   name: 'item-numeric',

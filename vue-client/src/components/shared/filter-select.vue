@@ -4,7 +4,7 @@
 */
 import { forEach } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
-import * as StringUtil from '@/utils/string';
+import * as StringUtil from 'lxltools/string';
 import * as LayoutUtil from '@/utils/layout';
 
 export default {

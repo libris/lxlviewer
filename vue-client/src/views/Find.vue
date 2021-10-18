@@ -2,8 +2,8 @@
 import { each, isArray, isPlainObject } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import * as StringUtil from 'lxltools/string';
 import * as RecordUtil from '@/utils/record';
-import * as StringUtil from '@/utils/string';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Copy from '@/resources/json/copy.json';
 import FacetControls from '@/components/search/facet-controls';

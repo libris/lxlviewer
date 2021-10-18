@@ -1,5 +1,44 @@
 import { isEmpty, cloneDeep, isArray, isObject, forEach, uniq, difference } from 'lodash-es';
+import * as VocabUtil from 'lxltools/vocab';
+import * as DisplayUtil from 'lxltools/display';
 import * as HttpUtil from '@/utils/http';
+
+export function getDisplayDefinitions(settings) {
+  const baseUri = settings.idPath;
+  return new Promise((resolve, reject) => {
+    if (settings.mockDisplay === true) {
+      window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using file from local definitions repository');
+      resolve(DisplayUtil.expandInherited(require('@/../../../definitions/source/vocab/display.jsonld')));
+    } else {
+      HttpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
+        resolve(DisplayUtil.expandInherited(result));
+      }, (error) => {
+        reject(error);
+      });
+    }
+  });
+}
+
+export function getVocab(apiPath) {
+  return new Promise((resolve, reject) => {
+    HttpUtil.getResourceFromCache(`${apiPath}/vocab/data.jsonld`).then((result) => {
+      resolve(result);
+    }, (error) => {
+      reject(error);
+    });
+  });
+}
+
+export function getContext(apiPath) {
+  return new Promise((resolve, reject) => {
+    HttpUtil.getResourceFromCache(`${apiPath}/context.jsonld`).then((result) => {
+      resolve(VocabUtil.preprocessContext(result));
+    }, (error) => {
+      reject(error);
+    });
+  });
+}
+
 
 export function getEmbellished(id, quotedIndex = {}) {
   if (typeof id === 'undefined' || id === '') {

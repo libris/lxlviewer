@@ -2,9 +2,9 @@
 import { merge, cloneDeep } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import * as DisplayUtil from '@/utils/display';
-import * as VocabUtil from '@/utils/vocab';
-import * as StringUtil from '@/utils/string';
+import * as DisplayUtil from 'lxltools/display';
+import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxltools/string';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import Button from '@/components/shared/button';

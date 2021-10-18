@@ -1,12 +1,12 @@
 <script>
 import { mapGetters } from 'vuex';
 import { filter } from 'lodash-es';
-import * as VocabUtil from '@/utils/vocab';
+import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxltools/string';
 import * as HttpUtil from '@/utils/http';
 import TabMenu from '@/components/shared/tab-menu';
 import HoldingMover from '@/components/care/holding-mover';
 import ModalComponent from '@/components/shared/modal-component';
-import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'DirectoryCare',

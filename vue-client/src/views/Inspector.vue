@@ -2,11 +2,11 @@
 <script>
 import { cloneDeep, each, get } from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
-import * as StringUtil from '@/utils/string';
+import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxltools/vocab';
+import * as DisplayUtil from 'lxltools/display';
 import * as DataUtil from '@/utils/data';
-import * as VocabUtil from '@/utils/vocab';
 import * as HttpUtil from '@/utils/http';
-import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import { checkAutoShelfControlNumber } from '@/utils/shelfmark';
 import EntityForm from '@/components/inspector/entity-form';

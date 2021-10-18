@@ -1,8 +1,8 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { difference, intersection, cloneDeep, isArray, union, isEqual, uniqWith, remove } from 'lodash-es';
-import * as VocabUtil from '@/utils/vocab';
-import * as DisplayUtil from '@/utils/display';
+import * as VocabUtil from 'lxltools/vocab';
+import * as DisplayUtil from 'lxltools/display';
 import Field from '@/components/inspector/field';
 import Button from '@/components/shared/button';
 import TabMenu from '@/components/shared/tab-menu';

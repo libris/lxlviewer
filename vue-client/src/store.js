@@ -2,8 +2,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { cloneDeep, each, set, get, assign, filter } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
-import * as VocabUtil from '@/utils/vocab';
-import * as StringUtil from '@/utils/string';
+import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxltools/string';
 import * as User from '@/models/user';
 
 Vue.use(Vuex);

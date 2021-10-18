@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as StringUtil from '@/utils/string';
+import * as StringUtil from 'lxltools/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import SelectSigel from './select-sigel';
 

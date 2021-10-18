@@ -2,7 +2,7 @@
 import AutoSize from 'autosize';
 import { isArray, debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as StringUtil from '@/utils/string';
+import * as StringUtil from 'lxltools/string';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 

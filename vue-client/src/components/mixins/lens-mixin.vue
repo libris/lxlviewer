@@ -1,6 +1,6 @@
 <script>
-import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
+import * as DisplayUtil from 'lxltools/display';
+import * as StringUtil from 'lxltools/string';
 
 export default {
   props: {

@@ -5,10 +5,10 @@
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import { get } from 'lodash-es';
-import * as VocabUtil from '@/utils/vocab';
+import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxltools/string';
 import * as RecordUtil from '@/utils/record';
 import * as HttpUtil from '@/utils/http';
-import * as StringUtil from '@/utils/string';
 import FieldAdder from '@/components/inspector/field-adder';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';

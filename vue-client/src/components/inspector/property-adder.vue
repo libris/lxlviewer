@@ -6,8 +6,8 @@
 import { mixin as clickaway } from 'vue-clickaway';
 import { filter, isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as StringUtil from '@/utils/string';
-import * as VocabUtil from '@/utils/vocab';
+import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxltools/vocab';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import RoundButton from '@/components/shared/round-button.vue';
 

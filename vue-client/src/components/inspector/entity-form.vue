@@ -5,7 +5,7 @@
   and makes changes to the bound 'focus' object accordingly.
 */
 import { mapGetters } from 'vuex';
-import * as VocabUtil from '@/utils/vocab';
+import * as VocabUtil from 'lxltools/vocab';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
 

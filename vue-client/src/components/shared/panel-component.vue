@@ -21,8 +21,8 @@
 
 */
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxltools/string';
 import * as LayoutUtil from '@/utils/layout';
-import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'panel-component',

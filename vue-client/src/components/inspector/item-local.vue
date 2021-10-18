@@ -2,12 +2,12 @@
 import { cloneDeep, get } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
+import * as VocabUtil from 'lxltools/vocab';
+import * as DisplayUtil from 'lxltools/display';
+import * as StringUtil from 'lxltools/string';
 import * as httpUtil from '@/utils/http';
 import * as LayoutUtil from '@/utils/layout';
-import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
-import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
 import PropertyAdder from '@/components/inspector/property-adder';
 import EntityAction from '@/components/inspector/entity-action';
 import SearchWindow from './search-window';
