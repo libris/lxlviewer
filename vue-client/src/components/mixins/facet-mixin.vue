@@ -57,11 +57,9 @@ export default {
 
       const label = DisplayUtil.getItemLabel(
         object,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
         object['@type'],
       );
 

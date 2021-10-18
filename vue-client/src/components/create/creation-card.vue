@@ -23,8 +23,8 @@ export default {
     setIndex() {
       this.$emit('set-active-index', this.index);
     },
-    getLabelWithTreeDepth(term, settings, vocab, context) {
-      return DisplayUtil.getLabelWithTreeDepth(term, settings, vocab, context);
+    getLabelWithTreeDepth(term, settings, resources) {
+      return DisplayUtil.getLabelWithTreeDepth(term, settings, resources);
     },
   },
   computed: {

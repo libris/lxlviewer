@@ -78,11 +78,9 @@ export default {
         if (o.object.hasOwnProperty('@id')) {
           label = DisplayUtil.getItemLabel(
             o.object,
-            this.resources.display,
+            this.resources,
             null,
-            this.resources.vocab,
             this.settings,
-            this.resources.context,
           );
         } else {
           label = o.object.label;

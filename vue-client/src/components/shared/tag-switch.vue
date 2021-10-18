@@ -59,11 +59,9 @@ export default {
     documentTitle() {
       return DisplayUtil.getItemLabel(
         this.document,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
       );
     },
     iconString() {

@@ -529,11 +529,9 @@ export default {
       if (typeof this.inspector.data.mainEntity !== 'undefined') {
         const headerList = DisplayUtil.getItemSummary(
           this.inspector.data.mainEntity,
-          this.resources.display,
+          this.resources,
           this.inspector.data.quoted,
-          this.resources.vocab,
           this.settings,
-          this.resources.context,
         ).header;
         const header = StringUtil.getFormattedEntries(
           headerList,

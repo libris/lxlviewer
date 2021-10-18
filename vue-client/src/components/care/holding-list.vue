@@ -78,11 +78,9 @@ export default {
       each(holdings, (h) => { 
         h._label = DisplayUtil.getItemLabel(
           h,
-          this.resources.display,
+          this.resources,
           [],
-          this.resources.vocab,
           this.settings,
-          this.resources.context,
         );
       });
       

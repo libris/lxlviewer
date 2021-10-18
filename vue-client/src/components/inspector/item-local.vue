@@ -102,11 +102,9 @@ export default {
     getItemLabel() {
       return DisplayUtil.getItemLabel(
         this.focusData,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
         this.focusData['@type'],
       );
     },

@@ -59,8 +59,7 @@ export default {
       return DisplayUtil.getLabelWithTreeDepth(
         term,
         this.settings,
-        this.resources.vocab,
-        this.resources.context,
+        this.resources,
       );
     },
     setParam($event) {

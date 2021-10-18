@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     getLabelWithTreeDepth(term) {
-      return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources.vocab, this.resources.context);
+      return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
     },
     unlockEdit() {
       this.unlockedByUser = true;
@@ -122,7 +122,7 @@ export default {
           :value="term.id"
           :key="index"
           :disabled="term.abstract"
-          v-html="getLabelWithTreeDepth(term, settings, resources.vocab, resources.context)"
+          v-html="getLabelWithTreeDepth(term, settings, resources)"
           ></option>
       </select>
       <div class="ItemType-actions">
