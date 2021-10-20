@@ -77,11 +77,9 @@ export default {
       const record = this.focusData.meta || this.recordData || {};
       const recordSummary = DisplayUtil.getItemSummary(
         record,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
         this.excludeProperties,
       );
       return {
