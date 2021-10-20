@@ -20,6 +20,7 @@ import * as DataUtil from '@/utils/data';
 import Field from '@/components/inspector/field';
 import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
+import i18n from '@/resources/json/i18n.json';
 
 const TooltipOptions = {
   popover: {
@@ -130,6 +131,7 @@ new Vue({
     store.dispatch('initOauth2Client').catch(() => {});
     this.initWarningFunc();
     this.fetchHelpDocs();
+    store.dispatch('setTranslations', i18n);
     store.dispatch('pushLoadingIndicator', 'Loading application');
     Promise.all(this.getLdDependencies()).then((resources) => {
       store.dispatch('setContext', resources[1]['@context']);

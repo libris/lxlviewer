@@ -680,6 +680,9 @@ const store = new Vuex.Store({
     setDisplay(state, data) {
       state.resources.display = data;
     },
+    setTranslations(state, data) {
+      state.resources.i18n = data;
+    },
     setDirectoryCare(state, data) {
       state.directoryCare = data;
     },
@@ -1003,6 +1006,9 @@ const store = new Vuex.Store({
         });
       }
       commit('setTemplates', templates);
+    },
+    setTranslations({ commit }, data) {
+      commit('setTranslations', data);
     },
     setHelpDocs({ commit }, helpDocsJson) {
       commit('setHelpDocs', helpDocsJson);
