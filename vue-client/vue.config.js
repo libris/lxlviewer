@@ -26,7 +26,7 @@ module.exports = {
     ],
   },
   chainWebpack(config) {
-    config.resolve.symlinks(false)
+    config.resolve.symlinks(false);
     config.module
       .rule('vue')
       .use('vue-loader')
