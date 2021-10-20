@@ -2,12 +2,12 @@
 import { cloneDeep, get } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
+import * as VocabUtil from 'lxltools/vocab';
+import * as DisplayUtil from 'lxltools/display';
+import * as StringUtil from 'lxltools/string';
 import * as httpUtil from '@/utils/http';
 import * as LayoutUtil from '@/utils/layout';
-import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
-import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
 import PropertyAdder from '@/components/inspector/property-adder';
 import EntityAction from '@/components/inspector/entity-action';
 import SearchWindow from './search-window';
@@ -102,11 +102,9 @@ export default {
     getItemLabel() {
       return DisplayUtil.getItemLabel(
         this.focusData,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
         this.focusData['@type'],
       );
     },
@@ -243,21 +241,21 @@ export default {
           }, (error) => {
             this.$store.dispatch('pushNotification', { 
               type: 'danger', 
-              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error}`,
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
             });
             this.closeExtractDialog();
           });
         } else {
           this.$store.dispatch('pushNotification', { 
             type: 'danger', 
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}`,
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}`,
           });
           this.closeExtractDialog();
         }
       }, (error) => {
         this.$store.dispatch('pushNotification', { 
           type: 'danger', 
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error}`,
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
         });
         this.closeExtractDialog();
       });
@@ -296,7 +294,7 @@ export default {
         ],
         addToHistory: false,
       });
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language)}` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language, this.resources.i18n)}` });
       this.$store.dispatch('setInspectorStatusValue', { 
         property: 'lastAdded', 
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
@@ -338,7 +336,7 @@ export default {
       const userStorage = cloneDeep(this.userStorage);
       userStorage.copyClipboard = this.item;
       this.$store.dispatch('setUserStorage', userStorage);
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.user.settings.language)}` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.user.settings.language, this.resources.i18n)}` });
     },
     attachHeadingStickyFunctionality() {
       document.addEventListener('scroll', () => {

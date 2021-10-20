@@ -24,8 +24,8 @@
 
 import { isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxltools/string';
 import * as LayoutUtil from '@/utils/layout';
-import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'modal-component',
@@ -75,15 +75,16 @@ export default {
     ...mapGetters([
       'user',
       'status',
+      'resources',
     ]),
     translatedTitle() {
       let title = '';
       if (isArray(this.title)) {
         for (let i = 0; i < this.title.length; i++) {
-          title = `${title}${StringUtil.getUiPhraseByLang(this.title[i], this.user.settings.language)} `;
+          title = `${title}${StringUtil.getUiPhraseByLang(this.title[i], this.user.settings.language, this.resources.i18n)} `;
         }
       } else {
-        title = StringUtil.getUiPhraseByLang(this.title, this.user.settings.language);
+        title = StringUtil.getUiPhraseByLang(this.title, this.user.settings.language, this.resources.i18n);
       }
       return title;
     },

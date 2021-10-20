@@ -2,8 +2,8 @@
 import { isEmpty, cloneDeep, isArray } from 'lodash-es';
 import marked from 'marked';
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxltools/string';
 import PropertyMappings from '@/resources/json/propertymappings.json';
-import * as StringUtil from '@/utils/string';
 import RemoteDatabases from '@/components/search/remote-databases';
 import { buildQueryString } from '@/utils/http';
 
@@ -152,13 +152,13 @@ export default {
       return styles;
     },
     searchHelpTooltip() {
-      return StringUtil.getUiPhraseByLang('Show search help', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Show search help', this.user.settings.language, this.resources.i18n);
     },
     searchHelpDocs() {
       if (this.docs && this.docs.hasOwnProperty('search')) {
         return this.transformMarkdownToHTML(this.docs.search.content);
       }
-      return StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n);
     },
     docs() {
       if (this.resources.helpDocs != null) {

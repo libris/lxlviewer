@@ -11,16 +11,16 @@ import PortalVue from 'portal-vue';
 import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
 import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
+import * as StringUtil from 'lxltools/string';
 import App from './App';
 import router from './router';
 import store from './store';
-import * as VocabUtil from '@/utils/vocab';
 import * as LayoutUtil from '@/utils/layout';
-import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
+import * as DataUtil from '@/utils/data';
 import Field from '@/components/inspector/field';
 import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
+import i18n from '@/resources/json/i18n.json';
 
 const TooltipOptions = {
   popover: {
@@ -59,7 +59,7 @@ Vue.component('v-popover', VTooltip.VPopover);
 Vue.component('field', Field);
 Vue.component('entity-summary', EntitySummary);
 
-Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context));
+Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources));
 
 Vue.filter('asAppPath', (path) => {
   const appPaths = store.getters.settings.appPaths;
@@ -104,7 +104,7 @@ Vue.mixin({
 });
 
 Vue.filter('removeDomain', value => StringUtil.removeDomain(value, store.getters.settings.removableBaseUris));
-Vue.filter('translatePhrase', string => StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language));
+Vue.filter('translatePhrase', string => StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language, store.getters.resources.i18n));
 Vue.filter('capitalize', (value) => {
   if (!value) return '';
   let newValue = value;
@@ -131,6 +131,7 @@ new Vue({
     store.dispatch('initOauth2Client').catch(() => {});
     this.initWarningFunc();
     this.fetchHelpDocs();
+    store.dispatch('setTranslations', i18n);
     store.dispatch('pushLoadingIndicator', 'Loading application');
     Promise.all(this.getLdDependencies()).then((resources) => {
       store.dispatch('setContext', resources[1]['@context']);
@@ -200,6 +201,7 @@ new Vue({
       'settings',
       'user',
       'inspector',
+      'resources',
       'status',
       'userStorage',
     ]),
@@ -245,17 +247,17 @@ new Vue({
           }
         }
       } else if (route.name === 'NewDocument') {
-        title += StringUtil.getUiPhraseByLang('New record', this.user.settings.language);
+        title += StringUtil.getUiPhraseByLang('New record', this.user.settings.language, this.resources.i18n);
       } else if (route.name === 'Inspector') {
         if (this.inspector.title && this.inspector.title.length > 0) {
           title += this.inspector.title;
         } else {
-          title += StringUtil.getUiPhraseByLang('Loading document', this.user.settings.language);
+          title += StringUtil.getUiPhraseByLang('Loading document', this.user.settings.language, this.resources.i18n);
         }
       } else if (route.name === 'Help') {
         title += this.status.helpSectionTitle;
       } else {
-        title += StringUtil.getUiPhraseByLang(route.name, this.user.settings.language);
+        title += StringUtil.getUiPhraseByLang(route.name, this.user.settings.language, this.resources.i18n);
       }
       if (route.name === 'Home' || route.name === null) {
         title = this.settings.title;
@@ -324,11 +326,11 @@ new Vue({
     },
     getLdDependencies() {
       const promiseArray = [];
-      const vocabPromise = VocabUtil.getVocab(this.settings.apiPath);
+      const vocabPromise = DataUtil.getVocab(this.settings.apiPath);
       promiseArray.push(vocabPromise);
-      const contextPromise = VocabUtil.getContext(this.settings.idPath);
+      const contextPromise = DataUtil.getContext(this.settings.idPath);
       promiseArray.push(contextPromise);
-      const displayPromise = DisplayUtil.getDisplayDefinitions(this.settings);
+      const displayPromise = DataUtil.getDisplayDefinitions(this.settings);
       promiseArray.push(displayPromise);
       return promiseArray;
     },

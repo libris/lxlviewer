@@ -1,6 +1,6 @@
 <script>
-import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
+import * as DisplayUtil from 'lxltools/display';
+import * as StringUtil from 'lxltools/string';
 
 export default {
   props: {
@@ -16,11 +16,9 @@ export default {
       }
       const label = DisplayUtil.getItemLabel(
         item,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
       );
       return label;
     },
@@ -38,51 +36,42 @@ export default {
     getItemLabel() {
       return DisplayUtil.getItemLabel(
         this.focusData,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
       );
     },
     getStringLabel() {
       return StringUtil.getLabelByLang(
         this.focusData,
         this.user.settings.language,
-        this.resources.vocab,
-        this.resources.context,
+        this.resources,
       );
     },
     getChip() {
       const chip = DisplayUtil.getChip(
         this.focusData,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
       );
       return chip;
     },
     getCard() {
       const card = DisplayUtil.getCard(
         this.focusData,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
       );
       return card;
     },
     getSummary() {
       const summary = DisplayUtil.getItemSummary(
         this.focusData,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
         this.excludeProperties,
       );
       return summary;

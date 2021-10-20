@@ -1,9 +1,10 @@
 <script>
 import { filter } from 'lodash-es';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import * as VocabUtil from '@/utils/vocab';
-import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
+import { mapGetters } from 'vuex';
+import * as VocabUtil from 'lxltools/vocab';
+import * as DisplayUtil from 'lxltools/display';
+import * as StringUtil from 'lxltools/string';
 import * as HttpUtil from '@/utils/http';
 import ItemVocab from '@/components/inspector/item-vocab';
 import ModalComponent from '@/components/shared/modal-component';
@@ -22,6 +23,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'resources',
+    ]),
     getClassTree() {
       const docType = VocabUtil.getRecordType(this.entityType, this.resources.vocab, this.resources.context);
       const tree = [docType].map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
@@ -31,7 +35,7 @@ export default {
       const docType = VocabUtil.getRecordType(this.entityType, this.resources.vocab, this.resources.context);
       const combined = [docType].concat(VocabUtil.getAllSubClasses(docType, this.resources.vocabClasses, this.resources.context));
       const filtered = filter(combined, (o) => {
-        const term = VocabUtil.getTermObject(o, this.resources.vocabClasses, this.resources.context);
+        const term = VocabUtil.getTermObject(o, this.resources.vocab, this.resources.context);
         return term.abstract !== true;
       });
       return filtered;
@@ -40,8 +44,8 @@ export default {
       return this.path === 'mainEntity.@type';
     },
     unlockTooltip() {
-      const activeLinks = StringUtil.getUiPhraseByLang('This entity has active links', this.user.settings.language);
-      const clickToUnlock = StringUtil.getUiPhraseByLang('Click to unlock editing', this.user.settings.language);
+      const activeLinks = StringUtil.getUiPhraseByLang('This entity has active links', this.user.settings.language, this.resources.i18n);
+      const clickToUnlock = StringUtil.getUiPhraseByLang('Click to unlock editing', this.user.settings.language, this.resources.i18n);
       return `${activeLinks}. ${clickToUnlock}.`;
     },
     isDisabled() {
@@ -50,7 +54,7 @@ export default {
   },
   methods: {
     getLabelWithTreeDepth(term) {
-      return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources.vocab, this.resources.context);
+      return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
     },
     unlockEdit() {
       this.unlockedByUser = true;
@@ -118,7 +122,7 @@ export default {
           :value="term.id"
           :key="index"
           :disabled="term.abstract"
-          v-html="getLabelWithTreeDepth(term, settings, resources.vocab, resources.context)"
+          v-html="getLabelWithTreeDepth(term, settings, resources)"
           ></option>
       </select>
       <div class="ItemType-actions">

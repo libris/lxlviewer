@@ -2,8 +2,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { cloneDeep, each, set, get, assign, filter } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
-import * as VocabUtil from '@/utils/vocab';
-import * as StringUtil from '@/utils/string';
+import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxltools/string';
 import * as User from '@/models/user';
 
 Vue.use(Vuex);
@@ -20,6 +20,7 @@ const store = new Vuex.Store({
       templates: {},
       helpDocs: null,
       globalMessages: null,
+      i18n: null,
     },
     directoryCare: {
       sender: null,
@@ -679,6 +680,9 @@ const store = new Vuex.Store({
     setDisplay(state, data) {
       state.resources.display = data;
     },
+    setTranslations(state, data) {
+      state.resources.i18n = data;
+    },
     setDirectoryCare(state, data) {
       state.directoryCare = data;
     },
@@ -1002,6 +1006,9 @@ const store = new Vuex.Store({
         });
       }
       commit('setTemplates', templates);
+    },
+    setTranslations({ commit }, data) {
+      commit('setTranslations', data);
     },
     setHelpDocs({ commit }, helpDocsJson) {
       commit('setHelpDocs', helpDocsJson);

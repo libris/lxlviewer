@@ -2,9 +2,9 @@
 import { merge, cloneDeep } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import * as DisplayUtil from '@/utils/display';
-import * as VocabUtil from '@/utils/vocab';
-import * as StringUtil from '@/utils/string';
+import * as DisplayUtil from 'lxltools/display';
+import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxltools/string';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import Button from '@/components/shared/button';
@@ -83,7 +83,7 @@ export default {
   },
   computed: {
     typeOfExtractingEntity() {
-      return StringUtil.getLabelByLang(VocabUtil.getRecordType(this.itemInfo['@type'], this.resources.vocab, this.resources.context), this.user.settings.language, this.resources.vocab, this.resources.context).toLowerCase();
+      return StringUtil.getLabelByLang(VocabUtil.getRecordType(this.itemInfo['@type'], this.resources.vocab, this.resources.context), this.user.settings.language, this.resources).toLowerCase();
     },
     displaySearchList() {
       return !this.searchInProgress && !this.extracting && this.keyword.length > 0 && this.searchResult.length > 0;
@@ -131,7 +131,7 @@ export default {
             this.$nextTick(() => {
               this.resetSearch();
               if (this.itemInfo !== null) {
-                const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources.display, this.inspector.data.quoted, this.resources.vocab, this.settings, this.resources.context).replace(/#|_|•|\[|\]/g, ' ').replace(/  +/g, ' ');
+                const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources, this.inspector.data.quoted, this.settings).replace(/#|_|•|\[|\]/g, ' ').replace(/  +/g, ' ');
                 this.keyword = cleanedChipString;
                 this.search();
               }

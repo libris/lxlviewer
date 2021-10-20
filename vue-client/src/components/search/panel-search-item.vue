@@ -1,8 +1,8 @@
 <script>
 import { merge, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxltools/string';
 import * as MathUtil from '@/utils/math';
-import * as StringUtil from '@/utils/string';
 import LensMixin from '../mixins/lens-mixin';
 import SummaryAction from '../inspector/summary-action';
 
@@ -99,7 +99,7 @@ export default {
       return this.focusData.reverseLinks ? MathUtil.getCompactNumber(this.focusData.reverseLinks.totalItems) : 0;
     },
     translatedTooltip() {
-      return StringUtil.getUiPhraseByLang('Number of links to entity', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Number of links to entity', this.user.settings.language, this.resources.i18n);
     },
   },
   components: {

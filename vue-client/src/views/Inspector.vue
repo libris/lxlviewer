@@ -2,11 +2,11 @@
 <script>
 import { cloneDeep, each, get } from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
-import * as StringUtil from '@/utils/string';
+import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxltools/vocab';
+import * as DisplayUtil from 'lxltools/display';
 import * as DataUtil from '@/utils/data';
-import * as VocabUtil from '@/utils/vocab';
 import * as HttpUtil from '@/utils/http';
-import * as DisplayUtil from '@/utils/display';
 import * as RecordUtil from '@/utils/record';
 import { checkAutoShelfControlNumber } from '@/utils/shelfmark';
 import EntityForm from '@/components/inspector/entity-form';
@@ -24,7 +24,7 @@ export default {
   name: 'Inspector',
   beforeRouteLeave(to, from, next) {
     if (this.shouldWarnOnUnload()) {
-      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.user.settings.language);
+      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.user.settings.language, this.resources.i18n);
       const answer = window.confirm(confString); // eslint-disable-line no-alert
       if (answer) {
         next();
@@ -37,7 +37,7 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     if (this.shouldWarnOnUnload()) {
-      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.user.settings.language);
+      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.user.settings.language, this.resources.i18n);
       const answer = window.confirm(confString); // eslint-disable-line no-alert
       if (answer) {
         next();
@@ -94,7 +94,7 @@ export default {
       this.$store.dispatch('setInspectorData', data);
       this.$store.dispatch('pushNotification', {
         type: 'success',
-        message: `${StringUtil.getUiPhraseByLang('Form updated, don\'t forget to save', this.user.settings.language)}`,
+        message: `${StringUtil.getUiPhraseByLang('Form updated, don\'t forget to save', this.user.settings.language, this.resources.i18n)}`,
       });
     },
     shouldWarnOnUnload() {
@@ -108,7 +108,7 @@ export default {
     initializeWarnBeforeUnload() {
       window.addEventListener('beforeunload', (e) => {
         if (this.shouldWarnOnUnload()) {
-          const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.user.settings.language);
+          const confirmationMessage = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.user.settings.language, this.resources.i18n);
           (e || window.event).returnValue = confirmationMessage; // Gecko + IE
           return confirmationMessage; // Gecko + Webkit, Safari, Chrome etc.
         }
@@ -173,7 +173,7 @@ export default {
         } else {
           this.$store.dispatch('pushNotification', {
             type: 'danger',
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`,
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
           });
           this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         }
@@ -181,7 +181,7 @@ export default {
       }, (error) => {
         this.$store.dispatch('pushNotification', {
           type: 'danger',
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`,
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
         });
       }).then((result) => {
         if (typeof result !== 'undefined') {
@@ -227,19 +227,19 @@ export default {
           } if (response.status === 404 || response.status === 410) {
             this.$store.dispatch('pushNotification', {
               type: 'danger',
-              message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language)}. ${response.status} ${response.statusText}`,
+              message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
             });
           } else {
             this.$store.dispatch('pushNotification', {
               type: 'danger',
-              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`,
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
             });
           }
           return false;
         }, (error) => {
           this.$store.dispatch('pushNotification', {
             type: 'danger',
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`,
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
           });
         }).then((result) => {
           if (typeof result !== 'undefined') {
@@ -267,19 +267,19 @@ export default {
         } if (response.status === 404 || response.status === 410) {
           this.$store.dispatch('pushNotification', {
             type: 'danger',
-            message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language)}. ${response.status} ${response.statusText}`,
+            message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
           });
         } else {
           this.$store.dispatch('pushNotification', {
             type: 'danger',
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${response.status} ${response.statusText}`,
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
           });
         }
         return false;
       }, (error) => {
         this.$store.dispatch('pushNotification', {
           type: 'danger',
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}. ${error}`,
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
         });
       }).then((result) => {
         if (typeof result !== 'undefined') {
@@ -304,10 +304,10 @@ export default {
         || VocabUtil.isSubClassOf(basePostType, tempPostType, this.resources.vocab, this.resources.context)
       );
       if (matching === false) {
-        const basePostLabel = StringUtil.getLabelByLang(basePostType, this.user.settings.language, this.resources.vocab, this.resources.context);
-        const tempPostLabel = StringUtil.getLabelByLang(tempPostType, this.user.settings.language, this.resources.vocab, this.resources.context);
-        const errorBase = `${StringUtil.getUiPhraseByLang('The types do not match', this.user.settings.language)}`;
-        const errorMessage = `"${tempPostLabel}" ${StringUtil.getUiPhraseByLang('is not compatible with', this.user.settings.language)} "${basePostLabel}"`;
+        const basePostLabel = StringUtil.getLabelByLang(basePostType, this.user.settings.language, this.resources);
+        const tempPostLabel = StringUtil.getLabelByLang(tempPostType, this.user.settings.language, this.resources);
+        const errorBase = `${StringUtil.getUiPhraseByLang('The types do not match', this.user.settings.language, this.resources.i18n)}`;
+        const errorMessage = `"${tempPostLabel}" ${StringUtil.getUiPhraseByLang('is not compatible with', this.user.settings.language, this.resources.i18n)} "${basePostLabel}"`;
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}! ${errorMessage}` });
         return;
       }
@@ -366,12 +366,12 @@ export default {
         this.justEmbellished = true;
         this.$store.dispatch('pushNotification', {
           type: 'success',
-          message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language)}`,
+          message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language, this.resources.i18n)}`,
         });
       } else {
         this.$store.dispatch('pushNotification', {
           type: 'info',
-          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language)}`,
+          message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language, this.resources.i18n)}`,
         });
       }
     },
@@ -387,15 +387,15 @@ export default {
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
         this.$store.dispatch('pushNotification', { 
           type: 'success', 
-          message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language)}!`, 
+          message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language, this.resources.i18n)}!`, 
         });
         // Force reload
         this.$router.go(-1);
       }, (error) => {
         if (error.status === 403) {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.user.settings.language)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.user.settings.language)} - ${error.statusText}` });
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.user.settings.language, this.resources.i18n)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.user.settings.language, this.resources.i18n)} - ${error.statusText}` });
         } else {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error.statusText}` });
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.statusText}` });
         }
       });
     },
@@ -504,7 +504,7 @@ export default {
       if (this.inspector.status.editing) {
         if (!this.inspector.status.isNew) {
           if (this.shouldWarnOnUnload()) {
-            const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.user.settings.language);
+            const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to cancel?', this.user.settings.language, this.resources.i18n);
             const answer = window.confirm(confString); // eslint-disable-line no-alert
             if (answer) {
               this.doCancel();
@@ -529,11 +529,9 @@ export default {
       if (typeof this.inspector.data.mainEntity !== 'undefined') {
         const headerList = DisplayUtil.getItemSummary(
           this.inspector.data.mainEntity,
-          this.resources.display,
+          this.resources,
           this.inspector.data.quoted,
-          this.resources.vocab,
           this.settings,
-          this.resources.context,
         ).header;
         const header = StringUtil.getFormattedEntries(
           headerList,
@@ -559,7 +557,7 @@ export default {
       const blob = new Blob([`${json}`], { type: 'application/ld+json' });
       const splitIdParts = focusId.split('/');
       const id = splitIdParts[splitIdParts.length - 1];
-      const promptInstruction = StringUtil.getUiPhraseByLang('Name your file', this.user.settings.language);
+      const promptInstruction = StringUtil.getUiPhraseByLang('Name your file', this.user.settings.language, this.resources.i18n);
       const promptedName = prompt(promptInstruction, id);
       if (promptedName !== null) {
         if (this.downloadIsSupported) {
@@ -626,7 +624,7 @@ export default {
       try {
         obj = this.getPackagedItem();
       } catch (e) {
-        const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language);
+        const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
         const errorMessage = `${StringUtil.getUiPhraseByLang(e.message, this.user.settings.language)}`;
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
@@ -662,7 +660,7 @@ export default {
           setTimeout(() => {
             this.$store.dispatch('pushNotification', { 
               type: 'success', 
-              message: `${this.$options.filters.labelByLang(this.recordType)}  ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language)}!`,
+              message: `${this.$options.filters.labelByLang(this.recordType)}  ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language, this.resources.i18n)}!`,
             });
           }, 10);
           this.warnOnSave();
@@ -672,7 +670,7 @@ export default {
           setTimeout(() => {
             this.$store.dispatch('pushNotification', {
               type: 'success', 
-              message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language)}!`,
+              message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language, this.resources.i18n)}!`,
             });
           }, 10);
           this.warnOnSave();
@@ -687,28 +685,28 @@ export default {
         this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-        const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language);
+        const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
         let errorMessage = '';
         switch (error.status) {
           case 412:
-            errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.user.settings.language)}`;
+            errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.user.settings.language, this.resources.i18n)}`;
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
             break;
           case 401:
             localStorage.removeItem('lastPath');
-            errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language)}`;
+            errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language, this.resources.i18n)}`;
             this.$store.dispatch('pushNotification', { type: 'danger', 
               message: `${errorBase}. ${errorMessage}.`, 
               sticky: true, 
               link: { 
                 to: this.$store.getters.oauth2Client.token.getUri(), 
-                title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language)}`, 
+                title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language, this.resources.i18n)}`, 
                 newTab: true, 
                 external: true,
               } });
             break;
           default:
-            errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language)}`;
+            errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
         }
       });
@@ -722,7 +720,7 @@ export default {
         if (warning) {
           this.$store.dispatch('pushNotification', {
             type: 'warning',
-            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources.vocab, this.resources.context)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources.vocab, this.resources.context)}`,
+            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language, this.resources.i18n)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources)}`,
           });
         }
       });

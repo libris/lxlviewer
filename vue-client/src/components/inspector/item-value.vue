@@ -2,7 +2,7 @@
 import AutoSize from 'autosize';
 import { isArray, debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as StringUtil from '@/utils/string';
+import * as StringUtil from 'lxltools/string';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 
@@ -56,6 +56,7 @@ export default {
   computed: {
     ...mapGetters([
       'user',
+      'resources',
     ]),
     value: {
       get() {
@@ -76,7 +77,7 @@ export default {
       return this.isUriType && this.fieldValue.startsWith('http');
     },
     newWindowText() {
-      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language, this.resources.i18n);
     },
     shouldFocus() {
       const lastAdded = this.inspector.status.lastAdded;

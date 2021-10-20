@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as DisplayUtil from '@/utils/display';
-import * as VocabUtil from '@/utils/vocab';
+import * as DisplayUtil from 'lxltools/display';
+import * as VocabUtil from 'lxltools/vocab';
 import * as MathUtil from '@/utils/math';
 import LensMixin from '@/components/mixins/lens-mixin';
 
@@ -57,11 +57,9 @@ export default {
 
       const label = DisplayUtil.getItemLabel(
         object,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
         object['@type'],
       );
 

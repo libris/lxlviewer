@@ -3,7 +3,7 @@ import { orderBy } from 'lodash-es';
 import marked from 'marked';
 import moment from 'moment';
 import { mapGetters } from 'vuex';
-import * as StringUtil from '@/utils/string';
+import * as StringUtil from 'lxltools/string';
 
 export default {
   name: 'help-component',
@@ -19,9 +19,9 @@ export default {
       const value = this.activeSectionTitle;
       let titleStr = '';
       if (value === 'Start') {
-        titleStr = StringUtil.getUiPhraseByLang('Help', this.user.settings.language);
+        titleStr = StringUtil.getUiPhraseByLang('Help', this.user.settings.language, this.resources.i18n);
       } else {
-        titleStr = `${value} - ${StringUtil.getUiPhraseByLang('Help', this.user.settings.language)}`;
+        titleStr = `${value} - ${StringUtil.getUiPhraseByLang('Help', this.user.settings.language, this.resources.i18n)}`;
       }
       this.$store.dispatch('setStatusValue', { 
         property: 'helpSectionTitle',
@@ -55,7 +55,7 @@ export default {
     getTimeAgoString(date) {
       const today = moment().startOf('day');
       if (today.isSame(date, 'day')) {
-        return StringUtil.getUiPhraseByLang('Today', this.user.settings.language).toLowerCase();
+        return StringUtil.getUiPhraseByLang('Today', this.user.settings.language, this.resources.i18n).toLowerCase();
       }
       return moment(date, 'YYYY-MM-DD').from(moment().startOf('day'));
     },

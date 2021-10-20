@@ -5,10 +5,10 @@
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import { get } from 'lodash-es';
-import * as VocabUtil from '@/utils/vocab';
+import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxltools/string';
 import * as RecordUtil from '@/utils/record';
 import * as HttpUtil from '@/utils/http';
-import * as StringUtil from '@/utils/string';
 import FieldAdder from '@/components/inspector/field-adder';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
@@ -109,7 +109,7 @@ export default {
       } else {
         this.$store.dispatch('pushNotification', {
           type: 'danger',
-          message: StringUtil.getUiPhraseByLang('New data @id does not match existing @id', this.user.settings.language),
+          message: StringUtil.getUiPhraseByLang('New data @id does not match existing @id', this.user.settings.language, this.resources.i18n),
         });
       }
     },
@@ -147,8 +147,8 @@ export default {
             self.applyFileAsOverride(data);
           } catch (error) {
             const msg = [
-              StringUtil.getUiPhraseByLang('Something went wrong', self.settings.language),
-              StringUtil.getUiPhraseByLang('Verify structure in template', self.settings.language),
+              StringUtil.getUiPhraseByLang('Something went wrong', self.settings.language, self.resources.i18n),
+              StringUtil.getUiPhraseByLang('Verify structure in template', self.settings.language, self.resources.i18n),
             ];
             self.$store.dispatch('pushNotification', { type: 'danger', message: msg.join() });
           }
@@ -167,8 +167,8 @@ export default {
             self.applyFileTemplate(data);
           } catch (error) {
             const msg = [
-              StringUtil.getUiPhraseByLang('Something went wrong', self.settings.language),
-              StringUtil.getUiPhraseByLang('Verify structure in template', self.settings.language),
+              StringUtil.getUiPhraseByLang('Something went wrong', self.settings.language, self.resources.i18n),
+              StringUtil.getUiPhraseByLang('Verify structure in template', self.settings.language, self.resources.i18n),
             ];
             self.$store.dispatch('pushNotification', { type: 'danger', message: msg.join() });
           }
@@ -301,7 +301,7 @@ export default {
       HttpUtil.get({ url: this.compileMARCUrl }).then((response) => {
         this.download(response);
       }, (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} - ${StringUtil.getUiPhraseByLang(error, this.user.settings.language)}` });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${StringUtil.getUiPhraseByLang(error, this.user.settings.language, this.resources.i18n)}` });
       });
     },
     handleCopy() {

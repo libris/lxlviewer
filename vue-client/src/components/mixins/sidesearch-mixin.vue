@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as DisplayUtil from '@/utils/display';
-import * as VocabUtil from '@/utils/vocab';
+import * as DisplayUtil from 'lxltools/display';
+import * as VocabUtil from 'lxltools/vocab';
 import { buildQueryString } from '@/utils/http';
 
 export default {
@@ -59,8 +59,7 @@ export default {
       return DisplayUtil.getLabelWithTreeDepth(
         term,
         this.settings,
-        this.resources.vocab,
-        this.resources.context,
+        this.resources,
       );
     },
     setParam($event) {

@@ -1,12 +1,12 @@
 <script>
 import { mapGetters } from 'vuex';
 import { filter } from 'lodash-es';
-import * as VocabUtil from '@/utils/vocab';
+import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxltools/string';
 import * as HttpUtil from '@/utils/http';
 import TabMenu from '@/components/shared/tab-menu';
 import HoldingMover from '@/components/care/holding-mover';
 import ModalComponent from '@/components/shared/modal-component';
-import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'DirectoryCare',
@@ -86,7 +86,7 @@ export default {
           this.$store.dispatch('pushNotification',
             { 
               type: 'danger',
-              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}`, 
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}`, 
             })
             .then(() => {
               this.allDone();
@@ -104,7 +104,7 @@ export default {
             this.$store.dispatch('pushNotification',
               {
                 type: 'danger',
-                message: `${StringUtil.getUiPhraseByLang('The following resources could not be retrieved', this.user.settings.language)}: 
+                message: `${StringUtil.getUiPhraseByLang('The following resources could not be retrieved', this.user.settings.language, this.resources.i18n)}: 
                 ${this.errors.other.map(el => el.label).join(', ')}`, 
               })
               .then(() => {

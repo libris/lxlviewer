@@ -1,7 +1,7 @@
 <script>
 import { sortBy, orderBy } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
-import * as DisplayUtil from '@/utils/display';
+import * as DisplayUtil from 'lxltools/display';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
 import Facet from './facet.vue';
@@ -78,11 +78,9 @@ export default {
         if (o.object.hasOwnProperty('@id')) {
           label = DisplayUtil.getItemLabel(
             o.object,
-            this.resources.display,
+            this.resources,
             null,
-            this.resources.vocab,
             this.settings,
-            this.resources.context,
           );
         } else {
           label = o.object.label;

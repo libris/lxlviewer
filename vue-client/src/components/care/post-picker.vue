@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as DisplayUtil from '@/utils/display';
-import * as StringUtil from '@/utils/string';
+import * as DisplayUtil from 'lxltools/display';
+import * as StringUtil from 'lxltools/string';
 
 export default {
   name: 'post-picker',
@@ -50,11 +50,9 @@ export default {
       return this.flaggedInstances.map((instance) => {
         const headerList = DisplayUtil.getItemSummary(
           instance, 
-          this.resources.display, 
+          this.resources, 
           this.inspector.data.quoted, 
-          this.resources.vocab, 
           this.settings, 
-          this.resources.context,
         ).header;
 
         const header = StringUtil.getFormattedEntries(

@@ -1,11 +1,11 @@
 <script>
 import { mapGetters } from 'vuex';
 import { filter } from 'lodash-es';
+import * as StringUtil from 'lxltools/string';
 import PostPicker from '@/components/care/post-picker';
 import HoldingList from '@/components/care/holding-list';
 import ModalComponent from '@/components/shared/modal-component';
 import * as RecordUtil from '@/utils/record';
-import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'holding-mover',
@@ -117,13 +117,14 @@ export default {
       'userCare',
       'directoryCare',
       'settings',
+      'resources',
       'user',
     ]),
     infoBoxTooltip() {
       if (this.showInfoBox) {
-        return StringUtil.getUiPhraseByLang('Hide instructions', this.user.settings.language);   
+        return StringUtil.getUiPhraseByLang('Hide instructions', this.user.settings.language, this.resources.i18n);   
       }
-      return StringUtil.getUiPhraseByLang('Show instructions', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Show instructions', this.user.settings.language, this.resources.i18n);
     },
     anySelected() {
       return !!(this.directoryCare.sender || this.directoryCare.reciever);

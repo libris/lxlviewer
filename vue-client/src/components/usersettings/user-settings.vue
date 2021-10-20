@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as StringUtil from '@/utils/string';
+import * as StringUtil from 'lxltools/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import SelectSigel from './select-sigel';
 
@@ -33,7 +33,7 @@ export default {
     },
     logout() {
       this.$store.dispatch('logoutUser');
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged out', this.user.settings.language)}!` });
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged out', this.user.settings.language, this.resources.i18n)}!` });
       this.$router.push({ path: '/' });
     },
     purgeTagged() {
@@ -46,6 +46,7 @@ export default {
       'user',
       'userStorage',
       'settings',
+      'resources',
     ]),
     userHasTaggedPosts() {
       return Object.keys(this.userStorage.list).length > 0;

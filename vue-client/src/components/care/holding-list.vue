@@ -1,8 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import { each, isObject, orderBy } from 'lodash-es';
-import * as StringUtil from '@/utils/string';
-import * as DisplayUtil from '@/utils/display';
+import * as StringUtil from 'lxltools/string';
+import * as DisplayUtil from 'lxltools/display';
 
 export default {
   name: 'holding-list',
@@ -65,24 +65,22 @@ export default {
       return permitted;
     },
     noPermissionTooltip() {
-      return StringUtil.getUiPhraseByLang('You don\'t have permission', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('You don\'t have permission', this.user.settings.language, this.resources.i18n);
     },
     foundOnDestinationTooltip() {
-      return StringUtil.getUiPhraseByLang('Holding already exists on the reciever', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Holding already exists on the reciever', this.user.settings.language, this.resources.i18n);
     },
     noRecieverTooltip() {
-      return StringUtil.getUiPhraseByLang('No reciever chosen', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('No reciever chosen', this.user.settings.language, this.resources.i18n);
     },
     sortedHoldings() {
       const holdings = this.directoryCare[`${this.name}Holdings`];
       each(holdings, (h) => { 
         h._label = DisplayUtil.getItemLabel(
           h,
-          this.resources.display,
+          this.resources,
           [],
-          this.resources.vocab,
           this.settings,
-          this.resources.context,
         );
       });
       

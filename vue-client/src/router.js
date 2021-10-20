@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import * as StringUtil from 'lxltools/string';
 import LandingPage from '@/views/LandingPage';
 import Login from '@/views/Login';
 import store from './store';
-import * as StringUtil from '@/utils/string';
 
 Vue.use(Router);
 

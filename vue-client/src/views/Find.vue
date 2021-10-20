@@ -2,8 +2,8 @@
 import { each, isArray, isPlainObject } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import * as StringUtil from 'lxltools/string';
 import * as RecordUtil from '@/utils/record';
-import * as StringUtil from '@/utils/string';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Copy from '@/resources/json/copy.json';
 import FacetControls from '@/components/search/facet-controls';
@@ -72,8 +72,8 @@ export default {
             this.result = result;
           }, () => {
             const msg = [
-              `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)}`,
-              `${StringUtil.getUiPhraseByLang('Could not process server response', this.user.settings.language)}`,
+              `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}`,
+              `${StringUtil.getUiPhraseByLang('Could not process server response', this.user.settings.language, this.resources.i18n)}`,
             ];
             this.$store.dispatch('pushNotification', {
               type: 'danger',
@@ -84,7 +84,7 @@ export default {
 
         this.searchInProgress = false;
       }, (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} ${error}` });
         this.searchInProgress = false;
       });
     },
@@ -93,7 +93,7 @@ export default {
       this.hideFacetColumn = true;
 
       fetch(fetchUrl, { headers: { Authorization: `Bearer ${this.user.token}` } }).then(response => response.json(), (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language)} ${error}` });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} ${error}` });
         this.searchInProgress = false;
       }).then((result) => {
         this.result = this.convertRemoteResult(result);
@@ -102,7 +102,7 @@ export default {
         this.$store.dispatch('setStatusValue', { property: 'failedRemoteDatabases', value: this.result.failedDbs });
 
         if (this.result.failedDbs.length > 0) {
-          const errorBase = StringUtil.getUiPhraseByLang('The following database(s) could not be reached, try again later:', this.user.settings.language);
+          const errorBase = StringUtil.getUiPhraseByLang('The following database(s) could not be reached, try again later:', this.user.settings.language, this.resources.i18n);
           const errorMessage = `${errorBase} ${this.result.failedDbs.join(', ')}`;
           this.$store.dispatch('pushNotification', { type: 'danger', message: errorMessage });
         }
@@ -166,18 +166,19 @@ export default {
       'user',
       'settings',
       'status',
+      'resources',
     ]),
     findTabs() {
       const tabs = [
         { 
           id: 'libris', 
-          text: StringUtil.getUiPhraseByLang('Libris', this.user.settings.language),
+          text: StringUtil.getUiPhraseByLang('Libris', this.user.settings.language, this.resources.i18n),
         },
         { 
           id: 'remote', 
-          text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language),
+          text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language, this.resources.i18n),
           disabled: !this.user.isLoggedIn,
-          tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('Sign in to search other sources', this.user.settings.language) : null,
+          tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('Sign in to search other sources', this.user.settings.language, this.resources.i18n) : null,
         },
       ];
       return tabs;

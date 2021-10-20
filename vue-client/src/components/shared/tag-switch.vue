@@ -5,8 +5,8 @@
     * tag         - String, what tag we are operating on
 */
 import { mapGetters } from 'vuex';
-import * as StringUtil from '@/utils/string';
-import * as DisplayUtil from '@/utils/display';
+import * as StringUtil from 'lxltools/string';
+import * as DisplayUtil from 'lxltools/display';
 
 export default {
   name: 'tag-switch',
@@ -59,11 +59,9 @@ export default {
     documentTitle() {
       return DisplayUtil.getItemLabel(
         this.document,
-        this.resources.display,
+        this.resources,
         this.inspector.data.quoted,
-        this.resources.vocab,
         this.settings,
-        this.resources.context,
       );
     },
     iconString() {
@@ -100,11 +98,11 @@ export default {
     tooltip() {
       let str = '';
       if (!this.isMarked) {
-        str += StringUtil.getUiPhraseByLang(this.actionLabels.on, this.user.settings.language);
+        str += StringUtil.getUiPhraseByLang(this.actionLabels.on, this.user.settings.language, this.resources.i18n);
       } else {
-        str += StringUtil.getUiPhraseByLang(this.actionLabels.off, this.user.settings.language);
+        str += StringUtil.getUiPhraseByLang(this.actionLabels.off, this.user.settings.language, this.resources.i18n);
       }
-      str += ` ${StringUtil.getUiPhraseByLang(this.tag, this.user.settings.language).toLowerCase()}`;
+      str += ` ${StringUtil.getUiPhraseByLang(this.tag, this.user.settings.language, this.resources.i18n).toLowerCase()}`;
       return str;
     },
   },

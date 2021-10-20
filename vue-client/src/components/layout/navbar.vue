@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { mixin as clickaway } from 'vue-clickaway';
-import * as StringUtil from '@/utils/string';
+import * as StringUtil from 'lxltools/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import TabMenu from '@/components/shared/tab-menu';
 import UserSettings from '@/components/usersettings/user-settings';
@@ -28,13 +28,14 @@ export default {
       'settings',
       'status',
       'user',
+      'resources',
     ]),
     tabs() {
       const directoryCareBadge = {
         value: this.userCare.length === 0 ? '' : this.userCare.length,
         type: 'accent',
       };
-      const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language)}`;
+      const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language, this.resources.i18n)}`;
       const loggedInTabs = this.user.isLoggedIn ? [
         { id: 'Create new', text: 'Create new', link: '/create', icon: 'plus-square-o' },
         { id: 'Directory care', html: $directoryCare, link: '/directory-care', icon: 'flag', badge: directoryCareBadge }, 
@@ -58,7 +59,7 @@ export default {
     },
     tooltipOptions() {
       const options = {
-        content: `${StringUtil.getUiPhraseByLang('To create concepts, you need to switch to a seal with correct authority.', this.user.settings.language)}`,
+        content: `${StringUtil.getUiPhraseByLang('To create concepts, you need to switch to a seal with correct authority.', this.user.settings.language, this.resources.i18n)}`,
         show: this.showSigelHint,
         trigger: 'manual',
         placement: 'bottom',

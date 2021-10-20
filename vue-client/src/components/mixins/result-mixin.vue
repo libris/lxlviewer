@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxltools/string';
 import * as RecordUtil from '@/utils/record';
-import * as StringUtil from '@/utils/string';
 
 export default {
   data() {
@@ -17,7 +17,7 @@ export default {
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
       } else {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('You need to be logged in to perform this action', this.user.settings.language)}.` });
+        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('You need to be logged in to perform this action', this.user.settings.language, this.resources.i18n)}.` });
       }
     },
   },
@@ -30,6 +30,7 @@ export default {
     ...mapGetters([
       'settings',
       'user',
+      'resources',
     ]),
     isImport() {
       if (typeof this.importItem !== 'undefined' && this.importItem['@graph'] && this.importItem['@graph'].length > 0 && this.importItem['@graph'][0].hasOwnProperty('@id')) {

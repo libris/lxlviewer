@@ -1,9 +1,9 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as DisplayUtil from '@/utils/display';
+import * as DisplayUtil from 'lxltools/display';
+import * as StringUtil from 'lxltools/string';
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
-import * as StringUtil from '@/utils/string';
 import * as LayoutUtil from '@/utils/layout';
 import RoundedButton from '@/components/shared/rounded-button.vue';
 
@@ -42,12 +42,10 @@ export default {
   methods: {
     buildItem() {
       const embellishedReference = DisplayUtil.getCard(
-        this.mainEntity, 
-        this.resources.display, 
+        this.mainEntity,
+        this.resources,
         this.inspector.data.quoted, 
-        this.resources.vocab, 
-        this.settings, 
-        this.resources.context,
+        this.settings,
       );
       embellishedReference['@id'] = this.mainEntity['@id'];
       embellishedReference['@type'] = this.mainEntity['@type']; // fixes broken itemOf chip FIXME: why does getCard drop @type?
@@ -87,7 +85,7 @@ export default {
     ]),
     tooltipText() {
       const str = this.hasHolding ? [this.user.settings.activeSigel, 'has holding'] : ['Add holding for', this.user.settings.activeSigel];
-      return StringUtil.getUiPhraseByLang(str, this.user.settings.language);
+      return StringUtil.getUiPhraseByLang(str, this.user.settings.language, this.resources.i18n);
     },
     keyBindText() {
       return LayoutUtil.getKeybindingText('add-holding');

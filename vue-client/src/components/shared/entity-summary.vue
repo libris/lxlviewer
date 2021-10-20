@@ -1,12 +1,12 @@
 <script>
 import { each, isArray, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxltools/vocab';
 import LensMixin from '../mixins/lens-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
 import SummaryNode from '@/components/shared/summary-node';
-import * as StringUtil from '@/utils/string';
-import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 
 export default {
@@ -109,6 +109,7 @@ export default {
     ...mapGetters([
       'user',
       'enrichment',
+      'resources',
     ]),
     encodingLevel() {
       /*
@@ -143,7 +144,7 @@ export default {
       return this.getSummary.info.length - this.keyDisplayLimit;
     },
     idTooltipText() {
-      return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language);
+      return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language, this.resources.i18n);
     },
     isReplacedBy() {
       const info = this.getSummary.info;
@@ -212,8 +213,7 @@ export default {
       const translatedBaseType = StringUtil.getLabelByLang(
         this.recordType,
         this.user.settings.language, 
-        this.resources.vocab, 
-        this.resources.context,
+        this.resources,
       );
       if (type === this.recordType && ['Instance', 'Work'].indexOf(type) !== -1) {
         return `${this.$options.filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
@@ -228,8 +228,7 @@ export default {
         translatedType = StringUtil.getLabelByLang(
           type,
           this.user.settings.language, 
-          this.resources.vocab, 
-          this.resources.context,
+          this.resources,
         );
       }
       return `${translatedType}, ${translatedBaseType}`;

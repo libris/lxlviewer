@@ -6,8 +6,8 @@
 import { mixin as clickaway } from 'vue-clickaway';
 import { filter, isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as StringUtil from '@/utils/string';
-import * as VocabUtil from '@/utils/vocab';
+import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxltools/vocab';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import RoundButton from '@/components/shared/round-button.vue';
 
@@ -63,12 +63,11 @@ export default {
       'status',
     ]),
     modalTitle() {
-      const title = StringUtil.getUiPhraseByLang('Add field in', this.user.settings.language);
+      const title = StringUtil.getUiPhraseByLang('Add field in', this.user.settings.language, this.resources.i18n);
       const contextString = StringUtil.getLabelByLang(
         this.entityType, 
         this.user.settings.language, 
-        this.resources.vocab, 
-        this.resources.context,
+        this.resources,
       );
       return `${title}: ${contextString}`;
     },
@@ -141,18 +140,18 @@ export default {
     getPropClassInfo(termObj) {
       if (isArray(termObj['@type'])) {
         if (termObj['@type'].indexOf('DatatypeProperty') > -1 && termObj['@type'].indexOf('DatatypeProperty') > -1) {
-          return StringUtil.getUiPhraseByLang('Literals and entities', this.user.settings.language);
+          return StringUtil.getUiPhraseByLang('Literals and entities', this.user.settings.language, this.resources.i18n);
         } if (termObj['@type'].indexOf('DatatypeProperty') > -1) {
-          return StringUtil.getUiPhraseByLang('Literals', this.user.settings.language);
+          return StringUtil.getUiPhraseByLang('Literals', this.user.settings.language, this.resources.i18n);
         } if (termObj['@type'].indexOf('ObjectProperty') > -1) {
-          return StringUtil.getUiPhraseByLang('Entities', this.user.settings.language);
+          return StringUtil.getUiPhraseByLang('Entities', this.user.settings.language, this.resources.i18n);
         } 
         return '';
       } 
       if (termObj['@type'] === 'DatatypeProperty') {
-        return StringUtil.getUiPhraseByLang('Literals', this.user.settings.language);
+        return StringUtil.getUiPhraseByLang('Literals', this.user.settings.language, this.resources.i18n);
       } if (termObj['@type'] === 'ObjectProperty') {
-        return StringUtil.getUiPhraseByLang('Entities', this.user.settings.language);
+        return StringUtil.getUiPhraseByLang('Entities', this.user.settings.language, this.resources.i18n);
       }
       return '';
     },

@@ -1,10 +1,10 @@
 <script>
+import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxltools/vocab';
 import LensMixin from '../mixins/lens-mixin';
 import ResultMixin from '../mixins/result-mixin';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import TagSwitch from '@/components/shared/tag-switch';
-import * as StringUtil from '@/utils/string';
-import * as VocabUtil from '@/utils/vocab';
 import * as RecordUtil from '@/utils/record';
 
 export default {

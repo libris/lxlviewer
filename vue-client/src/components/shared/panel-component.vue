@@ -21,8 +21,8 @@
 
 */
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxltools/string';
 import * as LayoutUtil from '@/utils/layout';
-import * as StringUtil from '@/utils/string';
 
 export default {
   name: 'panel-component',
@@ -71,9 +71,10 @@ export default {
       'user',
       'settings',
       'status',
+      'resources',
     ]),
     translatedTitle() {
-      return StringUtil.getUiPhraseByLang(this.title, this.user.settings.language);
+      return StringUtil.getUiPhraseByLang(this.title, this.user.settings.language, this.resources.i18n);
     },
   },
   watch: {
