@@ -41,7 +41,7 @@ export default {
     <div class="EntityChangelog-item">
       <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Created' | translatePhrase}}:</span> 
       <span class="EntityChangelog-value">
-        {{ getCard.created }} {{ 'by' | translatePhrase}} 
+        {{ $moment(getCard.created).format('lll') }} {{ 'by' | translatePhrase}} 
         <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionCreator" :item="inspector.data.record.descriptionCreator" :is-last="true" :field-key="'descriptionCreator'"/>
         <span class="EntityChangelog-unknown" v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
       </span>
@@ -49,7 +49,7 @@ export default {
     <div class="EntityChangelog-item">
       <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Changed' | translatePhrase}}:</span> 
       <span class="EntityChangelog-value">
-        {{ getCard.modified }} {{ 'by' | translatePhrase}}
+        {{ $moment(getCard.modified).format('lll') }} {{ 'by' | translatePhrase}}
         <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionLastModifier" :item="inspector.data.record.descriptionLastModifier" :is-last="true" :field-key="'descriptionLastModifier'"/>
         <span class="EntityChangelog-unknown" v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
       </span>

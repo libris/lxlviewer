@@ -11,6 +11,8 @@ import PortalVue from 'portal-vue';
 import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
 import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
+import moment from 'moment';
+import 'moment/locale/sv';
 import * as StringUtil from 'lxltools/string';
 import App from './App';
 import router from './router';
@@ -21,6 +23,9 @@ import Field from '@/components/inspector/field';
 import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
 import i18n from '@/resources/json/i18n.json';
+
+Vue.prototype.$moment = moment;
+moment.locale('sv');
 
 const TooltipOptions = {
   popover: {
