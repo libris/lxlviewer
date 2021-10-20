@@ -176,7 +176,7 @@ export function getLabelFromObject(object, language) {
   return label;
 }
 
-export function getLabelByLang(string, lang, vocab, context) {
+export function getLabelByLang(string, lang, resources) {
   if (!string) {
     return null;
   }
@@ -186,7 +186,8 @@ export function getLabelByLang(string, lang, vocab, context) {
       JSON.stringify(string),
     );
   }
-
+  const vocab = resources.vocab;
+  const context = resources.context;
   let item = VocabUtil.getTermObject(string, vocab, context);
   
   if (string.indexOf('@reverse/') >= 0) {
@@ -264,7 +265,7 @@ export function getFormattedEntries(list, vocab, language, context) {
   let formatted = [];
   for (const entry of list) {
     if (translateable(entry.property)) {
-      formatted = formatted.concat(entry.value.map(obj => getLabelByLang(obj, language, vocab, context)));
+      formatted = formatted.concat(entry.value.map(obj => getLabelByLang(obj, language, { vocab, context })));
     } else {
       formatted = formatted.concat(entry.value);
     }

@@ -182,7 +182,9 @@ function isFiltered(termObj, settings) {
   return false;
 }
 
-export function getTermByType(type, list, context, settings) {
+export function getTermByType(type, vocab, context, settings) {
+  const list = Array.from(vocab.values());
+
   if (!list || typeof list === 'undefined') {
     throw new Error('getTermByType was called without a vocabulary.');
   }

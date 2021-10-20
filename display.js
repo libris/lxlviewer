@@ -179,7 +179,7 @@ export function getItemLabel(item, resources, quoted, settings, inClass = '') {
     }
 
     if (inClass.toLowerCase() !== item['@type'].toLowerCase()) {
-      const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, resources.vocab, resources.context);
+      const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, resources);
       rendered = `${translatedType} ${rendered}`;
     }
   }
@@ -195,10 +195,8 @@ export function formatIsni(isni) {
 export function getSortedProperties(formType, formObj, settings, resources) {
   const propertyList = getDisplayProperties(
     formType,
-    resources.display,
-    resources.vocab,
+    resources,
     settings,
-    resources.context,
     'full',
   );
   each(formObj, (v, k) => {
@@ -214,7 +212,7 @@ export function getItemToken(item, resources, quoted, settings) {
   const displayObject = getToken(item, resources, quoted, settings);
   let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', resources.vocab, resources.context)) {
-    const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, resources.vocab, resources.context);
+    const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, resources);
     rendered = `${translatedType} ${rendered}`;
   }
   return rendered;
@@ -233,7 +231,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
     if (trueItem['@id'] == 'https://id.kb.se/vocab/') {
       return {};
     }
-    if (quoted.hasOwnProperty(trueItem['@id'])) {
+    if (quoted && quoted.hasOwnProperty(trueItem['@id'])) {
       trueItem = quoted[trueItem['@id']];
     }
     // trueItem = DataUtil.getEmbellished(trueItem['@id'], quoted);
@@ -296,7 +294,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
           }
           result[property] = value;
         } else if (properties.length < 3 && i === 0) {
-          const rangeOfMissingProp = VocabUtil.getRange(property, vocab, context);
+          const rangeOfMissingProp = VocabUtil.getRange(property, resources.vocab, resources.context);
           let propMissing = property;
           if (
             rangeOfMissingProp.length > 1
@@ -307,10 +305,9 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
           const expectedClassName = StringUtil.getLabelByLang(
             propMissing, // Get the first one just to show something
             settings.language,
-            vocab,
-            context,
+            resources,
           );
-          result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, vocab, context)} ${StringUtil.getUiPhraseByLang('without', settings.language)} ${expectedClassName.toLowerCase()}}`;
+          result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, resources )} ${StringUtil.getUiPhraseByLang('without', settings.language)} ${expectedClassName.toLowerCase()}}`;
         }
       }
     }
