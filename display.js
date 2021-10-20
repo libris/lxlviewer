@@ -1,6 +1,7 @@
 import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual } from 'lodash-es';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
+import { lxlWarning, lxlError } from './debug';
 
 export function expandInherited(display) {
   const cloned = cloneDeep(display);
@@ -24,12 +25,12 @@ export function expandInherited(display) {
     }
     
     if (!lens['fresnel:extends'] || !lens['fresnel:extends']['@id']) {
-      // window.lxlWarning(`👁️ Use of 'fresnel:super' without 'fresnel:extends': ${JSON.stringify(lens)}.`);
+      lxlWarning(`👁️ Use of 'fresnel:super' without 'fresnel:extends': ${JSON.stringify(lens)}.`);
       return lens.showProperties;
     }
     const extendId = lens['fresnel:extends']['@id'];
     if (!lensesById[extendId]) {
-      // window.lxlWarning(`👁️ Could not find lens with id '${extendId}' used in 'fresnel:extends': ${JSON.stringify(lens)}.`);
+      lxlWarning(`👁️ Could not find lens with id '${extendId}' used in 'fresnel:extends': ${JSON.stringify(lens)}.`);
       return lens.showProperties;
     }
       
@@ -314,7 +315,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
   }
   const itemKeys = Object.keys(result);
   if (isEmpty(result) || (itemKeys.length === 1 && (typeof result[itemKeys[0]] === 'undefined' || result[itemKeys[0]] === null || result[itemKeys[0]].length === 0))) {
-    // window.lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}.`, 'Item data:', trueItem);
+    lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}.`, 'Item data:', trueItem);
     if (trueItem.hasOwnProperty('@id')) {
       const idParts = item['@id'].split('/');
       result = { label: idParts[idParts.length - 1] };

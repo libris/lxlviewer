@@ -1,5 +1,6 @@
 import { isObject, uniq, isArray, find, sortBy, each, isPlainObject, cloneDeep, uniqBy, forOwn } from 'lodash-es';
 import * as StringUtil from './string';
+import { lxlWarning, lxlError } from './debug';
 
 export const XSD_NUMERIC_TYPES = Object.freeze({
   'xsd:byte': { min: -128, max: 127 },
@@ -61,7 +62,7 @@ export function getTermObject(term, vocab, context) {
   }
 
   if (!_class) {
-    // window.lxlWarning('📘 Term lookup failed:', term, '| Tried :', tries.join(', '));
+    lxlWarning('📘 Term lookup failed:', term, '| Tried :', tries.join(', '));
   }
   return _class;
 }
@@ -175,7 +176,7 @@ function isFiltered(termObj, settings) {
   const filteredCategories = settings.filteredCategories;
   for (let i = 0; i < filteredCategories.length; i++) {
     if (termObj.hasOwnProperty('category') && termObj.category['@id'] === `https://id.kb.se/vocab/${filteredCategories[i]}`) {
-      // window.lxlWarning(`🗑️ Filtered ${filteredCategories[i]} class:`, termObj['@id']);
+      // lxlWarning(`🗑️ Filtered ${filteredCategories[i]} class:`, termObj['@id']);
       return true;
     }
   }
@@ -551,7 +552,7 @@ export function getBaseUriFromPrefix(prefix, context) {
     baseUri = contextList[prefix];
   }
   if (baseUri === '') {
-    // window.lxlWarning('❓ Couldn\'t get baseUri from prefix:', prefix);
+    lxlWarning('❓ Couldn\'t get baseUri from prefix:', prefix);
   }
   return baseUri;
 }
