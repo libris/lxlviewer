@@ -937,7 +937,8 @@ export default {
         </div>
         <entity-header id="main-header"
           :full="true"
-          :focus-data="inspector.data.mainEntity"
+          :focus-data="inspector.data.mainEntity" 
+          :record-data="inspector.data.record"
           v-if="!isItem">
         </entity-header>
         <validation-summary v-if="user.settings.appTech" />

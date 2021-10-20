@@ -67,14 +67,26 @@ export default {
       return card;
     },
     getSummary() {
-      const summary = DisplayUtil.getItemSummary(
+      const mainSummary = DisplayUtil.getItemSummary(
         this.focusData,
         this.resources,
         this.inspector.data.quoted,
         this.settings,
         this.excludeProperties,
       );
-      return summary;
+      const record = this.focusData.meta || this.recordData || {};
+      const recordSummary = DisplayUtil.getItemSummary(
+        record,
+        this.resources,
+        this.inspector.data.quoted,
+        this.settings,
+        this.excludeProperties,
+      );
+      return {
+        categorization: mainSummary.categorization.concat(recordSummary.categorization),
+        header: mainSummary.header,
+        info: mainSummary.info,
+      };
     },
   },
 };
