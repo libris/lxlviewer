@@ -126,7 +126,7 @@
       "^.+\\.jsx?$": "babel-jest"
     },
     "transformIgnorePatterns": [
-      "<rootDir>/node_modules/(?!lodash-es)"
+      "<rootDir>/node_modules/(?!lodash-es|lxltools)"
     ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
