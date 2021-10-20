@@ -104,8 +104,7 @@ export default {
       return sortBy(possibleValues, value => StringUtil.getLabelByLang(
         value,
         this.user.settings.language,
-        this.resources.vocab,
-        this.resources.context,
+        this.resources,
       ));
     },
     setTooltipComment(value) {

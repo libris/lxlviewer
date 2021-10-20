@@ -95,7 +95,7 @@ export default {
     ]),
     computedTitle() {
       const modalStr = StringUtil.getUiPhraseByLang('Add entity', this.user.settings.language, this.resources.i18n);
-      const addLabelStr = StringUtil.getLabelByLang(this.addLabel, this.user.settings.language, this.resources.vocab, this.resources.context);
+      const addLabelStr = StringUtil.getLabelByLang(this.addLabel, this.user.settings.language, this.resources);
       return `${modalStr} | ${addLabelStr}`;
     },
     tooltipText() {
@@ -103,8 +103,7 @@ export default {
       const label = StringUtil.getLabelByLang(
         this.addLabel,
         this.user.settings.language,
-        this.resources.vocab,
-        this.resources.context,
+        this.resources,
       );
 
       return `${addText} ${label.toLowerCase()}`;

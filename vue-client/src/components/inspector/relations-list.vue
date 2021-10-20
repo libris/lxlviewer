@@ -168,7 +168,7 @@ export default {
         windowTitle += ` ${this.itemOfTitle}`;
         return windowTitle;
       }
-      const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.user.settings.language, this.resources.vocab, this.resources.context);
+      const typeLabel = StringUtil.getLabelByLang(this.listContextType, this.user.settings.language, this.resources);
       return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.user.settings.language, this.resources.i18n)}`;
     },
     itemOfTitle() {

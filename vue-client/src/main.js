@@ -58,7 +58,7 @@ Vue.component('v-popover', VTooltip.VPopover);
 Vue.component('field', Field);
 Vue.component('entity-summary', EntitySummary);
 
-Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources.vocab, store.getters.resources.context));
+Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources));
 
 Vue.filter('asAppPath', (path) => {
   const appPaths = store.getters.settings.appPaths;

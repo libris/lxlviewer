@@ -63,8 +63,7 @@ export default {
       const contextString = StringUtil.getLabelByLang(
         this.entityType, 
         this.user.settings.language, 
-        this.resources.vocab, 
-        this.resources.context,
+        this.resources,
       );
       return `${title}: ${contextString}`;
     },

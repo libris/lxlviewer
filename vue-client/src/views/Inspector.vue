@@ -304,8 +304,8 @@ export default {
         || VocabUtil.isSubClassOf(basePostType, tempPostType, this.resources.vocab, this.resources.context)
       );
       if (matching === false) {
-        const basePostLabel = StringUtil.getLabelByLang(basePostType, this.user.settings.language, this.resources.vocab, this.resources.context);
-        const tempPostLabel = StringUtil.getLabelByLang(tempPostType, this.user.settings.language, this.resources.vocab, this.resources.context);
+        const basePostLabel = StringUtil.getLabelByLang(basePostType, this.user.settings.language, this.resources);
+        const tempPostLabel = StringUtil.getLabelByLang(tempPostType, this.user.settings.language, this.resources);
         const errorBase = `${StringUtil.getUiPhraseByLang('The types do not match', this.user.settings.language, this.resources.i18n)}`;
         const errorMessage = `"${tempPostLabel}" ${StringUtil.getUiPhraseByLang('is not compatible with', this.user.settings.language, this.resources.i18n)} "${basePostLabel}"`;
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}! ${errorMessage}` });
@@ -720,7 +720,7 @@ export default {
         if (warning) {
           this.$store.dispatch('pushNotification', {
             type: 'warning',
-            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language, this.resources.i18n)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources.vocab, this.resources.context)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources.vocab, this.resources.context)}`,
+            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language, this.resources.i18n)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources)}`,
           });
         }
       });

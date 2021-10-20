@@ -83,7 +83,7 @@ export default {
   },
   computed: {
     typeOfExtractingEntity() {
-      return StringUtil.getLabelByLang(VocabUtil.getRecordType(this.itemInfo['@type'], this.resources.vocab, this.resources.context), this.user.settings.language, this.resources.vocab, this.resources.context).toLowerCase();
+      return StringUtil.getLabelByLang(VocabUtil.getRecordType(this.itemInfo['@type'], this.resources.vocab, this.resources.context), this.user.settings.language, this.resources).toLowerCase();
     },
     displaySearchList() {
       return !this.searchInProgress && !this.extracting && this.keyword.length > 0 && this.searchResult.length > 0;

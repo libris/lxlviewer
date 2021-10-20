@@ -68,6 +68,9 @@
       "plugin:vue/essential",
       "@vue/airbnb"
     ],
+    "ignorePatterns": [
+      "**/node_modules/**"
+    ],
     "rules": {
       "no-use-before-define": "off",
       "no-plusplus": "off",

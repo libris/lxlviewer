@@ -213,8 +213,7 @@ export default {
       const translatedBaseType = StringUtil.getLabelByLang(
         this.recordType,
         this.user.settings.language, 
-        this.resources.vocab, 
-        this.resources.context,
+        this.resources,
       );
       if (type === this.recordType && ['Instance', 'Work'].indexOf(type) !== -1) {
         return `${this.$options.filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
@@ -229,8 +228,7 @@ export default {
         translatedType = StringUtil.getLabelByLang(
           type,
           this.user.settings.language, 
-          this.resources.vocab, 
-          this.resources.context,
+          this.resources,
         );
       }
       return `${translatedType}, ${translatedBaseType}`;

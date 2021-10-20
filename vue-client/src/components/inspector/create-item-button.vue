@@ -42,10 +42,10 @@ export default {
   methods: {
     buildItem() {
       const embellishedReference = DisplayUtil.getCard(
-        this.mainEntity, 
-        this.resources, 
+        this.mainEntity,
+        this.resources,
         this.inspector.data.quoted, 
-        this.settings, 
+        this.settings,
       );
       embellishedReference['@id'] = this.mainEntity['@id'];
       embellishedReference['@type'] = this.mainEntity['@type']; // fixes broken itemOf chip FIXME: why does getCard drop @type?
