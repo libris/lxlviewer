@@ -260,11 +260,8 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
       const property = properties[i];
       if (!isObject(property)) {
         let valueOnItem = '';
-        if (property === 'created' || property === 'modified') {
-          valueOnItem = item[property];
-        } else {
-          valueOnItem = getValueByLang(trueItem, property, settings.language, resources.context);
-        }
+        valueOnItem = getValueByLang(trueItem, property, settings.language, resources.context);
+        
         if (typeof valueOnItem !== 'undefined') {
           let value = valueOnItem;
           if (isObject(value) && !isArray(value)) {
