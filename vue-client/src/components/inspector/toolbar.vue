@@ -373,7 +373,11 @@ export default {
     },
     userIsPermittedToEdit() {
       const mainEntity = this.inspector.data.mainEntity;
+      const record = this.inspector.data.record;
       if (this.user.isLoggedIn === false) {
+        return false;
+      }
+      if (record['@type'] !== 'Record') {
         return false;
       }
       if (mainEntity['@type'] === 'Item') {
@@ -394,6 +398,13 @@ export default {
         return this.user.getActiveLibraryUri() === ownedBy;
       }
       return true;
+    },
+    userIsPermittedToRemove() {
+      const record = this.inspector.data.record;
+      if (record['@type'] === 'CacheRecord' || record['@type'] === 'PlaceholderRecord') {
+        return true;
+      }
+      return this.userIsPermittedToEdit;
     },
     showRecord() {
       return this.status.showRecord;
@@ -599,7 +610,7 @@ export default {
             {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindText('preview-marc') ? ` (${getKeybindText('preview-marc')})` : ''}}
           </a>
         </li>
-        <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToEdit">
+        <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToRemove">
           <a class="Toolbar-menuLink"  @click="postControl('remove-post')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
           {{"Remove" | translatePhrase}} {{ recordType | labelByLang | lowercase }}
