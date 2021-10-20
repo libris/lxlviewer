@@ -35,6 +35,7 @@ export default {
         Multimedia: 'laptop',
         NotatedMusic: 'music',
         ManuscriptNotatedMusic: 'music',
+        Place: 'map-marker',
       },
       forcedUnspecified: [
         'Work',

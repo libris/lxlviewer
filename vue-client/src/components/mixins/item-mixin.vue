@@ -147,6 +147,9 @@ export default {
       }
       return RecordUtil.getRecordId(this.focusData, this.inspector.data.quoted);
     },
+    recordType() {
+      return RecordUtil.getRecordType(this.focusData, this.inspector.data.quoted);
+    },
     isLibrisResource() {
       return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
     },

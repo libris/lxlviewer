@@ -64,6 +64,9 @@ export default {
     isMaybeMagicShelfMark() {
       return this.focusData['@type'] === 'ShelfMarkSequence';
     },
+    isPlace() {
+      return this.focusData['@type'] === 'Place';
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -171,10 +174,11 @@ export default {
           tabindex="0"
           ref="chip"
           v-if="!isDistinguished || !expanded" 
-          :class="{ 'is-locked': isLocked, 'is-marc': isMarc, 'is-newlyAdded': animateNewlyAdded, 'is-removeable': removeHover}">
+          :class="{ 'is-locked': isLocked, 'is-marc': isMarc, 'is-newlyAdded': animateNewlyAdded, 'is-removeable': removeHover, 'is-cache': recordType === 'CacheRecord', 'is-placeholder': recordType === 'PlaceholderRecord', 'is-ext-link': !isLibrisResource}">
           <span class="ItemEntity-label chip-label">
+            <span v-if="isPlace" class="type-icon fa fa-map-marker"></span> <!-- TODO: use shared/type-icon -->
             <span v-if="(!isDistinguished || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-            <span v-if="(!isDistinguished || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}}</a></span>
+            <span v-if="(!isDistinguished || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
             <span class="placeholder"></span></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
             <i class="fa fa-times-circle icon icon--sm chip-icon" 
@@ -215,10 +219,10 @@ export default {
     position: relative;
     width: 100%;
 
-    &.is-expanded > 
+    &.is-expanded >
     .ItemEntity-expander >
     .ItemEntity-arrow {
-      transform:rotate(90deg);
+      transform: rotate(90deg);
       transform-origin: center;
     }
   }
@@ -269,7 +273,7 @@ export default {
   &.is-locked {
     padding: 3px 0.5em 3px 0.5em;
   }
-
+  
   a {
     color: @white;
     &:hover {
@@ -325,13 +329,40 @@ export default {
     margin: 0 5px;
   }
 
-  &.is-removeable {
-    background-color: @form-remove;
+  &.is-cache {
+    border-color: @chip-color-cache;
+    color: @chip-color-cache;
+    a {
+      color: @chip-color-cache;
+      &:hover {
+        //color: @link-color;
+      }
+    }
   }
 
+  &.is-placeholder {
+    border-color: @chip-color-placeholder;
+    color: @chip-color-placeholder;
+    a {
+      color: @chip-color-placeholder;
+      &:hover {
+        //color: @link-color;
+      }
+    }
+  }
+
+  &.is-external {
+    border: 1px solid #29A1A2;
+  }
+  
   @media (max-width: @screen-sm) {
     max-width: 100%;
   }
+}
+
+&.type-icon {
+  margin-left: 0.2em;
+  margin-right: 0.1em;
 }
 
 </style>

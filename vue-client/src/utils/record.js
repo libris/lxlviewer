@@ -58,14 +58,8 @@ export function splitJson(json) {
 }
 
 export function getRecordId(data, quoted) {
-  let recordObj = recordObjectFromGraph(data['@id'], quoted);
-  if (recordObj === null) {
-    if (data.hasOwnProperty('meta')) {
-      recordObj = data.meta;
-    } else {
-      recordObj = data;
-    }
-  }
+  const recordObj = recordObject(data, quoted);
+  
   let recordId;
   if (recordObj.hasOwnProperty('@id')) {
     recordId = recordObj['@id'];
@@ -76,6 +70,28 @@ export function getRecordId(data, quoted) {
   }
   recordId = recordId.split('#')[0];
   return recordId;
+}
+
+export function getRecordType(data, quoted) {
+  const recordObj = recordObject(data, quoted);
+
+  if (recordObj['@type']) {
+    return recordObj['@type'];
+  }
+  
+  return null;
+}
+
+export function recordObject(data, quoted) {
+  let recordObj = recordObjectFromGraph(data['@id'], quoted);
+  if (recordObj === null) {
+    if (data.hasOwnProperty('meta')) {
+      recordObj = data.meta;
+    } else {
+      recordObj = data;
+    }
+  }
+  return recordObj;
 }
 
 export function recordObjectFromGraph(id, quoted) {
