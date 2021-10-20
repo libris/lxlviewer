@@ -16,11 +16,11 @@ if (!Vue.__lxl_global_mixin__) {
       };
     },
     computed: {
-      ...mapGetters(['vocab', 'settings', 'vocabContext']),
+      ...mapGetters(['vocab', 'settings', 'vocabContext', 'resources']),
     },
     methods: {
       translateKey(key) {
-        const labelByLang = StringUtil.getLabelByLang(key, this.settings.language, this.vocab, this.vocabContext);
+        const labelByLang = StringUtil.getLabelByLang(key, this.settings.language, this.resources);
         if (labelByLang === key) {
           if (rdfTranslations[this.settings.language] && rdfTranslations[this.settings.language].hasOwnProperty(key)) {
             return rdfTranslations[this.settings.language][key];
