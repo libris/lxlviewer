@@ -844,6 +844,7 @@ export default {
           v-if="getDatatype(item) == 'entity'" 
           :is-locked="locked" 
           :is-distinguished="isDistinguished"
+          :is-expanded="isLinkedInstanceOf"
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 

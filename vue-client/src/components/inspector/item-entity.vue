@@ -20,6 +20,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isExpanded: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -121,6 +125,9 @@ export default {
             this.$store.commit('addMagicShelfMark', this.actualParentPath);
           }
         }).catch(error => console.error(error));
+      }
+      if (this.isExpanded) {
+        this.expand();
       }
       if (this.isNewlyAdded) {
         setTimeout(() => {
