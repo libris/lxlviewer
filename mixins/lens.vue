@@ -10,27 +10,9 @@ export default {
     // },
   },
   methods: {
-  //   getLabel(item) {
-  //     if (!this.display || !this.inspector.data || !this.vocab || !this.settings || !this.context) {
-  //       throw new Error('Missing display/vocab/settings or similar. Did you set up Vuex getters for this component?');
-  //     }
-  //     const label = DisplayUtil.getItemLabel(
-  //       item,
-  //       this.display,
-  //       this.entityReferences,
-  //       this.vocab,
-  //       this.settings,
-  //       this.context,
-  //     );
-  //     return label;
-  //   },
   },
   computed: {
     ...mapGetters(['vocab', 'display', 'entityReferences', 'resources', 'vocabContext', 'settings']),
-    getTestMetod() {
-      testMetod();
-      return "hmm";
-    },
     getItemLabel() {
       return DisplayUtil.getItemLabel(
         this.entityData,
