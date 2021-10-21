@@ -1,6 +1,6 @@
 import { isObject, uniq, isArray, find, sortBy, each, isPlainObject, cloneDeep, uniqBy, forOwn } from 'lodash-es';
 import * as StringUtil from './string';
-import { lxlWarning, lxlError } from './debug';
+import { lxlLog, lxlWarning, lxlError } from './debug';
 
 export const XSD_NUMERIC_TYPES = Object.freeze({
   'xsd:byte': { min: -128, max: 127 },

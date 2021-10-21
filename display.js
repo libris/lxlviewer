@@ -1,7 +1,7 @@
 import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual } from 'lodash-es';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
-import { lxlWarning, lxlError } from './debug';
+import { lxlLog, lxlWarning, lxlError } from './debug';
 
 export function expandInherited(display) {
   const cloned = cloneDeep(display);
@@ -153,6 +153,8 @@ export function getDisplayProperties(className, resources, settings, inputLevel,
 export function translateObjectProp(object) {
   if (object.hasOwnProperty('inverseOf')) {
     return `@reverse/${object.inverseOf}`;
+  } else if (object.hasOwnProperty('alternateProperties')) {
+    return object;
   }
   return null;
 }
@@ -220,34 +222,49 @@ export function getItemToken(item, resources, quoted, settings) {
 }
 
 export function getDisplayObject(item, level, resources, quoted, settings) {
+
+  // Some checks before we even start
   if (!item || typeof item === 'undefined') {
     throw new Error('getDisplayObject was called with an undefined object.');
   }
   if (!isObject(item)) {
     throw new Error(`getDisplayObject was called with a non-object. (Was ${typeof item})`);
   }
+
+  // Setup
   let result = {};
   let trueItem = Object.assign({}, item);
+
+  // Is this a link?
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
     if (trueItem['@id'] == 'https://id.kb.se/vocab/') {
       return {};
     }
+    // If we have the entity in quoted, replace our link-object with the entity
     if (quoted && quoted.hasOwnProperty(trueItem['@id'])) {
       trueItem = quoted[trueItem['@id']];
     }
+
+    // Plan to try and fetch missing data?
     // trueItem = DataUtil.getEmbellished(trueItem['@id'], quoted);
+
+    // If the item lacks a type, just return it as an anonymous object with a label
     if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
       return { label: StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
     }
   }
+
   if (!trueItem.hasOwnProperty('@type') || typeof trueItem['@type'] === 'undefined') {
     return {}; // Early fail
   }
+
   // Get the list of properties we want to show
   const displayType = isArray(trueItem['@type']) ? trueItem['@type'][0] : trueItem['@type']; // If more than one type, choose the first
   const properties = getDisplayProperties(displayType, resources, settings, level);
+
   // Start filling the object with the selected properties
   if (properties.length === 2 && properties.indexOf('label') > -1 && properties.indexOf('prefLabel') > -1) {
+    // This first block can probably be replace by alternateProperties at some point
     const labelValue = getValueByLang(trueItem, 'label', settings.language, resources.context);
     const prefLabelValue = getValueByLang(trueItem, 'prefLabel', settings.language, resources.context);
     if (typeof prefLabelValue !== 'undefined') {
@@ -256,12 +273,11 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
       result.label = labelValue;
     }
   } else {
-    for (let i = 0; i < properties.length; i++) {
-      const property = properties[i];
+    properties.forEach((property) => {
       if (!isObject(property)) {
         let valueOnItem = '';
         valueOnItem = getValueByLang(trueItem, property, settings.language, resources.context);
-        
+
         if (typeof valueOnItem !== 'undefined') {
           let value = valueOnItem;
           if (isObject(value) && !isArray(value)) {
@@ -291,7 +307,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
             value = newArray;
           }
           result[property] = value;
-        } else if (properties.length < 3 && i === 0) {
+        } else if (properties.length < 3 && properties.indexOf(property) === 0) {
           const rangeOfMissingProp = VocabUtil.getRange(property, resources.vocab, resources.context);
           let propMissing = property;
           if (
@@ -307,9 +323,22 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
           );
           result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, resources )} ${StringUtil.getUiPhraseByLang('without', settings.language)} ${expectedClassName.toLowerCase()}}`;
         }
+      } else {
+        // Property is object, lets calculate that
+        if (property.hasOwnProperty('alternateProperties')) {
+          // Handle alternateProperties
+          for (const p of property['alternateProperties']) {
+            if (typeof p === 'string' && trueItem.hasOwnProperty(p)) {
+              result[p] = trueItem[p];
+              lxlLog('Calculating alternate properties for', trueItem['@type'], 'choosing between', property['alternateProperties'], 'and found', p);
+              break;
+            }
+          }
+        }
       }
-    }
+    });
   }
+
   const itemKeys = Object.keys(result);
   if (isEmpty(result) || (itemKeys.length === 1 && (typeof result[itemKeys[0]] === 'undefined' || result[itemKeys[0]] === null || result[itemKeys[0]].length === 0))) {
     lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}.`, 'Item data:', trueItem);
