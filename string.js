@@ -32,7 +32,7 @@ export function convertToPrefix(uri, context) {
 }
 
 export function getCompactUri(uri, context) {
-  let singleUri = Array.isArray(uri) ? uri[0] : uri;
+  const singleUri = Array.isArray(uri) ? uri[0] : uri;
   if (typeof context === 'undefined') {
     throw new Error('getCompactUri was called without context.');
   }
@@ -79,7 +79,7 @@ export function convertToVocabKey(str, context) {
 }
 
 export function getUiPhraseByLang(phrase, langcode, translationsFile) {
-  if (translationsFile == null || typeof translationsFile == 'undefined') return phrase; // Fallback if no translations
+  if (translationsFile === null || typeof translationsFile === 'undefined') return phrase; // Fallback if no translations
 
   if (typeof phrase === 'string') {
     if (translationsFile[langcode] && translationsFile[langcode][phrase]) {

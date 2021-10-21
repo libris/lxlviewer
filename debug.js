@@ -6,8 +6,7 @@ export function lxlLog(...strings) {
     return console.log('%c LXL TOOLS ', 'background: #009788; color: #fff;', ...strings);
   }
   return false;
-};
-
+}
 
 const lxlWarnStack = [];
 
@@ -17,7 +16,7 @@ export function lxlWarning(...strings) {
     return console.warn('%c LXL TOOLS ', 'background: #009788; color: #fff;', ...strings);
   }
   return false;
-};
+}
 
 const lxlErrorStack = [];
 
@@ -27,4 +26,4 @@ export function lxlError(...strings) {
     return console.error('%c LXL TOOLS ', 'background: #a50000; color: #fff;', ...strings);
   }
   return false;
-};
+}

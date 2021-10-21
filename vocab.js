@@ -1,6 +1,6 @@
 import { isObject, uniq, isArray, find, sortBy, each, isPlainObject, cloneDeep, uniqBy, forOwn } from 'lodash-es';
 import * as StringUtil from './string';
-import { lxlLog, lxlWarning, lxlError } from './debug';
+import { lxlWarning } from './debug';
 
 export const XSD_NUMERIC_TYPES = Object.freeze({
   'xsd:byte': { min: -128, max: 127 },
@@ -18,7 +18,6 @@ export const XSD_NUMERIC_TYPES = Object.freeze({
   'xsd:unsignedShort': { min: 0, max: 65536 },
   'xsd:unsignedByte': { min: 0, max: 255 },
 });
-
 
 export function getTermObject(term, vocab, context) {
   // Returns a class object
@@ -189,7 +188,7 @@ export function getTermByType(type, vocab, context, settings) {
   if (!list || typeof list === 'undefined') {
     throw new Error('getTermByType was called without a vocabulary.');
   }
-  if (isArray(list) == false) {
+  if (isArray(list) === false) {
     throw new Error('getTermByType - parameter "list" is of wrong type (not an array)');
   }
   const expandedType = StringUtil.convertToBaseUri(type, context);

@@ -1,7 +1,7 @@
 import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual } from 'lodash-es';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
-import { lxlLog, lxlWarning, lxlError } from './debug';
+import { lxlLog, lxlWarning } from './debug';
 
 export function expandInherited(display) {
   const cloned = cloneDeep(display);
@@ -153,7 +153,8 @@ export function getDisplayProperties(className, resources, settings, inputLevel,
 export function translateObjectProp(object) {
   if (object.hasOwnProperty('inverseOf')) {
     return `@reverse/${object.inverseOf}`;
-  } else if (object.hasOwnProperty('alternateProperties')) {
+  }
+  if (object.hasOwnProperty('alternateProperties')) {
     return object;
   }
   return null;
@@ -222,7 +223,6 @@ export function getItemToken(item, resources, quoted, settings) {
 }
 
 export function getDisplayObject(item, level, resources, quoted, settings) {
-
   // Some checks before we even start
   if (!item || typeof item === 'undefined') {
     throw new Error('getDisplayObject was called with an undefined object.');
@@ -233,11 +233,11 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
 
   // Setup
   let result = {};
-  let trueItem = Object.assign({}, item);
+  let trueItem = Object.assign(...item);
 
   // Is this a link?
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
-    if (trueItem['@id'] == 'https://id.kb.se/vocab/') {
+    if (trueItem['@id'] === 'https://id.kb.se/vocab/') {
       return {};
     }
     // If we have the entity in quoted, replace our link-object with the entity
@@ -321,16 +321,16 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
             settings.language,
             resources,
           );
-          result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, resources )} ${StringUtil.getUiPhraseByLang('without', settings.language)} ${expectedClassName.toLowerCase()}}`;
+          result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, resources)} ${StringUtil.getUiPhraseByLang('without', settings.language)} ${expectedClassName.toLowerCase()}}`;
         }
       } else {
         // Property is object, lets calculate that
         if (property.hasOwnProperty('alternateProperties')) {
           // Handle alternateProperties
-          for (const p of property['alternateProperties']) {
+          for (const p of property.alternateProperties) {
             if (typeof p === 'string' && trueItem.hasOwnProperty(p)) {
               result[p] = trueItem[p];
-              lxlLog('Calculating alternate properties for', trueItem['@type'], 'choosing between', property['alternateProperties'], 'and found', p);
+              lxlLog('Calculating alternate properties for', trueItem['@type'], 'choosing between', property.alternateProperties, 'and found', p);
               break;
             }
           }
