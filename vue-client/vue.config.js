@@ -26,8 +26,8 @@ module.exports = {
     ],
     watchOptions: {
       ignored: [
-        /node_modules([\\]+|\/)+(?!lxltools)/
-      ]
+        /node_modules([\\]+|\/)+(?!lxltools)/,
+      ],
     },
   },
   chainWebpack(config) {
