@@ -12,7 +12,7 @@ process.env.VUE_APP_GIT_DESCRIBE = JSON.stringify(gitDescribeSync({
 
 module.exports = {
   publicPath: '/katalogisering/',
-  parellel: false,
+  parallel: false,
   configureWebpack: {
     resolve: {
       extensions: ['.js', '.vue', '.json'],
