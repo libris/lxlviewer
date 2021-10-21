@@ -24,9 +24,13 @@ module.exports = {
     plugins: [
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     ],
+    watchOptions: {
+      ignored: [
+        /node_modules([\\]+|\/)+(?!lxltools)/
+      ]
+    },
   },
   chainWebpack(config) {
-    config.resolve.symlinks(false);
     config.module
       .rule('vue')
       .use('vue-loader')
