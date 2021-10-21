@@ -233,7 +233,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
 
   // Setup
   let result = {};
-  let trueItem = Object.assign(...item);
+  let trueItem = Object.assign({}, item);
 
   // Is this a link?
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {

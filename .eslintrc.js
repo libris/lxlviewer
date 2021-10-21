@@ -19,6 +19,7 @@ module.exports = {
     'no-trailing-spaces': 'off',
     'no-prototype-builtins': 'off',
     'prefer-destructuring': 'off',
+    'prefer-object-spread': 'off',
     'no-underscore-dangle': 'off',
     'no-lonely-if': 'off',
     'max-len': 'off',
