@@ -329,7 +329,25 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
           // Handle alternateProperties
           for (const p of property.alternateProperties) {
             if (typeof p === 'string' && trueItem.hasOwnProperty(p)) {
-              result[p] = trueItem[p];
+              if (typeof trueItem[p] === 'string') {
+                result[p] = trueItem[p];
+              } else if (level === 'chips') {
+                if (isArray(trueItem[p])) {
+                  result[p] = trueItem[p].map((item) => {
+                    return getItemToken(item, resources, quoted, settings);
+                  })
+                } else {
+                  result[p] = getItemToken(trueItem[p], resources, quoted, settings);
+                }
+              } else {
+                if (isArray(trueItem[p])) {
+                  result[p] = trueItem[p].map((item) => {
+                    return getItemLabel(trueItem[p], resources, quoted, settings, property);
+                  })
+                } else {
+                  result[p] = getItemLabel(trueItem[p], resources, quoted, settings, property);
+                }
+              }
               lxlLog('Calculating alternate properties for', trueItem['@type'], 'choosing between', property.alternateProperties, 'and found', p);
               break;
             }
