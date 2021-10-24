@@ -160,6 +160,36 @@ export function translateObjectProp(object) {
   return null;
 }
 
+function formatLabel(item, resources) {
+  const label = [];
+  const formatters = resources.display.lensGroups.formatters;
+
+  const objKeys = Object.keys(item);
+  for (let i = 0; i < objKeys.length; i++) {
+    const key = objKeys[i];
+    const value = item[key];
+
+    if (i > 0) {
+      label.push(' • ');
+    }
+
+    const formatter = formatters[`${key}-format`];
+    if (isArray(value)) {
+      if (formatter && formatter['fresnel:valueFormat'] && formatter['fresnel:valueFormat']['fresnel:contentAfter']) {
+        label.push(value.join(formatter['fresnel:valueFormat']['fresnel:contentAfter']));
+        if (formatter['fresnel:contentLast']) {
+          label.push(formatter['fresnel:contentLast']);
+        }
+      } else {
+        label.push(value.join(', '));
+      }
+    } else {
+      label.push(value);
+    }
+  }
+  return label.join(''); // Join without any extra separators
+}
+
 /* eslint-disable no-use-before-define */
 export function getItemLabel(item, resources, quoted, settings, inClass = '') {
   if (typeof item === 'string') {
@@ -176,7 +206,10 @@ export function getItemLabel(item, resources, quoted, settings, inClass = '') {
   if (Object.keys(displayObject).length === 0) {
     return JSON.stringify(item);
   }
-  let rendered = StringUtil.formatLabel(displayObject).trim();
+
+  let rendered = formatLabel(displayObject, resources);
+
+  // let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', resources.vocab, resources.context)) {
     if (item['@type'] === 'ISNI' || item['@type'] === 'ORCID') { 
       rendered = formatIsni(rendered);
@@ -333,17 +366,13 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
                 result[p] = trueItem[p];
               } else if (level === 'chips') {
                 if (isArray(trueItem[p])) {
-                  result[p] = trueItem[p].map((item) => {
-                    return getItemToken(item, resources, quoted, settings);
-                  })
+                  result[p] = trueItem[p].map(arrayItem => getItemToken(arrayItem, resources, quoted, settings));
                 } else {
                   result[p] = getItemToken(trueItem[p], resources, quoted, settings);
                 }
               } else {
                 if (isArray(trueItem[p])) {
-                  result[p] = trueItem[p].map((item) => {
-                    return getItemLabel(trueItem[p], resources, quoted, settings, property);
-                  })
+                  result[p] = trueItem[p].map(arrayItem => getItemLabel(arrayItem[p], resources, quoted, settings, property));
                 } else {
                   result[p] = getItemLabel(trueItem[p], resources, quoted, settings, property);
                 }
