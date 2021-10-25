@@ -26,7 +26,7 @@
 import { mapGetters } from 'vuex';
 import LensMixin from '@/mixins/lens';
 import EntityNode from '@/components/EntityNode';
-import * as DisplayUtil from 'lxltools/display';
+import * as DisplayUtil from 'lxljs/display';
 
 export default {
   mixins: [LensMixin],

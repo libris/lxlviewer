@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as DisplayUtil from 'lxltools/display';
+import * as DisplayUtil from 'lxljs/display';
 
 export default {
   props: {

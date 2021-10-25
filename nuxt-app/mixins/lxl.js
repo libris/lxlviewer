@@ -1,5 +1,5 @@
 import { mapGetters } from 'vuex';
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 import envComputer from '@/plugins/env';
 import Vue from "vue"
 import rdfTranslations from '@/resources/json/rdfTranslations.json';

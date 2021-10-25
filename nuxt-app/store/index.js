@@ -1,7 +1,7 @@
 import { each } from 'lodash-es';
-import * as VocabUtil from 'lxltools/vocab';
-import * as DisplayUtil from 'lxltools/display';
-import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxljs/vocab';
+import * as DisplayUtil from 'lxljs/display';
+import * as StringUtil from 'lxljs/string';
 import envComputer from '@/plugins/env';
 import translationsFile from '@/resources/json/i18n.json';
 

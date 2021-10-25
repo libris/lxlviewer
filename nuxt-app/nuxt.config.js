@@ -91,7 +91,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: [
-      'lxltools',
+      'lxljs',
       'lodash-es',
     ],
     extend(config, ctx) {

@@ -30,7 +30,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import * as VocabUtil from 'lxltools/vocab';
+import * as VocabUtil from 'lxljs/vocab';
 import ResultItem from '@/components/ResultItem';
 
 export default {
