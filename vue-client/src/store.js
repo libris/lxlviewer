@@ -104,8 +104,8 @@ const store = new Vuex.Store({
       redirectPath: process.env.VUE_APP_REDIRECT_PATH,
       clientId: process.env.VUE_APP_CLIENT_ID,
       scopes: process.env.VUE_APP_SCOPES,
-      mockDisplay: Boolean(process.env.VUE_APP_MOCK_DISPLAY_BOOL) || false,
-      mockHelp: Boolean(process.env.VUE_APP_MOCK_HELP_BOOL) || false,
+      mockDisplay: process.env.VUE_APP_MOCK_DISPLAY_BOOL === 'true' ? true : false,
+      mockHelp: process.env.VUE_APP_MOCK_HELP_BOOL === 'truee' ? true : false,
       matomoId: process.env.VUE_APP_MATOMO_ID,
       appPaths: {
         '/find?': '/search/libris?',
