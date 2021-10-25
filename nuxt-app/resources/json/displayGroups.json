@@ -1,0 +1,42 @@
+{
+  "card": {
+    "categorization": [
+      "issuanceType",
+      "inCollection",
+      "inScheme",
+      "mediaType",
+      "carrierType"
+    ],
+    "header": [
+      "hasTitle",
+      "title",
+      "prefLabel",
+      "label",
+      "heldBy",
+      "familyName",
+      "givenName",
+      "name",
+      "marc:numeration",
+      "marc:titlesAndOtherWordsAssociatedWithAName",
+      "qualifyingNote",
+      "fullerFormOfName",
+      "lifeSpan",
+      "marc:attributionQualifier",
+      "isPartOf",
+      "marc:subordinateUnit",
+      "qualifier"
+    ],
+    "hidden": [
+      "shelfMarkStatus"
+    ]
+  },
+  "reverse": {
+    "mainForm": [
+      "@reverse/broader"
+    ],
+    "hidden": [
+      "@reverse/itemOf"
+    ]
+  }
+}
+
