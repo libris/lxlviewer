@@ -1,18 +1,9 @@
-# lxltools-js
+# LXLJS
 JavaScript tools for the Libris XL infrastructure.
 
 ## Installation
 
-Install from git repo like so
-
-```
-npm install libris/lxltools-js --save
-```
-
-```
-yarn add libris/lxltools-js --save
-```
-<sup>Specifiy version as usual if needed</sup>
+Not packaged for easy installation at the moment, but you can depend on it locally by importing and transpiling the files yourself.
 
 ## Development
 
