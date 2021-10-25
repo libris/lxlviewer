@@ -6,8 +6,8 @@
 import { isArray, isPlainObject, isObject, cloneDeep, get, differenceWith, isEqual } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
-import * as VocabUtil from 'lxltools/vocab';
-import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxljs/vocab';
+import * as StringUtil from 'lxljs/string';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';

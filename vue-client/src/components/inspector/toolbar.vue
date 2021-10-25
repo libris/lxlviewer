@@ -5,8 +5,8 @@
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import { get } from 'lodash-es';
-import * as VocabUtil from 'lxltools/vocab';
-import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxljs/vocab';
+import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 import * as HttpUtil from '@/utils/http';
 import FieldAdder from '@/components/inspector/field-adder';

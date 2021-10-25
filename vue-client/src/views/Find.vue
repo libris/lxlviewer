@@ -2,7 +2,7 @@
 import { each, isArray, isPlainObject } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Copy from '@/resources/json/copy.json';

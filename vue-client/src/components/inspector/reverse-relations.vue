@@ -1,8 +1,8 @@
 <script>
 import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
-import * as VocabUtil from 'lxltools/vocab';
-import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxljs/vocab';
+import * as StringUtil from 'lxljs/string';
 import * as MathUtil from '@/utils/math';
 import * as HttpUtil from '@/utils/http';
 import CreateItemButton from '@/components/inspector/create-item-button';
@@ -125,7 +125,7 @@ export default {
       return this.mainEntity['@id'];
     },
     translatedTooltip() {
-      return StringUtil.getUiPhraseByLang(this.totalRelationTooltipText, this.user.settings.language);
+      return StringUtil.getUiPhraseByLang(this.totalRelationTooltipText, this.user.settings.language, this.resources.i18ns);
     },
     totalRelationTooltipText() {
       if (this.recordType === 'Instance' || this.recordType === 'Item') {

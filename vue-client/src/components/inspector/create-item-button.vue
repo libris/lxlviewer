@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as DisplayUtil from 'lxltools/display';
-import * as StringUtil from 'lxltools/string';
+import * as DisplayUtil from 'lxljs/display';
+import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
 import * as LayoutUtil from '@/utils/layout';

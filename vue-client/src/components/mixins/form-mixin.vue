@@ -1,9 +1,9 @@
 <script>
 import { cloneDeep, isArray, sortBy, each, groupBy } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as DisplayUtil from 'lxltools/display';
-import * as VocabUtil from 'lxltools/vocab';
-import * as StringUtil from 'lxltools/string';
+import * as DisplayUtil from 'lxljs/display';
+import * as VocabUtil from 'lxljs/vocab';
+import * as StringUtil from 'lxljs/string';
 
 export default {
   props: {

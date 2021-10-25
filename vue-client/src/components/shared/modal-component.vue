@@ -24,7 +24,7 @@
 
 import { isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
 
 export default {

@@ -1,7 +1,7 @@
 <script>
 import { merge, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 import * as MathUtil from '@/utils/math';
 import LensMixin from '../mixins/lens-mixin';
 import SummaryAction from '../inspector/summary-action';

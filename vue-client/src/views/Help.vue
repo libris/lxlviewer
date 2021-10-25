@@ -3,7 +3,7 @@ import { orderBy } from 'lodash-es';
 import marked from 'marked';
 import moment from 'moment';
 import { mapGetters } from 'vuex';
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 
 export default {
   name: 'help-component',

@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as DisplayUtil from 'lxltools/display';
-import * as StringUtil from 'lxltools/string';
+import * as DisplayUtil from 'lxljs/display';
+import * as StringUtil from 'lxljs/string';
 
 export default {
   name: 'post-picker',

@@ -2,8 +2,8 @@
 import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import { partition, flatten } from 'lodash-es';
-import * as StringUtil from 'lxltools/string';
-import * as DisplayUtil from 'lxltools/display';
+import * as StringUtil from 'lxljs/string';
+import * as DisplayUtil from 'lxljs/display';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';

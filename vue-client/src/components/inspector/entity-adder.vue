@@ -5,8 +5,8 @@
 import { cloneDeep, isArray, get } from 'lodash-es';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
-import * as VocabUtil from 'lxltools/vocab';
-import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxljs/vocab';
+import * as StringUtil from 'lxljs/string';
 import Sort from '@/components/search/sort';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination.vue';

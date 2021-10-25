@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 
 export default {

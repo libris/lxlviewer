@@ -1,8 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import { filter } from 'lodash-es';
-import * as VocabUtil from 'lxltools/vocab';
-import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxljs/vocab';
+import * as StringUtil from 'lxljs/string';
 import * as HttpUtil from '@/utils/http';
 import TabMenu from '@/components/shared/tab-menu';
 import HoldingMover from '@/components/care/holding-mover';

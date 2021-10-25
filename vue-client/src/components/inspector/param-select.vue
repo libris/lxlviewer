@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as VocabUtil from 'lxltools/vocab';
+import * as VocabUtil from 'lxljs/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 

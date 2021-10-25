@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { filter } from 'lodash-es';
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 import PostPicker from '@/components/care/post-picker';
 import HoldingList from '@/components/care/holding-list';
 import ModalComponent from '@/components/shared/modal-component';

@@ -13,7 +13,7 @@ import ComboKeys from 'combokeys';
 import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
 import moment from 'moment';
 import 'moment/locale/sv';
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 import App from './App';
 import router from './router';
 import store from './store';

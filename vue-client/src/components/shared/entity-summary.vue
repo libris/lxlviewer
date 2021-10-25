@@ -1,8 +1,8 @@
 <script>
 import { each, isArray, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as StringUtil from 'lxltools/string';
-import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxljs/string';
+import * as VocabUtil from 'lxljs/vocab';
 import LensMixin from '../mixins/lens-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';

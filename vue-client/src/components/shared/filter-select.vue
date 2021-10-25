@@ -5,7 +5,7 @@
 import { forEach } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
 
 export default {

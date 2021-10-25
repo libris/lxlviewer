@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as DisplayUtil from 'lxltools/display';
-import * as VocabUtil from 'lxltools/vocab';
+import * as DisplayUtil from 'lxljs/display';
+import * as VocabUtil from 'lxljs/vocab';
 import * as MathUtil from '@/utils/math';
 import LensMixin from '@/components/mixins/lens-mixin';
 

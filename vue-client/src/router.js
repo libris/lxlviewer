@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 import LandingPage from '@/views/LandingPage';
 import Login from '@/views/Login';
 import store from './store';

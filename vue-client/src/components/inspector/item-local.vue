@@ -2,9 +2,9 @@
 import { cloneDeep, get } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
-import * as VocabUtil from 'lxltools/vocab';
-import * as DisplayUtil from 'lxltools/display';
-import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxljs/vocab';
+import * as DisplayUtil from 'lxljs/display';
+import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import * as LayoutUtil from '@/utils/layout';
 import * as RecordUtil from '@/utils/record';

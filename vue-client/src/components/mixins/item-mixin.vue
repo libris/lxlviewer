@@ -1,8 +1,8 @@
 <script>
 import { cloneDeep, isArray, get, isObject, dropRight } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as VocabUtil from 'lxltools/vocab';
-import * as StringUtil from 'lxltools/string';
+import * as VocabUtil from 'lxljs/vocab';
+import * as StringUtil from 'lxljs/string';
 import * as DataUtil from '@/utils/data';
 import * as RecordUtil from '@/utils/record';
 

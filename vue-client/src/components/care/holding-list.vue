@@ -1,8 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import { each, isObject, orderBy } from 'lodash-es';
-import * as StringUtil from 'lxltools/string';
-import * as DisplayUtil from 'lxltools/display';
+import * as StringUtil from 'lxljs/string';
+import * as DisplayUtil from 'lxljs/display';
 
 export default {
   name: 'holding-list',

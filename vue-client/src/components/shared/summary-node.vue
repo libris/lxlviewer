@@ -2,7 +2,7 @@
 /*
 
 */
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 import LensMixin from '@/components/mixins/lens-mixin';
 import ItemMixin from '@/components/mixins/item-mixin';
 import PreviewCard from '@/components/shared/preview-card';

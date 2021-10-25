@@ -5,8 +5,8 @@
     * tag         - String, what tag we are operating on
 */
 import { mapGetters } from 'vuex';
-import * as StringUtil from 'lxltools/string';
-import * as DisplayUtil from 'lxltools/display';
+import * as StringUtil from 'lxljs/string';
+import * as DisplayUtil from 'lxljs/display';
 
 export default {
   name: 'tag-switch',

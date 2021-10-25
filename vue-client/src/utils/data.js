@@ -1,6 +1,6 @@
 import { isEmpty, cloneDeep, isArray, isObject, forEach, uniq, difference } from 'lodash-es';
-import * as VocabUtil from 'lxltools/vocab';
-import * as DisplayUtil from 'lxltools/display';
+import * as VocabUtil from 'lxljs/vocab';
+import * as DisplayUtil from 'lxljs/display';
 import * as HttpUtil from '@/utils/http';
 
 export function getDisplayDefinitions(settings) {

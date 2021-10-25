@@ -2,9 +2,9 @@
 <script>
 import { cloneDeep, each, get } from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
-import * as StringUtil from 'lxltools/string';
-import * as VocabUtil from 'lxltools/vocab';
-import * as DisplayUtil from 'lxltools/display';
+import * as StringUtil from 'lxljs/string';
+import * as VocabUtil from 'lxljs/vocab';
+import * as DisplayUtil from 'lxljs/display';
 import * as DataUtil from '@/utils/data';
 import * as HttpUtil from '@/utils/http';
 import * as RecordUtil from '@/utils/record';

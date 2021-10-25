@@ -1,8 +1,8 @@
 <script>
 import { isArray, debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as StringUtil from 'lxltools/string';
-import { XSD_NUMERIC_TYPES } from 'lxltools/vocab';
+import * as StringUtil from 'lxljs/string';
+import { XSD_NUMERIC_TYPES } from 'lxljs/vocab';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 

@@ -6,8 +6,8 @@
 
 import { each, throttle } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as StringUtil from 'lxltools/string';
-import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxljs/string';
+import * as VocabUtil from 'lxljs/vocab';
 import TagSwitch from '@/components/shared/tag-switch';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import LensMixin from '@/components/mixins/lens-mixin';

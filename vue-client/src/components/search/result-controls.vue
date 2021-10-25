@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import * as StringUtil from 'lxltools/string';
+import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import Sort from '@/components/search/sort';
 import FilterBadge from '@/components/search/filter-badge';

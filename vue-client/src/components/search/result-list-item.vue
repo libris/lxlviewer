@@ -1,6 +1,6 @@
 <script>
-import * as StringUtil from 'lxltools/string';
-import * as VocabUtil from 'lxltools/vocab';
+import * as StringUtil from 'lxljs/string';
+import * as VocabUtil from 'lxljs/vocab';
 import LensMixin from '../mixins/lens-mixin';
 import ResultMixin from '../mixins/result-mixin';
 import ReverseRelations from '@/components/inspector/reverse-relations';
