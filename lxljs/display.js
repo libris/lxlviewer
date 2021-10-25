@@ -169,7 +169,7 @@ function formatLabel(item, resources) {
     const key = objKeys[i];
     const value = item[key];
 
-    if (i > 0) {
+    if (i > 0 && value.length > 0) {
       label.push(' • ');
     }
 
