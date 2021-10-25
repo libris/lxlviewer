@@ -6,12 +6,9 @@
           <Logo />
           id.kb.se
         </NuxtLink>
-        <span class="environment-label" v-if="gitDescribe.distance == 0">
+        <span class="environment-label">
           {{ versionInfo }}
         </span>
-        <a class="environment-label" v-if="gitDescribe.distance !== 0" target="_blank" :href="`https://github.com/libris/id.kb.se/commit/${this.hash}`">
-          {{ versionInfo }}
-        </a>
       </div>
       <button class="navbar-toggler" type="button" @click="toggleExpanded" @keyup.enter="toggleExpanded" aria-controls="navbarNav" :aria-expanded="expanded" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -43,7 +40,7 @@ export default {
       return hash.substr(1, hash.length);
     },
     version() {
-      return this.settings.gitDescribe.distance !== 0 ? this.hash : this.settings.gitDescribe.tag;
+      return this.settings.version;
     },
     versionInfo() {
       return `${this.environmentLabel.toUpperCase()} ${this.version}`;
@@ -85,7 +82,8 @@ export default {
       display: flex;
       align-items: center;
       .environment-label {
-        font-size: 0.6em;
+        font-size: 0.6rem;
+        font-weight: bold;
         position: relative;
         top: -0.75em;
         color: $light;

@@ -1,6 +1,7 @@
 const { gitDescribeSync } = require('git-describe');
 import envComputer from './plugins/env.js';
 const HOST_PATH = envComputer(process.env.ENV);
+process.env.APP_VERSION = require('./package.json').version;
 
 process.env.GIT_DESCRIBE = JSON.stringify(gitDescribeSync({
   longSemver: true,

@@ -25,7 +25,7 @@ export default {
       return hash.substr(1, hash.length);
     },
     version() {
-      return this.settings.gitDescribe.distance !== 0 ? this.hash : this.settings.gitDescribe.tag;
+      return this.settings.version;
     },
     versionInfo() {
       return `${this.environmentLabel.toUpperCase()} ${this.version}`;

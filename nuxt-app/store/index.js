@@ -21,6 +21,7 @@ export const state = () => ({
   settings: {
     language: 'sv',
     hostPath: envComputer(process.env.ENV),
+    version: process.env.APP_VERSION,
     gitDescribe: process.env.GIT_DESCRIBE,
     idPath: process.env.API_PATH,
     dataPath: process.env.API_PATH,
