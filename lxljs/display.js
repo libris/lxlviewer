@@ -173,7 +173,7 @@ function formatLabel(item, resources) {
       label.push(' • ');
     }
 
-    const formatter = formatters[`${key}-format`];
+    const formatter = formatters ? formatters[`${key}-format`] : null;
     if (isArray(value)) {
       if (formatter && formatter['fresnel:valueFormat'] && formatter['fresnel:valueFormat']['fresnel:contentAfter']) {
         label.push(value.join(formatter['fresnel:valueFormat']['fresnel:contentAfter']));
