@@ -246,6 +246,8 @@ export function getSortedProperties(formType, formObj, settings, resources) {
 }
 
 export function getItemToken(item, resources, quoted, settings) {
+  if (typeof item === 'string') return item;
+
   const displayObject = getToken(item, resources, quoted, settings);
   let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', resources.vocab, resources.context)) {
@@ -372,7 +374,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
                 }
               } else {
                 if (isArray(trueItem[p])) {
-                  result[p] = trueItem[p].map(arrayItem => getItemLabel(arrayItem[p], resources, quoted, settings, property));
+                  result[p] = trueItem[p].map(arrayItem => getItemLabel(arrayItem, resources, quoted, settings, property));
                 } else {
                   result[p] = getItemLabel(trueItem[p], resources, quoted, settings, property);
                 }
