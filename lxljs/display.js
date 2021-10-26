@@ -374,9 +374,9 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
                 }
               } else {
                 if (isArray(trueItem[p])) {
-                  result[p] = trueItem[p].map(arrayItem => getItemLabel(arrayItem, resources, quoted, settings, property));
+                  result[p] = trueItem[p].map(arrayItem => getItemLabel(arrayItem, resources, quoted, settings, p));
                 } else {
-                  result[p] = getItemLabel(trueItem[p], resources, quoted, settings, property);
+                  result[p] = getItemLabel(trueItem[p], resources, quoted, settings, p);
                 }
               }
               lxlLog('Calculating alternate properties for', trueItem['@type'], 'choosing between', property.alternateProperties, 'and found', p);
