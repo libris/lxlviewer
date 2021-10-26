@@ -177,7 +177,7 @@ export default {
         </li>
         <li>
           <router-link to="/user">{{"Settings" | translatePhrase}}</router-link>
-          <button class="btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeTagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</button>
+          <button class="btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeFlagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</button>
         </li>
         <li>
           <!-- <span>Växla användare</span> -->
