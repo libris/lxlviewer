@@ -789,10 +789,9 @@ const store = new Vuex.Store({
       if (markedDocuments.hasOwnProperty(id)) {
         if (markedDocuments[id].tags.indexOf(tag) < 0) {
           markedDocuments[id].tags.push(tag);
-          markedDocuments[id].label = label;
         }
       } else {
-        markedDocuments[id] = { tags: [tag], label };
+        markedDocuments[id] = { tags: [tag] };
       }
       dispatch('modifyUserDatabase', { property: 'markedDocuments', value: markedDocuments });
     },
