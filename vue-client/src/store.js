@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { cloneDeep, each, set, get, assign, filter } from 'lodash-es';
+import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
+import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
 
 Vue.use(Vuex);
@@ -85,6 +86,7 @@ const store = new Vuex.Store({
       hintSigelChange: false,
     },
     user: User.getUserObject(),
+    userDatabase: null,
     userStorage: {
       list: {},
       copyClipboard: null,
@@ -506,6 +508,21 @@ const store = new Vuex.Store({
     oauth2Client: {},
   },
   mutations: {
+    setUserDatabase(state, data) {
+      // Sets the userDatabase to *state*
+      // this should only be called after an API call to the user database has been successful
+      // Usually it would be set after a load from the database,
+      // or if you modify something and get a 200 response.
+      let recievedData = data;
+      if (isObject(recievedData) === false) {
+        if (recievedData.length === 0) {
+          recievedData = {};
+        } else {
+          recievedData = JSON.parse(recievedData);
+        }
+      }
+      state.userDatabase = recievedData;
+    },
     setGlobalMessages(state, payload) {
       state.resources.globalMessages = payload;
     },
@@ -726,30 +743,37 @@ const store = new Vuex.Store({
       }
       return activeMessages;
     },
-    userFavorites: (state, getters) => {
+    userBookmarks: (state) => {
       const collection = [];
-      const list = getters.userStorage.list;
-      const ids = Object.keys(list);
-      for (let i = 0; i < ids.length; i++) {
-        const listItem = list[ids[i]];
-        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Favorite') > -1) {
-          collection.push({ [ids[i]]: [ids[i]].label });
-        }
+      if (state.userDatabase == null || state.userDatabase.markedDocuments == null) {
+        return collection;
       }
-      return collection;
-    },
-    userCare: (state, getters) => {
-      const collection = [];
-      const list = getters.userStorage.list;
+      const list = state.userDatabase.markedDocuments;
       const ids = Object.keys(list);
       for (let i = 0; i < ids.length; i++) {
         const listItem = list[ids[i]];
-        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Directory care') > -1) {
+        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Bookmark') > -1) {
           collection.push({ '@id': ids[i], label: list[ids[i]].label });
         }
       }
       return collection;
     },
+    userFlagged: (state) => {
+      const collection = [];
+      if (state.userDatabase == null || state.userDatabase.markedDocuments == null) {
+        return collection;
+      }
+      const list = state.userDatabase.markedDocuments;
+      const ids = Object.keys(list);
+      for (let i = 0; i < ids.length; i++) {
+        const listItem = list[ids[i]];
+        if (listItem.hasOwnProperty('tags') && listItem.tags.indexOf('Flagged') > -1) {
+          collection.push({ '@id': ids[i], label: list[ids[i]].label });
+        }
+      }
+      return collection;
+    },
+    userDatabase: state => state.userDatabase,
     status: state => state.status,
     directoryCare: state => state.directoryCare,
     vocab: state => state.resources.vocab,
@@ -757,20 +781,73 @@ const store = new Vuex.Store({
     context: state => state.resources.context,
   },
   actions: {
-    mark({ commit, state }, payload) {
-      const userStorage = cloneDeep(state.userStorage);
+    mark({ dispatch, state }, payload) {
+      const markedDocuments = cloneDeep(state.userDatabase.markedDocuments) || {};
       const tag = payload.tag;
       const id = payload.documentId;
       const label = payload.documentTitle;
-      if (userStorage.list.hasOwnProperty(id)) {
-        if (userStorage.list[id].tags.indexOf(tag) < 0) {
-          userStorage.list[id].tags.push(tag);
-          userStorage.list[id].label = label;
+      if (markedDocuments.hasOwnProperty(id)) {
+        if (markedDocuments[id].tags.indexOf(tag) < 0) {
+          markedDocuments[id].tags.push(tag);
+          markedDocuments[id].label = label;
         }
       } else {
-        userStorage.list[id] = { tags: [tag], label };
+        markedDocuments[id] = { tags: [tag], label };
       }
-      commit('setUserStorage', userStorage);
+      dispatch('modifyUserDatabase', { property: 'markedDocuments', value: markedDocuments });
+    },
+    unmark({ dispatch, state }, payload) {
+      const markedDocuments = cloneDeep(state.userDatabase.markedDocuments);
+      const tag = payload.tag;
+      const id = payload.documentId;
+      if (markedDocuments.hasOwnProperty(id)) {
+        if (markedDocuments[id].tags.indexOf(tag) >= 0) {
+          markedDocuments[id].tags.splice(markedDocuments[id].tags.indexOf(tag), 1);
+          if (markedDocuments[id].tags.length === 0) {
+            delete markedDocuments[id];
+          }
+        }
+      }
+      dispatch('modifyUserDatabase', { property: 'markedDocuments', value: markedDocuments });
+    },
+    purgeUserTagged({ dispatch, state }, tagName) {
+      const markedDocuments = cloneDeep(state.userDatabase.markedDocuments);
+      each(markedDocuments, (o) => {
+        o.tags.splice(o.tags.indexOf(tagName), 1);
+      });
+      dispatch('modifyUserDatabase', { property: 'markedDocuments', value: markedDocuments });
+    },
+    loadUserDatabase({ commit, state }) {
+      if (state.user.email.length === 0) {
+        throw new Error('loadUserDatabase was dispatched with no real user loaded.');
+      }
+      // Call this when you need to load the userDatabase from the server.
+      StringUtil.digestMessage(state.user.email).then((digestHex) => {
+        httpUtil.get({ url: `${state.settings.apiPath}/_userdata/${digestHex}`, token: state.user.token, contentType: 'text/plain' }).then((result) => {
+          commit('setUserDatabase', result);
+        }, (error) => {
+          console.error(error);
+        });
+      });
+    },
+    modifyUserDatabase({ commit, state }, payload) {
+      if (state.user.email.length === 0) {
+        throw new Error('modifyUserDatabase was dispatched with no real user loaded.');
+      }
+      // Modifies a propery in the userDatabase
+      const userDatabase = cloneDeep(state.userDatabase);
+      if (payload.value == null) {
+        delete userDatabase[payload.property];
+      } else {
+        userDatabase[payload.property] = payload.value;
+      }
+      StringUtil.digestMessage(state.user.email).then((digestHex) => {
+        httpUtil.put({ url: `${state.settings.apiPath}/_userdata/${digestHex}`, token: state.user.token, contentType: 'text/plain' }, userDatabase).then(() => {
+          commit('setUserDatabase', userDatabase);
+        }, (error) => {
+          console.error(error);
+        });
+      });
     },
     setEnrichmentTarget({ commit }, data) {
       commit('setEnrichmentTarget', data);
@@ -783,25 +860,6 @@ const store = new Vuex.Store({
     },
     setGlobalMessages({ commit }, data) {
       commit('setGlobalMessages', data);
-    },
-    unmark({ commit, state }, payload) {
-      const userStorage = cloneDeep(state.userStorage);
-      const tag = payload.tag;
-      const id = payload.documentId;
-      if (userStorage.list.hasOwnProperty(id)) {
-        if (userStorage.list[id].tags.indexOf(tag) >= 0) {
-          userStorage.list[id].tags.splice(userStorage.list[id].tags.indexOf(tag), 1);
-          if (userStorage.list[id].tags.length === 0) {
-            delete userStorage.list[id];
-          }
-        }
-      }
-      commit('setUserStorage', userStorage);
-    },
-    purgeUserTagged({ commit, state }) {
-      const userStorage = cloneDeep(state.userStorage);
-      userStorage.list = {};
-      commit('setUserStorage', userStorage);
     },
     dismissMessage({ commit, state }, id) {
       const userStorage = cloneDeep(state.userStorage);
@@ -829,7 +887,7 @@ const store = new Vuex.Store({
         commit('setUserStorage', userStorage);
       }
     },
-    verifyUser({ commit, state }) {
+    async verifyUser({ commit, state }) {
       return new Promise((resolve, reject) => {
         if (state.user.isLoggedIn === true && state.user.hasTokenExpired() === false) {
           resolve();
@@ -850,7 +908,7 @@ const store = new Vuex.Store({
             userObj.token_expires_at = result.expires_at;
             userObj.loadUserData(state.settings.apiPath).then(() => {
               commit('setUser', userObj);
-              resolve();
+              resolve(userObj);
             });
           }, (error) => {
             localStorage.removeItem('at');

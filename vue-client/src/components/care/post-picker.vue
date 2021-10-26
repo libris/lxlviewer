@@ -40,7 +40,7 @@ export default {
   computed: {
     ...mapGetters([
       'directoryCare',
-      'userCare',
+      'userFlagged',
       'user',
       'resources',
       'inspector',
@@ -72,7 +72,7 @@ export default {
     },
   },
   watch: {
-    userCare(newVal) {
+    userFlagged(newVal) {
       if (this.selected) {
         const selectedIsFlagged = newVal.filter(item => item['@id'] === this.selected['@id']);
         if (selectedIsFlagged.length === 0) {

@@ -36,8 +36,11 @@ export default {
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged out', this.user.settings.language, this.resources.i18n)}!` });
       this.$router.push({ path: '/' });
     },
-    purgeTagged() {
-      this.$store.dispatch('purgeUserTagged');
+    purgeFlagged() {
+      this.$store.dispatch('purgeUserTagged', 'Flagged');
+    },
+    purgeBookmarks() {
+      this.$store.dispatch('purgeUserTagged', 'Bookmark');
     },
   },
   computed: {
@@ -47,6 +50,8 @@ export default {
       'userStorage',
       'settings',
       'resources',
+      'userFlagged',
+      'userBookmarks',
     ]),
     userHasTaggedPosts() {
       return Object.keys(this.userStorage.list).length > 0;
@@ -103,12 +108,23 @@ export default {
             <tr>
               <td class="key">
                 <label for="clearFlagged"> 
-                  {{ "Clear my flagged posts" | translatePhrase}}
+                  {{ "Clear my flagged documents" | translatePhrase}}
                 </label>
               </td>
               <td class="value">
-                <button name="clearFlagged" v-if="userHasTaggedPosts" class="btn btn--sm btn-danger" @click.prevent="purgeTagged" @keyup.enter.prevent="purgeTagged">{{ 'Clear' | translatePhrase }}</button>
-                <span v-if="!userHasTaggedPosts" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
+                <button name="clearFlagged" v-if="userFlagged.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeFlagged" @keyup.enter.prevent="purgeFlagged">{{ 'Clear' | translatePhrase }}</button>
+                <span v-if="userFlagged.length === 0" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="key">
+                <label for="clearBookmarks"> 
+                  {{ "Clear my bookmarked documents" | translatePhrase}}
+                </label>
+              </td>
+              <td class="value">
+                <button name="clearBookmarks" v-if="userBookmarks.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeBookmarks" @keyup.enter.prevent="purgeBookmarks">{{ 'Clear' | translatePhrase }}</button>
+                <span v-if="userBookmarks.length === 0" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
               </td>
             </tr>
           </table>
@@ -161,7 +177,7 @@ export default {
         </li>
         <li>
           <router-link to="/user">{{"Settings" | translatePhrase}}</router-link>
-          <button class="btn--as-link" v-if="userHasTaggedPosts" @click.prevent="purgeTagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</button>
+          <button class="btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeTagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</button>
         </li>
         <li>
           <!-- <span>Växla användare</span> -->

@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userCare',
+      'userFlagged',
       'settings',
       'user',
     ]),

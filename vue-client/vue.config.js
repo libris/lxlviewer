@@ -32,7 +32,7 @@ module.exports = {
     },
   },
   chainWebpack(config) {
-    config.resolve.symlinks(process.env.NODE_ENV === 'production' ? false : true);
+    config.resolve.symlinks(process.env.NODE_ENV !== 'production');
     config.module
       .rule('vue')
       .use('vue-loader')

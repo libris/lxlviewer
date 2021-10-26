@@ -132,7 +132,11 @@ new Vue({
   store,
   render: h => h(App),
   created() {
-    store.dispatch('verifyUser').catch(() => {});
+    store.dispatch('verifyUser').then(() => {
+      this.$nextTick(() => {
+        store.dispatch('loadUserDatabase');
+      });
+    }).catch(() => {});
     store.dispatch('initOauth2Client').catch(() => {});
     this.initWarningFunc();
     this.fetchHelpDocs();
@@ -196,6 +200,7 @@ new Vue({
       
       // Sync user storage initially and trigger it again every focus event
       this.syncUserStorage();
+      // this.$store.dispatch('loadUserDatabase');
       window.addEventListener('focus', () => {
         this.syncUserStorage();
       });

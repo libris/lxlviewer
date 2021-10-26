@@ -54,6 +54,7 @@ export default {
       'resourcesLoaded',
       'resourcesLoadingError',
       'status',
+      'userDatabase',
     ]),
   },
   watch: {
