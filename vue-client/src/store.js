@@ -21,6 +21,7 @@ const store = new Vuex.Store({
       helpDocs: null,
       globalMessages: null,
       i18n: null,
+      displayGroups: null,
     },
     directoryCare: {
       sender: null,
@@ -683,6 +684,9 @@ const store = new Vuex.Store({
     setTranslations(state, data) {
       state.resources.i18n = data;
     },
+    setResource(state, payload) {
+      state.resources[payload.property] = payload.value;
+    },
     setDirectoryCare(state, data) {
       state.directoryCare = data;
     },
@@ -1009,6 +1013,9 @@ const store = new Vuex.Store({
     },
     setTranslations({ commit }, data) {
       commit('setTranslations', data);
+    },
+    setResource({ commit }, payload) {
+      commit('setResource', payload);
     },
     setHelpDocs({ commit }, helpDocsJson) {
       commit('setHelpDocs', helpDocsJson);

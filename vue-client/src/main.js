@@ -137,6 +137,10 @@ new Vue({
     this.initWarningFunc();
     this.fetchHelpDocs();
     store.dispatch('setTranslations', i18n);
+    store.dispatch('setResource', {
+      property: 'displayGroups',
+      value: require('@/resources/json/displayGroups.json'),
+    });
     store.dispatch('pushLoadingIndicator', 'Loading application');
     Promise.all(this.getLdDependencies()).then((resources) => {
       store.dispatch('setContext', resources[1]['@context']);

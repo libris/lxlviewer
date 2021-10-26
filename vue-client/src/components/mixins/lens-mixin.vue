@@ -72,6 +72,7 @@ export default {
         this.resources,
         this.inspector.data.quoted,
         this.settings,
+        this.resources.displayGroups,
         this.excludeProperties,
       );
       const record = this.focusData.meta || this.recordData || {};
@@ -80,6 +81,7 @@ export default {
         this.resources,
         this.inspector.data.quoted,
         this.settings,
+        this.resources.displayGroups,
         this.excludeProperties,
       );
       return {

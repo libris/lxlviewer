@@ -419,14 +419,14 @@ export function getCard(item, resources, quoted, settings) {
 }
 /* eslint-enable no-use-before-define */
 
-export function getItemSummary(item, resources, quoted, settings, excludeProperties = []) {
+export function getItemSummary(item, resources, quoted, settings, displayGroups, excludeProperties = []) {
   const card = getCard(item, resources, quoted, settings);
   if (excludeProperties.length > 0) {
     for (let i = 0; i < excludeProperties.length; i++) {
       delete card[excludeProperties[i]];
     }
   }
-  const cardDisplayGroups = require('@/resources/json/displayGroups.json').card;
+  const cardDisplayGroups = displayGroups.card;
   const summary = {
     categorization: [],
     header: [],

@@ -53,6 +53,7 @@ export default {
           this.resources, 
           this.inspector.data.quoted, 
           this.settings, 
+          this.resources.displayGroups,
         ).header;
 
         const header = StringUtil.getFormattedEntries(
