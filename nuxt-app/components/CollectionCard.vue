@@ -39,7 +39,10 @@ export default {
   computed: {
     ...mapGetters(['settings']),
     title() {
-      return this.collectionData.object.titleByLang[this.settings.language] || this.collectionData.object.titleByLang[Object.keys(this.collectionData.object.titleByLang)[0]];
+      if (this.collectionData.object.titleByLang) {
+        return this.collectionData.object.titleByLang[this.settings.language] || this.collectionData.object.titleByLang[Object.keys(this.collectionData.object.titleByLang)[0]];
+      }
+      return this.collectionData.object['@id'];
     },
   },
   methods: {
