@@ -200,9 +200,11 @@ new Vue({
       
       // Sync user storage initially and trigger it again every focus event
       this.syncUserStorage();
-      // this.$store.dispatch('loadUserDatabase');
       window.addEventListener('focus', () => {
         this.syncUserStorage();
+        if (this.user.isLoggedIn) {
+          this.$store.dispatch('loadUserDatabase');
+        }
       });
       
       window.addEventListener('keydown', LayoutUtil.handleFirstTab);
