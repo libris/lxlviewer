@@ -108,7 +108,7 @@ export default {
         </span>
       </div>
       <div class="ResultItem-tags" v-if="user.isLoggedIn && isImport === false">
-        <tag-switch :document="focusData" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Bookmark" />
+        <!-- <tag-switch :document="focusData" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Bookmark" /> -->
         <tag-switch v-if="recordType === 'Instance'" :document="focusData" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Flagged" />
       </div>
       <div class="ResultItem-relationsContainer"

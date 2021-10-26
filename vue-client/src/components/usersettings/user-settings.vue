@@ -116,7 +116,7 @@ export default {
                 <span v-if="userFlagged.length === 0" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
               </td>
             </tr>
-            <tr>
+            <!-- <tr>
               <td class="key">
                 <label for="clearBookmarks"> 
                   {{ "Clear my bookmarked documents" | translatePhrase}}
@@ -126,7 +126,7 @@ export default {
                 <button name="clearBookmarks" v-if="userBookmarks.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeBookmarks" @keyup.enter.prevent="purgeBookmarks">{{ 'Clear' | translatePhrase }}</button>
                 <span v-if="userBookmarks.length === 0" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
               </td>
-            </tr>
+            </tr> -->
           </table>
           <h5 class="uppercaseHeading--bold">{{ 'Experimental settings' | translatePhrase }}</h5>
           <table class="UserSettings-configTable table table-striped">
