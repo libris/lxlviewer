@@ -17,6 +17,16 @@ export default {
     return {
     }
   },
+  head: {
+    meta: [
+      { hid: 'description', name: 'description', content: 'Länkad data hos Libris' },
+      { hid:'og:title', property:'og:title', content:'Libris' },
+      { hid:'og:site_name', property:'og:site_name', content:'Libris' },
+      { hid:'og:description', property:'og:description', content:'Länkad data hos Libris' },
+      { hid:'og:image', property:'og:image', content:`${HOST_PATH}/opengraph_libris.png` },
+      { hid:'twitter:image', property:'twitter:image', content:`${HOST_PATH}/opengraph_libris.png` },
+    ],
+  },
   computed: {
   },
   methods: {

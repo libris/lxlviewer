@@ -22,6 +22,16 @@ export default {
     return {
     }
   },
+  head: {
+    meta: [
+      { hid: 'description', name: 'description', content: 'Grundstenar för länkade data hos Kungliga biblioteket.' },
+      { hid:'og:title', property:'og:title', content:'id.kb.se' },
+      { hid:'og:site_name', property:'og:site_name', content:'id.kb.se' },
+      { hid:'og:description', property:'og:description', content:'Grundstenar för länkade data hos Kungliga biblioteket.' },
+      { hid:'og:image', property:'og:image', content:`${HOST_PATH}/opengraph_id.png` },
+      { hid:'twitter:image', property:'twitter:image', content:`${HOST_PATH}/opengraph_id.png` },
+    ],
+  },
   computed: {
   },
   methods: {
