@@ -781,6 +781,36 @@ const store = new Vuex.Store({
     context: state => state.resources.context,
   },
   actions: {
+    checkForMigrationOfUserDatabase({ commit, dispatch, state }, payload) {
+      // Check if user has posts stored in localStorage
+      if (state.userStorage.list) {
+        // console.log("Found locally stored flagged posts, moving to db.");
+        const userStorage = state.userStorage;
+        const dbMarkedDocuments = cloneDeep(state.userDatabase.markedDocuments) || {};
+        const oldMarkedDocuments = userStorage.list;
+        let numberOfMigrated = 0;
+        for (const [key, value] of Object.entries(oldMarkedDocuments)) {
+          if (dbMarkedDocuments.hasOwnProperty(key) === false) {
+            const item = cloneDeep(value);
+            delete item.label;
+            for (let i = 0; i < item.tags.length; i++) {
+              if (item.tags[i] === 'Directory care') {
+                item.tags[i] = 'Flagged';
+              }
+            }
+            dbMarkedDocuments[key] = item;
+            numberOfMigrated++;
+          }
+        }
+        // console.log(`Migrated ${numberOfMigrated} posts to user database.`);
+        // Save to db
+        dispatch('modifyUserDatabase', { property: 'markedDocuments', value: dbMarkedDocuments, callback: () => {
+          // Clean up the old list
+          delete userStorage.list;
+          commit('setUserStorage', userStorage);
+        }});
+      }
+    },
     mark({ dispatch, state }, payload) {
       const markedDocuments = cloneDeep(state.userDatabase.markedDocuments) || {};
       const tag = payload.tag;
@@ -811,12 +841,16 @@ const store = new Vuex.Store({
     },
     purgeUserTagged({ dispatch, state }, tagName) {
       const markedDocuments = cloneDeep(state.userDatabase.markedDocuments);
-      each(markedDocuments, (o) => {
-        o.tags.splice(o.tags.indexOf(tagName), 1);
-      });
-      dispatch('modifyUserDatabase', { property: 'markedDocuments', value: markedDocuments });
+      const newList = {};
+      for (const [key, value] of Object.entries(markedDocuments)) {
+        value.tags.splice(value.tags.indexOf(tagName), 1);
+        if (value.tags.length > 0) {
+          newList[key] = value;
+        }
+      }      
+      dispatch('modifyUserDatabase', { property: 'markedDocuments', value: newList });
     },
-    loadUserDatabase({ commit, state }) {
+    loadUserDatabase({ commit, dispatch, state }) {
       if (state.user.email.length === 0) {
         throw new Error('loadUserDatabase was dispatched with no real user loaded.');
       }
@@ -824,6 +858,7 @@ const store = new Vuex.Store({
       StringUtil.digestMessage(state.user.email).then((digestHex) => {
         httpUtil.get({ url: `${state.settings.apiPath}/_userdata/${digestHex}`, token: state.user.token, contentType: 'text/plain' }).then((result) => {
           commit('setUserDatabase', result);
+          dispatch('checkForMigrationOfUserDatabase');
         }, (error) => {
           console.error(error);
         });
@@ -842,6 +877,7 @@ const store = new Vuex.Store({
       }
       StringUtil.digestMessage(state.user.email).then((digestHex) => {
         httpUtil.put({ url: `${state.settings.apiPath}/_userdata/${digestHex}`, token: state.user.token, contentType: 'text/plain' }, userDatabase).then(() => {
+          if (payload.callback) payload.callback();
           commit('setUserDatabase', userDatabase);
         }, (error) => {
           console.error(error);
