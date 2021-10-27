@@ -11,12 +11,12 @@
         </div> -->
         <div class="Vocab-termList" v-if="vocab && listShown == 'Classes'">
           <ul>
-            <li v-for="item in classes" :key="item[0]"><NuxtLink v-if="item[0]" :to="item[0] | removeBaseUri">{{ item[0].split('/').pop() }}</NuxtLink></li>
+            <li is="VocabMenuItem" v-for="item in classes" :item="item[1]" :key="item[1]['@id']" />
           </ul>
         </div>
         <div class="Vocab-termList" v-if="vocab && listShown == 'Properties'">
           <ul>
-            <li v-for="item in properties" :key="item[0]"><NuxtLink v-if="item[0]" :to="item[0] | removeBaseUri">{{ item[0].split('/').pop() }}</NuxtLink></li>
+            <li is="VocabMenuItem" v-for="item in properties" :item="item[1]" :key="item[1]['@id']" />
           </ul>
         </div>
       </div>
@@ -31,6 +31,7 @@
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import ResultItem from '@/components/ResultItem';
+import VocabMenuItem from '@/components/VocabMenuItem';
 
 export default {
   head() {
@@ -88,6 +89,7 @@ export default {
   watchQuery: true,
   components: {
     ResultItem,
+    VocabMenuItem,
   },
 }
 </script>
