@@ -121,8 +121,9 @@ export default {
         <div class="HeaderComponent-controls">
           <span v-if="hiddenDetailsNumber > 1" class="HeaderComponent-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
         </div>
-        <div class="HeaderComponent-tags" v-if="user.isLoggedIn && recordType === 'Instance' && inspector.status.isNew == false">
-          <tag-switch :document="focusData" class="" :action-labels="{ on: 'Flag for', off: 'Unflag for' }" tag="Directory care" />
+        <div class="HeaderComponent-tags" v-if="user.isLoggedIn && inspector.status.isNew == false">
+          <!-- <tag-switch :document="focusData" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Bookmark" /> -->
+          <tag-switch :document="focusData" v-if="recordType === 'Instance'" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Flagged" />
         </div>
         <div class="HeaderComponent-relationsContainer"
           v-if="inspector.status.isNew == false">

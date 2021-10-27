@@ -70,7 +70,8 @@ function request(opts, data) {
     req.onload = () => {
       if (req.status === 200) {
         let resp = req.responseText;
-        if (req.getResponseHeader('Content-Type').indexOf('json') !== -1) {
+        const responseHeader = req.getResponseHeader('Content-Type');
+        if (responseHeader && responseHeader.indexOf('json') !== -1) {
           try {
             resp = JSON.parse(resp);
             if (req.getResponseHeader('ETag')) {

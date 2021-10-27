@@ -47,8 +47,8 @@ export default {
     ...mapGetters([
       'user',
       'userStorage',
-      'userCare',
-      'userFavorites',
+      'userFlagged',
+      'userBookmarks',
       'settings',
       'resources',
       'inspector',
@@ -67,10 +67,10 @@ export default {
     iconString() {
       let str = 'fa-';
       switch (this.tag) {
-        case 'Favorite':
+        case 'Bookmark':
           str += 'star';
           break;
-        case 'Directory care':
+        case 'Flagged':
           str += 'flag';
           break;
         default:
@@ -84,11 +84,11 @@ export default {
     isMarked() {
       let bool = false;
       switch (this.tag) {
-        case 'Favorite':
-          bool = this.userFavorites.some(el => el['@id']) === this.documentId;
+        case 'Bookmark':
+          bool = this.userBookmarks.some(el => el['@id'] === this.documentId);
           break;
-        case 'Directory care':
-          bool = this.userCare.some(el => el['@id'] === this.documentId);
+        case 'Flagged':
+          bool = this.userFlagged.some(el => el['@id'] === this.documentId);
           break;
         default:
           bool = false;
@@ -131,6 +131,9 @@ export default {
   cursor: pointer;
   .fa-flag {
     color: @brand-accent;
+  }
+  .fa-star {
+    color: #d6b400;
   }
 }
 

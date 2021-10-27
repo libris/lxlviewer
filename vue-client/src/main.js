@@ -132,7 +132,11 @@ new Vue({
   store,
   render: h => h(App),
   created() {
-    store.dispatch('verifyUser').catch(() => {});
+    store.dispatch('verifyUser').then(() => {
+      this.$nextTick(() => {
+        store.dispatch('loadUserDatabase');
+      });
+    }).catch(() => {});
     store.dispatch('initOauth2Client').catch(() => {});
     this.initWarningFunc();
     this.fetchHelpDocs();
@@ -198,6 +202,9 @@ new Vue({
       this.syncUserStorage();
       window.addEventListener('focus', () => {
         this.syncUserStorage();
+        if (this.user.isLoggedIn) {
+          this.$store.dispatch('loadUserDatabase');
+        }
       });
       
       window.addEventListener('keydown', LayoutUtil.handleFirstTab);

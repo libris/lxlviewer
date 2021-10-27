@@ -57,7 +57,7 @@ export default {
       this.allSuccessDialog = false;
     },
     untagSender() {
-      this.$store.dispatch('unmark', { tag: 'Directory care', documentId: this.directoryCare.sender });
+      this.$store.dispatch('unmark', { tag: 'Flagged', documentId: this.directoryCare.sender });
     },
     checkAllDone() {
       const selected = this.directoryCare.selectedHoldings;
@@ -114,7 +114,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userCare',
+      'userFlagged',
       'directoryCare',
       'settings',
       'resources',
