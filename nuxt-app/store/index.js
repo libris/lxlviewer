@@ -259,7 +259,7 @@ export const actions = {
   async nuxtServerInit({ commit, dispatch }, { req }) {
     if (process.server) {
       const headerHost = req.headers['x-forwarded-host'];
-      if (headerHost.startsWith('id') === false) {
+      if (headerHost && headerHost.startsWith('id') === false) {
         dispatch('setAppState', { property: 'domain', value: 'libris' });
       } else {
         dispatch('setAppState', { property: 'domain', value: 'id' });

@@ -35,7 +35,7 @@ export default {
   mixins: [LensMixin],
   layout (context) { 
     const requestedDomain = context.store.appState ? context.store.appState.domain : context.req.headers['x-forwarded-host'];
-    if (requestedDomain.startsWith('id') === false) {
+    if (requestedDomain && requestedDomain.startsWith('id') === false) {
       return 'libris';
     }
     return 'default';
