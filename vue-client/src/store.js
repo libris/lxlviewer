@@ -781,14 +781,14 @@ const store = new Vuex.Store({
     context: state => state.resources.context,
   },
   actions: {
-    checkForMigrationOfUserDatabase({ commit, dispatch, state }, payload) {
+    checkForMigrationOfUserDatabase({ commit, dispatch, state }) {
       // Check if user has posts stored in localStorage
       if (state.userStorage.list) {
         // console.log("Found locally stored flagged posts, moving to db.");
         const userStorage = state.userStorage;
         const dbMarkedDocuments = cloneDeep(state.userDatabase.markedDocuments) || {};
         const oldMarkedDocuments = userStorage.list;
-        let numberOfMigrated = 0;
+        // let numberOfMigrated = 0;
         for (const [key, value] of Object.entries(oldMarkedDocuments)) {
           if (dbMarkedDocuments.hasOwnProperty(key) === false) {
             const item = cloneDeep(value);
@@ -799,23 +799,26 @@ const store = new Vuex.Store({
               }
             }
             dbMarkedDocuments[key] = item;
-            numberOfMigrated++;
+            // numberOfMigrated++;
           }
         }
         // console.log(`Migrated ${numberOfMigrated} posts to user database.`);
         // Save to db
-        dispatch('modifyUserDatabase', { property: 'markedDocuments', value: dbMarkedDocuments, callback: () => {
-          // Clean up the old list
-          delete userStorage.list;
-          commit('setUserStorage', userStorage);
-        }});
+        dispatch('modifyUserDatabase', {
+          property: 'markedDocuments',
+          value: dbMarkedDocuments,
+          callback: () => {
+            // Clean up the old list
+            delete userStorage.list;
+            commit('setUserStorage', userStorage);
+          },
+        });
       }
     },
     mark({ dispatch, state }, payload) {
       const markedDocuments = cloneDeep(state.userDatabase.markedDocuments) || {};
       const tag = payload.tag;
       const id = payload.documentId;
-      const label = payload.documentTitle;
       if (markedDocuments.hasOwnProperty(id)) {
         if (markedDocuments[id].tags.indexOf(tag) < 0) {
           markedDocuments[id].tags.push(tag);
