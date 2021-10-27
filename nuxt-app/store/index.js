@@ -17,6 +17,7 @@ export const state = () => ({
   appState: {
     navigatingWithFacetColumn: false,
     navigatingFromSearchBar: false,
+    domain: null,
   },
   settings: {
     language: 'sv',
@@ -255,7 +256,16 @@ export const mutations = {
 }
 
 export const actions = {
-  async nuxtServerInit({ commit }) {
+  async nuxtServerInit({ commit, dispatch }, { req }) {
+    if (process.server) {
+      const headerHost = req.headers['x-forwarded-host'];
+      if (headerHost.startsWith('id') === false) {
+        dispatch('setAppState', { property: 'domain', value: 'libris' });
+      } else {
+        dispatch('setAppState', { property: 'domain', value: 'id' });
+      }
+    }
+
     const contextPath = `${process.env.API_PATH}/context.jsonld`;
     const contextData = await fetch(
       contextPath
