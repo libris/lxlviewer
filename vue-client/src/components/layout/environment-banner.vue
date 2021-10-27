@@ -44,10 +44,11 @@ export default {
 <style lang="less">
 .EnvironmentBanner {
   &-corner {
+    pointer-events: none;
     position: fixed;
     bottom: 0;
-    right: 0.3em;
-    font-size: 5rem;
+    right: .7em;
+    font-size: 4rem;
     text-shadow: 0.05em 0 #ffffff, 0 0.05em #ffffff, -0.05em 0 #ffffff, 0 -0.05em #ffffff;
     z-index: 9999;
   }
