@@ -7426,7 +7426,7 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-"lxljs@link:./../lxljs":
+"lxljs@link:../lxljs":
   version "0.0.0"
   uid ""
 

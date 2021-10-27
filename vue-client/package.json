@@ -35,7 +35,7 @@
     "less": "^3.10.3",
     "less-loader": "^4.1.0",
     "lodash-es": "^4.17.14",
-    "lxljs": "link:./../lxljs",
+    "lxljs": "link:../lxljs",
     "marked": "^2.0.0",
     "md5": "^2.2.1",
     "modernizr": "^3.6.0",
