@@ -62,6 +62,9 @@ function tryGetValueByLang(item, propertyId, langCode, context) {
   if (!langCode || typeof langCode === 'undefined') {
     throw new Error('tryGetValueByLang was called with an undefined language code.');
   }
+  if (!item || typeof item === 'undefined') {
+    throw new Error('tryGetValueByLang was called with an undefined object.');
+  }
   const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
   
   return byLangKey && item[byLangKey] && item[byLangKey][langCode]
@@ -258,7 +261,6 @@ export function getItemToken(item, resources, quoted, settings) {
 }
 
 export function getDisplayObject(item, level, resources, quoted, settings) {
-  // Some checks before we even start
   if (!item || typeof item === 'undefined') {
     throw new Error('getDisplayObject was called with an undefined object.');
   }
@@ -280,9 +282,6 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
       trueItem = quoted[trueItem['@id']];
     }
 
-    // Plan to try and fetch missing data?
-    // trueItem = DataUtil.getEmbellished(trueItem['@id'], quoted);
-
     // If the item lacks a type, just return it as an anonymous object with a label
     if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
       return { label: StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
@@ -298,72 +297,63 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
   const properties = getDisplayProperties(displayType, resources, settings, level);
 
   // Start filling the object with the selected properties
-  if (properties.length === 2 && properties.indexOf('label') > -1 && properties.indexOf('prefLabel') > -1) {
-    // This first block can probably be replace by alternateProperties at some point
-    const labelValue = getValueByLang(trueItem, 'label', settings.language, resources.context);
-    const prefLabelValue = getValueByLang(trueItem, 'prefLabel', settings.language, resources.context);
-    if (typeof prefLabelValue !== 'undefined') {
-      result.prefLabel = prefLabelValue;
-    } else if (labelValue !== 'undefined') {
-      result.label = labelValue;
-    }
-  } else {
-    properties.forEach((property) => {
-      if (!isObject(property)) {
-        let valueOnItem = '';
-        valueOnItem = getValueByLang(trueItem, property, settings.language, resources.context);
+  properties.forEach((property) => {
+    if (!isObject(property)) {
+      let valueOnItem = '';
+      valueOnItem = getValueByLang(trueItem, property, settings.language, resources.context);
 
-        if (typeof valueOnItem !== 'undefined') {
-          let value = valueOnItem;
-          if (isObject(value) && !isArray(value)) {
-            if (level === 'chips') {
-              value = getItemToken(value, resources, quoted, settings);
-            } else {
-              value = getItemLabel(value, resources, quoted, settings, property);
+      if (typeof valueOnItem !== 'undefined') {
+        let value = valueOnItem;
+        if (isObject(value) && !isArray(value)) {
+          if (level === 'chips') {
+            value = getItemToken(value, resources, quoted, settings);
+          } else {
+            value = getItemLabel(value, resources, quoted, settings, property);
+          }
+        } else if (isArray(value)) {
+          const newArray = [];
+          for (const arrayItem of value) {
+            if (typeof arrayItem === 'undefined' || arrayItem === null) {
+              throw new Error('getDisplayObject encountered an undefined or null item in an array.');
             }
-          } else if (isArray(value)) {
-            const newArray = [];
-            for (const arrayItem of value) {
-              if (typeof arrayItem === 'undefined' || arrayItem === null) {
-                throw new Error('getDisplayObject encountered an undefined or null item in an array.');
-              }
-              if (isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
-                if (level === 'chips') {
-                  newArray.push(getItemToken(arrayItem, resources, quoted, settings));
-                } else {
-                  newArray.push(getItemLabel(arrayItem, resources, quoted, settings, property));
-                }
-              } else if (arrayItem.length > 0) {
-                newArray.push(arrayItem);
+            if (isObject(arrayItem) && (Object.keys(arrayItem).length > 1 || arrayItem[Object.keys(arrayItem)[0]] !== '')) {
+              if (level === 'chips') {
+                newArray.push(getItemToken(arrayItem, resources, quoted, settings));
               } else {
-                // console.warn("Array contained unknown item", arrayItem);
+                newArray.push(getItemLabel(arrayItem, resources, quoted, settings, property));
               }
+            } else if (arrayItem.length > 0) {
+              newArray.push(arrayItem);
+            } else {
+              // console.warn("Array contained unknown item", arrayItem);
             }
-            value = newArray;
           }
-          result[property] = value;
-        } else if (properties.length < 3 && properties.indexOf(property) === 0) {
-          const rangeOfMissingProp = VocabUtil.getRange(property, resources.vocab, resources.context);
-          let propMissing = property;
-          if (
-            rangeOfMissingProp.length > 1
-            || (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
-          ) {
-            propMissing = rangeOfMissingProp[0];
-          }
-          const expectedClassName = StringUtil.getLabelByLang(
-            propMissing, // Get the first one just to show something
-            settings.language,
-            resources,
-          );
-          result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, resources)} ${StringUtil.getUiPhraseByLang('without', settings.language)} ${expectedClassName.toLowerCase()}}`;
+          value = newArray;
         }
-      } else {
-        // Property is object, lets calculate that
-        if (property.hasOwnProperty('alternateProperties')) {
-          // Handle alternateProperties
-          for (const p of property.alternateProperties) {
-            if (typeof p === 'string' && trueItem.hasOwnProperty(p)) {
+        result[property] = value;
+      } else if (properties.length < 3 && properties.indexOf(property) === 0) {
+        const rangeOfMissingProp = VocabUtil.getRange(property, resources.vocab, resources.context);
+        let propMissing = property;
+        if (
+          rangeOfMissingProp.length > 1
+          || (rangeOfMissingProp.length === 1 && rangeOfMissingProp[0] !== 'http://www.w3.org/2000/01/rdf-schema#Literal')
+        ) {
+          propMissing = rangeOfMissingProp[0];
+        }
+        const expectedClassName = StringUtil.getLabelByLang(
+          propMissing, // Get the first one just to show something
+          settings.language,
+          resources,
+        );
+        result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, resources)} ${StringUtil.getUiPhraseByLang('without', settings.language, resources.i18n)} ${expectedClassName.toLowerCase()}}`;
+      }
+    } else {
+      // Property is object, lets calculate that
+      if (property.hasOwnProperty('alternateProperties')) {
+        // Handle alternateProperties
+        for (const p of property.alternateProperties) {
+          if (typeof p === 'string') {
+            if (trueItem.hasOwnProperty(p)) {
               if (typeof trueItem[p] === 'string') {
                 result[p] = trueItem[p];
               } else if (level === 'chips') {
@@ -381,12 +371,14 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
               }
               lxlLog('Calculating alternate properties for', trueItem['@type'], 'choosing between', property.alternateProperties, 'and found', p);
               break;
+            } else if (trueItem.hasOwnProperty(`${p}ByLang`)) {
+              result[p] = tryGetValueByLang(trueItem, p, settings.language, resources.context);
             }
           }
         }
       }
-    });
-  }
+    }
+  });
 
   const itemKeys = Object.keys(result);
   if (isEmpty(result) || (itemKeys.length === 1 && (typeof result[itemKeys[0]] === 'undefined' || result[itemKeys[0]] === null || result[itemKeys[0]].length === 0))) {
