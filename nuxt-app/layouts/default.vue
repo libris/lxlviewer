@@ -12,10 +12,12 @@
 </template>
 
 <script>
+import envComputer from '@/plugins/env.js';
 import Navbar from '@/components/Navbar';
 import SearchBar from '@/components/SearchBar';
 import Footer from '@/components/Footer';
 
+const HOST_PATH = envComputer(process.env.ENV);
 
 export default {
   data() {

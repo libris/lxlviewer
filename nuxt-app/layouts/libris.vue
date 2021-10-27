@@ -10,7 +10,8 @@
 </template>
 
 <script>
-
+import envComputer from '@/plugins/env.js';
+const HOST_PATH = envComputer(process.env.ENV);
 
 export default {
   data() {
