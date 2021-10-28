@@ -10,6 +10,10 @@
         <template v-else-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
         <template v-else>{{ decodeURI(entityData['@id']) | translateUriEnv }}</template>
       </NuxtLink>
+      <NuxtLink v-else-if="entityData['@id'].startsWith('https://libris.kb.se')" :to="entityData['@id'] | removeBaseUri">
+        <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+        <template v-else>{{ decodeURI(entityData['@id']) | translateUriEnv }}</template>
+      </NuxtLink>
       <a v-else :href="entityData['@id']">{{ decodeURI(entityData['@id']) }}</a>
     </template>
     <span v-else>
