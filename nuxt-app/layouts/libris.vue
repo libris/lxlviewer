@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <header class="">
-      <h1>Libris</h1>
+      <Navbar />
     </header>
     <main>
       <Nuxt />

@@ -4,7 +4,7 @@
       <div class="Navbar-brandContainer">
         <NuxtLink to="/" class="Navbar-brand navbar-brand">
           <Logo />
-          id.kb.se
+          {{ siteTitle }}
         </NuxtLink>
         <span class="environment-label">
           {{ versionInfo }}
@@ -31,13 +31,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['settings']),
+    ...mapGetters(['settings', 'appState']),
     gitDescribe() {
       return JSON.parse(this.settings.gitDescribe);
     },
     hash() {
       const hash = this.gitDescribe.hash;
       return hash.substr(1, hash.length);
+    },
+    siteTitle() {
+      if (this.appState.domain === 'libris') {
+        return 'Libris';
+      }
+      return 'id.kb.se';
     },
     version() {
       return this.settings.version;
