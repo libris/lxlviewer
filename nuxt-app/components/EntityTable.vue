@@ -16,6 +16,10 @@
       <span class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Download') }}</span>
       <span class="PropertyRow-bodyValue"><a :href="`${itemData['@id']}/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${itemData['@id']}/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${itemData['@id']}/data.rdf` | replaceBaseWithApi">RDF/XML</a></span>
     </div>
+    <div class="PropertyRow d-md-flex" v-if="appState.domain === 'libris'">
+      <span class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Other sites') }}</span>
+      <span class="PropertyRow-bodyValue"><a :href="`https://libris.kb.se/katalogisering/${ itemData['@id'].split('/').pop() }`">Libris katalogisering</a></span>
+    </div>
   </div>
 </template>
 
@@ -58,7 +62,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['display', 'resources', 'vocabContext', 'settings', 'vocab']),
+    ...mapGetters(['display', 'resources', 'vocabContext', 'settings', 'vocab', 'appState']),
     ownPath() {
       return this.translateUriEnv(this.itemData['@id']);
     },
