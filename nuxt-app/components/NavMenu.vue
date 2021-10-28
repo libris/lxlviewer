@@ -1,6 +1,6 @@
 <template>
   <div :class="{ 'collapse': !expanded }" class="navbar-collapse NavMenu" id="navbarNav">
-    <ul class="navbar-nav">
+    <ul class="navbar-nav" v-if="appState.domain === 'id'">
       <li class="nav-item">
         <NuxtLink @click.native="linkActivated" to="/" class="nav-link" :class="{'active': $route.name == 'find' || $route.name == 'index' }">{{ translateUi('Search') }}</NuxtLink>
       </li>
@@ -14,6 +14,7 @@
         <NuxtLink @click.native="linkActivated" to="/doc/about" class="nav-link" :class="{'active': $route.path == '/doc/about' }">{{ translateUi('About id.kb.se') }}</NuxtLink>
       </li>
     </ul>
+    <ul v-else></ul>
     <ul class="navbar-nav">
       <li class="nav-item LanguageSelect">
         <i class="bi bi-globe"></i>
@@ -26,6 +27,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
@@ -37,6 +40,9 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  computed: {
+    ...mapGetters(['appState']),
   },
   methods: {
     linkActivated() {
