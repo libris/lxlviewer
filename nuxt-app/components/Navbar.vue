@@ -2,10 +2,14 @@
   <nav class="Navbar navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
       <div class="Navbar-brandContainer">
-        <NuxtLink to="/" class="Navbar-brand navbar-brand">
+        <NuxtLink v-if="appState.domain === 'id'" to="/" class="Navbar-brand navbar-brand">
           <Logo />
           {{ siteTitle }}
         </NuxtLink>
+        <a v-else href="/" class="Navbar-brand navbar-brand">
+          <Logo />
+          {{ siteTitle }}
+        </a>
         <span class="environment-label">
           {{ versionInfo }}
         </span>
