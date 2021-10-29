@@ -369,7 +369,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
                   result[p] = getItemLabel(trueItem[p], resources, quoted, settings, p);
                 }
               }
-              lxlLog('Calculating alternate properties for', trueItem['@type'], 'choosing between', property.alternateProperties, 'and found', p);
+              lxlLog(`Computing alternateProperties for ${trueItem['@type']}. Looking for: ${property.alternateProperties.join(', ')} | Settled on: ${p}`);
               break;
             } else if (trueItem.hasOwnProperty(`${p}ByLang`)) {
               result[p] = tryGetValueByLang(trueItem, p, settings.language, resources.context);
