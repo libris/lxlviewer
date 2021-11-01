@@ -296,7 +296,7 @@ new Vue({
       window.lxlInfo = (...strings) => {
         if (window.lxlInfoStack.indexOf(JSON.stringify(strings.join())) === -1) {
           window.lxlInfoStack.push(JSON.stringify(strings.join()));
-          return console.log('%c LXL ', 'background: #009788; color: #fff;', ...strings);
+          return console.log(...strings);
         }
         return false;
       };
@@ -304,7 +304,7 @@ new Vue({
       window.lxlWarning = (...strings) => {
         if (window.lxlWarnStack.indexOf(JSON.stringify(strings.join())) === -1) {
           window.lxlWarnStack.push(JSON.stringify(strings.join()));
-          return console.warn('%c LXL ', 'background: #009788; color: #fff;', ...strings);
+          return console.warn(...strings);
         }
         return false;
       };
@@ -312,7 +312,7 @@ new Vue({
       window.lxlError = (...strings) => {
         if (window.lxlErrorStack.indexOf(JSON.stringify(strings.join())) === -1) {
           window.lxlErrorStack.push(JSON.stringify(strings.join()));
-          return console.error('%c LXL ERROR ', 'background: #a50000; color: #fff;', ...strings);
+          return console.error(...strings);
         }
         return false;
       };
