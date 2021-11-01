@@ -172,7 +172,7 @@ export default {
       return `${typeLabel} ${StringUtil.getUiPhraseByLang('Used in', this.user.settings.language, this.resources.i18n)}`;
     },
     itemOfTitle() {
-      return DisplayUtil.getItemLabel(this.itemOf, this.resources.display, null, this.resources, this.settings);
+      return DisplayUtil.getItemLabel(this.itemOf, this.resources, null, this.settings);
     },
   },
   components: {
