@@ -125,7 +125,7 @@ export default {
       return this.mainEntity['@id'];
     },
     translatedTooltip() {
-      return StringUtil.getUiPhraseByLang(this.totalRelationTooltipText, this.user.settings.language, this.resources.i18ns);
+      return StringUtil.getUiPhraseByLang(this.totalRelationTooltipText, this.user.settings.language, this.resources.i18n);
     },
     totalRelationTooltipText() {
       if (this.recordType === 'Instance' || this.recordType === 'Item') {
