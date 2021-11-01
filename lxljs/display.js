@@ -207,7 +207,8 @@ export function getItemLabel(item, resources, quoted, settings, inClass = '') {
   }
   const displayObject = getChip(item, resources, quoted, settings);
   if (Object.keys(displayObject).length === 0) {
-    return JSON.stringify(item);
+    lxlWarning('getItemLabel returned an empty string for item:', item);
+    return '';
   }
 
   let rendered = formatLabel(displayObject, resources);
