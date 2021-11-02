@@ -90,7 +90,7 @@ export default {
     ...mapActions(['setCurrentDocument']),
   },
   async asyncData({ $config, route, params, $http, store }) {
-    const pageData = await $http.$get(`${$config.apiPath}/${route.path}/data.jsonld`);
+    const pageData = await $http.$get(`${$config.apiPath}${route.path}/data.jsonld`);
     store.commit('SET_CURRENT_DOCUMENT', pageData);
     return { pageData }
   },
