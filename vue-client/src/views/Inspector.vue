@@ -626,7 +626,7 @@ export default {
         obj = this.getPackagedItem();
       } catch (e) {
         const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
-        const errorMessage = `${StringUtil.getUiPhraseByLang(e.message, this.user.settings.language)}`;
+        const errorMessage = `${StringUtil.getUiPhraseByLang(e.message, this.user.settings.language, this.resources.i18n)}`;
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         return;

@@ -100,7 +100,7 @@ Vue.filter('asFnurgelLink', (id) => {
 Vue.mixin({
   methods: {
     translate(string) {
-      return StringUtil.getUiPhraseByLang(string, this.settings.language);
+      return StringUtil.getUiPhraseByLang(string, this.settings.language, this.resources.i18n);
     },
     getKeybindText(eventName) {
       return LayoutUtil.getKeybindingText(eventName);
