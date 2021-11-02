@@ -25,7 +25,7 @@ export default {
           return 'Page not found';
           break;
         default:
-          return '';
+          return this.error.message || '';
       }
     },
   },
