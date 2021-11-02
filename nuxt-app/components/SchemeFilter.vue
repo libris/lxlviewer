@@ -27,6 +27,10 @@ export default {
       if (this.noFilter == false) {
         queryObj['inScheme.@id'] = this.scheme.object['@id'];
       }
+      const sort = this.$route.query._sort;
+      if (sort && sort !== '') {
+        queryObj._sort = sort;
+      }
       this.$router.push({ path: this.$route.path, query: queryObj });
     },
   },
