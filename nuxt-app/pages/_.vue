@@ -7,7 +7,7 @@
     <div class="container-fluid">
       <div class="row">
         <template v-if="appState.navigatingWithFacetColumn">
-          <div class="DetailedFilters col-md-4 col-lg-4 col-xl-3 col-xxl-2 pt-4">
+          <div class="DetailedFilters col-md-4 col-lg-3 col-xl-4 col-xxl-3 pt-4">
             <div class="Document-backButton">
               <a @click="$router.go(-1)"><i class="bi bi-chevron-double-left"></i> Tillbaka</a>
             </div>
@@ -59,8 +59,7 @@ export default {
     ...mapGetters(['appState']),
     termCols() {
       if (this.appState.navigatingWithFacetColumn) {
-        //col-md-4 col-lg-4 col-xl-3 col-xxl-2
-        return "col-md-8 col-lg-8 col-xl-9 col-xxl-9";
+        return "col-md-8 col-lg-9 col-xl-8 col-xxl-9";
       }
       return "col-md-12 col-lg-12 col-xl-10 col-xxl-9";
     },
