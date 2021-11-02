@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid Marcframe">
+  <div class="container-fluid Marcframe" v-if="marcframe">
     <div class="row">
       <div class="Marcframe-codeListColumn col-md-4 col-lg-3 col-xl-4 col-xxl-3">
         <div class="Marcframe-codeListControllers">
@@ -44,6 +44,15 @@ export default {
       listShown: 'bib',
       chosenCode: null,
       showMarc: false,
+    }
+  },
+  async asyncData({ $config, store, $http }) {
+    if (!store.getters.resources.marcframe) {
+      const marcframePath = 'https://raw.githubusercontent.com/libris/librisxl/master/whelk-core/src/main/resources/ext/marcframe.json';
+      const pageData = await fetch(
+        marcframePath
+      ).then(res => res.json());
+      store.dispatch('setMarcframe', pageData);
     }
   },
   mounted() {

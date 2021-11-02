@@ -11,6 +11,7 @@ export const state = () => ({
   vocabProperties: null,
   display: null,
   vocabContext: null,
+  marcframe: null,
   currentDocument: null,
   entityReferences: {},
   collections: null,
@@ -287,15 +288,12 @@ export const actions = {
     ).then(res => res.json());
     const expanded = DisplayUtil.expandInherited(display);
     commit('SET_DISPLAY', expanded);
-  
-    const marcframePath = 'https://raw.githubusercontent.com/libris/librisxl/master/whelk-core/src/main/resources/ext/marcframe.json';
-    const marcframe = await fetch(
-      marcframePath
-    ).then(res => res.json());
-    commit('SET_MARCFRAME_DATA', marcframe);
+  },
+  setMarcframe({ commit }, data) {
+    commit('SET_MARCFRAME_DATA', data);
   },
   setCollections(data) {
-    commmit('SET_COLLECTIONS', data);
+    commit('SET_COLLECTIONS', data);
   },
   setAppState({ commit }, payload) {
     commit('SET_APP_STATE', payload);
