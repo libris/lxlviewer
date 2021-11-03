@@ -34,6 +34,10 @@ if (!Vue.__lxl_global_mixin__) {
         }
         return phrase;
       },
+      removeBaseUri(uri) {
+        const base = this.settings.removableBaseUris.find(base => uri.includes(base));
+        return uri.replace(base, '/');
+      },
       translateUriEnv(uri) {
         return uri.replace('https://id.kb.se', envComputer(process.env.ENV));
       },
