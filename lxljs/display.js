@@ -282,6 +282,11 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
     if (quoted && quoted.hasOwnProperty(trueItem['@id'])) {
       trueItem = quoted[trueItem['@id']];
     }
+
+    // If the item lacks a type, just return it as an anonymous object with a label
+    if (!trueItem.hasOwnProperty('@type') && trueItem.hasOwnProperty('@id')) {
+      return { label: StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
+    }
   }
 
   if (!trueItem.hasOwnProperty('@type') || typeof trueItem['@type'] === 'undefined') {
