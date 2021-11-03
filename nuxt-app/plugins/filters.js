@@ -6,6 +6,10 @@ Vue.filter('translateUriEnv', (uri) => {
 });
 
 Vue.filter('removeBaseUri', (uri) => {
+  const envHost = envComputer(process.env.ENV);
+  if (uri.includes(envHost)) {
+    return uri.replace(envHost, '/');
+  }
   return uri.replace('https://id.kb.se/', '/');
 });
 Vue.filter('replaceBaseWithApi', (uri) => {
