@@ -3,7 +3,7 @@ const PKG_NAME = require('./package.json').name.toUpperCase();
 const lxlLogStack = [];
 
 export function lxlLog(...strings) {
-  if (lxlLogStack.indexOf(JSON.stringify(strings.join())) === -1) {
+  if (process.env.NODE_ENV === 'development' && lxlLogStack.indexOf(JSON.stringify(strings.join())) === -1) {
     lxlLogStack.push(JSON.stringify(strings.join()));
     return console.log(`%c ${PKG_NAME} `, 'background: #009788; color: #fff;', ...strings);
   }
@@ -13,7 +13,7 @@ export function lxlLog(...strings) {
 const lxlWarnStack = [];
 
 export function lxlWarning(...strings) {
-  if (lxlWarnStack.indexOf(JSON.stringify(strings.join())) === -1) {
+  if (process.env.NODE_ENV === 'development' && lxlWarnStack.indexOf(JSON.stringify(strings.join())) === -1) {
     lxlWarnStack.push(JSON.stringify(strings.join()));
     return console.warn(`%c ${PKG_NAME} `, 'background: #009788; color: #fff;', ...strings);
   }
@@ -23,7 +23,7 @@ export function lxlWarning(...strings) {
 const lxlErrorStack = [];
 
 export function lxlError(...strings) {
-  if (lxlErrorStack.indexOf(JSON.stringify(strings.join())) === -1) {
+  if (process.env.NODE_ENV === 'development' && lxlErrorStack.indexOf(JSON.stringify(strings.join())) === -1) {
     lxlErrorStack.push(JSON.stringify(strings.join()));
     return console.error(`%c ${PKG_NAME} `, 'background: #a50000; color: #fff;', ...strings);
   }
