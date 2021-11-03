@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
@@ -35,10 +37,11 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['settings']),
     label() {
       const schemeObj = this.scheme.object;
       if (schemeObj.titleByLang) {
-        return schemeObj.titleByLang[settings.language] || Object.values(schemeObj.titleByLang)[0];
+        return schemeObj.titleByLang[this.settings.language] || Object.values(schemeObj.titleByLang)[0];
       }
       return this.removeBaseUri(schemeObj['@id']);
     },
