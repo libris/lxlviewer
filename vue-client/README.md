@@ -27,6 +27,9 @@ No action required here, this is just information.
 
 In `.env.development`, input the path to your flask app REST-API (if not standard). Get `VUE_APP_CLIENT_ID` for local development from a Libris developer.
 
+##### Further configurations
+
+Most things are controlled in `src/setttings.js`, and then exported into the store as the getter `settings`. This file is not environment specific, but some properties inside it varies depending on environment.
 
 #### Building
 
