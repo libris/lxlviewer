@@ -124,6 +124,12 @@ const store = new Vuex.Store({
         // 'Concept', - Blocking this per request of MSS
         'Work',
       ],
+      showTypeChangerFor: [
+        'Instance',
+        'Work',
+        'PlaceholderRecord',
+        'CacheRecord',
+      ],
       keysToClear: {
         duplication: [
           'record.controlNumber',
