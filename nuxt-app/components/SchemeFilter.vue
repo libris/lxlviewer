@@ -1,7 +1,7 @@
 <template>
   <div class="SchemeFilter" tabindex="0" :class="{ 'is-active': isActive }" @click="setAsFilter" @keyup.enter="setAsFilter">
     <template v-if="noFilter == false">
-      <span class="d-none d-sm-block">{{ scheme.object.titleByLang[settings.language] || Object.values(scheme.object.titleByLang)[0] }}</span>
+      <span class="d-none d-sm-block">{{ label }}</span>
       <span class="d-block d-sm-none">{{ scheme.object.code }}</span>
       <span>({{ scheme.totalItems }})</span>
     </template>
@@ -35,6 +35,13 @@ export default {
     },
   },
   computed: {
+    label() {
+      const schemeObj = this.scheme.object;
+      if (schemeObj.titleByLang) {
+        return schemeObj.titleByLang[settings.language] || Object.values(schemeObj.titleByLang)[0];
+      }
+      return this.removeBaseUri(schemeObj['@id']);
+    },
     isActive() {
       if (this.$route.query.hasOwnProperty('inScheme.@id') == false) {
         if (this.noFilter == true) {
