@@ -16,7 +16,7 @@ if (!Vue.__lxl_global_mixin__) {
       };
     },
     computed: {
-      ...mapGetters(['vocab', 'settings', 'vocabContext', 'resources']),
+      ...mapGetters(['vocab', 'settings', 'vocabContext', 'resources', 'appState']),
     },
     methods: {
       translateKey(key) {
@@ -39,7 +39,18 @@ if (!Vue.__lxl_global_mixin__) {
         return uri.replace(base, '/');
       },
       translateUriEnv(uri) {
-        return uri.replace('https://id.kb.se', envComputer(process.env.ENV));
+        const domain = this.appState.domain;
+        if (this.appState.domain === 'libris') {
+          // Libris
+          if (uri.includes('https://libris.kb.se/')) {
+            return uri.replace('https://libris.kb.se/', envComputer(process.env.ENV, domain));
+          }
+        }
+        // Not libris
+        if (uri.includes('https://id.kb.se')) {
+          return uri.replace('https://id.kb.se', envComputer(process.env.ENV, domain));
+        }
+        return uri;
       },
       getEntityTitle(entity) {
         if (entity != null) {

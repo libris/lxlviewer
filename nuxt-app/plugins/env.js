@@ -1,9 +1,9 @@
-export default function (envLabel) {
+export default function (envLabel, domain = 'id') {
   if (envLabel === 'local' || typeof envLabel === 'undefined') {
-    return 'http://localhost:3000';
+    return 'http://id.kblocalhost.kb.se:5000';
   } else if (envLabel === 'prod') {
-    return 'https://id.kb.se';
+    return `https://${domain}.kb.se`;
   } else {
-    return `https://id-${ envLabel }.kb.se`;
+    return `https://${domain}-${ envLabel }.kb.se`;
   }
 }
