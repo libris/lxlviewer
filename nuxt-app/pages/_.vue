@@ -89,7 +89,8 @@ export default {
     ...mapActions(['setCurrentDocument']),
   },
   async asyncData({ $config, route, params, $http, store }) {
-    const pageData = await $http.$get(`${$config.apiPath}${route.path}/data.jsonld`);
+    const path = route.path.replace(/\(/g, '%28').replace(/\)/g, '%29');
+    const pageData = await $http.$get(`${$config.apiPath}${path}/data.jsonld`);
     store.commit('SET_CURRENT_DOCUMENT', pageData);
     return { pageData }
   },
