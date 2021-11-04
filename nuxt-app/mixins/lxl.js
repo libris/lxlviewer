@@ -35,7 +35,22 @@ if (!Vue.__lxl_global_mixin__) {
         return phrase;
       },
       removeBaseUri(uri) {
-        const base = this.settings.removableBaseUris.find(base => uri.includes(base));
+        const bases = this.settings.removableBaseUris;
+        const envs = ['dev', 'qa', 'stg', 'edu'];
+        const computedBases = [];
+        bases.forEach((item) => {
+          computedBases.push(item);
+          if (item.includes('libris')) {
+            envs.forEach((env) => {
+              computedBases.push(item.replace('libris', `libris-${env}`));
+            });
+          } else {
+            envs.forEach((env) => {
+              computedBases.push(item.replace('id', `id-${env}`));
+            });
+          }
+        });
+        const base = computedBases.find(base => uri.includes(base));
         return uri.replace(base, '/');
       },
       translateUriEnv(uri) {
