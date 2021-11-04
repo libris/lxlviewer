@@ -352,6 +352,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
       // Property is object, lets calculate that
       if (property.hasOwnProperty('alternateProperties')) {
         // Handle alternateProperties
+        let foundProperty;
         for (const p of property.alternateProperties) {
           if (typeof p === 'string') {
             if (trueItem.hasOwnProperty(p)) {
@@ -370,13 +371,16 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
                   result[p] = getItemLabel(trueItem[p], resources, quoted, settings, p);
                 }
               }
-              lxlLog(`Computing alternateProperties for ${trueItem['@type']}. Looking for: ${property.alternateProperties.join(', ')} | Settled on: ${p}`);
+              foundProperty = p;
               break;
             } else if (trueItem.hasOwnProperty(`${p}ByLang`)) {
               result[p] = tryGetValueByLang(trueItem, p, settings.language, resources.context);
+              foundProperty = `${p}ByLang`;
+              break;
             }
           }
         }
+        lxlLog(`Computed alternateProperties for ${trueItem['@type']}. Looked for: ${property.alternateProperties.join(', ')} | Settled on: ${foundProperty}`);
       }
     }
   });
