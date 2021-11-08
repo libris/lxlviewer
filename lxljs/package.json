@@ -5,12 +5,21 @@
   "main": "index.js",
   "author": "Ola Blissing <ola.blissing@gmail.com>",
   "license": "Apache-2.0",
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
-    "lodash-es": "^4.17.21",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.25.2"
+    "eslint-plugin-import": "^2.25.2",
+    "lodash-es": "^4.17.21"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.16.0",
+    "jest": "^27.3.1"
+  },
+  "jest": {
+    "verbose": true,
+    "transformIgnorePatterns": ["<rootDir>/node_modules/(?!(lodash-es)/)"]
   }
 }
