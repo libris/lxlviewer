@@ -27,6 +27,8 @@
     "testResultsProcessor": "jest-junit"
   },
   "jest-junit": {
+    "suiteName": "lxljs utility functions",
+    "ancestorSeparator": " › ",
     "outputDirectory": "test-reports",
     "outputName": "jest-junit.xml"
   }
