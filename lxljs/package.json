@@ -16,10 +16,18 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
-    "jest": "^27.3.1"
+    "jest": "^27.3.1",
+    "jest-junit": "^13.0.0"
   },
   "jest": {
     "verbose": true,
-    "transformIgnorePatterns": ["<rootDir>/node_modules/(?!(lodash-es)/)"]
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!(lodash-es)/)"
+    ],
+    "testResultsProcessor": "jest-junit"
+  },
+  "jest-junit": {
+    "outputDirectory": "test-reports",
+    "outputName": "jest-junit.xml"
   }
 }
