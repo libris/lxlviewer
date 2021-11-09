@@ -170,14 +170,25 @@ export function getRecordType(mainEntityType, vocab, context) {
   return mainEntityType;
 }
 
-function isFiltered(termObj, settings) {
+function isFiltered(termObj, settings, context) {
   // Return true if term has any of the filteredCategories, else false
   const filteredCategories = settings.filteredCategories;
   for (let i = 0; i < filteredCategories.length; i++) {
-    if (termObj.hasOwnProperty('category') && termObj.category['@id'] === `https://id.kb.se/vocab/${filteredCategories[i]}`) {
-      // lxlWarning(`🗑️ Filtered ${filteredCategories[i]} class:`, termObj['@id']);
+    if (hasCategory(termObj, filteredCategories[i], context)) {
       return true;
     }
+  }
+  return false;
+}
+
+export function hasCategory(termObj, category, context) {
+  let target = category;
+  const baseUri = getBaseUriFromPrefix('@vocab', context);
+  if (category.includes(baseUri)) {
+    target = category.replace(baseUri, '');
+  }
+  if (termObj.hasOwnProperty('category') && [].concat(termObj.category).some(c => c['@id'] === `${baseUri}${target}`)) {
+    return true;
   }
   return false;
 }
@@ -194,7 +205,7 @@ export function getTermByType(type, vocab, context, settings) {
   const expandedType = StringUtil.convertToBaseUri(type, context);
   const terms = [];
   list.forEach((term) => {
-    if (!isFiltered(term, settings)) { // Only add if term should not be filtered
+    if (!isFiltered(term, settings, context)) { // Only add if term should not be filtered
       if (isArray(term['@type'])) {
         if (term['@type'].indexOf(type) > -1 || term['@type'].indexOf(expandedType) > -1) {
           terms.push(term);

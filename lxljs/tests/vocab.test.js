@@ -22,4 +22,37 @@ describe('VocabUtil', () => {
       }
     });
   });
+
+  describe('hasCategory', () => {
+    describe('check if the supplied termObj has the category', () => {
+      
+      const termObjSingle = {
+        category: {
+          '@id': 'https://id.kb.se/vocab/Integral',
+        },
+      };
+      const termObjMultiple = {
+        category: [
+          {
+            '@id': 'https://id.kb.se/vocab/Integral',
+          },
+          {
+            '@id': 'https://id.kb.se/vocab/Filtered',
+          },
+        ]
+      };
+      const termObjNone = {};
+      test('termObj with one category defined', () => {
+        expect(VocabUtil.hasCategory(termObjSingle, 'Integral', context['@context'])).toBe(true);
+        expect(VocabUtil.hasCategory(termObjSingle, 'NotExisting', context['@context'])).toBe(false);
+      });
+      test('termObj with multiple categories defined', () => {
+        expect(VocabUtil.hasCategory(termObjMultiple, 'Integral', context['@context'])).toBe(true);
+        expect(VocabUtil.hasCategory(termObjMultiple, 'NotExisting', context['@context'])).toBe(false);
+      });
+      test('termObj with no category defined', () => {
+        expect(VocabUtil.hasCategory(termObjNone, 'Integral', context['@context'])).toBe(false);
+      });
+    });
+  });
 });
