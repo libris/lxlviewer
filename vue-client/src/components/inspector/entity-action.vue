@@ -95,7 +95,7 @@ export default {
 .EntityAction {
   display: inline-block;
   transition: color .25s ease;
-  color: @grey-light-transparent;
+  color: @grey-transparent;
   .action-label {
     display: none;
     color: inherit;
