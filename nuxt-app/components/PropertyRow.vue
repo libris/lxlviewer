@@ -61,7 +61,7 @@ export default {
       return typeof value;
     },
     isIntegral() {
-      return VocabUtil.hasCategory(this.property, 'Integral', this.vocabContext);
+      return VocabUtil.hasCategory(this.property, 'integral', this.vocabContext);
     },
     containerType() {
       if (this.vocabContext[1].hasOwnProperty(this.property) && this.vocabContext[1][this.property].hasOwnProperty('@container')) {
