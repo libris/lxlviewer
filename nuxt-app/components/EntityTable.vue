@@ -77,7 +77,7 @@ export default {
         let currentProp = prop;
         if (prop.includes('@reverse')) {
           const termObj = VocabUtil.getTermObject(prop.split('/').pop(), this.vocab, this.vocabContext);
-          currentProp = termObj['owl:inverseOf']['@id'].split('/').pop();
+          currentProp = termObj['inverseOf']['@id'].split('/').pop();
         }
         if (this.itemData.hasOwnProperty(currentProp)) {
           translatedOrder.push(currentProp);
@@ -95,7 +95,7 @@ export default {
       const extracted = {};
       for (const [key, value] of Object.entries(this.itemData['@reverse'])) {
         const termObj = VocabUtil.getTermObject(key, this.vocab, this.vocabContext);
-        const reverseKey = termObj['owl:inverseOf']['@id'].split('/').pop();
+        const reverseKey = termObj['inverseOf']['@id'].split('/').pop();
         extracted[reverseKey] = value;
       }
       const combinedData = Object.assign(this.itemData, extracted);
