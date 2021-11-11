@@ -35,16 +35,19 @@ if (!Vue.__lxl_global_mixin__) {
         return phrase;
       },
       removeBaseUri(uri) {
+        if (typeof uri == 'undefined' || uri.length == 0) {
+          return null;
+        }
         const bases = this.settings.removableBaseUris;
         const envs = ['dev', 'qa', 'stg', 'edu'];
         const computedBases = [];
         bases.forEach((item) => {
           computedBases.push(item);
-          if (item.includes('libris')) {
+          if (item && item.includes('libris')) {
             envs.forEach((env) => {
               computedBases.push(item.replace('libris', `libris-${env}`));
             });
-          } else {
+          } else if (item) {
             envs.forEach((env) => {
               computedBases.push(item.replace('id', `id-${env}`));
             });
@@ -54,6 +57,9 @@ if (!Vue.__lxl_global_mixin__) {
         return uri.replace(base, '/');
       },
       translateUriEnv(uri) {
+        if (typeof uri == 'undefined' || uri.length == 0) {
+          return null;
+        }
         const domain = this.appState.domain;
         if (this.appState.domain === 'libris') {
           // Libris

@@ -1,10 +1,11 @@
 <template>
   <div class="PropertyRow d-md-flex" :data-property="property">
-    <span class="PropertyRow-bodyKey d-block d-md-inline" :title="translateKey(property)">{{ translateKey(property) }}</span>
-    <span class="PropertyRow-bodyValue single" v-if="!Array.isArray(value)">
-      <span class="" v-if="typeof value == 'boolean'">{{ translateUi(value == true ? 'Yes' : 'No') }}</span>
-      <span v-else-if="typeof value !== 'object'">{{ value }}</span>
+    <div :data-property="property" class="PropertyRow-bodyKey d-block d-md-inline" :title="translateKey(property)">{{ translateKey(property) }}</div>
+    <div :data-property="property" class="PropertyRow-bodyValue single" v-if="!Array.isArray(value)">
+      <span class="" v-if="valueType == 'boolean'">{{ translateUi(value == true ? 'Yes' : 'No') }}</span>
+      <EntityTable v-else-if="isIntegral && value.hasOwnProperty('@type')" :item-data="value" :is-main-entity="false" />
       <EntityNode :parent-key="property" :entity="value" v-else-if="!isByLangProperty" />
+      <span v-else-if="valueType !== 'object'">{{ value }}</span>
       <div class="PropertyRow-grid" v-else>
         <template v-for="(v, lang) in value">
           <div class="PropertyRow-gridKey" :key="`${property}-${lang}-key`">
@@ -15,10 +16,10 @@
           </div>
         </template>
       </div>
-    </span>
-    <span class="PropertyRow-bodyValue multiple" v-if="Array.isArray(value)">
+    </div>
+    <div :data-property="property" class="PropertyRow-bodyValue multiple" v-else>
       <EntityNode :parent-key="property" :entity="node" v-for="(node, index) in finalizedValue" :key="index" />
-    </span>
+    </div>
   </div>
 </template>
 
@@ -27,8 +28,10 @@ import { mapGetters } from 'vuex';
 import LensMixin from '@/mixins/lens';
 import EntityNode from '@/components/EntityNode';
 import * as DisplayUtil from 'lxljs/display';
+import * as VocabUtil from 'lxljs/vocab';
 
 export default {
+  name: 'PropertyRow',
   mixins: [LensMixin],
   data() {
     return {
@@ -53,6 +56,12 @@ export default {
     ...mapGetters(['entityReferences', 'settings', 'resources', 'vocabContext', 'display', 'vocab']),
     isByLangProperty() {
       return this.property.includes('ByLang');
+    },
+    valueType() {
+      return typeof value;
+    },
+    isIntegral() {
+      return VocabUtil.hasCategory(this.property, 'Integral', this.vocabContext);
     },
     containerType() {
       if (this.vocabContext[1].hasOwnProperty(this.property) && this.vocabContext[1][this.property].hasOwnProperty('@container')) {
@@ -106,6 +115,7 @@ export default {
   },
   components: {
     EntityNode,
+    EntityTable: () => import('@/components/EntityTable.vue'),
   },
 }
 </script>

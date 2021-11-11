@@ -1,26 +1,27 @@
 <template>
-  <div class="EntityTable-body">
-    <div class="PropertyRow d-md-flex" v-if="showUri">
-      <span class="PropertyRow-bodyKey d-block d-md-inline">
+  <div class="EntityTable-body" :class="{ 'is-inner-table': isMainEntity == false }">
+    <div class="PropertyRow d-md-flex" v-if="showUri && itemData.hasOwnProperty('@id')">
+      <div class="PropertyRow-bodyKey d-block d-md-inline">
         URI ({{ translateUi('link to resource') }})
-      </span>
-      <span class="PropertyRow-bodyValue">
+      </div>
+      <div class="PropertyRow-bodyValue">
         <NuxtLink :to="removeBaseUri(itemData['@id'])">
           {{ translateUriEnv(itemData['@id']) }}
         </NuxtLink>
-
         <i class="PropertyRow-idCopyButton bi" v-show="clipboardAvailable" title="Kopiera URI" :class="{ 'bi-clipboard': !idCopied, 'bi-clipboard-check': idCopied }" @click="copyId"></i>
-      </span>
+      </div>
     </div>
     <PropertyRow :property="prop" :key="prop" :value="itemData[prop]" v-for="prop in sortedProperties" />
-    <div class="PropertyRow d-md-flex" v-if="showDownload">
-      <span class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Download') }}</span>
-      <span class="PropertyRow-bodyValue"><a :href="`${ documentId }/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${ documentId }/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${ documentId }/data.rdf` | replaceBaseWithApi">RDF/XML</a></span>
-    </div>
-    <div class="PropertyRow d-md-flex" v-if="appState.domain === 'libris'">
-      <span class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Other sites') }}</span>
-      <span class="PropertyRow-bodyValue"><a :href="`https://libris.kb.se/katalogisering/${ documentId.split('/').pop() }`">Libris katalogisering</a></span>
-    </div>
+    <template v-if="isMainEntity">
+      <div class="PropertyRow d-md-flex" v-if="showDownload">
+        <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Download') }}</div>
+        <div class="PropertyRow-bodyValue"><a :href="`${ documentId }/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${ documentId }/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${ documentId }/data.rdf` | replaceBaseWithApi">RDF/XML</a></div>
+      </div>
+      <div class="PropertyRow d-md-flex" v-if="appState.domain === 'libris'">
+        <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Other sites') }}</div>
+        <div class="PropertyRow-bodyValue"><a :href="`https://libris.kb.se/katalogisering/${ documentId.split('/').pop() }`">Libris katalogisering</a></div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -38,6 +39,7 @@ export default {
         '@id',
         'reverseLinks',
         'meta',
+        'hasItem',
       ],
       idCopied: false,
       clipboardAvailable: false,
@@ -65,7 +67,10 @@ export default {
   computed: {
     ...mapGetters(['display', 'resources', 'vocabContext', 'settings', 'vocab', 'appState']),
     documentId() {
-      return this.translateUriEnv(this.itemData['@id']).split('#').shift();
+      if (this.itemData['@id']) {
+        return this.translateUriEnv(this.itemData['@id']).split('#').shift();
+      }
+      return null;
     },
     ownPath() {
       return this.translateUriEnv(this.itemData['@id']);
@@ -79,13 +84,14 @@ export default {
           const termObj = VocabUtil.getTermObject(prop.split('/').pop(), this.vocab, this.vocabContext);
           currentProp = termObj['inverseOf']['@id'].split('/').pop();
         }
-        if (this.itemData.hasOwnProperty(currentProp)) {
+        if (this.itemData.hasOwnProperty(currentProp) && this.hiddenProperties.includes(currentProp) == false) {
           translatedOrder.push(currentProp);
         }
       });
       const objectToInject = this.itemData.hasOwnProperty('@reverse') ? this.afterInverseReverse : this.itemData;
       Object.keys(objectToInject).forEach((prop) => {
         if (translatedOrder.includes(prop) == false && this.hiddenProperties.includes(prop) == false) {
+          console.log(prop);
           translatedOrder.push(prop);
         }
       });
@@ -107,6 +113,10 @@ export default {
     itemData: {
       type: Object,
       default: null,
+    },
+    isMainEntity: {
+      type: Boolean,
+      default: true,
     },
     showDownload: {
       type: Boolean,
@@ -175,6 +185,10 @@ export default {
     padding: 0.5rem 0.25rem 0.5rem 1rem;
     @media (min-width: 768px) {
       padding: 0.5rem 1rem 0.5rem 1.5rem;
+    }
+    &.is-inner-table {
+      border: solid $gray-200;
+      border-width: 0px 0px 0px 1px;
     }
   }
   &.hovered {

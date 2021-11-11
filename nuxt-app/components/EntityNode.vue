@@ -1,24 +1,28 @@
 <template>
-  <div class="EntityNode" :class="{ 'chip': isChip }" v-if="entityData != null">
-    <span class="" v-if="typeof entityData == 'string'">{{ entityData }}</span>
-    <span class="" v-else-if="entityData && !entityData['@id']">
-      {{ getItemLabel }}
-    </span>
-    <template v-else-if="entityData && entityData['@id']">
-      <NuxtLink v-if="entityData['@id'].startsWith('https://id.kb.se')" :to="entityData['@id'] | removeBaseUri">
-        <template v-if="entityData['@id'] === 'https://id.kb.se/vocab/'">https://id.kb.se/vocab/</template>
-        <template v-else-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
-        <template v-else>{{ decodeURI(entityData['@id']) | translateUriEnv }}</template>
-      </NuxtLink>
-      <NuxtLink v-else-if="entityData['@id'].startsWith('https://libris.kb.se')" :to="entityData['@id'] | removeBaseUri">
-        <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
-        <template v-else>{{ decodeURI(entityData['@id']) | translateUriEnv }}</template>
-      </NuxtLink>
-      <a v-else :href="entityData['@id']">{{ decodeURI(entityData['@id']) }}</a>
+  <div class="EntityNode" :class="{ 'chip': isChip }">
+    <template v-if="typeof entityData == 'string'">
+      <span class="">{{ entityData }}</span>
     </template>
-    <span v-else>
-      <template>{{ entity }}</template>
-    </span>
+    <template v-else-if="entityData">
+      <span class="" v-if="!entityData['@id']">
+        {{ getItemLabel }}
+      </span>
+      <template v-else-if="entityData['@id']">
+        <NuxtLink v-if="entityData['@id'].startsWith('https://id.kb.se')" :to="entityData['@id'] | removeBaseUri">
+          <template v-if="entityData['@id'] === 'https://id.kb.se/vocab/'">https://id.kb.se/vocab/</template>
+          <template v-else-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+          <template v-else>{{ decodeURI(entityData['@id']) | translateUriEnv }}</template>
+        </NuxtLink>
+        <NuxtLink v-else-if="entityData['@id'].startsWith('https://libris.kb.se')" :to="entityData['@id'] | removeBaseUri">
+          <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+          <template v-else>{{ decodeURI(entityData['@id']) | translateUriEnv }}</template>
+        </NuxtLink>
+        <a v-else :href="entityData['@id']">{{ decodeURI(entityData['@id']) }}</a>
+      </template>
+    </template>
+    <template v-else>
+      <span>{{ entity }}</span>
+    </template>
   </div>
 </template>
 
