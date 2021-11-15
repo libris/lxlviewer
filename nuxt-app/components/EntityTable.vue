@@ -91,7 +91,6 @@ export default {
       const objectToInject = this.itemData.hasOwnProperty('@reverse') ? this.afterInverseReverse : this.itemData;
       Object.keys(objectToInject).forEach((prop) => {
         if (translatedOrder.includes(prop) == false && this.hiddenProperties.includes(prop) == false) {
-          console.log(prop);
           translatedOrder.push(prop);
         }
       });
