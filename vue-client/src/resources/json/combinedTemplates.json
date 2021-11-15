@@ -245,29 +245,15 @@
               "subtitle": ""
             }
           ],
-          "responsibilityStatement": "",
           "identifiedBy": [],
-          "editionStatement": [""],
-          "publication": [
-            {
-              "@type": "PrimaryPublication",
-              "year": "",
-              "date": "",
-              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
-              "place": {
-                "@type": "Place",
-                "label": ""
-              },
-              "agent": {
-                "@type": "Agent",
-                "label": ""
-              }
+          "genreForm": [
+            { 
+              "@id": "https://id.kb.se/term/saogf/Digitala%20faksimiler"
             }
           ],
           "production": [
             {
-              "@type": "DigitalReproduction",
-              "typeNote": "",
+              "@type": "Reproduction",
               "date": "",
               "place": [
                 {
@@ -287,17 +273,9 @@
             "@type": "Copyright",
             "date": ""
           }],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Computer"}],
           "carrierType": [
-            {"@id": "https://id.kb.se/term/rda/OnlineResource"},
-            {"@id": "https://id.kb.se/marc/Online"},
-            {"@id": "https://id.kb.se/marc/OnlineResource"}
+            {"@id": "https://id.kb.se/term/rda/OnlineResource"}
           ],
-          "extent": [{
-            "@type": "Extent",
-            "label": ""
-          }],
-          "physicalDetailsNote": "",
           "seriesMembership": [
             {
               "@type": "SeriesMembership",
@@ -337,12 +315,6 @@
           "associatedMedia": [
             {
               "@type": "MediaObject",
-              "cataloguersNote": [
-                ""
-              ],
-              "marc:publicNote": [
-                ""
-              ],
               "uri": [
                 ""
               ]
