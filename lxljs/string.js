@@ -202,8 +202,8 @@ export function getLabelByLang(string, lang, resources) {
     const reverseLabel = string.split('/').pop();
     const reverseItem = VocabUtil.getTermObject(reverseLabel, vocab, context);
 
-    if (reverseItem.hasOwnProperty('inverseOf') && reverseItem['inverseOf'].hasOwnProperty('@id')) {
-      item = VocabUtil.getTermObject(reverseItem['inverseOf']['@id'], vocab, context);
+    if (reverseItem.hasOwnProperty('inverseOf') && reverseItem.inverseOf.hasOwnProperty('@id')) {
+      item = VocabUtil.getTermObject(reverseItem.inverseOf['@id'], vocab, context);
     }
   }
 
