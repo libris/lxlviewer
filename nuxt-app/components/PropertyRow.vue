@@ -58,7 +58,7 @@ export default {
       return this.property.includes('ByLang');
     },
     valueType() {
-      return typeof value;
+      return typeof this.value;
     },
     isIntegral() {
       return VocabUtil.hasCategory(this.property, 'integral', this.resources);
