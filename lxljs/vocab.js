@@ -39,6 +39,21 @@ export function getTermObject(term, vocab, context) {
   tries.push(cn);
   const vocabPfx = context[0]['@vocab'];
 
+  if (!_class) {
+    // Try to find a mapping in context
+    const contextMapping = getContextValue(cn, '@id', context);
+    if (contextMapping) {
+      // If mapping found try to get it
+      _class = vocab.get(contextMapping);
+      tries.push(contextMapping);
+      if (!_class) {
+        // Try to convert prefix to base uri and try to get it
+        const asUri = StringUtil.convertToBaseUri(contextMapping, context);
+        _class = vocab.get(asUri);
+        tries.push(asUri);
+      }
+    }
+  }
   if (!_class && term.indexOf('://') === -1) {
     cn = `${vocabPfx}${term}`;
     _class = vocab.get(cn);
