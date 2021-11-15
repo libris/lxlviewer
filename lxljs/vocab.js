@@ -59,6 +59,11 @@ export function getTermObject(term, vocab, context) {
       tries.push(cn);
     }
   }
+  if (!_class && term.endsWith('ByLang')) {
+    cn = cn.replace('ByLang', '');
+    _class = vocab.get(cn);
+    tries.push(cn);
+  }
 
   if (!_class) {
     lxlWarning('📘 Term lookup failed:', term, '| Tried :', tries.join(', '));
