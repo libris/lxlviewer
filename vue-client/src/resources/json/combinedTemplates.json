@@ -246,11 +246,6 @@
             }
           ],
           "identifiedBy": [],
-          "genreForm": [
-            { 
-              "@id": "https://id.kb.se/term/saogf/Digitala%20faksimiler"
-            }
-          ],
           "production": [
             {
               "@type": "Reproduction",
