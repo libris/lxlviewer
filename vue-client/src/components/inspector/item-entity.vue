@@ -64,9 +64,6 @@ export default {
     isMaybeMagicShelfMark() {
       return this.focusData['@type'] === 'ShelfMarkSequence';
     },
-    isPlace() {
-      return this.focusData['@type'] === 'Place';
-    },
   },
   watch: {
     'inspector.event'(val) {
@@ -176,7 +173,6 @@ export default {
           v-if="!isDistinguished || !expanded" 
           :class="{ 'is-locked': isLocked, 'is-marc': isMarc, 'is-newlyAdded': animateNewlyAdded, 'is-removeable': removeHover, 'is-cache': recordType === 'CacheRecord', 'is-placeholder': recordType === 'PlaceholderRecord', 'is-ext-link': !isLibrisResource}">
           <span class="ItemEntity-label chip-label">
-            <span v-if="isPlace" class="type-icon fa fa-map-marker"></span> <!-- TODO: use shared/type-icon -->
             <span v-if="(!isDistinguished || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
             <span v-if="(!isDistinguished || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
             <span class="placeholder"></span></span>
