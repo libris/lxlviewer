@@ -441,6 +441,10 @@ export function getProperties(classId, vocabClasses, vocabProperties, context) {
   const props = [];
   // console.log("Getting props for", className);
   const termObj = getTermObject(classId, vocabClasses, context);
+  if (termObj == null) {
+    lxlWarning(`getProperties couldn't find any properties for class "${classId}"`);
+    return [];
+  }
   if (termObj.allowedProperties) {
     return termObj.allowedProperties;
   }
