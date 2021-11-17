@@ -48,9 +48,11 @@
   },
   {
     "key": "ISSN",
-    "searchProps": ["identifiedBy.value"],
+    "searchProps": ["or-identifiedBy.value", "or-identifiedBy.marc:canceledIssn", "or-identifiedBy.marc:incorrectIssn"],
     "mappings": {
-      "identifiedBy.value": "",
+      "or-identifiedBy.value": "",
+      "or-identifiedBy.marc:canceledIssn": "",
+      "or-identifiedBy.marc:incorrectIssn": "",
       "identifiedBy.@type": "ISSN"
     },
     "types": [
