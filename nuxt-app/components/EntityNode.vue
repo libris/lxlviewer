@@ -59,7 +59,7 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters(['entityReferences', 'settings', 'vocab', 'vocabContext']),
+    ...mapGetters(['entityReferences', 'settings', 'resources']),
     isByLangValue() {
       return this.parentKey.includes('ByLang');
     },

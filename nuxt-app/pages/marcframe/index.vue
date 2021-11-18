@@ -34,25 +34,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['settings', 'vocab', 'vocabClasses', 'vocabProperties', 'vocabContext']),
+    ...mapGetters(['settings', 'vocab', 'vocabContext']),
     pageTitle() {
       return 'MARC-mappningar';
     },
     termTitle() {
       return this.getEntityTitle(this.termData);
-    },
-    chosenList() {
-      if (this.listShown === 'Classes') {
-        return this.classes;
-      } else {
-        return this.properties;
-      }
-    },
-    classes() {
-      return this.vocabClasses;
-    },
-    properties() {
-      return this.vocabProperties;
     },
   },
   methods: {

@@ -28,7 +28,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext']),
+    ...mapGetters(['vocab', 'vocabContext']),
     pageTitle() {
       if (this.termData) {
         return `${ this.termTitle || 'Basvokabulär'}`

@@ -61,7 +61,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext', 'resources']),
+    ...mapGetters(['vocab', 'vocabContext', 'resources']),
     pageTitle() {
       if (this.termData) {
         return `${ this.termTitle || 'MARC-mappningar'}`

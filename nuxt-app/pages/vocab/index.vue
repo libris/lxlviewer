@@ -24,12 +24,11 @@ export default {
   },
   data() {
     return {
-      listShown: 'Classes',
       showMarc: false,
     }
   },
   computed: {
-    ...mapGetters(['vocab', 'settings', 'vocabClasses', 'vocabProperties', 'vocabContext']),
+    ...mapGetters(['vocab', 'settings', 'vocabContext']),
     pageTitle() {
       if (this.termData) {
         return `${ this.termTitle || 'Basvokabulär'}`
@@ -38,19 +37,6 @@ export default {
     },
     termTitle() {
       return this.getEntityTitle(this.termData);
-    },
-    chosenList() {
-      if (this.listShown === 'Classes') {
-        return this.classes;
-      } else {
-        return this.properties;
-      }
-    },
-    classes() {
-      return this.vocabClasses;
-    },
-    properties() {
-      return this.vocabProperties;
     },
   },
   methods: {
