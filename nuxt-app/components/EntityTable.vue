@@ -82,7 +82,9 @@ export default {
         let currentProp = prop;
         if (prop.includes('@reverse')) {
           const termObj = VocabUtil.getTermObject(prop.split('/').pop(), this.vocab, this.vocabContext);
-          currentProp = termObj['inverseOf']['@id'].split('/').pop();
+          if (termObj.hasOwnProperty('inverseOf')) {
+            currentProp = termObj['inverseOf']['@id'].split('/').pop();
+          }
         }
         if (this.itemData.hasOwnProperty(currentProp) && this.hiddenProperties.includes(currentProp) == false) {
           translatedOrder.push(currentProp);
