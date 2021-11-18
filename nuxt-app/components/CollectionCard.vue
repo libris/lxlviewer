@@ -12,7 +12,7 @@
         </span>
       </div>
       <div class="CollectionCard-body">
-        <a onclick="event.stopPropagation()" :href="collectionData.object['@id'] | removeBaseUri">{{ translateUi('More about') }} {{ title }}</a>
+        <a onclick="event.stopPropagation()" :href="removeBaseUri(collectionData.object['@id'])">{{ translateUi('More about') }} {{ title }}</a>
       </div>
     </div>
     <div class="CollectionCard-arrow">
