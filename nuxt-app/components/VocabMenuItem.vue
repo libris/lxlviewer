@@ -1,10 +1,11 @@
 <template>
   <li class="VocabMenuItem">
-    <NuxtLink :to="item['@id'] | removeBaseUri">{{ shortId }} <span v-if="item.labelByLang && getItemLabel.length > 0" class="VocabMenuItem-termId text-muted text-small"> - {{ getItemLabel }}</span></NuxtLink>
+    <NuxtLink :to="removeBaseUri(item['@id'])">{{ shortId }} <span v-if="item.labelByLang && getItemLabel.length > 0" class="VocabMenuItem-termId text-muted text-small"> - {{ getItemLabel }}</span></NuxtLink>
   </li>
 </template>
 
 <script>
+import * as VocabUtil from 'lxljs/vocab';
 import LensMixin from '@/mixins/lens';
 
 export default {
@@ -19,7 +20,11 @@ export default {
       return this.item;
     },
     shortId() {
-      return this.item['@id'].split('/').pop();
+      const shortId = this.item['@id'].split('/').pop();
+      if (this.item['@id'].includes('/marc/')) {
+        return `marc:${shortId}`;
+      }
+      return shortId;
     },
     labelSameAsId() {
       return this.getItemLabel === this.shortId;

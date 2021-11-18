@@ -1,20 +1,16 @@
 <template>
   <div class="VocabTermlist">
     <div class="VocabTermlist-termListControllers">
-      <button class="btn" :class="{'btn-dark': listShown == 'Classes', 'btn-kb-primary-grey': listShown != 'Classes' }" @click="listShown = 'Classes'">{{ translateUi('Classes') }}</button>
-      <button class="btn" :class="{'btn-dark': listShown == 'Properties', 'btn-kb-primary-grey': listShown != 'Properties' }" @click="listShown = 'Properties'">{{ translateUi('Properties') }}</button>
+      <button class="btn" :class="{'btn-dark': listShown == 'Classes', 'btn-kb-primary-grey': listShown != 'Classes' }" @click="listChosen = 'Classes'">{{ translateUi('Classes') }}</button>
+      <button class="btn" :class="{'btn-dark': listShown == 'Properties', 'btn-kb-primary-grey': listShown != 'Properties' }" @click="listChosen = 'Properties'">{{ translateUi('Properties') }}</button>
     </div>
-    <!-- <div class="VocabTermlist-termListControllers">
-      <input type="checkbox" id="showMarc" v-model="showMarc" /> <label for="showMarc">Visa marc-termer</label>
-    </div> -->
-    <div class="VocabTermlist-termList" v-if="vocab && listShown == 'Classes'">
-      <ul>
-        <li is="VocabMenuItem" v-for="item in classes" :item="item[1]" :key="item[1]['@id']" />
-      </ul>
+    <div class="VocabTermlist-filterControllers">
+      <div class="VocabTermlist-filter"><label>{{ translateUi('Filter') }}</label> <input type="text" id="termListFilter" v-model="termListFilter" /></div>
+      <div class="VocabTermlist-filter"><label for="showMarc">{{ translateUi('Show marc') }}</label> <input type="checkbox" id="showMarc" v-model="showMarc" /></div>
     </div>
-    <div class="VocabTermlist-termList" v-if="vocab && listShown == 'Properties'">
+    <div class="VocabTermlist-termList" v-if="vocab">
       <ul>
-        <li is="VocabMenuItem" v-for="item in properties" :item="item[1]" :key="item[1]['@id']" />
+        <li is="VocabMenuItem" v-for="(item, index) in filteredList" :item="item" :key="index" />
       </ul>
     </div>
   </div>
@@ -22,6 +18,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxljs/string';
 import VocabMenuItem from '@/components/VocabMenuItem';
 
 export default {
@@ -29,34 +26,56 @@ export default {
     return {
       defaultList: 'Classes',
       showMarc: false,
+      termListFilter: '',
+      listChosen: null,
     }
   },
+  methods: {
+    filterList(list, keyword) {
+      const lowerCaseKeyword = keyword.toLowerCase();
+      return list.filter((item) => {
+        const itemLabel = StringUtil.getLabelByLang(item['@id'], this.settings.language, this.resources);
+        return item['@id'].toLowerCase().includes(lowerCaseKeyword) || itemLabel.toLowerCase().includes(lowerCaseKeyword);
+      });
+    },
+    sortList(list) {
+      return list.sort((a, b) => {
+        return a['@id'].localeCompare(b['@id'])
+      });
+    },
+  },
   computed: {
-    ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext']),
-    // chosenList() {
-    //   if (this.listShown === 'Classes') {
-    //     return this.classes;
-    //   } else {
-    //     return this.properties;
-    //   }
-    // },
+    ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'resources', 'settings', 'vocabContext']),
+    chosenList() {
+      if (this.listShown === 'Classes') {
+        return this.classes;
+      } else {
+        return this.properties;
+      }
+    },
     listShown() {
+      if (this.listChosen != null) {
+        return this.listChosen;
+      }
       if (this.currentTerm != null) {
         return 'Classes';
       }
       return this.defaultList;
     },
-    classKeys() {
-      return Array.from(this.classes.keys());
+    filteredList() {
+      let list = this.chosenList;
+      if (this.showMarc == false) {
+        list = this.chosenList.filter((item) => {
+          return item['@id'].includes('/marc/') == false;
+        });
+      }
+      return this.filterList(list, this.termListFilter);
     },
     classes() {
-      return this.vocabClasses;
-    },
-    propertyKeys() {
-      return Array.from(this.properties.keys());
+      return this.sortList([...this.vocabClasses]);
     },
     properties() {
-      return this.vocabProperties;
+      return this.sortList([...this.vocabProperties]);
     },
   },
   props: {
@@ -81,9 +100,38 @@ export default {
     border: solid $gray-500;
     border-width: 0px 0px 1px 0px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-evenly;
     align-items: center;
     padding: 0.5em 0;
+    button {
+      flex-grow: 1;
+      margin-right: 0.5em;
+    }
+  }
+  &-filterControllers {
+    border: solid $gray-500;
+    border-width: 0px 0px 1px 0px;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 0;
+    input {
+      border-radius: 0.25rem;
+      border: 1px solid $gray-500;
+    }
+  }
+  &-filter {
+    display: grid;
+    margin-right: 0.5em;
+    grid-template-columns: 1fr 3fr;
+    label {
+      white-space: nowrap;
+      padding-right: 0.5em;
+    }
+    input {
+      align-self: center;
+      min-width: 1em;
+    }
   }
   &-termList {
     flex-grow: 1;
