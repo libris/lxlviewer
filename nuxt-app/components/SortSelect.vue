@@ -1,21 +1,18 @@
 <template>
   <div class="SortSelect">
     <select v-model="selectedSort">
-      <option v-for="option in options" :key="option.value" :value="option.value">{{ translateUi(option.label) }}</option>
+      <option v-for="option in sortOptions" :key="option.value" :value="option.value">{{ translateUi(option.label) }}</option>
     </select>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
       selectedSort: '',
-      options: [
-        {value: '', label: 'Relevance' },
-        {value: 'prefLabel', label: 'Preferred label (A-Z)' },
-        {value: '-prefLabel', label: 'Preferred label (Z-A)' },
-      ],
     }
   },
   props: {
@@ -29,6 +26,16 @@ export default {
       if (newVal !== oldVal) {
         this.$emit('change', this.selectedSort);
       }
+    },
+  },
+  computed: {
+    ...mapGetters(['settings']),
+    sortOptions() {
+      return [
+        {value: '', label: 'Relevance' },
+        {value: `_sortKeyByLang.${this.settings.language}`, label: 'A-Z' },
+        {value: `-_sortKeyByLang.${this.settings.language}`, label: 'Z-A' },
+      ];
     },
   },
   methods: {

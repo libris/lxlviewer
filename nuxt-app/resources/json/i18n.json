@@ -34,8 +34,8 @@
     "All": "Alla",
     "No results": "Inga resultat",
     "of": "av",
-    "Preferred label (A-Z)": "Föredragen benämning (A-Ö)",
-    "Preferred label (Z-A)": "Föredragen benämning (Ö-A)",
+    "A-Z": "A-Ö",
+    "Z-A": "Ö-A",
     "Relevance": "Relevans",
     "search all of id.kb.se": "sök i hela id.kb.se",
     "suggested": "förslag"
