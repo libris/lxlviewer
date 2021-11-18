@@ -2,6 +2,7 @@
 <script>
 import { cloneDeep, each, get } from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
+import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
@@ -186,7 +187,7 @@ export default {
       }).then((result) => {
         if (typeof result !== 'undefined') {
           this.result = result;
-          const splitFetched = RecordUtil.splitJson(result);
+          const splitFetched = LxlDataUtil.splitJson(result);
           this.$store.dispatch('setInspectorData', splitFetched);
           this.onPostLoaded();
         }
@@ -243,7 +244,7 @@ export default {
           });
         }).then((result) => {
           if (typeof result !== 'undefined') {
-            const template = RecordUtil.splitJson(result);
+            const template = LxlDataUtil.splitJson(result);
             this.applyAsDetailedEnrichment(template);
           }
         });
@@ -283,9 +284,9 @@ export default {
         });
       }).then((result) => {
         if (typeof result !== 'undefined') {
-          const splitFetched = RecordUtil.splitJson(result);
+          const splitFetched = LxlDataUtil.splitJson(result);
           const templateJson = RecordUtil.prepareDuplicateFor(splitFetched, this.user, this.settings.keysToClear.duplication);
-          const template = RecordUtil.splitJson(templateJson);
+          const template = LxlDataUtil.splitJson(templateJson);
           this.applyFieldsFromTemplate(template);
         }
       });
@@ -412,7 +413,7 @@ export default {
         this.$router.go(-1);
         console.warn('New document called without input data, routing user back.');
       } else {
-        this.$store.dispatch('setInspectorData', RecordUtil.splitJson(insertData));
+        this.$store.dispatch('setInspectorData', LxlDataUtil.splitJson(insertData));
         this.startEditing();
         this.onPostLoaded();
         DataUtil.fetchMissingLinkedToQuoted(insertData, this.$store);
@@ -679,7 +680,7 @@ export default {
             this.stopEditing();
           } else {
             // Reset original data that should be restored when you click cancel
-            this.$store.dispatch('setOriginalData', RecordUtil.splitJson(obj));
+            this.$store.dispatch('setOriginalData', LxlDataUtil.splitJson(obj));
           }
         }
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });

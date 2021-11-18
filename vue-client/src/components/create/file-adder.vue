@@ -1,4 +1,5 @@
 <script>
+import * as LxlDataUtil from 'lxljs/data';
 import * as RecordUtil from '@/utils/record';
 
 export default {
@@ -88,7 +89,7 @@ export default {
   watch: {
     droppedFile(val) {
       if (val.hasOwnProperty('@graph')) {
-        const inspectorObject = RecordUtil.splitJson(val);
+        const inspectorObject = LxlDataUtil.splitJson(val);
         this.outputData(inspectorObject);
       } else {
         this.invalidFile = true;

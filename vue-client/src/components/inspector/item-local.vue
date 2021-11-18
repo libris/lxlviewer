@@ -2,6 +2,7 @@
 import { cloneDeep, get } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
+import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
@@ -235,7 +236,7 @@ export default {
             const recievedObj = {
               '@graph': getResult['@graph'],
             };
-            const mainEntity = RecordUtil.splitJson(recievedObj).mainEntity;
+            const mainEntity = LxlDataUtil.splitJson(recievedObj).mainEntity;
             this.replaceWith(mainEntity);
             this.closeExtractDialog();
           }, (error) => {

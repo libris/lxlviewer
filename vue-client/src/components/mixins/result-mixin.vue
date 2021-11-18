@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 
@@ -12,7 +13,7 @@ export default {
   methods: {
     importThis() {
       if (this.user.isLoggedIn) {
-        const original = RecordUtil.splitJson(this.importItem);
+        const original = LxlDataUtil.splitJson(this.importItem);
         const duplicate = RecordUtil.prepareDuplicateFor(original, this.user, this.settings.keysToClear.remoteImport);
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });

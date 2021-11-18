@@ -1,6 +1,7 @@
 <script>
 import { cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
+import * as LxlDataUtil from 'lxljs/data';
 import ResultListItem from './result-list-item';
 import * as RecordUtil from '@/utils/record';
 
@@ -21,7 +22,7 @@ export default {
     getImportItem(index) {
       if (this.importData.length !== 0) {
         const node = cloneDeep(this.importData[index].data);
-        const importItem = RecordUtil.prepareDuplicateFor(RecordUtil.splitJson(node), this.user, this.settings.keysToClear.remoteImport);
+        const importItem = RecordUtil.prepareDuplicateFor(LxlDataUtil.splitJson(node), this.user, this.settings.keysToClear.remoteImport);
         return importItem;
       }
       return {};

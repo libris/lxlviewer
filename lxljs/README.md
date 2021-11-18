@@ -23,6 +23,10 @@ Functions related to class structures of our base vocabulary.
 
 String conversions etc.
 
+### Data
+
+Functions that handle data structures.
+
 ## Common parameters
 
 ### The `settings` parameter

@@ -5,6 +5,7 @@
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import { get } from 'lodash-es';
+import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
@@ -99,7 +100,7 @@ export default {
       this.$refs.OverridePicker.click();
     },
     applyFileAsOverride(data) {
-      const splitData = RecordUtil.splitJson(data);
+      const splitData = LxlDataUtil.splitJson(data);
       this.$refs.OverridePicker.value = ''; // Important: reset the picker
       if (splitData.record['@id'] === this.inspector.data.record['@id']) {
         this.$store.dispatch('pushInspectorEvent', {
@@ -115,9 +116,9 @@ export default {
     },
     applyFileTemplate(data) {
       this.hideToolsMenu();
-      const inspectorObj = RecordUtil.splitJson(data);
+      const inspectorObj = LxlDataUtil.splitJson(data);
       const preparedData = RecordUtil.prepareDuplicateFor(inspectorObj, this.user, this.settings.keysToClear.duplication);
-      const splitData = RecordUtil.splitJson(preparedData);
+      const splitData = LxlDataUtil.splitJson(preparedData);
       this.$refs.TemplatePicker.value = ''; // Important: reset the picker
       this.$store.dispatch('pushInspectorEvent', {
         name: 'apply-template',
