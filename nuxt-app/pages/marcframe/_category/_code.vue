@@ -50,7 +50,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['vocab', 'vocabClasses', 'vocabProperties', 'vocabContext', 'resources']),
+    ...mapGetters(['vocab', 'vocabContext', 'resources']),
     pageTitle() {
       if (this.codeTitle) {
         return `${ this.codeTitle.toUpperCase() }`;
