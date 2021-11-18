@@ -206,6 +206,7 @@ export function hasCategory(term, category, resources) {
   if (typeof termObj === 'string') {
     termObj = getTermObject(termObj, resources.vocab, resources.context);
   }
+  if (!termObj) return false;
   let target = category;
   const baseUri = getBaseUriFromPrefix('@vocab', resources.context);
   if (category.includes(baseUri)) {
