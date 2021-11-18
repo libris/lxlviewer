@@ -35,7 +35,6 @@ export const state = () => ({
     ],
     removableBaseUris: [
       'https://libris.kb.se/',
-      'https://id.kb.se/vocab/',
       'https://id.kb.se/',
     ],
     propertyChains: {
