@@ -192,41 +192,28 @@ export const mutations = {
     state.collections = data;
   },
   SET_VOCAB(state, data) {
+    // Set vocab to a map
     const vocabMap = new Map(data['@graph'].map(entry => [entry['@id'], entry]));
     state.vocab = vocabMap;
   },
   SET_VOCAB_CLASSES(state, data) {
+    // Set vocabClasses to an array of objects
     const vocabJson = data['@graph'];
     const classTerms = [].concat(
       VocabUtil.getTermByType('Class', vocabJson, state.vocabContext, state.settings),
       VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.vocabContext, state.settings),
     );
-    const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
-    classes.forEach((classObj) => {
-      if (classObj.hasOwnProperty('subClassOf')) {
-        each(classObj.subClassOf, (baseClass) => {
-          const baseClassObj = classes.get(baseClass['@id']);
-          if (typeof baseClassObj !== 'undefined') {
-            if (baseClassObj.hasOwnProperty('baseClassOf')) {
-              baseClassObj.baseClassOf.push(StringUtil.convertToPrefix(classObj['@id'], state.vocabContext));
-            } else {
-              baseClassObj.baseClassOf = [StringUtil.convertToPrefix(classObj['@id'], state.vocabContext)];
-            }
-          }
-        });
-      }
-    });
-    state.vocabClasses = classes;
+    state.vocabClasses = classTerms;
   },
   SET_VOCAB_PROPERTIES(state, data) {
+    // Set vocabProperties to an array of objects
     const vocabJson = data['@graph'];
     let props = [];
     props = props.concat(VocabUtil.getTermByType('Property', vocabJson, state.vocabContext, state.settings));
     props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, state.vocabContext, state.settings));
     props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, state.vocabContext, state.settings));
     props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, state.vocabContext, state.settings));
-    const vocabProperties = new Map(props.map(entry => [entry['@id'], entry]));
-    state.vocabProperties = vocabProperties;
+    state.vocabProperties = props;
   },
   SET_DISPLAY(state, data) {
     state.display = data;
