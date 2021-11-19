@@ -290,6 +290,10 @@ export default {
         query: '-meta.modified',
         label: 'Last updated',
       },
+      {
+        query: '-reverseLinks.totalItems',
+        label: 'Most linked',
+      },
     ],
     Work: [
       {
