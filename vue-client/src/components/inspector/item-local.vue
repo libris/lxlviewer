@@ -8,7 +8,6 @@ import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import * as LayoutUtil from '@/utils/layout';
-import * as RecordUtil from '@/utils/record';
 import PropertyAdder from '@/components/inspector/property-adder';
 import EntityAction from '@/components/inspector/entity-action';
 import SearchWindow from './search-window';
