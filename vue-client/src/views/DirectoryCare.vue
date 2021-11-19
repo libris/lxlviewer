@@ -25,7 +25,7 @@ export default {
       },
       tabs: [
         { id: 'holdings', text: 'Move holdings' },
-        // { 'id': 'merge', 'text': 'Merge posts' }, 
+        // { 'id': 'merge', 'text': 'Merge records' }, 
         // { 'id': 'remove', 'text': 'Batch remove' }, 
       ],
       showModal: false,
@@ -133,7 +133,7 @@ export default {
         v-if="$route.params.tool === 'holdings'"
         :flaggedInstances="flaggedInstances"/>
       <div class="" v-if="$route.params.tool === 'merge'">
-        <h1>merge posts</h1>
+        <h1>merge records</h1>
         <!-- replace this whole div with the component -->
       </div>
       <modal-component 

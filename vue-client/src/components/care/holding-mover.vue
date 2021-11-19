@@ -2,7 +2,7 @@
 import { mapGetters } from 'vuex';
 import { filter } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
-import PostPicker from '@/components/care/post-picker';
+import RecordPicker from '@/components/care/record-picker';
 import HoldingList from '@/components/care/holding-list';
 import ModalComponent from '@/components/shared/modal-component';
 import * as RecordUtil from '@/utils/record';
@@ -10,7 +10,7 @@ import * as RecordUtil from '@/utils/record';
 export default {
   name: 'holding-mover',
   components: {
-    'post-picker': PostPicker,
+    'record-picker': RecordPicker,
     HoldingList,
     ModalComponent,
   },
@@ -184,7 +184,7 @@ export default {
       </div>
     </div>
     <div class="HoldingMover-pickers" v-if="flaggedInstances.length > 0">
-      <post-picker 
+      <record-picker 
         name="sender"
         opposite="reciever"
         :flaggedInstances="flaggedInstances"
@@ -192,8 +192,8 @@ export default {
         <p v-if="!directoryCare.sender"
           class="HoldingMover-info" 
           slot="info">
-          {{ "Holdings are moved from the sender post to the reciever post" | translatePhrase }}.</p>
-      </post-picker>
+          {{ "Holdings are moved from the sender record to the reciever record" | translatePhrase }}.</p>
+      </record-picker>
       <div class="HoldingMover-separator" v-if="flaggedInstances.length > 0">
         <button class="btn btn-primary" 
           @click="switchInstances" 
@@ -202,7 +202,7 @@ export default {
           <i class="fa fa-fw fa-exchange"></i>
         </button>
       </div>
-      <post-picker 
+      <record-picker 
         v-if="flaggedInstances.length > 0"
         name="reciever"
         opposite="sender"

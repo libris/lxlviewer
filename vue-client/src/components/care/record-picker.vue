@@ -4,7 +4,7 @@ import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
 
 export default {
-  name: 'post-picker',
+  name: 'record-picker',
   props: {
     name: {
       type: String,
@@ -137,34 +137,34 @@ export default {
 </script>
 
 <template>
-  <div class="PostPicker">
-    <div class="PostPicker-label uppercaseHeading" 
+  <div class="RecordPicker">
+    <div class="RecordPicker-label uppercaseHeading" 
       :class="{ 'has-selection' : selected}">
       {{ name | translatePhrase }}</div>
-    <div class="PostPicker-body" :class="{ 'has-selection' : selected, 'is-expanded' : expanded}">
-      <div class="PostPicker-dropdownWrapper">
-      <div class="PostPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
-        <div class="PostPicker-toggle" 
+    <div class="RecordPicker-body" :class="{ 'has-selection' : selected, 'is-expanded' : expanded}">
+      <div class="RecordPicker-dropdownWrapper">
+      <div class="RecordPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
+        <div class="RecordPicker-toggle" 
           @click="toggleDropdown"
           @keyup.enter="toggleDropdown"
           tabIndex="0">
-          <span class="PostPicker-toggleLabel">{{ ['Choose', name] | translatePhrase }}</span>
-          <span class="PostPicker-toggleIcon" :class="{ 'expanded' : expanded}">
+          <span class="RecordPicker-toggleLabel">{{ ['Choose', name] | translatePhrase }}</span>
+          <span class="RecordPicker-toggleIcon" :class="{ 'expanded' : expanded}">
             <i class="fa fa-fw fa-chevron-down"></i>
           </span>
         </div>
-        <div class="PostPicker-dropdown" v-show="expanded">
-          <div class="PostPicker-inputContainer">
+        <div class="RecordPicker-dropdown" v-show="expanded">
+          <div class="RecordPicker-inputContainer">
             <input
               type="text" 
               v-model="filterPhrase"
-              class="PostPicker-input" 
+              class="RecordPicker-input" 
               ref="pickerInput" 
               :placeholder="'Filter' | translatePhrase"
               :aria-label="'Filter' | translatePhrase">
           </div>
-          <div class="PostPicker-items">
-            <div class="PostPicker-item"
+          <div class="RecordPicker-items">
+            <div class="RecordPicker-item"
               :key="item['@id']"
               v-for="item in filteredInstances"
               @click="selectThis(item)"
@@ -182,14 +182,14 @@ export default {
           </div>
         </div>
       </div>
-      <div class="PostPicker-selectedContainer" v-if="selected">
+      <div class="RecordPicker-selectedContainer" v-if="selected">
         <entity-summary 
           :focus-data="selected"
           :shouldOpenTab="true"
           :valueDisplayLimit=1
           :encodingLevel="selected.encodingLevel">
         </entity-summary>
-        <span class="PostPicker-closeBtn" 
+        <span class="RecordPicker-closeBtn" 
           role="button" 
           @click="unselectThis"
           @keyup.enter="unselectThis"
@@ -207,7 +207,7 @@ export default {
 <style lang="less">
 
 .user-is-tabbing {
-  .PostPicker {
+  .RecordPicker {
     &-toggle, &-item {
       &:focus {
         .focus-mixin-bg();
@@ -216,7 +216,7 @@ export default {
   }
 }
 
-.PostPicker  {
+.RecordPicker  {
   max-width: @directorycare-sidewidth;
   display: flex;
   flex: 1 1 46%;

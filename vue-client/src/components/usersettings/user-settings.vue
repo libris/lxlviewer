@@ -53,7 +53,7 @@ export default {
       'userFlagged',
       'userBookmarks',
     ]),
-    userHasTaggedPosts() {
+    userHasTaggedRecords() {
       return Object.keys(this.userStorage.list).length > 0;
     },
   },
