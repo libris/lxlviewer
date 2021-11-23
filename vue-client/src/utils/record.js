@@ -111,38 +111,16 @@ export function getDigitalReproductionObject(original, resources) {
       digitalReproObject.mainEntity.instanceOf = original.mainEntity.instanceOf;
     }
   }
-
-  // Copy the PrimaryPublication if there is one
-  function getPrimaryPublication(mainEntity) {
-    if (mainEntity.hasOwnProperty('publication')) {
-      for (let i = 0; i < mainEntity.publication.length; i++) {
-        if (mainEntity.publication[i]['@type'] === 'PrimaryPublication') {
-          return mainEntity.publication[i];
-        }
-      }
-    }
-    return null;
-  }
-  const primaryPublication = getPrimaryPublication(original.mainEntity);
-  if (primaryPublication !== null) {
-    digitalReproObject.mainEntity.publication = [primaryPublication];
-  }
-
+  
   // Copy the other keys we want to copy
   const keysToCopy = [
     'mainEntity.hasTitle',
-    'mainEntity.responsibilityStatement',
-    'mainEntity.extent',
   ];
   for (let i = 0; i < keysToCopy.length; i++) {
     const originalValue = get(original, keysToCopy[i]);
     if (typeof originalValue !== 'undefined') {
       set(digitalReproObject, keysToCopy[i], originalValue);
     }
-  }
-  // Add "indirectly identified by" with the "identified by" value from original
-  if (original.mainEntity.hasOwnProperty('identifiedBy')) {
-    digitalReproObject.mainEntity.indirectlyIdentifiedBy = original.mainEntity.identifiedBy;
   }
   // Add "reproduction of" and link it to original document
   digitalReproObject.mainEntity.reproductionOf = { '@id': original.mainEntity['@id'] };
