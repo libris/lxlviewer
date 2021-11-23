@@ -149,21 +149,21 @@ export default {
       <router-link class="Breadcrumb-backLink"
         :to="searchResultUrl">{{ 'To result list' | translatePhrase }}</router-link>
     </div>
-    <div class="Breadcrumb-postData" v-if="thisIsSearchResult">
-      <span class="Breadcrumb-postNumbers">{{ absoluteOffset + 1 }} {{ 'of' | translatePhrase }} {{ totalItems }}</span>
-      <div class="Breadcrumb-postLinks">
+    <div class="Breadcrumb-recordData" v-if="thisIsSearchResult">
+      <span class="Breadcrumb-recordNumbers">{{ absoluteOffset + 1 }} {{ 'of' | translatePhrase }} {{ totalItems }}</span>
+      <div class="Breadcrumb-recordLinks">
         <span class="Breadcrumb-prev" v-if="absoluteOffset > 0">
-          <button class="btn--as-link" v-if="prevPath" @click="prev">{{ ['Previous', 'post'] | translatePhrase }}</button>
+          <button class="btn--as-link" v-if="prevPath" @click="prev">{{ ['Previous', 'record'] | translatePhrase }}</button>
           <button class="btn--as-link" v-if="prevOutOfBounds" @click="lastOnPrevPage">
-            <span v-if="!loading">{{ ['Previous', 'post'] | translatePhrase }}</span>
+            <span v-if="!loading">{{ ['Previous', 'record'] | translatePhrase }}</span>
             <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
           </button>
         </span>
         <span v-if="absoluteOffset > 0 && absoluteOffset + 1 < totalItems"> | </span>
         <span class="Breadcrumb-next" v-if="absoluteOffset < totalItems">
-          <button class="btn--as-link" v-if="nextPath" @click="next">{{ ['Next', 'post'] | translatePhrase }}</button>
+          <button class="btn--as-link" v-if="nextPath" @click="next">{{ ['Next', 'record'] | translatePhrase }}</button>
           <button class="btn--as-link" v-if="nextOutOfBounds" @click="firstOnNextPage">
-            <span v-if="!loading">{{ ['Next', 'post'] | translatePhrase }}</span>
+            <span v-if="!loading">{{ ['Next', 'record'] | translatePhrase }}</span>
             <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
           </button>
         </span>
@@ -179,10 +179,10 @@ export default {
   justify-content: space-between;
   margin: 0 0 30px 0;
 
-  &-postNumbers {
+  &-recordNumbers {
   }
 
-  &-postData {
+  &-recordData {
     display: flex;
     flex: 1;
     justify-content: flex-end;
@@ -195,7 +195,7 @@ export default {
     }
   }
 
-  &-postLinks {
+  &-recordLinks {
     display: flex;
     margin: 0 0 0 30px;
 

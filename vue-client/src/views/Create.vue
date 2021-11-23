@@ -184,7 +184,7 @@ export default {
 </script>
 
 <template>
-  <div class="Create" id="create-new-post">
+  <div class="Create" id="create-new-record">
     <div class="Create-body">
       <tab-menu 
         @go="setCreation" 

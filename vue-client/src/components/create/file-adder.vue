@@ -1,6 +1,5 @@
 <script>
 import * as LxlDataUtil from 'lxljs/data';
-import * as RecordUtil from '@/utils/record';
 
 export default {
   name: 'file-adder',

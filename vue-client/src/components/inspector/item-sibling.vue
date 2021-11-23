@@ -13,7 +13,6 @@ import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import * as LayoutUtil from '@/utils/layout';
-import * as RecordUtil from '@/utils/record';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';

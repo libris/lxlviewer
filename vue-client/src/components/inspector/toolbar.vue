@@ -38,7 +38,7 @@ export default {
       showClarifySave: false,
       showMarcPreview: false,
       showEmbellishTemplateSubMenu: false,
-      showEmbellishFromPostSubMenu: false,
+      showEmbellishFromRecordSubMenu: false,
       fieldAdderActive: false,
     };
   },
@@ -67,10 +67,10 @@ export default {
             this.cancel();
             break;
           case 'save-item':
-            this.postControl('save-record');
+            this.recordControl('save-record');
             break;
           case 'save-item-done':
-            this.postControl('save-record-done');
+            this.recordControl('save-record-done');
             break;
           case 'admin-data-on':
             this.toggleEditorFocus();
@@ -125,13 +125,13 @@ export default {
         value: splitData,
       });
     },
-    applyPostAsTemplate() {
+    applyRecordAsTemplate() {
       this.hideToolsMenu();
       this.$store.dispatch('pushInspectorEvent', {
         name: 'open-embellish-from-id',
       });
     },
-    detailedApplyPostAsTemplate() {
+    detailedApplyRecordAsTemplate() {
       this.hideToolsMenu();
       this.$store.dispatch('pushInspectorEvent', {
         name: 'open-detailed-embellish-from-id',
@@ -193,7 +193,7 @@ export default {
     hideToolsMenu() {
       this.toolsMenuActive = false;
       this.showEmbellishTemplateSubMenu = false;
-      this.showEmbellishFromPostSubMenu = false;
+      this.showEmbellishFromRecordSubMenu = false;
     },
     showToolsMenu() {
       this.toolsMenuActive = !this.toolsMenuActive;
@@ -211,11 +211,11 @@ export default {
         value: control, 
       });
     },
-    postControl(control) {
+    recordControl(control) {
       // if (!this.inspector.status.updating) {
       this.hideToolsMenu();
       this.$store.dispatch('pushInspectorEvent', { 
-        name: 'post-control', 
+        name: 'record-control', 
         value: control, 
       });
       // }
@@ -237,7 +237,7 @@ export default {
       if (this.enableMarcPreview) {
         this.hideToolsMenu();
         this.$store.dispatch('pushInspectorEvent', {
-          name: 'post-control',
+          name: 'record-control',
           value: 'open-marc-preview',
         });
       }      
@@ -254,7 +254,7 @@ export default {
     },
     cancel() {
       this.$store.dispatch('pushInspectorEvent', { 
-        name: 'post-control', 
+        name: 'record-control', 
         value: 'cancel',
       });
     },
@@ -264,7 +264,7 @@ export default {
     },
     edit() {
       this.$store.dispatch('pushInspectorEvent', { 
-        name: 'post-control', 
+        name: 'record-control', 
         value: 'start-edit', 
       });
     },
@@ -298,7 +298,7 @@ export default {
       element.click();
       document.body.removeChild(element);
     },
-    getCompiledPost() {
+    getCompiledRecord() {
       HttpUtil.get({ url: this.compileMARCUrl }).then((response) => {
         this.download(response);
       }, (error) => {
@@ -540,7 +540,7 @@ export default {
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && isSubClassOf('Instance') && !isSubClassOf('Electronic')">
-          <a class="Toolbar-menuLink"  @click="postControl('create-digital-reproduction'), hideToolsMenu()">
+          <a class="Toolbar-menuLink"  @click="recordControl('create-digital-reproduction'), hideToolsMenu()">
           <i class="fa fa-fw fa-wpforms"></i>
           {{ "Create digital reproduction" | translatePhrase }}{{ getKeybindText('create-digital-reproduction') ? ` (${getKeybindText('create-digital-reproduction')})` : ''}}
           </a>
@@ -564,33 +564,33 @@ export default {
           {{ value.label }}
           </a>
         </li>
-        <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishFromPostSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
-          <a class="Toolbar-menuLink" @click="showEmbellishFromPostSubMenu = !showEmbellishFromPostSubMenu">
+        <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishFromRecordSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
+          <a class="Toolbar-menuLink" @click="showEmbellishFromRecordSubMenu = !showEmbellishFromRecordSubMenu">
             <i class="fa fa-fw fa-clipboard"></i>
-            <span>{{ "Embellish from post" | translatePhrase }}{{ getKeybindText('embellish-from-post') ? ` (${getKeybindText('embellish-from-post')})` : ''}}</span>
-            <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishFromPostSubMenu, 'fa-caret-right': !showEmbellishFromPostSubMenu }"></i></span>
+            <span>{{ "Embellish from record" | translatePhrase }}{{ getKeybindText('embellish-from-record') ? ` (${getKeybindText('embellish-from-record')})` : ''}}</span>
+            <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishFromRecordSubMenu, 'fa-caret-right': !showEmbellishFromRecordSubMenu }"></i></span>
           </a>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromPostSubMenu">
-          <a class="Toolbar-menuLink" @click="applyPostAsTemplate">
+        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
+          <a class="Toolbar-menuLink" @click="applyRecordAsTemplate">
           <i class="fa fa-fw fa-chain"></i>
           {{ 'From ID' | translatePhrase }}
           </a>
         </li>
-        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromPostSubMenu">
+        <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
           <a class="Toolbar-menuLink" @click="openTemplatePicker">
           <i class="fa fa-fw fa-upload"></i>
             {{ 'From file' | translatePhrase }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing">
-          <a class="Toolbar-menuLink" @click="detailedApplyPostAsTemplate">
+          <a class="Toolbar-menuLink" @click="detailedApplyRecordAsTemplate">
           <i class="fa fa-fw fa-clipboard"></i>
           {{ 'Detailed enrichment' | translatePhrase }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
-          <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledPost()">
+          <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledRecord()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
               {{"Download compiled" | translatePhrase}} MARC21
           </a>
@@ -600,7 +600,7 @@ export default {
           </a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" @click="postControl('download-json'), hideToolsMenu()">
+          <a class="Toolbar-menuLink" @click="recordControl('download-json'), hideToolsMenu()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
             {{"Download" | translatePhrase}} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{'Incl. unsaved changes' | translatePhrase}})</span>
           </a>
@@ -612,7 +612,7 @@ export default {
           </a>
         </li>
         <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToRemove">
-          <a class="Toolbar-menuLink"  @click="postControl('remove-post')">
+          <a class="Toolbar-menuLink"  @click="recordControl('remove-record')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
           {{"Remove" | translatePhrase}} {{ recordType | labelByLang | lowercase }}
           </a>
@@ -660,7 +660,7 @@ export default {
     </button>
 
     <button class="Toolbar-btn btn btn-default" id="saveButton" 
-      @click="postControl('save-record')"
+      @click="recordControl('save-record')"
       v-if="inspector.status.editing && !isNewRecord" 
       @mouseover="showSave = true" 
       @mouseout="showSave = false"
@@ -671,7 +671,7 @@ export default {
       </i>
     </button>
     <button class="Toolbar-btn btn btn-primary" id="saveDoneButton" 
-      @click="postControl('save-record-done')"
+      @click="recordControl('save-record-done')"
       v-if="inspector.status.editing"
       v-tooltip.left="`${ isNewRecord ? translate('Create record') : translate('Save and stop editing') } (${ isNewRecord ? getKeybindText('save-item') : getKeybindText('save-item-done') })`"
       @mouseover="showClarifySave = true"

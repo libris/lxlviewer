@@ -371,9 +371,9 @@ const store = new Vuex.Store({
   },
   actions: {
     checkForMigrationOfUserDatabase({ commit, dispatch, state }) {
-      // Check if user has posts stored in localStorage
+      // Check if user has records stored in localStorage
       if (state.userStorage.list) {
-        // console.log("Found locally stored flagged posts, moving to db.");
+        // console.log("Found locally stored flagged records, moving to db.");
         const userStorage = state.userStorage;
         const dbMarkedDocuments = cloneDeep(state.userDatabase.markedDocuments) || {};
         const oldMarkedDocuments = userStorage.list;
@@ -391,7 +391,7 @@ const store = new Vuex.Store({
             // numberOfMigrated++;
           }
         }
-        // console.log(`Migrated ${numberOfMigrated} posts to user database.`);
+        // console.log(`Migrated ${numberOfMigrated} records to user database.`);
         // Save to db
         dispatch('modifyUserDatabase', {
           property: 'markedDocuments',
