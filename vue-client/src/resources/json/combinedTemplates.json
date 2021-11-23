@@ -271,42 +271,10 @@
           "carrierType": [
             {"@id": "https://id.kb.se/term/rda/OnlineResource"}
           ],
-          "seriesMembership": [
-            {
-              "@type": "SeriesMembership",
-              "inSeries": {
-                "@type": "Instance",
-                "identifiedBy": [
-                  {
-                    "@type": "ISSN",
-                    "value": ""
-                  }
-                ],
-                "instanceOf": {
-                  "@type": "Work",
-                  "hasTitle": [
-                    {
-                      "@type": "Title",
-                      "mainTitle": ""
-                    }
-                  ]
-                }
-              },
-              "marc:seriesTracingPolicy": "",
-              "seriesEnumeration": "",
-              "seriesStatement": [""]
-            }
-          ],
           "hasNote": [{
             "@type": "Note",
             "label": ""
           }],
-          "digitalCharacteristic": [
-            {
-              "@type": "EncodingFormat",
-              "label": ""
-            }
-          ],
           "associatedMedia": [
             {
               "@type": "MediaObject",
