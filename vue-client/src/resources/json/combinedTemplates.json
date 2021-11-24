@@ -222,6 +222,12 @@
           "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
           },
+          "digitalCharacteristic": [
+            {
+              "@type": "EncodingFormat",
+              "label": ""
+            }
+          ],
           "encodingLevel": "marc:MinimalLevel",
           "hasNote": [
             {
@@ -245,29 +251,10 @@
               "subtitle": ""
             }
           ],
-          "responsibilityStatement": "",
           "identifiedBy": [],
-          "editionStatement": [""],
-          "publication": [
-            {
-              "@type": "PrimaryPublication",
-              "year": "",
-              "date": "",
-              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
-              "place": {
-                "@type": "Place",
-                "label": ""
-              },
-              "agent": {
-                "@type": "Agent",
-                "label": ""
-              }
-            }
-          ],
           "production": [
             {
-              "@type": "DigitalReproduction",
-              "typeNote": "",
+              "@type": "Reproduction",
               "date": "",
               "place": [
                 {
@@ -287,62 +274,16 @@
             "@type": "Copyright",
             "date": ""
           }],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Computer"}],
           "carrierType": [
-            {"@id": "https://id.kb.se/term/rda/OnlineResource"},
-            {"@id": "https://id.kb.se/marc/Online"},
-            {"@id": "https://id.kb.se/marc/OnlineResource"}
-          ],
-          "extent": [{
-            "@type": "Extent",
-            "label": ""
-          }],
-          "physicalDetailsNote": "",
-          "seriesMembership": [
-            {
-              "@type": "SeriesMembership",
-              "inSeries": {
-                "@type": "Instance",
-                "identifiedBy": [
-                  {
-                    "@type": "ISSN",
-                    "value": ""
-                  }
-                ],
-                "instanceOf": {
-                  "@type": "Work",
-                  "hasTitle": [
-                    {
-                      "@type": "Title",
-                      "mainTitle": ""
-                    }
-                  ]
-                }
-              },
-              "marc:seriesTracingPolicy": "",
-              "seriesEnumeration": "",
-              "seriesStatement": [""]
-            }
+            {"@id": "https://id.kb.se/term/rda/OnlineResource"}
           ],
           "hasNote": [{
             "@type": "Note",
             "label": ""
           }],
-          "digitalCharacteristic": [
-            {
-              "@type": "EncodingFormat",
-              "label": ""
-            }
-          ],
           "associatedMedia": [
             {
               "@type": "MediaObject",
-              "cataloguersNote": [
-                ""
-              ],
-              "marc:publicNote": [
-                ""
-              ],
               "uri": [
                 ""
               ]

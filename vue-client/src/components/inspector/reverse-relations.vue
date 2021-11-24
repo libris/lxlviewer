@@ -164,9 +164,9 @@ export default {
             break;
           default:
         }
-      } else if (val.name === 'post-events') {
+      } else if (val.name === 'record-events') {
         switch (val.value) {
-          case 'on-post-loaded':
+          case 'on-record-loaded':
             this.getRelationsInfo();
             break;
           default:

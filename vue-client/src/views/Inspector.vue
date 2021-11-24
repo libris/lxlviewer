@@ -55,7 +55,7 @@ export default {
       documentETag: null,
       documentTitle: null,
       result: {},
-      postLoaded: false,
+      recordLoaded: false,
       modalOpen: false,
       removeInProgress: false,
       saveQueued: null,
@@ -189,7 +189,7 @@ export default {
           this.result = result;
           const splitFetched = LxlDataUtil.splitJson(result);
           this.$store.dispatch('setInspectorData', splitFetched);
-          this.onPostLoaded();
+          this.onRecordLoaded();
         }
       });
     },
@@ -197,7 +197,7 @@ export default {
       this.documentETag = null; // Reset this
       this.marcPreview.active = false;
       this.$store.dispatch('pushLoadingIndicator', 'Loading document');
-      this.postLoaded = false;
+      this.recordLoaded = false;
       this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
       if (this.$route.name === 'Inspector') {
@@ -209,13 +209,13 @@ export default {
         this.loadNewDocument();
       }
     },
-    confirmApplyPostAsTemplate(detailed = false) {
+    confirmApplyRecordAsTemplate(detailed = false) {
       this.embellishFromIdModal.open = false;
       const id = this.embellishFromIdModal.inputValue;
       if (detailed) {
         this.prepareDetailedEnrichment(id);
       } else if (id.length > 0) {
-        this.applyPostAsTemplate(id, this.embellishFromIdModal.detailed);
+        this.applyRecordAsTemplate(id, this.embellishFromIdModal.detailed);
       }
     },
     prepareDetailedEnrichment(id = null, data = null) {
@@ -228,7 +228,7 @@ export default {
           } if (response.status === 404 || response.status === 410) {
             this.$store.dispatch('pushNotification', {
               type: 'danger',
-              message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
+              message: `${StringUtil.getUiPhraseByLang('The record was not found', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
             });
           } else {
             this.$store.dispatch('pushNotification', {
@@ -259,7 +259,7 @@ export default {
       this.setEnrichmentSource(data);
       this.openDetailedEnrichmentModal();
     },
-    applyPostAsTemplate(id) {
+    applyRecordAsTemplate(id) {
       const fixedId = RecordUtil.extractFnurgel(id);
       const fetchUrl = `${this.settings.apiPath}/${fixedId}/data.jsonld`;
       fetch(fetchUrl).then((response) => {
@@ -268,7 +268,7 @@ export default {
         } if (response.status === 404 || response.status === 410) {
           this.$store.dispatch('pushNotification', {
             type: 'danger',
-            message: `${StringUtil.getUiPhraseByLang('The post was not found', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
+            message: `${StringUtil.getUiPhraseByLang('The record was not found', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
           });
         } else {
           this.$store.dispatch('pushNotification', {
@@ -298,27 +298,27 @@ export default {
         template.mainEntity.instanceOf = template.work;
         delete template.work;
       }
-      const basePostType = this.inspector.data.mainEntity['@type'];
-      const tempPostType = template.mainEntity['@type'];
+      const baseRecordType = this.inspector.data.mainEntity['@type'];
+      const tempRecordType = template.mainEntity['@type'];
       const matching = (
-        VocabUtil.isSubClassOf(tempPostType, basePostType, this.resources.vocab, this.resources.context)
-        || VocabUtil.isSubClassOf(basePostType, tempPostType, this.resources.vocab, this.resources.context)
+        VocabUtil.isSubClassOf(tempRecordType, baseRecordType, this.resources.vocab, this.resources.context)
+        || VocabUtil.isSubClassOf(baseRecordType, tempRecordType, this.resources.vocab, this.resources.context)
       );
       if (matching === false) {
-        const basePostLabel = StringUtil.getLabelByLang(basePostType, this.user.settings.language, this.resources);
-        const tempPostLabel = StringUtil.getLabelByLang(tempPostType, this.user.settings.language, this.resources);
+        const baseRecordLabel = StringUtil.getLabelByLang(baseRecordType, this.user.settings.language, this.resources);
+        const tempRecordLabel = StringUtil.getLabelByLang(tempRecordType, this.user.settings.language, this.resources);
         const errorBase = `${StringUtil.getUiPhraseByLang('The types do not match', this.user.settings.language, this.resources.i18n)}`;
-        const errorMessage = `"${tempPostLabel}" ${StringUtil.getUiPhraseByLang('is not compatible with', this.user.settings.language, this.resources.i18n)} "${basePostLabel}"`;
+        const errorMessage = `"${tempRecordLabel}" ${StringUtil.getUiPhraseByLang('is not compatible with', this.user.settings.language, this.resources.i18n)} "${baseRecordLabel}"`;
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}! ${errorMessage}` });
         return;
       }
 
-      const basePostData = cloneDeep(this.inspector.data);
+      const baseRecordData = cloneDeep(this.inspector.data);
 
       // This part checks if the template should include the work or not (to not overwrite a link)
-      if (basePostData.mainEntity.hasOwnProperty('instanceOf')) {
-        const basePostWork = basePostData.mainEntity.instanceOf;
-        if (Object.keys(basePostWork).length === 1 && basePostWork.hasOwnProperty('@id')) {
+      if (baseRecordData.mainEntity.hasOwnProperty('instanceOf')) {
+        const baseRecordWork = baseRecordData.mainEntity.instanceOf;
+        if (Object.keys(baseRecordWork).length === 1 && baseRecordWork.hasOwnProperty('@id')) {
           delete template.mainEntity.instanceOf;
         }
       }
@@ -330,7 +330,7 @@ export default {
           targetPath = templatePath;
         }
         const templateObject = get(template, templatePath);
-        let targetObject = get(basePostData, targetPath);
+        let targetObject = get(baseRecordData, targetPath);
         if (targetObject === null || typeof targetObject === 'undefined') {
           targetObject = {};
         }
@@ -346,10 +346,10 @@ export default {
 
       applyChangeList('record');
       applyChangeList('mainEntity');
-      if (basePostData.hasOwnProperty('work') && basePostData.work === null) {
-        delete basePostData.work;
+      if (baseRecordData.hasOwnProperty('work') && baseRecordData.work === null) {
+        delete baseRecordData.work;
       }
-      if (!basePostData.hasOwnProperty('work')) {
+      if (!baseRecordData.hasOwnProperty('work')) {
         applyChangeList('mainEntity.instanceOf');
       } else {
         // If work property exists, put the work entity there
@@ -382,7 +382,7 @@ export default {
     closeRemoveModal() {
       this.removeInProgress = false;
     },
-    doRemovePost() {
+    doRemoveRecord() {
       this.closeRemoveModal();
       const url = `${this.settings.apiPath}/${this.documentId}`;
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
@@ -415,19 +415,19 @@ export default {
       } else {
         this.$store.dispatch('setInspectorData', LxlDataUtil.splitJson(insertData));
         this.startEditing();
-        this.onPostLoaded();
+        this.onRecordLoaded();
         DataUtil.fetchMissingLinkedToQuoted(insertData, this.$store);
       }
     },
-    onPostLoaded() {
+    onRecordLoaded() {
       this.$store.dispatch('setInsertData', '');
       this.$store.dispatch('flushChangeHistory');
-      this.postLoaded = true;
+      this.recordLoaded = true;
       this.$store.dispatch('removeLoadingIndicator', 'Loading document');
       this.$nextTick(() => {
         this.$store.dispatch('pushInspectorEvent', {
-          name: 'post-events',
-          value: 'on-post-loaded',
+          name: 'record-events',
+          value: 'on-record-loaded',
         });
       });
     },
@@ -497,7 +497,7 @@ export default {
     },
     doCancel() {
       this.stopEditing();
-      // Restore post
+      // Restore record
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.$store.dispatch('flushChangeHistory');
     },
@@ -758,13 +758,13 @@ export default {
         this.initializeRecord();
       }
     },
-    'postLoaded'(val) {
+    'recordLoaded'(val) {
       if (val === true) {
         // do something
       }
     },
     'inspector.event'(val) {
-      if (val.name === 'post-control') {
+      if (val.name === 'record-control') {
         switch (val.value) {
           case 'cancel':
             this.cancelEditing(val.callback);
@@ -778,7 +778,7 @@ export default {
           case 'download-json':
             this.downloadJson();
             break;
-          case 'remove-post':
+          case 'remove-record':
             this.openRemoveModal();
             break;
           case 'save-record':
@@ -883,7 +883,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (!this.postLoaded) {
+      if (!this.recordLoaded) {
         this.initializeRecord();
         this.$emit('ready');
       }
@@ -896,19 +896,19 @@ export default {
 <template>
   <div class="Inspector row">
     <div 
-      v-if="postLoaded" 
+      v-if="recordLoaded" 
       class="col-sm-12" 
       :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}">
         <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" />
     </div>
     <div ref="componentFocusTarget" class="col-12 col-sm-12" :class="{'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
-      <div v-if="postLoaded && isDocumentAvailable" class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
-      <div v-if="postLoaded && isDocumentAvailable" class="Toolbar-container" ref="ToolbarTest">
+      <div v-if="recordLoaded && isDocumentAvailable" class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
+      <div v-if="recordLoaded && isDocumentAvailable" class="Toolbar-container" ref="ToolbarTest">
         <toolbar></toolbar>
       </div>
     </div>
     <div class="col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
-      <div v-if="!postLoaded && loadFailure">
+      <div v-if="!recordLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
         <p v-if="loadFailure.status === 404">
           {{ 'The resource' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
@@ -920,14 +920,14 @@ export default {
           {{ 'Back to home page' | translatePhrase }}
         </router-link>
       </div>
-      <div v-if="postLoaded && isDocumentAvailable == false">
+      <div v-if="recordLoaded && isDocumentAvailable == false">
         <h2>{{ 'Something went wrong' | translatePhrase }}</h2>
         <p>{{ 'The document was found but failed to load' | translatePhrase }}.</p>
         <router-link to="/">
           {{ 'Back to home page' | translatePhrase }}
         </router-link>
       </div>
-      <div v-if="postLoaded && isDocumentAvailable" class="Inspector-entity">
+      <div v-if="recordLoaded && isDocumentAvailable" class="Inspector-entity">
         <div class="Inspector-admin">
           <div class="Inspector-header">
             <h1>
@@ -958,19 +958,19 @@ export default {
     <portal to="sidebar" v-if="marcPreview.active">
       <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active"></marc-preview>
     </portal>
-    <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemovePostModal"
+    <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemoveRecordModal"
       v-if="removeInProgress">
-      <div slot="modal-header" class="RemovePostModal-header">
+      <div slot="modal-header" class="RemoveRecordModal-header">
         <header>
           {{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang }}?
         </header>
       </div>
-      <div slot="modal-body" class="RemovePostModal-body">
+      <div slot="modal-body" class="RemoveRecordModal-body">
         <p>
           {{ 'This operation can\'t be reverted' | translatePhrase }}
         </p>
-        <div class="RemovePostModal-buttonContainer">
-          <button class="btn btn-danger btn--md" @click="doRemovePost()">{{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang | lowercase }}</button>
+        <div class="RemoveRecordModal-buttonContainer">
+          <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang | lowercase }}</button>
           <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
         </div>
       </div>
@@ -991,9 +991,9 @@ export default {
         </div>
         <div class="input-group EmbellishFromIdModal-form">
           <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ 'ID' | translatePhrase }}/{{ 'Link' | translatePhrase }}</label>
-          <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" />
+          <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" />
           <span class="input-group-btn">
-            <button class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton" @click="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyPostAsTemplate(embellishFromIdModal.detailed)">{{ 'Continue' | translatePhrase }}</button>
+            <button class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton" @click="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)">{{ 'Continue' | translatePhrase }}</button>
           </span>
         </div>
       </div>
@@ -1130,7 +1130,7 @@ export default {
   }
 }
 
-.RemovePostModal .ModalComponent-container {
+.RemoveRecordModal .ModalComponent-container {
   width: 600px;
 }
 
@@ -1138,7 +1138,7 @@ export default {
   width: 90vw;
 }
 
-.RemovePostModal {
+.RemoveRecordModal {
   &-body {
     height: 80%;
     display: flex;
