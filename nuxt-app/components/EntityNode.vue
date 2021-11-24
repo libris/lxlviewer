@@ -17,7 +17,10 @@
           <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
           <template v-else>{{ translateUriEnv(decodeURI(entityData['@id'])) }}</template>
         </NuxtLink>
-        <a v-else :href="entityData['@id']">{{ decodeURI(entityData['@id']) }}</a>
+        <a v-else :href="entityData['@id']">
+          <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+          <template v-else>{{ decodeURI(entityData['@id']) }}</template>
+        </a>
       </template>
     </template>
     <template v-else>
