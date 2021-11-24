@@ -92,11 +92,14 @@ export default {
         // Entity is of type Work or derived type
         if (this.focusData.hasOwnProperty('hasTitle') === false) {
           let titleOnInstance = null;
-          if (this.inspector.data.mainEntity.hasOwnProperty('hasTitle')) {
-            const hasTitle = this.inspector.data.mainEntity.hasTitle;
+          const mainEntity = this.inspector.data.mainEntity;
+          if (mainEntity.hasOwnProperty('hasTitle')) {
+            const hasTitle = mainEntity.hasTitle;
             for (let i = 0; i < hasTitle.length; i++) {
               if (hasTitle[i]['@type'] === 'Title') {
-                titleOnInstance = hasTitle[i];
+                const titleObj = hasTitle[i];
+                titleObj.source = [{ '@id': mainEntity['@id'] }];
+                titleOnInstance = titleObj;
                 break;
               }
             }
