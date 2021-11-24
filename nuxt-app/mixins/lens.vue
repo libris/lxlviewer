@@ -12,12 +12,12 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters(['vocab', 'display', 'entityReferences', 'resources', 'vocabContext', 'settings']),
+    ...mapGetters(['vocab', 'display', 'currentDocument', 'resources', 'vocabContext', 'settings']),
     getItemLabel() {
       return DisplayUtil.getItemLabel(
         this.entityData,
         this.resources,
-        this.entityReferences,
+        this.currentDocument.quoted,
         this.settings,
       );
     },
@@ -25,7 +25,7 @@ export default {
       const chip = DisplayUtil.getChip(
         this.entityData,
         this.resources,
-        this.entityReferences,
+        this.currentDocument.quoted,
         this.settings,
       );
       return chip;
@@ -34,7 +34,7 @@ export default {
       const card = DisplayUtil.getCard(
         this.entityData,
         this.resources,
-        this.entityReferences,
+        this.currentDocument.quoted,
         this.settings,
       );
       return card;
@@ -43,7 +43,7 @@ export default {
       const summary = DisplayUtil.getItemSummary(
         this.entityData,
         this.resources,
-        this.entityReferences,
+        this.currentDocument.quoted,
         this.settings,
         this.excludeProperties,
       );

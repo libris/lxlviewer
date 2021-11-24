@@ -62,7 +62,7 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters(['entityReferences', 'settings', 'resources']),
+    ...mapGetters(['currentDocument', 'settings', 'resources']),
     isByLangValue() {
       return this.parentKey.includes('ByLang');
     },
@@ -70,8 +70,8 @@ export default {
       if (!this.entity) {
         return {};
       }
-      if (this.entity.hasOwnProperty('@id') && this.entityReferences.hasOwnProperty(this.entity['@id'])) {
-        return this.entityReferences[this.entity['@id']];
+      if (this.entity.hasOwnProperty('@id') && this.currentDocument.quoted.hasOwnProperty(this.entity['@id'])) {
+        return this.currentDocument.quoted[this.entity['@id']];
       }
       if (this.entity.hasOwnProperty('@id') && this.entity['@id'].startsWith('https://id.kb.se/vocab/')) {
         if (this.entity['@id'].includes('marc:')) {

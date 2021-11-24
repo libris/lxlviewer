@@ -28,6 +28,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import * as DataUtil from 'lxljs/data';
 import LensMixin from '@/mixins/lens';
 import ResultItem from '@/components/ResultItem';
 
@@ -79,8 +80,8 @@ export default {
       return '';
     },
     entityData() {
-      if (this.pageData['@graph']) {
-        return this.pageData['@graph'][1];
+      if (this.document) {
+        return this.document.mainEntity;
       }
       return null;
     },
@@ -91,8 +92,9 @@ export default {
   async asyncData({ $config, route, params, $http, store }) {
     const path = route.path.replace(/\(/g, '%28').replace(/\)/g, '%29');
     const pageData = await $http.$get(`${$config.apiPath}${path}/data.jsonld`);
-    store.commit('SET_CURRENT_DOCUMENT', pageData);
-    return { pageData }
+    const document = DataUtil.splitJson(pageData);
+    store.commit('SET_CURRENT_DOCUMENT', document);
+    return { document }
   },
   // call fetch only on client-side
   fetchOnServer: false,

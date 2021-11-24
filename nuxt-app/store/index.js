@@ -225,17 +225,6 @@ export const mutations = {
   },
   SET_CURRENT_DOCUMENT(state, data) {
     state.currentDocument = data;
-    const entityReferences = {};
-    if (data.hasOwnProperty('@graph')) {
-      data['@graph'].forEach(item => {
-        if (item['@graph']) {
-          entityReferences[item['@graph'][1]['@id']] = item['@graph'][1];
-        } else {
-          entityReferences[item['@id']] = item;
-        }
-      });
-    }
-    state.entityReferences = entityReferences;
   },
 }
 
