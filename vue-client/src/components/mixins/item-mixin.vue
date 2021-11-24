@@ -87,9 +87,24 @@ export default {
       return `${this.parentPath}`;
     },
     extractedMainEntity() {
-      const cleanObj = DataUtil.removeNullValues(this.item);
-      if (this.copyTitle) {
-        cleanObj.hasTitle = this.inspector.data.mainEntity.hasTitle;
+      const cleanObj = DataUtil.removeNullValues(this.focusData);
+      if (VocabUtil.isSubClassOf(this.focusData['@type'], 'Work', this.resources.vocabClasses, this.resources.context)) {
+        // Entity is of type Work or derived type
+        if (this.focusData.hasOwnProperty('hasTitle') === false) {
+          let titleOnInstance = null;
+          if (this.inspector.data.mainEntity.hasOwnProperty('hasTitle')) {
+            const hasTitle = this.inspector.data.mainEntity.hasTitle;
+            for (let i = 0; i < hasTitle.length; i++) {
+              if (hasTitle[i]['@type'] === 'Title') {
+                titleOnInstance = hasTitle[i];
+                break;
+              }
+            }
+          }
+          if (titleOnInstance != null) {
+            cleanObj.hasTitle = [titleOnInstance];
+          }
+        }
       }
       return cleanObj;
     },
