@@ -32,6 +32,7 @@ module.exports = {
     'import/no-unresolved': 'warn',
     'no-param-reassign': 'off',
     'import/no-dynamic-require': 'off',
+    'import/prefer-default-export': 'off',
     'object-curly-newline': ['error', { ImportDeclaration: 'never' }],
     'global-require': 'off',
     radix: 'off',
