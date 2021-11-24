@@ -222,6 +222,12 @@
           "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
           },
+          "digitalCharacteristic": [
+            {
+              "@type": "EncodingFormat",
+              "label": ""
+            }
+          ],
           "encodingLevel": "marc:MinimalLevel",
           "hasNote": [
             {
