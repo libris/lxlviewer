@@ -40,7 +40,7 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters(['entityReferences', 'settings', 'vocabContext', 'display', 'vocab']),
+    ...mapGetters(['settings', 'vocabContext', 'display', 'vocab']),
   },
   components: {
     EntityNode,

@@ -53,7 +53,7 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters(['entityReferences', 'settings', 'resources', 'vocabContext', 'display', 'vocab']),
+    ...mapGetters(['settings', 'resources', 'vocabContext', 'display', 'vocab']),
     isByLangProperty() {
       return this.property.includes('ByLang');
     },

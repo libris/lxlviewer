@@ -49,7 +49,7 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters(['entityReferences', 'settings', 'vocabContext', 'display', 'vocab']),
+    ...mapGetters(['settings', 'vocabContext', 'display', 'vocab']),
     mainProperties() {
       const mainProperties = {};
       for (const [key, value] of Object.entries(this.value)) {

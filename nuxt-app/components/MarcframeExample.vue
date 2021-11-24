@@ -51,7 +51,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['entityReferences', 'settings', 'vocabContext', 'display', 'vocab']),
+    ...mapGetters(['settings', 'vocabContext', 'display', 'vocab']),
     source() {
       if (this.example.source) {
         return JSON.stringify(this.example.source, null, 2);
