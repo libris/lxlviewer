@@ -36,6 +36,8 @@ export const state = () => ({
     removableBaseUris: [
       'https://libris.kb.se/',
       'https://id.kb.se/',
+      'http://id.kblocalhost.kb.se:5000/',
+      'http://kblocalhost.kb.se:5000/',
     ],
     propertyChains: {
       '@reverse.itemOf.heldBy.@id': {

@@ -1,5 +1,5 @@
 <template>
-  <div class="EntityTable-body" :class="{ 'is-inner-table': isMainEntity == false }">
+  <div class="EntityTable-body" :class="{ 'is-inner-table': isMainEntity == false }" v-if="itemData">
     <div class="PropertyRow d-md-flex" v-if="showUri && itemData.hasOwnProperty('@id')">
       <div class="PropertyRow-bodyKey d-block d-md-inline">
         URI ({{ translateUi('link to resource') }})
@@ -29,9 +29,11 @@
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
+import LensMixin from '@/mixins/lens';
 import PropertyRow from '@/components/PropertyRow';
 
 export default {
+  mixins: [LensMixin],
   data() {
     return {
       hiddenProperties: [
@@ -65,12 +67,18 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['display', 'resources', 'vocabContext', 'settings', 'vocab', 'appState']),
+    ...mapGetters(['display', 'quoted', 'resources', 'vocabContext', 'settings', 'vocab', 'appState']),
     documentId() {
       if (this.itemData['@id']) {
         return this.translateUriEnv(this.itemData['@id']).split('#').shift();
       }
       return null;
+    },
+    itemData() {
+      if (this.entity.hasOwnProperty('@type')) {
+        return this.entity;
+      }
+      return this.quoted[this.entity['@id']];
     },
     ownPath() {
       return this.translateUriEnv(this.itemData['@id']);
@@ -82,7 +90,7 @@ export default {
         let currentProp = prop;
         if (prop.includes('@reverse')) {
           const termObj = VocabUtil.getTermObject(prop.split('/').pop(), this.vocab, this.vocabContext);
-          if (termObj.hasOwnProperty('inverseOf')) {
+          if (termObj && termObj.hasOwnProperty('inverseOf')) {
             currentProp = termObj['inverseOf']['@id'].split('/').pop();
           }
         }
@@ -111,7 +119,7 @@ export default {
     },
   },
   props: {
-    itemData: {
+    entity: {
       type: Object,
       default: null,
     },
