@@ -131,6 +131,10 @@ export default {
         order: -1,
       },
     },
+    o: {
+      sv: 'Länkar till',
+      en: 'Links to',
+    },
     'instanceOf.@type': {
       sv: 'Verkstyp',
       en: 'Type of work',
