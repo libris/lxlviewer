@@ -257,9 +257,9 @@ export default {
         }
       }
     },
-    '$route.params'(value) {
+    '$route.params'() {
       this.setActiveSelectValues();
-    }
+    },
   },
   mounted() {
     this.$nextTick(() => {
