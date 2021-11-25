@@ -13,7 +13,7 @@ export const state = () => ({
   vocabContext: null,
   marcframe: null,
   currentDocument: null,
-  entityReferences: {},
+  quoted: {},
   collections: null,
   appState: {
     navigatingWithFacetColumn: false,
@@ -309,8 +309,11 @@ export const getters = {
   currentDocument: state => {
     return state.currentDocument;
   },
-  entityReferences: state => {
-    return state.entityReferences;
+  quoted: state => {
+    if (state.currentDocument) {
+      return state.currentDocument.quoted;
+    }
+    return {};
   },
   collections: state => {
     return state.collections;
