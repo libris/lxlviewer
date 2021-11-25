@@ -278,6 +278,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
     if (trueItem['@id'] === 'https://id.kb.se/vocab/') {
       return {};
     }
+    
     // If we have the entity in quoted, replace our link-object with the entity
     if (quoted && quoted.hasOwnProperty(trueItem['@id'])) {
       trueItem = quoted[trueItem['@id']];
@@ -389,8 +390,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
   if (isEmpty(result) || (itemKeys.length === 1 && (typeof result[itemKeys[0]] === 'undefined' || result[itemKeys[0]] === null || result[itemKeys[0]].length === 0))) {
     lxlWarning(`🏷️ DisplayObject was empty. @type was ${trueItem['@type']}.`, 'Item data:', trueItem);
     if (trueItem.hasOwnProperty('@id')) {
-      const idParts = item['@id'].split('/');
-      result = { label: idParts[idParts.length - 1] };
+      result = { label: StringUtil.removeDomain(trueItem['@id'], settings.removableBaseUris) };
     } else {
       result = { label: `{${StringUtil.getUiPhraseByLang('Unnamed', settings.language, resources.i18n)}}` };
     }
