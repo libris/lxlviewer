@@ -309,7 +309,7 @@ export default {
   v-bind:class="{'is-embedded-in-field': embeddedInField}">
   <div class="EntitySummary-meta">
     <type-icon
-      v-if="recordType === 'Work' || recordType === 'Place'"
+      v-if="recordType === 'Work'"
       :type="focusData['@type']"
     />
     <encoding-level-icon
