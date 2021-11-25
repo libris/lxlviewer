@@ -97,7 +97,7 @@ export default {
             const hasTitle = mainEntity.hasTitle;
             for (let i = 0; i < hasTitle.length; i++) {
               if (hasTitle[i]['@type'] === 'Title') {
-                const titleObj = hasTitle[i];
+                const titleObj = cloneDeep(hasTitle[i]);
                 titleObj.source = [{ '@id': mainEntity['@id'] }];
                 titleOnInstance = titleObj;
                 break;
