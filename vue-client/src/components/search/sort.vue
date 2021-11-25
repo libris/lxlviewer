@@ -20,6 +20,10 @@ export default {
       type: String,
       default: '',
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -96,7 +100,8 @@ export default {
     <label class="Sort-label" for="sort-select">{{ 'Sorting' | translatePhrase }}{{ styleVariant === 'material' ? '' : ':' }}</label>
     <select id="sort-select"
       class="Sort-select customSelect" 
-      v-model="boundVal" 
+      v-model="boundVal"
+      :disabled="disabled"      
       @change="handleSortChange">
       <option 
         v-for="(option, index) in options" 

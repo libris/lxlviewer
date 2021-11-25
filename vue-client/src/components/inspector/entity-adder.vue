@@ -2,7 +2,7 @@
 /*
   Controls add new entity button and add entity modal with it's content
 */
-import { cloneDeep, isArray, get, find } from 'lodash-es';
+import { cloneDeep, isArray, get, find, includes } from 'lodash-es';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
@@ -24,18 +24,6 @@ export default {
     return {
       rangeInfo: false,
       addEmbedded: false,
-      searchTabs: [
-        { id: 'Libris', 
-          text: 'Libris',
-          canSort: true,
-          parameterChoice: true,
-          endpoint: 'find.jsonld' },
-        { id: 'Wikidata', 
-          text: 'Wikidata',
-          canSort: false,
-          parameterChoice: false,
-          endpoint: '_externalentities' },
-      ],
       selectedSearchTabId: 'Libris',
     };
   },
@@ -192,8 +180,22 @@ export default {
     selectedSearchTab() {
       return find(this.searchTabs, s => s.id === this.selectedSearchTabId) || {};
     },
-    searchEndpoint() {
-      return this.selectedSearchTab.endpoint;
+    searchTabs() {
+      const list = [
+        { id: 'Libris',
+          text: 'Libris',
+          canSort: true,
+          parameterChoice: true,
+          endpoint: 'find.jsonld' },
+      ];
+      if (includes(this.allSearchTypes, 'Place')) {
+        list.push({ id: 'Wikidata',
+          text: 'Wikidata',
+          canSort: false,
+          parameterChoice: false,
+          endpoint: '_externalentities' });
+      } 
+      return list;
     },
   },
   mounted() {
@@ -496,10 +498,13 @@ export default {
           <!-- <div class="EntityAdder-panelBody"> -->
           <div class="EntityAdder-controls">
             <div class="EntityAdder-controlForm">
-              <tab-menu
-                @go="setSearchTab"
-                :tabs="searchTabs"
-                :active="selectedSearchTabId" />
+              <div class="EntityAdder-tabs">
+                <tab-menu
+                  v-if="searchTabs.length > 1"
+                  @go="setSearchTab"
+                  :tabs="searchTabs"
+                  :active="selectedSearchTabId" />
+              </div>
               <div class="EntityAdder-search">
                 <label for="entityKeywordInput" class="EntityAdder-searchLabel sr-only">{{ "Search" | translatePhrase }}</label>
                 <div class="EntityAdder-filterSearchContainer">
@@ -517,7 +522,7 @@ export default {
                   </div>
                   <div class="EntityAdder-filterSearchContainerItem">
                     <sort
-                      v-if="endpoint.canSort"
+                      :disabled="!endpoint.canSort"
                       :recordTypes="currentSearchTypes"
                       :commonSortFallback="true"
                       :currentSort="sort"
@@ -535,7 +540,7 @@ export default {
                          :placeholder="'Sök' | translatePhrase"
                          autofocus />
                   <param-select class="EntityAdder-paramSelect"
-                                v-if="endpoint.parameterChoice"
+                                v-show="endpoint.parameterChoice"
                                 :types="currentSearchTypes"
                                 :reset="resetParamSelect"
                                 :userPrefKey="'EntityAdder'"
@@ -680,6 +685,11 @@ export default {
 
   &-search {
     width: 100%;
+  }
+
+  &-tabs {
+    width: 100%;
+    align-items: start;
   }
 
   &-searchInputContainer {

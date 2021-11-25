@@ -259,7 +259,7 @@ export default {
     },
     '$route.params'(value) {
       this.setActiveSelectValues();
-    }
+    },
   },
   mounted() {
     this.$nextTick(() => {
