@@ -168,8 +168,11 @@ export default {
     recordType() {
       return RecordUtil.getRecordType(this.focusData, this.inspector.data.quoted);
     },
+    isPlaceholderRecord() {
+      return this.recordType === 'PlaceholderRecord';
+    },
     isLibrisResource() {
-      return StringUtil.isLibrisResourceUri(this.recordId, this.settings);
+      return !this.isPlaceholderRecord && StringUtil.isLibrisResourceUri(this.recordId, this.settings);
     },
     routerPath() {
       const uriParts = this.recordId.split('/');
