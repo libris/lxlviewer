@@ -45,6 +45,10 @@ export default {
         });
       }
       const filtered = range.filter(el => el.page <= this.currentPage + 3 && el.page >= this.currentPage - 3);
+      if (filtered.length === 0) {
+        return filtered;
+      }
+      
       if (filtered[0].page > 0) {
         filtered.unshift(dotObj);
       }

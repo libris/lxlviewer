@@ -193,6 +193,7 @@ export default {
           text: 'Wikidata',
           canSort: false,
           parameterChoice: false,
+          externalLink: { domain: 'wikidata.org', uri: 'https://www.wikidata.org/w/index.php?search=' },
           endpoint: '_externalentities' });
       } 
       return list;
@@ -218,6 +219,7 @@ export default {
 
       return params;
     },
+    
     actionHighlight(active, event) {
       if (active) {
         let item = event.target;
@@ -562,6 +564,15 @@ export default {
             :has-action="true"
             @use-item="addLinkedItem">
           </panel-search-list>
+          <div class="EntityAdder-externalSearchLinks" v-if="!searchInProgress && searchMade && endpoint.externalLink">
+            <div class="EntityAdder-externalSearchLink">
+              <span>
+              <a :href="this.endpoint.externalLink.uri + this.keyword" target="_blank">
+                {{"See more results at" | translatePhrase}} {{this.endpoint.externalLink.domain}} <i aria-hidden="true" class="EntitySummary-icon fa fa-external-link"></i>
+              </a>
+              </span>
+            </div>
+          </div>
           <div class="PanelComponent-searchStatus" v-if="!searchInProgress && !searchMade" >
             {{ "Start writing to begin search" | translatePhrase }}...
           </div>
@@ -773,6 +784,25 @@ export default {
 
   &-searchResult {
     padding: 0 0 0 0;
+  }
+
+  &-externalSearchLinks {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+
+  &-externalSearchLink {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 33px;
+    background-color: @grey-lighter;
+    color: @chip-color;
+    border-radius: 2em;
+    line-height: 1.6;
+    padding: 3px 15px 3px 15px;
+    margin: 10px 10px 10px 10px;
   }
 
 }
