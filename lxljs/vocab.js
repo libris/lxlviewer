@@ -344,6 +344,10 @@ export function getRestrictions(restrictionProperty, entityType, property, vocab
 
 export function getRange(propertyId, vocab, context) {
   const termObj = getTermObject(propertyId, vocab, context);
+  if (termObj == null) {
+    lxlWarning(`getRange failed to find range for '${propertyId}'. Returning empty range.`);
+    return [];
+  }
   const range = [];
   if (termObj.hasOwnProperty('range')) {
     for (let i = 0; i < termObj.range.length; i++) {
