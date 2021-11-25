@@ -103,7 +103,7 @@ export default {
       if (isEmpty(performedQuery)) {
         type = this.user.settings.searchType || 'Instance';
       } else {
-        type = performedQuery['@type'];
+        type = performedQuery['@type'] || '*';
       }
       if (isArray(type)) {
         for (let i = 0; i < type.length; i++) {
@@ -194,7 +194,7 @@ export default {
       return composed;
     },
     composedTypes() {
-      return this.activeSearchType.length > 0 ? { '@type': this.activeSearchType } : { '@type': null };
+      return this.activeSearchType && this.activeSearchType.length > 0 ? { '@type': this.activeSearchType } : { '@type': null };
     },
     prefSort() {
       if (this.user && this.user.settings.sort) {
@@ -255,10 +255,11 @@ export default {
             this.doSearch();
           }
         }
-      } else {
-        this.setActiveSelectValues();
       }
     },
+    '$route.params'(value) {
+      this.setActiveSelectValues();
+    }
   },
   mounted() {
     this.$nextTick(() => {
