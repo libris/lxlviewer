@@ -2,7 +2,7 @@
 /*
   Controls add new entity button and add entity modal with it's content
 */
-import { cloneDeep, isArray, get } from 'lodash-es';
+import { cloneDeep, isArray, get, find } from 'lodash-es';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
@@ -16,6 +16,7 @@ import ParamSelect from '@/components/inspector/param-select.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
 import PanelSearchList from '../search/panel-search-list.vue';
+import TabMenu from '@/components/shared/tab-menu';
 
 export default {
   mixins: [LensMixin, SideSearchMixin],
@@ -23,6 +24,19 @@ export default {
     return {
       rangeInfo: false,
       addEmbedded: false,
+      searchTabs: [
+        { id: 'Libris', 
+          text: 'Libris',
+          canSort: true,
+          parameterChoice: true,
+          endpoint: 'find.jsonld' },
+        { id: 'Wikidata', 
+          text: 'Wikidata',
+          canSort: false,
+          parameterChoice: false,
+          endpoint: '_externalentities' },
+      ],
+      selectedSearchTabId: 'Libris',
     };
   },
   props: {
@@ -73,6 +87,7 @@ export default {
     'type-select': TypeSelect,
     'param-select': ParamSelect,
     'vue-simple-spinner': VueSimpleSpinner,
+    'tab-menu': TabMenu,
     sort: Sort,
   },
   watch: {
@@ -174,6 +189,12 @@ export default {
       }
       return false;
     },
+    selectedSearchTab() {
+      return find(this.searchTabs, s => s.id === this.selectedSearchTabId) || {};
+    },
+    searchEndpoint() {
+      return this.selectedSearchTab.endpoint;
+    },
   },
   mounted() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1);
@@ -229,6 +250,11 @@ export default {
       } else {
         this.addItem('');
       }
+    },
+    setSearchTab(searchTab) {
+      this.selectedSearchTabId = searchTab;
+      this.endpoint = this.selectedSearchTab;
+      this.go();
     },
     show() {
       this.$store.dispatch('pushInspectorEvent', {
@@ -470,6 +496,10 @@ export default {
           <!-- <div class="EntityAdder-panelBody"> -->
           <div class="EntityAdder-controls">
             <div class="EntityAdder-controlForm">
+              <tab-menu
+                @go="setSearchTab"
+                :tabs="searchTabs"
+                :active="selectedSearchTabId" />
               <div class="EntityAdder-search">
                 <label for="entityKeywordInput" class="EntityAdder-searchLabel sr-only">{{ "Search" | translatePhrase }}</label>
                 <div class="EntityAdder-filterSearchContainer">
@@ -487,6 +517,7 @@ export default {
                   </div>
                   <div class="EntityAdder-filterSearchContainerItem">
                     <sort
+                      v-if="endpoint.canSort"
                       :recordTypes="currentSearchTypes"
                       :commonSortFallback="true"
                       :currentSort="sort"
@@ -504,6 +535,7 @@ export default {
                          :placeholder="'Sök' | translatePhrase"
                          autofocus />
                   <param-select class="EntityAdder-paramSelect"
+                                v-if="endpoint.parameterChoice"
                                 :types="currentSearchTypes"
                                 :reset="resetParamSelect"
                                 :userPrefKey="'EntityAdder'"

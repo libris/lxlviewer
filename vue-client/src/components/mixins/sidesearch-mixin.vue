@@ -22,6 +22,10 @@ export default {
       maxItems: 0,
       sort: '',
       isCompact: false,
+      endpoint: { canSort: true, 
+        parameterChoice: true,
+        fuzz: true,
+        endpoint: 'find.jsonld' },
     };
   },
   props: {
@@ -98,6 +102,10 @@ export default {
       }
     },
     getSearchPhrase(keyword) {
+      if (!this.endpoint.fuzz) {
+        return keyword;
+      }
+      
       let q = '';
       if (keyword === '') {
         q = '*';
@@ -149,7 +157,7 @@ export default {
       if (typeof this.typeArray !== 'undefined' && this.typeArray.length > 0) {
         params['@type'] = this.typeArray;
       }
-      const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
+      const searchUrl = `${this.settings.apiPath}/${this.endpoint.endpoint}?${buildQueryString(params)}`;
       return new Promise((resolve, reject) => {
         // Check if abortcontroller is available
         // ie11 doesn't have it atm so they don't get cancellable fetches...
@@ -190,6 +198,9 @@ export default {
     ]),
     searchInProgress() {
       return this.activeSearches > 0;
+    },
+    searchEndpoint() {
+      return 'find.jsonld';
     },
     filterPlaceHolder() {
       if (this.someValuesFrom.length > 0) {
