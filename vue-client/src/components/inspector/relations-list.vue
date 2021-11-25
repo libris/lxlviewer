@@ -53,7 +53,7 @@ export default {
             response.json().then((result) => {
               this.searchResult = result;
               this.totalItems = result.totalItems;
-              this.maxItems = result.maxItems;
+              this.maxItems = parseInt(result.maxItems);
               if (this.selectedQuery === this.query) {
                 this.allOption = this.buildAllOption();
                 this.selectedFacet = this.allOption;
