@@ -31,6 +31,10 @@ export default {
       default: 'Untitled panel',
       type: String,
     },
+    query: {
+      type: Object,
+      default: null,
+    },
     modalType: {
       default: 'normal',
       type: String,
@@ -49,6 +53,9 @@ export default {
   methods: {
     lockScroll(boolValue) {
       LayoutUtil.scrollLock(boolValue);
+    },
+    gotoSearch() {
+      this.$router.push({ path: '/search/', query: this.query });
     },
     toggleFullView() {
       const user = this.user;
@@ -126,6 +133,12 @@ export default {
               <slot name="panel-header-info"></slot>
             </div>
             <span class="PanelComponent-windowControl">
+              <i class="goto-search-button fa fa-search-plus icon icon--md"
+                v-show="query != null"
+                role="button"
+                tabindex="0"
+                @click="gotoSearch" 
+                :title="'Bring to main search' | translatePhrase"></i>
               <i class="fullview-toggle-button fa fa-compress icon icon--md"
                 v-show="user.settings.forceFullViewPanel"
                 role="button"
@@ -342,10 +355,15 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     margin-left: 10px;
+    > .fa {
+      margin-right: 0.5em;
+      &:last-child {
+        margin-right: unset;
+      }
+    }
 
     .fullview-toggle-button {
       width: 20px;
-      margin-right: 5px;
       
       @media screen and (max-width: @screen-lg-min) {
         display: none;
