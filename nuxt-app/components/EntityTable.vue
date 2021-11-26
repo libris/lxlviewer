@@ -1,5 +1,5 @@
 <template>
-  <div class="EntityTable-body" :class="{ 'is-inner-table': isMainEntity == false, 'is-linked-table': isLinked }" v-if="itemData">
+  <div class="EntityTable-body" :class="{ 'is-inner-table': isInnerTable, 'is-linked-table': isLinked }" v-if="itemData">
     <div class="PropertyRow d-md-flex" v-if="showUri && itemData.hasOwnProperty('@id')">
       <div class="PropertyRow-bodyKey d-block d-md-inline">
         URI ({{ translateUi('link to resource') }})
@@ -11,7 +11,7 @@
         <i class="PropertyRow-idCopyButton bi" v-show="clipboardAvailable" title="Kopiera URI" :class="{ 'bi-clipboard': !idCopied, 'bi-clipboard-check': idCopied }" @click="copyId"></i>
       </div>
     </div>
-    <PropertyRow :property="prop" :key="prop" :value="itemData[prop]" v-for="prop in sortedProperties" />
+    <PropertyRow :property="prop" :key="prop" :value="itemData[prop]" :is-inner="isInnerTable" v-for="prop in sortedProperties" />
     <template v-if="isMainEntity">
       <div class="PropertyRow d-md-flex" v-if="showDownload">
         <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Download') }}</div>

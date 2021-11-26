@@ -3,7 +3,7 @@
     <div :data-property="property" class="PropertyRow-bodyKey d-block d-md-inline" :title="translateKey(property)">{{ translateKey(property) }}</div>
     <div :data-property="property" class="PropertyRow-bodyValue single" v-if="!Array.isArray(value)">
       <span class="" v-if="valueType == 'boolean'">{{ translateUi(value == true ? 'Yes' : 'No') }}</span>
-      <EntityTable v-else-if="isIntegral" :entity="value" :is-main-entity="false" />
+      <EntityTable v-else-if="isIntegral && isInner == false" :entity="value" :is-main-entity="false" />
       <EntityNode :parent-key="property" :entity="value" v-else-if="!isByLangProperty" />
       <span v-else-if="valueType !== 'object'">{{ value }}</span>
       <div class="PropertyRow-grid" v-else>
@@ -48,6 +48,10 @@ export default {
     },
     value: {
       type: [Object, String, Number, Array, Boolean],
+    },
+    isInner: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {
