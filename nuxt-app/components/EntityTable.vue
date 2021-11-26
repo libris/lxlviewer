@@ -198,7 +198,6 @@ export default {
   }
   &-body {
     padding: 0.5rem 0.25rem 0.5rem 1rem;
-    background-color: $white;
     @media (min-width: 768px) {
       padding: 0.5rem 1rem 0.5rem 1.5rem;
     }
