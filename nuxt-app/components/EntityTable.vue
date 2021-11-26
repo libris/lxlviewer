@@ -207,6 +207,7 @@ export default {
     }
     &.is-linked-table {
       border-width: 1px 1px 1px 1px;
+      border-color: #badbde;
       background-color: #faffff;
     }
   }
