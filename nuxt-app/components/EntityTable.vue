@@ -1,5 +1,5 @@
 <template>
-  <div class="EntityTable-body" :class="{ 'is-inner-table': isMainEntity == false }" v-if="itemData">
+  <div class="EntityTable-body" :class="{ 'is-inner-table': isMainEntity == false, 'is-linked-table': isLinked }" v-if="itemData">
     <div class="PropertyRow d-md-flex" v-if="showUri && itemData.hasOwnProperty('@id')">
       <div class="PropertyRow-bodyKey d-block d-md-inline">
         URI ({{ translateUi('link to resource') }})
@@ -73,6 +73,12 @@ export default {
         return this.translateUriEnv(this.itemData['@id']).split('#').shift();
       }
       return null;
+    },
+    isInnerTable() {
+      return this.isMainEntity == false;
+    },
+    isLinked() {
+      return this.isInnerTable && this.entity.hasOwnProperty('@id');
     },
     itemData() {
       if (this.entity.hasOwnProperty('@type')) {
@@ -198,6 +204,10 @@ export default {
     &.is-inner-table {
       border: solid $gray-200;
       border-width: 0px 0px 0px 1px;
+    }
+    &.is-linked-table {
+      border-width: 1px 1px 1px 1px;
+      background-color: #faffff;
     }
   }
   &.hovered {
