@@ -198,7 +198,7 @@ export default {
 
 <template>
   <div class="RelationsList">
-    <panel-component :title="windowTitle" :query="query" @close="hide()">
+    <panel-component :title="windowTitle" :query="selectedQuery" @close="hide()">
       <template slot="panel-header-extra">
         <div class="RelationsList-searchHeader">
           <div
