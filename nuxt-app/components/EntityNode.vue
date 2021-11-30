@@ -8,19 +8,45 @@
         {{ getItemLabel }}
       </span>
       <template v-else-if="entityData['@id']">
-        <NuxtLink v-if="entityData['@id'].startsWith('https://id.kb.se')" :to="removeBaseUri(entityData['@id'])">
-          <template v-if="entityData['@id'] === 'https://id.kb.se/vocab/'">https://id.kb.se/vocab/</template>
-          <template v-else-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
-          <template v-else>{{ translateUriEnv(decodeURI(entityData['@id'])) }}</template>
-        </NuxtLink>
-        <NuxtLink v-else-if="entityData['@id'].startsWith('https://libris.kb.se')" :to="removeBaseUri(entityData['@id'])">
-          <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
-          <template v-else>{{ translateUriEnv(decodeURI(entityData['@id'])) }}</template>
-        </NuxtLink>
-        <a v-else :href="entityData['@id']">
-          <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
-          <template v-else>{{ decodeURI(entityData['@id']) }}</template>
-        </a>
+        <template v-if="typeOfLibrisService == null">
+          <!-- Outside link -->
+          <a class="link-out" :href="entityData['@id']">
+            <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+            <template v-else>{{ translateUriEnv(decodeURI(entityData['@id'])) }}</template>
+          </a>
+        </template>
+        <template v-else-if="typeOfLibrisService == 'id'">
+          <template v-if="appState.domain == 'id'">
+            <!-- Internal ID link -->
+            <NuxtLink class="link-id-internal" :to="removeBaseUri(entityData['@id'])">
+              <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+              <template v-else>{{ translateUriEnv(decodeURI(translateUriEnv(entityData['@id']))) }}</template>
+            </NuxtLink>
+          </template>
+          <template v-else>
+            <!-- External ID link -->
+            <a class="link-id-external" :href="removeBaseUri(translateUriEnv(entityData['@id']))">
+              <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+              <template v-else>{{ translateUriEnv(decodeURI(translateUriEnv(entityData['@id']))) }}</template>
+            </a>
+          </template>
+        </template>
+        <template v-else-if="typeOfLibrisService == 'libris'">
+          <template v-if="appState.domain == 'libris'">
+            <!-- Internal Libris link -->
+            <NuxtLink class="link-libris-internal" :to="removeBaseUri(entityData['@id'])">
+              <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+              <template v-else>{{ translateUriEnv(decodeURI(translateUriEnv(entityData['@id']))) }}</template>
+            </NuxtLink>
+          </template>
+          <template v-else>
+            <!-- External Libris link -->
+            <a class="link-libris-external" :href="removeBaseUri(translateUriEnv(entityData['@id']))">
+              <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
+              <template v-else>{{ translateUriEnv(decodeURI(translateUriEnv(entityData['@id']))) }}</template>
+            </a>
+          </template>
+        </template>
       </template>
     </template>
     <template v-else>
@@ -62,9 +88,18 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters(['currentDocument', 'quoted', 'settings', 'resources']),
+    ...mapGetters(['currentDocument', 'quoted', 'settings', 'resources', 'appState']),
     isByLangValue() {
       return this.parentKey.includes('ByLang');
+    },
+    typeOfLibrisService() {
+      const id = this.entityData['@id'];
+      if (id.includes('https://id.kb.se/')) {
+        return 'id';
+      } else if (id.includes('https://libris.kb.se/')) {
+        return 'libris';
+      }
+      return null;
     },
     entityData() {
       if (!this.entity) {

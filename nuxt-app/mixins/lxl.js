@@ -38,7 +38,7 @@ if (!Vue.__lxl_global_mixin__) {
         if (typeof uri == 'undefined' || uri.length == 0) {
           return null;
         }
-        const bases = this.settings.removableBaseUris;
+        const bases = this.settings.removableBaseUris[this.appState.domain];
         const envs = ['dev', 'qa', 'stg', 'edu'];
         const computedBases = [];
         bases.forEach((item) => {
@@ -60,16 +60,13 @@ if (!Vue.__lxl_global_mixin__) {
         if (typeof uri == 'undefined' || uri.length == 0) {
           return null;
         }
-        const domain = this.appState.domain;
-        if (this.appState.domain === 'libris') {
-          // Libris
-          if (uri.includes('https://libris.kb.se/')) {
-            return uri.replace('https://libris.kb.se/', envComputer(process.env.ENV, domain));
-          }
+        // Libris
+        if (uri.includes('https://libris.kb.se/')) {
+          return uri.replace('https://libris.kb.se/', envComputer(process.env.ENV, 'libris'));
         }
         // Not libris
         if (uri.includes('https://id.kb.se')) {
-          return uri.replace('https://id.kb.se', envComputer(process.env.ENV, domain));
+          return uri.replace('https://id.kb.se', envComputer(process.env.ENV, 'id'));
         }
         return uri;
       },
