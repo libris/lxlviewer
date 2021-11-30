@@ -142,7 +142,7 @@ export default {
     loadResults(result) {
       this.searchResult = result.items;
       this.totalItems = result.totalItems;
-      this.maxItems = parseInt(result.maxItems);
+      this.maxItems = parseInt(result.maxItems) || Number.MAX_SAFE_INTEGER;
     },
     go(n) {
       this.fetch(n);
