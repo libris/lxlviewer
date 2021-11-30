@@ -564,15 +564,6 @@ export default {
             :has-action="true"
             @use-item="addLinkedItem">
           </panel-search-list>
-          <div class="EntityAdder-externalSearchLinks" v-if="!searchInProgress && searchMade && endpoint.externalLink">
-            <div class="EntityAdder-externalSearchLink">
-              <span>
-              <a :href="this.endpoint.externalLink.uri + this.keyword" target="_blank">
-                {{"See more results at" | translatePhrase}} {{this.endpoint.externalLink.domain}} <i aria-hidden="true" class="EntitySummary-icon fa fa-external-link"></i>
-              </a>
-              </span>
-            </div>
-          </div>
           <div class="PanelComponent-searchStatus" v-if="!searchInProgress && !searchMade" >
             {{ "Start writing to begin search" | translatePhrase }}...
           </div>
@@ -583,10 +574,19 @@ export default {
             v-if="!searchInProgress && searchResult.length === 0 && searchMade">
             {{ "No results" | translatePhrase }}
           </div>
+          
         <!-- </div> -->
         </template>
         <template slot="panel-footer">
-
+          <div class="EntityAdder-externalSearchLinks" v-if="!searchInProgress && searchMade && endpoint.externalLink">
+            <div class="EntityAdder-externalSearchLink">
+              <span>
+              <a :href="this.endpoint.externalLink.uri + this.keyword" target="_blank">
+                {{"See more results at" | translatePhrase}} {{this.endpoint.externalLink.domain}} <i aria-hidden="true" class="EntitySummary-icon fa fa-external-link"></i>
+              </a>
+              </span>
+            </div>
+          </div>
           <div class="EntityAdder-resultControls" v-if="!searchInProgress && searchResult.length > 0">
             <modal-pagination
               @go="go"
@@ -790,6 +790,8 @@ export default {
     align-items: center;
     justify-content: center;
     display: flex;
+    background-color: white;
+    border-bottom: 1px solid #E7E7E7;
   }
 
   &-externalSearchLink {
@@ -797,10 +799,12 @@ export default {
     justify-content: center;
     align-items: flex-start;
     height: 33px;
-    background-color: @grey-lighter;
-    color: @chip-color;
+    background-color: #EBF5F7;
+    color: @brand-primary;
     border-radius: 2em;
-    line-height: 1.6;
+    font-weight: 600;
+    font-size: 1.4rem;
+    line-height: 2em;
     padding: 3px 15px 3px 15px;
     margin: 10px 10px 10px 10px;
   }
