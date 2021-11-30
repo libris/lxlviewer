@@ -91,7 +91,7 @@ export default {
       return flatten(s);
     },
     buildFacets(searchResult) {
-      if (searchResult) {
+      if (searchResult && searchResult.stats) {
         const dimensions = searchResult.stats.sliceByDimension;
         return this.displayFacets
           .filter(key => dimensions.hasOwnProperty(key))
