@@ -94,8 +94,8 @@ export default {
       const translatedOrder = [];
       propertyOrder.forEach((prop) => {
         let currentProp = prop;
-        if (prop.includes('@reverse')) {
-          const termObj = VocabUtil.getTermObject(prop.split('/').pop(), this.vocab, this.vocabContext);
+        if (typeof currentProp === 'string' && currentProp.includes('@reverse')) {
+          const termObj = VocabUtil.getTermObject(currentProp.split('/').pop(), this.vocab, this.vocabContext);
           if (termObj && termObj.hasOwnProperty('inverseOf')) {
             currentProp = termObj['inverseOf']['@id'].split('/').pop();
           }
