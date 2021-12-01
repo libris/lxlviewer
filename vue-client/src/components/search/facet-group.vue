@@ -5,10 +5,11 @@ import * as DisplayUtil from 'lxljs/display';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
 import Facet from './facet.vue';
+import FacetMixin from '@/components/mixins/facet-mixin';
 
 export default {
   name: 'facet-group',
-  mixins: [clickaway],
+  mixins: [clickaway, FacetMixin],
   props: {
     group: {
       type: Object,
@@ -83,7 +84,10 @@ export default {
             this.settings,
           );
         } else {
-          label = o.object.label;
+          label = this.determineLabel(o.object);
+        }
+        if (!label) {
+          label = o.object.label
         }
         label = this.$options.filters.capitalize(label);
         return {

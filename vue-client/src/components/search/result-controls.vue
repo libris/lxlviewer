@@ -5,11 +5,12 @@ import * as httpUtil from '@/utils/http';
 import Sort from '@/components/search/sort';
 import FilterBadge from '@/components/search/filter-badge';
 import LensMixin from '@/components/mixins/lens-mixin';
+import FacetMixin from '@/components/mixins/facet-mixin';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 
 export default {
   name: 'result-controls',
-  mixins: [LensMixin],
+  mixins: [LensMixin, FacetMixin],
   props: {
     pageData: {},
     showDetails: {
@@ -54,6 +55,8 @@ export default {
 
             if (item.hasOwnProperty('value')) { // Try to use item value to get label
               label = item.value;
+            } else if (item.variable === 'p' && item.hasOwnProperty('predicate')) { // FIXME?
+              label = this.determineLabel(item.predicate);
             } else if (item.hasOwnProperty('object')) { 
               label = this.getLabel(item.object);
             }
