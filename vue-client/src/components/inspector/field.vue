@@ -40,6 +40,10 @@ export default {
       type: String,
       default: '',
     },
+    parentAcceptedTypes: {
+      type: Array,
+      default: () => [],
+    },
     fieldKey: {
       type: String,
       default: '',
@@ -794,6 +798,7 @@ export default {
         v-bind:class="{'is-entityContent': getDatatype(item) == 'entity'}">
         <item-type
           :is-locked="locked" 
+          :container-accepted-types="parentAcceptedTypes"
           :field-key="fieldKey" 
           :field-value="fieldValue" 
           :entity-type="entityType" 
