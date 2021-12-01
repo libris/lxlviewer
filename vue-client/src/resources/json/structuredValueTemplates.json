@@ -119,6 +119,10 @@
       "code": ""
     }
   },
+  "Danacode": {
+    "@type": "Danacode",
+    "value": ""
+  },
   "DissertationIdentifier": {
     "@type": "DissertationIdentifier",
     "value": ""
