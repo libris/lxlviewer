@@ -284,9 +284,9 @@
           "associatedMedia": [
             {
               "@type": "MediaObject",
-              "uri": [
-                ""
-              ]
+              "publisher": [],
+              "uri": [""],
+              "usageAndAccessPolicy": []
             }
           ],
           "reproductionOf": [],
