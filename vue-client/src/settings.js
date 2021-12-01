@@ -35,6 +35,7 @@ export default {
     'Work',
     'PlaceholderRecord',
     'CacheRecord',
+    'ComplexSubject.termComponentList'
   ],
   keysToClear: {
     duplication: [

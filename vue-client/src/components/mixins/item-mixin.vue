@@ -86,6 +86,9 @@ export default {
       }
       return `${this.parentPath}`;
     },
+    inClassAndProperty() {
+      return `${this.entityType}.${this.fieldKey}`;
+    },
     extractedMainEntity() {
       const cleanObj = DataUtil.removeNullValues(this.focusData);
       if (VocabUtil.isSubClassOf(this.focusData['@type'], 'Work', this.resources.vocabClasses, this.resources.context)) {
