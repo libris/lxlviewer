@@ -57,7 +57,7 @@ export default {
       return VocabUtil.getRecordType(this.formType, this.resources.vocab, this.resources.context);
     },
     showTypeChanger() {
-      if (this.settings.showTypeChangerFor.includes(this.recordType) || this.isMainEntityForm) {
+      if (this.settings.showTypeChangerFor.includes(this.recordType) || this.settings.showTypeChangerFor.includes(this.inClassAndProperty) || this.isMainEntityForm) {
         return true;
       }
       return false;
