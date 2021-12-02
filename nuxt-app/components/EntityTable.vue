@@ -17,7 +17,7 @@
         <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Download') }}</div>
         <div class="PropertyRow-bodyValue"><a :href="`${ documentId }/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${ documentId }/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${ documentId }/data.rdf` | replaceBaseWithApi">RDF/XML</a></div>
       </div>
-      <div class="PropertyRow d-md-flex">
+      <div class="PropertyRow d-md-flex" v-if="showOtherServices">
         <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Other sites') }}</div>
         <div class="PropertyRow-bodyValue"><a :href="`https://libris.kb.se/katalogisering/${ recordId.split('/').pop() }`">Libris katalogisering</a></div>
       </div>
@@ -144,6 +144,10 @@ export default {
       default: true,
     },
     showDownload: {
+      type: Boolean,
+      default: false,
+    },
+    showOtherServices: {
       type: Boolean,
       default: false,
     },
