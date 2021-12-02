@@ -153,17 +153,17 @@ export default {
       <span class="Breadcrumb-recordNumbers">{{ absoluteOffset + 1 }} {{ 'of' | translatePhrase }} {{ totalItems }}</span>
       <div class="Breadcrumb-recordLinks">
         <span class="Breadcrumb-prev" v-if="absoluteOffset > 0">
-          <button class="btn--as-link" v-if="prevPath" @click="prev">{{ ['Previous', 'record'] | translatePhrase }}</button>
+          <button class="btn--as-link" v-if="prevPath" @click="prev">{{ ['Previous'] | translatePhrase }}</button>
           <button class="btn--as-link" v-if="prevOutOfBounds" @click="lastOnPrevPage">
-            <span v-if="!loading">{{ ['Previous', 'record'] | translatePhrase }}</span>
+            <span v-if="!loading">{{ ['Previous'] | translatePhrase }}</span>
             <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
           </button>
         </span>
         <span v-if="absoluteOffset > 0 && absoluteOffset + 1 < totalItems"> | </span>
         <span class="Breadcrumb-next" v-if="absoluteOffset < totalItems">
-          <button class="btn--as-link" v-if="nextPath" @click="next">{{ ['Next', 'record'] | translatePhrase }}</button>
+          <button class="btn--as-link" v-if="nextPath" @click="next">{{ ['Next'] | translatePhrase }}</button>
           <button class="btn--as-link" v-if="nextOutOfBounds" @click="firstOnNextPage">
-            <span v-if="!loading">{{ ['Next', 'record'] | translatePhrase }}</span>
+            <span v-if="!loading">{{ ['Next'] | translatePhrase }}</span>
             <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
           </button>
         </span>
