@@ -71,8 +71,10 @@ export default {
     recordId() {
       if (this.itemData.meta && this.itemData.meta['@id']) {
         return this.itemData.meta['@id'];
-      } else if (this.currentDocument.record && this.currentDocument.record['@id']) {
+      } else if (this.currentDocument && this.currentDocument.record && this.currentDocument.record['@id']) {
         return this.translateUriEnv(this.currentDocument.record['@id']);
+      } else if (this.itemData['@id']) {
+        return this.itemData['@id'];
       }
       return null;
     },
