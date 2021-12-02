@@ -298,12 +298,6 @@
               "uri": [""]
             }
           ],
-          "usageAndAccessPolicy": [
-            {
-              "@type": "UsePolicy",
-              "label": ""
-            }
-          ],
           "instanceOf": {
             "@type": "Text",
             "language": [{
