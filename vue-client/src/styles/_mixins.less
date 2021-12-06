@@ -1,0 +1,52 @@
+
+.focus-mixin-border() {
+  outline: 2px solid @focus-color-border !important; //fallback for IE & Edge
+  background-color: unset !important;
+}
+
+.focus-mixin-bg() {
+  border-color: @focus-color-bg !important;
+  background-color: @focus-color-bg !important;
+  color: black !important;
+  * {
+    color: black !important;
+  }
+}
+
+.panel-mixin(@color) {
+  border-radius: 4px;
+  box-shadow: @shadow-panel;
+  background-color: @color;
+  border-width: 0px;
+}
+
+.panel {
+  .panel-mixin(@neutral-color);
+}
+
+.icon-hover {
+  &:hover {
+    & .icon:not(.chip-icon):not(.is-disabled) {
+      color: @grey-dark-transparent;
+    }
+
+    &:not(.locked) >.actions {
+      opacity: 1;
+    }
+  }
+
+  .user-is-tabbing &:focus-within { // icon 'hover-effect' when tabbing 
+    & .icon:not(.chip-icon):not(.is-disabled) {
+      color: @grey-dark-transparent;
+    }
+  }
+
+  & .icon {
+    color: @grey-transparent;
+
+    &:hover:not(.is-disabled),
+    &:focus {
+      color: @grey-very-dark-transparent;
+    }
+  }
+}

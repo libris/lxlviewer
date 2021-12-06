@@ -1,28 +1,10 @@
-# Cached Data and Packages
-cache/
-viewer/client/node_modules/
-node_modules/
-viewer/client/bower_components/
-
-# Generated Files
-/build
-/viewer/v2client/dist
-/viewer/v2client/src/resources/help.json
-/viewer/client/static/build
-/viewer/client/test/e2e/bin
-/viewer/client/static/vendor
-
 # Local App Config
-instance/config.cfg
-viewer/vue-client/.env.development
+vue-client/.env.development
 
 # Common OS, Tool and Editor Files
 .vscode/*
 .*.sw*
 .DS_Store
 npm-debug.log
-*.pyc
 selenium-debug.log
-*venv/
 .idea
-viewer/helpdocs/helpdocs\.json
