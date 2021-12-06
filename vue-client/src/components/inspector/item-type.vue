@@ -13,6 +13,10 @@ export default {
   name: 'item-type',
   extends: ItemVocab,
   props: {
+    containerAcceptedTypes: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -26,11 +30,6 @@ export default {
     ...mapGetters([
       'resources',
     ]),
-    getClassTree() {
-      const docType = VocabUtil.getRecordType(this.entityType, this.resources.vocab, this.resources.context);
-      const tree = [docType].map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
-      return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
-    },
     range() {
       const docType = VocabUtil.getRecordType(this.entityType, this.resources.vocab, this.resources.context);
       const combined = [docType].concat(VocabUtil.getAllSubClasses(docType, this.resources.vocabClasses, this.resources.context));
@@ -111,14 +110,14 @@ export default {
     <div v-if="!isLocked && checkingRelations">
       <vue-simple-spinner size="small"></vue-simple-spinner>
     </div>
-    <div class="ItemType-selectContainer" v-if="!isLocked && !checkingRelations && getClassTree.length > 0">
+    <div class="ItemType-selectContainer" v-if="!isLocked && !checkingRelations && containerAcceptedTypes.length > 0">
       <select 
         :disabled="isDisabled"
         v-model="selected" 
         class="ItemType-select customSelect" 
         :aria-label="fieldKey | labelByLang">
         <option 
-          v-for="(term, index) in getClassTree" 
+          v-for="(term, index) in containerAcceptedTypes" 
           :value="term.id"
           :key="index"
           :disabled="term.abstract"

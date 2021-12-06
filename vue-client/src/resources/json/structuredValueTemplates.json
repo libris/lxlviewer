@@ -119,6 +119,10 @@
       "code": ""
     }
   },
+  "Danacode": {
+    "@type": "Danacode",
+    "value": ""
+  },
   "DissertationIdentifier": {
     "@type": "DissertationIdentifier",
     "value": ""
@@ -756,5 +760,13 @@
     "@type": "MediaObject",
     "uri": [""],
     "marc:publicNote": [""]
+  },
+  "AccessPolicy": {
+    "@type": "AccessPolicy",
+    "label": ""
+  },
+  "UsePolicy": {
+    "@type": "UsePolicy",
+    "label": ""
   }
 }

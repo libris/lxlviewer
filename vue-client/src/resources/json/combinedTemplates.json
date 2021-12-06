@@ -284,9 +284,9 @@
           "associatedMedia": [
             {
               "@type": "MediaObject",
-              "uri": [
-                ""
-              ]
+              "publisher": [],
+              "uri": [""],
+              "usageAndAccessPolicy": []
             }
           ],
           "reproductionOf": [],
@@ -296,12 +296,6 @@
               "cataloguersNote": [""],
               "marc:publicNote": [""],
               "uri": [""]
-            }
-          ],
-          "usageAndAccessPolicy": [
-            {
-              "@type": "UsePolicy",
-              "label": ""
             }
           ],
           "instanceOf": {

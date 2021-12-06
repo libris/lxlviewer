@@ -18,7 +18,7 @@
         <EntityNode :is-chip="true" :parent-key="'@type'" class="d-none" :class="{'d-xl-block': entity.inScheme, 'd-lg-block': !entity.inScheme }" :entity="entity['@type']" />
       </template>
     </div>
-    <EntityTable v-if="expanded" :entity="entityData" :show-download="showDownload" />
+    <EntityTable v-if="expanded" :entity="entityData" :show-download="showDownload" :show-other-services="showOtherServices" />
   </div>
 </template>
 
@@ -89,6 +89,10 @@ export default {
       default: false,
     },
     showDownload: {
+      type: Boolean,
+      default: true,
+    },
+    showOtherServices: {
       type: Boolean,
       default: true,
     },

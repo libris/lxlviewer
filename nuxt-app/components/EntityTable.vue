@@ -17,9 +17,9 @@
         <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Download') }}</div>
         <div class="PropertyRow-bodyValue"><a :href="`${ documentId }/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${ documentId }/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${ documentId }/data.rdf` | replaceBaseWithApi">RDF/XML</a></div>
       </div>
-      <div class="PropertyRow d-md-flex" v-if="appState.domain === 'libris'">
+      <div class="PropertyRow d-md-flex" v-if="showOtherServices">
         <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Other sites') }}</div>
-        <div class="PropertyRow-bodyValue"><a :href="`https://libris.kb.se/katalogisering/${ documentId.split('/').pop() }`">Libris katalogisering</a></div>
+        <div class="PropertyRow-bodyValue"><a :href="`https://libris.kb.se/katalogisering/${ recordId.split('/').pop() }`">Libris katalogisering</a></div>
       </div>
     </template>
   </div>
@@ -67,7 +67,17 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['display', 'quoted', 'resources', 'vocabContext', 'settings', 'vocab', 'appState']),
+    ...mapGetters(['display', 'quoted', 'currentDocument', 'resources', 'vocabContext', 'settings', 'vocab', 'appState']),
+    recordId() {
+      if (this.itemData.meta && this.itemData.meta['@id']) {
+        return this.itemData.meta['@id'];
+      } else if (this.currentDocument && this.currentDocument.record && this.currentDocument.record['@id']) {
+        return this.translateUriEnv(this.currentDocument.record['@id']);
+      } else if (this.itemData['@id']) {
+        return this.itemData['@id'];
+      }
+      return null;
+    },
     documentId() {
       if (this.itemData['@id']) {
         return this.translateUriEnv(this.itemData['@id']).split('#').shift();
@@ -134,6 +144,10 @@ export default {
       default: true,
     },
     showDownload: {
+      type: Boolean,
+      default: false,
+    },
+    showOtherServices: {
       type: Boolean,
       default: false,
     },

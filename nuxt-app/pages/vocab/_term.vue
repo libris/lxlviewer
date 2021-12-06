@@ -1,6 +1,6 @@
 <template>
   <div class="Vocab-termDetails">
-    <ResultItem :entity="termData" :force-expanded="true" :show-download="false" />
+    <ResultItem :entity="termData" :force-expanded="true" :show-download="false" :show-other-services="false" />
   </div>
 </template>
 

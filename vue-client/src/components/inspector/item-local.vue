@@ -540,6 +540,7 @@ export default {
         :is-removable="false" 
         :parent-key="fieldKey" 
         :parent-index="index" 
+        :parent-accepted-types="acceptedTypes"
         :field-key="k"
         :field-value="v"
         :key="k" 

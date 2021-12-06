@@ -21,7 +21,7 @@
             </p>
           </div>
           <div class="SearchResult-resultList">
-            <ResultItem v-for="resultItem in pageData.items" :entity="resultItem" :key="resultItem['@id']" />
+            <ResultItem v-for="resultItem in pageData.items" :entity="resultItem" :key="resultItem['@id']" :show-other-services="false" />
           </div>
           <Pagination :result-data="pageData" v-if="pageData.totalItems > 0" />
         </div>

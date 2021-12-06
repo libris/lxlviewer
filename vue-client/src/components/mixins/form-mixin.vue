@@ -47,6 +47,19 @@ export default {
       'settings',
       'status',
     ]),
+    acceptedTypes() {
+      return this.getClassTree;
+    },
+    getClassTree() {
+      let tree = [];
+      if (this.allSearchTypes && this.allSearchTypes.length > 0) {
+        tree = this.allSearchTypes.map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
+      } else {
+        const docType = VocabUtil.getRecordType(this.formType, this.resources.vocab, this.resources.context);
+        tree = [docType].map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
+      }
+      return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
+    },
     isMainEntityForm() {
       return this.editingObject === 'mainEntity';
     },
