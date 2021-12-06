@@ -1,10 +1,15 @@
 <template>
-  <div class="Vocab-termDetails">
-    <h1>{{ translateUi('Vocabulary') }}</h1>
-    <p v-if="settings.language == 'sv'">Välj en term i listan för att se detaljer.</p>
-    <p v-else>
-      Choose a term in the list to see details.
-    </p>
+  <div>
+    <div class="Vocab-termDetails">
+      <h1>{{ translateUi('Vocabulary') }}</h1>
+      <p v-if="settings.language == 'sv'">Välj en term i listan för att se detaljer.</p>
+      <p v-else>
+        Choose a term in the list to see details.
+      </p>
+    </div>
+    <div class="Vocab-termDetails">
+      <ResultItem :entity="termDataOntology" :force-expanded="true" :show-download="false" :show-other-services="false" />
+    </div>
   </div>
 </template>
 
@@ -37,6 +42,13 @@ export default {
     },
     termTitle() {
       return this.getEntityTitle(this.termData);
+    },
+    termDataOntology() {
+      const termData = VocabUtil.getTermObject('https://id.kb.se/vocab/', this.vocab, this.vocabContext);
+      if (termData) {
+        return termData;
+      }
+      return null;
     },
   },
   methods: {
