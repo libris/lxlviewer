@@ -2,7 +2,7 @@
   <div class="Find">
     <div class="container-fluid FilterContainer">
       <div class="row">
-        <SchemeFilters :slices="collectionResults.stats.sliceByDimension" />
+        <SchemeFilters v-if="collectionResults.stats" :slices="collectionResults.stats.sliceByDimension" />
       </div>
     </div>
     <div class="container-fluid">
