@@ -964,7 +964,7 @@
         }
       }
     },
-    "manuscriptdMonographText": {
+    "manuscriptMonographText": {
       "label": "Handskrift",
       "description": "Handskrift monografi - RDA",
       "value": {
@@ -1035,16 +1035,8 @@
               ]
             }
           ],
-          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
-          "baseMaterial": [
-            {
-              "@type": "BaseMaterial",
-              "label": [
-                "papper"
-              ]
-            }
-          ],
+          "baseMaterial": [{"@id": "https://id.kb.se/term/rda/material/Paper"}],
           "extent": [
             {
               "@type": "Extent",
