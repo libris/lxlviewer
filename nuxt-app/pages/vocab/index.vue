@@ -1,13 +1,6 @@
 <template>
   <div>
     <div class="Vocab-termDetails">
-      <h1>{{ translateUi('Vocabulary') }}</h1>
-      <p v-if="settings.language == 'sv'">Välj en term i listan för att se detaljer.</p>
-      <p v-else>
-        Choose a term in the list to see details.
-      </p>
-    </div>
-    <div class="Vocab-termDetails">
       <ResultItem :entity="termDataOntology" :force-expanded="true" :show-download="false" :show-other-services="false" />
     </div>
   </div>
