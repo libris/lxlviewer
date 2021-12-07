@@ -190,7 +190,6 @@ function formatLabel(item, resources) {
         label.push(value);
       }
     }
-
   }
   return label.join(''); // Join without any extra separators
 }
