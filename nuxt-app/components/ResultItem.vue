@@ -1,7 +1,7 @@
 <template>
   <div class="ResultItem" :class="{ 'hovered': hovered, 'expanded': expanded }" @mouseover="hovered = true" @mouseout="hovered = false">
     <div class="ResultItem-header" :class="{ 'cursor-pointer': !forceExpanded }" @click="toggle" @keyup.enter="toggle(true)" tabindex="0">
-      <span class="ResultItem-title" :class="{'as-header': isDocumentView }">
+      <span class="ResultItem-title" :class="{'as-header': isDocumentView || isVocabIndex }">
         <template v-if="!forceExpanded">
           <i class="bi bi-chevron-right" v-if="!expanded"></i>
           <i class="bi bi-chevron-down" v-if="expanded"></i>
@@ -58,6 +58,9 @@ export default {
   computed: {
     isDocumentView() {
       return this.$route.name == 'all' || this.$route.name == 'vocab-term';
+    },
+    isVocabIndex() {
+      return this.$route.name == 'vocab';
     },
     isVocabTerm() {
       const type = this.entityData['@type'];
