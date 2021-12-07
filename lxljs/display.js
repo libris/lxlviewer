@@ -172,22 +172,23 @@ function formatLabel(item, resources) {
     const key = objKeys[i];
     const value = item[key];
 
-    if (i > 0 && value.length > 0) {
-      label.push(' • ');
-    }
-
-    const formatter = formatters ? formatters[`${key}-format`] : null;
-    if (isArray(value)) {
-      if (formatter && formatter['fresnel:valueFormat'] && formatter['fresnel:valueFormat']['fresnel:contentAfter']) {
-        label.push(value.join(formatter['fresnel:valueFormat']['fresnel:contentAfter']));
-        if (formatter['fresnel:contentLast']) {
-          label.push(formatter['fresnel:contentLast']);
+    if (value != null) {
+      if (i > 0 && value.length > 0) {
+        label.push(' • ');
+      }
+      const formatter = formatters ? formatters[`${key}-format`] : null;
+      if (isArray(value)) {
+        if (formatter && formatter['fresnel:valueFormat'] && formatter['fresnel:valueFormat']['fresnel:contentAfter']) {
+          label.push(value.join(formatter['fresnel:valueFormat']['fresnel:contentAfter']));
+          if (formatter['fresnel:contentLast']) {
+            label.push(formatter['fresnel:contentLast']);
+          }
+        } else {
+          label.push(value.join(', '));
         }
       } else {
-        label.push(value.join(', '));
+        label.push(value);
       }
-    } else {
-      label.push(value);
     }
   }
   return label.join(''); // Join without any extra separators

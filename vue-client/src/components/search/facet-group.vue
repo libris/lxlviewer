@@ -87,7 +87,7 @@ export default {
           label = this.determineLabel(o.object);
         }
         if (!label) {
-          label = o.object.label
+          label = o.object.label;
         }
         label = this.$options.filters.capitalize(label);
         return {
