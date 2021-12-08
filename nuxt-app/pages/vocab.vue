@@ -47,12 +47,6 @@ export default {
   },
   methods: {
   },
-  // async asyncData({ $config, route, params, $http }) {
-  //   const pageData = await $http.$get(`${$config.apiPath}/vocab/data.jsonld`);
-  //   return {
-  //     pageData,
-  //   };
-  // },
   // call fetch only on client-side
   fetchOnServer: false,
   watchQuery: true,

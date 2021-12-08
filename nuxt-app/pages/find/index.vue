@@ -2,7 +2,7 @@
   <div class="Find">
     <div class="container-fluid FilterContainer">
       <div class="row">
-        <SchemeFilters :slices="collectionResults.stats.sliceByDimension" />
+        <SchemeFilters v-if="collectionResults.stats" :slices="collectionResults.stats.sliceByDimension" />
       </div>
     </div>
     <div class="container-fluid">
@@ -67,8 +67,6 @@ export default {
   async asyncData({ $config, route, params, $http, store }) {
     const query = route.query;
     let queryString = '';
-    // const collections = await $http.$get(`${$config.apiPath}/data.jsonld`);
-    // store.commit('SET_COLLECTIONS', collections.statistics.sliceByDimension['inScheme.@id'].observation);
 
     Object.entries(query).forEach(([key, val]) => queryString += `${key}=${val}&`);
     const pageData = await $http.$get(`${$config.apiPath}/find.jsonld?${queryString}`);
@@ -76,9 +74,6 @@ export default {
     return {
       pageData,
       collectionResults,
-      // items: pageData.items,
-      // stats: pageData.stats,
-      // schemes: pageData.stats.sliceByDimension['inScheme.@id'].observation
     }
   },
   beforeRouteLeave(to, from, next) {

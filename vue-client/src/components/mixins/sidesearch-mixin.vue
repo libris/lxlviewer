@@ -90,12 +90,8 @@ export default {
       } else {
         valuesArray.push($event.value);
       }
-
       this.currentSearchTypes = valuesArray;
-
-      if (this.keyword) {
-        this.search();
-      }
+      this.search();
     },
     getSearchPhrase(keyword) {
       let q = '';
