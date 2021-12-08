@@ -120,10 +120,6 @@ export default {
   },
   watch: {
     keyword(newValue, oldValue) {
-      if (newValue == '*') {
-        this.keyword = '';
-        return;
-      }
       if (this.disableSuggestion) return;
       if (newValue != oldValue && newValue.length > 0) {
         this.searchChangeDetected = true;
