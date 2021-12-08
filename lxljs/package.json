@@ -1,6 +1,6 @@
 {
   "name": "lxljs",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "JavaScript tools for the Libris XL infrastructure.",
   "main": "index.js",
   "author": "Ola Blissing <ola.blissing@gmail.com>",
