@@ -91,7 +91,11 @@ export default {
   },
   async asyncData({ $config, route, params, $http, store }) {
     const path = route.path.replace(/\(/g, '%28').replace(/\)/g, '%29');
-    const pageData = await $http.$get(`${$config.apiPath}${path}/data.jsonld`);
+    const pageData = await $http.$get(`${$config.apiPath}${path}/data.jsonld`,
+      {
+        headers: { 'Accept': 'application/ld+json' }
+      }
+    );
     const document = DataUtil.splitJson(pageData);
     store.commit('SET_CURRENT_DOCUMENT', document);
     return { document }
