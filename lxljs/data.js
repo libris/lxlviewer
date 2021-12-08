@@ -1,8 +1,11 @@
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, isPlainObject } from 'lodash-es';
 
 export function splitJson(json) {
+  if (isPlainObject(json) === false) {
+    throw new Error('DataUtil splitJson was called with data that wasn\'t JSON');
+  }
   if (!json || json.length === 0) {
-    throw new Error('Trying to split empty JSON data.');
+    throw new Error('DataUtil splitJson was called with empty JSON');
   }
   const original = cloneDeep(json['@graph']);
   const dataObj = {};
