@@ -61,8 +61,8 @@ if (!Vue.__lxl_global_mixin__) {
           return null;
         }
         // Libris
-        if (uri.includes('https://libris.kb.se/')) {
-          return uri.replace('https://libris.kb.se/', envComputer(process.env.ENV, 'libris'));
+        if (uri.includes('https://libris.kb.se')) {
+          return uri.replace('https://libris.kb.se', envComputer(process.env.ENV, 'libris'));
         }
         // Not libris
         if (uri.includes('https://id.kb.se')) {
