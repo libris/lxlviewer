@@ -98,6 +98,9 @@ export default {
       return PropertyMappings[0];
     },
     setType() {
+      if (this.$route.params.perimeter === 'remote') {
+        return this.activeSearchType; // Don't change while remote searching
+      }
       const performedQuery = cloneDeep(this.$route.query);
       let type;
       if (isEmpty(performedQuery)) {
