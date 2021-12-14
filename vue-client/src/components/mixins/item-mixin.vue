@@ -91,6 +91,7 @@ export default {
     },
     extractedMainEntity() {
       const cleanObj = DataUtil.removeNullValues(this.focusData);
+      if (cleanObj == null) return null; // Nothing left of this
       if (VocabUtil.isSubClassOf(this.focusData['@type'], 'Work', this.resources.vocabClasses, this.resources.context)) {
         // Entity is of type Work or derived type
         if (this.focusData.hasOwnProperty('hasTitle') === false) {
