@@ -55,7 +55,10 @@ export default class URIMinter {
       }
       const containerMemberMap = containerRelationMap[relation];
       if (mainEntity.hasOwnProperty(relation) && mainEntity[relation] !== null) {
-        const relationId = mainEntity[relation][ID];
+        let relationId = mainEntity[relation][ID]
+        if (Array.isArray(mainEntity[relation])) {
+          relationId = mainEntity[relation][0][ID];
+        }
         const container = containerMemberMap[relationId];
         if (container) {
           if (container.administeredBy.find(it => it[ID] === library[ID])) {
