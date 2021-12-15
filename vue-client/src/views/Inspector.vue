@@ -934,8 +934,8 @@ export default {
               <span class="type" :title="recordType">{{ recordType | labelByLang }}</span>
               <span class="badge badge-accent2" v-if="inspector.status.isNew">{{ "New record" | translatePhrase }}</span>
             </h1>
-            <entity-changelog v-if="inspector.status.isNew === false" />
           </div>
+          <entity-changelog v-if="inspector.status.isNew === false" />
         </div>
         <entity-header id="main-header"
           :full="true"
@@ -1016,12 +1016,7 @@ export default {
   }
 
   &-admin {
-    display: flex;
-    flex-direction: column;
-
-    @media (min-width: @screen-sm) {
-      flex-direction: row;
-    }
+    margin-bottom: 0.5em;
   }
 
   &-breadcrumb {
@@ -1030,12 +1025,7 @@ export default {
   }
 
   &-header {
-    flex: 3;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
     margin-bottom: 0.25em;
-    align-items: flex-end;
     h1 {
       margin: 0;
     }

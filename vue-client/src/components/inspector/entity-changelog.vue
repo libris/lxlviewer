@@ -66,6 +66,7 @@ export default {
   flex-direction: column;
   @media (min-width: @screen-md-min) {
     flex-direction: row;
+    flex-wrap: wrap;
   }
   &-unknown {
     @media (min-width: @screen-md-min) {
@@ -74,9 +75,21 @@ export default {
   }
   &-item {
     display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5em;
+    @media (min-width: @screen-sm-min) {
+      margin-bottom: 0.25em;
+      flex-direction: row;
+    }
   }
   &-key {
     margin-right: 0.5em;
+  }
+  &-value {
+    word-break: break-word;
+    @media (min-width: @screen-sm-min) {
+      word-break: unset;
+    }
   }
 }
 
