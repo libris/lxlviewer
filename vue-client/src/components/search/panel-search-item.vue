@@ -157,7 +157,9 @@ export default {
   &-listItem {
 
     .EntitySummary-detailsKey {
-      flex-basis: 8em;
+      @media (min-width: @screen-sm-min) {
+        flex-basis: 8em;
+      }
     }
 
     &.is-added, 

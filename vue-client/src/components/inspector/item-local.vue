@@ -457,7 +457,7 @@ export default {
       
       <div class="ItemLocal-actions">
         <entity-action
-          v-if="inspector.status.editing && !isEmbedded && !isLocked && !isCompositional"
+          v-if="inspector.status.editing && !isEmbedded && !isLocked && !isCompositional && extractedMainEntity != null"
           @action="openExtractDialog(), expand()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"

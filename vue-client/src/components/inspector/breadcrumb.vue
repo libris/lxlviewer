@@ -177,7 +177,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin: 0 0 30px 0;
+  margin: 0 0 0.5em 0;
 
   &-recordNumbers {
   }

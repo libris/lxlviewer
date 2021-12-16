@@ -270,7 +270,7 @@ export default {
             :has-action="true"
             @use-item="replaceWith"
           />
-          <div class="PanelComponent-searchStatus" v-show="keyword.length === 0 && !extracting">
+          <div class="PanelComponent-searchStatus" v-show="keyword.length === 0 && !extracting && searchResult.length == 0">
             <p> {{ "Search for existing linked entities to replace your local entity" | translatePhrase }}.</p>
             <p v-if="itemInfo && extractable"> {{ "If you can't find an existing link, you can create one using your local entity below" | translatePhrase }}.</p>
           </div>
