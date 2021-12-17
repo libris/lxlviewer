@@ -89,16 +89,20 @@ export default {
   methods: {
     ...mapActions(['setCurrentDocument']),
   },
-  async asyncData({ $config, route, params, $http, store }) {
+  async asyncData({ $config, error, route, params, $http, store }) {
     const path = route.path.replace(/\(/g, '%28').replace(/\)/g, '%29');
     const pageData = await $http.$get(`${$config.apiPath}${path}/data.jsonld`,
       {
         headers: { 'Accept': 'application/ld+json' }
       }
-    );
-    const document = DataUtil.splitJson(pageData);
-    store.commit('SET_CURRENT_DOCUMENT', document);
-    return { document }
+    ).catch((err) => {
+      error({ statusCode: err.statusCode, message: err.message })
+    });
+    if (pageData) {
+      const document = DataUtil.splitJson(pageData);
+      store.commit('SET_CURRENT_DOCUMENT', document);
+      return { document }
+    }
   },
   // call fetch only on client-side
   fetchOnServer: false,

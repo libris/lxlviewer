@@ -21,6 +21,7 @@
     </template>
     <template v-else>
       <h1>{{ translateUi('Did not find mapping for code') }} {{ category }}-{{ code }}</h1>
+      <a href="" @click.prevent="$router.back()">{{ translateUi('Go back') }}</a>
     </template>
   </div>
 </template>

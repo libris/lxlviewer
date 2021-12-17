@@ -28,8 +28,10 @@ export default {
   computed: {
     ...mapGetters(['settings']),
   },
-  async asyncData({ $config, route, params, $http }) {
-    const pageData = await $http.$get(`${$config.apiPath}/doc/${params.article}/data.jsonld`)
+  async asyncData({ $config, error, route, params, $http }) {
+    const pageData = await $http.$get(`${$config.apiPath}/doc/${params.article}/data.jsonld`).catch((err) => {
+      error({ statusCode: err.statusCode, message: err.message })
+    });
     return { pageData }
   },
   // call fetch only on client-side
