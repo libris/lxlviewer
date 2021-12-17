@@ -57,7 +57,9 @@ export default {
   },
   mounted() {
     if (this.category) {
-      this.listShown = this.category;
+      if (this.category === 'bib' || this.category === 'auth' || this.category === 'hold') {
+        this.listShown = this.category;
+      }
     }
   },
   computed: {
@@ -81,7 +83,10 @@ export default {
       return this.resources.marcframe;
     },
     category() {
-      return this.$route.params.category;
+      if (this.$route.params.category) {
+        return this.$route.params.category;
+      }
+      return null;
     },
     bibList() {
       return this.getSplitOnNumeric(this.marcframe.bib);
