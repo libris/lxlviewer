@@ -20,8 +20,12 @@
       </div>
     </template>
     <template v-else>
-      <h1>{{ translateUi('Did not find mapping for code') }} {{ category ? category : '' }}-{{ code ? code : '' }}</h1>
-      <a href="" @click.prevent="$router.back()">{{ translateUi('Go back') }}</a>
+      <div>
+        <h1>{{ translateUi('Did not find mapping for code') }} {{ category ? category : '' }}-{{ code ? code : '' }}</h1>
+        <p>
+          <a href="" @click.prevent="$router.back()">{{ translateUi('Go back') }}</a>
+        </p>
+      </div>
     </template>
   </div>
 </template>
@@ -80,7 +84,10 @@ export default {
       return 'MARC-mappning';
     },
     codeTitle() {
-      return `${ this.category }-${ this.code }`;
+      if (this.category && this.code) {
+        return `${ this.category }-${ this.code }`;
+      }
+      return null;
     },
   },
   methods: {
