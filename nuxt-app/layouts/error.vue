@@ -8,6 +8,8 @@
         </div>
         <h1 v-else>An error occurred</h1>
         <a href="" @click.prevent="$router.back()">{{ translateUi('Go back') }}</a>
+        <hr>
+        <a href="/">{{ translateUi('Return to homepage') }}</a>
       </div>
     </div>
   </div>

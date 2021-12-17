@@ -1,6 +1,14 @@
 <template>
   <div class="Vocab-termDetails">
-    <ResultItem :entity="termData" :force-expanded="true" :show-download="false" :show-other-services="false" />
+    <ResultItem :entity="termData" v-if="termData" :force-expanded="true" :show-download="false" :show-other-services="false" />
+    <div v-else>
+      <h2>
+        {{ translateUi("Could not find term") }}: {{ $route.params.term }}
+      </h2>
+      <p>
+        <a href="" @click.prevent="$router.back()">{{ translateUi('Go back') }}</a>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -35,7 +43,7 @@ export default {
       return 'Basvokabulär';
     },
     documentDescription() {
-      if (this.termData.hasOwnProperty('@type')) {
+      if (this.termData && this.termData.hasOwnProperty('@type')) {
         let type = '';
         if (Array.isArray(this.termData['@type'])) {
           type = this.termData['@type'][0];
