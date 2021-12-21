@@ -47,12 +47,12 @@ export default {
 <template>
   <div class="SearchBar" id="SearchBar" aria-labelledby="service-name">
     <div class="SearchBar-container" :class="{ 'container': user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
-      <div class="row">
+      <div class="SearchBar-row row">
         <div class="SearchBar-brand hidden-sm hidden-xs col-md-3">
           <router-link to="/" class="SearchBar-brandLink">
             <img class="SearchBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
           </router-link>
-          <router-link to="/" class="SearchBar-brandTitle" :title="`Version ${version}`">
+          <router-link to="/" class="SearchBar-brandTitle" :class="{ 'not-prod': settings.environment !== 'prod' }" :title="`Version ${version}`">
             <span id="service-name">{{ settings.title }}</span>
           </router-link>
           <span class="SearchBar-envLabel" v-if="this.settings.gitDescribe.distance == 0">
@@ -71,6 +71,9 @@ export default {
 
 <style lang="less">
 .SearchBar {
+  &-row {
+    display: flex;
+  }
   &.stick-to-top {
     position: fixed;
     top: 0;
@@ -82,9 +85,6 @@ export default {
   z-index: @sticky-bar-z;
   width: 100%;
   padding: 0.5rem 0 0.5rem 0;
-  @media screen and (min-width: @screen-md){
-    padding: 1rem 0 0.5rem 0;
-  }
   background-color: @bg-sticky-bar;
   border: solid @grey-lighter;
   border-width: 0px 0px 3px 0px;
@@ -131,6 +131,10 @@ export default {
   }
 
   &-brandTitle {
+    &.not-prod {
+      font-size: 14px;
+      font-size: 1.4rem;
+    }
     display: none;
     @media screen and (min-width: @screen-md){
       display: inline-block;
@@ -138,8 +142,8 @@ export default {
     color: @black;
     cursor: pointer;
     float: right;
-    font-size: 14px;
-    font-size: 1.4rem;
+    font-size: 16px;
+    font-size: 1.6rem;
     line-height: 20px;
     padding: 15px 5px 15px 0px;
     height: 50px;
