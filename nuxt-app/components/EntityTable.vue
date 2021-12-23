@@ -1,7 +1,7 @@
 <template>
   <div class="EntityTable-body" :class="{ 'is-inner-table': isInnerTable, 'is-linked-table': isLinked }" v-if="itemData">
     <div class="PropertyRow d-md-flex" v-if="showUri && itemData.hasOwnProperty('@id')">
-      <div class="PropertyRow-bodyKey d-block d-md-inline">
+      <div class="PropertyRow-bodyKey d-block d-md-inline" title="@id">
         URI ({{ translateUi('link to resource') }})
       </div>
       <div class="PropertyRow-bodyValue">

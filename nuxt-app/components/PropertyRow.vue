@@ -1,6 +1,6 @@
 <template>
   <div class="PropertyRow d-md-flex" :data-property="property">
-    <div :data-property="property" class="PropertyRow-bodyKey d-block d-md-inline" :title="translateKey(property)">{{ translateKey(property) }}</div>
+    <div :data-property="property" class="PropertyRow-bodyKey d-block d-md-inline" :title="property">{{ translateKey(property) }}</div>
     <div :data-property="property" class="PropertyRow-bodyValue single" v-if="!Array.isArray(value)">
       <span class="" v-if="valueType == 'boolean'">{{ translateUi(value == true ? 'Yes' : 'No') }}</span>
       <EntityTable v-else-if="isIntegral && isInner == false" :entity="value" :is-main-entity="false" />
