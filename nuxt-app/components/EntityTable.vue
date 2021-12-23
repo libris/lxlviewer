@@ -42,6 +42,7 @@ export default {
         'reverseLinks',
         'meta',
         'hasItem',
+        'baseClassChain',
       ],
       idCopied: false,
       clipboardAvailable: false,
