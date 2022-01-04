@@ -52,9 +52,6 @@ export default {
     this.clipboardAvailable = typeof navigator !== 'undefined' && typeof navigator.clipboard !== 'undefined';
   },
   methods: {
-    isByLangKey(key) {
-      return key.endsWith('ByLang');
-    },
     copyId() {
       const self = this;
       navigator.clipboard.writeText(this.ownPath).then(function() {

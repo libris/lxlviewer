@@ -4,7 +4,7 @@
     <div :data-property="property" class="PropertyRow-bodyValue single" v-if="!Array.isArray(value)">
       <span class="" v-if="valueType == 'boolean'">{{ translateUi(value == true ? 'Yes' : 'No') }}</span>
       <EntityTable v-else-if="isIntegral && isInner == false" :entity="value" :is-main-entity="false" />
-      <EntityNode :parent-key="property" :entity="value" v-else-if="!isByLangProperty" />
+      <EntityNode :parent-key="property" :entity="value" v-else-if="containerType != '@language'" />
       <span v-else-if="valueType !== 'object'">{{ value }}</span>
       <div class="PropertyRow-grid" v-else>
         <template v-for="(v, lang) in value">
@@ -58,9 +58,6 @@ export default {
   },
   computed: {
     ...mapGetters(['quoted', 'settings', 'resources', 'vocabContext', 'display', 'vocab']),
-    isByLangProperty() {
-      return this.property.includes('ByLang');
-    },
     valueType() {
       return typeof this.value;
     },
@@ -68,10 +65,7 @@ export default {
       return VocabUtil.hasCategory(this.property, 'integral', this.resources);
     },
     containerType() {
-      if (this.vocabContext[1].hasOwnProperty(this.property) && this.vocabContext[1][this.property].hasOwnProperty('@container')) {
-        return this.vocabContext[1][this.property]['@container'];
-      }
-      return null;
+      return VocabUtil.getContextValue(this.property, '@container', this.vocabContext);
     },
     finalizedValue() {
       return this.withoutFilteredTypes;

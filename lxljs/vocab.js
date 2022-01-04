@@ -74,8 +74,8 @@ export function getTermObject(term, vocab, context) {
       tries.push(cn);
     }
   }
-  if (!_class && term.endsWith('ByLang')) {
-    cn = cn.replace('ByLang', '');
+  if (!_class && getContextValue(term, '@container', context) == '@language') {
+    cn = getContextValue(term, '@id', context);
     _class = vocab.get(cn);
     tries.push(cn);
   }

@@ -89,9 +89,6 @@ export default {
   },
   computed: {
     ...mapGetters(['currentDocument', 'quoted', 'settings', 'resources', 'appState']),
-    isByLangValue() {
-      return this.parentKey.includes('ByLang');
-    },
     typeOfLibrisService() {
       const id = this.entityData['@id'];
       if (id.includes('https://id.kb.se/')) {
