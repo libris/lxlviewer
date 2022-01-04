@@ -19,6 +19,7 @@ export const state = () => ({
     navigatingWithFacetColumn: false,
     navigatingFromSearchBar: false,
     domain: null,
+    showLenses: false,
   },
   settings: {
     language: 'sv',
