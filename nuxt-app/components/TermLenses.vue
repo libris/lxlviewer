@@ -32,7 +32,7 @@
         <p>A card is a larger representation of an entity, usually displayed with several rows of information.</p>
         
         <template v-if="lensDefinitions.cards.length > 0">
-          <p>Entity of type <code>{{ lensType }}</code> will be represented as a chip by using the following properties:</p>
+          <p>Entity of type <code>{{ lensType }}</code> will be represented as a card by using the following properties:</p>
           <TermLensesList level="Card" :list="lensDefinitions.cards" />
         </template>
         <p v-else><code>{{ lensType }}</code> doesn't have a definition for cards.</p>
