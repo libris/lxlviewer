@@ -387,6 +387,12 @@
     "Generate control number when item is saved": "Generera löpnummer när bestånd sparas",
     "Enter manual control number": "Ange löpnummer manuellt",
     "Filter by held items for active sigel": "Filtrera på hållna bestånd för aktivt sigel",
-    "Remove filter by held items for active sigel": "Ta bort filtrering på hållna bestånd för aktivt sigel"
-    }
+    "Remove filter by held items for active sigel": "Ta bort filtrering på hållna bestånd för aktivt sigel",
+    "enrichment.info": "Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.",
+    "detailedEnrichment.info": "<p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>\n          <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>\n          <p>\n            Du kan välja mellan att <strong>utöka</strong> (<i class=\"fa text-success fa-plus\"></i>) eller <strong>ersätta</strong> (<i class=\"fa text-accent3 fa-arrow-right\"></i>) en egenskap.\n            Att <strong>utöka</strong> innebär att information läggs till i den berikade posten.\n            <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.\n          </p>"
+    },
+  "en": {
+    "enrichment.info": "Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.",
+    "detailedEnrichment.info": "<p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>\n          <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>\n          <p>\n            Du kan välja mellan att <strong>utöka</strong> (<i class=\"fa text-success fa-plus\"></i>) eller <strong>ersätta</strong> (<i class=\"fa text-accent3 fa-arrow-right\"></i>) en egenskap.\n            Att <strong>utöka</strong> innebär att information läggs till i den berikade posten.\n            <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.\n          </p>"
+  }
 }
