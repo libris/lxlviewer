@@ -86,21 +86,35 @@ export function convertToVocabKey(str, context) {
   return `${context[0]['@vocab']}${str}`;
 }
 
-export function getUiPhraseByLang(phrase, langcode, translationsFile) {
+export function getUiPhraseByLang(phrase, langcode, translationsFile, parameters) {
   if (translationsFile === null || typeof translationsFile === 'undefined') return phrase; // Fallback if no translations
 
   if (typeof phrase === 'string') {
-    if (translationsFile[langcode] && translationsFile[langcode][phrase]) {
-      return translationsFile[langcode][phrase];
-    }
+    return getOneUiPhraseByLang(phrase, langcode, translationsFile, parameters);
   } else if (Array.isArray(phrase)) {
-    const translated = phrase.map((el) => {
-      if (translationsFile[langcode] && translationsFile[langcode][el]) {
-        return translationsFile[langcode][el];
-      } return el;
-    });
-    return translated.join(' ');
+    return phrase.map(p => getOneUiPhraseByLang(p, langcode, translationsFile, parameters)).join(' ');
   }
+  return phrase;
+}
+
+function getOneUiPhraseByLang(phrase, langcode, translationsFile, parameters) {
+  if (translationsFile[langcode] && translationsFile[langcode][phrase]) {
+    let str = translationsFile[langcode][phrase];
+    
+    if (parameters !== undefined) {
+      if (typeof parameters === 'string') {
+        str = str.replace('{}', parameters);
+      }
+      else if (typeof parameters === 'object') {
+        for (const key in parameters) {
+          str = str.replaceAll(`{${key}}`, parameters[key]);
+        }
+      }
+    }
+    
+    return str;
+  }
+  
   return phrase;
 }
 

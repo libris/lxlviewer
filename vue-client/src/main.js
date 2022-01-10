@@ -109,7 +109,7 @@ Vue.mixin({
 });
 
 Vue.filter('removeDomain', value => StringUtil.removeDomain(value, store.getters.settings.removableBaseUris));
-Vue.filter('translatePhrase', string => StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language, store.getters.resources.i18n));
+Vue.filter('translatePhrase', (string, parameters) => StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language, store.getters.resources.i18n, parameters));
 Vue.filter('capitalize', (value) => {
   if (!value) return '';
   let newValue = value;

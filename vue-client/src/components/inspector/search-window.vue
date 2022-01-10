@@ -320,9 +320,9 @@ export default {
                 :valueDisplayLimit=1></entity-summary>
             </div>
             <div class="SearchWindow-dialogContainer">
-              <p class="preview-entity-text uppercaseHeading">Vill du skapa {{ typeOfExtractingEntity }} av lokal entitet?</p>
+              <p class="preview-entity-text uppercaseHeading">{{'previewEntity.heading' | translatePhrase(typeOfExtractingEntity)}}</p>
               <p>
-                Den lokala entiteten bryts ut och länkas. Förhandsgranska för att se hur den kommer att se ut.
+                {{'previewEntity.text' | translatePhrase}}
               </p>
               <button-component
                 :button-text="['Yes, create', typeOfExtractingEntity ]"
