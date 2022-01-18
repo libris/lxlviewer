@@ -74,7 +74,7 @@ export function getTermObject(term, vocab, context) {
       tries.push(cn);
     }
   }
-  if (!_class && getContextValue(term, '@container', context) == '@language') {
+  if (!_class && getContextValue(term, '@container', context) === '@language') {
     cn = getContextValue(term, '@id', context);
     _class = vocab.get(cn);
     tries.push(cn);
