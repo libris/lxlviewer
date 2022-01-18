@@ -48,7 +48,7 @@ export default {
         _sort: `_sortKeyByLang.${this.user.settings.language || 'sv'}`,
       };
       
-      if (this.recordType !== 'Item' && this.recordType !== 'Instance' && this.mainEntity.reverseLinks) {
+      if (this.recordType !== 'Instance' && this.mainEntity.reverseLinks) {
         this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
         this.checkingRelations = false;
         query.o = this.mainEntity['@id'];
@@ -59,10 +59,7 @@ export default {
       this.checkingRelations = true;
       const timeoutLength = 1100; // Needed so that the index has time to update 
       setTimeout(() => { //
-        if (this.recordType === 'Item') {
-          query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
-          query['@type'] = 'Item';
-        } else if (this.recordType === 'Instance') {
+        if (this.recordType === 'Instance') {
           query['itemOf.@id'] = this.mainEntity['@id'];
           query['@type'] = 'Item';
 
@@ -128,7 +125,7 @@ export default {
       return StringUtil.getUiPhraseByLang(this.totalRelationTooltipText, this.user.settings.language, this.resources.i18n);
     },
     totalRelationTooltipText() {
-      if (this.recordType === 'Instance' || this.recordType === 'Item') {
+      if (this.recordType === 'Instance') {
         if (this.numberOfRelations === 0) {
           return 'No holdings';
         } if (Number.isNaN(this.numberOfRelations)) {
@@ -199,7 +196,7 @@ export default {
   <div class="ReverseRelations-container">
     <div class="ReverseRelations">
       <div class="ReverseRelations-header uppercaseHeading--light">
-        <span v-if="recordType === 'Instance' || recordType === 'Item'">{{"Holding" | translatePhrase}}</span>
+        <span v-if="recordType === 'Instance'">{{"Holding" | translatePhrase}}</span>
         <span v-else>{{"Used in" | translatePhrase}}</span>
       </div>
       <div class="ReverseRelations-btnContainer">
