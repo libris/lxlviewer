@@ -200,6 +200,9 @@ export function getItemLabel(item, resources, quoted, settings, inClass = '') {
     // Assume this is already a label.
     return item;
   }
+  if (typeof item === 'number') {
+    return `${item}`;
+  }
   if (!item || typeof item === 'undefined') {
     throw new Error('getItemLabel was called with an undefined object.');
   }
