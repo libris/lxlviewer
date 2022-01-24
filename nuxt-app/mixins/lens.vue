@@ -14,12 +14,16 @@ export default {
   computed: {
     ...mapGetters(['vocab', 'display', 'currentDocument', 'quoted', 'resources', 'vocabContext', 'settings']),
     getItemLabel() {
-      return DisplayUtil.getItemLabel(
+      const label = DisplayUtil.getItemLabel(
         this.entityData,
         this.resources,
         this.quoted,
         this.settings,
       );
+      if (label === this.entityData) {
+        return this.translateKey(this.entityData);
+      }
+      return label;
     },
     getChip() {
       const chip = DisplayUtil.getChip(
