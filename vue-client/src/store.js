@@ -72,6 +72,7 @@ const store = new Vuex.Store({
     status: {
       userIdle: false,
       panelOpen: false,
+      fullScreenPanelOpen: false,
       keybindState: '',
       fullWidth: false,
       keyActions: [],

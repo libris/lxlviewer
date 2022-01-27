@@ -20,6 +20,8 @@ import ModalComponent from '@/components/shared/modal-component';
 import MarcPreview from '@/components/inspector/marc-preview';
 import TabMenu from '@/components/shared/tab-menu';
 import ValidationSummary from '@/components/inspector/validation-summary';
+import FullscreenPanel from '../components/shared/fullscreen-panel.vue';
+import VersionHistory from '../components/inspector/version-history.vue';
 
 export default {
   name: 'Inspector',
@@ -880,6 +882,8 @@ export default {
     'marc-preview': MarcPreview,
     'tab-menu': TabMenu,
     'validation-summary': ValidationSummary,
+    'fullscreen-panel': FullscreenPanel,
+    'version-history': VersionHistory,
   },
   mounted() {
     this.$nextTick(() => {
@@ -1002,6 +1006,9 @@ export default {
     <modal-component class="DetailedEnrichmentModal" :title="'Detailed enrichment' | translatePhrase" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
       <DetailedEnrichment slot="modal-body" :floating-dialogs="true" />
     </modal-component>
+    <fullscreen-panel v-if="status.fullScreenPanelOpen">
+      <version-history slot="content" />
+    </fullscreen-panel>
   </div>
 </template>
 

@@ -7,6 +7,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
+import Button from '@/components/shared/button';
 
 export default {
   name: 'entity-changelog',
@@ -17,6 +18,9 @@ export default {
     };
   },
   methods: {
+    openVersionHistory() {
+      this.$store.dispatch('setStatusValue', { property: 'fullScreenPanelOpen', value: true });
+    },
   },
   computed: {
     focusData() {
@@ -28,6 +32,7 @@ export default {
   },
   components: {
     SummaryNode,
+    'button-component': Button,
   },
   watch: {
   },
@@ -54,6 +59,7 @@ export default {
         <span class="EntityChangelog-unknown" v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
       </span>
     </div>
+    <button-component :inverted="true" class="Button-default" @click="openVersionHistory()" :label="'View version history'" icon="clock-o" size="medium" />
   </div>
 </template>
 
