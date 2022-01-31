@@ -19,10 +19,17 @@ export default {
     entityData() {
       return this.item;
     },
+    contextBaseUri() {
+      return VocabUtil.getContainedBaseUri(this.item['@id'], this.vocabContext);
+    },
+    contextPrefix() {
+      return VocabUtil.getContainedPrefix(this.item['@id'], this.vocabContext);
+    },
     shortId() {
       const shortId = this.item['@id'].split('/').pop();
-      if (this.item['@id'].includes('/marc/')) {
-        return `marc:${shortId}`;
+      if (this.contextPrefix.length > 0) {
+        const idWithoutBase = this.item['@id'].replace(this.contextBaseUri, '');
+        return `${this.contextPrefix}:${idWithoutBase}`;
       }
       return shortId;
     },

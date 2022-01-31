@@ -600,6 +600,24 @@ export function getBaseUriFromPrefix(prefix, context) {
   return baseUri;
 }
 
+export function getContainedBaseUri(uri, context) {
+  // If uri contains a baseUri defined in the context, return that baseUri
+  const contextList = context[0];
+  let baseUri = '';
+  forOwn(contextList, (value) => {
+    if (uri.includes(value)) {
+      baseUri = value;
+    }
+  });
+  return baseUri;
+}
+
+export function getContainedPrefix(uri, context) {
+  // If uri contains a prefix defined in the context, return that prefix
+  const baseUri = getContainedBaseUri(uri, context);
+  return getPrefixFromBaseUri(baseUri, context);
+}
+
 export function getPrefixFromBaseUri(baseUri, context) {
   // Returns prefix that corresponds to the provided baseUri.
   const contextList = context[0];
