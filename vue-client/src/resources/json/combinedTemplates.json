@@ -1102,11 +1102,7 @@
               {
                 "@type": "Contribution",
                 "agent": null,
-                "role": [
-                  {
-                    "@id": "https://id.kb.se/relator/unspecifiedContributor"
-                  }
-                ]
+                "role": []
               }
             ],
             "contentType": [
