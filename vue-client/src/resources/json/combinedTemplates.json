@@ -1036,7 +1036,7 @@
             }
           ],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
-          "baseMaterial": [{"@id": "https://id.kb.se/term/rda/material/Paper"}],
+          "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
           "extent": [
             {
               "@type": "Extent",
