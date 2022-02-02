@@ -1093,11 +1093,7 @@
               {
                 "@type": "Contribution",
                 "agent": null,
-                "role": [
-                  {
-                    "@id": "https://id.kb.se/relator/author"
-                  }
-                ]
+                "role": []
               },
               {
                 "@type": "Contribution",
