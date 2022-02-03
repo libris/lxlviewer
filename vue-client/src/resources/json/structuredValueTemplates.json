@@ -461,6 +461,10 @@
     "@type": "Duration",
     "value": ""
   },
+  "Material": {
+    "@type": "Material",
+    "label": ""
+  },
 "MovementNotation": {
    "@type": "MovementNotation",
    "label": ""
