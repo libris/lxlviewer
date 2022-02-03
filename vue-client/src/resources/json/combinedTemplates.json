@@ -964,6 +964,192 @@
         }
       }
     },
+    "manuscriptMonographText": {
+      "label": "Handskrift",
+      "description": "Handskrift monografi - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:AbbreviatedLevel",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Manuscript",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "marc:primaryProvisionActivity": {
+            "@type": "PrimaryProduction",
+            "country": {
+              "@id": "https://id.kb.se/country/sw"
+            },
+            "marc:publicationStatus": "marc:QuestionableDate",
+            "otherYear": "",
+            "year": ""
+          },
+          "production": [
+            {
+              "@type": "Production",
+              "agent": {
+                "@type": "Agent",
+                "label": [
+                  ""
+                ]
+              },
+              "date": [
+                ""
+              ],
+              "place": [
+                {
+                  "@type": "Place",
+                  "label": [
+                    ""
+                  ]
+                }
+              ]
+            }
+          ],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
+          "physicalDetailsNote": "illustrationer",
+          "productionMethod": [
+            {
+              "@type": "ProductionMethod",
+              "label": [
+                "handskrift"
+              ]
+            }
+          ],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": [
+                ""
+              ]
+            },
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [
+              {
+                "@id": "https://id.kb.se/language/swe"
+              }
+            ],
+            "genreForm": [
+              {
+                "@id": "https://id.kb.se/term/saogf/Handskrifter"
+              }
+            ],
+            "contribution": [
+              {
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [
+                  {
+                    "@id": "https://id.kb.se/relator/author"
+                  }
+                ]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/Text"
+              }
+            ],
+            "hasNote": [
+              {
+                "@type": "marc:LanguageNote",
+                "label": ""
+              }
+            ],
+            "subject": [
+              {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              {
+                "@type": "ComplexSubject",
+                "inScheme": {
+                  "@id": "https://id.kb.se/term/sao"
+                },
+                "termComponentList": [
+                  {
+                    "@type": "Geographic",
+                    "prefLabel": ""
+                  },
+                  {
+                    "@type": "GeographicSubdivision",
+                    "prefLabel": ""
+                  },
+                  {
+                    "@type": "GeographicSubdivision",
+                    "prefLabel": ""
+                  }
+                ]
+              }
+            ],
+            "summary": [
+              {
+                "@type": "Summary",
+                "label": [""]
+              }
+            ]
+          }
+        }
+      }
+    },
     "movie": {
       "label": "Film",
       "description": "Videoinspelning - RDA",
