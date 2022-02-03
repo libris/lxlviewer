@@ -1794,11 +1794,7 @@
           ],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Sheet"}],
-          "baseMaterial": [
-            {
-              "@id": "https://id.kb.se/marc/Paper"
-            }
-          ],
+          "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
           "colorContent": [
             {
               "@id": "https://id.kb.se/marc/Multicolored"
@@ -2769,21 +2765,8 @@
           ],
           "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Sheet"}],
-          "appliedMaterial": [
-            {
-              "@type": "AppliedMaterial",
-              "label": ""
-            }
-          ],
-          "baseMaterial": [
-            {
-              "@id": "https://id.kb.se/marc/NonProjectedType-o"
-            },
-            {
-              "@type": "BaseMaterial",
-              "label": "papper"
-            }
-          ],
+          "appliedMaterial": [],
+          "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
           "colorContent": [
             {
               "@id": "https://id.kb.se/marc/BlackAndWhite"
