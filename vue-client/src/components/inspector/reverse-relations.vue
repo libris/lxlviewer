@@ -194,7 +194,7 @@ export default {
 
 <template>
   <div class="ReverseRelations-container">
-    <div class="ReverseRelations">
+    <div class="ReverseRelations" v-if="recordType !== 'Item'">
       <div class="ReverseRelations-header uppercaseHeading--light">
         <span v-if="recordType === 'Instance'">{{"Holding" | translatePhrase}}</span>
         <span v-else>{{"Used in" | translatePhrase}}</span>
