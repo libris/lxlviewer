@@ -141,6 +141,20 @@ export default {
   watch: {
   },
   computed: {
+    diffAdded() {
+      if (this.diff == null) return false;
+      if (this.diff.added.includes(this.path)) {
+        return true;
+      }
+      return false;
+    },
+    diffModified() {
+      if (this.diff == null) return false;
+      if (this.diff.modified.includes(this.path)) {
+        return true;
+      }
+      return false;
+    },
     isReverseProperty() {
       return this.fieldKey.indexOf('@reverse') > -1;
     },
@@ -425,6 +439,12 @@ export default {
     },
   },
   methods: {
+    onLabelClick() {
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'field-label-clicked',
+        value: this.path,
+      });
+    },
     pasteClipboardItem() {
       const obj = this.clipboardValue;
       DataUtil.fetchMissingLinkedToQuoted(obj, this.$store)
@@ -625,8 +645,8 @@ export default {
       'is-lastAdded': isLastAdded, 
       'is-removed': removed,
       'is-locked': locked,
-      'is-diff': isFieldDiff,
-      'is-new': isFieldNew,
+      'is-diff': isFieldDiff || diffModified,
+      'is-new': isFieldNew || diffAdded,
       'is-highlighted': embellished,
       'is-grouped': isGrouped,
       'has-failed-validations': failedValidations.length > 0,
@@ -704,7 +724,7 @@ export default {
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-            :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>          
+            :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>          
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
             <div class="Field-comment">
@@ -723,7 +743,7 @@ export default {
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-        :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
+        :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>
 
       <!-- Is inner -->
       <div class="Field-actions is-nested">
@@ -822,6 +842,7 @@ export default {
           :field-key="fieldKey" 
           :parent-path="path"
           :index="index" 
+          :diff="diff"
           :item="item"></item-error>
 
         <item-grouped 
@@ -830,6 +851,7 @@ export default {
           :entity-type="entityType" 
           :parent-path="path"
           :index="index" 
+          :diff="diff"
           :item="item"></item-grouped>
 
         <!-- Other linked resources -->
@@ -842,6 +864,7 @@ export default {
           :value="item" 
           :entity-type="entityType" 
           :index="index" 
+          :diff="diff"
           :parent-path="path"></item-vocab>
 
         <!-- Other linked entities -->
@@ -853,6 +876,7 @@ export default {
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 
+          :diff="diff"
           :parent-path="path"></item-entity>
 
         <!-- Not linked, local child objects -->
@@ -872,6 +896,7 @@ export default {
           :index="index" 
           :parent-path="path" 
           :in-array="valueIsArray" 
+          :diff="diff"
           :should-expand="expandChildren || embellished"
           :show-action-buttons="actionButtonsShown"></item-local>
 
@@ -889,6 +914,7 @@ export default {
           :range-full="rangeFull"
           :index="index"
           :in-array="valueIsArray"
+          :diff="diff"
           :show-action-buttons="actionButtonsShown"
           :should-expand="expandChildren || embellished"
           :parent-path="path"></item-sibling>
@@ -911,6 +937,7 @@ export default {
           :field-value="item" 
           :entity-type="entityType" 
           :index="index" 
+          :diff="diff"
           :parent-path="path"></item-vocab>
 
         <!-- Boolean value -->
@@ -921,6 +948,7 @@ export default {
           :field-value="item" 
           :entity-type="entityType" 
           :index="index" 
+          :diff="diff"
           :parent-path="path"></item-boolean>
 
         <!-- Numeric value -->
@@ -931,6 +959,7 @@ export default {
           :field-value="item"
           :entity-type="entityType"
           :index="index"
+          :diff="diff"
           :parent-path="path"
           :range="range"/>
 
@@ -945,6 +974,7 @@ export default {
           :field-key="fieldKey" 
           :index="index" 
           :parent-path="path" 
+          :diff="diff"
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
 
@@ -956,6 +986,7 @@ export default {
           :field-value="item"
           :field-key="fieldKey"
           :index="index"
+          :diff="diff"
           :parent-path="path"
           :is-expanded="isExpanded"></item-shelf-control-number>
       </div>

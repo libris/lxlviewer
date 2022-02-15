@@ -96,9 +96,7 @@ export default {
           value: 'fullscreen-panel-open', 
         });
       }
-      if (window.innerWidth <= 1200 || this.user.settings.forceFullViewPanel) {
-        this.lockScroll(true);
-      }
+      this.lockScroll(true);
       setTimeout(() => {
         this.fadedIn = true;
       }, 1);

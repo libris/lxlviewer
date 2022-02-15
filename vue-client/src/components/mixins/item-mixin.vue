@@ -24,6 +24,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    diff: {
+      type: Object,
+      default: null,
+    },
     index: Number,
   },
   data() {
@@ -85,6 +89,20 @@ export default {
         return `${this.parentPath}[${this.index}]`;
       }
       return `${this.parentPath}`;
+    },
+    diffAdded() {
+      if (this.diff == null) return false;
+      if (this.diff.added.includes(this.path)) {
+        return true;
+      }
+      return false;
+    },
+    diffModified() {
+      if (this.diff == null) return false;
+      if (this.diff.modified.includes(this.path)) {
+        return true;
+      }
+      return false;
     },
     inClassAndProperty() {
       return `${this.entityType}.${this.fieldKey}`;

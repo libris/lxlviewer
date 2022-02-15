@@ -1006,7 +1006,7 @@ export default {
     <modal-component class="DetailedEnrichmentModal" :title="'Detailed enrichment' | translatePhrase" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
       <DetailedEnrichment slot="modal-body" :floating-dialogs="true" />
     </modal-component>
-    <fullscreen-panel v-if="status.fullScreenPanelOpen">
+    <fullscreen-panel v-if="$route.params.view == 'history'">
       <version-history slot="content" />
     </fullscreen-panel>
   </div>

@@ -18,9 +18,6 @@ export default {
     };
   },
   methods: {
-    openVersionHistory() {
-      this.$store.dispatch('setStatusValue', { property: 'fullScreenPanelOpen', value: true });
-    },
   },
   computed: {
     focusData() {
@@ -59,7 +56,7 @@ export default {
         <span class="EntityChangelog-unknown" v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
       </span>
     </div>
-    <button-component :inverted="true" class="Button-default" @click="openVersionHistory()" :label="'View version history'" icon="clock-o" size="medium" />
+    <router-link :to="{ path: `${this.$route.path}/history` }"><button-component :inverted="true" class="Button-default" :label="'View version history'" icon="clock-o" size="medium" /></router-link>
   </div>
 </template>
 
@@ -72,6 +69,7 @@ export default {
   flex-direction: column;
   @media (min-width: @screen-md-min) {
     flex-direction: row;
+    align-items: baseline;
     flex-wrap: wrap;
   }
   &-unknown {

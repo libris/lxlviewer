@@ -544,6 +544,7 @@ export default {
         :field-key="k"
         :field-value="v"
         :key="k" 
+        :diff="diff"
         :show-action-buttons="showActionButtons"
         :expand-children="expandChildren"
         :is-expanded="expanded"></field> 

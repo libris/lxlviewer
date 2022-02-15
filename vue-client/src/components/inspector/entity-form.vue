@@ -32,6 +32,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    diff: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -127,6 +131,7 @@ export default {
         :parent-accepted-types="acceptedTypes"
         :is-distinguished="k === 'instanceOf'"
         :key="k" 
+        :diff="diff"
         :field-key="k" 
         :field-value="v" 
         :parent-path="editingObject" />
