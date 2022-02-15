@@ -618,6 +618,10 @@
     "@type": "GeographicSubdivision",
     "prefLabel": ""
   },
+  "Temporal": {
+    "@type": "Temporal",
+    "prefLabel": ""
+  },
   "TemporalSubdivision": {
     "@type": "TemporalSubdivision",
     "prefLabel": ""
