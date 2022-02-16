@@ -254,9 +254,9 @@ export default {
     flex-direction: column;
   }
   &-sideCol {
+    box-shadow: @fullscreen-panel-shadow;
     z-index: 2;
     height: 100vh;
-    box-shadow: @fullscreen-panel-shadow;
   }
   &-backLink {
     font-weight: normal;
@@ -268,7 +268,6 @@ export default {
     z-index: 1;
     font-weight: 600;
     background-color: @white;
-    box-shadow: @fullscreen-panel-shadow;
     border: solid #ccc;
     border-width: 0px 0px 1px 0px;
     display: flex;
@@ -287,7 +286,7 @@ export default {
   }
   &-propertyDetails {
     z-index: 1;
-    box-shadow: @fullscreen-panel-shadow;
+    box-shadow: -5px 0px 5px 0px @grey-lighter;
     display: flex;
     flex-direction: column;
     flex-basis: 30%;
@@ -313,7 +312,7 @@ export default {
     display: flex;
     flex-direction: column;
     border-style: solid;
-    border-width: 0px 0px 0px 3px;
+    border-width: 0px 0px 0px 4px;
     border-color: transparent;
     padding: 0.75rem 0.75rem 0.75rem 1.5rem;
     &.selected {
