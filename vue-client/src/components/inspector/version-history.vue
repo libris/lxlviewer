@@ -35,7 +35,7 @@ export default {
       'status',
     ]),
     inspectingPathTranslated() {
-      if (this.inspectingPath == '') return '';
+      if (this.inspectingPath === '') return '';
       const path = this.inspectingPath;
       const split = path.split('.');
       split.splice(0, 1);
@@ -74,16 +74,16 @@ export default {
       };
     },
     modifiedPathsInCurrentVersion() {
-      if (this.selectedChangeSet.hasOwnProperty('modifiedPaths') == false) return [];
+      if (this.selectedChangeSet.hasOwnProperty('modifiedPaths') === false) return [];
       const modified = this.selectedChangeSet.modifiedPaths;
       const convertedModified = [];
       modified.forEach((modifiedPath) => {
         let path = '';
         for (let i = 0; i < modifiedPath.length; i++) {
           if (isNumber(modifiedPath[i])) {
-            path += `[${modifiedPath[i]}]`
+            path += `[${modifiedPath[i]}]`;
           } else {
-            if (i != 0) {
+            if (i !== 0) {
               path += '.';
             }
             path += modifiedPath[i];
@@ -91,21 +91,21 @@ export default {
         }
         path = path.replace('@graph[0]', 'record');
         path = path.replace('@graph[1]', 'mainEntity');
-        convertedModified.push(path)
+        convertedModified.push(path);
       });
       return convertedModified;
     },
     addedPathsInCurrentVersion() {
-      if (this.selectedChangeSet.hasOwnProperty('addedPaths') == false) return [];
+      if (this.selectedChangeSet.hasOwnProperty('addedPaths') === false) return [];
       const added = this.selectedChangeSet.addedPaths;
       const convertedAdded = [];
       added.forEach((addedPath) => {
         let path = '';
         for (let i = 0; i < addedPath.length; i++) {
           if (isNumber(addedPath[i])) {
-            path += `[${addedPath[i]}]`
+            path += `[${addedPath[i]}]`;
           } else {
-            if (i != 0) {
+            if (i !== 0) {
               path += '.';
             }
             path += addedPath[i];
@@ -113,7 +113,7 @@ export default {
         }
         path = path.replace('@graph[0]', 'record');
         path = path.replace('@graph[1]', 'mainEntity');
-        convertedAdded.push(path)
+        convertedAdded.push(path);
       });
       return convertedAdded;
     },
@@ -134,7 +134,7 @@ export default {
   },
   watch: {
     selectedVersion(val, oldval) {
-      if (val != oldval) {
+      if (val !== oldval) {
         this.fetchVersion(val);
       }
     },
@@ -155,19 +155,15 @@ export default {
     fetchHistoryData() {
       const fnurgel = this.$route.params.fnurgel;
       // _changesets
-      const fetchUrl = `${this.settings.apiPath}/${this.$route.params.fnurgel}/_changesets`;
-      fetch(fetchUrl).then((response) => {
-        return response.json();
-      }).then((result) => {
+      const fetchUrl = `${this.settings.apiPath}/${fnurgel}/_changesets`;
+      fetch(fetchUrl).then(response => response.json()).then((result) => {
         this.historyData = result;
         this.fetchVersion(0);
       });
     },
     fetchVersion(number) {
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
-      fetch(fetchUrl).then((response) => {
-        return response.json();
-      }).then((result) => {
+      fetch(fetchUrl).then(response => response.json()).then((result) => {
         this.fetchedVersionData = LxlDataUtil.splitJson(result);
       });
     },
