@@ -269,7 +269,8 @@ export default {
     font-weight: 600;
     background-color: @white;
     box-shadow: @fullscreen-panel-shadow;
-    border: 1px solid #ccc;
+    border: solid #ccc;
+    border-width: 0px 0px 1px 0px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -287,6 +288,8 @@ export default {
   &-propertyDetails {
     z-index: 1;
     box-shadow: @fullscreen-panel-shadow;
+    display: flex;
+    flex-direction: column;
     flex-basis: 30%;
     max-height: 0%;
     transition: max-height 0.25s ease;
@@ -296,7 +299,6 @@ export default {
   }
   &-changeSets {
     background-color: @white;
-    border: 1px solid #ccc;
   }
   .row > div {
     padding: 0;
