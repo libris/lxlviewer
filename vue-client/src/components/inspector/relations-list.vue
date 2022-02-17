@@ -20,6 +20,10 @@ export default {
       type: String,
       default: '',
     },
+    listContextTypeMode: {
+      type: String,
+      default: '',
+    },
     itemOf: {},
   },
   data() {
@@ -161,9 +165,7 @@ export default {
       return q + httpUtil.buildQueryString(queryPairs);
     },
     windowTitle() {
-      if (this.listContextType === 'Item') {
-        return StringUtil.getUiPhraseByLang('All holdings', this.user.settings.language, this.resources.i18n);
-      } if (this.listContextType === 'Instance') {
+      if (this.listContextTypeMode === 'Instance') {
         let windowTitle = StringUtil.getUiPhraseByLang('Holdings of', this.user.settings.language, this.resources.i18n);
         windowTitle += ` ${this.itemOfTitle}`;
         return windowTitle;

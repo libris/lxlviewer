@@ -35,6 +35,8 @@ export default {
       headerThreshold: 0,
       hiddenDetailsNumber: null,
       showAllKeys: false,
+      totalReverseCount: -1,
+      itemReverseCount: -1,
     };
   },
   methods: {
@@ -54,6 +56,12 @@ export default {
       if (headerContainer !== null) {
         this.headerThreshold = headerContainer.offsetTop + headerContainer.offsetHeight - 20;
       }
+    },
+    itemCount(value) {
+      this.itemReverseCount = value;
+    },
+    allCount(value) {
+      this.totalReverseCount = value;
     },
   },
   computed: {
@@ -85,6 +93,10 @@ export default {
         summary = summary.concat(StringUtil.getFormattedEntries(summaryArray, this.resources.vocab, this.user.settings.language, this.resources.context));
       });
       return summary.join(' • ');
+    },
+    showUsedIn() {
+      return this.recordType !== 'Instance'
+        || (this.totalReverseCount !== this.itemReverseCount && this.totalReverseCount > 0);
     },
   },
   beforeDestroy() {
@@ -125,13 +137,17 @@ export default {
           <!-- <tag-switch :document="focusData" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Bookmark" /> -->
           <tag-switch :document="focusData" v-if="recordType === 'Instance'" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Flagged" />
         </div>
-        <div class="HeaderComponent-relationsContainer"
-          v-if="inspector.status.isNew == false">
-          <reverse-relations 
-            :main-entity="focusData" 
-            :compact="false">
-          </reverse-relations>
-        </div>
+        <reverse-relations v-show="showUsedIn"
+                           @numberOfRelations="allCount"
+                           :main-entity="focusData"
+                           :compact="true">
+        </reverse-relations>
+        <reverse-relations v-if="recordType === 'Instance'"
+                           @numberOfRelations="itemCount"
+                           :main-entity="focusData"
+                           :mode="'items'"
+                           :compact="true">
+        </reverse-relations>
       </div>
     </div>
     <!-- <div class="EntityHeader-body HeaderComponent-body is-compact">
@@ -219,7 +235,6 @@ export default {
   &-tags {
     display: flex;
     align-items: center;
-    margin-right: 1em;
     .TagSwitch {
       display: flex;
     }
