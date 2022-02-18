@@ -74,8 +74,12 @@ export default {
       return this.showAllKeys ? 'Show fewer' : 'Show more';
     },
     showUsedIn() {
-      return this.recordType !== 'Instance' 
-        || (this.totalReverseCount !== this.itemReverseCount && this.totalReverseCount > 0);
+      if (this.recordType !== 'Instance') {
+        return true;
+      }
+      
+      const itemCountReady = this.itemReverseCount !== -1;
+      return itemCountReady && this.totalReverseCount > 0 && this.totalReverseCount !== this.itemReverseCount;
     },
   },
   methods: {
