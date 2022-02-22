@@ -1035,6 +1035,7 @@
               ]
             }
           ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
           "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
           "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
           "extent": [
