@@ -12,6 +12,8 @@ import EntityForm from './entity-form.vue';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import TabMenu from '@/components/shared/tab-menu';
 import Button from '@/components/shared/button';
+import VersionHistoryPropertyDetails from './version-history-property-details.vue';
+import VersionHistoryChangesets from './version-history-changesets.vue';
 
 export default {
   mixins: [LensMixin],
@@ -34,30 +36,6 @@ export default {
       'settings',
       'status',
     ]),
-    inspectingPathTranslated() {
-      if (this.inspectingPath === '') return '';
-      const path = this.inspectingPath;
-      const split = path.split('.');
-      split.splice(0, 1);
-      let result = '';
-      for (let i = 0; i < split.length; i++) {
-        if (i > 0) {
-          result += ' > ';
-        }
-        let value = split[i];
-        value = value.replace(/(\[.*?\])/g, '');
-        value = StringUtil.getLabelByLang(value, this.user.settings.language, this.resources);
-        value = value[0].toUpperCase() + value.substring(1);
-        result += value;
-      }
-      return result;
-    },
-    changeSetsReversed() {
-      if (this.historyData != null) {
-        return [...this.historyData.changeSets].reverse();
-      }
-      return null;
-    },
     focusData() {
       if (this.fetchedVersionData) {
         return this.fetchedVersionData.mainEntity;
@@ -66,6 +44,18 @@ export default {
     },
     selectedChangeSet() {
       return this.changeSetsReversed[this.selectedVersion];
+    },
+    changeSets() {
+      if (this.historyData != null && this.historyData.hasOwnProperty('changeSets')) {
+        return this.historyData.changeSets;
+      }
+      return null;
+    },
+    changeSetsReversed() {
+      if (this.changeSets != null) {
+        return [...this.changeSets].reverse();
+      }
+      return null;
     },
     currentVersionDiff() {
       return {
@@ -145,6 +135,9 @@ export default {
     },
   },
   methods: {
+    changeSelectedVersion(val) {
+      this.selectedVersion = val;
+    },
     closePropertyDetails() {
       this.inspectingPath = '';
     },
@@ -172,7 +165,9 @@ export default {
     EntityForm,
     SummaryNode,
     TabMenu,
+    VersionHistoryPropertyDetails,
     'button-component': Button,
+    VersionHistoryChangesets,
   },
   mounted() {
     this.$nextTick(() => {
@@ -208,33 +203,13 @@ export default {
             </entity-form>
           </template>
         </div>
-        <div class="VersionHistory-propertyDetails" :class="{ 'is-opened': inspectingPath.length > 0 }">
-          <div class="VersionHistory-header">
-            <span>
-            Egenskapshistorik: {{ inspectingPathTranslated }}
-            </span>
-            <button-component @click="closePropertyDetails" :inverted="true" class="Button-default" :label="'Close'" icon="times" size="medium" />
-          </div>
-          <div class="VersionHistory-content">
-            Detailed change information about {{ inspectingPath }}
-          </div>
-        </div>
+        <VersionHistoryPropertyDetails :inspecting-path="inspectingPath" :full-history-data="historyData" @close="closePropertyDetails" />
       </div>
       <div class="col-md-2 VersionHistory-sideCol">
         <div class="VersionHistory-header">
           Ändringshistorik
         </div>
-        <div class="VersionHistory-changeSets" v-if="historyData">
-          <div class="ChangeSet" v-for="(changeSet, index) in changeSetsReversed" :key="changeSet.date" @click="selectedVersion = index" :class="{ 'selected': selectedVersion == index }">
-            <div class="ChangeSet-changeSetContainer" :class="{ 'selected': selectedVersion == index }">
-              <span class="ChangeSet-currentVersion" :class="{ 'selected': selectedVersion == index }" v-if="index == 0">Aktuell version</span>
-              <span class="ChangeSet-date" :class="{ 'selected': selectedVersion == index }">{{ $moment(changeSet.date).format('lll') }}</span>
-              <span class="ChangeSet-author" :class="{ 'selected': selectedVersion == index }">
-                <SummaryNode :is-static="true" :hover-links="false" v-if="changeSet.agent" :item="changeSet.agent" :is-last="true" :field-key="'agent'"/>
-              </span>
-            </div>
-          </div>
-        </div>
+        <VersionHistoryChangesets :change-sets="changeSets" :selected-version="selectedVersion" @version-selected="changeSelectedVersion" />
       </div>
     </div>
   </div>
@@ -290,6 +265,7 @@ export default {
     transition: max-height 0.25s ease;
     &.is-opened {
       max-height: 30%;
+      min-height: 30rem;
     }
   }
   &-changeSets {

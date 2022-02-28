@@ -88,23 +88,27 @@ export default {
       return fItem;
     },
     reverseItem() {
-      return this.formObj['@reverse'];
+      if (this.formObj != null && this.formObj.hasOwnProperty('@reverse')) {
+        return this.formObj['@reverse'];
+      }
+      return null;
     },
     reverseItemInForm() {
       const reverseItem = cloneDeep(this.reverseItem);
       const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
       const objToMainForm = {};
-
-      each(reverseItem, (item, key) => {
-        const currentKey = `@reverse/${key}`;
-
-        if (propsInMainForm.indexOf(currentKey) > -1) {
-          objToMainForm[currentKey] = {};
-          objToMainForm[currentKey].items = this.groupItem(item);
-          objToMainForm[currentKey].isGrouped = true;
-          objToMainForm[currentKey].totalItems = item.length;
-        }
-      });
+      if (reverseItem) {
+        each(reverseItem, (item, key) => {
+          const currentKey = `@reverse/${key}`;
+  
+          if (propsInMainForm.indexOf(currentKey) > -1) {
+            objToMainForm[currentKey] = {};
+            objToMainForm[currentKey].items = this.groupItem(item);
+            objToMainForm[currentKey].isGrouped = true;
+            objToMainForm[currentKey].totalItems = item.length;
+          }
+        });
+      }
       return objToMainForm;
     },
     reverseItemStandalone() {
@@ -135,14 +139,16 @@ export default {
       return objToMainForm;
     },
     sortedFormData() {
-      const formObj = cloneDeep(this.formObj);
-      const formObjWithReverse = Object.assign(formObj, this.reverseItemInForm);
+      let formObj = cloneDeep(this.formObj);
+      if (this.reverseItemInForm) {
+        formObj = Object.assign(formObj, this.reverseItemInForm);
+      }
       const sortedForm = {};
 
       for (const property of this.sortedProperties) {
         const k = property;
-        if (typeof formObjWithReverse[k] !== 'undefined' || formObjWithReverse[k] === '') {
-          sortedForm[k] = formObjWithReverse[k];
+        if (typeof formObj[k] !== 'undefined' || formObj[k] === '') {
+          sortedForm[k] = formObj[k];
         }
       }
       return sortedForm;
