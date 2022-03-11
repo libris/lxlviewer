@@ -704,9 +704,37 @@ export function printTree(term, vocab, context) {
 }
 
 export function preprocessContext(context) {
-  const computed = { containerMap: computeContainerMap(context['@context'][1]) };
-  context['@context'].push(computed);
+  // Internal structure by index: 0 = prefixes, 1 = terms, 2 = computed
+  const prefixes = {};
+  const terms = {};
+
+  const ctx = context['@context'];
+  const ctxArray = isArray(ctx) ? ctx : [ctx];
+  for (const oneCtx of ctxArray) {
+    if (!isPlainObject(oneCtx)) {
+      continue;
+    }
+    forOwn(oneCtx, (value, key) => {
+      if (isPrefix(value)) {
+        prefixes[key] = value;
+      } else {
+        terms[key] = value;
+      }
+    });
+  }
+
+  const computed = { containerMap: computeContainerMap(terms) };
+  context['@context'] = [prefixes, terms, computed];
+
   return context;
+}
+
+function isPrefix(value) {
+  if (isPlainObject(value) && value['@prefix'] === true) {
+    return true;
+  }
+  const id = isPlainObject(value) ? value['@id'] : value;
+  return typeof id === 'string' && id.match(/[/#:]/) !== null;
 }
 
 export function computeContainerMap(contextList) {
