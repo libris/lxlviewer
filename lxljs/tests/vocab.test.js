@@ -4,7 +4,7 @@ import vocab from '../../test-resources/vocab';
 
 const resources = {
   vocab,
-  context: context['@context'],
+  context: VocabUtil.preprocessContext(context)['@context'],
 };
 
 describe('VocabUtil', () => {

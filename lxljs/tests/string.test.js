@@ -1,5 +1,8 @@
+import * as VocabUtil from '../vocab.js';
 import * as StringUtil from '../string.js';
-import context from '../../test-resources/context';
+import testContext from '../../test-resources/context';
+
+const context = VocabUtil.preprocessContext(testContext);
 
 describe('StringUtil', () => {
 
