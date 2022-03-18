@@ -734,7 +734,7 @@ function isPrefix(value) {
     return true;
   }
   const id = isPlainObject(value) ? value['@id'] : value;
-  return typeof id === 'string' && id.match(/[/#:]/) !== null;
+  return typeof id === 'string' && id.match(/[/#:]$/) !== null;
 }
 
 export function computeContainerMap(contextList) {
