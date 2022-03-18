@@ -661,6 +661,9 @@ export function isAbstract(termObject) {
 
 export function getTree(term, vocab, context, counter = 0, parentChainString = '') {
   const termObj = getTermObject(term, vocab, context);
+  if (typeof termObj === 'undefined') {
+    return {}
+  }
   const treeNode = {
     id: term,
     labels: termObj.labelByLang || termObj.prefLabelByLang,
