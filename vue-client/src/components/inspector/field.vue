@@ -1053,9 +1053,10 @@ export default {
   }
 
   &--inner {
-    border: 0;
+    border: 1px solid transparent;
     flex: 1 100%;
     margin: 0;
+    margin-top: -2px;
     padding: 5px 0 5px 0;
     border-radius: 4px;
     overflow: visible;
@@ -1063,12 +1064,12 @@ export default {
 
     .icon-hover();
         
-    &:hover {
+    &:hover:not(.is-locked) {
       background: @field-background-hover;
       box-shadow: inset 0 0 0 1px @grey-lighter;
     }
 
-    &.is-locked,
+    &.is-locked:not(.is-new),
     .Field--inner & {
       background: none;
       box-shadow: none;
