@@ -117,7 +117,7 @@ export default {
       const added = this.selectedChangeSet.addedPaths;
       const convertedAdded = [];
       added.forEach((addedPath) => {
-        const path = StringUtil.arrayPathToString(modifiedPath);
+        const path = StringUtil.arrayPathToString(addedPath);
         convertedAdded.push(path);
       });
       return convertedAdded;
