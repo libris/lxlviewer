@@ -155,6 +155,7 @@ export default {
       });
     },
     fetchVersion(number) {
+      if (this.changeSetsReversed == null) return;
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
       fetch(fetchUrl).then(response => response.json()).then((result) => {
         this.fetchedVersionData = LxlDataUtil.splitJson(result);
