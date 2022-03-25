@@ -1,7 +1,7 @@
 <template>
   <div class="EntityTable-body" :class="{ 'is-inner-table': isInnerTable, 'is-linked-table': isLinked }" v-if="itemData">
     <div class="PropertyRow d-md-flex" v-if="showUri && itemData.hasOwnProperty('@id')">
-      <div class="PropertyRow-bodyKey d-block d-md-inline">
+      <div class="PropertyRow-bodyKey d-block d-md-inline" title="@id">
         URI ({{ translateUi('link to resource') }})
       </div>
       <div class="PropertyRow-bodyValue">
@@ -42,6 +42,7 @@ export default {
         'reverseLinks',
         'meta',
         'hasItem',
+        'baseClassChain',
       ],
       idCopied: false,
       clipboardAvailable: false,
@@ -51,9 +52,6 @@ export default {
     this.clipboardAvailable = typeof navigator !== 'undefined' && typeof navigator.clipboard !== 'undefined';
   },
   methods: {
-    isByLangKey(key) {
-      return key.endsWith('ByLang');
-    },
     copyId() {
       const self = this;
       navigator.clipboard.writeText(this.ownPath).then(function() {

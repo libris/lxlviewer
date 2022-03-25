@@ -532,13 +532,19 @@ export default {
 
   &-detailsItem {
     display: flex;
+    flex-direction: column;
     min-width: 0;
     font-size: 1.4rem;
-    padding: 0.2rem 0;
+    @media (min-width: @screen-sm-min) {
+      padding: 0.2rem 0;
+      flex-direction: row;
+    }
   }
 
   &-detailsKey {
-    flex-basis: 6em;
+    @media (min-width: @screen-sm-min) {
+      flex-basis: 6em;
+    }
     flex-grow: 1;
     font-weight: 600;
     margin-right: 0.5em;
@@ -549,11 +555,13 @@ export default {
   }
 
   &-detailsValue {
-    flex-basis: 75%;
-    flex-grow: 2;
+    @media (min-width: @screen-sm-min) {
+      flex-basis: 75%;
+      flex-grow: 2;
+      align-self: flex-end;
+    }
     color: #000;
     white-space: nowrap;
-    align-self: flex-end;
     overflow-x: hidden;
     text-overflow: ellipsis;
   }

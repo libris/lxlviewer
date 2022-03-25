@@ -1,6 +1,10 @@
 <template>
   <div class="Vocab-termDetails">
-    <ResultItem :entity="termData" v-if="termData" :force-expanded="true" :show-download="false" :show-other-services="false" />
+    <div v-if="termData">
+      <ResultItem :entity="termData" :force-expanded="true" :show-download="false" :show-other-services="false" />
+      <br>
+      <TermLenses v-if="termData['@type'] == 'Class'" :entity="termData" />
+    </div>
     <div v-else>
       <h2>
         {{ translateUi("Could not find term") }}: {{ $route.params.term }}
@@ -15,7 +19,9 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
+import * as DisplayUtil from 'lxljs/display';
 import ResultItem from '@/components/ResultItem';
+import TermLenses from '@/components/TermLenses';
 
 export default {
   head() {
@@ -35,12 +41,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['vocab', 'vocabContext']),
+    ...mapGetters(['vocab', 'vocabContext', 'resources', 'settings']),
     pageTitle() {
       if (this.termData) {
         return `${ this.termTitle || 'Basvokabulär'}`
       }
       return 'Basvokabulär';
+    },
+    lensDefinitions() {
+      const lenses = {};
+      lenses.tokens = DisplayUtil.getDisplayProperties(this.termData['@type'], this.resources, this.settings, 'tokens');
+      lenses.chips = DisplayUtil.getDisplayProperties(this.termData['@type'], this.resources, this.settings, 'chips');
+      lenses.cards = DisplayUtil.getDisplayProperties(this.termData['@type'], this.resources, this.settings, 'cards');
+      return lenses;
     },
     documentDescription() {
       if (this.termData && this.termData.hasOwnProperty('@type')) {
@@ -76,11 +89,21 @@ export default {
   fetchOnServer: false,
   watchQuery: true,
   components: {
+    TermLenses,
     ResultItem,
   },
 }
 </script>
 
 <style lang="scss">
+
+.DisplayDefs {
+  table {
+    border: 1px solid #ccc;
+    td {
+      border: 1px solid #ccc;
+    }
+  }
+}
 
 </style>

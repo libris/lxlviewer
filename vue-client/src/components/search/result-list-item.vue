@@ -27,6 +27,8 @@ export default {
       keyword: '',
       hiddenDetailsNumber: null,
       showAllKeys: false,
+      totalReverseCount: -1,
+      itemReverseCount: -1,
     };
   },
   computed: {
@@ -71,6 +73,14 @@ export default {
       }      
       return this.showAllKeys ? 'Show fewer' : 'Show more';
     },
+    showUsedIn() {
+      if (this.recordType !== 'Instance') {
+        return true;
+      }
+      
+      const itemCountReady = this.itemReverseCount !== -1;
+      return itemCountReady && this.totalReverseCount > 0 && this.totalReverseCount !== this.itemReverseCount;
+    },
   },
   methods: {
     setHiddenDetailsNumber(value) {
@@ -78,6 +88,12 @@ export default {
     },
     toggleShowKeys() {
       this.showAllKeys = !this.showAllKeys;
+    },
+    itemCount(value) {
+      this.itemReverseCount = value;
+    },
+    allCount(value) {
+      this.totalReverseCount = value;
     },
   },
   components: {
@@ -113,8 +129,15 @@ export default {
       </div>
       <div class="ResultItem-relationsContainer"
         v-if="isImport === false">
-        <reverse-relations 
+        <reverse-relations v-show="showUsedIn"
+          @numberOfRelations="allCount"
           :main-entity="focusData" 
+          :compact="true">
+        </reverse-relations>
+        <reverse-relations v-if="recordType === 'Instance'"
+          @numberOfRelations="itemCount"
+          :main-entity="focusData"
+          :mode="'items'"
           :compact="true">
         </reverse-relations>
       </div>
@@ -221,7 +244,7 @@ export default {
   &-tags {
     display: flex;
     align-items: center;
-    margin-right: 1em;
+    margin-left: 1em;
     .TagSwitch {
       display: flex;
     }

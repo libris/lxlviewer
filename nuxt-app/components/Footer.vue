@@ -12,7 +12,6 @@
           <h4>{{ translateUi('Information') }}</h4>
           <ul class="bd-footer-links ps-0 mb-3 text-light">
             <li class="d-block"><a class="text-light" href="https://www.kb.se/digital-tillganglighet">{{ translateUi('Accessibility statement') }}</a></li>
-            <li class="d-block"><a class="text-light" href="https://www.kb.se/libris-versionsinformation">{{ translateUi('Release notes') }}</a></li>
           </ul>
         </div>
         <div class="col-md-5 d-flex flex-column">

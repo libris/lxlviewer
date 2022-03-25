@@ -1,10 +1,7 @@
 <template>
   <div class="EntityNode" :class="{ 'chip': isChip }">
-    <template v-if="typeof entityData == 'string'">
-      <span class="">{{ entityData }}</span>
-    </template>
-    <template v-else-if="entityData">
-      <span class="" v-if="!entityData['@id']">
+    <template v-if="entityData">
+      <span class="string-value" v-if="!entityData['@id']">
         {{ getItemLabel }}
       </span>
       <template v-else-if="entityData['@id']">
@@ -89,9 +86,6 @@ export default {
   },
   computed: {
     ...mapGetters(['currentDocument', 'quoted', 'settings', 'resources', 'appState']),
-    isByLangValue() {
-      return this.parentKey.includes('ByLang');
-    },
     typeOfLibrisService() {
       const id = this.entityData['@id'];
       if (id.includes('https://id.kb.se/')) {

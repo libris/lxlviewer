@@ -136,10 +136,6 @@ export default {
       sv: 'Länkar till',
       en: 'Links to',
     },
-    p: {
-      sv: 'Relation',
-      en: 'Relation',
-    },
     'instanceOf.@type': {
       sv: 'Verkstyp',
       en: 'Type of work',

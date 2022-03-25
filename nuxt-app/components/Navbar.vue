@@ -2,7 +2,7 @@
   <nav class="Navbar navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
       <div class="Navbar-brandContainer">
-        <NuxtLink :title="`Version ${version}`" v-if="appState.domain === 'id'" to="/" class="Navbar-brand navbar-brand">
+        <NuxtLink v-if="appState.domain === 'id'" to="/" class="Navbar-brand navbar-brand">
           <Logo />
           {{ siteTitle }}
         </NuxtLink>
@@ -53,7 +53,6 @@ export default {
       return this.settings.version;
     },
     versionInfo() {
-      if (this.settings.environment === 'prod') return '';
       return `${this.environmentLabel.toUpperCase()} ${this.version}`;
     },
     environmentLabel() {

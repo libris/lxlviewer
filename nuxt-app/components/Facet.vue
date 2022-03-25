@@ -19,6 +19,10 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import * as VocabUtil from 'lxljs/vocab';
+import * as DisplayUtil from 'lxljs/display';
+
 export default {
   data() {
     return {
@@ -49,6 +53,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['vocabContext', 'resources', 'settings']),
     checked() {
       if (this.$route.query.hasOwnProperty(this.dimension) && this.$route.query[this.dimension] === this.facet.object['@id']) {
         return true;
@@ -56,7 +61,8 @@ export default {
       return false;
     },
     label() {
-      let prop = '';
+      return DisplayUtil.getItemLabel(this.facet.object, this.resources, null, this.settings);
+      // let prop = '';
       if (this.facet.object.hasOwnProperty('labelByLang')) {
         prop = 'labelByLang';
       } else if (this.facet.object.hasOwnProperty('titleByLang')) {
@@ -69,7 +75,7 @@ export default {
         prop = 'code';
       }
       if (this.facet.object[prop]) {
-        if (prop.includes('ByLang')) {
+        if (VocabUtil.getContextValue(prop, '@container', this.vocabContext) == '@language') {
           return this.facet.object[prop][this.settings.language] || Object.values(this.facet.object[prop])[0];
         }
         return this.facet.object[prop];
