@@ -82,7 +82,7 @@ export default {
             <h4 id="footer-support-nav" class="Footer-listTitle">{{ "Support" | translatePhrase }}</h4>
             <ul class="Footer-navList">
               <li>
-                <a class="Footer-link" href="https://www.kb.se/om-oss/kontakta-oss/">{{ "Libris customer service" | translatePhrase }}</a>
+                <a class="Footer-link" href="https://www.kb.se/om-oss/kontakta-oss/#item-47bef1f3916eca87a61b1eed">{{ "Libris customer service" | translatePhrase }}</a>
               </li>
             </ul>
           </nav>
