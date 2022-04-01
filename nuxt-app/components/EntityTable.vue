@@ -19,7 +19,7 @@
       </div>
       <div class="PropertyRow d-md-flex" v-if="showOtherServices">
         <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Other sites') }}</div>
-        <div class="PropertyRow-bodyValue"><a :href="`https://libris.kb.se/katalogisering/${ recordId.split('/').pop() }`">Libris katalogisering</a></div>
+        <div class="PropertyRow-bodyValue" v-for="service in otherServices"><a :href="service.link">{{service.title}}</a></div>
       </div>
     </template>
   </div>
@@ -131,6 +131,20 @@ export default {
       delete combinedData['@reverse'];
       return combinedData;
     },
+    otherServices() {
+      let p = this.recordId.split('/');
+      const id = p.pop();
+      p.push('katalogisering');
+      p.push(id);
+      const catLink = p.join('/');
+
+      return [
+        { 'link': catLink,
+          'title': 'Libris katalogisering'
+        }
+      ]
+
+    }
   },
   props: {
     entity: {
