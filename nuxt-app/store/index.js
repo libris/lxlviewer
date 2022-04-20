@@ -38,6 +38,8 @@ export const state = () => ({
       libris: [
         'https://libris.kb.se/',
         'http://kblocalhost.kb.se:5000/',
+        'https://id.kb.se/',
+        'http://id.kblocalhost.kb.se:5000/',
       ],
       id: [
         'https://id.kb.se/',
@@ -252,7 +254,7 @@ export const actions = {
     ).then(res => res.json());
     const processed = VocabUtil.preprocessContext(contextData);
     commit('SET_VOCAB_CONTEXT', processed['@context']);
-  
+
     const vocabPath = `${process.env.API_PATH}/vocab/data.jsonld`;
     const vocab = await fetch(
       vocabPath
@@ -260,7 +262,7 @@ export const actions = {
     commit('SET_VOCAB', vocab);
     commit('SET_VOCAB_CLASSES', vocab);
     commit('SET_VOCAB_PROPERTIES', vocab);
-  
+
     const displayPath = `${process.env.API_PATH}/vocab/display/data.jsonld`;
     const display = await fetch(
       displayPath
