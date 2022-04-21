@@ -12,7 +12,7 @@ if (!Vue.__lxl_global_mixin__) {
   Vue.mixin({
     data() {
       return {
-  
+
       };
     },
     computed: {
@@ -35,26 +35,16 @@ if (!Vue.__lxl_global_mixin__) {
         return phrase;
       },
       removeBaseUri(uri) {
-        if (typeof uri == 'undefined' || uri.length == 0) {
+        if (typeof uri == 'undefined' || uri.length === 0) {
           return null;
         }
-        const bases = this.settings.removableBaseUris[this.appState.domain];
-        const envs = ['dev', 'qa', 'stg', 'edu'];
-        const computedBases = [];
-        bases.forEach((item) => {
-          computedBases.push(item);
-          if (item && item.includes('libris')) {
-            envs.forEach((env) => {
-              computedBases.push(item.replace('libris', `libris-${env}`));
-            });
-          } else if (item) {
-            envs.forEach((env) => {
-              computedBases.push(item.replace('id', `id-${env}`));
-            });
-          }
-        });
-        const base = computedBases.find(base => uri.includes(base));
-        return uri.replace(base, '/');
+        return uri.replace(this.settings.baseUri, '');
+      },
+      isInternalUri(uri) {
+        if (typeof uri == 'undefined' || uri.length === 0) {
+          return false;
+        }
+        return uri.startsWith(this.settings.baseUri);
       },
       translateUriEnv(uri) {
         if (typeof uri == 'undefined' || uri.length == 0) {

@@ -28,6 +28,7 @@ export const state = () => ({
     gitDescribe: process.env.GIT_DESCRIBE,
     idPath: process.env.API_PATH,
     dataPath: process.env.API_PATH,
+    baseUri: process.env.BASE_URI,
     environment: process.env.ENV || 'local',
     filteredCategories: [
       'pending',
@@ -252,7 +253,7 @@ export const actions = {
     ).then(res => res.json());
     const processed = VocabUtil.preprocessContext(contextData);
     commit('SET_VOCAB_CONTEXT', processed['@context']);
-  
+
     const vocabPath = `${process.env.API_PATH}/vocab/data.jsonld`;
     const vocab = await fetch(
       vocabPath
@@ -260,7 +261,7 @@ export const actions = {
     commit('SET_VOCAB', vocab);
     commit('SET_VOCAB_CLASSES', vocab);
     commit('SET_VOCAB_PROPERTIES', vocab);
-  
+
     const displayPath = `${process.env.API_PATH}/vocab/display/data.jsonld`;
     const display = await fetch(
       displayPath

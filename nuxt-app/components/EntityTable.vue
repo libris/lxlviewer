@@ -5,9 +5,12 @@
         URI ({{ translateUi('link to resource') }})
       </div>
       <div class="PropertyRow-bodyValue">
-        <NuxtLink :to="removeBaseUri(itemData['@id'])">
+        <NuxtLink :to="removeBaseUri(itemData['@id'])" v-if="isInternalUri(itemData['@id'])">
           {{ translateUriEnv(itemData['@id']) }}
         </NuxtLink>
+        <a :href="itemData['@id']" v-if="!isInternalUri(itemData['@id'])">
+          {{ translateUriEnv(itemData['@id']) }}
+        </a>
         <i class="PropertyRow-idCopyButton bi" v-show="clipboardAvailable" title="Kopiera URI" :class="{ 'bi-clipboard': !idCopied, 'bi-clipboard-check': idCopied }" @click="copyId"></i>
       </div>
     </div>
