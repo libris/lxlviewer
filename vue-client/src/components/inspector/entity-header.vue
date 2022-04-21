@@ -144,13 +144,13 @@ export default {
         <reverse-relations v-show="showUsedIn"
                            @numberOfRelations="allCount"
                            :main-entity="focusData"
-                           :compact="true">
+                           :compact="false">
         </reverse-relations>
         <reverse-relations v-if="recordType === 'Instance'"
                            @numberOfRelations="itemCount"
                            :main-entity="focusData"
                            :mode="'items'"
-                           :compact="true">
+                           :compact="false">
         </reverse-relations>
       </div>
     </div>
