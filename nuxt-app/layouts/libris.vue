@@ -11,7 +11,7 @@
 
 <script>
 import Navbar from '@/components/Navbar';
-import { hostPath } from '../plugins/env.js';
+import { hostPath } from '../plugins/env';
 const HOST_PATH = hostPath();
 
 export default {
