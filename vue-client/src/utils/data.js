@@ -209,7 +209,7 @@ export function xmlToJson(xml) {
 export function translateAliasedUri(uri) {
   let translatedUri = uri;
   
-  each(JSON.parse(process.env.VUE_APP_SITE_ALIAS), (from, to) => {
+  each(JSON.parse(process.env.VUE_APP_SITE_ALIAS || '{}'), (from, to) => {
     if (uri.startsWith(from)) {
       translatedUri = uri.replace(from, to);
       return false;
