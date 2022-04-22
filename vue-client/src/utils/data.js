@@ -206,10 +206,12 @@ export function xmlToJson(xml) {
   return obj;
 }
 
+const SITE_ALIAS = JSON.parse(process.env.VUE_APP_SITE_ALIAS || '{}');
+
 export function translateAliasedUri(uri) {
   let translatedUri = uri;
   
-  each(JSON.parse(process.env.VUE_APP_SITE_ALIAS || '{}'), (from, to) => {
+  each(SITE_ALIAS, (from, to) => {
     if (uri.startsWith(from)) {
       translatedUri = uri.replace(from, to);
       return false;
