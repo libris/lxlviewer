@@ -1,9 +1,7 @@
-import { each } from 'lodash-es';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
-import * as StringUtil from 'lxljs/string';
-import envComputer from '@/plugins/env';
 import translationsFile from '@/resources/json/i18n.json';
+import { hostPath, siteConfig } from '../plugins/env';
 
 export const state = () => ({
   vocab: null,
@@ -23,12 +21,12 @@ export const state = () => ({
   },
   settings: {
     language: 'sv',
-    hostPath: envComputer(process.env.ENV),
+    hostPath: hostPath(),
     version: process.env.APP_VERSION,
     gitDescribe: process.env.GIT_DESCRIBE,
     idPath: process.env.API_PATH,
     dataPath: process.env.API_PATH,
-    siteConfig: JSON.parse(process.env.SITE_CONFIG),
+    siteConfig: siteConfig(),
     environment: process.env.ENV || 'local',
     filteredCategories: [
       'pending',

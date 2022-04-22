@@ -16,7 +16,6 @@ export default {
   mockDisplay: process.env.VUE_APP_MOCK_DISPLAY_BOOL === 'true',
   mockHelp: process.env.VUE_APP_MOCK_HELP_BOOL === 'true',
   matomoId: process.env.VUE_APP_MATOMO_ID,
-  siteAlias: JSON.parse(process.env.VUE_APP_SITE_ALIAS),
   appPaths: {
     '/find?': '/search/libris?',
   },

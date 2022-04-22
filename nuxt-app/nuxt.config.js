@@ -1,6 +1,6 @@
 const { gitDescribeSync } = require('git-describe');
-import envComputer from './plugins/env.js';
-const HOST_PATH = envComputer(process.env.ENV);
+import { hostPath } from './plugins/env';
+const HOST_PATH = hostPath();
 process.env.APP_VERSION = require('./package.json').version;
 
 process.env.GIT_DESCRIBE = JSON.stringify(gitDescribeSync({
@@ -55,7 +55,7 @@ export default {
   components: false,
 
   parallel: true,
-  
+
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     '@nuxtjs/dotenv'

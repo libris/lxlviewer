@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import envComputer from '@/plugins/env';
 
 Vue.filter('replaceBaseWithApi', (uri) => {
   return uri.replace('https://id.kb.se', process.env.API_PATH);
