@@ -28,7 +28,6 @@ export const state = () => ({
     gitDescribe: process.env.GIT_DESCRIBE,
     idPath: process.env.API_PATH,
     dataPath: process.env.API_PATH,
-    baseUri: process.env.BASE_URI,
     siteConfig: JSON.parse(process.env.SITE_CONFIG),
     environment: process.env.ENV || 'local',
     filteredCategories: [
