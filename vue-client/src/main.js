@@ -79,13 +79,7 @@ Vue.filter('convertResourceLink', (uri) => {
   if (uri === null || typeof uri === 'undefined' || uri.length === 0) {
     throw new Error('Filter "convertResourceLink" was called without input');
   }
-  let translatedUri = uri;
-  if (uri.startsWith('https://id.kb.se')) {
-    translatedUri = uri.replace('https://id.kb.se', store.getters.settings.idPath);
-  } else if (uri.startsWith('https://libris.kb.se')) {
-    translatedUri = uri.replace('https://libris.kb.se', store.getters.settings.dataPath);
-  }
-  return translatedUri;
+  return DataUtil.translateAliasedUri(uri);
 });
 
 Vue.filter('asFnurgelLink', (id) => {
