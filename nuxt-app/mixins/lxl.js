@@ -4,6 +4,7 @@ import envComputer from '@/plugins/env';
 import Vue from "vue"
 import rdfTranslations from '@/resources/json/rdfTranslations.json';
 import i18n from '@/resources/json/i18n.json';
+import { each } from 'lodash-es';
 
 // Make sure to pick a unique name for the flag
 // so it won't conflict with any other mixin.
@@ -38,27 +39,31 @@ if (!Vue.__lxl_global_mixin__) {
         if (typeof uri == 'undefined' || uri.length === 0) {
           return null;
         }
-        return uri.replace(this.settings.baseUri, '');
+
+        return uri.replace(this.baseUri(), '');
       },
       isInternalUri(uri) {
         if (typeof uri == 'undefined' || uri.length === 0) {
           return false;
         }
-        return uri.startsWith(this.settings.baseUri);
+        return uri.startsWith(this.baseUri());
+      },
+      baseUri() {
+        return this.settings.siteConfig[this.appState.domain].baseUri;
       },
       translateUriEnv(uri) {
-        if (typeof uri == 'undefined' || uri.length == 0) {
+        if (typeof uri == 'undefined' || uri.length === 0) {
           return null;
         }
-        // Libris
-        if (uri.includes('https://libris.kb.se')) {
-          return uri.replace('https://libris.kb.se', envComputer(process.env.ENV, 'libris'));
-        }
-        // Not libris
-        if (uri.includes('https://id.kb.se')) {
-          return uri.replace('https://id.kb.se', envComputer(process.env.ENV, 'id'));
-        }
-        return uri;
+        let translatedUri = uri
+        each(JSON.parse(process.env.SITE_ALIAS), (from, to) => {
+          if (uri.startsWith(from)) {
+            translatedUri = uri.replace(from, to);
+            return false;
+          }
+          return true;
+        });
+        return translatedUri;
       },
       getEntityTitle(entity) {
         if (entity != null) {
