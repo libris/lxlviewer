@@ -1,7 +1,7 @@
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import translationsFile from '@/resources/json/i18n.json';
-import { hostPath, siteConfig } from '../plugins/env';
+import {hostPath, siteConfig, activeSite, defaultSite} from '../plugins/env';
 
 export const state = () => ({
   vocab: null,
@@ -27,6 +27,7 @@ export const state = () => ({
     idPath: process.env.API_PATH,
     dataPath: process.env.API_PATH,
     siteConfig: siteConfig(),
+    defaultSite: defaultSite(),
     environment: process.env.ENV || 'local',
     filteredCategories: [
       'pending',
@@ -227,12 +228,7 @@ export const mutations = {
 export const actions = {
   async nuxtServerInit({ commit, dispatch }, { req }) {
     if (process.server) {
-      const headerHost = req.headers['x-forwarded-host'];
-      if (headerHost && headerHost.startsWith('id') === false) {
-        dispatch('setAppState', { property: 'domain', value: 'libris' });
-      } else {
-        dispatch('setAppState', { property: 'domain', value: 'id' });
-      }
+      dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host']) });
     }
 
     const contextPath = `${process.env.API_PATH}/context.jsonld`;
