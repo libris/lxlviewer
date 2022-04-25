@@ -1,4 +1,4 @@
-import { isEmpty, cloneDeep, isArray, isObject, forEach, uniq, difference } from 'lodash-es';
+import { isEmpty, cloneDeep, isArray, isObject, forEach, uniq, difference, each } from 'lodash-es';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import * as HttpUtil from '@/utils/http';
@@ -204,4 +204,25 @@ export function xmlToJson(xml) {
     }
   }
   return obj;
+}
+
+const SITE_ALIAS = JSON.parse(process.env.VUE_APP_SITE_ALIAS || '{}');
+
+export function translateAliasedUri(uri) {
+  let translatedUri = uri;
+  
+  each(SITE_ALIAS, (from, to) => {
+    if (uri.startsWith(from)) {
+      translatedUri = uri.replace(from, to);
+      return false;
+    }
+    return true;
+  });
+
+  // TODO: why is this needed?
+  if (uri.startsWith('https://libris.kb.se')) {
+    translatedUri = uri.replace('https://libris.kb.se', process.env.VUE_APP_API_PATH);
+  }
+  
+  return translatedUri;
 }

@@ -34,9 +34,10 @@ import ResultItem from '@/components/ResultItem';
 
 export default {
   mixins: [LensMixin],
-  layout (context) { 
+  layout (context) {
     const appState = context.store ? context.store.getters.appState : this.appState;
     const requestedDomain = appState ? appState.domain : context.req.headers['x-forwarded-host'];
+    // TODO
     if (requestedDomain && requestedDomain.startsWith('id') === false) {
       return 'libris';
     }

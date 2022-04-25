@@ -1,13 +1,44 @@
-export default function (envLabel, domain = 'id') {
-  if (envLabel === 'local' || typeof envLabel === 'undefined') {
-    if (domain == 'libris') {
-      return 'http://kblocalhost.kb.se:5000';
-    } else {
-      return 'http://id.kblocalhost.kb.se:5000';
-    }
-  } else if (envLabel === 'prod') {
-    return `https://${domain}.kb.se`;
-  } else {
-    return `https://${domain}-${ envLabel }.kb.se`;
+import { each, findKey } from "lodash-es";
+
+const SITE_ALIAS = JSON.parse(process.env.SITE_ALIAS || '{}');
+const SITE_CONFIG = JSON.parse(process.env.SITE_CONFIG);
+
+export function hostPath() {
+  const baseUri = siteConfig()[defaultSite()]['baseUri'];
+  return translateAliasedUri(baseUri);
+}
+
+export function siteConfig() {
+  return SITE_CONFIG;
+}
+
+export function translateAliasedUri(uri) {
+  if (typeof uri == 'undefined' || uri.length === 0) {
+    return null;
   }
+  let translatedUri = uri
+  each(SITE_ALIAS, (from, to) => {
+    if (uri.startsWith(from)) {
+      translatedUri = uri.replace(from, to);
+      return false;
+    }
+    return true;
+  });
+  return translatedUri;
+}
+
+export function defaultSite() {
+  return process.env.DEFAULT_SITE || 'id.kb.se';
+}
+
+export function activeSite(xForwardedHost) {
+  if (!xForwardedHost) {
+    return defaultSite();
+  }
+
+  return findKey(siteConfig(), c => xForwardedHost.startsWith(host(translateAliasedUri(c.baseUri)))) || defaultSite();
+}
+
+function host(url) {
+  return new URL(url).host;
 }

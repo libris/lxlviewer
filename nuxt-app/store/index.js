@@ -1,9 +1,7 @@
-import { each } from 'lodash-es';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
-import * as StringUtil from 'lxljs/string';
-import envComputer from '@/plugins/env';
 import translationsFile from '@/resources/json/i18n.json';
+import {hostPath, siteConfig, activeSite, defaultSite} from '../plugins/env';
 
 export const state = () => ({
   vocab: null,
@@ -23,27 +21,19 @@ export const state = () => ({
   },
   settings: {
     language: 'sv',
-    hostPath: envComputer(process.env.ENV),
+    hostPath: hostPath(),
     version: process.env.APP_VERSION,
     gitDescribe: process.env.GIT_DESCRIBE,
     idPath: process.env.API_PATH,
     dataPath: process.env.API_PATH,
+    siteConfig: siteConfig(),
+    defaultSite: defaultSite(),
     environment: process.env.ENV || 'local',
     filteredCategories: [
       'pending',
       'shorthand',
       'unstable',
     ],
-    removableBaseUris: {
-      libris: [
-        'https://libris.kb.se/',
-        'http://kblocalhost.kb.se:5000/',
-      ],
-      id: [
-        'https://id.kb.se/',
-        'http://id.kblocalhost.kb.se:5000/',
-      ],
-    },
     propertyChains: {
       '@reverse.itemOf.heldBy.@id': {
         sv: 'Har bestånd',
@@ -238,12 +228,7 @@ export const mutations = {
 export const actions = {
   async nuxtServerInit({ commit, dispatch }, { req }) {
     if (process.server) {
-      const headerHost = req.headers['x-forwarded-host'];
-      if (headerHost && headerHost.startsWith('id') === false) {
-        dispatch('setAppState', { property: 'domain', value: 'libris' });
-      } else {
-        dispatch('setAppState', { property: 'domain', value: 'id' });
-      }
+      dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host']) });
     }
 
     const contextPath = `${process.env.API_PATH}/context.jsonld`;
@@ -252,7 +237,7 @@ export const actions = {
     ).then(res => res.json());
     const processed = VocabUtil.preprocessContext(contextData);
     commit('SET_VOCAB_CONTEXT', processed['@context']);
-  
+
     const vocabPath = `${process.env.API_PATH}/vocab/data.jsonld`;
     const vocab = await fetch(
       vocabPath
@@ -260,7 +245,7 @@ export const actions = {
     commit('SET_VOCAB', vocab);
     commit('SET_VOCAB_CLASSES', vocab);
     commit('SET_VOCAB_PROPERTIES', vocab);
-  
+
     const displayPath = `${process.env.API_PATH}/vocab/display/data.jsonld`;
     const display = await fetch(
       displayPath
