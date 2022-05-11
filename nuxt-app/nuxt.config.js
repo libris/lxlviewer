@@ -1,6 +1,6 @@
 const { gitDescribeSync } = require('git-describe');
-import { hostPath } from './plugins/env';
-const HOST_PATH = hostPath();
+import { defaultHostPath } from './plugins/env';
+const HOST_PATH = defaultHostPath();
 process.env.APP_VERSION = require('./package.json').version;
 
 process.env.GIT_DESCRIBE = JSON.stringify(gitDescribeSync({

@@ -3,8 +3,12 @@ import { each, findKey } from "lodash-es";
 const SITE_ALIAS = JSON.parse(process.env.SITE_ALIAS || '{}');
 const SITE_CONFIG = JSON.parse(process.env.SITE_CONFIG);
 
-export function hostPath() {
-  const baseUri = siteConfig()[defaultSite()]['baseUri'];
+export function defaultHostPath() {
+  return hostPath(defaultSite())
+}
+
+export function hostPath(site) {
+  const baseUri = siteConfig()[site]['baseUri'];
   return translateAliasedUri(baseUri);
 }
 

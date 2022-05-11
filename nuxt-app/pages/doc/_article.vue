@@ -11,8 +11,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { hostPath } from '../../plugins/env';
-const HOST_PATH = hostPath();
+import { defaultHostPath } from '../../plugins/env';
+const HOST_PATH = defaultHostPath();
 
 export default {
   head() {
