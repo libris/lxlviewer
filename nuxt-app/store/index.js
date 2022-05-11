@@ -21,7 +21,6 @@ export const state = () => ({
   },
   settings: {
     language: 'sv',
-    hostPath: defaultHostPath(),
     version: process.env.APP_VERSION,
     gitDescribe: process.env.GIT_DESCRIBE,
     siteConfig: siteConfig(),
