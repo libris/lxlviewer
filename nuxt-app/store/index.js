@@ -1,7 +1,7 @@
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import translationsFile from '@/resources/json/i18n.json';
-import {defaultHostPath, hostPath, siteConfig, activeSite, defaultSite} from '../plugins/env';
+import {VOCAB, CONTEXT, DISPLAY, siteConfig, activeSite, defaultSite, translateAliasedUri} from '../plugins/env';
 
 export const state = () => ({
   vocab: null,
@@ -224,30 +224,18 @@ export const mutations = {
 
 export const actions = {
   async nuxtServerInit({ commit, dispatch }, { req }) {
-    const site = activeSite(req.headers['x-forwarded-host'])
-    dispatch('setAppState', { property: 'domain', value: site });
+    dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host']) });
 
-    const host = hostPath(site)
-
-    const contextPath = `${host}/context.jsonld`;
-    const contextData = await fetch(
-      contextPath
-    ).then(res => res.json());
+    const contextData = await fetch(translateAliasedUri(CONTEXT)).then(res => res.json());
     const processed = VocabUtil.preprocessContext(contextData);
     commit('SET_VOCAB_CONTEXT', processed['@context']);
 
-    const vocabPath = `${host}/vocab/data.jsonld`;
-    const vocab = await fetch(
-      vocabPath
-    ).then(res => res.json());
+    const vocab = await fetch(translateAliasedUri(VOCAB)).then(res => res.json());
     commit('SET_VOCAB', vocab);
     commit('SET_VOCAB_CLASSES', vocab);
     commit('SET_VOCAB_PROPERTIES', vocab);
 
-    const displayPath = `${host}/vocab/display/data.jsonld`;
-    const display = await fetch(
-      displayPath
-    ).then(res => res.json());
+    const display = await fetch(translateAliasedUri(DISPLAY)).then(res => res.json());
     const expanded = DisplayUtil.expandInherited(display);
     commit('SET_DISPLAY', expanded);
   },
