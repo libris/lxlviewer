@@ -11,8 +11,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { defaultHostPath } from '../../plugins/env';
-const HOST_PATH = defaultHostPath();
+import {translateAliasedUri} from '../../plugins/env';
 
 export default {
   head() {
@@ -30,8 +29,12 @@ export default {
   computed: {
     ...mapGetters(['settings']),
   },
-  async asyncData({ $config, error, route, params, $http }) {
-    const pageData = await $http.$get(`${HOST_PATH}/doc/${params.article}/data.jsonld`).catch((err) => {
+  async asyncData({ $config, error, route, params, $http, store }) {
+    const domain = store.getters.appState.domain
+    const siteConfig = store.getters.settings.siteConfig
+    const host = translateAliasedUri(siteConfig[domain].baseUri)
+
+    const pageData = await $http.$get(`${host}/doc/${params.article}/data.jsonld`).catch((err) => {
       error({ statusCode: err.statusCode, message: err.message })
     });
     return { pageData }
