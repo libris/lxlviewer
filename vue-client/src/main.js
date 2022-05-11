@@ -336,7 +336,7 @@ new Vue({
     },
     getLdDependencies() {
       const promiseArray = [];
-      const vocabPromise = DataUtil.getVocab(this.settings.apiPath);
+      const vocabPromise = DataUtil.getVocab(this.settings.idPath);
       promiseArray.push(vocabPromise);
       const contextPromise = DataUtil.getContext(this.settings.idPath);
       promiseArray.push(contextPromise);
