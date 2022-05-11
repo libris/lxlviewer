@@ -11,6 +11,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { hostPath } from '../../plugins/env';
+const HOST_PATH = hostPath();
 
 export default {
   head() {
@@ -29,7 +31,7 @@ export default {
     ...mapGetters(['settings']),
   },
   async asyncData({ $config, error, route, params, $http }) {
-    const pageData = await $http.$get(`${$config.apiPath}/doc/${params.article}/data.jsonld`).catch((err) => {
+    const pageData = await $http.$get(`${HOST_PATH}/doc/${params.article}/data.jsonld`).catch((err) => {
       error({ statusCode: err.statusCode, message: err.message })
     });
     return { pageData }

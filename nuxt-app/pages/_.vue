@@ -32,6 +32,8 @@ import * as DataUtil from 'lxljs/data';
 import LensMixin from '@/mixins/lens';
 import ResultItem from '@/components/ResultItem';
 
+import { translateAliasedUri } from '../plugins/env';
+
 export default {
   mixins: [LensMixin],
   layout (context) {
@@ -91,8 +93,11 @@ export default {
     ...mapActions(['setCurrentDocument']),
   },
   async asyncData({ $config, error, route, params, $http, store }) {
+    const domain = store.getters.appState.domain
+    const siteConfig = store.getters.settings.siteConfig
+    const host = translateAliasedUri(siteConfig[domain].baseUri)
     const path = route.path.replace(/\(/g, '%28').replace(/\)/g, '%29');
-    const pageData = await $http.$get(`${$config.apiPath}${path}/data.jsonld`,
+    const pageData = await $http.$get(`${host}${path}/data.jsonld`,
       {
         headers: { 'Accept': 'application/ld+json' }
       }

@@ -81,7 +81,6 @@ export default {
   },
 
   publicRuntimeConfig: {
-    apiPath: process.env.API_PATH || 'http://localhost:5000',
     siteName: 'id.kb.se',
     environment: process.env.ENV,
   },
