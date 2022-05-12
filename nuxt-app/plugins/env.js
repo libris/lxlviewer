@@ -3,9 +3,9 @@ import { each, findKey } from "lodash-es";
 const SITE_ALIAS = JSON.parse(process.env.SITE_ALIAS || '{}');
 const SITE_CONFIG = JSON.parse(process.env.SITE_CONFIG);
 
-export const VOCAB = process.env.VOCAB || 'https://id.kb.se/vocab/data.jsonld'
-export const CONTEXT = process.env.CONTEXT || 'https://id.kb.se/context.jsonld'
-export const DISPLAY = process.env.DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld'
+export const VOCAB = process.env.XL_VOCAB || 'https://id.kb.se/vocab/data.jsonld'
+export const CONTEXT = process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld'
+export const DISPLAY = process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld'
 
 export function defaultHostPath() {
   return hostPath(defaultSite())
