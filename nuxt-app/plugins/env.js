@@ -1,7 +1,7 @@
 import { each, findKey } from "lodash-es";
 
-const SITE_ALIAS = JSON.parse(process.env.SITE_ALIAS || '{}');
-const SITE_CONFIG = JSON.parse(process.env.SITE_CONFIG);
+const SITE_ALIAS = JSON.parse(process.env.XL_SITE_ALIAS || '{}');
+const SITE_CONFIG = JSON.parse(process.env.XL_SITE_CONFIG);
 
 export const VOCAB = process.env.XL_VOCAB || 'https://id.kb.se/vocab/data.jsonld'
 export const CONTEXT = process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld'
