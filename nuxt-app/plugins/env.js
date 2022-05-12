@@ -1,7 +1,7 @@
 import { each, findKey } from "lodash-es";
 
-const SITE_ALIAS = JSON.parse(process.env.SITE_ALIAS || '{}');
-const SITE_CONFIG = JSON.parse(process.env.SITE_CONFIG);
+const SITE_ALIAS = JSON.parse(process.env.XL_SITE_ALIAS || '{}');
+const SITE_CONFIG = JSON.parse(process.env.XL_SITE_CONFIG);
 
 export function hostPath() {
   const baseUri = siteConfig()[defaultSite()]['baseUri'];
