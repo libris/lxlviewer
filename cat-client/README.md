@@ -13,7 +13,7 @@ No action required here, this is just information.
 
 #### Coding Standard
 * [SUIT CSS](https://suitcss.github.io/)
-* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`package.json`](/vue-client/package.json) in `./vue-client`)
+* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`package.json`](/cat-client/package.json) in `./cat-client`)
 
 #### Requirements
 * [node.js](http://nodejs.org/) >=8.16.2
@@ -21,7 +21,7 @@ No action required here, this is just information.
 
 #### Setup
 
-    $ cd vue-client && yarn install
+    $ cd cat-client && yarn install
 
     $ cp .env.development.in .env.development
 
@@ -74,7 +74,7 @@ yarn lint
 
 ##### Local displayfile
 
-If you can't load the display file or want to use a local version for any other reason, it's possible to mock it by adding `VUE_APP_MOCK_DISPLAY_BOOL=true` as a row in `.env.development` (in the `vue-client`-folder) and it will use the display file in your local definitions repository. If you want to use the live version, remove the row or set it to `false`.
+If you can't load the display file or want to use a local version for any other reason, it's possible to mock it by adding `VUE_APP_MOCK_DISPLAY_BOOL=true` as a row in `.env.development` (in the `cat-client`-folder) and it will use the display file in your local definitions repository. If you want to use the live version, remove the row or set it to `false`.
 
 ##### Local help documentation
 

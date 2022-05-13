@@ -4,6 +4,6 @@
 
 View the respective directory and their READMEs for more information.
 
-* `vue-client` -  Libris cataloging
-* `nuxt-app` - id.kb.se
+* `cat-client` -  Libris cataloging
+* `viewer` - id.kb.se and formal resource pages
 * `lxljs` - Utility library
