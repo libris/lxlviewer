@@ -14,6 +14,9 @@ module.exports = {
   publicPath: '/katalogisering/',
   parallel: false,
   configureWebpack: {
+    devServer: {
+      public: 'kblocalhost.kb.se'
+    },
     resolve: {
       extensions: ['.js', '.vue', '.json'],
       alias: {
