@@ -15,8 +15,8 @@
 import Navbar from '@/components/Navbar';
 import SearchBar from '@/components/SearchBar';
 import Footer from '@/components/Footer';
-import { hostPath } from '../plugins/env';
-const HOST_PATH = hostPath();
+import { defaultHostPath } from '../plugins/env';
+const HOST_PATH = defaultHostPath();
 
 export default {
   data() {

@@ -3,8 +3,16 @@ import { each, findKey } from "lodash-es";
 const SITE_ALIAS = JSON.parse(process.env.XL_SITE_ALIAS || '{}');
 const SITE_CONFIG = JSON.parse(process.env.XL_SITE_CONFIG);
 
-export function hostPath() {
-  const baseUri = siteConfig()[defaultSite()]['baseUri'];
+export const VOCAB = process.env.XL_VOCAB || 'https://id.kb.se/vocab/data.jsonld'
+export const CONTEXT = process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld'
+export const DISPLAY = process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld'
+
+export function defaultHostPath() {
+  return hostPath(defaultSite())
+}
+
+export function hostPath(site) {
+  const baseUri = siteConfig()[site]['baseUri'];
   return translateAliasedUri(baseUri);
 }
 
