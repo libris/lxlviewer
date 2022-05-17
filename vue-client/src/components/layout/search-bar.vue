@@ -28,8 +28,6 @@ export default {
       return this.settings.version;
     },
     versionInfo() {
-      if (this.settings.environment === 'prod') return '';
-      
       return `${this.environmentLabel.toUpperCase()} ${this.version}`;
     },
     environmentLabel() {

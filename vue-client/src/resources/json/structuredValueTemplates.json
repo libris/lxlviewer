@@ -461,26 +461,30 @@
     "@type": "Duration",
     "value": ""
   },
-"MovementNotation": {
-   "@type": "MovementNotation",
-   "label": ""
- },
- "MusicNotation": {
-   "@type": "MusicNotation",
-   "label": ""
- },
- "Notation": {
-   "@type": "Notation",
-   "label": ""
- },
- "Script": {
-   "@type": "Script",
-   "label": ""
- },
- "TactileNotation": {
-   "@type": "TactileNotation",
-   "label": ""
- },
+  "Material": {
+    "@type": "Material",
+    "label": ""
+  },
+  "MovementNotation": {
+    "@type": "MovementNotation",
+    "label": ""
+  },
+  "MusicNotation": {
+    "@type": "MusicNotation",
+    "label": ""
+  },
+  "Notation": {
+    "@type": "Notation",
+    "label": ""
+  },
+  "Script": {
+    "@type": "Script",
+    "label": ""
+  },
+  "TactileNotation": {
+    "@type": "TactileNotation",
+    "label": ""
+  },
   "Note": {
     "@type": "Note",
     "label": ""
@@ -612,6 +616,10 @@
   },
   "GeographicSubdivision": {
     "@type": "GeographicSubdivision",
+    "prefLabel": ""
+  },
+  "Temporal": {
+    "@type": "Temporal",
     "prefLabel": ""
   },
   "TemporalSubdivision": {

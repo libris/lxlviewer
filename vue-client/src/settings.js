@@ -39,6 +39,7 @@ export default {
   ],
   keysToClear: {
     duplication: [
+      'record.bibliography',
       'record.controlNumber',
       'record.descriptionUpgrader',
       'record.generationProcess',

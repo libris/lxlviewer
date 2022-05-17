@@ -15,6 +15,8 @@
 
 <script>
 import CollectionCard from '@/components/CollectionCard';
+import { hostPath } from '../plugins/env';
+const HOST_PATH = hostPath();
 
 export default {
   data() {
@@ -22,8 +24,8 @@ export default {
     }
   },
   async asyncData({ $config, params, $http }) {
-    const pageData = await $http.$get(`${$config.apiPath}/data.jsonld`);
-    const summary = await $http.$get(`${$config.apiPath}/doc/summary/data.jsonld`);
+    const pageData = await $http.$get(`${HOST_PATH}/data.jsonld`);
+    const summary = await $http.$get(`${HOST_PATH}/doc/summary/data.jsonld`);
     return { pageData, summary }
   },
   // call fetch only on client-side

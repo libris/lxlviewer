@@ -35,6 +35,7 @@ export default {
       const lowerCaseKeyword = keyword.toLowerCase();
       return list.filter((item) => {
         const itemLabel = StringUtil.getLabelByLang(item['@id'], this.settings.language, this.resources);
+        console.log(item['@id']);
         return item['@id'].toLowerCase().includes(lowerCaseKeyword) || itemLabel.toLowerCase().includes(lowerCaseKeyword);
       });
     },
@@ -62,12 +63,24 @@ export default {
       }
       return this.defaultList;
     },
-    filteredList() {
+    kbvList() {
       let list = this.chosenList;
-      if (this.showMarc == false) {
-        list = this.chosenList.filter((item) => {
-          return item['@id'].includes('/marc/') == false;
-        });
+      list = this.chosenList.filter((item) => {
+        return item.hasOwnProperty('isDefinedBy') && item.isDefinedBy['@id'] === this.vocabContext[0]['@vocab'];
+      })
+      return list;
+    },
+    marcList() {
+      let list = this.chosenList;
+      list = this.chosenList.filter((item) => {
+        return item['@id'].includes(this.vocabContext[0]['marc']);
+      })
+      return list;
+    },
+    filteredList() {
+      let list = this.kbvList;
+      if (this.showMarc) {
+        list = list.concat(this.marcList);
       }
       return this.filterList(list, this.termListFilter);
     },

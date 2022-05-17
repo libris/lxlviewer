@@ -600,6 +600,24 @@ export function getBaseUriFromPrefix(prefix, context) {
   return baseUri;
 }
 
+export function getContainedBaseUri(uri, context) {
+  // If uri contains a baseUri defined in the context, return that baseUri
+  const contextList = context[0];
+  let baseUri = '';
+  forOwn(contextList, (value) => {
+    if (uri.includes(value)) {
+      baseUri = value;
+    }
+  });
+  return baseUri;
+}
+
+export function getContainedPrefix(uri, context) {
+  // If uri contains a prefix defined in the context, return that prefix
+  const baseUri = getContainedBaseUri(uri, context);
+  return getPrefixFromBaseUri(baseUri, context);
+}
+
 export function getPrefixFromBaseUri(baseUri, context) {
   // Returns prefix that corresponds to the provided baseUri.
   const contextList = context[0];
@@ -643,6 +661,9 @@ export function isAbstract(termObject) {
 
 export function getTree(term, vocab, context, counter = 0, parentChainString = '') {
   const termObj = getTermObject(term, vocab, context);
+  if (typeof termObj === 'undefined') {
+    return {};
+  }
   const treeNode = {
     id: term,
     labels: termObj.labelByLang || termObj.prefLabelByLang,
@@ -686,9 +707,37 @@ export function printTree(term, vocab, context) {
 }
 
 export function preprocessContext(context) {
-  const computed = { containerMap: computeContainerMap(context['@context'][1]) };
-  context['@context'].push(computed);
+  // Internal structure by index: 0 = prefixes, 1 = terms, 2 = computed
+  const prefixes = {};
+  const terms = {};
+
+  const ctx = context['@context'];
+  const ctxArray = isArray(ctx) ? ctx : [ctx];
+  for (const oneCtx of ctxArray) {
+    if (!isPlainObject(oneCtx)) {
+      continue;
+    }
+    forOwn(oneCtx, (value, key) => {
+      if (isPrefix(value)) {
+        prefixes[key] = value;
+      } else {
+        terms[key] = value;
+      }
+    });
+  }
+
+  const computed = { containerMap: computeContainerMap(terms) };
+  context['@context'] = [prefixes, terms, computed];
+
   return context;
+}
+
+function isPrefix(value) {
+  if (isPlainObject(value) && value['@prefix'] === true) {
+    return true;
+  }
+  const id = isPlainObject(value) ? value['@id'] : value;
+  return typeof id === 'string' && id.match(/[/#:]$/) !== null;
 }
 
 export function computeContainerMap(contextList) {

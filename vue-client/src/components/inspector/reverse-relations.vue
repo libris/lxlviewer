@@ -14,6 +14,7 @@ export default {
   props: {
     mainEntity: null,
     compact: { type: Boolean, default: false }, 
+    mode: { type: String, default: 'default' }, // "default" or "items"
   },
   data() {
     return {
@@ -48,21 +49,19 @@ export default {
         _sort: `_sortKeyByLang.${this.user.settings.language || 'sv'}`,
       };
       
-      if (this.recordType !== 'Item' && this.recordType !== 'Instance' && this.mainEntity.reverseLinks) {
+      if (this.mode !== 'items' && this.mainEntity.reverseLinks) {
         this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
         this.checkingRelations = false;
         query.o = this.mainEntity['@id'];
         this.panelQuery = Object.assign({}, query);
+        this.$emit('numberOfRelations', this.numberOfRelations);
         return;
       }
       
       this.checkingRelations = true;
       const timeoutLength = 1100; // Needed so that the index has time to update 
       setTimeout(() => { //
-        if (this.recordType === 'Item') {
-          query['itemOf.@id'] = this.mainEntity.itemOf['@id'];
-          query['@type'] = 'Item';
-        } else if (this.recordType === 'Instance') {
+        if (this.mode === 'items') {
           query['itemOf.@id'] = this.mainEntity['@id'];
           query['@type'] = 'Item';
 
@@ -89,6 +88,7 @@ export default {
             this.relationInfo = response.items;
             this.numberOfRelations = response.totalItems;
             this.checkingRelations = false;
+            this.$emit('numberOfRelations', this.numberOfRelations);
           }, (error) => {
             console.log('Error checking for relations', error);
           });
@@ -128,7 +128,7 @@ export default {
       return StringUtil.getUiPhraseByLang(this.totalRelationTooltipText, this.user.settings.language, this.resources.i18n);
     },
     totalRelationTooltipText() {
-      if (this.recordType === 'Instance' || this.recordType === 'Item') {
+      if (this.mode === 'items') {
         if (this.numberOfRelations === 0) {
           return 'No holdings';
         } if (Number.isNaN(this.numberOfRelations)) {
@@ -197,9 +197,9 @@ export default {
 
 <template>
   <div class="ReverseRelations-container">
-    <div class="ReverseRelations">
+    <div class="ReverseRelations" v-if="recordType !== 'Item'">
       <div class="ReverseRelations-header uppercaseHeading--light">
-        <span v-if="recordType === 'Instance' || recordType === 'Item'">{{"Holding" | translatePhrase}}</span>
+        <span v-if="mode === 'items'">{{"Holding" | translatePhrase}}</span>
         <span v-else>{{"Used in" | translatePhrase}}</span>
       </div>
       <div class="ReverseRelations-btnContainer">
@@ -208,7 +208,7 @@ export default {
           size="small">
         </vue-simple-spinner>
         <create-item-button class="ReverseRelations-button"
-        v-if="!checkingRelations && recordType === 'Instance' && user.isLoggedIn && user.getPermissions().registrant" 
+        v-if="!checkingRelations && mode === 'items' && user.isLoggedIn && user.getPermissions().registrant" 
         :compact="compact"
         :main-entity="mainEntity"
         :has-holding="hasRelation" 
@@ -235,6 +235,7 @@ export default {
         :query="panelQuery"
         :item-of="mainEntity"
         :list-context-type="recordType"
+        :list-context-type-mode="mode === 'items' ? 'Instance' : ''"
         @close="hidePanel()"></relations-list>
     </portal>
   </div>
@@ -245,6 +246,8 @@ export default {
   display: flex;
   align-items: center;
   height: 40px;
+  margin-left: 1em;
+  
   &-number {
     float: left;
     margin: 0 0 10px;

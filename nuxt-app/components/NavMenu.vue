@@ -1,14 +1,14 @@
 <template>
   <div :class="{ 'collapse': !expanded }" class="navbar-collapse NavMenu" id="navbarNav">
-    <ul class="navbar-nav" v-if="appState.domain === 'id'">
+    <ul class="navbar-nav" v-if="appState.domain === settings.defaultSite">
       <li class="nav-item">
         <NuxtLink @click.native="linkActivated" to="/" class="nav-link" :class="{'active': $route.name == 'find' || $route.name == 'index' }">{{ translateUi('Search') }}</NuxtLink>
       </li>
       <li class="nav-item">
-        <NuxtLink @click.native="linkActivated" to="/marcframe/" class="nav-link" tabindex="-1" :class="{'active': $route.name.startsWith('marcframe') }">{{ translateUi('MARC mappings') }}</NuxtLink>
+        <NuxtLink @click.native="linkActivated" to="/vocab/" class="nav-link" :class="{'active': $route.name == 'vocab-term' || $route.name == 'vocab' }">{{ translateUi('Vocabulary') }}</NuxtLink>
       </li>
       <li class="nav-item">
-        <NuxtLink @click.native="linkActivated" to="/vocab/" class="nav-link" :class="{'active': $route.name == 'vocab-term' || $route.name == 'vocab' }">{{ translateUi('Vocabulary') }}</NuxtLink>
+        <NuxtLink @click.native="linkActivated" to="/marcframe/" class="nav-link" tabindex="-1" :class="{'active': $route.name.startsWith('marcframe') }">{{ translateUi('MARC mappings') }}</NuxtLink>
       </li>
       <li class="nav-item">
         <NuxtLink @click.native="linkActivated" to="/doc/about" class="nav-link" :class="{'active': $route.path == '/doc/about' }">{{ translateUi('About id.kb.se') }}</NuxtLink>

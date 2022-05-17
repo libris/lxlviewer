@@ -1,4 +1,5 @@
 import { each } from 'lodash-es';
+import { translateAliasedUri } from './data';
 
 export function buildQueryString(params) {
   const enc = encodeURIComponent;
@@ -132,13 +133,8 @@ export function getRelatedRecords(queryPairs, apiPath) {
 }
 
 export async function getDocument(uri, contentType = 'application/ld+json', embellished = true) {
-  let translatedUri = uri;
-  if (uri.startsWith('https://id.kb.se')) {
-    translatedUri = uri.replace('https://id.kb.se', process.env.VUE_APP_ID_PATH);
-  } else if (uri.startsWith('https://libris.kb.se')) {
-    translatedUri = uri.replace('https://libris.kb.se', process.env.VUE_APP_API_PATH);
-  }
-
+  let translatedUri = translateAliasedUri(uri);
+  
   if (!uri.includes('embellished=')) {
     const query = `${uri.includes('?') ? '&' : '?'}embellished=${embellished}`;
     translatedUri = `${translatedUri}${query}`;
