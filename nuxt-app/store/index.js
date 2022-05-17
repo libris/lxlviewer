@@ -222,22 +222,49 @@ export const mutations = {
   },
 }
 
+const toJson = response => {
+  if (response.ok) {
+    return response.json()
+  }
+  else {
+    throw { statusCode: response.status }
+  }
+}
+
+function catcher(error) {
+  return err => {
+    error({ statusCode: err.statusCode || 500, 'message': err.message || ''})
+  }
+}
+
 export const actions = {
-  async nuxtServerInit({ commit, dispatch }, { req }) {
+  async nuxtServerInit({ commit, dispatch }, { req, error }) {
     dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host']) });
 
-    const contextData = await fetch(translateAliasedUri(CONTEXT)).then(res => res.json());
-    const processed = VocabUtil.preprocessContext(contextData);
-    commit('SET_VOCAB_CONTEXT', processed['@context']);
+    await fetch(translateAliasedUri(CONTEXT))
+      .then(toJson)
+      .then(contextData => {
+        const processed = VocabUtil.preprocessContext(contextData);
+        commit('SET_VOCAB_CONTEXT', processed['@context']);
+      })
+      .catch(catcher(error));
 
-    const vocab = await fetch(translateAliasedUri(VOCAB)).then(res => res.json());
-    commit('SET_VOCAB', vocab);
-    commit('SET_VOCAB_CLASSES', vocab);
-    commit('SET_VOCAB_PROPERTIES', vocab);
+    await fetch(translateAliasedUri(VOCAB))
+      .then(toJson)
+      .then(vocab => {
+        commit('SET_VOCAB', vocab);
+        commit('SET_VOCAB_CLASSES', vocab);
+        commit('SET_VOCAB_PROPERTIES', vocab);
+      })
+      .catch(catcher(error));
 
-    const display = await fetch(translateAliasedUri(DISPLAY)).then(res => res.json());
-    const expanded = DisplayUtil.expandInherited(display);
-    commit('SET_DISPLAY', expanded);
+    await fetch(translateAliasedUri(DISPLAY))
+      .then(toJson)
+      .then(display => {
+        const expanded = DisplayUtil.expandInherited(display);
+        commit('SET_DISPLAY', expanded);
+      })
+      .catch(catcher(error));
   },
   setMarcframe({ commit }, data) {
     commit('SET_MARCFRAME_DATA', data);
