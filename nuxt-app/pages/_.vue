@@ -107,7 +107,10 @@ export default {
         return response.json()
       }
 
-      if (response.status === 302) {
+      if (response.status === 0) {
+        // We're on the client side and got redirected to the page we're already on
+      }
+      else if (response.status === 302) {
         const url = translateAliasedUri(response.headers.get('Location'))
         console.log (`REDIRECTING: ${host}${path} -> ${url}`)
         redirect(url);
@@ -117,6 +120,7 @@ export default {
       }
     })
     .catch((err) => {
+      console.log(`ERROR: ${err}`)
       error({ statusCode: 500, message: err })
     });
 
