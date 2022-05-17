@@ -1,5 +1,9 @@
 import { each, findKey } from "lodash-es";
 
+if (!process.env.XL_SITE_CONFIG) {
+  throw 'env.XL_SITE_CONFIG not defined (fix for development: copy .env.in to .env)'
+}
+
 const SITE_ALIAS = JSON.parse(process.env.XL_SITE_ALIAS || '{}');
 const SITE_CONFIG = JSON.parse(process.env.XL_SITE_CONFIG);
 
