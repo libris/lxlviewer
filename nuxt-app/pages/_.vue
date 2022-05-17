@@ -92,18 +92,34 @@ export default {
   methods: {
     ...mapActions(['setCurrentDocument']),
   },
-  async asyncData({ $config, error, route, params, $http, store }) {
+  async asyncData({ error, route, store, redirect }) {
     const domain = store.getters.appState.domain
     const siteConfig = store.getters.settings.siteConfig
     const host = translateAliasedUri(siteConfig[domain].baseUri)
     const path = route.path.replace(/\(/g, '%28').replace(/\)/g, '%29');
-    const pageData = await $http.$get(`${host}${path}/data.jsonld`,
+    const pageData = await fetch(`${host}${path}`,
       {
-        headers: { 'Accept': 'application/ld+json' }
+        headers: { 'Accept': 'application/ld+json' },
+        redirect: 'manual'
       }
-    ).catch((err) => {
-      error({ statusCode: err.statusCode, message: err.message })
+    ).then(response => {
+      if (response.ok) {
+        return response.json()
+      }
+
+      if (response.status === 302) {
+        const url = translateAliasedUri(response.headers.get('Location'))
+        console.log (`REDIRECTING: ${host}${path} -> ${url}`)
+        redirect(url);
+      }
+      else {
+        error({ statusCode: response.status, message: `` })
+      }
+    })
+    .catch((err) => {
+      error({ statusCode: 500, message: err })
     });
+
     if (pageData) {
       const document = DataUtil.splitJson(pageData);
       store.commit('SET_CURRENT_DOCUMENT', document);
