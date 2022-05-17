@@ -240,7 +240,7 @@ function catcher(error) {
 export const actions = {
   async nuxtServerInit({ commit, dispatch }, { req, error }) {
     dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host']) });
-    
+
     await Promise.all([
       fetch(translateAliasedUri(CONTEXT))
       .then(toJson)
