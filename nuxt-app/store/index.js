@@ -240,31 +240,33 @@ function catcher(error) {
 export const actions = {
   async nuxtServerInit({ commit, dispatch }, { req, error }) {
     dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host']) });
-
-    await fetch(translateAliasedUri(CONTEXT))
+    
+    await Promise.all([
+      fetch(translateAliasedUri(CONTEXT))
       .then(toJson)
       .then(contextData => {
         const processed = VocabUtil.preprocessContext(contextData);
         commit('SET_VOCAB_CONTEXT', processed['@context']);
       })
-      .catch(catcher(error));
+      .catch(catcher(error)),
 
-    await fetch(translateAliasedUri(VOCAB))
+      fetch(translateAliasedUri(VOCAB))
       .then(toJson)
       .then(vocab => {
         commit('SET_VOCAB', vocab);
         commit('SET_VOCAB_CLASSES', vocab);
         commit('SET_VOCAB_PROPERTIES', vocab);
       })
-      .catch(catcher(error));
+      .catch(catcher(error)),
 
-    await fetch(translateAliasedUri(DISPLAY))
+      fetch(translateAliasedUri(DISPLAY))
       .then(toJson)
       .then(display => {
         const expanded = DisplayUtil.expandInherited(display);
         commit('SET_DISPLAY', expanded);
       })
-      .catch(catcher(error));
+      .catch(catcher(error))
+    ]);
   },
   setMarcframe({ commit }, data) {
     commit('SET_MARCFRAME_DATA', data);
