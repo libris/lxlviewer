@@ -5,7 +5,7 @@
         {{ getItemLabel }}
       </span>
       <template v-else-if="entityData['@id']">
-        <template v-if="isInternalUri(entityData['@id'])">
+        <template v-if="isInternalUri(entityData['@id']) && parentKey !== 'sameAs'">
           <NuxtLink :to="removeBaseUri(entityData['@id'])">
             <template v-if="Object.keys(entityData).length > 1">{{ getItemLabel }}</template>
             <template v-else>{{ translateUriEnv(decodeURI(translateUriEnv(entityData['@id']))) }}</template>

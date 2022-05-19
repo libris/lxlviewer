@@ -22,7 +22,7 @@
     <template v-if="isMainEntity">
       <div class="PropertyRow d-md-flex" v-if="showDownload">
         <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Download') }}</div>
-        <div class="PropertyRow-bodyValue"><a :href="`${ documentId }/data.jsonld` | translateAliasedUri">JSON-LD</a> • <a :href="`${ documentId }/data.ttl` | translateAliasedUri">Turtle</a> • <a :href="`${ documentId }/data.rdf` | translateAliasedUri">RDF/XML</a></div>
+        <div class="PropertyRow-bodyValue"><a :href="`${ recordId }/data.jsonld` | translateAliasedUri">JSON-LD</a> • <a :href="`${ recordId }/data.ttl` | translateAliasedUri">Turtle</a> • <a :href="`${ recordId }/data.rdf` | translateAliasedUri">RDF/XML</a></div>
       </div>
       <div class="PropertyRow d-md-flex" v-if="showOtherServices">
         <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Other sites') }}</div>
