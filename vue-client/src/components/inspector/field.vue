@@ -650,7 +650,8 @@ export default {
     v-bind:class="{
       'Field--inner': isInner,
       'is-lastAdded': isLastAdded, 
-      'is-removed': removed || diffRemoved,
+      'is-removed': removed,
+      'is-diff-removed': diffRemoved,
       'is-locked': locked,
       'is-diff': isFieldDiff || diffModified,
       'is-new': isFieldNew || diffAdded,
@@ -1050,7 +1051,7 @@ export default {
     background-color: hsl(hue(@base-color), 50%, 95%);
   }
 
-  &.is-removed {
+  &.is-diff-removed {
     @base-color: @remove;
     border: 1px dashed;
     border-color: @base-color;

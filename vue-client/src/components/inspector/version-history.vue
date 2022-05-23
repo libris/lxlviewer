@@ -2,7 +2,7 @@
 /*
   The full version history view
 */
-import {isNumber, get, set, cloneDeep} from 'lodash-es';
+import {isNumber, get, set, cloneDeep, isEmpty} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
@@ -24,7 +24,6 @@ export default {
       historyData: null,
       selectedVersion: 0,
       displayData: null,
-      previousVersionData: null,
       focusedTab: 'mainEntity',
       inspectingPath: '',
     };
@@ -41,6 +40,7 @@ export default {
       if (this.displayData) {
         return this.displayData.mainEntity;
       }
+      console.log('Display data is null/undefined!');
       return this.inspector.data.mainEntity;
     },
     selectedChangeSet() {
@@ -178,32 +178,30 @@ export default {
         this.fetchVersion(0);
       });
     },
-    fetchVersion(number) {
+    async fetchVersion(number) {
       if (this.changeSetsReversed == null) return;
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
-      fetch(fetchUrl).then(response => response.json()).then((result) => {
-        const currentVersionData = LxlDataUtil.splitJson(result);
 
-        const fetchUrlPrevious = this.changeSetsReversed[number + 1];
-        if (this.changeSetsReversed[number + 1] === undefined) {
-          console.log('Undefined');
-          this.displayData = currentVersionData;
-          return;
-        }
+      const currentVersionData = await fetch(fetchUrl).then(response => response.json()).then(result => LxlDataUtil.splitJson(result));
 
-        fetch(fetchUrlPrevious.version['@id']).then(response => response.json()).then((res) => {
-          this.previousVersionData = LxlDataUtil.splitJson(res);
-        });
+      const fetchUrlPrevious = this.changeSetsReversed[number + 1];
+      if (fetchUrlPrevious === undefined) {
+        this.displayData = await currentVersionData;
+        return;
+      }
 
-        const diff = this.currentVersionDiff;
-        if (diff.removed) {
-          const removedAt = StringUtil.arrayPathToString(diff.removed);
-          const gottenFromPrev = get(this.previousVersionData, removedAt);
-          const compositeVersionData = cloneDeep(currentVersionData);
-          set(compositeVersionData.mainEntity, removedAt, gottenFromPrev);
-          this.displayData = compositeVersionData;
-        }
-      });
+      const previousVersionData = await fetch(fetchUrlPrevious.version['@id']).then(response => response.json()).then(res => LxlDataUtil.splitJson(res));
+
+      const diff = this.currentVersionDiff;
+      if (!isEmpty(diff.removed)) {
+        const removedAt = StringUtil.arrayPathToString(diff.removed);
+        const gottenFromPrev = get(previousVersionData, removedAt);
+        const compositeVersionData = cloneDeep(currentVersionData);
+        set(compositeVersionData, removedAt, gottenFromPrev);
+        this.displayData = compositeVersionData;
+      } else {
+        this.displayData = currentVersionData;
+      }
     },
   },
   components: {
