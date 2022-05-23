@@ -15,7 +15,7 @@ module.exports = {
   parallel: false,
   configureWebpack: {
     devServer: {
-      public: process.env.VUE_APP_DEV_SERVER || 'kblocalhost.kb.se'
+      public: process.env.VUE_APP_DEV_SERVER || 'kblocalhost.kb.se',
     },
     resolve: {
       extensions: ['.js', '.vue', '.json'],
