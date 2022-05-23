@@ -33,6 +33,7 @@ import LensMixin from '@/mixins/lens';
 import ResultItem from '@/components/ResultItem';
 
 import { translateAliasedUri } from '../plugins/env';
+import { encodeSpecialChars } from '../plugins/env';
 
 export default {
   mixins: [LensMixin],
@@ -96,7 +97,7 @@ export default {
     const domain = store.getters.appState.domain
     const siteConfig = store.getters.settings.siteConfig
     const host = translateAliasedUri(siteConfig[domain].baseUri)
-    const path = route.path.replace(/\(/g, '%28').replace(/\)/g, '%29');
+    const path = encodeSpecialChars(route.path);
     const pageData = await fetch(`${host}${path}`,
       {
         headers: { 'Accept': 'application/ld+json' },

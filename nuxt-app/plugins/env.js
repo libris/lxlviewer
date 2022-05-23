@@ -39,6 +39,16 @@ export function translateAliasedUri(uri) {
   return translatedUri;
 }
 
+export function encodeSpecialChars(path) {
+  if (typeof path !== 'string') {
+    return '';
+  }
+  return path
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29')
+    .replace(/&/g, '%26');
+}
+
 export function defaultSite() {
   return process.env.DEFAULT_SITE || 'id.kb.se';
 }
