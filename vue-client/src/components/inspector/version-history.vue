@@ -2,7 +2,7 @@
 /*
   The full version history view
 */
-import { isNumber } from 'lodash-es';
+import {isNumber, get, set, cloneDeep} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
@@ -23,7 +23,8 @@ export default {
     return {
       historyData: null,
       selectedVersion: 0,
-      fetchedVersionData: null,
+      displayData: null,
+      previousVersionData: null,
       focusedTab: 'mainEntity',
       inspectingPath: '',
     };
@@ -37,8 +38,8 @@ export default {
       'status',
     ]),
     focusData() {
-      if (this.fetchedVersionData) {
-        return this.fetchedVersionData.mainEntity;
+      if (this.displayData) {
+        return this.displayData.mainEntity;
       }
       return this.inspector.data.mainEntity;
     },
@@ -61,6 +62,7 @@ export default {
       return {
         modified: this.modifiedPathsInCurrentVersion,
         added: this.addedPathsInCurrentVersion,
+        removed: this.removedPathsInCurrentVersion,
       };
     },
     modifiedPathsInCurrentVersion() {
@@ -107,10 +109,32 @@ export default {
       });
       return convertedAdded;
     },
+    removedPathsInCurrentVersion() {
+      if (this.selectedChangeSet.hasOwnProperty('removedPaths') === false) return [];
+      const removed = this.selectedChangeSet.removedPaths;
+      const convertedRemoved = [];
+      removed.forEach((removedPath) => {
+        let path = '';
+        for (let i = 0; i < removedPath.length; i++) {
+          if (isNumber(removedPath[i])) {
+            path += `[${removedPath[i]}]`;
+          } else {
+            if (i !== 0) {
+              path += '.';
+            }
+            path += removedPath[i];
+          }
+        }
+        path = path.replace('@graph[0]', 'record');
+        path = path.replace('@graph[1]', 'mainEntity');
+        convertedRemoved.push(path);
+      });
+      return convertedRemoved;
+    },
     recordType() {
-      if (this.fetchedVersionData.hasOwnProperty('mainEntity')) {
+      if (this.displayData.hasOwnProperty('mainEntity')) {
         return VocabUtil.getRecordType(
-          this.fetchedVersionData.mainEntity['@type'],
+          this.displayData.mainEntity['@type'],
           this.resources.vocab,
           this.resources.context,
         );
@@ -158,7 +182,27 @@ export default {
       if (this.changeSetsReversed == null) return;
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
       fetch(fetchUrl).then(response => response.json()).then((result) => {
-        this.fetchedVersionData = LxlDataUtil.splitJson(result);
+        const currentVersionData = LxlDataUtil.splitJson(result);
+
+        const fetchUrlPrevious = this.changeSetsReversed[number + 1];
+        if (this.changeSetsReversed[number + 1] === undefined) {
+          console.log('Undefined');
+          this.displayData = currentVersionData;
+          return;
+        }
+
+        fetch(fetchUrlPrevious.version['@id']).then(response => response.json()).then((res) => {
+          this.previousVersionData = LxlDataUtil.splitJson(res);
+        });
+
+        const diff = this.currentVersionDiff;
+        if (diff.removed) {
+          const removedAt = StringUtil.arrayPathToString(diff.removed);
+          const gottenFromPrev = get(this.previousVersionData, removedAt);
+          const compositeVersionData = cloneDeep(currentVersionData);
+          set(compositeVersionData.mainEntity, removedAt, gottenFromPrev);
+          this.displayData = compositeVersionData;
+        }
       });
     },
   },
@@ -186,12 +230,12 @@ export default {
           <span class="VersionHistory-backLink">
             <a @click="$router.go(-1)"><i class="fa fa-arrow-left"></i> Tillbaka</a>
           </span>
-          <span class="VersionHistory-headerTitle" v-if="fetchedVersionData != null">
+          <span class="VersionHistory-headerTitle" v-if="displayData != null">
             {{ getItemLabel }}
           </span>
         </div>
         <div class="VersionHistory-content">
-          <template v-if="fetchedVersionData != null">
+          <template v-if="displayData != null">
             <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="focusedTab" />
             <entity-form
               v-for="tab in editorTabs"
@@ -199,7 +243,7 @@ export default {
               :key="tab.id"
               :diff="currentVersionDiff"
               :is-active="focusedTab === tab.id"
-              :form-data="fetchedVersionData[tab.id]"
+              :form-data="displayData[tab.id]"
               :locked="true">
             </entity-form>
           </template>

@@ -104,6 +104,13 @@ export default {
       }
       return false;
     },
+    diffRemoved() {
+      if (this.diff == null) return false;
+      if (this.diff.removed.includes(this.path)) {
+        return true;
+      }
+      return false;
+    },
     inClassAndProperty() {
       return `${this.entityType}.${this.fieldKey}`;
     },

@@ -32,6 +32,7 @@ export default {
       filteredChangeSets: null,
       selectedVersion: 0,
       fetchedVersionData: null,
+      compositeVersionData: null,
     };
   },
   computed: {
@@ -61,7 +62,7 @@ export default {
       return result;
     },
     inspectingPathData() {
-      const fullData = this.fetchedVersionData;
+      const fullData = this.compositeVersionData;
       if (fullData == null || this.inspectingPath == '') return null;
       const formObj = {};
       const formPathParts = this.inspectingPath.split('.');

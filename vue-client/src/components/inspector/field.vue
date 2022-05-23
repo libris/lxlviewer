@@ -3,9 +3,9 @@
   The field component is responsible for a specific key value pair.
   It's responsible for its own data, and dispatches all changes to the form component.
 */
-import { isArray, isPlainObject, isObject, cloneDeep, get, differenceWith, isEqual } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
-import { mapGetters } from 'vuex';
+import {cloneDeep, differenceWith, get, isArray, isEqual, isObject, isPlainObject} from 'lodash-es';
+import {mixin as clickaway} from 'vue-clickaway';
+import {mapGetters} from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import EntityAdder from './entity-adder';
@@ -151,6 +151,13 @@ export default {
     diffModified() {
       if (this.diff == null) return false;
       if (this.diff.modified.includes(this.path)) {
+        return true;
+      }
+      return false;
+    },
+    diffRemoved() {
+      if (this.diff == null) return false;
+      if (this.diff.removed.includes(this.path)) {
         return true;
       }
       return false;
@@ -643,7 +650,7 @@ export default {
     v-bind:class="{
       'Field--inner': isInner,
       'is-lastAdded': isLastAdded, 
-      'is-removed': removed,
+      'is-removed': removed || diffRemoved,
       'is-locked': locked,
       'is-diff': isFieldDiff || diffModified,
       'is-new': isFieldNew || diffAdded,
@@ -719,6 +726,9 @@ export default {
               @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
             </i>
           </div>
+        </div>
+        <div v-if="diffRemoved">
+          <i class="fa fa-trash-o fa-fw icon--sm icon-removed" tabindex="0"></i>
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
@@ -1038,6 +1048,16 @@ export default {
     border: 1px solid;
     border-color: @base-color;
     background-color: hsl(hue(@base-color), 50%, 95%);
+  }
+
+  &.is-removed {
+    @base-color: @remove;
+    border: 1px dashed;
+    border-color: @base-color;
+    background-color: @form-remove;
+  }
+  .icon-removed {
+    color: @remove;
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
