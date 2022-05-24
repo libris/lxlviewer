@@ -3,7 +3,7 @@
   The field component is responsible for a specific key value pair.
   It's responsible for its own data, and dispatches all changes to the form component.
 */
-import {cloneDeep, differenceWith, get, isArray, isEqual, isObject, isPlainObject} from 'lodash-es';
+import {cloneDeep, differenceWith, get, isArray, isEmpty, isEqual, isObject, isPlainObject} from 'lodash-es';
 import {mixin as clickaway} from 'vue-clickaway';
 import {mapGetters} from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
@@ -144,6 +144,13 @@ export default {
     diffAdded() {
       if (this.diff == null) return false;
       if (this.diff.added.includes(this.path)) {
+        return true;
+      }
+      return false;
+    },
+    diffAddedChildren() {
+      if (this.diff == null || isEmpty(this.diff.added)) return false;
+      if (this.diff.added[0].includes(this.path)) {
         return true;
       }
       return false;
@@ -627,6 +634,9 @@ export default {
         });
       }
     },
+    hasAdded() {
+      return true;
+    },
   },
   beforeDestroy() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
@@ -729,7 +739,11 @@ export default {
           </div>
         </div>
         <div v-if="diffRemoved">
-          <i class="fa fa-trash-o fa-fw icon--sm icon-removed" tabindex="0"></i>
+          <i class="fa fa-trash-o icon--sm icon-removed"></i>
+<!--          TODO: Use fa-trash-alt from sketches-->
+        </div>
+        <div v-if="diffAdded || diffAddedChildren">
+          <i class="fa fa-circle icon--xs icon-added"></i>
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
@@ -1057,8 +1071,14 @@ export default {
     border-color: @base-color;
     background-color: @form-remove;
   }
+
   .icon-removed {
     color: @remove;
+  }
+
+  .icon-added {
+    color: #428BCAFF;
+    //  TODO: Stolen from @brand-primary base. Import from styleguide?
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class

@@ -205,7 +205,7 @@ export default {
             &:not(.is-marked) {
               &:not(.is-linked) {
                 &:not(.is-diff-removed) {
-                  background-color: @form-field;
+                    background-color: @form-field;
                 }
               }
             }
