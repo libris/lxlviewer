@@ -284,6 +284,8 @@
           "associatedMedia": [
             {
               "@type": "MediaObject",
+              "marc:publicNote": [""],
+              "cataloguersNote": [""],
               "publisher": [],
               "uri": [""],
               "usageAndAccessPolicy": []
