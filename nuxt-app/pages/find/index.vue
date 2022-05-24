@@ -39,6 +39,7 @@ import PageStatus from '@/components/PageStatus';
 import ResultItem from '@/components/ResultItem';
 import Pagination from '@/components/Pagination';
 import {translateAliasedUri} from "../../plugins/env";
+import {encodeSpecialChars} from "../../plugins/env";
 
 export default {
   head() {
@@ -73,9 +74,9 @@ export default {
     const query = route.query;
     let queryString = '';
 
-    Object.entries(query).forEach(([key, val]) => queryString += `${key}=${val}&`);
+    Object.entries(query).forEach(([key, val]) => queryString += `${key}=${encodeSpecialChars(val)}&`);
     const pageData = await $http.$get(`${host}/find.jsonld?${queryString}`);
-    const collectionResults = await $http.$get(`${host}/find.jsonld?q=${route.query.q}&_limit=0`);
+    const collectionResults = await $http.$get(`${host}/find.jsonld?q=${encodeSpecialChars(route.query.q)}&_limit=0`);
     return {
       pageData,
       collectionResults,
