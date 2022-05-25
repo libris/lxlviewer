@@ -1054,7 +1054,9 @@ export default {
 
   &.is-diff {
     &:not(.is-new) {
-      background-color: transparent;
+      &:not(.is-diff-removed) {
+        background-color: transparent;
+      }
     }
   }
 
@@ -1110,7 +1112,7 @@ export default {
       box-shadow: inset 0 0 0 1px @grey-lighter;
     }
 
-    &.is-locked:not(.is-new),
+    &.is-locked:not(.is-new):not( .is-diff-removed),
     .Field--inner & {
       background: none;
       box-shadow: none;
