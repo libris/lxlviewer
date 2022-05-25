@@ -70,19 +70,7 @@ export default {
       const modified = this.selectedChangeSet.modifiedPaths;
       const convertedModified = [];
       modified.forEach((modifiedPath) => {
-        let path = '';
-        for (let i = 0; i < modifiedPath.length; i++) {
-          if (isNumber(modifiedPath[i])) {
-            path += `[${modifiedPath[i]}]`;
-          } else {
-            if (i !== 0) {
-              path += '.';
-            }
-            path += modifiedPath[i];
-          }
-        }
-        path = path.replace('@graph[0]', 'record');
-        path = path.replace('@graph[1]', 'mainEntity');
+        const path = StringUtil.arrayPathToString(modifiedPath);
         convertedModified.push(path);
       });
       return convertedModified;
@@ -92,19 +80,7 @@ export default {
       const added = this.selectedChangeSet.addedPaths;
       const convertedAdded = [];
       added.forEach((addedPath) => {
-        let path = '';
-        for (let i = 0; i < addedPath.length; i++) {
-          if (isNumber(addedPath[i])) {
-            path += `[${addedPath[i]}]`;
-          } else {
-            if (i !== 0) {
-              path += '.';
-            }
-            path += addedPath[i];
-          }
-        }
-        path = path.replace('@graph[0]', 'record');
-        path = path.replace('@graph[1]', 'mainEntity');
+        const path = StringUtil.arrayPathToString(addedPath);
         convertedAdded.push(path);
       });
       return convertedAdded;
@@ -114,19 +90,7 @@ export default {
       const removed = this.selectedChangeSet.removedPaths;
       const convertedRemoved = [];
       removed.forEach((removedPath) => {
-        let path = '';
-        for (let i = 0; i < removedPath.length; i++) {
-          if (isNumber(removedPath[i])) {
-            path += `[${removedPath[i]}]`;
-          } else {
-            if (i !== 0) {
-              path += '.';
-            }
-            path += removedPath[i];
-          }
-        }
-        path = path.replace('@graph[0]', 'record');
-        path = path.replace('@graph[1]', 'mainEntity');
+        const path = StringUtil.arrayPathToString(removedPath);
         convertedRemoved.push(path);
       });
       return convertedRemoved;
