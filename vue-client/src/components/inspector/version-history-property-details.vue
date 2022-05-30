@@ -170,6 +170,8 @@ export default {
       }
     },
     filterAndSetChangeSets(historyData) {
+      const featureToggle = true;
+      if (featureToggle) return;
       if (historyData == null || historyData.hasOwnProperty('changeSets') == false) return;
       const result = historyData.changeSets.filter((changeSet) => {
         let shouldBeAdded = false;
@@ -232,7 +234,8 @@ export default {
 </script>
 
 <template>
-  <div class="VersionHistory-propertyDetails" :class="{ 'is-opened': inspectingPath.length > 0 }">
+  <div class="VersionHistory-propertyDetails" :class="{ 'is-opened': false }">
+<!--  <div class="VersionHistory-propertyDetails" :class="{ 'is-opened': inspectingPath.length > 0 }">-->
     <div class="VersionHistory-propertyDetails-header">
       <span>
       Egenskapshistorik: {{ inspectingPathTranslated }}
