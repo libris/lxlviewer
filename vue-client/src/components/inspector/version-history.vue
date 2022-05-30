@@ -93,6 +93,7 @@ export default {
         const path = StringUtil.arrayPathToString(removedPath);
         convertedRemoved.push(path);
       });
+      console.log(convertedRemoved);
       return convertedRemoved;
     },
     recordType() {
@@ -158,10 +159,11 @@ export default {
 
       const diff = this.currentVersionDiff;
       if (!isEmpty(diff.removed)) {
-        const removedAt = StringUtil.arrayPathToString(diff.removed);
-        const gottenFromPrev = get(previousVersionData, removedAt);
         const compositeVersionData = cloneDeep(currentVersionData);
-        set(compositeVersionData, removedAt, gottenFromPrev);
+        diff.removed.forEach((r) => {
+          const gottenFromPrev = get(previousVersionData, r);
+          set(compositeVersionData, r, gottenFromPrev);
+        });
         this.displayData = compositeVersionData;
       } else {
         this.displayData = currentVersionData;
