@@ -634,9 +634,6 @@ export default {
         });
       }
     },
-    hasAdded() {
-      return true;
-    },
   },
   beforeDestroy() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
@@ -677,7 +674,7 @@ export default {
     <div class="Field-labelContainer" 
       :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}"
       v-if="showKey && !isInner" >
-      <div class="Field-labelWrapper">
+      <div class="Field-labelWrapper" :class="{'sticky': this.diff == null}">
         <div v-if="!isLocked" class="Field-actions">
           <div class="Field-action Field-remove" 
             v-show="!locked && isRemovable" 
@@ -1199,7 +1196,6 @@ export default {
 
   &-labelWrapper {
     position: static;
-    position: sticky;
     top: 55px;
     display: flex;
     justify-content: flex-end;
@@ -1208,6 +1204,10 @@ export default {
 
     @media (min-width: @screen-sm) {
       flex-direction: row;      
+    }
+
+    &.sticky {
+      position: sticky;
     }
 
     @media (min-width: @screen-md) {

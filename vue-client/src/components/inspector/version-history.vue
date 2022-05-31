@@ -2,7 +2,7 @@
 /*
   The full version history view
 */
-import {isNumber, get, set, cloneDeep, isEmpty} from 'lodash-es';
+import { get, set, cloneDeep, isEmpty } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
@@ -151,7 +151,7 @@ export default {
 
       const fetchUrlPrevious = this.changeSetsReversed[number + 1];
       if (fetchUrlPrevious === undefined) {
-        this.displayData = await currentVersionData;
+        this.displayData = currentVersionData;
         return;
       }
 
@@ -172,10 +172,8 @@ export default {
   },
   components: {
     EntityForm,
-    SummaryNode,
     TabMenu,
     VersionHistoryPropertyDetails,
-    'button-component': Button,
     VersionHistoryChangesets,
   },
   mounted() {
