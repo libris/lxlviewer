@@ -674,7 +674,7 @@ export default {
     <div class="Field-labelContainer" 
       :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}"
       v-if="showKey && !isInner" >
-      <div class="Field-labelWrapper" :class="{'sticky': this.diff == null}">
+      <div class="Field-labelWrapper" :class="{'sticky': !diff }">
         <div v-if="!isLocked" class="Field-actions">
           <div class="Field-action Field-remove" 
             v-show="!locked && isRemovable" 
