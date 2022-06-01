@@ -2,9 +2,9 @@
   "about-xl-full": {
     "image": "omxllarge_new.png",
     "image_alt_text": "Ett nav av tekniska produkter som är kopplade till ett moln",
-    "header": "Om nya Libris och XL",
+    "header": "Om Libris och XL",
     "text": {
-      "abstract": "Libris katalogisering är den nya katalogiseringstjänsten. I verktyget är gränssnittet anpassat för att ta tillvara de möjligheter som nytt format och ny systemarkitektur erbjuder. För att göra katalogiseringen så smidig som möjligt finns hjälp och stöd inbyggt i systemet.",
+      "abstract": "Libris katalogisering är en webbaserad tjänst för katalogisering. I verktyget är gränssnittet anpassat för att ta tillvara de möjligheter som format och systemarkitektur baserade på länkade data erbjuder. För att göra katalogiseringen så smidig som möjligt finns hjälp och stöd inbyggt i systemet.",
       "sections": {
         "section1": {
           "header": "Libris",
@@ -12,15 +12,15 @@
         },
         "section2": {
           "header": "Vision",
-          "text": "Dagens användarbehov och beteenden gör att verktyg, format och systemarkitektur behöver förändras. Den nya plattformen för den nationella bibliotekskatalogen, XL, utgör en stabil grund. Den är utbyggbar och har kapacitet för de stora dataflöden som präglar dagens informationssamhälle. Modern teknik ger säker drift, bra prestanda och framtida utvecklingsmöjligheter. Förändringen kan beskrivas som att katalogen flyttas från en gammal bräcklig grund till ett modernt fundament. På den nya tekniska plattformen blir systemet mer flexibelt och erbjuder god potential till utveckling av framtida tjänster.<br><br>Nya Libris och XL är baserat på ett nytt format, ny vokabulär och på öppna länkade data. Därmed blir informationen begriplig för resten av webben vilket skapar nya vägar in till bibliotekens samlingar. Bibliotekens data blir synlig även utanför biblioteken."
+          "text": "Dagens användarbehov och beteenden gör att verktyg, format och systemarkitektur behöver förändras. Den tekniska plattformen för den nationella bibliotekskatalogen, XL, utgör en stabil grund. Den är utbyggbar och har kapacitet för de stora dataflöden som präglar dagens informationssamhälle. Modern teknik ger säker drift, bra prestanda, flexibilitet och framtida utvecklingsmöjligheter.<br><br>Libris katalogiseringsverktyg och XL är baserat på Bibframe - format, en samlad vokabulär, KBV (KB Vokabulär), och på öppna länkade data. Därmed blir informationen begriplig för resten av webben vilket skapar nya vägar in till bibliotekens samlingar. Bibliotekens data blir synlig även utanför biblioteken."
         },
         "section3": {
           "header": "Systemägare",
-          "text": "Kungliga biblioteket är systemägare och systemleverantör av de nationella bibliotekssystemen Libris där systemlösningar och innehåll är fritt tillgängliga. Librissystemen utvecklas kontinuerligt vilket implementeras i löpande releaser.<br><br>KB styr utveckling och förvaltning i samråd med användare av systemen och tjänsterna för att säkra tjänsternas relevans över tid. En gång om året anordnas Libris användarmöte där användarna får information om  kommande releaser samt möjlighet att ge feedback på önskad framtida systemfunktionalitet."
+          "text": "Kungliga biblioteket är systemägare och systemleverantör av de nationella bibliotekssystemen Libris där systemlösningar och innehåll är fritt tillgängliga. Librissystemen utvecklas kontinuerligt vilket implementeras i löpande releaser.<br><br>KB styr utveckling och förvaltning i samråd med användare av systemen och tjänsterna för att säkra tjänsternas relevans över tid."
         },
         "section4": {
           "header": "Framtid",
-          "text": "Formatet möjliggör förbättrad datakvalitet och effektivare arbetsprocesser.  Genom att katalogisatörer fortsätter beskriva metadatat på ett kvalitativt sätt kan användningen av biblioteksdata öka. Bibliotekariens roll vidareutvecklas när vi beskriver relationer mellan resurser och skapar sammanlänkad och sökbar data. Detta bidrar till att biblioteken kan bygga nya tjänster och använda andra källor för att berika biblioteksdatat, men också att aktörer utanför biblioteksvärlden kan använda vår värdefulla källa för nya spännande tjänster.<br><br>Nya Libris ger nya möjligheter."
+          "text": "Formatet möjliggör förbättrad datakvalitet och effektivare arbetsprocesser. Genom att katalogisatörer fortsätter beskriva metadatat på ett kvalitativt sätt kan användningen av biblioteksdata öka. Bibliotekariens roll vidareutvecklas när vi beskriver relationer mellan resurser och skapar sammanlänkad och sökbar data. Detta bidrar till att biblioteken kan bygga nya tjänster och använda andra källor för att berika biblioteksdata, men också att aktörer utanför biblioteksvärlden kan använda denna värdefulla källa för nya spännande tjänster.<br><br>Libris skapar möjligheter."
         }
       }
     },
