@@ -30,10 +30,10 @@
   "about-xl": {
     "image": "omxl_new.png",
     "image_alt_text": "Ett nav av tekniska produkter som är kopplade till ett moln",
-    "header": "Om nya Libris och XL",
-    "text": "Nya Libris och XL är baserat på ett nytt format, ny vokabulär och öppna länkade data. På den nya tekniska plattformen blir systemet mer flexibelt och erbjuder god potential till utveckling av framtida tjänster.",
+    "header": "Om Libris och XL",
+    "text": "Libris katalogisering är en webbaserad tjänst för katalogisering. I verktyget är gränssnittet anpassat för att ta tillvara de möjligheter som format och systemarkitektur baserade på länkade data erbjuder.",
     "linkUrl": "/about",
-    "linkText": "Om nya Libris och XL"
+    "linkText": "Libris och XL"
   },
   "blog": {
     "image": "libris_nyheter.png",
