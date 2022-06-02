@@ -2,16 +2,14 @@
 /*
   The full version history view
 */
-import { get, set, cloneDeep, isEmpty } from 'lodash-es';
+import { get, set, cloneDeep, isEmpty, some } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import LensMixin from '@/components/mixins/lens-mixin';
 import EntityForm from './entity-form.vue';
-import SummaryNode from '@/components/shared/summary-node.vue';
 import TabMenu from '@/components/shared/tab-menu';
-import Button from '@/components/shared/button';
 import VersionHistoryPropertyDetails from './version-history-property-details.vue';
 import VersionHistoryChangesets from './version-history-changesets.vue';
 
@@ -22,6 +20,7 @@ export default {
   data() {
     return {
       historyData: null,
+      modified: { added: null, removed: null },
       selectedVersion: 0,
       displayData: null,
       focusedTab: 'mainEntity',
@@ -63,6 +62,8 @@ export default {
         modified: this.modifiedPathsInCurrentVersion,
         added: this.addedPathsInCurrentVersion,
         removed: this.removedPathsInCurrentVersion,
+        modifiedAdded: this.modified.added,
+        modifiedRemoved: this.modified.removed,
       };
     },
     modifiedPathsInCurrentVersion() {
@@ -70,6 +71,8 @@ export default {
       const modified = this.selectedChangeSet.modifiedPaths;
       const convertedModified = [];
       modified.forEach((modifiedPath) => {
+        // Throw away modifiedPath == [@graph]
+        if (modifiedPath.length === 1) return;
         const path = StringUtil.arrayPathToString(modifiedPath);
         convertedModified.push(path);
       });
@@ -115,6 +118,7 @@ export default {
     selectedVersion(val, oldval) {
       if (val !== oldval) {
         this.fetchVersion(val);
+        this.$store.dispatch('setCompositeHistoryData', this.displayData);
       }
     },
     'inspector.event'(val) {
@@ -158,11 +162,25 @@ export default {
       const previousVersionData = await fetch(fetchUrlPrevious.version['@id']).then(response => response.json()).then(res => LxlDataUtil.splitJson(res));
 
       const diff = this.currentVersionDiff;
-      if (!isEmpty(diff.removed)) {
+      if (!isEmpty(diff.removed) || !isEmpty(diff.modified)) {
         const compositeVersionData = cloneDeep(currentVersionData);
         diff.removed.forEach((r) => {
-          const gottenFromPrev = get(previousVersionData, r);
-          set(compositeVersionData, r, gottenFromPrev);
+          const previousRemoved = get(previousVersionData, r);
+          set(compositeVersionData, r, previousRemoved);
+        });
+        diff.modified.forEach((m) => {
+          if (m === 'record.modified') return;
+
+          const previousModified = get(previousVersionData, m);
+          const currentModified = get(currentVersionData, m);
+
+          if (Array.isArray(currentModified)) {
+            this.modified.removed = previousModified.filter(x => !some(currentModified, x));
+            this.modified.added = currentModified.filter(x => !some(previousModified, x));
+            this.modified.removed.forEach(el => currentModified.push(el));
+            set(compositeVersionData, m, currentModified);
+          }
+          // TODO: Else show before + after
         });
         this.displayData = compositeVersionData;
       } else {

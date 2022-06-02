@@ -44,6 +44,7 @@ const store = new Vuex.Store({
       data: {},
       insertData: {},
       originalData: {},
+      compositeHistoryData: {},
       title: '',
       status: {
         detailedEnrichmentModal: {
@@ -152,6 +153,9 @@ const store = new Vuex.Store({
     },
     setInsertData(state, data) {
       state.inspector.insertData = data;
+    },
+    setCompositeHistoryData(state, data) {
+      state.inspector.compositeHistoryData = data;
     },
     addToQuoted(state, data) {
       const quoted = cloneDeep(state.inspector.data.quoted);
@@ -644,6 +648,9 @@ const store = new Vuex.Store({
     },
     setInsertData({ commit }, data) {
       commit('setInsertData', data);
+    },
+    setCompositeHistoryData({ commit }, data) {
+      commit('setCompositeHistoryData', data);
     },
     updateInspectorData({ commit }, payload) {
       commit('updateInspectorData', payload);

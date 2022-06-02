@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, isArray, get, isObject, dropRight } from 'lodash-es';
+import { cloneDeep, isArray, get, isObject, dropRight, some } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -108,6 +108,14 @@ export default {
       if (this.diff == null) return false;
       if (this.diff.removed.includes(this.path)) {
         return true;
+      }
+      return false;
+    },
+    diffModRemoved() {
+      if (this.diff == null) return false;
+      if (this.diff.modified.includes(this.parentPath)) {
+        const obj = get(this.inspector.compositeHistoryData, this.path);
+        return some(this.diff.modifiedRemoved, obj);
       }
       return false;
     },
