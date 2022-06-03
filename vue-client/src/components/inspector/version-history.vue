@@ -170,13 +170,15 @@ export default {
         });
         diff.modified.forEach((m) => {
           if (m === 'record.modified') return;
-
           const previousModified = get(previousVersionData, m);
           const currentModified = get(currentVersionData, m);
 
           if (Array.isArray(currentModified)) {
-            this.modified.removed = previousModified.filter(x => !some(currentModified, x));
-            this.modified.added = currentModified.filter(x => !some(previousModified, x));
+            this.modified.removed = this.modified.removed.concat(previousModified.filter(x => !some(currentModified, x)));
+            this.modified.added = this.modified.added.concat(currentModified.filter(x => !some(previousModified, x)));
+
+            console.log('this.modified.removed', JSON.stringify(this.modified.removed));
+            console.log('this.modified.added', JSON.stringify(this.modified.added));
             this.modified.removed.forEach(el => currentModified.push(el));
             set(compositeVersionData, m, currentModified);
           }

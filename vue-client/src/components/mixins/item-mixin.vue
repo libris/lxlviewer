@@ -119,6 +119,14 @@ export default {
       }
       return false;
     },
+    diffModAdded() {
+      if (this.diff == null) return false;
+      if (this.diff.modifed.includes(this.parentPath)) {
+        const obj = get(this.inspector.compositeHistoryData, this.path);
+        return some(this.diff.modifiedAdded, obj);
+      }
+      return false;
+    },
     inClassAndProperty() {
       return `${this.entityType}.${this.fieldKey}`;
     },
