@@ -111,6 +111,7 @@ export default {
       }
       return false;
     },
+
     diffModRemoved() {
       if (this.diff == null) return false;
       if (this.diff.modified.includes(this.parentPath)) {

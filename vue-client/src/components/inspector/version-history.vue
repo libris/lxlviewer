@@ -2,7 +2,7 @@
 /*
   The full version history view
 */
-import { get, set, cloneDeep, isEmpty, some } from 'lodash-es';
+import {get, set, cloneDeep, isEmpty} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       historyData: null,
-      modified: { added: null, removed: null },
+      modified: null,
       selectedVersion: 0,
       displayData: null,
       focusedTab: 'mainEntity',
@@ -62,8 +62,6 @@ export default {
         modified: this.modifiedPathsInCurrentVersion,
         added: this.addedPathsInCurrentVersion,
         removed: this.removedPathsInCurrentVersion,
-        modifiedAdded: this.modified.added,
-        modifiedRemoved: this.modified.removed,
       };
     },
     modifiedPathsInCurrentVersion() {
@@ -71,8 +69,6 @@ export default {
       const modified = this.selectedChangeSet.modifiedPaths;
       const convertedModified = [];
       modified.forEach((modifiedPath) => {
-        // Throw away modifiedPath == [@graph]
-        if (modifiedPath.length === 1) return;
         const path = StringUtil.arrayPathToString(modifiedPath);
         convertedModified.push(path);
       });
@@ -96,7 +92,6 @@ export default {
         const path = StringUtil.arrayPathToString(removedPath);
         convertedRemoved.push(path);
       });
-      console.log(convertedRemoved);
       return convertedRemoved;
     },
     recordType() {
@@ -166,23 +161,16 @@ export default {
         const compositeVersionData = cloneDeep(currentVersionData);
         diff.removed.forEach((r) => {
           const previousRemoved = get(previousVersionData, r);
-          set(compositeVersionData, r, previousRemoved);
-        });
-        diff.modified.forEach((m) => {
-          if (m === 'record.modified') return;
-          const previousModified = get(previousVersionData, m);
-          const currentModified = get(currentVersionData, m);
-
-          if (Array.isArray(currentModified)) {
-            this.modified.removed = this.modified.removed.concat(previousModified.filter(x => !some(currentModified, x)));
-            this.modified.added = this.modified.added.concat(currentModified.filter(x => !some(previousModified, x)));
-
-            console.log('this.modified.removed', JSON.stringify(this.modified.removed));
-            console.log('this.modified.added', JSON.stringify(this.modified.added));
-            this.modified.removed.forEach(el => currentModified.push(el));
-            set(compositeVersionData, m, currentModified);
+          const lastIndexOf = r.lastIndexOf('[');
+          const isListItem = lastIndexOf !== -1;
+          if (isListItem) {
+            const parentPath = r.slice(0, lastIndexOf);
+            const parentObj = get(compositeVersionData, parentPath);
+            parentObj.push(previousRemoved);
+            set(compositeVersionData, parentPath, parentObj);
+          } else {
+            set(compositeVersionData, r, previousRemoved);
           }
-          // TODO: Else show before + after
         });
         this.displayData = compositeVersionData;
       } else {
