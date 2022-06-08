@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, isArray, get, isObject, dropRight, some } from 'lodash-es';
+import {cloneDeep, isArray, get, isObject, dropRight, some, isEqual} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -92,10 +92,9 @@ export default {
     },
     diffAdded() {
       if (this.diff == null) return false;
-      if (this.diff.added.includes(this.path)) {
-        return true;
-      }
-      return false;
+      const isArrayPath = a => a.path.slice(-1) === ']';
+      const obj = get(this.inspector.compositeHistoryData, this.path);
+      return this.diff.added.filter(isArrayPath).some(a => isEqual(obj, a.val));
     },
     diffModified() {
       if (this.diff == null) return false;
@@ -106,27 +105,9 @@ export default {
     },
     diffRemoved() {
       if (this.diff == null) return false;
-      if (this.diff.removed.includes(this.path)) {
-        return true;
-      }
-      return false;
-    },
-
-    diffModRemoved() {
-      if (this.diff == null) return false;
-      if (this.diff.modified.includes(this.parentPath)) {
-        const obj = get(this.inspector.compositeHistoryData, this.path);
-        return some(this.diff.modifiedRemoved, obj);
-      }
-      return false;
-    },
-    diffModAdded() {
-      if (this.diff == null) return false;
-      if (this.diff.modifed.includes(this.parentPath)) {
-        const obj = get(this.inspector.compositeHistoryData, this.path);
-        return some(this.diff.modifiedAdded, obj);
-      }
-      return false;
+      const isArrayPath = r => r.path.slice(-1) === ']';
+      const obj = get(this.inspector.compositeHistoryData, this.path);
+      return this.diff.removed.filter(isArrayPath).some(r => isEqual(obj, r.val));
     },
     inClassAndProperty() {
       return `${this.entityType}.${this.fieldKey}`;

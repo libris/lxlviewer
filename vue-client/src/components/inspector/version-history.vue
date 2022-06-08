@@ -23,6 +23,8 @@ export default {
       modified: null,
       selectedVersion: 0,
       displayData: null,
+      previousVersionData: null,
+      currentVersionData: null,
       focusedTab: 'mainEntity',
       inspectingPath: '',
     };
@@ -79,8 +81,9 @@ export default {
       const added = this.selectedChangeSet.addedPaths;
       const convertedAdded = [];
       added.forEach((addedPath) => {
-        const path = StringUtil.arrayPathToString(addedPath);
-        convertedAdded.push(path);
+        const thePath = StringUtil.arrayPathToString(addedPath);
+        const objectAtPath = get(this.currentVersionData, thePath);
+        convertedAdded.push({ path: thePath, val: objectAtPath });
       });
       return convertedAdded;
     },
@@ -89,8 +92,9 @@ export default {
       const removed = this.selectedChangeSet.removedPaths;
       const convertedRemoved = [];
       removed.forEach((removedPath) => {
-        const path = StringUtil.arrayPathToString(removedPath);
-        convertedRemoved.push(path);
+        const thePath = StringUtil.arrayPathToString(removedPath);
+        const objectAtPath = get(this.previousVersionData, thePath);
+        convertedRemoved.push({ path: thePath, val: objectAtPath });
       });
       return convertedRemoved;
     },
@@ -113,7 +117,6 @@ export default {
     selectedVersion(val, oldval) {
       if (val !== oldval) {
         this.fetchVersion(val);
-        this.$store.dispatch('setCompositeHistoryData', this.displayData);
       }
     },
     'inspector.event'(val) {
@@ -146,36 +149,32 @@ export default {
       if (this.changeSetsReversed == null) return;
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
 
-      const currentVersionData = await fetch(fetchUrl).then(response => response.json()).then(result => LxlDataUtil.splitJson(result));
+      this.currentVersionData = await fetch(fetchUrl).then(response => response.json()).then(result => LxlDataUtil.splitJson(result));
 
       const fetchUrlPrevious = this.changeSetsReversed[number + 1];
       if (fetchUrlPrevious === undefined) {
-        this.displayData = currentVersionData;
+        this.displayData = this.currentVersionData;
         return;
       }
 
-      const previousVersionData = await fetch(fetchUrlPrevious.version['@id']).then(response => response.json()).then(res => LxlDataUtil.splitJson(res));
-
+      this.previousVersionData = await fetch(fetchUrlPrevious.version['@id']).then(response => response.json()).then(res => LxlDataUtil.splitJson(res));
       const diff = this.currentVersionDiff;
-      if (!isEmpty(diff.removed) || !isEmpty(diff.modified)) {
-        const compositeVersionData = cloneDeep(currentVersionData);
+      const compositeVersionData = cloneDeep(this.currentVersionData);
+      if (!isEmpty(diff.removed)) {
         diff.removed.forEach((r) => {
-          const previousRemoved = get(previousVersionData, r);
-          const lastIndexOf = r.lastIndexOf('[');
-          const isListItem = lastIndexOf !== -1;
+          const isListItem = r.path.slice(-1) === ']';
           if (isListItem) {
-            const parentPath = r.slice(0, lastIndexOf);
+            const parentPath = r.path.slice(0, r.path.lastIndexOf('['));
             const parentObj = get(compositeVersionData, parentPath);
-            parentObj.push(previousRemoved);
+            parentObj.push(r.val);
             set(compositeVersionData, parentPath, parentObj);
           } else {
-            set(compositeVersionData, r, previousRemoved);
+            set(compositeVersionData, r.path, r.val);
           }
         });
-        this.displayData = compositeVersionData;
-      } else {
-        this.displayData = currentVersionData;
       }
+      await this.$store.dispatch('setCompositeHistoryData', compositeVersionData);
+      this.displayData = compositeVersionData;
     },
   },
   components: {

@@ -143,17 +143,11 @@ export default {
   computed: {
     diffAdded() {
       if (this.diff == null) return false;
-      if (this.diff.added.includes(this.path)) {
-        return true;
-      }
-      return false;
+      return this.diff.added.some(a => isEqual(a.path, this.path));
     },
     diffAddedChildren() {
       if (this.diff == null || isEmpty(this.diff.added)) return false;
-      if (this.diff.added[0].includes(this.path)) {
-        return true;
-      }
-      return false;
+      return this.diff.added.some(a => a.path.includes(this.path));
     },
     diffModified() {
       if (this.diff == null) return false;
@@ -164,10 +158,7 @@ export default {
     },
     diffRemoved() {
       if (this.diff == null) return false;
-      if (this.diff.removed.includes(this.path)) {
-        return true;
-      }
-      return false;
+      return this.diff.removed.some(r => isEqual(r.path, this.path));
     },
     isReverseProperty() {
       return this.fieldKey.indexOf('@reverse') > -1;
