@@ -10,10 +10,9 @@
 </template>
 
 <script>
-import envComputer from '@/plugins/env.js';
 import Navbar from '@/components/Navbar';
-
-const HOST_PATH = envComputer(process.env.ENV);
+import { defaultHostPath } from '../plugins/env';
+const HOST_PATH = defaultHostPath();
 
 export default {
   data() {

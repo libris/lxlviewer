@@ -39,11 +39,13 @@ export default {
   ],
   keysToClear: {
     duplication: [
+      'record.bibliography',
       'record.controlNumber',
       'record.descriptionUpgrader',
       'record.generationProcess',
       'record.generationDate',
       'record.identifiedBy',
+      'record.inDataset',
       'record.sameAs',
       'mainEntity.sameAs',
       'work.sameAs',

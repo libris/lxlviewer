@@ -2,7 +2,7 @@
   <nav class="Navbar navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
       <div class="Navbar-brandContainer">
-        <NuxtLink v-if="appState.domain === 'id'" to="/" class="Navbar-brand navbar-brand">
+        <NuxtLink v-if="appState.domain === settings.defaultSite" to="/" class="Navbar-brand navbar-brand">
           <Logo />
           {{ siteTitle }}
         </NuxtLink>
@@ -44,10 +44,7 @@ export default {
       return hash.substr(1, hash.length);
     },
     siteTitle() {
-      if (this.appState.domain === 'libris') {
-        return 'Libris';
-      }
-      return 'id.kb.se';
+      return this.settings.siteConfig[this.appState.domain].title || this.settings.defaultSite;
     },
     version() {
       return this.settings.version;

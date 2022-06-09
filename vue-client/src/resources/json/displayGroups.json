@@ -33,7 +33,9 @@
   },
   "reverse": {
     "mainForm": [
-      "@reverse/broader"
+      "@reverse/broader",
+      "@reverse/continues",
+      "@reverse/continuedBy"
     ],
     "hidden": [
       "@reverse/itemOf"

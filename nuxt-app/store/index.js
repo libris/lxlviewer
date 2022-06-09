@@ -1,9 +1,7 @@
-import { each } from 'lodash-es';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
-import * as StringUtil from 'lxljs/string';
-import envComputer from '@/plugins/env';
 import translationsFile from '@/resources/json/i18n.json';
+import {VOCAB, CONTEXT, DISPLAY, siteConfig, activeSite, defaultSite, translateAliasedUri} from '../plugins/env';
 
 export const state = () => ({
   vocab: null,
@@ -23,27 +21,16 @@ export const state = () => ({
   },
   settings: {
     language: 'sv',
-    hostPath: envComputer(process.env.ENV),
     version: process.env.APP_VERSION,
     gitDescribe: process.env.GIT_DESCRIBE,
-    idPath: process.env.API_PATH,
-    dataPath: process.env.API_PATH,
+    siteConfig: siteConfig(),
+    defaultSite: defaultSite(),
     environment: process.env.ENV || 'local',
     filteredCategories: [
       'pending',
       'shorthand',
       'unstable',
     ],
-    removableBaseUris: {
-      libris: [
-        'https://libris.kb.se/',
-        'http://kblocalhost.kb.se:5000/',
-      ],
-      id: [
-        'https://id.kb.se/',
-        'http://id.kblocalhost.kb.se:5000/',
-      ],
-    },
     propertyChains: {
       '@reverse.itemOf.heldBy.@id': {
         sv: 'Har bestånd',
@@ -235,38 +222,51 @@ export const mutations = {
   },
 }
 
-export const actions = {
-  async nuxtServerInit({ commit, dispatch }, { req }) {
-    if (process.server) {
-      const headerHost = req.headers['x-forwarded-host'];
-      if (headerHost && headerHost.startsWith('id') === false) {
-        dispatch('setAppState', { property: 'domain', value: 'libris' });
-      } else {
-        dispatch('setAppState', { property: 'domain', value: 'id' });
-      }
-    }
+const toJson = response => {
+  if (response.ok) {
+    return response.json()
+  }
+  else {
+    throw { statusCode: response.status }
+  }
+}
 
-    const contextPath = `${process.env.API_PATH}/context.jsonld`;
-    const contextData = await fetch(
-      contextPath
-    ).then(res => res.json());
-    const processed = VocabUtil.preprocessContext(contextData);
-    commit('SET_VOCAB_CONTEXT', processed['@context']);
-  
-    const vocabPath = `${process.env.API_PATH}/vocab/data.jsonld`;
-    const vocab = await fetch(
-      vocabPath
-    ).then(res => res.json());
-    commit('SET_VOCAB', vocab);
-    commit('SET_VOCAB_CLASSES', vocab);
-    commit('SET_VOCAB_PROPERTIES', vocab);
-  
-    const displayPath = `${process.env.API_PATH}/vocab/display/data.jsonld`;
-    const display = await fetch(
-      displayPath
-    ).then(res => res.json());
-    const expanded = DisplayUtil.expandInherited(display);
-    commit('SET_DISPLAY', expanded);
+function catcher(error) {
+  return err => {
+    error({ statusCode: err.statusCode || 500, 'message': err.message || ''})
+  }
+}
+
+export const actions = {
+  async nuxtServerInit({ commit, dispatch }, { req, error }) {
+    dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host']) });
+
+    await Promise.all([
+      fetch(translateAliasedUri(CONTEXT))
+      .then(toJson)
+      .then(contextData => {
+        const processed = VocabUtil.preprocessContext(contextData);
+        commit('SET_VOCAB_CONTEXT', processed['@context']);
+      })
+      .catch(catcher(error)),
+
+      fetch(translateAliasedUri(VOCAB))
+      .then(toJson)
+      .then(vocab => {
+        commit('SET_VOCAB', vocab);
+        commit('SET_VOCAB_CLASSES', vocab);
+        commit('SET_VOCAB_PROPERTIES', vocab);
+      })
+      .catch(catcher(error)),
+
+      fetch(translateAliasedUri(DISPLAY))
+      .then(toJson)
+      .then(display => {
+        const expanded = DisplayUtil.expandInherited(display);
+        commit('SET_DISPLAY', expanded);
+      })
+      .catch(catcher(error))
+    ]);
   },
   setMarcframe({ commit }, data) {
     commit('SET_MARCFRAME_DATA', data);
