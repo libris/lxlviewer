@@ -611,7 +611,8 @@ export default {
     createDigitalReproduction() {
       this.$store.dispatch('pushLoadingIndicator', 'Preparing reproduction');
       const repro = RecordUtil.getDigitalReproductionObject(this.inspector.data, this.resources, this.settings);
-      this.$store.dispatch('setInsertData', repro);
+      const cleanedRepro = RecordUtil.prepareDuplicateFor(repro, this.user, []);
+      this.$store.dispatch('setInsertData', cleanedRepro);
       setTimeout(() => {
         this.$store.dispatch('removeLoadingIndicator', 'Preparing reproduction');
         this.$router.push({ path: '/new' });
