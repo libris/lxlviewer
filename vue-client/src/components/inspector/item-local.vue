@@ -366,6 +366,13 @@ export default {
         this.expandChildren = true;
       }
     },
+    diff() {
+      if (this.diff && this.diffChangedChildren) {
+        this.expand();
+      } else {
+        this.collapse();
+      }
+    },
     extractDialogActive(val) {
       if (!val) {
         this.$refs.linkAction.$el.focus();
@@ -415,6 +422,11 @@ export default {
     if (this.shouldExpand) {
       this.expand();
       this.expandChildren = true;
+    }
+    if (this.diff && this.diffChangedChildren) {
+      this.expand();
+    } else {
+      this.collapse();
     }
     if (this.inspector.status.isNew) {
       this.expand();

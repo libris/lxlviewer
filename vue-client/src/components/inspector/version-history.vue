@@ -41,7 +41,6 @@ export default {
       if (this.displayData) {
         return this.displayData.mainEntity;
       }
-      console.log('Display data is null/undefined!');
       return this.inspector.data.mainEntity;
     },
     selectedChangeSet() {

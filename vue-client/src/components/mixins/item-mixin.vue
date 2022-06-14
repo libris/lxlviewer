@@ -1,5 +1,5 @@
 <script>
-import {cloneDeep, isArray, get, isObject, dropRight, some, isEqual} from 'lodash-es';
+import {cloneDeep, isArray, get, isObject, dropRight, some, isEqual, isEmpty} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -108,6 +108,21 @@ export default {
       const isArrayPath = r => r.path.slice(-1) === ']';
       const obj = get(this.inspector.compositeHistoryData, this.path);
       return this.diff.removed.filter(isArrayPath).some(r => isEqual(obj, r.val));
+    },
+    diffAddedChildren() {
+      if (this.diff == null || isEmpty(this.diff.added)) return false;
+      return this.diff.added
+        .filter(a => !isEqual(a.path, this.path))
+        .some(a => a.path.includes(this.path));
+    },
+    diffRemovedChildren() {
+      if (this.diff == null || isEmpty(this.diff.removed)) return false;
+      return this.diff.removed
+        .filter(r => !isEqual(r.path, this.path))
+        .some(r => r.path.includes(this.path));
+    },
+    diffChangedChildren() {
+      return this.diffAddedChildren || this.diffRemovedChildren;
     },
     inClassAndProperty() {
       return `${this.entityType}.${this.fieldKey}`;

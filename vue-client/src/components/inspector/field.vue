@@ -145,10 +145,6 @@ export default {
       if (this.diff == null) return false;
       return this.diff.added.some(a => isEqual(a.path, this.path));
     },
-    diffAddedChildren() {
-      if (this.diff == null || isEmpty(this.diff.added)) return false;
-      return this.diff.added.some(a => a.path.includes(this.path));
-    },
     diffModified() {
       if (this.diff == null) return false;
       if (this.diff.modified.includes(this.path)) {
@@ -726,13 +722,6 @@ export default {
             </i>
           </div>
         </div>
-        <div v-if="diffRemoved">
-          <i class="fa fa-trash-o icon--sm icon-removed"></i>
-<!--          TODO: Use fa-trash-alt from sketches-->
-        </div>
-        <div v-if="diffAdded || diffAddedChildren">
-          <i class="fa fa-circle icon--xs icon-added"></i>
-        </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
@@ -1062,15 +1051,6 @@ export default {
     background-color: @form-remove;
   }
 
-  .icon-removed {
-    color: @remove;
-  }
-
-  .icon-added {
-    color: #428BCAFF;
-    //  TODO: Stolen from @brand-primary base. Import from styleguide?
-  }
-
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
     background-color: @form-highlight;
   }
@@ -1100,9 +1080,8 @@ export default {
       box-shadow: inset 0 0 0 1px @grey-lighter;
     }
 
-    &.is-locked:not(.is-new):not( .is-diff-removed),
+    &.is-locked:not(.is-new):not(.is-diff-removed),
     .Field--inner & {
-      background: none;
       box-shadow: none;
     }
 
