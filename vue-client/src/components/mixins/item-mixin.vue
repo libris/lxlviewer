@@ -98,10 +98,9 @@ export default {
     },
     diffModified() {
       if (this.diff == null) return false;
-      if (this.diff.modified.includes(this.path)) {
-        return true;
-      }
-      return false;
+      const isArrayPath = m => m.path.slice(-1) === ']';
+      const obj = get(this.inspector.compositeHistoryData, this.path);
+      return this.diff.modified.filter(isArrayPath).some(m => isEqual(obj, m.val));
     },
     diffRemoved() {
       if (this.diff == null) return false;
@@ -110,19 +109,25 @@ export default {
       return this.diff.removed.filter(isArrayPath).some(r => isEqual(obj, r.val));
     },
     diffAddedChildren() {
-      if (this.diff == null || isEmpty(this.diff.added)) return false;
+      if (this.diff == null) return false;
       return this.diff.added
         .filter(a => !isEqual(a.path, this.path))
         .some(a => a.path.includes(this.path));
     },
     diffRemovedChildren() {
-      if (this.diff == null || isEmpty(this.diff.removed)) return false;
+      if (this.diff == null) return false;
       return this.diff.removed
         .filter(r => !isEqual(r.path, this.path))
         .some(r => r.path.includes(this.path));
     },
+    diffModifiedChildren() {
+      if (this.diff == null) return false;
+      return this.diff.modified
+        .filter(m => !isEqual(m.path, this.path))
+        .some(m => m.path.includes(this.path));
+    },
     diffChangedChildren() {
-      return this.diffAddedChildren || this.diffRemovedChildren;
+      return this.diffAddedChildren || this.diffRemovedChildren || this.diffModifiedChildren;
     },
     inClassAndProperty() {
       return `${this.entityType}.${this.fieldKey}`;

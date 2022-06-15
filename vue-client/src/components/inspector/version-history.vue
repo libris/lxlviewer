@@ -2,7 +2,7 @@
 /*
   The full version history view
 */
-import {get, set, cloneDeep, isEmpty} from 'lodash-es';
+import {get, set, cloneDeep, isEmpty, isEqual} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
@@ -70,8 +70,10 @@ export default {
       const modified = this.selectedChangeSet.modifiedPaths;
       const convertedModified = [];
       modified.forEach((modifiedPath) => {
-        const path = StringUtil.arrayPathToString(modifiedPath);
-        convertedModified.push(path);
+        const thePath = StringUtil.arrayPathToString(modifiedPath);
+        const previous = get(this.previousVersionData, thePath);
+        const current = get(this.currentVersionData, thePath);
+        convertedModified.push({ path: thePath, valPrevious: previous, valCurrent: current });
       });
       return convertedModified;
     },
@@ -159,7 +161,23 @@ export default {
       this.previousVersionData = await fetch(fetchUrlPrevious.version['@id']).then(response => response.json()).then(res => LxlDataUtil.splitJson(res));
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.currentVersionData);
-      if (!isEmpty(diff.removed)) {
+      if (!isEmpty(diff.removed) || !isEmpty(diff.modified)) {
+        diff.modified.forEach((m) => {
+          if (m.path.endsWith('@id')) {
+            // Things that should be shown as added + removed
+            const elementPath = m.path.slice(0, m.path.lastIndexOf('.'));
+            diff.removed.push({ path: elementPath, val: { '@id': m.valPrevious } });
+            const parentPath = m.path.slice(0, m.path.lastIndexOf('['));
+            const parentObj = get(this.previousVersionData, parentPath);
+            if (!parentObj.some(el => isEqual(el['@id'], m.valCurrent))) {
+              diff.added.push({ path: elementPath, val: { '@id': m.valCurrent } });
+            }
+          } else {
+            // Things that should be shown as modified "inline"
+            const moddedViewValue = m.valPrevious.concat(' → ').concat(m.valCurrent);
+            set(compositeVersionData, m.path, moddedViewValue);
+          }
+        });
         diff.removed.forEach((r) => {
           const isListItem = r.path.slice(-1) === ']';
           if (isListItem) {

@@ -147,10 +147,7 @@ export default {
     },
     diffModified() {
       if (this.diff == null) return false;
-      if (this.diff.modified.includes(this.path)) {
-        return true;
-      }
-      return false;
+      return this.diff.modified.some(m => isEqual(m.path, this.path));
     },
     diffRemoved() {
       if (this.diff == null) return false;
@@ -646,6 +643,7 @@ export default {
       'is-lastAdded': isLastAdded, 
       'is-removed': removed,
       'is-diff-removed': diffRemoved,
+      'is-diff-modified': diffModified,
       'is-locked': locked,
       'is-diff': isFieldDiff || diffModified,
       'is-new': isFieldNew || diffAdded,
@@ -1032,7 +1030,9 @@ export default {
   &.is-diff {
     &:not(.is-new) {
       &:not(.is-diff-removed) {
-        background-color: transparent;
+        &:not(.is-diff-modified) {
+          background-color: transparent;
+        }
       }
     }
   }
@@ -1049,6 +1049,13 @@ export default {
     border: 1px dashed;
     border-color: @base-color;
     background-color: @form-remove;
+  }
+
+  &.is-diff-modified {
+    @base-color: @focus-color-bg;
+    border: 1px dashed;
+    border-color: @base-color;
+    background-color: hsl(hue(@base-color), 50%, 95%);
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
