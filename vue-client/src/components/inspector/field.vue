@@ -8,6 +8,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
+import * as DisplayUtil from 'lxljs/display';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
@@ -424,7 +425,7 @@ export default {
       return false;
     },
     fieldRdfType() {
-      return get(this.resources, ['context', '1', this.fieldKey, '@type'], '');
+      return DisplayUtil.rdfDisplayType(this.fieldKey, this.resources);
     },
   },
   methods: {

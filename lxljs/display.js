@@ -237,6 +237,8 @@ export function formatIsni(isni) {
     : isni;
 }
 
+// TODO: it's probably better to display type coerced properties in the same 
+// way as e.g. language containers (prefLabelByLang etc) instead of as separate properties
 export function getSortedProperties(formType, formObj, settings, resources) {
   let propertyList = getDisplayProperties(
     formType,
@@ -258,22 +260,27 @@ export function getSortedProperties(formType, formObj, settings, resources) {
       }
     }
   });
+  
   remove(propertyList, k => (settings.hiddenProperties.indexOf(k) !== -1));
 
-  // Sort type coerced properties internally on their label
-  const rdfType = k => { return get(resources, ['context', '1', k, '@type'], '') }
-  const rdfTypeLabel = k => StringUtil.getLabelByLang(rdfType(k), settings.language, resources);
-  const withLabel = map(propertyList, k => ({ 'k': k, 'l': rdfTypeLabel(k), 'rk': realKey(k) }));
-  
+  // Sort type coerced property "groups" internally on their type label
+  const rdfTypeLabel = k => StringUtil.getLabelByLang(rdfDisplayType(k, resources), settings.language, resources);
+  const withLabel = map(propertyList, k => ({ k: k, l: rdfTypeLabel(k), rk: realKey(k) }));
   let ix = 0;
   let last = null;
-  withLabel.forEach(m => {
+  withLabel.forEach((m) => {
     m.ix = m.rk !== last ? ix++ : ix;
     last = m.rk;
   });
   propertyList = map(sortBy(withLabel, ['ix', 'l']), m => m.k);
   
   return propertyList;
+}
+
+export function rdfDisplayType(property, resources) {
+  const type = get(resources, ['context', '1', property, '@type'], '');
+  // Types such as xsd:string and @vocab don't make sense as field labels, skip them 
+  return type.match(/^[^:@]*$/) ? type : '';
 }
 
 export function getItemToken(item, resources, quoted, settings) {
