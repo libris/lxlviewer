@@ -171,7 +171,15 @@ export default {
           tabindex="0"
           ref="chip"
           v-if="!isDistinguished || !expanded" 
-          :class="{ 'is-locked': isLocked, 'is-marc': isMarc, 'is-newlyAdded': animateNewlyAdded, 'is-removeable': removeHover, 'is-cache': recordType === 'CacheRecord', 'is-placeholder': recordType === 'PlaceholderRecord', 'is-ext-link': !isLibrisResource, 'is-removed': diffRemoved, 'is-added': diffAdded, }">
+          :class="{ 'is-locked': isLocked,
+           'is-marc': isMarc,
+           'is-newlyAdded': animateNewlyAdded,
+           'is-removeable': removeHover,
+           'is-cache': recordType === 'CacheRecord',
+           'is-placeholder': recordType === 'PlaceholderRecord',
+           'is-ext-link': !isLibrisResource,
+           'is-removed': diffRemoved,
+           'is-added': diffAdded }">
           <span class="ItemEntity-label chip-label">
             <span v-if="(!isDistinguished || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
             <span v-if="(!isDistinguished || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>

@@ -96,17 +96,17 @@ export default {
       const obj = get(this.inspector.compositeHistoryData, this.path);
       return this.diff.added.filter(isArrayPath).some(a => isEqual(obj, a.val));
     },
-    diffModified() {
-      if (this.diff == null) return false;
-      const isArrayPath = m => m.path.slice(-1) === ']';
-      const obj = get(this.inspector.compositeHistoryData, this.path);
-      return this.diff.modified.filter(isArrayPath).some(m => isEqual(obj, m.val));
-    },
     diffRemoved() {
       if (this.diff == null) return false;
       const isArrayPath = r => r.path.slice(-1) === ']';
       const obj = get(this.inspector.compositeHistoryData, this.path);
       return this.diff.removed.filter(isArrayPath).some(r => isEqual(obj, r.val));
+    },
+    diffModified() {
+      if (this.diff == null) return false;
+      const isArrayPath = r => r.path.slice(-1) === ']';
+      const obj = get(this.inspector.compositeHistoryData, this.path);
+      return this.diff.modified.filter(isArrayPath).some(m => isEqual(obj, m.val));
     },
     diffAddedChildren() {
       if (this.diff == null) return false;
@@ -120,14 +120,8 @@ export default {
         .filter(r => !isEqual(r.path, this.path))
         .some(r => r.path.includes(this.path));
     },
-    diffModifiedChildren() {
-      if (this.diff == null) return false;
-      return this.diff.modified
-        .filter(m => !isEqual(m.path, this.path))
-        .some(m => m.path.includes(this.path));
-    },
     diffChangedChildren() {
-      return this.diffAddedChildren || this.diffRemovedChildren || this.diffModifiedChildren;
+      return this.diffAddedChildren || this.diffRemovedChildren;
     },
     inClassAndProperty() {
       return `${this.entityType}.${this.fieldKey}`;

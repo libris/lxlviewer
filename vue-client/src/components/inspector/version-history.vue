@@ -2,7 +2,7 @@
 /*
   The full version history view
 */
-import {get, set, cloneDeep, isEmpty, isEqual} from 'lodash-es';
+import {get, set, cloneDeep, isEmpty, isEqual, isObject} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
@@ -60,22 +60,10 @@ export default {
     },
     currentVersionDiff() {
       return {
-        modified: this.modifiedPathsInCurrentVersion,
         added: this.addedPathsInCurrentVersion,
         removed: this.removedPathsInCurrentVersion,
+        modified: [],
       };
-    },
-    modifiedPathsInCurrentVersion() {
-      if (this.selectedChangeSet.hasOwnProperty('modifiedPaths') === false) return [];
-      const modified = this.selectedChangeSet.modifiedPaths;
-      const convertedModified = [];
-      modified.forEach((modifiedPath) => {
-        const thePath = StringUtil.arrayPathToString(modifiedPath);
-        const previous = get(this.previousVersionData, thePath);
-        const current = get(this.currentVersionData, thePath);
-        convertedModified.push({ path: thePath, valPrevious: previous, valCurrent: current });
-      });
-      return convertedModified;
     },
     addedPathsInCurrentVersion() {
       if (this.selectedChangeSet.hasOwnProperty('addedPaths') === false) return [];
@@ -84,7 +72,12 @@ export default {
       added.forEach((addedPath) => {
         const thePath = StringUtil.arrayPathToString(addedPath);
         const objectAtPath = get(this.currentVersionData, thePath);
-        convertedAdded.push({ path: thePath, val: objectAtPath });
+        if (thePath.endsWith('.@id')) {
+          const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
+          convertedAdded.push({ path: elementPath, val: { '@id': objectAtPath } });
+        } else {
+          convertedAdded.push({ path: thePath, val: objectAtPath });
+        }
       });
       return convertedAdded;
     },
@@ -95,7 +88,12 @@ export default {
       removed.forEach((removedPath) => {
         const thePath = StringUtil.arrayPathToString(removedPath);
         const objectAtPath = get(this.previousVersionData, thePath);
-        convertedRemoved.push({ path: thePath, val: objectAtPath });
+        if (thePath.endsWith('.@id')) {
+          const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
+          convertedRemoved.push({ path: elementPath, val: { '@id': objectAtPath } });
+        } else {
+          convertedRemoved.push({ path: thePath, val: objectAtPath });
+        }
       });
       return convertedRemoved;
     },
@@ -161,32 +159,23 @@ export default {
       this.previousVersionData = await fetch(fetchUrlPrevious.version['@id']).then(response => response.json()).then(res => LxlDataUtil.splitJson(res));
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.currentVersionData);
-      if (!isEmpty(diff.removed) || !isEmpty(diff.modified)) {
-        diff.modified.forEach((m) => {
-          if (m.path.endsWith('@id')) {
-            // Things that should be shown as added + removed
-            const elementPath = m.path.slice(0, m.path.lastIndexOf('.'));
-            diff.removed.push({ path: elementPath, val: { '@id': m.valPrevious } });
-            const parentPath = m.path.slice(0, m.path.lastIndexOf('['));
-            const parentObj = get(this.previousVersionData, parentPath);
-            if (!parentObj.some(el => isEqual(el['@id'], m.valCurrent))) {
-              diff.added.push({ path: elementPath, val: { '@id': m.valCurrent } });
-            }
-          } else {
-            // Things that should be shown as modified "inline"
-            const moddedViewValue = m.valPrevious.concat(' → ').concat(m.valCurrent);
-            set(compositeVersionData, m.path, moddedViewValue);
-          }
-        });
+      if (!isEmpty(diff.removed)) {
         diff.removed.forEach((r) => {
           const isListItem = r.path.slice(-1) === ']';
-          if (isListItem) {
+          if (isListItem && isObject(r.val)) {
             const parentPath = r.path.slice(0, r.path.lastIndexOf('['));
             const parentObj = get(compositeVersionData, parentPath);
             parentObj.push(r.val);
             set(compositeVersionData, parentPath, parentObj);
           } else {
-            set(compositeVersionData, r.path, r.val);
+            const added = diff.added.find(a => isEqual(a.path, r.path));
+            if (added !== undefined && r.val !== added.val) {
+              const moddedValue = r.val.concat(' → ').concat(added.val);
+              diff.modified.push({ path: r.path, val: moddedValue });
+              set(compositeVersionData, r.path, moddedValue);
+            } else {
+              set(compositeVersionData, r.path, r.val);
+            }
           }
         });
       }

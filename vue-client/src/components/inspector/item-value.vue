@@ -173,7 +173,13 @@ export default {
 
 <template>
   <div class="ItemValue js-value" 
-    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}"
+    v-bind:class="{
+    'is-locked': isLocked,
+    'unlocked': !isLocked,
+    'is-removed': removed,
+    'is-diff-removed': diffRemoved && !diffAdded,
+    'is-added': diffAdded && !diffRemoved,
+    'is-diff-modified': diffModified }"
     :id="`formPath-${path}`">
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
@@ -247,6 +253,27 @@ export default {
     margin: 0px;
     border: none;
     overflow: hidden;
+  }
+
+  &.is-diff-removed {
+    @base-color: @remove;
+    border: 1px dashed;
+    border-color: @base-color;
+    background-color: @form-remove;
+  }
+
+  &.is-added {
+    @base-color: @brand-success;
+    border: 1px solid;
+    border-color: @base-color;
+    background-color: hsl(hue(@base-color), 50%, 95%);
+  }
+
+  &.is-diff-modified {
+    @base-color: rgb(250, 233, 219);
+    border: 1px dashed;
+    border-color: rgb(161, 67, 17);
+    background-color: rgb(250, 233, 219);
   }
 
   &-remover {

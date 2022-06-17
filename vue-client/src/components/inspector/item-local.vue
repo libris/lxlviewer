@@ -445,7 +445,16 @@ export default {
   <div class="ItemLocal js-itemLocal"
     ref="container"
     :id="`formPath-${path}`"
-    :class="{'is-highlighted': isLastAdded, 'highlight-info': highlights.indexOf('info') > -1, 'highlight-remove': highlights.indexOf('remove') > -1, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable, 'has-failed-validations': failedValidations.length > 0, 'is-removed': diffRemoved, 'is-added': diffAdded, 'is-modified': diffModified }"
+    :class="{
+      'is-highlighted': isLastAdded,
+      'highlight-info': highlights.indexOf('info') > -1,
+      'highlight-remove': highlights.indexOf('remove') > -1,
+      'is-expanded': expanded && !isEmpty,
+      'is-extractable': isExtractable,
+      'has-failed-validations': failedValidations.length > 0,
+      'is-removed': diffRemoved && !diffAdded,
+      'is-added': diffAdded && !diffRemoved,
+      'is-modified': diffModified}"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"

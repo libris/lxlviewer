@@ -3,7 +3,7 @@
   The field component is responsible for a specific key value pair.
   It's responsible for its own data, and dispatches all changes to the form component.
 */
-import {cloneDeep, differenceWith, get, isArray, isEmpty, isEqual, isObject, isPlainObject} from 'lodash-es';
+import {cloneDeep, differenceWith, get, isArray, isEqual, isObject, isPlainObject} from 'lodash-es';
 import {mixin as clickaway} from 'vue-clickaway';
 import {mapGetters} from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
@@ -145,13 +145,13 @@ export default {
       if (this.diff == null) return false;
       return this.diff.added.some(a => isEqual(a.path, this.path));
     },
-    diffModified() {
-      if (this.diff == null) return false;
-      return this.diff.modified.some(m => isEqual(m.path, this.path));
-    },
     diffRemoved() {
       if (this.diff == null) return false;
       return this.diff.removed.some(r => isEqual(r.path, this.path));
+    },
+    diffModified() {
+      if (this.diff == null) return false;
+      return this.diff.modified.some(m => isEqual(m.path, this.path));
     },
     isReverseProperty() {
       return this.fieldKey.indexOf('@reverse') > -1;
@@ -642,11 +642,11 @@ export default {
       'Field--inner': isInner,
       'is-lastAdded': isLastAdded, 
       'is-removed': removed,
-      'is-diff-removed': diffRemoved,
+      'is-diff-removed': diffRemoved && !diffAdded,
       'is-diff-modified': diffModified,
       'is-locked': locked,
-      'is-diff': isFieldDiff || diffModified,
-      'is-new': isFieldNew || diffAdded,
+      'is-diff': isFieldDiff,
+      'is-new': isFieldNew || (diffAdded && !diffRemoved),
       'is-highlighted': embellished,
       'is-grouped': isGrouped,
       'has-failed-validations': failedValidations.length > 0,
@@ -1030,9 +1030,7 @@ export default {
   &.is-diff {
     &:not(.is-new) {
       &:not(.is-diff-removed) {
-        &:not(.is-diff-modified) {
           background-color: transparent;
-        }
       }
     }
   }
@@ -1052,10 +1050,10 @@ export default {
   }
 
   &.is-diff-modified {
-    @base-color: @focus-color-bg;
+    @base-color: rgb(250, 233, 219);
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: hsl(hue(@base-color), 50%, 95%);
+    border-color: rgb(161, 67, 17);
+    background-color: rgb(250, 233, 219);
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
@@ -1087,7 +1085,7 @@ export default {
       box-shadow: inset 0 0 0 1px @grey-lighter;
     }
 
-    &.is-locked:not(.is-new):not(.is-diff-removed),
+    &.is-locked:not(.is-new):not(.is-diff-removed):not(.is-diff-modified),
     .Field--inner & {
       box-shadow: none;
     }
