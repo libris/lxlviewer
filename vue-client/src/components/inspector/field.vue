@@ -423,6 +423,9 @@ export default {
       }
       return false;
     },
+    fieldRdfType() {
+      return get(this.resources, ['context', '1', this.fieldKey, '@type'], '');
+    },
   },
   methods: {
     pasteClipboardItem() {
@@ -703,8 +706,9 @@ export default {
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-            :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>          
+          <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !fieldRdfType" 
+            :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
+          <span :title="fieldKey">{{ fieldRdfType | labelByLang | capitalize }}</span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
             <div class="Field-comment">
@@ -724,7 +728,6 @@ export default {
       <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
         :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
-
       <!-- Is inner -->
       <div class="Field-actions is-nested">
         <div class="Field-action Field-comment" v-if="propertyComment && !locked" >
