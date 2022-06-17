@@ -1,4 +1,4 @@
-import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual, get, indexOf, map, flatten } from 'lodash-es';
+import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual, get, indexOf, map, flatten, sortBy } from 'lodash-es';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import { lxlLog, lxlWarning } from './debug';
@@ -259,6 +259,19 @@ export function getSortedProperties(formType, formObj, settings, resources) {
     }
   });
   remove(propertyList, k => (settings.hiddenProperties.indexOf(k) !== -1));
+
+  // Sort type coerced properties internally on their label
+  const rdfType = k => { return get(resources, ['context', '1', k, '@type'], '') }
+  const rdfTypeLabel = k => StringUtil.getLabelByLang(rdfType(k), settings.language, resources);
+  const withLabel = map(propertyList, k => ({ 'k': k, 'l': rdfTypeLabel(k), 'rk': realKey(k) }));
+  
+  let ix = 0;
+  let last = null;
+  withLabel.forEach(m => {
+    m.ix = m.rk !== last ? ix++ : ix;
+    last = m.rk;
+  });
+  propertyList = map(sortBy(withLabel, ['ix', 'l']), m => m.k);
   
   return propertyList;
 }
