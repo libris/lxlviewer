@@ -58,7 +58,7 @@ export default {
           </nav>
 
           <nav class="Footer-nav" aria-labelledby="footer-libris-nav">
-            <h4 id="footer-libris-nav" class="Footer-listTitle">{{ "New Libris and XL" | translatePhrase }}</h4>
+            <h4 id="footer-libris-nav" class="Footer-listTitle">{{ "Libris and XL" | translatePhrase }}</h4>
             <ul class="Footer-navList">
               <li>
                 <a href="https://www.youtube.com/playlist?list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link">{{ "Instruction videos" | translatePhrase }}</a>
