@@ -1050,10 +1050,11 @@ export default {
   }
 
   &.is-diff-modified {
-    @base-color: rgb(250, 233, 219);
+    //$kb-primary-orange
+    @base-color: rgb(247, 160, 123);
     border: 1px dashed;
-    border-color: rgb(161, 67, 17);
-    background-color: rgb(250, 233, 219);
+    border-color: @base-color;
+    background-color: hsl(hue(@base-color), 80%, 90%);
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
