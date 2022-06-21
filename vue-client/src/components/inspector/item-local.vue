@@ -452,8 +452,8 @@ export default {
       'is-expanded': expanded && !isEmpty,
       'is-extractable': isExtractable,
       'has-failed-validations': failedValidations.length > 0,
-      'is-removed': diffRemoved && !diffAdded,
-      'is-added': diffAdded && !diffRemoved,
+      'is-diff-removed': diffRemoved && !diffAdded,
+      'is-diff-added': diffAdded && !diffRemoved,
       'is-modified': diffModified}"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
@@ -748,20 +748,16 @@ export default {
     background-color: @form-remove;
   }
 
-  &.is-removed {
+  &.is-diff-removed {
     @base-color: @remove;
     border: 1px dashed;
     border-color: @base-color;
     background-color: @form-remove;
   }
 
-  &.is-added {
+  &.is-diff-added {
     @base-color: @form-add;
     background-color: @base-color;
-  }
-
-  &.is-modified {
-    background-color: orange;
   }
 
   &.is-expanded > 

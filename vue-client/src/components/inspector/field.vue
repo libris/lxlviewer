@@ -642,11 +642,12 @@ export default {
       'Field--inner': isInner,
       'is-lastAdded': isLastAdded, 
       'is-removed': removed,
+      'is-diff-added': diffAdded && !diffRemoved,
       'is-diff-removed': diffRemoved && !diffAdded,
       'is-diff-modified': diffModified,
       'is-locked': locked,
       'is-diff': isFieldDiff,
-      'is-new': isFieldNew || (diffAdded && !diffRemoved),
+      'is-new': isFieldNew,
       'is-highlighted': embellished,
       'is-grouped': isGrouped,
       'has-failed-validations': failedValidations.length > 0,
@@ -1028,11 +1029,7 @@ export default {
   }
 
   &.is-diff {
-    &:not(.is-new) {
-      &:not(.is-diff-removed) {
-          background-color: transparent;
-      }
-    }
+    background-color: transparent;
   }
 
   &.is-new {
@@ -1040,6 +1037,13 @@ export default {
     border: 1px solid;
     border-color: @base-color;
     background-color: hsl(hue(@base-color), 50%, 95%);
+  }
+
+  &.is-diff-added {
+    @base-color: @form-add;
+    border: 1px solid;
+    border-color: @brand-primary;
+    background-color: @base-color;
   }
 
   &.is-diff-removed {
@@ -1086,7 +1090,7 @@ export default {
       box-shadow: inset 0 0 0 1px @grey-lighter;
     }
 
-    &.is-locked:not(.is-new):not(.is-diff-removed):not(.is-diff-modified),
+    &.is-locked:not(.is-new),
     .Field--inner & {
       box-shadow: none;
     }

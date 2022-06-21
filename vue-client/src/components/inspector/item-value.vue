@@ -178,7 +178,7 @@ export default {
     'unlocked': !isLocked,
     'is-removed': removed,
     'is-diff-removed': diffRemoved && !diffAdded,
-    'is-added': diffAdded && !diffRemoved,
+    'is-diff-added': diffAdded && !diffRemoved,
     'is-diff-modified': diffModified }"
     :id="`formPath-${path}`">
     <textarea class="ItemValue-input js-itemValueInput" 
@@ -263,12 +263,12 @@ export default {
     margin-bottom: 2px;
   }
 
-  &.is-added {
-    @base-color: @brand-success;
+  &.is-diff-added {
+    @base-color: @form-add;
     border: 1px solid;
-    border-color: @base-color;
-    background-color: hsl(hue(@base-color), 50%, 95%);
-    margin-bottom: 2px;
+    border-color: @brand-primary;
+    background-color: @base-color;
+    margin-bottom: 2px
   }
 
   &.is-diff-modified {
