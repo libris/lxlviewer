@@ -10,7 +10,6 @@ import * as StringUtil from 'lxljs/string';
 import LensMixin from '@/components/mixins/lens-mixin';
 import EntityForm from './entity-form.vue';
 import TabMenu from '@/components/shared/tab-menu';
-import VersionHistoryPropertyDetails from './version-history-property-details.vue';
 import VersionHistoryChangesets from './version-history-changesets.vue';
 
 export default {
@@ -128,9 +127,6 @@ export default {
     changeSelectedVersion(val) {
       this.selectedVersion = val;
     },
-    closePropertyDetails() {
-      this.inspectingPath = '';
-    },
     setEditorFocus(value) {
       this.focusedTab = value;
       this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'focus-changed' });
@@ -186,7 +182,6 @@ export default {
   components: {
     EntityForm,
     TabMenu,
-    VersionHistoryPropertyDetails,
     VersionHistoryChangesets,
   },
   mounted() {
@@ -223,7 +218,6 @@ export default {
             </entity-form>
           </template>
         </div>
-        <VersionHistoryPropertyDetails :inspecting-path="inspectingPath" :full-history-data="historyData" @close="closePropertyDetails" />
       </div>
       <div class="col-md-2 VersionHistory-sideCol">
         <div class="VersionHistory-header">
@@ -274,19 +268,6 @@ export default {
     padding: 2rem 3rem;
     overflow-y: scroll;
     flex-grow: 1;
-  }
-  &-propertyDetails {
-    z-index: 1;
-    box-shadow: -5px 0px 5px 0px @grey-lighter;
-    display: flex;
-    flex-direction: column;
-    flex-basis: 30%;
-    max-height: 0%;
-    transition: max-height 0.25s ease;
-    &.is-opened {
-      max-height: 30%;
-      min-height: 30rem;
-    }
   }
   &-changeSets {
     background-color: @white;
