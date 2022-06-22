@@ -114,7 +114,7 @@ export default {
   watch: {
     selectedVersion(val, oldval) {
       if (val !== oldval) {
-        this.fetchVersion(val);
+        this.setDisplayDataFor(val);
       }
     },
     'inspector.event'(val) {
@@ -131,19 +131,18 @@ export default {
       this.focusedTab = value;
       this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'focus-changed' });
     },
-    fetchHistoryData() {
+    setDisplayData() {
       const fnurgel = this.$route.params.fnurgel;
       // _changesets
       const fetchUrl = `${this.settings.apiPath}/${fnurgel}/_changesets`;
       fetch(fetchUrl).then(response => response.json()).then((result) => {
         this.historyData = result;
-        this.fetchVersion(0);
+        this.setDisplayDataFor(0);
       });
     },
-    async fetchVersion(number) {
+    async setDisplayDataFor(number) {
       if (this.changeSetsReversed == null) return;
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
-
       this.currentVersionData = await fetch(fetchUrl).then(response => response.json()).then(result => LxlDataUtil.splitJson(result));
 
       const fetchUrlPrevious = this.changeSetsReversed[number + 1];
@@ -151,8 +150,8 @@ export default {
         this.displayData = this.currentVersionData;
         return;
       }
-
       this.previousVersionData = await fetch(fetchUrlPrevious.version['@id']).then(response => response.json()).then(res => LxlDataUtil.splitJson(res));
+
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.currentVersionData);
       if (!isEmpty(diff.removed)) {
@@ -186,7 +185,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.fetchHistoryData();
+      this.setDisplayData();
     });
   },
 };
