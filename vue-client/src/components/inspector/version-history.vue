@@ -2,7 +2,7 @@
 /*
   The full version history view
 */
-import {get, set, cloneDeep, isEmpty, isEqual, isObject} from 'lodash-es';
+import { get, set, cloneDeep, isEmpty, isEqual, isObject } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
@@ -119,7 +119,17 @@ export default {
     },
     'inspector.event'(val) {
       if (val.name === 'field-label-clicked') {
-        this.inspectingPath = val.value;
+        const lastChanged = this.changeSetsReversed.find((changeSet) => {
+          if (changeSet.hasOwnProperty('addedPaths') || changeSet.hasOwnProperty('removedPaths')) {
+            const all = changeSet.addedPaths.concat(changeSet.removedPaths);
+            return all.find(path => StringUtil.arrayPathToString(path).includes(val.value));
+          }
+          return false;
+        });
+        const index = this.changeSetsReversed.indexOf(lastChanged);
+        if (index !== -1) {
+          this.changeSelectedVersion(index);
+        }
       }
     },
   },
@@ -145,12 +155,12 @@ export default {
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
       this.currentVersionData = await fetch(fetchUrl).then(response => response.json()).then(result => LxlDataUtil.splitJson(result));
 
-      const fetchUrlPrevious = this.changeSetsReversed[number + 1];
-      if (fetchUrlPrevious === undefined) {
+      const previousChangeSet = this.changeSetsReversed[number + 1];
+      if (previousChangeSet === undefined) {
         this.displayData = this.currentVersionData;
         return;
       }
-      this.previousVersionData = await fetch(fetchUrlPrevious.version['@id']).then(response => response.json()).then(res => LxlDataUtil.splitJson(res));
+      this.previousVersionData = await fetch(previousChangeSet.version['@id']).then(response => response.json()).then(res => LxlDataUtil.splitJson(res));
 
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.currentVersionData);

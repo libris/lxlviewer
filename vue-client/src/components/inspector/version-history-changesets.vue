@@ -53,7 +53,7 @@ export default {
   methods: {
     selectVersion(val) {
       this.$emit('version-selected', val);
-    }
+    },
   },
   components: {
     SummaryNode,

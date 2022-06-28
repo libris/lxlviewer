@@ -34,7 +34,6 @@ export default {
       return this.$store.getters.inspector;
     },
     getItemLabel() {
-      console.log('this.focusData', this.focusData);
       return DisplayUtil.getItemLabel(
         this.focusData,
         this.resources,
