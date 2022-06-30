@@ -724,8 +724,12 @@ export default {
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-            :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>          
+          <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff"
+            :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>
+          <span class="Field-navigateHistory" v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" @click="onLabelClick"
+                v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
+        {{ fieldKey | labelByLang | capitalize }}
+      </span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
             <div class="Field-comment">
@@ -743,8 +747,11 @@ export default {
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-        :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>
+      <span class="Field-navigateHistory" v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" @click="onLabelClick"
+            v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
+        {{ fieldKey | labelByLang | capitalize }}
+      </span>
 
       <!-- Is inner -->
       <div class="Field-actions is-nested">
@@ -1412,6 +1419,10 @@ export default {
     background-color: #f0f0f0;
     padding: 0;
     color: #4f4f4f;
+  }
+
+  &-navigateHistory {
+    cursor: pointer;
   }
 }
 
