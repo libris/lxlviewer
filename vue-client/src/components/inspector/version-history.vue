@@ -152,15 +152,26 @@ export default {
     },
     async setDisplayDataFor(number) {
       if (this.changeSetsReversed == null) return;
+      
+      const options = {
+        headers: {
+          'Accept': 'application/ld+json',
+        },
+      };
+
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
-      this.currentVersionData = await fetch(fetchUrl).then(response => response.json()).then(result => LxlDataUtil.splitJson(result));
+      this.currentVersionData = await fetch(fetchUrl, options)
+        .then(response => response.json())
+        .then(result => LxlDataUtil.splitJson(result));
 
       const previousChangeSet = this.changeSetsReversed[number + 1];
       if (previousChangeSet === undefined) {
         this.displayData = this.currentVersionData;
         return;
       }
-      this.previousVersionData = await fetch(previousChangeSet.version['@id']).then(response => response.json()).then(res => LxlDataUtil.splitJson(res));
+      this.previousVersionData = await fetch(previousChangeSet.version['@id'], options)
+        .then(response => response.json())
+        .then(res => LxlDataUtil.splitJson(res));
 
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.currentVersionData);
