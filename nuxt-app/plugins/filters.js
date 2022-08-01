@@ -1,7 +1,9 @@
 import Vue from 'vue'
 
-Vue.filter('replaceBaseWithApi', (uri) => {
-  return uri.replace('https://id.kb.se', process.env.API_PATH);
+import { translateAliasedUri } from './env';
+
+Vue.filter('translateAliasedUri', (uri) => {
+  return translateAliasedUri(uri);
 });
 
 Vue.filter('fixMarcUri', (uri) => {

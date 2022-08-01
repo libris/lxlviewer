@@ -15,8 +15,8 @@
 
 <script>
 import CollectionCard from '@/components/CollectionCard';
-import { hostPath } from '../plugins/env';
-const HOST_PATH = hostPath();
+import { defaultHostPath } from '../plugins/env';
+const HOST_PATH = defaultHostPath();
 
 export default {
   data() {

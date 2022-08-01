@@ -1,7 +1,7 @@
 <template>
   <div class="Marcframe-codeDetails">
     <h1>{{ translateUi('MARC mappings') }}</h1>
-    <p v-if="settings.language == 'sv'">KB/Libris mappningar av MARC till RDF-vokabulär. För mer information, se 
+    <p v-if="settings.language == 'sv'">KB/Libris mappningar av MARC till RDF-vokabulär. För mer information, se
       <a class="ext" target="_blank" rel="noopener noreferrer" href="https://github.com/libris/librisxl/blob/master/whelk-core/src/main/resources/ext/marcframe.json">källfil</a>
       och <a class="ext" target="_blank" rel="noopener noreferrer" href="https://github.com/libris/librisxl/blob/master/whelk-core/src/main/resources/ext/marcframe.md">dokumentation</a>.
     </p>
@@ -44,12 +44,6 @@ export default {
   },
   methods: {
   },
-  // async asyncData({ $config, route, params, $http }) {
-  //   const pageData = await $http.$get(`${$config.apiPath}/vocab/data.jsonld`);
-  //   return {
-  //     pageData,
-  //   };
-  // },
   // call fetch only on client-side
   fetchOnServer: false,
   watchQuery: true,

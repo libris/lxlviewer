@@ -29,6 +29,7 @@
 // import mockSuggest from '@/resources/json/mockSuggest.json';
 import { mapGetters } from 'vuex';
 import SuggestItem from '@/components/SuggestItem';
+import { encodeSpecialChars } from '../plugins/env';
 
 export default {
   data() {
@@ -111,8 +112,8 @@ export default {
     },
     async doSuggestSearch() {
       this.clearSuggest();
-      const searchPath = `find.jsonld?q=${this.keyword}&_lens=chips&_suggest=${this.settings.language}&_limit=7`;
-      const suggestData = await fetch(`${process.env.API_PATH}/${searchPath}`).then(res => res.json());
+      const searchPath = `find.jsonld?q=${encodeSpecialChars(this.keyword)}&_lens=chips&_suggest=${this.settings.language}&_limit=7`;
+      const suggestData = await fetch(`${this.activeHost()}/${searchPath}`).then(res => res.json());
       this.suggestedItems = suggestData.items;
       // const suggestData = mockSuggest;
       // this.suggestedItems = suggestData;
@@ -143,7 +144,7 @@ export default {
         	const compName = vNode.context.name
           let warn = `[Vue-click-outside:] provided expression '${binding.expression}' is not a function, but has to be`
           if (compName) { warn += `Found in component '${compName}'` }
-          
+
           console.warn(warn)
         }
         // Define Handler and cache it on the element
@@ -158,7 +159,7 @@ export default {
         // add Event Listeners
         document.addEventListener('click', handler)
 			},
-      
+
       unbind: function(el, binding) {
         // Remove Event Listeners
         document.removeEventListener('click', el.__vueClickOutside__)

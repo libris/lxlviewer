@@ -32,6 +32,9 @@ import * as DataUtil from 'lxljs/data';
 import LensMixin from '@/mixins/lens';
 import ResultItem from '@/components/ResultItem';
 
+import { translateAliasedUri } from '../plugins/env';
+import { encodeSpecialChars } from '../plugins/env';
+
 export default {
   mixins: [LensMixin],
   layout (context) {
@@ -90,15 +93,38 @@ export default {
   methods: {
     ...mapActions(['setCurrentDocument']),
   },
-  async asyncData({ $config, error, route, params, $http, store }) {
-    const path = route.path.replace(/\(/g, '%28').replace(/\)/g, '%29');
-    const pageData = await $http.$get(`${$config.apiPath}${path}/data.jsonld`,
+  async asyncData({ error, route, store, redirect }) {
+    const domain = store.getters.appState.domain
+    const siteConfig = store.getters.settings.siteConfig
+    const host = translateAliasedUri(siteConfig[domain].baseUri)
+    const path = encodeSpecialChars(route.path);
+    const pageData = await fetch(`${host}${path}`,
       {
-        headers: { 'Accept': 'application/ld+json' }
+        headers: { 'Accept': 'application/ld+json' },
+        redirect: 'manual'
       }
-    ).catch((err) => {
-      error({ statusCode: err.statusCode, message: err.message })
+    ).then(response => {
+      if (response.ok) {
+        return response.json()
+      }
+
+      if (response.status === 0) {
+        // We're on the client side and got redirected to the page we're already on
+      }
+      else if (response.status === 302) {
+        const url = translateAliasedUri(response.headers.get('Location'))
+        console.log (`REDIRECTING: ${host}${path} -> ${url}`)
+        redirect(url);
+      }
+      else {
+        error({ statusCode: response.status, message: `` })
+      }
+    })
+    .catch((err) => {
+      console.log(`ERROR: ${err}`)
+      error({ statusCode: 500, message: err })
     });
+
     if (pageData) {
       const document = DataUtil.splitJson(pageData);
       store.commit('SET_CURRENT_DOCUMENT', document);

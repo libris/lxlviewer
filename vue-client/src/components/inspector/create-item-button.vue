@@ -23,10 +23,6 @@ export default {
       default: '',
     },
     mainEntity: null, // mainEntity of the record we want to create item on
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
     compact: {
       type: Boolean,
       default: false,
@@ -84,11 +80,16 @@ export default {
       'status',
     ]),
     tooltipText() {
-      const str = this.hasHolding ? [this.user.settings.activeSigel, 'has holding'] : ['Add holding for', this.user.settings.activeSigel];
-      return StringUtil.getUiPhraseByLang(str, this.user.settings.language, this.resources.i18n);
+      if (this.hasHolding) {
+        return `${this.user.settings.activeSigel} ${StringUtil.getUiPhraseByLang('has holding', this.user.settings.language, this.resources.i18n)}`;
+      }
+      return `${StringUtil.getUiPhraseByLang('Add holding for', this.user.settings.language, this.resources.i18n)} ${this.user.settings.activeSigel}`;
     },
     keyBindText() {
       return LayoutUtil.getKeybindingText('add-holding');
+    },
+    disabled() {
+      return this.inspector && this.inspector.status.isNew;
     },
   },
   components: {
@@ -149,8 +150,8 @@ export default {
         :icon="hasHolding ? 'check' : 'plus'"
         :indicator="hasHolding"
         :label="hasHolding ? 
-              [user.settings.activeSigel, 'has holding'] : 
-              ['Add holding for', user.settings.activeSigel]"
+              `${user.settings.activeSigel} ${$options.filters.translatePhrase('has holding')}` :
+              `${$options.filters.translatePhrase('Add holding for')} ${user.settings.activeSigel}`"
         @click="performItemAction()">
       </rounded-button>
     </template>

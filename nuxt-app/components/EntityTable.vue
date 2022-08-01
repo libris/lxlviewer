@@ -22,11 +22,13 @@
     <template v-if="isMainEntity">
       <div class="PropertyRow d-md-flex" v-if="showDownload">
         <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Download') }}</div>
-        <div class="PropertyRow-bodyValue"><a :href="`${ documentId }/data.jsonld` | replaceBaseWithApi">JSON-LD</a> • <a :href="`${ documentId }/data.ttl` | replaceBaseWithApi">Turtle</a> • <a :href="`${ documentId }/data.rdf` | replaceBaseWithApi">RDF/XML</a></div>
+        <div class="PropertyRow-bodyValue"><a :href="`${ recordId }/data.jsonld` | translateAliasedUri">JSON-LD</a> • <a :href="`${ recordId }/data.ttl` | translateAliasedUri">Turtle</a> • <a :href="`${ recordId }/data.rdf` | translateAliasedUri">RDF/XML</a></div>
       </div>
       <div class="PropertyRow d-md-flex" v-if="showOtherServices">
         <div class="PropertyRow-bodyKey d-block d-md-inline">{{ translateUi('Other sites') }}</div>
-        <div class="PropertyRow-bodyValue" v-for="service in otherServices"><a :href="service.link">{{service.title}}</a></div>
+        <div class="PropertyRow-bodyValue multiple">
+          <div v-for="service in otherServices"><a :href="service.link">{{service.title}}</a></div>
+        </div>
       </div>
     </template>
   </div>
@@ -80,6 +82,12 @@ export default {
         return this.translateUriEnv(this.currentDocument.record['@id']);
       } else if (this.itemData['@id']) {
         return this.itemData['@id'];
+      }
+      return null;
+    },
+    controlNumber() {
+      if (this.currentDocument && this.currentDocument.record && this.currentDocument.record.controlNumber) {
+        return this.currentDocument.record.controlNumber
       }
       return null;
     },
@@ -139,18 +147,31 @@ export default {
       return combinedData;
     },
     otherServices() {
+      const links = []
+
       let p = this.recordId.split('/');
       const id = p.pop();
       p.push('katalogisering');
       p.push(id);
       const catLink = p.join('/');
+      links.push({
+        'link': catLink,
+        'title': 'Libris katalogisering'
+      });
 
-      return [
-        { 'link': catLink,
-          'title': 'Libris katalogisering'
-        }
-      ]
+      const baseType = VocabUtil.getRecordType(this.itemData['@type'], this.vocab, this.vocabContext)
+      if(this.controlNumber && baseType === 'Instance') {
+        let p = this.recordId.split('/');
+        p.pop();
+        p.push('bib');
+        p.push(this.controlNumber);
+        links.push({
+          'link': p.join('/'),
+          'title': 'Libris webbsök'
+        });
+      }
 
+      return links
     }
   },
   props: {

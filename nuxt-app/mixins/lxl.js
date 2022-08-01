@@ -53,6 +53,9 @@ if (!Vue.__lxl_global_mixin__) {
       translateUriEnv(uri) {
         return translateAliasedUri(uri)
       },
+      activeHost() {
+        return translateAliasedUri(this.baseUri())
+      },
       getEntityTitle(entity) {
         if (entity != null) {
           if (entity.prefLabel) {
