@@ -155,7 +155,7 @@ export default {
       
       const options = {
         headers: {
-          'Accept': 'application/ld+json',
+          Accept: 'application/ld+json',
         },
       };
 
@@ -190,8 +190,7 @@ export default {
                 const moddedValue = r.val.concat(' → ').concat(added.val);
                 diff.modified.push({ path: r.path, val: moddedValue });
                 set(compositeVersionData, r.path, moddedValue);
-              }
-              else {
+              } else {
                 diff.modified.push({ path: r.path, val: added.val });
                 set(compositeVersionData, r.path, added.val);
               }
