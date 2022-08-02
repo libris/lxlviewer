@@ -186,9 +186,15 @@ export default {
           } else {
             const added = diff.added.find(a => isEqual(a.path, r.path));
             if (added !== undefined && r.val !== added.val) {
-              const moddedValue = r.val.concat(' → ').concat(added.val);
-              diff.modified.push({ path: r.path, val: moddedValue });
-              set(compositeVersionData, r.path, moddedValue);
+              if (typeof r.val === 'string') {
+                const moddedValue = r.val.concat(' → ').concat(added.val);
+                diff.modified.push({ path: r.path, val: moddedValue });
+                set(compositeVersionData, r.path, moddedValue);
+              }
+              else {
+                diff.modified.push({ path: r.path, val: added.val });
+                set(compositeVersionData, r.path, added.val);
+              }
             } else {
               set(compositeVersionData, r.path, r.val);
             }
