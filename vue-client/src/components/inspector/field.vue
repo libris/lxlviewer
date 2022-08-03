@@ -8,6 +8,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
+import * as DisplayUtil from 'lxljs/display';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
@@ -423,6 +424,9 @@ export default {
       }
       return false;
     },
+    fieldRdfType() {
+      return DisplayUtil.rdfDisplayType(this.fieldKey, this.resources);
+    },
   },
   methods: {
     pasteClipboardItem() {
@@ -703,8 +707,9 @@ export default {
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-            :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>          
+          <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !fieldRdfType" 
+            :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
+          <span :title="fieldKey">{{ fieldRdfType | labelByLang | capitalize }}</span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
             <div class="Field-comment">
@@ -724,7 +729,6 @@ export default {
       <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
         :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
-
       <!-- Is inner -->
       <div class="Field-actions is-nested">
         <div class="Field-action Field-comment" v-if="propertyComment && !locked" >
