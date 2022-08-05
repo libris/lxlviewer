@@ -323,6 +323,12 @@ export default {
     'inspector.event'(val) {
       this.$emit(`${val.value}`);
     },
+    'inspector.status.editing'(val) {
+      if (!val) {
+        this.closePropertyAdder();
+        this.closeExtractDialog();
+      }
+    },
     shouldExpand(val) {
       if (val) {
         this.expand();
@@ -330,7 +336,7 @@ export default {
       }
     },
     extractDialogActive(val) {
-      if (!val) {
+      if (!val && this.inspector.status.editing) {
         this.$refs.linkAction.$el.focus();
       }
     },
