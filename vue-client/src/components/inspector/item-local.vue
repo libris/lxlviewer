@@ -357,6 +357,12 @@ export default {
     },
   },
   watch: {
+    'inspector.status.editing'(val) {
+      if (!val) {
+        this.closePropertyAdder();
+        this.closeExtractDialog();
+      }
+    },
     'inspector.event'(val) {
       this.$emit(`${val.value}`);
     },
@@ -367,7 +373,7 @@ export default {
       }
     },
     extractDialogActive(val) {
-      if (!val) {
+      if (!val && this.inspector.status.editing) {
         this.$refs.linkAction.$el.focus();
       }
     },
