@@ -460,7 +460,7 @@ const store = new Vuex.Store({
       if (state.user.email.length === 0) {
         throw new Error('modifyUserDatabase was dispatched with no real user loaded.');
       }
-      // Modifies a propery in the userDatabase
+      // Modifies a property in the userDatabase
       const userDatabase = cloneDeep(state.userDatabase);
       if (payload.value == null) {
         delete userDatabase[payload.property];
