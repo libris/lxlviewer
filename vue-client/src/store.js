@@ -755,7 +755,8 @@ store.subscribe((mutation, state) => {
     if (userStorageTotal === null) {
       userStorageTotal = {};
     }
-    userStorageTotal[state.user.emailHash] = mutation.payload;
+    userStorageTotal[state.user.idHash] = mutation.payload;
+    delete userStorageTotal[state.user.emailHash];
     localStorage.setItem('userStorage', JSON.stringify(userStorageTotal));
   }
 });

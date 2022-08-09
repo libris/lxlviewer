@@ -162,7 +162,7 @@ new Vue({
     'status.helpSectionTitle'() {
       this.updateTitle();
     },
-    'user.emailHash'() {
+    'user.idHash'() {
       this.syncUserStorage();
     },
     'status.keybindState'(state) {
@@ -220,8 +220,8 @@ new Vue({
     syncUserStorage() {
       const userStorageTotal = JSON.parse(localStorage.getItem('userStorage'));
       let userStorage = this.userStorage;
-      if (userStorageTotal !== null && userStorageTotal.hasOwnProperty(this.user.emailHash)) {
-        userStorage = userStorageTotal[this.user.emailHash];
+      if (userStorageTotal !== null && (userStorageTotal.hasOwnProperty(this.user.idHash) || userStorageTotal.hasOwnProperty(this.user.emailHash))) {
+        userStorage = userStorageTotal[this.user.idHash] || userStorageTotal[this.user.emailHash];
       }
       this.$store.dispatch('setUserStorage', userStorage);
     },
