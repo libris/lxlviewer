@@ -12,13 +12,14 @@ function getLibraryUri(sigel) {
 }
 
 export class User {
-  constructor(fullName = 'anonymous', shortName = '', email = '', collections = []) {
+  constructor(fullName = 'anonymous', shortName = '', email = '', collections = [], id = '') {
     this.isLoggedIn = (fullName !== 'anonymous');
     this.fullName = fullName;
     this.shortName = shortName;
     this.email = email;
     this.emailHash = md5(email);
     this.collections = collections;
+    this.id = id;
     this.settings = {
       resultListType: 'detailed',
       appTech: false,
@@ -145,6 +146,7 @@ export function getUserObject(userObj) {
       userObj.short_name,
       userObj.email,
       userObj.permissions,
+      `${userObj.id}`,
     );
   }
   user.loadSettings();

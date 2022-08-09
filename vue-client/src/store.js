@@ -443,11 +443,11 @@ const store = new Vuex.Store({
       dispatch('modifyUserDatabase', { property: 'markedDocuments', value: newList });
     },
     loadUserDatabase({ commit, dispatch, state }) {
-      if (state.user.email.length === 0) {
+      if (state.user.id.length === 0) {
         throw new Error('loadUserDatabase was dispatched with no real user loaded.');
       }
       // Call this when you need to load the userDatabase from the server.
-      StringUtil.digestMessage(state.user.email).then((digestHex) => {
+      StringUtil.digestMessage(state.user.id).then((digestHex) => {
         httpUtil.get({ url: `${state.settings.apiPath}/_userdata/${digestHex}`, token: state.user.token, contentType: 'text/plain' }).then((result) => {
           commit('setUserDatabase', result);
           dispatch('checkForMigrationOfUserDatabase');
@@ -457,7 +457,7 @@ const store = new Vuex.Store({
       });
     },
     modifyUserDatabase({ commit, state }, payload) {
-      if (state.user.email.length === 0) {
+      if (state.user.id.length === 0) {
         throw new Error('modifyUserDatabase was dispatched with no real user loaded.');
       }
       // Modifies a property in the userDatabase
@@ -467,7 +467,7 @@ const store = new Vuex.Store({
       } else {
         userDatabase[payload.property] = payload.value;
       }
-      StringUtil.digestMessage(state.user.email).then((digestHex) => {
+      StringUtil.digestMessage(state.user.id).then((digestHex) => {
         httpUtil.put({ url: `${state.settings.apiPath}/_userdata/${digestHex}`, token: state.user.token, contentType: 'text/plain' }, userDatabase).then(() => {
           if (payload.callback) payload.callback();
           commit('setUserDatabase', userDatabase);
