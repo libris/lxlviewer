@@ -16,7 +16,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    isDistinguished: {
+    isCard: {
       type: Boolean,
       default: false,
     },
@@ -155,7 +155,7 @@ export default {
     class="ItemEntity-container"
     :class="{ 'is-expanded': expanded }">
     <div 
-      v-if="isDistinguished"
+      v-if="isCard"
       class="ItemEntity-expander"
       tabindex="0"
       @click="toggleExpanded()"
@@ -165,16 +165,16 @@ export default {
     <div
       :id="`formPath-${path}`"
       class="ItemEntity-content"
-      v-show="!isDistinguished || !expanded">
+      v-show="!isCard || !expanded">
       <v-popover class="ItemEntity-popover" placement="bottom-start" @show="$refs.previewCard.populateData()">
         <div class="ItemEntity chip" 
           tabindex="0"
           ref="chip"
-          v-if="!isDistinguished || !expanded" 
+          v-if="!isCard || !expanded" 
           :class="{ 'is-locked': isLocked, 'is-marc': isMarc, 'is-newlyAdded': animateNewlyAdded, 'is-removeable': removeHover, 'is-cache': recordType === 'CacheRecord', 'is-placeholder': recordType === 'PlaceholderRecord', 'is-ext-link': !isLibrisResource}">
           <span class="ItemEntity-label chip-label">
-            <span v-if="(!isDistinguished || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-            <span v-if="(!isDistinguished || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
+            <span v-if="(!isCard || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
+            <span v-if="(!isCard || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
             <span class="placeholder"></span></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
             <i class="fa fa-times-circle icon icon--sm chip-icon" 
@@ -195,8 +195,9 @@ export default {
     </div>
     
     <entity-summary 
-      v-if="isDistinguished && expanded"
+      v-if="isCard && expanded"
       :focus-data="focusData" 
+      :exclude-properties="excludeProperties"
       :should-link="true"
       :should-open-tab="true"
       :show-all-keys="true"
