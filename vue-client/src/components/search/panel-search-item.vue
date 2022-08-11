@@ -139,6 +139,7 @@ export default {
         :focus-data="focusData" 
         :should-link="true" 
         :is-compact="isCompact"
+        :label-style="'top'"
         :exclude-components="settings.excludeComponents"
         :exclude-properties="settings.excludeProperties"
         :shouldOpenTab="true"
