@@ -49,6 +49,10 @@ export default {
       type: String,
       default: '',
     },
+    overrideLabel: {
+      type: String,
+      default: null,
+    },
     fieldValue: {
       type: [Object, String, Array, Boolean, Number],
       default: null,
@@ -86,6 +90,10 @@ export default {
       default: null,
     },
     isDistinguished: {
+      type: Boolean,
+      default: false,
+    },
+    isCard: {
       type: Boolean,
       default: false,
     },
@@ -144,6 +152,9 @@ export default {
   computed: {
     isReverseProperty() {
       return this.fieldKey.indexOf('@reverse') > -1;
+    },
+    reverseProperty() {
+      return this.isReverseProperty ? this.fieldKey.split('/').pop() : null;
     },
     isFieldDiff() {
       return this.isDiff && this.newDiffValues.length === 0;
@@ -708,7 +719,7 @@ export default {
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !fieldRdfType" 
-            :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
+            :title="fieldKey">{{ (overrideLabel || fieldKey) | labelByLang | capitalize }}</span>
           <span :title="fieldKey">{{ fieldRdfType | labelByLang | capitalize }}</span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
@@ -817,7 +828,7 @@ export default {
         v-for="(item, index) in valueAsArray" 
         :key="index"
         v-bind:class="{
-          'is-entityContent': getDatatype(item) == 'entity' && !isLinkedInstanceOf,
+          'is-entityContent': getDatatype(item) == 'entity' && !isCard,
           'is-new': newDiffValues.indexOf(item) > -1,
         }">
 
@@ -831,6 +842,7 @@ export default {
         <item-grouped 
           v-if="getDatatype(item) == 'grouped'"
           :field-key="fieldKey" 
+          :is-card="isCard"
           :entity-type="entityType" 
           :parent-path="path"
           :index="index" 
@@ -852,8 +864,9 @@ export default {
         <item-entity 
           v-if="getDatatype(item) == 'entity'" 
           :is-locked="locked" 
-          :is-distinguished="isDistinguished"
-          :is-expanded="isLinkedInstanceOf"
+          :is-card="isCard"
+          :is-expanded="isCard"
+          :exclude-properties="isReverseProperty ? [reverseProperty] : []"
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 

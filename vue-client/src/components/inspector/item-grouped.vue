@@ -19,6 +19,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isCard: {
+      type: Boolean,
+      default: false,
+    },
     entityType: {
       type: String,
       default: '',
@@ -30,7 +34,7 @@ export default {
   },
   data() {
     return {
-      expanded: false,
+      expanded: this.isCard,
     };
   },
   computed: {
@@ -111,8 +115,10 @@ export default {
       :is-locked="true" 
       :is-removable="false" 
       :is-grouped="true"
+      :is-card="isCard"
       :show-key="showKeys"
-      :field-key="key"
+      :override-label="key"
+      :field-key="fieldKey"
       :field-value="value"></field>
     </ul>  
   </div>

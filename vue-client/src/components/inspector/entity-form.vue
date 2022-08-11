@@ -103,6 +103,13 @@ export default {
     keyIsLocked(key) {
       return (this.isLocked || key === '@id');
     },
+    isIntegral(key) {
+      if (key.indexOf('@reverse/') >= 0) {
+        key = key.split('/').pop();
+      }
+      
+      return VocabUtil.hasCategory(key, 'integral', this.resources);
+    }
   },
   components: {
   },
@@ -125,6 +132,7 @@ export default {
         :is-removable="true" 
         :is-locked="keyIsLocked(k)" 
         :parent-accepted-types="acceptedTypes"
+        :is-card="isIntegral(k)"
         :is-distinguished="k === 'instanceOf'"
         :key="k" 
         :field-key="k" 
@@ -149,6 +157,7 @@ export default {
           :is-inner="false" 
           :is-removable="false" 
           :is-locked="true" 
+          :is-card="isIntegral(k)"
           :parent-accepted-types="acceptedTypes"
           :key="k" 
           :field-key="k" 
