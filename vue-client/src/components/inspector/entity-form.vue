@@ -109,7 +109,7 @@ export default {
       }
       
       return VocabUtil.hasCategory(key, 'integral', this.resources);
-    }
+    },
   },
   components: {
   },
