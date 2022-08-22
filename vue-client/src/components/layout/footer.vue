@@ -40,58 +40,47 @@ export default {
 
         <div class="Footer-navGroup">
           <nav class="Footer-nav" aria-labelledby="footer-xl-nav">
-            <h4 id="footer-xl-nav" class="Footer-listTitle">{{ "XL" | translatePhrase }}</h4>
-            <ul class="Footer-navList">
-              <li>
-                <router-link class="Footer-link" to="/about" >{{ "About XL" | translatePhrase }}</router-link>
-              </li>
-              <li>
-                <a href="https://www.kb.se/libris-versionsinformation" class="Footer-link">{{ "Release notes" | translatePhrase }}</a>
-              </li>
-              <li>
-                <a href="https://www.kb.se/om-oss/hantering-av-personuppgifter.html#XLkat" class="Footer-link">{{ "GDPR compliance" | translatePhrase }}</a>
-              </li>
-              <li>
-                <a href="https://www.kb.se/digital-tillganglighet" class="Footer-link">{{ "Accessibility statement" | translatePhrase }}</a>
-              </li>
-            </ul>
-          </nav>
-
-          <nav class="Footer-nav" aria-labelledby="footer-libris-nav">
-            <h4 id="footer-libris-nav" class="Footer-listTitle">{{ "Libris and XL" | translatePhrase }}</h4>
-            <ul class="Footer-navList">
-              <li>
-                <a href="https://www.youtube.com/playlist?list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link">{{ "Instruction videos" | translatePhrase }}</a>
-              </li>
-              <li>
-                <a href="https://www.kb.se/samverkan-och-utveckling/libris.html" class="Footer-link">{{ "Libris news" | translatePhrase }}</a>
-              </li>
-              <li>
-                <a href="https://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/" class="Footer-link">{{ "Introduction material" | translatePhrase }}</a>
-              </li>
-              <li>
-                <a href="http://www.kb.se/libris/" class="Footer-link">{{ "kb.se/libris" | translatePhrase }}</a>
-              </li>
-              <li>
-                <a href="https://libris.kb.se/" class="Footer-link">{{ "libris.kb.se" | translatePhrase }}</a>
-              </li>
-            </ul>
+            <h4 id="footer-xl-nav" class="Footer-listTitle">{{ "Information" | translatePhrase }}</h4>
+            <div class="Footer-navGroup">
+              <ul class="Footer-navList">
+                <li>
+                  <router-link class="Footer-link" to="/about" >{{ "About XL" | translatePhrase }}</router-link>
+                </li>
+                <li>
+                  <a href="https://www.kb.se/libris-versionsinformation" class="Footer-link">{{ "Release notes" | translatePhrase }}</a>
+                </li>
+                <li>
+                  <a href="https://www.kb.se/om-oss/hantering-av-personuppgifter.html#XLkat" class="Footer-link">{{ "GDPR compliance" | translatePhrase }}</a>
+                </li>
+                <li>
+                  <a href="https://www.kb.se/digital-tillganglighet" class="Footer-link">{{ "Accessibility statement" | translatePhrase }}</a>
+                </li>
+              </ul>
+              <ul class="Footer-navList">
+                <li>
+                  <a href="https://www.youtube.com/playlist?list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link">{{ "Instruction videos" | translatePhrase }}</a>
+                </li>
+                <li>
+                  <a href="https://www.kb.se/samverkan-och-utveckling/libris.html" class="Footer-link">{{ "Libris news" | translatePhrase }}</a>
+                </li>
+                <li>
+                  <a href="https://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/" class="Footer-link">{{ "Introduction material" | translatePhrase }}</a>
+                </li>
+                <li>
+                  <a href="http://www.kb.se/libris/" class="Footer-link">{{ "kb.se/libris" | translatePhrase }}</a>
+                </li>
+                <li>
+                  <a href="https://libris.kb.se/" class="Footer-link">{{ "libris.kb.se" | translatePhrase }}</a>
+                </li>
+              </ul>
+            </div>
           </nav>
 
           <nav class="Footer-nav" aria-labelledby="footer-support-nav">
-            <h4 id="footer-support-nav" class="Footer-listTitle">{{ "Support" | translatePhrase }}</h4>
+            <h4 id="footer-support-nav" class="Footer-listTitle">{{ "Contact" | translatePhrase }}</h4>
             <ul class="Footer-navList">
               <li>
                 <a class="Footer-link" href="https://www.kb.se/om-oss/kontakta-oss/#item-47bef1f3916eca87a61b1eed">{{ "Libris customer service" | translatePhrase }}</a>
-              </li>
-            </ul>
-          </nav>
-
-          <nav class="Footer-nav" aria-labelledby="footer-sm-nav">
-            <h4 id="footer-sm-nav" class="Footer-listTitle">{{ "Social media" | translatePhrase }}</h4>
-            <ul class="Footer-navList">
-              <li class="Footer-navItem">
-                <a class="Footer-link" href="https://www.youtube.com/user/KunglBiblioteket/">{{ "National Library of Sweden on Youtube" | translatePhrase }}</a>
               </li>
             </ul>
           </nav>
@@ -174,6 +163,10 @@ export default {
       font-size: 16px;
       font-size: 1.6rem;
     }
+  }
+
+  &-navList:not(:last-child) {
+    margin-right: 20px;
   }
 
   &-listTitle {
