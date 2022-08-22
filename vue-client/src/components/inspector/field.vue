@@ -739,13 +739,17 @@ export default {
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff && !fieldRdfType"
-            :title="fieldKey" @click="onLabelClick">{{ (overrideLabel || fieldKey) | labelByLang | capitalize }}</span>
-          <span class="Field-navigateHistory" v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" @click="onLabelClick"
+          <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" 
+                :title="fieldKey" 
+                @click="onLabelClick">
+            {{ (fieldRdfType || overrideLabel || fieldKey) | labelByLang | capitalize }}
+          </span>
+          <span class="Field-navigateHistory" 
+                v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" 
+                @click="onLabelClick"
                 v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
-          <span :title="fieldKey">{{ fieldRdfType | labelByLang | capitalize }}</span>
-      </span>
-
+            {{ (fieldRdfType || overrideLabel || fieldKey) | labelByLang | capitalize }}
+          </span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
             <div class="Field-comment">
