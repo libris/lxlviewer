@@ -266,6 +266,8 @@ new Vue({
         }
       } else if (route.name === 'Help') {
         title += this.status.helpSectionTitle;
+      } else if (route.name === 'DocumentHistory') {
+        title += StringUtil.getUiPhraseByLang('Version history', this.user.settings.language, this.resources.i18n);
       } else {
         title += StringUtil.getUiPhraseByLang(route.name, this.user.settings.language, this.resources.i18n);
       }
