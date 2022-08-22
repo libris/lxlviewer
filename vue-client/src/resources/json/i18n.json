@@ -29,7 +29,6 @@
     "Bookmarks": "Bokmärken",
     "Flagged": "Flaggad",
     "Libris customer service": "Libris kundservice och katalogsupport",
-    "Support": "Support och felanmälan",
     "Social media": "Sociala medier",
     "All": "Alla",
     "Suggested": "Föreslagna",
@@ -391,6 +390,7 @@
     "Remove filter by held items for active sigel": "Ta bort filtrering på hållna bestånd för aktivt sigel",
     "View version history": "Visa ändringshistorik",
     "Show latest change": "Visa senaste ändring",
-    "Version history": "Ändringshistorik"
+    "Version history": "Ändringshistorik",
+    "Information": "Information"
     }
 }
