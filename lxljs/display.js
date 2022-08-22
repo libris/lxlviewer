@@ -1,4 +1,4 @@
-import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual } from 'lodash-es';
+import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual, get, indexOf, map, flatten, sortBy } from 'lodash-es';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import { lxlLog, lxlWarning } from './debug';
@@ -237,20 +237,50 @@ export function formatIsni(isni) {
     : isni;
 }
 
+// TODO: it's probably better to display type coerced properties in the same 
+// way as e.g. language containers (prefLabelByLang etc) instead of as separate properties
 export function getSortedProperties(formType, formObj, settings, resources) {
-  const propertyList = getDisplayProperties(
+  let propertyList = getDisplayProperties(
     formType,
     resources,
     settings,
     'full',
   );
+  
+  propertyList = uniq(flatten(map(propertyList, k => get(k, 'alternateProperties', k))));
+
+  const realKey = k => get(resources, ['context', '1', k, '@id'], k); 
   each(formObj, (v, k) => {
     if (!includes(propertyList, k)) {
-      propertyList.push(k);
+      const ix = indexOf(propertyList, realKey(k));
+      if (ix > -1) {
+        propertyList.splice(ix + 1, 0, k);
+      } else {
+        propertyList.push(k);  
+      }
     }
   });
+  
   remove(propertyList, k => (settings.hiddenProperties.indexOf(k) !== -1));
+
+  // Sort type coerced property "groups" internally on their type label
+  const rdfTypeLabel = k => StringUtil.getLabelByLang(rdfDisplayType(k, resources), settings.language, resources);
+  const withLabel = map(propertyList, k => ({ k: k, l: rdfTypeLabel(k), rk: realKey(k) }));
+  let ix = 0;
+  let last = null;
+  withLabel.forEach((m) => {
+    m.ix = m.rk !== last ? ix++ : ix;
+    last = m.rk;
+  });
+  propertyList = map(sortBy(withLabel, ['ix', 'l']), m => m.k);
+  
   return propertyList;
+}
+
+export function rdfDisplayType(property, resources) {
+  const type = get(resources, ['context', '1', property, '@type'], '');
+  // Types such as xsd:string and @vocab don't make sense as field labels, skip them 
+  return type.match(/^[^:@]*$/) ? type : '';
 }
 
 export function getItemToken(item, resources, quoted, settings) {

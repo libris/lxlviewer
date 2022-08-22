@@ -12,13 +12,15 @@ function getLibraryUri(sigel) {
 }
 
 export class User {
-  constructor(fullName = 'anonymous', shortName = '', email = '', collections = []) {
+  constructor(fullName = 'anonymous', shortName = '', email = '', collections = [], id = '') {
     this.isLoggedIn = (fullName !== 'anonymous');
     this.fullName = fullName;
     this.shortName = shortName;
     this.email = email;
     this.emailHash = md5(email);
     this.collections = collections;
+    this.id = id;
+    this.idHash = md5(id);
     this.settings = {
       resultListType: 'detailed',
       appTech: false,
@@ -65,8 +67,8 @@ export class User {
     if (typeof savedSettings === 'undefined' || !savedSettings) {
       savedSettings = {};
     }
-    if (savedSettings.hasOwnProperty(this.emailHash)) {
-      const savedUserSettings = savedSettings[this.emailHash];
+    if (savedSettings.hasOwnProperty(this.idHash) || savedSettings.hasOwnProperty(this.emailHash)) {
+      const savedUserSettings = savedSettings[this.idHash] || savedSettings[this.emailHash];
       each(this.settings, (value, key) => {
         if (savedUserSettings.hasOwnProperty(key)) {
           if (key === 'activeSigel' && this.isLoggedIn) {
@@ -93,7 +95,9 @@ export class User {
     if (typeof savedSettings === 'undefined' || !savedSettings) {
       savedSettings = {};
     }
-    savedSettings[this.emailHash] = this.settings;
+    savedSettings[this.idHash] = this.settings;
+    delete savedSettings[this.emailHash];
+    
     localStorage.setItem('userSettings', JSON.stringify(savedSettings));
   }
 
@@ -145,6 +149,7 @@ export function getUserObject(userObj) {
       userObj.short_name,
       userObj.email,
       userObj.permissions,
+      `${userObj.id}`,
     );
   }
   user.loadSettings();

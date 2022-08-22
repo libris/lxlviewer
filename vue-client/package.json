@@ -103,7 +103,8 @@
       "no-continue": "off"
     },
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "babel-eslint",
+      "allowImportExportEverywhere": true
     }
   },
   "postcss": {

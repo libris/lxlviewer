@@ -8,6 +8,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
+import * as DisplayUtil from 'lxljs/display';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
@@ -48,6 +49,10 @@ export default {
       type: String,
       default: '',
     },
+    overrideLabel: {
+      type: String,
+      default: null,
+    },
     fieldValue: {
       type: [Object, String, Array, Boolean, Number],
       default: null,
@@ -85,6 +90,10 @@ export default {
       default: null,
     },
     isDistinguished: {
+      type: Boolean,
+      default: false,
+    },
+    isCard: {
       type: Boolean,
       default: false,
     },
@@ -155,6 +164,9 @@ export default {
     },
     isReverseProperty() {
       return this.fieldKey.indexOf('@reverse') > -1;
+    },
+    reverseProperty() {
+      return this.isReverseProperty ? this.fieldKey.split('/').pop() : null;
     },
     isFieldDiff() {
       return this.isDiff && this.newDiffValues.length === 0;
@@ -434,6 +446,9 @@ export default {
         }
       }
       return false;
+    },
+    fieldRdfType() {
+      return DisplayUtil.rdfDisplayType(this.fieldKey, this.resources);
     },
   },
   methods: {
@@ -724,12 +739,13 @@ export default {
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff"
-            :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>
+          <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff && !fieldRdfType"
+            :title="fieldKey" @click="onLabelClick">{{ (overrideLabel || fieldKey) | labelByLang | capitalize }}</span>
           <span class="Field-navigateHistory" v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" @click="onLabelClick"
                 v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
-        {{ fieldKey | labelByLang | capitalize }}
+          <span :title="fieldKey">{{ fieldRdfType | labelByLang | capitalize }}</span>
       </span>
+
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
             <div class="Field-comment">
@@ -752,7 +768,6 @@ export default {
             v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
         {{ fieldKey | labelByLang | capitalize }}
       </span>
-
       <!-- Is inner -->
       <div class="Field-actions is-nested">
         <div class="Field-action Field-comment" v-if="propertyComment && !locked" >
@@ -841,7 +856,7 @@ export default {
         v-for="(item, index) in valueAsArray" 
         :key="index"
         v-bind:class="{
-          'is-entityContent': getDatatype(item) == 'entity' && !isLinkedInstanceOf,
+          'is-entityContent': getDatatype(item) == 'entity' && !isCard,
           'is-new': newDiffValues.indexOf(item) > -1,
         }">
 
@@ -856,6 +871,7 @@ export default {
         <item-grouped 
           v-if="getDatatype(item) == 'grouped'"
           :field-key="fieldKey" 
+          :is-card="isCard"
           :entity-type="entityType" 
           :parent-path="path"
           :index="index" 
@@ -879,8 +895,9 @@ export default {
         <item-entity 
           v-if="getDatatype(item) == 'entity'" 
           :is-locked="locked" 
-          :is-distinguished="isDistinguished"
-          :is-expanded="isLinkedInstanceOf"
+          :is-card="isCard"
+          :is-expanded="isCard"
+          :exclude-properties="isReverseProperty ? [reverseProperty] : []"
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 

@@ -39,6 +39,10 @@
     "Z-A": "Ö-A",
     "Relevance": "Relevans",
     "search all of id.kb.se": "sök i hela id.kb.se",
-    "suggested": "förslag"
+    "suggested": "förslag",
+    "If you entered a web address, check that it is correct.": "Om du skrev in adressen, kontrollera att den är korrekt.",
+    "If you got here by following a link on our website, you can report it to us. See contact information in the footer.": "Om du hamnade här genom att följa en länk på vår webbplats, meddela oss gärna. Se kontaktinformation i sidfoten.",
+    "There is a problem with the service": "Det är ett problem med tjänsten",
+    "Try again later.": "Försök igen senare."
   }
 }

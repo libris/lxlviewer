@@ -74,6 +74,12 @@ export default {
       default: false,
       type: Boolean,
     },
+    labelStyle: {
+      default: 'regular',
+      validator(value) {
+        return ['regular', 'top', 'hidden'].includes(value);
+      },
+    },
     keyDisplayLimit: {
       default: 5,
       type: Number,
@@ -361,18 +367,19 @@ export default {
       
     </h3>
     <ul class="EntitySummary-details" v-show="!isCompact" :style="{ height: animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
-      <li class="EntitySummary-detailsItem" 
+      <li :class="`EntitySummary-detailsItem-${labelStyle}`"
         v-for="node in limitedInfo" 
         :key="node.property">
         <template v-if="node.value !== null">
-          <span class="EntitySummary-detailsKey" :title="node.property | labelByLang">{{ node.property | labelByLang | capitalize }}</span>
-          <span class="EntitySummary-detailsValue">
+          <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang">{{ node.property | labelByLang | capitalize }}</span>
+          <br v-if="labelStyle === 'top'"/>
+          <span :class="`EntitySummary-detailsValue-${labelStyle}`">
             <SummaryNode :hover-links="hoverLinks" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>
         <template v-else-if="isReplacedBy !== ''">
-          <span  class="EntitySummary-detailsKey">Ersatt av</span>
-          <span class="EntitySummary-detailsValue">{{ v }}</span>
+          <span :class="`EntitySummary-detailsKey-${labelStyle}`">Ersatt av</span>
+          <span :class="`EntitySummary-detailsValue-${labelStyle}`">{{ v }}</span>
         </template>
       </li>
     </ul>
@@ -530,7 +537,7 @@ export default {
   &-idInfo {
   }
 
-  &-detailsItem {
+  &-detailsItem-regular {
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -540,8 +547,8 @@ export default {
       flex-direction: row;
     }
   }
-
-  &-detailsKey {
+  
+  &-detailsKey-regular {
     @media (min-width: @screen-sm-min) {
       flex-basis: 6em;
     }
@@ -553,8 +560,71 @@ export default {
     overflow: hidden;
     white-space: nowrap;
   }
+  
+  &-detailsValue-regular {
+    @media (min-width: @screen-sm-min) {
+      flex-basis: 75%;
+      flex-grow: 2;
+      align-self: flex-end;
+    }
+    color: #000;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+  }
 
-  &-detailsValue {
+  &-detailsItem-top {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    font-size: 1.4rem;
+  }
+
+  &-detailsKey-top {
+    flex-grow: 1;
+    margin-top: 0.5em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-transform: uppercase;
+    color: @grey-darker;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  &-detailsValue-top {
+    @media (min-width: @screen-sm-min) {
+      flex-basis: 75%;
+      flex-grow: 2;
+    }
+    color: #000;
+    
+    // max 3 lines before ellipsis
+    // works in all major modern browsers
+    // https://stackoverflow.com/a/13924997
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  &-detailsItem-hidden {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    font-size: 1.4rem;
+    @media (min-width: @screen-sm-min) {
+      padding: 0.2rem 0;
+      flex-direction: row;
+    }
+  }
+
+  &-detailsKey-hidden {
+  }
+
+  &-detailsValue-hidden {
     @media (min-width: @screen-sm-min) {
       flex-basis: 75%;
       flex-grow: 2;
