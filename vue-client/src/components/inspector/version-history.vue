@@ -187,7 +187,9 @@ export default {
             const added = diff.added.find(a => isEqual(a.path, r.path));
             if (added !== undefined && r.val !== added.val) {
               if (typeof r.val === 'string') {
-                const moddedValue = r.val.concat(' → ').concat(added.val);
+                const from = StringUtil.getLabelByLang(r.val, this.user.settings.language, this.resources);
+                const to = StringUtil.getLabelByLang(added.val, this.user.settings.language, this.resources);
+                const moddedValue = from.concat(' → ').concat(to);
                 diff.modified.push({ path: r.path, val: moddedValue });
                 set(compositeVersionData, r.path, moddedValue);
               } else {
