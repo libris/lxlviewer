@@ -61,12 +61,23 @@ export default {
       return false;
     },
   },
+  created() {
+    this.$on('collapse-item', () => {
+      this.collapse();
+    });
+    this.$on('expand-item', () => {
+      this.expand();
+    });
+  },
   mounted() {
     if (this.isInForm || this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
       this.expand();
     }
   },
   watch: {
+    'inspector.event'(val) {
+      this.$emit(`${val.value}`);
+    },
   },
   methods: {
     expand() {
