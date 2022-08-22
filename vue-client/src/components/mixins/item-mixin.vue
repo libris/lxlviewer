@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, isArray, get, isObject, dropRight } from 'lodash-es';
+import { cloneDeep, isArray, get, isObject, dropRight, isEqual } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -23,6 +23,10 @@ export default {
     hoverLinks: {
       type: Boolean,
       default: false,
+    },
+    diff: {
+      type: Object,
+      default: null,
     },
     index: Number,
   },
@@ -85,6 +89,39 @@ export default {
         return `${this.parentPath}[${this.index}]`;
       }
       return `${this.parentPath}`;
+    },
+    diffAdded() {
+      if (this.diff == null) return false;
+      const isArrayPath = a => a.path.slice(-1) === ']';
+      const obj = get(this.inspector.compositeHistoryData, this.path);
+      return this.diff.added.filter(isArrayPath).some(a => isEqual(obj, a.val));
+    },
+    diffRemoved() {
+      if (this.diff == null) return false;
+      const isArrayPath = r => r.path.slice(-1) === ']';
+      const obj = get(this.inspector.compositeHistoryData, this.path);
+      return this.diff.removed.filter(isArrayPath).some(r => isEqual(obj, r.val));
+    },
+    diffModified() {
+      if (this.diff == null) return false;
+      const isArrayPath = r => r.path.slice(-1) === ']';
+      const obj = get(this.inspector.compositeHistoryData, this.path);
+      return this.diff.modified.filter(isArrayPath).some(m => isEqual(obj, m.val));
+    },
+    diffAddedChildren() {
+      if (this.diff == null) return false;
+      return this.diff.added
+        .filter(a => !isEqual(a.path, this.path))
+        .some(a => a.path.includes(this.path));
+    },
+    diffRemovedChildren() {
+      if (this.diff == null) return false;
+      return this.diff.removed
+        .filter(r => !isEqual(r.path, this.path))
+        .some(r => r.path.includes(this.path));
+    },
+    diffChangedChildren() {
+      return this.diffAddedChildren || this.diffRemovedChildren;
     },
     inClassAndProperty() {
       return `${this.entityType}.${this.fieldKey}`;

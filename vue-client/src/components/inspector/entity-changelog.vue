@@ -7,6 +7,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
+import Button from '@/components/shared/button';
 
 export default {
   name: 'entity-changelog',
@@ -28,6 +29,7 @@ export default {
   },
   components: {
     SummaryNode,
+    'button-component': Button,
   },
   watch: {
   },
@@ -54,6 +56,7 @@ export default {
         <span class="EntityChangelog-unknown" v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
       </span>
     </div>
+    <router-link :to="{ path: `${this.$route.path}/history` }"><button-component :inverted="true" class="Button-default" :label="'View version history' | translatePhrase" icon="clock-o" size="medium" /></router-link>
   </div>
 </template>
 
@@ -66,6 +69,7 @@ export default {
   flex-direction: column;
   @media (min-width: @screen-md-min) {
     flex-direction: row;
+    align-items: baseline;
     flex-wrap: wrap;
   }
   &-unknown {

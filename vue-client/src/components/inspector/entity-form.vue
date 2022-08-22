@@ -32,6 +32,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    diff: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -135,6 +139,7 @@ export default {
         :is-card="isIntegral(k)"
         :is-distinguished="k === 'instanceOf'"
         :key="k" 
+        :diff="diff"
         :field-key="k" 
         :field-value="v" 
         :parent-path="editingObject" />
@@ -208,7 +213,13 @@ export default {
           &:not(.is-removeable) {
             &:not(.is-marked) {
               &:not(.is-linked) {
-                background-color: @form-field;
+                &:not(.is-diff-removed) {
+                  &:not(.is-diff-added) {
+                    &:not(.is-diff-modified) {
+                      background-color: @form-field;
+                    }
+                  }
+                }
               }
             }
           }

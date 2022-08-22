@@ -23,6 +23,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isStatic: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -59,10 +63,10 @@ export default {
 
 <template>
   <div class="SummaryNode">
-    <span class="SummaryNode-label" v-if="!isLinked">
+    <span class="SummaryNode-label" v-if="!isLinked || isStatic">
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ',&nbsp;' }}
     </span>
-    <v-popover v-if="isLinked" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
+    <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
         <a v-if="!isLibrisResource" :href="focusData['@id'] | convertResourceLink">{{getItemLabel}}</a>

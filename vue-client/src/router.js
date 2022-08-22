@@ -92,6 +92,11 @@ const router = new Router({
       name: 'Inspector',
       component: () => import(/* webpackChunkName: "Inspector" */ './views/Inspector.vue'),
     },
+    {
+      path: '/:fnurgel/:view',
+      name: 'DocumentHistory',
+      component: () => import(/* webpackChunkName: "Inspector" */ './views/Inspector.vue'),
+    },
   ],
 });
 

@@ -387,6 +387,9 @@
     "Generate control number when item is saved": "Generera löpnummer när bestånd sparas",
     "Enter manual control number": "Ange löpnummer manuellt",
     "Filter by held items for active sigel": "Filtrera på hållna bestånd för aktivt sigel",
-    "Remove filter by held items for active sigel": "Ta bort filtrering på hållna bestånd för aktivt sigel"
+    "Remove filter by held items for active sigel": "Ta bort filtrering på hållna bestånd för aktivt sigel",
+    "View version history": "Visa ändringshistorik",
+    "Show latest change": "Visa senaste ändring",
+    "Version history": "Ändringshistorik"
     }
 }

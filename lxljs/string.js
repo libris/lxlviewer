@@ -1,4 +1,4 @@
-import { isObject, isArray, uniqBy, each, remove } from 'lodash-es';
+import { isObject, isArray, uniqBy, isNumber, each, remove } from 'lodash-es';
 import * as VocabUtil from './vocab';
 
 export function removeDomain(string, removableBaseUriArray) {
@@ -173,6 +173,23 @@ export function isLibrisResourceUri(uri, settings) {
     }
   }
   return false;
+}
+
+export function arrayPathToString(arrayPath) {
+  let path = '';
+  for (let i = 0; i < arrayPath.length; i++) {
+    if (isNumber(arrayPath[i])) {
+      path += `[${arrayPath[i]}]`;
+    } else {
+      if (i !== 0) {
+        path += '.';
+      }
+      path += arrayPath[i];
+    }
+  }
+  path = path.replace('@graph[0]', 'record');
+  path = path.replace('@graph[1]', 'mainEntity');
+  return path;
 }
 
 export function getLabelFromObject(object, language) {
