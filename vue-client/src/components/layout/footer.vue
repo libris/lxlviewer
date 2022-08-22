@@ -42,7 +42,7 @@ export default {
           <nav class="Footer-nav" aria-labelledby="footer-xl-nav">
             <h4 id="footer-xl-nav" class="Footer-listTitle">{{ "Information" | translatePhrase }}</h4>
             <div class="Footer-navGroup">
-              <ul class="Footer-navList Footer-navListNested">
+              <ul class="Footer-navList">
                 <li>
                   <router-link class="Footer-link" to="/about" >{{ "About XL" | translatePhrase }}</router-link>
                 </li>
@@ -56,7 +56,7 @@ export default {
                   <a href="https://www.kb.se/digital-tillganglighet" class="Footer-link">{{ "Accessibility statement" | translatePhrase }}</a>
                 </li>
               </ul>
-              <ul class="Footer-navList Footer-navListNested">
+              <ul class="Footer-navList">
                 <li>
                   <a href="https://www.youtube.com/playlist?list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link">{{ "Instruction videos" | translatePhrase }}</a>
                 </li>
@@ -165,7 +165,7 @@ export default {
     }
   }
 
-  &-navListNested:not(:last-child) {
+  &-navList:not(:last-child) {
     margin-right: 20px;
   }
 
