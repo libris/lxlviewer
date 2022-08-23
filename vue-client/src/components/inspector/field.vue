@@ -856,6 +856,7 @@ export default {
     <div class="Field-content FieldContent" 
       v-bind:class="{ 'is-locked': locked}"
       v-if="fieldKey !== '@type' && isObjectArray">
+      <portal-target :name="`typeSelect-${path}`" />
       <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
         :key="index"
@@ -948,7 +949,8 @@ export default {
           :should-expand="expandChildren || embellished"
           :parent-path="path"></item-sibling>
       </div>
-      <portal-target :name="`typeSelect-${path}`" />
+      <!-- The above div must be the last element since currently 
+           item-entity depends on this to draw separators -->
     </div>
 
     <div class="Field-content is-endOfTree js-endOfTree" 

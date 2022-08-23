@@ -163,7 +163,7 @@ export default {
 <template>
   <div 
     class="ItemEntity-container"
-    :class="{ 'is-expanded': expanded }">
+    :class="{ 'is-expanded': expanded, 'is-card': isCard }">
     <div 
       v-if="isCard"
       class="ItemEntity-expander"
@@ -234,6 +234,13 @@ export default {
 <style lang="less">
 
 @linked-color: #daefec;
+
+// FIXME: ugly that we depend on Field-contentItem here
+.Field-contentItem:last-child >
+.ItemEntity-container >
+.ItemEntity-cardContainer {
+  border-bottom: none;
+}
 
 .ItemEntity {
 
