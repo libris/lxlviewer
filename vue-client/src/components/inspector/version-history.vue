@@ -148,8 +148,8 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/${fnurgel}/_changesets`;
       fetch(fetchUrl).then(response => response.json()).then((result) => {
         this.historyData = result;
-
-        const agents = this.changeSets.map(c => c.agent).filter(a => a)
+        
+        const agents = (this.changeSets || []).map(c => c.agent).filter(a => a);
         DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
 
         this.setDisplayDataFor(0);
