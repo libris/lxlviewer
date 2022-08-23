@@ -16,7 +16,6 @@
     "Directory care": "Katalogvård",
     "Error": "Fel",
     "Libris and XL": "Libris och XL",
-    "Libris news": "Libris nyheter",
     "Instruction videos": "Instruktionsfilmer",
     "Introduction material": "Introduktionsmaterial",
     "Mark": "Markera",
@@ -391,6 +390,8 @@
     "View version history": "Visa ändringshistorik",
     "Show latest change": "Visa senaste ändring",
     "Version history": "Ändringshistorik",
-    "Information": "Information"
+    "Information": "Information",
+    "About Libris": "Om Libris",
+    "Libris web search": "Libris webbsök"
     }
 }

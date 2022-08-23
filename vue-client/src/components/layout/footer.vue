@@ -61,16 +61,13 @@ export default {
                   <a href="https://www.youtube.com/playlist?list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link">{{ "Instruction videos" | translatePhrase }}</a>
                 </li>
                 <li>
-                  <a href="https://www.kb.se/samverkan-och-utveckling/libris.html" class="Footer-link">{{ "Libris news" | translatePhrase }}</a>
-                </li>
-                <li>
                   <a href="https://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/" class="Footer-link">{{ "Introduction material" | translatePhrase }}</a>
                 </li>
                 <li>
-                  <a href="http://www.kb.se/libris/" class="Footer-link">{{ "kb.se/libris" | translatePhrase }}</a>
+                  <a href="http://www.kb.se/libris/" class="Footer-link">{{ "About Libris" | translatePhrase }}</a>
                 </li>
                 <li>
-                  <a href="https://libris.kb.se/" class="Footer-link">{{ "libris.kb.se" | translatePhrase }}</a>
+                  <a href="https://libris.kb.se/" class="Footer-link">{{ "Libris web search" | translatePhrase }}</a>
                 </li>
               </ul>
             </div>
