@@ -7,6 +7,7 @@ import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
+import * as DataUtil from '@/utils/data';
 import LensMixin from '@/components/mixins/lens-mixin';
 import EntityForm from './entity-form.vue';
 import TabMenu from '@/components/shared/tab-menu';
@@ -147,6 +148,10 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/${fnurgel}/_changesets`;
       fetch(fetchUrl).then(response => response.json()).then((result) => {
         this.historyData = result;
+
+        const agents = this.changeSets.map(c => c.agent).filter(a => a)
+        DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
+
         this.setDisplayDataFor(0);
       });
     },
@@ -162,7 +167,10 @@ export default {
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
       this.currentVersionData = await fetch(fetchUrl, options)
         .then(response => response.json())
-        .then(result => LxlDataUtil.splitJson(result));
+        .then((result) => {
+          DataUtil.fetchMissingLinkedToQuoted(result, this.$store);
+          return LxlDataUtil.splitJson(result);
+        });
 
       const previousChangeSet = this.changeSetsReversed[number + 1];
       if (previousChangeSet === undefined) {
@@ -171,7 +179,10 @@ export default {
       }
       this.previousVersionData = await fetch(previousChangeSet.version['@id'], options)
         .then(response => response.json())
-        .then(res => LxlDataUtil.splitJson(res));
+        .then((result) => {
+          DataUtil.fetchMissingLinkedToQuoted(result, this.$store);
+          return LxlDataUtil.splitJson(result);
+        });
 
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.currentVersionData);
