@@ -2,7 +2,7 @@
   "about-xl-full": {
     "image": "omxllarge_new.png",
     "image_alt_text": "Ett nav av tekniska produkter som är kopplade till ett moln",
-    "header": "Om Libris och XL",
+    "header": "Vad är Libris och XL?",
     "text": {
       "abstract": "Libris katalogisering är en webbaserad tjänst för katalogisering. I verktyget är gränssnittet anpassat för att ta tillvara de möjligheter som format och systemarkitektur baserade på länkade data erbjuder. För att göra katalogiseringen så smidig som möjligt finns hjälp och stöd inbyggt i systemet.",
       "sections": {
@@ -30,18 +30,18 @@
   "about-xl": {
     "image": "omxl_new.png",
     "image_alt_text": "Ett nav av tekniska produkter som är kopplade till ett moln",
-    "header": "Om Libris och XL",
+    "header": "Vad är Libris och XL?",
     "text": "Libris katalogisering är en webbaserad tjänst för katalogisering. I verktyget är gränssnittet anpassat för att ta tillvara de möjligheter som format och systemarkitektur baserade på länkade data erbjuder.",
     "linkUrl": "/about",
-    "linkText": "Libris och XL"
+    "linkText": "Läs mer om Libris och XL"
   },
   "blog": {
     "image": "libris_nyheter.png",
     "image_alt_text": "Två kvinnor framför en datorskärm",
-    "header": "Libris nyheter",
-    "text": "Libris nyheter är Libris främsta kommunikationskanal och här informerar vi om alla aspekter – allt från utveckling till samarbete inom Libris-projektet.",
+    "header": "Kommunikation kring Libris",
+    "text": "Nytt inom Libris är Libris främsta informationskanal. Där informerar vi om allt från utveckling till samarbete kring Libris.",
     "linkUrl": "https://www.kb.se/samverkan-och-utveckling/libris.html",
-    "linkText": "Till Libris nyheter"
+    "linkText": "Till Nytt inom Libris"
   },
   "instructional-videos": {
     "video": "https://www.youtube-nocookie.com/embed/?listType=playlist&list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy&html5=1&rel=0&showinfo=0&autoplay=1",
@@ -56,6 +56,6 @@
     "header": "Introduktionsmaterial",
     "text": "På Libris underwebb finns introduktionsmaterial för självstudier till dig som vill fördjupa dina kunskaper inom länkade data, format och vokabulär, med mera.",
     "linkUrl": "https://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/",
-    "linkText": "Introduktionsmaterial"
+    "linkText": "Till Introduktion till Libris"
   }
 }
