@@ -13,7 +13,8 @@ export default {
   name: 'reverse-relations',
   props: {
     mainEntity: null,
-    compact: { type: Boolean, default: false }, 
+    compact: { type: Boolean, default: false },
+    forceLoad: { type: Boolean, default: false }, // FIXME: on-record-loaded didn't work in item-entity
     mode: { type: String, default: 'default' }, // "default" or "items"
   },
   data() {
@@ -187,7 +188,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.$route.name === 'Search') {
+      if (this.$route.name === 'Search' || this.forceLoad) {
         this.getRelationsInfo();
       }
     });

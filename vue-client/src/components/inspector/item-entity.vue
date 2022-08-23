@@ -1,11 +1,13 @@
 <script>
 import { size } from 'lodash-es';
 import { mapGetters } from 'vuex';
+import * as VocabUtil from 'lxljs/vocab';
 import { hasAutomaticShelfControlNumber } from '@/utils/shelfmark';
 import * as LayoutUtil from '@/utils/layout';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 import PreviewCard from '@/components/shared/preview-card';
+import ReverseRelations from '@/components/inspector/reverse-relations';
 
 export default {
   name: 'item-entity',
@@ -64,6 +66,13 @@ export default {
     isMaybeMagicShelfMark() {
       return this.focusData['@type'] === 'ShelfMarkSequence';
     },
+    recordType() {
+      return VocabUtil.getRecordType(
+        this.focusData['@type'],
+        this.resources.vocab,
+        this.resources.context,
+      );
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -105,6 +114,7 @@ export default {
   },
   components: {
     PreviewCard,
+    ReverseRelations,
   },
   created() {
     this.$on('collapse-item', () => {
@@ -203,14 +213,21 @@ export default {
       </v-popover> 
     </div>
     
-    <entity-summary 
-      v-if="isCard && expanded"
-      :focus-data="focusData" 
-      :exclude-properties="excludeProperties"
-      :should-link="true"
-      :should-open-tab="true"
-      :show-all-keys="true"
-      :embedded-in-field="true"></entity-summary>
+    <div class="ItemEntity-cardContainer" v-if="isCard && expanded">
+      <entity-summary
+        :focus-data="focusData" 
+        :exclude-properties="excludeProperties"
+        :should-link="true"
+        :should-open-tab="true"
+        :show-all-keys="true"
+        :embedded-in-field="true"/>
+      <div class="ItemEntity-reverseRelationsContainer" v-if="recordType === 'Instance'">
+        <reverse-relations :main-entity="focusData"
+                           :mode="'items'"
+                           :force-load="true"
+                           :compact="false"/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -233,6 +250,26 @@ export default {
     }
   }
 
+  &-cardContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 0.25em;
+    border-bottom: 2px solid @form-border;
+    
+    margin-bottom: 0.5em;
+  }
+/*
+  &-cardContainer:last-child {
+    border-bottom: none;
+  }
+*/
+  &-reverseRelationsContainer {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+  }
+  
   &-expander {
     cursor: pointer;
     padding: 0.3em 0 0 0;
