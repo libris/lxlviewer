@@ -163,7 +163,6 @@ export default {
           Accept: 'application/ld+json',
         },
       };
-
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
       this.currentVersionData = await fetch(fetchUrl, options)
         .then(response => response.json())
@@ -321,7 +320,7 @@ export default {
   border-color: #ccc;
   &-changeSetContainer {
     display: flex;
-    flex-direction: column;
+    flex-wrap:wrap;
     border-style: solid;
     border-width: 0px 0px 0px 4px;
     border-color: transparent;
@@ -331,6 +330,7 @@ export default {
     }
   }
   &-currentVersion {
+    flex-basis:100%;
     font-size: 0.75em;
     text-transform: uppercase;
     &.selected {
@@ -338,13 +338,25 @@ export default {
     }
   }
   &-date {
+    flex-basis:70%;
     font-weight: 600;
     &.selected {
       color: @brand-primary;
     }
   }
   &-agent {
+    flex-basis:100%;
     font-size: 0.9em;
+  }
+  &-pill {
+    border: 1px solid;
+    border-radius: 1em;
+    width: max-content;
+    height: max-content;
+    margin-left: auto;
+    margin-right: 0;
+    font-size: 0.75em;
+    padding: 0 0.3em 0 0.3em;
   }
 }
 

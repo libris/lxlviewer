@@ -67,8 +67,9 @@ export default {
   <div class="VersionHistory-changeSets" v-if="changeSetsReversed">
     <div class="ChangeSet" v-for="(changeSet, index) in changeSetsReversed" :key="changeSet.date" @click="selectVersion(index)" :class="{ 'selected': selectedVersion == index }">
       <div class="ChangeSet-changeSetContainer" :class="{ 'selected': selectedVersion == index }" ref="changeSets">
-        <span class="ChangeSet-currentVersion" :class="{ 'selected': selectedVersion == index }" v-if="index == 0">Aktuell version</span>
+        <span class="ChangeSet-currentVersion" :class="{ 'selected': selectedVersion == index }" v-if="index == 0">{{"Current version" | translatePhrase}}</span>
         <span class="ChangeSet-date" :class="{ 'selected': selectedVersion == index }">{{ $moment(changeSet.date).format('lll') }}</span>
+        <span class="ChangeSet-pill" v-if="changeSet.tool['@id'] !== 'https://id.kb.se/generator/crud'">{{"by machine" | translatePhrase}}</span>
         <span class="ChangeSet-author" :class="{ 'selected': selectedVersion == index }">
           <SummaryNode :is-static="true" :hover-links="false" v-if="changeSet.agent" :item="changeSet.agent" :is-last="true" :field-key="'agent'"/>
         </span>
