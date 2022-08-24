@@ -255,12 +255,7 @@ export default {
       );
     },
     header() {
-      return StringUtil.getFormattedEntries(
-        this.getSummary.header, 
-        this.resources.vocab, 
-        this.user.settings.language,
-        this.resources.context,
-      );
+      return [this.getLabel(this.focusData)];
     },
     isItem() {
       if (this.getCard['@type'] === 'Item') {
