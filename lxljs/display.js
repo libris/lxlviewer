@@ -399,12 +399,12 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
             // So we use this broken implementation for now.
             const k = p.subPropertyOf;
             if (trueItem[k] && typeof trueItem[k] === 'object'
-                //&& trueItem[k]['@type'] && VocabUtil.isSubClassOf(trueItem[k]['@type'], p.range, resources.vocab, resources.context)) {
+                // && trueItem[k]['@type'] && VocabUtil.isSubClassOf(trueItem[k]['@type'], p.range, resources.vocab, resources.context)) {
                 && trueItem[k]['@type'] === p.range) {
               p = k;
             }
             else if (isArray(trueItem[k])) {
-              //const matching = filter(trueItem[k], item => item['@type'] && VocabUtil.isSubClassOf(item['@type'], p.range, resources.vocab, resources.context))
+              // const matching = filter(trueItem[k], item => item['@type'] && VocabUtil.isSubClassOf(item['@type'], p.range, resources.vocab, resources.context));
               const matching = filter(trueItem[k], item => item['@type'] && item['@type'] === p.range);
               if (matching.length > 0) {
                 if (level === 'chips') {
