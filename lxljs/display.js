@@ -444,9 +444,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
             }
           }
         }
-        // FIXME: Why did I start getting "TypeError: JSON.stringify(...) is undefined" here ??
-        // const str = s => JSON.stringify(s).replaceAll('"', '');
-        const str = s => s;
+        const str = s => JSON.stringify(s || '<nothing>').replaceAll('"', '');
         lxlLog(`Computed alternateProperties for ${trueItem['@type']}. Looked for: ${property.alternateProperties.map(str).join(', ')} | Settled on: ${str(foundProperty)}`);
       }
     }
