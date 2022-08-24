@@ -372,7 +372,6 @@ export default {
         :key="node.property">
         <template v-if="node.value !== null">
           <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang">{{ node.property | labelByLang | capitalize }}</span>
-          <br v-if="labelStyle === 'top'"/>
           <span :class="`EntitySummary-detailsValue-${labelStyle}`">
             <SummaryNode :hover-links="hoverLinks" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
