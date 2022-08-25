@@ -361,7 +361,7 @@ export default {
       </a>
       
     </h3>
-    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ height: animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
+    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ 'min-height': animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
       <li :class="`EntitySummary-detailsItem-${labelStyle}`"
         v-for="node in limitedInfo" 
         :key="node.property">
@@ -522,7 +522,7 @@ export default {
     margin: 0px;
     // height is set in style-bindings,
     // see template in this file
-    transition: height 0.2s ease-out;
+    transition: min-height 0.2s ease-out;
   }
 
   &-id {
