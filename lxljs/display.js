@@ -476,8 +476,9 @@ export function getItemSummary(item, resources, quoted, settings, displayGroups,
         const translated = tryGetValueByLang(item, key, settings.language, resources.context);
         const itemValue = translated !== null ? translated : item[key];
         
-        const values =  isArray(itemValue) ? itemValue : [itemValue]
-        summary.info.push({ property: key, value: values, valueTitle: values.map(it => getItemLabel(it, resources, quoted, settings)).join('\n') });
+        const values = isArray(itemValue) ? itemValue : [itemValue];
+        const title = `${StringUtil.getLabelByLang(key, settings.language, resources)}:\n${values.map(it => getItemLabel(it, resources, quoted, settings)).join('\n')}`;
+        summary.info.push({ property: key, value: values, title: title });
       }
     }
   });

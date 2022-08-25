@@ -366,8 +366,8 @@ export default {
         v-for="node in limitedInfo" 
         :key="node.property">
         <template v-if="node.value !== null">
-          <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang">{{ node.property | labelByLang | capitalize }}</span>
-          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :title="node.valueTitle">
+          <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.title | capitalize">{{ node.property | labelByLang | capitalize }}</span>
+          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`">
             <SummaryNode :hover-links="hoverLinks" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>
