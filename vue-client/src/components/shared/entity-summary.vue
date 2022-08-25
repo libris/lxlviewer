@@ -367,7 +367,7 @@ export default {
         :key="node.property">
         <template v-if="node.value !== null">
           <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang">{{ node.property | labelByLang | capitalize }}</span>
-          <span :class="`EntitySummary-detailsValue-${labelStyle}`">
+          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :title="node.valueTitle">
             <SummaryNode :hover-links="hoverLinks" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>
@@ -562,11 +562,23 @@ export default {
       align-self: flex-end;
     }
     color: #000;
-    white-space: nowrap;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
+    //white-space: nowrap;
+    //overflow-x: hidden;
+    //text-overflow: ellipsis
   }
-
+  
+  &-twoLines {
+    // max 2 lines before ellipsis
+    // works in all major modern browsers
+    // https://stackoverflow.com/a/13924997
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  
   &-detailsItem-top {
     display: flex;
     flex-direction: column;
@@ -592,16 +604,6 @@ export default {
       flex-grow: 2;
     }
     color: #000;
-    
-    // max 3 lines before ellipsis
-    // works in all major modern browsers
-    // https://stackoverflow.com/a/13924997
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
   }
 
   &-detailsItem-hidden {
@@ -622,12 +624,8 @@ export default {
     @media (min-width: @screen-sm-min) {
       flex-basis: 75%;
       flex-grow: 2;
-      align-self: flex-end;
     }
     color: #000;
-    white-space: nowrap;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
   }
 
   &-icon {

@@ -94,6 +94,17 @@ export default {
       }
     }
   }
+  &-label {
+    // max 3 lines before ellipsis
+    // works in all major modern browsers
+    // https://stackoverflow.com/a/13924997
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
 }
 
 </style>

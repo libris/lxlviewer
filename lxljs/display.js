@@ -475,7 +475,9 @@ export function getItemSummary(item, resources, quoted, settings, displayGroups,
       } else {
         const translated = tryGetValueByLang(item, key, settings.language, resources.context);
         const itemValue = translated !== null ? translated : item[key];
-        summary.info.push({ property: key, value: isArray(itemValue) ? itemValue : [itemValue] });
+        
+        const values =  isArray(itemValue) ? itemValue : [itemValue]
+        summary.info.push({ property: key, value: values, valueTitle: values.map(it => getItemLabel(it, resources, quoted, settings)).join('\n') });
       }
     }
   });
