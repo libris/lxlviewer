@@ -63,7 +63,7 @@ export default {
 
 <template>
   <div class="SummaryNode">
-    <span class="SummaryNode-label" v-if="!isLinked || isStatic">
+    <span class="SummaryNode-label" v-if="!isLinked || isStatic" @click.prevent.self="e => e.target.classList.toggle('full')">
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ',&nbsp;' }}
     </span>
     <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
@@ -104,6 +104,10 @@ export default {
     -webkit-line-clamp: 3;
     line-clamp: 3;
     -webkit-box-orient: vertical;
+    &.full {
+      -webkit-line-clamp: unset;
+      line-clamp: unset;
+    }
   }
 }
 
