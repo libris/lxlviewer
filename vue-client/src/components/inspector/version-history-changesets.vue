@@ -51,6 +51,9 @@ export default {
     },
   },
   methods: {
+    isGlobalChanges(changeSet) {
+      return changeSet.agent['@id'].includes('sys/globalchanges');
+    },
     selectVersion(val) {
       this.$emit('version-selected', val);
     },
@@ -71,7 +74,15 @@ export default {
         <span class="ChangeSet-date" :class="{ 'selected': selectedVersion == index }">{{ $moment(changeSet.date).format('lll') }}</span>
         <span class="ChangeSet-pill" v-if="changeSet.tool['@id'] !== 'https://id.kb.se/generator/crud'">{{"by machine" | translatePhrase}}</span>
         <span class="ChangeSet-author" :class="{ 'selected': selectedVersion == index }">
-          <SummaryNode :is-static="true" :hover-links="false" v-if="changeSet.agent" :item="changeSet.agent" :is-last="true" :field-key="'agent'"/>
+          <SummaryNode :is-static="true" :hover-links="false" v-if="changeSet.agent && !isGlobalChanges(changeSet)" :item="changeSet.agent" :is-last="true" :field-key="'agent'"/>
+          <span v-if="isGlobalChanges(changeSet)">
+                <v-popover placement="bottom-start">
+                  {{ 'Libris global changes' | translatePhrase }}
+                  <template slot="popover">
+                    <span>{{changeSet.agent['@id']}}</span>
+                  </template>
+                </v-popover>
+          </span>
         </span>
       </div>
     </div>
