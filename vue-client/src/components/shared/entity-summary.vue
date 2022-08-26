@@ -1,5 +1,5 @@
 <script>
-import { each, isArray, cloneDeep } from 'lodash-es';
+import { each, isArray, cloneDeep, pickBy, startsWith, values, map } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
@@ -271,7 +271,15 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.$emit('hiddenDetailsNumber', this.hiddenDetailsNumber);
+      
+      
     });
+
+    // Display expander button on property values that don't fit
+    const refs = pickBy(this.$refs, (v, k) => startsWith(k, 'dVal-'));
+    const elements = map(values(refs), r => r[0]);
+    elements.filter(e => this.isOverflown(e)).forEach(e => e.classList.add('overflown'))
+    
   },
   methods: {
     copyFnurgel() {
@@ -299,6 +307,9 @@ export default {
       const index = header.toLowerCase().indexOf(this.highlightStr.toLowerCase());
       const newHeader = `${header.substr(0, index)}<span class="highlight">${header.substr(index, this.highlightStr.length)}</span>${header.substr(index + this.highlightStr.length)}`;
       return newHeader;
+    },
+    isOverflown(element) {
+      return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
     },
   },
 };
@@ -367,7 +378,7 @@ export default {
         :key="node.property">
         <template v-if="node.value !== null">
           <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang | capitalize">{{ node.property | labelByLang | capitalize }}</span>
-          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" @click.prevent.self="e => e.target.classList.toggle('full')">
+          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`dVal-${node.property}`" @click.prevent.self="e => e.target.classList.toggle('expanded')">
             <SummaryNode :hover-links="hoverLinks" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>
@@ -565,6 +576,25 @@ export default {
     //white-space: nowrap;
     //overflow-x: hidden;
     //text-overflow: ellipsis
+
+    &.overflown {
+      &::before {
+        font-family: FontAwesome;
+        content: "\F054";
+        font-weight: normal;
+        color: @brand-primary;
+        display: inline-block;
+        margin-right: 5px;
+        transition: transform 0.1s ease;
+      }
+
+      &.expanded {
+        &::before {
+          transform: rotate(90deg);
+        }
+      }
+    }
+  
   }
   
   &-twoLines {
@@ -577,7 +607,7 @@ export default {
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
-    &.full {
+    &.expanded {
       -webkit-line-clamp: unset;
       line-clamp: unset;
     }
