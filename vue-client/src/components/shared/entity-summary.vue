@@ -3,6 +3,7 @@ import { each, isArray, cloneDeep, pickBy, startsWith, values, map } from 'lodas
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
+import { ResizeObserver } from 'vue-resize';
 import LensMixin from '../mixins/lens-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
@@ -16,6 +17,7 @@ export default {
     EncodingLevelIcon,
     SummaryNode,
     TypeIcon,
+    ResizeObserver,
   },
   props: {
     focusData: {
@@ -274,11 +276,6 @@ export default {
     });
 
     this.calculateOverflow();
-
-    window.addEventListener('resize', this.calculateOverflow);
-  },
-  unmounted() {
-    window.addEventListener('resize', this.calculateOverflow);
   },
   methods: {
     copyFnurgel() {
@@ -396,6 +393,7 @@ export default {
       </li>
     </ul>
   </div>
+  <resize-observer @notify="calculateOverflow" />
 </section>
 </template>
 
