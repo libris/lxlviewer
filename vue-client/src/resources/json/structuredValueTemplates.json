@@ -33,7 +33,8 @@
   },
   "CoverTitle": {
     "@type": "CoverTitle",
-    "mainTitle": ""
+    "mainTitle": "",
+    "subTitle": ""
   },
   "DistinctiveTitle": {
     "@type": "DistinctiveTitle",
@@ -51,7 +52,8 @@
   },
   "ParallelTitle": {
     "@type": "ParallelTitle",
-    "mainTitle": ""
+    "mainTitle": "",
+    "subTitle": ""
   },
   "RunningTitle": {
     "@type": "RunningTitle",
@@ -59,7 +61,8 @@
   },
   "SpineTitle": {
     "@type": "SpineTitle",
-    "mainTitle": ""
+    "mainTitle": "",
+    "subTitle": ""
   },
   "TitlePortion": {
     "@type": "TitlePortion",
@@ -67,7 +70,8 @@
   },
   "VariantTitle": {
     "@type": "VariantTitle",
-    "mainTitle": ""
+    "mainTitle": "",
+    "subTitle": ""
   },
   "TitlePart": {
     "@type": "TitlePart",
