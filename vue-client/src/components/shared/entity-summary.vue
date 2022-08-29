@@ -294,7 +294,7 @@ export default {
       // Display expander button on property values that don't fit
       const refs = pickBy(this.$refs, (v, k) => startsWith(k, 'dVal-'));
       const elements = map(values(refs), r => r[0]);
-      elements.forEach(e => (this.isOverflown(e) 
+      elements.forEach(e => (this.isOverflown(e) || e.classList.contains('expanded')
         ? e.classList.add('overflown') 
         : e.classList.remove('overflown')));
     },
