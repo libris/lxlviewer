@@ -271,15 +271,14 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.$emit('hiddenDetailsNumber', this.hiddenDetailsNumber);
-      
-      
     });
 
-    // Display expander button on property values that don't fit
-    const refs = pickBy(this.$refs, (v, k) => startsWith(k, 'dVal-'));
-    const elements = map(values(refs), r => r[0]);
-    elements.filter(e => this.isOverflown(e)).forEach(e => e.classList.add('overflown'))
-    
+    this.calculateOverflow();
+
+    window.addEventListener('resize', this.calculateOverflow);
+  },
+  unmounted() {
+    window.addEventListener('resize', this.calculateOverflow);
   },
   methods: {
     copyFnurgel() {
@@ -293,6 +292,14 @@ export default {
         self.failedCopyId = true;
         console.warn(e);
       });
+    },
+    calculateOverflow() {
+      // Display expander button on property values that don't fit
+      const refs = pickBy(this.$refs, (v, k) => startsWith(k, 'dVal-'));
+      const elements = map(values(refs), r => r[0]);
+      elements.forEach(e => (this.isOverflown(e) 
+        ? e.classList.add('overflown') 
+        : e.classList.remove('overflown')));
     },
     importThis() {
       this.$emit('import-this');
