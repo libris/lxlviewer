@@ -21,6 +21,9 @@ export default {
       if (this.settings.environment === 'stg') {
         return 'OBS! Du befinner dig nu i vår testmiljö.<br> För att komma till den skarpa katalogiseringstjänsten <strong> Libris katalogisering</strong> <a href="https://libris.kb.se/katalogisering">klickar du här</a>.';
       }
+      if (this.settings.environment === 'edu') {
+        return 'OBS! Du befinner dig nu i vår utbildningsmiljö.<br> För att komma till den skarpa katalogiseringstjänsten <strong> Libris katalogisering</strong> <a href="https://libris.kb.se/katalogisering">klickar du här</a>.';
+      }
       return '';
     },
   },
