@@ -1,4 +1,4 @@
-import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual, get, indexOf, map, flatten, sortBy } from 'lodash-es';
+import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual, get, indexOf, map, flatten, sortBy, filter } from 'lodash-es';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import { lxlLog, lxlWarning } from './debug';
@@ -247,8 +247,10 @@ export function getSortedProperties(formType, formObj, settings, resources) {
     'full',
   );
   
-  propertyList = uniq(flatten(map(propertyList, k => get(k, 'alternateProperties', k))));
-
+  propertyList = map(propertyList, k => get(k, 'alternateProperties', k));
+  propertyList = map(propertyList, k => get(k, ['alternateProperties', 'subPropertyOf'], k));
+  propertyList = uniq(flatten(propertyList));
+  
   const realKey = k => get(resources, ['context', '1', k, '@id'], k); 
   each(formObj, (v, k) => {
     if (!includes(propertyList, k)) {
@@ -387,7 +389,35 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
       if (property.hasOwnProperty('alternateProperties')) {
         // Handle alternateProperties
         let foundProperty;
-        for (const p of property.alternateProperties) {
+        for (let p of property.alternateProperties) {
+          if (typeof p === 'object' && p.subPropertyOf && p.range) {
+            // alternateProperties with locally defined subProperty with narrower range.
+            // Example: {"subPropertyOf": "hasTitle", "range": "KeyTitle"},
+            // The correct RDF semantics would be to match range against all subclasses. That is the commented out version.
+            // For our current use cases we have no need for that. But we have a need to match against exactly Title without 
+            // any subclasses (e.g. VariantTitle) which is actually not possible to express with this construct. 
+            // So we use this broken implementation for now.
+            const k = p.subPropertyOf;
+            if (trueItem[k] && typeof trueItem[k] === 'object'
+                // && trueItem[k]['@type'] && VocabUtil.isSubClassOf(trueItem[k]['@type'], p.range, resources.vocab, resources.context)) {
+                && trueItem[k]['@type'] === p.range) {
+              p = k;
+            }
+            else if (isArray(trueItem[k])) {
+              // const matching = filter(trueItem[k], item => item['@type'] && VocabUtil.isSubClassOf(item['@type'], p.range, resources.vocab, resources.context));
+              const matching = filter(trueItem[k], item => item['@type'] && item['@type'] === p.range);
+              if (matching.length > 0) {
+                if (level === 'chips') {
+                  result[k] = matching.map(arrayItem => getItemToken(arrayItem, resources, quoted, settings));
+                } else {
+                  result[k] = matching.map(arrayItem => getItemLabel(arrayItem, resources, quoted, settings, p));
+                }
+                foundProperty = p;
+                break;
+              }
+            }
+          }
+          
           if (typeof p === 'string') {
             if (trueItem.hasOwnProperty(p)) {
               if (typeof trueItem[p] === 'string') {
@@ -414,7 +444,8 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
             }
           }
         }
-        lxlLog(`Computed alternateProperties for ${trueItem['@type']}. Looked for: ${property.alternateProperties.join(', ')} | Settled on: ${foundProperty}`);
+        const str = s => JSON.stringify(s || '<nothing>').replaceAll('"', '');
+        lxlLog(`Computed alternateProperties for ${trueItem['@type']}. Looked for: ${property.alternateProperties.map(str).join(', ')} | Settled on: ${str(foundProperty)}`);
       }
     }
   });
