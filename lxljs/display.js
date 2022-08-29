@@ -402,10 +402,9 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
                 // && trueItem[k]['@type'] && VocabUtil.isSubClassOf(trueItem[k]['@type'], p.range, resources.vocab, resources.context)) {
                 && trueItem[k]['@type'] === p.range) {
               p = k;
-            }
-            else if (isArray(trueItem[k])) {
-              // const matching = filter(trueItem[k], item => item['@type'] && VocabUtil.isSubClassOf(item['@type'], p.range, resources.vocab, resources.context));
-              const matching = filter(trueItem[k], item => item['@type'] && item['@type'] === p.range);
+            } else if (isArray(trueItem[k])) {
+              // const matching = filter(trueItem[k], i => i['@type'] && VocabUtil.isSubClassOf(i['@type'], p.range, resources.vocab, resources.context));
+              const matching = filter(trueItem[k], i => i['@type'] && i['@type'] === p.range);
               if (matching.length > 0) {
                 if (level === 'chips') {
                   result[k] = matching.map(arrayItem => getItemToken(arrayItem, resources, quoted, settings));
