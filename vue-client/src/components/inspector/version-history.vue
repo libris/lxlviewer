@@ -27,6 +27,7 @@ export default {
       currentVersionData: null,
       focusedTab: 'mainEntity',
       inspectingPath: '',
+      showSideCol: false,
     };
   },
   computed: {
@@ -57,6 +58,9 @@ export default {
         return [...this.changeSets].reverse();
       }
       return null;
+    },
+    hideSideCol() {
+      return this.showSideCol === false;
     },
     currentVersionDiff() {
       return {
@@ -137,6 +141,7 @@ export default {
   methods: {
     changeSelectedVersion(val) {
       this.selectedVersion = val;
+      this.closeSideCol();
     },
     setEditorFocus(value) {
       this.focusedTab = value;
@@ -215,6 +220,12 @@ export default {
       await this.$store.dispatch('setCompositeHistoryData', compositeVersionData);
       this.displayData = compositeVersionData;
     },
+    openSideCol() {
+      this.showSideCol = true;
+    },
+    closeSideCol() {
+      this.showSideCol = false;
+    },
   },
   components: {
     EntityForm,
@@ -230,9 +241,9 @@ export default {
 </script>
 
 <template>
-  <div class="VersionHistory container-fluid">
-    <div class="row">
-      <div class="col-md-10 VersionHistory-mainCol">
+  <div class="VersionHistory">
+    <div class="Container-row">
+      <div class="VersionHistory-mainCol">
         <div class="VersionHistory-header">
           <span class="VersionHistory-backLink">
             <a @click="$router.go(-1)"><i class="fa fa-arrow-left"></i> Tillbaka</a>
@@ -240,6 +251,9 @@ export default {
           <span class="VersionHistory-headerTitle" v-if="displayData != null">
             {{ getItemLabel }}
           </span>
+          <i class="fa fa-th-list icon icon--md sideColButton"
+             role="button"
+             @click="openSideCol()"></i>
         </div>
         <div class="VersionHistory-content">
           <template v-if="displayData != null">
@@ -256,11 +270,11 @@ export default {
           </template>
         </div>
       </div>
-      <div class="col-md-2 VersionHistory-sideCol">
+      <div class="VersionHistory-sideCol" :class="{'hidden-view': hideSideCol}">
         <div class="VersionHistory-header">
           Ändringshistorik
         </div>
-        <VersionHistoryChangesets :change-sets="changeSets" :selected-version="selectedVersion" @version-selected="changeSelectedVersion" />
+        <VersionHistoryChangesets :change-sets="changeSets" :selected-version="selectedVersion" @version-selected="changeSelectedVersion"/>
       </div>
     </div>
   </div>
@@ -274,11 +288,29 @@ export default {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    flex: 3 0 auto;
   }
   &-sideCol {
     box-shadow: @fullscreen-panel-shadow;
     z-index: 2;
     height: 100vh;
+    flex: 1 0 0;
+
+    @media screen and (max-width: @screen-xs-max) {
+      .full-view();
+    }
+
+    .full-view() {
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      opacity: 1;
+      height: 100vh;
+      position: fixed;
+      &.hidden-view {
+        display: none;
+      }
+    }
   }
   &-backLink {
     font-weight: normal;
@@ -309,8 +341,16 @@ export default {
   &-changeSets {
     background-color: @white;
   }
-  .row > div {
+  .Container-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
     padding: 0;
+  }
+  .sideColButton {
+    @media screen and (min-width: @screen-xs-max) {
+      display: none;
+    }
   }
 }
 
@@ -318,6 +358,12 @@ export default {
   border-style: solid;
   border-width: 0px 0px 1px 0px;
   border-color: #ccc;
+  &-dateContainer {
+    flex-basis: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
   &-changeSetContainer {
     display: flex;
     flex-wrap:wrap;
@@ -338,7 +384,7 @@ export default {
     }
   }
   &-date {
-    flex-basis:70%;
+    flex: 1 0 auto;
     font-weight: 600;
     &.selected {
       color: @brand-primary;
@@ -353,12 +399,11 @@ export default {
     border-radius: 1em;
     width: max-content;
     height: max-content;
-    margin-left: auto;
-    margin-right: 0;
+    margin-right: 1em;
+    margin-left: 1em;
     font-size: 0.75em;
     padding: 0 0.3em 0 0.3em;
+    flex: 0 0 auto;
   }
 }
-
-
 </style>
