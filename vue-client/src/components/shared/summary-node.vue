@@ -100,10 +100,11 @@ export default {
     // https://stackoverflow.com/a/13924997
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;
+    display: -webkit-inline-box;
     -webkit-line-clamp: 3;
     line-clamp: 3;
     -webkit-box-orient: vertical;
+    vertical-align: bottom;
     &.full {
       -webkit-line-clamp: unset;
       line-clamp: unset;
