@@ -59,9 +59,6 @@ export default {
       }
       return null;
     },
-    isSideColHidden() {
-      return this.showSideCol === false;
-    },
     currentVersionDiff() {
       return {
         added: this.addedPathsInCurrentVersion,
@@ -272,7 +269,7 @@ export default {
           </template>
         </div>
       </div>
-      <div class="VersionHistory-sideCol" :class="{'hidden-view': isSideColHidden}">
+      <div class="VersionHistory-sideCol" :class="{'hidden-view': !showSideCol}">
         <div class="VersionHistory-header">
           {{ 'Version history' | translatePhrase }}
           <i class="fa fa-close icon icon--md sideColButton" role="button" @click="closeSideCol()"></i>
