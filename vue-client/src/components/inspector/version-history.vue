@@ -59,7 +59,7 @@ export default {
       }
       return null;
     },
-    hideSideCol() {
+    isSideColHidden() {
       return this.showSideCol === false;
     },
     currentVersionDiff() {
@@ -272,7 +272,7 @@ export default {
           </template>
         </div>
       </div>
-      <div class="VersionHistory-sideCol" :class="{'hidden-view': hideSideCol}">
+      <div class="VersionHistory-sideCol" :class="{'hidden-view': isSideColHidden}">
         <div class="VersionHistory-header">
           {{ 'Version history' | translatePhrase }}
           <i class="fa fa-close icon icon--md sideColButton" role="button" @click="closeSideCol()"></i>
@@ -403,7 +403,7 @@ export default {
     flex-basis:100%;
     font-size: 0.9em;
   }
-  &-pill {
+  &-tool {
     border: 1px solid;
     border-radius: 1em;
     width: max-content;
