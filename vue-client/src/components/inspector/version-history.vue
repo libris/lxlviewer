@@ -246,7 +246,9 @@ export default {
       <div class="VersionHistory-mainCol">
         <div class="VersionHistory-header">
           <span class="VersionHistory-backLink">
-            <a @click="$router.go(-1)"><i class="fa fa-arrow-left"></i> Tillbaka</a>
+            <a @click="$router.go(-1)">
+              <i class="fa fa-arrow-left"></i>{{ 'Back' | translatePhrase }}
+            </a>
           </span>
           <span class="VersionHistory-headerTitle" v-if="displayData != null">
             {{ getItemLabel }}
@@ -272,7 +274,8 @@ export default {
       </div>
       <div class="VersionHistory-sideCol" :class="{'hidden-view': hideSideCol}">
         <div class="VersionHistory-header">
-          Ändringshistorik
+          {{ 'Version history' | translatePhrase }}
+          <i class="fa fa-close icon icon--md sideColButton" role="button" @click="closeSideCol()"></i>
         </div>
         <VersionHistoryChangesets :change-sets="changeSets" :selected-version="selectedVersion" @version-selected="changeSelectedVersion"/>
       </div>
