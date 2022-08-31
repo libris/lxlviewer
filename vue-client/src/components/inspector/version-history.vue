@@ -290,8 +290,9 @@ export default {
   &-mainCol {
     height: 100vh;
     display: flex;
+    overflow: hidden;
     flex-direction: column;
-    flex: 3 0 auto;
+    flex: 3 0 0;
   }
   &-sideCol {
     box-shadow: @fullscreen-panel-shadow;
@@ -334,6 +335,11 @@ export default {
   }
   &-headerTitle {
     font-weight: 600;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   &-content {
     z-index: 0;
