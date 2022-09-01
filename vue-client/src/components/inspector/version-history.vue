@@ -170,7 +170,7 @@ export default {
         .then(response => response.json())
         .then((result) => {
           DataUtil.fetchMissingLinkedToQuoted(result, this.$store);
-          return LxlDataUtil.splitJson(result);
+          return DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result));
         });
 
       const previousChangeSet = this.changeSetsReversed[number + 1];
@@ -182,11 +182,12 @@ export default {
         .then(response => response.json())
         .then((result) => {
           DataUtil.fetchMissingLinkedToQuoted(result, this.$store);
-          return LxlDataUtil.splitJson(result);
+          return DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result));
         });
 
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.currentVersionData);
+
       if (!isEmpty(diff.removed)) {
         diff.removed.forEach((r) => {
           const isListItem = r.path.slice(-1) === ']';

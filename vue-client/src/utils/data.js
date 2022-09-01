@@ -164,6 +164,15 @@ export async function fetchMissingLinkedToQuoted(obj, store) {
     .catch(e => console.log(e));
 }
 
+export function moveWorkToInstance(data) {
+  const oldWork = data.work;
+  if (oldWork !== undefined) {
+    delete oldWork['@id']; // Get rid of <record-id>#work
+    data.mainEntity.instanceOf = oldWork;
+  }
+  return data;
+}
+
 // Changes XML to JSON
 // Modified version from here: http://davidwalsh.name/convert-xml-json
 export function xmlToJson(xml) {
