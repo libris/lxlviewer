@@ -1,23 +1,22 @@
 <script>
-import { each, isArray, cloneDeep, pickBy, startsWith, values, map } from 'lodash-es';
+import { each, isArray, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
-import { ResizeObserver } from 'vue-resize';
 import LensMixin from '../mixins/lens-mixin';
+import OverflowMixin from '@/components/mixins/overflow-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
 import SummaryNode from '@/components/shared/summary-node';
 import * as RecordUtil from '@/utils/record';
 
 export default {
-  mixins: [LensMixin],
+  mixins: [LensMixin, OverflowMixin],
   name: 'entity-summary',
   components: {
     EncodingLevelIcon,
     SummaryNode,
     TypeIcon,
-    ResizeObserver,
   },
   props: {
     focusData: {
@@ -274,8 +273,6 @@ export default {
     this.$nextTick(() => {
       this.$emit('hiddenDetailsNumber', this.hiddenDetailsNumber);
     });
-
-    this.calculateOverflow();
   },
   methods: {
     copyFnurgel() {
@@ -290,14 +287,6 @@ export default {
         console.warn(e);
       });
     },
-    calculateOverflow() {
-      // Display expander button on property values that don't fit
-      const refs = pickBy(this.$refs, (v, k) => startsWith(k, 'dVal-'));
-      const elements = map(values(refs), r => r[0]);
-      elements.forEach(e => (this.isOverflown(e) || e.classList.contains('expanded')
-        ? e.classList.add('overflown') 
-        : e.classList.remove('overflown')));
-    },
     importThis() {
       this.$emit('import-this');
     },
@@ -311,9 +300,6 @@ export default {
       const index = header.toLowerCase().indexOf(this.highlightStr.toLowerCase());
       const newHeader = `${header.substr(0, index)}<span class="highlight">${header.substr(index, this.highlightStr.length)}</span>${header.substr(index + this.highlightStr.length)}`;
       return newHeader;
-    },
-    isOverflown(element) {
-      return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
     },
   },
 };
@@ -382,7 +368,7 @@ export default {
         :key="node.property">
         <template v-if="node.value !== null">
           <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang | capitalize">{{ node.property | labelByLang | capitalize }}</span>
-          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`dVal-${node.property}`" @click.prevent.self="e => e.target.classList.toggle('expanded')">
+          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.prevent.self="e => e.target.classList.toggle('expanded')">
             <SummaryNode :hover-links="hoverLinks" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>

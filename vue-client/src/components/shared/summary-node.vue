@@ -5,11 +5,12 @@
 import * as StringUtil from 'lxljs/string';
 import LensMixin from '@/components/mixins/lens-mixin';
 import ItemMixin from '@/components/mixins/item-mixin';
+import OverflowMixin from '@/components/mixins/overflow-mixin';
 import PreviewCard from '@/components/shared/preview-card';
 
 export default {
   name: 'summary-node',
-  mixins: [LensMixin, ItemMixin],
+  mixins: [LensMixin, ItemMixin, OverflowMixin],
   props: {
     item: {
       type: [Object, String],
@@ -31,8 +32,6 @@ export default {
   data() {
     return {
     };
-  },
-  methods: {
   },
   computed: {
     isLinked() {
@@ -63,8 +62,9 @@ export default {
 
 <template>
   <div class="SummaryNode">
-    <span class="SummaryNode-label" v-if="!isLinked || isStatic" @click.prevent.self="e => e.target.classList.toggle('full')">
+    <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ',&nbsp;' }}
+      <resize-observer @notify="calculateOverflow" />
     </span>
     <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
@@ -105,9 +105,27 @@ export default {
     line-clamp: 3;
     -webkit-box-orient: vertical;
     vertical-align: bottom;
-    &.full {
+    &.expanded {
       -webkit-line-clamp: unset;
       line-clamp: unset;
+    }
+
+    &.overflown {
+      &::before {
+        font-family: FontAwesome;
+        content: "\F054";
+        font-weight: normal;
+        color: @brand-primary;
+        display: inline-block;
+        margin-right: 5px;
+        transition: transform 0.1s ease;
+      }
+
+      &.expanded {
+        &::before {
+          transform: rotate(90deg);
+        }
+      }
     }
   }
 }
