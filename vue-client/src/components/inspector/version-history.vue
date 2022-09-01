@@ -61,12 +61,12 @@ export default {
     },
     currentVersionDiff() {
       return {
-        added: this.addedPathsInCurrentVersion,
-        removed: this.removedPathsInCurrentVersion,
+        added: this.addedPathsAndObjects,
+        removed: this.removedPathsAndObjects,
         modified: [],
       };
     },
-    addedPathsInCurrentVersion() {
+    addedPathsAndObjects() {
       if (this.selectedChangeSet.hasOwnProperty('addedPaths') === false) return [];
       const added = this.selectedChangeSet.addedPaths;
       const convertedAdded = [];
@@ -82,7 +82,7 @@ export default {
       });
       return convertedAdded;
     },
-    removedPathsInCurrentVersion() {
+    removedPathsAndObjects() {
       if (this.selectedChangeSet.hasOwnProperty('removedPaths') === false) return [];
       const removed = this.selectedChangeSet.removedPaths;
       const convertedRemoved = [];
@@ -159,7 +159,6 @@ export default {
     },
     async setDisplayDataFor(number) {
       if (this.changeSetsReversed == null) return;
-      
       const options = {
         headers: {
           Accept: 'application/ld+json',
