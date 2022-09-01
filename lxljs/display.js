@@ -166,11 +166,13 @@ export function translateObjectProp(object) {
 function formatLabel(item, resources) {
   const label = [];
   const formatters = resources.display.lensGroups.formatters;
-
+  const replaceInnerDot = s => s.replaceAll(' • ', ', '); // TODO: handle nested chips properly
+  
   const objKeys = Object.keys(item);
   for (let i = 0; i < objKeys.length; i++) {
     const key = objKeys[i];
     const value = item[key];
+    
 
     if (value != null) {
       if (i > 0 && value.length > 0) {
@@ -184,10 +186,10 @@ function formatLabel(item, resources) {
             label.push(formatter['fresnel:contentLast']);
           }
         } else {
-          label.push(value.join(', '));
+          label.push(value.map(replaceInnerDot).join(', '));
         }
       } else {
-        label.push(value);
+        label.push(replaceInnerDot(value));
       }
     }
   }
