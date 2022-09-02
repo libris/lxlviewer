@@ -440,7 +440,8 @@ export default {
       return this.forcedListTerms.indexOf(this.fieldKey) > -1;
     },
     isLinkedInstanceOf() {
-      if (this.fieldKey === 'instanceOf' && this.fieldValue !== null && this.parentPath === 'mainEntity') {
+      if (this.fieldKey === 'instanceOf' && this.fieldValue !== null && this.parentPath === 'mainEntity' && this.fieldValue['@id'] !== undefined) {
+        console.log('this.fieldValue', this.fieldValue);
         if (this.fieldValue.hasOwnProperty('@id') && this.fieldValue['@id'].split('#')[0] !== this.inspector.data.record['@id']) {
           return true;
         }
