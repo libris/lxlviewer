@@ -189,6 +189,7 @@ export function arrayPathToString(arrayPath) {
   }
   path = path.replace('@graph[0]', 'record');
   path = path.replace('@graph[1]', 'mainEntity');
+  path = path.replace('@graph[2]', 'mainEntity.instanceOf');
   return path;
 }
 

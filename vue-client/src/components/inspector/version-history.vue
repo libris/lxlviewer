@@ -61,12 +61,12 @@ export default {
     },
     currentVersionDiff() {
       return {
-        added: this.addedPathsInCurrentVersion,
-        removed: this.removedPathsInCurrentVersion,
+        added: this.addedPathsAndObjects,
+        removed: this.removedPathsAndObjects,
         modified: [],
       };
     },
-    addedPathsInCurrentVersion() {
+    addedPathsAndObjects() {
       if (this.selectedChangeSet.hasOwnProperty('addedPaths') === false) return [];
       const added = this.selectedChangeSet.addedPaths;
       const convertedAdded = [];
@@ -82,7 +82,7 @@ export default {
       });
       return convertedAdded;
     },
-    removedPathsInCurrentVersion() {
+    removedPathsAndObjects() {
       if (this.selectedChangeSet.hasOwnProperty('removedPaths') === false) return [];
       const removed = this.selectedChangeSet.removedPaths;
       const convertedRemoved = [];
@@ -159,7 +159,6 @@ export default {
     },
     async setDisplayDataFor(number) {
       if (this.changeSetsReversed == null) return;
-      
       const options = {
         headers: {
           Accept: 'application/ld+json',
@@ -170,7 +169,7 @@ export default {
         .then(response => response.json())
         .then((result) => {
           DataUtil.fetchMissingLinkedToQuoted(result, this.$store);
-          return LxlDataUtil.splitJson(result);
+          return DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result));
         });
 
       const previousChangeSet = this.changeSetsReversed[number + 1];
@@ -182,11 +181,12 @@ export default {
         .then(response => response.json())
         .then((result) => {
           DataUtil.fetchMissingLinkedToQuoted(result, this.$store);
-          return LxlDataUtil.splitJson(result);
+          return DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result));
         });
 
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.currentVersionData);
+
       if (!isEmpty(diff.removed)) {
         diff.removed.forEach((r) => {
           const isListItem = r.path.slice(-1) === ']';
