@@ -89,6 +89,10 @@ export default {
       removed.forEach((removedPath) => {
         const thePath = StringUtil.arrayPathToString(removedPath);
         const objectAtPath = get(this.previousVersionData, thePath);
+
+        if (thePath.includes('instanceOf.@id')) {
+          return;
+        }
         if (thePath.endsWith('.@id')) {
           const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
           convertedRemoved.push({ path: elementPath, val: { '@id': objectAtPath } });
