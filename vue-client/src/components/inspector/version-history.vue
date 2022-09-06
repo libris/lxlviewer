@@ -49,7 +49,15 @@ export default {
     },
     changeSets() {
       if (this.historyData != null && this.historyData.hasOwnProperty('changeSets')) {
-        return this.historyData.changeSets;
+        // Reject changesets where the only thing that changed was 'modified'
+        const hasOnlyModified = changeSet => changeSet.hasOwnProperty('addedPaths')
+        && changeSet.hasOwnProperty('removedPaths')
+        && changeSet.addedPaths.length === 1
+        && changeSet.addedPaths[0].includes('modified')
+        && changeSet.removedPaths.length === 1
+        && changeSet.removedPaths[0].includes('modified');
+
+        return [...this.historyData.changeSets.filter(changeSet => !hasOnlyModified(changeSet))];
       }
       return null;
     },
@@ -386,7 +394,7 @@ export default {
     }
   }
   &-currentVersion {
-    flex-basis:100%;
+    flex-basis: 100%;
     font-size: 0.75em;
     text-transform: uppercase;
     &.selected {
