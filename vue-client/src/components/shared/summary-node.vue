@@ -28,6 +28,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    handleOverflow: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -64,7 +68,7 @@ export default {
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ',&nbsp;' }}
-      <resize-observer @notify="calculateOverflow" />
+      <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
     <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">

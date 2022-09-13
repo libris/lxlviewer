@@ -76,7 +76,7 @@ export default {
         <span class="ChangeSet-tool" v-if="changeSet.tool['@id'] !== 'https://id.kb.se/generator/crud'">{{"by machine" | translatePhrase}}</span>
         </div>
         <span class="ChangeSet-author" :class="{ 'selected': selectedVersion == index }">
-          <SummaryNode :is-static="true" :hover-links="false" v-if="changeSet.agent && !isGlobalChanges(changeSet)" :item="changeSet.agent" :is-last="true" :field-key="'agent'"/>
+          <SummaryNode :is-static="true" :hover-links="false" :handle-overflow="false" v-if="changeSet.agent && !isGlobalChanges(changeSet)" :item="changeSet.agent" :is-last="true" :field-key="'agent'"/>
           <span v-if="isGlobalChanges(changeSet)">
                 <v-popover placement="bottom-start">
                   {{ 'Libris global changes' | translatePhrase }}
