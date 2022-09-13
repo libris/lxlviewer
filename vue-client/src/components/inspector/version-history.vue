@@ -57,7 +57,7 @@ export default {
         && changeSet.removedPaths.length === 1
         && changeSet.removedPaths[0].includes('modified');
 
-        return [...this.historyData.changeSets.filter(changeSet => !hasOnlyModified(changeSet))];
+        return this.historyData.changeSets.filter(changeSet => !hasOnlyModified(changeSet));
       }
       return null;
     },
