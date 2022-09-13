@@ -413,14 +413,14 @@ export default {
     font-size: 0.9em;
   }
   &-tool {
-    border: 1px solid;
-    border-radius: 1em;
+    border: 1px solid @grey;
+    border-radius: 2em;
     width: max-content;
     height: max-content;
     margin-right: 1em;
     margin-left: 1em;
     font-size: 0.75em;
-    padding: 0 0.3em 0 0.3em;
+    padding: 0 0.3em 0.1em 0.3em;
     flex: 0 0 auto;
   }
 }
