@@ -68,7 +68,7 @@ export default {
 
 <template>
   <div class="VersionHistory-changeSets" v-if="changeSetsReversed">
-    <div class="ChangeSet" v-for="(changeSet, index) in changeSetsReversed" :key="changeSet.date" @click="selectVersion(index)" :class="{ 'selected': selectedVersion == index }">
+    <div class="ChangeSet" v-for="(changeSet, index) in changeSetsReversed" :key="changeSet.date" @click="selectVersion(index)" @keyup.enter="selectVersion(index)" :class="{ 'selected': selectedVersion == index }" tabindex=0>
       <div class="ChangeSet-changeSetContainer" :class="{ 'selected': selectedVersion == index }" ref="changeSets">
         <span class="ChangeSet-currentVersion" :class="{ 'selected': selectedVersion == index }" v-if="index == 0">{{"Current version" | translatePhrase}}</span>
         <div class="ChangeSet-dateContainer">
