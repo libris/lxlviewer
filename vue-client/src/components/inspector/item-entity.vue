@@ -190,7 +190,12 @@ export default {
            'is-ext-link': !isLibrisResource,
            'is-removed': diffRemoved,
            'is-added': diffAdded }">
-
+          <span class="ItemEntity-history-icon" v-if="diffRemoved">
+            <i class="fa fa-trash-o icon--sm icon-removed"></i>
+          </span>
+          <span class="ItemEntity-history-icon" v-if="diffAdded">
+            <i class="fa fa-circle icon--xs icon-added"></i>
+          </span>
           <span class="ItemEntity-label chip-label">
             <span v-if="(!isCard || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
             <span v-if="(!isCard || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
@@ -286,6 +291,10 @@ export default {
   &-content {
     flex: 0 1 auto;
     min-width: 0; //prevent flex overflow
+  }
+
+  &-history-icon {
+    padding: 0 6px 0 2px;
   }
 
   &-popover > .trigger {

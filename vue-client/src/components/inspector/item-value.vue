@@ -214,6 +214,12 @@ export default {
       <i class="fa fa-trash-o icon icon--sm">
       </i>
     </div>
+    <span class="ItemLocal-history-icon" v-if="diffRemoved">
+      <i class="fa fa-trash-o icon--sm icon-removed"></i>
+    </span>
+    <span class="ItemLocal-history-icon" v-if="diffAdded">
+      <i class="fa fa-circle icon--xs icon-added"></i>
+    </span>
   </div>
 </template>
 
@@ -278,6 +284,13 @@ export default {
     border-color: @base-color;
     background-color: hsl(hue(@base-color), 80%, 90%);
     margin-bottom: 2px;
+  }
+
+  &-history-icon {
+    padding: 0px 10px;
+    margin-left: auto;
+    margin-right: 0;
+    display: block;
   }
 
   &-remover {

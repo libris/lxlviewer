@@ -480,6 +480,12 @@ export default {
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>
+        <span class="ItemLocal-history-icon" v-if="diffRemoved">
+          <i class="fa fa-trash-o icon--sm icon-removed"></i>
+        </span>
+        <div class="ItemLocal-history-icon" v-if="diffAdded">
+          <i class="fa fa-circle icon--xs icon-added"></i>
+        </div>
       </div>
       
       <div class="ItemLocal-actions">
@@ -681,6 +687,13 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  &-history-icon {
+    padding: 2px 10px;
+    margin-left: auto;
+    margin-right: 0;
+    display: block;
   }
 
   &-collapsedText {
