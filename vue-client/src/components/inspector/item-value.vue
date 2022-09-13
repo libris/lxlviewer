@@ -214,10 +214,10 @@ export default {
       <i class="fa fa-trash-o icon icon--sm">
       </i>
     </div>
-    <span class="ItemLocal-history-icon" v-if="diffRemoved">
+    <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
       <i class="fa fa-trash-o icon--sm icon-removed"></i>
     </span>
-    <span class="ItemLocal-history-icon" v-if="diffAdded">
+    <span class="ItemLocal-history-icon" v-if="diffAdded && !diffRemoved">
       <i class="fa fa-circle icon--xs icon-added"></i>
     </span>
   </div>

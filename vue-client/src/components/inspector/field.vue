@@ -736,10 +736,10 @@ export default {
             </i>
           </div>
         </div>
-        <div v-if="diffRemoved">
+        <div v-if="diffRemoved && !diffAdded">
           <i class="fa fa-trash-o icon--sm icon-removed"></i>
         </div>
-        <div v-if="diffAdded">
+        <div v-if="diffAdded && !diffRemoved">
           <i class="fa fa-circle icon--xs icon-added"></i>
         </div>
 
@@ -838,10 +838,10 @@ export default {
           </i>
         </div>
       </div>
-      <div class="Field-history-icon" v-if="diffRemoved">
+      <div class="Field-history-icon" v-if="diffRemoved && !diffAdded">
         <i class="fa fa-trash-o icon--sm icon-removed"></i>
       </div>
-      <div class="Field-history-icon" v-if="diffAdded">
+      <div class="Field-history-icon" v-if="diffAdded && !diffRemoved">
         <i class="fa fa-circle icon--xs icon-added"></i>
       </div>
       <!-- {{ key | labelByLang | capitalize }} -->
