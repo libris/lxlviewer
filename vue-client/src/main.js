@@ -7,6 +7,7 @@ import Vuex from 'vuex'; // eslint-disable-line import/no-duplicates
 import { mapGetters } from 'vuex'; // eslint-disable-line import/no-duplicates
 import { each } from 'lodash-es';
 import VTooltip from 'v-tooltip';
+import { FocusTrap } from 'focus-trap-vue';
 import PortalVue from 'portal-vue';
 import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
@@ -61,6 +62,7 @@ Vue.use(PortalVue);
 Vue.use(VTooltip, TooltipOptions);
 Vue.use(VueClipboard);
 Vue.component('v-popover', VTooltip.VPopover);
+Vue.component('FocusTrap', FocusTrap);
 Vue.component('field', Field);
 Vue.component('entity-summary', EntitySummary);
 

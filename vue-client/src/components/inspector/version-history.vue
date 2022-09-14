@@ -28,6 +28,7 @@ export default {
       focusedTab: 'mainEntity',
       inspectingPath: '',
       showSideCol: false,
+      isFocusTrapActive: false,
     };
   },
   computed: {
@@ -167,6 +168,7 @@ export default {
         DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
 
         this.setDisplayDataFor(0);
+        this.isFocusTrapActive = true;
       });
     },
     async setDisplayDataFor(number) {
@@ -250,46 +252,50 @@ export default {
 </script>
 
 <template>
-  <div class="VersionHistory">
-    <div class="Container-row">
-      <div class="VersionHistory-mainCol">
-        <div class="VersionHistory-header">
-          <span class="VersionHistory-backLink">
-            <a @click="$router.go(-1)">
-              <i class="fa fa-arrow-left"></i>{{ 'Back' | translatePhrase }}
-            </a>
-          </span>
-          <span class="VersionHistory-headerTitle" v-if="displayData != null">
-            {{ getItemLabel }}
-          </span>
-          <i class="fa fa-th-list icon icon--md sideColButton"
-             role="button"
-             @click="openSideCol()"></i>
+  <focus-trap v-model=this.isFocusTrapActive>
+    <div class="VersionHistory" tabindex="-1">
+      <div class="Container-row">
+        <div class="VersionHistory-mainCol">
+          <div class="VersionHistory-header">
+            <span class="VersionHistory-backLink" tabindex="0">
+              <a @click="$router.go(-1)">
+                <i class="fa fa-arrow-left"></i>{{ 'Back' | translatePhrase }}
+              </a>
+            </span>
+            <span class="VersionHistory-headerTitle" v-if="displayData != null">
+              {{ getItemLabel }}
+            </span>
+            <i class="fa fa-th-list icon icon--md sideColButton"
+               role="button"
+               @click="openSideCol()"></i>
+          </div>
+          <div class="VersionHistory-content" tabindex="-1">
+            <template v-if="displayData != null">
+              <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="focusedTab"/>
+              <entity-form
+                v-for="tab in editorTabs"
+                :editing-object="tab.id"
+                :key="tab.id"
+                :diff="currentVersionDiff"
+                :is-active="focusedTab === tab.id"
+                :form-data="displayData[tab.id]"
+                :locked="true">
+              </entity-form>
+            </template>
+          </div>
         </div>
-        <div class="VersionHistory-content">
-          <template v-if="displayData != null">
-            <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="focusedTab" />
-            <entity-form
-              v-for="tab in editorTabs"
-              :editing-object="tab.id"
-              :key="tab.id"
-              :diff="currentVersionDiff"
-              :is-active="focusedTab === tab.id"
-              :form-data="displayData[tab.id]"
-              :locked="true">
-            </entity-form>
-          </template>
+        <div class="VersionHistory-sideCol" :class="{'hidden-view': !showSideCol}">
+          <div class="VersionHistory-header">
+            {{ 'Version history' | translatePhrase }}
+            <i class="fa fa-close icon icon--md sideColButton" role="button"
+               @click="closeSideCol()"></i>
+          </div>
+          <VersionHistoryChangesets :change-sets="changeSets" :selected-version="selectedVersion"
+                                    @version-selected="changeSelectedVersion"/>
         </div>
-      </div>
-      <div class="VersionHistory-sideCol" :class="{'hidden-view': !showSideCol}">
-        <div class="VersionHistory-header">
-          {{ 'Version history' | translatePhrase }}
-          <i class="fa fa-close icon icon--md sideColButton" role="button" @click="closeSideCol()"></i>
-        </div>
-        <VersionHistoryChangesets :change-sets="changeSets" :selected-version="selectedVersion" @version-selected="changeSelectedVersion"/>
       </div>
     </div>
-  </div>
+  </focus-trap>
 </template>
 
 <style lang="less">

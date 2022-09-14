@@ -29,6 +29,8 @@
     "combokeys": "https://github.com/avocode/combokeys/archive/v3.1.0.tar.gz",
     "eslint": "^7.0.0",
     "eslint-plugin-vue": "^6.1.2",
+    "focus-trap": "^6.0.1",
+    "focus-trap-vue": "^1.1.1",
     "font-awesome": "4.7.0",
     "git-describe": "^4.0.4",
     "json-loader": "^0.5.7",
