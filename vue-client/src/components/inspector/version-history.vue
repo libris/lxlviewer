@@ -266,8 +266,8 @@ export default {
       <div class="Container-row">
         <div class="VersionHistory-mainCol">
           <div class="VersionHistory-header">
-            <span class="VersionHistory-backLink" tabindex="0">
-              <a @click="$router.go(-1)">
+            <span class="VersionHistory-backLink">
+              <a @click="$router.go(-1)" @keyup.enter="$router.go(-1)" tabindex="0">
                 <i class="fa fa-arrow-left"></i>{{ 'Back' | translatePhrase }}
               </a>
             </span>
