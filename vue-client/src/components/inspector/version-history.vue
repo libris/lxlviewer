@@ -157,6 +157,14 @@ export default {
       this.focusedTab = value;
       this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'focus-changed' });
     },
+    setDefaultFocusedTab() {
+      if (!this.currentVersionDiff.added.some(el => el.path.includes('mainEntity'))
+        && !this.currentVersionDiff.removed.some(el => el.path.includes('mainEntity'))) {
+        this.focusedTab = 'record';
+      } else {
+        this.focusedTab = 'mainEntity';
+      }
+    },
     setDisplayData() {
       const fnurgel = this.$route.params.fnurgel;
       // _changesets
@@ -230,6 +238,7 @@ export default {
       }
       await this.$store.dispatch('setCompositeHistoryData', compositeVersionData);
       this.displayData = compositeVersionData;
+      this.setDefaultFocusedTab();
     },
     openSideCol() {
       this.showSideCol = true;
