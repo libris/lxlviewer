@@ -47,6 +47,7 @@ export default {
     'inspector.event'(val) {
       if (val.name === 'field-label-clicked') {
         this.inspectingPath = val.value;
+        this.$refs.changeSet[this.selectedVersion].scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'start' });
       }
     },
   },
@@ -68,8 +69,8 @@ export default {
 
 <template>
   <div class="VersionHistory-changeSets" v-if="changeSetsReversed">
-    <div class="ChangeSet" v-for="(changeSet, index) in changeSetsReversed" :key="changeSet.date" @click="selectVersion(index)" @keyup.enter="selectVersion(index)" :class="{ 'selected': selectedVersion == index }" tabindex=0>
-      <div class="ChangeSet-changeSetContainer" :class="{ 'selected': selectedVersion == index }" ref="changeSets">
+    <div class="ChangeSet" v-for="(changeSet, index) in changeSetsReversed" ref="changeSet" :key="changeSet.date" @click="selectVersion(index)" @keyup.enter="selectVersion(index)" :class="{ 'selected': selectedVersion == index }" tabindex=0>
+      <div class="ChangeSet-changeSetContainer" :class="{ 'selected': selectedVersion == index }">
         <span class="ChangeSet-currentVersion" :class="{ 'selected': selectedVersion == index }" v-if="index == 0">{{"Current version" | translatePhrase}}</span>
         <div class="ChangeSet-dateContainer">
         <span class="ChangeSet-date" :class="{ 'selected': selectedVersion == index }">{{ $moment(changeSet.date).format('lll') }}</span>
