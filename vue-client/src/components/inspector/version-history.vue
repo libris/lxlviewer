@@ -264,7 +264,7 @@ export default {
 </script>
 
 <template>
-  <focus-trap v-model=this.isFocusTrapActive>
+  <focus-trap v-model=isFocusTrapActive>
     <div class="VersionHistory" tabindex="-1">
       <div class="Container-row">
         <div class="VersionHistory-mainCol">
