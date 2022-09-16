@@ -141,10 +141,13 @@ export default {
           }
           return false;
         });
-        const index = this.changeSetsReversed.indexOf(lastChanged);
-        if (index !== -1) {
-          this.changeSelectedVersion(index);
+        let index;
+        if (lastChanged === undefined) {
+          index = this.changeSetsReversed.length - 1; // Latest change was in the first version
+        } else {
+          index = this.changeSetsReversed.indexOf(lastChanged);
         }
+        this.changeSelectedVersion(index);
       }
     },
   },
