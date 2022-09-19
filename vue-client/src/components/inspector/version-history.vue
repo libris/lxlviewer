@@ -281,7 +281,7 @@ export default {
           <div class="VersionHistory-header">
             <span class="VersionHistory-backLink">
               <a @click="$router.go(-1)" @keyup.enter="$router.go(-1)" tabindex="0">
-                <i class="fa fa-arrow-left"></i>{{ 'Back' | translatePhrase }}
+                <i class="fa fa-arrow-left VersionHistory-back-icon"></i>{{ 'Back' | translatePhrase }}
               </a>
             </span>
             <span class="VersionHistory-headerTitle" v-if="displayData != null">
@@ -358,6 +358,9 @@ export default {
     a {
       color: inherit;
     }
+  }
+  &-back-icon {
+    margin-right: 0.3em;
   }
   &-header {
     z-index: 1;
