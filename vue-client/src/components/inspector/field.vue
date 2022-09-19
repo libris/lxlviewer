@@ -740,9 +740,8 @@ export default {
           <i class="fa fa-trash-o icon--sm icon-removed"></i>
         </div>
         <div v-if="diffAdded && !diffRemoved">
-          <i class="fa fa-circle icon--xs icon-added"></i>
+          <i class="fa fa-plus-circle icon--sm icon-added"></i>
         </div>
-
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
@@ -842,7 +841,7 @@ export default {
         <i class="fa fa-trash-o icon--sm icon-removed"></i>
       </div>
       <div class="Field-history-icon" v-if="diffAdded && !diffRemoved">
-        <i class="fa fa-circle icon--xs icon-added"></i>
+        <i class="fa fa-plus-circle icon--sm icon-added"></i>
       </div>
       <!-- {{ key | labelByLang | capitalize }} -->
     </div>
@@ -1097,8 +1096,7 @@ export default {
   }
 
   &.is-diff-modified {
-    //$kb-primary-orange
-    @base-color: rgb(247, 160, 123);
+    @base-color: rgb(247, 160, 123); // $kb-primary-orange
     border: 1px dashed;
     border-color: @base-color;
     background-color: hsl(hue(@base-color), 80%, 90%);
@@ -1110,10 +1108,8 @@ export default {
   }
 
   .icon-added {
-    transform: translateY(-15%);
     position: relative;
-    color: #428BCAFF;
-    //  TODO: Stolen from @brand-primary base. Import from styleguide?
+    color: #428BCAFF; // @brand-primary base.
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class

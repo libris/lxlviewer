@@ -194,7 +194,7 @@ export default {
             <i class="fa fa-trash-o icon--sm icon-removed"></i>
           </span>
           <span class="ItemEntity-history-icon" v-if="diffAdded">
-            <i class="fa fa-circle icon--xs icon-added"></i>
+            <i class="fa fa-plus-circle icon--sm icon-added"></i>
           </span>
           <span class="ItemEntity-label chip-label">
             <span v-if="(!isCard || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
@@ -294,7 +294,7 @@ export default {
   }
 
   &-history-icon {
-    padding: 0 6px 0 2px;
+    padding: 0 4px 0 2px;
   }
 
   &-popover > .trigger {
