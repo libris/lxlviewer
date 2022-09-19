@@ -84,7 +84,7 @@ export default {
         const objectAtPath = get(this.currentVersionData, thePath);
         if (thePath.endsWith('.@id')) {
           const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
-          convertedAdded.push({ path: elementPath, val: { '@id': objectAtPath } });
+          convertedAdded.push({ path: elementPath.concat('[1]'), val: { '@id': objectAtPath } });
         } else {
           convertedAdded.push({ path: thePath, val: objectAtPath });
         }
@@ -104,7 +104,7 @@ export default {
         }
         if (thePath.endsWith('.@id')) {
           const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
-          convertedRemoved.push({ path: elementPath, val: { '@id': objectAtPath } });
+          convertedRemoved.push({ path: elementPath.concat('[0]'), val: { '@id': objectAtPath } });
         } else {
           convertedRemoved.push({ path: thePath, val: objectAtPath });
         }
@@ -218,8 +218,15 @@ export default {
           if (isListItem && isObject(r.val)) {
             const parentPath = r.path.slice(0, r.path.lastIndexOf('['));
             const parentObj = get(compositeVersionData, parentPath);
-            parentObj.push(r.val);
-            set(compositeVersionData, parentPath, parentObj);
+            if (Array.isArray(parentObj)) {
+              parentObj.push(r.val);
+              set(compositeVersionData, parentPath, parentObj);
+            } else {
+              const parent = [];
+              parent.push(r.val);
+              parent.push(parentObj);
+              set(compositeVersionData, parentPath, parent);
+            }
           } else {
             const added = diff.added.find(a => isEqual(a.path, r.path));
             if (added !== undefined && r.val !== added.val) {
@@ -229,9 +236,6 @@ export default {
                 const moddedValue = from.concat(' → ').concat(to);
                 diff.modified.push({ path: r.path, val: moddedValue });
                 set(compositeVersionData, r.path, moddedValue);
-              } else {
-                diff.modified.push({ path: r.path, val: added.val });
-                set(compositeVersionData, r.path, added.val);
               }
             } else {
               set(compositeVersionData, r.path, r.val);
