@@ -82,6 +82,9 @@ export default {
       added.forEach((addedPath) => {
         const thePath = StringUtil.arrayPathToString(addedPath);
         const objectAtPath = get(this.currentVersionData, thePath);
+
+        // Put non-repeatable properties, such as descriptionLastModifier, into a list to be able to show
+        // added + removed side by side.
         if (thePath.endsWith('.@id')) {
           const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
           convertedAdded.push({ path: elementPath.concat('[1]'), val: { '@id': objectAtPath } });
@@ -102,6 +105,9 @@ export default {
         if (thePath.includes('instanceOf.@id')) {
           return;
         }
+
+        // Put non-repeatable properties, such as descriptionLastModifier, into a list to be able to show
+        // added + removed side by side.
         if (thePath.endsWith('.@id')) {
           const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
           convertedRemoved.push({ path: elementPath.concat('[0]'), val: { '@id': objectAtPath } });
