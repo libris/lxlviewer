@@ -85,7 +85,7 @@ export default {
 
         // Put non-repeatable properties, such as descriptionLastModifier, into a list to be able to show
         // added + removed side by side.
-        if (thePath.endsWith('.@id')) {
+        if (thePath.endsWith('.@id') && !thePath.endsWith('mainEntity.@id')) {
           const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
           convertedAdded.push({ path: elementPath.concat('[1]'), val: { '@id': objectAtPath } });
         } else {
@@ -108,7 +108,7 @@ export default {
 
         // Put non-repeatable properties, such as descriptionLastModifier, into a list to be able to show
         // added + removed side by side.
-        if (thePath.endsWith('.@id')) {
+        if (thePath.endsWith('.@id') && !thePath.endsWith('mainEntity.@id')) {
           const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
           convertedRemoved.push({ path: elementPath.concat('[0]'), val: { '@id': objectAtPath } });
         } else {
@@ -223,14 +223,14 @@ export default {
           const isListItem = r.path.slice(-1) === ']';
           if (isListItem && isObject(r.val)) {
             const parentPath = r.path.slice(0, r.path.lastIndexOf('['));
-            const parentObj = get(compositeVersionData, parentPath);
-            if (Array.isArray(parentObj)) {
-              parentObj.push(r.val);
-              set(compositeVersionData, parentPath, parentObj);
+            const objAtPath = get(compositeVersionData, parentPath);
+            if (Array.isArray(objAtPath)) {
+              objAtPath.push(r.val);
+              set(compositeVersionData, parentPath, objAtPath);
             } else {
               const parent = [];
               parent.push(r.val);
-              parent.push(parentObj);
+              parent.push(objAtPath);
               set(compositeVersionData, parentPath, parent);
             }
           } else {
