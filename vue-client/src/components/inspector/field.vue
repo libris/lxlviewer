@@ -736,10 +736,10 @@ export default {
             </i>
           </div>
         </div>
-        <div v-if="diffRemoved && !diffAdded">
+        <div class="Field-label-history-icon" v-if="diffRemoved && !diffAdded">
           <i class="fa fa-trash-o icon--sm icon-removed"></i>
         </div>
-        <div v-if="diffAdded && !diffRemoved">
+        <div class="Field-label-history-icon" v-if="diffAdded && !diffRemoved">
           <i class="fa fa-plus-circle icon--sm icon-added"></i>
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
@@ -1461,6 +1461,10 @@ export default {
     margin-left: auto;
     margin-right: 0;
     display: block;
+  }
+
+  &-label-history-icon {
+    padding-right: 0.3em;
   }
 
   .path-code {
