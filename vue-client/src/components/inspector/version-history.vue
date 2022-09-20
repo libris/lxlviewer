@@ -198,10 +198,7 @@ export default {
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
       this.currentVersionData = await fetch(fetchUrl, options)
         .then(response => response.json())
-        .then((result) => {
-          DataUtil.fetchMissingLinkedToQuoted(result, this.$store);
-          return DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result));
-        });
+        .then(result => DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result)));
 
       const previousChangeSet = this.changeSetsReversed[number + 1];
       if (previousChangeSet === undefined) {
@@ -210,10 +207,7 @@ export default {
       }
       this.previousVersionData = await fetch(previousChangeSet.version['@id'], options)
         .then(response => response.json())
-        .then((result) => {
-          DataUtil.fetchMissingLinkedToQuoted(result, this.$store);
-          return DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result));
-        });
+        .then(result => DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result)));
 
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.currentVersionData);
@@ -249,9 +243,16 @@ export default {
           }
         });
       }
+      this.fetchMissingLinks(compositeVersionData);
       await this.$store.dispatch('setCompositeHistoryData', compositeVersionData);
       this.displayData = compositeVersionData;
       this.setDefaultFocusedTab();
+    },
+    fetchMissingLinks(data) {
+      const toFetch = cloneDeep(data);
+      delete toFetch.mainEntity.sameAs;
+      delete toFetch.record.sameAs;
+      DataUtil.fetchMissingLinkedToQuoted(toFetch, this.$store);
     },
     openSideCol() {
       this.showSideCol = true;
