@@ -163,11 +163,16 @@ export function translateObjectProp(object) {
   return null;
 }
 
-function formatLabel(item, resources) {
+function formatLabel(item, type, resources) {
   const label = [];
   const formatters = resources.display.lensGroups.formatters;
   const replaceInnerDot = s => s.replaceAll(' • ', ', '); // TODO: handle nested chips properly
   
+  // FIXME: this should be driven by display.jsonld
+  // We don't want Library and Bibliography. Could do isSubclassOf('Agent') && !isSubclassOf('Collection') but hardcode the list for now
+  const isAgent = ['Person', 'Organization', 'Jurisdiction', 'Meeting', 'Family'].includes(type);
+  const separator = isAgent ? ', ' : ' • ';
+
   const objKeys = Object.keys(item);
   for (let i = 0; i < objKeys.length; i++) {
     const key = objKeys[i];
@@ -175,7 +180,7 @@ function formatLabel(item, resources) {
     
     if (value != null) {
       if (i > 0 && value.length > 0) {
-        label.push(' • ');
+        label.push(separator);
       }
       const formatter = formatters ? formatters[`${key}-format`] : null;
       if (isArray(value)) {
@@ -192,7 +197,11 @@ function formatLabel(item, resources) {
       }
     }
   }
-  return label.join(''); // Join without any extra separators
+  let labelStr = label.join('');
+  // TODO: lots of punctuation for MARC going on inside some of these fields
+  labelStr = labelStr.replace(/([:.,]),/g, '$1');
+  labelStr = labelStr.replace(/\(,\s?/g, '(')
+  return labelStr;
 }
 
 /* eslint-disable no-use-before-define */
@@ -216,7 +225,7 @@ export function getItemLabel(item, resources, quoted, settings, inClass = '') {
     return '';
   }
 
-  let rendered = formatLabel(displayObject, resources);
+  let rendered = formatLabel(displayObject, item['@type'], resources);
 
   // let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', resources.vocab, resources.context)) {
