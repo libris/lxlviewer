@@ -65,6 +65,11 @@ function tryGetValueByLang(item, propertyId, langCode, context) {
   if (!item || typeof item === 'undefined') {
     throw new Error('tryGetValueByLang was called with an undefined object.');
   }
+  
+  if (typeof propertyId === 'string' && propertyId.startsWith('@reverse/')) {
+    return get(item, propertyId.replaceAll('/', '.'));
+  }
+  
   const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
   
   return byLangKey && item[byLangKey] && item[byLangKey][langCode]
