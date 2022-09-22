@@ -32,6 +32,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    diff: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -103,6 +107,13 @@ export default {
     keyIsLocked(key) {
       return (this.isLocked || key === '@id');
     },
+    isIntegral(key) {
+      if (key.indexOf('@reverse/') >= 0) {
+        key = key.split('/').pop();
+      }
+      
+      return VocabUtil.hasCategory(key, 'integral', this.resources);
+    },
   },
   components: {
   },
@@ -125,8 +136,10 @@ export default {
         :is-removable="true" 
         :is-locked="keyIsLocked(k)" 
         :parent-accepted-types="acceptedTypes"
+        :is-card="isIntegral(k)"
         :is-distinguished="k === 'instanceOf'"
         :key="k" 
+        :diff="diff"
         :field-key="k" 
         :field-value="v" 
         :parent-path="editingObject" />
@@ -149,6 +162,7 @@ export default {
           :is-inner="false" 
           :is-removable="false" 
           :is-locked="true" 
+          :is-card="isIntegral(k)"
           :parent-accepted-types="acceptedTypes"
           :key="k" 
           :field-key="k" 
@@ -199,7 +213,13 @@ export default {
           &:not(.is-removeable) {
             &:not(.is-marked) {
               &:not(.is-linked) {
-                background-color: @form-field;
+                &:not(.is-diff-removed) {
+                  &:not(.is-diff-added) {
+                    &:not(.is-diff-modified) {
+                      background-color: @form-field;
+                    }
+                  }
+                }
               }
             }
           }

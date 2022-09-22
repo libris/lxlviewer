@@ -1,4 +1,4 @@
-import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual } from 'lodash-es';
+import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual, get, indexOf, map, flatten, sortBy, filter } from 'lodash-es';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import { lxlLog, lxlWarning } from './debug';
@@ -65,6 +65,11 @@ function tryGetValueByLang(item, propertyId, langCode, context) {
   if (!item || typeof item === 'undefined') {
     throw new Error('tryGetValueByLang was called with an undefined object.');
   }
+  
+  if (typeof propertyId === 'string' && propertyId.startsWith('@reverse/')) {
+    return get(item, propertyId.replaceAll('/', '.'));
+  }
+  
   const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
   
   return byLangKey && item[byLangKey] && item[byLangKey][langCode]
@@ -163,18 +168,24 @@ export function translateObjectProp(object) {
   return null;
 }
 
-function formatLabel(item, resources) {
+function formatLabel(item, type, resources) {
   const label = [];
   const formatters = resources.display.lensGroups.formatters;
+  const replaceInnerDot = s => s.replaceAll(' • ', ', '); // TODO: handle nested chips properly
+  
+  // FIXME: this should be driven by display.jsonld
+  // We don't want Library and Bibliography. Could do isSubclassOf('Agent') && !isSubclassOf('Collection') but hardcode the list for now
+  const isAgent = ['Person', 'Organization', 'Jurisdiction', 'Meeting', 'Family'].includes(type);
+  const separator = isAgent ? ', ' : ' • ';
 
   const objKeys = Object.keys(item);
   for (let i = 0; i < objKeys.length; i++) {
     const key = objKeys[i];
     const value = item[key];
-
+    
     if (value != null) {
       if (i > 0 && value.length > 0) {
-        label.push(' • ');
+        label.push(separator);
       }
       const formatter = formatters ? formatters[`${key}-format`] : null;
       if (isArray(value)) {
@@ -184,14 +195,18 @@ function formatLabel(item, resources) {
             label.push(formatter['fresnel:contentLast']);
           }
         } else {
-          label.push(value.join(', '));
+          label.push(value.map(replaceInnerDot).join(', '));
         }
       } else {
-        label.push(value);
+        label.push(replaceInnerDot(value));
       }
     }
   }
-  return label.join(''); // Join without any extra separators
+  let labelStr = label.join('');
+  // TODO: lots of punctuation for MARC going on inside some of these fields
+  labelStr = labelStr.replace(/([:.,]),/g, '$1');
+  labelStr = labelStr.replace(/\(,\s?/g, '(')
+  return labelStr;
 }
 
 /* eslint-disable no-use-before-define */
@@ -215,7 +230,7 @@ export function getItemLabel(item, resources, quoted, settings, inClass = '') {
     return '';
   }
 
-  let rendered = formatLabel(displayObject, resources);
+  let rendered = formatLabel(displayObject, item['@type'], resources);
 
   // let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', resources.vocab, resources.context)) {
@@ -237,20 +252,52 @@ export function formatIsni(isni) {
     : isni;
 }
 
+// TODO: it's probably better to display type coerced properties in the same 
+// way as e.g. language containers (prefLabelByLang etc) instead of as separate properties
 export function getSortedProperties(formType, formObj, settings, resources) {
-  const propertyList = getDisplayProperties(
+  let propertyList = getDisplayProperties(
     formType,
     resources,
     settings,
     'full',
   );
+  
+  propertyList = map(propertyList, k => get(k, 'alternateProperties', k));
+  propertyList = map(propertyList, k => get(k, ['alternateProperties', 'subPropertyOf'], k));
+  propertyList = uniq(flatten(propertyList));
+  
+  const realKey = k => get(resources, ['context', '1', k, '@id'], k); 
   each(formObj, (v, k) => {
     if (!includes(propertyList, k)) {
-      propertyList.push(k);
+      const ix = indexOf(propertyList, realKey(k));
+      if (ix > -1) {
+        propertyList.splice(ix + 1, 0, k);
+      } else {
+        propertyList.push(k);  
+      }
     }
   });
+  
   remove(propertyList, k => (settings.hiddenProperties.indexOf(k) !== -1));
+
+  // Sort type coerced property "groups" internally on their type label
+  const rdfTypeLabel = k => StringUtil.getLabelByLang(rdfDisplayType(k, resources), settings.language, resources);
+  const withLabel = map(propertyList, k => ({ k: k, l: rdfTypeLabel(k), rk: realKey(k) }));
+  let ix = 0;
+  let last = null;
+  withLabel.forEach((m) => {
+    m.ix = m.rk !== last ? ix++ : ix;
+    last = m.rk;
+  });
+  propertyList = map(sortBy(withLabel, ['ix', 'l']), m => m.k);
+  
   return propertyList;
+}
+
+export function rdfDisplayType(property, resources) {
+  const type = get(resources, ['context', '1', property, '@type'], '');
+  // Types such as xsd:string and @vocab don't make sense as field labels, skip them 
+  return type.match(/^[^:@]*$/) ? type : '';
 }
 
 export function getItemToken(item, resources, quoted, settings) {
@@ -357,7 +404,34 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
       if (property.hasOwnProperty('alternateProperties')) {
         // Handle alternateProperties
         let foundProperty;
-        for (const p of property.alternateProperties) {
+        for (let p of property.alternateProperties) {
+          if (typeof p === 'object' && p.subPropertyOf && p.range) {
+            // alternateProperties with locally defined subProperty with narrower range.
+            // Example: {"subPropertyOf": "hasTitle", "range": "KeyTitle"},
+            // The correct RDF semantics would be to match range against all subclasses. That is the commented out version.
+            // For our current use cases we have no need for that. But we have a need to match against exactly Title without 
+            // any subclasses (e.g. VariantTitle) which is actually not possible to express with this construct. 
+            // So we use this broken implementation for now.
+            const k = p.subPropertyOf;
+            if (trueItem[k] && typeof trueItem[k] === 'object'
+                // && trueItem[k]['@type'] && VocabUtil.isSubClassOf(trueItem[k]['@type'], p.range, resources.vocab, resources.context)) {
+                && trueItem[k]['@type'] === p.range) {
+              p = k;
+            } else if (isArray(trueItem[k])) {
+              // const matching = filter(trueItem[k], it => it['@type'] && VocabUtil.isSubClassOf(it['@type'], p.range, resources.vocab, resources.context));
+              const matching = filter(trueItem[k], it => it['@type'] && it['@type'] === p.range);
+              if (matching.length > 0) {
+                if (level === 'chips') {
+                  result[k] = matching.map(arrayItem => getItemToken(arrayItem, resources, quoted, settings));
+                } else {
+                  result[k] = matching.map(arrayItem => getItemLabel(arrayItem, resources, quoted, settings, p));
+                }
+                foundProperty = p;
+                break;
+              }
+            }
+          }
+          
           if (typeof p === 'string') {
             if (trueItem.hasOwnProperty(p)) {
               if (typeof trueItem[p] === 'string') {
@@ -384,7 +458,8 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
             }
           }
         }
-        lxlLog(`Computed alternateProperties for ${trueItem['@type']}. Looked for: ${property.alternateProperties.join(', ')} | Settled on: ${foundProperty}`);
+        const str = s => JSON.stringify(s || '<nothing>').replaceAll('"', '');
+        lxlLog(`Computed alternateProperties for ${trueItem['@type']}. Looked for: ${property.alternateProperties.map(str).join(', ')} | Settled on: ${str(foundProperty)}`);
       }
     }
   });
@@ -445,6 +520,7 @@ export function getItemSummary(item, resources, quoted, settings, displayGroups,
       } else {
         const translated = tryGetValueByLang(item, key, settings.language, resources.context);
         const itemValue = translated !== null ? translated : item[key];
+        
         summary.info.push({ property: key, value: isArray(itemValue) ? itemValue : [itemValue] });
       }
     }

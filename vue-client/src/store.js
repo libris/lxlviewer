@@ -44,6 +44,7 @@ const store = new Vuex.Store({
       data: {},
       insertData: {},
       originalData: {},
+      compositeHistoryData: {},
       title: '',
       status: {
         detailedEnrichmentModal: {
@@ -72,6 +73,7 @@ const store = new Vuex.Store({
     status: {
       userIdle: false,
       panelOpen: false,
+      fullScreenPanelOpen: false,
       keybindState: '',
       fullWidth: false,
       keyActions: [],
@@ -151,6 +153,9 @@ const store = new Vuex.Store({
     },
     setInsertData(state, data) {
       state.inspector.insertData = data;
+    },
+    setCompositeHistoryData(state, data) {
+      state.inspector.compositeHistoryData = data;
     },
     addToQuoted(state, data) {
       const quoted = cloneDeep(state.inspector.data.quoted);
@@ -443,11 +448,11 @@ const store = new Vuex.Store({
       dispatch('modifyUserDatabase', { property: 'markedDocuments', value: newList });
     },
     loadUserDatabase({ commit, dispatch, state }) {
-      if (state.user.email.length === 0) {
+      if (state.user.id.length === 0) {
         throw new Error('loadUserDatabase was dispatched with no real user loaded.');
       }
       // Call this when you need to load the userDatabase from the server.
-      StringUtil.digestMessage(state.user.email).then((digestHex) => {
+      StringUtil.digestMessage(state.user.id).then((digestHex) => {
         httpUtil.get({ url: `${state.settings.apiPath}/_userdata/${digestHex}`, token: state.user.token, contentType: 'text/plain' }).then((result) => {
           commit('setUserDatabase', result);
           dispatch('checkForMigrationOfUserDatabase');
@@ -457,17 +462,17 @@ const store = new Vuex.Store({
       });
     },
     modifyUserDatabase({ commit, state }, payload) {
-      if (state.user.email.length === 0) {
+      if (state.user.id.length === 0) {
         throw new Error('modifyUserDatabase was dispatched with no real user loaded.');
       }
-      // Modifies a propery in the userDatabase
+      // Modifies a property in the userDatabase
       const userDatabase = cloneDeep(state.userDatabase);
       if (payload.value == null) {
         delete userDatabase[payload.property];
       } else {
         userDatabase[payload.property] = payload.value;
       }
-      StringUtil.digestMessage(state.user.email).then((digestHex) => {
+      StringUtil.digestMessage(state.user.id).then((digestHex) => {
         httpUtil.put({ url: `${state.settings.apiPath}/_userdata/${digestHex}`, token: state.user.token, contentType: 'text/plain' }, userDatabase).then(() => {
           if (payload.callback) payload.callback();
           commit('setUserDatabase', userDatabase);
@@ -644,6 +649,9 @@ const store = new Vuex.Store({
     setInsertData({ commit }, data) {
       commit('setInsertData', data);
     },
+    setCompositeHistoryData({ commit }, data) {
+      commit('setCompositeHistoryData', data);
+    },
     updateInspectorData({ commit }, payload) {
       commit('updateInspectorData', payload);
     },
@@ -755,7 +763,8 @@ store.subscribe((mutation, state) => {
     if (userStorageTotal === null) {
       userStorageTotal = {};
     }
-    userStorageTotal[state.user.emailHash] = mutation.payload;
+    userStorageTotal[state.user.idHash] = mutation.payload;
+    delete userStorageTotal[state.user.emailHash];
     localStorage.setItem('userStorage', JSON.stringify(userStorageTotal));
   }
 });

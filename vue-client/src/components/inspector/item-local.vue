@@ -357,6 +357,12 @@ export default {
     },
   },
   watch: {
+    'inspector.status.editing'(val) {
+      if (!val) {
+        this.closePropertyAdder();
+        this.closeExtractDialog();
+      }
+    },
     'inspector.event'(val) {
       this.$emit(`${val.value}`);
     },
@@ -366,8 +372,15 @@ export default {
         this.expandChildren = true;
       }
     },
+    diff() {
+      if (this.diff && this.diffChangedChildren) {
+        this.expand();
+      } else {
+        this.collapse();
+      }
+    },
     extractDialogActive(val) {
-      if (!val) {
+      if (!val && this.inspector.status.editing) {
         this.$refs.linkAction.$el.focus();
       }
     },
@@ -416,6 +429,11 @@ export default {
       this.expand();
       this.expandChildren = true;
     }
+    if (this.diff && this.diffChangedChildren) {
+      this.expand();
+    } else {
+      this.collapse();
+    }
     if (this.inspector.status.isNew) {
       this.expand();
     }
@@ -433,7 +451,16 @@ export default {
   <div class="ItemLocal js-itemLocal"
     ref="container"
     :id="`formPath-${path}`"
-    :class="{'is-highlighted': isLastAdded, 'highlight-info': highlights.indexOf('info') > -1, 'highlight-remove': highlights.indexOf('remove') > -1, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable, 'has-failed-validations': failedValidations.length > 0 }"
+    :class="{
+      'is-highlighted': isLastAdded,
+      'highlight-info': highlights.indexOf('info') > -1,
+      'highlight-remove': highlights.indexOf('remove') > -1,
+      'is-expanded': expanded && !isEmpty,
+      'is-extractable': isExtractable,
+      'has-failed-validations': failedValidations.length > 0,
+      'is-diff-removed': diffRemoved && !diffAdded,
+      'is-diff-added': diffAdded && !diffRemoved,
+      'is-modified': diffModified}"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
@@ -453,6 +480,12 @@ export default {
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>
+        <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
+          <i class="fa fa-trash-o icon--sm icon-removed"></i>
+        </span>
+        <div class="ItemLocal-history-icon" v-if="diffAdded && !diffRemoved">
+          <i class="fa fa-plus-circle icon--sm icon-added"></i>
+        </div>
       </div>
       
       <div class="ItemLocal-actions">
@@ -544,6 +577,7 @@ export default {
         :field-key="k"
         :field-value="v"
         :key="k" 
+        :diff="diff"
         :show-action-buttons="showActionButtons"
         :expand-children="expandChildren"
         :is-expanded="expanded"></field> 
@@ -655,6 +689,13 @@ export default {
     white-space: nowrap;
   }
 
+  &-history-icon {
+    padding: 2px 10px;
+    margin-left: auto;
+    margin-right: 0;
+    display: block;
+  }
+
   &-collapsedText {
     display: inline;
   }
@@ -724,6 +765,18 @@ export default {
   
   &.is-removeable {
     background-color: @form-remove;
+  }
+
+  &.is-diff-removed {
+    @base-color: @remove;
+    border: 1px dashed;
+    border-color: @base-color;
+    background-color: @form-remove;
+  }
+
+  &.is-diff-added {
+    @base-color: @form-add;
+    background-color: @base-color;
   }
 
   &.is-expanded > 

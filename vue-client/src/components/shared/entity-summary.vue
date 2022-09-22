@@ -4,13 +4,14 @@ import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
 import LensMixin from '../mixins/lens-mixin';
+import OverflowMixin from '@/components/mixins/overflow-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
 import SummaryNode from '@/components/shared/summary-node';
 import * as RecordUtil from '@/utils/record';
 
 export default {
-  mixins: [LensMixin],
+  mixins: [LensMixin, OverflowMixin],
   name: 'entity-summary',
   components: {
     EncodingLevelIcon,
@@ -73,6 +74,12 @@ export default {
     isCompact: {
       default: false,
       type: Boolean,
+    },
+    labelStyle: {
+      default: 'regular',
+      validator(value) {
+        return ['regular', 'top', 'hidden'].includes(value);
+      },
     },
     keyDisplayLimit: {
       default: 5,
@@ -249,12 +256,7 @@ export default {
       );
     },
     header() {
-      return StringUtil.getFormattedEntries(
-        this.getSummary.header, 
-        this.resources.vocab, 
-        this.user.settings.language,
-        this.resources.context,
-      );
+      return [this.getLabel(this.focusData)];
     },
     isItem() {
       if (this.getCard['@type'] === 'Item') {
@@ -360,23 +362,24 @@ export default {
       </a>
       
     </h3>
-    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ height: animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
-      <li class="EntitySummary-detailsItem" 
+    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ 'min-height': animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
+      <li :class="`EntitySummary-detailsItem-${labelStyle}`"
         v-for="node in limitedInfo" 
         :key="node.property">
         <template v-if="node.value !== null">
-          <span class="EntitySummary-detailsKey" :title="node.property | labelByLang">{{ node.property | labelByLang | capitalize }}</span>
-          <span class="EntitySummary-detailsValue">
+          <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang | capitalize">{{ node.property | labelByLang | capitalize }}</span>
+          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.prevent.self="e => e.target.classList.toggle('expanded')">
             <SummaryNode :hover-links="hoverLinks" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>
         <template v-else-if="isReplacedBy !== ''">
-          <span  class="EntitySummary-detailsKey">Ersatt av</span>
-          <span class="EntitySummary-detailsValue">{{ v }}</span>
+          <span :class="`EntitySummary-detailsKey-${labelStyle}`">Ersatt av</span>
+          <span :class="`EntitySummary-detailsValue-${labelStyle}`">{{ v }}</span>
         </template>
       </li>
     </ul>
   </div>
+  <resize-observer @notify="calculateOverflow" />
 </section>
 </template>
 
@@ -521,7 +524,7 @@ export default {
     margin: 0px;
     // height is set in style-bindings,
     // see template in this file
-    transition: height 0.2s ease-out;
+    transition: min-height 0.2s ease-out;
   }
 
   &-id {
@@ -530,7 +533,7 @@ export default {
   &-idInfo {
   }
 
-  &-detailsItem {
+  &-detailsItem-regular {
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -540,8 +543,8 @@ export default {
       flex-direction: row;
     }
   }
-
-  &-detailsKey {
+  
+  &-detailsKey-regular {
     @media (min-width: @screen-sm-min) {
       flex-basis: 6em;
     }
@@ -553,17 +556,101 @@ export default {
     overflow: hidden;
     white-space: nowrap;
   }
-
-  &-detailsValue {
+  
+  &-detailsValue-regular {
     @media (min-width: @screen-sm-min) {
       flex-basis: 75%;
       flex-grow: 2;
       align-self: flex-end;
     }
     color: #000;
-    white-space: nowrap;
-    overflow-x: hidden;
+    //white-space: nowrap;
+    //overflow-x: hidden;
+    //text-overflow: ellipsis
+
+    &.overflown {
+      &::before {
+        font-family: FontAwesome;
+        content: "\F054";
+        font-weight: normal;
+        color: @brand-primary;
+        display: inline-block;
+        margin-right: 5px;
+        transition: transform 0.1s ease;
+      }
+
+      &.expanded {
+        &::before {
+          transform: rotate(90deg);
+        }
+      }
+    }
+  
+  }
+  
+  &-twoLines {
+    // max 2 lines before ellipsis
+    // works in all major modern browsers
+    // https://stackoverflow.com/a/13924997
+    overflow: hidden;
     text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    &.expanded {
+      -webkit-line-clamp: unset;
+      line-clamp: unset;
+    }
+  }
+  
+  &-detailsItem-top {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    font-size: 1.4rem;
+  }
+
+  &-detailsKey-top {
+    flex-grow: 1;
+    margin-top: 0.5em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-transform: uppercase;
+    color: @grey-darker;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  &-detailsValue-top {
+    @media (min-width: @screen-sm-min) {
+      flex-basis: 75%;
+      flex-grow: 2;
+    }
+    color: #000;
+  }
+
+  &-detailsItem-hidden {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    font-size: 1.4rem;
+    @media (min-width: @screen-sm-min) {
+      padding: 0.2rem 0;
+      flex-direction: row;
+    }
+  }
+
+  &-detailsKey-hidden {
+  }
+
+  &-detailsValue-hidden {
+    @media (min-width: @screen-sm-min) {
+      flex-basis: 75%;
+      flex-grow: 2;
+    }
+    color: #000;
   }
 
   &-icon {

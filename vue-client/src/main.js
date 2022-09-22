@@ -7,6 +7,7 @@ import Vuex from 'vuex'; // eslint-disable-line import/no-duplicates
 import { mapGetters } from 'vuex'; // eslint-disable-line import/no-duplicates
 import { each } from 'lodash-es';
 import VTooltip from 'v-tooltip';
+import { FocusTrap } from 'focus-trap-vue';
 import PortalVue from 'portal-vue';
 import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
@@ -61,6 +62,7 @@ Vue.use(PortalVue);
 Vue.use(VTooltip, TooltipOptions);
 Vue.use(VueClipboard);
 Vue.component('v-popover', VTooltip.VPopover);
+Vue.component('FocusTrap', FocusTrap);
 Vue.component('field', Field);
 Vue.component('entity-summary', EntitySummary);
 
@@ -162,7 +164,7 @@ new Vue({
     'status.helpSectionTitle'() {
       this.updateTitle();
     },
-    'user.emailHash'() {
+    'user.idHash'() {
       this.syncUserStorage();
     },
     'status.keybindState'(state) {
@@ -220,8 +222,8 @@ new Vue({
     syncUserStorage() {
       const userStorageTotal = JSON.parse(localStorage.getItem('userStorage'));
       let userStorage = this.userStorage;
-      if (userStorageTotal !== null && userStorageTotal.hasOwnProperty(this.user.emailHash)) {
-        userStorage = userStorageTotal[this.user.emailHash];
+      if (userStorageTotal !== null && (userStorageTotal.hasOwnProperty(this.user.idHash) || userStorageTotal.hasOwnProperty(this.user.emailHash))) {
+        userStorage = userStorageTotal[this.user.idHash] || userStorageTotal[this.user.emailHash];
       }
       this.$store.dispatch('setUserStorage', userStorage);
     },
@@ -266,6 +268,8 @@ new Vue({
         }
       } else if (route.name === 'Help') {
         title += this.status.helpSectionTitle;
+      } else if (route.name === 'DocumentHistory') {
+        title += StringUtil.getUiPhraseByLang('Version history', this.user.settings.language, this.resources.i18n);
       } else {
         title += StringUtil.getUiPhraseByLang(route.name, this.user.settings.language, this.resources.i18n);
       }

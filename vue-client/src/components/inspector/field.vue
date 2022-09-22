@@ -3,11 +3,12 @@
   The field component is responsible for a specific key value pair.
   It's responsible for its own data, and dispatches all changes to the form component.
 */
-import { isArray, isPlainObject, isObject, cloneDeep, get, differenceWith, isEqual } from 'lodash-es';
+import { cloneDeep, differenceWith, get, isArray, isEqual, isObject, isPlainObject } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
+import * as DisplayUtil from 'lxljs/display';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
@@ -48,6 +49,10 @@ export default {
       type: String,
       default: '',
     },
+    overrideLabel: {
+      type: String,
+      default: null,
+    },
     fieldValue: {
       type: [Object, String, Array, Boolean, Number],
       default: null,
@@ -85,6 +90,10 @@ export default {
       default: null,
     },
     isDistinguished: {
+      type: Boolean,
+      default: false,
+    },
+    isCard: {
       type: Boolean,
       default: false,
     },
@@ -141,8 +150,23 @@ export default {
   watch: {
   },
   computed: {
+    diffAdded() {
+      if (this.diff == null) return false;
+      return this.diff.added.some(a => isEqual(a.path, this.path));
+    },
+    diffRemoved() {
+      if (this.diff == null) return false;
+      return this.diff.removed.some(r => isEqual(r.path, this.path));
+    },
+    diffModified() {
+      if (this.diff == null) return false;
+      return this.diff.modified.some(m => isEqual(m.path, this.path));
+    },
     isReverseProperty() {
       return this.fieldKey.indexOf('@reverse') > -1;
+    },
+    reverseProperty() {
+      return this.isReverseProperty ? this.fieldKey.split('/').pop() : null;
     },
     isFieldDiff() {
       return this.isDiff && this.newDiffValues.length === 0;
@@ -423,8 +447,17 @@ export default {
       }
       return false;
     },
+    fieldRdfType() {
+      return DisplayUtil.rdfDisplayType(this.fieldKey, this.resources);
+    },
   },
   methods: {
+    onLabelClick() {
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'field-label-clicked',
+        value: this.path,
+      });
+    },
     pasteClipboardItem() {
       const obj = this.clipboardValue;
       DataUtil.fetchMissingLinkedToQuoted(obj, this.$store)
@@ -624,6 +657,9 @@ export default {
       'Field--inner': isInner,
       'is-lastAdded': isLastAdded, 
       'is-removed': removed,
+      'is-diff-added': diffAdded && !diffRemoved,
+      'is-diff-removed': diffRemoved && !diffAdded,
+      'is-diff-modified': diffModified,
       'is-locked': locked,
       'is-diff': isFieldDiff,
       'is-new': isFieldNew,
@@ -639,7 +675,7 @@ export default {
     <div class="Field-labelContainer" 
       :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}"
       v-if="showKey && !isInner" >
-      <div class="Field-labelWrapper">
+      <div class="Field-labelWrapper" :class="{'sticky': !diff }">
         <div v-if="!isLocked" class="Field-actions">
           <div class="Field-action Field-remove" 
             v-show="!locked && isRemovable" 
@@ -700,11 +736,26 @@ export default {
             </i>
           </div>
         </div>
+        <div class="Field-label-history-icon" v-if="diffRemoved && !diffAdded">
+          <i class="fa fa-trash-o icon--sm icon-removed"></i>
+        </div>
+        <div class="Field-label-history-icon" v-if="diffAdded && !diffRemoved">
+          <i class="fa fa-plus-circle icon--sm icon-added"></i>
+        </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
           <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-            :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>          
+          <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" 
+                :title="fieldKey" 
+                @click="onLabelClick">
+            {{ (fieldRdfType || overrideLabel || fieldKey) | labelByLang | capitalize }}
+          </span>
+          <span class="Field-navigateHistory" 
+                v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" 
+                @click="onLabelClick"
+                v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
+            {{ (fieldRdfType || overrideLabel || fieldKey) | labelByLang | capitalize }}
+          </span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
             <div class="Field-comment">
@@ -722,9 +773,11 @@ export default {
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
       <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
       <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey !== '@id' && fieldKey !== '@type'" 
-        :title="fieldKey">{{ fieldKey | labelByLang | capitalize }}</span>
-
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>
+      <span class="Field-navigateHistory" v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" @click="onLabelClick"
+            v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
+        {{ fieldKey | labelByLang | capitalize }}
+      </span>
       <!-- Is inner -->
       <div class="Field-actions is-nested">
         <div class="Field-action Field-comment" v-if="propertyComment && !locked" >
@@ -784,6 +837,12 @@ export default {
           </i>
         </div>
       </div>
+      <div class="Field-history-icon" v-if="diffRemoved && !diffAdded">
+        <i class="fa fa-trash-o icon--sm icon-removed"></i>
+      </div>
+      <div class="Field-history-icon" v-if="diffAdded && !diffRemoved">
+        <i class="fa fa-plus-circle icon--sm icon-added"></i>
+      </div>
       <!-- {{ key | labelByLang | capitalize }} -->
     </div>
 
@@ -809,11 +868,12 @@ export default {
     <div class="Field-content FieldContent" 
       v-bind:class="{ 'is-locked': locked}"
       v-if="fieldKey !== '@type' && isObjectArray">
+      <portal-target :name="`typeSelect-${path}`" />
       <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
         :key="index"
         v-bind:class="{
-          'is-entityContent': getDatatype(item) == 'entity' && !isLinkedInstanceOf,
+          'is-entityContent': getDatatype(item) == 'entity' && !isCard,
           'is-new': newDiffValues.indexOf(item) > -1,
         }">
 
@@ -822,14 +882,17 @@ export default {
           :field-key="fieldKey" 
           :parent-path="path"
           :index="index" 
+          :diff="diff"
           :item="item"></item-error>
 
         <item-grouped 
           v-if="getDatatype(item) == 'grouped'"
           :field-key="fieldKey" 
+          :is-card="isCard"
           :entity-type="entityType" 
           :parent-path="path"
           :index="index" 
+          :diff="diff"
           :item="item"></item-grouped>
 
         <!-- Other linked resources -->
@@ -842,17 +905,20 @@ export default {
           :value="item" 
           :entity-type="entityType" 
           :index="index" 
+          :diff="diff"
           :parent-path="path"></item-vocab>
 
         <!-- Other linked entities -->
         <item-entity 
           v-if="getDatatype(item) == 'entity'" 
           :is-locked="locked" 
-          :is-distinguished="isDistinguished"
-          :is-expanded="isLinkedInstanceOf"
+          :is-card="isCard"
+          :is-expanded="isCard"
+          :exclude-properties="isReverseProperty ? [reverseProperty] : []"
           :item="item" 
           :field-key="fieldKey" 
           :index="index" 
+          :diff="diff"
           :parent-path="path"></item-entity>
 
         <!-- Not linked, local child objects -->
@@ -872,6 +938,7 @@ export default {
           :index="index" 
           :parent-path="path" 
           :in-array="valueIsArray" 
+          :diff="diff"
           :should-expand="expandChildren || embellished"
           :show-action-buttons="actionButtonsShown"></item-local>
 
@@ -889,11 +956,13 @@ export default {
           :range-full="rangeFull"
           :index="index"
           :in-array="valueIsArray"
+          :diff="diff"
           :show-action-buttons="actionButtonsShown"
           :should-expand="expandChildren || embellished"
           :parent-path="path"></item-sibling>
       </div>
-      <portal-target :name="`typeSelect-${path}`" />
+      <!-- The above div must be the last element since currently 
+           item-entity depends on this to draw separators -->
     </div>
 
     <div class="Field-content is-endOfTree js-endOfTree" 
@@ -911,6 +980,7 @@ export default {
           :field-value="item" 
           :entity-type="entityType" 
           :index="index" 
+          :diff="diff"
           :parent-path="path"></item-vocab>
 
         <!-- Boolean value -->
@@ -921,6 +991,7 @@ export default {
           :field-value="item" 
           :entity-type="entityType" 
           :index="index" 
+          :diff="diff"
           :parent-path="path"></item-boolean>
 
         <!-- Numeric value -->
@@ -931,6 +1002,7 @@ export default {
           :field-value="item"
           :entity-type="entityType"
           :index="index"
+          :diff="diff"
           :parent-path="path"
           :range="range"/>
 
@@ -945,6 +1017,7 @@ export default {
           :field-key="fieldKey" 
           :index="index" 
           :parent-path="path" 
+          :diff="diff"
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
 
@@ -956,6 +1029,7 @@ export default {
           :field-value="item"
           :field-key="fieldKey"
           :index="index"
+          :diff="diff"
           :parent-path="path"
           :is-expanded="isExpanded"></item-shelf-control-number>
       </div>
@@ -997,9 +1071,7 @@ export default {
   }
 
   &.is-diff {
-    &:not(.is-new) {
-      background-color: transparent;
-    }
+    background-color: transparent;
   }
 
   &.is-new {
@@ -1007,6 +1079,37 @@ export default {
     border: 1px solid;
     border-color: @base-color;
     background-color: hsl(hue(@base-color), 50%, 95%);
+  }
+
+  &.is-diff-added {
+    @base-color: @form-add;
+    border: 1px solid;
+    border-color: @brand-primary;
+    background-color: @base-color;
+  }
+
+  &.is-diff-removed {
+    @base-color: @remove;
+    border: 1px dashed;
+    border-color: @base-color;
+    background-color: @form-remove;
+  }
+
+  &.is-diff-modified {
+    @base-color: rgb(247, 160, 123); // $kb-primary-orange
+    border: 1px dashed;
+    border-color: @base-color;
+    background-color: hsl(hue(@base-color), 80%, 90%);
+  }
+
+  .icon-removed {
+    transform: translateY(-5%);
+    color: @remove;
+  }
+
+  .icon-added {
+    position: relative;
+    color: #428BCAFF; // @brand-primary base.
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
@@ -1022,9 +1125,10 @@ export default {
   }
 
   &--inner {
-    border: 0;
+    border: 1px solid transparent;
     flex: 1 100%;
     margin: 0;
+    margin-top: -2px;
     padding: 5px 0 5px 0;
     border-radius: 4px;
     overflow: visible;
@@ -1032,14 +1136,13 @@ export default {
 
     .icon-hover();
         
-    &:hover {
+    &:hover:not(.is-locked) {
       background: @field-background-hover;
       box-shadow: inset 0 0 0 1px @grey-lighter;
     }
 
-    &.is-locked,
+    &.is-locked:not(.is-new),
     .Field--inner & {
-      background: none;
       box-shadow: none;
     }
 
@@ -1124,7 +1227,6 @@ export default {
 
   &-labelWrapper {
     position: static;
-    position: sticky;
     top: 55px;
     display: flex;
     justify-content: flex-end;
@@ -1133,6 +1235,10 @@ export default {
 
     @media (min-width: @screen-sm) {
       flex-direction: row;      
+    }
+
+    &.sticky {
+      position: sticky;
     }
 
     @media (min-width: @screen-md) {
@@ -1350,6 +1456,17 @@ export default {
     }
   }
 
+  &-history-icon {
+    padding: 0 10px;
+    margin-left: auto;
+    margin-right: 0;
+    display: block;
+  }
+
+  &-label-history-icon {
+    padding-right: 0.3em;
+  }
+
   .path-code {
     display: inline-block;
     word-break: break-all;
@@ -1357,6 +1474,10 @@ export default {
     background-color: #f0f0f0;
     padding: 0;
     color: #4f4f4f;
+  }
+
+  &-navigateHistory {
+    cursor: pointer;
   }
 }
 

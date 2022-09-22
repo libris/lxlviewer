@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, isArray, get, isObject, dropRight } from 'lodash-es';
+import { cloneDeep, isArray, get, isObject, dropRight, isEqual } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -23,6 +23,10 @@ export default {
     hoverLinks: {
       type: Boolean,
       default: false,
+    },
+    diff: {
+      type: Object,
+      default: null,
     },
     index: Number,
   },
@@ -85,6 +89,48 @@ export default {
         return `${this.parentPath}[${this.index}]`;
       }
       return `${this.parentPath}`;
+    },
+    diffAdded() {
+      if (this.diff == null) return false;
+      const parentValue = get(this.inspector.compositeHistoryData, this.parentPath);
+      if (isArray(parentValue)) {
+        const obj = parentValue[this.index];
+        return this.diff.added.some(a => isEqual(obj, a.val));
+      }
+      return false;
+    },
+    diffRemoved() {
+      if (this.diff == null) return false;
+      const parentValue = get(this.inspector.compositeHistoryData, this.parentPath);
+      if (isArray(parentValue)) {
+        const obj = parentValue[this.index];
+        return this.diff.removed.some(r => isEqual(obj, r.val));
+      }
+      return false;
+    },
+    diffModified() {
+      if (this.diff == null) return false;
+      const parentValue = get(this.inspector.compositeHistoryData, this.parentPath);
+      if (isArray(parentValue)) {
+        const obj = parentValue[this.index];
+        return this.diff.modified.some(m => isEqual(obj, m.val));
+      }
+      return false;
+    },
+    diffAddedChildren() {
+      if (this.diff == null) return false;
+      return this.diff.added
+        .filter(a => !isEqual(a.path, this.path))
+        .some(a => a.path.includes(this.path));
+    },
+    diffRemovedChildren() {
+      if (this.diff == null) return false;
+      return this.diff.removed
+        .filter(r => !isEqual(r.path, this.path))
+        .some(r => r.path.includes(this.path));
+    },
+    diffChangedChildren() {
+      return this.diffAddedChildren || this.diffRemovedChildren;
     },
     inClassAndProperty() {
       return `${this.entityType}.${this.fieldKey}`;

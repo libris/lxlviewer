@@ -23,10 +23,6 @@ export default {
       default: '',
     },
     mainEntity: null, // mainEntity of the record we want to create item on
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
     compact: {
       type: Boolean,
       default: false,
@@ -91,6 +87,9 @@ export default {
     },
     keyBindText() {
       return LayoutUtil.getKeybindingText('add-holding');
+    },
+    disabled() {
+      return this.inspector && this.inspector.status.isNew;
     },
   },
   components: {

@@ -1,4 +1,4 @@
-import { isObject, isArray, uniqBy, each, remove } from 'lodash-es';
+import { isObject, isArray, uniqBy, isNumber, each, remove } from 'lodash-es';
 import * as VocabUtil from './vocab';
 
 export function removeDomain(string, removableBaseUriArray) {
@@ -11,11 +11,20 @@ export function removeDomain(string, removableBaseUriArray) {
 }
 
 export async function digestMessage(message) {
-  const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // hash the message
-  const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
-  return hashHex;
+  try {
+    const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // hash the message
+    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+    return hashHex;
+  } catch (e) {
+    // crypto.subtle is only available on https sites and localhost but not e.g. http://kblocalhost.kb.se
+    // eslint-disable-next-line
+    const sjcl = await import('sjcl');
+    const hashArray = sjcl.hash.sha256.hash(message);
+    const hashHex = sjcl.codec.hex.fromBits(hashArray);
+    return hashHex;
+  }
 }
 
 export function convertToPrefix(uri, context) {
@@ -164,6 +173,24 @@ export function isLibrisResourceUri(uri, settings) {
     }
   }
   return false;
+}
+
+export function arrayPathToString(arrayPath) {
+  let path = '';
+  for (let i = 0; i < arrayPath.length; i++) {
+    if (isNumber(arrayPath[i])) {
+      path += `[${arrayPath[i]}]`;
+    } else {
+      if (i !== 0) {
+        path += '.';
+      }
+      path += arrayPath[i];
+    }
+  }
+  path = path.replace('@graph[0]', 'record');
+  path = path.replace('@graph[1]', 'mainEntity');
+  path = path.replace('@graph[2]', 'mainEntity.instanceOf');
+  return path;
 }
 
 export function getLabelFromObject(object, language) {

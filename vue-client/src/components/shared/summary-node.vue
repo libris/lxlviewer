@@ -5,11 +5,12 @@
 import * as StringUtil from 'lxljs/string';
 import LensMixin from '@/components/mixins/lens-mixin';
 import ItemMixin from '@/components/mixins/item-mixin';
+import OverflowMixin from '@/components/mixins/overflow-mixin';
 import PreviewCard from '@/components/shared/preview-card';
 
 export default {
   name: 'summary-node',
-  mixins: [LensMixin, ItemMixin],
+  mixins: [LensMixin, ItemMixin, OverflowMixin],
   props: {
     item: {
       type: [Object, String],
@@ -23,12 +24,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    isStatic: {
+      type: Boolean,
+      default: false,
+    },
+    handleOverflow: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
     };
-  },
-  methods: {
   },
   computed: {
     isLinked() {
@@ -59,10 +66,11 @@ export default {
 
 <template>
   <div class="SummaryNode">
-    <span class="SummaryNode-label" v-if="!isLinked">
-      {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ',&nbsp;' }}
+    <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
+      {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
+      <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
-    <v-popover v-if="isLinked" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
+    <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
         <a v-if="!isLibrisResource" :href="focusData['@id'] | convertResourceLink">{{getItemLabel}}</a>
@@ -87,6 +95,40 @@ export default {
       &:hover {
         color: darken(@brand-primary, 20%);
         border-color: darken(@brand-primary, 20%);
+      }
+    }
+  }
+  &-label {
+    // max 3 lines before ellipsis
+    // works in all major modern browsers
+    // https://stackoverflow.com/a/13924997
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-inline-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    vertical-align: bottom;
+    &.expanded {
+      -webkit-line-clamp: unset;
+      line-clamp: unset;
+    }
+
+    &.overflown {
+      &::before {
+        font-family: FontAwesome;
+        content: "\F054";
+        font-weight: normal;
+        color: @brand-primary;
+        display: inline-block;
+        margin-right: 5px;
+        transition: transform 0.1s ease;
+      }
+
+      &.expanded {
+        &::before {
+          transform: rotate(90deg);
+        }
       }
     }
   }

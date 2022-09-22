@@ -1,11 +1,13 @@
 <script>
 import { size } from 'lodash-es';
 import { mapGetters } from 'vuex';
+import * as VocabUtil from 'lxljs/vocab';
 import { hasAutomaticShelfControlNumber } from '@/utils/shelfmark';
 import * as LayoutUtil from '@/utils/layout';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 import PreviewCard from '@/components/shared/preview-card';
+import ReverseRelations from '@/components/inspector/reverse-relations';
 
 export default {
   name: 'item-entity',
@@ -16,7 +18,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    isDistinguished: {
+    isCard: {
       type: Boolean,
       default: false,
     },
@@ -64,6 +66,13 @@ export default {
     isMaybeMagicShelfMark() {
       return this.focusData['@type'] === 'ShelfMarkSequence';
     },
+    recordType() {
+      return VocabUtil.getRecordType(
+        this.focusData['@type'],
+        this.resources.vocab,
+        this.resources.context,
+      );
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -105,6 +114,7 @@ export default {
   },
   components: {
     PreviewCard,
+    ReverseRelations,
   },
   created() {
     this.$on('collapse-item', () => {
@@ -153,9 +163,9 @@ export default {
 <template>
   <div 
     class="ItemEntity-container"
-    :class="{ 'is-expanded': expanded }">
+    :class="{ 'is-expanded': expanded, 'is-card': isCard }">
     <div 
-      v-if="isDistinguished"
+      v-if="isCard"
       class="ItemEntity-expander"
       tabindex="0"
       @click="toggleExpanded()"
@@ -165,16 +175,30 @@ export default {
     <div
       :id="`formPath-${path}`"
       class="ItemEntity-content"
-      v-show="!isDistinguished || !expanded">
+      v-show="!isCard || !expanded">
       <v-popover class="ItemEntity-popover" placement="bottom-start" @show="$refs.previewCard.populateData()">
         <div class="ItemEntity chip" 
           tabindex="0"
           ref="chip"
-          v-if="!isDistinguished || !expanded" 
-          :class="{ 'is-locked': isLocked, 'is-marc': isMarc, 'is-newlyAdded': animateNewlyAdded, 'is-removeable': removeHover, 'is-cache': recordType === 'CacheRecord', 'is-placeholder': recordType === 'PlaceholderRecord', 'is-ext-link': !isLibrisResource}">
+          v-if="!isCard || !expanded"
+          :class="{ 'is-locked': isLocked,
+           'is-marc': isMarc,
+           'is-newlyAdded': animateNewlyAdded,
+           'is-removeable': removeHover,
+           'is-cache': recordType === 'CacheRecord',
+           'is-placeholder': recordType === 'PlaceholderRecord',
+           'is-ext-link': !isLibrisResource,
+           'is-removed': diffRemoved,
+           'is-added': diffAdded }">
+          <span class="ItemEntity-history-icon" v-if="diffRemoved">
+            <i class="fa fa-trash-o icon--sm icon-removed"></i>
+          </span>
+          <span class="ItemEntity-history-icon" v-if="diffAdded">
+            <i class="fa fa-plus-circle icon--sm icon-added"></i>
+          </span>
           <span class="ItemEntity-label chip-label">
-            <span v-if="(!isDistinguished || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-            <span v-if="(!isDistinguished || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
+            <span v-if="(!isCard || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
+            <span v-if="(!isCard || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
             <span class="placeholder"></span></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
             <i class="fa fa-times-circle icon icon--sm chip-icon" 
@@ -194,19 +218,34 @@ export default {
       </v-popover> 
     </div>
     
-    <entity-summary 
-      v-if="isDistinguished && expanded"
-      :focus-data="focusData" 
-      :should-link="true"
-      :should-open-tab="true"
-      :show-all-keys="true"
-      :embedded-in-field="true"></entity-summary>
+    <div class="ItemEntity-cardContainer" v-if="isCard && expanded">
+      <entity-summary
+        :focus-data="focusData" 
+        :exclude-properties="excludeProperties"
+        :should-link="true"
+        :should-open-tab="true"
+        :show-all-keys="true"
+        :embedded-in-field="true"/>
+      <div class="ItemEntity-reverseRelationsContainer" v-if="recordType === 'Instance'">
+        <reverse-relations :main-entity="focusData"
+                           :mode="'items'"
+                           :force-load="true"
+                           :compact="false"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="less">
 
 @linked-color: #daefec;
+
+// FIXME: ugly that we depend on Field-contentItem here
+.Field-contentItem:last-child >
+.ItemEntity-container >
+.ItemEntity-cardContainer {
+  border-bottom: none;
+}
 
 .ItemEntity {
 
@@ -223,6 +262,26 @@ export default {
     }
   }
 
+  &-cardContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 0.25em;
+    border-bottom: 2px solid @form-border;
+    
+    margin-bottom: 0.5em;
+  }
+/*
+  &-cardContainer:last-child {
+    border-bottom: none;
+  }
+*/
+  &-reverseRelationsContainer {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+  }
+  
   &-expander {
     cursor: pointer;
     padding: 0.3em 0 0 0;
@@ -232,6 +291,10 @@ export default {
   &-content {
     flex: 0 1 auto;
     min-width: 0; //prevent flex overflow
+  }
+
+  &-history-icon {
+    padding: 0 4px 0 2px;
   }
 
   &-popover > .trigger {
@@ -257,6 +320,18 @@ export default {
     animation-fill-mode: both;
     -webkit-animation-name: pulse;
     animation-name: pulse;
+  }
+
+  &.is-removed {
+    @base-color: @remove;
+    border: 1px dashed;
+    border-color: @base-color;
+    background-color: @form-remove;
+  }
+
+  &.is-added {
+    @base-color: @form-add;
+    background-color: @base-color;
   }
 
   &-removeButton {
