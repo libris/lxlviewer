@@ -67,7 +67,7 @@ export default {
 <template>
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
-      {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ',&nbsp;' }}
+      {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
     <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
