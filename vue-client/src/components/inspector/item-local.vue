@@ -204,6 +204,9 @@ export default {
     isHolding() {
       return this.inspector.data.mainEntity['@type'] === 'Item';
     },
+    isHistoryView() {
+      return this.diff !== null;
+    },
     openPropertyAdder() {
       if (this.inspector.status.editing) {
         this.propertyAdderOpened = true;
@@ -373,10 +376,12 @@ export default {
       }
     },
     diff() {
-      if (this.diff && this.diffChangedChildren) {
-        this.expand();
-      } else {
-        this.collapse();
+      if (this.isHistoryView()) {
+        if (this.diffChangedChildren) {
+          this.expand();
+        } else {
+          this.collapse();
+        }
       }
     },
     extractDialogActive(val) {
@@ -429,10 +434,12 @@ export default {
       this.expand();
       this.expandChildren = true;
     }
-    if (this.diff && this.diffChangedChildren) {
-      this.expand();
-    } else {
-      this.collapse();
+    if (this.isHistoryView()) {
+      if (this.diffChangedChildren) {
+        this.expand();
+      } else {
+        this.collapse();
+      }
     }
     if (this.inspector.status.isNew) {
       this.expand();
