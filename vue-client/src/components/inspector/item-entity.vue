@@ -240,8 +240,10 @@ export default {
 
 @linked-color: #daefec;
 
-// FIXME: ugly that we depend on Field-contentItem here
-.Field-contentItem:last-child >
+// FIXME: ugly that we depend on Field-contentItem here?
+li.Field:last-child >
+.Field-content >
+.Field-contentItem >
 .ItemEntity-container >
 .ItemEntity-cardContainer {
   border-bottom: none;
