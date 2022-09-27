@@ -245,6 +245,12 @@ li.Field:last-child >
 .Field-content >
 .Field-contentItem >
 .ItemEntity-container >
+.ItemEntity-cardContainer,
+// Don't draw separator for the linked work card-view in a record
+li.FieldList-item >
+.Field-content >
+.Field-contentItem >
+.ItemEntity-container >
 .ItemEntity-cardContainer {
   border-bottom: none;
 }
