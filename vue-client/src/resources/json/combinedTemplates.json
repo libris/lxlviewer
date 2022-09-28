@@ -449,6 +449,12 @@
               "year": ""
             }
           ],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": ""
+            }
+          ],
           "instanceOf": {
             "@type": "Text",
             "classification": [
@@ -487,12 +493,6 @@
             "contentType": [
               {
                 "@id": "https://id.kb.se/term/rda/Text"
-              }
-            ],
-            "summary": [
-              {
-                "@type": "Summary",
-                "label": ""
               }
             ]
           }
@@ -1071,6 +1071,12 @@
               "label": ""
             }
           ],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": [""]
+            }
+          ],
           "instanceOf": {
             "@type": "Text",
             "language": [
@@ -1141,12 +1147,6 @@
                     "prefLabel": ""
                   }
                 ]
-              }
-            ],
-            "summary": [
-              {
-                "@type": "Summary",
-                "label": [""]
               }
             ]
           }
@@ -1641,6 +1641,12 @@
 
             }
           ],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": ""
+            }
+          ],
           "tableOfContents": [
             {
               "@type": "TableOfContents",
@@ -1698,13 +1704,7 @@
                 "label": ""
               }
             ],
-            "subject": [],
-            "summary": [
-              {
-                "@type": "Summary",
-                "label": ""
-              }
-            ]
+            "subject": []
           }
         }
       }
@@ -2010,6 +2010,12 @@
               "year": ""
             }
           ],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": ""
+            }
+          ],
           "instanceOf": {
             "@type": "Text",
             "classification": [
@@ -2048,12 +2054,6 @@
             "contentType": [
               {
                 "@id": "https://id.kb.se/term/rda/Text"
-              }
-            ],
-            "summary": [
-              {
-                "@type": "Summary",
-                "label": ""
               }
             ]
           }
