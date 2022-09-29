@@ -66,7 +66,7 @@ function tryGetValueByLang(item, propertyId, langCode, context) {
     throw new Error('tryGetValueByLang was called with an undefined object.');
   }
   
-  if (typeof propertyId === 'string' && propertyId.startsWith('@reverse/')) {
+  if (typeof propertyId === 'string' && propertyId.startsWith('@reverse/') && propertyId !== '@reverse/itemOf') {
     return get(item, propertyId.replaceAll('/', '.'));
   }
   
