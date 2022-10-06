@@ -176,7 +176,9 @@ function formatLabel(item, type, resources) {
   // FIXME: this should be driven by display.jsonld
   // We don't want Library and Bibliography. Could do isSubclassOf('Agent') && !isSubclassOf('Collection') but hardcode the list for now
   const isAgent = ['Person', 'Organization', 'Jurisdiction', 'Meeting', 'Family'].includes(type);
-  const separator = isAgent ? ', ' : ' • ';
+  // We don't want to touch commas inside property values when doing the final cleanup. 
+  // Use a private use character as a temporary stand in for comma.
+  const separator = isAgent ? '\uE000 ' : ' • ';
 
   const objKeys = Object.keys(item);
   for (let i = 0; i < objKeys.length; i++) {
@@ -195,7 +197,7 @@ function formatLabel(item, type, resources) {
             label.push(formatter['fresnel:contentLast']);
           }
         } else {
-          label.push(value.map(replaceInnerDot).join(', '));
+          label.push(value.map(replaceInnerDot).join('\uE000 '));
         }
       } else {
         label.push(replaceInnerDot(value));
@@ -204,8 +206,9 @@ function formatLabel(item, type, resources) {
   }
   let labelStr = label.join('');
   // TODO: lots of punctuation for MARC going on inside some of these fields
-  labelStr = labelStr.replace(/([:.,]),/g, '$1');
-  labelStr = labelStr.replace(/\(,\s?/g, '(');
+  labelStr = labelStr.replace(/([:.\uE000])\uE000/g, '$1');
+  labelStr = labelStr.replace(/\(\uE000\s?/g, '(');
+  labelStr = labelStr.replace(/\uE000/g, ',');
   return labelStr;
 }
 
