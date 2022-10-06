@@ -222,51 +222,22 @@ export const mutations = {
   },
 }
 
-const toJson = response => {
-  if (response.ok) {
-    return response.json()
-  }
-  else {
-    throw { statusCode: response.status }
-  }
-}
-
-function catcher(error) {
-  return err => {
-    error({ statusCode: err.statusCode || 500, 'message': err.message || ''})
-  }
-}
-
 export const actions = {
-  async nuxtServerInit({ commit, dispatch }, { req, error }) {
+  async nuxtServerInit({ commit, dispatch }, { req, error, ssrContext }) {
     dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host']) });
 
-    await Promise.all([
-      fetch(translateAliasedUri(CONTEXT))
-      .then(toJson)
-      .then(contextData => {
-        const processed = VocabUtil.preprocessContext(contextData);
-        commit('SET_VOCAB_CONTEXT', processed['@context']);
-      })
-      .catch(catcher(error)),
-
-      fetch(translateAliasedUri(VOCAB))
-      .then(toJson)
-      .then(vocab => {
-        commit('SET_VOCAB', vocab);
-        commit('SET_VOCAB_CLASSES', vocab);
-        commit('SET_VOCAB_PROPERTIES', vocab);
-      })
-      .catch(catcher(error)),
-
-      fetch(translateAliasedUri(DISPLAY))
-      .then(toJson)
-      .then(display => {
-        const expanded = DisplayUtil.expandInherited(display);
-        commit('SET_DISPLAY', expanded);
-      })
-      .catch(catcher(error))
-    ]);
+    const vocab = ssrContext.$vocab;
+    if (vocab.error) {
+      console.error(`Error getting vocab resources: ${JSON.stringify(vocab.error)}`)
+      error(vocab.error);
+    }
+    else {
+      commit('SET_VOCAB_CONTEXT', vocab.context);
+      commit('SET_VOCAB', vocab.vocab);
+      commit('SET_VOCAB_CLASSES', vocab.vocab);
+      commit('SET_VOCAB_PROPERTIES', vocab.vocab);
+      commit('SET_DISPLAY', vocab.display);
+    }
   },
   setMarcframe({ commit }, data) {
     commit('SET_MARCFRAME_DATA', data);
