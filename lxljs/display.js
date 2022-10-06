@@ -67,7 +67,7 @@ function tryGetValueByLang(item, propertyId, langCode, context) {
   }
   
   if (typeof propertyId === 'string' && propertyId.startsWith('@reverse/') && propertyId !== '@reverse/itemOf') {
-    return get(item, propertyId.replaceAll('/', '.'));
+    return get(item, propertyId.replace(/\//g, '.'));
   }
   
   const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
@@ -171,12 +171,14 @@ export function translateObjectProp(object) {
 function formatLabel(item, type, resources) {
   const label = [];
   const formatters = resources.display.lensGroups.formatters;
-  const replaceInnerDot = s => s.replaceAll(' • ', ', '); // TODO: handle nested chips properly
+  const replaceInnerDot = s => s.replace(/ • /g, ', '); // TODO: handle nested chips properly
   
   // FIXME: this should be driven by display.jsonld
   // We don't want Library and Bibliography. Could do isSubclassOf('Agent') && !isSubclassOf('Collection') but hardcode the list for now
   const isAgent = ['Person', 'Organization', 'Jurisdiction', 'Meeting', 'Family'].includes(type);
-  const separator = isAgent ? ', ' : ' • ';
+  // We don't want to touch commas inside property values when doing the final cleanup. 
+  // Use a private use character as a temporary stand in for comma.
+  const separator = isAgent ? '\uE000 ' : ' • ';
 
   const objKeys = Object.keys(item);
   for (let i = 0; i < objKeys.length; i++) {
@@ -195,7 +197,7 @@ function formatLabel(item, type, resources) {
             label.push(formatter['fresnel:contentLast']);
           }
         } else {
-          label.push(value.map(replaceInnerDot).join(', '));
+          label.push(value.map(replaceInnerDot).join('\uE000 '));
         }
       } else {
         label.push(replaceInnerDot(value));
@@ -204,8 +206,9 @@ function formatLabel(item, type, resources) {
   }
   let labelStr = label.join('');
   // TODO: lots of punctuation for MARC going on inside some of these fields
-  labelStr = labelStr.replace(/([:.,]),/g, '$1');
-  labelStr = labelStr.replace(/\(,\s?/g, '(')
+  labelStr = labelStr.replace(/([:.\uE000])\uE000/g, '$1');
+  labelStr = labelStr.replace(/\(\uE000\s?/g, '(');
+  labelStr = labelStr.replace(/\uE000/g, ',');
   return labelStr;
 }
 
@@ -458,7 +461,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
             }
           }
         }
-        const str = s => JSON.stringify(s || '<nothing>').replaceAll('"', '');
+        const str = s => JSON.stringify(s || '<nothing>').replace(/"/g, '');
         lxlLog(`Computed alternateProperties for ${trueItem['@type']}. Looked for: ${property.alternateProperties.map(str).join(', ')} | Settled on: ${str(foundProperty)}`);
       }
     }

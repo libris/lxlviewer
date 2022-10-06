@@ -65,6 +65,7 @@ export default {
   modules: [
     '@nuxtjs/style-resources',
     '@nuxt/http',
+    '~/modules/vocab-cache'
   ],
 
   styleResources: {
