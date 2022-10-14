@@ -200,6 +200,10 @@ export default {
       }
       return false;
     },
+    isTransliterable() {
+    //TODO:  Base on language containers
+    return this.fieldKey === 'partName' || this.fieldKey === 'mainTitle';
+    },
     warningOnField() {
       if (this.fieldKey === '@type') {
         return 'Warning on field';
@@ -1017,7 +1021,8 @@ export default {
           :parent-path="path" 
           :diff="diff"
           :show-action-buttons="actionButtonsShown"
-          :is-expanded="isExpanded"></item-value>
+          :is-expanded="isExpanded"
+          :is-transliterable="isTransliterable"></item-value>
 
         <!-- shelfControlNumber -->
         <item-shelf-control-number
