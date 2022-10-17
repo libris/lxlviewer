@@ -5,7 +5,6 @@ import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
-import * as httpUtil from "../../utils/http";
 
 export default {
   name: 'item-value',
@@ -34,10 +33,6 @@ export default {
     isExpanded: {
       type: Boolean,
       default: false,
-    },
-    isTransliterable: {
-      type: Boolean,
-      default: true,
     },
   },
   watch: {
@@ -96,12 +91,6 @@ export default {
         return true;
       }
       return false;
-    },
-    langCodes() {
-      //  First need to get available language codes
-      //  We can mock this to start with
-      //  get these via find API later (id.kb.se yadayada find?type=LanguageForm&_limit=2000)
-      return ['uk', 'kk'];
     },
   },
   methods: {
@@ -164,42 +153,6 @@ export default {
     addFocus() {
       this.$refs.textarea.focus({ preventScroll: true }); // Prevent scroll as we will handle this ourselves
     },
-    async requestTransliteration(sourceObj) {
-      let trans;
-      trans = httpUtil.post({
-        url: `${this.settings.apiPath}/_transliterate`,
-        token: this.user.token
-      }, sourceObj)
-        .then((result) => {
-          console.log('result', result);
-          return result;
-        });
-      return trans;
-    },
-    async transliterate() {
-      const lastIndex = this.path.lastIndexOf('.')
-      const lastProperty = this.parentPath.slice(lastIndex + 1);
-      const parentsParent = this.parentPath.slice(0, lastIndex);
-      let parentsParentValue = get(this.inspector.data, parentsParent);
-      console.log('parentsParentValue', JSON.stringify(parentsParentValue));
-      const byLangified = lastProperty.concat('ByLang');
-      const langCode = "uk";
-      const source = this.value[0];
-      let result = await this.requestTransliteration({"langTag": langCode, "source": source});
-
-      console.log(JSON.stringify({langCode, source}));
-      parentsParentValue[byLangified] =  Object.assign({"uk": this.value[0]}, result);
-
-      await this.$store.dispatch('updateInspectorData', {
-        changeList: [
-          {
-            path: parentsParent,
-            value: parentsParentValue,
-          },
-        ],
-        addToHistory: true,
-      })
-    },
   },
   components: {
   },
@@ -238,24 +191,6 @@ export default {
       @keydown.enter.prevent="handleEnter"
       v-if="!isLocked"
       ref="textarea"></textarea>
-
-    <div class="ItemValue-transItems" v-show="isTransliterable">
-      <i class="fa fa-language fa-fw action-button icon icon--sm ItemValue-transIcon"
-         tabindex="0"
-         role="button"
-         :aria-label="'Romanize' | translatePhrase"
-         v-on:click="transliterate"
-         v-tooltip.top="translate('Romanize')"
-         @keyup.enter="transliterate">
-      </i>
-      <span class="ItemValue-langLabel"
-            tabindex="0"
-            role="button"
-            v-tooltip.top="translate('Byt språk för romanisering från: ukrainska')">
-            {{ langCodes[0] }}
-          </span>
-    </div>
-
     <span class="ItemValue-text"
       v-if="isLocked && !shouldLink">{{fieldValue}}</span>
     <a class="ItemValue-text"
@@ -386,27 +321,6 @@ export default {
     animation-fill-mode: both;
     -webkit-animation-name: pulse;
     animation-name: pulse;
-  }
-
-  &-langLabel {
-    color: @text-brand-env;
-    font-weight: bold;
-    float: right;
-    //position: relative;
-    font-size: 0.8em;
-    padding: 0.5rem 0.5rem 0.5rem 0;
-  }
-
-  &-transIcon {
-    //position: relative;
-    //top: 0.9rem;
-    padding: 0.7rem 0.5rem 0.5rem 0;
-  }
-
-  &-transItems {
-    display: flex;
-    flex-direction: row;
-    margin-left: 0.5rem;
   }
 }
 </style>

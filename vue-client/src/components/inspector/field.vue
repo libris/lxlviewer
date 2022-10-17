@@ -21,6 +21,7 @@ import ItemBoolean from './item-boolean';
 import ItemNumeric from './item-numeric';
 import ItemGrouped from './item-grouped';
 import ItemShelfControlNumber from './item-shelf-control-number';
+import ItemTransliteration from './item-transliteration';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
@@ -145,6 +146,7 @@ export default {
     'item-numeric': ItemNumeric,
     'item-grouped': ItemGrouped,
     'item-shelf-control-number': ItemShelfControlNumber,
+    'item-transliteration' : ItemTransliteration,
     'entity-adder': EntityAdder,
   },
   watch: {
@@ -199,10 +201,6 @@ export default {
         return true;
       }
       return false;
-    },
-    isTransliterable() {
-    //TODO:  Base on language containers
-    return this.fieldKey === 'partName' || this.fieldKey === 'mainTitle';
     },
     warningOnField() {
       if (this.fieldKey === '@type') {
@@ -550,6 +548,10 @@ export default {
       }
       if (this.fieldKey === 'shelfControlNumber') {
         return 'shelfControlNumber';
+      }
+      //TODO:  Base on language containers
+      if (this.fieldKey === 'partName') {
+        return 'transliterable';
       }
       if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
@@ -1021,8 +1023,15 @@ export default {
           :parent-path="path" 
           :diff="diff"
           :show-action-buttons="actionButtonsShown"
-          :is-expanded="isExpanded"
-          :is-transliterable="isTransliterable"></item-value>
+          :is-expanded="isExpanded"></item-value>
+
+        <item-transliteration
+          v-if="getDatatype(item) == 'transliterable'"
+          :is-locked="locked"
+          :field-value="item"
+          :field-key="fieldKey"
+          :parent-path="path">
+        </item-transliteration>
 
         <!-- shelfControlNumber -->
         <item-shelf-control-number
