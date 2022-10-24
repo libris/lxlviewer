@@ -1,12 +1,12 @@
 <script>
-import * as httpUtil from "../../utils/http";
 import ItemMixin from '@/components/mixins/item-mixin';
-import {cloneDeep, debounce, get, isArray} from "lodash-es";
+import LanguageMixin from '@/components/mixins/language-mixin';
+import {cloneDeep, debounce, get} from "lodash-es";
 import AutoSize from "autosize";
 
 export default {
-  name: "item-transliteration.vue",
-  mixins: [ItemMixin],
+  name: "item-transliterable.vue",
+  mixins: [ItemMixin, LanguageMixin],
   props: {
     fieldValue: {
       type: [String, Number],
@@ -15,6 +15,10 @@ export default {
     isLocked: {
       type: Boolean,
       default: false,
+    },
+    byLangify: {
+      type: Boolean,
+      default: true,
     },
   },
   watch: {
@@ -47,6 +51,9 @@ export default {
     },
   },
   methods: {
+    romanize(source) {
+      this.transliterate(source);
+    },
     readyForSave(value) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
     },
@@ -55,7 +62,6 @@ export default {
       return false;
     },
     update(newValue) {
-      console.log('newValue', newValue);
       const oldValue = cloneDeep(get(this.inspector.data, this.path));
 
       this.readyForSave(true);
@@ -79,49 +85,15 @@ export default {
         AutoSize.update(textarea);
       });
     },
-    async requestTransliteration(sourceObj) {
-      let trans;
-      trans = httpUtil.post({
-        url: `${this.settings.apiPath}/_transliterate`,
-        token: this.user.token
-      }, sourceObj)
-        .then((result) => {
-          console.log('result', result);
-          return result;
-        });
-      return trans;
-    },
-    async transliterate() {
-      const lastIndex = this.path.lastIndexOf('.')
-      const lastProperty = this.parentPath.slice(lastIndex + 1);
-      const parentsParent = this.parentPath.slice(0, lastIndex);
-      let parentsParentValue = get(this.inspector.data, parentsParent);
-      console.log('parentsParentValue', JSON.stringify(parentsParentValue));
-      const byLangified = lastProperty.concat('ByLang');
-      const langCode = "uk";
-      const source = this.sourceValue;
-      let result = await this.requestTransliteration({"langTag": langCode, "source": source});
-      console.log(JSON.stringify({langCode, source}));
-      parentsParentValue[byLangified] =  Object.assign({"uk": this.sourceValue}, result);
-
-      await this.$store.dispatch('updateInspectorData', {
-        changeList: [
-          {
-            path: parentsParent,
-            value: parentsParentValue,
-          },
-        ],
-        addToHistory: true,
-      })
-    },
   }
-
 }
 </script>
 
 <template>
-  <div class="ItemTransliteration js-value">
-     <textarea class="ItemTransliteration-input js-itemValueInput"
+  <div class="ItemTransliterable js-value">
+     <span class="ItemTransliterable-list">
+       <span class="ItemTransliterable-row">
+     <textarea class="ItemTransliterable-input js-itemValueInput"
                rows="1"
                v-model="textFieldValue"
                :aria-label="fieldKey | labelByLang"
@@ -131,31 +103,34 @@ export default {
                @keydown.enter.prevent="handleEnter"
                v-if="!isLocked"
                ref="textarea"></textarea>
-    <span class="ItemTransliteration-text"
-          v-if="isLocked">{{fieldValue}}</span>
-    <div class="ItemTransliteration-transItems">
-      <i class="fa fa-language fa-fw action-button icon icon--sm ItemTransliteration-transIcon"
+    <div class="ItemTransliterable-transItems">
+      <i class="fa fa-language fa-fw action-button icon icon--sm ItemTransliterable-transIcon"
          tabindex="0"
          role="button"
          :aria-label="'Romanize' | translatePhrase"
-         v-on:click="transliterate"
+         v-on:click="romanize(sourceValue)"
          v-tooltip.top="translate('Romanize')"
-         @keyup.enter="transliterate">
+         @keyup.enter="romanize(sourceValue)">
       </i>
-      <span class="ItemTransliteration-langLabel"
+      <span class="ItemTransliterable-langLabel"
             tabindex="0"
             role="button"
             v-tooltip.top="translate('Byt språk för romanisering från: ukrainska')">
             {{ langCodes[0] }}
           </span>
     </div>
+         </span>
+    </span>
+
   </div>
 </template>
 
 <style lang="less">
-.ItemTransliteration {
+.ItemTransliterable {
   display: flex;
   flex: 1;
+  position: relative;
+  width: 100%;
   flex-shrink: 0;
   margin-left: -5px;
   padding: 5px;
@@ -168,6 +143,8 @@ export default {
     border: 1px solid @grey-light;
     border-radius: 2px;
     padding: 2px 10px;
+    margin-bottom: 7px;
+
     resize: none;
     transition: border .25s ease-out;
 
@@ -186,19 +163,36 @@ export default {
      padding: 0.7rem 0.5rem 0.5rem 0;
    }
 
+  &-keyvalue {
+    display: flex;
+    flex-direction: row;
+  }
+
   &-transItems {
      display: flex;
      flex-direction: row;
      margin-left: 0.5rem;
    }
 
+  &-transliterated {
+
+  }
+
+  &-list {
+    position: relative;
+    width: 100%;
+  }
+  &-row {
+    display: flex;
+    flex-direction: row;
+  }
+
   &-langLabel {
     color: @text-brand-env;
     font-weight: bold;
     float: right;
-    //position: relative;
     font-size: 0.8em;
-    padding: 0.5rem 0.5rem 0.5rem 0;
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   }
 }
 

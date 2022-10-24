@@ -21,10 +21,11 @@ import ItemBoolean from './item-boolean';
 import ItemNumeric from './item-numeric';
 import ItemGrouped from './item-grouped';
 import ItemShelfControlNumber from './item-shelf-control-number';
-import ItemTransliteration from './item-transliteration';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
+import ItemTransliterable from './item-transliterable';
+import ItemBylang from './item-bylang';
 
 export default {
   name: 'field',
@@ -146,7 +147,8 @@ export default {
     'item-numeric': ItemNumeric,
     'item-grouped': ItemGrouped,
     'item-shelf-control-number': ItemShelfControlNumber,
-    'item-transliteration' : ItemTransliteration,
+    'item-transliterable': ItemTransliterable,
+    'item-bylang': ItemBylang,
     'entity-adder': EntityAdder,
   },
   watch: {
@@ -540,7 +542,7 @@ export default {
       if (this.isPlainObject(o) && o.hasOwnProperty('isGrouped')) {
         return 'grouped';
       }
-      if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
+      if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type') && !this.isLangContainer()) {
         return 'error'; 
       }
       if (typeof o === 'boolean') {
@@ -552,6 +554,10 @@ export default {
       //TODO:  Base on language containers
       if (this.fieldKey === 'partName') {
         return 'transliterable';
+      }
+      //TODO:  Generalize
+      if (this.fieldKey === 'partNameByLang') {
+        return 'bylang';
       }
       if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
@@ -584,6 +590,9 @@ export default {
         return true;
       }
       return false;
+    },
+    isLangContainer() {
+      return this.fieldKey.includes('ByLang');
     },
     isInGraph(o) {
       const data = this.inspector.data;
@@ -890,6 +899,15 @@ export default {
           :diff="diff"
           :item="item"></item-error>
 
+        <item-bylang
+          v-if="getDatatype(item) == 'bylang'"
+          :is-locked="locked"
+          :field-value="item"
+          :field-key="fieldKey"
+          :index="index"
+          :parent-path="path">
+        </item-bylang>
+
         <item-grouped 
           v-if="getDatatype(item) == 'grouped'"
           :field-key="fieldKey" 
@@ -1025,13 +1043,13 @@ export default {
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
 
-        <item-transliteration
+        <item-transliterable
           v-if="getDatatype(item) == 'transliterable'"
           :is-locked="locked"
           :field-value="item"
           :field-key="fieldKey"
           :parent-path="path">
-        </item-transliteration>
+        </item-transliterable>
 
         <!-- shelfControlNumber -->
         <item-shelf-control-number
