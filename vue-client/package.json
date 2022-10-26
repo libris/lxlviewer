@@ -42,7 +42,7 @@
     "marked": "^2.0.0",
     "md5": "^2.2.1",
     "modernizr": "^3.6.0",
-    "moment": "^2.29.2",
+    "moment": "^2.29.4",
     "path": "^0.12.7",
     "portal-vue": "^1.5.0",
     "style-resources-loader": "^1.3.3",
