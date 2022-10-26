@@ -195,7 +195,7 @@ export default {
           @keyup.enter="unselectThis"
           tabindex="0"
           :aria-label="'Close' | translatePhrase">
-          <i class="fa fa-fw fa-close icon"></i>
+          <i class="fa fa-fw fa-times icon"></i>
         </span>
       </div>
       </div>

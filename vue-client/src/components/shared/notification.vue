@@ -64,7 +64,7 @@ export default {
                    :title="content.link.title"
                    :target="content.link.newTab ? '_blank' : '' ">
         {{ content.link.title }}
-        <i v-if="content.link.newTab" class="fa fa-external-link" aria-hidden="true"></i>
+        <i v-if="content.link.newTab" class="fa fa-external-link-alt" aria-hidden="true"></i>
       </router-link>
       <a
         class="Notification-link"
@@ -72,7 +72,7 @@ export default {
         :href="content.link.to" 
         :target="content.link.newTab ? '_blank' : '' ">
         {{ content.link.title }}
-        <i v-if="content.link.newTab" class="fa fa-external-link" aria-hidden="true"></i>
+        <i v-if="content.link.newTab" class="fa fa-external-link-alt" aria-hidden="true"></i>
       </a>
       
   </div>

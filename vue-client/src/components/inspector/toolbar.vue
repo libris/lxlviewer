@@ -484,17 +484,17 @@ export default {
         @click="hideOtherFormatMenu" >
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" :href="focusData.mainEntity['@id'] | convertResourceLink" target="_blank">
-            <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
+            <i class="fa fa-fw fa-external-link-alt" aria-hidden="true"></i>
             Formell resurs</a>
         </li>
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld') | convertResourceLink" target="_blank">
-            <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
+            <i class="fa fa-fw fa-external-link-alt" aria-hidden="true"></i>
             JSON-LD</a>
         </li>
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl') | convertResourceLink" target="_blank">
-            <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
+            <i class="fa fa-fw fa-external-link-alt" aria-hidden="true"></i>
             Turtle</a>
         </li>
         <li class="Toolbar-menuItem">
@@ -535,7 +535,7 @@ export default {
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
           <a class="Toolbar-menuLink"  @click="formControl('duplicate-item'), hideToolsMenu()">
-          <i class="fa fa-fw fa-files-o"></i>
+          <i class="fa fa-fw fa-copy"></i>
           {{ "Make copy" | translatePhrase }}{{ getKeybindText('duplicate-item') ? ` (${getKeybindText('duplicate-item')})` : ''}}
           </a>
         </li>
@@ -655,7 +655,7 @@ export default {
       @mouseover="showCancel = true" 
       @mouseout="showCancel = false"
       :aria-label="'Cancel' | translatePhrase">
-      <i class="fa fa-close" aria-hidden="true">
+      <i class="fa fa-times" aria-hidden="true">
       </i>
     </button>
 
@@ -666,7 +666,7 @@ export default {
       @mouseout="showSave = false"
       v-tooltip.left="`${translate('Save')} (${getKeybindText('save-item')})`"
       :aria-label="'Save' | translatePhrase">
-      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
+      <i class="fa fa-fw fa-circle-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
       </i>
     </button>
@@ -677,7 +677,7 @@ export default {
       @mouseover="showClarifySave = true"
       @mouseout="showClarifySave = false"
       :aria-label="'Save and stop editing' | translatePhrase">
-      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
+      <i class="fa fa-fw fa-circle-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-check" v-show="!inspector.status.saving">
       </i>
     </button>
@@ -689,8 +689,8 @@ export default {
       @mouseover="showEdit = true" 
       @mouseout="showEdit = false"
       :aria-label="'Edit' | translatePhrase">
-      <i class="fa fa-fw fa-pencil-square-o" v-show="!inspector.status.opening"></i>
-      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
+      <i class="fa fa-fw fa-pencil-alt" v-show="!inspector.status.opening"></i>
+      <i class="fa fa-fw fa-circle-notch fa-spin" v-show="inspector.status.opening"></i>
     </button>
   </div> 
 </template>

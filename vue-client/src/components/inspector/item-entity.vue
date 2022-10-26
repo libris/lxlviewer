@@ -191,7 +191,7 @@ export default {
            'is-removed': diffRemoved,
            'is-added': diffAdded }">
           <span class="ItemEntity-history-icon" v-if="diffRemoved">
-            <i class="fa fa-trash-o icon--sm icon-removed"></i>
+            <i class="fa fa-trash icon--sm icon-removed"></i>
           </span>
           <span class="ItemEntity-history-icon" v-if="diffAdded">
             <i class="fa fa-plus-circle icon--sm icon-added"></i>

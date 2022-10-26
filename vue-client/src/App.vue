@@ -169,7 +169,8 @@ export default {
 
 <style lang="less">
 @import "~bootstrap/less/bootstrap";
-@import "~font-awesome/css/font-awesome.css";
+@import "~@fortawesome/fontawesome-free/css/fontawesome.css";
+@import "~@fortawesome/fontawesome-free/css/solid.css";
 
 // BOOTSTRAP UNSET START
 .dropdown-menu > li > a {
@@ -741,7 +742,7 @@ h1 {
 
     &::before {
       content: "\f096";
-      font-family: "FontAwesome";
+      font-family: "Font Awesome 5 Free";
       display: inline-block;
       font-size: 18px;
       font-size: 1.8rem;

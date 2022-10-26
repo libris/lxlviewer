@@ -50,7 +50,7 @@ export default {
     <span>{{ filter.label | labelByLang }}</span>
     <router-link
       :to="filter.up | asAppPath">
-      <i class="fa fa-fw fa-close icon"
+      <i class="fa fa-fw fa-times icon"
         ></i>
     </router-link>
   </div>

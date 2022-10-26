@@ -310,7 +310,7 @@ export default {
         <div class="VersionHistory-sideCol" :class="{'hidden-view': !showSideCol}">
           <div class="VersionHistory-header">
             {{ 'Version history' | translatePhrase }}
-            <i class="fa fa-close icon icon--md sideColButton" role="button"
+            <i class="fa fa-times icon icon--md sideColButton" role="button"
                @click="closeSideCol()"></i>
           </div>
           <VersionHistoryChangesets :change-sets="changeSets" :selected-version="selectedVersion"

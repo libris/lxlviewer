@@ -151,7 +151,7 @@ export default {
                 tabindex="0"
                 @click="toggleFullView" 
                 :title="'Expand' | translatePhrase"></i>
-              <i class="fa fa-close icon icon--md"
+              <i class="fa fa-times icon icon--md"
                 role="button"
                 tabindex="0"
                 @click="close"

@@ -240,13 +240,13 @@ export default {
   <div class="HoldingList" :class="{ 'is-sender': isSender }" v-if="directoryCare[this.name]">
     <div class="HoldingList-topBar">
         <button v-if="isSender" class="btn btn--md btn-light SelectAll-btn" @click="toggleAll" :disabled="lock || movableHoldings.length === 0">
-          <i class="fa fa-fw fa-square-o" v-show="!allHoldingsSelected"></i>
-          <i class="fa fa-fw fa-check-square-o" v-show="allHoldingsSelected"></i>
+          <i class="fa fa-fw fa-square" v-show="!allHoldingsSelected"></i>
+          <i class="fa fa-fw fa-check-square" v-show="allHoldingsSelected"></i>
           <!-- <input v-model="allHoldingsSelected" type="checkbox" :disabled="lock || movableHoldings.length === 0" @change="handleAllSelect" /> -->
           {{ 'Select all' | translatePhrase }}
         </button>
         <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && !loading" :disabled="lock || directoryCare.selectedHoldings.length === 0" @click="doSend">{{ 'Move holdings' | translatePhrase }}</button>
-        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && loading" :disabled="true"><i class="fa fa-circle-o-notch fa-spin"></i> {{ 'Moving holdings' | translatePhrase }}</button>
+        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && loading" :disabled="true"><i class="fa fa-circle-notch fa-spin"></i> {{ 'Moving holdings' | translatePhrase }}</button>
         <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ 'Holdings chosen' | translatePhrase | lowercase }}</span>
         <div v-if="!isSender"></div>
         <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ 'Holdings' | translatePhrase | lowercase }}</span>
@@ -275,7 +275,7 @@ export default {
               <i v-tooltip.top="foundOnDestinationTooltip" class="fa fa-fw fa-warning"></i>
             </div>
             <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding) && directoryCare.reciever">
-              <i class="statusItem-loading fa fa-fw fa-circle-o-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
+              <i class="statusItem-loading fa fa-fw fa-circle-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
               <i class="statusItem-success fa fa-fw fa-check" v-show="getStatus(holding) === 'done'" />
               <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
             </div>

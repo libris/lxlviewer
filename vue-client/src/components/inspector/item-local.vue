@@ -488,7 +488,7 @@ export default {
           {{getItemLabel}}
         </span>
         <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
-          <i class="fa fa-trash-o icon--sm icon-removed"></i>
+          <i class="fa fa-trash icon--sm icon-removed"></i>
         </span>
         <div class="ItemLocal-history-icon" v-if="diffAdded && !diffRemoved">
           <i class="fa fa-plus-circle icon--sm icon-added"></i>

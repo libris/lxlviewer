@@ -305,7 +305,7 @@ export default {
     display: inline-block;
 
     &::before {
-      font-family: FontAwesome;
+      font-family: "Font Awesome 5 Free";
       content: "\F054";
       font-weight: normal;
       color: @brand-primary;

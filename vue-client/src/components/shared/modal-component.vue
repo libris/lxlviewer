@@ -129,7 +129,7 @@ export default {
               @click="close" 
               role="button"
               tabindex="0"
-              class="fa fa-close icon--md">
+              class="fa fa-times icon--md">
             </i>
           </span>
         </slot>

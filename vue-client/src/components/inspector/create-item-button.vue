@@ -127,7 +127,7 @@ export default {
         v-tooltip.top="keyBindText">
         <i class="fa fa-plus-circle"
           v-if="!hasHolding && !checkingHolding"></i>
-        <i class="fa fa-fw fa-circle-o-notch fa-spin"
+        <i class="fa fa-fw fa-circle-notch fa-spin"
           v-if="checkingHolding"></i>
         {{"Add holding" | translatePhrase}}
         <span>({{user.settings.activeSigel}})</span>

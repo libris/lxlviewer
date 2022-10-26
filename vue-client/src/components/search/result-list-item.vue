@@ -178,7 +178,7 @@ export default {
     padding: 0.5em 1em;
     line-height: 1.2em;
 
-    & .fa-external-link {
+    & .fa-external-link-alt {
       margin: 4px 6px 0 0;
       font-size: 14px;
     }

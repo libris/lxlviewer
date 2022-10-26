@@ -680,7 +680,7 @@ export default {
           <div class="Field-action Field-remove" 
             v-show="!locked && isRemovable" 
             :class="{'disabled': activeModal}">
-            <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
+            <i class="fa fa-trash fa-fw action-button icon icon--sm"
               role="button"
               :aria-label="'Remove' | translatePhrase"
               tabindex="0"
@@ -737,7 +737,7 @@ export default {
           </div>
         </div>
         <div class="Field-label-history-icon" v-if="diffRemoved && !diffAdded">
-          <i class="fa fa-trash-o icon--sm icon-removed"></i>
+          <i class="fa fa-trash icon--sm icon-removed"></i>
         </div>
         <div class="Field-label-history-icon" v-if="diffAdded && !diffRemoved">
           <i class="fa fa-plus-circle icon--sm icon-added"></i>
@@ -759,7 +759,7 @@ export default {
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
             <div class="Field-comment">
-              <i class="fa fa-question-circle-o icon icon--sm"></i>
+              <i class="fa fa-question-circle icon icon--sm"></i>
               <span class="Field-commentText">{{ 'Non editable incoming link' | translatePhrase }}.
                 <br />
                 <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ 'Read more about incoming links' | translatePhrase }}.</a>
@@ -807,7 +807,7 @@ export default {
         <div class="Field-action Field-remove" 
           v-show="!locked && isRemovable" 
           :class="{'disabled': activeModal}">
-          <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
+          <i class="fa fa-trash fa-fw action-button icon icon--sm"
             tabindex="0"
             role="button"
             :aria-label="'Remove' | translatePhrase"
@@ -838,7 +838,7 @@ export default {
         </div>
       </div>
       <div class="Field-history-icon" v-if="diffRemoved && !diffAdded">
-        <i class="fa fa-trash-o icon--sm icon-removed"></i>
+        <i class="fa fa-trash icon--sm icon-removed"></i>
       </div>
       <div class="Field-history-icon" v-if="diffAdded && !diffRemoved">
         <i class="fa fa-plus-circle icon--sm icon-added"></i>

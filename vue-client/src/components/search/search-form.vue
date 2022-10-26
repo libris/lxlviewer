@@ -338,7 +338,7 @@ export default {
           @focus="searchGroupFocus.clear = true"
           @blur="searchGroupFocus.clear = false"
           :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
-          <i class="fa fa-fw fa-close"></i>
+          <i class="fa fa-fw fa-times"></i>
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
           <select
@@ -363,7 +363,7 @@ export default {
           @blur="searchGroupFocus.submit = false"
           :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
           :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0" >
-          <i class="fa fa-search"></i>
+          <i class="fas fa-search"></i>
         </button>
       </div>
       <remote-databases

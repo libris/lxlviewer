@@ -341,7 +341,7 @@ export default {
         v-if="isImport && shouldLink" 
         :title="header.join(', ')" 
         v-on:click="importThis()">
-        <i class="fa fa-external-link" aria-hidden="true"></i>
+        <i class="fa fa-external-link-alt" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </span>
       <router-link class="EntitySummary-titleLink"
@@ -349,7 +349,7 @@ export default {
         :to="this.routerPath" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
-        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
+        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link-alt" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </router-link>
       <a class="EntitySummary-titleLink"
@@ -357,7 +357,7 @@ export default {
         :href="uri | convertResourceLink" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
-        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
+        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link-alt" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </a>
       
@@ -570,7 +570,7 @@ export default {
 
     &.overflown {
       &::before {
-        font-family: FontAwesome;
+        font-family: "Font Awesome 5 Free";
         content: "\F054";
         font-weight: normal;
         color: @brand-primary;

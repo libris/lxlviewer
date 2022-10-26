@@ -303,7 +303,7 @@ export default {
         @keyup.enter="filterVisible = !filterVisible"></i>
 
       <i v-if="isFilter"
-        class="fa fa-close icon icon--sm FilterSelect-clear"
+        class="fa fa-times icon icon--sm FilterSelect-clear"
         :title="'Close' | translatePhrase"
         role="button"
         @click="clear()"

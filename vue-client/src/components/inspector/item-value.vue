@@ -199,7 +199,7 @@ export default {
       target="_blank" 
       :title="`${fieldValue} (${newWindowText})`">
         {{fieldValue}} 
-        <i class="fa fa-external-link" aria-hidden="true"></i>
+        <i class="fa fa-external-link-alt" aria-hidden="true"></i>
     </a>
     <div class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
@@ -211,11 +211,11 @@ export default {
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)">
-      <i class="fa fa-trash-o icon icon--sm">
+      <i class="fa fa-trash icon icon--sm">
       </i>
     </div>
     <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
-      <i class="fa fa-trash-o icon--sm icon-removed"></i>
+      <i class="fa fa-trash icon--sm icon-removed"></i>
     </span>
     <span class="ItemLocal-history-icon" v-if="diffAdded && !diffRemoved">
       <i class="fa fa-plus-circle icon--sm icon-added"></i>

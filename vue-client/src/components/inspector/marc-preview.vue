@@ -86,7 +86,7 @@ export default {
           <div class="MarcPreview-status" v-if="marcObj === null">
             <p v-show="error === null" >
               {{ "Loading marc" | translatePhrase }}...<br>
-              <i class="fa fa-circle-o-notch fa-spin"></i>
+              <i class="fa fa-circle-notch fa-spin"></i>
             </p>
             <p v-show="error !== null" class="MarcPreview-error">
               {{ "Something went wrong" | translatePhrase }}...

@@ -72,7 +72,7 @@ export default {
   <div class="SearchResult" :class="{'is-showResult': showResult}">
     <div v-if="(status.resultList.loading || status.resultList.error)" class="SearchResult-loadingText panel panel-default">
       <span v-if="!status.resultList.error">
-        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <i class="fa fa-circle-notch fa-spin"></i>
       </span>
       <span v-if="status.resultList.error">
         <i class="fa fa-warning"></i>

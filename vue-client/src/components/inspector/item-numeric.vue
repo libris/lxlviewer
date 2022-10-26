@@ -188,7 +188,7 @@ export default {
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)">
-      <i class="fa fa-trash-o icon icon--sm">
+      <i class="fa fa-trash icon icon--sm">
       </i>
     </div>
   </div>
