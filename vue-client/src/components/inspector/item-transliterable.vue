@@ -16,10 +16,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    byLangify: {
-      type: Boolean,
-      default: true,
-    },
   },
   watch: {
     isLocked(val) {
@@ -51,9 +47,6 @@ export default {
     },
   },
   methods: {
-    romanize(source) {
-      this.transliterate(source);
-    },
     readyForSave(value) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
     },
@@ -85,7 +78,7 @@ export default {
         AutoSize.update(textarea);
       });
     },
-  }
+  },
 }
 </script>
 
@@ -104,24 +97,22 @@ export default {
                v-if="!isLocked"
                ref="textarea"></textarea>
     <div class="ItemTransliterable-transItems">
-      <i class="fa fa-language fa-fw action-button icon icon--sm ItemTransliterable-transIcon"
+      <i class="fa fa-globe fa-fw action-button icon icon-sm ItemTransliterable-transIcon"
          tabindex="0"
          role="button"
-         :aria-label="'Romanize' | translatePhrase"
-         v-on:click="romanize(sourceValue)"
-         v-tooltip.top="translate('Romanize')"
-         @keyup.enter="romanize(sourceValue)">
-      </i>
-      <span class="ItemTransliterable-langLabel"
-            tabindex="0"
-            role="button"
-            v-tooltip.top="translate('Byt språk för romanisering från: ukrainska')">
-            {{ langCodes[0] }}
-          </span>
+         @click="byLangify('uk', sourceValue)"
+         v-tooltip.top="translate('Välj språk')">
+          </i>
     </div>
          </span>
     </span>
 
+<!--    <language-selector-->
+<!--      :entity-type="item['@type']"-->
+<!--      :allowed="allowedProperties"-->
+<!--      :isActive="languageSelectorOpened"-->
+<!--      :path="getPath"-->
+<!--    />-->
   </div>
 </template>
 
@@ -187,13 +178,12 @@ export default {
     flex-direction: row;
   }
 
-  &-langLabel {
-    color: @text-brand-env;
-    font-weight: bold;
-    float: right;
-    font-size: 0.8em;
-    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-  }
+  //&-langLabel {
+  //  color: @text-brand-env;
+  //  font-weight: bold;
+  //  float: right;
+  //  font-size: 0.8em;
+  //  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  //}
 }
-
 </style>

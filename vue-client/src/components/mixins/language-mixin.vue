@@ -8,12 +8,10 @@ export default {
       type: String,
       default: '',
     },
-    byLangify: {},
   },
   data() {
     return {
       sourceValue: '',
-      transliterated: [],
     }
   },
   computed: {
@@ -38,26 +36,15 @@ export default {
         });
       return trans;
     },
-    async transliterate(sourceValue) {     //Transliterates and byLangifies
+    async byLangify(tag, sourceValue) {
       const lastIndex = this.path.lastIndexOf('.')
       const parentsParent = this.parentPath.slice(0, lastIndex);
       let parentsParentValue = get(this.inspector.data, parentsParent);
-
       let lastProperty = this.parentPath.slice(lastIndex + 1);
+      const byLangified = lastProperty.concat('ByLang');
+      delete parentsParentValue[lastProperty];
+      parentsParentValue[byLangified] =  { [tag] : sourceValue };
 
-      if (this.byLangify) {
-        const byLangified = lastProperty.concat('ByLang');
-        delete parentsParentValue[lastProperty];
-        lastProperty = byLangified;
-      }
-
-      const langCode = "uk";
-      const source = sourceValue;
-      let result = await this.requestTransliteration({"langTag": langCode, "source": source});
-
-      parentsParentValue[lastProperty] =  Object.assign({"uk": source}, result);
-      console.log("parentsParent", JSON.stringify(parentsParent));
-      console.log("parentsParentValue", JSON.stringify(parentsParentValue));
       await this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -67,7 +54,21 @@ export default {
         ],
         addToHistory: true,
       })
-      console.log("updated data", JSON.stringify(get(this.inspector.data, parentsParent)));
+    },
+    async transliterate(tag, sourceValue) {
+      let result = await this.requestTransliteration({"langTag": tag, "source": sourceValue});
+      let languageMap = get(this.inspector.data, this.parentPath);
+      console.log('this.parentsPath', JSON.stringify(this.parentPath));
+      console.log('languageMap', JSON.stringify(languageMap));
+      await this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: this.parentPath,
+            value: Object.assign(languageMap, result),
+          },
+        ],
+        addToHistory: true,
+      })
     },
     isTransSchema(tag) {
       //TODO: Make more robust
