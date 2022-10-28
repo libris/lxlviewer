@@ -101,18 +101,12 @@ export default {
          tabindex="0"
          role="button"
          @click="byLangify('uk', sourceValue)"
-         v-tooltip.top="translate('Välj språk')">
+         v-tooltip.top="translate('Välj språk')"
+         @keyup.enter="byLangify('uk', sourceValue)">
           </i>
     </div>
          </span>
     </span>
-
-<!--    <language-selector-->
-<!--      :entity-type="item['@type']"-->
-<!--      :allowed="allowedProperties"-->
-<!--      :isActive="languageSelectorOpened"-->
-<!--      :path="getPath"-->
-<!--    />-->
   </div>
 </template>
 
@@ -129,19 +123,13 @@ export default {
   transition: background-color 0.2s ease;
 
   &-input {
+    grid-area: input;
     width: 100%;
+    border: none;
     display: block;
-    border: 1px solid @grey-light;
-    border-radius: 2px;
     padding: 2px 10px;
-    margin-bottom: 7px;
-
     resize: none;
-    transition: border .25s ease-out;
 
-    &:focus {
-      border: 1px solid @grey-dark;
-    }
   }
 
   &-text {
@@ -149,9 +137,9 @@ export default {
     position: relative;
   }
   &-transIcon {
+    grid-area: action;
    //position: relative;
    //top: 0.9rem;
-     padding: 0.7rem 0.5rem 0.5rem 0;
    }
 
   &-keyvalue {
@@ -174,16 +162,18 @@ export default {
     width: 100%;
   }
   &-row {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    justify-items: start;
+    align-items: center;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+    "input action";
+    border: 1px solid @grey-light;
+    border-radius: 2px;
+    transition: border .25s ease-out;
+    &:focus {
+      border: 1px solid @grey-dark;
+    }
   }
-
-  //&-langLabel {
-  //  color: @text-brand-env;
-  //  font-weight: bold;
-  //  float: right;
-  //  font-size: 0.8em;
-  //  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-  //}
 }
 </style>

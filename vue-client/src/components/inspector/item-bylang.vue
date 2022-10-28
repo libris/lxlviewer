@@ -133,6 +133,8 @@ export default {
     resize: none;
     transition: border .25s ease-out;
     width: 100%;
+    padding: 2px 10px;
+
   }
 
   &-text {
@@ -153,9 +155,10 @@ export default {
   }
 
   &-container {
-    display: inline-grid;
+    display: grid;
     justify-items: start;
     align-items: center;
+    column-gap: 5px;
     grid-template-columns: 1fr auto;
     grid-template-rows: auto;
     grid-template-areas:
@@ -175,7 +178,6 @@ export default {
     }
     place-self: center stretch;
     grid-area: key;
-    padding: 0 10px;
   }
 
   &-value {
