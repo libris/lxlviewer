@@ -770,3 +770,164 @@ export function computeContainerMap(contextList) {
 
   return containerMap;
 }
+
+export class VocabUtil {
+  constructor(vocab, context) {
+    this.vocab = vocab;
+    this.context = context;
+  }
+
+  getTermObject(term) {
+    return getTermObject(term, this.vocab, this.context);
+  }
+
+  filterOwnClasses(classArray) {
+    return filterOwnClasses(classArray, this.context);
+  }
+
+  getBaseClasses(classId) {
+    return getBaseClasses(classId, this.vocab, this.context);
+  }
+
+  getBaseClassesFromArray(typeArray) {
+    return getBaseClassesFromArray(typeArray, this.vocab, this.context);
+  }
+
+  isSubClassOf(classId, baseClassId) {
+    return isSubClassOf(classId, baseClassId, this.vocab, this.context);
+  }
+
+  getRecordType(mainEntityType) {
+    return getRecordType(mainEntityType, this.vocab, this.context);
+  }
+
+  /*
+  hasCategory(term, category, resources) {
+    return hasCategory(term, category, resources);
+  }
+  */
+
+  getTermByType(type, settings) {
+    return getTermByType(type, this.vocab, this.context, settings);
+  }
+
+  getTermFromLabel(label, language) {
+    return getTermFromLabel(label, language, this.vocab);
+  }
+
+  getPropertyTypes(propertyId) {
+    return getPropertyTypes(propertyId, this.vocab, this.context);
+  }
+
+  getAllEnumerationTypesFor(onProp) {
+    return getAllEnumerationTypesFor(onProp, this.vocab);
+  }
+
+  getRestrictions(restrictionProperty, entityType, property) {
+    return getRestrictions(restrictionProperty, entityType, property, this.vocab, this.context);
+  }
+
+  getRange(propertyId) {
+    return getRange(propertyId, this.vocab, this.context);
+  }
+
+  getSubClasses(classname) {
+    return getSubClasses(classname, this.vocabClasses, this.context);
+  }
+
+  getAllSubClasses(classArray) {
+    return getAllSubClasses(classArray, this.vocabClasses, this.context);
+  }
+
+  getSubClassChain(classname) {
+    return getSubClassChain(classname, this.vocabClasses, this.context);
+  }
+
+  getRangeFull(key, vocabClasses) {
+    return getRangeFull(key, this.vocab, this.context, vocabClasses);
+  }
+
+  getDomainList(property) {
+    return getDomainList(property, this.vocab, this.context);
+  }
+
+  getProperties(classId, vocabProperties) {
+    return getProperties(classId, this.vocabClasses, vocabProperties, this.context);
+  }
+
+  getContextValue(propertyId) {
+    return getContextValue(propertyId, this.key, this.context);
+  }
+
+  propIsRepeatable(propertyId) {
+    return propIsRepeatable(propertyId, this.context);
+  }
+
+  getPropertiesFromArray(typeArray, vocabProperties) {
+    return getPropertiesFromArray(typeArray, this.vocabClasses, vocabProperties, this.context);
+  }
+
+  isEmbedded(classId, settings) {
+    return isEmbedded(classId, this.vocab, settings, this.context);
+  }
+
+  isDistinct(classId, settings) {
+    return isDistinct(classId, this.vocab, settings, this.context);
+  }
+
+  isExtractable(classId, settings) {
+    return isExtractable(classId, this.vocab, settings, this.context);
+  }
+
+  getMappedPropertyByContainer(property) {
+    return getMappedPropertyByContainer(property, this.container, this.context);
+  }
+
+  getBaseUriFromPrefix(prefix) {
+    return getBaseUriFromPrefix(prefix, this.context);
+  }
+
+  getContainedBaseUri(uri) {
+    return getContainedBaseUri(uri, this.context);
+  }
+
+  getContainedPrefix(uri) {
+    return getContainedPrefix(uri, this.context);
+  }
+
+  getPrefixFromBaseUri(baseUri) {
+    return getPrefixFromBaseUri(baseUri, this.context);
+  }
+
+  getValidTemplates(type, templateCollection, vocabClasses) {
+    return getValidTemplates(type, templateCollection, vocabClasses, this.context);
+  }
+
+  /*
+  isAbstract(termObject) {
+    return isAbstract(termObject);
+  }
+  */
+
+  getTree(term, counter = 0, parentChainString = '') {
+    return getTree(term, this.vocab, this.context, counter, parentChainString);
+  }
+
+  flattenTree(termArray, language) {
+    return flattenTree(termArray, this.vocab, this.context, language);
+  }
+
+  printTree(term) {
+    return printTree(term, this.vocab, this.context);
+  }
+
+  preprocessContext() {
+    return preprocessContext(this.context);
+  }
+
+  /*
+  computeContainerMap(contextList) {
+    return computeContainerMap(contextList);
+  }
+  */
+}
