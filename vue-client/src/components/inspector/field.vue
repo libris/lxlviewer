@@ -551,11 +551,11 @@ export default {
       if (this.fieldKey === 'shelfControlNumber') {
         return 'shelfControlNumber';
       }
-      //TODO:  Base on language containers
+      // TODO:  Base on language containers
       if (this.fieldKey === 'partName') {
         return 'transliterable';
       }
-      //TODO:  Generalize
+      // TODO:  Generalize
       if (this.fieldKey === 'partNameByLang') {
         return 'bylang';
       }

@@ -1,11 +1,11 @@
 <script>
+import AutoSize from 'autosize';
+import { cloneDeep, debounce, get } from 'lodash-es';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
-import {cloneDeep, debounce, get} from "lodash-es";
-import AutoSize from "autosize";
 
 export default {
-  name: "item-transliterable.vue",
+  name: 'item-transliterable.vue',
   mixins: [ItemMixin, LanguageMixin],
   props: {
     fieldValue: {
@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       sourceValue: '',
-    }
+    };
   },
   computed: {
     textFieldValue: {
@@ -59,7 +59,7 @@ export default {
 
       this.readyForSave(true);
       if (newValue !== oldValue) {
-        console.log('newValue != oldvalue:', newValue)
+        console.log('newValue != oldvalue:', newValue);
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
@@ -79,7 +79,7 @@ export default {
       });
     },
   },
-}
+};
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script>
-import {cloneDeep, debounce, get} from 'lodash-es';
+import { cloneDeep, debounce, get } from 'lodash-es';
 import AutoSize from 'autosize';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
@@ -16,8 +16,8 @@ export default {
   },
   data() {
     return {
-      entries: []
-    }
+      entries: [],
+    };
   },
   watch: {
     isLocked(val) {
@@ -27,17 +27,17 @@ export default {
     },
     entries: {
       handler: debounce(function debounceUpdate(val) {
-          this.update(val);
-        }, 1000),
-      deep: true
-    }
+        this.update(val);
+      }, 1000),
+      deep: true,
+    },
   },
   mounted() {
     this.$nextTick(() => {
-        if (!this.isLocked) {
-          this.initializeTextarea();
-        }
-       this.viewForm();
+      if (!this.isLocked) {
+        this.initializeTextarea();
+      }
+      this.viewForm();
     });
   },
   methods: {
@@ -53,7 +53,7 @@ export default {
     },
     update(newValue) {
       const oldLangMap = cloneDeep(get(this.inspector.data, this.path));
-      let newLangMap = this.dataForm(newValue);
+      const newLangMap = this.dataForm(newValue);
       this.readyForSave(true);
       if (newLangMap !== oldLangMap) {
         this.$store.dispatch('updateInspectorData', {
@@ -67,7 +67,7 @@ export default {
         });
       }
     },
-     viewForm() {
+    viewForm() {
       const viewForm = [];
       Object.entries(this.fieldValue).forEach(([key, value]) => {
         viewForm.push({ tag: key, val: value });
@@ -75,10 +75,10 @@ export default {
       this.entries = viewForm;
     },
     dataForm(viewObjects) {
-      const langMap = {}
+      const langMap = {};
       viewObjects.forEach((object) => {
         langMap[object.tag] = object.val;
-      })
+      });
       return langMap;
     },
     async romanize(tag, val) {
