@@ -24,18 +24,12 @@ export default {
       }
     },
   },
-  data() {
-    return {
-      sourceValue: '',
-    };
-  },
   computed: {
     textFieldValue: {
       get() {
         return this.fieldValue;
       },
       set: debounce(function debounceUpdate(newValue) {
-        this.sourceValue = newValue;
         this.update(newValue);
       }, 1000),
     },
@@ -100,9 +94,9 @@ export default {
       <i class="fa fa-globe fa-fw action-button icon icon-sm ItemTransliterable-transIcon"
          tabindex="0"
          role="button"
-         @click="byLangify('uk', sourceValue)"
+         @click="byLangify('uk', textFieldValue)"
          v-tooltip.top="translate('Välj språk')"
-         @keyup.enter="byLangify('uk', sourceValue)">
+         @keyup.enter="byLangify('uk', textFieldValue)">
           </i>
     </div>
          </span>
