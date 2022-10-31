@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, debounce, get } from 'lodash-es';
+import { cloneDeep, debounce, get, isEqual } from 'lodash-es';
 import AutoSize from 'autosize';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
@@ -25,6 +25,12 @@ export default {
         this.initializeTextarea();
       }
     },
+    fieldValue(newVal, oldVal) {
+      if (!isEqual(newVal, oldVal)) {
+        console.log('fieldValue was updated');
+        this.updateViewForm();
+      }
+    },
     entries: {
       handler: debounce(function debounceUpdate(val) {
         this.update(val);
@@ -37,7 +43,7 @@ export default {
       if (!this.isLocked) {
         this.initializeTextarea();
       }
-      this.viewForm();
+      this.updateViewForm();
     });
   },
   methods: {
@@ -67,7 +73,7 @@ export default {
         });
       }
     },
-    viewForm() {
+    updateViewForm() {
       const viewForm = [];
       Object.entries(this.fieldValue).forEach(([key, value]) => {
         viewForm.push({ tag: key, val: value });
@@ -83,7 +89,7 @@ export default {
     },
     async romanize(tag, val) {
       await this.transliterate(tag, val);
-      this.viewForm();
+      this.updateViewForm();
     },
     initializeTextarea() {
       this.$nextTick(() => {
