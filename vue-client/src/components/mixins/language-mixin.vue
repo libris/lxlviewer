@@ -1,5 +1,5 @@
 <script>
-import {get, isArray} from 'lodash-es';
+import {get, isArray, isEmpty} from 'lodash-es';
 import * as httpUtil from "../../utils/http";
 
 export default {
@@ -15,6 +15,9 @@ export default {
     }
   },
   computed: {
+    languageMap() {
+      return {'uk' : 'Ukrainska'};
+    },
     path() {
       const parentValue = get(this.inspector.data, this.parentPath);
       if (isArray(parentValue)) {
@@ -24,6 +27,14 @@ export default {
     },
   },
   methods: {
+    mapLanguage(tag) {
+      const languageString = this.languageMap[tag]
+      if (languageString) {
+        return languageString;
+      } else {
+        return tag;
+      }
+    },
     async requestTransliteration(sourceObj) {
       let trans;
       trans = httpUtil.post({
@@ -35,6 +46,33 @@ export default {
           return result;
         });
       return trans;
+    },
+    async removeLanguageTag(tag, value) {
+      let languageMap = get(this.inspector.data, this.parentPath);
+
+      let updatePath = this.path;
+      let updateValue = languageMap;
+      delete languageMap[tag];
+
+      if (isEmpty(languageMap)) { //De-langify
+        const lastIndex = this.path.lastIndexOf('.')
+        const parentsParent = this.parentPath.slice(0, lastIndex);
+        let parentsParentValue = get(this.inspector.data, parentsParent);
+        let lastProperty = this.parentPath.slice(lastIndex + 1);
+        updatePath = this.path.substring(0, this.path.indexOf("ByLang"));
+        updateValue = value;
+        delete parentsParentValue[lastProperty];
+      }
+
+      await this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: updatePath,
+            value: updateValue,
+          },
+        ],
+        addToHistory: true,
+      })
     },
     async byLangify(tag, sourceValue) {
       const lastIndex = this.path.lastIndexOf('.')
@@ -58,13 +96,12 @@ export default {
     async transliterate(tag, sourceValue) {
       let result = await this.requestTransliteration({"langTag": tag, "source": sourceValue});
       let languageMap = get(this.inspector.data, this.parentPath);
-      console.log('this.parentsPath', JSON.stringify(this.parentPath));
-      console.log('languageMap', JSON.stringify(languageMap));
+      const updateValue = Object.assign(languageMap, result);
       await this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
             path: this.parentPath,
-            value: Object.assign(languageMap, result),
+            value: updateValue,
           },
         ],
         addToHistory: true,

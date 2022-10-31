@@ -1,5 +1,5 @@
 <script>
-import {cloneDeep, get} from 'lodash-es';
+import {cloneDeep, debounce, get} from 'lodash-es';
 import AutoSize from 'autosize';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
@@ -16,22 +16,28 @@ export default {
   },
   data() {
     return {
-      entries: [],
-    };
-},
+      entries: []
+    }
+  },
   watch: {
     isLocked(val) {
       if (!val) {
         this.initializeTextarea();
       }
     },
+    entries: {
+      handler: debounce(function debounceUpdate(val) {
+          this.update(val);
+        }, 1000),
+      deep: true
+    }
   },
   mounted() {
     this.$nextTick(() => {
         if (!this.isLocked) {
           this.initializeTextarea();
         }
-      this.restructureData();
+       this.viewForm();
     });
   },
   methods: {
@@ -46,22 +52,38 @@ export default {
       return false;
     },
     update(newValue) {
-      console.log('newValue', newValue);
-      const oldValue = cloneDeep(get(this.inspector.data, this.path));
-
+      const oldLangMap = cloneDeep(get(this.inspector.data, this.path));
+      let newLangMap = this.dataForm(newValue);
       this.readyForSave(true);
-      if (newValue !== oldValue) {
-        console.log('newValue != oldvalue:', newValue)
+      if (newLangMap !== oldLangMap) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
               path: this.path,
-              value: newValue,
+              value: newLangMap,
             },
           ],
           addToHistory: true,
         });
       }
+    },
+     viewForm() {
+      const viewForm = [];
+      Object.entries(this.fieldValue).forEach(([key, value]) => {
+        viewForm.push({ tag: key, val: value });
+      });
+      this.entries = viewForm;
+    },
+    dataForm(viewObjects) {
+      const langMap = {}
+      viewObjects.forEach((object) => {
+        langMap[object.tag] = object.val;
+      })
+      return langMap;
+    },
+    async romanize(tag, val) {
+      await this.transliterate(tag, val);
+      this.viewForm();
     },
     initializeTextarea() {
       this.$nextTick(() => {
@@ -69,13 +91,6 @@ export default {
         AutoSize(textarea);
         AutoSize.update(textarea);
       });
-    },
-    restructureData() {
-      const restructured = [];
-      Object.entries(this.fieldValue).forEach(([key, value]) => {
-        restructured.push({ tag: key, val: value });
-      });
-      this.entries = restructured;
     },
   },
 };
@@ -95,15 +110,16 @@ export default {
             <span class="ItemBylang-value">
               <span class="ItemBylang-pill">
                 <span class="ItemBylang-pill-label">
-                  Ukrainska
-                  <!--                  {{ entry.tag }}-->
+                  {{ mapLanguage(entry.tag) }}
                 </span>
                    <span class="ItemBylang-pill-removeButton" v-if="!isLocked">
                     <i class="fa fa-times-circle icon icon--sm chip-icon"
                        v-if="!isLocked"
                        role="button"
                        tabindex="0"
+                       @click="removeLanguageTag(entry.tag, entry.val)"
                        :aria-label="'Remove' | translatePhrase"
+                       @keyup.enter="removeLanguageTag(entry.tag, entry.val)"
                        v-tooltip.top="translate('Remove')">
                     </i>
                   </span>
@@ -112,11 +128,13 @@ export default {
                    tabindex="0"
                    role="button"
                    :aria-label="'Romanize' | translatePhrase"
-                   v-on:click="transliterate(entry.tag, entry.val)"
+                   v-on:click="romanize(entry.tag, entry.val)"
                    v-if="!isTransSchema(entry.tag)"
                    v-tooltip.top="translate('Romanize')"
-                   @keyup.enter="transliterate(entry.tag, entry.val)">
+                   @keyup.enter="romanize(entry.tag, entry.val)">
             </i>
+              <i class="fa fa-language icon icon--sm ItemBylang-transIcon is-disabled"
+                 v-if="isTransSchema(entry.tag)"></i>
               </span>
           </div>
   </div>
@@ -166,6 +184,8 @@ export default {
     border: 1px solid @grey-light;
     border-radius: 2px;
     width: 100%;
+    margin-top: 7px;
+    margin-bottom: 7px;
   }
 
   &-action {
