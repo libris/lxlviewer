@@ -104,12 +104,13 @@ export default {
 
 <template>
   <div class="ItemBylang-root">
-    <div class="ItemBylang-container" v-for="entry in entries">
+    <div class="ItemBylang-inputcontainer"
+         v-for="entry in entries"
+         v-if="!isLocked">
       <span class="ItemBylang-key">
         <textarea class="ItemBylang-input js-itemValueInput"
                   rows="1"
                   v-model="entry.val"
-                  v-if="!isLocked"
                   ref="textarea">
         </textarea>
       </span>
@@ -143,6 +144,23 @@ export default {
            v-if="isTransSchema(entry.tag)"></i>
       </span>
     </div>
+    <div class="ItemBylang-textcontainer"
+         v-for="entry in entries"
+         v-if="isLocked">
+      <div class="ItemBylang-key">
+        <div class="ItemBylang-text">
+          {{ entry.val }}
+        </div>
+      </div>
+      <span class="ItemBylang-tags">
+        <span class="ItemBylang-pill">
+          <span class="ItemBylang-pill-label">
+            {{ mapLanguage(entry.tag) }}
+          </span>
+        </span>
+      </span>
+    </div>
+
   </div>
 </template>
 
@@ -178,7 +196,7 @@ export default {
     width: 100%;
   }
 
-  &-container {
+  &-inputcontainer {
     display: grid;
     justify-items: start;
     align-items: center;
@@ -193,6 +211,20 @@ export default {
     margin-top: 7px;
     margin-bottom: 7px;
     background: white;
+  }
+
+  &-textcontainer {
+    display: grid;
+    justify-items: start;
+    align-items: center;
+    column-gap: 5px;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+    "key tags";
+    width: 100%;
+    margin-top: 7px;
+    margin-bottom: 7px;
   }
 
   &-action {
@@ -218,6 +250,11 @@ export default {
     "pill action";
   }
 
+  &-tags {
+    grid-area: tags;
+    justify-self: end;
+  }
+
   &-transIcon {
     margin-left: 0.5rem;
     padding-right: 0.5rem;
@@ -228,7 +265,7 @@ export default {
     justify-items: start;
     align-items: center;
     grid-area: pill;
-    grid-template-columns: 1fr 23px;
+    grid-template-columns: 1fr auto;
     grid-template-areas:
     "label remove";
     border-radius: 2em;
@@ -242,10 +279,9 @@ export default {
       font-weight: 600;
       cursor: default;
       white-space: nowrap;
-      overflow: hidden;
       text-overflow: ellipsis;
       grid-area: label;
-      padding: 0 5px 0 8px
+      padding: 0 8px 0 8px
     }
 
     &-removeButton {
@@ -253,7 +289,7 @@ export default {
       height: 1.2em;
       line-height: 1.2em;
       grid-area: remove;
-      padding-right: 2px;
+      padding-right: 20px;
     }
   }
 }
