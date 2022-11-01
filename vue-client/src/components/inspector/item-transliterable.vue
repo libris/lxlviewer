@@ -169,6 +169,7 @@ export default {
     border: 1px solid @grey-light;
     border-radius: 2px;
     transition: border .25s ease-out;
+    background: white;
     &:focus {
       border: 1px solid @grey-dark;
     }

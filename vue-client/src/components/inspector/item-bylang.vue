@@ -192,6 +192,7 @@ export default {
     width: 100%;
     margin-top: 7px;
     margin-bottom: 7px;
+    background: white;
   }
 
   &-action {
