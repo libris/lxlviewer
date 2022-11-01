@@ -104,45 +104,45 @@ export default {
 
 <template>
   <div class="ItemBylang-root">
-          <div class="ItemBylang-container" v-for="entry in entries">
-              <span class="ItemBylang-key">
-                 <textarea class="ItemBylang-input js-itemValueInput"
-                           rows="1"
-                           v-model="entry.val"
-                           v-if="!isLocked"
-                           ref="textarea">
-                </textarea>
-              </span>
-            <span class="ItemBylang-value">
-              <span class="ItemBylang-pill">
-                <span class="ItemBylang-pill-label">
-                  {{ mapLanguage(entry.tag) }}
-                </span>
-                   <span class="ItemBylang-pill-removeButton" v-if="!isLocked">
-                    <i class="fa fa-times-circle icon icon--sm chip-icon"
-                       v-if="!isLocked"
-                       role="button"
-                       tabindex="0"
-                       @click="removeLanguageTag(entry.tag, entry.val)"
-                       :aria-label="'Remove' | translatePhrase"
-                       @keyup.enter="removeLanguageTag(entry.tag, entry.val)"
-                       v-tooltip.top="translate('Remove')">
-                    </i>
-                  </span>
-             </span>
-                <i class="fa fa-language icon icon--sm ItemBylang-transIcon"
-                   tabindex="0"
-                   role="button"
-                   :aria-label="'Romanize' | translatePhrase"
-                   v-on:click="romanize(entry.tag, entry.val)"
-                   v-if="!isTransSchema(entry.tag)"
-                   v-tooltip.top="translate('Romanize')"
-                   @keyup.enter="romanize(entry.tag, entry.val)">
+    <div class="ItemBylang-container" v-for="entry in entries">
+      <span class="ItemBylang-key">
+        <textarea class="ItemBylang-input js-itemValueInput"
+                  rows="1"
+                  v-model="entry.val"
+                  v-if="!isLocked"
+                  ref="textarea">
+        </textarea>
+      </span>
+      <span class="ItemBylang-value">
+        <span class="ItemBylang-pill">
+          <span class="ItemBylang-pill-label">
+            {{ mapLanguage(entry.tag) }}
+          </span>
+          <span class="ItemBylang-pill-removeButton" v-if="!isLocked">
+            <i class="fa fa-times-circle icon icon--sm chip-icon"
+               v-if="!isLocked"
+               role="button"
+               tabindex="0"
+               @click="removeLanguageTag(entry.tag, entry.val)"
+               :aria-label="'Remove' | translatePhrase"
+               @keyup.enter="removeLanguageTag(entry.tag, entry.val)"
+               v-tooltip.top="translate('Remove')">
             </i>
-              <i class="fa fa-language icon icon--sm ItemBylang-transIcon is-disabled"
-                 v-if="isTransSchema(entry.tag)"></i>
-              </span>
-          </div>
+          </span>
+        </span>
+        <i class="fa fa-language icon icon--sm ItemBylang-transIcon"
+           tabindex="0"
+           role="button"
+           :aria-label="'Romanize' | translatePhrase"
+           v-on:click="romanize(entry.tag, entry.val)"
+           v-if="!isTransSchema(entry.tag)"
+           v-tooltip.top="translate('Romanize')"
+           @keyup.enter="romanize(entry.tag, entry.val)">
+        </i>
+        <i class="fa fa-language icon icon--sm ItemBylang-transIcon is-disabled"
+           v-if="isTransSchema(entry.tag)"></i>
+      </span>
+    </div>
   </div>
 </template>
 
