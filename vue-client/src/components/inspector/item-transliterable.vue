@@ -44,6 +44,10 @@ export default {
     readyForSave(value) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
     },
+    transformToLanguageMap(tag, val) {
+      //Make sure debounce is done
+      setTimeout(() => {  this.byLangify(tag, val); }, 1000);
+    },
     handleEnter(e) {
       e.target.blur();
       return false;
@@ -94,9 +98,9 @@ export default {
       <i class="fa fa-globe fa-fw action-button icon icon-sm ItemTransliterable-transIcon"
          tabindex="0"
          role="button"
-         @click="byLangify('uk', textFieldValue)"
+         @click="transformToLanguageMap('uk', textFieldValue)"
          v-tooltip.top="translate('Välj språk')"
-         @keyup.enter="byLangify('uk', textFieldValue)">
+         @keyup.enter="transformToLanguageMap('uk', textFieldValue)">
           </i>
     </div>
          </span>
