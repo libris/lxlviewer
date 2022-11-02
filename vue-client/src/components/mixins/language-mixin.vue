@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     languageMap() {
-      return { uk: 'Ukrainska' };
+      return { uk: 'Ukrainska', sv: 'Svenska', de: 'Tyska', fr: 'Franska', en: 'Engelska' };
     },
     path() {
       const parentValue = get(this.inspector.data, this.parentPath);
@@ -43,11 +43,11 @@ export default {
     },
     async removeLanguageTag(tag, value) {
       const languageMap = get(this.inspector.data, this.parentPath);
+      console.log('updateValue', JSON.stringify(updateValue));
 
       let updatePath = this.path;
       let updateValue = languageMap;
       delete languageMap[tag];
-
       if (isEmpty(languageMap)) { // De-langify
         const lastIndex = this.path.lastIndexOf('.');
         const parentsParent = this.parentPath.slice(0, lastIndex);

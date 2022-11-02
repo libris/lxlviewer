@@ -24,7 +24,7 @@ import ItemShelfControlNumber from './item-shelf-control-number';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
-import ItemTransliterable from './item-transliterable';
+import ItemLangTaggable from './item-lang-taggable';
 import ItemBylang from './item-bylang';
 
 export default {
@@ -147,7 +147,7 @@ export default {
     'item-numeric': ItemNumeric,
     'item-grouped': ItemGrouped,
     'item-shelf-control-number': ItemShelfControlNumber,
-    'item-transliterable': ItemTransliterable,
+    'item-lang-taggable': ItemLangTaggable,
     'item-bylang': ItemBylang,
     'entity-adder': EntityAdder,
   },
@@ -552,11 +552,11 @@ export default {
         return 'shelfControlNumber';
       }
       // TODO:  Base on language containers
-      if (this.fieldKey === 'partName') {
-        return 'transliterable';
+      if (this.isLangTaggable(this.fieldKey) && !this.isLocked) {
+        return 'langtaggable';
       }
       // TODO:  Generalize
-      if (this.fieldKey === 'partNameByLang') {
+      if (['partNameByLang', 'prefLabelByLang', 'altLabelByLang'].includes(this.fieldKey)) {
         return 'bylang';
       }
       if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
@@ -590,6 +590,9 @@ export default {
         return true;
       }
       return false;
+    },
+    isLangTaggable(key) {
+      return ['partName', 'prefLabel', 'altLabel'].includes(key);
     },
     isLangContainer() {
       return this.fieldKey.includes('ByLang');
@@ -1043,13 +1046,13 @@ export default {
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
 
-        <item-transliterable
-          v-if="getDatatype(item) == 'transliterable'"
+        <item-lang-taggable
+          v-if="getDatatype(item) == 'langtaggable'"
           :is-locked="locked"
           :field-value="item"
           :field-key="fieldKey"
           :parent-path="path">
-        </item-transliterable>
+        </item-lang-taggable>
 
         <!-- shelfControlNumber -->
         <item-shelf-control-number

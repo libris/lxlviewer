@@ -5,23 +5,12 @@ import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
 
 export default {
-  name: 'item-transliterable.vue',
+  name: 'item-lang-taggable.vue',
   mixins: [ItemMixin, LanguageMixin],
   props: {
     fieldValue: {
       type: [String, Number],
       default: '',
-    },
-    isLocked: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  watch: {
-    isLocked(val) {
-      if (!val) {
-        this.initializeTextarea();
-      }
     },
   },
   computed: {
@@ -32,12 +21,6 @@ export default {
       set: debounce(function debounceUpdate(newValue) {
         this.update(newValue);
       }, 1000),
-    },
-    langCodes() {
-      //  First need to get available language codes
-      //  We can mock this to start with
-      //  get these via find API later (id.kb.se yadayada find?type=LanguageForm&_limit=2000)
-      return ['uk', 'kk'];
     },
   },
   methods: {
@@ -92,7 +75,6 @@ export default {
                @blur="update($event.target.value)"
                @keydown.exact="readyForSave(false)"
                @keydown.enter.prevent="handleEnter"
-               v-if="!isLocked"
                ref="textarea"></textarea>
     <div class="ItemTransliterable-transItems">
       <i class="fa fa-globe fa-fw action-button icon icon-sm ItemTransliterable-transIcon"
@@ -127,7 +109,6 @@ export default {
     display: block;
     padding: 2px 10px;
     resize: none;
-
   }
 
   &-text {
@@ -136,8 +117,6 @@ export default {
   }
   &-transIcon {
     grid-area: action;
-   //position: relative;
-   //top: 0.9rem;
    }
 
   &-keyvalue {
@@ -150,10 +129,6 @@ export default {
      flex-direction: row;
      margin-left: 0.5rem;
    }
-
-  &-transliterated {
-
-  }
 
   &-list {
     position: relative;

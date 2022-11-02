@@ -578,8 +578,9 @@ export default {
     },
     getPackagedItem(keepEmpty = false) {
       const recordCopy = cloneDeep(this.inspector.data.record);
-
       let obj = null;
+      console.log('this.inspector.data.mainEntity', JSON.stringify(this.inspector.data.mainEntity));
+
       if (keepEmpty) {
         obj = DataUtil.getMergedItems(
           recordCopy,
