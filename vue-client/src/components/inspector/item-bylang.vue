@@ -17,6 +17,7 @@ export default {
   data() {
     return {
       entries: [],
+      manualUpdate : true,
     };
   },
   watch: {
@@ -27,13 +28,16 @@ export default {
     },
     fieldValue(newVal, oldVal) {
       if (!isEqual(newVal, oldVal)) {
-        console.log('fieldValue was updated');
         this.updateViewForm();
       }
     },
     entries: {
       handler: debounce(function debounceUpdate(val) {
-        this.update(val);
+        if (this.manualUpdate) {
+          this.update(val);
+        } else {
+          this.manualUpdate = true;
+        }
       }, 1000),
       deep: true,
     },
@@ -61,7 +65,7 @@ export default {
       const oldLangMap = cloneDeep(get(this.inspector.data, this.path));
       const newLangMap = this.dataForm(newValue);
       this.readyForSave(true);
-      if (newLangMap !== oldLangMap) {
+      if (!isEqual(newLangMap,  oldLangMap)) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
@@ -89,7 +93,12 @@ export default {
     },
     async romanize(tag, val) {
       await this.transliterate(tag, val);
+      this.manualUpdate = false;
       this.updateViewForm();
+    },
+    async remove(tag, val) {
+      await this.removeLanguageTag(tag, val);
+      this.manualUpdate = false;
     },
     initializeTextarea() {
       this.$nextTick(() => {
@@ -124,9 +133,9 @@ export default {
                v-if="!isLocked"
                role="button"
                tabindex="0"
-               @click="removeLanguageTag(entry.tag, entry.val)"
+               @click="remove(entry.tag, entry.val)"
                :aria-label="'Remove' | translatePhrase"
-               @keyup.enter="removeLanguageTag(entry.tag, entry.val)"
+               @keyup.enter="remove(entry.tag, entry.val)"
                v-tooltip.top="translate('Remove')">
             </i>
           </span>
@@ -176,7 +185,6 @@ export default {
     transition: border .25s ease-out;
     width: 100%;
     padding: 2px 10px;
-
   }
 
   &-text {
@@ -293,6 +301,4 @@ export default {
     }
   }
 }
-
-
 </style>
