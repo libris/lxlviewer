@@ -47,6 +47,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isLangMap: {
+      type: Boolean,
+      default: false,
+    },
     path: {
       type: String,
       default: '',
@@ -217,6 +221,9 @@ export default {
         this.addItem({ '@id': '' });
       } else if (this.isVocabField) {
         this.addItem('');
+      } else if (this.isLangMap) {
+        this.addItem({'el' : ''});
+      //  TODO: force language selection on add
       } else if (this.canReceiveObjects) {
         const range = this.rangeFull;
         if (range.length === 1 && this.onlyEmbedded) {
@@ -295,6 +302,8 @@ export default {
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
       if (currentValue === null) {
         currentValue = obj;
+      } else if (this.isLangMap) {
+        Object.assign(currentValue, obj);
       } else if (!isArray(currentValue)) {
         currentValue = [currentValue];
         currentValue.push(obj);

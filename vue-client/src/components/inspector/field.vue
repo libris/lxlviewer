@@ -434,6 +434,9 @@ export default {
       }
       return false;
     },
+    isLangMap() {
+      return this.fieldKey.includes('ByLang');
+    },
     embellished() {
       const embellished = this.inspector.status.embellished;
       if (embellished.length > 0) {
@@ -542,7 +545,7 @@ export default {
       if (this.isPlainObject(o) && o.hasOwnProperty('isGrouped')) {
         return 'grouped';
       }
-      if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type') && !this.isLangContainer()) {
+      if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type') && !this.isLangMap) {
         return 'error'; 
       }
       if (typeof o === 'boolean') {
@@ -592,10 +595,8 @@ export default {
       return false;
     },
     isLangTaggable(key) {
-      return ['partName', 'prefLabel', 'altLabel'].includes(key);
-    },
-    isLangContainer() {
-      return this.fieldKey.includes('ByLang');
+      return ['partName', 'prefLabel', 'altLabel', 'mainTitle'].includes(key);
+      // return ['prefLabel', 'altLabel'].includes(key);
     },
     isInGraph(o) {
       const data = this.inspector.data;
@@ -712,7 +713,7 @@ export default {
             </i>
           </div>
           <entity-adder class="Field-entityAdder Field-action"
-            v-if="!locked && (isRepeatable || isEmptyObject)" 
+            v-if="!locked && (isRepeatable || isEmptyObject || isLangMap)"
             ref="entityAdder"
             :field-key="fieldKey" 
             :path="path"
@@ -727,7 +728,8 @@ export default {
             :property-types="propertyTypes" 
             :show-action-buttons="actionButtonsShown" 
             :active="activeModal" 
-            :is-placeholder="false" 
+            :is-placeholder="false"
+            :is-lang-map="isLangMap"
             :value-list="valueAsArray">
           </entity-adder>
           <div v-else class="Field-action placeholder"></div> 
@@ -803,7 +805,7 @@ export default {
           <span class="Field-commentText">{{ propertyComment }}</span>
         </div>
         <entity-adder class="Field-action Field-entityAdder"
-          v-if="!locked && (isRepeatable || isEmptyObject)" 
+          v-if="!locked && (isRepeatable || isEmptyObject || isLangMap)"
           ref="entityAdder"
           :field-key="fieldKey" 
           :path="path" 
@@ -818,7 +820,8 @@ export default {
           :property-types="propertyTypes" 
           :show-action-buttons="actionButtonsShown" 
           :active="activeModal" 
-          :is-placeholder="true" 
+          :is-placeholder="true"
+          :is-lang-map="isLangMap"
           :value-list="valueAsArray">
         </entity-adder>
 
