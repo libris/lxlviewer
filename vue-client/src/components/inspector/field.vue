@@ -26,6 +26,7 @@ import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import ItemLangTaggable from './item-lang-taggable';
 import ItemBylang from './item-bylang';
+import { getContextValue } from 'lxljs/vocab';
 
 export default {
   name: 'field',
@@ -435,7 +436,10 @@ export default {
       return false;
     },
     isLangMap() {
-      return this.fieldKey.includes('ByLang');
+      return getContextValue(this.fieldKey, '@container', this.resources.context) === '@language';
+    },
+    isLangTaggable() {
+      return getContextValue(this.fieldKey.concat('ByLang'), '@container', this.resources.context) === '@language';
     },
     embellished() {
       const embellished = this.inspector.status.embellished;
@@ -554,13 +558,11 @@ export default {
       if (this.fieldKey === 'shelfControlNumber') {
         return 'shelfControlNumber';
       }
-      // TODO:  Base on language containers
-      if (this.isLangTaggable(this.fieldKey) && !this.isLocked) {
-        return 'langtaggable';
-      }
-      // TODO:  Generalize
-      if (['partNameByLang', 'prefLabelByLang', 'altLabelByLang'].includes(this.fieldKey)) {
+      if (this.isLangMap) {
         return 'bylang';
+      }
+      if (this.isLangTaggable && !this.isLocked) {
+        return 'langtaggable';
       }
       if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
@@ -593,10 +595,6 @@ export default {
         return true;
       }
       return false;
-    },
-    isLangTaggable(key) {
-      return ['partName', 'prefLabel', 'altLabel', 'mainTitle'].includes(key);
-      // return ['prefLabel', 'altLabel'].includes(key);
     },
     isInGraph(o) {
       const data = this.inspector.data;
