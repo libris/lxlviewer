@@ -3,6 +3,7 @@ import AutoSize from 'autosize';
 import { cloneDeep, debounce, get } from 'lodash-es';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
+import EntityAdder from './entity-adder';
 
 export default {
   name: 'item-lang-taggable.vue',
@@ -12,6 +13,9 @@ export default {
       type: [String, Number],
       default: '',
     },
+  },
+  components: {
+    'entity-adder': EntityAdder,
   },
   computed: {
     textFieldValue: {
@@ -24,6 +28,10 @@ export default {
     },
   },
   methods: {
+    setValueFromEntityAdder(value) {
+      let langValue = value.split('/').pop();
+      this.transformToLanguageMap(langValue, this.textFieldValue);
+    },
     readyForSave(value) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
     },
@@ -77,13 +85,21 @@ export default {
                @keydown.enter.prevent="handleEnter"
                ref="textarea"></textarea>
     <div class="ItemTransliterable-transItems">
-      <i class="fa fa-globe fa-fw action-button icon icon-sm ItemTransliterable-transIcon"
-         tabindex="0"
-         role="button"
-         @click="transformToLanguageMap('uk', textFieldValue)"
-         v-tooltip.top="translate('Välj språk')"
-         @keyup.enter="transformToLanguageMap('uk', textFieldValue)">
-          </i>
+      <entity-adder class="Field-entityAdder Field-action"
+        ref="entityAdder"
+        :field-key="fieldKey"
+        :path="path"
+        :allow-local="false"
+        :all-search-types="['Language']"
+        :range="['Language']"
+        :range-full="['Language']"
+        :property-types="['ObjectProperty']"
+        :is-lang-tagger="true"
+        :icon-add="'fa-globe'"
+        @langTaggerEvent="setValueFromEntityAdder"
+        v-tooltip.top="translate('Välj språk')"
+        >
+      </entity-adder>
     </div>
          </span>
     </span>

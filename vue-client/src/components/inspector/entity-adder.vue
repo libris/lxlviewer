@@ -68,6 +68,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    isLangTagger: {
+      type: Boolean,
+      default: false,
+    },
+    iconAdd: {
+      type: String,
+      default: 'fa-plus-circle',
+    },
   },
   components: {
     'panel-component': PanelComponent,
@@ -271,6 +279,10 @@ export default {
       this.resetParamSelect += 1;
     },
     addLinkedItem(obj) {
+      if (this.isLangTagger) {
+        this.$emit('langTaggerEvent', obj['@id']);
+        return;
+      }
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
       if (!isArray(currentValue)) {
         // Converting value to array if it isn't already
@@ -400,7 +412,7 @@ export default {
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
       v-if="isPlaceholder">
-        <i class="fa fa-plus-circle fa-fw icon icon--sm"
+        <i class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
           v-if="!addEmbedded"
           tabindex="0"
           role="button"
@@ -414,7 +426,7 @@ export default {
           @focus="actionHighlight(true, $event)"
           @blur="actionHighlight(false, $event)">
         </i>
-        <i class="fa fa-plus-circle fa-fw icon icon--sm is-disabled"
+        <i class="fa fa-fw icon icon--sm is-disabled" :class="[this.iconAdd] "
           v-else-if="addEmbedded"
           tabindex="-1"
           aria-hidden="true">
@@ -424,7 +436,7 @@ export default {
     <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" v-if="!isPlaceholder">
       <i
-        class="fa fa-fw fa-plus-circle icon icon--sm"
+        class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
         v-if="!addEmbedded"
         tabindex="0"
         role="button"
@@ -439,7 +451,7 @@ export default {
         @blur="actionHighlight(false, $event)">
       </i>
       <i
-        class="fa fa-plus-circle fa-fw icon icon--sm is-disabled"
+        class="fa fa-fw icon icon--sm is-disabled" :class="[this.iconAdd] "
         v-else-if="addEmbedded"
         tabindex="-1">
       </i>
