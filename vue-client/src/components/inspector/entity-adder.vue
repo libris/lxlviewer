@@ -588,7 +588,7 @@ export default {
           </div>
           <div class="EntityAdder-create">
             <button class="EntityAdder-createBtn btn btn-primary btn--sm"
-              v-if="hasSingleCreatable"
+              v-if="hasSingleCreatable && allowLocal"
               v-on:click="addEmpty(rangeCreatable[0])">{{ "Create local entity" | translatePhrase }}
             </button>
             <filter-select
