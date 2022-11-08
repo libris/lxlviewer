@@ -3,6 +3,7 @@ import { cloneDeep, debounce, get, isEqual } from 'lodash-es';
 import AutoSize from 'autosize';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
+import * as VocabUtil from "lxljs/vocab";
 
 export default {
   name: 'item-bylang.vue',
@@ -49,6 +50,19 @@ export default {
       }
       this.updateViewForm();
     });
+  },
+  computed: {
+    isAllowed() {
+      // Check if de-langified property allows additions
+      let deLangifiedPath = this.path.substring(0, this.path.indexOf('ByLang'));
+      let deLangifiedObj = get(this.inspector.data, deLangifiedPath);
+      console.log('deLangifiedPath', deLangifiedPath);
+      console.log('deLangifiedObj', deLangifiedObj);
+      let deLangified = this.fieldKey.substring(0, this.path.indexOf('ByLang'));
+      let isRepeatable = VocabUtil.propIsRepeatable(deLangified, this.resources.context);
+      const isEmptyString = typeof deLangifiedObj === 'string' && deLangifiedObj.trim().length === 0;
+      return (deLangifiedObj === undefined || isEmptyString) || (deLangifiedObj !== 'undefined' && isRepeatable);
+    },
   },
   methods: {
     addFocus() {
@@ -130,7 +144,7 @@ export default {
           </span>
           <span class="ItemBylang-pill-removeButton" v-if="!isLocked">
             <i class="fa fa-times-circle icon icon--sm chip-icon"
-               v-if="!isLocked"
+               v-if="!isLocked && isAllowed"
                role="button"
                tabindex="0"
                @click="remove(entry.tag, entry.val)"

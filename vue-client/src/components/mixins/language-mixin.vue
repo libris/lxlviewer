@@ -47,6 +47,8 @@ export default {
 
       let updatePath = this.path;
       let updateValue = languageMap;
+      let taggedValue = languageMap[tag];
+      let deLangifedPath = this.path.substring(0, this.path.indexOf('ByLang'));
       delete languageMap[tag];
       if (isEmpty(languageMap)) { // De-langify
         const lastIndex = this.path.lastIndexOf('.');
@@ -63,6 +65,16 @@ export default {
           {
             path: updatePath,
             value: updateValue,
+          },
+        ],
+        addToHistory: true,
+      });
+
+      await this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: deLangifedPath,
+            value: taggedValue,
           },
         ],
         addToHistory: true,
