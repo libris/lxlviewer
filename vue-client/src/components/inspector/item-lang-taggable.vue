@@ -97,7 +97,6 @@ export default {
         :is-lang-tagger="true"
         :icon-add="'fa-globe'"
         @langTaggerEvent="setValueFromEntityAdder"
-        v-tooltip.top="translate('Välj språk')"
         >
       </entity-adder>
     </div>
