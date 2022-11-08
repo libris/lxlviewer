@@ -152,6 +152,8 @@ export default {
                @keyup.enter="remove(entry.tag, entry.val)"
                v-tooltip.top="translate('Remove')">
             </i>
+            <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled"
+               v-if="!isLocked && !isAllowed"></i>
           </span>
         </span>
         <i class="fa fa-language icon icon--sm ItemBylang-transIcon"
