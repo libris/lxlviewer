@@ -24,13 +24,13 @@ import ItemShelfControlNumber from './item-shelf-control-number';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
-import ItemLangTaggable from './item-lang-taggable';
 import ItemBylang from './item-bylang';
 import { getContextValue } from 'lxljs/vocab';
+import LanguageMixin from "../mixins/language-mixin";
 
 export default {
   name: 'field',
-  mixins: [clickaway, LodashProxiesMixin],
+  mixins: [clickaway, LodashProxiesMixin, LanguageMixin],
   props: {
     parentKey: {
       type: String,
@@ -148,7 +148,6 @@ export default {
     'item-numeric': ItemNumeric,
     'item-grouped': ItemGrouped,
     'item-shelf-control-number': ItemShelfControlNumber,
-    'item-lang-taggable': ItemLangTaggable,
     'item-bylang': ItemBylang,
     'entity-adder': EntityAdder,
   },
@@ -435,9 +434,6 @@ export default {
       }
       return false;
     },
-    isLangMap() {
-      return getContextValue(this.fieldKey, '@container', this.resources.context) === '@language';
-    },
     isLangTaggable() {
       return getContextValue(this.fieldKey.concat('ByLang'), '@container', this.resources.context) === '@language';
     },
@@ -463,6 +459,9 @@ export default {
     },
   },
   methods: {
+    isNotPartneredLangMap() {
+      return !(this.isLangMap() && this.hasDelangified())
+    },
     onLabelClick() {
       this.$store.dispatch('pushInspectorEvent', {
         name: 'field-label-clicked',
@@ -558,11 +557,8 @@ export default {
       if (this.fieldKey === 'shelfControlNumber') {
         return 'shelfControlNumber';
       }
-      if (this.isLangMap) {
-        return 'bylang';
-      }
-      if (this.isLangTaggable && !this.isLocked) {
-        return 'langtaggable';
+      if (this.isLangMap() || this.isLangTaggable) {
+        return 'language';
       }
       if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
@@ -685,9 +681,11 @@ export default {
       'has-failed-validations': failedValidations.length > 0,
       'is-distinguished': isDistinguished,
       'is-linked': isLinkedInstanceOf, 
-    }" 
+    }"
     @mouseover="handleMouseEnter()" 
-    @mouseleave="handleMouseLeave()">
+    @mouseleave="handleMouseLeave()"
+    v-if="this.isNotPartneredLangMap()"
+  >
 
     <div class="Field-labelContainer" 
       :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}"
@@ -904,12 +902,14 @@ export default {
           :item="item"></item-error>
 
         <item-bylang
-          v-if="getDatatype(item) == 'bylang'"
+          v-if="getDatatype(item) == 'language'"
           :is-locked="locked"
           :field-value="item"
           :field-key="fieldKey"
           :index="index"
-          :parent-path="path">
+          :parent-path="path"
+          :is-repeatable="isRepeatable"
+        >
         </item-bylang>
 
         <item-grouped 
@@ -1047,14 +1047,15 @@ export default {
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
 
-        <item-lang-taggable
-          v-if="getDatatype(item) == 'langtaggable'"
+        <item-bylang
+          v-if="getDatatype(item) == 'language'"
           :is-locked="locked"
           :field-value="item"
           :field-key="fieldKey"
-          :parent-path="path">
-        </item-lang-taggable>
-
+          :index="index"
+          :parent-path="path"
+          :is-repeatable="isRepeatable">
+        </item-bylang>
         <!-- shelfControlNumber -->
         <item-shelf-control-number
           v-if="getDatatype(item) == 'shelfControlNumber'"

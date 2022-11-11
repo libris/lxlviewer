@@ -230,7 +230,7 @@ export default {
       } else if (this.isVocabField) {
         this.addItem('');
       } else if (this.isLangMap) {
-        this.addItem({'el' : ''});
+        this.addItem({'none' : ''});
       //  TODO: force language selection on add
       } else if (this.canReceiveObjects) {
         const range = this.rangeFull;

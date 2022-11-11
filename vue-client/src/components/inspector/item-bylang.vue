@@ -1,24 +1,35 @@
 <script>
-import { cloneDeep, debounce, get, isEqual } from 'lodash-es';
+import {cloneDeep, debounce, get, isEmpty, isEqual} from 'lodash-es';
 import AutoSize from 'autosize';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
 import * as VocabUtil from "lxljs/vocab";
+import EntityAdder from "./entity-adder";
 
 export default {
   name: 'item-bylang.vue',
   mixins: [ItemMixin, LanguageMixin],
   props: {
-    fieldValue: {},
+    fieldValue: {
+      type: [Object, String],
+      default: null,
+    },
+    isRepeatable: {
+      type: Boolean,
+      default: false,
+    },
     isLocked: {
       type: Boolean,
       default: true,
     },
   },
+  components: {
+    'entity-adder': EntityAdder,
+  },
   data() {
     return {
       entries: [],
-      manualUpdate : true,
+      manualUpdate : false,
     };
   },
   watch: {
@@ -56,15 +67,25 @@ export default {
       // Check if de-langified property allows additions
       let deLangifiedPath = this.path.substring(0, this.path.indexOf('ByLang'));
       let deLangifiedObj = get(this.inspector.data, deLangifiedPath);
-      console.log('deLangifiedPath', deLangifiedPath);
-      console.log('deLangifiedObj', deLangifiedObj);
       let deLangified = this.fieldKey.substring(0, this.path.indexOf('ByLang'));
       let isRepeatable = VocabUtil.propIsRepeatable(deLangified, this.resources.context);
       const isEmptyString = typeof deLangifiedObj === 'string' && deLangifiedObj.trim().length === 0;
       return (deLangifiedObj === undefined || isEmptyString) || (deLangifiedObj !== 'undefined' && isRepeatable);
-    },
+    }
   },
   methods: {
+    setValueFromEntityAdder(fieldValue, eventArg) {
+      let tag = eventArg.split('/').pop();
+      this.addLangTag(tag, fieldValue);
+    },
+    addLangTag(tag, val) {
+      //Make sure debounce is done
+      setTimeout(() => {
+        this.manualUpdate = false;
+        this.addToLangMap(tag, val);
+        this.updateViewForm();
+        }, 1000);
+    },
     addFocus() {
       this.$refs.textarea.focus({ preventScroll: true }); // Prevent scroll as we will handle this ourselves
     },
@@ -75,16 +96,32 @@ export default {
       e.target.blur();
       return false;
     },
-    update(newValue) {
-      const oldLangMap = cloneDeep(get(this.inspector.data, this.path));
-      const newLangMap = this.dataForm(newValue);
+    update(viewObjects) {
+      // Update propByLang
+      const byLangPath = this.getByLangPath();
+      const oldLangMap = cloneDeep(get(this.inspector.data, byLangPath));
+      const newLangMap = this.dataFormByLang(viewObjects);
       this.readyForSave(true);
       if (!isEqual(newLangMap,  oldLangMap)) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
-              path: this.path,
+              path: byLangPath,
               value: newLangMap,
+            },
+          ],
+          addToHistory: true,
+        });
+      }
+      // Update prop
+      const newData = this.dataForm(viewObjects);
+      const oldData = cloneDeep(get(this.inspector.data, this.path));
+      if (!isEqual(oldData,  newData) && !isEmpty(newData)) {
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [
+            {
+              path: this.path,
+              value: newData,
             },
           ],
           addToHistory: true,
@@ -92,18 +129,49 @@ export default {
       }
     },
     updateViewForm() {
-      const viewForm = [];
-      Object.entries(this.fieldValue).forEach(([key, value]) => {
-        viewForm.push({ tag: key, val: value });
-      });
+      let viewForm = [];
+      if (typeof this.fieldValue === 'string') {
+        viewForm.push({ tag: 'none', val: this.fieldValue });
+        Object.entries(this.getByLang()).forEach(([key, value]) => {
+          viewForm.push({ tag: key, val: value });
+        });
+      } else if (typeof this.fieldValue === 'object') {
+        Object.entries(this.fieldValue).forEach(([key, value]) => {
+          viewForm.push({ tag: key, val: value });
+        });
+      }
       this.entries = viewForm;
     },
-    dataForm(viewObjects) {
+    dataFormByLang(viewObjects) {
       const langMap = {};
       viewObjects.forEach((object) => {
-        langMap[object.tag] = object.val;
+        if (object.tag !== 'none') {
+          langMap[object.tag] = object.val;
+        }
       });
       return langMap;
+    },
+    dataForm(viewObjects) {
+      const dataObjects = [];
+      viewObjects.forEach((object) => {
+        if (object.tag === 'none') {
+          dataObjects.push(object.val);
+        }
+      });
+      if (dataObjects.length === 1) {
+        return dataObjects.pop();
+      } else {
+        return dataObjects;
+      }
+    },
+    getByLang() {
+      let byLangPath = this.path.concat('ByLang');
+      let byLangObj = get(this.inspector.data, byLangPath);
+      if (typeof byLangObj !== 'undefined') {
+        return byLangObj;
+      } else {
+        return {};
+      }
     },
     async romanize(tag, val) {
       await this.transliterate(tag, val);
@@ -112,6 +180,7 @@ export default {
     },
     async remove(tag, val) {
       await this.removeLanguageTag(tag, val);
+      this.updateViewForm(); // Watch byLang version instead?
       this.manualUpdate = false;
     },
     initializeTextarea() {
@@ -138,7 +207,8 @@ export default {
         </textarea>
       </span>
       <span class="ItemBylang-value">
-        <span class="ItemBylang-pill">
+        <span class="ItemBylang-pill"
+        v-if="entry.tag !== 'none'">
           <span class="ItemBylang-pill-label">
             {{ mapLanguage(entry.tag) }}
           </span>
@@ -161,12 +231,27 @@ export default {
            role="button"
            :aria-label="'Romanize' | translatePhrase"
            v-on:click="romanize(entry.tag, entry.val)"
-           v-if="!isTransSchema(entry.tag)"
+           v-if="!isTransSchema(entry.tag) && entry.tag !== 'none'"
            v-tooltip.top="translate('Romanize')"
            @keyup.enter="romanize(entry.tag, entry.val)">
         </i>
-        <i class="fa fa-language icon icon--sm ItemBylang-transIcon is-disabled"
-           v-if="isTransSchema(entry.tag)"></i>
+         <i class="fa fa-language icon icon--sm ItemBylang-transIcon is-disabled"
+            v-if="isTransSchema(entry.tag)">
+         </i>
+        <entity-adder class="Field-entityAdder ItemBylang-action"
+                      ref="entityAdder"
+                      v-if="entry.tag === 'none'"
+                      :field-key="fieldKey"
+                      :path="path"
+                      :allow-local="false"
+                      :all-search-types="['Language']"
+                      :range="['Language']"
+                      :range-full="['Language']"
+                      :property-types="['ObjectProperty']"
+                      :is-lang-tagger="true"
+                      :icon-add="'fa-globe'"
+                      @langTaggerEvent="setValueFromEntityAdder(entry.val, ...arguments)">
+      </entity-adder>
       </span>
     </div>
     <div class="ItemBylang-textcontainer"
@@ -178,14 +263,14 @@ export default {
         </div>
       </div>
       <span class="ItemBylang-tags">
-        <span class="ItemBylang-pill">
+        <span class="ItemBylang-pill"
+        v-if="entry.tag !== 'none'">
           <span class="ItemBylang-pill-label">
             {{ mapLanguage(entry.tag) }}
           </span>
         </span>
       </span>
     </div>
-
   </div>
 </template>
 
