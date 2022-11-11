@@ -14,10 +14,6 @@ export default {
       type: [Object, String],
       default: null,
     },
-    isRepeatable: {
-      type: Boolean,
-      default: false,
-    },
     isLocked: {
       type: Boolean,
       default: true,
@@ -63,14 +59,11 @@ export default {
     });
   },
   computed: {
-    isAllowed() {
-      // Check if de-langified property allows additions
-      let deLangifiedPath = this.path.substring(0, this.path.indexOf('ByLang'));
-      let deLangifiedObj = get(this.inspector.data, deLangifiedPath);
-      let deLangified = this.fieldKey.substring(0, this.path.indexOf('ByLang'));
-      let isRepeatable = VocabUtil.propIsRepeatable(deLangified, this.resources.context);
-      const isEmptyString = typeof deLangifiedObj === 'string' && deLangifiedObj.trim().length === 0;
-      return (deLangifiedObj === undefined || isEmptyString) || (deLangifiedObj !== 'undefined' && isRepeatable);
+    isRepeatable() {
+      return VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context);
+    },
+    removeIsAllowed() {
+      return this.isRepeatable || !this.hasProp();
     }
   },
   methods: {
@@ -214,7 +207,7 @@ export default {
           </span>
           <span class="ItemBylang-pill-removeButton" v-if="!isLocked">
             <i class="fa fa-times-circle icon icon--sm chip-icon"
-               v-if="!isLocked && isAllowed"
+               v-if="!isLocked && removeIsAllowed"
                role="button"
                tabindex="0"
                @click="remove(entry.tag, entry.val)"
@@ -223,7 +216,7 @@ export default {
                v-tooltip.top="translate('Remove')">
             </i>
             <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled"
-               v-if="!isLocked && !isAllowed"></i>
+               v-if="!isLocked && !removeIsAllowed"></i>
           </span>
         </span>
         <i class="fa fa-language icon icon--sm ItemBylang-transIcon"

@@ -460,7 +460,7 @@ export default {
   },
   methods: {
     isNotPartneredLangMap() {
-      return !(this.isLangMap() && this.hasDelangified())
+      return !(this.isLangMap() && this.hasProp())
     },
     onLabelClick() {
       this.$store.dispatch('pushInspectorEvent', {
@@ -908,7 +908,6 @@ export default {
           :field-key="fieldKey"
           :index="index"
           :parent-path="path"
-          :is-repeatable="isRepeatable"
         >
         </item-bylang>
 
