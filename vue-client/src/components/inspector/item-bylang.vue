@@ -39,6 +39,11 @@ export default {
         this.updateViewForm();
       }
     },
+    fieldByLangValue(newVal, oldVal) {
+      if (!isEqual(newVal, oldVal)) {
+        this.updateViewForm();
+      }
+    },
     entries: {
       handler: debounce(function debounceUpdate(val) {
         if (this.manualUpdate) {
@@ -59,6 +64,9 @@ export default {
     });
   },
   computed: {
+    fieldByLangValue() {
+      return get(this.inspector.data, this.getByLangPath())
+    },
     isRepeatable() {
       return VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context);
     },
@@ -76,7 +84,6 @@ export default {
       setTimeout(() => {
         this.manualUpdate = false;
         this.addToLangMap(tag, val);
-        this.updateViewForm();
         }, 1000);
     },
     addFocus() {
@@ -125,7 +132,7 @@ export default {
       let viewForm = [];
       if (typeof this.fieldValue === 'string') {
         viewForm.push({ tag: 'none', val: this.fieldValue });
-        Object.entries(this.getByLang()).forEach(([key, value]) => {
+        Object.entries(this.propByLang).forEach(([key, value]) => {
           viewForm.push({ tag: key, val: value });
         });
       } else if (typeof this.fieldValue === 'object') {
@@ -157,15 +164,6 @@ export default {
         return dataObjects;
       }
     },
-    getByLang() {
-      let byLangPath = this.path.concat('ByLang');
-      let byLangObj = get(this.inspector.data, byLangPath);
-      if (typeof byLangObj !== 'undefined') {
-        return byLangObj;
-      } else {
-        return {};
-      }
-    },
     async romanize(tag, val) {
       await this.transliterate(tag, val);
       this.manualUpdate = false;
@@ -173,7 +171,6 @@ export default {
     },
     async remove(tag, val) {
       await this.removeLanguageTag(tag, val);
-      this.updateViewForm(); // Watch byLang version instead?
       this.manualUpdate = false;
     },
     initializeTextarea() {
