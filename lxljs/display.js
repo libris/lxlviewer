@@ -209,6 +209,7 @@ function formatLabel(item, type, resources) {
   labelStr = labelStr.replace(/([:.\uE000])\uE000/g, '$1');
   labelStr = labelStr.replace(/\(\uE000\s?/g, '(');
   labelStr = labelStr.replace(/\uE000/g, ',');
+  labelStr = labelStr.replace(/\uE001/g, '•');
   return labelStr;
 }
 
@@ -488,7 +489,10 @@ export function getToken(item, resources, quoted, settings) {
   const tokenObj = getDisplayObject(item, 'tokens', resources, quoted, settings);
   const token = { rendered: '' };
   Object.keys(tokenObj).forEach((key) => {
-    token.rendered += ` ${tokenObj[key]}`;
+    // TODO: Fix handling of nested lenses. They should be rendered to strings one time in one place
+    // Private use character \uE001 is replaced by '•' in formatLabel()
+    const v = tokenObj[key];
+    token.rendered += token.rendered ? ` \uE001 ${v}` : v;
   });
   return token;
 }
