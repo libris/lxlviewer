@@ -83,7 +83,7 @@ export default {
       //Make sure debounce is done
       setTimeout(() => {
         this.manualUpdate = false;
-        this.addToLangMap(tag, val);
+        this.toLangMap(tag, val);
         }, 1000);
     },
     addFocus() {

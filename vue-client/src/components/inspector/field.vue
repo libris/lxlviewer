@@ -725,7 +725,8 @@ export default {
             :show-action-buttons="actionButtonsShown" 
             :active="activeModal" 
             :is-placeholder="false"
-            :is-lang-map="isLangMap"
+            :is-language="this.isLangMap() || this.isLangTaggable"
+            @addEmptyLanguageItem="addToLangMap({ 'none': '' })"
             :value-list="valueAsArray">
           </entity-adder>
           <div v-else class="Field-action placeholder"></div> 
@@ -817,7 +818,8 @@ export default {
           :show-action-buttons="actionButtonsShown" 
           :active="activeModal" 
           :is-placeholder="true"
-          :is-lang-map="isLangMap"
+          :is-language="this.isLangMap() || this.isLangTaggable"
+          @addEmptyLanguageItem="addToLangMap({ 'none': '' })"
           :value-list="valueAsArray">
         </entity-adder>
 
@@ -1055,6 +1057,7 @@ export default {
           :parent-path="path"
           :is-repeatable="isRepeatable">
         </item-bylang>
+
         <!-- shelfControlNumber -->
         <item-shelf-control-number
           v-if="getDatatype(item) == 'shelfControlNumber'"

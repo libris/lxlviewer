@@ -36,7 +36,11 @@ export default {
     },
     getProp() {
       const prop = get(this.inspector.data, this.getPropPath())
-      return typeof prop !== 'undefined' ? prop : {};
+      if (typeof prop === 'undefined') {
+        return this.isRepeatable ? [] : "";
+      } else {
+        return prop;
+      }
     },
     byLangifiedPath() {
       return this.path.concat('ByLang');
@@ -108,44 +112,46 @@ export default {
         ],
         addToHistory: true,
       });
-      let updateAtDelangified = taggedValue;
+      let updateProp = taggedValue;
       if (this.isRepeatable) {
-        updateAtDelangified = this.getProp.push(taggedValue);
+        updateProp = this.getProp.push(taggedValue);
       }
       await this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
             path: this.getPropPath(),
-            value: updateAtDelangified,
+            value: updateProp,
           },
         ],
         addToHistory: true,
       });
     },
-    async addToLangMap(tag, sourceValue) {
+    async toLangMap(tag, sourceValue) {
       const lastIndex = this.path.lastIndexOf('.');
       const parentsParent = this.parentPath.slice(0, lastIndex);
       const parentsParentValue = get(this.inspector.data, parentsParent);
       delete parentsParentValue[this.fieldKey];
       if (this.hasByLang()) {
-        Object.assign(this.propByLang, { [tag]: sourceValue });
+        await this.addToLangMap({ [tag]: sourceValue });
       } else {
         parentsParentValue[this.fieldKey.concat('ByLang')] = { [tag]: sourceValue };
+        await this.$store.dispatch('updateInspectorData', {
+          changeList: [
+            {
+              path: parentsParent,
+              value: parentsParentValue,
+            },
+          ],
+          addToHistory: true,
+        });
       }
-      await this.$store.dispatch('updateInspectorData', {
-        changeList: [
-          {
-            path: parentsParent,
-            value: parentsParentValue,
-          },
-        ],
-        addToHistory: true,
-      });
     },
     async transliterate(tag, sourceValue) {
       const result = await this.requestTransliteration({ langTag: tag, source: sourceValue });
-      const langMap = this.propByLang;
-      const updateValue = Object.assign(langMap, result);
+      await this.addToLangMap(result);
+    },
+    async addToLangMap(obj) {
+      const updateValue = Object.assign(this.propByLang, obj);
       await this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
