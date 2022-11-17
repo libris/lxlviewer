@@ -39,7 +39,7 @@ export default {
         this.updateViewForm();
       }
     },
-    fieldByLangValue(newVal, oldVal) {
+    fieldOtherValue(newVal, oldVal) {
       if (!isEqual(newVal, oldVal)) {
         this.updateViewForm();
       }
@@ -51,7 +51,7 @@ export default {
         } else {
           this.manualUpdate = true;
         }
-      }, 1000),
+      }, 200),
       deep: true,
     },
   },
@@ -64,27 +64,31 @@ export default {
     });
   },
   computed: {
-    fieldByLangValue() {
-      return get(this.inspector.data, this.getByLangPath())
+    fieldOtherValue() {
+      if (this.isLangMap) {
+        return this.getProp;
+      } else {
+        return this.propByLang;
+      }
     },
     isRepeatable() {
       return VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context);
     },
     removeIsAllowed() {
-      return this.isRepeatable || !this.hasProp();
+      return this.isRepeatable || !this.hasProp;
     }
   },
   methods: {
     setValueFromEntityAdder(fieldValue, eventArg) {
       let tag = eventArg.split('/').pop();
-      this.addLangTag(tag, fieldValue);
+      this.addLangTag(tag.slice(0, -1), fieldValue);
     },
     addLangTag(tag, val) {
       //Make sure debounce is done
       setTimeout(() => {
         this.manualUpdate = false;
         this.toLangMap(tag, val);
-        }, 1000);
+        }, 200);
     },
     addFocus() {
       this.$refs.textarea.focus({ preventScroll: true }); // Prevent scroll as we will handle this ourselves
@@ -167,7 +171,7 @@ export default {
     async romanize(tag, val) {
       await this.transliterate(tag, val);
       this.manualUpdate = false;
-      this.updateViewForm();
+      // this.updateViewForm();
     },
     async remove(tag, val) {
       await this.removeLanguageTag(tag, val);

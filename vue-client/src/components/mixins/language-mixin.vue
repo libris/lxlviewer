@@ -37,7 +37,7 @@ export default {
     getProp() {
       const prop = get(this.inspector.data, this.getPropPath())
       if (typeof prop === 'undefined') {
-        return this.isRepeatable ? [] : "";
+        return this.isRepeatable ? [] : '';
       } else {
         return prop;
       }
@@ -46,39 +46,38 @@ export default {
       return this.path.concat('ByLang');
     },
     propByLang() {
-      const langMap = get(this.inspector.data, this.getByLangPath())
+      const langMap = get(this.inspector.data, this.getByLangPath());
       return typeof langMap !== 'undefined' ? langMap : {};
     },
     isRepeatable() {
       return VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context);
     },
-
-  },
-  methods: {
     isLangMap() {
       return getContextValue(this.fieldKey, '@container', this.resources.context) === '@language';
     },
     hasProp() {
-      return !isEmpty(this.getProp)
+      return typeof get(this.inspector.data, this.getPropPath()) !== 'undefined';
     },
     hasByLang() {
       return !isEmpty(this.propByLang);
     },
+  },
+  methods: {
     mapLanguage(tag) {
       const languageString = this.languageMap[tag];
       return languageString || tag;
     },
     getByLangKey() {
-      return this.isLangMap() ? this.fieldKey : this.fieldKey.concat('ByLang');
+      return this.isLangMap ? this.fieldKey : this.fieldKey.concat('ByLang');
     },
     getPropKey() {
-      return this.isLangMap() ? this.fieldKey.substring(0, this.fieldKey.indexOf('ByLang')) : this.fieldKey;
+      return this.isLangMap ? this.fieldKey.substring(0, this.fieldKey.indexOf('ByLang')) : this.fieldKey;
     },
     getByLangPath() {
-      return this.isLangMap() ? this.path : this.byLangifiedPath;
+      return this.isLangMap ? this.path : this.byLangifiedPath;
     },
     getPropPath() {
-      return this.isLangMap() ? this.deLangifiedPath : this.path;
+      return this.isLangMap ? this.deLangifiedPath : this.path;
     },
     async requestTransliteration(sourceObj) {
       return httpUtil.post({
@@ -131,24 +130,37 @@ export default {
       const parentsParent = this.parentPath.slice(0, lastIndex);
       const parentsParentValue = get(this.inspector.data, parentsParent);
       delete parentsParentValue[this.fieldKey];
-      if (this.hasByLang()) {
-        await this.addToLangMap({ [tag]: sourceValue });
+      if (this.hasByLang) {
+        Object.assign(this.propByLang, { [tag]: sourceValue });
+      }
+      await this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: parentsParent,
+            value: parentsParentValue,
+          },
+        ],
+        addToHistory: true,
+      });
+    },
+    async transliterate(tag, sourceValue) {
+      const result = await this.requestTransliteration({ langTag: tag, source: sourceValue });
+      await this.addToLangMap(result);
+    },
+    async addEmpty() {
+      if (this.hasProp) {
+        // For repeatable things
       } else {
-        parentsParentValue[this.fieldKey.concat('ByLang')] = { [tag]: sourceValue };
         await this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
-              path: parentsParent,
-              value: parentsParentValue,
+              path: this.getPropPath(),
+              value: '',
             },
           ],
           addToHistory: true,
         });
       }
-    },
-    async transliterate(tag, sourceValue) {
-      const result = await this.requestTransliteration({ langTag: tag, source: sourceValue });
-      await this.addToLangMap(result);
     },
     async addToLangMap(obj) {
       const updateValue = Object.assign(this.propByLang, obj);

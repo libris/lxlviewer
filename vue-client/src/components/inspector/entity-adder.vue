@@ -230,7 +230,6 @@ export default {
       } else if (this.isVocabField) {
         this.addItem('');
       } else if (this.isLanguage) {
-        console.log('isLanguage', this.isLanguage);
         this.$emit('addEmptyLanguageItem');
       } else if (this.canReceiveObjects) {
         const range = this.rangeFull;

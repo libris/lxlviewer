@@ -387,6 +387,9 @@ export default {
       }
       return false;
     },
+    isNotPartneredLangMap() {
+      return !(this.isLangMap && this.hasProp)
+    },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
         this.fieldKey,
@@ -459,9 +462,6 @@ export default {
     },
   },
   methods: {
-    isNotPartneredLangMap() {
-      return !(this.isLangMap() && this.hasProp())
-    },
     onLabelClick() {
       this.$store.dispatch('pushInspectorEvent', {
         name: 'field-label-clicked',
@@ -557,7 +557,7 @@ export default {
       if (this.fieldKey === 'shelfControlNumber') {
         return 'shelfControlNumber';
       }
-      if (this.isLangMap() || this.isLangTaggable) {
+      if (this.isLangMap || this.isLangTaggable) {
         return 'language';
       }
       if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
@@ -684,7 +684,7 @@ export default {
     }"
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()"
-    v-if="this.isNotPartneredLangMap()"
+    v-if="this.isNotPartneredLangMap"
   >
 
     <div class="Field-labelContainer" 
@@ -725,8 +725,8 @@ export default {
             :show-action-buttons="actionButtonsShown" 
             :active="activeModal" 
             :is-placeholder="false"
-            :is-language="this.isLangMap() || this.isLangTaggable"
-            @addEmptyLanguageItem="addToLangMap({ 'none': '' })"
+            :is-language="this.isLangMap || this.isLangTaggable"
+            @addEmptyLanguageItem="addEmpty()"
             :value-list="valueAsArray">
           </entity-adder>
           <div v-else class="Field-action placeholder"></div> 
@@ -818,8 +818,8 @@ export default {
           :show-action-buttons="actionButtonsShown" 
           :active="activeModal" 
           :is-placeholder="true"
-          :is-language="this.isLangMap() || this.isLangTaggable"
-          @addEmptyLanguageItem="addToLangMap({ 'none': '' })"
+          :is-language="this.isLangMap || this.isLangTaggable"
+          @addEmptyLanguageItem="addEmpty()"
           :value-list="valueAsArray">
         </entity-adder>
 
