@@ -82,12 +82,15 @@ export default {
       added.forEach((addedPath) => {
         const thePath = StringUtil.arrayPathToString(addedPath);
         const objectAtPath = get(this.currentVersionData, thePath);
-
-        // Put non-repeatable properties, such as descriptionLastModifier, into a list to be able to show
-        // added + removed side by side.
         if (thePath.endsWith('.@id') && !thePath.endsWith('mainEntity.@id')) {
           const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
-          convertedAdded.push({ path: elementPath.concat('[1]'), val: { '@id': objectAtPath } });
+          if (this.isListItem(elementPath)) {
+            convertedAdded.push({ path: elementPath, val: { '@id': objectAtPath } });
+          } else {
+            // Put non-repeatable properties, such as descriptionLastModifier, into a list to be able to show
+            // added + removed side by side.
+            convertedAdded.push({ path: elementPath.concat('[1]'), val: { '@id': objectAtPath } });
+          }
         } else {
           convertedAdded.push({ path: thePath, val: objectAtPath });
         }
@@ -106,11 +109,15 @@ export default {
           return;
         }
 
-        // Put non-repeatable properties, such as descriptionLastModifier, into a list to be able to show
-        // added + removed side by side.
         if (thePath.endsWith('.@id') && !thePath.endsWith('mainEntity.@id')) {
           const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
-          convertedRemoved.push({ path: elementPath.concat('[0]'), val: { '@id': objectAtPath } });
+          if (this.isListItem(elementPath)) {
+            convertedRemoved.push({ path: elementPath, val: { '@id': objectAtPath } });
+          } else {
+            // Put non-repeatable properties, such as descriptionLastModifier, into a list to be able to show
+            // added + removed side by side.
+            convertedRemoved.push({ path: elementPath.concat('[0]'), val: { '@id': objectAtPath } });
+          }
         } else {
           convertedRemoved.push({ path: thePath, val: objectAtPath });
         }
@@ -158,6 +165,9 @@ export default {
     },
   },
   methods: {
+    isListItem(path) {
+     return path.slice(-1) === ']';
+    },
     changeSelectedVersion(val) {
       this.selectedVersion = val;
       this.closeSideCol();
@@ -214,8 +224,7 @@ export default {
 
       if (!isEmpty(diff.removed)) {
         diff.removed.forEach((r) => {
-          const isListItem = r.path.slice(-1) === ']';
-          if (isListItem && isObject(r.val)) {
+          if (this.isListItem(r.path) && isObject(r.val)) {
             const parentPath = r.path.slice(0, r.path.lastIndexOf('['));
             const objAtPath = get(compositeVersionData, parentPath);
             if (Array.isArray(objAtPath)) {
