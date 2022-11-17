@@ -1,5 +1,5 @@
 <script>
-import {cloneDeep, debounce, get, isEmpty, isEqual} from 'lodash-es';
+import {cloneDeep, debounce, get, isArray, isEmpty, isEqual} from 'lodash-es';
 import AutoSize from 'autosize';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
@@ -51,7 +51,7 @@ export default {
         } else {
           this.manualUpdate = true;
         }
-      }, 200),
+      }, 1000),
       deep: true,
     },
   },

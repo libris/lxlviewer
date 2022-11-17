@@ -113,7 +113,8 @@ export default {
       });
       let updateProp = taggedValue;
       if (this.isRepeatable) {
-        updateProp = this.getProp.push(taggedValue);
+        this.getProp.push(taggedValue);
+        updateProp = this.getProp;
       }
       await this.$store.dispatch('updateInspectorData', {
         changeList: [
@@ -148,14 +149,24 @@ export default {
       await this.addToLangMap(result);
     },
     async addEmpty() {
-      if (this.hasProp) {
-        // For repeatable things
+      if (this.hasProp && this.isRepeatable) {
+        let updateVal = this.getProp;
+        updateVal.push('');
+        await this.$store.dispatch('updateInspectorData', {
+          changeList: [
+            {
+              path: this.getPropPath(),
+              value: updateVal,
+            },
+          ],
+          addToHistory: true,
+        });
       } else {
         await this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
               path: this.getPropPath(),
-              value: '',
+              value: this.isRepeatable ? [''] : '',
             },
           ],
           addToHistory: true,
