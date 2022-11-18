@@ -887,6 +887,16 @@ export default {
     <div class="Field-content FieldContent" 
       v-bind:class="{ 'is-locked': locked}"
       v-if="fieldKey !== '@type' && isObjectArray">
+      <div class="Field-contentItem">
+
+      <item-bylang
+        v-if="getDatatype(valueAsArray[0]) == 'language'"
+        :is-locked="locked"
+        :field-value="valueAsArray"
+        :field-key="fieldKey"
+        :parent-path="path">
+      </item-bylang>
+      </div>
       <div class="Field-contentItem"
         v-for="(item, index) in valueAsArray"
         :key="index"
@@ -902,16 +912,6 @@ export default {
           :index="index" 
           :diff="diff"
           :item="item"></item-error>
-
-        <item-bylang
-          v-if="getDatatype(item) == 'language'"
-          :is-locked="locked"
-          :field-value="item"
-          :field-key="fieldKey"
-          :index="index"
-          :parent-path="path"
-        >
-        </item-bylang>
 
         <item-grouped 
           v-if="getDatatype(item) == 'grouped'"
@@ -995,6 +995,17 @@ export default {
     <div class="Field-content is-endOfTree js-endOfTree" 
       v-bind:class="{ 'is-locked': locked }"
       v-if="fieldKey !== '@type' && !isObjectArray">
+      <div class="Field-contentItem">
+
+      <item-bylang
+        v-if="getDatatype(valueAsArray[0]) == 'language'"
+        :is-locked="locked"
+        :field-value="valueAsArray"
+        :field-key="fieldKey"
+        :parent-path="path"
+      >
+      </item-bylang>
+      </div>
       <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
         :key="index">
@@ -1047,16 +1058,6 @@ export default {
           :diff="diff"
           :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded"></item-value>
-
-        <item-bylang
-          v-if="getDatatype(item) == 'language'"
-          :is-locked="locked"
-          :field-value="item"
-          :field-key="fieldKey"
-          :index="index"
-          :parent-path="path"
-          :is-repeatable="isRepeatable">
-        </item-bylang>
 
         <!-- shelfControlNumber -->
         <item-shelf-control-number

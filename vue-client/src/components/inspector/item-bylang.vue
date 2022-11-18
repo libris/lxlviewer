@@ -11,7 +11,7 @@ export default {
   mixins: [ItemMixin, LanguageMixin],
   props: {
     fieldValue: {
-      type: [Object, String],
+      type: [Object, String, Array],
       default: null,
     },
     isLocked: {
@@ -66,7 +66,7 @@ export default {
   computed: {
     fieldOtherValue() {
       if (this.isLangMap) {
-        return this.getProp;
+        return this.prop;
       } else {
         return this.propByLang;
       }
@@ -85,10 +85,11 @@ export default {
     },
     addLangTag(tag, val) {
       //Make sure debounce is done
-      setTimeout(() => {
+      setTimeout(async () => {
         this.manualUpdate = false;
-        this.toLangMap(tag, val);
-        }, 200);
+        await this.toLangMap(tag, val);
+        this.updateViewForm();
+      }, 1000);
     },
     addFocus() {
       this.$refs.textarea.focus({ preventScroll: true }); // Prevent scroll as we will handle this ourselves
@@ -134,16 +135,22 @@ export default {
     },
     updateViewForm() {
       let viewForm = [];
-      if (typeof this.fieldValue === 'string') {
-        viewForm.push({ tag: 'none', val: this.fieldValue });
+      this.fieldValue.forEach(value => {
+        if (typeof value === 'string') {
+          viewForm.push({tag: 'none', val: value});
+        }
+      })
+      let fieldValue = this.fieldValue[0];
+      if (typeof fieldValue === 'string') {
         Object.entries(this.propByLang).forEach(([key, value]) => {
-          viewForm.push({ tag: key, val: value });
+          viewForm.push({tag: key, val: value});
         });
-      } else if (typeof this.fieldValue === 'object') {
-        Object.entries(this.fieldValue).forEach(([key, value]) => {
-          viewForm.push({ tag: key, val: value });
+      } else if (typeof fieldValue === 'object') {
+        Object.entries(fieldValue).forEach(([key, value]) => {
+          viewForm.push({tag: key, val: value});
         });
       }
+
       this.entries = viewForm;
     },
     dataFormByLang(viewObjects) {
@@ -162,7 +169,7 @@ export default {
           dataObjects.push(object.val);
         }
       });
-      if (dataObjects.length === 1) {
+      if (dataObjects.length === 1 && !this.isRepeatable) {
         return dataObjects.pop();
       } else {
         return dataObjects;

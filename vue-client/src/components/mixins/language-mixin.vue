@@ -1,5 +1,5 @@
 <script>
-import { get, isArray, isEmpty } from 'lodash-es';
+import { get, isEmpty } from 'lodash-es';
 import * as httpUtil from '../../utils/http';
 import { getContextValue } from 'lxljs/vocab';
 import * as VocabUtil from "lxljs/vocab";
@@ -25,16 +25,12 @@ export default {
       return { uk: 'Ukrainska', sv: 'Svenska', de: 'Tyska', fr: 'Franska', en: 'Engelska' };
     },
     path() {
-      const parentValue = get(this.inspector.data, this.parentPath);
-      if (isArray(parentValue)) {
-        return `${this.parentPath}[${this.index}]`;
-      }
       return `${this.parentPath}`;
     },
     deLangifiedPath() {
       return this.path.substring(0, this.path.indexOf('ByLang'));
     },
-    getProp() {
+    prop() {
       const prop = get(this.inspector.data, this.getPropPath())
       if (typeof prop === 'undefined') {
         return this.isRepeatable ? [] : '';
@@ -94,13 +90,19 @@ export default {
       let updateValue = languageMap;
       let taggedValue = languageMap[tag];
       delete languageMap[tag];
-      if (isEmpty(languageMap)) { // De-langify
+      const delangify = isEmpty(languageMap);
+      if (delangify) { // De-langify
         const lastIndex = this.path.lastIndexOf('.');
-        const parentsParent = this.parentPath.slice(0, lastIndex);
-        const parentsParentValue = get(this.inspector.data, parentsParent);
+        const parentPath = this.path.slice(0, lastIndex);
+        const parentValue = get(this.inspector.data, parentPath);
         updatePath = this.getPropPath();
-        updateValue = value;
-        delete parentsParentValue[this.fieldKey];
+        if (this.isRepeatable) {
+          updateValue = this.prop;
+          updateValue.push(taggedValue);
+        } else {
+          updateValue = value;
+        }
+        delete parentValue[this.getByLangKey()];
       }
       await this.$store.dispatch('updateInspectorData', {
         changeList: [
@@ -111,34 +113,45 @@ export default {
         ],
         addToHistory: true,
       });
-      let updateProp = taggedValue;
-      if (this.isRepeatable) {
-        this.getProp.push(taggedValue);
-        updateProp = this.getProp;
+      if (!delangify) {
+        let updateProp = taggedValue;
+        if (this.isRepeatable) {
+          updateProp = this.prop;
+          updateProp.push(taggedValue);
+        }
+        await this.$store.dispatch('updateInspectorData', {
+          changeList: [
+            {
+              path: this.getPropPath(),
+              value: updateProp,
+            },
+          ],
+          addToHistory: true,
+        });
       }
-      await this.$store.dispatch('updateInspectorData', {
-        changeList: [
-          {
-            path: this.getPropPath(),
-            value: updateProp,
-          },
-        ],
-        addToHistory: true,
-      });
     },
     async toLangMap(tag, sourceValue) {
       const lastIndex = this.path.lastIndexOf('.');
-      const parentsParent = this.parentPath.slice(0, lastIndex);
-      const parentsParentValue = get(this.inspector.data, parentsParent);
-      delete parentsParentValue[this.fieldKey];
+      const parentsPath = this.path.slice(0, lastIndex);
+      const parent = get(this.inspector.data, parentsPath);
+      if (this.isRepeatable) {
+        this.prop.splice(this.prop.indexOf(sourceValue), 1);
+        if (isEmpty(this.prop)) {
+          delete parent[this.getPropKey()]
+        }
+      } else {
+        delete parent[this.getPropKey()];
+      }
       if (this.hasByLang) {
         Object.assign(this.propByLang, { [tag]: sourceValue });
+      } else {
+        parent[this.getByLangKey()] = { [tag]: sourceValue };
       }
       await this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
-            path: parentsParent,
-            value: parentsParentValue,
+            path: parentsPath,
+            value: parent,
           },
         ],
         addToHistory: true,
@@ -149,8 +162,9 @@ export default {
       await this.addToLangMap(result);
     },
     async addEmpty() {
-      if (this.hasProp && this.isRepeatable) {
-        let updateVal = this.getProp;
+      let isRepeatable = VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context); //Is for some reason different from this.isRepeatable()
+      if (this.hasProp && isRepeatable) {
+        let updateVal = this.prop;
         updateVal.push('');
         await this.$store.dispatch('updateInspectorData', {
           changeList: [
@@ -166,7 +180,7 @@ export default {
           changeList: [
             {
               path: this.getPropPath(),
-              value: this.isRepeatable ? [''] : '',
+              value: isRepeatable ? [''] : '',
             },
           ],
           addToHistory: true,
