@@ -166,7 +166,7 @@ export default {
   },
   methods: {
     isListItem(path) {
-     return path.slice(-1) === ']';
+      return path.slice(-1) === ']';
     },
     changeSelectedVersion(val) {
       this.selectedVersion = val;
