@@ -1,10 +1,13 @@
 <script>
-import {cloneDeep, debounce, get, isArray, isEmpty, isEqual} from 'lodash-es';
+import {cloneDeep, debounce, get, isEmpty, isEqual} from 'lodash-es';
 import AutoSize from 'autosize';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
 import * as VocabUtil from "lxljs/vocab";
 import EntityAdder from "./entity-adder";
+import * as DisplayUtil from "lxljs/display";
+import * as DataUtil from "../../utils/data";
+import * as HttpUtil from "../../utils/http";
 
 export default {
   name: 'item-bylang.vue',
@@ -44,6 +47,11 @@ export default {
         this.updateViewForm();
       }
     },
+    cache: {
+      handler: debounce(function debounceUpdate(val) {
+        this.updateViewForm();
+      } ,100),
+    },
     entries: {
       handler: debounce(function debounceUpdate(val) {
         if (this.manualUpdate) {
@@ -56,6 +64,7 @@ export default {
     },
   },
   mounted() {
+    this.updateCache()
     this.$nextTick(() => {
       if (!this.isLocked) {
         this.initializeTextarea();
@@ -64,6 +73,9 @@ export default {
     });
   },
   computed: {
+    cache() {
+      return this.inspector.languageCache;
+    },
     fieldOtherValue() {
       if (this.isLangMap) {
         return this.prop;
@@ -76,19 +88,43 @@ export default {
     },
     removeIsAllowed() {
       return this.isRepeatable || !this.hasProp;
-    }
+    },
   },
   methods: {
-    setValueFromEntityAdder(fieldValue, eventArg) {
-      let tag = eventArg.split('/').pop();
-      this.addLangTag(tag.slice(0, -1), fieldValue);
+    updateCache() {
+      Object.entries(this.propByLang).forEach(([key, value]) => {
+        console.log('Updating langCache with', key);
+        this.updateLangCache(key);
+      });
+    },
+    updateLangCache(tag) {
+      HttpUtil.getDocument(`${this.settings.idPath}/i18n/lang/${tag}`, undefined, false).then((res) => {
+        let data = res.data;
+        if (data) {
+          let graph = data['@graph'];
+          DataUtil.fetchMissingLinkedToQuoted(graph, this.$store).then(() => {
+            const label = DisplayUtil.getItemLabel(graph[1],
+              this.resources,
+              this.inspector.data.quoted,
+              this.settings);
+            // Cache graph[1]?
+            this.addTagToCache(tag, label);
+          });
+        }
+      });
+    },
+    addTagToCache(tag, label) {
+      this.$store.dispatch('addToLanguageCache', {'tag': tag, 'label': label})
+    },
+    setValueFromEntityAdder(fieldValue, langTag) {
+      this.addLangTag(langTag, fieldValue);
     },
     addLangTag(tag, val) {
       //Make sure debounce is done
       setTimeout(async () => {
         this.manualUpdate = false;
         await this.toLangMap(tag, val);
-        this.updateViewForm();
+        this.updateLangCache(tag);
       }, 1000);
     },
     addFocus() {
@@ -135,6 +171,7 @@ export default {
     },
     updateViewForm() {
       let viewForm = [];
+      const languageCache = this.cache;
       this.fieldValue.forEach(value => {
         if (typeof value === 'string') {
           viewForm.push({tag: 'none', val: value});
@@ -143,14 +180,15 @@ export default {
       let fieldValue = this.fieldValue[0];
       if (typeof fieldValue === 'string') {
         Object.entries(this.propByLang).forEach(([key, value]) => {
-          viewForm.push({tag: key, val: value});
+          const label = languageCache[key] || key;
+          viewForm.push({tag: key, val: value, label: label});
         });
       } else if (typeof fieldValue === 'object') {
         Object.entries(fieldValue).forEach(([key, value]) => {
-          viewForm.push({tag: key, val: value});
+          const label = languageCache[key] || key;
+          viewForm.push({tag: key, val: value, label: label});
         });
       }
-
       this.entries = viewForm;
     },
     dataFormByLang(viewObjects) {
@@ -211,7 +249,7 @@ export default {
         <span class="ItemBylang-pill"
         v-if="entry.tag !== 'none'">
           <span class="ItemBylang-pill-label">
-            {{ mapLanguage(entry.tag) }}
+            {{ entry.label }}
           </span>
           <span class="ItemBylang-pill-removeButton" v-if="!isLocked">
             <i class="fa fa-times-circle icon icon--sm chip-icon"
@@ -267,7 +305,7 @@ export default {
         <span class="ItemBylang-pill"
         v-if="entry.tag !== 'none'">
           <span class="ItemBylang-pill-label">
-            {{ mapLanguage(entry.tag) }}
+            {{ entry.label }}
           </span>
         </span>
       </span>

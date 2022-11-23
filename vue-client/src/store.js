@@ -45,6 +45,7 @@ const store = new Vuex.Store({
       insertData: {},
       originalData: {},
       compositeHistoryData: {},
+      languageCache: {},
       title: '',
       status: {
         detailedEnrichmentModal: {
@@ -157,6 +158,12 @@ const store = new Vuex.Store({
     setCompositeHistoryData(state, data) {
       state.inspector.compositeHistoryData = data;
     },
+    addToLanguageCache(state, data) {
+      const languageCache = cloneDeep(state.inspector.languageCache);
+      languageCache[data['tag']] = data['label'];
+      state.inspector.languageCache = languageCache;
+    },
+
     addToQuoted(state, data) {
       const quoted = cloneDeep(state.inspector.data.quoted);
       quoted[data['@id']] = data;
@@ -651,6 +658,9 @@ const store = new Vuex.Store({
     },
     setCompositeHistoryData({ commit }, data) {
       commit('setCompositeHistoryData', data);
+    },
+    addToLanguageCache({ commit }, data) {
+      commit('addToLanguageCache', data);
     },
     updateInspectorData({ commit }, payload) {
       commit('updateInspectorData', payload);

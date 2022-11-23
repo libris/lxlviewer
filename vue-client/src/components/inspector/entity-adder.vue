@@ -279,7 +279,11 @@ export default {
     },
     addLinkedItem(obj) {
       if (this.isLangTagger) {
-        this.$emit('langTaggerEvent', obj['@id']);
+        let tag = obj['langTag']; //IETF BCP 47
+        if (typeof tag === 'undefined') {
+          tag = obj['code'];
+        }
+        this.$emit('langTaggerEvent', tag);
         return;
       }
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
