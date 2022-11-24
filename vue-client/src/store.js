@@ -160,7 +160,9 @@ const store = new Vuex.Store({
     },
     addToLanguageCache(state, data) {
       const languageCache = cloneDeep(state.inspector.languageCache);
-      languageCache[data['tag']] = data['label'];
+      for (const [key, value] of Object.entries(data)) {
+        languageCache[key] = value;
+      }
       state.inspector.languageCache = languageCache;
     },
 

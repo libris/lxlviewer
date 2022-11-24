@@ -42,15 +42,13 @@ export default {
         this.updateViewForm();
       }
     },
-    fieldOtherValue(newVal, oldVal) {
+    fieldOtherValue() {
+      this.updateViewForm();
+    },
+    cache(newVal, oldVal) {
       if (!isEqual(newVal, oldVal)) {
         this.updateViewForm();
       }
-    },
-    cache: {
-      handler: debounce(function debounceUpdate(val) {
-        this.updateViewForm();
-      } ,100),
     },
     entries: {
       handler: debounce(function debounceUpdate(val) {
@@ -64,12 +62,12 @@ export default {
     },
   },
   mounted() {
-    this.updateCache()
     this.$nextTick(() => {
       if (!this.isLocked) {
         this.initializeTextarea();
       }
       this.updateViewForm();
+      this.updateCache('')
     });
   },
   computed: {
@@ -91,40 +89,39 @@ export default {
     },
   },
   methods: {
-    updateCache() {
-      Object.entries(this.propByLang).forEach(([key, value]) => {
-        console.log('Updating langCache with', key);
-        this.updateLangCache(key);
-      });
-    },
-    updateLangCache(tag) {
-      HttpUtil.getDocument(`${this.settings.idPath}/i18n/lang/${tag}`, undefined, false).then((res) => {
-        let data = res.data;
+    async updateCache(tag) {
+      let toAdd = {}
+      const updateFrom = tag === '' ? Object.keys(this.propByLang) : [tag];
+      for (const tag of updateFrom) {
+        const doc = await HttpUtil.getDocument(`${this.settings.idPath}/i18n/lang/${tag}`, undefined, false);
+        let data = doc.data;
         if (data) {
           let graph = data['@graph'];
-          DataUtil.fetchMissingLinkedToQuoted(graph, this.$store).then(() => {
-            const label = DisplayUtil.getItemLabel(graph[1],
+          //TODO: let backend add to embellished instead?
+          await DataUtil.fetchMissingLinkedToQuoted(graph, this.$store);
+          const label = DisplayUtil.getItemLabel(graph[1],
               this.resources,
               this.inspector.data.quoted,
               this.settings);
             // Cache graph[1]?
-            this.addTagToCache(tag, label);
-          });
+            let obj = {};
+            obj[tag] = label;
+            Object.assign(toAdd, obj);
+        } else {
+          console.log('Missing i18n/lang/tag for', tag);
         }
-      });
-    },
-    addTagToCache(tag, label) {
-      this.$store.dispatch('addToLanguageCache', {'tag': tag, 'label': label})
+      }
+      await this.$store.dispatch('addToLanguageCache', toAdd)
     },
     setValueFromEntityAdder(fieldValue, langTag) {
       this.addLangTag(langTag, fieldValue);
     },
     addLangTag(tag, val) {
       //Make sure debounce is done
+      this.manualUpdate = false;
       setTimeout(async () => {
-        this.manualUpdate = false;
-        await this.toLangMap(tag, val);
-        this.updateLangCache(tag);
+        this.toLangMap(tag, val);
+        await this.updateCache(tag);
       }, 1000);
     },
     addFocus() {
@@ -171,7 +168,7 @@ export default {
     },
     updateViewForm() {
       let viewForm = [];
-      const languageCache = this.cache;
+      const languageCache = this.inspector.languageCache;
       this.fieldValue.forEach(value => {
         if (typeof value === 'string') {
           viewForm.push({tag: 'none', val: value});
@@ -218,8 +215,8 @@ export default {
       this.manualUpdate = false;
       // this.updateViewForm();
     },
-    async remove(tag, val) {
-      await this.removeLanguageTag(tag, val);
+    remove(tag, val) {
+      this.removeLanguageTag(tag, val);
       this.manualUpdate = false;
     },
     initializeTextarea() {

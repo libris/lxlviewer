@@ -52,7 +52,10 @@ export default {
       return getContextValue(this.fieldKey, '@container', this.resources.context) === '@language';
     },
     hasProp() {
-      return typeof get(this.inspector.data, this.getPropPath()) !== 'undefined';
+      return typeof get(this.inspector.data, this.propPath) !== 'undefined';
+    },
+    propPath() {
+      return this.isLangMap ? this.deLangifiedPath : this.path;
     },
     hasByLang() {
       return !isEmpty(this.propByLang);
@@ -84,7 +87,7 @@ export default {
           return result;
         });
     },
-    async removeLanguageTag(tag, value) {
+    removeLanguageTag(tag, value) {
       const languageMap = this.propByLang;
       let updatePath = this.getByLangPath();
       let updateValue = languageMap;
@@ -104,7 +107,7 @@ export default {
         }
         delete parentValue[this.getByLangKey()];
       }
-      await this.$store.dispatch('updateInspectorData', {
+      this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
             path: updatePath,
@@ -119,7 +122,7 @@ export default {
           updateProp = this.prop;
           updateProp.push(taggedValue);
         }
-        await this.$store.dispatch('updateInspectorData', {
+        this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
               path: this.getPropPath(),
@@ -130,7 +133,7 @@ export default {
         });
       }
     },
-    async toLangMap(tag, sourceValue) {
+    toLangMap(tag, sourceValue) {
       const lastIndex = this.path.lastIndexOf('.');
       const parentsPath = this.path.slice(0, lastIndex);
       const parent = get(this.inspector.data, parentsPath);
@@ -143,30 +146,30 @@ export default {
         delete parent[this.getPropKey()];
       }
       if (this.hasByLang) {
-        Object.assign(this.propByLang, { [tag]: sourceValue });
+        this.addToLangMap({ [tag]: sourceValue })
       } else {
         parent[this.getByLangKey()] = { [tag]: sourceValue };
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [
+            {
+              path: parentsPath,
+              value: parent,
+            },
+          ],
+          addToHistory: true,
+        });
       }
-      await this.$store.dispatch('updateInspectorData', {
-        changeList: [
-          {
-            path: parentsPath,
-            value: parent,
-          },
-        ],
-        addToHistory: true,
-      });
     },
     async transliterate(tag, sourceValue) {
       const result = await this.requestTransliteration({ langTag: tag, source: sourceValue });
-      await this.addToLangMap(result);
+      this.addToLangMap(result);
     },
-    async addEmpty() {
+    addEmpty() {
       let isRepeatable = VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context); //Is for some reason different from this.isRepeatable()
       if (this.hasProp && isRepeatable) {
         let updateVal = this.prop;
         updateVal.push('');
-        await this.$store.dispatch('updateInspectorData', {
+        this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
               path: this.getPropPath(),
@@ -176,7 +179,7 @@ export default {
           addToHistory: true,
         });
       } else {
-        await this.$store.dispatch('updateInspectorData', {
+        this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
               path: this.getPropPath(),
@@ -187,9 +190,9 @@ export default {
         });
       }
     },
-    async addToLangMap(obj) {
+    addToLangMap(obj) {
       const updateValue = Object.assign(this.propByLang, obj);
-      await this.$store.dispatch('updateInspectorData', {
+      this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
             path: this.getByLangPath(),
