@@ -5,9 +5,9 @@ import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
 import * as VocabUtil from "lxljs/vocab";
 import EntityAdder from "./entity-adder";
-import * as DisplayUtil from "lxljs/display";
 import * as DataUtil from "../../utils/data";
 import * as HttpUtil from "../../utils/http";
+import LanguageEntry from "./language-entry";
 
 export default {
   name: 'item-bylang.vue',
@@ -23,6 +23,7 @@ export default {
     },
   },
   components: {
+    'language-entry': LanguageEntry,
     'entity-adder': EntityAdder,
   },
   data() {
@@ -45,11 +46,6 @@ export default {
     fieldOtherValue() {
       this.updateViewForm();
     },
-    cache(newVal, oldVal) {
-      if (!isEqual(newVal, oldVal)) {
-        this.updateViewForm();
-      }
-    },
     entries: {
       handler: debounce(function debounceUpdate(val) {
         if (this.manualUpdate) {
@@ -67,13 +63,10 @@ export default {
         this.initializeTextarea();
       }
       this.updateViewForm();
-      this.updateCache('')
+      this.updateQuoted('')
     });
   },
   computed: {
-    cache() {
-      return this.inspector.languageCache;
-    },
     fieldOtherValue() {
       if (this.isLangMap) {
         return this.prop;
@@ -89,8 +82,7 @@ export default {
     },
   },
   methods: {
-    async updateCache(tag) {
-      let toAdd = {}
+    async updateQuoted(tag) {
       const updateFrom = tag === '' ? Object.keys(this.propByLang) : [tag];
       for (const tag of updateFrom) {
         const doc = await HttpUtil.getDocument(`${this.settings.idPath}/i18n/lang/${tag}`, undefined, false);
@@ -99,19 +91,10 @@ export default {
           let graph = data['@graph'];
           //TODO: let backend add to embellished instead?
           await DataUtil.fetchMissingLinkedToQuoted(graph, this.$store);
-          const label = DisplayUtil.getItemLabel(graph[1],
-              this.resources,
-              this.inspector.data.quoted,
-              this.settings);
-            // Cache graph[1]?
-            let obj = {};
-            obj[tag] = label;
-            Object.assign(toAdd, obj);
         } else {
           console.log('Missing i18n/lang/tag for', tag);
         }
       }
-      await this.$store.dispatch('addToLanguageCache', toAdd)
     },
     setValueFromEntityAdder(fieldValue, langTag) {
       this.addLangTag(langTag, fieldValue);
@@ -121,7 +104,7 @@ export default {
       this.manualUpdate = false;
       setTimeout(async () => {
         this.toLangMap(tag, val);
-        await this.updateCache(tag);
+        await this.updateQuoted(tag);
       }, 1000);
     },
     addFocus() {
@@ -168,7 +151,6 @@ export default {
     },
     updateViewForm() {
       let viewForm = [];
-      const languageCache = this.inspector.languageCache;
       this.fieldValue.forEach(value => {
         if (typeof value === 'string') {
           viewForm.push({tag: 'none', val: value});
@@ -177,13 +159,11 @@ export default {
       let fieldValue = this.fieldValue[0];
       if (typeof fieldValue === 'string') {
         Object.entries(this.propByLang).forEach(([key, value]) => {
-          const label = languageCache[key] || key;
-          viewForm.push({tag: key, val: value, label: label});
+          viewForm.push({tag: key, val: value});
         });
       } else if (typeof fieldValue === 'object') {
         Object.entries(fieldValue).forEach(([key, value]) => {
-          const label = languageCache[key] || key;
-          viewForm.push({tag: key, val: value, label: label});
+          viewForm.push({tag: key, val: value});
         });
       }
       this.entries = viewForm;
@@ -243,7 +223,7 @@ export default {
         </textarea>
       </span>
       <span class="ItemBylang-value">
-        <span class="ItemBylang-pill"
+          <span class="ItemBylang-pill"
         v-if="entry.tag !== 'none'">
           <span class="ItemBylang-pill-label">
             {{ entry.label }}
@@ -299,12 +279,9 @@ export default {
         </div>
       </div>
       <span class="ItemBylang-tags">
-        <span class="ItemBylang-pill"
-        v-if="entry.tag !== 'none'">
-          <span class="ItemBylang-pill-label">
-            {{ entry.label }}
-          </span>
-        </span>
+            <language-entry
+              :tag="entry.tag">
+            </language-entry>
       </span>
     </div>
   </div>
@@ -393,6 +370,10 @@ export default {
     align-items: center;
     grid-template-areas:
     "pill action";
+  }
+
+  &-popover > .trigger {
+    max-width: 100%;
   }
 
   &-tags {
