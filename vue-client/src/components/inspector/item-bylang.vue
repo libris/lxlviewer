@@ -191,13 +191,19 @@ export default {
       }
     },
     async romanize(tag, val) {
-      await this.transliterate(tag, val);
-      this.manualUpdate = false;
-      // this.updateViewForm();
+      // Make sure debounce is done
+      setTimeout(async () => {
+        await this.transliterate(tag, val);
+        this.manualUpdate = false;
+        this.updateViewForm();
+      }, 1000);
     },
     remove(tag, val) {
       this.removeLanguageTag(tag, val);
       this.manualUpdate = false;
+    },
+    uriFor(tag) {
+      return `${this.settings.idPath}/i18n/lang/${tag}`
     },
     initializeTextarea() {
       this.$nextTick(() => {
@@ -223,25 +229,13 @@ export default {
         </textarea>
       </span>
       <span class="ItemBylang-value">
-          <span class="ItemBylang-pill"
-        v-if="entry.tag !== 'none'">
-          <span class="ItemBylang-pill-label">
-            {{ entry.label }}
-          </span>
-          <span class="ItemBylang-pill-removeButton" v-if="!isLocked">
-            <i class="fa fa-times-circle icon icon--sm chip-icon"
-               v-if="!isLocked && removeIsAllowed"
-               role="button"
-               tabindex="0"
-               @click="remove(entry.tag, entry.val)"
-               :aria-label="'Remove' | translatePhrase"
-               @keyup.enter="remove(entry.tag, entry.val)"
-               v-tooltip.top="translate('Remove')">
-            </i>
-            <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled"
-               v-if="!isLocked && !removeIsAllowed"></i>
-          </span>
-        </span>
+        <language-entry v-if="entry.tag !== 'none'"
+          :tag="entry.tag"
+          :is-locked="isLocked"
+          :remove-is-allowed="removeIsAllowed"
+          :uri="uriFor(entry.tag)"
+          @remove="remove(entry.tag, entry.val)">
+        </language-entry>
         <i class="fa fa-language icon icon--sm ItemBylang-transIcon"
            tabindex="0"
            role="button"
@@ -279,8 +273,10 @@ export default {
         </div>
       </div>
       <span class="ItemBylang-tags">
-            <language-entry
-              :tag="entry.tag">
+            <language-entry v-if="entry.tag !== 'none'"
+              :tag="entry.tag"
+              :is-locked="isLocked"
+              :uri="uriFor(entry.tag)">
             </language-entry>
       </span>
     </div>

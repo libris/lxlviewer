@@ -15,6 +15,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    isLocked: {
+      type: Boolean,
+      default: true,
+    },
+    removeIsAllowed: {
+      type: Boolean,
+      default: false,
+    },
+    uri: {
+      type: String,
+      default: '',
+    }
   },
   data() {
     return {
@@ -30,10 +42,6 @@ export default {
     isLinked() {
       return this.data !== null;
     },
-    uri() {
-      //Pass as a prop instead
-      return `${this.settings.idPath}/i18n/lang/${this.tag}`;
-    },
     focusData() {
       const graph = this.data || null;
       return graph ? graph[1] : {};
@@ -41,6 +49,11 @@ export default {
     label() {
       if (this.data) {
         let graph = this.data;
+
+        if (graph[1]['langTag'] !== this.tag) {
+          this.setDocument();
+        }
+
         return DisplayUtil.getItemLabel(graph[1],
           this.resources,
           this.inspector.data.quoted,
@@ -76,7 +89,7 @@ export default {
 </script>
 
 <template>
-<span class="LanguageEntry-pill" v-if="this.tag !== 'none'">
+<span class="LanguageEntry-pill">
   <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
              @show="$refs.previewCard.populateData()">
     <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
@@ -88,6 +101,19 @@ export default {
       <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="this.recordId"/>
     </template>
   </v-popover>
+  <span class="LanguageEntry-pill-removeButton" v-if="!isLocked">
+            <i class="fa fa-times-circle icon icon--sm chip-icon"
+               v-if="!isLocked && removeIsAllowed"
+               role="button"
+               tabindex="0"
+               @click="$emit('remove')"
+               @keyup.enter="$emit('remove')"
+               :aria-label="'Remove' | translatePhrase"
+               v-tooltip.top="translate('Remove')">
+            </i>
+            <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled"
+               v-if="!isLocked && !removeIsAllowed"></i>
+          </span>
   <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
     {{ this.label }}
   </span>

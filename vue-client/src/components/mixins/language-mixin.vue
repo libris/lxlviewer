@@ -21,9 +21,6 @@ export default {
     };
   },
   computed: {
-    languageMap() {
-      return { uk: 'Ukrainska', sv: 'Svenska', de: 'Tyska', fr: 'Franska', en: 'Engelska' };
-    },
     path() {
       return `${this.parentPath}`;
     },
