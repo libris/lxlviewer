@@ -76,17 +76,21 @@ export default {
 </script>
 
 <template>
-<span class="LanguageEntry-pill"
-      v-if="this.tag !== 'none'">
-          <v-popover class="LanguageEntry-popover" placement="bottom-start"
-                     @show="$refs.previewCard.populateData()">
-          <span class="LanguageEntry-pill-label">
-            {{ this.label }}
-          </span>
-             <template slot="popover">
-          <PreviewCard v-show="this.isLinked" ref="previewCard" :focus-data="focusData" :record-id="this.recordId"/>
-        </template>
-        </v-popover>
+<span class="LanguageEntry-pill" v-if="this.tag !== 'none'">
+  <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
+             @show="$refs.previewCard.populateData()">
+    <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
+      <a :href="this.uri | convertResourceLink">
+        {{ this.label }}
+      </a>
+    </span>
+    <template slot="popover">
+      <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="this.recordId"/>
+    </template>
+  </v-popover>
+  <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
+    {{ this.label }}
+  </span>
 </span>
 
 </template>
@@ -115,6 +119,15 @@ export default {
       text-overflow: ellipsis;
       grid-area: label;
       padding: 0 8px 0 8px
+    }
+    &-link {
+      a:link {
+        color: #196f25;
+      }
+      a:visited {
+        color: #196f25;
+      }
+      cursor: pointer;
     }
 
     &-removeButton {
