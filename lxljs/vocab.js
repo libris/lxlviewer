@@ -770,3 +770,34 @@ export function computeContainerMap(contextList) {
 
   return containerMap;
 }
+
+export function preprocessVocab(vocab) {
+  const vocabMap = new Map(vocab['@graph'].map(entry => [entry['@id'], entry]));
+  vocabMap.forEach((termObj) => {
+    if (termObj && termObj.hasOwnProperty('@id')) {
+      let bases = null;
+      for (const baserel of ['subClassOf', 'subPropertyOf']) {
+        if (termObj.hasOwnProperty(baserel)) {
+          bases = termObj[baserel];
+          break;
+        }
+      }
+      if (!Array.isArray(bases)) {
+        return;
+      }
+      bases.forEach((obj) => {
+        if (obj['@id']) {
+          const baseClass = vocabMap.get(obj['@id']);
+          if (baseClass) {
+            if (!Array.isArray(baseClass.baseClassOf)) {
+              baseClass.baseClassOf = [];
+            }
+            baseClass.baseClassOf.push(termObj);
+          }
+        }
+      });
+    }
+  });
+
+  return vocabMap;
+}
