@@ -1,8 +1,6 @@
 <script>
 import PreviewCard from '@/components/shared/preview-card';
-import * as HttpUtil from "../../utils/http";
 import {mapGetters} from "vuex";
-import * as DisplayUtil from "lxljs/display";
 
 export default {
   name: 'language-entry',
@@ -26,13 +24,16 @@ export default {
     uri: {
       type: String,
       default: '',
+    },
+    label: {
+      type: String,
+      default: ''
+    },
+    data: {
+      type: Object,
+      default: null
     }
   },
-  data() {
-    return {
-      data: null,
-    };
-    },
   computed: {
     ...mapGetters([
       'inspector',
@@ -42,49 +43,13 @@ export default {
     isLinked() {
       return this.data !== null;
     },
-    focusData() {
-      const graph = this.data || null;
-      return graph ? graph[1] : {};
-    },
-    label() {
-      if (this.data) {
-        let graph = this.data;
-
-        if (graph[1]['langTag'] !== this.tag) {
-          this.setDocument();
-        }
-
-        return DisplayUtil.getItemLabel(graph[1],
-          this.resources,
-          this.inspector.data.quoted,
-          this.settings);
-      } else {
-        return this.tag;
-      }
-    },
     recordId() {
-      return this.isLinked ? this.focusData['@id'] : {};
+      return this.isLinked ? this.data['@id'] : {};
     }
-  },
-  methods: {
-    async setDocument() {
-      const document = await HttpUtil.getDocument(this.uri, undefined, false);
-      const data = document ? document.data : null;
-      this.data = data ? data['@graph'] : null;
-    },
   },
   components: {
     PreviewCard
   },
-  mounted() {
-    //If this is properly in embellished (be the backend) we can use:
-    // return DataUtil.getEmbellished(
-    //   this.uri,
-    //   this.inspector.data.quoted,
-    // );
-    // in a computed instead.
-    this.setDocument();
-  }
 }
 </script>
 
@@ -98,7 +63,7 @@ export default {
       </a>
     </span>
     <template slot="popover">
-      <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="this.recordId"/>
+      <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
     </template>
   </v-popover>
   <span class="LanguageEntry-pill-removeButton" v-if="!isLocked">

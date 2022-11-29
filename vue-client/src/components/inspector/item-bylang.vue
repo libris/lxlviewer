@@ -8,6 +8,7 @@ import EntityAdder from "./entity-adder";
 import * as DataUtil from "../../utils/data";
 import * as HttpUtil from "../../utils/http";
 import LanguageEntry from "./language-entry";
+import * as DisplayUtil from "lxljs/display";
 
 export default {
   name: 'item-bylang.vue',
@@ -80,6 +81,9 @@ export default {
     removeIsAllowed() {
       return this.isRepeatable || !this.hasProp;
     },
+    cache() {
+      return this.inspector.languageCache;
+    }
   },
   methods: {
     async updateQuoted(tag) {
@@ -91,6 +95,13 @@ export default {
           let graph = data['@graph'];
           //TODO: let backend add to embellished instead?
           await DataUtil.fetchMissingLinkedToQuoted(graph, this.$store);
+          let obj = {};
+          let label = DisplayUtil.getItemLabel(graph[1],
+            this.resources,
+            this.inspector.data.quoted,
+            this.settings);
+          obj[tag] = {'label': label, 'data': graph[1]};
+          await this.$store.dispatch('addToLanguageCache', obj)
         } else {
           console.log('Missing i18n/lang/tag for', tag);
         }
@@ -205,6 +216,14 @@ export default {
     uriFor(tag) {
       return `${this.settings.idPath}/i18n/lang/${tag}`
     },
+    getDataFromCache(tag) {
+      const languageCache = this.cache;
+      return languageCache[tag] ? languageCache[tag].data : null;
+    },
+    getLabelFromCache(tag) {
+      const languageCache = this.cache;
+      return languageCache[tag] ? languageCache[tag].label : tag;
+    },
     initializeTextarea() {
       this.$nextTick(() => {
         const textarea = this.$refs.textarea;
@@ -234,6 +253,8 @@ export default {
           :is-locked="isLocked"
           :remove-is-allowed="removeIsAllowed"
           :uri="uriFor(entry.tag)"
+          :label="getLabelFromCache(entry.tag)"
+          :data="getDataFromCache(entry.tag)"
           @remove="remove(entry.tag, entry.val)">
         </language-entry>
         <i class="fa fa-language icon icon--sm ItemBylang-transIcon"
@@ -276,7 +297,9 @@ export default {
             <language-entry v-if="entry.tag !== 'none'"
               :tag="entry.tag"
               :is-locked="isLocked"
-              :uri="uriFor(entry.tag)">
+              :uri="uriFor(entry.tag)"
+              :label="getLabelFromCache(entry.tag)"
+              :data="getDataFromCache(entry.tag)">
             </language-entry>
       </span>
     </div>
