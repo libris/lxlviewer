@@ -48,7 +48,6 @@ export default {
     },
     entries: {
       handler: debounce(function debounceUpdate(val) {
-        console.log('watch on entries triggered');
         this.update(val);
       }, 1000),
       deep: true,
@@ -199,12 +198,19 @@ export default {
     async romanize(tag, val) {
       // Make sure debounce is done
       setTimeout(async () => {
-        await this.transliterate(tag, val);
+        const result = await this.transliterate(tag, val);
+        for (const tag of Object.keys(result)) {
+          this.addToLangMap(result);
+          await this.updateQuoted(tag);
+        }
         this.updateViewForm();
       }, 1000);
     },
     remove(tag, val) {
       this.removeLanguageTag(tag, val);
+    },
+    removeVal(tag, val) {
+      this.removeValue(tag, val);
     },
     uriFor(tag) {
       return `${this.settings.idPath}/i18n/lang/${tag}`
@@ -250,6 +256,8 @@ export default {
           :data="getDataFromCache(entry.tag)"
           @remove="remove(entry.tag, entry.val)">
         </language-entry>
+
+        <span class="ItemBylang-actions">
         <i class="fa fa-language icon icon--sm ItemBylang-transIcon"
            tabindex="0"
            role="button"
@@ -276,6 +284,21 @@ export default {
                       :icon-add="'fa-globe'"
                       @langTaggerEvent="setValueFromEntityAdder(entry.val, ...arguments)">
       </entity-adder>
+
+       <div class="ItemBylang-remover"
+            tabindex="0"
+            v-show="!isLocked"
+            role="button"
+            :aria-label="'Remove' | translatePhrase"
+            v-on:click="removeVal(entry.tag, entry.val)"
+            @keyup.enter="removeVal(entry.tag, entry.val)"
+            v-tooltip.top="translate('Remove')">
+      <i class="fa fa-trash-o icon icon--sm">
+      </i>
+    </div>
+        </span>
+
+
       </span>
     </div>
     <div class="ItemBylang-textcontainer"
@@ -361,8 +384,24 @@ export default {
     margin-bottom: 7px;
   }
 
-  &-action {
-    grid-area: action;
+  &-actions {
+    grid-area: actions;
+    align-items: center;
+    column-gap: 5px;
+    display: grid;
+    grid-template-areas:
+    "action remover";
+    margin-right: 1rem;
+
+
+    &-action {
+      grid-area: action;
+      margin-left: 1rem;
+    }
+    &-remover {
+      grid-area: remover;
+      margin-left: 1rem;
+    }
   }
 
   &-key {
@@ -377,11 +416,12 @@ export default {
     grid-area: value;
     display: grid;
     justify-self: end;
-    grid-template-columns: 1fr 25px;
+    column-gap: 5px;
+    grid-template-columns: 1fr auto;
     grid-template-rows: auto;
     align-items: center;
     grid-template-areas:
-    "pill action";
+    "pill actions";
   }
 
   &-popover > .trigger {
@@ -394,8 +434,9 @@ export default {
   }
 
   &-transIcon {
+    grid-area: action;
     margin-left: 0.5rem;
-    padding-right: 0.5rem;
+    margin-right: 0.5rem;
   }
 
   &-pill {

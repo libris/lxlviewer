@@ -130,6 +130,47 @@ export default {
         });
       }
     },
+    removeValue(tag, value) {
+      let updateValue;
+      let updatePath;
+      if (tag !== 'none') {
+        const languageMap = this.propByLang;
+        delete languageMap[tag];
+        let updateValue = languageMap;
+        let updatePath = this.getByLangPath();
+        if (isEmpty(languageMap)) {
+          const lastIndex = this.path.lastIndexOf('.');
+          const parentPath = this.path.slice(0, lastIndex);
+          const parentValue = get(this.inspector.data, parentPath);
+          delete parentValue[this.getByLangKey()];
+          updatePath = parentPath;
+          updateValue = parentValue;
+        }
+      } else {
+        if (this.isRepeatable) {
+          updateValue = this.prop;
+          updatePath = this.getPropPath();
+          updateValue.splice(updateValue.indexOf(value), 1)
+        }
+        if (isEmpty(updateValue) || !this.isRepeatable) {
+          const lastIndex = this.path.lastIndexOf('.');
+          const parentPath = this.path.slice(0, lastIndex);
+          const parentValue = get(this.inspector.data, parentPath);
+          delete parentValue[this.getPropKey()];
+          updateValue = parentValue;
+          updatePath = parentPath;
+        }
+      }
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: updatePath,
+            value: updateValue,
+          },
+        ],
+        addToHistory: true,
+      });
+    },
     toLangMap(tag, sourceValue) {
       const lastIndex = this.path.lastIndexOf('.');
       const parentsPath = this.path.slice(0, lastIndex);
@@ -158,8 +199,7 @@ export default {
       }
     },
     async transliterate(tag, sourceValue) {
-      const result = await this.requestTransliteration({ langTag: tag, source: sourceValue });
-      this.addToLangMap(result);
+      return await this.requestTransliteration({ langTag: tag, source: sourceValue });
     },
     addEmpty() {
       let isRepeatable = VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context); //Is for some reason different from this.isRepeatable()
