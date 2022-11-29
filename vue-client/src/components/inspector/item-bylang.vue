@@ -30,7 +30,6 @@ export default {
   data() {
     return {
       entries: [],
-      manualUpdate : false,
     };
   },
   watch: {
@@ -49,11 +48,8 @@ export default {
     },
     entries: {
       handler: debounce(function debounceUpdate(val) {
-        if (this.manualUpdate) {
-          this.update(val);
-        } else {
-          this.manualUpdate = true;
-        }
+        console.log('watch on entries triggered');
+        this.update(val);
       }, 1000),
       deep: true,
     },
@@ -112,7 +108,6 @@ export default {
     },
     addLangTag(tag, val) {
       //Make sure debounce is done
-      this.manualUpdate = false;
       setTimeout(async () => {
         this.toLangMap(tag, val);
         await this.updateQuoted(tag);
@@ -205,13 +200,11 @@ export default {
       // Make sure debounce is done
       setTimeout(async () => {
         await this.transliterate(tag, val);
-        this.manualUpdate = false;
         this.updateViewForm();
       }, 1000);
     },
     remove(tag, val) {
       this.removeLanguageTag(tag, val);
-      this.manualUpdate = false;
     },
     uriFor(tag) {
       return `${this.settings.idPath}/i18n/lang/${tag}`
