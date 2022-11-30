@@ -184,28 +184,25 @@ export const mutations = {
   SET_COLLECTIONS(state, data) {
     state.collections = data;
   },
-  SET_VOCAB(state, data) {
+  SET_VOCAB(state, vocabMap) {
     // Set vocab to a map
-    const vocabMap = new Map(data['@graph'].map(entry => [entry['@id'], entry]));
     state.vocab = vocabMap;
   },
-  SET_VOCAB_CLASSES(state, data) {
+  SET_VOCAB_CLASSES(state, vocabMap) {
     // Set vocabClasses to an array of objects
-    const vocabJson = data['@graph'];
     const classTerms = [].concat(
-      VocabUtil.getTermByType('Class', vocabJson, state.vocabContext, state.settings),
-      VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.vocabContext, state.settings),
+      VocabUtil.getTermByType('Class', vocabMap, state.vocabContext, state.settings),
+      VocabUtil.getTermByType('marc:CollectionClass', vocabMap, state.vocabContext, state.settings),
     );
     state.vocabClasses = classTerms;
   },
-  SET_VOCAB_PROPERTIES(state, data) {
+  SET_VOCAB_PROPERTIES(state, vocabMap) {
     // Set vocabProperties to an array of objects
-    const vocabJson = data['@graph'];
     let props = [];
-    props = props.concat(VocabUtil.getTermByType('Property', vocabJson, state.vocabContext, state.settings));
-    props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, state.vocabContext, state.settings));
-    props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, state.vocabContext, state.settings));
-    props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, state.vocabContext, state.settings));
+    props = props.concat(VocabUtil.getTermByType('Property', vocabMap, state.vocabContext, state.settings));
+    props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabMap, state.vocabContext, state.settings));
+    props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabMap, state.vocabContext, state.settings));
+    props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabMap, state.vocabContext, state.settings));
     state.vocabProperties = props;
   },
   SET_DISPLAY(state, data) {
