@@ -1,7 +1,7 @@
 {
   "sv": {
-    "baseClassOf": "Specialisering",
-    "basePropertyOf": "Specialisering",
+    "baseClassOf": "Subklasser",
+    "basePropertyOf": "Subegenskaper",
     "subClassOf": "Härledd från",
     "subPropertyOf": "Härledd från",
     "isDefinedBy": "Definieras av",
@@ -14,8 +14,8 @@
     "equivalentProperty": "Motsvarar"
   },
   "en": {
-    "baseClassOf": "Base of",
-    "basePropertyOf": "Base of",
+    "baseClassOf": "Subclasses",
+    "basePropertyOf": "Subproperties",
     "subClassOf": "Sub class of",
     "subPropertyOf": "Sub property of",
     "isDefinedBy": "Is defined by",

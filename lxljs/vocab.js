@@ -776,9 +776,13 @@ export function preprocessVocab(vocab) {
   vocabMap.forEach((termObj) => {
     if (termObj && termObj.hasOwnProperty('@id')) {
       let bases = null;
+      let subRel = 'baseClassOf';
       for (const baserel of ['subClassOf', 'subPropertyOf']) {
         if (termObj.hasOwnProperty(baserel)) {
           bases = termObj[baserel];
+          if (baserel === 'subPropertyOf') {
+            subRel = 'basePropertyOf';
+          }
           break;
         }
       }
@@ -789,10 +793,10 @@ export function preprocessVocab(vocab) {
         if (obj['@id']) {
           const baseClass = vocabMap.get(obj['@id']);
           if (baseClass) {
-            if (!Array.isArray(baseClass.baseClassOf)) {
-              baseClass.baseClassOf = [];
+            if (!Array.isArray(baseClass[subRel])) {
+              baseClass[subRel] = [];
             }
-            baseClass.baseClassOf.push(termObj);
+            baseClass[subRel].push(termObj);
           }
         }
       });
