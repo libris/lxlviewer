@@ -4,7 +4,7 @@ import * as HttpUtil from './http';
 
 export async function hasAutomaticShelfControlNumber(shelfMarkId, settings) {
   return HttpUtil.get({
-    url: `${settings.apiPath}/${shelfMarkId}`,
+    url: shelfMarkId,
     accept: 'application/ld+json',
   }).then(shelfMark => Promise.resolve(shelfMark['@graph'][1].hasOwnProperty('nextShelfControlNumber')));
 }
@@ -37,7 +37,7 @@ async function _insertShelfControlNumber(item, settings, user) {
 async function _generateShelfControlNumber(shelfMarkId, settings, user) {
   let result = -1;
   const noCache = md5(Math.random() * 100000000);
-  const fetchUrl = `${settings.apiPath}/${shelfMarkId}?embellished=false&${noCache}`;
+  const fetchUrl = `${shelfMarkId}?embellished=false&${noCache}`;
   await HttpUtil.get({
     url: fetchUrl,
     accept: 'application/ld+json',
