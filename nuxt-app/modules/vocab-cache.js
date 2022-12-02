@@ -25,7 +25,7 @@ async function fetchVocab() {
       [context, vocab, display] = v;
 
       vocabCache.context = VocabUtil.preprocessContext(context)['@context'];
-      vocabCache.vocab = vocab;
+      vocabCache.vocab = VocabUtil.preprocessVocab(vocab);
       vocabCache.display = DisplayUtil.expandInherited(display);
     })
     .catch(err => {

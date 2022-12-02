@@ -73,8 +73,8 @@ export default {
           return VocabUtil.getTermObject(this.entity['@id'], this.vocab, this.vocabContext);
         }
       }
-      if (this.vocabLinkProperties.includes(this.parentKey)) {
-        return VocabUtil.getTermObject(this.entity, this.vocab, this.vocabContext);
+      if (this.vocabLinkProperties.includes(this.parentKey) && this.entity['@id']) {
+        return VocabUtil.getTermObject(this.entity['@id'], this.vocab, this.vocabContext);
       }
       return this.entity;
     }

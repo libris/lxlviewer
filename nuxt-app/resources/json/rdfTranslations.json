@@ -1,7 +1,7 @@
 {
   "sv": {
-    "baseClassOf": "Härleds till",
-    "basePropertyOf": "Härleds till",
+    "baseClassOf": "Subklasser",
+    "basePropertyOf": "Subegenskaper",
     "subClassOf": "Härledd från",
     "subPropertyOf": "Härledd från",
     "isDefinedBy": "Definieras av",
@@ -14,8 +14,8 @@
     "equivalentProperty": "Motsvarar"
   },
   "en": {
-    "baseClassOf": "Base class of",
-    "basePropertyOf": "Base property of",
+    "baseClassOf": "Subclasses",
+    "basePropertyOf": "Subproperties",
     "subClassOf": "Sub class of",
     "subPropertyOf": "Sub property of",
     "isDefinedBy": "Is defined by",

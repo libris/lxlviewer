@@ -6,7 +6,7 @@
         <CollectionCard v-for="collection in pageData.statistics.sliceByDimension['inScheme.@id'].observation" :collection-data="collection" :key="collection['@id']" />
       </div>
     </div>
-    <div class="col-12" v-if="settings.language == 'sv'">
+    <div class="col-12" v-if="settings.language == 'sv' && summary">
     <h4>Om tjänsten</h4>
       <div class="col-12 col-md-10 col-lg-9 col-xl-8 col-xxl-7" v-html="summary['@graph'][1].articleBody"></div>
     </div>
@@ -25,7 +25,12 @@ export default {
   },
   async asyncData({ $config, params, $http }) {
     const pageData = await $http.$get(`${HOST_PATH}/data.jsonld`);
-    const summary = await $http.$get(`${HOST_PATH}/doc/summary/data.jsonld`);
+    let summary;
+    try {
+      summary = await $http.$get(`${HOST_PATH}/doc/summary/data.jsonld`);
+    } catch (e) {
+      summary = null;
+    }
     return { pageData, summary }
   },
   // call fetch only on client-side
