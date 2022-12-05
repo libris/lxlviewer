@@ -1,5 +1,5 @@
 <script>
-import { get, isEmpty } from 'lodash-es';
+import {cloneDeep, get, isEmpty} from 'lodash-es';
 import * as httpUtil from '../../utils/http';
 import { getContextValue } from 'lxljs/vocab';
 import * as VocabUtil from "lxljs/vocab";
@@ -59,10 +59,6 @@ export default {
     },
   },
   methods: {
-    mapLanguage(tag) {
-      const languageString = this.languageMap[tag];
-      return languageString || tag;
-    },
     getByLangKey() {
       return this.isLangMap ? this.fieldKey : this.fieldKey.concat('ByLang');
     },
@@ -94,7 +90,7 @@ export default {
       if (delangify) { // De-langify
         const lastIndex = this.path.lastIndexOf('.');
         const parentPath = this.path.slice(0, lastIndex);
-        const parentValue = get(this.inspector.data, parentPath);
+        const parentValue = cloneDeep(get(this.inspector.data, parentPath));
         updatePath = this.getPropPath();
         if (this.isRepeatable) {
           updateValue = this.prop;
@@ -141,7 +137,7 @@ export default {
         if (isEmpty(languageMap)) {
           const lastIndex = this.path.lastIndexOf('.');
           const parentPath = this.path.slice(0, lastIndex);
-          const parentValue = get(this.inspector.data, parentPath);
+          const parentValue = cloneDeep(get(this.inspector.data, parentPath));
           delete parentValue[this.getByLangKey()];
           updatePath = parentPath;
           updateValue = parentValue;
@@ -155,7 +151,7 @@ export default {
         if (isEmpty(updateValue) || !this.isRepeatable) {
           const lastIndex = this.path.lastIndexOf('.');
           const parentPath = this.path.slice(0, lastIndex);
-          const parentValue = get(this.inspector.data, parentPath);
+          const parentValue = cloneDeep(get(this.inspector.data, parentPath));
           delete parentValue[this.getPropKey()];
           updateValue = parentValue;
           updatePath = parentPath;
