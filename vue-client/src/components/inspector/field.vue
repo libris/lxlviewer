@@ -387,8 +387,8 @@ export default {
       }
       return false;
     },
-    isNotPartneredLangMap() {
-      return !(this.isLangMap && this.hasProp)
+    isLangMapWithPartner() {
+      return this.isLangMap && this.hasProp;
     },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
@@ -684,7 +684,7 @@ export default {
     }"
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()"
-    v-if="this.isNotPartneredLangMap"
+    v-if="!this.isLangMapWithPartner"
   >
 
     <div class="Field-labelContainer" 
