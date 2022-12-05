@@ -9,6 +9,7 @@ import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
+import { getContextValue } from 'lxljs/vocab';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
@@ -25,8 +26,7 @@ import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import ItemBylang from './item-bylang';
-import { getContextValue } from 'lxljs/vocab';
-import LanguageMixin from "../mixins/language-mixin";
+import LanguageMixin from '../mixins/language-mixin';
 
 export default {
   name: 'field',

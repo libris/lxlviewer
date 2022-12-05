@@ -1,14 +1,14 @@
 <script>
-import {cloneDeep, debounce, get, isEmpty, isEqual} from 'lodash-es';
+import { cloneDeep, debounce, get, isEmpty, isEqual } from 'lodash-es';
 import AutoSize from 'autosize';
+import * as VocabUtil from 'lxljs/vocab';
+import * as DisplayUtil from 'lxljs/display';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
-import * as VocabUtil from "lxljs/vocab";
-import EntityAdder from "./entity-adder";
-import * as DataUtil from "../../utils/data";
-import * as HttpUtil from "../../utils/http";
-import LanguageEntry from "./language-entry";
-import * as DisplayUtil from "lxljs/display";
+import EntityAdder from './entity-adder';
+import * as DataUtil from '../../utils/data';
+import * as HttpUtil from '../../utils/http';
+import LanguageEntry from './language-entry';
 
 export default {
   name: 'item-bylang.vue',
@@ -59,16 +59,15 @@ export default {
         this.initializeTextarea();
       }
       this.updateViewForm();
-      this.updateQuoted('')
+      this.updateQuoted('');
     });
   },
   computed: {
     fieldOtherValue() {
       if (this.isLangMap) {
         return this.prop;
-      } else {
-        return this.propByLang;
-      }
+      } 
+      return this.propByLang;
     },
     isRepeatable() {
       return VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context);
@@ -78,25 +77,25 @@ export default {
     },
     cache() {
       return this.inspector.languageCache;
-    }
+    },
   },
   methods: {
     async updateQuoted(tag) {
       const updateFrom = tag === '' ? Object.keys(this.propByLang) : [tag];
       for (const tag of updateFrom) {
         const doc = await HttpUtil.getDocument(`${this.settings.idPath}/i18n/lang/${tag}`, undefined, false);
-        let data = doc.data;
+        const data = doc.data;
         if (data) {
-          let graph = data['@graph'];
-          //TODO: let backend add to embellished instead?
+          const graph = data['@graph'];
+          // TODO: let backend add to embellished instead?
           await DataUtil.fetchMissingLinkedToQuoted(graph, this.$store);
-          let obj = {};
-          let label = DisplayUtil.getItemLabel(graph[1],
+          const obj = {};
+          const label = DisplayUtil.getItemLabel(graph[1],
             this.resources,
             this.inspector.data.quoted,
             this.settings);
-          obj[tag] = {'label': label, 'data': graph[1]};
-          await this.$store.dispatch('addToLanguageCache', obj)
+          obj[tag] = { label: label, data: graph[1] };
+          await this.$store.dispatch('addToLanguageCache', obj);
         } else {
           console.log('Missing i18n/lang/tag for', tag);
         }
@@ -106,7 +105,7 @@ export default {
       this.addLangTag(langTag, fieldValue);
     },
     addLangTag(tag, val) {
-      //Make sure debounce is done
+      // Make sure debounce is done
       setTimeout(async () => {
         this.toLangMap(tag, val);
         await this.updateQuoted(tag);
@@ -128,7 +127,7 @@ export default {
       const oldLangMap = cloneDeep(get(this.inspector.data, byLangPath));
       const newLangMap = this.dataFormByLang(viewObjects);
       this.readyForSave(true);
-      if (!isEqual(newLangMap,  oldLangMap)) {
+      if (!isEqual(newLangMap, oldLangMap)) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
@@ -142,7 +141,7 @@ export default {
       // Update prop
       const newData = this.dataForm(viewObjects);
       const oldData = cloneDeep(get(this.inspector.data, this.path));
-      if (!isEqual(oldData,  newData) && !isEmpty(newData)) {
+      if (!isEqual(oldData, newData) && !isEmpty(newData)) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
@@ -155,20 +154,20 @@ export default {
       }
     },
     updateViewForm() {
-      let viewForm = [];
-      this.fieldValue.forEach(value => {
+      const viewForm = [];
+      this.fieldValue.forEach((value) => {
         if (typeof value === 'string') {
-          viewForm.push({tag: 'none', val: value});
+          viewForm.push({ tag: 'none', val: value });
         }
-      })
-      let fieldValue = this.fieldValue[0];
+      });
+      const fieldValue = this.fieldValue[0];
       if (typeof fieldValue === 'string') {
         Object.entries(this.propByLang).forEach(([key, value]) => {
-          viewForm.push({tag: key, val: value});
+          viewForm.push({ tag: key, val: value });
         });
       } else if (typeof fieldValue === 'object') {
         Object.entries(fieldValue).forEach(([key, value]) => {
-          viewForm.push({tag: key, val: value});
+          viewForm.push({ tag: key, val: value });
         });
       }
       this.entries = viewForm;
@@ -191,9 +190,8 @@ export default {
       });
       if (dataObjects.length === 1 && !this.isRepeatable) {
         return dataObjects.pop();
-      } else {
-        return dataObjects;
-      }
+      } 
+      return dataObjects;
     },
     async romanize(tag, val) {
       // Make sure debounce is done
@@ -213,7 +211,7 @@ export default {
       this.removeValue(tag, val);
     },
     uriFor(tag) {
-      return `${this.settings.idPath}/i18n/lang/${tag}`
+      return `${this.settings.idPath}/i18n/lang/${tag}`;
     },
     getDataFromCache(tag) {
       const languageCache = this.cache;
@@ -437,39 +435,6 @@ export default {
     grid-area: action;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
-  }
-
-  &-pill {
-    display: grid;
-    justify-items: start;
-    align-items: center;
-    grid-area: pill;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-    "label remove";
-    border-radius: 2em;
-    min-width: 20px;
-    height: 22px;
-    color: #196f25;
-    background-color: #D9EBDC;
-    font-size: 13px;
-
-    &-label {
-      font-weight: 600;
-      cursor: default;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      grid-area: label;
-      padding: 0 8px 0 8px
-    }
-
-    &-removeButton {
-      width: 1.2em;
-      height: 1.2em;
-      line-height: 1.2em;
-      grid-area: remove;
-      padding-right: 20px;
-    }
   }
 }
 </style>

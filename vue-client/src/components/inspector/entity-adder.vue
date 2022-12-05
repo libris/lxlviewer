@@ -279,9 +279,9 @@ export default {
     },
     addLinkedItem(obj) {
       if (this.isLangTagger) {
-        let tag = obj['langTag']; //IETF BCP 47
+        let tag = obj.langTag; // IETF BCP 47
         if (typeof tag === 'undefined') {
-          tag = obj['code'];
+          tag = obj.code;
         }
         this.$emit('langTaggerEvent', tag);
         return;

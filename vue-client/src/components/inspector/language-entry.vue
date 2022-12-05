@@ -1,6 +1,6 @@
 <script>
+import { mapGetters } from 'vuex';
 import PreviewCard from '@/components/shared/preview-card';
-import {mapGetters} from "vuex";
 
 export default {
   name: 'language-entry',
@@ -27,30 +27,30 @@ export default {
     },
     label: {
       type: String,
-      default: ''
+      default: '',
     },
     data: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   computed: {
     ...mapGetters([
       'inspector',
       'settings',
-      'resources'
+      'resources',
     ]),
     isLinked() {
       return this.data !== null;
     },
     recordId() {
       return this.isLinked ? this.data['@id'] : {};
-    }
+    },
   },
   components: {
-    PreviewCard
+    PreviewCard,
   },
-}
+};
 </script>
 
 <template>

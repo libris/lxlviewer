@@ -1,8 +1,8 @@
 <script>
-import {cloneDeep, get, isEmpty} from 'lodash-es';
-import * as httpUtil from '../../utils/http';
+import { cloneDeep, get, isEmpty } from 'lodash-es';
 import { getContextValue } from 'lxljs/vocab';
-import * as VocabUtil from "lxljs/vocab";
+import * as VocabUtil from 'lxljs/vocab';
+import * as httpUtil from '../../utils/http';
 
 export default {
   props: {
@@ -28,12 +28,11 @@ export default {
       return this.path.substring(0, this.path.indexOf('ByLang'));
     },
     prop() {
-      const prop = get(this.inspector.data, this.getPropPath())
+      const prop = get(this.inspector.data, this.getPropPath());
       if (typeof prop === 'undefined') {
         return this.isRepeatable ? [] : '';
-      } else {
-        return prop;
-      }
+      } 
+      return prop;
     },
     byLangifiedPath() {
       return this.path.concat('ByLang');
@@ -76,15 +75,13 @@ export default {
         url: `${this.settings.apiPath}/_transliterate`,
         token: this.user.token,
       }, sourceObj)
-        .then((result) => {
-          return result;
-        });
+        .then(result => result);
     },
     removeLanguageTag(tag, value) {
       const languageMap = this.propByLang;
       let updatePath = this.getByLangPath();
       let updateValue = languageMap;
-      let taggedValue = languageMap[tag];
+      const taggedValue = languageMap[tag];
       delete languageMap[tag];
       const delangify = isEmpty(languageMap);
       if (delangify) { // De-langify
@@ -146,7 +143,7 @@ export default {
         if (this.isRepeatable) {
           updateValue = this.prop;
           updatePath = this.getPropPath();
-          updateValue.splice(updateValue.indexOf(value), 1)
+          updateValue.splice(updateValue.indexOf(value), 1);
         }
         if (isEmpty(updateValue) || !this.isRepeatable) {
           const lastIndex = this.path.lastIndexOf('.');
@@ -174,13 +171,13 @@ export default {
       if (this.isRepeatable) {
         this.prop.splice(this.prop.indexOf(sourceValue), 1);
         if (isEmpty(this.prop)) {
-          delete parent[this.getPropKey()]
+          delete parent[this.getPropKey()];
         }
       } else {
         delete parent[this.getPropKey()];
       }
       if (this.hasByLang) {
-        this.addToLangMap({ [tag]: sourceValue })
+        this.addToLangMap({ [tag]: sourceValue });
       } else {
         parent[this.getByLangKey()] = { [tag]: sourceValue };
         this.$store.dispatch('updateInspectorData', {
@@ -195,12 +192,12 @@ export default {
       }
     },
     async transliterate(tag, sourceValue) {
-      return await this.requestTransliteration({ langTag: tag, source: sourceValue });
+      return this.requestTransliteration({ langTag: tag, source: sourceValue });
     },
     addEmpty() {
-      let isRepeatable = VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context); //Is for some reason different from this.isRepeatable()
+      const isRepeatable = VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context); // Is for some reason different from this.isRepeatable()
       if (this.hasProp && isRepeatable) {
-        let updateVal = this.prop;
+        const updateVal = this.prop;
         updateVal.push('');
         this.$store.dispatch('updateInspectorData', {
           changeList: [
