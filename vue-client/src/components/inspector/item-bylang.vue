@@ -59,7 +59,7 @@ export default {
         this.initializeTextarea();
       }
       this.updateViewForm();
-      this.updateQuoted('');
+      this.updateLangCache('');
     });
   },
   computed: {
@@ -80,22 +80,22 @@ export default {
     },
   },
   methods: {
-    async updateQuoted(tag) {
-      const updateFrom = tag === '' ? Object.keys(this.propByLang) : [tag];
+    async updateLangCache(langTag) {
+      const updateFrom = langTag === '' ? Object.keys(this.propByLang) : [langTag];
       for (const tag of updateFrom) {
-        const doc = await HttpUtil.getDocument(`${this.settings.idPath}/i18n/lang/${tag}`, undefined, false);
+        const doc = await HttpUtil.getDocument(`${this.settings.idPath}/i18n/lang/${tag}`, undefined, false); // eslint-disable-line no-await-in-loop
         const data = doc.data;
         if (data) {
           const graph = data['@graph'];
           // TODO: let backend add to embellished instead?
-          await DataUtil.fetchMissingLinkedToQuoted(graph, this.$store);
+          await DataUtil.fetchMissingLinkedToQuoted(graph, this.$store); // eslint-disable-line no-await-in-loop
           const obj = {};
           const label = DisplayUtil.getItemLabel(graph[1],
             this.resources,
             this.inspector.data.quoted,
             this.settings);
           obj[tag] = { label: label, data: graph[1] };
-          await this.$store.dispatch('addToLanguageCache', obj);
+          await this.$store.dispatch('addToLanguageCache', obj); // eslint-disable-line no-await-in-loop
         } else {
           console.log('Missing i18n/lang/tag for', tag);
         }
@@ -108,7 +108,7 @@ export default {
       // Make sure debounce is done
       setTimeout(async () => {
         this.toLangMap(tag, val);
-        await this.updateQuoted(tag);
+        await this.updateLangCache(tag); // eslint-disable-line no-await-in-loop
       }, 1000);
     },
     addFocus() {
@@ -155,19 +155,23 @@ export default {
     },
     updateViewForm() {
       const viewForm = [];
+      let idCounter = 0;
       this.fieldValue.forEach((value) => {
         if (typeof value === 'string') {
-          viewForm.push({ tag: 'none', val: value });
+          viewForm.push({ tag: 'none', val: value, id: `none-${idCounter}` });
+          idCounter++;
         }
       });
       const fieldValue = this.fieldValue[0];
       if (typeof fieldValue === 'string') {
         Object.entries(this.propByLang).forEach(([key, value]) => {
-          viewForm.push({ tag: key, val: value });
+          viewForm.push({ tag: key, val: value, id: `${key}-${idCounter}` });
+          idCounter++;
         });
       } else if (typeof fieldValue === 'object') {
         Object.entries(fieldValue).forEach(([key, value]) => {
-          viewForm.push({ tag: key, val: value });
+          viewForm.push({ tag: key, val: value, id: `${key}-${idCounter}` });
+          idCounter++;
         });
       }
       this.entries = viewForm;
@@ -193,13 +197,13 @@ export default {
       } 
       return dataObjects;
     },
-    async romanize(tag, val) {
+    async romanize(langTag, val) {
       // Make sure debounce is done
       setTimeout(async () => {
-        const result = await this.transliterate(tag, val);
+        const result = await this.transliterate(langTag, val);
         for (const tag of Object.keys(result)) {
           this.addToLangMap(result);
-          await this.updateQuoted(tag);
+          await this.updateLangCache(tag); // eslint-disable-line no-await-in-loop
         }
         this.updateViewForm();
       }, 1000);
@@ -234,9 +238,9 @@ export default {
 
 <template>
   <div class="ItemBylang-root">
-    <div class="ItemBylang-inputcontainer"
-         v-for="entry in entries"
-         v-if="!isLocked">
+    <div v-if="!isLocked">
+      <div class="ItemBylang-inputcontainer"
+         v-for="entry in entries" :key="entry.id">
       <span class="ItemBylang-key">
         <textarea class="ItemBylang-input js-itemValueInput"
                   rows="1"
@@ -281,41 +285,39 @@ export default {
                       :is-lang-tagger="true"
                       :icon-add="'fa-globe'"
                       @langTaggerEvent="setValueFromEntityAdder(entry.val, ...arguments)">
-      </entity-adder>
-
-       <div class="ItemBylang-remover"
-            tabindex="0"
-            v-show="!isLocked"
-            role="button"
-            :aria-label="'Remove' | translatePhrase"
-            v-on:click="removeVal(entry.tag, entry.val)"
-            @keyup.enter="removeVal(entry.tag, entry.val)"
-            v-tooltip.top="translate('Remove')">
-      <i class="fa fa-trash-o icon icon--sm">
-      </i>
-    </div>
+        </entity-adder>
+          <span class="ItemBylang-remover"
+               tabindex="0"
+               v-show="!isLocked"
+               role="button"
+               :aria-label="'Remove' | translatePhrase"
+               v-on:click="removeVal(entry.tag, entry.val)"
+               @keyup.enter="removeVal(entry.tag, entry.val)"
+               v-tooltip.top="translate('Remove')">
+            <i class="fa fa-trash-o icon icon--sm"></i>
+          </span>
         </span>
-
-
       </span>
     </div>
-    <div class="ItemBylang-textcontainer"
-         v-for="entry in entries"
-         v-if="isLocked">
-      <div class="ItemBylang-key">
-        <div class="ItemBylang-text">
-          {{ entry.val }}
+    </div>
+    <div v-if="isLocked">
+      <div class="ItemBylang-textcontainer"
+           v-for="entry in entries" :key="entry.id">
+        <div class="ItemBylang-key">
+          <div class="ItemBylang-text">
+            {{ entry.val }}
+          </div>
         </div>
+        <span class="ItemBylang-tags">
+              <language-entry v-if="entry.tag !== 'none'"
+                :tag="entry.tag"
+                :is-locked="isLocked"
+                :uri="uriFor(entry.tag)"
+                :label="getLabelFromCache(entry.tag)"
+                :data="getDataFromCache(entry.tag)">
+              </language-entry>
+        </span>
       </div>
-      <span class="ItemBylang-tags">
-            <language-entry v-if="entry.tag !== 'none'"
-              :tag="entry.tag"
-              :is-locked="isLocked"
-              :uri="uriFor(entry.tag)"
-              :label="getLabelFromCache(entry.tag)"
-              :data="getDataFromCache(entry.tag)">
-            </language-entry>
-      </span>
     </div>
   </div>
 </template>
