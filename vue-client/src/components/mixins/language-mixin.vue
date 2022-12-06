@@ -129,8 +129,8 @@ export default {
       if (tag !== 'none') {
         const languageMap = this.propByLang;
         delete languageMap[tag];
-        let updateValue = languageMap;
-        let updatePath = this.getByLangPath();
+        updateValue = languageMap;
+        updatePath = this.getByLangPath();
         if (isEmpty(languageMap)) {
           const lastIndex = this.path.lastIndexOf('.');
           const parentPath = this.path.slice(0, lastIndex);
