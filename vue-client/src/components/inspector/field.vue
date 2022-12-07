@@ -1002,8 +1002,7 @@ export default {
         :is-locked="locked"
         :field-value="valueAsArray"
         :field-key="fieldKey"
-        :parent-path="path"
-      >
+        :parent-path="path">
       </item-bylang>
       </div>
       <div class="Field-contentItem" 

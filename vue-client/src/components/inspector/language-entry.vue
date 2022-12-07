@@ -56,7 +56,7 @@ export default {
 <template>
 <span class="LanguageEntry-pill">
   <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
-             @show="$refs.previewCard.populateData()">
+    @show="$refs.previewCard.populateData()">
     <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
       <a :href="this.uri | convertResourceLink">
         {{ this.label }}
@@ -67,18 +67,17 @@ export default {
     </template>
   </v-popover>
   <span class="LanguageEntry-pill-removeButton" v-if="!isLocked">
-            <i class="fa fa-times-circle icon icon--sm chip-icon"
-               v-if="!isLocked && removeIsAllowed"
-               role="button"
-               tabindex="0"
-               @click="$emit('remove')"
-               @keyup.enter="$emit('remove')"
-               :aria-label="'Remove' | translatePhrase"
-               v-tooltip.top="translate('Remove')">
-            </i>
-            <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled"
-               v-if="!isLocked && !removeIsAllowed"></i>
-          </span>
+    <i class="fa fa-times-circle icon icon--sm chip-icon"
+      v-if="!isLocked && removeIsAllowed"
+      role="button"
+      tabindex="0"
+      @click="$emit('remove')"
+      @keyup.enter="$emit('remove')"
+      :aria-label="'Remove' | translatePhrase"
+      v-tooltip.top="translate('Remove')">
+    </i>
+    <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!isLocked && !removeIsAllowed"></i>
+  </span>
   <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
     {{ this.label }}
   </span>
@@ -111,6 +110,7 @@ export default {
       grid-area: label;
       padding: 0 8px 0 8px
     }
+
     &-link {
       a:link {
         color: #196f25;
@@ -132,8 +132,5 @@ export default {
   &-popover > .trigger {
     max-width: 100%;
   }
-
-
 }
-
 </style>
