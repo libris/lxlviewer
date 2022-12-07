@@ -3062,9 +3062,6 @@
             "@id": "https://id.kb.se/language/swe"
           },
           "recordStatus": "",
-          "marc:catalogingSource": {
-            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
-          },
           "cataloguersNote": [""]
         },
         "mainEntity": {
