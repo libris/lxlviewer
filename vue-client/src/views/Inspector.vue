@@ -578,8 +578,8 @@ export default {
     },
     getPackagedItem(keepEmpty = false) {
       const recordCopy = cloneDeep(this.inspector.data.record);
-
       let obj = null;
+
       if (keepEmpty) {
         obj = DataUtil.getMergedItems(
           recordCopy,

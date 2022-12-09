@@ -47,6 +47,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isLanguage: {
+      type: Boolean,
+      default: false,
+    },
     path: {
       type: String,
       default: '',
@@ -63,6 +67,14 @@ export default {
     hasRescriction: {
       type: Boolean,
       default: false,
+    },
+    isLangTagger: {
+      type: Boolean,
+      default: false,
+    },
+    iconAdd: {
+      type: String,
+      default: 'fa-plus-circle',
     },
   },
   components: {
@@ -217,6 +229,8 @@ export default {
         this.addItem({ '@id': '' });
       } else if (this.isVocabField) {
         this.addItem('');
+      } else if (this.isLanguage) {
+        this.$emit('addEmptyLanguageItem');
       } else if (this.canReceiveObjects) {
         const range = this.rangeFull;
         if (range.length === 1 && this.onlyEmbedded) {
@@ -264,6 +278,14 @@ export default {
       this.resetParamSelect += 1;
     },
     addLinkedItem(obj) {
+      if (this.isLangTagger) {
+        let tag = obj.langTag; // IETF BCP 47
+        if (typeof tag === 'undefined') {
+          tag = obj.code;
+        }
+        this.$emit('langTaggerEvent', tag);
+        return;
+      }
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
       if (!isArray(currentValue)) {
         // Converting value to array if it isn't already
@@ -391,7 +413,7 @@ export default {
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add"
       v-if="isPlaceholder">
-        <i class="fa fa-plus-circle fa-fw icon icon--sm"
+        <i class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
           v-if="!addEmbedded"
           tabindex="0"
           role="button"
@@ -405,7 +427,7 @@ export default {
           @focus="actionHighlight(true, $event)"
           @blur="actionHighlight(false, $event)">
         </i>
-        <i class="fa fa-plus-circle fa-fw icon icon--sm is-disabled"
+        <i class="fa fa-fw icon icon--sm is-disabled" :class="[this.iconAdd] "
           v-else-if="addEmbedded"
           tabindex="-1"
           aria-hidden="true">
@@ -415,7 +437,7 @@ export default {
     <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" v-if="!isPlaceholder">
       <i
-        class="fa fa-fw fa-plus-circle icon icon--sm"
+        class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
         v-if="!addEmbedded"
         tabindex="0"
         role="button"
@@ -430,7 +452,7 @@ export default {
         @blur="actionHighlight(false, $event)">
       </i>
       <i
-        class="fa fa-plus-circle fa-fw icon icon--sm is-disabled"
+        class="fa fa-fw icon icon--sm is-disabled" :class="[this.iconAdd] "
         v-else-if="addEmbedded"
         tabindex="-1">
       </i>
@@ -567,7 +589,7 @@ export default {
           </div>
           <div class="EntityAdder-create">
             <button class="EntityAdder-createBtn btn btn-primary btn--sm"
-              v-if="hasSingleCreatable"
+              v-if="hasSingleCreatable && allowLocal"
               v-on:click="addEmpty(rangeCreatable[0])">{{ "Create local entity" | translatePhrase }}
             </button>
             <filter-select

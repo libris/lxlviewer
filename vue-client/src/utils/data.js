@@ -232,6 +232,8 @@ export function translateAliasedUri(uri) {
   if (uri.startsWith('https://libris.kb.se')) {
     translatedUri = uri.replace('https://libris.kb.se', process.env.VUE_APP_API_PATH);
   }
-  
+  if (uri.startsWith('https://id.kb.se')) {
+    translatedUri = uri.replace('https://id.kb.se', process.env.VUE_APP_ID_PATH);
+  }
   return translatedUri;
 }

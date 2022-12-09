@@ -9,6 +9,7 @@ import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
+import { getContextValue } from 'lxljs/vocab';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
@@ -24,10 +25,12 @@ import ItemShelfControlNumber from './item-shelf-control-number';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
+import ItemBylang from './item-bylang';
+import LanguageMixin from '../mixins/language-mixin';
 
 export default {
   name: 'field',
-  mixins: [clickaway, LodashProxiesMixin],
+  mixins: [clickaway, LodashProxiesMixin, LanguageMixin],
   props: {
     parentKey: {
       type: String,
@@ -145,6 +148,7 @@ export default {
     'item-numeric': ItemNumeric,
     'item-grouped': ItemGrouped,
     'item-shelf-control-number': ItemShelfControlNumber,
+    'item-bylang': ItemBylang,
     'entity-adder': EntityAdder,
   },
   watch: {
@@ -383,6 +387,9 @@ export default {
       }
       return false;
     },
+    isLangMapWithPartner() {
+      return this.isLangMap && this.hasProp;
+    },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
         this.fieldKey,
@@ -429,6 +436,9 @@ export default {
         return true;
       }
       return false;
+    },
+    isLangTaggable() {
+      return getContextValue(this.fieldKey.concat('ByLang'), '@container', this.resources.context) === '@language';
     },
     embellished() {
       const embellished = this.inspector.status.embellished;
@@ -538,7 +548,7 @@ export default {
       if (this.isPlainObject(o) && o.hasOwnProperty('isGrouped')) {
         return 'grouped';
       }
-      if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
+      if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type') && !this.isLangMap) {
         return 'error'; 
       }
       if (typeof o === 'boolean') {
@@ -546,6 +556,9 @@ export default {
       }
       if (this.fieldKey === 'shelfControlNumber') {
         return 'shelfControlNumber';
+      }
+      if (this.isLangMap || this.isLangTaggable) {
+        return 'language';
       }
       if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
@@ -668,9 +681,11 @@ export default {
       'has-failed-validations': failedValidations.length > 0,
       'is-distinguished': isDistinguished,
       'is-linked': isLinkedInstanceOf, 
-    }" 
+    }"
     @mouseover="handleMouseEnter()" 
-    @mouseleave="handleMouseLeave()">
+    @mouseleave="handleMouseLeave()"
+    v-if="!this.isLangMapWithPartner"
+  >
 
     <div class="Field-labelContainer" 
       :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}"
@@ -694,7 +709,7 @@ export default {
             </i>
           </div>
           <entity-adder class="Field-entityAdder Field-action"
-            v-if="!locked && (isRepeatable || isEmptyObject)" 
+            v-if="!locked && (isRepeatable || isEmptyObject || isLangMap)"
             ref="entityAdder"
             :field-key="fieldKey" 
             :path="path"
@@ -709,7 +724,9 @@ export default {
             :property-types="propertyTypes" 
             :show-action-buttons="actionButtonsShown" 
             :active="activeModal" 
-            :is-placeholder="false" 
+            :is-placeholder="false"
+            :is-language="this.isLangMap || this.isLangTaggable"
+            @addEmptyLanguageItem="addEmpty()"
             :value-list="valueAsArray">
           </entity-adder>
           <div v-else class="Field-action placeholder"></div> 
@@ -785,7 +802,7 @@ export default {
           <span class="Field-commentText">{{ propertyComment }}</span>
         </div>
         <entity-adder class="Field-action Field-entityAdder"
-          v-if="!locked && (isRepeatable || isEmptyObject)" 
+          v-if="!locked && (isRepeatable || isEmptyObject || isLangMap)"
           ref="entityAdder"
           :field-key="fieldKey" 
           :path="path" 
@@ -800,7 +817,9 @@ export default {
           :property-types="propertyTypes" 
           :show-action-buttons="actionButtonsShown" 
           :active="activeModal" 
-          :is-placeholder="true" 
+          :is-placeholder="true"
+          :is-language="this.isLangMap || this.isLangTaggable"
+          @addEmptyLanguageItem="addEmpty()"
           :value-list="valueAsArray">
         </entity-adder>
 
@@ -868,6 +887,16 @@ export default {
     <div class="Field-content FieldContent" 
       v-bind:class="{ 'is-locked': locked}"
       v-if="fieldKey !== '@type' && isObjectArray">
+      <div class="Field-contentItem">
+
+      <item-bylang
+        v-if="getDatatype(valueAsArray[0]) == 'language'"
+        :is-locked="locked"
+        :field-value="valueAsArray"
+        :field-key="fieldKey"
+        :parent-path="path">
+      </item-bylang>
+      </div>
       <div class="Field-contentItem"
         v-for="(item, index) in valueAsArray"
         :key="index"
@@ -966,6 +995,16 @@ export default {
     <div class="Field-content is-endOfTree js-endOfTree" 
       v-bind:class="{ 'is-locked': locked }"
       v-if="fieldKey !== '@type' && !isObjectArray">
+      <div class="Field-contentItem">
+
+      <item-bylang
+        v-if="getDatatype(valueAsArray[0]) == 'language'"
+        :is-locked="locked"
+        :field-value="valueAsArray"
+        :field-key="fieldKey"
+        :parent-path="path">
+      </item-bylang>
+      </div>
       <div class="Field-contentItem" 
         v-for="(item, index) in valueAsArray" 
         :key="index">
