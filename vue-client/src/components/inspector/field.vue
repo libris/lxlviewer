@@ -367,6 +367,9 @@ export default {
       }
       return valueArray;
     },
+    firstInValueAsArray() {
+      return typeof this.valueAsArray[0] || "";
+    },
     isUriType() {
       return VocabUtil.getContextValue(this.fieldKey, '@id', this.resources.context) === 'uri';
     },
@@ -890,7 +893,7 @@ export default {
       <div class="Field-contentItem">
 
       <item-bylang
-        v-if="getDatatype(valueAsArray[0]) == 'language'"
+        v-if="getDatatype(firstInValueAsArray) == 'language'"
         :is-locked="locked"
         :field-value="valueAsArray"
         :field-key="fieldKey"
@@ -998,7 +1001,7 @@ export default {
       <div class="Field-contentItem">
 
       <item-bylang
-        v-if="getDatatype(valueAsArray[0]) == 'language'"
+        v-if="getDatatype(firstInValueAsArray) == 'language'"
         :is-locked="locked"
         :field-value="valueAsArray"
         :field-key="fieldKey"
