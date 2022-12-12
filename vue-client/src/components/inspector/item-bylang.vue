@@ -94,7 +94,7 @@ export default {
             this.resources,
             this.inspector.data.quoted,
             this.settings);
-          obj[tag] = { label: label, data: graph[1] };
+          obj[tag] = { label: label, data: graph[1], recordId: graph[0]['@id'] };
           await this.$store.dispatch('addToLanguageCache', obj); // eslint-disable-line no-await-in-loop
         } else {
           console.log('Missing i18n/lang/tag for', tag);
@@ -225,6 +225,10 @@ export default {
       const languageCache = this.cache;
       return languageCache[tag] ? languageCache[tag].label : tag;
     },
+    getRecordIdFromCache(tag) {
+      const languageCache = this.cache;
+      return languageCache[tag] ? languageCache[tag].recordId : '';
+    },
     initializeTextarea() {
       this.$nextTick(() => {
         const textarea = this.$refs.textarea;
@@ -256,6 +260,7 @@ export default {
           :uri="uriFor(entry.tag)"
           :label="getLabelFromCache(entry.tag)"
           :data="getDataFromCache(entry.tag)"
+          :record-id="getRecordIdFromCache(entry.tag)"
           @remove="remove(entry.tag, entry.val)">
         </language-entry>
         <span class="ItemBylang-actions">
@@ -313,7 +318,8 @@ export default {
             :is-locked="isLocked"
             :uri="uriFor(entry.tag)"
             :label="getLabelFromCache(entry.tag)"
-            :data="getDataFromCache(entry.tag)">
+            :data="getDataFromCache(entry.tag)"
+            :record-id="getRecordIdFromCache(entry.tag)">
           </language-entry>
         </span>
       </div>

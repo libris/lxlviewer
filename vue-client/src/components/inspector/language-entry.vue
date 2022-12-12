@@ -33,6 +33,10 @@ export default {
       type: Object,
       default: null,
     },
+    recordId: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     ...mapGetters([
@@ -43,8 +47,10 @@ export default {
     isLinked() {
       return this.data !== null;
     },
-    recordId() {
-      return this.isLinked ? this.data['@id'] : {};
+    routerPath() {
+      const uriParts = this.recordId.split('/');
+      const fnurgel = uriParts[uriParts.length - 1];
+      return `/${fnurgel}`;
     },
   },
   components: {
@@ -58,9 +64,7 @@ export default {
   <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
     @show="$refs.previewCard.populateData()">
     <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
-      <a :href="this.uri | convertResourceLink">
-        {{ this.label }}
-      </a>
+      <router-link :to="routerPath">{{ this.label }}</router-link>
     </span>
     <template slot="popover">
       <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
