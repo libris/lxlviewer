@@ -127,7 +127,7 @@ export default {
       const oldLangMap = cloneDeep(get(this.inspector.data, byLangPath));
       const newLangMap = this.dataFormByLang(viewObjects);
       this.readyForSave(true);
-      if (!isEqual(newLangMap, oldLangMap)) {
+      if (!isEqual(newLangMap, oldLangMap) && !isEmpty(newLangMap)) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
