@@ -424,6 +424,7 @@ export default {
     onRecordLoaded() {
       this.$store.dispatch('setInsertData', '');
       this.$store.dispatch('flushChangeHistory');
+      this.$store.dispatch('saveLangTagSearch', '');
       this.recordLoaded = true;
       this.$store.dispatch('removeLoadingIndicator', 'Loading document');
       this.$nextTick(() => {

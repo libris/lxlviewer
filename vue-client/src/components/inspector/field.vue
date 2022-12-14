@@ -368,7 +368,7 @@ export default {
       return valueArray;
     },
     firstInValueAsArray() {
-      return typeof this.valueAsArray[0] || "";
+      return typeof this.valueAsArray[0] || '';
     },
     isUriType() {
       return VocabUtil.getContextValue(this.fieldKey, '@id', this.resources.context) === 'uri';
