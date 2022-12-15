@@ -46,6 +46,7 @@ const store = new Vuex.Store({
       originalData: {},
       compositeHistoryData: {},
       languageCache: {},
+      langTagSearch: '',
       title: '',
       status: {
         detailedEnrichmentModal: {
@@ -164,6 +165,9 @@ const store = new Vuex.Store({
         languageCache[key] = value;
       }
       state.inspector.languageCache = languageCache;
+    },
+    saveLangTagSearch(state, data) {
+      state.inspector.langTagSearch = data;
     },
     addToQuoted(state, data) {
       const quoted = cloneDeep(state.inspector.data.quoted);
@@ -665,6 +669,9 @@ const store = new Vuex.Store({
     },
     addToLanguageCache({ commit }, data) {
       commit('addToLanguageCache', data);
+    },
+    saveLangTagSearch({ commit }, data) {
+      commit('saveLangTagSearch', data);
     },
     addToQuoted({ commit }, data) {
       commit('addToQuoted', data);

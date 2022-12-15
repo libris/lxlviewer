@@ -7,6 +7,7 @@ import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
+import * as RecordUtil from '@/utils/record';
 import Sort from '@/components/search/sort';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination.vue';
@@ -270,6 +271,20 @@ export default {
       this.keyword = '';
       if (this.fieldKey === 'shelfMark') {
         this.keyword = this.user ? this.user.settings.shelfMarkSearch : '';
+      } else if (this.isLangTagger) {
+        if (this.inspector.langTagSearch) {
+          this.keyword = this.inspector.langTagSearch;
+        } else {
+          // TODO: detect language of resource in a better way?
+          const langPath = ['mainEntity', 'instanceOf', 'language', 0, '@id'];
+          const langId = get(this.inspector.data, langPath);
+          if (langId) {
+            const lang = RecordUtil.recordObjectFromGraph(langId, this.inspector.data.quoted);
+            if (lang) {
+              this.keyword = this.getLabel(lang.mainEntity);
+            }
+          }
+        }
       }
       this.searchMade = false;
       this.currentSearchTypes = this.allSearchTypes;
@@ -393,6 +408,8 @@ export default {
       if (this.fieldKey === 'shelfMark' && this.user) {
         this.user.settings.shelfMarkSearch = this.keyword;
         this.$store.dispatch('setUser', this.user);
+      } else if (this.isLangTagger) {
+        this.$store.dispatch('saveLangTagSearch', this.keyword);
       }
       const self = this;
       this.typeArray = [].concat(this.currentSearchTypes);
