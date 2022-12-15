@@ -167,7 +167,7 @@ export default {
     toLangMap(tag, sourceValue) {
       const lastIndex = this.path.lastIndexOf('.');
       const parentsPath = this.path.slice(0, lastIndex);
-      const parent = get(this.inspector.data, parentsPath);
+      const parent = cloneDeep(get(this.inspector.data, parentsPath));
       if (this.isRepeatable) {
         this.prop.splice(this.prop.indexOf(sourceValue), 1);
         if (isEmpty(this.prop)) {
