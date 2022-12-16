@@ -275,15 +275,7 @@ export default {
         if (this.inspector.langTagSearch) {
           this.keyword = this.inspector.langTagSearch;
         } else {
-          // TODO: detect language of resource in a better way?
-          const langPath = ['mainEntity', 'instanceOf', 'language', 0, '@id'];
-          const langId = get(this.inspector.data, langPath);
-          if (langId) {
-            const lang = RecordUtil.recordObjectFromGraph(langId, this.inspector.data.quoted);
-            if (lang) {
-              this.keyword = this.getLabel(lang.mainEntity);
-            }
-          }
+          this.keyword = this.resourceLanguageLabel();
         }
       }
       this.searchMade = false;
@@ -291,6 +283,30 @@ export default {
       this.searchResult = [];
       // TODO: other way force param-select to set select value?
       this.resetParamSelect += 1;
+    },
+    resourceLanguageLabel() {
+      const getLanguage = () => {
+        // TODO: detect language of resource in a better way?
+        const langPath = ['mainEntity', 'instanceOf', 'language', 0, '@id'];
+        const langId = get(this.inspector.data, langPath);
+        if (langId) {
+          let lang = (this.inspector.data.quoted || {})[langId];
+          if (lang) {
+            return lang;
+          }
+          lang = RecordUtil.recordObjectFromGraph(langId, this.inspector.data.quoted);
+          if (lang) {
+            return lang.mainEntity;
+          }
+        }
+        return null;
+      };
+      const lang = getLanguage();
+      if (lang) {
+        return this.getLabel(lang);
+      }
+      
+      return '';
     },
     addLinkedItem(obj) {
       if (this.isLangTagger) {
@@ -408,7 +424,7 @@ export default {
       if (this.fieldKey === 'shelfMark' && this.user) {
         this.user.settings.shelfMarkSearch = this.keyword;
         this.$store.dispatch('setUser', this.user);
-      } else if (this.isLangTagger) {
+      } else if (this.isLangTagger && this.keyword !== this.resourceLanguageLabel()) {
         this.$store.dispatch('saveLangTagSearch', this.keyword);
       }
       const self = this;
