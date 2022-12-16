@@ -240,66 +240,66 @@ export default {
 <template>
   <div class="ItemBylang-root">
     <div v-if="!isLocked">
-      <div class="ItemBylang-inputcontainer"
-       v-for="entry in entries" :key="entry.id">
-      <span class="ItemBylang-key">
-        <textarea class="ItemBylang-input js-itemValueInput"
-          rows="1"
-          v-model="entry.val"
-          ref="textarea">
-        </textarea>
-      </span>
-      <span class="ItemBylang-value">
-        <language-entry v-if="entry.tag !== 'none'"
-          :tag="entry.tag"
-          :is-locked="isLocked"
-          :remove-is-allowed="removeIsAllowed"
-          :uri="uriFor(entry.tag)"
-          :label="getLabelFromCache(entry.tag)"
-          :data="getDataFromCache(entry.tag)"
-          :record-id="getRecordIdFromCache(entry.tag)"
-          @remove="remove(entry.tag, entry.val)">
-        </language-entry>
-        <span class="ItemBylang-actions">
-        <i class="fa fa-language icon icon--sm ItemBylang-transIcon"
-          tabindex="0"
-          role="button"
-          :aria-label="'Romanize' | translatePhrase"
-          v-on:click="romanize(entry.tag, entry.val)"
-          v-if="!isTransSchema(entry.tag) && entry.tag !== 'none'"
-          v-tooltip.top="translate('Romanize')"
-          @keyup.enter="romanize(entry.tag, entry.val)">
-        </i>
-        <i class="fa fa-language icon icon--sm ItemBylang-transIcon is-disabled"
-          v-if="isTransSchema(entry.tag)">
-        </i>
-        <entity-adder class="Field-entityAdder ItemBylang-action"
-          ref="entityAdder"
-          v-if="entry.tag === 'none'"
-          :field-key="fieldKey"
-          :path="path"
-          :allow-local="false"
-          :all-search-types="['Language']"
-          :range="['Language']"
-          :range-full="['Language']"
-          :property-types="['ObjectProperty']"
-          :is-lang-tagger="true"
-          :icon-add="'fa-globe'"
-          @langTaggerEvent="setValueFromEntityAdder(entry.val, ...arguments)">
-        </entity-adder>
-          <span class="ItemBylang-remover"
-            tabindex="0"
-            v-show="!isLocked"
-            role="button"
-            :aria-label="'Remove' | translatePhrase"
-            v-on:click="removeVal(entry.tag, entry.val)"
-            @keyup.enter="removeVal(entry.tag, entry.val)"
-            v-tooltip.top="translate('Remove')">
-            <i class="fa fa-trash-o icon icon--sm"></i>
+      <div v-for="entry in entries" :key="entry.id">
+        <div class="ItemBylang-inputcontainer">
+          <span class="ItemBylang-key">
+            <textarea class="ItemBylang-input js-itemValueInput"
+              rows="1"
+              v-model="entry.val">
+            </textarea>
           </span>
-        </span>
-      </span>
-    </div>
+          <span class="ItemBylang-value">
+            <language-entry v-if="entry.tag !== 'none'"
+              :tag="entry.tag"
+              :is-locked="isLocked"
+              :remove-is-allowed="removeIsAllowed"
+              :uri="uriFor(entry.tag)"
+              :label="getLabelFromCache(entry.tag)"
+              :data="getDataFromCache(entry.tag)"
+              :record-id="getRecordIdFromCache(entry.tag)"
+              @remove="remove(entry.tag, entry.val)">
+            </language-entry>
+            <span class="ItemBylang-actions">
+              <i class="fa fa-language icon icon--sm ItemBylang-transIcon"
+                tabindex="0"
+                role="button"
+                :aria-label="'Romanize' | translatePhrase"
+                v-on:click="romanize(entry.tag, entry.val)"
+                v-if="!isTransSchema(entry.tag) && entry.tag !== 'none'"
+                v-tooltip.top="translate('Romanize')"
+                @keyup.enter="romanize(entry.tag, entry.val)">
+              </i>
+              <i class="fa fa-language icon icon--sm ItemBylang-transIcon is-disabled"
+                v-if="isTransSchema(entry.tag)">
+              </i>
+              <entity-adder class="Field-entityAdder ItemBylang-action"
+                ref="entityAdder"
+                v-if="entry.tag === 'none'"
+                :field-key="fieldKey"
+                :path="path"
+                :allow-local="false"
+                :all-search-types="['Language']"
+                :range="['Language']"
+                :range-full="['Language']"
+                :property-types="['ObjectProperty']"
+                :is-lang-tagger="true"
+                :icon-add="'fa-globe'"
+                @langTaggerEvent="setValueFromEntityAdder(entry.val, ...arguments)">
+              </entity-adder>
+              <span class="ItemBylang-remover"
+                tabindex="0"
+                v-show="!isLocked"
+                role="button"
+                :aria-label="'Remove' | translatePhrase"
+                v-on:click="removeVal(entry.tag, entry.val)"
+                @keyup.enter="removeVal(entry.tag, entry.val)"
+                v-tooltip.top="translate('Remove')">
+                <i class="fa fa-trash-o icon icon--sm"></i>
+              </span>
+            </span>
+          </span>
+        </div>
+      </div>
     </div>
     <div v-if="isLocked">
       <div class="ItemBylang-textcontainer"
