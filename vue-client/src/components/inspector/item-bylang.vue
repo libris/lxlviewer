@@ -111,9 +111,6 @@ export default {
         await this.updateLangCache(tag); // eslint-disable-line no-await-in-loop
       }, 1000);
     },
-    addFocus() {
-      this.$refs.textarea.focus({ preventScroll: true }); // Prevent scroll as we will handle this ourselves
-    },
     readyForSave(value) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
     },
@@ -373,6 +370,9 @@ export default {
     margin-top: 7px;
     margin-bottom: 7px;
     background: white;
+    &:focus-within {
+      border: 1px solid @grey-dark;
+    }
   }
 
   &-textcontainer {
@@ -410,9 +410,6 @@ export default {
   }
 
   &-key {
-    &:focus {
-      border: 1px solid @grey-dark;
-    }
     place-self: center stretch;
     grid-area: key;
   }
