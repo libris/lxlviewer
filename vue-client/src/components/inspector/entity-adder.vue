@@ -299,14 +299,14 @@ export default {
             return lang.mainEntity;
           }
         }
-      }
+        return null;
+      };
       const lang = getLanguage();
       if (lang) {
         return this.getLabel(lang);
       }
-      else {
-        return '';
-      }
+      
+      return '';
     },
     addLinkedItem(obj) {
       if (this.isLangTagger) {
@@ -424,7 +424,7 @@ export default {
       if (this.fieldKey === 'shelfMark' && this.user) {
         this.user.settings.shelfMarkSearch = this.keyword;
         this.$store.dispatch('setUser', this.user);
-      } else if (this.isLangTagger && this.keyword != this.resourceLanguageLabel()) {
+      } else if (this.isLangTagger && this.keyword !== this.resourceLanguageLabel()) {
         this.$store.dispatch('saveLangTagSearch', this.keyword);
       }
       const self = this;
