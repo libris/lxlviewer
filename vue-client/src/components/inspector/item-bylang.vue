@@ -6,7 +6,6 @@ import * as DisplayUtil from 'lxljs/display';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
 import EntityAdder from './entity-adder';
-import * as DataUtil from '../../utils/data';
 import * as HttpUtil from '../../utils/http';
 import LanguageEntry from './language-entry';
 
@@ -80,25 +79,30 @@ export default {
     },
   },
   methods: {
-    async updateLangCache(langTag) {
+    updateLangCache(langTag) {
       const updateFrom = langTag === '' ? Object.keys(this.propByLang) : [langTag];
       for (const tag of updateFrom) {
-        const doc = await HttpUtil.getDocument(`${this.settings.idPath}/i18n/lang/${tag}`, undefined, false); // eslint-disable-line no-await-in-loop
-        const data = doc.data;
-        if (data) {
-          const graph = data['@graph'];
-          // TODO: let backend add to embellished instead?
-          await DataUtil.fetchMissingLinkedToQuoted(graph, this.$store); // eslint-disable-line no-await-in-loop
-          const obj = {};
-          const label = DisplayUtil.getItemLabel(graph[1],
-            this.resources,
-            this.inspector.data.quoted,
-            this.settings);
-          obj[tag] = { label: label, data: graph[1], recordId: graph[0]['@id'] };
-          await this.$store.dispatch('addToLanguageCache', obj); // eslint-disable-line no-await-in-loop
-        } else {
-          console.log('Missing i18n/lang/tag for', tag);
-        }
+        HttpUtil.getDocument(`${this.settings.idPath}/i18n/lang/${tag}`, 'application/ld+json', false).then((result) => {
+          const allData = result.data;
+          if (allData) {
+            const graph = allData['@graph'];
+            const id = graph[0]['@id'];
+            HttpUtil.getDocument(`${id}/data.jsonld?lens=card`).then((res) => {
+              const data = res.data;
+              if (data) {
+                const label = DisplayUtil.getItemLabel(data,
+                  this.resources,
+                  this.inspector.data.quoted,
+                  this.settings);
+                const obj = {};
+                obj[tag] = {label: label, data: graph[1], recordId: id};
+                this.$store.dispatch('addToLanguageCache', obj);
+              } else {
+                console.log('Missing i18n/lang/tag for', tag);
+              }
+            })
+          }
+        });
       }
     },
     setValueFromEntityAdder(fieldValue, langTag) {
@@ -106,9 +110,9 @@ export default {
     },
     addLangTag(tag, val) {
       // Make sure debounce is done
-      setTimeout(async () => {
+      setTimeout(() => {
         this.toLangMap(tag, val);
-        await this.updateLangCache(tag); // eslint-disable-line no-await-in-loop
+        this.updateLangCache(tag);
       }, 1000);
     },
     readyForSave(value) {
@@ -194,15 +198,17 @@ export default {
       } 
       return dataObjects;
     },
-    async romanize(langTag, val) {
+    romanize(langTag, val) {
       // Make sure debounce is done
-      setTimeout(async () => {
-        const result = await this.transliterate(langTag, val);
-        for (const tag of Object.keys(result)) {
-          this.addToLangMap(result);
-          await this.updateLangCache(tag); // eslint-disable-line no-await-in-loop
-        }
-        this.updateViewForm();
+      setTimeout(() => {
+        this.transliterate(langTag, val).then((result) => {
+          for (const tag of Object.keys(result)) {
+            this.addToLangMap(result);
+            this.updateLangCache(tag);
+          }
+          this.updateViewForm();
+          }
+        );
       }, 1000);
     },
     remove(tag, val) {

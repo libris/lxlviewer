@@ -70,7 +70,7 @@ export default {
     getPropPath() {
       return this.isLangMap ? this.deLangifiedPath : this.path;
     },
-    async requestTransliteration(sourceObj) {
+    requestTransliteration(sourceObj) {
       return httpUtil.post({
         url: `${this.settings.apiPath}/_transliterate`,
         token: this.user.token,
