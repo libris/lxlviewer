@@ -95,12 +95,12 @@ export default {
                   this.inspector.data.quoted,
                   this.settings);
                 const obj = {};
-                obj[tag] = {label: label, data: graph[1], recordId: id};
+                obj[tag] = { label: label, data: graph[1], recordId: id };
                 this.$store.dispatch('addToLanguageCache', obj);
               } else {
                 console.log('Missing i18n/lang/tag for', tag);
               }
-            })
+            });
           }
         });
       }
@@ -207,8 +207,7 @@ export default {
             this.updateLangCache(tag);
           }
           this.updateViewForm();
-          }
-        );
+        });
       }, 1000);
     },
     remove(tag, val) {

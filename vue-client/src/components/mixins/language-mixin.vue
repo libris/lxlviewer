@@ -195,9 +195,8 @@ export default {
       return this.requestTransliteration({ langTag: tag, source: sourceValue }).then((res) => {
         if (isObject(res)) {
           return Object.keys(res).length < 5 ? res : {};
-        } else {
-          return {};
         }
+        return {};
       });
     },
     addEmpty() {
