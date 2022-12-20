@@ -315,6 +315,7 @@ export default {
           tag = obj.code;
         }
         this.$emit('langTaggerEvent', tag);
+        this.hide();
         return;
       }
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
