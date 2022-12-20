@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, get, isEmpty } from 'lodash-es';
+import { cloneDeep, get, isEmpty, isObject } from 'lodash-es';
 import { getContextValue } from 'lxljs/vocab';
 import * as VocabUtil from 'lxljs/vocab';
 import * as httpUtil from '../../utils/http';
@@ -191,8 +191,14 @@ export default {
         });
       }
     },
-    async transliterate(tag, sourceValue) {
-      return this.requestTransliteration({ langTag: tag, source: sourceValue });
+    transliterate(tag, sourceValue) {
+      return this.requestTransliteration({ langTag: tag, source: sourceValue }).then((res) => {
+        if (isObject(res)) {
+          return Object.keys(res).length < 5 ? res : {};
+        } else {
+          return {};
+        }
+      });
     },
     addEmpty() {
       const isRepeatable = VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context); // Is for some reason different from this.isRepeatable()
