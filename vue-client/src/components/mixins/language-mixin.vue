@@ -176,20 +176,36 @@ export default {
       } else {
         delete parent[this.getPropKey()];
       }
+      // Commit removal
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: parentsPath,
+            value: parent,
+          },
+        ],
+        addToHistory: true,
+      });
+      let updateValue;
+      let updatePath;
       if (this.hasByLang) {
-        this.addToLangMap({ [tag]: sourceValue });
+        updatePath = this.getByLangPath();
+        updateValue = Object.assign(this.propByLang, { [tag]: sourceValue });
       } else {
         parent[this.getByLangKey()] = { [tag]: sourceValue };
-        this.$store.dispatch('updateInspectorData', {
-          changeList: [
-            {
-              path: parentsPath,
-              value: parent,
-            },
-          ],
-          addToHistory: true,
-        });
+        updateValue = parent;
+        updatePath = parentsPath;
       }
+      // Commit additions
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: updatePath,
+            value: updateValue,
+          },
+        ],
+        addToHistory: true,
+      });
     },
     transliterate(tag, sourceValue) {
       return this.requestTransliteration({ langTag: tag, source: sourceValue }).then((res) => {
