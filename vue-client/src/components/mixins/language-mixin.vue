@@ -169,7 +169,7 @@ export default {
       const parentsPath = this.path.slice(0, lastIndex);
       const parent = cloneDeep(get(this.inspector.data, parentsPath));
       if (this.isRepeatable) {
-        const prop = parent[this.getPropKey()]
+        const prop = parent[this.getPropKey()];
         prop.splice(this.prop.indexOf(sourceValue), 1);
         if (isEmpty(prop)) {
           delete parent[this.getPropKey()];
