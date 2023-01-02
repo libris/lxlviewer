@@ -10,11 +10,12 @@
     <meta property="og:title" content="Libris katalogisering">
     <meta property="og:site_name" content="Libris katalogisering">
     <meta property="og:description" content="Cataloguing interface for the Swedish National Union Catalogue">
-    <meta property="og:image" content="https://libris<%= process.env.VUE_APP_ENV_LABEL ? '-' : '' %><%= process.env.VUE_APP_ENV_LABEL %>.kb.se<%= BASE_URL %>opengraph.png">
+    <meta property="og:image" content="https://libris.kb.se<%= BASE_URL %>opengraph.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="600">
-    <meta property="twitter:image" content="https://libris<%= process.env.VUE_APP_ENV_LABEL ? '-' : '' %><%= process.env.VUE_APP_ENV_LABEL %>.kb.se<%= BASE_URL %>opengraph.png">
+    <meta property="twitter:image" content="https://libris.kb.se<%= BASE_URL %>opengraph.png">
     <meta name="twitter:card" content="summary_large_image">
+    <script src="<%= BASE_URL %>runtimeConfig.js"></script>
   </head>
   <body>
     <div id="oldbrowsermsg" style="display:none">
