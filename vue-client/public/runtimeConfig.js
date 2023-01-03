@@ -1,3 +1,3 @@
 const runtimeConfig =  {
-  "KOKKOBELL": "KOKKOBELLO2"
+  // Empty. File should be replaced at deploy-time.
 };
