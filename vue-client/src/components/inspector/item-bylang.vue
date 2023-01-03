@@ -385,7 +385,7 @@ export default {
     justify-items: start;
     align-items: center;
     column-gap: 5px;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 1fr;
     grid-template-rows: auto;
     grid-template-areas:
     "key tags";
