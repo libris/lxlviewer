@@ -130,7 +130,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       if (this.isMaybeMagicShelfMark) {
-        hasAutomaticShelfControlNumber(this.item['@id'], this.settings).then((hasAutomatic) => {
+        hasAutomaticShelfControlNumber(this.item['@id']).then((hasAutomatic) => {
           if (hasAutomatic) {
             this.$store.commit('addMagicShelfMark', this.actualParentPath);
           }

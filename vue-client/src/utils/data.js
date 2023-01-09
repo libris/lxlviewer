@@ -4,7 +4,7 @@ import * as DisplayUtil from 'lxljs/display';
 import * as HttpUtil from '@/utils/http';
 import settings from '../settings';
 
-export function getDisplayDefinitions(settings) {
+export function getDisplayDefinitions() {
   const baseUri = settings.idPath;
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
