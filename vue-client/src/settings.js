@@ -15,7 +15,7 @@ export default {
   siteAlias: runtimeConfig.SITE_ALIAS || process.env.VUE_APP_SITE_ALIAS,
   mockDisplay: process.env.VUE_APP_MOCK_DISPLAY_BOOL === 'true',
   mockHelp: process.env.VUE_APP_MOCK_HELP_BOOL === 'true',
-  scopes: "read write",
+  scopes: 'read write',
   matomoId: 23,
   appPaths: {
     '/find?': '/search/libris?',
