@@ -47,7 +47,6 @@ export default {
     },
     entries: {
       handler: debounce(function debounceUpdate(val) {
-        console.log('watch trigged')
         this.update(val);
       }, 1000),
       deep: true,
