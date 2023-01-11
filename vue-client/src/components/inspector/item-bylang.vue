@@ -245,7 +245,6 @@ export default {
 
 <template>
   <div class="ItemBylang-root">
-    <div v-if="!isLocked">
       <div v-for="entry in entries" :key="entry.id">
         <language-entry
           v-model="entry.val"
@@ -261,30 +260,8 @@ export default {
           @remove="remove(entry.tag, entry.val)"
           @removeval="removeVal(entry.tag, entry.val)"
           @addLangTag="setValueFromEntityAdder(...arguments, entry.val)">
-          >
         </language-entry>
       </div>
-    </div>
-    <div v-if="isLocked">
-      <div class="ItemBylang-textcontainer"
-           v-for="entry in entries" :key="entry.id">
-        <div class="ItemBylang-key">
-          <div class="ItemBylang-text">
-            {{ entry.val }}
-          </div>
-        </div>
-        <span class="ItemBylang-tags">
-          <language-entry v-if="entry.tag !== 'none'"
-            :tag="entry.tag"
-            :is-locked="isLocked"
-            :uri="uriFor(entry.tag)"
-            :label="getLabelFromCache(entry.tag)"
-            :data="getDataFromCache(entry.tag)"
-            :record-id="getRecordIdFromCache(entry.tag)">
-          </language-entry>
-        </span>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -294,41 +271,13 @@ export default {
   border-radius: 4px;
   transition: background-color 0.2s ease;
 
-
-  &-text {
-    word-break: break-word;
-    position: relative;
-  }
-
   &-root {
     display: inline-block;
-    padding: 5px 5px 5px 0;
     width: 100%;
-  }
-
-  &-textcontainer {
-    display: grid;
-    justify-items: start;
-    align-items: center;
-    column-gap: 5px;
-    grid-template-columns: 3fr 1fr;
-    grid-template-rows: auto;
-    grid-template-areas:
-    "key tags";
-    width: 100%;
-    margin-top: 7px;
-    margin-bottom: 7px;
   }
 
   &-popover > .trigger {
     max-width: 100%;
   }
-
-  &-tags {
-    grid-area: tags;
-    justify-self: end;
-  }
-
-
 }
 </style>

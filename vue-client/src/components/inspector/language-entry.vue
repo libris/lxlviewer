@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import {mapGetters} from 'vuex';
 import PreviewCard from '@/components/shared/preview-card';
 import LanguageMixin from '@/components/mixins/language-mixin';
 import EntityAdder from './entity-adder';
@@ -73,7 +73,8 @@ export default {
 </script>
 
 <template>
-  <div class="LanguageEntry-inputcontainer">
+  <div>
+  <div class="LanguageEntry-inputcontainer" v-if="!isLocked">
     <span class="LanguageEntry-key">
       <textarea class="LanguageEntry-input js-itemValueInput"
         rows="1"
@@ -82,8 +83,7 @@ export default {
       </textarea>
     </span>
     <span class="LanguageEntry-value">
-      <span class="LanguageEntry-pill" v-if="tag !== 'none'"
-      >
+      <span class="LanguageEntry-pill" v-if="tag !== 'none'">
   <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
     @show="$refs.previewCard.populateData()">
     <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
@@ -93,9 +93,9 @@ export default {
       <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
     </template>
   </v-popover>
-  <span class="LanguageEntry-pill-removeButton" v-if="!isLocked">
+  <span class="LanguageEntry-pill-removeButton">
     <i class="fa fa-times-circle icon icon--sm chip-icon"
-      v-if="!isLocked && removeIsAllowed"
+      v-if="removeIsAllowed"
       role="button"
       tabindex="0"
       @click="$emit('remove')"
@@ -103,7 +103,7 @@ export default {
       :aria-label="'Remove' | translatePhrase"
       v-tooltip.top="translate('Remove')">
     </i>
-    <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!isLocked && !removeIsAllowed"></i>
+    <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!removeIsAllowed"></i>
   </span>
   <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
     {{ this.label }}
@@ -124,7 +124,6 @@ export default {
         </i>
         <span class="LanguageEntry-remover"
               tabindex="0"
-              v-show="!isLocked"
               role="button"
               :aria-label="'Remove' | translatePhrase"
               v-on:click="$emit('removeval')"
@@ -149,6 +148,32 @@ export default {
         </entity-adder>
     </span>
   </div>
+  <div v-if="isLocked">
+    <div class="LanguageEntry-textcontainer">
+      <div class="LanguageEntry-key">
+        <div class="LanguageEntry-text">
+          {{ val }}
+        </div>
+      </div>
+      <span class="LanguageEntry-tags">
+         <span class="LanguageEntry-pill" v-if="tag !== 'none'">
+  <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
+             @show="$refs.previewCard.populateData()">
+    <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
+      <router-link :to="routerPath">{{ this.label }}</router-link>
+    </span>
+    <template slot="popover">
+      <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
+    </template>
+  </v-popover>
+  <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
+    {{ this.label }}
+  </span>
+  </span>
+        </span>
+    </div>
+  </div>
+  </div>
 </template>
 
 <style lang="less">
@@ -172,6 +197,31 @@ export default {
       border: 1px solid @grey-dark;
     }
   }
+
+  &-textcontainer {
+    display: grid;
+    justify-items: start;
+    align-items: center;
+    column-gap: 5px;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+    "key tags";
+    width: 100%;
+    margin-top: 7px;
+    margin-bottom: 7px;
+  }
+
+  &-text {
+    word-break: break-word;
+    position: relative;
+  }
+
+  &-tags {
+    grid-area: tags;
+    justify-self: end;
+  }
+
   &-key {
     place-self: center stretch;
     grid-area: key;
