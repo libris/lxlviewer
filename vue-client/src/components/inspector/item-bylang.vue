@@ -345,6 +345,7 @@ export default {
   transition: background-color 0.2s ease;
 
   &-input {
+    display: block;
     border: none;
     resize: none;
     transition: border .25s ease-out;
