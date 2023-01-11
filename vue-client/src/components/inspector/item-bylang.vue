@@ -244,15 +244,18 @@ export default {
 
 <template>
   <div class="ItemBylang-root">
+
     <div v-if="!isLocked">
       <div v-for="entry in entries" :key="entry.id">
         <div class="ItemBylang-inputcontainer">
           <span class="ItemBylang-key">
             <textarea class="ItemBylang-input js-itemValueInput"
               rows="1"
+              ref="textarea"
               v-model="entry.val">
             </textarea>
           </span>
+
           <span class="ItemBylang-value">
             <language-entry v-if="entry.tag !== 'none'"
               :tag="entry.tag"
@@ -264,6 +267,7 @@ export default {
               :record-id="getRecordIdFromCache(entry.tag)"
               @remove="remove(entry.tag, entry.val)">
             </language-entry>
+
             <span class="ItemBylang-actions">
               <i class="fa fa-language icon icon--sm ItemBylang-transIcon"
                 tabindex="0"
@@ -274,9 +278,11 @@ export default {
                 v-tooltip.top="translate('Romanize')"
                 @keyup.enter="romanize(entry.tag, entry.val)">
               </i>
+
               <i class="fa fa-language icon icon--sm ItemBylang-transIcon is-disabled"
                 v-if="isTransSchema(entry.tag)">
               </i>
+
               <entity-adder class="Field-entityAdder ItemBylang-action"
                 ref="entityAdder"
                 v-if="entry.tag === 'none'"
@@ -288,9 +294,10 @@ export default {
                 :range-full="['Language']"
                 :property-types="['ObjectProperty']"
                 :is-lang-tagger="true"
-                :icon-add="'fa-globe'"
+                :icon-add="'fa-globe-outline'"
                 @langTaggerEvent="setValueFromEntityAdder(entry.val, ...arguments)">
               </entity-adder>
+
               <span class="ItemBylang-remover"
                 tabindex="0"
                 v-show="!isLocked"
@@ -306,14 +313,15 @@ export default {
         </div>
       </div>
     </div>
+
     <div v-if="isLocked">
-      <div class="ItemBylang-textcontainer"
-           v-for="entry in entries" :key="entry.id">
+      <div class="ItemBylang-textcontainer" v-for="entry in entries" :key="entry.id">
         <div class="ItemBylang-key">
           <div class="ItemBylang-text">
             {{ entry.val }}
           </div>
         </div>
+
         <span class="ItemBylang-tags">
           <language-entry v-if="entry.tag !== 'none'"
             :tag="entry.tag"
@@ -326,6 +334,7 @@ export default {
         </span>
       </div>
     </div>
+
   </div>
 </template>
 
