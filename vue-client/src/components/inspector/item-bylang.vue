@@ -47,6 +47,7 @@ export default {
     },
     entries: {
       handler: debounce(function debounceUpdate(val) {
+        console.log('watch trigged')
         this.update(val);
       }, 1000),
       deep: true,
@@ -246,64 +247,22 @@ export default {
   <div class="ItemBylang-root">
     <div v-if="!isLocked">
       <div v-for="entry in entries" :key="entry.id">
-        <div class="ItemBylang-inputcontainer">
-          <span class="ItemBylang-key">
-            <textarea class="ItemBylang-input js-itemValueInput"
-              rows="1"
-              v-model="entry.val">
-            </textarea>
-          </span>
-          <span class="ItemBylang-value">
-            <language-entry v-if="entry.tag !== 'none'"
-              :tag="entry.tag"
-              :is-locked="isLocked"
-              :remove-is-allowed="removeIsAllowed"
-              :uri="uriFor(entry.tag)"
-              :label="getLabelFromCache(entry.tag)"
-              :data="getDataFromCache(entry.tag)"
-              :record-id="getRecordIdFromCache(entry.tag)"
-              @remove="remove(entry.tag, entry.val)">
-            </language-entry>
-            <span class="ItemBylang-actions">
-              <i class="fa fa-language icon icon--sm ItemBylang-transIcon"
-                tabindex="0"
-                role="button"
-                :aria-label="'Romanize' | translatePhrase"
-                v-on:click="romanize(entry.tag, entry.val)"
-                v-if="!isTransSchema(entry.tag) && entry.tag !== 'none'"
-                v-tooltip.top="translate('Romanize')"
-                @keyup.enter="romanize(entry.tag, entry.val)">
-              </i>
-              <i class="fa fa-language icon icon--sm ItemBylang-transIcon is-disabled"
-                v-if="isTransSchema(entry.tag)">
-              </i>
-              <entity-adder class="Field-entityAdder ItemBylang-action"
-                ref="entityAdder"
-                v-if="entry.tag === 'none'"
-                :field-key="fieldKey"
-                :path="path"
-                :allow-local="false"
-                :all-search-types="['Language']"
-                :range="['Language']"
-                :range-full="['Language']"
-                :property-types="['ObjectProperty']"
-                :is-lang-tagger="true"
-                :icon-add="'fa-globe'"
-                @langTaggerEvent="setValueFromEntityAdder(entry.val, ...arguments)">
-              </entity-adder>
-              <span class="ItemBylang-remover"
-                tabindex="0"
-                v-show="!isLocked"
-                role="button"
-                :aria-label="'Remove' | translatePhrase"
-                v-on:click="removeVal(entry.tag, entry.val)"
-                @keyup.enter="removeVal(entry.tag, entry.val)"
-                v-tooltip.top="translate('Remove')">
-                <i class="fa fa-trash-o icon icon--sm"></i>
-              </span>
-            </span>
-          </span>
-        </div>
+        <language-entry
+          v-model="entry.val"
+          :val="entry.val"
+          :tag="entry.tag"
+          :is-locked="isLocked"
+          :remove-is-allowed="removeIsAllowed"
+          :uri="uriFor(entry.tag)"
+          :label="getLabelFromCache(entry.tag)"
+          :data="getDataFromCache(entry.tag)"
+          :record-id="getRecordIdFromCache(entry.tag)"
+          @romanize="romanize(entry.tag, entry.val)"
+          @remove="remove(entry.tag, entry.val)"
+          @removeval="removeVal(entry.tag, entry.val)"
+          @test="setValueFromEntityAdder(entry.val, ...arguments)">
+          >
+        </language-entry>
       </div>
     </div>
     <div v-if="isLocked">
@@ -335,49 +294,16 @@ export default {
   border-radius: 4px;
   transition: background-color 0.2s ease;
 
-  &-input {
-    border: none;
-    resize: none;
-    transition: border .25s ease-out;
-    width: 100%;
-    padding: 2px 10px;
-  }
 
   &-text {
     word-break: break-word;
     position: relative;
   }
 
-  &-transItems {
-     display: flex;
-     flex-direction: row;
-     margin-left: 0.5rem;
-   }
-
   &-root {
     display: inline-block;
     padding: 5px 5px 5px 0;
     width: 100%;
-  }
-
-  &-inputcontainer {
-    display: grid;
-    justify-items: start;
-    align-items: center;
-    column-gap: 5px;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto;
-    grid-template-areas:
-    "key value";
-    border: 1px solid @grey-light;
-    border-radius: 2px;
-    width: 100%;
-    margin-top: 7px;
-    margin-bottom: 7px;
-    background: white;
-    &:focus-within {
-      border: 1px solid @grey-dark;
-    }
   }
 
   &-textcontainer {
@@ -394,43 +320,6 @@ export default {
     margin-bottom: 7px;
   }
 
-  &-actions {
-    grid-area: actions;
-    align-items: center;
-    column-gap: 5px;
-    display: grid;
-    grid-template-areas:
-    "action remover";
-    margin-right: 1rem;
-
-
-    &-action {
-      grid-area: action;
-      margin-left: 1rem;
-    }
-    &-remover {
-      grid-area: remover;
-      margin-left: 1rem;
-    }
-  }
-
-  &-key {
-    place-self: center stretch;
-    grid-area: key;
-  }
-
-  &-value {
-    grid-area: value;
-    display: grid;
-    justify-self: end;
-    column-gap: 5px;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto;
-    align-items: center;
-    grid-template-areas:
-    "pill actions";
-  }
-
   &-popover > .trigger {
     max-width: 100%;
   }
@@ -440,10 +329,6 @@ export default {
     justify-self: end;
   }
 
-  &-transIcon {
-    grid-area: action;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-  }
+
 }
 </style>
