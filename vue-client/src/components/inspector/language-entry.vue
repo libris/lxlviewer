@@ -109,7 +109,7 @@ export default {
     {{ this.label }}
   </span>
   </span>
-      <span class="LanguageEntry-actions" v-if="tag !== 'none'">
+      <span class="LanguageEntry-actions">
         <i class="fa fa-language icon icon--sm LanguageEntry-transIcon"
            tabindex="0"
            role="button"
@@ -120,8 +120,22 @@ export default {
            @keyup.enter="$emit('romanize')">
         </i>
         <i class="fa fa-language icon icon--sm LanguageEntry-transIcon is-disabled"
-           v-if="isTransSchema(tag)">
+           v-if="isTransSchema(tag) && tag !== 'none'">
         </i>
+         <entity-adder class="LanguageEntry-action Field-entityAdder"
+                       ref="entityAdder"
+                       v-if="tag === 'none'"
+                       :field-key="fieldKey"
+                       :path="path"
+                       :allow-local="false"
+                       :all-search-types="['Language']"
+                       :range="['Language']"
+                       :range-full="['Language']"
+                       :property-types="['ObjectProperty']"
+                       :is-lang-tagger="true"
+                       :icon-add="'fa-globe'"
+                       @langTaggerEvent="onLangTaggerEvent(...arguments)">
+        </entity-adder>
         <span class="LanguageEntry-remover"
               tabindex="0"
               role="button"
@@ -132,20 +146,7 @@ export default {
           <i class="fa fa-trash-o icon icon--sm"></i>
         </span>
       </span>
-      <entity-adder class="LanguageEntry-action Field-entityAdder"
-        ref="entityAdder"
-        v-if="tag === 'none'"
-        :field-key="fieldKey"
-        :path="path"
-        :allow-local="false"
-        :all-search-types="['Language']"
-        :range="['Language']"
-        :range-full="['Language']"
-        :property-types="['ObjectProperty']"
-        :is-lang-tagger="true"
-        :icon-add="'fa-globe'"
-        @langTaggerEvent="onLangTaggerEvent(...arguments)">
-        </entity-adder>
+
     </span>
   </div>
   <div v-if="isLocked">

@@ -273,6 +273,7 @@ export default {
 
   &-root {
     display: inline-block;
+    padding-right: 5px;
     width: 100%;
   }
 
