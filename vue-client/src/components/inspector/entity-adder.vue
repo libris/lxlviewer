@@ -469,7 +469,7 @@ export default {
     </div>
 
     <!-- Add entity within field -->
-    <div class="EntityAdder-add action-button" v-if="!isPlaceholder">
+    <div class="EntityAdder-add action-button" v-if="!isPlaceholder" v-tooltip.top="tooltipText">
       <i
         class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
         v-if="!addEmbedded"
@@ -479,7 +479,6 @@ export default {
         :aria-label="tooltipText | translatePhrase"
         v-on:click="add($event)"
         @keyup.enter="add($event)"
-        v-tooltip.top="tooltipText"
         @mouseenter="actionHighlight(true, $event)"
         @mouseleave="actionHighlight(false, $event)"
         @focus="actionHighlight(true, $event)"
