@@ -106,7 +106,7 @@ export default {
         });
       }
     },
-    setValueFromEntityAdder(fieldValue, langTag) {
+    setValueFromEntityAdder(langTag, fieldValue) {
       this.addLangTag(langTag, fieldValue);
     },
     addLangTag(tag, val) {
@@ -260,7 +260,7 @@ export default {
           @romanize="romanize(entry.tag, entry.val)"
           @remove="remove(entry.tag, entry.val)"
           @removeval="removeVal(entry.tag, entry.val)"
-          @test="setValueFromEntityAdder(entry.val, ...arguments)">
+          @addLangTag="setValueFromEntityAdder(...arguments, entry.val)">
           >
         </language-entry>
       </div>

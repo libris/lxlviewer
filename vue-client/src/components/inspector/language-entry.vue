@@ -65,8 +65,8 @@ export default {
     'entity-adder': EntityAdder,
   },
   methods: {
-    setValueFromEntityAdder(fieldValue, langTag) {
-       this.addLangTag(langTag, fieldValue);
+    onLangTaggerEvent(langTag) {
+      this.$emit('addLangTag', langTag);
     },
   }
 };
@@ -145,7 +145,7 @@ export default {
         :property-types="['ObjectProperty']"
         :is-lang-tagger="true"
         :icon-add="'fa-globe'"
-        @langTaggerEvent="$emit('test', ...arguments)">
+        @langTaggerEvent="onLangTaggerEvent(...arguments)">
         </entity-adder>
     </span>
   </div>
