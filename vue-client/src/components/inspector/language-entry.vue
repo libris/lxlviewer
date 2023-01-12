@@ -75,7 +75,15 @@ export default {
     diffRemoved() {
       if (this.diff == null) return false;
         return this.diff.removed.some(r => isEqual(r.path, this.exactPath));
-    }
+    },
+    diffAdded() {
+      if (this.diff == null) return false;
+      return this.diff.added.some(r => isEqual(r.path, this.exactPath));
+    },
+    diffModified() {
+      if (this.diff == null) return false;
+      return this.diff.modified.some(r => isEqual(r.path, this.exactPath));
+    },
   },
   components: {
     PreviewCard,
@@ -166,7 +174,9 @@ export default {
 
     </span>
   </div>
-  <div v-if="isLocked" v-bind:class="{'LanguageEntry-is-diff-removed': diffRemoved }">
+  <div v-if="isLocked" v-bind:class="{'LanguageEntry-is-diff-removed': diffRemoved && !diffAdded,
+         'LanguageEntry-is-diff-added': diffAdded && !diffRemoved,
+         'LanguageEntry-is-diff-modified': diffModified}">
     <div class="LanguageEntry-textcontainer">
       <div class="LanguageEntry-key">
         <div class="LanguageEntry-text">
@@ -196,6 +206,7 @@ export default {
 
 <style lang="less">
 .LanguageEntry{
+
   &-inputcontainer {
     display: grid;
     justify-items: start;
@@ -230,11 +241,31 @@ export default {
     margin-bottom: 7px;
   }
 
+  &-is-diff-added {
+    @base-color: @form-add;
+    border: 1px solid;
+    border-radius: 4px;
+    padding: 0px 5px 0 5px;
+    border-color: @brand-primary;
+    background-color: @base-color;
+  }
+
   &-is-diff-removed {
     @base-color: @remove;
     border: 1px dashed;
+    border-radius: 4px;
+    padding: 0px 5px 0 5px;
     border-color: @base-color;
     background-color: @form-remove;
+  }
+
+  &-is-diff-modified {
+    @base-color: rgb(247, 160, 123); // $kb-primary-orange
+    border: 1px dashed;
+    border-radius: 4px;
+    padding: 0px 5px 0 5px;
+    border-color: @base-color;
+    background-color: hsl(hue(@base-color), 80%, 90%);
   }
 
   &-text {
