@@ -3,6 +3,7 @@ import {mapGetters} from 'vuex';
 import PreviewCard from '@/components/shared/preview-card';
 import LanguageMixin from '@/components/mixins/language-mixin';
 import EntityAdder from './entity-adder';
+import {isEqual} from "lodash-es";
 
 export default {
   name: 'language-entry',
@@ -44,6 +45,14 @@ export default {
       type: String,
       default: '',
     },
+    diff: {
+      type: Object,
+      default: null,
+    },
+    byLangPath: {
+      type: String,
+      default: '',
+    }
   },
   computed: {
     ...mapGetters([
@@ -51,6 +60,10 @@ export default {
       'settings',
       'resources',
     ]),
+    exactPath() {
+      // check none
+      return `${this.byLangPath}.${this.tag}`;
+    },
     isLinked() {
       return this.data !== null;
     },
@@ -59,6 +72,10 @@ export default {
       const fnurgel = uriParts[uriParts.length - 1];
       return `/${fnurgel}`;
     },
+    diffRemoved() {
+      if (this.diff == null) return false;
+        return this.diff.removed.some(r => isEqual(r.path, this.exactPath));
+    }
   },
   components: {
     PreviewCard,
@@ -149,7 +166,7 @@ export default {
 
     </span>
   </div>
-  <div v-if="isLocked">
+  <div v-if="isLocked" v-bind:class="{'LanguageEntry-is-diff-removed': diffRemoved }">
     <div class="LanguageEntry-textcontainer">
       <div class="LanguageEntry-key">
         <div class="LanguageEntry-text">
@@ -211,6 +228,13 @@ export default {
     width: 100%;
     margin-top: 7px;
     margin-bottom: 7px;
+  }
+
+  &-is-diff-removed {
+    @base-color: @remove;
+    border: 1px dashed;
+    border-color: @base-color;
+    background-color: @form-remove;
   }
 
   &-text {

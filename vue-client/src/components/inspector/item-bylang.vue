@@ -21,6 +21,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    diff: {
+      type: Object,
+      default: null,
+    },
   },
   components: {
     'language-entry': LanguageEntry,
@@ -79,6 +83,9 @@ export default {
     },
   },
   methods: {
+    getParentPath() {
+       return this.parentPath;
+    },
     updateLangCache(langTag) {
       const updateFrom = langTag === '' ? Object.keys(this.propByLang) : [langTag];
       for (const tag of updateFrom) {
@@ -255,6 +262,8 @@ export default {
           :label="getLabelFromCache(entry.tag)"
           :data="getDataFromCache(entry.tag)"
           :record-id="getRecordIdFromCache(entry.tag)"
+          :diff="diff"
+          :by-lang-path="getParentPath()"
           @romanize="romanize(entry.tag, entry.val)"
           @remove="remove(entry.tag, entry.val)"
           @removeval="removeVal(entry.tag, entry.val)"
