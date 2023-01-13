@@ -204,7 +204,7 @@ export default {
       this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
 
-      if (this.$route.name === 'Inspector' || this.$route.name == 'DocumentHistory') {
+      if (this.$route.name === 'Inspector' || this.$route.name === 'DocumentHistory') {
         console.log('Initializing view for existing document');
         this.documentId = this.$route.params.fnurgel;
         this.loadDocument();
