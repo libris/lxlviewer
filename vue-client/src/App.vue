@@ -105,6 +105,7 @@ export default {
       // remove tabindex from focustarget.
       // reason: https://axesslab.com/skip-links/#update-3-a-comment-from-gov-uk
       focusTarget.removeAttribute('tabindex');
+      return focusTarget;
     },
     setupIdleTimer() {
       // USER IDLE TIMER
