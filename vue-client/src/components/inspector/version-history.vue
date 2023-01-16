@@ -222,8 +222,11 @@ export default {
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.currentVersionData);
 
+      console.log('current diff', diff);
+
       if (!isEmpty(diff.removed)) {
         diff.removed.forEach((r) => {
+          console.log('removed path', r.path)
           if (this.isListItem(r.path) && isObject(r.val)) {
             const parentPath = r.path.slice(0, r.path.lastIndexOf('['));
             const objAtPath = get(compositeVersionData, parentPath);
@@ -232,6 +235,7 @@ export default {
               set(compositeVersionData, parentPath, objAtPath);
             } else {
               const parent = [];
+              console.log('is object and add', r)
               parent.push(r.val);
               parent.push(objAtPath);
               set(compositeVersionData, parentPath, parent);
@@ -252,6 +256,37 @@ export default {
           }
         });
       }
+
+      if (!isEmpty(diff.added)) {
+        diff.added.forEach((entity) => {
+          console.log('added path', entity.path)
+          if (this.isListItem(entity.path) && isObject(entity.val)) {
+            const inRemoved = diff.removed.findIndex((a) =>
+              a.path == entity.path
+            );
+
+            if (inRemoved > -1) {
+              return false
+            }
+
+            const parentPath = entity.path.slice(0, entity.path.lastIndexOf('['));
+            const objAtPath = entity.val;
+            console.log('step2', entity, parentPath, objAtPath)
+            if (Array.isArray(entity.val)) {
+              objAtPath.push(entity.val);
+              set(compositeVersionData, parentPath, objAtPath);
+            } else {
+              const parent = [];
+              console.log('is object and add', entity)
+              parent.push(entity.val);
+              set(compositeVersionData, parentPath, parent);
+            }
+          }
+        });
+      }
+
+      console.log('before', compositeVersionData)
+
       this.fetchMissingLinks(compositeVersionData);
       await this.$store.dispatch('setCompositeHistoryData', compositeVersionData);
       this.displayData = compositeVersionData;
