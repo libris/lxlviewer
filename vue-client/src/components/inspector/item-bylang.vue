@@ -23,8 +23,8 @@ export default {
     },
     diff: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   components: {
     'language-entry': LanguageEntry,
