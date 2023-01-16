@@ -200,11 +200,13 @@ export default {
     },
     async setDisplayDataFor(number) {
       if (this.changeSetsReversed == null) return;
+
       const options = {
         headers: {
           Accept: 'application/ld+json',
         },
       };
+
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
       this.currentVersionData = await fetch(fetchUrl, options)
         .then(response => response.json())
@@ -215,32 +217,38 @@ export default {
         this.displayData = this.currentVersionData;
         return;
       }
+
       this.previousVersionData = await fetch(previousChangeSet.version['@id'], options)
         .then(response => response.json())
         .then(result => DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result)));
 
       const diff = this.currentVersionDiff;
-      const compositeVersionData = cloneDeep(this.currentVersionData);
+      const compositeVersionData = cloneDeep(this.previousVersionData);
 
-      console.log('current diff', diff);
-
-      if (!isEmpty(diff.removed)) {
-        diff.removed.forEach((r) => {
-          console.log('removed path', r.path)
-          if (this.isListItem(r.path) && isObject(r.val)) {
-            const parentPath = r.path.slice(0, r.path.lastIndexOf('['));
+      if (!isEmpty(diff.added)) {
+        diff.added.forEach((entity) => {
+          if (this.isListItem(entity.path) && isObject(entity.val)) {
+            const parentPath = entity.path.slice(0, entity.path.lastIndexOf('['));
             const objAtPath = get(compositeVersionData, parentPath);
+
             if (Array.isArray(objAtPath)) {
-              objAtPath.push(r.val);
+              objAtPath.push(entity.val);
               set(compositeVersionData, parentPath, objAtPath);
             } else {
               const parent = [];
-              console.log('is object and add', r)
-              parent.push(r.val);
+              parent.push(entity.val);
               parent.push(objAtPath);
               set(compositeVersionData, parentPath, parent);
             }
           } else {
+            set(compositeVersionData, entity.path, entity.val);
+          }
+        });
+      }
+
+      if (!isEmpty(diff.removed)) {
+        diff.removed.forEach((r) => {
+          if (!this.isListItem(r.path) && !isObject(r.val)) {
             const added = diff.added.find(a => isEqual(a.path, r.path));
             if (added !== undefined && r.val !== added.val) {
               if (typeof r.val === 'string') {
@@ -256,36 +264,6 @@ export default {
           }
         });
       }
-
-      if (!isEmpty(diff.added)) {
-        diff.added.forEach((entity) => {
-          console.log('added path', entity.path)
-          if (this.isListItem(entity.path) && isObject(entity.val)) {
-            const inRemoved = diff.removed.findIndex((a) =>
-              a.path == entity.path
-            );
-
-            if (inRemoved > -1) {
-              return false
-            }
-
-            const parentPath = entity.path.slice(0, entity.path.lastIndexOf('['));
-            const objAtPath = entity.val;
-            console.log('step2', entity, parentPath, objAtPath)
-            if (Array.isArray(entity.val)) {
-              objAtPath.push(entity.val);
-              set(compositeVersionData, parentPath, objAtPath);
-            } else {
-              const parent = [];
-              console.log('is object and add', entity)
-              parent.push(entity.val);
-              set(compositeVersionData, parentPath, parent);
-            }
-          }
-        });
-      }
-
-      console.log('before', compositeVersionData)
 
       this.fetchMissingLinks(compositeVersionData);
       await this.$store.dispatch('setCompositeHistoryData', compositeVersionData);
@@ -329,16 +307,20 @@ export default {
                 <i class="fa fa-arrow-left VersionHistory-back-icon"></i>{{ 'Back' | translatePhrase }}
               </a>
             </span>
+
             <span class="VersionHistory-headerTitle" v-if="displayData != null">
               {{ getItemLabel }}
             </span>
+
             <i class="fa fa-th-list icon icon--md sideColButton"
                role="button"
                @click="openSideCol()"></i>
           </div>
+
           <div class="VersionHistory-content" tabindex="-1">
             <template v-if="displayData != null">
               <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="focusedTab"/>
+
               <entity-form
                 v-for="tab in editorTabs"
                 :editing-object="tab.id"
@@ -351,14 +333,19 @@ export default {
             </template>
           </div>
         </div>
+
         <div class="VersionHistory-sideCol" :class="{'hidden-view': !showSideCol}">
           <div class="VersionHistory-header">
             {{ 'Version history' | translatePhrase }}
             <i class="fa fa-close icon icon--md sideColButton" role="button"
                @click="closeSideCol()"></i>
           </div>
-          <VersionHistoryChangesets :change-sets="changeSets" :selected-version="selectedVersion"
-                                    @version-selected="changeSelectedVersion"/>
+
+          <VersionHistoryChangesets
+            :change-sets="changeSets"
+            :selected-version="selectedVersion"
+            @version-selected="changeSelectedVersion"
+          />
         </div>
       </div>
     </div>
@@ -366,7 +353,6 @@ export default {
 </template>
 
 <style lang="less">
-
 .VersionHistory {
   background-color: @bg-site;
   &-mainCol {
