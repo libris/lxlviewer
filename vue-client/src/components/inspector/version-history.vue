@@ -226,40 +226,40 @@ export default {
       const compositeVersionData = cloneDeep(this.previousVersionData);
 
       if (!isEmpty(diff.added)) {
-        diff.added.forEach((entity) => {
-          if (this.isListItem(entity.path) && isObject(entity.val)) {
-            const parentPath = entity.path.slice(0, entity.path.lastIndexOf('['));
+        diff.added.forEach((item) => {
+          if (this.isListItem(item.path) && isObject(item.val)) {
+            const parentPath = item.path.slice(0, item.path.lastIndexOf('['));
             const objAtPath = get(compositeVersionData, parentPath);
 
             if (Array.isArray(objAtPath)) {
-              objAtPath.push(entity.val);
+              objAtPath.push(item.val);
               set(compositeVersionData, parentPath, objAtPath);
             } else {
               const parent = [];
-              parent.push(entity.val);
+              parent.push(item.val);
               parent.push(objAtPath);
               set(compositeVersionData, parentPath, parent);
             }
           } else {
-            set(compositeVersionData, entity.path, entity.val);
+            set(compositeVersionData, item.path, item.val);
           }
         });
       }
 
       if (!isEmpty(diff.removed)) {
-        diff.removed.forEach((r) => {
-          if (!this.isListItem(r.path) && !isObject(r.val)) {
-            const added = diff.added.find(a => isEqual(a.path, r.path));
-            if (added !== undefined && r.val !== added.val) {
-              if (typeof r.val === 'string') {
-                const from = StringUtil.getLabelByLang(r.val, this.user.settings.language, this.resources);
+        diff.removed.forEach((item) => {
+          if (!this.isListItem(item.path) && !isObject(item.val)) {
+            const added = diff.added.find(a => isEqual(a.path, item.path));
+            if (added !== undefined && item.val !== added.val) {
+              if (typeof item.val === 'string') {
+                const from = StringUtil.getLabelByLang(item.val, this.user.settings.language, this.resources);
                 const to = StringUtil.getLabelByLang(added.val, this.user.settings.language, this.resources);
                 const moddedValue = from.concat(' → ').concat(to);
-                diff.modified.push({ path: r.path, val: moddedValue });
-                set(compositeVersionData, r.path, moddedValue);
+                diff.modified.push({ path: item.path, val: moddedValue });
+                set(compositeVersionData, item.path, moddedValue);
               }
             } else {
-              set(compositeVersionData, r.path, r.val);
+              set(compositeVersionData, item.path, item.val);
             }
           }
         });
