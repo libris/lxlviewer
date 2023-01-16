@@ -79,3 +79,8 @@ If you can't load the display file or want to use a local version for any other 
 ##### Local help documentation
 
 It is also recommended to use a local version for `lxl-helpdocs` to be able to see the help documentation in your local environment. Just add `VUE_APP_MOCK_HELP_BOOL=true` for this. It will use the local file in your lxl-helpdocs repository.
+
+## Managing custom font for icons
+Font is built using [https://icomoon.io/](icomoon.io). To manage our font upload the json file located at 
+`src/assets/fonts/custom-icons.json`. Make the necessary changes and export it by clicking "Generate Font". 
+Replace the files in assets/fonts.
