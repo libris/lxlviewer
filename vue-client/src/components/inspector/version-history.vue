@@ -190,7 +190,6 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/${fnurgel}/_changesets`;
       fetch(fetchUrl).then(response => response.json()).then((result) => {
         this.historyData = result;
-        
         const agents = (this.changeSets || []).map(c => c.agent).filter(a => a);
         DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
 
@@ -337,8 +336,7 @@ export default {
         <div class="VersionHistory-sideCol" :class="{'hidden-view': !showSideCol}">
           <div class="VersionHistory-header">
             {{ 'Version history' | translatePhrase }}
-            <i class="fa fa-close icon icon--md sideColButton" role="button"
-               @click="closeSideCol()"></i>
+            <i class="fa fa-close icon icon--md sideColButton" role="button" @click="closeSideCol()"></i>
           </div>
 
           <VersionHistoryChangesets
