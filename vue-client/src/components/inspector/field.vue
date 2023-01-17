@@ -897,7 +897,9 @@ export default {
         :is-locked="locked"
         :field-value="valueAsArray"
         :field-key="fieldKey"
-        :parent-path="path">
+        :parent-path="path"
+        :diff="diff"
+      >
       </item-bylang>
       </div>
       <div class="Field-contentItem"
@@ -1005,7 +1007,8 @@ export default {
         :is-locked="locked"
         :field-value="valueAsArray"
         :field-key="fieldKey"
-        :parent-path="path">
+        :parent-path="path"
+        :diff="diff">
       </item-bylang>
       </div>
       <div class="Field-contentItem" 
