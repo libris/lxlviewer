@@ -83,6 +83,9 @@ export default {
     },
   },
   methods: {
+    isHistoryView() {
+      return this.diff !== null;
+    },
     getParentPath() {
        return this.parentPath;
     },
@@ -130,6 +133,10 @@ export default {
       return false;
     },
     update(viewObjects) {
+      if (this.isHistoryView()) {
+        return;
+      }
+
       // Update propByLang
       const byLangPath = this.getByLangPath();
       const oldLangMap = cloneDeep(get(this.inspector.data, byLangPath));

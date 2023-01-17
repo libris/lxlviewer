@@ -184,7 +184,7 @@ export default {
         </div>
       </div>
       <span class="LanguageEntry-tags">
-         <span class="LanguageEntry-pill" v-if="tag !== 'none'">
+        <span class="LanguageEntry-pill" v-if="tag !== 'none'">
   <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
              @show="$refs.previewCard.populateData()">
     <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
@@ -198,6 +198,12 @@ export default {
     {{ this.label }}
   </span>
   </span>
+        <span class="LanguageEntry-tags-history-icon" v-if="diffRemoved && !diffAdded">
+            <i class="fa fa-trash-o icon--sm icon-removed"></i>
+          </span>
+    <span class="LanguageEntry-tags-history-icon" v-if="diffAdded && !diffRemoved">
+            <i class="fa fa-plus-circle icon--sm icon-added"></i>
+          </span>
         </span>
     </div>
   </div>
@@ -232,7 +238,7 @@ export default {
     justify-items: start;
     align-items: center;
     column-gap: 5px;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 1fr auto;
     grid-template-rows: auto;
     grid-template-areas:
     "key tags";
@@ -269,13 +275,27 @@ export default {
   }
 
   &-text {
-    word-break: break-word;
     position: relative;
   }
 
   &-tags {
     grid-area: tags;
     justify-self: end;
+    justify-items: start;
+    width: 100%;
+    align-items: center;
+    column-gap: 5px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    overflow: hidden;
+
+    grid-template-areas:
+    "pill history";
+
+    &-history-icon {
+      padding: 0 4px 0 2px;
+      grid-area: history;
+    }
   }
 
   &-key {
@@ -315,11 +335,13 @@ export default {
     color: #196f25;
     background-color: #D9EBDC;
     font-size: 13px;
+    overflow: hidden;
 
     &-label {
       font-weight: 600;
       cursor: default;
       white-space: nowrap;
+      overflow: hidden;
       text-overflow: ellipsis;
       grid-area: label;
       padding: 0 8px 0 8px
