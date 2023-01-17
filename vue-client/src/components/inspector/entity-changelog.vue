@@ -48,6 +48,7 @@ export default {
         <span class="EntityChangelog-unknown" v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
       </span>
     </div>
+
     <div class="EntityChangelog-item">
       <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Changed' | translatePhrase}}:</span> 
       <span class="EntityChangelog-value">
@@ -56,7 +57,10 @@ export default {
         <span class="EntityChangelog-unknown" v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
       </span>
     </div>
-    <router-link :to="{ path: `${this.$route.path}/history` }"><button-component :inverted="true" class="Button-default" :label="'View version history' | translatePhrase" icon="clock-o" size="medium" /></router-link>
+
+    <router-link :to="{ path: `${this.$route.path}/history` }">
+      <button-component :inverted="true" class="Button-default" :label="'View version history' | translatePhrase" icon="clock-o" size="medium" />
+    </router-link>
   </div>
 </template>
 
