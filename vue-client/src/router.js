@@ -13,7 +13,7 @@ const router = new Router({
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition;
-    } 
+    }
     return { x: 0, y: 0 };
   },
   routes: [
@@ -62,7 +62,7 @@ const router = new Router({
       path: '/directory-care/:tool?',
       name: 'Directory care',
       component: () => import(/* webpackChunkName: "UserPage" */ './views/DirectoryCare.vue'),
-      meta: { 
+      meta: {
         requiresAuth: true,
       },
     },
@@ -70,7 +70,7 @@ const router = new Router({
       path: '/user',
       name: 'User settings',
       component: () => import(/* webpackChunkName: "UserPage" */ './views/UserPage.vue'),
-      meta: { 
+      meta: {
         requiresAuth: true,
       },
     },
@@ -78,7 +78,7 @@ const router = new Router({
       path: '/create',
       name: 'Create new',
       component: () => import(/* webpackChunkName: "Create" */ './views/Create.vue'),
-      meta: { 
+      meta: {
         requiresAuth: true,
       },
     },
@@ -101,10 +101,22 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+  // Remove trailing slashes from route path (if any)
+  if (to.fullPath.substring(to.fullPath.length - 1, to.fullPath.length) === '/') {
+    next({
+      path: to.fullPath.slice(0, -1),
+    });
+  }
+
+  next();
+});
+
+router.beforeEach((to, from, next) => {
   const newToken = StringUtil.getParamValueFromUrl(to.hash, 'access_token');
   if (newToken) {
     localStorage.setItem('at', newToken);
   }
+
   store.dispatch('verifyUser').then(() => {
     // authed
     next();
@@ -114,6 +126,7 @@ router.beforeEach((to, from, next) => {
       if (to.fullPath.indexOf('login') < 0) {
         localStorage.setItem('lastPath', to.fullPath);
       }
+
       next({
         path: '/login/expired',
       });
