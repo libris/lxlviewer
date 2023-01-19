@@ -85,6 +85,11 @@ export default {
       return this.diff.modified.some(m => isEqual(m.path, this.exactPath));
     },
   },
+  mounted() {
+    if (this.tag !== 'none') {
+      this.$emit('addToCache');
+    }
+  },
   components: {
     PreviewCard,
     'entity-adder': EntityAdder,

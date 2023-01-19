@@ -62,7 +62,6 @@ export default {
         this.initializeTextarea();
       }
       this.updateViewForm();
-      this.updateLangCache('');
     });
   },
   computed: {
@@ -96,9 +95,9 @@ export default {
     getParentPath() {
        return this.parentPath;
     },
-    updateLangCache(langTag) {
-      const updateFrom = langTag === '' ? Object.keys(this.propByLang) : [langTag];
-      for (const tag of updateFrom) {
+    updateLangCache(tag) {
+      if (!this.cache[tag]) {
+        console.log('adding to cache:', tag)
         HttpUtil.getDocument(`${this.settings.idPath}/i18n/lang/${tag}`, 'application/ld+json', false).then((result) => {
           const allData = result.data;
           if (allData) {
@@ -283,7 +282,8 @@ export default {
           @romanize="romanize(entry.tag, entry.val)"
           @remove="remove(entry.tag, entry.val)"
           @removeval="removeVal(entry.tag, entry.val)"
-          @addLangTag="setValueFromEntityAdder(...arguments, entry.val)">
+          @addLangTag="setValueFromEntityAdder(...arguments, entry.val)"
+          @addToCache="updateLangCache(entry.tag)">
         </language-entry>
       </div>
   </div>
