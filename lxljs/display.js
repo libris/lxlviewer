@@ -78,6 +78,11 @@ function tryGetValueByLang(item, propertyId, langCode, context) {
     }
     
     // TODO: refactor language handling in lxlviewer completely
+    if (!item[propertyId] && Object.keys(item[byLangKey]).length === 1) {
+      const k = Object.keys(item[byLangKey])[0];
+      return item[byLangKey][k];
+    }
+    
     for (const [langTag, value] of toPairs(item[byLangKey])) {
       const transliterated = langTag.includes('Latn-t-');
       if (transliterated) {
