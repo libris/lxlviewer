@@ -72,6 +72,13 @@ export default {
       } 
       return this.propByLang;
     },
+    isAddedByHistory() {
+      return this.diffRemoved;
+    },
+    diffRemoved() {
+      if (this.diff == null) return false;
+      return this.diff.removed.some(r => isEqual(r.path, this.path));
+    },
     isRepeatable() {
       return VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context);
     },
@@ -180,7 +187,9 @@ export default {
       const fieldValue = this.fieldValue[0];
       if (typeof fieldValue === 'string') {
         Object.entries(this.propByLang).forEach(([key, value]) => {
-          viewForm.push({ tag: key, val: value, id: `${key}-${idCounter}` });
+          if (!this.isAddedByHistory) {
+            viewForm.push({ tag: key, val: value, id: `${key}-${idCounter}` });
+          }
           idCounter++;
         });
       } else if (typeof fieldValue === 'object') {

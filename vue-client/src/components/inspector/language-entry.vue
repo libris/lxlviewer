@@ -78,11 +78,11 @@ export default {
     },
     diffAdded() {
       if (this.diff == null) return false;
-      return this.diff.added.some(r => isEqual(r.path, this.exactPath));
+      return this.diff.added.some(a => isEqual(a.path, this.exactPath));
     },
     diffModified() {
       if (this.diff == null) return false;
-      return this.diff.modified.some(r => isEqual(r.path, this.exactPath));
+      return this.diff.modified.some(m => isEqual(m.path, this.exactPath));
     },
   },
   components: {
