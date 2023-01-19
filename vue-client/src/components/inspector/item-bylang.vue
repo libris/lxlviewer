@@ -5,7 +5,6 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
-import EntityAdder from './entity-adder';
 import * as HttpUtil from '../../utils/http';
 import LanguageEntry from './language-entry';
 
@@ -28,7 +27,6 @@ export default {
   },
   components: {
     'language-entry': LanguageEntry,
-    'entity-adder': EntityAdder,
   },
   data() {
     return {
@@ -93,7 +91,7 @@ export default {
       return this.diff !== null;
     },
     getParentPath() {
-       return this.parentPath;
+      return this.parentPath;
     },
     updateLangCache(tag) {
       if (!this.cache[tag]) {
@@ -265,26 +263,26 @@ export default {
 
 <template>
   <div class="ItemBylang-root">
-      <div v-for="entry in entries" :key="entry.id">
-        <language-entry
-          v-model="entry.val"
-          :val="entry.val"
-          :tag="entry.tag"
-          :is-locked="isLocked"
-          :remove-is-allowed="removeIsAllowed"
-          :uri="uriFor(entry.tag)"
-          :label="getLabelFromCache(entry.tag)"
-          :data="getDataFromCache(entry.tag)"
-          :record-id="getRecordIdFromCache(entry.tag)"
-          :diff="diff"
-          :by-lang-path="getParentPath()"
-          @romanize="romanize(entry.tag, entry.val)"
-          @remove="remove(entry.tag, entry.val)"
-          @removeval="removeVal(entry.tag, entry.val)"
-          @addLangTag="setValueFromEntityAdder(...arguments, entry.val)"
-          @addToCache="updateLangCache(entry.tag)">
-        </language-entry>
-      </div>
+    <div v-for="entry in entries" :key="entry.id">
+      <language-entry
+        v-model="entry.val"
+        :val="entry.val"
+        :tag="entry.tag"
+        :is-locked="isLocked"
+        :remove-is-allowed="removeIsAllowed"
+        :uri="uriFor(entry.tag)"
+        :label="getLabelFromCache(entry.tag)"
+        :data="getDataFromCache(entry.tag)"
+        :record-id="getRecordIdFromCache(entry.tag)"
+        :diff="diff"
+        :by-lang-path="getParentPath()"
+        @romanize="romanize(entry.tag, entry.val)"
+        @remove="remove(entry.tag, entry.val)"
+        @removeval="removeVal(entry.tag, entry.val)"
+        @addLangTag="setValueFromEntityAdder(...arguments, entry.val)"
+        @addToCache="updateLangCache(entry.tag)">
+      </language-entry>
+    </div>
   </div>
 </template>
 

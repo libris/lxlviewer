@@ -1,9 +1,9 @@
 <script>
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'vuex';
+import { isEqual } from 'lodash-es';
 import PreviewCard from '@/components/shared/preview-card';
 import LanguageMixin from '@/components/mixins/language-mixin';
 import EntityAdder from './entity-adder';
-import {isEqual} from "lodash-es";
 
 export default {
   name: 'language-entry',
@@ -52,7 +52,7 @@ export default {
     byLangPath: {
       type: String,
       default: '',
-    }
+    },
   },
   computed: {
     ...mapGetters([
@@ -73,7 +73,7 @@ export default {
     },
     diffRemoved() {
       if (this.diff == null) return false;
-        return this.diff.removed.some(r => isEqual(r.path, this.exactPath));
+      return this.diff.removed.some(r => isEqual(r.path, this.exactPath));
     },
     diffAdded() {
       if (this.diff == null) return false;
@@ -97,120 +97,119 @@ export default {
     onLangTaggerEvent(langTag) {
       this.$emit('addLangTag', langTag);
     },
-  }
+  },
 };
 </script>
 
 <template>
   <div>
-  <div class="LanguageEntry-inputcontainer" v-if="!isLocked">
-    <span class="LanguageEntry-key">
-      <textarea class="LanguageEntry-input js-itemValueInput"
-        rows="1"
-        v-bind:value="val"
-        v-on:input="$emit('input', $event.target.value)">
-      </textarea>
-    </span>
-    <span class="LanguageEntry-value">
-      <span class="LanguageEntry-pill" v-if="tag !== 'none'">
-  <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
-    @show="$refs.previewCard.populateData()">
-    <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
-      <router-link :to="routerPath">{{ this.label }}</router-link>
-    </span>
-    <template slot="popover">
-      <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
-    </template>
-  </v-popover>
-  <span class="LanguageEntry-pill-removeButton">
-    <i class="fa fa-times-circle icon icon--sm chip-icon"
-      v-if="removeIsAllowed"
-      role="button"
-      tabindex="0"
-      @click="$emit('remove')"
-      @keyup.enter="$emit('remove')"
-      :aria-label="'Remove' | translatePhrase"
-      v-tooltip.top="translate('Remove')">
-    </i>
-    <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!removeIsAllowed"></i>
-  </span>
-  <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
-    {{ this.label }}
-  </span>
-  </span>
-      <span class="LanguageEntry-actions">
-        <i class="fa fa-language icon icon--sm LanguageEntry-transIcon"
-           tabindex="0"
-           role="button"
-           :aria-label="'Romanize' | translatePhrase"
-           v-on:click="$emit('romanize')"
-           v-if="!isTransSchema(tag) && tag !== 'none'"
-           v-tooltip.top="translate('Romanize')"
-           @keyup.enter="$emit('romanize')">
-        </i>
-        <i class="fa fa-language icon icon--sm LanguageEntry-transIcon is-disabled"
-           v-if="isTransSchema(tag) && tag !== 'none'">
-        </i>
-         <entity-adder class="LanguageEntry-action Field-entityAdder"
-                       ref="entityAdder"
-                       v-if="tag === 'none'"
-                       :field-key="fieldKey"
-                       :path="path"
-                       :allow-local="false"
-                       :all-search-types="['Language']"
-                       :range="['Language']"
-                       :range-full="['Language']"
-                       :property-types="['ObjectProperty']"
-                       :is-lang-tagger="true"
-                       :icon-add="'fa-globe'"
-                       @langTaggerEvent="onLangTaggerEvent(...arguments)">
-        </entity-adder>
-        <span class="LanguageEntry-remover"
-              tabindex="0"
+    <div class="LanguageEntry-inputcontainer" v-if="!isLocked">
+      <span class="LanguageEntry-key">
+        <textarea class="LanguageEntry-input js-itemValueInput" rows="1"
+          v-bind:value="val"
+          v-on:input="$emit('input', $event.target.value)">
+        </textarea>
+      </span>
+      <span class="LanguageEntry-value">
+        <span class="LanguageEntry-pill" v-if="tag !== 'none'">
+          <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
+            @show="$refs.previewCard.populateData()">
+            <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
+              <router-link :to="routerPath">{{ this.label }}</router-link>
+            </span>
+            <template slot="popover">
+              <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
+            </template>
+          </v-popover>
+          <span class="LanguageEntry-pill-removeButton">
+            <i class="fa fa-times-circle icon icon--sm chip-icon"
+              v-if="removeIsAllowed"
               role="button"
+              tabindex="0"
+              @click="$emit('remove')"
+              @keyup.enter="$emit('remove')"
               :aria-label="'Remove' | translatePhrase"
-              v-on:click="$emit('removeval')"
-              @keyup.enter="$emit('removeval')"
               v-tooltip.top="translate('Remove')">
-          <i class="fa fa-trash-o icon icon--sm"></i>
+            </i>
+            <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!removeIsAllowed"></i>
+          </span>
+          <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
+            {{ this.label }}
+          </span>
+        </span>
+        <span class="LanguageEntry-actions">
+          <i class="fa fa-language icon icon--sm LanguageEntry-transIcon"
+            tabindex="0"
+            role="button"
+            :aria-label="'Romanize' | translatePhrase"
+            v-on:click="$emit('romanize')"
+            v-if="!isTransSchema(tag) && tag !== 'none'"
+            v-tooltip.top="translate('Romanize')"
+            @keyup.enter="$emit('romanize')">
+          </i>
+          <i class="fa fa-language icon icon--sm LanguageEntry-transIcon is-disabled"
+            v-if="isTransSchema(tag) && tag !== 'none'">
+          </i>
+          <entity-adder class="LanguageEntry-action Field-entityAdder"
+            ref="entityAdder"
+            v-if="tag === 'none'"
+            :field-key="fieldKey"
+            :path="path"
+            :allow-local="false"
+            :all-search-types="['Language']"
+            :range="['Language']"
+            :range-full="['Language']"
+            :property-types="['ObjectProperty']"
+            :is-lang-tagger="true"
+            :icon-add="'fa-globe'"
+            @langTaggerEvent="onLangTaggerEvent(...arguments)">
+          </entity-adder>
+          <span class="LanguageEntry-remover"
+            tabindex="0"
+            role="button"
+            :aria-label="'Remove' | translatePhrase"
+            v-on:click="$emit('removeval')"
+            @keyup.enter="$emit('removeval')"
+            v-tooltip.top="translate('Remove')">
+            <i class="fa fa-trash-o icon icon--sm"></i>
+          </span>
         </span>
       </span>
-
-    </span>
-  </div>
-  <div v-if="isLocked" v-bind:class="{'LanguageEntry-is-diff-removed': diffRemoved && !diffAdded,
-         'LanguageEntry-is-diff-added': diffAdded && !diffRemoved,
-         'LanguageEntry-is-diff-modified': diffModified}">
-    <div class="LanguageEntry-textcontainer">
-      <div class="LanguageEntry-key">
-        <div class="LanguageEntry-text">
-          {{ val }}
+    </div>
+    <div v-if="isLocked" v-bind:class="{
+      'LanguageEntry-is-diff-removed': diffRemoved && !diffAdded,
+      'LanguageEntry-is-diff-added': diffAdded && !diffRemoved,
+      'LanguageEntry-is-diff-modified': diffModified}">
+      <div class="LanguageEntry-textcontainer">
+        <div class="LanguageEntry-key">
+          <div class="LanguageEntry-text">
+            {{ val }}
+          </div>
         </div>
-      </div>
-      <span class="LanguageEntry-tags">
-        <span class="LanguageEntry-pill" v-if="tag !== 'none'">
-  <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
-             @show="$refs.previewCard.populateData()">
-    <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
-      <router-link :to="routerPath">{{ this.label }}</router-link>
-    </span>
-    <template slot="popover">
-      <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
-    </template>
-  </v-popover>
-  <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
-    {{ this.label }}
-  </span>
-  </span>
-        <span class="LanguageEntry-tags-history-icon" v-if="diffRemoved && !diffAdded">
+        <span class="LanguageEntry-tags">
+          <span class="LanguageEntry-pill" v-if="tag !== 'none'">
+            <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
+              @show="$refs.previewCard.populateData()">
+              <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
+                <router-link :to="routerPath">{{ this.label }}</router-link>
+              </span>
+              <template slot="popover">
+                <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
+              </template>
+            </v-popover>
+            <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
+              {{ this.label }}
+            </span>
+          </span>
+          <span class="LanguageEntry-tags-history-icon" v-if="diffRemoved && !diffAdded">
             <i class="fa fa-trash-o icon--sm icon-removed"></i>
           </span>
-    <span class="LanguageEntry-tags-history-icon" v-if="diffAdded && !diffRemoved">
+          <span class="LanguageEntry-tags-history-icon" v-if="diffAdded && !diffRemoved">
             <i class="fa fa-plus-circle icon--sm icon-added"></i>
           </span>
         </span>
+      </div>
     </div>
-  </div>
   </div>
 </template>
 
