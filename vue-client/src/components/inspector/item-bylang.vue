@@ -97,7 +97,6 @@ export default {
     },
     updateLangCache(tag) {
       if (!this.cache[tag]) {
-        console.log('adding to cache:', tag)
         HttpUtil.getDocument(`${this.settings.idPath}/i18n/lang/${tag}`, 'application/ld+json', false).then((result) => {
           const allData = result.data;
           if (allData) {

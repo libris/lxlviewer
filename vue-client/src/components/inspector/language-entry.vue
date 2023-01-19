@@ -61,7 +61,6 @@ export default {
       'resources',
     ]),
     exactPath() {
-      // check none
       return `${this.byLangPath}.${this.tag}`;
     },
     isLinked() {
