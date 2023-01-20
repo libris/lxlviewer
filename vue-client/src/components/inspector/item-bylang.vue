@@ -69,9 +69,6 @@ export default {
       } 
       return this.propByLang;
     },
-    isAddedByHistory() {
-      return this.diffRemoved;
-    },
     diffRemoved() {
       if (this.diff == null) return false;
       return this.diff.removed.some(r => isEqual(r.path, this.path));
@@ -183,7 +180,7 @@ export default {
       const fieldValue = this.fieldValue[0];
       if (typeof fieldValue === 'string') {
         Object.entries(this.propByLang).forEach(([key, value]) => {
-          if (!this.isAddedByHistory) {
+          if (!this.isHistoryView()) {
             viewForm.push({ tag: key, val: value, id: `${key}-${idCounter}` });
           }
           idCounter++;
