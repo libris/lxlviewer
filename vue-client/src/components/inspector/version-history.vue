@@ -223,45 +223,92 @@ export default {
 
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.previousVersionData);
+      let updatedPaths = [];
 
-      if (!isEmpty(diff.added)) {
-        diff.added.forEach((item) => {
-          if (this.isListItem(item.path) && isObject(item.val)) {
-            const parentPath = item.path.slice(0, item.path.lastIndexOf('['));
-            const objAtPath = get(compositeVersionData, parentPath);
+      [...diff.added, ...diff.removed].forEach((item) => {
+        const parentPath = item.path.slice(0, item.path.lastIndexOf('['));
+        if (updatedPaths.indexOf(parentPath) == -1) {
+          updatedPaths.push(parentPath);
+        }
+      });
 
-            if (Array.isArray(objAtPath)) {
-              objAtPath.push(item.val);
-              set(compositeVersionData, parentPath, objAtPath);
-            } else {
-              const parent = [];
-              parent.push(item.val);
-              parent.push(objAtPath);
-              set(compositeVersionData, parentPath, parent);
-            }
-          } else {
-            set(compositeVersionData, item.path, item.val);
+      const checkConflict = (item, compare) => {
+        const updated = compare.find((compareItem) => isEqual(compareItem.path, item.path));
+        if (updated != null && item.val != updated.val) {
+          if (typeof item.val === 'string') {
+            const from = StringUtil.getLabelByLang(updated.val, this.user.settings.language, this.resources);
+            const to = StringUtil.getLabelByLang(item.val, this.user.settings.language, this.resources);
+            const moddedValue = from.concat(' → ').concat(to);
+            diff.modified.push({ path: item.path, val: moddedValue });
+            set(compositeVersionData, item.path, moddedValue);
           }
+        } else {
+          set(compositeVersionData, item.path, item.val);
+        }
+      };
+
+      if (!isEmpty(updatedPaths)) {
+        updatedPaths.forEach((parentPath) => {
+          const objAtPath = get(compositeVersionData, parentPath);
+
+          const pathRemoved = diff.removed.map((item) =>
+            parentPath == item.path.slice(0, item.path.lastIndexOf('[')) ? item : false
+          ).filter((r) => r);
+
+          const pathAdded = diff.added.map((item) =>
+            parentPath == item.path.slice(0, item.path.lastIndexOf('[')) ? item : false
+          ).filter((r) => r);
+
+          if (objAtPath != null && Array.isArray(objAtPath)) {
+            const conflictingPathNames = pathRemoved.find((removed) =>
+              pathAdded.find((added) => isEqual(added.path, removed.path))
+            ) != null;
+
+            const addedEntity = get(this.currentVersionData, parentPath);
+
+            if (!conflictingPathNames) {
+              // Under the same parent property but not the same key
+              if (Array.isArray(addedEntity)) {
+                objAtPath.push(...addedEntity);
+              } else {
+                objAtPath.push(addedEntity);
+              }
+
+              return true;
+            }
+          }
+
+          if (pathRemoved.length > 0 && pathAdded.length > 0) {
+            pathRemoved.forEach((item) => {
+              checkConflict(item, pathAdded);
+            });
+          }
+
+          pathAdded.forEach((item) => {
+            if (this.isListItem(item.path) && isObject(item.val)) {
+              const objAtPath = get(compositeVersionData, parentPath);
+
+              if (Array.isArray(objAtPath)) {
+                objAtPath.push(item.val);
+                set(compositeVersionData, parentPath, objAtPath);
+              } else {
+                const parent = [];
+                parent.push(item.val);
+                parent.push(objAtPath);
+                set(compositeVersionData, parentPath, parent);
+              }
+            } else {
+              checkConflict(item, pathRemoved);
+            }
+          });
         });
       }
 
-      if (!isEmpty(diff.removed)) {
-        diff.removed.forEach((item) => {
-          if (!this.isListItem(item.path) && !isObject(item.val)) {
-            const added = diff.added.find(a => isEqual(a.path, item.path));
-            if (added !== undefined && item.val !== added.val) {
-              if (typeof item.val === 'string') {
-                const from = StringUtil.getLabelByLang(item.val, this.user.settings.language, this.resources);
-                const to = StringUtil.getLabelByLang(added.val, this.user.settings.language, this.resources);
-                const moddedValue = from.concat(' → ').concat(to);
-                diff.modified.push({ path: item.path, val: moddedValue });
-                set(compositeVersionData, item.path, moddedValue);
-              }
-            } else {
-              set(compositeVersionData, item.path, item.val);
-            }
-          }
-        });
+      // Fix diff indexes
+      if (diff != null) {
+        diff.added = diff.added.map(this.updateDiffIndex);
+        diff.removed = diff.removed.map(this.updateDiffIndex);
+        diff.modified = diff.modified.map(this.updateDiffIndex);
       }
 
       this.fetchMissingLinks(compositeVersionData);
@@ -280,6 +327,42 @@ export default {
     },
     closeSideCol() {
       this.showSideCol = false;
+    },
+    findValue(obj, value) {
+      let result = {};
+
+      function findValueHelper(obj, value, path) {
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            const newPath = path ? `${path}.${key}` : key;
+            if (obj[key] === value) {
+              result.value = obj[key];
+              result.path = newPath;
+            }
+
+            if (typeof obj[key] === 'object') {
+              findValueHelper(obj[key], value, newPath);
+            }
+          }
+        }
+      }
+
+      findValueHelper(obj, value);
+      return result;
+    },
+    updateDiffIndex(diff) {
+      let result = this.findValue(compositeVersionData.mainEntity, diff.val);
+
+      if (result.path != null) {
+        const diffIndex = diff.path.lastIndexOf('[') + 1;
+        if (diffIndex > 0) {
+          const indexes = result.path.replace(/[^0-9.]/g, '').split('.').filter((index) => index != '');
+          const newPath = diff.path.substring(0, diffIndex) + indexes[indexes.length-1] + diff.path.substring(diffIndex + 1);
+          diff.path = newPath;
+        }
+      }
+
+      return diff;
     },
   },
   components: {
