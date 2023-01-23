@@ -21,6 +21,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    diff: {
+      type: Object,
+      default: null,
+    },
   },
   components: {
     'language-entry': LanguageEntry,
@@ -79,6 +83,9 @@ export default {
     },
   },
   methods: {
+    isHistoryView() {
+      return this.diff !== null;
+    },
     updateLangCache(langTag) {
       const updateFrom = langTag === '' ? Object.keys(this.propByLang) : [langTag];
       for (const tag of updateFrom) {
@@ -123,6 +130,10 @@ export default {
       return false;
     },
     update(viewObjects) {
+      if (this.isHistoryView()) {
+        return;
+      }
+
       // Update propByLang
       const byLangPath = this.getByLangPath();
       const oldLangMap = cloneDeep(get(this.inspector.data, byLangPath));
