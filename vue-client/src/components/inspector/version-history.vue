@@ -223,18 +223,18 @@ export default {
 
       const diff = this.currentVersionDiff;
       const compositeVersionData = cloneDeep(this.previousVersionData);
-      let updatedPaths = [];
+      const updatedPaths = [];
 
       [...diff.added, ...diff.removed].forEach((item) => {
         const parentPath = item.path.slice(0, item.path.lastIndexOf('['));
-        if (updatedPaths.indexOf(parentPath) == -1) {
+        if (updatedPaths.indexOf(parentPath) === -1) {
           updatedPaths.push(parentPath);
         }
       });
 
       const checkConflict = (item, compare) => {
-        const updated = compare.find((compareItem) => isEqual(compareItem.path, item.path));
-        if (updated != null && item.val != updated.val) {
+        const updated = compare.find(compareItem => isEqual(compareItem.path, item.path));
+        if (updated != null && item.val !== updated.val) {
           if (typeof item.val === 'string') {
             const from = StringUtil.getLabelByLang(updated.val, this.user.settings.language, this.resources);
             const to = StringUtil.getLabelByLang(item.val, this.user.settings.language, this.resources);
@@ -251,19 +251,24 @@ export default {
         updatedPaths.forEach((parentPath) => {
           const objAtPath = get(compositeVersionData, parentPath);
 
-          const pathRemoved = diff.removed.map((item) =>
-            parentPath == item.path.slice(0, item.path.lastIndexOf('[')) ? item : false
-          ).filter((r) => r);
+          const pathRemoved = diff.removed.map((item) => {
+            if (parentPath === item.path.slice(0, item.path.lastIndexOf('['))) {
+              return item;
+            }
 
-          const pathAdded = diff.added.map((item) =>
-            parentPath == item.path.slice(0, item.path.lastIndexOf('[')) ? item : false
-          ).filter((r) => r);
+            return false;
+          }).filter(r => r);
+
+          const pathAdded = diff.added.map((item) => {
+            if (parentPath === item.path.slice(0, item.path.lastIndexOf('['))) {
+              return item;
+            }
+
+            return false;
+          }).filter(r => r);
 
           if (objAtPath != null && Array.isArray(objAtPath)) {
-            const conflictingPathNames = pathRemoved.find((removed) =>
-              pathAdded.find((added) => isEqual(added.path, removed.path))
-            ) != null;
-
+            const conflictingPathNames = pathRemoved.find(removed => pathAdded.find(added => isEqual(added.path, removed.path))) != null;
             const addedEntity = get(this.currentVersionData, parentPath);
 
             if (!conflictingPathNames) {
@@ -274,7 +279,7 @@ export default {
                 objAtPath.push(addedEntity);
               }
 
-              return true;
+              return parentPath;
             }
           }
 
@@ -286,8 +291,6 @@ export default {
 
           pathAdded.forEach((item) => {
             if (this.isListItem(item.path) && isObject(item.val)) {
-              const objAtPath = get(compositeVersionData, parentPath);
-
               if (Array.isArray(objAtPath)) {
                 objAtPath.push(item.val);
                 set(compositeVersionData, parentPath, objAtPath);
@@ -301,14 +304,16 @@ export default {
               checkConflict(item, pathRemoved);
             }
           });
+
+          return parentPath;
         });
       }
 
       // Fix diff indexes
       if (diff != null) {
-        diff.added = diff.added.map(this.updateDiffIndex);
-        diff.removed = diff.removed.map(this.updateDiffIndex);
-        diff.modified = diff.modified.map(this.updateDiffIndex);
+        diff.added = diff.added.map(added => this.updateDiffIndex(added, compositeVersionData.mainEntity));
+        diff.removed = diff.removed.map(removed => this.updateDiffIndex(removed, compositeVersionData.mainEntity));
+        diff.modified = diff.modified.map(modified => this.updateDiffIndex(modified, compositeVersionData.mainEntity));
       }
 
       this.fetchMissingLinks(compositeVersionData);
@@ -329,19 +334,19 @@ export default {
       this.showSideCol = false;
     },
     findValue(obj, value) {
-      let result = {};
+      const result = {};
 
-      function findValueHelper(obj, value, path) {
-        for (const key in obj) {
-          if (obj.hasOwnProperty(key)) {
+      function findValueHelper(current, val, path) {
+        for (const key in current) {
+          if (current.hasOwnProperty(key)) {
             const newPath = path ? `${path}.${key}` : key;
-            if (obj[key] === value) {
-              result.value = obj[key];
+            if (current[key] === val) {
+              result.value = current[key];
               result.path = newPath;
             }
 
-            if (typeof obj[key] === 'object') {
-              findValueHelper(obj[key], value, newPath);
+            if (typeof current[key] === 'object') {
+              findValueHelper(current[key], val, newPath);
             }
           }
         }
@@ -350,14 +355,14 @@ export default {
       findValueHelper(obj, value);
       return result;
     },
-    updateDiffIndex(diff) {
-      let result = this.findValue(compositeVersionData.mainEntity, diff.val);
+    updateDiffIndex(diff, entity) {
+      const result = this.findValue(entity, diff.val);
 
       if (result.path != null) {
         const diffIndex = diff.path.lastIndexOf('[') + 1;
         if (diffIndex > 0) {
-          const indexes = result.path.replace(/[^0-9.]/g, '').split('.').filter((index) => index != '');
-          const newPath = diff.path.substring(0, diffIndex) + indexes[indexes.length-1] + diff.path.substring(diffIndex + 1);
+          const indexes = result.path.replace(/[^0-9.]/g, '').split('.').filter(index => index !== '');
+          const newPath = diff.path.substring(0, diffIndex) + indexes[indexes.length - 1] + diff.path.substring(diffIndex + 1);
           diff.path = newPath;
         }
       }
