@@ -102,7 +102,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   // Remove trailing slashes from route path (if any)
-  if (to.fullPath.substring(to.fullPath.length - 1, to.fullPath.length) === '/') {
+  if (to.fullPath.length > 1 && to.fullPath.substring(to.fullPath.length - 1, to.fullPath.length) === '/') {
     next({
       path: to.fullPath.slice(0, -1),
     });
