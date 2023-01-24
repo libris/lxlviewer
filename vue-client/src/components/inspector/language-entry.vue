@@ -1,4 +1,5 @@
 <script>
+import AutoSize from 'autosize';
 import { mapGetters } from 'vuex';
 import { isEqual } from 'lodash-es';
 import PreviewCard from '@/components/shared/preview-card';
@@ -85,9 +86,23 @@ export default {
     PreviewCard,
     'entity-adder': EntityAdder,
   },
+  watch: {
+    isLocked(val) {
+      if (!val) {
+        this.initializeTextarea();
+      }
+    },
+  },
   methods: {
     onLangTaggerEvent(langTag) {
       this.$emit('addLangTag', langTag);
+    },
+    initializeTextarea() {
+      this.$nextTick(() => {
+        const textarea = this.$refs.textarea;
+        AutoSize(textarea);
+        AutoSize.update(textarea);
+      });
     },
   },
   mounted() {
@@ -98,6 +113,12 @@ export default {
         this.$store.dispatch('getIsTagRomanizable', this.tag);
       }
     }
+
+    this.$nextTick(() => {
+      if (!this.isLocked) {
+        this.initializeTextarea();
+      }
+    });
   },
 };
 </script>
@@ -106,10 +127,13 @@ export default {
   <div>
     <div class="LanguageEntry-inputcontainer" v-if="!isLocked">
       <span class="LanguageEntry-key">
-        <textarea class="LanguageEntry-input js-itemValueInput" rows="1"
+        <textarea
+          class="LanguageEntry-input js-itemValueInput"
+          rows="1"
           v-bind:value="val"
-          v-on:input="$emit('input', $event.target.value)">
-        </textarea>
+          v-on:input="$emit('input', $event.target.value)"
+          ref="textarea"
+        ></textarea>
       </span>
       <span class="LanguageEntry-value">
         <span class="LanguageEntry-pill" v-if="tag !== 'none'">
@@ -167,7 +191,7 @@ export default {
             :range-full="['Language']"
             :property-types="['ObjectProperty']"
             :is-lang-tagger="true"
-            :icon-add="'fa-globe'"
+            :icon-add="'fa-globe-outline'"
             @langTaggerEvent="onLangTaggerEvent(...arguments)">
           </entity-adder>
 
@@ -227,8 +251,7 @@ export default {
 </template>
 
 <style lang="less">
-.LanguageEntry{
-
+.LanguageEntry {
   &-inputcontainer {
     display: grid;
     justify-items: start;
@@ -318,6 +341,7 @@ export default {
     place-self: center stretch;
     grid-area: key;
   }
+
   &-value {
     grid-area: value;
     display: grid;
@@ -331,12 +355,14 @@ export default {
   }
 
   &-input {
+    display: block;
     border: none;
     resize: none;
     transition: border .25s ease-out;
     width: 100%;
     padding: 2px 10px;
   }
+
   &-pill {
     display: grid;
     justify-items: start;
