@@ -1,6 +1,5 @@
 <script>
 import { cloneDeep, debounce, get, isEmpty, isEqual } from 'lodash-es';
-import AutoSize from 'autosize';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import ItemMixin from '@/components/mixins/item-mixin';
@@ -34,11 +33,6 @@ export default {
     };
   },
   watch: {
-    isLocked(val) {
-      if (!val) {
-        this.initializeTextarea();
-      }
-    },
     fieldValue(newVal, oldVal) {
       if (!isEqual(newVal, oldVal)) {
         this.updateViewForm();
@@ -56,9 +50,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (!this.isLocked) {
-        this.initializeTextarea();
-      }
       this.updateViewForm();
     });
   },
@@ -246,13 +237,6 @@ export default {
     getRecordIdFromCache(tag) {
       const languageCache = this.cache;
       return languageCache[tag] ? languageCache[tag].recordId : '';
-    },
-    initializeTextarea() {
-      this.$nextTick(() => {
-        const textarea = this.$refs.textarea;
-        AutoSize(textarea);
-        AutoSize.update(textarea);
-      });
     },
   },
 };
