@@ -445,15 +445,13 @@ export default {
 <template>
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
     <!-- Adds another empty field of the same type -->
-    <div class="EntityAdder-add"
-      v-if="isPlaceholder">
+    <div class="EntityAdder-add" v-if="isPlaceholder" v-tooltip.left="tooltipText">
         <i class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
           v-if="!addEmbedded"
           tabindex="0"
           role="button"
           :aria-label="tooltipText | translatePhrase"
           ref="adderFocusElement"
-          v-tooltip.left="tooltipText"
           @click="add($event)"
           @keyup.enter="add($event)"
           @mouseenter="actionHighlight(true, $event)"
