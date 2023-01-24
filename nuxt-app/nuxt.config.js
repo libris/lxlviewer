@@ -1,5 +1,5 @@
 const { gitDescribeSync } = require('git-describe');
-import { defaultHostPath } from './plugins/env';
+import { defaultHostPath } from './src/plugins/env';
 const HOST_PATH = defaultHostPath();
 process.env.APP_VERSION = require('./package.json').version;
 
@@ -58,7 +58,12 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    '@nuxtjs/dotenv'
+    [
+      '@nuxtjs/dotenv',
+      {
+        'path': "./"
+      }
+    ]
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -72,12 +77,12 @@ export default {
     hoistUseStatements: true,
     scss: [
       '~/assets/scss/_variables.scss',
-      '~/node_modules/kungbib-styles/lib/scss/_variables.scss',
-      '~/node_modules/bootstrap/scss/_functions.scss',
-      '~/node_modules/bootstrap/scss/_variables.scss',
-      '~/node_modules/bootstrap/scss/_mixins.scss',
-      '~/node_modules/bootstrap/scss/_containers.scss',
-      '~/node_modules/bootstrap/scss/_grid.scss'
+      '~~/node_modules/kungbib-styles/lib/scss/_variables.scss',
+      '~~/node_modules/bootstrap/scss/_functions.scss',
+      '~~/node_modules/bootstrap/scss/_variables.scss',
+      '~~/node_modules/bootstrap/scss/_mixins.scss',
+      '~~/node_modules/bootstrap/scss/_containers.scss',
+      '~~/node_modules/bootstrap/scss/_grid.scss'
     ],
   },
 
@@ -101,5 +106,6 @@ export default {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
       }
     }
-  }
+  },
+  srcDir: 'src/'
 }

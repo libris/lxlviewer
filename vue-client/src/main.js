@@ -344,7 +344,7 @@ new Vue({
       promiseArray.push(vocabPromise);
       const contextPromise = DataUtil.getContext(this.settings.idPath);
       promiseArray.push(contextPromise);
-      const displayPromise = DataUtil.getDisplayDefinitions(this.settings);
+      const displayPromise = DataUtil.getDisplayDefinitions();
       promiseArray.push(displayPromise);
       return promiseArray;
     },

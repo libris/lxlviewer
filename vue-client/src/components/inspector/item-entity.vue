@@ -73,6 +73,9 @@ export default {
         this.resources.context,
       );
     },
+    isCardWithData() {
+      return this.isCard && this.focusData && Object.keys(this.focusData).length > 1;
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -163,9 +166,9 @@ export default {
 <template>
   <div 
     class="ItemEntity-container"
-    :class="{ 'is-expanded': expanded, 'is-card': isCard }">
+    :class="{ 'is-expanded': expanded, 'is-card': isCardWithData }">
     <div 
-      v-if="isCard"
+      v-if="isCardWithData"
       class="ItemEntity-expander"
       tabindex="0"
       @click="toggleExpanded()"
@@ -175,12 +178,12 @@ export default {
     <div
       :id="`formPath-${path}`"
       class="ItemEntity-content"
-      v-show="!isCard || !expanded">
+      v-show="!isCardWithData || !expanded">
       <v-popover class="ItemEntity-popover" placement="bottom-start" @show="$refs.previewCard.populateData()">
         <div class="ItemEntity chip" 
           tabindex="0"
           ref="chip"
-          v-if="!isCard || !expanded"
+          v-if="!isCardWithData || !expanded"
           :class="{ 'is-locked': isLocked,
            'is-marc': isMarc,
            'is-newlyAdded': animateNewlyAdded,
@@ -197,8 +200,8 @@ export default {
             <i class="fa fa-plus-circle icon--sm icon-added"></i>
           </span>
           <span class="ItemEntity-label chip-label">
-            <span v-if="(!isCard || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-            <span v-if="(!isCard || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
+            <span v-if="(!isCardWithData || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
+            <span v-if="(!isCardWithData || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
             <span class="placeholder"></span></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
             <i class="fa fa-times-circle icon icon--sm chip-icon" 
@@ -218,7 +221,7 @@ export default {
       </v-popover> 
     </div>
     
-    <div class="ItemEntity-cardContainer" v-if="isCard && expanded">
+    <div class="ItemEntity-cardContainer" v-if="isCardWithData && expanded">
       <entity-summary
         :focus-data="focusData" 
         :exclude-properties="excludeProperties"

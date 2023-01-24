@@ -190,7 +190,6 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/${fnurgel}/_changesets`;
       fetch(fetchUrl).then(response => response.json()).then((result) => {
         this.historyData = result;
-        
         const agents = (this.changeSets || []).map(c => c.agent).filter(a => a);
         DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
 
@@ -200,11 +199,13 @@ export default {
     },
     async setDisplayDataFor(number) {
       if (this.changeSetsReversed == null) return;
+
       const options = {
         headers: {
           Accept: 'application/ld+json',
         },
       };
+
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
       this.currentVersionData = await fetch(fetchUrl, options)
         .then(response => response.json())
@@ -215,43 +216,106 @@ export default {
         this.displayData = this.currentVersionData;
         return;
       }
+
       this.previousVersionData = await fetch(previousChangeSet.version['@id'], options)
         .then(response => response.json())
         .then(result => DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result)));
 
       const diff = this.currentVersionDiff;
-      const compositeVersionData = cloneDeep(this.currentVersionData);
+      const compositeVersionData = cloneDeep(this.previousVersionData);
+      const updatedPaths = [];
 
-      if (!isEmpty(diff.removed)) {
-        diff.removed.forEach((r) => {
-          if (this.isListItem(r.path) && isObject(r.val)) {
-            const parentPath = r.path.slice(0, r.path.lastIndexOf('['));
-            const objAtPath = get(compositeVersionData, parentPath);
-            if (Array.isArray(objAtPath)) {
-              objAtPath.push(r.val);
-              set(compositeVersionData, parentPath, objAtPath);
-            } else {
-              const parent = [];
-              parent.push(r.val);
-              parent.push(objAtPath);
-              set(compositeVersionData, parentPath, parent);
+      [...diff.added, ...diff.removed].forEach((item) => {
+        const parentPath = item.path.slice(0, item.path.lastIndexOf('['));
+        if (updatedPaths.indexOf(parentPath) === -1) {
+          updatedPaths.push(parentPath);
+        }
+      });
+
+      const checkConflict = (item, compare) => {
+        const updated = compare.find(compareItem => isEqual(compareItem.path, item.path));
+        if (updated != null && item.val !== updated.val) {
+          if (typeof item.val === 'string') {
+            const from = StringUtil.getLabelByLang(updated.val, this.user.settings.language, this.resources);
+            const to = StringUtil.getLabelByLang(item.val, this.user.settings.language, this.resources);
+            const moddedValue = from.concat(' → ').concat(to);
+            diff.modified.push({ path: item.path, val: moddedValue });
+            set(compositeVersionData, item.path, moddedValue);
+          }
+        } else {
+          set(compositeVersionData, item.path, item.val);
+        }
+      };
+
+      if (!isEmpty(updatedPaths)) {
+        updatedPaths.forEach((parentPath) => {
+          const objAtPath = get(compositeVersionData, parentPath);
+
+          const pathRemoved = diff.removed.map((item) => {
+            if (parentPath === item.path.slice(0, item.path.lastIndexOf('['))) {
+              return item;
             }
-          } else {
-            const added = diff.added.find(a => isEqual(a.path, r.path));
-            if (added !== undefined && r.val !== added.val) {
-              if (typeof r.val === 'string') {
-                const from = StringUtil.getLabelByLang(r.val, this.user.settings.language, this.resources);
-                const to = StringUtil.getLabelByLang(added.val, this.user.settings.language, this.resources);
-                const moddedValue = from.concat(' → ').concat(to);
-                diff.modified.push({ path: r.path, val: moddedValue });
-                set(compositeVersionData, r.path, moddedValue);
+
+            return false;
+          }).filter(r => r);
+
+          const pathAdded = diff.added.map((item) => {
+            if (parentPath === item.path.slice(0, item.path.lastIndexOf('['))) {
+              return item;
+            }
+
+            return false;
+          }).filter(r => r);
+
+          if (objAtPath != null && Array.isArray(objAtPath)) {
+            const conflictingPathNames = pathRemoved.find(removed => pathAdded.find(added => isEqual(added.path, removed.path))) != null;
+            const addedEntity = get(this.currentVersionData, parentPath);
+
+            if (!conflictingPathNames) {
+              // Under the same parent property but not the same key
+              if (Array.isArray(addedEntity)) {
+                objAtPath.push(...addedEntity);
+              } else {
+                objAtPath.push(addedEntity);
               }
-            } else {
-              set(compositeVersionData, r.path, r.val);
+
+              return parentPath;
             }
           }
+
+          if (pathRemoved.length > 0 && pathAdded.length > 0) {
+            pathRemoved.forEach((item) => {
+              checkConflict(item, pathAdded);
+            });
+          }
+
+          pathAdded.forEach((item) => {
+            if (this.isListItem(item.path) && isObject(item.val)) {
+              if (Array.isArray(objAtPath)) {
+                objAtPath.push(item.val);
+                set(compositeVersionData, parentPath, objAtPath);
+              } else {
+                const parent = [];
+                parent.push(item.val);
+                parent.push(objAtPath);
+                set(compositeVersionData, parentPath, parent);
+              }
+            } else {
+              checkConflict(item, pathRemoved);
+            }
+          });
+
+          return parentPath;
         });
       }
+
+      // Fix diff indexes
+      if (diff != null) {
+        diff.added = diff.added.map(added => this.updateDiffIndex(added, compositeVersionData.mainEntity));
+        diff.removed = diff.removed.map(removed => this.updateDiffIndex(removed, compositeVersionData.mainEntity));
+        diff.modified = diff.modified.map(modified => this.updateDiffIndex(modified, compositeVersionData.mainEntity));
+      }
+
       this.fetchMissingLinks(compositeVersionData);
       await this.$store.dispatch('setCompositeHistoryData', compositeVersionData);
       this.displayData = compositeVersionData;
@@ -268,6 +332,42 @@ export default {
     },
     closeSideCol() {
       this.showSideCol = false;
+    },
+    findValue(obj, value) {
+      const result = {};
+
+      function findValueHelper(current, val, path) {
+        for (const key in current) {
+          if (current.hasOwnProperty(key)) {
+            const newPath = path ? `${path}.${key}` : key;
+            if (current[key] === val) {
+              result.value = current[key];
+              result.path = newPath;
+            }
+
+            if (typeof current[key] === 'object') {
+              findValueHelper(current[key], val, newPath);
+            }
+          }
+        }
+      }
+
+      findValueHelper(obj, value);
+      return result;
+    },
+    updateDiffIndex(diff, entity) {
+      const result = this.findValue(entity, diff.val);
+
+      if (result.path != null) {
+        const diffIndex = diff.path.lastIndexOf('[') + 1;
+        if (diffIndex > 0) {
+          const indexes = result.path.replace(/[^0-9.]/g, '').split('.').filter(index => index !== '');
+          const newPath = diff.path.substring(0, diffIndex) + indexes[indexes.length - 1] + diff.path.substring(diffIndex + 1);
+          diff.path = newPath;
+        }
+      }
+
+      return diff;
     },
   },
   components: {
@@ -294,16 +394,20 @@ export default {
                 <i class="fa fa-arrow-left VersionHistory-back-icon"></i>{{ 'Back' | translatePhrase }}
               </a>
             </span>
+
             <span class="VersionHistory-headerTitle" v-if="displayData != null">
               {{ getItemLabel }}
             </span>
+
             <i class="fa fa-th-list icon icon--md sideColButton"
                role="button"
                @click="openSideCol()"></i>
           </div>
+
           <div class="VersionHistory-content" tabindex="-1">
             <template v-if="displayData != null">
               <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="focusedTab"/>
+
               <entity-form
                 v-for="tab in editorTabs"
                 :editing-object="tab.id"
@@ -316,14 +420,18 @@ export default {
             </template>
           </div>
         </div>
+
         <div class="VersionHistory-sideCol" :class="{'hidden-view': !showSideCol}">
           <div class="VersionHistory-header">
             {{ 'Version history' | translatePhrase }}
-            <i class="fa fa-close icon icon--md sideColButton" role="button"
-               @click="closeSideCol()"></i>
+            <i class="fa fa-close icon icon--md sideColButton" role="button" @click="closeSideCol()"></i>
           </div>
-          <VersionHistoryChangesets :change-sets="changeSets" :selected-version="selectedVersion"
-                                    @version-selected="changeSelectedVersion"/>
+
+          <VersionHistoryChangesets
+            :change-sets="changeSets"
+            :selected-version="selectedVersion"
+            @version-selected="changeSelectedVersion"
+          />
         </div>
       </div>
     </div>
@@ -331,7 +439,6 @@ export default {
 </template>
 
 <style lang="less">
-
 .VersionHistory {
   background-color: @bg-site;
   &-mainCol {
