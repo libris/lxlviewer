@@ -393,6 +393,9 @@ export default {
     isLangMapWithPartner() {
       return this.isLangMap && this.hasProp;
     },
+    isHidden() {
+      return this.isLangMapWithPartner && this.diff == null;
+    },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
         this.fieldKey,
@@ -687,8 +690,7 @@ export default {
     }"
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()"
-    v-if="!this.isLangMapWithPartner"
-  >
+      v-if="!this.isHidden">
 
     <div class="Field-labelContainer" 
       :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}"
@@ -898,8 +900,7 @@ export default {
         :field-value="valueAsArray"
         :field-key="fieldKey"
         :parent-path="path"
-        :diff="diff"
-      >
+        :diff="diff">
       </item-bylang>
       </div>
       <div class="Field-contentItem"
