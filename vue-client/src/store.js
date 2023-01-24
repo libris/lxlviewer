@@ -325,7 +325,7 @@ const store = new Vuex.Store({
     },
     addTagAsSupported(state, tag) {
       state.inspector.supportedTags.promises[tag] = undefined;
-      if (state.inspector.supportedTags.data.indexOf(tag) == -1) {
+      if (state.inspector.supportedTags.data.indexOf(tag) === -1) {
         state.inspector.supportedTags.data.push(tag);
       }
     },
