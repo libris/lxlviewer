@@ -17,10 +17,6 @@ export default {
       type: String,
       default: '',
     },
-    isRomanizable: {
-      type: Boolean,
-      default: false,
-    },
     isLocked: {
       type: Boolean,
       default: true,
@@ -59,6 +55,7 @@ export default {
       'inspector',
       'settings',
       'resources',
+      'supportedTags',
     ]),
     exactPath() {
       return `${this.byLangPath}.${this.tag}`;
@@ -84,11 +81,6 @@ export default {
       return this.diff.modified.some(m => isEqual(m.path, this.exactPath));
     },
   },
-  mounted() {
-    if (this.tag !== 'none') {
-      this.$emit('addToCache');
-    }
-  },
   components: {
     PreviewCard,
     'entity-adder': EntityAdder,
@@ -97,6 +89,15 @@ export default {
     onLangTaggerEvent(langTag) {
       this.$emit('addLangTag', langTag);
     },
+  },
+  mounted() {
+    if (this.tag !== 'none') {
+      this.$emit('addToCache');
+
+      if (this.supportedTags.indexOf(this.tag) == -1) {
+        this.$store.dispatch('getIsTagRomanizable', this.tag);
+      }
+    }
   },
 };
 </script>
@@ -121,6 +122,7 @@ export default {
               <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
             </template>
           </v-popover>
+
           <span class="LanguageEntry-pill-removeButton">
             <i class="fa fa-times-circle icon icon--sm chip-icon"
               v-if="removeIsAllowed"
@@ -133,23 +135,27 @@ export default {
             </i>
             <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!removeIsAllowed"></i>
           </span>
+
           <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
             {{ this.label }}
           </span>
         </span>
+
         <span class="LanguageEntry-actions">
           <i class="fa fa-language icon icon--sm LanguageEntry-transIcon"
             tabindex="0"
             role="button"
             :aria-label="'Romanize' | translatePhrase"
             v-on:click="$emit('romanize')"
-            v-if="!isTransSchema(tag) && tag !== 'none'"
+            v-if="isTransSchema(tag) && tag !== 'none'"
             v-tooltip.top="translate('Romanize')"
             @keyup.enter="$emit('romanize')">
           </i>
+
           <i class="fa fa-language icon icon--sm LanguageEntry-transIcon is-disabled"
-            v-if="isTransSchema(tag) && tag !== 'none'">
+            v-if="!isTransSchema(tag) && tag !== 'none'">
           </i>
+
           <entity-adder class="LanguageEntry-action Field-entityAdder"
             ref="entityAdder"
             v-if="tag === 'none'"
@@ -164,6 +170,7 @@ export default {
             :icon-add="'fa-globe'"
             @langTaggerEvent="onLangTaggerEvent(...arguments)">
           </entity-adder>
+
           <span class="LanguageEntry-remover"
             tabindex="0"
             role="button"
@@ -176,6 +183,7 @@ export default {
         </span>
       </span>
     </div>
+
     <div v-if="isLocked" v-bind:class="{
       'LanguageEntry-is-diff-removed': diffRemoved && !diffAdded,
       'LanguageEntry-is-diff-added': diffAdded && !diffRemoved,
@@ -186,6 +194,7 @@ export default {
             {{ val }}
           </div>
         </div>
+
         <span class="LanguageEntry-tags">
           <span class="LanguageEntry-pill" v-if="tag !== 'none'">
             <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
@@ -193,17 +202,21 @@ export default {
               <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
                 <router-link :to="routerPath">{{ this.label }}</router-link>
               </span>
+
               <template slot="popover">
                 <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
               </template>
             </v-popover>
+
             <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
               {{ this.label }}
             </span>
           </span>
+
           <span class="LanguageEntry-tags-history-icon" v-if="diffRemoved && !diffAdded">
             <i class="fa fa-trash-o icon--sm icon-removed"></i>
           </span>
+
           <span class="LanguageEntry-tags-history-icon" v-if="diffAdded && !diffRemoved">
             <i class="fa fa-plus-circle icon--sm icon-added"></i>
           </span>

@@ -1,4 +1,5 @@
 <script>
+import { mapGetters } from 'vuex';
 import { cloneDeep, get, isEmpty, isObject } from 'lodash-es';
 import { getContextValue } from 'lxljs/vocab';
 import * as VocabUtil from 'lxljs/vocab';
@@ -21,6 +22,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'supportedTags',
+    ]),
     path() {
       return `${this.parentPath}`;
     },
@@ -255,8 +259,7 @@ export default {
       });
     },
     isTransSchema(tag) {
-      // TODO: Make more robust
-      return tag.includes('Latn-t');
+      return this.supportedTags.indexOf(tag) > -1;
     },
   },
 };
