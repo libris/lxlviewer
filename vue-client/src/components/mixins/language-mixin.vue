@@ -168,7 +168,7 @@ export default {
       const lastIndex = this.path.lastIndexOf('.');
       const parentsPath = this.path.slice(0, lastIndex);
       const parent = cloneDeep(get(this.inspector.data, parentsPath));
-      if (this.isRepeatable) {
+      if (Array.isArray(this.prop)) {
         const prop = parent[this.getPropKey()];
         prop.splice(this.prop.indexOf(sourceValue), 1);
         if (isEmpty(prop)) {
