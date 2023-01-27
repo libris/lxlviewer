@@ -1,6 +1,6 @@
 const { gitDescribeSync } = require('git-describe');
 import { defaultHostPath } from './src/plugins/env';
-const HOST_PATH = defaultHostPath();
+const HOST_PATH = "FOOBAR";//defaultHostPath();
 process.env.APP_VERSION = require('./package.json').version;
 
 process.env.GIT_DESCRIBE = JSON.stringify(gitDescribeSync({
@@ -45,6 +45,8 @@ export default {
   plugins: [
     '~plugins/filters.js',
     '~mixins/lxl.js',
+    '~plugins/myfile.js',
+    '~plugins/env.js'
   ],
 
   router: {

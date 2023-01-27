@@ -1,5 +1,5 @@
 import { each, findKey } from "lodash-es";
-
+import runtimeConf from "./myfile";
 if (!process.env.XL_SITE_CONFIG) {
   throw 'env.XL_SITE_CONFIG not defined (fix for development: copy .env.in to .env)'
 }
@@ -12,6 +12,7 @@ export const CONTEXT = process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonl
 export const DISPLAY = process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld'
 
 export function defaultHostPath() {
+  //console.log(`test: ${runtimeConf.bar()}`)
   return hostPath(defaultSite())
 }
 
