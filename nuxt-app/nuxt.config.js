@@ -1,5 +1,5 @@
 const { gitDescribeSync } = require('git-describe');
-import { defaultHostPath } from './src/plugins/env';
+import { defaultHostPath, publicRuntimeConfig } from './src/plugins/env';
 const HOST_PATH = "FOOBAR";//defaultHostPath();
 process.env.APP_VERSION = require('./package.json').version;
 
@@ -45,8 +45,7 @@ export default {
   plugins: [
     '~plugins/filters.js',
     '~mixins/lxl.js',
-    '~plugins/myfile.js',
-    '~plugins/env.js'
+    '~plugins/env.js',
   ],
 
   router: {
@@ -88,10 +87,7 @@ export default {
     ],
   },
 
-  publicRuntimeConfig: {
-    siteName: 'id.kb.se',
-    environment: process.env.ENV,
-  },
+  publicRuntimeConfig: publicRuntimeConfig,
 
   privateRuntimeConfig: {
   },

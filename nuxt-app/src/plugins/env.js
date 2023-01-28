@@ -1,5 +1,4 @@
 import { each, findKey } from "lodash-es";
-import runtimeConf from "./myfile";
 if (!process.env.XL_SITE_CONFIG) {
   throw 'env.XL_SITE_CONFIG not defined (fix for development: copy .env.in to .env)'
 }
@@ -11,8 +10,13 @@ export const VOCAB = process.env.XL_VOCAB || 'https://id.kb.se/vocab/data.jsonld
 export const CONTEXT = process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld'
 export const DISPLAY = process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld'
 
+export const publicRuntimeConfig = {
+    siteName: 'id.kb.se',
+    environment: process.env.ENV,
+};
+
 export function defaultHostPath() {
-  //console.log(`test: ${runtimeConf.bar()}`)
+  console.log('runtime config', publicRuntimeConfig);
   return hostPath(defaultSite())
 }
 
@@ -50,8 +54,8 @@ export function encodeSpecialChars(path) {
     .replace(/&/g, '%26');
 }
 
-export function defaultSite() {
-  return process.env.DEFAULT_SITE || 'id.kb.se';
+export function defaultSite(sitename) {
+  return sitename || process.env.DEFAULT_SITE || 'id.kb.se';
 }
 
 export function activeSite(xForwardedHost) {
