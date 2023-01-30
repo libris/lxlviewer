@@ -25,7 +25,6 @@ export const state = () => ({
     gitDescribe: process.env.GIT_DESCRIBE,
     siteConfig: siteConfig(),
     defaultSite: defaultSite(),
-    environment: process.env.ENV || 'local',
     filteredCategories: [
       'pending',
       'shorthand',

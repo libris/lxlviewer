@@ -3,20 +3,11 @@ if (!process.env.XL_SITE_CONFIG) {
   throw 'env.XL_SITE_CONFIG not defined (fix for development: copy .env.in to .env)'
 }
 
-const SITE_ALIAS = JSON.parse(process.env.XL_SITE_ALIAS || '{}');
+//const SITE_ALIAS = JSON.parse(process.env.XL_SITE_ALIAS || '{}');
 const SITE_CONFIG = JSON.parse(process.env.XL_SITE_CONFIG);
 
-export const VOCAB = process.env.XL_VOCAB || 'https://id.kb.se/vocab/data.jsonld'
-export const CONTEXT = process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld'
-export const DISPLAY = process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld'
-
-export const publicRuntimeConfig = {
-    siteName: 'id.kb.se',
-    environment: process.env.ENV,
-};
-
 export function defaultHostPath() {
-  console.log('runtime config', publicRuntimeConfig);
+  //console.log('runtime config', getFoo());
   return hostPath(defaultSite())
 }
 
@@ -29,18 +20,19 @@ export function siteConfig() {
   return SITE_CONFIG;
 }
 
-export function translateAliasedUri(uri) {
+export function translateAliasedUri(uri, siteAlias) {
   if (typeof uri == 'undefined' || uri.length === 0) {
     return null;
   }
   let translatedUri = uri
-  each(SITE_ALIAS, (from, to) => {
+  each(siteAlias, (from, to) => {
     if (uri.startsWith(from)) {
       translatedUri = uri.replace(from, to);
       return false;
     }
     return true;
   });
+  console.log("translateAliasedUri: ", translatedUri)
   return translatedUri;
 }
 

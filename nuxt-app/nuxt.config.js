@@ -87,7 +87,15 @@ export default {
     ],
   },
 
-  publicRuntimeConfig: publicRuntimeConfig,
+  publicRuntimeConfig: {
+    siteName: 'id.kb.se',
+    environment: process.env.ENV,
+    vocab: process.env.XL_VOCAB || 'https://id.kb.se/vocab/data.jsonld',
+    context:  process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld',
+    display: process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld',
+    siteAlias: JSON.parse(process.env.XL_SITE_ALIAS || '{}'),
+    siteConfig: JSON.parse(process.env.XL_SITE_CONFIG) ||  '{}'
+  },
 
   privateRuntimeConfig: {
   },

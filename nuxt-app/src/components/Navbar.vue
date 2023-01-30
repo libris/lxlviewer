@@ -53,8 +53,8 @@ export default {
       return `${this.environmentLabel.toUpperCase()} ${this.version}`;
     },
     environmentLabel() {
-      if (this.settings.environment !== 'prod') {
-        return this.settings.environment;
+      if (this.$config.environment !== 'prod') {
+        return (this.$config.environment);
       }
       return '';
     },
