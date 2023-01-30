@@ -18,6 +18,9 @@ export default {
       type: String,
       default: '',
     },
+    id: {
+      Number,
+    },
     isRomanizable: {
       type: Boolean,
       default: false,
@@ -50,7 +53,7 @@ export default {
       type: Object,
       default: null,
     },
-    byLangPath: {
+    itemPath: {
       type: String,
       default: '',
     },
@@ -61,8 +64,17 @@ export default {
       'settings',
       'resources',
     ]),
+    isByLang() {
+      return this.itemPath.includes('ByLang');
+    },
+    index() {
+      return this.id.substring(this.id.indexOf('-') + 1, this.id.length);
+    },
     exactPath() {
-      return `${this.byLangPath}.${this.tag}`;
+      if (this.isByLang) { // This is a map in the data
+        return `${this.itemPath}.${this.tag}`;
+      }
+      return `${this.itemPath}[${this.index}]`;
     },
     isLinked() {
       return this.data !== null;
