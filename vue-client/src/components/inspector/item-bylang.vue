@@ -164,7 +164,7 @@ export default {
       let idCounter = 0;
       this.fieldValue.forEach((value) => {
         if (typeof value === 'string') {
-          viewForm.push({ tag: 'none', val: value, id: `none-${idCounter}` });
+          viewForm.push({ tag: 'none', val: value, id: `none-${idCounter}` }); // idCounter <=> index in item-mixin.vue
           idCounter++;
         }
       });
@@ -249,6 +249,7 @@ export default {
         v-model="entry.val"
         :val="entry.val"
         :tag="entry.tag"
+        :id="entry.id"
         :is-locked="isLocked"
         :remove-is-allowed="removeIsAllowed"
         :uri="uriFor(entry.tag)"
@@ -256,7 +257,7 @@ export default {
         :data="getDataFromCache(entry.tag)"
         :record-id="getRecordIdFromCache(entry.tag)"
         :diff="diff"
-        :by-lang-path="getParentPath()"
+        :item-path="getParentPath()"
         @romanize="romanize(entry.tag, entry.val)"
         @remove="remove(entry.tag, entry.val)"
         @removeval="removeVal(entry.tag, entry.val)"

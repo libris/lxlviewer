@@ -92,14 +92,17 @@ export default {
         const lastIndex = this.path.lastIndexOf('.');
         const parentPath = this.path.slice(0, lastIndex);
         const parentValue = cloneDeep(get(this.inspector.data, parentPath));
-        updatePath = this.getPropPath();
+        let updatedProp;
         if (this.isRepeatable) {
-          updateValue = this.prop;
-          updateValue.push(taggedValue);
+          updatedProp = this.prop;
+          updatedProp.push(taggedValue);
         } else {
-          updateValue = value;
+          updatedProp = value;
         }
+        parentValue[this.getPropKey()] = updatedProp;
         delete parentValue[this.getByLangKey()];
+        updatePath = parentPath;
+        updateValue = parentValue;
       }
       this.$store.dispatch('updateInspectorData', {
         changeList: [
@@ -172,7 +175,7 @@ export default {
       const lastIndex = this.path.lastIndexOf('.');
       const parentsPath = this.path.slice(0, lastIndex);
       const parent = cloneDeep(get(this.inspector.data, parentsPath));
-      if (this.isRepeatable) {
+      if (Array.isArray(this.prop)) {
         const prop = parent[this.getPropKey()];
         prop.splice(this.prop.indexOf(sourceValue), 1);
         if (isEmpty(prop)) {

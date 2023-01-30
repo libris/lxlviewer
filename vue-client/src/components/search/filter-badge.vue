@@ -21,13 +21,6 @@ export default {
       'settings',
       'user',
     ]),
-    variableLabel() {
-      let chainLabel = '';
-      if (this.settings.propertyChains.hasOwnProperty(this.filter.variable)) {
-        chainLabel = this.settings.propertyChains[this.filter.variable][this.user.settings.language];
-      }
-      return chainLabel;
-    },
   },
   components: {
   },
@@ -46,7 +39,7 @@ export default {
 
 <template>
   <div class="FilterBadge">
-    <span v-if="variableLabel.length > 0">{{ variableLabel }}:</span>
+    <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}:</span>
     <span>{{ filter.label | labelByLang }}</span>
     <router-link
       :to="filter.up | asAppPath">
