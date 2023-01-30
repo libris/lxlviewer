@@ -262,7 +262,7 @@ export default {
       });
     },
     isTransSchema(tag) {
-      return this.supportedTags.indexOf(tag) > -1;
+      return this.supportedTags.includes(tag);
     },
   },
 };

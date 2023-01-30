@@ -121,7 +121,7 @@ export default {
     if (this.tag !== 'none') {
       this.$emit('addToCache');
 
-      if (this.supportedTags.indexOf(this.tag) === -1) {
+      if (!this.supportedTags.includes(this.tag)) {
         this.$store.dispatch('getIsTagRomanizable', this.tag);
       }
     }
