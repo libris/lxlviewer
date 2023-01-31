@@ -7,7 +7,6 @@ if (!process.env.XL_SITE_CONFIG) {
 const SITE_CONFIG = JSON.parse(process.env.XL_SITE_CONFIG);
 
 export function defaultHostPath() {
-  //console.log('runtime config', getFoo());
   return hostPath(defaultSite())
 }
 
@@ -46,16 +45,16 @@ export function encodeSpecialChars(path) {
     .replace(/&/g, '%26');
 }
 
-export function defaultSite(sitename) {
-  return sitename || process.env.DEFAULT_SITE || 'id.kb.se';
+export function defaultSite() {
+  return process.env.DEFAULT_SITE || 'id.kb.se';
 }
 
-export function activeSite(xForwardedHost) {
+export function activeSite(xForwardedHost, siteConfig, siteAlias) {
   if (!xForwardedHost) {
-    return defaultSite();
+    return null;
   }
 
-  return findKey(siteConfig(), c => xForwardedHost.startsWith(host(translateAliasedUri(c.baseUri)))) || defaultSite();
+  return findKey(siteConfig, c => xForwardedHost.startsWith(host(translateAliasedUri(c.baseUri, siteAlias))));
 }
 
 function host(url) {

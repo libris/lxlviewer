@@ -1,7 +1,7 @@
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import translationsFile from '@/resources/json/i18n.json';
-import {VOCAB, CONTEXT, DISPLAY, siteConfig, activeSite, defaultSite, translateAliasedUri} from '../plugins/env';
+import {VOCAB, CONTEXT, DISPLAY, siteConfig, activeSite, translateAliasedUri} from '../plugins/env';
 
 export const state = () => ({
   vocab: null,
@@ -23,8 +23,8 @@ export const state = () => ({
     language: 'sv',
     version: process.env.APP_VERSION,
     gitDescribe: process.env.GIT_DESCRIBE,
-    siteConfig: siteConfig(),
-    defaultSite: defaultSite(),
+    siteConfig: null,
+    defaultSite: null,
     filteredCategories: [
       'pending',
       'shorthand',
@@ -177,6 +177,9 @@ export const mutations = {
       throw new Error(`Trying to set an app state property that does not exist. Has it been setup in store? Trying to modify: ${property}`);
     }
   },
+  SET_SETTINGS(state, payload) {
+    state.settings[payload.property] = payload.value
+  },
   SET_LANGUAGE(state, langCode) {
     state.settings.language = langCode;
   },
@@ -219,9 +222,12 @@ export const mutations = {
 }
 
 export const actions = {
-  async nuxtServerInit({ commit, dispatch }, { req, error, ssrContext }) {
-    dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host']) });
+  async nuxtServerInit({ commit, dispatch}, { req, error, ssrContext, $config}) {
+    dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host'], $config.siteConfig, $config.siteAlias) || $config.defaultSite});
+    dispatch('setSettings', { property: 'siteConfig', value: $config.siteConfig});
+    dispatch('setSettings', { property: 'defaultSite', value: $config.defaultSite});
 
+    console.log($config)
     const vocab = ssrContext.$vocab;
     if (vocab.error) {
       console.error(`Error getting vocab resources: ${JSON.stringify(vocab.error)}`)
@@ -243,6 +249,9 @@ export const actions = {
   },
   setAppState({ commit }, payload) {
     commit('SET_APP_STATE', payload);
+  },
+  setSettings({ commit }, payload) {
+    commit('SET_SETTINGS', payload);
   },
   setLanguage({ commit }, langCode) {
     commit('SET_LANGUAGE', langCode);

@@ -16,22 +16,24 @@ import Navbar from '@/components/Navbar';
 import SearchBar from '@/components/SearchBar';
 import Footer from '@/components/Footer';
 import { defaultHostPath } from '../plugins/env';
-const HOST_PATH = defaultHostPath();
+const HOST_PATH = "foo"
 
 export default {
   data() {
     return {
     }
   },
-  head: {
-    meta: [
-      { hid: 'description', name: 'description', content: 'Grundstenar för länkade data hos Kungliga biblioteket.' },
-      { hid:'og:title', property:'og:title', content:'id.kb.se' },
-      { hid:'og:site_name', property:'og:site_name', content:'id.kb.se' },
-      { hid:'og:description', property:'og:description', content:'Grundstenar för länkade data hos Kungliga biblioteket.' },
-      { hid:'og:image', property:'og:image', content:`${HOST_PATH}/opengraph_id.png` },
-      { hid:'twitter:image', property:'twitter:image', content:`${HOST_PATH}/opengraph_id.png` },
-    ],
+  head() {
+    return {
+      meta: [
+        { hid: 'description', name: 'description', content: 'Grundstenar för länkade data hos Kungliga biblioteket.' },
+        { hid:'og:title', property:'og:title', content:'id.kb.se' },
+        { hid:'og:site_name', property:'og:site_name', content:'id.kb.se' },
+        { hid:'og:description', property:'og:description', content:'Grundstenar för länkade data hos Kungliga biblioteket.' },
+        { hid:'og:image', property:'og:image', content:`${this.$store.getters.settings.siteName}/opengraph_id.png` },
+        { hid:'twitter:image', property:'twitter:image', content:`${HOST_PATH}/opengraph_id.png` },
+      ],
+    }
   },
   computed: {
   },

@@ -44,6 +44,7 @@ export default {
       return hash.substr(1, hash.length);
     },
     siteTitle() {
+      console.log("Navbar: siteConfig: ", this.settings.siteConfig)
       return this.settings.siteConfig[this.appState.domain].title || this.settings.defaultSite;
     },
     version() {
