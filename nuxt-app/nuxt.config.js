@@ -94,7 +94,8 @@ export default {
     context:  process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld',
     display: process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld',
     siteAlias: JSON.parse(process.env.XL_SITE_ALIAS || '{}'),
-    siteConfig: JSON.parse(process.env.XL_SITE_CONFIG) ||  '{}'
+    siteConfig: JSON.parse(process.env.XL_SITE_CONFIG),
+    defaultSite: process.env.DEFAULT_SITE || 'id.kb.se'
   },
 
   privateRuntimeConfig: {

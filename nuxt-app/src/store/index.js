@@ -224,6 +224,9 @@ export const mutations = {
 export const actions = {
   async nuxtServerInit({ commit, dispatch}, { req, error, ssrContext, $config}) {
     dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host'], $config.siteConfig, $config.siteAlias) || $config.defaultSite});
+    if(!$config.siteConfig) {
+      throw 'env.XL_SITE_CONFIG not defined (fix for development: copy .env.in to .env)'
+    }
     dispatch('setSettings', { property: 'siteConfig', value: $config.siteConfig});
     dispatch('setSettings', { property: 'defaultSite', value: $config.defaultSite});
 
