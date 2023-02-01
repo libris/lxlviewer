@@ -1,7 +1,6 @@
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import translationsFile from '@/resources/json/i18n.json';
-import {VOCAB, CONTEXT, DISPLAY, siteConfig, activeSite, defaultSite, translateAliasedUri} from '../plugins/env';
 
 export const state = () => ({
   vocab: null,
@@ -23,9 +22,6 @@ export const state = () => ({
     language: 'sv',
     version: process.env.APP_VERSION,
     gitDescribe: process.env.GIT_DESCRIBE,
-    siteConfig: siteConfig(),
-    defaultSite: defaultSite(),
-    environment: process.env.ENV || 'local',
     filteredCategories: [
       'pending',
       'shorthand',
@@ -220,8 +216,8 @@ export const mutations = {
 }
 
 export const actions = {
-  async nuxtServerInit({ commit, dispatch }, { req, error, ssrContext }) {
-    dispatch('setAppState', { property: 'domain', value: activeSite(req.headers['x-forwarded-host']) });
+  async nuxtServerInit({ commit, dispatch,  }, { req, error, ssrContext, app }) {
+    dispatch('setAppState', { property: 'domain', value: app.$activeSite(req.headers['x-forwarded-host']) });
 
     const vocab = ssrContext.$vocab;
     if (vocab.error) {

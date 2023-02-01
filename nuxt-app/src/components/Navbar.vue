@@ -32,6 +32,9 @@ export default {
   data() {
     return {
       expanded: false,
+      defaultSite: this.$config.defaultSite,
+      siteConfig: this.$config.siteConfig,
+      environment: this.$config.environment
     }
   },
   computed: {
@@ -44,7 +47,7 @@ export default {
       return hash.substr(1, hash.length);
     },
     siteTitle() {
-      return this.settings.siteConfig[this.appState.domain].title || this.settings.defaultSite;
+      return this.siteConfig[this.appState.domain].title || this.defaultSite;
     },
     version() {
       return this.settings.version;
@@ -53,8 +56,8 @@ export default {
       return `${this.environmentLabel.toUpperCase()} ${this.version}`;
     },
     environmentLabel() {
-      if (this.settings.environment !== 'prod') {
-        return this.settings.environment;
+      if (this.environment !== 'prod') {
+        return this.environment;
       }
       return '';
     },

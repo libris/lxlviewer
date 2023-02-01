@@ -15,19 +15,17 @@
 
 <script>
 import CollectionCard from '@/components/CollectionCard';
-import { defaultHostPath } from '../plugins/env';
-const HOST_PATH = defaultHostPath();
 
 export default {
   data() {
     return {
     }
   },
-  async asyncData({ $config, params, $http }) {
-    const pageData = await $http.$get(`${HOST_PATH}/data.jsonld`);
+  async asyncData({ $config, params, $http, app}) {
+    const pageData = await $http.$get(`${app.$defaultHostPath()}/data.jsonld`);
     let summary;
     try {
-      summary = await $http.$get(`${HOST_PATH}/doc/summary/data.jsonld`);
+      summary = await $http.$get(`${app.$defaultHostPath()}/doc/summary/data.jsonld`);
     } catch (e) {
       summary = null;
     }
