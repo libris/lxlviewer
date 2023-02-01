@@ -32,9 +32,6 @@ import * as DataUtil from 'lxljs/data';
 import LensMixin from '@/mixins/lens';
 import ResultItem from '@/components/ResultItem';
 
-import { translateAliasedUri } from '../plugins/env';
-import { encodeSpecialChars } from '../plugins/env';
-
 export default {
   mixins: [LensMixin],
   layout (context) {
@@ -93,11 +90,11 @@ export default {
   methods: {
     ...mapActions(['setCurrentDocument']),
   },
-  async asyncData({ error, route, store, redirect }) {
+  async asyncData({ error, route, store, redirect, app, $config }) {
     const domain = store.getters.appState.domain
-    const siteConfig = store.getters.settings.siteConfig
-    const host = translateAliasedUri(siteConfig[domain].baseUri)
-    const path = encodeSpecialChars(route.path);
+    const siteConfig = $config.siteConfig
+    const host = app.$translateAliasedUri(siteConfig[domain].baseUri)
+    const path = app.$encodeSpecialChars(route.path);
     const pageData = await fetch(`${host}${path}`,
       {
         headers: { 'Accept': 'application/ld+json' },
@@ -112,7 +109,7 @@ export default {
         // We're on the client side and got redirected to the page we're already on
       }
       else if (response.status === 302) {
-        const url = translateAliasedUri(response.headers.get('Location'))
+        const url = app.$translateAliasedUri(response.headers.get('Location'))
         console.log (`REDIRECTING: ${host}${path} -> ${url}`)
         redirect(url);
       }

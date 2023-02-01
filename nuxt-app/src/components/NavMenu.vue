@@ -1,6 +1,6 @@
 <template>
   <div :class="{ 'collapse': !expanded }" class="navbar-collapse NavMenu" id="navbarNav">
-    <ul class="navbar-nav" v-if="appState.domain === settings.defaultSite">
+    <ul class="navbar-nav" v-if="appState.domain === $config.defaultSite">
       <li class="nav-item">
         <NuxtLink @click.native="linkActivated" to="/" class="nav-link" :class="{'active': $route.name == 'find' || $route.name == 'index' }">{{ translateUi('Search') }}</NuxtLink>
       </li>

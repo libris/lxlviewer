@@ -38,8 +38,6 @@ import SortSelect from '@/components/SortSelect';
 import PageStatus from '@/components/PageStatus';
 import ResultItem from '@/components/ResultItem';
 import Pagination from '@/components/Pagination';
-import {translateAliasedUri} from "../../plugins/env";
-import {encodeSpecialChars} from "../../plugins/env";
 
 export default {
   head() {
@@ -66,17 +64,16 @@ export default {
   computed: {
     ...mapGetters(['collections', 'appState']),
   },
-  async asyncData({ $config, route, params, $http, store }) {
+  async asyncData({ $config, route, params, $http, store, app }) {
     const domain = store.getters.appState.domain
-    const siteConfig = store.getters.settings.siteConfig
-    const host = translateAliasedUri(siteConfig[domain].baseUri)
-
+    const siteConfig = $config.siteConfig
+    const host = app.$translateAliasedUri(siteConfig[domain].baseUri)
     const query = route.query;
     let queryString = '';
 
-    Object.entries(query).forEach(([key, val]) => queryString += `${key}=${encodeSpecialChars(val)}&`);
+    Object.entries(query).forEach(([key, val]) => queryString += `${key}=${app.$encodeSpecialChars(val)}&`);
     const pageData = await $http.$get(`${host}/find.jsonld?${queryString}`);
-    const collectionResults = await $http.$get(`${host}/find.jsonld?q=${encodeSpecialChars(route.query.q)}&_limit=0`);
+    const collectionResults = await $http.$get(`${host}/find.jsonld?q=${app.$encodeSpecialChars(route.query.q)}&_limit=0`);
     return {
       pageData,
       collectionResults,
