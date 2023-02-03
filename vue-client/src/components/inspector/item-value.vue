@@ -278,11 +278,10 @@ export default {
   }
 
   &.is-diff-modified {
-    //$kb-primary-orange
-    @base-color: rgb(247, 160, 123);
+    @base-color: @brand-primary-orange;
     border: 1px dashed;
     border-color: @base-color;
-    background-color: hsl(hue(@base-color), 80%, 90%);
+    background-color: @form-modified;
     margin-bottom: 2px;
   }
 

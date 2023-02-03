@@ -317,12 +317,12 @@ export default {
   }
 
   &-is-diff-modified {
-    @base-color: rgb(247, 160, 123); // $kb-primary-orange
+    @base-color: @brand-primary-orange;
     border: 1px dashed;
     border-radius: 4px;
     padding: 0px 5px 0 5px;
     border-color: @base-color;
-    background-color: hsl(hue(@base-color), 80%, 90%);
+    background-color: @form-modified;
   }
 
   &-text {
