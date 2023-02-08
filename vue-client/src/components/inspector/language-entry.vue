@@ -335,7 +335,6 @@ export default {
     justify-items: start;
     width: 100%;
     align-items: center;
-    column-gap: 5px;
     display: grid;
     grid-template-columns: 1fr auto;
     overflow: hidden;
