@@ -305,6 +305,7 @@ export default {
     padding: 0px 5px 0 5px;
     border-color: @brand-primary;
     background-color: @base-color;
+    margin-bottom: 3px;
   }
 
   &-is-diff-removed {
@@ -314,6 +315,7 @@ export default {
     padding: 0px 5px 0 5px;
     border-color: @base-color;
     background-color: @form-remove;
+    margin-bottom: 3px;
   }
 
   &-is-diff-modified {
@@ -323,6 +325,7 @@ export default {
     padding: 0px 5px 0 5px;
     border-color: @base-color;
     background-color: @form-modified;
+    margin-bottom: 3px;
   }
 
   &-text {
