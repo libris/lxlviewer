@@ -108,6 +108,7 @@ export default {
     },
     setValueFromEntityAdder(langTag, fieldValue) {
       this.addLangTag(langTag, fieldValue);
+      this.updateViewForm();
     },
     addLangTag(tag, val) {
       // Make sure debounce is done
@@ -182,7 +183,30 @@ export default {
           idCounter++;
         });
       }
-      this.entries = viewForm;
+      this.entries = this.isHistoryView() ? viewForm : this.sortByTags(viewForm);
+    },
+    sortByTags(entries) {
+      const transformedTagged = entries.filter(entry => entry.tag.includes('-t-'));
+      const otherTagged = entries.filter(entry => !entry.tag.includes('-t-') && entry.tag !== 'none');
+      const untagged = entries.filter(entry => entry.tag === 'none');
+
+      const compare = (a, b) => {
+        const labelA = this.getLabelFromCache(a.tag);
+        const labelB = this.getLabelFromCache(b.tag);
+        if (labelA < labelB) {
+          return -1;
+        }
+        if (labelB < labelA) {
+          return 1;
+        }
+        return 0;
+      };
+
+      transformedTagged.sort(compare);
+      otherTagged.sort(compare);
+      untagged.sort(compare);
+
+      return [...transformedTagged, ...otherTagged, ...untagged];
     },
     dataFormByLang(viewObjects) {
       const langMap = {};
