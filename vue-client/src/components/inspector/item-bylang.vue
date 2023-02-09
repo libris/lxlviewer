@@ -186,8 +186,8 @@ export default {
       this.entries = this.isHistoryView() ? viewForm : this.sortByTags(viewForm);
     },
     sortByTags(entries) {
-      const transformedTagged = entries.filter(entry => entry.tag.includes('-t'));
-      const otherTagged = entries.filter(entry => !entry.tag.includes('-t') && entry.tag !== 'none');
+      const transformedTagged = entries.filter(entry => entry.tag.includes('-t-'));
+      const otherTagged = entries.filter(entry => !entry.tag.includes('-t-') && entry.tag !== 'none');
       const untagged = entries.filter(entry => entry.tag === 'none');
 
       const compare = (a, b) => {
