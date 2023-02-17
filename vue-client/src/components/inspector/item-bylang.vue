@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, debounce, get, isEmpty, isEqual } from 'lodash-es';
+import { cloneDeep, debounce, get, isEmpty, isEqual, partition } from 'lodash-es';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import ItemMixin from '@/components/mixins/item-mixin';
@@ -47,6 +47,14 @@ export default {
       }, 1000),
       deep: true,
     },
+    cache() {
+      const sizeSnapshot = this.cacheSize;
+      setTimeout(() => {
+        if (sizeSnapshot === this.cacheSize && !this.isHistoryView()) {
+          this.entries = this.sortByTags(this.entries);
+        }
+      }, 200);
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -72,6 +80,15 @@ export default {
     },
     cache() {
       return this.inspector.languageCache;
+    },
+    cacheSize() {
+      return Object.keys(this.cache).length;
+    },
+    uiLanguageTags() {
+      return [...this.settings.availableUserSettings.languages].map(lang => lang.value);
+    },
+    currentUiLanguage() {
+      return this.settings.language;
     },
   },
   methods: {
@@ -186,9 +203,14 @@ export default {
       this.entries = this.isHistoryView() ? viewForm : this.sortByTags(viewForm);
     },
     sortByTags(entries) {
+      const untagged = entries.filter(entry => entry.tag === 'none');
+      if (entries.length === untagged.length) {
+        return entries;
+      }
+
       const transformedTagged = entries.filter(entry => entry.tag.includes('-t-'));
       const otherTagged = entries.filter(entry => !entry.tag.includes('-t-') && entry.tag !== 'none');
-      const untagged = entries.filter(entry => entry.tag === 'none');
+      const [uiLangs, other] = partition(otherTagged, entry => this.uiLanguageTags.includes(entry.tag));
 
       const compare = (a, b) => {
         const labelA = this.getLabelFromCache(a.tag);
@@ -202,11 +224,22 @@ export default {
         return 0;
       };
 
+      uiLangs.sort(compare);
       transformedTagged.sort(compare);
-      otherTagged.sort(compare);
+      other.sort(compare);
       untagged.sort(compare);
 
-      return [...transformedTagged, ...otherTagged, ...untagged];
+      uiLangs.sort((a, b) => {
+        if (a.tag === this.currentUiLanguage) {
+          return -1;
+        }
+        if (b.tag === this.currentUiLanguage) {
+          return 1;
+        }
+        return 0;
+      });
+
+      return [...transformedTagged, ...uiLangs, ...other, ...untagged];
     },
     dataFormByLang(viewObjects) {
       const langMap = {};
