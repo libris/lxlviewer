@@ -48,7 +48,7 @@ export default {
       deep: true,
     },
     cache() {
-      const sizeSnapshot = cloneDeep(this.cacheSize);
+      const sizeSnapshot = this.cacheSize;
       setTimeout(() => {
         if (sizeSnapshot === this.cacheSize && !this.isHistoryView()) {
           this.entries = this.sortByTags(this.entries);
