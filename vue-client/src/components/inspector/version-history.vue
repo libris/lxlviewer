@@ -235,7 +235,7 @@ export default {
       const checkConflict = (item, compare) => {
         const updated = compare.find(compareItem => isEqual(compareItem.path, item.path));
         if (updated != null && item.val !== updated.val) {
-          if (typeof item.val === 'string') {
+          if (typeof item.val === 'string' && typeof updated.val === 'string') {
             const from = StringUtil.getLabelByLang(updated.val, this.user.settings.language, this.resources);
             const to = StringUtil.getLabelByLang(item.val, this.user.settings.language, this.resources);
             const moddedValue = from.concat(' → ').concat(to);
