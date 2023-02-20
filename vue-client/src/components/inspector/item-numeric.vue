@@ -201,6 +201,7 @@ export default {
   flex: 1;
   flex-shrink: 0;
   margin-left: -5px;
+  margin-right: -5px;
   padding: 5px;
   border-radius: 4px;
   transition: background-color 0.2s ease;
@@ -241,7 +242,6 @@ export default {
     color: @grey;
     min-width: 20px;
     margin-left: 5px;
-
 
     &:hover {
       color: @black;
