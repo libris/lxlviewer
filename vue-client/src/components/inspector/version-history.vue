@@ -274,9 +274,17 @@ export default {
             if (!conflictingPathNames) {
               // Under the same parent property but not the same key
               if (Array.isArray(addedEntity)) {
-                objAtPath.push(...addedEntity);
+                addedEntity.forEach((entity) => {
+                  const inPath = objAtPath.find(pathObject => pathObject['@id'] == entity['@id']);
+                  if (inPath == null) {
+                    objAtPath.push(entity);
+                  }
+                });
               } else {
-                objAtPath.push(addedEntity);
+                const inPath = objAtPath.find(pathObject => pathObject['@id'] == entity['@id']);
+                if (inPath == null) {
+                  objAtPath.push(addedEntity);
+                }
               }
 
               return parentPath;
