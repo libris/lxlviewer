@@ -275,13 +275,13 @@ export default {
               // Under the same parent property but not the same key
               if (Array.isArray(addedEntity)) {
                 addedEntity.forEach((entity) => {
-                  const inPath = objAtPath.find(pathObject => pathObject['@id'] == entity['@id']);
+                  const inPath = objAtPath.find(pathObject => pathObject['@id'] === entity['@id']);
                   if (inPath == null) {
                     objAtPath.push(entity);
                   }
                 });
               } else {
-                const inPath = objAtPath.find(pathObject => pathObject['@id'] == entity['@id']);
+                const inPath = objAtPath.find(pathObject => pathObject['@id'] === addedEntity['@id']);
                 if (inPath == null) {
                   objAtPath.push(addedEntity);
                 }
