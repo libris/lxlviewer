@@ -22,6 +22,7 @@ import ItemBoolean from './item-boolean';
 import ItemNumeric from './item-numeric';
 import ItemGrouped from './item-grouped';
 import ItemShelfControlNumber from './item-shelf-control-number';
+import ItemNextShelfControlNumber from './item-next-shelf-control-number';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
@@ -148,6 +149,7 @@ export default {
     'item-numeric': ItemNumeric,
     'item-grouped': ItemGrouped,
     'item-shelf-control-number': ItemShelfControlNumber,
+    'item-next-shelf-control-number': ItemNextShelfControlNumber,
     'item-bylang': ItemBylang,
     'entity-adder': EntityAdder,
   },
@@ -560,6 +562,9 @@ export default {
       if (typeof o === 'boolean') {
         return 'boolean';
       }
+      if (this.fieldKey === 'nextShelfControlNumber') {
+        return 'nextShelfControlNumber';
+      }
       if (this.fieldKey === 'shelfControlNumber') {
         return 'shelfControlNumber';
       }
@@ -931,7 +936,7 @@ export default {
 
         <!-- Other linked resources -->
         <item-vocab
-          v-if="getDatatype(item) == 'vocab'" 
+          v-if="getDatatype(item) == 'vocab'"
           :as-dropdown="fieldKey !== 'encodingLevel'"
           :is-locked="locked" 
           :field-key="fieldKey" 
@@ -998,22 +1003,24 @@ export default {
       <portal-target :name="`typeSelect-${path}`" />
     </div>
 
-    <div class="Field-content is-endOfTree js-endOfTree" 
+    <div
+      class="Field-content is-endOfTree js-endOfTree" 
       v-bind:class="{ 'is-locked': locked }"
-      v-if="fieldKey !== '@type' && !isObjectArray">
+      v-if="fieldKey !== '@type' && !isObjectArray"
+    >
       <div class="Field-contentItem">
-
-      <item-bylang
-        v-if="getDatatype(firstInValueAsArray) == 'language'"
-        :is-locked="locked"
-        :field-value="valueAsArray"
-        :field-key="fieldKey"
-        :parent-path="path"
-        :diff="diff">
-      </item-bylang>
+        <item-bylang
+          v-if="getDatatype(firstInValueAsArray) == 'language'"
+          :is-locked="locked"
+          :field-value="valueAsArray"
+          :field-key="fieldKey"
+          :parent-path="path"
+          :diff="diff">
+        </item-bylang>
       </div>
-      <div class="Field-contentItem" 
-        v-for="(item, index) in valueAsArray" 
+
+      <div class="Field-contentItem"
+        v-for="(item, index) in valueAsArray"
         :key="index">
 
         <!-- Other linked resources -->
@@ -1076,6 +1083,19 @@ export default {
           :diff="diff"
           :parent-path="path"
           :is-expanded="isExpanded"></item-shelf-control-number>
+
+        <!-- nextShelfControlNumber -->
+        <item-next-shelf-control-number
+          v-if="getDatatype(item) == 'nextShelfControlNumber'"
+          :is-last-added="isLastAdded"
+          :is-locked="locked"
+          :field-value="item"
+          :field-key="fieldKey"
+          :index="index"
+          :diff="diff"
+          :parent-path="path"
+          :is-expanded="isExpanded"
+        />
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
@@ -1266,7 +1286,7 @@ export default {
     pre {
       margin-top: 5px;
       max-width: 260px;
-    } 
+    }
   }
 
   &-labelWrapper {
@@ -1278,7 +1298,7 @@ export default {
     min-height: 30px;
 
     @media (min-width: @screen-sm) {
-      flex-direction: row;      
+      flex-direction: row;
     }
 
     &.sticky {
@@ -1396,10 +1416,10 @@ export default {
     }
   }
 
-  &-content {    
+  &-content {
     margin: 0;
     padding: 0.25em 1em;
-    max-width: 100%;    
+    max-width: 100%;
 
     .Field--inner & {
       border: 0;
@@ -1480,7 +1500,7 @@ export default {
     min-width:  20px;
     display: inline-block;
     margin-right: 5px;
-  
+
     &.placeholder {
       width: 20px;
       display: none;
@@ -1491,7 +1511,7 @@ export default {
     }
   }
 
-  &-reverse {    
+  &-reverse {
     .Field-comment {
       display: inline-block;
       min-height: 30px;
@@ -1526,7 +1546,6 @@ export default {
 }
 
 .field {
-  
   .node-list {
     line-height: 0;
     .chip-container > .chip {
