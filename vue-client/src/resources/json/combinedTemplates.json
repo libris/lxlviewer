@@ -2556,7 +2556,7 @@
               "@type": "MusicMedium",
               "label": ""
             }],
-            "version": "",
+            "marc:arrangedStatementForMusic": "",
             "language": [{
               "@id": "https://id.kb.se/language/zxx"
             }],
@@ -2641,7 +2641,7 @@
                   }
                 ],
                 "musicKey": "",
-                "version": "",
+                "marc:arrangedStatementForMusic": "",
                 "musicMedium": [{
                   "@type": "MusicMedium",
                   "label": ""
@@ -2668,7 +2668,7 @@
                   }
                 ],
                 "musicKey": "",
-                "version": "",
+                "marc:arrangedStatementForMusic": "",
                 "musicMedium": [{
                   "@type": "MusicMedium",
                   "label": ""
