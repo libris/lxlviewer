@@ -131,7 +131,8 @@ export default {
         :record-data="recordData"
         :should-link="false"
         :exclude-components="inspector.status.isNew ? ['id'] : []"
-        :valueDisplayLimit=3>
+        :valueDisplayLimit=3
+        :handleOverflow="false">
       </entity-summary>
       <div class="HeaderComponent-bottomBar">
         <div class="HeaderComponent-controls">
