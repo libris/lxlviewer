@@ -114,6 +114,9 @@ export default {
     removeFocus() {
       this.focused = false;
     },
+    isHistoryView() {
+     return this.diff != null;
+    }
   },
   components: {
     PreviewCard,
@@ -139,7 +142,7 @@ export default {
           }
         }).catch(error => console.error(error));
       }
-      if (this.isExpanded) {
+      if (this.isExpanded && !this.isHistoryView()) {
         this.expand();
       }
       if (this.isNewlyAdded) {
