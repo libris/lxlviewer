@@ -5,9 +5,10 @@ import * as StringUtil from 'lxljs/string';
 import { XSD_NUMERIC_TYPES } from 'lxljs/vocab';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
+import ModalComponent from '@/components/shared/modal-component';
 
 export default {
-  name: 'item-numeric',
+  name: 'item-next-shelf-control-number',
   mixins: [ItemMixin, LensMixin],
   props: {
     fieldValue: {
@@ -35,12 +36,16 @@ export default {
       default: () => [],
     },
   },
+
   data() {
     return {
       inEdit: false,
       removeHover: false,
+      unlockedByUser: false,
+      unlockModalOpen: false,
     };
   },
+
   computed: {
     ...mapGetters([
       'user',
@@ -87,7 +92,11 @@ export default {
     isDecimal() {
       return this.range.map(r => XSD_NUMERIC_TYPES[r]).some(t => (t.decimal));
     },
+    isDisabled() {
+      return this.unlockedByUser === false;
+    },
   },
+
   methods: {
     removeHighlight(event, active) {
       if (active) {
@@ -141,9 +150,25 @@ export default {
     addFocus() {
       this.$refs.textarea.focus({ preventScroll: true }); // Prevent scroll as we will handle this ourselves
     },
+    unlockEdit() {
+      this.unlockedByUser = true;
+      this.closeUnlockModal();
+    },
+    openUnlockModal() {
+      this.unlockModalOpen = true;
+      setTimeout(() => {
+        this.$refs.unlockButton.focus();
+      }, 200);
+    },
+    closeUnlockModal() {
+      this.unlockModalOpen = false;
+    },
   },
+
   components: {
+    'modal-component': ModalComponent,
   },
+
   mounted() {
     this.$nextTick(() => {
       if (!this.isLocked) {
@@ -159,107 +184,100 @@ export default {
 </script>
 
 <template>
-  <div class="ItemValue js-value" 
+  <div
+    class="ItemValue js-value" 
     v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}"
-    :id="`formPath-${path}`">
-    <input class="ItemValue-input js-itemValueInput"
-           rows="1"
-           v-model="value"
-           :aria-label="fieldKey | labelByLang"
-           @focus="readyForSave(false)"
-           @blur="update($event.target.value)"
-           @keydown.exact="readyForSave(false)"
-           @keydown.enter.prevent="handleEnter"
-           v-if="!isLocked"
-           type="number"
-           :min="min"
-           :max="max"
-           :step="isDecimal ? 0.01 : 1"
-           ref="textarea"/>
-    <span class="ItemValue-text"
-      v-if="isLocked">{{fieldValue}}</span>
-    <div class="ItemValue-remover"
+    :id="`formPath-${path}`"
+  >
+    <input
+      class="ItemValue-input js-itemValueInput"
+      rows="1"
+      v-model="value"
+      :aria-label="fieldKey | labelByLang"
+      @focus="readyForSave(false)"
+      @blur="update($event.target.value)"
+      @keydown.exact="readyForSave(false)"
+      @keydown.enter.prevent="handleEnter"
+      v-if="!isLocked"
+      type="number"
+      :min="min"
+      :max="max"
+      :step="isDecimal ? 0.01 : 1"
+      :disabled="isDisabled"
+      ref="textarea"
+    />
+
+    <span class="ItemValue-text" v-if="isLocked">{{fieldValue}}</span>
+
+    <div class="ItemType-actions">
+      <div
+        class="ItemType-action UnlockAction"
+        v-if="!isLocked && isDisabled"
+      >
+        <i
+          role="button"
+          class="fa fa-lock icon icon--sm"
+          tabindex="0"
+          aria-label="Unlock"
+          v-tooltip.top="translate('Click to unlock editing')"
+          @keyup.enter="openUnlockModal()"
+          @click="openUnlockModal()"
+        />
+      </div>
+    </div>
+
+    <div
+      class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       role="button"
-      :aria-label="'Remove' | translatePhrase"
+      :aria-label="translate('Remove')"
       v-on:click="removeThis()"
       v-tooltip.top="translate('Remove')"
       @focus="removeHover = true, removeHighlight($event, true)"
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"
-      @mouseout="removeHover = false, removeHighlight($event, false)">
-      <i class="fa fa-trash-o icon icon--sm">
-      </i>
+      @mouseout="removeHover = false, removeHighlight($event, false)"
+    >
+      <i class="fa fa-trash-o icon icon--sm"></i>
     </div>
+
+    <modal-component
+      title="Byte av löpnummer"
+      modal-type="warning"
+      class="ChangeTypeWarningModal"
+      :width="'570px'"
+      @close="closeUnlockModal()"
+      v-if="unlockModalOpen"
+    >
+      <div slot="modal-body" class="ChangeTypeWarningModal-body">
+        <p>
+          Observera att byte av löpnummer kan påverka övrigt bestånd i signumsviten. Är du säker på att du vill fortsätta?
+        </p>
+
+        <div class="ChangeTypeWarningModal-buttonContainer">
+          <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">
+            {{ 'Cancel' | translatePhrase }}
+          </button>
+
+          <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
+            <i class="icon icon--white fa fa-unlock-alt"></i>
+            {{ 'Unlock' | translatePhrase }}
+          </button>
+        </div>
+      </div>
+    </modal-component>
+
   </div>
 </template>
 
-<style lang="less">
-
-.ItemValue {
+<style lang="less" scoped>
+.ItemType-actions {
   display: flex;
-  flex: 1;
-  flex-shrink: 0;
-  margin-left: -5px;
-  margin-right: -5px;
-  padding: 5px;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
+  align-items: center;
+  flex: 0;
 
-  &-input {
-    width: 100%;
-    display: block;
-    border: 1px solid @grey-light;
-    border-radius: 2px;
-    padding: 2px 10px;
-    resize: none;
-    transition: border .25s ease-out;
-
-    &:focus {
-      border: 1px solid @grey-dark;
-    }
-  }
-
-  &-text {
-    word-break: break-word;
-    position: relative;
-  }
-
-  &.is-removed {
-    transition: all 0.5s ease;
-    max-height: 0px;
-    margin: 0px;
-    border: none;
-    overflow: hidden;
-  }
-
-  &-remover {
-    font-size: 16px;
-    font-size: 1.6rem;
-    float: right;
-    display: inline-block;
-    cursor: pointer;
-    color: @grey;
-    min-width: 20px;
-    margin-left: 5px;
-
-    &:hover {
-      color: @black;
-    }
-  }
-
-  &.is-removeable {
-    background-color: @form-remove;
-  }
-
-  &.is-lastAdded {
-    background-color: @form-add;
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
-    -webkit-animation-fill-mode: both;
-    animation-fill-mode: both;
-    -webkit-animation-name: pulse;
-    animation-name: pulse;
+  .UnlockAction {
+    margin-left: .5rem;
   }
 }
 </style>
