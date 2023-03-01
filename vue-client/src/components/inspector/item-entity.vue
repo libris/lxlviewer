@@ -115,8 +115,8 @@ export default {
       this.focused = false;
     },
     isHistoryView() {
-     return this.diff != null;
-    }
+      return this.diff != null;
+    },
   },
   components: {
     PreviewCard,
