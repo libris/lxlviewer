@@ -85,8 +85,12 @@ export default {
       const languageMap = this.propByLang;
       let updatePath = this.getByLangPath();
       let updateValue = languageMap;
-      const taggedValue = languageMap[tag];
-      delete languageMap[tag];
+      let taggedValue = languageMap[tag];
+      if (Array.isArray(taggedValue)) {
+        taggedValue = taggedValue.splice(taggedValue.indexOf(value), 1);
+      } else {
+        delete languageMap[tag];
+      }
       const delangify = isEmpty(languageMap);
       if (delangify) { // De-langify
         const lastIndex = this.path.lastIndexOf('.');
@@ -116,8 +120,7 @@ export default {
       if (!delangify) {
         let updateProp = taggedValue;
         if (this.isRepeatable) {
-          updateProp = this.prop;
-          updateProp.push(taggedValue);
+          updateProp = [].concat(this.prop, taggedValue);
         }
         this.$store.dispatch('updateInspectorData', {
           changeList: [
@@ -135,7 +138,12 @@ export default {
       let updatePath;
       if (tag !== 'none') {
         const languageMap = this.propByLang;
-        delete languageMap[tag];
+        let taggedValue = languageMap[tag];
+        if (Array.isArray(taggedValue)) {
+          taggedValue = taggedValue.splice(taggedValue.indexOf(value), 1);
+        } else {
+          delete languageMap[tag];
+        }
         updateValue = languageMap;
         updatePath = this.getByLangPath();
         if (isEmpty(languageMap)) {
@@ -198,7 +206,11 @@ export default {
       let updatePath;
       if (this.hasByLang) {
         updatePath = this.getByLangPath();
-        updateValue = Object.assign(this.propByLang, { [tag]: sourceValue });
+        if (this.propByLang.hasOwnProperty(tag) && this.isRepeatable) {
+          updateValue = Object.assign(this.propByLang, { [tag]: [].concat(this.propByLang[tag], sourceValue) });
+        } else {
+          updateValue = Object.assign(this.propByLang, { [tag]: sourceValue });
+        }
       } else {
         parent[this.getByLangKey()] = { [tag]: sourceValue };
         updateValue = parent;
@@ -249,8 +261,13 @@ export default {
         });
       }
     },
-    addToLangMap(obj) {
-      const updateValue = Object.assign(this.propByLang, obj);
+    addToLangMap(tag, obj) {
+      let updateValue;
+      if (this.propByLang.hasOwnProperty(tag) && this.isRepeatable) {
+        updateValue = Object.assign(this.propByLang, { [tag]: [].concat(this.propByLang[tag], obj[tag]) });
+      } else {
+        updateValue = Object.assign(this.propByLang, obj);
+      }
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {

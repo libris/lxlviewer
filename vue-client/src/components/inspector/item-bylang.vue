@@ -190,14 +190,18 @@ export default {
       if (typeof fieldValue === 'string') {
         Object.entries(this.propByLang).forEach(([key, value]) => {
           if (!this.isHistoryView()) {
-            viewForm.push({ tag: key, val: value, id: `${key}-${idCounter}` });
+            [].concat(value).forEach((v) => {
+              viewForm.push({ tag: key, val: v, id: `${key}-${idCounter}` });
+              idCounter++;
+            });
           }
-          idCounter++;
         });
       } else if (typeof fieldValue === 'object') {
         Object.entries(fieldValue).forEach(([key, value]) => {
-          viewForm.push({ tag: key, val: value, id: `${key}-${idCounter}` });
-          idCounter++;
+          [].concat(value).forEach((v) => {
+            viewForm.push({ tag: key, val: v, id: `${key}-${idCounter}` });
+            idCounter++;
+          });
         });
       }
       this.entries = this.isHistoryView() ? viewForm : this.sortByTags(viewForm);
@@ -245,7 +249,11 @@ export default {
       const langMap = {};
       viewObjects.forEach((object) => {
         if (object.tag !== 'none') {
-          langMap[object.tag] = object.val;
+          if (langMap.hasOwnProperty(object.tag)) {
+            langMap[object.tag] = [].concat(langMap[object.tag], object.val);
+          } else {
+            langMap[object.tag] = object.val;
+          }
         }
       });
       return langMap;
@@ -267,7 +275,7 @@ export default {
       setTimeout(() => {
         this.transliterate(langTag, val).then((result) => {
           for (const tag of Object.keys(result)) {
-            this.addToLangMap(result);
+            this.addToLangMap(tag, result);
             this.updateLangCache(tag);
           }
           this.updateViewForm();
