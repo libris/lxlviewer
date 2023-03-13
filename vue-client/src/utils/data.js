@@ -2,8 +2,9 @@ import { isEmpty, cloneDeep, isArray, isObject, forEach, uniq, difference, each 
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import * as HttpUtil from '@/utils/http';
+import settings from '../settings';
 
-export function getDisplayDefinitions(settings) {
+export function getDisplayDefinitions() {
   const baseUri = settings.idPath;
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
@@ -215,7 +216,7 @@ export function xmlToJson(xml) {
   return obj;
 }
 
-const SITE_ALIAS = JSON.parse(process.env.VUE_APP_SITE_ALIAS || '{}');
+const SITE_ALIAS = JSON.parse(settings.siteAlias || '{}');
 
 export function translateAliasedUri(uri) {
   let translatedUri = uri;
@@ -230,8 +231,10 @@ export function translateAliasedUri(uri) {
 
   // TODO: why is this needed?
   if (uri.startsWith('https://libris.kb.se')) {
-    translatedUri = uri.replace('https://libris.kb.se', process.env.VUE_APP_API_PATH);
+    translatedUri = uri.replace('https://libris.kb.se', settings.apiPath);
   }
-  
+  if (uri.startsWith('https://id.kb.se')) {
+    translatedUri = uri.replace('https://id.kb.se', process.env.VUE_APP_ID_PATH);
+  }
   return translatedUri;
 }

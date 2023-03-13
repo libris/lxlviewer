@@ -1,4 +1,4 @@
-import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual, get, indexOf, map, flatten, sortBy, filter } from 'lodash-es';
+import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual, get, indexOf, map, flatten, sortBy, filter, toPairs } from 'lodash-es';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import { lxlLog, lxlWarning } from './debug';
@@ -72,9 +72,26 @@ function tryGetValueByLang(item, propertyId, langCode, context) {
   
   const byLangKey = VocabUtil.getMappedPropertyByContainer(propertyId, '@language', context);
   
-  return byLangKey && item[byLangKey] && item[byLangKey][langCode]
-    ? item[byLangKey][langCode]
-    : null;
+  if (byLangKey && item[byLangKey]) {
+    if (item[byLangKey][langCode]) {
+      return item[byLangKey][langCode];
+    }
+    
+    // TODO: refactor language handling in lxlviewer completely
+    if (!item[propertyId] && Object.keys(item[byLangKey]).length === 1) {
+      const k = Object.keys(item[byLangKey])[0];
+      return item[byLangKey][k];
+    }
+    
+    for (const [langTag, value] of toPairs(item[byLangKey])) {
+      const transliterated = langTag.includes('Latn-t-');
+      if (transliterated) {
+        return value;
+      }
+    }
+  }
+  
+  return null;
 }
 
 export function getLensById(id, displayDefs) {

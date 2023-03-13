@@ -164,6 +164,7 @@ export default {
     },
     fetchDocument() {
       const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
+
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
           this.documentETag = response.headers.get('ETag');
@@ -202,7 +203,8 @@ export default {
       this.recordLoaded = false;
       this.$store.dispatch('flushChangeHistory');
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
-      if (this.$route.name === 'Inspector') {
+
+      if (this.$route.name === 'Inspector' || this.$route.name === 'DocumentHistory') {
         console.log('Initializing view for existing document');
         this.documentId = this.$route.params.fnurgel;
         this.loadDocument();
@@ -404,12 +406,14 @@ export default {
     },
     loadDocument() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
+
       this.stopEditing();
       this.fetchDocument();
     },
     loadNewDocument() {
       const insertData = this.inspector.insertData;
       this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: true });
+
       if (!insertData.hasOwnProperty('@graph') || insertData['@graph'].length === 0) {
         this.$store.dispatch('removeLoadingIndicator', 'Loading document');
         this.$router.go(-1);
@@ -424,8 +428,11 @@ export default {
     onRecordLoaded() {
       this.$store.dispatch('setInsertData', '');
       this.$store.dispatch('flushChangeHistory');
-      this.recordLoaded = true;
+      this.$store.dispatch('saveLangTagSearch', '');
       this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+
+      this.recordLoaded = true;
+
       this.$nextTick(() => {
         this.$store.dispatch('pushInspectorEvent', {
           name: 'record-events',
@@ -578,8 +585,8 @@ export default {
     },
     getPackagedItem(keepEmpty = false) {
       const recordCopy = cloneDeep(this.inspector.data.record);
-
       let obj = null;
+
       if (keepEmpty) {
         obj = DataUtil.getMergedItems(
           recordCopy,
@@ -749,7 +756,6 @@ export default {
       return obj;
     },
   },
-  
   watch: {
     'inspector.data'(val, oldVal) {
       if (val !== oldVal) {
@@ -895,26 +901,30 @@ export default {
         this.initializeRecord();
         this.$emit('ready');
       }
+
       this.initializeWarnBeforeUnload();
       this.initJsonOutput();
     });
   },
 };
 </script>
+
 <template>
   <div class="Inspector row">
-    <div 
-      v-if="recordLoaded" 
-      class="col-sm-12" 
+    <div
+      v-if="recordLoaded"
+      class="col-sm-12"
       :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}">
         <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" />
     </div>
+
     <div ref="componentFocusTarget" class="col-12 col-sm-12" :class="{'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
       <div v-if="recordLoaded && isDocumentAvailable" class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
       <div v-if="recordLoaded && isDocumentAvailable" class="Toolbar-container" ref="ToolbarTest">
         <toolbar></toolbar>
       </div>
     </div>
+
     <div class="col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
       <div v-if="!recordLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
@@ -928,6 +938,7 @@ export default {
           {{ 'Back to home page' | translatePhrase }}
         </router-link>
       </div>
+
       <div v-if="recordLoaded && isDocumentAvailable == false">
         <h2>{{ 'Something went wrong' | translatePhrase }}</h2>
         <p>{{ 'The document was found but failed to load' | translatePhrase }}.</p>
@@ -935,6 +946,7 @@ export default {
           {{ 'Back to home page' | translatePhrase }}
         </router-link>
       </div>
+
       <div v-if="recordLoaded && isDocumentAvailable" class="Inspector-entity">
         <div class="Inspector-admin">
           <div class="Inspector-header">
@@ -963,9 +975,11 @@ export default {
         </entity-form>
       </div>
     </div>
+
     <portal to="sidebar" v-if="marcPreview.active">
       <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active"></marc-preview>
     </portal>
+
     <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemoveRecordModal"
       v-if="removeInProgress">
       <div slot="modal-header" class="RemoveRecordModal-header">
@@ -983,6 +997,7 @@ export default {
         </div>
       </div>
     </modal-component>
+
     <modal-component class="EmbellishFromIdModal" :title="[embellishFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']" v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false">
       <div slot="modal-body" class="EmbellishFromIdModal-body">
         <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === true">
@@ -1010,6 +1025,7 @@ export default {
     <modal-component class="DetailedEnrichmentModal" :title="'Detailed enrichment' | translatePhrase" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
       <DetailedEnrichment slot="modal-body" :floating-dialogs="true" />
     </modal-component>
+
     <fullscreen-panel v-if="$route.params.view == 'history'">
       <version-history slot="content" />
     </fullscreen-panel>

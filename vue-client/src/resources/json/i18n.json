@@ -397,6 +397,8 @@
     "by machine" : "maskinellt",
     "Libris global changes" : "Libris mängduppdatering",
     "Versions" : "Versioner",
-    "Back" : "Tillbaka"
+    "Back" : "Tillbaka",
+    "Transliterate": "Translitterera",
+    "Romanize": "Romanisera"
     }
 }

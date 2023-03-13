@@ -55,13 +55,24 @@ export default {
 
             if (item.hasOwnProperty('value')) { // Try to use item value to get label
               label = item.value;
-            } else if (item.variable === 'p' && item.hasOwnProperty('predicate')) { // FIXME?
+            } else if (item.variable === 'p' && item.hasOwnProperty('predicate')) { // FIXME
               label = this.determineLabel(item.predicate);
             } else if (item.hasOwnProperty('object')) { 
               label = this.getLabel(item.object);
             }
+
+            let predicateLabel = '';
+            if (item.variable !== 'p' && item.hasOwnProperty('predicate')) { // FIXME
+              const k = (item.variable === 'and-@type') || (item.variable === '@type') 
+                ? { '@id': '@type' } 
+                : item.predicate;
+              
+              predicateLabel = this.determineLabel(k);
+            }
+
             return {
               label,
+              predicateLabel: predicateLabel,
               variable: item.variable,
               up: item.up['@id'],
             };

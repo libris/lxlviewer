@@ -1,8 +1,6 @@
 const { gitDescribeSync } = require('git-describe');
-import { defaultHostPath } from './plugins/env';
-const HOST_PATH = defaultHostPath();
-process.env.APP_VERSION = require('./package.json').version;
 
+process.env.APP_VERSION = require('./package.json').version;
 process.env.GIT_DESCRIBE = JSON.stringify(gitDescribeSync({
   longSemver: true,
   dirtySemver: false,
@@ -12,28 +10,30 @@ process.env.GIT_DESCRIBE = JSON.stringify(gitDescribeSync({
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
-  head: {
-    title: 'id.kb.se',
-    htmlAttrs: {
-      lang: 'sv'
-    },
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Grundstenar för länkade data hos Kungliga biblioteket.' },
-      { hid:'og:title', property:'og:title', content:'id.kb.se' },
-      { hid:'og:site_name', property:'og:site_name', content:'id.kb.se' },
-      { hid:'og:description', property:'og:description', content:'Grundstenar för länkade data hos Kungliga biblioteket.' },
-      { hid:'og:image', property:'og:image', content:`${HOST_PATH}/opengraph_id.png` },
-      { hid:'og:image:width', property:'og:image:width', content:'1200' },
-      { hid:'og:image:height', property:'og:image:height', content:'600' },
-      { hid:'twitter:image', property:'twitter:image', content:`${HOST_PATH}/opengraph_id.png` },
-      { hid:'twitter:card', name:'twitter:card', content:'summary_large_image' },
-    ],
-    link: [
-      { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+  head() {
+    return {
+      title: 'id.kb.se',
+      htmlAttrs: {
+        lang: 'sv'
+      },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { hid: 'description', name: 'description', content: 'Grundstenar för länkade data hos Kungliga biblioteket.' },
+        { hid:'og:title', property:'og:title', content:'id.kb.se' },
+        { hid:'og:site_name', property:'og:site_name', content:'id.kb.se' },
+        { hid:'og:description', property:'og:description', content:'Grundstenar för länkade data hos Kungliga biblioteket.' },
+        { hid:'og:image', property:'og:image', content:`${this.$defaultHostPath()}/opengraph_id.png` },
+        { hid:'og:image:width', property:'og:image:width', content:'1200' },
+        { hid:'og:image:height', property:'og:image:height', content:'600' },
+        { hid:'twitter:image', property:'twitter:image', content:`${this.$defaultHostPath()}/opengraph_id.png` },
+        { hid:'twitter:card', name:'twitter:card', content:'summary_large_image' },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ]
+    }
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -45,6 +45,7 @@ export default {
   plugins: [
     '~plugins/filters.js',
     '~mixins/lxl.js',
+    '~plugins/envInjects.js',
   ],
 
   router: {
@@ -58,7 +59,12 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    '@nuxtjs/dotenv'
+    [
+      '@nuxtjs/dotenv',
+      {
+        'path': "./"
+      }
+    ]
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -72,18 +78,24 @@ export default {
     hoistUseStatements: true,
     scss: [
       '~/assets/scss/_variables.scss',
-      '~/node_modules/kungbib-styles/lib/scss/_variables.scss',
-      '~/node_modules/bootstrap/scss/_functions.scss',
-      '~/node_modules/bootstrap/scss/_variables.scss',
-      '~/node_modules/bootstrap/scss/_mixins.scss',
-      '~/node_modules/bootstrap/scss/_containers.scss',
-      '~/node_modules/bootstrap/scss/_grid.scss'
+      '~~/node_modules/kungbib-styles/lib/scss/_variables.scss',
+      '~~/node_modules/bootstrap/scss/_functions.scss',
+      '~~/node_modules/bootstrap/scss/_variables.scss',
+      '~~/node_modules/bootstrap/scss/_mixins.scss',
+      '~~/node_modules/bootstrap/scss/_containers.scss',
+      '~~/node_modules/bootstrap/scss/_grid.scss'
     ],
   },
 
   publicRuntimeConfig: {
     siteName: 'id.kb.se',
-    environment: process.env.ENV,
+    environment: process.env.ENV || 'local',
+    defaultSite: process.env.DEFAULT_SITE || 'id.kb.se',
+    siteAlias: JSON.parse(process.env.XL_SITE_ALIAS || '{}'),
+    siteConfig: JSON.parse(process.env.XL_SITE_CONFIG || '{}'),
+    vocab: process.env.XL_VOCAB || 'https://id.kb.se/vocab/data.jsonld',
+    context: process.env.XL_CONTEXT || 'https://id.kb.se/context.jsonld',
+    display: process.env.XL_DISPLAY || 'https://id.kb.se/vocab/display/data.jsonld'
   },
 
   privateRuntimeConfig: {
@@ -101,5 +113,6 @@ export default {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
       }
     }
-  }
+  },
+  srcDir: 'src/'
 }

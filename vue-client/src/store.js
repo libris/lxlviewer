@@ -45,6 +45,12 @@ const store = new Vuex.Store({
       insertData: {},
       originalData: {},
       compositeHistoryData: {},
+      languageCache: {},
+      langTagSearch: '',
+      supportedTags: {
+        data: [],
+        promises: [],
+      },
       title: '',
       status: {
         detailedEnrichmentModal: {
@@ -68,7 +74,7 @@ const store = new Vuex.Store({
       clipboard: null,
       changeHistory: [],
       event: [],
-      magicShelfMarks: [], 
+      magicShelfMarks: [],
     },
     status: {
       userIdle: false,
@@ -156,6 +162,16 @@ const store = new Vuex.Store({
     },
     setCompositeHistoryData(state, data) {
       state.inspector.compositeHistoryData = data;
+    },
+    addToLanguageCache(state, data) {
+      const languageCache = cloneDeep(state.inspector.languageCache);
+      for (const [key, value] of Object.entries(data)) {
+        languageCache[key] = value;
+      }
+      state.inspector.languageCache = languageCache;
+    },
+    saveLangTagSearch(state, data) {
+      state.inspector.langTagSearch = data;
     },
     addToQuoted(state, data) {
       const quoted = cloneDeep(state.inspector.data.quoted);
@@ -307,6 +323,15 @@ const store = new Vuex.Store({
     removeMagicShelfMark(state, path) {
       state.inspector.magicShelfMarks = state.inspector.magicShelfMarks.filter(p => p !== path);
     },
+    addTagAsSupported(state, tag) {
+      state.inspector.supportedTags.promises[tag] = undefined;
+      if (state.inspector.supportedTags.data.indexOf(tag) === -1) {
+        state.inspector.supportedTags.data.push(tag);
+      }
+    },
+    setLanguageTagPromise(state, payload) {
+      state.inspector.supportedTags.promises[payload.tag] = payload.promise;
+    },
   },
   getters: {
     inspector: state => state.inspector,
@@ -373,6 +398,7 @@ const store = new Vuex.Store({
     vocab: state => state.resources.vocab,
     display: state => state.resources.display,
     context: state => state.resources.context,
+    supportedTags: state => state.inspector.supportedTags.data,
   },
   actions: {
     checkForMigrationOfUserDatabase({ commit, dispatch, state }) {
@@ -655,6 +681,12 @@ const store = new Vuex.Store({
     updateInspectorData({ commit }, payload) {
       commit('updateInspectorData', payload);
     },
+    addToLanguageCache({ commit }, data) {
+      commit('addToLanguageCache', data);
+    },
+    saveLangTagSearch({ commit }, data) {
+      commit('saveLangTagSearch', data);
+    },
     addToQuoted({ commit }, data) {
       commit('addToQuoted', data);
     },
@@ -753,6 +785,31 @@ const store = new Vuex.Store({
       const vocabProperties = new Map(props.map(entry => [entry['@id'], entry]));
 
       commit('setVocabProperties', vocabProperties);
+    },
+    async getIsTagRomanizable({ commit, state }, tag) {
+      if (tag == null || tag === '') {
+        return false;
+      }
+
+      if (state.inspector.supportedTags.promises[tag]) {
+        return state.inspector.supportedTags.promises[tag];
+      }
+
+      const promise = httpUtil.get({
+        url: `${state.settings.apiPath}/_transliterate/language/${tag}`,
+        token: state.user.token,
+      }).then((response) => {
+        if (response != null && response.status > 200) {
+          commit('addTagAsSupported', tag);
+        }
+      });
+
+      commit('setLanguageTagPromise', {
+        promise,
+        tag,
+      });
+
+      return promise;
     },
   },
 });

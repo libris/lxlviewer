@@ -4,23 +4,33 @@
     <EnvironmentBanner />
     <navbar-component />
     <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
+
     <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': (!status.panelOpen && user.settings.fullSiteWidth === false), 'container-fluid': (status.panelOpen || user.settings.fullSiteWidth), 'debug-mode': user.settings.appTech }">
       <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
         {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
       </div>
-        <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
-          <vue-simple-spinner size="large" :message="status.loadingIndicators[0] | translatePhrase"></vue-simple-spinner>
+
+      <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
+        <vue-simple-spinner size="large" :message="status.loadingIndicators[0] | translatePhrase"></vue-simple-spinner>
+      </div>
+
+      <div v-if="resourcesLoadingError" class="ResourcesLoadingError">
+        <i class="fa fa-warning fa-4x text-danger"></i>
+        <div>
+          <h2>Kunde inte hämta nödvändiga resurser</h2>
+          <p>Testa att ladda om sidan.</p>
+          <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
         </div>
-        <div v-if="resourcesLoadingError" class="ResourcesLoadingError">
-          <i class="fa fa-warning fa-4x text-danger"></i>
-          <div>
-            <h2>Kunde inte hämta nödvändiga resurser</h2>
-            <p>Testa att ladda om sidan.</p>
-            <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
-          </div>
-        </div>
-        <router-view ref="routerView" v-if="resourcesLoaded" v-show="status.loadingIndicators.length === 0" @ready="onRouterViewReady"></router-view>
+      </div>
+
+      <router-view
+        ref="routerView"
+        v-if="resourcesLoaded"
+        v-show="status.loadingIndicators.length === 0"
+        @ready="onRouterViewReady"
+      />
     </main>
+
     <portal-target name="sidebar" multiple />
     <footer-component></footer-component>
     <notification-list></notification-list>
@@ -74,6 +84,10 @@ export default {
       this.setFocusTarget();
     },
     setFocusTarget() {
+      if (this.$refs.routerView == null) {
+        return false;
+      }
+
       // get component's "routeFocusTarget" ref
       // if not existent, use router view container
       const focusTarget = (this.$refs.routerView.$refs.componentFocusTarget !== undefined) 
@@ -88,9 +102,10 @@ export default {
         preventScroll: true,
       });
 
-      // remove tabindex from focustarget. 
+      // remove tabindex from focustarget.
       // reason: https://axesslab.com/skip-links/#update-3-a-comment-from-gov-uk
       focusTarget.removeAttribute('tabindex');
+      return focusTarget;
     },
     setupIdleTimer() {
       // USER IDLE TIMER
@@ -98,6 +113,7 @@ export default {
       const resetTimer = () => {
         this.userIdleTimer = 0;
       };
+
       setInterval(() => {
         this.userIdleTimer += updateTimer;
         if (this.userIdleTimer > 5 && this.status.userIdle === false) {
@@ -112,7 +128,9 @@ export default {
           });
         }
       }, updateTimer * 1000);
+
       window.addEventListener('load', resetTimer, true);
+
       const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
       events.forEach((name) => {
         document.addEventListener(name, resetTimer, true); 
@@ -127,12 +145,15 @@ export default {
       const $SearchBar = document.getElementById('SearchBar');
       const elementsAboveSearchBar = document.getElementsByClassName('top-scroll-past');
       let margin = 0;
+
       for (let i = 0; i < elementsAboveSearchBar.length; i++) {
         margin += elementsAboveSearchBar[i].getBoundingClientRect().height;
       }
+
       if ($SearchBar) {
         this.searchBarHeight = $SearchBar.getBoundingClientRect().height;
       }
+
       if (event) {
         if (event.target.scrollingElement && event.target.scrollingElement.scrollTop > margin) {
           this.stickToTop = true;
@@ -146,11 +167,13 @@ export default {
     this.$nextTick(() => {
       this.setupIdleTimer();
       this.checkSearchBar();
-      this.$store.dispatch('setStatusValue', { 
-        property: 'keybindState', 
-        value: 'default', 
+
+      this.$store.dispatch('setStatusValue', {
+        property: 'keybindState',
+        value: 'default',
       });
     });
+
     window.addEventListener('scroll', (e) => {
       this.checkSearchBar(e);
     });

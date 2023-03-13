@@ -7,6 +7,7 @@ import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
+import * as RecordUtil from '@/utils/record';
 import Sort from '@/components/search/sort';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination.vue';
@@ -47,6 +48,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isLanguage: {
+      type: Boolean,
+      default: false,
+    },
     path: {
       type: String,
       default: '',
@@ -63,6 +68,14 @@ export default {
     hasRescriction: {
       type: Boolean,
       default: false,
+    },
+    isLangTagger: {
+      type: Boolean,
+      default: false,
+    },
+    iconAdd: {
+      type: String,
+      default: 'fa-plus-circle',
     },
   },
   components: {
@@ -217,6 +230,8 @@ export default {
         this.addItem({ '@id': '' });
       } else if (this.isVocabField) {
         this.addItem('');
+      } else if (this.isLanguage) {
+        this.$emit('addEmptyLanguageItem');
       } else if (this.canReceiveObjects) {
         const range = this.rangeFull;
         if (range.length === 1 && this.onlyEmbedded) {
@@ -256,6 +271,12 @@ export default {
       this.keyword = '';
       if (this.fieldKey === 'shelfMark') {
         this.keyword = this.user ? this.user.settings.shelfMarkSearch : '';
+      } else if (this.isLangTagger) {
+        if (this.inspector.langTagSearch) {
+          this.keyword = this.inspector.langTagSearch;
+        } else {
+          this.keyword = this.resourceLanguageLabel();
+        }
       }
       this.searchMade = false;
       this.currentSearchTypes = this.allSearchTypes;
@@ -263,7 +284,40 @@ export default {
       // TODO: other way force param-select to set select value?
       this.resetParamSelect += 1;
     },
+    resourceLanguageLabel() {
+      const getLanguage = () => {
+        // TODO: detect language of resource in a better way?
+        const langPath = ['mainEntity', 'instanceOf', 'language', 0, '@id'];
+        const langId = get(this.inspector.data, langPath);
+        if (langId) {
+          let lang = (this.inspector.data.quoted || {})[langId];
+          if (lang) {
+            return lang;
+          }
+          lang = RecordUtil.recordObjectFromGraph(langId, this.inspector.data.quoted);
+          if (lang) {
+            return lang.mainEntity;
+          }
+        }
+        return null;
+      };
+      const lang = getLanguage();
+      if (lang) {
+        return this.getLabel(lang);
+      }
+      
+      return '';
+    },
     addLinkedItem(obj) {
+      if (this.isLangTagger) {
+        let tag = obj.langTag; // IETF BCP 47
+        if (typeof tag === 'undefined') {
+          tag = obj.code;
+        }
+        this.$emit('langTaggerEvent', tag);
+        this.hide();
+        return;
+      }
       let currentValue = cloneDeep(get(this.inspector.data, this.path));
       if (!isArray(currentValue)) {
         // Converting value to array if it isn't already
@@ -371,6 +425,8 @@ export default {
       if (this.fieldKey === 'shelfMark' && this.user) {
         this.user.settings.shelfMarkSearch = this.keyword;
         this.$store.dispatch('setUser', this.user);
+      } else if (this.isLangTagger && this.keyword !== this.resourceLanguageLabel()) {
+        this.$store.dispatch('saveLangTagSearch', this.keyword);
       }
       const self = this;
       this.typeArray = [].concat(this.currentSearchTypes);
@@ -389,15 +445,13 @@ export default {
 <template>
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
     <!-- Adds another empty field of the same type -->
-    <div class="EntityAdder-add"
-      v-if="isPlaceholder">
-        <i class="fa fa-plus-circle fa-fw icon icon--sm"
+    <div class="EntityAdder-add" v-if="isPlaceholder" v-tooltip.left="tooltipText">
+        <i class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
           v-if="!addEmbedded"
           tabindex="0"
           role="button"
           :aria-label="tooltipText | translatePhrase"
           ref="adderFocusElement"
-          v-tooltip.left="tooltipText"
           @click="add($event)"
           @keyup.enter="add($event)"
           @mouseenter="actionHighlight(true, $event)"
@@ -405,7 +459,7 @@ export default {
           @focus="actionHighlight(true, $event)"
           @blur="actionHighlight(false, $event)">
         </i>
-        <i class="fa fa-plus-circle fa-fw icon icon--sm is-disabled"
+        <i class="fa fa-fw icon icon--sm is-disabled" :class="[this.iconAdd] "
           v-else-if="addEmbedded"
           tabindex="-1"
           aria-hidden="true">
@@ -413,9 +467,9 @@ export default {
     </div>
 
     <!-- Add entity within field -->
-    <div class="EntityAdder-add action-button" v-if="!isPlaceholder">
+    <div class="EntityAdder-add action-button" v-if="!isPlaceholder" v-tooltip.top="tooltipText">
       <i
-        class="fa fa-fw fa-plus-circle icon icon--sm"
+        class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
         v-if="!addEmbedded"
         tabindex="0"
         role="button"
@@ -423,14 +477,13 @@ export default {
         :aria-label="tooltipText | translatePhrase"
         v-on:click="add($event)"
         @keyup.enter="add($event)"
-        v-tooltip.top="tooltipText"
         @mouseenter="actionHighlight(true, $event)"
         @mouseleave="actionHighlight(false, $event)"
         @focus="actionHighlight(true, $event)"
         @blur="actionHighlight(false, $event)">
       </i>
       <i
-        class="fa fa-plus-circle fa-fw icon icon--sm is-disabled"
+        class="fa fa-fw icon icon--sm is-disabled" :class="[this.iconAdd] "
         v-else-if="addEmbedded"
         tabindex="-1">
       </i>
@@ -567,7 +620,7 @@ export default {
           </div>
           <div class="EntityAdder-create">
             <button class="EntityAdder-createBtn btn btn-primary btn--sm"
-              v-if="hasSingleCreatable"
+              v-if="hasSingleCreatable && allowLocal"
               v-on:click="addEmpty(rangeCreatable[0])">{{ "Create local entity" | translatePhrase }}
             </button>
             <filter-select

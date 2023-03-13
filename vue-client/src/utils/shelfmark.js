@@ -2,7 +2,7 @@ import { get } from 'lodash-es';
 import * as md5 from 'md5';
 import * as HttpUtil from './http';
 
-export async function hasAutomaticShelfControlNumber(shelfMarkId, settings) {
+export async function hasAutomaticShelfControlNumber(shelfMarkId) {
   return HttpUtil.get({
     url: shelfMarkId,
     accept: 'application/ld+json',
@@ -29,7 +29,7 @@ async function _insertShelfControlNumber(item, settings, user) {
   }
 
   const id = item.shelfMark[0]['@id'].split('#')[0];
-  if (await hasAutomaticShelfControlNumber(id, settings)) {
+  if (await hasAutomaticShelfControlNumber(id)) {
     item.shelfControlNumber = await _generateShelfControlNumber(id, settings, user);
   }
 }
