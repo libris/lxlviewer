@@ -238,8 +238,12 @@ export default {
     addEmpty() {
       const isRepeatable = VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context); // Is for some reason different from this.isRepeatable()
       if (this.hasProp && isRepeatable) {
-        const updateVal = this.prop;
-        updateVal.push('');
+        let updateVal = this.prop;
+        if (Array.isArray(updateVal)) {
+          updateVal.push('');
+        } else {
+          updateVal = [].concat(updateVal, '');
+        }
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
