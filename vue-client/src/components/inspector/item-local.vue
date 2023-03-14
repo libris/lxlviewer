@@ -463,7 +463,7 @@ export default {
       'highlight-info': highlights.indexOf('info') > -1,
       'highlight-remove': highlights.indexOf('remove') > -1,
       'is-expanded': expanded && !isEmpty,
-      'is-extractable': isExtractable,
+      'is-extractable': isExtractable && !isEmbedded,
       'has-failed-validations': failedValidations.length > 0,
       'is-diff-removed': diffRemoved && !diffAdded,
       'is-diff-added': diffAdded && !diffRemoved,
@@ -772,6 +772,13 @@ export default {
   
   &.is-removeable {
     background-color: @form-remove;
+  }
+
+  &.is-extractable {
+    //background-color: @form-extractable;
+    border-right: 4px solid @form-extractable;
+    border-radius: 0;
+    padding: 0 10rem 0 0;
   }
 
   &.is-diff-removed {
