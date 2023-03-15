@@ -778,7 +778,7 @@ export default {
     //background-color: @form-extractable;
     border-right: 4px solid @form-extractable;
     border-radius: 0;
-    padding: 0 10rem 0 0;
+    padding-right: 1rem;
   }
 
   &.is-diff-removed {
