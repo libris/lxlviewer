@@ -1,4 +1,4 @@
-import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual, get, indexOf, map, flatten, sortBy, filter, toPairs } from 'lodash-es';
+import { cloneDeep, each, isObject, uniq, includes, remove, isArray, isEmpty, uniqWith, isEqual, get, indexOf, map, flatten, sortBy, filter, toPairs, first } from 'lodash-es';
 import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import { lxlLog, lxlWarning } from './debug';
@@ -82,12 +82,10 @@ function tryGetValueByLang(item, propertyId, langCode, context) {
       const k = Object.keys(item[byLangKey])[0];
       return item[byLangKey][k];
     }
-    
-    for (const [langTag, value] of toPairs(item[byLangKey])) {
-      const transliterated = langTag.includes('Latn-t-');
-      if (transliterated) {
-        return value;
-      }
+
+    const transliterated = first(toPairs(item[byLangKey]).filter(e => e[0].includes('Latn-t-')).sort());
+    if (transliterated) {
+      return transliterated[1];
     }
   }
   
