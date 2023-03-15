@@ -749,7 +749,7 @@ export default {
       }
       setTimeout(() => {
         this.justEmbellished = false;
-      }, 300);
+      }, 1500);
     },
     async preSaveHook(obj) {
       await checkAutoShelfControlNumber(obj, this.settings, this.user);
