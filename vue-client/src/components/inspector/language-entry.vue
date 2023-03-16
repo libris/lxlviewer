@@ -60,6 +60,7 @@ export default {
       'settings',
       'resources',
       'supportedTags',
+      'status',
     ]),
     isByLang() {
       return this.itemPath.includes('ByLang');
@@ -93,6 +94,19 @@ export default {
       if (this.diff == null) return false;
       return this.diff.modified.some(m => isEqual(m.path, this.exactPath));
     },
+    shouldFocus() {
+      const lastAdded = this.inspector.status.lastAdded;
+      if (lastAdded === this.exactPath || this.itemPath.startsWith(lastAdded)) {
+        return true;
+      }
+      return false;
+    },
+    isLastAdded() {
+      if (this.inspector.status.lastAdded === this.exactPath) {
+        return true;
+      }
+      return false;
+    },
   },
   components: {
     PreviewCard,
@@ -116,6 +130,22 @@ export default {
         AutoSize.update(textarea);
       });
     },
+    addFocus() {
+      this.$refs.textarea.focus({ preventScroll: true }); // Prevent scroll as we will handle this ourselves
+    },
+    highLightLastAdded() {
+      if (this.isLastAdded === true) {
+        const element = this.$el;
+        // FIXME: the highlighting is not visible
+        element.classList.add('is-lastAdded');
+        setTimeout(() => {
+          element.classList.remove('is-lastAdded');
+          if (this.isLastAdded) {
+            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+          }
+        }, 1000);
+      }
+    },
   },
   mounted() {
     if (this.tag !== 'none') {
@@ -128,7 +158,11 @@ export default {
 
     this.$nextTick(() => {
       if (!this.isLocked) {
+        this.highLightLastAdded();
         this.initializeTextarea();
+        if (!this.status.isNew && this.shouldFocus) {
+          this.addFocus();
+        }
       }
     });
   },
@@ -447,6 +481,16 @@ export default {
   }
   &-popover > .trigger {
     max-width: 100%;
+  }
+
+  &.is-lastAdded {
+    background-color: @form-add;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-name: pulse;
+    animation-name: pulse;
   }
 }
 </style>
