@@ -53,6 +53,7 @@ export default {
     class="UserAvatar" 
     :class="[this.appearance]"
     :style="{ width: `${size}px`, height: `${size}px` }">
+    <!--
     <img 
       v-if="hasAvatar" 
       class="UserAvatar-img" 
@@ -60,6 +61,7 @@ export default {
       :style="{ width: `${size}px`, height: `${size}px` }" 
       :src="" 
       @error="hasAvatar = false" />
+      -->
     <span 
       v-if="!hasAvatar" 
       class="UserAvatar-no-img" 
