@@ -58,7 +58,7 @@ export default {
       class="UserAvatar-img" 
       alt="Avatar" 
       :style="{ width: `${size}px`, height: `${size}px` }" 
-      :src="``" 
+      :src="" 
       @error="hasAvatar = false" />
     <span 
       v-if="!hasAvatar" 
