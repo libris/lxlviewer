@@ -44,7 +44,7 @@ export default {
     entries: {
       handler: debounce(function debounceUpdate(val) {
         this.update(val);
-      }, 1000),
+      }, 400),
       deep: true,
     },
     cache() {
@@ -132,7 +132,7 @@ export default {
       setTimeout(() => {
         this.toLangMap(tag, val);
         this.updateLangCache(tag);
-      }, 1000);
+      }, 400);
     },
     readyForSave(value) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
@@ -163,9 +163,12 @@ export default {
         });
       }
       // Update prop
+      if (this.path.includes('ByLang')) {
+        return;
+      }
       const newData = this.dataForm(viewObjects);
       const oldData = cloneDeep(get(this.inspector.data, this.path));
-      if (!isEqual(oldData, newData) && !isEmpty(newData)) {
+      if (!isEqual(oldData, newData)) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
