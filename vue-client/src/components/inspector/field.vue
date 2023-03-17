@@ -85,6 +85,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isFirstField: {
+      type: Boolean,
+      default: false,
+    },
     oldValue: {
       type: [Array, String, Object],
       default: null,
@@ -902,6 +906,7 @@ export default {
       <item-bylang
         v-if="getDatatype(firstInValueAsArray) == 'language'"
         :is-locked="locked"
+        :is-first-field="isFirstField"
         :field-value="valueAsArray"
         :field-key="fieldKey"
         :parent-path="path"
@@ -1012,6 +1017,7 @@ export default {
         <item-bylang
           v-if="getDatatype(firstInValueAsArray) == 'language'"
           :is-locked="locked"
+          :is-first-field="isFirstField"
           :field-value="valueAsArray"
           :field-key="fieldKey"
           :parent-path="path"
