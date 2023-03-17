@@ -25,6 +25,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    isFirstField: {
+      type: Boolean,
+      default: false,
+    },
     removeIsAllowed: {
       type: Boolean,
       default: false,
@@ -96,7 +100,7 @@ export default {
     },
     shouldFocus() {
       const lastAdded = this.inspector.status.lastAdded;
-      if (lastAdded === this.exactPath || this.itemPath.startsWith(lastAdded)) {
+      if (lastAdded === this.exactPath || (this.isFirstField && this.itemPath.startsWith(lastAdded))) {
         return true;
       }
       return false;
