@@ -780,7 +780,7 @@ export default {
 
   &.is-extractable {
     border-radius: 4px;
-    padding: 0 1rem 0 1rem;
+    padding: 0.5rem 1rem 0.5rem 1rem;
     margin: 1rem 0 1rem 0;
     border: 1px solid @grey-lighter;
   }
