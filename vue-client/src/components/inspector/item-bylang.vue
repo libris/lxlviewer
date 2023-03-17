@@ -19,6 +19,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    isFirstField: {
+      type: Boolean,
+      default: false,
+    },
     diff: {
       type: Object,
       default: null,
@@ -319,6 +323,7 @@ export default {
         :tag="entry.tag"
         :id="entry.id"
         :is-locked="isLocked"
+        :is-first-field="isFirstField"
         :remove-is-allowed="removeIsAllowed"
         :uri="uriFor(entry.tag)"
         :label="getLabelFromCache(entry.tag)"
