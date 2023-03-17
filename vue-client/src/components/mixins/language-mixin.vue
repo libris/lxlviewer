@@ -244,6 +244,10 @@ export default {
         } else {
           updateVal = [].concat(updateVal, '');
         }
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'lastAdded',
+          value: `${this.getPropPath()}[${updateVal.length - 1}]`,
+        });
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
@@ -254,6 +258,10 @@ export default {
           addToHistory: true,
         });
       } else {
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'lastAdded',
+          value: `${this.getPropPath()}[0]`,
+        });
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {

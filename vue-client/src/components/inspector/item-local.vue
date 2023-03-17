@@ -572,12 +572,13 @@ export default {
     <ul class="ItemLocal-list js-itemLocalFields" v-show="expanded">
       <field
         v-show="k !== '_uid'" 
-        v-for="(v, k) in filteredItem"
+        v-for="(v, k, i) in filteredItem"
         :parent-path="getPath" 
         :entity-type="item['@type']" 
         :is-inner="true" 
         :is-locked="isLocked" 
         :is-removable="false" 
+        :is-first-field="i===0"
         :parent-key="fieldKey" 
         :parent-index="index" 
         :parent-accepted-types="acceptedTypes"
