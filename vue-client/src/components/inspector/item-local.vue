@@ -781,14 +781,13 @@ export default {
     border-radius: 4px;
     padding: 0.5rem 2rem 0.5rem 2rem;
     margin: 1rem 1rem;
-    box-shadow: @shadow-local-entity;
+    border: 1px solid @grey-lighter;
   }
 
   .icon-link {
     margin-right: 10px;
     display: block;
-    color: rgba(151, 34, 34, 0.9);
-    //color: rgba(0, 0, 0, 0.60);
+    color: @grey-dark;
     grid-area: link;
     width: 1.2em;
     height: 1.2em;
@@ -808,8 +807,7 @@ export default {
     min-width: 20px;
     height: 22px;
     overflow: hidden;
-    background-color: rgba(245, 221, 220, 0.9);
-    //background-color: rgba(191, 198, 202, 0.25);
+    background-color: rgba(191, 198, 202, 0.20);
     margin: 0.5rem 0.5rem;
     margin-left: auto;
     margin-right: 0;
