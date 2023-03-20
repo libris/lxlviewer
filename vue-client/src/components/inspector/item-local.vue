@@ -488,7 +488,8 @@ export default {
           {{getItemLabel}}
         </span>
         <div class="icon-container" v-if="isExtractable && !isEmbedded && isLocked">
-          <i class="fa fa-fw fa-chain-broken icon--sm icon-link" ></i>
+          <i class="fa fa-fw fa-chain-broken icon--sm icon-link"
+            v-tooltip.top="translate('Unlinked entity')"></i>
         </div>
         <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
           <i class="fa fa-trash-o icon--sm icon-removed"></i>
@@ -783,6 +784,7 @@ export default {
     padding: 0.5rem 1rem 0.5rem 1rem;
     margin: 1rem 0 1rem 0;
     border: 1px solid @grey-lighter;
+    box-shadow: 0 2px 5px rgba(0,0,0,.08);
   }
 
   .icon-link {
