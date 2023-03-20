@@ -168,6 +168,10 @@ export default {
     isListItem(path) {
       return path.slice(-1) === ']';
     },
+    goToRecord() {
+      const fnurgel = this.$route.params.fnurgel;
+      this.$router.push({ path: `/${fnurgel}` });
+    },
     changeSelectedVersion(val) {
       this.selectedVersion = val;
       this.closeSideCol();
@@ -398,7 +402,7 @@ export default {
         <div class="VersionHistory-mainCol">
           <div class="VersionHistory-header">
             <span class="VersionHistory-backLink">
-              <a @click="$router.go(-1)" @keyup.enter="$router.go(-1)" tabindex="0">
+              <a @click="goToRecord" @keyup.enter="goToRecord" tabindex="0">
                 <i class="fa fa-arrow-left VersionHistory-back-icon"></i>{{ 'Back' | translatePhrase }}
               </a>
             </span>
