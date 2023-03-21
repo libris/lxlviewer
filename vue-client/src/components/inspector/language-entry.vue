@@ -182,6 +182,7 @@ export default {
           rows="1"
           v-bind:value="val"
           v-on:input="$emit('input', $event.target.value)"
+          @blur="$emit('update')"
           ref="textarea"
         ></textarea>
       </span>
