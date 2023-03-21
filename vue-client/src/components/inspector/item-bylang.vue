@@ -335,7 +335,8 @@ export default {
         @remove="remove(entry.tag, entry.val)"
         @removeval="removeVal(entry.tag, entry.val)"
         @addLangTag="setValueFromEntityAdder(...arguments, entry.val)"
-        @addToCache="updateLangCache(entry.tag)">
+        @addToCache="updateLangCache(entry.tag)"
+        @update="update(entries)">
       </language-entry>
     </div>
   </div>
