@@ -463,6 +463,7 @@ export default {
       'highlight-info': highlights.indexOf('info') > -1,
       'highlight-remove': highlights.indexOf('remove') > -1,
       'is-expanded': expanded && !isEmpty,
+      'is-entity': !isEmbedded,
       'is-extractable': isExtractable && !isEmbedded,
       'has-failed-validations': failedValidations.length > 0,
       'is-diff-removed': diffRemoved && !diffAdded,
@@ -779,12 +780,17 @@ export default {
     background-color: @form-remove;
   }
 
-  &.is-extractable {
+  &.is-entity {
     border-radius: 4px;
     padding: 0.5rem 1rem 0.5rem 1rem;
-    margin: 1rem 0 1rem 0;
+    margin: 0.6rem 0 0.6rem 0;
     border: 1px solid @grey-lighter;
     box-shadow: 0 2px 5px rgba(0,0,0,.08);
+  }
+
+  &.is-extractable {
+    box-shadow: 0 2px 5px rgba(0,0,0,.16);
+    margin: 1rem 0 1rem 0;
   }
 
   .icon-link {
