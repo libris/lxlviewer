@@ -76,7 +76,7 @@ export default {
       }
     },
     selected(value, oldValue) {
-      if (value !== oldValue && this.initialized) {
+      if (value !== oldValue && this.initialized && !this.isLocked) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
