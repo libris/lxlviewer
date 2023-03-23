@@ -100,7 +100,10 @@ export default {
     },
     shouldFocus() {
       const lastAdded = this.inspector.status.lastAdded;
-      if (lastAdded === this.exactPath || (this.isFirstField && this.itemPath.startsWith(lastAdded))) {
+      if (lastAdded === this.exactPath 
+        || lastAdded === this.itemPath 
+        || (this.isFirstField && this.itemPath.startsWith(lastAdded))
+      ) {
         return true;
       }
       return false;

@@ -111,7 +111,7 @@ export default {
       const oldValue = cloneDeep(get(this.inspector.data, this.path));
 
       this.readyForSave(true);
-      if (newValue !== oldValue) {
+      if (newValue !== oldValue && !this.isLocked) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
