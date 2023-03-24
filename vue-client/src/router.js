@@ -1,15 +1,12 @@
 import Vue from 'vue';
-import Router from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
 import * as StringUtil from 'lxljs/string';
 import LandingPage from '@/views/LandingPage';
 import Login from '@/views/Login';
 import store from './store';
 
-Vue.use(Router);
-
-const router = new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition;
