@@ -300,6 +300,9 @@ const app = createApp({
     },
   })
 
+  app.config.globalProperties.$moment = moment;
+  moment.locale('sv');
+
   app.config.globalProperties.$filters = {
     translatePhrase(string) {
       return StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language, store.getters.resources.i18n);
