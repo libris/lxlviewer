@@ -146,7 +146,7 @@ export default {
         </li>
         <li class="MainNav-item" v-if="!user.isLoggedIn">
             <span class="MainNav-link" @click="login" @keyup.enter="login">
-              {{"Log in" | translatePhrase}}
+              {{ $filters.translatePhrase('Log in') }}
             </span>
         </li>
       </ul>

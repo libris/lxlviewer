@@ -204,14 +204,14 @@ export default {
           </span>
           <span class="ItemEntity-label chip-label">
             <span v-if="(!isCardWithData || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-            <span v-if="(!isCardWithData || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
+            <span v-if="(!isCardWithData || !expanded) && !isLibrisResource"><a :href="$filters.convertResourceLink(item['@id'])">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
             <span class="placeholder"></span></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
             <i class="fa fa-times-circle icon icon--sm chip-icon" 
               v-if="!isLocked"
               role="button"
               tabindex="0"
-              :aria-label="'Remove' | translatePhrase"
+              :aria-label="$filters.translatePhrase('Remove')"
               v-tooltip.top="translate('Remove')"
               @click="removeThis(true)"
               @keyup.enter="removeThis(true)">

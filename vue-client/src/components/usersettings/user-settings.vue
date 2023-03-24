@@ -78,11 +78,11 @@ export default {
           <user-avatar :size="150" :appearance="'dark'" />
         </div>
         <p class="UserInfo-name">
-          <strong class="UserInfo-label uppercaseHeading--bold">{{"Name" | translatePhrase}}</strong><br/>
+          <strong class="UserInfo-label uppercaseHeading--bold">{{ $filters.translatePhrase('Name') }}</strong><br/>
           <span>{{user.fullName}}</span>
         </p>
         <p class="UserInfo-email">
-          <strong class="UserInfo-label uppercaseHeading--bold">{{"E-mail" | translatePhrase}}</strong><br/>
+          <strong class="UserInfo-label uppercaseHeading--bold">{{ $filters.translatePhrase('E-mail') }}</strong><br/>
           <span>{{user.email || '-'}}</span>
         </p>
         <div class="UserInfo-meta">
@@ -93,12 +93,12 @@ export default {
         </div>
       </div>
       <div class="UserSettings-config UserConfig">
-        <h4>{{'User settings' | translatePhrase}}</h4>
+        <h4>{{ $filters.translatePhrase('User settings') }}</h4>
         <form class="UserConfig-form">
           <table class="UserSettings-configTable table table-striped">
             <tr>
               <td class="key">
-                <label for="UserConfig-sigel">{{"Active sigel" | translatePhrase}}</label>
+                <label for="UserConfig-sigel">{{ $filters.translatePhrase('Active sigel') }}</label>
               </td>
               <td class="value">
                   <select-sigel
@@ -108,31 +108,31 @@ export default {
             <tr>
               <td class="key">
                 <label for="clearFlagged"> 
-                  {{ "Clear my flagged documents" | translatePhrase}}
+                  {{ $filters.translatePhrase('Clear my flagged documents') }}
                 </label>
               </td>
               <td class="value">
-                <button name="clearFlagged" v-if="userFlagged.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeFlagged" @keyup.enter.prevent="purgeFlagged">{{ 'Clear' | translatePhrase }}</button>
-                <span v-if="userFlagged.length === 0" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
+                <button name="clearFlagged" v-if="userFlagged.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeFlagged" @keyup.enter.prevent="purgeFlagged">{{ $filters.translatePhrase('Clear') }}</button>
+                <span v-if="userFlagged.length === 0" class="disabled">{{ $filters.translatePhrase('Nothing flagged') }}</span>
               </td>
             </tr>
             <!-- <tr>
               <td class="key">
                 <label for="clearBookmarks"> 
-                  {{ "Clear my bookmarked documents" | translatePhrase}}
+                  {{ $filters.translatePhrase('Clear my bookmarked documents') }}
                 </label>
               </td>
               <td class="value">
-                <button name="clearBookmarks" v-if="userBookmarks.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeBookmarks" @keyup.enter.prevent="purgeBookmarks">{{ 'Clear' | translatePhrase }}</button>
-                <span v-if="userBookmarks.length === 0" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
+                <button name="clearBookmarks" v-if="userBookmarks.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeBookmarks" @keyup.enter.prevent="purgeBookmarks">{{ $filters.translatePhrase('Clear') }}</button>
+                <span v-if="userBookmarks.length === 0" class="disabled">{{ $filters.translatePhrase('Nothing flagged') }}</span>
               </td>
             </tr> -->
           </table>
-          <h5 class="uppercaseHeading--bold">{{ 'Experimental settings' | translatePhrase }}</h5>
+          <h5 class="uppercaseHeading--bold">{{ $filters.translatePhrase('Experimental settings') }}</h5>
           <table class="UserSettings-configTable table table-striped">
             <tr>
               <td class="key">
-                <label for="UserConfig-lang">{{"Language" | translatePhrase}}</label>
+                <label for="UserConfig-lang">{{ $filters.translatePhrase('Language') }}</label>
               </td>
               <td class="value">
                   <select id="UserConfig-lang" class="UserConfig-select customSelect" 
@@ -140,13 +140,13 @@ export default {
                     @change="updateLanguage">
                     <option v-for="language in settings.availableUserSettings.languages" 
                       :key="language.value" 
-                      :value="language.value">{{ language.label | translatePhrase }}</option>
+                      :value="language.value">{{ $filters.translatePhrase(language.label) }}</option>
                   </select>
               </td>
             </tr>
             <tr>
               <td class="key">
-                <label for="detailsCheckbox">{{"Activate debug mode" | translatePhrase}}</label>
+                <label for="detailsCheckbox">{{ $filters.translatePhrase('Activate debug mode') }}</label>
               </td>
               <td class="value">
                 <input id="detailsCheckbox" class="customCheckbox-input" type="checkbox" @change="updateAppTech" :checked="user.settings.appTech">
@@ -155,7 +155,7 @@ export default {
             </tr>
             <tr>
               <td class="key">
-                <label for="siteWidthCheckbox">{{"Use full site width" | translatePhrase}}</label>
+                <label for="siteWidthCheckbox">{{ $filters.translatePhrase('Use full site width') }}</label>
               </td>
               <td class="value">
                 <input id="siteWidthCheckbox" class="customCheckbox-input" type="checkbox" @change="updateFullSiteWidth" :checked="user.settings.fullSiteWidth">
@@ -165,7 +165,7 @@ export default {
           </table>
 
         </form>
-        <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{"Log out" | translatePhrase}}</button>
+        <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{ $filters.translatePhrase('Log out') }}</button>
       </div>
     </div>
     <div v-else class="UserSettings-content">
@@ -176,12 +176,12 @@ export default {
             id="UserConfig-sigel" />
         </li>
         <li>
-          <router-link to="/user">{{"Settings" | translatePhrase}}</router-link>
-          <button class="btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeFlagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</button>
+          <router-link to="/user">{{ $filters.translatePhrase('Settings') }}</router-link>
+          <button class="btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeFlagged">{{ $filters.capitalize($filters.translatePhrase(['Clear', 'Flags']).toLowerCase()) }}</button>
         </li>
         <li>
           <!-- <span>Växla användare</span> -->
-          <button class="btn--as-link" @click="logout">{{"Log out" | translatePhrase}}</button>
+          <button class="btn--as-link" @click="logout">{{ $filters.translatePhrase('Log out') }}</button>
         </li>
       </ul>
     </div>

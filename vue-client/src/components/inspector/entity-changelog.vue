@@ -41,25 +41,25 @@ export default {
 <template>
   <div class="EntityChangelog">
     <div class="EntityChangelog-item">
-      <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Created' | translatePhrase}}:</span> 
+      <span class="EntityChangelog-key uppercaseHeading--bold">{{ $filters.translatePhrase('Created') }}:</span> 
       <span class="EntityChangelog-value">
-        {{ $moment(getCard.created).format('lll') }} {{ 'by' | translatePhrase}} 
+        {{ $moment(getCard.created).format('lll') }} {{ $filters.translatePhrase('by') }} 
         <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionCreator" :item="inspector.data.record.descriptionCreator" :is-last="true" :field-key="'descriptionCreator'"/>
-        <span class="EntityChangelog-unknown" v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
+        <span class="EntityChangelog-unknown" v-else>{{ $filters.translatePhrase("Unknown").toLowerCase() }}</span>
       </span>
     </div>
 
     <div class="EntityChangelog-item">
-      <span class="EntityChangelog-key uppercaseHeading--bold">{{ 'Changed' | translatePhrase}}:</span> 
+      <span class="EntityChangelog-key uppercaseHeading--bold">{{ $filters.translatePhrase('Changed') }}:</span> 
       <span class="EntityChangelog-value">
-        {{ $moment(getCard.modified).format('lll') }} {{ 'by' | translatePhrase}}
+        {{ $moment(getCard.modified).format('lll') }} {{ $filters.translatePhrase('by') }}
         <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionLastModifier" :item="inspector.data.record.descriptionLastModifier" :is-last="true" :field-key="'descriptionLastModifier'"/>
-        <span class="EntityChangelog-unknown" v-else>{{ "Unknown" | translatePhrase | lowercase }}</span>
+        <span class="EntityChangelog-unknown" v-else>{{ $filters.translatePhrase("Unknown").toLowerCase() }}</span>
       </span>
     </div>
 
     <router-link :to="{ path: `${this.$route.path}/history` }">
-      <button-component :inverted="true" class="Button-default" :label="'View version history' | translatePhrase" icon="clock-o" size="medium" />
+      <button-component :inverted="true" class="Button-default" :label="$filters.translatePhrase('View version history')" icon="clock-o" size="medium" />
     </router-link>
   </div>
 </template>

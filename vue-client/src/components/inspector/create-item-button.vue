@@ -129,7 +129,7 @@ export default {
           v-if="!hasHolding && !checkingHolding"></i>
         <i class="fa fa-fw fa-circle-o-notch fa-spin"
           v-if="checkingHolding"></i>
-        {{"Add holding" | translatePhrase}}
+        {{ $filters.translatePhrase('Add holding') }}
         <span>({{user.settings.activeSigel}})</span>
       </button>
       <button class="btn btn--md CreateItem-btn"
@@ -140,7 +140,7 @@ export default {
         v-tooltip.top="keyBindText">
         <i class="fa fa-check-circle"
           v-if="hasHolding && !checkingHolding"></i>
-        {{"Show holding" | translatePhrase}}
+        {{ $filters.translatePhrase('Show holding') }}
         <span>({{user.settings.activeSigel}})</span>
       </button>
     </template>

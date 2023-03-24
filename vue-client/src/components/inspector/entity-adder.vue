@@ -450,7 +450,7 @@ export default {
           v-if="!addEmbedded"
           tabindex="0"
           role="button"
-          :aria-label="tooltipText | translatePhrase"
+          :aria-label="$filters.translatePhrase(tooltipText)"
           ref="adderFocusElement"
           @click="add($event)"
           @keyup.enter="add($event)"
@@ -474,7 +474,7 @@ export default {
         tabindex="0"
         role="button"
         ref="adderFocusElement"
-        :aria-label="tooltipText | translatePhrase"
+        :aria-label="$filters.translatePhrase(tooltipText)"
         v-on:click="add($event)"
         @keyup.enter="add($event)"
         @mouseenter="actionHighlight(true, $event)"
@@ -487,7 +487,7 @@ export default {
         v-else-if="addEmbedded"
         tabindex="-1">
       </i>
-      <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
+      <span class="EntityAdder-addLabel label-text">{{ $filters.capitalize($filters.labelByLang(addLabel)) }}</span>
     </div>
     <portal :to="`typeSelect-${path}`">
       <type-select
@@ -511,10 +511,10 @@ export default {
             <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
             <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
               <p class="header">
-                {{ "Allowed types" | translatePhrase }}:
+                {{ $filters.translatePhrase('Allowed types') }}:
               </p>
               <span v-for="(range, index) in rangeFull" :key="index">
-                • {{range | labelByLang}}
+                • {{ $filters.labelByLang(range) }}
               </span>
             </div>
           </div>
@@ -524,12 +524,12 @@ export default {
           <div class="EntityAdder-controls">
             <div class="EntityAdder-controlForm">
               <div class="EntityAdder-search">
-                <label for="entityKeywordInput" class="EntityAdder-searchLabel sr-only">{{ "Search" | translatePhrase }}</label>
+                <label for="entityKeywordInput" class="EntityAdder-searchLabel sr-only">{{ $filters.translatePhrase('Search') }}</label>
                 <div class="EntityAdder-filterSearchContainer">
                   <div class="EntityAdder-filterSearchContainerItem">
                     <filter-select class="EntityAdder-filterSearchInput FilterSelect--openDown"
                       :class-name="'js-filterSelect'"
-                      :label="'Show' | translatePhrase"
+                      :label="$filters.translatePhrase('Show')"
                       :custom-placeholder="filterPlaceHolder"
                       :options="{ tree: selectOptions, priority: priorityOptions }"
                       :options-all="allSearchTypes"
@@ -553,8 +553,8 @@ export default {
                          name="entityKeywordInput"
                          v-model="keyword"
                          ref="input"
-                         :aria-label="'Sök' | translatePhrase"
-                         :placeholder="'Sök' | translatePhrase"
+                         :aria-label="$filters.translatePhrase('Sök')"
+                         :placeholder="$filters.translatePhrase('Sök')"
                          autofocus />
                   <param-select class="EntityAdder-paramSelect"
                                 :types="currentSearchTypes"
@@ -579,14 +579,14 @@ export default {
             @use-item="addLinkedItem">
           </panel-search-list>
           <div class="PanelComponent-searchStatus" v-if="!searchInProgress && !searchMade" >
-            {{ "Start writing to begin search" | translatePhrase }}...
+            {{ $filters.translatePhrase('Start writing to begin search') }}...
           </div>
           <div v-if="searchInProgress" class="PanelComponent-searchStatus">
-            <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+            <vue-simple-spinner size="large" :message="$filters.translatePhrase('Searching')"></vue-simple-spinner>
           </div>
           <div class="PanelComponent-searchStatus"
             v-if="!searchInProgress && searchResult.length === 0 && searchMade">
-            {{ "No results" | translatePhrase }}
+            {{ $filters.translatePhrase('No results') }}
           </div>
         <!-- </div> -->
         </template>
@@ -607,21 +607,21 @@ export default {
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
-                :title="'Detailed view' | translatePhrase"
+                :title="$filters.translatePhrase('Detailed view')"
                 tabindex="0"></i>
               <i class="fa fa-list icon icon--sm"
                 role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"
-                :title="'Compact view' | translatePhrase"
+                :title="$filters.translatePhrase('Compact view')"
                 tabindex="0"></i>
             </div>
           </div>
           <div class="EntityAdder-create">
             <button class="EntityAdder-createBtn btn btn-primary btn--sm"
               v-if="hasSingleCreatable && allowLocal"
-              v-on:click="addEmpty(rangeCreatable[0])">{{ "Create local entity" | translatePhrase }}
+              v-on:click="addEmpty(rangeCreatable[0])">{{ $filters.translatePhrase('Create local entity') }}
             </button>
             <filter-select
               v-if="!hasSingleCreatable"

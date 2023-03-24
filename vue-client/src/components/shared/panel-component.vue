@@ -138,24 +138,24 @@ export default {
                 role="button"
                 tabindex="0"
                 @click="gotoSearch" 
-                :title="'Bring to main search' | translatePhrase"></i>
+                :title="$filters.translatePhrase('Bring to main search')"></i>
               <i class="fullview-toggle-button fa fa-compress icon icon--md"
                 v-show="user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
                 @click="toggleFullView" 
-                :title="'Minimize' | translatePhrase"></i>
+                :title="$filters.translatePhrase('Minimize')"></i>
               <i class="fullview-toggle-button fa fa-expand icon icon--md"
                 v-show="!user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
                 @click="toggleFullView" 
-                :title="'Expand' | translatePhrase"></i>
+                :title="$filters.translatePhrase('Expand')"></i>
               <i class="fa fa-close icon icon--md"
                 role="button"
                 tabindex="0"
                 @click="close"
-                :title="'Close' | translatePhrase"></i>
+                :title="$filters.translatePhrase('Close')"></i>
             </span>
           </slot>
         </div>

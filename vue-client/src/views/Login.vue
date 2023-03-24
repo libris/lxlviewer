@@ -43,13 +43,13 @@ export default {
 <template>
   <div class="Login">
     <div class="Login-content" v-if="failedLogin">
-      {{ 'Something went wrong' | translatePhrase }}
+      {{ $filters.translatePhrase('Something went wrong') }}
     </div>
     <div class="Login-content" v-if="loginExpired">
-      {{ 'Your login has expired' | translatePhrase }}.
+      {{ $filters.translatePhrase('Your login has expired') }}.
       <hr>
       <button class="btn-primary btn--md" @click="renewLogin" @keyup.enter="renewLogin">
-        {{ 'Renew' | translatePhrase }}
+        {{ $filters.translatePhrase('Renew') }}
       </button>
     </div>
   </div>

@@ -192,13 +192,13 @@ export default {
         <p v-if="!directoryCare.sender"
           class="HoldingMover-info" 
           slot="info">
-          {{ "Holdings are moved from the sender record to the reciever record" | translatePhrase }}.</p>
+          {{ $filters.translatePhrase('Holdings are moved from the sender record to the reciever record') }}.</p>
       </record-picker>
       <div class="HoldingMover-separator" v-if="flaggedInstances.length > 0">
         <button class="btn btn-primary" 
           @click="switchInstances" 
           :disabled="!anySelected"
-          :aria-label="'Switch place' | translatePhrase">
+          :aria-label="$filters.translatePhrase('Switch place')">
           <i class="fa fa-fw fa-exchange"></i>
         </button>
       </div>
@@ -223,10 +223,10 @@ export default {
       title="Move was successful" 
       modal-type="info">
       <div slot="modal-body" class="HoldingMover-allSuccessDialogBody">
-        <p>{{ 'All selected holdings has been moved' | translatePhrase }}.</p>
-        <p>{{'Do you want to unmark the sender' | translatePhrase }}?</p>
+        <p>{{ $filters.translatePhrase('All selected holdings has been moved') }}.</p>
+        <p>{{ $filters.translatePhrase('Do you want to unmark the sender') }}?</p>
         <div class="HoldingMover-allSuccessDialogBtnContainer">
-          <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ 'Yes' | translatePhrase }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ 'No' | translatePhrase }}</button>
+          <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ $filters.translatePhrase('Yes') }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ $filters.translatePhrase('No') }}</button>
         </div>
       </div>
     </modal-component>

@@ -193,7 +193,7 @@ export default {
       class="ItemValue-input js-itemValueInput"
       rows="1"
       v-model="value"
-      :aria-label="fieldKey | labelByLang"
+      :aria-label="$filters.labelByLang(fieldKey)"
       @focus="readyForSave(false)"
       @blur="update($event.target.value)"
       @keydown.exact="readyForSave(false)"
@@ -256,12 +256,12 @@ export default {
 
         <div class="ChangeTypeWarningModal-buttonContainer">
           <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">
-            {{ 'Cancel' | translatePhrase }}
+            {{ $filters.translatePhrase('Cancel') }}
           </button>
 
           <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
             <i class="icon icon--white fa fa-unlock-alt"></i>
-            {{ 'Unlock' | translatePhrase }}
+            {{ $filters.translatePhrase('Unlock') }}
           </button>
         </div>
       </div>

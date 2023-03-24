@@ -299,42 +299,50 @@ const app = createApp({
       },
     },
   })
-  .mount('#app')
 
-app.config.globalProperties.$filters = {
-  translatePhrase(string) {
-    return StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language, store.getters.resources.i18n);
+  app.config.globalProperties.$filters = {
+    translatePhrase(string) {
+      return StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language, store.getters.resources.i18n);
+    },
+    labelByLang(label) {
+      return StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources);
+    },
+    asAppPath(path) {
+      const appPaths = store.getters.settings.appPaths;
+      let newPath = '';
+      for (const key of Object.keys(appPaths)) {
+        newPath = path.replace(key, appPaths[key]);
+      }
+      return newPath;
+    },
+    convertResourceLink(uri) {
+      if (uri === null || typeof uri === 'undefined' || uri.length === 0) {
+        throw new Error('Filter "convertResourceLink" was called without input');
+      }
+      return DataUtil.translateAliasedUri(uri);
+    },
+    asFnurgelLink(id) {
+      if (!id || typeof id === 'undefined') {
+        return '';
+      }
+      const parts = id.split('/');
+      const fnurgel = `/${parts[parts.length - 1]}`;
+      return fnurgel;
+    },
+    removeDomain(value) {
+      StringUtil.removeDomain(value, store.getters.settings.removableBaseUris);
+    },
+    capitalize(value) {
+      if (!value) return '';
+      let newValue = value;
+      newValue = newValue.toString();
+      return newValue.charAt(0).toUpperCase() + newValue.slice(1);
+    }
   }
-}
 
+  app.mount('#app')
 
 /*
-Vue.filter('labelByLang', label => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources));
-
-Vue.filter('asAppPath', (path) => {
-  const appPaths = store.getters.settings.appPaths;
-  let newPath = '';
-  for (const key of Object.keys(appPaths)) {
-    newPath = path.replace(key, appPaths[key]);
-  }
-  return newPath;
-});
-
-Vue.filter('convertResourceLink', (uri) => {
-  if (uri === null || typeof uri === 'undefined' || uri.length === 0) {
-    throw new Error('Filter "convertResourceLink" was called without input');
-  }
-  return DataUtil.translateAliasedUri(uri);
-});
-
-Vue.filter('asFnurgelLink', (id) => {
-  if (!id || typeof id === 'undefined') {
-    return '';
-  }
-  const parts = id.split('/');
-  const fnurgel = `/${parts[parts.length - 1]}`;
-  return fnurgel;
-});
 
 Vue.mixin({
   methods: {
@@ -346,15 +354,4 @@ Vue.mixin({
     },
   },
 });
-
-Vue.filter('removeDomain', value => StringUtil.removeDomain(value, store.getters.settings.removableBaseUris));
-Vue.filter('translatePhrase', string => StringUtil.getUiPhraseByLang(string, store.getters.user.settings.language, store.getters.resources.i18n));
-Vue.filter('capitalize', (value) => {
-  if (!value) return '';
-  let newValue = value;
-  newValue = newValue.toString();
-  return newValue.charAt(0).toUpperCase() + newValue.slice(1);
-});
-Vue.filter('lowercase', value => value.toLowerCase());
-Vue.filter('uppercase', value => value.toUpperCase());
 */

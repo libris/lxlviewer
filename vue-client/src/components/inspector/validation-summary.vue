@@ -54,7 +54,7 @@ export default {
         </td>
         <td class="Violation-value">
           <ul>
-            <li :key="reason.text" v-for="reason in value">- {{ reason.text | translatePhrase }} <code v-if="reason.hint">{{ reason.hint }}</code></li>
+            <li :key="reason.text" v-for="reason in value">- {{ $filters.translatePhrase(reason.text) }} <code v-if="reason.hint">{{ reason.hint }}</code></li>
           </ul>
         </td>
       </tr>

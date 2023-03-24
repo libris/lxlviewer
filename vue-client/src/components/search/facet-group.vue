@@ -89,7 +89,7 @@ export default {
         if (!label) {
           label = o.object.label;
         }
-        label = this.$options.filters.capitalize(label);
+        label = this.$filters.capitalize(label);
         return {
           label,
           object: o.object,
@@ -181,7 +181,7 @@ export default {
         @keyup.enter="toggleExpanded()"
         tabindex="0"
         :id="facetLabelByLang(group.dimension)">
-        {{facetLabelByLang(group.dimension) | capitalize}}
+        {{$filters.capitalize(facetLabelByLang(group.dimension))}}
       </h4>
       <div
         class="FacetGroup-sortSelect" 
@@ -240,7 +240,7 @@ export default {
       class="FacetGroup-reveal link"
       tabindex="0"
       @click="currentLevel++"
-      @keyup.enter="currentLevel++">{{ revealText | translatePhrase }}...</span>
+      @keyup.enter="currentLevel++">{{ $filters.translatePhrase(revealText) }}...</span>
   </nav>
 </template>
 

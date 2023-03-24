@@ -134,11 +134,11 @@ export default {
         v-if="asDropdown"
         v-model="selected"
         class="ItemVocab-select customSelect"
-        :aria-label="fieldKey | labelByLang">
+        :aria-label="$filters.labelByLang(fieldKey)">
         <option
           v-for="option in possibleValues"
           :key="option"
-          v-bind:value="option">{{ option | labelByLang }}</option>
+          v-bind:value="option">{{ $filters.labelByLang(option) }}</option>
       </select>
       <!-- render as radiobuttons -->
       <fieldset v-else>
@@ -158,14 +158,14 @@ export default {
             v-bind:for="option"
             class="RadioPill-label">
             <i class="fa fa-check icon icon--sm"></i>
-            {{ option | labelByLang }}</label>
+            {{ $filters.labelByLang(option) }}</label>
         </div>
       </fieldset>
 
     </div>
 
     <span class="ItemVocab-text"
-      v-if="isLocked">{{fieldValue | labelByLang}}</span>
+      v-if="isLocked">{{ $filters.labelByLang(fieldValue) }}</span>
   </div>
 </template>
 

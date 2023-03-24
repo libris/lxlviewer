@@ -403,7 +403,7 @@ export default {
           <div class="VersionHistory-header">
             <span class="VersionHistory-backLink">
               <a @click="goToRecord" @keyup.enter="goToRecord" tabindex="0">
-                <i class="fa fa-arrow-left VersionHistory-back-icon"></i>{{ 'Back' | translatePhrase }}
+                <i class="fa fa-arrow-left VersionHistory-back-icon"></i>{{ $filters.translatePhrase('Back') }}
               </a>
             </span>
 
@@ -435,7 +435,7 @@ export default {
 
         <div class="VersionHistory-sideCol" :class="{'hidden-view': !showSideCol}">
           <div class="VersionHistory-header">
-            {{ 'Version history' | translatePhrase }}
+            {{ $filters.translatePhrase('Version history') }}
             <i class="fa fa-close icon icon--md sideColButton" role="button" @click="closeSideCol()"></i>
           </div>
 

@@ -11,9 +11,9 @@ export default {
   <article class="panel panel-default Article">
     <div class="Article-content">
       <header class="Article-header">
-        <h1 class="Article-title">{{ 'The page was not found' | translatePhrase }} <span class="error-code">(404)</span></h1>
+        <h1 class="Article-title">{{ $filters.translatePhrase('The page was not found') }} <span class="error-code">(404)</span></h1>
         <div class="abstract Article-abstract">
-          <router-link to="/">{{ 'Back to home page' | translatePhrase }}</router-link>
+          <router-link to="/">{{ $filters.translatePhrase('Back to home page') }}</router-link>
         </div>
       </header>
     </div>

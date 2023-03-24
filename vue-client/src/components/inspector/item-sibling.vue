@@ -415,7 +415,7 @@ export default {
         <i class="ItemSibling-arrow fa fa-chevron-right" 
           :class="{'icon is-disabled' : isEmpty}"></i>
         <span class="ItemSibling-type"
-          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+          :title="item['@type']">{{ $filters.capitalize($filters.labelByLang(item['@type'])) }}:</span>
         <span class="ItemSibling-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>

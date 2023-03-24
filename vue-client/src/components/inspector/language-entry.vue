@@ -207,7 +207,7 @@ export default {
               tabindex="0"
               @click="$emit('remove')"
               @keyup.enter="$emit('remove')"
-              :aria-label="'Remove' | translatePhrase"
+              :aria-label="$filters.translatePhrase('Remove')"
               v-tooltip.top="translate('Remove')">
             </i>
             <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!removeIsAllowed"></i>
@@ -222,7 +222,7 @@ export default {
           <i class="fa fa-language icon icon--sm LanguageEntry-transIcon"
             tabindex="0"
             role="button"
-            :aria-label="'Romanize' | translatePhrase"
+            :aria-label="$filters.translatePhrase('Romanize')"
             v-on:click="$emit('romanize')"
             v-if="isTransSchema(tag) && tag !== 'none'"
             v-tooltip.top="translate('Romanize')"
@@ -251,7 +251,7 @@ export default {
           <span class="LanguageEntry-remover"
             tabindex="0"
             role="button"
-            :aria-label="'Remove' | translatePhrase"
+            :aria-label="$filters.translatePhrase('Remove')"
             v-on:click="$emit('removeval')"
             @keyup.enter="$emit('removeval')"
             v-tooltip.top="translate('Remove')">

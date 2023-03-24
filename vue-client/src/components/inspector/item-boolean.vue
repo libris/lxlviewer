@@ -100,11 +100,11 @@ export default {
         class="customCheckbox-input"
         v-model="selected"
         :disabled="isLocked"
-        :aria-label="fieldKey | labelByLang" />
+        :aria-label="$filters.labelByLang(fieldKey) " />
       <div class="customCheckbox-icon"></div>
     </div>
     <span class="ItemVocab-text"
-      v-if="isLocked">{{fieldValue ? 'Yes' : 'No' | translatePhrase}}</span>
+      v-if="isLocked">{{$filters.translatePhrase(fieldValue ? 'Yes' : 'No')}}</span>
   </div>
 </template>
 

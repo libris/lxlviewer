@@ -106,12 +106,12 @@ export default {
       class="SearchForm-paramSelect SearchForm-select customSelect"
       v-model="selectedParam"
       @change="handleChange()"
-      :aria-label="'Choose type' | translatePhrase">
+      :aria-label="$filters.translatePhrase('Choose type')">
       <option
         v-for="prop in availableSearchParams"
         :key="prop.key"
         :value="prop">
-        {{prop.key | translatePhrase}}
+        {{$filters.translatePhrase(prop.key)}}
       </option>
     </select>
   </div>

@@ -263,7 +263,7 @@ export default {
       <ul class="FilterSelect-dropdown js-filterSelectDropdown"
         :class="{'is-visible': filterVisible}" v-show="filterVisible">
         <li class="FilterSelect-dropdownHeader" v-show="options.priority.length > 0">
-          {{ 'Suggested' | translatePhrase }}:
+          {{ $filters.translatePhrase('Suggested') }}:
         </li>
         <li class="FilterSelect-dropdownItem js-filterSelectItem"
           :class="{ 'is-abstract': option.abstract, 'is-concrete': !option.abstract }"
@@ -275,11 +275,11 @@ export default {
             tabindex="-1"
             :data-filter="option"
             :data-abstract="option.abstract"
-            :data-key="option">{{ option | labelByLang }}</span>
+            :data-key="option">{{ $filters.labelByLang(option) }}</span>
         </li>
         <hr class="FilterSelect-dropdownDivider" v-show="options.priority.length > 0">
         <li class="FilterSelect-dropdownHeader" v-show="options.tree.length > 0 && options.priority.length > 0">
-          {{ 'All' | translatePhrase }}:
+          {{ $filters.translatePhrase('All') }}:
         </li>
         <li class="FilterSelect-dropdownItem js-filterSelectItem"
           :class="{ 'is-abstract': option.abstract && !isFilter, 'is-concrete': !option.abstract || isFilter }"
@@ -298,13 +298,13 @@ export default {
         class="FilterSelect-open"
         :class="{'is-opened': filterVisible}"
         role="button"
-        :title="!filterVisible ? 'Expand' : 'Minimize' | translatePhrase"
+        :title="$filters.translatePhrase(!filterVisible ? 'Expand' : 'Minimize')"
         @click="filterVisible = !filterVisible"
         @keyup.enter="filterVisible = !filterVisible"></i>
 
       <i v-if="isFilter"
         class="fa fa-close icon icon--sm FilterSelect-clear"
-        :title="'Close' | translatePhrase"
+        :title="$filters.translatePhrase('Close')"
         role="button"
         @click="clear()"
         @keyup.enter="clear()"></i>

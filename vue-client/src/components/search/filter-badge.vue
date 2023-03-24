@@ -40,9 +40,9 @@ export default {
 <template>
   <div class="FilterBadge">
     <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}:</span>
-    <span>{{ filter.label | labelByLang }}</span>
+    <span>{{ $filters.labelByLang(filter.label) }}</span>
     <router-link
-      :to="filter.up | asAppPath">
+      :to="$filters.asAppPath(filter.up)">
       <i class="fa fa-fw fa-close icon"
         ></i>
     </router-link>

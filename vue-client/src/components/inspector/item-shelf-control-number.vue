@@ -197,7 +197,7 @@ export default {
       <textarea class="ItemShelfControlNumber-input js-itemValueInput"
                 rows="1"
                 v-model="textFieldValue"
-                :aria-label="fieldKey | labelByLang"
+                :aria-label="$filters.labelByLang(fieldKey)"
                 @focus="readyForSave(false)"
                 @blur="update($event.target.value)"
                 @keydown.exact="readyForSave(false)"

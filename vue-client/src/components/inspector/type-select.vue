@@ -55,8 +55,8 @@ export default {
       v-model="selectedType"
       ref="adderTypeSelect"
       @change="handleChange()"
-      :aria-label="'Choose type' | translatePhrase">
-      <option disabled value="">{{"Choose type" | translatePhrase}}</option>
+      :aria-label="$filters.translatePhrase('Choose type')">
+      <option disabled value="">{{ $filters.translatePhrase('Choose type') }}</option>
       <option v-for="(term, index) in classTree"  
         v-html="options[index].label"
         :disabled="term.abstract" 
@@ -67,7 +67,7 @@ export default {
       <i class="fa fa-times-circle icon icon--sm" 
         role="button"
         tabindex="0"
-        :aria-label="'Remove' | translatePhrase"
+        :aria-label="$filters.translatePhrase('Remove')"
         @click="dismiss()"
         @keyup.enter="dismiss()"
         @mouseover="highlight = true"

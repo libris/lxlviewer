@@ -176,7 +176,7 @@ export default {
     uri() {
       if (this.focusData.hasOwnProperty('@id') || this.focusData.hasOwnProperty('@graph')) {
         const uri = this.focusData.hasOwnProperty('@id') ? this.focusData['@id'] : this.focusData['@graph'][0].mainEntity['@id'];
-        const convertedUri = this.$options.filters.convertResourceLink(uri);
+        const convertedUri = this.$filters.convertResourceLink(uri);
         return convertedUri;
       }
       return null;
@@ -231,7 +231,7 @@ export default {
         this.resources,
       );
       if (type === this.recordType && ['Instance', 'Work'].indexOf(type) !== -1) {
-        return `${this.$options.filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
+        return `${this.$filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
       }
       if (type === this.recordType) {
         return translatedBaseType;
@@ -328,7 +328,7 @@ export default {
     <encoding-level-icon
       v-if="encodingLevel && recordType === 'Instance'"
       :encodingLevel="encodingLevel"
-      :tooltipText="encodingLevel | labelByLang"/>
+      :tooltipText="$filters.labelByLang(encodingLevel)"/>
     <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
@@ -365,7 +365,7 @@ export default {
       </router-link>
       <a class="EntitySummary-titleLink"
         v-if="!isLibrisResource && !isImport && shouldLink" 
-        :href="uri | convertResourceLink" 
+        :href="$filters.convertResourceLink(uri)" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
         <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
@@ -378,7 +378,7 @@ export default {
         v-for="node in limitedInfo" 
         :key="node.property">
         <template v-if="node.value !== null">
-          <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang | capitalize">{{ node.property | labelByLang | capitalize }}</span>
+          <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="$filters.capitalize($filters.labelByLang(node.property))">{{ $filters.capitalize($filters.labelByLang(node.property)) }}</span>
           <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.prevent.self="toggleExpanded">
             <SummaryNode :hover-links="hoverLinks" :handle-overflow="handleOverflow" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>

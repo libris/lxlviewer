@@ -78,7 +78,7 @@ export default {
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false"
-    :aria-label="label | translatePhrase">
+    :aria-label="$filters.translatePhrase(label)">
     <span v-if="icon">
       <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
     </span>

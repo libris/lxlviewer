@@ -61,13 +61,13 @@ export default {
   <li class="Facet">
     <slot name="icon"></slot>
     <router-link class="Facet-link"
-      :to="facet.link | asAppPath" 
-      :title="facet.label | capitalize">
+      :to="$filters.asAppPath(facet.link)" 
+      :title="$filters.capitalize(facet.label)">
       <span class="Facet-label"
-        :title="facet.label | capitalize">
-        {{label | capitalize}}</span>
+        :title="$filters.capitalize(facet.label)">
+        {{$filters.capitalize(label)}}</span>
       <span class="Facet-labelTail" 
-        :title="facet.label | capitalize">
+        :title="$filters.capitalize(facet.label)">
         {{labelTail}}</span>
       <span class="Facet-badge badge">{{compactNumber}}</span>
     </router-link>

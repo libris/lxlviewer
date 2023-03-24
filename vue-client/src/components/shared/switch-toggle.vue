@@ -85,7 +85,7 @@ export default {
         :class="{'is-active': active === options[0].id }"
         role="tab">
           <span v-if="options[0].html" v-html="options[0].html"></span>
-          <span v-else>{{options[0].text | translatePhrase}}</span>
+          <span v-else>{{$filters.translatePhrase(options[0].text)}}</span>
       </li>
       <i class="fa fa-toggle-on fa-fw SwitchToggle-icon" :class="{ 'fa-rotate-180': active === options[0].id }"></i>
       <li class="SwitchToggle-tab" 
@@ -96,7 +96,7 @@ export default {
         :class="{'is-active': active === options[1].id }"
         role="tab">
           <span v-if="options[1].html" v-html="options[1].html"></span>
-          <span v-else>{{options[1].text | translatePhrase}}</span>
+          <span v-else>{{$filters.translatePhrase(options[1].text)}}</span>
       </li>
     </ul>
     <ul v-else class="SwitchToggle-tabList" ref="tablist">
@@ -106,7 +106,7 @@ export default {
           :class="{'is-active': active === options[0].id }" 
           :to="options[0].link">
           <span v-if="options[0].html" v-html="options[0].html"></span>
-          <span v-else>{{options[0].text | translatePhrase}}</span>
+          <span v-else>{{$filters.translatePhrase(options[0].text)}}</span>
         </router-link>
       </li>
       <i class="fa fa-toggle-on fa-fw SwitchToggle-icon" :class="{ 'is-flipped': active === options[0].id }"></i>
@@ -116,7 +116,7 @@ export default {
           :class="{'is-active': active === options[1].id }" 
           :to="options[1].link">
           <span v-if="options[1].html" v-html="options[1].html"></span>
-          <span v-else>{{options[1].text | translatePhrase}}</span>
+          <span v-else>{{$filters.translatePhrase(options[1].text)}}</span>
         </router-link>
       </li>
     </ul>

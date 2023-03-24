@@ -77,7 +77,7 @@ export default {
       <span v-if="status.resultList.error">
         <i class="fa fa-warning"></i>
       </span>
-      <span v-if="!status.resultList.error" class="is-status">{{"Fetching results" | translatePhrase}}</span>
+      <span v-if="!status.resultList.error" class="is-status">{{ $filters.translatePhrase('Fetching results') }}</span>
       <span v-if="status.resultList.error" class="is-error">{{status.resultList.info}}</span>
     </div>
     <result-controls class="SearchResult-controls" 

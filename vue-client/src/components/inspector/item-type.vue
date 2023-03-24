@@ -115,7 +115,7 @@ export default {
         :disabled="isDisabled"
         v-model="selected" 
         class="ItemType-select customSelect" 
-        :aria-label="fieldKey | labelByLang">
+        :aria-label="$filters.labelByLang(fieldKey)">
         <option 
           v-for="(term, index) in containerAcceptedTypes" 
           :value="term.id"
@@ -131,7 +131,7 @@ export default {
       </div>
     </div>
     <span class="ItemType-text" 
-      v-if="isLocked">{{fieldValue | labelByLang}}
+      v-if="isLocked">{{ $filters.labelByLang(fieldValue) }}
     </span>
     <modal-component 
       title="Byte av typ" 
@@ -149,11 +149,11 @@ export default {
         </p>
         <p><a href="https://libris.kb.se/katalogisering/help/use-the-editor" target="_blank">Läs mer om byte av typ</a></p>
         <div class="ChangeTypeWarningModal-buttonContainer">          
-          <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">{{ 'Cancel' | translatePhrase }}</button>
-          <!-- <button class="btn btn-grey btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ 'Cancel' | translatePhrase }}</button> -->
+          <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">{{ $filters.translatePhrase('Cancel') }}</button>
+          <!-- <button class="btn btn-grey btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ $filters.translatePhrase('Cancel') }}</button> -->
           <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
             <i class="icon icon--white fa fa-unlock-alt"></i>
-            {{ 'Unlock' | translatePhrase }}
+            {{ $filters.translatePhrase('Unlock') }}
           </button>
         </div>
       </div>

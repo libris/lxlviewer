@@ -208,14 +208,14 @@ export default {
   <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
       <p class="ResultControls-resultText" id="resultDescr">
-        <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
-        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
-        <span v-else class="ResultControls-numTotal">{{'No hits' | translatePhrase }}</span>
+        <span v-if="pageData.totalItems > 0"> {{$filters.translatePhrase(['Showing', resultRange, 'of'])}} </span>
+        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{$filters.translatePhrase('Hits').toLowerCase()}}</span>
+        <span v-else class="ResultControls-numTotal">{{ $filters.translatePhrase('No hits') }}</span>
         
-        <span v-if="$route.params.perimeter === 'remote' && status.workingRemoteDatabases.length > 0">{{ 'from' | translatePhrase }} <span v-for="(db, index) in status.workingRemoteDatabases" :key="index"><span class="ResultControls-dbLabel">{{ db }}</span>{{ index !== status.workingRemoteDatabases.length - 1 ? ', ' : '' }}</span></span>
+        <span v-if="$route.params.perimeter === 'remote' && status.workingRemoteDatabases.length > 0">{{ $filters.translatePhrase('from') }} <span v-for="(db, index) in status.workingRemoteDatabases" :key="index"><span class="ResultControls-dbLabel">{{ db }}</span>{{ index !== status.workingRemoteDatabases.length - 1 ? ', ' : '' }}</span></span>
       </p>
       <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
-        {{ 'The search gave more results than can be displayed' | translatePhrase }}.
+        {{ $filters.translatePhrase('The search gave more results than can be displayed') }}.
       </p>
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
         <sort 
@@ -228,13 +228,13 @@ export default {
           <button class="ResultControls-listType icon icon--md"
             v-on:click="setFull()" 
             v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
-            :title="'Detailed view' | translatePhrase">
+            :title="$filters.translatePhrase('Detailed view')">
             <i class="fa fa-th-list"></i>
           </button>
           <button class="ResultControls-listType icon icon--md" 
             v-on:click="setCompact()" 
             v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
-            :title="'Compact view' | translatePhrase">
+            :title="$filters.translatePhrase('Compact view')">
             <i class="fa fa-list"></i>
           </button>
         </div>
@@ -249,34 +249,34 @@ export default {
       <ul class="ResultControls-pagList">
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
-          <router-link class="ResultControls-pagLink"  v-if="pageData.first" :to="pageData.first['@id'] | asAppPath">{{'First' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.first">{{'First' | translatePhrase}}</a>
+          <router-link class="ResultControls-pagLink"  v-if="pageData.first" :to="$filters.asAppPath(pageData.first['@id'])">{{ $filters.translatePhrase('First') }}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.first">{{ $filters.translatePhrase('First') }}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.previous }">
           <router-link class="ResultControls-pagLink" 
             v-if="pageData.previous" 
-            :to="pageData.previous['@id'] | asAppPath">{{'Previous' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.previous">{{'Previous' | translatePhrase}}</a>
+            :to="$filters.asAppPath(pageData.previous['@id'])">{{ $filters.translatePhrase('Previous') }}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.previous">{{ $filters.translatePhrase('Previous') }}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-active': page.active }" v-for="page in pageList" :key="page.link">
           <span class="ResultControls-pagDecor" v-if="!page.link">...</span>
           <router-link class="ResultControls-pagLink" 
-            :to="page.link | asAppPath" v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
+            :to="$filters.asAppPath(page.link)" v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
           <a class="ResultControls-pagLink" v-if="page.active">{{page.pageLabel}}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.next }">
           <router-link class="ResultControls-pagLink" 
-            v-if="pageData.next" :to="pageData.next['@id'] | asAppPath">{{'Next' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.next">{{'Next' | translatePhrase}}</a>
+            v-if="pageData.next" :to="$filters.asAppPath(pageData.next['@id'])">{{ $filters.translatePhrase('Next') }}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.next">{{ $filters.translatePhrase('Next') }}</a>
         </li>
         <li class="ResultControls-pagItem"
           v-bind:class="{ 'is-disabled': !pageData.last || pageData['@id'] === pageData.last['@id'] }">
           <router-link class="ResultControls-pagLink" 
-            v-if="pageData.last" :to="pageData.last['@id'] | asAppPath">{{'Last' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.last">{{'Last' | translatePhrase}}</a>
+            v-if="pageData.last" :to="$filters.asAppPath(pageData.last['@id'])">{{ $filters.translatePhrase('Last') }}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.last">{{ $filters.translatePhrase('Last') }}</a>
         </li>
       </ul>
     </nav>

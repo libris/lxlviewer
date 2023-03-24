@@ -147,7 +147,7 @@ export default {
 
   <div class="HelpSection">
     <div v-if="resources.helpDocs == null" class="text-center MainContent-spinner">
-      {{ 'Couldn\t load help documentation' | translatePhrase }}. {{ 'Try reloading the page' | translatePhrase }}.
+      {{ $filters.translatePhrase('Couldn\t load help documentation') }}. {{ $filters.translatePhrase('Try reloading the page') }}.
     </div>
     <div class="row" v-if="resources.helpDocs != null">
       <div class="col-md-3">

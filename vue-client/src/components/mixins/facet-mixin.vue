@@ -51,7 +51,7 @@ export default {
 
       if (object.hasOwnProperty('propertyChainAxiom')) {
         return object.propertyChainAxiom
-          .map(o => this.$options.filters.capitalize(this.determineLabel(o)))
+          .map(o => this.$filters.capitalize(this.determineLabel(o)))
           .join('/');
       } 
 

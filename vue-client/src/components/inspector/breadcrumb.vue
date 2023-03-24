@@ -147,23 +147,23 @@ export default {
   <div class="Breadcrumb">
     <div class="Breadcrumb-back">
       <router-link class="Breadcrumb-backLink"
-        :to="searchResultUrl">{{ 'To result list' | translatePhrase }}</router-link>
+        :to="searchResultUrl">{{ $filters.translatePhrase('To result list') }}</router-link>
     </div>
     <div class="Breadcrumb-recordData" v-if="thisIsSearchResult">
-      <span class="Breadcrumb-recordNumbers">{{ absoluteOffset + 1 }} {{ 'of' | translatePhrase }} {{ totalItems }}</span>
+      <span class="Breadcrumb-recordNumbers">{{ absoluteOffset + 1 }} {{ $filters.translatePhrase('of') }} {{ totalItems }}</span>
       <div class="Breadcrumb-recordLinks">
         <span class="Breadcrumb-prev" v-if="absoluteOffset > 0">
-          <button class="btn--as-link" v-if="prevPath" @click="prev">{{ ['Previous'] | translatePhrase }}</button>
+          <button class="btn--as-link" v-if="prevPath" @click="prev">{{ $filters.translatePhrase(['Previous']) }}</button>
           <button class="btn--as-link" v-if="prevOutOfBounds" @click="lastOnPrevPage">
-            <span v-if="!loading">{{ ['Previous'] | translatePhrase }}</span>
+            <span v-if="!loading">{{ $filters.translatePhrase(['Previous']) }}</span>
             <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
           </button>
         </span>
         <span v-if="absoluteOffset > 0 && absoluteOffset + 1 < totalItems"> | </span>
         <span class="Breadcrumb-next" v-if="absoluteOffset < totalItems">
-          <button class="btn--as-link" v-if="nextPath" @click="next">{{ ['Next'] | translatePhrase }}</button>
+          <button class="btn--as-link" v-if="nextPath" @click="next">{{ $filters.translatePhrase(['Next']) }}</button>
           <button class="btn--as-link" v-if="nextOutOfBounds" @click="firstOnNextPage">
-            <span v-if="!loading">{{ ['Next'] | translatePhrase }}</span>
+            <span v-if="!loading">{{ $filters.translatePhrase(['Next']) }}</span>
             <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
           </button>
         </span>

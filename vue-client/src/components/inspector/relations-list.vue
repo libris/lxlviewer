@@ -206,19 +206,19 @@ export default {
           <div
             class="Filter"
           >
-            <label class="Filter-label" for="filter-select">{{ 'Filter' | translatePhrase }}</label>
+            <label class="Filter-label" for="filter-select">{{ $filters.translatePhrase('Filter') }}</label>
             <select id="filter-select"
                     class="Filter-select customSelect"
                     v-model="selectedFacet"
                     @change="handleFacetSelected"
-                    :aria-label="'Filter' | translatePhrase">
+                    :aria-label="$filters.translatePhrase('Filter')">
               >
               <option :value="allOption">
-                {{ "All" | translatePhrase }} ({{ getCompactNumber(allOption) }})
+                {{ $filters.translatePhrase('All') }} ({{ getCompactNumber(allOption) }})
               </option>
               <optgroup v-for="(group, index) in facets" :key="`group-${index}`" :label="facetGroupLabelByLang(group.name)">
                 <option v-for="(option, index) in group.facets" :key="`option-${index}`" :value="option" :disabled="option.disabled">
-                  {{ option.label | capitalize }} {{ option.count }}
+                  {{ $filters.capitalize(option.label) }} {{ option.count }}
                 </option>
               </optgroup>
             </select>
@@ -227,7 +227,7 @@ export default {
       </template>
       <template slot="panel-body">
         <div class="PanelComponent-searchStatus" v-show="loading">
-          <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+          <vue-simple-spinner size="large" :message="$filters.translatePhrase('Searching')"></vue-simple-spinner>
         </div>
         <panel-search-list
           class="RelationsList-resultListContainer"

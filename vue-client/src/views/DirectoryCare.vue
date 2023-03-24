@@ -142,8 +142,8 @@ export default {
         modal-type="info" 
         @close="closeModal">
         <div slot="modal-body" class="DirectoryCare-modalBody">
-          <p>{{ ['The following resources could not be retrieved', 
-            'because they no longer exist. They have been removed from the directory care list'] | translatePhrase }}:</p>
+          <p>{{ $filters.translatePhrase(['The following resources could not be retrieved', 
+            'because they no longer exist. They have been removed from the directory care list']) }}:</p>
           <ul>
             <li v-for="error in errors.removed" :key="error['@id']">
               {{error.label}}

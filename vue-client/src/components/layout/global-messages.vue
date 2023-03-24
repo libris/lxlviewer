@@ -115,7 +115,7 @@ export default {
           <span class="GlobalMessage-text" v-html="message.content.text"></span>
         </div>
         <div class="GlobalMessage-action">
-          <button v-if="message.dismissable" @click="closeMessage(message.id)" @keyup.enter="closeMessage(message.id)" class="btn btn-transparent">{{ 'Close' | translatePhrase }}</button>
+          <button v-if="message.dismissable" @click="closeMessage(message.id)" @keyup.enter="closeMessage(message.id)" class="btn btn-transparent">{{ $filters.translatePhrase('Close') }}</button>
         </div>
       </div>
     </div>

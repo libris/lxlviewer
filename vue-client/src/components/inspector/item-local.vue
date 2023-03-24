@@ -484,7 +484,7 @@ export default {
         <i class="ItemLocal-arrow fa fa-chevron-right" 
           :class="{'icon is-disabled' : isEmpty}"></i>
         <span class="ItemLocal-type"
-          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+          :title="item['@type']">{{ $filters.capitalize($filters.labelByLang(item['@type'])) }}:</span>
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>
@@ -558,7 +558,7 @@ export default {
               @keyup.enter="copyThis(), closeManagerMenu()"
               @click="copyThis(), closeManagerMenu()">
               <i class="fa fa-fw fa-copy" aria-hidden="true"></i>
-              {{"Copy to clipboard" | translatePhrase}}
+              {{ $filters.translatePhrase('Copy to clipboard') }}
               </a>
             </li>
             <li class="ManagerMenu-menuItem" v-if="inArray">
@@ -566,7 +566,7 @@ export default {
               @keyup.enter="cloneThis(), closeManagerMenu()"
               @click="cloneThis(), closeManagerMenu()">
               <i class="fa fa-fw fa-clone" aria-hidden="true"></i>
-              {{"Duplicate entity" | translatePhrase}}
+              {{ $filters.translatePhrase('Duplicate entity') }}
               </a>
             </li>
           </ul>

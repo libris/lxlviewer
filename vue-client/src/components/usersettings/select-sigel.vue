@@ -89,7 +89,7 @@ export default {
       type="submit"
       class="btn btn-primary btn--md">
         <i class="icon icon--white fa fa-exchange"></i>
-        {{ 'Växla sigel' | translatePhrase }}
+        {{ $filters.translatePhrase('Växla sigel') }}
     </button>
   </form>
 </template>

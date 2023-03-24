@@ -136,7 +136,7 @@ export default {
       </entity-summary>
       <div class="HeaderComponent-bottomBar">
         <div class="HeaderComponent-controls">
-          <span v-if="hiddenDetailsNumber > 1" class="HeaderComponent-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
+          <span v-if="hiddenDetailsNumber > 1" class="HeaderComponent-showMore" @click="showAllKeys = !showAllKeys">{{ $filters.translatePhrase(showAllKeys ? 'Show fewer' : 'Show more') }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
         </div>
         <div class="HeaderComponent-tags" v-if="user.isLoggedIn && inspector.status.isNew == false">
           <!-- <tag-switch :document="focusData" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Bookmark" /> -->

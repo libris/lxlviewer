@@ -278,7 +278,7 @@ export default {
         <div class="DetailedEnrichment-fieldRow">
           <div class="DetailedEnrichment-columnHeader sourceColumn">
             <div class="DetailedEnrichment-summaryLabel">
-              {{ 'Enrich from' | translatePhrase }}
+              {{ $filters.translatePhrase('Enrich from') }}
             </div>
             <div class="DetailedEnrichment-summaryContainer">
               <entity-summary
@@ -291,7 +291,7 @@ export default {
           <div class="DetailedEnrichment-actionHeader actionColumn"></div>
           <div class="DetailedEnrichment-columnHeader resultColumn non-existing">
             <div class="DetailedEnrichment-summaryLabel">
-              {{ 'Result' | translatePhrase }}
+              {{ $filters.translatePhrase('Result') }}
             </div>
             <div class="DetailedEnrichment-summaryContainer">
               <entity-summary
@@ -307,18 +307,18 @@ export default {
       <div class="DetailedEnrichment-row" v-for="key in filteredKeys" :key="key">
         <div class="DetailedEnrichment-labelContainer uppercaseHeading">
           <div v-show="key !== '@type'" class="DetailedEnrichment-label sourceColumn">
-            {{ key | labelByLang | capitalize }}
+            {{ $filters.capitalize($filters.labelByLang(key)) }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label sourceColumn">
-            {{ 'Type' | translatePhrase | capitalize }}
+            {{ $filters.capitalize($filters.translatePhrase('Type')) }}
           </div>
           <div class="DetailedEnrichment-label actionColumn">
           </div>
           <div v-show="key !== '@type'" class="DetailedEnrichment-label resultColumn">
-            {{ key | labelByLang | capitalize }}
+            {{ $filters.capitalize($filters.labelByLang(key)) }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label resultColumn">
-            {{ 'Type' | translatePhrase | capitalize }}
+            {{ $filters.capitalize($filters.translatePhrase('Type')) }}
           </div>
         </div>
         <div class="DetailedEnrichment-fieldRow">
@@ -363,8 +363,8 @@ export default {
       </div>
     </div>
     <div class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
-      <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ 'Cancel' | translatePhrase }}</button>
-      <button class="btn btn--md btn-primary" @click="confirm" @keyup.enter="confirm">{{ 'Enrich' | translatePhrase }}</button>
+      <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ $filters.translatePhrase('Cancel') }}</button>
+      <button class="btn btn--md btn-primary" @click="confirm" @keyup.enter="confirm">{{ $filters.translatePhrase('Enrich') }}</button>
     </div>
   </div>
 </template>

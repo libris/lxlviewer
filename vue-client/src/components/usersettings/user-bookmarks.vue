@@ -34,7 +34,7 @@ export default {
 <template>
   <section class="UserBookmarks">
     <div class="UserBookmarks-content">
-      <h4>{{'Bookmarks' | translatePhrase}}</h4>
+      <h4>{{ $filters.translatePhrase('Bookmarks') }}</h4>
       <div class="UserBookmarks-itemList">
         <div class="UserBookmarks-item" v-for="item in userBookmarks" :key="item['@id']">
           <div class="UserBookmarks-itemLabel">

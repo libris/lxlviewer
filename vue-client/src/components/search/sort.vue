@@ -93,7 +93,7 @@ export default {
     class="Sort" 
     :class="{ 'variantMaterial' : styleVariant === 'material' }"
     v-if="options">
-    <label class="Sort-label" for="sort-select">{{ 'Sorting' | translatePhrase }}{{ styleVariant === 'material' ? '' : ':' }}</label>
+    <label class="Sort-label" for="sort-select">{{ $filters.translatePhrase('Sorting') }}{{ styleVariant === 'material' ? '' : ':' }}</label>
     <select id="sort-select"
       class="Sort-select customSelect" 
       v-model="boundVal" 
@@ -102,7 +102,7 @@ export default {
         v-for="(option, index) in options" 
         :value="option.query.endsWith('_sortKeyByLang') ? `${option.query}.${user.settings.language || 'sv'}` : option.query"
         :key="index">
-        {{ option.label | translatePhrase }}
+        {{ $filters.translatePhrase(option.label) }}
       </option>
     </select>
   </div>

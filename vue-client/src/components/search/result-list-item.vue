@@ -120,7 +120,7 @@ export default {
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
         <span v-if="hiddenDetailsNumber > 1" class="ResultItem-showMore" @click="toggleShowKeys">
-          {{ showKeysText | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}
+          {{ $filters.translatePhrase(showKeysText) }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}
         </span>
       </div>
       <div class="ResultItem-tags" v-if="user.isLoggedIn && isImport === false">

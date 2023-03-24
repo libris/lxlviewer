@@ -72,7 +72,7 @@ export default {
 <template>
   <div class="EntityAction" :class="{'action-larger': isLarge, 'has-parent-hovered': parentHovered, 'is-placeholder': placeholder }"
     role="button"
-    :aria-label="label | translatePhrase"
+    :aria-label="$filters.translatePhrase(label)"
     tabindex="0"
     v-tooltip.top="translate(description)"
     @click="action()"
@@ -85,7 +85,7 @@ export default {
     <i :class="iconClassString">
     </i>
     <span class="action-label" v-show="isLarge">
-      {{ label | translatePhrase }}
+      {{ $filters.translatePhrase(label) }}
     </span>
   </div>
 </template>

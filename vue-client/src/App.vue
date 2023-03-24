@@ -7,11 +7,11 @@
 
     <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': (!status.panelOpen && user.settings.fullSiteWidth === false), 'container-fluid': (status.panelOpen || user.settings.fullSiteWidth), 'debug-mode': user.settings.appTech }">
       <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
-        {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
+        {{ $filters.translatePhrase('Debug mode activated. Click here to disable.') }}
       </div>
 
       <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
-        <vue-simple-spinner size="large" :message="status.loadingIndicators[0] | translatePhrase"></vue-simple-spinner>
+        <vue-simple-spinner size="large" :message="$filters.translatePhrase(status.loadingIndicators[0])"></vue-simple-spinner>
       </div>
 
       <div v-if="resourcesLoadingError" class="ResourcesLoadingError">

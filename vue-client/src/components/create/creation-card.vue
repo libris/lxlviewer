@@ -57,7 +57,7 @@ export default {
           @change="useBase($event)"
           aria-labelledby="CreationCard-selectLabel">
           <option id="CreationCard-selectLabel" class="CreationCard-option" selected disabled>
-            {{'Choose type' | translatePhrase}}
+            {{ $filters.translatePhrase('Choose type') }}
           </option>
           <option class="CreationCard-option"
             v-for="(term, index) in getClassTree" 
@@ -82,7 +82,7 @@ export default {
           :disabled="!isAllowed"
           @keyup.enter="useTemplate(template.value)" 
           @click="useTemplate(template.value)">
-            {{ 'Choose' | translatePhrase }}
+            {{ $filters.translatePhrase('Choose') }}
         </button>
         <a 
           class="CreationCard-select" 
@@ -90,7 +90,7 @@ export default {
           v-show="isActive" 
           @keyup.enter="useTemplate(template.value)" 
           @click="useTemplate(template.value)">
-            {{ 'Chosen' | translatePhrase }}
+            {{ $filters.translatePhrase('Chosen') }}
         </a>
       </div>
     </div>

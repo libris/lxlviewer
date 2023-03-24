@@ -280,7 +280,7 @@ export default {
         role="button"
         tabindex="0"
         ref="adderButton"
-        :aria-label="modalTitle | translatePhrase"
+        :aria-label="$filters.translatePhrase(modalTitle)"
         @click="show(), expand()" 
         @keyup.enter="show"
         v-tooltip.top="modalTitle"
@@ -292,7 +292,7 @@ export default {
       <i 
         class="FieldAdder-innerIcon fa fa-plus-circle fa-fw icon icon--sm">
       </i>
-      <span class="action-label">{{ "Add field" | translatePhrase }}</span>
+      <span class="action-label">{{ $filters.translatePhrase('Add field') }}</span>
     </span>
 
     <button v-if="!inner" class="FieldAdder-add btn btn-default toolbar-button" 
@@ -300,10 +300,10 @@ export default {
       ref="adderButton"
       @keyup.enter="show"
       v-tooltip.left="`${translate(modalTitle)} (${getKeybindText('open-field-adder')})`"
-      :aria-label="modalTitle | translatePhrase">
+      :aria-label="$filters.translatePhrase(modalTitle)">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
       </i>
-      <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
+      <span v-if="!inToolbar" class="FieldAdder-label"> {{ $filters.translatePhrase('Add field') }}</span>
     </button>
     <portal to="sidebar" v-if="active">
     <panel-component class="FieldAdder-panel FieldAdderPanel"
@@ -316,17 +316,17 @@ export default {
             type="text" 
             ref="input"
             class="FieldAdderPanel-filterInput customInput mousetrap" 
-            :placeholder="'Filter by' | translatePhrase"
-            :aria-label="'Filter by' | translatePhrase"
+            :placeholder="$filters.translatePhrase('Filter by')"
+            :aria-label="$filters.translatePhrase('Filter by')"
             v-model="filterKey">
         </div>
         <div class="FieldAdderPanel-filterInfo uppercaseHeading">
           <span>
-            {{ "Showing" | translatePhrase }} 
+            {{ $filters.translatePhrase('Showing') }} 
             {{ filteredResults.length }} 
-            {{ "of" | translatePhrase }} 
+            {{ $filters.translatePhrase('of') }} 
             {{allowed ? allowed.length : '0'}} 
-            {{ "total" | translatePhrase }}
+            {{ $filters.translatePhrase('total') }}
           </span>
         </div>
       </template>
@@ -335,10 +335,10 @@ export default {
           <!-- <span class="FieldAdderPanel-addControl">
           </span> -->
           <span class="FieldAdderPanel-fieldLabel uppercaseHeading">
-            {{ "Field label" | translatePhrase }}
+            {{ $filters.translatePhrase('Field label') }}
           </span>
           <span class="uppercaseHeading">
-            {{ "Can contain" | translatePhrase }}
+            {{ $filters.translatePhrase('Can contain') }}
           </span>
         </div>
       </template>
@@ -360,9 +360,9 @@ export default {
                   :disabled="prop.added"
                   :label="prop.added ? 'Added' : 'Add'"/>
               </span>
-              <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
-                {{prop.label | capitalize }}
-                <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
+              <span class="FieldAdderPanel-fieldLabel" :title="$filters.capitalize(prop.label)">
+                {{ $filters.capitalize(prop.label) }}
+                <span class="typeLabel">{{ $filters.removeDomain(prop.item['@id']) }}</span>
               </span>
               <span class="FieldAdderPanel-classInfo">
                 {{ getPropClassInfo(prop.item) }}
@@ -371,7 +371,7 @@ export default {
           </ul>
         </div>
         <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
-          <span>{{ "Did not find any fields" | translatePhrase }}...</span>
+          <span>{{ $filters.translatePhrase('Did not find any fields') }}...</span>
         </div>
       </template>
     </panel-component>

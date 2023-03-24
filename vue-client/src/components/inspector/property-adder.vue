@@ -278,17 +278,17 @@ export default {
             type="text" 
             ref="input"
             class="PropertyAdderPanel-filterInput customInput mousetrap" 
-            :placeholder="'Filter by' | translatePhrase"
-            :aria-label="'Filter by' | translatePhrase"
+            :placeholder="$filters.translatePhrase('Filter by')"
+            :aria-label="$filters.translatePhrase('Filter by')"
             v-model="filterKey">
         </div>
         <div class="PropertyAdderPanel-filterInfo uppercaseHeading">
           <span>
-            {{ "Showing" | translatePhrase }} 
+            {{ $filters.translatePhrase('Showing') }} 
             {{ filteredResults.length }} 
-            {{ "of" | translatePhrase }} 
+            {{ $filters.translatePhrase('of') }} 
             {{allowed ? allowed.length : '0'}} 
-            {{ "total" | translatePhrase }}
+            {{ $filters.translatePhrase('total') }}
           </span>
         </div>
       </template>
@@ -297,10 +297,10 @@ export default {
           <!-- <span class="PropertyAdderPanel-addControl">
           </span> -->
           <span class="PropertyAdderPanel-fieldLabel uppercaseHeading">
-            {{ "Field label" | translatePhrase }}
+            {{ $filters.translatePhrase('Field label') }}
           </span>
           <span class="uppercaseHeading">
-            {{ "Can contain" | translatePhrase }}
+            {{ $filters.translatePhrase('Can contain') }}
           </span>
         </div>
       </template>
@@ -322,9 +322,9 @@ export default {
                   :disabled="prop.added"
                   :label="prop.added ? 'Added' : 'Add'"/>
               </span>
-              <span class="PropertyAdderPanel-fieldLabel" :title="prop.label | capitalize">
-                {{prop.label | capitalize }}
-                <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
+              <span class="PropertyAdderPanel-fieldLabel" :title="$filters.capitalize(prop.label)">
+                {{ $filters.capitalize(prop.label) }}
+                <span class="typeLabel">{{ $filters.removeDomain(prop.item['@id']) }}</span>
               </span>
               <span class="PropertyAdderPanel-classInfo">
                 {{ getPropClassInfo(prop.item) }}
@@ -333,7 +333,7 @@ export default {
           </ul>
         </div>
         <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
-          <span>{{ "Did not find any fields" | translatePhrase }}...</span>
+          <span>{{ $filters.translatePhrase('Did not find any fields') }}...</span>
         </div>
       </template>
     </panel-component>

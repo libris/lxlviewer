@@ -123,22 +123,22 @@ export default {
       Du behöver även spara posten i nästa steg för att operationen ska slutföras.
     </div>
     <button class="btn btn-primary btn--lg" 
-      @click="openPicker">{{ 'Choose file' | translatePhrase }}</button>
+      @click="openPicker">{{ $filters.translatePhrase('Choose file') }}</button>
     <input type="file" 
       class="FilePicker" 
       ref="FilePicker" 
       accept=".jsonld,application/ld+json,text/*"
       aria-labelledby="Dropzone-description"/>
-    <hr/>{{ 'or' | translatePhrase }}<hr/>
+    <hr/>{{ $filters.translatePhrase('or') }}<hr/>
     <div class="Dropzone" :class="{'is-active': userIsDropping, 'is-invalid': invalidFile}">
       <div class="Dropzone-mask" ref="dropzone"></div>
       <div class="Dropzone-container">
         <div id="Dropzone-description" 
           class="Dropzone-description" 
-          v-if="!invalidFile">{{'Drop your file here' | translatePhrase}}</div>
+          v-if="!invalidFile">{{ $filters.translatePhrase('Drop your file here') }}</div>
         <div id="Dropzone-description" 
           class="Dropzone-description" 
-          v-else-if="invalidFile">{{'Invalid file' | translatePhrase}}</div>
+          v-else-if="invalidFile">{{ $filters.translatePhrase('Invalid file') }}</div>
       </div>
     </div>
   </div>

@@ -200,8 +200,8 @@ export default {
   <div class="ReverseRelations-container">
     <div class="ReverseRelations" v-if="recordType !== 'Item'">
       <div class="ReverseRelations-header uppercaseHeading--light">
-        <span v-if="mode === 'items'">{{"Holding" | translatePhrase}}</span>
-        <span v-else>{{"Used in" | translatePhrase}}</span>
+        <span v-if="mode === 'items'">{{ $filters.translatePhrase('Holding') }}</span>
+        <span v-else>{{ $filters.translatePhrase('Used in') }}</span>
       </div>
       <div class="ReverseRelations-btnContainer">
         <vue-simple-spinner class="ReverseRelations spinner compact"

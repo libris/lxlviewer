@@ -74,7 +74,7 @@ export default {
           @keydown.enter="go(0)" 
           @click="go(0)" 
           :tabindex="currentPage-1 < 0 ? -1 : 0">
-          {{'First' | translatePhrase}}
+          {{ $filters.translatePhrase('First') }}
         </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage-1 < 0 }">
@@ -107,7 +107,7 @@ export default {
           @keydown.enter="go(lastPageIndex)" 
           @click="go(lastPageIndex)" 
           :tabindex="currentPage === lastPageIndex ? -1 : 0">
-          {{'Last' | translatePhrase}}
+          {{ $filters.translatePhrase('Last') }}
         </a>
       </li>
     </ul>

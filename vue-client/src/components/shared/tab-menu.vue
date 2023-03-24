@@ -145,7 +145,7 @@ export default {
         role="tab">
           <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
+          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{$filters.translatePhrase(item.text)}}</span>
       </li>      
     </ul>
     <ul v-else class="TabMenu-tabList" ref="tablist">
@@ -163,7 +163,7 @@ export default {
             }">        
             <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
             <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
+            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{$filters.translatePhrase(item.text)}}</span>
           </router-link>
           <span v-if="item.badge" class="badge UserCare-badge" :class="'badge-' + item.badge.type">{{ item.badge.value }}</span>
       </li>

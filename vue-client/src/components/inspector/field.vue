@@ -711,7 +711,7 @@ export default {
             :class="{'disabled': activeModal}">
             <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
               role="button"
-              :aria-label="'Remove' | translatePhrase"
+              :aria-label="$filters.translatePhrase('Remove')"
               tabindex="0"
               v-on:click="removeThis(true)"
               @keyup.enter="removeThis(true)"
@@ -756,7 +756,7 @@ export default {
             ref="clipboardPaster">
             <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
               role="button"
-              :aria-label="'Paste entity' | translatePhrase"
+              :aria-label="$filters.translatePhrase('Paste entity')"
               @click="pasteClipboardItem"
               @keyup.enter="pasteClipboardItem"
               v-tooltip.top="translate('Paste entity')"
@@ -774,26 +774,26 @@ export default {
           <i class="fa fa-plus-circle icon--sm icon-added"></i>
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
-          <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
+          <span v-show="fieldKey === '@id'">{{ $filters.capitalize($filters.translatePhrase('ID')) }}</span>
+          <span v-show="fieldKey === '@type'">{{ $filters.capitalize($filters.translatePhrase(entityTypeArchLabel)) }}</span>
           <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" 
                 :title="fieldKey" 
                 @click="onLabelClick">
-            {{ (fieldRdfType || overrideLabel || fieldKey) | labelByLang | capitalize }}
+            {{ $filters.capitalize($filters.labelByLang(fieldRdfType || overrideLabel || fieldKey)) }}
           </span>
           <span class="Field-navigateHistory" 
                 v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" 
                 @click="onLabelClick"
                 v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
-            {{ (fieldRdfType || overrideLabel || fieldKey) | labelByLang | capitalize }}
+            {{ $filters.capitalize($filters.labelByLang(fieldRdfType || overrideLabel || fieldKey)) }}
           </span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
-            <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
+            <span :title="fieldKey">{{ $filters.capitalize($filters.translatePhrase('Incoming links')) }}</span>          
             <div class="Field-comment">
               <i class="fa fa-question-circle-o icon icon--sm"></i>
-              <span class="Field-commentText">{{ 'Non editable incoming link' | translatePhrase }}.
+              <span class="Field-commentText">{{ $filters.translatePhrase('Non editable incoming link') }}.
                 <br />
-                <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ 'Read more about incoming links' | translatePhrase }}.</a>
+                <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ $filters.translatePhrase('Read more about incoming links') }}.</a>
               </span>
             </div>
           </div>
@@ -802,12 +802,12 @@ export default {
       <code class="path-code" v-show="user.settings.appTech && !isInner">{{path}}</code>
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
-      <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>
+      <span v-show="fieldKey === '@id'">{{ $filters.capitalize($filters.translatePhrase('ID')) }}</span>
+      <span v-show="fieldKey === '@type'">{{ $filters.capitalize($filters.translatePhrase(entityTypeArchLabel)) }}</span>
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ $filters.capitalize($filters.labelByLang(fieldKey)) }}</span>
       <span class="Field-navigateHistory" v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" @click="onLabelClick"
             v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
-        {{ fieldKey | labelByLang | capitalize }}
+        {{ $filters.capitalize($filters.labelByLang(fieldKey)) }}
       </span>
       <!-- Is inner -->
       <div class="Field-actions is-nested">
@@ -843,7 +843,7 @@ export default {
           <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
             tabindex="0"
             role="button"
-            :aria-label="'Remove' | translatePhrase"
+            :aria-label="$filters.translatePhrase('Remove')"
             v-on:click="removeThis(true)"
             v-tooltip.top="translate('Remove')"
             @keyup.enter="removeThis(true)"
@@ -859,7 +859,7 @@ export default {
           ref="clipboardPaster">
           <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
             role="button"
-            :aria-label="'Paste entity' | translatePhrase"
+            :aria-label="$filters.translatePhrase('Paste entity')"
             @click="pasteClipboardItem"
             @keyup.enter="pasteClipboardItem"
             v-tooltip.top="translate('Paste entity')"
@@ -876,7 +876,7 @@ export default {
       <div class="Field-history-icon" v-if="diffAdded && !diffRemoved">
         <i class="fa fa-plus-circle icon--sm icon-added"></i>
       </div>
-      <!-- {{ key | labelByLang | capitalize }} -->
+      <!-- {{ $filters.capitalize($filters.labelByLang(key)) }} -->
     </div>
 
     <pre class="path-code" v-show="user.settings.appTech && isInner">{{path}}</pre>

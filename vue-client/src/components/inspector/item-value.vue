@@ -184,7 +184,7 @@ export default {
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value"
-      :aria-label="fieldKey | labelByLang"
+      :aria-label="$filters.labelByLang(fieldKey)"
       @focus="readyForSave(false)"
       @blur="update($event.target.value)"
       @keydown.exact="readyForSave(false)"
@@ -195,7 +195,7 @@ export default {
       v-if="isLocked && !shouldLink">{{fieldValue}}</span>
     <a class="ItemValue-text"
       v-if="isLocked && shouldLink"
-      :href="fieldValue | convertResourceLink" 
+      :href="$filters.convertResourceLink(fieldValue)" 
       target="_blank" 
       :title="`${fieldValue} (${newWindowText})`">
         {{fieldValue}} 
@@ -204,7 +204,7 @@ export default {
     <div class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       role="button"
-      :aria-label="'Remove' | translatePhrase"
+      :aria-label="$filters.translatePhrase('Remove')"
       v-on:click="removeThis()"
       v-tooltip.top="translate('Remove')"
       @focus="removeHover = true, removeHighlight($event, true)"

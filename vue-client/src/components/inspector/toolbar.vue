@@ -474,7 +474,7 @@ export default {
         @blur="showDisplayAs = false"
         @mouseover="showDisplayAs = true" 
         @mouseout="showDisplayAs = false"
-        :aria-label="'Show as' | translatePhrase">
+        :aria-label="$filters.translatePhrase('Show as')">
         <i class="fa fa-fw fa-eye" aria-hidden="true">
         </i>
         <span class="Toolbar-caret caret"></span>
@@ -483,22 +483,22 @@ export default {
         v-show="otherFormatMenuActive"
         @click="hideOtherFormatMenu" >
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="focusData.mainEntity['@id'] | convertResourceLink" target="_blank">
+          <a class="Toolbar-menuLink" :href="$filters.convertResourceLink(focusData.mainEntity['@id'])" target="_blank">
             <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
             Formell resurs</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld') | convertResourceLink" target="_blank">
+          <a class="Toolbar-menuLink" :href="$filters.convertResourceLink(getOtherDataFormat('jsonld'))" target="_blank">
             <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
             JSON-LD</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl') | convertResourceLink" target="_blank">
+          <a class="Toolbar-menuLink" :href="$filters.convertResourceLink(getOtherDataFormat('ttl'))" target="_blank">
             <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
             Turtle</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('rdf') | convertResourceLink">
+          <a class="Toolbar-menuLink" :href="$filters.convertResourceLink(getOtherDataFormat('rdf'))">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
             RDF/XML</a>
         </li>
@@ -514,7 +514,7 @@ export default {
         v-tooltip.left="translate('Tools')"
         @mouseover="showTools = true" 
         @mouseout="showTools = false"
-        :aria-label="'Tools' | translatePhrase">
+        :aria-label="$filters.translatePhrase('Tools')">
         <i class="fa fa-fw fa-wrench" aria-hidden="true">
         </i>
         <span class="Toolbar-caret caret"></span>
@@ -524,38 +524,38 @@ export default {
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" @click="formControl('expand-item'), hideToolsMenu()">
           <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
-          {{"Expand all" | translatePhrase}}{{ getKeybindText('expand-item') ? ` (${getKeybindText('expand-item')})` : ''}}
+          {{ $filters.translatePhrase('Expand all') }}{{ getKeybindText('expand-item') ? ` (${getKeybindText('expand-item')})` : ''}}
           </a>
         </li>
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" @click="formControl('collapse-item'), hideToolsMenu()">
           <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
-          {{"Collapse all" | translatePhrase}}{{ getKeybindText('collapse-item') ? ` (${getKeybindText('collapse-item')})` : ''}}
+          {{ $filters.translatePhrase('Collapse all') }}{{ getKeybindText('collapse-item') ? ` (${getKeybindText('collapse-item')})` : ''}}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
           <a class="Toolbar-menuLink"  @click="formControl('duplicate-item'), hideToolsMenu()">
           <i class="fa fa-fw fa-files-o"></i>
-          {{ "Make copy" | translatePhrase }}{{ getKeybindText('duplicate-item') ? ` (${getKeybindText('duplicate-item')})` : ''}}
+          {{ $filters.translatePhrase('Make copy') }}{{ getKeybindText('duplicate-item') ? ` (${getKeybindText('duplicate-item')})` : ''}}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && isSubClassOf('Instance') && !isSubClassOf('Electronic')">
           <a class="Toolbar-menuLink"  @click="recordControl('create-digital-reproduction'), hideToolsMenu()">
           <i class="fa fa-fw fa-wpforms"></i>
-          {{ "Create digital reproduction" | translatePhrase }}{{ getKeybindText('create-digital-reproduction') ? ` (${getKeybindText('create-digital-reproduction')})` : ''}}
+          {{ $filters.translatePhrase('Create digital reproduction') }}{{ getKeybindText('create-digital-reproduction') ? ` (${getKeybindText('create-digital-reproduction')})` : ''}}
           </a>
         </li>
         <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishTemplateSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
           <a class="Toolbar-menuLink" @click="showEmbellishTemplateSubMenu = !showEmbellishTemplateSubMenu">
             <i class="fa fa-fw fa-clipboard"></i>
-            <span>{{ "Embellish from template" | translatePhrase }}{{ getKeybindText('embellish-from-template') ? ` (${getKeybindText('embellish-from-template')})` : ''}}</span>
+            <span>{{ $filters.translatePhrase('Embellish from template') }}{{ getKeybindText('embellish-from-template') ? ` (${getKeybindText('embellish-from-template')})` : ''}}</span>
             <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishTemplateSubMenu, 'fa-caret-right': !showEmbellishTemplateSubMenu }"></i></span>
           </a>
         </li>
         <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishTemplateSubMenu && validTemplates.length === 0">
           <span class="Toolbar-menuLink">
             <i class="fa fa-fw fa-exclamation"></i>
-            {{ "No matching templates" | translatePhrase }}
+            {{ $filters.translatePhrase('No matching templates') }}
           </span>
         </li>
         <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showEmbellishTemplateSubMenu" :key="key">
@@ -567,60 +567,60 @@ export default {
         <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishFromRecordSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
           <a class="Toolbar-menuLink" @click="showEmbellishFromRecordSubMenu = !showEmbellishFromRecordSubMenu">
             <i class="fa fa-fw fa-clipboard"></i>
-            <span>{{ "Embellish from record" | translatePhrase }}{{ getKeybindText('embellish-from-record') ? ` (${getKeybindText('embellish-from-record')})` : ''}}</span>
+            <span>{{ $filters.translatePhrase('Embellish from record') }}{{ getKeybindText('embellish-from-record') ? ` (${getKeybindText('embellish-from-record')})` : ''}}</span>
             <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishFromRecordSubMenu, 'fa-caret-right': !showEmbellishFromRecordSubMenu }"></i></span>
           </a>
         </li>
         <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
           <a class="Toolbar-menuLink" @click="applyRecordAsTemplate">
           <i class="fa fa-fw fa-chain"></i>
-          {{ 'From ID' | translatePhrase }}
+          {{ $filters.translatePhrase('From ID') }}
           </a>
         </li>
         <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
           <a class="Toolbar-menuLink" @click="openTemplatePicker">
           <i class="fa fa-fw fa-upload"></i>
-            {{ 'From file' | translatePhrase }}
+            {{ $filters.translatePhrase('From file') }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing">
           <a class="Toolbar-menuLink" @click="detailedApplyRecordAsTemplate">
           <i class="fa fa-fw fa-clipboard"></i>
-          {{ 'Detailed enrichment' | translatePhrase }}
+          {{ $filters.translatePhrase('Detailed enrichment') }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
           <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledRecord()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-              {{"Download compiled" | translatePhrase}} MARC21
+              {{ $filters.translatePhrase('Download compiled') }} MARC21
           </a>
-          <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl | convertResourceLink">
+          <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="$filters.convertResourceLink(compileMARCUrl)">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-              {{"Download compiled" | translatePhrase}} MARC21
+              {{ $filters.translatePhrase('Download compiled') }} MARC21
           </a>
         </li>
         <li class="Toolbar-menuItem">
           <a class="Toolbar-menuLink" @click="recordControl('download-json'), hideToolsMenu()">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-            {{"Download" | translatePhrase}} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{'Incl. unsaved changes' | translatePhrase}})</span>
+            {{ $filters.translatePhrase('Download') }} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{ $filters.translatePhrase('Incl. unsaved changes') }})</span>
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="enableMarcPreview">
           <a class="Toolbar-menuLink" @click="openMarc()">
             <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
-            {{ "Preview MARC21" | translatePhrase }}  {{ getKeybindText('preview-marc') ? ` (${getKeybindText('preview-marc')})` : ''}}
+            {{ $filters.translatePhrase('Preview MARC21') }}  {{ getKeybindText('preview-marc') ? ` (${getKeybindText('preview-marc')})` : ''}}
           </a>
         </li>
         <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToRemove">
           <a class="Toolbar-menuLink"  @click="recordControl('remove-record')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
-          {{"Remove" | translatePhrase}} {{ recordType | labelByLang | lowercase }}
+          {{ $filters.translatePhrase('Remove') }} {{ $filters.labelByLang(recordType).toLowerCase() }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech && userIsPermittedToEdit">
           <a class="Toolbar-menuLink" @click="openOverridePicker">
           <i class="fa fa-fw fa-upload"></i>
-          {{ 'Overwrite data' | translatePhrase }}
+          {{ $filters.translatePhrase('Overwrite data') }}
           </a>
         </li>
       </ul>
@@ -643,7 +643,7 @@ export default {
       @click="undo" 
       @mouseover="showUndo = true" 
       @mouseout="showUndo = false"
-      :aria-label="'Undo' | translatePhrase">
+      :aria-label="$filters.translatePhrase('Undo')">
       <i class="fa fa-undo" aria-hidden="true">
       </i>
     </button>
@@ -654,7 +654,7 @@ export default {
       v-tooltip.left="`${translate('Cancel')} (${getKeybindText('cancel-edit')})`"
       @mouseover="showCancel = true" 
       @mouseout="showCancel = false"
-      :aria-label="'Cancel' | translatePhrase">
+      :aria-label="$filters.translatePhrase('Cancel')">
       <i class="fa fa-close" aria-hidden="true">
       </i>
     </button>
@@ -665,7 +665,7 @@ export default {
       @mouseover="showSave = true" 
       @mouseout="showSave = false"
       v-tooltip.left="`${translate('Save')} (${getKeybindText('save-item')})`"
-      :aria-label="'Save' | translatePhrase">
+      :aria-label="$filters.translatePhrase('Save')">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
       </i>
@@ -676,7 +676,7 @@ export default {
       v-tooltip.left="`${ isNewRecord ? translate('Create record') : translate('Save and stop editing') } (${ isNewRecord ? getKeybindText('save-item') : getKeybindText('save-item-done') })`"
       @mouseover="showClarifySave = true"
       @mouseout="showClarifySave = false"
-      :aria-label="'Save and stop editing' | translatePhrase">
+      :aria-label="$filters.translatePhrase('Save and stop editing')">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
       <i class="fa fa-fw fa-check" v-show="!inspector.status.saving">
       </i>
@@ -688,7 +688,7 @@ export default {
       v-tooltip.left="`${ translate('Edit') } (${ getKeybindText('edit-item') })`"
       @mouseover="showEdit = true" 
       @mouseout="showEdit = false"
-      :aria-label="'Edit' | translatePhrase">
+      :aria-label="$filters.translatePhrase('Edit')">
       <i class="fa fa-fw fa-pencil-square-o" v-show="!inspector.status.opening"></i>
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
     </button>
