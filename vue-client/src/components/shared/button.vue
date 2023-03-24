@@ -80,18 +80,18 @@ export default {
   },
   computed: {
     computedLabel() {
-      return this.disabled ? '' : this.$options.filters.translatePhrase(this.label);
+      return this.disabled ? '' : this.$filters.translatePhrase(this.label);
     },
     computedButtonText() {
       if (isArray(this.buttonText)) {
         let buttonText = '';
         for (let i = 0; i < this.buttonText.length; i++) {
-          buttonText += this.$options.filters.translatePhrase(this.buttonText[i]);
+          buttonText += this.$filters.translatePhrase(this.buttonText[i]);
           buttonText += ' ';
         }
         return buttonText;
       }
-      return this.$options.filters.translatePhrase(this.buttonText);
+      return this.$filters.translatePhrase(this.buttonText);
     },
   },
   components: {

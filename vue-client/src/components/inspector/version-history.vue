@@ -135,7 +135,7 @@ export default {
       return null;
     },
     editorTabs() {
-      return [{ id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+      return [{ id: 'mainEntity', text: this.$filters.labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' }];
     },
   },

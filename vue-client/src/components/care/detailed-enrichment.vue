@@ -42,7 +42,7 @@ export default {
     },
     formTabs() {
       return [
-        { id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+        { id: 'mainEntity', text: this.$filters.labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' },
       ];
     },
