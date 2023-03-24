@@ -190,7 +190,7 @@ export default {
         @go="setCreation" 
         :tabs="creationList" 
         :active="selectedCreation"
-        v-on-clickaway="hideSigelHint" />
+        v-click-away="hideSigelHint" />
 
       <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card

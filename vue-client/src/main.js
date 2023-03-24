@@ -25,6 +25,7 @@ import Field from '@/components/inspector/field';
 import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
 import i18n from '@/resources/json/i18n.json';
+import VueClickAway from "vue3-click-away";
 
 const TooltipOptions = {
   popover: {
@@ -285,6 +286,7 @@ const app = createApp({
   .use(PortalVue)
   .use(VTooltip, TooltipOptions)
   .use(VueClipboard)
+  .use(VueClickAway)
   //.component('v-popover', VTooltip.VPopover)
   .component('FocusTrap', FocusTrap)
   .component('field', Field)

@@ -464,7 +464,7 @@ export default {
     <input type="file" class="OverridePicker" ref="OverridePicker" accept=".jsonld,application/ld+json,text/*" tabindex="-1" aria-hidden="true"/>
     <div class="dropdown Toolbar-menu OtherFormatMenu"
       v-if="!inspector.status.editing" 
-      v-on-clickaway="hideOtherFormatMenu">
+      v-click-away="hideOtherFormatMenu">
       <button class="Toolbar-btn btn btn-default OtherFormatMenu-button" 
         @click="showOtherFormatMenu" 
         aria-haspopup="true" 
@@ -506,7 +506,7 @@ export default {
     </div>
 
     <div class="dropdown Toolbar-menu ToolsMenu" 
-      v-on-clickaway="hideToolsMenu">
+      v-click-away="hideToolsMenu">
       <button class="Toolbar-btn btn btn-default ToolsMenu-button" 
         @click="showToolsMenu" 
         aria-haspopup="true" 

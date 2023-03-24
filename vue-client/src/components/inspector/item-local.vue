@@ -549,7 +549,7 @@ export default {
           :parent-hovered="isHovered"
           :is-large="false"
         />
-        <div class="dropdown ManagerMenu" v-on-clickaway="closeManagerMenu" v-if="managerMenuOpen"
+        <div class="dropdown ManagerMenu" v-click-away="closeManagerMenu" v-if="managerMenuOpen"
           @mouseover="addHighlight('info')"
           @mouseout="removeHighlight('info')">
           <ul class="dropdown-menu ManagerMenu-menuList">

@@ -142,7 +142,7 @@ export default {
           <user-settings 
             v-if="showUserMenu && !isUserPage" 
             compact 
-            v-on-clickaway="hideUserMenu" />
+            v-click-away="hideUserMenu" />
         </li>
         <li class="MainNav-item" v-if="!user.isLoggedIn">
             <span class="MainNav-link" @click="login" @keyup.enter="login">

@@ -240,7 +240,7 @@ export default {
 <template>
   <div class="FilterSelect"
     :class="[{'variantMaterial' : styleVariant === 'material'}, className]"
-    v-on-clickaway="close"
+    v-click-away="close"
     :tabindex="0"
     @keydown.space="preventBodyScroll"
     @keyup.space="focusOnInput">

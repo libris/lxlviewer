@@ -189,7 +189,7 @@ export default {
         v-show="isExpanded"
         @click="toggleSortDropDown"
         @keyup.enter="toggleSortDropDown"
-        v-on-clickaway="hideSortDropDown"
+        v-click-away="hideSortDropDown"
         :class="{'active': sortDropDownActive}"
       >
         <i v-if="chosenSort == 'amount.desc'" class="icon-selected fa fa-fw fa-sort-amount-desc"></i>
