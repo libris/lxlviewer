@@ -2,7 +2,7 @@
 /*
   Fixed toolbar
 */
-import { mixin as clickaway } from 'vue-clickaway';
+import { mixin as clickaway } from 'vue3-click-away';
 import { mapGetters } from 'vuex';
 import { get } from 'lodash-es';
 import * as LxlDataUtil from 'lxljs/data';

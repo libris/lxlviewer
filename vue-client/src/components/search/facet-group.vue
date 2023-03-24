@@ -1,6 +1,6 @@
 <script>
 import { sortBy, orderBy } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { mixin as clickaway } from 'vue3-click-away';
 import * as DisplayUtil from 'lxljs/display';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';

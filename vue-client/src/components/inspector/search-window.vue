@@ -1,6 +1,6 @@
 <script>
 import { merge, cloneDeep } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { mixin as clickaway } from 'vue3-click-away';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';

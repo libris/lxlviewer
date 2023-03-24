@@ -1,6 +1,6 @@
 <script>
 import { sortBy } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { mixin as clickaway } from 'vue3-click-away';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as RecordUtil from '@/utils/record';

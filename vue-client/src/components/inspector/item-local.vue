@@ -1,6 +1,6 @@
 <script>
 import { cloneDeep, get } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { mixin as clickaway } from 'vue3-click-away';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';

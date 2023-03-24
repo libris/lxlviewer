@@ -3,7 +3,7 @@
   Adds custom select menu with searchable options
 */
 import { forEach } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { mixin as clickaway } from 'vue3-click-away';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';

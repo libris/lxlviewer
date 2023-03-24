@@ -3,7 +3,7 @@
   Presentation of type label and changed/created text nodes.
 */
 
-import { mixin as clickaway } from 'vue-clickaway';
+import { mixin as clickaway } from 'vue3-click-away';
 import { mapGetters } from 'vuex';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';

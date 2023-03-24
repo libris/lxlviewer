@@ -3,7 +3,7 @@
   Controls add new field button and add field modal with it's content
 */
 
-import { mixin as clickaway } from 'vue-clickaway';
+import { mixin as clickaway } from 'vue3-click-away';
 import { filter, isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';

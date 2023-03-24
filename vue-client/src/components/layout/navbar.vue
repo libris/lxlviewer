@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import { mixin as clickaway } from 'vue-clickaway';
+import { mixin as clickaway } from 'vue3-click-away';
 import * as StringUtil from 'lxljs/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import TabMenu from '@/components/shared/tab-menu';
