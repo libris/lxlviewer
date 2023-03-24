@@ -15,7 +15,8 @@ module.exports = {
   parallel: false,
   configureWebpack: {
     devServer: {
-      public: process.env.VUE_APP_DEV_SERVER || 'kblocalhost.kb.se',
+      //public: process.env.VUE_APP_DEV_SERVER || 'kblocalhost.kb.se',
+      port: 5000
     },
     resolve: {
       extensions: ['.js', '.vue', '.json'],
@@ -24,18 +25,25 @@ module.exports = {
         '@': path.resolve('src/'),
         modernizr$: path.resolve(__dirname, '.modernizrrc'),
       },
+      fallback: {
+        // SEE: https://github.com/mulesoft-labs/js-client-oauth2/issues/190
+        querystring: require.resolve('querystring-es3'),
+      }
     },
-    plugins: [
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    ],
-    watchOptions: {
-      ignored: [
-        /node_modules([\\]+|\/)+(?!lxljs)/,
-      ],
-    },
+    // TODO make this work again
+    //plugins: [
+    //  new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    //],
+    // TODO make this work again
+    //watchOptions: {
+    //  ignored: [
+    //    /node_modules([\\]+|\/)+(?!lxljs)/,
+    //  ],
+    //},
   },
   chainWebpack(config) {
     config.resolve.symlinks(process.env.NODE_ENV !== 'production');
+    config.resolve.alias.set('vue', '@vue/compat')
     config.module
       .rule('vue')
       .use('vue-loader')
@@ -45,6 +53,9 @@ module.exports = {
         compilerOptions: {
           ...options.compilerOptions,
           preserveWhitespace: true,
+          compatConfig: {
+              MODE: 2
+          },
         },
       }));
     config.module
