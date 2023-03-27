@@ -23,10 +23,10 @@ import ItemNumeric from './item-numeric';
 import ItemGrouped from './item-grouped';
 import ItemShelfControlNumber from './item-shelf-control-number';
 import ItemNextShelfControlNumber from './item-next-shelf-control-number';
+import ItemBylang from './item-bylang';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
-import ItemBylang from './item-bylang';
 import LanguageMixin from '../mixins/language-mixin';
 
 export default {
@@ -1205,11 +1205,6 @@ export default {
     display: block;
 
     .icon-hover();
-        
-    &:hover:not(.is-locked) {
-      background: @field-background-hover;
-      box-shadow: inset 0 0 0 1px @grey-lighter;
-    }
 
     &.is-locked:not(.is-new),
     .Field--inner & {

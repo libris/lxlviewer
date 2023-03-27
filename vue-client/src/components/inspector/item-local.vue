@@ -460,8 +460,9 @@ export default {
     :id="`formPath-${path}`"
     :class="{
       'is-highlighted': isLastAdded,
-      'highlight-info': highlights.indexOf('info') > -1,
+      'highlight-mark': highlights.indexOf('mark') > -1,
       'highlight-remove': highlights.indexOf('remove') > -1,
+      'highlight-info': highlights.indexOf('info') > -1,
       'is-expanded': expanded && !isEmpty,
       'is-entity': !isEmbedded,
       'is-extractable': isExtractable && !isEmbedded,
@@ -472,7 +473,10 @@ export default {
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
-    @blur="removeFocus()">
+    @blur="removeFocus()"
+    @mouseover.stop="addHighlight('mark')"
+    @mouseout.stop="removeHighlight('mark')"
+  >
 
     <div class="ItemLocal-heading" ref="heading"
       @mouseover="isHovered = true"
@@ -662,6 +666,10 @@ export default {
     .icon-hover();
   }
 
+  &.highlight-mark:not(.highlight-info):not(.highlight-remove) {
+    background-color: @field-background-hover;
+    border-color: @grey-light;
+  }
   &.highlight-info {
     background-color: @form-mark;
   }
@@ -789,6 +797,7 @@ export default {
   }
 
   &.is-extractable {
+    border: 1px solid @grey-lighter;
     box-shadow: 0 2px 5px rgba(0,0,0,.16);
     margin: 1rem 0 1rem 0;
   }
