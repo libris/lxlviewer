@@ -43,7 +43,6 @@ module.exports = {
   },
   chainWebpack(config) {
     config.resolve.symlinks(process.env.NODE_ENV !== 'production');
-    config.resolve.alias.set('vue', '@vue/compat')
     config.module
       .rule('vue')
       .use('vue-loader')
@@ -53,9 +52,6 @@ module.exports = {
         compilerOptions: {
           ...options.compilerOptions,
           preserveWhitespace: true,
-          compatConfig: {
-              MODE: 2
-          },
         },
       }));
     config.module
