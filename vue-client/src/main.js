@@ -10,7 +10,6 @@ import { each } from 'lodash-es';
 import VTooltip from 'v-tooltip';
 import { FocusTrap } from 'focus-trap-vue';
 import PortalVue from 'portal-vue';
-import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
 import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
 import moment from 'moment';
@@ -285,7 +284,7 @@ const app = createApp({
   .use(Vuex)
   .use(PortalVue)
   .use(VTooltip, TooltipOptions)
-  .use(VueClipboard)
+  //.use(VueClipboard) TODO: replace with a Vue 3-compatible equivalent
   .use(VueClickAway)
   //.component('v-popover', VTooltip.VPopover)
   .component('FocusTrap', FocusTrap)
