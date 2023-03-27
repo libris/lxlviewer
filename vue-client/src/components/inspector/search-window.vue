@@ -1,7 +1,7 @@
 <script>
 import { merge, cloneDeep } from 'lodash-es';
 import { mixin as clickaway } from 'vue3-click-away';
-import VueSimpleSpinner from 'vue-simple-spinner';
+//import VueSimpleSpinner from 'vue-simple-spinner';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -65,7 +65,7 @@ export default {
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
     'param-select': ParamSelect,
-    'vue-simple-spinner': VueSimpleSpinner,
+    //'vue-simple-spinner': VueSimpleSpinner,
     'button-component': Button,
     sort: Sort,
   },
@@ -275,14 +275,14 @@ export default {
             <p v-if="itemInfo && extractable"> {{ $filters.translatePhrase('If you can\'t find an existing link, you can create one using your local entity below') }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="searchInProgress">
-            <vue-simple-spinner size="large" :message="$filters.translatePhrase('Searching')"></vue-simple-spinner>
+            <!--<vue-simple-spinner size="large" :message="$filters.translatePhrase('Searching')"></vue-simple-spinner>-->
           </div>
           <div class="PanelComponent-searchStatus" v-show="foundNoResult">
             <p>{{ $filters.translatePhrase('Your search gave no results') }}.</p>
             <p v-if="itemInfo && extractable">{{ $filters.translatePhrase('Try again') }} {{ $filters.translatePhrase('or create a link from your local data below') }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="extracting">
-            <vue-simple-spinner size="large" :message="$filters.translatePhrase('Creating link')"></vue-simple-spinner>
+            <!--<vue-simple-spinner size="large" :message="$filters.translatePhrase('Creating link')"></vue-simple-spinner>-->
           </div>
         </template>
         <template slot="panel-footer">

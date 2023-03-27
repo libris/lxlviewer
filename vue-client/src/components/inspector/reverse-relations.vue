@@ -1,5 +1,5 @@
 <script>
-import VueSimpleSpinner from 'vue-simple-spinner';
+//import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -150,7 +150,7 @@ export default {
   components: {
     'create-item-button': CreateItemButton,
     'relations-list': RelationsList,
-    'vue-simple-spinner': VueSimpleSpinner,
+    //'vue-simple-spinner': VueSimpleSpinner,
     'rounded-button': RoundedButton,
   },
   watch: {
@@ -204,10 +204,10 @@ export default {
         <span v-else>{{ $filters.translatePhrase('Used in') }}</span>
       </div>
       <div class="ReverseRelations-btnContainer">
-        <vue-simple-spinner class="ReverseRelations spinner compact"
+        <!--<vue-simple-spinner class="ReverseRelations spinner compact"
           v-if="checkingRelations" 
           size="small">
-        </vue-simple-spinner>
+        </vue-simple-spinner>-->
         <create-item-button class="ReverseRelations-button"
         v-if="!checkingRelations && mode === 'items' && user.isLoggedIn && user.getPermissions().registrant" 
         :compact="compact"

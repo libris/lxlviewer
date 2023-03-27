@@ -1,7 +1,7 @@
 <script>
 import { each, isArray, isPlainObject } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
+//import VueSimpleSpinner from 'vue-simple-spinner';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
@@ -225,7 +225,7 @@ export default {
     TabMenu,
     'facet-controls': FacetControls,
     'search-result': SearchResult,
-    'vue-simple-spinner': VueSimpleSpinner,
+    //'vue-simple-spinner': VueSimpleSpinner,
   },
 };
 
@@ -245,7 +245,7 @@ export default {
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">
         <div class="Find-progressText">
-          <vue-simple-spinner size="large" :message="$filters.translatePhrase('Searching')"></vue-simple-spinner>
+          <!--<vue-simple-spinner size="large" :message="$filters.translatePhrase('Searching')"></vue-simple-spinner>-->
         </div>
     </div>
     <div 

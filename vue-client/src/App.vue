@@ -11,7 +11,7 @@
       </div>
 
       <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
-        <vue-simple-spinner size="large" :message="$filters.translatePhrase(status.loadingIndicators[0])"></vue-simple-spinner>
+        <!--<vue-simple-spinner size="large" :message="$filters.translatePhrase(status.loadingIndicators[0])"></vue-simple-spinner>-->
       </div>
 
       <div v-if="resourcesLoadingError" class="ResourcesLoadingError">
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import VueSimpleSpinner from 'vue-simple-spinner';
+//import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters, mapActions } from 'vuex';
 import Navbar from '@/components/layout/navbar';
 import SearchBar from '@/components/layout/search-bar';
@@ -185,7 +185,7 @@ export default {
     'notification-list': NotificationList,
     EnvironmentBanner,
     GlobalMessages,
-    'vue-simple-spinner': VueSimpleSpinner,
+    //'vue-simple-spinner': VueSimpleSpinner,
   },
 };
 </script>

@@ -1,7 +1,7 @@
 <script>
 import { isPlainObject, each } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
+//import VueSimpleSpinner from 'vue-simple-spinner';
 import * as httpUtil from '@/utils/http';
 import * as RecordUtil from '@/utils/record';
 
@@ -198,7 +198,7 @@ export default {
     // },
   },
   components: {
-    'vue-simple-spinner': VueSimpleSpinner,
+    //'vue-simple-spinner': VueSimpleSpinner,
   },
   mounted() {
     this.remoteQuery = this.remoteSearch.q;
@@ -238,7 +238,7 @@ export default {
     </div> -->
     <portal to="facetColumn">
       <div v-show="remoteDatabases.state == 'loading'" class="RemoteDatabases-searchStatus">
-        <vue-simple-spinner size="medium" :message="$filters.translatePhrase('Loading external databases')"></vue-simple-spinner>
+        <!--<vue-simple-spinner size="medium" :message="$filters.translatePhrase('Loading external databases')"></vue-simple-spinner>-->
       </div>
       <div class="RemoteDatabases-searchStatus" v-show="remoteDatabases.state == 'error'">
         <p class="RemoteDatabases-statusText">

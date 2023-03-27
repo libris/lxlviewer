@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
+//import VueSimpleSpinner from 'vue-simple-spinner';
 import { partition, flatten } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
@@ -181,7 +181,7 @@ export default {
     'modal-pagination': ModalPagination,
     'panel-component': PanelComponent,
     'panel-search-list': PanelSearchList,
-    'vue-simple-spinner': VueSimpleSpinner,
+    //'vue-simple-spinner': VueSimpleSpinner,
   },
   watch: {
     builtQuery(val, oldVal) {
@@ -227,7 +227,7 @@ export default {
       </template>
       <template slot="panel-body">
         <div class="PanelComponent-searchStatus" v-show="loading">
-          <vue-simple-spinner size="large" :message="$filters.translatePhrase('Searching')"></vue-simple-spinner>
+          <!--<vue-simple-spinner size="large" :message="$filters.translatePhrase('Searching')"></vue-simple-spinner>-->
         </div>
         <panel-search-list
           class="RelationsList-resultListContainer"
