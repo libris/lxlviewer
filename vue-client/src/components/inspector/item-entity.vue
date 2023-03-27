@@ -182,7 +182,7 @@ export default {
       :id="`formPath-${path}`"
       class="ItemEntity-content"
       v-show="!isCardWithData || !expanded">
-      <v-popover class="ItemEntity-popover" placement="bottom-start" @show="$refs.previewCard.populateData()">
+      <VDropdown class="ItemEntity-popover" placement="bottom-start" @show="$refs.previewCard.populateData()">
         <div class="ItemEntity chip" 
           tabindex="0"
           ref="chip"
@@ -218,10 +218,10 @@ export default {
             </i>
           </div>
         </div>
-        <template slot="popover">
+        <template slot="popper">
           <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
         </template>
-      </v-popover> 
+      </VDropdown>
     </div>
     
     <div class="ItemEntity-cardContainer" v-if="isCardWithData && expanded">

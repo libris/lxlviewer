@@ -190,15 +190,15 @@ export default {
       </span>
       <span class="LanguageEntry-value">
         <span class="LanguageEntry-pill" v-if="tag !== 'none'">
-          <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
+          <v-dropdown v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
             @show="$refs.previewCard.populateData()">
             <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
               <router-link :to="routerPath">{{ this.label }}</router-link>
             </span>
-            <template slot="popover">
+            <template slot="popper">
               <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
             </template>
-          </v-popover>
+          </v-dropdown>
 
           <span class="LanguageEntry-pill-removeButton">
             <i class="fa fa-times-circle icon icon--sm chip-icon"
@@ -274,16 +274,16 @@ export default {
 
         <span class="LanguageEntry-tags">
           <span class="LanguageEntry-pill" v-if="tag !== 'none'">
-            <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
+            <v-dropdown v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
               @show="$refs.previewCard.populateData()">
               <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
                 <router-link :to="routerPath">{{ this.label }}</router-link>
               </span>
 
-              <template slot="popover">
+              <template slot="popper">
                 <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
               </template>
-            </v-popover>
+            </v-dropdown>
 
             <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
               {{ this.label }}

@@ -286,7 +286,7 @@ const app = createApp({
   .use(store)
   .use(Vuex)
   .use(PortalVue)
-  .use(FloatingVue, TooltipOptions) // TODO: set options (.use(FloatingVue, TooltipOptions))
+  .use(FloatingVue) // TODO: set options (.use(FloatingVue, TooltipOptions))
   //.use(VueClipboard) TODO: replace with a Vue 3-compatible equivalent
   .use(VueClickAway)
   //.component('v-popover', VTooltip.VPopover)

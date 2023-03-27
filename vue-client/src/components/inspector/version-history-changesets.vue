@@ -79,12 +79,12 @@ export default {
         <span class="ChangeSet-author" :class="{ 'selected': selectedVersion == index }">
           <SummaryNode :is-static="true" :hover-links="false" :handle-overflow="false" v-if="changeSet.agent && !isGlobalChanges(changeSet)" :item="changeSet.agent" :is-last="true" :field-key="'agent'"/>
           <span v-if="isGlobalChanges(changeSet)">
-                <v-popover placement="bottom-start">
+                <v-dropdown placement="bottom-start">
                   {{ $filters.translatePhrase('Libris global changes') }}
-                  <template slot="popover">
+                  <template slot="popper">
                     <span>{{changeSet.agent['@id']}}</span>
                   </template>
-                </v-popover>
+                </v-dropdown>
           </span>
         </span>
       </div>

@@ -70,15 +70,15 @@ export default {
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
-    <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
+    <v-dropdown v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
         <a v-if="!isLibrisResource" :href="$filters.convertResourceLink(focusData['@id'])">{{getItemLabel}}</a>
       </span>
-      <template slot="popover" v-if="hoverLinks">
+      <template slot="popper" v-if="hoverLinks">
         <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
       </template>
-    </v-popover>
+    </v-dropdown>
   </div>
 </template>
 
