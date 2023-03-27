@@ -7,7 +7,7 @@ import { createApp } from 'vue';
 import Vuex from 'vuex'; // eslint-disable-line import/no-duplicates
 import { mapGetters } from 'vuex'; // eslint-disable-line import/no-duplicates
 import { each } from 'lodash-es';
-import VTooltip from 'v-tooltip';
+import FloatingVue from 'floating-vue'
 import { FocusTrap } from 'focus-trap-vue';
 import PortalVue from 'portal-vue';
 import ComboKeys from 'combokeys';
@@ -26,6 +26,8 @@ import KeyBindings from '@/resources/json/keybindings.json';
 import i18n from '@/resources/json/i18n.json';
 import VueClickAway from "vue3-click-away";
 
+/*
+TODO: replace with floating-vue options https://floating-vue.starpad.dev/guide/config.html
 const TooltipOptions = {
   popover: {
     defaultPlacement: 'bottom',
@@ -53,6 +55,7 @@ const TooltipOptions = {
     defaultHandleResize: true,
   },
 };
+*/
 
 const app = createApp({
     extends: App,
@@ -283,7 +286,7 @@ const app = createApp({
   .use(store)
   .use(Vuex)
   .use(PortalVue)
-  .use(VTooltip, TooltipOptions)
+  .use(FloatingVue, TooltipOptions) // TODO: set options (.use(FloatingVue, TooltipOptions))
   //.use(VueClipboard) TODO: replace with a Vue 3-compatible equivalent
   .use(VueClickAway)
   //.component('v-popover', VTooltip.VPopover)
