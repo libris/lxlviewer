@@ -6913,10 +6913,10 @@ popsicle@^12.0.5:
     servie "^4.3.3"
     throwback "^4.1.0"
 
-portal-vue@^1.5.0:
-  version "1.5.1"
-  resolved "https://registry.npmjs.org/portal-vue/-/portal-vue-1.5.1.tgz"
-  integrity sha512-7T0K+qyY8bnjnEpQTiLbGsUaGlFcemK9gLurVSr6x1/qzr2HkHDNCOz5i+xhuTD1CrXckf/AGeCnLzvmAHMOHw==
+portal-vue@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/portal-vue/-/portal-vue-3.0.0.tgz#0f60fe3540e479d18f998d32d415c50c8e17c9a9"
+  integrity sha512-9eprMxNURLx6ijbcgkWjYNcTWJYu/H8QF8nyAeBzOmk9lKCea01BW1hYBeLkgz+AestmPOvznAEOFmNuO4Adjw==
 
 portfinder@^1.0.26:
   version "1.0.28"
