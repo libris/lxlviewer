@@ -182,8 +182,18 @@ export default {
       const element = this.$el;
       LayoutUtil.ensureInViewport(element);
     },
+    addHoverHightlight() {
+      if (!this.isHistoryView() && !this.isLocked) {
+        this.addHighlight('mark');
+      }
+    },
     addHighlight(type) {
       this.highlights.push(type);
+    },
+    removeHoverHightlight() {
+      if (!this.isHistoryView() && !this.isLocked) {
+        this.removeHighlight('mark');
+      }
     },
     removeHighlight(type) {
       this.highlights.splice(this.highlights.indexOf(type));
@@ -474,8 +484,8 @@ export default {
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
     @blur="removeFocus()"
-    @mouseover.stop="addHighlight('mark')"
-    @mouseout.stop="removeHighlight('mark')"
+    @mouseover.stop="addHoverHightlight()"
+    @mouseout.stop="removeHoverHightlight()"
   >
 
     <div class="ItemLocal-heading" ref="heading"
@@ -492,10 +502,6 @@ export default {
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>
-        <div class="icon-container" v-if="isExtractable && !isEmbedded && isLocked">
-          <i class="fa fa-fw fa-chain-broken icon--sm icon-link"
-            v-tooltip.top="translate('Unlinked entity')"></i>
-        </div>
         <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
           <i class="fa fa-trash-o icon--sm icon-removed"></i>
         </span>
@@ -801,36 +807,6 @@ export default {
     box-shadow: 0 2px 5px rgba(0,0,0,.16);
     margin: 1rem 0 1rem 0;
   }
-
-  .icon-link {
-    margin-right: 10px;
-    display: block;
-    color: @grey-dark;
-    grid-area: link;
-    width: 1.2em;
-    height: 1.2em;
-    line-height: 1.2em;
-    padding-left: 0.75rem;
-    padding-right: 2px;
-  }
-
-  .icon-container {
-    display: grid;
-    justify-items: start;
-    align-items: center;
-    grid-template-columns: auto;
-    grid-template-areas:
-    "link";
-    border-radius: 2em;
-    min-width: 20px;
-    height: 22px;
-    overflow: hidden;
-    background-color: rgba(191, 198, 202, 0.20);
-    margin: 0.5rem 0.5rem;
-    margin-left: auto;
-    margin-right: 0;
-  }
-
   &.is-diff-removed {
     @base-color: @remove;
     border: 1px dashed;
