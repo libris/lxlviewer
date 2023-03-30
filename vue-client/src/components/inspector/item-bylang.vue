@@ -149,7 +149,7 @@ export default {
       if (this.isHistoryView()) {
         return;
       }
-
+      console.log('updating');
       // Update propByLang
       const byLangPath = this.getByLangPath();
       const oldLangMap = cloneDeep(get(this.inspector.data, byLangPath));
@@ -172,7 +172,10 @@ export default {
       }
       const newData = this.dataForm(viewObjects);
       const oldData = cloneDeep(get(this.inspector.data, this.path));
+      console.log('newData vs', JSON.stringify(newData));
+      console.log('oldData', JSON.stringify(oldData));
       if (!isEqual(oldData, newData)) {
+        console.log('updating for real with', JSON.stringify(newData));
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {

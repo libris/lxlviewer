@@ -127,6 +127,17 @@ export default {
     },
   },
   methods: {
+    onDrop(evt) {
+      // Triggers on the drop target textfield
+      this.$emit('input', this.val.concat(evt.dataTransfer.getData('text/plain')));
+      evt.target.textContent = this.val.concat(evt.dataTransfer.getData('text/plain'));
+      console.log('evt.target.textContent', evt.target.textContent);
+      this.$emit('update');
+    },
+    onDragEnd() {
+      // Triggers on the textfield from which text is dragged
+      this.$emit('update');
+    },
     onLangTaggerEvent(langTag) {
       this.$emit('addLangTag', langTag);
     },
@@ -178,14 +189,18 @@ export default {
 
 <template>
   <div>
-    <div class="LanguageEntry-inputcontainer" v-if="!isLocked">
+    <div class="LanguageEntry-inputcontainer"
+      v-if="!isLocked">
       <span class="LanguageEntry-key">
         <textarea
           class="LanguageEntry-input js-itemValueInput"
           rows="1"
           v-bind:value="val"
           v-on:input="$emit('input', $event.target.value)"
-          @blur="$emit('update')"
+          @drop="onDrop($event)"
+          @dragover.prevent
+          @dragenter.prevent
+          @dragend="onDragEnd($event)"
           ref="textarea"
         ></textarea>
       </span>
