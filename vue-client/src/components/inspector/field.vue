@@ -162,15 +162,15 @@ export default {
   computed: {
     diffAdded() {
       if (this.diff == null) return false;
-      return this.diff.added.some(a => isEqual(a.path, this.path));
+      return this.diff.added.includes(this.path);
     },
     diffRemoved() {
       if (this.diff == null) return false;
-      return this.diff.removed.some(r => isEqual(r.path, this.path));
+      return this.diff.removed.includes(this.path);
     },
     diffModified() {
       if (this.diff == null) return false;
-      return this.diff.modified.some(m => isEqual(m.path, this.path));
+      return this.diff.modified.includes(this.path);
     },
     isReverseProperty() {
       return this.fieldKey.indexOf('@reverse') > -1;
@@ -1024,7 +1024,7 @@ export default {
           :diff="diff">
         </item-bylang>
       </div>
-
+            
       <div class="Field-contentItem"
         v-for="(item, index) in valueAsArray"
         :key="index">

@@ -2,12 +2,13 @@
 /*
   The full version history view
 */
-import { get, set, cloneDeep, isEmpty, isEqual, isObject } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DataUtil from '@/utils/data';
+import * as HistoryUtil from '@/utils/history';
 import LensMixin from '@/components/mixins/lens-mixin';
 import EntityForm from './entity-form.vue';
 import TabMenu from '@/components/shared/tab-menu';
@@ -29,6 +30,11 @@ export default {
       inspectingPath: '',
       showSideCol: false,
       isFocusTrapActive: false,
+      currentVersionDiff: {
+        added: [],
+        removed: [],
+        modified: [],
+      },
     };
   },
   computed: {
@@ -51,9 +57,7 @@ export default {
     changeSets() {
       if (this.historyData != null && this.historyData.hasOwnProperty('changeSets')) {
         // Reject changesets where the only thing that changed was 'modified'
-        const hasOnlyModified = changeSet => changeSet.hasOwnProperty('addedPaths')
-        && changeSet.hasOwnProperty('removedPaths')
-        && changeSet.addedPaths.length === 1
+        const hasOnlyModified = changeSet => changeSet.addedPaths.length === 1
         && changeSet.addedPaths[0].includes('modified')
         && changeSet.removedPaths.length === 1
         && changeSet.removedPaths[0].includes('modified');
@@ -67,62 +71,6 @@ export default {
         return [...this.changeSets].reverse();
       }
       return null;
-    },
-    currentVersionDiff() {
-      return {
-        added: this.addedPathsAndObjects,
-        removed: this.removedPathsAndObjects,
-        modified: [],
-      };
-    },
-    addedPathsAndObjects() {
-      if (this.selectedChangeSet.hasOwnProperty('addedPaths') === false) return [];
-      const added = this.selectedChangeSet.addedPaths;
-      const convertedAdded = [];
-      added.forEach((addedPath) => {
-        const thePath = StringUtil.arrayPathToString(addedPath);
-        const objectAtPath = get(this.currentVersionData, thePath);
-        if (thePath.endsWith('.@id') && !thePath.endsWith('mainEntity.@id')) {
-          const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
-          if (this.isListItem(elementPath)) {
-            convertedAdded.push({ path: elementPath, val: { '@id': objectAtPath } });
-          } else {
-            // Put non-repeatable properties, such as descriptionLastModifier, into a list to be able to show
-            // added + removed side by side.
-            convertedAdded.push({ path: elementPath.concat('[1]'), val: { '@id': objectAtPath } });
-          }
-        } else {
-          convertedAdded.push({ path: thePath, val: objectAtPath });
-        }
-      });
-      return convertedAdded;
-    },
-    removedPathsAndObjects() {
-      if (this.selectedChangeSet.hasOwnProperty('removedPaths') === false) return [];
-      const removed = this.selectedChangeSet.removedPaths;
-      const convertedRemoved = [];
-      removed.forEach((removedPath) => {
-        const thePath = StringUtil.arrayPathToString(removedPath);
-        const objectAtPath = get(this.previousVersionData, thePath);
-
-        if (thePath.includes('instanceOf.@id')) {
-          return;
-        }
-
-        if (thePath.endsWith('.@id') && !thePath.endsWith('mainEntity.@id')) {
-          const elementPath = thePath.slice(0, thePath.lastIndexOf('.'));
-          if (this.isListItem(elementPath)) {
-            convertedRemoved.push({ path: elementPath, val: { '@id': objectAtPath } });
-          } else {
-            // Put non-repeatable properties, such as descriptionLastModifier, into a list to be able to show
-            // added + removed side by side.
-            convertedRemoved.push({ path: elementPath.concat('[0]'), val: { '@id': objectAtPath } });
-          }
-        } else {
-          convertedRemoved.push({ path: thePath, val: objectAtPath });
-        }
-      });
-      return convertedRemoved;
     },
     recordType() {
       if (this.displayData.hasOwnProperty('mainEntity')) {
@@ -165,9 +113,6 @@ export default {
     },
   },
   methods: {
-    isListItem(path) {
-      return path.slice(-1) === ']';
-    },
     goToRecord() {
       const fnurgel = this.$route.params.fnurgel;
       this.$router.push({ path: `/${fnurgel}` });
@@ -181,8 +126,9 @@ export default {
       this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'focus-changed' });
     },
     setDefaultFocusedTab() {
-      if (!this.currentVersionDiff.added.some(el => el.path.includes('mainEntity'))
-        && !this.currentVersionDiff.removed.some(el => el.path.includes('mainEntity'))) {
+      if (!this.currentVersionDiff.added.some(path => path.includes('mainEntity'))
+        && !this.currentVersionDiff.removed.some(path => path.includes('mainEntity'))
+        && !this.currentVersionDiff.modified.some(path => path.includes('mainEntity'))) {
         this.focusedTab = 'record';
       } else {
         this.focusedTab = 'mainEntity';
@@ -203,7 +149,7 @@ export default {
     },
     async setDisplayDataFor(number) {
       if (this.changeSetsReversed == null) return;
-
+      
       const options = {
         headers: {
           Accept: 'application/ld+json',
@@ -224,113 +170,19 @@ export default {
       this.previousVersionData = await fetch(previousChangeSet.version['@id'], options)
         .then(response => response.json())
         .then(result => DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result)));
-
-      const diff = this.currentVersionDiff;
-      const compositeVersionData = cloneDeep(this.previousVersionData);
-      const updatedPaths = [];
-
-      [...diff.added, ...diff.removed].forEach((item) => {
-        const parentPath = item.path.slice(0, item.path.lastIndexOf('['));
-        if (updatedPaths.indexOf(parentPath) === -1) {
-          updatedPaths.push(parentPath);
-        }
-      });
-
-      const checkConflict = (item, compare) => {
-        const updated = compare.find(compareItem => isEqual(compareItem.path, item.path));
-        if (updated != null && item.val !== updated.val) {
-          if (typeof item.val === 'string' && typeof updated.val === 'string') {
-            const from = StringUtil.getLabelByLang(updated.val, this.user.settings.language, this.resources);
-            const to = StringUtil.getLabelByLang(item.val, this.user.settings.language, this.resources);
-            const moddedValue = from.concat(' → ').concat(to);
-            diff.modified.push({ path: item.path, val: moddedValue });
-            set(compositeVersionData, item.path, moddedValue);
-          }
-        } else {
-          set(compositeVersionData, item.path, item.val);
-        }
-      };
-
-      if (!isEmpty(updatedPaths)) {
-        updatedPaths.forEach((parentPath) => {
-          const objAtPath = get(compositeVersionData, parentPath);
-
-          const pathRemoved = diff.removed.map((item) => {
-            if (parentPath === item.path.slice(0, item.path.lastIndexOf('['))) {
-              return item;
-            }
-
-            return false;
-          }).filter(r => r);
-
-          const pathAdded = diff.added.map((item) => {
-            if (parentPath === item.path.slice(0, item.path.lastIndexOf('['))) {
-              return item;
-            }
-
-            return false;
-          }).filter(r => r);
-
-          if (objAtPath != null && Array.isArray(objAtPath)) {
-            const conflictingPathNames = pathRemoved.find(removed => pathAdded.find(added => isEqual(added.path, removed.path))) != null;
-            const addedEntity = get(this.currentVersionData, parentPath);
-
-            if (!conflictingPathNames) {
-              // Under the same parent property but not the same key
-              if (Array.isArray(addedEntity)) {
-                addedEntity.forEach((entity) => {
-                  const inPath = objAtPath.find(pathObject => pathObject['@id'] === entity['@id']);
-                  if (inPath == null) {
-                    objAtPath.push(entity);
-                  }
-                });
-              } else {
-                const inPath = objAtPath.find(pathObject => pathObject['@id'] === addedEntity['@id']);
-                if (inPath == null) {
-                  objAtPath.push(addedEntity);
-                }
-              }
-
-              return parentPath;
-            }
-          }
-
-          if (pathRemoved.length > 0 && pathAdded.length > 0) {
-            pathRemoved.forEach((item) => {
-              checkConflict(item, pathAdded);
-            });
-          }
-
-          pathAdded.forEach((item) => {
-            if (this.isListItem(item.path) && isObject(item.val)) {
-              if (Array.isArray(objAtPath)) {
-                objAtPath.push(item.val);
-                set(compositeVersionData, parentPath, objAtPath);
-              } else {
-                const parent = [];
-                parent.push(item.val);
-                parent.push(objAtPath);
-                set(compositeVersionData, parentPath, parent);
-              }
-            } else {
-              checkConflict(item, pathRemoved);
-            }
-          });
-
-          return parentPath;
-        });
-      }
-
-      // Fix diff indexes
-      if (diff != null) {
-        diff.added = diff.added.map(added => this.updateDiffIndex(added, compositeVersionData.mainEntity));
-        diff.removed = diff.removed.map(removed => this.updateDiffIndex(removed, compositeVersionData.mainEntity));
-        diff.modified = diff.modified.map(modified => this.updateDiffIndex(modified, compositeVersionData.mainEntity));
-      }
-
-      this.fetchMissingLinks(compositeVersionData);
-      await this.$store.dispatch('setCompositeHistoryData', compositeVersionData);
-      this.displayData = compositeVersionData;
+      
+      const [displayData, displayPaths] = HistoryUtil.buildDisplayData(
+        this.previousVersionData,
+        this.currentVersionData,
+        this.selectedChangeSet.addedPaths,
+        this.selectedChangeSet.removedPaths,
+        s => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
+      );
+      
+      this.currentVersionDiff = displayPaths;
+      this.fetchMissingLinks(displayData);
+      await this.$store.dispatch('setCompositeHistoryData', displayData);
+      this.displayData = displayData;
       this.setDefaultFocusedTab();
     },
     fetchMissingLinks(data) {
@@ -344,42 +196,6 @@ export default {
     },
     closeSideCol() {
       this.showSideCol = false;
-    },
-    findValue(obj, value) {
-      const result = {};
-
-      function findValueHelper(current, val, path) {
-        for (const key in current) {
-          if (current.hasOwnProperty(key)) {
-            const newPath = path ? `${path}.${key}` : key;
-            if (current[key] === val) {
-              result.value = current[key];
-              result.path = newPath;
-            }
-
-            if (typeof current[key] === 'object') {
-              findValueHelper(current[key], val, newPath);
-            }
-          }
-        }
-      }
-
-      findValueHelper(obj, value);
-      return result;
-    },
-    updateDiffIndex(diff, entity) {
-      const result = this.findValue(entity, diff.val);
-
-      if (result.path != null) {
-        const diffIndex = diff.path.lastIndexOf('[') + 1;
-        if (diffIndex > 0) {
-          const indexes = result.path.replace(/[^0-9.]/g, '').split('.').filter(index => index !== '');
-          const newPath = diff.path.substring(0, diffIndex) + indexes[indexes.length - 1] + diff.path.substring(diffIndex + 1);
-          diff.path = newPath;
-        }
-      }
-
-      return diff;
     },
   },
   components: {
