@@ -88,15 +88,15 @@ export default {
     },
     diffRemoved() {
       if (this.diff == null) return false;
-      return this.diff.removed.some(r => isEqual(r.path, this.exactPath));
+      return this.diff.removed.some(p => isEqual(p, this.exactPath));
     },
     diffAdded() {
       if (this.diff == null) return false;
-      return this.diff.added.some(a => isEqual(a.path, this.exactPath));
+      return this.diff.added.some(p => isEqual(p, this.exactPath));
     },
     diffModified() {
       if (this.diff == null) return false;
-      return this.diff.modified.some(m => isEqual(m.path, this.exactPath));
+      return this.diff.modified.some(p => isEqual(p, this.exactPath));
     },
     shouldFocus() {
       const lastAdded = this.inspector.status.lastAdded;

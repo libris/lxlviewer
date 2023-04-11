@@ -92,45 +92,41 @@ export default {
     },
     diffAdded() {
       if (this.diff == null) return false;
-      const parentValue = get(this.inspector.compositeHistoryData, this.parentPath);
-      if (isArray(parentValue)) {
-        const obj = parentValue[this.index];
-        return this.diff.added.some(a => isEqual(obj, a.val));
-      }
-      return false;
+      return this.diff.added.includes(this.myPath);
     },
     diffRemoved() {
       if (this.diff == null) return false;
-      const parentValue = get(this.inspector.compositeHistoryData, this.parentPath);
-      if (isArray(parentValue)) {
-        const obj = parentValue[this.index];
-        return this.diff.removed.some(r => isEqual(obj, r.val));
-      }
-      return false;
+      return this.diff.removed.includes(this.myPath);
     },
     diffModified() {
       if (this.diff == null) return false;
-      const parentValue = get(this.inspector.compositeHistoryData, this.parentPath);
-      if (isArray(parentValue)) {
-        const obj = parentValue[this.index];
-        return this.diff.modified.some(m => isEqual(obj, m.val));
-      }
-      return false;
+      return this.diff.modified.includes(this.myPath);
+    },
+    myPath() {
+      return this.index !== undefined
+        ? `${this.parentPath}[${this.index}]`
+        : this.path;
     },
     diffAddedChildren() {
       if (this.diff == null) return false;
       return this.diff.added
-        .filter(a => !isEqual(a.path, this.path))
-        .some(a => a.path.includes(this.path));
+        .filter(p => !isEqual(p, this.path))
+        .some(p => p.includes(this.path));
     },
     diffRemovedChildren() {
       if (this.diff == null) return false;
       return this.diff.removed
-        .filter(r => !isEqual(r.path, this.path))
-        .some(r => r.path.includes(this.path));
+        .filter(p => !isEqual(p, this.path))
+        .some(p => p.includes(this.path));
+    },
+    diffModifiedChildren() {
+      if (this.diff == null) return false;
+      return this.diff.modified
+        .filter(p => !isEqual(p, this.path))
+        .some(p => p.includes(this.path));
     },
     diffChangedChildren() {
-      return this.diffAddedChildren || this.diffRemovedChildren;
+      return this.diffAddedChildren || this.diffRemovedChildren || this.diffModifiedChildren;
     },
     inClassAndProperty() {
       return `${this.entityType}.${this.fieldKey}`;

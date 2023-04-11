@@ -477,8 +477,8 @@ export default {
       'is-entity': !isEmbedded,
       'is-extractable': isExtractable && !isEmbedded,
       'has-failed-validations': failedValidations.length > 0,
-      'is-diff-removed': diffRemoved && !diffAdded,
-      'is-diff-added': diffAdded && !diffRemoved,
+      'is-diff-removed': diffRemoved,
+      'is-diff-added': diffAdded,
       'is-modified': diffModified}"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
