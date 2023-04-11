@@ -58,7 +58,7 @@ export default {
               </ul>
               <ul class="Footer-navList">
                 <li>
-                  <a href="https://www.youtube.com/playlist?list=PLZVkEICvA5-GRT2oJQmLgq_2Pksx6zYPy" class="Footer-link">{{ "Instruction videos" | translatePhrase }}</a>
+                  <a href="https://kbplay.mediaflowportal.com/folder/91512/" class="Footer-link">{{ "Instruction videos" | translatePhrase }}</a>
                 </li>
                 <li>
                   <a href="https://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/" class="Footer-link">{{ "Introduction material" | translatePhrase }}</a>
