@@ -14,8 +14,7 @@ export function buildDisplayData(previousVersionData, currentVersionData, addedP
     displayData, operations, previousVersionData, currentVersionData, added, removed, getLabel,
   );
   
-  insertAdded(displayData, operations, previousVersionData, currentVersionData, added, 
-    removed, modified, getLabel);
+  insertAdded(displayData, operations, previousVersionData, currentVersionData, added, removed);
   
   operations.forEach(op => op(displayData));
   
