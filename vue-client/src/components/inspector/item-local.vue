@@ -182,8 +182,18 @@ export default {
       const element = this.$el;
       LayoutUtil.ensureInViewport(element);
     },
+    addHoverHightlight() {
+      if (!this.isHistoryView() && !this.isLocked) {
+        this.addHighlight('mark');
+      }
+    },
     addHighlight(type) {
       this.highlights.push(type);
+    },
+    removeHoverHightlight() {
+      if (!this.isHistoryView() && !this.isLocked) {
+        this.removeHighlight('mark');
+      }
     },
     removeHighlight(type) {
       this.highlights.splice(this.highlights.indexOf(type));
@@ -460,18 +470,23 @@ export default {
     :id="`formPath-${path}`"
     :class="{
       'is-highlighted': isLastAdded,
-      'highlight-info': highlights.indexOf('info') > -1,
+      'highlight-mark': highlights.indexOf('mark') > -1,
       'highlight-remove': highlights.indexOf('remove') > -1,
+      'highlight-info': highlights.indexOf('info') > -1,
       'is-expanded': expanded && !isEmpty,
-      'is-extractable': isExtractable,
+      'is-entity': !isEmbedded,
+      'is-extractable': isExtractable && !isEmbedded,
       'has-failed-validations': failedValidations.length > 0,
-      'is-diff-removed': diffRemoved && !diffAdded,
-      'is-diff-added': diffAdded && !diffRemoved,
+      'is-diff-removed': diffRemoved,
+      'is-diff-added': diffAdded,
       'is-modified': diffModified}"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
-    @blur="removeFocus()">
+    @blur="removeFocus()"
+    @mouseover.stop="addHoverHightlight()"
+    @mouseout.stop="removeHoverHightlight()"
+  >
 
     <div class="ItemLocal-heading" ref="heading"
       @mouseover="isHovered = true"
@@ -657,6 +672,10 @@ export default {
     .icon-hover();
   }
 
+  &.highlight-mark:not(.highlight-info):not(.highlight-remove) {
+    background-color: @field-background-hover;
+    border-color: @grey-light;
+  }
   &.highlight-info {
     background-color: @form-mark;
   }
@@ -775,6 +794,19 @@ export default {
     background-color: @form-remove;
   }
 
+  &.is-entity {
+    border-radius: 4px;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    margin: 0.6rem 0 0.6rem 0;
+    border: 1px solid @grey-lighter;
+    box-shadow: 0 2px 5px rgba(0,0,0,.08);
+  }
+
+  &.is-extractable {
+    border: 1px solid @grey-lighter;
+    box-shadow: 0 2px 5px rgba(0,0,0,.16);
+    margin: 1rem 0 1rem 0;
+  }
   &.is-diff-removed {
     @base-color: @remove;
     border: 1px dashed;

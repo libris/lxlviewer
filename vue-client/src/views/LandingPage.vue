@@ -55,21 +55,21 @@ export default {
           :text="copy['blog'].text" 
           :link-text="copy['blog'].linkText" 
           :link-url="copy['blog'].linkUrl"></link-card>
-        <link-card v-if="widgetShouldBeShown('link-studies')" 
-          :image="copy['studies'].image" 
+        <link-card v-if="widgetShouldBeShown('link-studies')"
+          :image="copy['studies'].image"
           :image-alt-text="copy['studies'].image_alt_text"
-          :header="copy['studies'].header" 
-          :text="copy['studies'].text" 
-          :link-text="copy['studies'].linkText" 
+          :header="copy['studies'].header"
+          :text="copy['studies'].text"
+          :link-text="copy['studies'].linkText"
           :link-url="copy['studies'].linkUrl"></link-card>
+        <link-card
+          v-if="widgetShouldBeShown('intro-component')"
+          :video-url="copy['instructional-videos'].video"
+          :header="copy['instructional-videos'].header"
+          :text="copy['instructional-videos'].text"
+          :link-text="copy['instructional-videos'].linkText"
+          :link-url="copy['instructional-videos'].linkUrl"></link-card>
       </div>
-      <link-card 
-        v-if="widgetShouldBeShown('intro-component')" 
-        :video-url="copy['instructional-videos'].video" 
-        :header="copy['instructional-videos'].header" 
-        :text="copy['instructional-videos'].text" 
-        :link-text="copy['instructional-videos'].linkText" 
-        :link-url="copy['instructional-videos'].linkUrl"></link-card>
     </div>
   </div>
 </template>

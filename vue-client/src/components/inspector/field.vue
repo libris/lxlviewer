@@ -23,10 +23,10 @@ import ItemNumeric from './item-numeric';
 import ItemGrouped from './item-grouped';
 import ItemShelfControlNumber from './item-shelf-control-number';
 import ItemNextShelfControlNumber from './item-next-shelf-control-number';
+import ItemBylang from './item-bylang';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
-import ItemBylang from './item-bylang';
 import LanguageMixin from '../mixins/language-mixin';
 
 export default {
@@ -162,15 +162,15 @@ export default {
   computed: {
     diffAdded() {
       if (this.diff == null) return false;
-      return this.diff.added.some(a => isEqual(a.path, this.path));
+      return this.diff.added.includes(this.path);
     },
     diffRemoved() {
       if (this.diff == null) return false;
-      return this.diff.removed.some(r => isEqual(r.path, this.path));
+      return this.diff.removed.includes(this.path);
     },
     diffModified() {
       if (this.diff == null) return false;
-      return this.diff.modified.some(m => isEqual(m.path, this.path));
+      return this.diff.modified.includes(this.path);
     },
     isReverseProperty() {
       return this.fieldKey.indexOf('@reverse') > -1;
@@ -1024,7 +1024,7 @@ export default {
           :diff="diff">
         </item-bylang>
       </div>
-
+            
       <div class="Field-contentItem"
         v-for="(item, index) in valueAsArray"
         :key="index">
@@ -1205,11 +1205,6 @@ export default {
     display: block;
 
     .icon-hover();
-        
-    &:hover:not(.is-locked) {
-      background: @field-background-hover;
-      box-shadow: inset 0 0 0 1px @grey-lighter;
-    }
 
     &.is-locked:not(.is-new),
     .Field--inner & {
