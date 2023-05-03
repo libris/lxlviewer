@@ -187,7 +187,7 @@ function formatLabel(item, type, resources) {
   const label = [];
   const formatters = resources.display.lensGroups.formatters;
   const replaceInnerDot = s => s.replace(/ • /g, ', '); // TODO: handle nested chips properly
-  
+
   // FIXME: this should be driven by display.jsonld
   // We don't want Library and Bibliography. Could do isSubclassOf('Agent') && !isSubclassOf('Collection') but hardcode the list for now
   const isAgent = ['Person', 'Organization', 'Jurisdiction', 'Meeting', 'Family'].includes(type);
@@ -228,6 +228,34 @@ function formatLabel(item, type, resources) {
   return labelStr;
 }
 
+function isStructuredValue(item, resources) {
+  if (item['@type']) {
+    return VocabUtil.isSubClassOf(
+      item['@type'], 
+      'StructuredValue', 
+      resources.vocab,  
+      resources.context,
+    );
+  }
+  return false;
+}
+
+function getTransliteratedLanguages(item) {
+  return Object.entries(item).reduce((acc, itemEntry) => {
+    if (itemEntry[0] && itemEntry[0].includes('ByLang')) {
+      const transliteratedKeys = Object.keys(itemEntry[1]).filter(key => key.includes('Latn-t-'));
+      if (transliteratedKeys) {
+        return {
+          from: Object.keys(itemEntry[1]).find(key => !transliteratedKeys.includes(key)),
+          to: transliteratedKeys,
+        };
+      }
+      return {};
+    }
+    return acc;
+  }, {});
+}
+
 /* eslint-disable no-use-before-define */
 export function getItemLabel(item, resources, quoted, settings, inClass = '') {
   if (typeof item === 'string') {
@@ -243,20 +271,28 @@ export function getItemLabel(item, resources, quoted, settings, inClass = '') {
   if (!isObject(item)) {
     throw new Error(`getItemLabel was called with a non-object. Type: ${typeof item}. Value: ${item}`);
   }
+
   const displayObject = getChip(item, resources, quoted, settings);
+
+  const { from: transliteratedFrom, to: transliteratedTo } = isStructuredValue(item, resources) && getTransliteratedLanguages(item);
+  const transliteratedFromDisplayObject = transliteratedFrom && getChip(item, resources, quoted, { ...settings, language: transliteratedFrom });
+  const transliteratedToDisplayObjects = transliteratedTo && transliteratedTo.map(language => getChip(item, resources, quoted, { ...settings, language }));
+
   if (Object.keys(displayObject).length === 0) {
     lxlWarning('getItemLabel returned an empty string for item:', item);
     return '';
   }
 
-  let rendered = formatLabel(displayObject, item['@type'], resources);
+  let rendered = (transliteratedFromDisplayObject && transliteratedToDisplayObjects)
+    ? `${transliteratedToDisplayObjects.map(ttdo => formatLabel(ttdo, item['@type'], resources)).join(' / ')} (${formatLabel(transliteratedFromDisplayObject, item['@type'], resources)})`
+    : formatLabel(displayObject, item['@type'], resources);
 
   // let rendered = StringUtil.formatLabel(displayObject).trim();
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', resources.vocab, resources.context)) {
     if (item['@type'] === 'ISNI' || item['@type'] === 'ORCID') { 
       rendered = formatIsni(rendered);
     }
-
+    
     if (inClass.toLowerCase() !== item['@type'].toLowerCase()) {
       const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, resources);
       rendered = `${translatedType} ${rendered}`;
@@ -323,7 +359,15 @@ export function getItemToken(item, resources, quoted, settings) {
   if (typeof item === 'string') return item;
 
   const displayObject = getToken(item, resources, quoted, settings);
-  let rendered = StringUtil.formatLabel(displayObject).trim();
+
+  const { from: transliteratedFrom, to: transliteratedTo } = isStructuredValue(item, resources) && getTransliteratedLanguages(item);
+  const transliteratedFromDisplayObject = transliteratedFrom && getToken(item, resources, quoted, { ...settings, language: transliteratedFrom });
+  const transliteratedToDisplayObjects = transliteratedTo && transliteratedTo.map(language => getToken(item, resources, quoted, { ...settings, language }));
+
+  let rendered = (transliteratedFromDisplayObject && transliteratedToDisplayObjects)
+    ? `${transliteratedToDisplayObjects.map(ttdo => StringUtil.formatLabel(ttdo).trim()).join(' / ')} (${StringUtil.formatLabel(transliteratedFromDisplayObject).trim()})`
+    : StringUtil.formatLabel(displayObject).trim();
+
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', resources.vocab, resources.context)) {
     const translatedType = StringUtil.getLabelByLang(item['@type'], settings.language, resources);
     rendered = `${translatedType} ${rendered}`;
