@@ -21,7 +21,7 @@
     "kungbib-styles": "^2.1.0",
     "lodash-es": "^4.17.21",
     "lxljs": "file:../lxljs",
-    "nuxt": "^2.15.3",
+    "nuxt": "^2.16.3",
     "sass": "^1.35.1",
     "sass-loader": "^10"
   },
@@ -31,6 +31,6 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^26.6.3",
     "jest": "^26.6.3",
-    "vue-jest": "^3.0.4"
+    "vue-jest": "^3.0.7"
   }
 }
