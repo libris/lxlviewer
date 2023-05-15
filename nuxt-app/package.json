@@ -18,7 +18,7 @@
     "core-js": "^3.9.1",
     "git-describe": "^4.1.0",
     "json-format-highlight": "^1.0.4",
-    "kungbib-styles": "^2.0.0",
+    "kungbib-styles": "^2.1.0",
     "lodash-es": "^4.17.21",
     "lxljs": "file:../lxljs",
     "nuxt": "^2.15.3",
