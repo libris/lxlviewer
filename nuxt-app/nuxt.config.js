@@ -81,6 +81,7 @@ export default {
       '~~/node_modules/kungbib-styles/lib/scss/_variables.scss',
       '~~/node_modules/bootstrap/scss/_functions.scss',
       '~~/node_modules/bootstrap/scss/_variables.scss',
+      '~~/node_modules/bootstrap/scss/_maps.scss',
       '~~/node_modules/bootstrap/scss/_mixins.scss',
       '~~/node_modules/bootstrap/scss/_containers.scss',
       '~~/node_modules/bootstrap/scss/_grid.scss'
