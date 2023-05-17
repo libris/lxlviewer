@@ -18,11 +18,13 @@
         <EntityNode :is-chip="true" :parent-key="'@type'" class="d-none" :class="{'d-xl-block': entity.inScheme, 'd-lg-block': !entity.inScheme }" :entity="entity['@type']" />
       </template>
     </div>
-    <EntityTable v-if="expanded" :entity="entityData" :show-download="showDownload" :show-other-services="showOtherServices" />
+    <EntityTable v-if="expanded" :entity="entityData" :show-download="showDownload" :show-other-services="showOtherServices" :classProperties="classProperties" />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import * as VocabUtil from 'lxljs/vocab';
 import LensMixin from '@/mixins/lens';
 import EntityNode from '@/components/EntityNode';
 import EntityTable from '@/components/EntityTable';
@@ -56,6 +58,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['vocabClasses', 'vocab', 'vocabProperties', 'vocabContext']),
     isDocumentView() {
       return this.$route.name == 'all' || this.$route.name == 'vocab-term';
     },
@@ -81,6 +84,11 @@ export default {
     expanded() {
       return this.forceExpanded || this.userExpanded;
     },
+    classProperties() {
+      if (this.$route.params.term) {
+        return VocabUtil.getProperties(this.$route.params.term, this.vocabClasses, this.vocabProperties, this.vocabContext)
+      }
+    }
   },
   props: {
     entity: {
