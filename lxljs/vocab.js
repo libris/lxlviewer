@@ -416,54 +416,28 @@ export function getRangeFull(key, vocab, context, vocabClasses) {
   return allTypes;
 }
 
-export function getDomainList(property, vocab, context) {
-  if (property['@type'] === 'Class') {
-    return false;
-  }
-  let domainList = [];
-  const vocabPfx = context[0]['@vocab'];
-  if (property.hasOwnProperty('domain')) {
-    domainList = domainList.concat(property.domain.map(obj => obj['@id']));
-  }
-  if (property.hasOwnProperty('domainIncludes')) {
-    domainList = domainList.concat(property.domainIncludes.map(obj => obj['@id']));
-  }
-  if (property.hasOwnProperty('subPropertyOf') && domainList.length === 0) {
-    for (const superPropNode of property.subPropertyOf) {
-      if (superPropNode['@id'] && superPropNode['@id'].indexOf(vocabPfx) !== -1) {
-        const superProp = getTermObject(superPropNode['@id'], vocab, context);
-        if (superProp) {
-          domainList = domainList.concat(getDomainList(superProp, vocab, context));
-        }
-      }
-    }
-  }
-  return domainList.map(item => StringUtil.getCompactUri(item, context));
-}
+export function getPropertiesList(property, vocab, context) {
+  const classLinks = ['domain', 'domainIncludes', 'range', 'rangeIncludes'];
 
-export function getRangeList(property, vocab, context) {
-  if (property['@type'] === 'Class') {
-    return false;
-  }
-  let rangeList = [];
+  let propertiesList = classLinks.reduce((acc, link) => {
+    if (property.hasOwnProperty(link)) {
+      return [...acc, ...property[link].map(obj => obj['@id'])];
+    }
+    return acc;
+  }, []);
+
   const vocabPfx = context[0]['@vocab'];
-  if (property.hasOwnProperty('range')) {
-    rangeList = rangeList.concat(property.range.map(obj => obj['@id']));
-  }
-  if (property.hasOwnProperty('rangeIncludes')) {
-    rangeList = rangeList.concat(property.rangeIncludes.map(obj => obj['@id']));
-  }
-  if (property.hasOwnProperty('subPropertyOf') && rangeList.length === 0) {
+  if (property.hasOwnProperty('subPropertyOf') && propertiesList.length === 0) {
     for (const superPropNode of property.subPropertyOf) {
       if (superPropNode['@id'] && superPropNode['@id'].indexOf(vocabPfx) !== -1) {
         const superProp = getTermObject(superPropNode['@id'], vocab, context);
         if (superProp) {
-          rangeList = rangeList.concat(getRangeList(superProp, vocab, context));
+          propertiesList = [...propertiesList, ...getPropertiesList(superProp, vocab, context)];
         }
       }
     }
   }
-  return rangeList.map(item => StringUtil.getCompactUri(item, context));
+  return propertiesList.map(item => StringUtil.getCompactUri(item, context));
 }
 
 export function getProperties(classId, vocabClasses, vocabProperties, context) {
@@ -479,10 +453,7 @@ export function getProperties(classId, vocabClasses, vocabProperties, context) {
 
   const allowedProperties = Array.from(vocabProperties.values())
     .filter((prop) => {
-      if (getDomainList(prop, vocabProperties, context).includes(classId)) {
-        return true;
-      }
-      if (getRangeList(prop, vocabProperties, context).includes(classId)) {
+      if (getPropertiesList(prop, vocabProperties, context).includes(classId)) {
         return true;
       }
       return false;
