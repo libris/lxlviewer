@@ -192,7 +192,6 @@ export const mutations = {
       VocabUtil.getTermByType('marc:CollectionClass', vocabMap, state.vocabContext, state.settings),
     );
     const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
-
     classes.forEach((classObj) => {
       if (classObj.hasOwnProperty('subClassOf')) {
         each(classObj.subClassOf, (baseClass) => {
@@ -217,6 +216,11 @@ export const mutations = {
     props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabMap, state.vocabContext, state.settings));
     props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabMap, state.vocabContext, state.settings));
     const vocabProperties = new Map(props.map(entry => [entry['@id'], entry]));
+
+    state.vocabClasses.forEach((classObj) => {
+      const compactClassUri = StringUtil.getCompactUri(classObj['@id'], state.vocabContext)
+      const allowedPropertiesInClass = VocabUtil.getProperties(compactClassUri, state.vocabClasses, vocabProperties, state.vocabContext)
+    });
     state.vocabProperties = vocabProperties;
   },
   SET_DISPLAY(state, data) {
