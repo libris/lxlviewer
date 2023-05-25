@@ -12,7 +12,11 @@
     "range": "Urval",
     "rangeIncludes": "Urval",
     "equivalentProperty": "Motsvarar",
-    "allowedProperties": "Förekommer i"
+    "allowedProperties": "Förekommer i",
+    "domainProperties": "Tillhörande egenskaper",
+    "domainIncludesProperties": "Egenskaper som kan tillhöra",
+    "rangeProperties": "Egenskaper inom urval",
+    "rangeIncludesProperties": "Egenskaper som kan vara inom urval"
   },
   "en": {
     "baseClassOf": "Subclasses",
@@ -27,6 +31,10 @@
     "range": "Range",
     "rangeIncludes": "Range",
     "equivalentProperty": "Equivalent property",
-    "allowedProperties": "Occurs in"
+    "allowedProperties": "Occurs in",
+    "domainProperties": "In domain of",
+    "domainIncludesProperties": "Included in domain",
+    "rangeProperties": "In range of",
+    "rangeIncludesProperties": "Included in range"
   }
 }

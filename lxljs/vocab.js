@@ -416,32 +416,84 @@ export function getRangeFull(key, vocab, context, vocabClasses) {
   return allTypes;
 }
 
-export function getPropertiesList(property, vocab, context) {
-  const classLinks = ['domain', 'domainIncludes', 'range', 'rangeIncludes'];
+export function getLinkedPropertiesList(linkType, property, vocabClasses, context) {
+  if (property['@type'] === 'Class') {
+    return [];
+  }
 
-  let propertiesList = classLinks.reduce((acc, link) => {
-    if (property.hasOwnProperty(link)) {
-      return [...acc, ...property[link].map(obj => obj['@id'])];
-    }
-    return acc;
-  }, []);
+  let propertiesList = [];
+  
+  if (property.hasOwnProperty(linkType)) {
+    propertiesList = [...property[linkType].map(obj => obj['@id'])];
+  }
 
-  const vocabPfx = context[0]['@vocab'];
   if (property.hasOwnProperty('subPropertyOf') && propertiesList.length === 0) {
+    const vocabPfx = context[0]['@vocab'];
     for (const superPropNode of property.subPropertyOf) {
       if (superPropNode['@id'] && superPropNode['@id'].indexOf(vocabPfx) !== -1) {
-        const superProp = getTermObject(superPropNode['@id'], vocab, context);
+        const superPropCompactUri = StringUtil.getCompactUri(superPropNode['@id'], context);
+        const superProp = getTermObject(superPropCompactUri, vocabClasses, context);
         if (superProp) {
-          propertiesList = [...propertiesList, ...getPropertiesList(superProp, vocab, context)];
+          propertiesList = [...propertiesList, ...getLinkedPropertiesList(linkType, superProp, vocabClasses, context)];
         }
       }
     }
   }
+
   return propertiesList.map(item => StringUtil.getCompactUri(item, context));
 }
 
+export function getLinkedProperties(linkType, classId, vocabClasses, vocabProperties, context) {
+  const termObj = getTermObject(classId, vocabClasses, context);
+  if (termObj == null) {
+    lxlWarning(`getLinkedProperties couldn't find any ${linkType} properties for class "${classId}"`);
+    return [];
+  }
+
+  if (termObj[`${linkType}Properties`]) {
+    return termObj[`${linkType}Properties`];
+  }
+
+  const linkedProperties = Array.from(vocabProperties.values())
+    .filter((prop) => {
+      if (getLinkedPropertiesList(linkType, prop, vocabClasses, context).includes(classId)) {
+        return true;
+      }
+      return false;
+    });
+
+  return linkedProperties;
+}
+
+export function getDomainList(property, vocab, context) {
+  if (property['@type'] === 'Class') {
+    return false;
+  }
+  let domainList = [];
+  const vocabPfx = context[0]['@vocab'];
+  if (property.hasOwnProperty('domain')) {
+    domainList = domainList.concat(property.domain.map(obj => obj['@id']));
+  }
+  if (property.hasOwnProperty('domainIncludes')) {
+    domainList = domainList.concat(property.domainIncludes.map(obj => obj['@id']));
+  }
+  if (property.hasOwnProperty('subPropertyOf') && domainList.length === 0) {
+    for (const superPropNode of property.subPropertyOf) {
+      if (superPropNode['@id'] && superPropNode['@id'].indexOf(vocabPfx) !== -1) {
+        const superProp = getTermObject(superPropNode['@id'], vocab, context);
+        if (superProp) {
+          domainList = domainList.concat(getDomainList(superProp, vocab, context));
+        }
+      }
+    }
+  }
+  return domainList.map(item => StringUtil.getCompactUri(item, context));
+}
+
 export function getProperties(classId, vocabClasses, vocabProperties, context) {
-  // Get all properties which has the domain or range of the className
+  // Get all properties which has the domain of the className
+  const props = [];
+  // console.log("Getting props for", className);
   const termObj = getTermObject(classId, vocabClasses, context);
   if (termObj == null) {
     lxlWarning(`getProperties couldn't find any properties for class "${classId}"`);
@@ -450,16 +502,22 @@ export function getProperties(classId, vocabClasses, vocabProperties, context) {
   if (termObj.allowedProperties) {
     return termObj.allowedProperties;
   }
-
-  const allowedProperties = Array.from(vocabProperties.values())
-    .filter((prop) => {
-      if (getPropertiesList(prop, vocabProperties, context).includes(classId)) {
-        return true;
+  vocabProperties.forEach((prop) => {
+    const domainList = getDomainList(prop, vocabProperties, context);
+    let domainListWithSubClasses = [];
+    for (let i = 0; i < domainList.length; i++) {
+      domainListWithSubClasses = domainListWithSubClasses.concat(
+        getSubClassChain(domainList[i], vocabClasses, context),
+      );
+    }
+    for (const domain of domainListWithSubClasses) {
+      if (domain === classId) {
+        props.push(prop);
       }
-      return false;
-    });
-  termObj.allowedProperties = allowedProperties;
-  return allowedProperties;
+    }
+  });
+  termObj.allowedProperties = props;
+  return props;
 }
 
 export function getContextValue(propertyId, key, context) {
