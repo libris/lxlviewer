@@ -3,6 +3,8 @@ import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import { lxlLog, lxlWarning } from './debug';
 
+const TRANSLITERATION_SEPARATOR = '❦';
+
 export function expandInherited(display) {
   const cloned = cloneDeep(display);
 
@@ -284,7 +286,7 @@ export function getItemLabel(item, resources, quoted, settings, inClass = '') {
   }
 
   let rendered = (transliteratedFromDisplayObject && transliteratedToDisplayObjects)
-    ? `${transliteratedToDisplayObjects.map(ttdo => formatLabel(ttdo, item['@type'], resources)).join(' = ')} = ${formatLabel(transliteratedFromDisplayObject, item['@type'], resources)}`
+    ? `${transliteratedToDisplayObjects.map(ttdo => formatLabel(ttdo, item['@type'], resources)).join(` ${TRANSLITERATION_SEPARATOR} `)} ${TRANSLITERATION_SEPARATOR} ${formatLabel(transliteratedFromDisplayObject, item['@type'], resources)}`
     : formatLabel(displayObject, item['@type'], resources);
 
   // let rendered = StringUtil.formatLabel(displayObject).trim();
@@ -365,7 +367,7 @@ export function getItemToken(item, resources, quoted, settings) {
   const transliteratedToDisplayObjects = transliteratedTo && transliteratedTo.map(language => getToken(item, resources, quoted, { ...settings, language }));
 
   let rendered = (transliteratedFromDisplayObject && transliteratedToDisplayObjects)
-    ? `${transliteratedToDisplayObjects.map(ttdo => StringUtil.formatLabel(ttdo).trim()).join(' = ')} = ${StringUtil.formatLabel(transliteratedFromDisplayObject).trim()}`
+    ? `${transliteratedToDisplayObjects.map(ttdo => StringUtil.formatLabel(ttdo).trim()).join(` ${TRANSLITERATION_SEPARATOR} `)} ${TRANSLITERATION_SEPARATOR} ${StringUtil.formatLabel(transliteratedFromDisplayObject).trim()}`
     : StringUtil.formatLabel(displayObject).trim();
 
   if (item['@type'] && VocabUtil.isSubClassOf(item['@type'], 'Identifier', resources.vocab, resources.context)) {
