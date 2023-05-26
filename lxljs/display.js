@@ -3,7 +3,7 @@ import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import { lxlLog, lxlWarning } from './debug';
 
-const TRANSLITERATION_SEPARATOR = '❦';
+const TRANSLITERATION_SEPARATOR = '⬥';
 
 export function expandInherited(display) {
   const cloned = cloneDeep(display);
