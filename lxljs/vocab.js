@@ -450,8 +450,9 @@ export function getLinkedProperties(linkType, classId, vocabClasses, vocabProper
     return [];
   }
 
-  if (termObj[`${linkType}Properties`]) {
-    return termObj[`${linkType}Properties`];
+  const capitilzedLinkType = linkType[0].toUpperCase() + linkType.slice(1);
+  if (termObj[`in${capitilzedLinkType}Of`]) {
+    return termObj[`in${capitilzedLinkType}Of`];
   }
 
   const linkedProperties = Array.from(vocabProperties.values())

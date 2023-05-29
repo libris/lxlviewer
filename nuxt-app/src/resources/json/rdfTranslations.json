@@ -13,15 +13,15 @@
     "rangeIncludes": "Urval",
     "equivalentProperty": "Motsvarar",
     "allowedProperties": "Förekommer i",
-    "domainProperties": "Tillhörande egenskaper",
-    "domainIncludesProperties": "Egenskaper som kan tillhöra",
-    "rangeProperties": "Egenskaper inom urval",
-    "rangeIncludesProperties": "Egenskaper som kan vara inom urval"
+    "inDomainOf": "Har",
+    "inDomainIncludesOf": "Kan ha",
+    "inRangeOf": "Förekommer som",
+    "inRangeIncludesOf": "Kan förekomma som"
   },
   "en": {
     "baseClassOf": "Subclasses",
     "basePropertyOf": "Subproperties",
-    "subClassOf": "Sub class of",
+    "subClassOf": "Subclass of",
     "subPropertyOf": "Sub property of",
     "isDefinedBy": "Is defined by",
     "abstract": "Abstract",
@@ -32,9 +32,9 @@
     "rangeIncludes": "Range",
     "equivalentProperty": "Equivalent property",
     "allowedProperties": "Occurs in",
-    "domainProperties": "In domain of",
-    "domainIncludesProperties": "Included in domain",
-    "rangeProperties": "In range of",
-    "rangeIncludesProperties": "Included in range"
+    "inDomainOf": "In domain of",
+    "inDomainIncludesOf": "In domain includes of",
+    "inRangeOf": "In range of",
+    "inRangeIncludesOf": "In range includes of"
   }
 }

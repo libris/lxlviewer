@@ -208,7 +208,11 @@ export const mutations = {
       const compactUri = StringUtil.getCompactUri(classObj['@id'], state.vocabContext);
       ['domain', 'domainIncludes', 'range', 'rangeIncludes'].forEach(linkType => {
         const linkedProperties = VocabUtil.getLinkedProperties(linkType, compactUri, classes, state.vocabProperties, state.vocabContext);
-        classObj[`${linkType}Properties`] = linkedProperties;
+        // Add inDomainOf / inDomainIncludesOf / inRangeOf / inRangeIncludesOf to class object
+        if (linkedProperties.length) {
+          const capitilzedLinkType = linkType[0].toUpperCase() + linkType.slice(1);
+          classObj[`in${capitilzedLinkType}Of`] = linkedProperties;
+        }
       });
 
     });
