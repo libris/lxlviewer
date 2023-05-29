@@ -251,11 +251,25 @@ export default {
         order: 15,
       },
     },
+    'subject.@id': {
+      sv: 'Ämne',
+      en: 'Subject',
+      facet: {
+        order: 16,
+      },
+    },
+    'intendedAudience.@id': {
+      sv: 'Målgrupp',
+      en: 'Intended audience',
+      facet: {
+        order: 17,
+      },
+    },
     'meta.bibliography.@id': {
       sv: 'Ingår i bibliografi',
       en: 'In bibliography',
       facet: {
-        order: 16,
+        order: 18,
       },
     },
     '@reverse': {
