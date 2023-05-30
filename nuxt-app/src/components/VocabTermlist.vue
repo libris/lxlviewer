@@ -35,6 +35,7 @@ export default {
       const lowerCaseKeyword = keyword.toLowerCase();
       return list.filter((item) => {
         const itemLabel = StringUtil.getLabelByLang(item['@id'], this.settings.language, this.resources);
+        console.log(item['@id']);
         return item['@id'].toLowerCase().includes(lowerCaseKeyword) || itemLabel.toLowerCase().includes(lowerCaseKeyword);
       });
     },
@@ -84,10 +85,10 @@ export default {
       return this.filterList(list, this.termListFilter);
     },
     classes() {
-      return this.sortList(Array.from(this.vocabClasses).map(([_, entry]) => (entry)));
+      return this.sortList([...this.vocabClasses]);
     },
     properties() {
-      return this.sortList(Array.from(this.vocabProperties).map(([_, entry]) => (entry)));
+      return this.sortList([...this.vocabProperties]);
     },
   },
   props: {

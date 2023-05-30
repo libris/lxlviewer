@@ -416,56 +416,6 @@ export function getRangeFull(key, vocab, context, vocabClasses) {
   return allTypes;
 }
 
-export function getLinkedPropertiesList(linkType, property, vocabClasses, context) {
-  if (property['@type'] === 'Class') {
-    return [];
-  }
-
-  let propertiesList = [];
-  
-  if (property.hasOwnProperty(linkType)) {
-    propertiesList = [...property[linkType].map(obj => obj['@id'])];
-  }
-
-  if (property.hasOwnProperty('subPropertyOf') && propertiesList.length === 0) {
-    const vocabPfx = context[0]['@vocab'];
-    for (const superPropNode of property.subPropertyOf) {
-      if (superPropNode['@id'] && superPropNode['@id'].indexOf(vocabPfx) !== -1) {
-        const superPropCompactUri = StringUtil.getCompactUri(superPropNode['@id'], context);
-        const superProp = getTermObject(superPropCompactUri, vocabClasses, context);
-        if (superProp) {
-          propertiesList = [...propertiesList, ...getLinkedPropertiesList(linkType, superProp, vocabClasses, context)];
-        }
-      }
-    }
-  }
-
-  return propertiesList.map(item => StringUtil.getCompactUri(item, context));
-}
-
-export function getLinkedProperties(linkType, classId, vocabClasses, vocabProperties, context) {
-  const termObj = getTermObject(classId, vocabClasses, context);
-  if (termObj == null) {
-    lxlWarning(`getLinkedProperties couldn't find any ${linkType} properties for class "${classId}"`);
-    return [];
-  }
-
-  const capitilzedLinkType = linkType[0].toUpperCase() + linkType.slice(1);
-  if (termObj[`in${capitilzedLinkType}Of`]) {
-    return termObj[`in${capitilzedLinkType}Of`];
-  }
-
-  const linkedProperties = Array.from(vocabProperties.values())
-    .filter((prop) => {
-      if (getLinkedPropertiesList(linkType, prop, vocabClasses, context).includes(classId)) {
-        return true;
-      }
-      return false;
-    });
-
-  return linkedProperties;
-}
-
 export function getDomainList(property, vocab, context) {
   if (property['@type'] === 'Class') {
     return false;
