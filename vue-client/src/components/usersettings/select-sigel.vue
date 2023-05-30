@@ -82,7 +82,7 @@ export default {
       @change="onChange">
       <option v-for="sigel in sortedSigels"
         :key="sigel.code" 
-        :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}</option>
+        :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}{{ sigel.code === 'Ssao' ? ' ⚔️' : '' }}</option>
     </select>
     <button      
       v-if="!updateOnChange"
