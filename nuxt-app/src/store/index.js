@@ -1,5 +1,6 @@
+import { each } from 'lodash-es'
 import * as VocabUtil from 'lxljs/vocab';
-import * as DisplayUtil from 'lxljs/display';
+import * as StringUtil from 'lxljs/string';
 import translationsFile from '@/resources/json/i18n.json';
 
 export const state = () => ({
@@ -185,21 +186,47 @@ export const mutations = {
     state.vocab = vocabMap;
   },
   SET_VOCAB_CLASSES(state, vocabMap) {
-    // Set vocabClasses to an array of objects
+    // Set vocabClasses to a map (as in vue-client/src/store.js)
     const classTerms = [].concat(
       VocabUtil.getTermByType('Class', vocabMap, state.vocabContext, state.settings),
       VocabUtil.getTermByType('marc:CollectionClass', vocabMap, state.vocabContext, state.settings),
     );
-    state.vocabClasses = classTerms;
+    const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
+    classes.forEach((classObj) => {
+      if (classObj.hasOwnProperty('subClassOf')) {
+        each(classObj.subClassOf, (baseClass) => {
+          const baseClassObj = classes.get(baseClass['@id']);
+          if (typeof baseClassObj !== 'undefined') {
+            if (baseClassObj.hasOwnProperty('baseClassOf')) {
+              baseClassObj.baseClassOf.push(StringUtil.convertToPrefix(classObj['@id'], state.vocabContext));
+            } else {
+              baseClassObj.baseClassOf = [StringUtil.convertToPrefix(classObj['@id'], state.vocabContext)];
+            }
+          }
+        });
+      }
+      const compactUri = StringUtil.getCompactUri(classObj['@id'], state.vocabContext);
+      ['domain', 'domainIncludes', 'range', 'rangeIncludes'].forEach(linkType => {
+        const linkedProperties = VocabUtil.getLinkedProperties(linkType, compactUri, classes, state.vocabProperties, state.vocabContext);
+        // Add inDomainOf / inDomainIncludesOf / inRangeOf / inRangeIncludesOf to class object
+        if (linkedProperties.length) {
+          const capitilzedLinkType = linkType[0].toUpperCase() + linkType.slice(1);
+          classObj[`in${capitilzedLinkType}Of`] = linkedProperties;
+        }
+      });
+
+    });
+    state.vocabClasses = classes;
   },
   SET_VOCAB_PROPERTIES(state, vocabMap) {
-    // Set vocabProperties to an array of objects
+    // Set vocabProperties to a map (as in vue-client/src/store.js)
     let props = [];
     props = props.concat(VocabUtil.getTermByType('Property', vocabMap, state.vocabContext, state.settings));
     props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabMap, state.vocabContext, state.settings));
     props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabMap, state.vocabContext, state.settings));
     props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabMap, state.vocabContext, state.settings));
-    state.vocabProperties = props;
+    const vocabProperties = new Map(props.map(entry => [entry['@id'], entry]));
+    state.vocabProperties = vocabProperties;
   },
   SET_DISPLAY(state, data) {
     state.display = data;
@@ -227,8 +254,8 @@ export const actions = {
     else {
       commit('SET_VOCAB_CONTEXT', vocab.context);
       commit('SET_VOCAB', vocab.vocab);
-      commit('SET_VOCAB_CLASSES', vocab.vocab);
       commit('SET_VOCAB_PROPERTIES', vocab.vocab);
+      commit('SET_VOCAB_CLASSES', vocab.vocab);
       commit('SET_DISPLAY', vocab.display);
     }
   },
