@@ -143,8 +143,8 @@ export default {
           const reverseKey = termObj['inverseOf']['@id'].split('/').pop();
           extracted[reverseKey] = value;
         } else {
-          const capitilzedKey = key[0].toUpperCase() + key.slice(1);
-          extracted[`in${capitilzedKey}Of`] = value;
+          const capitalizedKey = key[0].toUpperCase() + key.slice(1);
+          extracted[`in${capitalizedKey}Of`] = value;
         }
       }
       const combinedData = Object.assign(this.itemData, extracted);
