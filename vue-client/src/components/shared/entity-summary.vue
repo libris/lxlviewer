@@ -305,13 +305,6 @@ export default {
       const newHeader = `${header.substr(0, index)}<span class="highlight">${header.substr(index, this.highlightStr.length)}</span>${header.substr(index + this.highlightStr.length)}`;
       return newHeader;
     },
-    toggleExpanded() {
-      return (e) => {
-        if (this.handleOverflow) {
-          e.target.classList.toggle('expanded');
-        }
-      };
-    },
   },
 };
 </script>
@@ -379,7 +372,7 @@ export default {
         :key="node.property">
         <template v-if="node.value !== null">
           <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang | capitalize">{{ node.property | labelByLang | capitalize }}</span>
-          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.prevent.self="toggleExpanded">
+          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.prevent.self="(e) => { if (handleOverflow) { e.target.classList.toggle('expanded'); } }">
             <SummaryNode :hover-links="hoverLinks" :handle-overflow="handleOverflow" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>
