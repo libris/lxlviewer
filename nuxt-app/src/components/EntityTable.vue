@@ -139,8 +139,13 @@ export default {
       const extracted = {};
       for (const [key, value] of Object.entries(this.itemData['@reverse'])) {
         const termObj = VocabUtil.getTermObject(key, this.vocab, this.vocabContext);
-        const reverseKey = termObj['inverseOf']['@id'].split('/').pop();
-        extracted[reverseKey] = value;
+        if (termObj.hasOwnProperty('inverseOf')) {
+          const reverseKey = termObj['inverseOf']['@id'].split('/').pop();
+          extracted[reverseKey] = value;
+        } else {
+          const capitalizedKey = key[0].toUpperCase() + key.slice(1);
+          extracted[`in${capitalizedKey}Of`] = value;
+        }
       }
       const combinedData = Object.assign(this.itemData, extracted);
       delete combinedData['@reverse'];

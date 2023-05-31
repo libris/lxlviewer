@@ -416,6 +416,17 @@ export function getRangeFull(key, vocab, context, vocabClasses) {
   return allTypes;
 }
 
+export function getReversesByType(type, termObj, vocab) {
+  if (termObj.hasOwnProperty('@reverse') && termObj['@reverse'].hasOwnProperty(type)) {
+    return termObj['@reverse'][type];
+  }
+
+  // Find vocab items which has the type argument as a property wherein the current termObj is referenced
+  return Object.values(vocab)[0]
+    .filter(vocabItem => vocabItem.hasOwnProperty(type) && vocabItem[type].find(
+      typeItem => typeItem['@id'] === termObj['@id'],
+    ));
+}
 export function getDomainList(property, vocab, context) {
   if (property['@type'] === 'Class') {
     return false;
@@ -800,6 +811,19 @@ export function preprocessVocab(vocab) {
           }
         }
       });
+
+      if (termObj['@type'] === 'Class') {
+        ['domain', 'domainIncludes', 'range', 'rangeIncludes'].forEach((propertyLinkType) => {
+          const reverseProperties = getReversesByType(propertyLinkType, termObj, vocab);
+
+          if (reverseProperties.length) {
+            termObj['@reverse'] = {
+              ...termObj['@reverse'],
+              [propertyLinkType]: reverseProperties,
+            };
+          }
+        });
+      }
     }
   });
 
