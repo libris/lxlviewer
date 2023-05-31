@@ -29,6 +29,7 @@ import LensMixin from '@/mixins/lens';
 import EntityNode from '@/components/EntityNode';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
+import * as StringUtil from 'lxljs/string';
 
 export default {
   name: 'PropertyRow',
@@ -68,6 +69,12 @@ export default {
       return VocabUtil.getContextValue(this.property, '@container', this.vocabContext);
     },
     finalizedValue() {
+      if (Array.isArray(this.withoutFilteredTypes)) {
+        return [...this.withoutFilteredTypes].sort((a, b) => {
+          return StringUtil.getLabelByLang(a['@id'], this.settings.language, this.resources)
+            .localeCompare(StringUtil.getLabelByLang(b['@id'], this.settings.language, this.resources))
+        })
+      }
       return this.withoutFilteredTypes;
     },
     withoutFilteredTypes() {
