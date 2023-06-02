@@ -71,8 +71,9 @@ export default {
     finalizedValue() {
       if (Array.isArray(this.withoutFilteredTypes)) {
         return [...this.withoutFilteredTypes].sort((a, b) => {
-          return StringUtil.getLabelByLang(a['@id'], this.settings.language, this.resources)
-            .localeCompare(StringUtil.getLabelByLang(b['@id'], this.settings.language, this.resources))
+          const labelA = StringUtil.getLabelByLang(a['@id'], this.settings.language, this.resources)
+          const labelB = StringUtil.getLabelByLang(b['@id'], this.settings.language, this.resources)
+          return labelA ? labelA.localeCompare(labelB) : 1
         })
       }
       return this.withoutFilteredTypes;
