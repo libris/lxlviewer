@@ -32,6 +32,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    fieldKey: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -67,6 +71,9 @@ export default {
 <template>
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
+      <span v-if="fieldKey === 'instanceOf'">
+        {{ item['@type'] | labelByLang | capitalize }} &bull; 
+      </span>
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
