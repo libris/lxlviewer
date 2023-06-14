@@ -71,7 +71,7 @@ export default {
 <template>
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
-      <span v-if="fieldKey === 'instanceOf'">
+      <span v-if="fieldKey === 'instanceOf' && item['@type'] !== 'Work'">
         {{ item['@type'] | labelByLang | capitalize }}: 
       </span>
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
