@@ -131,7 +131,11 @@ export default {
             this.$nextTick(() => {
               this.resetSearch();
               if (this.itemInfo !== null) {
-                const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources, this.inspector.data.quoted, this.settings).replace(/#|_|•|\[|\]/g, ' ').replace(/  +/g, ' ');
+                const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources, this.inspector.data.quoted, this.settings)
+                  .replace(/#|_|•|\[|\]/g, ' ')
+                  .replace(/  +/g, ' ')
+                  .replace(new RegExp(`s?({(.*?)${StringUtil.getUiPhraseByLang('without', this.settings.language, this.resources.i18n)}(.*?)})`), '')
+                  .trim();
                 this.keyword = cleanedChipString;
                 this.search();
               }
