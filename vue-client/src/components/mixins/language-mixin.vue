@@ -133,7 +133,7 @@ export default {
         });
       }
     },
-    removeValue(tag, value) {
+    removeValue(tag, value, index) {
       let updateValue;
       let updatePath;
       if (tag !== 'none') {
@@ -164,11 +164,18 @@ export default {
           const lastIndex = this.path.lastIndexOf('.');
           const parentPath = this.path.slice(0, lastIndex);
           const parentValue = cloneDeep(get(this.inspector.data, parentPath));
-          delete parentValue[this.getPropKey()];
+
+          if (Array.isArray(parentValue[this.getPropKey()]) && index != null) {
+            parentValue[this.getPropKey()].splice(index, 1);
+          } else {
+            delete parentValue[this.getPropKey()];
+          }
+
           updateValue = parentValue;
           updatePath = parentPath;
         }
       }
+
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
