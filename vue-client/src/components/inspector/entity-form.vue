@@ -211,12 +211,10 @@ export default {
         &:not(.is-highlighted) {
           &:not(.is-removeable) {
             &:not(.is-marked) {
-              &:not(.is-linked) {
-                &:not(.is-diff-removed) {
-                  &:not(.is-diff-added) {
-                    &:not(.is-diff-modified) {
-                      background-color: @form-field;
-                    }
+              &:not(.is-diff-removed) {
+                &:not(.is-diff-added) {
+                  &:not(.is-diff-modified) {
+                    background-color: @form-field;
                   }
                 }
               }
@@ -231,24 +229,6 @@ export default {
     list-style: none;
     width: 100%;
     box-shadow: none;
-  }
-  &-item.is-linked {
-    border-color: rgba(@brand-primary, 23%);
-    background-color: lighten(@form-add, 5%);
-    
-    &:hover {
-      & .icon:not(.is-disabled) {
-        color: rgba(@brand-primary, 80%);
-      }
-    }
-    & .icon {
-      color: rgba(@brand-primary, 40%);
-
-      &:hover:not(.is-disabled),
-      &:focus {
-        color: @brand-primary;
-      }
-    }
   }
 }
 
