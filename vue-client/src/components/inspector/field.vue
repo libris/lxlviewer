@@ -97,10 +97,6 @@ export default {
       type: Object,
       default: null,
     },
-    isDistinguished: {
-      type: Boolean,
-      default: false,
-    },
     isCard: {
       type: Boolean,
       default: false,
@@ -694,7 +690,6 @@ export default {
       'is-highlighted': embellished,
       'is-grouped': isGrouped,
       'has-failed-validations': failedValidations.length > 0,
-      'is-distinguished': isDistinguished,
       'is-linked': isLinkedInstanceOf, 
     }"
     @mouseover="handleMouseEnter()" 

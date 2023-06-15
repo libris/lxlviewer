@@ -137,7 +137,6 @@ export default {
         :is-locked="keyIsLocked(k)" 
         :parent-accepted-types="acceptedTypes"
         :is-card="isIntegral(k)"
-        :is-distinguished="k === 'instanceOf'"
         :key="k" 
         :diff="diff"
         :field-key="k" 
@@ -233,12 +232,6 @@ export default {
     width: 100%;
     box-shadow: none;
   }
-
-  &-item.is-distinguished {    
-    border-bottom-width: 2px;
-    margin-bottom: 1rem;
-  }
-
   &-item.is-linked {
     border-color: rgba(@brand-primary, 23%);
     background-color: lighten(@form-add, 5%);
