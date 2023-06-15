@@ -399,7 +399,7 @@ export default {
   padding: 0.5em 0.75em 0.5em 0.75em;
 
   &.is-embedded-in-field {
-    padding: 0.5em 1.5em 0.5em 0;
+    padding: 0.5em 0 0.5em 0;
   }
 
   .EntityHeader & {

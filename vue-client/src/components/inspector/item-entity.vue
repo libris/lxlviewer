@@ -280,10 +280,12 @@ li.FieldList-item >
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding-bottom: 0.25em;
-    border-bottom: 2px solid @form-border;
-    
-    margin-bottom: 0.5em;
+
+    border-radius: 4px;
+    padding: 0.5em 1em 0.5em 1em;
+    margin: 0.6rem 0 0.6rem 0.6rem;
+    border: 1px solid @grey-lighter;
+    box-shadow: 0 2px 5px rgba(0,0,0,.08);
   }
 /*
   &-cardContainer:last-child {
