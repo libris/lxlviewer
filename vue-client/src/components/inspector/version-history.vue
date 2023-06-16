@@ -10,8 +10,8 @@ import * as StringUtil from 'lxljs/string';
 import * as DataUtil from '@/utils/data';
 import * as HistoryUtil from '@/utils/history';
 import LensMixin from '@/components/mixins/lens-mixin';
-import EntityForm from './entity-form.vue';
 import TabMenu from '@/components/shared/tab-menu';
+import EntityForm from './entity-form.vue';
 import VersionHistoryChangesets from './version-history-changesets.vue';
 
 export default {
