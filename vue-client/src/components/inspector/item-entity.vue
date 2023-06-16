@@ -224,7 +224,7 @@ export default {
       </v-popover> 
     </div>
     
-    <div class="ItemEntity-cardContainer" v-if="isCardWithData && expanded">
+    <div class="ItemEntity-content ItemEntity-cardContainer" v-if="isCardWithData && expanded">
       <entity-summary
         :focus-data="focusData" 
         :exclude-properties="excludeProperties"
