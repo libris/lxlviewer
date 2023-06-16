@@ -97,10 +97,6 @@ export default {
       type: Object,
       default: null,
     },
-    isDistinguished: {
-      type: Boolean,
-      default: false,
-    },
     isCard: {
       type: Boolean,
       default: false,
@@ -458,17 +454,6 @@ export default {
         return embellished.some(el => el.path === this.path);
       } return false;
     },
-    forcedToArray() {
-      return this.forcedListTerms.indexOf(this.fieldKey) > -1;
-    },
-    isLinkedInstanceOf() {
-      if (this.fieldKey === 'instanceOf' && this.fieldValue !== null && this.parentPath === 'mainEntity') {
-        if (this.fieldValue.hasOwnProperty('@id') && this.fieldValue['@id'].split('#')[0] !== this.inspector.data.record['@id']) {
-          return true;
-        }
-      }
-      return false;
-    },
     fieldRdfType() {
       return DisplayUtil.rdfDisplayType(this.fieldKey, this.resources);
     },
@@ -694,8 +679,6 @@ export default {
       'is-highlighted': embellished,
       'is-grouped': isGrouped,
       'has-failed-validations': failedValidations.length > 0,
-      'is-distinguished': isDistinguished,
-      'is-linked': isLinkedInstanceOf, 
     }"
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()"
