@@ -292,8 +292,8 @@ export default {
     remove(tag, val) {
       this.removeLanguageTag(tag, val);
     },
-    removeVal(tag, val) {
-      this.removeValue(tag, val);
+    removeVal(tag, val, index) {
+      this.removeValue(tag, val, index);
     },
     uriFor(tag) {
       return `${this.settings.idPath}/i18n/lang/${tag}`;
@@ -316,7 +316,7 @@ export default {
 
 <template>
   <div class="ItemBylang-root">
-    <div v-for="entry in entries" :key="entry.id">
+    <div v-for="(entry, index) in entries" :key="entry.id">
       <language-entry
         v-model="entry.val"
         :val="entry.val"
@@ -333,7 +333,7 @@ export default {
         :item-path="getParentPath()"
         @romanize="romanize(entry.tag, entry.val)"
         @remove="remove(entry.tag, entry.val)"
-        @removeval="removeVal(entry.tag, entry.val)"
+        @removeval="removeVal(entry.tag, entry.val, index)"
         @addLangTag="setValueFromEntityAdder(...arguments, entry.val)"
         @addToCache="updateLangCache(entry.tag)"
         @update="update(entries)">
