@@ -4,9 +4,9 @@ import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
-import settings from './settings';
 import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
+import settings from './settings';
 
 Vue.use(Vuex);
 

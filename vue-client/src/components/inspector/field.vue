@@ -10,6 +10,8 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
 import { getContextValue } from 'lxljs/vocab';
+import * as LayoutUtil from '@/utils/layout';
+import * as DataUtil from '@/utils/data';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
@@ -24,8 +26,6 @@ import ItemGrouped from './item-grouped';
 import ItemShelfControlNumber from './item-shelf-control-number';
 import ItemNextShelfControlNumber from './item-next-shelf-control-number';
 import ItemBylang from './item-bylang';
-import * as LayoutUtil from '@/utils/layout';
-import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import LanguageMixin from '../mixins/language-mixin';
 

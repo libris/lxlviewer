@@ -15,15 +15,16 @@ import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
 import moment from 'moment';
 import 'moment/locale/sv';
 import * as StringUtil from 'lxljs/string';
-import App from './App';
-import router from './router';
-import store from './store';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import Field from '@/components/inspector/field';
 import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
 import i18n from '@/resources/json/i18n.json';
+
+import App from './App';
+import router from './router';
+import store from './store';
 
 Vue.prototype.$moment = moment;
 moment.locale('sv');

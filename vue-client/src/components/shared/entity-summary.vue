@@ -3,12 +3,12 @@ import { each, isArray, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
-import LensMixin from '../mixins/lens-mixin';
 import OverflowMixin from '@/components/mixins/overflow-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
 import SummaryNode from '@/components/shared/summary-node';
 import * as RecordUtil from '@/utils/record';
+import LensMixin from '../mixins/lens-mixin';
 
 export default {
   mixins: [LensMixin, OverflowMixin],
