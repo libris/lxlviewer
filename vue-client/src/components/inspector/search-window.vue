@@ -1,5 +1,5 @@
 <script>
-import { merge, cloneDeep } from 'lodash-es';
+import { merge, cloneDeep, escapeRegExp } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import * as DisplayUtil from 'lxljs/display';
@@ -134,7 +134,7 @@ export default {
                 const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources, this.inspector.data.quoted, this.settings)
                   .replace(/#|_|•|\[|\]/g, ' ')
                   .replace(/  +/g, ' ')
-                  .replace(new RegExp(`s?({(.*?)(${this.settings.availableUserSettings.languages.map(lang => StringUtil.getUiPhraseByLang('without', lang.value, this.resources.i18n)).join('|')})(.*?)})`, 'g'), '')
+                  .replace(new RegExp(`s?({(.*?)(${this.settings.availableUserSettings.languages.map(lang => escapeRegExp(StringUtil.getUiPhraseByLang('without', lang.value, this.resources.i18n))).join('|')})(.*?)})`, 'g'), '')
                   .trim();
                 this.keyword = cleanedChipString;
                 this.search();
