@@ -3,7 +3,7 @@ import * as VocabUtil from './vocab';
 import * as StringUtil from './string';
 import { lxlLog, lxlWarning } from './debug';
 
-const TRANSLITERATION_SEPARATOR = '⬥';
+const TRANSLITERATION_SEPARATOR = '◦';
 
 export function expandInherited(display) {
   const cloned = cloneDeep(display);
@@ -246,7 +246,7 @@ function getTransliteratedLanguages(item) {
   return Object.entries(item).reduce((acc, itemEntry) => {
     if (itemEntry[0] && itemEntry[0].includes('ByLang')) {
       const transliteratedKeys = Object.keys(itemEntry[1]).filter(key => key.includes('Latn-t-'));
-      if (transliteratedKeys) {
+      if (transliteratedKeys.length) {
         return {
           from: Object.keys(itemEntry[1]).find(key => !transliteratedKeys.includes(key)),
           to: transliteratedKeys,
