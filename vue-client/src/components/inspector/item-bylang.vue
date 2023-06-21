@@ -27,6 +27,10 @@ export default {
       type: Object,
       default: null,
     },
+    isExpanded: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     'language-entry': LanguageEntry,
@@ -331,6 +335,7 @@ export default {
         :record-id="getRecordIdFromCache(entry.tag)"
         :diff="diff"
         :item-path="getParentPath()"
+        :is-expanded="isExpanded"
         @romanize="romanize(entry.tag, entry.val)"
         @remove="remove(entry.tag, entry.val)"
         @removeval="removeVal(entry.tag, entry.val, index)"

@@ -893,7 +893,8 @@ export default {
         :field-value="valueAsArray"
         :field-key="fieldKey"
         :parent-path="path"
-        :diff="diff">
+        :diff="diff"
+        :is-expanded="isExpanded">
       </item-bylang>
       </div>
       <div class="Field-contentItem"
@@ -1004,7 +1005,8 @@ export default {
           :field-value="valueAsArray"
           :field-key="fieldKey"
           :parent-path="path"
-          :diff="diff">
+          :diff="diff"
+          :is-expanded="isExpanded">
         </item-bylang>
       </div>
             
