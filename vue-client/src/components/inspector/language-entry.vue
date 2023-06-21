@@ -57,6 +57,10 @@ export default {
       type: String,
       default: '',
     },
+    isExpanded: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters([
@@ -122,6 +126,11 @@ export default {
   watch: {
     isLocked(val) {
       if (!val) {
+        this.initializeTextarea();
+      }
+    },
+    isExpanded(val) {
+      if (val) {
         this.initializeTextarea();
       }
     },
