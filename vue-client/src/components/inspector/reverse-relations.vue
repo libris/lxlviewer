@@ -275,5 +275,11 @@ export default {
   &-spinner {
     margin-bottom: 10px;
   }
+
+  button {
+    height: 32px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }
 </style>
