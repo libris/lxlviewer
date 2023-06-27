@@ -14,9 +14,9 @@ import ComboKeys from 'combokeys';
 import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
 import moment from 'moment';
 import 'moment/locale/sv';
-import App from './App';
-import router from './router';
-import store from './store';
+import App from './App'; // eslint-disable-line import/order
+import router from './router'; // eslint-disable-line import/order
+import store from './store'; // eslint-disable-line import/order
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
