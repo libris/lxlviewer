@@ -150,7 +150,7 @@ export default {
       return false;
     },
     update(viewObjects) {
-      if (this.isHistoryView()) {
+      if (this.isHistoryView() || this.isLocked) {
         return;
       }
 
@@ -176,7 +176,7 @@ export default {
       }
       const newData = this.dataForm(viewObjects);
       const oldData = cloneDeep(get(this.inspector.data, this.path));
-      if (!isEqual(oldData, newData)) {
+      if (newData && !isEqual(oldData, newData)) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
