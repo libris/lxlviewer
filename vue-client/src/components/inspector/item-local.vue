@@ -168,7 +168,7 @@ export default {
       return false;
     },
     isExtracting() {
-      if (this.inspector.keysToExtractOnSave.includes(this.fieldKey)) {
+      if (Object.keys(this.inspector.extractItemsOnSave).includes(this.path)) {
         return true;
       }
       return false;
@@ -252,12 +252,12 @@ export default {
       this.closeManagerMenu();
     },
     extract() {
-      this.$store.dispatch('addKeyToExtractOnSave', this.fieldKey);
+      this.$store.dispatch('addExtractItemOnSave', { path: this.path, item: this.focusData });
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Link was created', this.user.settings.language, this.resources.i18n)}` });
       this.closeExtractDialog();
     },
     stopExtracting() {
-      this.$store.dispatch('removeKeyToExtractOnSave', this.fieldKey);
+      this.$store.dispatch('removeExtractItemOnSave', { path: this.path });
       this.closeExtractDialog();
     },
     checkFocus() {

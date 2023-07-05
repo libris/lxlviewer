@@ -75,7 +75,7 @@ const store = new Vuex.Store({
       changeHistory: [],
       event: [],
       magicShelfMarks: [],
-      keysToExtractOnSave: [],
+      extractItemsOnSave: {},
     },
     status: {
       userIdle: false,
@@ -333,8 +333,8 @@ const store = new Vuex.Store({
     setLanguageTagPromise(state, payload) {
       state.inspector.supportedTags.promises[payload.tag] = payload.promise;
     },
-    setKeysToExtractOnSave(state, data) {
-      state.inspector.keysToExtractOnSave = data;
+    setExtractItemsOnSave(state, data) {
+      state.inspector.extractItemsOnSave = data;
     },
   },
   getters: {
@@ -405,14 +405,18 @@ const store = new Vuex.Store({
     supportedTags: state => state.inspector.supportedTags.data,
   },
   actions: {
-    addKeyToExtractOnSave({ commit, state }, data) {
-      commit('setKeysToExtractOnSave', [...new Set([...state.inspector.keysToExtractOnSave, data])]);
+    addExtractItemOnSave({ commit, state }, { path, item }) {
+      commit('setExtractItemsOnSave', {
+        ...state.inspector.extractItemsOnSave,
+        [path]: item,
+      });
     },
-    removeKeyToExtractOnSave({ commit, state }, data) {
-      commit('setKeysToExtractOnSave', state.inspector.keysToExtractOnSave.filter(key => key !== data));
+    removeExtractItemOnSave({ commit, state }, { path }) {
+      const { [path]: itemToRemove, ...rest } = state.inspector.extractItemsOnSave;
+      commit('setExtractItemsOnSave', rest);
     },
-    flushKeysToExtractOnSave({ commit }) {
-      commit('setKeysToExtractOnSave', []);
+    flushExtractItemsOnSave({ commit }) {
+      commit('setExtractItemsOnSave', {});
     },
     checkForMigrationOfUserDatabase({ commit, dispatch, state }) {
       // Check if user has records stored in localStorage

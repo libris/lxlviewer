@@ -202,6 +202,7 @@ export default {
       this.$store.dispatch('pushLoadingIndicator', 'Loading document');
       this.recordLoaded = false;
       this.$store.dispatch('flushChangeHistory');
+      this.$store.dispatch('flushExtractItemsOnSave');
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
 
       if (this.$route.name === 'Inspector' || this.$route.name === 'DocumentHistory') {
@@ -641,8 +642,8 @@ export default {
     },
     async saveExtracted() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
-      for await (const key of this.inspector.keysToExtractOnSave) {
-        const cleanedExtractedData = RecordUtil.getCleanedExtractedData(this.inspector.data.mainEntity[key], this.inspector.data, this.resources);
+      for await (const path of Object.keys(this.inspector.extractItemsOnSave)) {
+        const cleanedExtractedData = RecordUtil.getCleanedExtractedData(this.inspector.extractItemsOnSave[path], this.inspector.data, this.resources);
         const extractedRecord = RecordUtil.getObjectAsRecord(cleanedExtractedData, {
           descriptionCreator: { '@id': this.user.getActiveLibraryUri() },
           ...((this.inspector.data.record['@id'] !== 'https://id.kb.se/TEMPID') && {
@@ -663,7 +664,7 @@ export default {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
-              path: `mainEntity.${key}`,
+              path,
               value: { '@id': savedExtractedMainEntity['@id'] },
             },
           ],
@@ -671,10 +672,10 @@ export default {
         });
         this.$store.dispatch('setInspectorStatusValue', { 
           property: 'lastAdded', 
-          value: `mainEntity.${key}.{"@id":"${savedExtractedMainEntity['@id']}"}`,
+          value: `${path}.{"@id":"${savedExtractedMainEntity['@id']}"}`,
         });
       }
-      this.$store.dispatch('flushKeysToExtractOnSave');
+      this.$store.dispatch('flushExtractItemsOnSave');
     },
     saveItem(done = false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
