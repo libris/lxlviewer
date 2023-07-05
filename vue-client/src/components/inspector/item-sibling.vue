@@ -9,9 +9,7 @@
 import { cloneDeep, each } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
-import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
-import * as httpUtil from '@/utils/http';
 import * as LayoutUtil from '@/utils/layout';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
@@ -76,7 +74,6 @@ export default {
       isNewlyAdded: false,
       extractDialogActive: false,
       propertyAdderOpened: false,
-      extracting: false,
       expanded: false,
       focused: false,
       isHovered: false,
@@ -130,6 +127,12 @@ export default {
     },
     isLastAdded() {
       if (this.inspector.status.lastAdded === this.getPath) {
+        return true;
+      }
+      return false;
+    },
+    isExtracting() {
+      if (this.inspector.keysToExtractOnSave.includes(this.fieldKey)) {
         return true;
       }
       return false;
@@ -216,34 +219,6 @@ export default {
       this.extractDialogActive = false;
       this.extracting = false;
     },
-    doExtract() {
-      this.extracting = true;
-      this.doCreateRequest(httpUtil.post, this.extractedItem, `${this.settings.apiPath}/data`);
-    },
-    doCreateRequest(requestMethod, obj, url) {
-      requestMethod({ url, token: this.user.token, activeSigel: this.user.settings.activeSigel }, obj).then((result) => {
-        if (result.status === 201) {
-          const postUrl = `${result.getResponseHeader('Location')}`;
-          httpUtil.get({ url: `${postUrl}/data.jsonld`, contentType: 'text/plain' }).then((getResult) => {
-            const recievedObj = {
-              '@graph': getResult['@graph'],
-            };
-            const mainEntity = LxlDataUtil.splitJson(recievedObj).mainEntity;
-            this.replaceWith(mainEntity);
-            this.closeExtractDialog();
-          }, (error) => {
-            this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}` });
-            this.closeExtractDialog();
-          });
-        } else {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}` });
-          this.closeExtractDialog();
-        }
-      }, (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}` });
-        this.closeExtractDialog();
-      });
-    },
     openForm() {
       this.inEdit = true;
     },
@@ -257,8 +232,13 @@ export default {
       this.focused = false;
     },
     extract() {
-      this.extracting = true;
-      this.doExtract();
+      this.$store.dispatch('addKeyToExtractOnSave', this.fieldKey);
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Link was created', this.user.settings.language, this.resources.i18n)}` });
+      this.closeExtractDialog();
+    },
+    stopExtracting() {
+      this.$store.dispatch('removeKeyToExtractOnSave', this.fieldKey);
+      this.closeExtractDialog();
     },
     checkFocus() {
       if (this.focused) {
@@ -326,7 +306,7 @@ export default {
     'inspector.status.editing'(val) {
       if (!val) {
         this.closePropertyAdder();
-        this.closeExtractDialog();
+        this.stopExtracting();
       }
     },
     shouldExpand(val) {
@@ -399,7 +379,7 @@ export default {
   <div class="ItemSibling js-itemLocal"
     ref="container"
     :id="`formPath-${path}`"
-    :class="{'is-highlighted': isNewlyAdded, 'highlight-info': highlights.indexOf('info') > -1, 'highlight-remove': highlights.indexOf('remove') > -1, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
+    :class="{'is-extracting': isExtracting, 'is-highlighted': isNewlyAdded, 'highlight-info': highlights.indexOf('info') > -1, 'highlight-remove': highlights.indexOf('remove') > -1, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()" 
     @focus="addFocus()"
@@ -422,9 +402,19 @@ export default {
       </div>
       
       <div class="ItemSibling-actions">
-
         <entity-action
-          v-if="inspector.status.editing && !isEmbedded && !isLocked && !isCompositional && extractedMainEntity != null"
+          v-if="isExtracting"
+          @action="stopExtracting()"
+          @highlight="addHighlight('info')"
+          @dehighlight="removeHighlight('info')"
+          label="Avbryt utbrytning"
+          description="Avbryt utbrytning"
+          icon="unlink"
+          :parent-hovered="isHovered"
+          :is-large="largerActions"
+        />
+        <entity-action
+          v-if="inspector.status.editing && !isEmbedded && !isLocked && !isCompositional && extractedMainEntity != null && !isExtracting"
           @action="openExtractDialog(), expand()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
@@ -437,7 +427,7 @@ export default {
         />
 
         <entity-action
-          v-if="!isLocked"
+          v-if="!isLocked && !isExtracting"
           @action="openPropertyAdder(), expand()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
@@ -449,7 +439,7 @@ export default {
         />
 
         <entity-action
-          v-if="inspector.status.editing && !isLocked"
+          v-if="inspector.status.editing && !isLocked && !isExtracting"
           @action="removeThis(true)"
           @highlight="addHighlight('remove')"
           @dehighlight="removeHighlight('remove')"
@@ -473,7 +463,7 @@ export default {
         :parent-path="getPath" 
         :entity-type="item['@type']" 
         :is-inner="true" 
-        :is-locked="isLocked" 
+        :is-locked="isLocked || isExtracting" 
         :is-removable="false" 
         :parent-key="fieldKey" 
         :parent-index="index" 

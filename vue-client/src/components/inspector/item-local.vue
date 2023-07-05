@@ -2,11 +2,9 @@
 import { cloneDeep, get } from 'lodash-es';
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
-import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
-import * as httpUtil from '@/utils/http';
 import * as LayoutUtil from '@/utils/layout';
 import PropertyAdder from '@/components/inspector/property-adder';
 import EntityAction from '@/components/inspector/entity-action';
@@ -67,7 +65,6 @@ export default {
       showCardInfo: false,
       extractDialogActive: false,
       propertyAdderOpened: false,
-      extracting: false,
       expanded: false,
       removeHover: false,
       focused: false,
@@ -170,6 +167,12 @@ export default {
       }
       return false;
     },
+    isExtracting() {
+      if (this.inspector.keysToExtractOnSave.includes(this.fieldKey)) {
+        return true;
+      }
+      return false;
+    },
   },
   methods: {
     openManagerMenu() {
@@ -234,44 +237,6 @@ export default {
     },
     closeExtractDialog() {
       this.extractDialogActive = false;
-      this.extracting = false;
-    },
-    doExtract() {
-      this.extracting = true;
-      this.doCreateRequest(httpUtil.post, this.extractedItem, `${this.settings.apiPath}/data`);
-    },
-    doCreateRequest(requestMethod, obj, url) {
-      requestMethod({ url, token: this.user.token, activeSigel: this.user.settings.activeSigel }, obj).then((result) => {
-        if (result.status === 201) {
-          const postUrl = `${result.getResponseHeader('Location')}`;
-          httpUtil.get({ url: `${postUrl}/data.jsonld`, contentType: 'text/plain' }).then((getResult) => {
-            const recievedObj = {
-              '@graph': getResult['@graph'],
-            };
-            const mainEntity = LxlDataUtil.splitJson(recievedObj).mainEntity;
-            this.replaceWith(mainEntity);
-            this.closeExtractDialog();
-          }, (error) => {
-            this.$store.dispatch('pushNotification', { 
-              type: 'danger', 
-              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
-            });
-            this.closeExtractDialog();
-          });
-        } else {
-          this.$store.dispatch('pushNotification', { 
-            type: 'danger', 
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}`,
-          });
-          this.closeExtractDialog();
-        }
-      }, (error) => {
-        this.$store.dispatch('pushNotification', { 
-          type: 'danger', 
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
-        });
-        this.closeExtractDialog();
-      });
     },
     openForm() {
       this.inEdit = true;
@@ -287,8 +252,13 @@ export default {
       this.closeManagerMenu();
     },
     extract() {
-      this.extracting = true;
-      this.doExtract();
+      this.$store.dispatch('addKeyToExtractOnSave', this.fieldKey);
+      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Link was created', this.user.settings.language, this.resources.i18n)}` });
+      this.closeExtractDialog();
+    },
+    stopExtracting() {
+      this.$store.dispatch('removeKeyToExtractOnSave', this.fieldKey);
+      this.closeExtractDialog();
     },
     checkFocus() {
       if (this.focused) {
@@ -373,7 +343,7 @@ export default {
     'inspector.status.editing'(val) {
       if (!val) {
         this.closePropertyAdder();
-        this.closeExtractDialog();
+        this.stopExtracting();
       }
     },
     'inspector.event'(val) {
@@ -470,6 +440,7 @@ export default {
     :id="`formPath-${path}`"
     :class="{
       'is-highlighted': isLastAdded,
+      'is-extracting': isExtracting,
       'highlight-mark': highlights.indexOf('mark') > -1,
       'highlight-remove': highlights.indexOf('remove') > -1,
       'highlight-info': highlights.indexOf('info') > -1,
@@ -512,7 +483,18 @@ export default {
       
       <div class="ItemLocal-actions">
         <entity-action
-          v-if="inspector.status.editing && !isEmbedded && !isLocked && !isCompositional && extractedMainEntity != null"
+          v-if="isExtracting"
+          @action="stopExtracting()"
+          @highlight="addHighlight('info')"
+          @dehighlight="removeHighlight('info')"
+          label="Avbryt utbrytning"
+          description="Avbryt utbrytning"
+          icon="unlink"
+          :parent-hovered="isHovered"
+          :is-large="largerActions"
+        />
+        <entity-action
+          v-if="inspector.status.editing && !isEmbedded && !isLocked && !isCompositional && extractedMainEntity != null && !isExtracting"
           @action="openExtractDialog(), expand()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
@@ -525,7 +507,7 @@ export default {
         />
 
         <entity-action
-          v-if="!isLocked"
+          v-if="!isLocked && !isExtracting"
           @action="openPropertyAdder(), expand()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
@@ -537,7 +519,7 @@ export default {
         />
 
         <entity-action
-          v-if="inspector.status.editing && !isLocked"
+          v-if="inspector.status.editing && !isLocked && !isExtracting"
           @action="removeThis(true)"
           @highlight="addHighlight('remove')"
           @dehighlight="removeHighlight('remove')"
@@ -549,7 +531,7 @@ export default {
         />
 
         <entity-action
-          v-if="inspector.status.editing && !isLocked"
+          v-if="inspector.status.editing && !isLocked && !isExtracting"
           @action="managerMenuOpen ? closeManagerMenu() : openManagerMenu()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
@@ -591,7 +573,7 @@ export default {
         :parent-path="getPath" 
         :entity-type="item['@type']" 
         :is-inner="true" 
-        :is-locked="isLocked" 
+        :is-locked="isLocked || isExtracting" 
         :is-removable="false" 
         :is-first-field="i===0"
         :parent-key="fieldKey" 
@@ -624,7 +606,7 @@ export default {
       :all-search-types="allSearchTypes"
       :entity-type="item['@type']"
       :field-key="fieldKey" 
-      :extracting="extracting" 
+      :extracting="isExtracting" 
       :extractable="isExtractable"
       :item-info="extractedMainEntity"
       :index="index"
@@ -829,6 +811,15 @@ export default {
 
   &.is-highlighted {
     background-color: @form-highlight;
+  }
+
+  &.is-extracting {
+    background-color: @form-extracting !important;
+    box-shadow: 0 0 0 1px @brand-primary;
+  }
+
+  &.is-extracting .is-entity {
+    background: #fff;
   }
 }
 </style>

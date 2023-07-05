@@ -75,6 +75,7 @@ const store = new Vuex.Store({
       changeHistory: [],
       event: [],
       magicShelfMarks: [],
+      keysToExtractOnSave: [],
     },
     status: {
       userIdle: false,
@@ -332,6 +333,9 @@ const store = new Vuex.Store({
     setLanguageTagPromise(state, payload) {
       state.inspector.supportedTags.promises[payload.tag] = payload.promise;
     },
+    setKeysToExtractOnSave(state, data) {
+      state.inspector.keysToExtractOnSave = data;
+    },
   },
   getters: {
     inspector: state => state.inspector,
@@ -401,6 +405,15 @@ const store = new Vuex.Store({
     supportedTags: state => state.inspector.supportedTags.data,
   },
   actions: {
+    addKeyToExtractOnSave({ commit, state }, data) {
+      commit('setKeysToExtractOnSave', [...new Set([...state.inspector.keysToExtractOnSave, data])]);
+    },
+    removeKeyToExtractOnSave({ commit, state }, data) {
+      commit('setKeysToExtractOnSave', state.inspector.keysToExtractOnSave.filter(key => key !== data));
+    },
+    flushKeysToExtractOnSave({ commit }) {
+      commit('setKeysToExtractOnSave', []);
+    },
     checkForMigrationOfUserDatabase({ commit, dispatch, state }) {
       // Check if user has records stored in localStorage
       if (state.userStorage.list) {
@@ -470,7 +483,7 @@ const store = new Vuex.Store({
         if (value.tags.length > 0) {
           newList[key] = value;
         }
-      }      
+      }
       dispatch('modifyUserDatabase', { property: 'markedDocuments', value: newList });
     },
     loadUserDatabase({ commit, dispatch, state }) {
