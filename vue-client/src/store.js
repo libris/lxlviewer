@@ -5,6 +5,7 @@ import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
+import ChangeNotes from '@/utils/changenotes';
 import * as User from '@/models/user';
 import settings from './settings';
 
@@ -95,6 +96,7 @@ const store = new Vuex.Store({
       failedRemoteDatabases: '',
       hintSigelChange: false,
     },
+    changenotes: new ChangeNotes(),
     user: User.getUserObject(),
     userDatabase: null,
     userStorage: {
@@ -206,11 +208,15 @@ const store = new Vuex.Store({
       }
       // Set the new values
       each(payload.changeList, (node) => {
-        // console.log("DATA_UPDATE:", JSON.stringify(node));
+        // console.log('DATA_UPDATE:', JSON.stringify(node));
+        const tracker = state.changenotes.trackChange(state, inspectorData, node.path);
         if (node.path === '') {
           inspectorData = node.value;
         } else {
           set(inspectorData, node.path, node.value);
+        }
+        if (tracker) {
+          tracker.completeChange(node.value);
         }
       });
       // Check if we should remove work node (if it went from local to being linked)
