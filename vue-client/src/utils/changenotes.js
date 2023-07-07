@@ -11,20 +11,21 @@ export default class ChangeNotes {
     // console.log(JSON.stringify(this.categoryPatterns, null, 2));
   }
 
-  findCategoryFor(data, path) {
-    let rulePath = path.replace(/^mainEntity\./, '');
-    const subject = data.mainEntity;
-
+  findCategoryMatchFor(subject, rulePath) {
     let categoryId = null;
 
     let object = null;
     let selectedInArray = null;
+    let selectedAt = '0';
 
     while (rulePath) {
       object = get(subject, rulePath);
       const patterns = this.categoryPatterns[rulePath];
       if (patterns != null) {
         object = selectedInArray || (Array.isArray(object) && object.length === 1 ? object[0] : object);
+        if (object == null) {
+          return null;
+        }
         for (const pattern of patterns) {
           if (matches(subject, pattern.subjectMatches) && matches(object, pattern.objectMatches)) {
             categoryId = pattern.categoryId;
@@ -35,6 +36,9 @@ export default class ChangeNotes {
       }
 
       selectedInArray = rulePath.endsWith(']') ? object : null;
+      if (selectedInArray) {
+        selectedAt = rulePath.replace(/.*?\[(\d+)\]+$/, '$1');
+      }
 
       const parentRulePath = rulePath.replace(/\[\d+\]$|.[^.[]+$/, '');
       if (parentRulePath === '') {
@@ -43,34 +47,69 @@ export default class ChangeNotes {
       rulePath = parentRulePath;
     }
 
-    const atIndex = selectedInArray ? '[0]' : '';
-    const matchedPath = `mainEntity.${rulePath}${atIndex}`;
-
-    return { categoryId, object, matchedPath };
-  }
-
-  trackChange(state, inspectorData, path) {
-    const { categoryId, object, matchedPath } = this.findCategoryFor(inspectorData, path);
-    const innerChange = path !== matchedPath;
+    const atIndex = selectedInArray ? `[${selectedAt}]` : '';
+    const matchedPath = `${rulePath}${atIndex}`;
 
     if (categoryId == null) {
       return null;
     }
 
+    return { categoryId, object, matchedPath };
+  }
+
+  computeCategoryMatchFor(inspectorData, path) {
+    let rulePath = path.replace(/^mainEntity\./, '');
+    let subject = inspectorData.mainEntity;
+    let match = this.findCategoryMatchFor(subject, rulePath);
+    let record = inspectorData.record;
+
+    if (match == null) {
+      rulePath = rulePath.replace(/^instanceOf\./, '');
+      subject = inspectorData.mainEntity.instanceOf;
+      if (subject['@id'] != null) {
+        return null;
+      }
+
+      if (!subject.hasOwnProperty('meta')) {
+        subject.meta = { '@type': 'Record' };
+      }
+      match = this.findCategoryMatchFor(subject, rulePath);
+      if (match == null) {
+        return null;
+      }
+
+      match.matchedPath = `instanceOf.${match.matchedPath}`;
+      record = subject.meta;
+    }
+
+    match.matchedPath = `mainEntity.${match.matchedPath}`;
+    match.record = record;
+
+    return match;
+  }
+
+  trackChange(state, inspectorData, path) {
+    const match = this.computeCategoryMatchFor(inspectorData, path);
+    if (match == null) {
+      return null;
+    }
+    const { record, categoryId, object, matchedPath } = match;
+
     const getLabel = o => DisplayUtil.getItemLabel(o, state.resources, inspectorData.quoted, state.settings);
 
     // IMPROVE: check if added?
-    // Won't reach here; for old (non)-value use findCategoryFor again in completeChange...
+    // Won't reach here; use computeCategoryMatchFor again in completeChange to match newValue...?
     const chipLabel = getLabel(object);
     const oldValue = chipLabel; // get(inspectorData, path);
 
     return {
       completeChange: (changedValue) => {
         let newValue = null;
+        const innerChange = path !== matchedPath;
         if (innerChange || !isEmpty(changedValue)) {
           newValue = getLabel(get(inspectorData, matchedPath));
         }
-        completeChange(inspectorData.record, categoryId, oldValue, newValue);
+        completeChange(record, categoryId, oldValue, newValue);
       },
     };
   }
@@ -88,6 +127,17 @@ function completeChange(record, categoryId, oldValue, newValue) {
   const existingChange = idx > -1 ? record.hasChangeNote[idx] : null;
 
   oldValue = extractOldValue(existingChange) || oldValue;
+
+  /* Remove ChangeNote if value is changed back? Only if changed within the same editing session?
+  if (existingChange && oldValue === newValue) {
+    record.hasChangeNote.splice(idx, 1);
+    if (record.hasChangeNote.length === 0) {
+      delete record.hasChangeNote;
+    }
+    return;
+  }
+  */
+
   const changeText = makeDiffValue(oldValue, newValue);
 
   const changeNote = {
