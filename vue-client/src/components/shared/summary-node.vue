@@ -72,14 +72,19 @@ export default {
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
       <span v-if="fieldKey === 'instanceOf' && item['@type'] !== 'Work'">
-        {{ item['@type'] | labelByLang | capitalize }}: 
+        {{ item['@type'] | labelByLang | capitalize }} •
       </span>
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
     <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
-        <router-link v-if="isLibrisResource" :to="routerPath">{{getItemLabel}}</router-link>
+        <router-link v-if="isLibrisResource" :to="routerPath">
+          <span v-if="fieldKey === 'instanceOf'">
+            {{ item['@type'] | labelByLang | capitalize }} •
+          </span>
+          {{getItemLabel}}
+        </router-link>
         <a v-if="!isLibrisResource" :href="focusData['@id'] | convertResourceLink">{{getItemLabel}}</a>
       </span>
       <template slot="popover" v-if="hoverLinks">
