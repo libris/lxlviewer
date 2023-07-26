@@ -11,7 +11,6 @@ import { FocusTrap } from 'focus-trap-vue';
 import PortalVue from 'portal-vue';
 import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
-import modernizr from 'modernizr'; // eslint-disable-line no-unused-vars
 import moment from 'moment';
 import 'moment/locale/sv';
 import App from './App'; // eslint-disable-line import/order

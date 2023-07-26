@@ -25,7 +25,6 @@ module.exports = {
       alias: {
         '~': path.resolve(__dirname, 'src/'),
         '@': path.resolve('src/'),
-        modernizr$: path.resolve(__dirname, '.modernizrrc'),
       },
       fallback: {
         crypto: require.resolve('crypto-browserify'),
