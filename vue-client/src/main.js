@@ -24,9 +24,6 @@ import Field from '@/components/inspector/field';
 import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
 import i18n from '@/resources/json/i18n.json';
-import store from './store';
-import router from './router';
-import App from './App';
 
 Vue.prototype.$moment = moment;
 moment.locale('sv');
