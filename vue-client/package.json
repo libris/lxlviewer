@@ -23,7 +23,7 @@
     "autosize": "^4.0.2",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.3",
-    "babel-jest": "^24.0.0",
+    "babel-jest": "^29.6.1",
     "bootstrap": "^3.4.1",
     "client-oauth2": "^4.3.3",
     "combokeys": "https://github.com/avocode/combokeys/archive/v3.1.0.tar.gz",
@@ -66,7 +66,10 @@
     "webpack-modernizr-loader": "^4.0.1",
     "whatwg-fetch": "^3.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/preset-env": "^7.22.9",
+    "@vue/vue2-jest": "28"
+  },
   "eslintConfig": {
     "root": true,
     "env": {
@@ -139,7 +142,7 @@
       "runtimeConfig": {}
     },
     "transform": {
-      "^.+\\.vue$": "vue-jest",
+      "^.+\\.vue$": "@vue/vue2-jest",
       ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
       "^.+\\.jsx?$": "babel-jest"
     },
