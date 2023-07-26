@@ -54,11 +54,6 @@ module.exports = {
         },
       }));
     config.module
-      .rule('modernizr')
-      .test(/\.modernizrrc$/)
-      .use('webpack-modernizr-loader')
-      .loader('webpack-modernizr-loader');
-    config.module
       .rule('jsonld')
       .test(/\.jsonld$/)
       .use('json-loader')
