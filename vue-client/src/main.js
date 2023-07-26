@@ -24,6 +24,9 @@ import Field from '@/components/inspector/field';
 import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
 import i18n from '@/resources/json/i18n.json';
+import store from './store';
+import router from './router';
+import App from './App';
 
 Vue.prototype.$moment = moment;
 moment.locale('sv');
@@ -318,6 +321,7 @@ new Vue({
     fetchHelpDocs() {
       if (this.settings.mockHelp) {
         window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
+        // eslint-disable-next-line import/no-extraneous-dependencies
         store.dispatch('setHelpDocs', require('@/../../../lxl-helpdocs/build/help.json'));
       } else {
         fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
