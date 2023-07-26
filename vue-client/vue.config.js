@@ -18,7 +18,7 @@ module.exports = {
       allowedHosts: [
         process.env.VUE_APP_DEV_SERVER || 'kblocalhost.kb.se',
       ],
-      port: 8080
+      port: 8080,
     },
     resolve: {
       extensions: ['.js', '.vue', '.json'],
@@ -28,16 +28,16 @@ module.exports = {
         modernizr$: path.resolve(__dirname, '.modernizrrc'),
       },
       fallback: {
-        "crypto": require.resolve("crypto-browserify"),
-        "querystring": require.resolve("querystring-es3"),
-        "stream": require.resolve("stream-browserify")
-      }
+        crypto: require.resolve('crypto-browserify'),
+        querystring: require.resolve('querystring-es3'),
+        stream: require.resolve('stream-browserify'),
+      },
     },
     plugins: [
       new webpack.IgnorePlugin({ resourceRegExp: /^\.\/locale$/, contextRegExp: /moment$/ }),
     ],
     watchOptions: {
-      ignored: /node_modules([\\]+|\/)+(?!lxljs)/
+      ignored: /node_modules([\\]+|\/)+(?!lxljs)/,
     },
   },
   chainWebpack(config) {
