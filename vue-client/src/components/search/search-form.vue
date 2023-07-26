@@ -1,6 +1,6 @@
 <script>
 import { isEmpty, cloneDeep, isArray } from 'lodash-es';
-import marked from 'marked';
+import { marked } from 'marked';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import PropertyMappings from '@/resources/json/propertymappings.json';
