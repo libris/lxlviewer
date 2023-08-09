@@ -9,6 +9,7 @@ export function getDisplayDefinitions() {
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
       window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using file from local definitions repository');
+      // eslint-disable-next-line import/no-extraneous-dependencies
       resolve(DisplayUtil.expandInherited(require('@/../../../definitions/source/vocab/display.jsonld')));
     } else {
       HttpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {

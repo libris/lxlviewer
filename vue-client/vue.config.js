@@ -15,23 +15,28 @@ module.exports = {
   parallel: false,
   configureWebpack: {
     devServer: {
-      public: process.env.VUE_APP_DEV_SERVER || 'kblocalhost.kb.se',
+      allowedHosts: [
+        process.env.VUE_APP_DEV_SERVER || 'kblocalhost.kb.se',
+      ],
+      port: 8080,
     },
     resolve: {
       extensions: ['.js', '.vue', '.json'],
       alias: {
         '~': path.resolve(__dirname, 'src/'),
         '@': path.resolve('src/'),
-        modernizr$: path.resolve(__dirname, '.modernizrrc'),
+      },
+      fallback: {
+        crypto: require.resolve('crypto-browserify'),
+        querystring: require.resolve('querystring-es3'),
+        stream: require.resolve('stream-browserify'),
       },
     },
     plugins: [
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new webpack.IgnorePlugin({ resourceRegExp: /^\.\/locale$/, contextRegExp: /moment$/ }),
     ],
     watchOptions: {
-      ignored: [
-        /node_modules([\\]+|\/)+(?!lxljs)/,
-      ],
+      ignored: /node_modules([\\]+|\/)+(?!lxljs)/,
     },
   },
   chainWebpack(config) {
@@ -47,11 +52,6 @@ module.exports = {
           preserveWhitespace: true,
         },
       }));
-    config.module
-      .rule('modernizr')
-      .test(/\.modernizrrc$/)
-      .use('webpack-modernizr-loader')
-      .loader('webpack-modernizr-loader');
     config.module
       .rule('jsonld')
       .test(/\.jsonld$/)

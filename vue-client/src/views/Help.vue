@@ -1,6 +1,6 @@
 <script>
 import { orderBy } from 'lodash-es';
-import marked from 'marked';
+import { marked } from 'marked';
 import moment from 'moment';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
