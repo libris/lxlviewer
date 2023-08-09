@@ -14,6 +14,7 @@
   "dependencies": {
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/style-resources": "^1.2.1",
+    "bootstrap": "https://github.com/twbs/bootstrap/archive/v5.2.3.tar.gz",
     "bootstrap-icons": "^1.5.0",
     "core-js": "^3.9.1",
     "git-describe": "^4.1.0",
