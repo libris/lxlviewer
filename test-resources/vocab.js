@@ -1,7 +1,7 @@
 module.exports = {
   "@graph": [
     {
-      "@id": "http://kblocalhost.kb.se:5000/00nj5pg320vg4482",
+      "@id": "http://libris.localhost:5000/00nj5pg320vg4482",
       "@type": "Record",
       "created": "2021-11-11T15:59:37.144+01:00",
       "modified": "2021-11-11T15:59:37.144+01:00",
@@ -243,7 +243,7 @@ module.exports = {
     {
       "@graph": [
         {
-          "@id": "http://kblocalhost.kb.se:5000/00046r5325gpfg5l",
+          "@id": "http://libris.localhost:5000/00046r5325gpfg5l",
           "@type": "Record",
           "created": "2021-10-25T01:29:49.661+02:00",
           "modified": "2021-10-25T01:29:49.661+02:00",
@@ -270,7 +270,7 @@ module.exports = {
     {
       "@graph": [
         {
-          "@id": "http://kblocalhost.kb.se:5000/00nj5pg3229cknbr",
+          "@id": "http://libris.localhost:5000/00nj5pg3229cknbr",
           "@type": "Record",
           "created": "2021-10-25T01:29:49.698+02:00",
           "modified": "2021-10-25T01:29:49.698+02:00",
@@ -300,7 +300,7 @@ module.exports = {
     {
       "@graph": [
         {
-          "@id": "http://kblocalhost.kb.se:5000/pg46w5d0r2frvwzr",
+          "@id": "http://libris.localhost:5000/pg46w5d0r2frvwzr",
           "@type": "Record",
           "mainEntity": {
             "@id": "https://id.kb.se/generator/definitions"
