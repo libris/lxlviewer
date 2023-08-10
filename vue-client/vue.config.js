@@ -16,7 +16,7 @@ module.exports = {
   configureWebpack: {
     devServer: {
       allowedHosts: [
-        process.env.VUE_APP_DEV_SERVER || 'libris.localhost',
+        process.env.VUE_APP_DEV_SERVER || 'libris.kb.se.localhost',
       ],
       port: 8080,
     },
