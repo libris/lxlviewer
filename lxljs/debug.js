@@ -1,4 +1,14 @@
-const PKG_NAME = require('./package.json').name.toUpperCase();
+// TODO: Check if this works? We cant use require any more
+import packageInfo from './package.json';
+let PKG_NAME = '';
+
+if (typeof require !== 'undefined') {
+  PKG_NAME = require('./package.json').name.toUpperCase();
+}
+
+if (packageInfo != null) {
+  PKG_NAME = packageInfo.name;
+}
 
 const lxlLogStack = [];
 
