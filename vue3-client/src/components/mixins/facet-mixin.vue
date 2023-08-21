@@ -6,7 +6,7 @@ import { useSettingsStore } from '@/stores/settings';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as MathUtil from '@/utils/math';
-import LensMixin from '@/components/mixins/lens-mixin';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
 
 export default {
   mixins: [LensMixin],

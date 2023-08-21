@@ -271,7 +271,7 @@ export default {
 
 <style lang="scss">
 .VersionHistory {
-  background-color: @bg-site;
+  background-color: $bg-site;
   &-mainCol {
     height: 100vh;
     display: flex;
@@ -280,27 +280,16 @@ export default {
     flex: 3 0 0;
   }
   &-sideCol {
-    box-shadow: @fullscreen-panel-shadow;
+    box-shadow: $fullscreen-panel-shadow;
     z-index: 2;
     height: 100vh;
     flex: 1 0 0;
 
-    @media screen and (max-width: @screen-xs-max) {
-      .full-view();
-    }
-
-    .full-view() {
-      top: 0px;
-      left: 0px;
-      width: 100%;
-      opacity: 1;
-      height: 100vh;
-      position: fixed;
-      &.hidden-view {
-        display: none;
-      }
+    @include media-breakpoint-down(xs) {
+      @include full-view();
     }
   }
+
   &-backLink {
     font-weight: normal;
     a {
@@ -313,7 +302,7 @@ export default {
   &-header {
     z-index: 1;
     font-weight: 600;
-    background-color: @white;
+    background-color: $white;
     border: solid #ccc;
     border-width: 0px 0px 1px 0px;
     display: flex;
@@ -336,7 +325,7 @@ export default {
     flex-grow: 1;
   }
   &-changeSets {
-    background-color: @white;
+    background-color: $white;
   }
   .Container-row {
     display: flex;
@@ -345,7 +334,7 @@ export default {
     padding: 0;
   }
   .sideColButton {
-    @media screen and (min-width: @screen-xs-max) {
+    @include media-breakpoint-up(xs) {
       display: none;
     }
   }
@@ -369,7 +358,7 @@ export default {
     border-color: transparent;
     padding: 0.75rem 0.75rem 0.75rem 1.5rem;
     &.selected {
-      border-left-color: @brand-primary;
+      border-left-color: $brand-primary;
     }
   }
   &-currentVersion {
@@ -377,14 +366,14 @@ export default {
     font-size: 0.75em;
     text-transform: uppercase;
     &.selected {
-      color: @brand-primary;
+      color: $brand-primary;
     }
   }
   &-date {
     flex: 1 0 auto;
     font-weight: 600;
     &.selected {
-      color: @brand-primary;
+      color: $brand-primary;
     }
   }
   &-agent {
@@ -392,7 +381,7 @@ export default {
     font-size: 0.9em;
   }
   &-tool {
-    border: 1px solid @grey;
+    border: 1px solid $grey;
     border-radius: 2em;
     width: max-content;
     height: max-content;

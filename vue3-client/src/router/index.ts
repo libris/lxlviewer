@@ -2,8 +2,11 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import * as StringUtil from 'lxljs/string';
 
+// Import views
 import LandingPage from '../views/LandingPage.vue';
 import Login from '../views/Login.vue';
+import Find from "../views/Find.vue";
+import Help from "../views/Help.vue";
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,12 +47,12 @@ const router = createRouter({
 		{
 			path: '/search/:perimeter?',
 			name: 'Search',
-			component: () => import('../views/Find.vue'),
+			component: Find,
 		},
 		{
 			path: '/help/:section?',
 			name: 'Help',
-			component: () => import('../views/Help.vue'),
+			component: Help,
 		},
 		{
 			path: '/directory-care',
@@ -110,7 +113,6 @@ router.beforeEach((to, from, next) => {
 
 // TODO: Fix this router middleware
 router.beforeEach((to, from, next) => {
-	console.log('is working?', to, from);
 	const userStore = useUserStore();
 	const newToken = StringUtil.getParamValueFromUrl(to.hash, 'access_token');
 	if (newToken) {

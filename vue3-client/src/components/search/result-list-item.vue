@@ -154,8 +154,8 @@ export default {
   list-style: none;
   margin-bottom: 0.5em;
   padding: 0.5em 1em 0.25em 1em;
-  background-color: @white;
-  border: 1px solid @grey-lighter;
+  background-color: $white;
+  border: 1px solid $grey-lighter;
   transform: translateX(0);
   transition: transform .2s cubic-bezier(0.21, 0.21, 0.62, 1.23);
 
@@ -167,14 +167,14 @@ export default {
 
   &.is-highlighted {
     transform: translateX(25px);
-    border: 1px solid @grey-light;  
+    border: 1px solid $grey-light;
   }
 
   &--compact {
     display: flex;
     margin: -1px 0 0 0;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     padding: 0.5em 1em;
     line-height: 1.2em;
 
@@ -188,7 +188,7 @@ export default {
     font-size: 20px;
     font-size: 2.0rem;
     line-height: 1.3;
-    color: @brand-primary;
+    color: $brand-primary;
     font-weight: 600;
     margin: 0px;
     display: inline-block;
@@ -202,7 +202,7 @@ export default {
       cursor: pointer;
       &:hover {
         text-decoration: underline;
-        color: @link-hover-color;
+        color: $link-hover-color;
       }
     }
   }
@@ -210,7 +210,7 @@ export default {
   &-link {
     &:visited {
       // Commented out until fixing in IE11
-      // color: @link-visited-color;
+      // color: $link-visited-color;
     }
   }
 
@@ -239,7 +239,7 @@ export default {
     font-weight: 600;
     font-size: 1.4rem;
     cursor: pointer;
-    color: @link-color;
+    color: $link-color;
   }
   &-tags {
     display: flex;

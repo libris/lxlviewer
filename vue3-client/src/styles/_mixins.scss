@@ -1,4 +1,19 @@
 
+/*
+ * Calculate Luma
+ *
+ * Luma measures a colors percieved brightness
+ * by the human eye.
+ * http://en.wikipedia.org/wiki/YIQ
+ */
+@function luma($color){
+  $r: red($color);
+  $g: green($color);
+  $b: blue($color);
+
+  @return 0.299 * $r + 0.587 * $g + 0.114 * $b;
+}
+
 @mixin focus-mixin-border() {
   outline: 2px solid $focus-color-border !important; //fallback for IE & Edge
   background-color: unset !important;
@@ -18,6 +33,19 @@
   box-shadow: $shadow-panel;
   background-color: $color;
   border-width: 0px;
+}
+
+@mixin full-view() {
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  opacity: 1;
+  height: 100vh;
+  position: fixed;
+
+  &.hidden-view {
+    display: none;
+  }
 }
 
 .panel {

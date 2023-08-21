@@ -106,7 +106,7 @@ export default {
 .SearchResult {
   padding: 2rem 0;
 
-  @media (min-width: @screen-md) {
+  @include media-breakpoint-up(md) {
     padding: 0 0 2rem 0;
   }
 

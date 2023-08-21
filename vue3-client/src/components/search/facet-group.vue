@@ -5,7 +5,7 @@ import { useUserStore } from '@/stores/user';
 import { useResourcesStore } from '@/stores/resources';
 import { useSettingsStore } from '@/stores/settings';
 import { sortBy, orderBy } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { Dropdown } from 'floating-vue';
 import * as DisplayUtil from 'lxljs/display';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
 import TypeIcon from '@/components/shared/type-icon.vue';
@@ -14,7 +14,7 @@ import Facet from './facet.vue';
 
 export default {
   name: 'facet-group',
-  mixins: [clickaway, FacetMixin],
+  mixins: [FacetMixin],
   props: {
     group: {
       type: Object,
@@ -166,6 +166,7 @@ export default {
     Facet,
     EncodingLevelIcon,
     TypeIcon,
+    Dropdown,
   },
 };
 </script>
@@ -183,27 +184,30 @@ export default {
         :id="facetLabelByLang(group.dimension)">
         {{facetLabelByLang(group.dimension) | capitalize}}
       </h4>
-      <div
-        class="FacetGroup-sortSelect" 
-        tabindex="0"
-        v-show="isExpanded"
-        @click="toggleSortDropDown"
-        @keyup.enter="toggleSortDropDown"
-        v-on-clickaway="hideSortDropDown"
-        :class="{'active': sortDropDownActive}"
-      >
-        <i v-if="chosenSort == 'amount.desc'" class="icon-selected fa fa-fw fa-sort-amount-desc"></i>
-        <i v-if="chosenSort == 'amount.asc'" class="icon-selected fa fa-fw fa-sort-amount-asc"></i>
-        <i v-if="chosenSort == 'alpha.asc'" class="icon-selected fa fa-fw fa-sort-alpha-asc"></i>
-        <i v-if="chosenSort == 'alpha.desc'" class="icon-selected fa fa-fw fa-sort-alpha-desc"></i>
-        <i class="fa fa-caret-down"></i>
-        <ul class="FacetGroup-sortSelectDropdown" v-show="sortDropDownActive">
-          <li :class="{'active': chosenSort == 'amount.desc'}" @click="selectSortDropDownItem('amount.desc')" @keyup.enter="selectSortDropDownItem('amount.desc')"><i class="fa fa-fw fa-sort-amount-desc"></i> Antal träffar (fallande)</li>
-          <li :class="{'active': chosenSort == 'amount.asc'}" @click="selectSortDropDownItem('amount.asc')" @keyup.enter="selectSortDropDownItem('amount.asc')"><i class="fa fa-fw fa-sort-amount-asc"></i> Antal träffar (stigande)</li>
-          <li :class="{'active': chosenSort == 'alpha.asc'}" @click="selectSortDropDownItem('alpha.asc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-asc"></i> A-Ö</li>
-          <li :class="{'active': chosenSort == 'alpha.desc'}" @click="selectSortDropDownItem('alpha.desc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-desc"></i> Ö-A</li>
-        </ul>
-      </div>
+
+      <Dropdown>
+        <div
+          class="FacetGroup-sortSelect" 
+          tabindex="0"
+          v-show="isExpanded"
+          :class="{'active': sortDropDownActive}"
+        >
+          <i v-if="chosenSort == 'amount.desc'" class="icon-selected fa fa-fw fa-sort-amount-desc"></i>
+          <i v-if="chosenSort == 'amount.asc'" class="icon-selected fa fa-fw fa-sort-amount-asc"></i>
+          <i v-if="chosenSort == 'alpha.asc'" class="icon-selected fa fa-fw fa-sort-alpha-asc"></i>
+          <i v-if="chosenSort == 'alpha.desc'" class="icon-selected fa fa-fw fa-sort-alpha-desc"></i>
+          <i class="fa fa-caret-down"></i>
+        </div>
+
+        <template #popper>
+          <ul class="FacetGroup-sortSelectDropdown">
+            <li :class="{'active': chosenSort == 'amount.desc'}" @click="selectSortDropDownItem('amount.desc')" @keyup.enter="selectSortDropDownItem('amount.desc')"><i class="fa fa-fw fa-sort-amount-desc"></i> Antal träffar (fallande)</li>
+            <li :class="{'active': chosenSort == 'amount.asc'}" @click="selectSortDropDownItem('amount.asc')" @keyup.enter="selectSortDropDownItem('amount.asc')"><i class="fa fa-fw fa-sort-amount-asc"></i> Antal träffar (stigande)</li>
+            <li :class="{'active': chosenSort == 'alpha.asc'}" @click="selectSortDropDownItem('alpha.asc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-asc"></i> A-Ö</li>
+            <li :class="{'active': chosenSort == 'alpha.desc'}" @click="selectSortDropDownItem('alpha.desc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-desc"></i> Ö-A</li>
+          </ul>
+        </template>
+      </Dropdown>
     </div>
     <ul class="FacetGroup-list"
       :class="{'is-expanded' : isExpanded, 'has-scroll' : hasScroll}">

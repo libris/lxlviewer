@@ -4,6 +4,7 @@ import * as DisplayUtil from 'lxljs/display';
 import * as HttpUtil from '@/utils/http';
 import { useInspectorStore } from '@/stores/inspector';
 import { useSettingsStore } from '@/stores/settings';
+import displayJson from '@/../../../definitions/source/vocab/display.json'
 
 export function getDisplayDefinitions() {
   const settings = useSettingsStore();
@@ -11,7 +12,7 @@ export function getDisplayDefinitions() {
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
       window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using file from local definitions repository');
-      resolve(DisplayUtil.expandInherited(require('@/../../../definitions/source/vocab/display.jsonld')));
+      resolve(DisplayUtil.expandInherited(displayJson));
     } else {
       HttpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
         resolve(DisplayUtil.expandInherited(result));

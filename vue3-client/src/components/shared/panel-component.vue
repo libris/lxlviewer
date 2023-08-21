@@ -222,7 +222,7 @@ export default {
     }
 
     @include media-breakpoint-down(lg) {
-      .full-view();
+      @include full-view();
     }
 
     &.full-view {

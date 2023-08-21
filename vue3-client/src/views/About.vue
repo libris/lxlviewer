@@ -11,7 +11,7 @@ export default {
       return this.copy.header;
     },
     image() {
-      return require(`@/assets/img/${this.copy.image}`);
+      return `assets/img/${this.copy.image}`;
     },
     imageAltText() {
       return this.copy.image_alt_text;

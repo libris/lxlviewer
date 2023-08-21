@@ -18,8 +18,8 @@ export default {
     ...mapState(useSettingsStore, ['settings']),
     ...mapState(useUserStore, ['user']),
     hash() {
-      const hash = this.settings.gitDescribe.hash;
-      return hash.substr(1, hash.length);
+      const hash = this.settings.gitDescribe?.hash;
+      return hash?.substr(1, hash.length);
     },
     version() {
       return this.settings.version;
@@ -48,10 +48,10 @@ export default {
           <router-link to="/" class="SearchBar-brandTitle" :class="{ 'not-prod': settings.environment !== 'prod' }" :title="`Version ${version}`">
             <span id="service-name">{{ settings.title }}</span>
           </router-link>
-          <span class="SearchBar-envLabel" v-if="this.settings.gitDescribe.distance == 0">
+          <span class="SearchBar-envLabel" v-if="this.settings.gitDescribe?.distance == 0">
             {{ versionInfo }}
           </span>
-          <a class="SearchBar-envLabel" v-if="this.settings.gitDescribe.distance !== 0" target="_blank" :href="`https://github.com/libris/lxlviewer/commit/${this.hash}`">
+          <a class="SearchBar-envLabel" v-if="this.settings.gitDescribe?.distance !== 0" target="_blank" :href="`https://github.com/libris/lxlviewer/commit/${this.hash}`">
             {{ versionInfo }}
           </a>
         </div>

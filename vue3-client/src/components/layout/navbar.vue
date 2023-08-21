@@ -84,9 +84,6 @@ export default {
     },
   },
   watch: {
-    '$route.path'() {
-      this.hideUserMenu();
-    },
     'hintSigelChange'(val) {
       this.showSigelHint = val;
     },

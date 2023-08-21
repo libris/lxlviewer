@@ -12,6 +12,7 @@ const useRegexTest = new RegExp(useRegex, 'm');
 const useRegexReplace = new RegExp(`${useRegex}(?![\\s\\S]*${useRegex})`, 'gm');
 
 function hoistUseStatements(resources: string): (key: string) => string {
+    // De-duplicate identical imports
     return function(source: string): string {
         if (useRegexTest.test(source)) {
             const output = source.replace(
@@ -19,7 +20,6 @@ function hoistUseStatements(resources: string): (key: string) => string {
                 (useStatements) => `${useStatements}\n${resources}`,
             );
 
-            // De-duplicate identical imports
             const importedResources: Record<string, boolean | undefined> = {};
             return output.replace(new RegExp(useRegex, 'mg'), (importedResource: string) => {
                 if (importedResources[importedResource]) {
@@ -34,6 +34,23 @@ function hoistUseStatements(resources: string): (key: string) => string {
         return `${resources}\n${source}`;
     }
 };
+
+const imports = `@use "bootstrap/scss/bootstrap" as *;
+@use "@/styles/main.scss" as *;
+// Import kb-styles colors
+// @import "bootstrap/scss/variables.scss";`
+
+const additionalData = content => {
+  // If there are @use statements, insert the import after the last one,
+  // otherwise insert it before all content.
+  const match = content.match(/@use '[^']+';/g)
+  if (match) {
+    const last = match[match.length - 1]
+    return content.replace(last, `${last}\n${imports}`)
+  } else {
+    return `${imports}\n${content}`
+  }
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -60,13 +77,16 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: hoistUseStatements(`
-          @import "bootstrap/scss/bootstrap";
-          @import "@/styles/main.scss";
-          // Import kb-styles colors
-          // @import "bootstrap/scss/variables.scss";
-        `)
-      },
+        additionalData: additionalData(imports),
+      }
+      // scss: {
+      //   additionalData: hoistUseStatements(`
+      //     @import "bootstrap/scss/bootstrap";
+      //     @import "@/styles/main.scss";
+      //     // Import kb-styles colors
+      //     // @import "bootstrap/scss/variables.scss";
+      //   `)
+      // },
     }
   },
   build: {

@@ -49,7 +49,7 @@ export default {
 .FacetControls {
   padding: 0 10px;
 
-  @media (min-width: @screen-md) {
+  @include media-breakpoint-up(md) {
     padding: 0;
   }
 }

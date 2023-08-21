@@ -39,6 +39,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     focusSearchInput() {
       this.$refs.searchFormInput.focus();
     },
@@ -270,7 +271,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.focusSearchInput();
-      this.$router.onReady(() => {
+      this.$router.isReady().then(() => {
         this.setActiveSelectValues();
       });
     });

@@ -6,7 +6,7 @@ import { useStatusStore } from '@/stores/status';
 import { useUserStore } from '@/stores/user';
 import { useSettingsStore } from '@/stores/settings';
 import { orderBy } from 'lodash-es';
-import marked from 'marked';
+import { marked } from 'marked';
 import moment from 'moment';
 import * as StringUtil from 'lxljs/string';
 
@@ -53,7 +53,7 @@ export default {
       return htmlFixedImages;
     },
     transformMarkdownToHTML(markdown) {
-      const html = marked(markdown);
+      const html = marked.parse(markdown);
       return html;
     },
     getTimeAgoString(date) {
@@ -203,7 +203,7 @@ export default {
       code {
         padding: 4px;
         font-size: 90%;
-        color: @black;
+        color: $black;
         background-color: #fbebef;
       }
 
@@ -214,7 +214,7 @@ export default {
       table {
         font-size: 12px;
         font-size: 1.2rem;
-        border: 1px solid @grey-lighter;
+        border: 1px solid $grey-lighter;
         width: 100%;
       }
 
@@ -227,11 +227,11 @@ export default {
       }
 
       tr:nth-child(even) {
-        background: @list-item-bg-even;
+        background: $list-item-bg-even;
       }
 
       th {
-        background: @grey-lighter;
+        background: $grey-lighter;
         padding: 5px;
         text-transform: uppercase;
         line-height: 1.2;
@@ -251,7 +251,7 @@ export default {
   }
 
   &-categoryItemLabel {
-    color: @black;
+    color: $black;
     font-size: 14px;
     font-size: 1.4rem;
     text-transform: uppercase;

@@ -28,9 +28,6 @@
       v-if="resourcesLoaded"
       v-show="loadingIndicators.length === 0"
     />
-
-    {{ resourcesLoaded }}
-    {{ loadingIndicators.length }}
   </main>
 
   <portal-target name="sidebar" multiple />
@@ -210,7 +207,6 @@ export default {
       };
     },
     fetchHelpDocs() {
-      console.log('mockHelp', this.settings.mockHelp);
       if (this.settings.mockHelp) {
         window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
         this.helpDocs = helpDocsJson;

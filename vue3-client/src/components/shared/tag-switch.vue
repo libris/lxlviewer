@@ -126,7 +126,7 @@ export default {
 
   cursor: pointer;
   .fa-flag {
-    color: @brand-accent;
+    color: $brand-accent;
   }
   .fa-star {
     color: #d6b400;

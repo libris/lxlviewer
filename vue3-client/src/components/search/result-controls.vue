@@ -295,7 +295,7 @@ export default {
 </template>
 
 <style lang="scss">
-@buttoncolor: darken(@neutral-color, 10%);
+$buttoncolor: darken($neutral-color, 10%);
 
 .ResultControls {
   margin: 1em 0;
@@ -306,10 +306,10 @@ export default {
     align-items: center;
     width: 100%;
     min-height: 2.8em;
-    color: @grey-dark;
-    border-bottom: 1px solid @grey-lighter;
+    color: $grey-dark;
+    border-bottom: 1px solid $grey-lighter;
 
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       flex-direction: column;
     }
   }
@@ -324,7 +324,7 @@ export default {
   }
 
   &-numTotal, &-dbLabel {
-    color: @black;
+    color: $black;
   }
 
   &-controlWrap {
@@ -343,7 +343,7 @@ export default {
     &:hover, 
     &:focus {
       background-color: transparent;
-      color: @grey-darker;
+      color: $grey-darker;
     }
 
     i {
@@ -352,7 +352,7 @@ export default {
     }
 
     &.is-active {
-      color: @btn-primary;
+      color: $btn-primary;
 
       i {
         color: inherit;
@@ -391,7 +391,7 @@ export default {
   // &-filterBadge {
   //   background-color: #364a4c;
   //   border: 1px solid #364a4c;
-  //   color: @white;
+  //   color: $white;
   //   font-weight: 600;
   //   font-size: 1.4rem;
   //   padding: 2px 5px 2px 10px;
@@ -412,13 +412,13 @@ export default {
 
   //   & i,
   //   & i:hover {
-  //     color: @white;
+  //     color: $white;
   //   }
 
   //   &.clear-all {
   //     color: inherit;
-  //     background-color: @white;
-  //     border: 1px solid @grey-lighter;
+  //     background-color: $white;
+  //     border: 1px solid $grey-lighter;
 
   //     & i,
   //     & i:hover {
