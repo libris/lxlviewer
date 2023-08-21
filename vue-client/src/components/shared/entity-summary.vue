@@ -438,6 +438,7 @@ export default {
     background-color: @badge-color-transparent;
     transition: background-color 0.5s ease;
     letter-spacing: 0.5px;
+    font-size: 1.2rem;
     font-weight: 400;
     padding: 0 0.75em;
     border-radius: 1em;
