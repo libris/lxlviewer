@@ -71,7 +71,7 @@ export default {
 <template>
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
-      <span v-if="fieldKey === 'instanceOf' && item['@type'] !== 'Work'">
+      <span v-if="fieldKey === 'instanceOf' && focusData['@type'] !== 'Work'">
         {{ focusData['@type'] | labelByLang | capitalize }} •
       </span>
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
@@ -80,7 +80,7 @@ export default {
     <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">
-          <span v-if="fieldKey === 'instanceOf' && item['@type'] !== 'Work'">
+          <span v-if="fieldKey === 'instanceOf' && focusData['@type'] !== 'Work'">
             {{ focusData['@type'] | labelByLang | capitalize }} •
           </span>
           {{getItemLabel}}
