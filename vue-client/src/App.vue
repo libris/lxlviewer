@@ -709,12 +709,12 @@ h1 {
 
 // smaller uppercase headings
 .uppercaseHeading {
-    text-transform: uppercase;
+    text-transform: uppercase !important;
     color: @grey-darker;
     font-size: 13px;
     font-size: 1.3rem;
     font-weight: 600;
-  
+
     &--light {
       &:extend(.uppercaseHeading);
       font-size: 12px;

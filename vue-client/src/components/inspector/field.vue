@@ -10,6 +10,8 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
 import { getContextValue } from 'lxljs/vocab';
+import * as LayoutUtil from '@/utils/layout';
+import * as DataUtil from '@/utils/data';
 import EntityAdder from './entity-adder';
 import ItemEntity from './item-entity';
 import ItemValue from './item-value';
@@ -24,8 +26,6 @@ import ItemGrouped from './item-grouped';
 import ItemShelfControlNumber from './item-shelf-control-number';
 import ItemNextShelfControlNumber from './item-next-shelf-control-number';
 import ItemBylang from './item-bylang';
-import * as LayoutUtil from '@/utils/layout';
-import * as DataUtil from '@/utils/data';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import LanguageMixin from '../mixins/language-mixin';
 
@@ -96,10 +96,6 @@ export default {
     diff: {
       type: Object,
       default: null,
-    },
-    isDistinguished: {
-      type: Boolean,
-      default: false,
     },
     isCard: {
       type: Boolean,
@@ -458,17 +454,6 @@ export default {
         return embellished.some(el => el.path === this.path);
       } return false;
     },
-    forcedToArray() {
-      return this.forcedListTerms.indexOf(this.fieldKey) > -1;
-    },
-    isLinkedInstanceOf() {
-      if (this.fieldKey === 'instanceOf' && this.fieldValue !== null && this.parentPath === 'mainEntity') {
-        if (this.fieldValue.hasOwnProperty('@id') && this.fieldValue['@id'].split('#')[0] !== this.inspector.data.record['@id']) {
-          return true;
-        }
-      }
-      return false;
-    },
     fieldRdfType() {
       return DisplayUtil.rdfDisplayType(this.fieldKey, this.resources);
     },
@@ -694,8 +679,6 @@ export default {
       'is-highlighted': embellished,
       'is-grouped': isGrouped,
       'has-failed-validations': failedValidations.length > 0,
-      'is-distinguished': isDistinguished,
-      'is-linked': isLinkedInstanceOf, 
     }"
     @mouseover="handleMouseEnter()" 
     @mouseleave="handleMouseLeave()"
@@ -910,7 +893,8 @@ export default {
         :field-value="valueAsArray"
         :field-key="fieldKey"
         :parent-path="path"
-        :diff="diff">
+        :diff="diff"
+        :is-expanded="isExpanded">
       </item-bylang>
       </div>
       <div class="Field-contentItem"
@@ -1021,7 +1005,8 @@ export default {
           :field-value="valueAsArray"
           :field-key="fieldKey"
           :parent-path="path"
-          :diff="diff">
+          :diff="diff"
+          :is-expanded="isExpanded">
         </item-bylang>
       </div>
             

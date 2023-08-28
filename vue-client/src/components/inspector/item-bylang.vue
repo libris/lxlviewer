@@ -27,6 +27,10 @@ export default {
       type: Object,
       default: null,
     },
+    isExpanded: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     'language-entry': LanguageEntry,
@@ -146,7 +150,7 @@ export default {
       return false;
     },
     update(viewObjects) {
-      if (this.isHistoryView()) {
+      if (this.isHistoryView() || this.isLocked) {
         return;
       }
 
@@ -172,7 +176,7 @@ export default {
       }
       const newData = this.dataForm(viewObjects);
       const oldData = cloneDeep(get(this.inspector.data, this.path));
-      if (!isEqual(oldData, newData)) {
+      if (newData && !isEqual(oldData, newData)) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
@@ -292,8 +296,8 @@ export default {
     remove(tag, val) {
       this.removeLanguageTag(tag, val);
     },
-    removeVal(tag, val) {
-      this.removeValue(tag, val);
+    removeVal(tag, val, index) {
+      this.removeValue(tag, val, index);
     },
     uriFor(tag) {
       return `${this.settings.idPath}/i18n/lang/${tag}`;
@@ -316,7 +320,7 @@ export default {
 
 <template>
   <div class="ItemBylang-root">
-    <div v-for="entry in entries" :key="entry.id">
+    <div v-for="(entry, index) in entries" :key="entry.id">
       <language-entry
         v-model="entry.val"
         :val="entry.val"
@@ -331,9 +335,10 @@ export default {
         :record-id="getRecordIdFromCache(entry.tag)"
         :diff="diff"
         :item-path="getParentPath()"
+        :is-expanded="isExpanded"
         @romanize="romanize(entry.tag, entry.val)"
         @remove="remove(entry.tag, entry.val)"
-        @removeval="removeVal(entry.tag, entry.val)"
+        @removeval="removeVal(entry.tag, entry.val, index)"
         @addLangTag="setValueFromEntityAdder(...arguments, entry.val)"
         @addToCache="updateLangCache(entry.tag)"
         @update="update(entries)">

@@ -202,6 +202,7 @@ export default {
       this.$store.dispatch('pushLoadingIndicator', 'Loading document');
       this.recordLoaded = false;
       this.$store.dispatch('flushChangeHistory');
+      this.$store.dispatch('flushExtractItemsOnSave');
       this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
 
       if (this.$route.name === 'Inspector' || this.$route.name === 'DocumentHistory') {
@@ -416,7 +417,7 @@ export default {
 
       if (!insertData.hasOwnProperty('@graph') || insertData['@graph'].length === 0) {
         this.$store.dispatch('removeLoadingIndicator', 'Loading document');
-        this.$router.go(-1);
+        this.$router.replace('/create');
         console.warn('New document called without input data, routing user back.');
       } else {
         this.$store.dispatch('setInspectorData', LxlDataUtil.splitJson(insertData));
@@ -627,6 +628,55 @@ export default {
         this.$router.push({ path: '/new' });
       }, 0);
     },
+    async saveRecord(done = false) {
+      try {
+        await this.saveExtracted();
+        this.saveQueued = () => this.saveItem(done);
+      } catch (error) {
+        this.$store.dispatch('pushNotification', { 
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
+        });
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+      }
+    },
+    async saveExtracted() {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
+      for await (const path of Object.keys(this.inspector.extractItemsOnSave)) {
+        const cleanedExtractedData = RecordUtil.getCleanedExtractedData(this.inspector.extractItemsOnSave[path], this.inspector.data, this.resources);
+        const extractedRecord = RecordUtil.getObjectAsRecord(cleanedExtractedData, {
+          descriptionCreator: { '@id': this.user.getActiveLibraryUri() },
+          ...((this.inspector.data.record['@id'] !== 'https://id.kb.se/TEMPID') && {
+            derivedFrom: { '@id': this.inspector.data.record['@id'] },
+          }),
+        });
+        const response = await HttpUtil.post({
+          url: `${this.settings.apiPath}/data`,
+          token: this.user.token,
+          activeSigel: this.user.settings.activeSigel,
+        }, extractedRecord);
+        const postUrl = `${response.getResponseHeader('Location')}`;
+        const savedExtractedRecord = await HttpUtil.get({ url: `${postUrl}/data.jsonld`, contentType: 'text/plain' });
+        const savedExtractedMainEntity = LxlDataUtil.splitJson({
+          '@graph': savedExtractedRecord['@graph'],
+        }).mainEntity;
+        this.$store.dispatch('addToQuoted', savedExtractedMainEntity);
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [
+            {
+              path,
+              value: { '@id': savedExtractedMainEntity['@id'] },
+            },
+          ],
+          addToHistory: false,
+        });
+        this.$store.dispatch('setInspectorStatusValue', { 
+          property: 'lastAdded', 
+          value: `${path}.{"@id":"${savedExtractedMainEntity['@id']}"}`,
+        });
+      }
+      this.$store.dispatch('flushExtractItemsOnSave');
+    },
     saveItem(done = false) {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
 
@@ -794,10 +844,10 @@ export default {
             this.openRemoveModal();
             break;
           case 'save-record':
-            this.saveQueued = () => this.saveItem();
+            this.saveRecord();
             break;
           case 'save-record-done':
-            this.saveQueued = () => this.saveItem(true);
+            this.saveRecord(true);
             break;
           case 'open-marc-preview':
             this.openMarcPreview();

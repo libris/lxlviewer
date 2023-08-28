@@ -157,12 +157,7 @@ export default {
       const propertyList = DisplayUtil.getSortedProperties(this.formType, this.formObj, this.settings, this.resources);
 
       if (this.showTypeChanger) {
-        // move instanceOf field to top
-        if (this.recordType === 'Instance') {
-          propertyList.splice(1, 0, '@type');
-        } else {
-          propertyList.splice(0, 0, '@type');
-        }
+        propertyList.splice(0, 0, '@type');
       }
       return propertyList;
     },

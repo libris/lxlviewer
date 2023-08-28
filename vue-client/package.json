@@ -1,6 +1,6 @@
 {
   "name": "vue-client",
-  "version": "1.31.2",
+  "version": "1.32.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -12,39 +12,44 @@
     "test:e2e_ci": "vue-cli-service test:e2e --mode e2e --headless"
   },
   "dependencies": {
+    "@babel/core": "^7.0.0",
     "@babel/polyfill": "^7.8.3",
-    "@vue/cli-plugin-babel": "^3.0.1",
-    "@vue/cli-plugin-e2e-cypress": "^3.0.1",
-    "@vue/cli-plugin-eslint": "^3.0.1",
-    "@vue/cli-plugin-unit-jest": "^3.0.1",
-    "@vue/cli-service": "^3.0.1",
+    "@vue/cli-plugin-babel": "^5.0.7",
+    "@vue/cli-plugin-e2e-cypress": "^5.0.7",
+    "@vue/cli-plugin-eslint": "^5.0.7",
+    "@vue/cli-plugin-unit-jest": "^5.0.7",
+    "@vue/cli-service": "^5.0.7",
     "@vue/eslint-config-airbnb": "^4.0.0",
     "@vue/test-utils": "^1.0.0-beta.20",
     "autosize": "^4.0.2",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.3",
-    "babel-jest": "^24.0.0",
-    "bootstrap": "https://github.com/twbs/bootstrap/archive/v3.3.7.tar.gz",
+    "babel-jest": "^27.5.1",
+    "bootstrap": "^3.4.1",
     "client-oauth2": "^4.3.3",
     "combokeys": "https://github.com/avocode/combokeys/archive/v3.1.0.tar.gz",
+    "core-js": "^3.31.1",
+    "crypto-browserify": "^3.12.0",
     "eslint": "^7.0.0",
     "eslint-plugin-vue": "^6.1.2",
     "focus-trap": "^6.0.1",
     "focus-trap-vue": "^1.1.1",
     "font-awesome": "4.7.0",
     "git-describe": "^4.0.4",
+    "jest": "^27.1.0",
     "json-loader": "^0.5.7",
     "kungbib-styles": "^1.3.3",
     "less": "^3.10.3",
-    "less-loader": "^4.1.0",
+    "less-loader": "^11.1.3",
     "lodash-es": "^4.17.14",
     "lxljs": "link:../lxljs",
-    "marked": "^2.0.0",
+    "marked": "^4.3.0",
     "md5": "^2.2.1",
-    "modernizr": "^3.6.0",
     "moment": "^2.29.4",
     "path": "^0.12.7",
     "portal-vue": "^1.5.0",
+    "querystring-es3": "^0.2.1",
+    "stream-browserify": "^3.0.0",
     "style-resources-loader": "^1.3.3",
     "v-tooltip": "^2.0.2-rc.33",
     "vue": "^2.6.10",
@@ -58,11 +63,13 @@
     "vue-simple-spinner": "^1.2.8",
     "vue-template-compiler": "^2.6.11",
     "vuex": "^3.1.2",
-    "webpack": "^4.41.5",
-    "webpack-modernizr-loader": "^4.0.1",
+    "webpack": "^5.82.1",
     "whatwg-fetch": "^3.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/preset-env": "^7.22.9",
+    "@vue/vue2-jest": "27"
+  },
   "eslintConfig": {
     "root": true,
     "env": {
@@ -97,6 +104,7 @@
       "no-param-reassign": "off",
       "import/prefer-default-export": "off",
       "import/no-dynamic-require": "off",
+      "import/no-extraneous-dependencies": "off",
       "object-curly-newline": [
         "error",
         {
@@ -134,7 +142,7 @@
       "runtimeConfig": {}
     },
     "transform": {
-      "^.+\\.vue$": "vue-jest",
+      "^.+\\.vue$": "@vue/vue2-jest",
       ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
       "^.+\\.jsx?$": "babel-jest"
     },

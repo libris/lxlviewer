@@ -529,12 +529,6 @@ export default {
       margin: -1px -4px 0px 0px;
     }
   }
-
-  .FieldList-item.is-linked {
-    &:not(.is-diff) {
-      background-color: @form-field;
-    }
-  }
 }
 
 </style>

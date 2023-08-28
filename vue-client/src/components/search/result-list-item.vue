@@ -1,11 +1,11 @@
 <script>
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
-import LensMixin from '../mixins/lens-mixin';
-import ResultMixin from '../mixins/result-mixin';
 import ReverseRelations from '@/components/inspector/reverse-relations';
 import TagSwitch from '@/components/shared/tag-switch';
 import * as RecordUtil from '@/utils/record';
+import LensMixin from '../mixins/lens-mixin';
+import ResultMixin from '../mixins/result-mixin';
 
 export default {
   name: 'result-list-item',

@@ -224,7 +224,7 @@ export default {
       </v-popover> 
     </div>
     
-    <div class="ItemEntity-cardContainer" v-if="isCardWithData && expanded">
+    <div class="ItemEntity-content ItemEntity-cardContainer" v-if="isCardWithData && expanded">
       <entity-summary
         :focus-data="focusData" 
         :exclude-properties="excludeProperties"
@@ -246,21 +246,6 @@ export default {
 
 @linked-color: #daefec;
 
-// FIXME: ugly that we depend on Field-contentItem here?
-li.Field:last-child >
-.Field-content >
-.Field-contentItem >
-.ItemEntity-container >
-.ItemEntity-cardContainer,
-// Don't draw separator for the linked work card-view in a record
-li.FieldList-item >
-.Field-content >
-.Field-contentItem >
-.ItemEntity-container >
-.ItemEntity-cardContainer {
-  border-bottom: none;
-}
-
 .ItemEntity {
 
   &-container {
@@ -280,10 +265,12 @@ li.FieldList-item >
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding-bottom: 0.25em;
-    border-bottom: 2px solid @form-border;
-    
-    margin-bottom: 0.5em;
+
+    border-radius: 4px;
+    padding: 0.5em 1em 0.5em 1em;
+    margin: 0.6rem 0 0.6rem 0.6rem;
+    border: 1px solid @grey-lighter;
+    box-shadow: 0 2px 5px rgba(0,0,0,.08);
   }
 /*
   &-cardContainer:last-child {

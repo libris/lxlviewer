@@ -2,8 +2,8 @@
 import { cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
-import ResultListItem from './result-list-item';
 import * as RecordUtil from '@/utils/record';
+import ResultListItem from './result-list-item';
 
 export default {
   name: 'result-list',

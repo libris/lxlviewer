@@ -9,9 +9,10 @@ module.exports = {
     'vue',
     'json'
   ],
+  testEnvironment: "jsdom",
   transform: {
     '^.+\\.js$': 'babel-jest',
-    '.*\\.(vue)$': 'vue-jest'
+    '.*\\.(vue)$': '@vue/vue2-jest'
   },
   collectCoverage: true,
   collectCoverageFrom: [

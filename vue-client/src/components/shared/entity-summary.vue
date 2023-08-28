@@ -3,12 +3,12 @@ import { each, isArray, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
-import LensMixin from '../mixins/lens-mixin';
 import OverflowMixin from '@/components/mixins/overflow-mixin';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
 import SummaryNode from '@/components/shared/summary-node';
 import * as RecordUtil from '@/utils/record';
+import LensMixin from '../mixins/lens-mixin';
 
 export default {
   mixins: [LensMixin, OverflowMixin],
@@ -326,7 +326,7 @@ export default {
       {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
-    <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id uppercaseHeading--light" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
+    <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
       <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
       </i>{{ idAsFnurgel }}
     </div>
@@ -372,8 +372,8 @@ export default {
         :key="node.property">
         <template v-if="node.value !== null">
           <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang | capitalize">{{ node.property | labelByLang | capitalize }}</span>
-          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.prevent.self="(e) => { if (handleOverflow) { e.target.classList.toggle('expanded'); } }">
-            <SummaryNode :hover-links="hoverLinks" :handle-overflow="handleOverflow" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
+          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.self.prevent="(e) => { if (handleOverflow) { e.target.classList.toggle('expanded'); } }">
+            <SummaryNode :hover-links="hoverLinks" :handle-overflow="false" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>
         <template v-else-if="isReplacedBy !== ''">
@@ -399,7 +399,7 @@ export default {
   padding: 0.5em 0.75em 0.5em 0.75em;
 
   &.is-embedded-in-field {
-    padding: 0.5em 1.5em 0.5em 0;
+    padding: 0.5em 0 0.5em 0;
   }
 
   .EntityHeader & {
@@ -438,6 +438,7 @@ export default {
     background-color: @badge-color-transparent;
     transition: background-color 0.5s ease;
     letter-spacing: 0.5px;
+    font-size: 1.2rem;
     font-weight: 400;
     padding: 0 0.75em;
     border-radius: 1em;

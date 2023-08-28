@@ -4,9 +4,9 @@ import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
-import settings from './settings';
 import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
+import settings from './settings';
 
 Vue.use(Vuex);
 
@@ -75,6 +75,7 @@ const store = new Vuex.Store({
       changeHistory: [],
       event: [],
       magicShelfMarks: [],
+      extractItemsOnSave: {},
     },
     status: {
       userIdle: false,
@@ -332,6 +333,9 @@ const store = new Vuex.Store({
     setLanguageTagPromise(state, payload) {
       state.inspector.supportedTags.promises[payload.tag] = payload.promise;
     },
+    setExtractItemsOnSave(state, data) {
+      state.inspector.extractItemsOnSave = data;
+    },
   },
   getters: {
     inspector: state => state.inspector,
@@ -401,6 +405,19 @@ const store = new Vuex.Store({
     supportedTags: state => state.inspector.supportedTags.data,
   },
   actions: {
+    addExtractItemOnSave({ commit, state }, { path, item }) {
+      commit('setExtractItemsOnSave', {
+        ...state.inspector.extractItemsOnSave,
+        [path]: item,
+      });
+    },
+    removeExtractItemOnSave({ commit, state }, { path }) {
+      const { [path]: itemToRemove, ...rest } = state.inspector.extractItemsOnSave;
+      commit('setExtractItemsOnSave', rest);
+    },
+    flushExtractItemsOnSave({ commit }) {
+      commit('setExtractItemsOnSave', {});
+    },
     checkForMigrationOfUserDatabase({ commit, dispatch, state }) {
       // Check if user has records stored in localStorage
       if (state.userStorage.list) {
@@ -470,7 +487,7 @@ const store = new Vuex.Store({
         if (value.tags.length > 0) {
           newList[key] = value;
         }
-      }      
+      }
       dispatch('modifyUserDatabase', { property: 'markedDocuments', value: newList });
     },
     loadUserDatabase({ commit, dispatch, state }) {
