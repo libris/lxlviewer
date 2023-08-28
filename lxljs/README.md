@@ -3,7 +3,15 @@ JavaScript tools for the Libris XL infrastructure.
 
 ## Installation
 
-Not packaged for easy installation at the moment, but you can depend on it locally by importing and transpiling the files yourself.
+The package is bundled using Rollup (only as an ES Module bundle at the moment but this can easily be changed from `rollup.config.js`).
+
+For development install the dependencies: `npm install`
+
+`npm run build` builds the library to dist, generating ES module bundle, suitable for importing in other libraries and applications, that imports the external dependency. This corresponds to the "module" field in package.json.
+
+`npm run dev` builds the library, then keeps rebuilding it whenever the source files change using rollup-watch.
+
+`npm test` builds the library, then tests it.
 
 ## Development
 
