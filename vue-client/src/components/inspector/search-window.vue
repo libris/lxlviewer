@@ -317,9 +317,9 @@ export default {
           </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
             <div class="SearchWindow-dialogContainer">
-              <p class="preview-entity-text uppercaseHeading">Vill du skapa {{ typeOfExtractingEntity }} av lokal entitet?</p>
+              <p class="preview-entity-text uppercaseHeading"> {{ 'Do you want to create' | translatePhrase }} {{ typeOfExtractingEntity }}?</p>
               <p>
-                Den lokala entiteten bryts ut och länkas (efter att den lokala entiteten sparats).
+                {{ 'The local entity will be extracted and linked' | translatePhrase }}.
               </p>
               <button-component
                 :button-text="'Yes, start linking'"
