@@ -6,8 +6,12 @@
   "author": "Libris <libris@kb.se>",
   "license": "Apache-2.0",
   "scripts": {
-    "test": "jest"
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "jest",
+    "pretest": "npm run build"
   },
+  "type": "module",
   "dependencies": {
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -18,9 +22,16 @@
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
+    "@rollup/plugin-commonjs": "^25.0.4",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.2.1",
     "jest": "^27.3.1",
-    "jest-junit": "^13.0.0"
+    "jest-junit": "^13.0.0",
+    "rollup": "^3.28.1"
   },
+  "files": [
+    "dist"
+  ],
   "jest": {
     "verbose": true,
     "transformIgnorePatterns": [
