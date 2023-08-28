@@ -1,6 +1,7 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
+import { babel } from '@rollup/plugin-babel';
 
 export default [
 	{
@@ -13,7 +14,7 @@ export default [
 				preserveModulesRoot: 'src'
 			}
 		],
-		plugins: [nodeResolve(), commonjs(), json()],
+		plugins: [nodeResolve(), commonjs(), json(), babel({ babelHelpers: 'bundled' })],
 		external: ['lodash-es', 'sjcl']
 	}
 ];
