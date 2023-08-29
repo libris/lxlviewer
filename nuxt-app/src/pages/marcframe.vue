@@ -48,7 +48,8 @@ export default {
   },
   async asyncData({ $config, store, $http }) {
     if (!store.getters.resources.marcframe) {
-      const marcframePath = 'https://raw.githubusercontent.com/libris/librisxl/master/whelk-core/src/main/resources/ext/marcframe.json';
+      const baseUri = $config.siteConfig['libris.kb.se']?.baseUri;
+      const marcframePath = `${baseUri}/sys/marcframe.json`;
       const pageData = await fetch(
         marcframePath
       ).then(res => res.json());
