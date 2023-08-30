@@ -1252,12 +1252,6 @@
             }
           ],
           "videoCharacteristic": [],
-          "intendedAudience": [
-            {
-              "@type": "IntendedAudience",
-              "label": ""
-            }
-          ],
           "accompaniedBy": [
             {
               "@type": "Instance",
@@ -1302,7 +1296,12 @@
                 "role": []
               }
             ],
-            "intendedAudience": [],
+            "intendedAudience": [
+              {
+                "@type": "IntendedAudience",
+                "label": ""
+              }
+            ],
             "language": [],
             "marc:subtitlesOrCaptions": {
               "@type": "marc:SubtitlesOrCaptions",
@@ -2956,13 +2955,6 @@
               "@id": "https://id.kb.se/term/rda/Computer"
             }
           ],
-          "intendedAudience": [
-            {
-              "@type": "IntendedAudience",
-              "marc:audienceType": "marc:InterestAgeLevel",
-              "label": ""
-            }
-          ],
           "accompaniedBy": [
             {
               "@type": "Instance",
@@ -3011,7 +3003,13 @@
                 "role": []
               }
             ],
-            "intendedAudience": [],
+            "intendedAudience": [
+              {
+                "@type": "IntendedAudience",
+                "marc:audienceType": "marc:InterestAgeLevel",
+                "label": ""
+              }
+            ],
             "contentType": [
               {
                 "@id": "https://id.kb.se/term/rda/ComputerProgram"

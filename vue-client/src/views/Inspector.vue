@@ -417,7 +417,7 @@ export default {
 
       if (!insertData.hasOwnProperty('@graph') || insertData['@graph'].length === 0) {
         this.$store.dispatch('removeLoadingIndicator', 'Loading document');
-        this.$router.replace('/create');
+        this.$router.go(-1);
         console.warn('New document called without input data, routing user back.');
       } else {
         this.$store.dispatch('setInspectorData', LxlDataUtil.splitJson(insertData));
