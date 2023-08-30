@@ -1,3 +1,4 @@
+
 // ----------- FONTS ------------
 
 $font-family-base: 'Open Sans', sans-serif;
@@ -5,7 +6,7 @@ $font-family-base: 'Open Sans', sans-serif;
 // ----------- COLORS ------------
 
 $brand-primary: #058194;
-$brand-faded: fadeout($brand-primary, 85%);  // Maybe deprecate? should use L-5
+$brand-faded: fade-out($brand-primary, 0.85);  // Maybe deprecate? should use L-5
 $brand-success: $brand-primary;
 $brand-info: #767676;
 $brand-accent: #c1516c;   // aka "flag"
@@ -20,7 +21,7 @@ $focus-color-border: #10100D;
 
 $brand-id: #547e91;
 
-$neutral-color: $white;
+$neutral-color: #fff;
 
 $bg-site: #F9F9F9;
 $test-color: pink;

@@ -1,14 +1,55 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + Vue + TS</title>
-    <script src="/public/runtimeConfig.js?v=0"></script>
-  </head>
-  <body>
-    <div id="app" class="App"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="sv" translate="no">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="<%= BASE_URL %>favicon.svg" />
+  <link rel="alternate icon" href="<%= BASE_URL %>favicon.ico">
+  <title>Libris katalogisering</title>
+  <meta property="og:title" content="Libris katalogisering">
+  <meta property="og:site_name" content="Libris katalogisering">
+  <meta property="og:description" content="Cataloguing interface for the Swedish National Union Catalogue">
+  <meta property="og:image" content="https://libris.kb.se<%= BASE_URL %>opengraph.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="600">
+  <meta property="twitter:image" content="https://libris.kb.se<%= BASE_URL %>opengraph.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" type="text/css" href="/styles.css" />
+  <script src="/runtimeConfig.js?v=0"></script>
+</head>
+
+<body>
+  <div id="oldbrowsermsg" style="display:none">
+    <div>
+      <h2>Libris Katalogisering</h2>
+      <h1>Din webbläsare stöds inte av tjänsten <i class="fa fa-meh-o"></i></h1>
+      <br><br>
+      <h3>Kompatibla webbläsare:</h3>
+      <ul>
+        <li>Google Chrome</li>
+        <li>Mozilla Firefox</li>
+        <li>Apple Safari</li>
+        <li>Microsoft Edge</li>
+        <li>Microsoft Internet Explorer (version 11)</li>
+      </ul>
+      <p>
+        Kontakta oss via <a href="mailto:libris@kb.se">libris@kb.se</a> om du har några frågor.
+      </p>
+    </div>
+  </div>
+  <noscript>
+    <div>
+      <h2>Libris Katalogisering</h2>
+      <h3>Javascript behöver vara påslaget i din webbläsare för att tjänsten ska fungera</h3>
+      <p>
+        Kontakta oss via <a href="mailto:libris@kb.se">libris@kb.se</a> om du har några frågor.
+      </p>
+    </div>
+  </noscript>
+  <div id="app" class="App"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>

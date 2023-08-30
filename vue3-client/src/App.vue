@@ -51,7 +51,7 @@ import GlobalMessages from '@/components/layout/global-messages.vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import { useSettingsStore } from './stores/settings';
 import i18n from '@/resources/json/i18n.json';
-import helpDocsJson from '@/../../../lxl-helpdocs/build/help.json';
+// TODO: FIX THIS IMPORT import helpDocsJson from 'lxl-helpdocs/build/help.json';
 import displayGroupsJson from '@/resources/json/displayGroups.json';
 import * as DataUtil from '@/utils/data';
 
@@ -228,8 +228,8 @@ export default {
       promiseArray.push(vocabPromise);
       const contextPromise = DataUtil.getContext(this.settings.idPath);
       promiseArray.push(contextPromise);
-      const displayPromise = DataUtil.getDisplayDefinitions();
-      promiseArray.push(displayPromise);
+      // const displayPromise = DataUtil.getDisplayDefinitions();
+      // promiseArray.push(displayPromise);
       return promiseArray;
     },
   },
@@ -248,7 +248,7 @@ export default {
     // store.dispatch('initOauth2Client').catch(() => {});
 
     this.initWarningFunc();
-    this.fetchHelpDocs();
+    // this.fetchHelpDocs();
     this.i18n = i18n;
     this.displayGroups = displayGroupsJson;
     this.pushLoadingIndicator('Loading application');
@@ -279,10 +279,8 @@ export default {
 </script>
 
 <style lang="scss">
-// @import "bootstrap/scss/bootstrap.scss";
-// @import "@/styles/main.scss";
-
 // BOOTSTRAP UNSET START
+// @import './styles/main.scss';
 .dropdown-menu > li > a {
   font-weight: unset;
 }
@@ -309,6 +307,22 @@ body {
   line-height: 1.6;
   font-size: 16px;
   color: $black;
+  position: relative;
+  background-color: $site-body-background;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -ms-overflow-style: scrollbar;
+
+  .facet-container {
+    opacity: 1;
+    transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
+
+    &.facet-hidden {
+      width: 0%;
+      opacity: 0;
+    }
+  }
 }
 
 h1, h2, h3, h4 {
@@ -332,6 +346,7 @@ h4 {
   min-height: 100vh;
   flex-direction: column;
   font-family: $font-family-base;
+  width: 100%;
 
   .fade-enter-active, .fade-leave-active {
     transition-property: opacity;
@@ -668,24 +683,6 @@ main {
 }
 html.scroll-lock {
   overflow: hidden;
-}
-
-body {
-  position: relative;
-  background-color: $site-body-background;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  -ms-overflow-style: scrollbar;
-  
-  .facet-container {
-    opacity: 1;
-    transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
-    &.facet-hidden {
-      width: 0%;
-      opacity: 0;
-    }
-  }
 }
 
 // ----------- VARIOUS ----------------

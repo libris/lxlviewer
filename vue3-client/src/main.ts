@@ -8,8 +8,7 @@ import router from './router';
 import App from './App.vue'
 
 import 'floating-vue/dist/style.css'
-// import "bootstrap/scss/bootstrap.scss";
-// import "@/styles/main.scss";
+// import './styles/main.scss';
 
 const app = createApp(App)
 

@@ -182,7 +182,6 @@ export default {
 </template>
 
 <style lang="scss">
-
 .HelpSection {
   padding-bottom: 2rem;
   
