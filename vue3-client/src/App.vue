@@ -303,9 +303,12 @@ export default {
   height: 100%;
 }
 
+html {
+  font-size: 10px !important;
+}
+
 body {
   line-height: 1.6;
-  font-size: 16px;
   color: $black;
   position: relative;
   background-color: $site-body-background;
@@ -313,6 +316,7 @@ body {
   display: flex;
   flex-direction: column;
   -ms-overflow-style: scrollbar;
+  font-size: 16px;
 
   .facet-container {
     opacity: 1;
