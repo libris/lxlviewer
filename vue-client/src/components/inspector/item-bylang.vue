@@ -176,7 +176,7 @@ export default {
       }
       const newData = this.dataForm(viewObjects);
       const oldData = cloneDeep(get(this.inspector.data, this.path));
-      if (newData && !isEqual(oldData, newData)) {
+      if (!isEqual(oldData, newData)) {
         this.$store.dispatch('updateInspectorData', {
           changeList: [
             {
