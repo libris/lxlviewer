@@ -96,47 +96,6 @@ const store = new Vuex.Store({
       });
       commit('setOauth2Client', client);
     },
-    setupVocab({ dispatch }, vocabJson) {
-      dispatch('setVocab', vocabJson);
-      dispatch('setVocabClasses', vocabJson);
-      dispatch('setVocabProperties', vocabJson);
-    },
-    setVocab({ commit }, vocabJson) {
-      const vocabMap = new Map(vocabJson.map(entry => [entry['@id'], entry]));
-      commit('setVocab', vocabMap);
-    },
-    setVocabClasses({ commit, state }, vocabJson) {
-      const classTerms = [].concat(
-        VocabUtil.getTermByType('Class', vocabJson, state.resources.context, state.settings),
-        VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.resources.context, state.settings),
-      );
-      const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
-      classes.forEach((classObj) => {
-        if (classObj.hasOwnProperty('subClassOf')) {
-          each(classObj.subClassOf, (baseClass) => {
-            const baseClassObj = classes.get(baseClass['@id']);
-            if (typeof baseClassObj !== 'undefined') {
-              if (baseClassObj.hasOwnProperty('baseClassOf')) {
-                baseClassObj.baseClassOf.push(StringUtil.convertToPrefix(classObj['@id'], state.resources.context));
-              } else {
-                baseClassObj.baseClassOf = [StringUtil.convertToPrefix(classObj['@id'], state.resources.context)];
-              }
-            }
-          });
-        }
-      });
-      commit('setVocabClasses', classes);
-    },
-    setVocabProperties({ commit, state }, vocabJson) {
-      let props = [];
-      props = props.concat(VocabUtil.getTermByType('Property', vocabJson, state.resources.context, state.settings));
-      props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, state.resources.context, state.settings));
-      props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, state.resources.context, state.settings));
-      props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, state.resources.context, state.settings));
-      const vocabProperties = new Map(props.map(entry => [entry['@id'], entry]));
-
-      commit('setVocabProperties', vocabProperties);
-    },
   },
 });
 
