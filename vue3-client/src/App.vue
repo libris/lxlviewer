@@ -9,12 +9,12 @@
       {{ translatePhrase('Debug mode activated. Click here to disable.') }}
     </div>
 
-    <div v-if="loadingIndicators.length > 0" class="text-center MainContent-spinner">
+    <div v-if="loadingIndicators.length > 0 || true" class="text-center MainContent-spinner">
       <Spinner size="large" :message="translatePhrase(loadingIndicators[0])" />
     </div>
 
     <div v-if="loadingError" class="ResourcesLoadingError">
-      <i class="fa fa-warning fa-4x text-danger"></i>
+      <font-awesome-icon icon="fa fa-warning" class="fa-4x text-danger"></font-awesome-icon>
       <div>
         <h2>Kunde inte hämta nödvändiga resurser</h2>
         <p>Testa att ladda om sidan.</p>
@@ -51,7 +51,8 @@ import GlobalMessages from '@/components/layout/global-messages.vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import { useSettingsStore } from './stores/settings';
 import i18n from '@/resources/json/i18n.json';
-// TODO: FIX THIS IMPORT import helpDocsJson from 'lxl-helpdocs/build/help.json';
+// TODO: Support .jsonld files in Vite (copy pasted now in lxl-helpdocs)
+import helpDocsJson from 'lxl-helpdocs/build/help.json';
 import displayGroupsJson from '@/resources/json/displayGroups.json';
 import * as DataUtil from '@/utils/data';
 
@@ -95,6 +96,7 @@ export default {
   methods: {
     translatePhrase,
     ...mapActions(useStatusStore, ['pushLoadingIndicator', 'removeLoadingIndicator']),
+    ...mapActions(useResourcesStore, ['setupVocab']),
     onRouterViewReady() {
       this.setFocusTarget();
     },
@@ -228,8 +230,8 @@ export default {
       promiseArray.push(vocabPromise);
       const contextPromise = DataUtil.getContext(this.settings.idPath);
       promiseArray.push(contextPromise);
-      // const displayPromise = DataUtil.getDisplayDefinitions();
-      // promiseArray.push(displayPromise);
+      const displayPromise = DataUtil.getDisplayDefinitions();
+      promiseArray.push(displayPromise);
       return promiseArray;
     },
   },
@@ -255,7 +257,7 @@ export default {
 
     Promise.all(this.getLdDependencies()).then((resources) => {
       this.context = resources[1]['@context'];
-      this.vocab = resources[0]['@graph'];
+      this.setupVocab(resources[0]['@graph']);
       this.display = resources[2];
       this.resourcesLoaded = true;
       this.removeLoadingIndicator('Loading application');

@@ -79,6 +79,7 @@ export default defineConfig({
     port: 8080,
     host: true,
     fs: {
+      strict: false,
       allow: ['..'],
     },
   },

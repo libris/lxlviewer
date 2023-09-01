@@ -4,8 +4,7 @@ import * as DisplayUtil from 'lxljs/display';
 import * as HttpUtil from '@/utils/http';
 import { useInspectorStore } from '@/stores/inspector';
 import { useSettingsStore } from '@/stores/settings';
-// import displayJson from '@/../../../definitions/source/vocab/display.json'
-const displayJson = null;
+import displayJson from '../../node_modules/definitions/source/vocab/display.json';
 
 export function getDisplayDefinitions() {
   const settings = useSettingsStore();
