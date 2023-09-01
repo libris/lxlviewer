@@ -2,6 +2,6 @@
 
 <template>
 	<div>
-		Spinner
+		<font-awesome-icon :icon="['fas', 'circle-o-notch']" class="fa fa-fw fa-spin" />
 	</div>
 </template>

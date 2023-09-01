@@ -6,6 +6,7 @@ import { useResourcesStore } from '@/stores/resources';
 import { useSettingsStore } from '@/stores/settings';
 import { sortBy, orderBy } from 'lodash-es';
 import { Dropdown } from 'floating-vue';
+import { capitalize } from '@/utils/filters';
 import * as DisplayUtil from 'lxljs/display';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
 import TypeIcon from '@/components/shared/type-icon.vue';
@@ -34,6 +35,7 @@ export default {
     };
   },
   methods: {
+    capitalize,
     translatePhrase,
     facetLabelByLang(facetType) {
       return (this.settings.propertyChains[facetType] || {})[this.user.settings.language] || facetType;
@@ -89,7 +91,7 @@ export default {
         if (!label) {
           label = o.object.label;
         }
-        label = this.$options.filters.capitalize(label);
+        label = capitalize(label);
         return {
           label,
           object: o.object,
@@ -182,7 +184,7 @@ export default {
         @keyup.enter="toggleExpanded()"
         tabindex="0"
         :id="facetLabelByLang(group.dimension)">
-        {{facetLabelByLang(group.dimension) | capitalize}}
+        {{capitalize(facetLabelByLang(group.dimension))}}
       </h4>
 
       <Dropdown>

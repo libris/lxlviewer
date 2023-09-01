@@ -41,7 +41,7 @@ export default {
   <div class="SearchBar" id="SearchBar" aria-labelledby="service-name">
     <div class="SearchBar-container" :class="{ 'container': user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
       <div class="SearchBar-row row">
-        <div class="SearchBar-brand hidden-sm hidden-xs col-md-3">
+        <div class="SearchBar-brand d-none d-lg-flex col-md-3">
           <router-link to="/" class="SearchBar-brandLink">
             <img class="SearchBar-brandLogo" src="~kungbib-styles/lib/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
           </router-link>

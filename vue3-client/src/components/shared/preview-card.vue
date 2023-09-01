@@ -94,9 +94,9 @@ export default {
 </template>
 
 <style lang="scss">
-
 .PreviewCard {
   width: 600px;
+
   &-spinner {
     opacity: 0;
     transition: opacity 0.5s ease;
@@ -107,8 +107,9 @@ export default {
     position: absolute;
     right: 0.25em;
     bottom: 0.25em;
+
     .fetchError i {
-      color: @brand-danger;
+      color: $brand-danger;
     }
   }
 }

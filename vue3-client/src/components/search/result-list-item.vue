@@ -9,6 +9,7 @@ import TagSwitch from '@/components/shared/tag-switch.vue';
 import * as RecordUtil from '@/utils/record';
 import LensMixin from '../mixins/lens-mixin.vue';
 import ResultMixin from '../mixins/result-mixin.vue';
+import EntitySummary from '../shared/entity-summary.vue';
 import { translatePhrase } from '@/utils/filters';
 
 export default {
@@ -99,13 +100,14 @@ export default {
   components: {
     TagSwitch,
     ReverseRelations,
-  },
+    EntitySummary
+},
 };
 </script>
 
 <template>
   <li class="ResultItem" :class="{'ResultItem--compact' : showCompact}">
-    <entity-summary 
+    <EntitySummary
       @hiddenDetailsNumber="setHiddenDetailsNumber"
       :focus-data="focusData" 
       :database="database" 
@@ -116,7 +118,7 @@ export default {
       :key-display-limit="showCompact ? 0 : 5"
       @import-this="importThis()"
       :valueDisplayLimit=3>
-    </entity-summary>
+    </EntitySummary>
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
         <span v-if="hiddenDetailsNumber > 1" class="ResultItem-showMore" @click="toggleShowKeys">

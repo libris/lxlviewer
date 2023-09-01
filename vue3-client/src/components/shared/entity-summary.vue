@@ -1,5 +1,5 @@
 <script>
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, capitalize, labelByLang } from '@/utils/filters';
 import { each, isArray, cloneDeep } from 'lodash-es';
 import { mapState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
@@ -13,7 +13,7 @@ import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
 import TypeIcon from '@/components/shared/type-icon.vue';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import * as RecordUtil from '@/utils/record';
-import LensMixin from '../mixins/lens-mixin';
+import LensMixin from '../mixins/lens-mixin.vue';
 
 export default {
   mixins: [LensMixin, OverflowMixin],
@@ -280,6 +280,7 @@ export default {
     });
   },
   methods: {
+    labelByLang, capitalize, translatePhrase,
     copyFnurgel() {
       const self = this;
       this.$copyText(this.uri).then(() => {
@@ -311,26 +312,24 @@ export default {
 </script>
 
 <template>
-<section 
-  class="EntitySummary"
-  v-bind:class="{'is-embedded-in-field': embeddedInField}">
+<section class="EntitySummary" v-bind:class="{'is-embedded-in-field': embeddedInField}">
   <div class="EntitySummary-meta">
     <type-icon
       v-if="recordType === 'Work' || recordType === 'Place'"
       :type="focusData['@type']"
     />
-    <encoding-level-icon
+    <!-- <encoding-level-icon
       v-if="encodingLevel && recordType === 'Instance'"
       :encodingLevel="encodingLevel"
-      :tooltipText="encodingLevel | labelByLang"/>
-    <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
+      :tooltipText="labelByLang(encodingLevel)" /> -->
+    <!-- <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
     <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
       <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
       </i>{{ idAsFnurgel }}
-    </div>
+    </div> -->
   </div>
 
   <div class="EntitySummary-info">
@@ -365,14 +364,14 @@ export default {
         <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </a>
-      
     </h3>
+
     <ul class="EntitySummary-details" v-show="!isCompact" :style="{ 'min-height': animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
       <li :class="`EntitySummary-detailsItem-${labelStyle}`"
         v-for="node in limitedInfo" 
         :key="node.property">
         <template v-if="node.value !== null">
-          <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang | capitalize">{{ node.property | labelByLang | capitalize }}</span>
+          <span v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="capitalize(labelByLang(node.property))">{{ capitalize(labelByLang(node.property)) }}</span>
           <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.prevent.self="(e) => { if (handleOverflow) { e.target.classList.toggle('expanded'); } }">
             <SummaryNode :hover-links="hoverLinks" :handle-overflow="handleOverflow" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
@@ -384,7 +383,7 @@ export default {
       </li>
     </ul>
   </div>
-  <resize-observer @notify="calculateOverflow" />
+  <!-- <resize-observer @notify="calculateOverflow" /> -->
 </section>
 </template>
 
@@ -419,7 +418,7 @@ export default {
     white-space: nowrap;
 
     .database {
-      border: 1px solid @grey;
+      border: 1px solid $grey;
       border-radius: 0.3em;
       float: right;
       line-height: 1;
@@ -435,8 +434,8 @@ export default {
     flex-grow: 0;
     text-align: right;
     text-transform: none;
-    color: @grey-very-dark-transparent;
-    background-color: @badge-color-transparent;
+    color: $grey-very-dark-transparent;
+    background-color: $badge-color-transparent;
     transition: background-color 0.5s ease;
     letter-spacing: 0.5px;
     font-weight: 400;
@@ -444,8 +443,8 @@ export default {
     border-radius: 1em;
 
     &.recently-copied {
-      background-color: @brand-success;
-      color: @white;
+      background-color: $brand-success;
+      color: $white;
     }
   }
   &-idCopyIcon {
@@ -489,18 +488,18 @@ export default {
     height: auto;
 
     & .highlight {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
     }
 
     .ResultList & {
-      color: @brand-primary;
+      color: $brand-primary;
     }
 
     &--imported {
       cursor: pointer;
       &:hover {
         text-decoration: underline;
-        color: @link-hover-color;
+        color: $link-hover-color;
       }
     }
 
@@ -516,10 +515,10 @@ export default {
   &-titleLink {
     &:visited {
       // Commented out until fixing in IE11
-      // color: @link-visited-color;
+      // color: $link-visited-color;
     }
     &.blue-link {
-      color: @brand-id;
+      color: $brand-id;
     }
   }
 
@@ -543,27 +542,27 @@ export default {
     flex-direction: column;
     min-width: 0;
     font-size: 1.4rem;
-    @media (min-width: @screen-sm-min) {
+    @include media-breakpoint-down(sm) {
       padding: 0.2rem 0;
       flex-direction: row;
     }
   }
   
   &-detailsKey-regular {
-    @media (min-width: @screen-sm-min) {
+    @include media-breakpoint-down(sm) {
       flex-basis: 6em;
     }
     flex-grow: 1;
     font-weight: 600;
     margin-right: 0.5em;
-    color: @grey-darker;
+    color: $grey-darker;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
   }
   
   &-detailsValue-regular {
-    @media (min-width: @screen-sm-min) {
+    @include media-breakpoint-down(sm) {
       flex-basis: 75%;
       flex-grow: 2;
       align-self: flex-end;
@@ -578,7 +577,7 @@ export default {
         font-family: FontAwesome;
         content: "\F054";
         font-weight: normal;
-        color: @brand-primary;
+        color: $brand-primary;
         display: inline-block;
         margin-right: 5px;
         transition: transform 0.1s ease;
@@ -623,13 +622,13 @@ export default {
     overflow: hidden;
     white-space: nowrap;
     text-transform: uppercase;
-    color: @grey-darker;
+    color: $grey-darker;
     font-size: 1rem;
     font-weight: 600;
   }
   
   &-detailsValue-top {
-    @media (min-width: @screen-sm-min) {
+    @include media-breakpoint-down(sm) {
       flex-basis: 75%;
       flex-grow: 2;
     }
@@ -641,7 +640,7 @@ export default {
     flex-direction: column;
     min-width: 0;
     font-size: 1.4rem;
-    @media (min-width: @screen-sm-min) {
+    @include media-breakpoint-down(sm) {
       padding: 0.2rem 0;
       flex-direction: row;
     }
@@ -651,7 +650,7 @@ export default {
   }
 
   &-detailsValue-hidden {
-    @media (min-width: @screen-sm-min) {
+    @include media-breakpoint-down(sm) {
       flex-basis: 75%;
       flex-grow: 2;
     }

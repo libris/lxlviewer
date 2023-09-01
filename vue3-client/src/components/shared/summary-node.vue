@@ -77,6 +77,7 @@ export default {
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
+
     <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">
@@ -100,13 +101,13 @@ export default {
   &-link {
     margin-right: 0.5em;
     > a {
-      border-color: @brand-primary;
-      color: darken(@brand-primary, 10%);
+      border-color: $brand-primary;
+      color: darken($brand-primary, 10%);
       text-decoration-line: underline;
       text-decoration-style: dotted;
       &:hover {
-        color: darken(@brand-primary, 20%);
-        border-color: darken(@brand-primary, 20%);
+        color: darken($brand-primary, 20%);
+        border-color: darken($brand-primary, 20%);
       }
     }
   }
@@ -131,7 +132,7 @@ export default {
         font-family: FontAwesome;
         content: "\F054";
         font-weight: normal;
-        color: @brand-primary;
+        color: $brand-primary;
         display: inline-block;
         margin-right: 5px;
         transition: transform 0.1s ease;

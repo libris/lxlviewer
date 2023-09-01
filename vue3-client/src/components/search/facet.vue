@@ -1,6 +1,7 @@
 <script>
 import * as MathUtil from '@/utils/math';
 import FacetMixin from '@/components/mixins/facet-mixin.vue';
+import { asAppPath, capitalize } from '@/utils/filters';
 
 export default {
   name: 'facet',
@@ -15,11 +16,8 @@ export default {
       default: null,
     },
   },
-  data() {
-    return {
-    };
-  },
   methods: {
+    asAppPath, capitalize,
   },
   computed: {
     compactNumber() {
@@ -31,7 +29,7 @@ export default {
         return label.substring(0, label.lastIndexOf('•'));
       }
 
-      return this.facet.label;
+      return capitalize(this.facet.label);
     },
     labelTail() {
       if (this.facet.label.indexOf('•') >= 0 && this.alwaysShowLabelTail) {
@@ -47,28 +45,21 @@ export default {
       return this.facet.object && (this.facet.object['@type'] === 'Library' || this.facet.object['@type'] === 'Bibliography');
     },
   },
-  components: {
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-      
-    });
-  },
 };
 </script>
 
 <template>
   <li class="Facet">
     <slot name="icon"></slot>
-    <router-link class="Facet-link"
-      :to="facet.link | asAppPath" 
-      :title="facet.label | capitalize">
-      <span class="Facet-label"
-        :title="facet.label | capitalize">
-        {{label | capitalize}}</span>
-      <span class="Facet-labelTail" 
-        :title="facet.label | capitalize">
-        {{labelTail}}</span>
+
+    <router-link class="Facet-link" :to="asAppPath(facet.link)" :title="capitalize(facet.label)">
+      <span class="Facet-label" :title="capitalize(facet.label)">
+        {{label}}
+      </span>
+
+      <span class="Facet-labelTail" :title="capitalize(facet.label)">
+        {{labelTail}}
+      </span>
       <span class="Facet-badge badge">{{compactNumber}}</span>
     </router-link>
   </li>

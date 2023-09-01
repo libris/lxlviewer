@@ -63,8 +63,9 @@ export default {
     },
     doSearch() {
       this.helpToggled = false;
+      console.log('doSearch', this.composeQuery());
       const path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
-      this.$router.push({ path });
+      this.$router.push(path);
     },
     clearInputs() {
       this.searchPhrase = '';
@@ -285,7 +286,8 @@ export default {
       <label class="SearchForm-inputLabel sr-only" id="searchlabel" for="q">
         {{ translatePhrase("Search") }}
       </label>
-      <div class="SearchForm-formGroup SearchForm-selectGroup hidden-sm hidden-md hidden-lg">
+
+      <div class="SearchForm-formGroup SearchForm-selectGroup d-block d-sm-none">
         <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-typeSelect SearchForm-select customSelect"
@@ -313,8 +315,9 @@ export default {
           </select>
         </div>
       </div>
+
       <div ref="formGroup" class="SearchForm-formGroup" :class="{ 'is-focused': searchIsFocused }">
-        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
+        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper d-none d-sm-block" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-typeSelect SearchForm-select customSelect"
             v-model="activeSearchType"
@@ -344,7 +347,7 @@ export default {
           :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
           <i class="fa fa-fw fa-close"></i>
         </span>
-        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
+        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper d-none d-sm-block" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-paramSelect SearchForm-select customSelect"
             v-model="activeSearchParam"
@@ -359,6 +362,7 @@ export default {
             </option>
           </select>
         </div>
+
         <button
           class="SearchForm-submit btn btn-primary icon--white icon--md"
           :aria-label="translatePhrase('Search')"
@@ -366,25 +370,29 @@ export default {
           @focus="searchGroupFocus.submit = true"
           @blur="searchGroupFocus.submit = false"
           :class="{'disabled': searchPerimeter === 'remote' && remoteDatabases.length === 0}"
-          :disabled="searchPerimeter === 'remote' && remoteDatabases.length === 0" >
-          <i class="fa fa-search"></i>
+          :disabled="searchPerimeter === 'remote' && remoteDatabases.length === 0"
+        >
+          <font-awesome-icon :icon="['fa', 'search']" />
         </button>
       </div>
+
       <remote-databases
         v-if="searchPerimeter === 'remote'"
         :remoteSearch="searchPhrase"
         @panelClosed="focusSearchInput"
-        ref="dbComponent"></remote-databases>
+        ref="dbComponent"
+      />
     </form>
+
     <div class="SearchForm-help">
       <div class="SearchForm-helpBox dropdown" v-if="searchPerimeter === 'libris'">
         <span class="SearchForm-helpIcon">
-          <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle icon icon--md" tabindex="0" aria-haspopup="true"
+          <font-awesome-icon v-tooltip="searchHelpTooltip" :icon="['fa', 'question-circle']" class="icon icon--md" tabindex="0" aria-haspopup="true"
             ref="helpIcon"
             @mouseover="helpHover = true"
             @mouseleave="helpHover = false"
             @click="toggleHelp"
-            @keyup.enter="toggleHelp"></i>
+            @keyup.enter="toggleHelp"></font-awesome-icon>
         </span>
         <div class="SearchForm-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled">
           <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchForm-closeHelp" @click="toggleHelp"></i>

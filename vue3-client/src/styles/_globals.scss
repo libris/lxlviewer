@@ -243,6 +243,7 @@ button:focus-visible {
 
 .panel {
   @include panel-mixin($neutral-color);
+  margin-bottom: 20px;
 }
 
 .icon-hover {

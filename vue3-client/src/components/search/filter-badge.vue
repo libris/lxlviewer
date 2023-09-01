@@ -1,4 +1,6 @@
 <script>
+import { labelByLang, asAppPath } from '@/utils/filters';
+
 export default {
   name: 'FilterBadge',
   props: {
@@ -7,14 +9,17 @@ export default {
       default: null,
     },
   },
+  methods: {
+    labelByLang, asAppPath,
+  }
 };
 </script>
 
 <template>
   <div class="FilterBadge">
     <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}:</span>
-    <span>{{ filter.label | labelByLang }}</span>
-    <router-link :to="filter.up | asAppPath">
+    <span>{{ labelByLang(filter.label) }}</span>
+    <router-link :to="asAppPath(filter.up)">
       <i class="fa fa-fw fa-close icon"></i>
     </router-link>
   </div>
