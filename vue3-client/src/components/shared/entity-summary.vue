@@ -1,5 +1,6 @@
 <script>
-import { translatePhrase, capitalize, labelByLang } from '@/utils/filters';
+import { translatePhrase, capitalize, labelByLang, convertResourceLink } from '@/utils/filters';
+import { copyText } from '@/utils/mixins';
 import { each, isArray, cloneDeep } from 'lodash-es';
 import { mapState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
@@ -180,7 +181,7 @@ export default {
     uri() {
       if (this.focusData.hasOwnProperty('@id') || this.focusData.hasOwnProperty('@graph')) {
         const uri = this.focusData.hasOwnProperty('@id') ? this.focusData['@id'] : this.focusData['@graph'][0].mainEntity['@id'];
-        const convertedUri = this.$options.filters.convertResourceLink(uri);
+        const convertedUri = convertResourceLink(uri);
         return convertedUri;
       }
       return null;
@@ -280,10 +281,10 @@ export default {
     });
   },
   methods: {
-    labelByLang, capitalize, translatePhrase,
+    labelByLang, capitalize, translatePhrase, convertResourceLink,
     copyFnurgel() {
       const self = this;
-      this.$copyText(this.uri).then(() => {
+      copyText(this.uri).then(() => {
         self.recentlyCopiedId = true;
         setTimeout(() => {
           self.recentlyCopiedId = false;
@@ -318,18 +319,28 @@ export default {
       v-if="recordType === 'Work' || recordType === 'Place'"
       :type="focusData['@type']"
     />
-    <!-- <encoding-level-icon
+    <encoding-level-icon
       v-if="encodingLevel && recordType === 'Instance'"
       :encodingLevel="encodingLevel"
-      :tooltipText="labelByLang(encodingLevel)" /> -->
-    <!-- <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
+      :tooltipText="labelByLang(encodingLevel)"
+    />
+    <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
-    <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
-      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
-      </i>{{ idAsFnurgel }}
-    </div> -->
+
+    <div
+      v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0"
+      class="EntitySummary-id"
+      :class="{'recently-copied': recentlyCopiedId }"
+    >
+      <font-awesome-icon
+        :icon="['far', 'copy']"
+        class="EntitySummary-idCopyIcon"
+        v-tooltip="idTooltipText"
+        @click="copyFnurgel"
+      />{{ idAsFnurgel }}
+    </div>
   </div>
 
   <div class="EntitySummary-info">
@@ -358,7 +369,7 @@ export default {
       </router-link>
       <a class="EntitySummary-titleLink"
         v-if="!isLibrisResource && !isImport && shouldLink" 
-        :href="uri | convertResourceLink" 
+        :href="convertResourceLink(uri)"
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
         <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>

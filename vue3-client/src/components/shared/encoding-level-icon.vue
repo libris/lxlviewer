@@ -101,7 +101,7 @@ export default {
 <template>
   <div class="EncodingLevelIcon"
     :style="icon.style"
-    v-tooltip.top="tooltipText">
+    v-tooltip="tooltipText">
     <span class="EncodingLevelIcon-label">{{icon.label}}</span>
   </div>
 </template>
