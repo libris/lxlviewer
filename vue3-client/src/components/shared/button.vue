@@ -95,14 +95,13 @@ export default {
       return translatePhrase(this.buttonText);
     },
   },
-  mounted() {
-    this.$nextTick(() => {});
-  },
 };
 </script>
 
 <template>
-  <button class="Button" v-tooltip.top="computedLabel"
+  <button
+    class="Button"
+    v-tooltip.top="computedLabel"
     :class="[
       {
         'has-shadow': shadow, 
@@ -118,9 +117,10 @@ export default {
       this.variant ? 'Button-' + this.variant : '',
     ]"
     @click="action()"
-    :aria-label="computedLabel">
+    :aria-label="computedLabel"
+  >
     <span v-if="icon">
-      <i :class="`fa fa-fw fa-${icon}`" aria-hidden="true"></i>
+      <font-awesome-icon :icon="['fa', icon]" aria-hidden="true"></font-awesome-icon>
     </span>
     <span class="Button-buttonText" v-if="computedButtonText">{{ computedButtonText }}</span>
   </button>

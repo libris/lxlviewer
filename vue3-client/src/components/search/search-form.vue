@@ -317,7 +317,7 @@ export default {
       </div>
 
       <div ref="formGroup" class="SearchForm-formGroup" :class="{ 'is-focused': searchIsFocused }">
-        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper d-none d-sm-block" v-if="searchPerimeter === 'libris'">
+        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper d-none d-sm-flex" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-typeSelect SearchForm-select customSelect"
             v-model="activeSearchType"
@@ -347,7 +347,7 @@ export default {
           :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
           <i class="fa fa-fw fa-close"></i>
         </span>
-        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper d-none d-sm-block" v-if="searchPerimeter === 'libris'">
+        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper d-none d-sm-flex" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-paramSelect SearchForm-select customSelect"
             v-model="activeSearchParam"
@@ -542,9 +542,11 @@ export default {
       flex-basis: 30%;
     }
   }
+
   &-typeSelectWrapper {
     order: 1;
   }
+
   &-paramSelectWrapper {
     order: 4;
   }
@@ -608,6 +610,9 @@ export default {
   }
 
   &-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     order: 5;
     min-width: 2.4em;
     box-shadow: none;

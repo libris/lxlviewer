@@ -1,5 +1,7 @@
 <script>
+import { labelByLang, capitalize, convertResourceLink } from '@/utils/filters';
 import { mapState } from 'pinia';
+import { Dropdown } from 'floating-vue';
 import { useSettingsStore } from '@/stores/settings';
 import * as StringUtil from 'lxljs/string';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
@@ -36,10 +38,6 @@ export default {
       default: '',
     },
   },
-  data() {
-    return {
-    };
-  },
   computed: {
     ...mapState(useSettingsStore, ['settings']),
     isLinked() {
@@ -57,13 +55,12 @@ export default {
       return `/${fnurgel}`;
     },
   },
+  methods: {
+    convertResourceLink, labelByLang, capitalize,
+  },
   components: {
     PreviewCard,
-  },
-  watch: {
-  },
-  mounted() {
-    this.$nextTick(() => {});
+    Dropdown,
   },
 };
 </script>
@@ -72,26 +69,27 @@ export default {
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
       <span v-if="fieldKey === 'instanceOf' && item['@type'] !== 'Work'">
-        {{ item['@type'] | labelByLang | capitalize }} •
+        {{ capitalize(labelByLang(item['@type'])) }} •
       </span>
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
 
-    <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
+    <Dropdown v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">
           <span v-if="fieldKey === 'instanceOf'">
-            {{ item['@type'] | labelByLang | capitalize }} •
+            {{ capitalize(labelByLang(item['@type'])) }} •
           </span>
-          {{getItemLabel}}
+          {{getItemLabel}} - popover
         </router-link>
-        <a v-if="!isLibrisResource" :href="focusData['@id'] | convertResourceLink">{{getItemLabel}}</a>
+        <a v-if="!isLibrisResource" :href="convertResourceLink(focusData['@id'])">{{getItemLabel}}</a>
       </span>
-      <template slot="popover" v-if="hoverLinks">
+
+      <template #popper v-if="hoverLinks">
         <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
       </template>
-    </v-popover>
+    </Dropdown>
   </div>
 </template>
 

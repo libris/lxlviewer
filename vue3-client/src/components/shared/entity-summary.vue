@@ -337,7 +337,7 @@ export default {
       <font-awesome-icon
         :icon="['far', 'copy']"
         class="EntitySummary-idCopyIcon"
-        v-tooltip="idTooltipText"
+        v-tooltip.top="idTooltipText"
         @click="copyFnurgel"
       />{{ idAsFnurgel }}
     </div>
@@ -553,14 +553,15 @@ export default {
     flex-direction: column;
     min-width: 0;
     font-size: 1.4rem;
-    @include media-breakpoint-down(sm) {
+
+    @include media-breakpoint-up(sm) {
       padding: 0.2rem 0;
       flex-direction: row;
     }
   }
   
   &-detailsKey-regular {
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-up(sm) {
       flex-basis: 6em;
     }
     flex-grow: 1;
@@ -573,7 +574,7 @@ export default {
   }
   
   &-detailsValue-regular {
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-up(sm) {
       flex-basis: 75%;
       flex-grow: 2;
       align-self: flex-end;
@@ -639,7 +640,7 @@ export default {
   }
   
   &-detailsValue-top {
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-up(sm) {
       flex-basis: 75%;
       flex-grow: 2;
     }
@@ -651,7 +652,7 @@ export default {
     flex-direction: column;
     min-width: 0;
     font-size: 1.4rem;
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-up(sm) {
       padding: 0.2rem 0;
       flex-direction: row;
     }
@@ -661,7 +662,7 @@ export default {
   }
 
   &-detailsValue-hidden {
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-up(sm) {
       flex-basis: 75%;
       flex-grow: 2;
     }
