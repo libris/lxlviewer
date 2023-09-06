@@ -16,6 +16,7 @@ import * as VocabUtil from 'lxljs/vocab';
 import TagSwitch from '@/components/shared/tag-switch.vue';
 import ReverseRelations from '@/components/inspector/reverse-relations.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
+import EntitySummary from '../shared/entity-summary.vue';
 
 export default {
   name: 'entity-header',
@@ -121,6 +122,7 @@ export default {
   components: {
     TagSwitch,
     ReverseRelations,
+    EntitySummary,
   },
 };
 </script>
@@ -128,7 +130,7 @@ export default {
 <template>
   <div class="EntityHeader HeaderComponent">
     <div class="EntityHeader-body HeaderComponent-body is-full">
-      <entity-summary
+      <EntitySummary
         @hiddenDetailsNumber="setHiddenDetailsNumber"
         :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
         :focus-data="focusData"
@@ -136,8 +138,8 @@ export default {
         :should-link="false"
         :exclude-components="inspector.status.isNew ? ['id'] : []"
         :valueDisplayLimit=3
-        :handleOverflow="false">
-      </entity-summary>
+        :handleOverflow="false"
+      />
       <div class="HeaderComponent-bottomBar">
         <div class="HeaderComponent-controls">
           <span v-if="hiddenDetailsNumber > 1" class="HeaderComponent-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? translatePhrase('Show fewer') : translatePhrase('Show more') }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
@@ -168,13 +170,13 @@ export default {
 </template>
 
 <style lang="scss">
-
 .HeaderComponent {
   display: flex;
-  border: 1px solid @grey-lighter;
+  border: 1px solid $grey-lighter;
   border-radius: 4px;
   padding: 0.5em;
-  @media (min-width: @screen-sm-min) {
+
+  @include media-breakpoint-down(sm) {
     padding: 0.5em 1em 0.25em 1em;
   }
 
@@ -187,7 +189,7 @@ export default {
         border-width: 0;
         height: 100%;
         * {
-          color: @white;
+          color: $white;
         }
       }
     }
@@ -207,8 +209,8 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        background: @brand-primary;
-        color: @white;
+        background: $brand-primary;
+        color: $white;
         padding: 0.5em;
         box-shadow: 0 2px 5px rgba(0,0,0,.26);
         max-height: 0px;
@@ -239,7 +241,7 @@ export default {
     font-weight: 600;
     font-size: 1.4rem;
     cursor: pointer;
-    color: @link-color;
+    color: $link-color;
   }
   &-tags {
     display: flex;

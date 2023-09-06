@@ -541,12 +541,12 @@ export default {
 
   &.highlight-info {
     .is-stuck, .is-sticky {
-      background-color: @form-mark;
+      background-color: $form-mark;
     }
   }
   &.highlight-remove {
     .is-stuck, .is-sticky {
-      background-color: @form-remove;
+      background-color: $form-remove;
     }
   }
 
@@ -565,14 +565,15 @@ export default {
       position: sticky;
       background-color: #fff;
     }
-    .icon-hover();
+
+    @include icon-hover();
   }
 
   &.highlight-info {
-    background-color: @form-mark;
+    background-color: $form-mark;
   }
   &.highlight-remove {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.has-failed-validations {
@@ -616,10 +617,10 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    color: @grey-darker-transparent;
+    color: $grey-darker-transparent;
 
     .ItemLocal-label:hover & {
-      color: @black
+      color: $black
     }
   }
 
@@ -655,7 +656,7 @@ export default {
         display: flex;
         align-items: center;
         padding: 5px 15px;
-        color: @grey-darker;
+        color: $grey-darker;
       }
 
     }
@@ -672,11 +673,11 @@ export default {
   }
 
   &.is-marked {
-    background-color: @form-mark;
+    background-color: $form-mark;
   }
   
   &.is-removeable {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.is-expanded > 
@@ -688,7 +689,7 @@ export default {
   }
 
   &.is-highlighted {
-    background-color: @form-highlight;
+    background-color: $form-highlight;
   }
 }
 

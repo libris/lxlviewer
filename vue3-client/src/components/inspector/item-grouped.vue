@@ -144,17 +144,18 @@ export default {
     display: block;
     flex: 1 100%;
     font-weight: normal;
-    position: relative;    
+    position: relative;
 
     .is-expanded & {
       margin-bottom: 0.5rem;
-    }    
-    .icon-hover();
+    }
+
+    @include icon-hover();
   }
 
-  &-label {    
+  &-label {
     cursor: pointer;
-    
+
     &.is-inactive {
       pointer-events: none;
     }
@@ -164,14 +165,14 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    color: @grey-darker-transparent;
+    color: $grey-darker-transparent;
 
     .ItemGrouped-label:hover & {
-      color: @black;
+      color: $black;
     }
   }
 
-  &.is-expanded > 
+  &.is-expanded >
   .ItemGrouped-heading >
   .ItemGrouped-label > 
   .ItemGrouped-arrow {
@@ -180,7 +181,7 @@ export default {
   }
 
   &.is-highlighted {
-    background-color: @form-highlight;
+    background-color: $form-highlight;
   }
 
   &-list {
@@ -198,5 +199,4 @@ export default {
     }
   }
 }
-
 </style>

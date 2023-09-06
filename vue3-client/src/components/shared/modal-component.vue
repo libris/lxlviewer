@@ -157,13 +157,13 @@ export default {
     }
     opacity: 0;
     transition: opacity 0.5s ease;
-    z-index: @backdrop-z;
+    z-index: $backdrop-z;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: @modal-backdrop-background;
+    background-color: $modal-backdrop-background;
   }
 
   &-container {
@@ -172,8 +172,8 @@ export default {
     }
     opacity: 0;
     transition: opacity 0.5s ease;
-    z-index: @modal-z;
-    box-shadow: @modal-container-shadow;
+    z-index: $modal-z;
+    box-shadow: $modal-container-shadow;
     position: fixed;
     width: 900px;
     max-width: 100%;
@@ -182,7 +182,7 @@ export default {
     transform: translate(-50%, -50%);
     text-align: left;
     border-radius: 4px;
-    background-color: @modal-body-background;
+    background-color: $modal-body-background;
     line-height: 1.6;
   }
 
@@ -191,10 +191,10 @@ export default {
     flex-wrap: nowrap;
     flex-direction: row;
     justify-content: space-between;
-    border: solid @grey-light;
+    border: solid $grey-light;
     border-width: 0px 0px 1px 0px;
-    background-color: @modal-header-background;
-    color: @black;
+    background-color: $modal-header-background;
+    color: $black;
     padding: 1.5rem 2rem;
 
     header {
@@ -209,7 +209,7 @@ export default {
     overflow-x: hidden;
     height: 100%;
     display: flex;
-    background-color: @modal-body-background;
+    background-color: $modal-body-background;
     flex-direction: column;
     align-items: center;
     z-index: 5;
@@ -228,6 +228,4 @@ export default {
     }
   }
 }
-
-
 </style>

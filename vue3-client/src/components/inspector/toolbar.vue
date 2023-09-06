@@ -1,8 +1,9 @@
-<script>
+<script lang="js">
 /*
   Fixed toolbar
 */
 import { translatePhrase } from '@/utils/filters';
+import { getKeybindText } from '@/utils/mixins';
 import { mapActions, mapState } from 'pinia';
 import { useInspectorStore } from '@/stores/inspector';
 import { useStatusStore } from '@/stores/status';
@@ -96,7 +97,7 @@ export default {
     },
   },
   methods: {
-    translatePhrase,
+    translatePhrase, getKeybindText,
     ...mapActions(useStatusStore, ['pushNotification']),
     ...mapActions(useInspectorStore, ['setInspectorStatusValue', 'undoInspectorChange']),
     openTemplatePicker() {
@@ -481,34 +482,36 @@ export default {
           <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
           <span class="Toolbar-caret caret"></span>
         </button>
-
-        <template #popper>
-          <ul
-            class="dropdown-menu Toolbar-menuList OtherFormatMenu-menu" 
-          >
-            <li class="Toolbar-menuItem">
-              <a class="Toolbar-menuLink" :href="focusData.mainEntity['@id'] | convertResourceLink" target="_blank">
-                <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
-                Formell resurs</a>
-            </li>
-            <li class="Toolbar-menuItem">
-              <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld') | convertResourceLink" target="_blank">
-                <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
-                JSON-LD</a>
-            </li>
-            <li class="Toolbar-menuItem">
-              <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl') | convertResourceLink" target="_blank">
-                <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
-                Turtle</a>
-            </li>
-            <li class="Toolbar-menuItem">
-              <a class="Toolbar-menuLink" :href="getOtherDataFormat('rdf') | convertResourceLink">
-                <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                RDF/XML</a>
-            </li>
-          </ul>
-        </template>
       </div>
+
+      <template #popper>
+        <ul class="dropdown-menu Toolbar-menuList OtherFormatMenu-menu">
+          <li class="Toolbar-menuItem">
+            <a class="Toolbar-menuLink" :href="focusData.mainEntity['@id'] | convertResourceLink" target="_blank">
+              <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
+              Formell resurs
+            </a>
+          </li>
+          <li class="Toolbar-menuItem">
+            <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld') | convertResourceLink" target="_blank">
+              <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
+              JSON-LD
+            </a>
+          </li>
+          <li class="Toolbar-menuItem">
+            <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl') | convertResourceLink" target="_blank">
+              <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
+              Turtle
+            </a>
+          </li>
+          <li class="Toolbar-menuItem">
+            <a class="Toolbar-menuLink" :href="getOtherDataFormat('rdf') | convertResourceLink">
+              <i class="fa fa-fw fa-download" aria-hidden="true"></i>
+              RDF/XML
+            </a>
+          </li>
+        </ul>
+      </template>
     </Dropdown>
 
     <div class="dropdown Toolbar-menu ToolsMenu">
@@ -528,29 +531,29 @@ export default {
           <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu">
             <li class="Toolbar-menuItem">
               <a class="Toolbar-menuLink" @click="formControl('expand-item'), hideToolsMenu()">
-              <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
-              {{translatePhrase("Expand all")}}{{ getKeybindText('expand-item') ? ` (${getKeybindText('expand-item')})` : ''}}
+                <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
+                {{translatePhrase("Expand all")}}{{ getKeybindText('expand-item') ? ` (${getKeybindText('expand-item')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem">
               <a class="Toolbar-menuLink" @click="formControl('collapse-item'), hideToolsMenu()">
-              <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
-              {{translatePhrase("Collapse all")}}{{ getKeybindText('collapse-item') ? ` (${getKeybindText('collapse-item')})` : ''}}
+                <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
+                {{translatePhrase("Collapse all")}}{{ getKeybindText('collapse-item') ? ` (${getKeybindText('collapse-item')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
               <a class="Toolbar-menuLink"  @click="formControl('duplicate-item'), hideToolsMenu()">
-              <i class="fa fa-fw fa-files-o"></i>
-              {{ translatePhrase("Make copy") }}{{ getKeybindText('duplicate-item') ? ` (${getKeybindText('duplicate-item')})` : ''}}
+                <i class="fa fa-fw fa-files-o"></i>
+                {{ translatePhrase("Make copy") }}{{ getKeybindText('duplicate-item') ? ` (${getKeybindText('duplicate-item')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && isSubClassOf('Instance') && !isSubClassOf('Electronic')">
               <a class="Toolbar-menuLink"  @click="recordControl('create-digital-reproduction'), hideToolsMenu()">
-              <i class="fa fa-fw fa-wpforms"></i>
-              {{ translatePhrase("Create digital reproduction") }}{{ getKeybindText('create-digital-reproduction') ? ` (${getKeybindText('create-digital-reproduction')})` : ''}}
+                <i class="fa fa-fw fa-wpforms"></i>
+                {{ translatePhrase("Create digital reproduction") }}{{ getKeybindText('create-digital-reproduction') ? ` (${getKeybindText('create-digital-reproduction')})` : ''}}
               </a>
             </li>
 
@@ -586,33 +589,33 @@ export default {
 
             <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
               <a class="Toolbar-menuLink" @click="applyRecordAsTemplate">
-              <i class="fa fa-fw fa-chain"></i>
-              {{ translatePhrase('From ID') }}
+                <i class="fa fa-fw fa-chain"></i>
+                {{ translatePhrase('From ID') }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
               <a class="Toolbar-menuLink" @click="openTemplatePicker">
-              <i class="fa fa-fw fa-upload"></i>
+                <i class="fa fa-fw fa-upload"></i>
                 {{ translatePhrase('From file') }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing">
               <a class="Toolbar-menuLink" @click="detailedApplyRecordAsTemplate">
-              <i class="fa fa-fw fa-clipboard"></i>
-              {{ translatePhrase('Detailed enrichment') }}
+                <i class="fa fa-fw fa-clipboard"></i>
+                {{ translatePhrase('Detailed enrichment') }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
               <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledRecord()">
                 <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                  {{ translatePhrase("Download compiled") }} MARC21
+                {{ translatePhrase("Download compiled") }} MARC21
               </a>
               <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl | convertResourceLink">
                 <i class="fa fa-fw fa-download" aria-hidden="true"></i>
-                  {{ translatePhrase("Download compiled") }} MARC21
+                {{ translatePhrase("Download compiled") }} MARC21
               </a>
             </li>
 
@@ -632,25 +635,24 @@ export default {
 
             <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToRemove">
               <a class="Toolbar-menuLink"  @click="recordControl('remove-record')">
-              <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
-              {{ translatePhrase("Remove") }} {{ recordType | labelByLang | lowercase }}
+                <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
+                {{ translatePhrase("Remove") }} {{ recordType | labelByLang | lowercase }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech && userIsPermittedToEdit">
               <a class="Toolbar-menuLink" @click="openOverridePicker">
-              <i class="fa fa-fw fa-upload"></i>
-              {{ translatePhrase('Overwrite data') }}
+                <i class="fa fa-fw fa-upload"></i>
+                {{ translatePhrase('Overwrite data') }}
               </a>
             </li>
           </ul>
         </template>
       </Dropdown>
-
-
     </div>
-    
-    <field-adder class="FieldAdder--inToolbar Toolbar-btn"
+
+    <field-adder
+      class="FieldAdder--inToolbar Toolbar-btn"
       v-if="inspector.status.editing" 
       :entity-type="inspector.data[inspector.status.focus]['@type']" 
       :inner="false" 
@@ -658,29 +660,32 @@ export default {
       :path="inspector.status.focus" 
       :editing-object="inspector.status.focus"
       :in-toolbar="true"
-      :force-active="fieldAdderActive"></field-adder>
+      :force-active="fieldAdderActive"
+    />
 
-    <button class="Toolbar-btn btn btn-default toolbar-button" 
+    <button
+      class="Toolbar-btn btn btn-default toolbar-button" 
       :disabled="inspector.changeHistory.length === 0" 
       v-show="inspector.status.editing" 
       v-tooltip.left="`${translatePhrase('Undo')} (${getKeybindText('undo')})`"
       @click="undo" 
       @mouseover="showUndo = true" 
       @mouseout="showUndo = false"
-      :aria-label="translatePhrase('Undo')">
-      <i class="fa fa-undo" aria-hidden="true">
-      </i>
+      :aria-label="translatePhrase('Undo')"
+    >
+      <i class="fa fa-undo" aria-hidden="true"></i>
     </button>
 
-    <button class="Toolbar-btn btn btn-default toolbar-button" 
+    <button
+      class="Toolbar-btn btn btn-default toolbar-button" 
       v-show="inspector.status.editing" 
       @click="cancel" 
       v-tooltip.left="`${translatePhrase('Cancel')} (${getKeybindText('cancel-edit')})`"
       @mouseover="showCancel = true" 
       @mouseout="showCancel = false"
-      :aria-label="translatePhrase('Cancel')">
-      <i class="fa fa-close" aria-hidden="true">
-      </i>
+      :aria-label="translatePhrase('Cancel')"
+    >
+      <i class="fa fa-close" aria-hidden="true"></i>
     </button>
 
     <button class="Toolbar-btn btn btn-default" id="saveButton" 
@@ -689,34 +694,38 @@ export default {
       @mouseover="showSave = true" 
       @mouseout="showSave = false"
       v-tooltip.left="`${translatePhrase('Save')} (${getKeybindText('save-item')})`"
-      :aria-label="translatePhrase('Save')">
+      :aria-label="translatePhrase('Save')"
+    >
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
-      <i class="fa fa-fw fa-save" v-show="!inspector.status.saving">
-      </i>
+      <i class="fa fa-fw fa-save" v-show="!inspector.status.saving"></i>
     </button>
-    <button class="Toolbar-btn btn btn-primary" id="saveDoneButton" 
+
+    <button
+      class="Toolbar-btn btn btn-primary" id="saveDoneButton" 
       @click="recordControl('save-record-done')"
       v-if="inspector.status.editing"
       v-tooltip.left="`${ isNewRecord ? translatePhrase('Create record') : translatePhrase('Save and stop editing') } (${ isNewRecord ? getKeybindText('save-item') : getKeybindText('save-item-done') })`"
       @mouseover="showClarifySave = true"
       @mouseout="showClarifySave = false"
-      :aria-label="translatePhrase('Save and stop editing')">
+      :aria-label="translatePhrase('Save and stop editing')"
+    >
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
-      <i class="fa fa-fw fa-check" v-show="!inspector.status.saving">
-      </i>
+      <i class="fa fa-fw fa-check" v-show="!inspector.status.saving"></i>
     </button>
 
-    <button class="Toolbar-btn btn btn-primary edit-button" id="editButton" 
+    <button
+      class="Toolbar-btn btn btn-primary edit-button" id="editButton" 
       v-on:click="edit()" 
       v-show="!inspector.status.editing && userIsPermittedToEdit" 
       v-tooltip.left="`${ translatePhrase('Edit') } (${ getKeybindText('edit-item') })`"
       @mouseover="showEdit = true" 
       @mouseout="showEdit = false"
-      :aria-label="translatePhrase('Edit')">
+      :aria-label="translatePhrase('Edit')"
+    >
       <i class="fa fa-fw fa-pencil-square-o" v-show="!inspector.status.opening"></i>
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
     </button>
-  </div> 
+  </div>
 </template>
 
 <style lang="scss">
@@ -735,7 +744,7 @@ export default {
     background-color: #ecececd1;
     padding: 6px;
     border-radius: 0.5em;
-    box-shadow: 0px 0px 15px 0px @grey;
+    box-shadow: 0px 0px 15px 0px $grey;
     box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.2);
 
     @media (min-width: 992px) {
@@ -801,16 +810,16 @@ export default {
         font-weight: bold;
       }
       &.inSubMenu {
-        background-color: @grey-lighter;
+        background-color: $grey-lighter;
         & a:hover {
-          background-color: darken(@grey-lighter, 5%);
+          background-color: darken($grey-lighter, 5%);
         }
       }
       & .Toolbar-menuLink {
         display: flex;
         align-items: center;
         padding: 5px 15px;
-        color: @grey-darker;
+        color: $grey-darker;
       }
 
       & .submenuControl {
@@ -856,7 +865,7 @@ export default {
   .remove-option {
     a {
       &:hover {
-        color: @white;
+        color: $white;
         background-color: #c55252;
       }
     }

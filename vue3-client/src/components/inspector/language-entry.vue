@@ -327,14 +327,14 @@ export default {
     grid-template-rows: auto;
     grid-template-areas:
     "key value";
-    border: 1px solid @grey-light;
+    border: 1px solid $grey-light;
     border-radius: 2px;
     width: 100%;
     margin-top: 7px;
     margin-bottom: 7px;
     background: white;
     &:focus-within {
-      border: 1px solid @grey-dark;
+      border: 1px solid $grey-dark;
     }
   }
 
@@ -353,32 +353,32 @@ export default {
   }
 
   &-is-diff-added {
-    @base-color: @form-add;
+    $base-color: $form-add;
     border: 1px solid;
     border-radius: 4px;
     padding: 0px 5px 0 5px;
-    border-color: @brand-primary;
-    background-color: @base-color;
+    border-color: $brand-primary;
+    background-color: $base-color;
     margin-bottom: 3px;
   }
 
   &-is-diff-removed {
-    @base-color: @remove;
+    $base-color: $remove;
     border: 1px dashed;
     border-radius: 4px;
     padding: 0px 5px 0 5px;
-    border-color: @base-color;
-    background-color: @form-remove;
+    border-color: $base-color;
+    background-color: $form-remove;
     margin-bottom: 3px;
   }
 
   &-is-diff-modified {
-    @base-color: @brand-primary-orange;
+    $base-color: $brand-primary-orange;
     border: 1px dashed;
     border-radius: 4px;
     padding: 0px 5px 0 5px;
-    border-color: @base-color;
-    background-color: @form-modified;
+    border-color: $base-color;
+    background-color: $form-modified;
     margin-bottom: 3px;
   }
 
@@ -504,7 +504,7 @@ export default {
   }
 
   &.is-lastAdded {
-    background-color: @form-add;
+    background-color: $form-add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;

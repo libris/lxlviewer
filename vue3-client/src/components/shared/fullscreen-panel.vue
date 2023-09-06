@@ -125,13 +125,13 @@ export default {
 <style lang="scss">
 
 .FullScreenPanel {
-  z-index: @fullscreenpanel-z;
+  z-index: $fullscreenpanel-z;
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  background-color: @bg-site;
+  background-color: $bg-site;
   overflow: scroll;
 }
 

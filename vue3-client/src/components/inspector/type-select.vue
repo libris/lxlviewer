@@ -96,7 +96,7 @@ export default {
   }
 
   &.is-removeable {
-    background-color: @remove;
+    background-color: $remove;
   }
 }
 </style>

@@ -658,12 +658,12 @@ export default {
 
   &.highlight-info {
     .is-stuck, .is-sticky {
-      background-color: @form-mark;
+      background-color: $form-mark;
     }
   }
   &.highlight-remove {
     .is-stuck, .is-sticky {
-      background-color: @form-remove;
+      background-color: $form-remove;
     }
   }
 
@@ -682,18 +682,19 @@ export default {
       position: sticky;
       background-color: #fff;
     }
-    .icon-hover();
+
+    @include icon-hover();
   }
 
   &.highlight-mark:not(.highlight-info):not(.highlight-remove) {
-    background-color: @field-background-hover;
-    border-color: @grey-light;
+    background-color: $field-background-hover;
+    border-color: $grey-light;
   }
   &.highlight-info {
-    background-color: @form-mark;
+    background-color: $form-mark;
   }
   &.highlight-remove {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.has-failed-validations {
@@ -744,10 +745,10 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    color: @grey-darker-transparent;
+    color: $grey-darker-transparent;
 
     .ItemLocal-label:hover & {
-      color: @black
+      color: $black
     }
   }
 
@@ -783,7 +784,7 @@ export default {
         display: flex;
         align-items: center;
         padding: 5px 15px;
-        color: @grey-darker;
+        color: $grey-darker;
       }
 
     }
@@ -800,36 +801,36 @@ export default {
   }
 
   &.is-marked {
-    background-color: @form-mark;
+    background-color: $form-mark;
   }
   
   &.is-removeable {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.is-entity {
     border-radius: 4px;
     padding: 0.5rem 1rem 0.5rem 1rem;
     margin: 0.6rem 0 0.6rem 0;
-    border: 1px solid @grey-lighter;
+    border: 1px solid $grey-lighter;
     box-shadow: 0 2px 5px rgba(0,0,0,.08);
   }
 
   &.is-extractable {
-    border: 1px solid @grey-lighter;
+    border: 1px solid $grey-lighter;
     box-shadow: 0 2px 5px rgba(0,0,0,.16);
     margin: 1rem 0 1rem 0;
   }
   &.is-diff-removed {
-    @base-color: @remove;
+    $base-color: $remove;
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
+    border-color: $base-color;
+    background-color: $form-remove;
   }
 
   &.is-diff-added {
-    @base-color: @form-add;
-    background-color: @base-color;
+    $base-color: $form-add;
+    background-color: $base-color;
   }
 
   &.is-expanded > 
@@ -841,7 +842,7 @@ export default {
   }
 
   &.is-highlighted {
-    background-color: @form-highlight;
+    background-color: $form-highlight;
   }
 }
 </style>

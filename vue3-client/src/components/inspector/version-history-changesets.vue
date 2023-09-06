@@ -4,9 +4,9 @@
 */
 import { mapState } from 'pinia';
 import { useInspectorStore } from '@/stores/inspector';
-import LensMixin from '@/components/mixins/lens-mixin';
-import SummaryNode from '@/components/shared/summary-node.vue';
 import { translatePhrase } from '@/utils/filters';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import SummaryNode from '@/components/shared/summary-node.vue';
 
 export default {
   mixins: [LensMixin],

@@ -224,7 +224,7 @@ export default {
             <div class="SearchWindow-extractControls">
               <div class="copy-title" v-if="canCopyTitle">
                 <label>
-                  <input type="checkbox" name="copyTitle" v-model="copyTitle" />
+                  <input type="checkbox" name="copyTitle" v-bind="copyTitle" @change="$emit('update:copyTitle', $event.target.value)" />
                   {{ translatePhrase("Copy title from") }} {{this.editorData.mainEntity['@type'] | labelByLang}}
                 </label>
               </div>
@@ -382,7 +382,7 @@ export default {
     display: flex;
     flex-direction: column;
 
-    @media (min-width: @screen-xs) {
+    @include media-breakpoint-up(xs) {
       flex-direction: row;
     }
   }
@@ -391,7 +391,7 @@ export default {
     width: 100%;
     margin: 0.5em 1em 0 0;
 
-    @media (min-width: @screen-xs) {
+    @include media-breakpoint-up(xs) {
       width: 50%;
     }
 
@@ -415,14 +415,14 @@ export default {
     position: relative;
     margin-bottom: 0;
     margin-top: 0.5em;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     border-radius: 0.2em;
   }
 
   &-inputContainer input {
-    color: @black;
-    background-color: @white;
+    color: $black;
+    background-color: $white;
     border: none;
     margin-right: 2px; // make tab-focus border look ok
     border-radius: 0;
@@ -433,7 +433,7 @@ export default {
   }
 
   &-paramSelect {
-    border-left: 1px solid @grey-lighter;
+    border-left: 1px solid $grey-lighter;
     flex-basis: 33%;
   }
 
@@ -453,7 +453,7 @@ export default {
     justify-content: space-between;
     align-items: baseline;
     margin: 0 10px;
-    border: solid @grey-lighter;
+    border: solid $grey-lighter;
     border-width: 0 0 1px 0;
   }
 
@@ -480,9 +480,9 @@ export default {
   &-summaryContainer {
     display: flex;
     flex-direction: row;
-    border: solid @grey-lighter;
+    border: solid $grey-lighter;
     border-width: 0 0 1px 0;
-    background: @white;
+    background: $white;
     padding: 1rem 2rem;
   }
 

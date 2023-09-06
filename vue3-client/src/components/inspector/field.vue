@@ -1101,8 +1101,8 @@ export default {
 
 .Field {
   border-bottom: 1px solid;
-  border-color: @form-border;
-  border-color: @form-border-alt;
+  border-color: $form-border;
+  border-color: $form-border-alt;
   width: 100%;
   flex-direction: row;
   opacity: 1;
@@ -1114,15 +1114,15 @@ export default {
   }
 
   &.is-marked {
-    background-color: @form-mark;
+    background-color: $form-mark;
   }
 
   &.is-removeable {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.is-lastAdded {
-    background-color: @form-add;
+    background-color: $form-add;
   }
 
   &.has-no-diff {
@@ -1134,45 +1134,45 @@ export default {
   }
 
   &.is-new {
-    @base-color: @brand-success;
+    $base-color: $brand-success;
     border: 1px solid;
-    border-color: @base-color;
-    background-color: hsl(hue(@base-color), 50%, 95%);
+    border-color: $base-color;
+    background-color: hsl(hue($base-color), 50%, 95%);
   }
 
   &.is-diff-added {
-    @base-color: @form-add;
+    $base-color: $form-add;
     border: 1px solid;
-    border-color: @brand-primary;
-    background-color: @base-color;
+    border-color: $brand-primary;
+    background-color: $base-color;
   }
 
   &.is-diff-removed {
-    @base-color: @remove;
+    $base-color: $remove;
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
+    border-color: $base-color;
+    background-color: $form-remove;
   }
 
   &.is-diff-modified {
-    @base-color: @brand-primary-orange;
+    $base-color: $brand-primary-orange;
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-modified;
+    border-color: $base-color;
+    background-color: $form-modified;
   }
 
   .icon-removed {
     transform: translateY(-5%);
-    color: @remove;
+    color: $remove;
   }
 
   .icon-added {
     position: relative;
-    color: #428BCAFF; // @brand-primary base.
+    color: #428BCAFF; // $brand-primary base.
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
-    background-color: @form-highlight;
+    background-color: $form-highlight;
   }
 
   &.is-grouped {
@@ -1193,7 +1193,7 @@ export default {
     overflow: visible;
     display: block;
 
-    .icon-hover();
+    @include icon-hover();
 
     &.is-locked:not(.is-new),
     .Field--inner & {
@@ -1201,11 +1201,11 @@ export default {
     }
 
     &.is-marked {
-      background-color: @form-mark;
+      background-color: $form-mark;
     }
 
     &.is-removeable {
-      background-color: @form-remove;
+      background-color: $form-remove;
     }
 
     &:before, 
@@ -1217,8 +1217,8 @@ export default {
 
     &:before {
       border-top: 1px solid;
-      border-top-color: @field-path;
-      border-top-color: @field-path-alt;
+      border-top-color: $field-path;
+      border-top-color: $field-path-alt;
       top: 16px;
       width: 14px;
       height: 2px;
@@ -1226,8 +1226,8 @@ export default {
 
     &:after {
       border-left: 1px solid;
-      border-left-color: @field-path;
-      border-left-color: @field-path-alt;
+      border-left-color: $field-path;
+      border-left-color: $field-path-alt;
       height: 100%;
       width: 2px;
       top: 0px;
@@ -1256,7 +1256,7 @@ export default {
       flex-basis: 35%;
       max-width: 270px;
 
-      @media screen and (max-width: @screen-sm) { 
+      @include media-breakpoint-down(sm) {
         max-width: 100%;
       }
     }
@@ -1271,7 +1271,7 @@ export default {
       flex-basis: 1.5rem;
     }
 
-    .icon-hover();
+    @include icon-hover();
 
     pre {
       margin-top: 5px;
@@ -1287,7 +1287,7 @@ export default {
     flex-direction: row-reverse;
     min-height: 30px;
 
-    @media (min-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       flex-direction: row;
     }
 
@@ -1295,7 +1295,7 @@ export default {
       position: sticky;
     }
 
-    @media (min-width: @screen-md) {
+    @include media-breakpoint-down(sm) {
       top: 75px;
     }
   }
@@ -1311,8 +1311,8 @@ export default {
 
     &:after {
       border-left: 1px solid;
-      border-color: @field-path;
-      border-color: @field-path-alt;
+      border-color: $field-path;
+      border-color: $field-path-alt;
       height: 100%;
       width: 0px;
       top: 0px;
@@ -1349,8 +1349,8 @@ export default {
     &:before {
       .Field--inner & {
         content: " ● ";
-        color: @field-path;
-        color: @field-path-alt;
+        color: $field-path;
+        color: $field-path-alt;
         position: absolute;
         left: 0px;
         top: 0px;
@@ -1381,14 +1381,14 @@ export default {
     padding: 10px;
     text-align: left;
     white-space: normal;
-    color: @black;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    color: $black;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     border-radius: 4px;
-    box-shadow: @shadow-panel;
+    box-shadow: $shadow-panel;
     z-index: 3;
 
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-up(sm) {
       transform: translate(-60%, 5px);
     }
   }
@@ -1421,8 +1421,8 @@ export default {
       flex: 1 auto;
       width: 0;
       border-left: 1px solid;
-      border-color: @form-border;
-      border-color: @form-border-alt;
+      border-color: $form-border;
+      border-color: $form-border-alt;
     }
 
     @media print and (max-width: 768px) {
@@ -1440,10 +1440,10 @@ export default {
     max-width: 100%;
 
     &.is-new {
-      @base-color: @brand-success;
+      $base-color: $brand-success;
       border: 1px solid;
-      border-color: @base-color;
-      background-color: hsl(hue(@base-color), 50%, 95%);
+      border-color: $base-color;
+      background-color: hsl(hue($base-color), 50%, 95%);
     }
     &.is-entityContent {
       display: inline-flex;
@@ -1459,7 +1459,7 @@ export default {
     flex-grow: 1;
     justify-content: initial;
   
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       justify-content: flex-start;
       flex-direction: row-reverse;
     }
@@ -1477,8 +1477,8 @@ export default {
       font-size: 1.6rem;
       margin: 0 0 0 10px;
       line-height: 1.4;
-      
-      @media (max-width: @screen-sm) {
+
+      @include media-breakpoint-up(sm) {
         display: flex;
         justify-content: flex-end;
         flex-direction: row;
@@ -1495,7 +1495,7 @@ export default {
       width: 20px;
       display: none;
 
-      @media (min-width: @screen-sm) {
+      @include media-breakpoint-up(sm) {
         display: block;
       }
     }

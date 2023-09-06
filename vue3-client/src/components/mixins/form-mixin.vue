@@ -8,6 +8,7 @@ import { useInspectorStore } from '@/stores/inspector';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
+import displayGroups from '@/resources/json/displayGroups.json';
 
 export default {
   props: {
@@ -96,7 +97,7 @@ export default {
     },
     reverseItemInForm() {
       const reverseItem = cloneDeep(this.reverseItem);
-      const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
+      const propsInMainForm = displayGroups.reverse.mainForm;
       const objToMainForm = {};
       if (reverseItem) {
         each(reverseItem, (item, key) => {
@@ -118,8 +119,8 @@ export default {
       if (typeof reverseItem === 'undefined') {
         return {};
       }
-      const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
-      const propsToHide = require('@/resources/json/displayGroups.json').reverse.hidden;
+      const propsInMainForm = displayGroups.reverse.mainForm;
+      const propsToHide = displayGroups.reverse.hidden;
       const propsToDelete = propsInMainForm.concat(propsToHide);
 
       for (let i = 0; i < propsToDelete.length; i++) {

@@ -7,6 +7,7 @@ import LandingPage from '../views/LandingPage.vue';
 import Login from '../views/Login.vue';
 import Find from "../views/Find.vue";
 import Help from "../views/Help.vue";
+import Inspector from "../views/Inspector.vue";
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -85,17 +86,20 @@ const router = createRouter({
 		{
 			path: '/new',
 			name: 'NewDocument',
-			component: () => import('../views/Inspector.vue'),
+			// component: () => import('../views/Inspector.vue'),
+			component: Inspector,
 		},
 		{
 			path: '/:fnurgel',
 			name: 'Inspector',
-			component: () => import('../views/Inspector.vue'),
+			// component: () => import('../views/Inspector.vue'),
+			component: Inspector,
 		},
 		{
 			path: '/:fnurgel/:view',
 			name: 'DocumentHistory',
-			component: () => import('../views/Inspector.vue'),
+			// component: () => import('../views/Inspector.vue'),
+			component: Inspector,
 		},
 	],
 });

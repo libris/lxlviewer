@@ -382,7 +382,7 @@ export default {
   }
 
   &-filterInfo {
-    color: @grey-darker;
+    color: $grey-darker;
     margin-bottom: 10px;
   }
 
@@ -393,10 +393,10 @@ export default {
 
   &-columnHeaders {
     display: flex;
-    background-color: @white;
+    background-color: $white;
     width: 100%;
     padding: 5px 15px;
-    border-bottom: 1px solid @grey-lighter;
+    border-bottom: 1px solid $grey-lighter;
 
     & .PropertyAdderPanel-fieldLabel {
       padding-left: 0;

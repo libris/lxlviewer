@@ -372,15 +372,14 @@ export default {
 </template>
 
 <style lang="scss">
-
-@fieldCol: 46%;
-@fieldColMd: 45%;
-@fieldColSm: 44%;
-@fieldColXs: 42%;
-@actionCol: 8%;
-@actionColMd: 10%;
-@actionColSm: 12%;
-@actionColXs: 14%;
+$fieldCol: 46%;
+$fieldColMd: 45%;
+$fieldColSm: 44%;
+$fieldColXs: 42%;
+$actionCol: 8%;
+$actionColMd: 10%;
+$actionColSm: 12%;
+$actionColXs: 14%;
 
 .DetailedEnrichment {
   width: 100%;
@@ -392,13 +391,13 @@ export default {
   }
 
   &-dialog {
-    background-color: @neutral-color;
+    background-color: $neutral-color;
     margin: 0 -1em;
     padding: 1.5rem 2.5rem;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    border: solid @grey-light;
+    border: solid $grey-light;
     border-width: 1px 0px 0px 0px;
     button {
       margin-left: 1rem;
@@ -430,18 +429,18 @@ export default {
   }
 
   &-summaryLabel {
-    background-color: @grey-lighter;
-    color: @grey-darker;
+    background-color: $grey-lighter;
+    color: $grey-darker;
     padding: 0.15rem 0.5rem;
     font-size: 1.2rem;
     text-transform: uppercase;
     font-weight: 600;
     display: inline-block;
-    border: 1px solid @grey-lighter;
+    border: 1px solid $grey-lighter;
   }
   &-summaryContainer {
-    border: 1px solid @grey-lighter;
-    background-color: @neutral-color;
+    border: 1px solid $grey-lighter;
+    background-color: $neutral-color;
   }
   &-rowContainer {
     width: 100%;
@@ -459,50 +458,50 @@ export default {
     }
   }
   &-resultField {
-    border: 1px solid @grey-lighter;
+    border: 1px solid $grey-lighter;
     &.is-diff {
-      @base-color: @brand-accent3;
-      border-color: @base-color;
-      background-color: hsl(hue(@base-color), saturation(@base-color), lightness(@base-color)+51);
+      $base-color: $brand-accent3;
+      border-color: $base-color;
+      background-color: hsl(hue($base-color), saturation($base-color), lightness($base-color)+51);
     }
     &.is-new {
-      @base-color: @brand-success;
+      $base-color: $brand-success;
       border: 1px solid;
-      border-color: @base-color;
-      background-color: hsl(hue(@base-color), saturation(@base-color)-25, lightness(@base-color)+55);
+      border-color: $base-color;
+      background-color: hsl(hue($base-color), saturation($base-color)-25, lightness($base-color)+55);
     }
   }
   .sourceColumn, .resultColumn {
-    width: @fieldColXs;
+    width: $fieldColXs;
     @media (min-width: 900px) {
-      width: @fieldColSm;
+      width: $fieldColSm;
     }
     @media (min-width: 1200px) {
-      width: @fieldColMd;
+      width: $fieldColMd;
     }
     @media (min-width: 1500px) {
-      width: @fieldCol;
+      width: $fieldCol;
     }
   }
   .actionColumn {
-    width: @actionColXs;
+    width: $actionColXs;
     @media (min-width: 900px) {
-      width: @actionColSm;
+      width: $actionColSm;
     }
     @media (min-width: 1200px) {
-      width: @actionColMd;
+      width: $actionColMd;
     }
     @media (min-width: 1500px) {
-      width: @actionCol;
+      width: $actionCol;
     }
   }
   &-sourceField {
-    border: 1px solid @grey-lighter;
+    border: 1px solid $grey-lighter;
   }
 
   &-sourceField, &-resultField, &-buttonContainer {
     &.non-existing {
-      background-color: @grey-lightest;
+      background-color: $grey-lightest;
     }
     min-height: 2em;
     display: flex;
@@ -513,20 +512,20 @@ export default {
     flex-direction: row;
     justify-content: center;
     .Field-action {
-      background-color: @white;
+      background-color: $white;
       align-items: baseline;
       justify-content: center;
       display: flex;
-      color: @brand-primary;
+      color: $brand-primary;
       i {
-        color: @brand-primary;
+        color: $brand-primary;
       }
       font-weight: bold;
       font-size: 1.2rem;
       padding: 0.5rem;
       cursor: pointer;
       width: 100%;
-      border: solid @grey-light;
+      border: solid $grey-light;
       border-width: 1px;
       margin: -1px -4px 0px 0px;
     }

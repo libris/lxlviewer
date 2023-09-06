@@ -77,7 +77,7 @@ export default {
     padding-right: 1em;
   }
   code {
-    color: @black;
+    color: $black;
     background-color: transparent;
   }
   &.has-failed-validations {

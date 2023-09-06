@@ -10,8 +10,6 @@ export default {
   components: {
     Spinner,
   },
-  props: {
-  },
   data() {
     return {
       loading: false,
@@ -132,12 +130,6 @@ export default {
         });
     },
   },
-  watch: {
-  },
-  mounted() {
-    this.$nextTick(() => {
-    });
-  },
 };
 </script>
 
@@ -186,7 +178,7 @@ export default {
     justify-content: flex-end;
     white-space: nowrap;
 
-    @media (max-width: @screen-xs) {
+    @include media-breakpoint-down(xs) {
       justify-content: space-between;
       flex-direction: column;
       align-items: flex-end;

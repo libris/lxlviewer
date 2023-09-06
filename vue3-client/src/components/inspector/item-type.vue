@@ -198,8 +198,8 @@ export default {
     margin-top: 0.2em;
     margin-right: 0.5em;
     display: inline-block;
-    border: 1px solid @grey-light;
-    background-color: @white;
+    border: 1px solid $grey-light;
+    background-color: $white;
     &:disabled {
       opacity: 0.7;
     }

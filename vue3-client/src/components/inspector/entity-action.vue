@@ -81,7 +81,7 @@ export default {
 .EntityAction {
   display: inline-block;
   transition: color .25s ease;
-  color: @grey-transparent;
+  color: $grey-transparent;
   .action-label {
     display: none;
     color: inherit;
@@ -91,10 +91,10 @@ export default {
     cursor: default;
   }
   &.has-parent-hovered {
-    color: @grey-darker;
+    color: $grey-darker;
   }
   &.action-larger {
-    background-color: @white;
+    background-color: $white;
     border: 1px solid;
     border-radius: 0.25rem;
     padding: 0rem 1rem 0rem 0.5rem;

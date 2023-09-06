@@ -1,7 +1,7 @@
 <script>
 import { translatePhrase } from '@/utils/filters';
 import * as VocabUtil from 'lxljs/vocab';
-import ItemMixin from '../mixins/item-mixin';
+import ItemMixin from '../mixins/item-mixin.vue';
 import { mapActions, mapState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import { useInspectorStore } from '@/stores/inspector';

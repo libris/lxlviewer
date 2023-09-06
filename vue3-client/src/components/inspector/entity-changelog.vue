@@ -6,9 +6,10 @@
 import { mapState } from 'pinia';
 import { useInspectorStore } from '@/stores/inspector';
 import { translatePhrase } from '@/utils/filters';
+import moment from 'moment';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
-import Button from '@/components/shared/button';
+import Button from '@/components/shared/button.vue';
 
 export default {
   name: 'entity-changelog',
@@ -26,6 +27,12 @@ export default {
     focusData() {
       return this.inspector.data.record;
     },
+    createdFormatted() {
+      return moment(this.getCard.created).format('lll')
+    },
+    modifiedFormatted() {
+      return moment(this.getCard.modified).format('lll')
+    }
   },
   components: {
     SummaryNode,
@@ -39,7 +46,7 @@ export default {
     <div class="EntityChangelog-item">
       <span class="EntityChangelog-key uppercaseHeading--bold">{{ translatePhrase('Created') }}:</span> 
       <span class="EntityChangelog-value">
-        {{ $moment(getCard.created).format('lll') }} {{ translatePhrase('by') }} 
+        {{ createdFormatted }} {{ translatePhrase('by') }} 
         <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionCreator" :item="inspector.data.record.descriptionCreator" :is-last="true" :field-key="'descriptionCreator'"/>
         <span class="EntityChangelog-unknown" v-else>{{ lowercase(translatePhrase("Unknown")) }}</span>
       </span>
@@ -48,7 +55,7 @@ export default {
     <div class="EntityChangelog-item">
       <span class="EntityChangelog-key uppercaseHeading--bold">{{ translatePhrase('Changed') }}:</span> 
       <span class="EntityChangelog-value">
-        {{ $moment(getCard.modified).format('lll') }} {{ translatePhrase('by') }}
+        {{ modifiedFormatted }} {{ translatePhrase('by') }}
         <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionLastModifier" :item="inspector.data.record.descriptionLastModifier" :is-last="true" :field-key="'descriptionLastModifier'"/>
         <span class="EntityChangelog-unknown" v-else>{{ lowercase(translatePhrase("Unknown")) }}</span>
       </span>

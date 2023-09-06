@@ -11,8 +11,8 @@ import { useUserStore } from '@/stores/user';
 import { useSettingsStore } from '@/stores/settings';
 import { translatePhrase } from '@/utils/filters';
 import * as VocabUtil from 'lxljs/vocab';
-import LensMixin from '@/components/mixins/lens-mixin';
-import FormMixin from '@/components/mixins/form-mixin';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import FormMixin from '@/components/mixins/form-mixin.vue';
 
 export default {
   mixins: [FormMixin, LensMixin],
@@ -103,8 +103,6 @@ export default {
       return this.formData;
     },
   },
-  watch: {
-  },
   methods: {
     keyIsLocked(key) {
       return (this.isLocked || key === '@id');
@@ -116,10 +114,6 @@ export default {
 
       return VocabUtil.hasCategory(key, 'integral', this.resources);
     },
-  },
-  components: {
-  },
-  mounted() {
   },
 };
 </script>
@@ -179,7 +173,6 @@ export default {
 </template>
 
 <style lang="scss">
-
 .EntityForm {
   padding: 0;
 
@@ -208,10 +201,10 @@ export default {
 .FieldList {
   padding-left: 0px;
   margin: 0px;
-  border-bottom: 2px solid @form-border;
+  border-bottom: 2px solid $form-border;
 
   &-item {
-    color: @black;
+    color: $black;
     &:not(.is-diff) {
       &:not(.is-new) {
         &:not(.is-highlighted) {
@@ -220,7 +213,7 @@ export default {
               &:not(.is-diff-removed) {
                 &:not(.is-diff-added) {
                   &:not(.is-diff-modified) {
-                    background-color: @form-field;
+                    background-color: $form-field;
                   }
                 }
               }
@@ -229,7 +222,8 @@ export default {
         }
       }
     }
-    border: 1px solid @form-border;
+
+    border: 1px solid $form-border;
     border-bottom-width: 0;
     flex-direction: row;
     list-style: none;
@@ -237,5 +231,4 @@ export default {
     box-shadow: none;
   }
 }
-
 </style>

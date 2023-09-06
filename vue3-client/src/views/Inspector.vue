@@ -8,6 +8,7 @@ import { useStatusStore } from '@/stores/status';
 import { useUserStore } from '@/stores/user';
 import { useResourcesStore } from '@/stores/resources';
 import { useSettingsStore } from '@/stores/settings';
+import { useEnrichmentStore } from '@/stores/enrichment';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
@@ -16,19 +17,18 @@ import * as DataUtil from '@/utils/data';
 import * as HttpUtil from '@/utils/http';
 import * as RecordUtil from '@/utils/record';
 import { checkAutoShelfControlNumber } from '@/utils/shelfmark';
-import EntityForm from '@/components/inspector/entity-form';
-import Toolbar from '@/components/inspector/toolbar';
-import DetailedEnrichment from '@/components/care/detailed-enrichment';
-import EntityChangelog from '@/components/inspector/entity-changelog';
-import EntityHeader from '@/components/inspector/entity-header';
-import Breadcrumb from '@/components/inspector/breadcrumb';
-import ModalComponent from '@/components/shared/modal-component';
-import MarcPreview from '@/components/inspector/marc-preview';
-import TabMenu from '@/components/shared/tab-menu';
-import ValidationSummary from '@/components/inspector/validation-summary';
+import EntityForm from '@/components/inspector/entity-form.vue';
+import Toolbar from '@/components/inspector/toolbar.vue';
+import DetailedEnrichment from '@/components/care/detailed-enrichment.vue';
+import EntityChangelog from '@/components/inspector/entity-changelog.vue';
+import EntityHeader from '@/components/inspector/entity-header.vue';
+import Breadcrumb from '@/components/inspector/breadcrumb.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
+import MarcPreview from '@/components/inspector/marc-preview.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
+import ValidationSummary from '@/components/inspector/validation-summary.vue';
 import FullscreenPanel from '../components/shared/fullscreen-panel.vue';
 import VersionHistory from '../components/inspector/version-history.vue';
-import { useEnrichmentStore } from '@/stores/enrichment';
 
 export default {
   name: 'Inspector',
@@ -401,7 +401,7 @@ export default {
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
         this.pushNotification({
           type: 'success', 
-          message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language, this.resources.i18n)}!`, 
+          message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language, this.resources.i18n)}!`, 
         });
         // Force reload
         this.$router.go(-1);
@@ -689,7 +689,7 @@ export default {
           setTimeout(() => {
             this.pushNotification({
               type: 'success', 
-              message: `${this.$options.filters.labelByLang(this.recordType)}  ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language, this.resources.i18n)}!`,
+              message: `${labelByLang(this.recordType)}  ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language, this.resources.i18n)}!`,
             });
           }, 10);
           this.warnOnSave();
@@ -699,7 +699,7 @@ export default {
           setTimeout(() => {
             this.pushNotification({
               type: 'success', 
-              message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language, this.resources.i18n)}!`,
+              message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language, this.resources.i18n)}!`,
             });
           }, 10);
           this.warnOnSave();
@@ -853,7 +853,8 @@ export default {
     },
   },
   created() {
-    this.$on('duplicate-item', this.duplicateItem);
+    // TODO: Figure out what this does
+    // this.$on('duplicate-item', this.duplicateItem);
   },
   computed: {
     ...mapState(useResourcesStore, ['resources']),
@@ -903,7 +904,7 @@ export default {
       return null;
     },
     editorTabs() {
-      return [{ id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+      return [{ id: 'mainEntity', text: labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' }];
     },
   },
@@ -977,7 +978,7 @@ export default {
         <div class="Inspector-admin">
           <div class="Inspector-header">
             <h1>
-              <span class="type" :title="recordType">{{ recordType | labelByLang }}</span>
+              <span class="type" :title="recordType">{{ labelByLang(recordType) }}</span>
               <span class="badge badge-accent2" v-if="inspector.status.isNew">{{ translatePhrase("New record") }}</span>
             </h1>
           </div>
@@ -1010,7 +1011,7 @@ export default {
       v-if="removeInProgress">
       <div slot="modal-header" class="RemoveRecordModal-header">
         <header>
-          {{ translatePhrase('Remove') }} {{ this.recordType | labelByLang }}?
+          {{ translatePhrase('Remove') }} {{ labelByLang(recordType) }}?
         </header>
       </div>
       <div slot="modal-body" class="RemoveRecordModal-body">
@@ -1073,7 +1074,7 @@ export default {
   }
 
   &-breadcrumb {
-    border-bottom:  1px solid @grey-lighter;
+    border-bottom:  1px solid $grey-lighter;
     padding-bottom: 10px;
   }
 
@@ -1092,7 +1093,7 @@ export default {
     display: flex;
     height: fit-content;
 
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-up(sm) {
       flex-direction: row-reverse;
       justify-content: flex-end;
     }
@@ -1103,8 +1104,8 @@ export default {
 
   &-code {
     padding: 10px 20px;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
   }
 
   &.hideOnPrint {
@@ -1149,18 +1150,18 @@ export default {
 
   }
   &-label {
-    color: @black;
+    color: $black;
   }
   &-infoText {
     margin-bottom: 1em;
   }
   &-input {
     width: 50%;
-    color: @black;
+    color: $black;
   }
   &-reference {
     margin-top: 1em;
-    border: 1px solid @grey;
+    border: 1px solid $grey;
     border-radius: 0.5em;
     padding: 1em;
   }

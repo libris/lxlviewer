@@ -241,14 +241,14 @@ export default {
   &-input {
     width: 100%;
     display: block;
-    border: 1px solid @grey-light;
+    border: 1px solid $grey-light;
     border-radius: 2px;
     padding: 2px 10px;
     resize: none;
     transition: border .25s ease-out;
 
     &:focus {
-      border: 1px solid @grey-dark;
+      border: 1px solid $grey-dark;
     }
   }
 
@@ -266,26 +266,26 @@ export default {
   }
 
   &.is-diff-removed {
-    @base-color: @remove;
+    $base-color: $remove;
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
+    border-color: $base-color;
+    background-color: $form-remove;
     margin-bottom: 2px;
   }
 
   &.is-diff-added {
-    @base-color: @form-add;
+    $base-color: $form-add;
     border: 1px solid;
-    border-color: @brand-primary;
-    background-color: @base-color;
+    border-color: $brand-primary;
+    background-color: $base-color;
     margin-bottom: 2px
   }
 
   &.is-diff-modified {
-    @base-color: @brand-primary-orange;
+    $base-color: $brand-primary-orange;
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-modified;
+    border-color: $base-color;
+    background-color: $form-modified;
     margin-bottom: 2px;
   }
 
@@ -302,22 +302,22 @@ export default {
     float: right;
     display: inline-block;
     cursor: pointer;
-    color: @grey;
+    color: $grey;
     min-width: 20px;
     margin-left: 5px;
 
 
     &:hover {
-      color: @black;
+      color: $black;
     }
   }
 
   &.is-removeable {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.is-lastAdded {
-    background-color: @form-add;
+    background-color: $form-add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;

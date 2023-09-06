@@ -5,12 +5,14 @@
 import { mapActions, mapState, mapWritableState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import { useSettingsStore } from '@/stores/settings';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
 import { cloneDeep, isArray, get } from 'lodash-es';
 import { translatePhrase } from '@/utils/filters';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
-import Sort from '@/components/search/sort';
+import Sort from '@/components/search/sort.vue';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination.vue';
 import FilterSelect from '@/components/shared/filter-select.vue';
@@ -20,8 +22,6 @@ import LensMixin from '@/components/mixins/lens-mixin.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
 import PanelSearchList from '../search/panel-search-list.vue';
 import Spinner from '../shared/Spinner.vue';
-import { useInspectorStore } from '@/stores/inspector';
-import { useUserStore } from '@/stores/user';
 
 export default {
   mixins: [LensMixin, SideSearchMixin],
@@ -673,14 +673,14 @@ export default {
   }
 
   &-add {
-    color: @grey-dark;
+    color: $grey-dark;
     cursor: pointer;
     display: inline-block;
     opacity: 1;
     transition: opacity 0.5s ease;
 
     &:hover {
-      color: @black;
+      color: $black;
     }
   }
 
@@ -716,14 +716,14 @@ export default {
     flex-direction: row;
     position: relative;
     margin-top: 0.5em;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     border-radius: 0.2em;
   }
 
   &-searchInputContainer input {
-    color: @black;
-    background-color: @white;
+    color: $black;
+    background-color: $white;
     border: none;
     margin-right: 2px; // make tab-focus border look ok
     border-radius: 0;
@@ -734,7 +734,7 @@ export default {
   }
 
   &-paramSelect {
-    border-left: 1px solid @grey-lighter;
+    border-left: 1px solid tgrey-lighter;
     flex-basis: 33%;
   }
 
@@ -743,7 +743,7 @@ export default {
     display: flex;
     flex-direction: column;
 
-    @media (min-width: @screen-xs) {
+    @include media-breakpoint-up(xs) {
       flex-direction: row;
     }
   }
@@ -752,7 +752,7 @@ export default {
     width: 100%;
     margin: 0 1em 0 0;
 
-    @media (min-width: @screen-xs) {
+    @include media-breakpoint-up(xs) {
       width: 50%;
     }
 

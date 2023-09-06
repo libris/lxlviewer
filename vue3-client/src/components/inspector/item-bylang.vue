@@ -7,7 +7,7 @@ import * as DisplayUtil from 'lxljs/display';
 import ItemMixin from '@/components/mixins/item-mixin.vue';
 import LanguageMixin from '@/components/mixins/language-mixin.vue';
 import * as HttpUtil from '../../utils/http';
-import LanguageEntry from './language-entry';
+import LanguageEntry from './language-entry.vue';
 import { useInspectorStore } from '@/stores/inspector';
 
 export default {

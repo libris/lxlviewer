@@ -247,7 +247,7 @@ export default {
 
 <style lang="scss">
 
-@linked-color: #daefec;
+$linked-color: #daefec;
 
 .ItemEntity {
 
@@ -272,7 +272,7 @@ export default {
     border-radius: 4px;
     padding: 0.5em 1em 0.5em 1em;
     margin: 0.6rem 0 0.6rem 0.6rem;
-    border: 1px solid @grey-lighter;
+    border: 1px solid $grey-lighter;
     box-shadow: 0 2px 5px rgba(0,0,0,.08);
   }
 /*
@@ -309,15 +309,15 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    color: @grey-darker-transparent;
+    color: $grey-darker-transparent;
 
     .ItemEntity-expander:hover & {
-      color: @black;
+      color: $black;
     }
   }
 
   &.is-newlyAdded {
-    background-color: @form-add;
+    background-color: $form-add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;
@@ -327,15 +327,15 @@ export default {
   }
 
   &.is-removed {
-    @base-color: @remove;
+    $base-color: $remove;
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
+    border-color: $base-color;
+    background-color: $form-remove;
   }
 
   &.is-added {
-    @base-color: @form-add;
-    background-color: @base-color;
+    $base-color: $form-add;
+    background-color: $base-color;
   }
 
   &-removeButton {
@@ -350,7 +350,7 @@ export default {
   }
   
   a {
-    color: @white;
+    color: $white;
     &:hover {
       text-decoration: none;
     }
@@ -358,9 +358,9 @@ export default {
   &-label {
     cursor: pointer;
     a {
-      color: @link-color;
+      color: $link-color;
       &:hover {
-        color: @link-color;
+        color: $link-color;
       }
     }
   }
@@ -375,9 +375,9 @@ export default {
   justify-content: center;
   align-items: flex-start;
   height: 33px;
-  background-color: @chip-background;
-  border: 1px solid @chip-color;
-  color: @chip-color;
+  background-color: $chip-background;
+  border: 1px solid $chip-color;
+  color: $chip-color;
   border-radius: 2em;
   line-height: 1.6;
   padding: 3px 5px 3px 10px;
@@ -405,21 +405,21 @@ export default {
   }
 
   &.is-cache {
-    border-color: @chip-color-cache;
-    color: @chip-color-cache;
+    border-color: $chip-color-cache;
+    color: $chip-color-cache;
     a {
-      color: @chip-color-cache;
+      color: $chip-color-cache;
       &:hover {
-        //color: @link-color;
+        //color: $link-color;
       }
     }
   }
 
   &.is-placeholder {
-    border-color: @chip-color-placeholder;
-    color: @chip-color-placeholder;
+    border-color: $chip-color-placeholder;
+    color: $chip-color-placeholder;
     a {
-      color: @chip-color-placeholder;
+      color: $chip-color-placeholder;
       &:hover {
         //color: @link-color;
       }
@@ -430,12 +430,12 @@ export default {
     border: 1px solid #29A1A2;
   }
   
-  @media (max-width: @screen-sm) {
+  @include media-breakpoint-down(sm) {
     max-width: 100%;
   }
 }
 
-&.type-icon {
+.type-icon {
   margin-left: 0.2em;
   margin-right: 0.1em;
 }

@@ -64,27 +64,31 @@ export default {
       return false;
     },
   },
-  components: {
-  },
-  watch: {
-  },
-  mounted() {
-    this.$nextTick(() => {});
-  },
 };
 </script>
 
 <template>
-  <button class="RoundButton btn"
-    :class="{'btn-grey disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled, 'is-active': active}"
+  <button
+    class="RoundButton btn"
+    :class="{
+      'btn-grey disabled' : disabled,
+      'default': !indicator && !disabled,
+      'btn-primary': indicator && !disabled,
+      'is-active': active,
+    }"
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false"
-    :aria-label="translatePhrase(label)">
+    :aria-label="translatePhrase(label)"
+  >
     <span v-if="icon">
       <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
     </span>
-    <span class="RoundButton-buttonText" :class="{'small-text': smallText }" v-else>{{ buttonText }}</span>
+
+    <span class="RoundButton-buttonText" :class="{'small-text': smallText }" v-else>
+      {{ buttonText }}
+    </span>
+
     <slot name="tooltip" v-if="mouseOver"></slot>
   </button>
 </template>
@@ -103,23 +107,23 @@ export default {
   transition: all 0.25s ease;
 
   &.default {
-  background-color: @neutral-color;
-  color: @btn-primary;
-  border: 2px solid @btn-primary;
+  background-color: $neutral-color;
+  color: $btn-primary;
+  border: 2px solid $btn-primary;
 
     &:hover {
-      border-color: @btn-primary--hover; 
-      color: @btn-primary--hover;
+      border-color: $btn-primary--hover; 
+      color: $btn-primary--hover;
     }
   }
 
   &.btn-primary.is-active {
-    background-color: @btn-primary--hover; 
-    border: @btn-primary--hover;
+    background-color: $btn-primary--hover; 
+    border: $btn-primary--hover;
   }
 
   &.disabled { //can't be SUIT-ified because inherits from Bootstrap .disabled
-    color: @white;
+    color: $white;
     border: none;
   }
 

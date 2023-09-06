@@ -245,30 +245,3 @@ button:focus-visible {
   @include panel-mixin($neutral-color);
   margin-bottom: 20px;
 }
-
-.icon-hover {
-  &:hover {
-    & .icon:not(.chip-icon):not(.is-disabled) {
-      color: $grey-dark-transparent;
-    }
-
-    &:not(.locked) >.actions {
-      opacity: 1;
-    }
-  }
-
-  .user-is-tabbing &:focus-within { // icon 'hover-effect' when tabbing 
-    & .icon:not(.chip-icon):not(.is-disabled) {
-      color: $grey-dark-transparent;
-    }
-  }
-
-  & .icon {
-    color: $grey-transparent;
-
-    &:hover:not(.is-disabled),
-    &:focus {
-      color: $grey-very-dark-transparent;
-    }
-  }
-}
