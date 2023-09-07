@@ -609,3 +609,16 @@ export function getLabelWithTreeDepth(term, settings, resources) {
   const indent = Array(term.depth + 1).join('- ');
   return `${indent}${labelByLang} ${term.abstract ? abstractIndicator : ''}`;
 }
+
+/**
+ * A factory for instantiating `displayUtil` with repetitively passed data (`resources` and `settings`).
+ * @param {string} resources - containing `context`, `display`, `vocab` and `i18n` @see {@link https://github.com/libris/lxlviewer/tree/develop/lxljs#the-resources-parameter | Resources parameter in LXLJS readme}
+ * @param {string} settings - containing atleast `language` @see {@link https://github.com/libris/lxlviewer/tree/develop/lxljs#the-settings-parameter | Settings parameter in LXLJS readme} 
+ */
+export function initDisplayUtil(resources, settings) {
+  return ({
+    getItemLabel: (item, { quoted, inClass } = { quoted: {}, inClass: '' }) => getItemLabel(item, resources, quoted, settings, inClass),
+    getChip: (entityData, { quoted } = { quoted: { } }) => getChip(entityData, resources, quoted, settings),
+    // TODO: Add all remaining functions here...
+  });
+}

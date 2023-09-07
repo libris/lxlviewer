@@ -829,3 +829,15 @@ export function preprocessVocab(vocab) {
 
   return vocabMap;
 }
+
+/**
+ * Preprocesses the required LXLJS resources, converting the object property to a map.
+ * @param {string} resources - containing `context`, `display`, `vocab` and `i18n` as objects.
+ */
+export function preprocessResources(resources) {
+  return {
+    ...resources,
+    context: preprocessContext(resources.context)['@context'],
+    vocab: preprocessVocab(resources.vocab),
+  };
+}
