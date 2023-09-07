@@ -12,7 +12,15 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"prepare": "cd .. && husky install search/.husky"
+	},
+	"lint-staged": {
+		"*.{js,ts,svelte,css,scss,postcss,md,json}": [
+			"prettier --write --plugin-search-dir=.",
+			"prettier --check --plugin-search-dir=."
+		],
+		"*.{js,ts,svelte}": "eslint"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
@@ -23,6 +31,8 @@
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte": "^2.30.0",
+		"husky": "^8.0.0",
+		"lint-staged": "^14.0.1",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.10.1",
 		"svelte": "^4.0.5",

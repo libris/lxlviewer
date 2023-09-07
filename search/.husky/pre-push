@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# npm
+cd ./search && npm run format && npm run lint
+
+# pnpm
+# cd ./search && pnpm format && pnpm lint
