@@ -153,7 +153,7 @@ export default {
         const statementOfRangeIncludes = statementOf.rangeIncludes[0]['@id']; // e.g. Endeavour
         const subClassesOfRangeIncludes = VocabUtil.getSubClassChain(statementOfRangeIncludes, this.resources.vocabClasses, this.resources.context); 
 
-        const fieldParentPath = [...(this.path.split('.').slice(0, -2))].join('.'); // Maybe too specific... are we always sure we need to go up two steps to find field parent path?
+        const fieldParentPath = this.path.split('.').slice(0, -2).join('.');
         const fieldParentType = get(this.inspector.data, fieldParentPath)['@type']; // e.g. Text
         const fieldParentBaseClasses = VocabUtil.getBaseClasses(
           VocabUtil.getTermObject(fieldParentType, this.resources.vocab, this.resources.context)['@id'],
