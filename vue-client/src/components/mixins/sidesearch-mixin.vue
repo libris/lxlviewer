@@ -1,4 +1,5 @@
 <script>
+import { get } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
@@ -139,6 +140,33 @@ export default {
           [searchProp]: searchPhrase,
         }), {}),
       });
+
+      const field = VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.resources.context);
+
+      /**
+       * If field is a kbv:predicate (e.g. role) then filter linkable items depending on field and parent type.
+       * */
+      if (field.subPropertyOf.find(subProp => subProp['@id'] === VocabUtil.getTermObject('predicate', this.resources.vocab, this.resources.context)['@id'])) {
+        const statement = VocabUtil.getTermObject(field.domain[0]['@id'], this.resources.vocab, this.resources.context); // e.g. Contribution
+        const statementOf = statement.allowedProperties.find(p => p.domain?.find(d => d['@id'] === statement['@id'])); // e.g. contributionOf
+        const statementOfRangeIncludes = statementOf.rangeIncludes[0]['@id']; // e.g. Endeavour
+        const subClassesOfRangeIncludes = VocabUtil.getSubClassChain(statementOfRangeIncludes, this.resources.vocabClasses, this.resources.context); 
+
+        const fieldParentPath = [...(this.path.split('.').slice(0, -2))].join('.'); // Maybe too specific... are we always sure we need to go up two steps to find field parent path?
+        const fieldParentType = get(this.inspector.data, fieldParentPath)['@type']; // e.g. Text
+        const fieldParentBaseClasses = VocabUtil.getBaseClasses(
+          VocabUtil.getTermObject(fieldParentType, this.resources.vocab, this.resources.context)['@id'],
+          this.resources.vocab,
+          this.resources.context,
+        );
+
+        const linkableDomainIds = fieldParentBaseClasses
+          .filter(baseClassName => subClassesOfRangeIncludes.includes(baseClassName))
+          .map((className => VocabUtil.getTermObject(className, this.resources.vocab, this.resources.context)['@id']));
+
+        // Append urlSearchParams with linkable domain ids
+        linkableDomainIds.forEach(className => urlSearchParams.append('or-domain.@id', className));
+      }
 
       const searchUrl = `${this.settings.apiPath}/find.jsonld?${urlSearchParams.toString()}`;
 
