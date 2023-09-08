@@ -146,6 +146,7 @@ export default {
       /**
        * If field is a kbv:predicate (e.g. role) then filter linkable items depending on field and parent type.
        * */
+      // A VocabUtil.isSubPropertyOf(field.subPropertyOf, 'predicate', ...) would be preferable here.
       if (field.subPropertyOf.find(subProp => subProp['@id'] === VocabUtil.getTermObject('predicate', this.resources.vocab, this.resources.context)['@id'])) {
         const statement = VocabUtil.getTermObject(field.domain[0]['@id'], this.resources.vocab, this.resources.context); // e.g. Contribution
         const statementOf = statement.allowedProperties.find(p => p.domain?.find(d => d['@id'] === statement['@id'])); // e.g. contributionOf
