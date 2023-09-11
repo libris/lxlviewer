@@ -34,12 +34,8 @@ export default {
   },
   computed: {
     iconClassString() {
-      return `fa fa-fw fa-${this.icon} icon--sm`;
+      return [`fas`, this.icon];
     },
-  },
-  mounted() {
-    this.$nextTick(() => {
-    });
   },
   methods: {
     action() {
@@ -56,7 +52,9 @@ export default {
 </script>
 
 <template>
-  <div class="EntityAction" :class="{'action-larger': isLarge, 'has-parent-hovered': parentHovered, 'is-placeholder': placeholder }"
+  <div
+    class="EntityAction"
+    :class="{'action-larger': isLarge, 'has-parent-hovered': parentHovered, 'is-placeholder': placeholder }"
     role="button"
     :aria-label="translatePhrase(label)"
     tabindex="0"
@@ -68,8 +66,7 @@ export default {
     @blur="dehighlight()"
     @mouseout="dehighlight()"
   >
-    <i :class="iconClassString">
-    </i>
+    <font-awesome-icon :icon="iconClassString" />
     <span class="action-label" v-show="isLarge">
       {{ translatePhrase(label) }}
     </span>

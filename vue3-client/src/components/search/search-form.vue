@@ -345,7 +345,7 @@ export default {
           @focus="searchGroupFocus.clear = true"
           @blur="searchGroupFocus.clear = false"
           :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
-          <i class="fa fa-fw fa-close"></i>
+          <font-awesome-icon :icon="['fas', 'xmark']" />
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper d-none d-sm-flex" v-if="searchPerimeter === 'libris'">
           <select
@@ -395,7 +395,8 @@ export default {
             @keyup.enter="toggleHelp"></font-awesome-icon>
         </span>
         <div class="SearchForm-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled">
-          <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchForm-closeHelp" @click="toggleHelp"></i>
+          <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong>
+          <font-awesome-icon v-if="helpToggled" :icon="['fas', 'xmark']" class="SearchForm-closeHelp" @click="toggleHelp"></font-awesome-icon>
           <div class="SearchForm-helpContent" v-html="searchHelpDocs"></div>
         </div>
       </div>

@@ -427,8 +427,7 @@ export default {
       <div class="ItemSibling-label"
         :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
         @click="toggleExpanded()">
-        <i class="ItemSibling-arrow fa fa-chevron-right" 
-          :class="{'icon is-disabled' : isEmpty}"></i>
+        <font-awesome-icon :icon="['fas', 'chevron-right']" :class="{'icon is-disabled' : isEmpty}" class="ItemSibling-arrow" />
         <span class="ItemSibling-type"
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
         <span class="ItemSibling-collapsedLabel" v-show="!expanded || isEmpty">
@@ -458,7 +457,7 @@ export default {
           @dehighlight="removeHighlight('info')"
           label="Property"
           description="Add property"
-          icon="plus-circle"
+          icon="circle-plus"
           :parent-hovered="isHovered"
           :is-large="largerActions"
         />
@@ -470,7 +469,7 @@ export default {
           @dehighlight="removeHighlight('remove')"
           label="Remove"
           description="Remove"
-          icon="trash-o"
+          icon="trash-can"
           :parent-hovered="isHovered"
           :is-large="false"
         />

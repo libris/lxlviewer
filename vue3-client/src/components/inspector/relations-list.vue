@@ -225,14 +225,14 @@ export default {
       </template>
       <template slot="panel-body">
         <div class="PanelComponent-searchStatus" v-show="loading">
-          <Spinner size="large" :message="translatePhrase('Searching')"></Spinner>
+          <Spinner size="lg" :message="translatePhrase('Searching')"></Spinner>
         </div>
         <panel-search-list
           class="RelationsList-resultListContainer"
           :results="resultItems"
           :is-compact="isCompact"
           :list-item-settings="{ excludeProperties: this.listContextType === 'Instance' ? ['itemOf'] : [], excludeComponents: hiddenComponents }"
-          icon="chain"
+          icon="link"
           text="Link entity"
           v-if="!loading && searchResult !== null && error == null"
         />

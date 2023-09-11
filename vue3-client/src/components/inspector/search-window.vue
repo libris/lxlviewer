@@ -17,6 +17,7 @@ import FilterSelect from '@/components/shared/filter-select.vue';
 import ParamSelect from '@/components/inspector/param-select.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
+import EntitySummary from '../shared/entity-summary.vue';
 import { useInspectorStore } from '@/stores/inspector';
 
 export default {
@@ -72,6 +73,7 @@ export default {
     'button-component': Button,
     sort: Sort,
     Spinner,
+    EntitySummary,
   },
   watch: {
     copyTitle(value) {
@@ -189,11 +191,8 @@ export default {
         :title="translatePhrase('Link entity')"
         @close="hide()">
         <template slot="panel-header-info">
-          <div class="PanelComponent-headerInfo help-tooltip-container"
-            @mouseleave="showHelp = false">
-            <i class="fa fa-question-circle icon icon--md"
-              @mouseenter="showHelp = true">
-            </i>
+          <div class="PanelComponent-headerInfo help-tooltip-container" @mouseleave="showHelp = false">
+            <font-awesome-icon :icon="['fas', 'circle-question']" size="md" @mouseenter="showHelp = true" />
             <div class="PanelComponent-headerInfoBox help-tooltip" v-show="showHelp">
               <div>
                 <p class="header">
@@ -276,7 +275,7 @@ export default {
             class="SearchWindow-resultListContainer"
             :results="searchResult"
             :is-compact="isCompact"
-            icon="chain"
+            icon="link"
             text="Replace local entity"
             :has-action="true"
             @use-item="replaceWith"
@@ -286,14 +285,14 @@ export default {
             <p v-if="itemInfo && extractable"> {{ translatePhrase("If you can't find an existing link, you can create one using your local entity below") }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="searchInProgress">
-            <Spinner size="large" :message="translatePhrase('Searching')"></Spinner>
+            <Spinner size="lg" :message="translatePhrase('Searching')"></Spinner>
           </div>
           <div class="PanelComponent-searchStatus" v-show="foundNoResult">
             <p>{{ translatePhrase("Your search gave no results") }}.</p>
             <p v-if="itemInfo && extractable">{{ translatePhrase("Try again") }} {{ translatePhrase("or create a link from your local data below") }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="extracting">
-            <Spinner size="large" :message="translatePhrase('Creating link')"></Spinner>
+            <Spinner size="lg" :message="translatePhrase('Creating link')"></Spinner>
           </div>
         </template>
         <template slot="panel-footer">
@@ -307,28 +306,36 @@ export default {
             >
             </modal-pagination>
             <div class="SearchWindow-listTypes">
-              <i class="fa fa-th-list icon icon--md"
+              <font-awesome-icon
+                :icon="['fas', 'table-list']"
+                size="md"
                 role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
                 :title="translatePhrase('Detailed view')"
-                tabindex="0"></i>
-              <i class="fa fa-list icon icon--md"
+                tabindex="0"
+              />
+
+              <font-awesome-icon
+                :icon="['fas', 'list']"
+                size="md"
                 role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"
                 :title="translatePhrase('Compact view')"
-                tabindex="0"></i>
+                tabindex="0"
+              />
             </div>
           </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
             <div class="SearchWindow-summaryContainer" v-show="showExtractSummary">
-              <entity-summary
+              <EntitySummary
                 :focus-data="itemInfo"
                 :should-link="false"
-                :valueDisplayLimit=1></entity-summary>
+                :valueDisplayLimit=1
+              />
             </div>
             <div class="SearchWindow-dialogContainer">
               <p class="preview-entity-text uppercaseHeading">Vill du skapa {{ typeOfExtractingEntity }} av lokal entitet?</p>
@@ -337,7 +344,7 @@ export default {
               </p>
               <button-component
                 :button-text="['Yes, create', typeOfExtractingEntity ]"
-                icon="plus-circle"
+                icon="circle-plus"
                 :variant="'primary'"
                 :inverted="true"
                 @click="extract()"

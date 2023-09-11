@@ -140,34 +140,43 @@ export default {
         @keyup.enter="item.disabled ? null : go(item.id)"
         :class="{'is-active': active === item.id, 'is-disabled': item.disabled }"
         role="tab"
+        v-tooltip="item.tooltipText"
       >
-        <!-- v-tooltip="{
-          trigger: 'hover focus',
-          content: item.tooltipText
-        }" -->
-          <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
+          <font-awesome-icon v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></font-awesome-icon>
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{translatePhrase(item.text)}}</span>
-      </li>      
+      </li>
     </ul>
     <ul v-else class="TabMenu-tabList" ref="tablist">
       <li class="TabMenu-tab" 
         v-for="item in tabs"
-        :class="{'is-active': active === item.id, 'is-disabled': item.disabled, 'has-badge': item.badge && item.badge.value }"
-        :key="item.id">
-          <router-link class="TabMenu-link"
-            :event="item.disabled ? null : 'click'"            
-            :to="item.link"
-            tabindex="0"
-            v-tooltip="{
-              trigger: 'hover focus',
-              content: item.tooltipText
-            }">        
-            <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
-            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{translatePhrase(item.text)}}</span>
-          </router-link>
-          <span v-if="item.badge" class="badge UserCare-badge" :class="'badge-' + item.badge.type">{{ item.badge.value }}</span>
+        :class="{
+          'is-active': active === item.id,
+          'is-disabled': item.disabled,
+          'has-badge': item.badge && item.badge.value
+        }"
+        :key="item.id"
+      >
+        <router-link class="TabMenu-link"
+          :event="item.disabled ? null : 'click'"
+          :to="item.link"
+          tabindex="0"
+          v-tooltip="{
+            trigger: 'hover focus',
+            content: item.tooltipText
+          }"
+        >
+          <font-awesome-icon
+            v-if="item.icon" class="TabMenu-tabIcon visible-xs-block"
+            :icon="['fas', item.icon]"
+          />
+          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
+          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{translatePhrase(item.text)}}</span>
+        </router-link>
+
+        <span v-if="item.badge" class="badge UserCare-badge" :class="'badge-' + item.badge.type">
+          {{ item.badge.value }}
+        </span>
       </li>
     </ul>
     <hr v-show="hasActive" class="TabMenu-underline" :class="{'hidden-xs' : hasIcons}" ref="underline">

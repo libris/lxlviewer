@@ -1,4 +1,5 @@
 <script lang="js">
+import { labelByLang } from '@/utils/filters';
 import { each, uniq, sortBy } from 'lodash-es';
 import { mapActions, mapState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
@@ -90,6 +91,7 @@ export default {
     },
   },
   methods: {
+    labelByLang,
     ...mapActions(useInspectorStore, ['updateInspectorData']),
     getPossibleValues() {
       let values = [];
@@ -130,8 +132,8 @@ export default {
     <div v-if="!isLocked && possibleValues.length > 0">
       <!-- render as dropdown -->
       <select v-if="asDropdown" v-model="selected" class="ItemVocab-select customSelect"
-        :aria-label="fieldKey | labelByLang">
-        <option v-for="option in possibleValues" :key="option" v-bind:value="option">{{ option | labelByLang }}</option>
+        :aria-label="labelByLang(fieldKey)">
+        <option v-for="option in possibleValues" :key="option" v-bind:value="option">{{ labelByLang(option) }}</option>
       </select>
       <!-- render as radiobuttons -->
       <fieldset v-else>
@@ -139,14 +141,14 @@ export default {
           <input v-model="selected" v-bind:value="option" v-bind:id="option" class="RadioPill-input" type="radio"
             name="radios">
           <label v-bind:for="option" class="RadioPill-label">
-            <i class="fa fa-check icon icon--sm"></i>
-            {{ option | labelByLang }}</label>
+            <font-awesome-icon :icon="['fas', 'check']" size="sm" />
+            {{ labelByLang(option) }}</label>
         </div>
       </fieldset>
 
     </div>
 
-    <span class="ItemVocab-text" v-if="isLocked">{{ fieldValue | labelByLang }}</span>
+    <span class="ItemVocab-text" v-if="isLocked">{{ labelByLang(fieldValue) }}</span>
   </div>
 </template>
 

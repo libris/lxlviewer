@@ -214,16 +214,22 @@ export default {
           </v-popover>
 
           <span class="LanguageEntry-pill-removeButton">
-            <i class="fa fa-times-circle icon icon--sm chip-icon"
+            <font-awesome-icon :icon="['fas', 'circle-xmark']"
+              class="chip-icon"
+              size="sm"
               v-if="removeIsAllowed"
               role="button"
               tabindex="0"
               @click="$emit('remove')"
               @keyup.enter="$emit('remove')"
               :aria-label="translatePhrase('Remove')"
-              v-tooltip.top="translatePhrase('Remove')">
-            </i>
-            <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!removeIsAllowed"></i>
+              v-tooltip.top="translatePhrase('Remove')"
+            />
+
+            <font-awesome-icon
+              :icon="['fas', 'circle-xmark']" size="sm"
+              class="chip-icon is-disabled" v-if="!removeIsAllowed"
+            />
           </span>
 
           <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
@@ -232,19 +238,24 @@ export default {
         </span>
 
         <span class="LanguageEntry-actions">
-          <i class="fa fa-language icon icon--sm LanguageEntry-transIcon"
+          <font-awesome-icon :icon="['fas', 'language']"
+            class="LanguageEntry-transIcon"
+            size="sm"
             tabindex="0"
             role="button"
             :aria-label="translatePhrase('Romanize')"
             v-on:click="$emit('romanize')"
             v-if="isTransSchema(tag) && tag !== 'none'"
             v-tooltip.top="translatePhrase('Romanize')"
-            @keyup.enter="$emit('romanize')">
-          </i>
+            @keyup.enter="$emit('romanize')"
+          />
 
-          <i class="fa fa-language icon icon--sm LanguageEntry-transIcon is-disabled"
-            v-if="!isTransSchema(tag) && tag !== 'none'">
-          </i>
+          <font-awesome-icon
+            :icon="['fas', 'language']"
+            class="LanguageEntry-transIcon is-disabled"
+            size="sm"
+            v-if="!isTransSchema(tag) && tag !== 'none'"
+          />
 
           <entity-adder class="LanguageEntry-action Field-entityAdder"
             ref="entityAdder"
@@ -267,8 +278,9 @@ export default {
             :aria-label="translatePhrase('Remove')"
             v-on:click="$emit('removeval')"
             @keyup.enter="$emit('removeval')"
-            v-tooltip.top="translatePhrase('Remove')">
-            <i class="fa fa-trash-o icon icon--sm"></i>
+            v-tooltip.top="translatePhrase('Remove')"
+          >
+            <font-awesome-icon :icon="['fas', 'trash-can']" size="sm" />
           </span>
         </span>
       </span>
@@ -304,11 +316,11 @@ export default {
           </span>
 
           <span class="LanguageEntry-tags-history-icon" v-if="diffRemoved && !diffAdded">
-            <i class="fa fa-trash-o icon--sm icon-removed"></i>
+            <font-awesome-icon :icon="['fas', 'trash-can']" class="icon-removed" />
           </span>
 
           <span class="LanguageEntry-tags-history-icon" v-if="diffAdded && !diffRemoved">
-            <i class="fa fa-plus-circle icon--sm icon-added"></i>
+            <font-awesome-icon :icon="['fas', 'circle-plus']" class="icon-added" />
           </span>
         </span>
       </div>

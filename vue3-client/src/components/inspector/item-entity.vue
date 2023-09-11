@@ -173,13 +173,14 @@ export default {
   <div 
     class="ItemEntity-container"
     :class="{ 'is-expanded': expanded, 'is-card': isCardWithData }">
-    <div 
+    <div
       v-if="isCardWithData"
       class="ItemEntity-expander"
       tabindex="0"
       @click="toggleExpanded()"
-      @keyup.enter="toggleExpanded()">
-      <i class="ItemEntity-arrow fa fa-chevron-right"></i>
+      @keyup.enter="toggleExpanded()"
+    >
+      <font-awesome-icon :icon="['fas', 'chevron-right']" class="ItemEntity-arrow" />
     </div>
     <div
       :id="`formPath-${path}`"
@@ -200,17 +201,20 @@ export default {
            'is-removed': diffRemoved,
            'is-added': diffAdded }">
           <span class="ItemEntity-history-icon" v-if="diffRemoved">
-            <i class="fa fa-trash-o icon--sm icon-removed"></i>
+            <font-awesome-icon :icon="['fas', 'trash-can']" size="sm" class="icon-removed" />
           </span>
           <span class="ItemEntity-history-icon" v-if="diffAdded">
-            <i class="fa fa-plus-circle icon--sm icon-added"></i>
+            <font-awesome-icon :icon="['fas', 'circle-plus']" size="sm" class="icon-added" />
           </span>
           <span class="ItemEntity-label chip-label">
             <span v-if="(!isCardWithData || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
             <span v-if="(!isCardWithData || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
             <span class="placeholder"></span></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
-            <i class="fa fa-times-circle icon icon--sm chip-icon" 
+            <font-awesome-icon
+              :icon="['fas', 'circle-xmark']"
+              class="chip-icon"
+              size="sm"
               v-if="!isLocked"
               role="button"
               tabindex="0"
@@ -218,7 +222,7 @@ export default {
               v-tooltip.top="translatePhrase('Remove')"
               @click="removeThis(true)"
               @keyup.enter="removeThis(true)">
-            </i>
+            </font-awesome-icon>
           </div>
         </div>
         <template slot="popover">

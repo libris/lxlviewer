@@ -295,9 +295,7 @@ export default {
         @focus="actionHighlight(true, $event)"
         @blur="actionHighlight(false, $event)"
     >
-      <i 
-        class="FieldAdder-innerIcon fa fa-plus-circle fa-fw icon icon--sm">
-      </i>
+      <font-awesome-icon :icon="['fas', 'circle-plus']" class="FieldAdder-innerIcon icon icon--sm" />
       <span class="action-label">{{ translatePhrase("Add field") }}</span>
     </span>
 
@@ -306,9 +304,9 @@ export default {
       ref="adderButton"
       @keyup.enter="show"
       v-tooltip.left="`${translate(modalTitle)} (${getKeybindText('open-field-adder')})`"
-      :aria-label="translatePhrase(modalTitle)">
-      <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
-      </i>
+      :aria-label="translatePhrase(modalTitle)"
+    >
+      <font-awesome-icon :icon="['fas', 'plus']" aria-hidden="true" />
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ translatePhrase("Add field") }}</span>
     </button>
     <portal to="sidebar" v-if="active">

@@ -152,7 +152,7 @@ export default {
           tabIndex="0">
           <span class="RecordPicker-toggleLabel">{{ translatePhrase(['Choose', name]) }}</span>
           <span class="RecordPicker-toggleIcon" :class="{ 'expanded' : expanded}">
-            <i class="fa fa-fw fa-chevron-down"></i>
+            <font-awesome-icon :icon="['fas', 'chevron-down']" />
           </span>
         </div>
         <div class="RecordPicker-dropdown" v-show="expanded">
@@ -191,13 +191,15 @@ export default {
           :valueDisplayLimit=1
           :encodingLevel="selected.encodingLevel">
         </entity-summary>
-        <span class="RecordPicker-closeBtn" 
+        <span
+          class="RecordPicker-closeBtn" 
           role="button" 
           @click="unselectThis"
           @keyup.enter="unselectThis"
           tabindex="0"
-          :aria-label="translatePhrase('Close')">
-          <i class="fa fa-fw fa-close icon"></i>
+          :aria-label="translatePhrase('Close')"
+        >
+          <font-awesome-icon :icon="['fas', 'xmark']" />
         </span>
       </div>
       </div>

@@ -9,8 +9,8 @@
       {{ translatePhrase('Debug mode activated. Click here to disable.') }}
     </div>
 
-    <div v-if="loadingIndicators.length > 0 || true" class="text-center MainContent-spinner">
-      <Spinner size="large" :message="translatePhrase(loadingIndicators[0])" />
+    <div v-if="loadingIndicators.length > 0" class="text-center MainContent-spinner">
+      <Spinner size="lg" :message="translatePhrase(loadingIndicators[0])" />
     </div>
 
     <div v-if="loadingError" class="ResourcesLoadingError">
@@ -314,7 +314,7 @@ body {
   color: $black;
   position: relative;
   background-color: $site-body-background;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   -ms-overflow-style: scrollbar;

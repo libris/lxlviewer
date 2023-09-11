@@ -82,7 +82,7 @@ export default {
     :aria-label="translatePhrase(label)"
   >
     <span v-if="icon">
-      <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
+      <font-awesome-icon :icon="['fas', icon]" aria-hidden="true" />
     </span>
 
     <span class="RoundButton-buttonText" :class="{'small-text': smallText }" v-else>

@@ -38,7 +38,6 @@ export default {
         groupedItems[k].forEach(v => delete v.label);
       });
 
-      
       return groupedItems;
     },
   },

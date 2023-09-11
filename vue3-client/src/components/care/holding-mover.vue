@@ -150,17 +150,21 @@ export default {
   <div class="HoldingMover">
     <div class="HoldingMover-infoBoxToggle" v-if="flaggedInstances.length > 0">
       <span class="icon icon--md">
-        <i v-tooltip="infoBoxTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
+        <font-awesome-icon
+          v-tooltip="infoBoxTooltip"
+          tabindex="0"
+          aria-haspopup="true"
+          :icon="['fas', 'circle-question']"
           ref="helpIcon"
           @mouseover="infoBoxHover = true"
           @mouseleave="infoBoxHover = false"
           @click="toggleInfoBox"
-          @keyup.enter="toggleInfoBox"></i>
+          @keyup.enter="toggleInfoBox"></font-awesome-icon>
       </span>
     </div>
     <div class="HoldingMover-infoBox" v-if="flaggedInstances.length === 0 || showInfoBox">
       <div class="HoldingMover-infoBoxColumn">
-        <div class="iconCircle"><i class="fa fa-fw fa-flag"></i></div>
+        <div class="iconCircle"><font-awesome-icon :icon="['far', 'flag']"></font-awesome-icon></div>
         <span class="header">Flagga post</span>
         <p>
           För att kunna flytta bestånd behöver du först flagga de bibliografiska poster du vill flytta bestånd mellan.
@@ -170,7 +174,7 @@ export default {
         </p>
       </div>
       <div class="HoldingMover-infoBoxColumn">
-        <div class="iconCircle"><i class="fa fa-fw fa-exchange"></i></div>
+        <div class="iconCircle"><font-awesome-icon :icon="['fas', 'arrow-right-arrow-left']"></font-awesome-icon></div>
         <span class="header">Flytta bestånd</span>
         <p>
           När en post är flaggad kan du flytta beståndsposter som tillhör något av dina sigel.<br>
@@ -180,7 +184,7 @@ export default {
         </p>
       </div>
       <div class="HoldingMover-infoBoxColumn">
-        <div class="iconCircle"><i class="fa fa-fw fa-check"></i></div>
+        <div class="iconCircle"><font-awesome-icon :icon="['fas', 'check']" /></div>
         <span class="header">Klart!</span>
         <p>
           Beståndet är nu flyttat. Om du vill flagga av samtliga poster gör du det lättast under <router-link to="/user">din profil</router-link>.
@@ -202,8 +206,9 @@ export default {
         <button class="btn btn-primary" 
           @click="switchInstances" 
           :disabled="!anySelected"
-          :aria-label="translatePhrase('Switch place')">
-          <i class="fa fa-fw fa-exchange"></i>
+          :aria-label="translatePhrase('Switch place')"
+        >
+          <font-awesome-icon :icon="['fas', 'arrow-right-arrow-left']"></font-awesome-icon>
         </button>
       </div>
       <record-picker 

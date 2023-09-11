@@ -1,4 +1,5 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
 import { mapState } from 'pinia';
 import { useSettingsStore } from '@/stores/settings';
 import { each } from 'lodash-es';
@@ -59,6 +60,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     getQuery(direction) {
       const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
       queryObj._limit = this.range.itemsPerPage;
@@ -146,7 +148,7 @@ export default {
           <button class="btn--as-link" v-if="prevPath" @click="prev">{{ translatePhrase(['Previous']) }}</button>
           <button class="btn--as-link" v-if="prevOutOfBounds" @click="lastOnPrevPage">
             <span v-if="!loading">{{ translatePhrase(['Previous']) }}</span>
-            <Spinner v-if="loading" size="small"></Spinner>
+            <Spinner v-if="loading" size="sm"></Spinner>
           </button>
         </span>
         <span v-if="absoluteOffset > 0 && absoluteOffset + 1 < totalItems"> | </span>
@@ -154,7 +156,7 @@ export default {
           <button class="btn--as-link" v-if="nextPath" @click="next">{{ translatePhrase(['Next']) }}</button>
           <button class="btn--as-link" v-if="nextOutOfBounds" @click="firstOnNextPage">
             <span v-if="!loading">{{ translatePhrase(['Next']) }}</span>
-            <Spinner v-if="loading" size="small"></Spinner>
+            <Spinner v-if="loading" size="sm"></Spinner>
           </button>
         </span>
       </div>

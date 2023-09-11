@@ -62,7 +62,7 @@ export default {
     </div>
 
     <router-link :to="{ path: `${this.$route.path}/history` }">
-      <button-component :inverted="true" class="Button-default" :label="translatePhrase('View version history')" icon="clock-o" size="medium" />
+      <button-component :inverted="true" class="Button-default" :label="translatePhrase('View version history')" icon="clock" size="medium" />
     </router-link>
   </div>
 </template>

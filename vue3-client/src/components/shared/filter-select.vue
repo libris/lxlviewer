@@ -318,9 +318,11 @@ export default {
         @keyup.enter="filterVisible = !filterVisible"
       />
 
-      <i
+      <font-awesome-icon
         v-if="isFilter"
-        class="fa fa-close icon icon--sm FilterSelect-clear"
+        :icon="['fas', 'xmark']"
+        size="sm"
+        class="FilterSelect-clear"
         :title="translatePhrase('Close')"
         role="button"
         @click="clear()"

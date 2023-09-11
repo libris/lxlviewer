@@ -341,7 +341,7 @@ export default {
             <div class="DetailedEnrichment-buttons" v-if="settings.lockedProperties.indexOf(key) === -1">
               <button-component :inverted="true" class="Button-default" @click="addValue(key)" :label="'Extend'" icon="plus" size="large" :disabled="canBeDiffAdded(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
               <button-component :inverted="true" class="Button-accent3" @click="replaceValue(key)" :label="'Replace'" icon="arrow-right" size="large" :disabled="canBeDiffReplaced(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
-              <button-component :inverted="true" class="Button-info" @click="undo(key)" icon="undo" :label="'Undo'" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
+              <button-component :inverted="true" class="Button-info" @click="undo(key)" icon="rotate-left" :label="'Undo'" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
             </div>
           </div>
           <div class="DetailedEnrichment-resultField resultColumn" :class="{ 'non-existing': result.hasOwnProperty(key) === false, 'is-diff': isDiffing(key), 'is-new': newKeys.indexOf(key) > -1 }">

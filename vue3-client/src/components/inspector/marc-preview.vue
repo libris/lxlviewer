@@ -5,6 +5,7 @@ import { useInspectorStore } from '@/stores/inspector';
 import { isObject } from 'lodash-es';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import { useStatusStore } from '@/stores/status';
+import Spinner from '../shared/Spinner.vue';
 
 export default {
   name: 'marc-preview',
@@ -63,6 +64,7 @@ export default {
   },
   components: {
     'panel-component': PanelComponent,
+    Spinner,
   },
   mounted() { 
     this.$nextTick(() => {
@@ -85,7 +87,7 @@ export default {
           <div class="MarcPreview-status" v-if="marcObj === null">
             <p v-show="error === null" >
               {{ translatePhrase("Loading marc") }}...<br>
-              <i class="fa fa-circle-o-notch fa-spin"></i>
+              <Spinner />
             </p>
             <p v-show="error !== null" class="MarcPreview-error">
               {{ translatePhrase("Something went wrong") }}...

@@ -129,10 +129,8 @@ export default {
         :disabled="disabled" 
         :class=" {'is-disabled': disabled, 'btn-primary': !disabled} "
         v-tooltip.top="keyBindText">
-        <i class="fa fa-plus-circle"
-          v-if="!hasHolding && !checkingHolding"></i>
-        <i class="fa fa-fw fa-circle-o-notch fa-spin"
-          v-if="checkingHolding"></i>
+        <font-awesome-icon :icon="['fas', 'plus']" v-if="!hasHolding && !checkingHolding" />
+        <font-awesome-icon :icon="['fas', 'circle-notch']" class="fa-spin" v-if="checkingHolding" />
         {{ translatePhrase("Add holding") }}
         <span>({{user.settings.activeSigel}})</span>
       </button>
@@ -142,8 +140,7 @@ export default {
         :disabled="disabled" 
         @click.prevent="gotoHolding()"
         v-tooltip.top="keyBindText">
-        <i class="fa fa-check-circle"
-          v-if="hasHolding && !checkingHolding"></i>
+        <font-awesome-icon :icon="['fas', 'circle-check']" v-if="hasHolding && !checkingHolding"></font-awesome-icon>
         {{ translatePhrase("Show holding") }}
         <span>({{user.settings.activeSigel}})</span>
       </button>
@@ -156,8 +153,8 @@ export default {
         :label="hasHolding ? 
               `${user.settings.activeSigel} ${translatePhrase('has holding')}` :
               `${translatePhrase('Add holding for')} ${user.settings.activeSigel}`"
-        @click="performItemAction()">
-      </rounded-button>
+        @click="performItemAction()"
+      />
     </template>
   </div>
 </template>

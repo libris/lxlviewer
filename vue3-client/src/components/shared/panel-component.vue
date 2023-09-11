@@ -133,29 +133,45 @@ export default {
               <slot name="panel-header-info"></slot>
             </div>
             <span class="PanelComponent-windowControl">
-              <i class="goto-search-button fa fa-search-plus icon icon--md"
+              <font-awesome-icon
+                :icon="['fas', 'magnifying-glass']"
+                size="md"
+                class="goto-search-button"
                 v-show="query != null"
                 role="button"
                 tabindex="0"
                 @click="gotoSearch" 
-                :title="translatePhrase('Bring to main search')"></i>
-              <i class="fullview-toggle-button fa fa-compress icon icon--md"
+                :title="translatePhrase('Bring to main search')"
+              />
+
+              <font-awesome-icon
+                class="fullview-toggle-button"
+                size="md"
+                :icon="['fas', 'compress']"
                 v-show="user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
                 @click="toggleFullView" 
-                :title="translatePhrase('Minimize')"></i>
-              <i class="fullview-toggle-button fa fa-expand icon icon--md"
+                :title="translatePhrase('Minimize')"
+              />
+
+              <font-awesome-icon
+                class="fullview-toggle-button"
+                size="md"
+                :icon="['fas', 'expand']"
                 v-show="!user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
                 @click="toggleFullView" 
-                :title="translatePhrase('Expand')"></i>
-              <i class="fa fa-close icon icon--md"
+                :title="translatePhrase('Expand')"></font-awesome-icon>
+
+              <font-awesome-icon
+                size="md"
+                :icon="['fas', 'xmark']"
                 role="button"
                 tabindex="0"
                 @click="close"
-                :title="translatePhrase('Close')"></i>
+                :title="translatePhrase('Close')"></font-awesome-icon>
             </span>
           </slot>
         </div>

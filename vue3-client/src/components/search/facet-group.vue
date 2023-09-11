@@ -183,7 +183,9 @@ export default {
         @click="toggleExpanded()"
         @keyup.enter="toggleExpanded()"
         tabindex="0"
-        :id="facetLabelByLang(group.dimension)">
+        :id="facetLabelByLang(group.dimension)"
+      >
+        <font-awesome-icon :icon="['fas', 'chevron-right']" />
         {{capitalize(facetLabelByLang(group.dimension))}}
       </h4>
 
@@ -191,22 +193,33 @@ export default {
         <div
           class="FacetGroup-sortSelect" 
           tabindex="0"
-          v-show="isExpanded"
-          :class="{'active': sortDropDownActive}"
         >
-          <i v-if="chosenSort == 'amount.desc'" class="icon-selected fa fa-fw fa-sort-amount-desc"></i>
-          <i v-if="chosenSort == 'amount.asc'" class="icon-selected fa fa-fw fa-sort-amount-asc"></i>
+          <!-- <i v-if="chosenSort == 'amount.desc'" class="icon-selected fa fa-fw fa-sort-amount-desc"></i> -->
+          <!-- <i v-if="chosenSort == 'amount.asc'" class="icon-selected fa fa-fw fa-sort-amount-asc"></i>
           <i v-if="chosenSort == 'alpha.asc'" class="icon-selected fa fa-fw fa-sort-alpha-asc"></i>
-          <i v-if="chosenSort == 'alpha.desc'" class="icon-selected fa fa-fw fa-sort-alpha-desc"></i>
-          <i class="fa fa-caret-down"></i>
+          <i v-if="chosenSort == 'alpha.desc'" class="icon-selected fa fa-fw fa-sort-alpha-desc"></i> -->
+
+          <font-awesome-icon v-if="chosenSort == 'amount.desc'" :icon="['fas', 'arrow-up-1-9']" />
+          <font-awesome-icon v-if="chosenSort == 'amount.asc'" :icon="['fas', 'arrow-down-1-9']" />
+          <font-awesome-icon v-if="chosenSort == 'alpha.asc'" :icon="['fas', 'arrow-down-a-z']" />
+          <font-awesome-icon v-if="chosenSort == 'alpha.desc'" :icon="['fas', 'arrow-up-a-z']" />
+          <font-awesome-icon :icon="['fas', 'caret-down']" />
         </div>
 
         <template #popper>
           <ul class="FacetGroup-sortSelectDropdown">
-            <li :class="{'active': chosenSort == 'amount.desc'}" @click="selectSortDropDownItem('amount.desc')" @keyup.enter="selectSortDropDownItem('amount.desc')"><i class="fa fa-fw fa-sort-amount-desc"></i> Antal träffar (fallande)</li>
-            <li :class="{'active': chosenSort == 'amount.asc'}" @click="selectSortDropDownItem('amount.asc')" @keyup.enter="selectSortDropDownItem('amount.asc')"><i class="fa fa-fw fa-sort-amount-asc"></i> Antal träffar (stigande)</li>
-            <li :class="{'active': chosenSort == 'alpha.asc'}" @click="selectSortDropDownItem('alpha.asc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-asc"></i> A-Ö</li>
-            <li :class="{'active': chosenSort == 'alpha.desc'}" @click="selectSortDropDownItem('alpha.desc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-desc"></i> Ö-A</li>
+            <li :class="{'active': chosenSort == 'amount.desc'}" @click="selectSortDropDownItem('amount.desc')" @keyup.enter="selectSortDropDownItem('amount.desc')">
+              <font-awesome-icon :icon="['fas', 'arrow-up-1-9']" /> Antal träffar (fallande)
+            </li>
+            <li :class="{'active': chosenSort == 'amount.asc'}" @click="selectSortDropDownItem('amount.asc')" @keyup.enter="selectSortDropDownItem('amount.asc')">
+              <font-awesome-icon :icon="['fas', 'arrow-down-1-9']" /> Antal träffar (stigande)
+            </li>
+            <li :class="{'active': chosenSort == 'alpha.asc'}" @click="selectSortDropDownItem('alpha.asc')" @keyup.enter="selectSortDropDownItem('alpha.desc')">
+              <font-awesome-icon :icon="['fas', 'arrow-down-a-z']" /> A-Ö
+            </li>
+            <li :class="{'active': chosenSort == 'alpha.desc'}" @click="selectSortDropDownItem('alpha.desc')" @keyup.enter="selectSortDropDownItem('alpha.desc')">
+              <font-awesome-icon :icon="['fas', 'arrow-up-a-z']" /> Ö-A
+            </li>
           </ul>
         </template>
       </Dropdown>
@@ -278,22 +291,21 @@ export default {
       color: $brand-primary;
     }
   }
+
   &-sortSelectDropdown {
-    position: absolute;
-    margin-top: 0.25em;
-    right: 10%;
-    border: 1px solid $grey;
     display: flex;
     flex-direction: column;
     list-style: none;
     padding: 0;
     font-size: 1.3rem;
-    border-radius: 3px;
     overflow: hidden;
+    margin-bottom: 0;
+
     li {
       background-color: $neutral-color;
       padding: 0.5em;
       white-space: nowrap;
+      cursor: pointer;
       &.active {
         color: $brand-primary;
       }
@@ -310,10 +322,7 @@ export default {
     cursor: pointer;
     display: inline-block;
 
-    &::before {
-      font-family: FontAwesome;
-      content: "\F054";
-      font-weight: normal;
+    svg {
       color: $brand-primary;
       display: inline-block;
       margin-right: 5px;
@@ -321,7 +330,7 @@ export default {
     }
 
     &.is-expanded {
-      &::before {
+      svg {
         transform: rotate(90deg);
       }
     }

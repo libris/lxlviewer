@@ -1,5 +1,5 @@
 <script>
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 import { mapState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import { useUserStore } from '@/stores/user';
@@ -56,7 +56,7 @@ export default {
     },
   },
   methods: {
-    translatePhrase,
+    translatePhrase, labelByLang,
     getLabelWithTreeDepth(term) {
       return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
     },
@@ -113,14 +113,14 @@ export default {
 <template>
   <div class="ItemType" :id="`formPath-${path}`" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked && checkingRelations">
-      <Spinner size="small"></Spinner>
+      <Spinner size="sm"></Spinner>
     </div>
     <div class="ItemType-selectContainer" v-if="!isLocked && !checkingRelations && containerAcceptedTypes.length > 0">
       <select 
         :disabled="isDisabled"
         v-model="selected" 
         class="ItemType-select customSelect" 
-        :aria-label="fieldKey | labelByLang">
+        :aria-label="labelByLang(fieldKey)">
         <option 
           v-for="(term, index) in containerAcceptedTypes" 
           :value="term.id"
@@ -131,12 +131,22 @@ export default {
       </select>
       <div class="ItemType-actions">
         <div class="ItemType-action UnlockAction">
-          <i role="button" class="fa fa-lock icon icon--sm" tabindex="0" aria-label="Unlock" v-tooltip.top="unlockTooltip" @keyup.enter="openUnlockModal()" @click="openUnlockModal()" v-if="isDisabled"></i>
+          <font-awesome-icon
+            :icon="['fas', 'lock']"
+            role="button"
+            size="sm"
+            tabindex="0"
+            aria-label="Unlock"
+            v-tooltip.top="unlockTooltip"
+            @keyup.enter="openUnlockModal()"
+            @click="openUnlockModal()"
+            v-if="isDisabled"
+          />
         </div>
       </div>
     </div>
     <span class="ItemType-text" 
-      v-if="isLocked">{{fieldValue | labelByLang}}
+      v-if="isLocked">{{labelByLang(fieldValue)}}
     </span>
     <modal-component 
       title="Byte av typ" 
@@ -157,7 +167,7 @@ export default {
           <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">{{ translatePhrase('Cancel') }}</button>
           <!-- <button class="btn btn-grey btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ translatePhrase('Cancel') }}</button> -->
           <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
-            <i class="icon icon--white fa fa-unlock-alt"></i>
+            <font-awesome-icon :icon="['fas', 'unlock-keyhole']" class="icon icon--white" />
             {{ translatePhrase('Unlock') }}
           </button>
         </div>

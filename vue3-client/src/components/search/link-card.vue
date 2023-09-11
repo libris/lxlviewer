@@ -52,7 +52,7 @@ export default {
           <p>
             Genom att spela våra instruktionsfilmer godkänner du cookies från YouTube
           </p>
-          <i class="fa fa-3x fa-play"></i>
+          <font-awesome-icon :icon="['fas', 'play']" size="2xl" />
         </div>
       </div>
       <div class="LinkCard-video Video" v-if="videoUrl.indexOf('youtube') ==! -1 || youtube.accepted">

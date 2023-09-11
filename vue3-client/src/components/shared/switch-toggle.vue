@@ -81,7 +81,13 @@ export default {
           <span v-if="options[0].html" v-html="options[0].html"></span>
           <span v-else>{{translatePhrase(options[0].text)}}</span>
       </li>
-      <i class="fa fa-toggle-on fa-fw SwitchToggle-icon" :class="{ 'fa-rotate-180': active === options[0].id }"></i>
+
+      <font-awesome-icon
+        class="SwitchToggle-icon"
+        :icon="['fas', 'toggle-on']"
+        :class="{ 'fa-rotate-180': active === options[0].id }"
+      />
+
       <li class="SwitchToggle-tab" 
         tabindex="0"
         :key="options[1].id" 
@@ -103,7 +109,11 @@ export default {
           <span v-else>{{translatePhrase(options[0].text)}}</span>
         </router-link>
       </li>
-      <i class="fa fa-toggle-on fa-fw SwitchToggle-icon" :class="{ 'is-flipped': active === options[0].id }"></i>
+      <font-awesome-icon
+        class="SwitchToggle-icon"
+        :icon="['fas', 'toggle-on']"
+        :class="{ 'is-flipped': active === options[0].id }"
+      />
       <li class="SwitchToggle-linkContainer"
         :key="options[1].id">
         <router-link class="SwitchToggle-tab" 

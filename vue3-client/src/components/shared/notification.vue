@@ -44,38 +44,43 @@ export default {
     'is-showing': shouldShow
       }">
 
-      <span v-if="content.type === 'danger'" class="fa-stack fa-lg Notification-iconCont">
-        <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
-        <i class="fa fa-times fa-stack-1x Notification-icon"></i>
+      <span v-if="content.type === 'danger'" class="fa-stack-2x Notification-iconCont">
+        <font-awesome-icon :icon="['fas', 'circle']" class="fa-stack-2x fa-inverse" size="lg"></font-awesome-icon>
+        <font-awesome-icon :icon="['fas', 'xmark']" class="fa-stack-1x Notification-icon" size="lg"></font-awesome-icon>
       </span>
-      <span v-if="content.type === 'success'" class="fa-stack fa-lg Notification-iconCont">
-        <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
-        <i class="fa fa-check fa-stack-1x Notification-icon"></i>
+
+      <span v-if="content.type === 'success'" class="fa-stack Notification-iconCont">
+        <font-awesome-icon :icon="['fas', 'circle']" class="fa-stack-2x fa-inverse" size="lg"></font-awesome-icon>
+        <font-awesome-icon :icon="['fas', 'check']" class="fa-stack-1x Notification-icon" size="lg"></font-awesome-icon>
       </span>
-      <span v-if="content.type === 'info'" class="fa-stack fa-lg Notification-iconCont">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-info fa-stack-1x Notification-icon"></i>
+
+      <span v-if="content.type === 'info'" class="fa-stack Notification-iconCont">
+        <font-awesome-icon :icon="['fas', 'circle']" class="fa-stack-2x fa-inverse" size="lg"></font-awesome-icon>
+        <font-awesome-icon :icon="['fas', 'info']" class="fa-stack-1x Notification-icon" size="lg"></font-awesome-icon>
       </span>
-      
+
       {{ content.message }}
-    
-      <router-link class="Notification-link"
-                   v-if="content.link && !content.link.external"
-                   :to="content.link.to"
-                   :title="content.link.title"
-                   :target="content.link.newTab ? '_blank' : '' ">
+
+      <router-link
+        class="Notification-link"
+        v-if="content.link && !content.link.external"
+        :to="content.link.to"
+        :title="content.link.title"
+        :target="content.link.newTab ? '_blank' : '' "
+      >
         {{ content.link.title }}
-        <i v-if="content.link.newTab" class="fa fa-external-link" aria-hidden="true"></i>
+        <font-awesome-icon v-if="content.link.newTab" :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
       </router-link>
+
       <a
         class="Notification-link"
         v-if="content.link && content.link.external"
         :href="content.link.to" 
-        :target="content.link.newTab ? '_blank' : '' ">
+        :target="content.link.newTab ? '_blank' : '' "
+      >
         {{ content.link.title }}
-        <i v-if="content.link.newTab" class="fa fa-external-link" aria-hidden="true"></i>
+        <font-awesome-icon v-if="content.link.newTab" :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
       </a>
-      
   </div>
 </template>
 

@@ -257,16 +257,32 @@ export default {
         :active="$route.params.perimeter"
         :tabs="findTabs"
       />
-      <div v-if="$route.params.perimeter === 'libris'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ translatePhrase('Filter') }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
+      <div v-if="$route.params.perimeter === 'libris'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">
+        {{ translatePhrase('Filter') }} 
+        <font-awesome-icon
+          :icon="['fas', 'caret-down']"
+          class="hidden-md hidden-lg"
+          v-if="!hideFacetColumn"
+        />
+
+        <font-awesome-icon
+          :icon="['fas', 'caret-right']"
+          class="hidden-md hidden-lg"
+          v-if="hideFacetColumn"
+        />
+      </div>
+
       <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
       <portal-target name="facetColumn" />
     </div>
+
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">
         <div class="Find-progressText">
-          <Spinner size="large" :message="translatePhrase('Searching')"></Spinner>
+          <Spinner size="lg" :message="translatePhrase('Searching')"></Spinner>
         </div>
     </div>
-    <div 
+
+    <div
       class="col-sm-12 Find-content Column-searchResult" 
       :class="{
         'col-md-9': !panelOpen,

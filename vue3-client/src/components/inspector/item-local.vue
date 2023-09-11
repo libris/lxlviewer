@@ -1,5 +1,5 @@
 <script>
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, capitalize, labelByLang } from '@/utils/filters';
 import { mapActions, mapState, mapWritableState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import { useInspectorStore } from '@/stores/inspector';
@@ -18,6 +18,7 @@ import SearchWindow from './search-window.vue';
 import ItemMixin from '../mixins/item-mixin.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 import FormMixin from '../mixins/form-mixin.vue';
+import FieldVue from './field.vue';
 import { useStatusStore } from '@/stores/status';
 import { Dropdown } from 'floating-vue';
 
@@ -174,7 +175,7 @@ export default {
     },
   },
   methods: {
-    translatePhrase,
+    translatePhrase, labelByLang, capitalize,
     ...mapActions(useInspectorStore, ['setValidation', 'addToQuoted', 'updateInspectorData', 'setInspectorStatusValue']),
     ...mapActions(useStatusStore, ['pushNotification']),
     highLightLastAdded() {
@@ -411,19 +412,19 @@ export default {
     this.setValidation({ path: this.path, validates: true });
   },
   created() {
-    this.$on('collapse-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
-        this.collapse();
-      }
-    });
-    this.$on('expand-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus)
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
-        this.expand();
-      }
-    });
-    if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
+    // this.$on('collapse-item', () => {
+    //   if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
+    //       || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+    //     this.collapse();
+    //   }
+    // });
+    // this.$on('expand-item', () => {
+    //   if (this.getPath.startsWith(this.inspector.status.focus)
+    //       || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+    //     this.expand();
+    //   }
+    // });
+    if (this.settings.defaultExpandedProperties.includes(this.fieldKey)) {
       this.expand();
     }
   },
@@ -468,6 +469,7 @@ export default {
     'search-window': SearchWindow,
     'entity-action': EntityAction,
     Dropdown,
+    // 'Field': FieldVue,
   },
 };
 </script>
@@ -487,7 +489,8 @@ export default {
       'has-failed-validations': failedValidations.length > 0,
       'is-diff-removed': diffRemoved,
       'is-diff-added': diffAdded,
-      'is-modified': diffModified}"
+      'is-modified': diffModified,
+    }"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
@@ -495,26 +498,25 @@ export default {
     @mouseover.stop="addHoverHightlight()"
     @mouseout.stop="removeHoverHightlight()"
   >
-
     <div class="ItemLocal-heading" ref="heading"
       @mouseover="isHovered = true"
       @mouseout="isHovered = false"
     >
       <div class="ItemLocal-label"
         :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
-        @click="toggleExpanded()">
-        <i class="ItemLocal-arrow fa fa-chevron-right" 
-          :class="{'icon is-disabled' : isEmpty}"></i>
+        @click="toggleExpanded()"
+      >
+        <font-awesome-icon :icon="['fas', 'chevron-right']" class="ItemLocal-arrow" :class="{'icon is-disabled' : isEmpty}" />
         <span class="ItemLocal-type"
-          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+          :title="item['@type']">{{ capitalize(labelByLang(item['@type']))}}:</span>
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>
         <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
-          <i class="fa fa-trash-o icon--sm icon-removed"></i>
+          <font-awesome-icon :icon="['fas', 'trash-can']" class="icon-removed" />
         </span>
         <div class="ItemLocal-history-icon" v-if="diffAdded && !diffRemoved">
-          <i class="fa fa-plus-circle icon--sm icon-added"></i>
+          <font-awesome-icon :icon="['fas', 'circle-plus']" class="icon-added" />
         </div>
       </div>
       
@@ -539,7 +541,7 @@ export default {
           @dehighlight="removeHighlight('info')"
           label="Property"
           description="Add property"
-          icon="plus-circle"
+          icon="circle-plus"
           :parent-hovered="isHovered"
           :is-large="largerActions"
         />
@@ -551,7 +553,7 @@ export default {
           @dehighlight="removeHighlight('remove')"
           label="Remove"
           description="Remove"
-          icon="trash-o"
+          icon="trash-can"
           :parent-hovered="isHovered"
           :is-large="false"
         />
@@ -563,7 +565,7 @@ export default {
             @dehighlight="removeHighlight('info')"
             label="Manage"
             description="Manage"
-            icon="ellipsis-v"
+            icon="ellipsis-vertical"
             :parent-hovered="isHovered"
             :is-large="false"
           />
@@ -578,7 +580,7 @@ export default {
                   <a tabindex="0" class="ManagerMenu-menuLink"
                   @keyup.enter="copyThis(), closeManagerMenu()"
                   @click="copyThis(), closeManagerMenu()">
-                  <i class="fa fa-fw fa-copy" aria-hidden="true"></i>
+                  <font-awesome-icon :icon="['fas', 'copy']" aria-hidden="true" />
                   {{translatePhrase("Copy to clipboard")}}
                   </a>
                 </li>
@@ -586,7 +588,7 @@ export default {
                   <a tabindex="0" class="ManagerMenu-menuLink"
                   @keyup.enter="cloneThis(), closeManagerMenu()"
                   @click="cloneThis(), closeManagerMenu()">
-                  <i class="fa fa-fw fa-clone" aria-hidden="true"></i>
+                  <font-awesome-icon :icon="['fas', 'clone']" aria-hidden="true" />
                   {{translatePhrase("Duplicate entity")}}
                   </a>
                 </li>
@@ -598,7 +600,7 @@ export default {
     </div>
   
     <ul class="ItemLocal-list js-itemLocalFields" v-show="expanded">
-      <field
+      <Field
         v-show="k !== '_uid'" 
         v-for="(v, k, i) in filteredItem"
         :parent-path="getPath" 
@@ -616,7 +618,7 @@ export default {
         :diff="diff"
         :show-action-buttons="showActionButtons"
         :expand-children="expandChildren"
-        :is-expanded="expanded"></field> 
+        :is-expanded="expanded"></Field> 
     </ul>
 
     <property-adder

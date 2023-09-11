@@ -218,9 +218,9 @@ export default {
         class="ItemType-action UnlockAction"
         v-if="!isLocked && isDisabled"
       >
-        <i
+        <font-awesome-icon :icon="['fas', 'lock']"
           role="button"
-          class="fa fa-lock icon icon--sm"
+          size="sm"
           tabindex="0"
           aria-label="Unlock"
           v-tooltip.top="translate('Click to unlock editing')"
@@ -242,7 +242,7 @@ export default {
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)"
     >
-      <i class="fa fa-trash-o icon icon--sm"></i>
+      <font-awesome-icon :icon="['fas', 'trash-can']" size="sm" />
     </div>
 
     <modal-component
@@ -264,7 +264,7 @@ export default {
           </button>
 
           <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
-            <i class="icon icon--white fa fa-unlock-alt"></i>
+            <font-awesome-icon :icon="['fas', 'unlock-keyhole']" class="icon icon--white" />
             {{ translatePhrase('Unlock') }}
           </button>
         </div>

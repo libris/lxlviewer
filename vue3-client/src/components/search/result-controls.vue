@@ -236,17 +236,21 @@ export default {
         />
 
         <div class="ResultControls-listTypes">
-          <button class="ResultControls-listType icon icon--md"
+          <button
+            class="ResultControls-listType icon icon--md"
             v-on:click="setFull()" 
             v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
-            :title="translatePhrase('Detailed view')">
-            <i class="fa fa-th-list"></i>
+            :title="translatePhrase('Detailed view')"
+          >
+            <font-awesome-icon :icon="['fas', 'table-list']" />
           </button>
+
           <button class="ResultControls-listType icon icon--md" 
             v-on:click="setCompact()" 
             v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
-            :title="translatePhrase('Compact view')">
-            <i class="fa fa-list"></i>
+            :title="translatePhrase('Compact view')"
+          >
+            <font-awesome-icon :icon="['fas', 'list']" />
           </button>
         </div>
       </div>

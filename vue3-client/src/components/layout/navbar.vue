@@ -138,7 +138,7 @@ export default {
                 {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </span>
 
-              <i class="fa fa-fw hidden-xs" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
+              <font-awesome-icon :icon="['fas', 'caret-down']" class="hidden-xs" v-if="!isUserPage" :class="{ 'active': showUserMenu }" />
             </div>
 
             <template #popper>

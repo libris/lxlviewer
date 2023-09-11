@@ -356,7 +356,7 @@ export default {
         v-if="isImport && shouldLink" 
         :title="header.join(', ')" 
         v-on:click="importThis()">
-        <i class="fa fa-external-link" aria-hidden="true"></i>
+        <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
         {{ header.join(', ') }}
       </span>
       <router-link class="EntitySummary-titleLink"
@@ -364,7 +364,7 @@ export default {
         :to="this.routerPath" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
-        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
+        <font-awesome-icon v-if="shouldOpenTab" :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
         {{ header.join(', ') }}
       </router-link>
       <a class="EntitySummary-titleLink"
@@ -372,7 +372,7 @@ export default {
         :href="convertResourceLink(uri)"
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
-        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
+        <font-awesome-icon v-if="shouldOpenTab" class="EntitySummary-icon" :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
         {{ header.join(', ') }}
       </a>
     </h3>

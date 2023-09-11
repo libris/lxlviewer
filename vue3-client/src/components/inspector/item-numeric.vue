@@ -192,8 +192,7 @@ export default {
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)">
-      <i class="fa fa-trash-o icon icon--sm">
-      </i>
+      <font-awesome-icon :icon="['fas', 'trash-can']" size="sm" />
     </div>
   </div>
 </template>

@@ -453,7 +453,9 @@ export default {
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add" v-if="isPlaceholder" v-tooltip.left="tooltipText">
-        <i class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
+        <font-awesome-icon
+          class="icon icon--sm"
+          :icon="['fas', this.iconAdd] "
           v-if="!addEmbedded"
           tabindex="0"
           role="button"
@@ -465,18 +467,21 @@ export default {
           @mouseleave="actionHighlight(false, $event)"
           @focus="actionHighlight(true, $event)"
           @blur="actionHighlight(false, $event)">
-        </i>
-        <i class="fa fa-fw icon icon--sm is-disabled" :class="[this.iconAdd] "
+        </font-awesome-icon>
+        <font-awesome-icon
+          class="icon icon--sm is-disabled"
+          :icon="['fas', this.iconAdd] "
           v-else-if="addEmbedded"
           tabindex="-1"
-          aria-hidden="true">
-        </i>
+          aria-hidden="true"
+        />
     </div>
 
     <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" v-if="!isPlaceholder" v-tooltip.top="tooltipText">
-      <i
-        class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
+      <font-awesome-icon
+        class="icon icon--sm"
+        :icon="['fas', this.iconAdd] "
         v-if="!addEmbedded"
         tabindex="0"
         role="button"
@@ -488,14 +493,17 @@ export default {
         @mouseleave="actionHighlight(false, $event)"
         @focus="actionHighlight(true, $event)"
         @blur="actionHighlight(false, $event)">
-      </i>
-      <i
-        class="fa fa-fw icon icon--sm is-disabled" :class="[this.iconAdd] "
+      </font-awesome-icon>
+
+      <font-awesome-icon
+        class="icon icon--sm is-disabled"
+        :icon="['fas', this.iconAdd]"
         v-else-if="addEmbedded"
-        tabindex="-1">
-      </i>
+        tabindex="-1"
+      />
       <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
     </div>
+
     <portal :to="`typeSelect-${path}`">
       <type-select
         v-if="addEmbedded"
@@ -505,6 +513,7 @@ export default {
         @selected="addType($event)"
         @dismiss="dismissTypeChooser()" />
     </portal>
+
     <portal to="sidebar" v-if="active">
       <panel-component class="EntityAdder-panel EntityAdderPanel"
         v-if="active"
@@ -515,7 +524,7 @@ export default {
             class="PanelComponent-headerInfo"
             v-if="rangeFull.length > 0"
             @mouseleave="rangeInfo = false">
-            <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
+            <font-awesome-icon :icon="['fas', 'circle-info']" class="icon icon--md" @mouseenter="rangeInfo = true"></font-awesome-icon>
             <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
               <p class="header">
                 {{ translatePhrase("Allowed types") }}:
@@ -526,6 +535,7 @@ export default {
             </div>
           </div>
         </template>
+
         <template slot="panel-header-extra">
           <!-- <div class="EntityAdder-panelBody"> -->
           <div class="EntityAdder-controls">
@@ -589,7 +599,7 @@ export default {
             {{ translatePhrase("Start writing to begin search") }}...
           </div>
           <div v-if="searchInProgress" class="PanelComponent-searchStatus">
-            <Spinner size="large" :message="translatePhrase('Searching') "></Spinner>
+            <Spinner size="lg" :message="translatePhrase('Searching') "></Spinner>
           </div>
           <div class="PanelComponent-searchStatus"
             v-if="!searchInProgress && searchResult.length === 0 && searchMade">
@@ -597,8 +607,8 @@ export default {
           </div>
         <!-- </div> -->
         </template>
-        <template slot="panel-footer">
 
+        <template slot="panel-footer">
           <div class="EntityAdder-resultControls" v-if="!searchInProgress && searchResult.length > 0">
             <modal-pagination
               @go="go"
@@ -609,22 +619,30 @@ export default {
             >
             </modal-pagination>
             <div class="EntityAdder-listTypes">
-              <i class="fa fa-th-list icon icon--sm"
+              <font-awesome-icon
+                :icon="['fas', 'table-list']"
+                class="icon icon--sm"
                 role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
                 :title="translatePhrase('Detailed view')"
-                tabindex="0"></i>
-              <i class="fa fa-list icon icon--sm"
+                tabindex="0"
+              />
+
+              <font-awesome-icon
+                :icon="['fas', 'list']"
+                class="icon icon--sm"
                 role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"
                 :title="translatePhrase('Compact view')"
-                tabindex="0"></i>
+                tabindex="0"
+              />
             </div>
           </div>
+
           <div class="EntityAdder-create">
             <button class="EntityAdder-createBtn btn btn-primary btn--sm"
               v-if="hasSingleCreatable && allowLocal"

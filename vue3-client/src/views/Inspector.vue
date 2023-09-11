@@ -1031,7 +1031,7 @@ export default {
           <p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>
           <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>
           <p>
-            Du kan välja mellan att <strong>utöka</strong> (<i class="fa text-success fa-plus"></i>) eller <strong>ersätta</strong> (<i class="fa text-accent3 fa-arrow-right"></i>) en egenskap.
+            Du kan välja mellan att <strong>utöka</strong> (<font-awesome-icon class="text-success" :icon="['fas', 'plus']" />) eller <strong>ersätta</strong> (<font-awesome-icon class="text-accent3" :icon="['fas', 'arrow-right']" />) en egenskap.
             Att <strong>utöka</strong> innebär att information läggs till i den berikade posten.
             <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.
           </p>

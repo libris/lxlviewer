@@ -87,12 +87,13 @@ export default {
         :key="sigel.code" 
         :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}{{ sigel.code === 'Ssao' ? ' ⚔️' : '' }}</option>
     </select>
-    <button      
+    <button
       v-if="!updateOnChange"
       type="submit"
-      class="btn btn-primary btn--md">
-        <i class="icon icon--white fa fa-exchange"></i>
-        {{ translatePhrase('Växla sigel') }}
+      class="btn btn-primary btn--md"
+    >
+      <font-awesome-icon class="icon icon--white" :icon="['fas', 'arrow-right-arrow-left']" />
+      {{ translatePhrase('Växla sigel') }}
     </button>
   </form>
 </template>

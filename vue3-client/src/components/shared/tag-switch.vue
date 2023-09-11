@@ -68,7 +68,7 @@ export default {
       );
     },
     iconString() {
-      let str = 'fa-';
+      let str = '';
       switch (this.tag) {
         case 'Bookmark':
           str += 'star';
@@ -114,7 +114,7 @@ export default {
 
 <template>
   <div class="TagSwitch" v-tooltip.top="tooltip" @click="toggleMark()">
-    <i :class="`fa fa-fw ${iconString}`"></i>
+    <font-awesome-icon :icon="['fas', iconString]"/>
   </div>
 </template>
 
