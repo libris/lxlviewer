@@ -1,8 +1,11 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapState } from 'pinia';
 import { useSettingsStore } from '@/stores/settings';
 import * as HttpUtil from '@/utils/http';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
+
+const EntitySummary = defineAsyncComponent(() => import('./entity-summary.vue'));
 
 export default {
   name: 'preview-card',
@@ -24,9 +27,6 @@ export default {
     };
   },
   methods: {
-    // ...mapActions([
-    //   'addCardToCache',
-    // ]),
     populateData() {
       if (this.shouldFetch) { // Only fetch if we need to
         const self = this;
@@ -76,9 +76,11 @@ export default {
       }
     },
   },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-    });
+  components: {
+    EntitySummary,
+  },
+  mounted() {
+    this.populateData();
   },
 };
 </script>
@@ -89,7 +91,8 @@ export default {
       <span v-if="fetchStatus === 'loading'">Laddar <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></span>
       <span v-if="fetchStatus === 'error'" class="fetchError">Laddningsfel <font-awesome-icon :icon="['fas', 'xmark']" /></span>
     </div>
-    <entity-summary :animate="true" :focus-data="fullData" :hover-links="false" />
+
+    <EntitySummary :animate="true" :focus-data="fullData" :hover-links="false" />
   </div>
 </template>
 

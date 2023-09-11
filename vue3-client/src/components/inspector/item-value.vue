@@ -1,5 +1,5 @@
 <script>
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, convertResourceLink } from '@/utils/filters';
 import { mapActions, mapState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import AutoSize from 'autosize';
@@ -96,7 +96,7 @@ export default {
     },
   },
   methods: {
-    translatePhrase,
+    translatePhrase, convertResourceLink,
     ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue']),
     removeHighlight(event, active) {
       if (active) {
@@ -158,8 +158,6 @@ export default {
       this.$refs.textarea.focus({ preventScroll: true }); // Prevent scroll as we will handle this ourselves
     },
   },
-  components: {
-  },
   mounted() {
     this.$nextTick(() => {
       if (!this.isLocked) {
@@ -199,7 +197,7 @@ export default {
       v-if="isLocked && !shouldLink">{{fieldValue}}</span>
     <a class="ItemValue-text"
       v-if="isLocked && shouldLink"
-      :href="fieldValue | convertResourceLink" 
+      :href="convertResourceLink(fieldValue)"
       target="_blank" 
       :title="`${fieldValue} (${newWindowText})`">
         {{fieldValue}} 

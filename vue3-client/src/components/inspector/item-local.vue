@@ -18,9 +18,9 @@ import SearchWindow from './search-window.vue';
 import ItemMixin from '../mixins/item-mixin.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 import FormMixin from '../mixins/form-mixin.vue';
-import FieldVue from './field.vue';
 import { useStatusStore } from '@/stores/status';
 import { Dropdown } from 'floating-vue';
+import Field from './field.vue';
 
 export default {
   name: 'item-local',
@@ -284,7 +284,6 @@ export default {
     },
     removeFocus() {
       this.focused = false;
-      this.closeManagerMenu();
     },
     extract() {
       this.extracting = true;
@@ -469,7 +468,7 @@ export default {
     'search-window': SearchWindow,
     'entity-action': EntityAction,
     Dropdown,
-    // 'Field': FieldVue,
+    Field,
   },
 };
 </script>
@@ -578,16 +577,18 @@ export default {
               <ul class="dropdown-menu ManagerMenu-menuList">
                 <li class="ManagerMenu-menuItem">
                   <a tabindex="0" class="ManagerMenu-menuLink"
-                  @keyup.enter="copyThis(), closeManagerMenu()"
-                  @click="copyThis(), closeManagerMenu()">
+                  @keyup.enter="copyThis()"
+                  @click="copyThis()"
+                >
                   <font-awesome-icon :icon="['fas', 'copy']" aria-hidden="true" />
                   {{translatePhrase("Copy to clipboard")}}
                   </a>
                 </li>
                 <li class="ManagerMenu-menuItem" v-if="inArray">
                   <a tabindex="0" class="ManagerMenu-menuLink"
-                  @keyup.enter="cloneThis(), closeManagerMenu()"
-                  @click="cloneThis(), closeManagerMenu()">
+                  @keyup.enter="cloneThis()"
+                  @click="cloneThis()"
+                >
                   <font-awesome-icon :icon="['fas', 'clone']" aria-hidden="true" />
                   {{translatePhrase("Duplicate entity")}}
                   </a>

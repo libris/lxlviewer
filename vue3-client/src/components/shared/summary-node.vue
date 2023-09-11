@@ -75,19 +75,23 @@ export default {
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
 
-    <Dropdown v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()">
+    <Dropdown
+      v-if="isLinked && !isStatic"
+      :disabled="!hoverLinks"
+      :triggers="['hover', 'focus']"
+    >
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">
           <span v-if="fieldKey === 'instanceOf'">
             {{ capitalize(labelByLang(item['@type'])) }} •
           </span>
-          {{getItemLabel}} - popover
+          {{getItemLabel}}
         </router-link>
         <a v-if="!isLibrisResource" :href="convertResourceLink(focusData['@id'])">{{getItemLabel}}</a>
       </span>
 
-      <template #popper v-if="hoverLinks">
-        <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
+      <template #popper>
+        <PreviewCard :focus-data="focusData" :record-id="recordId" />
       </template>
     </Dropdown>
   </div>
@@ -109,6 +113,7 @@ export default {
       }
     }
   }
+
   &-label {
     // max 3 lines before ellipsis
     // works in all major modern browsers

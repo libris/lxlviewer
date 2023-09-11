@@ -378,15 +378,18 @@ export default {
     </h3>
 
     <ul class="EntitySummary-details" v-show="!isCompact" :style="{ 'min-height': animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
-      <li :class="`EntitySummary-detailsItem-${labelStyle}`"
+      <li
+        :class="`EntitySummary-detailsItem-${labelStyle}`"
         v-for="node in limitedInfo" 
-        :key="node.property">
+        :key="node.property"
+      >
         <template v-if="node.value !== null">
           <span v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="capitalize(labelByLang(node.property))">{{ capitalize(labelByLang(node.property)) }}</span>
           <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.prevent.self="(e) => { if (handleOverflow) { e.target.classList.toggle('expanded'); } }">
             <SummaryNode :hover-links="hoverLinks" :handle-overflow="handleOverflow" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>
+
         <template v-else-if="isReplacedBy !== ''">
           <span :class="`EntitySummary-detailsKey-${labelStyle}`">Ersatt av</span>
           <span :class="`EntitySummary-detailsValue-${labelStyle}`">{{ v }}</span>

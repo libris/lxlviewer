@@ -12,16 +12,16 @@ import displayGroups from '@/resources/json/displayGroups.json';
 
 export default {
   props: {
-  },
-  data() {
-    return {
-    };
+    editingObject: {
+      type: String,
+      default: '',
+    },
   },
   methods: {
     groupItem(item) {
       let groupedItems = {};
 
-      // get label and add it to the object for sorting        
+      // get label and add it to the object for sorting
       item.map((obj) => {
         obj.label = this.getLabel(obj);
         return obj;
@@ -40,8 +40,6 @@ export default {
 
       return groupedItems;
     },
-  },
-  events: {
   },
   computed: {
     ...mapState(useResourcesStore, ['resources']),
@@ -69,6 +67,9 @@ export default {
     },
     recordType() {
       return VocabUtil.getRecordType(this.formType, this.resources.vocab, this.resources.context);
+    },
+    inClassAndProperty() {
+      return `${this.entityType}.${this.fieldKey}`;
     },
     showTypeChanger() {
       if (this.settings.showTypeChangerFor.includes(this.recordType) || this.settings.showTypeChangerFor.includes(this.inClassAndProperty) || this.isMainEntityForm) {
@@ -222,8 +223,6 @@ export default {
       });
       return sortedAllowed;
     },
-  },
-  watch: {
   },
 };
 </script>

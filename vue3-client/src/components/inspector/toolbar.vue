@@ -2,7 +2,7 @@
 /*
   Fixed toolbar
 */
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, convertResourceLink } from '@/utils/filters';
 import { getKeybindText } from '@/utils/mixins';
 import { mapActions, mapState } from 'pinia';
 import { useInspectorStore } from '@/stores/inspector';
@@ -97,7 +97,7 @@ export default {
     },
   },
   methods: {
-    translatePhrase, getKeybindText,
+    translatePhrase, getKeybindText, convertResourceLink,
     ...mapActions(useStatusStore, ['pushNotification']),
     ...mapActions(useInspectorStore, ['setInspectorStatusValue', 'undoInspectorChange']),
     openTemplatePicker() {
@@ -122,7 +122,6 @@ export default {
       }
     },
     applyFileTemplate(data) {
-      this.hideToolsMenu();
       const inspectorObj = LxlDataUtil.splitJson(data);
       const preparedData = RecordUtil.prepareDuplicateFor(inspectorObj, this.user, this.settings.keysToClear.duplication);
       const splitData = LxlDataUtil.splitJson(preparedData);
@@ -133,19 +132,16 @@ export default {
       };
     },
     applyRecordAsTemplate() {
-      this.hideToolsMenu();
       this.event = {
         name: 'open-embellish-from-id',
       }
     },
     detailedApplyRecordAsTemplate() {
-      this.hideToolsMenu();
       this.event = {
         name: 'open-detailed-embellish-from-id',
       };
     },
     initOverridePicker() {
-      this.hideToolsMenu();
       const self = this;
       this.$refs.OverridePicker.addEventListener('change', (e) => {
         const reader = new FileReader();
@@ -169,7 +165,6 @@ export default {
       });
     },
     initTemplatePicker() {
-      this.hideToolsMenu();
       const self = this;
       this.$refs.TemplatePicker.addEventListener('change', (e) => {
         const reader = new FileReader();
@@ -214,7 +209,6 @@ export default {
     },
     recordControl(control) {
       // if (!this.inspector.status.updating) {
-      this.hideToolsMenu();
       this.event = { 
         name: 'record-control', 
         value: control, 
@@ -236,7 +230,6 @@ export default {
     },
     openMarc() {
       if (this.enableMarcPreview) {
-        this.hideToolsMenu();
         this.event = {
           name: 'record-control',
           value: 'open-marc-preview',
@@ -244,7 +237,6 @@ export default {
       }
     },
     applyTemplate(template) {
-      this.hideToolsMenu();
       this.event = {
         name: 'apply-template',
         value: template.value,
@@ -486,25 +478,25 @@ export default {
       <template #popper>
         <ul>
           <li class="Toolbar-menuItem">
-            <a class="Toolbar-menuLink" :href="focusData.mainEntity['@id'] | convertResourceLink" target="_blank">
+            <a class="Toolbar-menuLink" :href="convertResourceLink(focusData.mainEntity['@id'])" target="_blank">
               <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
               Formell resurs
             </a>
           </li>
           <li class="Toolbar-menuItem">
-            <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld') | convertResourceLink" target="_blank">
+            <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('jsonld'))" target="_blank">
               <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
               JSON-LD
             </a>
           </li>
           <li class="Toolbar-menuItem">
-            <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl') | convertResourceLink" target="_blank">
+            <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('ttl'))" target="_blank">
               <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
               Turtle
             </a>
           </li>
           <li class="Toolbar-menuItem">
-            <a class="Toolbar-menuLink" :href="getOtherDataFormat('rdf') | convertResourceLink">
+            <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('rdf'))">
               <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
               RDF/XML
             </a>
@@ -532,28 +524,28 @@ export default {
       <template #popper>
         <ul class="dropdown-menu Toolbar-menuList ToolsMenu-menu">
           <li class="Toolbar-menuItem">
-            <a class="Toolbar-menuLink" @click="formControl('expand-item'), hideToolsMenu()">
+            <a class="Toolbar-menuLink" @click="formControl('expand-item')">
               <font-awesome-icon :icon="['fas', 'expand']" aria-hidden="true" />
               {{translatePhrase("Expand all")}}{{ getKeybindText('expand-item') ? ` (${getKeybindText('expand-item')})` : ''}}
             </a>
           </li>
 
           <li class="Toolbar-menuItem">
-            <a class="Toolbar-menuLink" @click="formControl('collapse-item'), hideToolsMenu()">
+            <a class="Toolbar-menuLink" @click="formControl('collapse-item')">
               <font-awesome-icon :icon="['fas', 'compress']" aria-hidden="true" />
               {{translatePhrase("Collapse all")}}{{ getKeybindText('collapse-item') ? ` (${getKeybindText('collapse-item')})` : ''}}
             </a>
           </li>
 
           <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
-            <a class="Toolbar-menuLink"  @click="formControl('duplicate-item'), hideToolsMenu()">
+            <a class="Toolbar-menuLink"  @click="formControl('duplicate-item')">
               <font-awesome-icon :icon="['fas', 'copy']" />
               {{ translatePhrase("Make copy") }}{{ getKeybindText('duplicate-item') ? ` (${getKeybindText('duplicate-item')})` : ''}}
             </a>
           </li>
 
           <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && isSubClassOf('Instance') && !isSubClassOf('Electronic')">
-            <a class="Toolbar-menuLink"  @click="recordControl('create-digital-reproduction'), hideToolsMenu()">
+            <a class="Toolbar-menuLink"  @click="recordControl('create-digital-reproduction')">
               <font-awesome-icon :icon="['fab', 'wpforms']" />
               {{ translatePhrase("Create digital reproduction") }}{{ getKeybindText('create-digital-reproduction') ? ` (${getKeybindText('create-digital-reproduction')})` : ''}}
             </a>
@@ -629,7 +621,7 @@ export default {
           </li>
 
           <li class="Toolbar-menuItem">
-            <a class="Toolbar-menuLink" @click="recordControl('download-json'), hideToolsMenu()">
+            <a class="Toolbar-menuLink" @click="recordControl('download-json')">
               <font-awesome-icon :icon="['fas', 'download']" aria-hidden="true" />
               {{ translatePhrase("Download") }} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{ translatePhrase('Incl. unsaved changes')}})</span>
             </a>
@@ -731,7 +723,7 @@ export default {
       :aria-label="translatePhrase('Edit')"
     >
       <font-awesome-icon :icon="['fa', 'circle-notch']" class="fa-spin" v-show="inspector.status.saving" />
-      <font-awesome-icon :icon="['fa', 'pencil-square-o']" v-show="!inspector.status.saving" />
+      <font-awesome-icon :icon="['fa', 'pen-to-square']" v-show="!inspector.status.saving" />
     </button>
   </div>
 </template>
