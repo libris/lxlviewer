@@ -54,6 +54,10 @@ export default class URIMinter {
       if (mainEntity.hasOwnProperty(relation) && mainEntity[relation] !== null) {
         let relationId = mainEntity[relation][ID];
         if (Array.isArray(mainEntity[relation])) {
+          const len = mainEntity[relation].length;
+          if (len !== 1) {
+            throw new Error(`Unexpected number of values for: ${relation}: ${len}`);
+          }
           relationId = mainEntity[relation][0][ID];
         }
         const container = containerMemberMap[relationId];
