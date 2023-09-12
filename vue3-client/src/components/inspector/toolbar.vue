@@ -478,25 +478,25 @@ export default {
         <div class="Toolbar-menu OtherFormatMenu">
           <ul class="Toolbar-menuList OtherFormatMenu-menu">
               <li class="Toolbar-menuItem">
-                <a class="Toolbar-menuLink" :href="convertResourceLink(focusData.mainEntity['@id'])" target="_blank">
+                <a class="Toolbar-menuLink" :href="convertResourceLink(focusData.mainEntity['@id'])" target="_blank" v-close-popper>
                   <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
                   Formell resurs
                 </a>
               </li>
               <li class="Toolbar-menuItem">
-                <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('jsonld'))" target="_blank">
+                <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('jsonld'))" target="_blank" v-close-popper>
                   <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
                   JSON-LD
                 </a>
               </li>
               <li class="Toolbar-menuItem">
-                <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('ttl'))" target="_blank">
+                <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('ttl'))" target="_blank" v-close-popper>
                   <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
                   Turtle
                 </a>
               </li>
               <li class="Toolbar-menuItem">
-                <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('rdf'))">
+                <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('rdf'))" v-close-popper>
                   <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
                   RDF/XML
                 </a>
@@ -526,35 +526,35 @@ export default {
         <div class="Toolbar-menu OtherFormatMenu">
           <ul class="Toolbar-menuList OtherFormatMenu-menu">
             <li class="Toolbar-menuItem">
-              <a class="Toolbar-menuLink" @click="formControl('expand-item')">
+              <a class="Toolbar-menuLink" @click="formControl('expand-item')" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'expand']" aria-hidden="true" />
                 {{translatePhrase("Expand all")}}{{ getKeybindText('expand-item') ? ` (${getKeybindText('expand-item')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem">
-              <a class="Toolbar-menuLink" @click="formControl('collapse-item')">
+              <a class="Toolbar-menuLink" @click="formControl('collapse-item')" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'compress']" aria-hidden="true" />
                 {{translatePhrase("Collapse all")}}{{ getKeybindText('collapse-item') ? ` (${getKeybindText('collapse-item')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
-              <a class="Toolbar-menuLink"  @click="formControl('duplicate-item')">
+              <a class="Toolbar-menuLink"  @click="formControl('duplicate-item')" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'copy']" />
                 {{ translatePhrase("Make copy") }}{{ getKeybindText('duplicate-item') ? ` (${getKeybindText('duplicate-item')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && isSubClassOf('Instance') && !isSubClassOf('Electronic')">
-              <a class="Toolbar-menuLink"  @click="recordControl('create-digital-reproduction')">
+              <a class="Toolbar-menuLink"  @click="recordControl('create-digital-reproduction')" v-close-popper>
                 <font-awesome-icon :icon="['fab', 'wpforms']" />
                 {{ translatePhrase("Create digital reproduction") }}{{ getKeybindText('create-digital-reproduction') ? ` (${getKeybindText('create-digital-reproduction')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishTemplateSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
-              <a class="Toolbar-menuLink" @click="showEmbellishTemplateSubMenu = !showEmbellishTemplateSubMenu">
+              <a class="Toolbar-menuLink" @click="showEmbellishTemplateSubMenu = !showEmbellishTemplateSubMenu" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'clipboard']" />
                 <span>{{ translatePhrase("Embellish from template") }}{{ getKeybindText('embellish-from-template') ? ` (${getKeybindText('embellish-from-template')})` : ''}}</span>
                 <span class="submenuControl">
@@ -572,14 +572,14 @@ export default {
             </li>
 
             <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showEmbellishTemplateSubMenu" :key="key">
-              <a class="Toolbar-menuLink" @click="applyTemplate(value)">
+              <a class="Toolbar-menuLink" @click="applyTemplate(value)" v-close-popper>
               <font-awesome-icon :icon="['fas', 'plus']" />
               {{ value.label }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishFromRecordSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
-              <a class="Toolbar-menuLink" @click="showEmbellishFromRecordSubMenu = !showEmbellishFromRecordSubMenu">
+              <a class="Toolbar-menuLink" @click="showEmbellishFromRecordSubMenu = !showEmbellishFromRecordSubMenu" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'clipboard']" />
                 <span>{{ translatePhrase("Embellish from record") }}{{ getKeybindText('embellish-from-record') ? ` (${getKeybindText('embellish-from-record')})` : ''}}</span>
                 <span class="submenuControl">
@@ -590,61 +590,61 @@ export default {
             </li>
 
             <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
-              <a class="Toolbar-menuLink" @click="applyRecordAsTemplate">
+              <a class="Toolbar-menuLink" @click="applyRecordAsTemplate" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'link']" />
                 {{ translatePhrase('From ID') }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
-              <a class="Toolbar-menuLink" @click="openTemplatePicker">
+              <a class="Toolbar-menuLink" @click="openTemplatePicker" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'upload']" />
                 {{ translatePhrase('From file') }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing">
-              <a class="Toolbar-menuLink" @click="detailedApplyRecordAsTemplate">
+              <a class="Toolbar-menuLink" @click="detailedApplyRecordAsTemplate" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'clipboard']" />
                 {{ translatePhrase('Detailed enrichment') }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
-              <a class="Toolbar-menuLink"  v-if="downloadIsSupported" @click="getCompiledRecord()">
+              <a class="Toolbar-menuLink" v-if="downloadIsSupported" @click="getCompiledRecord()" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'download']" aria-hidden="true" />
                 {{ translatePhrase("Download compiled") }} MARC21
               </a>
 
-              <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl | convertResourceLink">
+              <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl | convertResourceLink" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'download']" aria-hidden="true" />
                 {{ translatePhrase("Download compiled") }} MARC21
               </a>
             </li>
 
             <li class="Toolbar-menuItem">
-              <a class="Toolbar-menuLink" @click="recordControl('download-json')">
+              <a class="Toolbar-menuLink" @click="recordControl('download-json')" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'download']" aria-hidden="true" />
                 {{ translatePhrase("Download") }} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{ translatePhrase('Incl. unsaved changes')}})</span>
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="enableMarcPreview">
-              <a class="Toolbar-menuLink" @click="openMarc()">
+              <a class="Toolbar-menuLink" @click="openMarc()" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'eye']" aria-hidden="true" />
                 {{ translatePhrase("Preview MARC21") }} {{ getKeybindText('preview-marc') ? ` (${getKeybindText('preview-marc')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToRemove">
-              <a class="Toolbar-menuLink"  @click="recordControl('remove-record')">
+              <a class="Toolbar-menuLink"  @click="recordControl('remove-record')" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'trash-can']" aria-hidden="true" />
                 {{ translatePhrase("Remove") }} {{ recordType | labelByLang | lowercase }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech && userIsPermittedToEdit">
-              <a class="Toolbar-menuLink" @click="openOverridePicker">
+              <a class="Toolbar-menuLink" @click="openOverridePicker" v-close-popper>
                 <font-awesome-icon :icon="['fas', 'upload']" />
                 {{ translatePhrase('Overwrite data') }}
               </a>
