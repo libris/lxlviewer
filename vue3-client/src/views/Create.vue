@@ -1,21 +1,19 @@
 <script>
 import { sortBy } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
 import { mapState, mapWritableState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import { useUserStore } from '@/stores/user';
 import { useStatusStore } from '@/stores/status';
 import { useSettingsStore } from '@/stores/settings';
+import { useInspectorStore } from '@/stores/inspector';
 import * as VocabUtil from 'lxljs/vocab';
 import * as RecordUtil from '@/utils/record';
-import CreationCard from '@/components/create/creation-card';
-import FileAdder from '@/components/create/file-adder';
-import TabMenu from '@/components/shared/tab-menu';
-import { useInspectorStore } from '@/stores/inspector';
+import CreationCard from '@/components/create/creation-card.vue';
+import FileAdder from '@/components/create/file-adder.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
 
 export default {
   name: 'create-new-form',
-  mixins: [clickaway],
   beforeRouteLeave(to, from, next) {
     this.setHintSigelChange(false);
 
@@ -164,14 +162,11 @@ export default {
       this.setHintSigelChange(!val);
     },
   },
-  created() {
-
-  },
   mounted() {
     this.$nextTick(() => {
       this.activeForm = '';
       this.transition = false;
-      this.initialized = true;      
+      this.initialized = true;
     });
   },
 };
@@ -180,11 +175,12 @@ export default {
 <template>
   <div class="Create" id="create-new-record">
     <div class="Create-body">
-      <tab-menu 
+      <tab-menu
         @go="setCreation" 
         :tabs="creationList" 
         :active="selectedCreation"
-        v-on-clickaway="hideSigelHint" />
+      />
+        <!-- v-on-clickaway="hideSigelHint" -->
 
       <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card

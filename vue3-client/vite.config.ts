@@ -87,6 +87,9 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '~bootstrap': resolve(__dirname, 'node_modules/bootstrap'),
+
+      // SEE: https://github.com/mulesoft-labs/js-client-oauth2/issues/190
+      querystring: resolve(__dirname, 'node_modules/querystring-es3'),
     },
   },
   css: {
@@ -103,22 +106,6 @@ export default defineConfig({
       },
     },
   },
-  // css: {
-  //   preprocessorOptions: {
-  //     scss: {
-  //       javascriptEnabled: true,
-  //       modifyVars: {
-  //         'root-entry-name': 'default',
-  //       },
-  //     },
-  //     less: {
-  //       javascriptEnabled: true,
-  //       modifyVars: {
-  //         'root-entry-name': 'default',
-  //       },
-  //     }
-  //   }
-  // },
   build: {
     rollupOptions: {
       input: './src/main.ts',

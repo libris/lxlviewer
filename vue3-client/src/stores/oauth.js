@@ -19,7 +19,6 @@ export const useOauthStore = defineStore('oauthstore', {
 				scopes: settings.scopes,
 			});
 
-			console.log('client', client);
 			this.client = client;
 		},
 	}
