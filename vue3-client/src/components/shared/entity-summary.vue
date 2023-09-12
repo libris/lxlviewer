@@ -468,6 +468,7 @@ export default {
     width: 1.2em;
     opacity: 1;
     cursor: pointer;
+
     &.collapsedIcon {
       margin: 0 0 0 0;
       width: 0;

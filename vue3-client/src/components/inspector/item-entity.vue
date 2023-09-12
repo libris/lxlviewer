@@ -166,7 +166,7 @@ export default {
       }
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.isMaybeMagicShelfMark) {
       this.removeMagicShelfMark(this.actualParentPath);
     }

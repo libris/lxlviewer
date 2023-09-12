@@ -7,23 +7,3 @@
 @import './_fonts.scss';
 @import './_icons.scss';
 @import './_utils.scss';
-
-// @mixin media-breakpoint-up($name) {
-// 	@if $name {
-// 	  @media (min-width: $name) {
-// 		@content;
-// 	  }
-// 	} @else {
-// 	  @content;
-// 	}
-//   }
-
-// @mixin media-breakpoint-down($name) {
-// 	@if $name {
-// 	  @media (max-width: $name) {
-// 		@content;
-// 	  }
-// 	} @else {
-// 	  @content;
-// 	}
-//   }

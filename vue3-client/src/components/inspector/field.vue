@@ -657,7 +657,7 @@ export default {
       }
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.setValidation({ path: this.path, validates: true });
   },
   mounted() {

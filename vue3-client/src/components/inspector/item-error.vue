@@ -50,7 +50,7 @@ export default {
       console.log('keyword changed', value, oldval);
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
    this.setValidation({ path: this.path, validates: true });
   },
 };

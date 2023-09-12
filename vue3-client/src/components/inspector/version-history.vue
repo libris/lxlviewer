@@ -2,7 +2,7 @@
 /*
   The full version history view
 */
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 import { cloneDeep } from 'lodash-es';
 import { mapState, mapWritableState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
@@ -14,6 +14,7 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DataUtil from '@/utils/data';
 import * as HistoryUtil from '@/utils/history';
+import { FocusTrap } from 'focus-trap-vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import EntityForm from './entity-form.vue';
@@ -21,8 +22,6 @@ import VersionHistoryChangesets from './version-history-changesets.vue';
 
 export default {
   mixins: [LensMixin],
-  props: {
-  },
   data() {
     return {
       historyData: null,
@@ -86,7 +85,7 @@ export default {
       return null;
     },
     editorTabs() {
-      return [{ id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+      return [{ id: 'mainEntity', text: labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' }];
     },
   },
@@ -116,6 +115,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase, labelByLang,
     goToRecord() {
       const fnurgel = this.$route.params.fnurgel;
       this.$router.push({ path: `/${fnurgel}` });
@@ -205,6 +205,7 @@ export default {
     EntityForm,
     TabMenu,
     VersionHistoryChangesets,
+    FocusTrap,
   },
   mounted() {
     this.$nextTick(() => {
@@ -215,7 +216,7 @@ export default {
 </script>
 
 <template>
-  <focus-trap v-model=isFocusTrapActive>
+  <FocusTrap v-model="isFocusTrapActive">
     <div class="VersionHistory" tabindex="-1">
       <div class="Container-row">
         <div class="VersionHistory-mainCol">
@@ -234,7 +235,7 @@ export default {
               :icon="['fas', 'table-list']"
               role="button"
               @click="openSideCol()"
-              size="md"
+              size="lg"
               class="sideColButton"
             />
           </div>
@@ -270,7 +271,7 @@ export default {
         </div>
       </div>
     </div>
-  </focus-trap>
+  </FocusTrap>
 </template>
 
 <style lang="scss">
@@ -289,7 +290,7 @@ export default {
     height: 100vh;
     flex: 1 0 0;
 
-    @include media-breakpoint-down(xs) {
+    @include media-breakpoint-down(md) {
       @include full-view();
     }
   }
@@ -337,8 +338,10 @@ export default {
     justify-content: flex-start;
     padding: 0;
   }
+
   .sideColButton {
-    @include media-breakpoint-up(xs) {
+    color: $brand-primary;
+    @include media-breakpoint-up(md) {
       display: none;
     }
   }

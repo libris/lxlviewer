@@ -7,6 +7,8 @@ import { useInspectorStore } from '@/stores/inspector';
 import { translatePhrase } from '@/utils/filters';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import SummaryNode from '@/components/shared/summary-node.vue';
+import { Dropdown } from 'floating-vue';
+import moment from 'moment';
 
 export default {
   mixins: [LensMixin],
@@ -43,44 +45,79 @@ export default {
     'inspector.event'(val) {
       if (val.name === 'field-label-clicked') {
         this.inspectingPath = val.value;
-        this.$refs.changeSet[this.selectedVersion].scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'start' });
+        this.$refs.changeSet[this.selectedVersion].scrollIntoView({
+          behavior: 'auto',
+          block: 'nearest',
+          inline: 'start'
+        });
       }
     },
   },
   methods: {
+    translatePhrase,
     isGlobalChanges(changeSet) {
       return changeSet.agent['@id'].includes('sys/globalchanges');
     },
     selectVersion(val) {
       this.$emit('version-selected', val);
     },
+    getFormattedDate(changeSet) {
+      return moment(changeSet.date).format('lll');
+    },
   },
   components: {
     SummaryNode,
-  },
-  mounted() {
+    Dropdown,
   },
 };
 </script>
 
 <template>
   <div class="VersionHistory-changeSets" v-if="changeSetsReversed">
-    <div class="ChangeSet" v-for="(changeSet, index) in changeSetsReversed" ref="changeSet" :key="changeSet.date" @click="selectVersion(index)" @keyup.enter="selectVersion(index)" :class="{ 'selected': selectedVersion == index }" tabindex=0>
+    <div
+      class="ChangeSet"
+      v-for="(changeSet, index) in changeSetsReversed"
+      ref="changeSet"
+      :key="changeSet.date"
+      @click="selectVersion(index)"
+      @keyup.enter="selectVersion(index)"
+      :class="{ 'selected': selectedVersion == index }"
+      tabindex=0
+    >
       <div class="ChangeSet-changeSetContainer" :class="{ 'selected': selectedVersion == index }">
-        <span class="ChangeSet-currentVersion" :class="{ 'selected': selectedVersion == index }" v-if="index == 0">{{ translatePhrase("Current version")}}</span>
+        <span class="ChangeSet-currentVersion" :class="{ 'selected': selectedVersion == index }" v-if="index == 0">
+          {{ translatePhrase("Current version")}}
+        </span>
+
         <div class="ChangeSet-dateContainer">
-          <span class="ChangeSet-date" :class="{ 'selected': selectedVersion == index }">{{ $moment(changeSet.date).format('lll') }}</span>
-          <span class="ChangeSet-tool" v-if="changeSet.tool['@id'] !== 'https://id.kb.se/generator/crud'">{{ translatePhrase("by machine") }}</span>
+          <span class="ChangeSet-date" :class="{ 'selected': selectedVersion == index }">
+            {{ getFormattedDate(changeSet) }}
+          </span>
+
+          <span class="ChangeSet-tool" v-if="changeSet.tool['@id'] !== 'https://id.kb.se/generator/crud'">
+            {{ translatePhrase("by machine") }}
+          </span>
         </div>
+
         <span class="ChangeSet-author" :class="{ 'selected': selectedVersion == index }">
-          <SummaryNode :is-static="true" :hover-links="false" :handle-overflow="false" v-if="changeSet.agent && !isGlobalChanges(changeSet)" :item="changeSet.agent" :is-last="true" :field-key="'agent'"/>
+          <SummaryNode
+            :is-static="true"
+            :hover-links="false"
+            :handle-overflow="false"
+            v-if="changeSet.agent && !isGlobalChanges(changeSet)"
+            :item="changeSet.agent"
+            :is-last="true"
+            :field-key="'agent'"
+          />
+
           <span v-if="isGlobalChanges(changeSet)">
-            <v-popover placement="bottom-start">
+            <Dropdown>
               {{ translatePhrase('Libris global changes') }}
-              <template #popover>
+
+              <template #popper>
                 <span>{{changeSet.agent['@id']}}</span>
               </template>
-            </v-popover>
+            </Dropdown>
           </span>
         </span>
       </div>

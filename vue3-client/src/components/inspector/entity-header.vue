@@ -108,7 +108,7 @@ export default {
       return itemCountReady && this.totalReverseCount > 0 && this.totalReverseCount !== this.itemReverseCount;
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('scroll', throttle(this.handleScroll, 300));
   },
   mounted() {
@@ -176,7 +176,7 @@ export default {
   border-radius: 4px;
   padding: 0.5em;
 
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-up(md) {
     padding: 0.5em 1em 0.25em 1em;
   }
 

@@ -99,6 +99,7 @@ export default {
           <img class="NavBar-brandLogo" src="~kungbib-styles/lib/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
         </router-link>
       </div>
+
       <div class="MainNav">
         <tab-menu
           :tabs="tabs"
@@ -109,6 +110,7 @@ export default {
           lookStyle="dark"
         />
       </div>
+
       <ul class="MainNav-userWrapper">
         <li
           class="MainNav-item" 
@@ -129,7 +131,7 @@ export default {
               />
 
               <user-avatar
-                class="visible-xs-block" 
+                class="visible-xs-block"
                 :highlight="highlightNavItem && !isUserPage"
                 :size="32"
               />
@@ -138,7 +140,12 @@ export default {
                 {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </span>
 
-              <font-awesome-icon :icon="['fas', 'caret-down']" class="hidden-xs" v-if="!isUserPage" :class="{ 'active': showUserMenu }" />
+              <font-awesome-icon
+                :icon="['fas', 'caret-down']"
+                class="hidden-xs"
+                v-if="!isUserPage"
+                :class="{ 'active': showUserMenu }"
+              />
             </div>
 
             <template #popper>

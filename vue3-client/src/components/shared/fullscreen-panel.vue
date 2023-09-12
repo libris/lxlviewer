@@ -103,7 +103,7 @@ export default {
       }, 1);
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$nextTick(() => {
       this.lockScroll(false);
       if (this.panelOpen) {
@@ -133,6 +133,7 @@ export default {
   width: 100%;
   background-color: $bg-site;
   overflow: scroll;
+  padding: 0;
 }
 
 </style>

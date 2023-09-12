@@ -63,10 +63,6 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-    };
-  },
   methods: {
     translatePhrase,
     go(name) {
@@ -77,7 +73,7 @@ export default {
         const $activeTab = this.$el.querySelector('.is-active');
         const $tabList = this.$refs.tablist;
         if ($activeTab && $tabList) {
-          const $underline = this.$refs.underline;          
+          const $underline = this.$refs.underline;
           const paddingLeft = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
           const paddingRight = parseInt(window.getComputedStyle($activeTab).paddingRight.replace('px', ''));
           const left = `${$activeTab.offsetLeft + paddingLeft}px`;
@@ -96,9 +92,6 @@ export default {
       return this.tabs.some(el => el.icon);
     },
   },
-  components: {
-
-  },
   watch: {
     '$route.fullPath'(value, oldValue) {
       if (value !== oldValue) {
@@ -107,7 +100,7 @@ export default {
         });
       }
     },
-    tabs() {      
+    tabs() {
       this.moveUnderline();
     },
     active(value, oldValue) {
@@ -142,11 +135,16 @@ export default {
         role="tab"
         v-tooltip="item.tooltipText"
       >
-          <font-awesome-icon v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></font-awesome-icon>
+          <font-awesome-icon
+            v-if="item.icon"
+            class="TabMenu-tabIcon visible-xs-block"
+            :class="`fa fa-fw fa-${item.icon}`"
+          />
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{translatePhrase(item.text)}}</span>
       </li>
     </ul>
+
     <ul v-else class="TabMenu-tabList" ref="tablist">
       <li class="TabMenu-tab" 
         v-for="item in tabs"
@@ -157,7 +155,8 @@ export default {
         }"
         :key="item.id"
       >
-        <router-link class="TabMenu-link"
+        <router-link
+          class="TabMenu-link"
           :event="item.disabled ? null : 'click'"
           :to="item.link"
           tabindex="0"
@@ -167,7 +166,8 @@ export default {
           }"
         >
           <font-awesome-icon
-            v-if="item.icon" class="TabMenu-tabIcon visible-xs-block"
+            v-if="item.icon"
+            class="TabMenu-tabIcon visible-xs-block"
             :icon="['fas', item.icon]"
           />
           <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
