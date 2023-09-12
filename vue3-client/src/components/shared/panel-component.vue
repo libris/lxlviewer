@@ -42,7 +42,7 @@ export default {
     modalType: {
       default: 'normal',
       type: String,
-    }, 
+    },
     closeable: {
       default: true,
       type: Boolean,
@@ -107,6 +107,17 @@ export default {
       setTimeout(() => {
         this.fadedIn = true;
       }, 1);
+
+      window.addEventListener('resize', () => {
+        const hasScrollLock = document.documentElement.classList.contains('scroll-lock');
+        if (window.innerWidth <= 1200 && !hasScrollLock) {
+          this.lockScroll(true);
+        }
+
+        if (window.innerWidth >= 1200 && hasScrollLock) {
+          this.lockScroll(false);
+        }
+      });
     });
   },
   beforeUnmount() {
@@ -134,6 +145,7 @@ export default {
               <h4 class="PanelComponent-title" :title="translatedTitle">{{ translatedTitle }}</h4>
               <slot name="panel-header-info"></slot>
             </div>
+
             <span class="PanelComponent-windowControl">
               <font-awesome-icon
                 :icon="['fas', 'magnifying-glass']"
@@ -373,6 +385,7 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     margin-left: 10px;
+
     > svg {
       margin-right: 0.5em;
       &:last-child {
