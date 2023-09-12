@@ -36,6 +36,7 @@
 </template>
 
 <script lang="js">
+import * as DataUtil from '@/utils/data';
 import { mapActions, mapState, mapWritableState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import { useStatusStore } from '@/stores/status';
@@ -51,11 +52,14 @@ import GlobalMessages from '@/components/layout/global-messages.vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import { useSettingsStore } from './stores/settings';
 import i18n from '@/resources/json/i18n.json';
+
 // TODO: Support .jsonld files in Vite (copy pasted now in lxl-helpdocs)
 import helpDocsJson from 'lxl-helpdocs/build/help.json';
 import displayGroupsJson from '@/resources/json/displayGroups.json';
-import * as DataUtil from '@/utils/data';
+import baseTemplates from '@/resources/json/baseTemplates.json';
+import combinedTemplates from '@/resources/json/combinedTemplates.json';
 
+// TODO: move some(or all) of the boot logic somewhere else to clean up this file
 export default {
   name: 'App',
   data() {
@@ -96,7 +100,7 @@ export default {
   methods: {
     translatePhrase,
     ...mapActions(useStatusStore, ['pushLoadingIndicator', 'removeLoadingIndicator']),
-    ...mapActions(useResourcesStore, ['setupVocab']),
+    ...mapActions(useResourcesStore, ['setupVocab', 'setTemplates']),
     onRouterViewReady() {
       this.setFocusTarget();
     },
@@ -234,8 +238,17 @@ export default {
       promiseArray.push(displayPromise);
       return promiseArray;
     },
+    loadTemplates() {
+      const templates = {
+        base: baseTemplates,
+        combined: combinedTemplates,
+      };
+
+      this.setTemplates(templates);
+    },
   },
   mounted() {
+    this.loadTemplates();
     this.$nextTick(() => {
       this.setupIdleTimer();
       this.checkSearchBar();
@@ -282,18 +295,12 @@ export default {
 
 <style lang="scss">
 // BOOTSTRAP UNSET START
-// @import './styles/main.scss';
 .dropdown-menu > li > a {
   font-weight: unset;
 }
 // BOOTSTRAP UNSET END
 
 // BOOTSTRAP OVERRIDE START
-// @media (max-width: $screen-md-min) {
-//    .container {
-//       width: 100%;
-//    }
-// }
 @include media-breakpoint-down(md) {
    .container {
       width: 100%;

@@ -10,7 +10,6 @@ import App from './App.vue'
 
 import '@/utils/icons';
 import 'floating-vue/dist/style.css'
-// import './styles/main.scss';
 
 const app = createApp(App)
 

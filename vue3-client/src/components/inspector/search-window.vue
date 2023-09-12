@@ -189,8 +189,9 @@ export default {
       <panel-component class="SearchWindow-panel SearchWindowPanel"
         v-if="active"
         :title="translatePhrase('Link entity')"
-        @close="hide()">
-        <template slot="panel-header-info">
+        @close="hide()"
+      >
+        <template #panel-header-info>
           <div class="PanelComponent-headerInfo help-tooltip-container" @mouseleave="showHelp = false">
             <font-awesome-icon :icon="['fas', 'circle-question']" size="md" @mouseenter="showHelp = true" />
             <div class="PanelComponent-headerInfoBox help-tooltip" v-show="showHelp">
@@ -218,7 +219,7 @@ export default {
             </div>
           </div>
         </template>
-        <template slot="panel-header-extra">
+        <template #panel-header-extra>
           <div class="SearchWindow-header search-header">
             <div class="SearchWindow-extractControls">
               <div class="copy-title" v-if="canCopyTitle">
@@ -269,7 +270,7 @@ export default {
           </div>
         </template>
 
-        <template slot="panel-body">
+        <template #panel-body>
           <panel-search-list
             v-if="!searchInProgress"
             class="SearchWindow-resultListContainer"
@@ -295,7 +296,8 @@ export default {
             <Spinner size="lg" :message="translatePhrase('Creating link')"></Spinner>
           </div>
         </template>
-        <template slot="panel-footer">
+
+        <template #panel-footer>
           <div class="SearchWindow-resultControls" v-if="!searchInProgress && searchResult.length > 0" >
             <modal-pagination
               @go="go"

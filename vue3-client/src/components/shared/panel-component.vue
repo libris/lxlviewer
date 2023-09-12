@@ -71,7 +71,7 @@ export default {
     close() {
       if (this.closeable) {
         this.fadedIn = false;
-        
+
         setTimeout(() => {
           this.$emit('close');
         }, this.fadeTime);
@@ -109,7 +109,7 @@ export default {
       }, 1);
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$nextTick(() => {
       this.lockScroll(false);
       if (this.panelOpen) {
@@ -121,9 +121,11 @@ export default {
 </script>
 
 <template>
-  <div class="PanelComponent"
-  :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}"
-  role="complementary">
+  <div
+    class="PanelComponent"
+    :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}"
+    role="complementary"
+  >
     <div class="PanelComponent-container" :class="{'full-view': user.settings.forceFullViewPanel }">
       <div class="PanelComponent-headerContainer">
         <div class="PanelComponent-header">
@@ -147,7 +149,7 @@ export default {
               <font-awesome-icon
                 class="fullview-toggle-button"
                 size="md"
-                :icon="['fas', 'compress']"
+                :icon="['fas', 'down-left-and-up-right-to-center']"
                 v-show="user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
@@ -158,7 +160,7 @@ export default {
               <font-awesome-icon
                 class="fullview-toggle-button"
                 size="md"
-                :icon="['fas', 'expand']"
+                :icon="['fas', 'up-right-and-down-left-from-center']"
                 v-show="!user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
@@ -371,7 +373,7 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     margin-left: 10px;
-    > .fa {
+    > svg {
       margin-right: 0.5em;
       &:last-child {
         margin-right: unset;

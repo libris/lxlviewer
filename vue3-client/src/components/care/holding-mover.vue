@@ -191,17 +191,21 @@ export default {
         </p>
       </div>
     </div>
+
     <div class="HoldingMover-pickers" v-if="flaggedInstances.length > 0">
       <record-picker 
         name="sender"
         opposite="reciever"
         :flaggedInstances="flaggedInstances"
-        :expand="false">
-        <p v-if="!sender"
-          class="HoldingMover-info" 
-          slot="info">
-          {{ translatePhrase("Holdings are moved from the sender record to the reciever record") }}.</p>
+        :expand="false"
+      >
+        <template #info>
+          <p v-if="!sender" class="HoldingMover-info">
+            {{ translatePhrase("Holdings are moved from the sender record to the reciever record") }}.
+          </p>
+        </template>
       </record-picker>
+
       <div class="HoldingMover-separator" v-if="flaggedInstances.length > 0">
         <button class="btn btn-primary" 
           @click="switchInstances" 
@@ -217,6 +221,7 @@ export default {
         opposite="sender"
         :flaggedInstances="flaggedInstances"/>
     </div>
+
     <div class="HoldingMover-resultListContainer"
       :class="{ 'is-empty' : !anySelected}"
       v-if="flaggedInstances.length > 0">
@@ -230,14 +235,17 @@ export default {
       width="500px"
       @close="closeModal"
       title="Move was successful" 
-      modal-type="info">
-      <div slot="modal-body" class="HoldingMover-allSuccessDialogBody">
-        <p>{{ translatePhrase('All selected holdings has been moved') }}.</p>
-        <p>{{ translatePhrase('Do you want to unmark the sender') }}?</p>
-        <div class="HoldingMover-allSuccessDialogBtnContainer">
-          <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ translatePhrase('Yes') }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ translatePhrase('No') }}</button>
+      modal-type="info"
+    >
+      <template #modal-body>
+        <div class="HoldingMover-allSuccessDialogBody">
+          <p>{{ translatePhrase('All selected holdings has been moved') }}.</p>
+          <p>{{ translatePhrase('Do you want to unmark the sender') }}?</p>
+          <div class="HoldingMover-allSuccessDialogBtnContainer">
+            <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ translatePhrase('Yes') }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ translatePhrase('No') }}</button>
+          </div>
         </div>
-      </div>
+      </template>
     </modal-component>
   </div>
 </template>

@@ -253,22 +253,24 @@ export default {
       @close="closeUnlockModal()"
       v-if="unlockModalOpen"
     >
-      <div slot="modal-body" class="ChangeTypeWarningModal-body">
-        <p>
-          Observera att byte av löpnummer kan påverka övrigt bestånd i signumsviten. Är du säker på att du vill fortsätta?
-        </p>
+      <template #modal-body>
+        <div class="ChangeTypeWarningModal-body">
+          <p>
+            Observera att byte av löpnummer kan påverka övrigt bestånd i signumsviten. Är du säker på att du vill fortsätta?
+          </p>
 
-        <div class="ChangeTypeWarningModal-buttonContainer">
-          <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">
-            {{ translatePhrase('Cancel') }}
-          </button>
+          <div class="ChangeTypeWarningModal-buttonContainer">
+            <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">
+              {{ translatePhrase('Cancel') }}
+            </button>
 
-          <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
-            <font-awesome-icon :icon="['fas', 'unlock-keyhole']" class="icon icon--white" />
-            {{ translatePhrase('Unlock') }}
-          </button>
+            <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
+              <font-awesome-icon :icon="['fas', 'unlock-keyhole']" class="icon icon--white" />
+              {{ translatePhrase('Unlock') }}
+            </button>
+          </div>
         </div>
-      </div>
+      </template>
     </modal-component>
 
   </div>

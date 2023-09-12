@@ -224,42 +224,60 @@ export default {
         </template>
       </Dropdown>
     </div>
-    <ul class="FacetGroup-list"
-      :class="{'is-expanded' : isExpanded, 'has-scroll' : hasScroll}">
-      <facet v-for="facetItem in featuredFacets"
+
+    <ul
+      class="FacetGroup-list"
+      :class="{'is-expanded' : isExpanded, 'has-scroll' : hasScroll}"
+    >
+      <facet
+        v-for="facetItem in featuredFacets"
         :facet="facetItem" 
-        :key="'featured_'+facetItem.link">
-        <encoding-level-icon
-          slot="icon"
-          v-if="group.dimension === 'meta.encodingLevel'"
-          :encodingLevel="facetItem.object['@id']" />
-        <type-icon
-          slot="icon"
-          :show-iconscss="false"
-          v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
-          :type="facetItem.object['@id']" />
+        :key="'featured_'+facetItem.link"
+      >
+        <template #icon>
+          <encoding-level-icon
+            v-if="group.dimension === 'meta.encodingLevel'"
+            :encodingLevel="facetItem.object['@id']"
+          />
+
+          <type-icon
+            :show-iconscss="false"
+            v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
+            :type="facetItem.object['@id']"
+          />
+        </template>
       </facet>
+
       <hr v-show="featuredFacets.length > 0">
+
       <facet v-for="facetItem in normalFacets"
         :facet="facetItem" 
-        :key="facetItem.link">
-        <encoding-level-icon
-          slot="icon"
-          v-if="group.dimension === 'meta.encodingLevel'"
-          :encodingLevel="facetItem.object['@id']" />
-        <type-icon
-          slot="icon"
-          :show-iconscss="false"
-          v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
-          :type="facetItem.object['@id']" />
+        :key="facetItem.link"
+      >
+        <template #icon>
+          <encoding-level-icon
+            v-if="group.dimension === 'meta.encodingLevel'"
+            :encodingLevel="facetItem.object['@id']"
+          />
+
+          <type-icon
+            :show-iconscss="false"
+            v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
+            :type="facetItem.object['@id']"
+          />
+        </template>
       </facet>
     </ul>
-    <span 
+
+    <span
       v-if="revealText && isExpanded" 
       class="FacetGroup-reveal link"
       tabindex="0"
       @click="currentLevel++"
-      @keyup.enter="currentLevel++">{{ translatePhrase(revealText) }}...</span>
+      @keyup.enter="currentLevel++"
+    >
+      {{ translatePhrase(revealText) }}...
+    </span>
   </nav>
 </template>
 

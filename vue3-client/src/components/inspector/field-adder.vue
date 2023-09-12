@@ -313,8 +313,9 @@ export default {
     <panel-component class="FieldAdder-panel FieldAdderPanel"
       v-if="active"
       :title="modalTitle"
-      @close="hide">
-      <template slot="panel-header-extra">
+      @close="hide"
+    >
+      <template #panel-header-extra>
         <div class="FieldAdderPanel-filterContainer form-group">
           <input id="field-adder-input"
             type="text" 
@@ -334,7 +335,8 @@ export default {
           </span>
         </div>
       </template>
-      <template slot="panel-header-after">
+
+      <template #panel-header-after>
         <div class="FieldAdderPanel-columnHeaders">
           <!-- <span class="FieldAdderPanel-addControl">
           </span> -->
@@ -346,7 +348,8 @@ export default {
           </span>
         </div>
       </template>
-      <template slot="panel-body">
+
+      <template #panel-body>
         <div>
           <ul class="FieldAdderPanel-fieldList js-fieldlist">
             <li

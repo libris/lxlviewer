@@ -34,6 +34,7 @@ export const useStatusStore = defineStore('status', {
 		},
 		// TODO: Remove this action
 		setStatusValue(payload) {
+			console.log('payload', JSON.parse(JSON.stringify(payload)));
 			if (this.hasOwnProperty(payload.property)) {
 				this[payload.property] = payload.value;
 			} else {

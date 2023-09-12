@@ -268,75 +268,80 @@ export default {
 <template>
   <div class="PropertyAdder">
     <portal to="sidebar" v-if="active">
-    <panel-component class="PropertyAdder-panel PropertyAdderPanel"
-      v-if="active"
-      :title="modalTitle"
-      @close="hide">
-      <template slot="panel-header-extra">
-        <div class="PropertyAdderPanel-filterContainer form-group">
-          <input id="field-adder-input"
-            type="text" 
-            ref="input"
-            class="PropertyAdderPanel-filterInput customInput mousetrap" 
-            :placeholder="translatePhrase('Filter by')"
-            :aria-label="translatePhrase('Filter by')"
-            v-model="filterKey">
-        </div>
-        <div class="PropertyAdderPanel-filterInfo uppercaseHeading">
-          <span>
-            {{ translatePhrase("Showing") }} 
-            {{ filteredResults.length }} 
-            {{ translatePhrase("of" )}} 
-            {{ allowed ? allowed.length : '0'}} 
-            {{ translatePhrase("total") }}
-          </span>
-        </div>
-      </template>
-      <template slot="panel-header-after">
-        <div class="PropertyAdderPanel-columnHeaders">
-          <!-- <span class="PropertyAdderPanel-addControl">
-          </span> -->
-          <span class="PropertyAdderPanel-fieldLabel uppercaseHeading">
-            {{ translatePhrase("Field label") }}
-          </span>
-          <span class="uppercaseHeading">
-            {{ translatePhrase("Can contain") }}
-          </span>
-        </div>
-      </template>
-      <template slot="panel-body">
-        <div>
-          <ul class="PropertyAdderPanel-fieldList js-fieldlist">
-            <li
-              class="PropertyAdderPanel-fieldItem PanelComponent-listItem"
-              v-bind:class="{ 'is-added': prop.added, 'available': !prop.added }" 
-              v-for="(prop) in filteredResults" 
-              @click="addField(prop, false)"
-              @keyup.enter="addField(prop, false)" 
-              :key="prop['@id']">
-              <span class="PropertyAdderPanel-addControl">
-                <round-button
-                  :tabindex="prop.added ? -1 : 0"
-                  :icon="prop.added ? 'check' : 'plus'"
-                  :indicator="true"
-                  :disabled="prop.added"
-                  :label="prop.added ? 'Added' : 'Add'"/>
-              </span>
-              <span class="PropertyAdderPanel-fieldLabel" :title="prop.label | capitalize">
-                {{prop.label | capitalize }}
-                <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
-              </span>
-              <span class="PropertyAdderPanel-classInfo">
-                {{ getPropClassInfo(prop.item) }}
-              </span>
-            </li>
-          </ul>
-        </div>
-        <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
-          <span>{{ translatePhrase("Did not find any fields") }}...</span>
-        </div>
-      </template>
-    </panel-component>
+      <panel-component class="PropertyAdder-panel PropertyAdderPanel"
+        v-if="active"
+        :title="modalTitle"
+        @close="hide"
+      >
+        <template #panel-header-extra>
+          <div class="PropertyAdderPanel-filterContainer form-group">
+            <input id="field-adder-input"
+              type="text" 
+              ref="input"
+              class="PropertyAdderPanel-filterInput customInput mousetrap" 
+              :placeholder="translatePhrase('Filter by')"
+              :aria-label="translatePhrase('Filter by')"
+              v-model="filterKey">
+          </div>
+
+          <div class="PropertyAdderPanel-filterInfo uppercaseHeading">
+            <span>
+              {{ translatePhrase("Showing") }} 
+              {{ filteredResults.length }} 
+              {{ translatePhrase("of" )}} 
+              {{ allowed ? allowed.length : '0'}} 
+              {{ translatePhrase("total") }}
+            </span>
+          </div>
+        </template>
+
+        <template #panel-header-after>
+          <div class="PropertyAdderPanel-columnHeaders">
+            <!-- <span class="PropertyAdderPanel-addControl">
+            </span> -->
+            <span class="PropertyAdderPanel-fieldLabel uppercaseHeading">
+              {{ translatePhrase("Field label") }}
+            </span>
+            <span class="uppercaseHeading">
+              {{ translatePhrase("Can contain") }}
+            </span>
+          </div>
+        </template>
+
+        <template #panel-body>
+          <div>
+            <ul class="PropertyAdderPanel-fieldList js-fieldlist">
+              <li
+                class="PropertyAdderPanel-fieldItem PanelComponent-listItem"
+                v-bind:class="{ 'is-added': prop.added, 'available': !prop.added }" 
+                v-for="(prop) in filteredResults" 
+                @click="addField(prop, false)"
+                @keyup.enter="addField(prop, false)" 
+                :key="prop['@id']">
+                <span class="PropertyAdderPanel-addControl">
+                  <round-button
+                    :tabindex="prop.added ? -1 : 0"
+                    :icon="prop.added ? 'check' : 'plus'"
+                    :indicator="true"
+                    :disabled="prop.added"
+                    :label="prop.added ? 'Added' : 'Add'"/>
+                </span>
+                <span class="PropertyAdderPanel-fieldLabel" :title="prop.label | capitalize">
+                  {{prop.label | capitalize }}
+                  <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
+                </span>
+                <span class="PropertyAdderPanel-classInfo">
+                  {{ getPropClassInfo(prop.item) }}
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
+            <span>{{ translatePhrase("Did not find any fields") }}...</span>
+          </div>
+        </template>
+      </panel-component>
     </portal>
   </div>
 </template>

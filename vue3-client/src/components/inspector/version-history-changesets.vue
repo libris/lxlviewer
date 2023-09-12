@@ -69,18 +69,18 @@ export default {
       <div class="ChangeSet-changeSetContainer" :class="{ 'selected': selectedVersion == index }">
         <span class="ChangeSet-currentVersion" :class="{ 'selected': selectedVersion == index }" v-if="index == 0">{{ translatePhrase("Current version")}}</span>
         <div class="ChangeSet-dateContainer">
-        <span class="ChangeSet-date" :class="{ 'selected': selectedVersion == index }">{{ $moment(changeSet.date).format('lll') }}</span>
-        <span class="ChangeSet-tool" v-if="changeSet.tool['@id'] !== 'https://id.kb.se/generator/crud'">{{ translatePhrase("by machine") }}</span>
+          <span class="ChangeSet-date" :class="{ 'selected': selectedVersion == index }">{{ $moment(changeSet.date).format('lll') }}</span>
+          <span class="ChangeSet-tool" v-if="changeSet.tool['@id'] !== 'https://id.kb.se/generator/crud'">{{ translatePhrase("by machine") }}</span>
         </div>
         <span class="ChangeSet-author" :class="{ 'selected': selectedVersion == index }">
           <SummaryNode :is-static="true" :hover-links="false" :handle-overflow="false" v-if="changeSet.agent && !isGlobalChanges(changeSet)" :item="changeSet.agent" :is-last="true" :field-key="'agent'"/>
           <span v-if="isGlobalChanges(changeSet)">
-                <v-popover placement="bottom-start">
-                  {{ translatePhrase('Libris global changes') }}
-                  <template slot="popover">
-                    <span>{{changeSet.agent['@id']}}</span>
-                  </template>
-                </v-popover>
+            <v-popover placement="bottom-start">
+              {{ translatePhrase('Libris global changes') }}
+              <template #popover>
+                <span>{{changeSet.agent['@id']}}</span>
+              </template>
+            </v-popover>
           </span>
         </span>
       </div>

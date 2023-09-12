@@ -519,7 +519,7 @@ export default {
         v-if="active"
         :title="computedTitle"
         @close="hide">
-        <template slot="panel-header-info">
+        <template #panel-header-info>
           <div
             class="PanelComponent-headerInfo"
             v-if="rangeFull.length > 0"
@@ -536,7 +536,7 @@ export default {
           </div>
         </template>
 
-        <template slot="panel-header-extra">
+        <template #panel-header-extra>
           <!-- <div class="EntityAdder-panelBody"> -->
           <div class="EntityAdder-controls">
             <div class="EntityAdder-controlForm">
@@ -583,7 +583,7 @@ export default {
             </div>
           </div>
         </template>
-        <template slot="panel-body">
+        <template #panel-body>
           <panel-search-list class="EntityAdder-searchResult"
             v-if="!searchInProgress && searchMade"
             :path="path"
@@ -608,7 +608,7 @@ export default {
         <!-- </div> -->
         </template>
 
-        <template slot="panel-footer">
+        <template #panel-footer>
           <div class="EntityAdder-resultControls" v-if="!searchInProgress && searchResult.length > 0">
             <modal-pagination
               @go="go"

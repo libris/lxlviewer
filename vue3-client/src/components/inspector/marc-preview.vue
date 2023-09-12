@@ -1,6 +1,6 @@
 <script>
 import { translatePhrase } from '@/utils/filters';
-import { mapActions, mapState } from 'pinia';
+import { mapState, mapWritableState } from 'pinia';
 import { useInspectorStore } from '@/stores/inspector';
 import { isObject } from 'lodash-es';
 import PanelComponent from '@/components/shared/panel-component.vue';
@@ -37,13 +37,9 @@ export default {
   },
   methods: {
     translatePhrase,
-    ...mapActions(useStatusStore, ['setStatusValue']),
     hide() {
       this.$emit('hide');
-      this.setStatusValue({
-        property: 'keybindState',
-        value: 'overview'
-      });
+      this.keybindState = 'overview';
     },
     isObject(o) {
       return isObject(o);
@@ -61,6 +57,7 @@ export default {
   },
   computed: {
     ...mapState(useInspectorStore, ['inspector']),
+    ...mapWritableState(useStatusStore, ['keybindState']),
   },
   components: {
     'panel-component': PanelComponent,
@@ -68,21 +65,19 @@ export default {
   },
   mounted() { 
     this.$nextTick(() => {
-      this.setStatusValue({
-        property: 'keybindState',
-        value: 'marc-preview'
-      });
+      this.keybindState = 'marc-preview';
     });
   },
 };
 </script>
 
 <template>
-  <panel-component class="MarcPreview"
+  <panel-component
+    class="MarcPreview"
     @close="hide"
-    title="Preview MARC21">
-    <template slot="panel-body">
-      <div class="">
+    title="Preview MARC21"
+  >
+    <template #panel-body>
         <div class="MarcPreview-body">
           <div class="MarcPreview-status" v-if="marcObj === null">
             <p v-show="error === null" >
@@ -124,8 +119,6 @@ export default {
             </tbody>
           </table>
         </div>
-       
-      </div>
     </template>
   </panel-component>
 </template>

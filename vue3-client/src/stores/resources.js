@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { useUserStore } from "./user";
 import { useSettingsStore } from "./settings";
-import { each } from 'lodash-es';
+import { each, filter } from 'lodash-es';
 
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -25,7 +25,6 @@ export const useResourcesStore = defineStore('resources', {
 		// Drop in replacement for Vuex state that returns the entire state object. Do NOT use in new components!!
 		// Bad practice. Use hook (useResourcesStore) or map all properties using mapState instead
 		resources: (state) => state,
-		templates: (state) => state.templates,
 		activeGlobalMessages: (state) => {
 			const now = new Date();
 			const activeMessages = [];
@@ -94,6 +93,24 @@ export const useResourcesStore = defineStore('resources', {
 			props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocab, this.context, settings));
 
 			this.vocabProperties = new Map(props.map(entry => [entry['@id'], entry]));
+		},
+		setTemplates(data) {
+			const templates = {
+				base: data.base,
+				combined: {},
+			};
+
+			const combinedBaseTypes = Object.keys(data.combined);
+			for (let i = 0; i < combinedBaseTypes.length; i++) {
+				templates.combined[combinedBaseTypes[i]] = filter(data.combined[combinedBaseTypes[i]], (o) => {
+					if (o.hasOwnProperty('status') && o.status === 'draft') {
+						return false;
+					}
+					return true;
+				});
+			};
+
+			this.templates = templates;
 		},
 	}
 });
