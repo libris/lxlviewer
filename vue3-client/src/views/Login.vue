@@ -2,6 +2,7 @@
 import { useUserStore } from '@/stores/user';
 import { mapState } from 'pinia';
 import { translatePhrase } from '@/utils/filters';
+import { useOauthStore } from '@/stores/oauth';
 
 export default {
   name: 'Login',
@@ -14,11 +15,12 @@ export default {
   },
   computed: {
     ...mapState(useUserStore, ['user']),
+    ...mapState(useOauthStore, ['oauthClient']),
   },
   methods: {
     translatePhrase,
     renewLogin() {
-      window.location = this.$store.getters.oauth2Client.token.getUri();
+      window.location = this.oauthClient.token.getUri();
     },
   },
   mounted() {
@@ -29,7 +31,7 @@ export default {
       } else if (this.user.isLoggedIn && token !== null) {
         const path = localStorage.getItem('lastPath') || '/';
         this.$router.push({ path: path });
-      } else window.location = this.$store.getters.oauth2Client.token.getUri();
+      } else window.location = this.oauthClient.token.getUri();
     });
   },
 };

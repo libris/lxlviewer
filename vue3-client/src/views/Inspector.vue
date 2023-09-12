@@ -8,6 +8,7 @@ import { useUserStore } from '@/stores/user';
 import { useResourcesStore } from '@/stores/resources';
 import { useSettingsStore } from '@/stores/settings';
 import { useEnrichmentStore } from '@/stores/enrichment';
+import { useOauthStore } from '@/stores/oauth';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
@@ -738,7 +739,7 @@ export default {
               message: `${errorBase}. ${errorMessage}.`, 
               sticky: true, 
               link: { 
-                to: this.$store.getters.oauth2Client.token.getUri(), 
+                to: this.oauthClient.token.getUri(), 
                 title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language, this.resources.i18n)}`, 
                 newTab: true, 
                 external: true,
@@ -863,6 +864,7 @@ export default {
     ...mapState(useSettingsStore, ['settings']),
     ...mapWritableState(useInspectorStore, ['event', 'originalData', 'data', 'insertData', 'langTagSearch', 'title']),
     ...mapWritableState(useEnrichmentStore, ['enrichmentData']),
+    ...mapState(useOauthStore, ['oauthClient']),
     isDocumentAvailable() {
       return this.inspector.data.hasOwnProperty('record');
     },

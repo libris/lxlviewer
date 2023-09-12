@@ -10,6 +10,7 @@ import UserAvatar from '@/components/shared/user-avatar.vue';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import UserSettings from '@/components/usersettings/user-settings.vue';
 import { Dropdown } from 'floating-vue';
+import { useOauthStore } from '@/stores/oauth';
 
 export default {
   name: 'navbar-component',
@@ -32,6 +33,7 @@ export default {
     ...mapState(useStatusStore, ['hintSigelChange']),
     ...mapState(useUserStore, ['user', 'userFlagged']),
     ...mapState(useSettingsStore, ['settings']),
+    ...mapState(useOauthStore, ['oauthClient']),
     tabs() {
       const directoryCareBadge = {
         value: this.userFlagged.length === 0 ? '' : this.userFlagged.length,
@@ -80,7 +82,7 @@ export default {
       }
     },
     login() {
-      window.location = this.$store.getters.oauth2Client.token.getUri();
+      window.location = this.oauthClient.token.getUri();
     },
   },
   watch: {
@@ -125,24 +127,24 @@ export default {
           <Dropdown>
             <div tabindex="0">
               <user-avatar
-                class="hidden-xs" 
+                class="d-none d-sm-block" 
                 :highlight="highlightNavItem && !isUserPage"
                 :size="30"
               />
 
               <user-avatar
-                class="visible-xs-block"
+                class="d-block d-sm-none"
                 :highlight="highlightNavItem && !isUserPage"
                 :size="32"
               />
 
-              <span class="MainNav-linkText userName hidden-sm">
+              <span class="MainNav-linkText userName d-none d-md-block">
                 {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </span>
 
               <font-awesome-icon
                 :icon="['fas', 'caret-down']"
-                class="hidden-xs"
+                class="d-none d-sm-block"
                 v-if="!isUserPage"
                 :class="{ 'active': showUserMenu }"
               />

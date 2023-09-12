@@ -333,11 +333,14 @@ export default {
       v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0"
       class="EntitySummary-id"
       :class="{'recently-copied': recentlyCopiedId }"
+      @mouseover="idHover = true"
+      @mouseout="idHover = false"
     >
       <font-awesome-icon
         :icon="['far', 'copy']"
         class="EntitySummary-idCopyIcon"
         v-tooltip.top="idTooltipText"
+        :class="{'collapsedIcon': !idHover || recentlyCopiedId }"
         @click="copyFnurgel"
       />{{ idAsFnurgel }}
     </div>
@@ -455,6 +458,7 @@ export default {
     font-weight: 400;
     padding: 0 0.75em;
     border-radius: 1em;
+    font-size: .75em;
 
     &.recently-copied {
       background-color: $brand-success;

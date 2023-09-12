@@ -58,6 +58,7 @@ import helpDocsJson from 'lxl-helpdocs/build/help.json';
 import displayGroupsJson from '@/resources/json/displayGroups.json';
 import baseTemplates from '@/resources/json/baseTemplates.json';
 import combinedTemplates from '@/resources/json/combinedTemplates.json';
+import { useOauthStore } from './stores/oauth';
 
 // TODO: move some(or all) of the boot logic somewhere else to clean up this file
 export default {
@@ -101,6 +102,7 @@ export default {
     translatePhrase,
     ...mapActions(useStatusStore, ['pushLoadingIndicator', 'removeLoadingIndicator']),
     ...mapActions(useResourcesStore, ['setupVocab', 'setTemplates']),
+    ...mapActions(useOauthStore, ['initOauth2Client']),
     onRouterViewReady() {
       this.setFocusTarget();
     },
@@ -249,6 +251,7 @@ export default {
   },
   mounted() {
     this.loadTemplates();
+    this.initOauth2Client();
     this.$nextTick(() => {
       this.setupIdleTimer();
       this.checkSearchBar();
@@ -260,10 +263,8 @@ export default {
       this.checkSearchBar(e);
     });
 
-    // store.dispatch('initOauth2Client').catch(() => {});
-
     this.initWarningFunc();
-    // this.fetchHelpDocs();
+    this.fetchHelpDocs();
     this.i18n = i18n;
     this.displayGroups = displayGroupsJson;
     this.pushLoadingIndicator('Loading application');

@@ -247,7 +247,7 @@ export default {
         <button class="btn btn-primary btn--sm" v-on:click.prevent="loadRemoteDatabases()">{{ translatePhrase("Try again")}}</button>
       </div>
       <div v-if="remoteDatabases.state == 'complete'" class="Find-facetHeading uppercaseHeading--light"><span @click="hideFacetColumn = !hideFacetColumn">{{ translatePhrase('Valda databaser') }} ({{ status.remoteDatabases.length }}) <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></span><a class="pull-right" v-if="status.remoteDatabases.length > 0" @click="clearDatabases()">{{ translatePhrase('Clear') }}</a></div>
-      <div v-if="remoteDatabases.state == 'complete'" :class="{ 'hidden-xs hidden-sm': hideFacetColumn }">
+      <div v-if="remoteDatabases.state == 'complete'" :class="{ 'd-none d-md-block': hideFacetColumn }">
         <ul class="RemoteDatabases-activeList">
           <li 
             class="RemoteDatabases-activeListItem"

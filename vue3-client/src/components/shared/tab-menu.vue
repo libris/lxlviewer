@@ -125,10 +125,11 @@ export default {
 <template>
   <div class="TabMenu" :class="[`style-${lookStyle}`, {'has-icons': hasIcons }]">
     <ul v-if="!link" class="TabMenu-tabList" role="tablist" ref="tablist">
-      <li class="TabMenu-tab"
-        v-for="item in tabs" 
+      <li
+        class="TabMenu-tab"
+        v-for="item in tabs"
         tabindex="0"
-        :key="item.id" 
+        :key="item.id"
         @click="item.disabled ? null : go(item.id)" 
         @keyup.enter="item.disabled ? null : go(item.id)"
         :class="{'is-active': active === item.id, 'is-disabled': item.disabled }"
@@ -136,12 +137,25 @@ export default {
         v-tooltip="item.tooltipText"
       >
           <font-awesome-icon
+            :icon="['fas', item.icon]"
             v-if="item.icon"
-            class="TabMenu-tabIcon visible-xs-block"
-            :class="`fa fa-fw fa-${item.icon}`"
+            class="TabMenu-tabIcon d-block d-sm-none"
           />
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{translatePhrase(item.text)}}</span>
+
+          <span
+            class="TabMenu-tabText"
+            :class="{'d-none d-sm-inline-block': item.icon }"
+            v-if="item.html"
+            v-html="item.html"
+          />
+
+          <span
+            class="TabMenu-tabText"
+            :class="{'d-none d-sm-inline-block': item.icon }"
+            v-else
+          >
+            {{translatePhrase(item.text)}}
+          </span>
       </li>
     </ul>
 
@@ -167,11 +181,24 @@ export default {
         >
           <font-awesome-icon
             v-if="item.icon"
-            class="TabMenu-tabIcon visible-xs-block"
+            class="TabMenu-tabIcon d-block d-sm-none"
             :icon="['fas', item.icon]"
           />
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{translatePhrase(item.text)}}</span>
+
+          <span
+            class="TabMenu-tabText"
+            :class="{'d-none d-sm-inline-block': item.icon }"
+            v-if="item.html"
+            v-html="item.html"
+          />
+
+          <span
+            class="TabMenu-tabText"
+            :class="{'d-none d-sm-inline-block': item.icon }"
+            v-else
+          >
+            {{translatePhrase(item.text)}}
+          </span>
         </router-link>
 
         <span v-if="item.badge" class="badge UserCare-badge" :class="'badge-' + item.badge.type">
@@ -179,13 +206,12 @@ export default {
         </span>
       </li>
     </ul>
-    <hr v-show="hasActive" class="TabMenu-underline" :class="{'hidden-xs' : hasIcons}" ref="underline">
+
+    <hr v-show="hasActive" class="TabMenu-underline" :class="{'d-none d-sm-block' : hasIcons}" ref="underline">
   </div>
 </template>
 
 <style lang="scss">
-
-
 .user-is-tabbing {
   .TabMenu {
     &-tab a {
@@ -247,11 +273,6 @@ export default {
     &:focus {
       text-decoration: none;
     }
-    
-    // @media screen and (min-width: @screen-sm) {
-    //   font-size: 15px;
-    //   font-size: 1.5rem;
-    // }    
 
     @include media-breakpoint-up(sm) {
       font-size: 15px;
@@ -279,22 +300,6 @@ export default {
         border-radius: 4px;
       }
     }
-    
-    // @media screen and (min-width: @screen-sm) {
-    //   .has-icons & {
-    //     padding: 0 10px;        
-    //     &.is-active {        
-    //       background-color: transparent;
-    //       border-radius: 0;
-    //     }
-    //   }
-    //   &.has-badge {
-    //     padding-right: 30px;
-    //   }
-    //   .TabMenu.extra-spacing & {
-    //     padding: 0 20px;
-    //   }
-    // }
 
     @include media-breakpoint-up(sm) {
       .has-icons & {
@@ -316,15 +321,6 @@ export default {
       position: absolute;
       top: 1px;
       right: 1px;
-
-      // @media screen and (min-width: @screen-sm) {
-      //   top: calc(50% - 15px);
-      //   right: 6px;
-
-      //   .TabMenu.extra-spacing & {
-      //     right: -4px;
-      //   }
-      // }
 
       @include media-breakpoint-up(sm) {
         top: calc(50% - 15px);
@@ -355,12 +351,6 @@ export default {
       margin-left: -20px;
     }
 
-    // @media screen and (max-width: @screen-sm) {
-    //   .has-icons & {
-    //     margin-left: -15px;
-    //   }
-    // }
-
     @include media-breakpoint-down(sm) {
       .has-icons & {
         margin-left: -15px;
@@ -388,5 +378,4 @@ export default {
     display: inline-block;
   }
 }
-
 </style>

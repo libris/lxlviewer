@@ -272,7 +272,11 @@ export default {
         />
       </div>
 
-      <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
+      <facet-controls
+        :class="{'d-none d-md-block': hideFacetColumn }"
+        :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"
+      />
+
       <portal-target name="facetColumn" />
     </div>
 
