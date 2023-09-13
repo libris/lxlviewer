@@ -150,8 +150,13 @@ export default {
       if (field.subPropertyOf.find(subProp => subProp['@id'] === VocabUtil.getTermObject('predicate', this.resources.vocab, this.resources.context)['@id'])) {
         const statement = VocabUtil.getTermObject(field.domain[0]['@id'], this.resources.vocab, this.resources.context); // e.g. Contribution
         const statementOf = statement.allowedProperties.find(p => p.domain?.find(d => d['@id'] === statement['@id'])); // e.g. contributionOf
-        const statementOfRangeIncludes = statementOf.rangeIncludes[0]['@id']; // e.g. Endeavour
-        const subClassesOfRangeIncludes = VocabUtil.getSubClassChain(statementOfRangeIncludes, this.resources.vocabClasses, this.resources.context); 
+        const subClassesOfRanges = [
+          ...new Set(
+            [...(statementOf.range || []), ...(statementOf.rangeIncludes || [])].flatMap( // iterate over both range and rangeIncludes
+              rangeItem => VocabUtil.getSubClassChain(rangeItem['@id'], this.resources.vocabClasses, this.resources.context), // get subclasses of e.g. Endeavour
+            ),
+          ),
+        ];
 
         const fieldParentPath = this.path.split('.').slice(0, -2).join('.');
         const fieldParentType = get(this.inspector.data, fieldParentPath)['@type']; // e.g. Text
@@ -162,7 +167,7 @@ export default {
         );
 
         const linkableDomainIds = fieldParentBaseClasses
-          .filter(baseClassName => subClassesOfRangeIncludes.includes(baseClassName))
+          .filter(baseClassName => subClassesOfRanges.includes(baseClassName))
           .map((className => VocabUtil.getTermObject(className, this.resources.vocab, this.resources.context)['@id']));
 
         // Append urlSearchParams with linkable domain ids
