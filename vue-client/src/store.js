@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { cloneDeep, each, set, get, assign, filter, isObject, isEqual } from 'lodash-es';
+import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -196,7 +196,9 @@ const store = new Vuex.Store({
         const changes = [];
         each(payload.changeList, (node) => {
           let oldValue;
-          if (node.path === '') {
+          if (node.value === EXTRACT_ON_SAVE) {
+            oldValue = EXTRACT_ON_SAVE;
+          } else if (node.path === '') {
             oldValue = inspectorData;
           } else {
             oldValue = cloneDeep(get(inspectorData, node.path));
@@ -209,7 +211,7 @@ const store = new Vuex.Store({
       // Set the new values
       each(payload.changeList, (node) => {
         // Do nothing if id indicates that the item should be extracted when saving (as the value will otherwise be the same as before).
-        if (node.value?.['@id'] !== EXTRACT_ON_SAVE) {
+        if (node.value !== EXTRACT_ON_SAVE) {
           if (node.path === '') {
             inspectorData = node.value;
           } else {
@@ -419,7 +421,7 @@ const store = new Vuex.Store({
         changeList: [
           {
             path,
-            value: { '@id': EXTRACT_ON_SAVE },
+            value: EXTRACT_ON_SAVE,
           },
         ],
         addToHistory: true,
@@ -636,7 +638,7 @@ const store = new Vuex.Store({
             value: node.value,
           });
           if (
-            isEqual(node.value, lastNode?.[0].value) // why is lastNode an array?
+            node.value === EXTRACT_ON_SAVE
             && Object.keys(state.inspector.extractItemsOnSave).includes(node.path)
           ) {
             dispatch('removeExtractItemOnSave', { path: node.path });
