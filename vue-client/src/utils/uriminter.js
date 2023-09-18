@@ -49,13 +49,17 @@ export default class URIMinter {
       containerRelationMap = this.containerMap[type];
       if (containerRelationMap) break;
     }
-    for (const relation in containerRelationMap) {
-      if (Object.hasOwnProperty(containerRelationMap)) {
-        continue;
-      }
+    for (const relation of Object.keys(containerRelationMap)) {
       const containerMemberMap = containerRelationMap[relation];
       if (mainEntity.hasOwnProperty(relation) && mainEntity[relation] !== null) {
-        const relationId = mainEntity[relation][ID];
+        let relationId = mainEntity[relation][ID];
+        if (Array.isArray(mainEntity[relation])) {
+          const len = mainEntity[relation].length;
+          if (len !== 1) {
+            throw new Error(`Unexpected number of values for: ${relation}: ${len}`);
+          }
+          relationId = mainEntity[relation][0][ID];
+        }
         const container = containerMemberMap[relationId];
         if (container) {
           if (container.administeredBy.find(it => it[ID] === library[ID])) {

@@ -295,8 +295,6 @@ export function convertToMarc(inspectorData, settings, user) {
   const editorObj = DataUtil.getMergedItems(
     DataUtil.removeNullValues(inspectorData.record),
     DataUtil.removeNullValues(inspectorData.mainEntity),
-    DataUtil.removeNullValues(inspectorData.work),
-    inspectorData.quoted,
   );
   const apiPath = settings.apiPath;
   return new Promise((resolve, reject) => {

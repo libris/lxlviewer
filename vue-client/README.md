@@ -16,7 +16,7 @@ No action required here, this is just information.
 * [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`package.json`](/vue-client/package.json) in `./vue-client`)
 
 #### Requirements
-* [node.js](http://nodejs.org/) >=8.16.2
+* [node.js](http://nodejs.org/) >= 18
 * [yarn](https://yarnpkg.com/en/docs/install)
 
 #### Setup
