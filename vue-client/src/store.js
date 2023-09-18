@@ -210,7 +210,11 @@ const store = new Vuex.Store({
       }
       // Set the new values
       each(payload.changeList, (node) => {
-        // Do nothing if id indicates that the item should be extracted when saving (as the value will otherwise be the same as before).
+        /** 
+         * Skip updating inspector data if changeList value is EXTRACT_ON_SAVE, which indicates that the
+         * item should be extracted first while saving (the values of the item should be unchanged until the
+         * extraction has finished and there is a new id to link to).
+         */
         if (node.value !== EXTRACT_ON_SAVE) {
           if (node.path === '') {
             inspectorData = node.value;
@@ -416,7 +420,7 @@ const store = new Vuex.Store({
         ...state.inspector.extractItemsOnSave,
         [path]: item,
       });
-      // Change id to constant indicating that the item should be extracted when clicking save.
+      // Change value to constant indicating that the item should be extracted when clicking save.
       dispatch('updateInspectorData', {
         changeList: [
           {
