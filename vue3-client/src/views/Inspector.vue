@@ -980,8 +980,8 @@ export default {
           <div class="Inspector-header">
             <h1>
               <span class="type" :title="recordType">{{ labelByLang(recordType) }}</span>
-              <span class="badge badge-accent2" v-if="inspector.status.isNew">{{ translatePhrase("New record") }}</span>
             </h1>
+            <span class="badge badge-accent2" v-if="inspector.status.isNew">{{ translatePhrase("New record") }}</span>
           </div>
           <entity-changelog v-if="inspector.status.isNew === false" />
         </div>
@@ -1106,12 +1106,22 @@ export default {
 
   &-header {
     margin-bottom: 0.25em;
+    display: flex;
+    align-items: center;
+
     h1 {
       margin: 0;
+      display: flex;
+      align-items: center;
     }
+
     .type {
       font-size: 3rem;
       text-transform: uppercase;
+    }
+
+    .badge {
+      margin-left: 0.45rem;
     }
   }
 

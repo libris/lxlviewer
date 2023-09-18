@@ -133,7 +133,7 @@ export default {
     }
   }
   
-  i {
+  svg {
     transition: transform 0.25s ease;
     &.rotate-45 {
       transform: rotate(45deg);

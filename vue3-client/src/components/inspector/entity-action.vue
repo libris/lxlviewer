@@ -1,4 +1,6 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
+
 export default {
   name: 'entity-action',
   mixins: [],
@@ -38,6 +40,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     action() {
       this.$emit('action');
     },
@@ -58,7 +61,7 @@ export default {
     role="button"
     :aria-label="translatePhrase(label)"
     tabindex="0"
-    v-tooltip.top="translate(description)"
+    v-tooltip.top="translatePhrase(description)"
     @click="action()"
     @keyup.enter="action()"
     @focus="highlight()"
@@ -79,10 +82,14 @@ export default {
   display: inline-block;
   transition: color .25s ease;
   color: $grey-transparent;
+  min-width: 20px;
+  text-align: center;
+
   .action-label {
     display: none;
     color: inherit;
   }
+
   &.is-placeholder {
     opacity: 0;
     cursor: default;
@@ -90,12 +97,17 @@ export default {
   &.has-parent-hovered {
     color: $grey-darker;
   }
+
   &.action-larger {
     background-color: $white;
     border: 1px solid;
     border-radius: 0.25rem;
     padding: 0rem 1rem 0rem 0.5rem;
-    margin: 0 0.2rem;
+
+    svg {
+      margin-right: 0.3rem;
+    }
+
     .action-label {
       font-size: 1.3rem;
       display: inline-block;

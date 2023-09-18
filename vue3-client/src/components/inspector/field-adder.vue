@@ -10,6 +10,7 @@ import { useUserStore } from '@/stores/user';
 import { useInspectorStore } from '@/stores/inspector';
 import { useSettingsStore } from '@/stores/settings';
 import { translatePhrase } from '@/utils/filters';
+import { getKeybindText } from '@/utils/mixins';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
 import PanelComponent from '@/components/shared/panel-component.vue';
@@ -119,7 +120,7 @@ export default {
     },
   },
   methods: {
-    translatePhrase,
+    translatePhrase, getKeybindText,
     ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue']),
     ...mapActions(useStatusStore, ['setStatusValue']),
     toggleFullView() {
@@ -303,7 +304,7 @@ export default {
       v-on:click="show" 
       ref="adderButton"
       @keyup.enter="show"
-      v-tooltip.left="`${translate(modalTitle)} (${getKeybindText('open-field-adder')})`"
+      v-tooltip.left="`${translatePhrase(modalTitle)} (${getKeybindText('open-field-adder')})`"
       :aria-label="translatePhrase(modalTitle)"
     >
       <font-awesome-icon :icon="['fas', 'plus']" aria-hidden="true" />
@@ -320,7 +321,7 @@ export default {
           <input id="field-adder-input"
             type="text" 
             ref="input"
-            class="FieldAdderPanel-filterInput customInput mousetrap" 
+            class="FieldAdderPanel-filtfalse customInput mousetrap" 
             :placeholder="translatePhrase('Filter by')"
             :aria-label="translatePhrase('Filter by')"
             v-model="filterKey">

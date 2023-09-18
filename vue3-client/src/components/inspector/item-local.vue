@@ -570,27 +570,28 @@ export default {
           />
 
           <template #popper>
-            <div class="dropdown ManagerMenu"
+            <div class="Toolbar-menu"
               @mouseover="addHighlight('info')"
               @mouseout="removeHighlight('info')"
             >
-              <ul class="dropdown-menu ManagerMenu-menuList">
-                <li class="ManagerMenu-menuItem">
-                  <a tabindex="0" class="ManagerMenu-menuLink"
-                  @keyup.enter="copyThis()"
-                  @click="copyThis()"
-                >
-                  <font-awesome-icon :icon="['fas', 'copy']" aria-hidden="true" />
-                  {{translatePhrase("Copy to clipboard")}}
+              <ul class="Toolbar-menuList">
+                <li class="Toolbar-menuItem">
+                  <a tabindex="0" class="Toolbar-menuLink"
+                    @keyup.enter="copyThis()"
+                    @click="copyThis()"
+                  >
+                    <font-awesome-icon :icon="['fas', 'copy']" aria-hidden="true" />
+                    {{translatePhrase("Copy to clipboard")}}
                   </a>
                 </li>
-                <li class="ManagerMenu-menuItem" v-if="inArray">
-                  <a tabindex="0" class="ManagerMenu-menuLink"
-                  @keyup.enter="cloneThis()"
-                  @click="cloneThis()"
-                >
-                  <font-awesome-icon :icon="['fas', 'clone']" aria-hidden="true" />
-                  {{translatePhrase("Duplicate entity")}}
+
+                <li class="Toolbar-menuItem" v-if="inArray">
+                  <a tabindex="0" class="Toolbar-menuLink"
+                    @keyup.enter="cloneThis()"
+                    @click="cloneThis()"
+                  >
+                    <font-awesome-icon :icon="['fas', 'clone']" aria-hidden="true" />
+                    {{translatePhrase("Duplicate entity")}}
                   </a>
                 </li>
               </ul>
@@ -771,32 +772,6 @@ export default {
     }
     display: flex;
     align-items: baseline;
-  }
-
-  .ManagerMenu {
-    li > a {
-      cursor: pointer;
-      padding: 3px 5px;
-    }
-    &-menuList {
-      display: block;
-      padding: 5px 0;
-    }
-    &-menuItem {
-      & a {
-        display: flex;
-        align-items: center;
-        padding: 5px 15px;
-        color: $grey-darker;
-      }
-
-    }
-    &-menuLink {
-      cursor: pointer;
-      & i {
-        margin-right: 5px;
-      }
-    }
   }
 
   &-action {

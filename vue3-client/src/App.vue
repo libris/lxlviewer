@@ -384,7 +384,8 @@ h4 {
     background-color: #ffffffeb;
     left: 0;
     position: fixed;
-    i {
+
+    svg {
       margin-right: 0.5em;
     }
   }
@@ -568,6 +569,7 @@ button {
   font-weight: 600;
 }
 
+// TODO: Get this back
 // .btn {
 //   &--auto {
 //     min-width: auto;

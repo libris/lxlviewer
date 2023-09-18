@@ -174,7 +174,7 @@ export default {
       }
     }
 
-    i {
+    svg {
       font-size: 13px;
       padding: 0 2px;
     }

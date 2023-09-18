@@ -15,7 +15,8 @@ import TabMenu from '@/components/shared/tab-menu.vue';
 export default {
   name: 'create-new-form',
   beforeRouteLeave(to, from, next) {
-    this.setHintSigelChange(false);
+    console.log('this', this);
+    this.hintSigelChange = false;
 
     next();
   },
@@ -83,7 +84,7 @@ export default {
       );
     },
     setHintSigelChange(val) {
-      this.setHintSigelChange = val;
+      this.hintSigelChange = val;
     },
     hideSigelHint() {
       this.setHintSigelChange(false);
@@ -100,7 +101,7 @@ export default {
         { id: 'Instance', text: 'Instance', excludeBase: true },
         { id: 'Work', text: 'Work', excludeBase: true },
         { id: 'Agent', text: 'Agent', excludeBase: true },
-      ];      
+      ];
       if (this.userIsAllowedToEditConcepts()) {
         list.push({ id: 'Concept', text: 'Concept', excludeBase: true });
       }
@@ -180,7 +181,8 @@ export default {
         :tabs="creationList" 
         :active="selectedCreation"
       />
-        <!-- v-on-clickaway="hideSigelHint" -->
+        <!-- TODO: What is this?
+          v-on-clickaway="hideSigelHint" -->
 
       <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card
@@ -191,7 +193,9 @@ export default {
           :index="0"
           :active-index="activeIndex"
           @use-base="useBase"
-          @set-active-index="setActiveIndex" />
+          @set-active-index="setActiveIndex"
+        />
+
         <creation-card
           v-for="(template, index) in combinedTemplates"
           :key="index"
@@ -201,9 +205,10 @@ export default {
           :index="index + 1"
           :active-index="activeIndex"
           @use-template="useTemplate"
-          @set-active-index="setActiveIndex" />        
+          @set-active-index="setActiveIndex"
+        />
       </div>
-      <file-adder type="new" v-if="selectedCreation === 'File'" @output="recieveFileData" />      
+      <file-adder type="new" v-if="selectedCreation === 'File'" @output="recieveFileData" />
     </div>
   </div>
 </template>
@@ -212,12 +217,20 @@ export default {
 .Create {
   padding-bottom: 2rem;
 
-  &-title {
-  }
   &-cards {
-    display: flex;
+    display: grid;
     flex-wrap: wrap;
     justify-content: flex-start;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+
+    @include media-breakpoint-up(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 }
 

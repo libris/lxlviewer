@@ -517,9 +517,11 @@ $actionColXs: 14%;
       justify-content: center;
       display: flex;
       color: $brand-primary;
-      i {
+
+      svg {
         color: $brand-primary;
       }
+
       font-weight: bold;
       font-size: 1.2rem;
       padding: 0.5rem;

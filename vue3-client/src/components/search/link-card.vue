@@ -107,7 +107,7 @@ export default {
     p {
       font-size: 0.8em;
     }
-    i {
+    svg {
       &:hover {
         color: rgb(170, 170, 170);
       }

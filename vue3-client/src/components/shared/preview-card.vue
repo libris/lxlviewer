@@ -111,7 +111,7 @@ export default {
     right: 0.25em;
     bottom: 0.25em;
 
-    .fetchError i {
+    .fetchError svg {
       color: $brand-danger;
     }
   }

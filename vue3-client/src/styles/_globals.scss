@@ -4,32 +4,32 @@ span.disabled {
 
 .badge {
   &-accent {
-    background-color: $brand-accent;
-    color: #fff;
+    background-color: $brand-accent !important;
+    color: #fff !important;
   }
   &-accent2 {
-    background-color: $brand-accent2;
-    color: #fff;
+    background-color: $brand-accent2 !important;
+    color: #fff !important;
   }
   &-accent3 {
-    background-color: $brand-accent3;
-    color: #fff;
+    background-color: $brand-accent3 !important;
+    color: #fff !important;
   }
   &-danger {
-    background-color: $brand-danger;
-    color: #fff;
+    background-color: $brand-danger !important;
+    color: #fff !important;
   }
   &-primary {
-    background-color: $brand-primary;
-    color: #fff;
+    background-color: $brand-primary !important;
+    color: #fff !important;
   }
   &-warning {
-    background-color: $brand-warning;
-    color: #fff;
+    background-color: $brand-warning !important;
+    color: #fff !important;
   }
   &-info {
-    background-color: $brand-info;
-    color: #333;
+    background-color: $brand-info !important;
+    color: #333 !important;
   }
 }
 

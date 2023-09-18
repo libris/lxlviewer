@@ -741,7 +741,7 @@ export default {
           <div v-else class="Field-action placeholder"></div> 
 
           <div class="Field-comment" v-if="propertyComment && !locked" >
-            <font-awesome-icon :icon="['fas', 'circle-question']" size="sm" />
+            <font-awesome-icon :icon="['fas', 'circle-question']" />
             <span class="Field-commentText">{{ propertyComment }}</span>
           </div>
 
@@ -790,7 +790,7 @@ export default {
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ capitalize(translatePhrase('Incoming links')) }}</span>
             <div class="Field-comment">
-              <font-awesome-icon :icon="['fas', 'circle-question']" size="sm" />
+              <font-awesome-icon :icon="['fas', 'circle-question']" />
               <span class="Field-commentText">{{ translatePhrase('Non editable incoming link') }}.
                 <br />
                 <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ translatePhrase('Read more about incoming links') }}.</a>
@@ -812,7 +812,7 @@ export default {
       <!-- Is inner -->
       <div class="Field-actions is-nested">
         <div class="Field-action Field-comment" v-if="propertyComment && !locked" >
-          <font-awesome-icon :icon="['fas', 'circle-question']" size="sm" />
+          <font-awesome-icon :icon="['fas', 'circle-question']" />
           <span class="Field-commentText">{{ propertyComment }}</span>
         </div>
         <entity-adder class="Field-action Field-entityAdder"
@@ -1305,7 +1305,7 @@ export default {
     flex-direction: row-reverse;
     min-height: 30px;
 
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-up(sm) {
       flex-direction: row;
     }
 
@@ -1313,7 +1313,7 @@ export default {
       position: sticky;
     }
 
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-up(sm) {
       top: 75px;
     }
   }
@@ -1476,6 +1476,7 @@ export default {
     display: flex;
     flex-grow: 1;
     justify-content: initial;
+    color: $grey-transparent;
   
     @include media-breakpoint-down(sm) {
       justify-content: flex-start;
@@ -1496,7 +1497,7 @@ export default {
       margin: 0 0 0 10px;
       line-height: 1.4;
 
-      @include media-breakpoint-up(sm) {
+      @include media-breakpoint-down(sm) {
         display: flex;
         justify-content: flex-end;
         flex-direction: row;
@@ -1505,13 +1506,14 @@ export default {
   }
 
   &-action {
-    min-width:  20px;
+    min-width: 20px;
     display: inline-block;
     margin-right: 5px;
 
     &.placeholder {
       width: 20px;
       display: none;
+      background-color: transparent;
 
       @include media-breakpoint-up(sm) {
         display: block;

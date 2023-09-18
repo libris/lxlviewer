@@ -787,7 +787,7 @@ export default {
   }
 
   &-menuLink {
-    & i {
+    & svg {
       margin-right: 5px;
     }
   }

@@ -8,7 +8,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { useInspectorStore } from '@/stores/inspector';
 import { useUserStore } from '@/stores/user';
 import { cloneDeep, isArray, get } from 'lodash-es';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
@@ -197,7 +197,7 @@ export default {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1);
   },
   methods: {
-    translatePhrase,
+    translatePhrase, labelByLang, capitalize,
     ...mapActions(useInspectorStore, ['addToQuoted', 'updateInspectorData', 'setInspectorStatusValue']),
     ...mapActions(useUserStore, ['setUser']),
     getSearchParams(searchPhrase) {
@@ -501,7 +501,7 @@ export default {
         v-else-if="addEmbedded"
         tabindex="-1"
       />
-      <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
+      <span class="EntityAdder-addLabel label-text">{{ capitalize(labelByLang(addLabel)) }}</span>
     </div>
 
     <portal :to="`typeSelect-${path}`">
@@ -530,7 +530,7 @@ export default {
                 {{ translatePhrase("Allowed types") }}:
               </p>
               <span v-for="(range, index) in rangeFull" :key="index">
-                • {{range | labelByLang}}
+                • {{labelByLang(range)}}
               </span>
             </div>
           </div>

@@ -1,4 +1,5 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
 import { mapState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import { useSettingsStore } from '@/stores/settings';
@@ -16,6 +17,7 @@ export default {
     activeIndex: Number,
   },
   methods: {
+    translatePhrase,
     useBase(event) {
       this.$emit('use-base', event.target.value);
     },
@@ -51,6 +53,7 @@ export default {
         <h2 class="CreationCard-title card-title">{{'Baspost'}}</h2>
         <div class="CreationCard-descr card-descr">Innehåller de vanligaste fälten för vald typ.</div>
       </div>
+
       <div class="card-link">
         <select class="CreationCard-select customSelect" 
           @change="useBase($event)"
@@ -68,27 +71,32 @@ export default {
         </select>
       </div>
     </div>
+
     <div v-if="!isBase" class="CreationCard-content card-content">
       <div class="card-text">
         <h2 class="CreationCard-title card-title">{{template.label}}</h2>
         <div class="CreationCard-descr card-descr">{{template.description}}</div>
       </div>
+
       <div class="card-link">
-        <button 
+        <button
           class="CreationCard-select btn btn-primary btn--md" 
           tabindex="0" 
           v-show="!isActive" 
           :disabled="!isAllowed"
           @keyup.enter="useTemplate(template.value)" 
-          @click="useTemplate(template.value)">
+          @click="useTemplate(template.value)"
+        >
             {{ translatePhrase('Choose') }}
         </button>
+
         <a 
           class="CreationCard-select" 
           tabindex="0" 
           v-show="isActive" 
           @keyup.enter="useTemplate(template.value)" 
-          @click="useTemplate(template.value)">
+          @click="useTemplate(template.value)"
+        >
             {{ translatePhrase('Choosen') }}
         </a>
       </div>
@@ -97,19 +105,8 @@ export default {
 </template>
 
 <style lang="scss">
-
-.CreationCard  {
-  flex-basis: 100%;
-  max-width: 27rem;
-
-  @media screen and (min-width: @screen-sm-min){
-    flex-basis: 49%;
-    margin-right: 1%;
-  }
-  @media screen and (min-width: @screen-md-min){
-    flex-basis: 24%;
-  }
-
+.CreationCard {
+  margin: 0;
   &.is-disabled {
     cursor: not-allowed;
     background-color: #efeded;
@@ -124,9 +121,6 @@ export default {
     width: 100%;
   }
 
-  &-descr {
-  }
-
   &-content {
     min-height: 200px;
     padding-bottom: 10px;
@@ -139,10 +133,9 @@ export default {
   }
 
   &-option {
-    background-color: @white;
-    color: @black;
+    background-color: $white;
+    color: $black;
     border-top: none;
   }
 }
-
 </style>

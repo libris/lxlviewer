@@ -524,8 +524,6 @@ export default {
       @replace-with="replaceWith"
     />
     </div>
-
-
 </template>
 
 <style lang="scss">
@@ -661,7 +659,7 @@ export default {
     }
     &-menuLink {
       cursor: pointer;
-      & i {
+      & svg {
         margin-right: 5px;
       }
     }

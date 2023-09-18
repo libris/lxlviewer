@@ -1,5 +1,5 @@
 <script>
-import { translatePhrase, convertResourceLink } from '@/utils/filters';
+import { translatePhrase, convertResourceLink, labelByLang } from '@/utils/filters';
 import { mapActions, mapState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import AutoSize from 'autosize';
@@ -9,6 +9,7 @@ import ItemMixin from '@/components/mixins/item-mixin.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import { useUserStore } from '@/stores/user';
 import { useInspectorStore } from '@/stores/inspector';
+import { useStatusStore } from '@/stores/status';
 
 export default {
   name: 'item-value',
@@ -59,6 +60,7 @@ export default {
   },
   computed: {
     ...mapState(useResourcesStore, ['i18n']),
+    ...mapState(useInspectorStore, ['status']),
     ...mapState(useUserStore, ['user']),
     value: {
       get() {
@@ -82,21 +84,21 @@ export default {
       return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language, this.i18n);
     },
     shouldFocus() {
-      const lastAdded = this.inspector.status.lastAdded;
+      const lastAdded = this.status.lastAdded;
       if (lastAdded === this.path || lastAdded === this.parentPath) {
         return true;
       }
       return false;
     },
     isLastAdded() {
-      if (this.inspector.status.lastAdded === this.path) {
+      if (this.status.lastAdded === this.path) {
         return true;
       }
       return false;
     },
   },
   methods: {
-    translatePhrase, convertResourceLink,
+    translatePhrase, convertResourceLink, labelByLang,
     ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue']),
     removeHighlight(event, active) {
       if (active) {
@@ -186,7 +188,7 @@ export default {
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value"
-      :aria-label="fieldKey | labelByLang"
+      :aria-label="labelByLang(fieldKey)"
       @focus="readyForSave(false)"
       @blur="update($event.target.value)"
       @keydown.exact="readyForSave(false)"

@@ -350,7 +350,7 @@ $buttoncolor: darken($neutral-color, 10%);
       color: $grey-darker;
     }
 
-    i {
+    svg {
       color: inherit;
       vertical-align: top;
     }
@@ -358,7 +358,7 @@ $buttoncolor: darken($neutral-color, 10%);
     &.is-active {
       color: $btn-primary;
 
-      i {
+      svg {
         color: inherit;
       }
     }
@@ -379,9 +379,11 @@ $buttoncolor: darken($neutral-color, 10%);
     display: flex;
     align-items: center;
     font-weight: normal;
-    i {
+
+    svg {
       margin-right: 0.2em;
     }
+
     .fa-check-square {
       color: $brand-primary;
     }

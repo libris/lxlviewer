@@ -523,7 +523,7 @@ export default {
     clear: right;
     display: flex;
 
-    & > i {
+    & > svg {
       vertical-align: bottom;
     }
 

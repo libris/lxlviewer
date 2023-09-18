@@ -1,4 +1,5 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
 import { mapState } from 'pinia';
 import { useUserStore } from '@/stores/user';
 import * as LxlDataUtil from 'lxljs/data';
@@ -19,6 +20,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     outputData(data) {
       this.$emit('output', data);
     },
@@ -144,8 +146,8 @@ export default {
 <style lang="scss">
 
 .FileAdder {
-  border: 1px solid @form-border;
-  background-color: @white;
+  border: 1px solid $form-border;
+  background-color: $white;
   display: flex;
   padding: 1em;
   flex-direction: column;
@@ -163,17 +165,17 @@ export default {
     width: 25%;
   }
   .Dropzone {
-    border: 3px solid @grey;
+    border: 3px solid $grey;
     border-radius: 1em;
     height: 25vh;
     width: 80%;
     &.is-active {
-      background-color: fadeout(@brand-primary, 50%);
-      border: 3px dashed @brand-primary;
+      background-color: fadeout($brand-primary, 50%);
+      border: 3px dashed $brand-primary;
     }
     &.is-invalid {
-      background-color: fadeout(@brand-danger, 50%);
-      border: 3px dashed @brand-danger;
+      background-color: fadeout($brand-danger, 50%);
+      border: 3px dashed $brand-danger;
     }
     &-title {
       font-size: 24px;

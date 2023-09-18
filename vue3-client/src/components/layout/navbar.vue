@@ -127,24 +127,24 @@ export default {
           <Dropdown>
             <div tabindex="0">
               <user-avatar
-                class="d-none d-sm-block" 
+                class="d-none d-sm-inline-block" 
                 :highlight="highlightNavItem && !isUserPage"
                 :size="30"
               />
 
               <user-avatar
-                class="d-block d-sm-none"
+                class="d-inline-block d-sm-none"
                 :highlight="highlightNavItem && !isUserPage"
                 :size="32"
               />
 
-              <span class="MainNav-linkText userName d-none d-md-block">
+              <span class="MainNav-linkText userName d-none d-md-inline-block">
                 {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </span>
 
               <font-awesome-icon
                 :icon="['fas', 'caret-down']"
-                class="d-none d-sm-block"
+                class="d-none d-sm-inline-block"
                 v-if="!isUserPage"
                 :class="{ 'active': showUserMenu }"
               />
@@ -178,11 +178,6 @@ export default {
   flex-shrink: 0; // fix ie flexbox height bug
   font-size: 2.4rem;
 
-  // @media screen and (min-width: $screen-sm) {
-  //   font-size: unset;
-  //   line-height: unset;
-  // }
-
   @include media-breakpoint-up(sm) {
     font-size: unset;
     line-height: unset;
@@ -190,9 +185,6 @@ export default {
 
   &-brand {    
     margin-right: 2rem;
-    // @media screen and (min-width: $screen-sm) {
-    //   display: none;
-    // }
 
     @include media-breakpoint-up(sm) {
       display: none;
@@ -208,11 +200,6 @@ export default {
     height: 1.6em;
     width: 1.6em;
     padding: 0.1em;
-    // @media screen and (min-width: $screen-sm){
-    //   height: 2em;
-    //   padding: 0;
-    //   margin-top: 0.1em;
-    // }
 
     @include media-breakpoint-up(sm) {
       height: 2em;
@@ -224,10 +211,6 @@ export default {
     display: flex;
     padding: 0 25px;
     height: 100%;
-    // @media screen and (max-width: $screen-lg){
-    //   flex-wrap: wrap;
-    //   width: 100% !important;
-    // }
 
     @include media-breakpoint-down(lg) {
       flex-wrap: wrap;
@@ -250,10 +233,6 @@ export default {
     justify-content: flex-end;
     height: 100%;
     margin: 0px;
-
-    // @media (max-width: $screen-sm) {
-    //   padding: 0;
-    // }
 
     @include media-breakpoint-down(sm) {
       padding: 0;
@@ -278,23 +257,12 @@ export default {
     &:last-of-type a {
       padding-right: 0;
     }
-    
-    // @media (max-width: $screen-sm) {
-    //   & .userName {
-    //     display: none;
-    //   }
-    // }
 
     @include media-breakpoint-down(sm) {
       & .userName {
         display: none;
       }
     }
-    
-    // @media (max-width: $screen-md) {
-    //   font-size: 16px;
-    //   font-size: 1.6rem;
-    // }
 
     @include media-breakpoint-down(md) {
       font-size: 16px;
@@ -316,7 +284,7 @@ export default {
       text-decoration: none;
     }
 
-    i {
+    svg {
       color: $text-alt-sticky-bar;
     }
   }
@@ -336,5 +304,4 @@ export default {
     margin-top: 0;
   }
 }
-
 </style>
