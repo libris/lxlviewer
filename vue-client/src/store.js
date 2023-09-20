@@ -282,6 +282,9 @@ const store = new Vuex.Store({
     flushChangeHistory(state) {
       state.inspector.changeHistory = [];
     },
+    removeIndexFromChangeHistory(state, index) {
+      state.inspector.changeHistory = state.inspector.changeHistory.filter((_, i) => i !== index);
+    },
     logoutUser(state) {
       localStorage.removeItem('at');
       state.user = User.getUserObject();
@@ -434,6 +437,10 @@ const store = new Vuex.Store({
     removeExtractItemOnSave({ commit, state }, { path }) {
       const { [path]: itemToRemove, ...rest } = state.inspector.extractItemsOnSave;
       commit('setExtractItemsOnSave', rest);
+      const indexInChangeHistory = state.inspector.changeHistory.findIndex(item => item[0].path === path && item[0].value === EXTRACT_ON_SAVE);
+      if (indexInChangeHistory >= 0) {
+        commit('removeIndexFromChangeHistory', indexInChangeHistory);
+      }
     },
     flushExtractItemsOnSave({ commit }) {
       commit('setExtractItemsOnSave', {});
