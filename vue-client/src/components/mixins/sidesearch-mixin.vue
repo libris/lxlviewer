@@ -3,6 +3,7 @@ import { get } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
+import { buildQueryString } from '@/utils/http';
 
 export default {
   data() {
@@ -106,6 +107,15 @@ export default {
       }
       return q;
     },
+    getSearchParams(searchPhrase) {
+      if (this.currentSearchParam == null) {
+        return { q: searchPhrase };
+      }
+
+      const params = Object.assign({}, this.currentSearchParam.mappings || {});
+      this.currentSearchParam.searchProps.forEach((param) => { params[param] = searchPhrase; });
+      return params;
+    },
     fetch(pageNumber) {
       const self = this;
       self.currentPage = pageNumber;
@@ -127,19 +137,15 @@ export default {
       this.fetch(n);
     },
     getItems(keyword) {
-      const searchPhrase = this.getSearchPhrase(keyword);
-      const urlSearchParams = new URLSearchParams({
-        q: searchPhrase,
+      let params = this.getSearchParams(this.getSearchPhrase(keyword));
+      params = Object.assign(params, {
         _limit: this.maxResults,
         _offset: this.currentPage * this.maxResults,
         _sort: this.sort,
-        ...(typeof this.typeArray !== 'undefined' && this.typeArray.length > 0 && { '@type': this.typeArray }),
-        ...this.currentSearchParam?.mappings,
-        ...this.currentSearchParam?.searchProps.reduce((acc, searchProp) => ({
-          ...acc,
-          [searchProp]: searchPhrase,
-        }), {}),
       });
+      if (typeof this.typeArray !== 'undefined' && this.typeArray.length > 0) {
+        params['@type'] = this.typeArray;
+      }
 
       if (this.fieldKey) {
         const field = VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.resources.context);
@@ -170,13 +176,11 @@ export default {
             .filter(baseClassName => subClassesOfRanges.includes(baseClassName))
             .map((className => VocabUtil.getTermObject(className, this.resources.vocab, this.resources.context)['@id']));
 
-          // Append urlSearchParams with linkable domain ids
-          linkableDomainIds.forEach(className => urlSearchParams.append('or-domain.@id', className));
+          // Add linkable domain ids to search params
+          params['or-domain.@id'] = linkableDomainIds;
         }
       }
-
-      const searchUrl = `${this.settings.apiPath}/find.jsonld?${urlSearchParams.toString()}`;
-
+      const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
       return new Promise((resolve, reject) => {
         // Check if abortcontroller is available
         // ie11 doesn't have it atm so they don't get cancellable fetches...
