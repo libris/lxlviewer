@@ -133,13 +133,14 @@ export default {
         _limit: this.maxResults,
         _offset: this.currentPage * this.maxResults,
         _sort: this.sort,
-        ...(typeof this.typeArray !== 'undefined' && this.typeArray.length > 0 && { '@type': this.typeArray }),
         ...this.currentSearchParam?.mappings,
         ...this.currentSearchParam?.searchProps.reduce((acc, searchProp) => ({
           ...acc,
           [searchProp]: searchPhrase,
         }), {}),
       });
+
+      this.typeArray?.forEach(type => urlSearchParams.append('@type', type));
 
       if (this.fieldKey) {
         const field = VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.resources.context);
