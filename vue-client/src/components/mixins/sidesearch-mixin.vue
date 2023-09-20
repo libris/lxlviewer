@@ -129,18 +129,19 @@ export default {
     getItems(keyword) {
       const searchPhrase = this.getSearchPhrase(keyword);
       const urlSearchParams = new URLSearchParams({
-        q: searchPhrase,
+        ...(!this.currentSearchParam && { q: searchPhrase }),
         _limit: this.maxResults,
         _offset: this.currentPage * this.maxResults,
         _sort: this.sort,
-        ...this.currentSearchParam?.mappings,
-        ...this.currentSearchParam?.searchProps.reduce((acc, searchProp) => ({
-          ...acc,
-          [searchProp]: searchPhrase,
-        }), {}),
       });
 
       this.typeArray?.forEach(type => urlSearchParams.append('@type', type));
+      
+      this.currentSearchParam?.searchProps
+        .forEach(searchProp => urlSearchParams.append(searchProp, searchPhrase));
+    
+      Object.keys(this.currentSearchParam?.mappings || {})
+        .forEach(key => urlSearchParams.append(key, this.currentSearchParam.mappings[key]));
 
       if (this.fieldKey) {
         const field = VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.resources.context);
