@@ -38,6 +38,7 @@
     "pinia": "^2.1.6",
     "portal-vue": "^3.0.0",
     "querystring-es3": "^0.2.1",
+    "rollup-plugin-alias": "^2.2.0",
     "vue": "3.3.4",
     "vue-router": "^4.2.4"
   },

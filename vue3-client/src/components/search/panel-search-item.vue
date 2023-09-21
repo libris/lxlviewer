@@ -9,6 +9,7 @@ import * as StringUtil from 'lxljs/string';
 import * as MathUtil from '@/utils/math';
 import LensMixin from '../mixins/lens-mixin.vue';
 import SummaryAction from '../inspector/summary-action.vue';
+import EntitySummary from '../shared/entity-summary.vue';
 
 export default {
   name: 'panel-search-item',
@@ -105,8 +106,7 @@ export default {
   },
   components: {
     SummaryAction,
-  },
-  mounted() { 
+    EntitySummary,
   },
 };
 </script>
@@ -136,7 +136,7 @@ export default {
     </div>
     <div class="PanelSearch-itemContainer" 
       :class="{'has-action' : hasAction}">
-      <entity-summary 
+      <EntitySummary
         :focus-data="focusData" 
         :should-link="true" 
         :is-compact="isCompact"
@@ -146,7 +146,7 @@ export default {
         :shouldOpenTab="true"
         :valueDisplayLimit=1
         :encodingLevel="focusData.meta.encodingLevel">
-      </entity-summary>
+      </EntitySummary>
     </div>
   </li>
 </template>

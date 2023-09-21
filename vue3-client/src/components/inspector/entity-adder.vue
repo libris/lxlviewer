@@ -103,7 +103,7 @@ export default {
     },
     active(value) {
       if (!value) {
-        this.$refs.adderFocusElement.focus();
+        this.$refs.adderFocusElement?.focus();
       }
     },
   },
@@ -453,6 +453,7 @@ export default {
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add" v-if="isPlaceholder" v-tooltip.left="tooltipText">
+      <span ref="adderFocusElement">
         <font-awesome-icon
           class="icon icon--sm"
           :icon="['fas', this.iconAdd] "
@@ -460,14 +461,14 @@ export default {
           tabindex="0"
           role="button"
           :aria-label="translatePhrase(tooltipText)"
-          ref="adderFocusElement"
           @click="add($event)"
           @keyup.enter="add($event)"
           @mouseenter="actionHighlight(true, $event)"
           @mouseleave="actionHighlight(false, $event)"
           @focus="actionHighlight(true, $event)"
-          @blur="actionHighlight(false, $event)">
-        </font-awesome-icon>
+          @blur="actionHighlight(false, $event)"
+        />
+
         <font-awesome-icon
           class="icon icon--sm is-disabled"
           :icon="['fas', this.iconAdd] "
@@ -475,32 +476,35 @@ export default {
           tabindex="-1"
           aria-hidden="true"
         />
+      </span>
     </div>
 
     <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" v-if="!isPlaceholder" v-tooltip.top="tooltipText">
-      <font-awesome-icon
-        class="icon icon--sm"
-        :icon="['fas', this.iconAdd] "
-        v-if="!addEmbedded"
-        tabindex="0"
-        role="button"
-        ref="adderFocusElement"
-        :aria-label="translatePhrase(tooltipText)"
-        v-on:click="add($event)"
-        @keyup.enter="add($event)"
-        @mouseenter="actionHighlight(true, $event)"
-        @mouseleave="actionHighlight(false, $event)"
-        @focus="actionHighlight(true, $event)"
-        @blur="actionHighlight(false, $event)">
-      </font-awesome-icon>
+      <span ref="adderFocusElement">
+        <font-awesome-icon
+          class="icon icon--sm"
+          :icon="['fas', this.iconAdd] "
+          v-if="!addEmbedded"
+          tabindex="0"
+          role="button"
+          :aria-label="translatePhrase(tooltipText)"
+          v-on:click="add($event)"
+          @keyup.enter="add($event)"
+          @mouseenter="actionHighlight(true, $event)"
+          @mouseleave="actionHighlight(false, $event)"
+          @focus="actionHighlight(true, $event)"
+          @blur="actionHighlight(false, $event)"
+        />
 
-      <font-awesome-icon
-        class="icon icon--sm is-disabled"
-        :icon="['fas', this.iconAdd]"
-        v-else-if="addEmbedded"
-        tabindex="-1"
-      />
+        <font-awesome-icon
+          class="icon icon--sm is-disabled"
+          :icon="['fas', this.iconAdd]"
+          v-else-if="addEmbedded"
+          tabindex="-1"
+        />
+      </span>
+
       <span class="EntityAdder-addLabel label-text">{{ capitalize(labelByLang(addLabel)) }}</span>
     </div>
 

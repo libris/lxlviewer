@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
+import alias from 'rollup-plugin-alias';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,6 +10,12 @@ export default defineConfig({
 
   plugins: [
     vue(),
+    alias({
+      entries:[
+        // Alias all .jsonld files as .json to load them as JSON files
+        // { find:/^(.*)\.jsonld$/, replacement: '$1.json' }
+      ]
+    }),
   ],
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),

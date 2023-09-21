@@ -11,7 +11,7 @@ export const useInspectorStore = defineStore('inspector', {
 		compositeHistoryData: {},
 		languageCache: {},
 		langTagSearch: '',
-		supportedTags: {
+		supportedTagsInternal: {
 			data: [],
 			promises: [],
 		},
@@ -44,7 +44,7 @@ export const useInspectorStore = defineStore('inspector', {
 		// Drop in replacement for Vuex state that returns the entire state object. Do NOT use in new components!!
 		// Bad practice. Use hook (useInspectorStore) or map all properties using mapState instead
 		inspector: (state) => state,
-		supportedTags: state => state.supportedTags.data,
+		supportedTags: state => state.supportedTagsInternal.data,
 	},
 	actions: {
 		setValidation(validation) {
@@ -144,8 +144,8 @@ export const useInspectorStore = defineStore('inspector', {
 				return false;
 			}
 
-			if (this.supportedTags.promises[tag]) {
-				return this.supportedTags.promises[tag];
+			if (this.supportedTagsInternal.promises[tag]) {
+				return this.supportedTagsInternal.promises[tag];
 			}
 
 			const promise = httpUtil.get({
@@ -153,14 +153,14 @@ export const useInspectorStore = defineStore('inspector', {
 				token: user.token,
 			}).then((response) => {
 				if (response != null && response.status > 200) {
-					this.supportedTags.promises[tag] = undefined;
-					if (this.supportedTags.data.indexOf(tag) === -1) {
-						this.supportedTags.data.push(tag);
+					this.supportedTagsInternal.promises[tag] = undefined;
+					if (this.supportedTagsInternal.data.indexOf(tag) === -1) {
+						this.supportedTagsInternal.data.push(tag);
 					}
 				}
 			});
 
-			this.supportedTags.promises[tag] = promise;
+			this.supportedTagsInternal.promises[tag] = promise;
 
 			return promise;
 		},

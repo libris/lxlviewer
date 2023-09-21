@@ -275,7 +275,7 @@ export default {
             :range-full="['Language']"
             :property-types="['ObjectProperty']"
             :is-lang-tagger="true"
-            :icon-add="'fa-globe-outline'"
+            :icon-add="'globe'"
             @langTaggerEvent="onLangTaggerEvent(...arguments)">
           </entity-adder>
 

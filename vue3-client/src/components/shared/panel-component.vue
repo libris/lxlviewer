@@ -149,7 +149,6 @@ export default {
             <span class="PanelComponent-windowControl">
               <font-awesome-icon
                 :icon="['fas', 'magnifying-glass']"
-                size="md"
                 class="goto-search-button"
                 v-show="query != null"
                 role="button"
@@ -160,7 +159,6 @@ export default {
 
               <font-awesome-icon
                 class="fullview-toggle-button"
-                size="md"
                 :icon="['fas', 'down-left-and-up-right-to-center']"
                 v-show="user.settings.forceFullViewPanel"
                 role="button"
@@ -171,7 +169,6 @@ export default {
 
               <font-awesome-icon
                 class="fullview-toggle-button"
-                size="md"
                 :icon="['fas', 'up-right-and-down-left-from-center']"
                 v-show="!user.settings.forceFullViewPanel"
                 role="button"
@@ -180,7 +177,6 @@ export default {
                 :title="translatePhrase('Expand')"></font-awesome-icon>
 
               <font-awesome-icon
-                size="md"
                 :icon="['fas', 'xmark']"
                 role="button"
                 tabindex="0"

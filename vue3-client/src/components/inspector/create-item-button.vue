@@ -78,7 +78,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(useResourcesStore, ['i18n']),
+    ...mapState(useResourcesStore, ['resources', 'i18n']),
     ...mapState(useInspectorStore, ['inspector']),
     ...mapState(useUserStore, ['user']),
     ...mapState(useSettingsStore, ['settings']),

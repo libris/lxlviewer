@@ -1,4 +1,5 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
 import Button from '@/components/shared/button.vue';
 
 export default {
@@ -27,6 +28,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     action() {
       this.$emit('action');
     },
@@ -68,7 +70,7 @@ export default {
         :indicator="!disabled || !replaced"
         :label="getTooltipText" 
         size="large"
-        v-tooltip.right="translate(getTooltipText)"
+        v-tooltip.right="translatePhrase(getTooltipText)"
         @click="action()"
         @keyup.enter="action()">
       </button-component>
