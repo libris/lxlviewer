@@ -8,6 +8,9 @@ import Login from '../views/Login.vue';
 import Find from "../views/Find.vue";
 import Help from "../views/Help.vue";
 import Inspector from "../views/Inspector.vue";
+import DirectoryCare from "../views/DirectoryCare.vue";
+import UserPage from "../views/UserPage.vue";
+import Create from "../views/Create.vue";
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,7 +65,7 @@ const router = createRouter({
 		{
 			path: '/directory-care/:tool?',
 			name: 'Directory care',
-			component: () => import('../views/DirectoryCare.vue'),
+			component: DirectoryCare,
 			meta: {
 				requiresAuth: true,
 			},
@@ -70,7 +73,7 @@ const router = createRouter({
 		{
 			path: '/user',
 			name: 'User settings',
-			component: () => import('../views/UserPage.vue'),
+			component: UserPage,
 			meta: {
 				requiresAuth: true,
 			},
@@ -78,7 +81,7 @@ const router = createRouter({
 		{
 			path: '/create',
 			name: 'Create new',
-			component: () => import('../views/Create.vue'),
+			component: Create,
 			meta: {
 				requiresAuth: true,
 			},
@@ -86,19 +89,16 @@ const router = createRouter({
 		{
 			path: '/new',
 			name: 'NewDocument',
-			// component: () => import('../views/Inspector.vue'),
 			component: Inspector,
 		},
 		{
 			path: '/:fnurgel',
 			name: 'Inspector',
-			// component: () => import('../views/Inspector.vue'),
 			component: Inspector,
 		},
 		{
 			path: '/:fnurgel/:view',
 			name: 'DocumentHistory',
-			// component: () => import('../views/Inspector.vue'),
 			component: Inspector,
 		},
 	],

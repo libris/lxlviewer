@@ -7,10 +7,10 @@ import { useSettingsStore } from '@/stores/settings';
 import { filter } from 'lodash-es';
 import { translatePhrase } from '@/utils/filters';
 import * as StringUtil from 'lxljs/string';
+import * as RecordUtil from '@/utils/record';
 import RecordPicker from '@/components/care/record-picker.vue';
 import HoldingList from '@/components/care/holding-list.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
-import * as RecordUtil from '@/utils/record';
 
 export default {
   name: 'holding-mover',
@@ -266,17 +266,17 @@ export default {
     margin-bottom: 1em;
     display: flex;
     flex-direction: row;
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       flex-direction: column;
       align-items: center;
     }
     justify-content: space-around;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
   }
   &-infoBoxColumn {
     padding: 2em 1% 1em 1%;
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       padding: 2em;
     }
     display: flex;
@@ -292,13 +292,13 @@ export default {
       width: 100%;
     }
     .iconCircle {
-      border: 1px solid @grey-lighter;
+      border: 1px solid $grey-lighter;
       border-radius: 1em;
       width: 2em;
       height: 2em;
       line-height: 2em;
       text-align: center;
-      color: @brand-primary;
+      color: $brand-primary;
     }
   }
 
@@ -308,7 +308,7 @@ export default {
     flex-direction: row;
     justify-content: space-between;
 
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       flex-direction: column;
       align-items: center;
     }
@@ -319,8 +319,8 @@ export default {
     align-items: baseline;
     margin: 80px 10px;
     justify-content: center;
-    
-    @media (max-width: @screen-sm) {
+
+    @include media-breakpoint-down(sm) {
       margin: 10px;
     }
   }
@@ -330,8 +330,8 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
 
     &.is-empty {
       background-color: unset;
@@ -343,10 +343,10 @@ export default {
     list-style: none;
     margin: 0;
     &-success {
-      color: @brand-success;
+      color: $brand-success;
     }
     &-error {
-      color: @brand-danger;
+      color: $brand-danger;
     }
     &-loading {
     }

@@ -221,12 +221,12 @@ export default {
 }
 
 .RecordPicker  {
-  max-width: @directorycare-sidewidth;
+  max-width: $directorycare-sidewidth;
   display: flex;
   flex: 1 1 46%;
   flex-direction: column;
 
-  @media (max-width: @screen-sm) {
+  @include media-breakpoint-down(sm) {
     flex: 1 1 auto;
     max-width: 100%;
     width: 100%;
@@ -234,25 +234,25 @@ export default {
 
   &-label {
     padding: 5px 10px;
-    background-color: @grey-lighter;
+    background-color: $grey-lighter;
     display: table; // ie fallback
     width: fit-content;
     transition: background-color 0.3s ease;
 
     &.has-selection {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
     }
   }
 
   &-body {
     height: 100%;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     padding: 0 20px 20px;
     transition: background-color 0.3s ease;
 
     &.has-selection {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
       border-color: transparent;
     }
 
@@ -264,9 +264,9 @@ export default {
   &-dropdownContainer,
   &-selectedContainer {
     position: relative;
-    border: 1px solid @grey-lighter;
-    box-shadow: @shadow-panel;
-    background-color: @white;
+    border: 1px solid $grey-lighter;
+    box-shadow: $shadow-panel;
+    background-color: $white;
     margin-top: 20px;
   }
 
@@ -298,7 +298,7 @@ export default {
   }
 
   &-toggleLabel {
-    color: @brand-primary;
+    color: $brand-primary;
     font-weight: 600;
   }
 
@@ -318,12 +318,12 @@ export default {
 
   &-inputContainer {
     padding: 0 15px;
-    border-bottom: 1px solid @grey-lighter;
+    border-bottom: 1px solid $grey-lighter;
   }
 
   &-input {
     width: 100%;
-    border: 1px solid @grey-light;
+    border: 1px solid $grey-light;
     border-radius: 4px;
     padding: 5px 10px;
     margin-bottom: 15px;
@@ -343,8 +343,8 @@ export default {
 
   &-item {
     cursor: pointer;
-    border-top: 1px solid @grey-lighter;
-    background-color: @white;
+    border-top: 1px solid $grey-lighter;
+    background-color: $white;
     transition: background-color 0.2s ease;
     padding: 0 15px;
 
@@ -358,7 +358,7 @@ export default {
     }
 
     &:hover:not(.is-disabled) {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
     }
   }
 

@@ -3,21 +3,21 @@ import { translatePhrase } from '@/utils/filters';
 import { mapActions, mapState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import { useUserStore } from '@/stores/user';
+import { useStatusStore } from '@/stores/status';
 import { filter } from 'lodash-es';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as HttpUtil from '@/utils/http';
-import TabMenu from '@/components/shared/tab-menu';
-import HoldingMover from '@/components/care/holding-mover';
-import ModalComponent from '@/components/shared/modal-component';
-import { useStatusStore } from '@/stores/status';
+import TabMenu from '@/components/shared/tab-menu.vue';
+import HoldingMover from '@/components/care/holding-mover.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
 
 export default {
   name: 'DirectoryCare',
   components: {
-    'tab-menu': TabMenu,
-    'holding-mover': HoldingMover,
-    'modal-component': ModalComponent,
+    TabMenu,
+    HoldingMover,
+    ModalComponent,
   },
   data() {
     return {
@@ -123,9 +123,9 @@ export default {
 <template>
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
-      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
+      <TabMenu @go="switchTool" :tabs="tabs" :active="$route.params.tool" />
 
-      <holding-mover 
+      <HoldingMover
         v-if="$route.params.tool === 'holdings'"
         :flaggedInstances="flaggedInstances"
       />
@@ -135,7 +135,7 @@ export default {
         <!-- replace this whole div with the component -->
       </div>
 
-      <modal-component 
+      <ModalComponent
         v-if="showModal"
         title="Directory care list adjusted" 
         modal-type="info" 
@@ -157,7 +157,7 @@ export default {
             </div>
           </div>
         </template>
-      </modal-component>
+      </ModalComponent>
     </div>
   </div>
 </template>

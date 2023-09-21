@@ -12,7 +12,12 @@ export const useDirectoryCareStore = defineStore('directoryCare', {
 	actions: {
 		// TODO: Remove this, also check if it even works like this?
 		setDirectoryCare(data) {
-			this = data;
+			this.sender = data['sender'];
+			this.senderHoldings = data['senderHoldings'];
+			this.reciever = data['reciever'];
+			this.recieverHoldings = data['recieverHoldings'];
+			this.selectedHoldings = data['selectedHoldings'];
+			this.holdingsMoved = data['holdingsMoved'];
 		},
 	},
 });

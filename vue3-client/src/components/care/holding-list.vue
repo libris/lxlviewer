@@ -287,8 +287,8 @@ export default {
 <style lang="scss">
 
 .HoldingList {
-  flex-basis: @directorycare-sidewidth;
-  max-width: @directorycare-sidewidth;
+  flex-basis: $directorycare-sidewidth;
+  max-width: $directorycare-sidewidth;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -314,14 +314,14 @@ export default {
       white-space: nowrap;
     }
 
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       height: auto;
       flex-wrap: wrap;
     }
   }
 
   &-body {
-    border: solid @grey-lighter;
+    border: solid $grey-lighter;
     border-width: 1px 0px 0px 1px;
     padding: 0 1em;
     flex-grow: 1;
@@ -350,23 +350,23 @@ export default {
   &-itemIndex {
     padding: 0.5em;
     flex-basis: 8%;
-    color: @grey-dark;
+    color: $grey-dark;
   }
   &-itemBody {
     flex-direction: row;
     display: flex;
     flex: 1;
     min-width: 0%;
-    border: solid @grey-lighter;
+    border: solid $grey-lighter;
     border-width: 0px 1px 1px 1px;
     &.is-first {
       border-width: 1px 1px 1px 1px;
     }
     &.selected {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
     }
     &.newly-moved {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
     }
   }
   &-itemInfo {
@@ -393,10 +393,10 @@ export default {
     }
   }
   &-noPermission {
-    color: @grey-light;
+    color: $grey-light;
   }
   &-foundOnDestination {
-    color: @brand-warning;
+    color: $brand-warning;
   }
 
   .SendHoldings-btn {
@@ -412,7 +412,7 @@ export default {
     word-break: break-word;
   }
 
-  @media (max-width: @screen-sm) {
+  @include media-breakpoint-down(sm) {
     flex-basis: 100%;
     max-width: 100%;
 
