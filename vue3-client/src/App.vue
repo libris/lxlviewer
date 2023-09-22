@@ -302,11 +302,7 @@ export default {
 // BOOTSTRAP UNSET END
 
 // BOOTSTRAP OVERRIDE START
-@include media-breakpoint-down(md) {
-   .container {
-      width: 100%;
-   }
-}
+
 // BOOTSTRAP OVERRIDE END
 
 .row {
@@ -416,13 +412,6 @@ h4 {
 
   &-spinner {
     margin-top: 2em;
-  }
-
-  // @media screen and (max-width: $screen-lg-min){
-  //   width: 100%;
-  // }
-  @include media-breakpoint-down(lg) {
-    width: 100%;
   }
 }
 
