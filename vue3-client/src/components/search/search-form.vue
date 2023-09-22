@@ -287,7 +287,7 @@ export default {
         {{ translatePhrase("Search") }}
       </label>
 
-      <div class="SearchForm-formGroup SearchForm-selectGroup d-block d-sm-none">
+      <div class="SearchForm-formGroup SearchForm-selectGroup d-flex d-sm-none">
         <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-typeSelect SearchForm-select customSelect"
