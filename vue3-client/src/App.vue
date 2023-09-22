@@ -303,6 +303,11 @@ export default {
 
 // BOOTSTRAP OVERRIDE START
 
+.container {
+  max-width: 1170px;
+  padding: 0 15px;
+}
+
 // BOOTSTRAP OVERRIDE END
 
 .row {
