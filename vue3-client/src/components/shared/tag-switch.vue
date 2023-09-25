@@ -67,6 +67,12 @@ export default {
         this.settings,
       );
     },
+    iconStyle() {
+      if (this.isMarked) {
+        return 'fas'
+      }
+      return 'far'
+    },
     iconString() {
       let str = '';
       switch (this.tag) {
@@ -78,9 +84,6 @@ export default {
           break;
         default:
           return false;
-      }
-      if (!this.isMarked) {
-        str += '-o';
       }
       return str;
     },
@@ -114,7 +117,7 @@ export default {
 
 <template>
   <div class="TagSwitch" v-tooltip.top="tooltip" @click="toggleMark()">
-    <font-awesome-icon :icon="['fas', iconString]"/>
+    <font-awesome-icon :icon="[iconStyle, iconString]"/>
   </div>
 </template>
 
@@ -125,7 +128,7 @@ export default {
   font-size: 1.4rem;
 
   cursor: pointer;
-  .fa-flag {
+  .fa-flag[data-prefix="fas"]{
     color: $brand-accent;
   }
   .fa-star {

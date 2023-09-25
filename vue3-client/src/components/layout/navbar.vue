@@ -122,7 +122,7 @@ export default {
           @focus="highlightNavItem = true"
           @blur="highlightNavItem = false"
           v-if="user.isLoggedIn"
-          v-tooltip="tooltipOptions"
+          v-tooltip="{tooltipOptions}"
         >
           <Dropdown>
             <div tabindex="0">
