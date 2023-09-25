@@ -80,6 +80,7 @@ export default {
           const width = `${parseInt($activeTab.clientWidth - (paddingLeft + paddingRight))}px`;
           $underline.style.width = width;
           $underline.style.left = left;
+          $underline.style.opacity = 1;
         }
       });
     },
@@ -369,6 +370,7 @@ export default {
     min-width: 5px;
     border: none;
     background-color: $brand-primary;
+    opacity: 0;
     .style-dark & {
       background-color: #f7a07b;
     }    
