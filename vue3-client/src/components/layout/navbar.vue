@@ -268,6 +268,10 @@ export default {
       font-size: 16px;
       font-size: 1.6rem;
     }
+
+    .fa-caret-down {
+      margin-left: .65rem;
+    }
   }
 
   &-link, &-linkText {

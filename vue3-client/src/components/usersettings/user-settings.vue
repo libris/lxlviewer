@@ -192,10 +192,6 @@ export default {
 .UserSettings {
   padding: 0;
 
-  // @media (min-width: @screen-sm) {
-  //   padding: 1em 0 1em 0;
-  // }
-
   @include media-breakpoint-up(sm) {
     padding: 1em 0;
   }
@@ -226,10 +222,6 @@ export default {
         font-size: 1.4rem;
       }
     }
-
-    // @media (min-width: @screen-sm) {
-    //   flex-direction: row;
-    // }
 
     @include media-breakpoint-up(sm) {
       flex-direction: row;
@@ -263,6 +255,7 @@ export default {
       }
       width: 50%;
     }
+
     .value {
       width: 50%;
       select {
@@ -273,13 +266,7 @@ export default {
 
   &.in-menu {
     cursor: initial;
-    top: 4rem;
-    position: absolute;
-    right: 0;
-    left: auto;
-    z-index: $dropdown-z;
-    padding-top: 0.25em;
-    padding-left: 0;
+    padding: 0;
 
     & ul {
       padding: 0;
@@ -306,16 +293,11 @@ export default {
           text-decoration: underline;
         }
       }
-
     }
 
-    // @media (max-width: @screen-sm) {
-    //   left: auto;
-    //   right: 0;
-    // }
-    @include media-breakpoint-down(sm) {
-      left: auto;
-      right: 0;
+    .UserSettings-content {
+      border: 0;
+      box-shadow: none;
     }
   }
 
@@ -327,10 +309,6 @@ export default {
   min-width: 250px;
   max-width: 500px;
   padding: 20px;
-
-  // @media (min-width: @screen-sm) {
-  //   border-right: 1px solid @grey-lighter;
-  // }
 
   @include media-breakpoint-up(sm) {
     border-right: 1px solid $grey-lighter;
