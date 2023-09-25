@@ -162,6 +162,7 @@ export default {
           @keyup.enter="toggleInfoBox"></font-awesome-icon>
       </span>
     </div>
+
     <div class="HoldingMover-infoBox" v-if="flaggedInstances.length === 0 || showInfoBox">
       <div class="HoldingMover-infoBoxColumn">
         <div class="iconCircle"><font-awesome-icon :icon="['far', 'flag']"></font-awesome-icon></div>
