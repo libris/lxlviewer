@@ -116,6 +116,10 @@ export default {
   mounted() {
     this.pushLoadingIndicator('Loading');
     this.fetchAllFlagged();
+
+    if (this.$route.params.tool == null || this.$route.params.tool == '') {
+      this.switchTool(this.tabs[0].id);
+    }
   },
 };
 </script>
