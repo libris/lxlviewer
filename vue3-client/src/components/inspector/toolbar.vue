@@ -741,14 +741,14 @@ export default {
     bottom: 10px;
     min-width: 65px;
     position: fixed;
-    // border: 1px solid #cccccc;
-    // border: 1px solid #cccccc75;
+    border: 1px solid #cccccc;
+    border: 1px solid #cccccc75;
     background-color: #ececec;
     background-color: #ecececd1;
     padding: 6px;
-    // border-radius: 0.5em;
-    // box-shadow: 0px 0px 15px 0px $grey;
-    // box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.2);
+    border-radius: 0.5em;
+    box-shadow: 0px 0px 15px 0px $grey;
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.2);
 
     @media (min-width: 992px) {
       top: 11em;
@@ -843,24 +843,24 @@ export default {
       }
     }
 
-    // @media (min-width: 992px) {
-    //   top: auto;
-    //   left: auto;
-    //   bottom: auto;
-    //   right: 0;
-    // }
+    @media (min-width: 992px) {
+      top: auto;
+      left: auto;
+      bottom: auto;
+      right: 0;
+    }
 
-    // @media (min-height: 650px) {
-    //   max-height: 400px;
-    // }
-
-    // @media (min-height: 850px) {
-    //   max-height: 550px;
-    // }
-
-    // @media (min-height: 1000px) {
-    //   max-height: none;
-    // }
+    @media (min-height: 650px) {
+      max-height: 400px;
+     }
+    
+    @media (min-height: 850px) {
+      max-height: 550px;
+    }
+    
+    @media (min-height: 1000px) {
+      max-height: none;
+    }
   } 
 
   .TemplatePicker, .OverridePicker {
