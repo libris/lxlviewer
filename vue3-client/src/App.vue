@@ -51,9 +51,9 @@ import EnvironmentBanner from '@/components/layout/environment-banner.vue';
 import GlobalMessages from '@/components/layout/global-messages.vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import { useSettingsStore } from './stores/settings';
-import i18n from '@/resources/json/i18n.json';
 
 // TODO: Support .jsonld files in Vite (copy pasted now in lxl-helpdocs)
+import i18n from '@/resources/json/i18n.json';
 import helpDocsJson from 'lxl-helpdocs/build/help.json';
 import displayGroupsJson from '@/resources/json/displayGroups.json';
 import baseTemplates from '@/resources/json/baseTemplates.json';
@@ -75,7 +75,7 @@ export default {
     ...mapState(useSettingsStore, ['settings']),
     ...mapState(useStatusStore, ['panelOpen', 'loadingIndicators']),
     ...mapState(useUserStore, ['userDatabase']),
-    ...mapWritableState(useUserStore, ['user']),
+    ...mapWritableState(useUserStore, ['user', 'userStorage']),
     ...mapWritableState(useStatusStore, ['userIdle', 'keybindState']),
     ...mapWritableState(useResourcesStore, [
       'helpDocs',
@@ -103,6 +103,7 @@ export default {
     ...mapActions(useStatusStore, ['pushLoadingIndicator', 'removeLoadingIndicator']),
     ...mapActions(useResourcesStore, ['setupVocab', 'setTemplates']),
     ...mapActions(useOauthStore, ['initOauth2Client']),
+    ...mapActions(useUserStore, ['verifyUser', 'loadUserDatabase']),
     onRouterViewReady() {
       this.setFocusTarget();
     },
@@ -248,8 +249,22 @@ export default {
 
       this.setTemplates(templates);
     },
+    syncUserStorage() {
+      const userStorageTotal = JSON.parse(localStorage.getItem('userStorage'));
+      let userStorage = this.userStorage;
+      if (userStorageTotal !== null && (userStorageTotal.hasOwnProperty(this.user.idHash) || userStorageTotal.hasOwnProperty(this.user.emailHash))) {
+        userStorage = userStorageTotal[this.user.idHash] || userStorageTotal[this.user.emailHash];
+      }
+      this.userStorage = userStorage;
+    },
   },
   mounted() {
+    this.verifyUser().then(() => {
+      this.$nextTick(() => {
+        this.loadUserDatabase();
+      });
+    }).catch(() => {});
+
     this.loadTemplates();
     this.initOauth2Client();
     this.$nextTick(() => {
@@ -279,6 +294,15 @@ export default {
       window.lxlWarning(`🔌 The API (at ${this.settings.apiPath}) might be offline! Error: ${error}`);
       this.loadingError = true;
       this.removeLoadingIndicator('Loading application');
+    });
+
+    // Sync user storage initially and trigger it again every focus event
+    this.syncUserStorage();
+    window.addEventListener('focus', () => {
+      this.syncUserStorage();
+      if (this.user.isLoggedIn) {
+        this.loadUserDatabase();
+      }
     });
   },
   components: {

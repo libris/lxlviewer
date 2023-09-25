@@ -2,6 +2,9 @@ import { defineStore } from "pinia";
 import * as User from '@/models/user';
 import { useSettingsStore } from "./settings";
 import { useResourcesStore } from "./resources";
+import { cloneDeep } from 'lodash-es';
+import * as StringUtil from 'lxljs/string';
+import * as httpUtil from '@/utils/http';
 
 export const useUserStore = defineStore('user', {
 	state: () => ({
@@ -176,6 +179,53 @@ export const useUserStore = defineStore('user', {
 					reject();
 				}
 			});
+		},
+		loadUserDatabase() {
+			if (this.user.id.length === 0) {
+				throw new Error('loadUserDatabase was dispatched with no real user loaded.');
+			}
+
+			const settings = useSettingsStore();
+
+			// Call this when you need to load the userDatabase from the server.
+			StringUtil.digestMessage(this.user.id).then((digestHex) => {
+				httpUtil.get({ url: `${settings.apiPath}/_userdata/${digestHex}`, token: this.user.token, contentType: 'text/plain' }).then((result) => {
+					this.userDatabase = result;
+					this.checkForMigrationOfUserDatabase();
+				}, (error) => {
+					console.error(error);
+				});
+			});
+		},
+		checkForMigrationOfUserDatabase() {
+			// Check if user has records stored in localStorage
+			if (this.userStorage.list) {
+				// console.log("Found locally stored flagged records, moving to db.");
+				const userStorage = this.userStorage;
+				const dbMarkedDocuments = cloneDeep(this.userDatabase.markedDocuments) || {};
+				const oldMarkedDocuments = userStorage.list;
+
+				for (const [key, value] of Object.entries(oldMarkedDocuments)) {
+					if (dbMarkedDocuments.hasOwnProperty(key) === false) {
+						const item = cloneDeep(value);
+						delete item.label;
+						for (let i = 0; i < item.tags.length; i++) {
+							if (item.tags[i] === 'Directory care') {
+								item.tags[i] = 'Flagged';
+							}
+						}
+
+						dbMarkedDocuments[key] = item;
+					}
+				}
+
+				// Save to db
+				this.userDatabase.markedDocuments = dbMarkedDocuments;
+
+				// Clean up the old list
+				delete userStorage.list;
+				this.userStorage = userStorage;
+			}
 		},
 	}
 });

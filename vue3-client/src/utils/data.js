@@ -4,6 +4,8 @@ import * as DisplayUtil from 'lxljs/display';
 import * as HttpUtil from '@/utils/http';
 import { useInspectorStore } from '@/stores/inspector';
 import { useSettingsStore } from '@/stores/settings';
+
+// TODO: Support .jsonld files in Vite (copy pasted now in definitions)
 import displayJson from '../../node_modules/definitions/source/vocab/display.json';
 
 export function getDisplayDefinitions() {
