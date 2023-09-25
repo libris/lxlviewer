@@ -5,7 +5,7 @@
 
 import { mapState } from 'pinia';
 import { useInspectorStore } from '@/stores/inspector';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, lowercase } from '@/utils/filters';
 import moment from 'moment';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
@@ -21,6 +21,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    lowercase,
   },
   computed: {
     ...mapState(useInspectorStore, ['inspector']),
