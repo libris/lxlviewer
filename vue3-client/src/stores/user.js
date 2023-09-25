@@ -3,7 +3,6 @@ import { defineStore } from "pinia";
 import * as User from '@/models/user';
 import { useSettingsStore } from "./settings";
 import { useResourcesStore } from "./resources";
-import { cloneDeep } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 
