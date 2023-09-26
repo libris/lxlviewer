@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
-import alias from 'rollup-plugin-alias';
+import renameExtensions from '@betit/rollup-plugin-rename-extensions';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,12 +10,11 @@ export default defineConfig({
 
   plugins: [
     vue(),
-    alias({
-      entries:[
-        // Alias all .jsonld files as .json to load them as JSON files
-        // { find:/^(.*)\.jsonld$/, replacement: '$1.json' }
-      ]
-    }),
+    renameExtensions.default({
+      mappings: {
+          '.jsonld': '.json',
+      },
+    })
   ],
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
