@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapWritableState } from 'pinia';
+import { mapState, mapWritableState, mapActions } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import { useDirectoryCareStore } from '@/stores/directoryCare';
 import { useUserStore } from '@/stores/user';
@@ -42,6 +42,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useUserStore, ['unmarkDocument']),
     translatePhrase,
     toggleInfoBox() {
       this.showInfoBox = !this.showInfoBox;
@@ -63,7 +64,7 @@ export default {
       this.allSuccessDialog = false;
     },
     untagSender() {
-      this.$store.dispatch('unmark', { tag: 'Flagged', documentId: this.sender });
+      this.unmarkDocument({ tag: 'Flagged', documentId: this.sender });
     },
     checkAllDone() {
       const selected = this.selectedHoldings;

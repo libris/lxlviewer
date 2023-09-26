@@ -3,6 +3,8 @@ import { cloneDeep, each } from 'lodash-es';
 import { useSettingsStore } from "./settings";
 import { useUserStore } from "./user";
 
+const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
+
 export const useInspectorStore = defineStore('inspector', {
 	state: () => ({
 		data: {}, // TODO: Rename this property
@@ -39,6 +41,7 @@ export const useInspectorStore = defineStore('inspector', {
 		changeHistory: [],
 		event: [],
 		magicShelfMarks: [],
+		extractItemsOnSave: {},
 	}),
 	getters: {
 		// Drop in replacement for Vuex state that returns the entire state object. Do NOT use in new components!!
@@ -193,6 +196,41 @@ export const useInspectorStore = defineStore('inspector', {
 
 			history.splice(history.length - 1, 1);
 			this.updateInspectorData(payload);
+		},
+		addExtractItemOnSave({ path, item }) {
+			const extractItems = {
+				...this.extractItemsOnSave,
+				[path]: item,
+			};
+
+			this.extractItemsOnSave = extractItems;
+
+			// Change value to constant indicating that the item should be extracted when clicking save.
+			this.updateInspectorData({
+				changeList: [
+					{
+						path,
+						value: EXTRACT_ON_SAVE,
+					},
+				],
+				addToHistory: true,
+			});
+		},
+		removeExtractItemOnSave({ path }) {
+			const {
+				[path]: itemToRemove,
+				...rest
+			} = this.extractItemsOnSave;
+
+			this.extractItemsOnSave = rest;
+
+			const indexInChangeHistory = this.changeHistory.findIndex(item => item[0].path === path && item[0].value === EXTRACT_ON_SAVE);
+			if (indexInChangeHistory >= 0) {
+				this.changeHistory = this.changeHistory.filter((_, i) => i !== index);
+			}
+		},
+		flushExtractItemsOnSave() {
+			this.extractItemsOnSave = {};
 		},
 	},
 });

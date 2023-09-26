@@ -162,7 +162,7 @@ export default {
   },
   methods: {
     ...mapActions(useStatusStore, ['pushNotification']),
-    ...mapActions(useInspectorStore, ['addToQuoted', 'updateInspectorData', 'setInspectorStatusValue']),
+    ...mapActions(useInspectorStore, ['addToQuoted', 'updateInspectorData', 'setInspectorStatusValue', 'addExtractItemOnSave', 'removeExtractItemOnSave']),
     highLightLastAdded() {
       const element = this.$el;
       LayoutUtil.ensureInViewport(element);
@@ -236,12 +236,16 @@ export default {
       this.focused = false;
     },
     extract() {
-      this.$store.dispatch('addExtractItemOnSave', { path: this.path, item: this.focusData });
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Link was created', this.user.settings.language, this.resources.i18n)}` });
+      this.addExtractItemOnSave({ path: this.path, item: this.focusData });
+      this.pushNotification({
+        type: 'success',
+        message: `${StringUtil.getUiPhraseByLang('Link was created', this.user.settings.language, this.resources.i18n)}`
+      });
+
       this.closeExtractDialog();
     },
     stopExtracting() {
-      this.$store.dispatch('removeExtractItemOnSave', { path: this.path });
+      this.removeExtractItemOnSave({ path: this.path });
       this.closeExtractDialog();
     },
     checkFocus() {

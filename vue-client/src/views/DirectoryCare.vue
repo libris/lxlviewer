@@ -51,6 +51,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    ...mapActions(useUserStore, ['unmarkDocument']),
     ...mapActions(useStatusStore, ['pushNotification', 'pushLoadingIndicator', 'removeLoadingIndicator']),
     switchTool(id) {
       this.$router.push({ path: `/directory-care/${id}` });
@@ -63,7 +64,7 @@ export default {
             resolve(res.data);
           } else if (res.status === 410) {
             this.errors.removed.push(item);
-            this.$store.dispatch('unmark', { tag: 'Flagged', documentId: item['@id'] });
+            this.unmarkDocument({ tag: 'Flagged', documentId: item['@id'] });
             resolve();
           } else {
             this.errors.other.push(item);

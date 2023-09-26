@@ -86,7 +86,7 @@ export default {
     translatePhrase, lowercase, labelByLang,
     ...mapActions(useStatusStore, ['pushNotification', 'pushLoadingIndicator', 'removeLoadingIndicator']),
     ...mapActions(useEnrichmentStore, ['setEnrichmentSource']),
-    ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue', 'flushChangeHistory']),
+    ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue', 'flushChangeHistory', 'flushExtractItemsOnSave']),
     replaceData(data) {
       this.data = data;
     },
@@ -210,7 +210,7 @@ export default {
       this.flushChangeHistory();
       this.setInspectorStatusValue({ property: 'focus', value: 'mainEntity' });
 
-      this.$store.dispatch('flushExtractItemsOnSave');
+      this.flushExtractItemsOnSave();
 
       if (this.$route.name === 'Inspector' || this.$route.name === 'DocumentHistory') {
         console.log('Initializing view for existing document');
@@ -649,15 +649,15 @@ export default {
         await this.saveExtracted();
         this.saveQueued = () => this.saveItem(done);
       } catch (error) {
-        this.$store.dispatch('pushNotification', { 
+        this.pushNotification({
           type: 'danger',
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
         });
-        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        this.setInspectorStatusValue({ property: 'saving', value: false });
       }
     },
     async saveExtracted() {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
+      this.setInspectorStatusValue({ property: 'saving', value: true });
       for await (const path of Object.keys(this.inspector.extractItemsOnSave)) {
         const cleanedExtractedData = RecordUtil.getCleanedExtractedData(this.inspector.extractItemsOnSave[path], this.inspector.data, this.resources);
         const extractedRecord = RecordUtil.getObjectAsRecord(cleanedExtractedData, {
@@ -676,8 +676,8 @@ export default {
         const savedExtractedMainEntity = LxlDataUtil.splitJson({
           '@graph': savedExtractedRecord['@graph'],
         }).mainEntity;
-        this.$store.dispatch('addToQuoted', savedExtractedMainEntity);
-        this.$store.dispatch('updateInspectorData', {
+        this.addToQuoted(savedExtractedMainEntity)
+        this.updateInspectorData({
           changeList: [
             {
               path,
@@ -686,12 +686,13 @@ export default {
           ],
           addToHistory: false,
         });
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'lastAdded', 
+        this.setInspectorStatusValue({
+          property: 'lastAdded',
           value: `${path}.{"@id":"${savedExtractedMainEntity['@id']}"}`,
         });
       }
-      this.$store.dispatch('flushExtractItemsOnSave');
+
+      this.flushExtractItemsOnSave();
     },
     saveItem(done = false) {
       this.setInspectorStatusValue({ property: 'saving', value: true });
