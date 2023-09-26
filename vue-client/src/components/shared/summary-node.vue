@@ -69,7 +69,7 @@ export default {
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
       <span v-if="fieldKey === 'instanceOf' && item['@type'] !== 'Work'">
-        {{ capitalize(labelByLang(item['@type'])) }} •
+        {{ capitalize(labelByLang(focusData['@type'])) }} •
       </span>
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
@@ -82,8 +82,8 @@ export default {
     >
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">
-          <span v-if="fieldKey === 'instanceOf'">
-            {{ capitalize(labelByLang(item['@type'])) }} •
+          <span v-if="fieldKey === 'instanceOf' && focusData['@type'] !== 'Work'">
+            {{ capitalize(labelByLang(focusData['@type'])) }} •
           </span>
           {{getItemLabel}}
         </router-link>

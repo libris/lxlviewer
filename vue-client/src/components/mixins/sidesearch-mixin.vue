@@ -6,7 +6,6 @@ import { useInspectorStore } from '@/stores/inspector';
 import { useSettingsStore } from '@/stores/settings';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
-import { buildQueryString } from '@/utils/http';
 
 export default {
   data() {
@@ -110,15 +109,6 @@ export default {
       }
       return q;
     },
-    getSearchParams(searchPhrase) {
-      if (this.currentSearchParam == null) {
-        return { q: searchPhrase };
-      }
-
-      const params = Object.assign({}, this.currentSearchParam.mappings || {});
-      this.currentSearchParam.searchProps.forEach((param) => { params[param] = searchPhrase; });
-      return params;
-    },
     fetch(pageNumber) {
       const self = this;
       self.currentPage = pageNumber;
@@ -140,16 +130,58 @@ export default {
       this.fetch(n);
     },
     getItems(keyword) {
-      let params = this.getSearchParams(this.getSearchPhrase(keyword));
-      params = Object.assign(params, {
+      const searchPhrase = this.getSearchPhrase(keyword);
+      const urlSearchParams = new URLSearchParams({
+        ...(!this.currentSearchParam && { q: searchPhrase }),
         _limit: this.maxResults,
         _offset: this.currentPage * this.maxResults,
         _sort: this.sort,
       });
-      if (typeof this.typeArray !== 'undefined' && this.typeArray.length > 0) {
-        params['@type'] = this.typeArray;
+
+      this.typeArray?.forEach(type => urlSearchParams.append('@type', type));
+      
+      this.currentSearchParam?.searchProps
+        .forEach(searchProp => urlSearchParams.append(searchProp, searchPhrase));
+    
+      Object.keys(this.currentSearchParam?.mappings || {})
+        .forEach(key => urlSearchParams.append(key, this.currentSearchParam.mappings[key]));
+
+      if (this.fieldKey) {
+        const field = VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.resources.context);
+        /**
+         * If field is a kbv:predicate (e.g. role) then filter linkable items depending on field and parent type.
+         * */
+        // A VocabUtil.isSubPropertyOf(field.subPropertyOf, 'predicate', ...) would be preferable here.
+        if (field.subPropertyOf?.find(subProp => subProp['@id'] === VocabUtil.getTermObject('predicate', this.resources.vocab, this.resources.context)['@id'])) {
+          const statement = VocabUtil.getTermObject(field.domain[0]['@id'], this.resources.vocab, this.resources.context); // e.g. Contribution
+          const statementOf = statement.allowedProperties.find(p => p.domain?.find(d => d['@id'] === statement['@id'])); // e.g. contributionOf
+          const subClassesOfRanges = [
+            ...new Set(
+              [...(statementOf.range || []), ...(statementOf.rangeIncludes || [])].flatMap( // iterate over both range and rangeIncludes
+                rangeItem => VocabUtil.getSubClassChain(rangeItem['@id'], this.resources.vocabClasses, this.resources.context), // get subclasses of e.g. Endeavour
+              ),
+            ),
+          ];
+
+          const fieldParentPath = this.path.split('.').slice(0, -2).join('.');
+          const fieldParentType = get(this.inspector.data, fieldParentPath)['@type']; // e.g. Text
+          const fieldParentBaseClasses = VocabUtil.getBaseClasses(
+            VocabUtil.getTermObject(fieldParentType, this.resources.vocab, this.resources.context)['@id'],
+            this.resources.vocab,
+            this.resources.context,
+          );
+
+          const linkableDomainIds = fieldParentBaseClasses
+            .filter(baseClassName => subClassesOfRanges.includes(baseClassName))
+            .map((className => VocabUtil.getTermObject(className, this.resources.vocab, this.resources.context)['@id']));
+
+          // Append urlSearchParams with linkable domain ids
+          linkableDomainIds.forEach(className => urlSearchParams.append('or-domain.@id', className));
+        }
       }
-      const searchUrl = `${this.settings.apiPath}/find.jsonld?${buildQueryString(params)}`;
+
+      const searchUrl = `${this.settings.apiPath}/find.jsonld?${urlSearchParams.toString()}`;
+
       return new Promise((resolve, reject) => {
         // Check if abortcontroller is available
         // ie11 doesn't have it atm so they don't get cancellable fetches...

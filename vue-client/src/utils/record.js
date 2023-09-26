@@ -2,6 +2,7 @@ import { cloneDeep, each, unset, get, set } from 'lodash-es';
 import * as LxlDataUtil from 'lxljs/data';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
+import * as VocabUtil from '../../../lxljs/vocab';
 
 export function getRecordId(data, quoted) {
   const recordObj = recordObject(data, quoted);
@@ -260,12 +261,40 @@ export function getObjectAsRecord(mainEntity, record = {}) {
   return newObj;
 }
 
+export function getCleanedExtractedData(extractedData, inspectorData, resources) {
+  /** 
+   * Cleans extracted data and adds title from parent data if it is missing.
+   */
+  const cleanObj = DataUtil.removeNullValues(extractedData);
+  if (cleanObj == null) return null; // Nothing left of this
+  if (VocabUtil.isSubClassOf(extractedData['@type'], 'Work', resources.vocabClasses, resources.context)) {
+    // Entity is of type Work or derived type
+    if (extractedData.hasOwnProperty('hasTitle') === false) {
+      let titleOnInstance = null;
+      const mainEntity = inspectorData.mainEntity;
+      if (mainEntity.hasOwnProperty('hasTitle')) {
+        const hasTitle = mainEntity.hasTitle;
+        for (let i = 0; i < hasTitle.length; i++) {
+          if (hasTitle[i]['@type'] === 'Title') {
+            const titleObj = cloneDeep(hasTitle[i]);
+            titleObj.source = [{ '@id': mainEntity['@id'] }];
+            titleOnInstance = titleObj;
+            break;
+          }
+        }
+      }
+      if (titleOnInstance != null) {
+        cleanObj.hasTitle = [titleOnInstance];
+      }
+    }
+  }
+  return cleanObj;
+}
+
 export function convertToMarc(inspectorData, settings, user) {
   const editorObj = DataUtil.getMergedItems(
     DataUtil.removeNullValues(inspectorData.record),
     DataUtil.removeNullValues(inspectorData.mainEntity),
-    DataUtil.removeNullValues(inspectorData.work),
-    inspectorData.quoted,
   );
   const apiPath = settings.apiPath;
   return new Promise((resolve, reject) => {

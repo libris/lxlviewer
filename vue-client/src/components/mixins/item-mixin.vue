@@ -118,42 +118,7 @@ export default {
       return `${this.entityType}.${this.fieldKey}`;
     },
     extractedMainEntity() {
-      const cleanObj = DataUtil.removeNullValues(this.focusData);
-      if (cleanObj == null) return null; // Nothing left of this
-      if (VocabUtil.isSubClassOf(this.focusData['@type'], 'Work', this.resources.vocabClasses, this.resources.context)) {
-        // Entity is of type Work or derived type
-        if (this.focusData.hasOwnProperty('hasTitle') === false) {
-          let titleOnInstance = null;
-          const mainEntity = this.inspector.data.mainEntity;
-          if (mainEntity.hasOwnProperty('hasTitle')) {
-            const hasTitle = mainEntity.hasTitle;
-            for (let i = 0; i < hasTitle.length; i++) {
-              if (hasTitle[i]['@type'] === 'Title') {
-                const titleObj = cloneDeep(hasTitle[i]);
-                titleObj.source = [{ '@id': mainEntity['@id'] }];
-                titleOnInstance = titleObj;
-                break;
-              }
-            }
-          }
-          if (titleOnInstance != null) {
-            cleanObj.hasTitle = [titleOnInstance];
-          }
-        }
-      }
-      return cleanObj;
-    },
-    extractedItem() {
-      if (this.focusData.hasOwnProperty('@type') === false) {
-        return null;
-      }
-      const newRecord = {};
-      newRecord.descriptionCreator = { '@id': this.user.getActiveLibraryUri() };
-      if (this.inspector.data.record['@id'] !== 'https://id.kb.se/TEMPID') {
-        newRecord.derivedFrom = { '@id': this.inspector.data.record['@id'] };
-      }
-      const objAsRecord = RecordUtil.getObjectAsRecord(this.extractedMainEntity, newRecord);
-      return objAsRecord;
+      return RecordUtil.getCleanedExtractedData(this.focusData, this.inspector.data, this.resources);
     },
     isExtractable() {
       if (this.isCompositional === true) {

@@ -6,6 +6,8 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 
+const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
+
 Vue.use(Vuex);
 
 /* eslint-disable no-param-reassign */
@@ -19,6 +21,33 @@ const store = new Vuex.Store({
     oauth2Client: state => state.oauth2Client,
   },
   actions: {
+    addExtractItemOnSave({ commit, dispatch, state }, { path, item }) {
+      commit('setExtractItemsOnSave', {
+        ...state.inspector.extractItemsOnSave,
+        [path]: item,
+      });
+      // Change value to constant indicating that the item should be extracted when clicking save.
+      dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path,
+            value: EXTRACT_ON_SAVE,
+          },
+        ],
+        addToHistory: true,
+      });
+    },
+    removeExtractItemOnSave({ commit, state }, { path }) {
+      const { [path]: itemToRemove, ...rest } = state.inspector.extractItemsOnSave;
+      commit('setExtractItemsOnSave', rest);
+      const indexInChangeHistory = state.inspector.changeHistory.findIndex(item => item[0].path === path && item[0].value === EXTRACT_ON_SAVE);
+      if (indexInChangeHistory >= 0) {
+        commit('removeIndexFromChangeHistory', indexInChangeHistory);
+      }
+    },
+    flushExtractItemsOnSave({ commit }) {
+      commit('setExtractItemsOnSave', {});
+    },
     checkForMigrationOfUserDatabase({ commit, dispatch, state }) {
       // Check if user has records stored in localStorage
       if (state.userStorage.list) {

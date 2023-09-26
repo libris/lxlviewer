@@ -27,7 +27,6 @@ export default {
     return {
       extractDialogActive: false,
       showHelp: false,
-      showExtractSummary: false,
       listItemSettings: {
         text: 'Replace local entity',
         styling: 'brand',
@@ -332,32 +331,17 @@ export default {
             </div>
           </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
-            <div class="SearchWindow-summaryContainer" v-show="showExtractSummary">
-              <EntitySummary
-                :focus-data="itemInfo"
-                :should-link="false"
-                :valueDisplayLimit=1
-              />
-            </div>
             <div class="SearchWindow-dialogContainer">
-              <p class="preview-entity-text uppercaseHeading">Vill du skapa {{ typeOfExtractingEntity }} av lokal entitet?</p>
+              <p class="preview-entity-text uppercaseHeading"> {{ 'Do you want to create' | translatePhrase }} {{ typeOfExtractingEntity }}?</p>
               <p>
-                Den lokala entiteten bryts ut och länkas. Förhandsgranska för att se hur den kommer att se ut.
+                {{ 'The local entity will be extracted and linked' | translatePhrase }}.
               </p>
               <button-component
-                :button-text="['Yes, create', typeOfExtractingEntity ]"
+                :button-text="'Yes, start linking'"
                 icon="circle-plus"
                 :variant="'primary'"
                 :inverted="true"
                 @click="extract()"
-              />
-              <button-component
-                :button-text="showExtractSummary ? 'Hide' : 'Preview'"
-                :transparent="true"
-                :variant="'primary'"
-                :inverted="true"
-                :border="false"
-                @click="showExtractSummary = !showExtractSummary"
               />
             </div>
           </div>

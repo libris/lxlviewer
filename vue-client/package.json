@@ -1,7 +1,7 @@
 {
-  "name": "vue3-client",
+  "name": "vue-client",
+  "version": "1.33.0",
   "private": true,
-  "version": "1.32.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

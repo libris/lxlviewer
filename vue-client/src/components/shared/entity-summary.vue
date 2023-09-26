@@ -389,7 +389,7 @@ export default {
         <template v-if="node.value !== null">
           <span v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="capitalize(labelByLang(node.property))">{{ capitalize(labelByLang(node.property)) }}</span>
           <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.prevent.self="(e) => { if (handleOverflow) { e.target.classList.toggle('expanded'); } }">
-            <SummaryNode :hover-links="hoverLinks" :handle-overflow="handleOverflow" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
+            <SummaryNode :hover-links="hoverLinks" :handle-overflow="false" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>
 
@@ -455,6 +455,7 @@ export default {
     background-color: $badge-color-transparent;
     transition: background-color 0.5s ease;
     letter-spacing: 0.5px;
+    font-size: 1.2rem;
     font-weight: 400;
     padding: 0 0.75em;
     border-radius: 1em;
