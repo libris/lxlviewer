@@ -261,13 +261,13 @@ export default {
         {{ translatePhrase('Filter') }} 
         <font-awesome-icon
           :icon="['fas', 'caret-down']"
-          class="hidden-md hidden-lg"
+          class="d-md-none"
           v-if="!hideFacetColumn"
         />
 
         <font-awesome-icon
           :icon="['fas', 'caret-right']"
-          class="hidden-md hidden-lg"
+          class="d-md-none"
           v-if="hideFacetColumn"
         />
       </div>
