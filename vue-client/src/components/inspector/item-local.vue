@@ -543,7 +543,6 @@ export default {
         <Dropdown>
           <entity-action
             v-if="inspector.status.editing && !isLocked && !isExtracting"
-            @action="managerMenuOpen ? closeManagerMenu() : openManagerMenu()"
             @highlight="addHighlight('info')"
             @dehighlight="removeHighlight('info')"
             label="Manage"
@@ -561,8 +560,8 @@ export default {
               <ul class="Toolbar-menuList">
                 <li class="Toolbar-menuItem">
                   <a tabindex="0" class="Toolbar-menuLink"
-                    @keyup.enter="copyThis(), closeManagerMenu()"
-                    @click="copyThis(), closeManagerMenu()"
+                    @keyup.enter="copyThis()"
+                    @click="copyThis()"
                   >
                     <font-awesome-icon :icon="['fas', 'copy']" aria-hidden="true" />
                     {{translatePhrase("Copy to clipboard")}}
@@ -571,8 +570,8 @@ export default {
 
                 <li class="Toolbar-menuItem" v-if="inArray">
                   <a tabindex="0" class="Toolbar-menuLink"
-                    @keyup.enter="cloneThis(), closeManagerMenu()"
-                    @click="cloneThis(), closeManagerMenu()"
+                    @keyup.enter="cloneThis()"
+                    @click="cloneThis()"
                   >
                     <font-awesome-icon :icon="['fas', 'clone']" aria-hidden="true" />
                     {{translatePhrase("Duplicate entity")}}
