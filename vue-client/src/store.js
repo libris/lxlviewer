@@ -5,9 +5,9 @@ import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
-import ChangeNotes from '@/utils/changenotes';
 import * as User from '@/models/user';
 import settings from './settings';
+import ChangeNotes from './utils/changenotes';
 
 Vue.use(Vuex);
 
@@ -96,7 +96,8 @@ const store = new Vuex.Store({
       failedRemoteDatabases: '',
       hintSigelChange: false,
     },
-    changenotes: new ChangeNotes(),
+    changeNotes: new ChangeNotes(),
+    changes: {},
     user: User.getUserObject(),
     userDatabase: null,
     userStorage: {
@@ -166,6 +167,9 @@ const store = new Vuex.Store({
     setCompositeHistoryData(state, data) {
       state.inspector.compositeHistoryData = data;
     },
+    setChanges(state, data) {
+      state.inspector.setChanges = data;
+    },
     addToLanguageCache(state, data) {
       const languageCache = cloneDeep(state.inspector.languageCache);
       for (const [key, value] of Object.entries(data)) {
@@ -208,15 +212,15 @@ const store = new Vuex.Store({
       }
       // Set the new values
       each(payload.changeList, (node) => {
-        // console.log('DATA_UPDATE:', JSON.stringify(node));
-        const tracker = state.changenotes.trackChange(state, inspectorData, node.path);
+        const match = state.changeNotes.computeCategoryMatchFor(state, inspectorData, node.path);
+        if (match) {
+          state.changes[match.categoryId] = match;
+        }
+
         if (node.path === '') {
           inspectorData = node.value;
         } else {
           set(inspectorData, node.path, node.value);
-        }
-        if (tracker) {
-          tracker.completeChange(node.value);
         }
       });
       // Check if we should remove work node (if it went from local to being linked)
@@ -409,6 +413,7 @@ const store = new Vuex.Store({
     display: state => state.resources.display,
     context: state => state.resources.context,
     supportedTags: state => state.inspector.supportedTags.data,
+    changes: state => state.changes,
   },
   actions: {
     addExtractItemOnSave({ commit, state }, { path, item }) {
@@ -833,6 +838,9 @@ const store = new Vuex.Store({
       });
 
       return promise;
+    },
+    setChangePaths({ commit }, data) {
+      commit('setChangePaths', data);
     },
   },
 });

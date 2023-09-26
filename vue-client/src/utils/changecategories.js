@@ -1,4 +1,4 @@
-// NOTE: This is intensionally JSON-LD shaped, to support moving from this
+// NOTE: This is intentionally JSON-LD shaped, to support moving from this
 // hardcoded data to a dataset with minimal effort.
 
 const IDKBSE = 'https://id.kb.se/changenote/';

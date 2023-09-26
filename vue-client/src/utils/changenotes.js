@@ -8,10 +8,9 @@ const DELMARKER = '⌫'; // &#9003;
 export default class ChangeNotes {
   constructor() {
     this.categoryPatterns = indexCategories(CHANGE_CATEGORIES);
-    // console.log(JSON.stringify(this.categoryPatterns, null, 2));
   }
 
-  findCategoryMatchFor(subject, rulePath) {
+  findCategoryMatchFor(state, subject, rulePath) {
     let categoryId = null;
 
     let object = null;
@@ -53,14 +52,18 @@ export default class ChangeNotes {
     if (categoryId == null) {
       return null;
     }
+    const getLabel = o => DisplayUtil.getItemLabel(o, state.resources, state.inspector.data.quoted, state.settings);
 
-    return { categoryId, object, matchedPath };
+    const chipLabel = getLabel(object);
+    const oldValue = chipLabel;
+
+    return { categoryId, oldValue, matchedPath };
   }
 
-  computeCategoryMatchFor(inspectorData, path) {
+  computeCategoryMatchFor(state, inspectorData, path) {
     let rulePath = path.replace(/^mainEntity\./, '');
     let subject = inspectorData.mainEntity;
-    let match = this.findCategoryMatchFor(subject, rulePath);
+    let match = this.findCategoryMatchFor(state, subject, rulePath);
     let record = inspectorData.record;
 
     if (match == null) {
@@ -73,7 +76,7 @@ export default class ChangeNotes {
       if (!subject.hasOwnProperty('meta')) {
         subject.meta = { '@type': 'Record' };
       }
-      match = this.findCategoryMatchFor(subject, rulePath);
+      match = this.findCategoryMatchFor(state, subject, rulePath);
       if (match == null) {
         return null;
       }
@@ -84,34 +87,23 @@ export default class ChangeNotes {
 
     match.matchedPath = `mainEntity.${match.matchedPath}`;
     match.record = record;
+    match.path = path;
 
     return match;
   }
 
-  trackChange(state, inspectorData, path) {
-    const match = this.computeCategoryMatchFor(inspectorData, path);
-    if (match == null) {
-      return null;
+  static completeChange(state, match) {
+    const { record, categoryId, oldValue, matchedPath, path } = match;
+    const inspectorData = state.inspector.data;
+
+    let newValue = null;
+    const changedValue = get(inspectorData, path);
+    const innerChange = path !== matchedPath;
+    if (innerChange || !isEmpty(changedValue)) {
+      newValue = DisplayUtil.getItemLabel(get(inspectorData, matchedPath), state.resources, inspectorData.quoted, state.settings);
     }
-    const { record, categoryId, object, matchedPath } = match;
-
-    const getLabel = o => DisplayUtil.getItemLabel(o, state.resources, inspectorData.quoted, state.settings);
-
-    // IMPROVE: check if added?
-    // Won't reach here; use computeCategoryMatchFor again in completeChange to match newValue...?
-    const chipLabel = getLabel(object);
-    const oldValue = chipLabel; // get(inspectorData, path);
-
-    return {
-      completeChange: (changedValue) => {
-        let newValue = null;
-        const innerChange = path !== matchedPath;
-        if (innerChange || !isEmpty(changedValue)) {
-          newValue = getLabel(get(inspectorData, matchedPath));
-        }
-        completeChange(record, categoryId, oldValue, newValue);
-      },
-    };
+    completeChange(record, categoryId, oldValue, newValue);
+    return true;
   }
 }
 
@@ -128,15 +120,10 @@ function completeChange(record, categoryId, oldValue, newValue) {
 
   oldValue = extractOldValue(existingChange) || oldValue;
 
-  /* Remove ChangeNote if value is changed back? Only if changed within the same editing session?
-  if (existingChange && oldValue === newValue) {
-    record.hasChangeNote.splice(idx, 1);
-    if (record.hasChangeNote.length === 0) {
-      delete record.hasChangeNote;
-    }
+  // TODO: compare on full value instead of labels
+  if (oldValue === newValue) {
     return;
   }
-  */
 
   const changeText = makeDiffValue(oldValue, newValue);
 
@@ -147,7 +134,7 @@ function completeChange(record, categoryId, oldValue, newValue) {
     label: [changeText],
     category: [{ '@id': categoryId }],
   };
-
+  console.log('changeNote', JSON.stringify(changeNote));
   if (idx > -1) {
     record.hasChangeNote[idx] = changeNote;
   } else {
@@ -164,7 +151,7 @@ function extractOldValue(existingChange) {
     if (existingChangeText) {
       const sepIdx = existingChangeText.indexOf(SEP);
       if (sepIdx > -1) {
-        return existingChangeText.substring(0, sepIdx);
+        return existingChangeText.substring(sepIdx + SEP.length, existingChangeText.length);
       }
     }
   }
