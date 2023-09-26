@@ -1,14 +1,20 @@
 <script>
+import { translatePhrase, capitalize, labelByLang, convertResourceLink } from '@/utils/filters';
+import { copyText } from '@/utils/mixins';
 import { each, isArray, cloneDeep } from 'lodash-es';
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useEnrichmentStore } from '@/stores/enrichment';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
-import OverflowMixin from '@/components/mixins/overflow-mixin';
-import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
-import TypeIcon from '@/components/shared/type-icon';
-import SummaryNode from '@/components/shared/summary-node';
+import OverflowMixin from '@/components/mixins/overflow-mixin.vue';
+import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
+import TypeIcon from '@/components/shared/type-icon.vue';
+import SummaryNode from '@/components/shared/summary-node.vue';
 import * as RecordUtil from '@/utils/record';
-import LensMixin from '../mixins/lens-mixin';
+import LensMixin from '../mixins/lens-mixin.vue';
 
 export default {
   mixins: [LensMixin, OverflowMixin],
@@ -121,11 +127,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'user',
-      'enrichment',
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useEnrichmentStore, ['enrichmentData']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     encodingLevel() {
       /*
         TODO:
@@ -138,8 +143,8 @@ export default {
       if (this.focusData.hasOwnProperty('meta')) {
         return this.focusData.meta.encodingLevel;
       }
-      if (this.enrichment.data.source && this.enrichment.data.source.hasOwnProperty('record')) {
-        return this.enrichment.data.source.record.encodingLevel;
+      if (this.enrichmentData.source && this.enrichmentData.source.hasOwnProperty('record')) {
+        return this.enrichmentData.source.record.encodingLevel;
       }
       return false;
     },
@@ -176,13 +181,10 @@ export default {
     uri() {
       if (this.focusData.hasOwnProperty('@id') || this.focusData.hasOwnProperty('@graph')) {
         const uri = this.focusData.hasOwnProperty('@id') ? this.focusData['@id'] : this.focusData['@graph'][0].mainEntity['@id'];
-        const convertedUri = this.$options.filters.convertResourceLink(uri);
+        const convertedUri = convertResourceLink(uri);
         return convertedUri;
       }
       return null;
-    },
-    settings() {
-      return this.$store.getters.settings;
     },
     recordId() {
       if (this.focusData.hasOwnProperty('@id')) {
@@ -231,7 +233,7 @@ export default {
         this.resources,
       );
       if (type === this.recordType && ['Instance', 'Work'].indexOf(type) !== -1) {
-        return `${this.$options.filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
+        return `${translatePhrase('Unspecified')}, ${translatedBaseType}`;
       }
       if (type === this.recordType) {
         return translatedBaseType;
@@ -279,9 +281,10 @@ export default {
     });
   },
   methods: {
+    labelByLang, capitalize, translatePhrase, convertResourceLink,
     copyFnurgel() {
       const self = this;
-      this.$copyText(this.uri).then(() => {
+      copyText(this.uri).then(() => {
         self.recentlyCopiedId = true;
         setTimeout(() => {
           self.recentlyCopiedId = false;
@@ -310,9 +313,7 @@ export default {
 </script>
 
 <template>
-<section 
-  class="EntitySummary"
-  v-bind:class="{'is-embedded-in-field': embeddedInField}">
+<section class="EntitySummary" v-bind:class="{'is-embedded-in-field': embeddedInField}">
   <div class="EntitySummary-meta">
     <type-icon
       v-if="recordType === 'Work' || recordType === 'Place'"
@@ -321,14 +322,27 @@ export default {
     <encoding-level-icon
       v-if="encodingLevel && recordType === 'Instance'"
       :encodingLevel="encodingLevel"
-      :tooltipText="encodingLevel | labelByLang"/>
+      :tooltipText="labelByLang(encodingLevel)"
+    />
     <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
-    <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
-      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
-      </i>{{ idAsFnurgel }}
+
+    <div
+      v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0"
+      class="EntitySummary-id"
+      :class="{'recently-copied': recentlyCopiedId }"
+      @mouseover="idHover = true"
+      @mouseout="idHover = false"
+    >
+      <font-awesome-icon
+        :icon="['far', 'copy']"
+        class="EntitySummary-idCopyIcon"
+        v-tooltip.top="idTooltipText"
+        :class="{'collapsedIcon': !idHover || recentlyCopiedId }"
+        @click="copyFnurgel"
+      />{{ idAsFnurgel }}
     </div>
   </div>
 
@@ -345,7 +359,7 @@ export default {
         v-if="isImport && shouldLink" 
         :title="header.join(', ')" 
         v-on:click="importThis()">
-        <i class="fa fa-external-link" aria-hidden="true"></i>
+        <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
         {{ header.join(', ') }}
       </span>
       <router-link class="EntitySummary-titleLink"
@@ -353,29 +367,32 @@ export default {
         :to="this.routerPath" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
-        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
+        <font-awesome-icon v-if="shouldOpenTab" :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
         {{ header.join(', ') }}
       </router-link>
       <a class="EntitySummary-titleLink"
         v-if="!isLibrisResource && !isImport && shouldLink" 
-        :href="uri | convertResourceLink" 
+        :href="convertResourceLink(uri)"
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
-        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
+        <font-awesome-icon v-if="shouldOpenTab" class="EntitySummary-icon" :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
         {{ header.join(', ') }}
       </a>
-      
     </h3>
+
     <ul class="EntitySummary-details" v-show="!isCompact" :style="{ 'min-height': animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
-      <li :class="`EntitySummary-detailsItem-${labelStyle}`"
+      <li
+        :class="`EntitySummary-detailsItem-${labelStyle}`"
         v-for="node in limitedInfo" 
-        :key="node.property">
+        :key="node.property"
+      >
         <template v-if="node.value !== null">
-          <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang | capitalize">{{ node.property | labelByLang | capitalize }}</span>
+          <span v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="capitalize(labelByLang(node.property))">{{ capitalize(labelByLang(node.property)) }}</span>
           <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.prevent.self="(e) => { if (handleOverflow) { e.target.classList.toggle('expanded'); } }">
             <SummaryNode :hover-links="hoverLinks" :handle-overflow="handleOverflow" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>
         </template>
+
         <template v-else-if="isReplacedBy !== ''">
           <span :class="`EntitySummary-detailsKey-${labelStyle}`">Ersatt av</span>
           <span :class="`EntitySummary-detailsValue-${labelStyle}`">{{ v }}</span>
@@ -383,11 +400,11 @@ export default {
       </li>
     </ul>
   </div>
-  <resize-observer @notify="calculateOverflow" />
+  <!-- <resize-observer @notify="calculateOverflow" /> -->
 </section>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .EntitySummary {
   display: flex;
@@ -418,7 +435,7 @@ export default {
     white-space: nowrap;
 
     .database {
-      border: 1px solid @grey;
+      border: 1px solid $grey;
       border-radius: 0.3em;
       float: right;
       line-height: 1;
@@ -434,17 +451,18 @@ export default {
     flex-grow: 0;
     text-align: right;
     text-transform: none;
-    color: @grey-very-dark-transparent;
-    background-color: @badge-color-transparent;
+    color: $grey-very-dark-transparent;
+    background-color: $badge-color-transparent;
     transition: background-color 0.5s ease;
     letter-spacing: 0.5px;
     font-weight: 400;
     padding: 0 0.75em;
     border-radius: 1em;
+    font-size: .75em;
 
     &.recently-copied {
-      background-color: @brand-success;
-      color: @white;
+      background-color: $brand-success;
+      color: $white;
     }
   }
   &-idCopyIcon {
@@ -454,6 +472,7 @@ export default {
     width: 1.2em;
     opacity: 1;
     cursor: pointer;
+
     &.collapsedIcon {
       margin: 0 0 0 0;
       width: 0;
@@ -488,18 +507,18 @@ export default {
     height: auto;
 
     & .highlight {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
     }
 
     .ResultList & {
-      color: @brand-primary;
+      color: $brand-primary;
     }
 
     &--imported {
       cursor: pointer;
       &:hover {
         text-decoration: underline;
-        color: @link-hover-color;
+        color: $link-hover-color;
       }
     }
 
@@ -515,10 +534,10 @@ export default {
   &-titleLink {
     &:visited {
       // Commented out until fixing in IE11
-      // color: @link-visited-color;
+      // color: $link-visited-color;
     }
     &.blue-link {
-      color: @brand-id;
+      color: $brand-id;
     }
   }
 
@@ -542,27 +561,28 @@ export default {
     flex-direction: column;
     min-width: 0;
     font-size: 1.4rem;
-    @media (min-width: @screen-sm-min) {
+
+    @include media-breakpoint-up(sm) {
       padding: 0.2rem 0;
       flex-direction: row;
     }
   }
   
   &-detailsKey-regular {
-    @media (min-width: @screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       flex-basis: 6em;
     }
     flex-grow: 1;
     font-weight: 600;
     margin-right: 0.5em;
-    color: @grey-darker;
+    color: $grey-darker;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
   }
   
   &-detailsValue-regular {
-    @media (min-width: @screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       flex-basis: 75%;
       flex-grow: 2;
       align-self: flex-end;
@@ -577,7 +597,7 @@ export default {
         font-family: FontAwesome;
         content: "\F054";
         font-weight: normal;
-        color: @brand-primary;
+        color: $brand-primary;
         display: inline-block;
         margin-right: 5px;
         transition: transform 0.1s ease;
@@ -622,13 +642,13 @@ export default {
     overflow: hidden;
     white-space: nowrap;
     text-transform: uppercase;
-    color: @grey-darker;
+    color: $grey-darker;
     font-size: 1rem;
     font-weight: 600;
   }
   
   &-detailsValue-top {
-    @media (min-width: @screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       flex-basis: 75%;
       flex-grow: 2;
     }
@@ -640,7 +660,7 @@ export default {
     flex-direction: column;
     min-width: 0;
     font-size: 1.4rem;
-    @media (min-width: @screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       padding: 0.2rem 0;
       flex-direction: row;
     }
@@ -650,7 +670,7 @@ export default {
   }
 
   &-detailsValue-hidden {
-    @media (min-width: @screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       flex-basis: 75%;
       flex-grow: 2;
     }

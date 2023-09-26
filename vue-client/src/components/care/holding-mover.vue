@@ -1,11 +1,16 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useDirectoryCareStore } from '@/stores/directoryCare';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import { filter } from 'lodash-es';
+import { translatePhrase } from '@/utils/filters';
 import * as StringUtil from 'lxljs/string';
-import RecordPicker from '@/components/care/record-picker';
-import HoldingList from '@/components/care/holding-list';
-import ModalComponent from '@/components/shared/modal-component';
 import * as RecordUtil from '@/utils/record';
+import RecordPicker from '@/components/care/record-picker.vue';
+import HoldingList from '@/components/care/holding-list.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
 
 export default {
   name: 'holding-mover',
@@ -30,13 +35,14 @@ export default {
     };
   },
   watch: {
-    'directoryCare.selectedHoldings'(newValue, oldValue) {
+    'selectedHoldings'(newValue, oldValue) {
       if (newValue !== oldValue) {
         this.clearProgress();
       }
     },
   },
   methods: {
+    translatePhrase,
     toggleInfoBox() {
       this.showInfoBox = !this.showInfoBox;
     },
@@ -57,10 +63,10 @@ export default {
       this.allSuccessDialog = false;
     },
     untagSender() {
-      this.$store.dispatch('unmark', { tag: 'Flagged', documentId: this.directoryCare.sender });
+      this.$store.dispatch('unmark', { tag: 'Flagged', documentId: this.sender });
     },
     checkAllDone() {
-      const selected = this.directoryCare.selectedHoldings;
+      const selected = this.selectedHoldings;
       if (filter(this.progress, o => o === 'done').length === selected.length) {
         this.allDone();
       }
@@ -71,7 +77,7 @@ export default {
         self.loading = false;
         self.$refs.sender.doneMoving();
         self.$refs.reciever.doneMoving();
-        if (self.directoryCare.holdingsMoved.length === filter(self.progress, o => o === 'done').length) {
+        if (self.holdingsMoved.length === filter(self.progress, o => o === 'done').length) {
           self.openModal();
         }
       }, 1500);
@@ -80,17 +86,17 @@ export default {
       this.clearProgress();
       this.loading = true;
       const promiseCollection = [];
-      const selected = this.directoryCare.selectedHoldings;
+      const selected = this.selectedHoldings;
 
       for (let i = 0; i < selected.length; i++) {
         this.$set(this.progress, selected[i], 'loading');
         promiseCollection.push(
-          RecordUtil.moveHolding(selected[i], this.directoryCare.reciever, this.user)
+          RecordUtil.moveHolding(selected[i], this.reciever, this.user)
             .then(() => {
               // Success
-              const changeObj = { holdingsMoved: this.directoryCare.holdingsMoved };
-              changeObj.holdingsMoved.push(selected[i]);
-              this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+              const holdingsMoved = this.holdingsMoved;
+              holdingsMoved.push(selected[i]);
+              this.holdingsMoved = holdingsMoved;
               this.$set(this.progress, selected[i], 'done');
               this.checkAllDone();
             }, () => {
@@ -108,35 +114,33 @@ export default {
       }
     },
     switchInstances() {
-      const switchObj = { sender: this.directoryCare.reciever, reciever: this.directoryCare.sender };
-      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...switchObj });
+      this.sender = this.reciever;
+      this.reciever = this.sender;
     },
   },
   computed: {
-    ...mapGetters([
-      'userFlagged',
-      'directoryCare',
-      'settings',
-      'resources',
-      'user',
-    ]),
+    ...mapState(useResourcesStore, ['i18n']),
+    ...mapWritableState(useDirectoryCareStore, ['reciever', 'sender', 'holdingsMoved', 'selectedHoldings']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     infoBoxTooltip() {
       if (this.showInfoBox) {
-        return StringUtil.getUiPhraseByLang('Hide instructions', this.user.settings.language, this.resources.i18n);   
+        return StringUtil.getUiPhraseByLang('Hide instructions', this.user.settings.language, this.i18n);
       }
-      return StringUtil.getUiPhraseByLang('Show instructions', this.user.settings.language, this.resources.i18n);
+      return StringUtil.getUiPhraseByLang('Show instructions', this.user.settings.language, this.i18n);
     },
     anySelected() {
-      return !!(this.directoryCare.sender || this.directoryCare.reciever);
+      return !!(this.sender || this.reciever);
     },
     bothSelected() {
-      return !!(this.directoryCare.sender && this.directoryCare.reciever);
+      return !!(this.sender && this.reciever);
     },
   },
   mounted() {
     this.$nextTick(() => {
-      const changeObj = { sender: null, reciever: null, selectedHoldings: [] };
-      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+      this.sender = null;
+      this.reciever = null;
+      this.selectedHoldings = [];
     });
   },
 };
@@ -146,17 +150,22 @@ export default {
   <div class="HoldingMover">
     <div class="HoldingMover-infoBoxToggle" v-if="flaggedInstances.length > 0">
       <span class="icon icon--md">
-        <i v-tooltip="infoBoxTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
+        <font-awesome-icon
+          v-tooltip="infoBoxTooltip"
+          tabindex="0"
+          aria-haspopup="true"
+          :icon="['fas', 'circle-question']"
           ref="helpIcon"
           @mouseover="infoBoxHover = true"
           @mouseleave="infoBoxHover = false"
           @click="toggleInfoBox"
-          @keyup.enter="toggleInfoBox"></i>
+          @keyup.enter="toggleInfoBox"></font-awesome-icon>
       </span>
     </div>
+
     <div class="HoldingMover-infoBox" v-if="flaggedInstances.length === 0 || showInfoBox">
       <div class="HoldingMover-infoBoxColumn">
-        <div class="iconCircle"><i class="fa fa-fw fa-flag"></i></div>
+        <div class="iconCircle"><font-awesome-icon :icon="['far', 'flag']"></font-awesome-icon></div>
         <span class="header">Flagga post</span>
         <p>
           För att kunna flytta bestånd behöver du först flagga de bibliografiska poster du vill flytta bestånd mellan.
@@ -166,7 +175,7 @@ export default {
         </p>
       </div>
       <div class="HoldingMover-infoBoxColumn">
-        <div class="iconCircle"><i class="fa fa-fw fa-exchange"></i></div>
+        <div class="iconCircle"><font-awesome-icon :icon="['fas', 'arrow-right-arrow-left']"></font-awesome-icon></div>
         <span class="header">Flytta bestånd</span>
         <p>
           När en post är flaggad kan du flytta beståndsposter som tillhör något av dina sigel.<br>
@@ -176,30 +185,35 @@ export default {
         </p>
       </div>
       <div class="HoldingMover-infoBoxColumn">
-        <div class="iconCircle"><i class="fa fa-fw fa-check"></i></div>
+        <div class="iconCircle"><font-awesome-icon :icon="['fas', 'check']" /></div>
         <span class="header">Klart!</span>
         <p>
           Beståndet är nu flyttat. Om du vill flagga av samtliga poster gör du det lättast under <router-link to="/user">din profil</router-link>.
         </p>
       </div>
     </div>
+
     <div class="HoldingMover-pickers" v-if="flaggedInstances.length > 0">
       <record-picker 
         name="sender"
         opposite="reciever"
         :flaggedInstances="flaggedInstances"
-        :expand="false">
-        <p v-if="!directoryCare.sender"
-          class="HoldingMover-info" 
-          slot="info">
-          {{ "Holdings are moved from the sender record to the reciever record" | translatePhrase }}.</p>
+        :expand="false"
+      >
+        <template #info>
+          <p v-if="!sender" class="HoldingMover-info">
+            {{ translatePhrase("Holdings are moved from the sender record to the reciever record") }}.
+          </p>
+        </template>
       </record-picker>
+
       <div class="HoldingMover-separator" v-if="flaggedInstances.length > 0">
         <button class="btn btn-primary" 
           @click="switchInstances" 
           :disabled="!anySelected"
-          :aria-label="'Switch place' | translatePhrase">
-          <i class="fa fa-fw fa-exchange"></i>
+          :aria-label="translatePhrase('Switch place')"
+        >
+          <font-awesome-icon :icon="['fas', 'arrow-right-arrow-left']"></font-awesome-icon>
         </button>
       </div>
       <record-picker 
@@ -208,6 +222,7 @@ export default {
         opposite="sender"
         :flaggedInstances="flaggedInstances"/>
     </div>
+
     <div class="HoldingMover-resultListContainer"
       :class="{ 'is-empty' : !anySelected}"
       v-if="flaggedInstances.length > 0">
@@ -221,19 +236,22 @@ export default {
       width="500px"
       @close="closeModal"
       title="Move was successful" 
-      modal-type="info">
-      <div slot="modal-body" class="HoldingMover-allSuccessDialogBody">
-        <p>{{ 'All selected holdings has been moved' | translatePhrase }}.</p>
-        <p>{{'Do you want to unmark the sender' | translatePhrase }}?</p>
-        <div class="HoldingMover-allSuccessDialogBtnContainer">
-          <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ 'Yes' | translatePhrase }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ 'No' | translatePhrase }}</button>
+      modal-type="info"
+    >
+      <template #modal-body>
+        <div class="HoldingMover-allSuccessDialogBody">
+          <p>{{ translatePhrase('All selected holdings has been moved') }}.</p>
+          <p>{{ translatePhrase('Do you want to unmark the sender') }}?</p>
+          <div class="HoldingMover-allSuccessDialogBtnContainer">
+            <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ translatePhrase('Yes') }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ translatePhrase('No') }}</button>
+          </div>
         </div>
-      </div>
+      </template>
     </modal-component>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .HoldingMover  {
   &-infoBoxToggle {
@@ -249,17 +267,17 @@ export default {
     margin-bottom: 1em;
     display: flex;
     flex-direction: row;
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       flex-direction: column;
       align-items: center;
     }
     justify-content: space-around;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
   }
   &-infoBoxColumn {
     padding: 2em 1% 1em 1%;
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       padding: 2em;
     }
     display: flex;
@@ -275,13 +293,13 @@ export default {
       width: 100%;
     }
     .iconCircle {
-      border: 1px solid @grey-lighter;
+      border: 1px solid $grey-lighter;
       border-radius: 1em;
       width: 2em;
       height: 2em;
       line-height: 2em;
       text-align: center;
-      color: @brand-primary;
+      color: $brand-primary;
     }
   }
 
@@ -291,7 +309,7 @@ export default {
     flex-direction: row;
     justify-content: space-between;
 
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       flex-direction: column;
       align-items: center;
     }
@@ -302,8 +320,8 @@ export default {
     align-items: baseline;
     margin: 80px 10px;
     justify-content: center;
-    
-    @media (max-width: @screen-sm) {
+
+    @include media-breakpoint-down(sm) {
       margin: 10px;
     }
   }
@@ -313,8 +331,8 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
 
     &.is-empty {
       background-color: unset;
@@ -326,10 +344,10 @@ export default {
     list-style: none;
     margin: 0;
     &-success {
-      color: @brand-success;
+      color: $brand-success;
     }
     &-error {
-      color: @brand-danger;
+      color: $brand-danger;
     }
     &-loading {
     }

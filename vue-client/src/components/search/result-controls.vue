@@ -1,11 +1,15 @@
 <script>
-import { mapGetters } from 'vuex';
+import { translatePhrase, lowercase, asAppPath } from '@/utils/filters';
+import { mapState, mapWritableState } from 'pinia';
+import { useStatusStore } from '@/stores/status';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
-import Sort from '@/components/search/sort';
-import FilterBadge from '@/components/search/filter-badge';
-import LensMixin from '@/components/mixins/lens-mixin';
-import FacetMixin from '@/components/mixins/facet-mixin';
+import Sort from '@/components/search/sort.vue';
+import FilterBadge from '@/components/search/filter-badge.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import FacetMixin from '@/components/mixins/facet-mixin.vue';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 
 export default {
@@ -32,12 +36,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useStatusStore, ['workingRemoteDatabases']),
+    ...mapWritableState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     excludeFilters() {
       const filtersToBeExcluded = PropertyMappings.flatMap(prop => Object.keys(prop.mappings));
       return filtersToBeExcluded;
@@ -149,6 +150,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase, lowercase, asAppPath,
     toggleFilterByHasItem() {
       if (this.filteredByHasItem) {
         this.removeFilter('@reverse.itemOf.heldBy.@id');
@@ -171,12 +173,12 @@ export default {
     setCompact() {
       const user = this.user;
       user.settings.resultListType = 'compact';
-      this.$store.dispatch('setUser', user);
+      this.user = user;
     },
     setFull() {
       const user = this.user;
       user.settings.resultListType = 'detailed';
-      this.$store.dispatch('setUser', user);
+      this.user = user;
     },
     getNewResult(url) {
       this.changeResultListStatus('loading', true);
@@ -208,34 +210,47 @@ export default {
   <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
       <p class="ResultControls-resultText" id="resultDescr">
-        <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
-        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
-        <span v-else class="ResultControls-numTotal">{{'No hits' | translatePhrase }}</span>
-        
-        <span v-if="$route.params.perimeter === 'remote' && status.workingRemoteDatabases.length > 0">{{ 'from' | translatePhrase }} <span v-for="(db, index) in status.workingRemoteDatabases" :key="index"><span class="ResultControls-dbLabel">{{ db }}</span>{{ index !== status.workingRemoteDatabases.length - 1 ? ', ' : '' }}</span></span>
+        <span v-if="pageData.totalItems > 0"> {{translatePhrase(['Showing', resultRange, 'of']) }} </span>
+        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{ lowercase(translatePhrase('Hits')) }}</span>
+        <span v-else class="ResultControls-numTotal">{{ translatePhrase('No hits') }}</span>
+        <span v-if="$route.params.perimeter === 'remote' && workingRemoteDatabases.length > 0">
+          {{ translatePhrase('from') }}
+          <span v-for="(db, index) in workingRemoteDatabases" :key="index">
+            <span class="ResultControls-dbLabel">{{ db }}</span>
+            {{ index !== workingRemoteDatabases.length - 1 ? ', ' : '' }}
+          </span>
+        </span>
       </p>
+
       <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
-        {{ 'The search gave more results than can be displayed' | translatePhrase }}.
+        {{ translatePhrase('The search gave more results than can be displayed') }}.
       </p>
+
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
-        <sort 
+        <sort
           v-if="searchedTypes && $route.params.perimeter != 'remote'"
           :currentSort="currentSortOrder ? currentSortOrder : ''"
           :common-sort-fallback="true"
           :recordTypes="searchedTypes"
-          @change="$emit('sortChange', $event)"/>
+          @change="$emit('sortChange', $event)"
+        />
+
         <div class="ResultControls-listTypes">
-          <button class="ResultControls-listType icon icon--md"
+          <button
+            class="ResultControls-listType icon icon--md"
             v-on:click="setFull()" 
             v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
-            :title="'Detailed view' | translatePhrase">
-            <i class="fa fa-th-list"></i>
+            :title="translatePhrase('Detailed view')"
+          >
+            <font-awesome-icon :icon="['fas', 'table-list']" />
           </button>
+
           <button class="ResultControls-listType icon icon--md" 
             v-on:click="setCompact()" 
             v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
-            :title="'Compact view' | translatePhrase">
-            <i class="fa fa-list"></i>
+            :title="translatePhrase('Compact view')"
+          >
+            <font-awesome-icon :icon="['fas', 'list']" />
           </button>
         </div>
       </div>
@@ -249,42 +264,42 @@ export default {
       <ul class="ResultControls-pagList">
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
-          <router-link class="ResultControls-pagLink"  v-if="pageData.first" :to="pageData.first['@id'] | asAppPath">{{'First' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.first">{{'First' | translatePhrase}}</a>
+          <router-link class="ResultControls-pagLink"  v-if="pageData.first" :to="asAppPath(pageData.first['@id'])">{{translatePhrase('First')}}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.first">{{translatePhrase('First')}}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.previous }">
           <router-link class="ResultControls-pagLink" 
             v-if="pageData.previous" 
-            :to="pageData.previous['@id'] | asAppPath">{{'Previous' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.previous">{{'Previous' | translatePhrase}}</a>
+            :to="asAppPath(pageData.previous['@id'])">{{translatePhrase('Previous')}}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.previous">{{translatePhrase('Previous')}}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-active': page.active }" v-for="page in pageList" :key="page.link">
           <span class="ResultControls-pagDecor" v-if="!page.link">...</span>
           <router-link class="ResultControls-pagLink" 
-            :to="page.link | asAppPath" v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
+            :to="asAppPath(page.link)" v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
           <a class="ResultControls-pagLink" v-if="page.active">{{page.pageLabel}}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.next }">
           <router-link class="ResultControls-pagLink" 
-            v-if="pageData.next" :to="pageData.next['@id'] | asAppPath">{{'Next' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.next">{{'Next' | translatePhrase}}</a>
+            v-if="pageData.next" :to="asAppPath(pageData.next['@id'])">{{translatePhrase('Next')}}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.next">{{translatePhrase('Next')}}</a>
         </li>
         <li class="ResultControls-pagItem"
           v-bind:class="{ 'is-disabled': !pageData.last || pageData['@id'] === pageData.last['@id'] }">
           <router-link class="ResultControls-pagLink" 
-            v-if="pageData.last" :to="pageData.last['@id'] | asAppPath">{{'Last' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.last">{{'Last' | translatePhrase}}</a>
+            v-if="pageData.last" :to="asAppPath(pageData.last['@id'])">{{translatePhrase('Last')}}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.last">{{transaltePhrase('Last')}}</a>
         </li>
       </ul>
     </nav>
   </div>
 </template>
 
-<style lang="less">
-@buttoncolor: darken(@neutral-color, 10%);
+<style lang="scss">
+$buttoncolor: darken($neutral-color, 10%);
 
 .ResultControls {
   margin: 1em 0;
@@ -295,10 +310,10 @@ export default {
     align-items: center;
     width: 100%;
     min-height: 2.8em;
-    color: @grey-dark;
-    border-bottom: 1px solid @grey-lighter;
+    color: $grey-dark;
+    border-bottom: 1px solid $grey-lighter;
 
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       flex-direction: column;
     }
   }
@@ -313,7 +328,7 @@ export default {
   }
 
   &-numTotal, &-dbLabel {
-    color: @black;
+    color: $black;
   }
 
   &-controlWrap {
@@ -332,18 +347,18 @@ export default {
     &:hover, 
     &:focus {
       background-color: transparent;
-      color: @grey-darker;
+      color: $grey-darker;
     }
 
-    i {
+    svg {
       color: inherit;
       vertical-align: top;
     }
 
     &.is-active {
-      color: @btn-primary;
+      color: $btn-primary;
 
-      i {
+      svg {
         color: inherit;
       }
     }
@@ -359,16 +374,18 @@ export default {
     padding: 0.25em 0.5em;
     border-radius: 2px;
     font-size: 1.4rem;
-    background-color: @neutral-color;
-    border: 1px solid @grey-lighter;
+    background-color: $neutral-color;
+    border: 1px solid $grey-lighter;
     display: flex;
     align-items: center;
     font-weight: normal;
-    i {
+
+    svg {
       margin-right: 0.2em;
     }
+
     .fa-check-square {
-      color: @brand-primary;
+      color: $brand-primary;
     }
   }
 
@@ -380,7 +397,7 @@ export default {
   // &-filterBadge {
   //   background-color: #364a4c;
   //   border: 1px solid #364a4c;
-  //   color: @white;
+  //   color: $white;
   //   font-weight: 600;
   //   font-size: 1.4rem;
   //   padding: 2px 5px 2px 10px;
@@ -401,13 +418,13 @@ export default {
 
   //   & i,
   //   & i:hover {
-  //     color: @white;
+  //     color: $white;
   //   }
 
   //   &.clear-all {
   //     color: inherit;
-  //     background-color: @white;
-  //     border: 1px solid @grey-lighter;
+  //     background-color: $white;
+  //     border: 1px solid $grey-lighter;
 
   //     & i,
   //     & i:hover {
@@ -418,7 +435,7 @@ export default {
   // }
 
   &-pagDecor {
-    color: @grey;
+    color: $grey;
     cursor: initial;
   }
 
@@ -442,7 +459,7 @@ export default {
   }
 
   &-pagLink {
-    color: @grey-dark;
+    color: $grey-dark;
     font-weight: 600;
     padding: 0 3px;
     position: relative;
@@ -451,21 +468,21 @@ export default {
 
     &:hover, 
     &:focus {
-      color: @brand-primary;
+      color: $brand-primary;
       text-decoration: none;
     }
 
     .is-disabled & {
-      color: @grey-light;
+      color: $grey-light;
       cursor: initial;
 
       &:hover {
-        color: @grey-light;
+        color: $grey-light;
       }
     }
 
     .is-active & {
-      color: @black;
+      color: $black;
       z-index: 3;
 
       &::after {
@@ -480,7 +497,7 @@ export default {
       }
 
       &:hover {
-        color: @black;
+        color: $black;
       }
     }
   }

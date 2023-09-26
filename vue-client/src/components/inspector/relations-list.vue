@@ -1,13 +1,17 @@
 <script>
-import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
+import { translatePhrase } from '@/utils/filters';
+import { mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import { partition, flatten } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
-import PanelComponent from '@/components/shared/panel-component';
-import PanelSearchList from '@/components/search/panel-search-list';
-import ModalPagination from '@/components/inspector/modal-pagination';
-import FacetMixin from '@/components/mixins/facet-mixin';
+import Spinner from '../shared/Spinner.vue';
+import PanelComponent from '@/components/shared/panel-component.vue';
+import PanelSearchList from '@/components/search/panel-search-list.vue';
+import ModalPagination from '@/components/inspector/modal-pagination.vue';
+import FacetMixin from '@/components/mixins/facet-mixin.vue';
 import * as httpUtil from '@/utils/http';
 import { getCompactNumber } from '@/utils/math';
 
@@ -46,6 +50,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     go(n) {
       this.currentPage = n;
     },
@@ -84,7 +89,7 @@ export default {
     },
     facetsForDimension(d) {
       const i = this.settings.interestingFacets[d.dimension] || [];
-      // partition into "interesting" and less interesting facets   
+      // partition into "interesting" and scss interesting facets   
       const s = partition(d.observation, o => o.object && (i.includes(o.object._key) || i.includes(o.object['@id'])))
         .map(observations => this.toFacets(observations));
       // insert divider if there are any "interesting" facets
@@ -131,16 +136,9 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
-    settings() {
-      return this.$store.getters.settings;
-    },
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     resultItems() {
       if (this.searchResult) {
         return this.searchResult.items;
@@ -181,7 +179,7 @@ export default {
     'modal-pagination': ModalPagination,
     'panel-component': PanelComponent,
     'panel-search-list': PanelSearchList,
-    'vue-simple-spinner': VueSimpleSpinner,
+    Spinner,
   },
   watch: {
     builtQuery(val, oldVal) {
@@ -201,20 +199,20 @@ export default {
 <template>
   <div class="RelationsList">
     <panel-component :title="windowTitle" :query="selectedQuery" @close="hide()">
-      <template slot="panel-header-extra">
+      <template #panel-header-extra>
         <div class="RelationsList-searchHeader">
           <div
             class="Filter"
           >
-            <label class="Filter-label" for="filter-select">{{ 'Filter' | translatePhrase }}</label>
+            <label class="Filter-label" for="filter-select">{{ translatePhrase('Filter') }}</label>
             <select id="filter-select"
                     class="Filter-select customSelect"
                     v-model="selectedFacet"
                     @change="handleFacetSelected"
-                    :aria-label="'Filter' | translatePhrase">
+                    :aria-label="translatePhrase('Filter')">
               >
               <option :value="allOption">
-                {{ "All" | translatePhrase }} ({{ getCompactNumber(allOption) }})
+                {{ translatePhrase("All") }} ({{ getCompactNumber(allOption) }})
               </option>
               <optgroup v-for="(group, index) in facets" :key="`group-${index}`" :label="facetGroupLabelByLang(group.name)">
                 <option v-for="(option, index) in group.facets" :key="`option-${index}`" :value="option" :disabled="option.disabled">
@@ -225,16 +223,17 @@ export default {
           </div>
         </div>
       </template>
-      <template slot="panel-body">
+
+      <template #panel-body>
         <div class="PanelComponent-searchStatus" v-show="loading">
-          <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+          <Spinner size="lg" :message="translatePhrase('Searching')"></Spinner>
         </div>
         <panel-search-list
           class="RelationsList-resultListContainer"
           :results="resultItems"
           :is-compact="isCompact"
           :list-item-settings="{ excludeProperties: this.listContextType === 'Instance' ? ['itemOf'] : [], excludeComponents: hiddenComponents }"
-          icon="chain"
+          icon="link"
           text="Link entity"
           v-if="!loading && searchResult !== null && error == null"
         />
@@ -242,7 +241,8 @@ export default {
           error happened: {{error}}
         </div>
       </template>
-      <template slot="panel-footer"> 
+
+      <template #panel-footer>
         <div class="RelationsList-resultControls" v-if="!loading && resultItems.length > 0">
           <modal-pagination 
             v-if="searchResult.totalItems > maxResults"
@@ -259,7 +259,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .RelationsList {
   &-searchHeader {
@@ -283,7 +283,7 @@ export default {
     overflow-y: scroll;
     .entity-summary {
       &:hover {
-        background: darken(@white, 5%);
+        background: darken($white, 5%);
         cursor: pointer;
         .header {
           text-decoration: underline;
@@ -307,14 +307,14 @@ export default {
     font-size: 1.2rem;
     left: 1rem;
     top: 0.4rem;
-    color: @brand-primary;
+    color: $brand-primary;
   }
   &-select {
     text-align: start;
     margin: 0 10px 10px 0;
     padding: 1.8rem 3.5rem 0 1rem;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     line-height: 2.8rem;
     height: 4.8rem;
   }

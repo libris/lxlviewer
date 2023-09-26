@@ -1,4 +1,5 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'modal-pagination',
@@ -21,6 +22,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     go(n) {
       if (n !== this.currentPage && n >= 0 && n <= this.lastPageIndex) {
         this.$emit('go', n);
@@ -74,7 +76,7 @@ export default {
           @keydown.enter="go(0)" 
           @click="go(0)" 
           :tabindex="currentPage-1 < 0 ? -1 : 0">
-          {{'First' | translatePhrase}}
+          {{ translatePhrase('First') }}
         </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage-1 < 0 }">
@@ -82,7 +84,7 @@ export default {
           @keydown.enter="go(currentPage-1)" 
           @click="go(currentPage-1)" 
           :tabindex="currentPage-1 < 0 ? -1 : 0">
-          <i class="fa fa-chevron-left"></i>
+          <font-awesome-icon :icon="['fas', 'chevron-left']" />
         </a>  
       </li>
       <li class="ModalPagination-item" v-for="(n, index) in pageRange" :key="index"  :class="{'is-active': n.active, 'is-disabled': n.disabled}">
@@ -99,7 +101,7 @@ export default {
           @keydown.enter="go(currentPage+1)" 
           @click="go(currentPage+1)" 
           :tabindex="currentPage+1 > lastPageIndex ? -1 : 0">
-          <i class="fa fa-chevron-right"></i>
+          <font-awesome-icon :icon="['fas', 'chevron-right']" />
         </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > lastPageIndex }">
@@ -107,14 +109,14 @@ export default {
           @keydown.enter="go(lastPageIndex)" 
           @click="go(lastPageIndex)" 
           :tabindex="currentPage === lastPageIndex ? -1 : 0">
-          {{'Last' | translatePhrase}}
+          {{ translatePhrase('Last') }}
         </a>
       </li>
     </ul>
   </nav>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .ModalPagination {
   margin: 10px 0;
@@ -139,14 +141,14 @@ export default {
       position: absolute;
       width: 100%;
       height: 3px;
-      background-color: @brand-primary;
+      background-color: $brand-primary;
       bottom: -6px;
       left: 0;
     }
   }
 
   &-link {
-    color: @grey-dark;
+    color: $grey-dark;
     font-weight: 600;
     position: relative;
     text-transform: uppercase;
@@ -156,34 +158,34 @@ export default {
       &:hover, 
       &:active, 
       &:focus  {
-      color: @brand-primary;
+      color: $brand-primary;
       text-decoration: none;
     }
 
     .is-disabled & {
-      color: @grey-light;
+      color: $grey-light;
       cursor: initial;
 
       &:hover, 
       &:active, 
       &:focus {
-        color: @grey-light;
+        color: $grey-light;
         text-decoration: none;
       }
     }
 
-    i {
+    svg {
       font-size: 13px;
       padding: 0 2px;
     }
 
     .is-active & {
-      color: @black;
+      color: $black;
 
       &:hover, 
       &:active, 
       &:focus  {
-        color: @black;
+        color: $black;
         text-decoration: none;
       }
     }

@@ -1,13 +1,17 @@
 <script>
+import { translatePhrase, labelByLang } from '@/utils/filters';
+import { mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import { filter } from 'lodash-es';
-import VueSimpleSpinner from 'vue-simple-spinner';
-import { mapGetters } from 'vuex';
+import Spinner from '../shared/Spinner.vue';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
 import * as HttpUtil from '@/utils/http';
-import ItemVocab from '@/components/inspector/item-vocab';
-import ModalComponent from '@/components/shared/modal-component';
+import ItemVocab from '@/components/inspector/item-vocab.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
 
 export default {
   name: 'item-type',
@@ -27,9 +31,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     range() {
       const docType = VocabUtil.getRecordType(this.entityType, this.resources.vocab, this.resources.context);
       const combined = [docType].concat(VocabUtil.getAllSubClasses(docType, this.resources.vocabClasses, this.resources.context));
@@ -52,6 +56,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase, labelByLang,
     getLabelWithTreeDepth(term) {
       return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
     },
@@ -98,7 +103,7 @@ export default {
     });
   },
   components: {
-    VueSimpleSpinner,
+    Spinner,
     ModalComponent,
   },
 };
@@ -108,14 +113,14 @@ export default {
 <template>
   <div class="ItemType" :id="`formPath-${path}`" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked && checkingRelations">
-      <vue-simple-spinner size="small"></vue-simple-spinner>
+      <Spinner size="sm"></Spinner>
     </div>
     <div class="ItemType-selectContainer" v-if="!isLocked && !checkingRelations && containerAcceptedTypes.length > 0">
       <select 
         :disabled="isDisabled"
         v-model="selected" 
         class="ItemType-select customSelect" 
-        :aria-label="fieldKey | labelByLang">
+        :aria-label="labelByLang(fieldKey)">
         <option 
           v-for="(term, index) in containerAcceptedTypes" 
           :value="term.id"
@@ -126,42 +131,57 @@ export default {
       </select>
       <div class="ItemType-actions">
         <div class="ItemType-action UnlockAction">
-          <i role="button" class="fa fa-lock icon icon--sm" tabindex="0" aria-label="Unlock" v-tooltip.top="unlockTooltip" @keyup.enter="openUnlockModal()" @click="openUnlockModal()" v-if="isDisabled"></i>
+          <font-awesome-icon
+            :icon="['fas', 'lock']"
+            role="button"
+            size="sm"
+            tabindex="0"
+            aria-label="Unlock"
+            v-tooltip.top="unlockTooltip"
+            @keyup.enter="openUnlockModal()"
+            @click="openUnlockModal()"
+            v-if="isDisabled"
+          />
         </div>
       </div>
     </div>
+
     <span class="ItemType-text" 
-      v-if="isLocked">{{fieldValue | labelByLang}}
+      v-if="isLocked">{{labelByLang(fieldValue)}}
     </span>
+
     <modal-component 
       title="Byte av typ" 
       modal-type="warning" 
       class="ChangeTypeWarningModal" 
       :width="'570px'"
       @close="closeUnlockModal()"
-      v-if="unlockModalOpen">
-      <div slot="modal-body" class="ChangeTypeWarningModal-body">
-        <p>
-          <strong>{{ numberOfRelations }} {{ numberOfRelations === 1 ? 'annan entitet' : 'andra entiteter' }}</strong> länkar till denna entitet.
-        </p>
-        <p>
-          Observera att byte av typ kan påverka de beskrivningar som länkar hit. Om du är osäker på konsekvenserna bör du ta del av hjälptexten innan du fortsätter.
-        </p>
-        <p><a href="https://libris.kb.se/katalogisering/help/use-the-editor" target="_blank">Läs mer om byte av typ</a></p>
-        <div class="ChangeTypeWarningModal-buttonContainer">          
-          <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">{{ 'Cancel' | translatePhrase }}</button>
-          <!-- <button class="btn btn-grey btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ 'Cancel' | translatePhrase }}</button> -->
-          <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
-            <i class="icon icon--white fa fa-unlock-alt"></i>
-            {{ 'Unlock' | translatePhrase }}
-          </button>
+      v-if="unlockModalOpen"
+    >
+      <template #modal-body>
+        <div class="ChangeTypeWarningModal-body">
+          <p>
+            <strong>{{ numberOfRelations }} {{ numberOfRelations === 1 ? 'annan entitet' : 'andra entiteter' }}</strong> länkar till denna entitet.
+          </p>
+          <p>
+            Observera att byte av typ kan påverka de beskrivningar som länkar hit. Om du är osäker på konsekvenserna bör du ta del av hjälptexten innan du fortsätter.
+          </p>
+          <p><a href="https://libris.kb.se/katalogisering/help/use-the-editor" target="_blank">Läs mer om byte av typ</a></p>
+          <div class="ChangeTypeWarningModal-buttonContainer">
+            <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">{{ translatePhrase('Cancel') }}</button>
+            <!-- <button class="btn btn-grey btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ translatePhrase('Cancel') }}</button> -->
+            <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
+              <font-awesome-icon :icon="['fas', 'unlock-keyhole']" class="icon icon--white" />
+              {{ translatePhrase('Unlock') }}
+            </button>
+          </div>
         </div>
-      </div>
+      </template>
     </modal-component>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .ItemType {
   flex-grow: 1;
@@ -193,8 +213,8 @@ export default {
     margin-top: 0.2em;
     margin-right: 0.5em;
     display: inline-block;
-    border: 1px solid @grey-light;
-    background-color: @white;
+    border: 1px solid $grey-light;
+    background-color: $white;
     &:disabled {
       opacity: 0.7;
     }

@@ -1,4 +1,5 @@
 <script>
+import { convertResourceLink } from '@/utils/filters';
 
 export default {
   name: 'link-card',
@@ -26,19 +27,14 @@ export default {
     };
   },
   methods: {
+    getResourceLink(url) {
+      return convertResourceLink(this.linkUrl);
+    },
   },
   computed: {
     resolvedImage() {
-      return require(`@/assets/img/${this.image}`);
+      return `assets/img/${this.image}`;
     },
-  },
-  components: {
-  },
-  watch: {
-  },
-  mounted() { 
-    this.$nextTick(() => {
-    });
   },
 };
 </script>
@@ -56,7 +52,7 @@ export default {
           <p>
             Genom att spela våra instruktionsfilmer godkänner du cookies från YouTube
           </p>
-          <i class="fa fa-3x fa-play"></i>
+          <font-awesome-icon :icon="['fas', 'play']" size="2xl" />
         </div>
       </div>
       <div class="LinkCard-video Video" v-if="videoUrl.indexOf('youtube') ==! -1 || youtube.accepted">
@@ -66,16 +62,16 @@ export default {
     <div class="LinkCard-content card-content">
       <div class="LinkCard-text card-text">
         <span class="LinkCard-title card-title">{{ header }}</span>
-        <div v-if="html" class="LinkCard-html card-descr" v-html="html">{{ html }}</div>
+        <div v-if="html" class="LinkCard-html card-descr" v-html="html" />
         <div class="LinkCard-descr card-descr">{{ text }}</div>
       </div>
-      <a v-if="!linkUrl.startsWith('/')" :href="linkUrl | convertResourceLink" class="card-link LinkCard-link">{{ linkText }}</a>
+      <a v-if="!linkUrl.startsWith('/')" :href="getResourceLink(linkUrl)" class="card-link LinkCard-link">{{ linkText }}</a>
       <router-link v-if="linkUrl.startsWith('/')" :to="linkUrl" class="card-link LinkCard-link">{{ linkText }}</router-link>
     </div>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .LinkCard {
   flex-basis: 100%; // To parent
   display: flex;
@@ -111,7 +107,7 @@ export default {
     p {
       font-size: 0.8em;
     }
-    i {
+    svg {
       &:hover {
         color: rgb(170, 170, 170);
       }

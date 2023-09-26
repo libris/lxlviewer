@@ -1,17 +1,10 @@
 <script>
-import UserSettings from '@/components/usersettings/user-settings';
-// import UserBookmarks from '@/components/usersettings/user-bookmarks';
+import UserSettings from '@/components/usersettings/user-settings.vue';
 
 export default {
   name: 'user-page-component',
-  computed: {
-    user() {
-      return this.$store.getters.user;
-    },
-  },
   components: {
     'user-settings': UserSettings,
-    // 'user-bookmarks': UserBookmarks,
   },
 };
 </script>
@@ -19,10 +12,9 @@ export default {
 <template>
   <div>
     <user-settings></user-settings>
-    <!-- <user-bookmarks></user-bookmarks> -->
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 </style>

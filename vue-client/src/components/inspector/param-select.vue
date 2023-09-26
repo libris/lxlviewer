@@ -1,8 +1,11 @@
-<script>
-import { mapGetters } from 'vuex';
+<script lang="js">
+import { translatePhrase } from '@/utils/filters';
+import { mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
 import * as VocabUtil from 'lxljs/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import PropertyMappings from '@/resources/json/propertymappings.json';
+import { useUserStore } from '@/stores/user';
 
 export default {
   name: 'param-select',
@@ -24,6 +27,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     handleChange() {
       this.$emit('param-selected', this.selectedParam);
       this.setUserPref(this.selectedParam);
@@ -40,8 +44,9 @@ export default {
     },
     setUserPref(param) {
       if (this.isUserPrefEnabled()) {
-        this.user.settings[`searchParam-${this.userPrefKey}`] = param;
-        this.$store.dispatch('setUser', this.user);
+        const user = this.user;
+        user.settings[`searchParam-${this.userPrefKey}`] = param;
+        this.user = user;
       }
     },
     getUserPref() {
@@ -56,10 +61,8 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'resources',
-      'user',
-    ]),
+    ...mapState(useResourcesStore, ['vocab', 'context']),
+    ...mapWritableState(useUserStore, ['user']),
     baseClasses() {
       if (this.types === undefined || this.types.includes(undefined) || this.types.length === 0) {
         return [];
@@ -67,8 +70,8 @@ export default {
 
       return VocabUtil.getBaseClassesFromArray(
         this.types,
-        this.resources.vocab,
-        this.resources.context,
+        this.vocab,
+        this.context,
       );
     },
     availableSearchParams() {
@@ -81,8 +84,6 @@ export default {
       const types = this.types.concat(this.baseClasses);
       return PropertyMappings.filter(m => intersects(m.types, types));
     },
-  },
-  components: {
   },
   watch: {
     types() {
@@ -106,18 +107,18 @@ export default {
       class="SearchForm-paramSelect SearchForm-select customSelect"
       v-model="selectedParam"
       @change="handleChange()"
-      :aria-label="'Choose type' | translatePhrase">
+      :aria-label="translatePhrase('Choose type')">
       <option
         v-for="prop in availableSearchParams"
         :key="prop.key"
         :value="prop">
-        {{prop.key | translatePhrase}}
+        {{ translatePhrase(prop.key) }}
       </option>
     </select>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .ParamSelect {
   display: flex;
 }

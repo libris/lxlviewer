@@ -1,6 +1,8 @@
 <script>
-import { mapGetters } from 'vuex';
-import ItemMixin from '../mixins/item-mixin';
+import { mapState } from 'pinia';
+import { useInspectorStore } from '@/stores/inspector';
+import { useSettingsStore } from '@/stores/settings';
+import ItemMixin from '../mixins/item-mixin.vue';
 
 export default {
   name: 'item-grouped',
@@ -38,13 +40,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useSettingsStore, ['settings']),
     groupedItems() {
       return this.item.items;
     },
@@ -70,7 +67,7 @@ export default {
     });
   },
   mounted() {
-    if (this.isInForm || this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
+    if (this.isInForm || this.settings.defaultExpandedProperties.includes(this.fieldKey)) {
       this.expand();
     }
   },
@@ -111,7 +108,7 @@ export default {
       <div class="ItemGrouped-label"
         :class="{'is-locked': isLocked }"
         @click="toggleExpanded()">
-        <i class="ItemGrouped-arrow fa fa-chevron-right"></i>
+        <font-awesome-icon :icon="['fas', 'chevron-right']" class="ItemGrouped-arrow" />
         <span class="ItemGrouped-type">{{ item.totalItems }} länkningar</span>
       </div>
     </strong>
@@ -135,7 +132,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .ItemGrouped {
   width: 100%;
   padding: 5px 0;
@@ -147,17 +144,18 @@ export default {
     display: block;
     flex: 1 100%;
     font-weight: normal;
-    position: relative;    
+    position: relative;
 
     .is-expanded & {
       margin-bottom: 0.5rem;
-    }    
-    .icon-hover();
+    }
+
+    @include icon-hover();
   }
 
-  &-label {    
+  &-label {
     cursor: pointer;
-    
+
     &.is-inactive {
       pointer-events: none;
     }
@@ -167,14 +165,14 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    color: @grey-darker-transparent;
+    color: $grey-darker-transparent;
 
     .ItemGrouped-label:hover & {
-      color: @black;
+      color: $black;
     }
   }
 
-  &.is-expanded > 
+  &.is-expanded >
   .ItemGrouped-heading >
   .ItemGrouped-label > 
   .ItemGrouped-arrow {
@@ -183,7 +181,7 @@ export default {
   }
 
   &.is-highlighted {
-    background-color: @form-highlight;
+    background-color: $form-highlight;
   }
 
   &-list {
@@ -201,5 +199,4 @@ export default {
     }
   }
 }
-
 </style>

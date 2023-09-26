@@ -2,15 +2,19 @@ import { isEmpty, cloneDeep, isArray, isObject, forEach, uniq, difference, each 
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import * as HttpUtil from '@/utils/http';
-import settings from '../settings';
+import { useInspectorStore } from '@/stores/inspector';
+import { useSettingsStore } from '@/stores/settings';
+
+// TODO: Support .jsonld files in Vite (copy pasted now in definitions)
+import displayJson from 'definitions/source/vocab/display.json';
 
 export function getDisplayDefinitions() {
+  const settings = useSettingsStore();
   const baseUri = settings.idPath;
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
       window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using file from local definitions repository');
-      // eslint-disable-next-line import/no-extraneous-dependencies
-      resolve(DisplayUtil.expandInherited(require('@/../../../definitions/source/vocab/display.jsonld')));
+      resolve(DisplayUtil.expandInherited(displayJson));
     } else {
       HttpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
         resolve(DisplayUtil.expandInherited(result));
@@ -150,16 +154,18 @@ export function getExternalLinks(obj) {
   return difference(uniq(links), entities);
 }
 
-export async function fetchMissingLinkedToQuoted(obj, store) {
-  const quoted = store.state.inspector.data.quoted || {};
+export async function fetchMissingLinkedToQuoted(obj) {
+  const inspector = useInspectorStore();
+  const quoted = inspector.data.quoted || {};
   const missingLinks = getExternalLinks(obj).filter(l => !quoted.hasOwnProperty(l));
   const embellished = false;
+
   return Promise
     .allSettled(missingLinks.map(l => HttpUtil.getDocument(l, undefined, embellished)))
     .then((results) => {
       results.filter(r => r.status === 'fulfilled').map(r => r.value.data).forEach((doc) => {
         if (doc) {
-          doc['@graph'].forEach(o => store.commit('addToQuoted', o));
+          doc['@graph'].forEach(o => inspector.addToQuoted(o));
         }
       });
     })
@@ -217,11 +223,11 @@ export function xmlToJson(xml) {
   return obj;
 }
 
-const SITE_ALIAS = JSON.parse(settings.siteAlias || '{}');
-
 export function translateAliasedUri(uri) {
   let translatedUri = uri;
-  
+  const settings = useSettingsStore();
+  const SITE_ALIAS = JSON.parse(settings.siteAlias || '{}');
+
   each(SITE_ALIAS, (from, to) => {
     if (uri.startsWith(from)) {
       translatedUri = uri.replace(from, to);
@@ -234,8 +240,10 @@ export function translateAliasedUri(uri) {
   if (uri.startsWith('https://libris.kb.se')) {
     translatedUri = uri.replace('https://libris.kb.se', settings.apiPath);
   }
+
   if (uri.startsWith('https://id.kb.se')) {
     translatedUri = uri.replace('https://id.kb.se', settings.idPath);
   }
+
   return translatedUri;
 }

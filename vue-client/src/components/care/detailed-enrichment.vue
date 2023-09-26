@@ -1,12 +1,17 @@
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useEnrichmentStore } from '@/stores/enrichment';
+import { useInspectorStore } from '@/stores/inspector';
+import { useSettingsStore } from '@/stores/settings';
 import { difference, intersection, cloneDeep, isArray, union, isEqual, uniqWith, remove } from 'lodash-es';
+import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
-import Field from '@/components/inspector/field';
-import Button from '@/components/shared/button';
-import TabMenu from '@/components/shared/tab-menu';
-import EntitySummary from '@/components/shared/entity-summary';
+import Field from '@/components/inspector/field.vue';
+import Button from '@/components/shared/button.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
+import EntitySummary from '@/components/shared/entity-summary.vue';
 
 export default {
   name: 'DetailedEnrichment',
@@ -30,15 +35,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'enrichment',
-      'settings',
-      'inspector',
-      'user',
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useEnrichmentStore, ['enrichmentData']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useEnrichmentStore, ['enrichmentData']),
     recordType() {
-      return this.enrichment.data.source.mainEntity['@type'];
+      return this.enrichmentData.source.mainEntity['@type'];
     },
     formTabs() {
       return [
@@ -47,14 +50,14 @@ export default {
       ];
     },
     allKeys() {
-      const sourceKeys = Object.keys(this.enrichment.data.source[this.formFocus]);
-      const targetKeys = Object.keys(this.enrichment.data.target[this.formFocus]);
+      const sourceKeys = Object.keys(this.enrichmentData.source[this.formFocus]);
+      const targetKeys = Object.keys(this.enrichmentData.target[this.formFocus]);
       const allKeys = union(sourceKeys, targetKeys);
       return allKeys;
     },
     sortedKeys() {
-      const sourceDisplay = DisplayUtil.getSortedProperties(this.recordType, this.enrichment.data.source[this.formFocus], this.settings, this.resources);
-      const targetDisplay = DisplayUtil.getSortedProperties(this.recordType, this.enrichment.data.target[this.formFocus], this.settings, this.resources);
+      const sourceDisplay = DisplayUtil.getSortedProperties(this.recordType, this.enrichmentData.source[this.formFocus], this.settings, this.resources);
+      const targetDisplay = DisplayUtil.getSortedProperties(this.recordType, this.enrichmentData.target[this.formFocus], this.settings, this.resources);
       const bothSorted = union(sourceDisplay, targetDisplay);
 
       return intersection(bothSorted, this.allKeys); // Important not to switch order of these params, since we sort on the first
@@ -66,10 +69,10 @@ export default {
       return filteredKeys;
     },
     source() {
-      return this.enrichment.data.source[this.formFocus];
+      return this.enrichmentData.source[this.formFocus];
     },
     target() {
-      return this.enrichment.data.target[this.formFocus];
+      return this.enrichmentData.target[this.formFocus];
     },
     result() {
       return this.resultObject[this.formFocus];
@@ -100,7 +103,7 @@ export default {
       return diffMap;
     },
     newKeys() {
-      const target = this.enrichment.data.target[this.formFocus];
+      const target = this.enrichmentData.target[this.formFocus];
       const result = this.resultObject[this.formFocus];
       const targetKeys = Object.keys(target);
       const resultKeys = Object.keys(result);
@@ -165,11 +168,10 @@ export default {
   watch: {
   },
   methods: {
-    ...mapActions([
-      'setEnrichmentResult',
-    ]),
+    translatePhrase, labelByLang, capitalize,
+    ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue']),
     confirm() {
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         changeList: [
           {
             path: '',
@@ -183,7 +185,7 @@ export default {
     close() {
       const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
       detailedEnrichmentModal.open = false;
-      this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+      this.setInspectorStatusValue({ property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
     },
     cancel() {
       this.close();
@@ -204,7 +206,7 @@ export default {
     },
     addValue(key) {
       // console.log("Add value:", key);
-      const source = this.enrichment.data.source;
+      const source = this.enrichmentData.source;
       if (this.resultObject[this.formFocus].hasOwnProperty(key) === false) {
         this.$set(this.resultObject[this.formFocus], key, source[this.formFocus][key]);
       } else {
@@ -223,7 +225,7 @@ export default {
     },
     replaceValue(key) {
       // console.log("Replace value:", key);
-      const source = this.enrichment.data.source;
+      const source = this.enrichmentData.source;
       this.resultObject[this.formFocus][key] = source[this.formFocus][key];
     },
     canBeDiffReplaced(key) {
@@ -264,7 +266,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.resultObject = cloneDeep(this.enrichment.data.target);
+      this.resultObject = cloneDeep(this.enrichmentData.target);
     });
   },
 
@@ -278,11 +280,11 @@ export default {
         <div class="DetailedEnrichment-fieldRow">
           <div class="DetailedEnrichment-columnHeader sourceColumn">
             <div class="DetailedEnrichment-summaryLabel">
-              {{ 'Enrich from' | translatePhrase }}
+              {{ translatePhrase('Enrich from') }}
             </div>
             <div class="DetailedEnrichment-summaryContainer">
               <entity-summary
-                :focus-data="enrichment.data.source['mainEntity']"
+                :focus-data="enrichmentData.source['mainEntity']"
                 :should-link="false"
                 :exclude-components="[]">
               </entity-summary>
@@ -291,7 +293,7 @@ export default {
           <div class="DetailedEnrichment-actionHeader actionColumn"></div>
           <div class="DetailedEnrichment-columnHeader resultColumn non-existing">
             <div class="DetailedEnrichment-summaryLabel">
-              {{ 'Result' | translatePhrase }}
+              {{ translatePhrase('Result') }}
             </div>
             <div class="DetailedEnrichment-summaryContainer">
               <entity-summary
@@ -307,39 +309,39 @@ export default {
       <div class="DetailedEnrichment-row" v-for="key in filteredKeys" :key="key">
         <div class="DetailedEnrichment-labelContainer uppercaseHeading">
           <div v-show="key !== '@type'" class="DetailedEnrichment-label sourceColumn">
-            {{ key | labelByLang | capitalize }}
+            {{ capitalize(labelByLang(key)) }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label sourceColumn">
-            {{ 'Type' | translatePhrase | capitalize }}
+            {{ capitalize(translatePhrase('Type')) }}
           </div>
           <div class="DetailedEnrichment-label actionColumn">
           </div>
           <div v-show="key !== '@type'" class="DetailedEnrichment-label resultColumn">
-            {{ key | labelByLang | capitalize }}
+            {{ capitalize(labelByLang(key)) }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label resultColumn">
-            {{ 'Type' | translatePhrase | capitalize }}
+            {{ capitalize(translatePhrase('Type')) }}
           </div>
         </div>
         <div class="DetailedEnrichment-fieldRow">
           <div class="DetailedEnrichment-sourceField sourceColumn" :class="{ 'non-existing': source.hasOwnProperty(key) === false }">
             <field class="FieldList-item"
-              v-if="enrichment.data.source[formFocus].hasOwnProperty(key)"
+              v-if="enrichmentData.source[formFocus].hasOwnProperty(key)"
               v-bind:class="{ 'locked': true }" 
-              :entity-type="enrichment.data.source[formFocus]['@type']" 
+              :entity-type="enrichmentData.source[formFocus]['@type']" 
               :is-inner="false" 
               :is-removable="false" 
               :is-locked="true" 
               :show-key="false"
               :field-key="key" 
-              :field-value="enrichment.data.source[formFocus][key]" 
+              :field-value="enrichmentData.source[formFocus][key]" 
               :parent-path="formFocus" />
           </div>
           <div class="DetailedEnrichment-buttonContainer actionColumn">
             <div class="DetailedEnrichment-buttons" v-if="settings.lockedProperties.indexOf(key) === -1">
               <button-component :inverted="true" class="Button-default" @click="addValue(key)" :label="'Extend'" icon="plus" size="large" :disabled="canBeDiffAdded(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
               <button-component :inverted="true" class="Button-accent3" @click="replaceValue(key)" :label="'Replace'" icon="arrow-right" size="large" :disabled="canBeDiffReplaced(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
-              <button-component :inverted="true" class="Button-info" @click="undo(key)" icon="undo" :label="'Undo'" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
+              <button-component :inverted="true" class="Button-info" @click="undo(key)" icon="rotate-left" :label="'Undo'" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
             </div>
           </div>
           <div class="DetailedEnrichment-resultField resultColumn" :class="{ 'non-existing': result.hasOwnProperty(key) === false, 'is-diff': isDiffing(key), 'is-new': newKeys.indexOf(key) > -1 }">
@@ -354,7 +356,7 @@ export default {
               :show-diffs="true"
               :field-key="key" 
               :field-value="resultObject[formFocus][key]" 
-              :old-value="enrichment.data.target[formFocus][key]"
+              :old-value="enrichmentData.target[formFocus][key]"
               :is-diff="isDiffing(key)"
               :is-new="newKeys.indexOf(key) > -1"
               :parent-path="formFocus" />
@@ -363,22 +365,21 @@ export default {
       </div>
     </div>
     <div class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
-      <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ 'Cancel' | translatePhrase }}</button>
-      <button class="btn btn--md btn-primary" @click="confirm" @keyup.enter="confirm">{{ 'Enrich' | translatePhrase }}</button>
+      <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
+      <button class="btn btn--md btn-primary" @click="confirm" @keyup.enter="confirm">{{ translatePhrase('Enrich') }}</button>
     </div>
   </div>
 </template>
 
-<style lang="less">
-
-@fieldCol: 46%;
-@fieldColMd: 45%;
-@fieldColSm: 44%;
-@fieldColXs: 42%;
-@actionCol: 8%;
-@actionColMd: 10%;
-@actionColSm: 12%;
-@actionColXs: 14%;
+<style lang="scss">
+$fieldCol: 46%;
+$fieldColMd: 45%;
+$fieldColSm: 44%;
+$fieldColXs: 42%;
+$actionCol: 8%;
+$actionColMd: 10%;
+$actionColSm: 12%;
+$actionColXs: 14%;
 
 .DetailedEnrichment {
   width: 100%;
@@ -390,13 +391,13 @@ export default {
   }
 
   &-dialog {
-    background-color: @neutral-color;
+    background-color: $neutral-color;
     margin: 0 -1em;
     padding: 1.5rem 2.5rem;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    border: solid @grey-light;
+    border: solid $grey-light;
     border-width: 1px 0px 0px 0px;
     button {
       margin-left: 1rem;
@@ -428,18 +429,18 @@ export default {
   }
 
   &-summaryLabel {
-    background-color: @grey-lighter;
-    color: @grey-darker;
+    background-color: $grey-lighter;
+    color: $grey-darker;
     padding: 0.15rem 0.5rem;
     font-size: 1.2rem;
     text-transform: uppercase;
     font-weight: 600;
     display: inline-block;
-    border: 1px solid @grey-lighter;
+    border: 1px solid $grey-lighter;
   }
   &-summaryContainer {
-    border: 1px solid @grey-lighter;
-    background-color: @neutral-color;
+    border: 1px solid $grey-lighter;
+    background-color: $neutral-color;
   }
   &-rowContainer {
     width: 100%;
@@ -457,50 +458,50 @@ export default {
     }
   }
   &-resultField {
-    border: 1px solid @grey-lighter;
+    border: 1px solid $grey-lighter;
     &.is-diff {
-      @base-color: @brand-accent3;
-      border-color: @base-color;
-      background-color: hsl(hue(@base-color), saturation(@base-color), lightness(@base-color)+51);
+      $base-color: $brand-accent3;
+      border-color: $base-color;
+      background-color: hsl(hue($base-color), saturation($base-color), lightness($base-color)+51);
     }
     &.is-new {
-      @base-color: @brand-success;
+      $base-color: $brand-success;
       border: 1px solid;
-      border-color: @base-color;
-      background-color: hsl(hue(@base-color), saturation(@base-color)-25, lightness(@base-color)+55);
+      border-color: $base-color;
+      background-color: hsl(hue($base-color), saturation($base-color)-25, lightness($base-color)+55);
     }
   }
   .sourceColumn, .resultColumn {
-    width: @fieldColXs;
+    width: $fieldColXs;
     @media (min-width: 900px) {
-      width: @fieldColSm;
+      width: $fieldColSm;
     }
     @media (min-width: 1200px) {
-      width: @fieldColMd;
+      width: $fieldColMd;
     }
     @media (min-width: 1500px) {
-      width: @fieldCol;
+      width: $fieldCol;
     }
   }
   .actionColumn {
-    width: @actionColXs;
+    width: $actionColXs;
     @media (min-width: 900px) {
-      width: @actionColSm;
+      width: $actionColSm;
     }
     @media (min-width: 1200px) {
-      width: @actionColMd;
+      width: $actionColMd;
     }
     @media (min-width: 1500px) {
-      width: @actionCol;
+      width: $actionCol;
     }
   }
   &-sourceField {
-    border: 1px solid @grey-lighter;
+    border: 1px solid $grey-lighter;
   }
 
   &-sourceField, &-resultField, &-buttonContainer {
     &.non-existing {
-      background-color: @grey-lightest;
+      background-color: $grey-lightest;
     }
     min-height: 2em;
     display: flex;
@@ -511,20 +512,22 @@ export default {
     flex-direction: row;
     justify-content: center;
     .Field-action {
-      background-color: @white;
+      background-color: $white;
       align-items: baseline;
       justify-content: center;
       display: flex;
-      color: @brand-primary;
-      i {
-        color: @brand-primary;
+      color: $brand-primary;
+
+      svg {
+        color: $brand-primary;
       }
+
       font-weight: bold;
       font-size: 1.2rem;
       padding: 0.5rem;
       cursor: pointer;
       width: 100%;
-      border: solid @grey-light;
+      border: solid $grey-light;
       border-width: 1px;
       margin: -1px -4px 0px 0px;
     }

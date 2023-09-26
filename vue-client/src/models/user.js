@@ -21,6 +21,8 @@ export class User {
     this.collections = collections;
     this.id = id;
     this.idHash = md5(id);
+    // TODO: Figure out if this property should be added?
+    this.token = null;
     this.settings = {
       resultListType: 'detailed',
       appTech: false,

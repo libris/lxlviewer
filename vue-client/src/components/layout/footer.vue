@@ -1,30 +1,10 @@
 <script>
-import { mapGetters } from 'vuex';
-
+import { translatePhrase } from '@/utils/filters';
 export default {
   name: 'footer-component',
-  props: {
-  },
-  data() {
-    return {
-      keyword: '',
-    };
-  },
-  methods: {
-  },
-  computed: {
-    ...mapGetters([
-      'settings',
-    ]),
-  },
-  components: {
-  },
-  watch: {
-  },
-  mounted() { 
-    this.$nextTick(() => {
-    });
-  },
+  methods: {
+    translatePhrase,
+  }
 };
 </script>
 
@@ -32,52 +12,52 @@ export default {
   <footer class="Footer">
       <div class="Footer-content">
         <div class="Footer-serviceName">
-          <img src="~kungbib-styles/dist/assets/kb_logo_black.svg" class="Footer-serviceLogo" alt="Kungliga bibliotekets logotyp" />
+          <img src="~kungbib-styles/lib/assets/kb_logo_black.svg" class="Footer-serviceLogo" alt="Kungliga bibliotekets logotyp" />
           <a class="Footer-link" href="http://www.kb.se" alt="Länk till Kungliga bibliotekets webbplats">
-            {{ "National Library of Sweden" | translatePhrase }}
+            {{ translatePhrase("National Library of Sweden") }}
           </a>
         </div>
 
         <div class="Footer-navGroup">
           <nav class="Footer-nav" aria-labelledby="footer-xl-nav">
-            <h4 id="footer-xl-nav" class="Footer-listTitle">{{ "Information" | translatePhrase }}</h4>
+            <h4 id="footer-xl-nav" class="Footer-listTitle">{{ translatePhrase("Information") }}</h4>
             <div class="Footer-navGroup">
               <ul class="Footer-navList">
                 <li>
-                  <router-link class="Footer-link" to="/about" >{{ "About XL" | translatePhrase }}</router-link>
+                  <router-link class="Footer-link" to="/about" >{{ translatePhrase("About XL") }}</router-link>
                 </li>
                 <li>
-                  <a href="https://www.kb.se/libris-versionsinformation" class="Footer-link">{{ "Release notes" | translatePhrase }}</a>
+                  <a href="https://www.kb.se/libris-versionsinformation" class="Footer-link">{{ translatePhrase("Release notes") }}</a>
                 </li>
                 <li>
-                  <a href="https://www.kb.se/om-oss/hantering-av-personuppgifter.html#XLkat" class="Footer-link">{{ "GDPR compliance" | translatePhrase }}</a>
+                  <a href="https://www.kb.se/om-oss/hantering-av-personuppgifter.html#XLkat" class="Footer-link">{{ translatePhrase("GDPR compliance") }}</a>
                 </li>
                 <li>
-                  <a href="https://www.kb.se/digital-tillganglighet" class="Footer-link">{{ "Accessibility statement" | translatePhrase }}</a>
+                  <a href="https://www.kb.se/digital-tillganglighet" class="Footer-link">{{ translatePhrase("Accessibility statement") }}</a>
                 </li>
               </ul>
               <ul class="Footer-navList">
                 <li>
-                  <a href="https://kbplay.mediaflowportal.com/folder/91512/" class="Footer-link">{{ "Instruction videos" | translatePhrase }}</a>
+                  <a href="https://kbplay.mediaflowportal.com/folder/91512/" class="Footer-link">{{ translatePhrase("Instruction videos") }}</a>
                 </li>
                 <li>
-                  <a href="https://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/" class="Footer-link">{{ "Introduction material" | translatePhrase }}</a>
+                  <a href="https://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/" class="Footer-link">{{ translatePhrase("Introduction material") }}</a>
                 </li>
                 <li>
-                  <a href="http://www.kb.se/libris/" class="Footer-link">{{ "About Libris" | translatePhrase }}</a>
+                  <a href="http://www.kb.se/libris/" class="Footer-link">{{ translatePhrase("About Libris") }}</a>
                 </li>
                 <li>
-                  <a href="https://libris.kb.se/" class="Footer-link">{{ "Libris web search" | translatePhrase }}</a>
+                  <a href="https://libris.kb.se/" class="Footer-link">{{ translatePhrase("Libris web search") }}</a>
                 </li>
               </ul>
             </div>
           </nav>
 
           <nav class="Footer-nav" aria-labelledby="footer-support-nav">
-            <h4 id="footer-support-nav" class="Footer-listTitle">{{ "Contact" | translatePhrase }}</h4>
+            <h4 id="footer-support-nav" class="Footer-listTitle">{{ translatePhrase("Contact") }}</h4>
             <ul class="Footer-navList">
               <li>
-                <a class="Footer-link" href="https://www.kb.se/om-oss/kontakta-oss/#item-47bef1f3916eca87a61b1eed">{{ "Libris customer service" | translatePhrase }}</a>
+                <a class="Footer-link" href="https://www.kb.se/om-oss/kontakta-oss/#item-47bef1f3916eca87a61b1eed">{{ translatePhrase("Libris customer service") }}</a>
               </li>
             </ul>
           </nav>
@@ -86,12 +66,11 @@ export default {
   </footer>
 </template>
 
-<style lang="less">
-
+<style lang="scss">
 .Footer {
   padding: 2em 10px;
-  background-color: @bg-footer;
-  color: @text-footer;  
+  background-color: $bg-footer;
+  color: $text-footer;  
 
   &-content {
     display: flex;
@@ -138,7 +117,11 @@ export default {
     list-style-type: none;
     flex: 80% 2 2;
 
-    @media (min-width: @screen-sm) {
+    // @media (min-width: $screen-sm) {
+    //   display: flex;
+    // }
+
+    @include media-breakpoint-up(sm) {
       display: flex;
     }
   }
@@ -156,7 +139,12 @@ export default {
     margin: 0;
     padding: 0;
 
-    @media (min-width: @screen-md) {
+    // @media (min-width: $screen-md) {
+    //   font-size: 16px;
+    //   font-size: 1.6rem;
+    // }
+
+    @include media-breakpoint-up(md) {
       font-size: 16px;
       font-size: 1.6rem;
     }
@@ -172,7 +160,12 @@ export default {
     font-weight: 600;
     margin: 0 0 0.8rem 0;
 
-    @media (min-width: @screen-md) {
+    // @media (min-width: $screen-md) {
+    //   font-size: 16px;
+    //   font-size: 1.6rem;
+    // }
+
+    @include media-breakpoint-up(md) {
       font-size: 16px;
       font-size: 1.6rem;
     }

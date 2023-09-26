@@ -13,6 +13,7 @@ Listen to the 'click' event in the parent as usual.
     * label - (if icon) provide a string that will be translated & used as accessible label
     * shadow - (default: false) show a shadow under the button
 */
+import { translatePhrase } from '@/utils/filters';
 export default {
   name: 'rounded-button',
   props: {
@@ -53,6 +54,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     action() {
       if (!this.disabled) {
         this.$emit('click');
@@ -67,10 +69,6 @@ export default {
       return false;
     },
   },
-  components: {
-  },
-  watch: {
-  },
   mounted() {
     this.$nextTick(() => {});
   },
@@ -83,16 +81,17 @@ export default {
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false"
-    :aria-label="label | translatePhrase">
+    :aria-label="translatePhrase(label)"
+  >
     <span v-if="icon">
-      <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
+      <font-awesome-icon :icon="['fas', icon]" aria-hidden="true" />
     </span>
     <span class="RoundedButton-buttonText" :class="{'small-text': smallText }" v-else>{{ buttonText }}</span>
     <slot name="tooltip" v-if="mouseOver"></slot>
   </button>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .RoundedButton {
   position: relative;
   margin: 5px;
@@ -112,23 +111,23 @@ export default {
   }
 
   &.default {
-  background-color: @neutral-color;
-  color: @btn-primary;
-  border: 2px solid @btn-primary;
+  background-color: $neutral-color;
+  color: $btn-primary;
+  border: 2px solid $btn-primary;
 
     &:hover {
-      border-color: @btn-primary--hover; 
-      color: @btn-primary--hover;
+      border-color: $btn-primary--hover; 
+      color: $btn-primary--hover;
     }
   }
 
   &.btn-primary.is-active {
-    background-color: @btn-primary--hover; 
-    border: @btn-primary--hover;
+    background-color: $btn-primary--hover; 
+    border: $btn-primary--hover;
   }
 
   &.disabled { //can't be SUIT-ified because inherits from Bootstrap .disabled
-    color: @white;
+    color: $white;
     border: none;
   }
 
@@ -137,8 +136,8 @@ export default {
       font-size: 85%;
     }
   }
-  
-  i {
+
+  svg {
     transition: transform 0.25s ease;
     &.rotate-45 {
       transform: rotate(45deg);

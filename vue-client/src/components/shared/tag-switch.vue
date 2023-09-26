@@ -4,7 +4,11 @@
     * document  - The mainEntity from which to extract id and title
     * tag         - String, what tag we are operating on
 */
-import { mapGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
 
@@ -24,35 +28,34 @@ export default {
       default: () => ({ on: 'Mark', off: 'Unmark' }),
     },
   },
-  data() {
-    return {
-    };
-  },
   methods: {
+    ...mapActions(useUserStore, ['markDocument', 'unmarkDocument']),
     toggleMark() {
       if (!this.isMarked) {
         this.mark();
       } else {
-        this.unmark(); 
+        this.unmark();
       }
     },
     mark() {
-      this.$store.dispatch('mark', { tag: this.tag, documentId: this.documentId, documentTitle: this.documentTitle });
+      this.markDocument({
+        tag: this.tag,
+        documentId: this.documentId,
+        documentTitle: this.documentTitle
+      });
     },
     unmark() {
-      this.$store.dispatch('unmark', { tag: this.tag, documentId: this.documentId });
+      this.unmarkDocument({
+        tag: this.tag,
+        documentId: this.documentId
+      });
     },
   },
   computed: {
-    ...mapGetters([
-      'user',
-      'userStorage',
-      'userFlagged',
-      'userBookmarks',
-      'settings',
-      'resources',
-      'inspector',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useUserStore, ['user', 'userStorage', 'userFlagged', 'userBookmarks']),
+    ...mapState(useSettingsStore, ['settings']),
     documentId() {
       return this.document['@id'];
     },
@@ -64,8 +67,14 @@ export default {
         this.settings,
       );
     },
+    iconStyle() {
+      if (this.isMarked) {
+        return 'fas'
+      }
+      return 'far'
+    },
     iconString() {
-      let str = 'fa-';
+      let str = '';
       switch (this.tag) {
         case 'Bookmark':
           str += 'star';
@@ -75,9 +84,6 @@ export default {
           break;
         default:
           return false;
-      }
-      if (!this.isMarked) {
-        str += '-o';
       }
       return str;
     },
@@ -106,31 +112,24 @@ export default {
       return str;
     },
   },
-  components: {
-  },
-  watch: {
-  },
-  mounted() {
-    this.$nextTick(() => {});
-  },
 };
 </script>
 
 <template>
   <div class="TagSwitch" v-tooltip.top="tooltip" @click="toggleMark()">
-    <i :class="`fa fa-fw ${iconString}`"></i>
+    <font-awesome-icon :icon="[iconStyle, iconString]"/>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .TagSwitch {
   display: inline-block;
   margin: 0 0.25em;
   font-size: 1.4rem;
 
   cursor: pointer;
-  .fa-flag {
-    color: @brand-accent;
+  .fa-flag[data-prefix="fas"]{
+    color: $brand-accent;
   }
   .fa-star {
     color: #d6b400;

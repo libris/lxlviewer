@@ -1,23 +1,30 @@
 <script>
+import { translatePhrase, capitalize, labelByLang } from '@/utils/filters';
+import { mapActions, mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import { cloneDeep, get } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
-import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import * as LayoutUtil from '@/utils/layout';
-import PropertyAdder from '@/components/inspector/property-adder';
-import EntityAction from '@/components/inspector/entity-action';
-import SearchWindow from './search-window';
-import ItemMixin from '../mixins/item-mixin';
-import LensMixin from '../mixins/lens-mixin';
-import FormMixin from '../mixins/form-mixin';
+import PropertyAdder from '@/components/inspector/property-adder.vue';
+import EntityAction from '@/components/inspector/entity-action.vue';
+import SearchWindow from './search-window.vue';
+import ItemMixin from '../mixins/item-mixin.vue';
+import LensMixin from '../mixins/lens-mixin.vue';
+import FormMixin from '../mixins/form-mixin.vue';
+import { useStatusStore } from '@/stores/status';
+import { Dropdown } from 'floating-vue';
+import Field from './field.vue';
 
 export default {
   name: 'item-local',
-  mixins: [ItemMixin, LensMixin, FormMixin, clickaway],
+  mixins: [ItemMixin, LensMixin, FormMixin],
   props: {
     item: {},
     entityType: {
@@ -72,7 +79,6 @@ export default {
       removeHover: false,
       focused: false,
       isHovered: false,
-      managerMenuOpen: false,
       manageHover: false,
       showLinkAction: false,
       copyTitle: false,
@@ -82,14 +88,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'settings',
-      'user',
-      'status',
-      'userStorage',
-    ]),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useUserStore, ['user']),
+    ...mapWritableState(useUserStore, ['userStorage']),
     isSpecialHeading() {
       return this.path === 'mainEntity.instanceOf';
     },
@@ -133,9 +136,9 @@ export default {
       }
 
       if (failedValidations.length > 0) {
-        this.$store.dispatch('setValidation', { path: this.path, validates: false, reasons: failedValidations });
+        this.setValidation({ path: this.path, validates: false, reasons: failedValidations });
       } else {
-        this.$store.dispatch('setValidation', { path: this.path, validates: true });
+        this.setValidation({ path: this.path, validates: true });
       }
       return failedValidations;
     },
@@ -172,12 +175,9 @@ export default {
     },
   },
   methods: {
-    openManagerMenu() {
-      this.managerMenuOpen = true;
-    },
-    closeManagerMenu() {
-      this.managerMenuOpen = false;
-    },
+    translatePhrase, labelByLang, capitalize,
+    ...mapActions(useInspectorStore, ['setValidation', 'addToQuoted', 'updateInspectorData', 'setInspectorStatusValue']),
+    ...mapActions(useStatusStore, ['pushNotification']),
     highLightLastAdded() {
       const element = this.$el;
       LayoutUtil.ensureInViewport(element);
@@ -252,21 +252,21 @@ export default {
             this.replaceWith(mainEntity);
             this.closeExtractDialog();
           }, (error) => {
-            this.$store.dispatch('pushNotification', { 
+            this.pushNotification({
               type: 'danger', 
               message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
             });
             this.closeExtractDialog();
           });
         } else {
-          this.$store.dispatch('pushNotification', { 
+          this.pushNotification({
             type: 'danger', 
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}`,
           });
           this.closeExtractDialog();
         }
       }, (error) => {
-        this.$store.dispatch('pushNotification', { 
+        this.pushNotification({
           type: 'danger', 
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
         });
@@ -284,7 +284,6 @@ export default {
     },
     removeFocus() {
       this.focused = false;
-      this.closeManagerMenu();
     },
     extract() {
       this.extracting = true;
@@ -297,8 +296,8 @@ export default {
     },
     replaceWith(value) {
       const newValue = { '@id': value['@id'] };
-      this.$store.dispatch('addToQuoted', value);
-      this.$store.dispatch('updateInspectorData', {
+      this.addToQuoted(value);
+      this.updateInspectorData({
         changeList: [
           {
             path: `${this.path}`,
@@ -307,24 +306,29 @@ export default {
         ],
         addToHistory: false,
       });
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language, this.resources.i18n)}` });
-      this.$store.dispatch('setInspectorStatusValue', { 
+
+      this.pushNotification({
+        type: 'success',
+        message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language, this.resources.i18n)}`
+      });
+
+      this.setInspectorStatusValue({ 
         property: 'lastAdded', 
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
       });
       this.closeExtractDialog();
     },
-    cloneThis() {      
+    cloneThis() {
       const parentData = cloneDeep(get(this.inspector.data, this.parentPath));
       parentData.push(this.item);
 
-      this.$store.dispatch('setInspectorStatusValue', { 
+      this.setInspectorStatusValue({
         property: 'lastAdded', 
         value: `${this.parentPath}[${parentData.length - 1}]`,
       });
 
       setTimeout(() => {
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: this.parentPath,
@@ -348,8 +352,11 @@ export default {
     copyThis() {
       const userStorage = cloneDeep(this.userStorage);
       userStorage.copyClipboard = this.item;
-      this.$store.dispatch('setUserStorage', userStorage);
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.user.settings.language, this.resources.i18n)}` });
+      this.userStorage = userStorage;
+      this.pushNotification({
+        type: 'success',
+        message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.user.settings.language, this.resources.i18n)}`
+      });
     },
     attachHeadingStickyFunctionality() {
       document.addEventListener('scroll', () => {
@@ -400,23 +407,23 @@ export default {
       }
     },
   },
-  beforeDestroy() {
-    this.$store.dispatch('setValidation', { path: this.path, validates: true });
+  beforeUnmount() {
+    this.setValidation({ path: this.path, validates: true });
   },
   created() {
-    this.$on('collapse-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
-        this.collapse();
-      }
-    });
-    this.$on('expand-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus)
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
-        this.expand();
-      }
-    });
-    if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
+    // this.$on('collapse-item', () => {
+    //   if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
+    //       || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+    //     this.collapse();
+    //   }
+    // });
+    // this.$on('expand-item', () => {
+    //   if (this.getPath.startsWith(this.inspector.status.focus)
+    //       || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+    //     this.expand();
+    //   }
+    // });
+    if (this.settings.defaultExpandedProperties.includes(this.fieldKey)) {
       this.expand();
     }
   },
@@ -436,7 +443,7 @@ export default {
       }
       setTimeout(() => {
         if (this.isLastAdded) {
-          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+          this.setInspectorStatusValue({ property: 'lastAdded', value: '' });
         }
       }, 1000);
     }
@@ -460,6 +467,8 @@ export default {
     'property-adder': PropertyAdder,
     'search-window': SearchWindow,
     'entity-action': EntityAction,
+    Dropdown,
+    Field,
   },
 };
 </script>
@@ -479,7 +488,8 @@ export default {
       'has-failed-validations': failedValidations.length > 0,
       'is-diff-removed': diffRemoved,
       'is-diff-added': diffAdded,
-      'is-modified': diffModified}"
+      'is-modified': diffModified,
+    }"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
@@ -487,26 +497,25 @@ export default {
     @mouseover.stop="addHoverHightlight()"
     @mouseout.stop="removeHoverHightlight()"
   >
-
     <div class="ItemLocal-heading" ref="heading"
       @mouseover="isHovered = true"
       @mouseout="isHovered = false"
     >
       <div class="ItemLocal-label"
         :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
-        @click="toggleExpanded()">
-        <i class="ItemLocal-arrow fa fa-chevron-right" 
-          :class="{'icon is-disabled' : isEmpty}"></i>
+        @click="toggleExpanded()"
+      >
+        <font-awesome-icon :icon="['fas', 'chevron-right']" class="ItemLocal-arrow" :class="{'icon is-disabled' : isEmpty}" />
         <span class="ItemLocal-type"
-          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+          :title="item['@type']">{{ capitalize(labelByLang(item['@type']))}}:</span>
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>
         <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
-          <i class="fa fa-trash-o icon--sm icon-removed"></i>
+          <font-awesome-icon :icon="['fas', 'trash-can']" class="icon-removed" />
         </span>
         <div class="ItemLocal-history-icon" v-if="diffAdded && !diffRemoved">
-          <i class="fa fa-plus-circle icon--sm icon-added"></i>
+          <font-awesome-icon :icon="['fas', 'circle-plus']" class="icon-added" />
         </div>
       </div>
       
@@ -531,7 +540,7 @@ export default {
           @dehighlight="removeHighlight('info')"
           label="Property"
           description="Add property"
-          icon="plus-circle"
+          icon="circle-plus"
           :parent-hovered="isHovered"
           :is-large="largerActions"
         />
@@ -543,49 +552,57 @@ export default {
           @dehighlight="removeHighlight('remove')"
           label="Remove"
           description="Remove"
-          icon="trash-o"
+          icon="trash-can"
           :parent-hovered="isHovered"
           :is-large="false"
         />
 
-        <entity-action
-          v-if="inspector.status.editing && !isLocked"
-          @action="managerMenuOpen ? closeManagerMenu() : openManagerMenu()"
-          @highlight="addHighlight('info')"
-          @dehighlight="removeHighlight('info')"
-          label="Manage"
-          description="Manage"
-          icon="ellipsis-v"
-          :parent-hovered="isHovered"
-          :is-large="false"
-        />
-        <div class="dropdown ManagerMenu" v-on-clickaway="closeManagerMenu" v-if="managerMenuOpen"
-          @mouseover="addHighlight('info')"
-          @mouseout="removeHighlight('info')">
-          <ul class="dropdown-menu ManagerMenu-menuList">
-            <li class="ManagerMenu-menuItem">
-              <a tabindex="0" class="ManagerMenu-menuLink"
-              @keyup.enter="copyThis(), closeManagerMenu()"
-              @click="copyThis(), closeManagerMenu()">
-              <i class="fa fa-fw fa-copy" aria-hidden="true"></i>
-              {{"Copy to clipboard" | translatePhrase}}
-              </a>
-            </li>
-            <li class="ManagerMenu-menuItem" v-if="inArray">
-              <a tabindex="0" class="ManagerMenu-menuLink"
-              @keyup.enter="cloneThis(), closeManagerMenu()"
-              @click="cloneThis(), closeManagerMenu()">
-              <i class="fa fa-fw fa-clone" aria-hidden="true"></i>
-              {{"Duplicate entity" | translatePhrase}}
-              </a>
-            </li>
-          </ul>
-        </div>
+        <Dropdown>
+          <entity-action
+            v-if="inspector.status.editing && !isLocked"
+            @highlight="addHighlight('info')"
+            @dehighlight="removeHighlight('info')"
+            label="Manage"
+            description="Manage"
+            icon="ellipsis-vertical"
+            :parent-hovered="isHovered"
+            :is-large="false"
+          />
+
+          <template #popper>
+            <div class="Toolbar-menu"
+              @mouseover="addHighlight('info')"
+              @mouseout="removeHighlight('info')"
+            >
+              <ul class="Toolbar-menuList">
+                <li class="Toolbar-menuItem">
+                  <a tabindex="0" class="Toolbar-menuLink"
+                    @keyup.enter="copyThis()"
+                    @click="copyThis()"
+                  >
+                    <font-awesome-icon :icon="['fas', 'copy']" aria-hidden="true" />
+                    {{translatePhrase("Copy to clipboard")}}
+                  </a>
+                </li>
+
+                <li class="Toolbar-menuItem" v-if="inArray">
+                  <a tabindex="0" class="Toolbar-menuLink"
+                    @keyup.enter="cloneThis()"
+                    @click="cloneThis()"
+                  >
+                    <font-awesome-icon :icon="['fas', 'clone']" aria-hidden="true" />
+                    {{translatePhrase("Duplicate entity")}}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </template>
+        </Dropdown>
       </div>
     </div>
   
     <ul class="ItemLocal-list js-itemLocalFields" v-show="expanded">
-      <field
+      <Field
         v-show="k !== '_uid'" 
         v-for="(v, k, i) in filteredItem"
         :parent-path="getPath" 
@@ -603,7 +620,7 @@ export default {
         :diff="diff"
         :show-action-buttons="showActionButtons"
         :expand-children="expandChildren"
-        :is-expanded="expanded"></field> 
+        :is-expanded="expanded"></Field> 
     </ul>
 
     <property-adder
@@ -634,7 +651,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .ItemLocal {
   width: 100%;
   min-width: 0;
@@ -645,12 +662,12 @@ export default {
 
   &.highlight-info {
     .is-stuck, .is-sticky {
-      background-color: @form-mark;
+      background-color: $form-mark;
     }
   }
   &.highlight-remove {
     .is-stuck, .is-sticky {
-      background-color: @form-remove;
+      background-color: $form-remove;
     }
   }
 
@@ -669,18 +686,19 @@ export default {
       position: sticky;
       background-color: #fff;
     }
-    .icon-hover();
+
+    @include icon-hover();
   }
 
   &.highlight-mark:not(.highlight-info):not(.highlight-remove) {
-    background-color: @field-background-hover;
-    border-color: @grey-light;
+    background-color: $field-background-hover;
+    border-color: $grey-light;
   }
   &.highlight-info {
-    background-color: @form-mark;
+    background-color: $form-mark;
   }
   &.highlight-remove {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.has-failed-validations {
@@ -731,10 +749,10 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    color: @grey-darker-transparent;
+    color: $grey-darker-transparent;
 
     .ItemLocal-label:hover & {
-      color: @black
+      color: $black
     }
   }
 
@@ -756,67 +774,41 @@ export default {
     align-items: baseline;
   }
 
-  .ManagerMenu {
-    li > a {
-      cursor: pointer;
-      padding: 3px 5px;
-    }
-    &-menuList {
-      display: block;
-      padding: 5px 0;
-    }
-    &-menuItem {
-      & a {
-        display: flex;
-        align-items: center;
-        padding: 5px 15px;
-        color: @grey-darker;
-      }
-
-    }
-    &-menuLink {
-      cursor: pointer;
-      & i {
-        margin-right: 5px;
-      }
-    }
-  }
-
   &-action {
     display: inline-block;
   }
 
   &.is-marked {
-    background-color: @form-mark;
+    background-color: $form-mark;
   }
   
   &.is-removeable {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.is-entity {
     border-radius: 4px;
     padding: 0.5rem 1rem 0.5rem 1rem;
     margin: 0.6rem 0 0.6rem 0;
-    border: 1px solid @grey-lighter;
+    border: 1px solid $grey-lighter;
     box-shadow: 0 2px 5px rgba(0,0,0,.08);
   }
 
   &.is-extractable {
-    border: 1px solid @grey-lighter;
+    border: 1px solid $grey-lighter;
     box-shadow: 0 2px 5px rgba(0,0,0,.16);
     margin: 1rem 0 1rem 0;
   }
   &.is-diff-removed {
-    @base-color: @remove;
+    $base-color: $remove;
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
+    border-color: $base-color;
+    background-color: $form-remove;
   }
 
   &.is-diff-added {
-    @base-color: @form-add;
-    background-color: @base-color;
+    $base-color: $form-add;
+    background-color: $base-color;
   }
 
   &.is-expanded > 
@@ -828,7 +820,7 @@ export default {
   }
 
   &.is-highlighted {
-    background-color: @form-highlight;
+    background-color: $form-highlight;
   }
 }
 </style>

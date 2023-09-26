@@ -1,32 +1,19 @@
 <script>
-import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
+import { useUserStore } from '@/stores/user';
+import { mapActions, mapState } from 'pinia';
 
 export default {
   name: 'user-bookmarks',
-  props: {
-  },
   methods: {
+    translatePhrase,
+    ...mapActions(useUserStore, ['purgeUserTaggedDocuments']),
     purgeBookmarks() {
-      this.$store.dispatch('purgeUserTagged', 'Bookmark');
+      this.purgeUserTaggedDocuments('Bookmark');
     },
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'user',
-      'userStorage',
-      'settings',
-      'resources',
-      'userBookmarks',
-    ]),
-  },
-  components: {
-  },
-  watch: {
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-    });
+    ...mapState(useUserStore, ['userBookmarks']),
   },
 };
 </script>
@@ -34,14 +21,14 @@ export default {
 <template>
   <section class="UserBookmarks">
     <div class="UserBookmarks-content">
-      <h4>{{'Bookmarks' | translatePhrase}}</h4>
+      <h4>{{ translatePhrase('Bookmarks') }}</h4>
       <div class="UserBookmarks-itemList">
         <div class="UserBookmarks-item" v-for="item in userBookmarks" :key="item['@id']">
           <div class="UserBookmarks-itemLabel">
             <a :href="`/katalogisering/${item['@id'].split('/').pop()}`">{{ item.label }}</a>
           </div>
           <div class="UserBookmarks-itemAction">
-            <button class="btn btn-warning"><i class="fa fa-times"></i></button>
+            <button class="btn btn-warning"><font-awesome-icon :icon="['fas', 'xmark']" /></button>
           </div>
         </div>
       </div>
@@ -49,7 +36,7 @@ export default {
   </section>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .UserBookmarks {
   padding: 0;

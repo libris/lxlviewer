@@ -1,4 +1,9 @@
 <script>
+import { mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
+import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
 import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
 
@@ -24,15 +29,10 @@ export default {
     },
   },
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
-    resources() {
-      return this.$store.getters.resources;
-    },
-    inspector() {
-      return this.$store.getters.inspector;
-    },
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useUserStore, ['user']),
     getItemLabel() {
       return DisplayUtil.getItemLabel(
         this.focusData,

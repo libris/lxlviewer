@@ -1,5 +1,9 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import { cloneDeep, get, isEmpty, isObject } from 'lodash-es';
 import { getContextValue } from 'lxljs/vocab';
 import * as VocabUtil from 'lxljs/vocab';
@@ -22,9 +26,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'supportedTags',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useInspectorStore, ['inspector', 'supportedTags']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     path() {
       return `${this.parentPath}`;
     },
@@ -62,6 +67,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue']),
     getByLangKey() {
       return this.isLangMap ? this.fieldKey : this.fieldKey.concat('ByLang');
     },
@@ -108,7 +114,7 @@ export default {
         updatePath = parentPath;
         updateValue = parentValue;
       }
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         changeList: [
           {
             path: updatePath,
@@ -122,7 +128,7 @@ export default {
         if (this.isRepeatable) {
           updateProp = [].concat(this.prop, taggedValue);
         }
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: this.getPropPath(),
@@ -176,7 +182,7 @@ export default {
         }
       }
 
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         changeList: [
           {
             path: updatePath,
@@ -200,7 +206,7 @@ export default {
         delete parent[this.getPropKey()];
       }
       // Commit removal
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         changeList: [
           {
             path: parentsPath,
@@ -224,7 +230,7 @@ export default {
         updatePath = parentsPath;
       }
       // Commit additions
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         changeList: [
           {
             path: updatePath,
@@ -251,11 +257,11 @@ export default {
         } else {
           updateVal = [].concat(updateVal, '');
         }
-        this.$store.dispatch('setInspectorStatusValue', {
+        this.setInspectorStatusValue({
           property: 'lastAdded',
           value: `${this.getPropPath()}[${updateVal.length - 1}]`,
         });
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: this.getPropPath(),
@@ -265,11 +271,11 @@ export default {
           addToHistory: true,
         });
       } else {
-        this.$store.dispatch('setInspectorStatusValue', {
+        this.setInspectorStatusValue({
           property: 'lastAdded',
           value: `${this.getPropPath()}[0]`,
         });
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: this.getPropPath(),
@@ -287,7 +293,7 @@ export default {
       } else {
         updateValue = Object.assign(this.propByLang, obj);
       }
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         changeList: [
           {
             path: this.getByLangPath(),

@@ -1,10 +1,14 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
+import { mapActions, mapState } from 'pinia';
+import { useUserStore } from '@/stores/user';
+import { useResourcesStore } from '@/stores/resources';
 import { isArray, debounce, cloneDeep, get } from 'lodash-es';
-import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import { XSD_NUMERIC_TYPES } from 'lxljs/vocab';
-import ItemMixin from '@/components/mixins/item-mixin';
-import LensMixin from '@/components/mixins/lens-mixin';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import { useInspectorStore } from '@/stores/inspector';
 
 export default {
   name: 'item-numeric',
@@ -42,10 +46,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'user',
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['i18n']),
+    ...mapState(useUserStore, ['user']),
     value: {
       get() {
         if (this.fieldValue === null) {
@@ -62,7 +64,7 @@ export default {
       }, 1000),
     },
     newWindowText() {
-      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language, this.resources.i18n);
+      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language, this.i18n);
     },
     shouldFocus() {
       const lastAdded = this.inspector.status.lastAdded;
@@ -89,6 +91,8 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
+    ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue']),
     removeHighlight(event, active) {
       if (active) {
         let item = event.target;
@@ -105,14 +109,14 @@ export default {
       return false;
     },
     readyForSave(value) {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
+      this.setInspectorStatusValue({ property: 'readyForSave', value: value });
     },
     update(newValue) {
       const oldValue = cloneDeep(get(this.inspector.data, this.path));
 
       this.readyForSave(true);
       if (newValue !== oldValue && !this.isLocked) {
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: this.path,
@@ -130,7 +134,7 @@ export default {
         setTimeout(() => {
           element.classList.remove('is-lastAdded');
           if (this.isLastAdded) {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            this.setInspectorStatusValue({ property: 'lastAdded', value: '' });
           }
         }, 1000);
       }
@@ -181,20 +185,19 @@ export default {
     <div class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       role="button"
-      :aria-label="'Remove' | translatePhrase"
+      :aria-label="translatePhrase('Remove')"
       v-on:click="removeThis()"
-      v-tooltip.top="translate('Remove')"
+      v-tooltip.top="translatePhrase('Remove')"
       @focus="removeHover = true, removeHighlight($event, true)"
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)">
-      <i class="fa fa-trash-o icon icon--sm">
-      </i>
+      <font-awesome-icon :icon="['fas', 'trash-can']" size="sm" />
     </div>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .ItemValue {
   display: flex;
@@ -209,14 +212,14 @@ export default {
   &-input {
     width: 100%;
     display: block;
-    border: 1px solid @grey-light;
+    border: 1px solid $grey-light;
     border-radius: 2px;
     padding: 2px 10px;
     resize: none;
     transition: border .25s ease-out;
 
     &:focus {
-      border: 1px solid @grey-dark;
+      border: 1px solid $grey-dark;
     }
   }
 
@@ -239,21 +242,21 @@ export default {
     float: right;
     display: inline-block;
     cursor: pointer;
-    color: @grey;
+    color: $grey;
     min-width: 20px;
     margin-left: 5px;
 
     &:hover {
-      color: @black;
+      color: $black;
     }
   }
 
   &.is-removeable {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.is-lastAdded {
-    background-color: @form-add;
+    background-color: $form-add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;

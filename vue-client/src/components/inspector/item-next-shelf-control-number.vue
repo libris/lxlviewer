@@ -1,11 +1,15 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
+import { mapActions, mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useUserStore } from '@/stores/user';
 import { isArray, debounce, cloneDeep, get } from 'lodash-es';
-import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import { XSD_NUMERIC_TYPES } from 'lxljs/vocab';
-import ItemMixin from '@/components/mixins/item-mixin';
-import LensMixin from '@/components/mixins/lens-mixin';
-import ModalComponent from '@/components/shared/modal-component';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
+import { useInspectorStore } from '@/stores/inspector';
 
 export default {
   name: 'item-next-shelf-control-number',
@@ -47,10 +51,8 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'user',
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['i18n']),
+    ...mapState(useUserStore, ['user']),
     value: {
       get() {
         if (this.fieldValue === null) {
@@ -67,7 +69,7 @@ export default {
       }, 1000),
     },
     newWindowText() {
-      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language, this.resources.i18n);
+      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language, this.i18n);
     },
     shouldFocus() {
       const lastAdded = this.inspector.status.lastAdded;
@@ -98,6 +100,8 @@ export default {
   },
 
   methods: {
+    translatePhrase,
+    ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue']),
     removeHighlight(event, active) {
       if (active) {
         let item = event.target;
@@ -114,14 +118,14 @@ export default {
       return false;
     },
     readyForSave(value) {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
+      this.setInspectorStatusValue({ property: 'readyForSave', value: value });
     },
     update(newValue) {
       const oldValue = cloneDeep(get(this.inspector.data, this.path));
 
       this.readyForSave(true);
       if (newValue !== oldValue && !this.isLocked) {
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: this.path,
@@ -139,7 +143,7 @@ export default {
         setTimeout(() => {
           element.classList.remove('is-lastAdded');
           if (this.isLastAdded) {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            this.setInspectorStatusValue({ property: 'lastAdded', value: '' });
           }
         }, 1000);
       }
@@ -214,9 +218,9 @@ export default {
         class="ItemType-action UnlockAction"
         v-if="!isLocked && isDisabled"
       >
-        <i
+        <font-awesome-icon :icon="['fas', 'lock']"
           role="button"
-          class="fa fa-lock icon icon--sm"
+          size="sm"
           tabindex="0"
           aria-label="Unlock"
           v-tooltip.top="translate('Click to unlock editing')"
@@ -238,7 +242,7 @@ export default {
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)"
     >
-      <i class="fa fa-trash-o icon icon--sm"></i>
+      <font-awesome-icon :icon="['fas', 'trash-can']" size="sm" />
     </div>
 
     <modal-component
@@ -249,28 +253,30 @@ export default {
       @close="closeUnlockModal()"
       v-if="unlockModalOpen"
     >
-      <div slot="modal-body" class="ChangeTypeWarningModal-body">
-        <p>
-          Observera att byte av löpnummer kan påverka övrigt bestånd i signumsviten. Är du säker på att du vill fortsätta?
-        </p>
+      <template #modal-body>
+        <div class="ChangeTypeWarningModal-body">
+          <p>
+            Observera att byte av löpnummer kan påverka övrigt bestånd i signumsviten. Är du säker på att du vill fortsätta?
+          </p>
 
-        <div class="ChangeTypeWarningModal-buttonContainer">
-          <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">
-            {{ 'Cancel' | translatePhrase }}
-          </button>
+          <div class="ChangeTypeWarningModal-buttonContainer">
+            <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">
+              {{ translatePhrase('Cancel') }}
+            </button>
 
-          <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
-            <i class="icon icon--white fa fa-unlock-alt"></i>
-            {{ 'Unlock' | translatePhrase }}
-          </button>
+            <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
+              <font-awesome-icon :icon="['fas', 'unlock-keyhole']" class="icon icon--white" />
+              {{ translatePhrase('Unlock') }}
+            </button>
+          </div>
         </div>
-      </div>
+      </template>
     </modal-component>
 
   </div>
 </template>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .ItemType-actions {
   display: flex;
   align-items: center;

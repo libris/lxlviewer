@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { labelByLang, asAppPath } from '@/utils/filters';
 
 export default {
   name: 'FilterBadge',
@@ -9,51 +9,27 @@ export default {
       default: null,
     },
   },
-  data() {
-    return {
-      keyword: '',
-    };
-  },
   methods: {
-  },
-  computed: {
-    ...mapGetters([
-      'settings',
-      'user',
-    ]),
-  },
-  components: {
-  },
-  watch: {
-    keyword(value, oldval) {
-      console.log('keyword changed', value, oldval);
-    },
-  },
-  mounted() {
-    this.$nextTick(() => {
-      // Do stuff
-    });
-  },
+    labelByLang, asAppPath,
+  }
 };
 </script>
 
 <template>
   <div class="FilterBadge">
     <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}:</span>
-    <span>{{ filter.label | labelByLang }}</span>
-    <router-link
-      :to="filter.up | asAppPath">
-      <i class="fa fa-fw fa-close icon"
-        ></i>
+    <span>{{ labelByLang(filter.label) }}</span>
+    <router-link :to="asAppPath(filter.up)">
+      <font-awesome-icon :icon="['fas', 'xmark']" />
     </router-link>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
   .FilterBadge {
     background-color: #364a4c;
     border: 1px solid #364a4c;
-    color: @white;
+    color: $white;
     font-weight: 600;
     font-size: 1.4rem;
     padding: 2px 5px 2px 10px;
@@ -74,13 +50,13 @@ export default {
 
     & i,
     & i:hover {
-      color: @white;
+      color: $white;
     }
 
     &.clear-all {
       color: inherit;
-      background-color: @white;
-      border: 1px solid @grey-lighter;
+      background-color: $white;
+      border: 1px solid $grey-lighter;
 
       & i,
       & i:hover {

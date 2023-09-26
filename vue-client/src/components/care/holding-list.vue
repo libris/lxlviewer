@@ -1,8 +1,13 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapWritableState } from 'pinia';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
+import { useResourcesStore } from '@/stores/resources';
+import { useDirectoryCareStore } from '@/stores/directoryCare';
 import { each, isObject, orderBy } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
+import { translatePhrase, lowercase } from '@/utils/filters';
 
 export default {
   name: 'holding-list',
@@ -24,8 +29,6 @@ export default {
       default: false,
     },
   },
-  components: {
-  },
   data() {
     return {
       selected: [],
@@ -33,12 +36,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'directoryCare',
-      'settings',
-      'resources',
-      'user',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useDirectoryCareStore, ['sender', 'reciever']),
+    ...mapState(useUserStore, ['user']),
+    ...mapWritableState(useDirectoryCareStore, ['senderHoldings', 'selectedHoldings', 'recieverHoldings', 'holdingsMoved']),
+    ...mapState(useSettingsStore, ['settings']),
     registrantPermissions() {
       const collections = this.user.collections.map((x) => {
         if (x.registrant === true) {
@@ -52,10 +54,10 @@ export default {
       return this.name === 'sender';
     },
     bothSelected() {
-      return (this.directoryCare.sender !== null && this.directoryCare.reciever !== null);
+      return (this.sender !== null && this.reciever !== null);
     },
     movableHoldings() {
-      const holdings = this.directoryCare.senderHoldings;
+      const holdings = this.senderHoldings;
       const permitted = [];
       for (let i = 0; i < holdings.length; i++) {
         if (this.userHasPermission(holdings[i]) && !this.holdingExistsOnTarget(holdings[i])) {
@@ -74,7 +76,7 @@ export default {
       return StringUtil.getUiPhraseByLang('No reciever chosen', this.user.settings.language, this.resources.i18n);
     },
     sortedHoldings() {
-      const holdings = this.directoryCare[`${this.name}Holdings`];
+      const holdings = this[`${this.name}Holdings`];
       each(holdings, (h) => { 
         h._label = DisplayUtil.getItemLabel(
           h,
@@ -94,21 +96,20 @@ export default {
   },
   watch: {
     selected(value) {
-      const changeObj = { selectedHoldings: value };
-      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+      this.selectedHoldings = value;
       if (this.selected.length > 0 && this.movableHoldings.length === this.selected.length) {
         this.allHoldingsSelected = true;
       } else {
         this.allHoldingsSelected = false;
       }
     },
-    'directoryCare.sender'() {
+    'sender'() {
       if (this.name === 'sender') {
         this.getHoldings();
       }
       this.clearSelected();
     },
-    'directoryCare.reciever'() {
+    'reciever'() {
       if (this.name === 'reciever') {
         this.resetMovedStatus();
         this.getHoldings();
@@ -122,9 +123,9 @@ export default {
     },
   },
   methods: {
+    translatePhrase, lowercase,
     resetMovedStatus() {
-      const changeObj = { holdingsMoved: [] };
-      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+      this.holdingsMoved = [];
     },
     doSend() {
       this.resetMovedStatus();
@@ -158,7 +159,7 @@ export default {
     },
     isNewlyMoved(holding) {
       if (this.name === 'reciever') {
-        const moved = this.directoryCare.holdingsMoved;
+        const moved = this.holdingsMoved;
         if (moved.indexOf(holding['@id']) > -1) {
           return true;
         }
@@ -201,17 +202,15 @@ export default {
     },
     holdingExistsOnTarget(holdingObj) {
       const sigel = holdingObj.heldBy['@id'];
-      const recieverHoldings = this.directoryCare.recieverHoldings;
-      for (let i = 0; i < recieverHoldings.length; i++) {
-        if (recieverHoldings[i].heldBy['@id'] === sigel) {
+      for (let i = 0; i < this.recieverHoldings.length; i++) {
+        if (this.recieverHoldings[i].heldBy['@id'] === sigel) {
           return true;
         }
       }
       return false;
     },
     getHoldings() {
-      const self = this;
-      const bibId = this.directoryCare[this.name];
+      const bibId = this[this.name];
       const queryPairs = {
         'itemOf.@id': bibId,
         '@type': 'Item',
@@ -221,35 +220,29 @@ export default {
         url += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
       });
       fetch(url).then(response => response.json()).then((result) => {
-        const changeObj = { [`${this.name}Holdings`]: result.items };
-        self.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+        this[`this.name}Holdings`] = result.items;
       }, (error) => {
         console.warn('Couldnt find holdongs for', bibId, error);
       });
     },
   },
-  mounted() {
-    this.$nextTick(() => {
-    });
-  },
-
 };
 </script>
 
 <template>
-  <div class="HoldingList" :class="{ 'is-sender': isSender }" v-if="directoryCare[this.name]">
+  <div class="HoldingList" :class="{ 'is-sender': isSender }" v-if="this[this.name]">
     <div class="HoldingList-topBar">
         <button v-if="isSender" class="btn btn--md btn-light SelectAll-btn" @click="toggleAll" :disabled="lock || movableHoldings.length === 0">
-          <i class="fa fa-fw fa-square-o" v-show="!allHoldingsSelected"></i>
-          <i class="fa fa-fw fa-check-square-o" v-show="allHoldingsSelected"></i>
+          <font-awesome-icon icon="fa fa-square-o" class="fa-fw" v-show="!allHoldingsSelected"></font-awesome-icon>
+          <font-awesome-icon icon="fa fa-check-square-o" class="fa-fw" v-show="allHoldingsSelected"></font-awesome-icon>
           <!-- <input v-model="allHoldingsSelected" type="checkbox" :disabled="lock || movableHoldings.length === 0" @change="handleAllSelect" /> -->
-          {{ 'Select all' | translatePhrase }}
+          {{ translatePhrase('Select all') }}
         </button>
-        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && !loading" :disabled="lock || directoryCare.selectedHoldings.length === 0" @click="doSend">{{ 'Move holdings' | translatePhrase }}</button>
-        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && loading" :disabled="true"><i class="fa fa-circle-o-notch fa-spin"></i> {{ 'Moving holdings' | translatePhrase }}</button>
-        <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ 'Holdings chosen' | translatePhrase | lowercase }}</span>
+        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && !loading" :disabled="lock || selectedHoldings.length === 0" @click="doSend">{{ translatePhrase('Move holdings') }}</button>
+        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && loading" :disabled="true"><i class="fa fa-circle-o-notch fa-spin"></i> {{ translatePhrase('Moving holdings') }}</button>
+        <span v-if="isSender">{{ selectedHoldings.length }} / {{ senderHoldings.length }} {{ lowercase(translatePhrase('Holdings chosen')) }}</span>
         <div v-if="!isSender"></div>
-        <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ 'Holdings' | translatePhrase | lowercase }}</span>
+        <span v-if="!isSender">{{ recieverHoldings.length }} {{ lowercase(translatePhrase('Holdings')) }}</span>
     </div>
     <div class="HoldingList-body">
       <div class="HoldingList-items">
@@ -263,21 +256,21 @@ export default {
                 :id="`checkbox-${holding.heldBy['@id']}`"/>
               <!-- <div class="customCheckbox-icon"></div> -->
             </div>
-            <div class="HoldingList-noReciever" v-if="directoryCare.reciever === null && userHasPermission(holding)">
+            <div class="HoldingList-noReciever" v-if="reciever === null && userHasPermission(holding)">
               <span v-tooltip.top="noRecieverTooltip">
               <input disabled type="checkbox" />
               </span>
-            </div>            
+            </div>
             <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
-              <i v-tooltip.top="noPermissionTooltip" class="fa fa-fw fa-lock"></i>
+              <font-awesome-icon icon="fa fa-lock" v-tooltip.top="noPermissionTooltip" class="fa-fw"></font-awesome-icon>
             </div>
             <div class="HoldingList-foundOnDestination" v-if="isSender && userHasPermission(holding) && holdingExistsOnTarget(holding)">
-              <i v-tooltip.top="foundOnDestinationTooltip" class="fa fa-fw fa-warning"></i>
+              <font-awesome-icon icon="fa fa-warning" v-tooltip.top="foundOnDestinationTooltip" class="fa-fw"></font-awesome-icon>
             </div>
-            <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding) && directoryCare.reciever">
-              <i class="statusItem-loading fa fa-fw fa-circle-o-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
-              <i class="statusItem-success fa fa-fw fa-check" v-show="getStatus(holding) === 'done'" />
-              <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
+            <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding) && reciever">
+              <font-awesome-icon icon="fa fa-circle-o-notch" class="statusItem-loading fa fa-fw fa-spin" v-show="getStatus(holding) === 'loading'" />
+              <font-awesome-icon icon="fa fa-check" class="statusItem-success fa fa-fw" v-show="getStatus(holding) === 'done'" />
+              <font-awesome-icon icon="fa fa-times" class="statusItem-error fa fa-fw" v-show="getStatus(holding) === 'error'" />
             </div>
             <entity-summary 
             :exclude-components="['categorization', 'id']"
@@ -291,11 +284,11 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .HoldingList {
-  flex-basis: @directorycare-sidewidth;
-  max-width: @directorycare-sidewidth;
+  flex-basis: $directorycare-sidewidth;
+  max-width: $directorycare-sidewidth;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -321,14 +314,14 @@ export default {
       white-space: nowrap;
     }
 
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       height: auto;
       flex-wrap: wrap;
     }
   }
 
   &-body {
-    border: solid @grey-lighter;
+    border: solid $grey-lighter;
     border-width: 1px 0px 0px 1px;
     padding: 0 1em;
     flex-grow: 1;
@@ -357,23 +350,23 @@ export default {
   &-itemIndex {
     padding: 0.5em;
     flex-basis: 8%;
-    color: @grey-dark;
+    color: $grey-dark;
   }
   &-itemBody {
     flex-direction: row;
     display: flex;
     flex: 1;
     min-width: 0%;
-    border: solid @grey-lighter;
+    border: solid $grey-lighter;
     border-width: 0px 1px 1px 1px;
     &.is-first {
       border-width: 1px 1px 1px 1px;
     }
     &.selected {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
     }
     &.newly-moved {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
     }
   }
   &-itemInfo {
@@ -400,10 +393,10 @@ export default {
     }
   }
   &-noPermission {
-    color: @grey-light;
+    color: $grey-light;
   }
   &-foundOnDestination {
-    color: @brand-warning;
+    color: $brand-warning;
   }
 
   .SendHoldings-btn {
@@ -419,7 +412,7 @@ export default {
     word-break: break-word;
   }
 
-  @media (max-width: @screen-sm) {
+  @include media-breakpoint-down(sm) {
     flex-basis: 100%;
     max-width: 100%;
 

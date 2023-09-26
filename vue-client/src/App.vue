@@ -1,52 +1,66 @@
 <template>
-  <div id="app" class="App">
-    <GlobalMessages />
-    <EnvironmentBanner />
-    <navbar-component />
-    <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
+  <GlobalMessages />
+  <EnvironmentBanner />
+  <navbar-component />
+  <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
 
-    <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': (!status.panelOpen && user.settings.fullSiteWidth === false), 'container-fluid': (status.panelOpen || user.settings.fullSiteWidth), 'debug-mode': user.settings.appTech }">
-      <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
-        {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
+  <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': (!panelOpen && user.settings.fullSiteWidth === false), 'container-fluid': (panelOpen || user.settings.fullSiteWidth), 'debug-mode': user.settings.appTech }">
+    <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
+      {{ translatePhrase('Debug mode activated. Click here to disable.') }}
+    </div>
+
+    <div v-if="loadingIndicators.length > 0" class="text-center MainContent-spinner">
+      <Spinner size="lg" :message="translatePhrase(loadingIndicators[0])" />
+    </div>
+
+    <div v-if="loadingError" class="ResourcesLoadingError">
+      <font-awesome-icon icon="fa fa-warning" class="fa-4x text-danger"></font-awesome-icon>
+      <div>
+        <h2>Kunde inte hämta nödvändiga resurser</h2>
+        <p>Testa att ladda om sidan.</p>
+        <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
       </div>
+    </div>
 
-      <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
-        <vue-simple-spinner size="large" :message="status.loadingIndicators[0] | translatePhrase"></vue-simple-spinner>
-      </div>
+    <RouterView
+      ref="routerView"
+      @ready="onRouterViewReady"
+      v-if="resourcesLoaded"
+      v-show="loadingIndicators.length === 0"
+    />
+  </main>
 
-      <div v-if="resourcesLoadingError" class="ResourcesLoadingError">
-        <i class="fa fa-warning fa-4x text-danger"></i>
-        <div>
-          <h2>Kunde inte hämta nödvändiga resurser</h2>
-          <p>Testa att ladda om sidan.</p>
-          <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
-        </div>
-      </div>
-
-      <router-view
-        ref="routerView"
-        v-if="resourcesLoaded"
-        v-show="status.loadingIndicators.length === 0"
-        @ready="onRouterViewReady"
-      />
-    </main>
-
-    <portal-target name="sidebar" multiple />
-    <footer-component></footer-component>
-    <notification-list></notification-list>
-  </div>
+  <portal-target name="sidebar" multiple />
+  <footer-component></footer-component>
+  <notification-list></notification-list>
 </template>
 
-<script>
-import VueSimpleSpinner from 'vue-simple-spinner';
-import { mapGetters, mapActions } from 'vuex';
-import Navbar from '@/components/layout/navbar';
-import SearchBar from '@/components/layout/search-bar';
-import Footer from '@/components/layout/footer';
-import NotificationList from '@/components/shared/notification-list';
-import EnvironmentBanner from '@/components/layout/environment-banner';
-import GlobalMessages from '@/components/layout/global-messages';
+<script lang="js">
+import * as DataUtil from '@/utils/data';
+import { mapActions, mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useStatusStore } from '@/stores/status';
+import { useUserStore } from '@/stores/user';
+import { RouterView } from 'vue-router';
+import { translatePhrase } from '@/utils/filters';
+import Navbar from '@/components/layout/navbar.vue';
+import SearchBar from '@/components/layout/search-bar.vue';
+import Footer from '@/components/layout/footer.vue';
+import NotificationList from '@/components/shared/notification-list.vue';
+import EnvironmentBanner from '@/components/layout/environment-banner.vue';
+import GlobalMessages from '@/components/layout/global-messages.vue';
+import Spinner from '@/components/shared/Spinner.vue';
+import { useSettingsStore } from './stores/settings';
 
+// TODO: Support .jsonld files in Vite (copy pasted now in lxl-helpdocs)
+import i18n from '@/resources/json/i18n.json';
+import helpDocsJson from 'lxl-helpdocs/build/help.json';
+import displayGroupsJson from '@/resources/json/displayGroups.json';
+import baseTemplates from '@/resources/json/baseTemplates.json';
+import combinedTemplates from '@/resources/json/combinedTemplates.json';
+import { useOauthStore } from './stores/oauth';
+
+// TODO: move some(or all) of the boot logic somewhere else to clean up this file
 export default {
   name: 'App',
   data() {
@@ -58,13 +72,21 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'settings',
-      'user',
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapState(useStatusStore, ['panelOpen', 'loadingIndicators']),
+    ...mapState(useUserStore, ['userDatabase']),
+    ...mapWritableState(useUserStore, ['user', 'userStorage']),
+    ...mapWritableState(useStatusStore, ['userIdle', 'keybindState']),
+    ...mapWritableState(useResourcesStore, [
+      'helpDocs',
+      'i18n',
+      'displayGroups',
+      'context',
+      'vocab',
+      'display',
       'resourcesLoaded',
-      'resourcesLoadingError',
-      'status',
-      'userDatabase',
+      'loading',
+      'loadingError',
     ]),
   },
   watch: {
@@ -77,9 +99,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      'setStatusValue',
-    ]),
+    translatePhrase,
+    ...mapActions(useStatusStore, ['pushLoadingIndicator', 'removeLoadingIndicator']),
+    ...mapActions(useResourcesStore, ['setupVocab', 'setTemplates']),
+    ...mapActions(useOauthStore, ['initOauth2Client']),
+    ...mapActions(useUserStore, ['verifyUser', 'loadUserDatabase']),
     onRouterViewReady() {
       this.setFocusTarget();
     },
@@ -116,16 +140,10 @@ export default {
 
       setInterval(() => {
         this.userIdleTimer += updateTimer;
-        if (this.userIdleTimer > 5 && this.status.userIdle === false) {
-          this.setStatusValue({ 
-            property: 'userIdle',
-            value: true,
-          });
-        } else if (this.userIdleTimer <= 5 && this.status.userIdle === true) {
-          this.setStatusValue({ 
-            property: 'userIdle',
-            value: false,
-          });
+        if (this.userIdleTimer > 5 && this.userIdle === false) {
+          this.userIdle = true;
+        } else if (this.userIdleTimer <= 5 && this.userIdle === true) {
+          this.userIdle = false;
         }
       }, updateTimer * 1000);
 
@@ -139,7 +157,7 @@ export default {
     disableDebugMode() {
       const userObj = this.user;
       userObj.settings.appTech = false;
-      this.$store.dispatch('setUser', userObj);
+      this.user = userObj;
     },
     checkSearchBar(event) {
       const $SearchBar = document.getElementById('SearchBar');
@@ -162,20 +180,129 @@ export default {
         }
       }
     },
+    initWarningFunc() {
+      if (this.settings.environment === 'prod' || this.settings.environment === 'stg') {
+        window.lxlWarning = () => {
+          
+        };
+        window.lxlError = () => {
+          
+        };
+        return;
+      }
+      window.lxlInfoStack = [];
+      window.lxlInfo = (...strings) => {
+        if (window.lxlInfoStack.indexOf(JSON.stringify(strings.join())) === -1) {
+          window.lxlInfoStack.push(JSON.stringify(strings.join()));
+          return console.log(...strings);
+        }
+        return false;
+      };
+      window.lxlWarnStack = [];
+      window.lxlWarning = (...strings) => {
+        if (window.lxlWarnStack.indexOf(JSON.stringify(strings.join())) === -1) {
+          window.lxlWarnStack.push(JSON.stringify(strings.join()));
+          return console.warn(...strings);
+        }
+        return false;
+      };
+      window.lxlErrorStack = [];
+      window.lxlError = (...strings) => {
+        if (window.lxlErrorStack.indexOf(JSON.stringify(strings.join())) === -1) {
+          window.lxlErrorStack.push(JSON.stringify(strings.join()));
+          return console.error(...strings);
+        }
+        return false;
+      };
+    },
+    fetchHelpDocs() {
+      if (this.settings.mockHelp) {
+        window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
+        this.helpDocs = helpDocsJson;
+      } else {
+        fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
+          if (result.status === 200) {
+            result.json().then((body) => {
+              this.helpDocs = body;
+            });
+          }
+        }, (error) => {
+          console.log('Couldn\'t fetch help documentation.', error);
+        });
+      }
+    },
+    getLdDependencies() {
+      const promiseArray = [];
+      const vocabPromise = DataUtil.getVocab(this.settings.idPath);
+      promiseArray.push(vocabPromise);
+      const contextPromise = DataUtil.getContext(this.settings.idPath);
+      promiseArray.push(contextPromise);
+      const displayPromise = DataUtil.getDisplayDefinitions();
+      promiseArray.push(displayPromise);
+      return promiseArray;
+    },
+    loadTemplates() {
+      const templates = {
+        base: baseTemplates,
+        combined: combinedTemplates,
+      };
+
+      this.setTemplates(templates);
+    },
+    syncUserStorage() {
+      const userStorageTotal = JSON.parse(localStorage.getItem('userStorage'));
+      let userStorage = this.userStorage;
+      if (userStorageTotal !== null && (userStorageTotal.hasOwnProperty(this.user.idHash) || userStorageTotal.hasOwnProperty(this.user.emailHash))) {
+        userStorage = userStorageTotal[this.user.idHash] || userStorageTotal[this.user.emailHash];
+      }
+      this.userStorage = userStorage;
+    },
   },
   mounted() {
+    this.verifyUser().then(() => {
+      this.$nextTick(() => {
+        this.loadUserDatabase();
+      });
+    }).catch(() => {});
+
+    this.loadTemplates();
+    this.initOauth2Client();
     this.$nextTick(() => {
       this.setupIdleTimer();
       this.checkSearchBar();
 
-      this.$store.dispatch('setStatusValue', {
-        property: 'keybindState',
-        value: 'default',
-      });
+      this.keybindState = 'default';
     });
 
     window.addEventListener('scroll', (e) => {
       this.checkSearchBar(e);
+    });
+
+    this.initWarningFunc();
+    this.fetchHelpDocs();
+    this.i18n = i18n;
+    this.displayGroups = displayGroupsJson;
+    this.pushLoadingIndicator('Loading application');
+
+    Promise.all(this.getLdDependencies()).then((resources) => {
+      this.context = resources[1]['@context'];
+      this.setupVocab(resources[0]['@graph']);
+      this.display = resources[2];
+      this.resourcesLoaded = true;
+      this.removeLoadingIndicator('Loading application');
+    }, (error) => {
+      window.lxlWarning(`🔌 The API (at ${this.settings.apiPath}) might be offline! Error: ${error}`);
+      this.loadingError = true;
+      this.removeLoadingIndicator('Loading application');
+    });
+
+    // Sync user storage initially and trigger it again every focus event
+    this.syncUserStorage();
+    window.addEventListener('focus', () => {
+      this.syncUserStorage();
+      if (this.user.isLoggedIn) {
+        this.loadUserDatabase();
+      }
     });
   },
   components: {
@@ -185,15 +312,13 @@ export default {
     'notification-list': NotificationList,
     EnvironmentBanner,
     GlobalMessages,
-    'vue-simple-spinner': VueSimpleSpinner,
+    Spinner,
+    RouterView,
   },
 };
 </script>
 
-<style lang="less">
-@import "~bootstrap/less/bootstrap";
-@import "~font-awesome/css/font-awesome.css";
-
+<style lang="scss">
 // BOOTSTRAP UNSET START
 .dropdown-menu > li > a {
   font-weight: unset;
@@ -201,21 +326,42 @@ export default {
 // BOOTSTRAP UNSET END
 
 // BOOTSTRAP OVERRIDE START
-@media (max-width: @screen-md-min) {
-   .container {
-      width: 100%;
-   }
+
+.container {
+  max-width: 1170px;
+  padding: 0 15px;
 }
+
 // BOOTSTRAP OVERRIDE END
 
 .row {
   height: 100%;
 }
 
+html {
+  font-size: 10px !important;
+}
+
 body {
   line-height: 1.6;
+  color: $black;
+  position: relative;
+  background-color: $site-body-background;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -ms-overflow-style: scrollbar;
   font-size: 16px;
-  color: @black;
+
+  .facet-container {
+    opacity: 1;
+    transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
+
+    &.facet-hidden {
+      width: 0%;
+      opacity: 0;
+    }
+  }
 }
 
 h1, h2, h3, h4 {
@@ -238,7 +384,8 @@ h4 {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-  font-family: @font-family-base;
+  font-family: $font-family-base;
+  width: 100%;
 
   .fade-enter-active, .fade-leave-active {
     transition-property: opacity;
@@ -262,7 +409,8 @@ h4 {
     background-color: #ffffffeb;
     left: 0;
     position: fixed;
-    i {
+
+    svg {
       margin-right: 0.5em;
     }
   }
@@ -272,14 +420,14 @@ h4 {
   width: 100%;
   height: 2em;
   text-align: center;
-  background-color: @brand-warning;
+  background-color: $brand-warning;
   cursor: pointer;
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
   font-variant: all-small-caps;
   color: #222222;
   font-weight: bold;
   &:hover {
-    background-color: darken(@brand-warning, 10%);
+    background-color: darken($brand-warning, 10%);
   }
 }
 
@@ -294,21 +442,17 @@ h4 {
   &-spinner {
     margin-top: 2em;
   }
-
-  @media screen and (max-width: @screen-lg-min){
-    width: 100%;
-  }
 }
 
 // ----------- LINKS ----------------
 body a,
 .link {
-  color: @link-color;
+  color: $link-color;
   text-decoration: none;
   cursor: pointer;
 
   &:hover {
-    color: @link-hover-color;
+    color: $link-hover-color;
     text-decoration: underline;
   }
 }
@@ -320,7 +464,7 @@ a:focus {
 // ----------- BUTTON ----------------
 
 button, .btn-primary, .btn-primary:hover, .btn-primary:focus {
-  color: @white;
+  color: $white;
 }
 
 button {
@@ -341,7 +485,7 @@ button {
 
 .btn {
   .icon {
-    color: @white !important;
+    color: $white !important;
   }
 }
 
@@ -358,15 +502,15 @@ button {
 
 .btn[disabled],
 .btn.disabled {
-  background-color: @grey-lighter;
+  background-color: $grey-lighter;
   opacity: 1;
   &:hover, 
   &:focus {
-    background-color: @grey-lighter;
+    background-color: $grey-lighter;
   }
 
   &.btn-primary {
-    background-color: fadeout(@btn-primary, 35%);
+    background-color: fadeout($btn-primary, 35%);
     box-shadow: none;
   }
   &.btn-light {
@@ -376,131 +520,141 @@ button {
 }
 
 .btn-info {
-  @base-color: @brand-info;
-  background-color: @white;
+  $base-color: $brand-info;
+  background-color: $white;
   border: 1px solid;
-  border-color: @base-color;
-  color: @black;
+  border-color: $base-color;
+  color: $black;
   &:focus {
-    background-color: @white;
-    color: @black;
+    background-color: $white;
+    color: $black;
   }
   &:hover, &:active {
-    background-color: darken(@white, 5%) !important;
-    color: @black !important;
+    background-color: darken($white, 5%) !important;
+    color: $black !important;
   }
   &:active {
     box-shadow: inset 0 0 0.5rem 0 rgba(0, 0, 0, 0.4);
-    color: @black;
+    color: $black;
   }
 }
 
 .btn-transparent, .btn-transparent:focus, .btn-transparent:active {
-  border: 1px solid @black;
+  border: 1px solid $black;
   font-weight: 700;
   background-color: transparent;
   &:hover {
-    background-color: fadeout(@neutral-color, 70%);
+    background-color: fadeout($neutral-color, 70%);
   }
 }
 
 .btn-primary {
-  background-color: @btn-primary;
+  background-color: $btn-primary;
   &:hover {
-    background-color: @btn-primary--hover;
-    border-color: @btn-primary--hover;
+    background-color: $btn-primary--hover;
+    border-color: $btn-primary--hover;
   }
 }
 
 .btn-grey {
   color: white;
-  background-color: @grey;
+  background-color: $grey;
   &:hover, 
   &:focus {
     color: white;
-    background-color: @grey-darker;
+    background-color: $grey-darker;
   }
 }
 
 .btn-light {
-  color: lighten(@black, 15%);
-  background-color: darken(@white, 5%);
+  color: lighten($black, 15%);
+  background-color: darken($white, 5%);
   &:focus {
-    color: lighten(@black, 15%);
-    background-color: darken(@white, 5%);
+    color: lighten($black, 15%);
+    background-color: darken($white, 5%);
   }
   &:hover {
-    color: lighten(@black, 15%);
-    background-color: darken(@white, 10%);
-  }
-}
-
-&.btn-hollow {
-  background-color: transparent;
-  &:focus,
-  &:hover {
-    color: lighten(@black, 15%);
-    background-color: darken(@white, 5%);
-  }
-}
-
-&.btn--as-link {
-  color: @link-color;
-  text-align: left;
-  padding: 0;
-  background: transparent;
-  font-weight: normal;
-  &:focus,
-  &:hover {
-    color: @link-hover-color;
-    background-color: transparent;
-    text-decoration: underline;
+    color: lighten($black, 15%);
+    background-color: darken($white, 10%);
   }
 }
 
 //btn sizes
-.btn-mixin(@width, @height, @fsize){
-  min-width: @width;
-  height: @height;
-  font-size: @fsize;
+@mixin btn-mixin($width, $height, $fsize){
+  min-width: $width;
+  height: $height;
+  font-size: $fsize;
   font-weight: 600;
 }
 
-.btn--lg {
-  .btn-mixin(275px, auto, 20px);
+// TODO: Get this back
+// .btn {
+//   &--auto {
+//     min-width: auto;
+//   }
 
-  @media screen and (max-width: @screen-sm-min){
-    .btn--md
-  }
-}
+//   &--sm {
+//     @include btn-mixin(150px, 26px, 13px);
+//     padding: 3px 10px;
+//     box-shadow: none;
+//   }
 
-.btn--md {
-  .btn-mixin(150px, 32px, 14px);
-  padding: 0 15px;
+//   &--md {
+//     @include btn-mixin(150px, 32px, 14px);
+//     padding: 0 15px;
 
-  &-icon {
-    padding: 0.25em 0.5em;
-    min-width: 0;
-  }
+//     &-icon {
+//       padding: 0.25em 0.5em;
+//       min-width: 0;
+//     }
 
-  .icon {
-    margin-right: 8px;
-  }
+//     .icon {
+//       margin-right: 8px;
+//     }
 
-  @media screen and (max-width: @screen-sm-min){
-    .btn--sm
-  }
-}
+//     // @media screen and (max-width: $screen-sm-min){
+//     //   @extend .btn--sm;
+//     // }
+//     @include media-breakpoint-down(sm) {
+//       @extend .btn--sm;
+//     }
+//   }
 
-.btn--sm {
-  .btn-mixin(150px, 26px, 13px);
-  padding: 3px 10px;
-  box-shadow: none;
-}
+//   &--lg {
+//     @include btn-mixin(275px, auto, 20px);
 
-.btn--auto {
-  min-width: auto;
-}
+//     // @media screen and (max-width: $screen-sm-min){
+//     //   @extend .btn--md;
+//     // }
+
+//     @include media-breakpoint-down(sm) {
+//       @extend .btn--md;
+//     }
+//   }
+
+//   &.btn-hollow {
+//     background-color: transparent;
+//     &:focus,
+//     &:hover {
+//       color: lighten($black, 15%);
+//       background-color: darken($white, 5%);
+//     }
+//   }
+
+//   &.btn--as-link {
+//     color: $link-color;
+//     text-align: left;
+//     padding: 0;
+//     background: transparent;
+//     font-weight: normal;
+//     &:focus,
+//     &:hover {
+//       color: $link-hover-color;
+//       background-color: transparent;
+//       text-decoration: underline;
+//     }
+//   }
+// }
 
 html {
   height: 100%;
@@ -538,8 +692,8 @@ main {
   width: 100%;
   padding: 3em 0em;
   div {
-    border: 1px solid @grey;
-    background-color: @grey-lighter;
+    border: 1px solid $grey;
+    background-color: $grey-lighter;
     padding: 25px;
     width: 800px;
     margin: auto;
@@ -548,12 +702,12 @@ main {
 }
 
 .vue-simple-spinner {
-  border-color: @brand-primary @grey-lighter @grey-lighter !important;
+  border-color: $brand-primary $grey-lighter $grey-lighter !important;
 }
 
 #body-blocker {
   display: none;
-  z-index: @backdrop-z;
+  z-index: $backdrop-z;
   position: fixed;
   top: 0;
   left: 0;
@@ -565,24 +719,6 @@ html.scroll-lock {
   overflow: hidden;
 }
 
-body {
-  position: relative;
-  background-color: @site-body-background;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  -ms-overflow-style: scrollbar;
-  
-  .facet-container {
-    opacity: 1;
-    transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
-    &.facet-hidden {
-      width: 0%;
-      opacity: 0;
-    }
-  }
-}
-
 // ----------- VARIOUS ----------------
 * {
   outline: none;
@@ -591,15 +727,15 @@ body {
 .user-is-tabbing {
   button, .MainNav-userDropdown, a, h1, h2, h3, h4, h5, span {
     &:focus {
-      .focus-mixin-bg();
+      @include focus-mixin-bg();
       * {
-        .focus-mixin-bg();
+        @include focus-mixin-bg();
       }
     }
   }
   input, textarea, img, select, .ItemEntity, .ItemLocal, .EntityAction, .ItemSibling, .icon, .icon i, li, i.fa, div {
     &:focus {
-      .focus-mixin-border();
+      @include focus-mixin-border();
     }
   }
 }
@@ -632,27 +768,27 @@ body {
 
 // ------------- ICONS ----------------
 .icon {
-    color: @grey;
-    color: @grey-transparent;
+    color: $grey;
+    color: $grey-transparent;
     transition: color .2s ease, background-color .2s ease;
 
     &:hover {
-        color: @grey-darker;
-        color: @grey-darker-transparent;
+        color: $grey-darker;
+        color: $grey-darker-transparent;
     }
 
     &--primary {
-        color: @btn-primary;
+        color: $btn-primary;
 
         &:hover {
-            color: @btn-primary--hover;
+            color: $btn-primary--hover;
         }
     }
 
     &--white {
-      color: @white;
+      color: $white;
       &:hover {
-        color: @white;
+        color: $white;
       }
     }
 
@@ -673,12 +809,12 @@ body {
     }
 
     &.is-disabled {
-        color: @grey-lighter-transparent;
+        color: $grey-lighter-transparent;
         cursor: not-allowed;
     }
 
     &.is-added {
-        color: @grey-light;
+        color: $grey-light;
         cursor: not-allowed;
     }
 }
@@ -686,17 +822,17 @@ body {
 // ------------- BADGE ----------------
 
 .badge {
-  background-color: @badge-color;
-  background-color: @badge-color-transparent;
-  color: @grey-darker;
-  color: @grey-darker-transparent;
+  background-color: $badge-color;
+  background-color: $badge-color-transparent;
+  color: $grey-darker;
+  color: $grey-darker-transparent;
 }
 
 // ---------- TYPOGRAPHY -------------
 // ----------- HEADINGS ----------------
 h1, h2, h3, h4 {
   font-weight: 600;
-  color: @black;
+  color: $black;
 }
   
 h1 {
@@ -710,29 +846,31 @@ h1 {
 // smaller uppercase headings
 .uppercaseHeading {
     text-transform: uppercase !important;
-    color: @grey-darker;
+    color: $grey-darker;
     font-size: 13px;
     font-size: 1.3rem;
     font-weight: 600;
 
     &--light {
-      &:extend(.uppercaseHeading);
+      @extend .uppercaseHeading;
       font-size: 12px;
       font-size: 1.2rem;
-      color: @grey-dark;
-      color: @grey-dark-transparent;
+      color: $grey-dark;
+      color: $grey-dark-transparent;
     }
 
     &--bold {
-      &:extend(.uppercaseHeading);
+      @extend .uppercaseHeading;
       font-weight: 700;
     }
+
     &--large {
-      &:extend(.uppercaseHeading);
+      @extend .uppercaseHeading;
       font-size: 1.8rem;
     }
+
     &--secondary {
-      color: @grey;
+      color: $grey;
     }
 }
 
@@ -748,12 +886,12 @@ h1 {
 
     &:checked + .customCheckbox-icon::before {
       content: "\f14a";
-      color: @brand-primary;
+      color: $brand-primary;
     }
 
     .user-is-tabbing &:focus + .customCheckbox-icon {
-      outline: 2px solid @focus-color-border; //fallback for IE & Edge
-      outline: auto @focus-color-border;
+      outline: 2px solid $focus-color-border; //fallback for IE & Edge
+      outline: auto $focus-color-border;
     }
   }
 
@@ -768,7 +906,7 @@ h1 {
       display: inline-block;
       font-size: 18px;
       font-size: 1.8rem;
-      color: @grey-darker;
+      color: $grey-darker;
       width: 18px;
     }
   }
@@ -780,16 +918,16 @@ h1 {
   font-weight: 500;
   font-size: 16px;
   font-size: 1.6rem;
-  color: @black;
+  color: $black;
   border: none;
   width: 100%;
-  border-radius: @form-radius;
+  border-radius: $form-radius;
   // border-bottom: 1px solid rgba(0, 0, 0, 0.07);
   text-align: left;
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
-  background-color: @grey-lightest;
+  background-color: $grey-lightest;
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'%3E%3Ctext x='0' y='10' fill='gray'%3E%E2%96%BE%3C/text%3E%3C/svg%3E");
   background-repeat: no-repeat, repeat;
   background-position: right 0.5em top 50%, 0 0;
@@ -814,20 +952,20 @@ h1 {
   font-size: 16px;
   font-size: 1.6rem;
   width: 100%;
-  border-radius: @form-radius;
-  background-color: @grey-lightest;
+  border-radius: $form-radius;
+  background-color: $grey-lightest;
   line-height: 1.2;
-  color: @black;
+  color: $black;
   border-color: transparent;
   padding: 0 0.5em;
 
   &::placeholder,
   input::placeholder  {
-    color: @grey;
+    color: $grey;
   }
 
   &:focus {
-    // border: 1px solid @brand-primary;
+    // border: 1px solid $brand-primary;
     // outline: 0;
     // box-shadow: none;
   }
@@ -840,7 +978,7 @@ h1 {
 // ------------ CARDS --------------
 
 .card {
-  border: 1px solid @grey-lighter;
+  border: 1px solid $grey-lighter;
 
   &-content {
     display: flex;
@@ -886,8 +1024,8 @@ h1 {
     width: 100%;
     
     &.active {
-      color: @white;
-      background: @brand-primary;
+      color: $white;
+      background: $brand-primary;
       &:hover {
           text-decoration: none;
       }

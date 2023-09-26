@@ -40,8 +40,8 @@
         {'id': 'MyTab1', 'text': 'My tab text' },
         {'id': 'MyOtherTab', 'text': 'My other text' }
       ]" :active="myActivePageVariable"></tab-menu>
-
 */
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'tab-menu',
@@ -63,11 +63,8 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-    };
-  },
   methods: {
+    translatePhrase,
     go(name) {
       this.$emit('go', name);
     },
@@ -76,13 +73,14 @@ export default {
         const $activeTab = this.$el.querySelector('.is-active');
         const $tabList = this.$refs.tablist;
         if ($activeTab && $tabList) {
-          const $underline = this.$refs.underline;          
+          const $underline = this.$refs.underline;
           const paddingLeft = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
           const paddingRight = parseInt(window.getComputedStyle($activeTab).paddingRight.replace('px', ''));
           const left = `${$activeTab.offsetLeft + paddingLeft}px`;
           const width = `${parseInt($activeTab.clientWidth - (paddingLeft + paddingRight))}px`;
           $underline.style.width = width;
           $underline.style.left = left;
+          $underline.style.opacity = 1;
         }
       });
     },
@@ -95,9 +93,6 @@ export default {
       return this.tabs.some(el => el.icon);
     },
   },
-  components: {
-
-  },
   watch: {
     '$route.fullPath'(value, oldValue) {
       if (value !== oldValue) {
@@ -106,7 +101,7 @@ export default {
         });
       }
     },
-    tabs() {      
+    tabs() {
       this.moveUnderline();
     },
     active(value, oldValue) {
@@ -131,55 +126,98 @@ export default {
 <template>
   <div class="TabMenu" :class="[`style-${lookStyle}`, {'has-icons': hasIcons }]">
     <ul v-if="!link" class="TabMenu-tabList" role="tablist" ref="tablist">
-      <li class="TabMenu-tab"
-        v-for="item in tabs" 
+      <li
+        class="TabMenu-tab"
+        v-for="item in tabs"
         tabindex="0"
-        :key="item.id" 
+        :key="item.id"
         @click="item.disabled ? null : go(item.id)" 
         @keyup.enter="item.disabled ? null : go(item.id)"
-        v-tooltip="{
-          trigger: 'hover focus',
-          content: item.tooltipText
-        }"
         :class="{'is-active': active === item.id, 'is-disabled': item.disabled }"
-        role="tab">
-          <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
-      </li>      
+        role="tab"
+        v-tooltip="item.tooltipText"
+      >
+          <font-awesome-icon
+            :icon="['fas', item.icon]"
+            v-if="item.icon"
+            class="TabMenu-tabIcon d-block d-sm-none"
+          />
+
+          <span
+            class="TabMenu-tabText"
+            :class="{'d-none d-sm-inline-block': item.icon }"
+            v-if="item.html"
+            v-html="item.html"
+          />
+
+          <span
+            class="TabMenu-tabText"
+            :class="{'d-none d-sm-inline-block': item.icon }"
+            v-else
+          >
+            {{translatePhrase(item.text)}}
+          </span>
+      </li>
     </ul>
+
     <ul v-else class="TabMenu-tabList" ref="tablist">
       <li class="TabMenu-tab" 
         v-for="item in tabs"
-        :class="{'is-active': active === item.id, 'is-disabled': item.disabled, 'has-badge': item.badge && item.badge.value }"
-        :key="item.id">
-          <router-link class="TabMenu-link"
-            :event="item.disabled ? null : 'click'"            
-            :to="item.link"
-            tabindex="0"
-            v-tooltip="{
-              trigger: 'hover focus',
-              content: item.tooltipText
-            }">        
-            <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
-            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
-          </router-link>
-          <span v-if="item.badge" class="badge UserCare-badge" :class="'badge-' + item.badge.type">{{ item.badge.value }}</span>
+        :class="{
+          'is-active': active === item.id,
+          'is-disabled': item.disabled,
+          'has-badge': item.badge && item.badge.value
+        }"
+        :key="item.id"
+      >
+        <router-link
+          class="TabMenu-link"
+          :event="item.disabled ? null : 'click'"
+          :to="item.link"
+          tabindex="0"
+          v-tooltip="{
+            trigger: 'hover focus',
+            content: item.tooltipText
+          }"
+        >
+          <font-awesome-icon
+            v-if="item.icon"
+            class="TabMenu-tabIcon d-block d-sm-none"
+            :icon="['fas', item.icon]"
+          />
+
+          <span
+            class="TabMenu-tabText"
+            :class="{'d-none d-sm-inline-block': item.icon }"
+            v-if="item.html"
+            v-html="item.html"
+          />
+
+          <span
+            class="TabMenu-tabText"
+            :class="{'d-none d-sm-inline-block': item.icon }"
+            v-else
+          >
+            {{translatePhrase(item.text)}}
+          </span>
+        </router-link>
+
+        <span v-if="item.badge" class="badge UserCare-badge" :class="'badge-' + item.badge.type">
+          {{ item.badge.value }}
+        </span>
       </li>
     </ul>
-    <hr v-show="hasActive" class="TabMenu-underline" :class="{'hidden-xs' : hasIcons}" ref="underline">
+
+    <hr v-show="hasActive" class="TabMenu-underline" :class="{'d-none d-sm-block' : hasIcons}" ref="underline">
   </div>
 </template>
 
-<style lang="less">
-
-
+<style lang="scss">
 .user-is-tabbing {
   .TabMenu {
     &-tab a {
       &:focus {
-        .focus-mixin-bg();
+        @include focus-mixin-bg();
       }
     }
   }
@@ -194,33 +232,33 @@ export default {
 
   &-link,
   &-tabText {
-    color: @grey-dark;
+    color: $grey-dark;
     
     .style-dark & {
-      color: @grey-light;
+      color: $grey-light;
     }
 
     .TabMenu-tab:not(.is-disabled) & {
       &:hover,
       &:focus {
-        color: @brand-primary;
+        color: $brand-primary;
         .style-dark & {
-          color: @white;
+          color: $white;
         }
       }
     }
     .is-active & {
-      color: @black;
+      color: $black;
       .style-dark & {
-        color: @white;
+        color: $white;
       }
     }
 
     .TabMenu-tab.is-disabled & {
-      color: @grey-light;
+      color: $grey-light;
       cursor: not-allowed;      
       .style-dark & {
-        color: @grey-darker;
+        color: $grey-darker;
       }
       
     }
@@ -236,11 +274,11 @@ export default {
     &:focus {
       text-decoration: none;
     }
-    
-    @media screen and (min-width: @screen-sm) {
+
+    @include media-breakpoint-up(sm) {
       font-size: 15px;
       font-size: 1.5rem;
-    }    
+    }
   }
 
   &-tab {
@@ -259,12 +297,12 @@ export default {
     .has-icons & {
       padding: 0 5px;
       &.is-active {
-        background-color: @brand-primary;
+        background-color: $brand-primary;
         border-radius: 4px;
       }
     }
-    
-    @media screen and (min-width: @screen-sm) {
+
+    @include media-breakpoint-up(sm) {
       .has-icons & {
         padding: 0 10px;        
         &.is-active {        
@@ -285,7 +323,7 @@ export default {
       top: 1px;
       right: 1px;
 
-      @media screen and (min-width: @screen-sm) {
+      @include media-breakpoint-up(sm) {
         top: calc(50% - 15px);
         right: 6px;
 
@@ -314,7 +352,7 @@ export default {
       margin-left: -20px;
     }
 
-    @media screen and (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       .has-icons & {
         margin-left: -15px;
       }
@@ -331,7 +369,8 @@ export default {
     margin: 0px;
     min-width: 5px;
     border: none;
-    background-color: @brand-primary;
+    background-color: $brand-primary;
+    opacity: 0;
     .style-dark & {
       background-color: #f7a07b;
     }    
@@ -341,5 +380,4 @@ export default {
     display: inline-block;
   }
 }
-
 </style>

@@ -1,6 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
-import PanelSearchItem from '@/components/search/panel-search-item';
+import PanelSearchItem from '@/components/search/panel-search-item.vue';
 
 export default {
   name: 'panel-search-list',
@@ -57,21 +56,8 @@ export default {
       this.$emit('use-item', item);
     },
   },
-  computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
-  },
   components: {
     'panel-search-item': PanelSearchItem,
-  },
-  watch: {
-  },
-  events: {
   },
   mounted() {
     this.active = true;
@@ -101,7 +87,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .PanelSearchResult {
   &-list {

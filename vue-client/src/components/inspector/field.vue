@@ -3,36 +3,46 @@
   The field component is responsible for a specific key value pair.
   It's responsible for its own data, and dispatches all changes to the form component.
 */
+import { defineAsyncComponent } from 'vue';
+import { mapActions, mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
 import { cloneDeep, differenceWith, get, isArray, isEqual, isObject, isPlainObject } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
-import { mapGetters } from 'vuex';
+import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
 import { getContextValue } from 'lxljs/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
-import EntityAdder from './entity-adder';
-import ItemEntity from './item-entity';
-import ItemValue from './item-value';
-import ItemLocal from './item-local';
-import ItemError from './item-error';
-import ItemVocab from './item-vocab';
-import ItemType from './item-type';
-import ItemSibling from './item-sibling';
-import ItemBoolean from './item-boolean';
-import ItemNumeric from './item-numeric';
-import ItemGrouped from './item-grouped';
-import ItemShelfControlNumber from './item-shelf-control-number';
-import ItemNextShelfControlNumber from './item-next-shelf-control-number';
-import ItemBylang from './item-bylang';
-import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
-import LanguageMixin from '../mixins/language-mixin';
+import LanguageMixin from '../mixins/language-mixin.vue';
+import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
+
+const EntityAdder = defineAsyncComponent(() => import('./entity-adder.vue'));
+const ItemEntity = defineAsyncComponent(() => import('./item-entity.vue'));
+const ItemValue = defineAsyncComponent(() => import('./item-value.vue'));
+const ItemLocal = defineAsyncComponent(() => import('./item-local.vue'));
+const ItemError = defineAsyncComponent(() => import('./item-error.vue'));
+const ItemVocab = defineAsyncComponent(() => import('./item-vocab.vue'));
+const ItemType = defineAsyncComponent(() => import('./item-type.vue'));
+const ItemSibling = defineAsyncComponent(() => import('./item-sibling.vue'));
+const ItemBoolean = defineAsyncComponent(() => import('./item-boolean.vue'));
+const ItemNumeric = defineAsyncComponent(() => import('./item-numeric.vue'));
+const ItemGrouped = defineAsyncComponent(() => import('./item-grouped.vue'));
+const ItemShelfControlNumber = defineAsyncComponent(() => import('./item-shelf-control-number.vue'));
+const ItemNextShelfControlNumber = defineAsyncComponent(() => import('./item-next-shelf-control-number.vue'));
+const ItemBylang = defineAsyncComponent(() => import('./item-bylang.vue'));
 
 export default {
   name: 'field',
-  mixins: [clickaway, LodashProxiesMixin, LanguageMixin],
+  mixins: [LodashProxiesMixin, LanguageMixin],
   props: {
+    key: {
+      type: String,
+      default: null,
+    },
     parentKey: {
       type: String,
       default: '',
@@ -134,7 +144,7 @@ export default {
       pasteHover: false,
       foundChip: false,
       removed: false,
-      uniqueIds: [],      
+      uniqueIds: [],
     };
   },
   components: {
@@ -156,6 +166,11 @@ export default {
   watch: {
   },
   computed: {
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useUserStore, ['user', 'userStorage']),
+    ...mapWritableState(useInspectorStore, ['event']),
     diffAdded() {
       if (this.diff == null) return false;
       return this.diff.added.includes(this.path);
@@ -233,9 +248,9 @@ export default {
       }
 
       if (failedValidations.length > 0) {
-        this.$store.dispatch('setValidation', { path: this.path, validates: false, reasons: failedValidations });
+        this.setValidation({ path: this.path, validates: false, reasons: failedValidations });
       } else {
-        this.$store.dispatch('setValidation', { path: this.path, validates: true });
+        this.setValidation({ path: this.path, validates: true });
       }
       return failedValidations;
     },
@@ -306,14 +321,6 @@ export default {
       } 
       return false;
     },
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-      'userStorage',
-    ]),
     warnBeforeRemove() {
       return this.inspector.status.focus === 'record';
     },
@@ -459,11 +466,14 @@ export default {
     },
   },
   methods: {
+    translatePhrase, labelByLang, capitalize,
+    ...mapActions(useInspectorStore, ['setValidation', 'updateInspectorData', 'setInspectorStatusValue']),
+    ...mapActions(useUserStore, ['setUserStorage']),
     onLabelClick() {
-      this.$store.dispatch('pushInspectorEvent', {
+      this.event = {
         name: 'field-label-clicked',
         value: this.path,
-      });
+      };
     },
     pasteClipboardItem() {
       const obj = this.clipboardValue;
@@ -488,11 +498,11 @@ export default {
       if (currentValue.length) {
         index = `[${currentValue.length - 1}]`;
       }
-      this.$store.dispatch('setInspectorStatusValue', { 
+      this.setInspectorStatusValue({
         property: 'lastAdded', 
         value: `${this.path}${index}`,
       });
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         changeList: [
           {
             path: `${this.path}`,
@@ -503,7 +513,7 @@ export default {
       });
       const userStorage = cloneDeep(this.userStorage);
       userStorage.copyClipboard = null;
-      this.$store.dispatch('setUserStorage', userStorage);
+      this.setUserStorage(userStorage);
     },
     highlight(active, event, cssClass) {
       let item = event.target;
@@ -526,7 +536,7 @@ export default {
         const parentData = cloneDeep(get(this.inspector.data, this.parentPath));
         delete parentData[this.fieldKey];
         setTimeout(() => {
-          this.$store.dispatch('updateInspectorData', {
+          this.updateInspectorData({
             changeList: [
               {
                 path: this.parentPath,
@@ -640,15 +650,15 @@ export default {
         LayoutUtil.ensureInViewport(element).then(() => {
           setTimeout(() => {
             if (this.isLastAdded) {
-              this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+              this.setInspectorStatusValue({ property: 'lastAdded', value: '' });
             }
           }, 1000);
         });
       }
     },
   },
-  beforeDestroy() {
-    this.$store.dispatch('setValidation', { path: this.path, validates: true });
+  beforeUnmount() {
+    this.setValidation({ path: this.path, validates: true });
   },
   mounted() {
     this.$nextTick(() => {
@@ -692,18 +702,20 @@ export default {
           <div class="Field-action Field-remove" 
             v-show="!locked && isRemovable" 
             :class="{'disabled': activeModal}">
-            <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
+            <font-awesome-icon
+              :icon="['fas', 'trash-can']"
+              class="action-button icon icon--sm"
               role="button"
-              :aria-label="'Remove' | translatePhrase"
+              :aria-label="translatePhrase('Remove')"
               tabindex="0"
               v-on:click="removeThis(true)"
               @keyup.enter="removeThis(true)"
-              v-tooltip.top="translate('Remove')"
+              v-tooltip.top="translatePhrase('Remove')"
               @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
               @blur="removeHover = false, highlight(false, $event, 'is-removeable')"
               @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
-              @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
-            </i>
+              @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')"
+            />
           </div>
           <entity-adder class="Field-entityAdder Field-action"
             v-if="!locked && (isRepeatable || isEmptyObject || isLangMap)"
@@ -729,54 +741,59 @@ export default {
           <div v-else class="Field-action placeholder"></div> 
 
           <div class="Field-comment" v-if="propertyComment && !locked" >
-            <i class="fa fa-question-circle fa-fw icon icon--sm"></i>
+            <font-awesome-icon :icon="['fas', 'circle-question']" />
             <span class="Field-commentText">{{ propertyComment }}</span>
           </div>
+
           <div v-else class="Field-action placeholder"></div> 
 
           <div class="Field-action Field-clipboardPaster"
             v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
             ref="clipboardPaster">
-            <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
+            <font-awesome-icon
+              tabindex="0"
+              class="action-button"
+              :icon="['fas', 'paste']"
+              size="sm"
               role="button"
-              :aria-label="'Paste entity' | translatePhrase"
+              :aria-label="translatePhrase('Paste entity')"
               @click="pasteClipboardItem"
               @keyup.enter="pasteClipboardItem"
-              v-tooltip.top="translate('Paste entity')"
+              v-tooltip.top="translatePhrase('Paste entity')"
               @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
               @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
               @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
               @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
-            </i>
+            </font-awesome-icon>
           </div>
         </div>
         <div class="Field-label-history-icon" v-if="diffRemoved && !diffAdded">
-          <i class="fa fa-trash-o icon--sm icon-removed"></i>
+          <font-awesome-icon :icon="['fas', 'trash-can']" size="sm" class="icon-removed" />
         </div>
         <div class="Field-label-history-icon" v-if="diffAdded && !diffRemoved">
-          <i class="fa fa-plus-circle icon--sm icon-added"></i>
+          <font-awesome-icon :icon="['fas', 'circle-plus']" class="icon-added" />
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
-          <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
+          <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
+          <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
           <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" 
                 :title="fieldKey" 
                 @click="onLabelClick">
-            {{ (fieldRdfType || overrideLabel || fieldKey) | labelByLang | capitalize }}
+            {{ capitalize(labelByLang(fieldRdfType || overrideLabel || fieldKey)) }}
           </span>
           <span class="Field-navigateHistory" 
                 v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" 
                 @click="onLabelClick"
-                v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
-            {{ (fieldRdfType || overrideLabel || fieldKey) | labelByLang | capitalize }}
+                v-tooltip.top="{content: translatePhrase('Show latest change'), delay: { show: 300, hide: 0 }}">
+            {{ capitalize(labelByLang(fieldRdfType || overrideLabel || fieldKey)) }}
           </span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
-            <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
+            <span :title="fieldKey">{{ capitalize(translatePhrase('Incoming links')) }}</span>
             <div class="Field-comment">
-              <i class="fa fa-question-circle-o icon icon--sm"></i>
-              <span class="Field-commentText">{{ 'Non editable incoming link' | translatePhrase }}.
+              <font-awesome-icon :icon="['fas', 'circle-question']" />
+              <span class="Field-commentText">{{ translatePhrase('Non editable incoming link') }}.
                 <br />
-                <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ 'Read more about incoming links' | translatePhrase }}.</a>
+                <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ translatePhrase('Read more about incoming links') }}.</a>
               </span>
             </div>
           </div>
@@ -785,17 +802,17 @@ export default {
       <code class="path-code" v-show="user.settings.appTech && !isInner">{{path}}</code>
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
-      <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>
+      <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
+      <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ capitalize(labelByLang(fieldKey)) }}</span>
       <span class="Field-navigateHistory" v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" @click="onLabelClick"
-            v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
+            v-tooltip.top="{content: translatePhrase('Show latest change'), delay: { show: 300, hide: 0 }}">
         {{ fieldKey | labelByLang | capitalize }}
       </span>
       <!-- Is inner -->
       <div class="Field-actions is-nested">
         <div class="Field-action Field-comment" v-if="propertyComment && !locked" >
-          <i class="fa fa-question-circle fa-fw icon icon--sm"></i>
+          <font-awesome-icon :icon="['fas', 'circle-question']" />
           <span class="Field-commentText">{{ propertyComment }}</span>
         </div>
         <entity-adder class="Field-action Field-entityAdder"
@@ -823,41 +840,46 @@ export default {
         <div class="Field-action Field-remove" 
           v-show="!locked && isRemovable" 
           :class="{'disabled': activeModal}">
-          <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
+          <font-awesome-icon :icon="['fas', 'trash-can']" size="sm"
+            class="action-button"
             tabindex="0"
             role="button"
-            :aria-label="'Remove' | translatePhrase"
+            :aria-label="translatePhrase('Remove')"
             v-on:click="removeThis(true)"
-            v-tooltip.top="translate('Remove')"
+            v-tooltip.top="translatePhrase('Remove')"
             @keyup.enter="removeThis(true)"
             @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
             @blur="removeHover = false, highlight(false, $event, 'is-removeable')" 
             @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
-            @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
-          </i>
+            @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')"
+          />
         </div>
 
         <div class="Field-action Field-clipboardPaster"
           v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
           ref="clipboardPaster">
-          <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
+          <font-awesome-icon
+            :icon="['fas', 'paste']"
+            tabindex="0"
+            class="action-button"
+            size="sm"
             role="button"
-            :aria-label="'Paste entity' | translatePhrase"
+            :aria-label="translatePhrase('Paste entity')"
             @click="pasteClipboardItem"
             @keyup.enter="pasteClipboardItem"
-            v-tooltip.top="translate('Paste entity')"
+            v-tooltip.top="translatePhrase('Paste entity')"
             @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
             @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
             @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
             @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
-          </i>
+          </font-awesome-icon>
         </div>
       </div>
       <div class="Field-history-icon" v-if="diffRemoved && !diffAdded">
-        <i class="fa fa-trash-o icon--sm icon-removed"></i>
+        <font-awesome-icon :icon="['fas', 'trash-can']" class="icon-removed" size="sm" />
       </div>
       <div class="Field-history-icon" v-if="diffAdded && !diffRemoved">
-        <i class="fa fa-plus-circle icon--sm icon-added"></i>
+        <font-awesome-icon :icon="['fas', 'circle-plus']" class="icon-added" size="sm" />
       </div>
       <!-- {{ key | labelByLang | capitalize }} -->
     </div>
@@ -1093,12 +1115,12 @@ export default {
   </li>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .Field {
   border-bottom: 1px solid;
-  border-color: @form-border;
-  border-color: @form-border-alt;
+  border-color: $form-border;
+  border-color: $form-border-alt;
   width: 100%;
   flex-direction: row;
   opacity: 1;
@@ -1110,15 +1132,15 @@ export default {
   }
 
   &.is-marked {
-    background-color: @form-mark;
+    background-color: $form-mark;
   }
 
   &.is-removeable {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.is-lastAdded {
-    background-color: @form-add;
+    background-color: $form-add;
   }
 
   &.has-no-diff {
@@ -1130,45 +1152,45 @@ export default {
   }
 
   &.is-new {
-    @base-color: @brand-success;
+    $base-color: $brand-success;
     border: 1px solid;
-    border-color: @base-color;
-    background-color: hsl(hue(@base-color), 50%, 95%);
+    border-color: $base-color;
+    background-color: hsl(hue($base-color), 50%, 95%);
   }
 
   &.is-diff-added {
-    @base-color: @form-add;
+    $base-color: $form-add;
     border: 1px solid;
-    border-color: @brand-primary;
-    background-color: @base-color;
+    border-color: $brand-primary;
+    background-color: $base-color;
   }
 
   &.is-diff-removed {
-    @base-color: @remove;
+    $base-color: $remove;
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
+    border-color: $base-color;
+    background-color: $form-remove;
   }
 
   &.is-diff-modified {
-    @base-color: @brand-primary-orange;
+    $base-color: $brand-primary-orange;
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-modified;
+    border-color: $base-color;
+    background-color: $form-modified;
   }
 
   .icon-removed {
     transform: translateY(-5%);
-    color: @remove;
+    color: $remove;
   }
 
   .icon-added {
     position: relative;
-    color: #428BCAFF; // @brand-primary base.
+    color: #428BCAFF; // $brand-primary base.
   }
 
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
-    background-color: @form-highlight;
+    background-color: $form-highlight;
   }
 
   &.is-grouped {
@@ -1189,7 +1211,7 @@ export default {
     overflow: visible;
     display: block;
 
-    .icon-hover();
+    @include icon-hover();
 
     &.is-locked:not(.is-new),
     .Field--inner & {
@@ -1197,11 +1219,11 @@ export default {
     }
 
     &.is-marked {
-      background-color: @form-mark;
+      background-color: $form-mark;
     }
 
     &.is-removeable {
-      background-color: @form-remove;
+      background-color: $form-remove;
     }
 
     &:before, 
@@ -1213,8 +1235,8 @@ export default {
 
     &:before {
       border-top: 1px solid;
-      border-top-color: @field-path;
-      border-top-color: @field-path-alt;
+      border-top-color: $field-path;
+      border-top-color: $field-path-alt;
       top: 16px;
       width: 14px;
       height: 2px;
@@ -1222,8 +1244,8 @@ export default {
 
     &:after {
       border-left: 1px solid;
-      border-left-color: @field-path;
-      border-left-color: @field-path-alt;
+      border-left-color: $field-path;
+      border-left-color: $field-path-alt;
       height: 100%;
       width: 2px;
       top: 0px;
@@ -1252,7 +1274,7 @@ export default {
       flex-basis: 35%;
       max-width: 270px;
 
-      @media screen and (max-width: @screen-sm) { 
+      @include media-breakpoint-down(sm) {
         max-width: 100%;
       }
     }
@@ -1267,7 +1289,7 @@ export default {
       flex-basis: 1.5rem;
     }
 
-    .icon-hover();
+    @include icon-hover();
 
     pre {
       margin-top: 5px;
@@ -1283,7 +1305,7 @@ export default {
     flex-direction: row-reverse;
     min-height: 30px;
 
-    @media (min-width: @screen-sm) {
+    @include media-breakpoint-up(sm) {
       flex-direction: row;
     }
 
@@ -1291,7 +1313,7 @@ export default {
       position: sticky;
     }
 
-    @media (min-width: @screen-md) {
+    @include media-breakpoint-up(sm) {
       top: 75px;
     }
   }
@@ -1307,8 +1329,8 @@ export default {
 
     &:after {
       border-left: 1px solid;
-      border-color: @field-path;
-      border-color: @field-path-alt;
+      border-color: $field-path;
+      border-color: $field-path-alt;
       height: 100%;
       width: 0px;
       top: 0px;
@@ -1345,8 +1367,8 @@ export default {
     &:before {
       .Field--inner & {
         content: " ● ";
-        color: @field-path;
-        color: @field-path-alt;
+        color: $field-path;
+        color: $field-path-alt;
         position: absolute;
         left: 0px;
         top: 0px;
@@ -1377,14 +1399,14 @@ export default {
     padding: 10px;
     text-align: left;
     white-space: normal;
-    color: @black;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    color: $black;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     border-radius: 4px;
-    box-shadow: @shadow-panel;
+    box-shadow: $shadow-panel;
     z-index: 3;
 
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-up(sm) {
       transform: translate(-60%, 5px);
     }
   }
@@ -1417,8 +1439,8 @@ export default {
       flex: 1 auto;
       width: 0;
       border-left: 1px solid;
-      border-color: @form-border;
-      border-color: @form-border-alt;
+      border-color: $form-border;
+      border-color: $form-border-alt;
     }
 
     @media print and (max-width: 768px) {
@@ -1436,10 +1458,10 @@ export default {
     max-width: 100%;
 
     &.is-new {
-      @base-color: @brand-success;
+      $base-color: $brand-success;
       border: 1px solid;
-      border-color: @base-color;
-      background-color: hsl(hue(@base-color), 50%, 95%);
+      border-color: $base-color;
+      background-color: hsl(hue($base-color), 50%, 95%);
     }
     &.is-entityContent {
       display: inline-flex;
@@ -1454,8 +1476,9 @@ export default {
     display: flex;
     flex-grow: 1;
     justify-content: initial;
+    color: $grey-transparent;
   
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       justify-content: flex-start;
       flex-direction: row-reverse;
     }
@@ -1473,8 +1496,8 @@ export default {
       font-size: 1.6rem;
       margin: 0 0 0 10px;
       line-height: 1.4;
-      
-      @media (max-width: @screen-sm) {
+
+      @include media-breakpoint-down(sm) {
         display: flex;
         justify-content: flex-end;
         flex-direction: row;
@@ -1483,15 +1506,16 @@ export default {
   }
 
   &-action {
-    min-width:  20px;
+    min-width: 20px;
     display: inline-block;
     margin-right: 5px;
 
     &.placeholder {
       width: 20px;
       display: none;
+      background-color: transparent;
 
-      @media (min-width: @screen-sm) {
+      @include media-breakpoint-up(sm) {
         display: block;
       }
     }

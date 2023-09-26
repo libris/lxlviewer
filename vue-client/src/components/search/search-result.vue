@@ -1,6 +1,11 @@
 <script>
-import ResultList from './result-list';
-import ResultControls from './result-controls';
+import { mapState } from 'pinia';
+import { useStatusStore } from '@/stores/status';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
+import { translatePhrase } from '@/utils/filters';
+import ResultList from './result-list.vue';
+import ResultControls from './result-controls.vue';
 
 export default {
   name: 'search-result',
@@ -19,23 +24,16 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     doSort(newsort) {
       const newQuery = Object.assign({}, this.$route.query, { _sort: newsort, _offset: 0 });
       this.$router.push({ query: newQuery });
     },
   },
-  watch: {
-  },
   computed: {
-    status() {
-      return this.$store.getters.status;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    settings() {
-      return this.$store.getters.settings;
-    },
+    ...mapState(useStatusStore, ['resultList']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     paginationData() {
       const page = Object.assign({}, this.result);
       if (!page.itemsPerPage) {
@@ -70,18 +68,18 @@ export default {
 
 <template>
   <div class="SearchResult" :class="{'is-showResult': showResult}">
-    <div v-if="(status.resultList.loading || status.resultList.error)" class="SearchResult-loadingText panel panel-default">
-      <span v-if="!status.resultList.error">
-        <i class="fa fa-circle-o-notch fa-spin"></i>
+    <div v-if="(resultList.loading || resultList.error)" class="SearchResult-loadingText panel panel-default">
+      <span v-if="!resultList.error">
+        <font-awesome-icon :icon="['fas', 'circle-notch']" spin />
       </span>
-      <span v-if="status.resultList.error">
-        <i class="fa fa-warning"></i>
+      <span v-if="resultList.error">
+        <font-awesome-icon :icon="['fas', 'triangle-exclamation']" />
       </span>
-      <span v-if="!status.resultList.error" class="is-status">{{"Fetching results" | translatePhrase}}</span>
-      <span v-if="status.resultList.error" class="is-error">{{status.resultList.info}}</span>
+      <span v-if="!resultList.error" class="is-status">{{ translatePhrase("Fetching results") }}</span>
+      <span v-if="resultList.error" class="is-error">{{resultList.info}}</span>
     </div>
     <result-controls class="SearchResult-controls" 
-      v-if="!status.resultList.loading && !status.resultList.error" 
+      v-if="!resultList.loading && !resultList.error" 
       :page-data="paginationData" 
       :show-details="true" 
       :has-pagination="hasPagination" 
@@ -89,13 +87,13 @@ export default {
       @sortChange="doSort($event)">
     </result-controls>
     <result-list class="SearchResult-list" 
-      v-if="!status.resultList.loading && !status.resultList.error" 
+      v-if="!resultList.loading && !resultList.error" 
       :results="result.items" 
       :import-data="importData" 
       :compact="user.settings.resultListType === 'compact'">
     </result-list>
     <result-controls class="SearchResult-controls" 
-      v-if="!status.resultList.loading && !status.resultList.error && hasPagination" 
+      v-if="!resultList.loading && !resultList.error && hasPagination" 
       :has-pagination="hasPagination" 
       :page-data="paginationData" 
       :show-details="false" 
@@ -104,11 +102,11 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .SearchResult {
   padding: 2rem 0;
 
-  @media (min-width: @screen-md) {
+  @include media-breakpoint-up(md) {
     padding: 0 0 2rem 0;
   }
 

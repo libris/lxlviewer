@@ -1,10 +1,15 @@
 <script>
+import { translatePhrase, convertResourceLink, labelByLang } from '@/utils/filters';
+import { mapActions, mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
 import AutoSize from 'autosize';
 import { isArray, debounce, cloneDeep, get } from 'lodash-es';
-import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
-import ItemMixin from '@/components/mixins/item-mixin';
-import LensMixin from '@/components/mixins/lens-mixin';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import { useUserStore } from '@/stores/user';
+import { useInspectorStore } from '@/stores/inspector';
+import { useStatusStore } from '@/stores/status';
 
 export default {
   name: 'item-value',
@@ -54,10 +59,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'user',
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['i18n']),
+    ...mapState(useInspectorStore, ['status']),
+    ...mapState(useUserStore, ['user']),
     value: {
       get() {
         if (this.fieldValue === null) {
@@ -77,23 +81,25 @@ export default {
       return this.isUriType && this.fieldValue.startsWith('http');
     },
     newWindowText() {
-      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language, this.resources.i18n);
+      return StringUtil.getUiPhraseByLang('Opens in new window', this.user.settings.language, this.i18n);
     },
     shouldFocus() {
-      const lastAdded = this.inspector.status.lastAdded;
+      const lastAdded = this.status.lastAdded;
       if (lastAdded === this.path || lastAdded === this.parentPath) {
         return true;
       }
       return false;
     },
     isLastAdded() {
-      if (this.inspector.status.lastAdded === this.path) {
+      if (this.status.lastAdded === this.path) {
         return true;
       }
       return false;
     },
   },
   methods: {
+    translatePhrase, convertResourceLink, labelByLang,
+    ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue']),
     removeHighlight(event, active) {
       if (active) {
         let item = event.target;
@@ -110,14 +116,14 @@ export default {
       return false;
     },
     readyForSave(value) {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
+      this.setInspectorStatusValue({ property: 'readyForSave', value: value });
     },
     update(newValue) {
       const oldValue = cloneDeep(get(this.inspector.data, this.path));
 
       this.readyForSave(true);
       if (newValue !== oldValue) {
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: this.path,
@@ -135,7 +141,7 @@ export default {
         setTimeout(() => {
           element.classList.remove('is-lastAdded');
           if (this.isLastAdded) {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            this.setInspectorStatusValue({ property: 'lastAdded', value: '' });
           }
         }, 1000);
       }
@@ -153,8 +159,6 @@ export default {
     addFocus() {
       this.$refs.textarea.focus({ preventScroll: true }); // Prevent scroll as we will handle this ourselves
     },
-  },
-  components: {
   },
   mounted() {
     this.$nextTick(() => {
@@ -184,7 +188,7 @@ export default {
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value"
-      :aria-label="fieldKey | labelByLang"
+      :aria-label="labelByLang(fieldKey)"
       @focus="readyForSave(false)"
       @blur="update($event.target.value)"
       @keydown.exact="readyForSave(false)"
@@ -195,35 +199,34 @@ export default {
       v-if="isLocked && !shouldLink">{{fieldValue}}</span>
     <a class="ItemValue-text"
       v-if="isLocked && shouldLink"
-      :href="fieldValue | convertResourceLink" 
+      :href="convertResourceLink(fieldValue)"
       target="_blank" 
       :title="`${fieldValue} (${newWindowText})`">
         {{fieldValue}} 
-        <i class="fa fa-external-link" aria-hidden="true"></i>
+        <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
     </a>
     <div class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       role="button"
-      :aria-label="'Remove' | translatePhrase"
+      :aria-label="translatePhrase('Remove')"
       v-on:click="removeThis()"
-      v-tooltip.top="translate('Remove')"
+      v-tooltip.top="translatePhrase('Remove')"
       @focus="removeHover = true, removeHighlight($event, true)"
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)">
-      <i class="fa fa-trash-o icon icon--sm">
-      </i>
+      <font-awesome-icon :icon="['fas', 'trash-can']" />
     </div>
     <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
-      <i class="fa fa-trash-o icon--sm icon-removed"></i>
+      <font-awesome-icon :icon="['fas', 'trash-can']" class="icon-removed" />
     </span>
     <span class="ItemLocal-history-icon" v-if="diffAdded && !diffRemoved">
-      <i class="fa fa-plus-circle icon--sm icon-added"></i>
+      <font-awesome-icon :icon="['fas', 'circle-plus']" class="icon-removed" />
     </span>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .ItemValue {
   display: flex;
@@ -237,14 +240,14 @@ export default {
   &-input {
     width: 100%;
     display: block;
-    border: 1px solid @grey-light;
+    border: 1px solid $grey-light;
     border-radius: 2px;
     padding: 2px 10px;
     resize: none;
     transition: border .25s ease-out;
 
     &:focus {
-      border: 1px solid @grey-dark;
+      border: 1px solid $grey-dark;
     }
   }
 
@@ -262,26 +265,26 @@ export default {
   }
 
   &.is-diff-removed {
-    @base-color: @remove;
+    $base-color: $remove;
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
+    border-color: $base-color;
+    background-color: $form-remove;
     margin-bottom: 2px;
   }
 
   &.is-diff-added {
-    @base-color: @form-add;
+    $base-color: $form-add;
     border: 1px solid;
-    border-color: @brand-primary;
-    background-color: @base-color;
+    border-color: $brand-primary;
+    background-color: $base-color;
     margin-bottom: 2px
   }
 
   &.is-diff-modified {
-    @base-color: @brand-primary-orange;
+    $base-color: $brand-primary-orange;
     border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-modified;
+    border-color: $base-color;
+    background-color: $form-modified;
     margin-bottom: 2px;
   }
 
@@ -298,22 +301,22 @@ export default {
     float: right;
     display: inline-block;
     cursor: pointer;
-    color: @grey;
+    color: $grey;
     min-width: 20px;
     margin-left: 5px;
 
 
     &:hover {
-      color: @black;
+      color: $black;
     }
   }
 
   &.is-removeable {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.is-lastAdded {
-    background-color: @form-add;
+    background-color: $form-add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;

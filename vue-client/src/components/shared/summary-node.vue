@@ -1,12 +1,13 @@
 <script>
-/*
-
-*/
+import { labelByLang, capitalize, convertResourceLink } from '@/utils/filters';
+import { mapState } from 'pinia';
+import { Dropdown } from 'floating-vue';
+import { useSettingsStore } from '@/stores/settings';
 import * as StringUtil from 'lxljs/string';
-import LensMixin from '@/components/mixins/lens-mixin';
-import ItemMixin from '@/components/mixins/item-mixin';
-import OverflowMixin from '@/components/mixins/overflow-mixin';
-import PreviewCard from '@/components/shared/preview-card';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import OverflowMixin from '@/components/mixins/overflow-mixin.vue';
+import PreviewCard from '@/components/shared/preview-card.vue';
 
 export default {
   name: 'summary-node',
@@ -37,11 +38,8 @@ export default {
       default: '',
     },
   },
-  data() {
-    return {
-    };
-  },
   computed: {
+    ...mapState(useSettingsStore, ['settings']),
     isLinked() {
       if (this.focusData.hasOwnProperty('@id') && this.focusData['@id'].split('#')[0] !== this.parentId.split('#')[0]) {
         return true;
@@ -57,13 +55,12 @@ export default {
       return `/${fnurgel}`;
     },
   },
+  methods: {
+    convertResourceLink, labelByLang, capitalize,
+  },
   components: {
     PreviewCard,
-  },
-  watch: {
-  },
-  mounted() {
-    this.$nextTick(() => {});
+    Dropdown,
   },
 };
 </script>
@@ -72,44 +69,51 @@ export default {
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
       <span v-if="fieldKey === 'instanceOf' && item['@type'] !== 'Work'">
-        {{ item['@type'] | labelByLang | capitalize }} •
+        {{ capitalize(labelByLang(item['@type'])) }} •
       </span>
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
-    <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
+
+    <Dropdown
+      v-if="isLinked && !isStatic"
+      :disabled="!hoverLinks"
+      :triggers="['hover', 'focus']"
+    >
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">
           <span v-if="fieldKey === 'instanceOf'">
-            {{ item['@type'] | labelByLang | capitalize }} •
+            {{ capitalize(labelByLang(item['@type'])) }} •
           </span>
           {{getItemLabel}}
         </router-link>
-        <a v-if="!isLibrisResource" :href="focusData['@id'] | convertResourceLink">{{getItemLabel}}</a>
+        <a v-if="!isLibrisResource" :href="convertResourceLink(focusData['@id'])">{{getItemLabel}}</a>
       </span>
-      <template slot="popover" v-if="hoverLinks">
-        <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
+
+      <template #popper>
+        <PreviewCard :focus-data="focusData" :record-id="recordId" />
       </template>
-    </v-popover>
+    </Dropdown>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .SummaryNode {
   display: inline-block;
   &-link {
     margin-right: 0.5em;
     > a {
-      border-color: @brand-primary;
-      color: darken(@brand-primary, 10%);
+      border-color: $brand-primary;
+      color: darken($brand-primary, 10%);
       text-decoration-line: underline;
       text-decoration-style: dotted;
       &:hover {
-        color: darken(@brand-primary, 20%);
-        border-color: darken(@brand-primary, 20%);
+        color: darken($brand-primary, 20%);
+        border-color: darken($brand-primary, 20%);
       }
     }
   }
+
   &-label {
     // max 3 lines before ellipsis
     // works in all major modern browsers
@@ -131,7 +135,7 @@ export default {
         font-family: FontAwesome;
         content: "\F054";
         font-weight: normal;
-        color: @brand-primary;
+        color: $brand-primary;
         display: inline-block;
         margin-right: 5px;
         transition: transform 0.1s ease;

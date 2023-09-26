@@ -6,23 +6,27 @@
   and to another for what data to edit.
 */
 
+import { mapActions, mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
+import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
 import { cloneDeep, each } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
-import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import * as LayoutUtil from '@/utils/layout';
-import ItemMixin from '@/components/mixins/item-mixin';
-import LensMixin from '@/components/mixins/lens-mixin';
-import FormMixin from '@/components/mixins/form-mixin';
-import PropertyAdder from '@/components/inspector/property-adder';
-import SearchWindow from '@/components/inspector/search-window';
-import EntityAction from '@/components/inspector/entity-action';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import FormMixin from '@/components/mixins/form-mixin.vue';
+import PropertyAdder from '@/components/inspector/property-adder.vue';
+import SearchWindow from '@/components/inspector/search-window.vue';
+import EntityAction from '@/components/inspector/entity-action.vue';
+import { useStatusStore } from '@/stores/status';
 
 export default {
   name: 'item-sibling',
-  mixins: [FormMixin, ItemMixin, LensMixin, clickaway],
+  mixins: [FormMixin, ItemMixin, LensMixin],
   props: {
     id: {
       type: String,
@@ -88,13 +92,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'settings',
-      'user',
-      'status',
-    ]),
+    ...mapState(useResourcesStore, ['i18n']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     isSpecialHeading() {
       return this.path === 'mainEntity.instanceOf';
     },
@@ -107,7 +108,7 @@ export default {
     item() {
       const item = cloneDeep(this.inspector.data[this.fragmentId]);
       if (typeof item === 'undefined' || item === null) {
-        this.$store.dispatch('pushNotification', {
+        this.pushNotification({
           type: 'danger',
           message: `${StringUtil.getUiPhraseByLang('Data is missing a reference, please verify file', this.user.settings.language, this.resources.i18n)}`,
         });
@@ -156,6 +157,8 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useStatusStore, ['pushNotification']),
+    ...mapActions(useInspectorStore, ['addToQuoted', 'updateInspectorData', 'setInspectorStatusValue']),
     highLightLastAdded() {
       const element = this.$el;
       LayoutUtil.ensureInViewport(element);
@@ -173,7 +176,7 @@ export default {
           value: null,
         });
       }
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         addToHistory: true,
         changeList: changeList,
       });
@@ -232,15 +235,24 @@ export default {
             this.replaceWith(mainEntity);
             this.closeExtractDialog();
           }, (error) => {
-            this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}` });
+            this.pushNotification({
+              type: 'danger',
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`
+            });
             this.closeExtractDialog();
           });
         } else {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}` });
+          this.pushNotification({
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}`
+          });
           this.closeExtractDialog();
         }
       }, (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}` });
+        this.pushNotification({
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`
+        });
         this.closeExtractDialog();
       });
     },
@@ -267,7 +279,7 @@ export default {
     },
     replaceWith(value) {
       const newValue = { '@id': value['@id'] };
-      this.$store.dispatch('addToQuoted', value);
+      this.addToQuoted(value);
       const changeList = [
         {
           // Remove the link
@@ -280,12 +292,15 @@ export default {
           value: null,
         },
       ];
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         addToHistory: true,
         changeList: changeList,
       });
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language, this.resources.i18n)}` });
-      this.$store.dispatch('setInspectorStatusValue', { 
+      this.pushNotification({
+        type: 'success',
+        message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language, this.resources.i18n)}`
+      });
+      this.setInspectorStatusValue({
         property: 'lastAdded', 
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
       });
@@ -354,7 +369,7 @@ export default {
         this.expand();
       }
     });
-    if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
+    if (this.settings.defaultExpandedProperties.includes(this.fieldKey)) {
       this.expand();
     }
   },
@@ -374,7 +389,7 @@ export default {
       }
       setTimeout(() => {
         if (this.isLastAdded) {
-          this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+          this.setInspectorStatusValue({ property: 'lastAdded', value: '' });
         }
       }, 1000);
     }
@@ -412,8 +427,7 @@ export default {
       <div class="ItemSibling-label"
         :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
         @click="toggleExpanded()">
-        <i class="ItemSibling-arrow fa fa-chevron-right" 
-          :class="{'icon is-disabled' : isEmpty}"></i>
+        <font-awesome-icon :icon="['fas', 'chevron-right']" :class="{'icon is-disabled' : isEmpty}" class="ItemSibling-arrow" />
         <span class="ItemSibling-type"
           :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
         <span class="ItemSibling-collapsedLabel" v-show="!expanded || isEmpty">
@@ -443,7 +457,7 @@ export default {
           @dehighlight="removeHighlight('info')"
           label="Property"
           description="Add property"
-          icon="plus-circle"
+          icon="circle-plus"
           :parent-hovered="isHovered"
           :is-large="largerActions"
         />
@@ -455,7 +469,7 @@ export default {
           @dehighlight="removeHighlight('remove')"
           label="Remove"
           description="Remove"
-          icon="trash-o"
+          icon="trash-can"
           :parent-hovered="isHovered"
           :is-large="false"
         />
@@ -510,11 +524,9 @@ export default {
       @replace-with="replaceWith"
     />
     </div>
-
-
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .ItemSibling {
   width: 100%;
@@ -526,12 +538,12 @@ export default {
 
   &.highlight-info {
     .is-stuck, .is-sticky {
-      background-color: @form-mark;
+      background-color: $form-mark;
     }
   }
   &.highlight-remove {
     .is-stuck, .is-sticky {
-      background-color: @form-remove;
+      background-color: $form-remove;
     }
   }
 
@@ -550,14 +562,15 @@ export default {
       position: sticky;
       background-color: #fff;
     }
-    .icon-hover();
+
+    @include icon-hover();
   }
 
   &.highlight-info {
-    background-color: @form-mark;
+    background-color: $form-mark;
   }
   &.highlight-remove {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.has-failed-validations {
@@ -601,10 +614,10 @@ export default {
     transition: all 0.2s ease;
     padding: 0 2px;
     font-size: 14px;
-    color: @grey-darker-transparent;
+    color: $grey-darker-transparent;
 
     .ItemLocal-label:hover & {
-      color: @black
+      color: $black
     }
   }
 
@@ -640,13 +653,13 @@ export default {
         display: flex;
         align-items: center;
         padding: 5px 15px;
-        color: @grey-darker;
+        color: $grey-darker;
       }
 
     }
     &-menuLink {
       cursor: pointer;
-      & i {
+      & svg {
         margin-right: 5px;
       }
     }
@@ -657,11 +670,11 @@ export default {
   }
 
   &.is-marked {
-    background-color: @form-mark;
+    background-color: $form-mark;
   }
   
   &.is-removeable {
-    background-color: @form-remove;
+    background-color: $form-remove;
   }
 
   &.is-expanded > 
@@ -673,7 +686,7 @@ export default {
   }
 
   &.is-highlighted {
-    background-color: @form-highlight;
+    background-color: $form-highlight;
   }
 }
 

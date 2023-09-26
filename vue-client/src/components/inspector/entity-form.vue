@@ -4,10 +4,16 @@
   It recieves modification events from other components through $dispatch calls
   and makes changes to the bound 'focus' object accordingly.
 */
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
+import { translatePhrase } from '@/utils/filters';
 import * as VocabUtil from 'lxljs/vocab';
-import LensMixin from '@/components/mixins/lens-mixin';
-import FormMixin from '@/components/mixins/form-mixin';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import FormMixin from '@/components/mixins/form-mixin.vue';
+import Field from './field.vue';
 
 export default {
   mixins: [FormMixin, LensMixin],
@@ -43,13 +49,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapState(useResourcesStore, ['resources', 'context', 'vocab']),
+    ...mapState(useUserStore, ['user']),
     isHolding() {
       return this.inspector.data[this.editingObject]['@type'] === 'Item';
     },
@@ -57,31 +60,31 @@ export default {
       if (VocabUtil.isSubClassOf(
         this.inspector.data[this.editingObject]['@type'], 
         'Instance', 
-        this.resources.vocab,  
-        this.resources.context,
+        this.vocab,  
+        this.context,
       )
       ) {
         return true;
       } if (VocabUtil.isSubClassOf(
         this.inspector.data[this.editingObject]['@type'], 
         'Work', 
-        this.resources.vocab, 
-        this.resources.context,
+        this.vocab, 
+        this.context,
       )
       ) {
         return true;
       } if (VocabUtil.isSubClassOf(
         this.inspector.data[this.editingObject]['@type'], 
-        'Agent', this.resources.vocab, 
-        this.resources.context,
+        'Agent', this.vocab, 
+        this.context,
       )
       ) {
         return true;
       } if (VocabUtil.isSubClassOf(
         this.inspector.data[this.editingObject]['@type'], 
         'Concept', 
-        this.resources.vocab, 
-        this.resources.context,
+        this.vocab, 
+        this.context,
       )
       ) {
         return true;
@@ -101,8 +104,6 @@ export default {
       return this.formData;
     },
   },
-  watch: {
-  },
   methods: {
     keyIsLocked(key) {
       return (this.isLocked || key === '@id');
@@ -111,13 +112,12 @@ export default {
       if (key.indexOf('@reverse/') >= 0) {
         key = key.split('/').pop();
       }
-      
+
       return VocabUtil.hasCategory(key, 'integral', this.resources);
     },
   },
   components: {
-  },
-  mounted() {
+    Field,
   },
 };
 </script>
@@ -128,20 +128,22 @@ export default {
     v-show="isActive">
     <ul class="FieldList" 
       v-bind:class="{'collapsed': collapsed }">
-      <field class="FieldList-item"        
-        v-for="(v,k) in filteredItem"         
-        v-bind:class="{ 'locked': isLocked }" 
-        :entity-type="formObj['@type']" 
-        :is-inner="false" 
-        :is-removable="true" 
-        :is-locked="keyIsLocked(k)" 
+      <Field class="FieldList-item"
+        v-for="(v,k) in filteredItem"
+        v-bind:class="{ 'locked': isLocked }"
+        :entity-type="formObj['@type']"
+        :is-inner="false"
+        :is-removable="true"
+        :is-locked="keyIsLocked(k)"
         :parent-accepted-types="acceptedTypes"
         :is-card="isIntegral(k)"
-        :key="k" 
+        :key="k"
         :diff="diff"
-        :field-key="k" 
-        :field-value="v" 
-        :parent-path="editingObject" />
+        :field-key="k"
+        :field-value="v"
+        :parent-path="editingObject"
+      />
+
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
           {{ formObj }}
@@ -149,12 +151,13 @@ export default {
       </div>
     </ul>
 
-    <div 
+    <div
       v-if="reverseItem && editingObject === 'mainEntity' && showIncomingLinksSection"
-      class="EntityForm-reverse">
-      <h6 class="uppercaseHeading">{{ 'Incoming links' | translatePhrase }}</h6>
+      class="EntityForm-reverse"
+    >
+      <h6 class="uppercaseHeading">{{ translatePhrase('Incoming links') }}</h6>
       <ul class="FieldList">
-        <field class="FieldList-item"
+        <Field class="FieldList-item"
           v-for="(v,k) in reverseItemStandalone"
           v-bind:class="{ 'locked': isLocked }" 
           :entity-type="formObj['@type']" 
@@ -166,14 +169,14 @@ export default {
           :key="k" 
           :field-key="k" 
           :field-value="v" 
-          :parent-path="'reverseItems'" />
+          :parent-path="'reverseItems'"
+        />
       </ul>
     </div>
   </div>
 </template>
 
-<style lang="less">
-
+<style lang="scss">
 .EntityForm {
   padding: 0;
 
@@ -202,10 +205,10 @@ export default {
 .FieldList {
   padding-left: 0px;
   margin: 0px;
-  border-bottom: 2px solid @form-border;
+  border-bottom: 2px solid $form-border;
 
   &-item {
-    color: @black;
+    color: $black;
     &:not(.is-diff) {
       &:not(.is-new) {
         &:not(.is-highlighted) {
@@ -214,7 +217,7 @@ export default {
               &:not(.is-diff-removed) {
                 &:not(.is-diff-added) {
                   &:not(.is-diff-modified) {
-                    background-color: @form-field;
+                    background-color: $form-field;
                   }
                 }
               }
@@ -223,7 +226,8 @@ export default {
         }
       }
     }
-    border: 1px solid @form-border;
+
+    border: 1px solid $form-border;
     border-bottom-width: 0;
     flex-direction: row;
     list-style: none;
@@ -231,5 +235,4 @@ export default {
     box-shadow: none;
   }
 }
-
 </style>

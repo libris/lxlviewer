@@ -1,10 +1,15 @@
 <script>
+import { mapState, mapWritableState } from 'pinia';
+import { translatePhrase } from '@/utils/filters';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
+import { useResourcesStore } from '@/stores/resources';
+import { useStatusStore } from '@/stores/status';
 import { isEmpty, cloneDeep, isArray } from 'lodash-es';
 import { marked } from 'marked';
-import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import PropertyMappings from '@/resources/json/propertymappings.json';
-import RemoteDatabases from '@/components/search/remote-databases';
+import RemoteDatabases from '@/components/search/remote-databases.vue';
 import { buildQueryString } from '@/utils/http';
 
 export default {
@@ -34,6 +39,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     focusSearchInput() {
       this.$refs.searchFormInput.focus();
     },
@@ -43,7 +49,7 @@ export default {
       return regexHtml;
     },
     transformMarkdownToHTML(markdown) {
-      let html = marked(markdown);
+      let html = marked.parse(markdown);
       html = this.removeTags(html);
       return html;
     },
@@ -53,12 +59,13 @@ export default {
     composeQuery() {
       return buildQueryString(this.searchPerimeter === 'libris'
         ? this.mergedParams
-        : { q: this.searchPhrase, databases: this.status.remoteDatabases.join() });
+        : { q: this.searchPhrase, databases: this.remoteDatabases.join() });
     },
     doSearch() {
       this.helpToggled = false;
+      console.log('doSearch', this.composeQuery());
       const path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
-      this.$router.push({ path });
+      this.$router.push(path);
     },
     clearInputs() {
       this.searchPhrase = '';
@@ -122,12 +129,12 @@ export default {
     setPrefSearchType() {
       const user = this.user;
       user.settings.searchType = this.activeSearchType;
-      this.$store.dispatch('setUser', user);
+      this.user = user;
     },
     setPrefSearchParam() {
       const user = this.user;
       user.settings.searchParam = this.activeSearchParam;
-      this.$store.dispatch('setUser', user);
+      this.user = user;
     },
     setActiveSelectValues() {
       this.activeSearchParam = this.setSearch();
@@ -135,6 +142,10 @@ export default {
     },
   },
   computed: {
+    ...mapState(useResourcesStore, ['i18n', 'helpDocs']),
+    ...mapState(useStatusStore, ['keyActions', 'remoteDatabases']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useUserStore, ['user']),
     searchIsFocused() {
       for (const element in this.searchGroupFocus) {
         if (this.searchGroupFocus[element] === true) {
@@ -155,27 +166,21 @@ export default {
       return styles;
     },
     searchHelpTooltip() {
-      return StringUtil.getUiPhraseByLang('Show search help', this.user.settings.language, this.resources.i18n);
+      return StringUtil.getUiPhraseByLang('Show search help', this.user.settings.language, this.i18n);
     },
     searchHelpDocs() {
       if (this.docs && this.docs.hasOwnProperty('search')) {
         return this.transformMarkdownToHTML(this.docs.search.content);
       }
-      return StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n);
+      return StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.i18n);
     },
     docs() {
-      if (this.resources.helpDocs != null) {
-        const json = this.resources.helpDocs;
+      if (this.helpDocs != null) {
+        const json = this.helpDocs;
         return json;
       }
       return null;
     },
-    ...mapGetters([
-      'resources',
-      'settings',
-      'status',
-      'user',
-    ]),
     dataSetFilters() {
       return this.settings.dataSetFilters.libris;
     },
@@ -226,7 +231,7 @@ export default {
     'remote-databases': RemoteDatabases,
   },
   watch: {
-    'status.keyActions'(actions) {
+    'keyActions'(actions) {
       const lastAction = actions.slice(-1).join();
       if (lastAction === 'focus-main-search') {
         this.focusSearchInput();
@@ -253,7 +258,7 @@ export default {
     },
     '$route.params.perimeter'(value) {
       if (value === 'remote') {
-        if (this.status.remoteDatabases.length > 0) {
+        if (this.remoteDatabases.length > 0) {
           if (this.composedSearchParam.q !== '' && this.composedSearchParam.q !== '*') {
             this.doSearch();
           }
@@ -267,7 +272,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.focusSearchInput();
-      this.$router.onReady(() => {
+      this.$router.isReady().then(() => {
         this.setActiveSelectValues();
       });
     });
@@ -279,9 +284,10 @@ export default {
   <div class="SearchForm">
     <form id="searchForm" class="SearchForm-form">
       <label class="SearchForm-inputLabel sr-only" id="searchlabel" for="q">
-        {{"Search" | translatePhrase}}
+        {{ translatePhrase("Search") }}
       </label>
-      <div class="SearchForm-formGroup SearchForm-selectGroup hidden-sm hidden-md hidden-lg">
+
+      <div class="SearchForm-formGroup SearchForm-selectGroup d-flex d-sm-none">
         <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-typeSelect SearchForm-select customSelect"
@@ -291,7 +297,7 @@ export default {
               v-for="filter in dataSetFilters"
               :key="filter.value"
               :value="filter.value">
-              {{filter.label | translatePhrase}}
+              {{ translatePhrase(filter.label) }}
             </option>
           </select>
         </div>
@@ -304,13 +310,14 @@ export default {
               v-for="prop in availableSearchParams"
               :key="prop.key"
               :value="prop">
-              {{prop.key | translatePhrase}}
+              {{translatePhrase(prop.key)}}
             </option>
           </select>
         </div>
       </div>
+
       <div ref="formGroup" class="SearchForm-formGroup" :class="{ 'is-focused': searchIsFocused }">
-        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
+        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper d-none d-sm-flex" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-typeSelect SearchForm-select customSelect"
             v-model="activeSearchType"
@@ -321,7 +328,7 @@ export default {
               v-for="filter in dataSetFilters"
               :key="filter.value"
               :value="filter.value">
-              {{filter.label | translatePhrase}}
+              {{translatePhrase(filter.label)}}
             </option>
           </select>
         </div>
@@ -332,15 +339,15 @@ export default {
           id="q"
           v-model="searchPhrase"
           aria-labelledby="searchlabel"
-          :placeholder="inputPlaceholder | translatePhrase"
+          :placeholder="translatePhrase(inputPlaceholder)"
           ref="searchFormInput">
         <span class="SearchForm-clear icon icon--md"
           @focus="searchGroupFocus.clear = true"
           @blur="searchGroupFocus.clear = false"
           :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
-          <i class="fa fa-fw fa-close"></i>
+          <font-awesome-icon :icon="['fas', 'xmark']" />
         </span>
-        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
+        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper d-none d-sm-flex" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-paramSelect SearchForm-select customSelect"
             v-model="activeSearchParam"
@@ -351,39 +358,45 @@ export default {
               v-for="prop in availableSearchParams"
               :key="prop.key"
               :value="prop">
-              {{prop.key | translatePhrase}}
+              {{translatePhrase(prop.key)}}
             </option>
           </select>
         </div>
+
         <button
           class="SearchForm-submit btn btn-primary icon--white icon--md"
-          :aria-label="'Search' | translatePhrase"
+          :aria-label="translatePhrase('Search')"
           @click.prevent="doSearch"
           @focus="searchGroupFocus.submit = true"
           @blur="searchGroupFocus.submit = false"
-          :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
-          :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0" >
-          <i class="fa fa-search"></i>
+          :class="{'disabled': searchPerimeter === 'remote' && remoteDatabases.length === 0}"
+          :disabled="searchPerimeter === 'remote' && remoteDatabases.length === 0"
+        >
+          <font-awesome-icon :icon="['fa', 'search']" />
         </button>
       </div>
+
       <remote-databases
         v-if="searchPerimeter === 'remote'"
         :remoteSearch="searchPhrase"
         @panelClosed="focusSearchInput"
-        ref="dbComponent"></remote-databases>
+        ref="dbComponent"
+      />
     </form>
+
     <div class="SearchForm-help">
       <div class="SearchForm-helpBox dropdown" v-if="searchPerimeter === 'libris'">
         <span class="SearchForm-helpIcon">
-          <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle icon icon--md" tabindex="0" aria-haspopup="true"
+          <font-awesome-icon v-tooltip="searchHelpTooltip" :icon="['fa', 'question-circle']" class="icon icon--md" tabindex="0" aria-haspopup="true"
             ref="helpIcon"
             @mouseover="helpHover = true"
             @mouseleave="helpHover = false"
             @click="toggleHelp"
-            @keyup.enter="toggleHelp"></i>
+            @keyup.enter="toggleHelp"></font-awesome-icon>
         </span>
         <div class="SearchForm-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled">
-          <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchForm-closeHelp" @click="toggleHelp"></i>
+          <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong>
+          <font-awesome-icon v-if="helpToggled" :icon="['fas', 'xmark']" class="SearchForm-closeHelp" @click="toggleHelp"></font-awesome-icon>
           <div class="SearchForm-helpContent" v-html="searchHelpDocs"></div>
         </div>
       </div>
@@ -391,7 +404,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .SearchForm {
   margin-top: 0vh;
@@ -400,9 +413,15 @@ export default {
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
-  @media all and (min-width: @screen-sm) {
+
+  // @media all and (min-width: @screen-sm) {
+  //   flex-wrap: unset;
+  // }
+
+  @include media-breakpoint-up(sm) {
     flex-wrap: unset;
   }
+
   &-selectGroup {
     margin-bottom: 0.5em;
     > * {
@@ -413,8 +432,8 @@ export default {
     width: 100%;
     display: flex;
     position: relative;
-    border-radius: @form-radius;
-    background-color: @grey-lightest;
+    border-radius: $form-radius;
+    background-color: $grey-lightest;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0), 0 1px 2px rgba(0, 0, 0, 0);
     transition: box-shadow 0.25s ease;
     &.is-focused {
@@ -422,17 +441,17 @@ export default {
     }
     > * {
       display: flex;
-      background-color: @grey-lightest;
+      background-color: $grey-lightest;
       border-radius: 0;
       &:first-child {
         overflow: hidden;
         border-left: none;
-        border-radius: @form-radius 0 0 @form-radius;
+        border-radius: $form-radius 0 0 $form-radius;
       }
       &:last-child {
         margin-left: 0;
         overflow: hidden;
-        border-radius: 0 @form-radius @form-radius 0;
+        border-radius: 0 $form-radius $form-radius 0;
       }
     }
   }
@@ -440,7 +459,11 @@ export default {
     order: 1;
     flex-grow: 1;
     flex-basis: 80%;
-    @media all and (min-width: @screen-sm) {
+    // @media all and (min-width: @screen-sm) {
+    //   flex-basis: unset;
+    // }
+
+    @include media-breakpoint-up(sm) {
       flex-basis: unset;
     }
   }
@@ -448,7 +471,13 @@ export default {
   &-help {
     width: 2em;
     display: none;
-    @media all and (min-width: @screen-sm) {
+
+    // @media all and (min-width: @screen-sm) {
+    //   order: 2;
+    //   display: block;
+    // }
+
+    @include media-breakpoint-up(sm) {
       order: 2;
       display: block;
     }
@@ -456,20 +485,23 @@ export default {
 
   &-helpContainer {
     position: absolute;
-    z-index: @popover-z;
+    z-index: $popover-z;
     right: 0px;
-    background-color: @neutral-color;
+    background-color: $neutral-color;
     padding: 1em;
     width: 30vw;
     @media all and (max-width: 1300px) {
       width: 40vw;
     }
+
     @media all and (max-width: 1100px) {
       width: 50vw;
     }
+
     @media all and (max-width: 800px) {
       width: 60vw;
     }
+
     max-height: 50vh;
     overflow-y: scroll;
     border-radius: 0.25em;
@@ -480,9 +512,9 @@ export default {
   &-closeHelp {
     float: right;
     cursor: pointer;
-    color: @grey;
+    color: $grey;
     &:hover {
-      color: @black;
+      color: $black;
     }
   }
 
@@ -491,7 +523,7 @@ export default {
     clear: right;
     display: flex;
 
-    & > i {
+    & > svg {
       vertical-align: bottom;
     }
 
@@ -501,15 +533,21 @@ export default {
   }
 
   &-selectWrapper {
-    @media (min-width: @screen-sm) {
+    // @media (min-width: @screen-sm) {
+    //   flex-basis: 30%;
+    // }
+    border: solid $grey-lighter;
+    border-width: 0px 1px 0px 1px;
+
+    @include media-breakpoint-up(sm) {
       flex-basis: 30%;
     }
-    border: solid @grey-lighter;
-    border-width: 0px 1px 0px 1px;
   }
+
   &-typeSelectWrapper {
     order: 1;
   }
+
   &-paramSelectWrapper {
     order: 4;
   }
@@ -518,14 +556,14 @@ export default {
     order: 2;
     min-width: 100px;
     width: 100%;
-    color: @black;
+    color: $black;
     transition: background-color 0.2s ease;
     &:focus {
-      background-color: @white;
+      background-color: $white;
       border-radius: 0;
       @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
         /* IE10+ CSS styles go here */
-        border: solid @grey-lighter;
+        border: solid $grey-lighter;
         border-width: 1px 0px 0px 0px;
       }
     }
@@ -535,18 +573,37 @@ export default {
     order: 3;
     position: absolute;
     right: 2.5em;
-    @media (min-width: @screen-sm) {
+
+    // @media (min-width: $screen-sm) {
+    //   right: 28%;
+    //   &.in-remote {
+    //     right: 4.5em;
+    //   }
+    // }
+
+    @include media-breakpoint-up(sm) {
       right: 28%;
       &.in-remote {
         right: 4.5em;
       }
     }
-    @media (min-width: @screen-md) {
+
+    // @media (min-width: @screen-md) {
+    //   right: 28.5%;
+    // }
+
+    @include media-breakpoint-up(md) {
       right: 28.5%;
     }
-    @media (min-width: @screen-lg) {
+
+    // @media (min-width: @screen-lg) {
+    //   right: 27%;
+    // }
+
+    @include media-breakpoint-up(lg) {
       right: 27%;
     }
+
     height: 2em;
     background-color: transparent;
     display: flex;
@@ -554,21 +611,20 @@ export default {
   }
 
   &-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     order: 5;
     min-width: 2.4em;
     box-shadow: none;
 
-    @media (min-width: @screen-sm) {
+    @include media-breakpoint-up(sm) {
       min-width: 84px;
     }
 
     .is-focused & {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
-  }
-
-  &-select {
-
   }
 
   &-inputLabel {

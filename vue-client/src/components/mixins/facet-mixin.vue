@@ -1,18 +1,15 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as MathUtil from '@/utils/math';
-import LensMixin from '@/components/mixins/lens-mixin';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
 
 export default {
   mixins: [LensMixin],
-  props: {
-  },
-  data() {
-    return {
-    };
-  },
   methods: {
     getByLang(object, property, lang) {
       const langDict = object[`${property}ByLang`];
@@ -75,16 +72,9 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'resources',
-    ]),
-    user() {
-      return this.$store.getters.user;
-    },
-    settings() {
-      return this.$store.getters.settings;
-    },
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
   },
-
 };
 </script>

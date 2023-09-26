@@ -1,5 +1,10 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
+import { translatePhrase } from '@/utils/filters';
 import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
@@ -36,11 +41,12 @@ export default {
   events: {
   },
   methods: {
+    translatePhrase,
     buildItem() {
       const embellishedReference = DisplayUtil.getCard(
         this.mainEntity,
         this.resources,
-        this.inspector.data.quoted, 
+        this.inspector.data.quoted,
         this.settings,
       );
       embellishedReference['@id'] = this.mainEntity['@id'];
@@ -60,7 +66,7 @@ export default {
       this.$router.push({ path: `/${fnurgel}` });
     },
     previewHolding() {
-      this.$store.dispatch('setInsertData', DataUtil.getMergedItems(this.itemData.record, this.itemData.mainEntity, null, this.itemData.quoted));
+      this.insertData = DataUtil.getMergedItems(this.itemData.record, this.itemData.mainEntity, null, this.itemData.quoted);
       this.$router.push({ path: '/new' });
     },
     performItemAction() {
@@ -72,18 +78,16 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useResourcesStore, ['resources', 'i18n']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useInspectorStore, ['insertData']),
     tooltipText() {
       if (this.hasHolding) {
-        return `${this.user.settings.activeSigel} ${StringUtil.getUiPhraseByLang('has holding', this.user.settings.language, this.resources.i18n)}`;
+        return `${this.user.settings.activeSigel} ${StringUtil.getUiPhraseByLang('has holding', this.user.settings.language, this.i18n)}`;
       }
-      return `${StringUtil.getUiPhraseByLang('Add holding for', this.user.settings.language, this.resources.i18n)} ${this.user.settings.activeSigel}`;
+      return `${StringUtil.getUiPhraseByLang('Add holding for', this.user.settings.language, this.i18n)} ${this.user.settings.activeSigel}`;
     },
     keyBindText() {
       return LayoutUtil.getKeybindingText('add-holding');
@@ -125,11 +129,9 @@ export default {
         :disabled="disabled" 
         :class=" {'is-disabled': disabled, 'btn-primary': !disabled} "
         v-tooltip.top="keyBindText">
-        <i class="fa fa-plus-circle"
-          v-if="!hasHolding && !checkingHolding"></i>
-        <i class="fa fa-fw fa-circle-o-notch fa-spin"
-          v-if="checkingHolding"></i>
-        {{"Add holding" | translatePhrase}}
+        <font-awesome-icon :icon="['fas', 'plus']" v-if="!hasHolding && !checkingHolding" />
+        <font-awesome-icon :icon="['fas', 'circle-notch']" class="fa-spin" v-if="checkingHolding" />
+        {{ translatePhrase("Add holding") }}
         <span>({{user.settings.activeSigel}})</span>
       </button>
       <button class="btn btn--md CreateItem-btn"
@@ -138,9 +140,8 @@ export default {
         :disabled="disabled" 
         @click.prevent="gotoHolding()"
         v-tooltip.top="keyBindText">
-        <i class="fa fa-check-circle"
-          v-if="hasHolding && !checkingHolding"></i>
-        {{"Show holding" | translatePhrase}}
+        <font-awesome-icon :icon="['fas', 'circle-check']" v-if="hasHolding && !checkingHolding"></font-awesome-icon>
+        {{ translatePhrase("Show holding") }}
         <span>({{user.settings.activeSigel}})</span>
       </button>
     </template>
@@ -150,51 +151,51 @@ export default {
         :icon="hasHolding ? 'check' : 'plus'"
         :indicator="hasHolding"
         :label="hasHolding ? 
-              `${user.settings.activeSigel} ${$options.filters.translatePhrase('has holding')}` :
-              `${$options.filters.translatePhrase('Add holding for')} ${user.settings.activeSigel}`"
-        @click="performItemAction()">
-      </rounded-button>
+              `${user.settings.activeSigel} ${translatePhrase('has holding')}` :
+              `${translatePhrase('Add holding for')} ${user.settings.activeSigel}`"
+        @click="performItemAction()"
+      />
     </template>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .CreateItem {
   &-btn {
     box-shadow: none;
-    background: @white;
-    color: @brand-primary;
-    border: 2px solid @brand-primary;
+    background: $white;
+    color: $brand-primary;
+    border: 2px solid $brand-primary;
     &:hover, 
     &:focus,
     &:active,
     &:active:focus {
-      border-color: @btn-primary--hover;
-      background: @white;
-      color: @btn-primary--hover;
+      border-color: $btn-primary--hover;
+      background: $white;
+      color: $btn-primary--hover;
     }
     &--hasHolding {
-      background: @brand-primary;
-      color: @white;
+      background: $brand-primary;
+      color: $white;
       border: none;
       &:hover, 
       &:focus,
       &:active,
       &:active:focus {
-        background: @btn-primary--hover;
-        color: @white;
+        background: $btn-primary--hover;
+        color: $white;
       }
     }
 
     &.is-disabled {
-      color: @white;
+      color: $white;
 
       &:hover, 
       &:focus,
       &:active {
-        background-color: @grey-lighter;
-        color: @white;
+        background-color: $grey-lighter;
+        color: $white;
       }
     }
   }

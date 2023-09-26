@@ -1,11 +1,16 @@
 <script>
+import { mapState } from 'pinia';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
-import ReverseRelations from '@/components/inspector/reverse-relations';
-import TagSwitch from '@/components/shared/tag-switch';
+import ReverseRelations from '@/components/inspector/reverse-relations.vue';
+import TagSwitch from '@/components/shared/tag-switch.vue';
 import * as RecordUtil from '@/utils/record';
-import LensMixin from '../mixins/lens-mixin';
-import ResultMixin from '../mixins/result-mixin';
+import LensMixin from '../mixins/lens-mixin.vue';
+import ResultMixin from '../mixins/result-mixin.vue';
+import EntitySummary from '../shared/entity-summary.vue';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'result-list-item',
@@ -32,31 +37,27 @@ export default {
     };
   },
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     recordType() {
       return VocabUtil.getRecordType(
-        this.focusData['@type'], 
-        this.resources.vocab, 
+        this.focusData['@type'],
+        this.resources.vocab,
         this.resources.context,
       );
     },
-    user() {
-      return this.$store.getters.user;
-    },
     categorization() {
       return StringUtil.getFormattedEntries(
-        this.getSummary.categorization, 
-        this.resources.vocab, 
+        this.getSummary.categorization,
+        this.resources.vocab,
         this.user.settings.language,
         this.resources.context,
       );
     },
     header() {
       return StringUtil.getFormattedEntries(
-        this.getSummary.header, 
-        this.resources.vocab, 
+        this.getSummary.header,
+        this.resources.vocab,
         this.user.settings.language,
         this.resources.context,
       );
@@ -69,9 +70,9 @@ export default {
     },
     showKeysText() {
       if (this.showCompact) {
-        return this.showAllKeys ? 'Hide properties' : 'Show properties';
-      }      
-      return this.showAllKeys ? 'Show fewer' : 'Show more';
+        return this.showAllKeys ? translatePhrase('Hide properties') : translatePhrase('Show properties');
+      }
+      return this.showAllKeys ? translatePhrase('Show fewer') : translatePhrase('Show more');
     },
     showUsedIn() {
       if (this.recordType !== 'Instance') {
@@ -99,13 +100,14 @@ export default {
   components: {
     TagSwitch,
     ReverseRelations,
-  },
+    EntitySummary
+},
 };
 </script>
 
 <template>
   <li class="ResultItem" :class="{'ResultItem--compact' : showCompact}">
-    <entity-summary 
+    <EntitySummary
       @hiddenDetailsNumber="setHiddenDetailsNumber"
       :focus-data="focusData" 
       :database="database" 
@@ -116,11 +118,11 @@ export default {
       :key-display-limit="showCompact ? 0 : 5"
       @import-this="importThis()"
       :valueDisplayLimit=3>
-    </entity-summary>
+    </EntitySummary>
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
         <span v-if="hiddenDetailsNumber > 1" class="ResultItem-showMore" @click="toggleShowKeys">
-          {{ showKeysText | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}
+          {{ showKeysText }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}
         </span>
       </div>
       <div class="ResultItem-tags" v-if="user.isLoggedIn && isImport === false">
@@ -145,7 +147,7 @@ export default {
   </li>  
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .ResultItem {
 
@@ -154,8 +156,8 @@ export default {
   list-style: none;
   margin-bottom: 0.5em;
   padding: 0.5em 1em 0.25em 1em;
-  background-color: @white;
-  border: 1px solid @grey-lighter;
+  background-color: $white;
+  border: 1px solid $grey-lighter;
   transform: translateX(0);
   transition: transform .2s cubic-bezier(0.21, 0.21, 0.62, 1.23);
 
@@ -167,14 +169,14 @@ export default {
 
   &.is-highlighted {
     transform: translateX(25px);
-    border: 1px solid @grey-light;  
+    border: 1px solid $grey-light;
   }
 
   &--compact {
     display: flex;
     margin: -1px 0 0 0;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     padding: 0.5em 1em;
     line-height: 1.2em;
 
@@ -188,7 +190,7 @@ export default {
     font-size: 20px;
     font-size: 2.0rem;
     line-height: 1.3;
-    color: @brand-primary;
+    color: $brand-primary;
     font-weight: 600;
     margin: 0px;
     display: inline-block;
@@ -202,7 +204,7 @@ export default {
       cursor: pointer;
       &:hover {
         text-decoration: underline;
-        color: @link-hover-color;
+        color: $link-hover-color;
       }
     }
   }
@@ -210,7 +212,7 @@ export default {
   &-link {
     &:visited {
       // Commented out until fixing in IE11
-      // color: @link-visited-color;
+      // color: $link-visited-color;
     }
   }
 
@@ -239,7 +241,7 @@ export default {
     font-weight: 600;
     font-size: 1.4rem;
     cursor: pointer;
-    color: @link-color;
+    color: $link-color;
   }
   &-tags {
     display: flex;

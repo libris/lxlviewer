@@ -1,15 +1,14 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
+import { mapState, mapWritableState } from 'pinia';
+import { useInspectorStore } from '@/stores/inspector';
 import * as LayoutUtil from '@/utils/layout';
 
 export default {
   name: 'validation-summary',
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
-    inspector() {
-      return this.$store.getters.inspector;
-    },
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapWritableState(useInspectorStore, ['event']),
     violations() {
       return this.inspector.validation.violations;
     },
@@ -23,13 +22,15 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     goToPath(path) {
       const id = `formPath-${path}`;
       const $element = document.getElementById(id);
-      this.$store.dispatch('pushInspectorEvent', { 
+      this.event = { 
         name: 'form-control', 
         value: 'expand-item',
-      });
+      };
+
       setTimeout(() => {
         LayoutUtil.scrollToElement($element, 1000, () => {});
       }, 1000);
@@ -40,7 +41,7 @@ export default {
 
 <template>
   <div class="ValidationSummary" v-show="numberOfViolations > 0">
-    <i class="fa fa-warning" /> Fann <strong>{{ numberOfViolations }}</strong> fall av oväntad data i denna post. Detta kan leda till oväntade resultat vid till exempel export.
+    <font-awesome-icon :icon="['fas', 'triangle-exclamation']" /> Fann <strong>{{ numberOfViolations }}</strong> fall av oväntad data i denna post. Detta kan leda till oväntade resultat vid till exempel export.
     <a class="pull-right" @click="showViolationList = true" v-show="!showViolationList">Visa detaljerad lista</a>
     <a class="pull-right" @click="showViolationList = false" v-show="showViolationList">Dölj detaljerad lista</a>
     <table class="table table-striped" v-if="showViolationList">
@@ -49,12 +50,12 @@ export default {
       </thead>
       <tr class="Violation" v-for="(value, key) in violations" :key="key">
         <td class="Violation-key">
-          <a @click="goToPath(key)"><i class="fa fa-tag"></i></a>
+          <a @click="goToPath(key)"><font-awesome-icon :icon="['fas', 'tag']" /></a>
           <code>{{ key }}</code>
         </td>
         <td class="Violation-value">
           <ul>
-            <li :key="reason.text" v-for="reason in value">- {{ reason.text | translatePhrase }} <code v-if="reason.hint">{{ reason.hint }}</code></li>
+            <li :key="reason.text" v-for="reason in value">- {{ translatePhrase(reason.text) }} <code v-if="reason.hint">{{ reason.hint }}</code></li>
           </ul>
         </td>
       </tr>
@@ -63,7 +64,7 @@ export default {
 </template>
 
 
-<style lang="less">
+<style lang="scss">
 .ValidationSummary {
   padding: 0.5em;
   border-radius: 0.25em;
@@ -75,11 +76,11 @@ export default {
   table {
     background-color: #fff;
     thead {
-      border: 1px solid @grey;
+      border: 1px solid $grey;
       border-width: 0px 0px 1px 0px;
     }
     .Violation {
-      border: 1px solid @grey-light;
+      border: 1px solid $grey-light;
       border-width: 0px 0px 1px 0px;
       &-nav {
         text-align: center;

@@ -1,12 +1,17 @@
 <script>
-import VueSimpleSpinner from 'vue-simple-spinner';
-import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
+import { mapState, mapWritableState } from 'pinia';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
+import { useResourcesStore } from '@/stores/resources';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as MathUtil from '@/utils/math';
 import * as HttpUtil from '@/utils/http';
-import CreateItemButton from '@/components/inspector/create-item-button';
-import RelationsList from '@/components/inspector/relations-list';
+import Spinner from '../shared/Spinner.vue';
+import CreateItemButton from '@/components/inspector/create-item-button.vue';
+import RelationsList from '@/components/inspector/relations-list.vue';
 import RoundedButton from '@/components/shared/rounded-button.vue';
 
 export default {
@@ -29,15 +34,16 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     showPanel() {
-      this.$store.dispatch('pushInspectorEvent', { 
+      this.event = { 
         name: 'form-control', 
         value: 'close-modals',
-      }).then(() => {
-        this.$nextTick(() => {
-          this.relationsListOpen = true;
-          this.$parent.$el.classList.add('is-highlighted');
-        });
+      };
+
+      this.$nextTick(() => {
+        this.relationsListOpen = true;
+        this.$parent.$el.classList.add('is-highlighted');
       });
     },
     hidePanel() {
@@ -49,7 +55,7 @@ export default {
         _limit: 0,
         _sort: `_sortKeyByLang.${this.user.settings.language || 'sv'}`,
       };
-      
+
       if (this.mode !== 'items' && this.mainEntity.reverseLinks) {
         this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
         this.checkingRelations = false;
@@ -102,13 +108,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useResourcesStore, ['vocab', 'context', 'i18n']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useInspectorStore, ['event']),
     numberOfRelationsCircle() {
       return MathUtil.getCompactNumber(this.numberOfRelations);
     },
@@ -118,15 +122,15 @@ export default {
     recordType() {
       return VocabUtil.getRecordType(
         this.mainEntity['@type'], 
-        this.resources.vocab, 
-        this.resources.context,
+        this.vocab, 
+        this.context,
       );
     },
     recordId() {
       return this.mainEntity['@id'];
     },
     translatedTooltip() {
-      return StringUtil.getUiPhraseByLang(this.totalRelationTooltipText, this.user.settings.language, this.resources.i18n);
+      return StringUtil.getUiPhraseByLang(this.totalRelationTooltipText, this.user.settings.language, this.i18n);
     },
     totalRelationTooltipText() {
       if (this.mode === 'items') {
@@ -150,7 +154,7 @@ export default {
   components: {
     'create-item-button': CreateItemButton,
     'relations-list': RelationsList,
-    'vue-simple-spinner': VueSimpleSpinner,
+    Spinner,
     'rounded-button': RoundedButton,
   },
   watch: {
@@ -200,14 +204,15 @@ export default {
   <div class="ReverseRelations-container">
     <div class="ReverseRelations" v-if="recordType !== 'Item'">
       <div class="ReverseRelations-header uppercaseHeading--light">
-        <span v-if="mode === 'items'">{{"Holding" | translatePhrase}}</span>
-        <span v-else>{{"Used in" | translatePhrase}}</span>
+        <span v-if="mode === 'items'">{{translatePhrase("Holding")}}</span>
+        <span v-else>{{translatePhrase("Used in")}}</span>
       </div>
       <div class="ReverseRelations-btnContainer">
-        <vue-simple-spinner class="ReverseRelations spinner compact"
+        <Spinner
+          class="ReverseRelations spinner compact"
           v-if="checkingRelations" 
-          size="small">
-        </vue-simple-spinner>
+          size="sm"
+        />
         <create-item-button class="ReverseRelations-button"
         v-if="!checkingRelations && mode === 'items' && user.isLoggedIn && user.getPermissions().registrant" 
         :compact="compact"
@@ -242,7 +247,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .ReverseRelations {
   display: flex;
   align-items: center;
@@ -253,7 +258,7 @@ export default {
     float: left;
     margin: 0 0 10px;
   
-    @media (min-width: @screen-sm) {
+    @include media-breakpoint-up(sm) {
       float: right;
       text-align: right;
     }

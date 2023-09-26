@@ -2,22 +2,26 @@
 /*
   The full version history view
 */
+import { translatePhrase, labelByLang } from '@/utils/filters';
 import { cloneDeep } from 'lodash-es';
-import { mapGetters } from 'vuex';
+import { mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DataUtil from '@/utils/data';
 import * as HistoryUtil from '@/utils/history';
-import LensMixin from '@/components/mixins/lens-mixin';
-import TabMenu from '@/components/shared/tab-menu';
+import { FocusTrap } from 'focus-trap-vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
 import EntityForm from './entity-form.vue';
 import VersionHistoryChangesets from './version-history-changesets.vue';
 
 export default {
   mixins: [LensMixin],
-  props: {
-  },
   data() {
     return {
       historyData: null,
@@ -38,13 +42,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useInspectorStore, ['event', 'compositeHistoryData']),
     focusData() {
       if (this.displayData) {
         return this.displayData.mainEntity;
@@ -83,7 +85,7 @@ export default {
       return null;
     },
     editorTabs() {
-      return [{ id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+      return [{ id: 'mainEntity', text: labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' }];
     },
   },
@@ -113,6 +115,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase, labelByLang,
     goToRecord() {
       const fnurgel = this.$route.params.fnurgel;
       this.$router.push({ path: `/${fnurgel}` });
@@ -123,7 +126,7 @@ export default {
     },
     setEditorFocus(value) {
       this.focusedTab = value;
-      this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'focus-changed' });
+      this.event = { name: 'form-control', value: 'focus-changed' };
     },
     setDefaultFocusedTab() {
       if (!this.currentVersionDiff.added.some(path => path.includes('mainEntity'))
@@ -181,7 +184,7 @@ export default {
       
       this.currentVersionDiff = displayPaths;
       this.fetchMissingLinks(displayData);
-      await this.$store.dispatch('setCompositeHistoryData', displayData);
+      this.compositeHistoryData = displayData;
       this.displayData = displayData;
       this.setDefaultFocusedTab();
     },
@@ -202,6 +205,7 @@ export default {
     EntityForm,
     TabMenu,
     VersionHistoryChangesets,
+    FocusTrap,
   },
   mounted() {
     this.$nextTick(() => {
@@ -212,14 +216,14 @@ export default {
 </script>
 
 <template>
-  <focus-trap v-model=isFocusTrapActive>
+  <FocusTrap v-model="isFocusTrapActive">
     <div class="VersionHistory" tabindex="-1">
       <div class="Container-row">
         <div class="VersionHistory-mainCol">
           <div class="VersionHistory-header">
             <span class="VersionHistory-backLink">
               <a @click="goToRecord" @keyup.enter="goToRecord" tabindex="0">
-                <i class="fa fa-arrow-left VersionHistory-back-icon"></i>{{ 'Back' | translatePhrase }}
+                <font-awesome-icon :icon="['fas', 'arrow-left']" class="VersionHistory-back-icon" />{{ translatePhrase('Back') }}
               </a>
             </span>
 
@@ -227,9 +231,13 @@ export default {
               {{ getItemLabel }}
             </span>
 
-            <i class="fa fa-th-list icon icon--md sideColButton"
-               role="button"
-               @click="openSideCol()"></i>
+            <font-awesome-icon
+              :icon="['fas', 'table-list']"
+              role="button"
+              @click="openSideCol()"
+              size="lg"
+              class="sideColButton"
+            />
           </div>
 
           <div class="VersionHistory-content" tabindex="-1">
@@ -251,8 +259,8 @@ export default {
 
         <div class="VersionHistory-sideCol" :class="{'hidden-view': !showSideCol}">
           <div class="VersionHistory-header">
-            {{ 'Version history' | translatePhrase }}
-            <i class="fa fa-close icon icon--md sideColButton" role="button" @click="closeSideCol()"></i>
+            {{ translatePhrase('Version history') }}
+            <font-awesome-icon :icon="['fas', 'xmark']" role="button" @click="closeSideCol()" class="sideColButton" />
           </div>
 
           <VersionHistoryChangesets
@@ -263,12 +271,12 @@ export default {
         </div>
       </div>
     </div>
-  </focus-trap>
+  </FocusTrap>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .VersionHistory {
-  background-color: @bg-site;
+  background-color: $bg-site;
   &-mainCol {
     height: 100vh;
     display: flex;
@@ -277,27 +285,16 @@ export default {
     flex: 3 0 0;
   }
   &-sideCol {
-    box-shadow: @fullscreen-panel-shadow;
+    box-shadow: $fullscreen-panel-shadow;
     z-index: 2;
     height: 100vh;
     flex: 1 0 0;
 
-    @media screen and (max-width: @screen-xs-max) {
-      .full-view();
-    }
-
-    .full-view() {
-      top: 0px;
-      left: 0px;
-      width: 100%;
-      opacity: 1;
-      height: 100vh;
-      position: fixed;
-      &.hidden-view {
-        display: none;
-      }
+    @include media-breakpoint-down(md) {
+      @include full-view();
     }
   }
+
   &-backLink {
     font-weight: normal;
     a {
@@ -310,7 +307,7 @@ export default {
   &-header {
     z-index: 1;
     font-weight: 600;
-    background-color: @white;
+    background-color: $white;
     border: solid #ccc;
     border-width: 0px 0px 1px 0px;
     display: flex;
@@ -333,7 +330,7 @@ export default {
     flex-grow: 1;
   }
   &-changeSets {
-    background-color: @white;
+    background-color: $white;
   }
   .Container-row {
     display: flex;
@@ -341,8 +338,10 @@ export default {
     justify-content: flex-start;
     padding: 0;
   }
+
   .sideColButton {
-    @media screen and (min-width: @screen-xs-max) {
+    color: $brand-primary;
+    @include media-breakpoint-up(md) {
       display: none;
     }
   }
@@ -366,7 +365,7 @@ export default {
     border-color: transparent;
     padding: 0.75rem 0.75rem 0.75rem 1.5rem;
     &.selected {
-      border-left-color: @brand-primary;
+      border-left-color: $brand-primary;
     }
   }
   &-currentVersion {
@@ -374,14 +373,14 @@ export default {
     font-size: 0.75em;
     text-transform: uppercase;
     &.selected {
-      color: @brand-primary;
+      color: $brand-primary;
     }
   }
   &-date {
     flex: 1 0 auto;
     font-weight: 600;
     &.selected {
-      color: @brand-primary;
+      color: $brand-primary;
     }
   }
   &-agent {
@@ -389,7 +388,7 @@ export default {
     font-size: 0.9em;
   }
   &-tool {
-    border: 1px solid @grey;
+    border: 1px solid $grey;
     border-radius: 2em;
     width: max-content;
     height: max-content;

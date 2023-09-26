@@ -1,7 +1,11 @@
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { defineAsyncComponent } from 'vue';
+import { mapState } from 'pinia';
+import { useSettingsStore } from '@/stores/settings';
 import * as HttpUtil from '@/utils/http';
-import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
+import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
+
+const EntitySummary = defineAsyncComponent(() => import('./entity-summary.vue'));
 
 export default {
   name: 'preview-card',
@@ -23,9 +27,6 @@ export default {
     };
   },
   methods: {
-    ...mapActions([
-      'addCardToCache',
-    ]),
     populateData() {
       if (this.shouldFetch) { // Only fetch if we need to
         const self = this;
@@ -54,10 +55,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'resources',
-      'settings',
-    ]),
+    ...mapState(useSettingsStore, ['settings']),
     shouldFetch() {
       if (this.focusData['@id'].startsWith(this.settings.dataPath) || this.recordId.startsWith(this.settings.dataPath) || (this.focusData.hasOwnProperty('meta') && this.focusData.meta['@id'].startsWith(this.settings.dataPath))) {
         return this.fetchedData === null;
@@ -78,9 +76,11 @@ export default {
       }
     },
   },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-    });
+  components: {
+    EntitySummary,
+  },
+  mounted() {
+    this.populateData();
   },
 };
 </script>
@@ -88,17 +88,18 @@ export default {
 <template>
   <div class="PreviewCard">
     <div class="PreviewCard-spinner" :class="{ 'is-active' : fetchStatus !== null }">
-      <span v-if="fetchStatus === 'loading'">Laddar <i class="fa-spin fa fa-circle-o-notch"></i></span>
-      <span v-if="fetchStatus === 'error'" class="fetchError">Laddningsfel <i class="fa fa-times"></i></span>
+      <span v-if="fetchStatus === 'loading'">Laddar <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></span>
+      <span v-if="fetchStatus === 'error'" class="fetchError">Laddningsfel <font-awesome-icon :icon="['fas', 'xmark']" /></span>
     </div>
-    <entity-summary :animate="true" :focus-data="fullData" :hover-links="false" />
+
+    <EntitySummary :animate="true" :focus-data="fullData" :hover-links="false" />
   </div>
 </template>
 
-<style lang="less">
-
+<style lang="scss">
 .PreviewCard {
   width: 600px;
+
   &-spinner {
     opacity: 0;
     transition: opacity 0.5s ease;
@@ -109,8 +110,9 @@ export default {
     position: absolute;
     right: 0.25em;
     bottom: 0.25em;
-    .fetchError i {
-      color: @brand-danger;
+
+    .fetchError svg {
+      color: $brand-danger;
     }
   }
 }

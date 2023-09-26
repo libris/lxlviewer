@@ -1,4 +1,8 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
+import { mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useSettingsStore } from '@/stores/settings';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 
@@ -13,6 +17,7 @@ export default {
     activeIndex: Number,
   },
   methods: {
+    translatePhrase,
     useBase(event) {
       this.$emit('use-base', event.target.value);
     },
@@ -28,18 +33,14 @@ export default {
     },
   },
   computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
-    resources() {
-      return this.$store.getters.resources;
-    },
+    ...mapState(useResourcesStore, ['vocab', 'context']),
+    ...mapState(useSettingsStore, ['settings']),
     isActive() {
       return this.activeIndex === this.index;
     },
     getClassTree() {
-      const tree = [this.creation].map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
-      return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
+      const tree = [this.creation].map(type => VocabUtil.getTree(type, this.vocab, this.context));
+      return VocabUtil.flattenTree(tree, this.vocab, this.context, this.settings.language);
     },
   },
 };
@@ -52,65 +53,60 @@ export default {
         <h2 class="CreationCard-title card-title">{{'Baspost'}}</h2>
         <div class="CreationCard-descr card-descr">Innehåller de vanligaste fälten för vald typ.</div>
       </div>
+
       <div class="card-link">
         <select class="CreationCard-select customSelect" 
           @change="useBase($event)"
           aria-labelledby="CreationCard-selectLabel">
           <option id="CreationCard-selectLabel" class="CreationCard-option" selected disabled>
-            {{'Choose type' | translatePhrase}}
+            {{translatePhrase('Choose type')}}
           </option>
           <option class="CreationCard-option"
             v-for="(term, index) in getClassTree" 
             :value="term.id" 
             :key="index" 
             :disabled="term.abstract"
-            v-html="getLabelWithTreeDepth(term, settings, resources.vocab, resources.context)">
+            v-html="getLabelWithTreeDepth(term, settings, vocab, context)">
           </option>
         </select>
       </div>
     </div>
+
     <div v-if="!isBase" class="CreationCard-content card-content">
       <div class="card-text">
         <h2 class="CreationCard-title card-title">{{template.label}}</h2>
         <div class="CreationCard-descr card-descr">{{template.description}}</div>
       </div>
+
       <div class="card-link">
-        <button 
+        <button
           class="CreationCard-select btn btn-primary btn--md" 
           tabindex="0" 
           v-show="!isActive" 
           :disabled="!isAllowed"
           @keyup.enter="useTemplate(template.value)" 
-          @click="useTemplate(template.value)">
-            {{ 'Choose' | translatePhrase }}
+          @click="useTemplate(template.value)"
+        >
+            {{ translatePhrase('Choose') }}
         </button>
+
         <a 
           class="CreationCard-select" 
           tabindex="0" 
           v-show="isActive" 
           @keyup.enter="useTemplate(template.value)" 
-          @click="useTemplate(template.value)">
-            {{ 'Chosen' | translatePhrase }}
+          @click="useTemplate(template.value)"
+        >
+            {{ translatePhrase('Choosen') }}
         </a>
       </div>
     </div>
   </div>
 </template>
 
-<style lang="less">
-
-.CreationCard  {
-  flex-basis: 100%;
-  max-width: 27rem;
-
-  @media screen and (min-width: @screen-sm-min){
-    flex-basis: 49%;
-    margin-right: 1%;
-  }
-  @media screen and (min-width: @screen-md-min){
-    flex-basis: 24%;
-  }
-
+<style lang="scss">
+.CreationCard {
+  margin: 0;
   &.is-disabled {
     cursor: not-allowed;
     background-color: #efeded;
@@ -125,9 +121,6 @@ export default {
     width: 100%;
   }
 
-  &-descr {
-  }
-
   &-content {
     min-height: 200px;
     padding-bottom: 10px;
@@ -140,10 +133,9 @@ export default {
   }
 
   &-option {
-    background-color: @white;
-    color: @black;
+    background-color: $white;
+    color: $black;
     border-top: none;
   }
 }
-
 </style>

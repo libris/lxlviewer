@@ -1,6 +1,11 @@
 <script>
 import { cloneDeep, isArray, get, isObject, dropRight, isEqual } from 'lodash-es';
-import { mapGetters } from 'vuex';
+import { mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
+import { useStatusStore } from '@/stores/status';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DataUtil from '@/utils/data';
@@ -44,29 +49,13 @@ export default {
         parentValue = null;
       }
       if (animate) {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'removing', value: true });
         this.removed = true;
+        this.inspector.status.removing = true;
         setTimeout(() => {
-          this.$store.dispatch('updateInspectorData', {
-            changeList: [
-              {
-                path: `${this.parentPath}`,
-                value: parentValue,
-              },
-            ],
-            addToHistory: true,
-          });
+          this.inspector[this.parentPath] = parentValue;
         }, 500);
       } else {
-        this.$store.dispatch('updateInspectorData', {
-          changeList: [
-            {
-              path: `${this.parentPath}`,
-              value: parentValue,
-            },
-          ],
-          addToHistory: true,
-        });
+        this.inspector[this.parentPath] = parentValue;
       }
     },
   },
@@ -76,13 +65,10 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useInspectorStore, ['inspector']),
     path() {
       const parentValue = get(this.inspector.data, this.parentPath);
       if (isArray(parentValue)) {
@@ -227,13 +213,14 @@ export default {
     },
   },
   watch: {
-    'status.removing': {
-      handler(newValue) {
-        if (!newValue) {
-          this.removed = false;
-        }
-      },
-    },
+    // TODO: What does this do? Is it status store or inspector store?
+    // 'status.removing': {
+    //   handler(newValue) {
+    //     if (!newValue) {
+    //       this.removed = false;
+    //     }
+    //   },
+    // },
   },
 };
 </script>

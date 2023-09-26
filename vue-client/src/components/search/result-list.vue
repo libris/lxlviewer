@@ -1,9 +1,11 @@
 <script>
 import { cloneDeep } from 'lodash-es';
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import * as LxlDataUtil from 'lxljs/data';
 import * as RecordUtil from '@/utils/record';
-import ResultListItem from './result-list-item';
+import ResultListItem from './result-list-item.vue';
 
 export default {
   name: 'result-list',
@@ -42,16 +44,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'resources',
-      'user',
-      'settings',
-    ]),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
   },
   components: {
     'result-list-item': ResultListItem,
-  },
-  mounted() { // Ready method is deprecated in 2.0, switch to "mounted"
   },
 };
 </script>
@@ -70,7 +67,7 @@ export default {
   </ol>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .ResultList {
   width: 100%;
   margin-bottom: 40px;

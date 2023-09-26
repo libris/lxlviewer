@@ -1,10 +1,15 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
+import { mapActions, mapState } from 'pinia';
+import { useInspectorStore } from '@/stores/inspector';
+import { useSettingsStore } from '@/stores/settings';
+import { useStatusStore } from '@/stores/status';
 import AutoSize from 'autosize';
-import { mapGetters } from 'vuex';
 import { isEqual } from 'lodash-es';
-import PreviewCard from '@/components/shared/preview-card';
-import LanguageMixin from '@/components/mixins/language-mixin';
-import EntityAdder from './entity-adder';
+import { Dropdown } from 'floating-vue';
+import PreviewCard from '@/components/shared/preview-card.vue';
+import LanguageMixin from '@/components/mixins/language-mixin.vue';
+import EntityAdder from './entity-adder.vue';
 
 export default {
   name: 'language-entry',
@@ -63,13 +68,9 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'settings',
-      'resources',
-      'supportedTags',
-      'status',
-    ]),
+    ...mapState(useInspectorStore, ['inspector', 'supportedTags']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapState(useStatusStore, ['']),
     isByLang() {
       return this.itemPath.includes('ByLang');
     },
@@ -122,6 +123,7 @@ export default {
   components: {
     PreviewCard,
     'entity-adder': EntityAdder,
+    Dropdown,
   },
   watch: {
     isLocked(val) {
@@ -136,6 +138,8 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
+    ...mapActions(useInspectorStore, ['setInspectorStatusValue', 'getIsTagRomanizable']),
     onLangTaggerEvent(langTag) {
       this.$emit('addLangTag', langTag);
     },
@@ -157,7 +161,7 @@ export default {
         setTimeout(() => {
           element.classList.remove('is-lastAdded');
           if (this.isLastAdded) {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            this.setInspectorStatusValue({ property: 'lastAdded', value: '' });
           }
         }, 1000);
       }
@@ -168,7 +172,7 @@ export default {
       this.$emit('addToCache');
 
       if (!this.supportedTags.includes(this.tag)) {
-        this.$store.dispatch('getIsTagRomanizable', this.tag);
+        this.getIsTagRomanizable(this.tag);
       }
     }
 
@@ -176,6 +180,7 @@ export default {
       if (!this.isLocked) {
         this.highLightLastAdded();
         this.initializeTextarea();
+        // TODO: isNew does not exist on status?
         if (!this.status.isNew && this.shouldFocus) {
           this.addFocus();
         }
@@ -200,27 +205,38 @@ export default {
       </span>
       <span class="LanguageEntry-value">
         <span class="LanguageEntry-pill" v-if="tag !== 'none'">
-          <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
-            @show="$refs.previewCard.populateData()">
+          <Dropdown
+            v-if="this.isLinked"
+            class="LanguageEntry-popover"
+            placement="bottom-start"
+            :triggers="['hover', 'focus']"
+          >
             <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
               <router-link :to="routerPath">{{ this.label }}</router-link>
             </span>
-            <template slot="popover">
-              <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
+
+            <template #popper>
+              <PreviewCard :focus-data="data" :record-id="this.recordId"/>
             </template>
-          </v-popover>
+          </Dropdown>
 
           <span class="LanguageEntry-pill-removeButton">
-            <i class="fa fa-times-circle icon icon--sm chip-icon"
+            <font-awesome-icon :icon="['fas', 'circle-xmark']"
+              class="chip-icon"
+              size="sm"
               v-if="removeIsAllowed"
               role="button"
               tabindex="0"
               @click="$emit('remove')"
               @keyup.enter="$emit('remove')"
-              :aria-label="'Remove' | translatePhrase"
-              v-tooltip.top="translate('Remove')">
-            </i>
-            <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!removeIsAllowed"></i>
+              :aria-label="translatePhrase('Remove')"
+              v-tooltip.top="translatePhrase('Remove')"
+            />
+
+            <font-awesome-icon
+              :icon="['fas', 'circle-xmark']" size="sm"
+              class="chip-icon is-disabled" v-if="!removeIsAllowed"
+            />
           </span>
 
           <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
@@ -229,19 +245,24 @@ export default {
         </span>
 
         <span class="LanguageEntry-actions">
-          <i class="fa fa-language icon icon--sm LanguageEntry-transIcon"
+          <font-awesome-icon :icon="['fas', 'language']"
+            class="LanguageEntry-transIcon"
+            size="sm"
             tabindex="0"
             role="button"
-            :aria-label="'Romanize' | translatePhrase"
+            :aria-label="translatePhrase('Romanize')"
             v-on:click="$emit('romanize')"
             v-if="isTransSchema(tag) && tag !== 'none'"
-            v-tooltip.top="translate('Romanize')"
-            @keyup.enter="$emit('romanize')">
-          </i>
+            v-tooltip.top="translatePhrase('Romanize')"
+            @keyup.enter="$emit('romanize')"
+          />
 
-          <i class="fa fa-language icon icon--sm LanguageEntry-transIcon is-disabled"
-            v-if="!isTransSchema(tag) && tag !== 'none'">
-          </i>
+          <font-awesome-icon
+            :icon="['fas', 'language']"
+            class="LanguageEntry-transIcon is-disabled"
+            size="sm"
+            v-if="!isTransSchema(tag) && tag !== 'none'"
+          />
 
           <entity-adder class="LanguageEntry-action Field-entityAdder"
             ref="entityAdder"
@@ -254,18 +275,19 @@ export default {
             :range-full="['Language']"
             :property-types="['ObjectProperty']"
             :is-lang-tagger="true"
-            :icon-add="'fa-globe-outline'"
+            :icon-add="'globe'"
             @langTaggerEvent="onLangTaggerEvent(...arguments)">
           </entity-adder>
 
           <span class="LanguageEntry-remover"
             tabindex="0"
             role="button"
-            :aria-label="'Remove' | translatePhrase"
+            :aria-label="translatePhrase('Remove')"
             v-on:click="$emit('removeval')"
             @keyup.enter="$emit('removeval')"
-            v-tooltip.top="translate('Remove')">
-            <i class="fa fa-trash-o icon icon--sm"></i>
+            v-tooltip.top="translatePhrase('Remove')"
+          >
+            <font-awesome-icon :icon="['fas', 'trash-can']" size="sm" />
           </span>
         </span>
       </span>
@@ -284,16 +306,20 @@ export default {
 
         <span class="LanguageEntry-tags">
           <span class="LanguageEntry-pill" v-if="tag !== 'none'">
-            <v-popover v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
-              @show="$refs.previewCard.populateData()">
+            <Dropdown
+              v-if="this.isLinked"
+              class="LanguageEntry-popover"
+              placement="bottom-start"
+              :triggers="['hover', 'focus']"
+            >
               <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
                 <router-link :to="routerPath">{{ this.label }}</router-link>
               </span>
 
-              <template slot="popover">
-                <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
+              <template #popper>
+                <PreviewCard :focus-data="data" :record-id="this.recordId"/>
               </template>
-            </v-popover>
+            </Dropdown>
 
             <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
               {{ this.label }}
@@ -301,11 +327,11 @@ export default {
           </span>
 
           <span class="LanguageEntry-tags-history-icon" v-if="diffRemoved && !diffAdded">
-            <i class="fa fa-trash-o icon--sm icon-removed"></i>
+            <font-awesome-icon :icon="['fas', 'trash-can']" class="icon-removed" />
           </span>
 
           <span class="LanguageEntry-tags-history-icon" v-if="diffAdded && !diffRemoved">
-            <i class="fa fa-plus-circle icon--sm icon-added"></i>
+            <font-awesome-icon :icon="['fas', 'circle-plus']" class="icon-added" />
           </span>
         </span>
       </div>
@@ -313,7 +339,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .LanguageEntry {
   &-inputcontainer {
     display: grid;
@@ -324,14 +350,14 @@ export default {
     grid-template-rows: auto;
     grid-template-areas:
     "key value";
-    border: 1px solid @grey-light;
+    border: 1px solid $grey-light;
     border-radius: 2px;
     width: 100%;
     margin-top: 7px;
     margin-bottom: 7px;
     background: white;
     &:focus-within {
-      border: 1px solid @grey-dark;
+      border: 1px solid $grey-dark;
     }
   }
 
@@ -350,32 +376,32 @@ export default {
   }
 
   &-is-diff-added {
-    @base-color: @form-add;
+    $base-color: $form-add;
     border: 1px solid;
     border-radius: 4px;
     padding: 0px 5px 0 5px;
-    border-color: @brand-primary;
-    background-color: @base-color;
+    border-color: $brand-primary;
+    background-color: $base-color;
     margin-bottom: 3px;
   }
 
   &-is-diff-removed {
-    @base-color: @remove;
+    $base-color: $remove;
     border: 1px dashed;
     border-radius: 4px;
     padding: 0px 5px 0 5px;
-    border-color: @base-color;
-    background-color: @form-remove;
+    border-color: $base-color;
+    background-color: $form-remove;
     margin-bottom: 3px;
   }
 
   &-is-diff-modified {
-    @base-color: @brand-primary-orange;
+    $base-color: $brand-primary-orange;
     border: 1px dashed;
     border-radius: 4px;
     padding: 0px 5px 0 5px;
-    border-color: @base-color;
-    background-color: @form-modified;
+    border-color: $base-color;
+    background-color: $form-modified;
     margin-bottom: 3px;
   }
 
@@ -501,7 +527,7 @@ export default {
   }
 
   &.is-lastAdded {
-    background-color: @form-add;
+    background-color: $form-add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;

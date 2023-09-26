@@ -1,23 +1,28 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
+import { mapState, mapWritableState } from 'pinia';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import { merge, cloneDeep, escapeRegExp } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
-import PanelComponent from '@/components/shared/panel-component';
-import PanelSearchList from '@/components/search/panel-search-list';
-import Button from '@/components/shared/button';
-import Sort from '@/components/search/sort';
-import ModalPagination from '@/components/inspector/modal-pagination';
+import Spinner from '../shared/Spinner.vue';
+import PanelComponent from '@/components/shared/panel-component.vue';
+import PanelSearchList from '@/components/search/panel-search-list.vue';
+import Button from '@/components/shared/button.vue';
+import Sort from '@/components/search/sort.vue';
+import ModalPagination from '@/components/inspector/modal-pagination.vue';
 import FilterSelect from '@/components/shared/filter-select.vue';
 import ParamSelect from '@/components/inspector/param-select.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
-import LensMixin from '../mixins/lens-mixin';
+import LensMixin from '../mixins/lens-mixin.vue';
+import EntitySummary from '../shared/entity-summary.vue';
+import { useInspectorStore } from '@/stores/inspector';
 
 export default {
   name: 'search-window',
-  mixins: [clickaway, LensMixin, SideSearchMixin],
+  mixins: [LensMixin, SideSearchMixin],
   data() {
     return {
       extractDialogActive: false,
@@ -65,9 +70,10 @@ export default {
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
     'param-select': ParamSelect,
-    'vue-simple-spinner': VueSimpleSpinner,
     'button-component': Button,
     sort: Sort,
+    Spinner,
+    EntitySummary,
   },
   watch: {
     copyTitle(value) {
@@ -82,6 +88,9 @@ export default {
     },
   },
   computed: {
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useInspectorStore, ['event']),
     typeOfExtractingEntity() {
       return StringUtil.getLabelByLang(VocabUtil.getRecordType(this.itemInfo['@type'], this.resources.vocab, this.resources.context), this.user.settings.language, this.resources).toLowerCase();
     },
@@ -93,6 +102,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     getSearchParams(searchPhrase) {
       if (this.currentSearchParam == null) {
         return { q: searchPhrase };
@@ -120,31 +130,30 @@ export default {
       }
     },
     show() {
-      this.$store.dispatch('pushInspectorEvent', {
+      this.event = {
         name: 'form-control',
         value: 'close-modals',
-      })
-        .then(() => {
-          this.$nextTick(() => {
-            this.active = true;
-            this.setSearchType = '';
-            this.$nextTick(() => {
-              this.resetSearch();
-              if (this.itemInfo !== null) {
-                const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources, this.inspector.data.quoted, this.settings)
-                  .replace(/#|_|•|\[|\]/g, ' ')
-                  .replace(/  +/g, ' ')
-                  .replace(new RegExp(`s?({(.*?)(${this.settings.availableUserSettings.languages.map(lang => escapeRegExp(StringUtil.getUiPhraseByLang('without', lang.value, this.resources.i18n))).join('|')})(.*?)})`, 'g'), '')
-                  .trim();
-                this.keyword = cleanedChipString;
-                this.search();
-              }
-              if (this.$refs.input) {
-                this.$refs.input.focus();
-              }
-            });
-          });
+      };
+
+      this.$nextTick(() => {
+        this.active = true;
+        this.setSearchType = '';
+        this.$nextTick(() => {
+          this.resetSearch();
+          if (this.itemInfo !== null) {
+            const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources, this.inspector.data.quoted, this.settings)
+              .replace(/#|_|•|\[|\]/g, ' ')
+              .replace(/  +/g, ' ')
+              .replace(new RegExp(`s?({(.*?)(${this.settings.availableUserSettings.languages.map(lang => escapeRegExp(StringUtil.getUiPhraseByLang('without', lang.value, this.resources.i18n))).join('|')})(.*?)})`, 'g'), '')
+              .trim();
+            this.keyword = cleanedChipString;
+            this.search();
+          }
+          if (this.$refs.input) {
+            this.$refs.input.focus();
+          }
         });
+      });
     },
     hide() {
       if (!this.active) return;
@@ -179,46 +188,44 @@ export default {
     <portal to="sidebar" v-if="active">
       <panel-component class="SearchWindow-panel SearchWindowPanel"
         v-if="active"
-        :title="'Link entity' | translatePhrase"
-        @close="hide()">
-        <template slot="panel-header-info">
-          <div class="PanelComponent-headerInfo help-tooltip-container"
-            @mouseleave="showHelp = false">
-            <i class="fa fa-question-circle icon icon--md"
-              @mouseenter="showHelp = true">
-            </i>
+        :title="translatePhrase('Link entity')"
+        @close="hide()"
+      >
+        <template #panel-header-info>
+          <div class="PanelComponent-headerInfo help-tooltip-container" @mouseleave="showHelp = false">
+            <font-awesome-icon :icon="['fas', 'circle-question']" size="md" @mouseenter="showHelp = true" />
             <div class="PanelComponent-headerInfoBox help-tooltip" v-show="showHelp">
               <div>
                 <p class="header">
-                  {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
+                  {{translatePhrase("Step")}} 1: {{translatePhrase("Search for existing linked entities")}}
                 </p>
               </div>
               <div>
                 <p class="header">
-                  {{"Step" | translatePhrase}} 2: {{"Identify and replace" | translatePhrase}}
+                  {{translatePhrase("Step")}} 2: {{translatePhrase("Identify and replace")}}
                 </p>
                 <p>
-                  {{"If you identify a matching linked entity, click it to replace the local entity with it" | translatePhrase}}.
+                  {{translatePhrase("If you identify a matching linked entity, click it to replace the local entity with it")}}.
                 </p>
               </div>
               <div>
                 <p class="header">
-                  {{"Create and link entity" | translatePhrase}}
+                  {{ translatePhrase("Create and link entity")}}
                 </p>
                 <p>
-                  {{"If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking" | translatePhrase}}.
+                  {{ translatePhrase("If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking")}}.
                 </p>
               </div>
             </div>
           </div>
         </template>
-        <template slot="panel-header-extra">
+        <template #panel-header-extra>
           <div class="SearchWindow-header search-header">
             <div class="SearchWindow-extractControls">
               <div class="copy-title" v-if="canCopyTitle">
                 <label>
-                  <input type="checkbox" name="copyTitle" v-model="copyTitle" />
-                  {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}
+                  <input type="checkbox" name="copyTitle" v-bind="copyTitle" @change="$emit('update:copyTitle', $event.target.value)" />
+                  {{ translatePhrase("Copy title from") }} {{this.editorData.mainEntity['@type'] | labelByLang}}
                 </label>
               </div>
             </div>
@@ -227,7 +234,7 @@ export default {
                 <div class="SearchWindow-filterSearchContainerItem">
                   <filter-select class="SearchWindow-filterSearchInput FilterSelect--openDown"
                     :class-name="'js-filterSelect'"
-                    :label="'Show' | translatePhrase"
+                    :label="translatePhrase('Show')"
                     :custom-placeholder="filterPlaceHolder"
                     :options="{ tree: selectOptions, priority: priorityOptions }"
                     :options-all="allSearchTypes"
@@ -252,8 +259,8 @@ export default {
                   v-model="keyword"
                   ref="input"
                   autofocus
-                  :placeholder="'Search' | translatePhrase"
-                  :aria-label="'Search' | translatePhrase">
+                  :placeholder="translatePhrase('Search')"
+                  :aria-label="translatePhrase('Search')">
                 <param-select class="SearchWindow-paramSelect"
                               :types="currentSearchTypes"
                               :reset="resetParamSelect"
@@ -263,33 +270,34 @@ export default {
           </div>
         </template>
 
-        <template slot="panel-body">
+        <template #panel-body>
           <panel-search-list
             v-if="!searchInProgress"
             class="SearchWindow-resultListContainer"
             :results="searchResult"
             :is-compact="isCompact"
-            icon="chain"
+            icon="link"
             text="Replace local entity"
             :has-action="true"
             @use-item="replaceWith"
           />
           <div class="PanelComponent-searchStatus" v-show="keyword.length === 0 && !extracting && searchResult.length == 0">
-            <p> {{ "Search for existing linked entities to replace your local entity" | translatePhrase }}.</p>
-            <p v-if="itemInfo && extractable"> {{ "If you can't find an existing link, you can create one using your local entity below" | translatePhrase }}.</p>
+            <p> {{ translatePhrase("Search for existing linked entities to replace your local entity") }}.</p>
+            <p v-if="itemInfo && extractable"> {{ translatePhrase("If you can't find an existing link, you can create one using your local entity below") }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="searchInProgress">
-            <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+            <Spinner size="lg" :message="translatePhrase('Searching')"></Spinner>
           </div>
           <div class="PanelComponent-searchStatus" v-show="foundNoResult">
-            <p>{{ "Your search gave no results" | translatePhrase }}.</p>
-            <p v-if="itemInfo && extractable">{{ "Try again" | translatePhrase }} {{ "or create a link from your local data below" | translatePhrase }}.</p>
+            <p>{{ translatePhrase("Your search gave no results") }}.</p>
+            <p v-if="itemInfo && extractable">{{ translatePhrase("Try again") }} {{ translatePhrase("or create a link from your local data below") }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="extracting">
-            <vue-simple-spinner size="large" :message="'Creating link' | translatePhrase"></vue-simple-spinner>
+            <Spinner size="lg" :message="translatePhrase('Creating link')"></Spinner>
           </div>
         </template>
-        <template slot="panel-footer">
+
+        <template #panel-footer>
           <div class="SearchWindow-resultControls" v-if="!searchInProgress && searchResult.length > 0" >
             <modal-pagination
               @go="go"
@@ -300,28 +308,36 @@ export default {
             >
             </modal-pagination>
             <div class="SearchWindow-listTypes">
-              <i class="fa fa-th-list icon icon--md"
+              <font-awesome-icon
+                :icon="['fas', 'table-list']"
+                size="md"
                 role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
-                :title="'Detailed view' | translatePhrase"
-                tabindex="0"></i>
-              <i class="fa fa-list icon icon--md"
+                :title="translatePhrase('Detailed view')"
+                tabindex="0"
+              />
+
+              <font-awesome-icon
+                :icon="['fas', 'list']"
+                size="md"
                 role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"
-                :title="'Compact view' | translatePhrase"
-                tabindex="0"></i>
+                :title="translatePhrase('Compact view')"
+                tabindex="0"
+              />
             </div>
           </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
             <div class="SearchWindow-summaryContainer" v-show="showExtractSummary">
-              <entity-summary
+              <EntitySummary
                 :focus-data="itemInfo"
                 :should-link="false"
-                :valueDisplayLimit=1></entity-summary>
+                :valueDisplayLimit=1
+              />
             </div>
             <div class="SearchWindow-dialogContainer">
               <p class="preview-entity-text uppercaseHeading">Vill du skapa {{ typeOfExtractingEntity }} av lokal entitet?</p>
@@ -330,7 +346,7 @@ export default {
               </p>
               <button-component
                 :button-text="['Yes, create', typeOfExtractingEntity ]"
-                icon="plus-circle"
+                icon="circle-plus"
                 :variant="'primary'"
                 :inverted="true"
                 @click="extract()"
@@ -351,7 +367,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .SearchWindow {
   &-entitySummary {
@@ -375,7 +391,7 @@ export default {
     display: flex;
     flex-direction: column;
 
-    @media (min-width: @screen-xs) {
+    @include media-breakpoint-up(xs) {
       flex-direction: row;
     }
   }
@@ -384,7 +400,7 @@ export default {
     width: 100%;
     margin: 0.5em 1em 0 0;
 
-    @media (min-width: @screen-xs) {
+    @include media-breakpoint-up(xs) {
       width: 50%;
     }
 
@@ -408,14 +424,14 @@ export default {
     position: relative;
     margin-bottom: 0;
     margin-top: 0.5em;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     border-radius: 0.2em;
   }
 
   &-inputContainer input {
-    color: @black;
-    background-color: @white;
+    color: $black;
+    background-color: $white;
     border: none;
     margin-right: 2px; // make tab-focus border look ok
     border-radius: 0;
@@ -426,7 +442,7 @@ export default {
   }
 
   &-paramSelect {
-    border-left: 1px solid @grey-lighter;
+    border-left: 1px solid $grey-lighter;
     flex-basis: 33%;
   }
 
@@ -446,7 +462,7 @@ export default {
     justify-content: space-between;
     align-items: baseline;
     margin: 0 10px;
-    border: solid @grey-lighter;
+    border: solid $grey-lighter;
     border-width: 0 0 1px 0;
   }
 
@@ -473,9 +489,9 @@ export default {
   &-summaryContainer {
     display: flex;
     flex-direction: row;
-    border: solid @grey-lighter;
+    border: solid $grey-lighter;
     border-width: 0 0 1px 0;
-    background: @white;
+    background: $white;
     padding: 1rem 2rem;
   }
 

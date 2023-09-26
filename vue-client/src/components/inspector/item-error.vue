@@ -1,6 +1,9 @@
 <script>
+import { mapActions, mapState } from 'pinia';
+import { useUserStore } from '@/stores/user';
 import { cloneDeep } from 'lodash-es';
-import ItemMixin from '../mixins/item-mixin';
+import ItemMixin from '../mixins/item-mixin.vue';
+import { useInspectorStore } from '@/stores/inspector';
 
 export default {
   name: 'item-error',
@@ -17,9 +20,8 @@ export default {
       keyword: '',
     };
   },
-  methods: {
-  },
   computed: {
+    ...mapState(useUserStore, ['user']),
     itemAsJson() {
       const cleanItem = cloneDeep(this.item);
       if (cleanItem.hasOwnProperty('_uid')) {
@@ -36,23 +38,20 @@ export default {
         text: 'The entity is missing crucial data',
       });
 
-      this.$store.dispatch('setValidation', { path: this.path, validates: false, reasons: failedValidations });
+      this.setValidation({ path: this.path, validates: false, reasons: failedValidations });
       return failedValidations;
     },
   },
-  components: {
+  methods: {
+    ...mapActions(useInspectorStore, ['setValidation']),
   },
   watch: {
     keyword(value, oldval) {
       console.log('keyword changed', value, oldval);
     },
   },
-  mounted() {
-    this.$nextTick(() => {
-    });
-  },
-  beforeDestroy() {
-    this.$store.dispatch('setValidation', { path: this.path, validates: true });
+  beforeUnmount() {
+   this.setValidation({ path: this.path, validates: true });
   },
 };
 </script>
@@ -67,7 +66,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .ItemError {
   line-height: 1.6;
@@ -78,7 +77,7 @@ export default {
     padding-right: 1em;
   }
   code {
-    color: @black;
+    color: $black;
     background-color: transparent;
   }
   &.has-failed-validations {

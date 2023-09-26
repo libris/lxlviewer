@@ -1,8 +1,9 @@
 <script>
 import AutoSize from 'autosize';
 import { debounce, cloneDeep, get } from 'lodash-es';
-import { mapGetters } from 'vuex';
-import ItemMixin from '@/components/mixins/item-mixin';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import { mapActions } from 'pinia';
+import { useInspectorStore } from '@/stores/inspector';
 
 export default {
   name: 'item-shelf-control-number',
@@ -59,9 +60,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'user',
-    ]),
     value() {
       return this.mode === 'generate' ? '' : this.textFieldValue;
     },
@@ -92,6 +90,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue']),
     removeHighlight(event, active) {
       if (active) {
         let item = event.target;
@@ -108,14 +107,14 @@ export default {
       return false;
     },
     readyForSave(value) {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
+      this.setInspectorStatusValue({ property: 'readyForSave', value: value });
     },
     update(newValue) {
       const oldValue = cloneDeep(get(this.inspector.data, this.path));
 
       this.readyForSave(true);
       if (newValue !== oldValue && !this.isLocked) {
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: this.path,
@@ -133,7 +132,7 @@ export default {
         setTimeout(() => {
           element.classList.remove('is-lastAdded');
           if (this.isLastAdded) {
-            this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+            this.setInspectorStatusValue({ property: 'lastAdded', value: '' });
           }
         }, 1000);
       }
@@ -210,7 +209,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .ItemShelfControlNumber {
   display: flex;
@@ -224,14 +223,14 @@ export default {
   &-input {
     width: 100%;
     display: block;
-    border: 1px solid @grey-light;
+    border: 1px solid $grey-light;
     border-radius: 2px;
     padding: 2px 10px;
     resize: none;
     transition: border .25s ease-out;
 
     &:focus {
-      border: 1px solid @grey-dark;
+      border: 1px solid $grey-dark;
     }
   }
 
@@ -245,7 +244,7 @@ export default {
   }
   
   &.is-lastAdded {
-    background-color: @form-add;
+    background-color: $form-add;
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;

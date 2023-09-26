@@ -1,5 +1,9 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useUserStore } from '@/stores/user';
+import { useInspectorStore } from '@/stores/inspector';
+import { useSettingsStore } from '@/stores/settings';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import { buildQueryString } from '@/utils/http';
@@ -177,13 +181,10 @@ export default {
   events: {
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     searchInProgress() {
       return this.activeSearches > 0;
     },

@@ -1,15 +1,15 @@
 <script>
-import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
+import { mapState } from 'pinia';
+import { useSettingsStore } from '@/stores/settings';
 import { each } from 'lodash-es';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import * as RecordUtil from '@/utils/record';
+import Spinner from '../shared/Spinner.vue';
 
 export default {
   name: 'breadcrumb',
   components: {
-    'vue-simple-spinner': VueSimpleSpinner,
-  },
-  props: {
+    Spinner,
   },
   data() {
     return {
@@ -17,10 +17,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'settings',
-    ]),
+    ...mapState(useSettingsStore, ['settings']),
     searchResultUrl() {
       return this.$route.meta.breadcrumb.resultUrl;
     },
@@ -63,6 +60,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     getQuery(direction) {
       const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
       queryObj._limit = this.range.itemsPerPage;
@@ -134,12 +132,6 @@ export default {
         });
     },
   },
-  watch: {
-  },
-  mounted() {
-    this.$nextTick(() => {
-    });
-  },
 };
 </script>
 
@@ -147,24 +139,24 @@ export default {
   <div class="Breadcrumb">
     <div class="Breadcrumb-back">
       <router-link class="Breadcrumb-backLink"
-        :to="searchResultUrl">{{ 'To result list' | translatePhrase }}</router-link>
+        :to="searchResultUrl">{{ translatePhrase('To result list') }}</router-link>
     </div>
     <div class="Breadcrumb-recordData" v-if="thisIsSearchResult">
-      <span class="Breadcrumb-recordNumbers">{{ absoluteOffset + 1 }} {{ 'of' | translatePhrase }} {{ totalItems }}</span>
+      <span class="Breadcrumb-recordNumbers">{{ absoluteOffset + 1 }} {{ translatePhrase('of') }} {{ totalItems }}</span>
       <div class="Breadcrumb-recordLinks">
         <span class="Breadcrumb-prev" v-if="absoluteOffset > 0">
-          <button class="btn--as-link" v-if="prevPath" @click="prev">{{ ['Previous'] | translatePhrase }}</button>
+          <button class="btn--as-link" v-if="prevPath" @click="prev">{{ translatePhrase(['Previous']) }}</button>
           <button class="btn--as-link" v-if="prevOutOfBounds" @click="lastOnPrevPage">
-            <span v-if="!loading">{{ ['Previous'] | translatePhrase }}</span>
-            <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
+            <span v-if="!loading">{{ translatePhrase(['Previous']) }}</span>
+            <Spinner v-if="loading" size="sm"></Spinner>
           </button>
         </span>
         <span v-if="absoluteOffset > 0 && absoluteOffset + 1 < totalItems"> | </span>
         <span class="Breadcrumb-next" v-if="absoluteOffset < totalItems">
-          <button class="btn--as-link" v-if="nextPath" @click="next">{{ ['Next'] | translatePhrase }}</button>
+          <button class="btn--as-link" v-if="nextPath" @click="next">{{ translatePhrase(['Next']) }}</button>
           <button class="btn--as-link" v-if="nextOutOfBounds" @click="firstOnNextPage">
-            <span v-if="!loading">{{ ['Next'] | translatePhrase }}</span>
-            <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
+            <span v-if="!loading">{{ translatePhrase(['Next']) }}</span>
+            <Spinner v-if="loading" size="sm"></Spinner>
           </button>
         </span>
       </div>
@@ -172,7 +164,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .Breadcrumb {
   display: flex;
   flex-wrap: wrap;
@@ -188,7 +180,7 @@ export default {
     justify-content: flex-end;
     white-space: nowrap;
 
-    @media (max-width: @screen-xs) {
+    @include media-breakpoint-down(xs) {
       justify-content: space-between;
       flex-direction: column;
       align-items: flex-end;

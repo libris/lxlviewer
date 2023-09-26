@@ -1,8 +1,13 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
+import { mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useStatusStore } from '@/stores/status';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import { orderBy } from 'lodash-es';
 import { marked } from 'marked';
 import moment from 'moment';
-import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 
 export default {
@@ -15,18 +20,17 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     setSectionTitle() {
       const value = this.activeSectionTitle;
       let titleStr = '';
       if (value === 'Start') {
-        titleStr = StringUtil.getUiPhraseByLang('Help', this.user.settings.language, this.resources.i18n);
+        titleStr = StringUtil.getUiPhraseByLang('Help', this.user.settings.language, this.i18n);
       } else {
-        titleStr = `${value} - ${StringUtil.getUiPhraseByLang('Help', this.user.settings.language, this.resources.i18n)}`;
+        titleStr = `${value} - ${StringUtil.getUiPhraseByLang('Help', this.user.settings.language, this.i18n)}`;
       }
-      this.$store.dispatch('setStatusValue', { 
-        property: 'helpSectionTitle',
-        value: titleStr,
-      });
+
+      this.helpSectionTitle = titleStr;
     },
     getImagePath(imgName) {
       const pathParts = imgName.split('/');
@@ -49,13 +53,13 @@ export default {
       return htmlFixedImages;
     },
     transformMarkdownToHTML(markdown) {
-      const html = marked(markdown);
+      const html = marked.parse(markdown);
       return html;
     },
     getTimeAgoString(date) {
       const today = moment().startOf('day');
       if (today.isSame(date, 'day')) {
-        return StringUtil.getUiPhraseByLang('Today', this.user.settings.language, this.resources.i18n).toLowerCase();
+        return StringUtil.getUiPhraseByLang('Today', this.user.settings.language, this.i18n).toLowerCase();
       }
       return moment(date, 'YYYY-MM-DD').from(moment().startOf('day'));
     },
@@ -76,19 +80,11 @@ export default {
       this.setSectionTitle();
     });
   },
-  components: {
-  },
-  watch: {
-  },
-  events: {
-  },
   computed: {
-    ...mapGetters([
-      'user',
-      'settings',
-      'status',
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['i18n', 'helpDocs']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useStatusStore, ['helpSectionTitle']),
     activeSection() {
       return this.$route.params.section || 'index';
     },
@@ -112,9 +108,6 @@ export default {
       }
       return null;
     },
-    status() {
-      return this.$store.getters.status;
-    },
     helpCategories() {
       const json = this.docs;
       const sortedJson = orderBy(json, ['order'], ['asc']);
@@ -131,7 +124,7 @@ export default {
       return categories;
     },
     docs() {
-      const json = this.resources.helpDocs;
+      const json = this.helpDocs;
       if (json === null) {
         return {};
       }
@@ -146,18 +139,21 @@ export default {
 <template>
 
   <div class="HelpSection">
-    <div v-if="resources.helpDocs == null" class="text-center MainContent-spinner">
-      {{ 'Couldn\t load help documentation' | translatePhrase }}. {{ 'Try reloading the page' | translatePhrase }}.
+    <div v-if="helpDocs == null" class="text-center MainContent-spinner">
+      {{ translatePhrase('Couldn\t load help documentation') }}. {{ translatePhrase('Try reloading the page') }}.
     </div>
-    <div class="row" v-if="resources.helpDocs != null">
+
+    <div class="row" v-if="helpDocs != null">
       <div class="col-md-3">
         <div class="HelpSection-menu">
           <ul class="HelpSection-categories">
-            <li class="HelpSection-categoryItem"
+            <li
               v-for="(value, key) in helpCategories" 
               :key="key" 
+              class="HelpSection-categoryItem"
               v-bind:class="{'is-active': key == activeCategory }" 
-              v-on:click="activeCategory = key">
+              v-on:click="activeCategory = key"
+            >
               <span class="HelpSection-categoryItemLabel" v-if="key !== 'Main'">{{key}}</span>
               <ul class="HelpSection-categoryList">
                 <li class="HelpSection-categoryListItem" v-for="(section, index) in value" 
@@ -185,8 +181,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
-
+<style lang="scss">
 .HelpSection {
   padding-bottom: 2rem;
   
@@ -207,7 +202,7 @@ export default {
       code {
         padding: 4px;
         font-size: 90%;
-        color: @black;
+        color: $black;
         background-color: #fbebef;
       }
 
@@ -218,7 +213,7 @@ export default {
       table {
         font-size: 12px;
         font-size: 1.2rem;
-        border: 1px solid @grey-lighter;
+        border: 1px solid $grey-lighter;
         width: 100%;
       }
 
@@ -231,11 +226,11 @@ export default {
       }
 
       tr:nth-child(even) {
-        background: @list-item-bg-even;
+        background: $list-item-bg-even;
       }
 
       th {
-        background: @grey-lighter;
+        background: $grey-lighter;
         padding: 5px;
         text-transform: uppercase;
         line-height: 1.2;
@@ -255,7 +250,7 @@ export default {
   }
 
   &-categoryItemLabel {
-    color: @black;
+    color: $black;
     font-size: 14px;
     font-size: 1.4rem;
     text-transform: uppercase;

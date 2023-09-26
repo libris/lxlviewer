@@ -1,4 +1,7 @@
 <script>
+import { useSettingsStore } from '@/stores/settings';
+import { translatePhrase } from '@/utils/filters';
+import { mapState } from 'pinia';
 
 export default {
   name: 'EnvironmentBanner',
@@ -8,20 +11,16 @@ export default {
     };
   },
   computed: {
-    user() {
-      return this.$store.getters.user;
-    },
-    settings() {
-      return this.$store.getters.settings;
-    },
+    translatePhrase,
+    ...mapState(useSettingsStore, ['environment']),
     message() {
-      if (this.settings.environment.startsWith('dev')) { // Matches dev2, dev3 etc...
+      if (this.environment.startsWith('dev')) { // Matches dev2, dev3 etc...
         return 'Du befinner dig nu i vår utvecklingsmiljö. Använd <a href="https://libris-qa.kb.se/katalogisering">libris-qa.kb.se/katalogisering</a> om du vill testa funktionalitet i en stabilare miljö';
       }
-      if (this.settings.environment === 'stg') {
+      if (this.environment === 'stg') {
         return 'OBS! Du befinner dig nu i vår testmiljö.<br> För att komma till den skarpa katalogiseringstjänsten <strong> Libris katalogisering</strong> <a href="https://libris.kb.se/katalogisering">klickar du här</a>.';
       }
-      if (this.settings.environment === 'edu') {
+      if (this.environment === 'edu') {
         return 'OBS! Du befinner dig nu i vår utbildningsmiljö.<br> För att komma till den skarpa katalogiseringstjänsten <strong> Libris katalogisering</strong> <a href="https://libris.kb.se/katalogisering">klickar du här</a>.';
       }
       return '';
@@ -32,19 +31,19 @@ export default {
 
 <template>
   <div class="EnvironmentBanner" id="EnvironmentBanner">
-    <div class="EnvironmentBanner-banner" v-bind:class="{'warning':this.settings.environment === 'stg'}" v-if="!closedByUser && message && message.length > 0">
-      <button @click="closedByUser = true" @keyup.enter="closedByUser = true" class="btn btn-default">{{ 'Close' | translatePhrase }}</button>
+    <div class="EnvironmentBanner-banner" v-bind:class="{'warning':this.environment === 'stg'}" v-if="!closedByUser && message && message.length > 0">
+      <button @click="closedByUser = true" @keyup.enter="closedByUser = true" class="btn btn-default">{{ translatePhrase('Close') }}</button>
       <div v-html="message"></div>
     </div>
     
     <div class="EnvironmentBanner-corner" v-if="closedByUser">
-      {{ settings.environment }}
+      {{ environment }}
     </div>
   </div>
 </template>
 
 
-<style lang="less">
+<style lang="scss">
 .EnvironmentBanner {
   &-corner {
     pointer-events: none;
@@ -64,8 +63,8 @@ export default {
     bottom: 0;
     text-shadow: 0px 1px 1px #00000054;
     font-weight: bold;
-    background-color: darken(@brand-primary, 5%);
-    border: 1px solid darken(@brand-primary, 10%);
+    background-color: darken($brand-primary, 5%);
+    border: 1px solid darken($brand-primary, 10%);
     border-width: 1px 0px 0px 0px;
     a {
       color: white;
@@ -75,17 +74,17 @@ export default {
     }
   
     & .warning {
-      background-color: @brand-warning;
-      border: @brand-warning;
+      background-color: $brand-warning;
+      border: $brand-warning;
       font-size: 20px;
       font-size: 2.0rem;
       font-weight: normal;
       padding: 10px 5px;
-      color: @black;
+      color: $black;
       text-shadow: none;
   
       a {
-        color: @black;
+        color: $black;
         text-decoration: underline;
       }
     }

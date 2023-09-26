@@ -1,11 +1,14 @@
 <script>
+import { mapActions, mapState } from 'pinia';
+import { useSettingsStore } from '@/stores/settings';
 import { cloneDeep, debounce, get, isEmpty, isEqual, partition } from 'lodash-es';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
-import ItemMixin from '@/components/mixins/item-mixin';
-import LanguageMixin from '@/components/mixins/language-mixin';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import LanguageMixin from '@/components/mixins/language-mixin.vue';
 import * as HttpUtil from '../../utils/http';
-import LanguageEntry from './language-entry';
+import LanguageEntry from './language-entry.vue';
+import { useInspectorStore } from '@/stores/inspector';
 
 export default {
   name: 'item-bylang.vue',
@@ -70,6 +73,7 @@ export default {
     });
   },
   computed: {
+    ...mapState(useSettingsStore, ['settings']),
     fieldOtherValue() {
       if (this.isLangMap) {
         return this.prop;
@@ -100,6 +104,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useInspectorStore, ['addToLanguageCache', 'updateInspectorData', 'setInspectorStatusValue']),
     isHistoryView() {
       return this.diff !== null;
     },
@@ -122,7 +127,7 @@ export default {
                   this.settings);
                 const obj = {};
                 obj[tag] = { label: label, data: graph[1], recordId: id };
-                this.$store.dispatch('addToLanguageCache', obj);
+                this.addToLanguageCache = obj;
               } else {
                 console.log('Missing i18n/lang/tag for', tag);
               }
@@ -143,7 +148,7 @@ export default {
       }, 400);
     },
     readyForSave(value) {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'readyForSave', value: value });
+      this.setInspectorStatusValue({ property: 'readyForSave', value: value });
     },
     handleEnter(e) {
       e.target.blur();
@@ -160,7 +165,7 @@ export default {
       const newLangMap = this.dataFormByLang(viewObjects);
       this.readyForSave(true);
       if (!isEqual(newLangMap, oldLangMap) && !isEmpty(newLangMap)) {
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: byLangPath,
@@ -177,7 +182,7 @@ export default {
       const newData = this.dataForm(viewObjects);
       const oldData = cloneDeep(get(this.inspector.data, this.path));
       if (newData && !isEqual(oldData, newData)) {
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: this.path,
@@ -347,7 +352,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .ItemBylang {
   width: 100%;
   border-radius: 4px;

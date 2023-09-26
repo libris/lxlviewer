@@ -32,6 +32,7 @@
       ]" :active="myActivePageVariable"></tab-menu>
 
 */
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'switch-toggle',
@@ -54,6 +55,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     go(name) {
       this.$emit('go', name);
     },
@@ -62,14 +64,6 @@ export default {
     hasActive() {
       return this.options.some(el => el.id === this.active);
     },
-  },
-  components: {
-  },
-  watch: {
-  },
-  mounted() {
-    this.$nextTick(() => {
-    });
   },
 };
 </script>
@@ -85,9 +79,15 @@ export default {
         :class="{'is-active': active === options[0].id }"
         role="tab">
           <span v-if="options[0].html" v-html="options[0].html"></span>
-          <span v-else>{{options[0].text | translatePhrase}}</span>
+          <span v-else>{{translatePhrase(options[0].text)}}</span>
       </li>
-      <i class="fa fa-toggle-on fa-fw SwitchToggle-icon" :class="{ 'fa-rotate-180': active === options[0].id }"></i>
+
+      <font-awesome-icon
+        class="SwitchToggle-icon"
+        :icon="['fas', 'toggle-on']"
+        :class="{ 'fa-rotate-180': active === options[0].id }"
+      />
+
       <li class="SwitchToggle-tab" 
         tabindex="0"
         :key="options[1].id" 
@@ -96,7 +96,7 @@ export default {
         :class="{'is-active': active === options[1].id }"
         role="tab">
           <span v-if="options[1].html" v-html="options[1].html"></span>
-          <span v-else>{{options[1].text | translatePhrase}}</span>
+          <span v-else>{{translatePhrase(options[1].text)}}</span>
       </li>
     </ul>
     <ul v-else class="SwitchToggle-tabList" ref="tablist">
@@ -106,24 +106,28 @@ export default {
           :class="{'is-active': active === options[0].id }" 
           :to="options[0].link">
           <span v-if="options[0].html" v-html="options[0].html"></span>
-          <span v-else>{{options[0].text | translatePhrase}}</span>
+          <span v-else>{{translatePhrase(options[0].text)}}</span>
         </router-link>
       </li>
-      <i class="fa fa-toggle-on fa-fw SwitchToggle-icon" :class="{ 'is-flipped': active === options[0].id }"></i>
+      <font-awesome-icon
+        class="SwitchToggle-icon"
+        :icon="['fas', 'toggle-on']"
+        :class="{ 'is-flipped': active === options[0].id }"
+      />
       <li class="SwitchToggle-linkContainer"
         :key="options[1].id">
         <router-link class="SwitchToggle-tab" 
           :class="{'is-active': active === options[1].id }" 
           :to="options[1].link">
           <span v-if="options[1].html" v-html="options[1].html"></span>
-          <span v-else>{{options[1].text | translatePhrase}}</span>
+          <span v-else>{{translatePhrase(options[1].text)}}</span>
         </router-link>
       </li>
     </ul>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 @tabPadding: 10px;
 
 .SwitchToggle {

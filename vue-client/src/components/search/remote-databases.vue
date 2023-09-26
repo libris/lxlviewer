@@ -1,7 +1,11 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
+import { mapState, mapWritableState } from 'pinia';
+import { useUserStore } from '@/stores/user';
+import { useStatusStore } from '@/stores/status';
+import { useSettingsStore } from '@/stores/settings';
 import { isPlainObject, each } from 'lodash-es';
-import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
+import Spinner from '../shared/Spinner.vue';
 import * as httpUtil from '@/utils/http';
 import * as RecordUtil from '@/utils/record';
 
@@ -30,13 +34,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapWritableState(useUserStore, ['user']),
+    ...mapWritableState(useStatusStore, {
+      statusRemoteDatabases: 'remoteDatabases',
+    }),
+    ...mapState(useSettingsStore, ['settings']),
     activeDatabases() {
       const dbs = this.remoteDatabases.list;
       const active = {};
@@ -69,9 +71,8 @@ export default {
     q() {
       return this.remoteSearch.q;
     },
-    user() {
-      const user = this.$store.getters.user;
-      return user.isLoggedIn ? user : false;
+    isLoggedIn() {
+      return this.user.isLoggedIn;
     },
   },
   events: {
@@ -91,18 +92,17 @@ export default {
             activeIds.push(key);
           }
         }
-        this.$store.dispatch('setStatusValue', { 
-          property: 'remoteDatabases', 
-          value: activeIds,
-        });
 
-        if (this.user) {
+        this.statusRemoteDatabases = activeIds;
+
+        if (this.isLoggedIn) {
           this.updateUserDbs(activeIds);
         }
       }
     },
   },
   methods: {
+    translatePhrase,
     isPlainObject(o) {
       return isPlainObject(o);
     },
@@ -120,7 +120,7 @@ export default {
         'WHOLIS', 
       ];
 
-      const defaultDbs = this.user ? this.user.settings.defaultDatabases : [];
+      const defaultDbs = this.isLoggedIn ? this.user.settings.defaultDatabases : [];
       this.remoteDatabases.state = 'loading';
       this.remoteDatabases.debug = '';
       this.fetchDatabases().then((dbs) => {
@@ -191,14 +191,14 @@ export default {
     updateUserDbs(dbs) {
       const userObj = this.user;
       userObj.settings.defaultDatabases = dbs;
-      this.$store.dispatch('setUser', userObj);
+      this.user = userObj;
     },
     // focusFilterInput() {
     //   this.$refs.listFilterInput.focus();
     // },
   },
   components: {
-    'vue-simple-spinner': VueSimpleSpinner,
+    Spinner,
   },
   mounted() {
     this.remoteQuery = this.remoteSearch.q;
@@ -209,19 +209,19 @@ export default {
 
 <template>
   <div class="RemoteDatabases">
-    <!-- <p v-if="activeDatabases.length === 0" class="RemoteDatabases-activeInfo no-sources">{{'No sources chosen' | translatePhrase}}</p>  -->
-    <!-- <p v-else class="RemoteDatabases-activeInfo">{{'Databases' | translatePhrase}}:</p> -->
+    <!-- <p v-if="activeDatabases.length === 0" class="RemoteDatabases-activeInfo no-sources">{{ translatePhrase('No sources chosen') }}</p>  -->
+    <!-- <p v-else class="RemoteDatabases-activeInfo">{{ translatePhrase('Databases') }}:</p> -->
     <!-- <div class="ResultControls-filterWrapper">
       <div class="ResultControls-filterBadge" v-for="(db, index) in activeDatabases" :key="index">
         <span>{{db}}</span>
-        <i 
+        <font-awesome-icon
+          :icon="['fas', 'xmark']"
           role="button"
           tabindex="0"
-          class="fa fa-times-circle icon"  
           @click="removeDatabase(db)"
           @keydown.enter="removeDatabase(db)"
-          :title="'Remove' | translatePhrase">
-        </i>
+          :title="translatePhrase('Remove')"
+        />
       </div>
       <div class="ResultControls-filterBadge--inverted"
         v-if="activeDatabases.length > 1"
@@ -229,25 +229,25 @@ export default {
         @keyup.enter="clearDatabases()"
         tabindex="0"
         role="button"
-        :aria-label="'Clear all' | translatePhrase"
+        :aria-label="translatePhrase('Clear all')"
         @mouseover="clearTooltip = true" 
         @mouseout="clearTooltip = false">
-        {{ 'Clear all' | translatePhrase }}
-        <i class="fa fa-times-circle icon"></i>
+        {{ translatePhrase('Clear all') }}
+        <font-awesome-icon :icon="['fas', 'circle-xmark']" />
       </div>
     </div> -->
     <portal to="facetColumn">
       <div v-show="remoteDatabases.state == 'loading'" class="RemoteDatabases-searchStatus">
-        <vue-simple-spinner size="medium" :message="'Loading external databases' | translatePhrase"></vue-simple-spinner>
+        <Spinner size="md" :message="translatePhrase('Loading external databases')"></Spinner>
       </div>
       <div class="RemoteDatabases-searchStatus" v-show="remoteDatabases.state == 'error'">
         <p class="RemoteDatabases-statusText">
-          {{"Did not find any external databases" | translatePhrase}}
+          {{ translatePhrase("Did not find any external databases") }}
         </p>
-        <button class="btn btn-primary btn--sm" v-on:click.prevent="loadRemoteDatabases()">{{"Try again" | translatePhrase}}</button>
+        <button class="btn btn-primary btn--sm" v-on:click.prevent="loadRemoteDatabases()">{{ translatePhrase("Try again")}}</button>
       </div>
-      <div v-if="remoteDatabases.state == 'complete'" class="Find-facetHeading uppercaseHeading--light"><span @click="hideFacetColumn = !hideFacetColumn">{{ 'Valda databaser' | translatePhrase }} ({{ status.remoteDatabases.length }}) <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></span><a class="pull-right" v-if="status.remoteDatabases.length > 0" @click="clearDatabases()">{{ 'Clear' | translatePhrase }}</a></div>
-      <div v-if="remoteDatabases.state == 'complete'" :class="{ 'hidden-xs hidden-sm': hideFacetColumn }">
+      <div v-if="remoteDatabases.state == 'complete'" class="Find-facetHeading uppercaseHeading--light"><span @click="hideFacetColumn = !hideFacetColumn">{{ translatePhrase('Valda databaser') }} ({{ status.remoteDatabases.length }}) <i class="fa fa-fw d-md-none" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></span><a class="pull-right" v-if="status.remoteDatabases.length > 0" @click="clearDatabases()">{{ translatePhrase('Clear') }}</a></div>
+      <div v-if="remoteDatabases.state == 'complete'" :class="{ 'd-none d-md-block': hideFacetColumn }">
         <ul class="RemoteDatabases-activeList">
           <li 
             class="RemoteDatabases-activeListItem"
@@ -255,15 +255,16 @@ export default {
             :key="index"
             :aria-label="db.database">
               {{db.database}} 
-              <i 
+              <font-awesome-icon
                 v-show="!db.disabled" 
-                class="fa icon icon--xs fa-times-circle" 
-                :title="db.active ? 'Remove' : 'Add' | translatePhrase"
+                :icon="['fas', 'circle-xmark']"
+                size="xs"
+                :title="db.active ? translatePhrase('Remove') : translatePhrase('Add')"
                 tabindex="0"
                 role="button"
                 @click="toggleDatabase(db.database)"
                 @keyup.enter="toggleDatabase(db.database)">
-              </i>
+              </font-awesome-icon>
           </li>
         </ul>
         <hr class="sectionDivider">
@@ -275,8 +276,8 @@ export default {
           type="text" 
           v-if="remoteDatabases.state == 'complete'"
           v-model="filterKey"
-          :aria-label="'Search for database' | translatePhrase"
-          :placeholder="'Search for database' | translatePhrase"
+          :aria-label="translatePhrase('Search for database')"
+          :placeholder="translatePhrase('Search for database')"
           ref="listFilterInput">
         <ul class="RemoteDatabases-list" v-if="remoteDatabases.state == 'complete'">
           <li 
@@ -286,30 +287,47 @@ export default {
             :key="index"
             :aria-label="db.database">
             <div class="RemoteDatabases-addControl">
-              <i v-show="db.disabled" class="fa fa-ban icon icon--sm is-disabled"></i>
-              <i 
-                v-show="!db.disabled" 
-                class="fa icon icon--sm" 
-                :class="{ 'fa-plus-circle': !db.active, 'fa-check-circle': db.active, 'is-inactive': !db.active }"
-                :title="db.active ? 'Remove' : 'Add' | translatePhrase"
+              <font-awesome-icon v-show="db.disabled" size="sm" class="is-disabled" :icon="['fas', 'ban']" />
+
+              <font-awesome-icon
+                v-show="!db.disabled"
+                v-if="db.active"
+                :icon="['fas', 'circle-plus']"
+                size="sm"
+                :class="{ 'is-inactive': !db.active }"
+                :title="db.active ? translatePhrase('Remove') : translatePhrase('Add')"
                 tabindex="0"
                 role="button"
                 @click="toggleDatabase(db.database)"
                 @keyup.enter="toggleDatabase(db.database)">
-              </i>
+              </font-awesome-icon>
+
+              <font-awesome-icon
+                v-show="!db.disabled"
+                v-if="!db.active"
+                :icon="['fas', 'circle-check']"
+                size="sm"
+                :class="{ 'is-inactive': !db.active }"
+                :title="db.active ? translatePhrase('Remove') : translatePhrase('Add')"
+                tabindex="0"
+                role="button"
+                @click="toggleDatabase(db.database)"
+                @keyup.enter="toggleDatabase(db.database)">
+              </font-awesome-icon>
             </div>
+
             <div class="RemoteDatabases-dbInfo">
               <div class="RemoteDatabases-dbLabel">
                 {{db.database}} 
                 <span v-show="db.disabled" class="RemoteDatabases-dbUnavailable">
-                  ({{'unavailable' | translatePhrase}})
+                  ({{translatePhrase('unavailabe')}})
                 </span>
                 <div class="RemoteDatabases-dbExtraInfo" v-show="db.about">
-                  <i class="fa fa-question-circle fa-fw icon"></i>
+                  <font-awesome-icon :icon="['fas', 'circle-question']" />
                   <span class="RemoteDatabases-dbExtrainfoText">{{ db.about }}</span>
                 </div>
                 <div class="RemoteDatabases-dbExtraInfo" v-show="db.comment">
-                  <i class="fa fa-info-circle fa-fw icon"></i>
+                  <font-awesome-icon :icon="['fas', 'circle-info']" />
                   <span class="RemoteDatabases-dbExtrainfoText">{{ db.comment }}</span>
                 </div>
               </div>
@@ -321,14 +339,14 @@ export default {
           </li>
         </ul>
         <div v-show="numOfFilteredDatabases === 0 && remoteDatabases.state !== 'loading'" class="RemoteDatabases-searchStatus">
-          <span>{{'No results' | translatePhrase}}</span>
+          <span>{{translatePhrase('No results')}}</span>
         </div>
       </div>
     </portal>
 </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .RemoteDatabases {
 
@@ -377,7 +395,7 @@ export default {
     display: flex;
     margin-bottom: 1rem;
     &.is-disabled {
-      color: @grey-dark-transparent;
+      color: $grey-dark-transparent;
       cursor: initial;
     }
   }
@@ -392,8 +410,8 @@ export default {
   &-activeListItem {
     display: inline-block;
     border-radius: 2em;
-    border: 1px solid @brand-primary;
-    color: @brand-primary;
+    border: 1px solid $brand-primary;
+    color: $brand-primary;
     padding: 0 0.4em;
     margin: 0 0.2em 0.2em 0;
     font-size: 1.4rem;
@@ -425,16 +443,16 @@ export default {
     width: 300px;
     font-size: 12px;
     font-size: 1.2rem;
-    color: @black;
+    color: $black;
     line-height: 1.6;
     text-transform: none;
     padding: 10px;
     text-align: left;
     white-space: normal;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     border-radius: 4px;
-    box-shadow: @shadow-panel;
+    box-shadow: $shadow-panel;
     z-index: 3;
   }
 
@@ -443,7 +461,7 @@ export default {
     line-height: 1.6rem;
     display: inline-block;
     i.is-inactive {
-      color: @brand-primary;
+      color: $brand-primary;
     }
   }
 

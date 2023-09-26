@@ -1,6 +1,4 @@
-<script>
-import { mapGetters } from 'vuex';
-
+<script lang="js">
 export default {
   name: 'type-icon',
   props: {
@@ -12,7 +10,7 @@ export default {
       type: String,
       default: '',
     },
-    showIconless: {
+    showIconscss: {
       type: Boolean,
       default: true,
     },
@@ -45,9 +43,6 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters([
-      'resources',
-    ]),
     convertedType() {
       return this.type.replace('https://id.kb.se/vocab/', '');
     },
@@ -59,9 +54,9 @@ export default {
       if (this.iconMap.hasOwnProperty(this.convertedType)) {
         iconName = this.iconMap[this.convertedType];
       } else {
-        return '';
+        return null;
       }
-      return `fa fa-fw fa-${iconName}`;
+      return ['fas', iconName];
     },
   },
   components: {
@@ -73,16 +68,16 @@ export default {
 </script>
 
 <template>
-  <div class="TypeIcon" v-if="showIconless === true || iconClass !== '' || isForcedUnspecified">
+  <div class="TypeIcon" v-if="showIconscss === true || iconClass !== '' || isForcedUnspecified">
     <span class="TypeIcon-label" v-if="iconClass === '' || isForcedUnspecified">/</span>
-    <i :class="iconClass" v-if="iconClass !== ''"></i>
+    <font-awesome-icon :icon="iconClass" v-if="iconClass != null"></font-awesome-icon>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .TypeIcon {
-  background-color: @grey-lightest;
-  color: @brand-primary;
+  background-color: $grey-lightest;
+  color: $brand-primary;
   display: flex;
   justify-content: center;
   align-items: center;

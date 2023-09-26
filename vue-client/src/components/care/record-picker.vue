@@ -1,7 +1,13 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
+import { translatePhrase } from '@/utils/filters';
 import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
+import { useDirectoryCareStore } from '@/stores/directoryCare';
 
 export default {
   name: 'record-picker',
@@ -38,29 +44,25 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'directoryCare',
-      'userFlagged',
-      'user',
-      'resources',
-      'inspector',
-      'settings',
-    ]),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useResourcesStore, ['resources', 'vocab', 'displayGroups', 'context']),
+    ...mapState(useUserStore, ['user', 'userFlagged']),
+    ...mapState(useSettingsStore, ['settings']),
     headers() {
       return this.flaggedInstances.map((instance) => {
         const headerList = DisplayUtil.getItemSummary(
-          instance, 
-          this.resources, 
-          this.inspector.data.quoted, 
-          this.settings, 
-          this.resources.displayGroups,
+          instance,
+          this.resources,
+          this.inspector.data.quoted,
+          this.settings,
+          this.displayGroups,
         ).header;
 
         const header = StringUtil.getFormattedEntries(
-          headerList, 
-          this.resources.vocab, 
+          headerList,
+          this.vocab,
           this.user.settings.language,
-          this.resources.context,
+          this.context,
         ).join(', ');
         return { '@id': instance['@id'], header };
       });
@@ -82,19 +84,19 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
+    ...mapActions(useDirectoryCareStore, ['setDirectoryCare']),
     selectThis(item) {
       if (item['@id'] !== this.oppositeSelected) {
         const changeObj = { [this.name]: item['@id'] };
-        this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj })
-          .then(() => {
-            this.expanded = false;
-          });
+        this.setDirectoryCare({ ...this.directoryCare, ...changeObj })
+        this.expanded = false;
       }
     },
     unselectThis() {
       const changeObj = { [this.name]: null };
-      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj })
-        .then(() => this.focusInput());
+      this.setDirectoryCare({ ...this.directoryCare, ...changeObj })
+      this.focusInput();
     },
     toggleDropdown() {
       this.expanded = !this.expanded;
@@ -140,7 +142,7 @@ export default {
   <div class="RecordPicker">
     <div class="RecordPicker-label uppercaseHeading" 
       :class="{ 'has-selection' : selected}">
-      {{ name | translatePhrase }}</div>
+      {{ translatePhrase(name) }}</div>
     <div class="RecordPicker-body" :class="{ 'has-selection' : selected, 'is-expanded' : expanded}">
       <div class="RecordPicker-dropdownWrapper">
       <div class="RecordPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
@@ -148,9 +150,9 @@ export default {
           @click="toggleDropdown"
           @keyup.enter="toggleDropdown"
           tabIndex="0">
-          <span class="RecordPicker-toggleLabel">{{ ['Choose', name] | translatePhrase }}</span>
+          <span class="RecordPicker-toggleLabel">{{ translatePhrase(['Choose', name]) }}</span>
           <span class="RecordPicker-toggleIcon" :class="{ 'expanded' : expanded}">
-            <i class="fa fa-fw fa-chevron-down"></i>
+            <font-awesome-icon :icon="['fas', 'chevron-down']" />
           </span>
         </div>
         <div class="RecordPicker-dropdown" v-show="expanded">
@@ -160,8 +162,8 @@ export default {
               v-model="filterPhrase"
               class="RecordPicker-input" 
               ref="pickerInput" 
-              :placeholder="'Filter' | translatePhrase"
-              :aria-label="'Filter' | translatePhrase">
+              :placeholder="translatePhrase('Filter')"
+              :aria-label="translatePhrase('Filter')">
           </div>
           <div class="RecordPicker-items">
             <div class="RecordPicker-item"
@@ -189,13 +191,15 @@ export default {
           :valueDisplayLimit=1
           :encodingLevel="selected.encodingLevel">
         </entity-summary>
-        <span class="RecordPicker-closeBtn" 
+        <span
+          class="RecordPicker-closeBtn" 
           role="button" 
           @click="unselectThis"
           @keyup.enter="unselectThis"
           tabindex="0"
-          :aria-label="'Close' | translatePhrase">
-          <i class="fa fa-fw fa-close icon"></i>
+          :aria-label="translatePhrase('Close')"
+        >
+          <font-awesome-icon :icon="['fas', 'xmark']" />
         </span>
       </div>
       </div>
@@ -204,25 +208,25 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .user-is-tabbing {
   .RecordPicker {
     &-toggle, &-item {
       &:focus {
-        .focus-mixin-bg();
+        @include focus-mixin-bg();
       }
     }
   }
 }
 
 .RecordPicker  {
-  max-width: @directorycare-sidewidth;
+  max-width: $directorycare-sidewidth;
   display: flex;
   flex: 1 1 46%;
   flex-direction: column;
 
-  @media (max-width: @screen-sm) {
+  @include media-breakpoint-down(sm) {
     flex: 1 1 auto;
     max-width: 100%;
     width: 100%;
@@ -230,25 +234,25 @@ export default {
 
   &-label {
     padding: 5px 10px;
-    background-color: @grey-lighter;
+    background-color: $grey-lighter;
     display: table; // ie fallback
     width: fit-content;
     transition: background-color 0.3s ease;
 
     &.has-selection {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
     }
   }
 
   &-body {
     height: 100%;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     padding: 0 20px 20px;
     transition: background-color 0.3s ease;
 
     &.has-selection {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
       border-color: transparent;
     }
 
@@ -260,9 +264,9 @@ export default {
   &-dropdownContainer,
   &-selectedContainer {
     position: relative;
-    border: 1px solid @grey-lighter;
-    box-shadow: @shadow-panel;
-    background-color: @white;
+    border: 1px solid $grey-lighter;
+    box-shadow: $shadow-panel;
+    background-color: $white;
     margin-top: 20px;
   }
 
@@ -294,7 +298,7 @@ export default {
   }
 
   &-toggleLabel {
-    color: @brand-primary;
+    color: $brand-primary;
     font-weight: 600;
   }
 
@@ -314,12 +318,12 @@ export default {
 
   &-inputContainer {
     padding: 0 15px;
-    border-bottom: 1px solid @grey-lighter;
+    border-bottom: 1px solid $grey-lighter;
   }
 
   &-input {
     width: 100%;
-    border: 1px solid @grey-light;
+    border: 1px solid $grey-light;
     border-radius: 4px;
     padding: 5px 10px;
     margin-bottom: 15px;
@@ -339,8 +343,8 @@ export default {
 
   &-item {
     cursor: pointer;
-    border-top: 1px solid @grey-lighter;
-    background-color: @white;
+    border-top: 1px solid $grey-lighter;
+    background-color: $white;
     transition: background-color 0.2s ease;
     padding: 0 15px;
 
@@ -354,7 +358,7 @@ export default {
     }
 
     &:hover:not(.is-disabled) {
-      background-color: @brand-faded;
+      background-color: $brand-faded;
     }
   }
 

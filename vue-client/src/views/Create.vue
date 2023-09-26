@@ -1,18 +1,22 @@
 <script>
 import { sortBy } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
-import { mapGetters } from 'vuex';
+import { mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useUserStore } from '@/stores/user';
+import { useStatusStore } from '@/stores/status';
+import { useSettingsStore } from '@/stores/settings';
+import { useInspectorStore } from '@/stores/inspector';
 import * as VocabUtil from 'lxljs/vocab';
 import * as RecordUtil from '@/utils/record';
-import CreationCard from '@/components/create/creation-card';
-import FileAdder from '@/components/create/file-adder';
-import TabMenu from '@/components/shared/tab-menu';
+import CreationCard from '@/components/create/creation-card.vue';
+import FileAdder from '@/components/create/file-adder.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
 
 export default {
   name: 'create-new-form',
-  mixins: [clickaway],
   beforeRouteLeave(to, from, next) {
-    this.setHintSigelChange(false);
+    console.log('this', this);
+    this.hintSigelChange = false;
 
     next();
   },
@@ -74,35 +78,30 @@ export default {
       if (!this.user.uriMinter) {
         return false;
       }
-      const { vocab, context } = this.$store.getters.resources;
+
       return Object.keys(this.user.uriMinter.containerMap).find(
-        it => VocabUtil.isSubClassOf(it, 'Concept', vocab, context),
+        it => VocabUtil.isSubClassOf(it, 'Concept', this.vocab, this.context),
       );
     },
     setHintSigelChange(val) {
-      this.$store.dispatch('setStatusValue', { 
-        property: 'hintSigelChange',
-        value: val,
-      });
+      this.hintSigelChange = val;
     },
     hideSigelHint() {
       this.setHintSigelChange(false);
     },
   },
-  events: {
-  },
   computed: {
-    ...mapGetters([
-      'settings',
-      'user',
-      'templates',
-    ]),
+    ...mapState(useResourcesStore, ['context', 'vocab', 'templates']),
+    ...mapWritableState(useStatusStore, ['hintSigelChange']),
+    ...mapWritableState(useInspectorStore, ['insertData']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     creationList() {
       const list = [
         { id: 'Instance', text: 'Instance', excludeBase: true },
         { id: 'Work', text: 'Work', excludeBase: true },
         { id: 'Agent', text: 'Agent', excludeBase: true },
-      ];      
+      ];
       if (this.userIsAllowedToEditConcepts()) {
         list.push({ id: 'Concept', text: 'Concept', excludeBase: true });
       }
@@ -110,12 +109,6 @@ export default {
       list.push({ id: 'File', text: 'From file' });
 
       return list;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    settings() {
-      return this.$store.getters.settings;
     },
     baseMainEntity() {
       const baseMainEntity = {
@@ -155,7 +148,7 @@ export default {
   },
   watch: {
     thingData() {
-      this.$store.dispatch('setInsertData', this.thingData);
+      this.insertData = this.thingData;
       this.$router.push({ path: '/new' });
     },
     selectedCreation(val) {
@@ -170,14 +163,11 @@ export default {
       this.setHintSigelChange(!val);
     },
   },
-  created() {
-
-  },
   mounted() {
     this.$nextTick(() => {
       this.activeForm = '';
       this.transition = false;
-      this.initialized = true;      
+      this.initialized = true;
     });
   },
 };
@@ -186,11 +176,13 @@ export default {
 <template>
   <div class="Create" id="create-new-record">
     <div class="Create-body">
-      <tab-menu 
+      <tab-menu
         @go="setCreation" 
         :tabs="creationList" 
         :active="selectedCreation"
-        v-on-clickaway="hideSigelHint" />
+      />
+        <!-- TODO: What is this?
+          v-on-clickaway="hideSigelHint" -->
 
       <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card
@@ -201,7 +193,9 @@ export default {
           :index="0"
           :active-index="activeIndex"
           @use-base="useBase"
-          @set-active-index="setActiveIndex" />
+          @set-active-index="setActiveIndex"
+        />
+
         <creation-card
           v-for="(template, index) in combinedTemplates"
           :key="index"
@@ -211,23 +205,32 @@ export default {
           :index="index + 1"
           :active-index="activeIndex"
           @use-template="useTemplate"
-          @set-active-index="setActiveIndex" />        
+          @set-active-index="setActiveIndex"
+        />
       </div>
-      <file-adder type="new" v-if="selectedCreation === 'File'" @output="recieveFileData" />      
+      <file-adder type="new" v-if="selectedCreation === 'File'" @output="recieveFileData" />
     </div>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .Create {
   padding-bottom: 2rem;
 
-  &-title {
-  }
   &-cards {
-    display: flex;
+    display: grid;
     flex-wrap: wrap;
     justify-content: flex-start;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+
+    @include media-breakpoint-up(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 }
 

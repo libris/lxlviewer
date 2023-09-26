@@ -1,9 +1,14 @@
-<script>
+<script lang="js">
+import { labelByLang } from '@/utils/filters';
 import { each, uniq, sortBy } from 'lodash-es';
-import { mapGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
+import { useInspectorStore } from '@/stores/inspector';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
-import ItemMixin from '../mixins/item-mixin';
+import ItemMixin from '../mixins/item-mixin.vue';
 
 export default {
   name: 'item-vocab',
@@ -43,13 +48,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useUserStore, ['user']),
     range() {
       const types = VocabUtil.getRangeFull(
         this.fieldKey,
@@ -77,7 +78,7 @@ export default {
     },
     selected(value, oldValue) {
       if (value !== oldValue && this.initialized && !this.isLocked) {
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: this.path,
@@ -90,6 +91,8 @@ export default {
     },
   },
   methods: {
+    labelByLang,
+    ...mapActions(useInspectorStore, ['updateInspectorData']),
     getPossibleValues() {
       let values = [];
       const possibleValues = [];
@@ -120,57 +123,36 @@ export default {
       return '';
     },
   },
-  components: {
-
-  },
 };
 </script>
 
 <template>
-  <div class="ItemVocab" :id="`formPath-${path}`" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
+  <div class="ItemVocab" :id="`formPath-${path}`"
+    v-bind:class="{ 'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed }">
     <div v-if="!isLocked && possibleValues.length > 0">
       <!-- render as dropdown -->
-      <select
-        v-if="asDropdown"
-        v-model="selected"
-        class="ItemVocab-select customSelect"
-        :aria-label="fieldKey | labelByLang">
-        <option
-          v-for="option in possibleValues"
-          :key="option"
-          v-bind:value="option">{{ option | labelByLang }}</option>
+      <select v-if="asDropdown" v-model="selected" class="ItemVocab-select customSelect"
+        :aria-label="labelByLang(fieldKey)">
+        <option v-for="option in possibleValues" :key="option" v-bind:value="option">{{ labelByLang(option) }}</option>
       </select>
       <!-- render as radiobuttons -->
       <fieldset v-else>
-        <div
-          v-for="option in possibleValues"
-          :key="option"
-          v-tooltip.top="setTooltipComment(option)"
-          class="RadioPill">
-          <input
-            v-model="selected"
-            v-bind:value="option"
-            v-bind:id="option"
-            class="RadioPill-input"
-            type="radio"
+        <div v-for="option in possibleValues" :key="option" v-tooltip.top="setTooltipComment(option)" class="RadioPill">
+          <input v-model="selected" v-bind:value="option" v-bind:id="option" class="RadioPill-input" type="radio"
             name="radios">
-          <label
-            v-bind:for="option"
-            class="RadioPill-label">
-            <i class="fa fa-check icon icon--sm"></i>
-            {{ option | labelByLang }}</label>
+          <label v-bind:for="option" class="RadioPill-label">
+            <font-awesome-icon :icon="['fas', 'check']" size="sm" />
+            {{ labelByLang(option) }}</label>
         </div>
       </fieldset>
 
     </div>
 
-    <span class="ItemVocab-text"
-      v-if="isLocked">{{fieldValue | labelByLang}}</span>
+    <span class="ItemVocab-text" v-if="isLocked">{{ labelByLang(fieldValue) }}</span>
   </div>
 </template>
 
-<style lang="less">
-
+<style lang="scss">
 .ItemVocab {
   &.is-locked {
     line-height: 2;
@@ -184,8 +166,8 @@ export default {
   &-select {
     width: 100%;
     margin-top: 0.2em;
-    border: 1px solid @grey-light;
-    background-color: @white;
+    border: 1px solid $grey-light;
+    background-color: $white;
   }
 }
 
@@ -213,9 +195,9 @@ export default {
   &-label {
     display: block;
     height: 33px;
-    background-color: @grey-lightest;
+    background-color: $grey-lightest;
     border: 1px solid transparent;
-    color: @grey-dark;
+    color: $grey-dark;
     border-radius: 2em;
     line-height: 1.6;
     padding: 3px 14px;
@@ -227,24 +209,23 @@ export default {
     }
   }
 
-  &-input:hover + &-label {
-    color: @black;
+  &-input:hover+&-label {
+    color: $black;
   }
 
-  &-input:checked + &-label {
-    background: @brand-primary;
-    color: @grey-lightest;
+  &-input:checked+&-label {
+    background: $brand-primary;
+    color: $grey-lightest;
 
     .icon {
       display: inline-block;
-      color: @grey-lightest !important;
+      color: $grey-lightest !important;
     }
   }
 
-  .user-is-tabbing &-input:focus + label {
+  .user-is-tabbing &-input:focus+label {
     outline: 2px solid #8cc9c9;
     outline: auto darkcyan;
   }
 }
-
 </style>

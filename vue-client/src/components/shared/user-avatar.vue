@@ -1,4 +1,6 @@
 <script>
+import { useUserStore } from '@/stores/user';
+import { mapState } from 'pinia';
 
 export default {
   name: 'user-avatar',
@@ -22,9 +24,7 @@ export default {
     };
   },
   computed: {
-    user() {
-      return this.$store.getters.user;
-    },
+    ...mapState(useUserStore, ['user']),
     initials() {
       let initials = '';
       const splitName = this.user.fullName.split(' ');
@@ -48,6 +48,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <div 
     class="UserAvatar" 
@@ -71,7 +72,7 @@ export default {
 </template>
 
 
-<style lang="less">
+<style lang="scss">
 .UserAvatar {
   overflow: hidden;
   display: inline-flex;
@@ -79,14 +80,18 @@ export default {
   flex-direction: column;
   align-items: center;
   border-radius: 50%;
-  border: 1px solid @grey-light;
+  border: 1px solid $grey-light;
 
-  @media screen and (min-width: @screen-md) {
+  // @media screen and (min-width: $screen-md) {
+  //   margin-right: 4px;
+  // }
+
+  @include media-breakpoint-up(md) {
     margin-right: 4px;
   }
 
   &.dark {
-    border-color: @grey-dark;
+    border-color: $grey-dark;
   }
 
   &-no-gravatar {
@@ -98,17 +103,17 @@ export default {
     justify-content: center;
     user-select: none;
     text-transform: uppercase;
-    border-color: @grey-light;
-    color: @grey-light;
+    border-color: $grey-light;
+    color: $grey-light;
     
     &.highlight {
-      color: @white;
-      border-color: @white;
+      color: $white;
+      border-color: $white;
     }
 
     .dark & {
-      border-color: @grey-dark;
-      color: @grey-dark;
+      border-color: $grey-dark;
+      color: $grey-dark;
     }
   }
 }

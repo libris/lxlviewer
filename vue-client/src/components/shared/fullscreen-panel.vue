@@ -15,9 +15,13 @@
       <panel-component title="My nice panel" v-if="panelActive" @close="panelActive=false"></panel-component>
 
 */
-import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
+import { mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useStatusStore } from '@/stores/status';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 
 export default {
   name: 'panel-component',
@@ -55,7 +59,7 @@ export default {
     toggleFullView() {
       const user = this.user;
       user.settings.forceFullViewPanel = !user.settings.forceFullViewPanel;
-      this.$store.dispatch('setUser', user);
+      this.user = user;
       this.lockScroll(user.settings.forceFullViewPanel);
     },
     close() {
@@ -69,44 +73,41 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'user',
-      'settings',
-      'status',
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['i18n']),
+    ...mapState(useStatusStore, ['keyActions', 'panelOpen']),
+    ...mapWritableState(useStatusStore, ['keybindState', 'fullScreenPanelOpen']),
+    ...mapWritableState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     translatedTitle() {
-      return StringUtil.getUiPhraseByLang(this.title, this.user.settings.language, this.resources.i18n);
+      return StringUtil.getUiPhraseByLang(this.title, this.user.settings.language, this.i18n);
     },
   },
   watch: {
-    'status.keyActions'(actions) {
+    'keyActions'(actions) {
       const lastAction = actions.slice(-1).join();
       if (lastAction === 'close-modals') {
         this.close();
       }
-    }, 
+    },
   },
   mounted() {
     this.$nextTick(() => {
-      this.$store.dispatch('setStatusValue', { property: 'fullScreenPanelOpen', value: true });
-      if (this.status.panelOpen) {
-        this.$store.dispatch('setStatusValue', { 
-          property: 'keybindState', 
-          value: 'fullscreen-panel-open', 
-        });
+      this.fullScreenPanelOpen = true;
+      if (this.panelOpen) {
+        this.keybindState = 'fullscreen-panel-open';
       }
+
       this.lockScroll(true);
       setTimeout(() => {
         this.fadedIn = true;
       }, 1);
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$nextTick(() => {
       this.lockScroll(false);
-      if (this.status.panelOpen) {
-        this.$store.dispatch('setStatusValue', { property: 'fullScreenPanelOpen', value: false });
+      if (this.panelOpen) {
+        this.fullScreenPanelOpen = false;
       }
     });
   },
@@ -121,17 +122,18 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .FullScreenPanel {
-  z-index: @fullscreenpanel-z;
+  z-index: $fullscreenpanel-z;
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  background-color: @bg-site;
+  background-color: $bg-site;
   overflow: scroll;
+  padding: 0;
 }
 
 </style>

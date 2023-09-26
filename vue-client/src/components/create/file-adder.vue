@@ -1,4 +1,7 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
+import { mapState } from 'pinia';
+import { useUserStore } from '@/stores/user';
 import * as LxlDataUtil from 'lxljs/data';
 
 export default {
@@ -17,6 +20,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     outputData(data) {
       this.$emit('output', data);
     },
@@ -76,12 +80,7 @@ export default {
   events: {
   },
   computed: {
-    user() {
-      return this.$store.getters.user;
-    },
-    settings() {
-      return this.$store.getters.settings;
-    },
+    ...mapState(useUserStore, ['user']),
   },
   components: {
   },
@@ -123,32 +122,32 @@ export default {
       Du behöver även spara posten i nästa steg för att operationen ska slutföras.
     </div>
     <button class="btn btn-primary btn--lg" 
-      @click="openPicker">{{ 'Choose file' | translatePhrase }}</button>
+      @click="openPicker">{{ translatePhrase('Choose file') }}</button>
     <input type="file" 
       class="FilePicker" 
       ref="FilePicker" 
       accept=".jsonld,application/ld+json,text/*"
       aria-labelledby="Dropzone-description"/>
-    <hr/>{{ 'or' | translatePhrase }}<hr/>
+    <hr/>{{ translatePhrase('or') }}<hr/>
     <div class="Dropzone" :class="{'is-active': userIsDropping, 'is-invalid': invalidFile}">
       <div class="Dropzone-mask" ref="dropzone"></div>
       <div class="Dropzone-container">
-        <div id="Dropzone-description" 
-          class="Dropzone-description" 
-          v-if="!invalidFile">{{'Drop your file here' | translatePhrase}}</div>
-        <div id="Dropzone-description" 
-          class="Dropzone-description" 
-          v-else-if="invalidFile">{{'Invalid file' | translatePhrase}}</div>
+        <div id="Dropzone-description"
+          class="Dropzone-description"
+          v-if="!invalidFile">{{ translatePhrase('Drop your file here') }}</div>
+        <div id="Dropzone-description"
+          class="Dropzone-description"
+          v-else-if="invalidFile">{{ translatePhrase('Invalid file') }}</div>
       </div>
     </div>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .FileAdder {
-  border: 1px solid @form-border;
-  background-color: @white;
+  border: 1px solid $form-border;
+  background-color: $white;
   display: flex;
   padding: 1em;
   flex-direction: column;
@@ -166,17 +165,17 @@ export default {
     width: 25%;
   }
   .Dropzone {
-    border: 3px solid @grey;
+    border: 3px solid $grey;
     border-radius: 1em;
     height: 25vh;
     width: 80%;
     &.is-active {
-      background-color: fadeout(@brand-primary, 50%);
-      border: 3px dashed @brand-primary;
+      background-color: fadeout($brand-primary, 50%);
+      border: 3px dashed $brand-primary;
     }
     &.is-invalid {
-      background-color: fadeout(@brand-danger, 50%);
-      border: 3px dashed @brand-danger;
+      background-color: fadeout($brand-danger, 50%);
+      border: 3px dashed $brand-danger;
     }
     &-title {
       font-size: 24px;

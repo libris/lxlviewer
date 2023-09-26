@@ -2,13 +2,17 @@
 /*
   Controls add new entity button and add entity modal with it's content
 */
+import { mapActions, mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useSettingsStore } from '@/stores/settings';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
 import { cloneDeep, isArray, get } from 'lodash-es';
-import VueSimpleSpinner from 'vue-simple-spinner';
-import { mapGetters } from 'vuex';
+import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
-import Sort from '@/components/search/sort';
+import Sort from '@/components/search/sort.vue';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import ModalPagination from '@/components/inspector/modal-pagination.vue';
 import FilterSelect from '@/components/shared/filter-select.vue';
@@ -17,6 +21,7 @@ import ParamSelect from '@/components/inspector/param-select.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
 import PanelSearchList from '../search/panel-search-list.vue';
+import Spinner from '../shared/Spinner.vue';
 
 export default {
   mixins: [LensMixin, SideSearchMixin],
@@ -85,7 +90,7 @@ export default {
     'filter-select': FilterSelect,
     'type-select': TypeSelect,
     'param-select': ParamSelect,
-    'vue-simple-spinner': VueSimpleSpinner,
+    Spinner,
     sort: Sort,
   },
   watch: {
@@ -98,14 +103,14 @@ export default {
     },
     active(value) {
       if (!value) {
-        this.$refs.adderFocusElement.focus();
+        this.$refs.adderFocusElement?.focus();
       }
     },
   },
   computed: {
-    ...mapGetters([
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useInspectorStore, ['event', 'langTagSearch']),
     computedTitle() {
       const modalStr = StringUtil.getUiPhraseByLang('Add entity', this.user.settings.language, this.resources.i18n);
       const addLabelStr = StringUtil.getLabelByLang(this.addLabel, this.user.settings.language, this.resources);
@@ -192,6 +197,9 @@ export default {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1);
   },
   methods: {
+    translatePhrase, labelByLang, capitalize,
+    ...mapActions(useInspectorStore, ['addToQuoted', 'updateInspectorData', 'setInspectorStatusValue']),
+    ...mapActions(useUserStore, ['setUser']),
     getSearchParams(searchPhrase) {
       let params;
       if (this.currentSearchParam == null) {
@@ -246,22 +254,21 @@ export default {
       }
     },
     show() {
-      this.$store.dispatch('pushInspectorEvent', {
+      this.event = {
         name: 'form-control',
         value: 'close-modals',
-      })
-        .then(() => {
-          this.$nextTick(() => {
-            this.active = true;
-            this.$nextTick(() => {
-              this.resetSearch();
-              this.search();
-              if (this.$refs.input) {
-                this.$refs.input.focus();
-              }
-            });
-          });
+      };
+
+      this.$nextTick(() => {
+        this.active = true;
+        this.$nextTick(() => {
+          this.resetSearch();
+          this.search();
+          if (this.$refs.input) {
+            this.$refs.input.focus();
+          }
         });
+      });
     },
     hide() {
       if (!this.active) return;
@@ -329,12 +336,12 @@ export default {
       }
       const linkObj = { '@id': obj['@id'] };
       currentValue.push(linkObj);
-      this.$store.dispatch('addToQuoted', obj);
-      this.$store.dispatch('setInspectorStatusValue', {
+      this.addToQuoted(obj);
+      this.setInspectorStatusValue({
         property: 'lastAdded',
         value: `${this.path}.{"@id":"${obj['@id']}"}`,
       });
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         changeList: [
           {
             path: `${this.path}`,
@@ -363,11 +370,11 @@ export default {
       if (currentValue.length) {
         index = `[${currentValue.length - 1}]`;
       }
-      this.$store.dispatch('setInspectorStatusValue', {
+      this.setInspectorStatusValue({
         property: 'lastAdded',
         value: `${this.path}${index}`,
       });
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         changeList: [
           {
             path: `${this.path}`,
@@ -382,11 +389,11 @@ export default {
       const workObj = obj;
       workObj['@id'] = linkObj['@id'];
 
-      this.$store.dispatch('setInspectorStatusValue', {
+      this.setInspectorStatusValue({
         property: 'lastAdded',
         value: 'work',
       });
-      this.$store.dispatch('updateInspectorData', {
+      this.updateInspectorData({
         changeList: [
           {
             path: `${this.path}`,
@@ -424,9 +431,9 @@ export default {
     search() {
       if (this.fieldKey === 'shelfMark' && this.user) {
         this.user.settings.shelfMarkSearch = this.keyword;
-        this.$store.dispatch('setUser', this.user);
+        this.setUser(this.user);
       } else if (this.isLangTagger && this.keyword !== this.resourceLanguageLabel()) {
-        this.$store.dispatch('saveLangTagSearch', this.keyword);
+        this.langTagSearch = this.keyword;
       }
       const self = this;
       this.typeArray = [].concat(this.currentSearchTypes);
@@ -446,49 +453,61 @@ export default {
   <div class="EntityAdder" :class="{'is-innerAdder': isPlaceholder, 'is-fillWidth': addEmbedded}">
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add" v-if="isPlaceholder" v-tooltip.left="tooltipText">
-        <i class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
+      <span ref="adderFocusElement">
+        <font-awesome-icon
+          class="icon icon--sm"
+          :icon="['fas', this.iconAdd] "
           v-if="!addEmbedded"
           tabindex="0"
           role="button"
-          :aria-label="tooltipText | translatePhrase"
-          ref="adderFocusElement"
+          :aria-label="translatePhrase(tooltipText)"
           @click="add($event)"
           @keyup.enter="add($event)"
           @mouseenter="actionHighlight(true, $event)"
           @mouseleave="actionHighlight(false, $event)"
           @focus="actionHighlight(true, $event)"
-          @blur="actionHighlight(false, $event)">
-        </i>
-        <i class="fa fa-fw icon icon--sm is-disabled" :class="[this.iconAdd] "
+          @blur="actionHighlight(false, $event)"
+        />
+
+        <font-awesome-icon
+          class="icon icon--sm is-disabled"
+          :icon="['fas', this.iconAdd] "
           v-else-if="addEmbedded"
           tabindex="-1"
-          aria-hidden="true">
-        </i>
+          aria-hidden="true"
+        />
+      </span>
     </div>
 
     <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" v-if="!isPlaceholder" v-tooltip.top="tooltipText">
-      <i
-        class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
-        v-if="!addEmbedded"
-        tabindex="0"
-        role="button"
-        ref="adderFocusElement"
-        :aria-label="tooltipText | translatePhrase"
-        v-on:click="add($event)"
-        @keyup.enter="add($event)"
-        @mouseenter="actionHighlight(true, $event)"
-        @mouseleave="actionHighlight(false, $event)"
-        @focus="actionHighlight(true, $event)"
-        @blur="actionHighlight(false, $event)">
-      </i>
-      <i
-        class="fa fa-fw icon icon--sm is-disabled" :class="[this.iconAdd] "
-        v-else-if="addEmbedded"
-        tabindex="-1">
-      </i>
-      <span class="EntityAdder-addLabel label-text">{{ addLabel | labelByLang | capitalize }}</span>
+      <span ref="adderFocusElement">
+        <font-awesome-icon
+          class="icon icon--sm"
+          :icon="['fas', this.iconAdd] "
+          v-if="!addEmbedded"
+          tabindex="0"
+          role="button"
+          :aria-label="translatePhrase(tooltipText)"
+          v-on:click="add($event)"
+          @keyup.enter="add($event)"
+          @mouseenter="actionHighlight(true, $event)"
+          @mouseleave="actionHighlight(false, $event)"
+          @focus="actionHighlight(true, $event)"
+          @blur="actionHighlight(false, $event)"
+        />
+
+        <font-awesome-icon
+          class="icon icon--sm is-disabled"
+          :icon="['fas', this.iconAdd]"
+          v-else-if="addEmbedded"
+          tabindex="-1"
+        />
+      </span>
+
+      <span class="EntityAdder-addLabel label-text">{{ capitalize(labelByLang(addLabel)) }}</span>
     </div>
+
     <portal :to="`typeSelect-${path}`">
       <type-select
         v-if="addEmbedded"
@@ -498,38 +517,40 @@ export default {
         @selected="addType($event)"
         @dismiss="dismissTypeChooser()" />
     </portal>
+
     <portal to="sidebar" v-if="active">
       <panel-component class="EntityAdder-panel EntityAdderPanel"
         v-if="active"
         :title="computedTitle"
         @close="hide">
-        <template slot="panel-header-info">
+        <template #panel-header-info>
           <div
             class="PanelComponent-headerInfo"
             v-if="rangeFull.length > 0"
             @mouseleave="rangeInfo = false">
-            <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
+            <font-awesome-icon :icon="['fas', 'circle-info']" class="icon icon--md" @mouseenter="rangeInfo = true"></font-awesome-icon>
             <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
               <p class="header">
-                {{ "Allowed types" | translatePhrase }}:
+                {{ translatePhrase("Allowed types") }}:
               </p>
               <span v-for="(range, index) in rangeFull" :key="index">
-                • {{range | labelByLang}}
+                • {{labelByLang(range)}}
               </span>
             </div>
           </div>
         </template>
-        <template slot="panel-header-extra">
+
+        <template #panel-header-extra>
           <!-- <div class="EntityAdder-panelBody"> -->
           <div class="EntityAdder-controls">
             <div class="EntityAdder-controlForm">
               <div class="EntityAdder-search">
-                <label for="entityKeywordInput" class="EntityAdder-searchLabel sr-only">{{ "Search" | translatePhrase }}</label>
+                <label for="entityKeywordInput" class="EntityAdder-searchLabel sr-only">{{ translatePhrase("Search") }}</label>
                 <div class="EntityAdder-filterSearchContainer">
                   <div class="EntityAdder-filterSearchContainerItem">
                     <filter-select class="EntityAdder-filterSearchInput FilterSelect--openDown"
                       :class-name="'js-filterSelect'"
-                      :label="'Show' | translatePhrase"
+                      :label="translatePhrase('Show')"
                       :custom-placeholder="filterPlaceHolder"
                       :options="{ tree: selectOptions, priority: priorityOptions }"
                       :options-all="allSearchTypes"
@@ -553,8 +574,8 @@ export default {
                          name="entityKeywordInput"
                          v-model="keyword"
                          ref="input"
-                         :aria-label="'Sök' | translatePhrase"
-                         :placeholder="'Sök' | translatePhrase"
+                         :aria-label="translatePhrase('Sök')"
+                         :placeholder="translatePhrase('Sök')"
                          autofocus />
                   <param-select class="EntityAdder-paramSelect"
                                 :types="currentSearchTypes"
@@ -566,7 +587,7 @@ export default {
             </div>
           </div>
         </template>
-        <template slot="panel-body">
+        <template #panel-body>
           <panel-search-list class="EntityAdder-searchResult"
             v-if="!searchInProgress && searchMade"
             :path="path"
@@ -579,19 +600,19 @@ export default {
             @use-item="addLinkedItem">
           </panel-search-list>
           <div class="PanelComponent-searchStatus" v-if="!searchInProgress && !searchMade" >
-            {{ "Start writing to begin search" | translatePhrase }}...
+            {{ translatePhrase("Start writing to begin search") }}...
           </div>
           <div v-if="searchInProgress" class="PanelComponent-searchStatus">
-            <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+            <Spinner size="lg" :message="translatePhrase('Searching') "></Spinner>
           </div>
           <div class="PanelComponent-searchStatus"
             v-if="!searchInProgress && searchResult.length === 0 && searchMade">
-            {{ "No results" | translatePhrase }}
+            {{ translatePhrase("No results") }}
           </div>
         <!-- </div> -->
         </template>
-        <template slot="panel-footer">
 
+        <template #panel-footer>
           <div class="EntityAdder-resultControls" v-if="!searchInProgress && searchResult.length > 0">
             <modal-pagination
               @go="go"
@@ -602,26 +623,34 @@ export default {
             >
             </modal-pagination>
             <div class="EntityAdder-listTypes">
-              <i class="fa fa-th-list icon icon--sm"
+              <font-awesome-icon
+                :icon="['fas', 'table-list']"
+                class="icon icon--sm"
                 role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
-                :title="'Detailed view' | translatePhrase"
-                tabindex="0"></i>
-              <i class="fa fa-list icon icon--sm"
+                :title="translatePhrase('Detailed view')"
+                tabindex="0"
+              />
+
+              <font-awesome-icon
+                :icon="['fas', 'list']"
+                class="icon icon--sm"
                 role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"
-                :title="'Compact view' | translatePhrase"
-                tabindex="0"></i>
+                :title="translatePhrase('Compact view')"
+                tabindex="0"
+              />
             </div>
           </div>
+
           <div class="EntityAdder-create">
             <button class="EntityAdder-createBtn btn btn-primary btn--sm"
               v-if="hasSingleCreatable && allowLocal"
-              v-on:click="addEmpty(rangeCreatable[0])">{{ "Create local entity" | translatePhrase }}
+              v-on:click="addEmpty(rangeCreatable[0])">{{ translatePhrase("Create local entity") }}
             </button>
             <filter-select
               v-if="!hasSingleCreatable"
@@ -640,7 +669,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .EntityAdder {
   &-panelBody {
@@ -666,14 +695,14 @@ export default {
   }
 
   &-add {
-    color: @grey-dark;
+    color: $grey-dark;
     cursor: pointer;
     display: inline-block;
     opacity: 1;
     transition: opacity 0.5s ease;
 
     &:hover {
-      color: @black;
+      color: $black;
     }
   }
 
@@ -709,14 +738,14 @@ export default {
     flex-direction: row;
     position: relative;
     margin-top: 0.5em;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
     border-radius: 0.2em;
   }
 
   &-searchInputContainer input {
-    color: @black;
-    background-color: @white;
+    color: $black;
+    background-color: $white;
     border: none;
     margin-right: 2px; // make tab-focus border look ok
     border-radius: 0;
@@ -727,7 +756,7 @@ export default {
   }
 
   &-paramSelect {
-    border-left: 1px solid @grey-lighter;
+    border-left: 1px solid tgrey-lighter;
     flex-basis: 33%;
   }
 
@@ -736,7 +765,7 @@ export default {
     display: flex;
     flex-direction: column;
 
-    @media (min-width: @screen-xs) {
+    @include media-breakpoint-up(xs) {
       flex-direction: row;
     }
   }
@@ -745,7 +774,7 @@ export default {
     width: 100%;
     margin: 0 1em 0 0;
 
-    @media (min-width: @screen-xs) {
+    @include media-breakpoint-up(xs) {
       width: 50%;
     }
 

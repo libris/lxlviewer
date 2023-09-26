@@ -1,5 +1,8 @@
 <script>
-import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
+import { mapState, mapWritableState } from 'pinia';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
 
 export default {
   name: 'select-sigel',
@@ -12,6 +15,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     getSigelLabel(sigel, len) {
       if (!sigel.friendly_name) {
         return sigel.code;
@@ -28,17 +32,17 @@ export default {
       const doUpdate = () => {
         const userObj = this.user;
         userObj.settings.activeSigel = value;
-        this.$store.dispatch('setUser', userObj);
+        this.user = userObj;
       };
+
       if (this.$route.name === 'Inspector' && this.inspector.data.mainEntity && this.inspector.data.mainEntity['@type'] === 'Item') {
         // If editing a holding, the user must accept a cancel dialog before sigel can be changed
-        this.$store.dispatch('pushInspectorEvent', { 
+        this.event = { 
           name: 'record-control',
           value: 'cancel',
-          callback: () => {
-            doUpdate();
-          },
-        });
+        };
+
+        doUpdate();
       } else {
         doUpdate();
       }
@@ -55,10 +59,9 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'user',
-    ]),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapWritableState(useUserStore, ['user']),
+    ...mapWritableState(useInspectorStore, ['event']),
     selectValue() {
       return this.preselectedValue ? this.preselectedValue : this.user.settings.activeSigel;
     },
@@ -84,29 +87,41 @@ export default {
         :key="sigel.code" 
         :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}{{ sigel.code === 'Ssao' ? ' ⚔️' : '' }}</option>
     </select>
-    <button      
+    <button
       v-if="!updateOnChange"
       type="submit"
-      class="btn btn-primary btn--md">
-        <i class="icon icon--white fa fa-exchange"></i>
-        {{ 'Växla sigel' | translatePhrase }}
+      class="btn btn-primary btn--md"
+    >
+      <font-awesome-icon class="icon icon--white" :icon="['fas', 'arrow-right-arrow-left']" />
+      {{ translatePhrase('Växla sigel') }}
     </button>
   </form>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .SelectSigelForm {
   &.displayInRow {
     display: flex;
     flex-direction: column;
     
-    @media screen and (min-width: @screen-sm-min){
+    // @media screen and (min-width: @screen-sm-min){
+    //   flex-direction: row;
+    //   justify-content: flex-end;      
+    // }
+
+    @include media-breakpoint-up(sm) {
       flex-direction: row;
-      justify-content: flex-end;      
+      justify-content: flex-end;
     }
 
-    @media screen and (max-width: @screen-sm-min){
+    // @media screen and (max-width: @screen-sm-min){
+    //   .btn {
+    //     margin-left: 0;
+    //   }
+    // }
+
+    @include media-breakpoint-down(sm) {
       .btn {
         margin-left: 0;
       }
@@ -114,10 +129,13 @@ export default {
 
     .customSelect {
       font-size: 1.4rem;
-      @media screen and (max-width: @screen-sm-min){
+      // @media screen and (max-width: @screen-sm-min){
+      //   margin-bottom: 1.4rem;
+      // }
+      @include media-breakpoint-down(sm) {
         margin-bottom: 1.4rem;
       }
-    }    
+    }
   }
 }
 

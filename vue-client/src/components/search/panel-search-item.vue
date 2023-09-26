@@ -1,10 +1,15 @@
 <script>
+import { mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import { merge, cloneDeep } from 'lodash-es';
-import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as MathUtil from '@/utils/math';
-import LensMixin from '../mixins/lens-mixin';
-import SummaryAction from '../inspector/summary-action';
+import LensMixin from '../mixins/lens-mixin.vue';
+import SummaryAction from '../inspector/summary-action.vue';
+import EntitySummary from '../shared/entity-summary.vue';
 
 export default {
   name: 'panel-search-item',
@@ -61,13 +66,10 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useResourcesStore, ['i18n']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     settings() {
       const settings = {
         text: this.text,
@@ -99,13 +101,12 @@ export default {
       return this.focusData.reverseLinks ? MathUtil.getCompactNumber(this.focusData.reverseLinks.totalItems) : 0;
     },
     translatedTooltip() {
-      return StringUtil.getUiPhraseByLang('Number of links to entity', this.user.settings.language, this.resources.i18n);
+      return StringUtil.getUiPhraseByLang('Number of links to entity', this.user.settings.language, this.i18n);
     },
   },
   components: {
     SummaryAction,
-  },
-  mounted() { 
+    EntitySummary,
   },
 };
 </script>
@@ -135,7 +136,7 @@ export default {
     </div>
     <div class="PanelSearch-itemContainer" 
       :class="{'has-action' : hasAction}">
-      <entity-summary 
+      <EntitySummary
         :focus-data="focusData" 
         :should-link="true" 
         :is-compact="isCompact"
@@ -145,20 +146,20 @@ export default {
         :shouldOpenTab="true"
         :valueDisplayLimit=1
         :encodingLevel="focusData.meta.encodingLevel">
-      </entity-summary>
+      </EntitySummary>
     </div>
   </li>
 </template>
 
 
-<style lang="less">
+<style lang="scss">
 
 .PanelSearch {
 
   &-listItem {
 
     .EntitySummary-detailsKey {
-      @media (min-width: @screen-sm-min) {
+      @include media-breakpoint-up(sm) {
         flex-basis: 8em;
       }
     }
@@ -169,11 +170,11 @@ export default {
     }
 
     code {
-      color: @black;
+      color: $black;
     }
 
     .label {
-      color: @black;
+      color: $black;
       font-weight: bold;
       font-size: 16px;
       display: inline-block;
@@ -191,7 +192,7 @@ export default {
     }
 
     &:nth-child(even) {
-      background-color: darken(@neutral-color, 2%);
+      background-color: darken($neutral-color, 2%);
     }
 
     &.is-selected {
@@ -214,23 +215,23 @@ export default {
   }
 
   &-linkCount {
-    border: 2px solid @brand-primary;
+    border: 2px solid $brand-primary;
     width: 100%;
     text-align: center;
     margin-top: -4px;
     border-radius: 0 0 4px 4px;
     border-top-width: 4px;
-    color: @grey;
+    color: $grey;
     font-weight: 600;
     font-size: 1.3rem;
 
     &.has-links {
-      color: @brand-primary;
+      color: $brand-primary;
     }
 
     .PanelComponent-listItem.is-added &,
     .PanelComponent-listItem.is-replaced & {
-      border-color: @grey-lighter;
+      border-color: $grey-lighter;
     }
   }
 
@@ -239,7 +240,7 @@ export default {
     overflow: hidden;
 
     &.has-action {
-      border: solid @grey-lighter-transparent;
+      border: solid $grey-lighter-transparent;
       border-width: 0px 0px 0px 1px;
       padding: 0 15px;
       margin-left: 15px;

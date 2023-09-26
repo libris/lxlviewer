@@ -1,8 +1,13 @@
 <script>
-import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
+import { mapActions, mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
+import { useStatusStore } from '@/stores/status';
 import * as StringUtil from 'lxljs/string';
-import UserAvatar from '@/components/shared/user-avatar';
-import SelectSigel from './select-sigel';
+import UserAvatar from '@/components/shared/user-avatar.vue';
+import SelectSigel from './select-sigel.vue';
 
 export default {
   name: 'user-settings',
@@ -13,9 +18,9 @@ export default {
     },
   },
   methods: {
-    setUser(userObj) {
-      this.$store.dispatch('setUser', userObj);
-    },
+    translatePhrase,
+    ...mapActions(useStatusStore, ['pushNotification']),
+    ...mapActions(useUserStore, ['setUser', 'logoutUser', 'purgeUserTaggedDocuments']),
     updateLanguage(e) {
       const userObj = this.user;
       userObj.settings.language = e.target.value;
@@ -32,27 +37,26 @@ export default {
       this.setUser(userObj);
     },
     logout() {
-      this.$store.dispatch('logoutUser');
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged out', this.user.settings.language, this.resources.i18n)}!` });
+      this.logoutUser();
+      this.pushNotification({
+        type: 'success',
+        message: `${StringUtil.getUiPhraseByLang('You were logged out', this.user.settings.language, this.i18n)}!`
+      });
+
       this.$router.push({ path: '/' });
     },
     purgeFlagged() {
-      this.$store.dispatch('purgeUserTagged', 'Flagged');
+      this.purgeUserTaggedDocuments('Flagged');
     },
     purgeBookmarks() {
-      this.$store.dispatch('purgeUserTagged', 'Bookmark');
+      this.purgeUserTaggedDocuments('Bookmark');
     },
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'user',
-      'userStorage',
-      'settings',
-      'resources',
-      'userFlagged',
-      'userBookmarks',
-    ]),
+    ...mapState(useResourcesStore, ['i18n']),
+    ...mapWritableState(useUserStore, ['user']),
+    ...mapState(useUserStore, ['userStorage', 'userFlagged']),
+    ...mapState(useSettingsStore, ['settings']),
     userHasTaggedRecords() {
       return Object.keys(this.userStorage.list).length > 0;
     },
@@ -60,12 +64,6 @@ export default {
   components: {
     'user-avatar': UserAvatar,
     'select-sigel': SelectSigel,
-  },
-  watch: {
-  },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-    });
   },
 };
 </script>
@@ -78,11 +76,11 @@ export default {
           <user-avatar :size="150" :appearance="'dark'" />
         </div>
         <p class="UserInfo-name">
-          <strong class="UserInfo-label uppercaseHeading--bold">{{"Name" | translatePhrase}}</strong><br/>
+          <strong class="UserInfo-label uppercaseHeading--bold">{{translatePhrase("Name")}}</strong><br/>
           <span>{{user.fullName}}</span>
         </p>
         <p class="UserInfo-email">
-          <strong class="UserInfo-label uppercaseHeading--bold">{{"E-mail" | translatePhrase}}</strong><br/>
+          <strong class="UserInfo-label uppercaseHeading--bold">{{translatePhrase("E-mail")}}</strong><br/>
           <span>{{user.email || '-'}}</span>
         </p>
         <div class="UserInfo-meta">
@@ -93,12 +91,12 @@ export default {
         </div>
       </div>
       <div class="UserSettings-config UserConfig">
-        <h4>{{'User settings' | translatePhrase}}</h4>
+        <h4>{{translatePhrase('User settings')}}</h4>
         <form class="UserConfig-form">
           <table class="UserSettings-configTable table table-striped">
             <tr>
               <td class="key">
-                <label for="UserConfig-sigel">{{"Active sigel" | translatePhrase}}</label>
+                <label for="UserConfig-sigel">{{ translatePhrase("Active sigel") }}</label>
               </td>
               <td class="value">
                   <select-sigel
@@ -108,31 +106,32 @@ export default {
             <tr>
               <td class="key">
                 <label for="clearFlagged"> 
-                  {{ "Clear my flagged documents" | translatePhrase}}
+                  {{ translatePhrase("Clear my flagged documents") }}
                 </label>
               </td>
               <td class="value">
-                <button name="clearFlagged" v-if="userFlagged.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeFlagged" @keyup.enter.prevent="purgeFlagged">{{ 'Clear' | translatePhrase }}</button>
-                <span v-if="userFlagged.length === 0" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
+                <button name="clearFlagged" v-if="userFlagged.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeFlagged" @keyup.enter.prevent="purgeFlagged">{{ translatePhrase('Clear') }}</button>
+                <span v-if="userFlagged.length === 0" class="disabled">{{ translatePhrase('Nothing flagged') }}</span>
               </td>
             </tr>
-            <!-- <tr>
+            <!-- TODO: Do we keep this? userBookmarks data is located in user store
+              <tr>
               <td class="key">
                 <label for="clearBookmarks"> 
-                  {{ "Clear my bookmarked documents" | translatePhrase}}
+                  {{ translatePhrase("Clear my bookmarked documents") }}
                 </label>
               </td>
               <td class="value">
-                <button name="clearBookmarks" v-if="userBookmarks.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeBookmarks" @keyup.enter.prevent="purgeBookmarks">{{ 'Clear' | translatePhrase }}</button>
-                <span v-if="userBookmarks.length === 0" class="disabled">{{ 'Nothing flagged' | translatePhrase }}</span>
+                <button name="clearBookmarks" v-if="userBookmarks.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeBookmarks" @keyup.enter.prevent="purgeBookmarks">{{ translatePhrase('Clear') }}</button>
+                <span v-if="userBookmarks.length === 0" class="disabled">{{ translatePhrase('Nothing flagged') }}</span>
               </td>
             </tr> -->
           </table>
-          <h5 class="uppercaseHeading--bold">{{ 'Experimental settings' | translatePhrase }}</h5>
+          <h5 class="uppercaseHeading--bold">{{ translatePhrase('Experimental settings') }}</h5>
           <table class="UserSettings-configTable table table-striped">
             <tr>
               <td class="key">
-                <label for="UserConfig-lang">{{"Language" | translatePhrase}}</label>
+                <label for="UserConfig-lang">{{ translatePhrase("Language") }}</label>
               </td>
               <td class="value">
                   <select id="UserConfig-lang" class="UserConfig-select customSelect" 
@@ -140,13 +139,13 @@ export default {
                     @change="updateLanguage">
                     <option v-for="language in settings.availableUserSettings.languages" 
                       :key="language.value" 
-                      :value="language.value">{{ language.label | translatePhrase }}</option>
+                      :value="language.value">{{ translatePhrase(language.label) }}</option>
                   </select>
               </td>
             </tr>
             <tr>
               <td class="key">
-                <label for="detailsCheckbox">{{"Activate debug mode" | translatePhrase}}</label>
+                <label for="detailsCheckbox">{{ translatePhrase("Activate debug mode") }}</label>
               </td>
               <td class="value">
                 <input id="detailsCheckbox" class="customCheckbox-input" type="checkbox" @change="updateAppTech" :checked="user.settings.appTech">
@@ -155,7 +154,7 @@ export default {
             </tr>
             <tr>
               <td class="key">
-                <label for="siteWidthCheckbox">{{"Use full site width" | translatePhrase}}</label>
+                <label for="siteWidthCheckbox">{{ translatePhrase("Use full site width") }}</label>
               </td>
               <td class="value">
                 <input id="siteWidthCheckbox" class="customCheckbox-input" type="checkbox" @change="updateFullSiteWidth" :checked="user.settings.fullSiteWidth">
@@ -165,7 +164,7 @@ export default {
           </table>
 
         </form>
-        <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{"Log out" | translatePhrase}}</button>
+        <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{ translatePhrase("Log out") }}</button>
       </div>
     </div>
     <div v-else class="UserSettings-content">
@@ -176,25 +175,25 @@ export default {
             id="UserConfig-sigel" />
         </li>
         <li>
-          <router-link to="/user">{{"Settings" | translatePhrase}}</router-link>
-          <button class="btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeFlagged">{{ ['Clear', 'Flags'] | translatePhrase | lowercase | capitalize}}</button>
+          <router-link to="/user">{{ translatePhrase("Settings") }}</router-link>
+          <button class="btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeFlagged">{{ capitalize(translatePhrase(['Clear', 'Flags'])) }}</button>
         </li>
         <li>
           <!-- <span>Växla användare</span> -->
-          <button class="btn--as-link" @click="logout">{{"Log out" | translatePhrase}}</button>
+          <button class="btn--as-link" @click="logout">{{translatePhrase("Log out")}}</button>
         </li>
       </ul>
     </div>
   </section>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .UserSettings {
   padding: 0;
 
-  @media (min-width: @screen-sm) {
-    padding: 1em 0 1em 0;
+  @include media-breakpoint-up(sm) {
+    padding: 1em 0;
   }
 
   &-title {
@@ -207,16 +206,16 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     padding: 20px;
-    background-color: @white;
+    background-color: $white;
     border-radius: 4px;
-    box-shadow: @shadow-panel;
+    box-shadow: $shadow-panel;
 
     .in-menu & {
       padding: 0 10px;
       border-radius: 0;
       font-size: 14px;
       font-size: 1.4rem;
-      border: 1px solid @grey-lighter;
+      border: 1px solid $grey-lighter;
 
       & select {
         font-size: 14px;
@@ -224,7 +223,7 @@ export default {
       }
     }
 
-    @media (min-width: @screen-sm) {
+    @include media-breakpoint-up(sm) {
       flex-direction: row;
     }
   }
@@ -247,7 +246,7 @@ export default {
       padding: 0.5em;
     }
     tr {
-      border: solid @grey-lighter;
+      border: solid $grey-lighter;
       border-width: 0px 0px 1px 0px;
     }
     .key {
@@ -256,6 +255,7 @@ export default {
       }
       width: 50%;
     }
+
     .value {
       width: 50%;
       select {
@@ -266,13 +266,7 @@ export default {
 
   &.in-menu {
     cursor: initial;
-    top: 4rem;
-    position: absolute;
-    right: 0;
-    left: auto;
-    z-index: @dropdown-z;
-    padding-top: 0.25em;
-    padding-left: 0;
+    padding: 0;
 
     & ul {
       padding: 0;
@@ -284,7 +278,7 @@ export default {
       padding: 10px 0;
       display: flex;
       flex-direction: column;
-      border-bottom: 1px solid @grey-lighter;
+      border-bottom: 1px solid $grey-lighter;
 
       &:last-of-type {
         border: 0px;
@@ -292,21 +286,21 @@ export default {
 
       & .btn--as-link, 
       & a {
-        color: @black;
+        color: $black;
         cursor: pointer;
 
         &:hover {
           text-decoration: underline;
         }
       }
-
     }
 
-  @media (max-width: @screen-sm) {
-    left: auto;
-    right: 0;
+    .UserSettings-content {
+      border: 0;
+      box-shadow: none;
     }
   }
+
 }
 
 .UserInfo {
@@ -316,12 +310,12 @@ export default {
   max-width: 500px;
   padding: 20px;
 
-  @media (min-width: @screen-sm) {
-    border-right: 1px solid @grey-lighter;
+  @include media-breakpoint-up(sm) {
+    border-right: 1px solid $grey-lighter;
   }
 
   &-img {
-    border: 1px solid @grey;
+    border: 1px solid $grey;
     border-radius: 50%;
     width: 150px;
     height: 150px;
@@ -370,6 +364,5 @@ export default {
   }
 }
 
-@sigel-selector-width: 200px;
-
+$sigel-selector-width: 200px;
 </style>

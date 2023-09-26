@@ -1,7 +1,10 @@
 <script>
-import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
 import * as VocabUtil from 'lxljs/vocab';
-import ItemMixin from '../mixins/item-mixin';
+import ItemMixin from '../mixins/item-mixin.vue';
+import { mapActions, mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
 
 export default {
   name: 'item-boolean',
@@ -41,13 +44,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
     range() {
       const types = VocabUtil.getRangeFull(
         this.fieldKey,
@@ -74,7 +71,7 @@ export default {
     },
     selected(value, oldValue) {
       if (value !== oldValue && this.initialized) {
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: this.path,
@@ -87,8 +84,8 @@ export default {
     },
   },
   methods: {
-  },
-  components: {
+    translatePhrase,
+    ...mapActions(useInspectorStore, ['updateInspectorData']),
   },
 };
 </script>
@@ -104,11 +101,11 @@ export default {
       <div class="customCheckbox-icon"></div>
     </div>
     <span class="ItemVocab-text"
-      v-if="isLocked">{{fieldValue ? 'Yes' : 'No' | translatePhrase}}</span>
+      v-if="isLocked">{{fieldValue ? translatePhrase('Yes') : translatePhrase('No')}}</span>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .ItemBoolean {
   &.is-locked {

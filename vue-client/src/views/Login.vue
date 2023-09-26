@@ -1,5 +1,8 @@
 <script>
-import { mapGetters } from 'vuex';
+import { useUserStore } from '@/stores/user';
+import { mapState } from 'pinia';
+import { translatePhrase } from '@/utils/filters';
+import { useOauthStore } from '@/stores/oauth';
 
 export default {
   name: 'Login',
@@ -10,20 +13,14 @@ export default {
       loginExpired: false,
     };
   },
-  watch: {
-  },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useOauthStore, ['oauthClient']),
   },
   methods: {
+    translatePhrase,
     renewLogin() {
-      window.location = this.$store.getters.oauth2Client.token.getUri();
+      window.location = this.oauthClient.token.getUri();
     },
   },
   mounted() {
@@ -34,7 +31,7 @@ export default {
       } else if (this.user.isLoggedIn && token !== null) {
         const path = localStorage.getItem('lastPath') || '/';
         this.$router.push({ path: path });
-      } else window.location = this.$store.getters.oauth2Client.token.getUri();
+      } else window.location = this.oauthClient.token.getUri();
     });
   },
 };
@@ -43,19 +40,19 @@ export default {
 <template>
   <div class="Login">
     <div class="Login-content" v-if="failedLogin">
-      {{ 'Something went wrong' | translatePhrase }}
+      {{ translatePhrase('Something went wrong') }}
     </div>
     <div class="Login-content" v-if="loginExpired">
-      {{ 'Your login has expired' | translatePhrase }}.
+      {{ translatePhrase('Your login has expired') }}.
       <hr>
       <button class="btn-primary btn--md" @click="renewLogin" @keyup.enter="renewLogin">
-        {{ 'Renew' | translatePhrase }}
+        {{ translatePhrase('Renew') }}
       </button>
     </div>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .Login {
   display: flex;
@@ -67,9 +64,9 @@ export default {
     flex-direction: column;
     justify-content: space-around;
     padding: 20px;
-    background-color: @white;
+    background-color: $white;
     border-radius: 4px;
-    box-shadow: @shadow-panel;
+    box-shadow: $shadow-panel;
   }
 }
 </style>

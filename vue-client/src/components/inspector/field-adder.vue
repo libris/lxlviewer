@@ -3,16 +3,21 @@
   Controls add new field button and add field modal with it's content
 */
 
-import { mixin as clickaway } from 'vue-clickaway';
 import { filter, isArray } from 'lodash-es';
-import { mapGetters } from 'vuex';
+import { mapActions, mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useUserStore } from '@/stores/user';
+import { useInspectorStore } from '@/stores/inspector';
+import { useSettingsStore } from '@/stores/settings';
+import { translatePhrase } from '@/utils/filters';
+import { getKeybindText } from '@/utils/mixins';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import RoundButton from '@/components/shared/round-button.vue';
+import { useStatusStore } from '@/stores/status';
 
 export default {
-  mixins: [clickaway],
   name: 'field-adder',
   props: {
     allowed: {
@@ -55,18 +60,16 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useUserStore, ['user']),
+    ...mapWritableState(useInspectorStore, ['event']),
     modalTitle() {
       const title = StringUtil.getUiPhraseByLang('Add field in', this.user.settings.language, this.resources.i18n);
       const contextString = StringUtil.getLabelByLang(
-        this.entityType, 
-        this.user.settings.language, 
+        this.entityType,
+        this.user.settings.language,
         this.resources,
       );
       return `${title}: ${contextString}`;
@@ -117,10 +120,13 @@ export default {
     },
   },
   methods: {
+    translatePhrase, getKeybindText,
+    ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue']),
+    ...mapActions(useStatusStore, ['setStatusValue']),
     toggleFullView() {
       const user = this.user;
       user.settings.forceFullViewPanel = !user.settings.forceFullViewPanel;
-      this.$store.dispatch('setUser', user);
+      this.user = user;
     },
     actionHighlight(active, event) {
       if (active) {
@@ -183,7 +189,7 @@ export default {
     addField(prop, close) {  
       if (!prop.added) {
         const key = StringUtil.convertToPrefix(prop.item['@id'], this.resources.context);
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [
             {
               path: `${this.path}.${key}`,
@@ -192,10 +198,11 @@ export default {
           ],
           addToHistory: true,
         });
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'lastAdded', 
-          value: `${this.path}.${key}`, 
+        this.setInspectorStatusValue({
+          property: 'lastAdded',
+          value: `${this.path}.${key}`,
         });
+
         if (close) {
           this.hide();
         }
@@ -203,24 +210,24 @@ export default {
       this.$parent.$emit('expand-item', true);
     },
     show() {
-      this.$store.dispatch('pushInspectorEvent', { 
+      this.event = {
         name: 'form-control', 
         value: 'close-modals',
-      })
-        .then(() => {
-          this.$nextTick(() => {
-            this.active = true;
-            this.$nextTick(() => {
-            // this.$store.dispatch('setStatusValue', { 
-            //   property: 'keybindState', 
-            //   value: 'field-adder' 
-            // });
-              if (this.$refs.input) {
-                this.$refs.input.focus();
-              }
-            });
+      };
+
+      this.$nextTick(() => {
+        this.active = true;
+        this.$nextTick(() => {
+          this.setStatusValue({
+            property: 'keybindState',
+            value: 'field-adder'
           });
+
+          if (this.$refs.input) {
+            this.$refs.input.focus();
+          }
         });
+      });
     },
     expand() {
       this.$parent.$emit('expand-item', true);
@@ -229,10 +236,10 @@ export default {
       if (!this.active) return;
       this.active = false;
       this.filterKey = '';
-      // this.$store.dispatch('setStatusValue', {
-      //  property: 'keybindState',
-      //  value: 'overview'
-      // });
+      this.setStatusValue({
+       property: 'keybindState',
+       value: 'overview'
+      });
     },
   },
   watch: {
@@ -280,7 +287,7 @@ export default {
         role="button"
         tabindex="0"
         ref="adderButton"
-        :aria-label="modalTitle | translatePhrase"
+        :aria-label="translatePhrase(modalTitle)"
         @click="show(), expand()" 
         @keyup.enter="show"
         v-tooltip.top="modalTitle"
@@ -289,60 +296,61 @@ export default {
         @focus="actionHighlight(true, $event)"
         @blur="actionHighlight(false, $event)"
     >
-      <i 
-        class="FieldAdder-innerIcon fa fa-plus-circle fa-fw icon icon--sm">
-      </i>
-      <span class="action-label">{{ "Add field" | translatePhrase }}</span>
+      <font-awesome-icon :icon="['fas', 'circle-plus']" class="FieldAdder-innerIcon icon icon--sm" />
+      <span class="action-label">{{ translatePhrase("Add field") }}</span>
     </span>
 
     <button v-if="!inner" class="FieldAdder-add btn btn-default toolbar-button" 
       v-on:click="show" 
       ref="adderButton"
       @keyup.enter="show"
-      v-tooltip.left="`${translate(modalTitle)} (${getKeybindText('open-field-adder')})`"
-      :aria-label="modalTitle | translatePhrase">
-      <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
-      </i>
-      <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
+      v-tooltip.left="`${translatePhrase(modalTitle)} (${getKeybindText('open-field-adder')})`"
+      :aria-label="translatePhrase(modalTitle)"
+    >
+      <font-awesome-icon :icon="['fas', 'plus']" aria-hidden="true" />
+      <span v-if="!inToolbar" class="FieldAdder-label"> {{ translatePhrase("Add field") }}</span>
     </button>
     <portal to="sidebar" v-if="active">
     <panel-component class="FieldAdder-panel FieldAdderPanel"
       v-if="active"
       :title="modalTitle"
-      @close="hide">
-      <template slot="panel-header-extra">
+      @close="hide"
+    >
+      <template #panel-header-extra>
         <div class="FieldAdderPanel-filterContainer form-group">
           <input id="field-adder-input"
             type="text" 
             ref="input"
-            class="FieldAdderPanel-filterInput customInput mousetrap" 
-            :placeholder="'Filter by' | translatePhrase"
-            :aria-label="'Filter by' | translatePhrase"
+            class="FieldAdderPanel-filtfalse customInput mousetrap" 
+            :placeholder="translatePhrase('Filter by')"
+            :aria-label="translatePhrase('Filter by')"
             v-model="filterKey">
         </div>
         <div class="FieldAdderPanel-filterInfo uppercaseHeading">
           <span>
-            {{ "Showing" | translatePhrase }} 
+            {{ translatePhrase("Showing") }} 
             {{ filteredResults.length }} 
-            {{ "of" | translatePhrase }} 
+            {{ translatePhrase("of") }} 
             {{allowed ? allowed.length : '0'}} 
-            {{ "total" | translatePhrase }}
+            {{ translatePhrase("total") }}
           </span>
         </div>
       </template>
-      <template slot="panel-header-after">
+
+      <template #panel-header-after>
         <div class="FieldAdderPanel-columnHeaders">
           <!-- <span class="FieldAdderPanel-addControl">
           </span> -->
           <span class="FieldAdderPanel-fieldLabel uppercaseHeading">
-            {{ "Field label" | translatePhrase }}
+            {{ translatePhrase("Field label") }}
           </span>
           <span class="uppercaseHeading">
-            {{ "Can contain" | translatePhrase }}
+            {{ translatePhrase("Can contain") }}
           </span>
         </div>
       </template>
-      <template slot="panel-body">
+
+      <template #panel-body>
         <div>
           <ul class="FieldAdderPanel-fieldList js-fieldlist">
             <li
@@ -371,7 +379,7 @@ export default {
           </ul>
         </div>
         <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
-          <span>{{ "Did not find any fields" | translatePhrase }}...</span>
+          <span>{{ translatePhrase("Did not find any fields") }}...</span>
         </div>
       </template>
     </panel-component>
@@ -379,7 +387,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .FieldAdder {
   &-innerAdd {
@@ -420,7 +428,7 @@ export default {
   }
 
   &-filterInfo {
-    color: @grey-darker;
+    color: $grey-darker;
     margin-bottom: 10px;
   }
 
@@ -431,10 +439,10 @@ export default {
 
   &-columnHeaders {
     display: flex;
-    background-color: @white;
+    background-color: $white;
     width: 100%;
     padding: 5px 15px;
-    border-bottom: 1px solid @grey-lighter;
+    border-bottom: 1px solid $grey-lighter;
 
     & .FieldAdderPanel-fieldLabel {
       padding-left: 0;

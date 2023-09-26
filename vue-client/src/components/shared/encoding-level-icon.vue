@@ -1,5 +1,6 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
 import * as VocabUtil from 'lxljs/vocab';
 
 export default {
@@ -21,11 +22,9 @@ export default {
   methods: {
   },
   computed: {
-    ...mapGetters([
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['context', 'vocab']),
     levelObj() {
-      return VocabUtil.getTermObject(this.encodingLevel, this.resources.vocab, this.resources.context);
+      return VocabUtil.getTermObject(this.encodingLevel, this.vocab, this.context);
     },
     levelId() {
       if (this.levelObj) {
@@ -102,14 +101,14 @@ export default {
 <template>
   <div class="EncodingLevelIcon"
     :style="icon.style"
-    v-tooltip.top="tooltipText">
+    v-tooltip="tooltipText">
     <span class="EncodingLevelIcon-label">{{icon.label}}</span>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .EncodingLevelIcon {
-  background-color: @grey-lighter;
+  background-color: $grey-lighter;
   color: #444;
   display: flex;
   justify-content: center;

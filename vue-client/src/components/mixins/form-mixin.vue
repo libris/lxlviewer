@@ -1,22 +1,27 @@
 <script>
 import { cloneDeep, isArray, sortBy, each, groupBy } from 'lodash-es';
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
+import { useResourcesStore } from '@/stores/resources';
+import { useInspectorStore } from '@/stores/inspector';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
+import displayGroups from '@/resources/json/displayGroups.json';
 
 export default {
   props: {
-  },
-  data() {
-    return {
-    };
+    editingObject: {
+      type: String,
+      default: '',
+    },
   },
   methods: {
     groupItem(item) {
       let groupedItems = {};
 
-      // get label and add it to the object for sorting        
+      // get label and add it to the object for sorting
       item.map((obj) => {
         obj.label = this.getLabel(obj);
         return obj;
@@ -33,20 +38,14 @@ export default {
         groupedItems[k].forEach(v => delete v.label);
       });
 
-      
       return groupedItems;
     },
   },
-  events: {
-  },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
     acceptedTypes() {
       return this.getClassTree;
     },
@@ -68,6 +67,9 @@ export default {
     },
     recordType() {
       return VocabUtil.getRecordType(this.formType, this.resources.vocab, this.resources.context);
+    },
+    inClassAndProperty() {
+      return `${this.entityType}.${this.fieldKey}`;
     },
     showTypeChanger() {
       if (this.settings.showTypeChangerFor.includes(this.recordType) || this.settings.showTypeChangerFor.includes(this.inClassAndProperty) || this.isMainEntityForm) {
@@ -95,7 +97,7 @@ export default {
     },
     reverseItemInForm() {
       const reverseItem = cloneDeep(this.reverseItem);
-      const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
+      const propsInMainForm = displayGroups.reverse.mainForm;
       const objToMainForm = {};
       if (reverseItem) {
         each(reverseItem, (item, key) => {
@@ -117,8 +119,8 @@ export default {
       if (typeof reverseItem === 'undefined') {
         return {};
       }
-      const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
-      const propsToHide = require('@/resources/json/displayGroups.json').reverse.hidden;
+      const propsInMainForm = displayGroups.reverse.mainForm;
+      const propsToHide = displayGroups.reverse.hidden;
       const propsToDelete = propsInMainForm.concat(propsToHide);
 
       for (let i = 0; i < propsToDelete.length; i++) {
@@ -221,8 +223,6 @@ export default {
       });
       return sortedAllowed;
     },
-  },
-  watch: {
   },
 };
 </script>

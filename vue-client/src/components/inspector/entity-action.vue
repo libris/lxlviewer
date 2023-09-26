@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'entity-action',
@@ -35,24 +35,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
     iconClassString() {
-      return `fa fa-fw fa-${this.icon} icon--sm`;
+      return [`fas`, this.icon];
     },
   },
-  mounted() {
-    this.$nextTick(() => {
-    });
-  },
-  watch: {
-  },
   methods: {
+    translatePhrase,
     action() {
       this.$emit('action');
     },
@@ -63,18 +51,17 @@ export default {
       this.$emit('dehighlight');
     },
   },
-  components: {
-
-  },
 };
 </script>
 
 <template>
-  <div class="EntityAction" :class="{'action-larger': isLarge, 'has-parent-hovered': parentHovered, 'is-placeholder': placeholder }"
+  <div
+    class="EntityAction"
+    :class="{'action-larger': isLarge, 'has-parent-hovered': parentHovered, 'is-placeholder': placeholder }"
     role="button"
-    :aria-label="label | translatePhrase"
+    :aria-label="translatePhrase(label)"
     tabindex="0"
-    v-tooltip.top="translate(description)"
+    v-tooltip.top="translatePhrase(description)"
     @click="action()"
     @keyup.enter="action()"
     @focus="highlight()"
@@ -82,37 +69,45 @@ export default {
     @blur="dehighlight()"
     @mouseout="dehighlight()"
   >
-    <i :class="iconClassString">
-    </i>
+    <font-awesome-icon :icon="iconClassString" />
     <span class="action-label" v-show="isLarge">
-      {{ label | translatePhrase }}
+      {{ translatePhrase(label) }}
     </span>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .EntityAction {
   display: inline-block;
   transition: color .25s ease;
-  color: @grey-transparent;
+  color: $grey-transparent;
+  min-width: 20px;
+  text-align: center;
+
   .action-label {
     display: none;
     color: inherit;
   }
+
   &.is-placeholder {
     opacity: 0;
     cursor: default;
   }
   &.has-parent-hovered {
-    color: @grey-darker;
+    color: $grey-darker;
   }
+
   &.action-larger {
-    background-color: @white;
+    background-color: $white;
     border: 1px solid;
     border-radius: 0.25rem;
     padding: 0rem 1rem 0rem 0.5rem;
-    margin: 0 0.2rem;
+
+    svg {
+      margin-right: 0.3rem;
+    }
+
     .action-label {
       font-size: 1.3rem;
       display: inline-block;

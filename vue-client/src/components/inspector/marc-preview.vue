@@ -1,7 +1,11 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
+import { mapState, mapWritableState } from 'pinia';
+import { useInspectorStore } from '@/stores/inspector';
 import { isObject } from 'lodash-es';
-import { mapGetters } from 'vuex';
 import PanelComponent from '@/components/shared/panel-component.vue';
+import { useStatusStore } from '@/stores/status';
+import Spinner from '../shared/Spinner.vue';
 
 export default {
   name: 'marc-preview',
@@ -32,12 +36,10 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     hide() {
       this.$emit('hide');
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview' 
-      // });
+      this.keybindState = 'overview';
     },
     isObject(o) {
       return isObject(o);
@@ -54,42 +56,36 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-    ]),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapWritableState(useStatusStore, ['keybindState']),
   },
   components: {
     'panel-component': PanelComponent,
+    Spinner,
   },
   mounted() { 
     this.$nextTick(() => {
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'marc-preview'
-      // });
+      this.keybindState = 'marc-preview';
     });
   },
 };
 </script>
 
 <template>
-  <panel-component class="MarcPreview"
+  <panel-component
+    class="MarcPreview"
     @close="hide"
-    title="Preview MARC21">
-    <template slot="panel-body">
-      <div class="">
+    title="Preview MARC21"
+  >
+    <template #panel-body>
         <div class="MarcPreview-body">
           <div class="MarcPreview-status" v-if="marcObj === null">
             <p v-show="error === null" >
-              {{ "Loading marc" | translatePhrase }}...<br>
-              <i class="fa fa-circle-o-notch fa-spin"></i>
+              {{ translatePhrase("Loading marc") }}...<br>
+              <Spinner />
             </p>
             <p v-show="error !== null" class="MarcPreview-error">
-              {{ "Something went wrong" | translatePhrase }}...
+              {{ translatePhrase("Something went wrong") }}...
             </p>
           </div>
 
@@ -123,13 +119,11 @@ export default {
             </tbody>
           </table>
         </div>
-       
-      </div>
     </template>
   </panel-component>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .MarcPreview {
 

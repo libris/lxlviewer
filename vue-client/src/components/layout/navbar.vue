@@ -1,14 +1,19 @@
 <script>
-import { mapGetters } from 'vuex';
-import { mixin as clickaway } from 'vue-clickaway';
+import { translatePhrase } from '@/utils/filters';
+import { mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useStatusStore } from '@/stores/status';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import * as StringUtil from 'lxljs/string';
-import UserAvatar from '@/components/shared/user-avatar';
-import TabMenu from '@/components/shared/tab-menu';
-import UserSettings from '@/components/usersettings/user-settings';
+import UserAvatar from '@/components/shared/user-avatar.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
+import UserSettings from '@/components/usersettings/user-settings.vue';
+import { Dropdown } from 'floating-vue';
+import { useOauthStore } from '@/stores/oauth';
 
 export default {
   name: 'navbar-component',
-  mixins: [clickaway],
   data() {
     return {
       hasAvatar: true,
@@ -21,23 +26,22 @@ export default {
     'user-avatar': UserAvatar,
     'tab-menu': TabMenu,
     UserSettings,
+    Dropdown,
   },
   computed: {
-    ...mapGetters([
-      'userFlagged',
-      'settings',
-      'status',
-      'user',
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['i18n']),
+    ...mapState(useStatusStore, ['hintSigelChange']),
+    ...mapState(useUserStore, ['user', 'userFlagged']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapState(useOauthStore, ['oauthClient']),
     tabs() {
       const directoryCareBadge = {
         value: this.userFlagged.length === 0 ? '' : this.userFlagged.length,
         type: 'accent',
       };
-      const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language, this.resources.i18n)}`;
+      const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language, this.i18n)}`;
       const loggedInTabs = this.user.isLoggedIn ? [
-        { id: 'Create new', text: 'Create new', link: '/create', icon: 'plus-square-o' },
+        { id: 'Create new', text: 'Create new', link: '/create', icon: 'square-plus' },
         { id: 'Directory care', html: $directoryCare, link: '/directory-care', icon: 'flag', badge: directoryCareBadge }, 
       ] : [];
       const tabs = [
@@ -59,7 +63,7 @@ export default {
     },
     tooltipOptions() {
       const options = {
-        content: `${StringUtil.getUiPhraseByLang('To create concepts, you need to switch to a seal with correct authority.', this.user.settings.language, this.resources.i18n)}`,
+        content: `${StringUtil.getUiPhraseByLang('To create concepts, you need to switch to a seal with correct authority.', this.user.settings.language, this.i18n)}`,
         show: this.showSigelHint,
         trigger: 'manual',
         placement: 'bottom',
@@ -69,6 +73,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     navigate(id) {
       for (const tab of this.tabs) {
         if (tab.id === id) {
@@ -76,21 +81,12 @@ export default {
         }
       }
     },
-    toggleUserMenu() {
-      this.showUserMenu = !this.showUserMenu;
-    },
-    hideUserMenu() {
-      this.showUserMenu = false;
-    },
     login() {
-      window.location = this.$store.getters.oauth2Client.token.getUri();
+      window.location = this.oauthClient.token.getUri();
     },
   },
   watch: {
-    '$route.path'() {
-      this.hideUserMenu();
-    },
-    'status.hintSigelChange'(val) {
+    'hintSigelChange'(val) {
       this.showSigelHint = val;
     },
   },
@@ -102,9 +98,10 @@ export default {
     <div class="NavBar-container" :class="{ 'container': user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
       <div class="NavBar-brand">
         <router-link to="/" class="NavBar-brandLink">
-          <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
+          <img class="NavBar-brandLogo" src="~kungbib-styles/lib/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
         </router-link>
       </div>
+
       <div class="MainNav">
         <tab-menu
           :tabs="tabs"
@@ -113,10 +110,11 @@ export default {
           @go="navigate"
           :link="true"
           lookStyle="dark"
-          />
+        />
       </div>
+
       <ul class="MainNav-userWrapper">
-        <li 
+        <li
           class="MainNav-item" 
           :class="{ 'active': showUserMenu && !isUserPage, 'highlight': highlightNavItem && !isUserPage }" 
           @mouseover="highlightNavItem = true"
@@ -124,29 +122,46 @@ export default {
           @focus="highlightNavItem = true"
           @blur="highlightNavItem = false"
           v-if="user.isLoggedIn"
-          v-tooltip="tooltipOptions" >
-          <div tabindex="0" @click="toggleUserMenu" @keyup.enter="toggleUserMenu">
-            <user-avatar 
-              class="hidden-xs" 
-              :highlight="highlightNavItem && !isUserPage"
-              :size="30" />
-            <user-avatar 
-              class="visible-xs-block" 
-              :highlight="highlightNavItem && !isUserPage"
-              :size="32" />
-            <span class="MainNav-linkText userName hidden-sm">
-            {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
-            </span>
-            <i class="fa fa-fw hidden-xs" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
-          </div>
-          <user-settings 
-            v-if="showUserMenu && !isUserPage" 
-            compact 
-            v-on-clickaway="hideUserMenu" />
+          v-tooltip="{tooltipOptions}"
+        >
+          <Dropdown>
+            <div tabindex="0">
+              <user-avatar
+                class="d-none d-sm-inline-block" 
+                :highlight="highlightNavItem && !isUserPage"
+                :size="30"
+              />
+
+              <user-avatar
+                class="d-inline-block d-sm-none"
+                :highlight="highlightNavItem && !isUserPage"
+                :size="32"
+              />
+
+              <span class="MainNav-linkText userName d-none d-md-inline-block">
+                {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
+              </span>
+
+              <font-awesome-icon
+                :icon="['fas', 'caret-down']"
+                class="d-none d-sm-inline-block"
+                v-if="!isUserPage"
+                :class="{ 'active': showUserMenu }"
+              />
+            </div>
+
+            <template #popper>
+              <user-settings
+                v-if="!isUserPage"
+                compact
+              />
+            </template>
+          </Dropdown>
         </li>
+
         <li class="MainNav-item" v-if="!user.isLoggedIn">
             <span class="MainNav-link" @click="login" @keyup.enter="login">
-              {{"Log in" | translatePhrase}}
+              {{translatePhrase("Log in")}}
             </span>
         </li>
       </ul>
@@ -155,22 +170,23 @@ export default {
 </template>
 
 
-<style lang="less">
+<style lang="scss">
 .NavBar {
   width: 100%;
   height: 4.8rem;
-  background-color: @bg-navbar;
+  background-color: $bg-navbar;
   flex-shrink: 0; // fix ie flexbox height bug
   font-size: 2.4rem;
 
-  @media screen and (min-width: @screen-sm) {
+  @include media-breakpoint-up(sm) {
     font-size: unset;
     line-height: unset;
   }
 
   &-brand {    
     margin-right: 2rem;
-    @media screen and (min-width: @screen-sm) {
+
+    @include media-breakpoint-up(sm) {
       display: none;
     }
   }
@@ -184,7 +200,8 @@ export default {
     height: 1.6em;
     width: 1.6em;
     padding: 0.1em;
-    @media screen and (min-width: @screen-sm){
+
+    @include media-breakpoint-up(sm) {
       height: 2em;
       padding: 0;
       margin-top: 0.1em;
@@ -194,7 +211,8 @@ export default {
     display: flex;
     padding: 0 25px;
     height: 100%;
-    @media screen and (max-width: @screen-lg){
+
+    @include media-breakpoint-down(lg) {
       flex-wrap: wrap;
       width: 100% !important;
     }
@@ -216,7 +234,7 @@ export default {
     height: 100%;
     margin: 0px;
 
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-down(sm) {
       padding: 0;
     }
   }
@@ -229,26 +247,30 @@ export default {
     position: relative;
     text-transform: none;
     cursor: pointer;
-    color: @grey-light;
+    color: $grey-light;
     list-style-type: none;
 
     &.highlight,
     &.active {
-      color: @white;
+      color: $white;
     }
     &:last-of-type a {
       padding-right: 0;
     }
-    
-    @media (max-width: @screen-sm) {
+
+    @include media-breakpoint-down(sm) {
       & .userName {
         display: none;
       }
     }
-    
-    @media (max-width: @screen-md) {
+
+    @include media-breakpoint-down(md) {
       font-size: 16px;
       font-size: 1.6rem;
+    }
+
+    .fa-caret-down {
+      margin-left: .65rem;
     }
   }
 
@@ -258,16 +280,16 @@ export default {
   }
   &-link {
     display: block;
-    color: @grey-light;
+    color: $grey-light;
 
     &:hover, 
     &:focus {
-      color: @white;
+      color: $white;
       text-decoration: none;
     }
 
-    i {
-      color: @text-alt-sticky-bar;
+    svg {
+      color: $text-alt-sticky-bar;
     }
   }
 
@@ -286,5 +308,4 @@ export default {
     margin-top: 0;
   }
 }
-
 </style>

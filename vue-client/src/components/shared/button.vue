@@ -15,6 +15,7 @@ Listen to the 'click' event in the parent as usual.
     * shadow - (default: false) show a shadow under the button
 */
 import { isArray } from 'lodash-es';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'button-component',
@@ -80,32 +81,27 @@ export default {
   },
   computed: {
     computedLabel() {
-      return this.disabled ? '' : this.$options.filters.translatePhrase(this.label);
+      return this.disabled ? '' : translatePhrase(this.label);
     },
     computedButtonText() {
       if (isArray(this.buttonText)) {
         let buttonText = '';
         for (let i = 0; i < this.buttonText.length; i++) {
-          buttonText += this.$options.filters.translatePhrase(this.buttonText[i]);
+          buttonText += translatePhrase(this.buttonText[i]);
           buttonText += ' ';
         }
         return buttonText;
       }
-      return this.$options.filters.translatePhrase(this.buttonText);
+      return translatePhrase(this.buttonText);
     },
-  },
-  components: {
-  },
-  watch: {
-  },
-  mounted() {
-    this.$nextTick(() => {});
   },
 };
 </script>
 
 <template>
-  <button class="Button" v-tooltip.top="computedLabel"
+  <button
+    class="Button"
+    v-tooltip.top="computedLabel"
     :class="[
       {
         'has-shadow': shadow, 
@@ -121,15 +117,16 @@ export default {
       this.variant ? 'Button-' + this.variant : '',
     ]"
     @click="action()"
-    :aria-label="computedLabel">
+    :aria-label="computedLabel"
+  >
     <span v-if="icon">
-      <i :class="`fa fa-fw fa-${icon}`" aria-hidden="true"></i>
+      <font-awesome-icon :icon="['fa', icon]" aria-hidden="true"></font-awesome-icon>
     </span>
     <span class="Button-buttonText" v-if="computedButtonText">{{ computedButtonText }}</span>
   </button>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .Button {
   position: relative;
   // margin: 5px;
@@ -169,54 +166,54 @@ export default {
   }
 
   // BUTTON COLOR MIXIN
-  .ButtonMixin(@color) {
+  @mixin ButtonMixin($color) {
     border: 1px solid;
     border-color: transparent;
-    background-color: @color;
-    color: if((luma(@color) < 50), @white, @black);
+    background-color: $color;
+    color: if((luma($color) < 50), $white, $black);
     &:hover, &:active, &:focus {
-      @hover-color: hsl(hue(@color), saturation(@color), lightness(@color)-5%);
-      color: if((luma(@hover-color) < 50), @white, @black);
-      background-color: @hover-color;
+      $hover-color: hsl(hue($color), saturation($color), lightness($color)-5%);
+      color: if((luma($hover-color) < 50), $white, $black);
+      background-color: $hover-color;
     }
     &:active {
-      box-shadow: inset 0em 0em 0.75rem 0em fadeout(darken(@color, 60%), 75%);
+      box-shadow: inset 0em 0em 0.75rem 0em fadeout(darken($color, 60%), 75%);
     }
     &.is-inverted {
-      border-color: @color;
-      color: @color;
-      background-color: @neutral-color;
+      border-color: $color;
+      color: $color;
+      background-color: $neutral-color;
       &:hover, &:active {
-        @hover-color: hsl(hue(@color), saturation(@color), lightness(@color)-5%);
-        color: @color;
-        background-color: fadeout(@hover-color, 85%);
+        $hover-color: hsl(hue($color), saturation($color), lightness($color)-5%);
+        color: $color;
+        background-color: fadeout($hover-color, 85%);
       }
       &:active {
-        box-shadow: inset 0em 0em 0.75rem 0em fadeout(darken(@color, 60%), 75%);
+        box-shadow: inset 0em 0em 0.75rem 0em fadeout(darken($color, 60%), 75%);
       }
     }
     &.is-transparent {
       background-color: transparent;
     }
     &.disabled {
-      border-color: @grey-lighter !important;
-      color: @grey !important;
-      background-color: @grey-lighter !important;
+      border-color: $grey-lighter !important;
+      color: $grey !important;
+      background-color: $grey-lighter !important;
       cursor: not-allowed !important;
       &:hover, &:active {
-        border-color: @grey-lighter !important;
-        color: @grey !important;
-        background-color: @grey-lighter !important;
+        border-color: $grey-lighter !important;
+        color: $grey !important;
+        background-color: $grey-lighter !important;
         box-shadow: none !important;
       }
       &.is-inverted {
-        border-color: @grey-lighter !important;
-        color: @grey !important;
-        background-color: @grey-lighter !important;
+        border-color: $grey-lighter !important;
+        color: $grey !important;
+        background-color: $grey-lighter !important;
         &:hover, &:active {
-          border-color: @grey-lighter !important;
-          color: @grey !important;
-          background-color: @grey-lighter !important;
+          border-color: $grey-lighter !important;
+          color: $grey !important;
+          background-color: $grey-lighter !important;
           box-shadow: none !important;
         }
       }
@@ -225,34 +222,34 @@ export default {
 
   // Color
   &-default {
-    .ButtonMixin(@brand-primary);
+    @include ButtonMixin($brand-primary);
   }
   &-warning {
-    .ButtonMixin(@brand-warning);
+    @include ButtonMixin($brand-warning);
   }
   &-primary {
-    .ButtonMixin(@brand-primary);
+    @include ButtonMixin($brand-primary);
   }
   &-accent {
-    .ButtonMixin(@brand-accent);
+    @include ButtonMixin($brand-accent);
   }
   &-accent2 {
-    .ButtonMixin(@brand-accent2);
+    @include ButtonMixin($brand-accent2);
   }
   &-accent3 {
-    .ButtonMixin(@brand-accent3);
+    @include ButtonMixin($brand-accent3);
   }
   &-danger {
-    .ButtonMixin(@brand-danger);
+    @include ButtonMixin($brand-danger);
   }
   &-success {
-    .ButtonMixin(@brand-success);
+    @include ButtonMixin($brand-success);
   }
   &-info {
-    .ButtonMixin(@brand-info);
+    @include ButtonMixin($brand-info);
   }
-  
-  i {
+
+  svg {
     transition: transform 0.25s ease;
     &.rotate-45 {
       transform: rotate(45deg);

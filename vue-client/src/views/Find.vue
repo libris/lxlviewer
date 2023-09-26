@@ -1,14 +1,19 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
 import { each, isArray, isPlainObject } from 'lodash-es';
-import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
+import { mapActions, mapState, mapWritableState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useStatusStore } from '@/stores/status';
+import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Copy from '@/resources/json/copy.json';
-import FacetControls from '@/components/search/facet-controls';
-import SearchResult from '@/components/search/search-result';
-import TabMenu from '@/components/shared/tab-menu';
+import Spinner from '@/components/shared/Spinner.vue';
+import FacetControls from '@/components/search/facet-controls.vue';
+import SearchResult from '@/components/search/search-result.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
 
 export default {
   name: 'Find',
@@ -23,8 +28,6 @@ export default {
       query: '',
     };
   },
-  events: {
-  },
   watch: {
     '$route.fullPath'(value, oldValue) {
       if (value !== oldValue) {
@@ -37,13 +40,15 @@ export default {
       this.emptyResults();
       this.hideFacetColumn = true;
       if (value === 'remote') {
-        if (this.status.remoteDatabases.length === 0) {
+        if (this.remoteDatabases.length === 0) {
           this.hideFacetColumn = false;
         }
       }
     },
   },
   methods: {
+    translatePhrase,
+    ...mapActions(useStatusStore, ['pushNotification']),
     setSearchPerimeter(id) {
       this.$router.push({ path: `/search/${id}` }).catch(() => {});
     },
@@ -66,16 +71,20 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/find.jsonld?${this.query}`;
       fetch(fetchUrl).then((response) => {
         if (response.status === 400) {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Invalid query', this.user.settings.language)}` });
+          this.pushNotification({
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Invalid query', this.user.settings.language)}`
+          });
         } else {
           response.json().then((result) => {
             this.result = result;
           }, () => {
             const msg = [
-              `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}`,
-              `${StringUtil.getUiPhraseByLang('Could not process server response', this.user.settings.language, this.resources.i18n)}`,
+              `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.i18n)}`,
+              `${StringUtil.getUiPhraseByLang('Could not process server response', this.user.settings.language, this.i18n)}`,
             ];
-            this.$store.dispatch('pushNotification', {
+
+            this.pushNotification({
               type: 'danger',
               message: msg.join('. '),
             });
@@ -84,7 +93,11 @@ export default {
 
         this.searchInProgress = false;
       }, (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} ${error}` });
+        this.pushNotification({
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.i18n)} ${error}`
+        });
+
         this.searchInProgress = false;
       });
     },
@@ -93,18 +106,24 @@ export default {
       this.hideFacetColumn = true;
 
       fetch(fetchUrl, { headers: { Authorization: `Bearer ${this.user.token}` } }).then(response => response.json(), (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} ${error}` });
+        this.pushNotification({
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.i18n)} ${error}`
+        });
         this.searchInProgress = false;
       }).then((result) => {
         this.result = this.convertRemoteResult(result);
 
-        this.$store.dispatch('setStatusValue', { property: 'workingRemoteDatabases', value: this.result.workingDbs });
-        this.$store.dispatch('setStatusValue', { property: 'failedRemoteDatabases', value: this.result.failedDbs });
+        this.workingRemoteDatabases = this.result.workingDbs;
+        this.failedRemoteDatabases = this.result.failedDbs;
 
         if (this.result.failedDbs.length > 0) {
-          const errorBase = StringUtil.getUiPhraseByLang('The following database(s) could not be reached, try again later:', this.user.settings.language, this.resources.i18n);
+          const errorBase = StringUtil.getUiPhraseByLang('The following database(s) could not be reached, try again later:', this.user.settings.language, this.i18n);
           const errorMessage = `${errorBase} ${this.result.failedDbs.join(', ')}`;
-          this.$store.dispatch('pushNotification', { type: 'danger', message: errorMessage });
+          this.pushNotification({
+            type: 'danger',
+            message: errorMessage
+          });
         }
 
         this.importData = result.items;
@@ -162,23 +181,22 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'user',
-      'settings',
-      'status',
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['i18n']),
+    ...mapState(useStatusStore, ['panelOpen', 'remoteDatabases']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useStatusStore, ['workingRemoteDatabases', 'failedRemoteDatabases']),
     findTabs() {
       const tabs = [
         { 
           id: 'libris', 
-          text: StringUtil.getUiPhraseByLang('Libris', this.user.settings.language, this.resources.i18n),
+          text: StringUtil.getUiPhraseByLang('Libris', this.user.settings.language, this.i18n),
         },
         { 
           id: 'remote', 
-          text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language, this.resources.i18n),
+          text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language, this.i18n),
           disabled: !this.user.isLoggedIn,
-          tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('Sign in to search other sources', this.user.settings.language, this.resources.i18n) : null,
+          tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('Sign in to search other sources', this.user.settings.language, this.i18n) : null,
         },
       ];
       return tabs;
@@ -225,7 +243,7 @@ export default {
     TabMenu,
     'facet-controls': FacetControls,
     'search-result': SearchResult,
-    'vue-simple-spinner': VueSimpleSpinner,
+    Spinner,
   },
 };
 
@@ -233,26 +251,46 @@ export default {
 
 <template>
   <div class="row">
-    <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
+    <div class="col-sm-12 col-md-3 Column-facets" v-if="!panelOpen">
       <tab-menu
         @go="setSearchPerimeter"
         :active="$route.params.perimeter"
         :tabs="findTabs"
       />
-      <div v-if="$route.params.perimeter === 'libris'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ 'Filter' | translatePhrase }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
-      <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
+      <div v-if="$route.params.perimeter === 'libris'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">
+        {{ translatePhrase('Filter') }} 
+        <font-awesome-icon
+          :icon="['fas', 'caret-down']"
+          class="d-md-none"
+          v-if="!hideFacetColumn"
+        />
+
+        <font-awesome-icon
+          :icon="['fas', 'caret-right']"
+          class="d-md-none"
+          v-if="hideFacetColumn"
+        />
+      </div>
+
+      <facet-controls
+        :class="{'d-none d-md-block': hideFacetColumn }"
+        :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"
+      />
+
       <portal-target name="facetColumn" />
     </div>
+
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">
         <div class="Find-progressText">
-          <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+          <Spinner size="lg" :message="translatePhrase('Searching')"></Spinner>
         </div>
     </div>
-    <div 
+
+    <div
       class="col-sm-12 Find-content Column-searchResult" 
       :class="{
-        'col-md-9': !status.panelOpen,
-        'col-md-7': status.panelOpen
+        'col-md-9': !panelOpen,
+        'col-md-7': panelOpen
         }">
       <search-result
         v-show="!searchInProgress"
@@ -265,7 +303,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .Find {
   &-facetHeading {
@@ -283,19 +321,19 @@ export default {
     height: unset;
     min-height: unset;
     padding-bottom: 0;
-    @media (min-width: @screen-md) {
+    @include media-breakpoint-up(md) {
       padding-bottom: 5rem;
       height: 100%;
       min-height: 50vh;
     }
-    border: solid @grey-lighter;
+    border: solid $grey-lighter;
     border-width: 0px 1px 0px 0px;
     input {
       background-color: #fff;
-      border: 1px solid @grey-lighter;
+      border: 1px solid $grey-lighter;
       margin: 0.5em 0;
       &:focus {
-        border-color: @brand-primary;
+        border-color: $brand-primary;
       }
     }
     .sectionDivider {

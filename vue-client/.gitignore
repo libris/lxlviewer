@@ -5,6 +5,10 @@ node_modules
 /tests/e2e/videos/
 /tests/e2e/screenshots/
 
+# Public files
+/public/styles.css
+/public/styles.css.map
+
 # env files that are generated
 .env.production
 

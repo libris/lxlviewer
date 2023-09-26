@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
 import Button from '@/components/shared/button.vue';
 
 export default {
@@ -28,14 +28,12 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     action() {
       this.$emit('action');
     },
   },
   computed: {
-    ...mapGetters([
-      'settings',
-    ]),
     getIcon() {
       if (this.disabled) return 'check';
       if (this.replaced) return 'ban';
@@ -72,7 +70,7 @@ export default {
         :indicator="!disabled || !replaced"
         :label="getTooltipText" 
         size="large"
-        v-tooltip.right="translate(getTooltipText)"
+        v-tooltip.right="translatePhrase(getTooltipText)"
         @click="action()"
         @keyup.enter="action()">
       </button-component>
@@ -80,7 +78,7 @@ export default {
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .SummaryAction {
   display: flex;
@@ -90,15 +88,15 @@ export default {
     margin-top: 5px;
 
     .fa-stack-1x {
-      color: @white;
+      color: $white;
     }
     .fa-stack-2x {
       transition: color 0.25s ease;
-      color: @link-color;
+      color: $link-color;
     }
     &:hover {
       .fa-stack-2x {
-        color: @link-hover-color;
+        color: $link-hover-color;
       }
     }
   }

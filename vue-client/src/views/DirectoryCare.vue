@@ -1,19 +1,23 @@
 <script>
-import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
+import { mapActions, mapState } from 'pinia';
+import { useResourcesStore } from '@/stores/resources';
+import { useUserStore } from '@/stores/user';
+import { useStatusStore } from '@/stores/status';
 import { filter } from 'lodash-es';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as HttpUtil from '@/utils/http';
-import TabMenu from '@/components/shared/tab-menu';
-import HoldingMover from '@/components/care/holding-mover';
-import ModalComponent from '@/components/shared/modal-component';
+import TabMenu from '@/components/shared/tab-menu.vue';
+import HoldingMover from '@/components/care/holding-mover.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
 
 export default {
   name: 'DirectoryCare',
   components: {
-    'tab-menu': TabMenu,
-    'holding-mover': HoldingMover,
-    'modal-component': ModalComponent,
+    TabMenu,
+    HoldingMover,
+    ModalComponent,
   },
   data() {
     return {
@@ -32,14 +36,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'settings',
-      'userFlagged',
-      'user',
-      'resources',
-    ]),
+    ...mapState(useResourcesStore, ['context', 'vocab', 'i18n']),
+    ...mapState(useUserStore, ['user', 'userFlagged']),
     flaggedInstances() {
-      return filter(this.fetchedItems, o => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
+      return filter(this.fetchedItems, o => VocabUtil.getRecordType(o['@type'], this.vocab, this.context) === 'Instance');
     },
   },
   watch: {
@@ -50,6 +50,8 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
+    ...mapActions(useStatusStore, ['pushNotification', 'pushLoadingIndicator', 'removeLoadingIndicator']),
     switchTool(id) {
       this.$router.push({ path: `/directory-care/${id}` });
     },
@@ -83,35 +85,28 @@ export default {
           this.allDone();
         })
         .catch(() => {
-          this.$store.dispatch('pushNotification',
-            { 
-              type: 'danger',
-              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}`, 
-            })
-            .then(() => {
-              this.allDone();
-            });
+          this.pushNotification({
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.i18n)}`,
+          });
+          this.allDone();
         });
     },
     allDone() {
-      this.$store.dispatch('removeLoadingIndicator', 'Loading')
-        .then(() => {
-          this.fetchComplete = true;
-          if (this.errors.removed.length > 0) {
-            this.showModal = true;
-          }
-          if (this.errors.other.length > 0) {
-            this.$store.dispatch('pushNotification',
-              {
-                type: 'danger',
-                message: `${StringUtil.getUiPhraseByLang('The following resources could not be retrieved', this.user.settings.language, this.resources.i18n)}: 
-                ${this.errors.other.map(el => el.label).join(', ')}`, 
-              })
-              .then(() => {
-                this.errors.other = [];
-              });
-          }
+      this.removeLoadingIndicator('Loading');
+      this.fetchComplete = true;
+      if (this.errors.removed.length > 0) {
+        this.showModal = true;
+      }
+      if (this.errors.other.length > 0) {
+        this.pushNotification({
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('The following resources could not be retrieved', this.user.settings.language, this.i18n)}: 
+          ${this.errors.other.map(el => el.label).join(', ')}`, 
         });
+
+        this.errors.other = [];
+      }
     },
     closeModal() {
       this.showModal = false;
@@ -119,8 +114,12 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('pushLoadingIndicator', 'Loading');
+    this.pushLoadingIndicator('Loading');
     this.fetchAllFlagged();
+
+    if (this.$route.params.tool == null || this.$route.params.tool == '') {
+      this.switchTool(this.tabs[0].id);
+    }
   },
 };
 </script>
@@ -128,37 +127,46 @@ export default {
 <template>
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
-      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
-      <holding-mover 
+      <TabMenu @go="switchTool" :tabs="tabs" :active="$route.params.tool" />
+
+      <HoldingMover
         v-if="$route.params.tool === 'holdings'"
-        :flaggedInstances="flaggedInstances"/>
+        :flaggedInstances="flaggedInstances"
+      />
+
       <div class="" v-if="$route.params.tool === 'merge'">
         <h1>merge records</h1>
         <!-- replace this whole div with the component -->
       </div>
-      <modal-component 
+
+      <ModalComponent
         v-if="showModal"
         title="Directory care list adjusted" 
         modal-type="info" 
-        @close="closeModal">
-        <div slot="modal-body" class="DirectoryCare-modalBody">
-          <p>{{ ['The following resources could not be retrieved', 
-            'because they no longer exist. They have been removed from the directory care list'] | translatePhrase }}:</p>
-          <ul>
-            <li v-for="error in errors.removed" :key="error['@id']">
-              {{error.label}}
-            </li>
-          </ul>
-          <div class="DirectoryCare-modalBtnContainer">
-            <button class="btn btn-primary btn--md" @click="closeModal">OK</button>
+        @close="closeModal"
+      >
+        <template #modal-body>
+          <div class="DirectoryCare-modalBody">
+            <p>{{ translatePhrase(['The following resources could not be retrieved', 
+              'because they no longer exist. They have been removed from the directory care list']) }}:</p>
+
+            <ul>
+              <li v-for="error in errors.removed" :key="error['@id']">
+                {{error.label}}
+              </li>
+            </ul>
+
+            <div class="DirectoryCare-modalBtnContainer">
+              <button class="btn btn-primary btn--md" @click="closeModal">OK</button>
+            </div>
           </div>
-        </div>
-      </modal-component>
+        </template>
+      </ModalComponent>
     </div>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 
 .DirectoryCare {
   margin-bottom: 2em;

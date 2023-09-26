@@ -1,7 +1,14 @@
-
 <script>
+import { translatePhrase, lowercase, labelByLang } from '@/utils/filters';
 import { cloneDeep, each, get } from 'lodash-es';
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapState, mapWritableState } from 'pinia';
+import { useInspectorStore } from '@/stores/inspector';
+import { useStatusStore } from '@/stores/status';
+import { useUserStore } from '@/stores/user';
+import { useResourcesStore } from '@/stores/resources';
+import { useSettingsStore } from '@/stores/settings';
+import { useEnrichmentStore } from '@/stores/enrichment';
+import { useOauthStore } from '@/stores/oauth';
 import * as LxlDataUtil from 'lxljs/data';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
@@ -10,16 +17,16 @@ import * as DataUtil from '@/utils/data';
 import * as HttpUtil from '@/utils/http';
 import * as RecordUtil from '@/utils/record';
 import { checkAutoShelfControlNumber } from '@/utils/shelfmark';
-import EntityForm from '@/components/inspector/entity-form';
-import Toolbar from '@/components/inspector/toolbar';
-import DetailedEnrichment from '@/components/care/detailed-enrichment';
-import EntityChangelog from '@/components/inspector/entity-changelog';
-import EntityHeader from '@/components/inspector/entity-header';
-import Breadcrumb from '@/components/inspector/breadcrumb';
-import ModalComponent from '@/components/shared/modal-component';
-import MarcPreview from '@/components/inspector/marc-preview';
-import TabMenu from '@/components/shared/tab-menu';
-import ValidationSummary from '@/components/inspector/validation-summary';
+import EntityForm from '@/components/inspector/entity-form.vue';
+import Toolbar from '@/components/inspector/toolbar.vue';
+import DetailedEnrichment from '@/components/care/detailed-enrichment.vue';
+import EntityChangelog from '@/components/inspector/entity-changelog.vue';
+import EntityHeader from '@/components/inspector/entity-header.vue';
+import Breadcrumb from '@/components/inspector/breadcrumb.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
+import MarcPreview from '@/components/inspector/marc-preview.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
+import ValidationSummary from '@/components/inspector/validation-summary.vue';
 import FullscreenPanel from '../components/shared/fullscreen-panel.vue';
 import VersionHistory from '../components/inspector/version-history.vue';
 
@@ -76,26 +83,26 @@ export default {
     };
   },
   methods: {
-    ...mapActions([
-      'setEnrichmentSource',
-      'setEnrichmentTarget',
-    ]),
+    translatePhrase, lowercase, labelByLang,
+    ...mapActions(useStatusStore, ['pushNotification', 'pushLoadingIndicator', 'removeLoadingIndicator']),
+    ...mapActions(useEnrichmentStore, ['setEnrichmentSource']),
+    ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue', 'flushChangeHistory']),
     replaceData(data) {
-      this.$store.dispatch('setInspectorData', data);
+      this.data = data;
     },
     openDetailedEnrichmentModal() {
       const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
       detailedEnrichmentModal.open = true;
-      this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+      this.setInspectorStatusValue({ property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
     },
     closeDetailedEnrichmentModal() {
       const detailedEnrichmentModal = this.inspector.status.detailedEnrichmentModal;
       detailedEnrichmentModal.open = false;
-      this.$store.dispatch('setInspectorStatusValue', { property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
+      this.setInspectorStatusValue({ property: 'detailedEnrichmentModal', value: detailedEnrichmentModal });
     },
     applyOverride(data) {
-      this.$store.dispatch('setInspectorData', data);
-      this.$store.dispatch('pushNotification', {
+      this.data = data;
+      this.pushNotification({
         type: 'success',
         message: `${StringUtil.getUiPhraseByLang('Form updated, don\'t forget to save', this.user.settings.language, this.resources.i18n)}`,
       });
@@ -148,19 +155,18 @@ export default {
       }
     },
     openMarcPreview() {
-      this.$store.dispatch('pushInspectorEvent', {
+      this.event = {
         name: 'form-control',
         value: 'close-modals',
-      })
-        .then(() => {
-          this.marcPreview.active = true;
-          RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
-            this.marcPreview.data = result;
-          }, (error) => {
-            this.marcPreview.data = null;
-            this.marcPreview.error = error;
-          });
-        });
+      };
+
+      this.marcPreview.active = true;
+      RecordUtil.convertToMarc(this.inspector.data, this.settings, this.user).then((result) => {
+        this.marcPreview.data = result;
+      }, (error) => {
+        this.marcPreview.data = null;
+        this.marcPreview.error = error;
+      });
     },
     fetchDocument() {
       const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
@@ -173,17 +179,17 @@ export default {
           this.loadFailure = {
             status: response.status,
           };
-          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+          this.removeLoadingIndicator('Loading document');
         } else {
-          this.$store.dispatch('pushNotification', {
+          this.pushNotification({
             type: 'danger',
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
           });
-          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+          this.removeLoadingIndicator('Loading document');
         }
         return null;
       }, (error) => {
-        this.$store.dispatch('pushNotification', {
+        this.pushNotification({
           type: 'danger',
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
         });
@@ -191,7 +197,7 @@ export default {
         if (typeof result !== 'undefined') {
           this.result = result;
           const splitFetched = LxlDataUtil.splitJson(result);
-          this.$store.dispatch('setInspectorData', splitFetched);
+          this.data = splitFetched;
           this.onRecordLoaded();
         }
       });
@@ -199,10 +205,10 @@ export default {
     initializeRecord() {
       this.documentETag = null; // Reset this
       this.marcPreview.active = false;
-      this.$store.dispatch('pushLoadingIndicator', 'Loading document');
+      this.pushLoadingIndicator('Loading document');
       this.recordLoaded = false;
-      this.$store.dispatch('flushChangeHistory');
-      this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: 'mainEntity' });
+      this.flushChangeHistory();
+      this.setInspectorStatusValue({ property: 'focus', value: 'mainEntity' });
 
       if (this.$route.name === 'Inspector' || this.$route.name === 'DocumentHistory') {
         console.log('Initializing view for existing document');
@@ -230,19 +236,19 @@ export default {
           if (response.status === 200) {
             return response.json();
           } if (response.status === 404 || response.status === 410) {
-            this.$store.dispatch('pushNotification', {
+            this.pushNotification({
               type: 'danger',
               message: `${StringUtil.getUiPhraseByLang('The record was not found', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
             });
           } else {
-            this.$store.dispatch('pushNotification', {
+            this.pushNotification({
               type: 'danger',
               message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
             });
           }
           return false;
         }, (error) => {
-          this.$store.dispatch('pushNotification', {
+          this.pushNotification({
             type: 'danger',
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
           });
@@ -259,7 +265,7 @@ export default {
       }
     },
     applyAsDetailedEnrichment(data) {
-      this.setEnrichmentTarget(this.inspector.data);
+      this.enrichmentData.target = this.inspector.data;
       this.setEnrichmentSource(data);
       this.openDetailedEnrichmentModal();
     },
@@ -270,19 +276,19 @@ export default {
         if (response.status === 200) {
           return response.json();
         } if (response.status === 404 || response.status === 410) {
-          this.$store.dispatch('pushNotification', {
+          this.pushNotification({
             type: 'danger',
             message: `${StringUtil.getUiPhraseByLang('The record was not found', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
           });
         } else {
-          this.$store.dispatch('pushNotification', {
+          this.pushNotification({
             type: 'danger',
             message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
           });
         }
         return false;
       }, (error) => {
-        this.$store.dispatch('pushNotification', {
+        this.pushNotification({
           type: 'danger',
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
         });
@@ -313,7 +319,10 @@ export default {
         const tempRecordLabel = StringUtil.getLabelByLang(tempRecordType, this.user.settings.language, this.resources);
         const errorBase = `${StringUtil.getUiPhraseByLang('The types do not match', this.user.settings.language, this.resources.i18n)}`;
         const errorMessage = `"${tempRecordLabel}" ${StringUtil.getUiPhraseByLang('is not compatible with', this.user.settings.language, this.resources.i18n)} "${baseRecordLabel}"`;
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}! ${errorMessage}` });
+        this.pushNotification({
+          type: 'danger',
+          message: `${errorBase}! ${errorMessage}`
+        });
         return;
       }
 
@@ -360,21 +369,21 @@ export default {
         applyChangeList('mainEntity.instanceOf', 'work');
       }
       if (changeList.length !== 0) {
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: changeList,
           addToHistory: false,
         });
-        this.$store.dispatch('setInspectorStatusValue', {
+        this.setInspectorStatusValue({
           property: 'embellished',
           value: changeList,
         });
         this.justEmbellished = true;
-        this.$store.dispatch('pushNotification', {
+        this.pushNotification({
           type: 'success',
           message: `${changeList.length} ${StringUtil.getUiPhraseByLang('field(s) added from template', this.user.settings.language, this.resources.i18n)}`,
         });
       } else {
-        this.$store.dispatch('pushNotification', {
+        this.pushNotification({
           type: 'info',
           message: `${StringUtil.getUiPhraseByLang('The record already contains these fields', this.user.settings.language, this.resources.i18n)}`,
         });
@@ -390,54 +399,60 @@ export default {
       this.closeRemoveModal();
       const url = `${this.settings.apiPath}/${this.documentId}`;
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
-        this.$store.dispatch('pushNotification', { 
+        this.pushNotification({
           type: 'success', 
-          message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language, this.resources.i18n)}!`, 
+          message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language, this.resources.i18n)}!`, 
         });
         // Force reload
         this.$router.go(-1);
       }, (error) => {
         if (error.status === 403) {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Forbidden', this.user.settings.language, this.resources.i18n)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.user.settings.language, this.resources.i18n)} - ${error.statusText}` });
+          this.pushNotification({
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Forbidden', this.user.settings.language, this.resources.i18n)} - ${StringUtil.getUiPhraseByLang('This entity may have active links', this.user.settings.language, this.resources.i18n)} - ${error.statusText}`
+          });
         } else {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.statusText}` });
+          this.pushNotification({
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.statusText}`
+          });
         }
       });
     },
     loadDocument() {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
+      this.setInspectorStatusValue({ property: 'isNew', value: false });
 
       this.stopEditing();
       this.fetchDocument();
     },
     loadNewDocument() {
       const insertData = this.inspector.insertData;
-      this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: true });
+      this.setInspectorStatusValue({ property: 'isNew', value: true });
 
       if (!insertData.hasOwnProperty('@graph') || insertData['@graph'].length === 0) {
-        this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+        this.removeLoadingIndicator('Loading document');
         this.$router.replace('/create');
         console.warn('New document called without input data, routing user back.');
       } else {
-        this.$store.dispatch('setInspectorData', LxlDataUtil.splitJson(insertData));
+        this.data = LxlDataUtil.splitJson(insertData);
         this.startEditing();
         this.onRecordLoaded();
         DataUtil.fetchMissingLinkedToQuoted(insertData, this.$store);
       }
     },
     onRecordLoaded() {
-      this.$store.dispatch('setInsertData', '');
-      this.$store.dispatch('flushChangeHistory');
-      this.$store.dispatch('saveLangTagSearch', '');
-      this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+      this.insertData = '';
+      this.flushChangeHistory();
+      this.langTagSearch = '';
+      this.removeLoadingIndicator('Loading document');
 
       this.recordLoaded = true;
 
       this.$nextTick(() => {
-        this.$store.dispatch('pushInspectorEvent', {
+        this.event = {
           name: 'record-events',
           value: 'on-record-loaded',
-        });
+        };
       });
     },
     checkForAutomaticFixes() {
@@ -459,11 +474,11 @@ export default {
         && mainEntity.hasComponent[0].hasOwnProperty('heldBy') === true
       ) {
         window.lxlWarning(`🚑 Found holding without heldBy property. Adding heldBy found in hasComponent (${this.user.settings.activeSigel}).`);
-        this.$store.dispatch('setInspectorStatusValue', {
+        this.setInspectorStatusValue({
           property: 'lastAdded',
           value: 'mainEntity.heldBy',
         });
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [{
             path: 'mainEntity.heldBy',
             value: mainEntity.hasComponent[0].heldBy,
@@ -475,11 +490,11 @@ export default {
     addCataloguersNote() {
       const record = this.inspector.data.record;
       if (record.hasOwnProperty('cataloguersNote') === false) {
-        this.$store.dispatch('setInspectorStatusValue', {
+        this.setInspectorStatusValue({
           property: 'lastAdded',
           value: 'record.cataloguersNote',
         });
-        this.$store.dispatch('updateInspectorData', {
+        this.updateInspectorData({
           changeList: [{
             path: 'record.cataloguersNote',
             value: [''],
@@ -489,9 +504,9 @@ export default {
       }
     },
     startEditing() {
-      this.$store.dispatch('setOriginalData', this.inspector.data);
+      this.originalData = cloneDeep(this.inspector.data);
       this.loadingEdit = true;
-      this.$store.dispatch('setInspectorStatusValue', {
+      this.setInspectorStatusValue({
         property: 'editing',
         value: true,
       });
@@ -499,7 +514,7 @@ export default {
     },
     stopEditing() {
       // THIS IS NOT THE SAME AS THE "CANCEL"-EVENT
-      this.$store.dispatch('setInspectorStatusValue', {
+      this.setInspectorStatusValue({
         property: 'editing',
         value: false,
       });
@@ -507,8 +522,8 @@ export default {
     doCancel() {
       this.stopEditing();
       // Restore record
-      this.$store.dispatch('setInspectorData', this.inspector.originalData);
-      this.$store.dispatch('flushChangeHistory');
+      this.data = this.inspector.originalData;
+      this.flushChangeHistory();
     },
     cancelEditing(callback) {
       if (this.inspector.status.editing) {
@@ -552,14 +567,14 @@ export default {
         ).join(', ');
         if (header.length > 0 && header !== '{Unknown}') {
           const title = header;
-          this.$store.dispatch('setInspectorTitle', title);
+          this.title = title;
           this.documentTitle = title;
         }
       }
     },
     setEditorFocus(value) {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'focus', value: value });
-      this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'focus-changed' });
+      this.setInspectorStatusValue({ property: 'focus', value: value });
+      this.event = { name: 'form-control', value: 'focus-changed' };
     },
     downloadJson() {
       const focusId = this.inspector.data.record['@id'];
@@ -608,27 +623,27 @@ export default {
     },
     duplicateItem() {
       if (!this.status.inEdit && !this.isItem) {
-        this.$store.dispatch('pushLoadingIndicator', 'Preparing copy');
+        this.pushLoadingIndicator('Preparing copy');
         const duplicate = RecordUtil.prepareDuplicateFor(this.inspector.data, this.user, this.settings.keysToClear.duplication);
-        this.$store.dispatch('setInsertData', duplicate);
+        this.insertData = duplicate;
         setTimeout(() => {
-          this.$store.dispatch('removeLoadingIndicator', 'Preparing copy');
+          this.removeLoadingIndicator('Preparing copy');
           this.$router.push({ path: '/new' });
         }, 0);
       }
     },
     createDigitalReproduction() {
-      this.$store.dispatch('pushLoadingIndicator', 'Preparing reproduction');
+      this.pushLoadingIndicator('Preparing reproduction');
       const repro = RecordUtil.getDigitalReproductionObject(this.inspector.data, this.resources, this.settings);
       const cleanedRepro = RecordUtil.prepareDuplicateFor(repro, this.user, []);
-      this.$store.dispatch('setInsertData', cleanedRepro);
+      this.insertData = cleanedRepro;
       setTimeout(() => {
-        this.$store.dispatch('removeLoadingIndicator', 'Preparing reproduction');
+        this.removeLoadingIndicator('Preparing reproduction');
         this.$router.push({ path: '/new' });
       }, 0);
     },
     saveItem(done = false) {
-      this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
+      this.setInspectorStatusValue({ property: 'saving', value: true });
 
       const RecordId = this.inspector.data.record['@id'];
       let obj = null;
@@ -637,8 +652,11 @@ export default {
       } catch (e) {
         const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
         const errorMessage = `${StringUtil.getUiPhraseByLang(e.message, this.user.settings.language, this.resources.i18n)}`;
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
-        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        this.pushNotification({
+          type: 'danger',
+          message: `${errorBase}. ${errorMessage}.`
+        });
+        this.setInspectorStatusValue({ property: 'saving', value: false });
         return;
       }
 
@@ -669,9 +687,9 @@ export default {
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
           setTimeout(() => {
-            this.$store.dispatch('pushNotification', { 
+            this.pushNotification({
               type: 'success', 
-              message: `${this.$options.filters.labelByLang(this.recordType)}  ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language, this.resources.i18n)}!`,
+              message: `${labelByLang(this.recordType)}  ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language, this.resources.i18n)}!`,
             });
           }, 10);
           this.warnOnSave();
@@ -679,9 +697,9 @@ export default {
         } else {
           this.fetchDocument();
           setTimeout(() => {
-            this.$store.dispatch('pushNotification', {
+            this.pushNotification({
               type: 'success', 
-              message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language, this.resources.i18n)}!`,
+              message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language, this.resources.i18n)}!`,
             });
           }, 10);
           this.warnOnSave();
@@ -689,40 +707,51 @@ export default {
             this.stopEditing();
           } else {
             // Reset original data that should be restored when you click cancel
-            this.$store.dispatch('setOriginalData', LxlDataUtil.splitJson(obj));
+            this.originalData = cloneDeep(LxlDataUtil.splitJson(obj));
           }
         }
-        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-        this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
+        this.setInspectorStatusValue({ property: 'saving', value: false });
+        this.setInspectorStatusValue({ property: 'isNew', value: false });
       }, (error) => {
-        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        this.setInspectorStatusValue({ property: 'saving', value: false });
         const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
         let errorMessage = '';
         switch (error.status) {
           case 412:
             errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.user.settings.language, this.resources.i18n)}`;
-            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+            this.pushNotification({
+              type: 'danger',
+              message: `${errorBase}. ${errorMessage}.`
+            });
             break;
           case 409:
             errorMessage = `${StringUtil.getUiPhraseByLang('The resource already exists', this.user.settings.language, this.resources.i18n)}`;
-            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+            this.pushNotification({
+              type: 'danger',
+              message: `${errorBase}. ${errorMessage}.`
+            });
             break;
           case 401:
             localStorage.removeItem('lastPath');
             errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language, this.resources.i18n)}`;
-            this.$store.dispatch('pushNotification', { type: 'danger', 
+            this.pushNotification({
+              type: 'danger', 
               message: `${errorBase}. ${errorMessage}.`, 
               sticky: true, 
               link: { 
-                to: this.$store.getters.oauth2Client.token.getUri(), 
+                to: this.oauthClient.token.getUri(), 
                 title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language, this.resources.i18n)}`, 
                 newTab: true, 
                 external: true,
-              } });
+              }
+            });
             break;
           default:
             errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
-            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+            this.pushNotification({
+              type: 'danger',
+              message: `${errorBase}. ${errorMessage}.`
+            });
         }
       });
     },
@@ -733,7 +762,7 @@ export default {
         const value = get(this.inspector.data, element);
         const warning = this.settings.warnOnSave[element].some(el => el === value);
         if (warning) {
-          this.$store.dispatch('pushNotification', {
+          this.pushNotification({
             type: 'warning',
             message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language, this.resources.i18n)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources)}`,
           });
@@ -742,7 +771,7 @@ export default {
     },
     removeEmbellishedHighlight() {
       if (this.inspector.status.embellished.length > 0 && !this.justEmbellished) {
-        this.$store.dispatch('setInspectorStatusValue', {
+        this.setInspectorStatusValue({
           property: 'embellished',
           value: [],
         });
@@ -761,7 +790,7 @@ export default {
       if (val !== oldVal) {
         this.setTitle();
         this.removeEmbellishedHighlight();
-        this.$store.dispatch('setInspectorStatusValue', { property: 'updating', value: false });
+        this.setInspectorStatusValue({ property: 'updating', value: false });
       }
     },
     '$route.params.fnurgel'(val, oldVal) {
@@ -824,19 +853,18 @@ export default {
     },
   },
   created() {
-    this.$on('duplicate-item', this.duplicateItem);
+    // TODO: Figure out what this does
+    // this.$on('duplicate-item', this.duplicateItem);
   },
   computed: {
-    ...mapGetters([
-      'inspector',
-      'resources',
-      'user',
-      'settings',
-      'status',
-      'userFlagged',
-      'userBookmarks',
-      'enrichment',
-    ]),
+    ...mapState(useResourcesStore, ['resources']),
+    ...mapState(useInspectorStore, ['inspector']),
+    ...mapState(useStatusStore, ['panelOpen']),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useInspectorStore, ['event', 'originalData', 'data', 'insertData', 'langTagSearch', 'title']),
+    ...mapWritableState(useEnrichmentStore, ['enrichmentData']),
+    ...mapState(useOauthStore, ['oauthClient']),
     isDocumentAvailable() {
       return this.inspector.data.hasOwnProperty('record');
     },
@@ -877,7 +905,7 @@ export default {
       return null;
     },
     editorTabs() {
-      return [{ id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+      return [{ id: 'mainEntity', text: labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' }];
     },
   },
@@ -914,36 +942,36 @@ export default {
     <div
       v-if="recordLoaded"
       class="col-sm-12"
-      :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}">
+      :class="{'col-md-11': !panelOpen, 'col-md-7': panelOpen, 'hideOnPrint': marcPreview.active}">
         <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" />
     </div>
 
-    <div ref="componentFocusTarget" class="col-12 col-sm-12" :class="{'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
+    <div ref="componentFocusTarget" class="col-12 col-sm-12" :class="{'col-md-1 col-md-offset-11': !panelOpen, 'col-md-5 col-md-offset-7': panelOpen }">
       <div v-if="recordLoaded && isDocumentAvailable" class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
       <div v-if="recordLoaded && isDocumentAvailable" class="Toolbar-container" ref="ToolbarTest">
         <toolbar></toolbar>
       </div>
     </div>
 
-    <div class="col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
+    <div class="col-sm-12" :class="{'col-md-11': !panelOpen, 'col-md-7': panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
       <div v-if="!recordLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
         <p v-if="loadFailure.status === 404">
-          {{ 'The resource' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
+          {{ translatePhrase('The resource') }} <code>{{documentId}}</code> {{ translatePhrase('could not be found') }}.
         </p>
         <p v-if="loadFailure.status === 410">
-          {{ 'The resource' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
+          {{ translatePhrase('The resource') }} <code>{{documentId}}</code> {{ translatePhrase('has been removed') }}.
         </p>
         <router-link to="/">
-          {{ 'Back to home page' | translatePhrase }}
+          {{ translatePhrase('Back to home page') }}
         </router-link>
       </div>
 
       <div v-if="recordLoaded && isDocumentAvailable == false">
-        <h2>{{ 'Something went wrong' | translatePhrase }}</h2>
-        <p>{{ 'The document was found but failed to load' | translatePhrase }}.</p>
+        <h2>{{ translatePhrase('Something went wrong') }}</h2>
+        <p>{{ translatePhrase('The document was found but failed to load') }}.</p>
         <router-link to="/">
-          {{ 'Back to home page' | translatePhrase }}
+          {{ translatePhrase('Back to home page') }}
         </router-link>
       </div>
 
@@ -951,9 +979,9 @@ export default {
         <div class="Inspector-admin">
           <div class="Inspector-header">
             <h1>
-              <span class="type" :title="recordType">{{ recordType | labelByLang }}</span>
-              <span class="badge badge-accent2" v-if="inspector.status.isNew">{{ "New record" | translatePhrase }}</span>
+              <span class="type" :title="recordType">{{ labelByLang(recordType) }}</span>
             </h1>
+            <span class="badge badge-accent2" v-if="inspector.status.isNew">{{ translatePhrase("New record") }}</span>
           </div>
           <entity-changelog v-if="inspector.status.isNew === false" />
         </div>
@@ -980,60 +1008,85 @@ export default {
       <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active"></marc-preview>
     </portal>
 
-    <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemoveRecordModal"
-      v-if="removeInProgress">
-      <div slot="modal-header" class="RemoveRecordModal-header">
-        <header>
-          {{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang }}?
-        </header>
-      </div>
-      <div slot="modal-body" class="RemoveRecordModal-body">
-        <p>
-          {{ 'This operation can\'t be reverted' | translatePhrase }}
-        </p>
-        <div class="RemoveRecordModal-buttonContainer">
-          <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang | lowercase }}</button>
-          <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
+    <modal-component
+      title="Error"
+      modal-type="danger"
+      @close="closeRemoveModal"
+      class="RemoveRecordModal"
+      v-if="removeInProgress"
+    >
+      <template #modal-header>
+        <div class="RemoveRecordModal-header">
+          <header>
+            {{ translatePhrase('Remove') }} {{ labelByLang(recordType) }}?
+          </header>
         </div>
-      </div>
-    </modal-component>
+      </template>
 
-    <modal-component class="EmbellishFromIdModal" :title="[embellishFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']" v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false">
-      <div slot="modal-body" class="EmbellishFromIdModal-body">
-        <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === true">
-          <p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>
-          <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>
+      <template #modal-body>
+        <div class="RemoveRecordModal-body">
           <p>
-            Du kan välja mellan att <strong>utöka</strong> (<i class="fa text-success fa-plus"></i>) eller <strong>ersätta</strong> (<i class="fa text-accent3 fa-arrow-right"></i>) en egenskap.
-            Att <strong>utöka</strong> innebär att information läggs till i den berikade posten.
-            <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.
+            {{ translatePhrase('This operation can\'t be reverted') }}
           </p>
+          <div class="RemoveRecordModal-buttonContainer">
+            <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ translatePhrase('Remove') }} {{ lowercase(labelByLang(this.recordType)) }}</button>
+            <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ translatePhrase('Cancel') }}</button>
+          </div>
         </div>
-        <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === false">
-          Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.
-        </div>
-        <div class="input-group EmbellishFromIdModal-form">
-          <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ 'ID' | translatePhrase }}/{{ 'Link' | translatePhrase }}</label>
-          <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" />
-          <span class="input-group-btn">
-            <button class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton" @click="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)">{{ 'Continue' | translatePhrase }}</button>
-          </span>
-        </div>
-      </div>
+      </template>
     </modal-component>
 
-    <modal-component class="DetailedEnrichmentModal" :title="'Detailed enrichment' | translatePhrase" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
-      <DetailedEnrichment slot="modal-body" :floating-dialogs="true" />
+    <modal-component
+      class="EmbellishFromIdModal"
+      :title="[embellishFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']"
+      v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false"
+    >
+      <template #modal-body>
+        <div class="EmbellishFromIdModal-body">
+          <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === true">
+            <p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>
+            <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>
+            <p>
+              Du kan välja mellan att <strong>utöka</strong> (<font-awesome-icon class="text-success" :icon="['fas', 'plus']" />) eller <strong>ersätta</strong> (<font-awesome-icon class="text-accent3" :icon="['fas', 'arrow-right']" />) en egenskap.
+              Att <strong>utöka</strong> innebär att information läggs till i den berikade posten.
+              <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.
+            </p>
+          </div>
+          <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === false">
+            Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.
+          </div>
+          <div class="input-group EmbellishFromIdModal-form">
+            <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ translatePhrase('ID') }}/{{ translatePhrase('Link') }}</label>
+            <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" />
+            <span class="input-group-btn">
+              <button class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton" @click="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)">{{ translatePhrase('Continue') }}</button>
+            </span>
+          </div>
+        </div>
+      </template>
+    </modal-component>
+
+    <modal-component
+      class="DetailedEnrichmentModal"
+      :title="translatePhrase('Detailed enrichment')"
+      v-if="inspector.status.detailedEnrichmentModal.open === true"
+      @close="closeDetailedEnrichmentModal" :backdrop-close="false"
+    >
+      <template #modal-body>
+        <DetailedEnrichment :floating-dialogs="true" />
+      </template>
     </modal-component>
 
     <fullscreen-panel v-if="$route.params.view == 'history'">
-      <version-history slot="content" />
+      <template #content>
+        <version-history />
+      </template>
     </fullscreen-panel>
   </div>
 </template>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="less">
+<style lang="scss">
 
 .Inspector {
   padding: 4rem 0;
@@ -1047,18 +1100,28 @@ export default {
   }
 
   &-breadcrumb {
-    border-bottom:  1px solid @grey-lighter;
+    border-bottom:  1px solid $grey-lighter;
     padding-bottom: 10px;
   }
 
   &-header {
     margin-bottom: 0.25em;
+    display: flex;
+    align-items: center;
+
     h1 {
       margin: 0;
+      display: flex;
+      align-items: center;
     }
+
     .type {
       font-size: 3rem;
       text-transform: uppercase;
+    }
+
+    .badge {
+      margin-left: 0.45rem;
     }
   }
 
@@ -1066,7 +1129,7 @@ export default {
     display: flex;
     height: fit-content;
 
-    @media (max-width: @screen-sm) {
+    @include media-breakpoint-up(sm) {
       flex-direction: row-reverse;
       justify-content: flex-end;
     }
@@ -1077,8 +1140,8 @@ export default {
 
   &-code {
     padding: 10px 20px;
-    background-color: @white;
-    border: 1px solid @grey-lighter;
+    background-color: $white;
+    border: 1px solid $grey-lighter;
   }
 
   &.hideOnPrint {
@@ -1123,18 +1186,18 @@ export default {
 
   }
   &-label {
-    color: @black;
+    color: $black;
   }
   &-infoText {
     margin-bottom: 1em;
   }
   &-input {
     width: 50%;
-    color: @black;
+    color: $black;
   }
   &-reference {
     margin-top: 1em;
-    border: 1px solid @grey;
+    border: 1px solid $grey;
     border-radius: 0.5em;
     padding: 1em;
   }

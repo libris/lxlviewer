@@ -1,5 +1,6 @@
 <script>
 import * as LayoutUtil from '@/utils/layout';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'type-select',
@@ -21,6 +22,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     handleChange() {
       this.$emit('selected', this.selectedType);
     },
@@ -55,31 +57,32 @@ export default {
       v-model="selectedType"
       ref="adderTypeSelect"
       @change="handleChange()"
-      :aria-label="'Choose type' | translatePhrase">
-      <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-      <option v-for="(term, index) in classTree"  
+      :aria-label="translatePhrase('Choose type')">
+      <option disabled value="">{{translatePhrase("Choose type")}}</option>
+      <option v-for="(term, index) in classTree"
         v-html="options[index].label"
         :disabled="term.abstract" 
         :key="`${term.id}-${index}`" 
         :value="term.id"></option>
     </select>
     <div class="TypeSelect-dismissBtn" v-if="removeable">
-      <i class="fa fa-times-circle icon icon--sm" 
+      <font-awesome-icon
+        :icon="['fas', 'circle-xmark']"
         role="button"
         tabindex="0"
-        :aria-label="'Remove' | translatePhrase"
+        :aria-label="translatePhrase('Remove')"
         @click="dismiss()"
         @keyup.enter="dismiss()"
         @mouseover="highlight = true"
         @mouseout="highlight = false"
         @focus="highlight = true"
-        @blur="highlight = false">
-      </i>
+        @blur="highlight = false"
+      />
       </div>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .TypeSelect {
   max-width: 200px;
   padding: 5px;
@@ -94,7 +97,7 @@ export default {
   }
 
   &.is-removeable {
-    background-color: @remove;
+    background-color: $remove;
   }
 }
 </style>

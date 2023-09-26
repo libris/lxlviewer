@@ -1,6 +1,11 @@
 <script>
+import { mapActions, mapState, mapWritableState } from 'pinia';
+import { translatePhrase } from '@/utils/filters';
+import { useResourcesStore } from '@/stores/resources';
+import { useSettingsStore } from '@/stores/settings';
+import { useStatusStore } from '@/stores/status';
+import { useUserStore } from '@/stores/user';
 import moment from 'moment';
-import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'GlobalMessages',
@@ -18,17 +23,13 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'settings',
-      'user',
-      'status',
-      'activeGlobalMessages',
-    ]),
+    ...mapState(useUserStore, ['user']),
+    ...mapState(useStatusStore, ['userIdle']),
+    ...mapState(useResourcesStore, ['activeGlobalMessages']),
+    ...mapState(useSettingsStore, ['settings']),
+    ...mapWritableState(useResourcesStore, ['globalMessages']),
     shownMessages() {
       return this.activeGlobalMessages;
-    },
-    settings() {
-      return this.$store.getters.settings;
     },
   },
   watch: {
@@ -39,11 +40,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      'setGlobalMessages',
-      'dismissMessage',
-      'cleanupDismissedList',
-    ]),
+    translatePhrase,
+    ...mapActions(useUserStore, ['dismissMessage', 'cleanupDismissedList']),
     getTimeSinceLastUpdate() {
       const now = moment();
       const lastUpdate = moment(this.timeForLastFetch);
@@ -54,7 +52,7 @@ export default {
         this.shouldFetch = true;
       }, 250);
       setInterval(() => {
-        if (this.status.userIdle === false && this.getTimeSinceLastUpdate() > this.secondsBetweenUpdates) {
+        if (this.userIdle === false && this.getTimeSinceLastUpdate() > this.secondsBetweenUpdates) {
           this.shouldFetch = true;
         }
       }, 10000);
@@ -70,7 +68,7 @@ export default {
         if (result.status === 200) {
           result.json().then((body) => {
             setTimeout(() => {
-              this.setGlobalMessages(body);
+              this.globalMessages = body;
             }, 1000);
           });
         }
@@ -104,10 +102,10 @@ export default {
         }"
       >
         <div class="GlobalMessage-icon">
-          <span class="fa-stack fa-md">
-            <i class="icon-backplate fa fa-circle fa-stack-2x"></i>
-            <i v-if="message.content.type == 'warning'" class="icon-symbol fa fa-exclamation fa-stack-1x fa-inverse"></i>
-            <i v-if="message.content.type == 'info'" class="icon-symbol fa fa-info fa-stack-1x fa-inverse"></i>
+          <span class="fa-stack fa-2x">
+            <font-awesome-icon :icon="['fas', 'circle']" class="fa-stack-2x" />
+            <font-awesome-icon v-if="message.content.type == 'warning'" :icon="['fas', 'triangle-exclamation']" class="fa-stack1x fa-inverse" />
+            <font-awesome-icon v-if="message.content.type == 'info'" :icon="['fas', 'info']" class="fa-stack-1x fa-inverse" />
           </span>
         </div>
         <div class="GlobalMessage-content">
@@ -115,14 +113,14 @@ export default {
           <span class="GlobalMessage-text" v-html="message.content.text"></span>
         </div>
         <div class="GlobalMessage-action">
-          <button v-if="message.dismissable" @click="closeMessage(message.id)" @keyup.enter="closeMessage(message.id)" class="btn btn-transparent">{{ 'Close' | translatePhrase }}</button>
+          <button v-if="message.dismissable" @click="closeMessage(message.id)" @keyup.enter="closeMessage(message.id)" class="btn btn-transparent">{{ translatePhrase('Close') }}</button>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .GlobalMessage {
   border-style: solid;
   padding: 0.5em;
@@ -134,10 +132,10 @@ export default {
   &-banner {
     display: flex;
     justify-content: space-between;
-    color: @black;
+    color: $black;
     font-weight: bold;
     a {
-      color: @black;
+      color: $black;
     }
     button {
       float: right;
@@ -174,7 +172,7 @@ export default {
     font-size: 20px;
     font-size: 2.0rem;
     font-weight: normal;
-    color: @black;
+    color: $black;
     text-shadow: none;
     .icon-backplate {
       color: #c1516c;
@@ -184,7 +182,7 @@ export default {
     }
 
     a {
-      color: @black;
+      color: $black;
       text-decoration: underline;
     }
   }
@@ -194,7 +192,7 @@ export default {
     font-size: 20px;
     font-size: 2.0rem;
     font-weight: normal;
-    color: @black;
+    color: $black;
     text-shadow: none;
     .icon-backplate {
       color: #236fc8;
@@ -204,7 +202,7 @@ export default {
     }
 
     a {
-      color: @black;
+      color: $black;
       text-decoration: underline;
     }
   }
