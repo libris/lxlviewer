@@ -160,7 +160,15 @@ export const useUserStore = defineStore('user', {
 					fetch(verifyUrl, {
 						headers,
 						method: 'GET',
-					}).then(response => response.json()).then((result) => {
+					}).then(async (response) => {
+						const result = await response.json();
+						if (response.status !== 200) {
+							localStorage.removeItem('at');
+							this.user = userObj;
+							console.warn(`Authentication failed for existing token:`, result);
+							reject();
+						}
+
 						userObj = User.getUserObject(result.user);
 						userObj.token = token;
 						userObj.token_expires_at = result.expires_at;
@@ -168,11 +176,6 @@ export const useUserStore = defineStore('user', {
 							this.user = userObj;
 							resolve(userObj);
 						});
-					}, (error) => {
-						localStorage.removeItem('at');
-						this.user = userObj;
-						console.warn(`Authentication failed for existing token: ${error}`);
-						reject();
 					});
 				} else {
 					this.user = userObj;
