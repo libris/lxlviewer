@@ -6,7 +6,7 @@ import { useInspectorStore } from '@/stores/inspector';
 import { useSettingsStore } from '@/stores/settings';
 
 // TODO: Support .jsonld files in Vite (copy pasted now in definitions)
-import displayJson from 'definitions/source/vocab/display.json';
+import displayJson from '../../node_modules/definitions/source/vocab/display.json';
 
 export function getDisplayDefinitions() {
   const settings = useSettingsStore();
