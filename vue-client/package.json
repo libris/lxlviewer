@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "serve": "run-p dev sass",
-    "sass": "sass --watch ./src/styles/main.scss ./public/styles.css",
-    "build": "vue-tsc && vite build",
+    "serve": "run-p dev sass-watch",
+    "sass-watch": "sass --watch ./src/styles/main.scss ./public/styles.css",
+    "sass-build": "sass ./src/styles/main.scss ./public/styles.css",
+    "build": "vue-tsc && yarn sass-build && vite build",
     "postinstall": "yarn --cwd ../lxljs/ install",
     "preview": "vite preview"
   },
