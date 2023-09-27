@@ -811,8 +811,8 @@ export default {
   }
 
   &.is-extracting {
-    background-color: @form-extracting !important;
-    box-shadow: 0 0 0 1px @brand-primary;
+    // background-color: $form-extracting !important;
+    box-shadow: 0 0 0 1px $brand-primary;
   }
 
   &.is-extracting .is-entity {
