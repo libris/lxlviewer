@@ -77,6 +77,7 @@ const store = new Vuex.Store({
       event: [],
       magicShelfMarks: [],
       extractItemsOnSave: {},
+      changeNotes: {},
     },
     status: {
       userIdle: false,
@@ -96,8 +97,7 @@ const store = new Vuex.Store({
       failedRemoteDatabases: '',
       hintSigelChange: false,
     },
-    changeNotes: new ChangeNotes(),
-    changes: {},
+    changeNoteHandler: new ChangeNotes(),
     user: User.getUserObject(),
     userDatabase: null,
     userStorage: {
@@ -167,8 +167,8 @@ const store = new Vuex.Store({
     setCompositeHistoryData(state, data) {
       state.inspector.compositeHistoryData = data;
     },
-    setChanges(state, data) {
-      state.inspector.setChanges = data;
+    setChangeNotes(state, data) {
+      state.inspector.changeNotes = data;
     },
     addToLanguageCache(state, data) {
       const languageCache = cloneDeep(state.inspector.languageCache);
@@ -212,9 +212,9 @@ const store = new Vuex.Store({
       }
       // Set the new values
       each(payload.changeList, (node) => {
-        const match = state.changeNotes.computeCategoryMatchFor(state, inspectorData, node.path);
+        const match = state.changeNoteHandler.computeCategoryMatchFor(state, inspectorData, node.path);
         if (match) {
-          state.changes[match.categoryId] = match;
+          state.inspector.changeNotes[match.categoryId] = match;
         }
 
         if (node.path === '') {
@@ -413,7 +413,7 @@ const store = new Vuex.Store({
     display: state => state.resources.display,
     context: state => state.resources.context,
     supportedTags: state => state.inspector.supportedTags.data,
-    changes: state => state.changes,
+    changeNotes: state => state.changeNotes,
   },
   actions: {
     addExtractItemOnSave({ commit, state }, { path, item }) {
@@ -839,8 +839,8 @@ const store = new Vuex.Store({
 
       return promise;
     },
-    setChangePaths({ commit }, data) {
-      commit('setChangePaths', data);
+    setChangeNotes({ commit }, data) {
+      commit('setChangeNotes', data);
     },
   },
 });

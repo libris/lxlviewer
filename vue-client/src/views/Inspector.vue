@@ -491,8 +491,8 @@ export default {
       }
     },
     applyChangeNotes() {
-      if (this.changes) {
-        Object.values(this.changes).forEach((match) => {
+      if (this.inspector.changeNotes) {
+        Object.values(this.inspector.changeNotes).forEach((match) => {
           ChangeNotes.completeChange(this, match);
         });
       }
@@ -813,7 +813,7 @@ export default {
     },
     async preSaveHook(obj) {
       await checkAutoShelfControlNumber(obj, this.settings, this.user);
-      await this.$store.dispatch('setChangePaths', {});
+      await this.$store.dispatch('setChangeNotes', {});
       return obj;
     },
   },
@@ -892,7 +892,6 @@ export default {
       'inspector',
       'resources',
       'user',
-      'changes',
       'settings',
       'status',
       'userFlagged',
