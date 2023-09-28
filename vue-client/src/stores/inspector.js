@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { cloneDeep, each, get } from 'lodash-es';
+import { cloneDeep, each, get, set } from 'lodash-es';
 import { useSettingsStore } from "./settings";
 import { useUserStore } from "./user";
 
