@@ -218,6 +218,7 @@ export default {
             </div>
           </div>
         </template>
+
         <template #panel-header-extra>
           <div class="SearchWindow-header search-header">
             <div class="SearchWindow-extractControls">
@@ -228,6 +229,7 @@ export default {
                 </label>
               </div>
             </div>
+
             <div class="SearchWindow-search search">
               <div class="SearchWindow-filterSearchContainer">
                 <div class="SearchWindow-filterSearchContainerItem">
@@ -243,6 +245,7 @@ export default {
                     :setValue="setSearchType"
                     v-on:filter-selected="setFilter($event)"></filter-select>
                 </div>
+
                 <div class="SearchWindow-filterSearchContainerItem">
                   <sort
                     :recordTypes="currentSearchTypes"
@@ -252,6 +255,7 @@ export default {
                     @change="setSort($event)" />
                 </div>
               </div>
+
               <div class="SearchWindow-inputContainer input-container form-group">
                 <input
                   class="SearchWindow-input SearchWindow-entity-search-keyword-input customInput"
@@ -259,11 +263,15 @@ export default {
                   ref="input"
                   autofocus
                   :placeholder="translatePhrase('Search')"
-                  :aria-label="translatePhrase('Search')">
-                <param-select class="SearchWindow-paramSelect"
-                              :types="currentSearchTypes"
-                              :reset="resetParamSelect"
-                              v-on:param-selected="setParam($event)"></param-select>
+                  :aria-label="translatePhrase('Search')"
+                />
+
+                <param-select
+                  class="SearchWindow-paramSelect"
+                  :types="currentSearchTypes"
+                  :reset="resetParamSelect"
+                  v-on:param-selected="setParam($event)"
+                />
               </div>
             </div>
           </div>
@@ -330,12 +338,14 @@ export default {
               />
             </div>
           </div>
+
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
             <div class="SearchWindow-dialogContainer">
-              <p class="preview-entity-text uppercaseHeading"> {{ 'Do you want to create' | translatePhrase }} {{ typeOfExtractingEntity }}?</p>
+              <p class="preview-entity-text uppercaseHeading"> {{ translatePhrase('Do you want to create') }} {{ typeOfExtractingEntity }}?</p>
               <p>
-                {{ 'The local entity will be extracted and linked' | translatePhrase }}.
+                {{ translatePhrase('The local entity will be extracted and linked') }}.
               </p>
+
               <button-component
                 :button-text="'Yes, start linking'"
                 icon="circle-plus"

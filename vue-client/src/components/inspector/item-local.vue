@@ -507,6 +507,7 @@ export default {
           :parent-hovered="isHovered"
           :is-large="largerActions"
         />
+
         <entity-action
           v-if="inspector.status.editing && !isEmbedded && !isLocked && !isCompositional && extractedMainEntity != null && !isExtracting"
           @action="openExtractDialog(), expand()"
