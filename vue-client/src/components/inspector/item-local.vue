@@ -544,9 +544,8 @@ export default {
           :is-large="false"
         />
 
-        <Dropdown>
+        <Dropdown v-if="inspector.status.editing && !isLocked && !isExtracting">
           <entity-action
-            v-if="inspector.status.editing && !isLocked && !isExtracting"
             @highlight="addHighlight('info')"
             @dehighlight="removeHighlight('info')"
             label="Manage"
@@ -811,7 +810,7 @@ export default {
   }
 
   &.is-extracting {
-    // background-color: $form-extracting !important;
+    background-color: $form-extractable !important;
     box-shadow: 0 0 0 1px $brand-primary;
   }
 
