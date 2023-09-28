@@ -114,10 +114,6 @@ function completeChange(record, categoryId, oldValue, newValue) {
     x => (Array.isArray(x.category) ? x.category.find(y => y['@id'] === categoryId) : false),
   );
 
-  const existingChange = idx > -1 ? record.hasChangeNote[idx] : null;
-
-  oldValue = extractOldValue(existingChange) || oldValue;
-
   // TODO: compare on full value instead of labels
   if (oldValue === newValue) {
     return;
@@ -138,22 +134,6 @@ function completeChange(record, categoryId, oldValue, newValue) {
   } else {
     record.hasChangeNote.push(changeNote);
   }
-}
-
-function extractOldValue(existingChange) {
-  if (existingChange) {
-    let existingChangeText = existingChange.label;
-    if (Array.isArray(existingChangeText)) {
-      existingChangeText = existingChangeText[0];
-    }
-    if (existingChangeText) {
-      const sepIdx = existingChangeText.indexOf(SEP);
-      if (sepIdx > -1) {
-        return existingChangeText.substring(sepIdx + SEP.length, existingChangeText.length);
-      }
-    }
-  }
-  return null;
 }
 
 function makeDiffValue(oldValue, newValue) {
