@@ -52,12 +52,8 @@ export default class ChangeNotes {
     if (categoryId == null) {
       return null;
     }
-    const getLabel = o => DisplayUtil.getItemLabel(o, state.resources, state.inspector.data.quoted, state.settings);
 
-    const chipLabel = getLabel(object);
-    const oldValue = chipLabel;
-
-    return { categoryId, oldValue, matchedPath };
+    return { categoryId, matchedPath };
   }
 
   computeCategoryMatchFor(state, inspectorData, path) {
@@ -93,14 +89,16 @@ export default class ChangeNotes {
   }
 
   static completeChange(state, match) {
-    const { record, categoryId, oldValue, matchedPath, path } = match;
+    const { record, categoryId, matchedPath, path } = match;
     const inspectorData = state.inspector.data;
 
     let newValue = null;
     const changedValue = get(inspectorData, path);
     const innerChange = path !== matchedPath;
-    if (innerChange || !isEmpty(changedValue)) {
-      newValue = DisplayUtil.getItemLabel(get(inspectorData, matchedPath), state.resources, inspectorData.quoted, state.settings);
+    let oldValue = null;
+    if (innerChange || !isEmpty(changedValue || '')) {
+      oldValue = DisplayUtil.getItemLabel(get(state.inspector.originalData, matchedPath) || '', state.resources, inspectorData.quoted, state.settings);
+      newValue = DisplayUtil.getItemLabel(get(inspectorData, matchedPath) || '', state.resources, inspectorData.quoted, state.settings);
     }
     completeChange(record, categoryId, oldValue, newValue);
     return true;
