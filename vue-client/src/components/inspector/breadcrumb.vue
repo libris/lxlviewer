@@ -145,16 +145,16 @@ export default {
       <span class="Breadcrumb-recordNumbers">{{ absoluteOffset + 1 }} {{ translatePhrase('of') }} {{ totalItems }}</span>
       <div class="Breadcrumb-recordLinks">
         <span class="Breadcrumb-prev" v-if="absoluteOffset > 0">
-          <button class="btn--as-link" v-if="prevPath" @click="prev">{{ translatePhrase(['Previous']) }}</button>
-          <button class="btn--as-link" v-if="prevOutOfBounds" @click="lastOnPrevPage">
+          <button class="btn btn--as-link" v-if="prevPath" @click="prev">{{ translatePhrase(['Previous']) }}</button>
+          <button class="btn btn--as-link" v-if="prevOutOfBounds" @click="lastOnPrevPage">
             <span v-if="!loading">{{ translatePhrase(['Previous']) }}</span>
             <Spinner v-if="loading" size="sm"></Spinner>
           </button>
         </span>
         <span v-if="absoluteOffset > 0 && absoluteOffset + 1 < totalItems"> | </span>
         <span class="Breadcrumb-next" v-if="absoluteOffset < totalItems">
-          <button class="btn--as-link" v-if="nextPath" @click="next">{{ translatePhrase(['Next']) }}</button>
-          <button class="btn--as-link" v-if="nextOutOfBounds" @click="firstOnNextPage">
+          <button class="btn btn--as-link" v-if="nextPath" @click="next">{{ translatePhrase(['Next']) }}</button>
+          <button class="btn btn--as-link" v-if="nextOutOfBounds" @click="firstOnNextPage">
             <span v-if="!loading">{{ translatePhrase(['Next']) }}</span>
             <Spinner v-if="loading" size="sm"></Spinner>
           </button>
@@ -180,7 +180,7 @@ export default {
     justify-content: flex-end;
     white-space: nowrap;
 
-    @include media-breakpoint-down(xs) {
+    @include media-breakpoint-down(sm) {
       justify-content: space-between;
       flex-direction: column;
       align-items: flex-end;

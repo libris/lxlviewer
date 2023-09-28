@@ -587,74 +587,71 @@ button {
   font-weight: 600;
 }
 
-// TODO: Get this back
-// .btn {
-//   &--auto {
-//     min-width: auto;
-//   }
+.btn {
+  &--auto {
+    min-width: auto;
+  }
 
-//   &--sm {
-//     @include btn-mixin(150px, 26px, 13px);
-//     padding: 3px 10px;
-//     box-shadow: none;
-//   }
+  &--sm {
+    @include btn-mixin(150px, 26px, 13px);
+    padding: 3px 10px;
+    box-shadow: none;
+  }
 
-//   &--md {
-//     @include btn-mixin(150px, 32px, 14px);
-//     padding: 0 15px;
+  &--md {
+    @include btn-mixin(150px, 32px, 14px);
+    padding: 0 15px;
 
-//     &-icon {
-//       padding: 0.25em 0.5em;
-//       min-width: 0;
-//     }
+    &-icon {
+      padding: 0.25em 0.5em;
+      min-width: 0;
+    }
 
-//     .icon {
-//       margin-right: 8px;
-//     }
+    .icon {
+      margin-right: 8px;
+    }
 
-//     // @media screen and (max-width: $screen-sm-min){
-//     //   @extend .btn--sm;
-//     // }
-//     @include media-breakpoint-down(sm) {
-//       @extend .btn--sm;
-//     }
-//   }
+    @include media-breakpoint-down(sm) {
+      @include btn-mixin(150px, 26px, 13px);
+      padding: 3px 10px;
+      box-shadow: none;
+    }
+  }
 
-//   &--lg {
-//     @include btn-mixin(275px, auto, 20px);
+  &--lg {
+    @include btn-mixin(275px, auto, 20px);
 
-//     // @media screen and (max-width: $screen-sm-min){
-//     //   @extend .btn--md;
-//     // }
+    @include media-breakpoint-down(sm) {
+      @include btn-mixin(150px, 32px, 14px);
+      padding: 0 15px;
+    }
+  }
 
-//     @include media-breakpoint-down(sm) {
-//       @extend .btn--md;
-//     }
-//   }
+  &.btn-hollow {
+    background-color: transparent;
+    &:focus,
+    &:hover {
+      color: lighten($black, 15%);
+      background-color: darken($white, 5%);
+    }
+  }
 
-//   &.btn-hollow {
-//     background-color: transparent;
-//     &:focus,
-//     &:hover {
-//       color: lighten($black, 15%);
-//       background-color: darken($white, 5%);
-//     }
-//   }
+  &.btn--as-link {
+    color: $link-color;
+    text-align: left;
+    padding: 0;
+    background: transparent;
+    font-weight: normal;
+    font-size: inherit;
 
-//   &.btn--as-link {
-//     color: $link-color;
-//     text-align: left;
-//     padding: 0;
-//     background: transparent;
-//     font-weight: normal;
-//     &:focus,
-//     &:hover {
-//       color: $link-hover-color;
-//       background-color: transparent;
-//       text-decoration: underline;
-//     }
-//   }
-// }
+    &:focus,
+    &:hover {
+      color: $link-hover-color;
+      background-color: transparent;
+      text-decoration: underline;
+    }
+  }
+}
 
 html {
   height: 100%;

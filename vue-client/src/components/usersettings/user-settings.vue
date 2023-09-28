@@ -176,11 +176,11 @@ export default {
         </li>
         <li>
           <router-link to="/user">{{ translatePhrase("Settings") }}</router-link>
-          <button class="btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeFlagged">{{ capitalize(translatePhrase(['Clear', 'Flags'])) }}</button>
+          <button class="btn btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeFlagged">{{ capitalize(translatePhrase(['Clear', 'Flags'])) }}</button>
         </li>
         <li>
           <!-- <span>Växla användare</span> -->
-          <button class="btn--as-link" @click="logout">{{translatePhrase("Log out")}}</button>
+          <button class="btn btn--as-link" @click="logout">{{translatePhrase("Log out")}}</button>
         </li>
       </ul>
     </div>
