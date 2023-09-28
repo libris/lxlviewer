@@ -116,7 +116,7 @@ export default {
       }
 
       const termObj = VocabUtil.getTermObject(this.focusData['@type'], this.resources.vocab, this.resources.context);
-      if (termObj === {} || typeof termObj === 'undefined') {
+      if (Object.keys(termObj).length === 0 || typeof termObj === 'undefined') {
         failedValidations.push({
           text: 'The class could not be found',
           hint: this.focusData['@type'],

@@ -77,7 +77,7 @@ export default {
     availableSearchParams() {
       const intersects = ((a1, a2) => a1.find(value => a2.includes(value)) !== undefined);
 
-      if (this.types === [] || this.types === undefined) {
+      if (this.types.length === 0 || this.types === undefined) {
         return PropertyMappings;
       }
 
