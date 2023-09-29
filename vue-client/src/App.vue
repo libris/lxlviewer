@@ -319,7 +319,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "/node_modules/font-awesome/css/font-awesome.css";
+@import "~font-awesome/css/font-awesome.css";
 
 // BOOTSTRAP UNSET START
 .dropdown-menu > li > a {
