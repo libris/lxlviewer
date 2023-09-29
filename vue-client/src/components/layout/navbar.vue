@@ -41,7 +41,7 @@ export default {
       };
       const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language, this.i18n)}`;
       const loggedInTabs = this.user.isLoggedIn ? [
-        { id: 'Create new', text: 'Create new', link: '/create', icon: 'square-plus' },
+        { id: 'Create new', text: 'Create new', link: '/create', icon: 'plus-square' },
         { id: 'Directory care', html: $directoryCare, link: '/directory-care', icon: 'flag', badge: directoryCareBadge }, 
       ] : [];
       const tabs = [
