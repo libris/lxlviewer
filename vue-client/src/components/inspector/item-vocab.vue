@@ -141,7 +141,7 @@ export default {
           <input v-model="selected" v-bind:value="option" v-bind:id="option" class="RadioPill-input" type="radio"
             name="radios">
           <label v-bind:for="option" class="RadioPill-label">
-            <font-awesome-icon :icon="['fas', 'check']" size="sm" />
+            <i class="fa fa-check icon icon--sm"></i>
             {{ labelByLang(option) }}</label>
         </div>
       </fieldset>

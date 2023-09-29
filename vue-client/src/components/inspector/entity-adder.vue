@@ -454,55 +454,55 @@ export default {
     <!-- Adds another empty field of the same type -->
     <div class="EntityAdder-add" v-if="isPlaceholder" v-tooltip.left="tooltipText">
       <span ref="adderFocusElement">
-        <font-awesome-icon
-          class="icon icon--sm"
-          :icon="['fas', this.iconAdd] "
+        <i
+          class="fa fa-fw icon icon--sm"
+          :class="[this.iconAdd] "
           v-if="!addEmbedded"
           tabindex="0"
           role="button"
           :aria-label="translatePhrase(tooltipText)"
+          ref="adderFocusElement"
           @click="add($event)"
           @keyup.enter="add($event)"
           @mouseenter="actionHighlight(true, $event)"
           @mouseleave="actionHighlight(false, $event)"
           @focus="actionHighlight(true, $event)"
-          @blur="actionHighlight(false, $event)"
-        />
+          @blur="actionHighlight(false, $event)">
+        </i>
 
-        <font-awesome-icon
-          class="icon icon--sm is-disabled"
-          :icon="['fas', this.iconAdd] "
+        <i
+          class="fa fa-fw icon icon--sm is-disabled"
+          :class="[this.iconAdd] "
           v-else-if="addEmbedded"
           tabindex="-1"
-          aria-hidden="true"
-        />
+          aria-hidden="true">
+        </i>
       </span>
     </div>
 
     <!-- Add entity within field -->
     <div class="EntityAdder-add action-button" v-if="!isPlaceholder" v-tooltip.top="tooltipText">
       <span ref="adderFocusElement">
-        <font-awesome-icon
-          class="icon icon--sm"
-          :icon="['fas', this.iconAdd] "
+        <i
+          class="fa fa-fw icon icon--sm" :class="[this.iconAdd] "
           v-if="!addEmbedded"
           tabindex="0"
           role="button"
+          ref="adderFocusElement"
           :aria-label="translatePhrase(tooltipText)"
           v-on:click="add($event)"
           @keyup.enter="add($event)"
           @mouseenter="actionHighlight(true, $event)"
           @mouseleave="actionHighlight(false, $event)"
           @focus="actionHighlight(true, $event)"
-          @blur="actionHighlight(false, $event)"
-        />
+          @blur="actionHighlight(false, $event)">
+        </i>
 
-        <font-awesome-icon
-          class="icon icon--sm is-disabled"
-          :icon="['fas', this.iconAdd]"
+        <i
+          class="fa fa-fw icon icon--sm is-disabled" :class="[this.iconAdd] "
           v-else-if="addEmbedded"
-          tabindex="-1"
-        />
+          tabindex="-1">
+        </i>
       </span>
 
       <span class="EntityAdder-addLabel label-text">{{ capitalize(labelByLang(addLabel)) }}</span>
@@ -528,7 +528,7 @@ export default {
             class="PanelComponent-headerInfo"
             v-if="rangeFull.length > 0"
             @mouseleave="rangeInfo = false">
-            <font-awesome-icon :icon="['fas', 'circle-info']" class="icon icon--md" @mouseenter="rangeInfo = true"></font-awesome-icon>
+            <i class="fa fa-info-circle icon icon--md" @mouseenter="rangeInfo = true"></i>
             <div class="PanelComponent-headerInfoBox" v-show="rangeInfo">
               <p class="header">
                 {{ translatePhrase("Allowed types") }}:
@@ -620,30 +620,25 @@ export default {
               :max-items="maxItems"
               :max-per-page="maxResults"
               :current-page="currentPage"
-            >
-            </modal-pagination>
+            />
+
             <div class="EntityAdder-listTypes">
-              <font-awesome-icon
-                :icon="['fas', 'table-list']"
-                class="icon icon--sm"
+              <i class="fa fa-th-list icon icon--sm"
                 role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
                 :title="translatePhrase('Detailed view')"
-                tabindex="0"
-              />
+                tabindex="0"></i>
 
-              <font-awesome-icon
-                :icon="['fas', 'list']"
-                class="icon icon--sm"
+              <i class="fa fa-list icon icon--sm"
                 role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"
                 :title="translatePhrase('Compact view')"
-                tabindex="0"
-              />
+                tabindex="0">
+              </i>
             </div>
           </div>
 

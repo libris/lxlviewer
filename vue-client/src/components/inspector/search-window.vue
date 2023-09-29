@@ -192,7 +192,8 @@ export default {
       >
         <template #panel-header-info>
           <div class="PanelComponent-headerInfo help-tooltip-container" @mouseleave="showHelp = false">
-            <font-awesome-icon :icon="['fas', 'circle-question']" size="md" @mouseenter="showHelp = true" />
+            <i class="fa fa-question-circle icon icon--md" @mouseenter="showHelp = true">
+            </i>
             <div class="PanelComponent-headerInfoBox help-tooltip" v-show="showHelp">
               <div>
                 <p class="header">
@@ -225,7 +226,7 @@ export default {
               <div class="copy-title" v-if="canCopyTitle">
                 <label>
                   <input type="checkbox" name="copyTitle" v-bind="copyTitle" @change="$emit('update:copyTitle', $event.target.value)" />
-                  {{ translatePhrase("Copy title from") }} {{this.editorData.mainEntity['@type'] | labelByLang}}
+                  {{ translatePhrase("Copy title from") }} {{ labelByLang(this.editorData.mainEntity['@type']) }}
                 </label>
               </div>
             </div>
@@ -315,27 +316,20 @@ export default {
             >
             </modal-pagination>
             <div class="SearchWindow-listTypes">
-              <font-awesome-icon
-                :icon="['fas', 'table-list']"
-                size="md"
+              <i class="fa fa-th-list icon icon--md"
                 role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
                 :title="translatePhrase('Detailed view')"
-                tabindex="0"
-              />
-
-              <font-awesome-icon
-                :icon="['fas', 'list']"
-                size="md"
+                tabindex="0"></i>
+              <i class="fa fa-list icon icon--md"
                 role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"
                 :title="translatePhrase('Compact view')"
-                tabindex="0"
-              />
+                tabindex="0"></i>
             </div>
           </div>
 

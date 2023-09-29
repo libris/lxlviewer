@@ -214,14 +214,14 @@ export default {
     <!-- <div class="ResultControls-filterWrapper">
       <div class="ResultControls-filterBadge" v-for="(db, index) in activeDatabases" :key="index">
         <span>{{db}}</span>
-        <font-awesome-icon
-          :icon="['fas', 'xmark']"
+        <i 
           role="button"
           tabindex="0"
+          class="fa fa-times-circle icon"  
           @click="removeDatabase(db)"
           @keydown.enter="removeDatabase(db)"
-          :title="translatePhrase('Remove')"
-        />
+          :title="translatePhrase('Remove')">
+        </i>
       </div>
       <div class="ResultControls-filterBadge--inverted"
         v-if="activeDatabases.length > 1"
@@ -233,7 +233,7 @@ export default {
         @mouseover="clearTooltip = true" 
         @mouseout="clearTooltip = false">
         {{ translatePhrase('Clear all') }}
-        <font-awesome-icon :icon="['fas', 'circle-xmark']" />
+        <i class="fa fa-times-circle icon"></i>
       </div>
     </div> -->
     <portal to="facetColumn">
@@ -255,16 +255,15 @@ export default {
             :key="index"
             :aria-label="db.database">
               {{db.database}} 
-              <font-awesome-icon
+              <i
                 v-show="!db.disabled" 
-                :icon="['fas', 'circle-xmark']"
-                size="xs"
-                :title="db.active ? translatePhrase('Remove') : translatePhrase('Add')"
+                class="fa icon icon--xs fa-times-circle" 
+                :title="translatePhrase(db.active ? 'Remove' : 'Add')"
                 tabindex="0"
                 role="button"
                 @click="toggleDatabase(db.database)"
                 @keyup.enter="toggleDatabase(db.database)">
-              </font-awesome-icon>
+              </i>
           </li>
         </ul>
         <hr class="sectionDivider">
@@ -287,33 +286,17 @@ export default {
             :key="index"
             :aria-label="db.database">
             <div class="RemoteDatabases-addControl">
-              <font-awesome-icon v-show="db.disabled" size="sm" class="is-disabled" :icon="['fas', 'ban']" />
-
-              <font-awesome-icon
-                v-show="!db.disabled"
-                v-if="db.active"
-                :icon="['fas', 'circle-plus']"
-                size="sm"
-                :class="{ 'is-inactive': !db.active }"
-                :title="db.active ? translatePhrase('Remove') : translatePhrase('Add')"
+              <i v-show="db.disabled" class="fa fa-ban icon icon--sm is-disabled"></i>
+              <i
+                v-show="!db.disabled" 
+                class="fa icon icon--sm" 
+                :class="{ 'fa-plus-circle': !db.active, 'fa-check-circle': db.active, 'is-inactive': !db.active }"
+                :title="translatePhrase(db.active ? 'Remove' : 'Add')"
                 tabindex="0"
                 role="button"
                 @click="toggleDatabase(db.database)"
                 @keyup.enter="toggleDatabase(db.database)">
-              </font-awesome-icon>
-
-              <font-awesome-icon
-                v-show="!db.disabled"
-                v-if="!db.active"
-                :icon="['fas', 'circle-check']"
-                size="sm"
-                :class="{ 'is-inactive': !db.active }"
-                :title="db.active ? translatePhrase('Remove') : translatePhrase('Add')"
-                tabindex="0"
-                role="button"
-                @click="toggleDatabase(db.database)"
-                @keyup.enter="toggleDatabase(db.database)">
-              </font-awesome-icon>
+              </i>
             </div>
 
             <div class="RemoteDatabases-dbInfo">
@@ -323,11 +306,11 @@ export default {
                   ({{translatePhrase('unavailabe')}})
                 </span>
                 <div class="RemoteDatabases-dbExtraInfo" v-show="db.about">
-                  <font-awesome-icon :icon="['fas', 'circle-question']" />
+                  <i class="fa fa-question-circle fa-fw icon"></i>
                   <span class="RemoteDatabases-dbExtrainfoText">{{ db.about }}</span>
                 </div>
                 <div class="RemoteDatabases-dbExtraInfo" v-show="db.comment">
-                  <font-awesome-icon :icon="['fas', 'circle-info']" />
+                  <i class="fa fa-info-circle fa-fw icon"></i>
                   <span class="RemoteDatabases-dbExtrainfoText">{{ db.comment }}</span>
                 </div>
               </div>

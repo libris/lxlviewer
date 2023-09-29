@@ -124,13 +124,12 @@ export default {
             {{ translatedTitle }}
           </header>
           <span class="ModalComponent-windowControl" v-if="closeable">
-            <font-awesome-icon
-              :icon="['fas', 'xmark']"
-              @click="close"
+            <i 
+              @click="close" 
               role="button"
               tabindex="0"
-              size="md"
-            />
+              class="fa fa-close icon--md">
+            </i>
           </span>
         </slot>
       </div>

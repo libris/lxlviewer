@@ -223,7 +223,7 @@ export default {
           <div class="VersionHistory-header">
             <span class="VersionHistory-backLink">
               <a @click="goToRecord" @keyup.enter="goToRecord" tabindex="0">
-                <font-awesome-icon :icon="['fas', 'arrow-left']" class="VersionHistory-back-icon" />{{ translatePhrase('Back') }}
+                <i class="fa fa-arrow-left VersionHistory-back-icon"></i>{{ translatePhrase('Back') }}
               </a>
             </span>
 
@@ -231,13 +231,9 @@ export default {
               {{ getItemLabel }}
             </span>
 
-            <font-awesome-icon
-              :icon="['fas', 'table-list']"
-              role="button"
-              @click="openSideCol()"
-              size="lg"
-              class="sideColButton"
-            />
+            <i class="fa fa-th-list icon icon--md sideColButton"
+               role="button"
+               @click="openSideCol()"></i>
           </div>
 
           <div class="VersionHistory-content" tabindex="-1">
@@ -260,7 +256,7 @@ export default {
         <div class="VersionHistory-sideCol" :class="{'hidden-view': !showSideCol}">
           <div class="VersionHistory-header">
             {{ translatePhrase('Version history') }}
-            <font-awesome-icon :icon="['fas', 'xmark']" role="button" @click="closeSideCol()" class="sideColButton" />
+            <i class="fa fa-close icon icon--md sideColButton" role="button" @click="closeSideCol()"></i>
           </div>
 
           <VersionHistoryChangesets

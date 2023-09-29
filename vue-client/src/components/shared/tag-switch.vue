@@ -117,7 +117,7 @@ export default {
 
 <template>
   <div class="TagSwitch" v-tooltip.top="tooltip" @click="toggleMark()">
-    <font-awesome-icon :icon="[iconStyle, iconString]"/>
+    <i :class="`fa fa-fw ${iconString}`"></i>
   </div>
 </template>
 

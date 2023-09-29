@@ -13,11 +13,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.4.2",
-    "@fortawesome/free-brands-svg-icons": "^6.4.2",
-    "@fortawesome/free-regular-svg-icons": "^6.4.2",
-    "@fortawesome/free-solid-svg-icons": "^6.4.2",
-    "@fortawesome/vue-fontawesome": "^3.0.3",
     "@popperjs/core": "^2.11.8",
     "autosize": "^6.0.1",
     "bootstrap": "^5.3.1",
@@ -27,6 +22,7 @@
     "floating-vue": "^2.0.0-beta.24",
     "focus-trap": "^7.5.2",
     "focus-trap-vue": "^4.0.2",
+    "font-awesome": "4.7.0",
     "git": "^0.1.5",
     "kungbib-styles": "^2.1.0",
     "lodash-es": "^4.17.21",

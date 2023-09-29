@@ -27,8 +27,11 @@ export default {
           <div class="UserBookmarks-itemLabel">
             <a :href="`/katalogisering/${item['@id'].split('/').pop()}`">{{ item.label }}</a>
           </div>
+
           <div class="UserBookmarks-itemAction">
-            <button class="btn btn-warning"><font-awesome-icon :icon="['fas', 'xmark']" /></button>
+            <button class="btn btn-warning">
+              <i class="fa fa-times"></i>
+            </button>
           </div>
         </div>
       </div>

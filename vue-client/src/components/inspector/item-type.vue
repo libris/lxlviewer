@@ -131,17 +131,15 @@ export default {
       </select>
       <div class="ItemType-actions">
         <div class="ItemType-action UnlockAction">
-          <font-awesome-icon
-            :icon="['fas', 'lock']"
-            role="button"
-            size="sm"
-            tabindex="0"
-            aria-label="Unlock"
-            v-tooltip.top="unlockTooltip"
-            @keyup.enter="openUnlockModal()"
-            @click="openUnlockModal()"
-            v-if="isDisabled"
-          />
+          <i
+          role="button"
+          class="fa fa-lock icon icon--sm"
+          tabindex="0"
+          aria-label="Unlock"
+          v-tooltip.top="unlockTooltip"
+          @keyup.enter="openUnlockModal()"
+          @click="openUnlockModal()"
+          v-if="isDisabled"></i>
         </div>
       </div>
     </div>
@@ -171,7 +169,7 @@ export default {
             <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">{{ translatePhrase('Cancel') }}</button>
             <!-- <button class="btn btn-grey btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ translatePhrase('Cancel') }}</button> -->
             <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
-              <font-awesome-icon :icon="['fas', 'unlock-keyhole']" class="icon icon--white" />
+              <i class="icon icon--white fa fa-unlock-alt"></i>
               {{ translatePhrase('Unlock') }}
             </button>
           </div>

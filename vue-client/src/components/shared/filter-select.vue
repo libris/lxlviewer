@@ -279,7 +279,7 @@ export default {
             :data-abstract="option.abstract"
             :data-key="option"
           >
-            {{ option | labelByLang }}
+            {{ labelByLang(option) }}
           </span>
         </li>
 
@@ -318,16 +318,12 @@ export default {
         @keyup.enter="filterVisible = !filterVisible"
       />
 
-      <font-awesome-icon
-        v-if="isFilter"
-        :icon="['fas', 'xmark']"
-        size="sm"
-        class="FilterSelect-clear"
+      <i v-if="isFilter"
+        class="fa fa-close icon icon--sm FilterSelect-clear"
         :title="translatePhrase('Close')"
         role="button"
         @click="clear()"
-        @keyup.enter="clear()"
-      />
+        @keyup.enter="clear()"></i>
     </div>
   </div>
 </template>

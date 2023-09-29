@@ -345,7 +345,7 @@ export default {
           @focus="searchGroupFocus.clear = true"
           @blur="searchGroupFocus.clear = false"
           :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
-          <font-awesome-icon :icon="['fas', 'xmark']" />
+          <i class="fa fa-fw fa-close"></i>
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper d-none d-sm-flex" v-if="searchPerimeter === 'libris'">
           <select
@@ -372,7 +372,7 @@ export default {
           :class="{'disabled': searchPerimeter === 'remote' && remoteDatabases.length === 0}"
           :disabled="searchPerimeter === 'remote' && remoteDatabases.length === 0"
         >
-          <font-awesome-icon :icon="['fa', 'search']" />
+          <i class="fa fa-search"></i>
         </button>
       </div>
 
@@ -387,16 +387,16 @@ export default {
     <div class="SearchForm-help">
       <div class="SearchForm-helpBox dropdown" v-if="searchPerimeter === 'libris'">
         <span class="SearchForm-helpIcon">
-          <font-awesome-icon v-tooltip="searchHelpTooltip" :icon="['fa', 'question-circle']" class="icon icon--md" tabindex="0" aria-haspopup="true"
+          <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle icon icon--md" tabindex="0" aria-haspopup="true"
             ref="helpIcon"
             @mouseover="helpHover = true"
             @mouseleave="helpHover = false"
             @click="toggleHelp"
-            @keyup.enter="toggleHelp"></font-awesome-icon>
+            @keyup.enter="toggleHelp"></i>
         </span>
         <div class="SearchForm-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled">
           <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong>
-          <font-awesome-icon v-if="helpToggled" :icon="['fas', 'xmark']" class="SearchForm-closeHelp" @click="toggleHelp"></font-awesome-icon>
+          <i v-if="helpToggled" class="fa fa-times SearchForm-closeHelp" @click="toggleHelp"></i>
           <div class="SearchForm-helpContent" v-html="searchHelpDocs"></div>
         </div>
       </div>

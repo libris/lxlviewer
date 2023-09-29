@@ -31,6 +31,7 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '~bootstrap': resolve(__dirname, 'node_modules/bootstrap'),
+      '~font-awesome': resolve(__dirname, 'node_modules/font-awesome'),
 
       // SEE: https://github.com/mulesoft-labs/js-client-oauth2/issues/190
       querystring: resolve(__dirname, 'node_modules/querystring-es3'),

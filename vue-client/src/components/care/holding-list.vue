@@ -233,8 +233,8 @@ export default {
   <div class="HoldingList" :class="{ 'is-sender': isSender }" v-if="this[this.name]">
     <div class="HoldingList-topBar">
         <button v-if="isSender" class="btn btn--md btn-light SelectAll-btn" @click="toggleAll" :disabled="lock || movableHoldings.length === 0">
-          <font-awesome-icon icon="fa fa-square-o" class="fa-fw" v-show="!allHoldingsSelected"></font-awesome-icon>
-          <font-awesome-icon icon="fa fa-check-square-o" class="fa-fw" v-show="allHoldingsSelected"></font-awesome-icon>
+          <i class="fa fa-fw fa-square-o" v-show="!allHoldingsSelected"></i>
+          <i class="fa fa-fw fa-check-square-o" v-show="allHoldingsSelected"></i>
           <!-- <input v-model="allHoldingsSelected" type="checkbox" :disabled="lock || movableHoldings.length === 0" @change="handleAllSelect" /> -->
           {{ translatePhrase('Select all') }}
         </button>
@@ -262,15 +262,15 @@ export default {
               </span>
             </div>
             <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
-              <font-awesome-icon icon="fa fa-lock" v-tooltip.top="noPermissionTooltip" class="fa-fw"></font-awesome-icon>
+              <i v-tooltip.top="noPermissionTooltip" class="fa fa-fw fa-lock"></i>
             </div>
             <div class="HoldingList-foundOnDestination" v-if="isSender && userHasPermission(holding) && holdingExistsOnTarget(holding)">
-              <font-awesome-icon icon="fa fa-warning" v-tooltip.top="foundOnDestinationTooltip" class="fa-fw"></font-awesome-icon>
+              <i v-tooltip.top="foundOnDestinationTooltip" class="fa fa-fw fa-warning"></i>
             </div>
             <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding) && reciever">
-              <font-awesome-icon icon="fa fa-circle-o-notch" class="statusItem-loading fa fa-fw fa-spin" v-show="getStatus(holding) === 'loading'" />
-              <font-awesome-icon icon="fa fa-check" class="statusItem-success fa fa-fw" v-show="getStatus(holding) === 'done'" />
-              <font-awesome-icon icon="fa fa-times" class="statusItem-error fa fa-fw" v-show="getStatus(holding) === 'error'" />
+              <i class="statusItem-loading fa fa-fw fa-circle-o-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
+              <i class="statusItem-success fa fa-fw fa-check" v-show="getStatus(holding) === 'done'" />
+              <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
             </div>
             <entity-summary 
             :exclude-components="['categorization', 'id']"

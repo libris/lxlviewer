@@ -45,18 +45,18 @@ export default {
       }">
 
       <span v-if="content.type === 'danger'" class="fa-stack-2x Notification-iconCont">
-        <font-awesome-icon :icon="['fas', 'circle']" class="fa-stack-2x fa-inverse" size="lg"></font-awesome-icon>
-        <font-awesome-icon :icon="['fas', 'xmark']" class="fa-stack-1x Notification-icon" size="lg"></font-awesome-icon>
+        <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+        <i class="fa fa-times fa-stack-1x Notification-icon"></i>
       </span>
 
       <span v-if="content.type === 'success'" class="fa-stack Notification-iconCont">
-        <font-awesome-icon :icon="['fas', 'circle']" class="fa-stack-2x fa-inverse" size="lg"></font-awesome-icon>
-        <font-awesome-icon :icon="['fas', 'check']" class="fa-stack-1x Notification-icon" size="lg"></font-awesome-icon>
+        <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+        <i class="fa fa-check fa-stack-1x Notification-icon"></i>
       </span>
 
       <span v-if="content.type === 'info'" class="fa-stack Notification-iconCont">
-        <font-awesome-icon :icon="['fas', 'circle']" class="fa-stack-2x fa-inverse" size="lg"></font-awesome-icon>
-        <font-awesome-icon :icon="['fas', 'info']" class="fa-stack-1x Notification-icon" size="lg"></font-awesome-icon>
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-info fa-stack-1x Notification-icon"></i>
       </span>
 
       {{ content.message }}
@@ -69,7 +69,7 @@ export default {
         :target="content.link.newTab ? '_blank' : '' "
       >
         {{ content.link.title }}
-        <font-awesome-icon v-if="content.link.newTab" :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
+        <i v-if="content.link.newTab" class="fa fa-external-link" aria-hidden="true"></i>
       </router-link>
 
       <a
@@ -79,7 +79,7 @@ export default {
         :target="content.link.newTab ? '_blank' : '' "
       >
         {{ content.link.title }}
-        <font-awesome-icon v-if="content.link.newTab" :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
+        <i v-if="content.link.newTab" class="fa fa-external-link" aria-hidden="true"></i>
       </a>
   </div>
 </template>

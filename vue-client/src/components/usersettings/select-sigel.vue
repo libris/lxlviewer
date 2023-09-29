@@ -92,7 +92,7 @@ export default {
       type="submit"
       class="btn btn-primary btn--md"
     >
-      <font-awesome-icon class="icon icon--white" :icon="['fas', 'arrow-right-arrow-left']" />
+      <i class="icon icon--white fa fa-exchange"></i>
       {{ translatePhrase('Växla sigel') }}
     </button>
   </form>

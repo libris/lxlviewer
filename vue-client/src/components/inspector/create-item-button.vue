@@ -129,8 +129,8 @@ export default {
         :disabled="disabled" 
         :class=" {'is-disabled': disabled, 'btn-primary': !disabled} "
         v-tooltip.top="keyBindText">
-        <font-awesome-icon :icon="['fas', 'plus']" v-if="!hasHolding && !checkingHolding" />
-        <font-awesome-icon :icon="['fas', 'circle-notch']" class="fa-spin" v-if="checkingHolding" />
+        <i class="fa fa-plus-circle" v-if="!hasHolding && !checkingHolding"></i>
+        <i class="fa fa-fw fa-circle-o-notch fa-spin" v-if="checkingHolding"></i>
         {{ translatePhrase("Add holding") }}
         <span>({{user.settings.activeSigel}})</span>
       </button>
@@ -140,7 +140,7 @@ export default {
         :disabled="disabled" 
         @click.prevent="gotoHolding()"
         v-tooltip.top="keyBindText">
-        <font-awesome-icon :icon="['fas', 'circle-check']" v-if="hasHolding && !checkingHolding"></font-awesome-icon>
+        <i class="fa fa-check-circle" v-if="hasHolding && !checkingHolding"></i>
         {{ translatePhrase("Show holding") }}
         <span>({{user.settings.activeSigel}})</span>
       </button>

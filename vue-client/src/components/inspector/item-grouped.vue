@@ -108,7 +108,7 @@ export default {
       <div class="ItemGrouped-label"
         :class="{'is-locked': isLocked }"
         @click="toggleExpanded()">
-        <font-awesome-icon :icon="['fas', 'chevron-right']" class="ItemGrouped-arrow" />
+        <i class="ItemGrouped-arrow fa fa-chevron-right"></i>
         <span class="ItemGrouped-type">{{ item.totalItems }} länkningar</span>
       </div>
     </strong>

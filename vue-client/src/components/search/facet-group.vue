@@ -185,7 +185,6 @@ export default {
         tabindex="0"
         :id="facetLabelByLang(group.dimension)"
       >
-        <font-awesome-icon :icon="['fas', 'chevron-right']" />
         {{capitalize(facetLabelByLang(group.dimension))}}
       </h4>
 
@@ -194,31 +193,26 @@ export default {
           class="FacetGroup-sortSelect" 
           tabindex="0"
         >
-          <!-- <i v-if="chosenSort == 'amount.desc'" class="icon-selected fa fa-fw fa-sort-amount-desc"></i> -->
-          <!-- <i v-if="chosenSort == 'amount.asc'" class="icon-selected fa fa-fw fa-sort-amount-asc"></i>
+          <i v-if="chosenSort == 'amount.desc'" class="icon-selected fa fa-fw fa-sort-amount-desc"></i>
+          <i v-if="chosenSort == 'amount.asc'" class="icon-selected fa fa-fw fa-sort-amount-asc"></i>
           <i v-if="chosenSort == 'alpha.asc'" class="icon-selected fa fa-fw fa-sort-alpha-asc"></i>
-          <i v-if="chosenSort == 'alpha.desc'" class="icon-selected fa fa-fw fa-sort-alpha-desc"></i> -->
-
-          <font-awesome-icon v-if="chosenSort == 'amount.desc'" :icon="['fas', 'arrow-up-1-9']" />
-          <font-awesome-icon v-if="chosenSort == 'amount.asc'" :icon="['fas', 'arrow-down-1-9']" />
-          <font-awesome-icon v-if="chosenSort == 'alpha.asc'" :icon="['fas', 'arrow-down-a-z']" />
-          <font-awesome-icon v-if="chosenSort == 'alpha.desc'" :icon="['fas', 'arrow-up-a-z']" />
-          <font-awesome-icon :icon="['fas', 'caret-down']" />
+          <i v-if="chosenSort == 'alpha.desc'" class="icon-selected fa fa-fw fa-sort-alpha-desc"></i>
+          <i class="fa fa-caret-down"></i>
         </div>
 
         <template #popper>
           <ul class="FacetGroup-sortSelectDropdown">
             <li :class="{'active': chosenSort == 'amount.desc'}" @click="selectSortDropDownItem('amount.desc')" @keyup.enter="selectSortDropDownItem('amount.desc')">
-              <font-awesome-icon :icon="['fas', 'arrow-up-1-9']" /> Antal träffar (fallande)
+              <i class="fa fa-fw fa-sort-amount-desc"></i> Antal träffar (fallande)
             </li>
             <li :class="{'active': chosenSort == 'amount.asc'}" @click="selectSortDropDownItem('amount.asc')" @keyup.enter="selectSortDropDownItem('amount.asc')">
-              <font-awesome-icon :icon="['fas', 'arrow-down-1-9']" /> Antal träffar (stigande)
+              <i class="fa fa-fw fa-sort-amount-asc"></i> Antal träffar (stigande)
             </li>
             <li :class="{'active': chosenSort == 'alpha.asc'}" @click="selectSortDropDownItem('alpha.asc')" @keyup.enter="selectSortDropDownItem('alpha.desc')">
-              <font-awesome-icon :icon="['fas', 'arrow-down-a-z']" /> A-Ö
+              <i class="fa fa-fw fa-sort-alpha-asc"></i> A-Ö
             </li>
             <li :class="{'active': chosenSort == 'alpha.desc'}" @click="selectSortDropDownItem('alpha.desc')" @keyup.enter="selectSortDropDownItem('alpha.desc')">
-              <font-awesome-icon :icon="['fas', 'arrow-up-a-z']" /> Ö-A
+              <i class="fa fa-fw fa-sort-alpha-desc"></i> Ö-A
             </li>
           </ul>
         </template>
@@ -340,7 +334,10 @@ export default {
     cursor: pointer;
     display: inline-block;
 
-    svg {
+    &::before {
+      font-family: FontAwesome;
+      content: "\F054";
+      font-weight: normal;
       color: $brand-primary;
       display: inline-block;
       margin-right: 5px;

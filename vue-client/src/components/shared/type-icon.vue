@@ -54,9 +54,9 @@ export default {
       if (this.iconMap.hasOwnProperty(this.convertedType)) {
         iconName = this.iconMap[this.convertedType];
       } else {
-        return null;
+        return '';
       }
-      return ['fas', iconName];
+      return `fa fa-fw fa-${iconName}`;
     },
   },
   components: {
@@ -70,7 +70,7 @@ export default {
 <template>
   <div class="TypeIcon" v-if="showIconscss === true || iconClass !== '' || isForcedUnspecified">
     <span class="TypeIcon-label" v-if="iconClass === '' || isForcedUnspecified">/</span>
-    <font-awesome-icon :icon="iconClass" v-if="iconClass != null"></font-awesome-icon>
+    <i :class="iconClass" v-if="iconClass !== ''"></i>
   </div>
 </template>
 

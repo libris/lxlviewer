@@ -120,7 +120,7 @@ export default {
     :aria-label="computedLabel"
   >
     <span v-if="icon">
-      <font-awesome-icon :icon="['fa', icon]" aria-hidden="true"></font-awesome-icon>
+      <i :class="`fa fa-fw fa-${icon}`" aria-hidden="true"></i>
     </span>
     <span class="Button-buttonText" v-if="computedButtonText">{{ computedButtonText }}</span>
   </button>

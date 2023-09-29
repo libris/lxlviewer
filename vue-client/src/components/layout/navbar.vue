@@ -142,11 +142,9 @@ export default {
                 {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </span>
 
-              <font-awesome-icon
-                :icon="['fas', 'caret-down']"
-                class="d-none d-sm-inline-block"
-                v-if="!isUserPage"
-                :class="{ 'active': showUserMenu }"
+              <i
+                class="fa fa-fw hidden-xs"
+                :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"
               />
             </div>
 

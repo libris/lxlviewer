@@ -481,17 +481,17 @@ export default {
         :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
         @click="toggleExpanded()"
       >
-        <font-awesome-icon :icon="['fas', 'chevron-right']" class="ItemLocal-arrow" :class="{'icon is-disabled' : isEmpty}" />
+        <i class="ItemLocal-arrow fa fa-chevron-right" :class="{'icon is-disabled' : isEmpty}"></i>
         <span class="ItemLocal-type"
           :title="item['@type']">{{ capitalize(labelByLang(item['@type']))}}:</span>
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>
         <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
-          <font-awesome-icon :icon="['fas', 'trash-can']" class="icon-removed" />
+          <i class="fa fa-trash-o icon--sm icon-removed"></i>
         </span>
         <div class="ItemLocal-history-icon" v-if="diffAdded && !diffRemoved">
-          <font-awesome-icon :icon="['fas', 'circle-plus']" class="icon-added" />
+          <i class="fa fa-plus-circle icon--sm icon-added"></i>
         </div>
       </div>
       
@@ -567,7 +567,7 @@ export default {
                     @keyup.enter="copyThis()"
                     @click="copyThis()"
                   >
-                    <font-awesome-icon :icon="['fas', 'copy']" aria-hidden="true" />
+                    <i class="fa fa-fw fa-copy" aria-hidden="true"></i>
                     {{translatePhrase("Copy to clipboard")}}
                   </a>
                 </li>
@@ -577,7 +577,7 @@ export default {
                     @keyup.enter="cloneThis()"
                     @click="cloneThis()"
                   >
-                    <font-awesome-icon :icon="['fas', 'clone']" aria-hidden="true" />
+                    <i class="fa fa-fw fa-clone" aria-hidden="true"></i>
                     {{translatePhrase("Duplicate entity")}}
                   </a>
                 </li>

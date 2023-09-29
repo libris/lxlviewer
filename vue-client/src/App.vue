@@ -14,7 +14,7 @@
     </div>
 
     <div v-if="loadingError" class="ResourcesLoadingError">
-      <font-awesome-icon icon="fa fa-warning" class="fa-4x text-danger"></font-awesome-icon>
+      <i class="fa fa-warning fa-4x text-danger"></i>
       <div>
         <h2>Kunde inte hämta nödvändiga resurser</h2>
         <p>Testa att ladda om sidan.</p>
@@ -319,6 +319,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import "/node_modules/font-awesome/css/font-awesome.css";
+
 // BOOTSTRAP UNSET START
 .dropdown-menu > li > a {
   font-weight: unset;

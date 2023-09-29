@@ -296,7 +296,7 @@ export default {
         @focus="actionHighlight(true, $event)"
         @blur="actionHighlight(false, $event)"
     >
-      <font-awesome-icon :icon="['fas', 'circle-plus']" class="FieldAdder-innerIcon icon icon--sm" />
+      <i class="FieldAdder-innerIcon fa fa-plus-circle fa-fw icon icon--sm" />
       <span class="action-label">{{ translatePhrase("Add field") }}</span>
     </span>
 
@@ -307,7 +307,7 @@ export default {
       v-tooltip.left="`${translatePhrase(modalTitle)} (${getKeybindText('open-field-adder')})`"
       :aria-label="translatePhrase(modalTitle)"
     >
-      <font-awesome-icon :icon="['fas', 'plus']" aria-hidden="true" />
+      <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true"></i>
       <span v-if="!inToolbar" class="FieldAdder-label"> {{ translatePhrase("Add field") }}</span>
     </button>
     <portal to="sidebar" v-if="active">
@@ -368,9 +368,9 @@ export default {
                   :disabled="prop.added"
                   :label="prop.added ? 'Added' : 'Add'"/>
               </span>
-              <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
-                {{prop.label | capitalize }}
-                <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
+              <span class="FieldAdderPanel-fieldLabel" :title="capitalize(prop.label)">
+                {{capitalize(prop.label) }}
+                <span class="typeLabel">{{ removeDomain(prop.item['@id']) }}</span>
               </span>
               <span class="FieldAdderPanel-classInfo">
                 {{ getPropClassInfo(prop.item) }}

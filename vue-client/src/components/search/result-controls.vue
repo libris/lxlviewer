@@ -242,7 +242,7 @@ export default {
             v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
             :title="translatePhrase('Detailed view')"
           >
-            <font-awesome-icon :icon="['fas', 'table-list']" />
+            <i class="fa fa-th-list"></i>
           </button>
 
           <button class="ResultControls-listType icon icon--md" 
@@ -250,7 +250,7 @@ export default {
             v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
             :title="translatePhrase('Compact view')"
           >
-            <font-awesome-icon :icon="['fas', 'list']" />
+            <i class="fa fa-list"></i>
           </button>
         </div>
       </div>

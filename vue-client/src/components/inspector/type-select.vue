@@ -66,8 +66,7 @@ export default {
         :value="term.id"></option>
     </select>
     <div class="TypeSelect-dismissBtn" v-if="removeable">
-      <font-awesome-icon
-        :icon="['fas', 'circle-xmark']"
+      <i class="fa fa-times-circle icon icon--sm" 
         role="button"
         tabindex="0"
         :aria-label="translatePhrase('Remove')"
@@ -76,9 +75,9 @@ export default {
         @mouseover="highlight = true"
         @mouseout="highlight = false"
         @focus="highlight = true"
-        @blur="highlight = false"
-      />
-      </div>
+        @blur="highlight = false">
+      </i>
+    </div>
   </div>
 </template>
 

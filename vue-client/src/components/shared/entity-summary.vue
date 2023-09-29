@@ -336,13 +336,8 @@ export default {
       @mouseover="idHover = true"
       @mouseout="idHover = false"
     >
-      <font-awesome-icon
-        :icon="['far', 'copy']"
-        class="EntitySummary-idCopyIcon"
-        v-tooltip.top="idTooltipText"
-        :class="{'collapsedIcon': !idHover || recentlyCopiedId }"
-        @click="copyFnurgel"
-      />{{ idAsFnurgel }}
+      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
+      </i>{{ idAsFnurgel }}
     </div>
   </div>
 
@@ -359,7 +354,7 @@ export default {
         v-if="isImport && shouldLink" 
         :title="header.join(', ')" 
         v-on:click="importThis()">
-        <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
+        <i class="fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </span>
       <router-link class="EntitySummary-titleLink"
@@ -367,7 +362,7 @@ export default {
         :to="this.routerPath" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
-        <font-awesome-icon v-if="shouldOpenTab" :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
+        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </router-link>
       <a class="EntitySummary-titleLink"
@@ -375,7 +370,7 @@ export default {
         :href="convertResourceLink(uri)"
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
-        <font-awesome-icon v-if="shouldOpenTab" class="EntitySummary-icon" :icon="['fas', 'arrow-up-right-from-square']" aria-hidden="true" />
+        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
         {{ header.join(', ') }}
       </a>
     </h3>

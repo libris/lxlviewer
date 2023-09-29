@@ -259,16 +259,13 @@ export default {
       />
       <div v-if="$route.params.perimeter === 'libris'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">
         {{ translatePhrase('Filter') }} 
-        <font-awesome-icon
-          :icon="['fas', 'caret-down']"
-          class="d-md-none"
-          v-if="!hideFacetColumn"
-        />
 
-        <font-awesome-icon
-          :icon="['fas', 'caret-right']"
-          class="d-md-none"
-          v-if="hideFacetColumn"
+        <i
+          class="fa fa-fw hidden-md hidden-lg"
+          :class="{
+            'fa-caret-down': !hideFacetColumn,
+            'fa-caret-right': hideFacetColumn
+          }"
         />
       </div>
 

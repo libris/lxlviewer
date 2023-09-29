@@ -3,7 +3,7 @@
   Controls add new field button and add field modal with it's content
 */
 
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, capitalize, removeDomain } from '@/utils/filters';
 import { filter, isArray } from 'lodash-es';
 import { mapActions, mapState, mapWritableState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
@@ -112,7 +112,7 @@ export default {
     },
   },
   methods: {
-    translatePhrase,
+    translatePhrase, capitalize, removeDomain,
     ...mapActions(useInspectorStore, ['updateInspectorData', 'setInspectorStatusValue']),
     toggleFullView() {
       const user = this.user;
@@ -326,9 +326,9 @@ export default {
                     :disabled="prop.added"
                     :label="prop.added ? 'Added' : 'Add'"/>
                 </span>
-                <span class="PropertyAdderPanel-fieldLabel" :title="prop.label | capitalize">
-                  {{prop.label | capitalize }}
-                  <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
+                <span class="PropertyAdderPanel-fieldLabel" :title="capitalize(prop.label)">
+                  {{capitalize(prop.label)}}
+                  <span class="typeLabel">{{ removeDomain(prop.item['@id']) }}</span>
                 </span>
                 <span class="PropertyAdderPanel-classInfo">
                   {{ getPropClassInfo(prop.item) }}

@@ -88,8 +88,8 @@ export default {
 <template>
   <div class="PreviewCard">
     <div class="PreviewCard-spinner" :class="{ 'is-active' : fetchStatus !== null }">
-      <span v-if="fetchStatus === 'loading'">Laddar <font-awesome-icon :icon="['fas', 'circle-notch']" spin /></span>
-      <span v-if="fetchStatus === 'error'" class="fetchError">Laddningsfel <font-awesome-icon :icon="['fas', 'xmark']" /></span>
+      <span v-if="fetchStatus === 'loading'">Laddar <i class="fa-spin fa fa-circle-o-notch"></i></span>
+      <span v-if="fetchStatus === 'error'" class="fetchError">Laddningsfel <i class="fa fa-times"></i></span>
     </div>
 
     <EntitySummary :animate="true" :focus-data="fullData" :hover-links="false" />

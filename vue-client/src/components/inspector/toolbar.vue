@@ -467,10 +467,8 @@ export default {
           :aria-label="translatePhrase('Show as')"
           v-if="!inspector.status.editing"
         >
-          <font-awesome-icon :icon="['fas', 'eye']" />
-          <span class="Toolbar-caret caret">
-            <font-awesome-icon :icon="['fas', 'caret-down']" size="2xs" />
-          </span>
+          <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
+          <span class="Toolbar-caret caret"></span>
         </button>
       </div>
 
@@ -479,25 +477,25 @@ export default {
           <ul class="Toolbar-menuList OtherFormatMenu-menu">
               <li class="Toolbar-menuItem">
                 <a class="Toolbar-menuLink" :href="convertResourceLink(focusData.mainEntity['@id'])" target="_blank" v-close-popper>
-                  <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
+                  <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
                   Formell resurs
                 </a>
               </li>
               <li class="Toolbar-menuItem">
                 <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('jsonld'))" target="_blank" v-close-popper>
-                  <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
+                  <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
                   JSON-LD
                 </a>
               </li>
               <li class="Toolbar-menuItem">
                 <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('ttl'))" target="_blank" v-close-popper>
-                  <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
+                  <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
                   Turtle
                 </a>
               </li>
               <li class="Toolbar-menuItem">
                 <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('rdf'))" v-close-popper>
-                  <font-awesome-icon :icon="['fas', 'arrow-up-right-from-square']" />
+                  <i class="fa fa-fw fa-download" aria-hidden="true"></i>
                   RDF/XML
                 </a>
               </li>
@@ -515,10 +513,8 @@ export default {
           v-tooltip.left="translatePhrase('Tools')"
           :aria-label="translatePhrase('Tools')"
         >
-          <font-awesome-icon :icon="['fa', 'wrench']" />
-          <span class="Toolbar-caret caret">
-            <font-awesome-icon :icon="['fas', 'caret-down']" size="2xs" />
-          </span>
+          <i class="fa fa-fw fa-wrench" aria-hidden="true"></i>
+          <span class="Toolbar-caret caret"></span>
         </button>
       </div>
 
@@ -527,125 +523,119 @@ export default {
           <ul class="Toolbar-menuList OtherFormatMenu-menu">
             <li class="Toolbar-menuItem">
               <a class="Toolbar-menuLink" @click="formControl('expand-item')" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'expand']" aria-hidden="true" />
+                <i class="fa fa-fw fa-expand" aria-hidden="true"></i>
                 {{translatePhrase("Expand all")}}{{ getKeybindText('expand-item') ? ` (${getKeybindText('expand-item')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem">
               <a class="Toolbar-menuLink" @click="formControl('collapse-item')" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'compress']" aria-hidden="true" />
+                <i class="fa fa-fw fa-compress" aria-hidden="true"></i>
                 {{translatePhrase("Collapse all")}}{{ getKeybindText('collapse-item') ? ` (${getKeybindText('collapse-item')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && !isSubClassOf('Item')">
               <a class="Toolbar-menuLink"  @click="formControl('duplicate-item')" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'copy']" />
+                <i class="fa fa-fw fa-files-o"></i>
                 {{ translatePhrase("Make copy") }}{{ getKeybindText('duplicate-item') ? ` (${getKeybindText('duplicate-item')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && !inspector.status.editing && isSubClassOf('Instance') && !isSubClassOf('Electronic')">
               <a class="Toolbar-menuLink"  @click="recordControl('create-digital-reproduction')" v-close-popper>
-                <font-awesome-icon :icon="['fab', 'wpforms']" />
+                <i class="fa fa-fw fa-wpforms"></i>
                 {{ translatePhrase("Create digital reproduction") }}{{ getKeybindText('create-digital-reproduction') ? ` (${getKeybindText('create-digital-reproduction')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishTemplateSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
               <a class="Toolbar-menuLink" @click="showEmbellishTemplateSubMenu = !showEmbellishTemplateSubMenu" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'clipboard']" />
+                <i class="fa fa-fw fa-clipboard"></i>
                 <span>{{ translatePhrase("Embellish from template") }}{{ getKeybindText('embellish-from-template') ? ` (${getKeybindText('embellish-from-template')})` : ''}}</span>
-                <span class="submenuControl">
-                  <font-awesome-icon :icon="['fas', 'caret-down']" v-if="showEmbellishTemplateSubMenu" />
-                  <font-awesome-icon :icon="['fas', 'caret-right']" v-if="!showEmbellishTemplateSubMenu" />
-                </span>
+                <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishTemplateSubMenu, 'fa-caret-right': !showEmbellishTemplateSubMenu }"></i></span>
               </a>
             </li>
 
             <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishTemplateSubMenu && validTemplates.length === 0">
               <span class="Toolbar-menuLink">
-                <font-awesome-icon :icon="['fas', 'exclamation']" />
+                <i class="fa fa-fw fa-exclamation"></i>
                 {{ translatePhrase("No matching templates") }}
               </span>
             </li>
 
             <li class="Toolbar-menuItem inSubMenu" v-for="(value, key) in validTemplates" v-show="showEmbellishTemplateSubMenu" :key="key">
               <a class="Toolbar-menuLink" @click="applyTemplate(value)" v-close-popper>
-              <font-awesome-icon :icon="['fas', 'plus']" />
+              <i class="fa fa-fw fa-plus"></i>
               {{ value.label }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" :class="{'is-active': showEmbellishFromRecordSubMenu}" v-if="user.isLoggedIn && inspector.status.editing">
               <a class="Toolbar-menuLink" @click="showEmbellishFromRecordSubMenu = !showEmbellishFromRecordSubMenu" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'clipboard']" />
+                <i class="fa fa-fw fa-clipboard"></i>
                 <span>{{ translatePhrase("Embellish from record") }}{{ getKeybindText('embellish-from-record') ? ` (${getKeybindText('embellish-from-record')})` : ''}}</span>
-                <span class="submenuControl">
-                  <font-awesome-icon :icon="['fas', 'caret-down']" v-if="showEmbellishFromRecordSubMenu" />
-                  <font-awesome-icon :icon="['fas', 'caret-right']" v-if="!showEmbellishFromRecordSubMenu" />
-                </span>
+                <span class="submenuControl"><i class="fa fa-fw" :class="{ 'fa-caret-down': showEmbellishFromRecordSubMenu, 'fa-caret-right': !showEmbellishFromRecordSubMenu }"></i></span>
               </a>
             </li>
 
             <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
               <a class="Toolbar-menuLink" @click="applyRecordAsTemplate" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'link']" />
+                <i class="fa fa-fw fa-chain"></i>
                 {{ translatePhrase('From ID') }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
               <a class="Toolbar-menuLink" @click="openTemplatePicker" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'upload']" />
+                <i class="fa fa-fw fa-upload"></i>
                 {{ translatePhrase('From file') }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing">
               <a class="Toolbar-menuLink" @click="detailedApplyRecordAsTemplate" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'clipboard']" />
+                <i class="fa fa-fw fa-clipboard"></i>
                 {{ translatePhrase('Detailed enrichment') }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="compiledIsAvailable">
               <a class="Toolbar-menuLink" v-if="downloadIsSupported" @click="getCompiledRecord()" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'download']" aria-hidden="true" />
+                <i class="fa fa-fw fa-download" aria-hidden="true"></i>
                 {{ translatePhrase("Download compiled") }} MARC21
               </a>
 
-              <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl | convertResourceLink" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'download']" aria-hidden="true" />
+              <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="convertResourceLink(compileMARCUrl)" v-close-popper>
+                <i class="fa fa-fw fa-download" aria-hidden="true"></i>
                 {{ translatePhrase("Download compiled") }} MARC21
               </a>
             </li>
 
             <li class="Toolbar-menuItem">
               <a class="Toolbar-menuLink" @click="recordControl('download-json')" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'download']" aria-hidden="true" />
+                <i class="fa fa-fw fa-download" aria-hidden="true"></i>
                 {{ translatePhrase("Download") }} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{ translatePhrase('Incl. unsaved changes')}})</span>
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="enableMarcPreview">
               <a class="Toolbar-menuLink" @click="openMarc()" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'eye']" aria-hidden="true" />
+                <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
                 {{ translatePhrase("Preview MARC21") }} {{ getKeybindText('preview-marc') ? ` (${getKeybindText('preview-marc')})` : ''}}
               </a>
             </li>
 
             <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToRemove">
               <a class="Toolbar-menuLink"  @click="recordControl('remove-record')" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'trash-can']" aria-hidden="true" />
-                {{ translatePhrase("Remove") }} {{ recordType | labelByLang | lowercase }}
+                <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
+                {{ translatePhrase("Remove") }} {{ lowercase(labelByLang(recordType)) }}
               </a>
             </li>
 
             <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech && userIsPermittedToEdit">
               <a class="Toolbar-menuLink" @click="openOverridePicker" v-close-popper>
-                <font-awesome-icon :icon="['fas', 'upload']" />
+                <i class="fa fa-fw fa-upload"></i>
                 {{ translatePhrase('Overwrite data') }}
               </a>
             </li>
@@ -676,7 +666,8 @@ export default {
       @mouseout="showUndo = false"
       :aria-label="translatePhrase('Undo')"
     >
-      <font-awesome-icon :icon="['fa', 'undo']" aria-hidden="true" />
+      <i class="fa fa-undo" aria-hidden="true">
+      </i>
     </button>
 
     <button
@@ -688,7 +679,8 @@ export default {
       @mouseout="showCancel = false"
       :aria-label="translatePhrase('Cancel')"
     >
-      <font-awesome-icon :icon="['fa', 'close']" aria-hidden="true" />
+      <i class="fa fa-close" aria-hidden="true">
+      </i>
     </button>
 
     <button class="Toolbar-btn btn btn-default" id="saveButton" 
@@ -699,8 +691,8 @@ export default {
       v-tooltip.left="`${translatePhrase('Save')} (${getKeybindText('save-item')})`"
       :aria-label="translatePhrase('Save')"
     >
-      <font-awesome-icon :icon="['fa', 'circle-notch']" class="fa-spin" v-show="inspector.status.saving" />
-      <font-awesome-icon :icon="['fa', 'save']" v-show="!inspector.status.saving" />
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
+      <i class="fa fa-fw fa-save" v-show="!inspector.status.saving"></i>
     </button>
 
     <button
@@ -712,8 +704,8 @@ export default {
       @mouseout="showClarifySave = false"
       :aria-label="translatePhrase('Save and stop editing')"
     >
-      <font-awesome-icon :icon="['fa', 'circle-notch']" class="fa-spin" v-show="inspector.status.saving" />
-      <font-awesome-icon :icon="['fa', 'check']" v-show="!inspector.status.saving" />
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving"></i>
+      <i class="fa fa-fw fa-check" v-show="!inspector.status.saving"></i>
     </button>
 
     <button
@@ -725,8 +717,8 @@ export default {
       @mouseout="showEdit = false"
       :aria-label="translatePhrase('Edit')"
     >
-      <font-awesome-icon :icon="['fa', 'circle-notch']" class="fa-spin" v-show="inspector.status.saving" />
-      <font-awesome-icon :icon="['fa', 'pen-to-square']" v-show="!inspector.status.saving" />
+      <i class="fa fa-fw fa-pencil-square-o" v-show="!inspector.status.opening"></i>
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.opening"></i>
     </button>
   </div>
 </template>

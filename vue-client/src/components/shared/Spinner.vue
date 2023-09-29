@@ -12,10 +12,9 @@ const props = defineProps({
 
 <template>
 	<div>
-		<font-awesome-icon
-			:icon="['fas', 'circle-notch']"
-			:size="props.size"
-			spin
+		<i
+			class="fa fa-circle-o-notch fa-spin"
+			:class="`fa-${props.size}`"
 		/>
 	</div>
 </template>

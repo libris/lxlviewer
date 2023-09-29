@@ -186,7 +186,7 @@ export default {
       @click="toggleExpanded()"
       @keyup.enter="toggleExpanded()"
     >
-      <font-awesome-icon :icon="['fas', 'chevron-right']" class="ItemEntity-arrow" />
+      <i class="ItemEntity-arrow fa fa-chevron-right"></i>
     </div>
 
     <div
@@ -213,10 +213,10 @@ export default {
           }"
         >
           <span class="ItemEntity-history-icon" v-if="diffRemoved">
-            <font-awesome-icon :icon="['fas', 'trash-can']" size="sm" class="icon-removed" />
+            <i class="fa fa-trash-o icon--sm icon-removed"></i>
           </span>
           <span class="ItemEntity-history-icon" v-if="diffAdded">
-            <font-awesome-icon :icon="['fas', 'circle-plus']" size="sm" class="icon-added" />
+            <i class="fa fa-plus-circle icon--sm icon-added"></i>
           </span>
           <span class="ItemEntity-label chip-label">
             <span v-if="(!isCardWithData || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
@@ -224,18 +224,15 @@ export default {
             <span class="placeholder"></span>
           </span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
-            <font-awesome-icon
-              :icon="['fas', 'circle-xmark']"
-              class="chip-icon"
-              size="sm"
+            <i class="fa fa-times-circle icon icon--sm chip-icon" 
               v-if="!isLocked"
               role="button"
               tabindex="0"
               :aria-label="translatePhrase('Remove')"
               v-tooltip.top="translatePhrase('Remove')"
               @click="removeThis(true)"
-              @keyup.enter="removeThis(true)"
-            />
+              @keyup.enter="removeThis(true)">
+            </i>
           </div>
         </div>
 

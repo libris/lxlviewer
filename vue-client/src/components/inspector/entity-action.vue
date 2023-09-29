@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     iconClassString() {
-      return [`fas`, this.icon];
+      return `fas ${this.icon}`;
     },
   },
   methods: {
@@ -69,7 +69,7 @@ export default {
     @blur="dehighlight()"
     @mouseout="dehighlight()"
   >
-    <font-awesome-icon :icon="iconClassString" />
+    <i :class="iconClassString"></i>
     <span class="action-label" v-show="isLarge">
       {{ translatePhrase(label) }}
     </span>

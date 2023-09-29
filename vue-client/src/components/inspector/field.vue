@@ -702,20 +702,18 @@ export default {
           <div class="Field-action Field-remove" 
             v-show="!locked && isRemovable" 
             :class="{'disabled': activeModal}">
-            <font-awesome-icon
-              :icon="['fas', 'trash-can']"
-              class="action-button icon icon--sm"
-              role="button"
-              :aria-label="translatePhrase('Remove')"
-              tabindex="0"
-              v-on:click="removeThis(true)"
-              @keyup.enter="removeThis(true)"
-              v-tooltip.top="translatePhrase('Remove')"
-              @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
-              @blur="removeHover = false, highlight(false, $event, 'is-removeable')"
-              @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
-              @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')"
-            />
+              <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
+                role="button"
+                :aria-label="translatePhrase('Remove')"
+                tabindex="0"
+                v-on:click="removeThis(true)"
+                @keyup.enter="removeThis(true)"
+                v-tooltip.top="translate('Remove')"
+                @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
+                @blur="removeHover = false, highlight(false, $event, 'is-removeable')"
+                @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
+                @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
+              </i>
           </div>
           <entity-adder class="Field-entityAdder Field-action"
             v-if="!locked && (isRepeatable || isEmptyObject || isLangMap)"
@@ -741,7 +739,7 @@ export default {
           <div v-else class="Field-action placeholder"></div> 
 
           <div class="Field-comment" v-if="propertyComment && !locked" >
-            <font-awesome-icon :icon="['fas', 'circle-question']" />
+            <i class="fa fa-question-circle fa-fw icon icon--sm"></i>
             <span class="Field-commentText">{{ propertyComment }}</span>
           </div>
 
@@ -750,28 +748,24 @@ export default {
           <div class="Field-action Field-clipboardPaster"
             v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
             ref="clipboardPaster">
-            <font-awesome-icon
-              tabindex="0"
-              class="action-button"
-              :icon="['fas', 'paste']"
-              size="sm"
+            <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
               role="button"
               :aria-label="translatePhrase('Paste entity')"
               @click="pasteClipboardItem"
               @keyup.enter="pasteClipboardItem"
-              v-tooltip.top="translatePhrase('Paste entity')"
+              v-tooltip.top="translate('Paste entity')"
               @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
               @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
               @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
               @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
-            </font-awesome-icon>
+            </i>
           </div>
         </div>
         <div class="Field-label-history-icon" v-if="diffRemoved && !diffAdded">
-          <font-awesome-icon :icon="['fas', 'trash-can']" size="sm" class="icon-removed" />
+          <i class="fa fa-trash-o icon--sm icon-removed"></i>
         </div>
         <div class="Field-label-history-icon" v-if="diffAdded && !diffRemoved">
-          <font-awesome-icon :icon="['fas', 'circle-plus']" class="icon-added" />
+          <i class="fa fa-plus-circle icon--sm icon-added"></i>
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
           <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
@@ -790,7 +784,7 @@ export default {
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
             <span :title="fieldKey">{{ capitalize(translatePhrase('Incoming links')) }}</span>
             <div class="Field-comment">
-              <font-awesome-icon :icon="['fas', 'circle-question']" />
+              <i class="fa fa-question-circle-o icon icon--sm"></i>
               <span class="Field-commentText">{{ translatePhrase('Non editable incoming link') }}.
                 <br />
                 <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ translatePhrase('Read more about incoming links') }}.</a>
@@ -807,12 +801,12 @@ export default {
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ capitalize(labelByLang(fieldKey)) }}</span>
       <span class="Field-navigateHistory" v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" @click="onLabelClick"
             v-tooltip.top="{content: translatePhrase('Show latest change'), delay: { show: 300, hide: 0 }}">
-        {{ fieldKey | labelByLang | capitalize }}
+        {{ capitalize(labelByLang(fieldKey)) }}
       </span>
       <!-- Is inner -->
       <div class="Field-actions is-nested">
         <div class="Field-action Field-comment" v-if="propertyComment && !locked" >
-          <font-awesome-icon :icon="['fas', 'circle-question']" />
+          <i class="fa fa-question-circle fa-fw icon icon--sm"></i>
           <span class="Field-commentText">{{ propertyComment }}</span>
         </div>
         <entity-adder class="Field-action Field-entityAdder"
@@ -840,8 +834,7 @@ export default {
         <div class="Field-action Field-remove" 
           v-show="!locked && isRemovable" 
           :class="{'disabled': activeModal}">
-          <font-awesome-icon :icon="['fas', 'trash-can']" size="sm"
-            class="action-button"
+          <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
             tabindex="0"
             role="button"
             :aria-label="translatePhrase('Remove')"
@@ -851,37 +844,33 @@ export default {
             @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
             @blur="removeHover = false, highlight(false, $event, 'is-removeable')" 
             @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
-            @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')"
-          />
+            @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
+          </i>
         </div>
 
         <div class="Field-action Field-clipboardPaster"
           v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
           ref="clipboardPaster">
-          <font-awesome-icon
-            :icon="['fas', 'paste']"
-            tabindex="0"
-            class="action-button"
-            size="sm"
+          <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
             role="button"
             :aria-label="translatePhrase('Paste entity')"
             @click="pasteClipboardItem"
             @keyup.enter="pasteClipboardItem"
-            v-tooltip.top="translatePhrase('Paste entity')"
+            v-tooltip.top="translate('Paste entity')"
             @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
             @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
             @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
             @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
-          </font-awesome-icon>
+          </i>
         </div>
       </div>
       <div class="Field-history-icon" v-if="diffRemoved && !diffAdded">
-        <font-awesome-icon :icon="['fas', 'trash-can']" class="icon-removed" size="sm" />
+        <i class="fa fa-trash-o icon--sm icon-removed"></i>
       </div>
       <div class="Field-history-icon" v-if="diffAdded && !diffRemoved">
-        <font-awesome-icon :icon="['fas', 'circle-plus']" class="icon-added" size="sm" />
+        <i class="fa fa-plus-circle icon--sm icon-added"></i>
       </div>
-      <!-- {{ key | labelByLang | capitalize }} -->
+      <!-- {{ capitalize(labelByLang(key)) }} -->
     </div>
 
     <pre class="path-code" v-show="user.settings.appTech && isInner">{{path}}</pre>

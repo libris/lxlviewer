@@ -70,10 +70,10 @@ export default {
   <div class="SearchResult" :class="{'is-showResult': showResult}">
     <div v-if="(resultList.loading || resultList.error)" class="SearchResult-loadingText panel panel-default">
       <span v-if="!resultList.error">
-        <font-awesome-icon :icon="['fas', 'circle-notch']" spin />
+        <i class="fa fa-circle-o-notch fa-spin"></i>
       </span>
       <span v-if="resultList.error">
-        <font-awesome-icon :icon="['fas', 'triangle-exclamation']" />
+        <i class="fa fa-warning"></i>
       </span>
       <span v-if="!resultList.error" class="is-status">{{ translatePhrase("Fetching results") }}</span>
       <span v-if="resultList.error" class="is-error">{{resultList.info}}</span>

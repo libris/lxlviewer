@@ -20,7 +20,7 @@ export default {
     <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}:</span>
     <span>{{ labelByLang(filter.label) }}</span>
     <router-link :to="asAppPath(filter.up)">
-      <font-awesome-icon :icon="['fas', 'xmark']" />
+      <i class="fa fa-fw fa-close icon"></i>
     </router-link>
   </div>
 </template>

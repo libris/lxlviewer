@@ -147,41 +147,32 @@ export default {
             </div>
 
             <span class="PanelComponent-windowControl">
-              <font-awesome-icon
-                :icon="['fas', 'magnifying-glass']"
-                class="goto-search-button"
+              <i class="goto-search-button fa fa-search-plus icon icon--md"
                 v-show="query != null"
                 role="button"
                 tabindex="0"
                 @click="gotoSearch" 
-                :title="translatePhrase('Bring to main search')"
-              />
+                :title="translatePhrase('Bring to main search')"></i>
 
-              <font-awesome-icon
-                class="fullview-toggle-button"
-                :icon="['fas', 'down-left-and-up-right-to-center']"
+              <i class="fullview-toggle-button fa fa-compress icon icon--md"
                 v-show="user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
                 @click="toggleFullView" 
-                :title="translatePhrase('Minimize')"
-              />
+                :title="translatePhrase('Minimize')"></i>
 
-              <font-awesome-icon
-                class="fullview-toggle-button"
-                :icon="['fas', 'up-right-and-down-left-from-center']"
+              <i class="fullview-toggle-button fa fa-expand icon icon--md"
                 v-show="!user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
                 @click="toggleFullView" 
-                :title="translatePhrase('Expand')"></font-awesome-icon>
+                :title="translatePhrase('Expand')"></i>
 
-              <font-awesome-icon
-                :icon="['fas', 'xmark']"
+              <i class="fa fa-close icon icon--md"
                 role="button"
                 tabindex="0"
                 @click="close"
-                :title="translatePhrase('Close')"></font-awesome-icon>
+                :title="translatePhrase('Close')"></i>
             </span>
           </slot>
         </div>

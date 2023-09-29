@@ -103,9 +103,9 @@ export default {
       >
         <div class="GlobalMessage-icon">
           <span class="fa-stack fa-2x">
-            <font-awesome-icon :icon="['fas', 'circle']" class="fa-stack-2x" />
-            <font-awesome-icon v-if="message.content.type == 'warning'" :icon="['fas', 'triangle-exclamation']" class="fa-stack1x fa-inverse" />
-            <font-awesome-icon v-if="message.content.type == 'info'" :icon="['fas', 'info']" class="fa-stack-1x fa-inverse" />
+            <i class="icon-backplate fa fa-circle fa-stack-2x"></i>
+            <i v-if="message.content.type == 'warning'" class="icon-symbol fa fa-exclamation fa-stack-1x fa-inverse"></i>
+            <i v-if="message.content.type == 'info'" class="icon-symbol fa fa-info fa-stack-1x fa-inverse"></i>
           </span>
         </div>
         <div class="GlobalMessage-content">

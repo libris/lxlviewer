@@ -137,10 +137,10 @@ export default {
         role="tab"
         v-tooltip="item.tooltipText"
       >
-          <font-awesome-icon
-            :icon="['fas', item.icon]"
+          <i
             v-if="item.icon"
-            class="TabMenu-tabIcon d-block d-sm-none"
+            class="TabMenu-tabIcon visible-xs-block"
+            :class="`fa fa-fw fa-${item.icon}`"
           />
 
           <span
@@ -180,10 +180,10 @@ export default {
             content: item.tooltipText
           }"
         >
-          <font-awesome-icon
+          <i
             v-if="item.icon"
-            class="TabMenu-tabIcon d-block d-sm-none"
-            :icon="['fas', item.icon]"
+            class="TabMenu-tabIcon visible-xs-block"
+            :class="`fa fa-fw fa-${item.icon}`"
           />
 
           <span

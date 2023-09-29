@@ -169,7 +169,7 @@ export default {
     <input class="ItemValue-input js-itemValueInput"
            rows="1"
            v-model="value"
-           :aria-label="fieldKey | labelByLang"
+           :aria-label="labelByLang(fieldKey)"
            @focus="readyForSave(false)"
            @blur="update($event.target.value)"
            @keydown.exact="readyForSave(false)"
@@ -192,7 +192,7 @@ export default {
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)">
-      <font-awesome-icon :icon="['fas', 'trash-can']" size="sm" />
+      <i class="fa fa-trash-o icon icon--sm"></i>
     </div>
   </div>
 </template>

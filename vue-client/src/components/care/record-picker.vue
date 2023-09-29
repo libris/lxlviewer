@@ -152,7 +152,7 @@ export default {
           tabIndex="0">
           <span class="RecordPicker-toggleLabel">{{ translatePhrase(['Choose', name]) }}</span>
           <span class="RecordPicker-toggleIcon" :class="{ 'expanded' : expanded}">
-            <font-awesome-icon :icon="['fas', 'chevron-down']" />
+            <i class="fa fa-fw fa-chevron-down"></i>
           </span>
         </div>
         <div class="RecordPicker-dropdown" v-show="expanded">
@@ -199,7 +199,7 @@ export default {
           tabindex="0"
           :aria-label="translatePhrase('Close')"
         >
-          <font-awesome-icon :icon="['fas', 'xmark']" />
+          <i class="fa fa-fw fa-close icon"></i>
         </span>
       </div>
       </div>

@@ -403,9 +403,9 @@ export default {
       <div class="ItemSibling-label"
         :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
         @click="toggleExpanded()">
-        <font-awesome-icon :icon="['fas', 'chevron-right']" :class="{'icon is-disabled' : isEmpty}" class="ItemSibling-arrow" />
+        <i class="ItemSibling-arrow fa fa-chevron-right" :class="{'icon is-disabled' : isEmpty}"></i>
         <span class="ItemSibling-type"
-          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+          :title="item['@type']">{{ capitalize(labelByLang(item['@type'])) }}:</span>
         <span class="ItemSibling-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>

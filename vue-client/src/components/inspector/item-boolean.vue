@@ -97,7 +97,7 @@ export default {
         class="customCheckbox-input"
         v-model="selected"
         :disabled="isLocked"
-        :aria-label="fieldKey | labelByLang" />
+        :aria-label="labelByLang(fieldKey)" />
       <div class="customCheckbox-icon"></div>
     </div>
     <span class="ItemVocab-text"

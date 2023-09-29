@@ -82,9 +82,8 @@ export default {
           <span v-else>{{translatePhrase(options[0].text)}}</span>
       </li>
 
-      <font-awesome-icon
-        class="SwitchToggle-icon"
-        :icon="['fas', 'toggle-on']"
+      <i
+        class="fa fa-toggle-on fa-fw SwitchToggle-icon"
         :class="{ 'fa-rotate-180': active === options[0].id }"
       />
 
@@ -109,11 +108,12 @@ export default {
           <span v-else>{{translatePhrase(options[0].text)}}</span>
         </router-link>
       </li>
-      <font-awesome-icon
-        class="SwitchToggle-icon"
-        :icon="['fas', 'toggle-on']"
+
+      <i
+        class="fa fa-toggle-on fa-fw SwitchToggle-icon"
         :class="{ 'is-flipped': active === options[0].id }"
       />
+
       <li class="SwitchToggle-linkContainer"
         :key="options[1].id">
         <router-link class="SwitchToggle-tab" 

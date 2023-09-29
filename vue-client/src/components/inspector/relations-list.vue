@@ -216,7 +216,7 @@ export default {
               </option>
               <optgroup v-for="(group, index) in facets" :key="`group-${index}`" :label="facetGroupLabelByLang(group.name)">
                 <option v-for="(option, index) in group.facets" :key="`option-${index}`" :value="option" :disabled="option.disabled">
-                  {{ option.label | capitalize }} {{ option.count }}
+                  {{ capitalize(option.label) }} {{ option.count }}
                 </option>
               </optgroup>
             </select>

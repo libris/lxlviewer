@@ -84,7 +84,7 @@ export default {
           @keydown.enter="go(currentPage-1)" 
           @click="go(currentPage-1)" 
           :tabindex="currentPage-1 < 0 ? -1 : 0">
-          <font-awesome-icon :icon="['fas', 'chevron-left']" />
+          <i class="fa fa-chevron-left"></i>
         </a>  
       </li>
       <li class="ModalPagination-item" v-for="(n, index) in pageRange" :key="index"  :class="{'is-active': n.active, 'is-disabled': n.disabled}">
@@ -101,7 +101,7 @@ export default {
           @keydown.enter="go(currentPage+1)" 
           @click="go(currentPage+1)" 
           :tabindex="currentPage+1 > lastPageIndex ? -1 : 0">
-          <font-awesome-icon :icon="['fas', 'chevron-right']" />
+          <i class="fa fa-chevron-right"></i>
         </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage+1 > lastPageIndex }">
