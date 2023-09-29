@@ -2,7 +2,7 @@
 /*
   Fixed toolbar
 */
-import { translatePhrase, convertResourceLink } from '@/utils/filters';
+import { translatePhrase, convertResourceLink, labelByLang, lowercase } from '@/utils/filters';
 import { getKeybindText } from '@/utils/mixins';
 import { mapActions, mapState, mapWritableState } from 'pinia';
 import { useInspectorStore } from '@/stores/inspector';
@@ -97,7 +97,7 @@ export default {
     },
   },
   methods: {
-    translatePhrase, getKeybindText, convertResourceLink,
+    translatePhrase, getKeybindText, convertResourceLink, labelByLang, lowercase,
     ...mapActions(useStatusStore, ['pushNotification']),
     ...mapActions(useInspectorStore, ['setInspectorStatusValue', 'undoInspectorChange']),
     openTemplatePicker() {
