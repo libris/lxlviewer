@@ -786,9 +786,8 @@ export default {
 
   &-caret {
     position: absolute;
-    right: 10px;
-    height: 12px;
-    bottom: 15px;
+    right: 8px;
+    bottom: 12px;
   }
 
   &-menuList {
