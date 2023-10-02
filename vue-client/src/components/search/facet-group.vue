@@ -345,7 +345,7 @@ export default {
     }
 
     &.is-expanded {
-      svg {
+      &::before {
         transform: rotate(90deg);
       }
     }
