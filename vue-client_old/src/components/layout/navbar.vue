@@ -127,17 +127,17 @@ export default {
           v-tooltip="tooltipOptions" >
           <div tabindex="0" @click="toggleUserMenu" @keyup.enter="toggleUserMenu">
             <user-avatar 
-              class="hidden-xs" 
+              class="d-none d-sm-block" 
               :highlight="highlightNavItem && !isUserPage"
               :size="30" />
             <user-avatar 
-              class="visible-xs-block" 
+              class="d-block d-sm-none"
               :highlight="highlightNavItem && !isUserPage"
               :size="32" />
             <span class="MainNav-linkText userName hidden-sm">
             {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
             </span>
-            <i class="fa fa-fw hidden-xs" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
+            <i class="fa fa-fw d-none d-sm-block" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
           </div>
           <user-settings 
             v-if="showUserMenu && !isUserPage" 

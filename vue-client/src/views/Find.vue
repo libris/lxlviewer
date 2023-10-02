@@ -251,7 +251,7 @@ export default {
 
 <template>
   <div class="row">
-    <div class="col-sm-12 col-md-3 Column-facets" v-if="!panelOpen">
+    <div class="col-sm-12 col-lg-3 Column-facets" v-if="!panelOpen">
       <tab-menu
         @go="setSearchPerimeter"
         :active="$route.params.perimeter"
@@ -261,7 +261,7 @@ export default {
         {{ translatePhrase('Filter') }} 
 
         <i
-          class="fa fa-fw hidden-md hidden-lg"
+          class="fa fa-fw d-lg-none"
           :class="{
             'fa-caret-down': !hideFacetColumn,
             'fa-caret-right': hideFacetColumn
@@ -270,7 +270,7 @@ export default {
       </div>
 
       <facet-controls
-        :class="{'d-none d-md-block': hideFacetColumn }"
+        :class="{'d-none d-lg-block': hideFacetColumn }"
         :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"
       />
 
@@ -286,8 +286,8 @@ export default {
     <div
       class="col-sm-12 Find-content Column-searchResult" 
       :class="{
-        'col-md-9': !panelOpen,
-        'col-md-7': panelOpen
+        'col-lg-9': !panelOpen,
+        'col-lg-7': panelOpen
         }">
       <search-result
         v-show="!searchInProgress"
@@ -318,13 +318,11 @@ export default {
     height: unset;
     min-height: unset;
     padding-bottom: 0;
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(lg) {
       padding-bottom: 5rem;
       height: 100%;
       min-height: 50vh;
     }
-    border: solid $grey-lighter;
-    border-width: 0px 1px 0px 0px;
     input {
       background-color: #fff;
       border: 1px solid $grey-lighter;

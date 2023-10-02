@@ -287,7 +287,7 @@ export default {
         {{ translatePhrase("Search") }}
       </label>
 
-      <div class="SearchForm-formGroup SearchForm-selectGroup d-flex d-sm-none">
+      <div class="SearchForm-formGroup SearchForm-selectGroup d-flex d-md-none">
         <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-typeSelect SearchForm-select customSelect"
@@ -317,7 +317,7 @@ export default {
       </div>
 
       <div ref="formGroup" class="SearchForm-formGroup" :class="{ 'is-focused': searchIsFocused }">
-        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper d-none d-sm-flex" v-if="searchPerimeter === 'libris'">
+        <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper d-none d-md-flex" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-typeSelect SearchForm-select customSelect"
             v-model="activeSearchType"
@@ -347,7 +347,7 @@ export default {
           :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
           <i class="fa fa-fw fa-close"></i>
         </span>
-        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper d-none d-sm-flex" v-if="searchPerimeter === 'libris'">
+        <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper d-none d-md-flex" v-if="searchPerimeter === 'libris'">
           <select
             class="SearchForm-paramSelect SearchForm-select customSelect"
             v-model="activeSearchParam"
@@ -463,7 +463,7 @@ export default {
     //   flex-basis: unset;
     // }
 
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       flex-basis: unset;
     }
   }
@@ -477,7 +477,7 @@ export default {
     //   display: block;
     // }
 
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       order: 2;
       display: block;
     }
@@ -539,7 +539,7 @@ export default {
     border: solid $grey-lighter;
     border-width: 0px 1px 0px 1px;
 
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       flex-basis: 30%;
     }
   }
@@ -581,7 +581,7 @@ export default {
     //   }
     // }
 
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       right: 28%;
       &.in-remote {
         right: 4.5em;
@@ -592,7 +592,7 @@ export default {
     //   right: 28.5%;
     // }
 
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(lg) {
       right: 28.5%;
     }
 

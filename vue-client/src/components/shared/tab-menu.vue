@@ -182,20 +182,20 @@ export default {
         >
           <i
             v-if="item.icon"
-            class="TabMenu-tabIcon visible-xs-block"
+            class="TabMenu-tabIcon d-md-none"
             :class="`fa fa-fw fa-${item.icon}`"
           />
 
           <span
             class="TabMenu-tabText"
-            :class="{'d-none d-sm-inline-block': item.icon }"
+            :class="{'d-none d-md-inline-block': item.icon }"
             v-if="item.html"
             v-html="item.html"
           />
 
           <span
             class="TabMenu-tabText"
-            :class="{'d-none d-sm-inline-block': item.icon }"
+            :class="{'d-none d-md-inline-block': item.icon }"
             v-else
           >
             {{translatePhrase(item.text)}}
@@ -208,7 +208,7 @@ export default {
       </li>
     </ul>
 
-    <hr v-show="hasActive" class="TabMenu-underline" :class="{'d-none d-sm-block' : hasIcons}" ref="underline">
+    <hr v-show="hasActive" class="TabMenu-underline" :class="{'d-none d-md-block' : hasIcons}" ref="underline">
   </div>
 </template>
 
@@ -275,7 +275,7 @@ export default {
       text-decoration: none;
     }
 
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       font-size: 15px;
       font-size: 1.5rem;
     }
@@ -302,7 +302,7 @@ export default {
       }
     }
 
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       .has-icons & {
         padding: 0 10px;        
         &.is-active {        
@@ -323,7 +323,7 @@ export default {
       top: 1px;
       right: 1px;
 
-      @include media-breakpoint-up(sm) {
+      @include media-breakpoint-up(md) {
         top: calc(50% - 15px);
         right: 6px;
 
@@ -352,7 +352,7 @@ export default {
       margin-left: -20px;
     }
 
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-down(md) {
       .has-icons & {
         margin-left: -15px;
       }
