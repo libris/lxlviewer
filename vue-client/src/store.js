@@ -9,6 +9,8 @@ import * as User from '@/models/user';
 import settings from './settings';
 import ChangeNotes from './utils/changenotes';
 
+const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
+
 Vue.use(Vuex);
 
 /* eslint-disable no-param-reassign */
@@ -200,7 +202,9 @@ const store = new Vuex.Store({
         const changes = [];
         each(payload.changeList, (node) => {
           let oldValue;
-          if (node.path === '') {
+          if (node.value === EXTRACT_ON_SAVE) {
+            oldValue = EXTRACT_ON_SAVE;
+          } else if (node.path === '') {
             oldValue = inspectorData;
           } else {
             oldValue = cloneDeep(get(inspectorData, node.path));
@@ -221,6 +225,18 @@ const store = new Vuex.Store({
           inspectorData = node.value;
         } else {
           set(inspectorData, node.path, node.value);
+          /**
+           * Skip updating inspector data if changeList value is EXTRACT_ON_SAVE, which indicates that the
+           * item should be extracted first while saving (the values of the item should be unchanged until the
+           * extraction has finished and there is a new id to link to).
+           */
+          if (node.value !== EXTRACT_ON_SAVE) {
+            if (node.path === '') {
+              inspectorData = node.value;
+            } else {
+              set(inspectorData, node.path, node.value);
+            }
+          }
         }
       });
       // Check if we should remove work node (if it went from local to being linked)
@@ -281,6 +297,9 @@ const store = new Vuex.Store({
     },
     flushChangeHistory(state) {
       state.inspector.changeHistory = [];
+    },
+    removeIndexFromChangeHistory(state, index) {
+      state.inspector.changeHistory = state.inspector.changeHistory.filter((_, i) => i !== index);
     },
     logoutUser(state) {
       localStorage.removeItem('at');
@@ -416,15 +435,29 @@ const store = new Vuex.Store({
     changeNotes: state => state.changeNotes,
   },
   actions: {
-    addExtractItemOnSave({ commit, state }, { path, item }) {
+    addExtractItemOnSave({ commit, dispatch, state }, { path, item }) {
       commit('setExtractItemsOnSave', {
         ...state.inspector.extractItemsOnSave,
         [path]: item,
+      });
+      // Change value to constant indicating that the item should be extracted when clicking save.
+      dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path,
+            value: EXTRACT_ON_SAVE,
+          },
+        ],
+        addToHistory: true,
       });
     },
     removeExtractItemOnSave({ commit, state }, { path }) {
       const { [path]: itemToRemove, ...rest } = state.inspector.extractItemsOnSave;
       commit('setExtractItemsOnSave', rest);
+      const indexInChangeHistory = state.inspector.changeHistory.findIndex(item => item[0].path === path && item[0].value === EXTRACT_ON_SAVE);
+      if (indexInChangeHistory >= 0) {
+        commit('removeIndexFromChangeHistory', indexInChangeHistory);
+      }
     },
     flushExtractItemsOnSave({ commit }) {
       commit('setExtractItemsOnSave', {});
@@ -620,7 +653,7 @@ const store = new Vuex.Store({
     flushChangeHistory({ commit }) {
       commit('flushChangeHistory');
     },
-    undoInspectorChange({ commit, state }) {
+    undoInspectorChange({ commit, dispatch, state }) {
       const history = state.inspector.changeHistory;
       const lastNode = history[history.length - 1];
 
@@ -632,6 +665,12 @@ const store = new Vuex.Store({
             path: node.path,
             value: node.value,
           });
+          if (
+            node.value === EXTRACT_ON_SAVE
+            && Object.keys(state.inspector.extractItemsOnSave).includes(node.path)
+          ) {
+            dispatch('removeExtractItemOnSave', { path: node.path });
+          }
         } else {
           // It did not have a value (ie key did not exist)
           const pathParts = node.path.split('.');
