@@ -75,13 +75,13 @@ export default {
   line-height: 1;
   font-size: 1.4rem;
   flex-direction: column;
-  @include media-breakpoint-up(min) {
+  @include media-breakpoint-up(lg) {
     flex-direction: row;
     align-items: baseline;
     flex-wrap: wrap;
   }
   &-unknown {
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(lg) {
       margin-right: 0.5em;
     }
   }
@@ -89,7 +89,7 @@ export default {
     display: flex;
     flex-direction: column;
     margin-bottom: 0.5em;
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       margin-bottom: 0.25em;
       flex-direction: row;
     }
@@ -99,7 +99,7 @@ export default {
   }
   &-value {
     word-break: break-word;
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       word-break: unset;
     }
   }
