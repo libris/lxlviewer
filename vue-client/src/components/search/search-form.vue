@@ -533,9 +533,6 @@ export default {
   }
 
   &-selectWrapper {
-    // @media (min-width: @screen-sm) {
-    //   flex-basis: 30%;
-    // }
     border: solid $grey-lighter;
     border-width: 0px 1px 0px 1px;
 
@@ -600,7 +597,7 @@ export default {
     //   right: 27%;
     // }
 
-    @include media-breakpoint-up(lg) {
+    @include media-breakpoint-up(xl) {
       right: 27%;
     }
 
@@ -618,7 +615,7 @@ export default {
     min-width: 2.4em;
     box-shadow: none;
 
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       min-width: 84px;
     }
 
