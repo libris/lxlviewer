@@ -7,6 +7,7 @@ import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
 import settings from './settings';
+import ChangeNotes from './utils/changenotes';
 
 const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
 
@@ -78,6 +79,7 @@ const store = new Vuex.Store({
       event: [],
       magicShelfMarks: [],
       extractItemsOnSave: {},
+      changeNotes: {},
     },
     status: {
       userIdle: false,
@@ -97,6 +99,7 @@ const store = new Vuex.Store({
       failedRemoteDatabases: '',
       hintSigelChange: false,
     },
+    changeNoteHandler: new ChangeNotes(),
     user: User.getUserObject(),
     userDatabase: null,
     userStorage: {
@@ -166,6 +169,9 @@ const store = new Vuex.Store({
     setCompositeHistoryData(state, data) {
       state.inspector.compositeHistoryData = data;
     },
+    setChangeNotes(state, data) {
+      state.inspector.changeNotes = data;
+    },
     addToLanguageCache(state, data) {
       const languageCache = cloneDeep(state.inspector.languageCache);
       for (const [key, value] of Object.entries(data)) {
@@ -210,16 +216,26 @@ const store = new Vuex.Store({
       }
       // Set the new values
       each(payload.changeList, (node) => {
-        /** 
-         * Skip updating inspector data if changeList value is EXTRACT_ON_SAVE, which indicates that the
-         * item should be extracted first while saving (the values of the item should be unchanged until the
-         * extraction has finished and there is a new id to link to).
-         */
-        if (node.value !== EXTRACT_ON_SAVE) {
-          if (node.path === '') {
-            inspectorData = node.value;
-          } else {
-            set(inspectorData, node.path, node.value);
+        const match = state.changeNoteHandler.computeCategoryMatchFor(state, inspectorData, node.path);
+        if (match) {
+          state.inspector.changeNotes[match.categoryId] = match;
+        }
+
+        if (node.path === '') {
+          inspectorData = node.value;
+        } else {
+          set(inspectorData, node.path, node.value);
+          /**
+           * Skip updating inspector data if changeList value is EXTRACT_ON_SAVE, which indicates that the
+           * item should be extracted first while saving (the values of the item should be unchanged until the
+           * extraction has finished and there is a new id to link to).
+           */
+          if (node.value !== EXTRACT_ON_SAVE) {
+            if (node.path === '') {
+              inspectorData = node.value;
+            } else {
+              set(inspectorData, node.path, node.value);
+            }
           }
         }
       });
@@ -416,6 +432,7 @@ const store = new Vuex.Store({
     display: state => state.resources.display,
     context: state => state.resources.context,
     supportedTags: state => state.inspector.supportedTags.data,
+    changeNotes: state => state.changeNotes,
   },
   actions: {
     addExtractItemOnSave({ commit, dispatch, state }, { path, item }) {
@@ -860,6 +877,9 @@ const store = new Vuex.Store({
       });
 
       return promise;
+    },
+    setChangeNotes({ commit }, data) {
+      commit('setChangeNotes', data);
     },
   },
 });

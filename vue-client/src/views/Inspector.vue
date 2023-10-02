@@ -22,6 +22,7 @@ import TabMenu from '@/components/shared/tab-menu';
 import ValidationSummary from '@/components/inspector/validation-summary';
 import FullscreenPanel from '../components/shared/fullscreen-panel.vue';
 import VersionHistory from '../components/inspector/version-history.vue';
+import ChangeNotes from '../utils/changenotes';
 
 export default {
   name: 'Inspector',
@@ -489,6 +490,13 @@ export default {
         });
       }
     },
+    applyChangeNotes() {
+      if (this.inspector.changeNotes) {
+        Object.values(this.inspector.changeNotes).forEach((match) => {
+          ChangeNotes.completeChange(this, match);
+        });
+      }
+    },
     startEditing() {
       this.$store.dispatch('setOriginalData', this.inspector.data);
       this.loadingEdit = true;
@@ -681,6 +689,8 @@ export default {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
 
       const RecordId = this.inspector.data.record['@id'];
+      this.applyChangeNotes();
+
       let obj = null;
       try {
         obj = this.getPackagedItem();
@@ -803,6 +813,7 @@ export default {
     },
     async preSaveHook(obj) {
       await checkAutoShelfControlNumber(obj, this.settings, this.user);
+      await this.$store.dispatch('setChangeNotes', {});
       return obj;
     },
   },
