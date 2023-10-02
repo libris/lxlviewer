@@ -210,8 +210,8 @@ export default {
   <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
       <p class="ResultControls-resultText" id="resultDescr">
-        <span v-if="pageData.totalItems > 0"> {{translatePhrase(['Showing', resultRange, 'of']) }} </span>
-        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{ lowercase(translatePhrase('Hits')) }}</span>
+        <span v-if="pageData.totalItems > 0">{{translatePhrase(['Showing', resultRange, 'of']) }}{{ ' ' }}</span>
+        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal">{{pageData.totalItems}} {{ lowercase(translatePhrase('Hits')) }}</span>
         <span v-else class="ResultControls-numTotal">{{ translatePhrase('No hits') }}</span>
         <span v-if="$route.params.perimeter === 'remote' && workingRemoteDatabases.length > 0">
           {{ translatePhrase('from') }}
