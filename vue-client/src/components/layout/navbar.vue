@@ -138,12 +138,12 @@ export default {
                 :size="32"
               />
 
-              <span class="MainNav-linkText userName d-none d-md-inline-block">
+              <span class="MainNav-linkText userName d-none d-lg-inline-block">
                 {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
               </span>
 
               <i
-                class="fa fa-fw hidden-xs"
+                class="fa fa-fw d-none d-md-inline-block"
                 :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"
               />
             </div>
@@ -176,7 +176,7 @@ export default {
   flex-shrink: 0; // fix ie flexbox height bug
   font-size: 2.4rem;
 
-  @include media-breakpoint-up(sm) {
+  @include media-breakpoint-up(md) {
     font-size: unset;
     line-height: unset;
   }
@@ -184,7 +184,7 @@ export default {
   &-brand {    
     margin-right: 2rem;
 
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(md) {
       display: none;
     }
   }
@@ -198,12 +198,6 @@ export default {
     height: 1.6em;
     width: 1.6em;
     padding: 0.1em;
-
-    @include media-breakpoint-up(sm) {
-      height: 2em;
-      padding: 0;
-      margin-top: 0.1em;
-    }
   }
   &-container {
     display: flex;
@@ -265,10 +259,6 @@ export default {
     @include media-breakpoint-down(md) {
       font-size: 16px;
       font-size: 1.6rem;
-    }
-
-    .fa-caret-down {
-      margin-left: .65rem;
     }
   }
 
