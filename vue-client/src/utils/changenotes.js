@@ -65,7 +65,7 @@ export default class ChangeNotes {
     if (match == null) {
       rulePath = rulePath.replace(/^instanceOf\./, '');
       subject = inspectorData.mainEntity.instanceOf;
-      if (subject == null || subject['@id'] != null) {
+      if (subject == null || typeof subject !== 'object' || subject['@id'] != null) {
         return null;
       }
 
