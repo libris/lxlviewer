@@ -62,7 +62,10 @@ export default class ChangeNotes {
     let match = this.findCategoryMatchFor(state, subject, rulePath);
     let record = inspectorData.record;
 
-    if (match == null) {
+    // FIXME: This block, which is about adding changenotes to local work meta,
+    // needs to be integrated with the new work extraction mechanism!
+    const useLocalWorkMeta = false;
+    if (useLocalWorkMeta && match == null) {
       rulePath = rulePath.replace(/^instanceOf\./, '');
       subject = inspectorData.mainEntity.instanceOf;
       if (subject == null || typeof subject !== 'object' || subject['@id'] != null) {
