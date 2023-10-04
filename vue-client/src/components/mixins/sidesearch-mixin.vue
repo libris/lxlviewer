@@ -6,6 +6,7 @@ import { useInspectorStore } from '@/stores/inspector';
 import { useSettingsStore } from '@/stores/settings';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
+import { get } from 'lodash-es'
 
 export default {
   data() {
