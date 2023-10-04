@@ -1,11 +1,9 @@
 <script>
-import { defineAsyncComponent } from 'vue';
 import { mapState } from 'pinia';
 import { useSettingsStore } from '@/stores/settings';
 import * as HttpUtil from '@/utils/http';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
 
-const EntitySummary = defineAsyncComponent(() => import('./entity-summary.vue'));
 
 export default {
   name: 'preview-card',
@@ -76,9 +74,6 @@ export default {
       }
     },
   },
-  components: {
-    EntitySummary,
-  },
   mounted() {
     this.populateData();
   },
@@ -92,7 +87,7 @@ export default {
       <span v-if="fetchStatus === 'error'" class="fetchError">Laddningsfel <i class="fa fa-times"></i></span>
     </div>
 
-    <EntitySummary :animate="true" :focus-data="fullData" :hover-links="false" />
+    <entity-summary :animate="true" :focus-data="fullData" :hover-links="false" />
   </div>
 </template>
 

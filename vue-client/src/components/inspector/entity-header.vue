@@ -16,7 +16,6 @@ import * as VocabUtil from 'lxljs/vocab';
 import TagSwitch from '@/components/shared/tag-switch.vue';
 import ReverseRelations from '@/components/inspector/reverse-relations.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
-import EntitySummary from '../shared/entity-summary.vue';
 
 export default {
   name: 'entity-header',
@@ -122,7 +121,6 @@ export default {
   components: {
     TagSwitch,
     ReverseRelations,
-    EntitySummary,
   },
 };
 </script>
@@ -130,7 +128,7 @@ export default {
 <template>
   <div class="EntityHeader HeaderComponent">
     <div class="EntityHeader-body HeaderComponent-body is-full">
-      <EntitySummary
+      <entity-summary
         @hiddenDetailsNumber="setHiddenDetailsNumber"
         :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
         :focus-data="focusData"

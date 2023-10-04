@@ -13,7 +13,6 @@ import ItemMixin from '@/components/mixins/item-mixin.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import PreviewCard from '@/components/shared/preview-card.vue';
 import ReverseRelations from '@/components/inspector/reverse-relations.vue';
-import EntitySummary from '../shared/entity-summary.vue';
 
 export default {
   name: 'item-entity',
@@ -127,7 +126,6 @@ export default {
     Dropdown,
     PreviewCard,
     ReverseRelations,
-    EntitySummary,
     ReverseRelations,
   },
   created() {
@@ -243,7 +241,7 @@ export default {
     </div>
 
     <div class="ItemEntity-content ItemEntity-cardContainer" v-if="isCardWithData && expanded">
-      <EntitySummary
+      <entity-summary
         :focus-data="focusData" 
         :exclude-properties="excludeProperties"
         :should-link="true"

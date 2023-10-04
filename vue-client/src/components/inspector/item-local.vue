@@ -19,7 +19,6 @@ import LensMixin from '../mixins/lens-mixin.vue';
 import FormMixin from '../mixins/form-mixin.vue';
 import { useStatusStore } from '@/stores/status';
 import { Dropdown } from 'floating-vue';
-import Field from './field.vue';
 
 export default {
   name: 'item-local',
@@ -443,7 +442,6 @@ export default {
     'search-window': SearchWindow,
     'entity-action': EntityAction,
     Dropdown,
-    Field,
   },
 };
 </script>
@@ -589,7 +587,7 @@ export default {
     </div>
   
     <ul class="ItemLocal-list js-itemLocalFields" v-show="expanded">
-      <Field
+      <field
         v-show="k !== '_uid'" 
         v-for="(v, k, i) in filteredItem"
         :parent-path="getPath" 
@@ -607,7 +605,8 @@ export default {
         :diff="diff"
         :show-action-buttons="showActionButtons"
         :expand-children="expandChildren"
-        :is-expanded="expanded"></Field> 
+        :is-expanded="expanded"
+      /> 
     </ul>
 
     <property-adder

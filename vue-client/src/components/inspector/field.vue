@@ -3,7 +3,6 @@
   The field component is responsible for a specific key value pair.
   It's responsible for its own data, and dispatches all changes to the form component.
 */
-import { defineAsyncComponent } from 'vue';
 import { mapActions, mapState, mapWritableState } from 'pinia';
 import { useResourcesStore } from '@/stores/resources';
 import { useInspectorStore } from '@/stores/inspector';
@@ -19,21 +18,20 @@ import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import LanguageMixin from '../mixins/language-mixin.vue';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
-
-const EntityAdder = defineAsyncComponent(() => import('./entity-adder.vue'));
-const ItemEntity = defineAsyncComponent(() => import('./item-entity.vue'));
-const ItemValue = defineAsyncComponent(() => import('./item-value.vue'));
-const ItemLocal = defineAsyncComponent(() => import('./item-local.vue'));
-const ItemError = defineAsyncComponent(() => import('./item-error.vue'));
-const ItemVocab = defineAsyncComponent(() => import('./item-vocab.vue'));
-const ItemType = defineAsyncComponent(() => import('./item-type.vue'));
-const ItemSibling = defineAsyncComponent(() => import('./item-sibling.vue'));
-const ItemBoolean = defineAsyncComponent(() => import('./item-boolean.vue'));
-const ItemNumeric = defineAsyncComponent(() => import('./item-numeric.vue'));
-const ItemGrouped = defineAsyncComponent(() => import('./item-grouped.vue'));
-const ItemShelfControlNumber = defineAsyncComponent(() => import('./item-shelf-control-number.vue'));
-const ItemNextShelfControlNumber = defineAsyncComponent(() => import('./item-next-shelf-control-number.vue'));
-const ItemBylang = defineAsyncComponent(() => import('./item-bylang.vue'));
+import EntityAdder from './entity-adder.vue'
+import ItemEntity from './item-entity.vue'
+import ItemValue from './item-value.vue'
+import ItemLocal from './item-local.vue'
+import ItemError from './item-error.vue'
+import ItemVocab from './item-vocab.vue'
+import ItemType from './item-type.vue'
+import ItemSibling from './item-sibling.vue'
+import ItemBoolean from './item-boolean.vue'
+import ItemNumeric from './item-numeric.vue'
+import ItemGrouped from './item-grouped.vue'
+import ItemShelfControlNumber from './item-shelf-control-number.vue'
+import ItemNextShelfControlNumber from './item-next-shelf-control-number.vue'
+import ItemBylang from './item-bylang.vue'
 
 export default {
   name: 'field',
@@ -148,7 +146,7 @@ export default {
     };
   },
   components: {
-    ItemType,
+    'item-type': ItemType,
     'item-entity': ItemEntity,
     'item-value': ItemValue,
     'item-local': ItemLocal,

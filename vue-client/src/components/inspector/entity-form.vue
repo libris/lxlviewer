@@ -13,7 +13,6 @@ import { translatePhrase } from '@/utils/filters';
 import * as VocabUtil from 'lxljs/vocab';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import FormMixin from '@/components/mixins/form-mixin.vue';
-import Field from './field.vue';
 
 export default {
   mixins: [FormMixin, LensMixin],
@@ -116,9 +115,6 @@ export default {
       return VocabUtil.hasCategory(key, 'integral', this.resources);
     },
   },
-  components: {
-    Field,
-  },
 };
 </script>
 
@@ -128,7 +124,7 @@ export default {
     v-show="isActive">
     <ul class="FieldList" 
       v-bind:class="{'collapsed': collapsed }">
-      <Field class="FieldList-item"
+      <field class="FieldList-item"
         v-for="(v,k) in filteredItem"
         v-bind:class="{ 'locked': isLocked }"
         :entity-type="formObj['@type']"
@@ -157,7 +153,7 @@ export default {
     >
       <h6 class="uppercaseHeading">{{ translatePhrase('Incoming links') }}</h6>
       <ul class="FieldList">
-        <Field class="FieldList-item"
+        <field class="FieldList-item"
           v-for="(v,k) in reverseItemStandalone"
           v-bind:class="{ 'locked': isLocked }" 
           :entity-type="formObj['@type']" 
