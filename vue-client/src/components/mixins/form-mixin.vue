@@ -16,6 +16,18 @@ export default {
       type: String,
       default: '',
     },
+    fieldKey: {
+      type: String,
+      default: '',
+    },
+    entityType: {
+      type: String,
+      default: '',
+    },
+    allSearchTypes: {
+      type: Array,
+      default: () => [],
+    },
   },
   methods: {
     groupItem(item) {

@@ -71,6 +71,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    key: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
