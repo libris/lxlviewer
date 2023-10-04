@@ -225,7 +225,6 @@ const store = new Vuex.Store({
         if (node.path === '') {
           inspectorData = node.value;
         } else {
-          set(inspectorData, node.path, node.value);
           /**
            * Skip updating inspector data if changeList value is EXTRACT_ON_SAVE, which indicates that the
            * item should be extracted first while saving (the values of the item should be unchanged until the
