@@ -216,10 +216,11 @@ const store = new Vuex.Store({
       }
       // Set the new values
       each(payload.changeList, (node) => {
-        const match = state.changeNoteHandler.computeCategoryMatchFor(state, inspectorData, node.path);
-        if (match) {
-          state.inspector.changeNotes[match.categoryId] = match;
-        }
+        // Turn off changeNote feature during external QA testing of work cataloguing
+        // const match = state.changeNoteHandler.computeCategoryMatchFor(state, inspectorData, node.path);
+        // if (match) {
+        //   state.inspector.changeNotes[match.categoryId] = match;
+        // }
 
         if (node.path === '') {
           inspectorData = node.value;
