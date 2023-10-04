@@ -24,6 +24,7 @@ import PanelSearchList from '../search/panel-search-list.vue';
 import Spinner from '../shared/Spinner.vue';
 
 export default {
+  name: 'entity-adder',
   mixins: [LensMixin, SideSearchMixin],
   data() {
     return {
