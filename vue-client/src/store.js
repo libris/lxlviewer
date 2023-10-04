@@ -222,20 +222,16 @@ const store = new Vuex.Store({
         //   state.inspector.changeNotes[match.categoryId] = match;
         // }
 
-        if (node.path === '') {
-          inspectorData = node.value;
-        } else {
-          /**
-           * Skip updating inspector data if changeList value is EXTRACT_ON_SAVE, which indicates that the
-           * item should be extracted first while saving (the values of the item should be unchanged until the
-           * extraction has finished and there is a new id to link to).
-           */
-          if (node.value !== EXTRACT_ON_SAVE) {
-            if (node.path === '') {
-              inspectorData = node.value;
-            } else {
-              set(inspectorData, node.path, node.value);
-            }
+        /**
+         * Skip updating inspector data if changeList value is EXTRACT_ON_SAVE, which indicates that the
+         * item should be extracted first while saving (the values of the item should be unchanged until the
+         * extraction has finished and there is a new id to link to).
+         */
+        if (node.value !== EXTRACT_ON_SAVE) {
+          if (node.path === '') {
+            inspectorData = node.value;
+          } else {
+            set(inspectorData, node.path, node.value);
           }
         }
       });
