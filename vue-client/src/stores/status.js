@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import * as StringUtil from 'lxljs/string';
 
 export const useStatusStore = defineStore('status', {
 	state: () => ({
