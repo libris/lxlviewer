@@ -5,8 +5,6 @@ import * as StringUtil from 'lxljs/string';
 // Import views
 import LandingPage from '../views/LandingPage.vue';
 import Login from '../views/Login.vue';
-import Find from "../views/Find.vue";
-import Help from "../views/Help.vue";
 import Inspector from "../views/Inspector.vue";
 import DirectoryCare from "../views/DirectoryCare.vue";
 import UserPage from "../views/UserPage.vue";
@@ -51,12 +49,12 @@ const router = createRouter({
 		{
 			path: '/search/:perimeter?',
 			name: 'Search',
-			component: Find,
+			component: () => import('../views/Find.vue'),
 		},
 		{
 			path: '/help/:section?',
 			name: 'Help',
-			component: Help,
+			component: () => import('../views/Help.vue'),
 		},
 		{
 			path: '/directory-care',

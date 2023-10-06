@@ -1,5 +1,4 @@
 import * as StringUtil from 'lxljs/string';
-import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 
 import { useResourcesStore } from '@/stores/resources';

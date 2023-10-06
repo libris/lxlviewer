@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { cloneDeep, each, get, set } from 'lodash-es';
 import { useSettingsStore } from "./settings";
 import { useUserStore } from "./user";
+import * as httpUtil from '@/utils/http';
 
 const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
 
@@ -218,6 +219,7 @@ export const useInspectorStore = defineStore('inspector', {
 		},
 		removeExtractItemOnSave({ path }) {
 			const {
+				// eslint-disable-next-line no-unused-vars
 				[path]: itemToRemove,
 				...rest
 			} = this.extractItemsOnSave;
@@ -225,9 +227,10 @@ export const useInspectorStore = defineStore('inspector', {
 			this.extractItemsOnSave = rest;
 
 			const indexInChangeHistory = this.changeHistory.findIndex(item => item[0].path === path && item[0].value === EXTRACT_ON_SAVE);
-			if (indexInChangeHistory >= 0) {
-				this.changeHistory = this.changeHistory.filter((_, i) => i !== index);
-			}
+
+      if (indexInChangeHistory >= 0) {
+				this.changeHistory = this.changeHistory.filter((_, i) => i !== indexInChangeHistory);
+      }
 		},
 		flushExtractItemsOnSave() {
 			this.extractItemsOnSave = {};

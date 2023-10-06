@@ -21,7 +21,7 @@ export const copyText = (text) => {
 
 		try {
 			successful = document.execCommand('copy');
-			console.log('Fallback: Copying text command was ' + msg);
+			console.log('Fallback: Copying text command was ' + text);
 		} catch (err) {
 			console.error('Fallback: Oops, unable to copy', err);
 		}
