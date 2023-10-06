@@ -1,5 +1,5 @@
 import { each, find } from 'lodash-es';
-import * as md5 from 'md5';
+import md5 from 'md5';
 import URIMinter from '@/utils/uriminter';
 
 async function createUriMinter(findContainerUrl) {

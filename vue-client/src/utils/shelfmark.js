@@ -1,5 +1,5 @@
 import { get } from 'lodash-es';
-import * as md5 from 'md5';
+import md5 from 'md5';
 import * as HttpUtil from './http';
 
 export async function hasAutomaticShelfControlNumber(shelfMarkId) {
