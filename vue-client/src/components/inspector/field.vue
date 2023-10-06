@@ -1105,9 +1105,6 @@ export default {
 <style lang="scss">
 
 .Field {
-  border-bottom: 1px solid;
-  border-color: $form-border;
-  border-color: $form-border-alt;
   width: 100%;
   flex-direction: row;
   opacity: 1;
