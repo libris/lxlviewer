@@ -1,0 +1,165 @@
+
+// ----------- FONTS ------------
+
+$font-family-base: 'Open Sans', sans-serif;
+
+// ----------- COLORS ------------
+
+$brand-primary: #058194;
+$brand-faded: fade-out($brand-primary, 0.85);  // Maybe deprecate? should use L-5
+$brand-success: $brand-primary;
+$brand-info: #767676;
+$brand-accent: #c1516c;   // aka "flag"
+$brand-accent2: #697bc8;
+$brand-accent3: #8A4B98;  // aka "secondary"
+$brand-warning: #be4c2d;
+$brand-danger: #b51919;
+$brand-primary-orange: rgb(247, 160, 123); // $kb-primary-orange
+
+$focus-color-bg: #FFDD02;
+$focus-color-border: #10100D;
+
+$brand-id: #547e91;
+
+$neutral-color: #fff;
+
+$bg-site: #F9F9F9;
+$test-color: pink;
+
+$badge-color: #ebeef1;
+$badge-color-transparent: rgba(191, 198, 202, 0.15);
+
+// greySCALE
+$white: #FFFFFF;
+$black: #222;
+
+
+$grey-light: #D8D8D8;
+$grey-lighter: #E7E7E7;
+$grey-lightest: lighten($grey-lighter, 5%);
+$grey: #949A9E;
+$grey-dark: #737373;
+$grey-darker: #595D61;
+
+$grey-transparent: rgba(0, 0, 0, 0.45);
+$grey-light-transparent: rgba(0, 0, 0, 0.25);
+$grey-lighter-transparent: rgba(0, 0, 0, 0.12);
+$grey-very-light-transparent: rgba(0, 0, 0, 0.07);
+$grey-extra-light-transparent: rgba(0, 0, 0, 0.025);
+$grey-dark-transparent: rgba(0, 0, 0, 0.58);
+$grey-darker-transparent: rgba(0, 0, 0, 0.68);
+$grey-very-dark-transparent: rgba(0, 0, 0, 0.85);
+
+
+// ----------- GLOBAL ------------
+
+// BODY
+$site-body-background: $bg-site;
+
+// LINKS
+$link-color: $brand-primary;
+$link-hover-color: darken($link-color,17%);
+$link-visited-color: #663399;
+
+// BUTTONS
+$btn-primary: $brand-primary;
+$btn-primary--hover: darken($btn-primary,17%);
+
+// ICONS
+
+// CHIPS
+$chip-color: $link-color;
+$chip-color-hover: $link-hover-color;
+$chip-background: $white;
+
+$chip-color-cache: $link-color;
+$chip-color-placeholder: $link-color;
+// $chip-color-placeholder: #525252;
+
+// SHADOWS
+$shadow-base: none;
+$shadow-chip: 0px 0px 5px 1px rgba(0, 0, 0, 0.15);
+$shadow-chip-elevated: 0px 5px 13px 2px rgba(0, 0, 0, 0.3);
+$shadow-card-elevated: 0px -1px 5px 2px rgba(0, 0, 0, 0.2);
+$shadow-local-entity: 0px -1px 5px 2px rgba(0, 0, 0, 0.15);
+// $shadow-select: 0px 5px 13px 2px rgba(0, 0, 0, 0.3);
+$shadow-panel: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.1);
+$shadow-sticky-bar: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+
+// MISC
+
+
+
+// ----------- COMPONENTS ------------
+
+// MODAL
+$modal-body-background: $bg-site;
+$modal-container-background: $modal-body-background;
+$modal-header-background: $white;
+$modal-backdrop-background: $grey-light-transparent;
+$modal-container-shadow: 0px 5px 15px 0px $grey-transparent;
+
+// FULL SCREEN PANEL
+$fullscreen-panel-shadow: 0px 0px 5px 5px $grey-lighter;
+
+// STICKY BAR
+$bg-sticky-bar: $white;
+$text-brand-env: $brand-primary;
+$text-alt-sticky-bar: $grey-darker;
+// NAVBAR
+$bg-navbar: #10100D;
+
+// SIDEBAR
+$list-item-bg-even: $white;
+$list-item-bg-odd: darken($list-item-bg-even, 5%);
+$list-item-bg-hover: darken($list-item-bg-even, 6%);
+$panel-header-bg: $bg-site;
+
+// TOOLBAR
+
+// FOOTER
+$bg-footer: $white;
+$text-footer: $black;
+$text-alt-footer: $black;
+
+// FORM
+$field-background-hover: #f9f9f9;
+
+$form-radius: 0.2em;
+$form-border: $grey-lighter;
+$form-border-alt: $grey-lighter-transparent;
+$form-add: hsl(hue($brand-primary), 25%, 90%);
+$form-remove: hsl(hue($brand-danger), 80%, 90%);
+$form-modified: hsl(hue($brand-primary-orange), 80%, 90%);
+$form-highlight: hsl(hue($brand-primary), 25%, 90%);
+$form-mark: $form-add;
+$form-extractable: hsl(hue($test-color), 50%, 90%);
+
+$field-path: $grey-light;
+$field-path-alt: $grey-light-transparent;
+$remove: $brand-danger;
+$form-field: $white;
+
+
+// ----------- VALUES ------------
+
+// Z-index
+$sidepanel-z: 998;
+$fullscreenpanel-z: 998;
+$dropdown-z: 997;
+$header-z: 900;
+$sticky-bar-z: 995;
+$modal-z: 999;
+$popover-z: 900;
+$previewcard-z: 1000;
+$notification-z: 1000;
+$active-component-z: 99;
+$backdrop-z: 950;
+
+// Column widths
+$col-label: 200px;
+$col-value: 620px;
+$col-action: 250px;
+
+$directorycare-sidewidth: 46%;
+

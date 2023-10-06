@@ -1,0 +1,96 @@
+{
+  "instance": {
+    "record": {
+      "@id": "https://id.kb.se/TEMPID",
+      "@type": "Record",
+      "mainEntity": {
+        "@id": "https://id.kb.se/TEMPID#it"
+      },
+      "bibliography": [],
+      "descriptionConventions": [{
+          "@id": "https://id.kb.se/marc/Isbd"
+        },
+        {
+          "@type": "DescriptionConventions",
+          "code": "rda"
+        }
+      ],
+      "descriptionLanguage": [{
+        "@id": "https://id.kb.se/language/swe"
+      }],
+      "encodingLevel": "marc:MinimalLevel",
+      "recordStatus": "",
+      "marc:catalogingSource": {
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+      }
+    },
+    "mainEntity": {
+      "@id": "https://id.kb.se/TEMPID#it",
+      "identifiedBy": [],
+      "hasTitle": [],
+      "publication": []
+    }
+  },
+  "work": {
+    "record": {
+      "@type": "Record",
+      "@id": "https://id.kb.se/TEMPID",
+      "mainEntity": {
+        "@id": "https://id.kb.se/TEMPID#it"
+      },
+      "marc:catalogingSource": {
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+      }
+    },
+    "mainEntity": {
+      "@id": "https://id.kb.se/TEMPID#it",
+      "language": [],
+      "genreForm": [],
+      "classification": [],
+      "contribution": [],
+      "contentType": [],
+      "subject": []
+    }
+  },
+  "agent": {
+    "record": {
+      "@id": "https://id.kb.se/TEMPID",
+      "marc:catalogingSource": {
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+      },
+      "mainEntity": {
+        "@id": "https://id.kb.se/TEMPID#it"
+      }
+    },
+    "mainEntity": {
+      "@id": "https://id.kb.se/TEMPID#it",
+      "name": ""
+    }
+  },
+  "concept": {
+    "record": {
+      "@type": "Record",
+      "@id": "https://id.kb.se/TEMPID",
+      "mainEntity": {
+        "@id": "https://id.kb.se/TEMPID#it"
+      },
+      "marc:catalogingSource": {
+        "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+      }
+    },
+    "mainEntity": {
+      "@id": "https://id.kb.se/TEMPID#it",
+      "inScheme": {},
+      "inCollection": [],
+      "prefLabel": [],
+      "closeMatch": [],
+      "altLabel": [],
+      "broader": [],
+      "narrower": [],
+      "related": [],
+      "label": [],
+      "scopeNote": [],
+      "historyNote": []
+    }
+  }
+}
