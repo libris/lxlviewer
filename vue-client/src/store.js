@@ -425,6 +425,13 @@ const store = new Vuex.Store({
       }
       return collection;
     },
+    userChangeCategories: (state) => {
+      const collection = [];
+      if (state.userDatabase == null || state.userDatabase.requestedNotifications == null) {
+        return collection;
+      }
+      return state.userDatabase.requestedNotifications;
+    },
     userDatabase: state => state.userDatabase,
     status: state => state.status,
     directoryCare: state => state.directoryCare,
@@ -461,6 +468,37 @@ const store = new Vuex.Store({
     },
     flushExtractItemsOnSave({ commit }) {
       commit('setExtractItemsOnSave', {});
+    },
+    updateSubscribedChangeCategories({ dispatch, state }, { libraryId, categoryId, checked }) {
+      //
+      //   {
+      //       "requestedNotifications" : [
+      //       {
+      //           "heldBy": "https://libris.kb.se/library/Utb1",
+      //           "triggers" : [
+      //               "https://id.kb.se/changenote/primarytitle",
+      //               "https://id.kb.se/changenote/BLA"
+      //           ],
+      //       }
+      //   ]
+      //       "notificationEmail": "jannis@tsiroyannis.se"
+      //   }
+      //   }
+
+      const notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
+
+      const notification = notifications?.find(obj => obj.heldBy === libraryId);
+      if (checked) {
+        if (notification) {
+          notification.triggers.push(categoryId);
+        } else {
+          notifications.push({ heldBy: libraryId, triggers: [categoryId] });
+        }
+      } else { // Unchecked => remove from triggers
+        notification.triggers = notification.triggers.filter(id => id !== categoryId);
+      }
+      console.log('Settings notifications object:', JSON.stringify(notifications));
+      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
     },
     checkForMigrationOfUserDatabase({ commit, dispatch, state }) {
       // Check if user has records stored in localStorage
@@ -533,6 +571,9 @@ const store = new Vuex.Store({
         }
       }
       dispatch('modifyUserDatabase', { property: 'markedDocuments', value: newList });
+    },
+    purgeChangeCategories({ dispatch }) {
+      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: null });
     },
     loadUserDatabase({ commit, dispatch, state }) {
       if (state.user.id.length === 0) {

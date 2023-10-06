@@ -35,6 +35,7 @@ export class User {
       sort: false,
       facetSortings: {},
       shelfMarkSearch: '',
+      changeCategoriesSubscribed: [],
     };
     this.uriMinter = null;
   }

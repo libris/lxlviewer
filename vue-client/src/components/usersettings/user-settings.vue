@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import SelectSigel from './select-sigel';
+import ChangeCategories from './change-categories.vue';
 
 export default {
   name: 'user-settings',
@@ -42,6 +43,9 @@ export default {
     purgeBookmarks() {
       this.$store.dispatch('purgeUserTagged', 'Bookmark');
     },
+    purgeChangeNoteCategories() {
+      this.$store.dispatch('purgeChangeCategories');
+    },
   },
   computed: {
     ...mapGetters([
@@ -52,18 +56,25 @@ export default {
       'resources',
       'userFlagged',
       'userBookmarks',
+      'userChangeCategories',
     ]),
     userHasTaggedRecords() {
       return Object.keys(this.userStorage.list).length > 0;
     },
+    sortedSigels() {
+      // TODO: sorting
+      return [...this.user.collections];
+      // return [...this.user.collections].sort((a, b) => this.getSigelLabel(a).localeCompare(this.getSigelLabel(b)));
+    },
   },
   components: {
+    'change-categories': ChangeCategories,
     'user-avatar': UserAvatar,
     'select-sigel': SelectSigel,
   },
   watch: {
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
     });
   },
@@ -163,7 +174,13 @@ export default {
               </td>
             </tr>
           </table>
-
+          <button name="clearFlagged" class="btn btn--sm btn-danger" @click.prevent="purgeChangeNoteCategories" @keyup.enter.prevent="purgeChangeNoteCategories">{{ 'Rensa databasen' }}</button>
+          <h5 class="uppercaseHeading--bold">{{ 'Subscribe to change notes' | translatePhrase }}</h5>
+          <table class="UserSettings-configTable table table-striped">
+            <div v-for="sigel in sortedSigels" :key="sigel.code">
+              <change-categories :sigel="sigel" :userChangeCategories="userChangeCategories"/>
+            </div>
+          </table>
         </form>
         <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{"Log out" | translatePhrase}}</button>
       </div>
