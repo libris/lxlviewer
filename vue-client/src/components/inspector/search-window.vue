@@ -342,7 +342,7 @@ export default {
 
               <button-component
                 :button-text="'Yes, start linking'"
-                icon="circle-plus"
+                icon="plus-circle"
                 :variant="'primary'"
                 :inverted="true"
                 @click="extract()"

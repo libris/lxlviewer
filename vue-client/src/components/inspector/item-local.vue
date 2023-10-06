@@ -530,7 +530,7 @@ export default {
           @dehighlight="removeHighlight('info')"
           label="Property"
           description="Add property"
-          icon="circle-plus"
+          icon="plus-circle"
           :parent-hovered="isHovered"
           :is-large="largerActions"
         />
@@ -542,7 +542,7 @@ export default {
           @dehighlight="removeHighlight('remove')"
           label="Remove"
           description="Remove"
-          icon="trash-can"
+          icon="trash-o"
           :parent-hovered="isHovered"
           :is-large="false"
         />

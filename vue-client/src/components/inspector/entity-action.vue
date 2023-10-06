@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     iconClassString() {
-      return `fas ${this.icon}`;
+      return `fa fa-fw fa-${this.icon} icon--sm`;
     },
   },
   methods: {
