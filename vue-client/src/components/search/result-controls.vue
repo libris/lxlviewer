@@ -182,6 +182,7 @@ export default {
       this.changeResultListStatus('loading', true);
       const resultPromise = new Promise((resolve, reject) => {
         httpUtil.get({ url: url, accept: 'application/ld+json' }).then((response) => {
+          // TODO: investigate if we need to do something here: https://router.vuejs.org/guide/migration/#Usage-of-history-state
           window.history.pushState(response, 'unused', response['@id']);
           resolve(response);
         }, (error) => {

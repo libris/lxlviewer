@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { createStore } from 'vuex';
 import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
@@ -11,10 +10,7 @@ import ChangeNotes from './utils/changenotes';
 
 const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
 
-Vue.use(Vuex);
-
-/* eslint-disable no-param-reassign */
-const store = new Vuex.Store({
+const store = createStore({
   state: {
     resources: {
       resourcesLoaded: false,

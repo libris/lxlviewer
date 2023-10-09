@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import { resolve } from 'path';
 import { gitDescribeSync } from 'git-describe'
-import vue from '@vitejs/plugin-vue2' // TODO: replace with @vitejs/plugin-vue when migrating to Vue 3
+import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({

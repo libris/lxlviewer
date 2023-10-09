@@ -66,7 +66,7 @@ export default {
     <div class="LinkCard-content card-content">
       <div class="LinkCard-text card-text">
         <span class="LinkCard-title card-title">{{ header }}</span>
-        <div v-if="html" class="LinkCard-html card-descr" v-html="html">{{ html }}</div>
+        <div v-if="html" class="LinkCard-html card-descr" v-html="html" />
         <div class="LinkCard-descr card-descr">{{ text }}</div>
       </div>
       <a v-if="!linkUrl.startsWith('/')" :href="linkUrl | convertResourceLink" class="card-link LinkCard-link">{{ linkText }}</a>
