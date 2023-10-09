@@ -9,6 +9,11 @@ import UserSettings from '@/components/usersettings/user-settings';
 export default {
   name: 'navbar-component',
   mixins: [clickaway],
+  setup() {
+    return {
+      kbLogoWhite: new URL('~kungbib-styles/dist/assets/kb_logo_white.svg', import.meta.url).href
+    }
+  },
   data() {
     return {
       hasAvatar: true,
@@ -102,7 +107,7 @@ export default {
     <div class="NavBar-container" :class="{ 'container': user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
       <div class="NavBar-brand">
         <router-link to="/" class="NavBar-brandLink">
-          <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
+          <img class="NavBar-brandLogo" :src="kbLogoWhite" alt="Kungliga Bibliotekets logotyp">
         </router-link>
       </div>
       <div class="MainNav">

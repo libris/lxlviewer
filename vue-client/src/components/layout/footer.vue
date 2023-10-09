@@ -3,7 +3,10 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'footer-component',
-  props: {
+  setup() {
+    return {
+      kbLogoBlack: new URL('~kungbib-styles/dist/assets/kb_logo_black.svg', import.meta.url).href
+    }
   },
   data() {
     return {
@@ -32,7 +35,7 @@ export default {
   <footer class="Footer">
       <div class="Footer-content">
         <div class="Footer-serviceName">
-          <img src="~kungbib-styles/dist/assets/kb_logo_black.svg" class="Footer-serviceLogo" alt="Kungliga bibliotekets logotyp" />
+          <img :src="kbLogoBlack" class="Footer-serviceLogo" alt="Kungliga bibliotekets logotyp" />
           <a class="Footer-link" href="http://www.kb.se" alt="Länk till Kungliga bibliotekets webbplats">
             {{ "National Library of Sweden" | translatePhrase }}
           </a>

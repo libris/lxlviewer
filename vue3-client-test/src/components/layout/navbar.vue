@@ -98,7 +98,7 @@ export default {
     <div class="NavBar-container" :class="{ 'container': user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
       <div class="NavBar-brand">
         <router-link to="/" class="NavBar-brandLink">
-          <img class="NavBar-brandLogo" src="~kungbib-styles/lib/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
+          <img class="NavBar-brandLogo" src="~kungbib-styles/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
         </router-link>
       </div>
 

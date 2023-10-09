@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import * as DisplayUtil from 'lxljs/display';
-import { CHANGE_CATEGORIES } from './changecategories.js';
+import CHANGE_CATEGORIES from './changecategories.js';
 
 const SEP = ' → '; // &rarr;
 const DELMARKER = '⌫'; // &#9003;

@@ -1,4 +1,4 @@
-const DataUtil = require('@/utils/data');
+import DataUtil from '@/utils/data'
 
 describe('rewriteValueOfKey()', () => {
   const beforeObj = {

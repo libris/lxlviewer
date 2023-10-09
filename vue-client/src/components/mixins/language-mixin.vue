@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import { cloneDeep, get, isEmpty, isObject } from 'lodash-es';
 import { getContextValue } from 'lxljs/vocab';
 import * as VocabUtil from 'lxljs/vocab';
-import * as httpUtil from '../../utils/http';
+import * as httpUtil from '@/utils/http';
 
 export default {
   props: {

@@ -1,4 +1,4 @@
-const HistoryUtil = require('@/utils/history');
+import HistoryUtil from '@/utils/data';
 
 const getLabel = s => `L:${s}`;
 

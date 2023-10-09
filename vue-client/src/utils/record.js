@@ -2,7 +2,7 @@ import { cloneDeep, each, unset, get, set } from 'lodash-es';
 import * as LxlDataUtil from 'lxljs/data';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
-import * as VocabUtil from '../../../lxljs/vocab';
+import * as VocabUtil from 'lxljs/vocab';
 
 export function getRecordId(data, quoted) {
   const recordObj = recordObject(data, quoted);

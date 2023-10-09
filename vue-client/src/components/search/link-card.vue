@@ -12,6 +12,11 @@ export default {
     'text',
     'html',
   ],
+  setup(props) {
+    return {
+      resolvedImage: new URL(`/src/assets/img/${props.image}`, import.meta.url).href
+    }
+  },
   data() {
     return {
       keyword: '',
@@ -26,11 +31,6 @@ export default {
     };
   },
   methods: {
-  },
-  computed: {
-    resolvedImage() {
-      return require(`@/assets/img/${this.image}`);
-    },
   },
   components: {
   },

@@ -5,7 +5,6 @@ import VueSimpleSpinner from 'vue-simple-spinner';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
-import Copy from '@/resources/json/copy.json';
 import FacetControls from '@/components/search/facet-controls';
 import SearchResult from '@/components/search/search-result';
 import TabMenu from '@/components/shared/tab-menu';
@@ -182,9 +181,6 @@ export default {
         },
       ];
       return tabs;
-    },
-    copy() {
-      return Copy;
     },
   },
   beforeCreate() {

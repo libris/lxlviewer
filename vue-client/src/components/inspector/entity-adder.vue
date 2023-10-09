@@ -17,6 +17,7 @@ import ParamSelect from '@/components/inspector/param-select.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
 import PanelSearchList from '../search/panel-search-list.vue';
+import templates from '@/resources/json/structuredValueTemplates.json'
 
 export default {
   mixins: [LensMixin, SideSearchMixin],
@@ -402,7 +403,6 @@ export default {
     },
     addEmpty(typeId) {
       this.hide();
-      const templates = require('@/resources/json/structuredValueTemplates.json');
       const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);
       let obj = { '@type': shortenedType };
       if (templates.hasOwnProperty(shortenedType)) {

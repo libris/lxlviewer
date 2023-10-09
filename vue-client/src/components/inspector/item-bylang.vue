@@ -4,7 +4,7 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LanguageMixin from '@/components/mixins/language-mixin';
-import * as HttpUtil from '../../utils/http';
+import * as HttpUtil from '@/utils/http';
 import LanguageEntry from './language-entry';
 
 export default {

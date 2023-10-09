@@ -4,6 +4,11 @@ import SearchForm from '@/components/search/search-form';
 
 export default {
   name: 'search-bar',
+  setup() {
+    return {
+      kbLogoBlack: new URL('~kungbib-styles/dist/assets/kb_logo_black.svg', import.meta.url).href
+    }
+  },
   data() {
     return {
       hasAvatar: true,
@@ -48,7 +53,7 @@ export default {
       <div class="SearchBar-row row">
         <div class="SearchBar-brand hidden-sm hidden-xs col-md-3">
           <router-link to="/" class="SearchBar-brandLink">
-            <img class="SearchBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_black.svg" alt="Kungliga Bibliotekets logotyp">
+            <img class="SearchBar-brandLogo" :src="kbLogoBlack" alt="Kungliga Bibliotekets logotyp">
           </router-link>
           <router-link to="/" class="SearchBar-brandTitle" :class="{ 'not-prod': settings.environment !== 'prod' }" :title="`Version ${version}`">
             <span id="service-name">{{ settings.title }}</span>

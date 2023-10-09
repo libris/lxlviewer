@@ -4,13 +4,16 @@ import * as DisplayUtil from 'lxljs/display';
 import * as HttpUtil from '@/utils/http';
 import settings from '../settings';
 
+// TODO: Support .jsonld files in Vite (copy pasted now in definitions)
+import displayJson from '../../../../definitions/source/vocab/display.json';
+
 export function getDisplayDefinitions() {
   const baseUri = settings.idPath;
   return new Promise((resolve, reject) => {
     if (settings.mockDisplay === true) {
       window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using file from local definitions repository');
       // eslint-disable-next-line import/no-extraneous-dependencies
-      resolve(DisplayUtil.expandInherited(require('@/../../../definitions/source/vocab/display.jsonld')));
+      resolve(DisplayUtil.expandInherited(displayJson));
     } else {
       HttpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
         resolve(DisplayUtil.expandInherited(result));

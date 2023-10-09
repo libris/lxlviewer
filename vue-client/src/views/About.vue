@@ -1,24 +1,16 @@
 <script>
-import Copy from '@/resources/json/copy.json';
+import copy from '@/resources/json/copy.json';
 
 export default {
   name: 'about-component',
-  computed: {
-    copy() {
-      return Copy['about-xl-full'];
-    },
-    header() {
-      return this.copy.header;
-    },
-    image() {
-      return require(`@/assets/img/${this.copy.image}`);
-    },
-    imageAltText() {
-      return this.copy.image_alt_text;
-    },
-    text() {
-      return this.copy.text;
-    },
+  setup() {
+    const { 'about-xl-full': helpCopy } = copy;
+    return {
+      header: helpCopy.header,
+      image: new URL(`/src/assets/img/${helpCopy.image}`, import.meta.url).href,
+      imageAltText: helpCopy.image_alt_text,
+      text: helpCopy.text,
+    };
   },
 };
 </script>

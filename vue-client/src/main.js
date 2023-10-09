@@ -11,6 +11,7 @@ import { FocusTrap } from 'focus-trap-vue';
 import PortalVue from 'portal-vue';
 import VueClipboard from 'vue-clipboard2';
 import ComboKeys from 'combokeys';
+import GlobalBind from 'combokeys/plugins/global-bind';
 import moment from 'moment';
 import 'moment/locale/sv';
 import App from './App'; // eslint-disable-line import/order
@@ -23,6 +24,10 @@ import Field from '@/components/inspector/field';
 import EntitySummary from '@/components/shared/entity-summary';
 import KeyBindings from '@/resources/json/keybindings.json';
 import i18n from '@/resources/json/i18n.json';
+import displayGroups from '@/resources/json/displayGroups.json';
+import baseTemplates from '@/resources/json/baseTemplates';
+import combinedTemplates from '@/resources/json/combinedTemplates';
+import helpDocs from '../../../lxl-helpdocs/build/help.json';
 
 Vue.prototype.$moment = moment;
 moment.locale('sv');
@@ -138,7 +143,7 @@ new Vue({
     store.dispatch('setTranslations', i18n);
     store.dispatch('setResource', {
       property: 'displayGroups',
-      value: require('@/resources/json/displayGroups.json'),
+      value: displayGroups,
     });
     store.dispatch('pushLoadingIndicator', 'Loading application');
     Promise.all(this.getLdDependencies()).then((resources) => {
@@ -173,7 +178,7 @@ new Vue({
       // }
 
       this.combokeys = new ComboKeys(document.documentElement);
-      require('combokeys/plugins/global-bind')(this.combokeys); // TODO: Solve with ES6 syntax
+      GlobalBind(this.combokeys); // TODO: Ensure combokeys works inside input fields 
       const stateSettings = KeyBindings[state];
         
       if (typeof stateSettings !== 'undefined') {
@@ -318,7 +323,7 @@ new Vue({
       if (this.settings.mockHelp) {
         window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
         // eslint-disable-next-line import/no-extraneous-dependencies
-        store.dispatch('setHelpDocs', require('@/../../../lxl-helpdocs/build/help.json'));
+        store.dispatch('setHelpDocs', helpDocs);
       } else {
         fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
           if (result.status === 200) {
@@ -333,8 +338,8 @@ new Vue({
     },
     loadTemplates() {
       const templates = {
-        base: require('@/resources/json/baseTemplates'),
-        combined: require('@/resources/json/combinedTemplates'),
+        base: baseTemplates,
+        combined: combinedTemplates,
       };
       store.dispatch('setTemplates', templates);
     },

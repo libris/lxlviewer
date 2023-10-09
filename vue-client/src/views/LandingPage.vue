@@ -1,12 +1,13 @@
 <script>
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import LinkCardComponent from '@/components/search/link-card';
-import Copy from '@/resources/json/copy.json';
+import copy from '@/resources/json/copy.json';
 
 export default {
   name: 'LandingPage',
   data() {
     return {
+      copy,
       msg: 'Welcome to Your Vue.js App',
     };
   },
@@ -24,11 +25,6 @@ export default {
         return true;
       }
       return false;
-    },
-  },
-  computed: {
-    copy() {
-      return Copy;
     },
   },
   components: {
