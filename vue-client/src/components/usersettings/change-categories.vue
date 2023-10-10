@@ -1,9 +1,10 @@
 <script>
 import { mapGetters } from 'vuex';
-import { CHANGE_CATEGORIES } from '../../utils/changecategories';
+import LensMixin from '@/components/mixins/lens-mixin';
 
 export default {
   name: 'change-categories',
+  mixins: [LensMixin],
   data() {
     return {
       sigelChecked: false,
@@ -11,17 +12,18 @@ export default {
   },
   props: {
     sigel: Object,
+    availableCategories: [],
   },
   methods: {
-    updateChangeCategories(e, sigel, category) {
-      this.$store.dispatch('updateSubscribedChangeCategories', { libraryId: sigel.code, categoryId: category, checked: e.target.checked });
+    updateChangeCategories(e, sigel, categoryId) {
+      this.$store.dispatch('updateSubscribedChangeCategories', { libraryId: sigel.code, categoryId: categoryId, checked: e.target.checked });
     },
     toggleChecked() {
       this.sigelChecked = !this.sigelChecked;
     },
-    isActiveCategory(category) {
+    isActiveCategory(categoryId) {
       const obj = this.userChangeCategories.find(c => c.heldBy === this.sigel.code);
-      return obj ? obj.triggers.includes(category) : false;
+      return obj ? obj.triggers.includes(categoryId) : false;
     },
     setActiveChecked() {
       const obj = this.userChangeCategories.find(c => c.heldBy === this.sigel.code);
@@ -29,14 +31,14 @@ export default {
         this.sigelChecked = true;
       }
     },
+    label(obj) {
+      return this.getLabel(obj);
+    },
   },
   computed: {
     ...mapGetters([
       'userChangeCategories',
     ]),
-    changeCategories() {
-      return CHANGE_CATEGORIES.map(c => c['@id']);
-    },
     isChecked() {
       return this.sigelChecked;
     },
@@ -67,16 +69,16 @@ export default {
       </td>
     </tr>
     <div v-if="isChecked">
-      <div v-for="category in changeCategories" :key="category">
+      <div v-for="category in availableCategories" :key="category['@id']">
         <tr>
           <td class="key">
-            <label for="siteWidthCheckbox">{{ category }}</label>
+            <label for="siteWidthCheckbox">{{ label(category) }}</label>
           </td>
           <td class="value">
             <input id="siteWidthCheckbox"
               class="customCheckbox-input"
               type="checkbox"
-              @change="updateChangeCategories(...arguments, sigel, category)" :checked=isActiveCategory(category)>
+              @change="updateChangeCategories(...arguments, sigel, category['@id'])" :checked="isActiveCategory(category['@id'])">
             <div class="customCheckbox-icon"></div>
           </td>
         </tr>

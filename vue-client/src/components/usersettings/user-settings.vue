@@ -13,9 +13,20 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      availableChangeCategories: [],
+    };
+  },
   methods: {
     setUser(userObj) {
       this.$store.dispatch('setUser', userObj);
+    },
+    getAvailableChangeCategories() {
+      const fetchUrl = `${this.settings.apiPath}/find.jsonld?@type=ChangeCategory`;
+      fetch(fetchUrl).then(response => response.json()).then((result) => {
+        this.availableChangeCategories = result?.items;
+      });
     },
     updateLanguage(e) {
       const userObj = this.user;
@@ -76,6 +87,8 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      // TODO: don't do this every time we open user settings
+      this.getAvailableChangeCategories();
     });
   },
 };
@@ -178,7 +191,7 @@ export default {
           <h5 class="uppercaseHeading--bold">{{ 'Subscribe to change notes' | translatePhrase }}</h5>
           <table class="UserSettings-configTable table table-striped">
             <div v-for="sigel in sortedSigels" :key="sigel.code">
-              <change-categories :sigel="sigel" :userChangeCategories="userChangeCategories"/>
+              <change-categories :sigel="sigel" :userChangeCategories="userChangeCategories" :availableCategories="availableChangeCategories"/>
             </div>
           </table>
         </form>
