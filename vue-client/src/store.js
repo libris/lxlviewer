@@ -470,21 +470,6 @@ const store = new Vuex.Store({
       commit('setExtractItemsOnSave', {});
     },
     updateSubscribedChangeCategories({ dispatch, state }, { libraryId, categoryId, checked }) {
-      //
-      //   {
-      //       "requestedNotifications" : [
-      //       {
-      //           "heldBy": "https://libris.kb.se/library/Utb1",
-      //           "triggers" : [
-      //               "https://id.kb.se/changenote/primarytitle",
-      //               "https://id.kb.se/changenote/BLA"
-      //           ],
-      //       }
-      //   ]
-      //       "notificationEmail": "jannis@tsiroyannis.se"
-      //   }
-      //   }
-
       const notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
 
       const notification = notifications?.find(obj => obj.heldBy === libraryId);
@@ -497,7 +482,6 @@ const store = new Vuex.Store({
       } else { // Unchecked => remove from triggers
         notification.triggers = notification.triggers.filter(id => id !== categoryId);
       }
-      console.log('Settings notifications object:', JSON.stringify(notifications));
       dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
     },
     checkForMigrationOfUserDatabase({ commit, dispatch, state }) {

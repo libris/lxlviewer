@@ -190,7 +190,7 @@ export default {
             <div v-for="sigel in sortedSigels" :key="sigel.code">
               <change-categories :sigel="sigel" :userChangeCategories="userChangeCategories" :availableCategories="availableChangeCategories"/>
             </div>
-            <button name="clearCategories" class="btn btn--sm btn-danger" @click.prevent="purgeChangeNoteCategories" @keyup.enter.prevent="purgeChangeNoteCategories">{{ 'Rensa databasen' }}</button>
+<!--            <button name="clearCategories" class="btn btn&#45;&#45;sm btn-danger" @click.prevent="purgeChangeNoteCategories" @keyup.enter.prevent="purgeChangeNoteCategories">{{ 'Rensa databasen' }}</button>-->
           </div>
         </form>
         <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{"Log out" | translatePhrase}}</button>
