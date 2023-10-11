@@ -73,9 +73,8 @@ export default {
       return Object.keys(this.userStorage.list).length > 0;
     },
     sortedSigels() {
-      // TODO: sorting
-      return [...this.user.collections];
-      // return [...this.user.collections].sort((a, b) => this.getSigelLabel(a).localeCompare(this.getSigelLabel(b)));
+      // return [...this.user.collections];
+      return [...this.user.collections].sort((a, b) => StringUtil.getSigelLabel(a).localeCompare(StringUtil.getSigelLabel(b)));
     },
   },
   components: {
