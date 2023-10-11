@@ -1,6 +1,7 @@
 <script>
 import ResultList from './result-list';
 import ResultControls from './result-controls';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'search-result',
@@ -19,6 +20,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     doSort(newsort) {
       const newQuery = Object.assign({}, this.$route.query, { _sort: newsort, _offset: 0 });
       this.$router.push({ query: newQuery });
@@ -77,7 +79,7 @@ export default {
       <span v-if="status.resultList.error">
         <i class="fa fa-warning"></i>
       </span>
-      <span v-if="!status.resultList.error" class="is-status">{{"Fetching results" | translatePhrase}}</span>
+      <span v-if="!status.resultList.error" class="is-status">{{ translatePhrase("Fetching results") }}</span>
       <span v-if="status.resultList.error" class="is-error">{{status.resultList.info}}</span>
     </div>
     <result-controls class="SearchResult-controls" 

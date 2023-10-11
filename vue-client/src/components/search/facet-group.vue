@@ -6,6 +6,7 @@ import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
 import FacetMixin from '@/components/mixins/facet-mixin';
 import Facet from './facet.vue';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'facet-group',
@@ -32,6 +33,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     facetLabelByLang(facetType) {
       return (this.settings.propertyChains[facetType] || {})[this.user.settings.language] || facetType;
     },
@@ -243,7 +245,7 @@ export default {
       class="FacetGroup-reveal link"
       tabindex="0"
       @click="currentLevel++"
-      @keyup.enter="currentLevel++">{{ revealText | translatePhrase }}...</span>
+      @keyup.enter="currentLevel++">{{ translatePhrase(revealText) }}...</span>
   </nav>
 </template>
 

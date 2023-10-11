@@ -5,6 +5,7 @@ import * as StringUtil from 'lxljs/string';
 import { XSD_NUMERIC_TYPES } from 'lxljs/vocab';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'item-numeric',
@@ -89,6 +90,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     removeHighlight(event, active) {
       if (active) {
         let item = event.target;
@@ -181,9 +183,9 @@ export default {
     <div class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       role="button"
-      :aria-label="'Remove' | translatePhrase"
+      :aria-label="translatePhrase('Remove')"
       v-on:click="removeThis()"
-      v-tooltip.top="translate('Remove')"
+      v-tooltip.top="translatePhrase('Remove')"
       @focus="removeHover = true, removeHighlight($event, true)"
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"

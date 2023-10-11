@@ -4,6 +4,7 @@ import { marked } from 'marked';
 import moment from 'moment';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'help-component',
@@ -15,6 +16,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     setSectionTitle() {
       const value = this.activeSectionTitle;
       let titleStr = '';
@@ -147,7 +149,7 @@ export default {
 
   <div class="HelpSection">
     <div v-if="resources.helpDocs == null" class="text-center MainContent-spinner">
-      {{ 'Couldn\t load help documentation' | translatePhrase }}. {{ 'Try reloading the page' | translatePhrase }}.
+      {{ translatePhrase('Couldn\t load help documentation') }}. {{ translatePhrase('Try reloading the page') }}.
     </div>
     <div class="row" v-if="resources.helpDocs != null">
       <div class="col-md-3">

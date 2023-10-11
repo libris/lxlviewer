@@ -2,6 +2,7 @@
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'record-picker',
@@ -82,6 +83,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     selectThis(item) {
       if (item['@id'] !== this.oppositeSelected) {
         const changeObj = { [this.name]: item['@id'] };
@@ -140,7 +142,7 @@ export default {
   <div class="RecordPicker">
     <div class="RecordPicker-label uppercaseHeading" 
       :class="{ 'has-selection' : selected}">
-      {{ name | translatePhrase }}</div>
+      {{ translatePhrase(name) }}</div>
     <div class="RecordPicker-body" :class="{ 'has-selection' : selected, 'is-expanded' : expanded}">
       <div class="RecordPicker-dropdownWrapper">
       <div class="RecordPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
@@ -148,7 +150,7 @@ export default {
           @click="toggleDropdown"
           @keyup.enter="toggleDropdown"
           tabIndex="0">
-          <span class="RecordPicker-toggleLabel">{{ ['Choose', name] | translatePhrase }}</span>
+          <span class="RecordPicker-toggleLabel">{{ `${translatePhrase('Choose')} ${name}` }}</span>
           <span class="RecordPicker-toggleIcon" :class="{ 'expanded' : expanded}">
             <i class="fa fa-fw fa-chevron-down"></i>
           </span>
@@ -160,8 +162,8 @@ export default {
               v-model="filterPhrase"
               class="RecordPicker-input" 
               ref="pickerInput" 
-              :placeholder="'Filter' | translatePhrase"
-              :aria-label="'Filter' | translatePhrase">
+              :placeholder="translatePhrase('Filter')"
+              :aria-label="translatePhrase('Filter')">
           </div>
           <div class="RecordPicker-items">
             <div class="RecordPicker-item"
@@ -194,7 +196,7 @@ export default {
           @click="unselectThis"
           @keyup.enter="unselectThis"
           tabindex="0"
-          :aria-label="'Close' | translatePhrase">
+          :aria-label="translatePhrase('Close')">
           <i class="fa fa-fw fa-close icon"></i>
         </span>
       </div>

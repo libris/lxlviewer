@@ -6,6 +6,7 @@ import TagSwitch from '@/components/shared/tag-switch';
 import * as RecordUtil from '@/utils/record';
 import LensMixin from '../mixins/lens-mixin';
 import ResultMixin from '../mixins/result-mixin';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'result-list-item',
@@ -83,6 +84,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     setHiddenDetailsNumber(value) {
       this.hiddenDetailsNumber = value;
     },
@@ -120,7 +122,7 @@ export default {
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
         <span v-if="hiddenDetailsNumber > 1" class="ResultItem-showMore" @click="toggleShowKeys">
-          {{ showKeysText | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}
+          {{ translatePhrase(showKeysText) }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}
         </span>
       </div>
       <div class="ResultItem-tags" v-if="user.isLoggedIn && isImport === false">

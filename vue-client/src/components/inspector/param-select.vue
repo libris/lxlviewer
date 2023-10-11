@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import PropertyMappings from '@/resources/json/propertymappings.json';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'param-select',
@@ -24,6 +25,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     handleChange() {
       this.$emit('param-selected', this.selectedParam);
       this.setUserPref(this.selectedParam);
@@ -106,12 +108,12 @@ export default {
       class="SearchForm-paramSelect SearchForm-select customSelect"
       v-model="selectedParam"
       @change="handleChange()"
-      :aria-label="'Choose type' | translatePhrase">
+      :aria-label="translatePhrase('Choose type')">
       <option
         v-for="prop in availableSearchParams"
         :key="prop.key"
         :value="prop">
-        {{prop.key | translatePhrase}}
+        {{ translatePhrase(prop.key) }}
       </option>
     </select>
   </div>

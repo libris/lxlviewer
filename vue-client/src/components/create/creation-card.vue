@@ -1,6 +1,7 @@
 <script>
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'creation-card',
@@ -13,6 +14,7 @@ export default {
     activeIndex: Number,
   },
   methods: {
+    translatePhrase,
     useBase(event) {
       this.$emit('use-base', event.target.value);
     },
@@ -57,7 +59,7 @@ export default {
           @change="useBase($event)"
           aria-labelledby="CreationCard-selectLabel">
           <option id="CreationCard-selectLabel" class="CreationCard-option" selected disabled>
-            {{'Choose type' | translatePhrase}}
+            {{ translatePhrase('Choose type')}}
           </option>
           <option class="CreationCard-option"
             v-for="(term, index) in getClassTree" 
@@ -82,7 +84,7 @@ export default {
           :disabled="!isAllowed"
           @keyup.enter="useTemplate(template.value)" 
           @click="useTemplate(template.value)">
-            {{ 'Choose' | translatePhrase }}
+            {{ translatePhrase('Choose') }}
         </button>
         <a 
           class="CreationCard-select" 
@@ -90,7 +92,7 @@ export default {
           v-show="isActive" 
           @keyup.enter="useTemplate(template.value)" 
           @click="useTemplate(template.value)">
-            {{ 'Chosen' | translatePhrase }}
+            {{ translatePhrase('Chosen') }}
         </a>
       </div>
     </div>

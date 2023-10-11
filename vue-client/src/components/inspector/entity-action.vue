@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'entity-action',
@@ -53,6 +54,7 @@ export default {
   watch: {
   },
   methods: {
+    translatePhrase,
     action() {
       this.$emit('action');
     },
@@ -72,9 +74,9 @@ export default {
 <template>
   <div class="EntityAction" :class="{'action-larger': isLarge, 'has-parent-hovered': parentHovered, 'is-placeholder': placeholder }"
     role="button"
-    :aria-label="label | translatePhrase"
+    :aria-label="translatePhrase(label)"
     tabindex="0"
-    v-tooltip.top="translate(description)"
+    v-tooltip.top="translatePhrase(description)"
     @click="action()"
     @keyup.enter="action()"
     @focus="highlight()"
@@ -85,7 +87,7 @@ export default {
     <i :class="iconClassString">
     </i>
     <span class="action-label" v-show="isLarge">
-      {{ label | translatePhrase }}
+      {{ translatePhrase(label) }}
     </span>
   </div>
 </template>

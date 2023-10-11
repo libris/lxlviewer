@@ -23,6 +23,7 @@
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'panel-component',
@@ -51,6 +52,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     lockScroll(boolValue) {
       LayoutUtil.scrollLock(boolValue);
     },
@@ -138,24 +140,24 @@ export default {
                 role="button"
                 tabindex="0"
                 @click="gotoSearch" 
-                :title="'Bring to main search' | translatePhrase"></i>
+                :title="translatePhrase('Bring to main search')"></i>
               <i class="fullview-toggle-button fa fa-compress icon icon--md"
                 v-show="user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
                 @click="toggleFullView" 
-                :title="'Minimize' | translatePhrase"></i>
+                :title="translatePhrase('Minimize')"></i>
               <i class="fullview-toggle-button fa fa-expand icon icon--md"
                 v-show="!user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
                 @click="toggleFullView" 
-                :title="'Expand' | translatePhrase"></i>
+                :title="translatePhrase('Expand')"></i>
               <i class="fa fa-close icon icon--md"
                 role="button"
                 tabindex="0"
                 @click="close"
-                :title="'Close' | translatePhrase"></i>
+                :title="translatePhrase('Close')"></i>
             </span>
           </slot>
         </div>

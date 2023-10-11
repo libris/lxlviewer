@@ -1,11 +1,13 @@
 <script>
 import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'user-bookmarks',
   props: {
   },
   methods: {
+    translatePhrase,
     purgeBookmarks() {
       this.$store.dispatch('purgeUserTagged', 'Bookmark');
     },
@@ -34,7 +36,7 @@ export default {
 <template>
   <section class="UserBookmarks">
     <div class="UserBookmarks-content">
-      <h4>{{'Bookmarks' | translatePhrase}}</h4>
+      <h4>{{ translatePhrase('Bookmarks') }}</h4>
       <div class="UserBookmarks-itemList">
         <div class="UserBookmarks-item" v-for="item in userBookmarks" :key="item['@id']">
           <div class="UserBookmarks-itemLabel">

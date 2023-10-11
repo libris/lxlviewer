@@ -5,6 +5,7 @@ import { isEqual } from 'lodash-es';
 import PreviewCard from '@/components/shared/preview-card';
 import LanguageMixin from '@/components/mixins/language-mixin';
 import EntityAdder from './entity-adder';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'language-entry',
@@ -136,6 +137,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     onLangTaggerEvent(langTag) {
       this.$emit('addLangTag', langTag);
     },
@@ -217,8 +219,8 @@ export default {
               tabindex="0"
               @click="$emit('remove')"
               @keyup.enter="$emit('remove')"
-              :aria-label="'Remove' | translatePhrase"
-              v-tooltip.top="translate('Remove')">
+              :aria-label="translatePhrase('Remove')"
+              v-tooltip.top="translatePhrase('Remove')">
             </i>
             <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!removeIsAllowed"></i>
           </span>
@@ -232,10 +234,10 @@ export default {
           <i class="fa fa-language icon icon--sm LanguageEntry-transIcon"
             tabindex="0"
             role="button"
-            :aria-label="'Romanize' | translatePhrase"
+            :aria-label="translatePhrase('Romanize')"
             v-on:click="$emit('romanize')"
             v-if="isTransSchema(tag) && tag !== 'none'"
-            v-tooltip.top="translate('Romanize')"
+            v-tooltip.top="translatePhrase('Romanize')"
             @keyup.enter="$emit('romanize')">
           </i>
 
@@ -261,10 +263,10 @@ export default {
           <span class="LanguageEntry-remover"
             tabindex="0"
             role="button"
-            :aria-label="'Remove' | translatePhrase"
+            :aria-label="translatePhrase('Remove')"
             v-on:click="$emit('removeval')"
             @keyup.enter="$emit('removeval')"
-            v-tooltip.top="translate('Remove')">
+            v-tooltip.top="translatePhrase('Remove')">
             <i class="fa fa-trash-o icon icon--sm"></i>
           </span>
         </span>

@@ -6,6 +6,7 @@ import { XSD_NUMERIC_TYPES } from 'lxljs/vocab';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 import ModalComponent from '@/components/shared/modal-component';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'item-next-shelf-control-number',
@@ -98,6 +99,7 @@ export default {
   },
 
   methods: {
+    translatePhrase,
     removeHighlight(event, active) {
       if (active) {
         let item = event.target;
@@ -219,7 +221,7 @@ export default {
           class="fa fa-lock icon icon--sm"
           tabindex="0"
           aria-label="Unlock"
-          v-tooltip.top="translate('Click to unlock editing')"
+          v-tooltip.top="translatePhrase('Click to unlock editing')"
           @keyup.enter="openUnlockModal()"
           @click="openUnlockModal()"
         />
@@ -230,9 +232,9 @@ export default {
       class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       role="button"
-      :aria-label="translate('Remove')"
+      :aria-label="translatePhrase('Remove')"
       v-on:click="removeThis()"
-      v-tooltip.top="translate('Remove')"
+      v-tooltip.top="translatePhrase('Remove')"
       @focus="removeHover = true, removeHighlight($event, true)"
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"
@@ -256,12 +258,12 @@ export default {
 
         <div class="ChangeTypeWarningModal-buttonContainer">
           <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">
-            {{ 'Cancel' | translatePhrase }}
+            {{ translatePhrase('Cancel') }}
           </button>
 
           <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
             <i class="icon icon--white fa fa-unlock-alt"></i>
-            {{ 'Unlock' | translatePhrase }}
+            {{ translatePhrase('Unlock') }}
           </button>
         </div>
       </div>

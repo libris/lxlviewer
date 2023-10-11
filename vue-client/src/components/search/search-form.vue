@@ -6,6 +6,7 @@ import * as StringUtil from 'lxljs/string';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import RemoteDatabases from '@/components/search/remote-databases';
 import { buildQueryString } from '@/utils/http';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'search-form',
@@ -34,6 +35,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     focusSearchInput() {
       this.$refs.searchFormInput.focus();
     },
@@ -279,7 +281,7 @@ export default {
   <div class="SearchForm">
     <form id="searchForm" class="SearchForm-form">
       <label class="SearchForm-inputLabel sr-only" id="searchlabel" for="q">
-        {{"Search" | translatePhrase}}
+        {{ translatePhrase("Search") }}
       </label>
       <div class="SearchForm-formGroup SearchForm-selectGroup hidden-sm hidden-md hidden-lg">
         <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper" v-if="searchPerimeter === 'libris'">
@@ -291,7 +293,7 @@ export default {
               v-for="filter in dataSetFilters"
               :key="filter.value"
               :value="filter.value">
-              {{filter.label | translatePhrase}}
+              {{ translatePhrase(filter.label) }}
             </option>
           </select>
         </div>
@@ -304,7 +306,7 @@ export default {
               v-for="prop in availableSearchParams"
               :key="prop.key"
               :value="prop">
-              {{prop.key | translatePhrase}}
+              {{ translatePhrase(prop.key) }}
             </option>
           </select>
         </div>
@@ -321,7 +323,7 @@ export default {
               v-for="filter in dataSetFilters"
               :key="filter.value"
               :value="filter.value">
-              {{filter.label | translatePhrase}}
+              {{ translatePhrase(filter.label) }}
             </option>
           </select>
         </div>
@@ -332,7 +334,7 @@ export default {
           id="q"
           v-model="searchPhrase"
           aria-labelledby="searchlabel"
-          :placeholder="inputPlaceholder | translatePhrase"
+          :placeholder="translatePhrase(inputPlaceholder)"
           ref="searchFormInput">
         <span class="SearchForm-clear icon icon--md"
           @focus="searchGroupFocus.clear = true"
@@ -351,13 +353,13 @@ export default {
               v-for="prop in availableSearchParams"
               :key="prop.key"
               :value="prop">
-              {{prop.key | translatePhrase}}
+              {{ translatePhrase(prop.key) }}
             </option>
           </select>
         </div>
         <button
           class="SearchForm-submit btn btn-primary icon--white icon--md"
-          :aria-label="'Search' | translatePhrase"
+          :aria-label="translatePhrase('Search')"
           @click.prevent="doSearch"
           @focus="searchGroupFocus.submit = true"
           @blur="searchGroupFocus.submit = false"

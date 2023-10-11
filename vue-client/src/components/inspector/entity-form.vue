@@ -8,6 +8,7 @@ import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   mixins: [FormMixin, LensMixin],
@@ -104,6 +105,7 @@ export default {
   watch: {
   },
   methods: {
+    translatePhrase,
     keyIsLocked(key) {
       return (this.isLocked || key === '@id');
     },
@@ -152,7 +154,7 @@ export default {
     <div 
       v-if="reverseItem && editingObject === 'mainEntity' && showIncomingLinksSection"
       class="EntityForm-reverse">
-      <h6 class="uppercaseHeading">{{ 'Incoming links' | translatePhrase }}</h6>
+      <h6 class="uppercaseHeading">{{ translatePhrase('Incoming links') }}</h6>
       <ul class="FieldList">
         <field class="FieldList-item"
           v-for="(v,k) in reverseItemStandalone"

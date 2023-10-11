@@ -10,6 +10,7 @@ import ModalPagination from '@/components/inspector/modal-pagination';
 import FacetMixin from '@/components/mixins/facet-mixin';
 import * as httpUtil from '@/utils/http';
 import { getCompactNumber } from '@/utils/math';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'relations-list',
@@ -46,6 +47,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     go(n) {
       this.currentPage = n;
     },
@@ -206,15 +208,15 @@ export default {
           <div
             class="Filter"
           >
-            <label class="Filter-label" for="filter-select">{{ 'Filter' | translatePhrase }}</label>
+            <label class="Filter-label" for="filter-select">{{ translatePhrase('Filter') }}</label>
             <select id="filter-select"
                     class="Filter-select customSelect"
                     v-model="selectedFacet"
                     @change="handleFacetSelected"
-                    :aria-label="'Filter' | translatePhrase">
+                    :aria-label="translatePhrase('Filter')">
               >
               <option :value="allOption">
-                {{ "All" | translatePhrase }} ({{ getCompactNumber(allOption) }})
+                {{ translatePhrase("All") }} ({{ getCompactNumber(allOption) }})
               </option>
               <optgroup v-for="(group, index) in facets" :key="`group-${index}`" :label="facetGroupLabelByLang(group.name)">
                 <option v-for="(option, index) in group.facets" :key="`option-${index}`" :value="option" :disabled="option.disabled">
@@ -227,7 +229,7 @@ export default {
       </template>
       <template slot="panel-body">
         <div class="PanelComponent-searchStatus" v-show="loading">
-          <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+          <vue-simple-spinner size="large" :message="translatePhrase('Searching')"></vue-simple-spinner>
         </div>
         <panel-search-list
           class="RelationsList-resultListContainer"

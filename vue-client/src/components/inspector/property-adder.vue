@@ -9,6 +9,7 @@ import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import RoundButton from '@/components/shared/round-button.vue';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'property-adder',
@@ -111,6 +112,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     toggleFullView() {
       const user = this.user;
       user.settings.forceFullViewPanel = !user.settings.forceFullViewPanel;
@@ -276,17 +278,17 @@ export default {
             type="text" 
             ref="input"
             class="PropertyAdderPanel-filterInput customInput mousetrap" 
-            :placeholder="'Filter by' | translatePhrase"
-            :aria-label="'Filter by' | translatePhrase"
+            :placeholder="translatePhrase('Filter by')"
+            :aria-label="translatePhrase('Filter by')"
             v-model="filterKey">
         </div>
         <div class="PropertyAdderPanel-filterInfo uppercaseHeading">
           <span>
-            {{ "Showing" | translatePhrase }} 
+            {{ translatePhrase("Showing") }} 
             {{ filteredResults.length }} 
-            {{ "of" | translatePhrase }} 
+            {{ translatePhrase("of") }} 
             {{allowed ? allowed.length : '0'}} 
-            {{ "total" | translatePhrase }}
+            {{ translatePhrase("total") }}
           </span>
         </div>
       </template>
@@ -295,10 +297,10 @@ export default {
           <!-- <span class="PropertyAdderPanel-addControl">
           </span> -->
           <span class="PropertyAdderPanel-fieldLabel uppercaseHeading">
-            {{ "Field label" | translatePhrase }}
+            {{ translatePhrase("Field label") }}
           </span>
           <span class="uppercaseHeading">
-            {{ "Can contain" | translatePhrase }}
+            {{ translatePhrase("Can contain") }}
           </span>
         </div>
       </template>
@@ -331,7 +333,7 @@ export default {
           </ul>
         </div>
         <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
-          <span>{{ "Did not find any fields" | translatePhrase }}...</span>
+          <span>{{ translatePhrase("Did not find any fields") }}...</span>
         </div>
       </template>
     </panel-component>

@@ -15,6 +15,7 @@ Listen to the 'click' event in the parent as usual.
     * shadow - (default: false) show a shadow under the button
 */
 import { isArray } from 'lodash-es';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'button-component',
@@ -72,6 +73,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     action() {
       if (!this.disabled) {
         this.$emit('click');
@@ -80,18 +82,18 @@ export default {
   },
   computed: {
     computedLabel() {
-      return this.disabled ? '' : this.$options.filters.translatePhrase(this.label);
+      return this.disabled ? '' : translatePhrase(this.label);
     },
     computedButtonText() {
       if (isArray(this.buttonText)) {
         let buttonText = '';
         for (let i = 0; i < this.buttonText.length; i++) {
-          buttonText += this.$options.filters.translatePhrase(this.buttonText[i]);
+          buttonText += translatePhrase(this.buttonText[i]);
           buttonText += ' ';
         }
         return buttonText;
       }
-      return this.$options.filters.translatePhrase(this.buttonText);
+      return translatePhrase(this.buttonText);
     },
   },
   components: {

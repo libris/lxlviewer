@@ -186,12 +186,12 @@ export default {
       <fieldset v-if="hasAutomaticCounter">
         <label class="ItemShelfControlNumber-label">
           <input type="radio" value="generate" v-model="mode">
-          {{translate("Generate control number when item is saved")}}
+          {{ translatePhrase("Generate control number when item is saved") }}
         </label>
         <br>
         <label class="ItemShelfControlNumber-label">
           <input type="radio" value="manual" v-model="mode">
-          {{translate("Enter manual control number")}}
+          {{ translatePhrase("Enter manual control number") }}
         </label>
       </fieldset>
       <textarea class="ItemShelfControlNumber-input js-itemValueInput"

@@ -2,6 +2,7 @@
 import { isObject } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import PanelComponent from '@/components/shared/panel-component.vue';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'marc-preview',
@@ -32,6 +33,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     hide() {
       this.$emit('hide');
       // this.$store.dispatch('setStatusValue', { 
@@ -85,11 +87,11 @@ export default {
         <div class="MarcPreview-body">
           <div class="MarcPreview-status" v-if="marcObj === null">
             <p v-show="error === null" >
-              {{ "Loading marc" | translatePhrase }}...<br>
+              {{ translatePhrase("Loading marc") }}...<br>
               <i class="fa fa-circle-o-notch fa-spin"></i>
             </p>
             <p v-show="error !== null" class="MarcPreview-error">
-              {{ "Something went wrong" | translatePhrase }}...
+              {{ translatePhrase("Something went wrong") }}...
             </p>
           </div>
 

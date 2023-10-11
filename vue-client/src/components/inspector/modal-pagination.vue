@@ -1,4 +1,5 @@
 <script>
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'modal-pagination',
@@ -21,6 +22,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     go(n) {
       if (n !== this.currentPage && n >= 0 && n <= this.lastPageIndex) {
         this.$emit('go', n);
@@ -74,7 +76,7 @@ export default {
           @keydown.enter="go(0)" 
           @click="go(0)" 
           :tabindex="currentPage-1 < 0 ? -1 : 0">
-          {{'First' | translatePhrase}}
+          {{ translatePhrase('First') }}
         </a>
       </li>
       <li class="ModalPagination-item" :class="{'is-disabled': currentPage-1 < 0 }">
@@ -107,7 +109,7 @@ export default {
           @keydown.enter="go(lastPageIndex)" 
           @click="go(lastPageIndex)" 
           :tabindex="currentPage === lastPageIndex ? -1 : 0">
-          {{'Last' | translatePhrase}}
+          {{ translatePhrase('Last') }}
         </a>
       </li>
     </ul>

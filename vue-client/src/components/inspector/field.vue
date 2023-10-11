@@ -27,6 +27,7 @@ import ItemNextShelfControlNumber from './item-next-shelf-control-number';
 import ItemBylang from './item-bylang';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import LanguageMixin from '../mixins/language-mixin';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'field',
@@ -458,6 +459,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     onLabelClick() {
       this.$store.dispatch('pushInspectorEvent', {
         name: 'field-label-clicked',
@@ -693,11 +695,11 @@ export default {
             :class="{'disabled': activeModal}">
             <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
               role="button"
-              :aria-label="'Remove' | translatePhrase"
+              :aria-label="translatePhrase('Remove')"
               tabindex="0"
               v-on:click="removeThis(true)"
               @keyup.enter="removeThis(true)"
-              v-tooltip.top="translate('Remove')"
+              v-tooltip.top="translatePhrase('Remove')"
               @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
               @blur="removeHover = false, highlight(false, $event, 'is-removeable')"
               @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
@@ -738,10 +740,10 @@ export default {
             ref="clipboardPaster">
             <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
               role="button"
-              :aria-label="'Paste entity' | translatePhrase"
+              :aria-label="translatePhrase('Paste entity')"
               @click="pasteClipboardItem"
               @keyup.enter="pasteClipboardItem"
-              v-tooltip.top="translate('Paste entity')"
+              v-tooltip.top="translatePhrase('Paste entity')"
               @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
               @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
               @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
@@ -756,8 +758,8 @@ export default {
           <i class="fa fa-plus-circle icon--sm icon-added"></i>
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
-          <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
+          <span v-show="fieldKey === '@id'">{{ translatePhrase('ID') | capitalize }}</span>
+          <span v-show="fieldKey === '@type'">{{ translatePhrase(entityTypeArchLabel) | capitalize }}</span>
           <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" 
                 :title="fieldKey" 
                 @click="onLabelClick">
@@ -766,16 +768,16 @@ export default {
           <span class="Field-navigateHistory" 
                 v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" 
                 @click="onLabelClick"
-                v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
+                v-tooltip.top="{content: translatePhrase('Show latest change'), delay: { show: 300, hide: 0 }}">
             {{ (fieldRdfType || overrideLabel || fieldKey) | labelByLang | capitalize }}
           </span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
-            <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
+            <span :title="fieldKey">{{ translatePhrase('Incoming links') | capitalize }}</span>          
             <div class="Field-comment">
               <i class="fa fa-question-circle-o icon icon--sm"></i>
-              <span class="Field-commentText">{{ 'Non editable incoming link' | translatePhrase }}.
+              <span class="Field-commentText">{{ translatePhrase('Non editable incoming link') }}.
                 <br />
-                <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ 'Read more about incoming links' | translatePhrase }}.</a>
+                <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ translatePhrase('Read more about incoming links') }}.</a>
               </span>
             </div>
           </div>
@@ -784,11 +786,11 @@ export default {
       <code class="path-code" v-show="user.settings.appTech && !isInner">{{path}}</code>
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
-      <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
+      <span v-show="fieldKey === '@id'">{{ translatePhrase('ID') | capitalize }}</span>
+      <span v-show="fieldKey === '@type'">{{ translatePhrase(entityTypeArchLabel) | capitalize }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>
       <span class="Field-navigateHistory" v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" @click="onLabelClick"
-            v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
+            v-tooltip.top="{content: translatePhrase('Show latest change'), delay: { show: 300, hide: 0 }}">
         {{ fieldKey | labelByLang | capitalize }}
       </span>
       <!-- Is inner -->
@@ -825,9 +827,9 @@ export default {
           <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
             tabindex="0"
             role="button"
-            :aria-label="'Remove' | translatePhrase"
+            :aria-label="translatePhrase('Remove')"
             v-on:click="removeThis(true)"
-            v-tooltip.top="translate('Remove')"
+            v-tooltip.top="translatePhrase('Remove')"
             @keyup.enter="removeThis(true)"
             @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
             @blur="removeHover = false, highlight(false, $event, 'is-removeable')" 
@@ -841,10 +843,10 @@ export default {
           ref="clipboardPaster">
           <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
             role="button"
-            :aria-label="'Paste entity' | translatePhrase"
+            :aria-label="translatePhrase('Paste entity')"
             @click="pasteClipboardItem"
             @keyup.enter="pasteClipboardItem"
-            v-tooltip.top="translate('Paste entity')"
+            v-tooltip.top="translatePhrase('Paste entity')"
             @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
             @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
             @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 

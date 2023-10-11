@@ -23,6 +23,7 @@ import ValidationSummary from '@/components/inspector/validation-summary';
 import FullscreenPanel from '../components/shared/fullscreen-panel.vue';
 import VersionHistory from '../components/inspector/version-history.vue';
 import ChangeNotes from '../utils/changenotes';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'Inspector',
@@ -77,6 +78,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     ...mapActions([
       'setEnrichmentSource',
       'setEnrichmentTarget',
@@ -990,21 +992,21 @@ export default {
       <div v-if="!recordLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
         <p v-if="loadFailure.status === 404">
-          {{ 'The resource' | translatePhrase }} <code>{{documentId}}</code> {{ 'could not be found' | translatePhrase}}.
+          {{ translatePhrase('The resource') }} <code>{{documentId}}</code> {{ translatePhrase('could not be found') }}.
         </p>
         <p v-if="loadFailure.status === 410">
-          {{ 'The resource' | translatePhrase }} <code>{{documentId}}</code> {{ 'has been removed' | translatePhrase}}.
+          {{ translatePhrase('The resource') }} <code>{{documentId}}</code> {{ translatePhrase('has been removed')}}.
         </p>
         <router-link to="/">
-          {{ 'Back to home page' | translatePhrase }}
+          {{ translatePhrase('Back to home page') }}
         </router-link>
       </div>
 
       <div v-if="recordLoaded && isDocumentAvailable == false">
-        <h2>{{ 'Something went wrong' | translatePhrase }}</h2>
-        <p>{{ 'The document was found but failed to load' | translatePhrase }}.</p>
+        <h2>{{ translatePhrase('Something went wrong') }}</h2>
+        <p>{{ translatePhrase('The document was found but failed to load') }}.</p>
         <router-link to="/">
-          {{ 'Back to home page' | translatePhrase }}
+          {{ translatePhrase('Back to home page') }}
         </router-link>
       </div>
 
@@ -1013,7 +1015,7 @@ export default {
           <div class="Inspector-header">
             <h1>
               <span class="type" :title="recordType">{{ recordType | labelByLang }}</span>
-              <span class="badge badge-accent2" v-if="inspector.status.isNew">{{ "New record" | translatePhrase }}</span>
+              <span class="badge badge-accent2" v-if="inspector.status.isNew">{{ translatePhrase("New record") }}</span>
             </h1>
           </div>
           <entity-changelog v-if="inspector.status.isNew === false" />
@@ -1045,16 +1047,16 @@ export default {
       v-if="removeInProgress">
       <div slot="modal-header" class="RemoveRecordModal-header">
         <header>
-          {{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang }}?
+          {{ translatePhrase('Remove') }} {{ this.recordType | labelByLang }}?
         </header>
       </div>
       <div slot="modal-body" class="RemoveRecordModal-body">
         <p>
-          {{ 'This operation can\'t be reverted' | translatePhrase }}
+          {{ translatePhrase('This operation can\'t be reverted') }}
         </p>
         <div class="RemoveRecordModal-buttonContainer">
-          <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ 'Remove' | translatePhrase }} {{ this.recordType | labelByLang | lowercase }}</button>
-          <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ 'Cancel' | translatePhrase }}</button>
+          <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ translatePhrase('Remove') }} {{ this.recordType | labelByLang | lowercase }}</button>
+          <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ translatePhrase('Cancel') }}</button>
         </div>
       </div>
     </modal-component>
@@ -1074,16 +1076,16 @@ export default {
           Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.
         </div>
         <div class="input-group EmbellishFromIdModal-form">
-          <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ 'ID' | translatePhrase }}/{{ 'Link' | translatePhrase }}</label>
+          <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ translatePhrase('ID') }}/{{ translatePhrase('Link') }}</label>
           <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" />
           <span class="input-group-btn">
-            <button class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton" @click="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)">{{ 'Continue' | translatePhrase }}</button>
+            <button class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton" @click="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)">{{ translatePhrase('Continue') }}</button>
           </span>
         </div>
       </div>
     </modal-component>
 
-    <modal-component class="DetailedEnrichmentModal" :title="'Detailed enrichment' | translatePhrase" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
+    <modal-component class="DetailedEnrichmentModal" :title="translatePhrase('Detailed enrichment')" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
       <DetailedEnrichment slot="modal-body" :floating-dialogs="true" />
     </modal-component>
 

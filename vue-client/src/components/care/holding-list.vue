@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import { each, isObject, orderBy } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'holding-list',
@@ -122,6 +123,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     resetMovedStatus() {
       const changeObj = { holdingsMoved: [] };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
@@ -243,13 +245,13 @@ export default {
           <i class="fa fa-fw fa-square-o" v-show="!allHoldingsSelected"></i>
           <i class="fa fa-fw fa-check-square-o" v-show="allHoldingsSelected"></i>
           <!-- <input v-model="allHoldingsSelected" type="checkbox" :disabled="lock || movableHoldings.length === 0" @change="handleAllSelect" /> -->
-          {{ 'Select all' | translatePhrase }}
+          {{ translatePhrase('Select all') }}
         </button>
-        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && !loading" :disabled="lock || directoryCare.selectedHoldings.length === 0" @click="doSend">{{ 'Move holdings' | translatePhrase }}</button>
-        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && loading" :disabled="true"><i class="fa fa-circle-o-notch fa-spin"></i> {{ 'Moving holdings' | translatePhrase }}</button>
-        <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ 'Holdings chosen' | translatePhrase | lowercase }}</span>
+        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && !loading" :disabled="lock || directoryCare.selectedHoldings.length === 0" @click="doSend">{{ translatePhrase('Move holdings') }}</button>
+        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && loading" :disabled="true"><i class="fa fa-circle-o-notch fa-spin"></i> {{ translatePhrase('Moving holdings') }}</button>
+        <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ translatePhrase('Holdings chosen') | lowercase }}</span>
         <div v-if="!isSender"></div>
-        <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ 'Holdings' | translatePhrase | lowercase }}</span>
+        <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ translatePhrase('Holdings') | lowercase }}</span>
     </div>
     <div class="HoldingList-body">
       <div class="HoldingList-items">

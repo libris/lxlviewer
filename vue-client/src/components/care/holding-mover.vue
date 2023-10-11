@@ -6,6 +6,7 @@ import RecordPicker from '@/components/care/record-picker';
 import HoldingList from '@/components/care/holding-list';
 import ModalComponent from '@/components/shared/modal-component';
 import * as RecordUtil from '@/utils/record';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'holding-mover',
@@ -37,6 +38,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     toggleInfoBox() {
       this.showInfoBox = !this.showInfoBox;
     },
@@ -192,13 +194,13 @@ export default {
         <p v-if="!directoryCare.sender"
           class="HoldingMover-info" 
           slot="info">
-          {{ "Holdings are moved from the sender record to the reciever record" | translatePhrase }}.</p>
+          {{ translatePhrase("Holdings are moved from the sender record to the reciever record") }}.</p>
       </record-picker>
       <div class="HoldingMover-separator" v-if="flaggedInstances.length > 0">
         <button class="btn btn-primary" 
           @click="switchInstances" 
           :disabled="!anySelected"
-          :aria-label="'Switch place' | translatePhrase">
+          :aria-label="translatePhrase('Switch place')">
           <i class="fa fa-fw fa-exchange"></i>
         </button>
       </div>
@@ -223,10 +225,10 @@ export default {
       title="Move was successful" 
       modal-type="info">
       <div slot="modal-body" class="HoldingMover-allSuccessDialogBody">
-        <p>{{ 'All selected holdings has been moved' | translatePhrase }}.</p>
-        <p>{{'Do you want to unmark the sender' | translatePhrase }}?</p>
+        <p>{{ translatePhrase('All selected holdings has been moved') }}.</p>
+        <p>{{ translatePhrase('Do you want to unmark the sender') }}?</p>
         <div class="HoldingMover-allSuccessDialogBtnContainer">
-          <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ 'Yes' | translatePhrase }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ 'No' | translatePhrase }}</button>
+          <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ translatePhrase('Yes') }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ translatePhrase('No') }}</button>
         </div>
       </div>
     </modal-component>

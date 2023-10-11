@@ -8,6 +8,7 @@ import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 import PreviewCard from '@/components/shared/preview-card';
 import ReverseRelations from '@/components/inspector/reverse-relations';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'item-entity',
@@ -89,6 +90,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     expand() {
       this.expanded = true;
     },
@@ -211,8 +213,8 @@ export default {
               v-if="!isLocked"
               role="button"
               tabindex="0"
-              :aria-label="'Remove' | translatePhrase"
-              v-tooltip.top="translate('Remove')"
+              :aria-label="translatePhrase('Remove')"
+              v-tooltip.top="translatePhrase('Remove')"
               @click="removeThis(true)"
               @keyup.enter="removeThis(true)">
             </i>

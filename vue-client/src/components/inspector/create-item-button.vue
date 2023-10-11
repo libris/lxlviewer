@@ -6,6 +6,7 @@ import * as RecordUtil from '@/utils/record';
 import * as DataUtil from '@/utils/data';
 import * as LayoutUtil from '@/utils/layout';
 import RoundedButton from '@/components/shared/rounded-button.vue';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'create-item-button',
@@ -36,6 +37,7 @@ export default {
   events: {
   },
   methods: {
+    translatePhrase,
     buildItem() {
       const embellishedReference = DisplayUtil.getCard(
         this.mainEntity,
@@ -129,7 +131,7 @@ export default {
           v-if="!hasHolding && !checkingHolding"></i>
         <i class="fa fa-fw fa-circle-o-notch fa-spin"
           v-if="checkingHolding"></i>
-        {{"Add holding" | translatePhrase}}
+        {{ translatePhrase("Add holding") }}
         <span>({{user.settings.activeSigel}})</span>
       </button>
       <button class="btn btn--md CreateItem-btn"
@@ -140,7 +142,7 @@ export default {
         v-tooltip.top="keyBindText">
         <i class="fa fa-check-circle"
           v-if="hasHolding && !checkingHolding"></i>
-        {{"Show holding" | translatePhrase}}
+        {{ translatePhrase("Show holding") }}
         <span>({{user.settings.activeSigel}})</span>
       </button>
     </template>
@@ -150,8 +152,8 @@ export default {
         :icon="hasHolding ? 'check' : 'plus'"
         :indicator="hasHolding"
         :label="hasHolding ? 
-              `${user.settings.activeSigel} ${$options.filters.translatePhrase('has holding')}` :
-              `${$options.filters.translatePhrase('Add holding for')} ${user.settings.activeSigel}`"
+              `${user.settings.activeSigel} ${translatePhrase('has holding')}` :
+              `${translatePhrase('Add holding for')} ${user.settings.activeSigel}`"
         @click="performItemAction()">
       </rounded-button>
     </template>

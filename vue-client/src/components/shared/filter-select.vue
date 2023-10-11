@@ -7,6 +7,7 @@ import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'filter-select',
@@ -84,6 +85,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     preventBodyScroll(e) {
       const keys = this.keyEnums;
       if ([
@@ -265,7 +267,7 @@ export default {
       <ul class="FilterSelect-dropdown js-filterSelectDropdown"
         :class="{'is-visible': filterVisible}" v-show="filterVisible">
         <li class="FilterSelect-dropdownHeader" v-show="options.priority.length > 0">
-          {{ 'Suggested' | translatePhrase }}:
+          {{ translatePhrase('Suggested') }}:
         </li>
         <li class="FilterSelect-dropdownItem js-filterSelectItem"
           :class="{ 'is-abstract': option.abstract, 'is-concrete': !option.abstract }"
@@ -281,7 +283,7 @@ export default {
         </li>
         <hr class="FilterSelect-dropdownDivider" v-show="options.priority.length > 0">
         <li class="FilterSelect-dropdownHeader" v-show="options.tree.length > 0 && options.priority.length > 0">
-          {{ 'All' | translatePhrase }}:
+          {{ translatePhrase('All') }}:
         </li>
         <li class="FilterSelect-dropdownItem js-filterSelectItem"
           :class="{ 'is-abstract': option.abstract && !isFilter, 'is-concrete': !option.abstract || isFilter }"
@@ -300,13 +302,13 @@ export default {
         class="FilterSelect-open"
         :class="{'is-opened': filterVisible}"
         role="button"
-        :title="!filterVisible ? 'Expand' : 'Minimize' | translatePhrase"
+        :title="translatePhrase(!filterVisible ? 'Expand' : 'Minimize')"
         @click="filterVisible = !filterVisible"
         @keyup.enter="filterVisible = !filterVisible"></i>
 
       <i v-if="isFilter"
         class="fa fa-close icon icon--sm FilterSelect-clear"
-        :title="'Close' | translatePhrase"
+        :title="translatePhrase('Close')"
         role="button"
         @click="clear()"
         @keyup.enter="clear()"></i>

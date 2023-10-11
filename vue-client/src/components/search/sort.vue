@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'sort',
@@ -76,6 +77,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     handleSortChange() {
       const user = this.user;
       user.settings.sort = this.newSort;
@@ -93,7 +95,7 @@ export default {
     class="Sort" 
     :class="{ 'variantMaterial' : styleVariant === 'material' }"
     v-if="options">
-    <label class="Sort-label" for="sort-select">{{ 'Sorting' | translatePhrase }}{{ styleVariant === 'material' ? '' : ':' }}</label>
+    <label class="Sort-label" for="sort-select">{{ translatePhrase('Sorting') }}{{ styleVariant === 'material' ? '' : ':' }}</label>
     <select id="sort-select"
       class="Sort-select customSelect" 
       v-model="boundVal" 
@@ -102,7 +104,7 @@ export default {
         v-for="(option, index) in options" 
         :value="option.query.endsWith('_sortKeyByLang') ? `${option.query}.${user.settings.language || 'sv'}` : option.query"
         :key="index">
-        {{ option.label | translatePhrase }}
+        {{ translatePhrase(option.label) }}
       </option>
     </select>
   </div>

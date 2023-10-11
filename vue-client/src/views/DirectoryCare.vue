@@ -7,6 +7,7 @@ import * as HttpUtil from '@/utils/http';
 import TabMenu from '@/components/shared/tab-menu';
 import HoldingMover from '@/components/care/holding-mover';
 import ModalComponent from '@/components/shared/modal-component';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'DirectoryCare',
@@ -50,6 +51,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     switchTool(id) {
       this.$router.push({ path: `/directory-care/${id}` });
     },
@@ -142,8 +144,7 @@ export default {
         modal-type="info" 
         @close="closeModal">
         <div slot="modal-body" class="DirectoryCare-modalBody">
-          <p>{{ ['The following resources could not be retrieved', 
-            'because they no longer exist. They have been removed from the directory care list'] | translatePhrase }}:</p>
+          <p>{{ `${translatePhrase('The following resources could not be retrieved')} ${translatePhrase('because they no longer exist. They have been removed from the directory care list')}` }}:</p>
           <ul>
             <li v-for="error in errors.removed" :key="error['@id']">
               {{error.label}}

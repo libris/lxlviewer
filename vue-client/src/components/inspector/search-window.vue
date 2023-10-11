@@ -13,6 +13,7 @@ import FilterSelect from '@/components/shared/filter-select.vue';
 import ParamSelect from '@/components/inspector/param-select.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
 import LensMixin from '../mixins/lens-mixin';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'search-window',
@@ -91,6 +92,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     getSearchParams(searchPhrase) {
       if (this.currentSearchParam == null) {
         return { q: searchPhrase };
@@ -177,7 +179,7 @@ export default {
     <portal to="sidebar" v-if="active">
       <panel-component class="SearchWindow-panel SearchWindowPanel"
         v-if="active"
-        :title="'Link entity' | translatePhrase"
+        :title="translatePhrase('Link entity')"
         @close="hide()">
         <template slot="panel-header-info">
           <div class="PanelComponent-headerInfo help-tooltip-container"
@@ -188,23 +190,23 @@ export default {
             <div class="PanelComponent-headerInfoBox help-tooltip" v-show="showHelp">
               <div>
                 <p class="header">
-                  {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
+                  {{ translatePhrase("Step")}} 1: {{translatePhrase("Search for existing linked entities") }}
                 </p>
               </div>
               <div>
                 <p class="header">
-                  {{"Step" | translatePhrase}} 2: {{"Identify and replace" | translatePhrase}}
+                  {{ translatePhrase("Step")}} 2: {{translatePhrase("Identify and replace") }}
                 </p>
                 <p>
-                  {{"If you identify a matching linked entity, click it to replace the local entity with it" | translatePhrase}}.
+                  {{ translatePhrase("If you identify a matching linked entity, click it to replace the local entity with it") }}.
                 </p>
               </div>
               <div>
                 <p class="header">
-                  {{"Create and link entity" | translatePhrase}}
+                  {{ translatePhrase("Create and link entity") }}
                 </p>
                 <p>
-                  {{"If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking" | translatePhrase}}.
+                  {{ translatePhrase("If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking") }}.
                 </p>
               </div>
             </div>
@@ -216,7 +218,7 @@ export default {
               <div class="copy-title" v-if="canCopyTitle">
                 <label>
                   <input type="checkbox" name="copyTitle" v-bind="copyTitle" @change="$emit('update:copyTitle', $event.target.value)" />
-                  {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}
+                  {{ translatePhrase("Copy title from") }} {{this.editorData.mainEntity['@type'] | labelByLang}}
                 </label>
               </div>
             </div>
@@ -225,7 +227,7 @@ export default {
                 <div class="SearchWindow-filterSearchContainerItem">
                   <filter-select class="SearchWindow-filterSearchInput FilterSelect--openDown"
                     :class-name="'js-filterSelect'"
-                    :label="'Show' | translatePhrase"
+                    :label="translatePhrase('Show')"
                     :custom-placeholder="filterPlaceHolder"
                     :options="{ tree: selectOptions, priority: priorityOptions }"
                     :options-all="allSearchTypes"
@@ -250,8 +252,8 @@ export default {
                   v-model="keyword"
                   ref="input"
                   autofocus
-                  :placeholder="'Search' | translatePhrase"
-                  :aria-label="'Search' | translatePhrase">
+                  :placeholder="translatePhrase('Search')"
+                  :aria-label="translatePhrase('Search')">
                 <param-select class="SearchWindow-paramSelect"
                               :types="currentSearchTypes"
                               :reset="resetParamSelect"
@@ -273,18 +275,18 @@ export default {
             @use-item="replaceWith"
           />
           <div class="PanelComponent-searchStatus" v-show="keyword.length === 0 && !extracting && searchResult.length == 0">
-            <p> {{ "Search for existing linked entities to replace your local entity" | translatePhrase }}.</p>
-            <p v-if="itemInfo && extractable"> {{ "If you can't find an existing link, you can create one using your local entity below" | translatePhrase }}.</p>
+            <p> {{ translatePhrase("Search for existing linked entities to replace your local entity") }}.</p>
+            <p v-if="itemInfo && extractable"> {{ translatePhrase("If you can't find an existing link, you can create one using your local entity below") }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="searchInProgress">
-            <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+            <vue-simple-spinner size="large" :message="translatePhrase('Searching')"></vue-simple-spinner>
           </div>
           <div class="PanelComponent-searchStatus" v-show="foundNoResult">
-            <p>{{ "Your search gave no results" | translatePhrase }}.</p>
-            <p v-if="itemInfo && extractable">{{ "Try again" | translatePhrase }} {{ "or create a link from your local data below" | translatePhrase }}.</p>
+            <p>{{ translatePhrase("Your search gave no results") }}.</p>
+            <p v-if="itemInfo && extractable">{{ translatePhrase("Try again") }} {{ translatePhrase("or create a link from your local data below") }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="extracting">
-            <vue-simple-spinner size="large" :message="'Creating link' | translatePhrase"></vue-simple-spinner>
+            <vue-simple-spinner size="large" :message="translatePhrase('Creating link')"></vue-simple-spinner>
           </div>
         </template>
         <template slot="panel-footer">
@@ -303,22 +305,22 @@ export default {
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
                 :class="{'icon--primary' : !isCompact}"
-                :title="'Detailed view' | translatePhrase"
+                :title="translatePhrase('Detailed view')"
                 tabindex="0"></i>
               <i class="fa fa-list icon icon--md"
                 role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
                 :class="{'icon--primary' : isCompact}"
-                :title="'Compact view' | translatePhrase"
+                :title="translatePhrase('Compact view')"
                 tabindex="0"></i>
             </div>
           </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
             <div class="SearchWindow-dialogContainer">
-              <p class="preview-entity-text uppercaseHeading"> {{ 'Do you want to create' | translatePhrase }} {{ typeOfExtractingEntity }}?</p>
+              <p class="preview-entity-text uppercaseHeading"> {{ translatePhrase('Do you want to create') }} {{ typeOfExtractingEntity }}?</p>
               <p>
-                {{ 'The local entity will be extracted and linked' | translatePhrase }}.
+                {{ translatePhrase('The local entity will be extracted and linked') }}.
               </p>
               <button-component
                 :button-text="'Yes, start linking'"

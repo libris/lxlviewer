@@ -13,6 +13,9 @@ Listen to the 'click' event in the parent as usual.
     * label - (if icon) provide a string that will be translated & used as accessible label
     * shadow - (default: false) show a shadow under the button
 */
+
+import { translatePhrase } from '@/utils/filters';
+
 export default {
   name: 'rounded-button',
   props: {
@@ -53,6 +56,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     action() {
       if (!this.disabled) {
         this.$emit('click');
@@ -83,7 +87,7 @@ export default {
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false"
-    :aria-label="label | translatePhrase">
+    :aria-label="translatePhrase(label)">
     <span v-if="icon">
       <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
     </span>

@@ -9,6 +9,7 @@ import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import RoundButton from '@/components/shared/round-button.vue';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'field-adder',
@@ -115,6 +116,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     toggleFullView() {
       const user = this.user;
       user.settings.forceFullViewPanel = !user.settings.forceFullViewPanel;
@@ -278,7 +280,7 @@ export default {
         role="button"
         tabindex="0"
         ref="adderButton"
-        :aria-label="modalTitle | translatePhrase"
+        :aria-label="translatePhrase(modalTitle)"
         @click="show(), expand()" 
         @keyup.enter="show"
         v-tooltip.top="modalTitle"
@@ -290,18 +292,18 @@ export default {
       <i 
         class="FieldAdder-innerIcon fa fa-plus-circle fa-fw icon icon--sm">
       </i>
-      <span class="action-label">{{ "Add field" | translatePhrase }}</span>
+      <span class="action-label">{{ translatePhrase("Add field") }}</span>
     </span>
 
     <button v-if="!inner" class="FieldAdder-add btn btn-default toolbar-button" 
       v-on:click="show" 
       ref="adderButton"
       @keyup.enter="show"
-      v-tooltip.left="`${translate(modalTitle)} (${getKeybindText('open-field-adder')})`"
-      :aria-label="modalTitle | translatePhrase">
+      v-tooltip.left="`${translatePhrase(modalTitle)} (${getKeybindText('open-field-adder')})`"
+      :aria-label="translatePhrase(modalTitle)">
       <i class="FieldAdder-icon fa fa-plus plus-icon" aria-hidden="true">
       </i>
-      <span v-if="!inToolbar" class="FieldAdder-label"> {{ "Add field" | translatePhrase }}</span>
+      <span v-if="!inToolbar" class="FieldAdder-label"> {{ translatePhrase("Add field") }}</span>
     </button>
     <portal to="sidebar" v-if="active">
     <panel-component class="FieldAdder-panel FieldAdderPanel"
@@ -314,17 +316,17 @@ export default {
             type="text" 
             ref="input"
             class="FieldAdderPanel-filterInput customInput mousetrap" 
-            :placeholder="'Filter by' | translatePhrase"
-            :aria-label="'Filter by' | translatePhrase"
+            :placeholder="translatePhrase('Filter by')"
+            :aria-label="translatePhrase('Filter by')"
             v-model="filterKey">
         </div>
         <div class="FieldAdderPanel-filterInfo uppercaseHeading">
           <span>
-            {{ "Showing" | translatePhrase }} 
+            {{ translatePhrase("Showing") }} 
             {{ filteredResults.length }} 
-            {{ "of" | translatePhrase }} 
+            {{ translatePhrase("of") }} 
             {{allowed ? allowed.length : '0'}} 
-            {{ "total" | translatePhrase }}
+            {{ translatePhrase("total") }}
           </span>
         </div>
       </template>
@@ -333,10 +335,10 @@ export default {
           <!-- <span class="FieldAdderPanel-addControl">
           </span> -->
           <span class="FieldAdderPanel-fieldLabel uppercaseHeading">
-            {{ "Field label" | translatePhrase }}
+            {{ translatePhrase("Field label") }}
           </span>
           <span class="uppercaseHeading">
-            {{ "Can contain" | translatePhrase }}
+            {{ translatePhrase("Can contain") }}
           </span>
         </div>
       </template>
@@ -369,7 +371,7 @@ export default {
           </ul>
         </div>
         <div v-if="filteredResults.length === 0" class="PanelComponent-searchStatus">
-          <span>{{ "Did not find any fields" | translatePhrase }}...</span>
+          <span>{{ translatePhrase("Did not find any fields") }}...</span>
         </div>
       </template>
     </panel-component>

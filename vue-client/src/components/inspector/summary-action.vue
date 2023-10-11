@@ -72,7 +72,7 @@ export default {
         :indicator="!disabled || !replaced"
         :label="getTooltipText" 
         size="large"
-        v-tooltip.right="translate(getTooltipText)"
+        v-tooltip.right="translatePhrase(getTooltipText)"
         @click="action()"
         @keyup.enter="action()">
       </button-component>

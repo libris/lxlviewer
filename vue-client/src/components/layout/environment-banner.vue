@@ -1,4 +1,6 @@
 <script>
+import { translatePhrase } from '../../utils/filters';
+
 
 export default {
   name: 'EnvironmentBanner',
@@ -6,6 +8,9 @@ export default {
     return {
       closedByUser: false,
     };
+  },
+  methods: {
+    translatePhrase,
   },
   computed: {
     user() {
@@ -33,7 +38,7 @@ export default {
 <template>
   <div class="EnvironmentBanner" id="EnvironmentBanner">
     <div class="EnvironmentBanner-banner" v-bind:class="{'warning':this.settings.environment === 'stg'}" v-if="!closedByUser && message && message.length > 0">
-      <button @click="closedByUser = true" @keyup.enter="closedByUser = true" class="btn btn-default">{{ 'Close' | translatePhrase }}</button>
+      <button @click="closedByUser = true" @keyup.enter="closedByUser = true" class="btn btn-default">{{ translatePhrase('Close') }}</button>
       <div v-html="message"></div>
     </div>
     

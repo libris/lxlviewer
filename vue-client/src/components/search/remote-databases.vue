@@ -4,6 +4,7 @@ import { mapGetters } from 'vuex';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import * as httpUtil from '@/utils/http';
 import * as RecordUtil from '@/utils/record';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'remote-databases',
@@ -103,6 +104,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     isPlainObject(o) {
       return isPlainObject(o);
     },
@@ -209,8 +211,8 @@ export default {
 
 <template>
   <div class="RemoteDatabases">
-    <!-- <p v-if="activeDatabases.length === 0" class="RemoteDatabases-activeInfo no-sources">{{'No sources chosen' | translatePhrase}}</p>  -->
-    <!-- <p v-else class="RemoteDatabases-activeInfo">{{'Databases' | translatePhrase}}:</p> -->
+    <!-- <p v-if="activeDatabases.length === 0" class="RemoteDatabases-activeInfo no-sources">{{translatePhrase('No sources chosen')}}</p>  -->
+    <!-- <p v-else class="RemoteDatabases-activeInfo">{{translatePhrase('Databases')}}:</p> -->
     <!-- <div class="ResultControls-filterWrapper">
       <div class="ResultControls-filterBadge" v-for="(db, index) in activeDatabases" :key="index">
         <span>{{db}}</span>
@@ -220,7 +222,7 @@ export default {
           class="fa fa-times-circle icon"  
           @click="removeDatabase(db)"
           @keydown.enter="removeDatabase(db)"
-          :title="'Remove' | translatePhrase">
+          :title="translatePhrase('Remove')">
         </i>
       </div>
       <div class="ResultControls-filterBadge--inverted"
@@ -229,24 +231,24 @@ export default {
         @keyup.enter="clearDatabases()"
         tabindex="0"
         role="button"
-        :aria-label="'Clear all' | translatePhrase"
+        :aria-label="translatePhrase('Clear all')"
         @mouseover="clearTooltip = true" 
         @mouseout="clearTooltip = false">
-        {{ 'Clear all' | translatePhrase }}
+        {{ translatePhrase('Clear all') }}
         <i class="fa fa-times-circle icon"></i>
       </div>
     </div> -->
     <portal to="facetColumn">
       <div v-show="remoteDatabases.state == 'loading'" class="RemoteDatabases-searchStatus">
-        <vue-simple-spinner size="medium" :message="'Loading external databases' | translatePhrase"></vue-simple-spinner>
+        <vue-simple-spinner size="medium" :message="translatePhrase('Loading external databases')"></vue-simple-spinner>
       </div>
       <div class="RemoteDatabases-searchStatus" v-show="remoteDatabases.state == 'error'">
         <p class="RemoteDatabases-statusText">
-          {{"Did not find any external databases" | translatePhrase}}
+          {{ translatePhrase("Did not find any external databases") }}
         </p>
-        <button class="btn btn-primary btn--sm" v-on:click.prevent="loadRemoteDatabases()">{{"Try again" | translatePhrase}}</button>
+        <button class="btn btn-primary btn--sm" v-on:click.prevent="loadRemoteDatabases()">{{ translatePhrase("Try again") }}</button>
       </div>
-      <div v-if="remoteDatabases.state == 'complete'" class="Find-facetHeading uppercaseHeading--light"><span @click="hideFacetColumn = !hideFacetColumn">{{ 'Valda databaser' | translatePhrase }} ({{ status.remoteDatabases.length }}) <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></span><a class="pull-right" v-if="status.remoteDatabases.length > 0" @click="clearDatabases()">{{ 'Clear' | translatePhrase }}</a></div>
+      <div v-if="remoteDatabases.state == 'complete'" class="Find-facetHeading uppercaseHeading--light"><span @click="hideFacetColumn = !hideFacetColumn">{{ translatePhrase('Valda databaser') }} ({{ status.remoteDatabases.length }}) <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></span><a class="pull-right" v-if="status.remoteDatabases.length > 0" @click="clearDatabases()">{{ translatePhrase('Clear') }}</a></div>
       <div v-if="remoteDatabases.state == 'complete'" :class="{ 'hidden-xs hidden-sm': hideFacetColumn }">
         <ul class="RemoteDatabases-activeList">
           <li 
@@ -258,7 +260,7 @@ export default {
               <i 
                 v-show="!db.disabled" 
                 class="fa icon icon--xs fa-times-circle" 
-                :title="db.active ? 'Remove' : 'Add' | translatePhrase"
+                :title="translatePhrase(db.active ? 'Remove' : 'Add')"
                 tabindex="0"
                 role="button"
                 @click="toggleDatabase(db.database)"
@@ -275,8 +277,8 @@ export default {
           type="text" 
           v-if="remoteDatabases.state == 'complete'"
           v-model="filterKey"
-          :aria-label="'Search for database' | translatePhrase"
-          :placeholder="'Search for database' | translatePhrase"
+          :aria-label="translatePhrase('Search for database')"
+          :placeholder="translatePhrase('Search for database')"
           ref="listFilterInput">
         <ul class="RemoteDatabases-list" v-if="remoteDatabases.state == 'complete'">
           <li 
@@ -291,7 +293,7 @@ export default {
                 v-show="!db.disabled" 
                 class="fa icon icon--sm" 
                 :class="{ 'fa-plus-circle': !db.active, 'fa-check-circle': db.active, 'is-inactive': !db.active }"
-                :title="db.active ? 'Remove' : 'Add' | translatePhrase"
+                :title="translatePhrase(db.active ? 'Remove' : 'Add')"
                 tabindex="0"
                 role="button"
                 @click="toggleDatabase(db.database)"
@@ -302,7 +304,7 @@ export default {
               <div class="RemoteDatabases-dbLabel">
                 {{db.database}} 
                 <span v-show="db.disabled" class="RemoteDatabases-dbUnavailable">
-                  ({{'unavailable' | translatePhrase}})
+                  ({{ translatePhrase('unavailable')}})
                 </span>
                 <div class="RemoteDatabases-dbExtraInfo" v-show="db.about">
                   <i class="fa fa-question-circle fa-fw icon"></i>
@@ -321,7 +323,7 @@ export default {
           </li>
         </ul>
         <div v-show="numOfFilteredDatabases === 0 && remoteDatabases.state !== 'loading'" class="RemoteDatabases-searchStatus">
-          <span>{{'No results' | translatePhrase}}</span>
+          <span>{{ translatePhrase('No results') }}</span>
         </div>
       </div>
     </portal>

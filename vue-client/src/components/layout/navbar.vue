@@ -5,6 +5,7 @@ import * as StringUtil from 'lxljs/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import TabMenu from '@/components/shared/tab-menu';
 import UserSettings from '@/components/usersettings/user-settings';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'navbar-component',
@@ -76,6 +77,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     navigate(id) {
       for (const tab of this.tabs) {
         if (tab.id === id) {
@@ -153,7 +155,7 @@ export default {
         </li>
         <li class="MainNav-item" v-if="!user.isLoggedIn">
             <span class="MainNav-link" @click="login" @keyup.enter="login">
-              {{"Log in" | translatePhrase}}
+              {{ translatePhrase("Log in") }}
             </span>
         </li>
       </ul>

@@ -12,6 +12,7 @@ import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
 import FormMixin from '../mixins/form-mixin';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'item-local',
@@ -178,6 +179,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     openManagerMenu() {
       this.managerMenuOpen = true;
     },
@@ -553,7 +555,7 @@ export default {
               @keyup.enter="copyThis(), closeManagerMenu()"
               @click="copyThis(), closeManagerMenu()">
               <i class="fa fa-fw fa-copy" aria-hidden="true"></i>
-              {{"Copy to clipboard" | translatePhrase}}
+              {{ translatePhrase("Copy to clipboard") }}
               </a>
             </li>
             <li class="ManagerMenu-menuItem" v-if="inArray">
@@ -561,7 +563,7 @@ export default {
               @keyup.enter="cloneThis(), closeManagerMenu()"
               @click="cloneThis(), closeManagerMenu()">
               <i class="fa fa-fw fa-clone" aria-hidden="true"></i>
-              {{"Duplicate entity" | translatePhrase}}
+              {{ translatePhrase("Duplicate entity") }}
               </a>
             </li>
           </ul>

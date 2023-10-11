@@ -9,6 +9,7 @@ import TypeIcon from '@/components/shared/type-icon';
 import SummaryNode from '@/components/shared/summary-node';
 import * as RecordUtil from '@/utils/record';
 import LensMixin from '../mixins/lens-mixin';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   mixins: [LensMixin, OverflowMixin],
@@ -231,7 +232,7 @@ export default {
         this.resources,
       );
       if (type === this.recordType && ['Instance', 'Work'].indexOf(type) !== -1) {
-        return `${this.$options.filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
+        return `${translatePhrase('Unspecified')}, ${translatedBaseType}`;
       }
       if (type === this.recordType) {
         return translatedBaseType;
@@ -279,6 +280,7 @@ export default {
     });
   },
   methods: {
+    translatePhrase,
     copyFnurgel() {
       const self = this;
       this.$copyText(this.uri).then(() => {

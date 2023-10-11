@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'select-sigel',
@@ -12,6 +13,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     getSigelLabel(sigel, len) {
       if (!sigel.friendly_name) {
         return sigel.code;
@@ -89,7 +91,7 @@ export default {
       type="submit"
       class="btn btn-primary btn--md">
         <i class="icon icon--white fa fa-exchange"></i>
-        {{ 'Växla sigel' | translatePhrase }}
+        {{ translatePhrase('Växla sigel') }}
     </button>
   </form>
 </template>

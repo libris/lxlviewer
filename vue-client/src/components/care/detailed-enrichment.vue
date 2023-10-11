@@ -7,6 +7,7 @@ import Field from '@/components/inspector/field';
 import Button from '@/components/shared/button';
 import TabMenu from '@/components/shared/tab-menu';
 import EntitySummary from '@/components/shared/entity-summary';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'DetailedEnrichment',
@@ -165,6 +166,7 @@ export default {
   watch: {
   },
   methods: {
+    translatePhrase,
     ...mapActions([
       'setEnrichmentResult',
     ]),
@@ -278,7 +280,7 @@ export default {
         <div class="DetailedEnrichment-fieldRow">
           <div class="DetailedEnrichment-columnHeader sourceColumn">
             <div class="DetailedEnrichment-summaryLabel">
-              {{ 'Enrich from' | translatePhrase }}
+              {{ translatePhrase('Enrich from') }}
             </div>
             <div class="DetailedEnrichment-summaryContainer">
               <entity-summary
@@ -291,7 +293,7 @@ export default {
           <div class="DetailedEnrichment-actionHeader actionColumn"></div>
           <div class="DetailedEnrichment-columnHeader resultColumn non-existing">
             <div class="DetailedEnrichment-summaryLabel">
-              {{ 'Result' | translatePhrase }}
+              {{ translatePhrase('Result') }}
             </div>
             <div class="DetailedEnrichment-summaryContainer">
               <entity-summary
@@ -310,7 +312,7 @@ export default {
             {{ key | labelByLang | capitalize }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label sourceColumn">
-            {{ 'Type' | translatePhrase | capitalize }}
+            {{ translatePhrase('Type') | capitalize }}
           </div>
           <div class="DetailedEnrichment-label actionColumn">
           </div>
@@ -318,7 +320,7 @@ export default {
             {{ key | labelByLang | capitalize }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label resultColumn">
-            {{ 'Type' | translatePhrase | capitalize }}
+            {{ translatePhrase('Type') | capitalize }}
           </div>
         </div>
         <div class="DetailedEnrichment-fieldRow">
@@ -363,8 +365,8 @@ export default {
       </div>
     </div>
     <div class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
-      <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ 'Cancel' | translatePhrase }}</button>
-      <button class="btn btn--md btn-primary" @click="confirm" @keyup.enter="confirm">{{ 'Enrich' | translatePhrase }}</button>
+      <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
+      <button class="btn btn--md btn-primary" @click="confirm" @keyup.enter="confirm">{{ translatePhrase('Enrich') }}</button>
     </div>
   </div>
 </template>

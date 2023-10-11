@@ -2,6 +2,7 @@
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import ItemMixin from '../mixins/item-mixin';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'item-boolean',
@@ -87,6 +88,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase
   },
   components: {
   },
@@ -104,7 +106,7 @@ export default {
       <div class="customCheckbox-icon"></div>
     </div>
     <span class="ItemVocab-text"
-      v-if="isLocked">{{fieldValue ? 'Yes' : 'No' | translatePhrase}}</span>
+      v-if="isLocked">{{ translatePhrase(fieldValue ? 'Yes' : 'No') }}</span>
   </div>
 </template>
 

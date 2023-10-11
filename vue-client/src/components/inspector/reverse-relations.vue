@@ -8,6 +8,7 @@ import * as HttpUtil from '@/utils/http';
 import CreateItemButton from '@/components/inspector/create-item-button';
 import RelationsList from '@/components/inspector/relations-list';
 import RoundedButton from '@/components/shared/rounded-button.vue';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'reverse-relations',
@@ -29,6 +30,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     showPanel() {
       this.$store.dispatch('pushInspectorEvent', { 
         name: 'form-control', 
@@ -200,8 +202,8 @@ export default {
   <div class="ReverseRelations-container">
     <div class="ReverseRelations" v-if="recordType !== 'Item'">
       <div class="ReverseRelations-header uppercaseHeading--light">
-        <span v-if="mode === 'items'">{{"Holding" | translatePhrase}}</span>
-        <span v-else>{{"Used in" | translatePhrase}}</span>
+        <span v-if="mode === 'items'">{{ translatePhrase("Holding") }}</span>
+        <span v-else>{{ translatePhrase("Used in") }}</span>
       </div>
       <div class="ReverseRelations-btnContainer">
         <vue-simple-spinner class="ReverseRelations spinner compact"
