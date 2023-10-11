@@ -86,6 +86,9 @@ export default {
     font-size: 14px;
     color: @grey-darker-transparent;
 
+    &.is-expanded {
+      transform: rotate(90deg);
+    }
     .Categories-label:hover & {
       color: @black
     }
@@ -106,12 +109,6 @@ export default {
   &-label {
     padding: 0.5em;
     cursor: pointer;
-  }
-  &.is-expanded >
-  .Categories-label >
-  .Categories-arrow {
-    transform: rotate(90deg);
-    transform-origin: center;
   }
 }
 </style>
