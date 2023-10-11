@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxljs/string';
 import LensMixin from '@/components/mixins/lens-mixin';
 
 export default {
@@ -25,12 +26,6 @@ export default {
       const obj = this.userChangeCategories.find(c => c.heldBy === this.sigel.code);
       return obj ? obj.triggers.includes(categoryId) : false;
     },
-    // setActiveChecked() {
-    //   const obj = this.userChangeCategories.find(c => c.heldBy === this.sigel.code);
-    //   if (obj && obj.triggers.length !== 0) {
-    //     this.sigelChecked = true;
-    //   }
-    // },
     label(obj) {
       return this.getLabel(obj);
     },
@@ -42,13 +37,12 @@ export default {
     isExpanded() {
       return this.expanded;
     },
-    sigelName() {
-      return this.sigel.friendly_name;
+    sigelLabel() {
+      return StringUtil.getSigelLabel(this.sigel);
     },
   },
   mounted() {
     this.$nextTick(() => {
-      // this.setActiveChecked();
     });
   },
 };
@@ -60,7 +54,7 @@ export default {
         <i class="Categories-arrow fa fa-chevron-right"
         :class="{'icon is-expanded' : isExpanded}"
         ></i>
-      {{ sigelName }}
+      {{ sigelLabel }}
       </div>
 
     <div v-if="isExpanded">
