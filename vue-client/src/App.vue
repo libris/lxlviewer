@@ -11,7 +11,7 @@
       </div>
 
       <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
-        <vue-simple-spinner size="large" :message="translatePhrase(status.loadingIndicators[0])"></vue-simple-spinner>
+        <Spinner size="lg" :message="translatePhrase(status.loadingIndicators[0])" />
       </div>
 
       <div v-if="resourcesLoadingError" class="ResourcesLoadingError">
@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters, mapActions } from 'vuex';
 import Navbar from '@/components/layout/navbar';
 import SearchBar from '@/components/layout/search-bar';
@@ -46,6 +45,7 @@ import Footer from '@/components/layout/footer';
 import NotificationList from '@/components/shared/notification-list';
 import EnvironmentBanner from '@/components/layout/environment-banner';
 import GlobalMessages from '@/components/layout/global-messages';
+import Spinner from '@/components/shared/Spinner.vue';
 import { translatePhrase } from '@/utils/filters';
 
 export default {
@@ -181,13 +181,13 @@ export default {
     });
   },
   components: {
+    Spinner,
     SearchBar,
     'navbar-component': Navbar,
     'footer-component': Footer,
     'notification-list': NotificationList,
     EnvironmentBanner,
     GlobalMessages,
-    'vue-simple-spinner': VueSimpleSpinner,
   },
 };
 </script>

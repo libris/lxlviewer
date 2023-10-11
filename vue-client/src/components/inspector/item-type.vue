@@ -1,6 +1,5 @@
 <script>
 import { filter } from 'lodash-es';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
@@ -8,6 +7,7 @@ import * as StringUtil from 'lxljs/string';
 import * as HttpUtil from '@/utils/http';
 import ItemVocab from '@/components/inspector/item-vocab';
 import ModalComponent from '@/components/shared/modal-component';
+import Spinner from '@/components/shared/modal-component';
 import { translatePhrase } from '@/utils/filters';
 
 export default {
@@ -100,7 +100,7 @@ export default {
     });
   },
   components: {
-    VueSimpleSpinner,
+    Spinner,
     ModalComponent,
   },
 };
@@ -110,7 +110,7 @@ export default {
 <template>
   <div class="ItemType" :id="`formPath-${path}`" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
     <div v-if="!isLocked && checkingRelations">
-      <vue-simple-spinner size="small"></vue-simple-spinner>
+      <Spinner size="sm" />
     </div>
     <div class="ItemType-selectContainer" v-if="!isLocked && !checkingRelations && containerAcceptedTypes.length > 0">
       <select 

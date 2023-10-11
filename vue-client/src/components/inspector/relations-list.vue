@@ -1,9 +1,9 @@
 <script>
 import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import { partition, flatten } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
+import Spinner from '@/components/shared/Spinner.vue';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
 import ModalPagination from '@/components/inspector/modal-pagination';
@@ -180,10 +180,10 @@ export default {
     },
   },
   components: {
+    Spinner,
     'modal-pagination': ModalPagination,
     'panel-component': PanelComponent,
     'panel-search-list': PanelSearchList,
-    'vue-simple-spinner': VueSimpleSpinner,
   },
   watch: {
     builtQuery(val, oldVal) {
@@ -229,7 +229,7 @@ export default {
       </template>
       <template slot="panel-body">
         <div class="PanelComponent-searchStatus" v-show="loading">
-          <vue-simple-spinner size="large" :message="translatePhrase('Searching')"></vue-simple-spinner>
+          <Spinner size="lg" :message="translatePhrase('Searching')" />
         </div>
         <panel-search-list
           class="RelationsList-resultListContainer"

@@ -3,7 +3,7 @@
   Controls add new entity button and add entity modal with it's content
 */
 import { cloneDeep, isArray, get } from 'lodash-es';
-import VueSimpleSpinner from 'vue-simple-spinner';
+import Spinner from '@/components/shared/Spinner.vue';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -81,13 +81,13 @@ export default {
     },
   },
   components: {
+    Spinner,
     'panel-component': PanelComponent,
     'panel-search-list': PanelSearchList,
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
     'type-select': TypeSelect,
     'param-select': ParamSelect,
-    'vue-simple-spinner': VueSimpleSpinner,
     sort: Sort,
   },
   watch: {
@@ -584,7 +584,7 @@ export default {
             {{ translatePhrase("Start writing to begin search") }}...
           </div>
           <div v-if="searchInProgress" class="PanelComponent-searchStatus">
-            <vue-simple-spinner size="large" :message="translatePhrase('Searching')"></vue-simple-spinner>
+            <Spinner size="lg" :message="translatePhrase('Searching')" />
           </div>
           <div class="PanelComponent-searchStatus"
             v-if="!searchInProgress && searchResult.length === 0 && searchMade">

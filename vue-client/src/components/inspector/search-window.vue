@@ -1,11 +1,11 @@
 <script>
 import { merge, cloneDeep, escapeRegExp } from 'lodash-es';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import PanelComponent from '@/components/shared/panel-component';
 import PanelSearchList from '@/components/search/panel-search-list';
+import Spinner from '@/components/shared/Spinner.vue';
 import Button from '@/components/shared/button';
 import Sort from '@/components/search/sort';
 import ModalPagination from '@/components/inspector/modal-pagination';
@@ -59,12 +59,12 @@ export default {
     },
   },
   components: {
+    Spinner,
     'panel-search-list': PanelSearchList,
     'panel-component': PanelComponent,
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
     'param-select': ParamSelect,
-    'vue-simple-spinner': VueSimpleSpinner,
     'button-component': Button,
     sort: Sort,
   },
@@ -279,14 +279,14 @@ export default {
             <p v-if="itemInfo && extractable"> {{ translatePhrase("If you can't find an existing link, you can create one using your local entity below") }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="searchInProgress">
-            <vue-simple-spinner size="large" :message="translatePhrase('Searching')"></vue-simple-spinner>
+            <Spinner size="lg" :message="translatePhrase('Searching')" />
           </div>
           <div class="PanelComponent-searchStatus" v-show="foundNoResult">
             <p>{{ translatePhrase("Your search gave no results") }}.</p>
             <p v-if="itemInfo && extractable">{{ translatePhrase("Try again") }} {{ translatePhrase("or create a link from your local data below") }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="extracting">
-            <vue-simple-spinner size="large" :message="translatePhrase('Creating link')"></vue-simple-spinner>
+            <Spinner size="lg" :message="translatePhrase('Creating link')" />
           </div>
         </template>
         <template slot="panel-footer">

@@ -1,14 +1,14 @@
 <script>
 import { mapGetters } from 'vuex';
 import { each } from 'lodash-es';
-import VueSimpleSpinner from 'vue-simple-spinner';
+import Spinner from '@/components/shared/Spinner.vue';
 import * as RecordUtil from '@/utils/record';
 import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'breadcrumb',
   components: {
-    'vue-simple-spinner': VueSimpleSpinner,
+    Spinner,
   },
   props: {
   },
@@ -158,7 +158,7 @@ export default {
           <button class="btn--as-link" v-if="prevPath" @click="prev">{{ translatePhrase('Previous') }}</button>
           <button class="btn--as-link" v-if="prevOutOfBounds" @click="lastOnPrevPage">
             <span v-if="!loading">{{ translatePhrase('Previous') }}</span>
-            <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
+            <Spinner v-if="loading" size="sm" />
           </button>
         </span>
         <span v-if="absoluteOffset > 0 && absoluteOffset + 1 < totalItems"> | </span>
@@ -166,7 +166,7 @@ export default {
           <button class="btn--as-link" v-if="nextPath" @click="next">{{ translatePhrase('Next') }}</button>
           <button class="btn--as-link" v-if="nextOutOfBounds" @click="firstOnNextPage">
             <span v-if="!loading">{{ translatePhrase('Next') }}</span>
-            <vue-simple-spinner v-if="loading" size="small"></vue-simple-spinner>
+            <Spinner v-if="loading" size="sm" />
           </button>
         </span>
       </div>
