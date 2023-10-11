@@ -3,7 +3,6 @@
   Presentation of type label and changed/created text nodes.
 */
 
-import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
@@ -11,7 +10,7 @@ import Button from '@/components/shared/button';
 
 export default {
   name: 'entity-changelog',
-  mixins: [clickaway, LensMixin],
+  mixins: [LensMixin],
   data() {
     return {
       showFull: false,

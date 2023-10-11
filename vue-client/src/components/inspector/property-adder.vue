@@ -3,7 +3,6 @@
   Controls add new field button and add field modal with it's content
 */
 
-import { mixin as clickaway } from 'vue-clickaway';
 import { filter, isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
@@ -12,7 +11,6 @@ import PanelComponent from '@/components/shared/panel-component.vue';
 import RoundButton from '@/components/shared/round-button.vue';
 
 export default {
-  mixins: [clickaway],
   name: 'property-adder',
   props: {
     allowed: {

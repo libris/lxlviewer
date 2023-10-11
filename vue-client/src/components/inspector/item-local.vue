@@ -1,6 +1,6 @@
 <script>
 import { cloneDeep, get } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
@@ -15,7 +15,10 @@ import FormMixin from '../mixins/form-mixin';
 
 export default {
   name: 'item-local',
-  mixins: [ItemMixin, LensMixin, FormMixin, clickaway],
+  directives: {
+    'on-click-outside': vOnClickOutside,
+  },
+  mixins: [ItemMixin, LensMixin, FormMixin],
   props: {
     item: {},
     entityType: {
@@ -541,7 +544,7 @@ export default {
           :parent-hovered="isHovered"
           :is-large="false"
         />
-        <div class="dropdown ManagerMenu" v-on-clickaway="closeManagerMenu" v-if="managerMenuOpen"
+        <div class="dropdown ManagerMenu" v-on-click-outside="closeManagerMenu" v-if="managerMenuOpen"
           @mouseover="addHighlight('info')"
           @mouseout="removeHighlight('info')">
           <ul class="dropdown-menu ManagerMenu-menuList">

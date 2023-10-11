@@ -1,6 +1,6 @@
 <script>
 import { sortBy } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as RecordUtil from '@/utils/record';
@@ -10,7 +10,9 @@ import TabMenu from '@/components/shared/tab-menu';
 
 export default {
   name: 'create-new-form',
-  mixins: [clickaway],
+  directives: {
+    'on-click-outside': vOnClickOutside,
+  },
   beforeRouteLeave(to, from, next) {
     this.setHintSigelChange(false);
 
@@ -190,7 +192,7 @@ export default {
         @go="setCreation" 
         :tabs="creationList" 
         :active="selectedCreation"
-        v-on-clickaway="hideSigelHint" />
+        v-on-click-outside="hideSigelHint" />
 
       <div v-if="selectedCreation !== 'File'" class="Create-cards" id="creationCardPanel">
         <creation-card

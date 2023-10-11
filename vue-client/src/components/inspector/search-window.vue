@@ -1,6 +1,5 @@
 <script>
 import { merge, cloneDeep, escapeRegExp } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
@@ -17,7 +16,7 @@ import LensMixin from '../mixins/lens-mixin';
 
 export default {
   name: 'search-window',
-  mixins: [clickaway, LensMixin, SideSearchMixin],
+  mixins: [LensMixin, SideSearchMixin],
   data() {
     return {
       extractDialogActive: false,

@@ -7,7 +7,7 @@
 */
 
 import { cloneDeep, each } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
@@ -20,7 +20,10 @@ import EntityAction from '@/components/inspector/entity-action';
 
 export default {
   name: 'item-sibling',
-  mixins: [FormMixin, ItemMixin, LensMixin, clickaway],
+  directives: {
+    'on-click-outside': vOnClickOutside,
+  },
+  mixins: [FormMixin, ItemMixin, LensMixin],
   props: {
     id: {
       type: String,

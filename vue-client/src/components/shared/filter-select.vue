@@ -3,14 +3,16 @@
   Adds custom select menu with searchable options
 */
 import { forEach } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
 
 export default {
-  mixins: [clickaway],
   name: 'filter-select',
+  directives: {
+    'on-click-outside': vOnClickOutside,
+  },
   props: {
     options: {
       type: Object,
@@ -240,7 +242,7 @@ export default {
 <template>
   <div class="FilterSelect"
     :class="[{'variantMaterial' : styleVariant === 'material'}, className]"
-    v-on-clickaway="close"
+    v-on-click-outside="close"
     :tabindex="0"
     @keydown.space="preventBodyScroll"
     @keyup.space="focusOnInput">

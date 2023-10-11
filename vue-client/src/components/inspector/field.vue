@@ -4,7 +4,6 @@
   It's responsible for its own data, and dispatches all changes to the form component.
 */
 import { cloneDeep, differenceWith, get, isArray, isEqual, isObject, isPlainObject } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -31,7 +30,7 @@ import LanguageMixin from '../mixins/language-mixin';
 
 export default {
   name: 'field',
-  mixins: [clickaway, LodashProxiesMixin, LanguageMixin],
+  mixins: [LodashProxiesMixin, LanguageMixin],
   props: {
     parentKey: {
       type: String,

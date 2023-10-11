@@ -1,6 +1,6 @@
 <script>
 import { sortBy, orderBy } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { vOnClickOutside } from '@vueuse/components';
 import * as DisplayUtil from 'lxljs/display';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
@@ -9,7 +9,10 @@ import Facet from './facet.vue';
 
 export default {
   name: 'facet-group',
-  mixins: [clickaway, FacetMixin],
+  directives: {
+    'on-click-outside': vOnClickOutside,
+  },
+  mixins: [FacetMixin],
   props: {
     group: {
       type: Object,
@@ -189,7 +192,7 @@ export default {
         v-show="isExpanded"
         @click="toggleSortDropDown"
         @keyup.enter="toggleSortDropDown"
-        v-on-clickaway="hideSortDropDown"
+        v-on-click-outside="hideSortDropDown"
         :class="{'active': sortDropDownActive}"
       >
         <i v-if="chosenSort == 'amount.desc'" class="icon-selected fa fa-fw fa-sort-amount-desc"></i>

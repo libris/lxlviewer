@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import { mixin as clickaway } from 'vue-clickaway';
+import { vOnClickOutside } from '@vueuse/components';
 import * as StringUtil from 'lxljs/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import TabMenu from '@/components/shared/tab-menu';
@@ -8,7 +8,9 @@ import UserSettings from '@/components/usersettings/user-settings';
 
 export default {
   name: 'navbar-component',
-  mixins: [clickaway],
+  directives: {
+    'on-click-outside': vOnClickOutside,
+  },
   setup() {
     return {
       kbLogoWhite: new URL('~kungbib-styles/dist/assets/kb_logo_white.svg', import.meta.url).href
@@ -147,7 +149,7 @@ export default {
           <user-settings 
             v-if="showUserMenu && !isUserPage" 
             compact 
-            v-on-clickaway="hideUserMenu" />
+            v-on-click-outside="hideUserMenu" />
         </li>
         <li class="MainNav-item" v-if="!user.isLoggedIn">
             <span class="MainNav-link" @click="login" @keyup.enter="login">
