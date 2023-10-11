@@ -7,7 +7,7 @@ export default {
   mixins: [LensMixin],
   data() {
     return {
-      sigelChecked: false,
+      expanded: false,
     };
   },
   props: {
@@ -18,19 +18,19 @@ export default {
     updateChangeCategories(e, sigel, categoryId) {
       this.$store.dispatch('updateSubscribedChangeCategories', { libraryId: sigel.code, categoryId: categoryId, checked: e.target.checked });
     },
-    toggleChecked() {
-      this.sigelChecked = !this.sigelChecked;
+    toggleExpanded() {
+      this.expanded = !this.expanded;
     },
     isActiveCategory(categoryId) {
       const obj = this.userChangeCategories.find(c => c.heldBy === this.sigel.code);
       return obj ? obj.triggers.includes(categoryId) : false;
     },
-    setActiveChecked() {
-      const obj = this.userChangeCategories.find(c => c.heldBy === this.sigel.code);
-      if (obj && obj.triggers.length !== 0) {
-        this.sigelChecked = true;
-      }
-    },
+    // setActiveChecked() {
+    //   const obj = this.userChangeCategories.find(c => c.heldBy === this.sigel.code);
+    //   if (obj && obj.triggers.length !== 0) {
+    //     this.sigelChecked = true;
+    //   }
+    // },
     label(obj) {
       return this.getLabel(obj);
     },
@@ -39,8 +39,8 @@ export default {
     ...mapGetters([
       'userChangeCategories',
     ]),
-    isChecked() {
-      return this.sigelChecked;
+    isExpanded() {
+      return this.expanded;
     },
     sigelName() {
       return this.sigel.friendly_name;
@@ -48,7 +48,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.setActiveChecked();
+      // this.setActiveChecked();
     });
   },
 };
@@ -56,14 +56,14 @@ export default {
 
 <template>
   <div class="Categories">
-      <div class="Categories-label" @click="toggleChecked">
+      <div class="Categories-label" @click="toggleExpanded">
         <i class="Categories-arrow fa fa-chevron-right"
-        :class="{'icon is-expanded' : isChecked}"
+        :class="{'icon is-expanded' : isExpanded}"
         ></i>
       {{ sigelName }}
       </div>
 
-    <div v-if="isChecked">
+    <div v-if="isExpanded">
       <div class="Categories-row" v-for="category in availableCategories" :key="category['@id']">
         <div class="Categories-key">{{ label(category) }}</div>
         <div class="Categories-value">
