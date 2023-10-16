@@ -7,6 +7,7 @@ import LensMixin from '@/components/mixins/lens-mixin';
 import ItemMixin from '@/components/mixins/item-mixin';
 import OverflowMixin from '@/components/mixins/overflow-mixin';
 import PreviewCard from '@/components/shared/preview-card';
+import { convertResourceLink } from '@/utils/filters';
 
 export default {
   name: 'summary-node',
@@ -60,6 +61,9 @@ export default {
   components: {
     PreviewCard,
   },
+  methods: {
+    convertResourceLink
+  },
   watch: {
   },
   mounted() {
@@ -85,7 +89,7 @@ export default {
           </span>
           {{getItemLabel}}
         </router-link>
-        <a v-if="!isLibrisResource" :href="focusData['@id'] | convertResourceLink">{{getItemLabel}}</a>
+        <a v-if="!isLibrisResource" :href="convertResourceLink(focusData['@id'])">{{getItemLabel}}</a>
       </span>
       <template slot="popover" v-if="hoverLinks">
         <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />

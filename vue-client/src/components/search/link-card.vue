@@ -1,4 +1,5 @@
 <script>
+import { convertResourceLink } from '@/utils/filters';
 
 export default {
   name: 'link-card',
@@ -31,6 +32,7 @@ export default {
     };
   },
   methods: {
+    convertResourceLink,
   },
   components: {
   },
@@ -69,7 +71,7 @@ export default {
         <div v-if="html" class="LinkCard-html card-descr" v-html="html" />
         <div class="LinkCard-descr card-descr">{{ text }}</div>
       </div>
-      <a v-if="!linkUrl.startsWith('/')" :href="linkUrl | convertResourceLink" class="card-link LinkCard-link">{{ linkText }}</a>
+      <a v-if="!linkUrl.startsWith('/')" :href="convertResourceLink(linkUrl)" class="card-link LinkCard-link">{{ linkText }}</a>
       <router-link v-if="linkUrl.startsWith('/')" :to="linkUrl" class="card-link LinkCard-link">{{ linkText }}</router-link>
     </div>
   </div>

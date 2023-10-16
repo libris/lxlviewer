@@ -5,7 +5,7 @@ import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, convertResourceLink } from '@/utils/filters';
 
 export default {
   name: 'item-value',
@@ -96,6 +96,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    convertResourceLink,
     removeHighlight(event, active) {
       if (active) {
         let item = event.target;
@@ -197,7 +198,7 @@ export default {
       v-if="isLocked && !shouldLink">{{fieldValue}}</span>
     <a class="ItemValue-text"
       v-if="isLocked && shouldLink"
-      :href="fieldValue | convertResourceLink" 
+      :href="convertResourceLink(fieldValue)" 
       target="_blank" 
       :title="`${fieldValue} (${newWindowText})`">
         {{fieldValue}} 

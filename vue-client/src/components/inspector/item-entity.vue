@@ -8,7 +8,7 @@ import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 import PreviewCard from '@/components/shared/preview-card';
 import ReverseRelations from '@/components/inspector/reverse-relations';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, convertResourceLink } from '@/utils/filters';
 
 export default {
   name: 'item-entity',
@@ -91,6 +91,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    convertResourceLink,
     expand() {
       this.expanded = true;
     },
@@ -206,7 +207,7 @@ export default {
           </span>
           <span class="ItemEntity-label chip-label">
             <span v-if="(!isCardWithData || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-            <span v-if="(!isCardWithData || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
+            <span v-if="(!isCardWithData || !expanded) && !isLibrisResource"><a :href="convertResourceLink(item['@id'])">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
             <span class="placeholder"></span></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
             <i class="fa fa-times-circle icon icon--sm chip-icon" 

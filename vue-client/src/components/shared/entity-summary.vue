@@ -9,7 +9,7 @@ import TypeIcon from '@/components/shared/type-icon';
 import SummaryNode from '@/components/shared/summary-node';
 import * as RecordUtil from '@/utils/record';
 import LensMixin from '../mixins/lens-mixin';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, convertResourceLink } from '@/utils/filters';
 
 export default {
   mixins: [LensMixin, OverflowMixin],
@@ -177,7 +177,7 @@ export default {
     uri() {
       if (this.focusData.hasOwnProperty('@id') || this.focusData.hasOwnProperty('@graph')) {
         const uri = this.focusData.hasOwnProperty('@id') ? this.focusData['@id'] : this.focusData['@graph'][0].mainEntity['@id'];
-        const convertedUri = this.$options.filters.convertResourceLink(uri);
+        const convertedUri = convertResourceLink(uri);
         return convertedUri;
       }
       return null;
@@ -281,6 +281,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    convertResourceLink,
     copyFnurgel() {
       const self = this;
       this.$copyText(this.uri).then(() => {
@@ -360,7 +361,7 @@ export default {
       </router-link>
       <a class="EntitySummary-titleLink"
         v-if="!isLibrisResource && !isImport && shouldLink" 
-        :href="uri | convertResourceLink" 
+        :href="convertResourceLink(uri)" 
         :title="header.join(', ')"
         :target="shouldOpenTab ? '_blank' : '' ">
         <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>

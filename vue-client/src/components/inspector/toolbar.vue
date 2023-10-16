@@ -13,7 +13,7 @@ import * as HttpUtil from '@/utils/http';
 import FieldAdder from '@/components/inspector/field-adder';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, convertResourceLink } from '@/utils/filters';
 
 export default {
   mixins: [LensMixin, FormMixin],
@@ -96,6 +96,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    convertResourceLink,
     openTemplatePicker() {
       this.$refs.TemplatePicker.click();
     },
@@ -486,22 +487,22 @@ export default {
         v-show="otherFormatMenuActive"
         @click="hideOtherFormatMenu" >
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="focusData.mainEntity['@id'] | convertResourceLink" target="_blank">
+          <a class="Toolbar-menuLink" :href="convertResourceLink(focusData.mainEntity['@id'])" target="_blank">
             <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
             Formell resurs</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('jsonld') | convertResourceLink" target="_blank">
+          <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('jsonld'))" target="_blank">
             <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
             JSON-LD</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('ttl') | convertResourceLink" target="_blank">
+          <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('ttl'))" target="_blank">
             <i class="fa fa-fw fa-external-link" aria-hidden="true"></i>
             Turtle</a>
         </li>
         <li class="Toolbar-menuItem">
-          <a class="Toolbar-menuLink" :href="getOtherDataFormat('rdf') | convertResourceLink">
+          <a class="Toolbar-menuLink" :href="convertResourceLink(getOtherDataFormat('rdf'))">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
             RDF/XML</a>
         </li>
@@ -597,7 +598,7 @@ export default {
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
             {{ translatePhrase("Download compiled") }} MARC21
           </a>
-          <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="compileMARCUrl | convertResourceLink">
+          <a class="Toolbar-menuLink"  v-if="!downloadIsSupported" :href="convertResourceLink(compileMARCUrl)">
             <i class="fa fa-fw fa-download" aria-hidden="true"></i>
               {{ translatePhrase("Download compiled") }} MARC21
           </a>
