@@ -7,7 +7,7 @@ import FilterBadge from '@/components/search/filter-badge';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FacetMixin from '@/components/mixins/facet-mixin';
 import PropertyMappings from '@/resources/json/propertymappings.json';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, asAppPath } from '@/utils/filters';
 
 export default {
   name: 'result-controls',
@@ -151,6 +151,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    asAppPath,
     toggleFilterByHasItem() {
       if (this.filteredByHasItem) {
         this.removeFilter('@reverse.itemOf.heldBy.@id');
@@ -252,33 +253,33 @@ export default {
       <ul class="ResultControls-pagList">
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
-          <router-link class="ResultControls-pagLink"  v-if="pageData.first" :to="pageData.first['@id'] | asAppPath">{{ translatePhrase('First') }}</router-link>
+          <router-link class="ResultControls-pagLink"  v-if="pageData.first" :to="asAppPath(pageData.first['@id'])">{{ translatePhrase('First') }}</router-link>
           <a class="ResultControls-pagLink" v-if="!pageData.first">{{ translatePhrase('First') }}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.previous }">
           <router-link class="ResultControls-pagLink" 
             v-if="pageData.previous" 
-            :to="pageData.previous['@id'] | asAppPath">{{ translatePhrase('Previous') }}</router-link>
+            :to="asAppPath(pageData.previous['@id'])">{{ translatePhrase('Previous') }}</router-link>
           <a class="ResultControls-pagLink" v-if="!pageData.previous">{{ translatePhrase('Previous') }}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-active': page.active }" v-for="page in pageList" :key="page.link">
           <span class="ResultControls-pagDecor" v-if="!page.link">...</span>
           <router-link class="ResultControls-pagLink" 
-            :to="page.link | asAppPath" v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
+            :to="asAppPath(page.link)" v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
           <a class="ResultControls-pagLink" v-if="page.active">{{page.pageLabel}}</a>
         </li>
         <li class="ResultControls-pagItem" 
           v-bind:class="{ 'is-disabled': !pageData.next }">
           <router-link class="ResultControls-pagLink" 
-            v-if="pageData.next" :to="pageData.next['@id'] | asAppPath">{{ translatePhrase('Next') }}</router-link>
+            v-if="pageData.next" :to="asAppPath(pageData.next['@id'])">{{ translatePhrase('Next') }}</router-link>
           <a class="ResultControls-pagLink" v-if="!pageData.next">{{ translatePhrase('Next') }}</a>
         </li>
         <li class="ResultControls-pagItem"
           v-bind:class="{ 'is-disabled': !pageData.last || pageData['@id'] === pageData.last['@id'] }">
           <router-link class="ResultControls-pagLink" 
-            v-if="pageData.last" :to="pageData.last['@id'] | asAppPath">{{ translatePhrase('Last') }}</router-link>
+            v-if="pageData.last" :to="asAppPath(pageData.last['@id'])">{{ translatePhrase('Last') }}</router-link>
           <a class="ResultControls-pagLink" v-if="!pageData.last">{{ translatePhrase('Last') }}</a>
         </li>
       </ul>

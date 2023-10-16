@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import { labelByLang } from '@/utils/filters';
+import { labelByLang, asAppPath } from '@/utils/filters';
 
 export default {
   name: 'FilterBadge',
@@ -17,6 +17,7 @@ export default {
   },
   methods: {
     labelByLang,
+    asAppPath,
   },
   computed: {
     ...mapGetters([
@@ -44,7 +45,7 @@ export default {
     <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}:</span>
     <span>{{ labelByLang(filter.label) }}</span>
     <router-link
-      :to="filter.up | asAppPath">
+      :to="asAppPath(filter.up)">
       <i class="fa fa-fw fa-close icon"
         ></i>
     </router-link>

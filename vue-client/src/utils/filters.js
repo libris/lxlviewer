@@ -13,6 +13,15 @@ export const translatePhrase = (string) => {
 export const labelByLang = (label) =>
   StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources);
 
+export const asAppPath = (path) => {
+  const appPaths = store.getters.settings.appPaths;
+  let newPath = '';
+  for (const key of Object.keys(appPaths)) {
+    newPath = path.replace(key, appPaths[key]);
+  }
+  return newPath;
+};
+
 export const convertResourceLink = (uri) => {
   if (uri === null || typeof uri === 'undefined' || uri.length === 0) {
     throw new Error('Filter "convertResourceLink" was called without input');

@@ -1,6 +1,7 @@
 <script>
 import * as MathUtil from '@/utils/math';
 import FacetMixin from '@/components/mixins/facet-mixin';
+import { asAppPath } from '@/utils/filters';
 
 export default {
   name: 'facet',
@@ -20,6 +21,7 @@ export default {
     };
   },
   methods: {
+    asAppPath,
   },
   computed: {
     compactNumber() {
@@ -61,7 +63,7 @@ export default {
   <li class="Facet">
     <slot name="icon"></slot>
     <router-link class="Facet-link"
-      :to="facet.link | asAppPath" 
+      :to="asAppPath(facet.link)" 
       :title="facet.label | capitalize">
       <span class="Facet-label"
         :title="facet.label | capitalize">
