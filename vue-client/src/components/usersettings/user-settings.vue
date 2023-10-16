@@ -88,7 +88,6 @@ export default {
         <div class="UserInfo-meta">
           <p>Din användarprofil är hämtad från <a href="https://login.libris.kb.se">Libris Login</a>.
             <br>Vid frågor om rättigheter för sigel kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.
-            <br>Profilbild sätts via <a href="https://www.gravatar.com">gravatar</a>.
           </p>
         </div>
       </div>

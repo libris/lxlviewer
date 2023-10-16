@@ -53,16 +53,18 @@ export default {
     class="UserAvatar" 
     :class="[this.appearance]"
     :style="{ width: `${size}px`, height: `${size}px` }">
+    <!--
     <img 
       v-if="hasAvatar" 
-      class="UserAvatar-gravatar" 
+      class="UserAvatar-img" 
       alt="Avatar" 
       :style="{ width: `${size}px`, height: `${size}px` }" 
-      :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=404&s=${size*2}`" 
+      :src="" 
       @error="hasAvatar = false" />
+      -->
     <span 
       v-if="!hasAvatar" 
-      class="UserAvatar-no-gravatar" 
+      class="UserAvatar-no-img" 
       :class="{'highlight': this.highlight}"
       :style="{ fontSize: `${fontSize}pt` }">
       {{ initials }}
@@ -89,7 +91,7 @@ export default {
     border-color: @grey-dark;
   }
 
-  &-no-gravatar {
+  &-no-img {
     height: 100%;
     width: 100%;
     font-weight: 600;
