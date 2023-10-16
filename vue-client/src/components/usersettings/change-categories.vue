@@ -17,13 +17,13 @@ export default {
   },
   methods: {
     updateChangeCategories(e, sigel, categoryId) {
-      this.$store.dispatch('updateSubscribedChangeCategories', { libraryId: StringUtil.getLibraryUri(sigel.code), categoryId: categoryId, checked: e.target.checked });
+      this.$store.dispatch('updateSubscribedChangeCategories', { libraryId: this.sigelUri, categoryId: categoryId, checked: e.target.checked });
     },
     toggleExpanded() {
       this.expanded = !this.expanded;
     },
     isActiveCategory(categoryId) {
-      const obj = this.userChangeCategories.find(c => c.heldBy === this.sigel.code);
+      const obj = this.userChangeCategories.find(c => c.heldBy === this.sigelUri);
       return obj ? obj.triggers.includes(categoryId) : false;
     },
     label(obj) {
@@ -39,6 +39,9 @@ export default {
     },
     sigelLabel() {
       return StringUtil.getSigelLabel(this.sigel);
+    },
+    sigelUri() {
+      return StringUtil.getLibraryUri(this.sigel.code);
     },
   },
   mounted() {
