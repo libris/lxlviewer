@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import { each } from 'lodash-es';
 import Spinner from '@/components/shared/Spinner.vue';
 import * as RecordUtil from '@/utils/record';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, asFnurgelLink } from '@/utils/filters';
 
 export default {
   name: 'breadcrumb',
@@ -97,13 +97,13 @@ export default {
       const meta = Object.assign({}, this.$route.meta);
       meta.breadcrumb.absoluteOffset--;
       meta.breadcrumb.relativeOffset--;
-      this.$router.push({ path: this.$options.filters.asFnurgelLink(this.prevPath), meta });
+      this.$router.push({ path: asFnurgelLink(this.prevPath), meta });
     },
     next() {
       const meta = Object.assign({}, this.$route.meta);
       meta.breadcrumb.absoluteOffset++;
       meta.breadcrumb.relativeOffset++;
-      this.$router.push({ path: this.$options.filters.asFnurgelLink(this.nextPath), meta });
+      this.$router.push({ path: asFnurgelLink(this.nextPath), meta });
     },
     lastOnPrevPage() {
       this.loading = true;
@@ -117,7 +117,7 @@ export default {
           meta.breadcrumb.paths = newPaths;
 
           this.loading = false;
-          this.$router.push({ path: this.$options.filters.asFnurgelLink(newPaths[this.range.itemsPerPage - 1]), meta });
+          this.$router.push({ path: asFnurgelLink(newPaths[this.range.itemsPerPage - 1]), meta });
         });
     },
     firstOnNextPage() {
@@ -132,7 +132,7 @@ export default {
           meta.breadcrumb.paths = newPaths;
 
           this.loading = false;
-          this.$router.push({ path: this.$options.filters.asFnurgelLink(newPaths[0]), meta });
+          this.$router.push({ path: asFnurgelLink(newPaths[0]), meta });
         });
     },
   },
