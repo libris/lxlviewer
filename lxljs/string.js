@@ -159,7 +159,7 @@ export function isLibrisResourceUri(uri, settings) {
   const baseUri = settings.dataPath;
   
   let translatedUri = uri;
-  if (uri.startsWith('https://id.kb.se')) {
+  if (uri && uri.startsWith('https://id.kb.se')) {
     translatedUri = uri.replace('https://id.kb.se', settings.idPath);
   }
 
