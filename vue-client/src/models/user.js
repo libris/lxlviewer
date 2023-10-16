@@ -1,6 +1,7 @@
 import { each, find } from 'lodash-es';
 import * as md5 from 'md5';
 import URIMinter from '@/utils/uriminter';
+import * as StringUtil from 'lxljs/string';
 
 async function createUriMinter(findContainerUrl) {
   const found = await (await fetch(findContainerUrl)).json();
@@ -8,7 +9,7 @@ async function createUriMinter(findContainerUrl) {
 }
 
 function getLibraryUri(sigel) {
-  return `https://libris.kb.se/library/${sigel}`;
+  return StringUtil.getLibraryUri(sigel);
 }
 
 export class User {
@@ -35,6 +36,7 @@ export class User {
       sort: false,
       facetSortings: {},
       shelfMarkSearch: '',
+      changeCategoriesSubscribed: [],
     };
     this.uriMinter = null;
   }

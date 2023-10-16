@@ -421,6 +421,13 @@ const store = new Vuex.Store({
       }
       return collection;
     },
+    userChangeCategories: (state) => {
+      const collection = [];
+      if (state.userDatabase == null || state.userDatabase.requestedNotifications == null) {
+        return collection;
+      }
+      return state.userDatabase.requestedNotifications;
+    },
     userDatabase: state => state.userDatabase,
     status: state => state.status,
     directoryCare: state => state.directoryCare,
@@ -530,6 +537,30 @@ const store = new Vuex.Store({
       }
       dispatch('modifyUserDatabase', { property: 'markedDocuments', value: newList });
     },
+    setNotificationEmail({ dispatch, state }, { userEmail }) {
+      const notificationEmail = cloneDeep(state.userDatabase.notificationEmail);
+      if (userEmail !== notificationEmail) {
+        dispatch('modifyUserDatabase', { property: 'notificationEmail', value: userEmail });
+      }
+    },
+    updateSubscribedChangeCategories({ dispatch, state }, { libraryId, categoryId, checked }) {
+      const notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
+
+      const notification = notifications?.find(obj => obj.heldBy === libraryId);
+      if (checked) {
+        if (notification) {
+          notification.triggers.push(categoryId);
+        } else {
+          notifications.push({ heldBy: libraryId, triggers: [categoryId] });
+        }
+      } else { // Unchecked => remove from triggers
+        notification.triggers = notification.triggers.filter(id => id !== categoryId);
+      }
+      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
+    },
+    purgeChangeCategories({ dispatch }) {
+      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: null });
+    },
     loadUserDatabase({ commit, dispatch, state }) {
       if (state.user.id.length === 0) {
         throw new Error('loadUserDatabase was dispatched with no real user loaded.');
@@ -539,6 +570,7 @@ const store = new Vuex.Store({
         httpUtil.get({ url: `${state.settings.apiPath}/_userdata/${digestHex}`, token: state.user.token, contentType: 'text/plain' }).then((result) => {
           commit('setUserDatabase', result);
           dispatch('checkForMigrationOfUserDatabase');
+          dispatch('setNotificationEmail', { userEmail: state.user.email });
         }, (error) => {
           console.error(error);
         });

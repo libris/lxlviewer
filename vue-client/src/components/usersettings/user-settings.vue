@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import SelectSigel from './select-sigel';
+import ChangeCategories from './change-categories.vue';
 
 export default {
   name: 'user-settings',
@@ -12,9 +13,20 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      availableChangeCategories: [],
+    };
+  },
   methods: {
     setUser(userObj) {
       this.$store.dispatch('setUser', userObj);
+    },
+    getAvailableChangeCategories() {
+      const fetchUrl = `${this.settings.apiPath}/find.jsonld?@type=ChangeCategory`;
+      fetch(fetchUrl).then(response => response.json()).then((result) => {
+        this.availableChangeCategories = result?.items;
+      });
     },
     updateLanguage(e) {
       const userObj = this.user;
@@ -42,6 +54,9 @@ export default {
     purgeBookmarks() {
       this.$store.dispatch('purgeUserTagged', 'Bookmark');
     },
+    purgeChangeNoteCategories() {
+      this.$store.dispatch('purgeChangeCategories');
+    },
   },
   computed: {
     ...mapGetters([
@@ -52,19 +67,26 @@ export default {
       'resources',
       'userFlagged',
       'userBookmarks',
+      'userChangeCategories',
     ]),
     userHasTaggedRecords() {
       return Object.keys(this.userStorage.list).length > 0;
     },
+    sortedSigels() {
+      return [...this.user.collections].sort((a, b) => StringUtil.getSigelLabel(a).localeCompare(StringUtil.getSigelLabel(b)));
+    },
   },
   components: {
+    'change-categories': ChangeCategories,
     'user-avatar': UserAvatar,
     'select-sigel': SelectSigel,
   },
   watch: {
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
+  mounted() {
     this.$nextTick(() => {
+      // TODO: don't do this every time we open user settings
+      this.getAvailableChangeCategories();
     });
   },
 };
@@ -163,7 +185,13 @@ export default {
               </td>
             </tr>
           </table>
-
+          <h5 class="uppercaseHeading--bold">{{ 'Subscribe to change notes' | translatePhrase }}</h5>
+          <div class="UserSettings-changeCategories">
+            <div v-for="sigel in sortedSigels" :key="sigel.code">
+              <change-categories :sigel="sigel" :userChangeCategories="userChangeCategories" :availableCategories="availableChangeCategories"/>
+            </div>
+<!--            <button name="clearCategories" class="btn btn&#45;&#45;sm btn-danger" @click.prevent="purgeChangeNoteCategories" @keyup.enter.prevent="purgeChangeNoteCategories">{{ 'Rensa databasen' }}</button>-->
+          </div>
         </form>
         <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{"Log out" | translatePhrase}}</button>
       </div>
@@ -240,6 +268,10 @@ export default {
     & form {
       width: 100%;
     }
+  }
+
+  &-changeCategories {
+    margin-bottom: 20px;
   }
 
   &-configTable {
