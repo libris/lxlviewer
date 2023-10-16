@@ -10,6 +10,9 @@ export const translatePhrase = (string) => {
   );
 };
 
+export const labelByLang = (label) =>
+  StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources);
+
 export const convertResourceLink = (uri) => {
   if (uri === null || typeof uri === 'undefined' || uri.length === 0) {
     throw new Error('Filter "convertResourceLink" was called without input');

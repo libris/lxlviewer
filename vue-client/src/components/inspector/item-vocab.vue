@@ -4,6 +4,7 @@ import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import ItemMixin from '../mixins/item-mixin';
+import { labelByLang } from '@/utils/filters';
 
 export default {
   name: 'item-vocab',
@@ -90,6 +91,7 @@ export default {
     },
   },
   methods: {
+    labelByLang,
     getPossibleValues() {
       let values = [];
       const possibleValues = [];
@@ -134,11 +136,11 @@ export default {
         v-if="asDropdown"
         v-model="selected"
         class="ItemVocab-select customSelect"
-        :aria-label="fieldKey | labelByLang">
+        :aria-label="labelByLang(fieldKey)">
         <option
           v-for="option in possibleValues"
           :key="option"
-          v-bind:value="option">{{ option | labelByLang }}</option>
+          v-bind:value="option">{{ labelByLang(option) }}</option>
       </select>
       <!-- render as radiobuttons -->
       <fieldset v-else>
@@ -158,14 +160,14 @@ export default {
             v-bind:for="option"
             class="RadioPill-label">
             <i class="fa fa-check icon icon--sm"></i>
-            {{ option | labelByLang }}</label>
+            {{ labelByLang(option) }}</label>
         </div>
       </fieldset>
 
     </div>
 
     <span class="ItemVocab-text"
-      v-if="isLocked">{{fieldValue | labelByLang}}</span>
+      v-if="isLocked">{{ labelByLang(fieldValue) }}</span>
   </div>
 </template>
 

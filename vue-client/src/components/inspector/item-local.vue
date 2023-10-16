@@ -12,7 +12,7 @@ import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
 import FormMixin from '../mixins/form-mixin';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
   name: 'item-local',
@@ -180,6 +180,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    labelByLang,
     openManagerMenu() {
       this.managerMenuOpen = true;
     },
@@ -474,7 +475,7 @@ export default {
         <i class="ItemLocal-arrow fa fa-chevron-right" 
           :class="{'icon is-disabled' : isEmpty}"></i>
         <span class="ItemLocal-type"
-          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+          :title="item['@type']">{{ labelByLang(item['@type']) | capitalize }}:</span>
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>

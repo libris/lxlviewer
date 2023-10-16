@@ -9,7 +9,7 @@ import TypeIcon from '@/components/shared/type-icon';
 import SummaryNode from '@/components/shared/summary-node';
 import * as RecordUtil from '@/utils/record';
 import LensMixin from '../mixins/lens-mixin';
-import { translatePhrase, convertResourceLink } from '@/utils/filters';
+import { translatePhrase, labelByLang, convertResourceLink } from '@/utils/filters';
 
 export default {
   mixins: [LensMixin, OverflowMixin],
@@ -281,6 +281,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    labelByLang,
     convertResourceLink,
     copyFnurgel() {
       const self = this;
@@ -324,7 +325,7 @@ export default {
     <encoding-level-icon
       v-if="encodingLevel && recordType === 'Instance'"
       :encodingLevel="encodingLevel"
-      :tooltipText="encodingLevel | labelByLang"/>
+      :tooltipText="labelByLang(encodingLevel)"/>
     <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
@@ -374,7 +375,7 @@ export default {
         v-for="node in limitedInfo" 
         :key="node.property">
         <template v-if="node.value !== null">
-          <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang | capitalize">{{ node.property | labelByLang | capitalize }}</span>
+          <span v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="labelByLang(node.property) | capitalize">{{ labelByLang(node.property) | capitalize }}</span>
           <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.self.prevent="(e) => { if (handleOverflow) { e.target.classList.toggle('expanded'); } }">
             <SummaryNode :hover-links="hoverLinks" :handle-overflow="false" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>

@@ -7,7 +7,7 @@ import LensMixin from '@/components/mixins/lens-mixin';
 import ItemMixin from '@/components/mixins/item-mixin';
 import OverflowMixin from '@/components/mixins/overflow-mixin';
 import PreviewCard from '@/components/shared/preview-card';
-import { convertResourceLink } from '@/utils/filters';
+import { labelByLang, convertResourceLink } from '@/utils/filters';
 
 export default {
   name: 'summary-node',
@@ -62,6 +62,7 @@ export default {
     PreviewCard,
   },
   methods: {
+    labelByLang,
     convertResourceLink
   },
   watch: {
@@ -76,7 +77,7 @@ export default {
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
       <span v-if="fieldKey === 'instanceOf' && focusData['@type'] !== 'Work'">
-        {{ focusData['@type'] | labelByLang | capitalize }} •
+        {{ labelByLang(focusData['@type']) | capitalize }} •
       </span>
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
@@ -85,7 +86,7 @@ export default {
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">
           <span v-if="fieldKey === 'instanceOf' && focusData['@type'] !== 'Work'">
-            {{ focusData['@type'] | labelByLang | capitalize }} •
+            {{ labelByLang(focusData['@type']) | capitalize }} •
           </span>
           {{getItemLabel}}
         </router-link>

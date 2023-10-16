@@ -6,7 +6,7 @@ import { XSD_NUMERIC_TYPES } from 'lxljs/vocab';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
 import ModalComponent from '@/components/shared/modal-component';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
   name: 'item-next-shelf-control-number',
@@ -100,6 +100,7 @@ export default {
 
   methods: {
     translatePhrase,
+    labelByLang,
     removeHighlight(event, active) {
       if (active) {
         let item = event.target;
@@ -195,7 +196,7 @@ export default {
       class="ItemValue-input js-itemValueInput"
       rows="1"
       v-model="value"
-      :aria-label="fieldKey | labelByLang"
+      :aria-label="labelByLang(fieldKey)"
       @focus="readyForSave(false)"
       @blur="update($event.target.value)"
       @keydown.exact="readyForSave(false)"

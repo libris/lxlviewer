@@ -13,7 +13,7 @@ import * as HttpUtil from '@/utils/http';
 import FieldAdder from '@/components/inspector/field-adder';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
-import { translatePhrase, convertResourceLink } from '@/utils/filters';
+import { translatePhrase, labelByLang, convertResourceLink } from '@/utils/filters';
 
 export default {
   mixins: [LensMixin, FormMixin],
@@ -96,6 +96,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    labelByLang,
     convertResourceLink,
     openTemplatePicker() {
       this.$refs.TemplatePicker.click();
@@ -618,7 +619,7 @@ export default {
         <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToRemove">
           <a class="Toolbar-menuLink"  @click="recordControl('remove-record')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
-          {{ translatePhrase("Remove") }} {{ recordType | labelByLang | lowercase }}
+          {{ translatePhrase("Remove") }} {{ labelByLang(recordType) | lowercase }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech && userIsPermittedToEdit">

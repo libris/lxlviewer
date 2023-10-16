@@ -7,7 +7,7 @@ import Field from '@/components/inspector/field';
 import Button from '@/components/shared/button';
 import TabMenu from '@/components/shared/tab-menu';
 import EntitySummary from '@/components/shared/entity-summary';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
   name: 'DetailedEnrichment',
@@ -43,7 +43,7 @@ export default {
     },
     formTabs() {
       return [
-        { id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+        { id: 'mainEntity', text: labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' },
       ];
     },
@@ -167,6 +167,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    labelByLang,
     ...mapActions([
       'setEnrichmentResult',
     ]),
@@ -309,7 +310,7 @@ export default {
       <div class="DetailedEnrichment-row" v-for="key in filteredKeys" :key="key">
         <div class="DetailedEnrichment-labelContainer uppercaseHeading">
           <div v-show="key !== '@type'" class="DetailedEnrichment-label sourceColumn">
-            {{ key | labelByLang | capitalize }}
+            {{ labelByLang(key) | capitalize }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label sourceColumn">
             {{ translatePhrase('Type') | capitalize }}
@@ -317,7 +318,7 @@ export default {
           <div class="DetailedEnrichment-label actionColumn">
           </div>
           <div v-show="key !== '@type'" class="DetailedEnrichment-label resultColumn">
-            {{ key | labelByLang | capitalize }}
+            {{ labelByLang(key) | capitalize }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label resultColumn">
             {{ translatePhrase('Type') | capitalize }}

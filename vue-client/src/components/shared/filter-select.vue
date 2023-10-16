@@ -7,7 +7,7 @@ import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
   name: 'filter-select',
@@ -86,6 +86,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    labelByLang,
     preventBodyScroll(e) {
       const keys = this.keyEnums;
       if ([
@@ -279,7 +280,7 @@ export default {
             tabindex="-1"
             :data-filter="option"
             :data-abstract="option.abstract"
-            :data-key="option">{{ option | labelByLang }}</span>
+            :data-key="option">{{ labelByLang(option) }}</span>
         </li>
         <hr class="FilterSelect-dropdownDivider" v-show="options.priority.length > 0">
         <li class="FilterSelect-dropdownHeader" v-show="options.tree.length > 0 && options.priority.length > 0">

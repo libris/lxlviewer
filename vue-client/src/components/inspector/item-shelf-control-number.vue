@@ -3,6 +3,7 @@ import AutoSize from 'autosize';
 import { debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import ItemMixin from '@/components/mixins/item-mixin';
+import { labelByLang } from '@/utils/filters';
 
 export default {
   name: 'item-shelf-control-number',
@@ -92,6 +93,7 @@ export default {
     },
   },
   methods: {
+    labelByLang,
     removeHighlight(event, active) {
       if (active) {
         let item = event.target;
@@ -197,7 +199,7 @@ export default {
       <textarea class="ItemShelfControlNumber-input js-itemValueInput"
                 rows="1"
                 v-model="textFieldValue"
-                :aria-label="fieldKey | labelByLang"
+                :aria-label="labelByLang(fieldKey)"
                 @focus="readyForSave(false)"
                 @blur="update($event.target.value)"
                 @keydown.exact="readyForSave(false)"

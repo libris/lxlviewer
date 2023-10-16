@@ -23,7 +23,7 @@ import ValidationSummary from '@/components/inspector/validation-summary';
 import FullscreenPanel from '../components/shared/fullscreen-panel.vue';
 import VersionHistory from '../components/inspector/version-history.vue';
 import ChangeNotes from '../utils/changenotes';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
   name: 'Inspector',
@@ -79,6 +79,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    labelByLang,
     ...mapActions([
       'setEnrichmentSource',
       'setEnrichmentTarget',
@@ -396,7 +397,7 @@ export default {
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
         this.$store.dispatch('pushNotification', { 
           type: 'success', 
-          message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language, this.resources.i18n)}!`, 
+          message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language, this.resources.i18n)}!`, 
         });
         // Force reload
         this.$router.go(-1);
@@ -733,7 +734,7 @@ export default {
           setTimeout(() => {
             this.$store.dispatch('pushNotification', { 
               type: 'success', 
-              message: `${this.$options.filters.labelByLang(this.recordType)}  ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language, this.resources.i18n)}!`,
+              message: `${labelByLang(this.recordType)}  ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language, this.resources.i18n)}!`,
             });
           }, 10);
           this.warnOnSave();
@@ -743,7 +744,7 @@ export default {
           setTimeout(() => {
             this.$store.dispatch('pushNotification', {
               type: 'success', 
-              message: `${this.$options.filters.labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language, this.resources.i18n)}!`,
+              message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language, this.resources.i18n)}!`,
             });
           }, 10);
           this.warnOnSave();
@@ -940,7 +941,7 @@ export default {
       return null;
     },
     editorTabs() {
-      return [{ id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+      return [{ id: 'mainEntity', text: labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' }];
     },
   },
@@ -1014,7 +1015,7 @@ export default {
         <div class="Inspector-admin">
           <div class="Inspector-header">
             <h1>
-              <span class="type" :title="recordType">{{ recordType | labelByLang }}</span>
+              <span class="type" :title="recordType">{{ labelByLang(recordType) }}</span>
               <span class="badge badge-accent2" v-if="inspector.status.isNew">{{ translatePhrase("New record") }}</span>
             </h1>
           </div>
@@ -1047,7 +1048,7 @@ export default {
       v-if="removeInProgress">
       <div slot="modal-header" class="RemoveRecordModal-header">
         <header>
-          {{ translatePhrase('Remove') }} {{ this.recordType | labelByLang }}?
+          {{ translatePhrase('Remove') }} {{ labelByLang(this.recordType) }}?
         </header>
       </div>
       <div slot="modal-body" class="RemoveRecordModal-body">
@@ -1055,7 +1056,7 @@ export default {
           {{ translatePhrase('This operation can\'t be reverted') }}
         </p>
         <div class="RemoveRecordModal-buttonContainer">
-          <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ translatePhrase('Remove') }} {{ this.recordType | labelByLang | lowercase }}</button>
+          <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ translatePhrase('Remove') }} {{ labelByLang(this.recordType) | lowercase }}</button>
           <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ translatePhrase('Cancel') }}</button>
         </div>
       </div>

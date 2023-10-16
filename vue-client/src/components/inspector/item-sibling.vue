@@ -17,6 +17,7 @@ import FormMixin from '@/components/mixins/form-mixin';
 import PropertyAdder from '@/components/inspector/property-adder';
 import SearchWindow from '@/components/inspector/search-window';
 import EntityAction from '@/components/inspector/entity-action';
+import { labelByLang } from '@/utils/filters';
 
 export default {
   name: 'item-sibling',
@@ -162,6 +163,7 @@ export default {
     },
   },
   methods: {
+    labelByLang,
     highLightLastAdded() {
       const element = this.$el;
       LayoutUtil.ensureInViewport(element);
@@ -398,7 +400,7 @@ export default {
         <i class="ItemSibling-arrow fa fa-chevron-right" 
           :class="{'icon is-disabled' : isEmpty}"></i>
         <span class="ItemSibling-type"
-          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+          :title="item['@type']">{{ labelByLang(item['@type']) | capitalize }}:</span>
         <span class="ItemSibling-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>

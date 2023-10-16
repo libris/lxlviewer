@@ -5,7 +5,7 @@ import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
-import { translatePhrase, convertResourceLink } from '@/utils/filters';
+import { translatePhrase, labelByLang, convertResourceLink } from '@/utils/filters';
 
 export default {
   name: 'item-value',
@@ -96,6 +96,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    labelByLang,
     convertResourceLink,
     removeHighlight(event, active) {
       if (active) {
@@ -187,7 +188,7 @@ export default {
     <textarea class="ItemValue-input js-itemValueInput" 
       rows="1" 
       v-model="value"
-      :aria-label="fieldKey | labelByLang"
+      :aria-label="labelByLang(fieldKey)"
       @focus="readyForSave(false)"
       @blur="update($event.target.value)"
       @keydown.exact="readyForSave(false)"

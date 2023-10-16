@@ -8,7 +8,7 @@ import * as HttpUtil from '@/utils/http';
 import ItemVocab from '@/components/inspector/item-vocab';
 import ModalComponent from '@/components/shared/modal-component';
 import Spinner from '@/components/shared/modal-component';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
   name: 'item-type',
@@ -54,6 +54,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    labelByLang,
     getLabelWithTreeDepth(term) {
       return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
     },
@@ -117,7 +118,7 @@ export default {
         :disabled="isDisabled"
         v-model="selected" 
         class="ItemType-select customSelect" 
-        :aria-label="fieldKey | labelByLang">
+        :aria-label="labelByLang(fieldKey)">
         <option 
           v-for="(term, index) in containerAcceptedTypes" 
           :value="term.id"
@@ -133,7 +134,7 @@ export default {
       </div>
     </div>
     <span class="ItemType-text" 
-      v-if="isLocked">{{fieldValue | labelByLang}}
+      v-if="isLocked">{{ labelByLang(fieldValue) }}
     </span>
     <modal-component 
       title="Byte av typ" 

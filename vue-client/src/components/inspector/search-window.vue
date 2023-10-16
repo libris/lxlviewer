@@ -13,7 +13,7 @@ import FilterSelect from '@/components/shared/filter-select.vue';
 import ParamSelect from '@/components/inspector/param-select.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
 import LensMixin from '../mixins/lens-mixin';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
   name: 'search-window',
@@ -93,6 +93,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    labelByLang,
     getSearchParams(searchPhrase) {
       if (this.currentSearchParam == null) {
         return { q: searchPhrase };
@@ -218,7 +219,7 @@ export default {
               <div class="copy-title" v-if="canCopyTitle">
                 <label>
                   <input type="checkbox" name="copyTitle" v-bind="copyTitle" @change="$emit('update:copyTitle', $event.target.value)" />
-                  {{ translatePhrase("Copy title from") }} {{this.editorData.mainEntity['@type'] | labelByLang}}
+                  {{ translatePhrase("Copy title from") }} {{ labelByLang(this.editorData.mainEntity['@type']) }}
                 </label>
               </div>
             </div>

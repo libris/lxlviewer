@@ -2,7 +2,7 @@
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import ItemMixin from '../mixins/item-mixin';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
   name: 'item-boolean',
@@ -88,7 +88,8 @@ export default {
     },
   },
   methods: {
-    translatePhrase
+    translatePhrase,
+    labelByLang
   },
   components: {
   },
@@ -102,7 +103,7 @@ export default {
         class="customCheckbox-input"
         v-model="selected"
         :disabled="isLocked"
-        :aria-label="fieldKey | labelByLang" />
+        :aria-label="labelByLang(fieldKey)" />
       <div class="customCheckbox-icon"></div>
     </div>
     <span class="ItemVocab-text"

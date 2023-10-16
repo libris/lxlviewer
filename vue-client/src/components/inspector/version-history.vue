@@ -13,6 +13,7 @@ import LensMixin from '@/components/mixins/lens-mixin';
 import TabMenu from '@/components/shared/tab-menu';
 import EntityForm from './entity-form.vue';
 import VersionHistoryChangesets from './version-history-changesets.vue';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
   mixins: [LensMixin],
@@ -83,7 +84,7 @@ export default {
       return null;
     },
     editorTabs() {
-      return [{ id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+      return [{ id: 'mainEntity', text: labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' }];
     },
   },

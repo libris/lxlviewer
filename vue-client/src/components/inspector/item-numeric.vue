@@ -5,7 +5,7 @@ import * as StringUtil from 'lxljs/string';
 import { XSD_NUMERIC_TYPES } from 'lxljs/vocab';
 import ItemMixin from '@/components/mixins/item-mixin';
 import LensMixin from '@/components/mixins/lens-mixin';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
   name: 'item-numeric',
@@ -91,6 +91,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    labelByLang,
     removeHighlight(event, active) {
       if (active) {
         let item = event.target;
@@ -167,7 +168,7 @@ export default {
     <input class="ItemValue-input js-itemValueInput"
            rows="1"
            v-model="value"
-           :aria-label="fieldKey | labelByLang"
+           :aria-label="labelByLang(fieldKey)"
            @focus="readyForSave(false)"
            @blur="update($event.target.value)"
            @keydown.exact="readyForSave(false)"
