@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     updateChangeCategories(e, sigel, categoryId) {
-      this.$store.dispatch('updateSubscribedChangeCategories', { libraryId: sigel.code, categoryId: categoryId, checked: e.target.checked });
+      this.$store.dispatch('updateSubscribedChangeCategories', { libraryId: StringUtil.getLibraryUri(sigel), categoryId: categoryId, checked: e.target.checked });
     },
     toggleExpanded() {
       this.expanded = !this.expanded;

@@ -321,3 +321,7 @@ export function getSigelLabel(sigel, len) {
 
   return `${fName}${sigelPart}`;
 }
+
+export function getLibraryUri(sigel) {
+  return `https://libris.kb.se/library/${sigel}`;
+}
