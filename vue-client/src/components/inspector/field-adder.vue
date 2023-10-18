@@ -9,7 +9,7 @@ import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import RoundButton from '@/components/shared/round-button.vue';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, removeDomain } from '@/utils/filters';
 
 export default {
   name: 'field-adder',
@@ -117,6 +117,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    removeDomain,
     toggleFullView() {
       const user = this.user;
       user.settings.forceFullViewPanel = !user.settings.forceFullViewPanel;
@@ -362,7 +363,7 @@ export default {
               </span>
               <span class="FieldAdderPanel-fieldLabel" :title="prop.label | capitalize">
                 {{prop.label | capitalize }}
-                <span class="typeLabel">{{ prop.item['@id'] | removeDomain }}</span>
+                <span class="typeLabel">{{ removeDomain(prop.item['@id']) }}</span>
               </span>
               <span class="FieldAdderPanel-classInfo">
                 {{ getPropClassInfo(prop.item) }}

@@ -38,3 +38,8 @@ export const asFnurgelLink = (id) => {
   const fnurgel = `/${parts[parts.length - 1]}`;
   return fnurgel;
 }
+
+export const removeDomain = (value) => {
+  return StringUtil.removeDomain(value, store.getters.settings.removableBaseUris);
+};
+
