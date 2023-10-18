@@ -17,7 +17,9 @@ import { translatePhrase, labelByLang, convertResourceLink } from '@/utils/filte
 
 export default {
   mixins: [LensMixin, FormMixin],
-  directives: [vOnClickOutside],
+  directives: {
+    'on-click-outside': vOnClickOutside,
+  },
   props: {
     fieldAdderOpen: {
       type: Boolean,
