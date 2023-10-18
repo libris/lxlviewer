@@ -1056,7 +1056,7 @@ export default {
           {{ translatePhrase('This operation can\'t be reverted') }}
         </p>
         <div class="RemoveRecordModal-buttonContainer">
-          <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ translatePhrase('Remove') }} {{ labelByLang(this.recordType) | lowercase }}</button>
+          <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ translatePhrase('Remove') }} {{ labelByLang(this.recordType).toLowerCase() }}</button>
           <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ translatePhrase('Cancel') }}</button>
         </div>
       </div>

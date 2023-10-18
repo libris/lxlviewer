@@ -249,9 +249,9 @@ export default {
         </button>
         <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && !loading" :disabled="lock || directoryCare.selectedHoldings.length === 0" @click="doSend">{{ translatePhrase('Move holdings') }}</button>
         <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && loading" :disabled="true"><i class="fa fa-circle-o-notch fa-spin"></i> {{ translatePhrase('Moving holdings') }}</button>
-        <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ translatePhrase('Holdings chosen') | lowercase }}</span>
+        <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ translatePhrase('Holdings chosen').toLowerCase() }}</span>
         <div v-if="!isSender"></div>
-        <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ translatePhrase('Holdings') | lowercase }}</span>
+        <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ translatePhrase('Holdings').toLowerCase() }}</span>
     </div>
     <div class="HoldingList-body">
       <div class="HoldingList-items">

@@ -213,7 +213,7 @@ export default {
     <div class="ResultControls-searchDetails" v-if="showDetails">
       <p class="ResultControls-resultText" id="resultDescr">
         <span v-if="pageData.totalItems > 0"> {{ translatePhrase(['Showing', resultRange, 'of']) }} </span>
-        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{ translatePhrase('Hits') | lowercase}}</span>
+        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{ translatePhrase('Hits').toLowerCase() }}</span>
         <span v-else class="ResultControls-numTotal">{{ translatePhrase('No hits') }}</span>
         
         <span v-if="$route.params.perimeter === 'remote' && status.workingRemoteDatabases.length > 0">{{ translatePhrase('from') }} <span v-for="(db, index) in status.workingRemoteDatabases" :key="index"><span class="ResultControls-dbLabel">{{ db }}</span>{{ index !== status.workingRemoteDatabases.length - 1 ? ', ' : '' }}</span></span>

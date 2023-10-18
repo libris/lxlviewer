@@ -619,7 +619,7 @@ export default {
         <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToRemove">
           <a class="Toolbar-menuLink"  @click="recordControl('remove-record')">
           <i class="fa fa-fw fa-trash" aria-hidden="true"></i>
-          {{ translatePhrase("Remove") }} {{ labelByLang(recordType) | lowercase }}
+          {{ translatePhrase("Remove") }} {{ labelByLang(recordType).toLowerCase() }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing && !inspector.status.isNew && user.settings.appTech && userIsPermittedToEdit">
