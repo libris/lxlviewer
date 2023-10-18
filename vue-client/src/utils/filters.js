@@ -43,3 +43,9 @@ export const removeDomain = (value) => {
   return StringUtil.removeDomain(value, store.getters.settings.removableBaseUris);
 };
 
+export const capitalize = (value) => {
+  if (!value) return '';
+  let newValue = value;
+  newValue = newValue.toString();
+  return newValue.charAt(0).toUpperCase() + newValue.slice(1);
+};

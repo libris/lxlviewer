@@ -9,7 +9,7 @@ import TypeIcon from '@/components/shared/type-icon';
 import SummaryNode from '@/components/shared/summary-node';
 import * as RecordUtil from '@/utils/record';
 import LensMixin from '../mixins/lens-mixin';
-import { translatePhrase, labelByLang, convertResourceLink } from '@/utils/filters';
+import { translatePhrase, labelByLang, convertResourceLink, capitalize } from '@/utils/filters';
 
 export default {
   mixins: [LensMixin, OverflowMixin],
@@ -283,6 +283,7 @@ export default {
     translatePhrase,
     labelByLang,
     convertResourceLink,
+    capitalize,
     copyFnurgel() {
       const self = this;
       this.$copyText(this.uri).then(() => {
@@ -375,7 +376,7 @@ export default {
         v-for="node in limitedInfo" 
         :key="node.property">
         <template v-if="node.value !== null">
-          <span v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="labelByLang(node.property) | capitalize">{{ labelByLang(node.property) | capitalize }}</span>
+          <span v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="capitalize(labelByLang(node.property))">{{ capitalize(labelByLang(node.property)) }}</span>
           <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.self.prevent="(e) => { if (handleOverflow) { e.target.classList.toggle('expanded'); } }">
             <SummaryNode :hover-links="hoverLinks" :handle-overflow="false" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
           </span>

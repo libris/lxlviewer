@@ -10,7 +10,7 @@ import ModalPagination from '@/components/inspector/modal-pagination';
 import FacetMixin from '@/components/mixins/facet-mixin';
 import * as httpUtil from '@/utils/http';
 import { getCompactNumber } from '@/utils/math';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, capitalize } from '@/utils/filters';
 
 export default {
   name: 'relations-list',
@@ -48,6 +48,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    capitalize,
     go(n) {
       this.currentPage = n;
     },
@@ -220,7 +221,7 @@ export default {
               </option>
               <optgroup v-for="(group, index) in facets" :key="`group-${index}`" :label="facetGroupLabelByLang(group.name)">
                 <option v-for="(option, index) in group.facets" :key="`option-${index}`" :value="option" :disabled="option.disabled">
-                  {{ option.label | capitalize }} {{ option.count }}
+                  {{ capitalize(option.label) }} {{ option.count }}
                 </option>
               </optgroup>
             </select>

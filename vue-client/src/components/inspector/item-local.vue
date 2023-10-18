@@ -12,7 +12,7 @@ import SearchWindow from './search-window';
 import ItemMixin from '../mixins/item-mixin';
 import LensMixin from '../mixins/lens-mixin';
 import FormMixin from '../mixins/form-mixin';
-import { translatePhrase, labelByLang } from '@/utils/filters';
+import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 
 export default {
   name: 'item-local',
@@ -116,7 +116,7 @@ export default {
       }
 
       const termObj = VocabUtil.getTermObject(this.focusData['@type'], this.resources.vocab, this.resources.context);
-      if (termObj === {} || typeof termObj === 'undefined') {
+      if (termObj == {} || typeof termObj === 'undefined') {
         failedValidations.push({
           text: 'The class could not be found',
           hint: this.focusData['@type'],
@@ -181,6 +181,7 @@ export default {
   methods: {
     translatePhrase,
     labelByLang,
+    capitalize,
     openManagerMenu() {
       this.managerMenuOpen = true;
     },
@@ -475,7 +476,7 @@ export default {
         <i class="ItemLocal-arrow fa fa-chevron-right" 
           :class="{'icon is-disabled' : isEmpty}"></i>
         <span class="ItemLocal-type"
-          :title="item['@type']">{{ labelByLang(item['@type']) | capitalize }}:</span>
+          :title="item['@type']">{{ capitalize(labelByLang(item['@type'])) }}:</span>
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>

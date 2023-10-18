@@ -4,6 +4,7 @@ import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as MathUtil from '@/utils/math';
 import LensMixin from '@/components/mixins/lens-mixin';
+import { capitalize } from '@/utils/filters';
 
 export default {
   mixins: [LensMixin],
@@ -14,6 +15,7 @@ export default {
     };
   },
   methods: {
+    capitalize,
     getByLang(object, property, lang) {
       const langDict = object[`${property}ByLang`];
       if (typeof langDict === 'object' && typeof langDict[lang] === 'string') {
@@ -51,7 +53,7 @@ export default {
 
       if (object.hasOwnProperty('propertyChainAxiom')) {
         return object.propertyChainAxiom
-          .map(o => this.$options.filters.capitalize(this.determineLabel(o)))
+          .map(o => capitalize(this.determineLabel(o)))
           .join('/');
       } 
 

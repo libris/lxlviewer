@@ -18,7 +18,7 @@ import LensMixin from '@/components/mixins/lens-mixin.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
 import PanelSearchList from '../search/panel-search-list.vue';
 import templates from '@/resources/json/structuredValueTemplates.json'
-import { translatePhrase, labelByLang } from '@/utils/filters';
+import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 
 export default {
   mixins: [LensMixin, SideSearchMixin],
@@ -196,6 +196,7 @@ export default {
   methods: {
     translatePhrase,
     labelByLang,
+    capitalize,
     getSearchParams(searchPhrase) {
       let params;
       if (this.currentSearchParam == null) {
@@ -490,7 +491,7 @@ export default {
         v-else-if="addEmbedded"
         tabindex="-1">
       </i>
-      <span class="EntityAdder-addLabel label-text">{{ labelByLang(addLabel) | capitalize }}</span>
+      <span class="EntityAdder-addLabel label-text">{{ capitalize(labelByLang(addLabel)) }}</span>
     </div>
     <portal :to="`typeSelect-${path}`">
       <type-select

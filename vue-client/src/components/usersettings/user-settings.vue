@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import UserAvatar from '@/components/shared/user-avatar';
 import SelectSigel from './select-sigel';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, capitalize } from '@/utils/filters';
 
 export default {
   name: 'user-settings',
@@ -15,6 +15,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    capitalize,
     setUser(userObj) {
       this.$store.dispatch('setUser', userObj);
     },
@@ -179,7 +180,7 @@ export default {
         </li>
         <li>
           <router-link to="/user">{{ translatePhrase("Settings")}}</router-link>
-          <button class="btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeFlagged">{{ translatePhrase(['Clear', 'Flags']) | lowercase | capitalize}}</button>
+          <button class="btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeFlagged">{{ capitalize(translatePhrase(['Clear', 'Flags'])) | lowercase }}</button>
         </li>
         <li>
           <!-- <span>Växla användare</span> -->

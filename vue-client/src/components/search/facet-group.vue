@@ -6,7 +6,7 @@ import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
 import FacetMixin from '@/components/mixins/facet-mixin';
 import Facet from './facet.vue';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, capitalize } from '@/utils/filters';
 
 export default {
   name: 'facet-group',
@@ -34,6 +34,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    capitalize,
     facetLabelByLang(facetType) {
       return (this.settings.propertyChains[facetType] || {})[this.user.settings.language] || facetType;
     },
@@ -94,7 +95,7 @@ export default {
         if (!label) {
           label = o.object.label;
         }
-        label = this.$options.filters.capitalize(label);
+        label = capitalize(label);
         return {
           label,
           object: o.object,
@@ -186,7 +187,7 @@ export default {
         @keyup.enter="toggleExpanded()"
         tabindex="0"
         :id="facetLabelByLang(group.dimension)">
-        {{facetLabelByLang(group.dimension) | capitalize}}
+        {{ capitalize(facetLabelByLang(group.dimension)) }}
       </h4>
       <div
         class="FacetGroup-sortSelect" 

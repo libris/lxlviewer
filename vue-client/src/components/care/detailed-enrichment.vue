@@ -7,7 +7,7 @@ import Field from '@/components/inspector/field';
 import Button from '@/components/shared/button';
 import TabMenu from '@/components/shared/tab-menu';
 import EntitySummary from '@/components/shared/entity-summary';
-import { translatePhrase, labelByLang } from '@/utils/filters';
+import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 
 export default {
   name: 'DetailedEnrichment',
@@ -168,6 +168,7 @@ export default {
   methods: {
     translatePhrase,
     labelByLang,
+    capitalize,
     ...mapActions([
       'setEnrichmentResult',
     ]),
@@ -310,18 +311,18 @@ export default {
       <div class="DetailedEnrichment-row" v-for="key in filteredKeys" :key="key">
         <div class="DetailedEnrichment-labelContainer uppercaseHeading">
           <div v-show="key !== '@type'" class="DetailedEnrichment-label sourceColumn">
-            {{ labelByLang(key) | capitalize }}
+            {{ capitalize(labelByLang(key)) }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label sourceColumn">
-            {{ translatePhrase('Type') | capitalize }}
+            {{ capitalize(translatePhrase('Type')) }}
           </div>
           <div class="DetailedEnrichment-label actionColumn">
           </div>
           <div v-show="key !== '@type'" class="DetailedEnrichment-label resultColumn">
-            {{ labelByLang(key) | capitalize }}
+            {{ capitalize(labelByLang(key)) }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label resultColumn">
-            {{ translatePhrase('Type') | capitalize }}
+            {{ capitalize(translatePhrase('Type')) }}
           </div>
         </div>
         <div class="DetailedEnrichment-fieldRow">

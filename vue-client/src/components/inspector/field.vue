@@ -27,7 +27,7 @@ import ItemNextShelfControlNumber from './item-next-shelf-control-number';
 import ItemBylang from './item-bylang';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
 import LanguageMixin from '../mixins/language-mixin';
-import { translatePhrase, labelByLang } from '@/utils/filters';
+import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 
 export default {
   name: 'field',
@@ -461,6 +461,7 @@ export default {
   methods: {
     translatePhrase,
     labelByLang,
+    capitalize,
     onLabelClick() {
       this.$store.dispatch('pushInspectorEvent', {
         name: 'field-label-clicked',
@@ -759,21 +760,21 @@ export default {
           <i class="fa fa-plus-circle icon--sm icon-added"></i>
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
-          <span v-show="fieldKey === '@id'">{{ translatePhrase('ID') | capitalize }}</span>
-          <span v-show="fieldKey === '@type'">{{ translatePhrase(entityTypeArchLabel) | capitalize }}</span>
+          <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
+          <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
           <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" 
                 :title="fieldKey" 
                 @click="onLabelClick">
-            {{ labelByLang((fieldRdfType || overrideLabel || fieldKey)) | capitalize }}
+            {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
           </span>
           <span class="Field-navigateHistory" 
                 v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" 
                 @click="onLabelClick"
                 v-tooltip.top="{content: translatePhrase('Show latest change'), delay: { show: 300, hide: 0 }}">
-            {{ labelByLang((fieldRdfType || overrideLabel || fieldKey)) | capitalize }}
+            {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
           </span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
-            <span :title="fieldKey">{{ translatePhrase('Incoming links') | capitalize }}</span>          
+            <span :title="fieldKey">{{ capitalize(translatePhrase('Incoming links')) }}</span>          
             <div class="Field-comment">
               <i class="fa fa-question-circle-o icon icon--sm"></i>
               <span class="Field-commentText">{{ translatePhrase('Non editable incoming link') }}.
@@ -787,12 +788,12 @@ export default {
       <code class="path-code" v-show="user.settings.appTech && !isInner">{{path}}</code>
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
-      <span v-show="fieldKey === '@id'">{{ translatePhrase('ID') | capitalize }}</span>
-      <span v-show="fieldKey === '@type'">{{ translatePhrase(entityTypeArchLabel) | capitalize }}</span>
-      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ labelByLang(fieldKey) | capitalize }}</span>
+      <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
+      <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ capitalize(labelByLang(fieldKey)) }}</span>
       <span class="Field-navigateHistory" v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" @click="onLabelClick"
             v-tooltip.top="{content: translatePhrase('Show latest change'), delay: { show: 300, hide: 0 }}">
-        {{ labelByLang(fieldKey) | capitalize }}
+        {{ capitalize(labelByLang(fieldKey)) }}
       </span>
       <!-- Is inner -->
       <div class="Field-actions is-nested">
