@@ -142,7 +142,7 @@ export default {
         @click="item.disabled ? null : go(item.id)" 
         @keyup.enter="item.disabled ? null : go(item.id)"
         v-tooltip="{
-          trigger: 'hover focus',
+          triggers: ['hover', 'focus'],
           content: item.tooltipText
         }"
         :class="{'is-active': active === item.id, 'is-disabled': item.disabled }"

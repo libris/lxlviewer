@@ -68,10 +68,10 @@ export default {
     tooltipOptions() {
       const options = {
         content: `${StringUtil.getUiPhraseByLang('To create concepts, you need to switch to a seal with correct authority.', this.user.settings.language, this.resources.i18n)}`,
-        show: this.showSigelHint,
-        trigger: 'manual',
+        shown: this.showSigelHint,
+        triggers: ['manual'],
         placement: 'bottom',
-        classes: 'with-accent',
+        popperClass: 'with-accent',
       };
       return options;
     },
