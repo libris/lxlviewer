@@ -8,6 +8,10 @@ import DisplayGroups from '@/resources/json/displayGroups.json'
 
 export default {
   props: {
+    allSearchTypes: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
