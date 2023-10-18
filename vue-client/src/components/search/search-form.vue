@@ -60,7 +60,7 @@ export default {
     doSearch() {
       this.helpToggled = false;
       const path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
-      this.$router.push({ path });
+      this.$router.push(path);
     },
     clearInputs() {
       this.searchPhrase = '';
