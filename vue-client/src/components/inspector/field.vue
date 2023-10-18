@@ -49,6 +49,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    key: {
+      type: String,
+      default: '',
+    },
     fieldKey: {
       type: String,
       default: '',

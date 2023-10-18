@@ -62,6 +62,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    editingObject: {
+      type: String,
+      default: '',
+    },
+    key: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {

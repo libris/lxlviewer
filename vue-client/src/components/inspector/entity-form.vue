@@ -37,6 +37,10 @@ export default {
       type: Object,
       default: null,
     },
+    inClassAndProperty: {
+      type: String,
+      default: '',
+    }
   },
   data() {
     return {
