@@ -13,11 +13,6 @@ export default {
   components: {
     notification: Notification,
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-      // Do stuff
-    });
-  },
 };
 </script>
 

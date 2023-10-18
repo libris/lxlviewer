@@ -66,10 +66,6 @@ export default {
   },
   watch: {
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-    });
-  },
 };
 </script>
 

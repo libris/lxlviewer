@@ -34,8 +34,6 @@ export default {
   },
   watch: {
   },
-  ready() {
-  },
 };
 </script>
 
