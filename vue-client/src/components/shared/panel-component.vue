@@ -111,7 +111,7 @@ export default {
       }, 1);
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$nextTick(() => {
       this.lockScroll(false);
       if (this.status.panelOpen) {

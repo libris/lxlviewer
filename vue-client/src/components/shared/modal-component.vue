@@ -99,7 +99,7 @@ export default {
       }, 1);
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$nextTick(() => {
       LayoutUtil.scrollLock(false);
     });

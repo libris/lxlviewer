@@ -227,7 +227,7 @@ export default {
       }
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.filterVisible === true) { // Make sure we unlock the scroll lock
       LayoutUtil.scrollLock(false);
     }

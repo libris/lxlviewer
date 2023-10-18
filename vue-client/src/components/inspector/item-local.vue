@@ -385,7 +385,7 @@ export default {
       }
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
   },
   created() {

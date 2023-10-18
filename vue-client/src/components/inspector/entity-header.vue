@@ -105,7 +105,7 @@ export default {
       return itemCountReady && this.totalReverseCount > 0 && this.totalReverseCount !== this.itemReverseCount;
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('scroll', throttle(this.handleScroll, 300));
   },
   mounted() {

@@ -51,7 +51,7 @@ export default {
     this.$nextTick(() => {
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
   },
 };

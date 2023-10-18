@@ -1,6 +1,7 @@
 <script>
 import { size } from 'lodash-es';
 import { mapGetters } from 'vuex';
+import { Dropdown } from 'floating-vue';
 import * as VocabUtil from 'lxljs/vocab';
 import { hasAutomaticShelfControlNumber } from '@/utils/shelfmark';
 import * as LayoutUtil from '@/utils/layout';
@@ -122,6 +123,7 @@ export default {
     },
   },
   components: {
+    Dropdown,
     PreviewCard,
     ReverseRelations,
   },
@@ -161,7 +163,7 @@ export default {
       }
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.isMaybeMagicShelfMark) {
       this.$store.commit('removeMagicShelfMark', this.actualParentPath);
     }
@@ -185,7 +187,12 @@ export default {
       :id="`formPath-${path}`"
       class="ItemEntity-content"
       v-show="!isCardWithData || !expanded">
-      <v-popover class="ItemEntity-popover" placement="bottom-start" @show="$refs.previewCard.populateData()">
+        <Dropdown
+          class="ItemEntity-popover"
+          placement="bottom-start"
+          :triggers="['hover', 'focus']"
+          @show="$refs.previewCard.populateData()"
+        >
         <div class="ItemEntity chip" 
           tabindex="0"
           ref="chip"
@@ -221,10 +228,10 @@ export default {
             </i>
           </div>
         </div>
-        <template slot="popover">
+        <template #popper>
           <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
         </template>
-      </v-popover> 
+      </Dropdown> 
     </div>
     
     <div class="ItemEntity-content ItemEntity-cardContainer" v-if="isCardWithData && expanded">
