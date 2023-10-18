@@ -18,7 +18,6 @@ export default {
     };
   },
   computed: {
-    translatePhrase,
     ...mapGetters([
       'inspector',
       'settings',
@@ -65,6 +64,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     getQuery(direction) {
       const queryObj = Object.assign({}, this.$route.meta.breadcrumb.query);
       queryObj._limit = this.range.itemsPerPage;
