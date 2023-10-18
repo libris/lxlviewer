@@ -1,5 +1,6 @@
 <script>
 import * as LayoutUtil from '@/utils/layout';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'validation-summary',

@@ -5,6 +5,7 @@
 import { mapGetters } from 'vuex';
 import LensMixin from '@/components/mixins/lens-mixin';
 import SummaryNode from '@/components/shared/summary-node.vue';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   mixins: [LensMixin],
