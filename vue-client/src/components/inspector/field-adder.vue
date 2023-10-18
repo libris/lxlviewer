@@ -7,6 +7,7 @@ import { filter, isArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
+import * as LayoutUtil from '@/utils/layout';
 import PanelComponent from '@/components/shared/panel-component.vue';
 import RoundButton from '@/components/shared/round-button.vue';
 import { translatePhrase, removeDomain, capitalize } from '@/utils/filters';
@@ -119,6 +120,9 @@ export default {
     translatePhrase,
     removeDomain,
     capitalize,
+    getKeybindText(eventName) {
+      return LayoutUtil.getKeybindingText(eventName);
+    },
     toggleFullView() {
       const user = this.user;
       user.settings.forceFullViewPanel = !user.settings.forceFullViewPanel;

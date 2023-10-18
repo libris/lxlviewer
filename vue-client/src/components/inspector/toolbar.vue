@@ -10,6 +10,7 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 import * as HttpUtil from '@/utils/http';
+import * as LayoutUtil from '@/utils/layout';
 import FieldAdder from '@/components/inspector/field-adder';
 import LensMixin from '@/components/mixins/lens-mixin';
 import FormMixin from '@/components/mixins/form-mixin';
@@ -100,6 +101,9 @@ export default {
     translatePhrase,
     labelByLang,
     convertResourceLink,
+    getKeybindText(eventName) {
+      return LayoutUtil.getKeybindingText(eventName);
+    },
     openTemplatePicker() {
       this.$refs.TemplatePicker.click();
     },
