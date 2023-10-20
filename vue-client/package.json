@@ -48,7 +48,6 @@
     "portal-vue": "^3.0.0",
     "querystring-es3": "^0.2.1",
     "stream-browserify": "^3.0.0",
-    "v-tooltip": "^2.0.2-rc.33",
     "vue": "^3.3.4",
     "vue-cli-plugin-style-resources-loader": "^0.1.4",
     "vue-clipboard2": "^0.3.0",
