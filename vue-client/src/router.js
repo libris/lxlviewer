@@ -5,6 +5,7 @@ import store from './store';
 // Import views
 import LandingPage from '@/views/LandingPage.vue';
 import Login from '@/views/Login.vue';
+import DirectoryCare from '@/views/DirectoryCare.vue';
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,7 +44,7 @@ const router = createRouter({
 			redirect: '/search/libris',
 		},
 		{
-			path: '/search/:perimeter?',
+			path: '/search/:perimeter',
 			name: 'Search',
 			component: () => import('@/views/Find.vue'),
 		},
@@ -57,7 +58,7 @@ const router = createRouter({
 			redirect: '/directory-care/holdings',
 		},
 		{
-			path: '/directory-care/:tool?',
+			path: '/directory-care/:tool',
 			name: 'Directory care',
       component: () => import('@/views/DirectoryCare.vue'),
 			meta: {
