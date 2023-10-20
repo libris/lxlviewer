@@ -218,7 +218,7 @@ export default {
             <div class="SearchWindow-extractControls">
               <div class="copy-title" v-if="canCopyTitle">
                 <label>
-                  <input type="checkbox" name="copyTitle" v-bind="copyTitle" @change="$emit('update:copyTitle', $event.target.value)" />
+                  <input v-bind="copyTitle" type="checkbox" name="copyTitle" @change="$emit('update:copyTitle', $event.target.value)" />
                   {{ translatePhrase("Copy title from") }} {{ labelByLang(this.editorData.mainEntity['@type']) }}
                 </label>
               </div>
