@@ -8,6 +8,7 @@ import ItemMixin from '@/components/mixins/item-mixin';
 import OverflowMixin from '@/components/mixins/overflow-mixin';
 import PreviewCard from '@/components/shared/preview-card';
 import { labelByLang, convertResourceLink, capitalize } from '@/utils/filters';
+import { Dropdown } from 'floating-vue';
 
 export default {
   name: 'summary-node',
@@ -59,6 +60,7 @@ export default {
     },
   },
   components: {
+    Dropdown,
     PreviewCard,
   },
   methods: {
@@ -83,7 +85,7 @@ export default {
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
-    <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
+    <Dropdown v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">
           <span v-if="fieldKey === 'instanceOf' && focusData['@type'] !== 'Work'">
@@ -93,10 +95,10 @@ export default {
         </router-link>
         <a v-if="!isLibrisResource" :href="convertResourceLink(focusData['@id'])">{{getItemLabel}}</a>
       </span>
-      <template slot="popover" v-if="hoverLinks">
+      <template #popper v-if="hoverLinks">
         <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
       </template>
-    </v-popover>
+    </Dropdown>
   </div>
 </template>
 

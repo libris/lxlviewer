@@ -5,6 +5,7 @@
 import { mapGetters } from 'vuex';
 import LensMixin from '@/components/mixins/lens-mixin';
 import SummaryNode from '@/components/shared/summary-node.vue';
+import { Dropdown } from 'floating-vue';
 import { translatePhrase } from '@/utils/filters';
 
 export default {
@@ -62,6 +63,7 @@ export default {
     },
   },
   components: {
+    Dropdown,
     SummaryNode,
   },
   mounted() {
@@ -81,12 +83,12 @@ export default {
         <span class="ChangeSet-author" :class="{ 'selected': selectedVersion == index }">
           <SummaryNode :is-static="true" :hover-links="false" :handle-overflow="false" v-if="changeSet.agent && !isGlobalChanges(changeSet)" :item="changeSet.agent" :is-last="true" :field-key="'agent'"/>
           <span v-if="isGlobalChanges(changeSet)">
-                <v-popover placement="bottom-start">
+                <Dropdown placement="bottom-start">
                   {{ translatePhrase('Libris global changes') }}
-                  <template slot="popover">
+                  <template #popper>
                     <span>{{changeSet.agent['@id']}}</span>
                   </template>
-                </v-popover>
+                </Dropdown>
           </span>
         </span>
       </div>
