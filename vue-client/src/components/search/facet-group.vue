@@ -216,15 +216,15 @@ export default {
       <facet v-for="facetItem in featuredFacets"
         :facet="facetItem" 
         :key="'featured_'+facetItem.link">
-        <encoding-level-icon
-          slot="icon"
-          v-if="group.dimension === 'meta.encodingLevel'"
-          :encodingLevel="facetItem.object['@id']" />
-        <type-icon
-          slot="icon"
-          :show-iconless="false"
-          v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
-          :type="facetItem.object['@id']" />
+        <template #icon>
+          <encoding-level-icon
+            v-if="group.dimension === 'meta.encodingLevel'"
+            :encodingLevel="facetItem.object['@id']" />
+          <type-icon
+            :show-iconless="false"
+            v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
+            :type="facetItem.object['@id']" />
+        </template>
       </facet>
       <hr v-show="featuredFacets.length > 0">
       <facet v-for="facetItem in normalFacets"

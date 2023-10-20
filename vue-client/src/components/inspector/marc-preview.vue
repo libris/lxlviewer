@@ -82,7 +82,7 @@ export default {
   <panel-component class="MarcPreview"
     @close="hide"
     title="Preview MARC21">
-    <template slot="panel-body">
+    <template #panel-body>
       <div class="">
         <div class="MarcPreview-body">
           <div class="MarcPreview-status" v-if="marcObj === null">

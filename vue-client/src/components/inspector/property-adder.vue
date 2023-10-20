@@ -274,7 +274,7 @@ export default {
       v-if="active"
       :title="modalTitle"
       @close="hide">
-      <template slot="panel-header-extra">
+      <template #panel-header-extra>
         <div class="PropertyAdderPanel-filterContainer form-group">
           <input id="field-adder-input"
             type="text" 
@@ -294,7 +294,7 @@ export default {
           </span>
         </div>
       </template>
-      <template slot="panel-header-after">
+      <template #panel-header-after>
         <div class="PropertyAdderPanel-columnHeaders">
           <!-- <span class="PropertyAdderPanel-addControl">
           </span> -->
@@ -306,7 +306,7 @@ export default {
           </span>
         </div>
       </template>
-      <template slot="panel-body">
+      <template #panel-body>
         <div>
           <ul class="PropertyAdderPanel-fieldList js-fieldlist">
             <li

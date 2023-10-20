@@ -182,7 +182,7 @@ export default {
         v-if="active"
         :title="translatePhrase('Link entity')"
         @close="hide()">
-        <template slot="panel-header-info">
+        <template #panel-header-info>
           <div class="PanelComponent-headerInfo help-tooltip-container"
             @mouseleave="showHelp = false">
             <i class="fa fa-question-circle icon icon--md"
@@ -213,7 +213,7 @@ export default {
             </div>
           </div>
         </template>
-        <template slot="panel-header-extra">
+        <template #panel-header-extra>
           <div class="SearchWindow-header search-header">
             <div class="SearchWindow-extractControls">
               <div class="copy-title" v-if="canCopyTitle">
@@ -264,7 +264,7 @@ export default {
           </div>
         </template>
 
-        <template slot="panel-body">
+        <template #panel-body>
           <panel-search-list
             v-if="!searchInProgress"
             class="SearchWindow-resultListContainer"
@@ -290,7 +290,7 @@ export default {
             <Spinner size="lg" :message="translatePhrase('Creating link')" />
           </div>
         </template>
-        <template slot="panel-footer">
+        <template #panel-footer>
           <div class="SearchWindow-resultControls" v-if="!searchInProgress && searchResult.length > 0" >
             <modal-pagination
               @go="go"

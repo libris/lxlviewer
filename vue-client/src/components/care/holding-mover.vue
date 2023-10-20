@@ -224,13 +224,15 @@ export default {
       @close="closeModal"
       title="Move was successful" 
       modal-type="info">
-      <div slot="modal-body" class="HoldingMover-allSuccessDialogBody">
-        <p>{{ translatePhrase('All selected holdings has been moved') }}.</p>
-        <p>{{ translatePhrase('Do you want to unmark the sender') }}?</p>
-        <div class="HoldingMover-allSuccessDialogBtnContainer">
-          <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ translatePhrase('Yes') }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ translatePhrase('No') }}</button>
+      <template #modal-body>
+        <div class="HoldingMover-allSuccessDialogBody">
+          <p>{{ translatePhrase('All selected holdings has been moved') }}.</p>
+          <p>{{ translatePhrase('Do you want to unmark the sender') }}?</p>
+          <div class="HoldingMover-allSuccessDialogBtnContainer">
+            <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ translatePhrase('Yes') }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ translatePhrase('No') }}</button>
+          </div>
         </div>
-      </div>
+      </template>
     </modal-component>
   </div>
 </template>

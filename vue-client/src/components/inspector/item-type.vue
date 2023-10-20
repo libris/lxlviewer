@@ -143,23 +143,25 @@ export default {
       :width="'570px'"
       @close="closeUnlockModal()"
       v-if="unlockModalOpen">
-      <div slot="modal-body" class="ChangeTypeWarningModal-body">
-        <p>
-          <strong>{{ numberOfRelations }} {{ numberOfRelations === 1 ? 'annan entitet' : 'andra entiteter' }}</strong> länkar till denna entitet.
-        </p>
-        <p>
-          Observera att byte av typ kan påverka de beskrivningar som länkar hit. Om du är osäker på konsekvenserna bör du ta del av hjälptexten innan du fortsätter.
-        </p>
-        <p><a href="https://libris.kb.se/katalogisering/help/use-the-editor" target="_blank">Läs mer om byte av typ</a></p>
-        <div class="ChangeTypeWarningModal-buttonContainer">          
-          <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">{{ translatePhrase('Cancel') }}</button>
-          <!-- <button class="btn btn-grey btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ translatePhrase('Cancel') }}</button> -->
-          <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
-            <i class="icon icon--white fa fa-unlock-alt"></i>
-            {{ translatePhrase('Unlock') }}
-          </button>
+      <template #modal-body>
+        <div class="ChangeTypeWarningModal-body">
+          <p>
+            <strong>{{ numberOfRelations }} {{ numberOfRelations === 1 ? 'annan entitet' : 'andra entiteter' }}</strong> länkar till denna entitet.
+          </p>
+          <p>
+            Observera att byte av typ kan påverka de beskrivningar som länkar hit. Om du är osäker på konsekvenserna bör du ta del av hjälptexten innan du fortsätter.
+          </p>
+          <p><a href="https://libris.kb.se/katalogisering/help/use-the-editor" target="_blank">Läs mer om byte av typ</a></p>
+          <div class="ChangeTypeWarningModal-buttonContainer">          
+            <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">{{ translatePhrase('Cancel') }}</button>
+            <!-- <button class="btn btn-grey btn--md" ref="cancelUnlockButton" @click="closeUnlockModal()">{{ translatePhrase('Cancel') }}</button> -->
+            <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
+              <i class="icon icon--white fa fa-unlock-alt"></i>
+              {{ translatePhrase('Unlock') }}
+            </button>
+          </div>
         </div>
-      </div>
+      </template>
     </modal-component>
   </div>
 </template>

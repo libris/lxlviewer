@@ -1046,52 +1046,62 @@ export default {
 
     <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemoveRecordModal"
       v-if="removeInProgress">
-      <div slot="modal-header" class="RemoveRecordModal-header">
-        <header>
-          {{ translatePhrase('Remove') }} {{ labelByLang(this.recordType) }}?
-        </header>
-      </div>
-      <div slot="modal-body" class="RemoveRecordModal-body">
-        <p>
-          {{ translatePhrase('This operation can\'t be reverted') }}
-        </p>
-        <div class="RemoveRecordModal-buttonContainer">
-          <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ translatePhrase('Remove') }} {{ labelByLang(this.recordType).toLowerCase() }}</button>
-          <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ translatePhrase('Cancel') }}</button>
+      <template #modal-header>
+        <div class="RemoveRecordModal-header">
+          <header>
+            {{ translatePhrase('Remove') }} {{ labelByLang(this.recordType) }}?
+          </header>
         </div>
-      </div>
+      </template>
+      <template #modal-body>
+        <div class="RemoveRecordModal-body">
+          <p>
+            {{ translatePhrase('This operation can\'t be reverted') }}
+          </p>
+          <div class="RemoveRecordModal-buttonContainer">
+            <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ translatePhrase('Remove') }} {{ labelByLang(this.recordType).toLowerCase() }}</button>
+            <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ translatePhrase('Cancel') }}</button>
+          </div>
+        </div>
+      </template>
     </modal-component>
 
     <modal-component class="EmbellishFromIdModal" :title="[embellishFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']" v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false">
-      <div slot="modal-body" class="EmbellishFromIdModal-body">
-        <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === true">
-          <p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>
-          <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>
-          <p>
-            Du kan välja mellan att <strong>utöka</strong> (<i class="fa text-success fa-plus"></i>) eller <strong>ersätta</strong> (<i class="fa text-accent3 fa-arrow-right"></i>) en egenskap.
-            Att <strong>utöka</strong> innebär att information läggs till i den berikade posten.
-            <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.
-          </p>
+      <template #modal-body>
+        <div class="EmbellishFromIdModal-body">
+          <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === true">
+            <p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>
+            <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>
+            <p>
+              Du kan välja mellan att <strong>utöka</strong> (<i class="fa text-success fa-plus"></i>) eller <strong>ersätta</strong> (<i class="fa text-accent3 fa-arrow-right"></i>) en egenskap.
+              Att <strong>utöka</strong> innebär att information läggs till i den berikade posten.
+              <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.
+            </p>
+          </div>
+          <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === false">
+            Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.
+          </div>
+          <div class="input-group EmbellishFromIdModal-form">
+            <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ translatePhrase('ID') }}/{{ translatePhrase('Link') }}</label>
+            <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" />
+            <span class="input-group-btn">
+              <button class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton" @click="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)">{{ translatePhrase('Continue') }}</button>
+            </span>
+          </div>
         </div>
-        <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === false">
-          Med funktionen <em>Berika från ID</em> kan du berika en post med egenskaper från en annan. För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.
-        </div>
-        <div class="input-group EmbellishFromIdModal-form">
-          <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ translatePhrase('ID') }}/{{ translatePhrase('Link') }}</label>
-          <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" />
-          <span class="input-group-btn">
-            <button class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton" @click="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)">{{ translatePhrase('Continue') }}</button>
-          </span>
-        </div>
-      </div>
+      </template>
     </modal-component>
 
     <modal-component class="DetailedEnrichmentModal" :title="translatePhrase('Detailed enrichment')" v-if="inspector.status.detailedEnrichmentModal.open === true" @close="closeDetailedEnrichmentModal" :backdrop-close="false">
-      <DetailedEnrichment slot="modal-body" :floating-dialogs="true" />
+      <template #modal-body>
+        <DetailedEnrichment :floating-dialogs="true" />
+      </template>
     </modal-component>
 
     <fullscreen-panel v-if="$route.params.view == 'history'">
-      <version-history slot="content" />
+      <template #content>
+        <version-history />
+      </template>
     </fullscreen-panel>
   </div>
 </template>

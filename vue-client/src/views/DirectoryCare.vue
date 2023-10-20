@@ -143,17 +143,19 @@ export default {
         title="Directory care list adjusted" 
         modal-type="info" 
         @close="closeModal">
-        <div slot="modal-body" class="DirectoryCare-modalBody">
-          <p>{{ `${translatePhrase('The following resources could not be retrieved')} ${translatePhrase('because they no longer exist. They have been removed from the directory care list')}` }}:</p>
-          <ul>
-            <li v-for="error in errors.removed" :key="error['@id']">
-              {{error.label}}
-            </li>
-          </ul>
-          <div class="DirectoryCare-modalBtnContainer">
-            <button class="btn btn-primary btn--md" @click="closeModal">OK</button>
+        <template #modal-body>
+          <div class="DirectoryCare-modalBody">
+            <p>{{ `${translatePhrase('The following resources could not be retrieved')} ${translatePhrase('because they no longer exist. They have been removed from the directory care list')}` }}:</p>
+            <ul>
+              <li v-for="error in errors.removed" :key="error['@id']">
+                {{error.label}}
+              </li>
+            </ul>
+            <div class="DirectoryCare-modalBtnContainer">
+              <button class="btn btn-primary btn--md" @click="closeModal">OK</button>
+            </div>
           </div>
-        </div>
+        </template>
       </modal-component>
     </div>
   </div>
