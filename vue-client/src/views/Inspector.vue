@@ -829,7 +829,7 @@ export default {
       }
     },
     '$route.params.fnurgel'(val, oldVal) {
-      if (val !== oldVal) {
+      if (val && val !== oldVal) {
         this.documentId = val;
         this.initializeRecord();
       }
