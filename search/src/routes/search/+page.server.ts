@@ -1,9 +1,10 @@
 import { redirect } from '@sveltejs/kit';
 import { PUBLIC_API_PATH } from '$env/static/public';
 import getFnurgelFromUri from '$lib/utils/getFnurgelFromUri';
-import type { PageLoad } from './$types';
+import type { PageServerLoad } from './$types';
 import getRecordContributions from '$lib/utils/getRecordContributions';
 import propertyChains from '$lib/assets/json/propertyChains.json';
+import * as DisplayUtil from 'lxljs/display';
 
 export const load = (async ({ fetch, url, parent }) => {
 	if (!url.searchParams.size) {
@@ -13,14 +14,16 @@ export const load = (async ({ fetch, url, parent }) => {
 	const res = await fetch(`${PUBLIC_API_PATH}/find.jsonld?${url.searchParams.toString()}`);
 	const records = await res.json();
 
-	const { displayUtil, resources } = await parent();
+	const { resources } = await parent();
 
 	const items = records.items.map((item) => ({
 		id: item['@id'],
 		fnurgel: getFnurgelFromUri(item['@id']),
-		title: displayUtil.getItemLabel(item.hasTitle?.[0]), // should we use chip here? Linking to contributors won't be possible if we only get strings in return...,
+		title: DisplayUtil.getItemLabel(item.hasTitle?.[0], resources, {}, { language: 'sv' }), // should we use chip here? Linking to contributors won't be possible if we only get strings in return...,
 		contributions: getRecordContributions(item, resources),
-		languages: item.language?.map((lang) => displayUtil.getItemLabel(lang))
+		languages: item.language?.map((lang) =>
+			DisplayUtil.getItemLabel(lang, resources, {}, { language: 'sv' })
+		)
 	}));
 
 	const selectedFacets = records.search.mapping
@@ -30,7 +33,10 @@ export const load = (async ({ fetch, url, parent }) => {
 				id: mapping.variable,
 				label:
 					mapping.value ||
-					displayUtil.getItemLabel(mapping?.object).replace('https://id.kb.se/', ''),
+					DisplayUtil.getItemLabel(mapping?.object, resources, {}, { language: 'sv' }).replace(
+						'https://id.kb.se/',
+						''
+					),
 				groupLabel: mapping.variable, // TODO: language should'nt be hardcoded
 				link: mapping?.up?.['@id'].replace('/find?', '/search?')
 			};
@@ -45,7 +51,12 @@ export const load = (async ({ fetch, url, parent }) => {
 					items: group.observation.map((observation) => {
 						return {
 							id: observation.view?.['@id'],
-							label: displayUtil.getItemLabel(observation.object).replace('https://id.kb.se/', ''),
+							label: DisplayUtil.getItemLabel(
+								observation.object,
+								resources,
+								{},
+								{ language: 'sv' }
+							).replace('https://id.kb.se/', ''),
 							link: observation.view?.['@id'].replace('/find?', '/search?'),
 							totalItems: observation.totalItems
 						};
@@ -61,4 +72,4 @@ export const load = (async ({ fetch, url, parent }) => {
 		selectedFacets,
 		facetGroups
 	};
-}) satisfies PageLoad;
+}) satisfies PageServerLoad;

@@ -1,6 +1,7 @@
-import type { PageLoad } from './$types';
+import type { PageServerLoad } from './$types';
 
-export const load: PageLoad = () => {
+export const load: PageServerLoad = () => {
+	// Data should probably come from some kind of CMS...
 	return {
 		featuredSubjects: [
 			{

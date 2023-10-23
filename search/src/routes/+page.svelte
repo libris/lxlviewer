@@ -1,9 +1,9 @@
 <script lang="ts">
 	import logo from '$lib/assets/libris_logotyp.gif';
 	import Search from '$lib/components/Search.svelte';
-	import type { PageData } from '../$types';
+	import type { PageServerData } from './$types';
 
-	export let data: PageData;
+	export let data: PageServerData;
 </script>
 
 <main>

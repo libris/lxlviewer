@@ -1,9 +1,8 @@
-import { initLxljsUtils } from 'lxljs';
+import * as DisplayUtil from 'lxljs/display';
 import getFnurgelFromUri from '$lib/utils/getFnurgelFromUri';
 
 function getRecordContributions(record, resources) {
 	/** TODO: Investigate if we can get resources automatically from layout or context */
-	const { displayUtil } = initLxljsUtils(resources, { language: 'sv' });
 	return record.contribution
 		?.map((contribution) => {
 			const agent = Array.isArray(contribution.agent) ? contribution.agent[0] : contribution.agent;
@@ -11,9 +10,11 @@ function getRecordContributions(record, resources) {
 				role:
 					contribution.role &&
 					(Array.isArray(contribution.role)
-						? contribution.role?.map((role) => displayUtil.getItemLabel(role))
-						: displayUtil.getItemLabel(contribution.role)),
-				agent: displayUtil.getItemLabel(agent),
+						? contribution.role?.map((role) =>
+								DisplayUtil.getItemLabel(role, resources, {}, { language: 'sv' })
+						  )
+						: DisplayUtil.getItemLabel(contribution.role, resources, {}, { language: 'sv' })),
+				agent: DisplayUtil.getItemLabel(agent, resources, {}, { language: 'sv' }),
 				fnurgel: agent['@id'] ? getFnurgelFromUri(agent['@id']) : undefined,
 				isPrimary:
 					contribution['@type'] === 'PrimaryContribution' ||

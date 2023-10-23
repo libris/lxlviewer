@@ -1,6 +1,7 @@
 import { PUBLIC_API_PATH } from '$env/static/public';
 import { error } from '@sveltejs/kit';
-import type { PageLoad } from './$types';
+import * as DisplayUtil from 'lxljs/display';
+import type { PageServerLoad } from './$types';
 
 export const load = (async ({ params, fetch, parent }) => {
 	const res = await fetch(`${PUBLIC_API_PATH}/${params.fnurgel}/data.jsonld`);
@@ -10,12 +11,13 @@ export const load = (async ({ params, fetch, parent }) => {
 		throw error(401, 'Not found');
 	}
 
-	const { displayUtil } = await parent();
+	const { resources } = await parent();
 
 	const item = record['@graph']?.[1];
-
 	return {
-		title: item.hasTitle ? displayUtil.getItemLabel(item?.hasTitle?.[0]) : 'Titel här',
+		title: item.hasTitle
+			? DisplayUtil.getItemLabel(item?.hasTitle?.[0], resources, {}, { language: 'sv' })
+			: 'Titel här',
 		tempJson: item
 	};
-}) satisfies PageLoad;
+}) satisfies PageServerLoad;
