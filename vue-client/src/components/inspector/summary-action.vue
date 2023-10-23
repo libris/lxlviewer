@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import Button from '@/components/shared/button.vue';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'summary-action-button',
@@ -28,6 +29,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     action() {
       this.$emit('action');
     },
