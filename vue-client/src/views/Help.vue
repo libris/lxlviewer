@@ -137,9 +137,8 @@ export default {
       if (json === null) {
         return {};
       }
-      delete json.default;
-      delete json.readme;
-      return json;
+      const { default: _default, readme, ...helpDocsRest } = json; // remove default and readme from help docs
+      return helpDocsRest;
     },
   },
 };

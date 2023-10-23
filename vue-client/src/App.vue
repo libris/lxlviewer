@@ -54,7 +54,6 @@ import * as StringUtil from 'lxljs/string';
 
 // TODO: Support .jsonld files in Vite (copy pasted now in lxl-helpdocs)
 import i18n from '@/resources/json/i18n.json';
-import helpDocsJson from '../../../lxl-helpdocs/build/help.json';
 import displayGroupsJson from '@/resources/json/displayGroups.json';
 import baseTemplates from '@/resources/json/baseTemplates.json';
 import combinedTemplates from '@/resources/json/combinedTemplates.json';
@@ -324,12 +323,15 @@ export default {
     fetchHelpDocs() {
       if (this.settings.mockHelp) {
         window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
-        this.helpDocs = helpDocsJson;
+        // eslint-disable-next-line import/no-extraneous-dependencies
+        import('@/../../../lxl-helpdocs/build/help.json').then((helpDocs) => {
+          this.$store.dispatch('setHelpDocs', helpDocs);
+        });
       } else {
         fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
           if (result.status === 200) {
             result.json().then((body) => {
-              this.helpDocs = body;
+              this.$store.dispatch('setHelpDocs', body);
             });
           }
         }, (error) => {
