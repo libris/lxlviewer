@@ -55,7 +55,6 @@
     "vue-meta": "^2.4.0",
     "vue-resize": "^2.0.0-alpha.1",
     "vue-router": "^4.2.4",
-    "vue-simple-spinner": "^1.2.8",
     "vue-template-compiler": "^2.7.14",
     "vuex": "^4.1.0",
     "whatwg-fetch": "^3.0.0"
