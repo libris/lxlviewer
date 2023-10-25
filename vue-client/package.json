@@ -3,8 +3,8 @@
   "version": "1.32.2",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "serve": "vite serve",
+    "dev": "vite --port 5000",
+    "serve": "vite serve --port 5000",
     "build": "vite build",
     "preview": "vite preview",
     "postinstall": "yarn --cwd ../lxljs/ install --frozen-lockfile",
