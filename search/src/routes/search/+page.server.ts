@@ -6,6 +6,7 @@ import type { PageServerLoad } from './$types';
 import getRecordContributions from '$lib/utils/getRecordContributions';
 import propertyChains from '$lib/assets/json/propertyChains.json';
 import * as DisplayUtil from 'lxljs/display';
+import type { FindResponse } from '$lib/types';
 
 export const load = (async ({ fetch, url }) => {
 	if (!url.searchParams.size) {
@@ -18,7 +19,7 @@ export const load = (async ({ fetch, url }) => {
 	]);
 
 	const resources = preprocessResources(await resourcesRes.json());
-	const records = await recordsRes.json();
+	const records = (await recordsRes.json()) as FindResponse;
 
 	const items = records.items.map((item) => ({
 		id: item['@id'],
@@ -74,6 +75,7 @@ export const load = (async ({ fetch, url }) => {
 		totalItems: records.totalItems,
 		offset: records.offset,
 		selectedFacets,
-		facetGroups
+		facetGroups,
+		records
 	};
 }) satisfies PageServerLoad;
