@@ -6,12 +6,16 @@
 	export let data: PageServerData;
 </script>
 
+<svelte:head>
+	<title>Libris</title>
+	<meta name="description" content="This is where the description goes for SEO" />
+</svelte:head>
 <main>
 	<div class="hero">
 		<img class="logo" src={logo} width={125} height={25} alt="LIBRIS" />
 		<h1>Sök i Sveriges gemensamma bibliotekskatalog.</h1>
 		<div class="search">
-			<Search tabindex={1} autofocus />
+			<Search autofocus />
 		</div>
 		<div class="links">
 			<a href="/subjects">Bläddra ämnesvis</a> • <a href="/about">Läs mer om Libris</a>

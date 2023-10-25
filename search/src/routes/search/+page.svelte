@@ -7,6 +7,10 @@
 	$: q = $page.url.searchParams.get('q')?.trim();
 </script>
 
+<svelte:head>
+	<title>{q} | Libris</title>
+	<meta name="description" content="This is where the description goes for SEO" />
+</svelte:head>
 <main class="search-page">
 	<div class="results">
 		<h1 class="results-title">Sökresultat för: {q}</h1>

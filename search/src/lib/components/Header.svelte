@@ -69,7 +69,7 @@
 	{/if}
 	{#if withSearch}
 		<div class="search">
-			<Search tabindex={1} />
+			<Search />
 		</div>
 	{/if}
 	<div class="actions">
@@ -97,6 +97,7 @@
 				on:click={toggleMenu}
 				aria-expanded={expandedMenu}
 				aria-controls="menu"
+				aria-label="Menu"
 			>
 				{#if expandedMenu}
 					<IconClose width={24} height={24} />
