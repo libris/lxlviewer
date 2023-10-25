@@ -1,20 +1,24 @@
 import { redirect } from '@sveltejs/kit';
 import { PUBLIC_API_PATH } from '$env/static/public';
+import { preprocessResources } from 'lxljs/vocab';
 import getFnurgelFromUri from '$lib/utils/getFnurgelFromUri';
 import type { PageServerLoad } from './$types';
 import getRecordContributions from '$lib/utils/getRecordContributions';
 import propertyChains from '$lib/assets/json/propertyChains.json';
 import * as DisplayUtil from 'lxljs/display';
 
-export const load = (async ({ fetch, url, parent }) => {
+export const load = (async ({ fetch, url }) => {
 	if (!url.searchParams.size) {
 		throw redirect(303, `/`); // redirect to home page if no search params are given
 	}
 
-	const res = await fetch(`${PUBLIC_API_PATH}/find.jsonld?${url.searchParams.toString()}`);
-	const records = await res.json();
+	const [resourcesRes, recordsRes] = await Promise.all([
+		fetch('/api/resources'),
+		fetch(`${PUBLIC_API_PATH}/find.jsonld?${url.searchParams.toString()}`)
+	]);
 
-	const { resources } = await parent();
+	const resources = preprocessResources(await resourcesRes.json());
+	const records = await recordsRes.json();
 
 	const items = records.items.map((item) => ({
 		id: item['@id'],
