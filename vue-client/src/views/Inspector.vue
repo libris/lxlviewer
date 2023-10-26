@@ -495,14 +495,8 @@ export default {
     },
     addEmptyChangeNote() {
       // TODO: Don't generate a changeNote when creating a record from a template
-      const record = this.inspector.data.record;
       const emptyChangeNote = { '@type': 'ChangeNote', label: [''] };
-      let hasChangeNote = cloneDeep(record.hasChangeNote);
-      if (hasChangeNote) {
-        hasChangeNote.push(emptyChangeNote);
-      } else {
-        hasChangeNote = [emptyChangeNote];
-      }
+
       this.$store.dispatch('setInspectorStatusValue', {
         property: 'lastAdded',
         value: 'record.hasChangeNote',
@@ -510,7 +504,7 @@ export default {
       this.$store.dispatch('updateInspectorData', {
         changeList: [{
           path: 'record.hasChangeNote',
-          value: hasChangeNote,
+          value: emptyChangeNote,
         }],
         addToHistory: false,
       });
@@ -518,7 +512,7 @@ export default {
         property: 'embellished',
         value: [{
           path: 'record.hasChangeNote',
-          value: hasChangeNote,
+          value: emptyChangeNote,
         }],
       });
       this.justEmbellished = true;
