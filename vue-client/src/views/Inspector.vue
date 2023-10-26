@@ -22,7 +22,6 @@ import TabMenu from '@/components/shared/tab-menu';
 import ValidationSummary from '@/components/inspector/validation-summary';
 import FullscreenPanel from '../components/shared/fullscreen-panel.vue';
 import VersionHistory from '../components/inspector/version-history.vue';
-import ChangeNotes from '../utils/changenotes';
 
 export default {
   name: 'Inspector',
@@ -451,6 +450,10 @@ export default {
       if (this.recordType === 'Work' && this.inspector.data.record.recordStatus === 'marc:New') {
         this.addCataloguersNote();
       }
+      // Add a change note for the user to input her commit message
+      if (this.recordType === 'Work' || this.recordType === 'Instance') {
+        this.addEmptyChangeNote();
+      }
     },
     checkForMissingHeldBy() {
       const mainEntity = this.inspector.data.mainEntity;
@@ -490,12 +493,42 @@ export default {
         });
       }
     },
-    applyChangeNotes() {
-      if (this.inspector.changeNotes) {
-        Object.values(this.inspector.changeNotes).forEach((match) => {
-          ChangeNotes.completeChange(this, match);
-        });
+    addEmptyChangeNote() {
+      // TODO: Don't generate a changeNote when creating a record from a template
+      const record = this.inspector.data.record;
+      const emptyChangeNote = { '@type': 'ChangeNote', label: [''] };
+      let hasChangeNote = cloneDeep(record.hasChangeNote);
+      if (hasChangeNote) {
+        hasChangeNote.push(emptyChangeNote);
+      } else {
+        hasChangeNote = [emptyChangeNote];
       }
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'lastAdded',
+        value: 'record.hasChangeNote',
+      });
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [{
+          path: 'record.hasChangeNote',
+          value: hasChangeNote,
+        }],
+        addToHistory: false,
+      });
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'embellished',
+        value: [{
+          path: 'record.hasChangeNote',
+          value: hasChangeNote,
+        }],
+      });
+      this.justEmbellished = true;
+      setTimeout(() => {
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'embellished',
+          value: [],
+        });
+        this.justEmbellished = false;
+      }, 2000);
     },
     startEditing() {
       this.$store.dispatch('setOriginalData', this.inspector.data);
@@ -689,8 +722,6 @@ export default {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
 
       const RecordId = this.inspector.data.record['@id'];
-      this.applyChangeNotes();
-
       let obj = null;
       try {
         obj = this.getPackagedItem();
@@ -813,7 +844,6 @@ export default {
     },
     async preSaveHook(obj) {
       await checkAutoShelfControlNumber(obj, this.settings, this.user);
-      await this.$store.dispatch('setChangeNotes', {});
       return obj;
     },
   },

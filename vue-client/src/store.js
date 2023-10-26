@@ -216,10 +216,6 @@ const store = new Vuex.Store({
       }
       // Set the new values
       each(payload.changeList, (node) => {
-        const match = state.changeNoteHandler.computeCategoryMatchFor(state, inspectorData, node.path);
-        if (match) {
-          state.inspector.changeNotes[match.categoryId] = match;
-        }
         /**
          * Skip updating inspector data if changeList value is EXTRACT_ON_SAVE, which indicates that the
          * item should be extracted first while saving (the values of the item should be unchanged until the
