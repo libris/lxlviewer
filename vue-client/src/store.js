@@ -7,7 +7,6 @@ import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
 import settings from './settings';
-import ChangeNotes from './utils/changenotes';
 
 const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
 
@@ -79,7 +78,6 @@ const store = new Vuex.Store({
       event: [],
       magicShelfMarks: [],
       extractItemsOnSave: {},
-      changeNotes: {},
     },
     status: {
       userIdle: false,
@@ -99,7 +97,6 @@ const store = new Vuex.Store({
       failedRemoteDatabases: '',
       hintSigelChange: false,
     },
-    changeNoteHandler: new ChangeNotes(),
     user: User.getUserObject(),
     userDatabase: null,
     userStorage: {
@@ -168,9 +165,6 @@ const store = new Vuex.Store({
     },
     setCompositeHistoryData(state, data) {
       state.inspector.compositeHistoryData = data;
-    },
-    setChangeNotes(state, data) {
-      state.inspector.changeNotes = data;
     },
     addToLanguageCache(state, data) {
       const languageCache = cloneDeep(state.inspector.languageCache);
@@ -429,7 +423,6 @@ const store = new Vuex.Store({
     display: state => state.resources.display,
     context: state => state.resources.context,
     supportedTags: state => state.inspector.supportedTags.data,
-    changeNotes: state => state.changeNotes,
   },
   actions: {
     addExtractItemOnSave({ commit, dispatch, state }, { path, item }) {
@@ -899,9 +892,6 @@ const store = new Vuex.Store({
       });
 
       return promise;
-    },
-    setChangeNotes({ commit }, data) {
-      commit('setChangeNotes', data);
     },
   },
 });
