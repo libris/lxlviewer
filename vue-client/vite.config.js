@@ -58,6 +58,7 @@ export default defineConfig({
           @import "@/styles/_fonts.less";
           @import '@/styles/_icons.less';
           @import '@/styles/_utils.less';
+          @import '@/styles/_globals.less';
         `,
       },
     },
