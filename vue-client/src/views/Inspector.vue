@@ -495,7 +495,7 @@ export default {
     },
     addEmptyChangeNote() {
       // TODO: Don't generate a changeNote when creating a record from a template
-      const emptyChangeNote = { '@type': 'ChangeNote', label: [''] };
+      const emptyChangeNote = { '@type': 'ChangeNote', comment: [''] };
 
       this.$store.dispatch('setInspectorStatusValue', {
         property: 'lastAdded',
@@ -522,7 +522,7 @@ export default {
           value: [],
         });
         this.justEmbellished = false;
-      }, 2000);
+      }, 3000);
     },
     startEditing() {
       this.$store.dispatch('setOriginalData', this.inspector.data);
