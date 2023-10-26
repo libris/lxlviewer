@@ -494,7 +494,6 @@ export default {
       }
     },
     addEmptyChangeNote() {
-      // TODO: Don't generate a changeNote when creating a record from a template
       const emptyChangeNote = { '@type': 'ChangeNote', comment: [''] };
       
       this.$store.dispatch('updateInspectorData', {
