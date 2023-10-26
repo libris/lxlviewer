@@ -81,7 +81,17 @@ export default {
   },
   watch: {
     'inspector.event'(val) {
-      this.$emit(`${val.value}`);
+      if (val.name === 'form-control') {
+        switch (val.value) {
+          case 'collapse-item':
+            this.collapse();
+            break;
+          case 'expand-item':
+            this.expand();
+            break;
+          default:
+        }
+      }
     },
     'status.panelOpen'(val) {
       if (this.isNewlyAdded && !val) {        
@@ -128,12 +138,6 @@ export default {
     ReverseRelations,
   },
   created() {
-    this.$on('collapse-item', () => {
-      this.collapse();
-    });
-    this.$on('expand-item', () => {
-      this.expand();
-    });
     if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
       this.expand();
     }

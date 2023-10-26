@@ -61,14 +61,6 @@ export default {
       return false;
     },
   },
-  created() {
-    this.$on('collapse-item', () => {
-      this.collapse();
-    });
-    this.$on('expand-item', () => {
-      this.expand();
-    });
-  },
   mounted() {
     if (this.isInForm || this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
       this.expand();
@@ -76,7 +68,17 @@ export default {
   },
   watch: {
     'inspector.event'(val) {
-      this.$emit(`${val.value}`);
+      if (val.name === 'form-control') {
+        switch (val.value) {
+          case 'collapse-item':
+            this.collapse();
+            break;
+          case 'expand-item':
+            this.expand();
+            break;
+          default:
+        }
+      }
     },
   },
   methods: {

@@ -362,7 +362,23 @@ export default {
       }
     },
     'inspector.event'(val) {
-      this.$emit(`${val.value}`);
+      if (val.name === 'form-control') {
+        switch (val.value) {
+          case 'collapse-item':
+            if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
+                || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+              this.collapse();
+            }
+            break;
+          case 'expand-item':
+            if (this.getPath.startsWith(this.inspector.status.focus)
+                || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+              this.expand();
+            }
+            break;
+          default:
+        }
+      }
     },
     shouldExpand(val) {
       if (val) {
@@ -389,18 +405,6 @@ export default {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
   },
   created() {
-    this.$on('collapse-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
-        this.collapse();
-      }
-    });
-    this.$on('expand-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus)
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
-        this.expand();
-      }
-    });
     if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
       this.expand();
     }

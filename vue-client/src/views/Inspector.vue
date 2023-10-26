@@ -868,6 +868,14 @@ export default {
             break;
           default:
         }
+      } else if (val.name === 'form-control') {
+        switch (val.value) {
+          case 'duplicate-item':
+            this.duplicateItem();
+            break;
+          default:
+            break;
+        }
       } else if (val.name === 'apply-template') {
         this.applyFieldsFromTemplate(val.value);
       } else if (val.name === 'open-embellish-from-id') {
@@ -886,9 +894,6 @@ export default {
         this.saveQueued = null;
       }
     },
-  },
-  created() {
-    this.$on('duplicate-item', this.duplicateItem);
   },
   computed: {
     ...mapGetters([

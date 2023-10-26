@@ -56,9 +56,6 @@ export default {
     'inspector.event'(val) {
       if (val.name === 'form-control') {
         switch (val.value) {
-          case 'duplicate-item':
-            this.handleCopy();
-            break;
           case 'edit-item':
             this.edit();
             break;
@@ -315,11 +312,6 @@ export default {
       }, (error) => {
         this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${StringUtil.getUiPhraseByLang(error, this.user.settings.language, this.resources.i18n)}` });
       });
-    },
-    handleCopy() {
-      if (this.user.isLoggedIn) {
-        this.$parent.$emit('duplicate-item');
-      }
     },
   },
   computed: {
@@ -591,7 +583,7 @@ export default {
         <li class="Toolbar-menuItem inSubMenu" v-show="showEmbellishFromRecordSubMenu">
           <a class="Toolbar-menuLink" @click="openTemplatePicker">
           <i class="fa fa-fw fa-upload"></i>
-           {{ translatePhrase('From file') }}
+          {{ translatePhrase('From file') }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="user.isLoggedIn && inspector.status.editing">
