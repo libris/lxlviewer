@@ -178,11 +178,10 @@ export default {
 
 <template>
   <nav class="FacetGroup" 
-    :class="{'has-scroll' : hasScroll}"
+    :class="{'has-scroll' : hasScroll, 'is-expanded' : isExpanded, }"
     :aria-labelledby="facetLabelByLang(group.dimension)">
     <div class="FacetGroup-header">
       <h4 class="FacetGroup-title uppercaseHeading--bold"
-        :class="{'is-expanded' : isExpanded}"
         @click="toggleExpanded()"
         @keyup.enter="toggleExpanded()"
         tabindex="0"
@@ -211,8 +210,7 @@ export default {
         </ul>
       </div>
     </div>
-    <ul class="FacetGroup-list"
-      :class="{'is-expanded' : isExpanded, 'has-scroll' : hasScroll}">
+    <ul class="FacetGroup-list">
       <facet v-for="facetItem in featuredFacets"
         :facet="facetItem" 
         :key="'featured_'+facetItem.link">
@@ -230,15 +228,17 @@ export default {
       <facet v-for="facetItem in normalFacets"
         :facet="facetItem" 
         :key="facetItem.link">
-        <encoding-level-icon
-          slot="icon"
-          v-if="group.dimension === 'meta.encodingLevel'"
-          :encodingLevel="facetItem.object['@id']" />
-        <type-icon
-          slot="icon"
-          :show-iconless="false"
-          v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
-          :type="facetItem.object['@id']" />
+        <template #icon>
+          <encoding-level-icon
+            slot="icon"
+            v-if="group.dimension === 'meta.encodingLevel'"
+            :encodingLevel="facetItem.object['@id']" />
+          <type-icon
+            slot="icon"
+            :show-iconless="false"
+            v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
+            :type="facetItem.object['@id']" />
+        </template>
       </facet>
     </ul>
     <span 
@@ -253,11 +253,10 @@ export default {
 <style lang="less">
 .FacetGroup {
   // width: 230px;
-  margin-bottom: 15px;
 
   &-header {
     display: flex;
-    margin: 10px 0 8px 0;
+    margin: 10px 0 7px 0;
     align-items: center;
     line-height: 1;
     justify-content: space-between;
@@ -278,6 +277,7 @@ export default {
       color: @brand-primary;
     }
   }
+
   &-sortSelectDropdown {
     position: absolute;
     margin-top: 0.25em;
@@ -290,13 +290,16 @@ export default {
     font-size: 1.3rem;
     border-radius: 3px;
     overflow: hidden;
+
     li {
       background-color: @neutral-color;
       padding: 0.5em;
       white-space: nowrap;
+
       &.active {
         color: @brand-primary;
       }
+
       &:hover {
         background-color: @brand-primary;
         color: @neutral-color;
@@ -316,14 +319,8 @@ export default {
       font-weight: normal;
       color: @brand-primary;
       display: inline-block;
-      margin-right: 5px;
+      margin: 0 8px 5px 0;
       transition: transform 0.1s ease;
-    }
-
-    &.is-expanded {
-      &::before {
-        transform: rotate(90deg);
-      }
     }
   }
 
@@ -336,22 +333,30 @@ export default {
       margin: 0;
       border-color: @grey-light;
     }
-
-    &.is-expanded {
-      margin-top: 5px;
-      display: block;
-    }
-
-    &.has-scroll {
-      max-height: 437px;
-      overflow-y: scroll;
-      border-bottom: 1px solid @grey-light;
-    }
   }
 
   &-reveal {
     font-size: 14px;
     line-height: 30px;
+  }
+
+  &.is-expanded {
+    margin-bottom: 15px;
+  }
+
+  .is-expanded &-title::before {
+    transform: rotate(90deg);
+  }
+
+  .is-expanded &-list {
+    margin-top: 5px;
+    display: block;
+  }
+
+  .has-scroll &-list {
+    max-height: 437px;
+    overflow-y: scroll;
+    border-bottom: 1px solid @grey-light;
   }
 }
 </style>
