@@ -51,7 +51,7 @@ export default {
       this.helpToggled = !this.helpToggled;
     },
     composeQuery() {
-      return buildQueryString(this.searchPerimeter === 'libris'
+      return buildQueryString(this.searchPerimeter === 'libris' || this.searchPerimeter === 'changes'
         ? this.mergedParams
         : { q: this.searchPhrase, databases: this.status.remoteDatabases.join() });
     },
@@ -100,6 +100,10 @@ export default {
     setType() {
       if (this.$route.params.perimeter === 'remote') {
         return this.activeSearchType; // Don't change while remote searching
+      }
+      if (this.$route.params.perimeter === 'changes') {
+        this.activeSearchType = 'ChangeCategory'; // Change to the type of the changenotes: ChangeObservation?
+        return this.activeSearchType;
       }
       const performedQuery = cloneDeep(this.$route.query);
       let type;
@@ -183,7 +187,13 @@ export default {
       return this.searchPhrase.length > 0;
     },
     inputPlaceholder() {
-      return this.searchPerimeter === 'remote' ? 'ISBN eller valfria sökord' : 'Search';
+      if (this.searchPerimeter === 'remote') {
+        return 'ISBN eller valfria sökord';
+      }
+      if (this.searchPerimeter === 'changes') {
+        return 'Sök bland ändringar'; // TODO: i18n
+      }   
+      return 'Search';
     },
     composedSearchParam() { // pair current search param with searchphrase
       let composed = {};
@@ -337,7 +347,7 @@ export default {
         <span class="SearchForm-clear icon icon--md"
           @focus="searchGroupFocus.clear = true"
           @blur="searchGroupFocus.clear = false"
-          :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
+          :class="{ 'in-remote': searchPerimeter === 'remote' || searchPerimeter === 'changes' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
           <i class="fa fa-fw fa-close"></i>
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">

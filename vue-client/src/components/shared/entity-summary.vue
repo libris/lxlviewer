@@ -325,6 +325,7 @@ export default {
     <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
       {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
       <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
+      <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
     </div>
     <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
       <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
