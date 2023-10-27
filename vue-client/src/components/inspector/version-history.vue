@@ -16,6 +16,7 @@ import VersionHistoryChangesets from './version-history-changesets.vue';
 import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
+  name: 'version-history',
   mixins: [LensMixin],
   props: {
   },
@@ -146,7 +147,6 @@ export default {
         DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
 
         this.setDisplayDataFor(0);
-        this.isFocusTrapActive = true;
       });
     },
     async setDisplayDataFor(number) {
@@ -205,6 +205,13 @@ export default {
     TabMenu,
     VersionHistoryChangesets,
   },
+  watch: {
+    displayData() {
+      this.$nextTick(() => {
+        this.isFocusTrapActive = true;
+      })
+    }
+  },
   mounted() {
     this.$nextTick(() => {
       this.setDisplayData();
@@ -214,7 +221,10 @@ export default {
 </script>
 
 <template>
-  <focus-trap v-model=isFocusTrapActive>
+<!-- eslint-disable-next-line vue/no-v-model-argument -->
+  <focus-trap v-model:active="isFocusTrapActive" 
+              :escape-deactivates="false"  
+              :delay-initial-focus="true">
     <div class="VersionHistory" tabindex="-1">
       <div class="Container-row">
         <div class="VersionHistory-mainCol">
@@ -304,6 +314,7 @@ export default {
     font-weight: normal;
     a {
       color: inherit;
+      white-space: nowrap;
     }
   }
   &-back-icon {
@@ -330,7 +341,7 @@ export default {
   }
   &-content {
     z-index: 0;
-    padding: 2rem 3rem;
+    padding: 1rem 3rem;
     overflow-y: scroll;
     flex-grow: 1;
   }
