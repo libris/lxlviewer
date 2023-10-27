@@ -73,6 +73,9 @@ export default {
         case 'Flagged':
           str += 'flag';
           break;
+        case 'Handled':
+          str += 'envelope';
+          break;
         default:
           return false;
       }

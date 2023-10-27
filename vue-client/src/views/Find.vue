@@ -51,8 +51,12 @@ export default {
       this.emptyResults();
       if (typeof this.query !== 'undefined') {
         this.searchInProgress = true;
+        console.log('this.$route.params.perimeter', this.$route.params.perimeter);
         if (this.$route.params.perimeter === 'libris') {
           this.getLocalResult();
+        } else if (this.$route.params.perimeter === 'changes') {
+          console.log('getChangesResult');
+          this.getChangesResult();
         } else {
           this.getRemoteResult();
         }
@@ -110,6 +114,9 @@ export default {
         this.importData = result.items;
         this.searchInProgress = false;
       });
+    },
+    getChangesResult() {
+      this.getLocalResult();
     },
     convertRemoteResult(result) {
       let totalResults = 0;
@@ -180,6 +187,12 @@ export default {
           disabled: !this.user.isLoggedIn,
           tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('Sign in to search other sources', this.user.settings.language, this.resources.i18n) : null,
         },
+        {
+          id: 'changes',
+          text: StringUtil.getUiPhraseByLang('Changes', this.user.settings.language, this.resources.i18n),
+          disabled: !this.user.isLoggedIn,
+          tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('Sign in to search in change notes', this.user.settings.language, this.resources.i18n) : null,
+        },
       ];
       return tabs;
     },
@@ -239,8 +252,11 @@ export default {
         :active="$route.params.perimeter"
         :tabs="findTabs"
       />
-      <div v-if="$route.params.perimeter === 'libris'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ 'Filter' | translatePhrase }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
-      <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
+      <div v-if="$route.params.perimeter === 'libris' || $route.params.perimeter === 'changes'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ 'Filter' | translatePhrase }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
+      <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }"
+        :result="result"
+        v-if="result && result.stats && result.totalItems > 0
+        && ($route.params.perimeter === 'libris' || $route.params.perimeter === 'changes')"></facet-controls>
       <portal-target name="facetColumn" />
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">

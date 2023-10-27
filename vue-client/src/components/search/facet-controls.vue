@@ -19,6 +19,7 @@ export default {
     },
     sortedFacets() {
       const unordered = this.result.stats.sliceByDimension;
+      console.log('unordered', JSON.stringify(unordered));
       const cmp = dim => (this.facetSettings.hasOwnProperty(dim) ? this.facetSettings[dim].facet.order : Number.MAX_VALUE);
       const ordered = Object
         .keys(unordered)
