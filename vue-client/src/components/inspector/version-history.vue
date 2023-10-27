@@ -230,8 +230,8 @@ export default {
             </span>
 
             <i class="fa fa-th-list icon icon--md sideColButton"
-               role="button"
-               @click="openSideCol()"></i>
+              role="button"
+              @click="openSideCol()"></i>
           </div>
 
           <div class="VersionHistory-content" tabindex="-1">

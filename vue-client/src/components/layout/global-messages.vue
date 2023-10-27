@@ -1,5 +1,4 @@
 <script>
-import moment from 'moment';
 import { mapGetters, mapActions } from 'vuex';
 import { translatePhrase } from '@/utils/filters';
 
@@ -47,9 +46,7 @@ export default {
       'cleanupDismissedList',
     ]),
     getTimeSinceLastUpdate() {
-      const now = moment();
-      const lastUpdate = moment(this.timeForLastFetch);
-      return now.diff(lastUpdate, 'seconds');
+      return Math.floor((new Date().getTime() - this.timeForLastFetch.getTime()) / 1000);
     },
     initializeUpdateTriggers() {
       setTimeout(() => {

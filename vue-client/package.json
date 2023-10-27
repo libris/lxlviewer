@@ -44,7 +44,6 @@
     "lxljs": "link:../lxljs",
     "marked": "^4.3.0",
     "md5": "^2.2.1",
-    "moment": "^2.29.4",
     "path": "^0.12.7",
     "portal-vue": "^3.0.0",
     "querystring-es3": "^0.2.1",

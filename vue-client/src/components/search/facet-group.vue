@@ -178,7 +178,7 @@ export default {
 
 <template>
   <nav class="FacetGroup" 
-    :class="{'has-scroll' : hasScroll, 'is-expanded' : isExpanded, }"
+    :class="{'has-scroll' : hasScroll, 'is-expanded' : isExpanded }"
     :aria-labelledby="facetLabelByLang(group.dimension)">
     <div class="FacetGroup-header">
       <h4 class="FacetGroup-title uppercaseHeading--bold"

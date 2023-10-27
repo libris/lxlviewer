@@ -8,6 +8,7 @@ import SummaryNode from '@/components/shared/summary-node.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import Button from '@/components/shared/button';
 import { translatePhrase } from '@/utils/filters';
+import { formatDateTime } from '@/utils/datetime';
 
 export default {
   name: 'entity-changelog',
@@ -19,6 +20,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    formatDateTime
   },
   computed: {
     focusData() {
@@ -42,7 +44,7 @@ export default {
     <div class="EntityChangelog-item">
       <span class="EntityChangelog-key uppercaseHeading--bold">{{ translatePhrase('Created') }}:</span> 
       <span class="EntityChangelog-value">
-        {{ $moment(getCard.created).format('lll') }} {{ translatePhrase('by') }} 
+        {{ formatDateTime(getCard.created) }} {{ translatePhrase('by') }} 
         <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionCreator" :item="inspector.data.record.descriptionCreator" :is-last="true" :field-key="'descriptionCreator'"/>
         <span class="EntityChangelog-unknown" v-else>{{ translatePhrase('Unknown').toLowerCase() }}</span>
       </span>
@@ -51,7 +53,7 @@ export default {
     <div class="EntityChangelog-item">
       <span class="EntityChangelog-key uppercaseHeading--bold">{{ translatePhrase('Changed') }}:</span> 
       <span class="EntityChangelog-value">
-        {{ $moment(getCard.modified).format('lll') }} {{ translatePhrase('by') }}
+        {{ formatDateTime(getCard.modified) }} {{ translatePhrase('by') }}
         <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionLastModifier" :item="inspector.data.record.descriptionLastModifier" :is-last="true" :field-key="'descriptionLastModifier'"/>
         <span class="EntityChangelog-unknown" v-else>{{ translatePhrase('Unknown').toLowerCase() }}</span>
       </span>

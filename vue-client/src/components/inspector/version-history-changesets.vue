@@ -7,6 +7,7 @@ import LensMixin from '@/components/mixins/lens-mixin';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import { Dropdown } from 'floating-vue';
 import { translatePhrase } from '@/utils/filters';
+import { formatDateTime } from '@/utils/datetime';
 
 export default {
   mixins: [LensMixin],
@@ -55,6 +56,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    formatDateTime,
     isGlobalChanges(changeSet) {
       return changeSet.agent['@id'].includes('sys/globalchanges');
     },
@@ -77,7 +79,7 @@ export default {
       <div class="ChangeSet-changeSetContainer" :class="{ 'selected': selectedVersion == index }">
         <span class="ChangeSet-currentVersion" :class="{ 'selected': selectedVersion == index }" v-if="index == 0">{{ translatePhrase("Current version")}}</span>
         <div class="ChangeSet-dateContainer">
-        <span class="ChangeSet-date" :class="{ 'selected': selectedVersion == index }">{{ $moment(changeSet.date).format('lll') }}</span>
+        <span class="ChangeSet-date" :class="{ 'selected': selectedVersion == index }">{{ formatDateTime(changeSet.date) }}</span>
         <span class="ChangeSet-tool" v-if="changeSet.tool['@id'] !== 'https://id.kb.se/generator/crud'">{{ translatePhrase("by machine") }}</span>
         </div>
         <span class="ChangeSet-author" :class="{ 'selected': selectedVersion == index }">

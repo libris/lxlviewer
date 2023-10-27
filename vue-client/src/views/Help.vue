@@ -1,10 +1,10 @@
 <script>
 import { orderBy } from 'lodash-es';
 import { marked } from 'marked';
-import moment from 'moment';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import { translatePhrase } from '@/utils/filters';
+import { formatDate, getRelativeTime } from '@/utils/datetime';
 
 export default {
   name: 'help-component',
@@ -17,6 +17,8 @@ export default {
   },
   methods: {
     translatePhrase,
+    formatDate,
+    getRelativeTime,
     setSectionTitle() {
       const value = this.activeSectionTitle;
       let titleStr = '';
@@ -53,16 +55,6 @@ export default {
     transformMarkdownToHTML(markdown) {
       const html = marked(markdown);
       return html;
-    },
-    getTimeAgoString(date) {
-      const today = moment().startOf('day');
-      if (today.isSame(date, 'day')) {
-        return StringUtil.getUiPhraseByLang('Today', this.user.settings.language, this.resources.i18n).toLowerCase();
-      }
-      return moment(date, 'YYYY-MM-DD').from(moment().startOf('day'));
-    },
-    getDateString(date) {
-      return moment(date).format('YYYY-MM-DD');
     },
     getSectionUri(value) {
       return `/help/${value}`;
@@ -175,7 +167,7 @@ export default {
         <article class="HelpSection-article is-fromMarkdown panel panel-default">
           <div>
             <div class="pull-right text-right" v-show="activeSectionData.date">
-              <span class="label label-primary" v-if="sectionIsUpdating">UNDER ARBETE</span> <span :title="getDateString(activeSectionData.date)">Uppdaterad {{ getTimeAgoString(activeSectionData.date) }}</span>
+              <span class="label label-primary" v-if="sectionIsUpdating">UNDER ARBETE</span> <span :title="formatDate(activeSectionData.date)">{{ translatePhrase('Last updated') }} {{ getRelativeTime(activeSectionData.date) }}</span>
             </div>
             <br v-show="activeSectionData.date">
             <div v-html="getHTML(activeSectionData.content)"></div>
