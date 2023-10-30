@@ -5,7 +5,7 @@ import getFnurgelFromUri from '$lib/utils/getFnurgelFromUri';
 import type { PageServerLoad } from './$types';
 import getRecordContributions from '$lib/utils/getRecordContributions';
 import propertyChains from '$lib/assets/json/propertyChains.json';
-import * as DisplayUtil from 'lxljs/display';
+import { initDisplayUtil } from 'lxljs/display';
 import type { FindResponse } from '$lib/types';
 
 export const load = (async ({ fetch, url }) => {
@@ -19,16 +19,16 @@ export const load = (async ({ fetch, url }) => {
 	]);
 
 	const resources = preprocessResources(await resourcesRes.json());
+	const { getItemLabel } = initDisplayUtil(resources, { language: 'sv' });
+
 	const records = (await recordsRes.json()) as FindResponse;
 
 	const items = records.items.map((item) => ({
 		id: item['@id'],
 		fnurgel: getFnurgelFromUri(item['@id']),
-		title: DisplayUtil.getItemLabel(item.hasTitle?.[0], resources, {}, { language: 'sv' }), // should we use chip here? Linking to contributors won't be possible if we only get strings in return...,
+		title: getItemLabel(item.hasTitle?.[0]), // should we use chip here? Linking to contributors won't be possible if we only get strings in return...,
 		contributions: getRecordContributions(item, resources),
-		languages: item.language?.map((lang) =>
-			DisplayUtil.getItemLabel(lang, resources, {}, { language: 'sv' })
-		)
+		languages: item.language?.map((lang) => getItemLabel(lang))
 	}));
 
 	const selectedFacets = records.search.mapping
@@ -36,12 +36,7 @@ export const load = (async ({ fetch, url }) => {
 		.map((mapping) => {
 			return {
 				id: mapping.variable,
-				label:
-					mapping.value ||
-					DisplayUtil.getItemLabel(mapping?.object, resources, {}, { language: 'sv' }).replace(
-						'https://id.kb.se/',
-						''
-					),
+				label: mapping.value || getItemLabel(mapping?.object).replace('https://id.kb.se/', ''),
 				groupLabel: mapping.variable, // TODO: language should'nt be hardcoded
 				link: mapping?.up?.['@id'].replace('/find?', '/search?')
 			};
@@ -56,19 +51,14 @@ export const load = (async ({ fetch, url }) => {
 					items: group.observation.map((observation) => {
 						return {
 							id: observation.view?.['@id'],
-							label: DisplayUtil.getItemLabel(
-								observation.object,
-								resources,
-								{},
-								{ language: 'sv' }
-							).replace('https://id.kb.se/', ''),
+							label: getItemLabel(observation.object).replace('https://id.kb.se/', ''),
 							link: observation.view?.['@id'].replace('/find?', '/search?'),
 							totalItems: observation.totalItems
 						};
 					})
 				};
 		  })
-		: null;
+		: [];
 
 	return {
 		items,
