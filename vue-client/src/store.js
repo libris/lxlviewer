@@ -136,7 +136,7 @@ const store = createStore({
       state.inspector.validation.numberOfViolations = Object.keys(state.inspector.validation.violations).length;
     },
     pushKeyAction(state, keyAction) {
-      state.status.keyActions.push(keyAction);
+      state.status.keyActions = [...state.status.keyActions, keyAction];
     },
     pushInspectorEvent(state, payload) {
       state.inspector.event = payload;

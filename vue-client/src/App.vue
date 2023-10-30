@@ -101,7 +101,7 @@ export default {
       // }
 
       this.combokeys = new ComboKeys(document.documentElement);
-      GlobalBind(this.combokeys); // TODO: Ensure combokeys works inside input fields 
+      GlobalBind(this.combokeys);
       const stateSettings = KeyBindings[state];
         
       if (typeof stateSettings !== 'undefined') {
