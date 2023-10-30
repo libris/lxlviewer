@@ -324,8 +324,8 @@ export default {
       if (this.settings.mockHelp) {
         window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
         // eslint-disable-next-line import/no-extraneous-dependencies
-        import('@/../../../lxl-helpdocs/build/help.json').then((helpDocs) => {
-          this.$store.dispatch('setHelpDocs', helpDocs);
+        import('@/../../../lxl-helpdocs/build/help.json').then((module) => {
+          this.$store.dispatch('setHelpDocs', module.default);
         });
       } else {
         fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
