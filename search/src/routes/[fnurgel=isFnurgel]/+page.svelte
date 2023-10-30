@@ -6,9 +6,7 @@
 <div class="record-page">
 	<div class="record">
 		<h1>{data.title}</h1>
-		<pre>
-      {JSON.stringify(data.tempJson, null, 4)}
-    </pre>
+		<div>Not much to see here yet...</div>
 	</div>
 </div>
 
