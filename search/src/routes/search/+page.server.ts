@@ -65,7 +65,6 @@ export const load = (async ({ fetch, url }) => {
 		totalItems: records.totalItems,
 		offset: records.offset,
 		selectedFacets,
-		facetGroups,
-		records
+		facetGroups
 	};
 }) satisfies PageServerLoad;
