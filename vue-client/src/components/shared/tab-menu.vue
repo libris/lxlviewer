@@ -54,6 +54,10 @@ export default {
       type: String,
       default: 'light',
     },
+    textSize: {
+      type: String,
+      default: 'normal',
+    },
     active: {
       type: String,
       default: '',
@@ -144,9 +148,9 @@ export default {
         :class="{'is-active': active === item.id, 'is-disabled': item.disabled }"
         role="tab">
           <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
-      </li>      
+          <span class="TabMenu-tabText" :class="[{'hidden-xs': item.icon}, `tabText-${textSize}`]" v-if="item.html" v-html="item.html"></span>
+          <span class="TabMenu-tabText" :class="[{'hidden-xs': item.icon}, `tabText-${textSize}`]" v-else>{{item.text | translatePhrase}}</span>
+      </li>
     </ul>
     <ul v-else class="TabMenu-tabList" ref="tablist">
       <li class="TabMenu-tab" 
@@ -162,8 +166,8 @@ export default {
               content: item.tooltipText
             }">        
             <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
-            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
+            <span class="TabMenu-tabText" :class="[{'hidden-xs': item.icon}, `tabText-${textSize}`]" v-if="item.html" v-html="item.html"></span>
+            <span class="TabMenu-tabText" :class="[{'hidden-xs': item.icon}, `tabText-${textSize}`]" v-else>{{item.text | translatePhrase}}</span>
           </router-link>
           <span v-if="item.badge" class="badge UserCare-badge" :class="'badge-' + item.badge.type">{{ item.badge.value }}</span>
       </li>
@@ -278,6 +282,9 @@ export default {
       .TabMenu.extra-spacing & {
         padding: 0 20px;
       }
+      .TabMenu.less-spacing & {
+        padding: 0 8px;
+      }
     }
 
     .badge {
@@ -296,12 +303,20 @@ export default {
     }
   }
 
-  &-tabText {
+  .tabText-normal {
     display: inline-block;
     margin: 5px 0;
     font-weight: 600;
     font-size: 18px;
     font-size: 1.6rem;
+  }
+
+  .tabText-small {
+    display: inline-block;
+    margin: 5px 0;
+    font-weight: 600;
+    font-size: 16px;
+    font-size: 1.4rem;
   }
 
   &-tabList {

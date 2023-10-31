@@ -250,6 +250,8 @@ export default {
       <tab-menu
         @go="setSearchPerimeter"
         :active="$route.params.perimeter"
+        :textSize="'small'"
+        :class="'less-spacing'"
         :tabs="findTabs"
       />
       <div v-if="$route.params.perimeter === 'libris' || $route.params.perimeter === 'changes'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ 'Filter' | translatePhrase }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
