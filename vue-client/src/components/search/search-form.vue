@@ -98,12 +98,8 @@ export default {
       return PropertyMappings[0];
     },
     setType() {
-      if (this.$route.params.perimeter === 'remote') {
+      if (this.$route.params.perimeter === 'remote' || this.$route.params.perimeter === 'changes') {
         return this.activeSearchType; // Don't change while remote searching
-      }
-      if (this.$route.params.perimeter === 'changes') {
-        this.activeSearchType = 'ChangeCategory'; // Change to the type of the changenotes: ChangeObservation?
-        return this.activeSearchType;
       }
       const performedQuery = cloneDeep(this.$route.query);
       let type;
@@ -207,7 +203,15 @@ export default {
       return composed;
     },
     composedTypes() {
-      return this.activeSearchType && this.activeSearchType.length > 0 ? { '@type': this.activeSearchType } : { '@type': null };
+      let type = null;
+      if (this.activeSearchType && this.activeSearchType.length > 0) {
+        if (this.searchPerimeter === 'libris') {
+          type = this.activeSearchType;
+        } else if (this.searchPerimeter === 'changes') {
+          type = 'ChangeCategory';
+        }
+      }
+      return { '@type': type };
     },
     prefSort() {
       if (this.user && this.user.settings.sort) {
