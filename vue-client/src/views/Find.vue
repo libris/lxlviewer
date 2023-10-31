@@ -243,7 +243,7 @@ export default {
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">
         <div class="Find-progressText">
-          <Spinner size="lg" :message="'Searching'" />
+          <Spinner size="3x" :message="translatePhrase('Searching')" />
         </div>
     </div>
     <div 
@@ -274,6 +274,7 @@ export default {
     height: 25vh;
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
 }
 .Column {

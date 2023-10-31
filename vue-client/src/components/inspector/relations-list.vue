@@ -230,7 +230,7 @@ export default {
       </template>
       <template #panel-body>
         <div class="PanelComponent-searchStatus" v-show="loading">
-          <Spinner size="lg" :message="translatePhrase('Searching')" />
+          <Spinner size="2x" :message="translatePhrase('Searching')" />
         </div>
         <panel-search-list
           class="RelationsList-resultListContainer"

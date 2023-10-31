@@ -10,7 +10,7 @@
     </div>
 
     <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
-      <Spinner size="lg" :message="translatePhrase(status.loadingIndicators[0])" />
+      <Spinner size="3x" :message="translatePhrase(status.loadingIndicators[0])" />
     </div>
 
     <div v-if="resourcesLoadingError" class="ResourcesLoadingError">
@@ -378,7 +378,7 @@ export default {
       property: 'displayGroups',
       value: displayGroupsJson,
     });
-    this.pushLoadingIndicator('Loading application')
+    this.pushLoadingIndicator('Loading application');
     Promise.all(this.getLdDependencies()).then((resources) => {
       this.setContext(resources[1]['@context']);
       this.setupVocab(resources[0]['@graph']);

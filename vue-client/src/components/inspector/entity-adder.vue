@@ -586,7 +586,7 @@ export default {
             {{ translatePhrase("Start writing to begin search") }}...
           </div>
           <div v-if="searchInProgress" class="PanelComponent-searchStatus">
-            <Spinner size="lg" :message="translatePhrase('Searching')" />
+            <Spinner size="2x" :message="translatePhrase('Searching')" />
           </div>
           <div class="PanelComponent-searchStatus"
             v-if="!searchInProgress && searchResult.length === 0 && searchMade">

@@ -206,10 +206,7 @@ export default {
         <span v-else>{{ translatePhrase("Used in") }}</span>
       </div>
       <div class="ReverseRelations-btnContainer">
-        <Spinner class="ReverseRelations spinner compact"
-          v-if="checkingRelations" 
-          size="sm"
-        />
+        <Spinner v-if="checkingRelations" size="sm" />
         <create-item-button class="ReverseRelations-button"
         v-if="!checkingRelations && mode === 'items' && user.isLoggedIn && user.getPermissions().registrant" 
         :compact="compact"
@@ -272,10 +269,6 @@ export default {
   &-btnContainer {
     display: flex;
     align-items: center;
-  }
-
-  &-spinner {
-    margin-bottom: 10px;
   }
 
   button {

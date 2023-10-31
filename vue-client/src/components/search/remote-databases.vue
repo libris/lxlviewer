@@ -240,7 +240,7 @@ export default {
     </div> -->
     <portal to="facetColumn">
       <div v-show="remoteDatabases.state == 'loading'" class="RemoteDatabases-searchStatus">
-        <Spinner :message="translatePhrase('Loading external databases')" />
+        <Spinner size="2x" :message="translatePhrase('Loading external databases')" />
       </div>
       <div class="RemoteDatabases-searchStatus" v-show="remoteDatabases.state == 'error'">
         <p class="RemoteDatabases-statusText">
