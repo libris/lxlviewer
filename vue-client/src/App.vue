@@ -23,6 +23,7 @@
     </div>
 
     <router-view
+      :key="$route.fullPath"
       ref="routerView"
       v-if="resourcesLoaded"
       v-show="status.loadingIndicators.length === 0"
