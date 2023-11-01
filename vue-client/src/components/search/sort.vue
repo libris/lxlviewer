@@ -27,6 +27,7 @@ export default {
       boundVal: this.currentSort,
     };
   },
+  emits: ['change'],
   computed: {
     ...mapGetters([
       'inspector',

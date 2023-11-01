@@ -149,6 +149,7 @@ export default {
       return `${first}-${last}`;
     },
   },
+  emits: ['sortChange'],
   methods: {
     translatePhrase,
     asAppPath,

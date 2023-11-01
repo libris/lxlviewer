@@ -21,6 +21,7 @@ export default {
       type: Number,
     },
   },
+  emits: 'go',
   methods: {
     translatePhrase,
     go(n) {

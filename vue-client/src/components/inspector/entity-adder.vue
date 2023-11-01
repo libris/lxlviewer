@@ -80,6 +80,7 @@ export default {
       default: 'fa-plus-circle',
     },
   },
+  emits: ['langTaggerEvent', 'addEmptyLanguageItem'],
   components: {
     Spinner,
     'panel-component': PanelComponent,
@@ -193,7 +194,6 @@ export default {
   mounted() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1);
   },
-  emits: ['langTaggerEvent'],
   methods: {
     translatePhrase,
     labelByLang,

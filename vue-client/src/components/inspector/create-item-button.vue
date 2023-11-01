@@ -34,8 +34,7 @@ export default {
       itemData: {},
     };
   },
-  events: {
-  },
+  emits: ['done'],
   methods: {
     translatePhrase,
     buildItem() {

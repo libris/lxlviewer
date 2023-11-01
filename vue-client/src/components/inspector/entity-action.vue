@@ -53,6 +53,7 @@ export default {
   },
   watch: {
   },
+  emits: ['action', 'highlight', 'dehighlight'],
   methods: {
     translatePhrase,
     action() {

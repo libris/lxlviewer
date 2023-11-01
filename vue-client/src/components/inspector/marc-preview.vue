@@ -32,6 +32,7 @@ export default {
       }
     },
   },
+  emits: ['hide'],
   methods: {
     translatePhrase,
     hide() {

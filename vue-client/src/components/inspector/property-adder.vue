@@ -49,6 +49,7 @@ export default {
       showToolTip: false,
     };
   },
+  emits: ['expand-item'],
   computed: {
     ...mapGetters([
       'inspector',

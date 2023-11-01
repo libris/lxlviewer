@@ -53,6 +53,7 @@ export default {
       keyword: '',
     };
   },
+  emits: ['use-item'],
   methods: {
     useItem() {
       if (!this.isDisabled && !this.isReplaced) {

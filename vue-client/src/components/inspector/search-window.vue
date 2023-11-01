@@ -31,6 +31,7 @@ export default {
       setSearchType: '',
     };
   },
+  emits: ['replace-with', 'extract', 'update:copyTitle'],
   props: {
     extractable: {
       type: Boolean,

@@ -24,6 +24,7 @@ export default {
       selectedParam: '',
     };
   },
+  emits: ['param-selected'],
   methods: {
     translatePhrase,
     handleChange() {

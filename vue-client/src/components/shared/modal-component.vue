@@ -61,6 +61,7 @@ export default {
       fadeTime: 500,
     };
   },
+  emits: ['close'],
   methods: {
     close() {
       if (this.closeable) {

@@ -46,6 +46,7 @@ export default {
       selectedQuery: this.query,
     };
   },
+  emits: ['close'],
   methods: {
     translatePhrase,
     capitalize,

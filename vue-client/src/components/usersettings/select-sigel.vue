@@ -12,6 +12,7 @@ export default {
       type: Boolean,
     },
   },
+  emits: ['changed'],
   methods: {
     translatePhrase,
     getSigelLabel(sigel, len) {

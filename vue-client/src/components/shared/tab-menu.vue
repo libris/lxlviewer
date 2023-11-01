@@ -69,6 +69,7 @@ export default {
     return {
     };
   },
+  emits: ['go'],
   methods: {
     translatePhrase,
     go(name) {

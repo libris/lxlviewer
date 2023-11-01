@@ -73,6 +73,7 @@ export default {
       },
     };
   },
+  emits: ['filter-selected'],
   computed: {
     ...mapGetters([
       'resources',

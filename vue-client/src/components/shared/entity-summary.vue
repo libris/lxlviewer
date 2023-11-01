@@ -121,6 +121,7 @@ export default {
       },
     };
   },
+  emits: ['hiddenDetailsNumber', 'import-this'],
   computed: {
     ...mapGetters([
       'user',

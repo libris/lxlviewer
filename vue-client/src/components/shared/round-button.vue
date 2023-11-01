@@ -50,6 +50,7 @@ export default {
       mouseOver: false,
     };
   },
+  emits: ['click'],
   methods: {
     translatePhrase,
     action() {

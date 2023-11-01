@@ -45,6 +45,7 @@ export default {
       fadeTime: 300,
     };
   },
+  emits: ['close'],
   methods: {
     lockScroll(boolValue) {
       LayoutUtil.scrollLock(boolValue);

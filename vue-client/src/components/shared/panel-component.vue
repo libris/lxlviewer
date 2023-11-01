@@ -51,6 +51,7 @@ export default {
       fadeTime: 300,
     };
   },
+  emits: ['close'],
   methods: {
     translatePhrase,
     lockScroll(boolValue) {

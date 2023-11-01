@@ -13,6 +13,7 @@ export default {
     index: Number,
     activeIndex: Number,
   },
+  emits: ['use-base', 'use-template', 'set-active-index'],
   methods: {
     translatePhrase,
     useBase(event) {

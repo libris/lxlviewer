@@ -33,6 +33,7 @@ export default {
       allHoldingsSelected: false,
     };
   },
+  emits: ['send'],
   computed: {
     ...mapGetters([
       'directoryCare',

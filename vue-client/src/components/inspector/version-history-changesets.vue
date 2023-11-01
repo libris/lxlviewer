@@ -28,6 +28,7 @@ export default {
       inspectingPath: '',
     };
   },
+  emits: ['version-selected'],
   computed: {
     ...mapGetters([
       'inspector',

@@ -21,6 +21,7 @@ export default {
       highlight: false,
     };
   },
+  emits: ['selected', 'dismiss'],
   methods: {
     translatePhrase,
     handleChange() {

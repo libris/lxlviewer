@@ -36,6 +36,7 @@ export default {
       default: () => {},
     },
   },
+  emits: ['use-item'],
   data() {
     return {
       keyword: '',

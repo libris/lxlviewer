@@ -17,6 +17,7 @@ export default {
       default: 'new',
     },
   },
+  emits: ['output'],
   methods: {
     translatePhrase,
     outputData(data) {

@@ -28,6 +28,7 @@ export default {
     return {
     };
   },
+  emits: ['action'],
   methods: {
     translatePhrase,
     action() {

@@ -29,6 +29,7 @@ export default {
       panelQuery: '',
     };
   },
+  emits: ['numberOfRelations'],
   methods: {
     translatePhrase,
     showPanel() {
