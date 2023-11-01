@@ -53,7 +53,6 @@ import * as DataUtil from '@/utils/data';
 import * as LayoutUtil from '@/utils/layout';
 import * as StringUtil from 'lxljs/string';
 
-// TODO: Support .jsonld files in Vite (copy pasted now in lxl-helpdocs)
 import i18n from '@/resources/json/i18n.json';
 import displayGroupsJson from '@/resources/json/displayGroups.json';
 import baseTemplates from '@/resources/json/baseTemplates.json';
