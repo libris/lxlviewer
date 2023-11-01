@@ -128,7 +128,8 @@ const store = createStore({
     setValidation(state, payload) {
       if (payload.validates) {
         if (state.inspector.validation.violations[payload.path]) {
-          delete state.inspector.validation.violations[payload.path];
+          const { [payload.path]: _deletedPath, ...restValidations } = state.inspector.validation.violations;
+          state.inspector.validation.violations = restValidations;
         }
       } else {
         state.inspector.validation.violations[payload.path] = payload.reasons;
@@ -143,15 +144,16 @@ const store = createStore({
     },
     pushNotification(state, content) {
       const date = new Date();
-      content.id = StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`);
-      state.status.notifications.push(content);
+      state.status.notifications = [
+        ...state.status.notifications,
+        {
+          ...content,
+          id: StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`),
+        }
+      ];
     },
     removeNotification(state, id) {
-      for (let i = 0; i < state.status.notifications.length; i++) {
-        if (state.status.notifications[i].id === id) {
-          state.status.notifications.splice(i, 1);
-        }
-      }
+      state.status.notifications = state.status.notifications.filter((notification => notification.id !== id));
     },
     setOriginalData(state, data) {
       state.inspector.originalData = cloneDeep(data);
@@ -208,7 +210,10 @@ const store = createStore({
           const historyNode = { path: node.path, value: oldValue };
           changes.push(historyNode);
         });
-        state.inspector.changeHistory.push(changes);
+        state.inspector.changeHistory = [
+          ...state.inspector.changeHistory,
+          changes,
+        ];
       }
       // Set the new values
       each(payload.changeList, (node) => {
@@ -340,15 +345,15 @@ const store = createStore({
       state.directoryCare = data;
     },
     addMagicShelfMark(state, path) {
-      state.inspector.magicShelfMarks.push(path);
+      state.inspector.magicShelfMarks = [...state.inspector.magicShelfMarks, path];
     },
     removeMagicShelfMark(state, path) {
       state.inspector.magicShelfMarks = state.inspector.magicShelfMarks.filter(p => p !== path);
     },
     addTagAsSupported(state, tag) {
       state.inspector.supportedTags.promises[tag] = undefined;
-      if (state.inspector.supportedTags.data.indexOf(tag) === -1) {
-        state.inspector.supportedTags.data.push(tag);
+      if (!state.inspector.supportedTags.data.includes(tag)) {
+        state.inspector.supportedTags.data = [...state.inspector.supportedTags.data, tag];
       }
     },
     setLanguageTagPromise(state, payload) {
