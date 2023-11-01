@@ -18,7 +18,7 @@ export default {
   scopes: 'read write',
   matomoId: 23,
   appPaths: {
-    '/find?': '/search/libris?',
+    '/find?': ['/search/libris?', '/directory-care/changes?'],
   },
   embeddedTypes: [
     'StructuredValue',

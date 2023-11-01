@@ -7,10 +7,12 @@ import * as HttpUtil from '@/utils/http';
 import TabMenu from '@/components/shared/tab-menu';
 import HoldingMover from '@/components/care/holding-mover';
 import ModalComponent from '@/components/shared/modal-component';
+import Find from './Find.vue';
 
 export default {
   name: 'DirectoryCare',
   components: {
+    find: Find,
     'tab-menu': TabMenu,
     'holding-mover': HoldingMover,
     'modal-component': ModalComponent,
@@ -23,11 +25,6 @@ export default {
         removed: [],
         other: [],
       },
-      tabs: [
-        { id: 'holdings', text: 'Move holdings' },
-        // { 'id': 'merge', 'text': 'Merge records' }, 
-        // { 'id': 'remove', 'text': 'Batch remove' }, 
-      ],
       showModal: false,
     };
   },
@@ -40,6 +37,17 @@ export default {
     ]),
     flaggedInstances() {
       return filter(this.fetchedItems, o => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
+    },
+    tabs() {
+      return [
+        { id: 'holdings', text: 'Move holdings' },
+        {
+          id: 'changes',
+          text: StringUtil.getUiPhraseByLang('Changes', this.user.settings.language, this.resources.i18n),
+        },
+        // { 'id': 'merge', 'text': 'Merge records' },
+        // { 'id': 'remove', 'text': 'Batch remove' },
+      ];
     },
   },
   watch: {
@@ -129,7 +137,8 @@ export default {
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
       <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
-      <holding-mover 
+      <find v-if="$route.params.tool === 'changes'"></find>
+      <holding-mover
         v-if="$route.params.tool === 'holdings'"
         :flaggedInstances="flaggedInstances"/>
       <div class="" v-if="$route.params.tool === 'merge'">

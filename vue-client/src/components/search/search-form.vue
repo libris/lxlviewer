@@ -14,6 +14,10 @@ export default {
       default: 'libris',
       type: String,
     },
+    searchTool: {
+      default: '',
+      type: String,
+    },
   },
   data() {
     return {
@@ -51,13 +55,19 @@ export default {
       this.helpToggled = !this.helpToggled;
     },
     composeQuery() {
-      return buildQueryString(this.searchPerimeter === 'libris' || this.searchPerimeter === 'changes'
+      return buildQueryString(this.searchPerimeter === 'libris' || this.searchTool === 'changes'
         ? this.mergedParams
         : { q: this.searchPhrase, databases: this.status.remoteDatabases.join() });
     },
     doSearch() {
       this.helpToggled = false;
-      const path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
+      let path = '';
+      console.log('this.searchperimeter', this.searchPerimeter);
+      if (this.searchPerimeter === 'libris' || this.searchPerimeter === 'remote') {
+        path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
+      } else if (this.searchTool === 'changes') {
+        path = `${this.$route.path}?${this.composeQuery()}`;
+      }
       this.$router.push({ path });
     },
     clearInputs() {
@@ -98,7 +108,7 @@ export default {
       return PropertyMappings[0];
     },
     setType() {
-      if (this.$route.params.perimeter === 'remote' || this.$route.params.perimeter === 'changes') {
+      if (this.$route.params.perimeter === 'remote' || this.searchTool === 'changes') {
         return this.activeSearchType; // Don't change while remote searching
       }
       const performedQuery = cloneDeep(this.$route.query);
@@ -186,7 +196,7 @@ export default {
       if (this.searchPerimeter === 'remote') {
         return 'ISBN eller valfria sökord';
       }
-      if (this.searchPerimeter === 'changes') {
+      if (this.searchTool === 'changes') {
         return 'Sök bland ändringar'; // TODO: i18n
       }   
       return 'Search';
@@ -207,7 +217,7 @@ export default {
       if (this.activeSearchType && this.activeSearchType.length > 0) {
         if (this.searchPerimeter === 'libris') {
           type = this.activeSearchType;
-        } else if (this.searchPerimeter === 'changes') {
+        } else if (this.searchTool === 'changes') {
           type = 'ChangeCategory';
         }
       }
@@ -351,7 +361,7 @@ export default {
         <span class="SearchForm-clear icon icon--md"
           @focus="searchGroupFocus.clear = true"
           @blur="searchGroupFocus.clear = false"
-          :class="{ 'in-remote': searchPerimeter === 'remote' || searchPerimeter === 'changes' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
+          :class="{ 'in-remote': searchPerimeter === 'remote' || searchTool === 'changes' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
           <i class="fa fa-fw fa-close"></i>
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">

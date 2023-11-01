@@ -54,7 +54,7 @@ export default {
         console.log('this.$route.params.perimeter', this.$route.params.perimeter);
         if (this.$route.params.perimeter === 'libris') {
           this.getLocalResult();
-        } else if (this.$route.params.perimeter === 'changes') {
+        } else if (this.$route.params.tool === 'changes') {
           console.log('getChangesResult');
           this.getChangesResult();
         } else {
@@ -187,12 +187,6 @@ export default {
           disabled: !this.user.isLoggedIn,
           tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('Sign in to search other sources', this.user.settings.language, this.resources.i18n) : null,
         },
-        {
-          id: 'changes',
-          text: StringUtil.getUiPhraseByLang('Changes', this.user.settings.language, this.resources.i18n),
-          disabled: !this.user.isLoggedIn,
-          tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('Sign in to search in change notes', this.user.settings.language, this.resources.i18n) : null,
-        },
       ];
       return tabs;
     },
@@ -204,10 +198,12 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.$route.params.perimeter !== 'libris' && this.$route.params.perimeter !== 'remote') {
+      console.log('route name:', this.$route.name);
+      console.log('route params:', this.$route.params);
+      if (this.$route.params.perimeter !== 'libris' && this.$route.params.perimeter !== 'remote' && this.$route.params.tool !== 'changes') {
         this.$router.push({ path: '/search/' });
       }
-      if (!this.user.isLoggedIn && this.$route.params.perimeter === 'remote') {
+      if (!this.user.isLoggedIn && this.$route.params.perimeter === 'remote' && this.$route.params.tool === 'changes') {
         this.$router.push({ path: '/search/' });
       }
       this.query = this.$route.fullPath.split('?')[1];
@@ -247,18 +243,16 @@ export default {
 <template>
   <div class="row">
     <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
-      <tab-menu
+      <tab-menu v-if="$route.params.tool !== 'changes'"
         @go="setSearchPerimeter"
         :active="$route.params.perimeter"
-        :textSize="'small'"
-        :class="'less-spacing'"
         :tabs="findTabs"
       />
-      <div v-if="$route.params.perimeter === 'libris' || $route.params.perimeter === 'changes'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ 'Filter' | translatePhrase }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
+      <div v-if="$route.params.perimeter === 'libris' || $route.params.tool === 'changes'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ 'Filter' | translatePhrase }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
       <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }"
         :result="result"
         v-if="result && result.stats && result.totalItems > 0
-        && ($route.params.perimeter === 'libris' || $route.params.perimeter === 'changes')"></facet-controls>
+        && ($route.params.perimeter === 'libris' || $route.params.tool === 'changes')"></facet-controls>
       <portal-target name="facetColumn" />
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">
