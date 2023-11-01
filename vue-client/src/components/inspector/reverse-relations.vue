@@ -188,7 +188,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.$route.name === 'Search' || this.forceLoad) {
+      if (this.$route.name === 'Search' || this.$route.params.tool === 'changes' || this.forceLoad) {
         this.getRelationsInfo();
       }
     });
