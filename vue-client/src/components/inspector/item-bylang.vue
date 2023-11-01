@@ -339,7 +339,7 @@ export default {
         @romanize="romanize(entry.tag, entry.val)"
         @remove="remove(entry.tag, entry.val)"
         @removeval="removeVal(entry.tag, entry.val, index)"
-        @addLangTag="setValueFromEntityAdder(...arguments, entry.val)"
+        @addLangTag="(tag) => setValueFromEntityAdder(tag, entry.val)"
         @addToCache="updateLangCache(entry.tag)"
         @update="update(entries)">
       </language-entry>

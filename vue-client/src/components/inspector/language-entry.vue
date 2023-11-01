@@ -138,6 +138,7 @@ export default {
       }
     },
   },
+  emits: ['addLangTag'],
   methods: {
     translatePhrase,
     onLangTaggerEvent(langTag) {
@@ -264,7 +265,7 @@ export default {
             :property-types="['ObjectProperty']"
             :is-lang-tagger="true"
             :icon-add="'fa-globe-outline'"
-            @langTaggerEvent="onLangTaggerEvent(...arguments)">
+            @langTaggerEvent="onLangTaggerEvent">
           </entity-adder>
 
           <span class="LanguageEntry-remover"

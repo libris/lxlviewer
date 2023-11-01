@@ -193,6 +193,7 @@ export default {
   mounted() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1);
   },
+  emits: ['langTaggerEvent'],
   methods: {
     translatePhrase,
     labelByLang,
