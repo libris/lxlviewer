@@ -152,7 +152,7 @@ export default {
             @click="toggleDropdown"
             @keyup.enter="toggleDropdown"
             tabIndex="0">
-            <span class="RecordPicker-toggleLabel">{{ `${translatePhrase('Choose')} ${name}` }}</span>
+            <span class="RecordPicker-toggleLabel">{{ `${translatePhrase('Choose')} ${translatePhrase(name)}` }}</span>
             <span class="RecordPicker-toggleIcon" :class="{ expanded: expanded }">
               <i class="fa fa-fw fa-chevron-down" />
             </span>
