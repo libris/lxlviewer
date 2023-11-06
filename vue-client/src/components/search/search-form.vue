@@ -62,7 +62,6 @@ export default {
     doSearch() {
       this.helpToggled = false;
       let path = '';
-      console.log('this.searchperimeter', this.searchPerimeter);
       if (this.searchPerimeter === 'libris' || this.searchPerimeter === 'remote') {
         path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
       } else if (this.searchTool === 'changes') {
@@ -260,6 +259,12 @@ export default {
       if (val !== oldVal && oldVal) {
         this.setPrefSearchType();
         this.resetSearchParam();
+      }
+    },
+    searchTool(newVal, oldVal) {
+      if (newVal !== oldVal && newVal === 'changes') {
+        this.clearInputs();
+        this.doSearch();
       }
     },
     searchPerimeter(newVal, oldVal) {
