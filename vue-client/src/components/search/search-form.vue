@@ -218,7 +218,7 @@ export default {
         if (this.searchPerimeter === 'libris') {
           type = this.activeSearchType;
         } else if (this.searchTool === 'changes') {
-          type = 'ChangeCategory';
+          type = 'ChangeObservation';
         }
       }
       return { '@type': type };

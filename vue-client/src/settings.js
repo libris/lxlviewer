@@ -272,6 +272,13 @@ export default {
         order: 18,
       },
     },
+    'category.@id': {
+      sv: 'Ändringskategori',
+      en: 'Change category',
+      facet: {
+        order: 19,
+      },
+    },
     '@reverse': {
       sv: 'Relation',
       en: 'Relation',

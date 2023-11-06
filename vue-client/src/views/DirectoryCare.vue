@@ -7,12 +7,12 @@ import * as HttpUtil from '@/utils/http';
 import TabMenu from '@/components/shared/tab-menu';
 import HoldingMover from '@/components/care/holding-mover';
 import ModalComponent from '@/components/shared/modal-component';
-import Find from './Find.vue';
+import ChangeNotes from './ChangeNotes.vue';
 
 export default {
   name: 'DirectoryCare',
   components: {
-    find: Find,
+    ChangeNotes,
     'tab-menu': TabMenu,
     'holding-mover': HoldingMover,
     'modal-component': ModalComponent,
@@ -137,7 +137,7 @@ export default {
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
       <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
-      <find v-if="$route.params.tool === 'changes'"></find>
+      <change-notes v-if="$route.params.tool === 'changes'"></change-notes>
       <holding-mover
         v-if="$route.params.tool === 'holdings'"
         :flaggedInstances="flaggedInstances"/>
