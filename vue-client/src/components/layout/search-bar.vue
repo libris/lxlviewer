@@ -1,13 +1,13 @@
 <script>
 import { mapGetters } from 'vuex';
-import SearchForm from '@/components/search/search-form';
+import SearchForm from '@/components/search/search-form.vue';
 
 export default {
   name: 'search-bar',
   setup() {
     return {
-      kbLogoBlack: new URL('~kungbib-styles/dist/assets/kb_logo_black.svg', import.meta.url).href
-    }
+      kbLogoBlack: new URL('~kungbib-styles/dist/assets/kb_logo_black.svg', import.meta.url).href,
+    };
   },
   data() {
     return {
@@ -49,7 +49,7 @@ export default {
 
 <template>
   <div class="SearchBar" id="SearchBar" aria-labelledby="service-name">
-    <div class="SearchBar-container" :class="{ 'container': user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
+    <div class="SearchBar-container" :class="{ container: user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
       <div class="SearchBar-row row">
         <div class="SearchBar-brand hidden-sm hidden-xs col-md-3">
           <router-link to="/" class="SearchBar-brandLink">
@@ -61,7 +61,12 @@ export default {
           <span class="SearchBar-envLabel" v-if="this.settings.gitDescribe.distance == 0">
             {{ versionInfo }}
           </span>
-          <a class="SearchBar-envLabel" v-if="this.settings.gitDescribe.distance !== 0" target="_blank" :href="`https://github.com/libris/lxlviewer/commit/${this.hash}`">
+          <a
+            class="SearchBar-envLabel"
+            v-if="this.settings.gitDescribe.distance !== 0"
+            target="_blank"
+            rel="noopener noreferrer"
+            :href="`https://github.com/libris/lxlviewer/commit/${this.hash}`">
             {{ versionInfo }}
           </a>
         </div>
@@ -70,7 +75,6 @@ export default {
     </div>
   </div>
 </template>
-
 
 <style lang="less">
 .SearchBar {
@@ -97,7 +101,7 @@ export default {
   &-container {
     padding: 0 25px;
     align-items: center;
-    
+
     @media screen and (min-width: @screen-sm){
       padding: 0 15px;
     }
@@ -175,6 +179,5 @@ export default {
     left: -0.5rem;
   }
 }
-
 
 </style>

@@ -11,13 +11,13 @@ import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
-import ItemMixin from '@/components/mixins/item-mixin';
-import LensMixin from '@/components/mixins/lens-mixin';
-import FormMixin from '@/components/mixins/form-mixin';
-import PropertyAdder from '@/components/inspector/property-adder';
-import SearchWindow from '@/components/inspector/search-window';
-import EntityAction from '@/components/inspector/entity-action';
 import { labelByLang, capitalize } from '@/utils/filters';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import FormMixin from '@/components/mixins/form-mixin.vue';
+import PropertyAdder from '@/components/inspector/property-adder.vue';
+import SearchWindow from '@/components/inspector/search-window.vue';
+import EntityAction from '@/components/inspector/entity-action.vue';
 
 export default {
   name: 'item-sibling',
@@ -202,7 +202,7 @@ export default {
     toggleExpanded() {
       if (this.expanded === true) {
         this.collapse();
-      } else {   
+      } else {
         this.expand();
       }
     },
@@ -239,7 +239,11 @@ export default {
     },
     extract() {
       this.$store.dispatch('addExtractItemOnSave', { path: this.path, item: this.focusData });
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Link was created', this.user.settings.language, this.resources.i18n)}` });
+      this.$store.dispatch(
+        'pushNotification',
+        { type: 'success',
+          message: `${StringUtil.getUiPhraseByLang('Link was created', this.user.settings.language, this.resources.i18n)}` },
+      );
       this.closeExtractDialog();
     },
     stopExtracting() {
@@ -270,9 +274,13 @@ export default {
         addToHistory: true,
         changeList: changeList,
       });
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language, this.resources.i18n)}` });
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
+      this.$store.dispatch(
+        'pushNotification',
+        { type: 'success',
+          message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language, this.resources.i18n)}` },
+      );
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'lastAdded',
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
       });
       this.closeExtractDialog();
@@ -386,31 +394,44 @@ export default {
 </script>
 
 <template>
-  <div class="ItemSibling js-itemLocal"
+  <div
+    class="ItemSibling js-itemLocal"
     ref="container"
     :id="`formPath-${path}`"
-    :class="{'is-extracting': isExtracting, 'is-highlighted': isNewlyAdded, 'highlight-info': highlights.indexOf('info') > -1, 'highlight-remove': highlights.indexOf('remove') > -1, 'is-expanded': expanded && !isEmpty, 'is-extractable': isExtractable}"
+    :class="{
+      'is-extracting': isExtracting,
+      'is-highlighted': isNewlyAdded,
+      'highlight-info': highlights.indexOf('info') > -1,
+      'highlight-remove': highlights.indexOf('remove') > -1,
+      'is-expanded': expanded && !isEmpty,
+      'is-extractable': isExtractable,
+    }"
     :tabindex="isEmpty ? -1 : 0"
-    @keyup.enter="checkFocus()" 
+    @keyup.enter="checkFocus()"
     @focus="addFocus()"
     @blur="removeFocus()">
 
-    <div class="ItemSibling-heading" ref="heading"
+    <div
+      class="ItemSibling-heading"
+      ref="heading"
       @mouseover="isHovered = true"
       @mouseout="isHovered = false"
     >
-      <div class="ItemSibling-label"
-        :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
+      <div
+        class="ItemSibling-label"
+        :class="{ 'is-inactive': isEmpty, 'is-locked': isLocked }"
         @click="toggleExpanded()">
-        <i class="ItemSibling-arrow fa fa-chevron-right" 
-          :class="{'icon is-disabled' : isEmpty}"></i>
-        <span class="ItemSibling-type"
+        <i
+          class="ItemSibling-arrow fa fa-chevron-right"
+          :class="{ 'icon is-disabled': isEmpty }" />
+        <span
+          class="ItemSibling-type"
           :title="item['@type']">{{ capitalize(labelByLang(item['@type'])) }}:</span>
         <span class="ItemSibling-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>
       </div>
-      
+
       <div class="ItemSibling-actions">
         <entity-action
           v-if="isExtracting"
@@ -465,52 +486,51 @@ export default {
         />
       </div>
     </div>
-  
+
     <ul class="ItemSibling-list js-itemLocalFields" v-show="expanded">
       <field
-        v-show="k !== '_uid'" 
-        v-for="(v, k) in filteredItem" 
-        :parent-path="getPath" 
-        :entity-type="item['@type']" 
-        :is-inner="true" 
-        :is-locked="isLocked || isExtracting" 
-        :is-removable="false" 
-        :parent-key="fieldKey" 
-        :parent-index="index" 
-        :field-key="k" 
-        :field-value="v" 
-        :key="k" 
+        v-show="k !== '_uid'"
+        v-for="(v, k) in filteredItem"
+        :parent-path="getPath"
+        :entity-type="item['@type']"
+        :is-inner="true"
+        :is-locked="isLocked || isExtracting"
+        :is-removable="false"
+        :parent-key="fieldKey"
+        :parent-index="index"
+        :field-key="k"
+        :field-value="v"
+        :key="k"
         :expand-children="expandChildren"
-        :show-action-buttons="showActionButtons"></field>
+        :show-action-buttons="showActionButtons" />
     </ul>
 
     <property-adder
-      :entity-type="item['@type']" 
-      :allowed="allowedProperties" 
+      :entity-type="item['@type']"
+      :allowed="allowedProperties"
       :isActive="propertyAdderOpened"
       :path="getPath"
     />
 
-    <search-window 
-      :isActive="extractDialogActive" 
-      :can-copy-title="canCopyTitle" 
-      :copy-title="copyTitle" 
+    <search-window
+      :isActive="extractDialogActive"
+      :can-copy-title="canCopyTitle"
+      :copy-title="copyTitle"
       :range-full="rangeFull"
       :range="range"
       :all-values-from="allValuesFrom"
       :some-values-from="someValuesFrom"
       :all-search-types="allSearchTypes"
       :entity-type="item['@type']"
-      :field-key="fieldKey" 
-      :extracting="extracting" 
+      :field-key="fieldKey"
+      :extracting="extracting"
       :extractable="isExtractable"
       :item-info="extractedMainEntity"
       :index="index"
       @extract="extract"
       @replace-with="replaceWith"
     />
-    </div>
-
+  </div>
 
 </template>
 
@@ -583,7 +603,6 @@ export default {
     margin: 0 0.5rem;
     white-space: nowrap;
   }
-
 
   &-collapsedLabel {
     justify-content: space-between;
@@ -659,14 +678,14 @@ export default {
   &.is-marked {
     background-color: @form-mark;
   }
-  
+
   &.is-removeable {
     background-color: @form-remove;
   }
 
-  &.is-expanded > 
+  &.is-expanded >
   .ItemLocal-heading >
-  .ItemLocal-label > 
+  .ItemLocal-label >
   .ItemLocal-arrow {
     transform:rotate(90deg);
     transform-origin: center;

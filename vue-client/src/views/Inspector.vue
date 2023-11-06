@@ -1,4 +1,3 @@
-
 <script>
 import { cloneDeep, each, get } from 'lodash-es';
 import { mapGetters, mapActions } from 'vuex';
@@ -10,20 +9,20 @@ import * as DataUtil from '@/utils/data';
 import * as HttpUtil from '@/utils/http';
 import * as RecordUtil from '@/utils/record';
 import { checkAutoShelfControlNumber } from '@/utils/shelfmark';
-import EntityForm from '@/components/inspector/entity-form';
-import Toolbar from '@/components/inspector/toolbar';
-import DetailedEnrichment from '@/components/care/detailed-enrichment';
-import EntityChangelog from '@/components/inspector/entity-changelog';
-import EntityHeader from '@/components/inspector/entity-header';
-import Breadcrumb from '@/components/inspector/breadcrumb';
-import ModalComponent from '@/components/shared/modal-component';
-import MarcPreview from '@/components/inspector/marc-preview';
-import TabMenu from '@/components/shared/tab-menu';
-import ValidationSummary from '@/components/inspector/validation-summary';
+import { translatePhrase, labelByLang } from '@/utils/filters';
+import EntityForm from '@/components/inspector/entity-form.vue';
+import Toolbar from '@/components/inspector/toolbar.vue';
+import DetailedEnrichment from '@/components/care/detailed-enrichment.vue';
+import EntityChangelog from '@/components/inspector/entity-changelog.vue';
+import EntityHeader from '@/components/inspector/entity-header.vue';
+import Breadcrumb from '@/components/inspector/breadcrumb.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
+import MarcPreview from '@/components/inspector/marc-preview.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
+import ValidationSummary from '@/components/inspector/validation-summary.vue';
 import FullscreenPanel from '../components/shared/fullscreen-panel.vue';
 import VersionHistory from '../components/inspector/version-history.vue';
 import ChangeNotes from '../utils/changenotes';
-import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
   name: 'Inspector',
@@ -395,9 +394,9 @@ export default {
       this.closeRemoveModal();
       const url = `${this.settings.apiPath}/${this.documentId}`;
       HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
-        this.$store.dispatch('pushNotification', { 
-          type: 'success', 
-          message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language, this.resources.i18n)}!`, 
+        this.$store.dispatch('pushNotification', {
+          type: 'success',
+          message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was deleted', this.user.settings.language, this.resources.i18n)}!`,
         });
         // Force reload
         this.$router.go(-1);
@@ -644,7 +643,7 @@ export default {
         await this.saveExtracted();
         this.saveQueued = () => this.saveItem(done);
       } catch (error) {
-        this.$store.dispatch('pushNotification', { 
+        this.$store.dispatch('pushNotification', {
           type: 'danger',
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
         });
@@ -681,8 +680,8 @@ export default {
           ],
           addToHistory: false,
         });
-        this.$store.dispatch('setInspectorStatusValue', { 
-          property: 'lastAdded', 
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'lastAdded',
           value: `${path}.{"@id":"${savedExtractedMainEntity['@id']}"}`,
         });
       }
@@ -721,7 +720,7 @@ export default {
       this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
     doSaveRequest(requestMethod, obj, opts, done) {
-      this.preSaveHook(obj).then(obj2 => requestMethod({
+      this.preSaveHook(obj).then((obj2) => requestMethod({
         url: opts.url,
         ETag: opts.ETag,
         activeSigel: this.user.settings.activeSigel,
@@ -732,8 +731,8 @@ export default {
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
           setTimeout(() => {
-            this.$store.dispatch('pushNotification', { 
-              type: 'success', 
+            this.$store.dispatch('pushNotification', {
+              type: 'success',
               message: `${labelByLang(this.recordType)}  ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language, this.resources.i18n)}!`,
             });
           }, 10);
@@ -743,7 +742,7 @@ export default {
           this.fetchDocument();
           setTimeout(() => {
             this.$store.dispatch('pushNotification', {
-              type: 'success', 
+              type: 'success',
               message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language, this.resources.i18n)}!`,
             });
           }, 10);
@@ -773,13 +772,13 @@ export default {
           case 401:
             localStorage.removeItem('lastPath');
             errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language, this.resources.i18n)}`;
-            this.$store.dispatch('pushNotification', { type: 'danger', 
-              message: `${errorBase}. ${errorMessage}.`, 
-              sticky: true, 
-              link: { 
-                to: this.$store.getters.oauth2Client.token.getUri(), 
-                title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language, this.resources.i18n)}`, 
-                newTab: true, 
+            this.$store.dispatch('pushNotification', { type: 'danger',
+              message: `${errorBase}. ${errorMessage}.`,
+              sticky: true,
+              link: {
+                to: this.$store.getters.oauth2Client.token.getUri(),
+                title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language, this.resources.i18n)}`,
+                newTab: true,
                 external: true,
               } });
             break;
@@ -794,7 +793,7 @@ export default {
       warnArr.forEach((element) => {
         const keys = element.split('.');
         const value = get(this.inspector.data, element);
-        const warning = this.settings.warnOnSave[element].some(el => el === value);
+        const warning = this.settings.warnOnSave[element].some((el) => el === value);
         if (warning) {
           this.$store.dispatch('pushNotification', {
             type: 'warning',
@@ -983,18 +982,21 @@ export default {
     <div
       v-if="recordLoaded"
       class="col-sm-12"
-      :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}">
-        <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" />
+      :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, hideOnPrint: marcPreview.active }">
+      <breadcrumb v-if="$route.meta.breadcrumb" class="Inspector-breadcrumb" />
     </div>
 
-    <div ref="componentFocusTarget" class="col-12 col-sm-12" :class="{'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
-      <div v-if="recordLoaded && isDocumentAvailable" class="Toolbar-placeholder" ref="ToolbarPlaceholder"></div>
+    <div
+      ref="componentFocusTarget"
+      class="col-12 col-sm-12"
+      :class="{ 'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
+      <div v-if="recordLoaded && isDocumentAvailable" class="Toolbar-placeholder" ref="ToolbarPlaceholder" />
       <div v-if="recordLoaded && isDocumentAvailable" class="Toolbar-container" ref="ToolbarTest">
-        <toolbar></toolbar>
+        <toolbar />
       </div>
     </div>
 
-    <div class="col-sm-12" :class="{'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, 'hideOnPrint': marcPreview.active}" ref="Inspector">
+    <div class="col-sm-12" :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen, hideOnPrint: marcPreview.active }" ref="Inspector">
       <div v-if="!recordLoaded && loadFailure">
         <h2>{{loadFailure.status}}</h2>
         <p v-if="loadFailure.status === 404">
@@ -1026,12 +1028,12 @@ export default {
           </div>
           <entity-changelog v-if="inspector.status.isNew === false" />
         </div>
-        <entity-header id="main-header"
+        <entity-header
+          id="main-header"
           :full="true"
-          :focus-data="inspector.data.mainEntity" 
+          :focus-data="inspector.data.mainEntity"
           :record-data="inspector.data.record"
-          v-if="!isItem">
-        </entity-header>
+          v-if="!isItem" />
         <validation-summary v-if="user.settings.appTech" />
         <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="this.inspector.status.focus" />
         <entity-form
@@ -1040,16 +1042,19 @@ export default {
           :key="tab.id"
           :is-active="inspector.status.focus === tab.id"
           :form-data="inspector.data[tab.id]"
-          :locked="!inspector.status.editing">
-        </entity-form>
+          :locked="!inspector.status.editing" />
       </div>
     </div>
 
     <portal to="sidebar" v-if="marcPreview.active">
-      <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active"></marc-preview>
+      <marc-preview @hide="marcPreview.active = false" :error="marcPreview.error" :marc-obj="marcPreview.data" v-if="marcPreview.active" />
     </portal>
 
-    <modal-component title="Error" modal-type="danger" @close="closeRemoveModal" class="RemoveRecordModal"
+    <modal-component
+      title="Error"
+      modal-type="danger"
+      @close="closeRemoveModal"
+      class="RemoveRecordModal"
       v-if="removeInProgress">
       <template #modal-header>
         <div class="RemoveRecordModal-header">
@@ -1064,21 +1069,26 @@ export default {
             {{ translatePhrase('This operation can\'t be reverted') }}
           </p>
           <div class="RemoveRecordModal-buttonContainer">
-            <button class="btn btn-danger btn--md" @click="doRemoveRecord()">{{ translatePhrase('Remove') }} {{ labelByLang(this.recordType).toLowerCase() }}</button>
+            <button class="btn btn-danger btn--md" @click="doRemoveRecord()">
+              {{ translatePhrase('Remove') }} {{ labelByLang(this.recordType).toLowerCase() }}</button>
             <button class="btn btn-info btn--md" @click="closeRemoveModal()">{{ translatePhrase('Cancel') }}</button>
           </div>
         </div>
       </template>
     </modal-component>
 
-    <modal-component class="EmbellishFromIdModal" :title="[embellishFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']" v-if="embellishFromIdModal.open" @close="embellishFromIdModal.open = false">
+    <modal-component
+      class="EmbellishFromIdModal"
+      :title="[embellishFromIdModal.detailed ? 'Detailed enrichment' : 'Enrich from ID']"
+      v-if="embellishFromIdModal.open"
+      @close="embellishFromIdModal.open = false">
       <template #modal-body>
         <div class="EmbellishFromIdModal-body">
           <div class="EmbellishFromIdModal-infoText" v-if="embellishFromIdModal.detailed === true">
             <p>Med funktionen <em>Detaljerad berikning</em> kan du handplocka egenskaper från en post till en annan.</p>
             <p>För att göra detta behöver du tillgång till den berikande postens ID (URI), vilken du hittar i postens sammanfattning. Du kan också länka till posten genom att kopiera adressfältet i din webbläsare.</p>
             <p>
-              Du kan välja mellan att <strong>utöka</strong> (<i class="fa text-success fa-plus"></i>) eller <strong>ersätta</strong> (<i class="fa text-accent3 fa-arrow-right"></i>) en egenskap.
+              Du kan välja mellan att <strong>utöka</strong> (<i class="fa text-success fa-plus" />) eller <strong>ersätta</strong> (<i class="fa text-accent3 fa-arrow-right" />) en egenskap.
               Att <strong>utöka</strong> innebär att information läggs till i den berikade posten.
               <strong>Ersätta</strong> resulterar i att den berikande posten skriver över egenskaper.
             </p>
@@ -1088,9 +1098,17 @@ export default {
           </div>
           <div class="input-group EmbellishFromIdModal-form">
             <label class="input-group-addon EmbellishFromIdModal-label" for="id">{{ translatePhrase('ID') }}/{{ translatePhrase('Link') }}</label>
-            <input name="id" class="EmbellishFromIdModal-input form-control" ref="EmbellishFromIdModalInput" v-model="embellishFromIdModal.inputValue" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" />
+            <input
+              name="id"
+              class="EmbellishFromIdModal-input form-control"
+              ref="EmbellishFromIdModalInput"
+              v-model="embellishFromIdModal.inputValue"
+              @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" />
             <span class="input-group-btn">
-              <button class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton" @click="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)" @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)">{{ translatePhrase('Continue') }}</button>
+              <button
+                class="btn btn-primary btn--md EmbellishFromIdModal-confirmButton"
+                @click="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)"
+                @keyup.enter="confirmApplyRecordAsTemplate(embellishFromIdModal.detailed)">{{ translatePhrase('Continue') }}</button>
             </span>
           </div>
         </div>

@@ -1,7 +1,7 @@
 <script>
 import { isPlainObject, each } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import Spinner from '@/components/shared/Spinner.vue';
+import Spinner from '@/components/shared/spinner.vue';
 import * as httpUtil from '@/utils/http';
 import * as RecordUtil from '@/utils/record';
 import { translatePhrase } from '@/utils/filters';
@@ -92,8 +92,8 @@ export default {
             activeIds.push(key);
           }
         }
-        this.$store.dispatch('setStatusValue', { 
-          property: 'remoteDatabases', 
+        this.$store.dispatch('setStatusValue', {
+          property: 'remoteDatabases',
           value: activeIds,
         });
 
@@ -113,13 +113,13 @@ export default {
         'NLI',
         'AGRALIN',
         'ARM',
-        'IRN', 
+        'IRN',
         'LIBRIS',
-        'NORBOK', 
-        'NOSP', 
-        'NYPL', 
+        'NORBOK',
+        'NOSP',
+        'NYPL',
         'NY',
-        'WHOLIS', 
+        'WHOLIS',
       ];
 
       const defaultDbs = this.user ? this.user.settings.defaultDatabases : [];
@@ -216,10 +216,10 @@ export default {
     <!-- <div class="ResultControls-filterWrapper">
       <div class="ResultControls-filterBadge" v-for="(db, index) in activeDatabases" :key="index">
         <span>{{db}}</span>
-        <i 
+        <i
           role="button"
           tabindex="0"
-          class="fa fa-times-circle icon"  
+          class="fa fa-times-circle icon"
           @click="removeDatabase(db)"
           @keydown.enter="removeDatabase(db)"
           :title="translatePhrase('Remove')">
@@ -232,7 +232,7 @@ export default {
         tabindex="0"
         role="button"
         :aria-label="translatePhrase('Clear all')"
-        @mouseover="clearTooltip = true" 
+        @mouseover="clearTooltip = true"
         @mouseout="clearTooltip = false">
         {{ translatePhrase('Clear all') }}
         <i class="fa fa-times-circle icon"></i>
@@ -248,75 +248,84 @@ export default {
         </p>
         <button class="btn btn-primary btn--sm" v-on:click.prevent="loadRemoteDatabases()">{{ translatePhrase("Try again") }}</button>
       </div>
-      <div v-if="remoteDatabases.state == 'complete'" class="Find-facetHeading uppercaseHeading--light"><span @click="hideFacetColumn = !hideFacetColumn">{{ translatePhrase('Valda databaser') }} ({{ status.remoteDatabases.length }}) <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></span><a class="pull-right" v-if="status.remoteDatabases.length > 0" @click="clearDatabases()">{{ translatePhrase('Clear') }}</a></div>
+      <div v-if="remoteDatabases.state == 'complete'" class="Find-facetHeading uppercaseHeading--light">
+        <span @click="hideFacetColumn = !hideFacetColumn">
+          {{ translatePhrase('Valda databaser') }} ({{ status.remoteDatabases.length }})
+          <i
+            class="fa fa-fw hidden-md hidden-lg"
+            :class="{ 'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }" />
+        </span>
+        <a
+          class="pull-right"
+          v-if="status.remoteDatabases.length > 0"
+          @click="clearDatabases()">{{ translatePhrase('Clear') }}</a></div>
       <div v-if="remoteDatabases.state == 'complete'" :class="{ 'hidden-xs hidden-sm': hideFacetColumn }">
         <ul class="RemoteDatabases-activeList">
-          <li 
+          <li
             class="RemoteDatabases-activeListItem"
-            v-for="(db, index) in activeDatabases" 
+            v-for="(db, index) in activeDatabases"
             :key="index"
             :aria-label="db.database">
-              {{db.database}} 
-              <i 
-                v-show="!db.disabled" 
-                class="fa icon icon--xs fa-times-circle" 
-                :title="translatePhrase(db.active ? 'Remove' : 'Add')"
-                tabindex="0"
-                role="button"
-                @click="toggleDatabase(db.database)"
-                @keyup.enter="toggleDatabase(db.database)">
-              </i>
+            {{db.database}}
+            <i
+              v-show="!db.disabled"
+              class="fa icon icon--xs fa-times-circle"
+              :title="translatePhrase(db.active ? 'Remove' : 'Add')"
+              tabindex="0"
+              role="button"
+              @click="toggleDatabase(db.database)"
+              @keyup.enter="toggleDatabase(db.database)" />
           </li>
         </ul>
         <hr class="sectionDivider">
         <span class="uppercaseHeading--light">
           Databaser
         </span>
-        <input 
-          class="RemoteDatabases-listFilterInput customInput mousetrap" 
-          type="text" 
+        <input
+          class="RemoteDatabases-listFilterInput customInput mousetrap"
+          type="text"
           v-if="remoteDatabases.state == 'complete'"
           v-model="filterKey"
           :aria-label="translatePhrase('Search for database')"
           :placeholder="translatePhrase('Search for database')"
           ref="listFilterInput">
         <ul class="RemoteDatabases-list" v-if="remoteDatabases.state == 'complete'">
-          <li 
+          <li
             class="RemoteDatabases-listItem"
-            :class="{'is-active': db.active, 'is-disabled': db.disabled }" 
-            v-for="(db, index) in filteredDatabases" 
+            :class="{ 'is-active': db.active, 'is-disabled': db.disabled }"
+            v-for="(db, index) in filteredDatabases"
             :key="index"
             :aria-label="db.database">
             <div class="RemoteDatabases-addControl">
-              <i v-show="db.disabled" class="fa fa-ban icon icon--sm is-disabled"></i>
-              <i 
-                v-show="!db.disabled" 
-                class="fa icon icon--sm" 
+              <i v-show="db.disabled" class="fa fa-ban icon icon--sm is-disabled" />
+              <i
+                v-show="!db.disabled"
+                class="fa icon icon--sm"
                 :class="{ 'fa-plus-circle': !db.active, 'fa-check-circle': db.active, 'is-inactive': !db.active }"
                 :title="translatePhrase(db.active ? 'Remove' : 'Add')"
                 tabindex="0"
                 role="button"
                 @click="toggleDatabase(db.database)"
-                @keyup.enter="toggleDatabase(db.database)">
-              </i>
+                @keyup.enter="toggleDatabase(db.database)" />
             </div>
             <div class="RemoteDatabases-dbInfo">
               <div class="RemoteDatabases-dbLabel">
-                {{db.database}} 
+                {{db.database}}
                 <span v-show="db.disabled" class="RemoteDatabases-dbUnavailable">
                   ({{ translatePhrase('unavailable')}})
                 </span>
                 <div class="RemoteDatabases-dbExtraInfo" v-show="db.about">
-                  <i class="fa fa-question-circle fa-fw icon"></i>
+                  <i class="fa fa-question-circle fa-fw icon" />
                   <span class="RemoteDatabases-dbExtrainfoText">{{ db.about }}</span>
                 </div>
                 <div class="RemoteDatabases-dbExtraInfo" v-show="db.comment">
-                  <i class="fa fa-info-circle fa-fw icon"></i>
+                  <i class="fa fa-info-circle fa-fw icon" />
                   <span class="RemoteDatabases-dbExtrainfoText">{{ db.comment }}</span>
                 </div>
               </div>
-              <div class="RemoteDatabases-dbName" 
-                v-show="db.database !== db.name" 
+              <div
+                class="RemoteDatabases-dbName"
+                v-show="db.database !== db.name"
                 :title="db.name">{{db.name}}
               </div>
             </div>
@@ -327,7 +336,7 @@ export default {
         </div>
       </div>
     </portal>
-</div>
+  </div>
 </template>
 
 <style lang="less">
@@ -336,9 +345,6 @@ export default {
 
   &-activeInfo {
     margin-bottom: 5px;
-    
-    &.no-sources {
-    }
   }
 
   &-activeContainer {
@@ -447,9 +453,6 @@ export default {
     i.is-inactive {
       color: @brand-primary;
     }
-  }
-
-  &-dbLabel {
   }
 
   &-dbName {

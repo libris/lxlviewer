@@ -2,11 +2,11 @@
 import { mapGetters } from 'vuex';
 import { filter } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
-import RecordPicker from '@/components/care/record-picker';
-import HoldingList from '@/components/care/holding-list';
-import ModalComponent from '@/components/shared/modal-component';
 import * as RecordUtil from '@/utils/record';
 import { translatePhrase } from '@/utils/filters';
+import RecordPicker from '@/components/care/record-picker.vue';
+import HoldingList from '@/components/care/holding-list.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
 
 export default {
   name: 'holding-mover',
@@ -63,7 +63,7 @@ export default {
     },
     checkAllDone() {
       const selected = this.directoryCare.selectedHoldings;
-      if (filter(this.progress, o => o === 'done').length === selected.length) {
+      if (filter(this.progress, (o) => o === 'done').length === selected.length) {
         this.allDone();
       }
     },
@@ -73,7 +73,7 @@ export default {
         self.loading = false;
         self.$refs.sender.doneMoving();
         self.$refs.reciever.doneMoving();
-        if (self.directoryCare.holdingsMoved.length === filter(self.progress, o => o === 'done').length) {
+        if (self.directoryCare.holdingsMoved.length === filter(self.progress, (o) => o === 'done').length) {
           self.openModal();
         }
       }, 1500);
@@ -110,7 +110,8 @@ export default {
       }
     },
     switchInstances() {
-      const switchObj = { sender: this.directoryCare.reciever, reciever: this.directoryCare.sender };
+      const switchObj = { sender: this.directoryCare.reciever,
+        reciever: this.directoryCare.sender };
       this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...switchObj });
     },
   },
@@ -124,7 +125,7 @@ export default {
     ]),
     infoBoxTooltip() {
       if (this.showInfoBox) {
-        return StringUtil.getUiPhraseByLang('Hide instructions', this.user.settings.language, this.resources.i18n);   
+        return StringUtil.getUiPhraseByLang('Hide instructions', this.user.settings.language, this.resources.i18n);
       }
       return StringUtil.getUiPhraseByLang('Show instructions', this.user.settings.language, this.resources.i18n);
     },
@@ -148,17 +149,21 @@ export default {
   <div class="HoldingMover">
     <div class="HoldingMover-infoBoxToggle" v-if="flaggedInstances.length > 0">
       <span class="icon icon--md">
-        <i v-tooltip="infoBoxTooltip" class="fa fa-fw fa-question-circle" tabindex="0" aria-haspopup="true"
+        <i
+          v-tooltip="infoBoxTooltip"
+          class="fa fa-fw fa-question-circle"
+          tabindex="0"
+          aria-haspopup="true"
           ref="helpIcon"
           @mouseover="infoBoxHover = true"
           @mouseleave="infoBoxHover = false"
           @click="toggleInfoBox"
-          @keyup.enter="toggleInfoBox"></i>
+          @keyup.enter="toggleInfoBox" />
       </span>
     </div>
     <div class="HoldingMover-infoBox" v-if="flaggedInstances.length === 0 || showInfoBox">
       <div class="HoldingMover-infoBoxColumn">
-        <div class="iconCircle"><i class="fa fa-fw fa-flag"></i></div>
+        <div class="iconCircle"><i class="fa fa-fw fa-flag" /></div>
         <span class="header">Flagga post</span>
         <p>
           För att kunna flytta bestånd behöver du först flagga de bibliografiska poster du vill flytta bestånd mellan.
@@ -168,7 +173,7 @@ export default {
         </p>
       </div>
       <div class="HoldingMover-infoBoxColumn">
-        <div class="iconCircle"><i class="fa fa-fw fa-exchange"></i></div>
+        <div class="iconCircle"><i class="fa fa-fw fa-exchange" /></div>
         <span class="header">Flytta bestånd</span>
         <p>
           När en post är flaggad kan du flytta beståndsposter som tillhör något av dina sigel.<br>
@@ -178,7 +183,7 @@ export default {
         </p>
       </div>
       <div class="HoldingMover-infoBoxColumn">
-        <div class="iconCircle"><i class="fa fa-fw fa-check"></i></div>
+        <div class="iconCircle"><i class="fa fa-fw fa-check" /></div>
         <span class="header">Klart!</span>
         <p>
           Beståndet är nu flyttat. Om du vill flagga av samtliga poster gör du det lättast under <router-link to="/user">din profil</router-link>.
@@ -186,50 +191,54 @@ export default {
       </div>
     </div>
     <div class="HoldingMover-pickers" v-if="flaggedInstances.length > 0">
-      <record-picker 
+      <record-picker
         name="sender"
         opposite="reciever"
         :flaggedInstances="flaggedInstances"
         :expand="false">
-        <p v-if="!directoryCare.sender"
-          class="HoldingMover-info" 
+        <p
+          v-if="!directoryCare.sender"
+          class="HoldingMover-info"
           slot="info">
           {{ translatePhrase("Holdings are moved from the sender record to the reciever record") }}.</p>
       </record-picker>
       <div class="HoldingMover-separator" v-if="flaggedInstances.length > 0">
-        <button class="btn btn-primary" 
-          @click="switchInstances" 
+        <button
+          class="btn btn-primary"
+          @click="switchInstances"
           :disabled="!anySelected"
           :aria-label="translatePhrase('Switch place')">
-          <i class="fa fa-fw fa-exchange"></i>
+          <i class="fa fa-fw fa-exchange" />
         </button>
       </div>
-      <record-picker 
+      <record-picker
         v-if="flaggedInstances.length > 0"
         name="reciever"
         opposite="sender"
-        :flaggedInstances="flaggedInstances"/>
+        :flaggedInstances="flaggedInstances" />
     </div>
-    <div class="HoldingMover-resultListContainer"
-      :class="{ 'is-empty' : !anySelected}"
+    <div
+      class="HoldingMover-resultListContainer"
+      :class="{ 'is-empty': !anySelected }"
       v-if="flaggedInstances.length > 0">
-        <HoldingList ref="sender" name="sender" :loading="loading" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />
-      <div class="HoldingMover-separator"></div>
-        <HoldingList ref="reciever" :lock="true" name="reciever" />
+      <HoldingList ref="sender" name="sender" :loading="loading" :lock="loading || !bothSelected" @send="doMove" :progress="progress" />
+      <div class="HoldingMover-separator" />
+      <HoldingList ref="reciever" :lock="true" name="reciever" />
     </div>
-    <modal-component 
+    <modal-component
       class="HoldingMover-allSuccessDialog"
       v-if="allSuccessDialog"
       width="500px"
       @close="closeModal"
-      title="Move was successful" 
+      title="Move was successful"
       modal-type="info">
       <template #modal-body>
         <div class="HoldingMover-allSuccessDialogBody">
           <p>{{ translatePhrase('All selected holdings has been moved') }}.</p>
           <p>{{ translatePhrase('Do you want to unmark the sender') }}?</p>
           <div class="HoldingMover-allSuccessDialogBtnContainer">
-            <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ translatePhrase('Yes') }}</button> <button class="btn btn-primary btn--md" @click="closeModal">{{ translatePhrase('No') }}</button>
+            <button ref="acceptUntagButton" class="btn btn-primary btn--md" @click="acceptUntag">{{ translatePhrase('Yes') }}</button>
+            <button class="btn btn-primary btn--md" @click="closeModal">{{ translatePhrase('No') }}</button>
           </div>
         </div>
       </template>
@@ -306,7 +315,7 @@ export default {
     align-items: baseline;
     margin: 80px 10px;
     justify-content: center;
-    
+
     @media (max-width: @screen-sm) {
       margin: 10px;
     }
@@ -334,8 +343,6 @@ export default {
     }
     &-error {
       color: @brand-danger;
-    }
-    &-loading {
     }
   }
 

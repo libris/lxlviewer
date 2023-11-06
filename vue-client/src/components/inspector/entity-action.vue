@@ -73,7 +73,9 @@ export default {
 </script>
 
 <template>
-  <div class="EntityAction" :class="{'action-larger': isLarge, 'has-parent-hovered': parentHovered, 'is-placeholder': placeholder }"
+  <div
+    class="EntityAction"
+    :class="{ 'action-larger': isLarge, 'has-parent-hovered': parentHovered, 'is-placeholder': placeholder }"
     role="button"
     :aria-label="translatePhrase(label)"
     tabindex="0"
@@ -81,12 +83,11 @@ export default {
     @click="action()"
     @keyup.enter="action()"
     @focus="highlight()"
-    @mouseover="highlight()" 
+    @mouseover="highlight()"
     @blur="dehighlight()"
     @mouseout="dehighlight()"
   >
-    <i :class="iconClassString">
-    </i>
+    <i :class="iconClassString" />
     <span class="action-label" v-show="isLarge">
       {{ translatePhrase(label) }}
     </span>

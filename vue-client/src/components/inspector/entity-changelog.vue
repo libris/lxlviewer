@@ -6,9 +6,9 @@
 import { mapGetters } from 'vuex';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
-import Button from '@/components/shared/button';
 import { translatePhrase } from '@/utils/filters';
 import { formatDateTime } from '@/utils/datetime';
+import Button from '@/components/shared/button.vue';
 
 export default {
   name: 'entity-changelog',
@@ -20,7 +20,7 @@ export default {
   },
   methods: {
     translatePhrase,
-    formatDateTime
+    formatDateTime,
   },
   computed: {
     focusData() {
@@ -42,19 +42,29 @@ export default {
 <template>
   <div class="EntityChangelog">
     <div class="EntityChangelog-item">
-      <span class="EntityChangelog-key uppercaseHeading--bold">{{ translatePhrase('Created') }}:</span> 
+      <span class="EntityChangelog-key uppercaseHeading--bold">{{ translatePhrase('Created') }}:</span>
       <span class="EntityChangelog-value">
-        {{ formatDateTime(getCard.created) }} {{ translatePhrase('by') }} 
-        <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionCreator" :item="inspector.data.record.descriptionCreator" :is-last="true" :field-key="'descriptionCreator'"/>
+        {{ formatDateTime(getCard.created) }} {{ translatePhrase('by') }}
+        <SummaryNode
+          :hover-links="true"
+          v-if="inspector.data.record.descriptionCreator"
+          :item="inspector.data.record.descriptionCreator"
+          :is-last="true"
+          :field-key="'descriptionCreator'" />
         <span class="EntityChangelog-unknown" v-else>{{ translatePhrase('Unknown').toLowerCase() }}</span>
       </span>
     </div>
 
     <div class="EntityChangelog-item">
-      <span class="EntityChangelog-key uppercaseHeading--bold">{{ translatePhrase('Changed') }}:</span> 
+      <span class="EntityChangelog-key uppercaseHeading--bold">{{ translatePhrase('Changed') }}:</span>
       <span class="EntityChangelog-value">
         {{ formatDateTime(getCard.modified) }} {{ translatePhrase('by') }}
-        <SummaryNode :hover-links="true" v-if="inspector.data.record.descriptionLastModifier" :item="inspector.data.record.descriptionLastModifier" :is-last="true" :field-key="'descriptionLastModifier'"/>
+        <SummaryNode
+          :hover-links="true"
+          v-if="inspector.data.record.descriptionLastModifier"
+          :item="inspector.data.record.descriptionLastModifier"
+          :is-last="true"
+          :field-key="'descriptionLastModifier'" />
         <span class="EntityChangelog-unknown" v-else>{{ translatePhrase('Unknown').toLowerCase() }}</span>
       </span>
     </div>

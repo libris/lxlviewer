@@ -1,8 +1,8 @@
-import { fileURLToPath, URL } from 'node:url'
-import { defineConfig } from 'vite'
+import { fileURLToPath, URL } from 'node:url';
+import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { gitDescribeSync } from 'git-describe'
-import vue from '@vitejs/plugin-vue'
+import { gitDescribeSync } from 'git-describe';
+import vue from '@vitejs/plugin-vue';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,11 +12,11 @@ export default defineConfig({
       template: {
         compilerOptions: {
           compatConfig: {
-            MODE: 2
-          }
-        }
-      }
-    })
+            MODE: 2,
+          },
+        },
+      },
+    }),
   ],
   server: {
     port: 8080,
@@ -32,7 +32,7 @@ export default defineConfig({
       dirtySemver: false,
       requireAnnotated: false,
       match: '*',
-    }))
+    })),
   },
   resolve: {
     alias: {
@@ -45,7 +45,9 @@ export default defineConfig({
       crypto: resolve(__dirname, 'node_modules/crypto-browserify'),
       stream: resolve(__dirname, 'node_modules/stream-browserify'),
     },
-    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'], // TODO: remove entire row when we have ensured all SFC imports end with the .vue extension. https://vueschool.io/articles/vuejs-tutorials/how-to-migrate-from-vue-cli-to-vite/
+    // TODO: remove entire row when we have ensured all SFC imports end with the .vue extension.
+    // https://vueschool.io/articles/vuejs-tutorials/how-to-migrate-from-vue-cli-to-vite/
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
   },
   css: {
     preprocessorOptions: {
@@ -63,4 +65,4 @@ export default defineConfig({
       },
     },
   },
-})
+});

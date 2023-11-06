@@ -4,10 +4,10 @@ import { filter } from 'lodash-es';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as HttpUtil from '@/utils/http';
-import TabMenu from '@/components/shared/tab-menu';
-import HoldingMover from '@/components/care/holding-mover';
-import ModalComponent from '@/components/shared/modal-component';
 import { translatePhrase } from '@/utils/filters';
+import TabMenu from '@/components/shared/tab-menu.vue';
+import HoldingMover from '@/components/care/holding-mover.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
 
 export default {
   name: 'DirectoryCare',
@@ -26,8 +26,8 @@ export default {
       },
       tabs: [
         { id: 'holdings', text: 'Move holdings' },
-        // { 'id': 'merge', 'text': 'Merge records' }, 
-        // { 'id': 'remove', 'text': 'Batch remove' }, 
+        // { 'id': 'merge', 'text': 'Merge records' },
+        // { 'id': 'remove', 'text': 'Batch remove' },
       ],
       showModal: false,
     };
@@ -40,7 +40,7 @@ export default {
       'resources',
     ]),
     flaggedInstances() {
-      return filter(this.fetchedItems, o => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
+      return filter(this.fetchedItems, (o) => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
     },
   },
   watch: {
@@ -85,11 +85,13 @@ export default {
           this.allDone();
         })
         .catch(() => {
-          this.$store.dispatch('pushNotification',
-            { 
+          this.$store.dispatch(
+            'pushNotification',
+            {
               type: 'danger',
-              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}`, 
-            })
+              message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}`,
+            },
+          )
             .then(() => {
               this.allDone();
             });
@@ -103,12 +105,14 @@ export default {
             this.showModal = true;
           }
           if (this.errors.other.length > 0) {
-            this.$store.dispatch('pushNotification',
+            this.$store.dispatch(
+              'pushNotification',
               {
                 type: 'danger',
                 message: `${StringUtil.getUiPhraseByLang('The following resources could not be retrieved', this.user.settings.language, this.resources.i18n)}: 
-                ${this.errors.other.map(el => el.label).join(', ')}`, 
-              })
+                ${this.errors.other.map((el) => el.label).join(', ')}`,
+              },
+            )
               .then(() => {
                 this.errors.other = [];
               });
@@ -130,22 +134,25 @@ export default {
 <template>
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
-      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
-      <holding-mover 
+      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool" />
+      <holding-mover
         v-if="$route.params.tool === 'holdings'"
-        :flaggedInstances="flaggedInstances"/>
+        :flaggedInstances="flaggedInstances" />
       <div class="" v-if="$route.params.tool === 'merge'">
         <h1>merge records</h1>
         <!-- replace this whole div with the component -->
       </div>
-      <modal-component 
+      <modal-component
         v-if="showModal"
-        title="Directory care list adjusted" 
-        modal-type="info" 
+        title="Directory care list adjusted"
+        modal-type="info"
         @close="closeModal">
         <template #modal-body>
           <div class="DirectoryCare-modalBody">
-            <p>{{ `${translatePhrase('The following resources could not be retrieved')} ${translatePhrase('because they no longer exist. They have been removed from the directory care list')}` }}:</p>
+            <p>
+              {{ `${translatePhrase('The following resources could not be retrieved')}
+              ${translatePhrase('because they no longer exist. They have been removed from the directory care list')}` }}:
+            </p>
             <ul>
               <li v-for="error in errors.removed" :key="error['@id']">
                 {{error.label}}

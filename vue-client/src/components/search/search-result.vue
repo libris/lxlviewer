@@ -1,7 +1,7 @@
 <script>
-import ResultList from './result-list';
-import ResultControls from './result-controls';
 import { translatePhrase } from '@/utils/filters';
+import ResultList from './result-list.vue';
+import ResultControls from './result-controls.vue';
 
 export default {
   name: 'search-result',
@@ -71,38 +71,38 @@ export default {
 </script>
 
 <template>
-  <div class="SearchResult" :class="{'is-showResult': showResult}">
+  <div class="SearchResult" :class="{ 'is-showResult': showResult }">
     <div v-if="(status.resultList.loading || status.resultList.error)" class="SearchResult-loadingText panel panel-default">
       <span v-if="!status.resultList.error">
-        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <i class="fa fa-circle-o-notch fa-spin" />
       </span>
       <span v-if="status.resultList.error">
-        <i class="fa fa-warning"></i>
+        <i class="fa fa-warning" />
       </span>
       <span v-if="!status.resultList.error" class="is-status">{{ translatePhrase("Fetching results") }}</span>
       <span v-if="status.resultList.error" class="is-error">{{status.resultList.info}}</span>
     </div>
-    <result-controls class="SearchResult-controls" 
-      v-if="!status.resultList.loading && !status.resultList.error" 
-      :page-data="paginationData" 
-      :show-details="true" 
-      :has-pagination="hasPagination" 
+    <result-controls
+      class="SearchResult-controls"
+      v-if="!status.resultList.loading && !status.resultList.error"
+      :page-data="paginationData"
+      :show-details="true"
+      :has-pagination="hasPagination"
       :show-pages="false"
-      @sortChange="doSort($event)">
-    </result-controls>
-    <result-list class="SearchResult-list" 
-      v-if="!status.resultList.loading && !status.resultList.error" 
-      :results="result.items" 
-      :import-data="importData" 
-      :compact="user.settings.resultListType === 'compact'">
-    </result-list>
-    <result-controls class="SearchResult-controls" 
-      v-if="!status.resultList.loading && !status.resultList.error && hasPagination" 
-      :has-pagination="hasPagination" 
-      :page-data="paginationData" 
-      :show-details="false" 
-      :show-pages="true">
-    </result-controls>
+      @sortChange="doSort($event)" />
+    <result-list
+      class="SearchResult-list"
+      v-if="!status.resultList.loading && !status.resultList.error"
+      :results="result.items"
+      :import-data="importData"
+      :compact="user.settings.resultListType === 'compact'" />
+    <result-controls
+      class="SearchResult-controls"
+      v-if="!status.resultList.loading && !status.resultList.error && hasPagination"
+      :has-pagination="hasPagination"
+      :page-data="paginationData"
+      :show-details="false"
+      :show-pages="true" />
   </div>
 </template>
 

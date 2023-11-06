@@ -52,22 +52,26 @@ export default {
 </script>
 
 <template>
-  <div class="TypeSelect"
-    :class="{'is-removeable': highlight}">
-    <select class="customSelect" 
+  <div
+    class="TypeSelect"
+    :class="{ 'is-removeable': highlight }">
+    <select
+      class="customSelect"
       v-model="selectedType"
       ref="adderTypeSelect"
       @change="handleChange()"
       :aria-label="translatePhrase('Choose type')">
       <option disabled value="">{{ translatePhrase("Choose type") }}</option>
-      <option v-for="(term, index) in classTree"  
+      <option
+        v-for="(term, index) in classTree"
         v-html="options[index].label"
-        :disabled="term.abstract" 
-        :key="`${term.id}-${index}`" 
-        :value="term.id"></option>
+        :disabled="term.abstract"
+        :key="`${term.id}-${index}`"
+        :value="term.id" />
     </select>
     <div class="TypeSelect-dismissBtn" v-if="removeable">
-      <i class="fa fa-times-circle icon icon--sm" 
+      <i
+        class="fa fa-times-circle icon icon--sm"
         role="button"
         tabindex="0"
         :aria-label="translatePhrase('Remove')"
@@ -76,9 +80,8 @@ export default {
         @mouseover="highlight = true"
         @mouseout="highlight = false"
         @focus="highlight = true"
-        @blur="highlight = false">
-      </i>
-      </div>
+        @blur="highlight = false" />
+    </div>
   </div>
 </template>
 

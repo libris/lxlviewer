@@ -1,9 +1,9 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
-import UserAvatar from '@/components/shared/user-avatar';
-import SelectSigel from './select-sigel';
 import { translatePhrase, capitalize } from '@/utils/filters';
+import UserAvatar from '@/components/shared/user-avatar.vue';
+import SelectSigel from './select-sigel.vue';
 
 export default {
   name: 'user-settings',
@@ -36,7 +36,11 @@ export default {
     },
     logout() {
       this.$store.dispatch('logoutUser');
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('You were logged out', this.user.settings.language, this.resources.i18n)}!` });
+      this.$store.dispatch(
+        'pushNotification',
+        { type: 'success',
+          message: `${StringUtil.getUiPhraseByLang('You were logged out', this.user.settings.language, this.resources.i18n)}!` },
+      );
       this.$router.push({ path: '/' });
     },
     purgeFlagged() {
@@ -70,18 +74,18 @@ export default {
 </script>
 
 <template>
-  <section class="UserSettings" :class="{'in-menu' : compact}">
+  <section class="UserSettings" :class="{ 'in-menu': compact }">
     <div class="UserSettings-content" v-if="!compact">
       <div class="UserSettings-info UserInfo">
         <div class="UserInfo-avatar">
           <user-avatar :size="150" :appearance="'dark'" />
         </div>
         <p class="UserInfo-name">
-          <strong class="UserInfo-label uppercaseHeading--bold">{{ translatePhrase("Name") }}</strong><br/>
+          <strong class="UserInfo-label uppercaseHeading--bold">{{ translatePhrase("Name") }}</strong><br />
           <span>{{user.fullName}}</span>
         </p>
         <p class="UserInfo-email">
-          <strong class="UserInfo-label uppercaseHeading--bold">{{ translatePhrase("E-mail") }}</strong><br/>
+          <strong class="UserInfo-label uppercaseHeading--bold">{{ translatePhrase("E-mail") }}</strong><br />
           <span>{{user.email || '-'}}</span>
         </p>
         <div class="UserInfo-meta">
@@ -100,24 +104,29 @@ export default {
                 <label for="UserConfig-sigel">{{ translatePhrase("Active sigel") }}</label>
               </td>
               <td class="value">
-                  <select-sigel
-                    id="UserConfig-sigel" />
+                <select-sigel
+                  id="UserConfig-sigel" />
               </td>
             </tr>
             <tr>
               <td class="key">
-                <label for="clearFlagged"> 
+                <label for="clearFlagged">
                   {{ translatePhrase("Clear my flagged documents") }}
                 </label>
               </td>
               <td class="value">
-                <button name="clearFlagged" v-if="userFlagged.length > 0" class="btn btn--sm btn-danger" @click.prevent="purgeFlagged" @keyup.enter.prevent="purgeFlagged">{{ translatePhrase('Clear') }}</button>
+                <button
+                  name="clearFlagged"
+                  v-if="userFlagged.length > 0"
+                  class="btn btn--sm btn-danger"
+                  @click.prevent="purgeFlagged"
+                  @keyup.enter.prevent="purgeFlagged">{{ translatePhrase('Clear') }}</button>
                 <span v-if="userFlagged.length === 0" class="disabled">{{ translatePhrase('Nothing flagged') }}</span>
               </td>
             </tr>
             <!-- <tr>
               <td class="key">
-                <label for="clearBookmarks"> 
+                <label for="clearBookmarks">
                   {{ translatePhrase("Clear my bookmarked documents") }}
                 </label>
               </td>
@@ -134,13 +143,16 @@ export default {
                 <label for="UserConfig-lang">{{ translatePhrase("Language") }}</label>
               </td>
               <td class="value">
-                  <select id="UserConfig-lang" class="UserConfig-select customSelect" 
-                    :value="user.settings.language" 
-                    @change="updateLanguage">
-                    <option v-for="language in settings.availableUserSettings.languages" 
-                      :key="language.value" 
-                      :value="language.value">{{ translatePhrase(language.label) }}</option>
-                  </select>
+                <select
+                  id="UserConfig-lang"
+                  class="UserConfig-select customSelect"
+                  :value="user.settings.language"
+                  @change="updateLanguage">
+                  <option
+                    v-for="language in settings.availableUserSettings.languages"
+                    :key="language.value"
+                    :value="language.value">{{ translatePhrase(language.label) }}</option>
+                </select>
               </td>
             </tr>
             <tr>
@@ -149,7 +161,7 @@ export default {
               </td>
               <td class="value">
                 <input id="detailsCheckbox" class="customCheckbox-input" type="checkbox" @change="updateAppTech" :checked="user.settings.appTech">
-                <div class="customCheckbox-icon"></div>
+                <div class="customCheckbox-icon" />
               </td>
             </tr>
             <tr>
@@ -157,8 +169,13 @@ export default {
                 <label for="siteWidthCheckbox">{{ translatePhrase("Use full site width") }}</label>
               </td>
               <td class="value">
-                <input id="siteWidthCheckbox" class="customCheckbox-input" type="checkbox" @change="updateFullSiteWidth" :checked="user.settings.fullSiteWidth">
-                <div class="customCheckbox-icon"></div>
+                <input
+                  id="siteWidthCheckbox"
+                  class="customCheckbox-input"
+                  type="checkbox"
+                  @change="updateFullSiteWidth"
+                  :checked="user.settings.fullSiteWidth">
+                <div class="customCheckbox-icon" />
               </td>
             </tr>
           </table>
@@ -176,7 +193,12 @@ export default {
         </li>
         <li>
           <router-link to="/user">{{ translatePhrase("Settings")}}</router-link>
-          <button class="btn--as-link" v-if="userFlagged.length > 0" @click.prevent="purgeFlagged">{{ capitalize(translatePhrase(['Clear', 'Flags']).toLowerCase()) }}</button>
+          <button
+            class="btn--as-link"
+            v-if="userFlagged.length > 0"
+            @click.prevent="purgeFlagged">
+            {{ capitalize(translatePhrase(['Clear', 'Flags']).toLowerCase()) }}
+          </button>
         </li>
         <li>
           <!-- <span>Växla användare</span> -->
@@ -289,7 +311,7 @@ export default {
         border: 0px;
       }
 
-      & .btn--as-link, 
+      & .btn--as-link,
       & a {
         color: @black;
         cursor: pointer;
@@ -328,9 +350,6 @@ export default {
 
   &-avatar {
     text-align: center;
-  }
-
-  &-label {
   }
 
   &-meta {

@@ -15,8 +15,8 @@ export default {
   ],
   setup(props) {
     return {
-      resolvedImage: new URL(`/src/assets/img/${props.image}`, import.meta.url).href
-    }
+      resolvedImage: new URL(`/src/assets/img/${props.image}`, import.meta.url).href,
+    };
   },
   data() {
     return {
@@ -38,33 +38,35 @@ export default {
   },
   watch: {
   },
-  mounted() { 
+  mounted() {
     this.$nextTick(() => {
     });
   },
 };
 </script>
 
-
 <template>
-  <div class="panel panel-default LinkCard" v-bind:class="{'no-link': !linkUrl, 'LinkCard--large': videoUrl}">
-    <img v-if="image" :src="resolvedImage" class="LinkCard-img" :alt="imageAltText"/>
+  <div class="panel panel-default LinkCard" v-bind:class="{ 'no-link': !linkUrl, 'LinkCard--large': videoUrl }">
+    <img v-if="image" :src="resolvedImage" class="LinkCard-img" :alt="imageAltText" />
 
     <div v-else-if="videoUrl" class="LinkCard-videoWrap">
-      <div class="LinkCard-youtubeDialog" v-if="videoUrl.indexOf('youtube') > -1 && !youtube.accepted"
-                    @click="youtube.accepted = true"
-            @keyup.enter="youtube.accepted = true" tabindex="0">
+      <div
+        class="LinkCard-youtubeDialog"
+        v-if="videoUrl.indexOf('youtube') > -1 && !youtube.accepted"
+        @click="youtube.accepted = true"
+        @keyup.enter="youtube.accepted = true"
+        tabindex="0">
         <div>
           <p>
             Genom att spela våra instruktionsfilmer godkänner du cookies från YouTube
           </p>
-          <i class="fa fa-3x fa-play"></i>
+          <i class="fa fa-3x fa-play" />
         </div>
       </div>
-      <div class="LinkCard-video Video" v-if="videoUrl.indexOf('youtube') ==! -1 || youtube.accepted">
-        <iframe :src="videoUrl" allow="autoplay" allowfullscreen :title="header"></iframe>
+      <div class="LinkCard-video Video" v-if="videoUrl.indexOf('youtube') == !-1 || youtube.accepted">
+        <iframe :src="videoUrl" allow="autoplay" allowfullscreen :title="header" />
       </div>
-    </div> 
+    </div>
     <div class="LinkCard-content card-content">
       <div class="LinkCard-text card-text">
         <span class="LinkCard-title card-title">{{ header }}</span>
@@ -86,11 +88,11 @@ export default {
   padding: 0;
 
   @media (min-width: 768px) {
-    flex-basis: 49%; 
+    flex-basis: 49%;
   }
 
   @media (min-width: 992px) {
-    flex-basis: 32%; 
+    flex-basis: 32%;
   }
 
   &-img {
@@ -138,7 +140,7 @@ export default {
     padding-bottom: 56.25%; /* 16:9 */
     padding-top: 25px;
     height: 0;
-  
+
     &-iframe,
     & iframe,
     & embed {
@@ -160,12 +162,6 @@ export default {
     }
   }
 
-  &-link {
-  }
-
-  &-text {
-  }
-
   &-descr,
   &-html {
     @media (min-width: 768px) {
@@ -175,9 +171,6 @@ export default {
 
   &-html {
     display: block;
-  }
-
-  &-title {
   }
 
   &.no-link {

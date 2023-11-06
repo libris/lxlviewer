@@ -4,11 +4,11 @@ import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
-import Spinner from '@/components/shared/Spinner.vue';
-import FacetControls from '@/components/search/facet-controls';
-import SearchResult from '@/components/search/search-result';
-import TabMenu from '@/components/shared/tab-menu';
+import Spinner from '@/components/shared/spinner.vue';
 import { translatePhrase } from '@/utils/filters';
+import FacetControls from '@/components/search/facet-controls.vue';
+import SearchResult from '@/components/search/search-result.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
 
 export default {
   name: 'Find',
@@ -67,7 +67,11 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/find.jsonld?${this.query}`;
       fetch(fetchUrl).then((response) => {
         if (response.status === 400) {
-          this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Invalid query', this.user.settings.language)}` });
+          this.$store.dispatch(
+            'pushNotification',
+            { type: 'danger',
+              message: `${StringUtil.getUiPhraseByLang('Invalid query', this.user.settings.language)}` },
+          );
         } else {
           response.json().then((result) => {
             this.result = result;
@@ -85,7 +89,11 @@ export default {
 
         this.searchInProgress = false;
       }, (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} ${error}` });
+        this.$store.dispatch(
+          'pushNotification',
+          { type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} ${error}` },
+        );
         this.searchInProgress = false;
       });
     },
@@ -93,8 +101,12 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/_remotesearch?${this.query}`;
       this.hideFacetColumn = true;
 
-      fetch(fetchUrl, { headers: { Authorization: `Bearer ${this.user.token}` } }).then(response => response.json(), (error) => {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} ${error}` });
+      fetch(fetchUrl, { headers: { Authorization: `Bearer ${this.user.token}` } }).then((response) => response.json(), (error) => {
+        this.$store.dispatch(
+          'pushNotification',
+          { type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} ${error}` },
+        );
         this.searchInProgress = false;
       }).then((result) => {
         this.result = this.convertRemoteResult(result);
@@ -171,12 +183,12 @@ export default {
     ]),
     findTabs() {
       const tabs = [
-        { 
-          id: 'libris', 
+        {
+          id: 'libris',
           text: StringUtil.getUiPhraseByLang('Libris', this.user.settings.language, this.resources.i18n),
         },
-        { 
-          id: 'remote', 
+        {
+          id: 'remote',
           text: StringUtil.getUiPhraseByLang('Other sources', this.user.settings.language, this.resources.i18n),
           disabled: !this.user.isLoggedIn,
           tooltipText: !this.user.isLoggedIn ? StringUtil.getUiPhraseByLang('Sign in to search other sources', this.user.settings.language, this.resources.i18n) : null,
@@ -203,7 +215,7 @@ export default {
   beforeRouteLeave(to, from, next) {
     if (to.name === 'Inspector') {
       const startOffset = this.result.itemOffset;
-      const relativeOffset = this.result.items.findIndex(item => RecordUtil.extractFnurgel(item['@id']) === to.params.fnurgel);
+      const relativeOffset = this.result.items.findIndex((item) => RecordUtil.extractFnurgel(item['@id']) === to.params.fnurgel);
       const absoluteOffset = startOffset + relativeOffset;
 
       const breadcrumb = {
@@ -213,7 +225,7 @@ export default {
         relativeOffset,
         absoluteOffset,
         range: { start: startOffset, itemsPerPage: this.result.itemsPerPage },
-        paths: this.result.items.map(el => el['@id']),
+        paths: this.result.items.map((el) => el['@id']),
       };
       to.meta.breadcrumb = breadcrumb;
     }
@@ -237,28 +249,33 @@ export default {
         :active="$route.params.perimeter"
         :tabs="findTabs"
       />
-      <div v-if="$route.params.perimeter === 'libris'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ translatePhrase('Filter') }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
-      <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'"></facet-controls>
+      <div
+        v-if="$route.params.perimeter === 'libris'"
+        @click="hideFacetColumn = !hideFacetColumn"
+        class="Find-facetHeading uppercaseHeading--light">{{ translatePhrase('Filter') }}
+        <i
+          class="fa fa-fw hidden-md hidden-lg"
+          :class="{ 'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }" /></div>
+      <facet-controls :class="{ 'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'" />
       <portal-target name="facetColumn" />
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">
-        <div class="Find-progressText">
-          <Spinner size="3x" :message="translatePhrase('Searching')" />
-        </div>
+      <div class="Find-progressText">
+        <Spinner size="3x" :message="translatePhrase('Searching')" />
+      </div>
     </div>
-    <div 
-      class="col-sm-12 Find-content Column-searchResult" 
+    <div
+      class="col-sm-12 Find-content Column-searchResult"
       :class="{
         'col-md-9': !status.panelOpen,
-        'col-md-7': status.panelOpen
-        }">
+        'col-md-7': status.panelOpen,
+      }">
       <search-result
         v-show="!searchInProgress"
-        :import-data="importData" 
-        :result="result" 
+        :import-data="importData"
+        :result="result"
         :query="query"
-        v-if="result !== null && result.totalItems > -1">
-      </search-result>
+        v-if="result !== null && result.totalItems > -1" />
     </div>
   </div>
 </template>
@@ -300,11 +317,6 @@ export default {
     .sectionDivider {
       margin: 0.5em 0;
     }
-  }
-  &-searchForm {
-
-  }
-  &-searchResult {
   }
 }
 

@@ -3,12 +3,12 @@
 
 */
 import * as StringUtil from 'lxljs/string';
-import LensMixin from '@/components/mixins/lens-mixin';
-import ItemMixin from '@/components/mixins/item-mixin';
-import OverflowMixin from '@/components/mixins/overflow-mixin';
-import PreviewCard from '@/components/shared/preview-card';
 import { labelByLang, convertResourceLink, capitalize } from '@/utils/filters';
 import { Dropdown } from 'floating-vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import OverflowMixin from '@/components/mixins/overflow-mixin.vue';
+import PreviewCard from '@/components/shared/preview-card.vue';
 
 export default {
   name: 'summary-node',
@@ -66,7 +66,7 @@ export default {
   methods: {
     labelByLang,
     convertResourceLink,
-    capitalize
+    capitalize,
   },
   watch: {
   },

@@ -11,8 +11,8 @@ export default {
     calculateOverflow() {
       // Display expander button on property values that don't fit
       const refs = pickBy(this.$refs, (v, k) => startsWith(k, 'ovf-'));
-      const elements = map(values(refs), r => (isArray(r) ? r[0] : r)).filter(e => e);
-      elements.forEach(e => (this.isOverflown(e) || e.classList.contains('expanded')
+      const elements = map(values(refs), (r) => (isArray(r) ? r[0] : r)).filter((e) => e);
+      elements.forEach((e) => (this.isOverflown(e) || e.classList.contains('expanded')
         ? e.classList.add('overflown')
         : e.classList.remove('overflown')));
     },

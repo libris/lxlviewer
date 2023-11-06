@@ -1,5 +1,5 @@
 <script>
-/* 
+/*
 
   HOW TO USE:
   This component can recieve content to inject in the different slots.
@@ -111,27 +111,26 @@ export default {
       if (lastAction === 'close-modals') {
         this.close();
       }
-    }, 
+    },
   },
 };
 </script>
 
 <template>
-  <div class="ModalComponent" :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger', 'is-warning': modalType === 'warning'}">
-    <div class="ModalComponent-backdrop" @click="backdropClose ? close() : null"></div>
-    <div class="ModalComponent-container" :style="{ 'width': width, 'top': top }">
+  <div class="ModalComponent" :class="{ 'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger', 'is-warning': modalType === 'warning' }">
+    <div class="ModalComponent-backdrop" @click="backdropClose ? close() : null" />
+    <div class="ModalComponent-container" :style="{ width: width, top: top }">
       <div class="ModalComponent-header">
         <slot name="modal-header">
           <header>
             {{ translatedTitle }}
           </header>
           <span class="ModalComponent-windowControl" v-if="closeable">
-            <i 
-              @click="close" 
+            <i
+              @click="close"
               role="button"
               tabindex="0"
-              class="fa fa-close icon--md">
-            </i>
+              class="fa fa-close icon--md" />
           </span>
         </slot>
       </div>
@@ -141,8 +140,7 @@ export default {
         </slot>
       </div>
       <div class="ModalComponent-footer">
-        <slot name="modal-footer">
-        </slot>
+        <slot name="modal-footer" />
       </div>
     </div>
   </div>
@@ -230,6 +228,5 @@ export default {
     }
   }
 }
-
 
 </style>

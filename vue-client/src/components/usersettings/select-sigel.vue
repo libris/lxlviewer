@@ -19,12 +19,12 @@ export default {
       if (!sigel.friendly_name) {
         return sigel.code;
       }
-      
+
       const sigelPart = ` (${sigel.code})`;
       const fName = sigel.friendly_name.length + sigelPart.length > len
         ? `${sigel.friendly_name.substr(0, len - sigelPart.length - 3)}...`
         : sigel.friendly_name;
-      
+
       return `${fName}${sigelPart}`;
     },
     updateSigel(value) {
@@ -35,7 +35,7 @@ export default {
       };
       if (this.$route.name === 'Inspector' && this.inspector.data.mainEntity && this.inspector.data.mainEntity['@type'] === 'Item') {
         // If editing a holding, the user must accept a cancel dialog before sigel can be changed
-        this.$store.dispatch('pushInspectorEvent', { 
+        this.$store.dispatch('pushInspectorEvent', {
           name: 'record-control',
           value: 'cancel',
           callback: () => {
@@ -73,26 +73,27 @@ export default {
 </script>
 
 <template>
-  <form 
+  <form
     class="SelectSigelForm"
-    :class="{'displayInRow': !updateOnChange}"    
+    :class="{ displayInRow: !updateOnChange }"
     @submit.prevent="onSubmit">
-    <select 
-      :id="id" 
-      class="customSelect" 
+    <select
+      :id="id"
+      class="customSelect"
       ref="selectSigel"
-      :value="selectValue" 
+      :value="selectValue"
       @change="onChange">
-      <option v-for="sigel in sortedSigels"
-        :key="sigel.code" 
+      <option
+        v-for="sigel in sortedSigels"
+        :key="sigel.code"
         :value="sigel.code">{{ getSigelLabel(sigel, 50) }} {{ sigel.global_registrant == true ? '👑' : '' }}{{ sigel.code === 'Ssao' ? ' ⚔️' : '' }}</option>
     </select>
-    <button      
+    <button
       v-if="!updateOnChange"
       type="submit"
       class="btn btn-primary btn--md">
-        <i class="icon icon--white fa fa-exchange"></i>
-        {{ translatePhrase('Växla sigel') }}
+      <i class="icon icon--white fa fa-exchange" />
+      {{ translatePhrase('Växla sigel') }}
     </button>
   </form>
 </template>
@@ -103,10 +104,10 @@ export default {
   &.displayInRow {
     display: flex;
     flex-direction: column;
-    
+
     @media screen and (min-width: @screen-sm-min){
       flex-direction: row;
-      justify-content: flex-end;      
+      justify-content: flex-end;
     }
 
     @media screen and (max-width: @screen-sm-min){
@@ -120,7 +121,7 @@ export default {
       @media screen and (max-width: @screen-sm-min){
         margin-bottom: 1.4rem;
       }
-    }    
+    }
   }
 }
 

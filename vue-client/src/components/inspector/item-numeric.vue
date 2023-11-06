@@ -3,8 +3,8 @@ import { isArray, debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import { XSD_NUMERIC_TYPES } from 'lxljs/vocab';
-import ItemMixin from '@/components/mixins/item-mixin';
-import LensMixin from '@/components/mixins/lens-mixin';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
 import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
@@ -80,13 +80,13 @@ export default {
     },
     // Handling multiple ranges doesn't actually really make sense...
     min() {
-      return Math.min(...this.range.map(r => XSD_NUMERIC_TYPES[r]).map(t => (t.min ? t.min : NaN)));
+      return Math.min(...this.range.map((r) => XSD_NUMERIC_TYPES[r]).map((t) => (t.min ? t.min : NaN)));
     },
     max() {
-      return Math.max(...this.range.map(r => XSD_NUMERIC_TYPES[r]).map(t => (t.max ? t.max : NaN)));
+      return Math.max(...this.range.map((r) => XSD_NUMERIC_TYPES[r]).map((t) => (t.max ? t.max : NaN)));
     },
     isDecimal() {
-      return this.range.map(r => XSD_NUMERIC_TYPES[r]).some(t => (t.decimal));
+      return this.range.map((r) => XSD_NUMERIC_TYPES[r]).some((t) => (t.decimal));
     },
   },
   methods: {
@@ -162,26 +162,30 @@ export default {
 </script>
 
 <template>
-  <div class="ItemValue js-value" 
-    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}"
+  <div
+    class="ItemValue js-value"
+    v-bind:class="{ 'is-locked': isLocked, unlocked: !isLocked, 'is-removed': removed }"
     :id="`formPath-${path}`">
-    <input class="ItemValue-input js-itemValueInput"
-           rows="1"
-           v-model="value"
-           :aria-label="labelByLang(fieldKey)"
-           @focus="readyForSave(false)"
-           @blur="update($event.target.value)"
-           @keydown.exact="readyForSave(false)"
-           @keydown.enter.prevent="handleEnter"
-           v-if="!isLocked"
-           type="number"
-           :min="min"
-           :max="max"
-           :step="isDecimal ? 0.01 : 1"
-           ref="textarea"/>
-    <span class="ItemValue-text"
+    <input
+      class="ItemValue-input js-itemValueInput"
+      rows="1"
+      v-model="value"
+      :aria-label="labelByLang(fieldKey)"
+      @focus="readyForSave(false)"
+      @blur="update($event.target.value)"
+      @keydown.exact="readyForSave(false)"
+      @keydown.enter.prevent="handleEnter"
+      v-if="!isLocked"
+      type="number"
+      :min="min"
+      :max="max"
+      :step="isDecimal ? 0.01 : 1"
+      ref="textarea" />
+    <span
+      class="ItemValue-text"
       v-if="isLocked">{{fieldValue}}</span>
-    <div class="ItemValue-remover"
+    <div
+      class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       role="button"
       :aria-label="translatePhrase('Remove')"
@@ -191,8 +195,7 @@ export default {
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)">
-      <i class="fa fa-trash-o icon icon--sm">
-      </i>
+      <i class="fa fa-trash-o icon icon--sm" />
     </div>
   </div>
 </template>
@@ -240,7 +243,6 @@ export default {
     font-size: 16px;
     font-size: 1.6rem;
     float: right;
-    display: inline-block;
     cursor: pointer;
     color: @grey;
     min-width: 20px;

@@ -41,7 +41,7 @@ export default {
       const embellishedReference = DisplayUtil.getCard(
         this.mainEntity,
         this.resources,
-        this.inspector.data.quoted, 
+        this.inspector.data.quoted,
         this.settings,
       );
       embellishedReference['@id'] = this.mainEntity['@id'];
@@ -104,7 +104,7 @@ export default {
   watch: {
     'inspector.event'(val) {
       if (val.name === 'form-control' && !this.compact) {
-        switch (val.value) { 
+        switch (val.value) {
           case 'add-holding':
             this.performItemAction();
             break;
@@ -120,41 +120,45 @@ export default {
   <div class="CreateItem create-item-button-container">
     <!--<textarea id="copyItem" name="data" class="hidden">{{itemData | json}}</textarea>-->
     <template v-if="!compact">
-      <button class="btn btn--md CreateItem-btn"
-        v-if="!hasHolding || checkingHolding" 
-        @click="previewHolding()" 
-        :disabled="disabled" 
-        :class=" {'is-disabled': disabled, 'btn-primary': !disabled} "
+      <button
+        class="btn btn--md CreateItem-btn"
+        v-if="!hasHolding || checkingHolding"
+        @click="previewHolding()"
+        :disabled="disabled"
+        :class=" { 'is-disabled': disabled, 'btn-primary': !disabled } "
         v-tooltip.top="keyBindText">
-        <i class="fa fa-plus-circle"
-          v-if="!hasHolding && !checkingHolding"></i>
-        <i class="fa fa-fw fa-circle-o-notch fa-spin"
-          v-if="checkingHolding"></i>
+        <i
+          class="fa fa-plus-circle"
+          v-if="!hasHolding && !checkingHolding" />
+        <i
+          class="fa fa-fw fa-circle-o-notch fa-spin"
+          v-if="checkingHolding" />
         {{ translatePhrase("Add holding") }}
         <span>({{user.settings.activeSigel}})</span>
       </button>
-      <button class="btn btn--md CreateItem-btn"
-        v-if="hasHolding" 
-        :class="{'CreateItem-btn--hasHolding': hasHolding, 'is-disabled': disabled}"  
-        :disabled="disabled" 
+      <button
+        class="btn btn--md CreateItem-btn"
+        v-if="hasHolding"
+        :class="{ 'CreateItem-btn--hasHolding': hasHolding, 'is-disabled': disabled }"
+        :disabled="disabled"
         @click.prevent="gotoHolding()"
         v-tooltip.top="keyBindText">
-        <i class="fa fa-check-circle"
-          v-if="hasHolding && !checkingHolding"></i>
+        <i
+          class="fa fa-check-circle"
+          v-if="hasHolding && !checkingHolding" />
         {{ translatePhrase("Show holding") }}
         <span>({{user.settings.activeSigel}})</span>
       </button>
     </template>
     <template v-if="compact">
-      <rounded-button 
+      <rounded-button
         v-tooltip.top="tooltipText"
         :icon="hasHolding ? 'check' : 'plus'"
         :indicator="hasHolding"
-        :label="hasHolding ? 
-              `${user.settings.activeSigel} ${translatePhrase('has holding')}` :
-              `${translatePhrase('Add holding for')} ${user.settings.activeSigel}`"
-        @click="performItemAction()">
-      </rounded-button>
+        :label="hasHolding
+          ? `${user.settings.activeSigel} ${translatePhrase('has holding')}`
+          : `${translatePhrase('Add holding for')} ${user.settings.activeSigel}`"
+        @click="performItemAction()" />
     </template>
   </div>
 </template>
@@ -167,7 +171,7 @@ export default {
     background: @white;
     color: @brand-primary;
     border: 2px solid @brand-primary;
-    &:hover, 
+    &:hover,
     &:focus,
     &:active,
     &:active:focus {
@@ -179,7 +183,7 @@ export default {
       background: @brand-primary;
       color: @white;
       border: none;
-      &:hover, 
+      &:hover,
       &:focus,
       &:active,
       &:active:focus {
@@ -191,7 +195,7 @@ export default {
     &.is-disabled {
       color: @white;
 
-      &:hover, 
+      &:hover,
       &:focus,
       &:active {
         background-color: @grey-lighter;

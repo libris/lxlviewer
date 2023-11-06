@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { each } from 'lodash-es';
-import Spinner from '@/components/shared/Spinner.vue';
+import Spinner from '@/components/shared/spinner.vue';
 import * as RecordUtil from '@/utils/record';
 import { translatePhrase, asFnurgelLink } from '@/utils/filters';
 
@@ -52,14 +52,16 @@ export default {
       } return false;
     },
     nextOutOfBounds() {
-      if (this.absoluteOffset + 1 < this.totalItems && this.relativeOffset + 1 > this.paths.length - 1) {
+      if (this.absoluteOffset + 1 < this.totalItems
+      && this.relativeOffset + 1 > this.paths.length - 1) {
         return true;
       } return false;
     },
     thisIsSearchResult() {
-      // check if this id is present in our list of paths. Otherwise user has gone off path (to a holding for example)
+      // check if this id is present in our list of paths.
+      // Otherwise user has gone off path (to a holding for example)
       // and prev/next are no longer valid
-      const match = this.paths.filter(path => `/${RecordUtil.extractFnurgel(path)}` === this.$route.path);
+      const match = this.paths.filter((path) => `/${RecordUtil.extractFnurgel(path)}` === this.$route.path);
       return match.length === 1;
     },
   },
@@ -72,7 +74,7 @@ export default {
         case 'prev':
           queryObj._offset = this.range.start - this.range.itemsPerPage;
           break;
-        case 'next': 
+        case 'next':
           queryObj._offset = this.range.start + this.range.itemsPerPage;
           break;
         default:
@@ -89,8 +91,8 @@ export default {
         fetch(url).then((res) => {
           if (res.status === 200) {
             resolve(res.json());
-          } 
-        }, error => reject('Error fetching breadcrumb data', error));
+          }
+        }, (error) => reject('Error fetching breadcrumb data', error));
       });
     },
     prev() {
@@ -113,7 +115,7 @@ export default {
           meta.breadcrumb.absoluteOffset--;
           meta.breadcrumb.relativeOffset = this.range.itemsPerPage - 1;
           meta.breadcrumb.range.start = results.itemOffset;
-          const newPaths = results.items.map(res => res['@id']);
+          const newPaths = results.items.map((res) => res['@id']);
           meta.breadcrumb.paths = newPaths;
 
           this.loading = false;
@@ -128,7 +130,7 @@ export default {
           meta.breadcrumb.absoluteOffset++;
           meta.breadcrumb.relativeOffset = 0;
           meta.breadcrumb.range.start = results.itemOffset;
-          const newPaths = results.items.map(res => res['@id']);
+          const newPaths = results.items.map((res) => res['@id']);
           meta.breadcrumb.paths = newPaths;
 
           this.loading = false;
@@ -148,7 +150,8 @@ export default {
 <template>
   <div class="Breadcrumb">
     <div class="Breadcrumb-back">
-      <router-link class="Breadcrumb-backLink"
+      <router-link
+        class="Breadcrumb-backLink"
         :to="searchResultUrl">{{ translatePhrase('To result list') }}</router-link>
     </div>
     <div class="Breadcrumb-recordData" v-if="thisIsSearchResult">
@@ -181,9 +184,6 @@ export default {
   justify-content: space-between;
   margin: 0 0 0.5em 0;
 
-  &-recordNumbers {
-  }
-
   &-recordData {
     display: flex;
     flex: 1;
@@ -213,7 +213,7 @@ export default {
   &-backLink {
     white-space: nowrap;
     margin-right: 10px;
-  } 
+  }
 
   &-next {
     margin: 0 0 0 10px;

@@ -1,7 +1,7 @@
 <script>
 import * as MathUtil from '@/utils/math';
-import FacetMixin from '@/components/mixins/facet-mixin';
 import { asAppPath, capitalize } from '@/utils/filters';
+import FacetMixin from '@/components/mixins/facet-mixin.vue';
 
 export default {
   name: 'facet',
@@ -43,7 +43,7 @@ export default {
         const nbsp = '\xa0';
         return `${nbsp}• ${label2}`;
       }
-      
+
       return '';
     },
     alwaysShowLabelTail() {
@@ -57,14 +57,17 @@ export default {
 
 <template>
   <li class="Facet">
-    <slot name="icon"></slot>
-    <router-link class="Facet-link"
-      :to="asAppPath(facet.link)" 
+    <slot name="icon" />
+    <router-link
+      class="Facet-link"
+      :to="asAppPath(facet.link)"
       :title="capitalize(facet.label)">
-      <span class="Facet-label"
+      <span
+        class="Facet-label"
         :title="capitalize(facet.label)">
         {{ capitalize(label) }}</span>
-      <span class="Facet-labelTail" 
+      <span
+        class="Facet-labelTail"
         :title="capitalize(facet.label)">
         {{labelTail}}</span>
       <span class="Facet-badge badge">{{compactNumber}}</span>

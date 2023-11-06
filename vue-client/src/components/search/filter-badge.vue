@@ -47,7 +47,7 @@ export default {
     <router-link
       :to="asAppPath(filter.up)">
       <i class="fa fa-fw fa-close icon"
-        ></i>
+      />
     </router-link>
   </div>
 </template>

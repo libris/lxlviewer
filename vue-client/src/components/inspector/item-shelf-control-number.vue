@@ -2,8 +2,8 @@
 import AutoSize from 'autosize';
 import { debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import ItemMixin from '@/components/mixins/item-mixin';
 import { labelByLang } from '@/utils/filters';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
 
 export default {
   name: 'item-shelf-control-number',
@@ -41,7 +41,7 @@ export default {
       this.update(this.value);
     },
     hasAutomaticCounter(val) {
-      // if we get linked to another counter we should switch mode to 'generate' 
+      // if we get linked to another counter we should switch mode to 'generate'
       if (!val) {
         this.shelfMarkUnlinkedAtLeastOnce = true;
       }
@@ -181,8 +181,9 @@ export default {
 </script>
 
 <template>
-  <div class="ItemShelfControlNumber js-value" 
-    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked}"
+  <div
+    class="ItemShelfControlNumber js-value"
+    v-bind:class="{ 'is-locked': isLocked, unlocked: !isLocked }"
     :id="`formPath-${path}`">
     <div v-if="!isLocked">
       <fieldset v-if="hasAutomaticCounter">
@@ -196,18 +197,20 @@ export default {
           {{ translatePhrase("Enter manual control number") }}
         </label>
       </fieldset>
-      <textarea class="ItemShelfControlNumber-input js-itemValueInput"
-                rows="1"
-                v-model="textFieldValue"
-                :aria-label="labelByLang(fieldKey)"
-                @focus="readyForSave(false)"
-                @blur="update($event.target.value)"
-                @keydown.exact="readyForSave(false)"
-                @keydown.enter.prevent="handleEnter"
-                :disabled="hasAutomaticCounter && mode === 'generate'"
-                ref="textarea"></textarea>
+      <textarea
+        class="ItemShelfControlNumber-input js-itemValueInput"
+        rows="1"
+        v-model="textFieldValue"
+        :aria-label="labelByLang(fieldKey)"
+        @focus="readyForSave(false)"
+        @blur="update($event.target.value)"
+        @keydown.exact="readyForSave(false)"
+        @keydown.enter.prevent="handleEnter"
+        :disabled="hasAutomaticCounter && mode === 'generate'"
+        ref="textarea" />
     </div>
-    <span class="ItemShelfControlNumber-text"
+    <span
+      class="ItemShelfControlNumber-text"
       v-if="isLocked">{{fieldValue}}</span>
   </div>
 </template>
@@ -245,7 +248,7 @@ export default {
   &-label {
     font-weight: normal;
   }
-  
+
   &.is-lastAdded {
     background-color: @form-add;
     -webkit-animation-duration: 1s;

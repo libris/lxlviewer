@@ -2,16 +2,13 @@ import * as StringUtil from 'lxljs/string';
 import store from '@/store';
 import * as DataUtil from '@/utils/data';
 
-export const translatePhrase = (string) => {
-  return StringUtil.getUiPhraseByLang(
-    string,
-    store.getters.settings.language,
-    store.getters.resources.i18n
-  );
-};
+export const translatePhrase = (string) => StringUtil.getUiPhraseByLang(
+  string,
+  store.getters.settings.language,
+  store.getters.resources.i18n,
+);
 
-export const labelByLang = (label) =>
-  StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources);
+export const labelByLang = (label) => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources);
 
 export const asAppPath = (path) => {
   const appPaths = store.getters.settings.appPaths;
@@ -37,11 +34,9 @@ export const asFnurgelLink = (id) => {
   const parts = id.split('/');
   const fnurgel = `/${parts[parts.length - 1]}`;
   return fnurgel;
-}
-
-export const removeDomain = (value) => {
-  return StringUtil.removeDomain(value, store.getters.settings.removableBaseUris);
 };
+
+export const removeDomain = (value) => StringUtil.removeDomain(value, store.getters.settings.removableBaseUris);
 
 export const capitalize = (value) => {
   if (!value) return '';

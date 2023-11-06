@@ -1,5 +1,5 @@
 <script>
-import Notification from '@/components/shared/notification';
+import Notification from '@/components/shared/notification.vue';
 
 export default {
   name: 'notification-list',
@@ -18,7 +18,7 @@ export default {
 
 <template>
   <div class="NotificationList">
-    <notification v-for="notification in notifications" :content="notification" :key="notification.id" class="NotificationList-item"></notification>
+    <notification v-for="notification in notifications" :content="notification" :key="notification.id" class="NotificationList-item" />
   </div>
 </template>
 

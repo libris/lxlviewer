@@ -3,10 +3,10 @@ import AutoSize from 'autosize';
 import { mapGetters } from 'vuex';
 import { Dropdown } from 'floating-vue';
 import { isEqual } from 'lodash-es';
-import PreviewCard from '@/components/shared/preview-card';
-import LanguageMixin from '@/components/mixins/language-mixin';
-import EntityAdder from './entity-adder';
 import { translatePhrase } from '@/utils/filters';
+import PreviewCard from '@/components/shared/preview-card.vue';
+import LanguageMixin from '@/components/mixins/language-mixin.vue';
+import EntityAdder from './entity-adder.vue';
 
 export default {
   name: 'language-entry',
@@ -94,20 +94,20 @@ export default {
     },
     diffRemoved() {
       if (this.diff == null) return false;
-      return this.diff.removed.some(p => isEqual(p, this.exactPath));
+      return this.diff.removed.some((p) => isEqual(p, this.exactPath));
     },
     diffAdded() {
       if (this.diff == null) return false;
-      return this.diff.added.some(p => isEqual(p, this.exactPath));
+      return this.diff.added.some((p) => isEqual(p, this.exactPath));
     },
     diffModified() {
       if (this.diff == null) return false;
-      return this.diff.modified.some(p => isEqual(p, this.exactPath));
+      return this.diff.modified.some((p) => isEqual(p, this.exactPath));
     },
     shouldFocus() {
       const lastAdded = this.inspector.status.lastAdded;
-      if (lastAdded === this.exactPath 
-        || lastAdded === this.itemPath 
+      if (lastAdded === this.exactPath
+        || lastAdded === this.itemPath
         || (this.isFirstField && this.itemPath.startsWith(lastAdded))
       ) {
         return true;
@@ -201,7 +201,7 @@ export default {
           v-on:input="$emit('input', $event.target.value)"
           @blur="$emit('update')"
           ref="textarea"
-        ></textarea>
+        />
       </span>
       <span class="LanguageEntry-value">
         <span class="LanguageEntry-pill" v-if="tag !== 'none'">
@@ -216,21 +216,21 @@ export default {
               <router-link :to="routerPath">{{ this.label }}</router-link>
             </span>
             <template #popper>
-              <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
+              <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId" />
             </template>
           </Dropdown>
 
           <span class="LanguageEntry-pill-removeButton">
-            <i class="fa fa-times-circle icon icon--sm chip-icon"
+            <i
+              class="fa fa-times-circle icon icon--sm chip-icon"
               v-if="removeIsAllowed"
               role="button"
               tabindex="0"
               @click="$emit('remove')"
               @keyup.enter="$emit('remove')"
               :aria-label="translatePhrase('Remove')"
-              v-tooltip.top="translatePhrase('Remove')">
-            </i>
-            <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!removeIsAllowed"></i>
+              v-tooltip.top="translatePhrase('Remove')" />
+            <i class="fa fa-times-circle icon icon--sm chip-icon is-disabled" v-if="!removeIsAllowed" />
           </span>
 
           <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
@@ -239,21 +239,22 @@ export default {
         </span>
 
         <span class="LanguageEntry-actions">
-          <i class="fa fa-language icon icon--sm LanguageEntry-transIcon"
+          <i
+            class="fa fa-language icon icon--sm LanguageEntry-transIcon"
             tabindex="0"
             role="button"
             :aria-label="translatePhrase('Romanize')"
             v-on:click="$emit('romanize')"
             v-if="isTransSchema(tag) && tag !== 'none'"
             v-tooltip.top="translatePhrase('Romanize')"
-            @keyup.enter="$emit('romanize')">
-          </i>
+            @keyup.enter="$emit('romanize')" />
 
-          <i class="fa fa-language icon icon--sm LanguageEntry-transIcon is-disabled"
-            v-if="!isTransSchema(tag) && tag !== 'none'">
-          </i>
+          <i
+            class="fa fa-language icon icon--sm LanguageEntry-transIcon is-disabled"
+            v-if="!isTransSchema(tag) && tag !== 'none'" />
 
-          <entity-adder class="LanguageEntry-action Field-entityAdder"
+          <entity-adder
+            class="LanguageEntry-action Field-entityAdder"
             ref="entityAdder"
             v-if="tag === 'none'"
             :field-key="fieldKey"
@@ -265,26 +266,29 @@ export default {
             :property-types="['ObjectProperty']"
             :is-lang-tagger="true"
             :icon-add="'fa-globe-outline'"
-            @langTaggerEvent="onLangTaggerEvent">
-          </entity-adder>
+            @langTaggerEvent="onLangTaggerEvent" />
 
-          <span class="LanguageEntry-remover"
+          <span
+            class="LanguageEntry-remover"
             tabindex="0"
             role="button"
             :aria-label="translatePhrase('Remove')"
             v-on:click="$emit('removeval')"
             @keyup.enter="$emit('removeval')"
             v-tooltip.top="translatePhrase('Remove')">
-            <i class="fa fa-trash-o icon icon--sm"></i>
+            <i class="fa fa-trash-o icon icon--sm" />
           </span>
         </span>
       </span>
     </div>
 
-    <div v-if="isLocked" v-bind:class="{
-      'LanguageEntry-is-diff-removed': diffRemoved && !diffAdded,
-      'LanguageEntry-is-diff-added': diffAdded && !diffRemoved,
-      'LanguageEntry-is-diff-modified': diffModified}">
+    <div
+      v-if="isLocked"
+      v-bind:class="{
+        'LanguageEntry-is-diff-removed': diffRemoved && !diffAdded,
+        'LanguageEntry-is-diff-added': diffAdded && !diffRemoved,
+        'LanguageEntry-is-diff-modified': diffModified,
+      }">
       <div class="LanguageEntry-textcontainer">
         <div class="LanguageEntry-key">
           <div class="LanguageEntry-text">
@@ -294,14 +298,17 @@ export default {
 
         <span class="LanguageEntry-tags">
           <span class="LanguageEntry-pill" v-if="tag !== 'none'">
-            <Dropdown v-if="this.isLinked" class="LanguageEntry-popover" placement="bottom-start"
+            <Dropdown
+              v-if="this.isLinked"
+              class="LanguageEntry-popover"
+              placement="bottom-start"
               @show="$refs.previewCard.populateData()">
               <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
                 <router-link :to="routerPath">{{ this.label }}</router-link>
               </span>
 
               <template #popper>
-                <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId"/>
+                <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId" />
               </template>
             </Dropdown>
 
@@ -311,11 +318,11 @@ export default {
           </span>
 
           <span class="LanguageEntry-tags-history-icon" v-if="diffRemoved && !diffAdded">
-            <i class="fa fa-trash-o icon--sm icon-removed"></i>
+            <i class="fa fa-trash-o icon--sm icon-removed" />
           </span>
 
           <span class="LanguageEntry-tags-history-icon" v-if="diffAdded && !diffRemoved">
-            <i class="fa fa-plus-circle icon--sm icon-added"></i>
+            <i class="fa fa-plus-circle icon--sm icon-added" />
           </span>
         </span>
       </div>

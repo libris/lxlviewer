@@ -6,14 +6,14 @@ export async function hasAutomaticShelfControlNumber(shelfMarkId) {
   return HttpUtil.get({
     url: shelfMarkId,
     accept: 'application/ld+json',
-  }).then(shelfMark => Promise.resolve(shelfMark['@graph'][1].hasOwnProperty('nextShelfControlNumber')));
+  }).then((shelfMark) => Promise.resolve(shelfMark['@graph'][1].hasOwnProperty('nextShelfControlNumber')));
 }
 
 export async function checkAutoShelfControlNumber(obj, settings, user) {
   const mainEntity = obj['@graph'][1];
 
   if (mainEntity['@type'] === 'Item') {
-    const items = (mainEntity.hasComponent || []).filter(c => c['@type'] === 'Item');
+    const items = (mainEntity.hasComponent || []).filter((c) => c['@type'] === 'Item');
     items.push(mainEntity);
     for (const item of items) {
       // we actually want to do these sequentially in case they link to the same shelf mark

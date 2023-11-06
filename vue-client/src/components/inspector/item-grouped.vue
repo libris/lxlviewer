@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import ItemMixin from '../mixins/item-mixin';
+import ItemMixin from '../mixins/item-mixin.vue';
 
 export default {
   name: 'item-grouped',
@@ -91,7 +91,7 @@ export default {
     toggleExpanded() {
       if (this.expanded === true) {
         this.collapse();
-      } else {   
+      } else {
         this.expand();
       }
     },
@@ -102,38 +102,41 @@ export default {
 </script>
 
 <template>
-  <div class="ItemGrouped"
+  <div
+    class="ItemGrouped"
     :id="`formPath-${path}`"
-    :class="{'is-expanded': expanded }"
+    :class="{ 'is-expanded': expanded }"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
     @blur="removeFocus()">
 
     <strong class="ItemGrouped-heading" v-if="!isInForm">
-      <div class="ItemGrouped-label"
-        :class="{'is-locked': isLocked }"
+      <div
+        class="ItemGrouped-label"
+        :class="{ 'is-locked': isLocked }"
         @click="toggleExpanded()">
-        <i class="ItemGrouped-arrow fa fa-chevron-right"></i>
+        <i class="ItemGrouped-arrow fa fa-chevron-right" />
         <span class="ItemGrouped-type">{{ item.totalItems }} länkningar</span>
       </div>
     </strong>
 
-    <ul class="ItemGrouped-list"
-      :class="{'has-hidden-keys' : !showKeys}">
+    <ul
+      class="ItemGrouped-list"
+      :class="{ 'has-hidden-keys': !showKeys }">
       <field
-      v-for="(value, key) in groupedItems"
-      :key="key"
-      :entity-type="entityType" 
-      :is-inner="false" 
-      :is-locked="true" 
-      :is-removable="false" 
-      :is-grouped="true"
-      :is-card="isCard"
-      :show-key="showKeys"
-      :override-label="key"
-      :field-key="fieldKey"
-      :field-value="value"></field>
-    </ul>  
+        v-for="(value, key) in groupedItems"
+        :key="key"
+        :entity-type="entityType"
+        :is-inner="false"
+        :is-locked="true"
+        :is-removable="false"
+        :is-grouped="true"
+        :is-card="isCard"
+        :show-key="showKeys"
+        :override-label="key"
+        :field-key="fieldKey"
+        :field-value="value" />
+    </ul>
   </div>
 </template>
 
@@ -144,22 +147,22 @@ export default {
   position: relative;
   flex: 1 100%;
   transition: background-color .5s ease;
-  
+
   &-heading {
     display: block;
     flex: 1 100%;
     font-weight: normal;
-    position: relative;    
+    position: relative;
 
     .is-expanded & {
       margin-bottom: 0.5rem;
-    }    
+    }
     .icon-hover();
   }
 
-  &-label {    
+  &-label {
     cursor: pointer;
-    
+
     &.is-inactive {
       pointer-events: none;
     }
@@ -176,9 +179,9 @@ export default {
     }
   }
 
-  &.is-expanded > 
+  &.is-expanded >
   .ItemGrouped-heading >
-  .ItemGrouped-label > 
+  .ItemGrouped-label >
   .ItemGrouped-arrow {
     transform:rotate(90deg);
     transform-origin: center;

@@ -2,11 +2,11 @@
 import { sortBy, orderBy } from 'lodash-es';
 import { vOnClickOutside } from '@vueuse/components';
 import * as DisplayUtil from 'lxljs/display';
-import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
-import TypeIcon from '@/components/shared/type-icon';
-import FacetMixin from '@/components/mixins/facet-mixin';
-import Facet from './facet.vue';
 import { translatePhrase, capitalize } from '@/utils/filters';
+import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
+import TypeIcon from '@/components/shared/type-icon.vue';
+import FacetMixin from '@/components/mixins/facet-mixin.vue';
+import Facet from './facet.vue';
 
 export default {
   name: 'facet-group',
@@ -55,7 +55,7 @@ export default {
     featuredComparison(facet) {
       if (this.group.dimension === '@reverse.itemOf.heldBy.@id') {
         // Featured code for '@reverse.itemOf.heldBy.@id'
-        const userSigels = this.user.collections.map(item => item.code);
+        const userSigels = this.user.collections.map((item) => item.code);
         if (facet.object.hasOwnProperty('sigel')) {
           return userSigels.indexOf(facet.object.sigel) > -1;
         }
@@ -133,19 +133,19 @@ export default {
           sorted = orderBy(this.list, ['amount'], ['desc']);
           break;
       }
-      sorted = sortBy(sorted, o => o.featured === false);
+      sorted = sortBy(sorted, (o) => o.featured === false);
       return sorted;
     },
     featuredFacets() {
-      let featured = this.facets.filter(o => o.featured === true);
+      let featured = this.facets.filter((o) => o.featured === true);
       if (this.group.dimension === '@reverse.itemOf.heldBy.@id') {
         const activeSigel = this.user.settings.activeSigel;
-        featured = sortBy(featured, o => o.object.sigel !== activeSigel && o.label !== activeSigel && o.label !== `library/${activeSigel}`);
+        featured = sortBy(featured, (o) => o.object.sigel !== activeSigel && o.label !== activeSigel && o.label !== `library/${activeSigel}`);
       }
       return featured;
     },
     normalFacets() {
-      return this.facets.filter(o => o.featured === false);
+      return this.facets.filter((o) => o.featured === false);
     },
     facets() {
       let limit = this.revealLevels[this.currentLevel];
@@ -157,15 +157,15 @@ export default {
     revealText() {
       if (this.facets.length >= this.sorted.length) {
         return false;
-      } 
-      if (this.revealLevels[this.currentLevel + 1] 
+      }
+      if (this.revealLevels[this.currentLevel + 1]
         && this.revealLevels[this.currentLevel + 1] < this.sorted.length) {
         return 'Show more';
-      } 
+      }
       return 'Show all';
     },
     hasScroll() {
-      return !this.revealLevels[this.currentLevel] && this.isExpanded; 
+      return !this.revealLevels[this.currentLevel] && this.isExpanded;
     },
   },
   components: {
@@ -177,11 +177,13 @@ export default {
 </script>
 
 <template>
-  <nav class="FacetGroup" 
-    :class="{'has-scroll' : hasScroll, 'is-expanded' : isExpanded }"
+  <nav
+    class="FacetGroup"
+    :class="{ 'has-scroll': hasScroll, 'is-expanded': isExpanded }"
     :aria-labelledby="facetLabelByLang(group.dimension)">
     <div class="FacetGroup-header">
-      <h4 class="FacetGroup-title uppercaseHeading--bold"
+      <h4
+        class="FacetGroup-title uppercaseHeading--bold"
         @click="toggleExpanded()"
         @keyup.enter="toggleExpanded()"
         tabindex="0"
@@ -189,31 +191,44 @@ export default {
         {{ capitalize(facetLabelByLang(group.dimension)) }}
       </h4>
       <div
-        class="FacetGroup-sortSelect" 
+        class="FacetGroup-sortSelect"
         tabindex="0"
         v-show="isExpanded"
         @click="toggleSortDropDown"
         @keyup.enter="toggleSortDropDown"
         v-on-click-outside="hideSortDropDown"
-        :class="{'active': sortDropDownActive}"
+        :class="{ active: sortDropDownActive }"
       >
-        <i v-if="chosenSort == 'amount.desc'" class="icon-selected fa fa-fw fa-sort-amount-desc"></i>
-        <i v-if="chosenSort == 'amount.asc'" class="icon-selected fa fa-fw fa-sort-amount-asc"></i>
-        <i v-if="chosenSort == 'alpha.asc'" class="icon-selected fa fa-fw fa-sort-alpha-asc"></i>
-        <i v-if="chosenSort == 'alpha.desc'" class="icon-selected fa fa-fw fa-sort-alpha-desc"></i>
-        <i class="fa fa-caret-down"></i>
+        <i v-if="chosenSort == 'amount.desc'" class="icon-selected fa fa-fw fa-sort-amount-desc" />
+        <i v-if="chosenSort == 'amount.asc'" class="icon-selected fa fa-fw fa-sort-amount-asc" />
+        <i v-if="chosenSort == 'alpha.asc'" class="icon-selected fa fa-fw fa-sort-alpha-asc" />
+        <i v-if="chosenSort == 'alpha.desc'" class="icon-selected fa fa-fw fa-sort-alpha-desc" />
+        <i class="fa fa-caret-down" />
         <ul class="FacetGroup-sortSelectDropdown" v-show="sortDropDownActive">
-          <li :class="{'active': chosenSort == 'amount.desc'}" @click="selectSortDropDownItem('amount.desc')" @keyup.enter="selectSortDropDownItem('amount.desc')"><i class="fa fa-fw fa-sort-amount-desc"></i> Antal träffar (fallande)</li>
-          <li :class="{'active': chosenSort == 'amount.asc'}" @click="selectSortDropDownItem('amount.asc')" @keyup.enter="selectSortDropDownItem('amount.asc')"><i class="fa fa-fw fa-sort-amount-asc"></i> Antal träffar (stigande)</li>
-          <li :class="{'active': chosenSort == 'alpha.asc'}" @click="selectSortDropDownItem('alpha.asc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-asc"></i> A-Ö</li>
-          <li :class="{'active': chosenSort == 'alpha.desc'}" @click="selectSortDropDownItem('alpha.desc')" @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-desc"></i> Ö-A</li>
+          <li
+            :class="{ active: chosenSort == 'amount.desc' }"
+            @click="selectSortDropDownItem('amount.desc')"
+            @keyup.enter="selectSortDropDownItem('amount.desc')"><i class="fa fa-fw fa-sort-amount-desc" /> Antal träffar (fallande)</li>
+          <li
+            :class="{ active: chosenSort == 'amount.asc' }"
+            @click="selectSortDropDownItem('amount.asc')"
+            @keyup.enter="selectSortDropDownItem('amount.asc')"><i class="fa fa-fw fa-sort-amount-asc" /> Antal träffar (stigande)</li>
+          <li
+            :class="{ active: chosenSort == 'alpha.asc' }"
+            @click="selectSortDropDownItem('alpha.asc')"
+            @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-asc" /> A-Ö</li>
+          <li
+            :class="{ active: chosenSort == 'alpha.desc' }"
+            @click="selectSortDropDownItem('alpha.desc')"
+            @keyup.enter="selectSortDropDownItem('alpha.desc')"><i class="fa fa-fw fa-sort-alpha-desc" /> Ö-A</li>
         </ul>
       </div>
     </div>
     <ul class="FacetGroup-list">
-      <facet v-for="facetItem in featuredFacets"
-        :facet="facetItem" 
-        :key="'featured_'+facetItem.link">
+      <facet
+        v-for="facetItem in featuredFacets"
+        :facet="facetItem"
+        :key="'featured_' + facetItem.link">
         <template #icon>
           <encoding-level-icon
             v-if="group.dimension === 'meta.encodingLevel'"
@@ -225,8 +240,9 @@ export default {
         </template>
       </facet>
       <hr v-show="featuredFacets.length > 0">
-      <facet v-for="facetItem in normalFacets"
-        :facet="facetItem" 
+      <facet
+        v-for="facetItem in normalFacets"
+        :facet="facetItem"
         :key="facetItem.link">
         <template #icon>
           <encoding-level-icon
@@ -241,8 +257,8 @@ export default {
         </template>
       </facet>
     </ul>
-    <span 
-      v-if="revealText && isExpanded" 
+    <span
+      v-if="revealText && isExpanded"
       class="FacetGroup-reveal link"
       tabindex="0"
       @click="currentLevel++"

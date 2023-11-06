@@ -78,17 +78,21 @@ export default {
 </script>
 
 <template>
-  <button class="RoundButton btn"
-    :class="{'btn-grey disabled' : disabled, 'default': !indicator && !disabled, 'btn-primary': indicator && !disabled, 'is-active': active}"
+  <button
+    type="button"
+    class="RoundButton btn"
+    :class="{
+      'btn-grey disabled': disabled, default: !indicator && !disabled, 'btn-primary': indicator && !disabled, 'is-active': active,
+    }"
     @click="action()"
     @mouseover="mouseOver = true"
     @mouseout="mouseOver = false"
     :aria-label="translatePhrase(label)">
     <span v-if="icon">
-      <i :class="`fa fa-${icon}`" aria-hidden="true"></i>
+      <i :class="`fa fa-${icon}`" aria-hidden="true" />
     </span>
-    <span class="RoundButton-buttonText" :class="{'small-text': smallText }" v-else>{{ buttonText }}</span>
-    <slot name="tooltip" v-if="mouseOver"></slot>
+    <span class="RoundButton-buttonText" :class="{ 'small-text': smallText }" v-else>{{ buttonText }}</span>
+    <slot name="tooltip" v-if="mouseOver" />
   </button>
 </template>
 
@@ -111,13 +115,13 @@ export default {
   border: 2px solid @btn-primary;
 
     &:hover {
-      border-color: @btn-primary--hover; 
+      border-color: @btn-primary--hover;
       color: @btn-primary--hover;
     }
   }
 
   &.btn-primary.is-active {
-    background-color: @btn-primary--hover; 
+    background-color: @btn-primary--hover;
     border: @btn-primary--hover;
   }
 
@@ -131,7 +135,7 @@ export default {
       font-size: 85%;
     }
   }
-  
+
   i {
     transition: transform 0.25s ease;
     &.rotate-45 {

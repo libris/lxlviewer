@@ -24,12 +24,10 @@ module.exports = {
     'no-plusplus': 'off',
     'no-restricted-syntax': 'off',
     'no-console': 'off',
-    'no-trailing-spaces': 'off',
     'no-prototype-builtins': 'off',
     'prefer-destructuring': 'off',
     'prefer-object-spread': 'off',
     'no-underscore-dangle': 'off',
-    'max-len': 'off',
     'prefer-promise-reject-errors': 'off',
     'no-cond-assign': 'off',
     'object-shorthand': 'off',
@@ -49,6 +47,14 @@ module.exports = {
     radix: 'off',
     'no-alert': 'off',
     'no-continue': 'off',
+    'vue/max-len': ['error', {
+      code: 150,
+      template: 150,
+      comments: 150,
+    }],
+    'vue/multi-word-component-names': ['error', {
+      ignores: ['field', 'breadcrumb', 'spinner', 'notification', 'facet', 'sort', 'Find', 'Inspector', 'Login'],
+    }],
   },
   settings: {
     ...createAliasSetting({

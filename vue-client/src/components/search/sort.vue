@@ -52,14 +52,14 @@ export default {
       }
       return false;
     },
-    commonBaseType() {      
+    commonBaseType() {
       if (typeof this.recordTypes === 'string') {
         return VocabUtil.getRecordType(
           this.recordTypes,
-          this.resources.vocab, 
+          this.resources.vocab,
           this.resources.context,
         );
-      }      
+      }
       if (Array.isArray(this.recordTypes)) {
         const baseTypes = this.recordTypes.reduce((accumulator, currType) => {
           const baseType = VocabUtil.getRecordType(currType, this.resources.vocab, this.resources.context);
@@ -92,17 +92,18 @@ export default {
 </script>
 
 <template>
-  <div 
-    class="Sort" 
-    :class="{ 'variantMaterial' : styleVariant === 'material' }"
+  <div
+    class="Sort"
+    :class="{ variantMaterial: styleVariant === 'material' }"
     v-if="options">
     <label class="Sort-label" for="sort-select">{{ translatePhrase('Sorting') }}{{ styleVariant === 'material' ? '' : ':' }}</label>
-    <select id="sort-select"
-      class="Sort-select customSelect" 
-      v-model="boundVal" 
+    <select
+      id="sort-select"
+      class="Sort-select customSelect"
+      v-model="boundVal"
       @change="handleSortChange">
-      <option 
-        v-for="(option, index) in options" 
+      <option
+        v-for="(option, index) in options"
         :value="option.query.endsWith('_sortKeyByLang') ? `${option.query}.${user.settings.language || 'sv'}` : option.query"
         :key="index">
         {{ translatePhrase(option.label) }}

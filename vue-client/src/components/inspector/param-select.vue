@@ -75,14 +75,14 @@ export default {
       );
     },
     availableSearchParams() {
-      const intersects = ((a1, a2) => a1.find(value => a2.includes(value)) !== undefined);
+      const intersects = ((a1, a2) => a1.find((value) => a2.includes(value)) !== undefined);
 
       if (this.types === [] || this.types === undefined) {
         return PropertyMappings;
       }
 
       const types = this.types.concat(this.baseClasses);
-      return PropertyMappings.filter(m => intersects(m.types, types));
+      return PropertyMappings.filter((m) => intersects(m.types, types));
     },
   },
   components: {

@@ -25,7 +25,6 @@ const props = defineProps({
   </div>
 </template>
 
-
 <style scoped lang="less">
   .spinner {
     display: flex;

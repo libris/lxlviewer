@@ -17,16 +17,16 @@ export default {
 
 <template>
   <article class="panel panel-default Article">
-    <img :src="image" class="Article-featuredImg" :alt="imageAltText" title="Abstract XL Graphics"/>
+    <img :src="image" class="Article-featuredImg" :alt="imageAltText" title="Abstract XL Graphics" />
     <div class="Article-content">
       <header class="Article-header">
         <h1 class="Article-title">{{ header }}</h1>
         <div class="abstract Article-abstract">{{ text.abstract }}</div>
       </header>
-    
+
       <section class="Article-section" v-for="section in text.sections" :key="section.title">
         <h2 class="Article-sectionTitle">{{ section.header }}</h2>
-        <div v-html="section.text" class="section-text Article-sectionText"></div>
+        <div v-html="section.text" class="section-text Article-sectionText" />
       </section>
     </div>
   </article>

@@ -114,7 +114,7 @@ function completeChange(record, categoryId, oldValue, newValue) {
   }
 
   const idx = record.hasChangeNote.findIndex(
-    x => (Array.isArray(x.category) ? x.category.find(y => y['@id'] === categoryId) : false),
+    (x) => (Array.isArray(x.category) ? x.category.find((y) => y['@id'] === categoryId) : false),
   );
 
   // TODO: compare on full value instead of labels

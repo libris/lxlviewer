@@ -1,15 +1,15 @@
 import HistoryUtil from '@/utils/data';
 
-const getLabel = s => `L:${s}`;
+const getLabel = (s) => `L:${s}`;
 
 test('empty data and paths', () => {
   const prev = {};
   const curr = {};
   const added = [];
   const removed = [];
-  
+
   const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
-  
+
   expect(data).toEqual({});
   expect(paths).toEqual({
     added: [],
@@ -17,7 +17,6 @@ test('empty data and paths', () => {
     modified: [],
   });
 });
-
 
 test('modify string', () => {
   const prev = { a: 'x' };
@@ -36,7 +35,6 @@ test('modify string', () => {
     modified: ['a'],
   });
 });
-
 
 test('property added', () => {
   const prev = {
@@ -61,7 +59,6 @@ test('property added', () => {
     modified: [],
   });
 });
-
 
 test('remove + add in array', () => {
   const prev = {
@@ -91,7 +88,6 @@ test('remove + add in array', () => {
     modified: [],
   });
 });
-
 
 test('remove + add in array', () => {
   const prev = {
@@ -139,7 +135,6 @@ test('remove + add in array', () => {
   });
 });
 
-
 test('object replaced', () => {
   const prev = {
     p: { '@id': 'a' },
@@ -164,7 +159,6 @@ test('object replaced', () => {
     modified: [],
   });
 });
-
 
 test('string to array', () => {
   const prev = {
@@ -194,7 +188,6 @@ test('string to array', () => {
     modified: [],
   });
 });
-
 
 test('array to string', () => {
   const prev = {
@@ -290,7 +283,6 @@ test('remove + add in array + nested', () => {
   });
 });
 
-
 test('replace object and modify string', () => {
   const prev = {
     p: [
@@ -326,15 +318,13 @@ test('replace object and modify string', () => {
       { '@id': 'i1b' },
     ],
   });
-  
- 
+
   expect(paths).toEqual({
     added: ['p[1]', 'p[5]'],
     removed: ['p[2]', 'p[6]'],
     modified: ['p[0]', 'p[4]'],
   });
 });
-
 
 test('modify + add string', () => {
   const prev = {
@@ -352,7 +342,7 @@ test('modify + add string', () => {
       { c: [
         's1',
         's3',
-        's4', 
+        's4',
       ] },
     ],
   };
@@ -371,7 +361,7 @@ test('modify + add string', () => {
       ] },
     ],
   });
-  
+
   expect(paths).toEqual({
     added: ['i[1].c[2]'],
     removed: [],

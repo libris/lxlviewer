@@ -1,6 +1,6 @@
 <script>
 import { cloneDeep } from 'lodash-es';
-import ItemMixin from '../mixins/item-mixin';
+import ItemMixin from '../mixins/item-mixin.vue';
 
 export default {
   name: 'item-error',

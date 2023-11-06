@@ -3,17 +3,17 @@ import { merge, cloneDeep, escapeRegExp } from 'lodash-es';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
-import PanelComponent from '@/components/shared/panel-component';
-import PanelSearchList from '@/components/search/panel-search-list';
-import Spinner from '@/components/shared/Spinner.vue';
-import Button from '@/components/shared/button';
-import Sort from '@/components/search/sort';
-import ModalPagination from '@/components/inspector/modal-pagination';
+import { translatePhrase, labelByLang } from '@/utils/filters';
+import Spinner from '@/components/shared/spinner.vue';
 import FilterSelect from '@/components/shared/filter-select.vue';
 import ParamSelect from '@/components/inspector/param-select.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
-import LensMixin from '../mixins/lens-mixin';
-import { translatePhrase, labelByLang } from '@/utils/filters';
+import PanelComponent from '@/components/shared/panel-component.vue';
+import PanelSearchList from '@/components/search/panel-search-list.vue';
+import Button from '@/components/shared/button.vue';
+import Sort from '@/components/search/sort.vue';
+import ModalPagination from '@/components/inspector/modal-pagination.vue';
+import LensMixin from '../mixins/lens-mixin.vue';
 
 export default {
   name: 'search-window',
@@ -136,7 +136,7 @@ export default {
                 const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources, this.inspector.data.quoted, this.settings)
                   .replace(/#|_|•|\[|\]/g, ' ')
                   .replace(/  +/g, ' ')
-                  .replace(new RegExp(`s?({(.*?)(${this.settings.availableUserSettings.languages.map(lang => escapeRegExp(StringUtil.getUiPhraseByLang('without', lang.value, this.resources.i18n))).join('|')})(.*?)})`, 'g'), '')
+                  .replace(new RegExp(`s?({(.*?)(${this.settings.availableUserSettings.languages.map((lang) => escapeRegExp(StringUtil.getUiPhraseByLang('without', lang.value, this.resources.i18n))).join('|')})(.*?)})`, 'g'), '')
                   .trim();
                 this.keyword = cleanedChipString;
                 this.search();
@@ -179,16 +179,18 @@ export default {
 <template>
   <div class="SearchWindow">
     <portal to="sidebar" v-if="active">
-      <panel-component class="SearchWindow-panel SearchWindowPanel"
+      <panel-component
+        class="SearchWindow-panel SearchWindowPanel"
         v-if="active"
         :title="translatePhrase('Link entity')"
         @close="hide()">
         <template #panel-header-info>
-          <div class="PanelComponent-headerInfo help-tooltip-container"
+          <div
+            class="PanelComponent-headerInfo help-tooltip-container"
             @mouseleave="showHelp = false">
-            <i class="fa fa-question-circle icon icon--md"
-              @mouseenter="showHelp = true">
-            </i>
+            <i
+              class="fa fa-question-circle icon icon--md"
+              @mouseenter="showHelp = true" />
             <div class="PanelComponent-headerInfoBox help-tooltip" v-show="showHelp">
               <div>
                 <p class="header">
@@ -227,7 +229,8 @@ export default {
             <div class="SearchWindow-search search">
               <div class="SearchWindow-filterSearchContainer">
                 <div class="SearchWindow-filterSearchContainerItem">
-                  <filter-select class="SearchWindow-filterSearchInput FilterSelect--openDown"
+                  <filter-select
+                    class="SearchWindow-filterSearchInput FilterSelect--openDown"
                     :class-name="'js-filterSelect'"
                     :label="translatePhrase('Show')"
                     :custom-placeholder="filterPlaceHolder"
@@ -237,7 +240,7 @@ export default {
                     :is-filter="true"
                     :styleVariant="'material'"
                     :setValue="setSearchType"
-                    v-on:filter-selected="setFilter($event)"></filter-select>
+                    v-on:filter-selected="setFilter($event)" />
                 </div>
                 <div class="SearchWindow-filterSearchContainerItem">
                   <sort
@@ -256,10 +259,11 @@ export default {
                   autofocus
                   :placeholder="translatePhrase('Search')"
                   :aria-label="translatePhrase('Search')">
-                <param-select class="SearchWindow-paramSelect"
-                              :types="currentSearchTypes"
-                              :reset="resetParamSelect"
-                              v-on:param-selected="setParam($event)"></param-select>
+                <param-select
+                  class="SearchWindow-paramSelect"
+                  :types="currentSearchTypes"
+                  :reset="resetParamSelect"
+                  v-on:param-selected="setParam($event)" />
               </div>
             </div>
           </div>
@@ -292,30 +296,31 @@ export default {
           </div>
         </template>
         <template #panel-footer>
-          <div class="SearchWindow-resultControls" v-if="!searchInProgress && searchResult.length > 0" >
+          <div class="SearchWindow-resultControls" v-if="!searchInProgress && searchResult.length > 0">
             <modal-pagination
               @go="go"
               :total-items="totalItems"
               :max-items="maxItems"
               :max-per-page="maxResults"
               :current-page="currentPage"
-            >
-            </modal-pagination>
+            />
             <div class="SearchWindow-listTypes">
-              <i class="fa fa-th-list icon icon--md"
+              <i
+                class="fa fa-th-list icon icon--md"
                 role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
-                :class="{'icon--primary' : !isCompact}"
+                :class="{ 'icon--primary': !isCompact }"
                 :title="translatePhrase('Detailed view')"
-                tabindex="0"></i>
-              <i class="fa fa-list icon icon--md"
+                tabindex="0" />
+              <i
+                class="fa fa-list icon icon--md"
                 role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
-                :class="{'icon--primary' : isCompact}"
+                :class="{ 'icon--primary': isCompact }"
                 :title="translatePhrase('Compact view')"
-                tabindex="0"></i>
+                tabindex="0" />
             </div>
           </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
@@ -477,9 +482,6 @@ export default {
     }
   }
 
-  &-panel {
-  }
-
   &-resultListContainer {
     flex: 1 1 auto;
   }
@@ -508,12 +510,6 @@ export default {
     .is-compact & {
       width: 150px;
     }
-  }
-
-  &-searchStatusContainer {
-  }
-
-  &-searchStatus {
   }
 }
 

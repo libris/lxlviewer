@@ -4,9 +4,9 @@ import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as RecordUtil from '@/utils/record';
-import CreationCard from '@/components/create/creation-card';
-import FileAdder from '@/components/create/file-adder';
-import TabMenu from '@/components/shared/tab-menu';
+import CreationCard from '@/components/create/creation-card.vue';
+import FileAdder from '@/components/create/file-adder.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
 
 export default {
   name: 'create-new-form',
@@ -60,16 +60,18 @@ export default {
     setActiveIndex(index) {
       this.activeIndex = index;
     },
-    templateIsAllowed(template) {      
+    templateIsAllowed(template) {
       const isAllowed = this.selectedCreation !== 'Concept'
       || (this.user.uriMinter
-        && this.user.uriMinter.findContainerForEntity(template.value.mainEntity,
-          { '@id': this.user.getActiveLibraryUri() }));
+        && this.user.uriMinter.findContainerForEntity(
+          template.value.mainEntity,
+          { '@id': this.user.getActiveLibraryUri() },
+        ));
 
       if (isAllowed) {
         this.hasAllowedTemplates = true;
       }
-      
+
       return isAllowed;
     },
     userIsAllowedToEditConcepts() {
@@ -78,11 +80,11 @@ export default {
       }
       const { vocab, context } = this.$store.getters.resources;
       return Object.keys(this.user.uriMinter.containerMap).find(
-        it => VocabUtil.isSubClassOf(it, 'Concept', vocab, context),
+        (it) => VocabUtil.isSubClassOf(it, 'Concept', vocab, context),
       );
     },
     setHintSigelChange(val) {
-      this.$store.dispatch('setStatusValue', { 
+      this.$store.dispatch('setStatusValue', {
         property: 'hintSigelChange',
         value: val,
       });
@@ -104,7 +106,7 @@ export default {
         { id: 'Instance', text: 'Instance', excludeBase: true },
         { id: 'Work', text: 'Work', excludeBase: true },
         { id: 'Agent', text: 'Agent', excludeBase: true },
-      ];      
+      ];
       if (this.userIsAllowedToEditConcepts()) {
         list.push({ id: 'Concept', text: 'Concept', excludeBase: true });
       }
@@ -140,14 +142,14 @@ export default {
       return baseRecord;
     },
     combinedTemplates() {
-      const sorted = sortBy(this.templates.combined[this.selectedCreation.toLowerCase()], template => template.label);
+      const sorted = sortBy(this.templates.combined[this.selectedCreation.toLowerCase()], (template) => template.label);
       return sorted;
     },
     hasChosen() {
       return this.activeIndex > 0 || (this.activeIndex === 0 && this.chosenType);
     },
     isExcludedBase() {
-      return this.creationList.find(it => it.id === this.selectedCreation).excludeBase;
+      return this.creationList.find((it) => it.id === this.selectedCreation).excludeBase;
     },
   },
   components: {
@@ -179,7 +181,7 @@ export default {
     this.$nextTick(() => {
       this.activeForm = '';
       this.transition = false;
-      this.initialized = true;      
+      this.initialized = true;
     });
   },
 };
@@ -188,9 +190,9 @@ export default {
 <template>
   <div class="Create" id="create-new-record">
     <div class="Create-body">
-      <tab-menu 
-        @go="setCreation" 
-        :tabs="creationList" 
+      <tab-menu
+        @go="setCreation"
+        :tabs="creationList"
         :active="selectedCreation"
         v-on-click-outside="hideSigelHint" />
 
@@ -213,9 +215,9 @@ export default {
           :index="index + 1"
           :active-index="activeIndex"
           @use-template="useTemplate"
-          @set-active-index="setActiveIndex" />        
+          @set-active-index="setActiveIndex" />
       </div>
-      <file-adder type="new" v-if="selectedCreation === 'File'" @output="recieveFileData" />      
+      <file-adder type="new" v-if="selectedCreation === 'File'" @output="recieveFileData" />
     </div>
   </div>
 </template>
@@ -224,8 +226,6 @@ export default {
 .Create {
   padding-bottom: 2rem;
 
-  &-title {
-  }
   &-cards {
     display: flex;
     flex-wrap: wrap;

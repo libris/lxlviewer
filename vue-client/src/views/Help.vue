@@ -27,7 +27,7 @@ export default {
       } else {
         titleStr = `${value} - ${StringUtil.getUiPhraseByLang('Help', this.user.settings.language, this.resources.i18n)}`;
       }
-      this.$store.dispatch('setStatusValue', { 
+      this.$store.dispatch('setStatusValue', {
         property: 'helpSectionTitle',
         value: titleStr,
       });
@@ -146,16 +146,19 @@ export default {
       <div class="col-md-3">
         <div class="HelpSection-menu">
           <ul class="HelpSection-categories">
-            <li class="HelpSection-categoryItem"
-              v-for="(value, key) in helpCategories" 
-              :key="key" 
-              v-bind:class="{'is-active': key == activeCategory }" 
+            <li
+              class="HelpSection-categoryItem"
+              v-for="(value, key) in helpCategories"
+              :key="key"
+              v-bind:class="{ 'is-active': key == activeCategory }"
               v-on:click="activeCategory = key">
               <span class="HelpSection-categoryItemLabel" v-if="key !== 'Main'">{{key}}</span>
               <ul class="HelpSection-categoryList">
-                <li class="HelpSection-categoryListItem" v-for="(section, index) in value" 
-                  :key="index" 
-                  v-bind:class="{'active': section.basename == activeSection }">
+                <li
+                  class="HelpSection-categoryListItem"
+                  v-for="(section, index) in value"
+                  :key="index"
+                  v-bind:class="{ active: section.basename == activeSection }">
                   <router-link :to="getSectionUri(section.basename)">{{section.title}}</router-link>
                 </li>
               </ul>
@@ -167,10 +170,13 @@ export default {
         <article class="HelpSection-article is-fromMarkdown panel panel-default">
           <div>
             <div class="pull-right text-right" v-show="activeSectionData.date">
-              <span class="label label-primary" v-if="sectionIsUpdating">UNDER ARBETE</span> <span :title="formatDate(activeSectionData.date)">{{ translatePhrase('Last updated') }} {{ getRelativeTime(activeSectionData.date) }}</span>
+              <span class="label label-primary" v-if="sectionIsUpdating">UNDER ARBETE</span>
+              <span :title="formatDate(activeSectionData.date)">
+                {{ translatePhrase('Last updated') }} {{ getRelativeTime(activeSectionData.date) }}
+              </span>
             </div>
             <br v-show="activeSectionData.date">
-            <div v-html="getHTML(activeSectionData.content)"></div>
+            <div v-html="getHTML(activeSectionData.content)" />
           </div>
         </article>
       </div>
@@ -182,7 +188,7 @@ export default {
 
 .HelpSection {
   padding-bottom: 2rem;
-  
+
   &-article {
     padding: 30px;
     height: 100%;

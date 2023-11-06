@@ -37,9 +37,9 @@ export default {
     translatePhrase,
     hide() {
       this.$emit('hide');
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
-      //   value: 'overview' 
+      // this.$store.dispatch('setStatusValue', {
+      //   property: 'keybindState',
+      //   value: 'overview'
       // });
     },
     isObject(o) {
@@ -68,10 +68,10 @@ export default {
   components: {
     'panel-component': PanelComponent,
   },
-  mounted() { 
+  mounted() {
     this.$nextTick(() => {
-      // this.$store.dispatch('setStatusValue', { 
-      //   property: 'keybindState', 
+      // this.$store.dispatch('setStatusValue', {
+      //   property: 'keybindState',
       //   value: 'marc-preview'
       // });
     });
@@ -80,16 +80,17 @@ export default {
 </script>
 
 <template>
-  <panel-component class="MarcPreview"
+  <panel-component
+    class="MarcPreview"
     @close="hide"
     title="Preview MARC21">
     <template #panel-body>
       <div class="">
         <div class="MarcPreview-body">
           <div class="MarcPreview-status" v-if="marcObj === null">
-            <p v-show="error === null" >
+            <p v-show="error === null">
               {{ translatePhrase("Loading marc") }}...<br>
-              <i class="fa fa-circle-o-notch fa-spin"></i>
+              <i class="fa fa-circle-o-notch fa-spin" />
             </p>
             <p v-show="error !== null" class="MarcPreview-error">
               {{ translatePhrase("Something went wrong") }}...
@@ -106,8 +107,8 @@ export default {
             <tbody>
               <tr>
                 <td>000</td>
-                <td></td>
-                <td></td>
+                <td />
+                <td />
                 <td>{{ marcObj.leader }}</td>
               </tr>
               <tr v-for="(field, index) in marcObj.fields" :key="index">
@@ -126,7 +127,7 @@ export default {
             </tbody>
           </table>
         </div>
-       
+
       </div>
     </template>
   </panel-component>

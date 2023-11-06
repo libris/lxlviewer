@@ -3,8 +3,8 @@ import { merge, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as MathUtil from '@/utils/math';
-import LensMixin from '../mixins/lens-mixin';
-import SummaryAction from '../inspector/summary-action';
+import LensMixin from '../mixins/lens-mixin.vue';
+import SummaryAction from '../inspector/summary-action.vue';
 
 export default {
   name: 'panel-search-item',
@@ -106,27 +106,27 @@ export default {
   components: {
     SummaryAction,
   },
-  mounted() { 
+  mounted() {
   },
 };
 </script>
 
 <template>
-  <li class="PanelSearch-listItem PanelComponent-listItem"
-    :class="{ 'is-added' : isDisabled, 'is-replaced' : isReplaced }">
-    <div 
+  <li
+    class="PanelSearch-listItem PanelComponent-listItem"
+    :class="{ 'is-added': isDisabled, 'is-replaced': isReplaced }">
+    <div
       class="PanelSearch-action"
       v-if="hasAction">
-      <summary-action 
-        :disabled="isDisabled" 
+      <summary-action
+        :disabled="isDisabled"
         :replaced="isReplaced"
-        :options="addPayload" 
-        @action="useItem()">
-      </summary-action>
-      <div 
+        :options="addPayload"
+        @action="useItem()" />
+      <div
         class="PanelSearch-linkCount"
         v-if="reverseLinksAmount !== null"
-        :class="{'has-links' : reverseLinksAmount != 0}"
+        :class="{ 'has-links': reverseLinksAmount != 0 }"
         v-tooltip="{
           placement: 'right',
           content: translatedTooltip,
@@ -134,23 +134,22 @@ export default {
         {{ reverseLinksAmount }}
       </div>
     </div>
-    <div class="PanelSearch-itemContainer" 
-      :class="{'has-action' : hasAction}">
-      <entity-summary 
-        :focus-data="focusData" 
-        :should-link="true" 
+    <div
+      class="PanelSearch-itemContainer"
+      :class="{ 'has-action': hasAction }">
+      <entity-summary
+        :focus-data="focusData"
+        :should-link="true"
         :is-compact="isCompact"
         :label-style="'regular'"
         :exclude-components="settings.excludeComponents"
         :exclude-properties="settings.excludeProperties"
         :shouldOpenTab="true"
         :valueDisplayLimit=1
-        :encodingLevel="focusData.meta.encodingLevel">
-      </entity-summary>
+        :encodingLevel="focusData.meta.encodingLevel" />
     </div>
   </li>
 </template>
-
 
 <style lang="less">
 
@@ -164,7 +163,7 @@ export default {
       }
     }
 
-    &.is-added, 
+    &.is-added,
     &.is-replaced {
       cursor: default;
     }
@@ -195,9 +194,6 @@ export default {
       background-color: darken(@neutral-color, 2%);
     }
 
-    &.is-selected {
-    } 
-
     & .EntitySummary {
       padding: 0;
 
@@ -209,7 +205,7 @@ export default {
     }
   }
 
-  &-action {    
+  &-action {
     display: flex;
     flex-direction: column;
   }

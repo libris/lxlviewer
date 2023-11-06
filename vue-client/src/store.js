@@ -149,11 +149,11 @@ const store = createStore({
         {
           ...content,
           id: StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`),
-        }
+        },
       ];
     },
     removeNotification(state, id) {
-      state.status.notifications = state.status.notifications.filter((notification => notification.id !== id));
+      state.status.notifications = state.status.notifications.filter(((notification) => notification.id !== id));
     },
     setOriginalData(state, data) {
       state.inspector.originalData = cloneDeep(data);
@@ -188,7 +188,7 @@ const store = createStore({
           quoted[sameAs['@id']] = data;
         }
       });
-      
+
       state.inspector.data.quoted = quoted;
     },
     updateInspectorData(state, payload) {
@@ -348,7 +348,7 @@ const store = createStore({
       state.inspector.magicShelfMarks = [...state.inspector.magicShelfMarks, path];
     },
     removeMagicShelfMark(state, path) {
-      state.inspector.magicShelfMarks = state.inspector.magicShelfMarks.filter(p => p !== path);
+      state.inspector.magicShelfMarks = state.inspector.magicShelfMarks.filter((p) => p !== path);
     },
     addTagAsSupported(state, tag) {
       state.inspector.supportedTags.promises[tag] = undefined;
@@ -364,16 +364,16 @@ const store = createStore({
     },
   },
   getters: {
-    inspector: state => state.inspector,
-    resources: state => state.resources,
-    resourcesLoaded: state => state.resources.resourcesLoaded,
-    resourcesLoadingError: state => state.resources.loadingError,
-    templates: state => state.resources.templates,
-    settings: state => state.settings,
-    oauth2Client: state => state.oauth2Client,
-    user: state => state.user,
-    userStorage: state => state.userStorage,
-    enrichment: state => state.enrichment,
+    inspector: (state) => state.inspector,
+    resources: (state) => state.resources,
+    resourcesLoaded: (state) => state.resources.resourcesLoaded,
+    resourcesLoadingError: (state) => state.resources.loadingError,
+    templates: (state) => state.resources.templates,
+    settings: (state) => state.settings,
+    oauth2Client: (state) => state.oauth2Client,
+    user: (state) => state.user,
+    userStorage: (state) => state.userStorage,
+    enrichment: (state) => state.enrichment,
     activeGlobalMessages: (state) => {
       const now = new Date();
       const activeMessages = [];
@@ -422,14 +422,14 @@ const store = createStore({
       }
       return collection;
     },
-    userDatabase: state => state.userDatabase,
-    status: state => state.status,
-    directoryCare: state => state.directoryCare,
-    vocab: state => state.resources.vocab,
-    display: state => state.resources.display,
-    context: state => state.resources.context,
-    supportedTags: state => state.inspector.supportedTags.data,
-    changeNotes: state => state.changeNotes,
+    userDatabase: (state) => state.userDatabase,
+    status: (state) => state.status,
+    directoryCare: (state) => state.directoryCare,
+    vocab: (state) => state.resources.vocab,
+    display: (state) => state.resources.display,
+    context: (state) => state.resources.context,
+    supportedTags: (state) => state.inspector.supportedTags.data,
+    changeNotes: (state) => state.changeNotes,
   },
   actions: {
     addExtractItemOnSave({ commit, dispatch, state }, { path, item }) {
@@ -451,7 +451,7 @@ const store = createStore({
     removeExtractItemOnSave({ commit, state }, { path }) {
       const { [path]: itemToRemove, ...rest } = state.inspector.extractItemsOnSave;
       commit('setExtractItemsOnSave', rest);
-      const indexInChangeHistory = state.inspector.changeHistory.findIndex(item => item[0].path === path && item[0].value === EXTRACT_ON_SAVE);
+      const indexInChangeHistory = state.inspector.changeHistory.findIndex((item) => item[0].path === path && item[0].value === EXTRACT_ON_SAVE);
       if (indexInChangeHistory >= 0) {
         commit('removeIndexFromChangeHistory', indexInChangeHistory);
       }
@@ -618,7 +618,7 @@ const store = createStore({
           fetch(verifyUrl, {
             headers,
             method: 'GET',
-          }).then(response => response.json()).then((result) => {
+          }).then((response) => response.json()).then((result) => {
             userObj = User.getUserObject(result.user);
             userObj.token = token;
             userObj.token_expires_at = result.expires_at;
@@ -815,7 +815,7 @@ const store = createStore({
       dispatch('setVocabProperties', vocabJson);
     },
     setVocab({ commit }, vocabJson) {
-      const vocabMap = new Map(vocabJson.map(entry => [entry['@id'], entry]));
+      const vocabMap = new Map(vocabJson.map((entry) => [entry['@id'], entry]));
       commit('setVocab', vocabMap);
     },
     setVocabClasses({ commit, state }, vocabJson) {
@@ -823,7 +823,7 @@ const store = createStore({
         VocabUtil.getTermByType('Class', vocabJson, state.resources.context, state.settings),
         VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.resources.context, state.settings),
       );
-      const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
+      const classes = new Map(classTerms.map((entry) => [entry['@id'], entry]));
       classes.forEach((classObj) => {
         if (classObj.hasOwnProperty('subClassOf')) {
           each(classObj.subClassOf, (baseClass) => {
@@ -846,7 +846,7 @@ const store = createStore({
       props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, state.resources.context, state.settings));
       props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, state.resources.context, state.settings));
       props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, state.resources.context, state.settings));
-      const vocabProperties = new Map(props.map(entry => [entry['@id'], entry]));
+      const vocabProperties = new Map(props.map((entry) => [entry['@id'], entry]));
 
       commit('setVocabProperties', vocabProperties);
     },

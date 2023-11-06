@@ -1,5 +1,5 @@
 <script>
-/* 
+/*
 
   HOW TO USE:
   This component can recieve content to inject in the different slots.
@@ -33,7 +33,7 @@ export default {
     modalType: {
       default: 'normal',
       type: String,
-    }, 
+    },
     closeable: {
       default: true,
       type: Boolean,
@@ -62,7 +62,7 @@ export default {
     close() {
       if (this.closeable) {
         this.fadedIn = false;
-        
+
         setTimeout(() => {
           this.$emit('close');
         }, this.fadeTime);
@@ -86,15 +86,15 @@ export default {
       if (lastAction === 'close-modals') {
         this.close();
       }
-    }, 
+    },
   },
   mounted() {
     this.$nextTick(() => {
       this.$store.dispatch('setStatusValue', { property: 'fullScreenPanelOpen', value: true });
       if (this.status.panelOpen) {
-        this.$store.dispatch('setStatusValue', { 
-          property: 'keybindState', 
-          value: 'fullscreen-panel-open', 
+        this.$store.dispatch('setStatusValue', {
+          property: 'keybindState',
+          value: 'fullscreen-panel-open',
         });
       }
       this.lockScroll(true);
@@ -115,10 +115,11 @@ export default {
 </script>
 
 <template>
-  <div class="FullScreenPanel"
-  :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}"
-  role="complementary">
-    <slot name="content"></slot>
+  <div
+    class="FullScreenPanel"
+    :class="{ 'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger' }"
+    role="complementary">
+    <slot name="content" />
   </div>
 </template>
 

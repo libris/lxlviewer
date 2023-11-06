@@ -3,10 +3,10 @@ import { isArray, debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import { XSD_NUMERIC_TYPES } from 'lxljs/vocab';
-import ItemMixin from '@/components/mixins/item-mixin';
-import LensMixin from '@/components/mixins/lens-mixin';
-import ModalComponent from '@/components/shared/modal-component';
 import { translatePhrase, labelByLang } from '@/utils/filters';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import ModalComponent from '@/components/shared/modal-component.vue';
 
 export default {
   name: 'item-next-shelf-control-number',
@@ -85,13 +85,13 @@ export default {
     },
     // Handling multiple ranges doesn't actually really make sense...
     min() {
-      return Math.min(...this.range.map(r => XSD_NUMERIC_TYPES[r]).map(t => (t.min ? t.min : NaN)));
+      return Math.min(...this.range.map((r) => XSD_NUMERIC_TYPES[r]).map((t) => (t.min ? t.min : NaN)));
     },
     max() {
-      return Math.max(...this.range.map(r => XSD_NUMERIC_TYPES[r]).map(t => (t.max ? t.max : NaN)));
+      return Math.max(...this.range.map((r) => XSD_NUMERIC_TYPES[r]).map((t) => (t.max ? t.max : NaN)));
     },
     isDecimal() {
-      return this.range.map(r => XSD_NUMERIC_TYPES[r]).some(t => (t.decimal));
+      return this.range.map((r) => XSD_NUMERIC_TYPES[r]).some((t) => (t.decimal));
     },
     isDisabled() {
       return this.unlockedByUser === false;
@@ -188,8 +188,8 @@ export default {
 
 <template>
   <div
-    class="ItemValue js-value" 
-    v-bind:class="{'is-locked': isLocked, 'unlocked': !isLocked, 'is-removed': removed}"
+    class="ItemValue js-value"
+    v-bind:class="{ 'is-locked': isLocked, unlocked: !isLocked, 'is-removed': removed }"
     :id="`formPath-${path}`"
   >
     <input
@@ -241,7 +241,7 @@ export default {
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)"
     >
-      <i class="fa fa-trash-o icon icon--sm"></i>
+      <i class="fa fa-trash-o icon icon--sm" />
     </div>
 
     <modal-component
@@ -264,7 +264,7 @@ export default {
             </button>
 
             <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
-              <i class="icon icon--white fa fa-unlock-alt"></i>
+              <i class="icon icon--white fa fa-unlock-alt" />
               {{ translatePhrase('Unlock') }}
             </button>
           </div>

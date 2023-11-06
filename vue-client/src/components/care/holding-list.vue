@@ -77,7 +77,7 @@ export default {
     },
     sortedHoldings() {
       const holdings = this.directoryCare[`${this.name}Holdings`];
-      each(holdings, (h) => { 
+      each(holdings, (h) => {
         h._label = DisplayUtil.getItemLabel(
           h,
           this.resources,
@@ -85,12 +85,12 @@ export default {
           this.settings,
         );
       });
-      
+
       const sorted = orderBy(holdings, [(o) => {
         const parts = o.heldBy['@id'].split('/');
         const code = parts[parts.length - 1];
         return this.registrantPermissions.indexOf(code) > -1;
-      }, o => o._label], ['desc', 'asc']);
+      }, (o) => o._label], ['desc', 'asc']);
       return sorted;
     },
   },
@@ -223,7 +223,7 @@ export default {
       each(queryPairs, (v, k) => {
         url += (`${encodeURIComponent(k)}=${encodeURIComponent(v)}&`);
       });
-      fetch(url).then(response => response.json()).then((result) => {
+      fetch(url).then((response) => response.json()).then((result) => {
         const changeObj = { [`${this.name}Holdings`]: result.items };
         self.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
       }, (error) => {
@@ -242,51 +242,62 @@ export default {
 <template>
   <div class="HoldingList" :class="{ 'is-sender': isSender }" v-if="directoryCare[this.name]">
     <div class="HoldingList-topBar">
-        <button v-if="isSender" class="btn btn--md btn-light SelectAll-btn" @click="toggleAll" :disabled="lock || movableHoldings.length === 0">
-          <i class="fa fa-fw fa-square-o" v-show="!allHoldingsSelected"></i>
-          <i class="fa fa-fw fa-check-square-o" v-show="allHoldingsSelected"></i>
-          <!-- <input v-model="allHoldingsSelected" type="checkbox" :disabled="lock || movableHoldings.length === 0" @change="handleAllSelect" /> -->
-          {{ translatePhrase('Select all') }}
-        </button>
-        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && !loading" :disabled="lock || directoryCare.selectedHoldings.length === 0" @click="doSend">{{ translatePhrase('Move holdings') }}</button>
-        <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && loading" :disabled="true"><i class="fa fa-circle-o-notch fa-spin"></i> {{ translatePhrase('Moving holdings') }}</button>
-        <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ translatePhrase('Holdings chosen').toLowerCase() }}</span>
-        <div v-if="!isSender"></div>
-        <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ translatePhrase('Holdings').toLowerCase() }}</span>
+      <button
+        v-if="isSender"
+        class="btn btn--md btn-light SelectAll-btn"
+        @click="toggleAll"
+        :disabled="lock || movableHoldings.length === 0">
+        <i class="fa fa-fw fa-square-o" v-show="!allHoldingsSelected" />
+        <i class="fa fa-fw fa-check-square-o" v-show="allHoldingsSelected" />
+        <!-- <input v-model="allHoldingsSelected" type="checkbox" :disabled="lock || movableHoldings.length === 0" @change="handleAllSelect" /> -->
+        {{ translatePhrase('Select all') }}
+      </button>
+      <button
+        class="btn btn--md SendHoldings-btn btn-primary"
+        v-if="isSender && !loading"
+        :disabled="lock || directoryCare.selectedHoldings.length === 0"
+        @click="doSend">{{ translatePhrase('Move holdings') }}</button>
+      <button class="btn btn--md SendHoldings-btn btn-primary" v-if="isSender && loading" :disabled="true"><i class="fa fa-circle-o-notch fa-spin" /> {{ translatePhrase('Moving holdings') }}</button>
+      <span v-if="isSender">{{ directoryCare.selectedHoldings.length }} / {{ directoryCare.senderHoldings.length }} {{ translatePhrase('Holdings chosen').toLowerCase() }}</span>
+      <div v-if="!isSender" />
+      <span v-if="!isSender">{{ directoryCare.recieverHoldings.length }} {{ translatePhrase('Holdings').toLowerCase() }}</span>
     </div>
     <div class="HoldingList-body">
       <div class="HoldingList-items">
         <div class="HoldingList-item" :key="index" v-for="(holding, index) in sortedHoldings">
-          <div class="HoldingList-itemBody" :class="{ 'selected': isSelected(holding), 'newly-moved': isNewlyMoved(holding), 'is-first': index === 0 }">
+          <div class="HoldingList-itemBody" :class="{ selected: isSelected(holding), 'newly-moved': isNewlyMoved(holding), 'is-first': index === 0 }">
             <div class="HoldingList-input" v-if="isSender && !lock && userHasPermission(holding) && !holdingExistsOnTarget(holding)">
               <input
-                :checked="isSelected(holding)" 
-                type="checkbox" :disabled="lock" 
-                @change="handleCheckbox($event, holding)" 
-                :id="`checkbox-${holding.heldBy['@id']}`"/>
+                :checked="isSelected(holding)"
+                type="checkbox"
+                :disabled="lock"
+                @change="handleCheckbox($event, holding)"
+                :id="`checkbox-${holding.heldBy['@id']}`" />
               <!-- <div class="customCheckbox-icon"></div> -->
             </div>
             <div class="HoldingList-noReciever" v-if="directoryCare.reciever === null && userHasPermission(holding)">
               <span v-tooltip.top="noRecieverTooltip">
-              <input disabled type="checkbox" />
+                <input disabled type="checkbox" />
               </span>
-            </div>            
+            </div>
             <div class="HoldingList-noPermission" v-if="isSender && !userHasPermission(holding)">
-              <i v-tooltip.top="noPermissionTooltip" class="fa fa-fw fa-lock"></i>
+              <i v-tooltip.top="noPermissionTooltip" class="fa fa-fw fa-lock" />
             </div>
             <div class="HoldingList-foundOnDestination" v-if="isSender && userHasPermission(holding) && holdingExistsOnTarget(holding)">
-              <i v-tooltip.top="foundOnDestinationTooltip" class="fa fa-fw fa-warning"></i>
+              <i v-tooltip.top="foundOnDestinationTooltip" class="fa fa-fw fa-warning" />
             </div>
-            <div class="HoldingList-status" v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding) && directoryCare.reciever">
+            <div
+              class="HoldingList-status"
+              v-if="lock && isSender && userHasPermission(holding) && !holdingExistsOnTarget(holding) && directoryCare.reciever">
               <i class="statusItem-loading fa fa-fw fa-circle-o-notch fa-spin" v-show="getStatus(holding) === 'loading'" />
               <i class="statusItem-success fa fa-fw fa-check" v-show="getStatus(holding) === 'done'" />
               <i class="statusItem-error fa fa-fw fa-times" v-show="getStatus(holding) === 'error'" />
             </div>
-            <entity-summary 
-            :exclude-components="['categorization', 'id']"
-            :exclude-properties="['itemOf']"
-            :focus-data="holding"
-            :shouldOpenTab="true"></entity-summary>
+            <entity-summary
+              :exclude-components="['categorization', 'id']"
+              :exclude-properties="['itemOf']"
+              :focus-data="holding"
+              :shouldOpenTab="true" />
           </div>
         </div>
       </div>
@@ -407,10 +418,6 @@ export default {
   }
   &-foundOnDestination {
     color: @brand-warning;
-  }
-
-  .SendHoldings-btn {
-    // font-weight: 800;
   }
 
   & .EntitySummary-title {

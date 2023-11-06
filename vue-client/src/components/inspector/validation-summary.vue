@@ -28,8 +28,8 @@ export default {
     goToPath(path) {
       const id = `formPath-${path}`;
       const $element = document.getElementById(id);
-      this.$store.dispatch('pushInspectorEvent', { 
-        name: 'form-control', 
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'form-control',
         value: 'expand-item',
       });
       setTimeout(() => {
@@ -42,7 +42,8 @@ export default {
 
 <template>
   <div class="ValidationSummary" v-show="numberOfViolations > 0">
-    <i class="fa fa-warning" /> Fann <strong>{{ numberOfViolations }}</strong> fall av oväntad data i denna post. Detta kan leda till oväntade resultat vid till exempel export.
+    <i class="fa fa-warning" /> Fann <strong>{{ numberOfViolations }}</strong>
+    fall av oväntad data i denna post. Detta kan leda till oväntade resultat vid till exempel export.
     <a class="pull-right" @click="showViolationList = true" v-show="!showViolationList">Visa detaljerad lista</a>
     <a class="pull-right" @click="showViolationList = false" v-show="showViolationList">Dölj detaljerad lista</a>
     <table class="table table-striped" v-if="showViolationList">
@@ -51,7 +52,7 @@ export default {
       </thead>
       <tr class="Violation" v-for="(value, key) in violations" :key="key">
         <td class="Violation-key">
-          <a @click="goToPath(key)"><i class="fa fa-tag"></i></a>
+          <a @click="goToPath(key)"><i class="fa fa-tag" /></a>
           <code>{{ key }}</code>
         </td>
         <td class="Violation-value">
@@ -63,7 +64,6 @@ export default {
     </table>
   </div>
 </template>
-
 
 <style lang="less">
 .ValidationSummary {

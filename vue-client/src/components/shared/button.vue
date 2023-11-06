@@ -108,12 +108,14 @@ export default {
 </script>
 
 <template>
-  <button class="Button" v-tooltip.top="computedLabel"
+  <button
+    class="Button"
+    v-tooltip.top="computedLabel"
     :class="[
       {
-        'has-shadow': shadow, 
+        'has-shadow': shadow,
         'has-no-border': border === false,
-        'disabled' : disabled, 
+        disabled: disabled,
         'Button-primary': indicator && !disabled,
         'is-active': active,
         'is-inverted': inverted,
@@ -126,7 +128,7 @@ export default {
     @click="action()"
     :aria-label="computedLabel">
     <span v-if="icon">
-      <i :class="`fa fa-fw fa-${icon}`" aria-hidden="true"></i>
+      <i :class="`fa fa-fw fa-${icon}`" aria-hidden="true" />
     </span>
     <span class="Button-buttonText" v-if="computedButtonText">{{ computedButtonText }}</span>
   </button>
@@ -254,7 +256,7 @@ export default {
   &-info {
     .ButtonMixin(@brand-info);
   }
-  
+
   i {
     transition: transform 0.25s ease;
     &.rotate-45 {

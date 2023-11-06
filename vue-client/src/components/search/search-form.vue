@@ -5,9 +5,9 @@ import { marked } from 'marked';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import PropertyMappings from '@/resources/json/propertymappings.json';
-import RemoteDatabases from '@/components/search/remote-databases';
 import { buildQueryString } from '@/utils/http';
 import { translatePhrase } from '@/utils/filters';
+import RemoteDatabases from '@/components/search/remote-databases.vue';
 
 /* TODO: Remove when Vue compat is removed. See https://github.com/Akryum/floating-vue/issues/924. */
 configureCompat({
@@ -74,20 +74,20 @@ export default {
       this.focusSearchInput();
     },
     resetSearchParam() {
-      this.activeSearchParam = PropertyMappings.find(mapping => mapping.searchProps.includes('q'));
+      this.activeSearchParam = PropertyMappings.find((mapping) => mapping.searchProps.includes('q'));
     },
     setSearch() {
       let match = PropertyMappings.filter((prop) => {
         const keys = Object.keys(prop.mappings);
-        return keys.every(key => this.$route.query.hasOwnProperty(key));
+        return keys.every((key) => this.$route.query.hasOwnProperty(key));
       });
       if (match.length > 1) {
         // multiple matching parameters...
         const filteredMatch = match
           // try separate ISSN from ISBN
-          .filter(prop => prop.mappings['identifiedBy.@type'] === this.$route.query['identifiedBy.@type'])
+          .filter((prop) => prop.mappings['identifiedBy.@type'] === this.$route.query['identifiedBy.@type'])
           // remove 'q'
-          .filter(prop => !prop.mappings.hasOwnProperty('q'));
+          .filter((prop) => !prop.mappings.hasOwnProperty('q'));
         match = filteredMatch;
       }
       if (match.length > 0) {
@@ -156,7 +156,7 @@ export default {
       if (this.activeSearchType === '*') {
         return PropertyMappings;
       }
-      return PropertyMappings.filter(mapping => mapping.types.indexOf(this.activeSearchType) > -1);
+      return PropertyMappings.filter((mapping) => mapping.types.indexOf(this.activeSearchType) > -1);
     },
     helpContainerBoundaryStyles() {
       const $icon = this.$refs.helpIcon;
@@ -334,7 +334,8 @@ export default {
             </option>
           </select>
         </div>
-        <input type="text"
+        <input
+          type="text"
           @focus="searchGroupFocus.input = true"
           @blur="searchGroupFocus.input = false"
           class="SearchForm-input customInput"
@@ -343,11 +344,16 @@ export default {
           aria-labelledby="searchlabel"
           :placeholder="translatePhrase(inputPlaceholder)"
           ref="searchFormInput">
-        <span class="SearchForm-clear icon icon--md"
+        <span
+          class="SearchForm-clear icon icon--md"
           @focus="searchGroupFocus.clear = true"
           @blur="searchGroupFocus.clear = false"
-          :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
-          <i class="fa fa-fw fa-close"></i>
+          :class="{ 'in-remote': searchPerimeter === 'remote' }"
+          tabindex="0"
+          v-show="hasInput"
+          @keyup.enter="clearInputs()"
+          @click="clearInputs()">
+          <i class="fa fa-fw fa-close" />
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
           <select
@@ -370,30 +376,34 @@ export default {
           @click.prevent="doSearch"
           @focus="searchGroupFocus.submit = true"
           @blur="searchGroupFocus.submit = false"
-          :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
-          :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0" >
-          <i class="fa fa-search"></i>
+          :class="{ disabled: searchPerimeter === 'remote' && status.remoteDatabases.length === 0 }"
+          :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0">
+          <i class="fa fa-search" />
         </button>
       </div>
       <remote-databases
         v-if="searchPerimeter === 'remote'"
         :remoteSearch="searchPhrase"
         @panelClosed="focusSearchInput"
-        ref="dbComponent"></remote-databases>
+        ref="dbComponent" />
     </form>
     <div class="SearchForm-help">
       <div class="SearchForm-helpBox dropdown" v-if="searchPerimeter === 'libris'">
         <span class="SearchForm-helpIcon">
-          <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle icon icon--md" tabindex="0" aria-haspopup="true"
+          <i
+            v-tooltip="searchHelpTooltip"
+            class="fa fa-fw fa-question-circle icon icon--md"
+            tabindex="0"
+            aria-haspopup="true"
             ref="helpIcon"
             @mouseover="helpHover = true"
             @mouseleave="helpHover = false"
             @click="toggleHelp"
-            @keyup.enter="toggleHelp"></i>
+            @keyup.enter="toggleHelp" />
         </span>
         <div class="SearchForm-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled">
-          <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchForm-closeHelp" @click="toggleHelp"></i>
-          <div class="SearchForm-helpContent" v-html="searchHelpDocs"></div>
+          <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchForm-closeHelp" @click="toggleHelp" />
+          <div class="SearchForm-helpContent" v-html="searchHelpDocs" />
         </div>
       </div>
     </div>
@@ -574,10 +584,6 @@ export default {
     .is-focused & {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
-  }
-
-  &-select {
-
   }
 
   &-inputLabel {

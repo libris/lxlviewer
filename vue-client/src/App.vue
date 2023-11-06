@@ -4,7 +4,14 @@
   <navbar-component />
   <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
 
-  <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': (!status.panelOpen && user.settings.fullSiteWidth === false), 'container-fluid': (status.panelOpen || user.settings.fullSiteWidth), 'debug-mode': user.settings.appTech }">
+  <main
+    class="MainContent"
+    :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }"
+    :class="{
+      container: (!status.panelOpen && user.settings.fullSiteWidth === false),
+      'container-fluid': (status.panelOpen || user.settings.fullSiteWidth),
+      'debug-mode': user.settings.appTech,
+    }">
     <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
       {{ translatePhrase('Debug mode activated. Click here to disable.') }}
     </div>
@@ -14,7 +21,7 @@
     </div>
 
     <div v-if="resourcesLoadingError" class="ResourcesLoadingError">
-      <i class="fa fa-warning fa-4x text-danger"></i>
+      <i class="fa fa-warning fa-4x text-danger" />
       <div>
         <h2>Kunde inte hämta nödvändiga resurser</h2>
         <p>Testa att ladda om sidan.</p>
@@ -32,20 +39,13 @@
   </main>
 
   <portal-target name="sidebar" multiple />
-  <footer-component></footer-component>
-  <notification-list></notification-list>
+  <footer-component />
+  <notification-list />
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { RouterView } from 'vue-router';
-import Navbar from '@/components/layout/navbar';
-import SearchBar from '@/components/layout/search-bar';
-import Footer from '@/components/layout/footer';
-import NotificationList from '@/components/shared/notification-list';
-import EnvironmentBanner from '@/components/layout/environment-banner';
-import GlobalMessages from '@/components/layout/global-messages';
-import Spinner from '@/components/shared/Spinner.vue';
 import ComboKeys from 'combokeys';
 import GlobalBind from 'combokeys/plugins/global-bind';
 import { translatePhrase } from '@/utils/filters';
@@ -58,6 +58,13 @@ import displayGroupsJson from '@/resources/json/displayGroups.json';
 import baseTemplates from '@/resources/json/baseTemplates.json';
 import combinedTemplates from '@/resources/json/combinedTemplates.json';
 import KeyBindings from '@/resources/json/keybindings.json';
+import GlobalMessages from '@/components/layout/global-messages.vue';
+import EnvironmentBanner from '@/components/layout/environment-banner.vue';
+import Spinner from '@/components/shared/spinner.vue';
+import NotificationList from '@/components/shared/notification-list.vue';
+import Footer from '@/components/layout/footer.vue';
+import SearchBar from '@/components/layout/search-bar.vue';
+import Navbar from '@/components/layout/navbar.vue';
 
 export default {
   name: 'App',
@@ -103,7 +110,7 @@ export default {
       this.combokeys = new ComboKeys(document.documentElement);
       GlobalBind(this.combokeys);
       const stateSettings = KeyBindings[state];
-        
+
       if (typeof stateSettings !== 'undefined') {
         Object.entries(stateSettings).forEach(([key, value]) => {
           if (value !== null && value !== '') {
@@ -152,7 +159,7 @@ export default {
 
       // get component's "routeFocusTarget" ref
       // if not existent, use router view container
-      const focusTarget = (this.$refs.routerView.$refs.componentFocusTarget !== undefined) 
+      const focusTarget = (this.$refs.routerView.$refs.componentFocusTarget !== undefined)
         ? this.$refs.routerView.$refs.componentFocusTarget
         : this.$refs.routerView.$el;
 
@@ -179,12 +186,12 @@ export default {
       setInterval(() => {
         this.userIdleTimer += updateTimer;
         if (this.userIdleTimer > 5 && this.status.userIdle === false) {
-          this.setStatusValue({ 
+          this.setStatusValue({
             property: 'userIdle',
             value: true,
           });
         } else if (this.userIdleTimer <= 5 && this.status.userIdle === true) {
-          this.setStatusValue({ 
+          this.setStatusValue({
             property: 'userIdle',
             value: false,
           });
@@ -195,7 +202,7 @@ export default {
 
       const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
       events.forEach((name) => {
-        document.addEventListener(name, resetTimer, true); 
+        document.addEventListener(name, resetTimer, true);
       });
     },
     disableDebugMode() {
@@ -224,22 +231,15 @@ export default {
         }
       }
     },
-    syncUserStorage() {
-      const userStorageTotal = JSON.parse(localStorage.getItem('userStorage'));
-      let userStorage = this.userStorage;
-      if (userStorageTotal !== null && (userStorageTotal.hasOwnProperty(this.user.idHash) || userStorageTotal.hasOwnProperty(this.user.emailHash))) {
-        userStorage = userStorageTotal[this.user.idHash] || userStorageTotal[this.user.emailHash];
-      }
-      this.$store.dispatch('setUserStorage', userStorage);
-    },
     injectAnalytics() {
+      // eslint-disable-next-line vue/max-len
       const analyticsString = 'var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//analytics.kb.se/";_paq.push(["setTrackerUrl",e+"matomo.php"]),_paq.push(["setSiteId","****"]);var a=document,p=a.createElement("script"),t=a.getElementsByTagName("script")[0];p.type="text/javascript",p.async=!0,p.defer=!0,p.src=e+"matomo.js",t.parentNode.insertBefore(p,t)}();';
       const scriptWithMatomoId = analyticsString.replace('****', this.settings.matomoId);
       const scriptTag = document.createElement('script');
 
       scriptTag.setAttribute('type', 'text/javascript');
       scriptTag.text = scriptWithMatomoId;
-      
+
       document.head.appendChild(scriptTag);
     },
     verifyConfig() {
@@ -288,10 +288,10 @@ export default {
     initWarningFunc() {
       if (this.settings.environment === 'prod' || this.settings.environment === 'stg') {
         window.lxlWarning = () => {
-          
+
         };
         window.lxlError = () => {
-          
+
         };
         return;
       }
@@ -321,7 +321,7 @@ export default {
       };
     },
     fetchHelpDocs() {
-      if (this.settings.mockHelp === true ) {
+      if (this.settings.mockHelp === true) {
         window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
         // eslint-disable-next-line import/no-extraneous-dependencies
         import('@/../../../lxl-helpdocs/build/help.json').then((module) => {
@@ -360,7 +360,7 @@ export default {
       if (userStorageTotal !== null && (userStorageTotal.hasOwnProperty(this.user.idHash) || userStorageTotal.hasOwnProperty(this.user.emailHash))) {
         userStorage = userStorageTotal[this.user.idHash] || userStorageTotal[this.user.emailHash];
       }
-      this.userStorage = userStorage;
+      this.$store.dispatch('setUserStorage', userStorage);
     },
   },
   mounted() {
@@ -534,7 +534,7 @@ h4 {
 
 .MainContent {
   flex: 1 0 auto;
-  
+
   &.container-fluid {
     margin-right: 0px;
     margin-left: 0px;
@@ -609,7 +609,7 @@ button {
 .btn.disabled {
   background-color: @grey-lighter;
   opacity: 1;
-  &:hover, 
+  &:hover,
   &:focus {
     background-color: @grey-lighter;
   }
@@ -621,7 +621,7 @@ button {
   &.btn-light {
     opacity: 0.7;
     box-shadow: none;
-  }  
+  }
 }
 
 .btn-info {
@@ -664,7 +664,7 @@ button {
 .btn-grey {
   color: white;
   background-color: @grey;
-  &:hover, 
+  &:hover,
   &:focus {
     color: white;
     background-color: @grey-darker;
@@ -821,7 +821,7 @@ body {
   display: flex;
   flex-direction: column;
   -ms-overflow-style: scrollbar;
-  
+
   .facet-container {
     opacity: 1;
     transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
@@ -878,7 +878,6 @@ body {
   display: block !important;
 }
 
-
 // ------------- ICONS ----------------
 .icon {
     color: @grey;
@@ -916,7 +915,7 @@ body {
     &--md {
         font-size: 20px;
     }
-    
+
     &--lg {
         font-size: 30px;
     }
@@ -947,7 +946,7 @@ h1, h2, h3, h4 {
   font-weight: 600;
   color: @black;
 }
-  
+
 h1 {
     margin: 10px 0;
 }
@@ -1075,12 +1074,6 @@ h1 {
     color: @grey;
   }
 
-  &:focus {
-    // border: 1px solid @brand-primary;
-    // outline: 0;
-    // box-shadow: none;
-  }
-
   &::-ms-clear {
     display: none; // remove cross from IE
   }
@@ -1133,7 +1126,7 @@ h1 {
     padding: 10px 0;
     margin: 0.25em 0;
     width: 100%;
-    
+
     &.active {
       color: @white;
       background: @brand-primary;

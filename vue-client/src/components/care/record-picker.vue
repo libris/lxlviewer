@@ -50,16 +50,16 @@ export default {
     headers() {
       return this.flaggedInstances.map((instance) => {
         const headerList = DisplayUtil.getItemSummary(
-          instance, 
-          this.resources, 
-          this.inspector.data.quoted, 
-          this.settings, 
+          instance,
+          this.resources,
+          this.inspector.data.quoted,
+          this.settings,
           this.resources.displayGroups,
         ).header;
 
         const header = StringUtil.getFormattedEntries(
-          headerList, 
-          this.resources.vocab, 
+          headerList,
+          this.resources.vocab,
           this.user.settings.language,
           this.resources.context,
         ).join(', ');
@@ -67,15 +67,15 @@ export default {
       });
     },
     filteredInstances() {
-      const filteredTitles = this.headers.filter(el => el.header.toLowerCase()
+      const filteredTitles = this.headers.filter((el) => el.header.toLowerCase()
         .indexOf(this.filterPhrase.trim().toLowerCase()) > -1);
-      return this.flaggedInstances.filter(instance => filteredTitles.some(el => el['@id'] === instance['@id']));
+      return this.flaggedInstances.filter((instance) => filteredTitles.some((el) => el['@id'] === instance['@id']));
     },
   },
   watch: {
     userFlagged(newVal) {
       if (this.selected) {
-        const selectedIsFlagged = newVal.filter(item => item['@id'] === this.selected['@id']);
+        const selectedIsFlagged = newVal.filter((item) => item['@id'] === this.selected['@id']);
         if (selectedIsFlagged.length === 0) {
           this.unselectThis();
         }
@@ -120,7 +120,7 @@ export default {
       if (!newVal) {
         this.selected = newVal;
       } else {
-        const match = this.flaggedInstances.filter(el => el['@id'] === newVal);
+        const match = this.flaggedInstances.filter((el) => el['@id'] === newVal);
         this.selected = match[0];
       }
     });
@@ -140,68 +140,70 @@ export default {
 
 <template>
   <div class="RecordPicker">
-    <div class="RecordPicker-label uppercaseHeading" 
-      :class="{ 'has-selection' : selected}">
+    <div
+      class="RecordPicker-label uppercaseHeading"
+      :class="{ 'has-selection': selected }">
       {{ translatePhrase(name) }}</div>
-    <div class="RecordPicker-body" :class="{ 'has-selection' : selected, 'is-expanded' : expanded}">
+    <div class="RecordPicker-body" :class="{ 'has-selection': selected, 'is-expanded': expanded }">
       <div class="RecordPicker-dropdownWrapper">
-      <div class="RecordPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
-        <div class="RecordPicker-toggle" 
-          @click="toggleDropdown"
-          @keyup.enter="toggleDropdown"
-          tabIndex="0">
-          <span class="RecordPicker-toggleLabel">{{ `${translatePhrase('Choose')} ${name}` }}</span>
-          <span class="RecordPicker-toggleIcon" :class="{ 'expanded' : expanded}">
-            <i class="fa fa-fw fa-chevron-down"></i>
-          </span>
-        </div>
-        <div class="RecordPicker-dropdown" v-show="expanded">
-          <div class="RecordPicker-inputContainer">
-            <input
-              type="text" 
-              v-model="filterPhrase"
-              class="RecordPicker-input" 
-              ref="pickerInput" 
-              :placeholder="translatePhrase('Filter')"
-              :aria-label="translatePhrase('Filter')">
+        <div class="RecordPicker-dropdownContainer" v-if="!selected && flaggedInstances.length > 0">
+          <div
+            class="RecordPicker-toggle"
+            @click="toggleDropdown"
+            @keyup.enter="toggleDropdown"
+            tabIndex="0">
+            <span class="RecordPicker-toggleLabel">{{ `${translatePhrase('Choose')} ${name}` }}</span>
+            <span class="RecordPicker-toggleIcon" :class="{ expanded: expanded }">
+              <i class="fa fa-fw fa-chevron-down" />
+            </span>
           </div>
-          <div class="RecordPicker-items">
-            <div class="RecordPicker-item"
-              :key="item['@id']"
-              v-for="item in filteredInstances"
-              @click="selectThis(item)"
-              @keyup.enter="selectThis(item)"
-              :tabindex="item['@id'] === oppositeSelected ? -1 : 0"
-              :class="{ 'is-disabled' : item['@id'] === oppositeSelected}">
-              <entity-summary 
-                :focus-data="item" 
-                :should-link="false"
-                :valueDisplayLimit=1
-                :highlightStr="filterPhrase.trim()"
-                :encodingLevel="item.encodingLevel">
-              </entity-summary>
+          <div class="RecordPicker-dropdown" v-show="expanded">
+            <div class="RecordPicker-inputContainer">
+              <input
+                type="text"
+                v-model="filterPhrase"
+                class="RecordPicker-input"
+                ref="pickerInput"
+                :placeholder="translatePhrase('Filter')"
+                :aria-label="translatePhrase('Filter')">
+            </div>
+            <div class="RecordPicker-items">
+              <div
+                class="RecordPicker-item"
+                :key="item['@id']"
+                v-for="item in filteredInstances"
+                @click="selectThis(item)"
+                @keyup.enter="selectThis(item)"
+                :tabindex="item['@id'] === oppositeSelected ? -1 : 0"
+                :class="{ 'is-disabled': item['@id'] === oppositeSelected }">
+                <entity-summary
+                  :focus-data="item"
+                  :should-link="false"
+                  :valueDisplayLimit=1
+                  :highlightStr="filterPhrase.trim()"
+                  :encodingLevel="item.encodingLevel" />
+              </div>
             </div>
           </div>
         </div>
+        <div class="RecordPicker-selectedContainer" v-if="selected">
+          <entity-summary
+            :focus-data="selected"
+            :shouldOpenTab="true"
+            :valueDisplayLimit=1
+            :encodingLevel="selected.encodingLevel" />
+          <span
+            class="RecordPicker-closeBtn"
+            role="button"
+            @click="unselectThis"
+            @keyup.enter="unselectThis"
+            tabindex="0"
+            :aria-label="translatePhrase('Close')">
+            <i class="fa fa-fw fa-close icon" />
+          </span>
+        </div>
       </div>
-      <div class="RecordPicker-selectedContainer" v-if="selected">
-        <entity-summary 
-          :focus-data="selected"
-          :shouldOpenTab="true"
-          :valueDisplayLimit=1
-          :encodingLevel="selected.encodingLevel">
-        </entity-summary>
-        <span class="RecordPicker-closeBtn" 
-          role="button" 
-          @click="unselectThis"
-          @keyup.enter="unselectThis"
-          tabindex="0"
-          :aria-label="translatePhrase('Close')">
-          <i class="fa fa-fw fa-close icon"></i>
-        </span>
-      </div>
-      </div>
-      <slot name="info"></slot>
+      <slot name="info" />
     </div>
   </div>
 </template>

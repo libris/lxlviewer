@@ -2,10 +2,10 @@
 import { cloneDeep, debounce, get, isEmpty, isEqual, partition } from 'lodash-es';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
-import ItemMixin from '@/components/mixins/item-mixin';
-import LanguageMixin from '@/components/mixins/language-mixin';
 import * as HttpUtil from '@/utils/http';
-import LanguageEntry from './language-entry';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import LanguageMixin from '@/components/mixins/language-mixin.vue';
+import LanguageEntry from './language-entry.vue';
 
 export default {
   name: 'item-bylang.vue',
@@ -73,12 +73,12 @@ export default {
     fieldOtherValue() {
       if (this.isLangMap) {
         return this.prop;
-      } 
+      }
       return this.propByLang;
     },
     diffRemoved() {
       if (this.diff == null) return false;
-      return this.diff.removed.some(r => isEqual(r.path, this.path));
+      return this.diff.removed.some((r) => isEqual(r.path, this.path));
     },
     isRepeatable() {
       return VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context);
@@ -93,7 +93,7 @@ export default {
       return Object.keys(this.cache).length;
     },
     uiLanguageTags() {
-      return [...this.settings.availableUserSettings.languages].map(lang => lang.value);
+      return [...this.settings.availableUserSettings.languages].map((lang) => lang.value);
     },
     currentUiLanguage() {
       return this.settings.language;
@@ -116,10 +116,12 @@ export default {
             HttpUtil.getDocument(`${id}/data.jsonld?lens=card`).then((res) => {
               const data = res.data;
               if (data) {
-                const label = DisplayUtil.getItemLabel(data,
+                const label = DisplayUtil.getItemLabel(
+                  data,
                   this.resources,
                   this.inspector.data.quoted,
-                  this.settings);
+                  this.settings,
+                );
                 const obj = {};
                 obj[tag] = { label: label, data: graph[1], recordId: id };
                 this.$store.dispatch('addToLanguageCache', obj);
@@ -218,14 +220,14 @@ export default {
       this.entries = this.isHistoryView() ? viewForm : this.sortByTags(viewForm);
     },
     sortByTags(entries) {
-      const untagged = entries.filter(entry => entry.tag === 'none');
+      const untagged = entries.filter((entry) => entry.tag === 'none');
       if (entries.length === untagged.length) {
         return entries;
       }
 
-      const transformedTagged = entries.filter(entry => entry.tag.includes('-t-'));
-      const otherTagged = entries.filter(entry => !entry.tag.includes('-t-') && entry.tag !== 'none');
-      const [uiLangs, other] = partition(otherTagged, entry => this.uiLanguageTags.includes(entry.tag));
+      const transformedTagged = entries.filter((entry) => entry.tag.includes('-t-'));
+      const otherTagged = entries.filter((entry) => !entry.tag.includes('-t-') && entry.tag !== 'none');
+      const [uiLangs, other] = partition(otherTagged, (entry) => this.uiLanguageTags.includes(entry.tag));
 
       const compare = (a, b) => {
         const labelA = this.getLabelFromCache(a.tag);
@@ -278,7 +280,7 @@ export default {
       });
       if (dataObjects.length === 1 && !this.isRepeatable) {
         return dataObjects.pop();
-      } 
+      }
       return dataObjects;
     },
     romanize(langTag, val) {
@@ -341,8 +343,7 @@ export default {
         @removeval="removeVal(entry.tag, entry.val, index)"
         @addLangTag="(tag) => setValueFromEntityAdder(tag, entry.val)"
         @addToCache="updateLangCache(entry.tag)"
-        @update="update(entries)">
-      </language-entry>
+        @update="update(entries)" />
     </div>
   </div>
 </template>

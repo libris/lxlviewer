@@ -6,7 +6,7 @@ describe('Opening and closing of panels', () => {
       cy.viewport('macbook-15');
       cy.login();
     });
-    
+
     it('... the field-adder panel', () => {
       cy.gotoNewDocument();
       cy.get('.Toolbar .FieldAdder button').click();

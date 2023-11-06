@@ -1,9 +1,9 @@
 import { createApp } from 'vue';
 import PortalVue from 'portal-vue';
-import { VTooltip, Dropdown } from 'floating-vue'
-import { FocusTrap } from 'focus-trap-vue'
+import { VTooltip, Dropdown } from 'floating-vue';
+import { FocusTrap } from 'focus-trap-vue';
 import 'floating-vue/dist/style.css';
-import VueClipboard from 'vue-clipboard2'
+import VueClipboard from 'vue-clipboard2';
 import store from './store';
 import router from './router';
 import App from './App.vue';

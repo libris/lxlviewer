@@ -3,8 +3,8 @@ import { each, uniq, sortBy } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
-import ItemMixin from '../mixins/item-mixin';
 import { labelByLang } from '@/utils/filters';
+import ItemMixin from '../mixins/item-mixin.vue';
 
 export default {
   name: 'item-vocab',
@@ -103,7 +103,7 @@ export default {
       each(values, (value) => {
         possibleValues.push(StringUtil.getCompactUri(value['@id'], this.resources.context));
       });
-      return sortBy(possibleValues, value => StringUtil.getLabelByLang(
+      return sortBy(possibleValues, (value) => StringUtil.getLabelByLang(
         value,
         this.user.settings.language,
         this.resources,
@@ -129,7 +129,12 @@ export default {
 </script>
 
 <template>
-  <div class="ItemVocab" :id="`formPath-${path}`" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
+  <div
+    class="ItemVocab"
+    :id="`formPath-${path}`"
+    v-bind:class="{
+      'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, removed: removed,
+    }">
     <div v-if="!isLocked && possibleValues.length > 0">
       <!-- render as dropdown -->
       <select
@@ -159,14 +164,15 @@ export default {
           <label
             v-bind:for="option"
             class="RadioPill-label">
-            <i class="fa fa-check icon icon--sm"></i>
+            <i class="fa fa-check icon icon--sm" />
             {{ labelByLang(option) }}</label>
         </div>
       </fieldset>
 
     </div>
 
-    <span class="ItemVocab-text"
+    <span
+      class="ItemVocab-text"
       v-if="isLocked">{{ labelByLang(fieldValue) }}</span>
   </div>
 </template>

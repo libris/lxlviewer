@@ -1,5 +1,5 @@
 <script>
-/* 
+/*
 
   HOW TO USE:
   This component can show a tablist and emit an event on tab click.
@@ -7,7 +7,7 @@
   Props:
     * Tabs    - Expects an array of tab-objects
     * Active  - Expects a string that it will match against the id on the tab-object and put as active.
-    * Link    - If true, component expects tab-objects to have a link prop. 
+    * Link    - If true, component expects tab-objects to have a link prop.
                 It will then render a <router-link> instead of emitting an event.
 
   Tab-Objects:
@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     hasActive() {
-      return this.options.some(el => el.id === this.active);
+      return this.options.some((el) => el.id === this.active);
     },
   },
   components: {
@@ -81,45 +81,51 @@ export default {
 <template>
   <div class="SwitchToggle" v-if="options">
     <ul v-if="!link" class="SwitchToggle-tabList" role="tablist" ref="tablist">
-      <li class="SwitchToggle-tab" 
+      <li
+        class="SwitchToggle-tab"
         tabindex="0"
-        :key="options[0].id" 
-        @click="go(options[0].id)" 
+        :key="options[0].id"
+        @click="go(options[0].id)"
         @keyup.enter="go(options[0].id)"
-        :class="{'is-active': active === options[0].id }"
+        :class="{ 'is-active': active === options[0].id }"
         role="tab">
-          <span v-if="options[0].html" v-html="options[0].html"></span>
-          <span v-else>{{ translatePhrase(options[0].text) }}</span>
+        <span v-if="options[0].html" v-html="options[0].html" />
+        <span v-else>{{ translatePhrase(options[0].text) }}</span>
       </li>
-      <i class="fa fa-toggle-on fa-fw SwitchToggle-icon" :class="{ 'fa-rotate-180': active === options[0].id }"></i>
-      <li class="SwitchToggle-tab" 
+      <i class="fa fa-toggle-on fa-fw SwitchToggle-icon" :class="{ 'fa-rotate-180': active === options[0].id }" />
+      <li
+        class="SwitchToggle-tab"
         tabindex="0"
-        :key="options[1].id" 
-        @click="go(options[1].id)" 
+        :key="options[1].id"
+        @click="go(options[1].id)"
         @keyup.enter="go(options[1].id)"
-        :class="{'is-active': active === options[1].id }"
+        :class="{ 'is-active': active === options[1].id }"
         role="tab">
-          <span v-if="options[1].html" v-html="options[1].html"></span>
-          <span v-else>{{ translatePhrase(options[1].text) }}</span>
+        <span v-if="options[1].html" v-html="options[1].html" />
+        <span v-else>{{ translatePhrase(options[1].text) }}</span>
       </li>
     </ul>
     <ul v-else class="SwitchToggle-tabList" ref="tablist">
-      <li class="SwitchToggle-linkContainer"
+      <li
+        class="SwitchToggle-linkContainer"
         :key="options[0].id">
-        <router-link class="SwitchToggle-tab" 
-          :class="{'is-active': active === options[0].id }" 
+        <router-link
+          class="SwitchToggle-tab"
+          :class="{ 'is-active': active === options[0].id }"
           :to="options[0].link">
-          <span v-if="options[0].html" v-html="options[0].html"></span>
+          <span v-if="options[0].html" v-html="options[0].html" />
           <span v-else>{{ translatePhrase(options[0].text) }}</span>
         </router-link>
       </li>
-      <i class="fa fa-toggle-on fa-fw SwitchToggle-icon" :class="{ 'is-flipped': active === options[0].id }"></i>
-      <li class="SwitchToggle-linkContainer"
+      <i class="fa fa-toggle-on fa-fw SwitchToggle-icon" :class="{ 'is-flipped': active === options[0].id }" />
+      <li
+        class="SwitchToggle-linkContainer"
         :key="options[1].id">
-        <router-link class="SwitchToggle-tab" 
-          :class="{'is-active': active === options[1].id }" 
+        <router-link
+          class="SwitchToggle-tab"
+          :class="{ 'is-active': active === options[1].id }"
           :to="options[1].link">
-          <span v-if="options[1].html" v-html="options[1].html"></span>
+          <span v-if="options[1].html" v-html="options[1].html" />
           <span v-else>{{ translatePhrase(options[1].text) }}</span>
         </router-link>
       </li>

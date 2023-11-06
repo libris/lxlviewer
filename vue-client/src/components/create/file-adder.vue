@@ -118,29 +118,35 @@ export default {
 <template>
   <div class="FileAdder">
     <div class="alert alert-info" v-if="type === 'new'">
-      Notera att denna funktion automatiskt rensar och byter ut vissa värden som inte ska tas med till den nya posten. Till detta hör bland annat en posts ID, information om vem som skapat posten och när den skapades.
+      Notera att denna funktion automatiskt rensar och byter ut vissa värden som inte ska tas med till den nya posten.
+      Till detta hör bland annat en posts ID, information om vem som skapat posten och när den skapades.
     </div>
     <div class="alert alert-danger" v-if="type === 'overwrite'">
-      Denna funktion förbereder formuläret för att <strong>skriva över en post</strong>. Om du vill skapa en ny post istället, välj "Från fil" i menyn ovan.<br><br>
+      Denna funktion förbereder formuläret för att <strong>skriva över en post</strong>.
+      Om du vill skapa en ny post istället, välj "Från fil" i menyn ovan.<br><br>
       Notera att interna @ID-värden behöver matcha posten du vill skriva över.<br>
       Du behöver även spara posten i nästa steg för att operationen ska slutföras.
     </div>
-    <button class="btn btn-primary btn--lg" 
+    <button
+      class="btn btn-primary btn--lg"
       @click="openPicker">{{ translatePhrase('Choose file') }}</button>
-    <input type="file" 
-      class="FilePicker" 
-      ref="FilePicker" 
+    <input
+      type="file"
+      class="FilePicker"
+      ref="FilePicker"
       accept=".jsonld,application/ld+json,text/*"
-      aria-labelledby="Dropzone-description"/>
-    <hr/>{{ translatePhrase('or') }}<hr/>
-    <div class="Dropzone" :class="{'is-active': userIsDropping, 'is-invalid': invalidFile}">
-      <div class="Dropzone-mask" ref="dropzone"></div>
+      aria-labelledby="Dropzone-description" />
+    <hr />{{ translatePhrase('or') }}<hr />
+    <div class="Dropzone" :class="{ 'is-active': userIsDropping, 'is-invalid': invalidFile }">
+      <div class="Dropzone-mask" ref="dropzone" />
       <div class="Dropzone-container">
-        <div id="Dropzone-description" 
-          class="Dropzone-description" 
+        <div
+          id="Dropzone-description"
+          class="Dropzone-description"
           v-if="!invalidFile">{{ translatePhrase('Drop your file here') }}</div>
-        <div id="Dropzone-description" 
-          class="Dropzone-description" 
+        <div
+          id="Dropzone-description"
+          class="Dropzone-description"
           v-else-if="invalidFile">{{ translatePhrase('Invalid file') }}</div>
       </div>
     </div>

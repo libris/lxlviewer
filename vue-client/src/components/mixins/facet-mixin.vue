@@ -3,8 +3,8 @@ import { mapGetters } from 'vuex';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as MathUtil from '@/utils/math';
-import LensMixin from '@/components/mixins/lens-mixin';
 import { capitalize } from '@/utils/filters';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
 
 export default {
   mixins: [LensMixin],
@@ -37,7 +37,7 @@ export default {
       if (object.hasOwnProperty('mainEntity')) {
         object = object.mainEntity;
       }
-  
+
       for (const prop of ['@id', '_key']) {
         if (object.hasOwnProperty(prop)) {
           const chains = this.settings.propertyChains;
@@ -53,9 +53,9 @@ export default {
 
       if (object.hasOwnProperty('propertyChainAxiom')) {
         return object.propertyChainAxiom
-          .map(o => capitalize(this.determineLabel(o)))
+          .map((o) => capitalize(this.determineLabel(o)))
           .join('/');
-      } 
+      }
 
       const label = DisplayUtil.getItemLabel(
         object,
@@ -71,7 +71,7 @@ export default {
       if (this.getRecordType(object) === 'Agent') {
         return this.getLabel(object);
       }
-      
+
       const idArray = object['@id'].split('/');
       return `${idArray[idArray.length - 1]} [has no label]`;
     },
