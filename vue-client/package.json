@@ -10,8 +10,8 @@
     "postinstall": "yarn --cwd ../lxljs/ install --frozen-lockfile",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore",
     "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e --mode e2e",
-    "test:e2e_ci": "vue-cli-service test:e2e --mode e2e --headless"
+    "test:e2e": "cypress open --e2e",
+    "test:e2e_ci": "server-test 'vite --port 5000 --mode e2e' http://localhost:5000 'cypress run --headless'"
   },
   "dependencies": {
     "@babel/core": "^7.23.2",
@@ -65,8 +65,10 @@
     "@vue/compiler-sfc": "^3.3.4",
     "@vue/vue2-jest": "27",
     "autoprefixer": "^10.4.16",
+    "cypress": "^13.4.0",
     "eslint-plugin-cypress": "^2.15.1",
     "less": "^4.2.0",
+    "start-server-and-test": "^2.0.2",
     "vite": "^4.4.11"
   },
   "packageManager": "yarn@1.22.19",
