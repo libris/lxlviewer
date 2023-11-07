@@ -27,12 +27,13 @@ export default defineConfig({
     },
   },
   define: {
-    __APP_GIT_DESCRIBE__: JSON.stringify(gitDescribeSync({
+    'import.meta.env.VITE_APP_GIT_DESCRIBE': JSON.stringify(gitDescribeSync({
       longSemver: true,
       dirtySemver: false,
       requireAnnotated: false,
       match: '*',
     })),
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(process.env.npm_package_version),
   },
   resolve: {
     alias: {

@@ -2,8 +2,8 @@ export default {
   title: 'Libris katalogisering',
   language: 'sv',
   debounceTimer: 500, // Wait this long for input to stop before reacting
-  version: import.meta.env.VITE_APP_VERSION,
-  gitDescribe: __APP_GIT_DESCRIBE__,
+  version: runtimeConfig.VITE_APP_VERSION || import.meta.env.VITE_APP_VERSION,
+  gitDescribe: runtimeConfig.VITE_APP_GIT_DESCRIBE || import.meta.env.VITE_APP_GIT_DESCRIBE,
   environment: runtimeConfig.ENV_LABEL || import.meta.env.VITE_APP_ENV_LABEL || 'local',
   dataPath: runtimeConfig.API_PATH || import.meta.env.VITE_APP_API_PATH,
   apiPath: runtimeConfig.API_PATH || import.meta.env.VITE_APP_API_PATH,
