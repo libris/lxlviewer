@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import { gitDescribeSync } from 'git-describe';
 import vue from '@vitejs/plugin-vue';
+import autoprefixer from 'autoprefixer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -27,12 +28,13 @@ export default defineConfig({
     },
   },
   define: {
-    __APP_GIT_DESCRIBE__: JSON.stringify(gitDescribeSync({
+    'import.meta.env.VITE_APP_GIT_DESCRIBE': JSON.stringify(gitDescribeSync({
       longSemver: true,
       dirtySemver: false,
       requireAnnotated: false,
       match: '*',
     })),
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(process.env.npm_package_version),
   },
   resolve: {
     alias: {
@@ -50,6 +52,11 @@ export default defineConfig({
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
   },
   css: {
+    postcss: {
+      plugins: [
+        autoprefixer({}), // add options if needed
+      ],
+    },
     preprocessorOptions: {
       less: {
         includePaths: ['node_modules'],
