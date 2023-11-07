@@ -47,6 +47,7 @@
     "md5": "^2.2.1",
     "path": "^0.12.7",
     "portal-vue": "^3.0.0",
+    "postcss": "^8.4.31",
     "querystring-es3": "^0.2.1",
     "stream-browserify": "^3.0.0",
     "vite": "^4.5.0",
