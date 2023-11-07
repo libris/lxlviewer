@@ -19,7 +19,7 @@ export const formatDateTime = (date) => {
     minute: 'numeric',
   };
 
-  const dateObj = new Date(date);
+  const dateObj = (date && new Date(date)) || new Date();
 
   if (dateObj instanceof Date) {
     const result = new Intl.DateTimeFormat(lang, options).format(dateObj);
