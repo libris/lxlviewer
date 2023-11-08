@@ -1,4 +1,4 @@
-import DataUtil from '@/utils/data';
+import { rewriteValueOfKey } from '@/utils/data';
 
 describe('rewriteValueOfKey()', () => {
   const beforeObj = {
@@ -23,7 +23,7 @@ describe('rewriteValueOfKey()', () => {
   const replaceValue = 'newValue';
 
   it('rewrite all keys (if run as deep = true) <key> with value supplied', () => {
-    const afterObj = DataUtil.rewriteValueOfKey(beforeObj, key, replaceValue, true);
+    const afterObj = rewriteValueOfKey(beforeObj, key, replaceValue, true);
     const expectedObj = {
       shouldBeReplaced: 'newValue',
       someOther: {
@@ -44,8 +44,8 @@ describe('rewriteValueOfKey()', () => {
     expect(afterObj).toEqual(expectedObj);
   });
   it('rewrite outermost key (if run as deep = false) <key> with value supplied', () => {
-    const afterObj = DataUtil.rewriteValueOfKey(beforeObj, key, replaceValue);
-    const afterObjExplicitFalse = DataUtil.rewriteValueOfKey(beforeObj, key, replaceValue, false);
+    const afterObj = rewriteValueOfKey(beforeObj, key, replaceValue);
+    const afterObjExplicitFalse = rewriteValueOfKey(beforeObj, key, replaceValue, false);
     const expectedObj = {
       shouldBeReplaced: 'newValue',
       someOther: {

@@ -51,6 +51,11 @@ export default defineConfig({
     // https://vueschool.io/articles/vuejs-tutorials/how-to-migrate-from-vue-cli-to-vite/
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
   },
+  test: { // vitest config
+    globals: true, // enable jest-like global test APIs
+    environment: 'happy-dom',
+    setupFiles: ['/tests/unit/vitest-setup.js'],
+  },
   css: {
     postcss: {
       plugins: [
