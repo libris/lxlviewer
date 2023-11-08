@@ -19,7 +19,6 @@
     "@vitejs/plugin-vue": "^4.4.0",
     "@vue/compat": "^3.3.4",
     "@vue/eslint-config-airbnb": "^7.0.0",
-    "@vue/test-utils": "^1.0.0-beta.20",
     "@vueuse/components": "^10.5.0",
     "@vueuse/core": "^10.5.0",
     "autoprefixer": "^10.4.16",
