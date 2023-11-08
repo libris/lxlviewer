@@ -16,7 +16,7 @@ const props = defineProps({
 <template>
   <div class="spinner">
     <i
-      class="fa fa-fw fa-circle-o-notch fa-spin"
+      class="fa fa-fw fa-circle-o-notch fa-spin animated"
       :class="props.size ? `fa-${props.size}` : undefined"
     />
     <span v-if="message" class="message">
