@@ -187,9 +187,7 @@ export default {
           </table>
           <h5 class="uppercaseHeading--bold">{{ 'Subscribe to change notes' | translatePhrase }}</h5>
           <div class="UserSettings-changeCategories">
-            <div v-for="sigel in sortedSigels" :key="sigel.code">
-              <change-categories :sigel="sigel" :userChangeCategories="userChangeCategories" :availableCategories="availableChangeCategories"/>
-            </div>
+            <change-categories :available-sigels="sortedSigels" :userChangeCategories="userChangeCategories" :availableCategories="availableChangeCategories"/>
           </div>
         </form>
         <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{"Log out" | translatePhrase}}</button>

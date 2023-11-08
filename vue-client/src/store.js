@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
+import { cloneDeep, each, set, get, assign, filter, isObject, isEmpty } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -530,19 +530,51 @@ const store = new Vuex.Store({
         dispatch('modifyUserDatabase', { property: 'notificationEmail', value: userEmail });
       }
     },
+    updateSubscribedSigel({ dispatch, state }, { libraryId, checked }) {
+      let notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
+      const notification = notifications[0];
+      let categories = [];
+      if (notification) {
+        categories = notification.triggers;
+      }
+      if (checked) {
+        console.log('changed, pushing notication', { heldBy: libraryId, triggers: categories });
+        notifications.push({ heldBy: libraryId, triggers: categories });
+      } else if (notifications.length === 1) { // Unchecked & removing the last element
+        notifications.forEach((n) => { n.heldBy = 'none'; });
+      } else { // Unchecked => remove whole notification
+        notifications = notifications.filter(n => n.heldBy !== libraryId);
+      }
+
+      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
+    },
+    updateSubscribedChangeCategory({ dispatch, state }, { categoryId, checked }) {
+      const notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
+      if (isEmpty(notifications)) {
+        notifications.push({ heldBy: 'none', triggers: [categoryId] });
+      }
+      notifications.forEach((n) => {
+        if (checked) {
+          n.triggers.push(categoryId);
+        } else { // Unchecked => remove from triggers
+          n.triggers = n.triggers.filter(id => id !== categoryId);
+        }
+      });
+      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
+    },
     updateSubscribedChangeCategories({ dispatch, state }, { libraryId, categoryId, checked }) {
       const notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
-
-      const notification = notifications?.find(obj => obj.heldBy === libraryId);
-      if (checked) {
-        if (notification) {
-          notification.triggers.push(categoryId);
-        } else {
-          notifications.push({ heldBy: libraryId, triggers: [categoryId] });
+      notifications?.forEach((n) => {
+        if (checked) {
+          if (n) {
+            n.triggers.push(categoryId);
+          } else {
+            n.push({ heldBy: libraryId, triggers: [categoryId] });
+          }
+        } else { // Unchecked => remove from triggers
+          n.triggers = n.triggers.filter(id => id !== categoryId);
         }
-      } else { // Unchecked => remove from triggers
-        notification.triggers = notification.triggers.filter(id => id !== categoryId);
-      }
+      });
       dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
     },
     purgeChangeCategories({ dispatch }) {
