@@ -3040,9 +3040,9 @@
     }
   },
   "work": {
-    "Text": {
-      "label": "Text",
-      "description": "Verk",
+    "SVSK": {
+      "label": "Svensk skönlitteratur",
+      "description": "Verkstyp Text",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -3050,16 +3050,9 @@
           "mainEntity": {
             "@id": "https://id.kb.se/TEMPID#it"
           },
-          "descriptionConventions": [
-            {
-              "@type": "DescriptionConventions",
-              "code": "rda"
-            }
-          ],
           "descriptionLanguage": {
             "@id": "https://id.kb.se/language/swe"
           },
-          "recordStatus": "",
           "cataloguersNote": [""]
         },
         "mainEntity": {
@@ -3078,15 +3071,18 @@
               "role": [{
                 "@id": "https://id.kb.se/relator/author"
               }]
-            },
-            {
-              "@type": "Contribution",
-              "agent": null,
-              "role": []
             }
           ],
-          "language": [],
-          "genreForm": [],
+          "language": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/FictionNotFurtherSpecified"
+            }
+          ],
           "classification": [
             {
               "@type": "ClassificationDdc",
@@ -3096,7 +3092,84 @@
             },
             {
               "@type": "Classification",
+              "code": "Hc",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb",
+                "version": "8"
+              }
+            }
+          ],
+          "subject": [],
+          "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}]
+        }
+      }
+    },
+    "TranslationToSVSK": {
+      "label": "Utländsk skönlitteratur i svensk översättning ",
+      "description": "Verkstyp Text",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "cataloguersNote": [""]
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Text",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ],
+          "contribution": [
+            {
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [
+                {
+                  "@id": "https://id.kb.se/relator/author"
+                }
+              ]
+            },
+            {
+              "@type": "Contribution",
+              "agent": null,
+              "role": [
+                {
+                  "@id": "https://id.kb.se/relator/translator"
+                }
+              ]
+            }
+          ],
+          "language": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/FictionNotFurtherSpecified"
+            }
+          ],
+          "classification": [
+            {
+              "@type": "ClassificationDdc",
               "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
+            {
+              "@type": "Classification",
+              "code": "Hce",
               "inScheme": {
                 "@type": "ConceptScheme",
                 "@id": "https://id.kb.se/term/kssb/8",
@@ -3111,6 +3184,18 @@
             {
               "@type": "marc:LanguageNote",
               "label": ""
+            }
+          ],
+          "translationOf": [
+            {
+              "@type": "Work",
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": ""
+                }
+              ],
+              "language": []
             }
           ]
         }
