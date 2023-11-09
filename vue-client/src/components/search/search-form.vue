@@ -217,7 +217,7 @@ export default {
         if (this.searchPerimeter === 'libris') {
           type = this.activeSearchType;
         } else if (this.searchTool === 'changes') {
-          type = 'ChangeObservation';
+          type = 'AdministrativeNotice';
         }
       }
       return { '@type': type };

@@ -2,7 +2,7 @@
 import FacetGroup from './facet-group.vue';
 
 export default {
-  name: 'facet-controls',
+  name: 'change-facets',
   props: {
     result: {},
   },
@@ -15,19 +15,13 @@ export default {
   },
   computed: {
     facetSettings() {
+      console.log('WE ARE IN THE COMPONENT');
       return this.$store.getters.settings.propertyChains;
     },
     sortedFacets() {
-      const unordered = this.result.stats.sliceByDimension;
-      const cmp = dim => (this.facetSettings.hasOwnProperty(dim) ? this.facetSettings[dim].facet.order : Number.MAX_VALUE);
-      const ordered = Object
-        .keys(unordered)
-        .sort((a, b) => cmp(unordered[a].dimension) - cmp(unordered[b].dimension))
-        .reduce((_sortedObj, key) => ({
-          ..._sortedObj, 
-          [key]: unordered[key],
-        }), {});
-      return ordered;
+      console.log('results!!', JSON.stringify(this.result));
+      console.log('this.result.stats.sliceByDimension', JSON.stringify(this.result.stats.sliceByDimension));
+      return [];
     },
   },
   events: {
@@ -39,6 +33,8 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      console.log('THE COMPONENT IS MOUNTED');
+      console.log('results 3333', JSON.stringify(this.result));
     });
   },
 };

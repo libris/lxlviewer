@@ -18,7 +18,7 @@ export default {
   scopes: 'read write',
   matomoId: 23,
   appPaths: {
-    '/find?': ['/search/libris?', '/directory-care/changes?'],
+    '/find?': '/search/libris?',
   },
   embeddedTypes: [
     'StructuredValue',
@@ -277,6 +277,13 @@ export default {
       en: 'Change category',
       facet: {
         order: 19,
+      },
+    },
+    'concerning.@reverse.itemOf.heldBy.@id': {
+      sv: 'Sigler',
+      en: 'Collections',
+      facet: {
+        order: 20,
       },
     },
     '@reverse': {
