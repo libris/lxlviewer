@@ -3041,7 +3041,7 @@
   },
   "work": {
     "SVSK": {
-      "label": "Skönlitteratur på svenska",
+      "label": "Svensk skönlitteratur",
       "description": "Verkstyp Text",
       "value": {
         "record": {
@@ -3078,7 +3078,11 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "genreForm": [],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/FictionNotFurtherSpecified"
+            }
+          ],
           "classification": [
             {
               "@type": "ClassificationDdc",
@@ -3088,7 +3092,7 @@
             },
             {
               "@type": "Classification",
-              "code": "",
+              "code": "Hc",
               "inScheme": {
                 "@type": "ConceptScheme",
                 "@id": "https://id.kb.se/term/kssb/8",
@@ -3098,18 +3102,12 @@
             }
           ],
           "subject": [],
-          "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
-          "hasNote": [
-            {
-              "@type": "marc:LanguageNote",
-              "label": ""
-            }
-          ]
+          "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}]
         }
       }
     },
     "TranslationToSVSK": {
-      "label": "Skönlitteratur översatt till svenska",
+      "label": "Utländsk skönlitteratur i svensk översättning ",
       "description": "Verkstyp Text",
       "value": {
         "record": {
@@ -3157,7 +3155,11 @@
               "@id": "https://id.kb.se/language/swe"
             }
           ],
-          "genreForm": [],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/FictionNotFurtherSpecified"
+            }
+          ],
           "classification": [
             {
               "@type": "ClassificationDdc",
@@ -3167,7 +3169,7 @@
             },
             {
               "@type": "Classification",
-              "code": "",
+              "code": "Hce",
               "inScheme": {
                 "@type": "ConceptScheme",
                 "@id": "https://id.kb.se/term/kssb/8",
