@@ -8,6 +8,7 @@ import * as DisplayUtil from 'lxljs/display';
 import * as DataUtil from '@/utils/data';
 import * as HttpUtil from '@/utils/http';
 import * as RecordUtil from '@/utils/record';
+import ChangeNotes from '@/utils/changenotes';
 import { checkAutoShelfControlNumber } from '@/utils/shelfmark';
 import { translatePhrase, labelByLang } from '@/utils/filters';
 import EntityForm from '@/components/inspector/entity-form.vue';
@@ -20,15 +21,22 @@ import ModalComponent from '@/components/shared/modal-component.vue';
 import MarcPreview from '@/components/inspector/marc-preview.vue';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import ValidationSummary from '@/components/inspector/validation-summary.vue';
-import FullscreenPanel from '../components/shared/fullscreen-panel.vue';
-import VersionHistory from '../components/inspector/version-history.vue';
-import ChangeNotes from '../utils/changenotes';
+import FullscreenPanel from '@/components/shared/fullscreen-panel.vue';
+import VersionHistory from '@/components/inspector/version-history.vue';
 
 export default {
   name: 'Inspector',
   beforeRouteLeave(to, from, next) {
+    if (from.meta && (from.params.fnurgel === to.params.fnurgel)) {
+      // copy breadcrumbs from/to history view
+      to.meta = { ...from.meta };
+    }
     if (this.shouldWarnOnUnload()) {
-      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.user.settings.language, this.resources.i18n);
+      const confString = StringUtil.getUiPhraseByLang(
+        'You have unsaved changes. Do you want to leave the page?',
+        this.user.settings.language,
+        this.resources.i18n,
+      );
       const answer = window.confirm(confString); // eslint-disable-line no-alert
       if (answer) {
         next();
@@ -40,8 +48,15 @@ export default {
     }
   },
   beforeRouteUpdate(to, from, next) {
+    if (from.meta) {
+      to.meta = { ...from.meta };
+    }
     if (this.shouldWarnOnUnload()) {
-      const confString = StringUtil.getUiPhraseByLang('You have unsaved changes. Do you want to leave the page?', this.user.settings.language, this.resources.i18n);
+      const confString = StringUtil.getUiPhraseByLang(
+        'You have unsaved changes. Do you want to leave the page?',
+        this.user.settings.language,
+        this.resources.i18n,
+      );
       const answer = window.confirm(confString); // eslint-disable-line no-alert
       if (answer) {
         next();
@@ -76,6 +91,7 @@ export default {
       justEmbellished: false,
     };
   },
+  emits: ['ready'],
   methods: {
     translatePhrase,
     labelByLang,

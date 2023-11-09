@@ -30,7 +30,7 @@
     </div>
 
     <router-view
-      :key="$route.fullPath"
+      :key="$route.name"
       ref="routerView"
       v-if="resourcesLoaded"
       v-show="status.loadingIndicators.length === 0"
@@ -451,9 +451,9 @@ export default {
 
 // BOOTSTRAP OVERRIDE START
 @media (max-width: @screen-md-min) {
-   .container {
+  .container {
       width: 100%;
-   }
+  }
 }
 // BOOTSTRAP OVERRIDE END
 
