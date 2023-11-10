@@ -7,12 +7,10 @@ import * as HttpUtil from '@/utils/http';
 import TabMenu from '@/components/shared/tab-menu';
 import HoldingMover from '@/components/care/holding-mover';
 import ModalComponent from '@/components/shared/modal-component';
-import ChangeNotes from './ChangeNotes.vue';
 
 export default {
   name: 'DirectoryCare',
   components: {
-    ChangeNotes,
     'tab-menu': TabMenu,
     'holding-mover': HoldingMover,
     'modal-component': ModalComponent,
@@ -41,10 +39,6 @@ export default {
     tabs() {
       return [
         { id: 'holdings', text: 'Move holdings' },
-        {
-          id: 'changes',
-          text: StringUtil.getUiPhraseByLang('Changes', this.user.settings.language, this.resources.i18n),
-        },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
       ];
@@ -137,7 +131,6 @@ export default {
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
       <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
-      <change-notes v-if="$route.params.tool === 'changes'"></change-notes>
       <holding-mover
         v-if="$route.params.tool === 'holdings'"
         :flaggedInstances="flaggedInstances"/>

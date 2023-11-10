@@ -251,7 +251,6 @@ export default {
       <div v-if="$route.params.perimeter === 'libris' || $route.params.tool === 'changes'" @click="hideFacetColumn = !hideFacetColumn" class="Find-facetHeading uppercaseHeading--light">{{ 'Filter' | translatePhrase }} <i class="fa fa-fw hidden-md hidden-lg" :class="{'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }"></i></div>
       <facet-controls :class="{'hidden-xs hidden-sm': hideFacetColumn }"
         :result="result"
-        :isChangeView="$route.params.tool === 'changes'"
         v-if="result && result.stats && result.totalItems > 0
         && ($route.params.perimeter === 'libris' || $route.params.tool === 'changes')"></facet-controls>
       <portal-target name="facetColumn" />
