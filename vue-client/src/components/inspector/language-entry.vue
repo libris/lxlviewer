@@ -138,7 +138,7 @@ export default {
       }
     },
   },
-  emits: ['addLangTag', 'romanize', 'addToCache'],
+  emits: ['addLangTag', 'romanize', 'addToCache', 'update'],
   methods: {
     translatePhrase,
     onLangTaggerEvent(langTag) {

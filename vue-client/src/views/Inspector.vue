@@ -770,8 +770,10 @@ export default {
             this.$store.dispatch('setOriginalData', LxlDataUtil.splitJson(obj));
           }
         }
-        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
-        this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
+        this.$nextTick(() => {
+          this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+          this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
+        });
       }, (error) => {
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
         const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
