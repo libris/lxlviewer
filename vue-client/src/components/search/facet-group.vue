@@ -4,6 +4,7 @@ import { mixin as clickaway } from 'vue-clickaway';
 import * as DisplayUtil from 'lxljs/display';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
 import TypeIcon from '@/components/shared/type-icon';
+import CheckBox from '@/components/shared/check-box';
 import FacetMixin from '@/components/mixins/facet-mixin';
 import Facet from './facet.vue';
 
@@ -17,6 +18,10 @@ export default {
     },
     expanded: {
       type: Boolean,
+    },
+    isChangeView: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -166,6 +171,7 @@ export default {
     Facet,
     EncodingLevelIcon,
     TypeIcon,
+    CheckBox,
   },
 };
 </script>
@@ -224,6 +230,8 @@ export default {
       <facet v-for="facetItem in normalFacets"
         :facet="facetItem" 
         :key="facetItem.link">
+        <check-box v-if="group.dimension === 'category.@id' || group.dimension === 'concerning.@reverse.itemOf.heldBy.@id'"
+        slot="checkbox"></check-box>
         <encoding-level-icon
           slot="icon"
           v-if="group.dimension === 'meta.encodingLevel'"

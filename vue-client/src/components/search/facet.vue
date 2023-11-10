@@ -60,6 +60,7 @@ export default {
 <template>
   <li class="Facet">
     <slot name="icon"></slot>
+    <slot name="checkbox"></slot>
     <router-link class="Facet-link"
       :to="facet.link | asAppPath" 
       :title="facet.label | capitalize">
