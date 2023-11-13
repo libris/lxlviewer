@@ -182,7 +182,7 @@ export default {
       const user = this.user;
       user.settings.resultListType = 'detailed';
       this.$store.dispatch('setUser', user);
-    // },
+    },
     // getNewResult(url) {
     //   this.changeResultListStatus('loading', true);
     //   const resultPromise = new Promise((resolve, reject) => {
@@ -206,7 +206,7 @@ export default {
   },
   components: {
     sort: Sort,
-    FilterBadge,
+    FilterBadge
   },
 };
 </script>
