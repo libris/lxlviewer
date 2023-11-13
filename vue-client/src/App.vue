@@ -424,7 +424,6 @@ export default {
     window.addEventListener('scroll', (e) => {
       this.checkSearchBar(e);
     });
-    // TODO: Check everything from old main.js is migrated.
   },
   components: {
     'router-view': RouterView,
