@@ -302,6 +302,7 @@ export default {
               v-if="this.isLinked"
               class="LanguageEntry-popover"
               placement="bottom-start"
+              :triggers="['hover', 'focus']"
               @show="$refs.previewCard.populateData()">
               <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
                 <router-link :to="routerPath">{{ this.label }}</router-link>

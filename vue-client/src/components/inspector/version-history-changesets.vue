@@ -104,7 +104,7 @@ export default {
             :is-last="true"
             :field-key="'agent'" />
           <span v-if="isGlobalChanges(changeSet)">
-            <Dropdown placement="bottom-start">
+            <Dropdown placement="bottom-start" :triggers="['hover', 'focus']">
               {{ translatePhrase('Libris global changes') }}
               <template #popper>
                 <span>{{changeSet.agent['@id']}}</span>

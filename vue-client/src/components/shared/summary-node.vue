@@ -85,7 +85,13 @@ export default {
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
-    <Dropdown v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
+    <Dropdown
+      v-if="isLinked && !isStatic"
+      :disabled="!hoverLinks"
+      :triggers="['hover', 'focus']"
+      @show="$refs.previewCard.populateData()"
+      placement="bottom-start"
+    >
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">
           <span v-if="fieldKey === 'instanceOf' && focusData['@type'] !== 'Work'">
