@@ -3,15 +3,15 @@
   "version": "1.32.2",
   "private": true,
   "scripts": {
-    "dev": "vite --port 5000",
-    "serve": "vite serve --port 5000",
+    "dev": "vite --port 8080",
+    "serve": "vite serve --port 8080",
     "build": "vite build",
     "preview": "vite preview",
     "postinstall": "yarn --cwd ../lxljs/ install --frozen-lockfile",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --ignore-path .gitignore",
     "test:unit": "vitest",
     "test:e2e": "cypress open --e2e",
-    "test:e2e_ci": "server-test 'vite --port 5000 --mode e2e' http://localhost:5000 'cypress run --headless'"
+    "test:e2e_ci": "server-test 'vite --port 8080 --mode e2e' http://localhost:8080 'cypress run --headless'"
   },
   "dependencies": {
     "@babel/core": "^7.23.2",
