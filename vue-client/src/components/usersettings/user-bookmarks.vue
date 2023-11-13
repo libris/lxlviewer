@@ -1,11 +1,13 @@
 <script>
 import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'user-bookmarks',
   props: {
   },
   methods: {
+    translatePhrase,
     purgeBookmarks() {
       this.$store.dispatch('purgeUserTagged', 'Bookmark');
     },
@@ -24,24 +26,20 @@ export default {
   },
   watch: {
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-    });
-  },
 };
 </script>
 
 <template>
   <section class="UserBookmarks">
     <div class="UserBookmarks-content">
-      <h4>{{'Bookmarks' | translatePhrase}}</h4>
+      <h4>{{ translatePhrase('Bookmarks') }}</h4>
       <div class="UserBookmarks-itemList">
         <div class="UserBookmarks-item" v-for="item in userBookmarks" :key="item['@id']">
           <div class="UserBookmarks-itemLabel">
             <a :href="`/katalogisering/${item['@id'].split('/').pop()}`">{{ item.label }}</a>
           </div>
           <div class="UserBookmarks-itemAction">
-            <button class="btn btn-warning"><i class="fa fa-times"></i></button>
+            <button class="btn btn-warning"><i class="fa fa-times" /></button>
           </div>
         </div>
       </div>
@@ -94,15 +92,11 @@ export default {
     overflow-x: hidden;
     text-overflow: ellipsis;
     flex-grow: 1;
-    a {
-
-    }
   }
   &-itemAction {
     margin-left: 1em;
     text-align: right;
   }
 }
-
 
 </style>

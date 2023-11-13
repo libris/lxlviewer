@@ -1,18 +1,21 @@
 <script>
-import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as MathUtil from '@/utils/math';
 import * as HttpUtil from '@/utils/http';
-import CreateItemButton from '@/components/inspector/create-item-button';
-import RelationsList from '@/components/inspector/relations-list';
+import { translatePhrase } from '@/utils/filters';
+import Spinner from '@/components/shared/spinner.vue';
 import RoundedButton from '@/components/shared/rounded-button.vue';
+import CreateItemButton from '@/components/inspector/create-item-button.vue';
+import RelationsList from '@/components/inspector/relations-list.vue';
 
 export default {
   name: 'reverse-relations',
   props: {
-    mainEntity: null,
+    mainEntity: {
+      default: null,
+    },
     compact: { type: Boolean, default: false },
     forceLoad: { type: Boolean, default: false }, // FIXME: on-record-loaded didn't work in item-entity
     mode: { type: String, default: 'default' }, // "default" or "items"
@@ -28,10 +31,12 @@ export default {
       panelQuery: '',
     };
   },
+  emits: ['numberOfRelations'],
   methods: {
+    translatePhrase,
     showPanel() {
-      this.$store.dispatch('pushInspectorEvent', { 
-        name: 'form-control', 
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'form-control',
         value: 'close-modals',
       }).then(() => {
         this.$nextTick(() => {
@@ -49,7 +54,7 @@ export default {
         _limit: 0,
         _sort: `_sortKeyByLang.${this.user.settings.language || 'sv'}`,
       };
-      
+
       if (this.mode !== 'items' && this.mainEntity.reverseLinks) {
         this.numberOfRelations = this.mainEntity.reverseLinks.totalItems;
         this.checkingRelations = false;
@@ -58,9 +63,9 @@ export default {
         this.$emit('numberOfRelations', this.numberOfRelations);
         return;
       }
-      
+
       this.checkingRelations = true;
-      const timeoutLength = 1100; // Needed so that the index has time to update 
+      const timeoutLength = 1100; // Needed so that the index has time to update
       setTimeout(() => { //
         if (this.mode === 'items') {
           query['itemOf.@id'] = this.mainEntity['@id'];
@@ -83,7 +88,7 @@ export default {
           query.o = this.mainEntity['@id'];
         }
         this.panelQuery = Object.assign({}, query);
-        
+
         HttpUtil.getRelatedRecords(query, this.settings.apiPath)
           .then((response) => {
             this.relationInfo = response.items;
@@ -117,8 +122,8 @@ export default {
     },
     recordType() {
       return VocabUtil.getRecordType(
-        this.mainEntity['@type'], 
-        this.resources.vocab, 
+        this.mainEntity['@type'],
+        this.resources.vocab,
         this.resources.context,
       );
     },
@@ -134,29 +139,29 @@ export default {
           return 'No holdings';
         } if (Number.isNaN(this.numberOfRelations)) {
           return 'Holdings could not be loaded';
-        } 
+        }
         return 'Show all holdings';
-      } 
+      }
       if (this.numberOfRelations === 0) {
         return 'No uses';
       } if (Number.isNaN(this.numberOfRelations)) {
         return 'Uses could not be loaded';
-      } 
+      }
       return 'Show all uses';
     },
   },
   events: {
   },
   components: {
+    Spinner,
     'create-item-button': CreateItemButton,
     'relations-list': RelationsList,
-    'vue-simple-spinner': VueSimpleSpinner,
     'rounded-button': RoundedButton,
   },
   watch: {
     'inspector.event'(val) {
       if (val.name === 'form-control') {
-        switch (val.value) { 
+        switch (val.value) {
           case 'open-instances-window':
             this.showPanel();
             break;
@@ -174,7 +179,7 @@ export default {
         }
       }
     },
-    relationsListOpen(val, oldVal) { 
+    relationsListOpen(val, oldVal) {
       if (val !== oldVal) {
         this.$parent.$emit('relations-list-open', val);
       }
@@ -200,22 +205,20 @@ export default {
   <div class="ReverseRelations-container">
     <div class="ReverseRelations" v-if="recordType !== 'Item'">
       <div class="ReverseRelations-header uppercaseHeading--light">
-        <span v-if="mode === 'items'">{{"Holding" | translatePhrase}}</span>
-        <span v-else>{{"Used in" | translatePhrase}}</span>
+        <span v-if="mode === 'items'">{{ translatePhrase("Holding") }}</span>
+        <span v-else>{{ translatePhrase("Used in") }}</span>
       </div>
       <div class="ReverseRelations-btnContainer">
-        <vue-simple-spinner class="ReverseRelations spinner compact"
-          v-if="checkingRelations" 
-          size="small">
-        </vue-simple-spinner>
-        <create-item-button class="ReverseRelations-button"
-        v-if="!checkingRelations && mode === 'items' && user.isLoggedIn && user.getPermissions().registrant" 
-        :compact="compact"
-        :main-entity="mainEntity"
-        :has-holding="hasRelation" 
-        :checking-holding="checkingRelations" 
-        :holding-id="myHolding"
-        @done="checkingRelations=false"></create-item-button>
+        <Spinner v-if="checkingRelations" size="sm" />
+        <create-item-button
+          class="ReverseRelations-button"
+          v-if="!checkingRelations && mode === 'items' && user.isLoggedIn && user.getPermissions().registrant"
+          :compact="compact"
+          :main-entity="mainEntity"
+          :has-holding="hasRelation"
+          :checking-holding="checkingRelations"
+          :holding-id="myHolding"
+          @done="checkingRelations = false" />
         <rounded-button
           v-if="!checkingRelations"
           :button-text="numberOfRelationsCircle"
@@ -225,19 +228,18 @@ export default {
           :active="relationsListOpen"
           :label="totalRelationTooltipText"
           v-tooltip.top="translatedTooltip"
-          @click="showPanel()">
-        </rounded-button>
+          @click="showPanel()" />
       </div>
     </div>
     <!-- end -->
     <portal to="sidebar">
-      <relations-list 
+      <relations-list
         v-if="relationsListOpen"
         :query="panelQuery"
         :item-of="mainEntity"
         :list-context-type="recordType"
         :list-context-type-mode="mode === 'items' ? 'Instance' : ''"
-        @close="hidePanel()"></relations-list>
+        @close="hidePanel()" />
     </portal>
   </div>
 </template>
@@ -248,11 +250,11 @@ export default {
   align-items: center;
   height: 40px;
   margin-left: 1em;
-  
+
   &-number {
     float: left;
     margin: 0 0 10px;
-  
+
     @media (min-width: @screen-sm) {
       float: right;
       text-align: right;
@@ -270,10 +272,6 @@ export default {
   &-btnContainer {
     display: flex;
     align-items: center;
-  }
-
-  &-spinner {
-    margin-bottom: 10px;
   }
 
   button {

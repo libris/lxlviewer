@@ -1,5 +1,5 @@
 <script>
-import UserSettings from '@/components/usersettings/user-settings';
+import UserSettings from '@/components/usersettings/user-settings.vue';
 // import UserBookmarks from '@/components/usersettings/user-bookmarks';
 
 export default {
@@ -18,7 +18,7 @@ export default {
 
 <template>
   <div>
-    <user-settings></user-settings>
+    <user-settings />
     <!-- <user-bookmarks></user-bookmarks> -->
   </div>
 </template>

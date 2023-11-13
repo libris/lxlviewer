@@ -9,12 +9,14 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DataUtil from '@/utils/data';
 import * as HistoryUtil from '@/utils/history';
-import LensMixin from '@/components/mixins/lens-mixin';
-import TabMenu from '@/components/shared/tab-menu';
+import { translatePhrase, labelByLang } from '@/utils/filters';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
 import EntityForm from './entity-form.vue';
 import VersionHistoryChangesets from './version-history-changesets.vue';
 
 export default {
+  name: 'version-history',
   mixins: [LensMixin],
   props: {
   },
@@ -57,12 +59,12 @@ export default {
     changeSets() {
       if (this.historyData != null && this.historyData.hasOwnProperty('changeSets')) {
         // Reject changesets where the only thing that changed was 'modified'
-        const hasOnlyModified = changeSet => changeSet.addedPaths.length === 1
+        const hasOnlyModified = (changeSet) => changeSet.addedPaths.length === 1
         && changeSet.addedPaths[0].includes('modified')
         && changeSet.removedPaths.length === 1
         && changeSet.removedPaths[0].includes('modified');
 
-        return this.historyData.changeSets.filter(changeSet => !hasOnlyModified(changeSet));
+        return this.historyData.changeSets.filter((changeSet) => !hasOnlyModified(changeSet));
       }
       return null;
     },
@@ -83,7 +85,7 @@ export default {
       return null;
     },
     editorTabs() {
-      return [{ id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+      return [{ id: 'mainEntity', text: labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' }];
     },
   },
@@ -98,7 +100,7 @@ export default {
         const lastChanged = this.changeSetsReversed.find((changeSet) => {
           if (changeSet.hasOwnProperty('addedPaths') || changeSet.hasOwnProperty('removedPaths')) {
             const all = changeSet.addedPaths.concat(changeSet.removedPaths);
-            return all.find(path => StringUtil.arrayPathToString(path).includes(val.value));
+            return all.find((path) => StringUtil.arrayPathToString(path).includes(val.value));
           }
           return false;
         });
@@ -111,8 +113,14 @@ export default {
         this.changeSelectedVersion(index);
       }
     },
+    displayData() {
+      this.$nextTick(() => {
+        this.isFocusTrapActive = true;
+      });
+    },
   },
   methods: {
+    translatePhrase,
     goToRecord() {
       const fnurgel = this.$route.params.fnurgel;
       this.$router.push({ path: `/${fnurgel}` });
@@ -126,9 +134,9 @@ export default {
       this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'focus-changed' });
     },
     setDefaultFocusedTab() {
-      if (!this.currentVersionDiff.added.some(path => path.includes('mainEntity'))
-        && !this.currentVersionDiff.removed.some(path => path.includes('mainEntity'))
-        && !this.currentVersionDiff.modified.some(path => path.includes('mainEntity'))) {
+      if (!this.currentVersionDiff.added.some((path) => path.includes('mainEntity'))
+        && !this.currentVersionDiff.removed.some((path) => path.includes('mainEntity'))
+        && !this.currentVersionDiff.modified.some((path) => path.includes('mainEntity'))) {
         this.focusedTab = 'record';
       } else {
         this.focusedTab = 'mainEntity';
@@ -138,18 +146,17 @@ export default {
       const fnurgel = this.$route.params.fnurgel;
       // _changesets
       const fetchUrl = `${this.settings.apiPath}/${fnurgel}/_changesets`;
-      fetch(fetchUrl).then(response => response.json()).then((result) => {
+      fetch(fetchUrl).then((response) => response.json()).then((result) => {
         this.historyData = result;
-        const agents = (this.changeSets || []).map(c => c.agent).filter(a => a);
+        const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
         DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
 
         this.setDisplayDataFor(0);
-        this.isFocusTrapActive = true;
       });
     },
     async setDisplayDataFor(number) {
       if (this.changeSetsReversed == null) return;
-      
+
       const options = {
         headers: {
           Accept: 'application/ld+json',
@@ -158,8 +165,8 @@ export default {
 
       const fetchUrl = this.changeSetsReversed[number].version['@id'];
       this.currentVersionData = await fetch(fetchUrl, options)
-        .then(response => response.json())
-        .then(result => DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result)));
+        .then((response) => response.json())
+        .then((result) => DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result)));
 
       const previousChangeSet = this.changeSetsReversed[number + 1];
       if (previousChangeSet === undefined) {
@@ -168,17 +175,17 @@ export default {
       }
 
       this.previousVersionData = await fetch(previousChangeSet.version['@id'], options)
-        .then(response => response.json())
-        .then(result => DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result)));
-      
+        .then((response) => response.json())
+        .then((result) => DataUtil.moveWorkToInstance(LxlDataUtil.splitJson(result)));
+
       const [displayData, displayPaths] = HistoryUtil.buildDisplayData(
         this.previousVersionData,
         this.currentVersionData,
         this.selectedChangeSet.addedPaths,
         this.selectedChangeSet.removedPaths,
-        s => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
+        (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
       );
-      
+
       this.currentVersionDiff = displayPaths;
       this.fetchMissingLinks(displayData);
       await this.$store.dispatch('setCompositeHistoryData', displayData);
@@ -212,14 +219,18 @@ export default {
 </script>
 
 <template>
-  <focus-trap v-model=isFocusTrapActive>
+  <!-- eslint-disable-next-line vue/no-v-model-argument -->
+  <focus-trap
+    v-model:active="isFocusTrapActive"
+    :escape-deactivates="false"
+    :delay-initial-focus="true">
     <div class="VersionHistory" tabindex="-1">
       <div class="Container-row">
         <div class="VersionHistory-mainCol">
           <div class="VersionHistory-header">
             <span class="VersionHistory-backLink">
               <a @click="goToRecord" @keyup.enter="goToRecord" tabindex="0">
-                <i class="fa fa-arrow-left VersionHistory-back-icon"></i>{{ 'Back' | translatePhrase }}
+                <i class="fa fa-arrow-left VersionHistory-back-icon" />{{ translatePhrase('Back') }}
               </a>
             </span>
 
@@ -227,14 +238,15 @@ export default {
               {{ getItemLabel }}
             </span>
 
-            <i class="fa fa-th-list icon icon--md sideColButton"
-               role="button"
-               @click="openSideCol()"></i>
+            <i
+              class="fa fa-th-list icon icon--md sideColButton"
+              role="button"
+              @click="openSideCol()" />
           </div>
 
           <div class="VersionHistory-content" tabindex="-1">
             <template v-if="displayData != null">
-              <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="focusedTab"/>
+              <tab-menu @go="setEditorFocus" :tabs="editorTabs" :active="focusedTab" />
 
               <entity-form
                 v-for="tab in editorTabs"
@@ -243,16 +255,15 @@ export default {
                 :diff="currentVersionDiff"
                 :is-active="focusedTab === tab.id"
                 :form-data="displayData[tab.id]"
-                :locked="true">
-              </entity-form>
+                :locked="true" />
             </template>
           </div>
         </div>
 
-        <div class="VersionHistory-sideCol" :class="{'hidden-view': !showSideCol}">
+        <div class="VersionHistory-sideCol" :class="{ 'hidden-view': !showSideCol }">
           <div class="VersionHistory-header">
-            {{ 'Version history' | translatePhrase }}
-            <i class="fa fa-close icon icon--md sideColButton" role="button" @click="closeSideCol()"></i>
+            {{ translatePhrase('Version history') }}
+            <i class="fa fa-close icon icon--md sideColButton" role="button" @click="closeSideCol()" />
           </div>
 
           <VersionHistoryChangesets
@@ -302,6 +313,7 @@ export default {
     font-weight: normal;
     a {
       color: inherit;
+      white-space: nowrap;
     }
   }
   &-back-icon {
@@ -328,7 +340,7 @@ export default {
   }
   &-content {
     z-index: 0;
-    padding: 2rem 3rem;
+    padding: 1rem 3rem;
     overflow-y: scroll;
     flex-grow: 1;
   }

@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import * as DisplayUtil from 'lxljs/display';
-import { CHANGE_CATEGORIES } from './changecategories.js';
+import CHANGE_CATEGORIES from './changecategories.js';
 
 const SEP = ' → '; // &rarr;
 const DELMARKER = '⌫'; // &#9003;
@@ -114,7 +114,7 @@ function completeChange(record, categoryId, oldValue, newValue) {
   }
 
   const idx = record.hasChangeNote.findIndex(
-    x => (Array.isArray(x.category) ? x.category.find(y => y['@id'] === categoryId) : false),
+    (x) => (Array.isArray(x.category) ? x.category.find((y) => y['@id'] === categoryId) : false),
   );
 
   // TODO: compare on full value instead of labels

@@ -1,21 +1,25 @@
 <script>
 import { cloneDeep, get } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
-import PropertyAdder from '@/components/inspector/property-adder';
-import EntityAction from '@/components/inspector/entity-action';
-import SearchWindow from './search-window';
-import ItemMixin from '../mixins/item-mixin';
-import LensMixin from '../mixins/lens-mixin';
-import FormMixin from '../mixins/form-mixin';
+import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
+import PropertyAdder from '@/components/inspector/property-adder.vue';
+import EntityAction from '@/components/inspector/entity-action.vue';
+import SearchWindow from './search-window.vue';
+import ItemMixin from '../mixins/item-mixin.vue';
+import LensMixin from '../mixins/lens-mixin.vue';
+import FormMixin from '../mixins/form-mixin.vue';
 
 export default {
   name: 'item-local',
-  mixins: [ItemMixin, LensMixin, FormMixin, clickaway],
+  directives: {
+    'on-click-outside': vOnClickOutside,
+  },
+  mixins: [ItemMixin, LensMixin, FormMixin],
   props: {
     item: {},
     entityType: {
@@ -57,6 +61,14 @@ export default {
     shouldExpand: {
       type: Boolean,
       default: false,
+    },
+    editingObject: {
+      type: String,
+      default: '',
+    },
+    key: {
+      type: String,
+      default: '',
     },
   },
   data() {
@@ -112,7 +124,7 @@ export default {
       }
 
       const termObj = VocabUtil.getTermObject(this.focusData['@type'], this.resources.vocab, this.resources.context);
-      if (termObj === {} || typeof termObj === 'undefined') {
+      if (termObj == {} || typeof termObj === 'undefined') {
         failedValidations.push({
           text: 'The class could not be found',
           hint: this.focusData['@type'],
@@ -175,6 +187,9 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
+    labelByLang,
+    capitalize,
     openManagerMenu() {
       this.managerMenuOpen = true;
     },
@@ -210,7 +225,7 @@ export default {
     toggleExpanded() {
       if (this.expanded === true) {
         this.collapse();
-      } else {   
+      } else {
         this.expand();
       }
     },
@@ -253,7 +268,10 @@ export default {
     },
     extract() {
       this.$store.dispatch('addExtractItemOnSave', { path: this.path, item: this.focusData });
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Link was created', this.user.settings.language, this.resources.i18n)}` });
+      this.$store.dispatch(
+        'pushNotification',
+        { type: 'success', message: `${StringUtil.getUiPhraseByLang('Link was created', this.user.settings.language, this.resources.i18n)}` },
+      );
       this.closeExtractDialog();
     },
     stopExtracting() {
@@ -278,18 +296,18 @@ export default {
         addToHistory: false,
       });
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language, this.resources.i18n)}` });
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'lastAdded',
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
       });
       this.closeExtractDialog();
     },
-    cloneThis() {      
+    cloneThis() {
       const parentData = cloneDeep(get(this.inspector.data, this.parentPath));
       parentData.push(this.item);
 
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'lastAdded',
         value: `${this.parentPath}[${parentData.length - 1}]`,
       });
 
@@ -319,7 +337,11 @@ export default {
       const userStorage = cloneDeep(this.userStorage);
       userStorage.copyClipboard = this.item;
       this.$store.dispatch('setUserStorage', userStorage);
-      this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.user.settings.language, this.resources.i18n)}` });
+      this.$store.dispatch(
+        'pushNotification',
+        { type: 'success',
+          message: `${StringUtil.getUiPhraseByLang('Copied entity to clipboard', this.user.settings.language, this.resources.i18n)}` },
+      );
     },
     attachHeadingStickyFunctionality() {
       document.addEventListener('scroll', () => {
@@ -347,7 +369,23 @@ export default {
       }
     },
     'inspector.event'(val) {
-      this.$emit(`${val.value}`);
+      if (val.name === 'form-control') {
+        switch (val.value) {
+          case 'collapse-item':
+            if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
+                || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+              this.collapse();
+            }
+            break;
+          case 'expand-item':
+            if (this.getPath.startsWith(this.inspector.status.focus)
+                || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
+              this.expand();
+            }
+            break;
+          default:
+        }
+      }
     },
     shouldExpand(val) {
       if (val) {
@@ -370,22 +408,10 @@ export default {
       }
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
   },
   created() {
-    this.$on('collapse-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus) // Only expand part of form that has focus
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
-        this.collapse();
-      }
-    });
-    this.$on('expand-item', () => {
-      if (this.getPath.startsWith(this.inspector.status.focus)
-          || (this.getPath.startsWith('work') && this.inspector.status.focus === 'mainEntity')) {
-        this.expand();
-      }
-    });
     if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
       this.expand();
     }
@@ -435,7 +461,8 @@ export default {
 </script>
 
 <template>
-  <div class="ItemLocal js-itemLocal"
+  <div
+    class="ItemLocal js-itemLocal"
     ref="container"
     :id="`formPath-${path}`"
     :class="{
@@ -450,7 +477,8 @@ export default {
       'has-failed-validations': failedValidations.length > 0,
       'is-diff-removed': diffRemoved,
       'is-diff-added': diffAdded,
-      'is-modified': diffModified}"
+      'is-modified': diffModified,
+    }"
     :tabindex="isEmpty ? -1 : 0"
     @keyup.enter="checkFocus()"
     @focus="addFocus()"
@@ -459,28 +487,33 @@ export default {
     @mouseout.stop="removeHoverHightlight()"
   >
 
-    <div class="ItemLocal-heading" ref="heading"
+    <div
+      class="ItemLocal-heading"
+      ref="heading"
       @mouseover="isHovered = true"
       @mouseout="isHovered = false"
     >
-      <div class="ItemLocal-label"
-        :class="{'is-inactive': isEmpty, 'is-locked': isLocked }"
+      <div
+        class="ItemLocal-label"
+        :class="{ 'is-inactive': isEmpty, 'is-locked': isLocked }"
         @click="toggleExpanded()">
-        <i class="ItemLocal-arrow fa fa-chevron-right" 
-          :class="{'icon is-disabled' : isEmpty}"></i>
-        <span class="ItemLocal-type"
-          :title="item['@type']">{{ item['@type'] | labelByLang | capitalize }}:</span>
+        <i
+          class="ItemLocal-arrow fa fa-chevron-right"
+          :class="{ 'icon is-disabled': isEmpty }" />
+        <span
+          class="ItemLocal-type"
+          :title="item['@type']">{{ capitalize(labelByLang(item['@type'])) }}:</span>
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>
         <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
-          <i class="fa fa-trash-o icon--sm icon-removed"></i>
+          <i class="fa fa-trash-o icon--sm icon-removed" />
         </span>
         <div class="ItemLocal-history-icon" v-if="diffAdded && !diffRemoved">
-          <i class="fa fa-plus-circle icon--sm icon-added"></i>
+          <i class="fa fa-plus-circle icon--sm icon-added" />
         </div>
       </div>
-      
+
       <div class="ItemLocal-actions">
         <entity-action
           v-if="isExtracting"
@@ -541,72 +574,79 @@ export default {
           :parent-hovered="isHovered"
           :is-large="false"
         />
-        <div class="dropdown ManagerMenu" v-on-clickaway="closeManagerMenu" v-if="managerMenuOpen"
+        <div
+          class="dropdown ManagerMenu"
+          v-on-click-outside="closeManagerMenu"
+          v-if="managerMenuOpen"
           @mouseover="addHighlight('info')"
           @mouseout="removeHighlight('info')">
           <ul class="dropdown-menu ManagerMenu-menuList">
             <li class="ManagerMenu-menuItem">
-              <a tabindex="0" class="ManagerMenu-menuLink"
-              @keyup.enter="copyThis(), closeManagerMenu()"
-              @click="copyThis(), closeManagerMenu()">
-              <i class="fa fa-fw fa-copy" aria-hidden="true"></i>
-              {{"Copy to clipboard" | translatePhrase}}
+              <a
+                tabindex="0"
+                class="ManagerMenu-menuLink"
+                @keyup.enter="copyThis(), closeManagerMenu()"
+                @click="copyThis(), closeManagerMenu()">
+                <i class="fa fa-fw fa-copy" aria-hidden="true" />
+                {{ translatePhrase("Copy to clipboard") }}
               </a>
             </li>
             <li class="ManagerMenu-menuItem" v-if="inArray">
-              <a tabindex="0" class="ManagerMenu-menuLink"
-              @keyup.enter="cloneThis(), closeManagerMenu()"
-              @click="cloneThis(), closeManagerMenu()">
-              <i class="fa fa-fw fa-clone" aria-hidden="true"></i>
-              {{"Duplicate entity" | translatePhrase}}
+              <a
+                tabindex="0"
+                class="ManagerMenu-menuLink"
+                @keyup.enter="cloneThis(), closeManagerMenu()"
+                @click="cloneThis(), closeManagerMenu()">
+                <i class="fa fa-fw fa-clone" aria-hidden="true" />
+                {{ translatePhrase("Duplicate entity") }}
               </a>
             </li>
           </ul>
         </div>
       </div>
     </div>
-  
+
     <ul class="ItemLocal-list js-itemLocalFields" v-show="expanded">
       <field
-        v-show="k !== '_uid'" 
+        v-show="k !== '_uid'"
         v-for="(v, k, i) in filteredItem"
-        :parent-path="getPath" 
-        :entity-type="item['@type']" 
-        :is-inner="true" 
-        :is-locked="isLocked || isExtracting" 
-        :is-removable="false" 
-        :is-first-field="i===0"
-        :parent-key="fieldKey" 
-        :parent-index="index" 
+        :parent-path="getPath"
+        :entity-type="item['@type']"
+        :is-inner="true"
+        :is-locked="isLocked || isExtracting"
+        :is-removable="false"
+        :is-first-field="i === 0"
+        :parent-key="fieldKey"
+        :parent-index="index"
         :parent-accepted-types="acceptedTypes"
         :field-key="k"
         :field-value="v"
-        :key="k" 
+        :key="k"
         :diff="diff"
         :show-action-buttons="showActionButtons"
         :expand-children="expandChildren"
-        :is-expanded="expanded"></field> 
+        :is-expanded="expanded" />
     </ul>
 
     <property-adder
-      :entity-type="item['@type']" 
-      :allowed="allowedProperties" 
+      :entity-type="item['@type']"
+      :allowed="allowedProperties"
       :isActive="propertyAdderOpened"
       :path="getPath"
     />
 
-    <search-window 
-      :isActive="extractDialogActive" 
-      :can-copy-title="canCopyTitle" 
-      :copy-title="copyTitle" 
+    <search-window
+      :isActive="extractDialogActive"
+      :can-copy-title="canCopyTitle"
+      :copy-title="copyTitle"
       :range-full="rangeFull"
       :range="range"
       :all-values-from="allValuesFrom"
       :some-values-from="someValuesFrom"
       :all-search-types="allSearchTypes"
       :entity-type="item['@type']"
-      :field-key="fieldKey" 
-      :extracting="isExtracting" 
+      :field-key="fieldKey"
+      :extracting="isExtracting"
       :extractable="isExtractable"
       :item-info="extractedMainEntity"
       :index="index"
@@ -689,7 +729,6 @@ export default {
     white-space: nowrap;
   }
 
-
   &-collapsedLabel {
     justify-content: space-between;
     align-items: center;
@@ -771,7 +810,7 @@ export default {
   &.is-marked {
     background-color: @form-mark;
   }
-  
+
   &.is-removeable {
     background-color: @form-remove;
   }
@@ -801,9 +840,9 @@ export default {
     background-color: @base-color;
   }
 
-  &.is-expanded > 
+  &.is-expanded >
   .ItemLocal-heading >
-  .ItemLocal-label > 
+  .ItemLocal-label >
   .ItemLocal-arrow {
     transform:rotate(90deg);
     transform-origin: center;

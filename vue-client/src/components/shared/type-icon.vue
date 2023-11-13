@@ -75,7 +75,7 @@ export default {
 <template>
   <div class="TypeIcon" v-if="showIconless === true || iconClass !== '' || isForcedUnspecified">
     <span class="TypeIcon-label" v-if="iconClass === '' || isForcedUnspecified">/</span>
-    <i :class="iconClass" v-if="iconClass !== ''"></i>
+    <i :class="iconClass" v-if="iconClass !== ''" />
   </div>
 </template>
 

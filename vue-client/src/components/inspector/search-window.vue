@@ -1,23 +1,23 @@
 <script>
 import { merge, cloneDeep, escapeRegExp } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
-import PanelComponent from '@/components/shared/panel-component';
-import PanelSearchList from '@/components/search/panel-search-list';
-import Button from '@/components/shared/button';
-import Sort from '@/components/search/sort';
-import ModalPagination from '@/components/inspector/modal-pagination';
+import { translatePhrase, labelByLang } from '@/utils/filters';
+import Spinner from '@/components/shared/spinner.vue';
 import FilterSelect from '@/components/shared/filter-select.vue';
 import ParamSelect from '@/components/inspector/param-select.vue';
 import SideSearchMixin from '@/components/mixins/sidesearch-mixin.vue';
-import LensMixin from '../mixins/lens-mixin';
+import PanelComponent from '@/components/shared/panel-component.vue';
+import PanelSearchList from '@/components/search/panel-search-list.vue';
+import Button from '@/components/shared/button.vue';
+import Sort from '@/components/search/sort.vue';
+import ModalPagination from '@/components/inspector/modal-pagination.vue';
+import LensMixin from '../mixins/lens-mixin.vue';
 
 export default {
   name: 'search-window',
-  mixins: [clickaway, LensMixin, SideSearchMixin],
+  mixins: [LensMixin, SideSearchMixin],
   data() {
     return {
       extractDialogActive: false,
@@ -31,6 +31,7 @@ export default {
       setSearchType: '',
     };
   },
+  emits: ['replace-with', 'extract', 'update:copyTitle'],
   props: {
     extractable: {
       type: Boolean,
@@ -59,12 +60,12 @@ export default {
     },
   },
   components: {
+    Spinner,
     'panel-search-list': PanelSearchList,
     'panel-component': PanelComponent,
     'modal-pagination': ModalPagination,
     'filter-select': FilterSelect,
     'param-select': ParamSelect,
-    'vue-simple-spinner': VueSimpleSpinner,
     'button-component': Button,
     sort: Sort,
   },
@@ -92,6 +93,8 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
+    labelByLang,
     getSearchParams(searchPhrase) {
       if (this.currentSearchParam == null) {
         return { q: searchPhrase };
@@ -133,7 +136,7 @@ export default {
                 const cleanedChipString = DisplayUtil.getItemLabel(this.itemInfo, this.resources, this.inspector.data.quoted, this.settings)
                   .replace(/#|_|•|\[|\]/g, ' ')
                   .replace(/  +/g, ' ')
-                  .replace(new RegExp(`s?({(.*?)(${this.settings.availableUserSettings.languages.map(lang => escapeRegExp(StringUtil.getUiPhraseByLang('without', lang.value, this.resources.i18n))).join('|')})(.*?)})`, 'g'), '')
+                  .replace(new RegExp(`s?({(.*?)(${this.settings.availableUserSettings.languages.map((lang) => escapeRegExp(StringUtil.getUiPhraseByLang('without', lang.value, this.resources.i18n))).join('|')})(.*?)})`, 'g'), '')
                   .trim();
                 this.keyword = cleanedChipString;
                 this.search();
@@ -176,57 +179,60 @@ export default {
 <template>
   <div class="SearchWindow">
     <portal to="sidebar" v-if="active">
-      <panel-component class="SearchWindow-panel SearchWindowPanel"
+      <panel-component
+        class="SearchWindow-panel SearchWindowPanel"
         v-if="active"
-        :title="'Link entity' | translatePhrase"
+        :title="translatePhrase('Link entity')"
         @close="hide()">
-        <template slot="panel-header-info">
-          <div class="PanelComponent-headerInfo help-tooltip-container"
+        <template #panel-header-info>
+          <div
+            class="PanelComponent-headerInfo help-tooltip-container"
             @mouseleave="showHelp = false">
-            <i class="fa fa-question-circle icon icon--md"
-              @mouseenter="showHelp = true">
-            </i>
+            <i
+              class="fa fa-question-circle icon icon--md"
+              @mouseenter="showHelp = true" />
             <div class="PanelComponent-headerInfoBox help-tooltip" v-show="showHelp">
               <div>
                 <p class="header">
-                  {{"Step" | translatePhrase}} 1: {{"Search for existing linked entities" | translatePhrase}}
+                  {{ translatePhrase("Step")}} 1: {{translatePhrase("Search for existing linked entities") }}
                 </p>
               </div>
               <div>
                 <p class="header">
-                  {{"Step" | translatePhrase}} 2: {{"Identify and replace" | translatePhrase}}
+                  {{ translatePhrase("Step")}} 2: {{translatePhrase("Identify and replace") }}
                 </p>
                 <p>
-                  {{"If you identify a matching linked entity, click it to replace the local entity with it" | translatePhrase}}.
+                  {{ translatePhrase("If you identify a matching linked entity, click it to replace the local entity with it") }}.
                 </p>
               </div>
               <div>
                 <p class="header">
-                  {{"Create and link entity" | translatePhrase}}
+                  {{ translatePhrase("Create and link entity") }}
                 </p>
                 <p>
-                  {{"If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking" | translatePhrase}}.
+                  {{ translatePhrase("If no matching linked entity is found you can create and link. This will create a linked entity containing the information in the entity chosen for linking") }}.
                 </p>
               </div>
             </div>
           </div>
         </template>
-        <template slot="panel-header-extra">
+        <template #panel-header-extra>
           <div class="SearchWindow-header search-header">
             <div class="SearchWindow-extractControls">
               <div class="copy-title" v-if="canCopyTitle">
                 <label>
-                  <input type="checkbox" name="copyTitle" v-model="copyTitle" />
-                  {{ "Copy title from" | translatePhrase }} {{this.editorData.mainEntity['@type'] | labelByLang}}
+                  <input v-bind="copyTitle" type="checkbox" name="copyTitle" @change="$emit('update:copyTitle', $event.target.value)" />
+                  {{ translatePhrase("Copy title from") }} {{ labelByLang(this.editorData.mainEntity['@type']) }}
                 </label>
               </div>
             </div>
             <div class="SearchWindow-search search">
               <div class="SearchWindow-filterSearchContainer">
                 <div class="SearchWindow-filterSearchContainerItem">
-                  <filter-select class="SearchWindow-filterSearchInput FilterSelect--openDown"
+                  <filter-select
+                    class="SearchWindow-filterSearchInput FilterSelect--openDown"
                     :class-name="'js-filterSelect'"
-                    :label="'Show' | translatePhrase"
+                    :label="translatePhrase('Show')"
                     :custom-placeholder="filterPlaceHolder"
                     :options="{ tree: selectOptions, priority: priorityOptions }"
                     :options-all="allSearchTypes"
@@ -234,7 +240,7 @@ export default {
                     :is-filter="true"
                     :styleVariant="'material'"
                     :setValue="setSearchType"
-                    v-on:filter-selected="setFilter($event)"></filter-select>
+                    v-on:filter-selected="setFilter($event)" />
                 </div>
                 <div class="SearchWindow-filterSearchContainerItem">
                   <sort
@@ -251,18 +257,19 @@ export default {
                   v-model="keyword"
                   ref="input"
                   autofocus
-                  :placeholder="'Search' | translatePhrase"
-                  :aria-label="'Search' | translatePhrase">
-                <param-select class="SearchWindow-paramSelect"
-                              :types="currentSearchTypes"
-                              :reset="resetParamSelect"
-                              v-on:param-selected="setParam($event)"></param-select>
+                  :placeholder="translatePhrase('Search')"
+                  :aria-label="translatePhrase('Search')">
+                <param-select
+                  class="SearchWindow-paramSelect"
+                  :types="currentSearchTypes"
+                  :reset="resetParamSelect"
+                  v-on:param-selected="setParam($event)" />
               </div>
             </div>
           </div>
         </template>
 
-        <template slot="panel-body">
+        <template #panel-body>
           <panel-search-list
             v-if="!searchInProgress"
             class="SearchWindow-resultListContainer"
@@ -274,52 +281,53 @@ export default {
             @use-item="replaceWith"
           />
           <div class="PanelComponent-searchStatus" v-show="keyword.length === 0 && !extracting && searchResult.length == 0">
-            <p> {{ "Search for existing linked entities to replace your local entity" | translatePhrase }}.</p>
-            <p v-if="itemInfo && extractable"> {{ "If you can't find an existing link, you can create one using your local entity below" | translatePhrase }}.</p>
+            <p> {{ translatePhrase("Search for existing linked entities to replace your local entity") }}.</p>
+            <p v-if="itemInfo && extractable"> {{ translatePhrase("If you can't find an existing link, you can create one using your local entity below") }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="searchInProgress">
-            <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+            <Spinner size="2x" :message="translatePhrase('Searching')" />
           </div>
           <div class="PanelComponent-searchStatus" v-show="foundNoResult">
-            <p>{{ "Your search gave no results" | translatePhrase }}.</p>
-            <p v-if="itemInfo && extractable">{{ "Try again" | translatePhrase }} {{ "or create a link from your local data below" | translatePhrase }}.</p>
+            <p>{{ translatePhrase("Your search gave no results") }}.</p>
+            <p v-if="itemInfo && extractable">{{ translatePhrase("Try again") }} {{ translatePhrase("or create a link from your local data below") }}.</p>
           </div>
           <div class="PanelComponent-searchStatus" v-show="extracting">
-            <vue-simple-spinner size="large" :message="'Creating link' | translatePhrase"></vue-simple-spinner>
+            <Spinner size="2x" :message="translatePhrase('Creating link')" />
           </div>
         </template>
-        <template slot="panel-footer">
-          <div class="SearchWindow-resultControls" v-if="!searchInProgress && searchResult.length > 0" >
+        <template #panel-footer>
+          <div class="SearchWindow-resultControls" v-if="!searchInProgress && searchResult.length > 0">
             <modal-pagination
               @go="go"
               :total-items="totalItems"
               :max-items="maxItems"
               :max-per-page="maxResults"
               :current-page="currentPage"
-            >
-            </modal-pagination>
+            />
             <div class="SearchWindow-listTypes">
-              <i class="fa fa-th-list icon icon--md"
+              <i
+                class="fa fa-th-list icon icon--md"
                 role="button"
                 @click="isCompact = false"
                 @keyup.enter="isCompact = false"
-                :class="{'icon--primary' : !isCompact}"
-                :title="'Detailed view' | translatePhrase"
-                tabindex="0"></i>
-              <i class="fa fa-list icon icon--md"
+                :class="{ 'icon--primary': !isCompact }"
+                :title="translatePhrase('Detailed view')"
+                tabindex="0" />
+              <i
+                class="fa fa-list icon icon--md"
                 role="button"
                 @click="isCompact = true"
                 @keyup.enter="isCompact = true"
-                :class="{'icon--primary' : isCompact}"
-                :title="'Compact view' | translatePhrase"
-                tabindex="0"></i>
+                :class="{ 'icon--primary': isCompact }"
+                :title="translatePhrase('Compact view')"
+                tabindex="0" />
             </div>
           </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
             <div class="SearchWindow-dialogContainer">
-              <p class="preview-entity-text uppercaseHeading"> {{ 'Do you want to create' | translatePhrase }} {{ typeOfExtractingEntity }}?</p>
+              <p class="preview-entity-text uppercaseHeading"> {{ translatePhrase('Do you want to create') }} {{ typeOfExtractingEntity }}?</p>
               <p>
-                {{ 'The local entity will be extracted and linked' | translatePhrase }}.
+                {{ translatePhrase('The local entity will be extracted and linked') }}.
               </p>
               <button-component
                 :button-text="'Yes, start linking'"
@@ -474,9 +482,6 @@ export default {
     }
   }
 
-  &-panel {
-  }
-
   &-resultListContainer {
     flex: 1 1 auto;
   }
@@ -505,12 +510,6 @@ export default {
     .is-compact & {
       width: 150px;
     }
-  }
-
-  &-searchStatusContainer {
-  }
-
-  &-searchStatus {
   }
 }
 

@@ -1,21 +1,24 @@
 <script>
 import { mapGetters } from 'vuex';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import { partition, flatten } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
 import * as DisplayUtil from 'lxljs/display';
-import PanelComponent from '@/components/shared/panel-component';
-import PanelSearchList from '@/components/search/panel-search-list';
-import ModalPagination from '@/components/inspector/modal-pagination';
-import FacetMixin from '@/components/mixins/facet-mixin';
 import * as httpUtil from '@/utils/http';
 import { getCompactNumber } from '@/utils/math';
+import { translatePhrase, capitalize } from '@/utils/filters';
+import Spinner from '@/components/shared/spinner.vue';
+import PanelComponent from '@/components/shared/panel-component.vue';
+import PanelSearchList from '@/components/search/panel-search-list.vue';
+import ModalPagination from '@/components/inspector/modal-pagination.vue';
+import FacetMixin from '@/components/mixins/facet-mixin.vue';
 
 export default {
   name: 'relations-list',
   mixins: [FacetMixin],
   props: {
-    query: null,
+    query: {
+      default: null,
+    },
     listContextType: {
       type: String,
       default: '',
@@ -45,7 +48,10 @@ export default {
       selectedQuery: this.query,
     };
   },
+  emits: ['close'],
   methods: {
+    translatePhrase,
+    capitalize,
     go(n) {
       this.currentPage = n;
     },
@@ -76,7 +82,7 @@ export default {
       this.$emit('close');
     },
     toFacets(observations) {
-      return observations.map(o => ({
+      return observations.map((o) => ({
         query: httpUtil.decomposeQueryString(o.view['@id']),
         label: this.determineLabel(o.object),
         count: `(${getCompactNumber(o.totalItems)})`,
@@ -84,23 +90,23 @@ export default {
     },
     facetsForDimension(d) {
       const i = this.settings.interestingFacets[d.dimension] || [];
-      // partition into "interesting" and less interesting facets   
-      const s = partition(d.observation, o => o.object && (i.includes(o.object._key) || i.includes(o.object['@id'])))
-        .map(observations => this.toFacets(observations));
+      // partition into "interesting" and less interesting facets
+      const s = partition(d.observation, (o) => o.object && (i.includes(o.object._key) || i.includes(o.object['@id'])))
+        .map((observations) => this.toFacets(observations));
       // insert divider if there are any "interesting" facets
       if (s[0].length > 0 && s[1] && s[1].length > 0) {
         s.splice(1, 0, [{ disabled: true, label: '────────────────────' }]);
       }
-      
+
       return flatten(s);
     },
     buildFacets(searchResult) {
       if (searchResult && searchResult.stats) {
         const dimensions = searchResult.stats.sliceByDimension;
         return this.displayFacets
-          .filter(key => dimensions.hasOwnProperty(key))
-          .map(key => dimensions[key])
-          .map(d => ({
+          .filter((key) => dimensions.hasOwnProperty(key))
+          .map((key) => dimensions[key])
+          .map((d) => ({
             name: d.dimension,
             facets: this.facetsForDimension(d),
           }));
@@ -120,7 +126,7 @@ export default {
       if (this.settings.propertyChains.hasOwnProperty(key)) {
         return this.settings.propertyChains[key][this.user.settings.language];
       }
-      
+
       return key;
     },
     handleFacetSelected() {
@@ -144,7 +150,7 @@ export default {
     resultItems() {
       if (this.searchResult) {
         return this.searchResult.items;
-      } 
+      }
       return [];
     },
     hiddenComponents() {
@@ -178,10 +184,10 @@ export default {
     },
   },
   components: {
+    Spinner,
     'modal-pagination': ModalPagination,
     'panel-component': PanelComponent,
     'panel-search-list': PanelSearchList,
-    'vue-simple-spinner': VueSimpleSpinner,
   },
   watch: {
     builtQuery(val, oldVal) {
@@ -201,33 +207,34 @@ export default {
 <template>
   <div class="RelationsList">
     <panel-component :title="windowTitle" :query="selectedQuery" @close="hide()">
-      <template slot="panel-header-extra">
+      <template #panel-header-extra>
         <div class="RelationsList-searchHeader">
           <div
             class="Filter"
           >
-            <label class="Filter-label" for="filter-select">{{ 'Filter' | translatePhrase }}</label>
-            <select id="filter-select"
-                    class="Filter-select customSelect"
-                    v-model="selectedFacet"
-                    @change="handleFacetSelected"
-                    :aria-label="'Filter' | translatePhrase">
+            <label class="Filter-label" for="filter-select">{{ translatePhrase('Filter') }}</label>
+            <select
+              id="filter-select"
+              class="Filter-select customSelect"
+              v-model="selectedFacet"
+              @change="handleFacetSelected"
+              :aria-label="translatePhrase('Filter')">
               >
               <option :value="allOption">
-                {{ "All" | translatePhrase }} ({{ getCompactNumber(allOption) }})
+                {{ translatePhrase("All") }} ({{ getCompactNumber(allOption) }})
               </option>
               <optgroup v-for="(group, index) in facets" :key="`group-${index}`" :label="facetGroupLabelByLang(group.name)">
                 <option v-for="(option, index) in group.facets" :key="`option-${index}`" :value="option" :disabled="option.disabled">
-                  {{ option.label | capitalize }} {{ option.count }}
+                  {{ capitalize(option.label) }} {{ option.count }}
                 </option>
               </optgroup>
             </select>
           </div>
         </div>
       </template>
-      <template slot="panel-body">
+      <template #panel-body>
         <div class="PanelComponent-searchStatus" v-show="loading">
-          <vue-simple-spinner size="large" :message="'Searching' | translatePhrase"></vue-simple-spinner>
+          <Spinner size="2x" :message="translatePhrase('Searching')" />
         </div>
         <panel-search-list
           class="RelationsList-resultListContainer"
@@ -242,17 +249,16 @@ export default {
           error happened: {{error}}
         </div>
       </template>
-      <template slot="panel-footer"> 
+      <template #panel-footer>
         <div class="RelationsList-resultControls" v-if="!loading && resultItems.length > 0">
-          <modal-pagination 
+          <modal-pagination
             v-if="searchResult.totalItems > maxResults"
-            @go="go" 
+            @go="go"
             :total-items="totalItems"
-            :max-items="maxItems" 
+            :max-items="maxItems"
             :max-per-page="maxResults"
             :current-page="currentPage"
-          >
-          </modal-pagination>
+          />
         </div>
       </template>
     </panel-component>
@@ -265,7 +271,7 @@ export default {
   &-searchHeader {
     margin: 0 0 0.5em 0;
   }
-  
+
   &-resultControls {
     display: flex;
     justify-content: space-between;

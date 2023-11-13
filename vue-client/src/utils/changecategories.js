@@ -3,7 +3,7 @@
 
 const IDKBSE = 'https://id.kb.se/changenote/';
 
-exports.CHANGE_CATEGORIES = [
+export default [
   {
     '@id': `${IDKBSE}primarycontribution`,
     appliesToPattern: {

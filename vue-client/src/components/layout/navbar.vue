@@ -1,14 +1,22 @@
 <script>
 import { mapGetters } from 'vuex';
-import { mixin as clickaway } from 'vue-clickaway';
+import { vOnClickOutside } from '@vueuse/components';
 import * as StringUtil from 'lxljs/string';
-import UserAvatar from '@/components/shared/user-avatar';
-import TabMenu from '@/components/shared/tab-menu';
-import UserSettings from '@/components/usersettings/user-settings';
+import { translatePhrase } from '@/utils/filters';
+import UserAvatar from '@/components/shared/user-avatar.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
+import UserSettings from '@/components/usersettings/user-settings.vue';
 
 export default {
   name: 'navbar-component',
-  mixins: [clickaway],
+  directives: {
+    'on-click-outside': vOnClickOutside,
+  },
+  setup() {
+    return {
+      kbLogoWhite: new URL('~kungbib-styles/dist/assets/kb_logo_white.svg', import.meta.url).href,
+    };
+  },
   data() {
     return {
       hasAvatar: true,
@@ -38,13 +46,13 @@ export default {
       const $directoryCare = `${StringUtil.getUiPhraseByLang('Directory care', this.user.settings.language, this.resources.i18n)}`;
       const loggedInTabs = this.user.isLoggedIn ? [
         { id: 'Create new', text: 'Create new', link: '/create', icon: 'plus-square-o' },
-        { id: 'Directory care', html: $directoryCare, link: '/directory-care', icon: 'flag', badge: directoryCareBadge }, 
+        { id: 'Directory care', html: $directoryCare, link: '/directory-care', icon: 'flag', badge: directoryCareBadge },
       ] : [];
       const tabs = [
         { id: 'Home', text: 'Start', link: '/', icon: 'home' },
         { id: 'Search', text: 'Search', link: '/search/libris', icon: 'search' },
         ...loggedInTabs,
-        { id: 'Help', text: 'Help', link: '/help', icon: 'question-circle' }, 
+        { id: 'Help', text: 'Help', link: '/help', icon: 'question-circle' },
       ];
       return tabs;
     },
@@ -60,15 +68,16 @@ export default {
     tooltipOptions() {
       const options = {
         content: `${StringUtil.getUiPhraseByLang('To create concepts, you need to switch to a seal with correct authority.', this.user.settings.language, this.resources.i18n)}`,
-        show: this.showSigelHint,
-        trigger: 'manual',
+        shown: this.showSigelHint,
+        triggers: ['manual'],
         placement: 'bottom',
-        classes: 'with-accent',
+        popperClass: 'with-accent',
       };
       return options;
     },
   },
   methods: {
+    translatePhrase,
     navigate(id) {
       for (const tab of this.tabs) {
         if (tab.id === id) {
@@ -99,10 +108,10 @@ export default {
 
 <template>
   <nav class="NavBar top-scroll-past" id="NavBar" aria-labelledby="service-name">
-    <div class="NavBar-container" :class="{ 'container': user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
+    <div class="NavBar-container" :class="{ container: user.settings.fullSiteWidth === false, 'container-fluid': user.settings.fullSiteWidth }">
       <div class="NavBar-brand">
         <router-link to="/" class="NavBar-brandLink">
-          <img class="NavBar-brandLogo" src="~kungbib-styles/dist/assets/kb_logo_white.svg" alt="Kungliga Bibliotekets logotyp">
+          <img class="NavBar-brandLogo" :src="kbLogoWhite" alt="Kungliga Bibliotekets logotyp">
         </router-link>
       </div>
       <div class="MainNav">
@@ -113,47 +122,46 @@ export default {
           @go="navigate"
           :link="true"
           lookStyle="dark"
-          />
+        />
       </div>
       <ul class="MainNav-userWrapper">
-        <li 
-          class="MainNav-item" 
-          :class="{ 'active': showUserMenu && !isUserPage, 'highlight': highlightNavItem && !isUserPage }" 
+        <li
+          class="MainNav-item"
+          :class="{ active: showUserMenu && !isUserPage, highlight: highlightNavItem && !isUserPage }"
           @mouseover="highlightNavItem = true"
           @mouseleave="highlightNavItem = false"
           @focus="highlightNavItem = true"
           @blur="highlightNavItem = false"
           v-if="user.isLoggedIn"
-          v-tooltip="tooltipOptions" >
+          v-tooltip="tooltipOptions">
           <div tabindex="0" @click="toggleUserMenu" @keyup.enter="toggleUserMenu">
-            <user-avatar 
-              class="hidden-xs" 
+            <user-avatar
+              class="hidden-xs"
               :highlight="highlightNavItem && !isUserPage"
               :size="30" />
-            <user-avatar 
-              class="visible-xs-block" 
+            <user-avatar
+              class="visible-xs-block"
               :highlight="highlightNavItem && !isUserPage"
               :size="32" />
             <span class="MainNav-linkText userName hidden-sm">
-            {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
+              {{ user.fullName }} <span v-cloak class="sigelLabel">({{ user.settings.activeSigel }})</span>
             </span>
-            <i class="fa fa-fw hidden-xs" :class="{ 'fa-caret-down': !isUserPage, 'active': showUserMenu }"></i>
+            <i class="fa fa-fw hidden-xs" :class="{ 'fa-caret-down': !isUserPage, active: showUserMenu }" />
           </div>
-          <user-settings 
-            v-if="showUserMenu && !isUserPage" 
-            compact 
-            v-on-clickaway="hideUserMenu" />
+          <user-settings
+            v-if="showUserMenu && !isUserPage"
+            compact
+            v-on-click-outside="hideUserMenu" />
         </li>
         <li class="MainNav-item" v-if="!user.isLoggedIn">
-            <span class="MainNav-link" @click="login" @keyup.enter="login">
-              {{"Log in" | translatePhrase}}
-            </span>
+          <span class="MainNav-link" @click="login" @keyup.enter="login">
+            {{ translatePhrase("Log in") }}
+          </span>
         </li>
       </ul>
     </div>
   </nav>
 </template>
-
 
 <style lang="less">
 .NavBar {
@@ -168,7 +176,7 @@ export default {
     line-height: unset;
   }
 
-  &-brand {    
+  &-brand {
     margin-right: 2rem;
     @media screen and (min-width: @screen-sm) {
       display: none;
@@ -239,13 +247,13 @@ export default {
     &:last-of-type a {
       padding-right: 0;
     }
-    
+
     @media (max-width: @screen-sm) {
       & .userName {
         display: none;
       }
     }
-    
+
     @media (max-width: @screen-md) {
       font-size: 16px;
       font-size: 1.6rem;
@@ -260,7 +268,7 @@ export default {
     display: block;
     color: @grey-light;
 
-    &:hover, 
+    &:hover,
     &:focus {
       color: @white;
       text-decoration: none;

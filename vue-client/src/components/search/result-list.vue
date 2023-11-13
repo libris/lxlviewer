@@ -3,7 +3,7 @@ import { cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as LxlDataUtil from 'lxljs/data';
 import * as RecordUtil from '@/utils/record';
-import ResultListItem from './result-list-item';
+import ResultListItem from './result-list-item.vue';
 
 export default {
   name: 'result-list',
@@ -57,16 +57,19 @@ export default {
 </script>
 
 <template>
-  <ol class="ResultList" 
+  <ol
+    class="ResultList"
     aria-labelledby="resultDescr"
     v-if="results.length > 0">
-    <result-list-item class="ResultList-item"
-      :database="getDatabase(index)" 
+    <result-list-item
+      class="ResultList-item"
+      :database="getDatabase(index)"
       :show-compact="compact"
-      :focus-data="item" 
-      :import-item="getImportItem(index)" v-for="(item, index) in results" 
+      :focus-data="item"
+      :import-item="getImportItem(index)"
+      v-for="(item, index) in results"
       :key="item['@id']"
-      @relations-list-open="relationsListOpen"></result-list-item>
+      @relations-list-open="relationsListOpen" />
   </ol>
 </template>
 

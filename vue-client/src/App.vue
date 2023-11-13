@@ -1,51 +1,70 @@
 <template>
-  <div id="app" class="App">
-    <GlobalMessages />
-    <EnvironmentBanner />
-    <navbar-component />
-    <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
+  <GlobalMessages />
+  <EnvironmentBanner />
+  <navbar-component />
+  <search-bar v-if="resourcesLoaded" :class="{ 'stick-to-top': stickToTop }" />
 
-    <main class="MainContent" :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }" :class="{ 'container': (!status.panelOpen && user.settings.fullSiteWidth === false), 'container-fluid': (status.panelOpen || user.settings.fullSiteWidth), 'debug-mode': user.settings.appTech }">
-      <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
-        {{ 'Debug mode activated. Click here to disable.' | translatePhrase }}
+  <main
+    class="MainContent"
+    :style="{ 'margin-top': stickToTop ? `${searchBarHeight}px` : '0px' }"
+    :class="{
+      container: (!status.panelOpen && user.settings.fullSiteWidth === false),
+      'container-fluid': (status.panelOpen || user.settings.fullSiteWidth),
+      'debug-mode': user.settings.appTech,
+    }">
+    <div class="debug-mode-indicator" v-if="user.settings.appTech" @click="disableDebugMode">
+      {{ translatePhrase('Debug mode activated. Click here to disable.') }}
+    </div>
+
+    <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
+      <Spinner size="3x" :message="translatePhrase(status.loadingIndicators[0])" />
+    </div>
+
+    <div v-if="resourcesLoadingError" class="ResourcesLoadingError">
+      <i class="fa fa-warning fa-4x text-danger" />
+      <div>
+        <h2>Kunde inte hämta nödvändiga resurser</h2>
+        <p>Testa att ladda om sidan.</p>
+        <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
       </div>
+    </div>
 
-      <div v-if="status.loadingIndicators.length > 0" class="text-center MainContent-spinner">
-        <vue-simple-spinner size="large" :message="status.loadingIndicators[0] | translatePhrase"></vue-simple-spinner>
-      </div>
+    <router-view
+      :key="$route.name"
+      ref="routerView"
+      v-if="resourcesLoaded"
+      v-show="status.loadingIndicators.length === 0"
+      @ready="onRouterViewReady"
+    />
+  </main>
 
-      <div v-if="resourcesLoadingError" class="ResourcesLoadingError">
-        <i class="fa fa-warning fa-4x text-danger"></i>
-        <div>
-          <h2>Kunde inte hämta nödvändiga resurser</h2>
-          <p>Testa att ladda om sidan.</p>
-          <p>Om felet kvarstår, kontakta <a href="mailto:libris@kb.se">libris@kb.se</a>.</p>
-        </div>
-      </div>
-
-      <router-view
-        ref="routerView"
-        v-if="resourcesLoaded"
-        v-show="status.loadingIndicators.length === 0"
-        @ready="onRouterViewReady"
-      />
-    </main>
-
-    <portal-target name="sidebar" multiple />
-    <footer-component></footer-component>
-    <notification-list></notification-list>
-  </div>
+  <portal-target name="sidebar" multiple />
+  <footer-component />
+  <notification-list />
 </template>
 
 <script>
-import VueSimpleSpinner from 'vue-simple-spinner';
 import { mapGetters, mapActions } from 'vuex';
-import Navbar from '@/components/layout/navbar';
-import SearchBar from '@/components/layout/search-bar';
-import Footer from '@/components/layout/footer';
-import NotificationList from '@/components/shared/notification-list';
-import EnvironmentBanner from '@/components/layout/environment-banner';
-import GlobalMessages from '@/components/layout/global-messages';
+import { RouterView } from 'vue-router';
+import ComboKeys from 'combokeys';
+import GlobalBind from 'combokeys/plugins/global-bind';
+import { translatePhrase } from '@/utils/filters';
+import * as DataUtil from '@/utils/data';
+import * as LayoutUtil from '@/utils/layout';
+import * as StringUtil from 'lxljs/string';
+
+import i18n from '@/resources/json/i18n.json';
+import displayGroupsJson from '@/resources/json/displayGroups.json';
+import baseTemplates from '@/resources/json/baseTemplates.json';
+import combinedTemplates from '@/resources/json/combinedTemplates.json';
+import KeyBindings from '@/resources/json/keybindings.json';
+import GlobalMessages from '@/components/layout/global-messages.vue';
+import EnvironmentBanner from '@/components/layout/environment-banner.vue';
+import Spinner from '@/components/shared/spinner.vue';
+import NotificationList from '@/components/shared/notification-list.vue';
+import Footer from '@/components/layout/footer.vue';
+import SearchBar from '@/components/layout/search-bar.vue';
+import Navbar from '@/components/layout/navbar.vue';
 
 export default {
   name: 'App',
@@ -61,6 +80,8 @@ export default {
     ...mapGetters([
       'settings',
       'user',
+      'resources',
+      'inspector',
       'resourcesLoaded',
       'resourcesLoadingError',
       'status',
@@ -68,6 +89,39 @@ export default {
     ]),
   },
   watch: {
+    '$route.params'() {
+      this.updateTitle();
+    },
+    'inspector.title'() {
+      this.updateTitle();
+    },
+    'status.helpSectionTitle'() {
+      this.updateTitle();
+    },
+    'user.idHash'() {
+      this.syncUserStorage();
+    },
+    'status.keybindState'(state) {
+      // Bindings are defined in keybindings.json
+      // if (this.combokeys) {
+      //   this.combokeys.detach();
+      // }
+
+      this.combokeys = new ComboKeys(document.documentElement);
+      GlobalBind(this.combokeys);
+      const stateSettings = KeyBindings[state];
+
+      if (typeof stateSettings !== 'undefined') {
+        Object.entries(stateSettings).forEach(([key, value]) => {
+          if (value !== null && value !== '') {
+            this.combokeys.bindGlobal(key.toString(), () => {
+              this.$store.dispatch('pushKeyAction', value);
+              return false;
+            });
+          }
+        });
+      }
+    },
     '$route'(to, from) {
       this.$nextTick(() => {
         if (from.name !== null && to.name !== 'Search') {
@@ -77,8 +131,23 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     ...mapActions([
       'setStatusValue',
+      'pushLoadingIndicator',
+      'removeLoadingIndicator',
+      'setContext',
+      'setupVocab',
+      'setDisplay',
+      'changeResourcesStatus',
+      'changeResourcesLoadingError',
+      'setTemplates',
+      'initOauth2Client',
+      'verifyUser',
+      'loadUserDatabase',
+      'setTranslations',
+      'setResource',
+      'setUser',
     ]),
     onRouterViewReady() {
       this.setFocusTarget();
@@ -90,7 +159,7 @@ export default {
 
       // get component's "routeFocusTarget" ref
       // if not existent, use router view container
-      const focusTarget = (this.$refs.routerView.$refs.componentFocusTarget !== undefined) 
+      const focusTarget = (this.$refs.routerView.$refs.componentFocusTarget !== undefined)
         ? this.$refs.routerView.$refs.componentFocusTarget
         : this.$refs.routerView.$el;
 
@@ -117,12 +186,12 @@ export default {
       setInterval(() => {
         this.userIdleTimer += updateTimer;
         if (this.userIdleTimer > 5 && this.status.userIdle === false) {
-          this.setStatusValue({ 
+          this.setStatusValue({
             property: 'userIdle',
             value: true,
           });
         } else if (this.userIdleTimer <= 5 && this.status.userIdle === true) {
-          this.setStatusValue({ 
+          this.setStatusValue({
             property: 'userIdle',
             value: false,
           });
@@ -133,7 +202,7 @@ export default {
 
       const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
       events.forEach((name) => {
-        document.addEventListener(name, resetTimer, true); 
+        document.addEventListener(name, resetTimer, true);
       });
     },
     disableDebugMode() {
@@ -162,8 +231,165 @@ export default {
         }
       }
     },
+    injectAnalytics() {
+      // eslint-disable-next-line vue/max-len
+      const analyticsString = 'var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//analytics.kb.se/";_paq.push(["setTrackerUrl",e+"matomo.php"]),_paq.push(["setSiteId","****"]);var a=document,p=a.createElement("script"),t=a.getElementsByTagName("script")[0];p.type="text/javascript",p.async=!0,p.defer=!0,p.src=e+"matomo.js",t.parentNode.insertBefore(p,t)}();';
+      const scriptWithMatomoId = analyticsString.replace('****', this.settings.matomoId);
+      const scriptTag = document.createElement('script');
+
+      scriptTag.setAttribute('type', 'text/javascript');
+      scriptTag.text = scriptWithMatomoId;
+
+      document.head.appendChild(scriptTag);
+    },
+    verifyConfig() {
+      if (!this.settings.apiPath || typeof this.settings.apiPath === 'undefined') {
+        throw new Error('Missing API path in app-config');
+      }
+      if (!this.settings.verifyPath || typeof this.settings.verifyPath === 'undefined') {
+        throw new Error('Missing AUTH path in app-config');
+      }
+      if (!this.settings.idPath || typeof this.settings.idPath === 'undefined') {
+        throw new Error('Missing ID path in app-config');
+      }
+    },
+    updateTitle() {
+      const route = this.$route;
+      let title = '';
+      if (route.params.query) {
+        const queryParts = route.params.query.split('&');
+        for (const param of queryParts) {
+          if (param[0] === 'q' && param[1] === '=') {
+            title += `"${param.substr(2, param.length - 2)}"`;
+          }
+        }
+      } else if (route.name === 'NewDocument') {
+        title += StringUtil.getUiPhraseByLang('New record', this.user.settings.language, this.resources.i18n);
+      } else if (route.name === 'Inspector') {
+        if (this.inspector.title && this.inspector.title.length > 0) {
+          title += this.inspector.title;
+        } else {
+          title += StringUtil.getUiPhraseByLang('Loading document', this.user.settings.language, this.resources.i18n);
+        }
+      } else if (route.name === 'Help') {
+        title += this.status.helpSectionTitle;
+      } else if (route.name === 'DocumentHistory') {
+        title += StringUtil.getUiPhraseByLang('Version history', this.user.settings.language, this.resources.i18n);
+      } else {
+        title += StringUtil.getUiPhraseByLang(route.name, this.user.settings.language, this.resources.i18n);
+      }
+      if (route.name === 'Home' || !route.name) {
+        title = this.settings.title;
+      } else {
+        title += ` | ${this.settings.title}`;
+      }
+      document.title = title;
+    },
+    initWarningFunc() {
+      if (this.settings.environment === 'prod' || this.settings.environment === 'stg') {
+        window.lxlWarning = () => {
+
+        };
+        window.lxlError = () => {
+
+        };
+        return;
+      }
+      window.lxlInfoStack = [];
+      window.lxlInfo = (...strings) => {
+        if (window.lxlInfoStack.indexOf(JSON.stringify(strings.join())) === -1) {
+          window.lxlInfoStack.push(JSON.stringify(strings.join()));
+          return console.log(...strings);
+        }
+        return false;
+      };
+      window.lxlWarnStack = [];
+      window.lxlWarning = (...strings) => {
+        if (window.lxlWarnStack.indexOf(JSON.stringify(strings.join())) === -1) {
+          window.lxlWarnStack.push(JSON.stringify(strings.join()));
+          return console.warn(...strings);
+        }
+        return false;
+      };
+      window.lxlErrorStack = [];
+      window.lxlError = (...strings) => {
+        if (window.lxlErrorStack.indexOf(JSON.stringify(strings.join())) === -1) {
+          window.lxlErrorStack.push(JSON.stringify(strings.join()));
+          return console.error(...strings);
+        }
+        return false;
+      };
+    },
+    fetchHelpDocs() {
+      if (this.settings.mockHelp === true) {
+        window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
+        // eslint-disable-next-line import/no-extraneous-dependencies
+        import('@/../../../lxl-helpdocs/build/help.json').then((module) => {
+          this.$store.dispatch('setHelpDocs', module.default);
+        });
+      } else {
+        fetch(`${this.settings.apiPath}/helpdocs/help.json`).then((result) => {
+          if (result.status === 200) {
+            result.json().then((body) => {
+              this.$store.dispatch('setHelpDocs', body);
+            });
+          }
+        }, (error) => {
+          console.log('Couldn\'t fetch help documentation.', error);
+        });
+      }
+    },
+    getLdDependencies() {
+      return [
+        DataUtil.getVocab(this.settings.idPath),
+        DataUtil.getContext(this.settings.idPath),
+        DataUtil.getDisplayDefinitions(),
+      ];
+    },
+    loadTemplates() {
+      const templates = {
+        base: baseTemplates,
+        combined: combinedTemplates,
+      };
+
+      this.setTemplates(templates);
+    },
+    syncUserStorage() {
+      const userStorageTotal = JSON.parse(localStorage.getItem('userStorage'));
+      let userStorage = this.userStorage;
+      if (userStorageTotal !== null && (userStorageTotal.hasOwnProperty(this.user.idHash) || userStorageTotal.hasOwnProperty(this.user.emailHash))) {
+        userStorage = userStorageTotal[this.user.idHash] || userStorageTotal[this.user.emailHash];
+      }
+      this.$store.dispatch('setUserStorage', userStorage);
+    },
   },
   mounted() {
+    this.verifyUser().then(() => {
+      this.$nextTick(() => {
+        this.loadUserDatabase();
+      });
+    }).catch(() => {});
+    this.initOauth2Client().catch(() => {});
+    this.initWarningFunc();
+    this.fetchHelpDocs();
+    this.setTranslations(i18n);
+    this.setResource({
+      property: 'displayGroups',
+      value: displayGroupsJson,
+    });
+    this.pushLoadingIndicator('Loading application');
+    Promise.all(this.getLdDependencies()).then((resources) => {
+      this.setContext(resources[1]['@context']);
+      this.setupVocab(resources[0]['@graph']);
+      this.setDisplay(resources[2]);
+      this.changeResourcesStatus(true);
+      this.removeLoadingIndicator('Loading application');
+    }, (error) => {
+      window.lxlWarning(`🔌 The API (at ${this.settings.apiPath}) might be offline! Error: ${error}`);
+      this.changeResourcesLoadingError(true);
+      this.removeLoadingIndicator('Loading application');
+    });
+
     this.$nextTick(() => {
       this.setupIdleTimer();
       this.checkSearchBar();
@@ -172,6 +398,27 @@ export default {
         property: 'keybindState',
         value: 'default',
       });
+
+      this.verifyConfig();
+      this.loadTemplates();
+
+      this.syncUserStorage();
+      window.addEventListener('focus', () => {
+        this.syncUserStorage();
+        if (this.user.isLoggedIn) {
+          this.$store.dispatch('loadUserDatabase');
+        }
+      });
+      window.addEventListener('focus', () => {
+        this.syncUserStorage();
+        if (this.user.isLoggedIn) {
+          this.$store.dispatch('loadUserDatabase');
+        }
+      });
+
+      window.addEventListener('keydown', LayoutUtil.handleFirstTab);
+      this.updateTitle();
+      this.injectAnalytics();
     });
 
     window.addEventListener('scroll', (e) => {
@@ -179,13 +426,14 @@ export default {
     });
   },
   components: {
+    'router-view': RouterView,
     SearchBar,
     'navbar-component': Navbar,
     'footer-component': Footer,
     'notification-list': NotificationList,
     EnvironmentBanner,
     GlobalMessages,
-    'vue-simple-spinner': VueSimpleSpinner,
+    Spinner,
   },
 };
 </script>
@@ -202,9 +450,9 @@ export default {
 
 // BOOTSTRAP OVERRIDE START
 @media (max-width: @screen-md-min) {
-   .container {
+  .container {
       width: 100%;
-   }
+  }
 }
 // BOOTSTRAP OVERRIDE END
 
@@ -285,7 +533,7 @@ h4 {
 
 .MainContent {
   flex: 1 0 auto;
-  
+
   &.container-fluid {
     margin-right: 0px;
     margin-left: 0px;
@@ -360,7 +608,7 @@ button {
 .btn.disabled {
   background-color: @grey-lighter;
   opacity: 1;
-  &:hover, 
+  &:hover,
   &:focus {
     background-color: @grey-lighter;
   }
@@ -372,7 +620,7 @@ button {
   &.btn-light {
     opacity: 0.7;
     box-shadow: none;
-  }  
+  }
 }
 
 .btn-info {
@@ -415,7 +663,7 @@ button {
 .btn-grey {
   color: white;
   background-color: @grey;
-  &:hover, 
+  &:hover,
   &:focus {
     color: white;
     background-color: @grey-darker;
@@ -572,7 +820,7 @@ body {
   display: flex;
   flex-direction: column;
   -ms-overflow-style: scrollbar;
-  
+
   .facet-container {
     opacity: 1;
     transition: 0.3s ease width 0s, 0.3s ease opacity 0.3s;
@@ -629,7 +877,6 @@ body {
   display: block !important;
 }
 
-
 // ------------- ICONS ----------------
 .icon {
     color: @grey;
@@ -667,7 +914,7 @@ body {
     &--md {
         font-size: 20px;
     }
-    
+
     &--lg {
         font-size: 30px;
     }
@@ -698,7 +945,7 @@ h1, h2, h3, h4 {
   font-weight: 600;
   color: @black;
 }
-  
+
 h1 {
     margin: 10px 0;
 }
@@ -826,12 +1073,6 @@ h1 {
     color: @grey;
   }
 
-  &:focus {
-    // border: 1px solid @brand-primary;
-    // outline: 0;
-    // box-shadow: none;
-  }
-
   &::-ms-clear {
     display: none; // remove cross from IE
   }
@@ -884,7 +1125,7 @@ h1 {
     padding: 10px 0;
     margin: 0.25em 0;
     width: 100%;
-    
+
     &.active {
       color: @white;
       background: @brand-primary;

@@ -1,6 +1,7 @@
 <script>
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'creation-card',
@@ -12,7 +13,9 @@ export default {
     index: Number,
     activeIndex: Number,
   },
+  emits: ['use-base', 'use-template', 'set-active-index'],
   methods: {
+    translatePhrase,
     useBase(event) {
       this.$emit('use-base', event.target.value);
     },
@@ -38,7 +41,7 @@ export default {
       return this.activeIndex === this.index;
     },
     getClassTree() {
-      const tree = [this.creation].map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
+      const tree = [this.creation].map((type) => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
       return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
     },
   },
@@ -46,26 +49,27 @@ export default {
 </script>
 
 <template>
-  <div class="CreationCard panel card" :class="{'is-active': isActive, 'is-disabled': !isAllowed}">
+  <div class="CreationCard panel card" :class="{ 'is-active': isActive, 'is-disabled': !isAllowed }">
     <div v-if="isBase" class="CreationCard-content card-content" @click="setIndex()">
       <div class="card-text">
         <h2 class="CreationCard-title card-title">{{'Baspost'}}</h2>
         <div class="CreationCard-descr card-descr">Innehåller de vanligaste fälten för vald typ.</div>
       </div>
       <div class="card-link">
-        <select class="CreationCard-select customSelect" 
+        <select
+          class="CreationCard-select customSelect"
           @change="useBase($event)"
           aria-labelledby="CreationCard-selectLabel">
           <option id="CreationCard-selectLabel" class="CreationCard-option" selected disabled>
-            {{'Choose type' | translatePhrase}}
+            {{ translatePhrase('Choose type')}}
           </option>
-          <option class="CreationCard-option"
-            v-for="(term, index) in getClassTree" 
-            :value="term.id" 
-            :key="index" 
+          <option
+            class="CreationCard-option"
+            v-for="(term, index) in getClassTree"
+            :value="term.id"
+            :key="index"
             :disabled="term.abstract"
-            v-html="getLabelWithTreeDepth(term, settings, resources.vocab, resources.context)">
-          </option>
+            v-html="getLabelWithTreeDepth(term, settings, resources.vocab, resources.context)" />
         </select>
       </div>
     </div>
@@ -75,22 +79,22 @@ export default {
         <div class="CreationCard-descr card-descr">{{template.description}}</div>
       </div>
       <div class="card-link">
-        <button 
-          class="CreationCard-select btn btn-primary btn--md" 
-          tabindex="0" 
-          v-show="!isActive" 
+        <button
+          class="CreationCard-select btn btn-primary btn--md"
+          tabindex="0"
+          v-show="!isActive"
           :disabled="!isAllowed"
-          @keyup.enter="useTemplate(template.value)" 
+          @keyup.enter="useTemplate(template.value)"
           @click="useTemplate(template.value)">
-            {{ 'Choose' | translatePhrase }}
+          {{ translatePhrase('Choose') }}
         </button>
-        <a 
-          class="CreationCard-select" 
-          tabindex="0" 
-          v-show="isActive" 
-          @keyup.enter="useTemplate(template.value)" 
+        <a
+          class="CreationCard-select"
+          tabindex="0"
+          v-show="isActive"
+          @keyup.enter="useTemplate(template.value)"
           @click="useTemplate(template.value)">
-            {{ 'Chosen' | translatePhrase }}
+          {{ translatePhrase('Chosen') }}
         </a>
       </div>
     </div>
@@ -123,9 +127,6 @@ export default {
 
   &-title {
     width: 100%;
-  }
-
-  &-descr {
   }
 
   &-content {

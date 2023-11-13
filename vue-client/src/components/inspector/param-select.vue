@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import PropertyMappings from '@/resources/json/propertymappings.json';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'param-select',
@@ -23,7 +24,9 @@ export default {
       selectedParam: '',
     };
   },
+  emits: ['param-selected'],
   methods: {
+    translatePhrase,
     handleChange() {
       this.$emit('param-selected', this.selectedParam);
       this.setUserPref(this.selectedParam);
@@ -72,14 +75,14 @@ export default {
       );
     },
     availableSearchParams() {
-      const intersects = ((a1, a2) => a1.find(value => a2.includes(value)) !== undefined);
+      const intersects = ((a1, a2) => a1.find((value) => a2.includes(value)) !== undefined);
 
       if (this.types === [] || this.types === undefined) {
         return PropertyMappings;
       }
 
       const types = this.types.concat(this.baseClasses);
-      return PropertyMappings.filter(m => intersects(m.types, types));
+      return PropertyMappings.filter((m) => intersects(m.types, types));
     },
   },
   components: {
@@ -106,12 +109,12 @@ export default {
       class="SearchForm-paramSelect SearchForm-select customSelect"
       v-model="selectedParam"
       @change="handleChange()"
-      :aria-label="'Choose type' | translatePhrase">
+      :aria-label="translatePhrase('Choose type')">
       <option
         v-for="prop in availableSearchParams"
         :key="prop.key"
         :value="prop">
-        {{prop.key | translatePhrase}}
+        {{ translatePhrase(prop.key) }}
       </option>
     </select>
   </div>

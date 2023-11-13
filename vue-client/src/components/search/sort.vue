@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'sort',
@@ -26,6 +27,7 @@ export default {
       boundVal: this.currentSort,
     };
   },
+  emits: ['change'],
   computed: {
     ...mapGetters([
       'inspector',
@@ -50,14 +52,14 @@ export default {
       }
       return false;
     },
-    commonBaseType() {      
+    commonBaseType() {
       if (typeof this.recordTypes === 'string') {
         return VocabUtil.getRecordType(
           this.recordTypes,
-          this.resources.vocab, 
+          this.resources.vocab,
           this.resources.context,
         );
-      }      
+      }
       if (Array.isArray(this.recordTypes)) {
         const baseTypes = this.recordTypes.reduce((accumulator, currType) => {
           const baseType = VocabUtil.getRecordType(currType, this.resources.vocab, this.resources.context);
@@ -76,6 +78,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     handleSortChange() {
       const user = this.user;
       user.settings.sort = this.newSort;
@@ -89,20 +92,21 @@ export default {
 </script>
 
 <template>
-  <div 
-    class="Sort" 
-    :class="{ 'variantMaterial' : styleVariant === 'material' }"
+  <div
+    class="Sort"
+    :class="{ variantMaterial: styleVariant === 'material' }"
     v-if="options">
-    <label class="Sort-label" for="sort-select">{{ 'Sorting' | translatePhrase }}{{ styleVariant === 'material' ? '' : ':' }}</label>
-    <select id="sort-select"
-      class="Sort-select customSelect" 
-      v-model="boundVal" 
+    <label class="Sort-label" for="sort-select">{{ translatePhrase('Sorting') }}{{ styleVariant === 'material' ? '' : ':' }}</label>
+    <select
+      id="sort-select"
+      class="Sort-select customSelect"
+      v-model="boundVal"
       @change="handleSortChange">
-      <option 
-        v-for="(option, index) in options" 
+      <option
+        v-for="(option, index) in options"
         :value="option.query.endsWith('_sortKeyByLang') ? `${option.query}.${user.settings.language || 'sv'}` : option.query"
         :key="index">
-        {{ option.label | translatePhrase }}
+        {{ translatePhrase(option.label) }}
       </option>
     </select>
   </div>

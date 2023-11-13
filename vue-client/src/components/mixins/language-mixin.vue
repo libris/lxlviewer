@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import { cloneDeep, get, isEmpty, isObject } from 'lodash-es';
 import { getContextValue } from 'lxljs/vocab';
 import * as VocabUtil from 'lxljs/vocab';
-import * as httpUtil from '../../utils/http';
+import * as httpUtil from '@/utils/http';
 
 export default {
   props: {
@@ -35,7 +35,7 @@ export default {
       const prop = get(this.inspector.data, this.getPropPath());
       if (typeof prop === 'undefined') {
         return this.isRepeatable ? [] : '';
-      } 
+      }
       return prop;
     },
     byLangifiedPath() {
@@ -79,7 +79,7 @@ export default {
         url: `${this.settings.apiPath}/_transliterate`,
         token: this.user.token,
       }, sourceObj)
-        .then(result => result);
+        .then((result) => result);
     },
     removeLanguageTag(tag, value) {
       const languageMap = this.propByLang;
@@ -243,7 +243,8 @@ export default {
       });
     },
     addEmpty() {
-      const isRepeatable = VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context); // Is for some reason different from this.isRepeatable()
+      // Is for some reason different from this.isRepeatable()
+      const isRepeatable = VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context);
       if (this.hasProp && isRepeatable) {
         let updateVal = this.prop;
         if (Array.isArray(updateVal)) {

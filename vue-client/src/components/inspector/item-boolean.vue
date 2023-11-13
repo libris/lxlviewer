@@ -1,7 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
-import ItemMixin from '../mixins/item-mixin';
+import { translatePhrase, labelByLang } from '@/utils/filters';
+import ItemMixin from '../mixins/item-mixin.vue';
 
 export default {
   name: 'item-boolean',
@@ -87,6 +88,8 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
+    labelByLang,
   },
   components: {
   },
@@ -94,17 +97,23 @@ export default {
 </script>
 
 <template>
-  <div class="ItemBoolean" v-bind:class="{'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, 'removed': removed}">
+  <div
+    class="ItemBoolean"
+    v-bind:class="{
+      'is-locked': isLocked, 'is-unlocked': !isLocked, 'distinguish-removal': removeHover, removed: removed,
+    }">
     <div v-if="!isLocked">
-      <input type="checkbox"
+      <input
+        type="checkbox"
         class="customCheckbox-input"
         v-model="selected"
         :disabled="isLocked"
-        :aria-label="fieldKey | labelByLang" />
-      <div class="customCheckbox-icon"></div>
+        :aria-label="labelByLang(fieldKey)" />
+      <div class="customCheckbox-icon" />
     </div>
-    <span class="ItemVocab-text"
-      v-if="isLocked">{{fieldValue ? 'Yes' : 'No' | translatePhrase}}</span>
+    <span
+      class="ItemVocab-text"
+      v-if="isLocked">{{ translatePhrase(fieldValue ? 'Yes' : 'No') }}</span>
   </div>
 </template>
 
