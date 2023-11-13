@@ -325,7 +325,6 @@ export default {
     <div v-for="(entry, index) in entries" :key="entry.id">
       <language-entry
         v-model="entry.val"
-        :val="entry.val"
         :tag="entry.tag"
         :id="entry.id"
         :is-locked="isLocked"

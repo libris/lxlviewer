@@ -16,7 +16,7 @@ export default {
       type: String,
       default: '',
     },
-    val: {
+    modelValue: {
       type: String,
       default: '',
     },
@@ -127,18 +127,18 @@ export default {
     'entity-adder': EntityAdder,
   },
   watch: {
-    isLocked(val) {
-      if (!val) {
+    isLocked(modelValue) {
+      if (!modelValue) {
         this.initializeTextarea();
       }
     },
-    isExpanded(val) {
-      if (val) {
+    isExpanded(modelValue) {
+      if (modelValue) {
         this.initializeTextarea();
       }
     },
   },
-  emits: ['addLangTag', 'romanize', 'addToCache', 'update'],
+  emits: ['add-lang-tag', 'romanize', 'add-to-cache', 'update', 'remove', 'removeval', 'update:model-value'],
   methods: {
     translatePhrase,
     onLangTaggerEvent(langTag) {
@@ -197,8 +197,8 @@ export default {
         <textarea
           class="LanguageEntry-input js-itemValueInput"
           rows="1"
-          v-bind:value="val"
-          v-on:input="$emit('input', $event.target.value)"
+          v-bind:value="modelValue"
+          v-on:input="$emit('update:modelValue', $event.target.value)"
           @blur="$emit('update')"
           ref="textarea"
         />
@@ -292,7 +292,7 @@ export default {
       <div class="LanguageEntry-textcontainer">
         <div class="LanguageEntry-key">
           <div class="LanguageEntry-text">
-            {{ val }}
+            {{ modelValue }}
           </div>
         </div>
 
