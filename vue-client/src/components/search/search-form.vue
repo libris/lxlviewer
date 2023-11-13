@@ -1,5 +1,4 @@
 <script>
-import { configureCompat } from 'vue';
 import { isEmpty, cloneDeep, isArray } from 'lodash-es';
 import { marked } from 'marked';
 import { mapGetters } from 'vuex';
@@ -8,12 +7,6 @@ import PropertyMappings from '@/resources/json/propertymappings.json';
 import { buildQueryString } from '@/utils/http';
 import { translatePhrase } from '@/utils/filters';
 import RemoteDatabases from '@/components/search/remote-databases.vue';
-
-/* TODO: Remove when Vue compat is removed. See https://github.com/Akryum/floating-vue/issues/924. */
-configureCompat({
-  RENDER_FUNCTION: false,
-  WATCH_ARRAY: false,
-});
 
 export default {
   name: 'search-form',
