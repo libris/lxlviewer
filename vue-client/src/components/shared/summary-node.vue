@@ -89,7 +89,7 @@ export default {
       v-if="isLinked && !isStatic"
       :disabled="!hoverLinks"
       :triggers="['hover', 'focus']"
-      @show="$refs.previewCard.populateData()"
+      @apply-show="$refs.previewCard.populateData()"
       placement="bottom-start"
     >
       <span class="SummaryNode-link tooltip-target">

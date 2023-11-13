@@ -195,7 +195,7 @@ export default {
         class="ItemEntity-popover"
         placement="bottom-start"
         :triggers="['hover', 'focus']"
-        @show="$refs.previewCard.populateData()"
+        @apply-show="$refs.previewCard.populateData()"
       >
         <div
           class="ItemEntity chip"
