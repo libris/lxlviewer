@@ -182,21 +182,22 @@ export default {
       const user = this.user;
       user.settings.resultListType = 'detailed';
       this.$store.dispatch('setUser', user);
-    },
-    getNewResult(url) {
-      this.changeResultListStatus('loading', true);
-      const resultPromise = new Promise((resolve, reject) => {
-        httpUtil.get({ url: url, accept: 'application/ld+json' }).then((response) => {
-          // TODO: investigate if we need to do something here: https://router.vuejs.org/guide/migration/#Usage-of-history-state
-          window.history.pushState(response, 'unused', response['@id']);
-          resolve(response);
-        }, (error) => {
-          window.history.pushState({}, 'unused', url);
-          reject('Error searching...', error);
-        });
-      });
-      this.$dispatch('newresult', resultPromise);
-    },
+    // },
+    // getNewResult(url) {
+    //   this.changeResultListStatus('loading', true);
+    //   const resultPromise = new Promise((resolve, reject) => {
+    //     httpUtil.get({ url: url, accept: 'application/ld+json' }).then((response) => {
+    //       // TODO: investigate if we need to do something here: https://router.vuejs.org/guide/migration/#Usage-of-history-state
+    //       window.history.pushState(response, 'unused', response['@id']);
+    //       resolve(response);
+    //     }, (error) => {
+    //       window.history.replaceState(window.history.state, 'unused', url)
+    //       window.history.pushState({}, 'unused', url);
+    //       reject('Error searching...', error);
+    //     });
+    //   });
+    //   this.$dispatch('newresult', resultPromise);
+    // },
     // clearAllFilters() { // introduce when we have 'type' radio buttons
     //   const currentQuery = Object.assign({}, this.$route.query);
     //   const clearedQuery = pickBy(currentQuery, (value, key) => this.filters.every(el => el.variable !== key));
