@@ -59,7 +59,7 @@ export default {
       this.$store.dispatch('setUser', userObj);
     },
     featuredComparison(facet) {
-      if (this.group.dimension === '@reverse.itemOf.heldBy.@id') {
+      if (this.isCollectionGroup(this.group.dimension)) {
         // Featured code for '@reverse.itemOf.heldBy.@id'
         const userSigels = this.user.collections.map((item) => item.code);
         if (facet.object.hasOwnProperty('sigel')) {
@@ -72,6 +72,20 @@ export default {
         }
       }
       return false;
+    },
+    defaultChecked(facet) {
+      if (this.isChangeFacetGroup) {
+        const id = facet.object['@id'];
+        return this.checkedCategoriesAndSigels.includes(id);
+      }
+      return false;
+    },
+    checked(link, id) {
+      console.log('link', JSON.stringify(link));
+      console.log('id', JSON.stringify(id));
+    },
+    isCollectionGroup(dim) {
+      return dim === '@reverse.itemOf.heldBy.@id' || dim === 'concerning.@reverse.itemOf.heldBy.@id';
     },
   },
   computed: {
@@ -88,6 +102,7 @@ export default {
       const self = this;
       const list = this.group.observation.map((o) => {
         let label;
+        console.log('observation', JSON.stringify(o));
         if (o.object.hasOwnProperty('@id')) {
           label = DisplayUtil.getItemLabel(
             o.object,
@@ -108,6 +123,7 @@ export default {
           amount: o.totalItems,
           link: o.view['@id'],
           featured: self.featuredComparison(o),
+          isDefaultChecked: self.defaultChecked(o),
         };
       });
       return list;
@@ -143,8 +159,8 @@ export default {
       return sorted;
     },
     featuredFacets() {
-      let featured = this.facets.filter((o) => o.featured === true);
-      if (this.group.dimension === '@reverse.itemOf.heldBy.@id') {
+      let featured = this.facets.filter(o => o.featured === true);
+      if (this.isCollectionGroup(this.group.dimension)) {
         const activeSigel = this.user.settings.activeSigel;
         featured = sortBy(featured, (o) => o.object.sigel !== activeSigel && o.label !== activeSigel && o.label !== `library/${activeSigel}`);
       }
@@ -172,6 +188,12 @@ export default {
     },
     hasScroll() {
       return !this.revealLevels[this.currentLevel] && this.isExpanded;
+    },
+    isChangeFacetGroup() {
+      return (this.group.dimension === 'category.@id' || this.group.dimension === 'concerning.@reverse.itemOf.heldBy.@id') && this.isChangeView;
+    },
+    checkedCategoriesAndSigels() {
+      return [...this.changeCategories.map(c => c.heldBy), ...this.changeCategories.find(c => c.hasOwnProperty('triggers')).triggers];
     },
   },
   components: {
@@ -231,11 +253,13 @@ export default {
         </ul>
       </div>
     </div>
-    <ul class="FacetGroup-list">
+    <ul class="FacetGroup-list"
+        :class="{'is-expanded' : isExpanded, 'has-scroll' : hasScroll}">
       <facet
         v-for="facetItem in featuredFacets"
         :facet="facetItem"
-        :key="'featured_' + facetItem.link">
+        :key="'featured_' + facetItem.link"
+        :is-link="!isChangeFacetGroup">
         <template #icon>
           <encoding-level-icon
             v-if="group.dimension === 'meta.encodingLevel'"
@@ -244,13 +268,19 @@ export default {
             :show-iconless="false"
             v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
             :type="facetItem.object['@id']" />
+          <check-box v-if="group.dimension === 'concerning.@reverse.itemOf.heldBy.@id' && isChangeView"
+              slot="checkbox"
+              :checkedProperty="facetItem.object['@id']"
+              :isChosen="facetItem.isDefaultChecked"
+              @changed="checked(facetItem.link, facetItem.object['@id'])"></check-box>
         </template>
       </facet>
       <hr v-show="featuredFacets.length > 0">
       <facet
         v-for="facetItem in normalFacets"
         :facet="facetItem"
-        :key="facetItem.link">
+        :key="facetItem.link"
+        :is-link="!isChangeFacetGroup">
         <template #icon>
           <encoding-level-icon
             slot="icon"
@@ -262,7 +292,10 @@ export default {
             v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
             :type="facetItem.object['@id']" />
           <check-box v-if="group.dimension === 'category.@id' || group.dimension === 'concerning.@reverse.itemOf.heldBy.@id'"
-              slot="checkbox"></check-box>
+              slot="checkbox"
+              :checkedProperty="facetItem.object['@id']"
+              :isChosen="facetItem.isDefaultChecked"
+              @changed="checked(facetItem.link, facetItem.object['@id'])"></check-box>
         </template>
       </facet>
     </ul>
