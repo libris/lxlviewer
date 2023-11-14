@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
 import * as StringUtil from 'lxljs/string';
 import LensMixin from '@/components/mixins/lens-mixin';
 
@@ -18,6 +19,7 @@ export default {
     availableSigels: [],
   },
   methods: {
+    translatePhrase,
     updateSigel(e, sigel) {
       this.$store.dispatch('updateSubscribedSigel', { libraryId: this.sigelUri(sigel), checked: e.target.checked });
     },
@@ -64,7 +66,7 @@ export default {
       <i class="Categories-arrow fa fa-chevron-right"
       :class="{'icon is-expanded' : sigelIsExpanded}"
       ></i>
-      {{ 'Collections' | translatePhrase }}
+      {{ translatePhrase("Collections") }}
     </div>
     <div v-if="sigelIsExpanded">
       <div class="Categories-row" v-for="sigel in availableSigels" :key="sigel.code">
@@ -82,7 +84,7 @@ export default {
       <i class="Categories-arrow fa fa-chevron-right"
         :class="{'icon is-expanded' : categoriesIsExpanded}"
       ></i>
-      {{ 'Change categories' | translatePhrase }}
+      {{ translatePhrase("Change categories") }}
     </div>
     <div v-if="categoriesIsExpanded">
       <div class="Categories-row" v-for="category in availableCategories" :key="category['@id']">

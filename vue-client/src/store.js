@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
+import { cloneDeep, each, set, get, assign, filter, isObject, isEmpty } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';

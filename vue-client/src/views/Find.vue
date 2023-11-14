@@ -52,11 +52,9 @@ export default {
       this.emptyResults();
       if (typeof this.query !== 'undefined') {
         this.searchInProgress = true;
-        console.log('this.$route.params.perimeter', this.$route.params.perimeter);
         if (this.$route.params.perimeter === 'libris') {
           this.getLocalResult();
         } else if (this.$route.params.tool === 'changes') {
-          console.log('getChangesResult');
           this.getChangesResult();
         } else {
           this.getRemoteResult();
@@ -208,8 +206,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      console.log('route name:', this.$route.name);
-      console.log('route params:', this.$route.params);
       if (this.$route.params.perimeter !== 'libris' && this.$route.params.perimeter !== 'remote' && this.$route.params.tool !== 'changes') {
         this.$router.push({ path: '/search/' });
       }

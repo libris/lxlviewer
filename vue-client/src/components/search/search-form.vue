@@ -69,7 +69,7 @@ export default {
       } else if (this.searchTool === 'changes') {
         path = `${this.$route.path}?${this.composeQuery()}`;
       }
-      this.$router.push({ path });
+      this.$router.push(path);
     },
     clearInputs() {
       this.searchPhrase = '';

@@ -205,7 +205,7 @@ export default {
               </td>
             </tr>
           </table>
-          <h5 class="uppercaseHeading--bold">{{ 'Subscribe to change notes' | translatePhrase }}</h5>
+          <h5 class="uppercaseHeading--bold">{{ translatePhrase("Subscribe to change notes") }}</h5>
           <div class="UserSettings-changeCategories">
             <change-categories :available-sigels="sortedSigels" :userChangeCategories="userChangeCategories" :availableCategories="availableChangeCategories"/>
           </div>
