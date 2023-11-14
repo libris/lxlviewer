@@ -134,6 +134,11 @@ export default {
           class=""
           :action-labels="{ on: 'Mark as', off: 'Unmark as' }"
           tag="Flagged" />
+        <tag-switch
+          :document="focusData"
+          class=""
+          :action-labels="{ on: 'Mark as', off: 'Unmark as' }"
+          tag="Handled" />
       </div>
       <div
         class="ResultItem-relationsContainer"

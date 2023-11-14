@@ -263,6 +263,7 @@ export default {
           :class="{ 'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }" /></div>
       <facet-controls :class="{ 'hidden-xs hidden-sm': hideFacetColumn }"
           :result="result"
+          :isChangeView="$route.params.tool === 'changes'"
           v-if="result && result.stats && result.totalItems > 0 && ($route.params.perimeter === 'libris' || $route.params.tool === 'changes')" />
       <portal-target name="facetColumn" />
     </div>

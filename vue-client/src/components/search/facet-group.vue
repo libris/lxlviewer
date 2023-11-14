@@ -5,7 +5,9 @@ import * as DisplayUtil from 'lxljs/display';
 import { translatePhrase, capitalize } from '@/utils/filters';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
 import TypeIcon from '@/components/shared/type-icon.vue';
+import CheckBox from '@/components/shared/check-box';
 import FacetMixin from '@/components/mixins/facet-mixin.vue';
+
 import Facet from './facet.vue';
 
 export default {
@@ -21,6 +23,10 @@ export default {
     },
     expanded: {
       type: Boolean,
+    },
+    isChangeView: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -172,6 +178,7 @@ export default {
     Facet,
     EncodingLevelIcon,
     TypeIcon,
+    CheckBox,
   },
 };
 </script>
@@ -254,6 +261,8 @@ export default {
             :show-iconless="false"
             v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
             :type="facetItem.object['@id']" />
+          <check-box v-if="group.dimension === 'category.@id' || group.dimension === 'concerning.@reverse.itemOf.heldBy.@id'"
+              slot="checkbox"></check-box>
         </template>
       </facet>
     </ul>

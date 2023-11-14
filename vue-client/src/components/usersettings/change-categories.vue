@@ -21,6 +21,8 @@ export default {
   methods: {
     translatePhrase,
     updateSigel(e, sigel) {
+      console.log('available sigels', JSON.stringify(this.availableSigels));
+      console.log('sigelCode', sigel);
       this.$store.dispatch('updateSubscribedSigel', { libraryId: this.sigelUri(sigel), checked: e.target.checked });
     },
     updateCategory(e, categoryId) {
@@ -37,6 +39,7 @@ export default {
       return obj ? obj.triggers.includes(categoryId) : false;
     },
     isActiveSigel(sigel) {
+      console.log('this.userChangeCategories', JSON.stringify(this.userChangeCategories));
       const obj = this.userChangeCategories.find(c => c.heldBy === this.sigelUri(sigel));
       return !!obj;
     },
