@@ -52,6 +52,11 @@ export default {
     middleware: ['marc'],
   },
 
+  server: {
+    host: '127.0.0.1',
+    port: 3000
+  },
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: false,
 
