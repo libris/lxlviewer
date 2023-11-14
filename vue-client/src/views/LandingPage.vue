@@ -1,12 +1,13 @@
 <script>
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
-import LinkCardComponent from '@/components/search/link-card';
-import Copy from '@/resources/json/copy.json';
+import copy from '@/resources/json/copy.json';
+import LinkCardComponent from '@/components/search/link-card.vue';
 
 export default {
   name: 'LandingPage',
   data() {
     return {
+      copy,
       msg: 'Welcome to Your Vue.js App',
     };
   },
@@ -26,11 +27,6 @@ export default {
       return false;
     },
   },
-  computed: {
-    copy() {
-      return Copy;
-    },
-  },
   components: {
     'link-card': LinkCardComponent,
   },
@@ -41,34 +37,37 @@ export default {
   <div class="row">
     <div class="LandingPage col-md-12">
       <div class="LandingPage-linkCards">
-        <link-card v-if="widgetShouldBeShown('about-xl')" 
-          :image="copy['about-xl'].image" 
+        <link-card
+          v-if="widgetShouldBeShown('about-xl')"
+          :image="copy['about-xl'].image"
           :image-alt-text="copy['about-xl'].image_alt_text"
-          :header="copy['about-xl'].header" 
-          :text="copy['about-xl'].text" 
-          :link-text="copy['about-xl'].linkText" 
-          :link-url="copy['about-xl'].linkUrl"></link-card>
-        <link-card v-if="widgetShouldBeShown('link-blog')" 
-          :image="copy['blog'].image" 
+          :header="copy['about-xl'].header"
+          :text="copy['about-xl'].text"
+          :link-text="copy['about-xl'].linkText"
+          :link-url="copy['about-xl'].linkUrl" />
+        <link-card
+          v-if="widgetShouldBeShown('link-blog')"
+          :image="copy['blog'].image"
           :image-alt-text="copy['blog'].image_alt_text"
-          :header="copy['blog'].header" 
-          :text="copy['blog'].text" 
-          :link-text="copy['blog'].linkText" 
-          :link-url="copy['blog'].linkUrl"></link-card>
-        <link-card v-if="widgetShouldBeShown('link-studies')"
+          :header="copy['blog'].header"
+          :text="copy['blog'].text"
+          :link-text="copy['blog'].linkText"
+          :link-url="copy['blog'].linkUrl" />
+        <link-card
+          v-if="widgetShouldBeShown('link-studies')"
           :image="copy['studies'].image"
           :image-alt-text="copy['studies'].image_alt_text"
           :header="copy['studies'].header"
           :text="copy['studies'].text"
           :link-text="copy['studies'].linkText"
-          :link-url="copy['studies'].linkUrl"></link-card>
+          :link-url="copy['studies'].linkUrl" />
         <link-card
           v-if="widgetShouldBeShown('intro-component')"
           :video-url="copy['instructional-videos'].video"
           :header="copy['instructional-videos'].header"
           :text="copy['instructional-videos'].text"
           :link-text="copy['instructional-videos'].linkText"
-          :link-url="copy['instructional-videos'].linkUrl"></link-card>
+          :link-url="copy['instructional-videos'].linkUrl" />
       </div>
     </div>
   </div>

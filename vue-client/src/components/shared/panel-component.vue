@@ -1,5 +1,5 @@
 <script>
-/* 
+/*
 
   HOW TO USE:
   This component can recieve content to inject in the different slots.
@@ -23,6 +23,7 @@
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'panel-component',
@@ -38,7 +39,7 @@ export default {
     modalType: {
       default: 'normal',
       type: String,
-    }, 
+    },
     closeable: {
       default: true,
       type: Boolean,
@@ -50,7 +51,9 @@ export default {
       fadeTime: 300,
     };
   },
+  emits: ['close'],
   methods: {
+    translatePhrase,
     lockScroll(boolValue) {
       LayoutUtil.scrollLock(boolValue);
     },
@@ -66,7 +69,7 @@ export default {
     close() {
       if (this.closeable) {
         this.fadedIn = false;
-        
+
         setTimeout(() => {
           this.$emit('close');
         }, this.fadeTime);
@@ -90,15 +93,15 @@ export default {
       if (lastAction === 'close-modals') {
         this.close();
       }
-    }, 
+    },
   },
   mounted() {
     this.$nextTick(() => {
       this.$store.dispatch('setStatusValue', { property: 'panelOpen', value: true });
       if (this.status.panelOpen) {
-        this.$store.dispatch('setStatusValue', { 
-          property: 'keybindState', 
-          value: 'panel-open', 
+        this.$store.dispatch('setStatusValue', {
+          property: 'keybindState',
+          value: 'panel-open',
         });
       }
       if (window.innerWidth <= 1200 || this.user.settings.forceFullViewPanel) {
@@ -109,7 +112,7 @@ export default {
       }, 1);
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$nextTick(() => {
       this.lockScroll(false);
       if (this.status.panelOpen) {
@@ -121,41 +124,46 @@ export default {
 </script>
 
 <template>
-  <div class="PanelComponent"
-  :class="{'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger'}"
-  role="complementary">
-    <div class="PanelComponent-container" :class="{'full-view': user.settings.forceFullViewPanel }">
+  <div
+    class="PanelComponent"
+    :class="{ 'is-fadedIn': fadedIn, 'is-danger': modalType === 'danger' }"
+    role="complementary">
+    <div class="PanelComponent-container" :class="{ 'full-view': user.settings.forceFullViewPanel }">
       <div class="PanelComponent-headerContainer">
         <div class="PanelComponent-header">
           <slot name="panel-header">
             <div class="PanelComponent-titleContainer">
               <h4 class="PanelComponent-title" :title="translatedTitle">{{ translatedTitle }}</h4>
-              <slot name="panel-header-info"></slot>
+              <slot name="panel-header-info" />
             </div>
             <span class="PanelComponent-windowControl">
-              <i class="goto-search-button fa fa-search-plus icon icon--md"
+              <i
+                class="goto-search-button fa fa-search-plus icon icon--md"
                 v-show="query != null"
                 role="button"
                 tabindex="0"
-                @click="gotoSearch" 
-                :title="'Bring to main search' | translatePhrase"></i>
-              <i class="fullview-toggle-button fa fa-compress icon icon--md"
+                @click="gotoSearch"
+                :title="translatePhrase('Bring to main search')" />
+              <i
+                class="fullview-toggle-button fa fa-compress icon icon--md"
                 v-show="user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
-                @click="toggleFullView" 
-                :title="'Minimize' | translatePhrase"></i>
-              <i class="fullview-toggle-button fa fa-expand icon icon--md"
+                @click="toggleFullView"
+                :title="translatePhrase('Minimize')" />
+              <i
+                class="fullview-toggle-button fa fa-expand icon icon--md"
                 v-show="!user.settings.forceFullViewPanel"
                 role="button"
                 tabindex="0"
-                @click="toggleFullView" 
-                :title="'Expand' | translatePhrase"></i>
-              <i class="fa fa-close icon icon--md"
+                @click="toggleFullView"
+                :title="translatePhrase('Expand')" />
+              <i
+                class="fa fa-close icon icon--md"
                 role="button"
                 tabindex="0"
                 @click="close"
-                :title="'Close' | translatePhrase"></i>
+                :title="translatePhrase('Close')" />
             </span>
           </slot>
         </div>
@@ -168,7 +176,7 @@ export default {
         </slot>
       </div>
       <div class="PanelComponent-footer">
-        <slot name="panel-footer"></slot>
+        <slot name="panel-footer" />
       </div>
     </div>
   </div>
@@ -314,7 +322,7 @@ export default {
 
   &-searchStatus {
     padding: 15px 20px;
-    display: flex;    
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -364,7 +372,7 @@ export default {
 
     .fullview-toggle-button {
       width: 20px;
-      
+
       @media screen and (max-width: @screen-lg-min) {
         display: none;
       }

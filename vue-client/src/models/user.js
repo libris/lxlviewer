@@ -1,5 +1,5 @@
 import { each, find } from 'lodash-es';
-import * as md5 from 'md5';
+import md5 from 'md5';
 import URIMinter from '@/utils/uriminter';
 import * as StringUtil from 'lxljs/string';
 
@@ -45,7 +45,7 @@ export class User {
     if (this.collections.length > 0) {
       if (this.collections[0].code === '?') {
         return false;
-      } 
+      }
       return true;
     }
     return false;
@@ -99,7 +99,7 @@ export class User {
     }
     savedSettings[this.idHash] = this.settings;
     delete savedSettings[this.emailHash];
-    
+
     localStorage.setItem('userSettings', JSON.stringify(savedSettings));
   }
 
@@ -107,7 +107,7 @@ export class User {
     if (!this.settings.activeSigel) {
       return this.collections[0];
     }
-    return find(this.collections, o => o.code === this.settings.activeSigel);
+    return find(this.collections, (o) => o.code === this.settings.activeSigel);
   }
 
   getActiveLibraryUri() {
@@ -116,7 +116,7 @@ export class User {
 
   async loadUserData(apiPath) {
     const findUrl = `${apiPath}/find.jsonld?@type=EntityContainer&${
-      this.collections.map(it => `administeredBy.@id=${getLibraryUri(it.code)}`).join('&')
+      this.collections.map((it) => `administeredBy.@id=${getLibraryUri(it.code)}`).join('&')
     }`;
     const uriMinter = await createUriMinter(findUrl);
     this.uriMinter = uriMinter;

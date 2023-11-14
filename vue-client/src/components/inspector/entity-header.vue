@@ -1,6 +1,6 @@
 <script>
 /*
-  Entity summary is presented from this component, either within Inspector 
+  Entity summary is presented from this component, either within Inspector
   header or in fixed bar at top of window.
 */
 
@@ -8,9 +8,10 @@ import { each, throttle } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
-import TagSwitch from '@/components/shared/tag-switch';
-import ReverseRelations from '@/components/inspector/reverse-relations';
-import LensMixin from '@/components/mixins/lens-mixin';
+import { translatePhrase } from '@/utils/filters';
+import TagSwitch from '@/components/shared/tag-switch.vue';
+import ReverseRelations from '@/components/inspector/reverse-relations.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
 
 export default {
   name: 'entity-header',
@@ -40,8 +41,9 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     handleScroll() {
-      if (document.body.scrollTop > this.headerThreshold 
+      if (document.body.scrollTop > this.headerThreshold
       || document.documentElement.scrollTop > this.headerThreshold) {
         this.showCompact = true;
       } else {
@@ -73,8 +75,8 @@ export default {
     ]),
     recordType() {
       return VocabUtil.getRecordType(
-        this.focusData['@type'], 
-        this.resources.vocab, 
+        this.focusData['@type'],
+        this.resources.vocab,
         this.resources.context,
       );
     },
@@ -103,7 +105,7 @@ export default {
       return itemCountReady && this.totalReverseCount > 0 && this.totalReverseCount !== this.itemReverseCount;
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('scroll', throttle(this.handleScroll, 300));
   },
   mounted() {
@@ -132,27 +134,36 @@ export default {
         :should-link="false"
         :exclude-components="inspector.status.isNew ? ['id'] : []"
         :valueDisplayLimit=3
-        :handleOverflow="false">
-      </entity-summary>
+        :handleOverflow="false" />
       <div class="HeaderComponent-bottomBar">
         <div class="HeaderComponent-controls">
-          <span v-if="hiddenDetailsNumber > 1" class="HeaderComponent-showMore" @click="showAllKeys = !showAllKeys">{{ showAllKeys ? 'Show fewer' : 'Show more' | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}</span>
+          <span
+            v-if="hiddenDetailsNumber > 1"
+            class="HeaderComponent-showMore"
+            @click="showAllKeys = !showAllKeys">
+            {{ translatePhrase(showAllKeys ? 'Show fewer' : 'Show more') }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}
+          </span>
         </div>
         <div class="HeaderComponent-tags" v-if="user.isLoggedIn && inspector.status.isNew == false">
           <!-- <tag-switch :document="focusData" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Bookmark" /> -->
-          <tag-switch :document="focusData" v-if="recordType === 'Instance'" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Flagged" />
+          <tag-switch
+            :document="focusData"
+            v-if="recordType === 'Instance'"
+            class=""
+            :action-labels="{ on: 'Mark as', off: 'Unmark as' }"
+            tag="Flagged" />
         </div>
-        <reverse-relations v-show="showUsedIn"
-                           @numberOfRelations="allCount"
-                           :main-entity="focusData"
-                           :compact="false">
-        </reverse-relations>
-        <reverse-relations v-if="recordType === 'Instance'"
-                           @numberOfRelations="itemCount"
-                           :main-entity="focusData"
-                           :mode="'items'"
-                           :compact="false">
-        </reverse-relations>
+        <reverse-relations
+          v-show="showUsedIn"
+          @numberOfRelations="allCount"
+          :main-entity="focusData"
+          :compact="false" />
+        <reverse-relations
+          v-if="recordType === 'Instance'"
+          @numberOfRelations="itemCount"
+          :main-entity="focusData"
+          :mode="'items'"
+          :compact="false" />
       </div>
     </div>
     <!-- <div class="EntityHeader-body HeaderComponent-body is-compact">
@@ -194,7 +205,7 @@ export default {
       top: 0;
       left: 0;
       width: 100%;
-      
+
       @media print {
         display: none;
       }
@@ -211,7 +222,7 @@ export default {
         opacity: 0;
         transition: all 0.3s ease;
         line-height: 0;
-        
+
         &.show-compact {
           max-height: 55px;
           opacity: 1;

@@ -1,4 +1,6 @@
-const PKG_NAME = require('./package.json').name.toUpperCase();
+import { name } from './package.json';
+
+const PKG_NAME = name.toUpperCase();
 
 const lxlLogStack = [];
 

@@ -23,12 +23,12 @@ export default {
     },
     sortedFacets() {
       const unordered = this.result.stats.sliceByDimension;
-      const cmp = dim => (this.facetSettings.hasOwnProperty(dim) ? this.facetSettings[dim].facet.order : Number.MAX_VALUE);
+      const cmp = (dim) => (this.facetSettings.hasOwnProperty(dim) ? this.facetSettings[dim].facet.order : Number.MAX_VALUE);
       const ordered = Object
         .keys(unordered)
         .sort((a, b) => cmp(unordered[a].dimension) - cmp(unordered[b].dimension))
         .reduce((_sortedObj, key) => ({
-          ..._sortedObj, 
+          ..._sortedObj,
           [key]: unordered[key],
         }), {});
       return ordered;

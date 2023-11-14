@@ -10,7 +10,7 @@ function asArray(value) {
 // Additional encoding for following special chars: []()!'*
 // in order to sync with backend encoded uris
 function fixedEncodeURIComponent(str) {
-  return encodeURIComponent(str).replace(/[!'()*]/g, c => `%${c.charCodeAt(0).toString(16)}`);
+  return encodeURIComponent(str).replace(/[!'()*]/g, (c) => `%${c.charCodeAt(0).toString(16)}`);
 }
 
 export default class URIMinter {
@@ -62,7 +62,7 @@ export default class URIMinter {
         }
         const container = containerMemberMap[relationId];
         if (container) {
-          if (container.administeredBy.find(it => it[ID] === library[ID])) {
+          if (container.administeredBy.find((it) => it[ID] === library[ID])) {
             return container;
           }
         }
@@ -87,9 +87,9 @@ export default class URIMinter {
     const uri = container[ID] + fixedEncodeURIComponent(slugValue.trim());
 
     let sameAs = mainEntity.sameAs ? asArray(mainEntity.sameAs) : [];
-    if (!sameAs.find(it => it[ID] === mainEntity[ID])) {
+    if (!sameAs.find((it) => it[ID] === mainEntity[ID])) {
       sameAs.push({ [ID]: mainEntity[ID] });
-      sameAs = sameAs.filter(it => it[ID] !== uri);
+      sameAs = sameAs.filter((it) => it[ID] !== uri);
       mainEntity.sameAs = sameAs;
     }
     mainEntity[ID] = uri;

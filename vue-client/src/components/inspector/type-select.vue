@@ -1,5 +1,6 @@
 <script>
 import * as LayoutUtil from '@/utils/layout';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'type-select',
@@ -20,7 +21,9 @@ export default {
       highlight: false,
     };
   },
+  emits: ['selected', 'dismiss'],
   methods: {
+    translatePhrase,
     handleChange() {
       this.$emit('selected', this.selectedType);
     },
@@ -49,33 +52,36 @@ export default {
 </script>
 
 <template>
-  <div class="TypeSelect"
-    :class="{'is-removeable': highlight}">
-    <select class="customSelect" 
+  <div
+    class="TypeSelect"
+    :class="{ 'is-removeable': highlight }">
+    <select
+      class="customSelect"
       v-model="selectedType"
       ref="adderTypeSelect"
       @change="handleChange()"
-      :aria-label="'Choose type' | translatePhrase">
-      <option disabled value="">{{"Choose type" | translatePhrase}}</option>
-      <option v-for="(term, index) in classTree"  
+      :aria-label="translatePhrase('Choose type')">
+      <option disabled value="">{{ translatePhrase("Choose type") }}</option>
+      <option
+        v-for="(term, index) in classTree"
         v-html="options[index].label"
-        :disabled="term.abstract" 
-        :key="`${term.id}-${index}`" 
-        :value="term.id"></option>
+        :disabled="term.abstract"
+        :key="`${term.id}-${index}`"
+        :value="term.id" />
     </select>
     <div class="TypeSelect-dismissBtn" v-if="removeable">
-      <i class="fa fa-times-circle icon icon--sm" 
+      <i
+        class="fa fa-times-circle icon icon--sm"
         role="button"
         tabindex="0"
-        :aria-label="'Remove' | translatePhrase"
+        :aria-label="translatePhrase('Remove')"
         @click="dismiss()"
         @keyup.enter="dismiss()"
         @mouseover="highlight = true"
         @mouseout="highlight = false"
         @focus="highlight = true"
-        @blur="highlight = false">
-      </i>
-      </div>
+        @blur="highlight = false" />
+    </div>
   </div>
 </template>
 

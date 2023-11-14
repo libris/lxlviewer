@@ -135,13 +135,13 @@ export default {
         _sort: this.sort,
       });
 
-      this.typeArray?.forEach(type => urlSearchParams.append('@type', type));
-      
+      this.typeArray?.forEach((type) => urlSearchParams.append('@type', type));
+
       this.currentSearchParam?.searchProps
-        .forEach(searchProp => urlSearchParams.append(searchProp, searchPhrase));
-    
+        .forEach((searchProp) => urlSearchParams.append(searchProp, searchPhrase));
+
       Object.keys(this.currentSearchParam?.mappings || {})
-        .forEach(key => urlSearchParams.append(key, this.currentSearchParam.mappings[key]));
+        .forEach((key) => urlSearchParams.append(key, this.currentSearchParam.mappings[key]));
 
       if (this.fieldKey) {
         const field = VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.resources.context);
@@ -149,13 +149,13 @@ export default {
          * If field is a kbv:predicate (e.g. role) then filter linkable items depending on field and parent type.
          * */
         // A VocabUtil.isSubPropertyOf(field.subPropertyOf, 'predicate', ...) would be preferable here.
-        if (field.subPropertyOf?.find(subProp => subProp['@id'] === VocabUtil.getTermObject('predicate', this.resources.vocab, this.resources.context)['@id'])) {
+        if (field.subPropertyOf?.find((subProp) => subProp['@id'] === VocabUtil.getTermObject('predicate', this.resources.vocab, this.resources.context)['@id'])) {
           const statement = VocabUtil.getTermObject(field.domain[0]['@id'], this.resources.vocab, this.resources.context); // e.g. Contribution
-          const statementOf = statement.allowedProperties.find(p => p.domain?.find(d => d['@id'] === statement['@id'])); // e.g. contributionOf
+          const statementOf = statement.allowedProperties.find((p) => p.domain?.find((d) => d['@id'] === statement['@id'])); // e.g. contributionOf
           const subClassesOfRanges = [
             ...new Set(
               [...(statementOf.range || []), ...(statementOf.rangeIncludes || [])].flatMap( // iterate over both range and rangeIncludes
-                rangeItem => VocabUtil.getSubClassChain(rangeItem['@id'], this.resources.vocabClasses, this.resources.context), // get subclasses of e.g. Endeavour
+                (rangeItem) => VocabUtil.getSubClassChain(rangeItem['@id'], this.resources.vocabClasses, this.resources.context), // get subclasses of e.g. Endeavour
               ),
             ),
           ];
@@ -169,11 +169,11 @@ export default {
           );
 
           const linkableDomainIds = fieldParentBaseClasses
-            .filter(baseClassName => subClassesOfRanges.includes(baseClassName))
-            .map((className => VocabUtil.getTermObject(className, this.resources.vocab, this.resources.context)['@id']));
+            .filter((baseClassName) => subClassesOfRanges.includes(baseClassName))
+            .map(((className) => VocabUtil.getTermObject(className, this.resources.vocab, this.resources.context)['@id']));
 
           // Append urlSearchParams with linkable domain ids
-          linkableDomainIds.forEach(className => urlSearchParams.append('or-domain.@id', className));
+          linkableDomainIds.forEach((className) => urlSearchParams.append('or-domain.@id', className));
         }
       }
 
@@ -250,7 +250,7 @@ export default {
       if (this.allValuesFrom.length > 0) {
         treeSource = this.allValuesFrom;
       }
-      const tree = treeSource.map(type => VocabUtil.getTree(
+      const tree = treeSource.map((type) => VocabUtil.getTree(
         type,
         this.resources.vocab,
         this.resources.context,

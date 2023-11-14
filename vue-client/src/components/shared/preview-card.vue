@@ -1,7 +1,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import * as HttpUtil from '@/utils/http';
-import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
+import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
 
 export default {
   name: 'preview-card',
@@ -59,7 +59,9 @@ export default {
       'settings',
     ]),
     shouldFetch() {
-      if (this.focusData['@id'].startsWith(this.settings.dataPath) || this.recordId.startsWith(this.settings.dataPath) || (this.focusData.hasOwnProperty('meta') && this.focusData.meta['@id'].startsWith(this.settings.dataPath))) {
+      if (this.focusData['@id'].startsWith(this.settings.dataPath)
+      || this.recordId.startsWith(this.settings.dataPath)
+      || (this.focusData.hasOwnProperty('meta') && this.focusData.meta['@id'].startsWith(this.settings.dataPath))) {
         return this.fetchedData === null;
       }
       return false;
@@ -87,9 +89,9 @@ export default {
 
 <template>
   <div class="PreviewCard">
-    <div class="PreviewCard-spinner" :class="{ 'is-active' : fetchStatus !== null }">
-      <span v-if="fetchStatus === 'loading'">Laddar <i class="fa-spin fa fa-circle-o-notch"></i></span>
-      <span v-if="fetchStatus === 'error'" class="fetchError">Laddningsfel <i class="fa fa-times"></i></span>
+    <div class="PreviewCard-spinner" :class="{ 'is-active': fetchStatus !== null }">
+      <span v-if="fetchStatus === 'loading'">Laddar <i class="fa-spin fa fa-circle-o-notch" /></span>
+      <span v-if="fetchStatus === 'error'" class="fetchError">Laddningsfel <i class="fa fa-times" /></span>
     </div>
     <entity-summary :animate="true" :focus-data="fullData" :hover-links="false" />
   </div>

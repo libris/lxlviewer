@@ -26,16 +26,17 @@
 
 Cypress.Commands.add('login', () => {
   cy.on('window:before:load', (win) => {
-    win.fetch = null;
+    // win.fetch = null;
   });
-  cy.server(); // enable response stubbing
   window.localStorage.setItem('at', 'aRandomString');
   cy.fixture('userObject').then((json) => {
-    cy.route({
-      method: 'GET', // Route all GET requests
-      url: 'https://login.libris.kb.se/oauth/verify', // that have a URL that matches '/users/*'
-      response: json, // and force the response to be: []
-    });
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '**/oauth/verify',
+      },
+      json,
+    ).as('getUser');
   });
 });
 

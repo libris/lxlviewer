@@ -1,5 +1,5 @@
 <script>
-/* 
+/*
 
   HOW TO USE:
   This component can show a tablist and emit an event on tab click.
@@ -7,16 +7,16 @@
   Props:
     * tabs      - Expects an array of tab-objects
     * active    - Expects a string that it will match against the id on the tab-object and put as active.
-    * link      - If true, component expects tab-objects to have a link prop. 
+    * link      - If true, component expects tab-objects to have a link prop.
                   It will then render a <router-link> instead of emitting an event.
-    * lookStyle - Expects a string which will be used to "theme" the component (dark/light).    
+    * lookStyle - Expects a string which will be used to "theme" the component (dark/light).
 
   Tab-Objects:
     A tab object needs two things.
       * id          -  Just an identifier, it is used when emitting the go-event and to match against the "active" prop.
       * text        -  A fancy text for your tab, which should be in english. The component will automatically try to
                         translate this text to the users language, based on the i18n file.
-      * icon        -  (Optional) The tab icon                        
+      * icon        -  (Optional) The tab icon
       * html        -  (Optional) Raw html for the item, will replace 'text'
       * disabled    -  (Optional) Boolean - disables the tab
       * tooltipText -  (Optional) Display given text on tab hover or focus
@@ -43,6 +43,8 @@
 
 */
 
+import { translatePhrase } from '@/utils/filters';
+
 export default {
   name: 'tab-menu',
   props: {
@@ -67,7 +69,9 @@ export default {
     return {
     };
   },
+  emits: ['go'],
   methods: {
+    translatePhrase,
     go(name) {
       this.$emit('go', name);
     },
@@ -76,7 +80,7 @@ export default {
         const $activeTab = this.$el.querySelector('.is-active');
         const $tabList = this.$refs.tablist;
         if ($activeTab && $tabList) {
-          const $underline = this.$refs.underline;          
+          const $underline = this.$refs.underline;
           const paddingLeft = parseInt(window.getComputedStyle($activeTab).paddingLeft.replace('px', ''));
           const paddingRight = parseInt(window.getComputedStyle($activeTab).paddingRight.replace('px', ''));
           const left = `${$activeTab.offsetLeft + paddingLeft}px`;
@@ -89,10 +93,10 @@ export default {
   },
   computed: {
     hasActive() {
-      return this.tabs.some(el => el.id === this.active);
+      return this.tabs.some((el) => el.id === this.active);
     },
     hasIcons() {
-      return this.tabs.some(el => el.icon);
+      return this.tabs.some((el) => el.icon);
     },
   },
   components: {
@@ -106,7 +110,7 @@ export default {
         });
       }
     },
-    tabs() {      
+    tabs() {
       this.moveUnderline();
     },
     active(value, oldValue) {
@@ -129,51 +133,53 @@ export default {
 </script>
 
 <template>
-  <div class="TabMenu" :class="[`style-${lookStyle}`, {'has-icons': hasIcons }]">
+  <div class="TabMenu" :class="[`style-${lookStyle}`, { 'has-icons': hasIcons }]">
     <ul v-if="!link" class="TabMenu-tabList" role="tablist" ref="tablist">
-      <li class="TabMenu-tab"
-        v-for="item in tabs" 
+      <li
+        class="TabMenu-tab"
+        v-for="item in tabs"
         tabindex="0"
-        :key="item.id" 
-        @click="item.disabled ? null : go(item.id)" 
+        :key="item.id"
+        @click="item.disabled ? null : go(item.id)"
         @keyup.enter="item.disabled ? null : go(item.id)"
         v-tooltip="{
-          trigger: 'hover focus',
-          content: item.tooltipText
+          triggers: ['hover', 'focus'],
+          content: item.tooltipText,
         }"
-        :class="{'is-active': active === item.id, 'is-disabled': item.disabled }"
+        :class="{ 'is-active': active === item.id, 'is-disabled': item.disabled }"
         role="tab">
-          <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-          <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
+        <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`" />
+        <span class="TabMenu-tabText" :class="{ 'hidden-xs': item.icon }" v-if="item.html" v-html="item.html" />
+        <span class="TabMenu-tabText" :class="{ 'hidden-xs': item.icon }" v-else>{{ translatePhrase(item.text) }}</span>
       </li>
     </ul>
     <ul v-else class="TabMenu-tabList" ref="tablist">
-      <li class="TabMenu-tab" 
+      <li
+        class="TabMenu-tab"
         v-for="item in tabs"
-        :class="{'is-active': active === item.id, 'is-disabled': item.disabled, 'has-badge': item.badge && item.badge.value }"
+        :class="{ 'is-active': active === item.id, 'is-disabled': item.disabled, 'has-badge': item.badge && item.badge.value }"
         :key="item.id">
-          <router-link class="TabMenu-link"
-            :event="item.disabled ? null : 'click'"            
-            :to="item.link"
-            tabindex="0"
-            v-tooltip="{
-              trigger: 'hover focus',
-              content: item.tooltipText
-            }">        
-            <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`"></i>
-            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-if="item.html" v-html="item.html"></span>
-            <span class="TabMenu-tabText" :class="{'hidden-xs': item.icon }" v-else>{{item.text | translatePhrase}}</span>
-          </router-link>
-          <span v-if="item.badge" class="badge UserCare-badge" :class="'badge-' + item.badge.type">{{ item.badge.value }}</span>
+        <router-link
+          class="TabMenu-link"
+          :event="item.disabled ? null : 'click'"
+          :to="item.link"
+          tabindex="0"
+          v-tooltip="{
+            trigger: 'hover focus',
+            content: item.tooltipText,
+          }">
+          <i v-if="item.icon" class="TabMenu-tabIcon visible-xs-block" :class="`fa fa-fw fa-${item.icon}`" />
+          <span class="TabMenu-tabText" :class="{ 'hidden-xs': item.icon }" v-if="item.html" v-html="item.html" />
+          <span class="TabMenu-tabText" :class="{ 'hidden-xs': item.icon }" v-else>{{ translatePhrase(item.text) }}</span>
+        </router-link>
+        <span v-if="item.badge" class="badge UserCare-badge" :class="'badge-' + item.badge.type">{{ item.badge.value }}</span>
       </li>
     </ul>
-    <hr v-show="hasActive" class="TabMenu-underline" :class="{'hidden-xs' : hasIcons}" ref="underline">
+    <hr v-show="hasActive" class="TabMenu-underline" :class="{ 'hidden-xs': hasIcons }" ref="underline">
   </div>
 </template>
 
 <style lang="less">
-
 
 .user-is-tabbing {
   .TabMenu {
@@ -195,7 +201,7 @@ export default {
   &-link,
   &-tabText {
     color: @grey-dark;
-    
+
     .style-dark & {
       color: @grey-light;
     }
@@ -218,15 +224,15 @@ export default {
 
     .TabMenu-tab.is-disabled & {
       color: @grey-light;
-      cursor: not-allowed;      
+      cursor: not-allowed;
       .style-dark & {
         color: @grey-darker;
       }
-      
+
     }
   }
 
-  &-link {    
+  &-link {
     display: inline-block;
     text-decoration: none;
     font-size: unset;
@@ -236,11 +242,11 @@ export default {
     &:focus {
       text-decoration: none;
     }
-    
+
     @media screen and (min-width: @screen-sm) {
       font-size: 15px;
       font-size: 1.5rem;
-    }    
+    }
   }
 
   &-tab {
@@ -249,7 +255,7 @@ export default {
     text-decoration: none;
     position: relative;
     display: inline-block;
-    height: 100%;    
+    height: 100%;
     text-transform: uppercase;
     transition: color 0.2s ease;
     white-space: nowrap;
@@ -263,11 +269,11 @@ export default {
         border-radius: 4px;
       }
     }
-    
+
     @media screen and (min-width: @screen-sm) {
       .has-icons & {
-        padding: 0 10px;        
-        &.is-active {        
+        padding: 0 10px;
+        &.is-active {
           background-color: transparent;
           border-radius: 0;
         }
@@ -304,7 +310,7 @@ export default {
     font-size: 1.6rem;
   }
   &-tabList {
-    margin: 0 0 0 -10px;    
+    margin: 0 0 0 -10px;
     height: 100%;
     padding: 0;
     white-space: nowrap;
@@ -323,7 +329,7 @@ export default {
   &-underline {
     position: absolute;
     display: inline-block;
-    transition: all 0.25s ease .025s;    
+    transition: all 0.25s ease .025s;
     height: 3px;
     left: 0;
     bottom: 8px;
@@ -333,7 +339,7 @@ export default {
     background-color: @brand-primary;
     .style-dark & {
       background-color: #f7a07b;
-    }    
+    }
   }
 
   &-linkContainer {

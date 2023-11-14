@@ -1,15 +1,15 @@
-const HistoryUtil = require('@/utils/history');
+import { buildDisplayData } from '@/utils/history';
 
-const getLabel = s => `L:${s}`;
+const getLabel = (s) => `L:${s}`;
 
 test('empty data and paths', () => {
   const prev = {};
   const curr = {};
   const added = [];
   const removed = [];
-  
-  const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
-  
+
+  const [data, paths] = buildDisplayData(prev, curr, added, removed, getLabel);
+
   expect(data).toEqual({});
   expect(paths).toEqual({
     added: [],
@@ -18,14 +18,13 @@ test('empty data and paths', () => {
   });
 });
 
-
 test('modify string', () => {
   const prev = { a: 'x' };
   const curr = { a: 'y' };
   const added = [['a']];
   const removed = [['a']];
 
-  const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
+  const [data, paths] = buildDisplayData(prev, curr, added, removed, getLabel);
 
   expect(data).toEqual({
     a: 'L:x → L:y',
@@ -36,7 +35,6 @@ test('modify string', () => {
     modified: ['a'],
   });
 });
-
 
 test('property added', () => {
   const prev = {
@@ -49,7 +47,7 @@ test('property added', () => {
   const added = [['p2']];
   const removed = [];
 
-  const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
+  const [data, paths] = buildDisplayData(prev, curr, added, removed, getLabel);
 
   expect(data).toEqual({
     p1: 'x',
@@ -61,7 +59,6 @@ test('property added', () => {
     modified: [],
   });
 });
-
 
 test('remove + add in array', () => {
   const prev = {
@@ -77,7 +74,7 @@ test('remove + add in array', () => {
   const added = [['p', 0]];
   const removed = [['p', 0]];
 
-  const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
+  const [data, paths] = buildDisplayData(prev, curr, added, removed, getLabel);
 
   expect(data).toEqual({
     p: [
@@ -91,7 +88,6 @@ test('remove + add in array', () => {
     modified: [],
   });
 });
-
 
 test('remove + add in array', () => {
   const prev = {
@@ -117,7 +113,7 @@ test('remove + add in array', () => {
   const added = [['p', 0], ['p', 2], ['p', 4]];
   const removed = [['p', 0], ['p', 2], ['p', 4]];
 
-  const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
+  const [data, paths] = buildDisplayData(prev, curr, added, removed, getLabel);
 
   expect(data).toEqual({
     p: [
@@ -139,7 +135,6 @@ test('remove + add in array', () => {
   });
 });
 
-
 test('object replaced', () => {
   const prev = {
     p: { '@id': 'a' },
@@ -150,7 +145,7 @@ test('object replaced', () => {
   const added = [['p']];
   const removed = [['p']];
 
-  const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
+  const [data, paths] = buildDisplayData(prev, curr, added, removed, getLabel);
 
   expect(data).toEqual({
     p: [
@@ -165,7 +160,6 @@ test('object replaced', () => {
   });
 });
 
-
 test('string to array', () => {
   const prev = {
     p: '1',
@@ -179,7 +173,7 @@ test('string to array', () => {
   const added = [['p']];
   const removed = [['p']];
 
-  const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
+  const [data, paths] = buildDisplayData(prev, curr, added, removed, getLabel);
 
   expect(data).toEqual({
     p: [
@@ -195,7 +189,6 @@ test('string to array', () => {
   });
 });
 
-
 test('array to string', () => {
   const prev = {
     p: [
@@ -209,7 +202,7 @@ test('array to string', () => {
   const added = [['p']];
   const removed = [['p']];
 
-  const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
+  const [data, paths] = buildDisplayData(prev, curr, added, removed, getLabel);
 
   expect(data).toEqual({
     p: [
@@ -262,7 +255,7 @@ test('remove + add in array + nested', () => {
   const added = [['p', 0], ['p', 2, 'p', 1], ['p', 2, 'p', 3], ['p', 4]];
   const removed = [['p', 0], ['p', 2, 'p', 1], ['p', 4]];
 
-  const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
+  const [data, paths] = buildDisplayData(prev, curr, added, removed, getLabel);
 
   expect(data).toEqual({
     p: [
@@ -290,7 +283,6 @@ test('remove + add in array + nested', () => {
   });
 });
 
-
 test('replace object and modify string', () => {
   const prev = {
     p: [
@@ -313,7 +305,7 @@ test('replace object and modify string', () => {
   const added = [['p', 0], ['p', 1], ['p', 3], ['p', 4]];
   const removed = [['p', 0], ['p', 1], ['p', 3], ['p', 4]];
 
-  const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
+  const [data, paths] = buildDisplayData(prev, curr, added, removed, getLabel);
 
   expect(data).toEqual({
     p: [
@@ -326,15 +318,13 @@ test('replace object and modify string', () => {
       { '@id': 'i1b' },
     ],
   });
-  
- 
+
   expect(paths).toEqual({
     added: ['p[1]', 'p[5]'],
     removed: ['p[2]', 'p[6]'],
     modified: ['p[0]', 'p[4]'],
   });
 });
-
 
 test('modify + add string', () => {
   const prev = {
@@ -352,14 +342,14 @@ test('modify + add string', () => {
       { c: [
         's1',
         's3',
-        's4', 
+        's4',
       ] },
     ],
   };
   const added = [['i', 1, 'c', 1], ['i', 1, 'c', 2]];
   const removed = [['i', 1, 'c', 1]];
 
-  const [data, paths] = HistoryUtil.buildDisplayData(prev, curr, added, removed, getLabel);
+  const [data, paths] = buildDisplayData(prev, curr, added, removed, getLabel);
 
   expect(data).toEqual({
     i: [
@@ -371,7 +361,7 @@ test('modify + add string', () => {
       ] },
     ],
   });
-  
+
   expect(paths).toEqual({
     added: ['i[1].c[2]'],
     removed: [],

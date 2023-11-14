@@ -3,8 +3,11 @@
   Changeset list
 */
 import { mapGetters } from 'vuex';
-import LensMixin from '@/components/mixins/lens-mixin';
+import { Dropdown } from 'floating-vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
 import SummaryNode from '@/components/shared/summary-node.vue';
+import { translatePhrase } from '@/utils/filters';
+import { formatDateTime } from '@/utils/datetime';
 
 export default {
   mixins: [LensMixin],
@@ -25,6 +28,7 @@ export default {
       inspectingPath: '',
     };
   },
+  emits: ['version-selected'],
   computed: {
     ...mapGetters([
       'inspector',
@@ -52,6 +56,8 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
+    formatDateTime,
     isGlobalChanges(changeSet) {
       return changeSet.agent['@id'].includes('sys/globalchanges');
     },
@@ -60,6 +66,7 @@ export default {
     },
   },
   components: {
+    Dropdown,
     SummaryNode,
   },
   mounted() {
@@ -69,22 +76,40 @@ export default {
 
 <template>
   <div class="VersionHistory-changeSets" v-if="changeSetsReversed">
-    <div class="ChangeSet" v-for="(changeSet, index) in changeSetsReversed" ref="changeSet" :key="changeSet.date" @click="selectVersion(index)" @keyup.enter="selectVersion(index)" :class="{ 'selected': selectedVersion == index }" tabindex=0>
-      <div class="ChangeSet-changeSetContainer" :class="{ 'selected': selectedVersion == index }">
-        <span class="ChangeSet-currentVersion" :class="{ 'selected': selectedVersion == index }" v-if="index == 0">{{"Current version" | translatePhrase}}</span>
+    <div
+      class="ChangeSet"
+      v-for="(changeSet, index) in changeSetsReversed"
+      ref="changeSet"
+      :key="changeSet.date"
+      @click="selectVersion(index)"
+      @keyup.enter="selectVersion(index)"
+      :class="{ selected: selectedVersion == index }"
+      tabindex=0>
+      <div class="ChangeSet-changeSetContainer" :class="{ selected: selectedVersion == index }">
+        <span
+          class="ChangeSet-currentVersion"
+          :class="{ selected: selectedVersion == index }"
+          v-if="index == 0">{{ translatePhrase("Current version")}}</span>
         <div class="ChangeSet-dateContainer">
-        <span class="ChangeSet-date" :class="{ 'selected': selectedVersion == index }">{{ $moment(changeSet.date).format('lll') }}</span>
-        <span class="ChangeSet-tool" v-if="changeSet.tool['@id'] !== 'https://id.kb.se/generator/crud'">{{"by machine" | translatePhrase}}</span>
+          <span class="ChangeSet-date" :class="{ selected: selectedVersion == index }">{{ formatDateTime(changeSet.date) }}</span>
+          <span class="ChangeSet-tool" v-if="changeSet.tool['@id'] !== 'https://id.kb.se/generator/crud'">{{ translatePhrase("by machine") }}</span>
         </div>
-        <span class="ChangeSet-author" :class="{ 'selected': selectedVersion == index }">
-          <SummaryNode :is-static="true" :hover-links="false" :handle-overflow="false" v-if="changeSet.agent && !isGlobalChanges(changeSet)" :item="changeSet.agent" :is-last="true" :field-key="'agent'"/>
+        <span class="ChangeSet-author" :class="{ selected: selectedVersion == index }">
+          <SummaryNode
+            :is-static="true"
+            :hover-links="false"
+            :handle-overflow="false"
+            v-if="changeSet.agent && !isGlobalChanges(changeSet)"
+            :item="changeSet.agent"
+            :is-last="true"
+            :field-key="'agent'" />
           <span v-if="isGlobalChanges(changeSet)">
-                <v-popover placement="bottom-start">
-                  {{ 'Libris global changes' | translatePhrase }}
-                  <template slot="popover">
-                    <span>{{changeSet.agent['@id']}}</span>
-                  </template>
-                </v-popover>
+            <Dropdown placement="bottom-start" :triggers="['hover', 'focus']">
+              {{ translatePhrase('Libris global changes') }}
+              <template #popper>
+                <span>{{changeSet.agent['@id']}}</span>
+              </template>
+            </Dropdown>
           </span>
         </span>
       </div>

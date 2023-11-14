@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import PanelSearchItem from '@/components/search/panel-search-item';
+import PanelSearchItem from '@/components/search/panel-search-item.vue';
 
 export default {
   name: 'panel-search-list',
@@ -13,7 +13,9 @@ export default {
       type: Array,
       default: () => [],
     },
-    icon: null,
+    icon: {
+      default: null,
+    },
     text: {
       type: String,
       default: '',
@@ -36,6 +38,7 @@ export default {
       default: () => {},
     },
   },
+  emits: ['use-item'],
   data() {
     return {
       keyword: '',
@@ -49,7 +52,7 @@ export default {
     isReplaced(item) {
       if ('isReplacedBy' in item) {
         return true;
-      } 
+      }
 
       return false;
     },
@@ -81,12 +84,12 @@ export default {
 
 <template>
   <div class="PanelSearchResult">
-    <ul class="PanelSearchResult-list js-field-list" v-show="results.length > 0" >
+    <ul class="PanelSearchResult-list js-field-list" v-show="results.length > 0">
       <panel-search-item
-        v-for="(item, index) in results" 
+        v-for="(item, index) in results"
         :is-replaced="isReplaced(item)"
-        :focus-data="item" 
-        :is-disabled="itemIsAdded(item)" 
+        :focus-data="item"
+        :is-disabled="itemIsAdded(item)"
         :add-link="false"
         :path="path"
         :key="index"
@@ -96,7 +99,7 @@ export default {
         :is-compact="isCompact"
         :has-action="hasAction"
         @use-item="useItem(item)"
-        ></panel-search-item>
+      />
     </ul>
   </div>
 </template>

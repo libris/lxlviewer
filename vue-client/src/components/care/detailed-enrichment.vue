@@ -3,10 +3,11 @@ import { mapGetters, mapActions } from 'vuex';
 import { difference, intersection, cloneDeep, isArray, union, isEqual, uniqWith, remove } from 'lodash-es';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
-import Field from '@/components/inspector/field';
-import Button from '@/components/shared/button';
-import TabMenu from '@/components/shared/tab-menu';
-import EntitySummary from '@/components/shared/entity-summary';
+import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
+import Field from '@/components/inspector/field.vue';
+import Button from '@/components/shared/button.vue';
+import TabMenu from '@/components/shared/tab-menu.vue';
+import EntitySummary from '@/components/shared/entity-summary.vue';
 
 export default {
   name: 'DetailedEnrichment',
@@ -42,7 +43,7 @@ export default {
     },
     formTabs() {
       return [
-        { id: 'mainEntity', text: this.$options.filters.labelByLang(this.recordType) },
+        { id: 'mainEntity', text: labelByLang(this.recordType) },
         { id: 'record', text: 'Admin metadata' },
       ];
     },
@@ -59,10 +60,10 @@ export default {
 
       return intersection(bothSorted, this.allKeys); // Important not to switch order of these params, since we sort on the first
     },
-    filteredKeys() {      
+    filteredKeys() {
       const filteredKeys = this.sortedKeys;
       // filter out keys we don't want in enrichment form
-      remove(filteredKeys, e => e === '@reverse');      
+      remove(filteredKeys, (e) => e === '@reverse');
       return filteredKeys;
     },
     source() {
@@ -165,6 +166,9 @@ export default {
   watch: {
   },
   methods: {
+    translatePhrase,
+    labelByLang,
+    capitalize,
     ...mapActions([
       'setEnrichmentResult',
     ]),
@@ -278,27 +282,25 @@ export default {
         <div class="DetailedEnrichment-fieldRow">
           <div class="DetailedEnrichment-columnHeader sourceColumn">
             <div class="DetailedEnrichment-summaryLabel">
-              {{ 'Enrich from' | translatePhrase }}
+              {{ translatePhrase('Enrich from') }}
             </div>
             <div class="DetailedEnrichment-summaryContainer">
               <entity-summary
                 :focus-data="enrichment.data.source['mainEntity']"
                 :should-link="false"
-                :exclude-components="[]">
-              </entity-summary>
+                :exclude-components="[]" />
             </div>
           </div>
-          <div class="DetailedEnrichment-actionHeader actionColumn"></div>
+          <div class="DetailedEnrichment-actionHeader actionColumn" />
           <div class="DetailedEnrichment-columnHeader resultColumn non-existing">
             <div class="DetailedEnrichment-summaryLabel">
-              {{ 'Result' | translatePhrase }}
+              {{ translatePhrase('Result') }}
             </div>
             <div class="DetailedEnrichment-summaryContainer">
               <entity-summary
                 :focus-data="resultObject['mainEntity']"
                 :should-link="false"
-                :exclude-components="[]">
-              </entity-summary>
+                :exclude-components="[]" />
             </div>
           </div>
         </div>
@@ -307,53 +309,81 @@ export default {
       <div class="DetailedEnrichment-row" v-for="key in filteredKeys" :key="key">
         <div class="DetailedEnrichment-labelContainer uppercaseHeading">
           <div v-show="key !== '@type'" class="DetailedEnrichment-label sourceColumn">
-            {{ key | labelByLang | capitalize }}
+            {{ capitalize(labelByLang(key)) }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label sourceColumn">
-            {{ 'Type' | translatePhrase | capitalize }}
+            {{ capitalize(translatePhrase('Type')) }}
           </div>
-          <div class="DetailedEnrichment-label actionColumn">
-          </div>
+          <div class="DetailedEnrichment-label actionColumn" />
           <div v-show="key !== '@type'" class="DetailedEnrichment-label resultColumn">
-            {{ key | labelByLang | capitalize }}
+            {{ capitalize(labelByLang(key)) }}
           </div>
           <div v-show="key === '@type'" class="DetailedEnrichment-label resultColumn">
-            {{ 'Type' | translatePhrase | capitalize }}
+            {{ capitalize(translatePhrase('Type')) }}
           </div>
         </div>
         <div class="DetailedEnrichment-fieldRow">
           <div class="DetailedEnrichment-sourceField sourceColumn" :class="{ 'non-existing': source.hasOwnProperty(key) === false }">
-            <field class="FieldList-item"
+            <field
+              class="FieldList-item"
               v-if="enrichment.data.source[formFocus].hasOwnProperty(key)"
-              v-bind:class="{ 'locked': true }" 
-              :entity-type="enrichment.data.source[formFocus]['@type']" 
-              :is-inner="false" 
-              :is-removable="false" 
-              :is-locked="true" 
+              v-bind:class="{ locked: true }"
+              :entity-type="enrichment.data.source[formFocus]['@type']"
+              :is-inner="false"
+              :is-removable="false"
+              :is-locked="true"
               :show-key="false"
-              :field-key="key" 
-              :field-value="enrichment.data.source[formFocus][key]" 
+              :field-key="key"
+              :field-value="enrichment.data.source[formFocus][key]"
               :parent-path="formFocus" />
           </div>
           <div class="DetailedEnrichment-buttonContainer actionColumn">
-            <div class="DetailedEnrichment-buttons" v-if="settings.lockedProperties.indexOf(key) === -1">
-              <button-component :inverted="true" class="Button-default" @click="addValue(key)" :label="'Extend'" icon="plus" size="large" :disabled="canBeDiffAdded(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
-              <button-component :inverted="true" class="Button-accent3" @click="replaceValue(key)" :label="'Replace'" icon="arrow-right" size="large" :disabled="canBeDiffReplaced(key) === false" v-if="modifiedKeys.indexOf(key) === -1" />
-              <button-component :inverted="true" class="Button-info" @click="undo(key)" icon="undo" :label="'Undo'" size="large" v-if="modifiedKeys.indexOf(key) > -1" />
+            <div
+              class="DetailedEnrichment-buttons"
+              v-if="settings.lockedProperties.indexOf(key) === -1">
+              <button-component
+                :inverted="true"
+                class="Button-default"
+                @click="addValue(key)"
+                :label="'Extend'"
+                icon="plus"
+                size="large"
+                :disabled="canBeDiffAdded(key) === false"
+                v-if="modifiedKeys.indexOf(key) === -1" />
+              <button-component
+                :inverted="true"
+                class="Button-accent3"
+                @click="replaceValue(key)"
+                :label="'Replace'"
+                icon="arrow-right"
+                size="large"
+                :disabled="canBeDiffReplaced(key) === false"
+                v-if="modifiedKeys.indexOf(key) === -1" />
+              <button-component
+                :inverted="true"
+                class="Button-info"
+                @click="undo(key)"
+                icon="undo"
+                :label="'Undo'"
+                size="large"
+                v-if="modifiedKeys.indexOf(key) > -1" />
             </div>
           </div>
-          <div class="DetailedEnrichment-resultField resultColumn" :class="{ 'non-existing': result.hasOwnProperty(key) === false, 'is-diff': isDiffing(key), 'is-new': newKeys.indexOf(key) > -1 }">
-            <field class="FieldList-item"
+          <div
+            class="DetailedEnrichment-resultField resultColumn"
+            :class="{ 'non-existing': result.hasOwnProperty(key) === false, 'is-diff': isDiffing(key), 'is-new': newKeys.indexOf(key) > -1 }">
+            <field
+              class="FieldList-item"
               v-if="resultObject !== null && resultObject[formFocus].hasOwnProperty(key)"
-              v-bind:class="{ 'locked': true }" 
-              :entity-type="resultObject[formFocus]['@type']" 
-              :is-inner="false" 
-              :is-removable="false" 
-              :is-locked="true" 
+              v-bind:class="{ locked: true }"
+              :entity-type="resultObject[formFocus]['@type']"
+              :is-inner="false"
+              :is-removable="false"
+              :is-locked="true"
               :show-key="false"
               :show-diffs="true"
-              :field-key="key" 
-              :field-value="resultObject[formFocus][key]" 
+              :field-key="key"
+              :field-value="resultObject[formFocus][key]"
               :old-value="enrichment.data.target[formFocus][key]"
               :is-diff="isDiffing(key)"
               :is-new="newKeys.indexOf(key) > -1"
@@ -363,8 +393,8 @@ export default {
       </div>
     </div>
     <div class="DetailedEnrichment-dialog" :class="{ 'is-floating': floatingDialogs }">
-      <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ 'Cancel' | translatePhrase }}</button>
-      <button class="btn btn--md btn-primary" @click="confirm" @keyup.enter="confirm">{{ 'Enrich' | translatePhrase }}</button>
+      <button class="btn btn--md btn-info" @click="cancel" @keyup.enter="cancel">{{ translatePhrase('Cancel') }}</button>
+      <button class="btn btn--md btn-primary" @click="confirm" @keyup.enter="confirm">{{ translatePhrase('Enrich') }}</button>
     </div>
   </div>
 </template>

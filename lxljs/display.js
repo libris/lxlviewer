@@ -391,13 +391,13 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
 
   // Is this a link?
   if (trueItem.hasOwnProperty('@id') && !trueItem.hasOwnProperty('@type')) {
+    if (trueItem['@id'] === 'https://id.kb.se/vocab/') {
+      return {};
+    }
     const termObj = VocabUtil.getTermObject(trueItem['@id'], resources.vocab, resources.context);
     if (termObj != null) {
       const label = termObj.labelByLang ? termObj.labelByLang[settings.language] : termObj.label;
       return label ? { label } : trueItem;
-    }
-    if (trueItem['@id'] === 'https://id.kb.se/vocab/') {
-      return {};
     }
     // If we have the entity in quoted, replace our link-object with the entity
     if (quoted && quoted.hasOwnProperty(trueItem['@id'])) {

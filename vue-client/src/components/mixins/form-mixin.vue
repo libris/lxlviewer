@@ -4,9 +4,14 @@ import { mapGetters } from 'vuex';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
+import DisplayGroups from '@/resources/json/displayGroups.json';
 
 export default {
   props: {
+    allSearchTypes: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -16,7 +21,7 @@ export default {
     groupItem(item) {
       let groupedItems = {};
 
-      // get label and add it to the object for sorting        
+      // get label and add it to the object for sorting
       item.map((obj) => {
         obj.label = this.getLabel(obj);
         return obj;
@@ -26,14 +31,13 @@ export default {
       item.sort((a, b) => a.label.localeCompare(b.label, 'sv'));
 
       // group by first letter
-      groupedItems = groupBy(item, i => i.label.substring(0, 1));
+      groupedItems = groupBy(item, (i) => i.label.substring(0, 1));
 
       // delete label
       Object.keys(groupedItems).forEach((k) => {
-        groupedItems[k].forEach(v => delete v.label);
+        groupedItems[k].forEach((v) => delete v.label);
       });
 
-      
       return groupedItems;
     },
   },
@@ -53,10 +57,10 @@ export default {
     getClassTree() {
       let tree = [];
       if (this.allSearchTypes && this.allSearchTypes.length > 0) {
-        tree = this.allSearchTypes.map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
+        tree = this.allSearchTypes.map((type) => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
       } else {
         const docType = VocabUtil.getRecordType(this.formType, this.resources.vocab, this.resources.context);
-        tree = [docType].map(type => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
+        tree = [docType].map((type) => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
       }
       return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
     },
@@ -77,7 +81,7 @@ export default {
     },
     filteredItem() {
       const fItem = cloneDeep(this.sortedFormData);
-      
+
       if (this.showTypeChanger === false) {
         delete fItem['@type'];
       }
@@ -95,12 +99,12 @@ export default {
     },
     reverseItemInForm() {
       const reverseItem = cloneDeep(this.reverseItem);
-      const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
+      const propsInMainForm = DisplayGroups.reverse.mainForm;
       const objToMainForm = {};
       if (reverseItem) {
         each(reverseItem, (item, key) => {
           const currentKey = `@reverse/${key}`;
-  
+
           if (propsInMainForm.indexOf(currentKey) > -1) {
             objToMainForm[currentKey] = {};
             objToMainForm[currentKey].items = this.groupItem(item);
@@ -117,8 +121,8 @@ export default {
       if (typeof reverseItem === 'undefined') {
         return {};
       }
-      const propsInMainForm = require('@/resources/json/displayGroups.json').reverse.mainForm;
-      const propsToHide = require('@/resources/json/displayGroups.json').reverse.hidden;
+      const propsInMainForm = DisplayGroups.reverse.mainForm;
+      const propsToHide = DisplayGroups.reverse.hidden;
       const propsToDelete = propsInMainForm.concat(propsToHide);
 
       for (let i = 0; i < propsToDelete.length; i++) {
@@ -126,7 +130,7 @@ export default {
         if (reverseItem.hasOwnProperty(key)) {
           delete reverseItem[key];
         }
-      }      
+      }
 
       each(reverseItem, (item, key) => {
         const currentKey = `@reverse/${key}`;
@@ -205,7 +209,7 @@ export default {
             item: property.item,
             label: label,
           };
-        } 
+        }
         // If no label, use @id as label
         return {
           added: property.added,
@@ -216,7 +220,7 @@ export default {
       const sortedAllowed = sortBy(extendedAllowed, (prop) => {
         if (prop.label) {
           return prop.label.toLowerCase();
-        } 
+        }
         return prop.item['@id'];
       });
       return sortedAllowed;
