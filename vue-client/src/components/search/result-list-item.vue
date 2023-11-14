@@ -7,6 +7,7 @@ import ReverseRelations from '@/components/inspector/reverse-relations.vue';
 import TagSwitch from '@/components/shared/tag-switch.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 import ResultMixin from '../mixins/result-mixin.vue';
+import CheckBox from "../shared/check-box.vue";
 
 export default {
   name: 'result-list-item',
@@ -21,6 +22,10 @@ export default {
     database: {
       type: String,
       default: '',
+    },
+    isChangeView: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -99,6 +104,7 @@ export default {
     },
   },
   components: {
+    CheckBox,
     TagSwitch,
     ReverseRelations,
   },
@@ -134,15 +140,13 @@ export default {
           class=""
           :action-labels="{ on: 'Mark as', off: 'Unmark as' }"
           tag="Flagged" />
-        <tag-switch
-          :document="focusData"
-          class=""
-          :action-labels="{ on: 'Mark as', off: 'Unmark as' }"
-          tag="Handled" />
+
+        <check-box v-if="isChangeView">
+        </check-box>
       </div>
       <div
         class="ResultItem-relationsContainer"
-        v-if="isImport === false">
+        v-if="isImport === false && !isChangeView ">
         <reverse-relations
           v-show="showUsedIn"
           @numberOfRelations="allCount"

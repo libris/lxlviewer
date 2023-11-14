@@ -55,6 +55,9 @@ export default {
     totalItems() {
       return this.result.totalItems;
     },
+    isChangeView() {
+      return this.$route.params.tool === 'changes';
+    }
   },
   components: {
     'result-controls': ResultControls,
@@ -95,7 +98,9 @@ export default {
       v-if="!status.resultList.loading && !status.resultList.error"
       :results="result.items"
       :import-data="importData"
-      :compact="user.settings.resultListType === 'compact'" />
+      :compact="user.settings.resultListType === 'compact'"
+      :isChangeView="isChangeView"
+    />
     <result-controls
       class="SearchResult-controls"
       v-if="!status.resultList.loading && !status.resultList.error && hasPagination"

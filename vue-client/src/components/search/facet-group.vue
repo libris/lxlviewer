@@ -102,7 +102,6 @@ export default {
       const self = this;
       const list = this.group.observation.map((o) => {
         let label;
-        console.log('observation', JSON.stringify(o));
         if (o.object.hasOwnProperty('@id')) {
           label = DisplayUtil.getItemLabel(
             o.object,

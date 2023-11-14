@@ -41,15 +41,15 @@ export default {
 </script>
 
 <template>
-  <div class="TypeIcon">
+  <div class="CheckBox">
     <input id="test" class="customCheckbox-input" type="checkbox" @change="onChange" :checked="isChosen">
     <div class="customCheckbox-icon"></div>
   </div>
 </template>
 
 <style lang="less">
-.TypeIcon {
-  background-color: @grey-lightest;
+.CheckBox {
+  background-color: transparent;
   color: @brand-primary;
   display: flex;
   justify-content: center;
