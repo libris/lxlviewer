@@ -19,8 +19,6 @@ export default {
   },
   methods: {
     updateSigel(e, sigel) {
-      console.log('available sigels', JSON.stringify(this.availableSigels));
-      console.log('sigelCode', sigel);
       this.$store.dispatch('updateSubscribedSigel', { libraryId: this.sigelUri(sigel), checked: e.target.checked });
     },
     updateCategory(e, categoryId) {

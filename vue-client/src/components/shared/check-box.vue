@@ -4,61 +4,33 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'check-box',
   props: {
-    type: {
+    checkedProperty: {
       type: String,
-      required: true,
+      default: '',
     },
     tooltipText: {
       type: String,
       default: '',
     },
+    isChosen: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      iconMap: {
-        Text: 'file-text',
-        ManuscriptText: 'file-text',
-        Audio: 'volume-up',
-        Music: 'volume-up',
-        Kit: 'archive',
-        StillImage: 'picture-o',
-        MixedMaterial: 'cubes',
-        Object: 'cube',
-        MovingImage: 'film',
-        Cartography: 'map',
-        ManuscriptCartography: 'map',
-        Dataset: 'database',
-        Multimedia: 'laptop',
-        NotatedMusic: 'music',
-        ManuscriptNotatedMusic: 'music',
-        // Place: 'map-marker',
-      },
-      forcedUnspecified: [
-        'Work',
-      ],
     };
   },
   methods: {
+    onChange(e) {
+      this.$emit('changed', e);
+      // emit on change and let the parent handle it.
+    },
   },
   computed: {
     ...mapGetters([
       'resources',
     ]),
-    convertedType() {
-      return this.type.replace('https://id.kb.se/vocab/', '');
-    },
-    isForcedUnspecified() {
-      return this.forcedUnspecified.indexOf(this.convertedType) > -1;
-    },
-    iconClass() {
-      let iconName = '';
-      if (this.iconMap.hasOwnProperty(this.convertedType)) {
-        iconName = this.iconMap[this.convertedType];
-      } else {
-        return '';
-      }
-      return `fa fa-fw fa-${iconName}`;
-    },
   },
   components: {
   },
@@ -70,7 +42,7 @@ export default {
 
 <template>
   <div class="TypeIcon">
-    <input id="test" class="customCheckbox-input" type="checkbox">
+    <input id="test" class="customCheckbox-input" type="checkbox" @change="onChange" :checked="isChosen">
     <div class="customCheckbox-icon"></div>
   </div>
 </template>

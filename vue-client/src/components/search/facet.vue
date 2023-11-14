@@ -14,6 +14,10 @@ export default {
       type: Object,
       default: null,
     },
+    isLink: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
