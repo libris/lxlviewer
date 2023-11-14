@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxljs/string';
 import { translatePhrase } from '@/utils/filters';
 
 export default {
@@ -16,16 +17,7 @@ export default {
   methods: {
     translatePhrase,
     getSigelLabel(sigel, len) {
-      if (!sigel.friendly_name) {
-        return sigel.code;
-      }
-
-      const sigelPart = ` (${sigel.code})`;
-      const fName = sigel.friendly_name.length + sigelPart.length > len
-        ? `${sigel.friendly_name.substr(0, len - sigelPart.length - 3)}...`
-        : sigel.friendly_name;
-
-      return `${fName}${sigelPart}`;
+      return StringUtil.getSigelLabel(sigel, len);
     },
     updateSigel(value) {
       const doUpdate = () => {

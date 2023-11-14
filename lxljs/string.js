@@ -159,7 +159,7 @@ export function isLibrisResourceUri(uri, settings) {
   const baseUri = settings.dataPath;
   
   let translatedUri = uri;
-  if (uri.startsWith('https://id.kb.se')) {
+  if (uri && uri.startsWith('https://id.kb.se')) {
     translatedUri = uri.replace('https://id.kb.se', settings.idPath);
   }
 
@@ -307,4 +307,21 @@ export function getFormattedEntries(list, vocab, language, context) {
   }
   remove(formatted, value => value === '' || value === null); // Remove empty strings
   return formatted;
+}
+
+export function getSigelLabel(sigel, len) {
+  if (!sigel.friendly_name) {
+    return sigel.code;
+  }
+
+  const sigelPart = ` (${sigel.code})`;
+  const fName = sigel.friendly_name.length + sigelPart.length > len
+      ? `${sigel.friendly_name.substr(0, len - sigelPart.length - 3)}...`
+      : sigel.friendly_name;
+
+  return `${fName}${sigelPart}`;
+}
+
+export function getLibraryUri(sigel) {
+  return `https://libris.kb.se/library/${sigel}`;
 }

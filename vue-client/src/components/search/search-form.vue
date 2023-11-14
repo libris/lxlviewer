@@ -15,6 +15,10 @@ export default {
       default: 'libris',
       type: String,
     },
+    searchTool: {
+      default: '',
+      type: String,
+    },
   },
   data() {
     return {
@@ -53,13 +57,18 @@ export default {
       this.helpToggled = !this.helpToggled;
     },
     composeQuery() {
-      return buildQueryString(this.searchPerimeter === 'libris'
+      return buildQueryString(this.searchPerimeter === 'libris' || this.searchTool === 'changes'
         ? this.mergedParams
         : { q: this.searchPhrase, databases: this.status.remoteDatabases.join() });
     },
     doSearch() {
       this.helpToggled = false;
-      const path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
+      let path = '';
+      if (this.searchPerimeter === 'libris' || this.searchPerimeter === 'remote') {
+        path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
+      } else if (this.searchTool === 'changes') {
+        path = `${this.$route.path}?${this.composeQuery()}`;
+      }
       this.$router.push(path);
     },
     clearInputs() {
@@ -100,7 +109,7 @@ export default {
       return PropertyMappings[0];
     },
     setType() {
-      if (this.$route.params.perimeter === 'remote') {
+      if (this.$route.params.perimeter === 'remote' || this.searchTool === 'changes') {
         return this.activeSearchType; // Don't change while remote searching
       }
       const performedQuery = cloneDeep(this.$route.query);
@@ -185,7 +194,13 @@ export default {
       return this.searchPhrase.length > 0;
     },
     inputPlaceholder() {
-      return this.searchPerimeter === 'remote' ? 'ISBN eller valfria sökord' : 'Search';
+      if (this.searchPerimeter === 'remote') {
+        return 'ISBN eller valfria sökord';
+      }
+      if (this.searchTool === 'changes') {
+        return 'Sök bland ändringar'; // TODO: i18n
+      }   
+      return 'Search';
     },
     composedSearchParam() { // pair current search param with searchphrase
       let composed = {};
@@ -199,7 +214,15 @@ export default {
       return composed;
     },
     composedTypes() {
-      return this.activeSearchType && this.activeSearchType.length > 0 ? { '@type': this.activeSearchType } : { '@type': null };
+      let type = null;
+      if (this.activeSearchType && this.activeSearchType.length > 0) {
+        if (this.searchPerimeter === 'libris') {
+          type = this.activeSearchType;
+        } else if (this.searchTool === 'changes') {
+          type = 'AdministrativeNotice';
+        }
+      }
+      return { '@type': type };
     },
     prefSort() {
       if (this.user && this.user.settings.sort) {
@@ -238,6 +261,12 @@ export default {
       if (val !== oldVal && oldVal) {
         this.setPrefSearchType();
         this.resetSearchParam();
+      }
+    },
+    searchTool(newVal, oldVal) {
+      if (newVal !== oldVal && newVal === 'changes') {
+        this.clearInputs();
+        this.doSearch();
       }
     },
     searchPerimeter(newVal, oldVal) {
@@ -341,12 +370,12 @@ export default {
           class="SearchForm-clear icon icon--md"
           @focus="searchGroupFocus.clear = true"
           @blur="searchGroupFocus.clear = false"
-          :class="{ 'in-remote': searchPerimeter === 'remote' }"
+          :class="{ 'in-remote': searchPerimeter === 'remote' || searchTool === 'changes' }"
           tabindex="0"
           v-show="hasInput"
           @keyup.enter="clearInputs()"
           @click="clearInputs()">
-          <i class="fa fa-fw fa-close" />
+          <i class="fa fa-fw fa-close"></i>
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
           <select

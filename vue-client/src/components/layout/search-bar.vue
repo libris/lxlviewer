@@ -70,7 +70,7 @@ export default {
             {{ versionInfo }}
           </a>
         </div>
-        <search-form class="SearchBar-searchForm col-sm-12 col-md-9" :search-perimeter="$route.params.perimeter" />
+        <search-form class="SearchBar-searchForm col-sm-12 col-md-9" :search-perimeter="$route.params.tool === 'changes' ? '' : $route.params.perimeter" :search-tool="$route.params.tool"/>
       </div>
     </div>
   </div>

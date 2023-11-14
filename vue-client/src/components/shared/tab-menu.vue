@@ -309,7 +309,6 @@ export default {
     font-size: 18px;
     font-size: 1.6rem;
   }
-
   &-tabList {
     margin: 0 0 0 -10px;
     height: 100%;

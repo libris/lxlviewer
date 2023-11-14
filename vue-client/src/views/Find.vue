@@ -54,6 +54,8 @@ export default {
         this.searchInProgress = true;
         if (this.$route.params.perimeter === 'libris') {
           this.getLocalResult();
+        } else if (this.$route.params.tool === 'changes') {
+          this.getChangesResult();
         } else {
           this.getRemoteResult();
         }
@@ -123,6 +125,9 @@ export default {
         this.importData = result.items;
         this.searchInProgress = false;
       });
+    },
+    getChangesResult() {
+      this.getLocalResult();
     },
     convertRemoteResult(result) {
       let totalResults = 0;
@@ -201,10 +206,10 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.$route.params.perimeter !== 'libris' && this.$route.params.perimeter !== 'remote') {
+      if (this.$route.params.perimeter !== 'libris' && this.$route.params.perimeter !== 'remote' && this.$route.params.tool !== 'changes') {
         this.$router.push({ path: '/search/' });
       }
-      if (!this.user.isLoggedIn && this.$route.params.perimeter === 'remote') {
+      if (!this.user.isLoggedIn && this.$route.params.perimeter === 'remote' && this.$route.params.tool === 'changes') {
         this.$router.push({ path: '/search/' });
       }
       this.query = this.$route.fullPath.split('?')[1];
@@ -244,19 +249,21 @@ export default {
 <template>
   <div class="row">
     <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
-      <tab-menu
+      <tab-menu v-if="$route.params.tool !== 'changes'"
         @go="setSearchPerimeter"
         :active="$route.params.perimeter"
         :tabs="findTabs"
       />
       <div
-        v-if="$route.params.perimeter === 'libris'"
+        v-if="$route.params.perimeter === 'libris' || $route.params.tool === 'changes'"
         @click="hideFacetColumn = !hideFacetColumn"
         class="Find-facetHeading uppercaseHeading--light">{{ translatePhrase('Filter') }}
         <i
           class="fa fa-fw hidden-md hidden-lg"
           :class="{ 'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }" /></div>
-      <facet-controls :class="{ 'hidden-xs hidden-sm': hideFacetColumn }" :result="result" v-if="result && result.stats && result.totalItems > 0 && $route.params.perimeter === 'libris'" />
+      <facet-controls :class="{ 'hidden-xs hidden-sm': hideFacetColumn }"
+          :result="result"
+          v-if="result && result.stats && result.totalItems > 0 && ($route.params.perimeter === 'libris' || $route.params.tool === 'changes')" />
       <portal-target name="facetColumn" />
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">

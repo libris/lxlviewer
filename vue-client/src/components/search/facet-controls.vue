@@ -5,6 +5,10 @@ export default {
   name: 'facet-controls',
   props: {
     result: {},
+    isChangeView: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -50,7 +54,8 @@ export default {
       v-for="(dimensionValue, dimensionKey, index) in sortedFacets"
       :key="dimensionKey"
       :group="dimensionValue"
-      :expanded="index < numOfExpanded" />
+      :is-change-view="isChangeView"
+      :expanded="index < numOfExpanded"/>
   </div>
 </template>
 

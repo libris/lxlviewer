@@ -42,6 +42,13 @@ export default {
     flaggedInstances() {
       return filter(this.fetchedItems, (o) => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
     },
+    tabs() {
+      return [
+        { id: 'holdings', text: 'Move holdings' },
+        // { 'id': 'merge', 'text': 'Merge records' },
+        // { 'id': 'remove', 'text': 'Batch remove' },
+      ];
+    },
   },
   watch: {
     userFlagged(newValue, oldValue) {

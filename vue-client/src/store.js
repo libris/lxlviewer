@@ -1,12 +1,11 @@
 import { createStore } from 'vuex';
-import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
+import { cloneDeep, each, set, get, assign, filter, isObject, isEmpty } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
 import settings from './settings';
-import ChangeNotes from './utils/changenotes';
 
 const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
 
@@ -75,7 +74,6 @@ const store = createStore({
       event: [],
       magicShelfMarks: [],
       extractItemsOnSave: {},
-      changeNotes: {},
     },
     status: {
       userIdle: false,
@@ -95,7 +93,6 @@ const store = createStore({
       failedRemoteDatabases: '',
       hintSigelChange: false,
     },
-    changeNoteHandler: new ChangeNotes(),
     user: User.getUserObject(),
     userDatabase: null,
     userStorage: {
@@ -167,9 +164,6 @@ const store = createStore({
     setCompositeHistoryData(state, data) {
       state.inspector.compositeHistoryData = data;
     },
-    setChangeNotes(state, data) {
-      state.inspector.changeNotes = data;
-    },
     addToLanguageCache(state, data) {
       const languageCache = cloneDeep(state.inspector.languageCache);
       for (const [key, value] of Object.entries(data)) {
@@ -217,12 +211,6 @@ const store = createStore({
       }
       // Set the new values
       each(payload.changeList, (node) => {
-        // Turn off changeNote feature during external QA testing of work cataloguing
-        // const match = state.changeNoteHandler.computeCategoryMatchFor(state, inspectorData, node.path);
-        // if (match) {
-        //   state.inspector.changeNotes[match.categoryId] = match;
-        // }
-
         /**
          * Skip updating inspector data if changeList value is EXTRACT_ON_SAVE, which indicates that the
          * item should be extracted first while saving (the values of the item should be unchanged until the
@@ -422,6 +410,13 @@ const store = createStore({
       }
       return collection;
     },
+    userChangeCategories: (state) => {
+      const collection = [];
+      if (state.userDatabase == null || state.userDatabase.requestedNotifications == null) {
+        return collection;
+      }
+      return state.userDatabase.requestedNotifications;
+    },
     userDatabase: (state) => state.userDatabase,
     status: (state) => state.status,
     directoryCare: (state) => state.directoryCare,
@@ -429,7 +424,6 @@ const store = createStore({
     display: (state) => state.resources.display,
     context: (state) => state.resources.context,
     supportedTags: (state) => state.inspector.supportedTags.data,
-    changeNotes: (state) => state.changeNotes,
   },
   actions: {
     addExtractItemOnSave({ commit, dispatch, state }, { path, item }) {
@@ -531,6 +525,62 @@ const store = createStore({
       }
       dispatch('modifyUserDatabase', { property: 'markedDocuments', value: newList });
     },
+    setNotificationEmail({ dispatch, state }, { userEmail }) {
+      const notificationEmail = cloneDeep(state.userDatabase.notificationEmail);
+      if (userEmail !== notificationEmail) {
+        dispatch('modifyUserDatabase', { property: 'notificationEmail', value: userEmail });
+      }
+    },
+    updateSubscribedSigel({ dispatch, state }, { libraryId, checked }) {
+      let notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
+      const notification = notifications[0];
+      let categories = [];
+      if (notification) {
+        categories = notification.triggers;
+      }
+      if (checked) {
+        console.log('changed, pushing notication', { heldBy: libraryId, triggers: categories });
+        notifications.push({ heldBy: libraryId, triggers: categories });
+      } else if (notifications.length === 1) { // Unchecked & removing the last element
+        notifications.forEach((n) => { n.heldBy = 'none'; });
+      } else { // Unchecked => remove whole notification
+        notifications = notifications.filter(n => n.heldBy !== libraryId);
+      }
+
+      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
+    },
+    updateSubscribedChangeCategory({ dispatch, state }, { categoryId, checked }) {
+      const notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
+      if (isEmpty(notifications)) {
+        notifications.push({ heldBy: 'none', triggers: [categoryId] });
+      }
+      notifications.forEach((n) => {
+        if (checked) {
+          n.triggers.push(categoryId);
+        } else { // Unchecked => remove from triggers
+          n.triggers = n.triggers.filter(id => id !== categoryId);
+        }
+      });
+      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
+    },
+    updateSubscribedChangeCategories({ dispatch, state }, { libraryId, categoryId, checked }) {
+      const notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
+      notifications?.forEach((n) => {
+        if (checked) {
+          if (n) {
+            n.triggers.push(categoryId);
+          } else {
+            n.push({ heldBy: libraryId, triggers: [categoryId] });
+          }
+        } else { // Unchecked => remove from triggers
+          n.triggers = n.triggers.filter(id => id !== categoryId);
+        }
+      });
+      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
+    },
+    purgeChangeCategories({ dispatch }) {
+      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: null });
+    },
     loadUserDatabase({ commit, dispatch, state }) {
       if (state.user.id.length === 0) {
         throw new Error('loadUserDatabase was dispatched with no real user loaded.');
@@ -540,6 +590,7 @@ const store = createStore({
         httpUtil.get({ url: `${state.settings.apiPath}/_userdata/${digestHex}`, token: state.user.token, contentType: 'text/plain' }).then((result) => {
           commit('setUserDatabase', result);
           dispatch('checkForMigrationOfUserDatabase');
+          dispatch('setNotificationEmail', { userEmail: state.user.email });
         }, (error) => {
           console.error(error);
         });
@@ -874,9 +925,6 @@ const store = createStore({
       });
 
       return promise;
-    },
-    setChangeNotes({ commit }, data) {
-      commit('setChangeNotes', data);
     },
   },
 });

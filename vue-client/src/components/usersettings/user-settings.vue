@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
+import ChangeCategories from './change-categories.vue';
 import { translatePhrase, capitalize } from '@/utils/filters';
 import UserAvatar from '@/components/shared/user-avatar.vue';
 import SelectSigel from './select-sigel.vue';
@@ -13,11 +14,22 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      availableChangeCategories: [],
+    };
+  },
   methods: {
     translatePhrase,
     capitalize,
     setUser(userObj) {
       this.$store.dispatch('setUser', userObj);
+    },
+    getAvailableChangeCategories() {
+      const fetchUrl = `${this.settings.apiPath}/find.jsonld?@type=ChangeCategory`;
+      fetch(fetchUrl).then(response => response.json()).then((result) => {
+        this.availableChangeCategories = result?.items;
+      });
     },
     updateLanguage(e) {
       const userObj = this.user;
@@ -49,6 +61,9 @@ export default {
     purgeBookmarks() {
       this.$store.dispatch('purgeUserTagged', 'Bookmark');
     },
+    purgeChangeNoteCategories() {
+      this.$store.dispatch('purgeChangeCategories');
+    },
   },
   computed: {
     ...mapGetters([
@@ -59,16 +74,27 @@ export default {
       'resources',
       'userFlagged',
       'userBookmarks',
+      'userChangeCategories',
     ]),
     userHasTaggedRecords() {
       return Object.keys(this.userStorage.list).length > 0;
     },
+    sortedSigels() {
+      return [...this.user.collections].sort((a, b) => StringUtil.getSigelLabel(a).localeCompare(StringUtil.getSigelLabel(b)));
+    },
   },
   components: {
+    'change-categories': ChangeCategories,
     'user-avatar': UserAvatar,
     'select-sigel': SelectSigel,
   },
   watch: {
+  },
+  mounted() {
+    this.$nextTick(() => {
+      // TODO: don't do this every time we open user settings
+      this.getAvailableChangeCategories();
+    });
   },
 };
 </script>
@@ -179,7 +205,10 @@ export default {
               </td>
             </tr>
           </table>
-
+          <h5 class="uppercaseHeading--bold">{{ translatePhrase("Subscribe to change notes") }}</h5>
+          <div class="UserSettings-changeCategories">
+            <change-categories :available-sigels="sortedSigels" :userChangeCategories="userChangeCategories" :availableCategories="availableChangeCategories"/>
+          </div>
         </form>
         <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{ translatePhrase("Log out") }}</button>
       </div>
@@ -261,6 +290,10 @@ export default {
     & form {
       width: 100%;
     }
+  }
+
+  &-changeCategories {
+    margin-bottom: 20px;
   }
 
   &-configTable {

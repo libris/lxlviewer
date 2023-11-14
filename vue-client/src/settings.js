@@ -272,6 +272,20 @@ export default {
         order: 18,
       },
     },
+    'category.@id': {
+      sv: 'Ändringskategori',
+      en: 'Change category',
+      facet: {
+        order: 19,
+      },
+    },
+    'concerning.@reverse.itemOf.heldBy.@id': {
+      sv: 'Sigler',
+      en: 'Collections',
+      facet: {
+        order: 20,
+      },
+    },
     '@reverse': {
       sv: 'Relation',
       en: 'Relation',
