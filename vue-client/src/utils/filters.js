@@ -10,8 +10,13 @@ export const translatePhrase = (string) => StringUtil.getUiPhraseByLang(
 
 export const labelByLang = (label) => StringUtil.getLabelByLang(label, store.getters.user.settings.language, store.getters.resources);
 
-export const asAppPath = (path) => {
-  const appPaths = store.getters.settings.appPaths;
+export const asAppPath = (path, isChangeView = false) => {
+  let appPaths = store.getters.settings.appPaths;
+  if (isChangeView) {
+    appPaths =  {
+      '/find?': '/directory-care/changes?',
+    }
+  }
   let newPath = '';
   for (const key of Object.keys(appPaths)) {
     newPath = path.replace(key, appPaths[key]);
