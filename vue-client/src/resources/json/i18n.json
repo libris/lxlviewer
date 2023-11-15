@@ -410,6 +410,8 @@
     "Changes": "Ändringar",
     "Handled": "Hanterad",
     "Change categories": "Ändringskategorier",
-    "Collections": "Sigler"
+    "Collections": "Sigler",
+    "Mark as handled": "Markera som hanterad",
+    "Unmark as handled": "Avmarkera som hanterad"
     }
 }

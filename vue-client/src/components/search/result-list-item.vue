@@ -140,8 +140,9 @@ export default {
           class=""
           :action-labels="{ on: 'Mark as', off: 'Unmark as' }"
           tag="Flagged" />
-
-        <check-box v-if="isChangeView">
+        <check-box
+          :action-labels="{ on: 'Mark as handled', off: 'Unmark as handled' }"
+          v-if="isChangeView">
         </check-box>
       </div>
       <div

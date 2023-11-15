@@ -1,36 +1,49 @@
 <script>
 import { mapGetters } from 'vuex';
+import * as StringUtil from 'lxljs/string';
 
 export default {
   name: 'check-box',
   props: {
-    checkedProperty: {
-      type: String,
-      default: '',
-    },
-    tooltipText: {
-      type: String,
-      default: '',
+    actionLabels: {
+      type: Object,
+      default: () => ({ on: 'Mark', off: 'Unmark' }),
     },
     isChosen: {
       type: Boolean,
       default: false,
     },
+    showToolTip: {
+      type: Boolean,
+      default: true,
+    }
   },
   data() {
     return {
+      isChecked : false,
     };
   },
+  emits: ['changed'],
   methods: {
     onChange(e) {
+      this.isChecked = !this.isChecked;
       this.$emit('changed', e);
-      // emit on change and let the parent handle it.
     },
   },
   computed: {
     ...mapGetters([
       'resources',
+      'user',
     ]),
+    tooltip() {
+      let str = '';
+      if (!this.isChecked) {
+        str += StringUtil.getUiPhraseByLang(this.actionLabels.on, this.user.settings.language, this.resources.i18n);
+      } else {
+        str += StringUtil.getUiPhraseByLang(this.actionLabels.off, this.user.settings.language, this.resources.i18n);
+      }
+      return str;
+    },
   },
   components: {
   },
@@ -41,8 +54,12 @@ export default {
 </script>
 
 <template>
-  <div class="CheckBox">
-    <input id="test" class="customCheckbox-input" type="checkbox" @change="onChange" :checked="isChosen">
+  <div class="CheckBox" v-tooltip="{
+    content: showToolTip ? tooltip : '',
+    trigger: 'hover',
+    placement: 'top',}">
+    <input id="test" class="customCheckbox-input" type="checkbox" @change="onChange"
+      :checked="isChosen">
     <div class="customCheckbox-icon"></div>
   </div>
 </template>

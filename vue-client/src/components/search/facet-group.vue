@@ -268,10 +268,11 @@ export default {
             v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
             :type="facetItem.object['@id']" />
           <check-box v-if="group.dimension === 'concerning.@reverse.itemOf.heldBy.@id' && isChangeView"
-              slot="checkbox"
-              :checkedProperty="facetItem.object['@id']"
-              :isChosen="facetItem.isDefaultChecked"
-              @changed="checked(facetItem.link, facetItem.object['@id'])"></check-box>
+            slot="checkbox"
+            :checkedProperty="facetItem.object['@id']"
+            :isChosen="facetItem.isDefaultChecked"
+            :showToolTip="false"
+            @changed="checked(facetItem.link, facetItem.object['@id'])"></check-box>
         </template>
       </facet>
       <hr v-show="featuredFacets.length > 0">
@@ -291,10 +292,11 @@ export default {
             v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
             :type="facetItem.object['@id']" />
           <check-box v-if="group.dimension === 'category.@id' || group.dimension === 'concerning.@reverse.itemOf.heldBy.@id'"
-              slot="checkbox"
-              :checkedProperty="facetItem.object['@id']"
-              :isChosen="facetItem.isDefaultChecked"
-              @changed="checked(facetItem.link, facetItem.object['@id'])"></check-box>
+            slot="checkbox"
+            :checkedProperty="facetItem.object['@id']"
+            :isChosen="facetItem.isDefaultChecked"
+            :showToolTip="false"
+            @changed="checked(facetItem.link, facetItem.object['@id'])"></check-box>
         </template>
       </facet>
     </ul>

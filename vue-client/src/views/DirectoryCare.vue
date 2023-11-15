@@ -26,11 +26,6 @@ export default {
         removed: [],
         other: [],
       },
-      tabs: [
-        { id: 'holdings', text: 'Move holdings' },
-        // { 'id': 'merge', 'text': 'Merge records' },
-        // { 'id': 'remove', 'text': 'Batch remove' },
-      ],
       showModal: false,
     };
   },

@@ -100,7 +100,7 @@ export default {
       :import-data="importData"
       :compact="user.settings.resultListType === 'compact'"
       :isChangeView="isChangeView"
-    />
+    />  
     <result-controls
       class="SearchResult-controls"
       v-if="!status.resultList.loading && !status.resultList.error && hasPagination"
