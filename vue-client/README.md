@@ -35,7 +35,7 @@ Most things are controlled in `src/setttings.js`, and then exported into the sto
 
 ```
 
-# serve with hot reload at localhost:5000
+# serve with hot reload at localhost:8080
 $ yarn dev
 
 # build for production with minification
