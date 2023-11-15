@@ -9,11 +9,11 @@ It is a VueJS single page application (SPA) that uses the [Libris XL](https://gi
 
 No action required here, this is just information.
 * [VueJS](https://vuejs.org/)
-* [Webpack](https://webpack.js.org/)
+* [Vite](https://vitejs.dev/)
 
 #### Coding Standard
 * [SUIT CSS](https://suitcss.github.io/)
-* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`package.json`](/vue-client/package.json) in `./vue-client`)
+* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`.eslintrc.js`](/vue-client/.eslintrc.js) in `./vue-client`)
 
 #### Requirements
 * [node.js](http://nodejs.org/) >= 18
@@ -36,7 +36,7 @@ Most things are controlled in `src/setttings.js`, and then exported into the sto
 ```
 
 # serve with hot reload at localhost:8080
-$ yarn serve
+$ yarn dev
 
 # build for production with minification
 $ yarn build
