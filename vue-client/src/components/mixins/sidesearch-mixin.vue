@@ -233,7 +233,7 @@ export default {
       for (let i = 0; i < classTree.length; i++) {
         const term = {};
         term.depth = classTree[i].depth;
-        term.abstract = classTree[i].abstract;
+        term.abstract = classTree[i].abstract || null;
         term.label = this.getLabelWithTreeDepth(classTree[i]);
         term.value = classTree[i].id;
         term.key = `${classTree[i].id}-${i}`;
