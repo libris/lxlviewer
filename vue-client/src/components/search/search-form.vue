@@ -199,7 +199,7 @@ export default {
       }
       if (this.searchTool === 'changes') {
         return 'Sök bland ändringar'; // TODO: i18n
-      }   
+      }
       return 'Search';
     },
     composedSearchParam() { // pair current search param with searchphrase
@@ -375,7 +375,7 @@ export default {
           v-show="hasInput"
           @keyup.enter="clearInputs()"
           @click="clearInputs()">
-          <i class="fa fa-fw fa-close"></i>
+          <i class="fa fa-fw fa-close" />
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
           <select

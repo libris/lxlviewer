@@ -198,7 +198,7 @@ export default {
           class="LanguageEntry-input js-itemValueInput"
           rows="1"
           v-bind:value="modelValue"
-          v-on:input="$emit('update:modelValue', $event.target.value)"
+          v-on:input="$emit('update:model-value', $event.target.value)"
           @blur="$emit('update')"
           ref="textarea"
         />
