@@ -4083,6 +4083,7 @@
     "inquiry": {
       "label": "Förfrågan",
       "description": "Angående flaggade poster",
+      "@id": "inquiry",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -4103,6 +4104,7 @@
     "changeNotice": {
       "label": "Ändringsmeddelande",
       "description": "Allmänt ändringsmeddelande",
+      "@id": "changeNotice",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
