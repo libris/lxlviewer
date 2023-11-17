@@ -149,6 +149,9 @@ export default {
       }
       return `${first}-${last}`;
     },
+    isChangeView() {
+      return this.$route.params.tool === 'changes';
+    },
   },
   emits: ['sortChange'],
   methods: {
@@ -162,7 +165,7 @@ export default {
       }
     },
     appPath(path) {
-      return this.asAppPath(path, this.$route.params.tool === 'changes');
+      return this.asAppPath(path, this.isChangeView);
     },
     addFilter(key, value) {
       const newQuery = Object.assign({}, this.$route.query);
@@ -254,7 +257,7 @@ export default {
     </div>
     <div class="ResultControls-secondary">
       <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0">
-        <FilterBadge class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index" :filter="filter" />
+        <FilterBadge class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index" :filter="filter" :is-change-view="isChangeView" />
       </div>
     </div>
     <nav v-if="hasPagination && showPages">

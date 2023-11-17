@@ -9,7 +9,7 @@ export default {
       type: Object,
       default: () => ({ on: 'Mark', off: 'Unmark' }),
     },
-    isChosen: {
+    selected: {
       type: Boolean,
       default: false,
     },
@@ -59,7 +59,7 @@ export default {
     trigger: 'hover',
     placement: 'top',}">
     <input id="test" class="customCheckbox-input" type="checkbox" @change="onChange"
-      :checked="isChosen">
+      :checked="selected">
     <div class="customCheckbox-icon"></div>
   </div>
 </template>

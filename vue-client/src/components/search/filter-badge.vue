@@ -9,6 +9,10 @@ export default {
       type: Object,
       default: null,
     },
+    isChangeView: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -45,7 +49,7 @@ export default {
     <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}:</span>
     <span>{{ labelByLang(filter.label) }}</span>
     <router-link
-      :to="asAppPath(filter.up)">
+      :to="asAppPath(filter.up, isChangeView)">
       <i class="fa fa-fw fa-close icon"
       />
     </router-link>

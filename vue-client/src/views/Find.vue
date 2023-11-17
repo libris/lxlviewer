@@ -5,7 +5,7 @@ import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Spinner from '@/components/shared/spinner.vue';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, asAppPath } from '@/utils/filters';
 import FacetControls from '@/components/search/facet-controls.vue';
 import SearchResult from '@/components/search/search-result.vue';
 import TabMenu from '@/components/shared/tab-menu.vue';
@@ -44,6 +44,7 @@ export default {
     },
   },
   methods: {
+    asAppPath,
     translatePhrase,
     setSearchPerimeter(id) {
       this.$router.push({ path: `/search/${id}` }).catch(() => {});
@@ -64,6 +65,18 @@ export default {
     emptyResults() {
       this.result = null;
       this.importData = [];
+    },
+    getResultAndInitFacets() {
+      const fetchUrl = `${this.settings.apiPath}/find.jsonld?${this.query}`;
+      fetch(fetchUrl).then((response) => {
+        response.json().then((result) => {
+          this.result = result;
+          if (result.stats) {
+            this.applyChangeFacets(result.stats);
+          }
+          this.searchInProgress = false;
+        })
+      })
     },
     getLocalResult() {
       const fetchUrl = `${this.settings.apiPath}/find.jsonld?${this.query}`;
@@ -128,6 +141,25 @@ export default {
     },
     getChangesResult() {
       this.getLocalResult();
+    },
+    selectedInSettings(id) {
+      return this.checkedCategoriesAndSigels.includes(id);
+    },
+    applyChangeFacets(stats) {
+      let facetsString = '';
+      Object.entries(stats.sliceByDimension).forEach(([key, value]) => {
+        const facets = value.observation;
+        facets.forEach((facet) => {
+          const facetId = facet.object['@id'];
+          if (this.selectedInSettings(facetId)) {
+            const addedFacet = `&${key}=${facetId}`
+            if (!this.$route.fullPath.includes(addedFacet)) {
+              facetsString += addedFacet;
+            }
+          }
+        })
+      });
+       this.$router.push(asAppPath(this.$route.fullPath+facetsString, true));
     },
     convertRemoteResult(result) {
       let totalResults = 0;
@@ -201,6 +233,12 @@ export default {
       ];
       return tabs;
     },
+    changeCategories() {
+      return this.$store.getters.userChangeCategories;
+    },
+    checkedCategoriesAndSigels() {
+      return [...this.changeCategories.map(c => c.heldBy), ...this.changeCategories.find(c => c.hasOwnProperty('triggers')).triggers];
+    },
   },
   beforeCreate() {
   },
@@ -213,7 +251,11 @@ export default {
         this.$router.push({ path: '/search/' });
       }
       this.query = this.$route.fullPath.split('?')[1];
-      this.getResult();
+      if (this.$route.params.tool === 'changes') {
+        this.getResultAndInitFacets();
+      } else {
+        this.getResult();
+      }
       this.initialized = true;
     });
   },
