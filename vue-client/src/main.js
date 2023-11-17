@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import PortalVue from 'portal-vue';
-import { VTooltip, Dropdown } from 'floating-vue';
+import { VTooltip } from 'floating-vue';
 import { FocusTrap } from 'focus-trap-vue';
 import 'floating-vue/dist/style.css';
 import VueClipboard from 'vue-clipboard2';
@@ -15,7 +15,6 @@ const app = createApp(App);
 app.use(store);
 app.use(PortalVue);
 app.directive('tooltip', VTooltip);
-app.component('VDropdown', Dropdown);
 app.component('FocusTrap', FocusTrap);
 app.use(router);
 app.use(VueClipboard);
