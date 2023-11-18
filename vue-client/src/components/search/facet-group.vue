@@ -79,7 +79,7 @@ export default {
     },
     checkedChanged(facetLink) {
       this.$router.push(asAppPath(facetLink, true));
-    }
+    },
   },
   computed: {
     settings() {

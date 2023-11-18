@@ -42,6 +42,12 @@ export default {
         }
       }
     },
+    query(newVal, oldVal) {
+      if (this.$route.params.tool === 'changes' && typeof oldVal === 'undefined' && typeof newVal !== 'undefined') {
+        
+        this.getResultAndInitFacets();
+      }
+    },
   },
   methods: {
     asAppPath,
@@ -67,6 +73,8 @@ export default {
       this.importData = [];
     },
     getResultAndInitFacets() {
+      this.emptyResults();
+      this.searchInProgress = true;
       const fetchUrl = `${this.settings.apiPath}/find.jsonld?${this.query}`;
       fetch(fetchUrl).then((response) => {
         response.json().then((result) => {
@@ -251,11 +259,7 @@ export default {
         this.$router.push({ path: '/search/' });
       }
       this.query = this.$route.fullPath.split('?')[1];
-      if (this.$route.params.tool === 'changes') {
-        this.getResultAndInitFacets();
-      } else {
-        this.getResult();
-      }
+      this.getResult();
       this.initialized = true;
     });
   },

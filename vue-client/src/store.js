@@ -539,7 +539,6 @@ const store = createStore({
         categories = notification.triggers;
       }
       if (checked) {
-        console.log('changed, pushing notication', { heldBy: libraryId, triggers: categories });
         notifications.push({ heldBy: libraryId, triggers: categories });
       } else if (notifications.length === 1) { // Unchecked & removing the last element
         notifications.forEach((n) => { n.heldBy = 'none'; });

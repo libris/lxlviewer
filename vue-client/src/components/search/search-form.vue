@@ -57,7 +57,7 @@ export default {
       this.helpToggled = !this.helpToggled;
     },
     composeQuery() {
-      return buildQueryString(this.searchPerimeter === 'libris' || this.searchTool === 'changes'
+      return buildQueryString(this.searchPerimeter === 'libris'
         ? this.mergedParams
         : { q: this.searchPhrase, databases: this.status.remoteDatabases.join() });
     },
@@ -67,7 +67,14 @@ export default {
       if (this.searchPerimeter === 'libris' || this.searchPerimeter === 'remote') {
         path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
       } else if (this.searchTool === 'changes') {
-        path = `${this.$route.path}?${this.composeQuery()}`;
+        //Keep facets
+        if (!isEmpty(this.$route.query)) {
+          let queryObj = cloneDeep(this.$route.query);
+          queryObj.q = this.searchPhrase;
+          path = `${this.$route.path}?${buildQueryString(queryObj)}`;
+        } else {
+          path = `${this.$route.path}?${buildQueryString(this.mergedParams)}`;
+        }
       }
       this.$router.push(path);
     },

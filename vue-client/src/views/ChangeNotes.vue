@@ -16,7 +16,7 @@ export default {
 </script>
 
 <template>
-  <find v-if="$route.params.tool === 'changes'"></find>
+  <find></find>
 </template>
 
 <style lang="less">
