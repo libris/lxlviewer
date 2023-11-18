@@ -2,7 +2,7 @@
 import { sortBy, orderBy } from 'lodash-es';
 import { vOnClickOutside } from '@vueuse/components';
 import * as DisplayUtil from 'lxljs/display';
-import { translatePhrase, capitalize } from '@/utils/filters';
+import { translatePhrase, capitalize, asAppPath } from '@/utils/filters';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
 import TypeIcon from '@/components/shared/type-icon.vue';
 import CheckBox from '@/components/shared/check-box';
@@ -41,6 +41,7 @@ export default {
   methods: {
     translatePhrase,
     capitalize,
+    asAppPath,
     facetLabelByLang(facetType) {
       return (this.settings.propertyChains[facetType] || {})[this.user.settings.language] || facetType;
     },
@@ -76,6 +77,9 @@ export default {
     isCollectionGroup(dim) {
       return dim === '@reverse.itemOf.heldBy.@id' || dim === 'concerning.@reverse.itemOf.heldBy.@id';
     },
+    checkedChanged(facetLink) {
+      this.$router.push(asAppPath(facetLink, true));
+    }
   },
   computed: {
     settings() {
@@ -269,7 +273,7 @@ export default {
             :checkedProperty="facetItem.object['@id']"
             :selected="facetItem.selected"
             :showToolTip="false"
-            @changed="checked(facetItem.link, facetItem.object['@id'])"></check-box>
+            @changed="checkedChanged(facetItem.link)"></check-box>
         </template>
       </facet>
       <hr v-show="featuredFacets.length > 0">
@@ -293,7 +297,7 @@ export default {
             :checkedProperty="facetItem.object['@id']"
             :selected="facetItem.selected"
             :showToolTip="false"
-            @changed="checked(facetItem.link, facetItem.object['@id'])"></check-box>
+            @changed="checkedChanged(facetItem.link)"></check-box>
         </template>
       </facet>
     </ul>
