@@ -205,8 +205,8 @@ export default {
         return 'ISBN eller valfria sökord';
       }
       if (this.searchTool === 'changes') {
-        return 'Sök bland ändringar'; // TODO: i18n
-      }   
+        return 'Search among changes';
+      }
       return 'Search';
     },
     composedSearchParam() { // pair current search param with searchphrase
