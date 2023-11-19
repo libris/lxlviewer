@@ -2,12 +2,14 @@
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
 import * as RecordUtil from '@/utils/record';
+import * as HttpUtil from '@/utils/http';
 import { translatePhrase } from '@/utils/filters';
 import ReverseRelations from '@/components/inspector/reverse-relations.vue';
 import TagSwitch from '@/components/shared/tag-switch.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 import ResultMixin from '../mixins/result-mixin.vue';
 import CheckBox from "../shared/check-box.vue";
+import { getHandleAction } from "../../utils/record";
 
 export default {
   name: 'result-list-item',
@@ -102,6 +104,20 @@ export default {
     allCount(value) {
       this.totalReverseCount = value;
     },
+    async handleChanged(e, isChecked) {
+      if (isChecked) {
+        const handleActionRecord = getHandleAction(this.recordId);
+        const response = await HttpUtil.post({
+          url: `${this.settings.apiPath}/data`,
+          token: this.user.token,
+          activeSigel: this.user.settings.activeSigel,
+        }, handleActionRecord);
+        const recordUrl = `${response.getResponseHeader('Location')}`;
+        console.log('Created handle action: ', recordUrl);
+      } else {
+        //Remove record linking to this id, (we need to know this through reverse)
+      }
+    }
   },
   components: {
     CheckBox,
@@ -142,7 +158,8 @@ export default {
           tag="Flagged" />
         <check-box
           :action-labels="{ on: 'Mark as handled', off: 'Unmark as handled' }"
-          v-if="isChangeView">
+          v-if="isChangeView"
+          @changed="handleChanged">
         </check-box>
       </div>
       <div

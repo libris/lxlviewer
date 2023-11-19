@@ -27,7 +27,7 @@ export default {
   methods: {
     onChange(e) {
       this.isChecked = !this.isChecked;
-      this.$emit('changed', e);
+      this.$emit('changed', e, this.isChecked);
     },
   },
   computed: {
