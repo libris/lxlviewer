@@ -10,6 +10,7 @@ import LensMixin from '../mixins/lens-mixin.vue';
 import ResultMixin from '../mixins/result-mixin.vue';
 import CheckBox from "../shared/check-box.vue";
 import { getHandleAction } from "../../utils/record";
+import { getLibraryUri } from "lxljs/string";
 
 export default {
   name: 'result-list-item',
@@ -89,6 +90,9 @@ export default {
       const itemCountReady = this.itemReverseCount !== -1;
       return itemCountReady && this.totalReverseCount > 0 && this.totalReverseCount !== this.itemReverseCount;
     },
+    isHandledByCurrentSigel() {
+      return this.focusData['@reverse']?.concerning.some((c) => c.agent ? c.agent['@id'] === getLibraryUri(this.user.settings.activeSigel) : false);
+    },
   },
   methods: {
     translatePhrase,
@@ -106,7 +110,7 @@ export default {
     },
     async handleChanged(e, isChecked) {
       if (isChecked) {
-        const handleActionRecord = getHandleAction(this.recordId, `https://libris.kb.se/library/${this.user.settings.activeSigel}`);
+        const handleActionRecord = getHandleAction(this.recordId, getLibraryUri(this.user.settings.activeSigel));
         const response = await HttpUtil.post({
           url: `${this.settings.apiPath}/data`,
           token: this.user.token,
@@ -115,7 +119,19 @@ export default {
         const recordUrl = `${response.getResponseHeader('Location')}`;
         console.log('Created handle action: ', recordUrl);
       } else {
-        //Remove record linking to this id, (we need to know this through reverse)
+        this.removeHandleActionForCurrentSigel();
+      }
+    },
+    removeHandleActionForCurrentSigel() {
+      const handleAction = this.focusData['@reverse']?.concerning.find((c) => c.agent ? c.agent['@id'] === getLibraryUri(this.user.settings.activeSigel) : false);
+      // TODO: this.focusData['@reverse'] is not updated / existing when a new handle action has been created
+      console.log('handleAction', JSON.stringify(handleAction));
+      if (handleAction) {
+        const id = handleAction['@id'].split('/').pop().replace('#it', '');
+        const url = `${this.settings.apiPath}/${id}`;
+        HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
+          console.log('Removed handle action: ', handleAction['@id'])
+        });
       }
     }
   },
@@ -159,6 +175,7 @@ export default {
         <check-box
           :action-labels="{ on: 'Mark as handled', off: 'Unmark as handled' }"
           v-if="isChangeView"
+          :selected="isHandledByCurrentSigel"
           @changed="handleChanged">
         </check-box>
       </div>

@@ -48,7 +48,9 @@ export default {
   components: {
   },
   mounted() {
-    this.$nextTick(() => {});
+    this.$nextTick(() => {
+      this.isChecked = this.selected;
+    });
   },
 };
 </script>
