@@ -115,7 +115,7 @@ export default {
           amount: o.totalItems,
           link: o.view['@id'],
           featured: self.featuredComparison(o),
-          selected: o.selected,
+          selected: o._selected,
         };
       });
       return list;
