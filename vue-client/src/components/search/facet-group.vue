@@ -2,10 +2,12 @@
 import { sortBy, orderBy } from 'lodash-es';
 import { vOnClickOutside } from '@vueuse/components';
 import * as DisplayUtil from 'lxljs/display';
-import { translatePhrase, capitalize } from '@/utils/filters';
+import { translatePhrase, capitalize, asAppPath } from '@/utils/filters';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
 import TypeIcon from '@/components/shared/type-icon.vue';
+import CheckBox from '@/components/shared/check-box';
 import FacetMixin from '@/components/mixins/facet-mixin.vue';
+
 import Facet from './facet.vue';
 
 export default {
@@ -22,6 +24,10 @@ export default {
     expanded: {
       type: Boolean,
     },
+    isChangeView: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -35,6 +41,7 @@ export default {
   methods: {
     translatePhrase,
     capitalize,
+    asAppPath,
     facetLabelByLang(facetType) {
       return (this.settings.propertyChains[facetType] || {})[this.user.settings.language] || facetType;
     },
@@ -53,7 +60,7 @@ export default {
       this.$store.dispatch('setUser', userObj);
     },
     featuredComparison(facet) {
-      if (this.group.dimension === '@reverse.itemOf.heldBy.@id') {
+      if (this.isCollectionGroup(this.group.dimension)) {
         // Featured code for '@reverse.itemOf.heldBy.@id'
         const userSigels = this.user.collections.map((item) => item.code);
         if (facet.object.hasOwnProperty('sigel')) {
@@ -66,6 +73,12 @@ export default {
         }
       }
       return false;
+    },
+    isCollectionGroup(dim) {
+      return dim === '@reverse.itemOf.heldBy.@id' || dim === 'concerning.@reverse.itemOf.heldBy.@id';
+    },
+    checkedChanged(facetLink) {
+      this.$router.push(asAppPath(facetLink, true));
     },
   },
   computed: {
@@ -102,6 +115,7 @@ export default {
           amount: o.totalItems,
           link: o.view['@id'],
           featured: self.featuredComparison(o),
+          selected: o._selected,
         };
       });
       return list;
@@ -137,8 +151,8 @@ export default {
       return sorted;
     },
     featuredFacets() {
-      let featured = this.facets.filter((o) => o.featured === true);
-      if (this.group.dimension === '@reverse.itemOf.heldBy.@id') {
+      let featured = this.facets.filter(o => o.featured === true);
+      if (this.isCollectionGroup(this.group.dimension)) {
         const activeSigel = this.user.settings.activeSigel;
         featured = sortBy(featured, (o) => o.object.sigel !== activeSigel && o.label !== activeSigel && o.label !== `library/${activeSigel}`);
       }
@@ -167,11 +181,24 @@ export default {
     hasScroll() {
       return !this.revealLevels[this.currentLevel] && this.isExpanded;
     },
+    isChangeFacetGroup() {
+      return (this.group.dimension === 'category.@id' || this.group.dimension === 'concerning.@reverse.itemOf.heldBy.@id') && this.isChangeView;
+    },
+    checkedCategoriesAndSigels() {
+      return [...this.changeCategories.map(c => c.heldBy), ...this.changeCategories.find(c => c.hasOwnProperty('triggers')).triggers];
+    },
+    show() {
+      if (this.isChangeView) {
+        return this.isChangeFacetGroup;
+      }
+      return true;
+    }
   },
   components: {
     Facet,
     EncodingLevelIcon,
     TypeIcon,
+    CheckBox,
   },
 };
 </script>
@@ -180,7 +207,8 @@ export default {
   <nav
     class="FacetGroup"
     :class="{ 'has-scroll': hasScroll, 'is-expanded': isExpanded }"
-    :aria-labelledby="facetLabelByLang(group.dimension)">
+    :aria-labelledby="facetLabelByLang(group.dimension)"
+    v-if="show">
     <div class="FacetGroup-header">
       <h4
         class="FacetGroup-title uppercaseHeading--bold"
@@ -224,11 +252,14 @@ export default {
         </ul>
       </div>
     </div>
-    <ul class="FacetGroup-list">
+    <ul class="FacetGroup-list"
+        :class="{'is-expanded' : isExpanded, 'has-scroll' : hasScroll}">
       <facet
         v-for="facetItem in featuredFacets"
         :facet="facetItem"
-        :key="'featured_' + facetItem.link">
+        :key="'featured_' + facetItem.link"
+        :is-change-facet="isChangeFacetGroup"
+        :is-default-active="facetItem.checkedInSettings">
         <template #icon>
           <encoding-level-icon
             v-if="group.dimension === 'meta.encodingLevel'"
@@ -237,13 +268,20 @@ export default {
             :show-iconless="false"
             v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
             :type="facetItem.object['@id']" />
+          <check-box v-if="group.dimension === 'concerning.@reverse.itemOf.heldBy.@id' && isChangeView"
+            slot="checkbox"
+            :checkedProperty="facetItem.object['@id']"
+            :selected="facetItem.selected"
+            :showToolTip="false"
+            @changed="checkedChanged(facetItem.link)"></check-box>
         </template>
       </facet>
       <hr v-show="featuredFacets.length > 0">
       <facet
         v-for="facetItem in normalFacets"
         :facet="facetItem"
-        :key="facetItem.link">
+        :key="facetItem.link"
+        :is-change-facet="isChangeFacetGroup">
         <template #icon>
           <encoding-level-icon
             slot="icon"
@@ -254,6 +292,12 @@ export default {
             :show-iconless="false"
             v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
             :type="facetItem.object['@id']" />
+          <check-box v-if="isChangeFacetGroup"
+            slot="checkbox"
+            :checkedProperty="facetItem.object['@id']"
+            :selected="facetItem.selected"
+            :showToolTip="false"
+            @changed="checkedChanged(facetItem.link)"></check-box>
         </template>
       </facet>
     </ul>

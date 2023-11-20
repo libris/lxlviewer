@@ -9,10 +9,12 @@ import TabMenu from '@/components/shared/tab-menu.vue';
 import HoldingMover from '@/components/care/holding-mover.vue';
 import CreateMessage from '@/components/care/create-message.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
+import ChangeNotes from './ChangeNotes.vue';
 
 export default {
   name: 'DirectoryCare',
   components: {
+    ChangeNotes,
     'tab-menu': TabMenu,
     'holding-mover': HoldingMover,
     'modal-component': ModalComponent,
@@ -26,11 +28,13 @@ export default {
         removed: [],
         other: [],
       },
+
       tabs: [
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
-        { 'id': 'message', 'text': 'Create message' },
+        { id: 'message', text: 'Create message' },
+        { id: 'changes', text: 'Changes' },
       ],
       showModal: false,
     };
@@ -41,7 +45,7 @@ export default {
       'userFlagged',
       'user',
       'resources',
-      'templates'
+      'templates',
     ]),
     flaggedInstances() {
       return filter(this.fetchedItems, (o) => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
@@ -51,7 +55,8 @@ export default {
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
-        { 'id': 'message', 'text': 'Create message' },
+        { id: 'message', text: 'Create message' },
+        { id: 'changes', text: 'Changes' },
       ];
     },
   },
@@ -146,7 +151,8 @@ export default {
 <template>
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
-      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool" />
+      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
+      <change-notes v-if="$route.params.tool === 'changes'"></change-notes>
       <holding-mover
         v-if="$route.params.tool === 'holdings'"
         :flaggedInstances="flaggedInstances" />

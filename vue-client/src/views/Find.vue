@@ -5,7 +5,7 @@ import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Spinner from '@/components/shared/spinner.vue';
-import { translatePhrase } from '@/utils/filters';
+import { translatePhrase, asAppPath } from '@/utils/filters';
 import FacetControls from '@/components/search/facet-controls.vue';
 import SearchResult from '@/components/search/search-result.vue';
 import TabMenu from '@/components/shared/tab-menu.vue';
@@ -42,8 +42,14 @@ export default {
         }
       }
     },
+    query(newVal, oldVal) {
+      if (this.$route.params.tool === 'changes' && typeof oldVal === 'undefined' && typeof newVal !== 'undefined') {
+        this.getResultAndInitFacets();
+      }
+    },
   },
   methods: {
+    asAppPath,
     translatePhrase,
     setSearchPerimeter(id) {
       this.$router.push({ path: `/search/${id}` }).catch(() => {});
@@ -64,6 +70,20 @@ export default {
     emptyResults() {
       this.result = null;
       this.importData = [];
+    },
+    getResultAndInitFacets() {
+      this.emptyResults();
+      this.searchInProgress = true;
+      const fetchUrl = `${this.settings.apiPath}/find.jsonld?${this.query}`;
+      fetch(fetchUrl).then((response) => {
+        response.json().then((result) => {
+          this.result = result;
+          if (result.stats) {
+            this.applyChangeFacets(result.stats);
+          }
+          this.searchInProgress = false;
+        });
+      });
     },
     getLocalResult() {
       const fetchUrl = `${this.settings.apiPath}/find.jsonld?${this.query}`;
@@ -128,6 +148,25 @@ export default {
     },
     getChangesResult() {
       this.getLocalResult();
+    },
+    selectedInSettings(id) {
+      return this.checkedCategoriesAndSigels.includes(id);
+    },
+    applyChangeFacets(stats) {
+      let facetsString = '';
+      Object.entries(stats.sliceByDimension).forEach(([key, value]) => {
+        const facets = value.observation;
+        facets.forEach((facet) => {
+          const facetId = facet.object['@id'];
+          if (this.selectedInSettings(facetId)) {
+            const addedFacet = `&${key}=${facetId}`;
+            if (!this.$route.fullPath.includes(addedFacet)) {
+              facetsString += addedFacet;
+            }
+          }
+        });
+      });
+      this.$router.push(asAppPath(this.$route.fullPath + facetsString, true));
     },
     convertRemoteResult(result) {
       let totalResults = 0;
@@ -201,6 +240,12 @@ export default {
       ];
       return tabs;
     },
+    changeCategories() {
+      return this.$store.getters.userChangeCategories;
+    },
+    checkedCategoriesAndSigels() {
+      return [...this.changeCategories.map((c) => c.heldBy), ...this.changeCategories.find((c) => c.hasOwnProperty('triggers')).triggers];
+    },
   },
   beforeCreate() {
   },
@@ -249,7 +294,8 @@ export default {
 <template>
   <div class="row">
     <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
-      <tab-menu v-if="$route.params.tool !== 'changes'"
+      <tab-menu
+        v-if="$route.params.tool !== 'changes'"
         @go="setSearchPerimeter"
         :active="$route.params.perimeter"
         :tabs="findTabs"
@@ -261,10 +307,12 @@ export default {
         <i
           class="fa fa-fw hidden-md hidden-lg"
           :class="{ 'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }" /></div>
-      <facet-controls :class="{ 'hidden-xs hidden-sm': hideFacetColumn }"
-          :result="result"
-          v-if="result && result.stats && result.totalItems > 0 && ($route.params.perimeter === 'libris' || $route.params.tool === 'changes')" />
-      <portal-target name="facetColumn" />
+      <facet-controls
+        :class="{ 'hidden-xs hidden-sm': hideFacetColumn }"
+        :result="result"
+        :isChangeView="$route.params.tool === 'changes'"
+        v-if="result && result.stats && result.totalItems > 0 && ($route.params.perimeter === 'libris' || $route.params.tool === 'changes')"/>
+      <portal-target name="facetColumn"/>
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">
       <div class="Find-progressText">

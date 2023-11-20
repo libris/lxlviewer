@@ -149,6 +149,9 @@ export default {
       }
       return `${first}-${last}`;
     },
+    isChangeView() {
+      return this.$route.params.tool === 'changes';
+    },
   },
   emits: ['sortChange'],
   methods: {
@@ -160,6 +163,9 @@ export default {
       } else {
         this.addFilter('@reverse.itemOf.heldBy.@id', `https://libris.kb.se/library/${this.user.settings.activeSigel}`);
       }
+    },
+    appPath(path) {
+      return this.asAppPath(path, this.isChangeView);
     },
     addFilter(key, value) {
       const newQuery = Object.assign({}, this.$route.query);
@@ -251,7 +257,7 @@ export default {
     </div>
     <div class="ResultControls-secondary">
       <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0">
-        <FilterBadge class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index" :filter="filter" />
+        <FilterBadge class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index" :filter="filter" :is-change-view="isChangeView" />
       </div>
     </div>
     <nav v-if="hasPagination && showPages">
@@ -259,7 +265,7 @@ export default {
         <li
           class="ResultControls-pagItem"
           v-bind:class="{ 'is-disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
-          <router-link class="ResultControls-pagLink" v-if="pageData.first" :to="asAppPath(pageData.first['@id'])">{{ translatePhrase('First') }}</router-link>
+          <router-link class="ResultControls-pagLink" v-if="pageData.first" :to="appPath(pageData.first['@id'])">{{ translatePhrase('First') }}</router-link>
           <a class="ResultControls-pagLink" v-if="!pageData.first">{{ translatePhrase('First') }}</a>
         </li>
         <li
@@ -268,7 +274,7 @@ export default {
           <router-link
             class="ResultControls-pagLink"
             v-if="pageData.previous"
-            :to="asAppPath(pageData.previous['@id'])">{{ translatePhrase('Previous') }}</router-link>
+            :to="appPath(pageData.previous['@id'])">{{ translatePhrase('Previous') }}</router-link>
           <a class="ResultControls-pagLink" v-if="!pageData.previous">{{ translatePhrase('Previous') }}</a>
         </li>
         <li
@@ -279,7 +285,7 @@ export default {
           <span class="ResultControls-pagDecor" v-if="!page.link">...</span>
           <router-link
             class="ResultControls-pagLink"
-            :to="asAppPath(page.link)"
+            :to="appPath(page.link)"
             v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
           <a class="ResultControls-pagLink" v-if="page.active">{{page.pageLabel}}</a>
         </li>
@@ -289,7 +295,7 @@ export default {
           <router-link
             class="ResultControls-pagLink"
             v-if="pageData.next"
-            :to="asAppPath(pageData.next['@id'])">{{ translatePhrase('Next') }}</router-link>
+            :to="appPath(pageData.next['@id'])">{{ translatePhrase('Next') }}</router-link>
           <a class="ResultControls-pagLink" v-if="!pageData.next">{{ translatePhrase('Next') }}</a>
         </li>
         <li
@@ -298,7 +304,7 @@ export default {
           <router-link
             class="ResultControls-pagLink"
             v-if="pageData.last"
-            :to="asAppPath(pageData.last['@id'])">{{ translatePhrase('Last') }}</router-link>
+            :to="appPath(pageData.last['@id'])">{{ translatePhrase('Last') }}</router-link>
           <a class="ResultControls-pagLink" v-if="!pageData.last">{{ translatePhrase('Last') }}</a>
         </li>
       </ul>

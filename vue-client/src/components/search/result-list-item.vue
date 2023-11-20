@@ -2,11 +2,14 @@
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
 import * as RecordUtil from '@/utils/record';
+import * as HttpUtil from '@/utils/http';
 import { translatePhrase } from '@/utils/filters';
 import ReverseRelations from '@/components/inspector/reverse-relations.vue';
 import TagSwitch from '@/components/shared/tag-switch.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 import ResultMixin from '../mixins/result-mixin.vue';
+import CheckBox from "../shared/check-box.vue";
+import { getHandleAction } from "../../utils/record";
 
 export default {
   name: 'result-list-item',
@@ -21,6 +24,10 @@ export default {
     database: {
       type: String,
       default: '',
+    },
+    isChangeView: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -97,8 +104,23 @@ export default {
     allCount(value) {
       this.totalReverseCount = value;
     },
+    async handleChanged(e, isChecked) {
+      if (isChecked) {
+        const handleActionRecord = getHandleAction(this.recordId);
+        const response = await HttpUtil.post({
+          url: `${this.settings.apiPath}/data`,
+          token: this.user.token,
+          activeSigel: this.user.settings.activeSigel,
+        }, handleActionRecord);
+        const recordUrl = `${response.getResponseHeader('Location')}`;
+        console.log('Created handle action: ', recordUrl);
+      } else {
+        //Remove record linking to this id, (we need to know this through reverse)
+      }
+    }
   },
   components: {
+    CheckBox,
     TagSwitch,
     ReverseRelations,
   },
@@ -134,10 +156,15 @@ export default {
           class=""
           :action-labels="{ on: 'Mark as', off: 'Unmark as' }"
           tag="Flagged" />
+        <check-box
+          :action-labels="{ on: 'Mark as handled', off: 'Unmark as handled' }"
+          v-if="isChangeView"
+          @changed="handleChanged">
+        </check-box>
       </div>
       <div
         class="ResultItem-relationsContainer"
-        v-if="isImport === false">
+        v-if="isImport === false && !isChangeView ">
         <reverse-relations
           v-show="showUsedIn"
           @numberOfRelations="allCount"

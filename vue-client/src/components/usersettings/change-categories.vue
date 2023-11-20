@@ -37,6 +37,7 @@ export default {
       return obj ? obj.triggers.includes(categoryId) : false;
     },
     isActiveSigel(sigel) {
+      console.log('this.userChangeCategories', JSON.stringify(this.userChangeCategories));
       const obj = this.userChangeCategories.find(c => c.heldBy === this.sigelUri(sigel));
       return !!obj;
     },

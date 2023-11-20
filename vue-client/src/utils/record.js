@@ -233,6 +233,26 @@ export function moveHolding(holdingId, destinationId, user) {
   });
 }
 
+export function getHandleAction(concerningId) {
+  return {
+    '@graph': [{
+      '@id': 'https://libris.kb.se/TEMPID',
+      '@type': 'Record',
+      mainEntity: {
+        '@id': 'https://libris.kb.se/TEMPID#it',
+      },
+    },
+      {
+        '@id': 'https://libris.kb.se/TEMPID#it',
+        '@type': 'HandleAction',
+        'concerning': {
+          '@id': concerningId
+        }
+      },
+    ],
+  };
+}
+
 export function getObjectAsRecord(mainEntity, record = {}) {
   const newMainEntity = cloneDeep(mainEntity);
   newMainEntity['@id'] = 'https://id.kb.se/TEMPID#it';

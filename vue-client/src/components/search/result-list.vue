@@ -11,6 +11,7 @@ export default {
     results: Array,
     compact: Boolean,
     importData: Array,
+    isChangeView: Boolean,
   },
   data() {
     return {
@@ -67,6 +68,7 @@ export default {
       :show-compact="compact"
       :focus-data="item"
       :import-item="getImportItem(index)"
+      :isChangeView="isChangeView"
       v-for="(item, index) in results"
       :key="item['@id']"
       @relations-list-open="relationsListOpen" />
