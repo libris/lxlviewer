@@ -232,20 +232,21 @@ export function moveHolding(holdingId, destinationId, user) {
     });
   });
 }
+
 export function getHandleAction(concerningId) {
-  return  {
+  return {
     '@graph': [{
       '@id': 'https://libris.kb.se/TEMPID',
-      '@type': "Record",
+      '@type': 'Record',
       mainEntity: {
         '@id': 'https://libris.kb.se/TEMPID#it',
       },
     },
       {
-        "@id": "https://libris.kb.se/TEMPID#it",
-        "@type": "HandleAction",
-        "concerning": {
-          "@id": concerningId
+        '@id': 'https://libris.kb.se/TEMPID#it',
+        '@type': 'HandleAction',
+        'concerning': {
+          '@id': concerningId
         }
       },
     ],

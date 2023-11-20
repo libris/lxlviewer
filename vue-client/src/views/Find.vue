@@ -44,7 +44,6 @@ export default {
     },
     query(newVal, oldVal) {
       if (this.$route.params.tool === 'changes' && typeof oldVal === 'undefined' && typeof newVal !== 'undefined') {
-        
         this.getResultAndInitFacets();
       }
     },
@@ -83,8 +82,8 @@ export default {
             this.applyChangeFacets(result.stats);
           }
           this.searchInProgress = false;
-        })
-      })
+        });
+      });
     },
     getLocalResult() {
       const fetchUrl = `${this.settings.apiPath}/find.jsonld?${this.query}`;
@@ -160,14 +159,14 @@ export default {
         facets.forEach((facet) => {
           const facetId = facet.object['@id'];
           if (this.selectedInSettings(facetId)) {
-            const addedFacet = `&${key}=${facetId}`
+            const addedFacet = `&${key}=${facetId}`;
             if (!this.$route.fullPath.includes(addedFacet)) {
               facetsString += addedFacet;
             }
           }
-        })
+        });
       });
-       this.$router.push(asAppPath(this.$route.fullPath+facetsString, true));
+      this.$router.push(asAppPath(this.$route.fullPath + facetsString, true));
     },
     convertRemoteResult(result) {
       let totalResults = 0;
@@ -245,7 +244,7 @@ export default {
       return this.$store.getters.userChangeCategories;
     },
     checkedCategoriesAndSigels() {
-      return [...this.changeCategories.map(c => c.heldBy), ...this.changeCategories.find(c => c.hasOwnProperty('triggers')).triggers];
+      return [...this.changeCategories.map((c) => c.heldBy), ...this.changeCategories.find((c) => c.hasOwnProperty('triggers')).triggers];
     },
   },
   beforeCreate() {
@@ -295,7 +294,8 @@ export default {
 <template>
   <div class="row">
     <div class="col-sm-12 col-md-3 Column-facets" v-if="!status.panelOpen">
-      <tab-menu v-if="$route.params.tool !== 'changes'"
+      <tab-menu
+        v-if="$route.params.tool !== 'changes'"
         @go="setSearchPerimeter"
         :active="$route.params.perimeter"
         :tabs="findTabs"
@@ -307,11 +307,12 @@ export default {
         <i
           class="fa fa-fw hidden-md hidden-lg"
           :class="{ 'fa-caret-down': !hideFacetColumn, 'fa-caret-right': hideFacetColumn }" /></div>
-      <facet-controls :class="{ 'hidden-xs hidden-sm': hideFacetColumn }"
-          :result="result"
-          :isChangeView="$route.params.tool === 'changes'"
-          v-if="result && result.stats && result.totalItems > 0 && ($route.params.perimeter === 'libris' || $route.params.tool === 'changes')" />
-      <portal-target name="facetColumn" />
+      <facet-controls
+        :class="{ 'hidden-xs hidden-sm': hideFacetColumn }"
+        :result="result"
+        :isChangeView="$route.params.tool === 'changes'"
+        v-if="result && result.stats && result.totalItems > 0 && ($route.params.perimeter === 'libris' || $route.params.tool === 'changes')"/>
+      <portal-target name="facetColumn"/>
     </div>
     <div v-show="searchInProgress" class="col-sm-12 col-md-9">
       <div class="Find-progressText">

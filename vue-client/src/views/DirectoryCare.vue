@@ -33,7 +33,7 @@ export default {
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
-        { 'id': 'message', 'text': 'Create message' },
+        { id: 'message', text: 'Create message' },
         { id: 'changes', text: 'Changes' },
       ],
       showModal: false,
@@ -45,7 +45,7 @@ export default {
       'userFlagged',
       'user',
       'resources',
-      'templates'
+      'templates',
     ]),
     flaggedInstances() {
       return filter(this.fetchedItems, (o) => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
@@ -55,7 +55,7 @@ export default {
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
-        { 'id': 'message', 'text': 'Create message' },
+        { id: 'message', text: 'Create message' },
         { id: 'changes', text: 'Changes' },
       ];
     },
