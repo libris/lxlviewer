@@ -70,7 +70,7 @@ export default {
         //Keep facets
         if (!isEmpty(this.$route.query)) {
           let queryObj = cloneDeep(this.$route.query);
-          queryObj.q = this.searchPhrase;
+          queryObj.q = this.searchPhrase === '' ? '*' : this.searchPhrase;
           path = `${this.$route.path}?${buildQueryString(queryObj)}`;
         } else {
           path = `${this.$route.path}?${buildQueryString(this.mergedParams)}`;

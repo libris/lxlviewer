@@ -1,8 +1,9 @@
 <script>
-import { each, isArray, isPlainObject } from 'lodash-es';
+import {clone, cloneDeep, each, isArray, isEmpty, isPlainObject} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
+import * as HttpUtil from '@/utils/http';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Spinner from '@/components/shared/spinner.vue';
 import { translatePhrase, asAppPath } from '@/utils/filters';
@@ -43,7 +44,7 @@ export default {
       }
     },
     query(newVal, oldVal) {
-      if (this.$route.params.tool === 'changes' && typeof oldVal === 'undefined' && typeof newVal !== 'undefined') {
+      if (this.$route.params.tool === 'changes' && (typeof oldVal === 'undefined' || oldVal === '') && typeof newVal !== 'undefined') {
         this.getResultAndInitFacets();
       }
     },
@@ -153,20 +154,26 @@ export default {
       return this.checkedCategoriesAndSigels.includes(id);
     },
     applyChangeFacets(stats) {
-      let facetsString = '';
+      let query = cloneDeep(HttpUtil.decomposeQueryString(this.query));
       Object.entries(stats.sliceByDimension).forEach(([key, value]) => {
         const facets = value.observation;
         facets.forEach((facet) => {
           const facetId = facet.object['@id'];
           if (this.selectedInSettings(facetId)) {
-            const addedFacet = `&${key}=${facetId}`;
-            if (!this.$route.fullPath.includes(addedFacet)) {
-              facetsString += addedFacet;
+            let currentFacetsForKey = query[key];
+            if (currentFacetsForKey) {
+              if (!currentFacetsForKey.includes(facetId)) {
+                currentFacetsForKey.push(facetId);
+              }
+            } else {
+              let obj = {};
+              obj[key] = [facetId];
+              Object.assign(query, obj);
             }
           }
         });
       });
-      this.$router.push(asAppPath(this.$route.fullPath + facetsString, true));
+      this.$router.push(this.$route.path + '?' + HttpUtil.buildQueryString(query));
     },
     convertRemoteResult(result) {
       let totalResults = 0;
