@@ -437,10 +437,10 @@ const store = createStore({
           ...mainEntityHasTitle.hasPart[0].partName || '',
         ].join(', ') : '';
 
-        const extractedHasTitle = {
+        const extractedHasTitle = [{
           '@type': 'Title',
           mainTitle: `${mainEntityHasTitle.mainTitle.replace(/\.$/, '')}. ${extractedTitleParts}`.trim(),
-        };
+        }];
 
         commit('updateInspectorData', {
           changeList: [
