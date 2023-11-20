@@ -30,7 +30,7 @@ export default {
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
-        { 'id': 'message', 'text': 'Message' },
+        { 'id': 'message', 'text': 'Create message' },
       ],
       showModal: false,
     };
@@ -51,7 +51,7 @@ export default {
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
-        { 'id': 'message', 'text': 'Message' },
+        { 'id': 'message', 'text': 'Create message' },
       ];
     },
   },
