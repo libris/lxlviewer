@@ -1,4 +1,5 @@
 <script>
+import { sortBy } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import { translatePhrase } from '@/utils/filters';
 import * as StringUtil from 'lxljs/string';
@@ -55,6 +56,9 @@ export default {
     ...mapGetters([
       'userChangeCategories',
     ]),
+    categoriesSorted() {
+      return sortBy(this.availableCategories, this.label);
+    },
   },
   mounted() {
   },
@@ -88,7 +92,7 @@ export default {
       {{ translatePhrase("Change categories") }}
     </div>
     <div v-if="categoriesIsExpanded">
-      <div class="Categories-row" v-for="category in availableCategories" :key="category['@id']">
+      <div class="Categories-row" v-for="category in categoriesSorted" :key="category['@id']">
         <div class="Categories-key">{{ label(category) }}</div>
         <div class="Categories-value">
           <input id="categoryCheckbox"
