@@ -46,7 +46,7 @@ export default {
 
 <template>
   <div class="FilterBadge">
-    <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}:</span>
+    <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}: </span>
     <span>{{ labelByLang(filter.label) }}</span>
     <router-link
       :to="asAppPath(filter.up, isChangeView)">
