@@ -7,6 +7,7 @@ import * as HttpUtil from '@/utils/http';
 import { translatePhrase } from '@/utils/filters';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import HoldingMover from '@/components/care/holding-mover.vue';
+import CreateMessage from '@/components/care/create-message.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import ChangeNotes from './ChangeNotes.vue';
 
@@ -17,6 +18,7 @@ export default {
     'tab-menu': TabMenu,
     'holding-mover': HoldingMover,
     'modal-component': ModalComponent,
+    'create-message': CreateMessage,
   },
   data() {
     return {
@@ -26,6 +28,14 @@ export default {
         removed: [],
         other: [],
       },
+
+      tabs: [
+        { id: 'holdings', text: 'Move holdings' },
+        // { 'id': 'merge', 'text': 'Merge records' },
+        // { 'id': 'remove', 'text': 'Batch remove' },
+        { 'id': 'message', 'text': 'Create message' },
+        { id: 'changes', text: 'Changes' },
+      ],
       showModal: false,
     };
   },
@@ -35,6 +45,7 @@ export default {
       'userFlagged',
       'user',
       'resources',
+      'templates'
     ]),
     flaggedInstances() {
       return filter(this.fetchedItems, (o) => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
@@ -42,12 +53,10 @@ export default {
     tabs() {
       return [
         { id: 'holdings', text: 'Move holdings' },
-        {
-          id: 'changes',
-          text: StringUtil.getUiPhraseByLang('Changes', this.user.settings.language, this.resources.i18n),
-        },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
+        { 'id': 'message', 'text': 'Create message' },
+        { id: 'changes', text: 'Changes' },
       ];
     },
   },
@@ -173,12 +182,14 @@ export default {
           </div>
         </template>
       </modal-component>
+      <div v-if="$route.params.tool === 'message'">
+        <create-message/>
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="less">
-
 .DirectoryCare {
   margin-bottom: 2em;
   &-modalBody {
@@ -190,4 +201,5 @@ export default {
     margin-top: 20px;
   }
 }
+
 </style>

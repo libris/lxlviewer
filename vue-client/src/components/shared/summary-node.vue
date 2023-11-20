@@ -1,10 +1,7 @@
 <script>
-/*
-
-*/
 import * as StringUtil from 'lxljs/string';
 import { labelByLang, convertResourceLink, capitalize } from '@/utils/filters';
-import { Dropdown } from 'floating-vue';
+import { Menu } from 'floating-vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import ItemMixin from '@/components/mixins/item-mixin.vue';
 import OverflowMixin from '@/components/mixins/overflow-mixin.vue';
@@ -60,7 +57,7 @@ export default {
     },
   },
   components: {
-    Dropdown,
+    Menu,
     PreviewCard,
   },
   methods: {
@@ -85,10 +82,9 @@ export default {
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
-    <Dropdown
+    <Menu
       v-if="isLinked && !isStatic"
       :disabled="!hoverLinks"
-      :triggers="['hover', 'focus']"
       @apply-show="$refs.previewCard.populateData()"
       placement="bottom-start"
     >
@@ -104,7 +100,7 @@ export default {
       <template #popper v-if="hoverLinks">
         <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
       </template>
-    </Dropdown>
+    </Menu>
   </div>
 </template>
 

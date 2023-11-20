@@ -413,6 +413,9 @@
     "Collections": "Sigler",
     "Mark as handled": "Markera som hanterad",
     "Unmark as handled": "Avmarkera som hanterad",
-    "Search among changes": "Sök bland ändringar"
-    }
+    "Search among changes": "Sök bland ändringar",
+    "Create message": "Skapa meddelande",
+    "Inquiry": "Förfrågan",
+    "Change notice": "Ändringsmeddelande"
+  }
 }

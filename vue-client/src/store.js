@@ -543,7 +543,7 @@ const store = createStore({
       } else if (notifications.length === 1) { // Unchecked & removing the last element
         notifications.forEach((n) => { n.heldBy = 'none'; });
       } else { // Unchecked => remove whole notification
-        notifications = notifications.filter(n => n.heldBy !== libraryId);
+        notifications = notifications.filter((n) => n.heldBy !== libraryId);
       }
 
       dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
@@ -557,7 +557,7 @@ const store = createStore({
         if (checked) {
           n.triggers.push(categoryId);
         } else { // Unchecked => remove from triggers
-          n.triggers = n.triggers.filter(id => id !== categoryId);
+          n.triggers = n.triggers.filter((id) => id !== categoryId);
         }
       });
       dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
@@ -572,7 +572,7 @@ const store = createStore({
             n.push({ heldBy: libraryId, triggers: [categoryId] });
           }
         } else { // Unchecked => remove from triggers
-          n.triggers = n.triggers.filter(id => id !== categoryId);
+          n.triggers = n.triggers.filter((id) => id !== categoryId);
         }
       });
       dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });

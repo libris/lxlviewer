@@ -46,8 +46,10 @@ export default {
         this.updateViewForm();
       }
     },
-    fieldOtherValue() {
-      this.updateViewForm();
+    fieldOtherValue(newVal, oldVal) {
+      if (!isEqual(newVal, oldVal)) {
+        this.updateViewForm();
+      }
     },
     entries: {
       handler: debounce(function debounceUpdate(val) {

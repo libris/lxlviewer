@@ -382,7 +382,7 @@ export default {
           v-show="hasInput"
           @keyup.enter="clearInputs()"
           @click="clearInputs()">
-          <i class="fa fa-fw fa-close"></i>
+          <i class="fa fa-fw fa-close" />
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
           <select

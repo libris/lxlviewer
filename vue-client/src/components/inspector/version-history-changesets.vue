@@ -3,7 +3,7 @@
   Changeset list
 */
 import { mapGetters } from 'vuex';
-import { Dropdown } from 'floating-vue';
+import { Menu } from 'floating-vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import { translatePhrase } from '@/utils/filters';
@@ -66,7 +66,7 @@ export default {
     },
   },
   components: {
-    Dropdown,
+    Menu,
     SummaryNode,
   },
   mounted() {
@@ -104,12 +104,12 @@ export default {
             :is-last="true"
             :field-key="'agent'" />
           <span v-if="isGlobalChanges(changeSet)">
-            <Dropdown placement="bottom-start" :triggers="['hover', 'focus']">
+            <Menu placement="bottom-start">
               {{ translatePhrase('Libris global changes') }}
               <template #popper>
                 <span>{{changeSet.agent['@id']}}</span>
               </template>
-            </Dropdown>
+            </Menu>
           </span>
         </span>
       </div>

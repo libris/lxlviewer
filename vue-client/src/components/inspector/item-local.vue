@@ -425,7 +425,9 @@ export default {
       const fieldAdder = this.$refs.fieldAdder;
       if (this.isEmpty) {
         LayoutUtil.enableTabbing();
-        fieldAdder.$refs.adderButton.focus();
+        if (fieldAdder) {
+          fieldAdder.$refs.adderButton.focus();
+        }
       } else {
         this.expand();
         this.expandAllChildren();

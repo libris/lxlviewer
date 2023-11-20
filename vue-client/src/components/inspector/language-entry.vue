@@ -1,7 +1,7 @@
 <script>
 import AutoSize from 'autosize';
 import { mapGetters } from 'vuex';
-import { Dropdown } from 'floating-vue';
+import { Menu } from 'floating-vue';
 import { isEqual } from 'lodash-es';
 import { translatePhrase } from '@/utils/filters';
 import PreviewCard from '@/components/shared/preview-card.vue';
@@ -122,7 +122,7 @@ export default {
     },
   },
   components: {
-    Dropdown,
+    Menu,
     PreviewCard,
     'entity-adder': EntityAdder,
   },
@@ -198,18 +198,17 @@ export default {
           class="LanguageEntry-input js-itemValueInput"
           rows="1"
           v-bind:value="modelValue"
-          v-on:input="$emit('update:modelValue', $event.target.value)"
+          v-on:input="$emit('update:model-value', $event.target.value)"
           @blur="$emit('update')"
           ref="textarea"
         />
       </span>
       <span class="LanguageEntry-value">
         <span class="LanguageEntry-pill" v-if="tag !== 'none'">
-          <Dropdown
+          <Menu
             v-if="this.isLinked"
             class="LanguageEntry-popover"
             placement="bottom-start"
-            :triggers="['hover', 'focus']"
             @apply-show="$refs.previewCard.populateData()"
           >
             <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
@@ -218,7 +217,7 @@ export default {
             <template #popper>
               <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId" />
             </template>
-          </Dropdown>
+          </Menu>
 
           <span class="LanguageEntry-pill-removeButton">
             <i
@@ -298,11 +297,10 @@ export default {
 
         <span class="LanguageEntry-tags">
           <span class="LanguageEntry-pill" v-if="tag !== 'none'">
-            <Dropdown
+            <Menu
               v-if="this.isLinked"
               class="LanguageEntry-popover"
               placement="bottom-start"
-              :triggers="['hover', 'focus']"
               @apply-show="$refs.previewCard.populateData()">
               <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
                 <router-link :to="routerPath">{{ this.label }}</router-link>
@@ -311,7 +309,7 @@ export default {
               <template #popper>
                 <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId" />
               </template>
-            </Dropdown>
+            </Menu>
 
             <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
               {{ this.label }}

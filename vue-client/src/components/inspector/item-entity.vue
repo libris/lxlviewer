@@ -1,7 +1,7 @@
 <script>
 import { size } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import { Dropdown } from 'floating-vue';
+import { Menu } from 'floating-vue';
 import * as VocabUtil from 'lxljs/vocab';
 import { hasAutomaticShelfControlNumber } from '@/utils/shelfmark';
 import * as LayoutUtil from '@/utils/layout';
@@ -133,7 +133,7 @@ export default {
     },
   },
   components: {
-    Dropdown,
+    Menu,
     PreviewCard,
     ReverseRelations,
   },
@@ -191,10 +191,9 @@ export default {
       :id="`formPath-${path}`"
       class="ItemEntity-content"
       v-show="!isCardWithData || !expanded">
-      <Dropdown
+      <Menu
         class="ItemEntity-popover"
         placement="bottom-start"
-        :triggers="['hover', 'focus']"
         @apply-show="$refs.previewCard.populateData()"
       >
         <div
@@ -242,7 +241,7 @@ export default {
         <template #popper>
           <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
         </template>
-      </Dropdown>
+      </Menu>
     </div>
 
     <div class="ItemEntity-content ItemEntity-cardContainer" v-if="isCardWithData && expanded">
