@@ -7,8 +7,6 @@ import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
 import settings from './settings';
 
-const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
-
 const store = createStore({
   state: {
     resources: {
@@ -73,7 +71,7 @@ const store = createStore({
       changeHistory: [],
       event: [],
       magicShelfMarks: [],
-      extractItemsOnSave: {},
+      extractItemsOnSave: [],
     },
     status: {
       userIdle: false,
@@ -194,9 +192,7 @@ const store = createStore({
         const changes = [];
         each(payload.changeList, (node) => {
           let oldValue;
-          if (node.value === EXTRACT_ON_SAVE) {
-            oldValue = EXTRACT_ON_SAVE;
-          } else if (node.path === '') {
+          if (node.path === '') {
             oldValue = inspectorData;
           } else {
             oldValue = cloneDeep(get(inspectorData, node.path));
@@ -211,17 +207,10 @@ const store = createStore({
       }
       // Set the new values
       each(payload.changeList, (node) => {
-        /**
-         * Skip updating inspector data if changeList value is EXTRACT_ON_SAVE, which indicates that the
-         * item should be extracted first while saving (the values of the item should be unchanged until the
-         * extraction has finished and there is a new id to link to).
-         */
-        if (node.value !== EXTRACT_ON_SAVE) {
-          if (node.path === '') {
-            inspectorData = node.value;
-          } else {
-            set(inspectorData, node.path, node.value);
-          }
+        if (node.path === '') {
+          inspectorData = node.value;
+        } else {
+          set(inspectorData, node.path, node.value);
         }
       });
       // Check if we should remove work node (if it went from local to being linked)
@@ -350,6 +339,14 @@ const store = createStore({
     setExtractItemsOnSave(state, data) {
       state.inspector.extractItemsOnSave = data;
     },
+    addExtractItemOnSave(state, path) {
+      state.inspector.extractItemsOnSave = [
+        ...new Set([...state.inspector.extractItemsOnSave, path]),
+      ];
+    },
+    removeExtractItemOnSave(state, path) {
+      state.inspector.extractItemsOnSave = state.inspector.extractItemsOnSave.filter((key) => key !== path);
+    },
   },
   getters: {
     inspector: (state) => state.inspector,
@@ -427,31 +424,56 @@ const store = createStore({
   },
   actions: {
     addExtractItemOnSave({ commit, dispatch, state }, { path, item }) {
-      commit('setExtractItemsOnSave', {
-        ...state.inspector.extractItemsOnSave,
-        [path]: item,
-      });
-      // Change value to constant indicating that the item should be extracted when clicking save.
-      dispatch('updateInspectorData', {
-        changeList: [
-          {
-            path,
-            value: EXTRACT_ON_SAVE,
-          },
-        ],
-        addToHistory: true,
-      });
-    },
-    removeExtractItemOnSave({ commit, state }, { path }) {
-      const { [path]: itemToRemove, ...rest } = state.inspector.extractItemsOnSave;
-      commit('setExtractItemsOnSave', rest);
-      const indexInChangeHistory = state.inspector.changeHistory.findIndex((item) => item[0].path === path && item[0].value === EXTRACT_ON_SAVE);
-      if (indexInChangeHistory >= 0) {
-        commit('removeIndexFromChangeHistory', indexInChangeHistory);
+      commit('addExtractItemOnSave', path);
+
+      if (!item.hasOwnProperty('hasTitle') && state.inspector.data.mainEntity.hasOwnProperty('hasTitle')) {
+        /**
+         * Add formatted/refined title from mainEntity if title is missing on item to be extracted
+         */
+        const mainEntityHasTitle = state.inspector.data.mainEntity.hasTitle[0];
+
+        const extractedTitleParts = mainEntityHasTitle?.hasPart?.length === 1 ? [
+          ...mainEntityHasTitle.hasPart[0].partNumber || '',
+          ...mainEntityHasTitle.hasPart[0].partName || '',
+        ].join(', ') : '';
+
+        const extractedHasTitle = {
+          '@type': 'Title',
+          mainTitle: `${mainEntityHasTitle.mainTitle.replace(/\.$/, '')}. ${extractedTitleParts}`.trim(),
+        };
+
+        commit('updateInspectorData', {
+          changeList: [
+            {
+              path: `${path}.hasTitle`,
+              value: extractedHasTitle,
+            },
+          ],
+          addToHistory: true,
+        });
+
+        dispatch('pushNotification', {
+          type: 'success',
+          message: `${StringUtil.getUiPhraseByLang(
+            'Link was created and title was copied from instance',
+            state.settings.language,
+            state.resources.i18n,
+          )}.`,
+        });
+      } else {
+        dispatch('pushNotification', { type: 'success',
+          message: `${StringUtil.getUiPhraseByLang(
+            'Link was created',
+            state.settings.language,
+            state.resources.i18n,
+          )}.` });
       }
     },
+    removeExtractItemOnSave({ commit }, { path }) {
+      commit('removeExtractItemOnSave', path);
+    },
     flushExtractItemsOnSave({ commit }) {
-      commit('setExtractItemsOnSave', {});
+      commit('setExtractItemsOnSave', []);
     },
     checkForMigrationOfUserDatabase({ commit, dispatch, state }) {
       // Check if user has records stored in localStorage
@@ -700,7 +722,7 @@ const store = createStore({
     flushChangeHistory({ commit }) {
       commit('flushChangeHistory');
     },
-    undoInspectorChange({ commit, dispatch, state }) {
+    undoInspectorChange({ commit, state }) {
       const history = state.inspector.changeHistory;
       const lastNode = history[history.length - 1];
 
@@ -712,12 +734,6 @@ const store = createStore({
             path: node.path,
             value: node.value,
           });
-          if (
-            node.value === EXTRACT_ON_SAVE
-            && Object.keys(state.inspector.extractItemsOnSave).includes(node.path)
-          ) {
-            dispatch('removeExtractItemOnSave', { path: node.path });
-          }
         } else {
           // It did not have a value (ie key did not exist)
           const pathParts = node.path.split('.');
