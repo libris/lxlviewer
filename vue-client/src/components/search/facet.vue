@@ -15,10 +15,6 @@ export default {
       type: Object,
       default: null,
     },
-    isChangeFacet: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -64,7 +60,7 @@ export default {
     <slot name="icon" />
     <router-link
       class="Facet-link"
-      :to="asAppPath(facet.link, isChangeFacet)"
+      :to="asAppPath(facet.link, this.$route.params.tool === 'changes')"
       :title="capitalize(facet.label)">
       <span
         class="Facet-label"

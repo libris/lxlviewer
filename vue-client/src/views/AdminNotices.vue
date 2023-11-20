@@ -2,7 +2,7 @@
 import Find from './Find.vue';
 
 export default {
-  name: 'ChangeNotes',
+  name: 'AdminNotices',
   components: {
     Find,
   },

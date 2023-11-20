@@ -9,12 +9,12 @@ import TabMenu from '@/components/shared/tab-menu.vue';
 import HoldingMover from '@/components/care/holding-mover.vue';
 import CreateMessage from '@/components/care/create-message.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
-import ChangeNotes from './ChangeNotes.vue';
+import AdminNotices from "./AdminNotices.vue";
 
 export default {
   name: 'DirectoryCare',
   components: {
-    ChangeNotes,
+    AdminNotices,
     'tab-menu': TabMenu,
     'holding-mover': HoldingMover,
     'modal-component': ModalComponent,
@@ -152,7 +152,7 @@ export default {
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
       <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
-      <change-notes v-if="$route.params.tool === 'changes'"></change-notes>
+      <admin-notices v-if="$route.params.tool === 'changes'"></admin-notices>
       <holding-mover
         v-if="$route.params.tool === 'holdings'"
         :flaggedInstances="flaggedInstances" />

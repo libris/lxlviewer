@@ -78,8 +78,11 @@ export default {
       return dim === '@reverse.itemOf.heldBy.@id' || dim === 'concerning.@reverse.itemOf.heldBy.@id';
     },
     checkedChanged(facetLink) {
-      this.$router.push(asAppPath(facetLink, true));
+      this.$router.push(asAppPath(facetLink, this.isChangeView));
     },
+    hasSelectedProperty(facet) {
+      return typeof facet.selected !== 'undefined';
+    }
   },
   computed: {
     settings() {
@@ -182,16 +185,13 @@ export default {
       return !this.revealLevels[this.currentLevel] && this.isExpanded;
     },
     isChangeFacetGroup() {
-      return (this.group.dimension === 'category.@id' || this.group.dimension === 'concerning.@reverse.itemOf.heldBy.@id') && this.isChangeView;
+      return (this.group.dimension === 'category.@id' || this.group.dimension === 'concerning.@reverse.itemOf.heldBy.@id');
     },
     checkedCategoriesAndSigels() {
       return [...this.changeCategories.map(c => c.heldBy), ...this.changeCategories.find(c => c.hasOwnProperty('triggers')).triggers];
     },
-    show() {
-      if (this.isChangeView) {
-        return this.isChangeFacetGroup;
-      }
-      return true;
+    hide() {
+      return this.isChangeFacetGroup && !this.isChangeView;
     }
   },
   components: {
@@ -205,10 +205,10 @@ export default {
 
 <template>
   <nav
+    v-if="!hide"
     class="FacetGroup"
     :class="{ 'has-scroll': hasScroll, 'is-expanded': isExpanded }"
-    :aria-labelledby="facetLabelByLang(group.dimension)"
-    v-if="show">
+    :aria-labelledby="facetLabelByLang(group.dimension)">
     <div class="FacetGroup-header">
       <h4
         class="FacetGroup-title uppercaseHeading--bold"
@@ -258,7 +258,6 @@ export default {
         v-for="facetItem in featuredFacets"
         :facet="facetItem"
         :key="'featured_' + facetItem.link"
-        :is-change-facet="isChangeFacetGroup"
         :is-default-active="facetItem.checkedInSettings">
         <template #icon>
           <encoding-level-icon
@@ -268,7 +267,8 @@ export default {
             :show-iconless="false"
             v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
             :type="facetItem.object['@id']" />
-          <check-box v-if="group.dimension === 'concerning.@reverse.itemOf.heldBy.@id' && isChangeView"
+          <check-box
+            v-if="hasSelectedProperty(facetItem)"
             slot="checkbox"
             :checkedProperty="facetItem.object['@id']"
             :selected="facetItem.selected"
@@ -280,8 +280,7 @@ export default {
       <facet
         v-for="facetItem in normalFacets"
         :facet="facetItem"
-        :key="facetItem.link"
-        :is-change-facet="isChangeFacetGroup">
+        :key="facetItem.link">
         <template #icon>
           <encoding-level-icon
             slot="icon"
@@ -292,7 +291,8 @@ export default {
             :show-iconless="false"
             v-if="group.dimension === 'instanceOf.@type' || group.dimension === '@type'"
             :type="facetItem.object['@id']" />
-          <check-box v-if="isChangeFacetGroup"
+          <check-box
+            v-if="hasSelectedProperty(facetItem)"
             slot="checkbox"
             :checkedProperty="facetItem.object['@id']"
             :selected="facetItem.selected"
