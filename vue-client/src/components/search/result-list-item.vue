@@ -106,7 +106,7 @@ export default {
     },
     async handleChanged(e, isChecked) {
       if (isChecked) {
-        const handleActionRecord = getHandleAction(this.recordId);
+        const handleActionRecord = getHandleAction(this.recordId, `https://libris.kb.se/library/${this.user.settings.activeSigel}`);
         const response = await HttpUtil.post({
           url: `${this.settings.apiPath}/data`,
           token: this.user.token,

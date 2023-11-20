@@ -233,7 +233,7 @@ export function moveHolding(holdingId, destinationId, user) {
   });
 }
 
-export function getHandleAction(concerningId) {
+export function getHandleAction(concerningId, agentId) {
   return {
     '@graph': [{
       '@id': 'https://libris.kb.se/TEMPID',
@@ -246,8 +246,9 @@ export function getHandleAction(concerningId) {
         '@id': 'https://libris.kb.se/TEMPID#it',
         '@type': 'HandleAction',
         'concerning': {
-          '@id': concerningId
-        }
+          '@id': concerningId + '#it'
+        },
+        'agent': { '@id': agentId }
       },
     ],
   };
