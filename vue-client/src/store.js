@@ -430,7 +430,7 @@ const store = createStore({
         /**
          * Add formatted/refined title from mainEntity if title is missing on item to be extracted
          */
-        const mainEntityHasTitle = state.inspector.data.mainEntity.hasTitle.find((item) => item['@type'] === 'Title');
+        const mainEntityHasTitle = state.inspector.data.mainEntity.hasTitle.find((titleItem) => titleItem['@type'] === 'Title');
 
         const extractedTitleParts = mainEntityHasTitle?.hasPart?.length === 1 ? [
           ...mainEntityHasTitle.hasPart[0].partNumber || '',
@@ -439,7 +439,7 @@ const store = createStore({
 
         const extractedMainTitle = extractedTitleParts
           ? `${mainEntityHasTitle.mainTitle.replace(/\.$/, '')}. ${extractedTitleParts}`.trim()
-          : mainEntityHasTitle.mainTitle
+          : mainEntityHasTitle.mainTitle;
 
         const extractedHasTitle = [{
           '@type': 'Title',
