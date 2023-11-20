@@ -4,7 +4,7 @@
 */
 import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
-import { get } from 'lodash-es';
+import { get, pick, set } from 'lodash-es';
 import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -240,6 +240,13 @@ export default {
           value: 'record',
         });
       }
+    },
+    createMessage(templateId) {
+      const template = this.templates.combined['messages'].find(t => t['@id'] === templateId).value;
+      const preparedTemplate = RecordUtil.prepareDuplicateFor(template, this.user, this.settings.keysToClear.duplication);
+      set(preparedTemplate, ['@graph', 1, 'concerning'], [pick(this.inspector.data.mainEntity, '@id')]);
+      this.$store.dispatch('setInsertData', preparedTemplate);
+      this.$router.push({ path: '/new' });
     },
     openMarc() {
       if (this.enableMarcPreview) {
@@ -620,6 +627,18 @@ export default {
           <a class="Toolbar-menuLink" @click="recordControl('download-json'), hideToolsMenu()">
             <i class="fa fa-fw fa-download" aria-hidden="true" />
             {{ translatePhrase("Download") }} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{ translatePhrase('Incl. unsaved changes') }})</span>
+          </a>
+        </li>
+        <li class="Toolbar-menuItem" v-show="!inspector.status.editing">
+          <a class="Toolbar-menuLink" @click="createMessage('inquiry')">
+            <i class="fa fa-fw fa-question" aria-hidden="true" />
+            {{ translatePhrase("Inquiry") }}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem" v-show="!inspector.status.editing">
+          <a class="Toolbar-menuLink" @click="createMessage('changeNotice'), hideToolsMenu()">
+            <i class="fa fa-fw fa-exclamation" aria-hidden="true" />
+            {{ translatePhrase("Change notice") }}
           </a>
         </li>
         <li class="Toolbar-menuItem" v-if="enableMarcPreview">
