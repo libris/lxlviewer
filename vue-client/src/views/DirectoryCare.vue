@@ -30,11 +30,11 @@ export default {
       },
 
       tabs: [
+        { id: 'changes', text: 'Changes' },
+        { id: 'message', text: 'Create message' },
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
-        { id: 'message', text: 'Create message' },
-        { id: 'changes', text: 'Changes' },
       ],
       showModal: false,
     };
@@ -52,11 +52,11 @@ export default {
     },
     tabs() {
       return [
+        { id: 'changes', text: 'Changes' },
+        { id: 'message', text: 'Create message' },
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
-        { id: 'message', text: 'Create message' },
-        { id: 'changes', text: 'Changes' },
       ];
     },
   },
@@ -151,11 +151,10 @@ export default {
 <template>
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
-      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"></tab-menu>
-      <admin-notices v-if="$route.params.tool === 'changes'"></admin-notices>
-      <holding-mover
-        v-if="$route.params.tool === 'holdings'"
-        :flaggedInstances="flaggedInstances" />
+      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"/>
+      <admin-notices v-if="$route.params.tool === 'changes'"/>
+      <create-message v-if="$route.params.tool === 'message'"/>
+      <holding-mover v-if="$route.params.tool === 'holdings'" :flaggedInstances="flaggedInstances" />
       <div class="" v-if="$route.params.tool === 'merge'">
         <h1>merge records</h1>
         <!-- replace this whole div with the component -->
@@ -182,9 +181,6 @@ export default {
           </div>
         </template>
       </modal-component>
-      <div v-if="$route.params.tool === 'message'">
-        <create-message/>
-      </div>
     </div>
   </div>
 </template>
