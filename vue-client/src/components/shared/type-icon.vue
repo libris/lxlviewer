@@ -35,6 +35,9 @@ export default {
         Multimedia: 'laptop',
         NotatedMusic: 'music',
         ManuscriptNotatedMusic: 'music',
+        InquiryAction: 'question',
+        ChangeNotice: 'exclamation',
+        ChangeObservation: 'exchange',
         // Place: 'map-marker',
       },
       forcedUnspecified: [
