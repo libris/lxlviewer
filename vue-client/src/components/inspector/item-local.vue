@@ -180,7 +180,7 @@ export default {
       return false;
     },
     isExtracting() {
-      if (Object.keys(this.inspector.extractItemsOnSave).includes(this.path)) {
+      if (this.inspector.extractItemsOnSave.includes(this.path)) {
         return true;
       }
       return false;
@@ -268,10 +268,6 @@ export default {
     },
     extract() {
       this.$store.dispatch('addExtractItemOnSave', { path: this.path, item: this.focusData });
-      this.$store.dispatch(
-        'pushNotification',
-        { type: 'success', message: `${StringUtil.getUiPhraseByLang('Link was created', this.user.settings.language, this.resources.i18n)}` },
-      );
       this.closeExtractDialog();
     },
     stopExtracting() {
@@ -542,7 +538,7 @@ export default {
         />
 
         <entity-action
-          v-if="!isLocked && !isExtracting"
+          v-if="!isLocked"
           @action="openPropertyAdder(), expand()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
@@ -554,7 +550,7 @@ export default {
         />
 
         <entity-action
-          v-if="inspector.status.editing && !isLocked && !isExtracting"
+          v-if="inspector.status.editing && !isLocked"
           @action="removeThis(true)"
           @highlight="addHighlight('remove')"
           @dehighlight="removeHighlight('remove')"
@@ -566,7 +562,7 @@ export default {
         />
 
         <entity-action
-          v-if="inspector.status.editing && !isLocked && !isExtracting"
+          v-if="inspector.status.editing && !isLocked"
           @action="managerMenuOpen ? closeManagerMenu() : openManagerMenu()"
           @highlight="addHighlight('info')"
           @dehighlight="removeHighlight('info')"
@@ -615,7 +611,7 @@ export default {
         :parent-path="getPath"
         :entity-type="item['@type']"
         :is-inner="true"
-        :is-locked="isLocked || isExtracting"
+        :is-locked="isLocked"
         :is-removable="false"
         :is-first-field="i === 0"
         :parent-key="fieldKey"

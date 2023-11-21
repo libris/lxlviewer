@@ -268,6 +268,7 @@ export default {
       this.showMarcPreview = false;
     },
     cancel() {
+      this.$store.dispatch('flushExtractItemsOnSave');
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
         value: 'cancel',

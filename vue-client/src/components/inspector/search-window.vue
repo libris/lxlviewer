@@ -325,9 +325,8 @@ export default {
           </div>
           <div class="SearchWindow-footerContainer" v-if="itemInfo && extractable">
             <div class="SearchWindow-dialogContainer">
-              <p class="preview-entity-text uppercaseHeading"> {{ translatePhrase('Do you want to create') }} {{ typeOfExtractingEntity }}?</p>
-              <p>
-                {{ translatePhrase('The local entity will be extracted and linked') }}.
+              <p class="preview-entity-text uppercaseHeading">
+                {{ translatePhrase('Do you want to create linkable') }} {{ typeOfExtractingEntity }}?
               </p>
               <button-component
                 :button-text="'Yes, start linking'"
@@ -475,7 +474,7 @@ export default {
   &-dialogContainer {
     padding: 1rem 2rem;
     .preview-entity-text {
-      margin: 0;
+      margin: 0 0 0.5rem 0;
     }
     .Button:not(:first-of-type) {
       margin-left: 1em;

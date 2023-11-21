@@ -690,8 +690,8 @@ export default {
     },
     async saveExtracted() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
-      for await (const path of Object.keys(this.inspector.extractItemsOnSave)) {
-        const cleanedExtractedData = RecordUtil.getCleanedExtractedData(this.inspector.extractItemsOnSave[path], this.inspector.data, this.resources);
+      for await (const path of this.inspector.extractItemsOnSave) {
+        const cleanedExtractedData = RecordUtil.getCleanedExtractedData(get(this.inspector.data, path), this.inspector.data, this.resources);
         const extractedRecord = RecordUtil.getObjectAsRecord(cleanedExtractedData, {
           descriptionCreator: { '@id': this.user.getActiveLibraryUri() },
           ...((this.inspector.data.record['@id'] !== 'https://id.kb.se/TEMPID') && {
