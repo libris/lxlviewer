@@ -4096,7 +4096,6 @@
           "@type": "InquiryAction",
           "@id": "https://id.kb.se/TEMPID#it",
           "concerning": [],
-          "label": "",
           "comment": ""
         }
       }
@@ -4116,7 +4115,6 @@
         "mainEntity": {
           "@type": "ChangeNotice",
           "@id": "https://id.kb.se/TEMPID#it",
-          "label": "",
           "comment": ""
         }
       }
@@ -4136,7 +4134,6 @@
           "@type": "ChangeNotice",
           "@id": "https://id.kb.se/TEMPID#it",
           "concerning": [],
-          "label": "",
           "comment": ""
         }
       }
