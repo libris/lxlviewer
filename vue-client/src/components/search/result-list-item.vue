@@ -38,6 +38,7 @@ export default {
       showAllKeys: false,
       totalReverseCount: -1,
       itemReverseCount: -1,
+      linkedAdminNotices: {},
     };
   },
   computed: {
@@ -117,6 +118,7 @@ export default {
           activeSigel: this.user.settings.activeSigel,
         }, handleActionRecord);
         const recordUrl = `${response.getResponseHeader('Location')}`;
+        this.linkedAdminNotices[this.user.settings.activeSigel] = recordUrl;
         console.log('Created handle action: ', recordUrl);
       } else {
         this.removeHandleActionForCurrentSigel();
@@ -124,13 +126,14 @@ export default {
     },
     removeHandleActionForCurrentSigel() {
       const handleAction = this.focusData['@reverse']?.concerning.find((c) => c.agent ? c.agent['@id'] === getLibraryUri(this.user.settings.activeSigel) : false);
-      // TODO: this.focusData['@reverse'] is not updated / existing when a new handle action has been created
-      console.log('handleAction', JSON.stringify(handleAction));
-      if (handleAction) {
-        const id = handleAction['@id'].split('/').pop().replace('#it', '');
+      let uri = '';
+      uri = typeof handleAction !== 'undefined'  ? handleAction['@id'] : this.linkedAdminNotices[this.user.settings.activeSigel];
+      if (uri !== '') {
+        const id = uri.split('/').pop().replace('#it', '');
         const url = `${this.settings.apiPath}/${id}`;
         HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
-          console.log('Removed handle action: ', handleAction['@id'])
+          delete this.linkedAdminNotices[this.user.settings.activeSigel];
+          console.log('Removed handle action: ', id);
         });
       }
     }
