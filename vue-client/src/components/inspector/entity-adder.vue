@@ -40,10 +40,6 @@ export default {
     compositional: {
       default: null,
     },
-    showActionButtons: {
-      type: Boolean,
-      default: false,
-    },
     isPlaceholder: {
       type: Boolean,
       default: false,

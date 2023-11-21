@@ -38,10 +38,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    showActionButtons: {
-      type: Boolean,
-      default: false,
-    },
     allSearchTypes: {
       type: Array,
       default: () => [],
@@ -501,8 +497,7 @@ export default {
         :field-key="k"
         :field-value="v"
         :key="k"
-        :expand-children="expandChildren"
-        :show-action-buttons="showActionButtons" />
+        :expand-children="expandChildren" />
     </ul>
 
     <property-adder
