@@ -49,6 +49,9 @@ export default class URIMinter {
       containerRelationMap = this.containerMap[type];
       if (containerRelationMap) break;
     }
+    if (!containerRelationMap) {
+      return null;
+    }
     for (const relation of Object.keys(containerRelationMap)) {
       const containerMemberMap = containerRelationMap[relation];
       if (mainEntity.hasOwnProperty(relation) && mainEntity[relation] !== null) {
