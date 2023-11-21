@@ -23,10 +23,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    showActionButtons: {
-      type: Boolean,
-      default: false,
-    },
     isExpanded: {
       type: Boolean,
       default: false,

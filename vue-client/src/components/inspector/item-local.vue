@@ -30,10 +30,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    showActionButtons: {
-      type: Boolean,
-      default: false,
-    },
     inArray: {
       type: Boolean,
       default: false,
@@ -621,7 +617,6 @@ export default {
         :field-value="v"
         :key="k"
         :diff="diff"
-        :show-action-buttons="showActionButtons"
         :expand-children="expandChildren"
         :is-expanded="expanded" />
     </ul>

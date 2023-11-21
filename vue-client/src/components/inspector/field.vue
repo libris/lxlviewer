@@ -117,10 +117,6 @@ export default {
       type: String,
       default: '',
     },
-    showActionButtons: {
-      type: Boolean,
-      default: false,
-    },
     isExpanded: {
       type: Boolean,
       default: false,
@@ -133,7 +129,6 @@ export default {
   data() {
     return {
       activeModal: false,
-      shouldShowActionButtons: false,
       removeHover: false,
       pasteHover: false,
       foundChip: false,
@@ -303,12 +298,6 @@ export default {
         return 'Concept type';
       }
       return 'Type';
-    },
-    actionButtonsShown() {
-      if (this.shouldShowActionButtons || this.showActionButtons) {
-        return true;
-      }
-      return false;
     },
     ...mapGetters([
       'inspector',
@@ -625,14 +614,6 @@ export default {
       }
       return false;
     },
-    handleMouseEnter() {
-      this.shouldShowActionButtons = true;
-    },
-    handleMouseLeave() {
-      if (!this.isInner) {
-        this.shouldShowActionButtons = false;
-      }
-    },
     highLightLastAdded() {
       if (this.isLastAdded === true) {
         if (this.fieldValue === null || (isArray(this.fieldValue) && this.fieldValue.length === 0)) {
@@ -689,13 +670,11 @@ export default {
       'is-grouped': isGrouped,
       'has-failed-validations': failedValidations.length > 0,
     }"
-    @mouseover="handleMouseEnter()"
-    @mouseleave="handleMouseLeave()"
     v-if="!this.isHidden">
 
     <div
       class="Field-labelContainer"
-      :class="{ 'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons }"
+      :class="{ 'is-wide': inspector.status.editing || user.settings.appTech }"
       v-if="showKey && !isInner">
       <div class="Field-labelWrapper" :class="{ sticky: !diff }">
         <div v-if="!isLocked" class="Field-actions">
@@ -731,7 +710,6 @@ export default {
             :some-values-from="someValuesFrom"
             :all-search-types="allSearchTypes"
             :property-types="propertyTypes"
-            :show-action-buttons="actionButtonsShown"
             :active="activeModal"
             :is-placeholder="false"
             :is-language="this.isLangMap || this.isLangTaggable"
@@ -831,7 +809,6 @@ export default {
           :some-values-from="someValuesFrom"
           :all-search-types="allSearchTypes"
           :property-types="propertyTypes"
-          :show-action-buttons="actionButtonsShown"
           :active="activeModal"
           :is-placeholder="true"
           :is-language="this.isLangMap || this.isLangTaggable"
@@ -990,8 +967,7 @@ export default {
           :parent-path="path"
           :in-array="valueIsArray"
           :diff="diff"
-          :should-expand="expandChildren || embellished"
-          :show-action-buttons="actionButtonsShown" />
+          :should-expand="expandChildren || embellished" />
 
         <item-sibling
           v-if="getDatatype(item) == 'sibling'"
@@ -1008,7 +984,6 @@ export default {
           :index="index"
           :in-array="valueIsArray"
           :diff="diff"
-          :show-action-buttons="actionButtonsShown"
           :should-expand="expandChildren || embellished"
           :parent-path="path" />
       </div>
@@ -1084,7 +1059,6 @@ export default {
           :index="index"
           :parent-path="path"
           :diff="diff"
-          :show-action-buttons="actionButtonsShown"
           :is-expanded="isExpanded" />
 
         <!-- shelfControlNumber -->
@@ -1279,10 +1253,6 @@ export default {
       @media screen and (max-width: @screen-sm) {
         max-width: 100%;
       }
-    }
-
-    &.is-hovered * {
-      z-index: 1;
     }
 
     .Field.is-grouped & {
