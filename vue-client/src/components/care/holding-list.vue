@@ -95,14 +95,17 @@ export default {
     },
   },
   watch: {
-    selected(value) {
-      const changeObj = { selectedHoldings: value };
-      this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
-      if (this.selected.length > 0 && this.movableHoldings.length === this.selected.length) {
-        this.allHoldingsSelected = true;
-      } else {
-        this.allHoldingsSelected = false;
-      }
+    selected: {
+      handler(value) {
+        const changeObj = { selectedHoldings: value };
+        this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
+        if (this.selected.length > 0 && this.movableHoldings.length === this.selected.length) {
+          this.allHoldingsSelected = true;
+        } else {
+          this.allHoldingsSelected = false;
+        }
+      },
+      deep: true
     },
     'directoryCare.sender'() {
       if (this.name === 'sender') {

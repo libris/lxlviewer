@@ -85,7 +85,7 @@ export default {
       const selected = this.directoryCare.selectedHoldings;
 
       for (let i = 0; i < selected.length; i++) {
-        this.$set(this.progress, selected[i], 'loading');
+        this.progress[selected[i]] = 'loading';
         promiseCollection.push(
           RecordUtil.moveHolding(selected[i], this.directoryCare.reciever, this.user)
             .then(() => {
@@ -93,16 +93,16 @@ export default {
               const changeObj = { holdingsMoved: this.directoryCare.holdingsMoved };
               changeObj.holdingsMoved.push(selected[i]);
               this.$store.dispatch('setDirectoryCare', { ...this.directoryCare, ...changeObj });
-              this.$set(this.progress, selected[i], 'done');
+              this.progress[selected[i]] = 'done';
               this.checkAllDone();
             }, () => {
               // Error
-              this.$set(this.progress, selected[i], 'error');
+              this.progress[selected[i]] = 'error';
               this.checkAllDone();
             })
             .catch((error) => {
               // Catch
-              this.$set(this.progress, selected[i], 'error');
+              this.progress[selected[i]] = 'error';
               console.warn(error);
               this.checkAllDone();
             }),
