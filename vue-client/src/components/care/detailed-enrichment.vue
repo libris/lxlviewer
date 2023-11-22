@@ -201,16 +201,16 @@ export default {
     },
     undo(key) {
       if (this.target.hasOwnProperty(key)) {
-        this.$set(this.resultObject[this.formFocus], key, this.target[key]);
+        this.resultObject[this.formFocus][key] = this.target[key];
       } else {
-        this.$delete(this.resultObject[this.formFocus], key);
+        delete this.resultObject[this.formFocus][key];
       }
     },
     addValue(key) {
       // console.log("Add value:", key);
       const source = this.enrichment.data.source;
       if (this.resultObject[this.formFocus].hasOwnProperty(key) === false) {
-        this.$set(this.resultObject[this.formFocus], key, source[this.formFocus][key]);
+        this.resultObject[this.formFocus][key] = source[this.formFocus][key];
       } else {
         let resultValue = this.resultObject[this.formFocus][key];
         if (isArray(resultValue) === false) {
