@@ -280,8 +280,8 @@ export default {
       },
     },
     'concerning.@reverse.itemOf.heldBy.@id': {
-      sv: 'Sigler',
-      en: 'Collections',
+      sv: 'Sigel',
+      en: 'Collection',
       facet: {
         order: 20,
       },
