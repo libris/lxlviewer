@@ -4082,7 +4082,7 @@
   "messages": {
     "inquiry": {
       "label": "Förfrågan",
-      "description": "Angående flaggade poster",
+      "description": "Utgå från flaggade poster eller länka",
       "@id": "inquiry",
       "value": {
         "record": {
@@ -4100,28 +4100,9 @@
         }
       }
     },
-    "changeNotice": {
-      "label": "Ändringsmeddelande",
-      "description": "Allmänt ändringsmeddelande",
-      "@id": "changeNotice",
-      "value": {
-        "record": {
-          "@id": "https://id.kb.se/TEMPID",
-          "@type": "Record",
-          "mainEntity": {
-            "@id": "https://id.kb.se/TEMPID#it"
-          }
-        },
-        "mainEntity": {
-          "@type": "ChangeNotice",
-          "@id": "https://id.kb.se/TEMPID#it",
-          "comment": ""
-        }
-      }
-    },
     "changeNoticeFlagged": {
       "label": "Ändringsmeddelande",
-      "description": "Angående flaggade poster",
+      "description": "Utgå från flaggade poster eller länka",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
