@@ -116,15 +116,17 @@ export default {
       return PropertyMappings[0];
     },
     setType() {
-      if (this.$route.params.perimeter === 'remote' || this.searchTool === 'changes') {
-        return this.activeSearchType; // Don't change while remote searching
+      if (this.$route.params.perimeter === 'remote' || (this.$route === 'changes' && this.$route.params.perimeter !== 'libris')) {
+        return this.activeSearchType; // Don't change while remote searching, or in change view
       }
       const performedQuery = cloneDeep(this.$route.query);
       let type;
       if (isEmpty(performedQuery)) {
         type = this.user.settings.searchType || 'Instance';
       } else {
-        type = performedQuery['@type'] || '*';
+        if (!this.isChangeView) {
+          type = performedQuery['@type'] || '*';
+        }
       }
       if (isArray(type)) {
         for (let i = 0; i < type.length; i++) {
@@ -253,6 +255,9 @@ export default {
         this.prefSort,
       );
     },
+    isChangeView() {
+      return this.searchTool === 'changes' || this.$route.path === '/directory-care/changes';
+    }
   },
   components: {
     'remote-databases': RemoteDatabases,
