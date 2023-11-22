@@ -56,7 +56,7 @@ export default {
     },
     selectSortDropDownItem(item) {
       const userObj = this.user;
-      this.$set(userObj.settings.facetSortings, this.group.dimension, item);
+      userObj.settings.facetSortings[this.group.dimension] = item;
       this.$store.dispatch('setUser', userObj);
     },
     featuredComparison(facet) {
@@ -270,7 +270,6 @@ export default {
           <check-box
             v-if="hasSelectedProperty(facetItem)"
             slot="checkbox"
-            :checkedProperty="facetItem.object['@id']"
             :selected="facetItem.selected"
             :showToolTip="false"
             @changed="checkedChanged(facetItem.link)"></check-box>
@@ -294,7 +293,6 @@ export default {
           <check-box
             v-if="hasSelectedProperty(facetItem)"
             slot="checkbox"
-            :checkedProperty="facetItem.object['@id']"
             :selected="facetItem.selected"
             :showToolTip="false"
             @changed="checkedChanged(facetItem.link)"></check-box>
