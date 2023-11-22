@@ -501,7 +501,7 @@ export default {
             <i class="fa fa-scissors" />
             {{ translatePhrase("Extracts on save") }}
           </span>
-          <span v-if="!expanded">
+          <span v-if="!expanded || !isExtracting">
             {{ capitalize(labelByLang(item['@type'])) }}:
           </span>
         </span>
@@ -733,7 +733,7 @@ export default {
   }
 
   &-extraction-label {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     color: @brand-primary;
     margin-right: 0.5em;
     font-weight: 600;
