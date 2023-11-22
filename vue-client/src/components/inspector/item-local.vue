@@ -501,7 +501,9 @@ export default {
             <i class="fa fa-scissors" />
             {{ translatePhrase("Extracts on save") }}
           </span>
-          {{ capitalize(labelByLang(item['@type'])) }}:
+          <span v-if="!expanded">
+            {{ capitalize(labelByLang(item['@type'])) }}:
+          </span>
         </span>
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
