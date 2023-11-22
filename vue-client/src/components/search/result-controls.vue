@@ -136,7 +136,15 @@ export default {
       return this.$route.query['@type'];
     },
     currentSortOrder() {
-      return this.$route.query._sort;
+      let sortOrder;
+      if (this.$route.query._sort) {
+        sortOrder = this.$route.query._sort;
+      } else if (this.isChangeView) {
+        sortOrder = '-meta.modified';
+      } else {
+        return '';
+      }
+      return sortOrder;
     },
     resultRange() {
       if (this.$route.params.perimeter === 'remote') {
@@ -233,7 +241,7 @@ export default {
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
         <sort
           v-if="searchedTypes && $route.params.perimeter != 'remote'"
-          :currentSort="currentSortOrder ? currentSortOrder : ''"
+          :currentSort="currentSortOrder"
           :common-sort-fallback="true"
           :recordTypes="searchedTypes"
           @change="$emit('sortChange', $event)" />
