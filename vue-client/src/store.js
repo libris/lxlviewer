@@ -444,6 +444,7 @@ const store = createStore({
         const extractedHasTitle = [{
           '@type': 'Title',
           mainTitle: extractedMainTitle,
+          'marc:nonfilingChars': mainEntityHasTitle['marc:nonfilingChars'] || undefined,
         }];
 
         commit('updateInspectorData', {
