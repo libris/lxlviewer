@@ -496,7 +496,13 @@ export default {
           :class="{ 'icon is-disabled': isEmpty }" />
         <span
           class="ItemLocal-type"
-          :title="item['@type']">{{ capitalize(labelByLang(item['@type'])) }}:</span>
+          :title="item['@type']">
+          <span class="ItemLocal-extraction-label" v-if="isExtracting">
+            <i class="fa fa-scissors" />
+            {{ translatePhrase("Extracts on save") }}
+          </span>
+          {{ capitalize(labelByLang(item['@type'])) }}:
+        </span>
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>
@@ -718,8 +724,17 @@ export default {
   }
 
   &-type {
+    display: flex;
+    align-items: center;
     margin: 0 0.5rem;
     white-space: nowrap;
+  }
+
+  &-extraction-label {
+    font-size: 1.4rem;
+    color: @brand-primary;
+    margin-right: 0.5em;
+    font-weight: 600;
   }
 
   &-collapsedLabel {
@@ -847,7 +862,11 @@ export default {
 
   &.is-extracting {
     background-color: @form-extracting !important;
-    box-shadow: 0 0 0 1px @brand-primary;
+    border: 1px dashed @brand-primary;
+    
+    &.highlight-mark {
+      border-color: @brand-primary !important;
+    }
   }
 
   &.is-extracting .is-entity {
