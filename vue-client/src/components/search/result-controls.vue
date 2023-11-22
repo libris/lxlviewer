@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import { isMatch } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import PropertyMappings from '@/resources/json/propertymappings.json';
@@ -43,6 +44,16 @@ export default {
       const filtersToBeExcluded = PropertyMappings.flatMap((prop) => Object.keys(prop.mappings));
       return filtersToBeExcluded;
     },
+    baseFilters() {
+      return this.$route.params && this.$route.params.tool === 'changes'
+        ? [{'variable': '@type', 'object': {'@id': 'AdministrativeNotice'}}]
+        : [];
+    },
+    filteredFilters() {
+      return this.pageData.search.mapping
+        .filter((item) => this.excludeFilters.every((el) => el !== item.variable))
+        .filter((item) => !this.baseFilters.some((el) => isMatch(item, el)));
+    },
     filteredByHasItem() {
       return this.$route.query.hasOwnProperty('@reverse.itemOf.heldBy.@id')
       && this.$route.query['@reverse.itemOf.heldBy.@id'] === `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
@@ -51,7 +62,7 @@ export default {
       let filters = [];
       if (typeof this.pageData.search !== 'undefined') {
         // remove search-by filters, ISBN etc
-        filters = this.pageData.search.mapping.filter((item) => this.excludeFilters.every((el) => el !== item.variable))
+        filters = this.filteredFilters
           .map((item) => {
             let label = '';
 
