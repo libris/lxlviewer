@@ -70,7 +70,10 @@ export default {
   methods: {
     translatePhrase,
     switchTool(id) {
-      this.$router.push({ path: `/directory-care/${id}` });
+      const goTo = `/directory-care/${id}`;
+      if (!this.$route.fullPath.includes(goTo)) {
+        this.$router.push({ path: goTo });
+      }
     },
     fetchOne(item) {
       return new Promise((resolve, reject) => {
