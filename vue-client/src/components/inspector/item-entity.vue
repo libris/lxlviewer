@@ -95,7 +95,7 @@ export default {
     },
     'status.panelOpen'(val) {
       if (this.isNewlyAdded && !val) {
-        this.$refs.chip.focus();
+        this.$refs.chip?.focus();
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }
     },
