@@ -1,9 +1,8 @@
 <script>
-import {clone, cloneDeep, each, isArray, isEmpty, isPlainObject} from 'lodash-es';
+import { cloneDeep, each, isArray, isPlainObject } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as RecordUtil from '@/utils/record';
-import * as HttpUtil from '@/utils/http';
 import ServiceWidgetSettings from '@/resources/json/serviceWidgetSettings.json';
 import Spinner from '@/components/shared/spinner.vue';
 import { translatePhrase, asAppPath } from '@/utils/filters';
@@ -154,7 +153,7 @@ export default {
       return this.checkedCategoriesAndSigels.includes(id);
     },
     applyChangeFacets(stats) {
-      let query = cloneDeep(HttpUtil.decomposeQueryString(this.query));
+      let query = cloneDeep(this.$route.query);
       Object.entries(stats.sliceByDimension).forEach(([key, value]) => {
         const facets = value.observation;
         facets.forEach((facet) => {
@@ -173,7 +172,8 @@ export default {
           }
         });
       });
-      this.$router.push(this.$route.path + '?' + HttpUtil.buildQueryString(query));
+      Object.assign(query, { _sort : '-meta.modified'});
+      this.$router.push({ query: query });
     },
     convertRemoteResult(result) {
       let totalResults = 0;
