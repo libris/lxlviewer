@@ -2,7 +2,7 @@
 import AutoSize from 'autosize';
 import { debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
-import { labelByLang } from '@/utils/filters';
+import { labelByLang, translatePhrase } from '@/utils/filters';
 import ItemMixin from '@/components/mixins/item-mixin.vue';
 
 export default {
@@ -93,6 +93,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     labelByLang,
     removeHighlight(event, active) {
       if (active) {
