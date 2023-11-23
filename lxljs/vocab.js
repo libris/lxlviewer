@@ -222,6 +222,13 @@ export function hasCategory(term, category, resources) {
 }
 
 export function getTermByType(type, vocab, context, settings) {
+  if (!settings._getTermByType_cache) {
+    settings._getTermByType_cache = {}
+  }
+  if (settings._getTermByType_cache[type]) {
+    return settings._getTermByType_cache[type];
+  }
+
   const list = Array.from(vocab.values());
 
   if (!list || typeof list === 'undefined') {
@@ -243,6 +250,7 @@ export function getTermByType(type, vocab, context, settings) {
       }
     }
   });
+  settings._getTermByType_cache[type] = terms;
   return terms;
 }
 
