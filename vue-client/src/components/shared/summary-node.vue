@@ -87,6 +87,7 @@ export default {
       :disabled="!hoverLinks"
       @apply-show="$refs.previewCard.populateData()"
       placement="bottom-start"
+      delay="0"
     >
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">

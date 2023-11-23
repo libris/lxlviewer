@@ -104,7 +104,7 @@ export default {
             :is-last="true"
             :field-key="'agent'" />
           <span v-if="isGlobalChanges(changeSet)">
-            <Menu placement="bottom-start">
+            <Menu placement="bottom-start" delay="0">
               {{ translatePhrase('Libris global changes') }}
               <template #popper>
                 <span>{{changeSet.agent['@id']}}</span>

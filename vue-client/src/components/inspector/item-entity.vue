@@ -194,6 +194,7 @@ export default {
       <Menu
         class="ItemEntity-popover"
         placement="bottom-start"
+        delay="0"
         @apply-show="$refs.previewCard.populateData()"
       >
         <div
