@@ -7,6 +7,8 @@ import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
 import settings from './settings';
 
+const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
+
 const store = createStore({
   state: {
     resources: {
@@ -272,8 +274,8 @@ const store = createStore({
     flushChangeHistory(state) {
       state.inspector.changeHistory = [];
     },
-    removeIndexFromChangeHistory(state, index) {
-      state.inspector.changeHistory = state.inspector.changeHistory.filter((_, i) => i !== index);
+    setChangeHistory(state, data) {
+      state.inspector.changeHistory = data;
     },
     logoutUser(state) {
       localStorage.removeItem('at');
@@ -450,6 +452,10 @@ const store = createStore({
         commit('updateInspectorData', {
           changeList: [
             {
+              path: `${path}.${EXTRACT_ON_SAVE}`,
+              value: undefined,
+            },
+            {
               path: `${path}.hasTitle`,
               value: extractedHasTitle,
             },
@@ -474,7 +480,16 @@ const store = createStore({
           )}.` });
       }
     },
-    removeExtractItemOnSave({ commit }, { path }) {
+    removeExtractItemOnSave({ commit, state }, { path }) {
+      // Remove references to extraction in change history
+      const newChangeHistroy = state.inspector.changeHistory.reduce((acc, currentChangeHistoryItem) => {
+        return [
+          ...acc,
+          currentChangeHistoryItem.filter((change) => change.path !== `${path}.${EXTRACT_ON_SAVE}`),
+        ];
+      }, []);
+
+      commit('setChangeHistory', newChangeHistroy);
       commit('removeExtractItemOnSave', path);
     },
     flushExtractItemsOnSave({ commit }) {
@@ -727,19 +742,22 @@ const store = createStore({
     flushChangeHistory({ commit }) {
       commit('flushChangeHistory');
     },
-    undoInspectorChange({ commit, state }) {
+    undoInspectorChange({ dispatch, commit, state }) {
       const history = state.inspector.changeHistory;
       const lastNode = history[history.length - 1];
 
       const payload = { addToHistory: false, changeList: [] };
       each(lastNode, (node) => {
-        if (typeof node.value !== 'undefined') {
+        if (typeof node.value !== 'undefined' && !node.path.includes(EXTRACT_ON_SAVE)) {
           // It had a value
           payload.changeList.push({
             path: node.path,
             value: node.value,
           });
         } else {
+          if (node.path.includes(EXTRACT_ON_SAVE)) {
+            dispatch('removeExtractItemOnSave', { path: node.path.replace(`.${EXTRACT_ON_SAVE}`, '') });
+          }
           // It did not have a value (ie key did not exist)
           const pathParts = node.path.split('.');
           const key = pathParts[pathParts.length - 1];
