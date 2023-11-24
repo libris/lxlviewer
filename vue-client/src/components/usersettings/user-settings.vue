@@ -46,6 +46,14 @@ export default {
       userObj.settings.fullSiteWidth = e.target.checked;
       this.setUser(userObj);
     },
+    updateCxzFeatureIsOn(e) {
+      if (!e.target.checked) {
+        this.purgeChangeNoteCategories();
+      }
+      const userObj = this.user;
+      userObj.settings.cxzFeatureIsOn = e.target.checked;
+      this.setUser(userObj);
+    },
     logout() {
       this.$store.dispatch('logoutUser');
       this.$store.dispatch(
@@ -92,7 +100,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      // TODO: don't do this every time we open user settings
       this.getAvailableChangeCategories();
     });
   },
@@ -204,9 +211,23 @@ export default {
                 <div class="customCheckbox-icon" />
               </td>
             </tr>
+            <tr>
+              <td class="key">
+                <label for="cxzCheckbox">{{ translatePhrase("Activate change message feature") }}</label>
+              </td>
+              <td class="value">
+                <input
+                  id="cxzCheckbox"
+                  class="customCheckbox-input"
+                  type="checkbox"
+                  @change="updateCxzFeatureIsOn"
+                  :checked="user.settings.cxzFeatureIsOn">
+                <div class="customCheckbox-icon" />
+              </td>
+            </tr>
           </table>
-          <h5 class="uppercaseHeading--bold">{{ translatePhrase("Subscribe to change notes") }}</h5>
-          <div class="UserSettings-changeCategories">
+          <h5 class="uppercaseHeading--bold" v-if="user.settings.cxzFeatureIsOn">{{ translatePhrase("Subscribe to change notes") }}</h5>
+          <div class="UserSettings-changeCategories" v-if="user.settings.cxzFeatureIsOn">
             <change-categories :available-sigels="sortedSigels" :userChangeCategories="userChangeCategories" :availableCategories="availableChangeCategories"/>
           </div>
         </form>

@@ -28,14 +28,6 @@ export default {
         removed: [],
         other: [],
       },
-
-      tabs: [
-        { id: 'changes', text: 'Changes' },
-        { id: 'message', text: 'Create message' },
-        { id: 'holdings', text: 'Move holdings' },
-        // { 'id': 'merge', 'text': 'Merge records' },
-        // { 'id': 'remove', 'text': 'Batch remove' },
-      ],
       showModal: false,
     };
   },
@@ -52,8 +44,8 @@ export default {
     },
     tabs() {
       return [
-        { id: 'changes', text: 'Changes' },
-        { id: 'message', text: 'Create message' },
+        { id: 'changes', text: 'Changes',  hide: !this.user.settings.cxzFeatureIsOn },
+        { id: 'message', text: 'Create message',  hide: !this.user.settings.cxzFeatureIsOn },
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
@@ -154,7 +146,7 @@ export default {
 <template>
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
-      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"/>
+      <tab-menu @go="switchTool" :tabs="tabs.filter((t) => !t.hide)" :active="$route.params.tool"/>
       <admin-notices v-if="$route.params.tool === 'changes'"/>
       <create-message v-if="$route.params.tool === 'message'"/>
       <holding-mover v-if="$route.params.tool === 'holdings'" :flaggedInstances="flaggedInstances" />

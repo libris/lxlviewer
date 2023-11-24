@@ -470,7 +470,9 @@ export default {
       }
       // Add a change note for the user to input her commit message
       if (this.recordType === 'Work' || this.recordType === 'Instance') {
-        this.addEmptyChangeNote();
+        if (this.user.settings.cxzFeatureIsOn) {
+          this.addEmptyChangeNote();
+        }
       }
     },
     checkForMissingHeldBy() {
