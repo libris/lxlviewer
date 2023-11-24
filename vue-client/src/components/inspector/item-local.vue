@@ -499,7 +499,7 @@ export default {
           :title="item['@type']">
           <span class="ItemLocal-extraction-label" v-if="isExtracting">
             <i class="fa fa-scissors" />
-            {{ translatePhrase("Extracts on save") }}
+            {{ translatePhrase("The work is extracted once the instance is saved") }}
           </span>
           <span v-if="!expanded || !isExtracting">
             {{ capitalize(labelByLang(item['@type'])) }}:
