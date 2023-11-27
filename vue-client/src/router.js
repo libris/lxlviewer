@@ -120,11 +120,11 @@ router.beforeEach((to, from, next) => {
     next();
   }, () => {
     // notAuthed
-    if (to.matched.some((record) => record.meta.requiresAuth)) {
-      if (to.fullPath.indexOf('login') < 0) {
-        localStorage.setItem('lastPath', to.fullPath);
-      }
+    if (to.fullPath.indexOf('login') < 0) {
+      localStorage.setItem('lastPath', to.fullPath);
+    }
 
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
       next({
         path: '/login/expired',
       });

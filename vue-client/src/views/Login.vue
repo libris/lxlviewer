@@ -35,7 +35,7 @@ export default {
         this.loginExpired = true;
       } else if (this.user.isLoggedIn && token !== null) {
         const path = localStorage.getItem('lastPath') || '/';
-        this.$router.push({ path: path });
+        this.$router.push(path);
       } else window.location = this.$store.getters.oauth2Client.token.getUri();
     });
   },
