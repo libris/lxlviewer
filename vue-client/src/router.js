@@ -54,7 +54,7 @@ const router = createRouter({
     },
     {
       path: '/directory-care',
-      redirect: '/directory-care/changes',
+      redirect: '/directory-care/holdings',
     },
     {
       path: '/directory-care/:tool',

@@ -286,21 +286,19 @@ export default {
         this.$nextTick(() => {
           this.helpToggled = false;
           this.focusSearchInput();
+          if (newVal === 'remote') {
+            if (this.status.remoteDatabases.length > 0) {
+              if (this.composedSearchParam.q !== '' && this.composedSearchParam.q !== '*') {
+                this.doSearch();
+              }
+            }
+          }
         });
       }
     },
     '$route.name'(val, oldValue) {
       if (val === 'Search' && oldValue !== 'Search') {
         this.focusSearchInput();
-      }
-    },
-    '$route.params.perimeter'(value) {
-      if (value === 'remote') {
-        if (this.status.remoteDatabases.length > 0) {
-          if (this.composedSearchParam.q !== '' && this.composedSearchParam.q !== '*') {
-            this.doSearch();
-          }
-        }
       }
     },
     '$route.params'() {

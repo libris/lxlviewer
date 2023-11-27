@@ -209,6 +209,7 @@ export default {
             v-if="this.isLinked"
             class="LanguageEntry-popover"
             placement="bottom-start"
+            :delay="{show: 200, hide:0}"
             @apply-show="$refs.previewCard.populateData()"
           >
             <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
@@ -301,6 +302,7 @@ export default {
               v-if="this.isLinked"
               class="LanguageEntry-popover"
               placement="bottom-start"
+              :delay="{show: 200, hide:0}"
               @apply-show="$refs.previewCard.populateData()">
               <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
                 <router-link :to="routerPath">{{ this.label }}</router-link>
