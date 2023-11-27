@@ -399,6 +399,11 @@ export default {
         this.$refs.linkAction.$el.focus();
       }
     },
+    isExtracting(val) {
+      if (val === false) {
+        this.removeHighlight('info');
+      }
+    },
   },
   beforeUnmount() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
