@@ -247,11 +247,8 @@ export default {
       ];
       return tabs;
     },
-    changeCategories() {
-      return this.$store.getters.userChangeCategories;
-    },
     checkedCategoriesAndSigels() {
-      return [...this.changeCategories.map((c) => c.heldBy), ...this.changeCategories.find((c) => c.hasOwnProperty('triggers')).triggers];
+      return [...this.$store.getters.userChangeCategories, ...this.$store.getters.userChangeCollections];
     },
   },
   beforeCreate() {

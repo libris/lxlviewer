@@ -16,8 +16,8 @@ export default {
   },
   props: {
     sigel: Object,
-    availableCategories: [],
-    availableSigels: [],
+    availableCategories: Array,
+    availableSigels: Array,
   },
   methods: {
     translatePhrase,
@@ -34,12 +34,10 @@ export default {
       this.categoriesIsExpanded = !this.categoriesIsExpanded;
     },
     isActiveCategory(categoryId) {
-      const obj = this.userChangeCategories[0];
-      return obj ? obj.triggers.includes(categoryId) : false;
+      return this.userChangeCategories.includes(categoryId);
     },
     isActiveSigel(sigel) {
-      const obj = this.userChangeCategories.find(c => c.heldBy === this.sigelUri(sigel));
-      return !!obj;
+      return this.userChangeCollections.includes(this.sigelUri(sigel));
     },
     label(obj) {
       return this.getLabel(obj);
@@ -54,6 +52,7 @@ export default {
   computed: {
     ...mapGetters([
       'userChangeCategories',
+      'userChangeCollections',
     ]),
     categoriesSorted() {
       return sortBy(this.availableCategories, this.label);

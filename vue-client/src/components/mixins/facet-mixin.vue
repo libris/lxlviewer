@@ -89,6 +89,9 @@ export default {
     changeCategories() {
       return this.$store.getters.userChangeCategories;
     },
+    changeCollections() {
+      return this.$store.getters.userChangeCollections;
+    },
   },
 
 };
