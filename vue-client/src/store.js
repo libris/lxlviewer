@@ -410,11 +410,16 @@ const store = createStore({
       return collection;
     },
     userChangeCategories: (state) => {
-      const collection = [];
-      if (state.userDatabase == null || state.userDatabase.requestedNotifications == null) {
-        return collection;
+      if (state.userDatabase == null || state.userDatabase.notificationCategories == null) {
+        return [];
       }
-      return state.userDatabase.requestedNotifications;
+      return state.userDatabase.notificationCategories.map(c => c['@id']);
+    },
+    userChangeCollections: (state) => {
+      if (state.userDatabase == null || state.userDatabase.notificationCollections == null) {
+        return [];
+      }
+      return state.userDatabase.notificationCollections.map(c => c['@id']);;
     },
     userDatabase: (state) => state.userDatabase,
     status: (state) => state.status,
@@ -574,53 +579,24 @@ const store = createStore({
       }
     },
     updateSubscribedSigel({ dispatch, state }, { libraryId, checked }) {
-      let notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
-      const notification = notifications[0];
-      let categories = [];
-      if (notification) {
-        categories = notification.triggers;
-      }
+      let collections = cloneDeep(state.userDatabase.notificationCollections) || [];
+      collections = collections.filter(c => c['@id'] !== libraryId);
       if (checked) {
-        notifications.push({ heldBy: libraryId, triggers: categories });
-      } else if (notifications.length === 1) { // Unchecked & removing the last element
-        notifications.forEach((n) => { n.heldBy = 'none'; });
-      } else { // Unchecked => remove whole notification
-        notifications = notifications.filter((n) => n.heldBy !== libraryId);
+        collections.push({'@id': libraryId});
       }
-
-      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
+      dispatch('modifyUserDatabase', { property: 'notificationCollections', value: collections });
     },
     updateSubscribedChangeCategory({ dispatch, state }, { categoryId, checked }) {
-      const notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
-      if (isEmpty(notifications)) {
-        notifications.push({ heldBy: 'none', triggers: [categoryId] });
+      let categories = cloneDeep(state.userDatabase.notificationCategories) || [];
+      categories = categories.filter(c => c['@id'] !== categoryId);
+      if (checked) {
+        categories.push({'@id': categoryId});
       }
-      notifications.forEach((n) => {
-        if (checked) {
-          n.triggers.push(categoryId);
-        } else { // Unchecked => remove from triggers
-          n.triggers = n.triggers.filter((id) => id !== categoryId);
-        }
-      });
-      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
-    },
-    updateSubscribedChangeCategories({ dispatch, state }, { libraryId, categoryId, checked }) {
-      const notifications = cloneDeep(state.userDatabase.requestedNotifications) || [];
-      notifications?.forEach((n) => {
-        if (checked) {
-          if (n) {
-            n.triggers.push(categoryId);
-          } else {
-            n.push({ heldBy: libraryId, triggers: [categoryId] });
-          }
-        } else { // Unchecked => remove from triggers
-          n.triggers = n.triggers.filter((id) => id !== categoryId);
-        }
-      });
-      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: notifications });
+      dispatch('modifyUserDatabase', { property: 'notificationCategories', value: categories });
     },
     purgeChangeCategories({ dispatch }) {
-      dispatch('modifyUserDatabase', { property: 'requestedNotifications', value: null });
+      dispatch('modifyUserDatabase', { property: 'notificationCategories', value: [] });
+      dispatch('modifyUserDatabase', { property: 'notificationCollections', value: [] });
     },
     loadUserDatabase({ commit, dispatch, state }) {
       if (state.user.id.length === 0) {

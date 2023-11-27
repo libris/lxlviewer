@@ -75,6 +75,7 @@ export default {
       'userFlagged',
       'userBookmarks',
       'userChangeCategories',
+      'userChangeCollections',
     ]),
     userHasTaggedRecords() {
       return Object.keys(this.userStorage.list).length > 0;
