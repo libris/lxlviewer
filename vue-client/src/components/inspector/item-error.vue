@@ -1,6 +1,6 @@
 <script>
 import { cloneDeep } from 'lodash-es';
-import ItemMixin from '../mixins/item-mixin';
+import ItemMixin from '../mixins/item-mixin.vue';
 
 export default {
   name: 'item-error',
@@ -51,7 +51,7 @@ export default {
     this.$nextTick(() => {
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
   },
 };

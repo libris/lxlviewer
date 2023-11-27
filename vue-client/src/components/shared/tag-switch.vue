@@ -33,7 +33,7 @@ export default {
       if (!this.isMarked) {
         this.mark();
       } else {
-        this.unmark(); 
+        this.unmark();
       }
     },
     mark() {
@@ -73,6 +73,9 @@ export default {
         case 'Flagged':
           str += 'flag';
           break;
+        case 'Handled':
+          str += 'envelope';
+          break;
         default:
           return false;
       }
@@ -85,10 +88,10 @@ export default {
       let bool = false;
       switch (this.tag) {
         case 'Bookmark':
-          bool = this.userBookmarks.some(el => el['@id'] === this.documentId);
+          bool = this.userBookmarks.some((el) => el['@id'] === this.documentId);
           break;
         case 'Flagged':
-          bool = this.userFlagged.some(el => el['@id'] === this.documentId);
+          bool = this.userFlagged.some((el) => el['@id'] === this.documentId);
           break;
         default:
           bool = false;
@@ -118,7 +121,7 @@ export default {
 
 <template>
   <div class="TagSwitch" v-tooltip.top="tooltip" @click="toggleMark()">
-    <i :class="`fa fa-fw ${iconString}`"></i>
+    <i :class="`fa fa-fw ${iconString}`" />
   </div>
 </template>
 

@@ -1,20 +1,18 @@
-import Vue from 'vue';
-import Router from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import * as StringUtil from 'lxljs/string';
-import LandingPage from '@/views/LandingPage';
-import Login from '@/views/Login';
+
+// Import views
+import LandingPage from '@/views/LandingPage.vue';
+import Login from '@/views/Login.vue';
 import store from './store';
 
-Vue.use(Router);
-
-const router = new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition;
     }
-    return { x: 0, y: 0 };
+    return { top: 0, left: 0 };
   },
   routes: [
     {
@@ -28,7 +26,7 @@ const router = new Router({
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      component: () => import('@/views/About.vue'),
     },
     {
       path: '/login/authorized',
@@ -45,23 +43,23 @@ const router = new Router({
       redirect: '/search/libris',
     },
     {
-      path: '/search/:perimeter?',
+      path: '/search/:perimeter',
       name: 'Search',
-      component: () => import(/* webpackChunkName: "Find" */ './views/Find.vue'),
+      component: () => import('@/views/Find.vue'),
     },
     {
       path: '/help/:section?',
       name: 'Help',
-      component: () => import(/* webpackChunkName: "Help" */ './views/Help.vue'),
+      component: () => import('@/views/Help.vue'),
     },
     {
       path: '/directory-care',
       redirect: '/directory-care/holdings',
     },
     {
-      path: '/directory-care/:tool?',
+      path: '/directory-care/:tool',
       name: 'Directory care',
-      component: () => import(/* webpackChunkName: "UserPage" */ './views/DirectoryCare.vue'),
+      component: () => import('@/views/DirectoryCare.vue'),
       meta: {
         requiresAuth: true,
       },
@@ -69,7 +67,7 @@ const router = new Router({
     {
       path: '/user',
       name: 'User settings',
-      component: () => import(/* webpackChunkName: "UserPage" */ './views/UserPage.vue'),
+      component: () => import('@/views/UserPage.vue'),
       meta: {
         requiresAuth: true,
       },
@@ -77,7 +75,7 @@ const router = new Router({
     {
       path: '/create',
       name: 'Create new',
-      component: () => import(/* webpackChunkName: "Create" */ './views/Create.vue'),
+      component: () => import('@/views/Create.vue'),
       meta: {
         requiresAuth: true,
       },
@@ -85,17 +83,17 @@ const router = new Router({
     {
       path: '/new',
       name: 'NewDocument',
-      component: () => import(/* webpackChunkName: "Inspector" */ './views/Inspector.vue'),
+      component: () => import('@/views/Inspector.vue'),
     },
     {
       path: '/:fnurgel',
       name: 'Inspector',
-      component: () => import(/* webpackChunkName: "Inspector" */ './views/Inspector.vue'),
+      component: () => import('@/views/Inspector.vue'),
     },
     {
       path: '/:fnurgel/:view',
       name: 'DocumentHistory',
-      component: () => import(/* webpackChunkName: "Inspector" */ './views/Inspector.vue'),
+      component: () => import('@/views/Inspector.vue'),
     },
   ],
 });
@@ -122,11 +120,11 @@ router.beforeEach((to, from, next) => {
     next();
   }, () => {
     // notAuthed
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-      if (to.fullPath.indexOf('login') < 0) {
-        localStorage.setItem('lastPath', to.fullPath);
-      }
+    if (to.fullPath.indexOf('login') < 0) {
+      localStorage.setItem('lastPath', to.fullPath);
+    }
 
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
       next({
         path: '/login/expired',
       });

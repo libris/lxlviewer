@@ -9,34 +9,38 @@ It is a VueJS single page application (SPA) that uses the [Libris XL](https://gi
 
 No action required here, this is just information.
 * [VueJS](https://vuejs.org/)
-* [Webpack](https://webpack.js.org/)
+* [Vite](https://vitejs.dev/)
 
 #### Coding Standard
 * [SUIT CSS](https://suitcss.github.io/)
-* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`package.json`](/vue-client/package.json) in `./vue-client`)
+* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`.eslintrc.js`](/vue-client/.eslintrc.js) in `./vue-client`)
 
 #### Requirements
-* [node.js](http://nodejs.org/) >=8.16.2
+* [node.js](http://nodejs.org/) >= 18
 * [yarn](https://yarnpkg.com/en/docs/install)
 
 #### Setup
 
     $ cd vue-client && yarn install
 
+    # To only run frontend stuff locally, and use libris-dev as backend:
     $ cp .env.development.in .env.development
+
+    # If you're running both frontend and backend locally:
+    $ cp .env.local_backend.in .env.development
 
 In `.env.development`, input the path to your flask app REST-API (if not standard). Get `VUE_APP_CLIENT_ID` for local development from a Libris developer.
 
 #### Further configurations
 
-Most things are controlled in `src/setttings.js`, and then exported into the store as the getter `settings`. This file is not environment specific, but some properties inside it varies depending on environment.
+Most things are controlled in `src/settings.js`, and then exported into the store as the getter `settings`. This file is not environment specific, but some properties inside it varies depending on environment.
 
 #### Building
 
 ```
 
 # serve with hot reload at localhost:8080
-$ yarn serve
+$ yarn dev
 
 # build for production with minification
 $ yarn build

@@ -1,12 +1,11 @@
 <script>
-/*
-
-*/
 import * as StringUtil from 'lxljs/string';
-import LensMixin from '@/components/mixins/lens-mixin';
-import ItemMixin from '@/components/mixins/item-mixin';
-import OverflowMixin from '@/components/mixins/overflow-mixin';
-import PreviewCard from '@/components/shared/preview-card';
+import { labelByLang, convertResourceLink, capitalize } from '@/utils/filters';
+import { Menu } from 'floating-vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import OverflowMixin from '@/components/mixins/overflow-mixin.vue';
+import PreviewCard from '@/components/shared/preview-card.vue';
 
 export default {
   name: 'summary-node',
@@ -58,7 +57,13 @@ export default {
     },
   },
   components: {
+    Menu,
     PreviewCard,
+  },
+  methods: {
+    labelByLang,
+    convertResourceLink,
+    capitalize,
   },
   watch: {
   },
@@ -71,26 +76,32 @@ export default {
 <template>
   <div class="SummaryNode">
     <span class="SummaryNode-label" v-if="!isLinked || isStatic" ref="ovf-label" @click.prevent.self="e => e.target.classList.toggle('expanded')">
-      <span v-if="fieldKey === 'instanceOf' && item['@type'] !== 'Work'">
-        {{ item['@type'] | labelByLang | capitalize }} •
+      <span v-if="fieldKey === 'instanceOf' && focusData['@type'] !== 'Work'">
+        {{ capitalize(labelByLang(focusData['@type'])) }} •
       </span>
       {{ typeof item === 'string' ? getStringLabel : getItemLabel }}{{ isLast ? '' : ';&nbsp;' }}
       <resize-observer v-if="handleOverflow" @notify="calculateOverflow" />
     </span>
-    <v-popover v-if="isLinked && !isStatic" :disabled="!hoverLinks" @show="$refs.previewCard.populateData()" placement="bottom-start">
+    <Menu
+      v-if="isLinked && !isStatic"
+      :disabled="!hoverLinks"
+      @apply-show="$refs.previewCard.populateData()"
+      placement="bottom-start"
+      :delay="{show: 200, hide:0}"
+    >
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">
-          <span v-if="fieldKey === 'instanceOf'">
-            {{ item['@type'] | labelByLang | capitalize }} •
+          <span v-if="fieldKey === 'instanceOf' && focusData['@type'] !== 'Work'">
+            {{ capitalize(labelByLang(focusData['@type'])) }} •
           </span>
           {{getItemLabel}}
         </router-link>
-        <a v-if="!isLibrisResource" :href="focusData['@id'] | convertResourceLink">{{getItemLabel}}</a>
+        <a v-if="!isLibrisResource" :href="convertResourceLink(focusData['@id'])">{{getItemLabel}}</a>
       </span>
-      <template slot="popover" v-if="hoverLinks">
+      <template #popper v-if="hoverLinks">
         <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
       </template>
-    </v-popover>
+    </Menu>
   </div>
 </template>
 

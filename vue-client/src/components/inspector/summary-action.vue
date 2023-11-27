@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import Button from '@/components/shared/button.vue';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'summary-action-button',
@@ -27,7 +28,9 @@ export default {
     return {
     };
   },
+  emits: ['action'],
   methods: {
+    translatePhrase,
     action() {
       this.$emit('action');
     },
@@ -61,21 +64,19 @@ export default {
 };
 </script>
 
-
 <template>
   <div class="SummaryAction">
     <div class="SummaryAction-button">
-      <button-component 
+      <button-component
         :disabled="disabled || replaced || extracting"
         :variant="options.styling"
         :icon="getIcon"
         :indicator="!disabled || !replaced"
-        :label="getTooltipText" 
+        :label="getTooltipText"
         size="large"
-        v-tooltip.right="translate(getTooltipText)"
+        v-tooltip.right="translatePhrase(getTooltipText)"
         @click="action()"
-        @keyup.enter="action()">
-      </button-component>
+        @keyup.enter="action()" />
     </div>
   </div>
 </template>
@@ -101,10 +102,6 @@ export default {
         color: @link-hover-color;
       }
     }
-  }
-  
-
-  &-button {
   }
 }
 </style>

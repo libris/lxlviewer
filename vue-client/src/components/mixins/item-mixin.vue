@@ -110,20 +110,20 @@ export default {
     diffAddedChildren() {
       if (this.diff == null) return false;
       return this.diff.added
-        .filter(p => !isEqual(p, this.path))
-        .some(p => p.includes(this.path));
+        .filter((p) => !isEqual(p, this.path))
+        .some((p) => p.includes(this.path));
     },
     diffRemovedChildren() {
       if (this.diff == null) return false;
       return this.diff.removed
-        .filter(p => !isEqual(p, this.path))
-        .some(p => p.includes(this.path));
+        .filter((p) => !isEqual(p, this.path))
+        .some((p) => p.includes(this.path));
     },
     diffModifiedChildren() {
       if (this.diff == null) return false;
       return this.diff.modified
-        .filter(p => !isEqual(p, this.path))
-        .some(p => p.includes(this.path));
+        .filter((p) => !isEqual(p, this.path))
+        .some((p) => p.includes(this.path));
     },
     diffChangedChildren() {
       return this.diffAddedChildren || this.diffRemovedChildren || this.diffModifiedChildren;

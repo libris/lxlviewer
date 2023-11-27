@@ -3,12 +3,13 @@ import { each, isArray, cloneDeep } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
-import OverflowMixin from '@/components/mixins/overflow-mixin';
-import EncodingLevelIcon from '@/components/shared/encoding-level-icon';
-import TypeIcon from '@/components/shared/type-icon';
-import SummaryNode from '@/components/shared/summary-node';
 import * as RecordUtil from '@/utils/record';
-import LensMixin from '../mixins/lens-mixin';
+import { translatePhrase, labelByLang, convertResourceLink, capitalize } from '@/utils/filters';
+import OverflowMixin from '@/components/mixins/overflow-mixin.vue';
+import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
+import TypeIcon from '@/components/shared/type-icon.vue';
+import SummaryNode from '@/components/shared/summary-node.vue';
+import LensMixin from '../mixins/lens-mixin.vue';
 
 export default {
   mixins: [LensMixin, OverflowMixin],
@@ -94,7 +95,7 @@ export default {
       type: Number,
     },
     highlightStr: {
-      type: [String, Boolean], 
+      type: [String, Boolean],
       default: false,
     },
     embeddedInField: {
@@ -120,6 +121,7 @@ export default {
       },
     };
   },
+  emits: ['hiddenDetailsNumber', 'import-this'],
   computed: {
     ...mapGetters([
       'user',
@@ -176,7 +178,7 @@ export default {
     uri() {
       if (this.focusData.hasOwnProperty('@id') || this.focusData.hasOwnProperty('@graph')) {
         const uri = this.focusData.hasOwnProperty('@id') ? this.focusData['@id'] : this.focusData['@graph'][0].mainEntity['@id'];
-        const convertedUri = this.$options.filters.convertResourceLink(uri);
+        const convertedUri = convertResourceLink(uri);
         return convertedUri;
       }
       return null;
@@ -197,16 +199,25 @@ export default {
       return false;
     },
     routerPath() {
-      const uriParts = this.recordId.split('/');
-      const fnurgel = uriParts[uriParts.length - 1];
-      return `/${fnurgel}`;
+      if (this.focusData && this.focusData['@type'] === 'ChangeObservation') {
+        const uriParts = this.focusData.concerning['@id'].split('/');
+        const fnurgel = uriParts[uriParts.length - 1].split('#')[0];
+        // FIXME linking directly to history sometimes blows up
+        //return `/${fnurgel}/history`;
+        return `/${fnurgel}`;
+      }
+      else {
+        const uriParts = this.recordId.split('/');
+        const fnurgel = uriParts[uriParts.length - 1];
+        return `/${fnurgel}`;
+      }
     },
     totalInfo() {
       const total = this.getSummary.info;
       return total.filter((prop) => {
         if (isArray(prop.value)) {
           return prop.value.join('').length > 0;
-        } 
+        }
         return prop.value.length > 0;
       });
     },
@@ -227,11 +238,11 @@ export default {
       }
       const translatedBaseType = StringUtil.getLabelByLang(
         this.recordType,
-        this.user.settings.language, 
+        this.user.settings.language,
         this.resources,
       );
       if (type === this.recordType && ['Instance', 'Work'].indexOf(type) !== -1) {
-        return `${this.$options.filters.translatePhrase('Unspecified')}, ${translatedBaseType}`;
+        return `${translatePhrase('Unspecified')}, ${translatedBaseType}`;
       }
       if (type === this.recordType) {
         return translatedBaseType;
@@ -242,7 +253,7 @@ export default {
       } else {
         translatedType = StringUtil.getLabelByLang(
           type,
-          this.user.settings.language, 
+          this.user.settings.language,
           this.resources,
         );
       }
@@ -253,8 +264,8 @@ export default {
     },
     categorization() {
       return StringUtil.getFormattedEntries(
-        this.getSummary.categorization, 
-        this.resources.vocab, 
+        this.getSummary.categorization,
+        this.resources.vocab,
         this.user.settings.language,
         this.resources.context,
       );
@@ -279,6 +290,10 @@ export default {
     });
   },
   methods: {
+    translatePhrase,
+    labelByLang,
+    convertResourceLink,
+    capitalize,
     copyFnurgel() {
       const self = this;
       this.$copyText(this.uri).then(() => {
@@ -310,81 +325,106 @@ export default {
 </script>
 
 <template>
-<section 
-  class="EntitySummary"
-  v-bind:class="{'is-embedded-in-field': embeddedInField}">
-  <div class="EntitySummary-meta">
-    <type-icon
-      v-if="recordType === 'Work' || recordType === 'Place'"
-      :type="focusData['@type']"
-    />
-    <encoding-level-icon
-      v-if="encodingLevel && recordType === 'Instance'"
-      :encodingLevel="encodingLevel"
-      :tooltipText="encodingLevel | labelByLang"/>
-    <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
-      {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
-      <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
+  <section
+    class="EntitySummary"
+    v-bind:class="{ 'is-embedded-in-field': embeddedInField }">
+    <div class="EntitySummary-meta">
+      <type-icon
+        v-if="recordType === 'Work' || recordType === 'Place' || recordType === 'AdministrativeNotice'"
+        :type="focusData['@type']"
+      />
+      <encoding-level-icon
+        v-if="encodingLevel && recordType === 'Instance'"
+        :encodingLevel="encodingLevel"
+        :tooltipText="labelByLang(encodingLevel)" />
+      <div :title="topBarInformation" v-if="excludeComponents.indexOf('categorization') < 0" class="EntitySummary-type uppercaseHeading--light">
+        {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
+        <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
+      </div>
+      <div
+        v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0"
+        class="EntitySummary-id"
+        :class="{ 'recently-copied': recentlyCopiedId }"
+        @mouseover="idHover = true"
+        @mouseout="idHover = false">
+        <i
+          v-tooltip.top="idTooltipText"
+          class="fa fa-copy EntitySummary-idCopyIcon"
+          :class="{ collapsedIcon: !idHover || recentlyCopiedId }"
+          @click.stop="copyFnurgel" />{{ idAsFnurgel }}
+      </div>
     </div>
-    <div v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0" class="EntitySummary-id" :class="{'recently-copied': recentlyCopiedId }" @mouseover="idHover = true" @mouseout="idHover = false">
-      <i v-tooltip.top="idTooltipText" class="fa fa-copy EntitySummary-idCopyIcon" :class="{'collapsedIcon': !idHover || recentlyCopiedId }" @click.stop="copyFnurgel">
-      </i>{{ idAsFnurgel }}
-    </div>
-  </div>
 
-  <div class="EntitySummary-info">
-    <h3 class="EntitySummary-title" v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink, 'showAll': showAllKeys }" v-if="excludeComponents.indexOf('header') < 0">
-      <span v-if="highlightStr && !shouldLink" 
-        v-html="highlight(header.join(', '))"
-        :title="header.join(', ')">
-      </span>
-      <span 
-        v-if="!highlightStr && !shouldLink" 
-        :title="header.join(', ')">{{ header.join(', ') }}</span>
-      <span
-        v-if="isImport && shouldLink" 
-        :title="header.join(', ')" 
-        v-on:click="importThis()">
-        <i class="fa fa-external-link" aria-hidden="true"></i>
-        {{ header.join(', ') }}
-      </span>
-      <router-link class="EntitySummary-titleLink"
-        v-if="isLibrisResource && !isImport && shouldLink" 
-        :to="this.routerPath" 
-        :title="header.join(', ')"
-        :target="shouldOpenTab ? '_blank' : '' ">
-        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
-        {{ header.join(', ') }}
-      </router-link>
-      <a class="EntitySummary-titleLink"
-        v-if="!isLibrisResource && !isImport && shouldLink" 
-        :href="uri | convertResourceLink" 
-        :title="header.join(', ')"
-        :target="shouldOpenTab ? '_blank' : '' ">
-        <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true"></i>
-        {{ header.join(', ') }}
-      </a>
-      
-    </h3>
-    <ul class="EntitySummary-details" v-show="!isCompact" :style="{ 'min-height': animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
-      <li :class="`EntitySummary-detailsItem-${labelStyle}`"
-        v-for="node in limitedInfo" 
-        :key="node.property">
-        <template v-if="node.value !== null">
-          <span  v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="node.property | labelByLang | capitalize">{{ node.property | labelByLang | capitalize }}</span>
-          <span :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`" :ref="`ovf-${node.property}`" @click.self.prevent="(e) => { if (handleOverflow) { e.target.classList.toggle('expanded'); } }">
-            <SummaryNode :hover-links="hoverLinks" :handle-overflow="false" v-for="(value, index) in node.value" :is-last="index === node.value.length - 1" :key="index" :item="value" :parent-id="focusData['@id']" :field-key="node.property"/>
-          </span>
-        </template>
-        <template v-else-if="isReplacedBy !== ''">
-          <span :class="`EntitySummary-detailsKey-${labelStyle}`">Ersatt av</span>
-          <span :class="`EntitySummary-detailsValue-${labelStyle}`">{{ v }}</span>
-        </template>
-      </li>
-    </ul>
-  </div>
-  <resize-observer @notify="calculateOverflow" />
-</section>
+    <div class="EntitySummary-info">
+      <h3
+        class="EntitySummary-title"
+        v-bind:class="{ 'EntitySummary-title--imported': isImport && shouldLink, showAll: showAllKeys }"
+        v-if="excludeComponents.indexOf('header') < 0">
+        <span
+          v-if="highlightStr && !shouldLink"
+          v-html="highlight(header.join(', '))"
+          :title="header.join(', ')" />
+        <span
+          v-if="!highlightStr && !shouldLink"
+          :title="header.join(', ')">{{ header.join(', ') }}</span>
+        <span
+          v-if="isImport && shouldLink"
+          :title="header.join(', ')"
+          v-on:click="importThis()">
+          <i class="fa fa-external-link" aria-hidden="true" />
+          {{ header.join(', ') }}
+        </span>
+        <router-link
+          class="EntitySummary-titleLink"
+          v-if="isLibrisResource && !isImport && shouldLink"
+          :to="this.routerPath"
+          :title="header.join(', ')"
+          :target="shouldOpenTab ? '_blank' : '' ">
+          <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true" />
+          {{ header.join(', ') }}
+        </router-link>
+        <a
+          class="EntitySummary-titleLink"
+          v-if="!isLibrisResource && !isImport && shouldLink"
+          :href="convertResourceLink(uri)"
+          :title="header.join(', ')"
+          :target="shouldOpenTab ? '_blank' : '' ">
+          <i v-if="shouldOpenTab" class="EntitySummary-icon fa fa-external-link" aria-hidden="true" />
+          {{ header.join(', ') }}
+        </a>
+
+      </h3>
+      <ul class="EntitySummary-details" v-show="!isCompact" :style="{ 'min-height': animate ? `${ (limitedInfo.length * 1.8) + 0.2 }em` : 'auto' }" v-if="excludeComponents.indexOf('details') < 0">
+        <li
+          :class="`EntitySummary-detailsItem-${labelStyle}`"
+          v-for="node in limitedInfo"
+          :key="node.property">
+          <template v-if="node.value !== null">
+            <span v-if="labelStyle !== 'hidden'" :class="`EntitySummary-detailsKey-${labelStyle}`" :title="capitalize(labelByLang(node.property))">{{ capitalize(labelByLang(node.property)) }}</span>
+            <span
+              :class="`EntitySummary-detailsValue-${labelStyle} EntitySummary-twoLines`"
+              :ref="`ovf-${node.property}`"
+              @click.self.prevent="(e) => { if (handleOverflow) { e.target.classList.toggle('expanded'); } }">
+              <SummaryNode
+                v-for="(value, index) in node.value"
+                :hover-links="hoverLinks"
+                :handle-overflow="false"
+                :is-last="index === node.value.length - 1"
+                :key="index"
+                :item="value"
+                :parent-id="focusData['@id']"
+                :field-key="node.property" />
+            </span>
+          </template>
+          <template v-else-if="isReplacedBy !== ''">
+            <span :class="`EntitySummary-detailsKey-${labelStyle}`">Ersatt av</span>
+            <span :class="`EntitySummary-detailsValue-${labelStyle}`">{{ v }}</span>
+          </template>
+        </li>
+      </ul>
+    </div>
+    <resize-observer @notify="calculateOverflow" />
+  </section>
 </template>
 
 <style lang="less">
@@ -532,12 +572,6 @@ export default {
     transition: min-height 0.2s ease-out;
   }
 
-  &-id {
-  }
-
-  &-idInfo {
-  }
-
   &-detailsItem-regular {
     display: flex;
     flex-direction: column;
@@ -548,7 +582,7 @@ export default {
       flex-direction: row;
     }
   }
-  
+
   &-detailsKey-regular {
     @media (min-width: @screen-sm-min) {
       flex-basis: 6em;
@@ -561,7 +595,7 @@ export default {
     overflow: hidden;
     white-space: nowrap;
   }
-  
+
   &-detailsValue-regular {
     @media (min-width: @screen-sm-min) {
       flex-basis: 75%;
@@ -590,9 +624,8 @@ export default {
         }
       }
     }
-  
   }
-  
+
   &-twoLines {
     // max 2 lines before ellipsis
     // works in all major modern browsers
@@ -608,7 +641,7 @@ export default {
       line-clamp: unset;
     }
   }
-  
+
   &-detailsItem-top {
     display: flex;
     flex-direction: column;
@@ -627,7 +660,7 @@ export default {
     font-size: 1rem;
     font-weight: 600;
   }
-  
+
   &-detailsValue-top {
     @media (min-width: @screen-sm-min) {
       flex-basis: 75%;
@@ -645,9 +678,6 @@ export default {
       padding: 0.2rem 0;
       flex-direction: row;
     }
-  }
-
-  &-detailsKey-hidden {
   }
 
   &-detailsValue-hidden {

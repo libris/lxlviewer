@@ -1,12 +1,12 @@
 import { cloneDeep, each, unset, get, set } from 'lodash-es';
 import * as LxlDataUtil from 'lxljs/data';
+import * as VocabUtil from 'lxljs/vocab';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
-import * as VocabUtil from '../../../lxljs/vocab';
 
 export function getRecordId(data, quoted) {
   const recordObj = recordObject(data, quoted);
-  
+
   let recordId;
   if (recordObj.hasOwnProperty('@id')) {
     recordId = recordObj['@id'];
@@ -25,7 +25,7 @@ export function getRecordType(data, quoted) {
   if (recordObj['@type']) {
     return recordObj['@type'];
   }
-  
+
   return null;
 }
 
@@ -112,7 +112,7 @@ export function getDigitalReproductionObject(original, resources) {
       digitalReproObject.mainEntity.instanceOf = original.mainEntity.instanceOf;
     }
   }
-  
+
   // Copy the other keys we want to copy
   const keysToCopy = [
     'mainEntity.hasTitle',
@@ -175,7 +175,7 @@ export function getItemObject(itemOf, heldBy, instance) {
         {
           '@type': 'MediaObject',
           uri: [''],
-          'marc:publicNote': [''], 
+          'marc:publicNote': [''],
         },
       ],
       'marc:hasTextualHoldingsBasicBibliographicUnit': [
@@ -233,6 +233,27 @@ export function moveHolding(holdingId, destinationId, user) {
   });
 }
 
+export function getHandleAction(concerningId, agentId) {
+  return {
+    '@graph': [{
+      '@id': 'https://libris.kb.se/TEMPID',
+      '@type': 'Record',
+      mainEntity: {
+        '@id': 'https://libris.kb.se/TEMPID#it',
+      },
+    },
+      {
+        '@id': 'https://libris.kb.se/TEMPID#it',
+        '@type': 'HandleAction',
+        'concerning': {
+          '@id': concerningId + '#it'
+        },
+        'agent': { '@id': agentId }
+      },
+    ],
+  };
+}
+
 export function getObjectAsRecord(mainEntity, record = {}) {
   const newMainEntity = cloneDeep(mainEntity);
   newMainEntity['@id'] = 'https://id.kb.se/TEMPID#it';
@@ -262,7 +283,7 @@ export function getObjectAsRecord(mainEntity, record = {}) {
 }
 
 export function getCleanedExtractedData(extractedData, inspectorData, resources) {
-  /** 
+  /**
    * Cleans extracted data and adds title from parent data if it is missing.
    */
   const cleanObj = DataUtil.removeNullValues(extractedData);
@@ -295,12 +316,10 @@ export function convertToMarc(inspectorData, settings, user) {
   const editorObj = DataUtil.getMergedItems(
     DataUtil.removeNullValues(inspectorData.record),
     DataUtil.removeNullValues(inspectorData.mainEntity),
-    DataUtil.removeNullValues(inspectorData.work),
-    inspectorData.quoted,
   );
   const apiPath = settings.apiPath;
   return new Promise((resolve, reject) => {
-    httpUtil.post({ 
+    httpUtil.post({
       url: `${apiPath}/_convert`,
       accept: 'application/x-marc-json',
       token: user.token,
@@ -349,9 +368,9 @@ export function prepareDuplicateFor(inspectorData, user, keysToClear) {
   }
 
   const merged = DataUtil.getMergedItems(
-    newData.record, 
-    newData.mainEntity, 
-    newData.work, 
+    newData.record,
+    newData.mainEntity,
+    newData.work,
     newData.quoted,
   );
   return merged;

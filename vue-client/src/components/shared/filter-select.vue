@@ -3,14 +3,17 @@
   Adds custom select menu with searchable options
 */
 import { forEach } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
+import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
+import { translatePhrase, labelByLang } from '@/utils/filters';
 
 export default {
-  mixins: [clickaway],
   name: 'filter-select',
+  directives: {
+    'on-click-outside': vOnClickOutside,
+  },
   props: {
     options: {
       type: Object,
@@ -70,6 +73,7 @@ export default {
       },
     };
   },
+  emits: ['filter-selected'],
   computed: {
     ...mapGetters([
       'resources',
@@ -82,6 +86,8 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
+    labelByLang,
     preventBodyScroll(e) {
       const keys = this.keyEnums;
       if ([
@@ -212,7 +218,7 @@ export default {
     },
     setValue(value) {
       this.clear();
-      const option = this.options.tree.find(o => o.value === value);
+      const option = this.options.tree.find((o) => o.value === value);
       if (option !== undefined) {
         this.selectedObject = {
           value: option.value,
@@ -222,7 +228,7 @@ export default {
       }
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.filterVisible === true) { // Make sure we unlock the scroll lock
       LayoutUtil.scrollLock(false);
     }
@@ -238,9 +244,10 @@ export default {
 </script>
 
 <template>
-  <div class="FilterSelect"
-    :class="[{'variantMaterial' : styleVariant === 'material'}, className]"
-    v-on-clickaway="close"
+  <div
+    class="FilterSelect"
+    :class="[{ variantMaterial: styleVariant === 'material' }, className]"
+    v-on-click-outside="close"
     :tabindex="0"
     @keydown.space="preventBodyScroll"
     @keyup.space="focusOnInput">
@@ -250,7 +257,8 @@ export default {
       {{ label }}{{ styleVariant !== 'material' && label ? ':' : '' }}
     </label>
     <div class="FilterSelect-inputContainer">
-      <input class="FilterSelect-input js-filterSelectInput"
+      <input
+        class="FilterSelect-input js-filterSelectInput"
         type="text"
         :id="inputId"
         v-bind:placeholder="translatedPlaceholder"
@@ -260,34 +268,40 @@ export default {
         @click="filterVisible = !filterVisible"
         ref="filterselectInput"
         :tabindex="-1">
-      <ul class="FilterSelect-dropdown js-filterSelectDropdown"
-        :class="{'is-visible': filterVisible}" v-show="filterVisible">
+      <ul
+        class="FilterSelect-dropdown js-filterSelectDropdown"
+        :class="{ 'is-visible': filterVisible }"
+        v-show="filterVisible">
         <li class="FilterSelect-dropdownHeader" v-show="options.priority.length > 0">
-          {{ 'Suggested' | translatePhrase }}:
+          {{ translatePhrase('Suggested') }}:
         </li>
-        <li class="FilterSelect-dropdownItem js-filterSelectItem"
+        <li
+          class="FilterSelect-dropdownItem js-filterSelectItem"
           :class="{ 'is-abstract': option.abstract, 'is-concrete': !option.abstract }"
           @click="selectOption"
           @keyup.enter="selectOption"
           v-for="option in options.priority"
           :key="option">
-          <span class="FilterSelect-dropdownText js-filterSelectText"
+          <span
+            class="FilterSelect-dropdownText js-filterSelectText"
             tabindex="-1"
             :data-filter="option"
             :data-abstract="option.abstract"
-            :data-key="option">{{ option | labelByLang }}</span>
+            :data-key="option">{{ labelByLang(option) }}</span>
         </li>
         <hr class="FilterSelect-dropdownDivider" v-show="options.priority.length > 0">
         <li class="FilterSelect-dropdownHeader" v-show="options.tree.length > 0 && options.priority.length > 0">
-          {{ 'All' | translatePhrase }}:
+          {{ translatePhrase('All') }}:
         </li>
-        <li class="FilterSelect-dropdownItem js-filterSelectItem"
+        <li
+          class="FilterSelect-dropdownItem js-filterSelectItem"
           :class="{ 'is-abstract': option.abstract && !isFilter, 'is-concrete': !option.abstract || isFilter }"
           @click="selectOption"
           @keyup.enter="selectOption"
           v-for="option in options.tree"
           :key="option.key">
-          <span class="FilterSelect-dropdownText js-filterSelectText"
+          <span
+            class="FilterSelect-dropdownText js-filterSelectText"
             tabindex="-1"
             :data-filter="option.value"
             :data-abstract="option.abstract"
@@ -296,18 +310,19 @@ export default {
       </ul>
       <i
         class="FilterSelect-open"
-        :class="{'is-opened': filterVisible}"
+        :class="{ 'is-opened': filterVisible }"
         role="button"
-        :title="!filterVisible ? 'Expand' : 'Minimize' | translatePhrase"
+        :title="translatePhrase(!filterVisible ? 'Expand' : 'Minimize')"
         @click="filterVisible = !filterVisible"
-        @keyup.enter="filterVisible = !filterVisible"></i>
+        @keyup.enter="filterVisible = !filterVisible" />
 
-      <i v-if="isFilter"
+      <i
+        v-if="isFilter"
         class="fa fa-close icon icon--sm FilterSelect-clear"
-        :title="'Close' | translatePhrase"
+        :title="translatePhrase('Close')"
         role="button"
         @click="clear()"
-        @keyup.enter="clear()"></i>
+        @keyup.enter="clear()" />
     </div>
   </div>
 </template>

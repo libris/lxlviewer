@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'Login',
@@ -22,6 +23,7 @@ export default {
     ]),
   },
   methods: {
+    translatePhrase,
     renewLogin() {
       window.location = this.$store.getters.oauth2Client.token.getUri();
     },
@@ -33,7 +35,7 @@ export default {
         this.loginExpired = true;
       } else if (this.user.isLoggedIn && token !== null) {
         const path = localStorage.getItem('lastPath') || '/';
-        this.$router.push({ path: path });
+        this.$router.push(path);
       } else window.location = this.$store.getters.oauth2Client.token.getUri();
     });
   },
@@ -43,13 +45,13 @@ export default {
 <template>
   <div class="Login">
     <div class="Login-content" v-if="failedLogin">
-      {{ 'Something went wrong' | translatePhrase }}
+      {{ translatePhrase('Something went wrong') }}
     </div>
     <div class="Login-content" v-if="loginExpired">
-      {{ 'Your login has expired' | translatePhrase }}.
+      {{ translatePhrase('Your login has expired') }}.
       <hr>
       <button class="btn-primary btn--md" @click="renewLogin" @keyup.enter="renewLogin">
-        {{ 'Renew' | translatePhrase }}
+        {{ translatePhrase('Renew') }}
       </button>
     </div>
   </div>

@@ -10,7 +10,9 @@ export function getDisplayDefinitions() {
     if (settings.mockDisplay === true) {
       window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using file from local definitions repository');
       // eslint-disable-next-line import/no-extraneous-dependencies
-      resolve(DisplayUtil.expandInherited(require('@/../../../definitions/source/vocab/display.jsonld')));
+      const displayGlob = import.meta.glob('../../../../definitions/source/vocab/display.jsonld', { as: 'raw', eager: true });
+      const displayJson = JSON.parse(displayGlob['../../../../definitions/source/vocab/display.jsonld']);
+      resolve(DisplayUtil.expandInherited(displayJson));
     } else {
       HttpUtil.getResourceFromCache(`${baseUri}/vocab/display/data.jsonld`).then((result) => {
         resolve(DisplayUtil.expandInherited(result));
@@ -40,7 +42,6 @@ export function getContext(apiPath) {
     });
   });
 }
-
 
 export function getEmbellished(id, quotedIndex = {}) {
   if (typeof id === 'undefined' || id === '') {
@@ -131,7 +132,7 @@ export function getExternalLinks(obj) {
   if (!isArray(obj) && !isObject(obj)) {
     return [];
   }
-  
+
   const links = [];
   const entities = [];
   const stack = [];
@@ -141,7 +142,7 @@ export function getExternalLinks(obj) {
     if (o['@id']) {
       (Object.keys(o).length > 1 ? entities : links).push(o['@id']);
     }
-    forEach(o, (child) => { 
+    forEach(o, (child) => {
       if (isArray(child) || isObject(child)) {
         stack.push(child);
       }
@@ -152,18 +153,18 @@ export function getExternalLinks(obj) {
 
 export async function fetchMissingLinkedToQuoted(obj, store) {
   const quoted = store.state.inspector.data.quoted || {};
-  const missingLinks = getExternalLinks(obj).filter(l => !quoted.hasOwnProperty(l));
+  const missingLinks = getExternalLinks(obj).filter((l) => !quoted.hasOwnProperty(l));
   const embellished = false;
   return Promise
-    .allSettled(missingLinks.map(l => HttpUtil.getDocument(l, undefined, embellished)))
+    .allSettled(missingLinks.map((l) => HttpUtil.getDocument(l, undefined, embellished)))
     .then((results) => {
-      results.filter(r => r.status === 'fulfilled').map(r => r.value.data).forEach((doc) => {
+      results.filter((r) => r.status === 'fulfilled').map((r) => r.value.data).forEach((doc) => {
         if (doc) {
-          doc['@graph'].forEach(o => store.commit('addToQuoted', o));
+          doc['@graph'].forEach((o) => store.commit('addToQuoted', o));
         }
       });
     })
-    .catch(e => console.log(e));
+    .catch((e) => console.log(e));
 }
 
 export function moveWorkToInstance(data) {
@@ -221,7 +222,7 @@ const SITE_ALIAS = JSON.parse(settings.siteAlias || '{}');
 
 export function translateAliasedUri(uri) {
   let translatedUri = uri;
-  
+
   each(SITE_ALIAS, (from, to) => {
     if (uri.startsWith(from)) {
       translatedUri = uri.replace(from, to);

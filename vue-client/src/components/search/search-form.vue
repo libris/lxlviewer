@@ -4,14 +4,19 @@ import { marked } from 'marked';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import PropertyMappings from '@/resources/json/propertymappings.json';
-import RemoteDatabases from '@/components/search/remote-databases';
 import { buildQueryString } from '@/utils/http';
+import { translatePhrase } from '@/utils/filters';
+import RemoteDatabases from '@/components/search/remote-databases.vue';
 
 export default {
   name: 'search-form',
   props: {
     searchPerimeter: {
       default: 'libris',
+      type: String,
+    },
+    searchTool: {
+      default: '',
       type: String,
     },
   },
@@ -34,6 +39,7 @@ export default {
     };
   },
   methods: {
+    translatePhrase,
     focusSearchInput() {
       this.$refs.searchFormInput.focus();
     },
@@ -57,28 +63,40 @@ export default {
     },
     doSearch() {
       this.helpToggled = false;
-      const path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
-      this.$router.push({ path });
+      let path = '';
+      if (this.searchPerimeter === 'libris' || this.searchPerimeter === 'remote') {
+        path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
+      } else if (this.searchTool === 'changes') {
+        //Keep facets
+        if (!isEmpty(this.$route.query)) {
+          let queryObj = cloneDeep(this.$route.query);
+          queryObj.q = this.searchPhrase === '' ? '*' : this.searchPhrase;
+          path = `${this.$route.path}?${buildQueryString(queryObj)}`;
+        } else {
+          path = `${this.$route.path}?${buildQueryString(this.mergedParams)}`;
+        }
+      }
+      this.$router.push(path);
     },
     clearInputs() {
       this.searchPhrase = '';
       this.focusSearchInput();
     },
     resetSearchParam() {
-      this.activeSearchParam = PropertyMappings.find(mapping => mapping.searchProps.includes('q'));
+      this.activeSearchParam = PropertyMappings.find((mapping) => mapping.searchProps.includes('q'));
     },
     setSearch() {
       let match = PropertyMappings.filter((prop) => {
         const keys = Object.keys(prop.mappings);
-        return keys.every(key => this.$route.query.hasOwnProperty(key));
+        return keys.every((key) => this.$route.query.hasOwnProperty(key));
       });
       if (match.length > 1) {
         // multiple matching parameters...
         const filteredMatch = match
           // try separate ISSN from ISBN
-          .filter(prop => prop.mappings['identifiedBy.@type'] === this.$route.query['identifiedBy.@type'])
+          .filter((prop) => prop.mappings['identifiedBy.@type'] === this.$route.query['identifiedBy.@type'])
           // remove 'q'
-          .filter(prop => !prop.mappings.hasOwnProperty('q'));
+          .filter((prop) => !prop.mappings.hasOwnProperty('q'));
         match = filteredMatch;
       }
       if (match.length > 0) {
@@ -98,15 +116,17 @@ export default {
       return PropertyMappings[0];
     },
     setType() {
-      if (this.$route.params.perimeter === 'remote') {
-        return this.activeSearchType; // Don't change while remote searching
+      if (this.$route.params.perimeter === 'remote' || (this.$route === 'changes' && this.$route.params.perimeter !== 'libris')) {
+        return this.activeSearchType; // Don't change while remote searching, or in change view
       }
       const performedQuery = cloneDeep(this.$route.query);
       let type;
       if (isEmpty(performedQuery)) {
         type = this.user.settings.searchType || 'Instance';
       } else {
-        type = performedQuery['@type'] || '*';
+        if (!this.isChangeView) {
+          type = performedQuery['@type'] || '*';
+        }
       }
       if (isArray(type)) {
         for (let i = 0; i < type.length; i++) {
@@ -147,7 +167,7 @@ export default {
       if (this.activeSearchType === '*') {
         return PropertyMappings;
       }
-      return PropertyMappings.filter(mapping => mapping.types.indexOf(this.activeSearchType) > -1);
+      return PropertyMappings.filter((mapping) => mapping.types.indexOf(this.activeSearchType) > -1);
     },
     helpContainerBoundaryStyles() {
       const $icon = this.$refs.helpIcon;
@@ -183,7 +203,13 @@ export default {
       return this.searchPhrase.length > 0;
     },
     inputPlaceholder() {
-      return this.searchPerimeter === 'remote' ? 'ISBN eller valfria sökord' : 'Search';
+      if (this.searchPerimeter === 'remote') {
+        return 'ISBN eller valfria sökord';
+      }
+      if (this.searchTool === 'changes') {
+        return 'Search among changes';
+      }
+      return 'Search';
     },
     composedSearchParam() { // pair current search param with searchphrase
       let composed = {};
@@ -197,7 +223,15 @@ export default {
       return composed;
     },
     composedTypes() {
-      return this.activeSearchType && this.activeSearchType.length > 0 ? { '@type': this.activeSearchType } : { '@type': null };
+      let type = null;
+      if (this.activeSearchType && this.activeSearchType.length > 0) {
+        if (this.searchPerimeter === 'libris') {
+          type = this.activeSearchType;
+        } else if (this.searchTool === 'changes') {
+          type = 'AdministrativeNotice';
+        }
+      }
+      return { '@type': type };
     },
     prefSort() {
       if (this.user && this.user.settings.sort) {
@@ -221,6 +255,9 @@ export default {
         this.prefSort,
       );
     },
+    isChangeView() {
+      return this.searchTool === 'changes' || this.$route.path === '/directory-care/changes';
+    }
   },
   components: {
     'remote-databases': RemoteDatabases,
@@ -238,26 +275,30 @@ export default {
         this.resetSearchParam();
       }
     },
+    searchTool(newVal, oldVal) {
+      if (newVal !== oldVal && newVal === 'changes') {
+        this.clearInputs();
+        this.doSearch();
+      }
+    },
     searchPerimeter(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.$nextTick(() => {
           this.helpToggled = false;
           this.focusSearchInput();
+          if (newVal === 'remote') {
+            if (this.status.remoteDatabases.length > 0) {
+              if (this.composedSearchParam.q !== '' && this.composedSearchParam.q !== '*') {
+                this.doSearch();
+              }
+            }
+          }
         });
       }
     },
     '$route.name'(val, oldValue) {
       if (val === 'Search' && oldValue !== 'Search') {
         this.focusSearchInput();
-      }
-    },
-    '$route.params.perimeter'(value) {
-      if (value === 'remote') {
-        if (this.status.remoteDatabases.length > 0) {
-          if (this.composedSearchParam.q !== '' && this.composedSearchParam.q !== '*') {
-            this.doSearch();
-          }
-        }
       }
     },
     '$route.params'() {
@@ -267,7 +308,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.focusSearchInput();
-      this.$router.onReady(() => {
+      this.$router.isReady().then(() => {
         this.setActiveSelectValues();
       });
     });
@@ -279,7 +320,7 @@ export default {
   <div class="SearchForm">
     <form id="searchForm" class="SearchForm-form">
       <label class="SearchForm-inputLabel sr-only" id="searchlabel" for="q">
-        {{"Search" | translatePhrase}}
+        {{ translatePhrase("Search") }}
       </label>
       <div class="SearchForm-formGroup SearchForm-selectGroup hidden-sm hidden-md hidden-lg">
         <div class="SearchForm-selectWrapper SearchForm-typeSelectWrapper" v-if="searchPerimeter === 'libris'">
@@ -291,7 +332,7 @@ export default {
               v-for="filter in dataSetFilters"
               :key="filter.value"
               :value="filter.value">
-              {{filter.label | translatePhrase}}
+              {{ translatePhrase(filter.label) }}
             </option>
           </select>
         </div>
@@ -304,7 +345,7 @@ export default {
               v-for="prop in availableSearchParams"
               :key="prop.key"
               :value="prop">
-              {{prop.key | translatePhrase}}
+              {{ translatePhrase(prop.key) }}
             </option>
           </select>
         </div>
@@ -321,24 +362,30 @@ export default {
               v-for="filter in dataSetFilters"
               :key="filter.value"
               :value="filter.value">
-              {{filter.label | translatePhrase}}
+              {{ translatePhrase(filter.label) }}
             </option>
           </select>
         </div>
-        <input type="text"
+        <input
+          type="text"
           @focus="searchGroupFocus.input = true"
           @blur="searchGroupFocus.input = false"
           class="SearchForm-input customInput"
           id="q"
           v-model="searchPhrase"
           aria-labelledby="searchlabel"
-          :placeholder="inputPlaceholder | translatePhrase"
+          :placeholder="translatePhrase(inputPlaceholder)"
           ref="searchFormInput">
-        <span class="SearchForm-clear icon icon--md"
+        <span
+          class="SearchForm-clear icon icon--md"
           @focus="searchGroupFocus.clear = true"
           @blur="searchGroupFocus.clear = false"
-          :class="{ 'in-remote': searchPerimeter === 'remote' }" tabindex="0" v-show="hasInput" @keyup.enter="clearInputs()" @click="clearInputs()">
-          <i class="fa fa-fw fa-close"></i>
+          :class="{ 'in-remote': searchPerimeter === 'remote' || searchTool === 'changes' }"
+          tabindex="0"
+          v-show="hasInput"
+          @keyup.enter="clearInputs()"
+          @click="clearInputs()">
+          <i class="fa fa-fw fa-close" />
         </span>
         <div class="SearchForm-selectWrapper SearchForm-paramSelectWrapper hidden-xs" v-if="searchPerimeter === 'libris'">
           <select
@@ -351,40 +398,44 @@ export default {
               v-for="prop in availableSearchParams"
               :key="prop.key"
               :value="prop">
-              {{prop.key | translatePhrase}}
+              {{ translatePhrase(prop.key) }}
             </option>
           </select>
         </div>
         <button
           class="SearchForm-submit btn btn-primary icon--white icon--md"
-          :aria-label="'Search' | translatePhrase"
+          :aria-label="translatePhrase('Search')"
           @click.prevent="doSearch"
           @focus="searchGroupFocus.submit = true"
           @blur="searchGroupFocus.submit = false"
-          :class="{'disabled': searchPerimeter === 'remote' && status.remoteDatabases.length === 0}"
-          :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0" >
-          <i class="fa fa-search"></i>
+          :class="{ disabled: searchPerimeter === 'remote' && status.remoteDatabases.length === 0 }"
+          :disabled="searchPerimeter === 'remote' && status.remoteDatabases.length === 0">
+          <i class="fa fa-search" />
         </button>
       </div>
       <remote-databases
         v-if="searchPerimeter === 'remote'"
         :remoteSearch="searchPhrase"
         @panelClosed="focusSearchInput"
-        ref="dbComponent"></remote-databases>
+        ref="dbComponent" />
     </form>
     <div class="SearchForm-help">
       <div class="SearchForm-helpBox dropdown" v-if="searchPerimeter === 'libris'">
         <span class="SearchForm-helpIcon">
-          <i v-tooltip="searchHelpTooltip" class="fa fa-fw fa-question-circle icon icon--md" tabindex="0" aria-haspopup="true"
+          <i
+            v-tooltip="searchHelpTooltip"
+            class="fa fa-fw fa-question-circle icon icon--md"
+            tabindex="0"
+            aria-haspopup="true"
             ref="helpIcon"
             @mouseover="helpHover = true"
             @mouseleave="helpHover = false"
             @click="toggleHelp"
-            @keyup.enter="toggleHelp"></i>
+            @keyup.enter="toggleHelp" />
         </span>
         <div class="SearchForm-helpContainer" :style="helpContainerBoundaryStyles" v-if="helpToggled">
-          <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchForm-closeHelp" @click="toggleHelp"></i>
-          <div class="SearchForm-helpContent" v-html="searchHelpDocs"></div>
+          <strong class="SearchForm-helpTitle">Operatorer för frågespråk</strong><i v-if="helpToggled" class="fa fa-times SearchForm-closeHelp" @click="toggleHelp" />
+          <div class="SearchForm-helpContent" v-html="searchHelpDocs" />
         </div>
       </div>
     </div>
@@ -565,10 +616,6 @@ export default {
     .is-focused & {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
-  }
-
-  &-select {
-
   }
 
   &-inputLabel {

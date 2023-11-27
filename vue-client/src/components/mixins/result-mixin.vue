@@ -18,7 +18,11 @@ export default {
         this.$store.dispatch('setInsertData', duplicate);
         this.$router.push({ path: '/new' });
       } else {
-        this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('You need to be logged in to perform this action', this.user.settings.language, this.resources.i18n)}.` });
+        this.$store.dispatch(
+          'pushNotification',
+          { type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('You need to be logged in to perform this action', this.user.settings.language, this.resources.i18n)}.` },
+        );
       }
     },
   },

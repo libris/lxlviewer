@@ -1,4 +1,3 @@
-
 export function getRandomInt(min, max) {
   const iMin = Math.ceil(min);
   const iMax = Math.floor(max);

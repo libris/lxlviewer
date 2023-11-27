@@ -134,12 +134,12 @@ export function getRelatedRecords(queryPairs, apiPath) {
 
 export async function getDocument(uri, contentType = 'application/ld+json', embellished = true) {
   let translatedUri = translateAliasedUri(uri);
-  
+
   if (!uri.includes('embellished=')) {
     const query = `${uri.includes('?') ? '&' : '?'}embellished=${embellished}`;
     translatedUri = `${translatedUri}${query}`;
   }
-  
+
   const headers = new Headers();
   headers.append('Accept', contentType);
   const responseObject = {};

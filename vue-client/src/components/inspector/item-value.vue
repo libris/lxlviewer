@@ -3,8 +3,9 @@ import AutoSize from 'autosize';
 import { isArray, debounce, cloneDeep, get } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
-import ItemMixin from '@/components/mixins/item-mixin';
-import LensMixin from '@/components/mixins/lens-mixin';
+import { translatePhrase, labelByLang, convertResourceLink } from '@/utils/filters';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
 
 export default {
   name: 'item-value',
@@ -23,10 +24,6 @@ export default {
       default: false,
     },
     isRemovable: {
-      type: Boolean,
-      default: false,
-    },
-    showActionButtons: {
       type: Boolean,
       default: false,
     },
@@ -94,6 +91,9 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
+    labelByLang,
+    convertResourceLink,
     removeHighlight(event, active) {
       if (active) {
         let item = event.target;
@@ -172,53 +172,59 @@ export default {
 </script>
 
 <template>
-  <div class="ItemValue js-value" 
+  <div
+    class="ItemValue js-value"
     v-bind:class="{
-    'is-locked': isLocked,
-    'unlocked': !isLocked,
-    'is-removed': removed,
-    'is-diff-removed': diffRemoved && !diffAdded,
-    'is-diff-added': diffAdded && !diffRemoved,
-    'is-diff-modified': diffModified }"
+      'is-locked': isLocked,
+      unlocked: !isLocked,
+      'is-removed': removed,
+      'is-diff-removed': diffRemoved && !diffAdded,
+      'is-diff-added': diffAdded && !diffRemoved,
+      'is-diff-modified': diffModified,
+    }"
     :id="`formPath-${path}`">
-    <textarea class="ItemValue-input js-itemValueInput" 
-      rows="1" 
+    <textarea
+      class="ItemValue-input js-itemValueInput"
+      rows="1"
       v-model="value"
-      :aria-label="fieldKey | labelByLang"
+      :aria-label="labelByLang(fieldKey)"
       @focus="readyForSave(false)"
       @blur="update($event.target.value)"
       @keydown.exact="readyForSave(false)"
       @keydown.enter.prevent="handleEnter"
       v-if="!isLocked"
-      ref="textarea"></textarea>
-    <span class="ItemValue-text"
+      ref="textarea" />
+    <span
+      class="ItemValue-text"
       v-if="isLocked && !shouldLink">{{fieldValue}}</span>
-    <a class="ItemValue-text"
+    <a
+      class="ItemValue-text"
       v-if="isLocked && shouldLink"
-      :href="fieldValue | convertResourceLink" 
-      target="_blank" 
+      :href="convertResourceLink(fieldValue)"
+      target="_blank"
+      rel="noopener noreferrer"
       :title="`${fieldValue} (${newWindowText})`">
-        {{fieldValue}} 
-        <i class="fa fa-external-link" aria-hidden="true"></i>
+      {{fieldValue}}
+      <i class="fa fa-external-link" aria-hidden="true" />
     </a>
-    <div class="ItemValue-remover"
+    <div
+      class="ItemValue-remover"
       v-show="!isLocked && isRemovable"
       role="button"
-      :aria-label="'Remove' | translatePhrase"
+      :aria-label="translatePhrase('Remove')"
       v-on:click="removeThis()"
-      v-tooltip.top="translate('Remove')"
+      v-tooltip.top="translatePhrase('Remove')"
       @focus="removeHover = true, removeHighlight($event, true)"
       @blur="removeHover = false, removeHighlight($event, false)"
       @mouseover="removeHover = true, removeHighlight($event, true)"
       @mouseout="removeHover = false, removeHighlight($event, false)">
-      <i class="fa fa-trash-o icon icon--sm">
-      </i>
+      <i class="fa fa-trash-o icon icon--sm" />
     </div>
     <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
-      <i class="fa fa-trash-o icon--sm icon-removed"></i>
+      <i class="fa fa-trash-o icon--sm icon-removed" />
     </span>
     <span class="ItemLocal-history-icon" v-if="diffAdded && !diffRemoved">
-      <i class="fa fa-plus-circle icon--sm icon-added"></i>
+      <i class="fa fa-plus-circle icon--sm icon-added" />
     </span>
   </div>
 </template>
@@ -296,12 +302,10 @@ export default {
     font-size: 16px;
     font-size: 1.6rem;
     float: right;
-    display: inline-block;
     cursor: pointer;
     color: @grey;
     min-width: 20px;
     margin-left: 5px;
-
 
     &:hover {
       color: @black;

@@ -38,7 +38,7 @@ export default {
       switch (this.levelId) {
         case 'https://id.kb.se/marc/FullLevel':
           icon.label = 'NB';
-          icon.style = { 
+          icon.style = {
             color: '#61215C',
             'background-color': '#E1D4E0',
             ...smaller,
@@ -100,7 +100,8 @@ export default {
 </script>
 
 <template>
-  <div class="EncodingLevelIcon"
+  <div
+    class="EncodingLevelIcon"
     :style="icon.style"
     v-tooltip.top="tooltipText">
     <span class="EncodingLevelIcon-label">{{icon.label}}</span>

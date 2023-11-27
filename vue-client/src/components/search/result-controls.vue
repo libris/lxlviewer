@@ -1,12 +1,14 @@
 <script>
 import { mapGetters } from 'vuex';
+import { isMatch } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
-import Sort from '@/components/search/sort';
-import FilterBadge from '@/components/search/filter-badge';
-import LensMixin from '@/components/mixins/lens-mixin';
-import FacetMixin from '@/components/mixins/facet-mixin';
 import PropertyMappings from '@/resources/json/propertymappings.json';
+import { translatePhrase, asAppPath } from '@/utils/filters';
+import Sort from '@/components/search/sort.vue';
+import FilterBadge from '@/components/search/filter-badge.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import FacetMixin from '@/components/mixins/facet-mixin.vue';
 
 export default {
   name: 'result-controls',
@@ -39,17 +41,28 @@ export default {
       'status',
     ]),
     excludeFilters() {
-      const filtersToBeExcluded = PropertyMappings.flatMap(prop => Object.keys(prop.mappings));
+      const filtersToBeExcluded = PropertyMappings.flatMap((prop) => Object.keys(prop.mappings));
       return filtersToBeExcluded;
     },
+    baseFilters() {
+      return this.$route.params && this.$route.params.tool === 'changes'
+        ? [{'variable': '@type', 'object': {'@id': 'AdministrativeNotice'}}]
+        : [];
+    },
+    filteredFilters() {
+      return this.pageData.search.mapping
+        .filter((item) => this.excludeFilters.every((el) => el !== item.variable))
+        .filter((item) => !this.baseFilters.some((el) => isMatch(item, el)));
+    },
     filteredByHasItem() {
-      return this.$route.query.hasOwnProperty('@reverse.itemOf.heldBy.@id') && this.$route.query['@reverse.itemOf.heldBy.@id'] === `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
+      return this.$route.query.hasOwnProperty('@reverse.itemOf.heldBy.@id')
+      && this.$route.query['@reverse.itemOf.heldBy.@id'] === `https://libris.kb.se/library/${this.user.settings.activeSigel}`;
     },
     filters() {
       let filters = [];
       if (typeof this.pageData.search !== 'undefined') {
         // remove search-by filters, ISBN etc
-        filters = this.pageData.search.mapping.filter(item => this.excludeFilters.every(el => el !== item.variable))
+        filters = this.filteredFilters
           .map((item) => {
             let label = '';
 
@@ -57,16 +70,16 @@ export default {
               label = item.value;
             } else if (item.variable === 'p' && item.hasOwnProperty('predicate')) { // FIXME
               label = this.determineLabel(item.predicate);
-            } else if (item.hasOwnProperty('object')) { 
+            } else if (item.hasOwnProperty('object')) {
               label = this.getLabel(item.object);
             }
 
             let predicateLabel = '';
             if (item.variable !== 'p' && item.hasOwnProperty('predicate')) { // FIXME
-              const k = (item.variable === 'and-@type') || (item.variable === '@type') 
-                ? { '@id': '@type' } 
+              const k = (item.variable === 'and-@type') || (item.variable === '@type')
+                ? { '@id': '@type' }
                 : item.predicate;
-              
+
               predicateLabel = this.determineLabel(k);
             }
 
@@ -78,7 +91,7 @@ export default {
             };
           });
       }
-      const filtersWithoutWildcard = filters.filter(item => item.label !== '*'); // Remove any filters that's just a wildcard
+      const filtersWithoutWildcard = filters.filter((item) => item.label !== '*'); // Remove any filters that's just a wildcard
       return filtersWithoutWildcard;
     },
     queryText() {
@@ -92,7 +105,7 @@ export default {
       const limitFromUrl = StringUtil.getParamValueFromUrl(this.pageData.first['@id'], '_limit');
       if (limitFromUrl !== null) {
         return limitFromUrl;
-      } 
+      }
       return 20;
     },
     pageList() {
@@ -134,12 +147,20 @@ export default {
       return this.$route.query['@type'];
     },
     currentSortOrder() {
-      return this.$route.query._sort;
+      let sortOrder;
+      if (this.$route.query._sort) {
+        sortOrder = this.$route.query._sort;
+      } else if (this.isChangeView) {
+        sortOrder = '-meta.modified';
+      } else {
+        return '';
+      }
+      return sortOrder;
     },
     resultRange() {
       if (this.$route.params.perimeter === 'remote') {
         return `1-${this.pageData.itemsPerPage}`;
-      } 
+      }
       const first = this.pageData.itemOffset + 1;
       let last = this.pageData.itemOffset + this.pageData.itemsPerPage;
       if (last > this.pageData.totalItems) {
@@ -147,14 +168,23 @@ export default {
       }
       return `${first}-${last}`;
     },
+    isChangeView() {
+      return this.$route.params.tool === 'changes';
+    },
   },
+  emits: ['sortChange'],
   methods: {
+    translatePhrase,
+    asAppPath,
     toggleFilterByHasItem() {
       if (this.filteredByHasItem) {
         this.removeFilter('@reverse.itemOf.heldBy.@id');
       } else {
         this.addFilter('@reverse.itemOf.heldBy.@id', `https://libris.kb.se/library/${this.user.settings.activeSigel}`);
       }
+    },
+    appPath(path) {
+      return this.asAppPath(path, this.isChangeView);
     },
     addFilter(key, value) {
       const newQuery = Object.assign({}, this.$route.query);
@@ -178,19 +208,21 @@ export default {
       user.settings.resultListType = 'detailed';
       this.$store.dispatch('setUser', user);
     },
-    getNewResult(url) {
-      this.changeResultListStatus('loading', true);
-      const resultPromise = new Promise((resolve, reject) => {
-        httpUtil.get({ url: url, accept: 'application/ld+json' }).then((response) => {
-          window.history.pushState(response, 'unused', response['@id']);
-          resolve(response);
-        }, (error) => {
-          window.history.pushState({}, 'unused', url);
-          reject('Error searching...', error);
-        });
-      });
-      this.$dispatch('newresult', resultPromise);
-    },
+    // getNewResult(url) {
+    //   this.changeResultListStatus('loading', true);
+    //   const resultPromise = new Promise((resolve, reject) => {
+    //     httpUtil.get({ url: url, accept: 'application/ld+json' }).then((response) => {
+    //       // TODO: investigate if we need to do something here: https://router.vuejs.org/guide/migration/#Usage-of-history-state
+    //       window.history.pushState(response, 'unused', response['@id']);
+    //       resolve(response);
+    //     }, (error) => {
+    //       window.history.replaceState(window.history.state, 'unused', url)
+    //       window.history.pushState({}, 'unused', url);
+    //       reject('Error searching...', error);
+    //     });
+    //   });
+    //   this.$dispatch('newresult', resultPromise);
+    // },
     // clearAllFilters() { // introduce when we have 'type' radio buttons
     //   const currentQuery = Object.assign({}, this.$route.query);
     //   const clearedQuery = pickBy(currentQuery, (value, key) => this.filters.every(el => el.variable !== key));
@@ -199,7 +231,7 @@ export default {
   },
   components: {
     sort: Sort,
-    FilterBadge,
+    FilterBadge
   },
 };
 </script>
@@ -208,75 +240,91 @@ export default {
   <div class="ResultControls" v-if="!(!showDetails && pageData.totalItems < limit)">
     <div class="ResultControls-searchDetails" v-if="showDetails">
       <p class="ResultControls-resultText" id="resultDescr">
-        <span v-if="pageData.totalItems > 0"> {{['Showing', resultRange, 'of'] | translatePhrase }} </span>
-        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{pageData.totalItems}} {{'Hits' | translatePhrase | lowercase}}</span>
-        <span v-else class="ResultControls-numTotal">{{'No hits' | translatePhrase }}</span>
-        
-        <span v-if="$route.params.perimeter === 'remote' && status.workingRemoteDatabases.length > 0">{{ 'from' | translatePhrase }} <span v-for="(db, index) in status.workingRemoteDatabases" :key="index"><span class="ResultControls-dbLabel">{{ db }}</span>{{ index !== status.workingRemoteDatabases.length - 1 ? ', ' : '' }}</span></span>
+        <span v-if="pageData.totalItems > 0"> {{ translatePhrase(['Showing', resultRange, 'of', '']) }} </span>
+        <span v-if="pageData.totalItems > 0" class="ResultControls-numTotal"> {{ pageData.totalItems }} {{ translatePhrase('Hits').toLowerCase() }}</span>
+        <span v-else class="ResultControls-numTotal">{{ translatePhrase('No hits') }}</span>
+
+        <span v-if="$route.params.perimeter === 'remote' && status.workingRemoteDatabases.length > 0">{{ translatePhrase('from') }} <span v-for="(db, index) in status.workingRemoteDatabases" :key="index"><span class="ResultControls-dbLabel">{{ db }}</span>{{ index !== status.workingRemoteDatabases.length - 1 ? ', ' : '' }}</span></span>
       </p>
       <p class="ResultControls-resultText" v-if="$route.params.perimeter === 'remote' && pageData.totalItems > limit">
-        {{ 'The search gave more results than can be displayed' | translatePhrase }}.
+        {{ translatePhrase('The search gave more results than can be displayed') }}.
       </p>
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
-        <sort 
+        <sort
           v-if="searchedTypes && $route.params.perimeter != 'remote'"
-          :currentSort="currentSortOrder ? currentSortOrder : ''"
+          :currentSort="currentSortOrder"
           :common-sort-fallback="true"
           :recordTypes="searchedTypes"
-          @change="$emit('sortChange', $event)"/>
+          @change="$emit('sortChange', $event)" />
         <div class="ResultControls-listTypes">
-          <button class="ResultControls-listType icon icon--md"
-            v-on:click="setFull()" 
-            v-bind:class="{'is-active': user.settings.resultListType === 'detailed' }"
-            :title="'Detailed view' | translatePhrase">
-            <i class="fa fa-th-list"></i>
+          <button
+            class="ResultControls-listType icon icon--md"
+            v-on:click="setFull()"
+            v-bind:class="{ 'is-active': user.settings.resultListType === 'detailed' }"
+            :title="translatePhrase('Detailed view')">
+            <i class="fa fa-th-list" />
           </button>
-          <button class="ResultControls-listType icon icon--md" 
-            v-on:click="setCompact()" 
-            v-bind:class="{'is-active': user.settings.resultListType === 'compact' }"
-            :title="'Compact view' | translatePhrase">
-            <i class="fa fa-list"></i>
+          <button
+            class="ResultControls-listType icon icon--md"
+            v-on:click="setCompact()"
+            v-bind:class="{ 'is-active': user.settings.resultListType === 'compact' }"
+            :title="translatePhrase('Compact view')">
+            <i class="fa fa-list" />
           </button>
         </div>
       </div>
     </div>
     <div class="ResultControls-secondary">
       <div class="ResultControls-filterWrapper" v-if="showDetails && filters.length > 0">
-        <FilterBadge class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index" :filter="filter" />
+        <FilterBadge class="ResultControls-filterBadge" v-for="(filter, index) in filters" :key="index" :filter="filter" :is-change-view="isChangeView" />
       </div>
     </div>
     <nav v-if="hasPagination && showPages">
       <ul class="ResultControls-pagList">
-        <li class="ResultControls-pagItem" 
+        <li
+          class="ResultControls-pagItem"
           v-bind:class="{ 'is-disabled': !pageData.first || pageData['@id'] === pageData.first['@id'] }">
-          <router-link class="ResultControls-pagLink"  v-if="pageData.first" :to="pageData.first['@id'] | asAppPath">{{'First' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.first">{{'First' | translatePhrase}}</a>
+          <router-link class="ResultControls-pagLink" v-if="pageData.first" :to="appPath(pageData.first['@id'])">{{ translatePhrase('First') }}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.first">{{ translatePhrase('First') }}</a>
         </li>
-        <li class="ResultControls-pagItem" 
+        <li
+          class="ResultControls-pagItem"
           v-bind:class="{ 'is-disabled': !pageData.previous }">
-          <router-link class="ResultControls-pagLink" 
-            v-if="pageData.previous" 
-            :to="pageData.previous['@id'] | asAppPath">{{'Previous' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.previous">{{'Previous' | translatePhrase}}</a>
+          <router-link
+            class="ResultControls-pagLink"
+            v-if="pageData.previous"
+            :to="appPath(pageData.previous['@id'])">{{ translatePhrase('Previous') }}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.previous">{{ translatePhrase('Previous') }}</a>
         </li>
-        <li class="ResultControls-pagItem" 
-          v-bind:class="{ 'is-active': page.active }" v-for="page in pageList" :key="page.link">
+        <li
+          class="ResultControls-pagItem"
+          v-bind:class="{ 'is-active': page.active }"
+          v-for="page in pageList"
+          :key="page.link">
           <span class="ResultControls-pagDecor" v-if="!page.link">...</span>
-          <router-link class="ResultControls-pagLink" 
-            :to="page.link | asAppPath" v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
+          <router-link
+            class="ResultControls-pagLink"
+            :to="appPath(page.link)"
+            v-if="!page.active && page.link">{{page.pageLabel}}</router-link>
           <a class="ResultControls-pagLink" v-if="page.active">{{page.pageLabel}}</a>
         </li>
-        <li class="ResultControls-pagItem" 
+        <li
+          class="ResultControls-pagItem"
           v-bind:class="{ 'is-disabled': !pageData.next }">
-          <router-link class="ResultControls-pagLink" 
-            v-if="pageData.next" :to="pageData.next['@id'] | asAppPath">{{'Next' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.next">{{'Next' | translatePhrase}}</a>
+          <router-link
+            class="ResultControls-pagLink"
+            v-if="pageData.next"
+            :to="appPath(pageData.next['@id'])">{{ translatePhrase('Next') }}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.next">{{ translatePhrase('Next') }}</a>
         </li>
-        <li class="ResultControls-pagItem"
+        <li
+          class="ResultControls-pagItem"
           v-bind:class="{ 'is-disabled': !pageData.last || pageData['@id'] === pageData.last['@id'] }">
-          <router-link class="ResultControls-pagLink" 
-            v-if="pageData.last" :to="pageData.last['@id'] | asAppPath">{{'Last' | translatePhrase}}</router-link>
-          <a class="ResultControls-pagLink" v-if="!pageData.last">{{'Last' | translatePhrase}}</a>
+          <router-link
+            class="ResultControls-pagLink"
+            v-if="pageData.last"
+            :to="appPath(pageData.last['@id'])">{{ translatePhrase('Last') }}</router-link>
+          <a class="ResultControls-pagLink" v-if="!pageData.last">{{ translatePhrase('Last') }}</a>
         </li>
       </ul>
     </nav>
@@ -303,10 +351,6 @@ export default {
     }
   }
 
-  &-resultDescr {
-
-  }
-
   &-resultText {
     font-weight: 600;
     padding-right: 20px;
@@ -329,7 +373,7 @@ export default {
   &-listType {
     background-color: transparent;
 
-    &:hover, 
+    &:hover,
     &:focus {
       background-color: transparent;
       color: @grey-darker;
@@ -449,7 +493,7 @@ export default {
     text-transform: uppercase;
     transition: color 0.2s ease;
 
-    &:hover, 
+    &:hover,
     &:focus {
       color: @brand-primary;
       text-decoration: none;

@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import { labelByLang, asAppPath } from '@/utils/filters';
 
 export default {
   name: 'FilterBadge',
@@ -8,6 +9,10 @@ export default {
       type: Object,
       default: null,
     },
+    isChangeView: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -15,6 +20,8 @@ export default {
     };
   },
   methods: {
+    labelByLang,
+    asAppPath,
   },
   computed: {
     ...mapGetters([
@@ -39,12 +46,12 @@ export default {
 
 <template>
   <div class="FilterBadge">
-    <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}:</span>
-    <span>{{ filter.label | labelByLang }}</span>
+    <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}: </span>
+    <span>{{ labelByLang(filter.label) }}</span>
     <router-link
-      :to="filter.up | asAppPath">
+      :to="asAppPath(filter.up, isChangeView)">
       <i class="fa fa-fw fa-close icon"
-        ></i>
+      />
     </router-link>
   </div>
 </template>

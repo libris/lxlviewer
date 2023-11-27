@@ -4,7 +4,6 @@
   It's responsible for its own data, and dispatches all changes to the form component.
 */
 import { cloneDeep, differenceWith, get, isArray, isEqual, isObject, isPlainObject } from 'lodash-es';
-import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -12,26 +11,27 @@ import * as DisplayUtil from 'lxljs/display';
 import { getContextValue } from 'lxljs/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
-import EntityAdder from './entity-adder';
-import ItemEntity from './item-entity';
-import ItemValue from './item-value';
-import ItemLocal from './item-local';
-import ItemError from './item-error';
-import ItemVocab from './item-vocab';
-import ItemType from './item-type';
-import ItemSibling from './item-sibling';
-import ItemBoolean from './item-boolean';
-import ItemNumeric from './item-numeric';
-import ItemGrouped from './item-grouped';
-import ItemShelfControlNumber from './item-shelf-control-number';
-import ItemNextShelfControlNumber from './item-next-shelf-control-number';
-import ItemBylang from './item-bylang';
-import LodashProxiesMixin from '../mixins/lodash-proxies-mixin';
-import LanguageMixin from '../mixins/language-mixin';
+import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
+import EntityAdder from './entity-adder.vue';
+import ItemEntity from './item-entity.vue';
+import ItemValue from './item-value.vue';
+import ItemLocal from './item-local.vue';
+import ItemError from './item-error.vue';
+import ItemVocab from './item-vocab.vue';
+import ItemType from './item-type.vue';
+import ItemSibling from './item-sibling.vue';
+import ItemBoolean from './item-boolean.vue';
+import ItemNumeric from './item-numeric.vue';
+import ItemGrouped from './item-grouped.vue';
+import ItemShelfControlNumber from './item-shelf-control-number.vue';
+import ItemNextShelfControlNumber from './item-next-shelf-control-number.vue';
+import ItemBylang from './item-bylang.vue';
+import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
+import LanguageMixin from '../mixins/language-mixin.vue';
 
 export default {
   name: 'field',
-  mixins: [clickaway, LodashProxiesMixin, LanguageMixin],
+  mixins: [LodashProxiesMixin, LanguageMixin],
   props: {
     parentKey: {
       type: String,
@@ -48,6 +48,10 @@ export default {
     parentAcceptedTypes: {
       type: Array,
       default: () => [],
+    },
+    key: {
+      type: String,
+      default: '',
     },
     fieldKey: {
       type: String,
@@ -113,10 +117,6 @@ export default {
       type: String,
       default: '',
     },
-    showActionButtons: {
-      type: Boolean,
-      default: false,
-    },
     isExpanded: {
       type: Boolean,
       default: false,
@@ -129,12 +129,11 @@ export default {
   data() {
     return {
       activeModal: false,
-      shouldShowActionButtons: false,
       removeHover: false,
       pasteHover: false,
       foundChip: false,
       removed: false,
-      uniqueIds: [],      
+      uniqueIds: [],
     };
   },
   components: {
@@ -256,20 +255,20 @@ export default {
     },
     range() {
       const fetchedRange = VocabUtil.getRange(
-        this.fieldKey, 
-        this.resources.vocab, 
-        this.resources.context, 
+        this.fieldKey,
+        this.resources.vocab,
+        this.resources.context,
         this.resources.vocabClasses,
-      ).map(item => StringUtil.getCompactUri(item, this.resources.context));
+      ).map((item) => StringUtil.getCompactUri(item, this.resources.context));
       return fetchedRange;
     },
     rangeFull() {
       const fetchedRange = VocabUtil.getRangeFull(
-        this.fieldKey, 
-        this.resources.vocab, 
-        this.resources.context, 
+        this.fieldKey,
+        this.resources.vocab,
+        this.resources.context,
         this.resources.vocabClasses,
-      ).map(item => StringUtil.getCompactUri(item, this.resources.context));
+      ).map((item) => StringUtil.getCompactUri(item, this.resources.context));
       return fetchedRange;
     },
     allSearchTypes() {
@@ -280,8 +279,8 @@ export default {
     },
     archType() {
       return VocabUtil.getRecordType(
-        this.entityType, 
-        this.resources.vocab, 
+        this.entityType,
+        this.resources.vocab,
         this.resources.context,
       );
     },
@@ -299,12 +298,6 @@ export default {
         return 'Concept type';
       }
       return 'Type';
-    },
-    actionButtonsShown() {
-      if (this.shouldShowActionButtons || this.showActionButtons) {
-        return true;
-      } 
-      return false;
     },
     ...mapGetters([
       'inspector',
@@ -354,9 +347,9 @@ export default {
       if (this.keyAsVocabProperty && this.keyAsVocabProperty.commentByLang) {
         if (this.keyAsVocabProperty.commentByLang[this.user.settings.language]) {
           return this.keyAsVocabProperty.commentByLang[this.user.settings.language];
-        } 
+        }
         return this.keyAsVocabProperty.commentByLang[0];
-      } 
+      }
       return '';
     },
     valueAsArray() {
@@ -451,7 +444,7 @@ export default {
     embellished() {
       const embellished = this.inspector.status.embellished;
       if (embellished.length > 0) {
-        return embellished.some(el => el.path === this.path);
+        return embellished.some((el) => el.path === this.path);
       } return false;
     },
     fieldRdfType() {
@@ -459,6 +452,9 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
+    labelByLang,
+    capitalize,
     onLabelClick() {
       this.$store.dispatch('pushInspectorEvent', {
         name: 'field-label-clicked',
@@ -488,8 +484,8 @@ export default {
       if (currentValue.length) {
         index = `[${currentValue.length - 1}]`;
       }
-      this.$store.dispatch('setInspectorStatusValue', { 
-        property: 'lastAdded', 
+      this.$store.dispatch('setInspectorStatusValue', {
+        property: 'lastAdded',
         value: `${this.path}${index}`,
       });
       this.$store.dispatch('updateInspectorData', {
@@ -518,7 +514,8 @@ export default {
     removeThis() {
       let approved = true;
       if (this.warnBeforeRemove) {
-        const confString = `${StringUtil.getUiPhraseByLang('Are you sure you want to remove the field', this.user.settings.language, this.resources.i18n)} "${StringUtil.getLabelByLang(this.fieldKey, this.user.settings.language, this.resources)}"?`;
+        const confString = `${StringUtil.getUiPhraseByLang('Are you sure you want to remove the field', this.user.settings.language, this.resources.i18n)} 
+        "${StringUtil.getLabelByLang(this.fieldKey, this.user.settings.language, this.resources)}"?`;
         approved = window.confirm(confString);
       }
       if (approved) {
@@ -546,7 +543,7 @@ export default {
         return 'grouped';
       }
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type') && !this.isLangMap) {
-        return 'error'; 
+        return 'error';
       }
       if (typeof o === 'boolean') {
         return 'boolean';
@@ -572,7 +569,7 @@ export default {
       if (this.isPlainObject(o) && !this.isLinked(o)) {
         return 'local';
       }
-      if (this.range && this.range.length > 0 && this.range.every(r => Object.keys(VocabUtil.XSD_NUMERIC_TYPES).includes(r))) {
+      if (this.range && this.range.length > 0 && this.range.every((r) => Object.keys(VocabUtil.XSD_NUMERIC_TYPES).includes(r))) {
         return 'numeric';
       }
       if (!this.isPlainObject(o) && !this.isLinked(o)) {
@@ -587,7 +584,7 @@ export default {
       if (typeof o === 'undefined') {
         throw new Error('Cannot check link status of undefined object.');
       }
-      if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {        
+      if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
         return true;
       }
       return false;
@@ -617,14 +614,6 @@ export default {
       }
       return false;
     },
-    handleMouseEnter() {
-      this.shouldShowActionButtons = true;
-    },
-    handleMouseLeave() {
-      if (!this.isInner) {
-        this.shouldShowActionButtons = false;
-      }
-    },
     highLightLastAdded() {
       if (this.isLastAdded === true) {
         if (this.fieldValue === null || (isArray(this.fieldValue) && this.fieldValue.length === 0)) {
@@ -647,7 +636,7 @@ export default {
       }
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
   },
   mounted() {
@@ -664,11 +653,12 @@ export default {
 </script>
 
 <template>
-  <li class="Field js-field" 
+  <li
+    class="Field js-field"
     :id="`formPath-${path}`"
     v-bind:class="{
       'Field--inner': isInner,
-      'is-lastAdded': isLastAdded, 
+      'is-lastAdded': isLastAdded,
       'is-removed': removed,
       'is-diff-added': diffAdded && !diffRemoved,
       'is-diff-removed': diffRemoved && !diffAdded,
@@ -680,103 +670,106 @@ export default {
       'is-grouped': isGrouped,
       'has-failed-validations': failedValidations.length > 0,
     }"
-    @mouseover="handleMouseEnter()" 
-    @mouseleave="handleMouseLeave()"
-      v-if="!this.isHidden">
+    v-if="!this.isHidden">
 
-    <div class="Field-labelContainer" 
-      :class="{'is-wide': inspector.status.editing || user.settings.appTech, 'is-hovered': shouldShowActionButtons}"
-      v-if="showKey && !isInner" >
-      <div class="Field-labelWrapper" :class="{'sticky': !diff }">
+    <div
+      class="Field-labelContainer"
+      :class="{ 'is-wide': inspector.status.editing || user.settings.appTech }"
+      v-if="showKey && !isInner">
+      <div class="Field-labelWrapper" :class="{ sticky: !diff }">
         <div v-if="!isLocked" class="Field-actions">
-          <div class="Field-action Field-remove" 
-            v-show="!locked && isRemovable" 
-            :class="{'disabled': activeModal}">
-            <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
+          <div
+            class="Field-action Field-remove"
+            v-show="!locked && isRemovable"
+            :class="{ disabled: activeModal }">
+            <i
+              class="fa fa-trash-o fa-fw action-button icon icon--sm"
               role="button"
-              :aria-label="'Remove' | translatePhrase"
+              :aria-label="translatePhrase('Remove')"
               tabindex="0"
               v-on:click="removeThis(true)"
               @keyup.enter="removeThis(true)"
-              v-tooltip.top="translate('Remove')"
-              @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
+              v-tooltip.top="translatePhrase('Remove')"
+              @focus="removeHover = true, highlight(true, $event, 'is-removeable')"
               @blur="removeHover = false, highlight(false, $event, 'is-removeable')"
-              @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
-              @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
-            </i>
+              @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')"
+              @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')" />
           </div>
-          <entity-adder class="Field-entityAdder Field-action"
+          <entity-adder
+            class="Field-entityAdder Field-action"
             v-if="!locked && (isRepeatable || isEmptyObject || isLangMap)"
             ref="entityAdder"
-            :field-key="fieldKey" 
+            :field-key="fieldKey"
             :path="path"
-            :already-added="linkedIds" 
-            :compositional="isCompositional" 
-            :entity-type="entityType" 
+            :already-added="linkedIds"
+            :compositional="isCompositional"
+            :entity-type="entityType"
             :range-full="rangeFull"
             :range="range"
             :all-values-from="allValuesFrom"
             :some-values-from="someValuesFrom"
             :all-search-types="allSearchTypes"
-            :property-types="propertyTypes" 
-            :show-action-buttons="actionButtonsShown" 
-            :active="activeModal" 
+            :property-types="propertyTypes"
+            :active="activeModal"
             :is-placeholder="false"
             :is-language="this.isLangMap || this.isLangTaggable"
             @addEmptyLanguageItem="addEmpty()"
-            :value-list="valueAsArray">
-          </entity-adder>
-          <div v-else class="Field-action placeholder"></div> 
+            :value-list="valueAsArray" />
+          <div v-else class="Field-action placeholder" />
 
-          <div class="Field-comment" v-if="propertyComment && !locked" >
-            <i class="fa fa-question-circle fa-fw icon icon--sm"></i>
+          <div class="Field-comment" v-if="propertyComment && !locked">
+            <i class="fa fa-question-circle fa-fw icon icon--sm" />
             <span class="Field-commentText">{{ propertyComment }}</span>
           </div>
-          <div v-else class="Field-action placeholder"></div> 
+          <div v-else class="Field-action placeholder" />
 
-          <div class="Field-action Field-clipboardPaster"
-            v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
+          <div
+            class="Field-action Field-clipboardPaster"
+            v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject"
             ref="clipboardPaster">
-            <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
+            <i
+              tabindex="0"
+              class="fa fa-paste fa-fw action-button icon icon--sm"
               role="button"
-              :aria-label="'Paste entity' | translatePhrase"
+              :aria-label="translatePhrase('Paste entity')"
               @click="pasteClipboardItem"
               @keyup.enter="pasteClipboardItem"
-              v-tooltip.top="translate('Paste entity')"
-              @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
+              v-tooltip.top="translatePhrase('Paste entity')"
+              @focus="pasteHover = true, highlight(true, $event, 'is-marked')"
               @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
-              @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
-              @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
-            </i>
+              @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')"
+              @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')" />
           </div>
         </div>
         <div class="Field-label-history-icon" v-if="diffRemoved && !diffAdded">
-          <i class="fa fa-trash-o icon--sm icon-removed"></i>
+          <i class="fa fa-trash-o icon--sm icon-removed" />
         </div>
         <div class="Field-label-history-icon" v-if="diffAdded && !diffRemoved">
-          <i class="fa fa-plus-circle icon--sm icon-added"></i>
+          <i class="fa fa-plus-circle icon--sm icon-added" />
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
-          <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-          <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" 
-                :title="fieldKey" 
-                @click="onLabelClick">
-            {{ (fieldRdfType || overrideLabel || fieldKey) | labelByLang | capitalize }}
+          <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
+          <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
+          <span
+            v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff"
+            :title="fieldKey"
+            @click="onLabelClick">
+            {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
           </span>
-          <span class="Field-navigateHistory" 
-                v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" 
-                @click="onLabelClick"
-                v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
-            {{ (fieldRdfType || overrideLabel || fieldKey) | labelByLang | capitalize }}
+          <span
+            class="Field-navigateHistory"
+            v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff"
+            @click="onLabelClick"
+            v-tooltip.top="{ content: translatePhrase('Show latest change'), delay: { show: 300, hide: 0 } }">
+            {{ capitalize(labelByLang((fieldRdfType || overrideLabel || fieldKey))) }}
           </span>
           <div class="Field-reverse uppercaseHeading--secondary" v-if="isReverseProperty && !isLocked">
-            <span :title="fieldKey">{{ 'Incoming links' | translatePhrase | capitalize }}</span>          
+            <span :title="fieldKey">{{ capitalize(translatePhrase('Incoming links')) }}</span>
             <div class="Field-comment">
-              <i class="fa fa-question-circle-o icon icon--sm"></i>
-              <span class="Field-commentText">{{ 'Non editable incoming link' | translatePhrase }}.
+              <i class="fa fa-question-circle-o icon icon--sm" />
+              <span class="Field-commentText">{{ translatePhrase('Non editable incoming link') }}.
                 <br />
-                <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ 'Read more about incoming links' | translatePhrase }}.</a>
+                <a href="https://libris.kb.se/katalogisering/help/entity-search" target="_blank">{{ translatePhrase('Read more about incoming links') }}.</a>
               </span>
             </div>
           </div>
@@ -785,119 +778,126 @@ export default {
       <code class="path-code" v-show="user.settings.appTech && !isInner">{{path}}</code>
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
-      <span v-show="fieldKey === '@id'">{{ 'ID' | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey === '@type'">{{ entityTypeArchLabel | translatePhrase | capitalize }}</span>
-      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ fieldKey | labelByLang | capitalize }}</span>
-      <span class="Field-navigateHistory" v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff" @click="onLabelClick"
-            v-tooltip.top="{content: translate('Show latest change'), delay: { show: 300, hide: 0 }}">
-        {{ fieldKey | labelByLang | capitalize }}
+      <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
+      <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
+      <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ capitalize(labelByLang(fieldKey)) }}</span>
+      <span
+        class="Field-navigateHistory"
+        v-show="fieldKey !== '@id' && fieldKey !== '@type' && diff"
+        @click="onLabelClick"
+        v-tooltip.top="{ content: translatePhrase('Show latest change'), delay: { show: 300, hide: 0 } }">
+        {{ capitalize(labelByLang(fieldKey)) }}
       </span>
       <!-- Is inner -->
       <div class="Field-actions is-nested">
-        <div class="Field-action Field-comment" v-if="propertyComment && !locked" >
-          <i class="fa fa-question-circle fa-fw icon icon--sm"></i>
+        <div class="Field-action Field-comment" v-if="propertyComment && !locked">
+          <i class="fa fa-question-circle fa-fw icon icon--sm" />
           <span class="Field-commentText">{{ propertyComment }}</span>
         </div>
-        <entity-adder class="Field-action Field-entityAdder"
+        <entity-adder
+          class="Field-action Field-entityAdder"
           v-if="!locked && (isRepeatable || isEmptyObject || isLangMap)"
           ref="entityAdder"
-          :field-key="fieldKey" 
-          :path="path" 
-          :already-added="linkedIds" 
-          :compositional="isCompositional" 
-          :entity-type="entityType" 
+          :field-key="fieldKey"
+          :path="path"
+          :already-added="linkedIds"
+          :compositional="isCompositional"
+          :entity-type="entityType"
           :range-full="rangeFull"
           :range="range"
           :all-values-from="allValuesFrom"
           :some-values-from="someValuesFrom"
           :all-search-types="allSearchTypes"
-          :property-types="propertyTypes" 
-          :show-action-buttons="actionButtonsShown" 
-          :active="activeModal" 
+          :property-types="propertyTypes"
+          :active="activeModal"
           :is-placeholder="true"
           :is-language="this.isLangMap || this.isLangTaggable"
           @addEmptyLanguageItem="addEmpty()"
-          :value-list="valueAsArray">
-        </entity-adder>
+          :value-list="valueAsArray" />
 
-        <div class="Field-action Field-remove" 
-          v-show="!locked && isRemovable" 
-          :class="{'disabled': activeModal}">
-          <i class="fa fa-trash-o fa-fw action-button icon icon--sm"
+        <div
+          class="Field-action Field-remove"
+          v-show="!locked && isRemovable"
+          :class="{ disabled: activeModal }">
+          <i
+            class="fa fa-trash-o fa-fw action-button icon icon--sm"
             tabindex="0"
             role="button"
-            :aria-label="'Remove' | translatePhrase"
+            :aria-label="translatePhrase('Remove')"
             v-on:click="removeThis(true)"
-            v-tooltip.top="translate('Remove')"
+            v-tooltip.top="translatePhrase('Remove')"
             @keyup.enter="removeThis(true)"
-            @focus="removeHover = true, highlight(true, $event, 'is-removeable')" 
-            @blur="removeHover = false, highlight(false, $event, 'is-removeable')" 
-            @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')" 
-            @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')">
-          </i>
+            @focus="removeHover = true, highlight(true, $event, 'is-removeable')"
+            @blur="removeHover = false, highlight(false, $event, 'is-removeable')"
+            @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')"
+            @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')" />
         </div>
 
-        <div class="Field-action Field-clipboardPaster"
-          v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject" 
+        <div
+          class="Field-action Field-clipboardPaster"
+          v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject"
           ref="clipboardPaster">
-          <i tabindex="0" class="fa fa-paste fa-fw action-button icon icon--sm"
+          <i
+            tabindex="0"
+            class="fa fa-paste fa-fw action-button icon icon--sm"
             role="button"
-            :aria-label="'Paste entity' | translatePhrase"
+            :aria-label="translatePhrase('Paste entity')"
             @click="pasteClipboardItem"
             @keyup.enter="pasteClipboardItem"
-            v-tooltip.top="translate('Paste entity')"
-            @focus="pasteHover = true, highlight(true, $event, 'is-marked')" 
+            v-tooltip.top="translatePhrase('Paste entity')"
+            @focus="pasteHover = true, highlight(true, $event, 'is-marked')"
             @blur="pasteHover = false, highlight(false, $event, 'is-marked')"
-            @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')" 
-            @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')">
-          </i>
+            @mouseover="pasteHover = true, highlight(true, $event, 'is-marked')"
+            @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')" />
         </div>
       </div>
       <div class="Field-history-icon" v-if="diffRemoved && !diffAdded">
-        <i class="fa fa-trash-o icon--sm icon-removed"></i>
+        <i class="fa fa-trash-o icon--sm icon-removed" />
       </div>
       <div class="Field-history-icon" v-if="diffAdded && !diffRemoved">
-        <i class="fa fa-plus-circle icon--sm icon-added"></i>
+        <i class="fa fa-plus-circle icon--sm icon-added" />
       </div>
-      <!-- {{ key | labelByLang | capitalize }} -->
     </div>
 
     <pre class="path-code" v-show="user.settings.appTech && isInner">{{path}}</pre>
-    
-    <div class="Field-content FieldContent"
-    :class="{ 'is-locked': locked}"
-    v-if="fieldKey === '@type'">
-      <div class="Field-contentItem" 
-        v-for="(item, index) in valueAsArray" 
+
+    <div
+      class="Field-content FieldContent"
+      :class="{ 'is-locked': locked }"
+      v-if="fieldKey === '@type'">
+      <div
+        class="Field-contentItem"
+        v-for="(item, index) in valueAsArray"
         :key="index"
-        v-bind:class="{'is-entityContent': getDatatype(item) == 'entity'}">
+        v-bind:class="{ 'is-entityContent': getDatatype(item) == 'entity' }">
         <item-type
-          :is-locked="locked" 
+          :is-locked="locked"
           :container-accepted-types="parentAcceptedTypes"
-          :field-key="fieldKey" 
-          :field-value="fieldValue" 
-          :entity-type="entityType" 
+          :field-key="fieldKey"
+          :field-value="fieldValue"
+          :entity-type="entityType"
           :parent-path="path" />
       </div>
     </div>
 
-    <div class="Field-content FieldContent" 
-      v-bind:class="{ 'is-locked': locked}"
+    <div
+      class="Field-content FieldContent"
+      v-bind:class="{ 'is-locked': locked }"
       v-if="fieldKey !== '@type' && isObjectArray">
       <div class="Field-contentItem">
 
-      <item-bylang
-        v-if="getDatatype(firstInValueAsArray) == 'language'"
-        :is-locked="locked"
-        :is-first-field="isFirstField"
-        :field-value="valueAsArray"
-        :field-key="fieldKey"
-        :parent-path="path"
-        :diff="diff"
-        :is-expanded="isExpanded">
-      </item-bylang>
+        <item-bylang
+          v-if="getDatatype(firstInValueAsArray) == 'language'"
+          :is-locked="locked"
+          :is-first-field="isFirstField"
+          :field-value="valueAsArray"
+          :field-key="fieldKey"
+          :parent-path="path"
+          :diff="diff"
+          :is-expanded="isExpanded" />
       </div>
-      <div class="Field-contentItem"
+      <div
+        class="Field-contentItem"
         v-for="(item, index) in valueAsArray"
         :key="index"
         v-bind:class="{
@@ -905,70 +905,69 @@ export default {
           'is-new': newDiffValues.indexOf(item) > -1,
         }">
 
-        <item-error 
-          v-if="getDatatype(item) == 'error'" 
-          :field-key="fieldKey" 
+        <item-error
+          v-if="getDatatype(item) == 'error'"
+          :field-key="fieldKey"
           :parent-path="path"
-          :index="index" 
+          :index="index"
           :diff="diff"
-          :item="item"></item-error>
+          :item="item" />
 
-        <item-grouped 
+        <item-grouped
           v-if="getDatatype(item) == 'grouped'"
-          :field-key="fieldKey" 
+          :field-key="fieldKey"
           :is-card="isCard"
-          :entity-type="entityType" 
+          :entity-type="entityType"
           :parent-path="path"
-          :index="index" 
+          :index="index"
           :diff="diff"
-          :item="item"></item-grouped>
+          :item="item" />
 
         <!-- Other linked resources -->
         <item-vocab
           v-if="getDatatype(item) == 'vocab'"
           :as-dropdown="fieldKey !== 'encodingLevel'"
-          :is-locked="locked" 
-          :field-key="fieldKey" 
+          :is-locked="locked"
+          :field-key="fieldKey"
           :parent-range="rangeFull"
-          :value="item" 
-          :entity-type="entityType" 
-          :index="index" 
+          :value="item"
+          :entity-type="entityType"
+          :index="index"
           :diff="diff"
-          :parent-path="path"></item-vocab>
+          :parent-path="path" />
 
         <!-- Other linked entities -->
-        <item-entity 
-          v-if="getDatatype(item) == 'entity'" 
-          :is-locked="locked" 
+        <item-entity
+          v-if="getDatatype(item) == 'entity'"
+          :is-locked="locked"
           :is-card="isCard"
           :is-expanded="isCard"
           :exclude-properties="isReverseProperty ? [reverseProperty] : []"
-          :item="item" 
-          :field-key="fieldKey" 
-          :index="index" 
+          :item="item"
+          :field-key="fieldKey"
+          :index="index"
           :diff="diff"
-          :parent-path="path"></item-entity>
+          :parent-path="path" />
 
         <!-- Not linked, local child objects -->
         <item-local
           :data-parent="path"
-          v-if="getDatatype(item) == 'local'" 
-          :is-locked="locked" 
-          :entity-type="entityType" 
+          v-if="getDatatype(item) == 'local'"
+          :is-locked="locked"
+          :entity-type="entityType"
           :is-compositional="isCompositional"
           :all-values-from="allValuesFrom"
           :some-values-from="someValuesFrom"
           :all-search-types="allSearchTypes"
           :range="range"
           :range-full="rangeFull"
-          :item="item" 
-          :field-key="fieldKey" 
-          :index="index" 
-          :parent-path="path" 
-          :in-array="valueIsArray" 
+          :item="item"
+          :field-key="fieldKey"
+          :index="index"
+          :parent-path="path"
+          :in-array="valueIsArray"
           :diff="diff"
-          :should-expand="expandChildren || embellished"
-          :show-action-buttons="actionButtonsShown"></item-local>
+          :should-expand="expandChildren || embellished" />
 
         <item-sibling
           v-if="getDatatype(item) == 'sibling'"
@@ -985,15 +984,14 @@ export default {
           :index="index"
           :in-array="valueIsArray"
           :diff="diff"
-          :show-action-buttons="actionButtonsShown"
           :should-expand="expandChildren || embellished"
-          :parent-path="path"></item-sibling>
+          :parent-path="path" />
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
 
     <div
-      class="Field-content is-endOfTree js-endOfTree" 
+      class="Field-content is-endOfTree js-endOfTree"
       v-bind:class="{ 'is-locked': locked }"
       v-if="fieldKey !== '@type' && !isObjectArray"
     >
@@ -1006,35 +1004,36 @@ export default {
           :field-key="fieldKey"
           :parent-path="path"
           :diff="diff"
-          :is-expanded="isExpanded">
-        </item-bylang>
+          :is-expanded="isExpanded" />
       </div>
-            
-      <div class="Field-contentItem"
+
+      <div
+        class="Field-contentItem"
         v-for="(item, index) in valueAsArray"
         :key="index">
 
         <!-- Other linked resources -->
-        <item-vocab 
-          v-if="getDatatype(item) == 'vocab'" 
+        <item-vocab
+          v-if="getDatatype(item) == 'vocab'"
           :as-dropdown="fieldKey !== 'encodingLevel'"
-          :is-locked="locked" :field-key="fieldKey" 
-          :field-value="item" 
-          :entity-type="entityType" 
-          :index="index" 
+          :is-locked="locked"
+          :field-key="fieldKey"
+          :field-value="item"
+          :entity-type="entityType"
+          :index="index"
           :diff="diff"
-          :parent-path="path"></item-vocab>
+          :parent-path="path" />
 
         <!-- Boolean value -->
         <item-boolean
-          v-if="getDatatype(item) == 'boolean'" 
-          :is-locked="locked" 
-          :field-key="fieldKey" 
-          :field-value="item" 
-          :entity-type="entityType" 
-          :index="index" 
+          v-if="getDatatype(item) == 'boolean'"
+          :is-locked="locked"
+          :field-key="fieldKey"
+          :field-value="item"
+          :entity-type="entityType"
+          :index="index"
           :diff="diff"
-          :parent-path="path"></item-boolean>
+          :parent-path="path" />
 
         <!-- Numeric value -->
         <item-numeric
@@ -1046,22 +1045,21 @@ export default {
           :index="index"
           :diff="diff"
           :parent-path="path"
-          :range="range"/>
+          :range="range" />
 
         <!-- Not linked, local child strings -->
-        <item-value 
-          v-if="getDatatype(item) == 'value'" 
+        <item-value
+          v-if="getDatatype(item) == 'value'"
           :is-last-added="isLastAdded"
-          :is-removable="!hasSingleValue" 
-          :is-locked="locked" 
+          :is-removable="!hasSingleValue"
+          :is-locked="locked"
           :is-uri-type="isUriType"
-          :field-value="item" 
-          :field-key="fieldKey" 
-          :index="index" 
-          :parent-path="path" 
+          :field-value="item"
+          :field-key="fieldKey"
+          :index="index"
+          :parent-path="path"
           :diff="diff"
-          :show-action-buttons="actionButtonsShown"
-          :is-expanded="isExpanded"></item-value>
+          :is-expanded="isExpanded" />
 
         <!-- shelfControlNumber -->
         <item-shelf-control-number
@@ -1073,7 +1071,7 @@ export default {
           :index="index"
           :diff="diff"
           :parent-path="path"
-          :is-expanded="isExpanded"></item-shelf-control-number>
+          :is-expanded="isExpanded" />
 
         <!-- nextShelfControlNumber -->
         <item-next-shelf-control-number
@@ -1174,7 +1172,7 @@ export default {
   &.is-grouped {
     border-width: 0;
   }
-  
+
   @media (min-width: 768px) {
     display: flex;
   }
@@ -1204,7 +1202,7 @@ export default {
       background-color: @form-remove;
     }
 
-    &:before, 
+    &:before,
     &:after {
       content: "";
       position: absolute;
@@ -1235,7 +1233,7 @@ export default {
       }
     }
   }
-    
+
   &-enrichmentButtonContainer {
     display: flex;
     flex-basis: 7%;
@@ -1252,13 +1250,9 @@ export default {
       flex-basis: 35%;
       max-width: 270px;
 
-      @media screen and (max-width: @screen-sm) { 
+      @media screen and (max-width: @screen-sm) {
         max-width: 100%;
       }
-    }
-
-    &.is-hovered * {
-      z-index: 1;
     }
 
     .Field.is-grouped & {
@@ -1351,7 +1345,7 @@ export default {
         left: 0px;
         top: 0px;
       }
-    } 
+    }
 
     @media (min-width: 768px) {
       text-align: right;
@@ -1454,7 +1448,7 @@ export default {
     display: flex;
     flex-grow: 1;
     justify-content: initial;
-  
+
     @media (max-width: @screen-sm) {
       justify-content: flex-start;
       flex-direction: row-reverse;
@@ -1473,7 +1467,7 @@ export default {
       font-size: 1.6rem;
       margin: 0 0 0 10px;
       line-height: 1.4;
-      
+
       @media (max-width: @screen-sm) {
         display: flex;
         justify-content: flex-end;

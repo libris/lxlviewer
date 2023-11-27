@@ -35,6 +35,13 @@ export default {
             "If you got here by following a link on our website, you can report it to us. See contact information in the footer."
           ]
         };
+      } else if (this.error.statusCode == 410) {
+        return {
+          heading: "410 Gone",
+          extra: [
+            "The resource has been removed."
+          ]
+        };
       } else {
         return {
           heading: "There is a problem with the service",

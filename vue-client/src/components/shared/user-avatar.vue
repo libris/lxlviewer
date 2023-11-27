@@ -49,27 +49,26 @@ export default {
 };
 </script>
 <template>
-  <div 
-    class="UserAvatar" 
+  <div
+    class="UserAvatar"
     :class="[this.appearance]"
     :style="{ width: `${size}px`, height: `${size}px` }">
-    <img 
-      v-if="hasAvatar" 
-      class="UserAvatar-gravatar" 
-      alt="Avatar" 
-      :style="{ width: `${size}px`, height: `${size}px` }" 
-      :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=404&s=${size*2}`" 
+    <img
+      v-if="hasAvatar"
+      class="UserAvatar-gravatar"
+      alt="Avatar"
+      :style="{ width: `${size}px`, height: `${size}px` }"
+      :src="`https://www.gravatar.com/avatar/${user.emailHash}?d=404&s=${size * 2}`"
       @error="hasAvatar = false" />
-    <span 
-      v-if="!hasAvatar" 
-      class="UserAvatar-no-gravatar" 
-      :class="{'highlight': this.highlight}"
+    <span
+      v-if="!hasAvatar"
+      class="UserAvatar-no-gravatar"
+      :class="{ highlight: this.highlight }"
       :style="{ fontSize: `${fontSize}pt` }">
       {{ initials }}
     </span>
   </div>
 </template>
-
 
 <style lang="less">
 .UserAvatar {
@@ -100,7 +99,7 @@ export default {
     text-transform: uppercase;
     border-color: @grey-light;
     color: @grey-light;
-    
+
     &.highlight {
       color: @white;
       border-color: @white;

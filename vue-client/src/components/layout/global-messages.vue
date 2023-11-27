@@ -1,6 +1,6 @@
 <script>
-import moment from 'moment';
 import { mapGetters, mapActions } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
 
 export default {
   name: 'GlobalMessages',
@@ -39,15 +39,14 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     ...mapActions([
       'setGlobalMessages',
       'dismissMessage',
       'cleanupDismissedList',
     ]),
     getTimeSinceLastUpdate() {
-      const now = moment();
-      const lastUpdate = moment(this.timeForLastFetch);
-      return now.diff(lastUpdate, 'seconds');
+      return Math.floor((new Date().getTime() - this.timeForLastFetch.getTime()) / 1000);
     },
     initializeUpdateTriggers() {
       setTimeout(() => {
@@ -89,33 +88,39 @@ export default {
 
 <template>
   <div class="GlobalMessages top-scroll-past" id="GlobalMessages">
-    <div class="GlobalMessage"
+    <div
+      class="GlobalMessage"
       :class="{
-        'warning': message.content.type === 'warning',
-        'info': message.content.type === 'info',
+        warning: message.content.type === 'warning',
+        info: message.content.type === 'info',
       }"
       :key="message.id"
       v-for="message in shownMessages"
     >
-      <div class="GlobalMessage-banner"
+      <div
+        class="GlobalMessage-banner"
         :class="{
-          'container': user.settings.fullSiteWidth === false,
+          container: user.settings.fullSiteWidth === false,
           'container-fluid': user.settings.fullSiteWidth,
         }"
       >
         <div class="GlobalMessage-icon">
           <span class="fa-stack fa-md">
-            <i class="icon-backplate fa fa-circle fa-stack-2x"></i>
-            <i v-if="message.content.type == 'warning'" class="icon-symbol fa fa-exclamation fa-stack-1x fa-inverse"></i>
-            <i v-if="message.content.type == 'info'" class="icon-symbol fa fa-info fa-stack-1x fa-inverse"></i>
+            <i class="icon-backplate fa fa-circle fa-stack-2x" />
+            <i v-if="message.content.type == 'warning'" class="icon-symbol fa fa-exclamation fa-stack-1x fa-inverse" />
+            <i v-if="message.content.type == 'info'" class="icon-symbol fa fa-info fa-stack-1x fa-inverse" />
           </span>
         </div>
         <div class="GlobalMessage-content">
           <span class="GlobalMessage-title">{{ message.content.title }}</span>
-          <span class="GlobalMessage-text" v-html="message.content.text"></span>
+          <span class="GlobalMessage-text" v-html="message.content.text" />
         </div>
         <div class="GlobalMessage-action">
-          <button v-if="message.dismissable" @click="closeMessage(message.id)" @keyup.enter="closeMessage(message.id)" class="btn btn-transparent">{{ 'Close' | translatePhrase }}</button>
+          <button
+            v-if="message.dismissable"
+            @click="closeMessage(message.id)"
+            @keyup.enter="closeMessage(message.id)"
+            class="btn btn-transparent">{{ translatePhrase('Close') }}</button>
         </div>
       </div>
     </div>

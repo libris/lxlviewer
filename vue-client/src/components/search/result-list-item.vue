@@ -1,11 +1,16 @@
 <script>
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
-import ReverseRelations from '@/components/inspector/reverse-relations';
-import TagSwitch from '@/components/shared/tag-switch';
 import * as RecordUtil from '@/utils/record';
-import LensMixin from '../mixins/lens-mixin';
-import ResultMixin from '../mixins/result-mixin';
+import * as HttpUtil from '@/utils/http';
+import { translatePhrase } from '@/utils/filters';
+import ReverseRelations from '@/components/inspector/reverse-relations.vue';
+import TagSwitch from '@/components/shared/tag-switch.vue';
+import LensMixin from '../mixins/lens-mixin.vue';
+import ResultMixin from '../mixins/result-mixin.vue';
+import CheckBox from "../shared/check-box.vue";
+import { getHandleAction } from "../../utils/record";
+import { getLibraryUri } from "lxljs/string";
 
 export default {
   name: 'result-list-item',
@@ -21,6 +26,10 @@ export default {
       type: String,
       default: '',
     },
+    isChangeView: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -29,6 +38,7 @@ export default {
       showAllKeys: false,
       totalReverseCount: -1,
       itemReverseCount: -1,
+      linkedAdminNotices: {},
     };
   },
   computed: {
@@ -37,8 +47,8 @@ export default {
     },
     recordType() {
       return VocabUtil.getRecordType(
-        this.focusData['@type'], 
-        this.resources.vocab, 
+        this.focusData['@type'],
+        this.resources.vocab,
         this.resources.context,
       );
     },
@@ -47,16 +57,16 @@ export default {
     },
     categorization() {
       return StringUtil.getFormattedEntries(
-        this.getSummary.categorization, 
-        this.resources.vocab, 
+        this.getSummary.categorization,
+        this.resources.vocab,
         this.user.settings.language,
         this.resources.context,
       );
     },
     header() {
       return StringUtil.getFormattedEntries(
-        this.getSummary.header, 
-        this.resources.vocab, 
+        this.getSummary.header,
+        this.resources.vocab,
         this.user.settings.language,
         this.resources.context,
       );
@@ -70,19 +80,23 @@ export default {
     showKeysText() {
       if (this.showCompact) {
         return this.showAllKeys ? 'Hide properties' : 'Show properties';
-      }      
+      }
       return this.showAllKeys ? 'Show fewer' : 'Show more';
     },
     showUsedIn() {
       if (this.recordType !== 'Instance') {
         return true;
       }
-      
+
       const itemCountReady = this.itemReverseCount !== -1;
       return itemCountReady && this.totalReverseCount > 0 && this.totalReverseCount !== this.itemReverseCount;
     },
+    isHandledByCurrentSigel() {
+      return this.focusData['@reverse']?.concerning.some((c) => c.agent ? c.agent['@id'] === getLibraryUri(this.user.settings.activeSigel) : false);
+    },
   },
   methods: {
+    translatePhrase,
     setHiddenDetailsNumber(value) {
       this.hiddenDetailsNumber = value;
     },
@@ -95,8 +109,37 @@ export default {
     allCount(value) {
       this.totalReverseCount = value;
     },
+    async handleChanged(e, isChecked) {
+      if (isChecked) {
+        const handleActionRecord = getHandleAction(this.recordId, getLibraryUri(this.user.settings.activeSigel));
+        const response = await HttpUtil.post({
+          url: `${this.settings.apiPath}/data`,
+          token: this.user.token,
+          activeSigel: this.user.settings.activeSigel,
+        }, handleActionRecord);
+        const recordUrl = `${response.getResponseHeader('Location')}`;
+        this.linkedAdminNotices[this.user.settings.activeSigel] = recordUrl;
+        console.log('Created handle action: ', recordUrl);
+      } else {
+        this.removeHandleActionForCurrentSigel();
+      }
+    },
+    removeHandleActionForCurrentSigel() {
+      const handleAction = this.focusData['@reverse']?.concerning.find((c) => c.agent ? c.agent['@id'] === getLibraryUri(this.user.settings.activeSigel) : false);
+      let uri = '';
+      uri = typeof handleAction !== 'undefined'  ? handleAction['@id'] : this.linkedAdminNotices[this.user.settings.activeSigel];
+      if (uri !== '') {
+        const id = uri.split('/').pop().replace('#it', '');
+        const url = `${this.settings.apiPath}/${id}`;
+        HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
+          delete this.linkedAdminNotices[this.user.settings.activeSigel];
+          console.log('Removed handle action: ', id);
+        });
+      }
+    }
   },
   components: {
+    CheckBox,
     TagSwitch,
     ReverseRelations,
   },
@@ -104,13 +147,14 @@ export default {
 </script>
 
 <template>
-  <li class="ResultItem" :class="{'ResultItem--compact' : showCompact}">
-    <entity-summary 
+  <li class="ResultItem" :class="{ 'ResultItem--compact': showCompact }">
+    <!-- eslint-disable-next-line vue/html-self-closing -->
+    <entity-summary
       @hiddenDetailsNumber="setHiddenDetailsNumber"
-      :focus-data="focusData" 
-      :database="database" 
-      :is-import="isImport" 
-      :import-item="importItem" 
+      :focus-data="focusData"
+      :database="database"
+      :is-import="isImport"
+      :import-item="importItem"
       :exclude-components="isImport ? ['id'] : []"
       :show-all-keys="showAllKeys || hiddenDetailsNumber === 1"
       :key-display-limit="showCompact ? 0 : 5"
@@ -120,29 +164,41 @@ export default {
     <div class="ResultItem-bottomBar">
       <div class="ResultItem-controls">
         <span v-if="hiddenDetailsNumber > 1" class="ResultItem-showMore" @click="toggleShowKeys">
-          {{ showKeysText | translatePhrase }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}
+          {{ translatePhrase(showKeysText) }}{{ showAllKeys ? '' : ` (${hiddenDetailsNumber})` }}
         </span>
       </div>
       <div class="ResultItem-tags" v-if="user.isLoggedIn && isImport === false">
         <!-- <tag-switch :document="focusData" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Bookmark" /> -->
-        <tag-switch v-if="recordType === 'Instance'" :document="focusData" class="" :action-labels="{ on: 'Mark as', off: 'Unmark as' }" tag="Flagged" />
+        <tag-switch
+          v-if="recordType === 'Instance'"
+          :document="focusData"
+          class=""
+          :action-labels="{ on: 'Mark as', off: 'Unmark as' }"
+          tag="Flagged" />
+        <check-box
+          :action-labels="{ on: 'Mark as handled', off: 'Unmark as handled' }"
+          v-if="isChangeView"
+          :selected="isHandledByCurrentSigel"
+          @changed="handleChanged">
+        </check-box>
       </div>
-      <div class="ResultItem-relationsContainer"
-        v-if="isImport === false">
-        <reverse-relations v-show="showUsedIn"
+      <div
+        class="ResultItem-relationsContainer"
+        v-if="isImport === false && !isChangeView ">
+        <reverse-relations
+          v-show="showUsedIn"
           @numberOfRelations="allCount"
-          :main-entity="focusData" 
-          :compact="true">
-        </reverse-relations>
-        <reverse-relations v-if="recordType === 'Instance'"
+          :main-entity="focusData"
+          :compact="true" />
+        <reverse-relations
+          v-if="recordType === 'Instance'"
           @numberOfRelations="itemCount"
           :main-entity="focusData"
           :mode="'items'"
-          :compact="true">
-        </reverse-relations>
+          :compact="true" />
       </div>
     </div>
-  </li>  
+  </li>
 </template>
 
 <style lang="less">
@@ -167,7 +223,7 @@ export default {
 
   &.is-highlighted {
     transform: translateX(25px);
-    border: 1px solid @grey-light;  
+    border: 1px solid @grey-light;
   }
 
   &--compact {
@@ -204,13 +260,6 @@ export default {
         text-decoration: underline;
         color: @link-hover-color;
       }
-    }
-  }
-
-  &-link {
-    &:visited {
-      // Commented out until fixing in IE11
-      // color: @link-visited-color;
     }
   }
 

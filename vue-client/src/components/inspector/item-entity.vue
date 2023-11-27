@@ -1,13 +1,15 @@
 <script>
 import { size } from 'lodash-es';
 import { mapGetters } from 'vuex';
+import { Menu } from 'floating-vue';
 import * as VocabUtil from 'lxljs/vocab';
 import { hasAutomaticShelfControlNumber } from '@/utils/shelfmark';
 import * as LayoutUtil from '@/utils/layout';
-import ItemMixin from '@/components/mixins/item-mixin';
-import LensMixin from '@/components/mixins/lens-mixin';
-import PreviewCard from '@/components/shared/preview-card';
-import ReverseRelations from '@/components/inspector/reverse-relations';
+import { translatePhrase, convertResourceLink } from '@/utils/filters';
+import ItemMixin from '@/components/mixins/item-mixin.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import PreviewCard from '@/components/shared/preview-card.vue';
+import ReverseRelations from '@/components/inspector/reverse-relations.vue';
 
 export default {
   name: 'item-entity',
@@ -79,16 +81,28 @@ export default {
   },
   watch: {
     'inspector.event'(val) {
-      this.$emit(`${val.value}`);
+      if (val.name === 'form-control') {
+        switch (val.value) {
+          case 'collapse-item':
+            this.collapse();
+            break;
+          case 'expand-item':
+            this.expand();
+            break;
+          default:
+        }
+      }
     },
     'status.panelOpen'(val) {
-      if (this.isNewlyAdded && !val) {        
-        this.$refs.chip.focus();
+      if (this.isNewlyAdded && !val) {
+        this.$refs.chip?.focus();
         this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
       }
     },
   },
   methods: {
+    translatePhrase,
+    convertResourceLink,
     expand() {
       this.expanded = true;
     },
@@ -119,16 +133,11 @@ export default {
     },
   },
   components: {
+    Menu,
     PreviewCard,
     ReverseRelations,
   },
   created() {
-    this.$on('collapse-item', () => {
-      this.collapse();
-    });
-    this.$on('expand-item', () => {
-      this.expand();
-    });
     if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
       this.expand();
     }
@@ -140,7 +149,7 @@ export default {
           if (hasAutomatic) {
             this.$store.commit('addMagicShelfMark', this.actualParentPath);
           }
-        }).catch(error => console.error(error));
+        }).catch((error) => console.error(error));
       }
       if (this.isExpanded && !this.isHistoryView()) {
         this.expand();
@@ -148,7 +157,7 @@ export default {
       if (this.isNewlyAdded) {
         setTimeout(() => {
           const element = this.$el;
-          LayoutUtil.ensureInViewport(element).then(() => {                        
+          LayoutUtil.ensureInViewport(element).then(() => {
             this.animateNewlyAdded = true;
             setTimeout(() => {
               this.animateNewlyAdded = false;
@@ -158,7 +167,7 @@ export default {
       }
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.isMaybeMagicShelfMark) {
       this.$store.commit('removeMagicShelfMark', this.actualParentPath);
     }
@@ -167,76 +176,89 @@ export default {
 </script>
 
 <template>
-  <div 
+  <div
     class="ItemEntity-container"
     :class="{ 'is-expanded': expanded, 'is-card': isCardWithData }">
-    <div 
+    <div
       v-if="isCardWithData"
       class="ItemEntity-expander"
       tabindex="0"
       @click="toggleExpanded()"
       @keyup.enter="toggleExpanded()">
-      <i class="ItemEntity-arrow fa fa-chevron-right"></i>
+      <i class="ItemEntity-arrow fa fa-chevron-right" />
     </div>
     <div
       :id="`formPath-${path}`"
       class="ItemEntity-content"
       v-show="!isCardWithData || !expanded">
-      <v-popover class="ItemEntity-popover" placement="bottom-start" @show="$refs.previewCard.populateData()">
-        <div class="ItemEntity chip" 
+      <Menu
+        class="ItemEntity-popover"
+        placement="bottom-start"
+        :delay="{show: 200, hide:0}"
+        @apply-show="$refs.previewCard.populateData()"
+      >
+        <div
+          class="ItemEntity chip"
           tabindex="0"
           ref="chip"
           v-if="!isCardWithData || !expanded"
-          :class="{ 'is-locked': isLocked,
-           'is-marc': isMarc,
-           'is-newlyAdded': animateNewlyAdded,
-           'is-removeable': removeHover,
-           'is-cache': recordType === 'CacheRecord',
-           'is-placeholder': recordType === 'PlaceholderRecord',
-           'is-ext-link': !isLibrisResource,
-           'is-removed': diffRemoved,
-           'is-added': diffAdded }">
+          :class="{
+            'is-locked': isLocked,
+            'is-marc': isMarc,
+            'is-newlyAdded': animateNewlyAdded,
+            'is-removeable': removeHover,
+            'is-cache': recordType === 'CacheRecord',
+            'is-placeholder': recordType === 'PlaceholderRecord',
+            'is-ext-link': !isLibrisResource,
+            'is-removed': diffRemoved,
+            'is-added': diffAdded,
+          }">
           <span class="ItemEntity-history-icon" v-if="diffRemoved">
-            <i class="fa fa-trash-o icon--sm icon-removed"></i>
+            <i class="fa fa-trash-o icon--sm icon-removed" />
           </span>
           <span class="ItemEntity-history-icon" v-if="diffAdded">
-            <i class="fa fa-plus-circle icon--sm icon-added"></i>
+            <i class="fa fa-plus-circle icon--sm icon-added" />
           </span>
           <span class="ItemEntity-label chip-label">
-            <span v-if="(!isCardWithData || !expanded) && isLibrisResource"><router-link :to="routerPath">{{getItemLabel}}</router-link></span>
-            <span v-if="(!isCardWithData || !expanded) && !isLibrisResource"><a :href="item['@id'] | convertResourceLink">{{getItemLabel}} <span class="fa fa-arrow-circle-right"></span></a></span>
-            <span class="placeholder"></span></span>
+            <span v-if="(!isCardWithData || !expanded) && isLibrisResource">
+              <router-link :to="routerPath">{{getItemLabel}}</router-link>
+            </span>
+            <span v-if="(!isCardWithData || !expanded) && !isLibrisResource">
+              <a :href="convertResourceLink(item['@id'])">{{getItemLabel}} <span class="fa fa-arrow-circle-right" /></a>
+            </span>
+            <span class="placeholder" /></span>
           <div class="ItemEntity-removeButton chip-removeButton" v-if="!isLocked">
-            <i class="fa fa-times-circle icon icon--sm chip-icon" 
+            <i
+              class="fa fa-times-circle icon icon--sm chip-icon"
               v-if="!isLocked"
               role="button"
               tabindex="0"
-              :aria-label="'Remove' | translatePhrase"
-              v-tooltip.top="translate('Remove')"
+              :aria-label="translatePhrase('Remove')"
+              v-tooltip.top="translatePhrase('Remove')"
               @click="removeThis(true)"
-              @keyup.enter="removeThis(true)">
-            </i>
+              @keyup.enter="removeThis(true)" />
           </div>
         </div>
-        <template slot="popover">
+        <template #popper>
           <PreviewCard ref="previewCard" :focus-data="focusData" :record-id="recordId" />
         </template>
-      </v-popover> 
+      </Menu>
     </div>
-    
+
     <div class="ItemEntity-content ItemEntity-cardContainer" v-if="isCardWithData && expanded">
       <entity-summary
-        :focus-data="focusData" 
+        :focus-data="focusData"
         :exclude-properties="excludeProperties"
         :should-link="true"
         :should-open-tab="true"
         :show-all-keys="true"
-        :embedded-in-field="true"/>
+        :embedded-in-field="true" />
       <div class="ItemEntity-reverseRelationsContainer" v-if="recordType === 'Instance'">
-        <reverse-relations :main-entity="focusData"
-                           :mode="'items'"
-                           :force-load="true"
-                           :compact="false"/>
+        <reverse-relations
+          :main-entity="focusData"
+          :mode="'items'"
+          :force-load="true"
+          :compact="false" />
       </div>
     </div>
   </div>
@@ -282,7 +304,7 @@ export default {
     flex-direction: row-reverse;
     width: 100%;
   }
-  
+
   &-expander {
     cursor: pointer;
     padding: 0.3em 0 0 0;
@@ -335,9 +357,6 @@ export default {
     background-color: @base-color;
   }
 
-  &-removeButton {
-  }
-
   &.expanded {
     margin: 0 0 2em 0;
   }
@@ -345,7 +364,7 @@ export default {
   &.is-locked {
     padding: 3px 0.5em 3px 0.5em;
   }
-  
+
   a {
     color: @white;
     &:hover {
@@ -361,7 +380,7 @@ export default {
       }
     }
   }
-  
+
   @media print {
     border: 1px solid;
   }
@@ -406,9 +425,6 @@ export default {
     color: @chip-color-cache;
     a {
       color: @chip-color-cache;
-      &:hover {
-        //color: @link-color;
-      }
     }
   }
 
@@ -417,16 +433,13 @@ export default {
     color: @chip-color-placeholder;
     a {
       color: @chip-color-placeholder;
-      &:hover {
-        //color: @link-color;
-      }
     }
   }
 
   &.is-external {
     border: 1px solid #29A1A2;
   }
-  
+
   @media (max-width: @screen-sm) {
     max-width: 100%;
   }

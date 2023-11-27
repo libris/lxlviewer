@@ -1,5 +1,5 @@
 <script>
-import Notification from '@/components/shared/notification';
+import Notification from '@/components/shared/notification.vue';
 
 export default {
   name: 'notification-list',
@@ -13,17 +13,12 @@ export default {
   components: {
     notification: Notification,
   },
-  ready() { // Ready method is deprecated in 2.0, switch to "mounted"
-    this.$nextTick(() => {
-      // Do stuff
-    });
-  },
 };
 </script>
 
 <template>
   <div class="NotificationList">
-    <notification v-for="notification in notifications" :content="notification" :key="notification.id" class="NotificationList-item"></notification>
+    <notification v-for="notification in notifications" :content="notification" :key="notification.id" class="NotificationList-item" />
   </div>
 </template>
 

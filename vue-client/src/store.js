@@ -1,6 +1,5 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import { cloneDeep, each, set, get, assign, filter, isObject } from 'lodash-es';
+import { createStore } from 'vuex';
+import { cloneDeep, each, set, get, assign, filter, isObject, isEmpty } from 'lodash-es';
 import ClientOAuth2 from 'client-oauth2';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -8,10 +7,9 @@ import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
 import settings from './settings';
 
-Vue.use(Vuex);
+const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
 
-/* eslint-disable no-param-reassign */
-const store = new Vuex.Store({
+const store = createStore({
   state: {
     resources: {
       resourcesLoaded: false,
@@ -75,7 +73,7 @@ const store = new Vuex.Store({
       changeHistory: [],
       event: [],
       magicShelfMarks: [],
-      extractItemsOnSave: {},
+      extractItemsOnSave: [],
     },
     status: {
       userIdle: false,
@@ -127,7 +125,8 @@ const store = new Vuex.Store({
     setValidation(state, payload) {
       if (payload.validates) {
         if (state.inspector.validation.violations[payload.path]) {
-          delete state.inspector.validation.violations[payload.path];
+          const { [payload.path]: _deletedPath, ...restValidations } = state.inspector.validation.violations;
+          state.inspector.validation.violations = restValidations;
         }
       } else {
         state.inspector.validation.violations[payload.path] = payload.reasons;
@@ -135,22 +134,23 @@ const store = new Vuex.Store({
       state.inspector.validation.numberOfViolations = Object.keys(state.inspector.validation.violations).length;
     },
     pushKeyAction(state, keyAction) {
-      state.status.keyActions.push(keyAction);
+      state.status.keyActions = [...state.status.keyActions, keyAction];
     },
     pushInspectorEvent(state, payload) {
       state.inspector.event = payload;
     },
     pushNotification(state, content) {
       const date = new Date();
-      content.id = StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`);
-      state.status.notifications.push(content);
+      state.status.notifications = [
+        ...state.status.notifications,
+        {
+          ...content,
+          id: StringUtil.getHash(`${date.getSeconds()}${date.getMilliseconds()}`),
+        },
+      ];
     },
     removeNotification(state, id) {
-      for (let i = 0; i < state.status.notifications.length; i++) {
-        if (state.status.notifications[i].id === id) {
-          state.status.notifications.splice(i, 1);
-        }
-      }
+      state.status.notifications = state.status.notifications.filter(((notification) => notification.id !== id));
     },
     setOriginalData(state, data) {
       state.inspector.originalData = cloneDeep(data);
@@ -182,7 +182,7 @@ const store = new Vuex.Store({
           quoted[sameAs['@id']] = data;
         }
       });
-      
+
       state.inspector.data.quoted = quoted;
     },
     updateInspectorData(state, payload) {
@@ -202,11 +202,13 @@ const store = new Vuex.Store({
           const historyNode = { path: node.path, value: oldValue };
           changes.push(historyNode);
         });
-        state.inspector.changeHistory.push(changes);
+        state.inspector.changeHistory = [
+          ...state.inspector.changeHistory,
+          changes,
+        ];
       }
       // Set the new values
       each(payload.changeList, (node) => {
-        // console.log("DATA_UPDATE:", JSON.stringify(node));
         if (node.path === '') {
           inspectorData = node.value;
         } else {
@@ -272,6 +274,9 @@ const store = new Vuex.Store({
     flushChangeHistory(state) {
       state.inspector.changeHistory = [];
     },
+    setChangeHistory(state, data) {
+      state.inspector.changeHistory = data;
+    },
     logoutUser(state) {
       localStorage.removeItem('at');
       state.user = User.getUserObject();
@@ -319,15 +324,15 @@ const store = new Vuex.Store({
       state.directoryCare = data;
     },
     addMagicShelfMark(state, path) {
-      state.inspector.magicShelfMarks.push(path);
+      state.inspector.magicShelfMarks = [...state.inspector.magicShelfMarks, path];
     },
     removeMagicShelfMark(state, path) {
-      state.inspector.magicShelfMarks = state.inspector.magicShelfMarks.filter(p => p !== path);
+      state.inspector.magicShelfMarks = state.inspector.magicShelfMarks.filter((p) => p !== path);
     },
     addTagAsSupported(state, tag) {
       state.inspector.supportedTags.promises[tag] = undefined;
-      if (state.inspector.supportedTags.data.indexOf(tag) === -1) {
-        state.inspector.supportedTags.data.push(tag);
+      if (!state.inspector.supportedTags.data.includes(tag)) {
+        state.inspector.supportedTags.data = [...state.inspector.supportedTags.data, tag];
       }
     },
     setLanguageTagPromise(state, payload) {
@@ -336,18 +341,26 @@ const store = new Vuex.Store({
     setExtractItemsOnSave(state, data) {
       state.inspector.extractItemsOnSave = data;
     },
+    addExtractItemOnSave(state, path) {
+      state.inspector.extractItemsOnSave = [
+        ...new Set([...state.inspector.extractItemsOnSave, path]),
+      ];
+    },
+    removeExtractItemOnSave(state, path) {
+      state.inspector.extractItemsOnSave = state.inspector.extractItemsOnSave.filter((key) => key !== path);
+    },
   },
   getters: {
-    inspector: state => state.inspector,
-    resources: state => state.resources,
-    resourcesLoaded: state => state.resources.resourcesLoaded,
-    resourcesLoadingError: state => state.resources.loadingError,
-    templates: state => state.resources.templates,
-    settings: state => state.settings,
-    oauth2Client: state => state.oauth2Client,
-    user: state => state.user,
-    userStorage: state => state.userStorage,
-    enrichment: state => state.enrichment,
+    inspector: (state) => state.inspector,
+    resources: (state) => state.resources,
+    resourcesLoaded: (state) => state.resources.resourcesLoaded,
+    resourcesLoadingError: (state) => state.resources.loadingError,
+    templates: (state) => state.resources.templates,
+    settings: (state) => state.settings,
+    oauth2Client: (state) => state.oauth2Client,
+    user: (state) => state.user,
+    userStorage: (state) => state.userStorage,
+    enrichment: (state) => state.enrichment,
     activeGlobalMessages: (state) => {
       const now = new Date();
       const activeMessages = [];
@@ -396,27 +409,96 @@ const store = new Vuex.Store({
       }
       return collection;
     },
-    userDatabase: state => state.userDatabase,
-    status: state => state.status,
-    directoryCare: state => state.directoryCare,
-    vocab: state => state.resources.vocab,
-    display: state => state.resources.display,
-    context: state => state.resources.context,
-    supportedTags: state => state.inspector.supportedTags.data,
+    userChangeCategories: (state) => {
+      if (state.userDatabase == null || state.userDatabase.notificationCategories == null) {
+        return [];
+      }
+      return state.userDatabase.notificationCategories.map(c => c['@id']);
+    },
+    userChangeCollections: (state) => {
+      if (state.userDatabase == null || state.userDatabase.notificationCollections == null) {
+        return [];
+      }
+      return state.userDatabase.notificationCollections.map(c => c['@id']);;
+    },
+    userDatabase: (state) => state.userDatabase,
+    status: (state) => state.status,
+    directoryCare: (state) => state.directoryCare,
+    vocab: (state) => state.resources.vocab,
+    display: (state) => state.resources.display,
+    context: (state) => state.resources.context,
+    supportedTags: (state) => state.inspector.supportedTags.data,
   },
   actions: {
-    addExtractItemOnSave({ commit, state }, { path, item }) {
-      commit('setExtractItemsOnSave', {
-        ...state.inspector.extractItemsOnSave,
-        [path]: item,
-      });
+    addExtractItemOnSave({ commit, dispatch, state }, { path, item }) {
+      commit('addExtractItemOnSave', path);
+
+      if (!item.hasOwnProperty('hasTitle') && state.inspector.data.mainEntity.hasOwnProperty('hasTitle')) {
+        /**
+         * Add formatted/refined title from mainEntity if title is missing on item to be extracted
+         */
+        const mainEntityHasTitle = state.inspector.data.mainEntity.hasTitle.find((titleItem) => titleItem['@type'] === 'Title');
+
+        const extractedTitleParts = mainEntityHasTitle?.hasPart?.length === 1 ? [
+          ...mainEntityHasTitle.hasPart[0].partNumber || '',
+          ...mainEntityHasTitle.hasPart[0].partName || '',
+        ].join(', ') : '';
+
+        const extractedMainTitle = extractedTitleParts
+          ? `${mainEntityHasTitle.mainTitle.replace(/\.$/, '')}. ${extractedTitleParts}`.trim()
+          : mainEntityHasTitle.mainTitle;
+
+        const extractedHasTitle = [{
+          '@type': 'Title',
+          mainTitle: extractedMainTitle,
+          'marc:nonfilingChars': mainEntityHasTitle['marc:nonfilingChars'] || undefined,
+        }];
+
+        commit('updateInspectorData', {
+          changeList: [
+            {
+              path: `${path}.${EXTRACT_ON_SAVE}`,
+              value: undefined,
+            },
+            {
+              path: `${path}.hasTitle`,
+              value: extractedHasTitle,
+            },
+          ],
+          addToHistory: true,
+        });
+
+        dispatch('pushNotification', {
+          type: 'success',
+          message: `${StringUtil.getUiPhraseByLang(
+            'Link was created and title was copied from instance',
+            state.settings.language,
+            state.resources.i18n,
+          )}.`,
+        });
+      } else {
+        dispatch('pushNotification', { type: 'success',
+          message: `${StringUtil.getUiPhraseByLang(
+            'Link was created',
+            state.settings.language,
+            state.resources.i18n,
+          )}.` });
+      }
     },
     removeExtractItemOnSave({ commit, state }, { path }) {
-      const { [path]: itemToRemove, ...rest } = state.inspector.extractItemsOnSave;
-      commit('setExtractItemsOnSave', rest);
+      // Remove references to extraction in change history
+      const newChangeHistroy = state.inspector.changeHistory.reduce((acc, currentChangeHistoryItem) => {
+        return [
+          ...acc,
+          currentChangeHistoryItem.filter((change) => change.path !== `${path}.${EXTRACT_ON_SAVE}`),
+        ];
+      }, []);
+
+      commit('setChangeHistory', newChangeHistroy);
+      commit('removeExtractItemOnSave', path);
     },
     flushExtractItemsOnSave({ commit }) {
-      commit('setExtractItemsOnSave', {});
+      commit('setExtractItemsOnSave', []);
     },
     checkForMigrationOfUserDatabase({ commit, dispatch, state }) {
       // Check if user has records stored in localStorage
@@ -490,6 +572,32 @@ const store = new Vuex.Store({
       }
       dispatch('modifyUserDatabase', { property: 'markedDocuments', value: newList });
     },
+    setNotificationEmail({ dispatch, state }, { userEmail }) {
+      const notificationEmail = cloneDeep(state.userDatabase.notificationEmail);
+      if (userEmail !== notificationEmail) {
+        dispatch('modifyUserDatabase', { property: 'notificationEmail', value: userEmail });
+      }
+    },
+    updateSubscribedSigel({ dispatch, state }, { libraryId, checked }) {
+      let collections = cloneDeep(state.userDatabase.notificationCollections) || [];
+      collections = collections.filter(c => c['@id'] !== libraryId);
+      if (checked) {
+        collections.push({'@id': libraryId});
+      }
+      dispatch('modifyUserDatabase', { property: 'notificationCollections', value: collections });
+    },
+    updateSubscribedChangeCategory({ dispatch, state }, { categoryId, checked }) {
+      let categories = cloneDeep(state.userDatabase.notificationCategories) || [];
+      categories = categories.filter(c => c['@id'] !== categoryId);
+      if (checked) {
+        categories.push({'@id': categoryId});
+      }
+      dispatch('modifyUserDatabase', { property: 'notificationCategories', value: categories });
+    },
+    purgeChangeCategories({ dispatch }) {
+      dispatch('modifyUserDatabase', { property: 'notificationCategories', value: [] });
+      dispatch('modifyUserDatabase', { property: 'notificationCollections', value: [] });
+    },
     loadUserDatabase({ commit, dispatch, state }) {
       if (state.user.id.length === 0) {
         throw new Error('loadUserDatabase was dispatched with no real user loaded.');
@@ -499,6 +607,7 @@ const store = new Vuex.Store({
         httpUtil.get({ url: `${state.settings.apiPath}/_userdata/${digestHex}`, token: state.user.token, contentType: 'text/plain' }).then((result) => {
           commit('setUserDatabase', result);
           dispatch('checkForMigrationOfUserDatabase');
+          dispatch('setNotificationEmail', { userEmail: state.user.email });
         }, (error) => {
           console.error(error);
         });
@@ -577,7 +686,7 @@ const store = new Vuex.Store({
           fetch(verifyUrl, {
             headers,
             method: 'GET',
-          }).then(response => response.json()).then((result) => {
+          }).then((response) => response.json()).then((result) => {
             userObj = User.getUserObject(result.user);
             userObj.token = token;
             userObj.token_expires_at = result.expires_at;
@@ -609,19 +718,22 @@ const store = new Vuex.Store({
     flushChangeHistory({ commit }) {
       commit('flushChangeHistory');
     },
-    undoInspectorChange({ commit, state }) {
+    undoInspectorChange({ dispatch, commit, state }) {
       const history = state.inspector.changeHistory;
       const lastNode = history[history.length - 1];
 
       const payload = { addToHistory: false, changeList: [] };
       each(lastNode, (node) => {
-        if (typeof node.value !== 'undefined') {
+        if (typeof node.value !== 'undefined' && !node.path.includes(EXTRACT_ON_SAVE)) {
           // It had a value
           payload.changeList.push({
             path: node.path,
             value: node.value,
           });
         } else {
+          if (node.path.includes(EXTRACT_ON_SAVE)) {
+            dispatch('removeExtractItemOnSave', { path: node.path.replace(`.${EXTRACT_ON_SAVE}`, '') });
+          }
           // It did not have a value (ie key did not exist)
           const pathParts = node.path.split('.');
           const key = pathParts[pathParts.length - 1];
@@ -768,7 +880,7 @@ const store = new Vuex.Store({
       dispatch('setVocabProperties', vocabJson);
     },
     setVocab({ commit }, vocabJson) {
-      const vocabMap = new Map(vocabJson.map(entry => [entry['@id'], entry]));
+      const vocabMap = new Map(vocabJson.map((entry) => [entry['@id'], entry]));
       commit('setVocab', vocabMap);
     },
     setVocabClasses({ commit, state }, vocabJson) {
@@ -776,7 +888,7 @@ const store = new Vuex.Store({
         VocabUtil.getTermByType('Class', vocabJson, state.resources.context, state.settings),
         VocabUtil.getTermByType('marc:CollectionClass', vocabJson, state.resources.context, state.settings),
       );
-      const classes = new Map(classTerms.map(entry => [entry['@id'], entry]));
+      const classes = new Map(classTerms.map((entry) => [entry['@id'], entry]));
       classes.forEach((classObj) => {
         if (classObj.hasOwnProperty('subClassOf')) {
           each(classObj.subClassOf, (baseClass) => {
@@ -799,7 +911,7 @@ const store = new Vuex.Store({
       props = props.concat(VocabUtil.getTermByType('DatatypeProperty', vocabJson, state.resources.context, state.settings));
       props = props.concat(VocabUtil.getTermByType('ObjectProperty', vocabJson, state.resources.context, state.settings));
       props = props.concat(VocabUtil.getTermByType('owl:SymmetricProperty', vocabJson, state.resources.context, state.settings));
-      const vocabProperties = new Map(props.map(entry => [entry['@id'], entry]));
+      const vocabProperties = new Map(props.map((entry) => [entry['@id'], entry]));
 
       commit('setVocabProperties', vocabProperties);
     },

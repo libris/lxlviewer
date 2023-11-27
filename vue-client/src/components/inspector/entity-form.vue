@@ -6,8 +6,9 @@
 */
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
-import LensMixin from '@/components/mixins/lens-mixin';
-import FormMixin from '@/components/mixins/form-mixin';
+import { translatePhrase } from '@/utils/filters';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import FormMixin from '@/components/mixins/form-mixin.vue';
 
 export default {
   mixins: [FormMixin, LensMixin],
@@ -36,6 +37,10 @@ export default {
       type: Object,
       default: null,
     },
+    inClassAndProperty: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -55,32 +60,34 @@ export default {
     },
     isBib() {
       if (VocabUtil.isSubClassOf(
-        this.inspector.data[this.editingObject]['@type'], 
-        'Instance', 
-        this.resources.vocab,  
+        this.inspector.data[this.editingObject]['@type'],
+        'Instance',
+        this.resources.vocab,
         this.resources.context,
       )
       ) {
         return true;
       } if (VocabUtil.isSubClassOf(
-        this.inspector.data[this.editingObject]['@type'], 
-        'Work', 
-        this.resources.vocab, 
+        this.inspector.data[this.editingObject]['@type'],
+        'Work',
+        this.resources.vocab,
         this.resources.context,
       )
       ) {
         return true;
       } if (VocabUtil.isSubClassOf(
-        this.inspector.data[this.editingObject]['@type'], 
-        'Agent', this.resources.vocab, 
+        this.inspector.data[this.editingObject]['@type'],
+        'Agent',
+
+        this.resources.vocab,
         this.resources.context,
       )
       ) {
         return true;
       } if (VocabUtil.isSubClassOf(
-        this.inspector.data[this.editingObject]['@type'], 
-        'Concept', 
-        this.resources.vocab, 
+        this.inspector.data[this.editingObject]['@type'],
+        'Concept',
+        this.resources.vocab,
         this.resources.context,
       )
       ) {
@@ -104,6 +111,7 @@ export default {
   watch: {
   },
   methods: {
+    translatePhrase,
     keyIsLocked(key) {
       return (this.isLocked || key === '@id');
     },
@@ -111,7 +119,7 @@ export default {
       if (key.indexOf('@reverse/') >= 0) {
         key = key.split('/').pop();
       }
-      
+
       return VocabUtil.hasCategory(key, 'integral', this.resources);
     },
   },
@@ -123,24 +131,27 @@ export default {
 </script>
 
 <template>
-  <div class="EntityForm form-component focused-form-component" 
-    :class="{ 'locked is-locked': isLocked }" 
+  <div
+    class="EntityForm form-component focused-form-component"
+    :class="{ 'locked is-locked': isLocked }"
     v-show="isActive">
-    <ul class="FieldList" 
-      v-bind:class="{'collapsed': collapsed }">
-      <field class="FieldList-item"        
-        v-for="(v,k) in filteredItem"         
-        v-bind:class="{ 'locked': isLocked }" 
-        :entity-type="formObj['@type']" 
-        :is-inner="false" 
-        :is-removable="true" 
-        :is-locked="keyIsLocked(k)" 
+    <ul
+      class="FieldList"
+      v-bind:class="{ collapsed: collapsed }">
+      <field
+        class="FieldList-item"
+        v-for="(v, k) in filteredItem"
+        v-bind:class="{ locked: isLocked }"
+        :entity-type="formObj['@type']"
+        :is-inner="false"
+        :is-removable="true"
+        :is-locked="keyIsLocked(k)"
         :parent-accepted-types="acceptedTypes"
         :is-card="isIntegral(k)"
-        :key="k" 
+        :key="k"
         :diff="diff"
-        :field-key="k" 
-        :field-value="v" 
+        :field-key="k"
+        :field-value="v"
         :parent-path="editingObject" />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
@@ -149,23 +160,24 @@ export default {
       </div>
     </ul>
 
-    <div 
+    <div
       v-if="reverseItem && editingObject === 'mainEntity' && showIncomingLinksSection"
       class="EntityForm-reverse">
-      <h6 class="uppercaseHeading">{{ 'Incoming links' | translatePhrase }}</h6>
+      <h6 class="uppercaseHeading">{{ translatePhrase('Incoming links') }}</h6>
       <ul class="FieldList">
-        <field class="FieldList-item"
-          v-for="(v,k) in reverseItemStandalone"
-          v-bind:class="{ 'locked': isLocked }" 
-          :entity-type="formObj['@type']" 
-          :is-inner="false" 
-          :is-removable="false" 
-          :is-locked="true" 
+        <field
+          class="FieldList-item"
+          v-for="(v, k) in reverseItemStandalone"
+          v-bind:class="{ locked: isLocked }"
+          :entity-type="formObj['@type']"
+          :is-inner="false"
+          :is-removable="false"
+          :is-locked="true"
           :is-card="isIntegral(k)"
           :parent-accepted-types="acceptedTypes"
-          :key="k" 
-          :field-key="k" 
-          :field-value="v" 
+          :key="k"
+          :field-key="k"
+          :field-value="v"
           :parent-path="'reverseItems'" />
       </ul>
     </div>
