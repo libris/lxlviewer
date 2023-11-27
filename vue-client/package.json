@@ -1,6 +1,6 @@
 {
   "name": "vue-client",
-  "version": "1.32.2",
+  "version": "1.33.1",
   "private": true,
   "scripts": {
     "dev": "vite --port 8080",
