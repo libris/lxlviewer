@@ -192,6 +192,7 @@ export default {
       class="ItemEntity-content"
       v-show="!isCardWithData || !expanded">
       <Menu
+        v-if="!expanded"
         class="ItemEntity-popover"
         placement="bottom-start"
         @apply-show="$refs.previewCard.populateData()"
