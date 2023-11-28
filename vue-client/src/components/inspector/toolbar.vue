@@ -630,13 +630,13 @@ export default {
             {{ translatePhrase("Download") }} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{ translatePhrase('Incl. unsaved changes') }})</span>
           </a>
         </li>
-        <li class="Toolbar-menuItem" v-show="!inspector.status.editing">
+        <li class="Toolbar-menuItem" v-show="user.settings.cxzFeatureIsOn && !inspector.status.editing">
           <a class="Toolbar-menuLink" @click="createMessage('inquiry')">
             <i class="fa fa-fw fa-question" aria-hidden="true" />
             {{ translatePhrase("Inquiry") }}
           </a>
         </li>
-        <li class="Toolbar-menuItem" v-show="!inspector.status.editing">
+        <li class="Toolbar-menuItem" v-show="user.settings.cxzFeatureIsOn && !inspector.status.editing">
           <a class="Toolbar-menuLink" @click="createMessage('changeNotice'), hideToolsMenu()">
             <i class="fa fa-fw fa-exclamation" aria-hidden="true" />
             {{ translatePhrase("Change notice") }}
