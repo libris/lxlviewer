@@ -48,6 +48,9 @@ export default {
     isRepeatable() {
       return VocabUtil.propIsRepeatable(this.getPropKey(), this.resources.context);
     },
+    isRepeatableOrArray() {
+      return this.isRepeatable || Array.isArray(this.prop);
+    },
     isLangMap() {
       return getContextValue(this.fieldKey, '@container', this.resources.context) === '@language';
     },
@@ -155,12 +158,14 @@ export default {
           updateValue = parentValue;
         }
       } else {
-        if (this.isRepeatable) {
+        // isRepeatableOrArray is used to allow for removal of properties that are not allowed to have
+        // multiple values but still do, e.g. after uploading a bad JSON-LD file.
+        if (this.isRepeatableOrArray) {
           updateValue = this.prop;
           updatePath = this.getPropPath();
           updateValue.splice(updateValue.indexOf(value), 1);
         }
-        if (isEmpty(updateValue) || !this.isRepeatable) {
+        if (isEmpty(updateValue) || !this.isRepeatableOrArray) {
           const lastIndex = this.path.lastIndexOf('.');
           const parentPath = this.path.slice(0, lastIndex);
           const parentValue = cloneDeep(get(this.inspector.data, parentPath));

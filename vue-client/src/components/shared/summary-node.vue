@@ -87,7 +87,8 @@ export default {
       :disabled="!hoverLinks"
       @apply-show="$refs.previewCard.populateData()"
       placement="bottom-start"
-      :delay="{show: 200, hide:0}"
+      :delay="{ show: 200, hide: 0 }"
+      :popperHideTriggers="['hover']"
     >
       <span class="SummaryNode-link tooltip-target">
         <router-link v-if="isLibrisResource" :to="routerPath">
