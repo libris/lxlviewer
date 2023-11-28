@@ -194,7 +194,8 @@ export default {
       <Menu
         class="ItemEntity-popover"
         placement="bottom-start"
-        :delay="{show: 200, hide:0}"
+        :delay="{ show: 200, hide: 0 }"
+        :popperHideTriggers="['hover']"
         @apply-show="$refs.previewCard.populateData()"
       >
         <div
