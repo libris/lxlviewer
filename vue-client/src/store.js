@@ -724,7 +724,6 @@ const store = createStore({
       const undoChanges = lastChange.reduce((acc, node) => {
         if (node.path.includes(EXTRACT_ON_SAVE)) {
           dispatch('removeExtractItemOnSave', { path: node.path.replace(`.${EXTRACT_ON_SAVE}`, '') });
-          return acc;
         }
 
         if (typeof node.value !== 'undefined') {
