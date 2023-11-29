@@ -726,6 +726,7 @@ const store = createStore({
           dispatch('removeExtractItemOnSave', { path: node.path.replace(`.${EXTRACT_ON_SAVE}`, '') });
         }
 
+        // It had a value
         if (typeof node.value !== 'undefined') {
           return [...acc, node];
         }
@@ -733,15 +734,15 @@ const store = createStore({
         // It did not have a value (ie key did not exist)
         const pathArray = node.path.split('.')
         const key = pathArray[pathArray.length - 1];
-        const path = pathArray.slice(0, -1);
-        const data = cloneDeep(get(state.inspector.data, path));
+        const parentPath = pathArray.slice(0, -1);
+        const parentData = cloneDeep(get(state.inspector.data, parentPath));
 
-        if (data) {
-          const { [key]: _removedData, ...restData } = data;
+        if (parentData) {
+          const { [key]: _removedData, ...restData } = parentData;
 
           return [
             ...acc, {
-              path,
+              path: parentPath,
               value: restData,
             }
           ]
