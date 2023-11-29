@@ -719,36 +719,44 @@ const store = createStore({
       commit('flushChangeHistory');
     },
     undoInspectorChange({ dispatch, commit, state }) {
-      const history = state.inspector.changeHistory;
-      const lastNode = history[history.length - 1];
+      const lastChange = state.inspector.changeHistory[state.inspector.changeHistory.length - 1];
 
-      const payload = { addToHistory: false, changeList: [] };
-      each(lastNode, (node) => {
-        if (typeof node.value !== 'undefined' && !node.path.includes(EXTRACT_ON_SAVE)) {
-          // It had a value
-          payload.changeList.push({
-            path: node.path,
-            value: node.value,
-          });
-        } else {
-          if (node.path.includes(EXTRACT_ON_SAVE)) {
-            dispatch('removeExtractItemOnSave', { path: node.path.replace(`.${EXTRACT_ON_SAVE}`, '') });
-          }
-          // It did not have a value (ie key did not exist)
-          const pathParts = node.path.split('.');
-          const key = pathParts[pathParts.length - 1];
-          pathParts.splice(pathParts.length - 1, 1);
-          const path = pathParts.join('.');
-          const data = cloneDeep(get(state.inspector.data, path));
-          delete data[key];
-          payload.changeList.push({
-            path: path,
-            value: data,
-          });
+      const undoChanges = lastChange.reduce((acc, node) => {
+        if (node.path.includes(EXTRACT_ON_SAVE)) {
+          dispatch('removeExtractItemOnSave', { path: node.path.replace(`.${EXTRACT_ON_SAVE}`, '') });
+          return acc;
         }
+
+        if (typeof node.value !== 'undefined') {
+          return [...acc, node];
+        }
+
+        // It did not have a value (ie key did not exist)
+        const pathArray = node.path.split('.')
+        const key = pathArray[pathArray.length - 1];
+        const path = pathArray.slice(0, -1);
+        const data = cloneDeep(get(state.inspector.data, path));
+
+        if (data) {
+          const { [key]: _removedData, ...restData } = data;
+
+          return [
+            ...acc, {
+              path,
+              value: restData,
+            }
+          ]
+        }
+
+        return acc;
+      }, [])
+
+      commit("updateInspectorData", {
+        addToHistory: false,
+        changeList: undoChanges
       });
-      history.splice(history.length - 1, 1);
-      commit('updateInspectorData', payload);
+
+      commit('setChangeHistory', state.inspector.changeHistory.slice(0, -1));
     },
     pushLoadingIndicator({ commit, state }, indicatorString) {
       const loaders = state.status.loadingIndicators;
