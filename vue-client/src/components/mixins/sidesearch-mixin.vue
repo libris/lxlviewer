@@ -143,6 +143,11 @@ export default {
       Object.keys(this.currentSearchParam?.mappings || {})
         .forEach((key) => urlSearchParams.append(key, this.currentSearchParam.mappings[key]));
 
+      if (this.fieldKey === 'shelfMark') {
+        urlSearchParams.append('meta.descriptionCreator.@id',  this.user.getActiveLibraryUri());
+        urlSearchParams.append('shelfMarkStatus', 'ActiveShelfMark');
+      }
+
       if (this.fieldKey) {
         const field = VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.resources.context);
         /**
