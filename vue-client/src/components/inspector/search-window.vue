@@ -95,6 +95,7 @@ export default {
   methods: {
     translatePhrase,
     labelByLang,
+    // TODO: dead code?
     getSearchParams(searchPhrase) {
       if (this.currentSearchParam == null) {
         return { q: searchPhrase };
