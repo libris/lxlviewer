@@ -198,6 +198,7 @@ export default {
     translatePhrase,
     labelByLang,
     capitalize,
+    // TODO: dead code?
     getSearchParams(searchPhrase) {
       let params;
       if (this.currentSearchParam == null) {
@@ -205,11 +206,6 @@ export default {
       } else {
         params = Object.assign({}, this.currentSearchParam.mappings || {});
         this.currentSearchParam.searchProps.forEach((param) => { params[param] = searchPhrase; });
-      }
-
-      if (this.fieldKey === 'shelfMark') {
-        params['meta.descriptionCreator.@id'] = this.user.getActiveLibraryUri();
-        params.shelfMarkStatus = 'ActiveShelfMark';
       }
 
       return params;
