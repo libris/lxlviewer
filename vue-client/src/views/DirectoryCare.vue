@@ -44,7 +44,7 @@ export default {
     },
     tabs() {
       return [
-        { id: 'changes', text: 'Changes',  hide: !this.user.settings.cxzFeatureIsOn },
+        { id: 'changes', text: 'Messages',  hide: !this.user.settings.cxzFeatureIsOn },
         { id: 'message', text: 'Create message',  hide: !this.user.settings.cxzFeatureIsOn },
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge records' },
