@@ -4082,7 +4082,7 @@
   "messages": {
     "inquiry": {
       "label": "Förfrågan",
-      "description": "Utgå från flaggade poster eller länka",
+      "description": "Utgå från flaggade poster eller länka till post",
       "@id": "inquiry",
       "value": {
         "record": {
@@ -4102,7 +4102,7 @@
     },
     "changeNoticeFlagged": {
       "label": "Ändringsmeddelande",
-      "description": "Utgå från flaggade poster eller länka",
+      "description": "Utgå från flaggade poster eller länka till post",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
