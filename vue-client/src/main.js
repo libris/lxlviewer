@@ -17,6 +17,7 @@ app.use(PortalVue);
 app.directive('tooltip', VTooltip);
 app.component('FocusTrap', FocusTrap);
 app.use(router);
+router.app = app;
 app.use(VueClipboard);
 
 app.component('entity-summary', EntitySummary).component('field', Field);

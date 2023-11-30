@@ -52,10 +52,10 @@ const router = createRouter({
       name: 'Help',
       component: () => import('@/views/Help.vue'),
     },
-    {
+    /*{
       path: '/directory-care',
-      redirect: '/directory-care/holdings',
-    },
+      redirect: `/directory-care/changes' }`,
+    },*/
     {
       path: '/directory-care/:tool',
       name: 'Directory care',
@@ -107,6 +107,16 @@ router.beforeEach((to, from, next) => {
   }
 
   next();
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.fullPath === '/directory-care') {
+    next({
+      path: `/directory-care/${store.getters.user.settings.cxzFeatureIsOn ? 'changes' : 'holdings'}`
+    });
+  } else {
+    next();
+  }
 });
 
 router.beforeEach((to, from, next) => {

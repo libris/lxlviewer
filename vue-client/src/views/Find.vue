@@ -267,7 +267,7 @@ export default {
     });
   },
   beforeRouteLeave(to, from, next) {
-    if (to.name === 'Inspector') {
+    if (to.name === 'Inspector' && this.result) {
       const startOffset = this.result.itemOffset;
       const relativeOffset = this.result.items.findIndex((item) => RecordUtil.extractFnurgel(item['@id']) === to.params.fnurgel);
       const absoluteOffset = startOffset + relativeOffset;
