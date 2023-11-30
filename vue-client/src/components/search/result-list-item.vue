@@ -2,15 +2,12 @@
 import * as StringUtil from 'lxljs/string';
 import * as VocabUtil from 'lxljs/vocab';
 import * as RecordUtil from '@/utils/record';
-import * as HttpUtil from '@/utils/http';
 import { translatePhrase } from '@/utils/filters';
 import ReverseRelations from '@/components/inspector/reverse-relations.vue';
 import TagSwitch from '@/components/shared/tag-switch.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 import ResultMixin from '../mixins/result-mixin.vue';
-import CheckBox from "../shared/check-box.vue";
-import { getHandleAction } from "../../utils/record";
-import { getLibraryUri } from "lxljs/string";
+import HandledButton from "./handled-button.vue";
 
 export default {
   name: 'result-list-item',
@@ -38,7 +35,6 @@ export default {
       showAllKeys: false,
       totalReverseCount: -1,
       itemReverseCount: -1,
-      linkedAdminNotices: {},
     };
   },
   computed: {
@@ -90,10 +86,7 @@ export default {
 
       const itemCountReady = this.itemReverseCount !== -1;
       return itemCountReady && this.totalReverseCount > 0 && this.totalReverseCount !== this.itemReverseCount;
-    },
-    isHandledByCurrentSigel() {
-      return this.focusData['@reverse']?.concerning.some((c) => c.agent ? c.agent['@id'] === getLibraryUri(this.user.settings.activeSigel) : false);
-    },
+    }
   },
   methods: {
     translatePhrase,
@@ -109,37 +102,9 @@ export default {
     allCount(value) {
       this.totalReverseCount = value;
     },
-    async handleChanged(e, isChecked) {
-      if (isChecked) {
-        const handleActionRecord = getHandleAction(this.recordId, getLibraryUri(this.user.settings.activeSigel));
-        const response = await HttpUtil.post({
-          url: `${this.settings.apiPath}/data`,
-          token: this.user.token,
-          activeSigel: this.user.settings.activeSigel,
-        }, handleActionRecord);
-        const recordUrl = `${response.getResponseHeader('Location')}`;
-        this.linkedAdminNotices[this.user.settings.activeSigel] = recordUrl;
-        console.log('Created handle action: ', recordUrl);
-      } else {
-        this.removeHandleActionForCurrentSigel();
-      }
-    },
-    removeHandleActionForCurrentSigel() {
-      const handleAction = this.focusData['@reverse']?.concerning.find((c) => c.agent ? c.agent['@id'] === getLibraryUri(this.user.settings.activeSigel) : false);
-      let uri = '';
-      uri = typeof handleAction !== 'undefined'  ? handleAction['@id'] : this.linkedAdminNotices[this.user.settings.activeSigel];
-      if (uri !== '') {
-        const id = uri.split('/').pop().replace('#it', '');
-        const url = `${this.settings.apiPath}/${id}`;
-        HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
-          delete this.linkedAdminNotices[this.user.settings.activeSigel];
-          console.log('Removed handle action: ', id);
-        });
-      }
-    }
   },
   components: {
-    CheckBox,
+    HandledButton,
     TagSwitch,
     ReverseRelations,
   },
@@ -175,27 +140,25 @@ export default {
           class=""
           :action-labels="{ on: 'Mark as', off: 'Unmark as' }"
           tag="Flagged" />
-        <check-box
-          :action-labels="{ on: 'Mark as handled', off: 'Unmark as handled' }"
-          v-if="isChangeView"
-          :selected="isHandledByCurrentSigel"
-          @changed="handleChanged">
-        </check-box>
       </div>
       <div
         class="ResultItem-relationsContainer"
-        v-if="isImport === false && !isChangeView ">
+        v-if="isImport === false">
         <reverse-relations
-          v-show="showUsedIn"
+          v-show="showUsedIn && !isChangeView"
           @numberOfRelations="allCount"
           :main-entity="focusData"
           :compact="true" />
         <reverse-relations
-          v-if="recordType === 'Instance'"
+          v-if="recordType === 'Instance' && !isChangeView"
           @numberOfRelations="itemCount"
           :main-entity="focusData"
           :mode="'items'"
           :compact="true" />
+        <handled-button
+          v-if="isChangeView"
+          :focus-data="this.focusData">
+        </handled-button>
       </div>
     </div>
   </li>
