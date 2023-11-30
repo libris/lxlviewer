@@ -155,7 +155,10 @@ export async function fetchMissingLinkedToQuoted(obj, store) {
   const quoted = store.state.inspector.data.quoted || {};
   const missingLinks = getExternalLinks(obj)
     .filter((l) => !quoted.hasOwnProperty(l))
-    .filter((l) => l.startsWith(settings.apiPath) || translateAliasedUri(l).startsWith(settings.idPath));
+    .filter((l) => {
+      const uri = translateAliasedUri(l);
+      return uri.startsWith(settings.apiPath) || uri.startsWith(settings.idPath);
+    });
   const embellished = false;
   return Promise
     .allSettled(missingLinks.map((l) => HttpUtil.getDocument(l, undefined, embellished)))
