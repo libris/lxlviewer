@@ -52,6 +52,7 @@ export default {
     },
     filteredFilters() {
       return this.pageData.search.mapping
+        .filter((item) => !item.hasOwnProperty('_selected'))
         .filter((item) => this.excludeFilters.every((el) => el !== item.variable))
         .filter((item) => !this.baseFilters.some((el) => isMatch(item, el)));
     },
