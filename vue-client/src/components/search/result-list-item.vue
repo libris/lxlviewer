@@ -157,8 +157,8 @@ export default {
           :compact="true" />
         <handled-button
           v-if="isChangeView"
-          :focus-data="this.focusData"
-          :record-id="this.recordId">
+          :focus-data="focusData"
+          :record-id="recordId">
         </handled-button>
       </div>
     </div>

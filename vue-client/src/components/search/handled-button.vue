@@ -16,7 +16,8 @@ export default {
   data() {
     return {
       linkedAdminNotices: {},
-      isChecked: false
+      isChecked: false,
+      removed: false
     }
   },
   methods: {
@@ -34,6 +35,7 @@ export default {
         }, handleActionRecord);
         const recordUrl = `${response.getResponseHeader('Location')}`;
         this.linkedAdminNotices[this.user.settings.activeSigel] = recordUrl;
+        this.removed = false;
       } else {
         // Set unhandled
         this.removeHandleActionForCurrentSigel();
@@ -47,6 +49,7 @@ export default {
         const url = `${this.settings.apiPath}/${id}`;
         HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
           delete this.linkedAdminNotices[this.user.settings.activeSigel];
+          this.removed = true;
         });
       }
     }
@@ -60,7 +63,7 @@ export default {
       return this.focusData['@reverse']?.concerning.find((c) => c.agent ? c.agent['@id'] === getLibraryUri(this.user.settings.activeSigel) : false);
     },
     isHandledByCurrentSigel() {
-      return this.hasReverseConcerning || this.linkedAdminNotices[this.user.settings.activeSigel];
+      return (this.hasReverseConcerning || this.linkedAdminNotices[this.user.settings.activeSigel]) && !this.removed;
     },
     hasReverseConcerning() {
       return this.focusData['@reverse']?.concerning.some((c) => c.agent ? c.agent['@id'] === getLibraryUri(this.user.settings.activeSigel) : false);
