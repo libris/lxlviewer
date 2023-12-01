@@ -11,6 +11,7 @@ export default {
   components: { RoundedButton },
   props: {
     focusData: {},
+    recordId: {}
   },
   data() {
     return {
