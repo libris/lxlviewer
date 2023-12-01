@@ -199,7 +199,7 @@ export default {
       return false;
     },
     routerPath() {
-      if (this.focusData && this.focusData['@type'] === 'ChangeObservation') {
+      if (this.focusData && this.focusData.concerning && this.focusData['@type'] === 'ChangeObservation') {
         const uriParts = this.focusData.concerning['@id'].split('/');
         const fnurgel = uriParts[uriParts.length - 1].split('#')[0];
         // FIXME linking directly to history sometimes blows up

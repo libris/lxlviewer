@@ -422,6 +422,7 @@
     "Create message": "Skapa meddelande",
     "Inquiry": "Förfrågan",
     "Change notice": "Ändringsmeddelande",
-    "Activate change message feature": "Aktivera funktion för ändringsmeddelanden"
+    "Activate change message feature": "Aktivera funktion för ändringsmeddelanden",
+    "Hide handled:": "Dölj hanterade:"
   }
 }
