@@ -254,9 +254,9 @@ export default {
             this.hide();
             break;
           case 'focus-changed':
-            if (!this.inToolbar) {
+            //if (!this.inToolbar) {
               this.hide();
-            }
+            //}
             break;
           default:
         }
