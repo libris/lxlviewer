@@ -190,7 +190,7 @@ export default {
     <div
       :id="`formPath-${path}`"
       class="ItemEntity-content"
-      v-show="!isCardWithData || !expanded">
+      v-if="!isCardWithData || !expanded">
       <Menu
         class="ItemEntity-popover"
         placement="bottom-start"

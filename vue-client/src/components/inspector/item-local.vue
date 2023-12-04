@@ -285,7 +285,7 @@ export default {
             value: newValue,
           },
         ],
-        addToHistory: false,
+        addToHistory: true,
       });
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language, this.resources.i18n)}` });
       this.$store.dispatch('setInspectorStatusValue', {
