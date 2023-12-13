@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import { translatePhrase } from '@/utils/filters';
 import ItemMixin from '../mixins/item-mixin.vue';
 
 export default {
@@ -60,6 +61,13 @@ export default {
       }
       return false;
     },
+    getLabelText() {
+      if (this.item.totalItems === 1) {
+        return 'link';
+      } else {
+        return 'links';
+      }
+    },
   },
   mounted() {
     if (this.isInForm || this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
@@ -82,6 +90,7 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     expand() {
       this.expanded = true;
     },
@@ -116,7 +125,7 @@ export default {
         :class="{ 'is-locked': isLocked }"
         @click="toggleExpanded()">
         <i class="ItemGrouped-arrow fa fa-chevron-right" />
-        <span class="ItemGrouped-type">{{ item.totalItems }} länkningar</span>
+        <span class="ItemGrouped-labelContent">{{ item.totalItems }} {{ translatePhrase(getLabelText) }}</span>
       </div>
     </strong>
 
@@ -166,6 +175,10 @@ export default {
     &.is-inactive {
       pointer-events: none;
     }
+  }
+
+  &-labelContent {
+    margin: 0 0.5rem;
   }
 
   &-arrow {
