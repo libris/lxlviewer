@@ -423,6 +423,8 @@
     "Inquiry": "Förfrågan",
     "Change notice": "Ändringsmeddelande",
     "Activate change message feature": "Aktivera funktion för ändringsmeddelanden",
-    "Hide handled:": "Dölj hanterade:"
+    "Hide handled:": "Dölj hanterade:",
+    "links": "länkningar",
+    "link": "länkning"
   }
 }
