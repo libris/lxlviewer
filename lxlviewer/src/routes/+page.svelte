@@ -1,2 +1,3 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<div class="flex h-screen justify-center bg-gradient-to-b from-blue to-gray-100 p-10 text-gray-900">
+	<h1>Welcome to Libris(?)</h1>
+</div>
