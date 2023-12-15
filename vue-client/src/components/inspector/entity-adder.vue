@@ -329,7 +329,12 @@ export default {
         }
       }
       const linkObj = { '@id': obj['@id'] };
-      currentValue.push(linkObj);
+
+      if (!VocabUtil.propIsRepeatable(this.fieldKey, this.resources.context) && !currentValue.length) {
+        currentValue = linkObj;
+      } else {
+        currentValue.push(linkObj);
+      }
       this.$store.dispatch('addToQuoted', obj);
       this.$store.dispatch('setInspectorStatusValue', {
         property: 'lastAdded',
