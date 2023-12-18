@@ -24,11 +24,12 @@ export async function checkAutoShelfControlNumber(obj, settings, user) {
 }
 
 async function _insertShelfControlNumber(item, settings, user) {
-  if (item.shelfControlNumber || !get(item, ['shelfMark', 0, '@id'])) {
+  const shelfMark = Array.isArray(item.shelfMark) ? item.shelfMark[0] : item.shelfMark;
+  if (item.shelfControlNumber || !shelfMark?.['@id']) {
     return;
   }
 
-  const id = item.shelfMark[0]['@id'].split('#')[0];
+  const id = shelfMark['@id'].split('#')[0];
   if (await hasAutomaticShelfControlNumber(id)) {
     item.shelfControlNumber = await _generateShelfControlNumber(id, settings, user);
   }
