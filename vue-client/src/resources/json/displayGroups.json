@@ -6,7 +6,8 @@
       "inScheme",
       "mediaType",
       "carrierType",
-      "inDataset"
+      "inDataset",
+      "category"
     ],
     "header": [
       "hasTitle",
