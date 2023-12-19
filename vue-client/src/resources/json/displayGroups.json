@@ -26,7 +26,8 @@
       "marc:attributionQualifier",
       "isPartOf",
       "marc:subordinateUnit",
-      "qualifier"
+      "qualifier",
+      "concerning"
     ],
     "hidden": [
       "shelfMarkStatus"
