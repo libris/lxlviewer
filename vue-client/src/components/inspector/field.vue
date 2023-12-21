@@ -1050,7 +1050,6 @@ export default {
         <!-- Not linked, local child strings -->
         <item-value
           v-if="getDatatype(item) == 'value'"
-          :is-last-added="isLastAdded"
           :is-removable="!hasSingleValue"
           :is-locked="locked"
           :is-uri-type="isUriType"
@@ -1064,7 +1063,6 @@ export default {
         <!-- shelfControlNumber -->
         <item-shelf-control-number
           v-if="getDatatype(item) == 'shelfControlNumber'"
-          :is-last-added="isLastAdded"
           :is-locked="locked"
           :field-value="item"
           :field-key="fieldKey"
@@ -1076,7 +1074,6 @@ export default {
         <!-- nextShelfControlNumber -->
         <item-next-shelf-control-number
           v-if="getDatatype(item) == 'nextShelfControlNumber'"
-          :is-last-added="isLastAdded"
           :is-locked="locked"
           :field-value="item"
           :field-key="fieldKey"
