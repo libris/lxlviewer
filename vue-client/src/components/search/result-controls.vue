@@ -286,7 +286,7 @@ export default {
       </p>
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
         <sort
-          v-if="searchedTypes && $route.params.perimeter != 'remote'"
+          v-if="$route.params.perimeter != 'remote'"
           :currentSort="currentSortOrder"
           :common-sort-fallback="true"
           :recordTypes="searchedTypes"
