@@ -1,22 +1,12 @@
-# create-svelte
-
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+# lxlviewer
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Install dependencies with `npm install` (or `pnpm install` or `yarn`).
+
+Add an `.env` file (see `.env.example` for the required environment variables).
+
+Start a development server:
 
 ```bash
 npm run dev
@@ -25,14 +15,35 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Building
+## Folder structure
 
-To create a production version of your app:
+- `src/lib` includes library code (assets, utils and components), which can be imported via the `$lib` alias
+- `src/params` contains [param matchers](https://kit.svelte.dev/docs/advanced-routing#matching) used for routing uses dynamic params.
+- `src/routes` contains the routes of the application (as well as components that are only used within a single route).
+- `static` contains static assets that should be served as-is, like robots.txt or favicon.png.
 
-```bash
-npm run build
-```
+## Routing structure
 
-You can preview the production build with `npm run preview`.
+SvelteKit uses a filesystem-based router. The routes of the app — i.e. the URL paths that users can access — are defined by the directories in the codebase. Each route directory contains one or more route files, which can be identified by their `+` prefix.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+### +page.svelte
+
+A [`+page.svelte`](https://kit.svelte.dev/docs/routing#page-page-svelte) component defines a page of the app. By default, pages are rendered both on the server (SSR) for the initial request and in the browser (CSR) for subsequent navigation.
+
+### +page.ts
+
+The [`+page.ts`](https://kit.svelte.dev/docs/routing#page-page-js) file exports a `load` function which returns the data which the page consumes when rendering. This function runs alongsid `+page.svelte`, which means it runs on the server during server-side rendering and in the browser during client-side navigation.
+
+### +page.server.ts
+
+If your load function can (or should) only run on the server then you can rename `+page.ts` to `+page.server.ts` and change the `PageLoad` type to `PageServerLoad`.
+
+A `+page.server.js` file can also export actions, which allow you to POST data to the server using the `<form>` element. See more here: [Form Actions](https://kit.svelte.dev/docs/form-actions)
+
+### +layout.svelte
+
+The [`+layout.svelte`](https://kit.svelte.dev/docs/routing#layout) component contains elements that should be shared between different pages, such as top-level navigation or a footer.
+
+### +layout.ts
+
+Just like `+page.svelte` loading data from `+page.js`, the `+layout.svelte` component can get data from a load function in `+layout.ts`. This data will be accessible to all nested `load` functions using `await parent()`.
