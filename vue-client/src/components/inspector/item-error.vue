@@ -26,19 +26,7 @@ export default {
         delete cleanItem._uid;
       }
       return cleanItem;
-    },
-    failedValidations() {
-      const failedValidations = [];
-      if (this.user.settings.appTech === false) {
-        return failedValidations;
-      }
-      failedValidations.push({
-        text: 'The entity is missing crucial data',
-      });
-
-      this.$store.dispatch('setValidation', { path: this.path, validates: false, reasons: failedValidations });
-      return failedValidations;
-    },
+    }
   },
   components: {
   },
@@ -58,7 +46,7 @@ export default {
 </script>
 
 <template>
-  <div class="ItemError" :id="`formPath-${path}`" :class="{ 'has-failed-validations': failedValidations.length > 0 }">
+  <div class="ItemError" :id="`formPath-${path}`">
     <table>
       <tr v-for="(value, key) in itemAsJson" :key="key">
         <td class="ItemError-key">{{ key }}</td><td class="ItemError-value">{{ value }}</td>
