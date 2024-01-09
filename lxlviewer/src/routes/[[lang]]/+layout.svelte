@@ -1,10 +1,10 @@
 <script>
 	import Search from '$lib/components/Search.svelte';
-	import '../app.css';
+	import '../../app.css';
 </script>
 
 <header>
-	<a href="/">Libris</a>
+	<a href="/lxlviewer/static">Libris</a>
 	<Search />
 </header>
 <slot />
