@@ -1377,6 +1377,7 @@ export default {
     border: 1px solid @grey-lighter;
     border-radius: 4px;
     box-shadow: @shadow-panel;
+    z-index: 1;
 
     @media (max-width: @screen-sm) {
       transform: translate(-60%, 5px);
