@@ -1,29 +1,26 @@
 
 const LANGUAGE_KEY = '@language';
-const SET_KEY = '@set';
-const LIST_KEY = '@list';
+//const SET_KEY = '@set';
+//const LIST_KEY = '@list';
 const CONTAINER_KEY = '@container';
 const CONTEXT_KEY = '@context';
 const ID_KEY = '@id';
 
 /*
-function applyLens(thing: object, lens: Lens, displayUtil: DisplayUtil) {
-
-}
-
-function isSetContainer(dfn: object) {
+function isSetContainer(dfn: Record<string, string>) {
     return dfn[CONTAINER_KEY] == SET_KEY
 }
 
-function isListContainer(dfn: object) {
+function isListContainer(dfn: Record<string, string>) {
     return dfn[CONTAINER_KEY] == LIST_KEY
 }
+*/
 
-function isLangContainer(dfn: object) {
+function isLangContainer(dfn: Record<string, string>) {
     return dfn[CONTAINER_KEY] == LANGUAGE_KEY
 }
 
- */
+
 
 type AlternateProperties = {
     alternateProperties: (PropertyName | { subPropertyOf: PropertyName; range: ClassName })[]
@@ -113,9 +110,9 @@ export class DisplayUtil {
     private readonly vocabUtil: VocabUtil
 
     // x -> xByLang
-    private langContainerAlias: { [key: PropertyName]: PropertyName; } = {}
+    private langContainerAlias: Record<PropertyName, PropertyName> = {}
     // xByLang -> x
-    private langContainerAliasInverted: { [key: PropertyName]: PropertyName; } = {}
+    private langContainerAliasInverted: Record<PropertyName, PropertyName> = {}
 
     constructor(display: DisplayJsonLd, vocabUtil: VocabUtil) {
         this.display = display
@@ -125,18 +122,16 @@ export class DisplayUtil {
         this.eachLens(lens => {
            console.log(lens.showProperties)
         });
-        //this.expandAliasesInLensProperties();
-
     }
 
     applyLens(thing: object, lens: LensType) {
-        applyLens(thing, lens, this.vocabUtil, this.display)
+
     }
 
     private buildLangContainerAliasMap() {
         for (const [k, v] of Object.entries({...this.vocabUtil.context, ...this.display[CONTEXT_KEY]})) {
-            if(isLangContainer(v)) {
-                this.langContainerAlias[v[ID_KEY]] = k
+            if(isLangContainer(v as Record<string, string>)) {
+                this.langContainerAlias[(v as Record<string, string>)[ID_KEY]] = k
             }
         }
 
@@ -219,8 +214,8 @@ export class DisplayUtil {
     }
 }
 
-function invert<K, V>(obj: { [Property in keyof K]: V; }): { [Property in keyof V]: K; } {
-    return Object.entries(obj).map(([k, v]) => [v, k]);
+function invert<K extends string | number | symbol, V extends string | number | symbol >(obj: Record<K, V>): Record<V, K> {
+    return Object.fromEntries(Object.entries(obj).map(([k, v]) => [v, k]));
 }
 
 function mapValuesOfObject<V, V2>(obj: { string: V }, fn: (v: V, k: string, i: number) => V2): { string: V2 } {
