@@ -1,6 +1,6 @@
 <script>
 	import Search from '$lib/components/Search.svelte';
-	import '../app.css';
+	import '../../app.css';
 </script>
 
 <header>
