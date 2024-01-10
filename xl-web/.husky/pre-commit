@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd ./lxlviewer && npx lint-staged
+cd ./xl-web && npx lint-staged

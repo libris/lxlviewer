@@ -1,5 +1,5 @@
 {
-	"name": "lxlviewer",
+	"name": "xl-web",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
@@ -13,7 +13,7 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"prepare": "cd .. && husky install lxlviewer/.husky"
+		"prepare": "cd .. && husky install xl-web/.husky"
 	},
 	"lint-staged": {
 		"*.{js,ts,svelte,css,scss,postcss,md,json}": [
