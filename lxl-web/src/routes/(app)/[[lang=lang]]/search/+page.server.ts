@@ -1,4 +1,4 @@
-import type { PageServerLoad } from '../../../../../.svelte-kit/types/src/routes';
+import type { PageServerLoad } from './$types';
 import { API_URL } from '$env/static/private';
 import { redirect } from '@sveltejs/kit';
 

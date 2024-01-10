@@ -4,7 +4,7 @@
 </script>
 
 <header>
-	<a href="/lxl-web/static">Libris</a>
+	<a href="/">Libris</a>
 	<Search />
 </header>
 <slot />
