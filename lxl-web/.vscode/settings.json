@@ -1,7 +1,0 @@
-{
-	"[svelte]": {
-		"editor.defaultFormatter": "svelte.svelte-vscode"
-	},
-	"workbench.editor.labelFormat": "short",
-	"explorer.compactFolders": false
-}
