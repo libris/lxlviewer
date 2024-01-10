@@ -1,0 +1,132 @@
+{
+	"@context": {
+		"@vocab": "http://example.org/ns/#",
+		"_display": {
+			"@id": "@nest"
+		},
+		"_hint": null,
+		"_contentBefore": null,
+		"_contentAfter": null
+	},
+	"@type": "Instance",
+	"_display": [
+		{
+			"_hint": "header"
+		},
+		{
+			"_hint": "body",
+			"contribution": {
+				"@type": "Contribution",
+				"_display": [
+					{
+						"agent": {
+							"@id": "https://libris-qa.kb.se/wt79b24f0q1r45c#it",
+							"@type": "Person",
+							"_display": [
+								{
+									"familyName": "Browne",
+									"_hint": ["implicit", "abbrev", "identity"]
+								},
+								{
+									"_contentBefore": ", ",
+									"givenName": "Moses"
+								},
+								{
+									"_contentBefore": ", ",
+									"lifeSpan": "1704-1787."
+								}
+							]
+						}
+					},
+					{
+						"_contentBefore": " (",
+						"_style": "light",
+						"role": [
+							{
+								"@id": "https://id.kb.se/relator/author",
+								"@type": "Role",
+								"_display": [
+									{
+										"label": "Författare"
+									}
+								],
+								"_hint": ["detail"]
+							},
+							{
+								"_contentBefore": ", ",
+								"@id": "https://id.kb.se/relator/illustrator",
+								"@type": "Role",
+								"_display": [
+									{
+										"label": ["Illustratör", ""]
+									}
+								],
+								"_hint": ["detail"]
+							}
+						],
+						"_contentAfter": ")"
+					}
+				]
+			}
+		},
+		{
+			"_hint": "body",
+			"publication": [
+				{
+					"@type": "PrimaryPublication",
+					"_display": [
+						{
+							"country": {
+								"@id": "https://id.kb.se/country/enk",
+								"@type": "Country",
+								"_display": [
+									{
+										"label": "England"
+									}
+								]
+							}
+						},
+						{
+							"place": [
+								{
+									"_contentBefore": ", ",
+									"@type": "Place",
+									"_display": [
+										{
+											"label": "London"
+										}
+									]
+								}
+							]
+						},
+						{
+							"agent": {
+								"_contentBefore": " : ",
+								"@type": "Agent",
+								"_display": [
+									{
+										"label": "Printed for J. Coote, at the King's Arms, in Pater-noster Row"
+									}
+								]
+							}
+						},
+						{
+							"year": {
+								"_contentBefore": ", ",
+								"_display": [
+									{
+										"@value": "1759"
+									}
+								]
+							}
+						},
+						{
+							"_contentBefore": ", ",
+							"date": "MDCCLIX. [1759]"
+						}
+					]
+				}
+			]
+		}
+	]
+}
