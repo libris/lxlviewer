@@ -7,4 +7,4 @@ View the respective directory and their READMEs for more information.
 * `vue-client` -  Libris cataloging
 * `nuxt-app` - id.kb.se
 * `lxljs` - Utility library
-* `xl-web` - New Libris search
+* `lxl-web` - New Libris search
