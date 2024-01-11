@@ -1,8 +1,7 @@
 <script lang="ts">
-	import type { PageData } from './$types';
 	import { page } from '$app/stores';
 
-	export let data: PageData;
+	export let data;
 
 	$: q = $page.url.searchParams.get('q');
 </script>

@@ -1,8 +1,7 @@
-import type { PageServerLoad } from './$types';
 import { API_URL } from '$env/static/private';
 import { redirect } from '@sveltejs/kit';
 
-export const load = (async ({ fetch, url }) => {
+export const load = async ({ fetch, url }) => {
 	if (!url.searchParams.size) {
 		redirect(303, `/`); // redirect to home page if no search params are given
 	}
@@ -17,4 +16,4 @@ export const load = (async ({ fetch, url }) => {
 	return {
 		items
 	};
-}) satisfies PageServerLoad;
+};
