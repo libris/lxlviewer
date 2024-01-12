@@ -3,7 +3,7 @@
 
 	export let data: { [key: string]: unknown } | string | number | boolean | null;
 	export let key: string | undefined = undefined;
-	export let propertyElementType: string | undefined = undefined;
+	export let propertyElementType: string | undefined = 'span';
 
 	export let customValueComponent:
 		| ComponentType<
@@ -30,7 +30,7 @@
 	{#if Array.isArray(data)}
 		{#each data as arrayItem}<svelte:self data={arrayItem} {key} {customValueComponent} />{/each}
 	{:else}
-		<!-- prettier-ignore -->{#each getFilteredEntries(data) as [key, value]}{data?._contentBefore || ''}{#if key === '_display'}<svelte:self data={value} {key} {customValueComponent} />{:else}{#if propertyElementType}<svelte:element this={propertyElementType} data-property={key} data-type={data?.['@type']} data-hint={data?.['_hint']}><svelte:self data={value} {key} {customValueComponent} /></svelte:element>{:else}<svelte:self data={value} {key} {customValueComponent} />{/if}{/if}{data?._contentAfter || ''}{/each}
+		<!-- prettier-ignore -->{#each getFilteredEntries(data) as [key, value]}{data?._contentBefore || ''}{#if key === '_display' || key === '@value'}<svelte:self data={value} {key} {customValueComponent} />{:else}{#if propertyElementType}<svelte:element this={propertyElementType} data-property={key} data-type={data?.['@type']} data-hint={data?.['_hint']}><svelte:self data={value} {key} {customValueComponent} /></svelte:element>{:else}<svelte:self data={value} {key} {customValueComponent} />{/if}{/if}{data?._contentAfter || ''}{/each}
 	{/if}
 {:else if customValueComponent}
 	<svelte:component this={customValueComponent} {key} value={data} />
