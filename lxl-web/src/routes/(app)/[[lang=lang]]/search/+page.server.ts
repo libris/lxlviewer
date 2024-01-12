@@ -11,6 +11,7 @@ export const load = (async ({ fetch, url }) => {
 	const records = await recordsRes.json();
 
 	const items = records.items.map((item) => ({
+		fnurgel: new URL(item['@id']).pathname,
 		'@id': item['@id']
 	}));
 

@@ -26,7 +26,7 @@
 	}
 </script>
 
-<form action="/search" on:submit={handleSubmit}>
+<form action={$page.data.base + '/search'} on:submit={handleSubmit}>
 	<!-- svelte-ignore a11y-autofocus -->
 	<input
 		type="search"
