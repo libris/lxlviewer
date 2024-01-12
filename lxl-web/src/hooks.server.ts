@@ -7,7 +7,7 @@ export const handle = async ({ event, resolve }) => {
 	let lang = defaultLocale;
 
 	Object.keys(Locales).forEach((locale) => {
-		if (path && path.startsWith(`/${locale}/`)) {
+		if (path && (path.startsWith(`/${locale}/`) || path.endsWith(`/${locale}`))) {
 			lang = locale;
 		}
 	});
