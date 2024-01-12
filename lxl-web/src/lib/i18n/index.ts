@@ -3,6 +3,7 @@ import { interpolate } from './interpolate';
 import { defaultLocale, type LocaleCode } from './locales';
 import sv from './locales/sv.js';
 
+// always import default translation?
 const loadedTranslations: Record<string, typeof sv> = {
 	sv
 };
@@ -13,7 +14,7 @@ export async function getTranslator(locale: LocaleCode) {
 		// add error handling?
 	}
 
-	return (key: string, options?: { values?: Record<string, string> }): string => {
+	return (key: string, values?: { [key: string]: string }): string => {
 		if (!key.includes('.')) {
 			// do we require nested keys?
 			throw new Error('Incorrect i11n key');
@@ -24,7 +25,7 @@ export async function getTranslator(locale: LocaleCode) {
 		const localeResult = loadedTranslations[locale][section]?.[item];
 
 		if (localeResult) {
-			return interpolate(localeResult, options?.values);
+			return interpolate(localeResult, values);
 		} else {
 			console.warn(`Missing ${locale} translation for ${key}`);
 		}
@@ -33,7 +34,7 @@ export async function getTranslator(locale: LocaleCode) {
 		const fallbackResult = loadedTranslations[defaultLocale][section][item];
 
 		if (fallbackResult) {
-			return interpolate(fallbackResult, options?.values);
+			return interpolate(fallbackResult, values);
 		}
 
 		const error = `Missing fallback translation for ${key}`;
