@@ -1,5 +1,14 @@
 <script lang="ts">
-	export let data: { [key: string]: unknown } | string | number;
+	import type { SvelteComponent, ComponentType } from 'svelte';
+
+	export let data: { [key: string]: unknown } | string | number | boolean | null;
+	export let key: string | undefined = undefined;
+
+	export let customValueComponent:
+		| ComponentType<
+				SvelteComponent<{ key: string | undefined; value: string | number | boolean | null }>
+		  >
+		| undefined = undefined;
 
 	const hiddenProperties = [
 		'@context',
@@ -11,25 +20,25 @@
 		'_contentAfter'
 	];
 
-	export function getFilteredEntries(data: { [key: string]: unknown }) {
+	export function getFilteredEntries(data: Record<string, unknown>) {
 		return Object.entries(data).filter(([key]) => !hiddenProperties?.includes(key));
 	}
 </script>
 
 {#if data && typeof data === 'object'}
 	{#if Array.isArray(data)}
-		{#each data as arrayItem}
-			<svelte:self data={arrayItem} />
-		{/each}
+		{#each data as arrayItem}<svelte:self data={arrayItem} {key} {customValueComponent} />{/each}
 	{:else}
-		{data?._contentBefore || ' '}
-		<!-- Strange formatting is needed here to ensure no extra whitespaces are added between the elements... -->
-		<!-- prettier-ignore -->
 		{#each getFilteredEntries(data) as [key, value]}
-			<span data-property={key} data-type={data?.['@type']} data-hint={data?.['_hint']}>
-				<svelte:self data={value} /></span
-			>{/each}{data?._contentAfter || ''}
+			<!-- prettier-ignore -->{data?._contentBefore || ''}<span
+				data-property={key}
+				data-type={data?.['@type']}
+				data-hint={data?.['_hint']}><svelte:self data={value} {key} {customValueComponent} /></span
+			>{data?._contentAfter || ''}
+		{/each}
 	{/if}
+{:else if customValueComponent}
+	<svelte:component this={customValueComponent} {key} value={data} />
 {:else}
 	{data}
 {/if}
