@@ -419,7 +419,7 @@ const store = createStore({
       if (state.userDatabase == null || state.userDatabase.notificationCollections == null) {
         return [];
       }
-      return state.userDatabase.notificationCollections.map(c => c['@id']);;
+      return state.userDatabase.notificationCollections.map(c => c['@id']);
     },
     userDatabase: (state) => state.userDatabase,
     status: (state) => state.status,
