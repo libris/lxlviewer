@@ -366,9 +366,11 @@ export default {
   mounted() {
     this.verifyUser().then(() => {
       this.$nextTick(() => {
-        this.loadUserDatabase();
+        if (this.user.isLoggedIn) {
+          this.loadUserDatabase();
+        }
       });
-    }).catch(() => {});
+    });
     this.initOauth2Client().catch(() => {});
     this.initWarningFunc();
     this.fetchHelpDocs();
