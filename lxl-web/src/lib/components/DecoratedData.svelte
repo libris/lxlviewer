@@ -1,15 +1,20 @@
 <script lang="ts">
-	import type { SvelteComponent, ComponentType } from 'svelte';
+	import type { ComponentType } from 'svelte';
 
-	export let data: { [key: string]: unknown } | string | number | boolean | null;
-	export let key: string | undefined = undefined;
-	export let propertyElementType: string | undefined = 'span';
+	type ResourceData =
+		| null
+		| boolean
+		| string
+		| number
+		| ResourceData[]
+		| undefined
+		| { [key: string]: ResourceData };
 
-	export let customValueComponent:
-		| ComponentType<
-				SvelteComponent<{ key: string | undefined; value: string | number | boolean | null }>
-		  >
-		| undefined = undefined;
+	export let data: ResourceData;
+	export let elementType: string | undefined = 'span';
+
+	export let customComponent: ComponentType | { [key: string]: ComponentType } | undefined =
+		undefined;
 
 	const hiddenProperties = [
 		'@context',
@@ -28,12 +33,32 @@
 
 {#if data && typeof data === 'object'}
 	{#if Array.isArray(data)}
-		{#each data as arrayItem}<svelte:self data={arrayItem} {key} {customValueComponent} />{/each}
+		{#each data as arrayItem}
+			<svelte:self data={arrayItem} {elementType} {customComponent} />
+		{/each}
 	{:else}
-		<!-- prettier-ignore -->{data?._contentBefore || ''}<!-- prettier-ignore -->{#each getFilteredEntries(data) as [key, value]}{#if key === '_display' || key === '@value'}<svelte:self data={value} {key} {customValueComponent} />{:else}{#if propertyElementType}<svelte:element this={propertyElementType} data-property={key} data-type={data?.['@type']} data-hint={data?.['_hint']}><svelte:self data={value} {key} {customValueComponent} /></svelte:element>{:else}<svelte:self data={value} {key} {customValueComponent} />{/if}{/if}{/each}<!-- prettier-ignore -->{data?._contentAfter || ''}
+		{data?._contentBefore || ''}
+		{#each getFilteredEntries(data) as [key, value]}
+			{#if key === '_display' || key === '@value'}
+				<svelte:self data={value} {elementType} {customComponent} />
+			{:else if customComponent && typeof customComponent === 'object' && Object.hasOwn(customComponent, key)}
+				<svelte:component this={customComponent[key]} name={key} {value} parentData={data}>
+					<svelte:self data={value} {elementType} {customComponent} />
+				</svelte:component>
+			{:else if customComponent && typeof customComponent !== 'object'}
+				<svelte:component this={customComponent} name={key} {value} parentData={data}>
+					<svelte:self data={value} {elementType} {customComponent} />
+				</svelte:component>
+			{:else if elementType}
+				<svelte:element this={elementType} data-property={key} data-type={data?.['@type']}>
+					<svelte:self data={value} {elementType} {customComponent} />
+				</svelte:element>
+			{:else}
+				<svelte:self data={value} {elementType} {customComponent} />
+			{/if}
+		{/each}
+		{data?._contentAfter || ''}
 	{/if}
-{:else if customValueComponent}
-	<svelte:component this={customValueComponent} {key} value={data} />
 {:else}
 	{data}
 {/if}
