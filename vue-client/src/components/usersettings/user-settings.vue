@@ -101,6 +101,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      this.$store.dispatch('loadUserDatabase');
       this.getAvailableChangeCategories();
     });
   },
