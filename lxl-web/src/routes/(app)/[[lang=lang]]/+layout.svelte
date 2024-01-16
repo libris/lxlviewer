@@ -6,9 +6,12 @@
 	export let data;
 </script>
 
+<svelte:head>
+	<base href={data.base} />
+</svelte:head>
 <header class="mx-4 flex">
 	<div class="flex-1">
-		<a href={data.base || '/'}>Libris</a>
+		<a href={data.base}>Libris</a>
 		<Search />
 	</div>
 	<LangPicker />
