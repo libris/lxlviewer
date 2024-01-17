@@ -10,8 +10,6 @@
 
 	export let data: ResourceData;
 
-	const elementType: string = 'span';
-
 	const hiddenProperties = [
 		'@context',
 		'@type',
@@ -19,13 +17,32 @@
 		'_hint',
 		'_style',
 		'_contentBefore',
-		'_contentAfter'
+		'_contentAfter',
+		'_link'
 	];
 
 	const flattenProperties = ['_display', '@value'];
 
-	function getFilteredEntries(data: Record<string, unknown>) {
+	function getFilteredEntries(data: Record<string, ResourceData>) {
 		return Object.entries(data).filter(([key]) => !hiddenProperties.includes(key));
+	}
+
+	function getElementType(value: ResourceData) {
+		if (value && typeof value === 'object' && Object.hasOwn(value, '_link')) {
+			return 'a';
+		}
+		return 'span';
+	}
+
+	function getElementAttributes({ key, value }: { key: string; value: ResourceData }) {
+		const linkAttributes = {
+			href:
+				(value && typeof value === 'object' && !Array.isArray(value) && value['@id']) || undefined
+		};
+		return {
+			'data-property': key,
+			...linkAttributes
+		};
 	}
 </script>
 
@@ -40,7 +57,7 @@
 			{#if flattenProperties.includes(key)}
 				<svelte:self data={value} />
 			{:else}
-				<svelte:element this={elementType} data-property={key} data-type={data?.['@type']}>
+				<svelte:element this={getElementType(value)} {...getElementAttributes({ key, value })}>
 					<svelte:self data={value} />
 				</svelte:element>
 			{/if}
