@@ -37,7 +37,12 @@
 	function getElementAttributes({ key, value }: { key: string; value: ResourceData }) {
 		const linkAttributes = {
 			href:
-				(value && typeof value === 'object' && !Array.isArray(value) && value['@id']) || undefined
+				(value &&
+					typeof value === 'object' &&
+					!Array.isArray(value) &&
+					Object.hasOwn(value, '_link') &&
+					value['@id']) ||
+				undefined
 		};
 		return {
 			'data-property': key,
