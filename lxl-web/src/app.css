@@ -3,11 +3,38 @@
 @tailwind utilities;
 
 @layer base {
-	h1 {
-		@apply text-4xl;
+	@font-face {
+		font-family: 'Roboto Flex';
+		src: url('/fonts/RobotoFlex-VariableFont.ttf') format('truetype');
+		font-stretch: 60% 100%;
+		font-weight: 400 700 800;
 	}
-	h2 {
-		@apply text-3xl;
+
+	/* Base styles for elements */
+
+	html {
+		@apply bg-primary text-primary font-sans text-base antialiased;
 	}
-	/* ... */
+
+	a {
+		@apply text-greenDark underline visited:text-[purple];
+	}
+
+	/* basic dark mode support */
+
+	.text-primary {
+		@apply text-brown;
+	}
+
+	.text-secondary {
+		@apply text-brown-80;
+	}
+
+	.bg-primary {
+		@apply bg-beige;
+	}
+
+	.gradient-primary {
+		@apply bg-gradient-to-b from-[#7A4D1F] to-[#66401A];
+	}
 }
