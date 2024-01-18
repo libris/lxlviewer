@@ -6,9 +6,11 @@
 	$: q = $page.url.searchParams.get('q');
 </script>
 
-<h1>Search results for: {q}</h1>
-<ul>
-	{#each data.items as item (item['@id'])}
-		<li>{item['@id']}</li>
-	{/each}
-</ul>
+<div class="m-3">
+	<h1>{$page.data.t('search.result_info', { q: `${q}` })}</h1>
+	<ul>
+		{#each data.items as item (item['@id'])}
+			<li><a class="underline" href={item.fnurgel}>{item.fnurgel}</a></li>
+		{/each}
+	</ul>
+</div>

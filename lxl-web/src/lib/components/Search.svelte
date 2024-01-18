@@ -26,7 +26,7 @@
 	}
 </script>
 
-<form action="/search" on:submit={handleSubmit}>
+<form action="search" on:submit={handleSubmit}>
 	<!-- svelte-ignore a11y-autofocus -->
 	<input
 		type="search"
