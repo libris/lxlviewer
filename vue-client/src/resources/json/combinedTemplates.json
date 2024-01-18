@@ -4101,9 +4101,10 @@
         }
       }
     },
-    "changeNoticeFlagged": {
+    "changeNotice": {
       "label": "Ändringsmeddelande",
       "description": "Utgå från flaggade poster eller länka till post",
+      "@id": "changeNotice",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
