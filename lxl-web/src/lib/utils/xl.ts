@@ -179,6 +179,7 @@ export class DisplayUtil {
 		showProperties: [{ alternateProperties: ['prefLabel', 'label', 'name', '@id'] }]
 	};
 
+	// TODO category integral should remain on same level?
 	private readonly DEFAULT_SUBLENS_SELECTOR = (lensType: LensType) => {
 		switch (lensType) {
 			case LensType.Full:
