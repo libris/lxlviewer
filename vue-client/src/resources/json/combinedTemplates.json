@@ -4095,7 +4095,7 @@
         "mainEntity": {
           "@type": "InquiryAction",
           "@id": "https://id.kb.se/TEMPID#it",
-          "agent": null,
+          "descriptionCreator": null,
           "concerning": [],
           "comment": ""
         }
@@ -4116,7 +4116,7 @@
         "mainEntity": {
           "@type": "ChangeNotice",
           "@id": "https://id.kb.se/TEMPID#it",
-          "agent": null,
+          "descriptionCreator": null,
           "concerning": [],
           "comment": ""
         }

@@ -28,8 +28,8 @@ export default {
       if (preparedTemplate['@graph'][1].hasOwnProperty('concerning')) {
         set(preparedTemplate, ['@graph', 1, 'concerning'], this.userFlagged.map(f => pick(f, '@id')));
       }
-      if (preparedTemplate['@graph'][1].hasOwnProperty('agent')) {
-        set(preparedTemplate, ['@graph', 1, 'agent'], {'@id': StringUtil.getLibraryUri(this.user.settings.activeSigel)});
+      if (preparedTemplate['@graph'][1].hasOwnProperty('descriptionCreator')) {
+        set(preparedTemplate, ['@graph', 1, 'descriptionCreator'], {'@id': StringUtil.getLibraryUri(this.user.settings.activeSigel)});
       }
       this.thingData = preparedTemplate;
     },

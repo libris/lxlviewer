@@ -245,6 +245,9 @@ export default {
       const template = this.templates.combined['messages'].find(t => t['@id'] === templateId).value;
       const preparedTemplate = RecordUtil.prepareDuplicateFor(template, this.user, this.settings.keysToClear.duplication);
       set(preparedTemplate, ['@graph', 1, 'concerning'], [pick(this.inspector.data.mainEntity, '@id')]);
+      if (preparedTemplate['@graph'][1].hasOwnProperty('descriptionCreator')) {
+        set(preparedTemplate, ['@graph', 1, 'descriptionCreator'], {'@id': StringUtil.getLibraryUri(this.user.settings.activeSigel)});
+      }
       this.$store.dispatch('setInsertData', preparedTemplate);
       this.$router.push({ path: '/new' });
     },
