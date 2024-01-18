@@ -228,7 +228,7 @@ export default {
               </td>
             </tr>
           </table>
-          <h5 class="uppercaseHeading--bold" v-if="user.settings.cxzFeatureIsOn">{{ translatePhrase("Subscribe to messages") }}</h5>
+          <h5 class="uppercaseHeading--bold" v-if="user.settings.cxzFeatureIsOn">{{ translatePhrase("Subscribe to CXZ messages") }}</h5>
           <div class="UserSettings-changeCategories" v-if="user.settings.cxzFeatureIsOn">
             <change-categories :available-sigels="sortedSigels" :userChangeCategories="userChangeCategories" :availableCategories="availableChangeCategories"/>
           </div>
