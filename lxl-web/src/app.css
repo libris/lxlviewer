@@ -1,40 +1,38 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'colors.css';
+
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 @layer base {
-	@font-face {
-		font-family: 'Roboto Flex';
-		src: url('/fonts/RobotoFlex-VariableFont.ttf') format('truetype');
-		font-stretch: 60% 100%;
-		font-weight: 400 700 800;
+	/* Variable Font */
+	@supports (font-variation-settings: normal) {
+		@font-face {
+			font-family: 'Roboto Flex';
+			src: url('/fonts/RobotoFlex-VariableFont_GRAD,XTRA,YOPQ,YTAS,YTDE,YTFI,YTLC,YTUC,opsz,slnt,wdth,wght.ttf')
+				format('truetype');
+			font-stretch: 60% 100%;
+			font-weight: 400 800;
+			font-display: swap;
+		}
+	}
+
+	/* Static fallback */
+	@supports not (font-variation-settings: normal) {
+		@font-face {
+			font-family: 'Roboto Flex';
+			src: url('/fonts/RobotoFlex-Regular.ttf') format('truetype');
+			font-style: normal;
+			font-display: swap;
+		}
 	}
 
 	/* Base styles for elements */
-
 	html {
-		@apply bg-primary text-primary font-sans text-base antialiased;
+		@apply bg-background font-sans text-base text-primary antialiased;
 	}
 
 	a {
-		@apply text-greenDark underline visited:text-[purple];
-	}
-
-	/* basic dark mode support */
-
-	.text-primary {
-		@apply text-brown;
-	}
-
-	.text-secondary {
-		@apply text-brown-80;
-	}
-
-	.bg-primary {
-		@apply bg-beige;
-	}
-
-	.gradient-primary {
-		@apply bg-gradient-to-b from-[#7A4D1F] to-[#66401A];
+		@apply text-accent-dark underline visited:text-[purple];
 	}
 }

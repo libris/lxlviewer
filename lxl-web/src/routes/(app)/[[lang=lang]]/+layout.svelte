@@ -10,7 +10,7 @@
 	<base href={data.base} />
 </svelte:head>
 <div class="container">
-	<header class="mx-4 flex">
+	<header class="flex">
 		<div class="flex-1">
 			<a href={data.base}>Libris</a>
 			<Search />

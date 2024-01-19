@@ -1,0 +1,26 @@
+/* Colors are defined in rgb using this syntax for css variables to work with tw -
+see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
+
+:root {
+	--color-black: 0 0 0;
+	--color-white: 255 255 255;
+	--color-brown: 82 51 20;
+	--color-dark-green: 66 107 84;
+	--color-light-green: 213 229 220;
+	--color-beige: 248 246 241;
+	--color-pink: 236 214 192;
+
+	--color-primary: var(--color-brown);
+	--color-accent-dark: var(--color-dark-green);
+	--color-accent-light: var(--color-light-green);
+	--color-background: var(--color-beige);
+	--color-highlight: var(--color-pink);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-primary: var(--color-white);
+		--color-background: var(--color-black);
+	}
+}

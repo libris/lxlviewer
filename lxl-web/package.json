@@ -14,7 +14,7 @@
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
 		"prepare": "cd .. && husky install lxl-web/.husky",
-		"tailwind-config-viewer": "tailwind-config-viewer -o -c tailwind.config.cjs"
+		"tw-viewer": "tailwind-config-viewer -o -c tailwind.config.cjs"
 	},
 	"lint-staged": {
 		"*.{js,ts,svelte,css,scss,postcss,md,json}": [
@@ -39,6 +39,7 @@
 		"lint-staged": "^15.2.0",
 		"lxljs": "file:../lxljs",
 		"postcss": "^8.4.32",
+		"postcss-import": "^16.0.0",
 		"prettier": "^3.0.0",
 		"prettier-plugin-svelte": "^3.0.0",
 		"prettier-plugin-tailwindcss": "^0.5.9",
