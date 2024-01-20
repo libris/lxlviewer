@@ -46,7 +46,7 @@
     "postcss": "^8.4.31",
     "querystring-es3": "^0.2.1",
     "stream-browserify": "^3.0.0",
-    "vite": "^4.5.1",
+    "vite": "^4.5.2",
     "vue": "^3.3.4",
     "vue-cli-plugin-style-resources-loader": "^0.1.4",
     "vue-clipboard2": "^0.3.3",
