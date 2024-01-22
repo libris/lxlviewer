@@ -272,7 +272,6 @@ export class DisplayUtil {
 		}
 
 		const lens = this.findLens(lensType, this.vocabUtil.getType(thing));
-
 		const result = ackInit();
 
 		const has = (src: Data, key: string): boolean => {
@@ -332,7 +331,7 @@ export class DisplayUtil {
 
 	private findLens(lens: LensType, className: ClassName) {
 		for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
-			if (this.display.lensGroups[lens].lenses[cls]) {
+			if (cls in this.display.lensGroups[lens].lenses) {
 				return this.display.lensGroups[lens].lenses[cls];
 			}
 		}
