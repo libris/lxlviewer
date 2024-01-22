@@ -17,8 +17,7 @@
 		'_hint',
 		'_style',
 		'_contentBefore',
-		'_contentAfter',
-		'_link'
+		'_contentAfter'
 	];
 
 	const flattenProperties = ['_display', '@value'];
@@ -27,26 +26,32 @@
 		return Object.entries(data).filter(([key]) => !hiddenProperties.includes(key));
 	}
 
+	function getObjectProperty(value: ResourceData, name: string) {
+		if (value && typeof value === 'object' && !Array.isArray(value) && name in value) {
+			return value[name];
+		}
+		return undefined;
+	}
+
+	function getLink(value: ResourceData) {
+		const hints = getObjectProperty(value, '_hint');
+		if (Array.isArray(hints) && hints.includes('link')) {
+			return value?.['@id' as keyof typeof value];
+		}
+		return undefined;
+	}
+
 	function getElementType(value: ResourceData) {
-		if (value && typeof value === 'object' && Object.hasOwn(value, '_link')) {
+		if (getLink(value)) {
 			return 'a';
 		}
 		return 'span';
 	}
 
 	function getElementAttributes({ key, value }: { key: string; value: ResourceData }) {
-		const linkAttributes = {
-			href:
-				(value &&
-					typeof value === 'object' &&
-					!Array.isArray(value) &&
-					Object.hasOwn(value, '_link') &&
-					value['@id']) ||
-				undefined
-		};
 		return {
 			'data-property': key,
-			...linkAttributes
+			href: getLink(value)
 		};
 	}
 </script>

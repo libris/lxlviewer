@@ -22,7 +22,7 @@
 						"agent": {
 							"@id": "https://libris-qa.kb.se/wt79b24f0q1r45c#it",
 							"@type": "Person",
-							"_link": true,
+							"_hint": ["link"],
 							"_display": [
 								{
 									"familyName": "Browne",
