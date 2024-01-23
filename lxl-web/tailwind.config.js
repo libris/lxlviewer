@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+
+export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
 		colors: {
@@ -9,18 +10,18 @@ module.exports = {
 			'accent-light': 'rgb(var(--color-accent-light) / <alpha-value>)',
 			'accent-dark': 'rgb(var(--color-accent-dark) / <alpha-value>)',
 			background: 'rgb(var(--color-background) / <alpha-value>)',
-			highlight: 'rgb(var(--color-highlight) / <alpha-value>)',
+			highlight: 'rgb(var(--color-highlight) / <alpha-value>)'
 		},
 		opacity: {
-			'80': '.80',
-			'64': '.64',
-			'48': '.48',
-			'40': '.40',
-			'32': '.32',
-			'24': '.24',
-			'16': '.16',
-			'8': '.08',
-			'4': '.04'
+			80: '.80',
+			64: '.64',
+			48: '.48',
+			40: '.40',
+			32: '.32',
+			24: '.24',
+			16: '.16',
+			8: '.08',
+			4: '.04'
 		},
 		fontSize: ({ theme }) => ({
 			xs: ['0.75rem', theme('lineHeight.normal')],
@@ -29,17 +30,17 @@ module.exports = {
 			xl: ['1.5rem', theme('lineHeight.tight')],
 			'2xl': ['2rem', theme('lineHeight.tight')],
 			'3xl': ['2.5rem', theme('lineHeight.tight')],
-			'4xl': ['4rem', theme('lineHeight.tight')],
+			'4xl': ['4rem', theme('lineHeight.tight')]
 		}),
 		fontFamily: {
 			sans: ['"Roboto Flex"', 'sans-serif'],
-      condensed: [
-        '"Roboto Flex", sans-serif',
-        {
-          fontVariationSettings: '"wdth" 60',
-        },
-      ],
-    },
+			condensed: [
+				'"Roboto Flex", sans-serif',
+				{
+					fontVariationSettings: '"wdth" 60'
+				}
+			]
+		},
 		fontWeight: {
 			normal: '400',
 			bold: '700',
@@ -67,8 +68,8 @@ module.exports = {
 	},
 	plugins: [
 		/** @type {import('tailwindcss/types/config').PluginCreator} */
-    ({ addUtilities }) => {
-      addUtilities({
+		({ addUtilities }) => {
+			addUtilities({
 				// typography 1-6 variants in design
 				'.text-1-regular': {
 					'@apply text-xs': {}
@@ -103,8 +104,8 @@ module.exports = {
 				// other utility classes
 				'.gradient-primary': {
 					'@apply bg-gradient-to-b from-[#7A4D1F] to-[#66401A]': {}
-				},
-      });
-    }
+				}
+			});
+		}
 	]
 };

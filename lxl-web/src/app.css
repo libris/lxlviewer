@@ -13,7 +13,7 @@
 				format('truetype');
 			font-stretch: 60% 100%;
 			font-weight: 400 800;
-			font-display: swap;
+			font-display: auto;
 		}
 	}
 
@@ -23,7 +23,7 @@
 			font-family: 'Roboto Flex';
 			src: url('/fonts/RobotoFlex-Regular.ttf') format('truetype');
 			font-style: normal;
-			font-display: swap;
+			font-display: auto;
 		}
 	}
 
