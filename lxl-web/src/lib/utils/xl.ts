@@ -355,8 +355,8 @@ export class DisplayUtil {
 		// TODO... decide what we want
 		if (lens == LensType.Token) {
 			for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
-				if (cls in this.display.lensGroups[LensType.Card].lenses) {
-					return this.display.lensGroups[LensType.Card].lenses[cls];
+				if (cls in this.display.lensGroups[LensType.Chip].lenses) {
+					return this.display.lensGroups[LensType.Chip].lenses[cls];
 				}
 			}
 		}
