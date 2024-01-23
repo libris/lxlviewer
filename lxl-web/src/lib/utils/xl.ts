@@ -26,6 +26,10 @@ enum Base {
 	StructuredValue = 'StructuredValue'
 }
 
+enum Platform {
+	integral = 'integral'
+}
+
 type ClassName = string;
 type PropertyName = string;
 type LangCode = string;
@@ -159,6 +163,14 @@ export class VocabUtil {
 	isStructuredValue(className: ClassName) {
 		return this.isSubClassOf(className, Base.StructuredValue);
 	}
+
+	// TODO? reimplement?
+	hasCategory(propertyName: PropertyName, category: string) {
+		return lxljsVocab.hasCategory(propertyName, category, {
+			vocab: this.vocabIndex,
+			context: this.context
+		});
+	}
 }
 
 type FormatIndex = Record<string, Format>;
@@ -180,7 +192,11 @@ export class DisplayUtil {
 	};
 
 	// TODO category integral should remain on same level?
-	private readonly DEFAULT_SUBLENS_SELECTOR = (lensType: LensType) => {
+	private readonly DEFAULT_SUBLENS_SELECTOR = (lensType: LensType, propertyName: PropertyName) => {
+		if (this.vocabUtil.hasCategory(propertyName, Platform.integral)) {
+			return lensType;
+		}
+
 		switch (lensType) {
 			case LensType.Full:
 				return LensType.Card;
@@ -263,7 +279,7 @@ export class DisplayUtil {
 	private _applyLens(
 		thing: unknown,
 		lensType: LensType,
-		subLensSelector: (lensType: LensType) => LensType,
+		subLensSelector: (lensType: LensType, propertyName: PropertyName) => LensType,
 		ack: (result: unknown, p: PropertyName, value: unknown) => void,
 		ackInit: () => unknown
 	) {
@@ -281,9 +297,9 @@ export class DisplayUtil {
 		const accumulate = (src: Data, key: string) => {
 			const value = Array.isArray(src[key])
 				? (src[key] as Array<unknown>).map((v) =>
-						this._applyLens(v, subLensSelector(lensType), subLensSelector, ack, ackInit)
+						this._applyLens(v, subLensSelector(lensType, key), subLensSelector, ack, ackInit)
 					)
-				: this._applyLens(src[key], subLensSelector(lensType), subLensSelector, ack, ackInit);
+				: this._applyLens(src[key], subLensSelector(lensType, key), subLensSelector, ack, ackInit);
 			ack(result, key, value);
 		};
 
