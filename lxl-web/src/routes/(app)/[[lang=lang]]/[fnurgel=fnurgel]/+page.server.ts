@@ -1,7 +1,7 @@
-import { API_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 export const load = async ({ params, fetch }) => {
-	const iri = `${API_URL}/${params.fnurgel}`;
+	const iri = `${env.API_URL}/${params.fnurgel}`;
 	const response = await fetch(iri, { headers: { Accept: 'application/ld+json' } });
 	const doc = await response.json();
 
