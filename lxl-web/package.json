@@ -37,6 +37,7 @@
 		"husky": "^8.0.3",
 		"lint-staged": "^15.2.0",
 		"lxljs": "file:../lxljs",
+		"magic-string": "^0.30.5",
 		"postcss": "^8.4.32",
 		"prettier": "^3.0.0",
 		"prettier-plugin-svelte": "^3.0.0",
