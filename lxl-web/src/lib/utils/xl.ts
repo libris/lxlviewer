@@ -3,7 +3,7 @@ import * as lxljsVocab from 'lxljs/vocab';
 // TODO TESTS!
 // TODO type for JSON-LD structure
 
-enum JsonLd {
+export enum JsonLd {
 	BASE = '@base',
 	CONTAINER = '@container',
 	CONTEXT = '@context',
@@ -33,8 +33,8 @@ enum Platform {
 }
 
 type ClassName = string;
-type PropertyName = string;
-type LangCode = string;
+export type PropertyName = string;
+export type LangCode = string;
 
 interface DisplayJsonLd {
 	[JsonLd.CONTEXT]: Context;
@@ -91,7 +91,7 @@ interface LensGroup {
 	[Fresnel.classFormatDomain]?: [ClassName];
 }
 
-interface Link {
+export interface Link {
 	'@id': string;
 }
 
@@ -124,9 +124,11 @@ type Context = Record<string, string | Record<JsonLd, string>>;
 type Data = Record<string, unknown>;
 export type FramedData = Record<string, unknown>;
 
+export type PropertyDefinition = unknown;
+
 // TODO
 type LensedOrdered = unknown;
-type DisplayDecorated = unknown;
+export type DisplayDecorated = unknown;
 
 interface VocabData {
 	'@context'?: string | Context;
@@ -259,6 +261,10 @@ export class DisplayUtil {
 				return { _props: [] };
 			}
 		);
+	}
+
+	lensAndFormat(thing: FramedData, lensType: LensType, locale: LangCode): DisplayDecorated {
+		return this.format(this.applyLensOrdered(thing, lensType), locale);
 	}
 
 	format(thing: LensedOrdered, locale: LangCode): DisplayDecorated {
@@ -680,14 +686,15 @@ function invertRecord<K extends string | number | symbol, V extends string | num
 }
 
 /*
-function mapValuesOfObject<V, V2>(obj: { string: V }, fn: (v: V, k: string, i: number) => V2): { string: V2 } {
+export function mapValuesOfObject<V, V2>(obj: Record<string, V>, fn: (v: V, k: string, i: number) => V2): Record<string, V2> {
     return Object.fromEntries(
         Object.entries(obj).map(
             ([k, v], i) => [k, fn(v, k, i)]
         )
     )
 }
-*/
+
+ */
 
 function isAlternateProperties(v: ShowProperty): v is AlternateProperties {
 	return typeof v !== 'string' && 'alternateProperties' in v;
@@ -722,7 +729,7 @@ function isLink(data: unknown): data is Link {
 }
  */
 
-function isObject(data: unknown): data is Data {
+export function isObject(data: unknown): data is Data {
 	return typeof data === 'object' && !Array.isArray(data) && data !== null;
 }
 
