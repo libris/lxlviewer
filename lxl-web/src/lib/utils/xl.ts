@@ -19,7 +19,9 @@ enum JsonLd {
 
 enum Fmt {
 	DISPLAY = '_display',
-	PROPS = '_props'
+	PROPS = '_props',
+	CONTENT_AFTER = '_contentAfter',
+	CONTENT_BEFORE = '_contentBefore'
 }
 
 enum Base {
@@ -548,19 +550,19 @@ class Formatter {
 		if (isFirst && Fresnel.contentFirst in details) {
 			if (details[Fresnel.contentFirst] !== '') {
 				// TODO decide if we should generate contentBefore or contentFirst here
-				obj[Fresnel.contentBefore] = details[Fresnel.contentFirst];
+				obj[Fmt.CONTENT_BEFORE] = details[Fresnel.contentFirst];
 			}
 		} else if (Fresnel.contentBefore in details && details[Fresnel.contentBefore] !== '') {
-			obj[Fresnel.contentBefore] = details[Fresnel.contentBefore];
+			obj[Fmt.CONTENT_BEFORE] = details[Fresnel.contentBefore];
 		}
 
 		if (isLast && Fresnel.contentLast in details) {
 			if (details[Fresnel.contentLast] !== '') {
 				// TODO decide if we should generate contentAfter or contentLast here
-				obj[Fresnel.contentAfter] = details[Fresnel.contentLast];
+				obj[Fmt.CONTENT_AFTER] = details[Fresnel.contentLast];
 			}
 		} else if (Fresnel.contentAfter in details && details[Fresnel.contentAfter] !== '') {
-			obj[Fresnel.contentAfter] = details[Fresnel.contentAfter];
+			obj[Fmt.CONTENT_AFTER] = details[Fresnel.contentAfter];
 		}
 	}
 
