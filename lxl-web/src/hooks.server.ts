@@ -1,5 +1,6 @@
 import { defaultLocale, Locales } from '$lib/i18n/locales';
-import { ID_URL, DISPLAY_JSONLD_FROM_LOCAL_FS } from '$env/static/private';
+import { USE_LOCAL_DISPLAY_JSONLD } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import fs from 'fs';
 
@@ -37,20 +38,20 @@ async function loadUtilCached() {
 // TODO error handling
 async function loadUtil() {
 	const [contextRes, vocabRes, displayRes] = await Promise.all([
-		fetch(`${ID_URL}/context.jsonld`),
-		fetch(`${ID_URL}/vocab/data.jsonld`),
-		fetch(`${ID_URL}/vocab/display/data.jsonld`)
+		fetch(`${env.ID_URL}/context.jsonld`),
+		fetch(`${env.ID_URL}/vocab/data.jsonld`),
+		fetch(`${env.ID_URL}/vocab/display/data.jsonld`)
 	]);
 
 	const context = await contextRes.json();
 	const vocab = await vocabRes.json();
 	let display = await displayRes.json();
 
-	if (DISPLAY_JSONLD_FROM_LOCAL_FS) {
+	if (USE_LOCAL_DISPLAY_JSONLD) {
 		const path = '../../definitions/source/vocab/display.jsonld';
 		const displayJson = fs.readFileSync(path, { encoding: 'utf8' });
 		display = JSON.parse(displayJson);
-		console.warn(`DISPLAY_JSONLD_FROM_LOCAL_FS true. Using ${path}`);
+		console.warn(`USE_LOCAL_DISPLAY_JSONLD true. Using ${path}`);
 	}
 
 	const vocabUtil = new VocabUtil(vocab, context);
