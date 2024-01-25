@@ -21,10 +21,12 @@ export const load = async ({ params, locals, fetch, url }) => {
 	}));
 
 	const filters = decorateFilters(result, displayUtil, getSupportedLocale(params?.lang));
+	const mapping = decorateMapping(result, displayUtil, getSupportedLocale(params?.lang));
 
 	return {
 		items,
-		filters
+		filters,
+		mapping
 	};
 };
 
@@ -49,4 +51,21 @@ function decorateFilters(
 	});
 
 	return slices;
+}
+
+function decorateMapping(
+	result: Record<string, Record<string, unknown>>,
+	displayUtil: DisplayUtil,
+	locale: string
+) {
+	const mapping: Array = result.search?.mapping || [];
+
+	mapping.forEach((m) => {
+		if ('object' in m) {
+			m.object = displayUtil.format(displayUtil.applyLensOrdered(m.object, LensType.Chip), locale);
+			console.log(m.object);
+		}
+	});
+
+	return mapping;
 }
