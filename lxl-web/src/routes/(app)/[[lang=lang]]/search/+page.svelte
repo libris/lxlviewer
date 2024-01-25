@@ -10,6 +10,18 @@
 <div class="m-3">
 	<h1>{$page.data.t('search.result_info', { q: `${q}` })}</h1>
 	<ul>
+		{#each data.searchResult.mapping as mapping}
+			<li>
+				<DecoratedData data={mapping.display} />
+				{#if 'up' in mapping}
+					<a class="underline" href={mapping.up['@id']}>x</a>
+				{/if}
+			</li>
+		{/each}
+	</ul>
+	<br />
+	<br />
+	<ul>
 		{#each data.searchResult.items as item (item['@id'])}
 			href={item.fnurgel}>{item['@id']}
 			<li>
@@ -17,6 +29,8 @@
 			</li>
 		{/each}
 	</ul>
+	<br />
+	<br />
 	<ul>
 		{#each data.searchResult.facetGroups as group (group.dimension)}
 			<h2>{group.label}</h2>
