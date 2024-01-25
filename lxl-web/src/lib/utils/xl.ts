@@ -148,9 +148,11 @@ export class VocabUtil {
 		this.vocabIndex = lxljsVocab.preprocessVocab(vocab);
 	}
 
-	getBaseClasses(className: ClassName): ClassName[] {
+	getBaseClasses(className: ClassName | ClassName[]): ClassName[] {
 		//FIXME? if multiple base classes, base classes are returned in depth-first order instead of breadth-first
-		return lxljsVocab.getBaseClasses(className, this.vocabIndex, this.context);
+		return Array.isArray(className)
+			? className.map((c) => lxljsVocab.getBaseClasses(c, this.vocabIndex, this.context)).flat()
+			: lxljsVocab.getBaseClasses(className, this.vocabIndex, this.context);
 	}
 
 	// TODO handle missing type
