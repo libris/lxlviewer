@@ -1,4 +1,4 @@
-import { ID_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { json } from '@sveltejs/kit';
 import displayGroups from '$lib/assets/json/displayGroups.json';
 import i18n from '$lib/assets/json/i18n.json';
@@ -10,9 +10,9 @@ import i18n from '$lib/assets/json/i18n.json';
 
 export async function GET() {
 	const [contextRes, vocabRes, displayRes] = await Promise.all([
-		fetch(`${ID_URL}/context.jsonld`),
-		fetch(`${ID_URL}/vocab/data.jsonld`),
-		fetch(`${ID_URL}/vocab/display/data.jsonld`)
+		fetch(`${env.ID_URL}/context.jsonld`),
+		fetch(`${env.ID_URL}/vocab/data.jsonld`),
+		fetch(`${env.ID_URL}/vocab/display/data.jsonld`)
 	]);
 
 	const context = await contextRes.json();
