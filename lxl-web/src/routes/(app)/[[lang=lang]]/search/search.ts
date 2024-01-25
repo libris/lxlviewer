@@ -42,6 +42,7 @@ function displayFacetGroups(
 			dimension: g.dimension,
 			facets: g.observation.map((o) => {
 				return {
+					...('_selected' in o && { selected: o._selected }),
 					totalItems: o.totalItems,
 					view: o.view,
 					object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale)
@@ -126,18 +127,24 @@ interface Facet {
 	totalItems: number;
 	view: Link;
 	object: FramedData;
+	_selected?: boolean;
 }
 
 interface DisplayFacetGroup {
 	label: string;
 	dimension: FacetGroupId;
-	facets: DisplayFacet[];
+	// TODO better to do this distinction on the group level?
+	facets: (DisplayFacet | DisplayMultiSelectFacet)[];
 }
 
 interface DisplayFacet {
 	totalItems: number;
 	view: Link;
 	object: DisplayDecorated;
+}
+
+interface DisplayMultiSelectFacet extends DisplayFacet {
+	selected: boolean;
 }
 
 interface DisplayMapping {

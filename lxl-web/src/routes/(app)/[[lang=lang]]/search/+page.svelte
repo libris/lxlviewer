@@ -26,6 +26,7 @@
 				<a class="underline" href={facet.view['@id']}>
 					<DecoratedData data={facet.object} />
 				</a>
+				<pre>{JSON.stringify(facet)}</pre>
 				<br />
 			{/each}
 
