@@ -29,28 +29,92 @@ export function asResult(
 	};
 }
 
-function displayFacetGroups(
-	view: PartialCollectionView,
-	displayUtil: DisplayUtil,
-	locale: LangCode
-): DisplayFacetGroup[] {
-	const slices = view.stats?.sliceByDimension || {};
-
-	return Object.values(slices).map((g) => {
-		return {
-			label: g.dimension, // TODO
-			dimension: g.dimension,
-			facets: g.observation.map((o) => {
-				return {
-					...('_selected' in o && { selected: o._selected }),
-					totalItems: o.totalItems,
-					view: o.view,
-					object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale)
-				};
-			})
-		};
-	});
+export interface SearchResult {
+	itemOffset: number;
+	itemsPerPage: number;
+	totalItems: number;
+	maxItems: number;
+	mapping: DisplayMapping[];
+	first: Link;
+	last: Link;
+	next?: Link;
+	items: DisplayDecorated[];
+	facetGroups: FacetGroup[];
 }
+
+type FacetGroupId = string;
+
+interface FacetGroup {
+	label: string;
+	dimension: FacetGroupId;
+	// TODO better to do this distinction on the group level?
+	facets: (Facet | MultiSelectFacet)[];
+}
+
+interface Facet {
+	totalItems: number;
+	view: Link;
+	object: DisplayDecorated;
+}
+
+interface MultiSelectFacet extends Facet {
+	selected: boolean;
+}
+
+interface DisplayMapping {
+	display: DisplayDecorated;
+	up?: Link;
+	children: DisplayMapping[];
+}
+
+export interface PartialCollectionView {
+	[JsonLd.TYPE]: 'PartialCollectionView';
+	[JsonLd.ID]: string;
+	[JsonLd.CONTEXT]: string;
+	itemOffset: number;
+	itemsPerPage: number;
+	totalItems: number;
+	maxItems: number;
+	search: {
+		mapping: (PredicateAndObject | PredicateAndValue)[];
+	};
+	first: Link;
+	last: Link;
+	next?: Link;
+	items: FramedData[];
+	stats?: {
+		[JsonLd.ID]: '#stats';
+		sliceByDimension: Record<FacetGroupId, Slice>;
+	};
+}
+
+interface Slice {
+	dimension: FacetGroupId;
+	dimensionChain: PropertyName[];
+	observation: Observation[];
+}
+
+interface Observation {
+	totalItems: number;
+	view: Link;
+	object: FramedData;
+	_selected?: boolean;
+}
+
+interface PredicateAndObject {
+	variable: string;
+	predicate: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
+	object: FramedData;
+}
+interface PredicateAndValue {
+	variable: string;
+	predicate: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
+	value: string;
+}
+
+interface ObjectProperty {}
+
+interface DatatypeProperty {}
 
 function displayMappings(
 	view: PartialCollectionView,
@@ -81,92 +145,28 @@ function displayMappings(
 	});
 }
 
-interface SearchResult {
-	itemOffset: number;
-	itemsPerPage: number;
-	totalItems: number;
-	maxItems: number;
-	mapping: DisplayMapping[];
-	first: Link;
-	last: Link;
-	next?: Link;
-	items: DisplayDecorated[];
-	facetGroups: DisplayFacetGroup[];
+function displayFacetGroups(
+	view: PartialCollectionView,
+	displayUtil: DisplayUtil,
+	locale: LangCode
+): FacetGroup[] {
+	const slices = view.stats?.sliceByDimension || {};
+
+	return Object.values(slices).map((g) => {
+		return {
+			label: g.dimension, // TODO
+			dimension: g.dimension,
+			facets: g.observation.map((o) => {
+				return {
+					...('_selected' in o && { selected: o._selected }),
+					totalItems: o.totalItems,
+					view: o.view,
+					object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale)
+				};
+			})
+		};
+	});
 }
-
-export interface PartialCollectionView {
-	[JsonLd.TYPE]: 'PartialCollectionView';
-	[JsonLd.ID]: string;
-	[JsonLd.CONTEXT]: string;
-	itemOffset: number;
-	itemsPerPage: number;
-	totalItems: number;
-	maxItems: number;
-	search: {
-		mapping: (PredicateAndObject | PredicateAndValue)[];
-	};
-	first: Link;
-	last: Link;
-	next?: Link;
-	items: FramedData[];
-	stats?: {
-		[JsonLd.ID]: '#stats';
-		sliceByDimension: Record<FacetGroupId, FacetGroup>;
-	};
-}
-
-type FacetGroupId = string;
-
-interface FacetGroup {
-	dimension: FacetGroupId;
-	dimensionChain: PropertyName[];
-	observation: Facet[];
-}
-
-interface Facet {
-	totalItems: number;
-	view: Link;
-	object: FramedData;
-	_selected?: boolean;
-}
-
-interface DisplayFacetGroup {
-	label: string;
-	dimension: FacetGroupId;
-	// TODO better to do this distinction on the group level?
-	facets: (DisplayFacet | DisplayMultiSelectFacet)[];
-}
-
-interface DisplayFacet {
-	totalItems: number;
-	view: Link;
-	object: DisplayDecorated;
-}
-
-interface DisplayMultiSelectFacet extends DisplayFacet {
-	selected: boolean;
-}
-
-interface DisplayMapping {
-	display: DisplayDecorated;
-	up?: Link;
-	children: DisplayMapping[];
-}
-
-interface PredicateAndObject {
-	variable: string;
-	predicate: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
-	object: FramedData;
-}
-interface PredicateAndValue {
-	variable: string;
-	predicate: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
-	value: string;
-}
-
-interface ObjectProperty {}
-
-interface DatatypeProperty {}
 
 function isPredicateAndObject(v: unknown): v is PredicateAndObject {
 	return isObject(v) && 'variable' in v && 'predicate' in v && 'object' in v;
