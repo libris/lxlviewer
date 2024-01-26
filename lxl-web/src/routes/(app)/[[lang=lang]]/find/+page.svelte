@@ -23,10 +23,10 @@
 	<br />
 	<ul>
 		{#each data.searchResult.items as item (item['@id'])}
-			href={item.fnurgel}>{item['@id']}
 			<li>
 				<DecoratedData data={item} />
 			</li>
+			<br />
 		{/each}
 	</ul>
 	<br />

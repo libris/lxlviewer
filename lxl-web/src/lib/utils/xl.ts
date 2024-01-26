@@ -184,7 +184,7 @@ export class VocabUtil {
 
 type FormatIndex = Record<string, Format>;
 
-// TODO tranliterated values in language containers
+// TODO transliterated values in language containers
 // TODO handle not framed data, i.e. @graph
 // TODO type coercion (code, langCode, langCodeFull -> code^^ISO639-2, code^^ISO639-3 etc.)
 // TODO fresnel:allProperties?
