@@ -499,6 +499,7 @@ class Formatter {
 	private formatResource(resource, isFirst: boolean, isLast: boolean) {
 		const className = resource[JsonLd.TYPE];
 		let result = {
+			...(JsonLd.ID in resource && { [JsonLd.ID]: resource[JsonLd.ID] }),
 			[JsonLd.TYPE]: className,
 			[Fmt.DISPLAY]: this.formatProperties(resource[Fmt.PROPS], className)
 		};
