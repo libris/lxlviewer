@@ -1,7 +1,5 @@
 export default {
-	home: {
-		welcome_text: 'Välkommen till {site}, idag är det {day}'
-	},
+	home: {},
 	search: {
 		result_info: 'Sökresultat för: {q}'
 	},

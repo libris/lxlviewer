@@ -1,12 +1,12 @@
-<p class="text-1-regular">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-<p class="text-1-cond-caps">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+<p class="text-6-cond-extrabold">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+<p class="text-5-cond-extrabold">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+<p class="text-4-cond-extrabold">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+<p class="text-3-cond-bold">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+<p class="text-3-regular">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
 <p class="text-1-cond-bold">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
 <p class="text-2-regular">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-<p class="text-3-regular">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-<p class="text-3-cond-bold">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-<p class="text-4-cond-extrabold">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-<p class="text-5-cond-extrabold">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-<p class="text-6-cond-extrabold">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+<p class="text-1-cond-caps">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+<p class="text-1-regular">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
 
 <div class="m-3">
 	<div class="flex">
