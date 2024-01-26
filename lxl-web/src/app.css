@@ -1,13 +1,40 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'colors.css';
+
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 @layer base {
-	h1 {
-		@apply text-4xl;
+	/* Variable Font */
+	/* TODO: reduce size, convert to woff2 etc */
+	@supports (font-variation-settings: normal) {
+		@font-face {
+			font-family: 'Roboto Flex';
+			src: url('/fonts/RobotoFlex-VariableFont_GRAD,XTRA,YOPQ,YTAS,YTDE,YTFI,YTLC,YTUC,opsz,slnt,wdth,wght.ttf')
+				format('truetype');
+			font-stretch: 60% 100%;
+			font-weight: 400 800;
+			font-display: auto;
+		}
 	}
-	h2 {
-		@apply text-3xl;
+
+	/* Static fallback */
+	@supports not (font-variation-settings: normal) {
+		@font-face {
+			font-family: 'Roboto Flex';
+			src: url('/fonts/RobotoFlex-Regular.ttf') format('truetype');
+			font-style: normal;
+			font-display: auto;
+		}
 	}
-	/* ... */
+
+	/* Base styles for elements */
+	/* html {
+		@apply bg-background text-primary;
+		@apply font-sans text-base antialiased;
+	} */
+
+	a {
+		@apply text-accent-dark underline visited:text-[purple];
+	}
 }
