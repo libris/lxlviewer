@@ -1,6 +1,5 @@
 import type { Handle, HandleFetch } from '@sveltejs/kit';
 import { defaultLocale, Locales } from '$lib/i18n/locales';
-import { env } from '$env/dynamic/private';
 import { USE_LOCAL_DISPLAY_JSONLD } from '$env/static/private';
 import { env } from '$env/dynamic/private';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
