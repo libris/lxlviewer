@@ -9,7 +9,15 @@ import autoprefixer from 'autoprefixer';
 export default defineConfig({
   base: '/katalogisering/',
   plugins: [
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          compatConfig: {
+            MODE: 2
+          }
+        }
+      }
+    })
   ],
   server: {
     port: 8080,
@@ -30,6 +38,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      vue: '@vue/compat',
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '~bootstrap': resolve(__dirname, 'node_modules/bootstrap'),
       '~font-awesome': resolve(__dirname, 'node_modules/font-awesome'),
