@@ -62,7 +62,8 @@ enum Fresnel {
 	resourceFormat = 'fresnel:resourceFormat',
 	resourceStyle = 'fresnel:resourceStyle',
 	super = 'fresnel:super',
-	valueFormat = 'fresnel:valueFormat'
+	valueFormat = 'fresnel:valueFormat',
+	valueStyle = 'fresnel:valueStyle'
 }
 
 interface Format {
@@ -74,7 +75,9 @@ interface Format {
 	[Fresnel.propertyFormat]?: FormatDetails;
 	[Fresnel.resourceFormat]: FormatDetails;
 	[Fresnel.valueFormat]?: FormatDetails;
-	[Fresnel.propertyStyle]?: string;
+	[Fresnel.propertyStyle]?: string[];
+	[Fresnel.resourceStyle]?: string[];
+	[Fresnel.valueStyle]?: string[];
 }
 
 interface FormatDetails {
@@ -185,8 +188,6 @@ type FormatIndex = Record<string, Format>;
 // TODO handle not framed data, i.e. @graph
 // TODO type coercion (code, langCode, langCodeFull -> code^^ISO639-2, code^^ISO639-3 etc.)
 // TODO fresnel:allProperties?
-// TODO token for Identifier "<@type> <value>" e.g . "ISBN 9783833148408" - hardcoded in display.js
-// TODO ISNI/ORCID formatting see display.js:293
 export class DisplayUtil {
 	private readonly display: DisplayJsonLd;
 	private readonly vocabUtil: VocabUtil;
@@ -442,12 +443,32 @@ export class DisplayUtil {
 	}
 }
 
+type Styler = (v: unknown) => unknown;
+
 class Formatter {
 	private readonly DEFAULT_FORMAT: Format = {
 		[JsonLd.TYPE]: Fresnel.Format,
 		[Fresnel.propertyFormat]: {},
 		[Fresnel.valueFormat]: {},
 		[Fresnel.resourceFormat]: {}
+	};
+
+	private readonly stylers: Record<string, Styler> = {
+		'isniGroupDigits()': (v) => {
+			const formatIsni = (isni: unknown) =>
+				typeof isni === 'string' && isni.length === 16
+					? `${isni.slice(0, 4)} ${isni.slice(4, 8)} ${isni.slice(8, 12)} ${isni.slice(12, 16)}`
+					: isni;
+
+			return Array.isArray(v) ? v.map(formatIsni) : formatIsni(v);
+		},
+		'displayType()': (v) => {
+			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
+				// TODO doesn't translate type name
+				(v[Fmt.DISPLAY] as Array<unknown>).unshift({ [JsonLd.VALUE]: v[JsonLd.TYPE] });
+			}
+			return v;
+		}
 	};
 
 	private readonly formatIndex: FormatIndex;
@@ -477,10 +498,11 @@ class Formatter {
 
 	private formatResource(resource, isFirst: boolean, isLast: boolean) {
 		const className = resource[JsonLd.TYPE];
-		const result = {
+		let result = {
 			[JsonLd.TYPE]: className,
 			[Fmt.DISPLAY]: this.formatProperties(resource[Fmt.PROPS], className)
 		};
+		result = this.styleResource(result, className);
 		this.addFormatDetail(result, this.resourceFormat(className), isFirst, isLast);
 
 		return result;
@@ -528,7 +550,7 @@ class Formatter {
 			this.addFormatDetail(result, this.valueFormat(className, propertyName), true, true);
 			return result;
 		} else {
-			return value;
+			return this.styleValue(value, className, propertyName);
 		}
 	}
 
@@ -543,10 +565,28 @@ class Formatter {
 		if (isTypedNode(value)) {
 			result = this.formatResource(value, isFirst, isLast);
 		} else {
-			result = { [JsonLd.VALUE]: value };
+			result = { [JsonLd.VALUE]: this.styleValue(value, className, propertyName) };
 		}
 		this.addFormatDetail(result, this.valueFormat(className, propertyName), isFirst, isLast);
 		return result;
+	}
+
+	private styleResource(value, className: ClassName) {
+		this.resourceStyle(className).forEach((style) => {
+			if (style in this.stylers) {
+				value = this.stylers[style](value);
+			}
+		});
+		return value;
+	}
+
+	private styleValue(value, className: ClassName, propertyName: PropertyName) {
+		this.valueStyle(className, propertyName).forEach((style) => {
+			if (style in this.stylers) {
+				value = this.stylers[style](value);
+			}
+		});
+		return value;
 	}
 
 	private addFormatDetail(
@@ -578,6 +618,10 @@ class Formatter {
 		return this._resourceFormat(className, Fresnel.resourceFormat)[Fresnel.resourceFormat]!;
 	}
 
+	private resourceStyle(className: ClassName): string[] {
+		return this._resourceFormat(className, Fresnel.resourceStyle)[Fresnel.resourceStyle] || [];
+	}
+
 	private propertyFormat(className: ClassName, propertyName: PropertyName): FormatDetails {
 		const f = this._propertyOrValueFormat(className, propertyName, Fresnel.propertyFormat);
 		return f[Fresnel.propertyFormat]!;
@@ -586,6 +630,11 @@ class Formatter {
 	private valueFormat(className: ClassName, propertyName: PropertyName): FormatDetails {
 		const f = this._propertyOrValueFormat(className, propertyName, Fresnel.valueFormat);
 		return f[Fresnel.valueFormat]!;
+	}
+
+	private valueStyle(className: ClassName, propertyName: PropertyName): string[] {
+		const f = this._propertyOrValueFormat(className, propertyName, Fresnel.valueStyle);
+		return f[Fresnel.valueStyle] || [];
 	}
 
 	private _resourceFormat(
@@ -604,7 +653,7 @@ class Formatter {
 	private _propertyOrValueFormat(
 		className: ClassName,
 		propertyName: PropertyName,
-		key: Fresnel.propertyFormat | Fresnel.propertyStyle | Fresnel.valueFormat
+		key: Fresnel.propertyFormat | Fresnel.propertyStyle | Fresnel.valueFormat | Fresnel.valueStyle
 	) {
 		// TODO precompute / memoize formats for base classes
 		const hasFormat = (f: Format) => key in f;
