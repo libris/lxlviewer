@@ -4,6 +4,6 @@
 	export let data;
 </script>
 
-<h1>{data.fnurgel}</h1>
+<h1 class="text-6-cond-extrabold">{data.fnurgel}</h1>
 <DecoratedData data={data.foo.card_decorated}></DecoratedData>
 <pre>{JSON.stringify(data.foo, null, 2)}</pre>

@@ -6,6 +6,7 @@
 
 @layer base {
 	/* Variable Font */
+	/* TODO: reduce size, convert to woff2 etc */
 	@supports (font-variation-settings: normal) {
 		@font-face {
 			font-family: 'Roboto Flex';
@@ -28,9 +29,10 @@
 	}
 
 	/* Base styles for elements */
-	html {
-		@apply bg-background font-sans text-base text-primary antialiased;
-	}
+	/* html {
+		@apply bg-background text-primary;
+		@apply font-sans text-base antialiased;
+	} */
 
 	a {
 		@apply text-accent-dark underline visited:text-[purple];

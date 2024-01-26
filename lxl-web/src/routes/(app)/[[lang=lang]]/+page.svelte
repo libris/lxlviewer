@@ -4,7 +4,7 @@
 	export let data;
 </script>
 
-<div class="container">
+<div class="m-3">
 	<h1 class="text-6-cond-extrabold">
 		{data.t('home.welcome_text', {
 			site: 'Libris',
