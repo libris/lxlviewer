@@ -504,7 +504,7 @@ class Formatter {
 			[Fmt.DISPLAY]: this.formatProperties(resource[Fmt.PROPS], className)
 		};
 		result = this.styleResource(result, className);
-		this.addFormatDetail(result, this.resourceFormat(className), isFirst, isLast);
+		this.addFormatDetail(result, this.findResourceFormat(className), isFirst, isLast);
 
 		return result;
 	}
@@ -527,7 +527,7 @@ class Formatter {
 		}
 
 		const result = {} as Record<string, unknown>;
-		this.addFormatDetail(result, this.propertyFormat(className, propertyName), isFirst, isLast);
+		this.addFormatDetail(result, this.findPropertyFormat(className, propertyName), isFirst, isLast);
 
 		result[propertyName] = this.formatValues(value, className, propertyName);
 
@@ -548,7 +548,7 @@ class Formatter {
 	private formatSingleValue(value, className: ClassName, propertyName: PropertyName) {
 		if (isTypedNode(value)) {
 			const result = this.formatResource(value, true, true);
-			this.addFormatDetail(result, this.valueFormat(className, propertyName), true, true);
+			this.addFormatDetail(result, this.findValueFormat(className, propertyName), true, true);
 			return result;
 		} else {
 			return this.styleValue(value, className, propertyName);
@@ -568,12 +568,12 @@ class Formatter {
 		} else {
 			result = { [JsonLd.VALUE]: this.styleValue(value, className, propertyName) };
 		}
-		this.addFormatDetail(result, this.valueFormat(className, propertyName), isFirst, isLast);
+		this.addFormatDetail(result, this.findValueFormat(className, propertyName), isFirst, isLast);
 		return result;
 	}
 
 	private styleResource(value, className: ClassName) {
-		this.resourceStyle(className).forEach((style) => {
+		this.findResourceStyle(className).forEach((style) => {
 			if (style in this.stylers) {
 				value = this.stylers[style](value);
 			}
@@ -582,7 +582,7 @@ class Formatter {
 	}
 
 	private styleValue(value, className: ClassName, propertyName: PropertyName) {
-		this.valueStyle(className, propertyName).forEach((style) => {
+		this.findValueStyle(className, propertyName).forEach((style) => {
 			if (style in this.stylers) {
 				value = this.stylers[style](value);
 			}
@@ -615,30 +615,30 @@ class Formatter {
 		}
 	}
 
-	private resourceFormat(className: ClassName): FormatDetails {
-		return this._resourceFormat(className, Fresnel.resourceFormat)[Fresnel.resourceFormat]!;
+	private findResourceFormat(className: ClassName): FormatDetails {
+		return this._findResourceFormat(className, Fresnel.resourceFormat)[Fresnel.resourceFormat]!;
 	}
 
-	private resourceStyle(className: ClassName): string[] {
-		return this._resourceFormat(className, Fresnel.resourceStyle)[Fresnel.resourceStyle] || [];
+	private findResourceStyle(className: ClassName): string[] {
+		return this._findResourceFormat(className, Fresnel.resourceStyle)[Fresnel.resourceStyle] || [];
 	}
 
-	private propertyFormat(className: ClassName, propertyName: PropertyName): FormatDetails {
-		const f = this._propertyOrValueFormat(className, propertyName, Fresnel.propertyFormat);
+	private findPropertyFormat(className: ClassName, propertyName: PropertyName): FormatDetails {
+		const f = this._findPropertyOrValueFormat(className, propertyName, Fresnel.propertyFormat);
 		return f[Fresnel.propertyFormat]!;
 	}
 
-	private valueFormat(className: ClassName, propertyName: PropertyName): FormatDetails {
-		const f = this._propertyOrValueFormat(className, propertyName, Fresnel.valueFormat);
+	private findValueFormat(className: ClassName, propertyName: PropertyName): FormatDetails {
+		const f = this._findPropertyOrValueFormat(className, propertyName, Fresnel.valueFormat);
 		return f[Fresnel.valueFormat]!;
 	}
 
-	private valueStyle(className: ClassName, propertyName: PropertyName): string[] {
-		const f = this._propertyOrValueFormat(className, propertyName, Fresnel.valueStyle);
+	private findValueStyle(className: ClassName, propertyName: PropertyName): string[] {
+		const f = this._findPropertyOrValueFormat(className, propertyName, Fresnel.valueStyle);
 		return f[Fresnel.valueStyle] || [];
 	}
 
-	private _resourceFormat(
+	private _findResourceFormat(
 		className: ClassName,
 		key: Fresnel.resourceFormat | Fresnel.resourceStyle
 	) {
@@ -651,7 +651,7 @@ class Formatter {
 		return this.DEFAULT_FORMAT;
 	}
 
-	private _propertyOrValueFormat(
+	private _findPropertyOrValueFormat(
 		className: ClassName,
 		propertyName: PropertyName,
 		key: Fresnel.propertyFormat | Fresnel.propertyStyle | Fresnel.valueFormat | Fresnel.valueStyle
