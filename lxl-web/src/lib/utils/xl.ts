@@ -21,7 +21,8 @@ enum Fmt {
 	DISPLAY = '_display',
 	PROPS = '_props',
 	CONTENT_AFTER = '_contentAfter',
-	CONTENT_BEFORE = '_contentBefore'
+	CONTENT_BEFORE = '_contentBefore',
+	STYLE = '_style'
 }
 
 enum Base {
@@ -118,7 +119,8 @@ export enum LensType {
 	Card = 'cards',
 	Full = 'full',
 	SearchChip = 'search-chips',
-	SearchCard = 'search-cards'
+	SearchCard = 'search-cards',
+	WebChip = 'web-chips'
 }
 
 type Context = Record<string, string | Record<JsonLd, string>>;
@@ -526,7 +528,8 @@ class Formatter {
 			};
 		}
 
-		const result = {} as Record<string, unknown>;
+		let result = {} as Record<string, unknown>;
+		result = this.styleProperty(result, className, propertyName);
 		this.addFormatDetail(result, this.findPropertyFormat(className, propertyName), isFirst, isLast);
 
 		result[propertyName] = this.formatValues(value, className, propertyName);
@@ -572,13 +575,28 @@ class Formatter {
 		return result;
 	}
 
-	private styleResource(value, className: ClassName) {
-		this.findResourceStyle(className).forEach((style) => {
+	private styleProperty(property, className: ClassName, propertyName: PropertyName) {
+		this.findPropertyStyle(className, propertyName).forEach((style) => {
 			if (style in this.stylers) {
-				value = this.stylers[style](value);
+				property = this.stylers[style](property);
+			} else {
+				property[Fmt.STYLE] = property[Fmt.STYLE] || [];
+				property[Fmt.STYLE].push(style);
 			}
 		});
-		return value;
+		return property;
+	}
+
+	private styleResource(resource, className: ClassName) {
+		this.findResourceStyle(className).forEach((style) => {
+			if (style in this.stylers) {
+				resource = this.stylers[style](resource);
+			} else {
+				resource[Fmt.STYLE] = resource[Fmt.STYLE] || [];
+				resource[Fmt.STYLE].push(style);
+			}
+		});
+		return resource;
 	}
 
 	private styleValue(value, className: ClassName, propertyName: PropertyName) {
@@ -626,6 +644,11 @@ class Formatter {
 	private findPropertyFormat(className: ClassName, propertyName: PropertyName): FormatDetails {
 		const f = this._findPropertyOrValueFormat(className, propertyName, Fresnel.propertyFormat);
 		return f[Fresnel.propertyFormat]!;
+	}
+
+	private findPropertyStyle(className: ClassName, propertyName: PropertyName): string[] {
+		const f = this._findPropertyOrValueFormat(className, propertyName, Fresnel.propertyStyle);
+		return f[Fresnel.propertyStyle] || [];
 	}
 
 	private findValueFormat(className: ClassName, propertyName: PropertyName): FormatDetails {
