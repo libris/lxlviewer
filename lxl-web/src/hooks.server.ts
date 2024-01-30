@@ -1,5 +1,4 @@
 import { defaultLocale, Locales } from '$lib/i18n/locales';
-import { USE_LOCAL_DISPLAY_JSONLD } from '$env/static/private';
 import { env } from '$env/dynamic/private';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import fs from 'fs';
@@ -47,7 +46,7 @@ async function loadUtil() {
 	const vocab = await vocabRes.json();
 	let display = await displayRes.json();
 
-	if (USE_LOCAL_DISPLAY_JSONLD === 'true') {
+	if (env.USE_LOCAL_DISPLAY_JSONLD === 'true') {
 		const path = '../../definitions/source/vocab/display.jsonld';
 		const displayJson = fs.readFileSync(path, { encoding: 'utf8' });
 		display = JSON.parse(displayJson);
