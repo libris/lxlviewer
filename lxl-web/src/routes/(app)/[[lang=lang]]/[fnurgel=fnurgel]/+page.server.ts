@@ -1,6 +1,12 @@
 import { env } from '$env/dynamic/private';
-import { DisplayUtil, type FramedData, LensType } from '$lib/utils/xl';
+import { type DisplayDecorated, DisplayUtil, type FramedData, LensType } from '$lib/utils/xl';
 import { getSupportedLocale } from '$lib/i18n/locales';
+
+export interface ResourcePage {
+	header: DisplayDecorated;
+	overview: DisplayDecorated;
+	details: DisplayDecorated;
+}
 
 export const load = async ({ params, locals, fetch }) => {
 	const doc = await loadDoc(fetch, params.fnurgel);

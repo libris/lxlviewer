@@ -22,7 +22,8 @@ enum Fmt {
 	PROPS = '_props',
 	CONTENT_AFTER = '_contentAfter',
 	CONTENT_BEFORE = '_contentBefore',
-	STYLE = '_style'
+	STYLE = '_style',
+	LABEL = '_label'
 }
 
 enum Base {
@@ -132,7 +133,11 @@ export type FramedData = Record<string, unknown>;
 export type PropertyDefinition = unknown;
 
 // TODO
-type LensedOrdered = unknown;
+interface LensedOrdered {
+	[JsonLd.ID]?: Link;
+	[JsonLd.TYPE]: ClassName;
+	[Fmt.PROPS]: LensedOrdered[];
+}
 export type DisplayDecorated = unknown;
 
 interface VocabData {
@@ -167,6 +172,10 @@ export class VocabUtil {
 		return thing[JsonLd.TYPE] as ClassName;
 	}
 
+	getDefinition(name: ClassName | PropertyName): FramedData {
+		return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
+	}
+
 	isSubClassOf(className: ClassName, baseClassName: ClassName) {
 		this.getBaseClasses(className).includes(baseClassName);
 	}
@@ -175,12 +184,23 @@ export class VocabUtil {
 		return this.isSubClassOf(className, Base.StructuredValue);
 	}
 
+	isVocabProperty(propertyName: PropertyName) {
+		return (
+			propertyName in this.contextTerms() &&
+			this.contextTerms()[propertyName][JsonLd.TYPE] === JsonLd.VOCAB
+		);
+	}
+
 	// TODO? reimplement?
 	hasCategory(propertyName: PropertyName, category: string) {
 		return lxljsVocab.hasCategory(propertyName, category, {
 			vocab: this.vocabIndex,
 			context: this.context
 		});
+	}
+
+	private contextTerms() {
+		return this.context[1];
 	}
 }
 
@@ -271,23 +291,9 @@ export class DisplayUtil {
 	}
 
 	format(thing: LensedOrdered, locale: LangCode): DisplayDecorated {
-		return new Formatter(this, this.vocabUtil, this.formatIndex, locale).displayDecorate(thing);
+		const f = new Formatter(this, this.vocabUtil, this.formatIndex, locale);
+		return f.addLabels(f.displayDecorate(thing));
 	}
-
-	/*
-	applyLensOrdered(thing: FramedData, lensType: LensType) {
-		return this._applyLens(
-			thing,
-			lensType,
-			(result, p, value) => {
-				(result as Array<Data>).push({ [p]: value });
-			},
-			() => {
-				return [];
-			}
-		);
-	}
-	 */
 
 	private _applyLens(
 		thing: unknown,
@@ -358,18 +364,20 @@ export class DisplayUtil {
 		return result;
 	}
 
-	private findLens(lens: LensType, className: ClassName) {
-		for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
-			if (cls in this.display.lensGroups[lens].lenses) {
-				return this.display.lensGroups[lens].lenses[cls];
-			}
-		}
-
-		// TODO... decide what we want
-		if (lens == LensType.Token) {
+	private findLens(lenses: LensType | LensType[], className: ClassName) {
+		for (const lens of asArray(lenses)) {
 			for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
-				if (cls in this.display.lensGroups[LensType.Chip].lenses) {
-					return this.display.lensGroups[LensType.Chip].lenses[cls];
+				if (cls in this.display.lensGroups[lens].lenses) {
+					return this.display.lensGroups[lens].lenses[cls];
+				}
+			}
+
+			// TODO... decide what we want
+			if (lens == LensType.Token) {
+				for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
+					if (cls in this.display.lensGroups[LensType.Chip].lenses) {
+						return this.display.lensGroups[LensType.Chip].lenses[cls];
+					}
 				}
 			}
 		}
@@ -496,6 +504,35 @@ class Formatter {
 		}
 
 		return this.formatResource(thing, false, false);
+	}
+
+	addLabels(thing: DisplayDecorated): DisplayDecorated {
+		if (typeof thing === 'string') {
+			return thing;
+		} else if (isTypedNode(thing)) {
+			thing[Fmt.LABEL] = this.getLabel(thing[JsonLd.TYPE]);
+			asArray(thing[Fmt.DISPLAY]).forEach((v) => this.addLabels(v));
+		} else if (isObject(thing)) {
+			const key = unwrapSingle(
+				Object.keys(thing).filter((k) => !k.startsWith('_') && k !== JsonLd.ID)
+			);
+			thing[Fmt.LABEL] = this.getLabel(key);
+			if (this.vocabUtil.isVocabProperty(key)) {
+				thing[key] = this.getLabel(thing[key]);
+			} else {
+				asArray(thing[key]).forEach((v) => this.addLabels(v));
+			}
+		}
+
+		return thing;
+	}
+
+	private getLabel(vocabName) {
+		return toString(
+			this.displayDecorate(
+				this.displayUtil.applyLensOrdered(this.vocabUtil.getDefinition(vocabName))
+			)
+		);
 	}
 
 	private formatResource(resource, isFirst: boolean, isLast: boolean) {
@@ -707,6 +744,11 @@ class Formatter {
 	}
 }
 
+// TODO
+function toString(data: DisplayDecorated) {
+	return isTypedNode(data) ? data[Fmt.DISPLAY].map(Object.values).join() : data;
+}
+
 function buildFormatIndex(display: DisplayJsonLd) {
 	if (!display.formatters) {
 		return {};
@@ -786,7 +828,7 @@ function isTypedNode(data: unknown): data is Data {
 	return isObject(data) && JsonLd.TYPE in data;
 }
 
-function asArray(v: unknown): Array<unknown> {
+function asArray<V>(v: V | Array<V>): Array<V> | [] {
 	return Array.isArray(v) ? v : v === null || v === undefined ? [] : [v];
 }
 
