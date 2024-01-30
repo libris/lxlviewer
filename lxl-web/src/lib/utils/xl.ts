@@ -184,7 +184,7 @@ export class VocabUtil {
 		return this.isSubClassOf(className, Base.StructuredValue);
 	}
 
-	isVocabProperty(propertyName: PropertyName) {
+	isKeyword(propertyName: PropertyName) {
 		return (
 			propertyName in this.contextTerms() &&
 			this.contextTerms()[propertyName][JsonLd.TYPE] === JsonLd.VOCAB
@@ -517,7 +517,7 @@ class Formatter {
 				Object.keys(thing).filter((k) => !k.startsWith('_') && k !== JsonLd.ID)
 			);
 			thing[Fmt.LABEL] = this.getLabel(key);
-			if (this.vocabUtil.isVocabProperty(key)) {
+			if (this.vocabUtil.isKeyword(key)) {
 				thing[key] = this.getLabel(thing[key]);
 			} else {
 				asArray(thing[key]).forEach((v) => this.addLabels(v));
