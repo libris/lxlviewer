@@ -510,15 +510,15 @@ class Formatter {
 		if (typeof thing === 'string') {
 			return thing;
 		} else if (isTypedNode(thing)) {
-			thing[Fmt.LABEL] = this.getLabel(thing[JsonLd.TYPE]);
+			thing[Fmt.LABEL] = this.getVocabLabel(thing[JsonLd.TYPE]);
 			asArray(thing[Fmt.DISPLAY]).forEach((v) => this.addLabels(v));
 		} else if (isObject(thing)) {
 			const key = unwrapSingle(
 				Object.keys(thing).filter((k) => !k.startsWith('_') && k !== JsonLd.ID)
 			);
-			thing[Fmt.LABEL] = this.getLabel(key);
+			thing[Fmt.LABEL] = this.getVocabLabel(key);
 			if (this.vocabUtil.isKeyword(key)) {
-				thing[key] = this.getLabel(thing[key]);
+				thing[key] = this.getVocabLabel(thing[key]);
 			} else {
 				asArray(thing[key]).forEach((v) => this.addLabels(v));
 			}
@@ -527,7 +527,7 @@ class Formatter {
 		return thing;
 	}
 
-	private getLabel(vocabName) {
+	private getVocabLabel(vocabName) {
 		return toString(
 			this.displayDecorate(
 				this.displayUtil.applyLensOrdered(this.vocabUtil.getDefinition(vocabName))
