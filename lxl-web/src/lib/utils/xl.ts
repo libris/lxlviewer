@@ -121,7 +121,8 @@ export enum LensType {
 	Full = 'full',
 	SearchChip = 'search-chips',
 	SearchCard = 'search-cards',
-	WebChip = 'web-chips'
+	WebChip = 'web-chips',
+	None = null // FIXME
 }
 
 type Context = Record<string, string | Record<JsonLd, string>>;
@@ -511,6 +512,7 @@ class Formatter {
 			return thing;
 		} else if (isTypedNode(thing)) {
 			thing[Fmt.LABEL] = this.getVocabLabel(thing[JsonLd.TYPE]);
+			thing[Fmt.LABEL] = mapMaybeArray(thing[JsonLd.TYPE], (v) => this.getVocabLabel(v));
 			asArray(thing[Fmt.DISPLAY]).forEach((v) => this.addLabels(v));
 		} else if (isObject(thing)) {
 			const key = unwrapSingle(
@@ -518,7 +520,7 @@ class Formatter {
 			);
 			thing[Fmt.LABEL] = this.getVocabLabel(key);
 			if (this.vocabUtil.isKeyword(key)) {
-				thing[key] = this.getVocabLabel(thing[key]);
+				thing[key] = mapMaybeArray(thing[key], (v) => this.getVocabLabel(v));
 			} else {
 				asArray(thing[key]).forEach((v) => this.addLabels(v));
 			}
@@ -528,11 +530,15 @@ class Formatter {
 	}
 
 	private getVocabLabel(vocabName) {
-		return toString(
-			this.displayDecorate(
-				this.displayUtil.applyLensOrdered(this.vocabUtil.getDefinition(vocabName))
-			)
-		);
+		try {
+			return toString(
+				this.displayDecorate(
+					this.displayUtil.applyLensOrdered(this.vocabUtil.getDefinition(vocabName), LensType.None)
+				)
+			);
+		} catch (e) {
+			console.warn(`Error getting vocab label for: ${vocabName}`);
+		}
 	}
 
 	private formatResource(resource, isFirst: boolean, isLast: boolean) {
@@ -834,6 +840,10 @@ function asArray<V>(v: V | Array<V>): Array<V> | [] {
 
 function unwrapSingle(v: unknown) {
 	return Array.isArray(v) ? (v.length == 1 ? v[0] : v) : v;
+}
+
+function mapMaybeArray(v, fn) {
+	return Array.isArray(v) ? v.map(fn) : fn(v);
 }
 
 /*
