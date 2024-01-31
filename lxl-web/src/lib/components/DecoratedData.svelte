@@ -17,7 +17,8 @@
 		'_hint',
 		'_style',
 		'_contentBefore',
-		'_contentAfter'
+		'_contentAfter',
+		'_label'
 	];
 
 	const flattenedProperties = ['_display', '@value'];
@@ -33,15 +34,20 @@
 		return undefined;
 	}
 
-	function getLink(value: ResourceData) {
-		const hints = getObjectProperty(value, '_hint');
-		if (Array.isArray(hints) && hints.includes('link')) {
-			return value?.['@id' as keyof typeof value];
+	function getLink(value: ResourceData): string | undefined {
+		return (getObjectProperty(value, '@id') as string) || undefined;
+		/*
+		if (getObjectProperty(value, '_style') === 'link') {
+			return getObjectProperty(value, '@id') as string
 		}
 		return undefined;
+		*/
 	}
 
-	function getElementType(value: ResourceData) {
+	function getElementType({ key, value }: { key: string; value: ResourceData }) {
+		if (key === '_style' && value === 'area') {
+			return 'div';
+		}
 		if (getLink(value)) {
 			return 'a';
 		}
@@ -67,11 +73,17 @@
 		{/each}
 	{:else}
 		{data?._contentBefore || ''}
+		{#if data?._label}
+			<strong>{data._label}</strong>
+		{/if}
 		{#each getFilteredEntries(data) as [key, value]}
 			{#if flattenedProperties.includes(key)}
 				<svelte:self data={value} />
 			{:else}
-				<svelte:element this={getElementType(value)} {...getElementAttributes({ key, value })}>
+				<svelte:element
+					this={getElementType({ key, value })}
+					{...getElementAttributes({ key, value })}
+				>
 					<svelte:self data={value} />
 				</svelte:element>
 			{/if}
