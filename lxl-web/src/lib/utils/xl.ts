@@ -531,7 +531,7 @@ class Formatter {
 
 	private getVocabLabel(vocabName) {
 		try {
-			return toString(
+			return toLabel(
 				this.displayDecorate(
 					this.displayUtil.applyLensOrdered(this.vocabUtil.getDefinition(vocabName), LensType.None)
 				)
@@ -751,8 +751,34 @@ class Formatter {
 }
 
 // TODO
-function toString(data: DisplayDecorated) {
-	return isTypedNode(data) ? data[Fmt.DISPLAY].map(Object.values).join() : data;
+function toLabel(data: DisplayDecorated) {
+	return isTypedNode(data) ? data[Fmt.DISPLAY].map(Object.values).join('') : data;
+}
+
+// TODO
+export function toString(data: DisplayDecorated) {
+	if (isObject(data)) {
+		const v = [];
+		if (Fmt.CONTENT_BEFORE in data && data[Fmt.CONTENT_BEFORE] !== '') {
+			v.push(data[Fmt.CONTENT_BEFORE]);
+		}
+		if (Fmt.DISPLAY in data) {
+			v.push(...data[Fmt.DISPLAY].map(toString));
+		}
+		v.push(
+			...Object.entries(data)
+				.filter(([k]) => !(Object.values(Fmt).includes(k) || [JsonLd.TYPE, JsonLd.ID].includes(k)))
+				.map(([, v]) => toString(v))
+		);
+		if (Fmt.CONTENT_AFTER in data && data[Fmt.CONTENT_AFTER] !== '') {
+			v.push(data[Fmt.CONTENT_AFTER]);
+		}
+		return v.join('');
+	} else if (Array.isArray(data)) {
+		data.map(toString).join('');
+	} else {
+		return data;
+	}
 }
 
 function buildFormatIndex(display: DisplayJsonLd) {

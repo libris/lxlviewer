@@ -7,7 +7,8 @@ import {
 	type LangCode,
 	LensType,
 	type Link,
-	type PropertyName
+	type PropertyName,
+	toString
 } from '$lib/utils/xl';
 
 export function asResult(
@@ -161,7 +162,8 @@ function displayFacetGroups(
 					...('_selected' in o && { selected: o._selected }),
 					totalItems: o.totalItems,
 					view: o.view,
-					object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale)
+					object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
+					str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale))
 				};
 			})
 		};

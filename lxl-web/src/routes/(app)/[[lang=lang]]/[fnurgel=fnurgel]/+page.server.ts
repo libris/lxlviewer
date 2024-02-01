@@ -1,5 +1,11 @@
 import { env } from '$env/dynamic/private';
-import { type DisplayDecorated, DisplayUtil, type FramedData, LensType } from '$lib/utils/xl';
+import {
+	type DisplayDecorated,
+	DisplayUtil,
+	type FramedData,
+	LensType,
+	toString
+} from '$lib/utils/xl';
 import { getSupportedLocale } from '$lib/i18n/locales';
 
 export interface ResourcePage {
@@ -16,13 +22,14 @@ export const load = async ({ params, locals, fetch }) => {
 
 	const data = doc;
 
+	const locale = getSupportedLocale(params?.lang);
+
 	const foo = {
-		card_decorated: displayUtil.format(
-			displayUtil.applyLensOrdered(data, LensType.Card),
-			getSupportedLocale(params?.lang)
-		),
+		str: toString(displayUtil.format(displayUtil.applyLensOrdered(data, LensType.Card), locale)),
+		card_decorated: displayUtil.format(displayUtil.applyLensOrdered(data, LensType.Card), locale),
 		card_ordered: displayUtil.applyLensOrdered(data, LensType.Card),
 		format_index: displayUtil._getFormatIndex()
+
 		//card: displayUtil.applyLens(doc, LensType.Chip),
 	};
 
