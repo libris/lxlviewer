@@ -64,6 +64,7 @@ interface Facet {
 	totalItems: number;
 	view: Link;
 	object: DisplayDecorated;
+	str: string;
 }
 
 interface MultiSelectFacet extends Facet {

@@ -1,17 +1,17 @@
 <script lang="ts">
+	import SeachMapping from './SeachMapping.svelte';
+	import FacetPanel from './FacetPanel.svelte';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { LxlLens } from '$lib/utils/display.types';
 	import { relativize } from '$lib/utils/http';
-	import FilterPanel from './FilterPanel.svelte';
-	import FiltersActive from './FiltersActive.svelte';
 
 	export let data;
 </script>
 
 <div class="m-3">
-	<FiltersActive mapping={data.searchResult.mapping} />
+	<SeachMapping mapping={data.searchResult.mapping} />
 	<div class="flex">
-		<FilterPanel facets={data.searchResult.facetGroups} />
+		<FacetPanel facets={data.searchResult.facetGroups} />
 		<main class="w-10/12">
 			<ul>
 				{#each data.searchResult.items as item (item['@id'])}

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import { type FacetGroup } from './search';
 
@@ -12,9 +11,12 @@
 	let expanded = false;
 	let searchPhrase = '';
 
-	$: filteredFacets = group.facets.filter((facet, index) => index < facetsShown);
-	$: canShowMoreFacets = numfacets > facetsShown;
-	$: canShowLessFacets = !canShowMoreFacets && numfacets > defaultLimit;
+	$: filteredFacets = group.facets.filter((facet) =>
+		facet.str.toLowerCase().startsWith(searchPhrase.toLowerCase())
+	);
+	$: shownFacets = filteredFacets.filter((facet, index) => index < facetsShown);
+	$: canShowMoreFacets = filteredFacets.length > facetsShown;
+	$: canShowLessFacets = !canShowMoreFacets && filteredFacets.length > defaultLimit;
 </script>
 
 <div class="mb-2 border-b-[1px] pb-2 text-2-regular">
@@ -29,10 +31,10 @@
 	<div id={'group-' + group.dimension} class:hidden={!expanded}>
 		<input bind:value={searchPhrase} class="my-2" placeholder="Sök {group.label.toLowerCase()}" />
 		<ul class="">
-			{#each filteredFacets as facet (facet.view['@id'])}
+			{#each shownFacets as facet (facet.view['@id'])}
 				<li class="flex justify-between">
 					<a class="text-2-regular" href={facet.view['@id']}>
-						<DecoratedData data={facet.object} />
+						{facet.str}
 					</a>
 					<span>({facet.totalItems.toLocaleString(locale)})</span>
 				</li>
@@ -46,6 +48,9 @@
 			>
 				{canShowMoreFacets ? 'Visa fler' : 'Visa färre'}</button
 			>
+		{/if}
+		{#if searchPhrase && filteredFacets.length === 0}
+			<span>Inget resultat</span>
 		{/if}
 	</div>
 </div>
