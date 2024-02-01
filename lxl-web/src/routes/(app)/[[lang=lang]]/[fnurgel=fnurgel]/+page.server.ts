@@ -7,6 +7,7 @@ import {
 	toString
 } from '$lib/utils/xl';
 import { getSupportedLocale } from '$lib/i18n/locales';
+import { LxlLens } from '$lib/utils/display.types';
 
 export interface ResourcePage {
 	header: DisplayDecorated;
@@ -24,13 +25,18 @@ export const load = async ({ params, locals, fetch }) => {
 
 	const locale = getSupportedLocale(params?.lang);
 
+	const page = {
+		[LxlLens.PageHeading]: displayUtil.lensAndFormat(data, LxlLens.PageHeading, locale),
+		[LxlLens.PageOverView]: displayUtil.lensAndFormat(data, LxlLens.PageOverView, locale),
+		[LxlLens.PageDetails]: displayUtil.lensAndFormat(data, LxlLens.PageDetails, locale)
+	};
+
 	const foo = {
+		page,
 		str: toString(displayUtil.format(displayUtil.applyLensOrdered(data, LensType.Card), locale)),
 		card_decorated: displayUtil.format(displayUtil.applyLensOrdered(data, LensType.Card), locale),
 		card_ordered: displayUtil.applyLensOrdered(data, LensType.Card),
 		format_index: displayUtil._getFormatIndex()
-
-		//card: displayUtil.applyLens(doc, LensType.Chip),
 	};
 
 	return { fnurgel: params.fnurgel, doc, foo };

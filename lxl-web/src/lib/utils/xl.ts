@@ -106,8 +106,8 @@ type ShowProperty = PropertyName | Fresnel.super | AlternateProperties | { inver
 type ShowProperties = ShowProperty[];
 
 interface Lens {
-	'@id'?: string;
-	'@type': Fresnel.Lens;
+	[JsonLd.ID]?: string;
+	[JsonLd.TYPE]: Fresnel.Lens;
 	classLensDomain?: ClassName;
 	[Fresnel.extends]?: Link;
 	[Fresnel.group]?: string;
@@ -123,6 +123,16 @@ export enum LensType {
 	SearchCard = 'search-cards',
 	WebChip = 'web-chips',
 	None = null // FIXME
+}
+
+export type DerivedLensType = string;
+
+export interface DerivedLensTypeDefinition {
+	name: DerivedLensType;
+	// use the first of these found as the base
+	base: LensType[];
+	// remove all showProperties from these
+	minus: LensType[];
 }
 
 type Context = Record<string, string | Record<JsonLd, string>>;
@@ -222,9 +232,16 @@ export class DisplayUtil {
 	};
 
 	// TODO category integral should remain on same level?
-	private readonly DEFAULT_SUBLENS_SELECTOR = (lensType: LensType, propertyName: PropertyName) => {
+	private readonly DEFAULT_SUBLENS_SELECTOR = (
+		lensType: LensType | DerivedLensType,
+		propertyName: PropertyName
+	) => {
 		if (this.vocabUtil.hasCategory(propertyName, Platform.integral)) {
 			return lensType;
+		}
+		// TODO
+		if (this.isDerivedLens(lensType)) {
+			return LensType.Chip;
 		}
 
 		switch (lensType) {
@@ -235,17 +252,23 @@ export class DisplayUtil {
 				return LensType.Chip;
 			case LensType.Chip:
 			case LensType.SearchChip:
+			case LensType.WebChip:
 			case LensType.Token:
 				return LensType.Token;
 		}
 	};
 
+	private readonly formatIndex: FormatIndex;
+
+	private registeredDerivedLensTypes: Record<DerivedLensType, DerivedLensTypeDefinition> = {};
+	private derivedLensesCache: Record<string, Lens> = {};
+
 	// x -> xByLang
 	langContainerAlias: Record<PropertyName, PropertyName> = {};
-	// xByLang -> x
-	langContainerAliasInverted: Record<PropertyName, PropertyName> = {};
 
-	private readonly formatIndex: FormatIndex;
+	// xByLang -> x
+
+	langContainerAliasInverted: Record<PropertyName, PropertyName> = {};
 
 	constructor(display: DisplayJsonLd, vocabUtil: VocabUtil) {
 		this.display = display;
@@ -257,7 +280,7 @@ export class DisplayUtil {
 		console.log('Initialized DisplayUtil');
 	}
 
-	applyLens(thing: FramedData, lensType: LensType) {
+	applyLens(thing: FramedData, lensType: LensType | DerivedLensType) {
 		return this._applyLens(
 			thing,
 			lensType,
@@ -271,7 +294,7 @@ export class DisplayUtil {
 		);
 	}
 
-	applyLensOrdered(thing: FramedData, lensType: LensType): LensedOrdered {
+	applyLensOrdered(thing: FramedData, lensType: LensType | DerivedLensType): LensedOrdered {
 		return this._applyLens(
 			thing,
 			lensType,
@@ -287,7 +310,11 @@ export class DisplayUtil {
 		);
 	}
 
-	lensAndFormat(thing: FramedData, lensType: LensType, locale: LangCode): DisplayDecorated {
+	lensAndFormat(
+		thing: FramedData,
+		lensType: LensType | DerivedLensType,
+		locale: LangCode
+	): DisplayDecorated {
 		return this.format(this.applyLensOrdered(thing, lensType), locale);
 	}
 
@@ -296,10 +323,54 @@ export class DisplayUtil {
 		return f.addLabels(f.displayDecorate(thing));
 	}
 
+	registerDerivedLens(def: DerivedLensTypeDefinition) {
+		this.registeredDerivedLensTypes[def.name] = def;
+	}
+
+	private deriveLens(type: ClassName, def: DerivedLensTypeDefinition): Lens {
+		const taken = def.minus
+			.map((l) => this.findLens(l, type).showProperties)
+			.flat()
+			.map((s) => JSON.stringify(s));
+
+		const showProperties = this.findLens(def.base, type).showProperties.filter(
+			(s) => !taken.includes(JSON.stringify(s))
+		);
+
+		return {
+			[JsonLd.TYPE]: Fresnel.Lens,
+			classLensDomain: type,
+			showProperties
+		};
+	}
+
+	private findDerivedLens(type: ClassName, lensType: DerivedLensType) {
+		if (!(lensType in this.registeredDerivedLensTypes)) {
+			throw Error(`${lensType} is not registered as derived lens type`);
+		}
+		const id = `${lensType}--${type}`;
+		if (!(id in this.derivedLensesCache)) {
+			const def = this.registeredDerivedLensTypes[lensType];
+			this.derivedLensesCache[id] = this.deriveLens(type, def);
+		}
+
+		return this.derivedLensesCache[id];
+	}
+
+	private isDerivedLens(lensType: LensType | DerivedLensType) {
+		if (Object.values(LensType).includes(lensType)) {
+			return false;
+		}
+		if (!(lensType in this.registeredDerivedLensTypes)) {
+			throw Error(`${lensType} is not registered as derived lens type`);
+		}
+		return true;
+	}
+
 	private _applyLens(
 		thing: unknown,
-		lensType: LensType,
-		subLensSelector: (lensType: LensType, propertyName: PropertyName) => LensType,
+		lensType: LensType | DerivedLensType,
+		subLensSelector: (lensType: LensType | DerivedLensType, propertyName: PropertyName) => LensType,
 		ack: (result: unknown, p: PropertyName, value: unknown) => void,
 		ackInit: () => unknown
 	) {
@@ -365,7 +436,15 @@ export class DisplayUtil {
 		return result;
 	}
 
-	private findLens(lenses: LensType | LensType[], className: ClassName) {
+	private findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
+		if (!Array.isArray(lenses) && this.isDerivedLens(lenses)) {
+			return this.findDerivedLens(className, lenses);
+		} else {
+			return this._findLens(lenses, className);
+		}
+	}
+
+	private _findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
 		for (const lens of asArray(lenses)) {
 			for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 				if (cls in this.display.lensGroups[lens].lenses) {

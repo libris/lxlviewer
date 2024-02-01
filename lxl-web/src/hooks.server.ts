@@ -2,6 +2,7 @@ import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { env } from '$env/dynamic/private';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import fs from 'fs';
+import { DERIVED_LENSES } from '$lib/utils/display.types';
 
 let utilCache;
 
@@ -55,5 +56,8 @@ async function loadUtil() {
 
 	const vocabUtil = new VocabUtil(vocab, context);
 	const displayUtil = new DisplayUtil(display, vocabUtil);
+
+	DERIVED_LENSES.forEach((l) => displayUtil.registerDerivedLens(l));
+
 	return [vocabUtil, displayUtil];
 }
