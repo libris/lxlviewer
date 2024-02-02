@@ -1,4 +1,5 @@
 import * as lxljsVocab from 'lxljs/vocab';
+import * as lxljsString from 'lxljs/string';
 
 // TODO TESTS!
 // TODO type for JSON-LD structure
@@ -11,6 +12,7 @@ export enum JsonLd {
 	ID = '@id',
 	LANGUAGE = '@language',
 	LIST = '@list',
+	REVERSE = '@reverse',
 	SET = '@set',
 	TYPE = '@type',
 	VALUE = '@value',
@@ -185,6 +187,12 @@ export class VocabUtil {
 
 	getDefinition(name: ClassName | PropertyName): FramedData {
 		return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
+	}
+
+	getInverseProperty(name: PropertyName): PropertyName {
+		const def = this.getDefinition(name);
+		const inverseId = def.inverseOf?.[JsonLd.ID];
+		return lxljsString.getCompactUri(inverseId, this.context);
 	}
 
 	isSubClassOf(className: ClassName, baseClassName: ClassName) {
@@ -427,7 +435,12 @@ export class DisplayUtil {
 					}
 				}
 			} else if (isInverseProperty(p)) {
-				// TODO
+				// never language container
+				if (isObject(thing[JsonLd.REVERSE]) && p.inverseOf in thing[JsonLd.REVERSE]) {
+					const inverseName = this.vocabUtil.getInverseProperty(p.inverseOf);
+					const v = thing[JsonLd.REVERSE][p.inverseOf];
+					pick({ [inverseName]: v }, inverseName);
+				}
 			} else {
 				if (has(thing, p)) {
 					pick(thing, p);
@@ -928,8 +941,8 @@ function isAlternateProperties(v: ShowProperty): v is AlternateProperties {
 	return isObject(v) && 'alternateProperties' in v;
 }
 
-function isInverseProperty(v: ShowProperty): v is { inverse: PropertyName } {
-	return isObject(v) && 'inverse' in v;
+function isInverseProperty(v: ShowProperty): v is { inverseOf: PropertyName } {
+	return isObject(v) && 'inverseOf' in v;
 }
 
 function isRangeRestriction(v: PropertyName | RangeRestriction): v is RangeRestriction {
