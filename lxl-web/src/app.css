@@ -29,10 +29,9 @@
 	}
 
 	/* Base styles for elements */
-	/* html {
-		@apply bg-background text-primary;
+	html {
 		@apply font-sans text-base antialiased;
-	} */
+	}
 
 	a {
 		@apply text-accent-dark underline visited:text-[purple];
