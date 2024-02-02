@@ -37,4 +37,8 @@
 	a {
 		@apply text-accent-dark underline visited:text-[purple];
 	}
+
+	input {
+		@apply rounded-sm border border-[#000] p-1;
+	}
 }
