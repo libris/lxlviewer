@@ -25,6 +25,16 @@ export const load = async ({ params, locals, fetch }) => {
 
 	const locale = getSupportedLocale(params?.lang);
 
+	// TODO this doesn't really play well with alternativeProperties...?
+	// say we want to use alternativeProperties for hasTitle in the heading
+	// "alternateProperties": [
+	//	 {"subPropertyOf": "hasTitle", "range": "KeyTitle"},
+	//	 {"subPropertyOf": "hasTitle", "range": "Title"},
+	// 	 "hasTitle"
+	// ]
+	// we then probably want all titles in the overview
+	// but we don't want them there when there is only one title?
+	// or just place "hasTitle" (without alternateProperties) in details?
 	const page = {
 		[LxlLens.PageHeading]: displayUtil.lensAndFormat(data, LxlLens.PageHeading, locale),
 		[LxlLens.PageOverView]: displayUtil.lensAndFormat(data, LxlLens.PageOverView, locale),
