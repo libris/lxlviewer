@@ -86,9 +86,6 @@ export default {
     settings() {
       return this.$store.getters.settings;
     },
-    changeCategories() {
-      return this.$store.getters.userChangeCategories;
-    },
     changeCollections() {
       return this.$store.getters.userChangeCollections;
     },

@@ -1,9 +1,9 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
-import ChangeCategories from './change-categories.vue';
 import { translatePhrase, capitalize } from '@/utils/filters';
 import UserAvatar from '@/components/shared/user-avatar.vue';
+import ChangeCategories from './change-categories.vue';
 import SelectSigel from './select-sigel.vue';
 
 export default {
@@ -14,22 +14,11 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      availableChangeCategories: [],
-    };
-  },
   methods: {
     translatePhrase,
     capitalize,
     setUser(userObj) {
       this.$store.dispatch('setUser', userObj);
-    },
-    getAvailableChangeCategories() {
-      const fetchUrl = `${this.settings.apiPath}/find.jsonld?@type=ChangeCategory`;
-      fetch(fetchUrl).then(response => response.json()).then((result) => {
-        this.availableChangeCategories = result?.items;
-      });
     },
     updateLanguage(e) {
       const userObj = this.user;
@@ -44,14 +33,6 @@ export default {
     updateFullSiteWidth(e) {
       const userObj = this.user;
       userObj.settings.fullSiteWidth = e.target.checked;
-      this.setUser(userObj);
-    },
-    updateCxzFeatureIsOn(e) {
-      if (!e.target.checked) {
-        this.purgeChangeNoteCategories();
-      }
-      const userObj = this.user;
-      userObj.settings.cxzFeatureIsOn = e.target.checked;
       this.setUser(userObj);
     },
     logout() {
@@ -102,7 +83,6 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.$store.dispatch('loadUserDatabase');
-      this.getAvailableChangeCategories();
     });
   },
 };
@@ -213,24 +193,10 @@ export default {
                 <div class="customCheckbox-icon" />
               </td>
             </tr>
-            <tr>
-              <td class="key">
-                <label for="cxzCheckbox">{{ translatePhrase("Activate change message feature") }}</label>
-              </td>
-              <td class="value">
-                <input
-                  id="cxzCheckbox"
-                  class="customCheckbox-input"
-                  type="checkbox"
-                  @change="updateCxzFeatureIsOn"
-                  :checked="user.settings.cxzFeatureIsOn">
-                <div class="customCheckbox-icon" />
-              </td>
-            </tr>
           </table>
-          <h5 class="uppercaseHeading--bold" v-if="user.settings.cxzFeatureIsOn">{{ translatePhrase("Subscribe to CXZ messages") }}</h5>
-          <div class="UserSettings-changeCategories" v-if="user.settings.cxzFeatureIsOn">
-            <change-categories :available-sigels="sortedSigels" :userChangeCategories="userChangeCategories" :availableCategories="availableChangeCategories"/>
+          <h5 class="uppercaseHeading--bold">{{ translatePhrase("Subscribe to CXZ messages") }}</h5>
+          <div class="UserSettings-changeCategories">
+            <change-categories :available-sigels="sortedSigels" :userChangeCategories="userChangeCategories"/>
           </div>
         </form>
         <button class="btn btn-primary btn--lg UserSettings-logout" @click="logout">{{ translatePhrase("Log out") }}</button>

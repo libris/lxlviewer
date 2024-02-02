@@ -187,9 +187,8 @@ export default {
     isChangeFacetGroup() {
       return (this.group.dimension === 'category.@id' || this.group.dimension === 'concerning.@reverse.itemOf.heldBy.@id');
     },
-
     checkedCategoriesAndSigels() {
-      return [...this.changeCategories, ...this.changeCollections];
+      return [...this.changeCollections];
     },
     hide() {
       return this.isChangeFacetGroup && !this.isChangeView;
