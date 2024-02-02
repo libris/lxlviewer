@@ -248,7 +248,7 @@ export default {
       return tabs;
     },
     checkedCategoriesAndSigels() {
-      return [...this.$store.getters.userChangeCategories, ...this.$store.getters.userChangeCollections];
+      return [...this.$store.getters.userChangeCollections];
     },
   },
   beforeCreate() {
