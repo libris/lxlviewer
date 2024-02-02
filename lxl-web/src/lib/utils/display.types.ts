@@ -5,7 +5,7 @@ export enum LxlLens {
 	PageOverView = 'page-overview',
 	PageDetails = 'page-details',
 	CardHeading = 'card-heading',
-	CardDetails = 'card-details'
+	CardBody = 'card-body'
 }
 
 export const DERIVED_LENSES: DerivedLensTypeDefinition[] = [
@@ -23,5 +23,15 @@ export const DERIVED_LENSES: DerivedLensTypeDefinition[] = [
 		name: LxlLens.PageDetails,
 		base: [LensType.Full],
 		minus: [LensType.WebChip, LensType.Chip, LensType.Card]
+	},
+	{
+		name: LxlLens.CardHeading,
+		base: [LensType.WebChip, LensType.Chip],
+		minus: []
+	},
+	{
+		name: LxlLens.CardBody,
+		base: [LensType.Card],
+		minus: [LensType.WebChip, LensType.Chip]
 	}
 ];

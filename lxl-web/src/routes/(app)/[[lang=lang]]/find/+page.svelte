@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
+	import { LxlLens } from '$lib/utils/display.types';
+	import { relativize } from '$lib/utils/http';
 
 	export let data;
 
@@ -24,7 +26,12 @@
 	<ul>
 		{#each data.searchResult.items as item (item['@id'])}
 			<li>
-				<DecoratedData data={item} />
+				<a href={relativize(item['@id'])}
+					><h2 class="text-4-cond-extrabold">
+						<DecoratedData data={item[LxlLens.CardHeading]} />
+					</h2></a
+				>
+				<DecoratedData data={item[LxlLens.CardBody]} />
 			</li>
 			<br />
 		{/each}
@@ -33,7 +40,7 @@
 	<br />
 	<ul>
 		{#each data.searchResult.facetGroups as group (group.dimension)}
-			<h2 class="text-5-cond-extrabold">{group.label}</h2>
+			<h2 class="text-3-cond-extrabold">{group.label}</h2>
 			<br />
 
 			{#each group.facets as facet (facet.view)}

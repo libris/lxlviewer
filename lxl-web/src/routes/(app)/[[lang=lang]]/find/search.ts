@@ -10,6 +10,7 @@ import {
 	type PropertyName,
 	toString
 } from '$lib/utils/xl';
+import { LxlLens } from '$lib/utils/display.types';
 
 export function asResult(
 	view: PartialCollectionView,
@@ -25,7 +26,11 @@ export function asResult(
 		mapping: displayMappings(view, displayUtil, locale),
 		first: view.first,
 		last: view.last,
-		items: view.items.map((i) => displayUtil.lensAndFormat(i, LensType.Card, locale)),
+		items: view.items.map((i) => ({
+			[JsonLd.ID]: i.meta[JsonLd.ID],
+			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
+			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale)
+		})),
 		facetGroups: displayFacetGroups(view, displayUtil, locale)
 	};
 }

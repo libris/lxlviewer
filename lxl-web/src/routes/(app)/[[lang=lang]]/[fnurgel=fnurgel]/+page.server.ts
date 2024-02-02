@@ -39,7 +39,7 @@ export const load = async ({ params, locals, fetch }) => {
 		format_index: displayUtil._getFormatIndex()
 	};
 
-	return { fnurgel: params.fnurgel, doc, foo };
+	return { fnurgel: params.fnurgel, doc, page, foo };
 };
 
 async function loadDoc(fetch, fnurgel: string) {
