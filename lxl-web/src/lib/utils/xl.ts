@@ -412,9 +412,11 @@ export class DisplayUtil {
 					if (isRangeRestriction(alternative)) {
 						// can never be language container
 						const k = alternative.subPropertyOf;
-						const v = thing[k];
-						if (isTypedNode(v) && v[JsonLd.TYPE] === alternative.range) {
-							pick(thing, k);
+						const v = asArray(thing[k]).filter(
+							(n) => isTypedNode(n) && n[JsonLd.TYPE] === alternative.range
+						);
+						if (v.length > 0) {
+							pick({ [k]: v }, k);
 							break;
 						}
 					} else {
@@ -923,15 +925,15 @@ export function mapValuesOfObject<V, V2>(obj: Record<string, V>, fn: (v: V, k: s
  */
 
 function isAlternateProperties(v: ShowProperty): v is AlternateProperties {
-	return typeof v !== 'string' && 'alternateProperties' in v;
+	return isObject(v) && 'alternateProperties' in v;
 }
 
 function isInverseProperty(v: ShowProperty): v is { inverse: PropertyName } {
-	return typeof v !== 'string' && 'inverse' in v;
+	return isObject(v) && 'inverse' in v;
 }
 
 function isRangeRestriction(v: PropertyName | RangeRestriction): v is RangeRestriction {
-	return typeof v !== 'string' && 'subPropertyOf' in v && 'range' in v;
+	return isObject(v) && 'subPropertyOf' in v && 'range' in v;
 }
 
 // TODO...
