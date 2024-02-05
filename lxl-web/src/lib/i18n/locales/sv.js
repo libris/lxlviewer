@@ -24,6 +24,7 @@ export default {
 		'category.@id': 'Ändringskategori',
 		'concerning.@reverse.itemOf.heldBy.@id': 'Har bestånd',
 		'@reverse': 'Relation'
+		'meta.encodingLevel': 'Beskrivningsnivå'		
 	},
 	search: {},
 	errors: {},
