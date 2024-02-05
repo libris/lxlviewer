@@ -189,10 +189,10 @@ export class VocabUtil {
 		return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
 	}
 
-	getInverseProperty(name: PropertyName): PropertyName {
+	getInverseProperty(name: PropertyName): PropertyName | undefined {
 		const def = this.getDefinition(name);
 		const inverseId = def.inverseOf?.[JsonLd.ID];
-		return lxljsString.getCompactUri(inverseId, this.context);
+		return inverseId ? lxljsString.getCompactUri(inverseId, this.context) : undefined;
 	}
 
 	isSubClassOf(className: ClassName, baseClassName: ClassName) {
@@ -247,6 +247,11 @@ export class DisplayUtil {
 		if (this.vocabUtil.hasCategory(propertyName, Platform.integral)) {
 			return lensType;
 		}
+		const inverse = this.vocabUtil.getInverseProperty(propertyName);
+		if (inverse && this.vocabUtil.hasCategory(inverse, Platform.integral)) {
+			return lensType;
+		}
+
 		// TODO
 		if (this.isDerivedLens(lensType)) {
 			return LensType.Chip;
