@@ -23,8 +23,8 @@ export default {
 		'meta.bibliography.@id': 'Ingår i bibliografi',
 		'category.@id': 'Ändringskategori',
 		'concerning.@reverse.itemOf.heldBy.@id': 'Har bestånd',
-		'@reverse': 'Relation'
-		'meta.encodingLevel': 'Beskrivningsnivå'		
+		'@reverse': 'Relation',
+		'meta.encodingLevel': 'Beskrivningsnivå'
 	},
 	search: {},
 	errors: {},
