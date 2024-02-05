@@ -3,6 +3,10 @@ import { interpolate } from './interpolate';
 import { defaultLocale, type LocaleCode } from './locales';
 import sv from './locales/sv.js';
 
+export type translateFn = {
+	(key: string, values?: { [key: string]: string }): string;
+};
+
 // always import default translation?
 const loadedTranslations: Record<string, typeof sv> = {
 	sv
@@ -19,7 +23,10 @@ export async function getTranslator(locale: LocaleCode) {
 			// do we require nested keys?
 			throw new Error('Incorrect i11n key');
 		}
-		const [section, item] = key.split('.') as [string, string];
+
+		// split key at the first '.'
+		const [section, ...rest] = key.split('.') as [string, string[]];
+		const item = rest.join('.');
 
 		// @ts-expect-error - how to typecheck??
 		const localeResult = loadedTranslations[locale][section]?.[item];

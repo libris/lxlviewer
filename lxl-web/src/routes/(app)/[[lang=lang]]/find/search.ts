@@ -4,7 +4,6 @@ import {
 	type FramedData,
 	isObject,
 	JsonLd,
-	type LangCode,
 	LensType,
 	type Link,
 	type PropertyName,
@@ -12,10 +11,14 @@ import {
 } from '$lib/utils/xl';
 import { LxlLens } from '$lib/utils/display.types';
 
+import { type translateFn } from '$lib/i18n';
+import { type LocaleCode as LangCode } from '$lib/i18n/locales';
+
 export function asResult(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
-	locale: LangCode
+	locale: LangCode,
+	translate: translateFn
 ): SearchResult {
 	return {
 		...('next' in view && { next: view.next }),
@@ -23,7 +26,7 @@ export function asResult(
 		itemsPerPage: view.itemsPerPage,
 		totalItems: view.totalItems,
 		maxItems: view.maxItems,
-		mapping: displayMappings(view, displayUtil, locale),
+		mapping: displayMappings(view, displayUtil, locale, translate),
 		first: view.first,
 		last: view.last,
 		items: view.items.map((i) => ({
@@ -31,7 +34,7 @@ export function asResult(
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale)
 		})),
-		facetGroups: displayFacetGroups(view, displayUtil, locale)
+		facetGroups: displayFacetGroups(view, displayUtil, locale, translate)
 	};
 }
 
@@ -50,7 +53,7 @@ export interface SearchResult {
 
 type FacetGroupId = string;
 
-interface FacetGroup {
+export interface FacetGroup {
 	label: string;
 	dimension: FacetGroupId;
 	// TODO better to do this distinction on the group level?
@@ -61,16 +64,18 @@ interface Facet {
 	totalItems: number;
 	view: Link;
 	object: DisplayDecorated;
+	str: string;
 }
 
 interface MultiSelectFacet extends Facet {
 	selected: boolean;
 }
 
-interface DisplayMapping {
+export interface DisplayMapping {
 	display: DisplayDecorated;
 	up?: Link;
 	children: DisplayMapping[];
+	label: string;
 }
 
 export interface PartialCollectionView {
@@ -125,27 +130,34 @@ interface DatatypeProperty {}
 function displayMappings(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
-	locale: LangCode
+	locale: LangCode,
+	translate: translateFn
 ): DisplayMapping[] {
 	const mapping = view.search?.mapping || [];
 
 	return mapping.map((m) => {
+		const trimmedLabel = m.variable.replace(/and-|or-/, ''); // Hack?!
+		const label = translate(`facet.${trimmedLabel}`);
+
 		if (isPredicateAndObject(m)) {
 			return {
 				...('up' in m && { up: m.up }),
 				display: displayUtil.lensAndFormat(m.object, LensType.Chip, locale),
-				children: []
+				children: [],
+				label
 			} as DisplayMapping;
 		} else if (isPredicateAndValue(m)) {
 			return {
 				...('up' in m && { up: m.up }),
 				display: { [JsonLd.VALUE]: m.value } as DisplayDecorated,
-				children: []
+				children: [],
+				label
 			} as DisplayMapping;
 		} else {
 			return {
 				display: { [JsonLd.VALUE]: '<ERROR>' } as DisplayDecorated,
-				children: []
+				children: [],
+				label
 			} as DisplayMapping;
 		}
 	});
@@ -154,13 +166,14 @@ function displayMappings(
 function displayFacetGroups(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
-	locale: LangCode
+	locale: LangCode,
+	translate: translateFn
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
 
 	return Object.values(slices).map((g) => {
 		return {
-			label: g.dimension, // TODO
+			label: translate(`facet.${g.dimension}`),
 			dimension: g.dimension,
 			facets: g.observation.map((o) => {
 				return {
