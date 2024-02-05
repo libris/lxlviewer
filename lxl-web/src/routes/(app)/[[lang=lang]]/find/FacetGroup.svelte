@@ -48,11 +48,13 @@
 				<li>
 					<a class="flex justify-between no-underline text-2-regular" href={facet.view['@id']}>
 						<span class="flex items-baseline">
-							<!-- howto A11y?! -->
-							<span class="sr-only">{facet.selected ? 'Valt filter' : ''}</span>
-							<span class="mr-1 text-3-regular" aria-hidden="true"
-								>{facet.selected ? '☑' : '☐'}</span
-							>
+							{#if 'selected' in facet}
+								<!-- howto A11y?! -->
+								<span class="sr-only">{facet.selected ? 'Valt filter' : ''}</span>
+								<span class="mr-1 text-3-regular" aria-hidden="true"
+									>{facet.selected ? '☑' : '☐'}</span
+								>
+							{/if}
 							<span>{facet.str}</span>
 						</span>
 						<span>({facet.totalItems.toLocaleString(locale)})</span>
