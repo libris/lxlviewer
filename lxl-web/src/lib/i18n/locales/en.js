@@ -25,6 +25,7 @@ export default {
 		'category.@id': 'Change category',
 		'concerning.@reverse.itemOf.heldBy.@id': 'Has holding',
 		'@reverse': 'Relation'
+		'meta.encodingLevel': 'Encoding level'
 	},
 	search: {},
 	errors: {},
