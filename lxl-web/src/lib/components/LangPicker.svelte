@@ -33,7 +33,7 @@
 	>
 	<ul
 		id="lang-picker-menu"
-		class="bg-white absolute right-0 my-3 rounded-sm p-3"
+		class="absolute right-0 my-3 rounded-sm bg-cards p-3"
 		class:hidden={!expanded}
 	>
 		{#each localesObj as locale}

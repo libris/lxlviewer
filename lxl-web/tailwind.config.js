@@ -23,7 +23,8 @@ export default {
 			main: 'rgb(var(--bg-main) / 1)',
 			head: 'rgb(var(--bg-head) / 1)',
 			positive: 'rgb(var(--bg-positive) / 1)',
-			'positive-inv': 'rgb(var(--bg-positive-inv) / 1)'
+			'positive-inv': 'rgb(var(--bg-positive-inv) / 1)',
+			cards: 'rgb(var(--bg-cards) / 1)'
 		},
 		opacity: {
 			80: '.80',
@@ -95,7 +96,7 @@ export default {
 		},
 		extend: {
 			maxWidth: {
-				content: '85rem'
+				content: '78rem'
 			}
 		}
 	},

@@ -10,12 +10,14 @@
 
 <SeachMapping mapping={data.searchResult.mapping} />
 <div class="container-fluid">
-	<div class="mx-auto grid max-w-content grid-cols-4 gap-8 py-4 sm:py-8">
-		<FacetSidebar facets={data.searchResult.facetGroups} />
-		<main class="col-span-3">
+	<div class="flex gap-16 py-4 sm:py-8">
+		<div class="hidden w-80 shrink-0 md:flex">
+			<FacetSidebar facets={data.searchResult.facetGroups} />
+		</div>
+		<main class="max-w-content">
 			<ul>
 				{#each data.searchResult.items as item (item['@id'])}
-					<li>
+					<li class="bg-cards">
 						<a href={relativize(item['@id'])}
 							><h2 class="text-4-cond-extrabold">
 								<DecoratedData data={item[LxlLens.CardHeading]} />

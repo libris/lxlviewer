@@ -6,7 +6,7 @@
 </script>
 
 <header class="bg-head pb-4 pt-11 sm:py-6">
-	<div class="container-fluid flex max-w-screen-xl flex-nowrap items-center gap-4 sm:gap-16">
+	<div class="container-fluid flex flex-nowrap items-center justify-between gap-4 sm:gap-16">
 		<a class="flex items-baseline gap-2 no-underline" href={$page.data.base}>
 			<figure class="h-10 w-10"><Logo /></figure>
 			<span
@@ -14,7 +14,7 @@
 				>{$page.data.settings.serviceName}</span
 			>
 		</a>
-		<div class="flex-1">
+		<div class="max-w-content flex-1">
 			<Search placeholder="Sök i hela Sveriges bibliotekskatalog" />
 		</div>
 		<div class="hidden md:flex">

@@ -7,7 +7,7 @@
 </script>
 
 <section>
-	<ul class="container-fluid bg-transparent flex max-w-screen-xl flex-wrap gap-2 py-4">
+	<ul class="container-fluid bg-transparent flex flex-wrap gap-2 py-4">
 		{#each filteredMapping as filter}
 			<li class="justify-center rounded-md bg-positive-inv px-4 py-2">
 				<span class="mr-2">
