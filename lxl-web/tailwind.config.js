@@ -9,8 +9,21 @@ export default {
 			primary: 'rgb(var(--color-primary) / <alpha-value>)',
 			'accent-light': 'rgb(var(--color-accent-light) / <alpha-value>)',
 			'accent-dark': 'rgb(var(--color-accent-dark) / <alpha-value>)',
-			background: 'rgb(var(--color-background) / <alpha-value>)',
+			subtle: 'rgb(var(--color-subtle) / <alpha-value>)',
 			highlight: 'rgb(var(--color-highlight) / <alpha-value>)'
+		},
+		textColor: {
+			primary: 'rgb(var(--text-primary) / 1)',
+			'primary-inv': 'rgb(var(--text-primary-inv) / 1)',
+			secondary: 'rgb(var(--text-primary) / 0.8)',
+			'secondary-inv': 'rgb(var(--text-primary-inv) / 0.8)',
+			link: 'rgb(var(--text-link) / 1)'
+		},
+		backgroundColor: {
+			main: 'rgb(var(--bg-main) / 1)',
+			head: 'rgb(var(--bg-head) / 1)',
+			positive: 'rgb(var(--bg-positive) / 1)',
+			'positive-inv': 'rgb(var(--bg-positive-inv) / 1)'
 		},
 		opacity: {
 			80: '.80',
@@ -48,7 +61,8 @@ export default {
 		},
 		lineHeight: {
 			normal: '1.4',
-			tight: '1.2'
+			tight: '1.2',
+			none: '0'
 		},
 		letterSpacing: {
 			normal: '0',
@@ -62,9 +76,28 @@ export default {
 		},
 		container: {
 			center: true,
-			padding: '2rem'
+			padding: {
+				DEFAULT: '1rem',
+				sm: '2rem'
+			}
 		},
-		extend: {}
+		screens: {
+			// figma screens:
+			// sm: '375px',
+			// md: '1024px',
+			// lg: '1440px'
+
+			xs: '375px',
+			sm: '640px',
+			md: '1024px',
+			lg: '1440px',
+			xl: '1536px'
+		},
+		extend: {
+			maxWidth: {
+				content: '85rem'
+			}
+		}
 	},
 	plugins: [
 		/** @type {import('tailwindcss/types/config').PluginCreator} */

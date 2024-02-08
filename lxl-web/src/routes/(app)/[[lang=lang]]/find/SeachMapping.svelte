@@ -7,13 +7,17 @@
 </script>
 
 <section>
-	<ul class="my-4 flex flex-wrap">
+	<ul class="container-fluid bg-transparent flex max-w-screen-xl flex-wrap gap-2 py-4">
 		{#each filteredMapping as filter}
-			<li class="my-2 mr-2 justify-center rounded-md bg-accent-light px-4 py-2">
-				<span class="text-2-regular">{filter.label}:</span>
-				<span class="text-2-cond-bold"><DecoratedData data={filter.display} /></span>
+			<li class="justify-center rounded-md bg-positive-inv px-4 py-2">
+				<span class="mr-2">
+					<span class="text-secondary-inv text-2-regular">{filter.label}</span>
+					<span class="text-primary-inv text-2-cond-bold"
+						><DecoratedData data={filter.display} /></span
+					>
+				</span>
 				{#if 'up' in filter}
-					<a class="underline" href={filter.up?.['@id']}>x</a>
+					<a class="text-secondary-inv" href={filter.up?.['@id']}>x</a>
 				{/if}
 			</li>
 		{/each}

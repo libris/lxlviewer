@@ -8,11 +8,11 @@
 	export let data;
 </script>
 
-<div class="m-3">
-	<SeachMapping mapping={data.searchResult.mapping} />
-	<div class="flex">
+<SeachMapping mapping={data.searchResult.mapping} />
+<div class="container-fluid">
+	<div class="mx-auto grid max-w-content grid-cols-4 gap-8 py-4 sm:py-8">
 		<FacetSidebar facets={data.searchResult.facetGroups} />
-		<main class="w-10/12">
+		<main class="col-span-3">
 			<ul>
 				{#each data.searchResult.items as item (item['@id'])}
 					<li>

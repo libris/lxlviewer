@@ -5,7 +5,7 @@
 	export let facets: Group[];
 </script>
 
-<nav class="mr-4 w-2/12" aria-labelledby="facet-sidebar-header">
+<nav aria-labelledby="facet-sidebar-header">
 	<header id="facet-sidebar-header" class="text-2-cond-bold">Filter</header>
 	<ol>
 		{#each facets as group (group.dimension)}
