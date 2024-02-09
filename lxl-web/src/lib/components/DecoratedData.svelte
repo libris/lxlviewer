@@ -1,12 +1,7 @@
 <script lang="ts">
-	type ResourceData =
-		| null
-		| boolean
-		| string
-		| number
-		| ResourceData[]
-		| undefined
-		| { [key: string]: ResourceData };
+	import type { ResourceData } from '$lib/types/ResourceData';
+	import resourcePopover from '$lib/actions/resourcePopover';
+	import { getResourceId, getResourcePropertyStyle } from '$lib/utils/resourceData';
 
 	export let data: ResourceData;
 
@@ -14,7 +9,7 @@
 		'@context',
 		'@type',
 		'@id',
-		'_hint',
+		'_label',
 		'_style',
 		'_contentBefore',
 		'_contentAfter'
@@ -26,17 +21,12 @@
 		return Object.entries(data).filter(([key]) => !hiddenProperties.includes(key));
 	}
 
-	function getObjectProperty(value: ResourceData, name: string) {
-		if (value && typeof value === 'object' && !Array.isArray(value) && name in value) {
-			return value[name];
-		}
-		return undefined;
-	}
-
 	function getLink(value: ResourceData) {
-		const hints = getObjectProperty(value, '_hint');
-		if (Array.isArray(hints) && hints.includes('link')) {
-			return value?.['@id' as keyof typeof value];
+		if (getResourcePropertyStyle(value)?.includes('link')) {
+			const id = getResourceId(value);
+			if (id) {
+				return id;
+			}
 		}
 		return undefined;
 	}
@@ -71,7 +61,11 @@
 			{#if flattenedProperties.includes(key)}
 				<svelte:self data={value} />
 			{:else}
-				<svelte:element this={getElementType(value)} {...getElementAttributes({ key, value })}>
+				<svelte:element
+					this={getElementType(value)}
+					{...getElementAttributes({ key, value })}
+					use:resourcePopover={value}
+				>
 					<svelte:self data={value} />
 				</svelte:element>
 			{/if}
