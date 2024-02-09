@@ -31,9 +31,12 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 }
 
 /* Dark mode */
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
 	:root {
-		--color-primary: var(--color-white);
-		--color-background: var(--color-black);
+		--bg-main: var(--color-black);
+		--bg-cards: var(--color-black);
+		--bg-head: var(--color-accent-dark);
+		--text-primary: var(--text-primary-inv);
+		--text-link: var(--color-accent-light);
 	}
-}
+} */

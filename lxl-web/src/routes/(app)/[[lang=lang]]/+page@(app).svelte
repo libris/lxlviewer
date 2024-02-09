@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Theme from '$lib/components/Theme.svelte';
 	import Search from '$lib/components/Search.svelte';
 	import Logo from '$lib/components/Logo.svelte';
 	import { page } from '$app/stores';
@@ -25,7 +24,3 @@
 		</div>
 	</div>
 </header>
-
-<div class="container-fluid">
-	<Theme />
-</div>
