@@ -1,5 +1,4 @@
 <script>
-	import { PUBLIC_SERVICE_NAME } from '$env/static/public';
 	import Search from '$lib/components/Search.svelte';
 	import Logo from '$lib/components/Logo.svelte';
 	import SiteNav from '$lib/components/SiteNav.svelte';
@@ -12,7 +11,7 @@
 			<figure class="h-10 w-10"><Logo /></figure>
 			<span
 				class="sr-only text-[2.1rem] font-extrabold leading-none text-primary sm:not-sr-only sm:inline"
-				>{PUBLIC_SERVICE_NAME}</span
+				>Libris</span
 			>
 		</a>
 		<div class="max-w-content flex-1">
