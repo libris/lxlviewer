@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { PUBLIC_SERVICE_NAME } from '$env/static/public';
 	import Search from '$lib/components/Search.svelte';
 	import Logo from '$lib/components/Logo.svelte';
-	import { page } from '$app/stores';
 	import SiteNav from '$lib/components/SiteNav.svelte';
 </script>
 
@@ -13,7 +13,7 @@
 		<div class="flex items-baseline gap-3 sm:gap-6">
 			<figure class="h-12 w-12 sm:h-24 sm:w-24"><Logo /></figure>
 			<h1 class="text-3xl font-bold leading-none text-primary sm:text-[5.5rem]">
-				{$page.data.settings.serviceName}
+				{PUBLIC_SERVICE_NAME}
 			</h1>
 		</div>
 		<label for="main-search" class="text-center text-[1.25rem] text-secondary"

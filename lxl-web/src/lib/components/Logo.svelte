@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { PUBLIC_SERVICE_NAME } from '$env/static/public';
 	import logo from '$lib/assets/img/logo-brown-flare.svg';
 </script>
 
-<img alt="{$page.data.settings.serviceName} logo" src={logo} />
+<img alt="{PUBLIC_SERVICE_NAME} logo" src={logo} />
