@@ -10,6 +10,7 @@ import ResourcePopover from './ResourcePopover.svelte';
  * - [] Removes popover if user stops hovering over popover (without entering trigger node)
  * - [] Keeps popover if user has focused child element
  * - [] Doesn't attach popover if fetching of resource data fails
+ * - [] Closes popover immediately when the URL changes
  */
 
 export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode }> = (
@@ -51,7 +52,8 @@ export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode
 						onMouseOver: startFloatingElementInteraction,
 						onFocus: startFloatingElementInteraction,
 						onMouseLeave: endFloatingElementInteraction,
-						onBlur: endFloatingElementInteraction
+						onBlur: endFloatingElementInteraction,
+						closeImmediately: destroyPopover
 					}
 				});
 				attached = true;
@@ -68,10 +70,14 @@ export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode
 				cancelRemove = reject;
 				setTimeout(resolve, REMOVE_DELAY);
 			});
-			floatingElement?.$destroy();
-			attached = false;
+			destroyPopover();
 			// eslint-disable-next-line no-empty
 		} catch {}
+	}
+
+	function destroyPopover() {
+		floatingElement?.$destroy();
+		attached = false;
 	}
 
 	function startFloatingElementInteraction() {
