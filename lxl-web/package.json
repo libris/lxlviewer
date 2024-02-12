@@ -23,6 +23,9 @@
 		],
 		"*.{js,ts,svelte}": "eslint"
 	},
+	"peerDependencies": {
+		"lodash-es": "4.x"
+	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-node": "^2.0.0",
