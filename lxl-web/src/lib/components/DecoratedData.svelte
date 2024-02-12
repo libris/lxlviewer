@@ -1,9 +1,10 @@
 <script lang="ts">
 	import type { ResourceData } from '$lib/types/ResourceData';
+	import { page } from '$app/stores';
 	import resourcePopover from '$lib/actions/resourcePopover';
 	import { getResourceId, getResourcePropertyStyle } from '$lib/utils/resourceData';
 	import { relativize } from '$lib/utils/http';
-
+	import { getSupportedLocale } from '$lib/i18n/locales';
 	export let data: ResourceData;
 
 	const hiddenProperties = [
@@ -52,7 +53,10 @@
 		if (style && style.includes('link' || style.includes('definition'))) {
 			const id = getResourceId(value);
 			if (id) {
-				return resourcePopover(node, id);
+				return resourcePopover(node, {
+					id,
+					lang: getSupportedLocale($page.params.lang)
+				});
 			}
 		}
 	}

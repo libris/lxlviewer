@@ -1,4 +1,5 @@
 import type { Action } from 'svelte/action';
+import type { LocaleCode } from '$lib/i18n/locales';
 import ResourcePopover from './ResourcePopover.svelte';
 
 /** Tests to do
@@ -11,7 +12,10 @@ import ResourcePopover from './ResourcePopover.svelte';
  * - [] Doesn't attach popover if fetching of resource data fails
  */
 
-export const resourcePopover: Action<HTMLElement, string> = (node: HTMLElement, id: string) => {
+export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode }> = (
+	node: HTMLElement,
+	options
+) => {
 	const FETCH_DELAY = 250;
 	const ATTACH_DELAY = 500;
 	const REMOVE_DELAY = 200;
@@ -31,9 +35,9 @@ export const resourcePopover: Action<HTMLElement, string> = (node: HTMLElement, 
 	async function attachPopover() {
 		try {
 			cancelRemove?.();
-			if (id && !attached) {
+			if (options.id && !attached) {
 				const [decoratedData] = await Promise.all([
-					getDecoratedData(`/api/${id.split('/').pop()}`),
+					getDecoratedData(),
 					new Promise((resolve, reject) => {
 						cancelAttach = reject; // allows promise rejection from outside the promise constructor scope
 						setTimeout(resolve, ATTACH_DELAY);
@@ -78,13 +82,13 @@ export const resourcePopover: Action<HTMLElement, string> = (node: HTMLElement, 
 		removePopover();
 	}
 
-	async function getDecoratedData(id: string) {
+	async function getDecoratedData() {
 		await new Promise((resolve, reject) => {
 			cancelFetch = reject;
 			setTimeout(resolve, FETCH_DELAY);
 		});
 		try {
-			const resourceRes = await fetch(`/api/${id.split('/').pop()}`);
+			const resourceRes = await fetch(`/api/${options.lang}/${options.id.split('/').pop()}`);
 			const resource = await resourceRes.json();
 			return resource;
 		} catch (error) {
