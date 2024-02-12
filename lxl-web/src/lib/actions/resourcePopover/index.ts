@@ -25,6 +25,8 @@ export const resourcePopover: Action<HTMLElement, string> = (node: HTMLElement, 
 
 	node.addEventListener('mouseover', attachPopover);
 	node.addEventListener('mouseout', removePopover);
+	node.addEventListener('focus', attachPopover);
+	node.addEventListener('blur', removePopover);
 
 	async function attachPopover() {
 		try {
@@ -95,6 +97,8 @@ export const resourcePopover: Action<HTMLElement, string> = (node: HTMLElement, 
 		destroy() {
 			node.removeEventListener('mouseover', attachPopover);
 			node.removeEventListener('mouseout', removePopover);
+			node.removeEventListener('focus', attachPopover);
+			node.removeEventListener('blur', removePopover);
 		}
 	};
 };
