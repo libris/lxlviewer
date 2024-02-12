@@ -23,8 +23,8 @@
 		],
 		"*.{js,ts,svelte}": "eslint"
 	},
-	"peerDependencies": {
-		"lodash-es": "4.x"
+	"dependencies": {
+		"lxljs": "file:../lxljs"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
@@ -40,7 +40,6 @@
 		"eslint-plugin-svelte": "^2.30.0",
 		"husky": "^8.0.3",
 		"lint-staged": "^15.2.0",
-		"lxljs": "file:../lxljs",
 		"postcss": "^8.4.32",
 		"postcss-import": "^16.0.0",
 		"prettier": "^3.0.0",
