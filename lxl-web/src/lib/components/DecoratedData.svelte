@@ -46,7 +46,7 @@
 	}
 
 	/* Conditionally add popover action so it's only added when needed */
-	const conditionalResourcePopover = (node: HTMLElement, value: ResourceData) => {
+	function conditionalResourcePopover(node: HTMLElement, value: ResourceData) {
 		const style = getResourcePropertyStyle(value);
 		if (style && style.includes('link' || style.includes('definition'))) {
 			const id = getResourceId(value);
@@ -54,7 +54,7 @@
 				return resourcePopover(node, id);
 			}
 		}
-	};
+	}
 </script>
 
 <!-- 
