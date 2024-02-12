@@ -23,9 +23,6 @@
 		],
 		"*.{js,ts,svelte}": "eslint"
 	},
-	"dependencies": {
-		"lxljs": "file:../lxljs"
-	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-node": "^2.0.0",
@@ -54,6 +51,7 @@
 		"vitest": "^1.0.0"
 	},
 	"dependencies": {
-		"@floating-ui/dom": "^1.6.1"
+		"@floating-ui/dom": "^1.6.1",
+		"lxljs": "file:../lxljs"
 	}
 }
