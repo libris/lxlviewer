@@ -17,3 +17,4 @@
 	<LangPicker />
 </header>
 <slot />
+<div id="floating-elements-container" />
