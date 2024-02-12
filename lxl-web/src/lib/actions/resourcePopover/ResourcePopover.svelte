@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { onMount } from 'svelte';
+	import { beforeNavigate } from '$app/navigation';
 	import { computePosition, offset, shift, inline, flip, arrow } from '@floating-ui/dom';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 
@@ -10,6 +11,7 @@
 	export let onMouseLeave: (event: MouseEvent) => void;
 	export let onFocus: (event: FocusEvent) => void;
 	export let onBlur: (event: FocusEvent) => void;
+	export let closeImmediately: () => void;
 
 	let popoverElement: HTMLElement;
 	let arrowElement: HTMLDivElement;
@@ -57,6 +59,10 @@
 
 	onMount(() => {
 		updatePosition();
+	});
+
+	beforeNavigate(() => {
+		closeImmediately();
 	});
 </script>
 
