@@ -1,7 +1,5 @@
 import type { Action } from 'svelte/action';
-import type { ResourceData } from '$lib/types/ResourceData';
 import ResourcePopover from './ResourcePopover.svelte';
-import { getResourceId, getResourcePropertyStyle } from '$lib/utils/resourceData';
 
 /** Tests to do
  * - [] Attaches popover when user hovers over trigger node (after delay)
@@ -13,18 +11,7 @@ import { getResourceId, getResourcePropertyStyle } from '$lib/utils/resourceData
  * - [] Doesn't attach popover if fetching of resource data fails
  */
 
-/* Conditionally add popover action so it's only added when needed */
-const conditionalResourcePopover = (node: HTMLElement, value: ResourceData) => {
-	const style = getResourcePropertyStyle(value);
-	if (style && style.includes('link' || style.includes('definition'))) {
-		const id = getResourceId(value);
-		if (id) {
-			return resourcePopover(node, id);
-		}
-	}
-};
-
-const resourcePopover: Action<HTMLElement, string> = (node: HTMLElement, id: string) => {
+export const resourcePopover: Action<HTMLElement, string> = (node: HTMLElement, id: string) => {
 	const FETCH_DELAY = 250;
 	const ATTACH_DELAY = 500;
 	const REMOVE_DELAY = 200;
@@ -112,4 +99,4 @@ const resourcePopover: Action<HTMLElement, string> = (node: HTMLElement, id: str
 	};
 };
 
-export default conditionalResourcePopover;
+export default resourcePopover;

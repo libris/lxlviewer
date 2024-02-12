@@ -44,6 +44,17 @@
 			href: getLink(value)
 		};
 	}
+
+	/* Conditionally add popover action so it's only added when needed */
+	const conditionalResourcePopover = (node: HTMLElement, value: ResourceData) => {
+		const style = getResourcePropertyStyle(value);
+		if (style && style.includes('link' || style.includes('definition'))) {
+			const id = getResourceId(value);
+			if (id) {
+				return resourcePopover(node, id);
+			}
+		}
+	};
 </script>
 
 <!-- 
@@ -64,7 +75,7 @@
 				<svelte:element
 					this={getElementType(value)}
 					{...getElementAttributes({ key, value })}
-					use:resourcePopover={value}
+					use:conditionalResourcePopover={value}
 				>
 					<svelte:self data={value} />
 				</svelte:element>
