@@ -66,7 +66,7 @@
 	Note that `ResourcePopover.svelte` isn't intended to be used directly in page templates – use the `use:resourcePopover` action instead (see `$lib/actions/resourcePopover`).
 -->
 <div
-	class="resource-popover"
+	class="absolute left-0 top-0 z-50 max-w-sm rounded-md border border-[#c3c3c3] bg-primary text-sm shadow-xl"
 	role="complementary"
 	bind:this={popoverElement}
 	on:mouseover={onMouseOver}
@@ -74,10 +74,10 @@
 	on:focus={onFocus}
 	on:blur={onBlur}
 >
-	<div class="content">
+	<div class="p-2">
 		<DecoratedData {data} />
 	</div>
-	<div class="popover-arrow" bind:this={arrowElement}>
+	<div class="absolute" bind:this={arrowElement}>
 		<svg
 			aria-hidden="true"
 			width={arrowWidth}
@@ -88,27 +88,3 @@
 		</svg>
 	</div>
 </div>
-
-<style>
-	.resource-popover {
-		background: #fff;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.19);
-		border: 1px solid #c3c3c3;
-		position: absolute;
-		width: max-content;
-		max-width: 360px;
-		top: 0;
-		left: 0;
-		z-index: 100;
-		font-size: 0.875rem;
-		border-radius: 6px;
-	}
-
-	.content {
-		padding: 0.5rem;
-	}
-
-	.popover-arrow {
-		position: absolute;
-	}
-</style>
