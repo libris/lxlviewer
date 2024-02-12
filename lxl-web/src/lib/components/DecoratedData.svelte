@@ -2,6 +2,7 @@
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import resourcePopover from '$lib/actions/resourcePopover';
 	import { getResourceId, getResourcePropertyStyle } from '$lib/utils/resourceData';
+	import { relativize } from '$lib/utils/http';
 
 	export let data: ResourceData;
 
@@ -25,7 +26,7 @@
 		if (getResourcePropertyStyle(value)?.includes('link')) {
 			const id = getResourceId(value);
 			if (id) {
-				return id;
+				return relativize(id);
 			}
 		}
 		return undefined;
