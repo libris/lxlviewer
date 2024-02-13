@@ -1,5 +1,5 @@
 <script>
-import {cloneDeep, isArray, sortBy, each, groupBy, get, castArray} from 'lodash-es';
+import { cloneDeep, isArray, sortBy, each, groupBy, get, castArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
@@ -21,16 +21,16 @@ export default {
     groupItem(item, key) {
       if (key === '@reverse/instanceOf') {
         // sort instances on publication.year
-        const toInt = s => Number(s.replace(/[^0-9]/g, "")); // default 0
-        item.forEach(obj => {
+        const toInt = (s) => Number(s.replace(/[^0-9]/g, '')); // default 0
+        item.forEach((obj) => {
           const publications = castArray(get(this.inspector.data.quoted, [obj['@id'], 'publication'], []));
-          const primary = publications.find(p => p['@type'] = 'PrimaryPublication');
+          const primary = publications.find((p) => p['@type'] === 'PrimaryPublication');
           obj.year = toInt(get(primary, ['year']));
         });
         item.sort((a, b) => b.year - a.year);
-        item.forEach(obj => delete obj.year);
+        item.forEach((obj) => delete obj.year);
 
-        return {'': item}
+        return { '': item };
       }
 
       let groupedItems = {};
