@@ -48,10 +48,10 @@
 		"tslib": "^2.4.1",
 		"typescript": "^5.0.0",
 		"vite": "^5.0.0",
-		"vitest": "^1.0.0"
+		"vitest": "^1.0.0",
+		"lxljs": "file:../lxljs"
 	},
 	"dependencies": {
-		"@floating-ui/dom": "^1.6.1",
-		"lxljs": "file:../lxljs"
+		"@floating-ui/dom": "^1.6.1"
 	}
 }
