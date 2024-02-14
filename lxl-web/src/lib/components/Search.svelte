@@ -4,6 +4,9 @@
 	import getDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 
+	export let placeholder: string;
+	export let autofocus: boolean = false;
+
 	let q = $page.url.searchParams.get('q')?.trim();
 
 	const searchParams = Array.from(
@@ -26,16 +29,18 @@
 	}
 </script>
 
-<form action="find" on:submit={handleSubmit}>
+<form class="w-full" action="find" on:submit={handleSubmit}>
 	<!-- svelte-ignore a11y-autofocus -->
 	<input
+		id="main-search"
+		class="h-12 w-full rounded-full text-secondary sm:h-14"
 		type="search"
 		name="q"
-		placeholder="Sök på författare, titel, ämne eller fria sökord"
+		{placeholder}
 		aria-label="Sök"
 		spellcheck="false"
 		bind:value={q}
-		autofocus
+		{autofocus}
 	/>
 	{#each searchParams as [name, value]}
 		{#if name !== 'q'}

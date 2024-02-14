@@ -30,14 +30,18 @@
 
 	/* Base styles for elements */
 	html {
-		@apply font-sans text-base antialiased;
+		@apply bg-main font-sans text-base text-primary antialiased;
 	}
 
 	a {
-		@apply text-accent-dark underline visited:text-[purple];
+		@apply text-link underline visited:text-[purple];
 	}
 
 	input {
-		@apply rounded-sm border border-[#000] p-1;
+		@apply text-ellipsis rounded-md border-t border-t-primary/16 px-4 py-2 text-3-regular;
+	}
+
+	.container-fluid {
+		@apply mx-auto px-4 sm:px-8;
 	}
 }
