@@ -15,6 +15,21 @@ npm run dev
 npm run dev -- --open
 ```
 
+To try out a production build locally, build the app with
+
+```bash
+npm run build
+```
+
+and start it:
+
+```bash
+npm install dotenv
+node -r dotenv/config build
+```
+
+(dotenv is used to make the env variables in `.env` accessible, see https://kit.svelte.dev/docs/adapter-node#environment-variables)
+
 ## Folder structure
 
 - `src/lib` includes library code (assets, utils and components), which can be imported via the `$lib` alias
