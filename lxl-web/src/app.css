@@ -45,3 +45,11 @@
 		@apply mx-auto px-4 sm:px-8;
 	}
 }
+
+.decorated-wrapper > span > span:not([data-property='role']) {
+	display: block;
+}
+
+.search-card *[data-property='_style'] {
+	color: red;
+}

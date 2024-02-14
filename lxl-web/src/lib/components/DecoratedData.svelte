@@ -12,9 +12,10 @@
 		'@type',
 		'@id',
 		'_label',
-		'_style',
+		// '_style',
 		'_contentBefore',
 		'_contentAfter'
+		// 'inScheme'
 	];
 
 	const flattenedProperties = ['_display', '@value'];
@@ -41,9 +42,13 @@
 	}
 
 	function getElementAttributes({ key, value }: { key: string; value: ResourceData }) {
+		if (key === 'genreForm') {
+			console.log('genreform', value);
+		}
 		return {
 			'data-property': key,
 			href: getLink(value)
+			// class: getResourcePropertyStyle(value)
 		};
 	}
 

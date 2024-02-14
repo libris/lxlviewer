@@ -1,10 +1,7 @@
 <script lang="ts">
 	import SeachMapping from './SeachMapping.svelte';
 	import FacetSidebar from './FacetSidebar.svelte';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import { LxlLens } from '$lib/utils/display.types';
-	import { relativize } from '$lib/utils/http';
-
+	import SearchCard from './SearchCard.svelte';
 	export let data;
 </script>
 
@@ -15,19 +12,11 @@
 			<FacetSidebar facets={data.searchResult.facetGroups} />
 		</div>
 		<main class="max-w-content">
-			<ul>
+			<ol class="flex flex-col gap-2">
 				{#each data.searchResult.items as item (item['@id'])}
-					<li class="bg-cards">
-						<a href={relativize(item['@id'])}
-							><h2 class="text-4-cond-extrabold">
-								<DecoratedData data={item[LxlLens.CardHeading]} />
-							</h2></a
-						>
-						<DecoratedData data={item[LxlLens.CardBody]} />
-					</li>
-					<br />
+					<SearchCard {item} />
 				{/each}
-			</ul>
+			</ol>
 		</main>
 	</div>
 </div>
