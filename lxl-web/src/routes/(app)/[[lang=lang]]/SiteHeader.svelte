@@ -25,7 +25,7 @@
 				>Hitta och låna i hela Sveriges bibliotekskatalog</label
 			>
 			<div class="w-full max-w-3xl">
-				<Search placeholder="Titel, författare, ämne, bokförlag m.m." />
+				<Search placeholder="Titel, författare, ämne, bokförlag m.m." autofocus />
 			</div>
 		</div>
 	</header>

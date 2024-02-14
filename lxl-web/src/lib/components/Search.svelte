@@ -5,6 +5,7 @@
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 
 	export let placeholder: string;
+	export let autofocus: boolean = false;
 
 	let q = $page.url.searchParams.get('q')?.trim();
 
@@ -39,7 +40,7 @@
 		aria-label="Sök"
 		spellcheck="false"
 		bind:value={q}
-		autofocus
+		{autofocus}
 	/>
 	{#each searchParams as [name, value]}
 		{#if name !== 'q'}
