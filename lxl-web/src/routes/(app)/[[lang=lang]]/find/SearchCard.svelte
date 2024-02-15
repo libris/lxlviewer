@@ -6,14 +6,14 @@
 	import type { ResourceData } from '$lib/types/ResourceData';
 
 	export let item: ResourceData;
+
 	const hiddenProperties = ['_label', '_style'];
+	const bodyDisplay = item[LxlLens.CardBody]?._display;
 
 	function getClasses(obj: ResourceData) {
 		const style = getResourcePropertyStyle(obj);
 		return style ? style.join(' ') : '';
 	}
-
-	console.log(item[LxlLens.CardBody]._display);
 </script>
 
 <li class="search-card flex flex-col gap-2 rounded-md border-b border-b-primary/16 bg-cards p-6">
@@ -25,11 +25,10 @@
 	>
 	<!-- card body -->
 	<div class="search-card-body">
-		{#each item[LxlLens.CardBody]._display as obj}
-			<div class="search-card-group {getClasses(obj)}">
-				<p class="search-card-label mb-1 text-secondary">{obj?._label}</p>
-				<!-- eslint-disable-next-line no-empty @typescript-eslint/no-unused-vars -->
-				{#each getFilteredEntries(obj, hiddenProperties) as [key, value]}
+		{#each bodyDisplay as obj}
+			{#each getFilteredEntries(obj, hiddenProperties) as [key, value]}
+				<div class="search-card-group {getClasses(obj)}" id={key}>
+					<p class="search-card-label mb-1 text-secondary">{obj?._label}</p>
 					{#if Array.isArray(value)}
 						{#each value as v}
 							<div class="search-card-value">
@@ -41,8 +40,8 @@
 							<DecoratedData data={value} />
 						</div>
 					{/if}
-				{/each}
-			</div>
+				</div>
+			{/each}
 		{/each}
 	</div>
 </li>
@@ -50,14 +49,44 @@
 <style>
 	.search-card-body {
 		@apply grid grid-cols-3 gap-4 text-2-regular;
-		grid-template-areas: 'head nav foot';
+		grid-template-areas:
+			'contribution hasInstance subject'
+			'genreForm classification contentType';
+	}
+
+	#contribution {
+		grid-area: contribution;
+	}
+
+	#hasInstance {
+		grid-area: hasInstance;
+	}
+
+	#subject {
+		grid-area: subject;
+	}
+
+	#genreForm {
+		grid-area: genreForm;
+	}
+
+	#classification {
+		grid-area: classification;
+	}
+
+	#contentType {
+		grid-area: contentType;
 	}
 
 	.search-card-group.nolabel .search-card-label {
 		@apply hidden;
 	}
 
+	.search-card-group.pill {
+		@apply flex flex-wrap items-start gap-1;
+	}
+
 	.search-card-group.pill .search-card-value {
-		@apply m-1 inline-block rounded-md border border-accent-dark p-1;
+		@apply rounded-md border border-accent-dark p-1;
 	}
 </style>
