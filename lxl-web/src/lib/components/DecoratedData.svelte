@@ -2,7 +2,11 @@
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { page } from '$app/stores';
 	import resourcePopover from '$lib/actions/resourcePopover';
-	import { getResourceId, getResourcePropertyStyle } from '$lib/utils/resourceData';
+	import {
+		getResourceId,
+		getResourcePropertyStyle,
+		getFilteredEntries
+	} from '$lib/utils/resourceData';
 	import { relativize } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 	export let data: ResourceData;
@@ -12,17 +16,12 @@
 		'@type',
 		'@id',
 		'_label',
-		// '_style',
+		'_style',
 		'_contentBefore',
 		'_contentAfter'
-		// 'inScheme'
 	];
 
 	const flattenedProperties = ['_display', '@value'];
-
-	function getFilteredEntries(data: Record<string, ResourceData>) {
-		return Object.entries(data).filter(([key]) => !hiddenProperties.includes(key));
-	}
 
 	function getLink(value: ResourceData) {
 		if (getResourcePropertyStyle(value)?.includes('link')) {
@@ -42,13 +41,9 @@
 	}
 
 	function getElementAttributes({ key, value }: { key: string; value: ResourceData }) {
-		if (key === 'genreForm') {
-			console.log('genreform', value);
-		}
 		return {
 			'data-property': key,
 			href: getLink(value)
-			// class: getResourcePropertyStyle(value)
 		};
 	}
 
@@ -78,7 +73,7 @@
 		{/each}
 	{:else}
 		{data?._contentBefore || ''}
-		{#each getFilteredEntries(data) as [key, value]}
+		{#each getFilteredEntries(data, hiddenProperties) as [key, value]}
 			{#if flattenedProperties.includes(key)}
 				<svelte:self data={value} />
 			{:else}

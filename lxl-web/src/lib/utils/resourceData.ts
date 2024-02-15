@@ -23,3 +23,7 @@ export function getResourceId(value: ResourceData) {
 	}
 	return undefined;
 }
+
+export function getFilteredEntries(data: Record<string, ResourceData>, hiddenProperties: string[]) {
+	return Object.entries(data).filter(([key]) => !hiddenProperties.includes(key));
+}

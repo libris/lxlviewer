@@ -11,7 +11,7 @@
 		<div class="hidden w-80 shrink-0 md:flex">
 			<FacetSidebar facets={data.searchResult.facetGroups} />
 		</div>
-		<main class="max-w-content">
+		<main class="w-full">
 			<ol class="flex flex-col gap-2">
 				{#each data.searchResult.items as item (item['@id'])}
 					<SearchCard {item} />
