@@ -35,7 +35,9 @@ export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode
 
 	async function attachPopover() {
 		try {
+			cancelAttach?.(); // cancel earlier promises to ensure popovers doesn't appear after navigating
 			cancelRemove?.();
+			cancelFetch?.();
 			if (options.id && !attached) {
 				const [decoratedData] = await Promise.all([
 					getDecoratedData(),
@@ -52,8 +54,7 @@ export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode
 						onMouseOver: startFloatingElementInteraction,
 						onFocus: startFloatingElementInteraction,
 						onMouseLeave: endFloatingElementInteraction,
-						onBlur: endFloatingElementInteraction,
-						closeImmediately: destroyPopover
+						onBlur: endFloatingElementInteraction
 					}
 				});
 				attached = true;
@@ -76,6 +77,9 @@ export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode
 	}
 
 	function destroyPopover() {
+		cancelAttach?.();
+		cancelFetch?.();
+		cancelRemove?.();
 		floatingElement?.$destroy();
 		attached = false;
 	}
@@ -105,6 +109,7 @@ export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode
 
 	return {
 		destroy() {
+			destroyPopover();
 			node.removeEventListener('mouseover', attachPopover);
 			node.removeEventListener('mouseout', removePopover);
 			node.removeEventListener('focus', attachPopover);
