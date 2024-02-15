@@ -7,7 +7,7 @@
 
 	export let item: ResourceData;
 
-	const hiddenProperties = ['_label', '_style'];
+	const hiddenProperties = ['_label', '_style', '_contentBefore'];
 	const bodyDisplay = item[LxlLens.CardBody]?._display;
 
 	function getClasses(obj: ResourceData) {
