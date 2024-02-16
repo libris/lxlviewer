@@ -32,14 +32,16 @@
 						Inga träffar
 					{/if}
 				</p>
-				<form on:change={handleSortChange}>
-					<label for="search-sort">Sortera efter</label>
-					<select value={sortOrder} name="search-sort">
-						<option value="">Relevans</option>
-						<option value="_sortKeyByLang.{$page.data.locale}">A-Ö</option>
-						<option value="-_sortKeyByLang.{$page.data.locale}">Ö-A</option>
-					</select>
-				</form>
+				{#if numHits > 0}
+					<form on:change={handleSortChange}>
+						<label for="search-sort">Sortera efter</label>
+						<select value={sortOrder} name="search-sort">
+							<option value="">Relevans</option>
+							<option value="_sortKeyByLang.{$page.data.locale}">A-Ö</option>
+							<option value="-_sortKeyByLang.{$page.data.locale}">Ö-A</option>
+						</select>
+					</form>
+				{/if}
 			</div>
 			<ol class="flex flex-col gap-2">
 				{#each $page.data.searchResult.items as item (item['@id'])}
