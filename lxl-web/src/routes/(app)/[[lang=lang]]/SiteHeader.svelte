@@ -22,7 +22,7 @@
 				<h1 class="text-3xl font-bold leading-none text-primary sm:text-[5.5rem]">Libris</h1>
 			</div>
 			<label for="main-search" class="text-center text-[1.25rem] text-secondary"
-				>Hitta och låna i hela Sveriges bibliotekskatalog</label
+				>Hitta och låna i hela Sveriges bibliotekskatalog!</label
 			>
 			<div class="w-full max-w-3xl">
 				<Search placeholder="Titel, författare, ämne, bokförlag m.m." autofocus />
