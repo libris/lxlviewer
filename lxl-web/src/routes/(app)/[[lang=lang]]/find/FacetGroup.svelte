@@ -19,14 +19,14 @@
 	$: canShowLessFacets = !canShowMoreFacets && filteredFacets.length > defaultFacetsShown;
 </script>
 
-<li class="my-4 border-b-[1px] pb-2 text-2-regular">
+<li class="my-4 border-b-[1px] pb-2">
 	<button
 		id={'toggle-' + group.dimension}
 		type="button"
 		on:click={() => (expanded = !expanded)}
 		aria-expanded={!!expanded}
 		aria-controls={'group-' + group.dimension}
-		class="w-full text-left text-2-cond-bold"
+		class="w-full text-left font-bold"
 	>
 		{expanded ? '⌃' : '⌄'} {group.label}</button
 	>
@@ -46,14 +46,12 @@
 		<ol class="mt-2">
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li>
-					<a class="flex justify-between no-underline text-2-regular" href={facet.view['@id']}>
+					<a class="flex justify-between no-underline" href={facet.view['@id']}>
 						<span class="flex items-baseline">
 							{#if 'selected' in facet}
 								<!-- howto A11y?! -->
 								<span class="sr-only">{facet.selected ? 'Valt filter' : ''}</span>
-								<span class="mr-1 text-3-regular" aria-hidden="true"
-									>{facet.selected ? '☑' : '☐'}</span
-								>
+								<span class="mr-1" aria-hidden="true">{facet.selected ? '☑' : '☐'}</span>
 							{/if}
 							<span>{facet.str}</span>
 						</span>
