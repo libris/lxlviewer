@@ -25,7 +25,7 @@ export default {
         item.forEach((obj) => {
           const publications = castArray(get(this.inspector.data.quoted, [obj['@id'], 'publication'], []));
           const primary = publications.find((p) => p['@type'] === 'PrimaryPublication');
-          obj.year = toInt(get(primary, ['year']));
+          obj.year = toInt(get(primary, ['year'], ''));
         });
         item.sort((a, b) => b.year - a.year);
         item.forEach((obj) => delete obj.year);
