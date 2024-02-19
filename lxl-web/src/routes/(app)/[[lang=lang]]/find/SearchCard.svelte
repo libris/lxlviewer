@@ -18,7 +18,7 @@
 
 <li class="search-card flex flex-col gap-2 rounded-md border-b border-b-primary/16 bg-cards p-6">
 	<!-- card heading -->
-	<a href={relativize(item['@id'])} class="text-primary no-underline text-3-cond-bold"
+	<a href={relativize(item['@id'])} class="font-bold text-primary no-underline"
 		><h2>
 			<DecoratedData data={item[LxlLens.CardHeading]} />
 		</h2></a
@@ -27,7 +27,7 @@
 	<div class="search-card-body">
 		{#each bodyDisplay as obj}
 			{#each getFilteredEntries(obj, hiddenProperties) as [key, value]}
-				<div class="search-card-group {getClasses(obj)}" id={key}>
+				<div class="search-card-group {getClasses(obj)}" data-property={key}>
 					<p class="search-card-label mb-1 text-secondary">{obj?._label}</p>
 					{#if Array.isArray(value)}
 						{#each value as v}
@@ -48,33 +48,33 @@
 
 <style>
 	.search-card-body {
-		@apply grid grid-cols-3 gap-4 text-2-regular;
+		@apply grid grid-cols-3 gap-6;
 		grid-template-areas:
 			'contribution hasInstance subject'
 			'genreForm classification contentType';
 	}
 
-	#contribution {
+	[data-property='contribution'] {
 		grid-area: contribution;
 	}
 
-	#hasInstance {
+	[data-property='hasInstance'] {
 		grid-area: hasInstance;
 	}
 
-	#subject {
+	[data-property='subject'] {
 		grid-area: subject;
 	}
 
-	#genreForm {
+	[data-property='genreForm'] {
 		grid-area: genreForm;
 	}
 
-	#classification {
+	[data-property='classification'] {
 		grid-area: classification;
 	}
 
-	#contentType {
+	[data-property='contentType'] {
 		grid-area: contentType;
 	}
 
