@@ -7,11 +7,15 @@
 
 	$: numHits = $page.data.searchResult.totalItems;
 	const sortOrder = $page.url.searchParams.get('_sort');
+	const sortOptions = [
+		{ value: '', label: 'Relevans' },
+		{ value: `_sortKeyByLang.${$page.data.locale}`, label: 'A-Ö' },
+		{ value: `-_sortKeyByLang.${$page.data.locale}`, label: 'Ö-A' }
+	];
 
 	function handleSortChange(e: Event) {
 		const value = (e.target as HTMLSelectElement).value;
 		let searchParams = $page.url.searchParams;
-
 		searchParams.set('_sort', value);
 		goto(`find?${searchParams.toString()}`, { invalidateAll: true });
 	}
@@ -36,9 +40,9 @@
 					<form on:change={handleSortChange}>
 						<label for="search-sort">Sortera efter</label>
 						<select value={sortOrder} name="search-sort">
-							<option value="">Relevans</option>
-							<option value="_sortKeyByLang.{$page.data.locale}">A-Ö</option>
-							<option value="-_sortKeyByLang.{$page.data.locale}">Ö-A</option>
+							{#each sortOptions as option}
+								<option value={option.value}>{option.label}</option>
+							{/each}
 						</select>
 					</form>
 				{/if}
