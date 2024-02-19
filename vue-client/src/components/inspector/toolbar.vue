@@ -245,6 +245,9 @@ export default {
       const template = this.templates.combined['messages'].find(t => t['@id'] === templateId).value;
       const preparedTemplate = RecordUtil.prepareDuplicateFor(template, this.user, this.settings.keysToClear.duplication);
       set(preparedTemplate, ['@graph', 1, 'concerning'], [pick(this.inspector.data.mainEntity, '@id')]);
+      if (preparedTemplate['@graph'][1].hasOwnProperty('descriptionCreator')) {
+        set(preparedTemplate, ['@graph', 1, 'descriptionCreator'], {'@id': StringUtil.getLibraryUri(this.user.settings.activeSigel)});
+      }
       this.$store.dispatch('setInsertData', preparedTemplate);
       this.$router.push({ path: '/new' });
     },
@@ -630,13 +633,13 @@ export default {
             {{ translatePhrase("Download") }} JSON-LD<span v-show="inspector.status.editing">&nbsp;({{ translatePhrase('Incl. unsaved changes') }})</span>
           </a>
         </li>
-        <li class="Toolbar-menuItem" v-show="user.settings.cxzFeatureIsOn && !inspector.status.editing">
+        <li class="Toolbar-menuItem" v-show="!inspector.status.editing">
           <a class="Toolbar-menuLink" @click="createMessage('inquiry')">
             <i class="fa fa-fw fa-question" aria-hidden="true" />
             {{ translatePhrase("Inquiry") }}
           </a>
         </li>
-        <li class="Toolbar-menuItem" v-show="user.settings.cxzFeatureIsOn && !inspector.status.editing">
+        <li class="Toolbar-menuItem" v-show="!inspector.status.editing">
           <a class="Toolbar-menuLink" @click="createMessage('changeNotice'), hideToolsMenu()">
             <i class="fa fa-fw fa-exclamation" aria-hidden="true" />
             {{ translatePhrase("Change notice") }}

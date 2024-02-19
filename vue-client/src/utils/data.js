@@ -153,7 +153,12 @@ export function getExternalLinks(obj) {
 
 export async function fetchMissingLinkedToQuoted(obj, store) {
   const quoted = store.state.inspector.data.quoted || {};
-  const missingLinks = getExternalLinks(obj).filter((l) => !quoted.hasOwnProperty(l));
+  const missingLinks = getExternalLinks(obj)
+    .filter((l) => !quoted.hasOwnProperty(l))
+    .filter((l) => {
+      const uri = translateAliasedUri(l);
+      return uri.startsWith(settings.apiPath) || uri.startsWith(settings.idPath);
+    });
   const embellished = false;
   return Promise
     .allSettled(missingLinks.map((l) => HttpUtil.getDocument(l, undefined, embellished)))

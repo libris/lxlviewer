@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import { sortBy, set, pick } from 'lodash-es';
 import CreationCard from "@/components/create/creation-card.vue";
 import * as RecordUtil from "@/utils/record";
+import * as StringUtil from 'lxljs/string';
 
 export default {
   name: 'create-message',
@@ -26,6 +27,9 @@ export default {
       const preparedTemplate = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings.keysToClear.duplication);
       if (preparedTemplate['@graph'][1].hasOwnProperty('concerning')) {
         set(preparedTemplate, ['@graph', 1, 'concerning'], this.userFlagged.map(f => pick(f, '@id')));
+      }
+      if (preparedTemplate['@graph'][1].hasOwnProperty('descriptionCreator')) {
+        set(preparedTemplate, ['@graph', 1, 'descriptionCreator'], {'@id': StringUtil.getLibraryUri(this.user.settings.activeSigel)});
       }
       this.thingData = preparedTemplate;
     },

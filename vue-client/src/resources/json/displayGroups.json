@@ -6,7 +6,8 @@
       "inScheme",
       "mediaType",
       "carrierType",
-      "inDataset"
+      "inDataset",
+      "category"
     ],
     "header": [
       "hasTitle",
@@ -38,7 +39,8 @@
       "@reverse/continuedBy"
     ],
     "hidden": [
-      "@reverse/itemOf"
+      "@reverse/itemOf",
+      "@reverse/concerning"
     ]
   }
 }

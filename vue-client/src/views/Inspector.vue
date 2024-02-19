@@ -470,9 +470,7 @@ export default {
       }
       // Add a change note for the user to input her commit message
       if (this.recordType === 'Work' || this.recordType === 'Instance') {
-        if (this.user.settings.cxzFeatureIsOn) {
-          this.addEmptyChangeNote();
-        }
+        this.addEmptyChangeNote();
       }
     },
     checkForMissingHeldBy() {
@@ -764,26 +762,25 @@ export default {
         activeSigel: this.user.settings.activeSigel,
         token: this.user.token,
       }, obj2)).then((result) => {
+        // eslint-disable-next-line no-nested-ternary
+        const msgKey = this.isCxzMessage
+          ? 'was sent'
+          : (!this.documentId ? 'was created' : 'was saved');
+
+        setTimeout(() => {
+          this.$store.dispatch('pushNotification', {
+            type: 'success',
+            message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang(msgKey, this.user.settings.language, this.resources.i18n)}!`,
+          });
+        }, 10);
         if (!this.documentId) {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
-          setTimeout(() => {
-            this.$store.dispatch('pushNotification', {
-              type: 'success',
-              message: `${labelByLang(this.recordType)}  ${StringUtil.getUiPhraseByLang('was created', this.user.settings.language, this.resources.i18n)}!`,
-            });
-          }, 10);
           this.warnOnSave();
           this.$router.push({ path: `/${fnurgel}` });
         } else {
           this.fetchDocument();
-          setTimeout(() => {
-            this.$store.dispatch('pushNotification', {
-              type: 'success',
-              message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang('was saved', this.user.settings.language, this.resources.i18n)}!`,
-            });
-          }, 10);
           this.warnOnSave();
           if (done) {
             this.stopEditing();
@@ -966,6 +963,13 @@ export default {
     isItem() {
       if (this.inspector.data.hasOwnProperty('mainEntity')) {
         return this.inspector.data.mainEntity['@type'] === 'Item';
+      }
+      return false;
+    },
+    isCxzMessage() {
+      if (this.inspector.data.hasOwnProperty('mainEntity')) {
+        const type = this.inspector.data.mainEntity['@type'];
+        return type === 'InquiryAction' || type === 'ChangeNotice';
       }
       return false;
     },

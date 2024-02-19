@@ -8,7 +8,7 @@ export default {
   props: {
     recordTypes: {
       type: [String, Array],
-      required: true,
+      default: () => [],
     },
     currentSort: { // sortparam-value to set initial select option
       type: String,

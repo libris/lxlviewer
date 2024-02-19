@@ -280,8 +280,8 @@ export default {
       },
     },
     'concerning.@reverse.itemOf.heldBy.@id': {
-      sv: 'Sigel',
-      en: 'Collection',
+      sv: 'Har bestånd',
+      en: 'Has holding',
       facet: {
         order: 20,
       },

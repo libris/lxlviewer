@@ -36,8 +36,6 @@ export class User {
       sort: false,
       facetSortings: {},
       shelfMarkSearch: '',
-      changeCategoriesSubscribed: [],
-      cxzFeatureIsOn: false,
     };
     this.uriMinter = null;
   }

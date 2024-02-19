@@ -321,7 +321,7 @@ export default {
       };
     },
     fetchHelpDocs() {
-      if (this.settings.mockHelp === true) {
+      if (import.meta.env.DEV && this.settings.mockHelp === true) {
         window.lxlInfo('🎭 MOCKING HELP FILE - Using file from local lxl-helpdocs repository');
         // eslint-disable-next-line import/no-extraneous-dependencies
         import('@/../../../lxl-helpdocs/build/help.json').then((module) => {
@@ -366,9 +366,11 @@ export default {
   mounted() {
     this.verifyUser().then(() => {
       this.$nextTick(() => {
-        this.loadUserDatabase();
+        if (this.user.isLoggedIn) {
+          this.loadUserDatabase();
+        }
       });
-    }).catch(() => {});
+    });
     this.initOauth2Client().catch(() => {});
     this.initWarningFunc();
     this.fetchHelpDocs();

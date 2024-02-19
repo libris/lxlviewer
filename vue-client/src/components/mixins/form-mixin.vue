@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep, isArray, sortBy, each, groupBy } from 'lodash-es';
+import { cloneDeep, isArray, sortBy, each, groupBy, get, castArray } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
@@ -18,7 +18,21 @@ export default {
     };
   },
   methods: {
-    groupItem(item) {
+    groupItem(item, key) {
+      if (key === '@reverse/instanceOf') {
+        // sort instances on publication.year
+        const toInt = (s) => Number(s.replace(/[^0-9]/g, '')); // default 0
+        item.forEach((obj) => {
+          const publications = castArray(get(this.inspector.data.quoted, [obj['@id'], 'publication'], []));
+          const primary = publications.find((p) => p['@type'] === 'PrimaryPublication');
+          obj.year = toInt(get(primary, ['year'], ''));
+        });
+        item.sort((a, b) => b.year - a.year);
+        item.forEach((obj) => delete obj.year);
+
+        return { '': item };
+      }
+
       let groupedItems = {};
 
       // get label and add it to the object for sorting
@@ -107,7 +121,7 @@ export default {
 
           if (propsInMainForm.indexOf(currentKey) > -1) {
             objToMainForm[currentKey] = {};
-            objToMainForm[currentKey].items = this.groupItem(item);
+            objToMainForm[currentKey].items = this.groupItem(item, currentKey);
             objToMainForm[currentKey].isGrouped = true;
             objToMainForm[currentKey].totalItems = item.length;
           }
@@ -136,7 +150,7 @@ export default {
         const currentKey = `@reverse/${key}`;
 
         objToMainForm[currentKey] = {};
-        objToMainForm[currentKey].items = this.groupItem(item);
+        objToMainForm[currentKey].items = this.groupItem(item, currentKey);
         objToMainForm[currentKey].isGrouped = true;
         objToMainForm[currentKey].totalItems = item.length;
       });

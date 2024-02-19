@@ -1,5 +1,4 @@
 <script>
-import { sortBy } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import { translatePhrase } from '@/utils/filters';
 import * as StringUtil from 'lxljs/string';
@@ -16,7 +15,6 @@ export default {
   },
   props: {
     sigel: Object,
-    availableCategories: Array,
     availableSigels: Array,
   },
   methods: {
@@ -24,17 +22,8 @@ export default {
     updateSigel(e, sigel) {
       this.$store.dispatch('updateSubscribedSigel', { libraryId: this.sigelUri(sigel), checked: e.target.checked });
     },
-    updateCategory(e, categoryId) {
-      this.$store.dispatch('updateSubscribedChangeCategory', { categoryId: categoryId, checked: e.target.checked });
-    },
     toggleSigelExpanded() {
       this.sigelIsExpanded = !this.sigelIsExpanded;
-    },
-    toggleCategoriesExpanded() {
-      this.categoriesIsExpanded = !this.categoriesIsExpanded;
-    },
-    isActiveCategory(categoryId) {
-      return this.userChangeCategories.includes(categoryId);
     },
     isActiveSigel(sigel) {
       return this.userChangeCollections.includes(this.sigelUri(sigel));
@@ -51,12 +40,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userChangeCategories',
       'userChangeCollections',
     ]),
-    categoriesSorted() {
-      return sortBy(this.availableCategories, this.label);
-    },
   },
   mounted() {
   },
@@ -66,38 +51,23 @@ export default {
 <template><div>
   <div class="Categories">
     <div class="Categories-label" @click="toggleSigelExpanded">
-      <i class="Categories-arrow fa fa-chevron-right"
-      :class="{'icon is-expanded' : sigelIsExpanded}"
-      ></i>
+      <i
+        class="Categories-arrow fa fa-chevron-right"
+        :class="{ 'icon is-expanded': sigelIsExpanded }"
+      />
       {{ translatePhrase("Collections") }}
     </div>
     <div v-if="sigelIsExpanded">
       <div class="Categories-row" v-for="sigel in availableSigels" :key="sigel.code">
         <div class="Categories-key">{{ sigelLabel(sigel) }}</div>
         <div class="Categories-value">
-          <input id="categoryCheckbox"
+          <input
+            id="categoryCheckbox"
             class="customCheckbox-input"
             type="checkbox"
-            @change="e => updateSigel(e, sigel)" :checked="isActiveSigel(sigel)">
-          <div class="customCheckbox-icon"></div>
-        </div>
-      </div>
-    </div>
-    <div class="Categories-label" @click="toggleCategoriesExpanded">
-      <i class="Categories-arrow fa fa-chevron-right"
-        :class="{'icon is-expanded' : categoriesIsExpanded}"
-      ></i>
-      {{ translatePhrase("Change categories") }}
-    </div>
-    <div v-if="categoriesIsExpanded">
-      <div class="Categories-row" v-for="category in categoriesSorted" :key="category['@id']">
-        <div class="Categories-key">{{ label(category) }}</div>
-        <div class="Categories-value">
-          <input id="categoryCheckbox"
-            class="customCheckbox-input"
-            type="checkbox"
-            @change="e => updateCategory(e, category['@id'])" :checked="isActiveCategory(category['@id'])">
-          <div class="customCheckbox-icon"></div>
+            @change="e => updateSigel(e, sigel)"
+            :checked="isActiveSigel(sigel)">
+          <div class="customCheckbox-icon" />
         </div>
       </div>
     </div>

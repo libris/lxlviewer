@@ -1,14 +1,14 @@
 <script>
 import { mapGetters } from 'vuex';
-import { isMatch } from 'lodash-es';
+import { cloneDeep, isMatch } from 'lodash-es';
 import * as StringUtil from 'lxljs/string';
-import * as httpUtil from '@/utils/http';
 import PropertyMappings from '@/resources/json/propertymappings.json';
 import { translatePhrase, asAppPath } from '@/utils/filters';
 import Sort from '@/components/search/sort.vue';
 import FilterBadge from '@/components/search/filter-badge.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import FacetMixin from '@/components/mixins/facet-mixin.vue';
+import { getLibraryUri } from "lxljs/string";
 
 export default {
   name: 'result-controls',
@@ -46,11 +46,13 @@ export default {
     },
     baseFilters() {
       return this.$route.params && this.$route.params.tool === 'changes'
-        ? [{'variable': '@type', 'object': {'@id': 'AdministrativeNotice'}}]
+        ? [{'variable': '@type', 'object': {'@id': 'AdministrativeNotice'}},
+           {'variable': 'not-@reverse.concerning.agent.@id', 'object': {'@id': `https://libris.kb.se/library/${this.user.settings.activeSigel}`}}]
         : [];
     },
     filteredFilters() {
       return this.pageData.search.mapping
+        .filter((item) => !item.hasOwnProperty('_selected'))
         .filter((item) => this.excludeFilters.every((el) => el !== item.variable))
         .filter((item) => !this.baseFilters.some((el) => isMatch(item, el)));
     },
@@ -171,6 +173,12 @@ export default {
     isChangeView() {
       return this.$route.params.tool === 'changes';
     },
+    filteredOnHandled() {
+      return typeof this.$route.query['not-@reverse.concerning.agent.@id'] !== 'undefined';
+    },
+    activeSigel() {
+      return this.user.settings.activeSigel;
+    }
   },
   emits: ['sortChange'],
   methods: {
@@ -208,6 +216,26 @@ export default {
       user.settings.resultListType = 'detailed';
       this.$store.dispatch('setUser', user);
     },
+    handleCheckbox(e) {
+      if (e.target.checked === true) {
+        this.pushHandledFilter();
+      } else {
+        this.removeHandledFilter()
+      }
+    },
+    pushHandledFilter() {
+      const newQuery = Object.assign({}, this.$route.query, { 'not-@reverse.concerning.agent.@id': getLibraryUri(this.user.settings.activeSigel)});
+      this.$router.push({
+        query: newQuery
+      });
+    },
+    removeHandledFilter() {
+      let query = cloneDeep(this.$route.query);
+      delete query['not-@reverse.concerning.agent.@id'];
+      this.$router.push({
+        query: query
+      });
+    },
     // getNewResult(url) {
     //   this.changeResultListStatus('loading', true);
     //   const resultPromise = new Promise((resolve, reject) => {
@@ -228,6 +256,13 @@ export default {
     //   const clearedQuery = pickBy(currentQuery, (value, key) => this.filters.every(el => el.variable !== key));
     //   this.$router.push({ query: clearedQuery });
     // },
+  },
+  watch: {
+    activeSigel(newValue, oldValue) {
+      if (newValue !== oldValue && this.filteredOnHandled) {
+        this.pushHandledFilter();
+      }
+    }
   },
   components: {
     sort: Sort,
@@ -251,11 +286,22 @@ export default {
       </p>
       <div class="ResultControls-controlWrap" v-if="showDetails && pageData.totalItems > 0">
         <sort
-          v-if="searchedTypes && $route.params.perimeter != 'remote'"
+          v-if="$route.params.perimeter != 'remote'"
           :currentSort="currentSortOrder"
           :common-sort-fallback="true"
           :recordTypes="searchedTypes"
           @change="$emit('sortChange', $event)" />
+        <div class="ResultControls-handledWrap" v-if="isChangeView">
+          <label class="ResultControls-handledLabel">{{ translatePhrase('Hide handled:') }}</label>
+          <div>
+            <input
+              class="customCheckbox-input"
+              type="checkbox"
+              @change="handleCheckbox"
+              :checked="filteredOnHandled"/>
+            <div class="customCheckbox-icon ResultControls-handledCheck"></div>
+          </div>
+        </div>
         <div class="ResultControls-listTypes">
           <button
             class="ResultControls-listType icon icon--md"
@@ -362,6 +408,18 @@ export default {
 
   &-controlWrap {
     display: flex;
+  }
+  &-handledWrap {
+    display: flex;
+    align-items: center;
+  }
+  &-handledCheck {
+    padding-right: 8px;
+    margin-bottom: 8px;
+  }
+  &-handledLabel {
+    margin: 0 10px 10px 0;
+    font-weight: 600;
   }
 
   &-listTypes {

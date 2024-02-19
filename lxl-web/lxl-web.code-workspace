@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../lxljs"
+		}
+	],
+	"settings": {
+		"[svelte]": {
+			"editor.defaultFormatter": "svelte.svelte-vscode"
+		},
+		"workbench.editor.labelFormat": "short",
+		"explorer.compactFolders": false
+	},
+	"extensions": {
+		"recommendations": ["svelte.svelte-vscode"]
+	}
+}

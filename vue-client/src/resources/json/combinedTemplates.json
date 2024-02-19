@@ -908,12 +908,14 @@
           "frequency": [],
           "hasTitle": [
             {
-              "@type": "KeyTitle",
-              "mainTitle": ""
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
             },
             {
-              "@type": "Title",
-              "mainTitle": ""
+              "@type": "VariantTitle",
+              "mainTitle": "",
+              "subtitle": ""
             }
           ],
           "marc:alphabet": {
@@ -1064,6 +1066,7 @@
             {
               "@type": "PrimaryPublication",
               "startYear": "",
+              "endYear": "",
               "date": "",
               "country": [ {"@id": "https://id.kb.se/country/sw"} ],
               "place": {
@@ -2410,8 +2413,16 @@
                 "label": ""
               }
             ],
-            "subject": []
-          }
+            "subject": [],
+            "intendedAudience": []
+          },
+           "contribution": [
+        {
+          "@type": "Contribution",
+          "agent": null,      
+          "role": []
+        }
+      ]
         }
       }
     },
@@ -2449,14 +2460,17 @@
           "@type": "Print",
           "issuanceType": "Serial",
           "frequency": [],
-          "hasTitle": [{
-              "@type": "KeyTitle",
-              "mainTitle": ""
-            },
+          "hasTitle": [
             {
               "@type": "Title",
-              "mainTitle": ""
-            }
+              "mainTitle": "",
+              "subtitle": ""
+            },
+            {
+             "@type": "VariantTitle",
+             "mainTitle": "",
+             "subtitle": ""
+           }
           ],
           "marc:alphabet": {
             "@id": "https://id.kb.se/marc/SerialsAlphabetType-b"
@@ -2584,7 +2598,8 @@
             },
             {
               "@type": "ISMN",
-              "value": ""
+              "value": "",
+              "qualifier": ""
             },
             {
               "@type": "MusicPlate",
@@ -4082,7 +4097,7 @@
   "messages": {
     "inquiry": {
       "label": "Förfrågan",
-      "description": "Utgå från flaggade poster eller länka",
+      "description": "Utgå från flaggade poster eller länka till post",
       "@id": "inquiry",
       "value": {
         "record": {
@@ -4095,14 +4110,16 @@
         "mainEntity": {
           "@type": "InquiryAction",
           "@id": "https://id.kb.se/TEMPID#it",
+          "descriptionCreator": null,
           "concerning": [],
           "comment": ""
         }
       }
     },
-    "changeNoticeFlagged": {
+    "changeNotice": {
       "label": "Ändringsmeddelande",
-      "description": "Utgå från flaggade poster eller länka",
+      "description": "Utgå från flaggade poster eller länka till post",
+      "@id": "changeNotice",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -4114,6 +4131,7 @@
         "mainEntity": {
           "@type": "ChangeNotice",
           "@id": "https://id.kb.se/TEMPID#it",
+          "descriptionCreator": null,
           "concerning": [],
           "comment": ""
         }
