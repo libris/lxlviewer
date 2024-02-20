@@ -6,7 +6,7 @@
 </script>
 
 <nav class="w-full" aria-labelledby="facet-sidebar-header">
-	<header id="facet-sidebar-header" class="text-3-cond-bold">Filter</header>
+	<header id="facet-sidebar-header" class="font-bold">Filter</header>
 	<ol>
 		{#each facets as group (group.dimension)}
 			<FacetGroup {group} locale={$page.data.locale} />
