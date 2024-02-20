@@ -39,9 +39,11 @@
 				{#if numHits > 0}
 					<form on:change={handleSortChange}>
 						<label for="search-sort">Sortera efter</label>
-						<select value={sortOrder} name="search-sort">
+						<select name="search-sort">
 							{#each sortOptions as option}
-								<option value={option.value}>{option.label}</option>
+								<option value={option.value} selected={option.value === sortOrder}
+									>{option.label}</option
+								>
 							{/each}
 						</select>
 					</form>
