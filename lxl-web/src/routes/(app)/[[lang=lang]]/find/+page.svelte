@@ -37,16 +37,16 @@
 					{/if}
 				</p>
 				{#if numHits > 0}
-					<form on:change={handleSortChange}>
+					<div>
 						<label for="search-sort">Sortera efter</label>
-						<select name="search-sort">
+						<select id="search-sort" on:change={handleSortChange}>
 							{#each sortOptions as option}
 								<option value={option.value} selected={option.value === sortOrder}
 									>{option.label}</option
 								>
 							{/each}
 						</select>
-					</form>
+					</div>
 				{/if}
 			</div>
 			<ol class="flex flex-col gap-2">
