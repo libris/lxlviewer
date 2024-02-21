@@ -468,10 +468,6 @@ export default {
       if (this.recordType === 'Work' && this.inspector.data.record.recordStatus === 'marc:New') {
         this.addCataloguersNote();
       }
-      // Add a change note for the user to input her commit message
-      if (this.recordType === 'Work' || this.recordType === 'Instance') {
-        this.addEmptyChangeNote();
-      }
     },
     checkForMissingHeldBy() {
       const mainEntity = this.inspector.data.mainEntity;
@@ -510,32 +506,6 @@ export default {
           addToHistory: false,
         });
       }
-    },
-    addEmptyChangeNote() {
-      const emptyChangeNote = { '@type': 'ChangeNote', comment: [''] };
-      
-      this.$store.dispatch('updateInspectorData', {
-        changeList: [{
-          path: 'record.hasChangeNote',
-          value: emptyChangeNote,
-        }],
-        addToHistory: false,
-      });
-      this.$store.dispatch('setInspectorStatusValue', {
-        property: 'embellished',
-        value: [{
-          path: 'record.hasChangeNote',
-          value: emptyChangeNote,
-        }],
-      });
-      this.justEmbellished = true;
-      setTimeout(() => {
-        this.$store.dispatch('setInspectorStatusValue', {
-          property: 'embellished',
-          value: [],
-        });
-        this.justEmbellished = false;
-      }, 3000);
     },
     startEditing() {
       this.$store.dispatch('setOriginalData', this.inspector.data);
