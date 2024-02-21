@@ -1,14 +1,14 @@
 import type { ResourceData } from '$lib/types/ResourceData';
 
-export function getResourceProperty(value: ResourceData, name: string) {
-	if (value && typeof value === 'object' && !Array.isArray(value) && name in value) {
-		return value[name];
+export function getPropertyValue(data: ResourceData, name: string) {
+	if (data && typeof data === 'object' && !Array.isArray(data) && name in data) {
+		return data[name];
 	}
 	return undefined;
 }
 
-export function getResourcePropertyStyle(value: ResourceData) {
-	const style = getResourceProperty(value, '_style');
+export function getPropertyStyle(data: ResourceData) {
+	const style = getPropertyValue(data, '_style');
 	if (style) {
 		return style as string[];
 	}
@@ -16,8 +16,8 @@ export function getResourcePropertyStyle(value: ResourceData) {
 	return undefined;
 }
 
-export function getResourceId(value: ResourceData) {
-	const id = getResourceProperty(value, '@id');
+export function getResourceId(data: ResourceData) {
+	const id = getPropertyValue(data, '@id');
 	if (typeof id === 'string' && id.length) {
 		return id;
 	}

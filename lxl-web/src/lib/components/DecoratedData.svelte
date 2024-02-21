@@ -2,11 +2,7 @@
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { page } from '$app/stores';
 	import resourcePopover from '$lib/actions/resourcePopover';
-	import {
-		getResourceId,
-		getResourcePropertyStyle,
-		getFilteredEntries
-	} from '$lib/utils/resourceData';
+	import { getResourceId, getPropertyStyle } from '$lib/utils/resourceData';
 	import { relativize } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 	export let data: ResourceData;
@@ -21,10 +17,8 @@
 		'_contentAfter'
 	];
 
-	const flattenedProperties = ['_display', '@value'];
-
 	function getLink(value: ResourceData) {
-		if (getResourcePropertyStyle(value)?.includes('link')) {
+		if (getPropertyStyle(value)?.includes('link')) {
 			const id = getResourceId(value);
 			if (id) {
 				return relativize(id);
@@ -40,18 +34,11 @@
 		return 'span';
 	}
 
-	function getElementAttributes({ key, value }: { key: string; value: ResourceData }) {
-		return {
-			'data-property': key,
-			href: getLink(value)
-		};
-	}
-
 	/* Conditionally add popover action so it's only added when needed */
-	function conditionalResourcePopover(node: HTMLElement, value: ResourceData) {
-		const style = getResourcePropertyStyle(value);
-		if (style && style.includes('link' || style.includes('definition'))) {
-			const id = getResourceId(value);
+	function conditionalResourcePopover(node: HTMLElement, data: ResourceData) {
+		const style = getPropertyStyle(data);
+		if (style && (style.includes('link') || style.includes('definition'))) {
+			const id = getResourceId(data);
 			if (id) {
 				return resourcePopover(node, {
 					id,
@@ -59,6 +46,14 @@
 				});
 			}
 		}
+	}
+
+	function getProperty(data: { [key: string]: ResourceData }) {
+		return (
+			Object.entries(data).find(
+				([key, value]) => key && value && !hiddenProperties.includes(key)
+			) || []
+		);
 	}
 </script>
 
@@ -73,21 +68,36 @@
 		{/each}
 	{:else}
 		{data?._contentBefore || ''}
-		{#each getFilteredEntries(data, hiddenProperties) as [key, value]}
-			{#if flattenedProperties.includes(key)}
-				<svelte:self data={value} />
-			{:else}
-				<svelte:element
-					this={getElementType(value)}
-					{...getElementAttributes({ key, value })}
-					use:conditionalResourcePopover={value}
-				>
-					<svelte:self data={value} />
-				</svelte:element>
-			{/if}
-		{/each}
+		{#if data['@type']}
+			<svelte:element
+				this={getElementType(data)}
+				href={getLink(data)}
+				data-type={data['@type']}
+				class:definition={getPropertyStyle(data)?.includes('definition')}
+				use:conditionalResourcePopover={data}
+			>
+				<svelte:self data={data['_display']} />
+			</svelte:element>
+		{:else if data['@value']}
+			<svelte:self data={data['@value']} />
+		{:else if data['_display']}
+			<svelte:self data={data['_display']} />
+		{:else}
+			{@const [propertyName, propertyValue] = getProperty(data)}
+			<span data-property={propertyName}><svelte:self data={propertyValue} /></span>
+		{/if}
 		{data?._contentAfter || ''}
 	{/if}
 {:else}
 	{data}
 {/if}
+
+<style>
+	.definition {
+		text-decoration: underline;
+		text-decoration-style: dotted;
+		font-size: 0.875rem;
+		color: #666;
+		font-style: italic;
+	}
+</style>
