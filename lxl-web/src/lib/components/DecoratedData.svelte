@@ -2,7 +2,7 @@
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { page } from '$app/stores';
 	import resourcePopover from '$lib/actions/resourcePopover';
-	import { getResourceId, getResourcePropertyStyle } from '$lib/utils/resourceData';
+	import { getResourceId, getPropertyStyle } from '$lib/utils/resourceData';
 	import { relativize } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 	export let data: ResourceData;
@@ -18,7 +18,7 @@
 	];
 
 	function getLink(value: ResourceData) {
-		if (getResourcePropertyStyle(value)?.includes('link')) {
+		if (getPropertyStyle(value)?.includes('link')) {
 			const id = getResourceId(value);
 			if (id) {
 				return relativize(id);
@@ -36,7 +36,7 @@
 
 	/* Conditionally add popover action so it's only added when needed */
 	function conditionalResourcePopover(node: HTMLElement, data: ResourceData) {
-		const style = getResourcePropertyStyle(data);
+		const style = getPropertyStyle(data);
 		if (style && (style.includes('link') || style.includes('definition'))) {
 			const id = getResourceId(data);
 			if (id) {
@@ -73,7 +73,7 @@
 				this={getElementType(data)}
 				href={getLink(data)}
 				data-type={data['@type']}
-				class:definition={getResourcePropertyStyle(data)?.includes('definition')}
+				class:definition={getPropertyStyle(data)?.includes('definition')}
 				use:conditionalResourcePopover={data}
 			>
 				<svelte:self data={data['_display']} />

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { relativize } from '$lib/utils/http';
-	import { getFilteredEntries, getResourcePropertyStyle } from '$lib/utils/resourceData';
+	import { getFilteredEntries, getPropertyStyle } from '$lib/utils/resourceData';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { LxlLens } from '$lib/utils/display.types';
 	import type { ResourceData } from '$lib/types/ResourceData';
@@ -11,7 +11,7 @@
 	const bodyDisplay = item[LxlLens.CardBody]?._display;
 
 	function getClasses(obj: ResourceData) {
-		const style = getResourcePropertyStyle(obj);
+		const style = getPropertyStyle(obj);
 		return style ? style.join(' ') : '';
 	}
 </script>
