@@ -4097,8 +4097,48 @@
   "messages": {
     "inquiry": {
       "label": "Förfrågan",
-      "description": "Utgå från flaggade poster eller länka till post",
+      "description": "Länka till poster",
       "@id": "inquiry",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        },
+        "mainEntity": {
+          "@type": "InquiryAction",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "descriptionCreator": null,
+          "comment": ""
+        }
+      }
+    },
+    "changeNotice": {
+      "label": "Ändringsmeddelande",
+      "description": "Länka till poster",
+      "@id": "changeNotice",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        },
+        "mainEntity": {
+          "@type": "ChangeNotice",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "descriptionCreator": null,
+          "comment": ""
+        }
+      }
+    },
+    "inquiryFlagged": {
+      "label": "Förfrågan",
+      "description": "Utgå från flaggade poster",
+      "@id": "inquiryFlagged",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
@@ -4116,10 +4156,10 @@
         }
       }
     },
-    "changeNotice": {
+    "changeNoticeFlagged": {
       "label": "Ändringsmeddelande",
-      "description": "Utgå från flaggade poster eller länka till post",
-      "@id": "changeNotice",
+      "description": "Utgå från flaggade poster",
+      "@id": "changeNoticeFlagged",
       "value": {
         "record": {
           "@id": "https://id.kb.se/TEMPID",
