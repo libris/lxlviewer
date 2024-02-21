@@ -19,6 +19,21 @@
 		searchParams.set('_sort', value);
 		goto(`find?${searchParams.toString()}`, { invalidateAll: true });
 	}
+
+	$: ({ first, last, next, totalItems, itemsPerPage, itemOffset } = $page.data.searchResult);
+	$: pagination = {
+		currentPage: Math.floor(itemOffset / itemsPerPage) + 1,
+		nextPage: Math.floor(itemOffset / itemsPerPage) + 2,
+		lastPage: Math.ceil(totalItems / itemsPerPage)
+	};
+
+	function setSortParam(offset: number) {
+		const params = $page.url.searchParams;
+		params.set('_offset', offset.toString());
+		return `find?${params.toString()}`;
+	}
+	console.log($page.url);
+	console.log($page.data.searchResult);
 </script>
 
 <SeachMapping mapping={$page.data.searchResult.mapping} />
@@ -54,6 +69,42 @@
 					<SearchCard {item} />
 				{/each}
 			</ol>
+			{#if $page.data.searchResult.items.length > 0 && totalItems > itemsPerPage}
+				<nav aria-label="paginering" class="my-4 flex justify-center gap-2">
+					<!-- prev -->
+					{#if itemOffset > 0}<a
+							href={setSortParam(itemOffset - itemsPerPage > 0 ? itemOffset - itemsPerPage : 0)}
+							>←</a
+						>{/if}
+					<!-- first -->
+					{#if first && pagination.currentPage !== 1}<a id="first" href={first['@id']}>1</a>{/if}
+					<!-- divider -->
+					{#if pagination.currentPage > 2}<span>...</span>{/if}
+					<!-- prev (if last) -->
+					{#if pagination.currentPage === pagination.lastPage && pagination.currentPage > 2}<a
+							id="prev"
+							href={setSortParam(itemOffset - itemsPerPage)}>{pagination.currentPage - 1}</a
+						>{/if}
+					<!-- current -->
+					<span class="rounded-md border border-primary px-1">{pagination.currentPage}</span>
+					<!-- next -->
+					{#if next}<a id="next" href={next['@id']}>{pagination.nextPage}</a>{/if}
+					<!-- second next (if first) -->
+					{#if pagination.currentPage === 1 && totalItems > itemsPerPage * 2}<a
+							id="second-next"
+							href={setSortParam(itemOffset + itemsPerPage * 2)}>{pagination.nextPage + 1}</a
+						>{/if}
+					<!-- divider -->
+					{#if pagination.lastPage - pagination.nextPage > 1}<span>...</span>{/if}
+					<!-- last -->
+					{#if last && pagination.currentPage !== pagination.lastPage && pagination.nextPage !== pagination.lastPage}<a
+							id="last"
+							href={last['@id']}>{pagination.lastPage}</a
+						>{/if}
+					<!-- next -->
+					{#if next}<a href={next['@id']}>→</a>{/if}
+				</nav>
+			{/if}
 		</main>
 	</div>
 </div>
