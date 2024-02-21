@@ -26,7 +26,9 @@ export default {
     useTemplate(templateValue) {
       const preparedTemplate = RecordUtil.prepareDuplicateFor(templateValue, this.user, this.settings.keysToClear.duplication);
       if (preparedTemplate['@graph'][1].hasOwnProperty('concerning')) {
-        set(preparedTemplate, ['@graph', 1, 'concerning'], this.userFlagged.map(f => pick(f, '@id')));
+        set(preparedTemplate, ['@graph', 1, 'concerning'], this.userFlagged.map((f) => pick(f, '@id')));
+      } else {
+        set(preparedTemplate, ['@graph', 1, 'concerning'], []);
       }
       if (preparedTemplate['@graph'][1].hasOwnProperty('descriptionCreator')) {
         set(preparedTemplate, ['@graph', 1, 'descriptionCreator'], {'@id': StringUtil.getLibraryUri(this.user.settings.activeSigel)});
