@@ -134,4 +134,15 @@ router.beforeEach((to, from, next) => {
   });
 });
 
+router.beforeEach((to, from, next) => {
+  if (to.fullPath === '/directory-care/changes' && from.path.includes('/directory-care/changes')) {
+    next({
+      name: to.name,
+      query: from.query,
+    });
+  } else {
+    next();
+  }
+});
+
 export default router;
