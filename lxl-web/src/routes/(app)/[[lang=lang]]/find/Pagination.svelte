@@ -19,8 +19,9 @@
 	$: sequenceEnd = pageSequence[pageSequence.length - 1];
 
 	function getOffsetLink(offset: number) {
+		let o = offset < 0 ? 0 : offset;
 		const params = $page.url.searchParams;
-		params.set('_offset', offset.toString());
+		params.set('_offset', o.toString());
 		return `find?${params.toString()}`;
 	}
 </script>
@@ -31,10 +32,7 @@
 			<!-- prev and first -->
 			{#if !isFirstPage || itemOffset > 0}
 				<li>
-					<a
-						href={getOffsetLink(itemOffset - itemsPerPage > 0 ? itemOffset - itemsPerPage : 0)}
-						aria-label="Föregående sida">←</a
-					>
+					<a href={getOffsetLink(itemOffset - itemsPerPage)} aria-label="Föregående sida">←</a>
 				</li>
 				{#if sequenceStart > 1}
 					<li><a href={removeOpeningSlash(first['@id'])}>1</a></li>
