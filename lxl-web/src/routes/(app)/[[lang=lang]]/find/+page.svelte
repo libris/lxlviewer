@@ -2,6 +2,7 @@
 	import SeachMapping from './SeachMapping.svelte';
 	import FacetSidebar from './FacetSidebar.svelte';
 	import SearchCard from './SearchCard.svelte';
+	import Pagination from './Pagination.svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
@@ -109,13 +110,14 @@
 	}
 	console.log($page.url);
 	console.log($page.data.searchResult);
+	$: searchResult = $page.data.searchResult;
 </script>
 
-<SeachMapping mapping={$page.data.searchResult.mapping} />
+<SeachMapping mapping={searchResult.mapping} />
 <div class="container-fluid">
 	<div class="flex gap-16 py-4 sm:py-8">
 		<div class="hidden w-80 shrink-0 md:flex">
-			<FacetSidebar facets={$page.data.searchResult.facetGroups} />
+			<FacetSidebar facets={searchResult.facetGroups} />
 		</div>
 		<main class="max-w-content">
 			<div class="mb-4 flex justify-between">
@@ -140,29 +142,13 @@
 				{/if}
 			</div>
 			<ol class="flex flex-col gap-2">
-				{#each $page.data.searchResult.items as item (item['@id'])}
+				{#each searchResult.items as item (item['@id'])}
 					<SearchCard {item} />
 				{/each}
 			</ol>
-			{#if $page.data.searchResult.items.length > 0 && totalItems > itemsPerPage}
-				<nav aria-label="paginering" class="my-4 flex justify-center gap-2">
-					{#each Object.entries(pagination) as [key, value]}
-						<svelte:element
-							this={value?.elem}
-							data-property={key}
-							{...value.href && { href: value.href }}
-						>
-							{value.number || value?.label}
-						</svelte:element>
-					{/each}
-				</nav>
+			{#if searchResult.items.length > 0 && searchResult.totalItems > searchResult.itemsPerPage}
+				<Pagination data={searchResult} />
 			{/if}
 		</main>
 	</div>
 </div>
-
-<style>
-	[data-property='currentPage'] {
-		@apply rounded-md border border-primary px-1;
-	}
-</style>
