@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { removeOpeningSlash } from '$lib/utils/http';
 	import type { SearchResult } from './search';
 	export let data: SearchResult;
 
@@ -36,7 +37,7 @@
 					>
 				</li>
 				{#if sequenceStart > 1}
-					<li><a href={first['@id']}>1</a></li>
+					<li><a href={removeOpeningSlash(first['@id'])}>1</a></li>
 				{/if}
 			{/if}
 			{#if sequenceStart > 2}
@@ -56,9 +57,9 @@
 			<!-- last and next -->
 			{#if !isLastPage}
 				{#if sequenceEnd !== lastPage}
-					<li><a href={last['@id']}>{lastPage}</a></li>
+					<li><a href={removeOpeningSlash(last['@id'])}>{lastPage}</a></li>
 				{/if}
-				<li><a href={next?.['@id']} aria-label="Nästa sida">→</a></li>
+				<li><a href={removeOpeningSlash(next?.['@id'])} aria-label="Nästa sida">→</a></li>
 			{/if}
 		</ul>
 	</nav>

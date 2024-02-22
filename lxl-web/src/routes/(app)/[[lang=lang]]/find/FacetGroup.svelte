@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { LocaleCode } from '$lib/i18n/locales';
+	import { removeOpeningSlash } from '$lib/utils/http';
 	import { type FacetGroup } from './search';
 
 	export let group: FacetGroup;
@@ -46,7 +47,7 @@
 		<ol class="mt-2">
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li>
-					<a class="flex justify-between no-underline" href={facet.view['@id']}>
+					<a class="flex justify-between no-underline" href={removeOpeningSlash(facet.view['@id'])}>
 						<span class="flex items-baseline">
 							{#if 'selected' in facet}
 								<!-- howto A11y?! -->
