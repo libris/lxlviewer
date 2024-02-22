@@ -146,9 +146,7 @@
 					<SearchCard {item} />
 				{/each}
 			</ol>
-			{#if searchResult.items.length > 0 && searchResult.totalItems > searchResult.itemsPerPage}
-				<Pagination data={searchResult} />
-			{/if}
+			<Pagination data={searchResult} />
 		</main>
 	</div>
 </div>

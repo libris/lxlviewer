@@ -9,11 +9,10 @@
 	$: lastPage = Math.ceil(totalItems / itemsPerPage);
 	$: isLastPage = currentPage === lastPage;
 
-	const sequenceSize = [...Array(3)];
+	const sequenceSize = [...Array(2)];
 	$: sequenceStart = (() => {
-		if (isFirstPage) return currentPage;
-		if (isLastPage) return currentPage - (sequenceSize.length - 1);
-		else return currentPage - 1;
+		if (isLastPage) return currentPage - 1;
+		else return currentPage;
 	})();
 	$: pageSequence = sequenceSize.map((el, i) => sequenceStart + i);
 	$: sequenceEnd = pageSequence[pageSequence.length - 1];
