@@ -1,14 +1,14 @@
-export function relativize(uri: string) {
-	return uri.split('/').slice(3).join('');
-}
-
 /**
- * Turns /find?q=etc into find?q=etc to keep lang support (base href)
- * @param path A relative path
+ * Turns an absolute url into a relative one
+ * & formats it (removes the opening slash for base href)
+ * @param path - absolute or relative url
  */
-export function removeOpeningSlash(path: string | undefined) {
-	if (path && path.charAt(0) === '/') {
-		return path.replace('/', '');
+export function relativizeUrl(url: string | undefined) {
+	if (!url) {
+		return url;
 	}
-	return path;
+	if (url.charAt(0) === '/') {
+		return url.replace('/', '');
+	}
+	return url.split('/').slice(3).join('');
 }

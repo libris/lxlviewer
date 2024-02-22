@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { removeOpeningSlash } from '$lib/utils/http';
+	import { relativizeUrl } from '$lib/utils/http';
 	import type { SearchResult } from './search';
 	export let data: SearchResult;
 
@@ -35,7 +35,7 @@
 					<a href={getOffsetLink(itemOffset - itemsPerPage)} aria-label="Föregående sida">←</a>
 				</li>
 				{#if sequenceStart > 1}
-					<li><a href={removeOpeningSlash(first['@id'])}>1</a></li>
+					<li><a href={relativizeUrl(first['@id'])}>1</a></li>
 				{/if}
 			{/if}
 			{#if sequenceStart > 2}
@@ -55,9 +55,9 @@
 			<!-- last and next -->
 			{#if !isLastPage}
 				{#if sequenceEnd !== lastPage}
-					<li><a href={removeOpeningSlash(last['@id'])}>{lastPage}</a></li>
+					<li><a href={relativizeUrl(last['@id'])}>{lastPage}</a></li>
 				{/if}
-				<li><a href={removeOpeningSlash(next?.['@id'])} aria-label="Nästa sida">→</a></li>
+				<li><a href={relativizeUrl(next?.['@id'])} aria-label="Nästa sida">→</a></li>
 			{/if}
 		</ul>
 	</nav>
