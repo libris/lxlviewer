@@ -6,6 +6,7 @@
 	import { relativize } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 	export let data: ResourceData;
+	export let depth = 0;
 
 	const hiddenProperties = [
 		'@context',
@@ -18,7 +19,7 @@
 	];
 
 	function getLink(value: ResourceData) {
-		if (getPropertyStyle(value)?.includes('link')) {
+		if (depth > 1 && getPropertyStyle(value)?.includes('link')) {
 			const id = getResourceId(value);
 			if (id) {
 				return relativize(id);
@@ -64,7 +65,7 @@
 {#if data && typeof data === 'object'}
 	{#if Array.isArray(data)}
 		{#each data as arrayItem}
-			<svelte:self data={arrayItem} />
+			<svelte:self data={arrayItem} depth={depth + 1} />
 		{/each}
 	{:else}
 		{data?._contentBefore || ''}
@@ -76,12 +77,12 @@
 				class:definition={getPropertyStyle(data)?.includes('definition')}
 				use:conditionalResourcePopover={data}
 			>
-				<svelte:self data={data['_display']} />
+				<svelte:self data={data['_display']} depth={depth + 1} />
 			</svelte:element>
 		{:else if data['@value']}
-			<svelte:self data={data['@value']} />
+			<svelte:self data={data['@value']} depth={depth + 1} />
 		{:else if data['_display']}
-			<svelte:self data={data['_display']} />
+			<svelte:self data={data['_display']} depth={depth + 1} />
 		{:else}
 			{@const [propertyName, propertyValue] = getProperty(data)}
 			<span data-property={propertyName}><svelte:self data={propertyValue} /></span>
