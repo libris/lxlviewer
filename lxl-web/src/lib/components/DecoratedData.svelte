@@ -6,8 +6,8 @@
 	import { relativize } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 	export let data: ResourceData;
-	export let labeledProperties: string[] = [];
 	export let depth = 0;
+	export let showLabels = true;
 
 	const hiddenProperties = [
 		'@context',
@@ -66,7 +66,7 @@
 {#if data && typeof data === 'object'}
 	{#if Array.isArray(data)}
 		{#each data as arrayItem}
-			<svelte:self data={arrayItem} depth={depth + 1} {labeledProperties} />
+			<svelte:self data={arrayItem} depth={depth + 1} {showLabels} />
 		{/each}
 	{:else}
 		{#if getPropertyValue(data, '_contentBefore')}
@@ -82,22 +82,22 @@
 				class:definition={getPropertyStyle(data)?.includes('definition')}
 				use:conditionalResourcePopover={data}
 			>
-				<svelte:self data={data['_display']} depth={depth + 1} {labeledProperties} />
+				<svelte:self data={data['_display']} depth={depth + 1} {showLabels} />
 			</svelte:element>
 		{:else if data['@value']}
-			<svelte:self data={data['@value']} depth={depth + 1} {labeledProperties} />
+			<svelte:self data={data['@value']} depth={depth + 1} {showLabels} />
 		{:else if data['_display']}
-			<svelte:self data={data['_display']} depth={depth + 1} {labeledProperties} />
+			<svelte:self data={data['_display']} depth={depth + 1} {showLabels} />
 		{:else}
 			{@const [propertyName, propertyValue] = getProperty(data)}
 			{#if propertyName && propertyValue}
 				<svelte:element this={getElementType(propertyValue)} data-property={propertyName}>
-					{#if labeledProperties.includes(propertyName)}
-						<strong class="mt-4 block first-letter:uppercase">
+					{#if depth <= 2 && showLabels && !getPropertyStyle('nolabel')}
+						<strong>
 							{data._label}
 						</strong>
 					{/if}
-					<svelte:self data={propertyValue} depth={depth + 1} {labeledProperties} />
+					<svelte:self data={propertyValue} depth={depth + 1} {showLabels} />
 				</svelte:element>
 			{/if}
 		{/if}

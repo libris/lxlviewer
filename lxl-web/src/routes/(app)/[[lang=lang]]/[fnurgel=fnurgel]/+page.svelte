@@ -8,23 +8,12 @@
 	<main>
 		<header>
 			<h1 class="mb-6 text-6-cond-extrabold">
-				<DecoratedData data={data.heading} />
+				<DecoratedData data={data.heading} showLabels={false} />
 			</h1>
 		</header>
 		<div class="overview mb-4">
 			<div class="image">Image</div>
-			<DecoratedData
-				data={data.overview}
-				labeledProperties={[
-					'genreForm',
-					'classification',
-					'subject',
-					'intendedAudience',
-					'contentType',
-					'hasInstance',
-					'hasItem'
-				]}
-			/>
+			<DecoratedData data={data.overview} />
 		</div>
 		<details open>
 			<summary class="text-5-cond-extrabold">Details</summary>
