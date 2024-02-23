@@ -21,8 +21,8 @@
 		computePosition(referenceElement, popoverElement, {
 			middleware: [
 				offset(8),
-				shift(),
-				arrow({ element: arrowElement, padding: 6 }),
+				shift({ padding: 24 }),
+				arrow({ element: arrowElement, padding: 8 }),
 				inline(),
 				flip()
 			]
