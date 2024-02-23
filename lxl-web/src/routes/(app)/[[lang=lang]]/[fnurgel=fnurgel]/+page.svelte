@@ -51,7 +51,6 @@
 
 	.overview :global(strong) {
 		display: block;
-		margin-top: 1rem;
 		&::first-letter {
 			text-transform: capitalize;
 		}
@@ -63,6 +62,10 @@
 		align-items: center;
 		justify-content: center;
 		aspect-ratio: 1 / 1;
+	}
+
+	.overview :global(div[data-property]) {
+		margin-bottom: 1rem;
 	}
 
 	.overview :global([data-property='contribution']) {
