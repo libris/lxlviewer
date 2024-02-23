@@ -1,11 +1,71 @@
 <script lang="ts">
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import { LxlLens } from '$lib/utils/display.types';
 
 	export let data;
 </script>
 
-<h1 class="text-6-cond-extrabold"><DecoratedData data={data.page[LxlLens.PageHeading]} /></h1>
-<DecoratedData data={data.page[LxlLens.PageOverView]} />
-<DecoratedData data={data.page[LxlLens.PageDetails]} />
-<pre>{JSON.stringify(data.foo, null, 2)}</pre>
+<div class="product-page">
+	<main>
+		<header>
+			<h1 class="mb-6 text-6-cond-extrabold">
+				<DecoratedData data={data.heading} />
+			</h1>
+		</header>
+		<div class="overview mb-4">
+			<div class="image">Image</div>
+			<DecoratedData data={data.overview} />
+		</div>
+		<details open>
+			<summary class="text-5-cond-extrabold">Details</summary>
+			<DecoratedData data={data.details} />
+		</details>
+		<div>
+			<h2 class="text-5-cond-extrabold">Instances</h2>
+			<DecoratedData data={data.instances} />
+		</div>
+		<details>
+			<summary class="text-5-cond-extrabold">JSON</summary>
+			<pre>
+					{JSON.stringify(data.overview, null, 2)}
+				</pre>
+		</details>
+	</main>
+	<aside>Aside</aside>
+</div>
+
+<style>
+	.product-page {
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+		max-width: 1600px;
+		margin: 0 auto;
+		padding: 2rem;
+		gap: 2rem;
+	}
+
+	.overview {
+		display: grid;
+		grid-template-columns: 1fr 3fr;
+		gap: 2rem;
+	}
+
+	.image {
+		background: rgba(0, 0, 0, 0.05);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		aspect-ratio: 1 / 1;
+	}
+
+	.overview :global([data-property='contribution']) {
+		& > ._contentBefore,
+		& > ._contentAfter {
+			display: none;
+		}
+		/* Following should probably controlled from display.json */
+		& > * {
+			display: block;
+			white-space: nowrap;
+		}
+	}
+</style>

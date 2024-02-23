@@ -986,3 +986,29 @@ export function isObject(data: unknown): data is Data {
 function isLangContainerDefinition(dfn: Record<string, string>) {
 	return dfn[JsonLd.CONTAINER] == JsonLd.LANGUAGE;
 }
+
+export function pickProperty(
+	data: DisplayDecorated,
+	pickProperties: PropertyName[]
+): [DisplayDecorated, DisplayDecorated | undefined] {
+	if (!isTypedNode(data)) {
+		return [data, undefined];
+	}
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { [Fmt.DISPLAY]: _1, ...picked } = data;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { [Fmt.DISPLAY]: _2, ...rest } = data;
+
+	picked[Fmt.DISPLAY] = [];
+	rest[Fmt.DISPLAY] = [];
+
+	data[Fmt.DISPLAY].forEach((p) => {
+		if (isObject(p) && pickProperties.some((name) => name in p)) {
+			picked[Fmt.DISPLAY].push(p);
+		} else {
+			rest[Fmt.DISPLAY].push(p);
+		}
+	});
+
+	return [rest, picked];
+}
