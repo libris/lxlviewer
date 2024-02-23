@@ -13,7 +13,7 @@
 		</header>
 		<div class="overview mb-4">
 			<div class="image">Image</div>
-			<DecoratedData data={data.overview} />
+			<DecoratedData data={data.overview} block />
 		</div>
 		<details open>
 			<summary class="text-5-cond-extrabold">Details</summary>
@@ -47,6 +47,14 @@
 		display: grid;
 		grid-template-columns: 1fr 3fr;
 		gap: 2rem;
+	}
+
+	.overview :global(strong) {
+		display: block;
+		margin-top: 1rem;
+		&::first-letter {
+			text-transform: capitalize;
+		}
 	}
 
 	.image {

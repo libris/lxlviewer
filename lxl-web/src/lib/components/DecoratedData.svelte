@@ -8,6 +8,7 @@
 	export let data: ResourceData;
 	export let depth = 0;
 	export let showLabels = true;
+	export let block = false;
 
 	const hiddenProperties = [
 		'@context',
@@ -33,6 +34,9 @@
 		if (getLink(value)) {
 			return 'a';
 		}
+		if (block && depth <= 2) {
+			return 'div';
+		}
 		return 'span';
 	}
 
@@ -57,6 +61,20 @@
 			) || []
 		);
 	}
+
+	function shouldShowContentBefore() {
+		if (block && depth > 2 && getPropertyValue(data, '_contentBefore')) {
+			return true;
+		}
+		return false;
+	}
+
+	function shouldShowContentAfter() {
+		if (block && depth > 2 && getPropertyValue(data, '_contentAfter')) {
+			return true;
+		}
+		return false;
+	}
 </script>
 
 <!-- 
@@ -66,10 +84,10 @@
 {#if data && typeof data === 'object'}
 	{#if Array.isArray(data)}
 		{#each data as arrayItem}
-			<svelte:self data={arrayItem} depth={depth + 1} {showLabels} />
+			<svelte:self data={arrayItem} depth={depth + 1} {showLabels} {block} />
 		{/each}
 	{:else}
-		{#if getPropertyValue(data, '_contentBefore')}
+		{#if shouldShowContentBefore()}
 			<span class="_contentBefore">
 				{data._contentBefore}
 			</span>
@@ -82,12 +100,12 @@
 				class:definition={getPropertyStyle(data)?.includes('definition')}
 				use:conditionalResourcePopover={data}
 			>
-				<svelte:self data={data['_display']} depth={depth + 1} {showLabels} />
+				<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
 			</svelte:element>
 		{:else if data['@value']}
-			<svelte:self data={data['@value']} depth={depth + 1} {showLabels} />
+			<svelte:self data={data['@value']} depth={depth + 1} {showLabels} {block} />
 		{:else if data['_display']}
-			<svelte:self data={data['_display']} depth={depth + 1} {showLabels} />
+			<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
 		{:else}
 			{@const [propertyName, propertyValue] = getProperty(data)}
 			{#if propertyName && propertyValue}
@@ -97,11 +115,11 @@
 							{data._label}
 						</strong>
 					{/if}
-					<svelte:self data={propertyValue} depth={depth + 1} {showLabels} />
+					<svelte:self data={propertyValue} depth={depth + 1} {showLabels} {block} />
 				</svelte:element>
 			{/if}
 		{/if}
-		{#if getPropertyValue(data, '_contentAfter')}
+		{#if shouldShowContentAfter()}
 			<span class="_contentAfter">
 				{data._contentAfter}
 			</span>
