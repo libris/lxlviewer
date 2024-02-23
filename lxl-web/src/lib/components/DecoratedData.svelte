@@ -2,10 +2,11 @@
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { page } from '$app/stores';
 	import resourcePopover from '$lib/actions/resourcePopover';
-	import { getResourceId, getPropertyStyle } from '$lib/utils/resourceData';
+	import { getResourceId, getPropertyStyle, getPropertyValue } from '$lib/utils/resourceData';
 	import { relativize } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 	export let data: ResourceData;
+	export let labeledProperties: string[] = [];
 	export let depth = 0;
 
 	const hiddenProperties = [
@@ -65,10 +66,14 @@
 {#if data && typeof data === 'object'}
 	{#if Array.isArray(data)}
 		{#each data as arrayItem}
-			<svelte:self data={arrayItem} depth={depth + 1} />
+			<svelte:self data={arrayItem} depth={depth + 1} {labeledProperties} />
 		{/each}
 	{:else}
-		{data?._contentBefore || ''}
+		{#if getPropertyValue(data, '_contentBefore')}
+			<span class="_contentBefore">
+				{data._contentBefore}
+			</span>
+		{/if}
 		{#if data['@type']}
 			<svelte:element
 				this={getElementType(data)}
@@ -77,17 +82,30 @@
 				class:definition={getPropertyStyle(data)?.includes('definition')}
 				use:conditionalResourcePopover={data}
 			>
-				<svelte:self data={data['_display']} depth={depth + 1} />
+				<svelte:self data={data['_display']} depth={depth + 1} {labeledProperties} />
 			</svelte:element>
 		{:else if data['@value']}
-			<svelte:self data={data['@value']} depth={depth + 1} />
+			<svelte:self data={data['@value']} depth={depth + 1} {labeledProperties} />
 		{:else if data['_display']}
-			<svelte:self data={data['_display']} depth={depth + 1} />
+			<svelte:self data={data['_display']} depth={depth + 1} {labeledProperties} />
 		{:else}
 			{@const [propertyName, propertyValue] = getProperty(data)}
-			<span data-property={propertyName}><svelte:self data={propertyValue} /></span>
+			{#if propertyName && propertyValue}
+				<svelte:element this={getElementType(propertyValue)} data-property={propertyName}>
+					{#if labeledProperties.includes(propertyName)}
+						<strong class="mt-4 block first-letter:uppercase">
+							{data._label}
+						</strong>
+					{/if}
+					<svelte:self data={propertyValue} depth={depth + 1} {labeledProperties} />
+				</svelte:element>
+			{/if}
 		{/if}
-		{data?._contentAfter || ''}
+		{#if getPropertyValue(data, '_contentAfter')}
+			<span class="_contentAfter">
+				{data._contentAfter}
+			</span>
+		{/if}
 	{/if}
 {:else}
 	{data}
