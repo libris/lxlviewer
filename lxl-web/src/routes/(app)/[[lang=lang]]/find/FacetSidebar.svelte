@@ -6,10 +6,12 @@
 </script>
 
 <nav class="w-full" aria-labelledby="facet-sidebar-header">
-	<header id="facet-sidebar-header" class="font-bold">Filter</header>
-	<ol>
-		{#each facets as group (group.dimension)}
-			<FacetGroup {group} locale={$page.data.locale} />
-		{/each}
-	</ol>
+	{#if facets && facets.length > 0}
+		<header id="facet-sidebar-header" class="font-bold">Filter</header>
+		<ol>
+			{#each facets as group (group.dimension)}
+				<FacetGroup {group} locale={$page.data.locale} />
+			{/each}
+		</ol>
+	{/if}
 </nav>
