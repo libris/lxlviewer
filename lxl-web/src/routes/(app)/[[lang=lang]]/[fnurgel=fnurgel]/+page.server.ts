@@ -19,7 +19,7 @@ export const load = async ({ params, locals, fetch }) => {
 		headers: { Accept: 'application/ld+json' }
 	});
 	const resource = await resourceRes.json();
-	const mainEntity = resource['mainEntity'] as FramedData;
+	const mainEntity = centerOnWork(resource['mainEntity'] as FramedData);
 
 	// TODO this doesn't really play well with alternativeProperties...?
 	// say we want to use alternativeProperties for hasTitle in the heading
@@ -42,3 +42,18 @@ export const load = async ({ params, locals, fetch }) => {
 		instances: hasInstances
 	};
 };
+
+// TODO: handle titles correctly
+function centerOnWork(mainEntity: FramedData): FramedData {
+	if ('instanceOf' in mainEntity) {
+		const result = mainEntity.instanceOf;
+		delete mainEntity.instanceOf;
+		result['@reverse'] = { instanceOf: [mainEntity] };
+		if (!result.hasTitle && mainEntity.hasTitle) {
+			result.hasTitle = mainEntity.hasTitle;
+		}
+		return result;
+	} else {
+		return mainEntity;
+	}
+}
