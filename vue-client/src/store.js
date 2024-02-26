@@ -687,6 +687,9 @@ const store = createStore({
             headers,
             method: 'GET',
           }).then((response) => response.json()).then((result) => {
+            if (!result.user) {
+              throw new Error(result.message);
+            }
             userObj = User.getUserObject(result.user);
             userObj.token = token;
             userObj.token_expires_at = result.expires_at;
@@ -695,6 +698,8 @@ const store = createStore({
               resolve(userObj);
             });
           }, (error) => {
+            throw new Error(error);
+          }).catch((error) => {
             localStorage.removeItem('at');
             commit('setUser', userObj);
             console.warn(`Authentication failed for existing token: ${error}`);
