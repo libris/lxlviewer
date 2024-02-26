@@ -1,13 +1,15 @@
 <script lang="ts">
 	import type { ResourceData } from '$lib/types/ResourceData';
+	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import { page } from '$app/stores';
 	import resourcePopover from '$lib/actions/resourcePopover';
 	import { hasPropertyStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
 	import { relativize } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
+
 	export let data: ResourceData;
 	export let depth = 0;
-	export let showLabels = true;
+	export let showLabels: ShowLabelsOptions = ShowLabelsOptions.ByPropertyStyle;
 	export let block = false;
 
 	const hiddenProperties = [
@@ -109,7 +111,7 @@
 			{@const [propertyName, propertyValue] = getProperty(data)}
 			{#if propertyName && propertyValue}
 				<svelte:element this={getElementType(propertyValue)} data-property={propertyName}>
-					{#if depth <= 2 && showLabels && !hasPropertyStyle(propertyValue, 'nolabel')}
+					{#if showLabels === ShowLabelsOptions.Always || (showLabels === ShowLabelsOptions.ByPropertyStyle && depth <= 2 && !hasPropertyStyle(propertyValue, 'nolabel'))}
 						<strong>
 							{data._label}
 						</strong>

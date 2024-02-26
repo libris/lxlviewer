@@ -1,6 +1,6 @@
 <script lang="ts">
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
-
+	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	export let data;
 </script>
 
@@ -8,7 +8,7 @@
 	<main>
 		<header>
 			<h1 class="mb-6 text-6-cond-extrabold">
-				<DecoratedData data={data.heading} showLabels={false} />
+				<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 			</h1>
 		</header>
 		<div class="overview mb-4">
