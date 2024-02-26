@@ -75,7 +75,7 @@
 	on:blur={onBlur}
 >
 	<div class="p-2">
-		<DecoratedData {data} />
+		<DecoratedData {data} block />
 	</div>
 	<div class="absolute" bind:this={arrowElement}>
 		<svg

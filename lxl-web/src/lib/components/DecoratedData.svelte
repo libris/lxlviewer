@@ -1,12 +1,21 @@
 <script lang="ts">
 	import type { ResourceData } from '$lib/types/ResourceData';
+	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import { page } from '$app/stores';
 	import resourcePopover from '$lib/actions/resourcePopover';
-	import { getResourceId, getPropertyStyle } from '$lib/utils/resourceData';
+	import {
+		hasPropertyStyle,
+		getPropertyStyle,
+		getResourceId,
+		getPropertyValue
+	} from '$lib/utils/resourceData';
 	import { relativize } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
+
 	export let data: ResourceData;
 	export let depth = 0;
+	export let showLabels: ShowLabelsOptions = ShowLabelsOptions.ByPropertyStyle;
+	export let block = false;
 
 	const hiddenProperties = [
 		'@context',
@@ -19,7 +28,7 @@
 	];
 
 	function getLink(value: ResourceData) {
-		if (depth > 1 && getPropertyStyle(value)?.includes('link')) {
+		if (depth > 1 && hasPropertyStyle(data, 'link')) {
 			const id = getResourceId(value);
 			if (id) {
 				return relativize(id);
@@ -32,13 +41,15 @@
 		if (getLink(value)) {
 			return 'a';
 		}
+		if (block && depth <= 2) {
+			return 'div';
+		}
 		return 'span';
 	}
 
 	/* Conditionally add popover action so it's only added when needed */
 	function conditionalResourcePopover(node: HTMLElement, data: ResourceData) {
-		const style = getPropertyStyle(data);
-		if (style && (style.includes('link') || style.includes('definition'))) {
+		if ((depth > 1 && hasPropertyStyle(data, 'link')) || hasPropertyStyle(data, 'definition')) {
 			const id = getResourceId(data);
 			if (id) {
 				return resourcePopover(node, {
@@ -56,6 +67,25 @@
 			) || []
 		);
 	}
+
+	function getPropertyStyleClasses(data: ResourceData) {
+		const style = getPropertyStyle(data);
+		return style ? style.join(' ') : '';
+	}
+
+	function shouldShowContentBefore() {
+		if (block && depth > 2 && getPropertyValue(data, '_contentBefore')) {
+			return true;
+		}
+		return false;
+	}
+
+	function shouldShowContentAfter() {
+		if (block && depth > 2 && getPropertyValue(data, '_contentAfter')) {
+			return true;
+		}
+		return false;
+	}
 </script>
 
 <!-- 
@@ -65,29 +95,46 @@
 {#if data && typeof data === 'object'}
 	{#if Array.isArray(data)}
 		{#each data as arrayItem}
-			<svelte:self data={arrayItem} depth={depth + 1} />
+			<svelte:self data={arrayItem} depth={depth + 1} {showLabels} {block} />
 		{/each}
 	{:else}
-		{data?._contentBefore || ''}
+		{#if shouldShowContentBefore()}
+			<span class="_contentBefore">
+				{data._contentBefore}
+			</span>
+		{/if}
 		{#if data['@type']}
 			<svelte:element
 				this={getElementType(data)}
 				href={getLink(data)}
 				data-type={data['@type']}
-				class:definition={getPropertyStyle(data)?.includes('definition')}
+				class={getPropertyStyleClasses(data)}
 				use:conditionalResourcePopover={data}
 			>
-				<svelte:self data={data['_display']} depth={depth + 1} />
+				<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
 			</svelte:element>
 		{:else if data['@value']}
-			<svelte:self data={data['@value']} depth={depth + 1} />
+			<svelte:self data={data['@value']} depth={depth + 1} {showLabels} {block} />
 		{:else if data['_display']}
-			<svelte:self data={data['_display']} depth={depth + 1} />
+			<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
 		{:else}
 			{@const [propertyName, propertyValue] = getProperty(data)}
-			<span data-property={propertyName}><svelte:self data={propertyValue} /></span>
+			{#if propertyName && propertyValue}
+				<svelte:element this={getElementType(propertyValue)} data-property={propertyName}>
+					{#if showLabels === ShowLabelsOptions.Always || (showLabels === ShowLabelsOptions.ByPropertyStyle && depth <= 2 && !hasPropertyStyle(propertyValue, 'nolabel'))}
+						<strong>
+							{data._label}
+						</strong>
+					{/if}
+					<svelte:self data={propertyValue} depth={depth + 1} {showLabels} {block} />
+				</svelte:element>
+			{/if}
 		{/if}
-		{data?._contentAfter || ''}
+		{#if shouldShowContentAfter()}
+			<span class="_contentAfter">
+				{data._contentAfter}
+			</span>
+		{/if}
 	{/if}
 {:else}
 	{data}
@@ -100,5 +147,9 @@
 		font-size: 0.875rem;
 		color: #666;
 		font-style: italic;
+	}
+
+	.pill {
+		@apply rounded-md border border-accent-dark p-1 no-underline;
 	}
 </style>
