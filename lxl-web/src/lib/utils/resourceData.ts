@@ -7,7 +7,7 @@ export function getPropertyValue(data: ResourceData, name: string) {
 	return undefined;
 }
 
-export function getPropertyStyle(data: ResourceData) {
+export function getStyle(data: ResourceData) {
 	const style = getPropertyValue(data, '_style');
 	if (style) {
 		return style as string[];
@@ -16,8 +16,8 @@ export function getPropertyStyle(data: ResourceData) {
 	return undefined;
 }
 
-export function hasPropertyStyle(data: ResourceData, styleName: string) {
-	return getPropertyStyle(data)?.includes(styleName);
+export function hasStyle(data: ResourceData, styleName: string) {
+	return getStyle(data)?.includes(styleName);
 }
 
 export function getResourceId(data: ResourceData) {

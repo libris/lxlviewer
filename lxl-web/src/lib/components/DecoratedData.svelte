@@ -3,12 +3,7 @@
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import { page } from '$app/stores';
 	import resourcePopover from '$lib/actions/resourcePopover';
-	import {
-		hasPropertyStyle,
-		getPropertyStyle,
-		getResourceId,
-		getPropertyValue
-	} from '$lib/utils/resourceData';
+	import { hasStyle, getStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 
@@ -28,7 +23,7 @@
 	];
 
 	function getLink(value: ResourceData) {
-		if (depth > 1 && hasPropertyStyle(data, 'link')) {
+		if (depth > 1 && hasStyle(data, 'link')) {
 			const id = getResourceId(value);
 			if (id) {
 				return relativizeUrl(id);
@@ -49,7 +44,7 @@
 
 	/* Conditionally add popover action so it's only added when needed */
 	function conditionalResourcePopover(node: HTMLElement, data: ResourceData) {
-		if ((depth > 1 && hasPropertyStyle(data, 'link')) || hasPropertyStyle(data, 'definition')) {
+		if ((depth > 1 && hasStyle(data, 'link')) || hasStyle(data, 'definition')) {
 			const id = getResourceId(data);
 			if (id) {
 				return resourcePopover(node, {
@@ -68,8 +63,8 @@
 		);
 	}
 
-	function getPropertyStyleClasses(data: ResourceData) {
-		const style = getPropertyStyle(data);
+	function getStyleClasses(data: ResourceData) {
+		const style = getStyle(data);
 		return style ? style.join(' ') : '';
 	}
 
@@ -108,7 +103,7 @@
 				this={getElementType(data)}
 				href={getLink(data)}
 				data-type={data['@type']}
-				class={getPropertyStyleClasses(data)}
+				class={getStyleClasses(data)}
 				use:conditionalResourcePopover={data}
 			>
 				<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
@@ -118,15 +113,15 @@
 		{:else if data['_display']}
 			<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
 		{:else}
-			{@const [propertyName, propertyValue] = getProperty(data)}
-			{#if propertyName && propertyValue}
-				<svelte:element this={getElementType(propertyValue)} data-property={propertyName}>
-					{#if showLabels === ShowLabelsOptions.Always || (showLabels === ShowLabelsOptions.ByPropertyStyle && depth <= 2 && !hasPropertyStyle(propertyValue, 'nolabel'))}
+			{@const [propertyName, propertyData] = getProperty(data)}
+			{#if propertyName && propertyData}
+				<svelte:element this={getElementType(propertyData)} data-property={propertyName}>
+					{#if showLabels === ShowLabelsOptions.Always || (showLabels === ShowLabelsOptions.ByPropertyStyle && depth <= 2 && !hasStyle(data, 'nolabel'))}
 						<strong>
 							{data._label}
 						</strong>
 					{/if}
-					<svelte:self data={propertyValue} depth={depth + 1} {showLabels} {block} />
+					<svelte:self data={propertyData} depth={depth + 1} {showLabels} {block} />
 				</svelte:element>
 			{/if}
 		{/if}
