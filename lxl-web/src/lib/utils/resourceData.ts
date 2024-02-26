@@ -16,6 +16,10 @@ export function getPropertyStyle(data: ResourceData) {
 	return undefined;
 }
 
+export function hasPropertyStyle(data: ResourceData, styleName: string) {
+	return getPropertyStyle(data)?.includes(styleName);
+}
+
 export function getResourceId(data: ResourceData) {
 	const id = getPropertyValue(data, '@id');
 	if (typeof id === 'string' && id.length) {

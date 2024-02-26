@@ -2,7 +2,7 @@
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { page } from '$app/stores';
 	import resourcePopover from '$lib/actions/resourcePopover';
-	import { getResourceId, getPropertyStyle, getPropertyValue } from '$lib/utils/resourceData';
+	import { hasPropertyStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
 	import { relativize } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 	export let data: ResourceData;
@@ -21,7 +21,7 @@
 	];
 
 	function getLink(value: ResourceData) {
-		if (depth > 1 && getPropertyStyle(value)?.includes('link')) {
+		if (depth > 1 && hasPropertyStyle(data, 'link')) {
 			const id = getResourceId(value);
 			if (id) {
 				return relativize(id);
@@ -42,8 +42,7 @@
 
 	/* Conditionally add popover action so it's only added when needed */
 	function conditionalResourcePopover(node: HTMLElement, data: ResourceData) {
-		const style = getPropertyStyle(data);
-		if (style && (style.includes('link') || style.includes('definition'))) {
+		if ((depth > 1 && hasPropertyStyle(data, 'link')) || hasPropertyStyle(data, 'definition')) {
 			const id = getResourceId(data);
 			if (id) {
 				return resourcePopover(node, {
@@ -97,7 +96,7 @@
 				this={getElementType(data)}
 				href={getLink(data)}
 				data-type={data['@type']}
-				class:definition={getPropertyStyle(data)?.includes('definition')}
+				class:definition={hasPropertyStyle(data, 'definition')}
 				use:conditionalResourcePopover={data}
 			>
 				<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
@@ -110,7 +109,7 @@
 			{@const [propertyName, propertyValue] = getProperty(data)}
 			{#if propertyName && propertyValue}
 				<svelte:element this={getElementType(propertyValue)} data-property={propertyName}>
-					{#if depth <= 2 && showLabels && !getPropertyStyle('nolabel')}
+					{#if depth <= 2 && showLabels && !hasPropertyStyle(propertyValue, 'nolabel')}
 						<strong>
 							{data._label}
 						</strong>
