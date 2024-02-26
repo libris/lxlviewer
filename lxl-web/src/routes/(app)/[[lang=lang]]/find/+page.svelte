@@ -39,7 +39,7 @@
 				{#if numHits > 0}
 					<div>
 						<label for="search-sort">Sortera efter</label>
-						<select id="search-sort" on:change={handleSortChange}>
+						<select id="search-sort" form="main-search" on:change={handleSortChange}>
 							{#each sortOptions as option}
 								<option value={option.value} selected={option.value === sortOrder}
 									>{option.label}</option
