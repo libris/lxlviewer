@@ -4,13 +4,7 @@ import { DisplayUtil } from '$lib/utils/xl';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { asResult, type PartialCollectionView } from './search';
 import { getTranslator } from '$lib/i18n';
-import type { NumericRange } from '@sveltejs/kit';
-
-type apiError = {
-	message: string;
-	status_code: NumericRange<400, 599>;
-	status: string;
-};
+import type { apiError } from '$lib/types/API';
 
 export const load = async ({ params, locals, fetch, url }) => {
 	if (!url.searchParams.size) {
