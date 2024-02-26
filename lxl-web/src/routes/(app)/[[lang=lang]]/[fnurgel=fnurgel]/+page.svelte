@@ -49,7 +49,7 @@
 		gap: 2rem;
 	}
 
-	.overview :global(strong) {
+	:global(.overview strong) {
 		display: block;
 		&::first-letter {
 			text-transform: capitalize;
@@ -64,11 +64,11 @@
 		aspect-ratio: 1 / 1;
 	}
 
-	.overview :global(div[data-property]) {
+	:global(.overview div[data-property]) {
 		margin-bottom: 1rem;
 	}
 
-	.overview :global([data-property='contribution']) {
+	:global(.overview [data-property='contribution']) {
 		& > ._contentBefore,
 		& > ._contentAfter {
 			display: none;
