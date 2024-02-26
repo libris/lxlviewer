@@ -33,7 +33,8 @@ enum Base {
 }
 
 enum Platform {
-	integral = 'integral'
+	integral = 'integral',
+	meta = 'meta'
 }
 
 type ClassName = string;
@@ -408,7 +409,9 @@ export class DisplayUtil {
 		};
 
 		const pick = (src: Data, key: string) => {
-			if (key in src) {
+			if (key === JsonLd.ID && src[Platform.meta] && src[Platform.meta][JsonLd.ID]) {
+				accumulate(src[Platform.meta], JsonLd.ID);
+			} else if (key in src) {
 				accumulate(src, key);
 			}
 			if (key in this.langContainerAlias) {
