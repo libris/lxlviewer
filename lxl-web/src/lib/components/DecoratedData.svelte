@@ -9,7 +9,7 @@
 		getResourceId,
 		getPropertyValue
 	} from '$lib/utils/resourceData';
-	import { relativize } from '$lib/utils/http';
+	import { relativizeUrl } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 
 	export let data: ResourceData;
@@ -31,7 +31,7 @@
 		if (depth > 1 && hasPropertyStyle(data, 'link')) {
 			const id = getResourceId(value);
 			if (id) {
-				return relativize(id);
+				return relativizeUrl(id);
 			}
 		}
 		return undefined;

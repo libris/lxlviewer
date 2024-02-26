@@ -2,10 +2,13 @@
 	import SeachMapping from './SeachMapping.svelte';
 	import FacetSidebar from './FacetSidebar.svelte';
 	import SearchCard from './SearchCard.svelte';
+	import Pagination from './Pagination.svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
-	$: numHits = $page.data.searchResult.totalItems;
+	$: searchResult = $page.data.searchResult;
+	$: numHits = searchResult.totalItems;
+
 	const sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
 		{ value: '', label: 'Relevans' },
@@ -17,15 +20,18 @@
 		const value = (e.target as HTMLSelectElement).value;
 		let searchParams = $page.url.searchParams;
 		searchParams.set('_sort', value);
+		if (searchParams.has('_offset')) {
+			searchParams.set('_offset', '0');
+		}
 		goto(`find?${searchParams.toString()}`, { invalidateAll: true });
 	}
 </script>
 
-<SeachMapping mapping={$page.data.searchResult.mapping} />
+<SeachMapping mapping={searchResult.mapping} />
 <div class="container-fluid">
 	<div class="flex gap-16 py-4 sm:py-8">
 		<div class="hidden w-80 shrink-0 md:flex">
-			<FacetSidebar facets={$page.data.searchResult.facetGroups} />
+			<FacetSidebar facets={searchResult.facetGroups} />
 		</div>
 		<main class="max-w-content">
 			<div class="mb-4 flex justify-between">
@@ -50,10 +56,11 @@
 				{/if}
 			</div>
 			<ol class="flex flex-col gap-2">
-				{#each $page.data.searchResult.items as item (item['@id'])}
+				{#each searchResult.items as item (item['@id'])}
 					<SearchCard {item} />
 				{/each}
 			</ol>
+			<Pagination data={searchResult} />
 		</main>
 	</div>
 </div>

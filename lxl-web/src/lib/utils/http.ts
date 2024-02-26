@@ -1,3 +1,14 @@
-export function relativize(uri: string) {
-	return uri.split('/').slice(3).join('');
+/**
+ * Turns an absolute url into a relative one
+ * & formats it (removes the opening slash for base href)
+ * @param path - absolute or relative url
+ */
+export function relativizeUrl(url: string | undefined) {
+	if (!url) {
+		return url;
+	}
+	if (url.charAt(0) === '/') {
+		return url.replace('/', '');
+	}
+	return url.split('/').slice(3).join('');
 }
