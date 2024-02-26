@@ -20,6 +20,9 @@
 		const value = (e.target as HTMLSelectElement).value;
 		let searchParams = $page.url.searchParams;
 		searchParams.set('_sort', value);
+		if (searchParams.has('_offset')) {
+			searchParams.set('_offset', '0');
+		}
 		goto(`find?${searchParams.toString()}`, { invalidateAll: true });
 	}
 </script>
