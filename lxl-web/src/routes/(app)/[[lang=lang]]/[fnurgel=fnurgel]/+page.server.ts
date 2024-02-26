@@ -10,14 +10,16 @@ export interface ResourcePage {
 }
 
 export const load = async ({ params, locals, fetch }) => {
-	const doc = await loadDoc(fetch, params.fnurgel);
-
 	const displayUtil: DisplayUtil = locals.display;
 	//const vocabUtil: VocabUtil = locals.vocab;
 
-	const data = doc;
-
 	const locale = getSupportedLocale(params?.lang);
+
+	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
+		headers: { Accept: 'application/ld+json' }
+	});
+	const resource = await resourceRes.json();
+	const mainEntity = resource['mainEntity'] as FramedData;
 
 	// TODO this doesn't really play well with alternativeProperties...?
 	// say we want to use alternativeProperties for hasTitle in the heading
@@ -30,20 +32,13 @@ export const load = async ({ params, locals, fetch }) => {
 	// but we don't want them there when there is only one title?
 	// or just place "hasTitle" (without alternateProperties) in details?
 
-	const overview = displayUtil.lensAndFormat(data, LxlLens.PageOverView, locale);
+	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
 	const [overviewNoInstances, hasInstances] = pickProperty(overview, ['hasInstance']);
 
 	return {
-		heading: displayUtil.lensAndFormat(data, LxlLens.PageHeading, locale),
+		heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
 		overview: overviewNoInstances,
-		details: displayUtil.lensAndFormat(data, LxlLens.PageDetails, locale),
+		details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
 		instances: hasInstances
 	};
 };
-
-async function loadDoc(fetch, fnurgel: string) {
-	const iri = `${env.API_URL}/${fnurgel}?framed=true`;
-	const response = await fetch(iri, { headers: { Accept: 'application/ld+json' } });
-	const doc = await response.json();
-	return doc['mainEntity'] as FramedData;
-}
