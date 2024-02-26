@@ -47,12 +47,25 @@
 		display: grid;
 		grid-template-columns: 1fr 3fr;
 		gap: 2rem;
-	}
 
-	:global(.overview strong) {
-		display: block;
-		&::first-letter {
-			text-transform: capitalize;
+		& :global(strong) {
+			display: block;
+			&::first-letter {
+				text-transform: capitalize;
+			}
+		}
+		& :global(div[data-property]) {
+			margin-bottom: 1rem;
+		}
+
+		& :global([data-property='contribution'] > ._contentBefore),
+		:global([data-property='contribution'] > ._contentAfter) {
+			display: none;
+		}
+
+		& :global([data-property='contribution'] > *) {
+			display: block;
+			white-space: nowrap;
 		}
 	}
 
@@ -62,21 +75,5 @@
 		align-items: center;
 		justify-content: center;
 		aspect-ratio: 1 / 1;
-	}
-
-	:global(.overview div[data-property]) {
-		margin-bottom: 1rem;
-	}
-
-	:global(.overview [data-property='contribution']) {
-		& > ._contentBefore,
-		& > ._contentAfter {
-			display: none;
-		}
-		/* Following should probably controlled from display.json */
-		& > * {
-			display: block;
-			white-space: nowrap;
-		}
 	}
 </style>
