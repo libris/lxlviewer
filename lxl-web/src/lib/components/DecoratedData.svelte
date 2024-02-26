@@ -3,7 +3,12 @@
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import { page } from '$app/stores';
 	import resourcePopover from '$lib/actions/resourcePopover';
-	import { hasPropertyStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
+	import {
+		hasPropertyStyle,
+		getPropertyStyle,
+		getResourceId,
+		getPropertyValue
+	} from '$lib/utils/resourceData';
 	import { relativize } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 
@@ -63,6 +68,11 @@
 		);
 	}
 
+	function getPropertyStyleClasses(data: ResourceData) {
+		const style = getPropertyStyle(data);
+		return style ? style.join(' ') : '';
+	}
+
 	function shouldShowContentBefore() {
 		if (block && depth > 2 && getPropertyValue(data, '_contentBefore')) {
 			return true;
@@ -98,7 +108,7 @@
 				this={getElementType(data)}
 				href={getLink(data)}
 				data-type={data['@type']}
-				class:definition={hasPropertyStyle(data, 'definition')}
+				class={getPropertyStyleClasses(data)}
 				use:conditionalResourcePopover={data}
 			>
 				<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
@@ -137,5 +147,9 @@
 		font-size: 0.875rem;
 		color: #666;
 		font-style: italic;
+	}
+
+	.pill {
+		@apply rounded-md border border-accent-dark p-1 no-underline;
 	}
 </style>
