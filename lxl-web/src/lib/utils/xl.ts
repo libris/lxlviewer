@@ -470,7 +470,7 @@ export class DisplayUtil {
 	private _findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
 		for (const lens of asArray(lenses)) {
 			for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
-				if (cls in this.display.lensGroups[lens].lenses) {
+				if (this.display.lensGroups[lens] && cls in this.display.lensGroups[lens].lenses) {
 					return this.display.lensGroups[lens].lenses[cls];
 				}
 			}
