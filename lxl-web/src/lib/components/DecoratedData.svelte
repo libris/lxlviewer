@@ -145,6 +145,6 @@
 	}
 
 	.pill {
-		@apply rounded-md border border-accent-dark p-1 no-underline;
+		@apply inline-block rounded-md border border-accent-dark p-1 no-underline;
 	}
 </style>

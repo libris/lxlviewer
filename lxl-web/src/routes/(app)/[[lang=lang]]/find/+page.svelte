@@ -33,7 +33,7 @@
 		<div class="hidden w-80 shrink-0 md:flex">
 			<FacetSidebar facets={searchResult.facetGroups} />
 		</div>
-		<main class="max-w-content">
+		<main class="w-full max-w-content">
 			<div class="mb-4 flex justify-between">
 				<p role="status">
 					{#if numHits && numHits > 0}
