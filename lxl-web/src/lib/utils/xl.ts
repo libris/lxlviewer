@@ -342,10 +342,7 @@ export class DisplayUtil {
 	}
 
 	private deriveLens(type: ClassName, def: DerivedLensTypeDefinition): Lens {
-		const taken = def.minus
-			.map((l) => this.findLens(l, type).showProperties)
-			.flat()
-			.map((s) => JSON.stringify(s));
+		const taken = this.findLens(def.minus, type).showProperties.map((s) => JSON.stringify(s));
 
 		const showProperties = this.findLens(def.base, type).showProperties.filter(
 			(s) => !taken.includes(JSON.stringify(s))
