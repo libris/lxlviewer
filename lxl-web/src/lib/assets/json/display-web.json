@@ -199,6 +199,12 @@
 			"fresnel:classFormatDomain": ["Identifier"],
 			"fresnel:resourceStyle": ["displayType()"]
 		},
+		"contribution-format": {
+			"@id": "contribution-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["contribution"],
+			"fresnel:propertyStyle": ["nolabel"]
+		},
 		"genreForm-format": {
 			"@id": "genreForm-format",
 			"@type": "fresnel:Format",
