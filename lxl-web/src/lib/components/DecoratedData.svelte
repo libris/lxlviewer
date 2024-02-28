@@ -139,6 +139,9 @@
 {/if}
 
 <style>
+	a {
+		color: inherit;
+	}
 	.definition {
 		text-decoration: underline;
 		text-decoration-style: dotted;
@@ -148,6 +151,11 @@
 	}
 
 	.pill {
-		@apply inline-block rounded-md border border-accent-dark p-1 no-underline;
+		@apply mr-1 inline-block rounded-full bg-pill/8 px-3 py-1 no-underline;
+
+		&:hover,
+		&:focus {
+			@apply bg-pill/16;
+		}
 	}
 </style>

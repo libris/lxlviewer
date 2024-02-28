@@ -28,6 +28,7 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--bg-positive: var(--color-accent-light);
 	--bg-positive-inv: var(--color-primary);
 	--bg-cards: var(--color-white);
+	--bg-pill: var(--color-brown);
 }
 
 /* Dark mode */
