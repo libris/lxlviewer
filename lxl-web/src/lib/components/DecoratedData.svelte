@@ -86,10 +86,6 @@
 	}
 </script>
 
-<!-- 
-  @component
-	Component used for rendering decorated data.
--->
 {#if data && typeof data === 'object'}
 	{#if Array.isArray(data)}
 		{#each data as arrayItem}
@@ -97,9 +93,11 @@
 		{/each}
 	{:else}
 		{#if shouldShowContentBefore()}
-			<span class="_contentBefore">
+			<span class="_contentBefore"
+				>
 				{data._contentBefore}
-			</span>
+				</span
+			>
 		{/if}
 		{#if data['@type']}
 			<svelte:element
@@ -129,9 +127,11 @@
 			{/if}
 		{/if}
 		{#if shouldShowContentAfter()}
-			<span class="_contentAfter">
+			<span class="_contentAfter"
+				>
 				{data._contentAfter}
-			</span>
+				</span
+			>
 		{/if}
 	{/if}
 {:else}
