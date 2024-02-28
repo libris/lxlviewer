@@ -65,7 +65,10 @@
 
 	function getStyleClasses(data: ResourceData) {
 		const style = getStyle(data);
-		return style ? style.join(' ') : '';
+		if (style && depth > 1) {
+			return style.join(' ');
+		}
+		return '';
 	}
 
 	function shouldShowContentBefore() {
