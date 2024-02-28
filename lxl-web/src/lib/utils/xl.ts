@@ -134,7 +134,7 @@ export interface DerivedLensTypeDefinition {
 	name: DerivedLensType;
 	// use the first of these found as the base
 	base: LensType[];
-	// remove all showProperties from these
+	// remove all showProperties from the first of these that is found
 	minus: LensType[];
 }
 
