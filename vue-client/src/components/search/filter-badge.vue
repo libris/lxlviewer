@@ -49,6 +49,7 @@ export default {
     <span v-if="filter.predicateLabel.length > 0">{{ filter.predicateLabel }}: </span>
     <span>{{ labelByLang(filter.label) }}</span>
     <router-link
+      v-if="filter.up"
       :to="asAppPath(filter.up, isChangeView)">
       <i class="fa fa-fw fa-close icon"
       />
