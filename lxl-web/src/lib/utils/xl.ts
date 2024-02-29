@@ -582,7 +582,10 @@ class Formatter {
 		'displayType()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				// TODO doesn't translate type name
-				(v[Fmt.DISPLAY] as Array<unknown>).unshift({ [JsonLd.VALUE]: v[JsonLd.TYPE] });
+				(v[Fmt.DISPLAY] as Array<unknown>).unshift({
+					[JsonLd.VALUE]: v[JsonLd.TYPE],
+					[Fmt.CONTENT_AFTER]: ' '
+				});
 			}
 			return v;
 		}
@@ -833,12 +836,12 @@ class Formatter {
 		for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 			const ix = `${cls}/${propertyName}`;
 			if (ix in this.formatIndex && hasFormat(this.formatIndex[ix])) {
-				console.debug(`${ix} -> ${this.formatIndex[ix]}`);
+				// console.debug(`${ix} -> ${JSON.stringify(this.formatIndex[ix], null, 2)}`);
 				return this.formatIndex[ix];
 			}
 		}
 		if (propertyName in this.formatIndex && hasFormat(this.formatIndex[propertyName])) {
-			console.debug(`${className} ${propertyName} ${key} -> ${this.formatIndex[propertyName]}`);
+			// console.debug(`${className} ${propertyName} ${key} -> ${JSON.stringify(this.formatIndex[propertyName], null, 2)}`);
 			return this.formatIndex[propertyName];
 		}
 		for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
