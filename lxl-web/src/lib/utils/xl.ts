@@ -135,7 +135,9 @@ export interface DerivedLensTypeDefinition {
 	// use the first of these found as the base
 	base: LensType[];
 	// remove all showProperties from the first of these that is found
-	minus: LensType[];
+	minusFirst: LensType[];
+	// remove all showProperties from these
+	minusAll: LensType[];
 }
 
 type Context = Record<string, string | Record<JsonLd, string>>;
@@ -342,7 +344,12 @@ export class DisplayUtil {
 	}
 
 	private deriveLens(type: ClassName, def: DerivedLensTypeDefinition): Lens {
-		const taken = this.findLens(def.minus, type).showProperties.map((s) => JSON.stringify(s));
+		let taken = this.findLens(def.minusFirst, type).showProperties.map((s) => JSON.stringify(s));
+
+		taken += def.minusAll
+			.map((l) => this.findLens(l, type).showProperties)
+			.flat()
+			.map((s) => JSON.stringify(s));
 
 		const showProperties = this.findLens(def.base, type).showProperties.filter(
 			(s) => !taken.includes(JSON.stringify(s))
