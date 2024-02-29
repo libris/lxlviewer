@@ -43,7 +43,7 @@ const trimSiblingWhitespaces = ({ filenames }) => ({
 				s.update(
 					start,
 					end,
-					s.slice(start, end).replaceAll(/$\s\t*(?=(\t*)(?=[{#|{:|{/|<|>]))/gm, '')
+					s.slice(start, end).replaceAll(/$\s\t*(?=(\t*)(?={#|{:|{\/|<|>))/gm, '')
 				);
 			}
 
