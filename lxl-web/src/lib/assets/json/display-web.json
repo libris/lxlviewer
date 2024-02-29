@@ -208,7 +208,6 @@
 		"genreForm-format": {
 			"@id": "genreForm-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["genreForm"],
 			"fresnel:propertyStyle": ["pill", "nolabel"],
 			"fresnel:valueFormat": {
@@ -234,6 +233,12 @@
 			"fresnel:classFormatDomain": ["Agent"],
 			"fresnel:resourceStyle": ["link"]
 		},
+		"Work-format": {
+			"@id": "Work-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Work"],
+			"fresnel:resourceStyle": ["link"]
+		},
 		"Agent-hasVariant-format": {
 			"@id": "Agent-hasVariant-format",
 			"@type": "fresnel:Format",
@@ -245,10 +250,23 @@
 			}
 		},
 		"Role-format": {
-			"@id": "Agent-format",
+			"@id": "Role-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Role"],
-			"fresnel:resourceStyle": ["definition"]
+			"fresnel:resourceStyle": ["definition"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"role-format": {
+			"@id": "role-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["role"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": ""
+			}
 		},
 		"Instance-self-x-format": {
 			"@id": "Instance-self-x-format",
