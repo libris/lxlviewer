@@ -9,7 +9,7 @@
 
 	export let data: ResourceData;
 	export let depth = 0;
-	export let showLabels: ShowLabelsOptions = ShowLabelsOptions.ByPropertyStyle;
+	export let showLabels: ShowLabelsOptions = ShowLabelsOptions.DefaultOn;
 	export let block = false;
 
 	const hiddenProperties = [
@@ -36,7 +36,7 @@
 		if (getLink(value)) {
 			return 'a';
 		}
-		if (block && depth <= 2) {
+		if (block && isTopLevel()) {
 			return 'div';
 		}
 		return 'span';
@@ -72,17 +72,38 @@
 	}
 
 	function shouldShowContentBefore() {
-		if (block && depth > 2 && getPropertyValue(data, '_contentBefore')) {
-			return true;
+		if (getPropertyValue(data, '_contentBefore')) {
+			if (block) {
+				return !isTopLevel();
+			} else {
+				return true;
+			}
 		}
 		return false;
 	}
 
 	function shouldShowContentAfter() {
-		if (block && depth > 2 && getPropertyValue(data, '_contentAfter')) {
-			return true;
+		if (getPropertyValue(data, '_contentAfter')) {
+			if (block) {
+				return !isTopLevel();
+			} else {
+				return true;
+			}
 		}
 		return false;
+	}
+
+	function isTopLevel() {
+		return depth <= 2;
+	}
+
+	function shouldShowLabels() {
+		return (
+			isTopLevel() &&
+			(showLabels === ShowLabelsOptions.Always ||
+				(showLabels === ShowLabelsOptions.DefaultOn && !hasStyle(data, 'nolabel')) ||
+				(showLabels === ShowLabelsOptions.DefaultOff && !hasStyle(data, 'label')))
+		);
 	}
 </script>
 
@@ -119,7 +140,7 @@
 			{@const [propertyName, propertyData] = getProperty(data)}
 			{#if propertyName && propertyData}
 				<svelte:element this={getElementType(propertyData)} data-property={propertyName}>
-					{#if showLabels === ShowLabelsOptions.Always || (showLabels === ShowLabelsOptions.ByPropertyStyle && depth <= 2 && !hasStyle(data, 'nolabel'))}
+					{#if shouldShowLabels()}
 						<strong>
 							{data._label}
 						</strong>

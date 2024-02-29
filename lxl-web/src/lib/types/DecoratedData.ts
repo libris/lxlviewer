@@ -1,5 +1,6 @@
 export enum ShowLabelsOptions {
 	Always = 'always',
 	Never = 'never',
-	ByPropertyStyle = 'byPropertyStyle'
+	DefaultOn = 'defaultOn',
+	DefaultOff = 'defaultOff'
 }

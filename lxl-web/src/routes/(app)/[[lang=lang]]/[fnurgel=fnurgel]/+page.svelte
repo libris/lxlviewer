@@ -17,7 +17,7 @@
 		</div>
 		<details open>
 			<summary class="text-5-cond-extrabold">Details</summary>
-			<DecoratedData data={data.details} />
+			<DecoratedData data={data.details} block />
 		</details>
 		<div>
 			<h2 class="text-5-cond-extrabold">Instances</h2>
@@ -25,9 +25,12 @@
 		</div>
 		<details>
 			<summary class="text-5-cond-extrabold">JSON</summary>
-			<pre>
-					{JSON.stringify(data.overview, null, 2)}
-				</pre>
+			Heading
+			<pre>{JSON.stringify(data.heading, null, 2)}</pre>
+			Overview
+			<pre>{JSON.stringify(data.overview, null, 2)}</pre>
+			Details
+			<pre>{JSON.stringify(data.details, null, 2)}</pre>
 		</details>
 	</main>
 	<aside>Aside</aside>
