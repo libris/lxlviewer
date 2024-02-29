@@ -37,7 +37,7 @@ const trimSiblingWhitespaces = ({ filenames }) => ({
 
 			if (start && end) {
 				/**
-				 * Replace tabs and whitespace characters which are followed by tabs which are followed
+				 * Replace whitespace characters (at the end of a line) and tabs which are followed
 				 * by Svelte specific logic blocks (by matching their starting characters) or HTML tags.
 				 */
 				s.update(
