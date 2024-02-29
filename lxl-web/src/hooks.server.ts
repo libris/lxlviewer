@@ -58,7 +58,15 @@ async function loadUtil() {
 	// Merge display with lxl-web display stuff
 	// TODO later: move content back into definitions display.jsonld
 	display.formatters = { ...display.formatters, ...displayWeb.formatters };
-	display.lensGroups = { ...display.lensGroups, ...displayWeb.lensGroups };
+	Object.keys(displayWeb.lensGroups).forEach((g) => {
+		if (display.lensGroups[g]) {
+			Object.keys(displayWeb.lensGroups[g]['lenses']).forEach((l) => {
+				display.lensGroups[g]['lenses'][l] = displayWeb.lensGroups[g]['lenses'][l];
+			});
+		} else {
+			display.lensGroups[g] = displayWeb.lensGroups[g];
+		}
+	});
 
 	const vocabUtil = new VocabUtil(vocab, context);
 	const displayUtil = new DisplayUtil(display, vocabUtil);

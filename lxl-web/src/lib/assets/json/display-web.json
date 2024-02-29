@@ -1,5 +1,33 @@
 {
 	"lensGroups": {
+		"chips": {
+			"@id": "chips",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Concept": {
+					"@id": "Concept-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Concept",
+					"showProperties": [
+						{
+							"alternateProperties": ["prefLabel", "label", "termComponentList", "code"]
+						}
+					]
+				},
+				"Classification": {
+					"@id": "Classification-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Classification",
+					"showProperties": ["code", "prefLabel"]
+				},
+				"ClassificationDdc": {
+					"@id": "ClassificationDdc-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Classification",
+					"showProperties": ["code", "prefLabel"]
+				}
+			}
+		},
 		"web-chips": {
 			"@id": "web-chips",
 			"@type": "fresnel:Group",
@@ -21,20 +49,6 @@
 						"marc:arrangedStatementForMusic",
 						"originDate"
 					]
-				},
-				"Concept": {
-					"@id": "Concept-web-chips",
-					"@type": "fresnel:Lens",
-					"classLensDomain": "Concept",
-					"showProperties": [
-						{ "alternateProperties": ["prefLabel", "label", "termComponentList", "code"] }
-					]
-				},
-				"Classification": {
-					"@id": "Classification-web-chips",
-					"@type": "fresnel:Lens",
-					"classLensDomain": "Classification",
-					"showProperties": ["code", "prefLabel"]
 				}
 			}
 		}

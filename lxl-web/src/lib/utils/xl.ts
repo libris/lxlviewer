@@ -475,6 +475,7 @@ export class DisplayUtil {
 		for (const lens of asArray(lenses)) {
 			for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 				if (this.display.lensGroups[lens] && cls in this.display.lensGroups[lens].lenses) {
+					// console.debug(`_findLens ${className} ${lenses} -> ${JSON.stringify(this.display.lensGroups[lens].lenses[cls], null, 2)}`)
 					return this.display.lensGroups[lens].lenses[cls];
 				}
 			}
