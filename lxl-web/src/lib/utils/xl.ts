@@ -690,7 +690,7 @@ class Formatter {
 			});
 			value.sort((a, b) => {
 				const cmp = (x) => (isObject(x) ? x._str : typeof x === 'string' ? x : `${x}`);
-				return cmp(a).localeCompare(cmp(b));
+				return cmp(a).localeCompare(cmp(b), this.locale);
 			});
 		}
 
