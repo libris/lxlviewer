@@ -229,6 +229,18 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"sorted-format": {
+			"@id": "sorted-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": [
+				"classification",
+				"narrower",
+				"related",
+				"seeAlso",
+				"closeMatch"
+			],
+			"fresnel:propertyStyle": ["sort()"]
+		},
 		"GenreForm-format": {
 			"@id": "GenreForm-format",
 			"@type": "fresnel:Format",

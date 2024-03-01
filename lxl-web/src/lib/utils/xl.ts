@@ -683,6 +683,17 @@ class Formatter {
 
 		let result = {} as Record<string, unknown>;
 		result = this.styleProperty(result, className, propertyName);
+
+		if (Array.isArray(value) && asArray(result[Fmt.STYLE]).includes('sort()')) {
+			value.filter(isObject).forEach((v) => {
+				v._str = toString(this.formatValues(v, className, propertyName)).toLowerCase();
+			});
+			value.sort((a, b) => {
+				const cmp = (x) => (isObject(x) ? x._str : typeof x === 'string' ? x : `${x}`);
+				return cmp(a).localeCompare(cmp(b));
+			});
+		}
+
 		this.addFormatDetail(result, this.findPropertyFormat(className, propertyName), isFirst, isLast);
 
 		result[propertyName] = this.formatValues(value, className, propertyName);
