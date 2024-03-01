@@ -111,53 +111,55 @@
   @component
 	Component used for rendering decorated data.
 -->
-{#if data && typeof data === 'object'}
-	{#if Array.isArray(data)}
-		{#each data as arrayItem}
-			<svelte:self data={arrayItem} depth={depth + 1} {showLabels} {block} />
-		{/each}
-	{:else}
-		{#if shouldShowContentBefore()}
-			<span class="_contentBefore">
-				{data._contentBefore}
-			</span>
-		{/if}
-		{#if data['@type']}
-			<svelte:element
-				this={getElementType(data)}
-				href={getLink(data)}
-				data-type={data['@type']}
-				class={getStyleClasses(data)}
-				use:conditionalResourcePopover={data}
-			>
-				<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
-			</svelte:element>
-		{:else if data['@value']}
-			<svelte:self data={data['@value']} depth={depth + 1} {showLabels} {block} />
-		{:else if data['_display']}
-			<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
+{#key data}
+	{#if data && typeof data === 'object'}
+		{#if Array.isArray(data)}
+			{#each data as arrayItem}
+				<svelte:self data={arrayItem} depth={depth + 1} {showLabels} {block} />
+			{/each}
 		{:else}
-			{@const [propertyName, propertyData] = getProperty(data)}
-			{#if propertyName && propertyData}
-				<svelte:element this={getElementType(propertyData)} data-property={propertyName}>
-					{#if shouldShowLabels()}
-						<strong>
-							{data._label}
-						</strong>
-					{/if}
-					<svelte:self data={propertyData} depth={depth + 1} {showLabels} {block} />
+			{#if shouldShowContentBefore()}
+				<span class="_contentBefore">
+					{data._contentBefore}
+				</span>
+			{/if}
+			{#if data['@type']}
+				<svelte:element
+					this={getElementType(data)}
+					href={getLink(data)}
+					data-type={data['@type']}
+					class={getStyleClasses(data)}
+					use:conditionalResourcePopover={data}
+				>
+					<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
 				</svelte:element>
+			{:else if data['@value']}
+				<svelte:self data={data['@value']} depth={depth + 1} {showLabels} {block} />
+			{:else if data['_display']}
+				<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
+			{:else}
+				{@const [propertyName, propertyData] = getProperty(data)}
+				{#if propertyName && propertyData}
+					<svelte:element this={getElementType(propertyData)} data-property={propertyName}>
+						{#if shouldShowLabels()}
+							<strong>
+								{data._label}
+							</strong>
+						{/if}
+						<svelte:self data={propertyData} depth={depth + 1} {showLabels} {block} />
+					</svelte:element>
+				{/if}
+			{/if}
+			{#if shouldShowContentAfter()}
+				<span class="_contentAfter">
+					{data._contentAfter}
+				</span>
 			{/if}
 		{/if}
-		{#if shouldShowContentAfter()}
-			<span class="_contentAfter">
-				{data._contentAfter}
-			</span>
-		{/if}
+	{:else}
+		{data}
 	{/if}
-{:else}
-	{data}
-{/if}
+{/key}
 
 <style>
 	a {
