@@ -159,7 +159,7 @@
 	{data}
 {/if}
 
-<style>
+<style lang="postcss">
 	a {
 		color: inherit;
 	}
@@ -172,11 +172,9 @@
 	}
 
 	.pill {
-		@apply mr-1 inline-block rounded-full bg-pill/8 px-3 py-1 no-underline;
-
-		&:hover,
-		&:focus {
-			@apply bg-pill/16;
-		}
+		@apply mb-1 mr-1 inline-block rounded-full bg-pill/8 px-3 py-1 no-underline;
+	}
+	a.pill {
+		@apply hover:bg-pill/16 focus:bg-pill/16;
 	}
 </style>
