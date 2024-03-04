@@ -252,7 +252,7 @@
 			"@id": "GenreForm-relations-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["GenreForm"],
-			"fresnel:propertyFormatDomain": ["narrower", "closeMatch", "broader"],
+			"fresnel:propertyFormatDomain": ["narrower", "closeMatch", "broader", "hasVariant"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
