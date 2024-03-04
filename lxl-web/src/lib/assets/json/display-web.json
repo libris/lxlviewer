@@ -234,10 +234,11 @@
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
 				"classification",
+				"closeMatch",
+				"hasDataset",
 				"narrower",
 				"related",
-				"seeAlso",
-				"closeMatch"
+				"seeAlso"
 			],
 			"fresnel:propertyStyle": ["sort()"]
 		},
