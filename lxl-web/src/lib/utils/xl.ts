@@ -203,7 +203,7 @@ export class VocabUtil {
 	}
 
 	isSubClassOf(className: ClassName, baseClassName: ClassName) {
-		this.getBaseClasses(className).includes(baseClassName);
+		return this.getBaseClasses(className).includes(baseClassName);
 	}
 
 	isStructuredValue(className: ClassName) {
