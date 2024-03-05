@@ -500,10 +500,6 @@ export class DisplayUtil {
 		return this.DEFAULT_LENS;
 	}
 
-	_getFormatIndex() {
-		return this.formatIndex;
-	}
-
 	private buildLangContainerAliasMap() {
 		for (const [k, v] of Object.entries({
 			...this.vocabUtil.context,
