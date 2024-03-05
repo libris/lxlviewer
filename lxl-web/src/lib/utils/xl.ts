@@ -28,10 +28,12 @@ enum Fmt {
 	LABEL = '_label'
 }
 
+// https://github.com/libris/definitions/blob/develop/source/vocab/base.ttl
 enum Base {
 	StructuredValue = 'StructuredValue'
 }
 
+// https://github.com/libris/definitions/blob/develop/source/vocab/platform.ttl
 enum Platform {
 	integral = 'integral',
 	meta = 'meta'
@@ -41,6 +43,7 @@ type ClassName = string;
 export type PropertyName = string;
 export type LangCode = string;
 
+// https://github.com/libris/definitions/blob/develop/source/vocab/display.jsonld
 interface DisplayJsonLd {
 	[JsonLd.CONTEXT]: Context;
 	[JsonLd.GRAPH]: unknown;
@@ -50,6 +53,7 @@ interface DisplayJsonLd {
 
 type LangContainer = Record<LangCode, string | string[]>;
 
+// https://www.w3.org/2005/04/fresnel-info/manual/
 enum Fresnel {
 	Format = 'fresnel:Format',
 	Group = 'fresnel:Group',
@@ -414,6 +418,9 @@ export class DisplayUtil {
 
 		const pick = (src: Data, key: string) => {
 			if (key === JsonLd.ID && src[Platform.meta] && src[Platform.meta][JsonLd.ID]) {
+				// replace mainEntity id with record id.
+				// This is incorrect semantically but keeps links within the platform for display purposes
+				// TODO revisit when we want to be able to display the correct id as well...
 				accumulate(src[Platform.meta], JsonLd.ID);
 			} else if (key in src) {
 				accumulate(src, key);
