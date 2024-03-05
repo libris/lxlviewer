@@ -142,9 +142,9 @@
 				{#if propertyName && propertyData}
 					<svelte:element this={getElementType(propertyData)} data-property={propertyName}>
 						{#if shouldShowLabels()}
-							<strong>
+							<small>
 								{data._label}
-							</strong>
+							</small>
 						{/if}
 						<svelte:self data={propertyData} depth={depth + 1} {showLabels} {block} />
 					</svelte:element>

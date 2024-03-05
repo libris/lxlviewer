@@ -51,7 +51,7 @@
 		grid-template-columns: 1fr 3fr;
 		gap: 2rem;
 
-		& :global(strong) {
+		& :global(small) {
 			display: block;
 			&::first-letter {
 				text-transform: capitalize;
