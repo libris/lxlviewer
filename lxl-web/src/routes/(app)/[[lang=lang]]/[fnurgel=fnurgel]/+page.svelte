@@ -58,7 +58,7 @@
 			}
 		}
 		& :global(div[data-property]) {
-			margin-bottom: 1rem;
+			margin-bottom: 0.8rem;
 		}
 
 		& :global([data-property='contribution'] > ._contentBefore),
