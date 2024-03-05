@@ -1,5 +1,42 @@
 {
 	"lensGroups": {
+		"cards": {
+			"lenses": {
+				"Work": {
+					"@type": "fresnel:Lens",
+					"@id": "Work-cards",
+					"classLensDomain": "Work",
+					"showProperties": [
+						{
+							"alternateProperties": [
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
+								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								"hasTitle"
+							]
+						},
+						"legalDate",
+						"version",
+						"marc:arrangedStatementForMusic",
+						"originDate",
+						"genreForm",
+						"contribution",
+						"language",
+						"translationOf",
+						"hasNotation",
+						"hasVariant",
+						"inCollection",
+						"classification",
+						"subject",
+						"intendedAudience",
+						"contentType",
+						"dissertation",
+						"cartographicAttributes",
+						"isPartOf",
+						{ "inverseOf": "instanceOf" }
+					]
+				}
+			}
+		},
 		"chips": {
 			"@id": "chips",
 			"@type": "fresnel:Group",
