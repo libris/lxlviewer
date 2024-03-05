@@ -189,7 +189,7 @@
 		},
 		"Family-format": {
 			"NOTE": "This ia a workaround for old MARC formatting inside the fields",
-			"@id": "Meeting-format",
+			"@id": "Family-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Family"],
 			"fresnel:propertyFormatDomain": ["lifeSpan"],
@@ -290,11 +290,7 @@
 			"@id": "Role-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Role"],
-			"fresnel:resourceStyle": ["definition"],
-			"fresnel:valueFormat": {
-				"fresnel:contentBefore": ", ",
-				"fresnel:contentFirst": ""
-			}
+			"fresnel:resourceStyle": ["definition"]
 		},
 		"role-format": {
 			"@id": "role-format",
@@ -313,7 +309,7 @@
 			"fresnel:propertyStyle": ["nolabel"]
 		},
 		"Work-self-x-format": {
-			"@id": "Instance-self-x-format",
+			"@id": "Work-self-x-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Work"],
 			"fresnel:propertyFormatDomain": ["hasTitle", "identifiedBy", "summary"],
