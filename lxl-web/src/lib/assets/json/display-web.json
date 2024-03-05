@@ -25,6 +25,24 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Classification",
 					"showProperties": ["code", "prefLabel"]
+				},
+				"Work": {
+					"@id": "Work-web-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": [
+						{
+							"alternateProperties": [
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
+								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								"hasTitle"
+							]
+						},
+						"legalDate",
+						"version",
+						"marc:arrangedStatementForMusic",
+						"originDate"
+					]
 				}
 			}
 		},
