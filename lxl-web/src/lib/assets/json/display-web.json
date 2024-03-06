@@ -347,7 +347,7 @@
 			"fresnel:classFormatDomain": ["Agent"],
 			"fresnel:propertyFormatDomain": ["hasVariant"],
 			"fresnel:valueFormat": {
-				"fresnel:contentBefore": " • ",
+				"fresnel:contentBefore": "; ",
 				"fresnel:contentFirst": ""
 			}
 		},
