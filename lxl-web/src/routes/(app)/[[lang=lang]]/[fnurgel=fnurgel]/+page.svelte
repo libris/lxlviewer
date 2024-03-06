@@ -70,6 +70,11 @@
 			display: block;
 			white-space: nowrap;
 		}
+
+		& :global([data-property='seeAlso'] > *) {
+			display: block;
+			white-space: nowrap;
+		}
 	}
 
 	.image {

@@ -325,6 +325,16 @@
 			"fresnel:classFormatDomain": ["Agent"],
 			"fresnel:resourceStyle": ["link"]
 		},
+		"seeAlso-format": {
+			"@id": "genreForm-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Agent"],
+			"fresnel:propertyFormatDomain": ["seeAlso"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"Work-format": {
 			"@id": "Work-format",
 			"@type": "fresnel:Format",
