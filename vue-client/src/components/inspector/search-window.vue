@@ -23,7 +23,7 @@ export default {
       extractDialogActive: false,
       showHelp: false,
       listItemSettings: {
-        text: 'Replace local entity',
+        text: 'Replace local entity (10 XP)',
         styling: 'brand',
         show: true,
         inspectAction: true,

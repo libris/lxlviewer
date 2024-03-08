@@ -36,6 +36,9 @@ export class User {
       sort: false,
       facetSortings: {},
       shelfMarkSearch: '',
+      experience: 0,
+      hearts: 0,
+      level: 1,
     };
     this.uriMinter = null;
   }

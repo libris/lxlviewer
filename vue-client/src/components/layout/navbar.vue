@@ -4,6 +4,7 @@ import { vOnClickOutside } from '@vueuse/components';
 import * as StringUtil from 'lxljs/string';
 import { translatePhrase } from '@/utils/filters';
 import UserAvatar from '@/components/shared/user-avatar.vue';
+import GameBar from '@/components/shared/game-bar.vue';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import UserSettings from '@/components/usersettings/user-settings.vue';
 
@@ -19,6 +20,7 @@ export default {
   },
   data() {
     return {
+      isGameMode: true,
       hasAvatar: true,
       showUserMenu: false,
       showSigelHint: false,
@@ -27,6 +29,7 @@ export default {
   },
   components: {
     'user-avatar': UserAvatar,
+    'game-bar': GameBar,
     'tab-menu': TabMenu,
     UserSettings,
   },
@@ -123,6 +126,12 @@ export default {
           :link="true"
           lookStyle="dark"
         />
+        <ul class="MainNav-userWrapper">
+          <game-bar
+            v-if="isGameMode"
+            :size="38"
+          />
+        </ul>
       </div>
       <ul class="MainNav-userWrapper">
         <li
@@ -136,6 +145,7 @@ export default {
           v-tooltip="tooltipOptions">
           <div tabindex="0" @click="toggleUserMenu" @keyup.enter="toggleUserMenu">
             <user-avatar
+              v-if="!isGameMode"
               class="hidden-xs"
               :highlight="highlightNavItem && !isUserPage"
               :size="30" />

@@ -288,6 +288,15 @@ export default {
         addToHistory: true,
       });
       this.$store.dispatch('pushNotification', { type: 'success', message: `${StringUtil.getUiPhraseByLang('Linking was successful', this.user.settings.language, this.resources.i18n)}` });
+      const userObj = this.user;
+      userObj.settings.experience += 10;
+      console.log()
+      if (userObj.settings.experience > 40) {
+        userObj.settings.experience = 0;
+        userObj.settings.level += 1;
+      }
+      this.setUser(userObj);
+      this.$store.dispatch('setUser', userObj);
       this.$store.dispatch('setInspectorStatusValue', {
         property: 'lastAdded',
         value: `${this.parentPath}.{"@id":"${newValue['@id']}"}`,
@@ -513,6 +522,12 @@ export default {
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">
           {{getItemLabel}}
         </span>
+        <div class="icon-container" v-if="!isEmbedded && !isCompositional && extractedMainEntity != null && !isExtracting">
+          <img
+            alt="emerald"
+            src="@/assets/img/emerald.png"
+            :style="{ width: `20px`, height: `20px` }" />
+        </div>
         <span class="ItemLocal-history-icon" v-if="diffRemoved && !diffAdded">
           <i class="fa fa-trash-o icon--sm icon-removed" />
         </span>
@@ -843,6 +858,35 @@ export default {
     box-shadow: 0 2px 5px rgba(0,0,0,.16);
     margin: 1rem 0 1rem 0;
   }
+
+  .icon-link {
+    margin-right: 10px;
+    display: block;
+    color: @grey-dark;
+    grid-area: link;
+    width: 1.2em;
+    height: 1.2em;
+    line-height: 1.2em;
+    padding-left: 0.75rem;
+    padding-right: 2px;
+  }
+
+  .icon-container {
+    display: grid;
+    justify-items: start;
+    align-items: center;
+    grid-template-columns: auto;
+    grid-template-areas: "link";
+    border-radius: 2em;
+    min-width: 20px;
+    height: 22px;
+    overflow: hidden;
+    background-color: rgba(191, 198, 202, 0.20);
+    margin: 0.5rem 0.5rem;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
   &.is-diff-removed {
     @base-color: @remove;
     border: 1px dashed;
