@@ -1017,7 +1017,7 @@ export function pickProperty(
 	pickProperties: PropertyName[]
 ): [DisplayDecorated | undefined, DisplayDecorated] {
 	if (!isTypedNode(data)) {
-		return [data, undefined];
+		return [undefined, data];
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { [Fmt.DISPLAY]: _1, ...picked } = data;
