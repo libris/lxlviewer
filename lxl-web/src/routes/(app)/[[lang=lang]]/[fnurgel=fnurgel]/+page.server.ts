@@ -33,13 +33,13 @@ export const load = async ({ params, locals, fetch }) => {
 	// or just place "hasTitle" (without alternateProperties) in details?
 
 	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
-	const [overviewNoInstances, hasInstances] = pickProperty(overview, ['hasInstance']);
+	const [hasInstance, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
 
 	return {
 		heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
-		overview: overviewNoInstances,
+		overview: overviewWithoutHasInstance,
 		details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
-		instances: hasInstances
+		instances: hasInstance
 	};
 };
 

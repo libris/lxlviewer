@@ -1015,7 +1015,7 @@ function isLangContainerDefinition(dfn: Record<string, string>) {
 export function pickProperty(
 	data: DisplayDecorated,
 	pickProperties: PropertyName[]
-): [DisplayDecorated, DisplayDecorated | undefined] {
+): [DisplayDecorated | undefined, DisplayDecorated] {
 	if (!isTypedNode(data)) {
 		return [data, undefined];
 	}
@@ -1035,5 +1035,5 @@ export function pickProperty(
 		}
 	});
 
-	return [rest, picked];
+	return [picked, rest];
 }
