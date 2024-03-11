@@ -10,6 +10,7 @@
 	export let data: ResourceData;
 	export let depth = 0;
 	export let showLabels: ShowLabelsOptions = ShowLabelsOptions.DefaultOn;
+	export let allowPopovers = true; // used for preventing nested popovers
 	export let block = false;
 
 	const hiddenProperties = [
@@ -44,7 +45,7 @@
 
 	/* Conditionally add popover action so it's only added when needed */
 	function conditionalResourcePopover(node: HTMLElement, data: ResourceData) {
-		if ((depth > 1 && hasStyle(data, 'link')) || hasStyle(data, 'definition')) {
+		if (allowPopovers && ((depth > 1 && hasStyle(data, 'link')) || hasStyle(data, 'definition'))) {
 			const id = getResourceId(data);
 			if (id) {
 				return resourcePopover(node, {
@@ -115,7 +116,7 @@
 	{#if data && typeof data === 'object'}
 		{#if Array.isArray(data)}
 			{#each data as arrayItem}
-				<svelte:self data={arrayItem} depth={depth + 1} {showLabels} {block} />
+				<svelte:self data={arrayItem} depth={depth + 1} {showLabels} {block} {allowPopovers} />
 			{/each}
 		{:else}
 			{#if shouldShowContentBefore()}
@@ -131,12 +132,24 @@
 					class={getStyleClasses(data)}
 					use:conditionalResourcePopover={data}
 				>
-					<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
+					<svelte:self
+						data={data['_display']}
+						depth={depth + 1}
+						{showLabels}
+						{block}
+						{allowPopovers}
+					/>
 				</svelte:element>
 			{:else if data['@value']}
-				<svelte:self data={data['@value']} depth={depth + 1} {showLabels} {block} />
+				<svelte:self data={data['@value']} depth={depth + 1} {showLabels} {block} {allowPopovers} />
 			{:else if data['_display']}
-				<svelte:self data={data['_display']} depth={depth + 1} {showLabels} {block} />
+				<svelte:self
+					data={data['_display']}
+					depth={depth + 1}
+					{showLabels}
+					{block}
+					{allowPopovers}
+				/>
 			{:else}
 				{@const [propertyName, propertyData] = getProperty(data)}
 				{#if propertyName && propertyData}
@@ -146,7 +159,13 @@
 								{data._label}
 							</small>
 						{/if}
-						<svelte:self data={propertyData} depth={depth + 1} {showLabels} {block} />
+						<svelte:self
+							data={propertyData}
+							depth={depth + 1}
+							{showLabels}
+							{block}
+							{allowPopovers}
+						/>
 					</svelte:element>
 				{/if}
 			{/if}

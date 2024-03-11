@@ -75,7 +75,7 @@
 	on:blur={onBlur}
 >
 	<div class="p-2">
-		<DecoratedData {data} block />
+		<DecoratedData {data} block allowPopovers={false} />
 	</div>
 	<div class="absolute" bind:this={arrowElement}>
 		<svg
