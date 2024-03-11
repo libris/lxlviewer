@@ -27,7 +27,7 @@
 				'genreForm classification contentType';
 		}
 
-		& :global(strong) {
+		& :global(small) {
 			@apply block font-normal text-secondary;
 
 			&::first-letter {
