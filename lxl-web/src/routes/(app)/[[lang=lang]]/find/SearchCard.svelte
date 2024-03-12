@@ -2,14 +2,14 @@
 	import { relativizeUrl } from '$lib/utils/http';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import type { ResourceData } from '$lib/types/ResourceData';
-
+	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	export let item: ResourceData;
 </script>
 
 <li class="search-card flex flex-col gap-2 rounded-md border-b border-b-primary/16 bg-cards p-6">
 	<a href={relativizeUrl(item['@id'])} class="font-bold text-primary no-underline"
 		><h2>
-			<DecoratedData data={item['card-heading']} />
+			<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 		</h2></a
 	>
 	<div class="search-card-body">
