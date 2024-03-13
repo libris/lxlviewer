@@ -28,6 +28,7 @@
 		aria-expanded={!!expanded}
 		aria-controls={'group-' + group.dimension}
 		class="w-full text-left font-bold"
+		data-testid="facet-toggle"
 	>
 		{expanded ? '⌃' : '⌄'} {group.label}</button
 	>
@@ -44,7 +45,7 @@
 				title="Sök {group.label.toLowerCase()}"
 			/>
 		{/if}
-		<ol class="mt-2">
+		<ol class="mt-2" data-testid="facet-list">
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li>
 					<a class="flex justify-between no-underline" href={relativizeUrl(facet.view['@id'])}>

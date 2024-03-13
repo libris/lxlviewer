@@ -41,6 +41,7 @@
 		spellcheck="false"
 		bind:value={q}
 		{autofocus}
+		data-testid="main-search"
 	/>
 	{#each searchParams as [name, value]}
 		{#if name !== 'q'}

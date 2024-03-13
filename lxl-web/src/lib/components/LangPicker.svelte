@@ -28,6 +28,7 @@
 		on:click={() => (expanded = !expanded)}
 		aria-expanded={!!expanded}
 		aria-controls="lang-picker-menu"
+		data-testid="current-lang"
 	>
 		{Locales[$page.data.locale]} ⌄</button
 	>
