@@ -1,7 +1,17 @@
 <script lang="ts">
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
+	import DecoratedTable from '$lib/components/DecoratedTable.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	export let data;
+
+	/**
+	 * 							"alternateProperties": [
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
+								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								"hasTitle"
+							]
+	*/
+	$: console.log('dataInsa', data.instances);
 </script>
 
 <div class="product-page">
@@ -12,34 +22,61 @@
 			</h1>
 		</header>
 		<div class="overview mb-4">
-			<div class="image">Image</div>
 			<DecoratedData data={data.overview} block />
 		</div>
-		<details open>
-			<summary class="text-5-cond-extrabold">Details</summary>
-			<DecoratedData data={data.details} block />
-		</details>
-		<div>
-			<h2 class="text-5-cond-extrabold">Instances</h2>
-			<DecoratedData data={data.instances} />
-		</div>
+		{#if data.instances?.['_display']?.['hasInstance']?.length}
+			<div>
+				<DecoratedTable
+					data={data.instances['_display']['hasInstance']}
+					columns={[
+						{
+							alternateProperties: [
+								{ propertyName: 'year', subPropertyOf: 'publication', range: 'PrimaryPublication' },
+								{ propertyName: 'year', subPropertyOf: 'publication', range: 'Publication' }
+							]
+						},
+						{
+							alternateProperties: [
+								{
+									propertyName: 'agent',
+									subPropertyOf: 'publication',
+									range: 'PrimaryPublication'
+								},
+								{ propertyName: 'agent', subPropertyOf: 'publication', range: 'Publication' }
+							]
+						},
+						'@type',
+						'responsibilityStatement'
+					]}
+				/>
+			</div>
+		{/if}
 		<details>
-			<summary class="text-5-cond-extrabold">JSON</summary>
-			Heading
-			<pre>{JSON.stringify(data.heading, null, 2)}</pre>
-			Overview
-			<pre>{JSON.stringify(data.overview, null, 2)}</pre>
-			Details
-			<pre>{JSON.stringify(data.details, null, 2)}</pre>
+			<summary>JSON</summary>
+			<details>
+				<summary>Heading</summary>
+				<pre>{JSON.stringify(data.heading, null, 2)}</pre>
+			</details>
+			<details>
+				<summary>Details</summary>
+				<pre>{JSON.stringify(data.details, null, 2)}</pre>
+			</details>
+			<details>
+				<summary>Overview</summary>
+				<pre>{JSON.stringify(data.overview, null, 2)}</pre>
+			</details>
+			<details>
+				<summary>Instances</summary>
+				<pre>{JSON.stringify(data.instances, null, 2)}</pre>
+			</details>
 		</details>
 	</main>
-	<aside>Aside</aside>
 </div>
 
 <style>
 	.product-page {
 		display: grid;
-		grid-template-columns: 2fr 1fr;
+		grid-template-columns: 1fr;
 		max-width: 1600px;
 		margin: 0 auto;
 		padding: 2rem;
@@ -48,7 +85,6 @@
 
 	.overview {
 		display: grid;
-		grid-template-columns: 1fr 3fr;
 		gap: 2rem;
 
 		& :global(small) {
@@ -75,13 +111,5 @@
 			display: block;
 			white-space: nowrap;
 		}
-	}
-
-	.image {
-		background: rgba(0, 0, 0, 0.05);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		aspect-ratio: 1 / 1;
 	}
 </style>
