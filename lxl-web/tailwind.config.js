@@ -42,10 +42,12 @@ export default {
 			xs: ['0.75rem', theme('lineHeight.normal')],
 			sm: ['0.875rem', theme('lineHeight.normal')],
 			base: ['1rem', theme('lineHeight.normal')],
+			lg: ['1.25rem', theme('lineHeight.normal')],
 			xl: ['1.5rem', theme('lineHeight.tight')],
 			'2xl': ['2rem', theme('lineHeight.tight')],
 			'3xl': ['2.5rem', theme('lineHeight.tight')],
-			'4xl': ['4rem', theme('lineHeight.tight')]
+			'4xl': ['3rem', theme('lineHeight.tight')],
+			'5xl': ['4rem', theme('lineHeight.tight')]
 		}),
 		fontFamily: {
 			sans: ['"Roboto Flex"', 'sans-serif'],
@@ -127,14 +129,20 @@ export default {
 				'.text-3-cond-bold': {
 					'@apply text-base font-condensed font-bold': {}
 				},
-				'.text-4-cond-extrabold': {
-					'@apply text-xl font-condensed font-extrabold': {}
+				'.text-4-regular': {
+					'@apply text-lg': {}
+				},
+				'.text-4-cond-bold': {
+					'@apply text-lg font-condensed font-bold': {}
 				},
 				'.text-5-cond-extrabold': {
-					'@apply text-2xl font-condensed font-extrabold': {}
+					'@apply text-xl font-condensed font-extrabold': {}
 				},
 				'.text-6-cond-extrabold': {
-					'@apply text-3xl lg:text-4xl font-condensed font-extrabold': {}
+					'@apply text-2xl md:text-3xl font-condensed font-extrabold': {}
+				},
+				'.text-7-cond-extrabold': {
+					'@apply text-3xl md:text-4xl lg:text-5xl font-condensed font-extrabold': {}
 				},
 				// other utility classes
 				'.gradient-primary': {

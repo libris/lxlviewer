@@ -21,7 +21,7 @@
 				<img class="h-12 w-12 sm:h-24 sm:w-24" alt="Libris logo" src={logo} />
 				<h1 class="text-3xl font-bold leading-none text-primary sm:text-[5.5rem]">Libris</h1>
 			</div>
-			<label for="main-search" class="text-center text-[1.25rem] text-secondary"
+			<label for="main-search" class="text-center text-secondary text-4-regular"
 				>Hitta och låna i hela Sveriges bibliotekskatalog</label
 			>
 			<div class="w-full max-w-3xl">
