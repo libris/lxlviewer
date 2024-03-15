@@ -18,13 +18,13 @@
 				<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 			</h2></a
 		>
-		<div class="search-card-body flex gap-2">
+		<div class="search-card-body flex items-baseline gap-2">
 			{#each item['card-body']._display as obj}
 				<div class="rounded-md bg-pill/4 p-2">
 					{#if 'hasInstance' in obj}
 						<span>{obj.hasInstance.length ? `${obj.hasInstance.length} utgåvor` : `1 utgåva`}</span>
 					{:else}
-						<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block />
+						<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block truncate />
 					{/if}
 				</div>
 			{/each}
