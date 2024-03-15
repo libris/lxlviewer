@@ -11,32 +11,43 @@
 		Image
 	</div>
 	<div class="flex flex-col gap-2">
-		<a href={relativizeUrl(item['@id'])} class="search-card-heading"
+		<a
+			href={relativizeUrl(item['@id'])}
+			class="search-card-heading line-clamp-2 text-ellipsis text-secondary no-underline text-4-regular"
 			><h2>
 				<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 			</h2></a
 		>
-		<div class="search-card-body">
-			<DecoratedData data={item['card-body']} showLabels={ShowLabelsOptions.Never} block />
+		<div class="search-card-body flex gap-2">
+			{#each item['card-body']._display as obj}
+				<div class="rounded-md bg-pill/4 p-2">
+					{#if 'hasInstance' in obj}
+						<span>{obj.hasInstance.length ? `${obj.hasInstance.length} utgåvor` : `1 utgåva`}</span>
+					{:else}
+						<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block />
+					{/if}
+				</div>
+			{/each}
+			<!-- <DecoratedData data={item['card-body']} showLabels={ShowLabelsOptions.Never} block /> -->
 		</div>
 	</div>
 </li>
 
 <style>
 	.search-card-heading {
-		@apply line-clamp-2 text-ellipsis text-primary no-underline text-4-regular;
-
 		& :global([data-property='mainTitle']) {
 			@apply text-4-cond-bold;
 		}
-	}
-	.search-card-body {
-		& :global(> div) {
-			@apply grid grid-cols-3 gap-6;
 
-			grid-template-areas: 'contribution language hasInstance';
+		&:not(:visited) {
+			& :global([data-property='mainTitle']) {
+				@apply text-primary;
+			}
 		}
+	}
 
+	.search-card-body {
+		/* grid-template-areas: 'contribution language hasInstance'; */
 		/* hide formatting */
 		& :global([data-property='contribution'] ._contentBefore),
 		:global([data-property='contribution'] ._contentAfter),
@@ -46,11 +57,11 @@
 
 		/* ...except for agents */
 		& :global([data-property='agent'] ._contentBefore),
-		& :global([data-property='agent'] ._contentBefore) {
+		:global([data-property='agent'] ._contentBefore) {
 			@apply inline;
 		}
 
-		& :global([data-property='contribution'] > *) {
+		/* & :global([data-property='contribution'] > *) {
 			@apply block;
 		}
 
@@ -64,6 +75,6 @@
 
 		& :global([data-property='hasInstance']) {
 			grid-area: hasInstance;
-		}
+		} */
 	}
 </style>

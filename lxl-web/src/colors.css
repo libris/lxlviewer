@@ -20,7 +20,7 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	/* Text colors */
 	--text-primary: var(--color-primary);
 	--text-primary-inv: var(--color-white);
-	--text-link: var(--color-accent-dark);
+	--text-link: var(--color-primary);
 
 	/* Bg colors */
 	--bg-main: var(--color-subtle);

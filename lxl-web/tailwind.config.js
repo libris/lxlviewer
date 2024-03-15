@@ -109,28 +109,28 @@ export default {
 			addUtilities({
 				// typography 1-6 variants in design
 				'.text-1-regular': {
-					'@apply text-xs': {}
+					'@apply text-xs font-normal': {}
 				},
 				'.text-1-cond-bold': {
 					'@apply text-xs font-condensed font-bold': {}
 				},
 				'.text-1-cond-caps': {
-					'@apply text-xs font-condensed uppercase tracking-wide': {}
+					'@apply text-xs font-condensed font-normal uppercase tracking-wide': {}
 				},
 				'.text-2-regular': {
-					'@apply text-sm': {}
+					'@apply text-sm font-normal': {}
 				},
 				'.text-2-cond-bold': {
 					'@apply text-sm font-condensed font-bold': {}
 				},
 				'.text-3-regular': {
-					'@apply text-base': {}
+					'@apply text-base font-normal': {}
 				},
 				'.text-3-cond-bold': {
 					'@apply text-base font-condensed font-bold': {}
 				},
 				'.text-4-regular': {
-					'@apply text-lg': {}
+					'@apply text-lg font-normal': {}
 				},
 				'.text-4-cond-bold': {
 					'@apply text-lg font-condensed font-bold': {}
