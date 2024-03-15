@@ -28,7 +28,6 @@
 					{/if}
 				</div>
 			{/each}
-			<!-- <DecoratedData data={item['card-body']} showLabels={ShowLabelsOptions.Never} block /> -->
 		</div>
 	</div>
 </li>
@@ -47,7 +46,6 @@
 	}
 
 	.search-card-body {
-		/* grid-template-areas: 'contribution language hasInstance'; */
 		/* hide formatting */
 		& :global([data-property='contribution'] ._contentBefore),
 		:global([data-property='contribution'] ._contentAfter),
@@ -60,21 +58,5 @@
 		:global([data-property='agent'] ._contentBefore) {
 			@apply inline;
 		}
-
-		/* & :global([data-property='contribution'] > *) {
-			@apply block;
-		}
-
-		& :global([data-property='contribution']) {
-			grid-area: contribution;
-		}
-
-		& :global([data-property='language']) {
-			grid-area: language;
-		}
-
-		& :global([data-property='hasInstance']) {
-			grid-area: hasInstance;
-		} */
 	}
 </style>
