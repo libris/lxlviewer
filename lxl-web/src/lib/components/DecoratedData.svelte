@@ -14,11 +14,10 @@
 	export let block = false;
 	export let truncate = false;
 
-	let remainder: number | undefined;
-
+	// truncate option; use only first item as data and keep the rest for tooltip
+	let remainder: ResourceData[] | undefined;
 	if (truncate && Array.isArray(data) && data?.[0] && '@type' in data[0]) {
-		remainder = data.length - 1;
-		data = data[0];
+		[data, ...remainder] = data;
 		truncate = false;
 	}
 
@@ -157,7 +156,10 @@
 						{truncate}
 					/>
 					{#if remainder}
-						<span class="remainder">+ {remainder}</span>
+						<span
+							use:resourcePopover={{ data: remainder, lang: getSupportedLocale($page.params.lang) }}
+							class="remainder">+ {remainder.length}</span
+						>
 					{/if}
 				</svelte:element>
 			{:else if data['@value']}

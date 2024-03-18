@@ -3,7 +3,7 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-	export let item: ResourceData;
+	export let item: { '@id': string; 'card-heading': ResourceData; 'card-body': ResourceData };
 </script>
 
 <li class="flex gap-8 rounded-md border-b border-b-primary/16 bg-cards p-6">
@@ -19,7 +19,7 @@
 			</h2></a
 		>
 		<div class="search-card-body flex items-baseline gap-2">
-			{#each item['card-body']._display as obj}
+			{#each item['card-body']?._display as obj}
 				<div class="rounded-md bg-pill/4 p-2">
 					{#if 'hasInstance' in obj}
 						<span>{obj.hasInstance.length ? `${obj.hasInstance.length} utgåvor` : `1 utgåva`}</span>
