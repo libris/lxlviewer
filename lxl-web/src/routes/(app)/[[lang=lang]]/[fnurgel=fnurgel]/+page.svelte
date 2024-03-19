@@ -3,15 +3,6 @@
 	import DecoratedTable from '$lib/components/DecoratedTable.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	export let data;
-
-	/**
-	 * 							"alternateProperties": [
-								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
-								{ "subPropertyOf": "hasTitle", "range": "Title" },
-								"hasTitle"
-							]
-	*/
-	$: console.log('dataInsa', data.instances);
 </script>
 
 <div class="product-page">
@@ -24,34 +15,19 @@
 		<div class="overview mb-4">
 			<DecoratedData data={data.overview} block />
 		</div>
-		{#if data.instances?.['_display']?.['hasInstance']?.length}
+		{#if data.instances}
 			<div>
 				<DecoratedTable
-					data={data.instances['_display']['hasInstance']}
+					data={data.instances}
 					columns={[
-						{
-							alternateProperties: [
-								{ propertyName: 'year', subPropertyOf: 'publication', range: 'PrimaryPublication' },
-								{ propertyName: 'year', subPropertyOf: 'publication', range: 'Publication' }
-							]
-						},
-						{
-							alternateProperties: [
-								{
-									propertyName: 'agent',
-									subPropertyOf: 'publication',
-									range: 'PrimaryPublication'
-								},
-								{ propertyName: 'agent', subPropertyOf: 'publication', range: 'Publication' }
-							]
-						},
-						'@type',
-						'responsibilityStatement'
+						'*[].publication[].*[][?year].year',
+						'*[].publication.*[][?agent].agent',
+						'"@type"'
 					]}
 				/>
 			</div>
 		{/if}
-		<details>
+		<details class="json">
 			<summary>JSON</summary>
 			<details>
 				<summary>Heading</summary>
@@ -68,6 +44,10 @@
 			<details>
 				<summary>Instances</summary>
 				<pre>{JSON.stringify(data.instances, null, 2)}</pre>
+			</details>
+			<details>
+				<summary>Full</summary>
+				<pre>{JSON.stringify(data.full, null, 2)}</pre>
 			</details>
 		</details>
 	</main>
@@ -111,5 +91,10 @@
 			display: block;
 			white-space: nowrap;
 		}
+	}
+
+	.json {
+		font-size: 0.75rem;
+		font-family: monospace;
 	}
 </style>
