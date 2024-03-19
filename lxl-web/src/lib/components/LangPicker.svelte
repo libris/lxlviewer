@@ -36,6 +36,7 @@
 		id="lang-picker-menu"
 		class="absolute right-0 my-3 rounded-sm bg-cards p-3"
 		class:hidden={!expanded}
+		data-testid="lang-picker-menu"
 	>
 		{#each localesObj as locale}
 			<li>

@@ -20,7 +20,8 @@ test('page has a search input', async ({ page }) => {
 
 test('can change the language', async ({ page }) => {
 	await page.getByTestId('current-lang').click();
-	await page.getByRole('link', { name: 'English' }).click();
+	const menu = page.getByTestId('lang-picker-menu');
+	await menu.getByRole('link', { name: 'English' }).click();
 	await expect(page).toHaveURL(/\/en\/find/);
 });
 
@@ -29,7 +30,7 @@ test('displays 10 search cards on a page', async ({ page }) => {
 });
 
 test('search card heading contains a link', async ({ page }) => {
-	await expect(page.getByTestId('search-card-heading').first().getAttribute('href')).toBeTruthy();
+	await expect(page.getByTestId('search-card-heading').first()).toHaveAttribute('href');
 });
 
 test('has a facet panel', async ({ page }) => {
