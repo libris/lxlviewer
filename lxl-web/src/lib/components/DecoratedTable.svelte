@@ -16,7 +16,8 @@
 							<DecoratedData data={jmespath.search(item, columnItem)} />
 						</td>
 					{/each}
-				</tr>{/each}
+				</tr>
+			{/each}
 		{/if}
 	</tbody>
 </table>
