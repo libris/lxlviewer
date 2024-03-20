@@ -19,7 +19,6 @@
 	 */
 
 	let expanded = $page.url.searchParams.getAll('expanded');
-	let tableElement: HTMLTableElement;
 
 	export let data: ResourceData;
 	export let columns: string[];
@@ -89,7 +88,7 @@
 			Collapse all
 		</a>
 	</div>
-	<table class="w-full table-fixed" bind:this={tableElement}>
+	<table class="w-full table-fixed">
 		<tbody>
 			{#if Array.isArray(data)}
 				{#each data as item, index (item['@id'])}
