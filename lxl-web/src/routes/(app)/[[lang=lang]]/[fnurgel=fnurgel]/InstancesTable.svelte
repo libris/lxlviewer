@@ -21,7 +21,7 @@
 	let expanded = $page.url.searchParams.getAll('expanded');
 	let tableElement: HTMLTableElement;
 
-	export let data: DecoratedData;
+	export let data: ResourceData;
 	export let columns: string[];
 
 	afterNavigate(({ to }) => {
@@ -99,7 +99,7 @@
 						aria-level="1"
 						aria-setsize="1"
 						aria-posinset={index + 1}
-						data-id={item['@id']}
+						data-id={id}
 						aria-expanded={!!(id && expanded.includes(id))}
 					>
 						{#each columns as columnItem}
