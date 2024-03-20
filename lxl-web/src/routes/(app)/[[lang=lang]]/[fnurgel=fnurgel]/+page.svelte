@@ -15,7 +15,7 @@
 		<div class="overview mb-4">
 			<DecoratedData data={data.overview} block />
 		</div>
-		{#if data.instances}
+		{#if data.instances?.length}
 			<div>
 				<InstancesTable
 					data={data.instances}
