@@ -1019,15 +1019,17 @@ export function pickProperty(
 	if (!isTypedNode(data)) {
 		return [undefined, data];
 	}
-	const picked: Data = {};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { [Fmt.DISPLAY]: _, ...rest } = data;
+	const { [Fmt.DISPLAY]: _1, ...picked } = data;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { [Fmt.DISPLAY]: _2, ...rest } = data;
 
+	picked[Fmt.DISPLAY] = [];
 	rest[Fmt.DISPLAY] = [];
 
 	data[Fmt.DISPLAY].forEach((p) => {
 		if (isObject(p) && pickProperties.some((name) => name in p)) {
-			picked[Fmt.DISPLAY] = p;
+			picked[Fmt.DISPLAY].push(p);
 		} else {
 			rest[Fmt.DISPLAY].push(p);
 		}
