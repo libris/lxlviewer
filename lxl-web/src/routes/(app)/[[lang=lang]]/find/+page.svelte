@@ -1,12 +1,13 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import SeachMapping from './SeachMapping.svelte';
 	import SearchCard from './SearchCard.svelte';
 	import Pagination from './Pagination.svelte';
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
 	import FacetGroup from './FacetGroup.svelte';
+	import { type SearchResult } from './search';
 
-	$: searchResult = $page.data.searchResult;
+	$: searchResult = $page.data.searchResult as SearchResult;
 	$: numHits = searchResult.totalItems;
 	$: facets = searchResult.facetGroups;
 

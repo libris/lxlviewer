@@ -12,6 +12,14 @@
 	export let showLabels: ShowLabelsOptions = ShowLabelsOptions.DefaultOn;
 	export let allowPopovers = true; // used for preventing nested popovers
 	export let block = false;
+	export let truncate = false;
+
+	// truncate option; use only first item as data and keep the rest for tooltip
+	let remainder: ResourceData[] | undefined;
+	if (truncate && Array.isArray(data) && data?.[0] && '@type' in data[0]) {
+		[data, ...remainder] = data;
+		truncate = false;
+	}
 
 	const hiddenProperties = [
 		'@context',
@@ -116,7 +124,14 @@
 	{#if data && typeof data === 'object'}
 		{#if Array.isArray(data)}
 			{#each data as arrayItem}
-				<svelte:self data={arrayItem} depth={depth + 1} {showLabels} {block} {allowPopovers} />
+				<svelte:self
+					data={arrayItem}
+					depth={depth + 1}
+					{showLabels}
+					{block}
+					{allowPopovers}
+					{truncate}
+				/>
 			{/each}
 		{:else}
 			{#if shouldShowContentBefore()}
@@ -138,7 +153,14 @@
 						{showLabels}
 						{block}
 						{allowPopovers}
+						{truncate}
 					/>
+					{#if remainder}
+						<span
+							use:resourcePopover={{ data: remainder, lang: getSupportedLocale($page.params.lang) }}
+							class="remainder">+ {remainder.length}</span
+						>
+					{/if}
 				</svelte:element>
 			{:else if data['@value']}
 				<svelte:self data={data['@value']} depth={depth + 1} {showLabels} {block} {allowPopovers} />
@@ -149,6 +171,7 @@
 					{showLabels}
 					{block}
 					{allowPopovers}
+					{truncate}
 				/>
 			{:else}
 				{@const [propertyName, propertyData] = getProperty(data)}
@@ -165,6 +188,7 @@
 							{showLabels}
 							{block}
 							{allowPopovers}
+							{truncate}
 						/>
 					</svelte:element>
 				{/if}
@@ -197,5 +221,9 @@
 	}
 	a.pill {
 		@apply hover:bg-pill/16 focus:bg-pill/16;
+	}
+
+	.remainder {
+		@apply ml-2 rounded-full bg-pill/8 px-2 py-1 text-secondary;
 	}
 </style>

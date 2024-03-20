@@ -106,6 +106,29 @@
 					]
 				}
 			}
+		},
+		"web-card": {
+			"@id": "web-card",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-card",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": [
+						{
+							"alternateProperties": [
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
+								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								"hasTitle"
+							]
+						},
+						"contribution",
+						"language",
+						{ "inverseOf": "instanceOf" }
+					]
+				}
+			}
 		}
 	},
 	"formatters": {

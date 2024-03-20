@@ -129,6 +129,7 @@ export enum LensType {
 	SearchChip = 'search-chips',
 	SearchCard = 'search-cards',
 	WebChip = 'web-chips',
+	WebCard = 'web-card',
 	None = null // FIXME
 }
 
@@ -269,6 +270,7 @@ export class DisplayUtil {
 				return LensType.Card;
 			case LensType.Card:
 			case LensType.SearchCard:
+			case LensType.WebCard:
 				return LensType.Chip;
 			case LensType.Chip:
 			case LensType.SearchChip:
