@@ -1,6 +1,6 @@
 <script lang="ts">
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import DecoratedTable from '$lib/components/DecoratedTable.svelte';
+	import InstancesTable from './InstancesTable.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	export let data;
 </script>
@@ -17,7 +17,7 @@
 		</div>
 		{#if data.instances}
 			<div>
-				<DecoratedTable
+				<InstancesTable
 					data={data.instances}
 					columns={[
 						'*[].publication[].*[][?year].year',
