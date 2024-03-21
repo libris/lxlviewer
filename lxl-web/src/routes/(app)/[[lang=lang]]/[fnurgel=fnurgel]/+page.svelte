@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
+	import InstancesTable from './InstancesTable.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	export let data;
 </script>
@@ -12,34 +13,50 @@
 			</h1>
 		</header>
 		<div class="overview mb-4">
-			<div class="image">Image</div>
 			<DecoratedData data={data.overview} block />
 		</div>
-		<details open>
-			<summary class="text-5-cond-extrabold">Details</summary>
-			<DecoratedData data={data.details} block />
-		</details>
-		<div>
-			<h2 class="text-5-cond-extrabold">Instances</h2>
-			<DecoratedData data={data.instances} />
-		</div>
-		<details>
-			<summary class="text-5-cond-extrabold">JSON</summary>
-			Heading
-			<pre>{JSON.stringify(data.heading, null, 2)}</pre>
-			Overview
-			<pre>{JSON.stringify(data.overview, null, 2)}</pre>
-			Details
-			<pre>{JSON.stringify(data.details, null, 2)}</pre>
+		{#if data.instances?.length}
+			<div>
+				<InstancesTable
+					data={data.instances}
+					columns={[
+						'*[].publication[].*[][?year].year',
+						'*[].publication.*[][?agent].agent',
+						'"@type"'
+					]}
+				/>
+			</div>
+		{/if}
+		<details class="json">
+			<summary>JSON</summary>
+			<details>
+				<summary>Heading</summary>
+				<pre>{JSON.stringify(data.heading, null, 2)}</pre>
+			</details>
+			<details>
+				<summary>Details</summary>
+				<pre>{JSON.stringify(data.details, null, 2)}</pre>
+			</details>
+			<details>
+				<summary>Overview</summary>
+				<pre>{JSON.stringify(data.overview, null, 2)}</pre>
+			</details>
+			<details>
+				<summary>Instances</summary>
+				<pre>{JSON.stringify(data.instances, null, 2)}</pre>
+			</details>
+			<details>
+				<summary>Full</summary>
+				<pre>{JSON.stringify(data.full, null, 2)}</pre>
+			</details>
 		</details>
 	</main>
-	<aside>Aside</aside>
 </div>
 
 <style>
 	.product-page {
 		display: grid;
-		grid-template-columns: 2fr 1fr;
+		grid-template-columns: 1fr;
 		max-width: 1600px;
 		margin: 0 auto;
 		padding: 2rem;
@@ -48,7 +65,6 @@
 
 	.overview {
 		display: grid;
-		grid-template-columns: 1fr 3fr;
 		gap: 2rem;
 
 		& :global(small) {
@@ -77,11 +93,8 @@
 		}
 	}
 
-	.image {
-		background: rgba(0, 0, 0, 0.05);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		aspect-ratio: 1 / 1;
+	.json {
+		font-size: 0.75rem;
+		font-family: monospace;
 	}
 </style>
