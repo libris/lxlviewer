@@ -29,9 +29,9 @@
 	}
 </script>
 
-<SeachMapping mapping={searchResult.mapping} />
-<div class="container-fluid">
-	<div class="flex gap-16 py-4 sm:py-8">
+<main>
+	<SeachMapping mapping={searchResult.mapping} />
+	<section class="container-fluid flex gap-16 py-4 sm:py-8">
 		<nav class="hidden w-80 shrink-0 flex-col md:flex" aria-labelledby="facet-sidebar-header">
 			{#if facets && facets.length > 0}
 				<header id="facet-sidebar-header" class="font-bold">Filter</header>
@@ -42,9 +42,9 @@
 				</ol>
 			{/if}
 		</nav>
-		<main class="w-full max-w-content">
+		<div class="w-full max-w-content">
 			<div class="mb-4 flex justify-between">
-				<p role="status">
+				<p role="status" data-testid="result-info">
 					{#if numHits && numHits > 0}
 						{numHits.toLocaleString($page.data.locale)} träffar
 					{:else}
@@ -52,7 +52,7 @@
 					{/if}
 				</p>
 				{#if numHits > 0}
-					<div>
+					<div data-testid="sort-select">
 						<label for="search-sort">Sortera efter</label>
 						<select id="search-sort" form="main-search" on:change={handleSortChange}>
 							{#each sortOptions as option}
@@ -70,6 +70,6 @@
 				{/each}
 			</ol>
 			<Pagination data={searchResult} />
-		</main>
-	</div>
-</div>
+		</div>
+	</section>
+</main>

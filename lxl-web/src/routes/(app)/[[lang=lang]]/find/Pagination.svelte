@@ -27,7 +27,7 @@
 </script>
 
 {#if data.items.length > 0 && totalItems > itemsPerPage}
-	<nav aria-label="paginering">
+	<nav aria-label="paginering" data-testid="pagination">
 		<ul class="my-4 flex justify-center gap-2">
 			<!-- prev and first -->
 			{#if !isFirstPage || itemOffset > 0}
@@ -39,18 +39,20 @@
 				{/if}
 			{/if}
 			{#if sequenceStart > 2}
-				<span>...</span>
+				<li><span>...</span></li>
 			{/if}
 			<!-- page sequence -->
 			{#each pageSequence as p}
-				<a
-					href={getOffsetLink(itemsPerPage * (p - 1))}
-					aria-label="Sida {p}"
-					aria-current={p === currentPage ? 'page' : false}>{p}</a
-				>
+				<li>
+					<a
+						href={getOffsetLink(itemsPerPage * (p - 1))}
+						aria-label="Sida {p}"
+						aria-current={p === currentPage ? 'page' : false}>{p}</a
+					>
+				</li>
 			{/each}
 			{#if lastPage - sequenceEnd > 1}
-				<span>...</span>
+				<li><span>...</span></li>
 			{/if}
 			<!-- last and next -->
 			{#if !isLastPage}

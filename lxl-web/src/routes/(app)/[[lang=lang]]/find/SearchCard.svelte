@@ -6,7 +6,7 @@
 	export let item: { '@id': string; 'card-heading': ResourceData; 'card-body': ResourceData };
 </script>
 
-<li class="flex gap-8 rounded-md border-b border-b-primary/16 bg-cards p-6">
+<li class="flex gap-8 rounded-md border-b border-b-primary/16 bg-cards p-6" data-testid="search-card">
 	<div class="flex h-[6.5rem] w-20 shrink-0 items-center justify-center rounded-sm bg-[lightgrey]">
 		Image
 	</div>
@@ -14,6 +14,7 @@
 		<a
 			href={relativizeUrl(item['@id'])}
 			class="search-card-heading line-clamp-2 text-ellipsis text-secondary no-underline text-4-regular"
+			data-testid="search-card-heading"
 			><h2>
 				<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 			</h2></a
