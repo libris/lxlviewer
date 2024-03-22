@@ -8,6 +8,7 @@
 
 	function getInstanceData(instances: ResourceData) {
 		if (typeof instances === 'object') {
+			let years: string = '';
 			let count = 1;
 			let query = '_display[].publication[].*[][?year].year[]';
 
@@ -16,12 +17,12 @@
 				query = '[]._display[].publication[].*[][?year].year[]';
 			}
 
-			let years = jmespath.search(instances, query);
-			if (years) {
-				years = years
-					.filter((el: string) => !isNaN(parseInt(el)))
+			let res = jmespath.search(instances, query) as string[] | null;
+			if (res) {
+				years = res
+					.filter((el, i, arr) => !isNaN(parseInt(el)) && arr.indexOf(el) === i)
 					.sort()
-					.filter((el: string, i: number) => el && (i === 0 || i === years.length - 1))
+					.filter((el, i, arr) => i === 0 || i === arr.length - 1)
 					.join('-');
 			}
 			return { count, years };
