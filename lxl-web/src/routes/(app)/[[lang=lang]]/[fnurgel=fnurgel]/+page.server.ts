@@ -1,5 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { type DisplayDecorated, DisplayUtil, type FramedData, pickProperty } from '$lib/utils/xl';
+import { calculateExpirationTime, generateAuxdImageUri, getImageLink } from '$lib/utils/auxd';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { LxlLens } from '$lib/utils/display.types';
 import jmespath from 'jmespath';
@@ -40,12 +41,22 @@ export const load = async ({ params, locals, fetch }) => {
 	// TODO: Replace with a custom getProperty method (similar to pickProperty)
 	const instances = jmespath.search(overview, '*[].hasInstance[]');
 
+	const imageUrlExpirationTime = calculateExpirationTime();
+	// const imageUrl = "http://auxd-prod.libris.kb.se/dataset/images/9f08c0e469a78b5b50f05a6bb1535684.full.jpg"
+	const imageUrl = getImageLink(mainEntity);
+	const auxdSecret = env.AUXD_SECRET;
+	console.log(
+		'generated image URI',
+		generateAuxdImageUri(imageUrlExpirationTime, imageUrl, auxdSecret)
+	);
+
 	return {
 		heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
 		overview: overviewWithoutHasInstance,
 		details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
 		instances,
-		full: overview
+		full: overview,
+		imageUri: generateAuxdImageUri(imageUrlExpirationTime, imageUrl, auxdSecret)
 	};
 };
 
