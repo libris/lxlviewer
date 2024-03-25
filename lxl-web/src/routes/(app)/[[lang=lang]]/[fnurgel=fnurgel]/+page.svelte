@@ -13,6 +13,10 @@
 			</h1>
 		</header>
 		<div class="overview mb-4">
+			<div
+				class="rounded-lg h-64 w-64 bg-contain bg-top bg-no-repeat"
+				style="background-image: url('{data.imageUri}')"
+			/>
 			<DecoratedData data={data.overview} block />
 		</div>
 		{#if data.instances?.length}
@@ -90,7 +94,6 @@
 			white-space: nowrap;
 		}
 	}
-
 	.json {
 		font-size: 0.75rem;
 		font-family: monospace;

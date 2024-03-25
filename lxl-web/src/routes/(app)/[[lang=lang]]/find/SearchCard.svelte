@@ -4,8 +4,12 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-	export let item: { '@id': string; 'card-heading': ResourceData; 'card-body': ResourceData };
-
+	export let item: {
+		'@id': string;
+		'card-heading': ResourceData;
+		'card-body': ResourceData;
+		imageUrl: string;
+	};
 	function getInstanceData(instances: ResourceData) {
 		if (typeof instances === 'object') {
 			let years: string = '';
@@ -35,9 +39,10 @@
 	class="flex gap-8 rounded-md border-b border-b-primary/16 bg-cards p-6"
 	data-testid="search-card"
 >
-	<div class="flex h-[6.5rem] w-20 shrink-0 items-center justify-center rounded-sm bg-[lightgrey]">
-		Image
-	</div>
+	<div
+		class="flex h-[6.5rem] w-20 shrink-0 items-center justify-center rounded-sm bg-[lightgrey] bg-contain bg-no-repeat"
+		style="background-image: url('{item.imageUrl}')"
+	></div>
 	<div class="flex flex-col gap-2">
 		<a
 			href={relativizeUrl(item['@id'])}
