@@ -2,7 +2,6 @@ import {
 	type DisplayDecorated,
 	DisplayUtil,
 	type FramedData,
-	isObject,
 	JsonLd,
 	LensType,
 	type Link,
@@ -28,7 +27,7 @@ export async function asResult(
 		itemsPerPage: view.itemsPerPage,
 		totalItems: view.totalItems,
 		maxItems: view.maxItems,
-		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
+		mapping: displayMappings(view, displayUtil, locale, usePath),
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
 		items: view.items.map((i) => ({
@@ -75,10 +74,11 @@ interface MultiSelectFacet extends Facet {
 }
 
 export interface DisplayMapping {
-	display: DisplayDecorated;
+	display?: DisplayDecorated;
 	up?: Link;
-	children: DisplayMapping[];
-	label: string;
+	children?: DisplayMapping[];
+	label?: string;
+	operator: keyof typeof SearchOperators;
 }
 
 export interface PartialCollectionView {
@@ -90,7 +90,7 @@ export interface PartialCollectionView {
 	totalItems: number;
 	maxItems: number;
 	search: {
-		mapping: (PredicateAndObject | PredicateAndValue)[];
+		mapping: SearchMapping[];
 	};
 	first: Link;
 	last: Link;
@@ -115,15 +115,23 @@ interface Observation {
 	_selected?: boolean;
 }
 
-interface PredicateAndObject {
-	variable: string;
-	predicate: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
-	object: FramedData;
+enum SearchOperators {
+	and = 'and',
+	or = 'or',
+	not = 'not',
+	equals = 'equals',
+	notEquals = 'notEquals',
+	greaterThan = 'greaterThan',
+	greaterThanOrEquals = 'greaterThanOrEquals',
+	lessThan = 'lessThan',
+	lessThanOrEquals = 'lessThanOrEquals'
 }
-interface PredicateAndValue {
-	variable: string;
-	predicate: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
-	value: string;
+
+type MappingObj = { [key in SearchOperators]: SearchMapping[] | string | FramedData };
+
+interface SearchMapping extends MappingObj {
+	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
+	up: { '@id': string };
 }
 
 interface ObjectProperty {}
@@ -134,37 +142,44 @@ function displayMappings(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn,
 	usePath: string
 ): DisplayMapping[] {
 	const mapping = view.search?.mapping || [];
+	return _iterateMapping(mapping);
 
-	return mapping.map((m) => {
-		const trimmedLabel = m.variable.replace(/and-|or-/, ''); // Hack?!
-		const label = translate(`facet.${trimmedLabel}`);
+	function _iterateMapping(mapping: SearchMapping[]): DisplayMapping[] {
+		return mapping.map((m: SearchMapping) => {
+			const operator = _hasOperator(m);
 
-		if (isPredicateAndObject(m)) {
-			return {
-				...('up' in m && { up: replacePath(m.up as Link, usePath) }),
-				display: displayUtil.lensAndFormat(m.object, LensType.Chip, locale),
-				children: [],
-				label
-			} as DisplayMapping;
-		} else if (isPredicateAndValue(m)) {
-			return {
-				...('up' in m && { up: m.up }),
-				display: { [JsonLd.VALUE]: m.value } as DisplayDecorated,
-				children: [],
-				label
-			} as DisplayMapping;
-		} else {
-			return {
-				display: { [JsonLd.VALUE]: '<ERROR>' } as DisplayDecorated,
-				children: [],
-				label
-			} as DisplayMapping;
-		}
-	});
+			if ('property' in m && operator) {
+				const property = m[operator] as FramedData;
+				return {
+					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
+					label: m.property?.labelByLang?.[locale] || 'no label', // lensandformat?
+					operator,
+					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+				} as DisplayMapping;
+			} else if (operator && operator in m && Array.isArray(m[operator])) {
+				const mappingArr = m[operator] as SearchMapping[];
+				return {
+					children: _iterateMapping(mappingArr),
+					operator,
+					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+				} as DisplayMapping;
+			} else {
+				return {
+					display: { [JsonLd.VALUE]: '<ERROR>' } as DisplayDecorated,
+					children: [],
+					label: 'no label',
+					operator
+				} as DisplayMapping;
+			}
+		});
+	}
+
+	function _hasOperator(obj: SearchMapping): keyof typeof SearchOperators | undefined {
+		return Object.values(SearchOperators).find((val) => val in obj);
+	}
 }
 
 function displayFacetGroups(
@@ -201,15 +216,6 @@ function replacePath(view: Link, usePath: string) {
 		'@id': view['@id'].replace('/find', usePath)
 	};
 }
-
-function isPredicateAndObject(v: unknown): v is PredicateAndObject {
-	return isObject(v) && 'variable' in v && 'predicate' in v && 'object' in v;
-}
-
-function isPredicateAndValue(v: unknown): v is PredicateAndValue {
-	return isObject(v) && 'variable' in v && 'predicate' in v && 'value' in v;
-}
-
 interface PropertyChainAxiom {
 	propertyChainAxiom: (ObjectProperty | DatatypeProperty)[];
 	label: string; // e.g. "instanceOf language"
