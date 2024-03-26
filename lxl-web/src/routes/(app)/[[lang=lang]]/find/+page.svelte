@@ -30,7 +30,9 @@
 </script>
 
 <main>
-	<SeachMapping mapping={searchResult.mapping} />
+	<section class="container-fluid bg-transparent py-4">
+		<SeachMapping mapping={searchResult.mapping} />
+	</section>
 	<section class="container-fluid flex gap-16 py-4 sm:py-8">
 		<nav class="hidden w-80 shrink-0 flex-col md:flex" aria-labelledby="facet-sidebar-header">
 			{#if facets && facets.length > 0}
