@@ -1,22 +1,40 @@
 import crypto from 'crypto';
 
-export function getImageLink(mainEntity) {
-	const firstInstance = getFirstInstanceOf(mainEntity);
+export function getImageLinks(mainEntity) {
+	const instances = getInstances(mainEntity);
 	if ('image' in mainEntity) {
 		// TODO: handle multiple images
-		return mainEntity.image[0]['@id'];
-	} else if (firstInstance && firstInstance.image) {
-		return firstInstance.image[0]['@id'];
+		return [
+			{
+				recordId: mainEntity['@id'],
+				imageUrl: mainEntity.image[0]['@id']
+			}
+		];
+	} else if (instances) {
+		const imageLinks = instances.map((i) => {
+			if (i.image) {
+				return {
+					recordId: i['@id'],
+					imageUrl: i.image[0]['@id']
+				};
+			} else {
+				return {
+					recordId: i['@id'],
+					imageUrl: ''
+				};
+			}
+		});
+		return imageLinks;
 	} else {
-		return '';
+		return [];
 	}
 }
 
-function getFirstInstanceOf(mainEntity) {
+function getInstances(mainEntity) {
 	if (mainEntity['@reverse'] && mainEntity['@reverse']['instanceOf']) {
-		return mainEntity['@reverse']['instanceOf'][0];
+		return mainEntity['@reverse']['instanceOf'];
 	} else {
-		return undefined;
+		return [];
 	}
 }
 

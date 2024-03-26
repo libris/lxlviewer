@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { type DisplayDecorated, DisplayUtil, type FramedData, pickProperty } from '$lib/utils/xl';
-import { calculateExpirationTime, generateAuxdImageUri, getImageLink } from '$lib/utils/auxd'
+import { calculateExpirationTime, generateAuxdImageUri, getImageLinks } from '$lib/utils/auxd';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { LxlLens } from '$lib/utils/display.types';
 import jmespath from 'jmespath';
@@ -60,9 +60,16 @@ export const load = async ({ params, locals, fetch }) => {
 		}
 		return yearB - yearA;
 	});
+
 	const imageUrlExpirationTime = calculateExpirationTime();
-	const imageUrl = getImageLink(mainEntity);
+	const imageLinks = getImageLinks(mainEntity);
 	const auxdSecret = env.AUXD_SECRET;
+	const imageUris = imageLinks.map((idAndLink) => {
+		return {
+			recordId: idAndLink.recordId,
+			imageUri: generateAuxdImageUri(imageUrlExpirationTime, idAndLink.imageUrl, auxdSecret)
+		};
+	});
 
 	return {
 		heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
@@ -70,7 +77,7 @@ export const load = async ({ params, locals, fetch }) => {
 		details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
 		instances: sortedInstances,
 		full: overview,
-		imageUri: generateAuxdImageUri(imageUrlExpirationTime, imageUrl, auxdSecret)
+		imageUris: imageUris
 	};
 };
 

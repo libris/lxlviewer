@@ -17,7 +17,7 @@
 			<div>
 				<div
 					class="rounded-lg h-64 w-64 bg-contain bg-top bg-no-repeat"
-					style="background-image: url('{data.imageUri}')"
+					style="background-image: url('{data.imageUris[0].imageUri}')"
 				/>
 			</div>
 			<div class="overview mb-4">
@@ -27,6 +27,7 @@
 		{#if data.instances?.length}
 			<InstancesList
 				data={data.instances}
+				imageUris={data.imageUris}
 				columns={[
 					'*[].publication[].*[][?year].year',
 					'*[].publication.*[][?agent].agent',

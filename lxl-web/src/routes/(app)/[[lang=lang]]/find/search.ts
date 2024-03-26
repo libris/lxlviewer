@@ -13,7 +13,7 @@ import { LxlLens } from '$lib/utils/display.types';
 
 import { type translateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import { calculateExpirationTime, generateAuxdImageUri, getImageLink } from '$lib/utils/auxd';
+import { calculateExpirationTime, generateAuxdImageUri, getImageLinks } from '$lib/utils/auxd';
 
 export function asResult(
 	view: PartialCollectionView,
@@ -35,7 +35,11 @@ export function asResult(
 			[JsonLd.ID]: i.meta[JsonLd.ID],
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
-			imageUrl: generateAuxdImageUri(calculateExpirationTime(), getImageLink(i), auxdSecret)
+			imageUrl: generateAuxdImageUri(
+				calculateExpirationTime(),
+				getImageLinks(i)[0].imageUrl,
+				auxdSecret
+			)
 		})),
 		facetGroups: displayFacetGroups(view, displayUtil, locale, translate)
 	};

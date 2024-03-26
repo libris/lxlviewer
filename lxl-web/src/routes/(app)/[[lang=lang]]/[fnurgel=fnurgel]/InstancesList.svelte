@@ -23,6 +23,7 @@
 		}
 	});
 	export let data: ResourceData;
+	export let imageUris: { recordId: string; imageUri: string }[];
 	export let columns: string[];
 
 	function handleToggleDetails(event: Event) {
@@ -106,6 +107,16 @@
 				?.focus();
 		}
 	}
+
+	function getImageUri(item) {
+		return imageUris.find((uri) => {
+			return relativizeUrl(uri.recordId)?.replace(/#it/g, '') === getInstanceId(item);
+		})?.imageUri;
+	}
+
+	function getInstanceId(item: ResourceData) {
+		return relativizeUrl(item?.['@id' as keyof ResourceData]);
+	}
 </script>
 
 <div>
@@ -123,6 +134,10 @@
 			{#each data as item (item['@id'])}
 				{@const id = relativizeUrl(getResourceId(item))}
 				<li {id} class="border-t border-t-primary/16">
+					<div
+						class="m-2 flex h-[6.5rem] w-20 shrink-0 items-center justify-center rounded-sm bg-[lightgrey] bg-contain bg-no-repeat"
+						style="background-image: url('{getImageUri(item)}')"
+					></div>
 					<details
 						open={(id && expandedInSearchParams.includes(id)) ||
 							(id && !!$page.state.expandedInstances?.includes(id)) ||
