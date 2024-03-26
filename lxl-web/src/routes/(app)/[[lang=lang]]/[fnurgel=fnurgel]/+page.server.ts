@@ -42,13 +42,8 @@ export const load = async ({ params, locals, fetch }) => {
 	const instances = jmespath.search(overview, '*[].hasInstance[]');
 
 	const imageUrlExpirationTime = calculateExpirationTime();
-	// const imageUrl = "http://auxd-prod.libris.kb.se/dataset/images/9f08c0e469a78b5b50f05a6bb1535684.full.jpg"
 	const imageUrl = getImageLink(mainEntity);
 	const auxdSecret = env.AUXD_SECRET;
-	console.log(
-		'generated image URI',
-		generateAuxdImageUri(imageUrlExpirationTime, imageUrl, auxdSecret)
-	);
 
 	return {
 		heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),

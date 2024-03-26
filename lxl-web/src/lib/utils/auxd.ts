@@ -1,9 +1,7 @@
 import crypto from 'crypto';
 
 export function getImageLink(mainEntity) {
-	console.log('mainEntity', mainEntity);
 	const firstInstance = getFirstInstanceOf(mainEntity);
-	console.log('firstInstance', firstInstance);
 	if ('image' in mainEntity) {
 		// TODO: handle multiple images
 		return mainEntity.image[0]['@id'];
