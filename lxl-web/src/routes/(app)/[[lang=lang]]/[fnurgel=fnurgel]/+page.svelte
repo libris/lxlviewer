@@ -2,6 +2,7 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesList from './InstancesList.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
+
 	export let data;
 </script>
 
@@ -12,12 +13,16 @@
 				<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 			</h1>
 		</header>
-		<div class="overview mb-4">
-			<div
-				class="rounded-lg h-64 w-64 bg-contain bg-top bg-no-repeat"
-				style="background-image: url('{data.imageUri}')"
-			/>
-			<DecoratedData data={data.overview} block />
+		<div class="flex items-start">
+			<div>
+				<div
+					class="rounded-lg h-64 w-64 bg-contain bg-top bg-no-repeat"
+					style="background-image: url('{data.imageUri}')"
+				/>
+			</div>
+			<div class="overview mb-4">
+				<DecoratedData data={data.overview} block />
+			</div>
 		</div>
 		{#if data.instances?.length}
 			<InstancesList
