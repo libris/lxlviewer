@@ -7,7 +7,7 @@ export function getImageLinks(mainEntity) {
 		return [
 			{
 				recordId: mainEntity['@id'],
-				imageUrl: mainEntity.image[0]['@id']
+				imageLink: mainEntity.image[0]['@id']
 			}
 		];
 	} else if (instances) {
@@ -15,12 +15,12 @@ export function getImageLinks(mainEntity) {
 			if (i.image) {
 				return {
 					recordId: i['@id'],
-					imageUrl: i.image[0]['@id']
+					imageLink: i.image[0]['@id']
 				};
 			} else {
 				return {
 					recordId: i['@id'],
-					imageUrl: ''
+					imageLink: ''
 				};
 			}
 		});

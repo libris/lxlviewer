@@ -35,9 +35,9 @@ export function asResult(
 			[JsonLd.ID]: i.meta[JsonLd.ID],
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
-			imageUrl: generateAuxdImageUri(
+			imageUri: generateAuxdImageUri(
 				calculateExpirationTime(),
-				getImageLinks(i)[0].imageUrl,
+				getImageLinks(i)[0].imageLink,
 				auxdSecret
 			)
 		})),

@@ -40,14 +40,15 @@ export const load = async ({ params, locals, fetch }) => {
 
 	// TODO: Replace with a custom getProperty method (similar to pickProperty)
 	const instances = jmespath.search(overview, '*[].hasInstance[]');
-	console.log('instances', instances);
-	const imageUrlExpirationTime = calculateExpirationTime();
-	const imageLinks = getImageLinks(mainEntity);
-	const auxdSecret = env.AUXD_SECRET;
-	const imageUris = imageLinks.map((idAndLink) => {
+
+	const imageUris = getImageLinks(mainEntity).map((idAndLink) => {
 		return {
 			recordId: idAndLink.recordId,
-			imageUri: generateAuxdImageUri(imageUrlExpirationTime, idAndLink.imageUrl, auxdSecret)
+			imageUri: generateAuxdImageUri(
+				calculateExpirationTime(),
+				idAndLink.imageLink,
+				env.AUXD_SECRET
+			)
 		};
 	});
 
