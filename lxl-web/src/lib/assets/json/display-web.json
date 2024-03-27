@@ -28,11 +28,66 @@
 						"classification",
 						"subject",
 						"intendedAudience",
-						"contentType",
 						"dissertation",
 						"cartographicAttributes",
 						"isPartOf",
 						{ "inverseOf": "instanceOf" }
+					]
+				},
+				"Instance": {
+					"@type": "fresnel:Lens",
+					"@id": "Instance-cards",
+					"classLensDomain": "Instance",
+					"showProperties": [
+						"contribution",
+						"reproductionOf",
+						"identifiedBy",
+						"indirectlyIdentifiedBy",
+						{
+							"alternateProperties": [
+								{ "subPropertyOf": "hasTitle", "range": "KeyTitle" },
+								{ "subPropertyOf": "hasTitle", "range": "Title" },
+								"hasTitle",
+								"identifiedBy"
+							]
+						},
+						"responsibilityStatement",
+						"editionStatement",
+						"editionStatementRemainder",
+						"isIssueOfEdition",
+						"publication",
+						"marc:primaryProvisionActivity",
+						"production",
+						"manufacture",
+						"distribution",
+						"copyright",
+						"copyrightDate",
+						"projectedProvisionDate",
+						"extent",
+						"hasDimensions",
+						"hasDuration",
+						"physicalDetailsNote",
+						"illustrativeContent",
+						"baseMaterial",
+						"appliedMaterial",
+						"productionMethod",
+						"digitalCharacteristic",
+						"marc:mediaTerm",
+						"genreForm",
+						"classification",
+						"accompaniedBy",
+						"seriesMembership",
+						"intendedAudience",
+						"associatedMedia",
+						"usageAndAccessPolicy",
+						"accessMode",
+						"isIssueOf",
+						"relatedTo",
+						"issuanceType",
+						"mediaType",
+						"carrierType",
+						{ "inverseOf": "reproductionOf" },
+						{ "inverseOf": "supplementTo" }
 					]
 				}
 			}
@@ -64,7 +119,7 @@
 					"showProperties": ["code", "prefLabel"]
 				},
 				"Work": {
-					"@id": "Work-web-chips",
+					"@id": "Work-chips",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
 					"showProperties": [
@@ -104,6 +159,12 @@
 						"marc:arrangedStatementForMusic",
 						"originDate"
 					]
+				},
+				"Instance": {
+					"@id": "Instance-web-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["hasTitle"]
 				}
 			}
 		},
@@ -342,6 +403,12 @@
 			"fresnel:classFormatDomain": ["Topic"],
 			"fresnel:resourceStyle": ["link"]
 		},
+		"Instance-format": {
+			"@id": "Instance-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Instance"],
+			"fresnel:resourceStyle": ["link"]
+		},
 		"Agent-format": {
 			"@id": "Agent-format",
 			"@type": "fresnel:Format",
@@ -393,7 +460,7 @@
 			"@id": "Instance-self-x-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Instance"],
-			"fresnel:propertyFormatDomain": ["hasTitle", "identifiedBy", "summary"],
+			"fresnel:propertyFormatDomain": ["identifiedBy", "summary"],
 			"fresnel:propertyStyle": ["nolabel"]
 		},
 		"Work-self-x-format": {
