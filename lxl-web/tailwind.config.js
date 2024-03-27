@@ -146,7 +146,7 @@ export default {
 				},
 				// other utility classes
 				'.gradient-primary': {
-					'@apply bg-gradient-to-b from-[#7A4D1F] to-[#66401A]': {}
+					'@apply bg-gradient-to-b from-[#7B4C1E] to-[#674019]': {}
 				}
 			});
 		}
