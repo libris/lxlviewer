@@ -8,7 +8,7 @@
 		'@id': string;
 		'card-heading': ResourceData;
 		'card-body': ResourceData;
-		imageUrl: string;
+		imageUri: string;
 	};
 	function getInstanceData(instances: ResourceData) {
 		if (typeof instances === 'object') {
@@ -41,7 +41,7 @@
 >
 	<div
 		class="flex h-[6.5rem] w-20 shrink-0 items-center justify-center rounded-sm bg-[lightgrey] bg-contain bg-no-repeat"
-		style="background-image: url('{item.imageUrl}')"
+		style="background-image: url('{item.imageUri}')"
 	></div>
 	<div class="flex flex-col gap-2">
 		<a
