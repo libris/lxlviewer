@@ -115,7 +115,7 @@ interface Observation {
 	_selected?: boolean;
 }
 
-enum SearchOperators {
+export enum SearchOperators {
 	and = 'and',
 	or = 'or',
 	not = 'not',
