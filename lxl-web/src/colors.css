@@ -8,8 +8,8 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--color-brown-light: 103 64 25;
 	--color-dark-green: 66 107 84;
 	--color-light-green: 213 229 220;
-	--color-beige: 248 246 241;
-	--color-pink: 236 214 192;
+	--color-beige: 247 246 242;
+	--color-pink: 239 214 189;
 
 	/* Fundament */
 	--color-primary: var(--color-brown);

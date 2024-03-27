@@ -8,7 +8,7 @@
 </script>
 
 {#if isLandingPage}
-	<header class="container-fluid flex flex-col gap-8 py-10">
+	<header class="container-fluid flex flex-col gap-8 bg-head py-10 pb-20">
 		<nav class="flex justify-center sm:justify-end">
 			<ol class="flex items-center gap-6 text-secondary">
 				<li>Hjälp</li>
