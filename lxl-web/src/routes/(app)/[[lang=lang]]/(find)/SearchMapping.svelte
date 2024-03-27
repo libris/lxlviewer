@@ -27,7 +27,7 @@
 
 <ul class="flex flex-wrap items-center gap-2">
 	{#each mapping as m}
-		<li class="pill {m.children ? 'pill-group' : ''} pill-{m.operator}">
+		<li class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}">
 			{#if 'children' in m}
 				<svelte:self mapping={m.children} parentOperator={m.operator} />
 			{:else if 'label' in m && 'display' in m}
@@ -43,35 +43,41 @@
 			{/if}
 		</li>
 		{#if parentOperator}
-			<li class="pill-between">{parentOperator}</li>
+			<li class="pill-between pill-between-{parentOperator}">{parentOperator}</li>
 		{/if}
 	{/each}
 </ul>
 
 <style lang="postcss">
-	.pill {
+	.mapping-item {
 		@apply rounded-md px-4 py-2 brightness-100 text-3-cond-bold;
 		transition: filter 0.1s ease;
 	}
 
-	.pill:has(> .pill-remove:hover) {
+	.mapping-item:has(> .pill-remove:hover) {
 		@apply brightness-75;
 	}
 
-	.pill-group {
-		@apply flex items-center gap-2 bg-pill/4 p-0 pr-4;
-	}
-
-	.pill-equals {
+	.pill {
 		@apply bg-positive-inv text-primary-inv;
 
-		& .pill-label {
+		& .pill-label,
+		.pill-relation {
 			@apply text-secondary-inv;
 		}
 	}
 
 	.pill-notEquals {
 		@apply bg-negative text-primary;
+
+		& .pill-label,
+		.pill-relation {
+			@apply text-secondary;
+		}
+	}
+
+	.pill-group {
+		@apply flex items-center gap-2 bg-pill/4 p-0 pr-4;
 	}
 
 	.pill-between,
@@ -79,11 +85,8 @@
 		@apply uppercase text-primary text-1-regular;
 	}
 
-	.pill-and > ul .pill-between {
-		@apply hidden;
-	}
-
-	ul > .pill-between:last-of-type {
+	.pill-between-and,
+	.pill-between:last-of-type {
 		@apply hidden;
 	}
 
