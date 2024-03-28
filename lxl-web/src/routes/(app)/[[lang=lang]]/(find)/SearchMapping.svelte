@@ -3,7 +3,7 @@
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import type { DisplayMapping, SearchOperators } from './search';
 	export let mapping: DisplayMapping[];
-	export let parentOperator: keyof typeof SearchOperators;
+	export let parentOperator: keyof typeof SearchOperators | undefined = undefined;
 
 	function getRelationSymbol(operator: keyof typeof SearchOperators): string {
 		switch (operator) {
