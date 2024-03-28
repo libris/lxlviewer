@@ -41,7 +41,6 @@ export const load = async ({ params, locals, fetch }) => {
 	// TODO: Replace with a custom getProperty method (similar to pickProperty)
 	const instances = jmespath.search(overview, '*[].hasInstance[]');
 
-<<<<<<< HEAD
 	const sortedInstances = [...instances].sort((a, b) => {
 		const yearA = parseInt(
 			jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity),
@@ -62,10 +61,6 @@ export const load = async ({ params, locals, fetch }) => {
 		return yearB - yearA;
 	});
 
-	const imageUrlExpirationTime = calculateExpirationTime();
-	const imageLinks = getImageLinks(mainEntity);
-	const auxdSecret = env.AUXD_SECRET;
-	const imageUris = imageLinks.map((idAndLink) => {
 	const imageUris = getImageLinks(mainEntity).map((idAndLink) => {
 		return {
 			recordId: idAndLink.recordId,

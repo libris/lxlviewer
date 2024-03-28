@@ -3,14 +3,13 @@ import crypto from 'crypto';
 export function getImageLinks(mainEntity) {
 	const instances = getInstances(mainEntity);
 	if ('image' in mainEntity) {
-		// TODO: handle multiple images
 		return [
 			{
 				recordId: mainEntity['@id'],
 				imageLink: mainEntity.image[0]['@id']
 			}
 		];
-	} else if (instances) {
+	} else if (instances?.length) {
 		const imageLinks = instances.map((i) => {
 			if (i.image) {
 				return {
@@ -28,6 +27,11 @@ export function getImageLinks(mainEntity) {
 	} else {
 		return [];
 	}
+}
+
+export function getFirstImageLink(mainEntity) {
+	const links = getImageLinks(mainEntity);
+	return links.length ? links[0].imageLink : '';
 }
 
 function getInstances(mainEntity) {

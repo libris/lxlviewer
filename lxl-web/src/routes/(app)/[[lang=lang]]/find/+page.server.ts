@@ -22,7 +22,6 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil: DisplayUtil = locals.display;
 	const locale = getSupportedLocale(params?.lang);
 	const translator = await getTranslator(locale);
-	console.log('result', result);
 	const searchResult = await asResult(result, displayUtil, locale, translator, env.AUXD_SECRET);
 
 	return {
