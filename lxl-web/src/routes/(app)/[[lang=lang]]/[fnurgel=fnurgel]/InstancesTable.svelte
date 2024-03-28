@@ -21,6 +21,7 @@
 	let expanded = $page.url.searchParams.getAll('expanded');
 
 	export let data: ResourceData;
+	export let imageUris: { recordId: string; imageUri: string }[];
 	export let columns: string[];
 
 	afterNavigate(({ to }) => {
@@ -73,6 +74,12 @@
 		linkParams.delete('expanded');
 		return `${$page.url.pathname}?${linkParams.toString()}`;
 	}
+
+	function getImageUri(item) {
+		return imageUris.find((uri) => {
+			return relativizeUrl(uri.recordId)?.replace(/#it/g, '') === getInstanceId(item);
+		})?.imageUri;
+	}
 </script>
 
 <div role="treegrid">
@@ -101,6 +108,10 @@
 						data-id={id}
 						aria-expanded={!!(id && expanded.includes(id))}
 					>
+						<div
+							class="m-2 flex h-[6.5rem] w-20 shrink-0 items-center justify-center rounded-sm bg-[lightgrey] bg-contain bg-no-repeat"
+							style="background-image: url('{getImageUri(item)}')"
+						></div>
 						{#each columns as columnItem}
 							<td class="p-4">
 								<DecoratedData data={jmespath.search(item, columnItem)} />
