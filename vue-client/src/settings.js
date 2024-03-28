@@ -286,6 +286,13 @@ export default {
         order: 20,
       },
     },
+    'concerning.issuanceType': {
+      sv: 'Utgivningssätt',
+      en: 'Issuance type',
+      facet: {
+        order: 21,
+      },
+    },
     '@reverse': {
       sv: 'Relation',
       en: 'Relation',

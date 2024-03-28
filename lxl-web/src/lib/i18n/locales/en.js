@@ -24,6 +24,7 @@ export default {
 		'meta.bibliography.@id': 'In bibliography',
 		'category.@id': 'Change category',
 		'concerning.@reverse.itemOf.heldBy.@id': 'Has holding',
+		'concerning.issuanceType': 'Issuance type',
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Encoding level'
 	},
