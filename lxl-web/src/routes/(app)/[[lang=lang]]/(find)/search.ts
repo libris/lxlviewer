@@ -155,7 +155,7 @@ function displayMappings(
 				const property = m[operator] as FramedData;
 				return {
 					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
-					label: m.property?.labelByLang?.[locale] || 'no label', // lensandformat?
+					label: m.property?.labelByLang?.[locale] || m.property?.['@id'] || 'no label', // lensandformat?
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
 				} as DisplayMapping;

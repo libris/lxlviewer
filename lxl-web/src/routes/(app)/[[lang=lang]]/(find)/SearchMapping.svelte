@@ -32,7 +32,7 @@
 				<svelte:self mapping={m.children} parentOperator={m.operator} />
 			{:else if 'label' in m && 'display' in m}
 				{@const symbol = getRelationSymbol(m.operator)}
-				<span class="pill-label capitalize text-2-regular">{m.label}</span>
+				<div class="pill-label inline-block text-2-regular first-letter:uppercase">{m.label}</div>
 				<span class="pill-relation">{symbol}</span>
 				<span class="pill-value">
 					<DecoratedData data={m.display} showLabels={ShowLabelsOptions['Never']} />
