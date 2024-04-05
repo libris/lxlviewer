@@ -39,9 +39,20 @@ export const load = async ({ params, locals, fetch }) => {
 
 	// TODO: Replace with a custom getProperty method (similar to pickProperty)
 	const instances = jmespath.search(overview, '*[].hasInstance[]').sort((a, b) => {
-		const yearA = jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity);
-		const yearB = jmespath.search(b, '*[].publication[].*[][?year].year[]').flat(Infinity);
-		if (typeof parseInt(yearA, 10) === 'number' && typeof parseInt(yearB, 10) === 'number') {
+		const yearA = parseInt(
+			jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity),
+			10
+		);
+		const yearB = parseInt(
+			jmespath.search(b, '*[].publication[].*[][?year].year[]').flat(Infinity),
+			10
+		);
+
+		if (typeof yearA === 'number') {
+			return -1;
+		}
+
+		if (typeof yearA === 'number' && typeof yearB === 'number') {
 			return yearB - yearA;
 		}
 		return 0;
