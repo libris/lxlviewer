@@ -139,10 +139,14 @@
 								</div>
 							{/each}
 						</summary>
-						<div class="grid grid-cols-3 gap-2 px-2 pb-4 pt-2">
+						<div class="grid gap-2 px-2 pb-8 pt-4 md:grid-cols-3">
 							<div>
 								{#if id}
-									<a href={getPermalink(item)} on:click={() => handleCopyPermalink(item)}>
+									<a
+										class="mb-4 text-sm"
+										href={getPermalink(item)}
+										on:click={() => handleCopyPermalink(item)}
+									>
 										{$page.data.t('general.copyPermalinkToInstance')}
 									</a>
 								{/if}
@@ -167,7 +171,11 @@
 	}
 
 	:global(.instance-details > div) {
-		columns: 2;
+		@apply gap-2 lg:columns-2;
+	}
+
+	:global(.instance-details > div div[data-property]) {
+		@apply mb-4;
 	}
 
 	:global(.instance-details > div > *) {
