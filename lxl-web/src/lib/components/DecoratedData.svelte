@@ -209,15 +209,11 @@
 		color: inherit;
 	}
 	.definition {
-		text-decoration: underline;
-		text-decoration-style: dotted;
-		font-size: 0.875rem;
-		color: #666;
-		font-style: italic;
+		@apply text-sm italic text-subtle underline decoration-dotted;
 	}
 
 	.label {
-		@apply text-2-cond-bold first-letter:uppercase;
+		@apply text-sm text-subtle first-letter:uppercase;
 	}
 
 	.pill {

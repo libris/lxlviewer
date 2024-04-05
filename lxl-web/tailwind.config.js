@@ -9,7 +9,6 @@ export default {
 			primary: 'rgb(var(--color-primary) / <alpha-value>)',
 			'accent-light': 'rgb(var(--color-accent-light) / <alpha-value>)',
 			'accent-dark': 'rgb(var(--color-accent-dark) / <alpha-value>)',
-			subtle: 'rgb(var(--color-subtle) / <alpha-value>)',
 			highlight: 'rgb(var(--color-highlight) / <alpha-value>)'
 		},
 		textColor: {
@@ -18,7 +17,8 @@ export default {
 			secondary: 'rgb(var(--text-primary) / 0.8)',
 			'secondary-inv': 'rgb(var(--text-primary-inv) / 0.8)',
 			link: 'rgb(var(--text-link) / 1)',
-			disabled: 'rgb(var(--text-primary) / 0.6)'
+			disabled: 'rgb(var(--text-primary) / 0.6)',
+			subtle: 'rgb(var(--text-primary) / 0.8)'
 		},
 		backgroundColor: {
 			main: 'rgb(var(--bg-main) / 1)',
