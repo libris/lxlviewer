@@ -209,11 +209,11 @@
 		color: inherit;
 	}
 	.definition {
-		@apply text-sm italic text-subtle underline decoration-dotted;
+		@apply text-sm italic text-secondary underline decoration-dotted;
 	}
 
 	.label {
-		@apply text-sm text-subtle first-letter:uppercase;
+		@apply text-sm text-secondary first-letter:uppercase;
 	}
 
 	.pill {
