@@ -127,4 +127,12 @@
 			@apply text-disabled;
 		}
 	}
+
+	:global(.instance-details > div) {
+		columns: 2;
+	}
+
+	:global(.instance-details > div > *) {
+		break-inside: avoid-column;
+	}
 </style>
