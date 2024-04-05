@@ -31,6 +31,6 @@ export default {
 	errors: {},
 	general: {
 		collapseAll: 'Stäng alla',
-		copyPermalinkToInstance: 'Kopiera länk till instans'
+		copyPermalinkToInstance: 'Kopiera länk till utgåva'
 	}
 };

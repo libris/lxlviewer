@@ -32,6 +32,6 @@ export default {
 	errors: {},
 	general: {
 		collapseAll: 'Collapse all',
-		copyPermalinkToInstance: 'Copy link to instance'
+		copyPermalinkToInstance: 'Copy link to edition'
 	}
 };
