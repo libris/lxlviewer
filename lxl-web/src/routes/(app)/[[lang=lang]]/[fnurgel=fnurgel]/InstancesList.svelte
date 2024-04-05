@@ -140,10 +140,10 @@
 							{/each}
 						</summary>
 						<div class="grid gap-2 px-2 pb-8 pt-4 md:grid-cols-3">
-							<div>
+							<div class="mb-4">
 								{#if id}
 									<a
-										class="mb-4 text-sm"
+										class="text-sm"
 										href={getPermalink(item)}
 										on:click={() => handleCopyPermalink(item)}
 									>
