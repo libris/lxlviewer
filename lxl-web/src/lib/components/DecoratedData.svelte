@@ -178,9 +178,9 @@
 				{#if propertyName && propertyData}
 					<svelte:element this={getElementType(propertyData)} data-property={propertyName}>
 						{#if shouldShowLabels()}
-							<small>
+							<div class="label">
 								{data._label}
-							</small>
+							</div>
 						{/if}
 						<svelte:self
 							data={propertyData}
@@ -209,11 +209,11 @@
 		color: inherit;
 	}
 	.definition {
-		text-decoration: underline;
-		text-decoration-style: dotted;
-		font-size: 0.875rem;
-		color: #666;
-		font-style: italic;
+		@apply text-sm italic text-secondary underline decoration-dotted;
+	}
+
+	.label {
+		@apply text-sm text-secondary first-letter:uppercase;
 	}
 
 	.pill {

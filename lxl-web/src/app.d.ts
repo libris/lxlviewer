@@ -8,6 +8,9 @@ declare global {
 			locale: import('$lib/i18n/locales').LocaleCode;
 			t: Awaited<ReturnType<typeof import('$lib/i18n').getTranslator>>;
 		}
+		interface PageState {
+			expandedInstances?: string[];
+		}
 		// interface Platform {}
 	}
 }

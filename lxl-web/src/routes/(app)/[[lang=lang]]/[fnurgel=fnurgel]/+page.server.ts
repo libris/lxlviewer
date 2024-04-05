@@ -40,11 +40,31 @@ export const load = async ({ params, locals, fetch }) => {
 	// TODO: Replace with a custom getProperty method (similar to pickProperty)
 	const instances = jmespath.search(overview, '*[].hasInstance[]');
 
+	const sortedInstances = [...instances].sort((a, b) => {
+		const yearA = parseInt(
+			jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity),
+			10
+		);
+		const yearB = parseInt(
+			jmespath.search(b, '*[].publication[].*[][?year].year[]').flat(Infinity),
+			10
+		);
+
+		if (Number.isNaN(yearA)) {
+			return 1;
+		}
+
+		if (Number.isNaN(yearB)) {
+			return -1;
+		}
+		return yearB - yearA;
+	});
+
 	return {
 		heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
 		overview: overviewWithoutHasInstance,
 		details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
-		instances,
+		instances: sortedInstances,
 		full: overview
 	};
 };

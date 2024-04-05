@@ -1,6 +1,6 @@
 <script lang="ts">
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import InstancesTable from './InstancesTable.svelte';
+	import InstancesList from './InstancesList.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	export let data;
 </script>
@@ -16,16 +16,14 @@
 			<DecoratedData data={data.overview} block />
 		</div>
 		{#if data.instances?.length}
-			<div>
-				<InstancesTable
-					data={data.instances}
-					columns={[
-						'*[].publication[].*[][?year].year',
-						'*[].publication.*[][?agent].agent',
-						'"@type"'
-					]}
-				/>
-			</div>
+			<InstancesList
+				data={data.instances}
+				columns={[
+					'*[].publication[].*[][?year].year',
+					'*[].publication.*[][?agent].agent',
+					'"@type"'
+				]}
+			/>
 		{/if}
 		<details class="json">
 			<summary>JSON</summary>
