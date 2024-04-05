@@ -55,7 +55,7 @@
 	.product-page {
 		display: grid;
 		grid-template-columns: 1fr;
-		max-width: 1600px;
+		max-width: 1140px;
 		margin: 0 auto;
 		padding: 2rem;
 		gap: 2rem;
