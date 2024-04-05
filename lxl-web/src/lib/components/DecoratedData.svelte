@@ -178,9 +178,9 @@
 				{#if propertyName && propertyData}
 					<svelte:element this={getElementType(propertyData)} data-property={propertyName}>
 						{#if shouldShowLabels()}
-							<small>
+							<div class="label">
 								{data._label}
-							</small>
+							</div>
 						{/if}
 						<svelte:self
 							data={propertyData}
@@ -214,6 +214,10 @@
 		font-size: 0.875rem;
 		color: #666;
 		font-style: italic;
+	}
+
+	.label {
+		@apply text-2-cond-bold first-letter:uppercase;
 	}
 
 	.pill {
