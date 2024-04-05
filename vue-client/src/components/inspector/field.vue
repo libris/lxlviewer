@@ -668,7 +668,6 @@ export default {
       'is-new': isFieldNew,
       'is-highlighted': embellished,
       'is-grouped': isGrouped,
-      'has-failed-validations': failedValidations.length > 0,
     }"
     v-if="!this.isHidden">
 
