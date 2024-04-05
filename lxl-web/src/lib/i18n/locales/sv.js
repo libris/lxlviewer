@@ -30,6 +30,7 @@ export default {
 	search: {},
 	errors: {},
 	general: {
-		// shared stuff go here
+		collapseAll: 'Stäng alla',
+		copyPermalinkToInstance: 'Kopiera länk till instans'
 	}
 };

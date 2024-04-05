@@ -30,5 +30,8 @@ export default {
 	},
 	search: {},
 	errors: {},
-	general: {}
+	general: {
+		collapseAll: 'Collapse all',
+		copyPermalinkToInstance: 'Copy link to instance'
+	}
 };
