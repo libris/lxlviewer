@@ -38,7 +38,14 @@ export const load = async ({ params, locals, fetch }) => {
 	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
 
 	// TODO: Replace with a custom getProperty method (similar to pickProperty)
-	const instances = jmespath.search(overview, '*[].hasInstance[]');
+	const instances = jmespath.search(overview, '*[].hasInstance[]').sort((a, b) => {
+		const yearA = jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity);
+		const yearB = jmespath.search(b, '*[].publication[].*[][?year].year[]').flat(Infinity);
+		if (typeof parseInt(yearA, 10) === 'number' && typeof parseInt(yearB, 10) === 'number') {
+			return yearB - yearA;
+		}
+		return 0;
+	});
 
 	return {
 		heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),

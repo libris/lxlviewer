@@ -18,7 +18,7 @@ export default {
 			'secondary-inv': 'rgb(var(--text-primary-inv) / 0.8)',
 			link: 'rgb(var(--text-link) / 1)',
 			disabled: 'rgb(var(--text-primary) / 0.6)',
-			subtle: 'rgb(var(--text-primary) / 0.8)'
+			subtle: 'rgb(var(--text-primary) / 0.6)'
 		},
 		backgroundColor: {
 			main: 'rgb(var(--bg-main) / 1)',
