@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesList from './InstancesList.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
@@ -13,16 +14,19 @@
 				<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 			</h1>
 		</header>
-		<div class="flex items-start">
-			<div>
-				<div
-					class="rounded-lg h-64 w-64 bg-contain bg-top bg-no-repeat"
-					style="background-image: url('{data.imageUris[0].imageUri}')"
-				/>
-			</div>
-			<div class="overview mb-4">
+		<div class="mb-4 flex items-start">
+			<div class="overview flex-1">
 				<DecoratedData data={data.overview} block />
 			</div>
+			{#if data.imageUris.length}
+				<div class="flex h-full max-h-72 w-full max-w-72">
+					<img
+						alt={$page.data.t('general.latestInstanceCover')}
+						src={data.imageUris[0].imageUri}
+						class="h-auto w-full object-contain object-right"
+					/>
+				</div>
+			{/if}
 		</div>
 		{#if data.instances?.length}
 			<InstancesList

@@ -134,10 +134,6 @@
 			{#each data as item (item['@id'])}
 				{@const id = relativizeUrl(getResourceId(item))}
 				<li {id} class="border-t border-t-primary/16">
-					<div
-						class="m-2 flex h-[6.5rem] w-20 shrink-0 items-center justify-center rounded-sm bg-[lightgrey] bg-contain bg-no-repeat"
-						style="background-image: url('{getImageUri(item)}')"
-					></div>
 					<details
 						open={(id && expandedInSearchParams.includes(id)) ||
 							(id && !!$page.state.expandedInstances?.includes(id)) ||
@@ -145,7 +141,7 @@
 						on:toggle={handleToggleDetails}
 					>
 						<summary
-							class="flex min-h-11 gap-2 px-2 align-middle hover:bg-pill/8"
+							class="flex min-h-11 gap-2 px-2 py-4 align-middle hover:bg-pill/8"
 							on:keydown={handleSummaryKeydown}
 						>
 							{#each columns as columnItem}
@@ -155,7 +151,14 @@
 							{/each}
 						</summary>
 						<div class="grid gap-2 px-2 pb-8 pt-4 md:grid-cols-3">
-							<div class="mb-4">
+							<div class="flex flex-col gap-4">
+								<div class="flex h-full max-h-32 w-full max-w-32">
+									<img
+										alt={$page.data.t('general.instanceCover')}
+										src={getImageUri(item)}
+										class="object-contain object-left"
+									/>
+								</div>
 								{#if id}
 									<a
 										class="text-sm"

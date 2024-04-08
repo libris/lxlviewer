@@ -4,6 +4,8 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
+	import { page } from '$app/stores';
+
 	export let item: {
 		'@id': string;
 		'card-heading': ResourceData;
@@ -39,10 +41,16 @@
 	class="flex gap-8 rounded-md border-b border-b-primary/16 bg-cards p-6"
 	data-testid="search-card"
 >
-	<div
-		class="flex h-[6.5rem] w-20 shrink-0 items-center justify-center rounded-sm bg-[lightgrey] bg-contain bg-no-repeat"
-		style="background-image: url('{item.imageUri}')"
-	></div>
+	<div class="flex h-full max-h-20 w-full max-w-20">
+		{#if item.imageUri}
+			<img
+				alt={$page.data.t('general.latestInstanceCover')}
+				src={item.imageUri}
+				class="h-auto w-full object-contain"
+			/>
+		{/if}
+	</div>
+
 	<div class="flex flex-col gap-2">
 		<a
 			href={relativizeUrl(item['@id'])}
