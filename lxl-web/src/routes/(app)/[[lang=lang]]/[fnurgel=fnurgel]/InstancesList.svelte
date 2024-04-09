@@ -7,6 +7,7 @@
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
+	import placeholderBook from '$lib/assets/img/placeholder-book.svg';
 
 	/**
 	 * TODO:
@@ -133,6 +134,7 @@
 		<ul>
 			{#each data as item (item['@id'])}
 				{@const id = relativizeUrl(getResourceId(item))}
+				{@const cover = getImageUri(item)}
 				<li {id} class="border-t border-t-primary/16">
 					<details
 						open={(id && expandedInSearchParams.includes(id)) ||
@@ -153,11 +155,15 @@
 						<div class="grid gap-2 px-2 pb-8 pt-4 md:grid-cols-3">
 							<div class="flex flex-col gap-4">
 								<div class="flex h-full max-h-32 w-full max-w-32">
-									<img
-										alt={$page.data.t('general.instanceCover')}
-										src={getImageUri(item)}
-										class="object-contain object-left"
-									/>
+									{#if cover}
+										<img
+											alt={$page.data.t('general.instanceCover')}
+											src={cover}
+											class="object-contain object-left"
+										/>
+									{:else}
+										<img src={placeholderBook} alt="" class="object-contain object-left" />
+									{/if}
 								</div>
 								{#if id}
 									<a
