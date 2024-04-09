@@ -5,6 +5,7 @@
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import { page } from '$app/stores';
+	import placeholderBook from '$lib/assets/img/placeholder-book.svg';
 
 	export let item: {
 		'@id': string;
@@ -44,10 +45,12 @@
 	<div class="flex h-full max-h-20 w-full max-w-20">
 		{#if item.imageUri}
 			<img
-				alt={$page.data.t('general.latestInstanceCover')}
 				src={item.imageUri}
+				alt={$page.data.t('general.latestInstanceCover')}
 				class="h-auto w-full object-contain"
 			/>
+		{:else}
+			<img src={placeholderBook} alt="" class="h-auto w-full object-contain" />
 		{/if}
 	</div>
 
