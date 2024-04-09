@@ -126,6 +126,7 @@
 					<details
 						open={(id && expandedInSearchParams.includes(id)) ||
 							(id && !!$page.state.expandedInstances?.includes(id)) ||
+							(!$page.state.expandedInstances && data.length === 1) ||
 							undefined}
 						on:toggle={handleToggleDetails}
 					>
