@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesList from './InstancesList.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
+
 	export let data;
 </script>
 
@@ -12,12 +14,24 @@
 				<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 			</h1>
 		</header>
-		<div class="overview mb-4">
-			<DecoratedData data={data.overview} block />
+		<div class="mb-4 flex flex-col-reverse gap-4 md:flex-row">
+			<div class="overview flex-1">
+				<DecoratedData data={data.overview} block />
+			</div>
+			{#if data.imageUris.length}
+				<div class="flex h-full max-h-72 w-full max-w-72 self-center">
+					<img
+						alt={$page.data.t('general.latestInstanceCover')}
+						src={data.imageUris[0].imageUri}
+						class="h-auto w-full object-contain md:object-right"
+					/>
+				</div>
+			{/if}
 		</div>
 		{#if data.instances?.length}
 			<InstancesList
 				data={data.instances}
+				imageUris={data.imageUris}
 				columns={[
 					'*[].publication[].*[][?year].year',
 					'*[].publication.*[][?agent].agent',
@@ -90,7 +104,6 @@
 			white-space: nowrap;
 		}
 	}
-
 	.json {
 		font-size: 0.75rem;
 		font-family: monospace;

@@ -4,8 +4,15 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-	export let item: { '@id': string; 'card-heading': ResourceData; 'card-body': ResourceData };
+	import { page } from '$app/stores';
+	import placeholderBook from '$lib/assets/img/placeholder-book.svg';
 
+	export let item: {
+		'@id': string;
+		'card-heading': ResourceData;
+		'card-body': ResourceData;
+		imageUri: string;
+	};
 	function getInstanceData(instances: ResourceData) {
 		if (typeof instances === 'object') {
 			let years: string = '';
@@ -35,9 +42,18 @@
 	class="flex gap-8 rounded-md border-b border-b-primary/16 bg-cards p-6"
 	data-testid="search-card"
 >
-	<div class="flex h-[6.5rem] w-20 shrink-0 items-center justify-center rounded-sm bg-[lightgrey]">
-		Image
+	<div class="flex h-full max-h-20 w-full max-w-20">
+		{#if item.imageUri}
+			<img
+				src={item.imageUri}
+				alt={$page.data.t('general.latestInstanceCover')}
+				class="h-auto w-full object-contain"
+			/>
+		{:else}
+			<img src={placeholderBook} alt="" class="h-auto w-full object-contain" />
+		{/if}
 	</div>
+
 	<div class="flex flex-col gap-2">
 		<a
 			href={relativizeUrl(item['@id'])}

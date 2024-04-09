@@ -13,12 +13,14 @@ import { LxlLens } from '$lib/utils/display.types';
 
 import { type translateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
+import { calculateExpirationTime, generateAuxdImageUri, getFirstImageLink } from '$lib/utils/auxd';
 
 export function asResult(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn
+	translate: translateFn,
+	auxdSecret: string
 ): SearchResult {
 	return {
 		...('next' in view && { next: view.next }),
@@ -32,7 +34,8 @@ export function asResult(
 		items: view.items.map((i) => ({
 			[JsonLd.ID]: i.meta[JsonLd.ID],
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
-			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale)
+			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
+			imageUri: generateAuxdImageUri(calculateExpirationTime(), getFirstImageLink(i), auxdSecret)
 		})),
 		facetGroups: displayFacetGroups(view, displayUtil, locale, translate)
 	};

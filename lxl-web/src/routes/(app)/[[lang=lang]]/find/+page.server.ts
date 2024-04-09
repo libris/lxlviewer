@@ -22,7 +22,7 @@ export const load = async ({ params, locals, fetch, url }) => {
 	const displayUtil: DisplayUtil = locals.display;
 	const locale = getSupportedLocale(params?.lang);
 	const translator = await getTranslator(locale);
-	const searchResult = await asResult(result, displayUtil, locale, translator);
+	const searchResult = await asResult(result, displayUtil, locale, translator, env.AUXD_SECRET);
 
 	return {
 		searchResult
