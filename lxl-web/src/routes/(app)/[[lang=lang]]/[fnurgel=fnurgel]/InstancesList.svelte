@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { page } from '$app/stores';
-	import { goto, replaceState, afterNavigate } from '$app/navigation';
+	import { goto, replaceState } from '$app/navigation';
 	import jmespath from 'jmespath';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { getResourceId } from '$lib/utils/resourceData';
@@ -15,83 +15,62 @@
 	 * - [] Add tests (e.g. rows should be expandable and permalink should work, and that opened state should be saved when navigating forward and backwards). The tests should probably be placed inside +page.svelte...
 	 */
 
+	let instancesList: HTMLUListElement;
 	let expandedInSearchParams = $page.url.searchParams.getAll('expanded') || [];
 
-	afterNavigate(({ to }) => {
-		/** Update expanded value after navigation */
-		if (to?.url) {
-			expandedInSearchParams = to.url.searchParams.getAll('expanded');
-		}
-	});
 	export let data: ResourceData;
 	export let imageUris: { recordId: string; imageUri: string }[];
 	export let columns: string[];
 
-	function handleToggleDetails(event: Event) {
-		const detailsElement = event.target as HTMLDetailsElement;
-		const id = detailsElement.parentElement?.id;
-
-		if (detailsElement.open && id) {
-			replaceState($page.url, {
-				expandedInstances: [...new Set([...($page.state.expandedInstances || []), id])]
-			});
-		} else if (event instanceof ToggleEvent && event.oldState !== event.newState) {
-			{
-				replaceState($page.url, {
-					expandedInstances: $page.state.expandedInstances?.filter(
-						(expandedId) => expandedId !== id
-					)
-				});
-			}
-		}
-	}
-
-	function handleCollapseAll() {
-		const newUrl = new URL($page.url);
-		const newSearchParams = new URLSearchParams([...Array.from($page.url.searchParams.entries())]);
-		newSearchParams.delete('expanded');
-		newUrl.search = newSearchParams.toString();
-		newUrl.hash = '';
-		// expandedInSearchParams = [];
-		goto(newUrl, {
-			replaceState: true,
-			noScroll: true,
-			state: {
-				...$page.state,
-				expandedInstances: []
+	function handleToggleDetails(state: { expandedInstances?: string[] }) {
+		let openIds: string[] = [];
+		instancesList.querySelectorAll('details[open]').forEach((openElement) => {
+			const parentId = openElement.parentElement?.id;
+			if (parentId) {
+				openIds = [...openIds, parentId];
 			}
 		});
-		replaceState(newUrl, { expandedInstances: [] });
-	}
 
-	function getPermalink(item: ResourceData) {
-		const id = relativizeUrl(getResourceId(item));
-		const newUrl = new URL($page.url);
-		if (id) {
-			const newSearchParams = new URLSearchParams([
-				...Array.from($page.url.searchParams.entries())
-			]);
-			newSearchParams.set('expanded', id);
-			newUrl.search = newSearchParams.toString();
-			newUrl.hash = id;
-		}
-		return newUrl.toString();
-	}
-
-	function handleCopyPermalink(item: ResourceData) {
-		const permalink = getPermalink(item);
-		navigator.clipboard.writeText(permalink.toString());
-		const id = relativizeUrl(getResourceId(item));
-		if (id) {
-			goto(permalink, {
-				state: {
-					...$page.state,
-					expandedInstances: [id]
-				},
-				replaceState: true,
-				noScroll: true
+		// Only replace state if opened details elements have changed since last toggle event
+		if (
+			!state.expandedInstances?.every((value) => openIds.includes(value)) ||
+			!openIds?.every((value) => state.expandedInstances?.includes(value))
+		) {
+			replaceState(window.location.href, {
+				...state,
+				expandedInstances: openIds
 			});
 		}
+	}
+
+	function getCollapseAllUrl(url: URL) {
+		const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
+		url.searchParams.delete('expanded');
+		return `${url.origin}${url.pathname}${newSearchParams.size ? '?' + newSearchParams.toString() : ''}`;
+	}
+
+	function getPermalink(url: URL, id: string) {
+		const newSearchParams = new URLSearchParams({ expanded: id });
+		return `${url.origin}${url.pathname}?${newSearchParams.toString()}#${id}`;
+	}
+
+	function handleCopyPermalink(
+		event: MouseEvent,
+		url: URL,
+		id: string,
+		state: {
+			expandedInstances?: string[];
+		}
+	) {
+		event.preventDefault();
+		const permalink = getPermalink(url, id);
+		navigator.clipboard.writeText(permalink.toString());
+		goto(permalink, {
+			state: {
+				...state,
+				expandedInstances: [id]
+			}
+		});
 	}
 
 	function handleSummaryKeydown(event: KeyboardEvent) {
@@ -123,28 +102,33 @@
 <div>
 	{#if Array.isArray(data) && data.length > 1}
 		<div class="flex justify-end py-4">
-			<button
+			<a
+				href={getCollapseAllUrl($page.url)}
 				class="close-all"
-				on:click={handleCollapseAll}
-				disabled={!$page.state.expandedInstances?.length}
+				on:click={(event) => {
+					event.preventDefault();
+					replaceState(getCollapseAllUrl($page.url), { ...$page.state, expandedInstances: [] });
+				}}
 			>
 				{$page.data.t('general.collapseAll')}
-			</button>
+			</a>
 		</div>
 	{/if}
 
 	{#if Array.isArray(data)}
-		<ul>
+		<ul bind:this={instancesList}>
 			{#each data as item (item['@id'])}
 				{@const id = relativizeUrl(getResourceId(item))}
 				{@const cover = getImageUri(item)}
 				<li {id} class="border-t border-t-primary/16">
 					<details
-						open={(id && expandedInSearchParams.includes(id)) ||
-							(id && !!$page.state.expandedInstances?.includes(id)) ||
-							(!$page.state.expandedInstances && data.length === 1) ||
-							undefined}
-						on:toggle={handleToggleDetails}
+						{...id && {
+							open:
+								(!$page.state.expandedInstances && expandedInSearchParams.includes(id)) ||
+								$page.state.expandedInstances?.includes(id) ||
+								data.length === 1
+						}}
+						on:toggle={() => handleToggleDetails($page.state)}
 					>
 						<summary
 							class="flex min-h-11 gap-2 px-2 py-4 align-middle hover:bg-pill/8"
@@ -171,9 +155,8 @@
 								</div>
 								{#if id}
 									<a
-										class="text-sm"
-										href={getPermalink(item)}
-										on:click={() => handleCopyPermalink(item)}
+										href={getPermalink($page.url, id)}
+										on:click={(event) => handleCopyPermalink(event, $page.url, id, $page.state)}
 									>
 										{$page.data.t('general.copyPermalinkToInstance')}
 									</a>
