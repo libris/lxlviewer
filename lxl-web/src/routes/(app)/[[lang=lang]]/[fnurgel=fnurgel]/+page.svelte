@@ -14,16 +14,16 @@
 				<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 			</h1>
 		</header>
-		<div class="mb-4 flex items-start">
+		<div class="mb-4 flex flex-col-reverse gap-4 md:flex-row">
 			<div class="overview flex-1">
 				<DecoratedData data={data.overview} block />
 			</div>
 			{#if data.imageUris.length}
-				<div class="flex h-full max-h-72 w-full max-w-72">
+				<div class="flex h-full max-h-72 w-full max-w-72 self-center">
 					<img
 						alt={$page.data.t('general.latestInstanceCover')}
 						src={data.imageUris[0].imageUri}
-						class="h-auto w-full object-contain object-right"
+						class="h-auto w-full object-contain md:object-right"
 					/>
 				</div>
 			{/if}
