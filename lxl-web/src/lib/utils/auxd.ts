@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 export function getImageLinks(mainEntity) {
 	const instances = getInstances(mainEntity);
-	if ('image' in mainEntity) {
+	if (Object.hasOwn(mainEntity, 'image')) {
 		return [
 			{
 				recordId: mainEntity['@id'],
