@@ -57,6 +57,7 @@
 		"vitest": "^1.0.0"
 	},
 	"dependencies": {
-		"@floating-ui/dom": "^1.6.1"
+		"@floating-ui/dom": "^1.6.1",
+		"dotenv": "^16.4.5"
 	}
 }
