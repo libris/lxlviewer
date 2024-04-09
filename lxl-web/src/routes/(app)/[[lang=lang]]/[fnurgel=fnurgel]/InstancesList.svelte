@@ -109,15 +109,18 @@
 </script>
 
 <div>
-	<div class="flex justify-end py-4">
-		<button
-			class="close-all"
-			on:click={handleCollapseAll}
-			disabled={!$page.state.expandedInstances?.length}
-		>
-			{$page.data.t('general.collapseAll')}
-		</button>
-	</div>
+	{#if Array.isArray(data) && data.length > 1}
+		<div class="flex justify-end py-4">
+			<button
+				class="close-all"
+				on:click={handleCollapseAll}
+				disabled={!$page.state.expandedInstances?.length}
+			>
+				{$page.data.t('general.collapseAll')}
+			</button>
+		</div>
+	{/if}
+
 	{#if Array.isArray(data)}
 		<ul>
 			{#each data as item (item['@id'])}
