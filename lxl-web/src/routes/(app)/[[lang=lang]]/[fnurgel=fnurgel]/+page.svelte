@@ -20,10 +20,10 @@
 			</div>
 			{#if data.imageUris.length}
 				<div class="flex h-full max-h-72 w-full max-w-72 self-center">
-					{#if data.imageUris[0].imageUri}
+					{#if data.firstImageUri}
 						<img
 							alt={$page.data.t('general.latestInstanceCover')}
-							src={data.imageUris[0].imageUri}
+							src={data.firstImageUri}
 							class="h-auto w-full object-contain md:object-right"
 						/>
 					{/if}

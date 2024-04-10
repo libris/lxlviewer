@@ -31,7 +31,13 @@ export function getImageLinks(mainEntity) {
 
 export function getFirstImageLink(mainEntity) {
 	const links = getImageLinks(mainEntity);
-	return links.length ? links[0].imageLink : '';
+	const nonEmptyLinks = links.filter((l) => l.imageLink !== '');
+	return nonEmptyLinks.length ? nonEmptyLinks[0].imageLink : '';
+}
+
+export function getFirstImageUri(uris) {
+	const nonEmptyUris = uris.filter((u) => u.imageUri !== '');
+	return nonEmptyUris.length ? nonEmptyUris[0].imageUri : '';
 }
 
 function getInstances(mainEntity) {
