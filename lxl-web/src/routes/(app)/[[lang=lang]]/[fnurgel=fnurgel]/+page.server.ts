@@ -9,6 +9,10 @@ import {
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { LxlLens } from '$lib/utils/display.types';
 import jmespath from 'jmespath';
+import type { PartialCollectionView } from '../find/search.js';
+import type { apiError } from '$lib/types/API.js';
+import { getTranslator } from '$lib/i18n/index.js';
+import { asResult } from '../find/search.js';
 
 export interface ResourcePage {
 	header: DisplayDecorated;
@@ -16,7 +20,7 @@ export interface ResourcePage {
 	details: DisplayDecorated;
 }
 
-export const load = async ({ params, locals, fetch }) => {
+export const load = async ({ params, locals, fetch, isDataRequest }) => {
 	const displayUtil: DisplayUtil = locals.display;
 	//const vocabUtil: VocabUtil = locals.vocab;
 
@@ -76,6 +80,37 @@ export const load = async ({ params, locals, fetch }) => {
 			)
 		};
 	});
+	// move me
+
+	const relations = instances.length > 1 ? false : getRelations();
+
+	async function getRelations() {
+		const query = {
+			_limit: '20',
+			'not-@type': 'Item',
+			'@type': 'Work',
+			o: overview['@id'] + '#it',
+			_sort: `_sortKeyByLang.${locale}`
+		};
+
+		const searchParams = new URLSearchParams(query).toString();
+		// const id = encodeURIComponent(overview['@id'] + '#it')
+		// const recordsRes = await fetch(`${env.API_URL}/find.jsonld?_limit=20&o=${encodeURIComponent(overview['@id'] + '#it')}`);
+		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams}`);
+		if (!recordsRes.ok) {
+			const err = (await recordsRes.json()) as apiError;
+			return Promise.reject(err);
+		} else {
+			const result = (await recordsRes.json()) as PartialCollectionView;
+			const displayUtil: DisplayUtil = locals.display;
+			const translator = await getTranslator(locale);
+			const searchResult = await asResult(result, displayUtil, locale, translator);
+			return searchResult;
+		}
+		// await delay(2000);
+		// return 'o search here';
+	}
+	//
 
 	return {
 		heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
@@ -84,7 +119,9 @@ export const load = async ({ params, locals, fetch }) => {
 		instances: sortedInstances,
 		full: overview,
 		imageUris: imageUris,
-		firstImageUri: getFirstImageUri(imageUris)
+		firstImageUri: getFirstImageUri(imageUris),
+		// waits for data on initial page load, streams in on client side navigation
+		relations: isDataRequest ? relations : await relations
 	};
 };
 
