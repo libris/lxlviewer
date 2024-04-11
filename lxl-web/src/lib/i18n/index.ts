@@ -1,4 +1,4 @@
-import { dev } from '$app/environment';
+// import { dev } from '$app/environment';
 import { interpolate } from './interpolate';
 import { defaultLocale, type LocaleCode } from './locales';
 import sv from './locales/sv.js';
@@ -45,9 +45,9 @@ export async function getTranslator(locale: LocaleCode) {
 		}
 
 		const error = `Missing fallback translation for ${key}`;
-		if (dev) {
-			throw new Error(error);
-		}
+		// if (dev) {
+		// 	throw new Error(error);
+		// }
 
 		console.error(error);
 		return key;
