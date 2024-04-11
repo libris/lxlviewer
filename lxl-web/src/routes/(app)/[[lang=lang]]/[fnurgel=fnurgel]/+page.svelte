@@ -51,8 +51,8 @@
 		grid-template-areas: 'content';
 
 		@media screen and (min-width: theme('screens.lg')) {
-			grid-template-areas: '. content';
-			grid-template-columns: 320px 1fr;
+			grid-template-areas: '. content .';
+			grid-template-columns: 320px 1fr 320px;
 		}
 	}
 
