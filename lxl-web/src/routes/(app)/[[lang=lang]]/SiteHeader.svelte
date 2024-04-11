@@ -30,7 +30,7 @@
 		</div>
 	</header>
 {:else}
-	<header class="bg-head pb-4 pt-11 sm:py-6">
+	<header class="bg-head pb-4 pt-4 sm:py-6">
 		<div class="container-fluid flex flex-nowrap items-center justify-between gap-4 sm:gap-16">
 			<a class="flex items-baseline gap-2 no-underline" href={$page.data.base}>
 				<img class="h-10 w-10" alt="Libris logo" src={logo} />

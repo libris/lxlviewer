@@ -7,8 +7,8 @@
 	export let data;
 </script>
 
-<div class="product-page">
-	<main>
+<article class="resource">
+	<div class="content">
 		<header>
 			<h1 class="mb-6 text-6-cond-extrabold">
 				<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
@@ -41,40 +41,23 @@
 				]}
 			/>
 		{/if}
-		<details class="json">
-			<summary>JSON</summary>
-			<details>
-				<summary>Heading</summary>
-				<pre>{JSON.stringify(data.heading, null, 2)}</pre>
-			</details>
-			<details>
-				<summary>Details</summary>
-				<pre>{JSON.stringify(data.details, null, 2)}</pre>
-			</details>
-			<details>
-				<summary>Overview</summary>
-				<pre>{JSON.stringify(data.overview, null, 2)}</pre>
-			</details>
-			<details>
-				<summary>Instances</summary>
-				<pre>{JSON.stringify(data.instances, null, 2)}</pre>
-			</details>
-			<details>
-				<summary>Full</summary>
-				<pre>{JSON.stringify(data.full, null, 2)}</pre>
-			</details>
-		</details>
-	</main>
-</div>
+	</div>
+</article>
 
-<style>
-	.product-page {
+<style lang="postcss">
+	.resource {
+		@apply gap-4 p-4;
 		display: grid;
-		grid-template-columns: 1fr;
-		max-width: 1140px;
-		margin: 0 auto;
-		padding: 2rem;
-		gap: 2rem;
+		grid-template-areas: 'content';
+
+		@media screen and (min-width: theme('screens.lg')) {
+			grid-template-areas: '. content';
+			grid-template-columns: 320px 1fr;
+		}
+	}
+
+	.content {
+		grid-area: content;
 	}
 
 	.overview {
@@ -105,9 +88,5 @@
 			display: block;
 			white-space: nowrap;
 		}
-	}
-	.json {
-		font-size: 0.75rem;
-		font-family: monospace;
 	}
 </style>

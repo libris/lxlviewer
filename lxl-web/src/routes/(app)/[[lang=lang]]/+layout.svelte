@@ -9,5 +9,7 @@
 	<base href={data.base} />
 </svelte:head>
 <SiteHeader />
-<slot />
+<main>
+	<slot />
+</main>
 <div id="floating-elements-container" />
