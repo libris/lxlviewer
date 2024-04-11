@@ -28,13 +28,12 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		if (!resourceRes.ok) {
 			const err = (await resourceRes.json()) as apiError;
-			// Todo better error handling
 			throw error(err.status_code, err.status);
 		}
 
 		const resource = await resourceRes.json();
 		const mainEntity = centerOnWork(resource['mainEntity'] as FramedData);
-		resourceId = resource.mainEntity['@id']; // can we rely on this???
+		resourceId = resource.mainEntity['@id'];
 
 		const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -44,7 +43,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		const instances = jmespath.search(overview, '*[].hasInstance[]');
 
 		// set condition to perform search
-		shouldFindRelations = instances.length <= 1; // correct??
+		shouldFindRelations = instances.length <= 1;
 
 		const sortedInstances = [...instances].sort((a, b) => {
 			const yearA = parseInt(
@@ -104,7 +103,6 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		if (!recordsRes.ok) {
 			const err = (await recordsRes.json()) as apiError;
-			// TODO handdle error with promise reject
 			throw error(err.status_code, err.status);
 		}
 
