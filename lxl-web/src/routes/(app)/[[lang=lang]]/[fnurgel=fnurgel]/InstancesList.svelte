@@ -45,7 +45,7 @@
 
 	function getCollapseAllUrl(url: URL) {
 		const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
-		url.searchParams.delete('expanded');
+		newSearchParams.delete('expanded');
 		return `${url.origin}${url.pathname}${newSearchParams.size ? '?' + newSearchParams.toString() : ''}`;
 	}
 
