@@ -5,7 +5,12 @@ import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n/index.js';
 import { type FramedData, DisplayUtil, pickProperty } from '$lib/utils/xl.js';
 import { LxlLens } from '$lib/utils/display.types.js';
-import { getImageLinks, generateAuxdImageUri, calculateExpirationTime } from '$lib/utils/auxd';
+import {
+	calculateExpirationTime,
+	generateAuxdImageUri,
+	getImageLinks,
+	getFirstImageUri
+} from '$lib/utils/auxd';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams.js';
 import { type apiError } from '$lib/types/API.js';
 import { asResult, type PartialCollectionView, type SearchResult } from './search.js';
@@ -82,7 +87,8 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
 			instances: sortedInstances,
 			full: overview,
-			imageUris: imageUris
+			imageUris: imageUris,
+			firstImageUri: getFirstImageUri(imageUris)
 		};
 	}
 

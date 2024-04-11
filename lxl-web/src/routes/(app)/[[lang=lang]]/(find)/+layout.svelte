@@ -76,13 +76,13 @@
 			</section>
 		</div>
 	{:catch error}
-		<p>error loading relations: {error.message}</p>
+		<p>error loading search: {error.message}</p>
 	{/await}
 {/if}
 
 <style lang="postcss">
 	.find {
-		@apply grid gap-4;
+		@apply grid gap-4 py-4;
 		grid-template-areas:
 			'mapping'
 			'results';
