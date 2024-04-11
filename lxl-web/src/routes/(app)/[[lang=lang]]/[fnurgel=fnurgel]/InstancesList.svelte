@@ -131,7 +131,7 @@
 						on:toggle={() => handleToggleDetails($page.state)}
 					>
 						<summary
-							class="flex min-h-11 gap-2 px-2 py-4 align-middle hover:bg-pill/8"
+							class="flex min-h-11 gap-2 px-2 py-4 align-middle hover:bg-pill/16"
 							on:keydown={handleSummaryKeydown}
 						>
 							{#each columns as columnItem}
@@ -191,5 +191,9 @@
 
 	:global(.instance-details > div > *) {
 		break-inside: avoid-column;
+	}
+
+	details[open] > summary {
+		@apply bg-pill/8 hover:bg-pill/16;
 	}
 </style>
