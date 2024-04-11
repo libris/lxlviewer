@@ -6,7 +6,7 @@ export function getImageLinks(mainEntity) {
 		return [
 			{
 				recordId: mainEntity['@id'],
-				imageLink: mainEntity.image[0]['@id']
+				imageLink: asArray(mainEntity.image)[0]['@id']
 			}
 		];
 	} else if (instances?.length) {
@@ -14,7 +14,7 @@ export function getImageLinks(mainEntity) {
 			if (i.image) {
 				return {
 					recordId: i['@id'],
-					imageLink: i.image[0]['@id']
+					imageLink: asArray(i.image)[0]['@id']
 				};
 			} else {
 				return {
@@ -71,4 +71,8 @@ function generateImageHash(expires, url, secret) {
 	const binaryHash = crypto.createHash('md5').update(input).digest();
 	const base64Value = Buffer.from(binaryHash).toString('base64');
 	return base64Value.replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+}
+
+function asArray(thing) {
+	return Array.isArray(thing) ? thing : Array.of(thing);
 }
