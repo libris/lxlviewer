@@ -60,10 +60,7 @@ export function generateAuxdImageUri(expires, url, secret) {
 	}
 	const parsedUrl = new URL(url);
 	const key = generateImageHash(expires, parsedUrl.pathname, secret);
-	// At the moment we need the URL origin to be http://auxd-prod.libris.kb.se instead of https://libris.kb.se/
-	// otherwise we could just take parsed_url.origin here instead of auxdOrigin
-	const auxdOrigin = `http://auxd-prod.libris.kb.se`;
-	return `${auxdOrigin}${parsedUrl.pathname}?key=${key}&expires=${expires}`;
+	return `${parsedUrl.origin}${parsedUrl.pathname}?key=${key}&expires=${expires}`;
 }
 
 function generateImageHash(expires, url, secret) {
