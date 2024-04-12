@@ -99,14 +99,14 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			redirect(303, `/`); // redirect to home page if no search params are given
 		}
 
-		let params = new URLSearchParams(url.searchParams.toString());
+		let searchParams = new URLSearchParams(url.searchParams.toString());
 
 		if (shouldFindRelations) {
-			params.set('o', resourceId);
-			params = getSortedSearchParams(addDefaultSearchParams(params));
+			searchParams.set('o', resourceId);
+			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
 		}
 
-		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${params.toString()}`);
+		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
 
 		if (!recordsRes.ok) {
 			const err = (await recordsRes.json()) as apiError;
@@ -115,13 +115,15 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		const result = (await recordsRes.json()) as PartialCollectionView;
 		const translator = await getTranslator(locale); // move to search.ts?
+		const pathname = params.lang ? url.pathname.replace(`/${params.lang}`, '') : url.pathname;
+
 		searchResult = await asResult(
 			result,
 			displayUtil,
 			locale,
 			translator,
 			env.AUXD_SECRET,
-			url.pathname
+			pathname
 		);
 	}
 

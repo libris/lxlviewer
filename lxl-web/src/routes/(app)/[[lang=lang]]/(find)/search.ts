@@ -21,24 +21,24 @@ export function asResult(
 	locale: LangCode,
 	translate: translateFn,
 	auxdSecret: string,
-	currentPath: string
+	usePath: string
 ): SearchResult {
 	return {
-		...('next' in view && { next: replacePath(view.next as Link, currentPath) }),
+		...('next' in view && { next: replacePath(view.next as Link, usePath) }),
 		itemOffset: view.itemOffset,
 		itemsPerPage: view.itemsPerPage,
 		totalItems: view.totalItems,
 		maxItems: view.maxItems,
-		mapping: displayMappings(view, displayUtil, locale, translate, currentPath),
-		first: replacePath(view.first, currentPath),
-		last: replacePath(view.last, currentPath),
+		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
+		first: replacePath(view.first, usePath),
+		last: replacePath(view.last, usePath),
 		items: view.items.map((i) => ({
 			[JsonLd.ID]: i.meta[JsonLd.ID],
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
 			imageUri: generateAuxdImageUri(calculateExpirationTime(), getFirstImageLink(i), auxdSecret)
 		})),
-		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, currentPath)
+		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 	};
 }
 
@@ -136,7 +136,7 @@ function displayMappings(
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: translateFn,
-	currentPath: string
+	usePath: string
 ): DisplayMapping[] {
 	const mapping = view.search?.mapping || [];
 
@@ -146,7 +146,7 @@ function displayMappings(
 
 		if (isPredicateAndObject(m)) {
 			return {
-				...('up' in m && { up: replacePath(m.up as Link, currentPath) }),
+				...('up' in m && { up: replacePath(m.up as Link, usePath) }),
 				display: displayUtil.lensAndFormat(m.object, LensType.Chip, locale),
 				children: [],
 				label
@@ -173,7 +173,7 @@ function displayFacetGroups(
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: translateFn,
-	currentPath: string
+	usePath: string
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
 
@@ -185,7 +185,7 @@ function displayFacetGroups(
 				return {
 					...('_selected' in o && { selected: o._selected }),
 					totalItems: o.totalItems,
-					view: replacePath(o.view, currentPath),
+					view: replacePath(o.view, usePath),
 					object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
 					str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale))
 				};
@@ -197,9 +197,9 @@ function displayFacetGroups(
 /**
  * prevent links on resource page from pointing to /find
  */
-function replacePath(view: Link, currentPath: string) {
+function replacePath(view: Link, usePath: string) {
 	return {
-		'@id': view['@id'].replace('/find', currentPath)
+		'@id': view['@id'].replace('/find', usePath)
 	};
 }
 
