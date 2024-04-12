@@ -3,7 +3,6 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesList from './InstancesList.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-
 	export let data;
 </script>
 
