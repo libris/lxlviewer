@@ -42,17 +42,19 @@
 	class="flex gap-8 rounded-md border-b border-b-primary/16 bg-cards p-6"
 	data-testid="search-card"
 >
-	<div class="flex h-full max-h-20 w-full max-w-20">
-		{#if item.imageUri}
-			<img
-				src={item.imageUri}
-				alt={$page.data.t('general.latestInstanceCover')}
-				class="h-auto w-full object-contain"
-			/>
-		{:else}
-			<img src={placeholderBook} alt="" class="h-auto w-full object-contain" />
-		{/if}
-	</div>
+	<a href={relativizeUrl(item['@id'])}>
+		<div class="flex h-full max-h-20 w-full max-w-20">
+			{#if item.imageUri}
+				<img
+					src={item.imageUri}
+					alt={$page.data.t('general.latestInstanceCover')}
+					class="h-auto w-full object-contain"
+				/>
+			{:else}
+				<img src={placeholderBook} alt="" class="h-auto w-full object-contain" />
+			{/if}
+		</div>
+	</a>
 
 	<div class="flex flex-col gap-2">
 		<a
