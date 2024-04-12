@@ -2,7 +2,6 @@ import { redirect, error } from '@sveltejs/kit';
 import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
-import { getTranslator } from '$lib/i18n/index.js';
 import { type FramedData, DisplayUtil, pickProperty } from '$lib/utils/xl.js';
 import { LxlLens } from '$lib/utils/display.types.js';
 import {
@@ -114,17 +113,9 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		}
 
 		const result = (await recordsRes.json()) as PartialCollectionView;
-		const translator = await getTranslator(locale); // move to search.ts?
 		const pathname = params.lang ? url.pathname.replace(`/${params.lang}`, '') : url.pathname;
 
-		searchResult = await asResult(
-			result,
-			displayUtil,
-			locale,
-			translator,
-			env.AUXD_SECRET,
-			pathname
-		);
+		searchResult = await asResult(result, displayUtil, locale, env.AUXD_SECRET, pathname);
 	}
 
 	return {

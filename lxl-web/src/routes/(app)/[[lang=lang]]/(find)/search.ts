@@ -10,19 +10,18 @@ import {
 	toString
 } from '$lib/utils/xl';
 import { LxlLens } from '$lib/utils/display.types';
-
-import { type translateFn } from '$lib/i18n';
+import { type translateFn, getTranslator } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { calculateExpirationTime, generateAuxdImageUri, getFirstImageLink } from '$lib/utils/auxd';
 
-export function asResult(
+export async function asResult(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn,
 	auxdSecret: string,
 	usePath: string
-): SearchResult {
+): Promise<SearchResult> {
+	const translate = await getTranslator(locale);
 	return {
 		...('next' in view && { next: replacePath(view.next as Link, usePath) }),
 		itemOffset: view.itemOffset,
