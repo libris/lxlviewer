@@ -12,6 +12,7 @@ import {
 	getFirstImageUri
 } from '$lib/utils/auxd';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams.js';
+import getSortedSearchParams from '$lib/utils/getSortedSearchParams.js';
 import { type apiError } from '$lib/types/API.js';
 import { asResult, type PartialCollectionView, type SearchResult } from './search.js';
 
@@ -103,6 +104,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		if (shouldFindRelations) {
 			params = addDefaultSearchParams(params);
 			params.set('o', resourceId);
+			params = getSortedSearchParams(params);
 		}
 
 		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${params.toString()}`);
