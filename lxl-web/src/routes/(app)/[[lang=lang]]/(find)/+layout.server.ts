@@ -113,9 +113,12 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		}
 
 		const result = (await recordsRes.json()) as PartialCollectionView;
-		const pathname = params.lang ? url.pathname.replace(`/${params.lang}`, '') : url.pathname;
 
-		searchResult = await asResult(result, displayUtil, locale, env.AUXD_SECRET, pathname);
+		// Hide zero results from resource page
+		if (result.totalItems > 0 || isFindRoute) {
+			const pathname = params.lang ? url.pathname.replace(`/${params.lang}`, '') : url.pathname;
+			searchResult = await asResult(result, displayUtil, locale, env.AUXD_SECRET, pathname);
+		}
 	}
 
 	return {
