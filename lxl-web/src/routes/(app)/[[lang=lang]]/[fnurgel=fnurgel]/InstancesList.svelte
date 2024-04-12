@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { ResourceData } from '$lib/types/ResourceData';
+	import { getContext } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto, replaceState } from '$app/navigation';
 	import jmespath from 'jmespath';
@@ -15,6 +16,9 @@
 	 * - [] Add tests (e.g. rows should be expandable and permalink should work, and that opened state should be saved when navigating forward and backwards). The tests should probably be placed inside +page.svelte...
 	 */
 
+	const asideData = getContext('asideData');
+
+	$: console.log('asdidedD', asideData);
 	let instancesList: HTMLUListElement;
 	let expandedInSearchParams = $page.url.searchParams.getAll('expanded') || [];
 
@@ -47,6 +51,33 @@
 		const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 		newSearchParams.delete('expanded');
 		return `${url.origin}${url.pathname}${newSearchParams.size ? '?' + newSearchParams.toString() : ''}`;
+	}
+
+	function getHoldingsLink(url: URL, id: string) {
+		const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
+		newSearchParams.set('aside', id);
+		return `${url.origin}${url.pathname}?${newSearchParams.toString()}`;
+	}
+
+	function handleOpenHoldings(
+		event: MouseEvent & { currentTarget: HTMLAnchorElement },
+		url: URL,
+		id: string,
+		state: object
+	) {
+		event.preventDefault();
+		console.log('$page.data.holdingsByInstanceId[id]', $page.data.holdingsByInstanceId[id]);
+		asideData.set($page.data.holdingsByInstanceId[id]);
+
+		goto(event.currentTarget.href, {
+			state: {
+				...state,
+				aside: id
+			},
+			replaceState: true,
+			noScroll: true
+		});
+		console.log('ewve', event);
 	}
 
 	function getPermalink(url: URL, id: string) {
@@ -154,6 +185,14 @@
 									{/if}
 								</div>
 								{#if id}
+									{#if $page.data.holdingsByInstanceId[id]}
+										<a
+											href={getHoldingsLink($page.url, id)}
+											on:click={(event) => handleOpenHoldings(event, $page.url, id, $page.state)}
+										>
+											{`Finns på ${$page.data.holdingsByInstanceId[id].length} bibliotek`}
+										</a>
+									{/if}
 									<a
 										href={getPermalink($page.url, id)}
 										on:click={(event) => handleCopyPermalink(event, $page.url, id, $page.state)}

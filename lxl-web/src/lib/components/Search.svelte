@@ -33,7 +33,7 @@
 	<!-- svelte-ignore a11y-autofocus -->
 	<input
 		id="main-search"
-		class="h-12 w-full rounded-full text-secondary sm:h-14"
+		class="min-h-11 w-full rounded-full text-secondary"
 		type="search"
 		name="q"
 		{placeholder}

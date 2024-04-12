@@ -8,6 +8,7 @@ import {
 } from '$lib/utils/auxd';
 import { getSupportedLocale } from '$lib/i18n/locales';
 import { LxlLens } from '$lib/utils/display.types';
+import { relativizeUrl } from '$lib/utils/http';
 import jmespath from 'jmespath';
 
 export interface ResourcePage {
@@ -44,9 +45,7 @@ export const load = async ({ params, locals, fetch }) => {
 	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
 
 	// TODO: Replace with a custom getProperty method (similar to pickProperty)
-	const instances = jmespath.search(overview, '*[].hasInstance[]');
-
-	const sortedInstances = [...instances].sort((a, b) => {
+	const instances = jmespath.search(overview, '*[].hasInstance[]').sort((a, b) => {
 		const yearA = parseInt(
 			jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity),
 			10
@@ -76,12 +75,28 @@ export const load = async ({ params, locals, fetch }) => {
 			)
 		};
 	});
+	const holdingsByInstanceId = mainEntity['@reverse']?.instanceOf.reduce(
+		(acc, currentInstanceOf) => {
+			const id = relativizeUrl(currentInstanceOf['@id'])?.replace('#it', '');
+
+			if (!id || !currentInstanceOf?.['@reverse']?.itemOf) {
+				return acc;
+			}
+
+			return {
+				...acc,
+				[id]: currentInstanceOf?.['@reverse'].itemOf
+			};
+		},
+		{}
+	);
 
 	return {
 		heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
 		overview: overviewWithoutHasInstance,
 		details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
-		instances: sortedInstances,
+		instances,
+		holdingsByInstanceId,
 		full: overview,
 		imageUris: imageUris,
 		firstImageUri: getFirstImageUri(imageUris)

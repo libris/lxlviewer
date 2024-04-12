@@ -30,10 +30,10 @@
 </script>
 
 <div class="find">
-	<nav class="mapping" aria-label="Valda filter">
+	<nav class="mapping py-4" aria-label="Valda filter">
 		<SearchMapping mapping={searchResult.mapping} />
 	</nav>
-	<nav class="lg:facets hidden lg:block" aria-labelledby="facet-sidebar-header">
+	<nav class="facets hidden pr-4 lg:block" aria-labelledby="facet-sidebar-header">
 		{#if facets && facets.length > 0}
 			<header id="facet-sidebar-header" class="font-bold">Filter</header>
 			<ol>
@@ -76,17 +76,13 @@
 
 <style lang="postcss">
 	.find {
-		@apply gap-4 p-4;
-		display: grid;
-		grid-template-areas:
-			'mapping'
-			'results';
-
 		@media screen and (min-width: theme('screens.lg')) {
+			display: grid;
 			grid-template-areas:
 				'mapping mapping'
 				'facets results';
-			grid-template-columns: 320px 1fr;
+			grid-template-columns: 360px 1fr;
+			grid-template-rows: min-content 1fr;
 		}
 	}
 
@@ -96,9 +92,13 @@
 
 	.facets {
 		grid-area: facets;
+
+		@media screen and (min-width: theme('screens.lg')) {
+		}
 	}
 
 	.results {
 		grid-area: results;
+		align-items: flex-start;
 	}
 </style>

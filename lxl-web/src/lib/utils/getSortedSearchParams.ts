@@ -9,6 +9,10 @@ function getSortedSearchParams(searchParams: URLSearchParams): URLSearchParams {
 		params.delete('expanded');
 	}
 
+	if (params.has('aside')) {
+		params.delete('aside');
+	}
+
 	if (params.size) {
 		params.sort();
 	}

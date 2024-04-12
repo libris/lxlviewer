@@ -10,6 +10,7 @@ declare global {
 		}
 		interface PageState {
 			expandedInstances?: string[];
+			aside?: string;
 		}
 		// interface Platform {}
 	}

@@ -8,7 +8,18 @@
 </script>
 
 <article class="resource">
-	<div class="content">
+	<nav class="shortcuts">
+		<div class="shortcuts-content">
+			<span class="text-sm font-bold">På denna sida</span>
+			<ul class="flex flex-col gap-2">
+				<li><a href={$page.url.href} class="text-secondary">Låna</a></li>
+				<li><a href={$page.url.href}>Detaljer</a></li>
+				<li><a href={$page.url.href}>Utgåvor</a></li>
+				<li><a href={$page.url.href}>Liknande verk</a></li>
+			</ul>
+		</div>
+	</nav>
+	<div class="content py-4">
 		<header>
 			<h1 class="mb-6 text-6-cond-extrabold">
 				<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
@@ -46,23 +57,54 @@
 
 <style lang="postcss">
 	.resource {
-		@apply gap-4 p-4;
 		display: grid;
 		grid-template-areas: 'content';
+		position: relative;
 
 		@media screen and (min-width: theme('screens.lg')) {
-			grid-template-areas: '. content .';
+			grid-template-areas: 'shortcuts content .';
 			grid-template-columns: 320px 1fr 320px;
 		}
 	}
 
+	:global(main:has(> aside)) .resource {
+		@media screen and (min-width: theme('screens.lg')) {
+			grid-template-areas: 'shortcuts content content';
+			grid-template-columns: 320px 1fr 320px;
+		}
+	}
+
+	.shortcuts {
+		display: none;
+		grid-area: shortcuts;
+		height: calc(100vh - 76px);
+
+		@media screen and (min-width: theme('screens.lg')) {
+			display: flex;
+			flex-direction: column;
+		}
+
+		& a {
+			@apply text-secondary;
+			margin-bottom: 4px;
+		}
+	}
+	.shortcuts-content {
+		position: sticky;
+		top: 76px;
+		@apply py-4;
+	}
 	.content {
 		grid-area: content;
+		width: 100%;
+		max-width: 1140px;
+		margin: 0 auto;
 	}
 
 	.overview {
 		display: grid;
 		gap: 2rem;
+		width: 100%;
 
 		& :global(small) {
 			display: block;
