@@ -21,7 +21,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	const locale = getSupportedLocale(params?.lang);
 
 	const isResourceRoute = !!params.fnurgel;
-	const isFindRoute = url.pathname === '/find';
+	const isFindRoute = url.pathname.endsWith('/find');
 	let resourceParts = {};
 	let searchResult: SearchResult | null = null;
 	let shouldFindRelations, resourceId;
