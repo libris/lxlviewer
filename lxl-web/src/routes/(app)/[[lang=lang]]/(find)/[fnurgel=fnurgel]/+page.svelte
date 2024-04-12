@@ -18,17 +18,17 @@
 				<DecoratedData data={data.overview} block />
 			</div>
 			{#if data.imageUris.length}
-				<div class="flex h-full max-h-72 w-full max-w-72 self-center">
-					{#if data.firstImageUri}
-						<a href={data.firstImageUri} target="_blank">
+				<a href={data.firstImageUri} target="_blank">
+					<div class="flex h-full max-h-72 w-full max-w-72 self-center">
+						{#if data.firstImageUri}
 							<img
 								alt={$page.data.t('general.latestInstanceCover')}
 								src={data.firstImageUri}
 								class="h-auto w-full object-contain md:object-right"
 							/>
-						</a>
-					{/if}
-				</div>
+						{/if}
+					</div>
+				</a>
 			{/if}
 		</div>
 		{#if data.instances?.length}
