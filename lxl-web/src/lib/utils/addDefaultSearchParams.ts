@@ -13,7 +13,7 @@ function addDefaultSearchParams(searchParams: URLSearchParams): URLSearchParams 
 	if (!params.has('_limit')) {
 		params.set('_limit', '10');
 	}
-	if (params.has('_offset')) {
+	if (!params.has('_offset')) {
 		params.set('_offset', '0');
 	}
 	if (!params.has('_sort')) {

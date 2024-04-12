@@ -22,7 +22,7 @@
 		let o = offset < 0 ? 0 : offset;
 		const params = $page.url.searchParams;
 		params.set('_offset', o.toString());
-		return `find?${params.toString()}`;
+		return `${$page.url.pathname}?${params.toString()}`;
 	}
 </script>
 

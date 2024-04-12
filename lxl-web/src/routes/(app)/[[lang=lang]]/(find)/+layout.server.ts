@@ -102,9 +102,8 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		let params = new URLSearchParams(url.searchParams.toString());
 
 		if (shouldFindRelations) {
-			params = addDefaultSearchParams(params);
 			params.set('o', resourceId);
-			params = getSortedSearchParams(params);
+			params = getSortedSearchParams(addDefaultSearchParams(params));
 		}
 
 		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${params.toString()}`);
@@ -116,7 +115,14 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		const result = (await recordsRes.json()) as PartialCollectionView;
 		const translator = await getTranslator(locale); // move to search.ts?
-		searchResult = await asResult(result, displayUtil, locale, translator, env.AUXD_SECRET);
+		searchResult = await asResult(
+			result,
+			displayUtil,
+			locale,
+			translator,
+			env.AUXD_SECRET,
+			url.pathname
+		);
 	}
 
 	return {
