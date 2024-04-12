@@ -144,13 +144,19 @@
 							<div class="flex flex-col gap-4">
 								<div class="flex h-full max-h-32 w-full max-w-32">
 									{#if cover}
-										<img
-											alt={$page.data.t('general.instanceCover')}
-											src={cover}
-											class="object-contain object-left"
-										/>
+										<a href={cover} target="_blank">
+											<div class="flex h-full max-h-32 w-full max-w-32">
+												<img
+													alt={$page.data.t('general.instanceCover')}
+													src={cover}
+													class="object-contain object-left"
+												/>
+											</div>
+										</a>
 									{:else}
-										<img src={placeholderBook} alt="" class="object-contain object-left" />
+										<div class="flex h-full max-h-32 w-full max-w-32">
+											<img src={placeholderBook} alt="" class="object-contain object-left" />
+										</div>
 									{/if}
 								</div>
 								{#if id}
