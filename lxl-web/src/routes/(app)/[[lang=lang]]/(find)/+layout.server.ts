@@ -46,40 +46,11 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		// TODO: Replace with a custom getProperty method (similar to pickProperty)
 		const instances = jmespath.search(overview, '*[].hasInstance[]');
-
+		const sortedInstances = getSortedInstances([...instances]);
 		// set condition to perform search
 		shouldFindRelations = instances.length <= 1;
 
-		const sortedInstances = [...instances].sort((a, b) => {
-			const yearA = parseInt(
-				jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity),
-				10
-			);
-			const yearB = parseInt(
-				jmespath.search(b, '*[].publication[].*[][?year].year[]').flat(Infinity),
-				10
-			);
-
-			if (Number.isNaN(yearA)) {
-				return 1;
-			}
-
-			if (Number.isNaN(yearB)) {
-				return -1;
-			}
-			return yearB - yearA;
-		});
-
-		const imageUris = getImageLinks(mainEntity).map((idAndLink) => {
-			return {
-				recordId: idAndLink.recordId,
-				imageUri: generateAuxdImageUri(
-					calculateExpirationTime(),
-					idAndLink.imageLink,
-					env.AUXD_SECRET
-				)
-			};
-		});
+		const imageUris = getImageUris(getImageLinks(mainEntity));
 
 		resourceParts = {
 			heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
@@ -141,4 +112,39 @@ function centerOnWork(mainEntity: FramedData): FramedData {
 	} else {
 		return mainEntity;
 	}
+}
+
+function getSortedInstances(instances: Record<string, unknown>[]) {
+	return instances.sort((a, b) => {
+		const yearA = parseInt(
+			jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity),
+			10
+		);
+		const yearB = parseInt(
+			jmespath.search(b, '*[].publication[].*[][?year].year[]').flat(Infinity),
+			10
+		);
+
+		if (Number.isNaN(yearA)) {
+			return 1;
+		}
+
+		if (Number.isNaN(yearB)) {
+			return -1;
+		}
+		return yearB - yearA;
+	});
+}
+
+function getImageUris(imageLinks: { recordId: string; imageLink: string }[]) {
+	return imageLinks.map((idAndLink) => {
+		return {
+			recordId: idAndLink.recordId,
+			imageUri: generateAuxdImageUri(
+				calculateExpirationTime(),
+				idAndLink.imageLink,
+				env.AUXD_SECRET
+			)
+		};
+	});
 }
