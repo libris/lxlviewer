@@ -34,6 +34,12 @@ export default {
 		collapseAll: 'Collapse all',
 		copyPermalinkToInstance: 'Copy link to edition',
 		latestInstanceCover: 'Cover of latest edition',
-		instanceCover: 'Cover of edition'
+		instanceCover: 'Cover of edition',
+		close: 'Close'
+	},
+	holdings: {
+		availableAt: 'Available at',
+		library: 'library',
+		libraries: 'libraries'
 	}
 };

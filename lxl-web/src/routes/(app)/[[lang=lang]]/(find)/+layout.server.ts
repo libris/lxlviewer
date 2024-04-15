@@ -3,7 +3,7 @@ import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { getTranslator } from '$lib/i18n/index.js';
-import { type FramedData, DisplayUtil, pickProperty } from '$lib/utils/xl.js';
+import { type FramedData, DisplayUtil, pickProperty, LensType } from '$lib/utils/xl.js';
 import { LxlLens } from '$lib/utils/display.types.js';
 import {
 	calculateExpirationTime,
@@ -12,6 +12,7 @@ import {
 	getFirstImageUri
 } from '$lib/utils/auxd';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams.js';
+import { relativizeUrl } from '$lib/utils/http';
 import { type apiError } from '$lib/types/API.js';
 import { asResult, type PartialCollectionView, type SearchResult } from './search.js';
 
@@ -81,11 +82,49 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			};
 		});
 
+		const holdingsByInstanceId = mainEntity['@reverse']?.instanceOf.reduce(
+			(acc, instanceOfItem) => {
+				const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
+
+				if (!id) {
+					return acc;
+				}
+
+				const sortedHoldings = [...(instanceOfItem?.['@reverse']?.itemOf || [])].sort((a, b) => {
+					if (a?.heldBy?.name < b?.heldBy?.name) {
+						return -1;
+					}
+					if (a?.heldBy?.name > b?.heldBy?.name) {
+						return 1;
+					}
+					return 0;
+				});
+
+				return {
+					...acc,
+					[id]: sortedHoldings
+				};
+			},
+			{}
+		);
+
+		const decoratedHolding =
+			url.searchParams.has('holdings') &&
+			displayUtil.lensAndFormat(
+				mainEntity['@reverse']?.instanceOf.find((i) =>
+					i['@id'].includes(url.searchParams.get('holdings'))
+				),
+				LensType.Card,
+				locale
+			);
+
 		resourceParts = {
 			heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
 			overview: overviewWithoutHasInstance,
 			details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
 			instances: sortedInstances,
+			holdingsByInstanceId,
+			decoratedHolding,
 			full: overview,
 			imageUris: imageUris,
 			firstImageUri: getFirstImageUri(imageUris)

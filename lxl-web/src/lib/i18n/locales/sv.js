@@ -33,6 +33,12 @@ export default {
 		collapseAll: 'Stäng alla',
 		copyPermalinkToInstance: 'Kopiera länk till utgåva',
 		latestInstanceCover: 'Senaste utgåvans omslag',
-		instanceCover: 'Utgåvans omslag'
+		instanceCover: 'Utgåvans omslag',
+		close: 'Stäng'
+	},
+	holdings: {
+		availableAt: 'Finns på',
+		library: 'bibliotek',
+		libraries: 'bibliotek'
 	}
 };
