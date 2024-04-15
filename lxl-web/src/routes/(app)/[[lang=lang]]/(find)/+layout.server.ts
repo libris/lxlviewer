@@ -2,7 +2,6 @@ import { redirect, error } from '@sveltejs/kit';
 import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
-import { getTranslator } from '$lib/i18n/index.js';
 import { type FramedData, DisplayUtil, pickProperty } from '$lib/utils/xl.js';
 import { LxlLens } from '$lib/utils/display.types.js';
 import {
@@ -12,6 +11,7 @@ import {
 	getFirstImageUri
 } from '$lib/utils/auxd';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams.js';
+import getSortedSearchParams from '$lib/utils/getSortedSearchParams.js';
 import { type apiError } from '$lib/types/API.js';
 import { asResult, type PartialCollectionView, type SearchResult } from './search.js';
 
@@ -20,10 +20,10 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	const locale = getSupportedLocale(params?.lang);
 
 	const isResourceRoute = !!params.fnurgel;
-	const isFindRoute = url.pathname === '/find';
+	const isFindRoute = url.pathname.endsWith('/find');
 	let resourceParts = {};
-	let searchResult: SearchResult | null = null;
-	let shouldFindRelations, resourceId;
+	let shouldFindRelations = false;
+	let resourceId: null | string = null;
 
 	// If product page, get the resource
 	if (isResourceRoute) {
@@ -46,40 +46,11 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		// TODO: Replace with a custom getProperty method (similar to pickProperty)
 		const instances = jmespath.search(overview, '*[].hasInstance[]');
-
+		const sortedInstances = getSortedInstances([...instances]);
 		// set condition to perform search
 		shouldFindRelations = instances.length <= 1;
 
-		const sortedInstances = [...instances].sort((a, b) => {
-			const yearA = parseInt(
-				jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity),
-				10
-			);
-			const yearB = parseInt(
-				jmespath.search(b, '*[].publication[].*[][?year].year[]').flat(Infinity),
-				10
-			);
-
-			if (Number.isNaN(yearA)) {
-				return 1;
-			}
-
-			if (Number.isNaN(yearB)) {
-				return -1;
-			}
-			return yearB - yearA;
-		});
-
-		const imageUris = getImageLinks(mainEntity).map((idAndLink) => {
-			return {
-				recordId: idAndLink.recordId,
-				imageUri: generateAuxdImageUri(
-					calculateExpirationTime(),
-					idAndLink.imageLink,
-					env.AUXD_SECRET
-				)
-			};
-		});
+		const imageUris = getImageUris(getImageLinks(mainEntity));
 
 		resourceParts = {
 			heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
@@ -92,20 +63,20 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		};
 	}
 
-	// perform search
-	if (isFindRoute || shouldFindRelations) {
+	const searchResult = isFindRoute || shouldFindRelations ? getSearchResult() : null;
+	async function getSearchResult() {
 		if (isFindRoute && !url.searchParams.size) {
 			redirect(303, `/`); // redirect to home page if no search params are given
 		}
 
-		let params = new URLSearchParams(url.searchParams.toString());
+		let searchParams = new URLSearchParams(url.searchParams.toString());
 
-		if (shouldFindRelations) {
-			params = addDefaultSearchParams(params);
-			params.set('o', resourceId);
+		if (shouldFindRelations && resourceId) {
+			searchParams.set('o', resourceId);
+			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
 		}
 
-		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${params.toString()}`);
+		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
 
 		if (!recordsRes.ok) {
 			const err = (await recordsRes.json()) as apiError;
@@ -113,8 +84,19 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		}
 
 		const result = (await recordsRes.json()) as PartialCollectionView;
-		const translator = await getTranslator(locale); // move to search.ts?
-		searchResult = await asResult(result, displayUtil, locale, translator, env.AUXD_SECRET);
+
+		// Hide zero results from resource page
+		if (result.totalItems > 0 || isFindRoute) {
+			const pathname = params.lang ? url.pathname.replace(`/${params.lang}`, '') : url.pathname;
+			return (await asResult(
+				result,
+				displayUtil,
+				locale,
+				env.AUXD_SECRET,
+				pathname
+			)) as SearchResult;
+		}
+		return null;
 	}
 
 	return {
@@ -137,4 +119,39 @@ function centerOnWork(mainEntity: FramedData): FramedData {
 	} else {
 		return mainEntity;
 	}
+}
+
+function getSortedInstances(instances: Record<string, unknown>[]) {
+	return instances.sort((a, b) => {
+		const yearA = parseInt(
+			jmespath.search(a, '*[].publication[].*[][?year].year[]').flat(Infinity),
+			10
+		);
+		const yearB = parseInt(
+			jmespath.search(b, '*[].publication[].*[][?year].year[]').flat(Infinity),
+			10
+		);
+
+		if (Number.isNaN(yearA)) {
+			return 1;
+		}
+
+		if (Number.isNaN(yearB)) {
+			return -1;
+		}
+		return yearB - yearA;
+	});
+}
+
+function getImageUris(imageLinks: { recordId: string; imageLink: string }[]) {
+	return imageLinks.map((idAndLink) => {
+		return {
+			recordId: idAndLink.recordId,
+			imageUri: generateAuxdImageUri(
+				calculateExpirationTime(),
+				idAndLink.imageLink,
+				env.AUXD_SECRET
+			)
+		};
+	});
 }

@@ -9,9 +9,9 @@
 
 	let q = $page.url.searchParams.get('q')?.trim();
 
-	const searchParams = Array.from(
-		getSortedSearchParams(getDefaultSearchParams($page.url.searchParams))
-	);
+	let params = getSortedSearchParams(getDefaultSearchParams($page.url.searchParams));
+	params.set('_offset', '0'); // Always reset offset on new search
+	const searchParams = Array.from(params);
 
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */

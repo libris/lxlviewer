@@ -10,34 +10,34 @@ import {
 	toString
 } from '$lib/utils/xl';
 import { LxlLens } from '$lib/utils/display.types';
-
-import { type translateFn } from '$lib/i18n';
+import { type translateFn, getTranslator } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { calculateExpirationTime, generateAuxdImageUri, getFirstImageLink } from '$lib/utils/auxd';
 
-export function asResult(
+export async function asResult(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn,
-	auxdSecret: string
-): SearchResult {
+	auxdSecret: string,
+	usePath: string
+): Promise<SearchResult> {
+	const translate = await getTranslator(locale);
 	return {
-		...('next' in view && { next: view.next }),
+		...('next' in view && { next: replacePath(view.next as Link, usePath) }),
 		itemOffset: view.itemOffset,
 		itemsPerPage: view.itemsPerPage,
 		totalItems: view.totalItems,
 		maxItems: view.maxItems,
-		mapping: displayMappings(view, displayUtil, locale, translate),
-		first: view.first,
-		last: view.last,
+		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
+		first: replacePath(view.first, usePath),
+		last: replacePath(view.last, usePath),
 		items: view.items.map((i) => ({
 			[JsonLd.ID]: i.meta[JsonLd.ID],
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
 			imageUri: generateAuxdImageUri(calculateExpirationTime(), getFirstImageLink(i), auxdSecret)
 		})),
-		facetGroups: displayFacetGroups(view, displayUtil, locale, translate)
+		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 	};
 }
 
@@ -134,7 +134,8 @@ function displayMappings(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn
+	translate: translateFn,
+	usePath: string
 ): DisplayMapping[] {
 	const mapping = view.search?.mapping || [];
 
@@ -144,7 +145,7 @@ function displayMappings(
 
 		if (isPredicateAndObject(m)) {
 			return {
-				...('up' in m && { up: m.up }),
+				...('up' in m && { up: replacePath(m.up as Link, usePath) }),
 				display: displayUtil.lensAndFormat(m.object, LensType.Chip, locale),
 				children: [],
 				label
@@ -170,7 +171,8 @@ function displayFacetGroups(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	translate: translateFn
+	translate: translateFn,
+	usePath: string
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
 
@@ -182,13 +184,22 @@ function displayFacetGroups(
 				return {
 					...('_selected' in o && { selected: o._selected }),
 					totalItems: o.totalItems,
-					view: o.view,
+					view: replacePath(o.view, usePath),
 					object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
 					str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale))
 				};
 			})
 		};
 	});
+}
+
+/**
+ * prevent links on resource page from pointing to /find
+ */
+function replacePath(view: Link, usePath: string) {
+	return {
+		'@id': view['@id'].replace('/find', usePath)
+	};
 }
 
 function isPredicateAndObject(v: unknown): v is PredicateAndObject {
