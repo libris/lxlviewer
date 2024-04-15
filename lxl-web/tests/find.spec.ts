@@ -34,7 +34,7 @@ test('search card heading contains a link', async ({ page }) => {
 });
 
 test('has a facet panel', async ({ page }) => {
-	await expect(page.getByLabel('Filter').getByRole('list')).toBeVisible();
+	await expect(page.getByTestId('facet-panel')).toBeVisible();
 });
 
 test('facet groups can toggle', async ({ page }) => {

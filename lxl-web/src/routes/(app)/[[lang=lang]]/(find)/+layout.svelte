@@ -35,7 +35,11 @@
 			<nav class="mapping" aria-label="Valda filter">
 				<SearchMapping mapping={searchResult.mapping} />
 			</nav>
-			<nav class="lg:facets hidden lg:block" aria-labelledby="facet-sidebar-header">
+			<nav
+				class="lg:facets hidden lg:block"
+				aria-labelledby="facet-sidebar-header"
+				data-testid="facet-panel"
+			>
 				{#if facets && facets.length > 0}
 					<header id="facet-sidebar-header" class="font-bold">Filter</header>
 					<ol>
