@@ -22,8 +22,8 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	const isResourceRoute = !!params.fnurgel;
 	const isFindRoute = url.pathname.endsWith('/find');
 	let resourceParts = {};
-	let searchResult: SearchResult | null = null;
-	let shouldFindRelations, resourceId;
+	let shouldFindRelations = false;
+	let resourceId: null | string = null;
 
 	// If product page, get the resource
 	if (isResourceRoute) {
@@ -63,15 +63,15 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		};
 	}
 
-	// perform search
-	if (isFindRoute || shouldFindRelations) {
+	const searchResult = isFindRoute || shouldFindRelations ? getSearchResult() : null;
+	async function getSearchResult() {
 		if (isFindRoute && !url.searchParams.size) {
 			redirect(303, `/`); // redirect to home page if no search params are given
 		}
 
 		let searchParams = new URLSearchParams(url.searchParams.toString());
 
-		if (shouldFindRelations) {
+		if (shouldFindRelations && resourceId) {
 			searchParams.set('o', resourceId);
 			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
 		}
@@ -88,8 +88,15 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		// Hide zero results from resource page
 		if (result.totalItems > 0 || isFindRoute) {
 			const pathname = params.lang ? url.pathname.replace(`/${params.lang}`, '') : url.pathname;
-			searchResult = await asResult(result, displayUtil, locale, env.AUXD_SECRET, pathname);
+			return (await asResult(
+				result,
+				displayUtil,
+				locale,
+				env.AUXD_SECRET,
+				pathname
+			)) as SearchResult;
 		}
+		return null;
 	}
 
 	return {

@@ -27,7 +27,7 @@
 <slot />
 {#if $page.data.searchResult}
 	{#await $page.data.searchResult}
-		<p>Laddar...</p>
+		<p class="p-3">Laddar...</p>
 	{:then searchResult}
 		{@const facets = searchResult.facetGroups}
 		{@const numHits = searchResult.totalItems}
