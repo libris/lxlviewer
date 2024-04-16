@@ -27,13 +27,13 @@ export default {
 		'concerning.issuanceType': 'Issuance type',
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Encoding level',
-		'genreForm': 'Genre/form',
-		'itemHeldBy': 'Library',
-		'contributor': 'Contribution',
-		'language': 'Language',
-		'subject': 'Subject',
-		'yearPublished': 'Year published',
-		'intendedAudience': 'Intended audience'
+		genreForm: 'Genre/form',
+		itemHeldBy: 'Library',
+		contributor: 'Contribution',
+		language: 'Language',
+		subject: 'Subject',
+		yearPublished: 'Year published',
+		intendedAudience: 'Intended audience'
 	},
 	search: {},
 	errors: {},
@@ -41,6 +41,12 @@ export default {
 		collapseAll: 'Collapse all',
 		copyPermalinkToInstance: 'Copy link to edition',
 		latestInstanceCover: 'Cover of latest edition',
-		instanceCover: 'Cover of edition'
+		instanceCover: 'Cover of edition',
+		close: 'Close'
+	},
+	holdings: {
+		availableAt: 'Available at',
+		library: 'library',
+		libraries: 'libraries'
 	}
 };

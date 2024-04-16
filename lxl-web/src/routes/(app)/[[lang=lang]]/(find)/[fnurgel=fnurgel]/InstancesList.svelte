@@ -49,6 +49,28 @@
 		return `${url.origin}${url.pathname}${newSearchParams.size ? '?' + newSearchParams.toString() : ''}`;
 	}
 
+	function getHoldingsLink(url: URL, id: string) {
+		const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
+		newSearchParams.set('holdings', id);
+		return `${url.origin}${url.pathname}?${newSearchParams.toString()}`;
+	}
+
+	function handleClickHoldings(
+		event: MouseEvent & { currentTarget: HTMLAnchorElement },
+		url: URL,
+		state: {
+			expandedInstances?: string[];
+		}
+	) {
+		event.preventDefault();
+		if (url.href !== event.currentTarget.href) {
+			goto(event.currentTarget.href, {
+				state,
+				noScroll: true
+			});
+		}
+	}
+
 	function getPermalink(url: URL, id: string) {
 		const newSearchParams = new URLSearchParams({ expanded: id });
 		return `${url.origin}${url.pathname}?${newSearchParams.toString()}#${id}`;
@@ -131,7 +153,7 @@
 						on:toggle={() => handleToggleDetails($page.state)}
 					>
 						<summary
-							class="flex min-h-11 gap-2 px-2 py-4 align-middle hover:bg-pill/16"
+							class="flex min-h-11 gap-2 px-2 align-middle hover:bg-pill/16"
 							on:keydown={handleSummaryKeydown}
 						>
 							{#each columns as columnItem}
@@ -139,9 +161,26 @@
 									<DecoratedData data={jmespath.search(item, columnItem)} />
 								</div>
 							{/each}
+							<div class="text flex flex-1 items-center justify-end text-sm">
+								{#if id && $page.data.holdingsByInstanceId[id]}
+									<a
+										href={getHoldingsLink($page.url, id)}
+										on:click={(event) => handleClickHoldings(event, $page.url, $page.state)}
+									>
+										{$page.data.holdingsByInstanceId[id].length}
+										{$page.data.holdingsByInstanceId[id].length === 1
+											? $page.data.t('holdings.library')
+											: $page.data.t('holdings.libraries')}
+									</a>
+								{:else}
+									<span>
+										{$page.data.t('holdings.availableAt')} 0 {$page.data.t('holdings.libraries')}
+									</span>
+								{/if}
+							</div>
 						</summary>
 						<div class="grid gap-2 px-2 pb-8 pt-4 md:grid-cols-3">
-							<div class="flex flex-col gap-4">
+							<div class="flex flex-col gap-4 text-sm">
 								<div class="flex h-full max-h-32 w-full max-w-32">
 									{#if cover}
 										<a href={cover} target="_blank">
@@ -160,12 +199,24 @@
 									{/if}
 								</div>
 								{#if id}
-									<a
-										href={getPermalink($page.url, id)}
-										on:click={(event) => handleCopyPermalink(event, $page.url, id, $page.state)}
-									>
-										{$page.data.t('general.copyPermalinkToInstance')}
-									</a>
+									<div class="flex flex-col gap-2">
+										<a
+											href={getHoldingsLink($page.url, id)}
+											on:click={(event) => handleClickHoldings(event, $page.url, $page.state)}
+										>
+											{$page.data.t('holdings.availableAt')}
+											{$page.data.holdingsByInstanceId[id].length}
+											{$page.data.holdingsByInstanceId[id].length === 1
+												? $page.data.t('holdings.library')
+												: $page.data.t('holdings.libraries')}
+										</a>
+										<a
+											href={getPermalink($page.url, id)}
+											on:click={(event) => handleCopyPermalink(event, $page.url, id, $page.state)}
+										>
+											{$page.data.t('general.copyPermalinkToInstance')}
+										</a>
+									</div>
 								{/if}
 							</div>
 							<div class="instance-details col-span-2">
