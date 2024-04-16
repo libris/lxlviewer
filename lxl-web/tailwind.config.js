@@ -16,7 +16,9 @@ export default {
 			secondary: 'rgb(var(--text-primary) / 0.8)',
 			'secondary-inv': 'rgb(var(--text-primary-inv) / 0.8)',
 			link: 'rgb(var(--text-link) / 1)',
-			disabled: 'rgb(var(--text-primary) / 0.6)'
+			disabled: 'rgb(var(--text-primary) / 0.6)',
+			'icon-default': 'rgb(var(--icon-default) / 0.4)',
+			'icon-inv-secondary': 'rgb(var(--icon-inv-secondary) / 0.64)'
 		},
 		backgroundColor: {
 			transparent: 'transparent',
@@ -72,6 +74,9 @@ export default {
 		letterSpacing: {
 			normal: '0',
 			wide: '0.03rem'
+		},
+		borderColor: {
+			primary: 'rgb(var(--text-primary) / 0.16)'
 		},
 		borderRadius: {
 			none: '0px',

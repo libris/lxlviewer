@@ -2,6 +2,8 @@
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { type FacetGroup } from './search';
+	import BiChevronRight from '~icons/bi/chevron-right';
+	import BiChevronDown from '~icons/bi/chevron-down';
 
 	export let group: FacetGroup;
 	export let locale: LocaleCode;
@@ -20,7 +22,7 @@
 	$: canShowLessFacets = !canShowMoreFacets && filteredFacets.length > defaultFacetsShown;
 </script>
 
-<li class="my-4 border-b-[1px] pb-2">
+<li class="my-4 border-b-[2px] border-primary pb-2">
 	<button
 		id={'toggle-' + group.dimension}
 		type="button"
@@ -30,7 +32,18 @@
 		class="w-full text-left font-bold"
 		data-testid="facet-toggle"
 	>
-		{expanded ? '⌃' : '⌄'} {group.label}</button
+		<span class="flex items-center gap-2">
+			<span>
+				{#if expanded}
+					<BiChevronRight />
+				{:else}
+					<BiChevronDown />
+				{/if}
+			</span>
+			<span>
+				{group.label}
+			</span>
+		</span></button
 	>
 	<div
 		id={'group-' + group.dimension}

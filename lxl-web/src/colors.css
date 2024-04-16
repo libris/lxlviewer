@@ -23,6 +23,8 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--text-primary: var(--color-primary);
 	--text-primary-inv: var(--color-white);
 	--text-link: var(--color-primary);
+	--icon-default: var(--color-primary);
+	--icon-inv-secondary: var(--color-white);
 
 	/* Bg colors */
 	--bg-main: var(--color-subtle);
