@@ -7,7 +7,7 @@
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-	import placeholderBook from '$lib/assets/img/placeholder-book.svg';
+	import ResourceImage from '$lib/components/ResourceImage.svelte';
 
 	/**
 	 * TODO:
@@ -19,7 +19,6 @@
 	let expandedInSearchParams = $page.url.searchParams.getAll('expanded') || [];
 
 	export let data: ResourceData;
-	export let imageUris: { recordId: string; imageUri: string }[];
 	export let columns: string[];
 
 	function handleToggleDetails(state: { expandedInstances?: string[] }) {
@@ -109,16 +108,6 @@
 				?.focus();
 		}
 	}
-
-	function getImageUri(item) {
-		return imageUris.find((uri) => {
-			return relativizeUrl(uri.recordId)?.replace(/#it/g, '') === getInstanceId(item);
-		})?.imageUri;
-	}
-
-	function getInstanceId(item: ResourceData) {
-		return relativizeUrl(item?.['@id' as keyof ResourceData]);
-	}
 </script>
 
 <div>
@@ -141,7 +130,6 @@
 		<ul bind:this={instancesList}>
 			{#each data as item (item['@id'])}
 				{@const id = relativizeUrl(getResourceId(item))}
-				{@const cover = getImageUri(item)}
 				<li {id} class="border-t border-t-primary/16">
 					<details
 						{...id && {
@@ -182,21 +170,7 @@
 						<div class="grid gap-2 px-2 pb-8 pt-4 md:grid-cols-3">
 							<div class="flex flex-col gap-4 text-sm">
 								<div class="flex h-full max-h-32 w-full max-w-32">
-									{#if cover}
-										<a href={cover} target="_blank">
-											<div class="flex h-full max-h-32 w-full max-w-32">
-												<img
-													alt={$page.data.t('general.instanceCover')}
-													src={cover}
-													class="object-contain object-left"
-												/>
-											</div>
-										</a>
-									{:else}
-										<div class="flex h-full max-h-32 w-full max-w-32">
-											<img src={placeholderBook} alt="" class="object-contain object-left" />
-										</div>
-									{/if}
+									<ResourceImage resource={item} alt={$page.data.t('general.instanceCover')} />
 								</div>
 								{#if id}
 									<div class="flex flex-col gap-2">

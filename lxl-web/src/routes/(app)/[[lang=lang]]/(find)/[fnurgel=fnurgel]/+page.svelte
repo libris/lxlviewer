@@ -8,6 +8,7 @@
 	import { relativizeUrl } from '$lib/utils/http';
 	import Modal from '$lib/components/Modal.svelte';
 	import type { SvelteComponent } from 'svelte';
+	import ResourceImage from '$lib/components/ResourceImage.svelte';
 
 	export let data;
 
@@ -86,24 +87,20 @@
 					{/each}
 				</ul>
 			</div>
-			{#if data.imageUris.length}
-				<a href={data.firstImageUri} target="_blank">
-					<div class="flex h-full max-h-72 w-full max-w-72 self-center">
-						{#if data.firstImageUri}
-							<img
-								alt={$page.data.t('general.latestInstanceCover')}
-								src={data.firstImageUri}
-								class="h-auto w-full object-contain md:object-right"
-							/>
-						{/if}
-					</div>
-				</a>
+			{#if data.images.length}
+				<div class="flex h-full max-h-72 w-full max-w-72 self-center md:self-start">
+					<ResourceImage
+						resource={data.instances?.find(
+							(instanceItem) => instanceItem['@id'] === data.images[0].recordId.replace('#it', '')
+						)}
+						alt={data.t('general.latestInstanceCover')}
+					/>
+				</div>
 			{/if}
 		</div>
 		{#if data.instances?.length}
 			<InstancesList
 				data={data.instances}
-				imageUris={data.imageUris}
 				columns={[
 					'*[].publication[].*[][?year].year',
 					'*[].publication.*[][?agent].agent',
