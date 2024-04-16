@@ -26,7 +26,14 @@ export default {
 		'concerning.@reverse.itemOf.heldBy.@id': 'Has holding',
 		'concerning.issuanceType': 'Issuance type',
 		'@reverse': 'Relation',
-		'meta.encodingLevel': 'Encoding level'
+		'meta.encodingLevel': 'Encoding level',
+		genreForm: 'Genre/form',
+		itemHeldBy: 'Library',
+		contributor: 'Contribution',
+		language: 'Language',
+		subject: 'Subject',
+		yearPublished: 'Year published',
+		intendedAudience: 'Intended audience'
 	},
 	search: {},
 	errors: {},
