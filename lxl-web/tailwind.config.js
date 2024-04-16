@@ -4,7 +4,6 @@ export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
 		colors: {
-			transparent: 'transparent',
 			white: 'rgb(var(--color-white) / <alpha-value>)',
 			primary: 'rgb(var(--color-primary) / <alpha-value>)',
 			'accent-light': 'rgb(var(--color-accent-light) / <alpha-value>)',
@@ -20,10 +19,12 @@ export default {
 			disabled: 'rgb(var(--text-primary) / 0.6)'
 		},
 		backgroundColor: {
+			transparent: 'transparent',
 			main: 'rgb(var(--bg-main) / 1)',
 			head: 'rgb(var(--bg-head) / 1)',
 			positive: 'rgb(var(--bg-positive) / 1)',
 			'positive-inv': 'rgb(var(--bg-positive-inv) / 1)',
+			negative: 'rgb(var(--bg-negative) / 1)',
 			cards: 'rgb(var(--bg-cards) / 1)',
 			pill: 'rgb(var(--bg-pill) / <alpha-value>)'
 		},
