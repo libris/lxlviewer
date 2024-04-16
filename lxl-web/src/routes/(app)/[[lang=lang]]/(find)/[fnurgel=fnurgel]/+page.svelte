@@ -14,7 +14,14 @@
 
 	let holdingsModal: SvelteComponent;
 
-	$: instancesByTypeLabel = getInstancesByTypeLabel(data?.instances);
+	$: instancesByType = data?.instances.reduce((acc, currentInstance) => {
+		const type = currentInstance['_label'];
+		return {
+			...acc,
+			[type]: [...(acc[type] || []), relativizeUrl(getResourceId(currentInstance))]
+		};
+	}, {});
+
 	$: decoratedInstance =
 		$page.url.searchParams.has('holdings') &&
 		data.instances.find((instanceItem) =>
@@ -33,16 +40,6 @@
 	function handleCloseHoldings(event: Event) {
 		event.preventDefault();
 		history.back();
-	}
-
-	function getInstancesByTypeLabel(instances) {
-		return instances.reduce((acc, currentInstance) => {
-			const typeLabel = currentInstance['_label'];
-			return {
-				...acc,
-				[typeLabel]: [...(acc[typeLabel] || []), relativizeUrl(getResourceId(currentInstance))]
-			};
-		}, {});
 	}
 
 	function getAggregatedLibrariesCount(instances: string[], holdingsByInstanceId) {
@@ -74,13 +71,15 @@
 			<div class="overview flex-1">
 				<DecoratedData data={data.overview} block />
 				<ul>
-					{#each Object.keys(instancesByTypeLabel) as key}
-						{@const typeInstances = instancesByTypeLabel[key]}
+					{#each Object.keys(instancesByType) as instanceType}
 						<li>
-							<a href={getHoldingsLink($page.url, typeInstances?.[0])}>
-								{key}
+							<a href={getHoldingsLink($page.url, instancesByType[instanceType]?.[0])}>
+								{instanceType}
 								{`(${data.t('holdings.availableAt').toLowerCase()}`}
-								{getAggregatedLibrariesCount(typeInstances, data.holdingsByInstanceId)}
+								{getAggregatedLibrariesCount(
+									instancesByType[instanceType],
+									data.holdingsByInstanceId
+								)}
 								{`${data.t('holdings.libraries')})`}
 							</a>
 						</li>
@@ -114,6 +113,17 @@
 		<Modal close={handleCloseHoldings} bind:this={holdingsModal}>
 			<div class="flex flex-col gap-4 px-4 text-sm">
 				<div class="flex gap-4">
+					{#if data.images.length}
+						<div class="flex h-full max-h-20 w-full max-w-20 self-center md:self-start">
+							<ResourceImage
+								resource={data.instances?.find(
+									(instanceItem) =>
+										instanceItem['@id'] === data.images[0].recordId.replace('#it', '')
+								)}
+								alt={data.t('general.latestInstanceCover')}
+							/>
+						</div>
+					{/if}
 					<div class="overview">
 						<DecoratedData data={decoratedInstance} block />
 					</div>
