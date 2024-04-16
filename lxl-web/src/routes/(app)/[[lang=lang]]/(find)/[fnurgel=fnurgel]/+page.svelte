@@ -87,7 +87,7 @@
 				</ul>
 			</div>
 			{#if data.images.length}
-				<div class="flex h-full max-h-72 w-full max-w-72 self-center md:self-start">
+				<div class="flex h-full max-h-72 w-full max-w-72 justify-center self-center md:self-start">
 					<ResourceImage
 						resource={data.instances?.find(
 							(instanceItem) => instanceItem['@id'] === data.images[0].recordId.replace('#it', '')
