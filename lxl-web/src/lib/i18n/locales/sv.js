@@ -25,7 +25,14 @@ export default {
 		'concerning.@reverse.itemOf.heldBy.@id': 'Har bestånd',
 		'concerning.issuanceType': 'Utgivningssätt',
 		'@reverse': 'Relation',
-		'meta.encodingLevel': 'Beskrivningsnivå'
+		'meta.encodingLevel': 'Beskrivningsnivå',
+		'genreForm': 'Genre/form',
+		'itemHeldBy': 'Bibliotek',
+		'contributor': 'Medverkan',
+		'language': 'Språk',
+		'subject': 'Ämne',
+		'yearPublished': 'Utgivningsår',
+		'intendedAudience': 'Målgrupp'
 	},
 	search: {},
 	errors: {},
