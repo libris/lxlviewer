@@ -4,6 +4,7 @@
 	import type { DisplayMapping, SearchOperators } from './search';
 	export let mapping: DisplayMapping[];
 	export let parentOperator: keyof typeof SearchOperators | undefined = undefined;
+	export let depth = 0;
 
 	function getRelationSymbol(operator: keyof typeof SearchOperators): string {
 		switch (operator) {
@@ -27,9 +28,12 @@
 
 <ul class="flex flex-wrap items-center gap-2">
 	{#each mapping as m}
-		<li class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}">
+		<li
+			class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}"
+			class:outer={depth === 0}
+		>
 			{#if 'children' in m}
-				<svelte:self mapping={m.children} parentOperator={m.operator} />
+				<svelte:self mapping={m.children} parentOperator={m.operator} depth={depth + 1} />
 			{:else if 'label' in m && 'display' in m}
 				{@const symbol = getRelationSymbol(m.operator)}
 				<div class="pill-label inline-block text-2-regular first-letter:uppercase">{m.label}</div>
@@ -77,7 +81,11 @@
 	}
 
 	.pill-group {
-		@apply flex items-center gap-2 bg-pill/4 p-0 pr-4;
+		@apply flex items-center gap-2 bg-pill/8 p-0 pr-4;
+
+		&.outer {
+			@apply bg-transparent;
+		}
 	}
 
 	.pill-between,
