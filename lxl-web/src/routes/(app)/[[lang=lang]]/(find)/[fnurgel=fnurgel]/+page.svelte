@@ -9,6 +9,7 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import type { SvelteComponent } from 'svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
+	import { getHoldingsLink, handleClickHoldings } from './utils';
 
 	export let data;
 
@@ -52,12 +53,6 @@
 			];
 		}, []).length;
 	}
-
-	function getHoldingsLink(url: URL, id: string) {
-		const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
-		newSearchParams.set('holdings', id);
-		return `${url.origin}${url.pathname}?${newSearchParams.toString()}`;
-	}
 </script>
 
 <article class="resource grid">
@@ -73,7 +68,10 @@
 				<ul>
 					{#each Object.keys(instancesByType) as instanceType}
 						<li>
-							<a href={getHoldingsLink($page.url, instancesByType[instanceType]?.[0])}>
+							<a
+								href={getHoldingsLink($page.url, instancesByType[instanceType]?.[0])}
+								on:click={(event) => handleClickHoldings(event, $page.url, $page.state)}
+							>
 								{instanceType}
 								{`(${data.t('holdings.availableAt').toLowerCase()}`}
 								{getAggregatedLibrariesCount(

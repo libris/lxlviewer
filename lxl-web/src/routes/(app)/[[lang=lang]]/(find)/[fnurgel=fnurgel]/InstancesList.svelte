@@ -8,7 +8,7 @@
 	import { relativizeUrl } from '$lib/utils/http';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
-
+	import { getHoldingsLink, handleClickHoldings } from './utils';
 	/**
 	 * TODO:
 	 * - [] Replace jmespath (used for queriyng data for the columns) with something more home-baked (with smaller bundle-size). Another alternative could be querying and preparing the column data server-side?
@@ -46,28 +46,6 @@
 		const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 		newSearchParams.delete('expanded');
 		return `${url.origin}${url.pathname}${newSearchParams.size ? '?' + newSearchParams.toString() : ''}`;
-	}
-
-	function getHoldingsLink(url: URL, id: string) {
-		const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
-		newSearchParams.set('holdings', id);
-		return `${url.origin}${url.pathname}?${newSearchParams.toString()}`;
-	}
-
-	function handleClickHoldings(
-		event: MouseEvent & { currentTarget: HTMLAnchorElement },
-		url: URL,
-		state: {
-			expandedInstances?: string[];
-		}
-	) {
-		event.preventDefault();
-		if (url.href !== event.currentTarget.href) {
-			goto(event.currentTarget.href, {
-				state,
-				noScroll: true
-			});
-		}
 	}
 
 	function getPermalink(url: URL, id: string) {
