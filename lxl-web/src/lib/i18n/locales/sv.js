@@ -26,13 +26,13 @@ export default {
 		'concerning.issuanceType': 'Utgivningssätt',
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Beskrivningsnivå',
-		'genreForm': 'Genre/form',
-		'itemHeldBy': 'Bibliotek',
-		'contributor': 'Medverkan',
-		'language': 'Språk',
-		'subject': 'Ämne',
-		'yearPublished': 'Utgivningsår',
-		'intendedAudience': 'Målgrupp'
+		genreForm: 'Genre/form',
+		itemHeldBy: 'Bibliotek',
+		contributor: 'Medverkan',
+		language: 'Språk',
+		subject: 'Ämne',
+		yearPublished: 'Utgivningsår',
+		intendedAudience: 'Målgrupp'
 	},
 	search: {},
 	errors: {},
@@ -40,6 +40,12 @@ export default {
 		collapseAll: 'Stäng alla',
 		copyPermalinkToInstance: 'Kopiera länk till utgåva',
 		latestInstanceCover: 'Senaste utgåvans omslag',
-		instanceCover: 'Utgåvans omslag'
+		instanceCover: 'Utgåvans omslag',
+		close: 'Stäng'
+	},
+	holdings: {
+		availableAt: 'Finns på',
+		library: 'bibliotek',
+		libraries: 'bibliotek'
 	}
 };

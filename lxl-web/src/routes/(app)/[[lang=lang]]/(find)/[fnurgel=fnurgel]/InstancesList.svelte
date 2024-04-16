@@ -7,8 +7,8 @@
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-	import placeholderBook from '$lib/assets/img/placeholder-book.svg';
-
+	import ResourceImage from '$lib/components/ResourceImage.svelte';
+	import { getHoldingsLink, handleClickHoldings } from './utils';
 	/**
 	 * TODO:
 	 * - [] Replace jmespath (used for queriyng data for the columns) with something more home-baked (with smaller bundle-size). Another alternative could be querying and preparing the column data server-side?
@@ -19,7 +19,6 @@
 	let expandedInSearchParams = $page.url.searchParams.getAll('expanded') || [];
 
 	export let data: ResourceData;
-	export let imageUris: { recordId: string; imageUri: string }[];
 	export let columns: string[];
 
 	function handleToggleDetails(state: { expandedInstances?: string[] }) {
@@ -87,16 +86,6 @@
 				?.focus();
 		}
 	}
-
-	function getImageUri(item) {
-		return imageUris.find((uri) => {
-			return relativizeUrl(uri.recordId)?.replace(/#it/g, '') === getInstanceId(item);
-		})?.imageUri;
-	}
-
-	function getInstanceId(item: ResourceData) {
-		return relativizeUrl(item?.['@id' as keyof ResourceData]);
-	}
 </script>
 
 <div>
@@ -119,7 +108,6 @@
 		<ul bind:this={instancesList}>
 			{#each data as item (item['@id'])}
 				{@const id = relativizeUrl(getResourceId(item))}
-				{@const cover = getImageUri(item)}
 				<li {id} class="border-t border-t-primary/16">
 					<details
 						{...id && {
@@ -131,7 +119,7 @@
 						on:toggle={() => handleToggleDetails($page.state)}
 					>
 						<summary
-							class="flex min-h-11 gap-2 px-2 py-4 align-middle hover:bg-pill/16"
+							class="flex min-h-11 gap-2 px-2 align-middle hover:bg-pill/16"
 							on:keydown={handleSummaryKeydown}
 						>
 							{#each columns as columnItem}
@@ -139,33 +127,48 @@
 									<DecoratedData data={jmespath.search(item, columnItem)} />
 								</div>
 							{/each}
+							<div class="text flex flex-1 items-center justify-end text-sm">
+								{#if id && $page.data.holdingsByInstanceId[id]}
+									<a
+										href={getHoldingsLink($page.url, id)}
+										on:click={(event) => handleClickHoldings(event, $page.url, $page.state)}
+									>
+										{$page.data.holdingsByInstanceId[id].length}
+										{$page.data.holdingsByInstanceId[id].length === 1
+											? $page.data.t('holdings.library')
+											: $page.data.t('holdings.libraries')}
+									</a>
+								{:else}
+									<span>
+										{$page.data.t('holdings.availableAt')} 0 {$page.data.t('holdings.libraries')}
+									</span>
+								{/if}
+							</div>
 						</summary>
 						<div class="grid gap-2 px-2 pb-8 pt-4 md:grid-cols-3">
-							<div class="flex flex-col gap-4">
+							<div class="flex flex-col gap-4 text-sm">
 								<div class="flex h-full max-h-32 w-full max-w-32">
-									{#if cover}
-										<a href={cover} target="_blank">
-											<div class="flex h-full max-h-32 w-full max-w-32">
-												<img
-													alt={$page.data.t('general.instanceCover')}
-													src={cover}
-													class="object-contain object-left"
-												/>
-											</div>
-										</a>
-									{:else}
-										<div class="flex h-full max-h-32 w-full max-w-32">
-											<img src={placeholderBook} alt="" class="object-contain object-left" />
-										</div>
-									{/if}
+									<ResourceImage resource={item} alt={$page.data.t('general.instanceCover')} />
 								</div>
 								{#if id}
-									<a
-										href={getPermalink($page.url, id)}
-										on:click={(event) => handleCopyPermalink(event, $page.url, id, $page.state)}
-									>
-										{$page.data.t('general.copyPermalinkToInstance')}
-									</a>
+									<div class="flex flex-col gap-2">
+										<a
+											href={getHoldingsLink($page.url, id)}
+											on:click={(event) => handleClickHoldings(event, $page.url, $page.state)}
+										>
+											{$page.data.t('holdings.availableAt')}
+											{$page.data.holdingsByInstanceId[id].length}
+											{$page.data.holdingsByInstanceId[id].length === 1
+												? $page.data.t('holdings.library')
+												: $page.data.t('holdings.libraries')}
+										</a>
+										<a
+											href={getPermalink($page.url, id)}
+											on:click={(event) => handleCopyPermalink(event, $page.url, id, $page.state)}
+										>
+											{$page.data.t('general.copyPermalinkToInstance')}
+										</a>
+									</div>
 								{/if}
 							</div>
 							<div class="instance-details col-span-2">

@@ -9,6 +9,10 @@ function getSortedSearchParams(searchParams: URLSearchParams): URLSearchParams {
 		params.delete('expanded');
 	}
 
+	if (params.has('holdings')) {
+		params.delete('holdings');
+	}
+
 	if (params.size) {
 		params.sort();
 	}
