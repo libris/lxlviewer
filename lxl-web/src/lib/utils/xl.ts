@@ -252,6 +252,11 @@ export class DisplayUtil {
 		lensType: LensType | DerivedLensType,
 		propertyName: PropertyName
 	) => {
+		// FIXME - hardcoded workaround to get title + language in translationOf - should we use sublenses?
+		if (this.isDerivedLens(lensType) && propertyName === 'translationOf') {
+			return LensType.Card;
+		}
+
 		if (this.vocabUtil.hasCategory(propertyName, Platform.integral)) {
 			return lensType;
 		}
