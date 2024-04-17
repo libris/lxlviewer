@@ -161,7 +161,7 @@ function getImageUris(imageLinks: { recordId: string; imageLink: string }[]) {
 }
 
 function getHoldingsByInstanceId(mainEntity) {
-	return mainEntity['@reverse']?.instanceOf.reduce((acc, instanceOfItem) => {
+	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
 		const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
 		if (!id) {
 			return acc;
