@@ -1677,6 +1677,24 @@
           ],
           "instanceOf": {
             "@type": "Music",
+             "hasTitle": [
+              {
+                "@type": "Title",
+                "mainTitle": "",
+                "partName": [
+                ""
+                ],
+                "partNumber": [
+                  ""
+                ]
+              }
+            ],
+          "musicKey": "",
+          "musicMedium": [{
+            "@type": "MusicMedium",
+            "label": ""
+          }],
+          "marc:arrangedStatementForMusic": "",
             "language": [],
             "classification": [{
                 "@type": "ClassificationDdc",
