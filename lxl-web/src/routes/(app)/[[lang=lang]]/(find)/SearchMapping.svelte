@@ -2,6 +2,7 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import type { DisplayMapping, SearchOperators } from './search';
+	import BiXLg from '~icons/bi/x-lg';
 	export let mapping: DisplayMapping[];
 	export let parentOperator: keyof typeof SearchOperators | undefined = undefined;
 	export let depth = 0;
@@ -43,7 +44,11 @@
 				</span>
 			{/if}
 			{#if 'up' in m}
-				<a class="pill-remove pl-2 no-underline" href={m.up?.['@id']}>x</a>
+				<span class="inline-block align-sub">
+					<a class="float-right pl-2" href={m.up?.['@id']}>
+						<BiXLg class="text-icon-inv-secondary" />
+					</a>
+				</span>
 			{/if}
 		</li>
 		{#if parentOperator}
@@ -54,7 +59,7 @@
 
 <style lang="postcss">
 	.mapping-item {
-		@apply rounded-md px-4 py-2 brightness-100 text-3-cond-bold;
+		@apply rounded-md py-2 pl-3 pr-3 brightness-100 text-3-cond-bold;
 		transition: filter 0.1s ease;
 	}
 
@@ -96,9 +101,5 @@
 	.pill-between-and,
 	.pill-between:last-of-type {
 		@apply hidden;
-	}
-
-	.pill-remove {
-		color: inherit;
 	}
 </style>
