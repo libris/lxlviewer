@@ -31,6 +31,8 @@
 						"dissertation",
 						"cartographicAttributes",
 						"isPartOf",
+						"associatedMedia",
+						"isPrimaryTopicOf",
 						{ "inverseOf": "instanceOf" }
 					]
 				},
@@ -469,16 +471,30 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"marc:publicNote-format": {
-			"@id": "marc:publicNote-format",
+		"MediaObject-format": {
+			"@id": "MediaObject-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Document", "MediaObject"],
+			"fresnel:resourceStyle": ["ext-link", "pill", "uriAsId()"]
+		},
+		"MediaObject-publicNote-format": {
+			"FIXME": "this is just to hide the interpunct before",
+			"@id": "MediaObject-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Document", "MediaObject"],
 			"fresnel:propertyFormatDomain": ["marc:publicNote"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " (",
-				"fresnel:contentFirst": "(",
-				"fresnel:contentAfter": ")",
-				"fresnel:contentLast": ")"
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"isPrimaryTopicOf-associatedMedia-format": {
+			"@id": "isPrimaryTopicOf-associatedMedia-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["isPrimaryTopicOf", "associatedMedia"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
 			}
 		},
 		"Instance-self-x-format": {

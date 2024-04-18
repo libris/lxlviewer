@@ -38,6 +38,12 @@
 				return relativizeUrl(id);
 			}
 		}
+		if (depth > 1 && hasStyle(data, 'ext-link')) {
+			const id = getResourceId(value);
+			if (id) {
+				return id;
+			}
+		}
 		return undefined;
 	}
 
