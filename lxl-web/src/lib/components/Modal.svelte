@@ -62,18 +62,18 @@
 	bind:this={dialog}
 	transition:fly={{ x: 12, duration: 250, opacity: 0, easing: cubicInOut }}
 >
-	<div
-		class="absolute right-0 top-0 flex min-h-full w-full flex-col gap-4 bg-main pb-4 md:max-w-[480px]"
-	>
-		<header
-			class="sticky top-0 flex min-h-14 items-center justify-end border-b border-b-primary/8 bg-main py-2 pl-4 pr-2"
-		>
-			<!-- svelte-ignore a11y-autofocus -->
-			<button on:click={handleClose} autofocus class="flex h-11 w-11 items-center justify-center">
-				X
-			</button>
-		</header>
-		<slot />
+	<div class="absolute right-0 top-0 flex h-full w-full gap-4 bg-main md:max-w-[480px]">
+		<div class="flex flex-1 flex-col gap-4 overflow-y-auto pb-4">
+			<header
+				class="sticky top-0 flex min-h-14 items-center justify-end border-b border-b-primary/8 bg-main py-2 pl-4 pr-2"
+			>
+				<!-- svelte-ignore a11y-autofocus -->
+				<button on:click={handleClose} autofocus class="flex h-11 w-11 items-center justify-center">
+					X
+				</button>
+			</header>
+			<slot />
+		</div>
 	</div>
 </dialog>
 
