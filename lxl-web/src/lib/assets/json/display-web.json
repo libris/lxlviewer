@@ -118,6 +118,12 @@
 					"classLensDomain": "Classification",
 					"showProperties": ["code", "prefLabel"]
 				},
+				"MediaObject": {
+					"@id": "MediaObject-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "MediaObject",
+					"showProperties": ["uri", "marc:publicNote"]
+				},
 				"Work": {
 					"@id": "Work-chips",
 					"@type": "fresnel:Lens",
@@ -454,6 +460,18 @@
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": ", ",
 				"fresnel:contentFirst": ""
+			}
+		},
+		"MediaObject-note-format": {
+			"@id": "MediaObject-note-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["MediaObject"],
+			"fresnel:propertyFormatDomain": ["marc:publicNote"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " (",
+				"fresnel:contentFirst": "(",
+				"fresnel:contentAfter": ")",
+				"fresnel:contentLast": ")"
 			}
 		},
 		"Instance-self-x-format": {
