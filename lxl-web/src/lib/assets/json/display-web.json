@@ -81,6 +81,7 @@
 						"associatedMedia",
 						"usageAndAccessPolicy",
 						"accessMode",
+						"isPrimaryTopicOf",
 						"isIssueOf",
 						"relatedTo",
 						"issuanceType",
@@ -117,6 +118,12 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Classification",
 					"showProperties": ["code", "prefLabel"]
+				},
+				"Document": {
+					"@id": "Document-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Document",
+					"showProperties": ["uri", "marc:publicNote"]
 				},
 				"MediaObject": {
 					"@id": "MediaObject-chips",
@@ -462,10 +469,10 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"MediaObject-note-format": {
-			"@id": "MediaObject-note-format",
+		"marc:publicNote-format": {
+			"@id": "marc:publicNote-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["MediaObject"],
+			"fresnel:classFormatDomain": ["Document", "MediaObject"],
 			"fresnel:propertyFormatDomain": ["marc:publicNote"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
