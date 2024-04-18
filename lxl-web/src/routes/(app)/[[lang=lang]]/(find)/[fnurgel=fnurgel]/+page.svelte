@@ -12,6 +12,9 @@
 	export let data;
 
 	$: selectedHolding = $page.state.holdings || $page.url.searchParams.get('holdings') || null; // we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
+	$: selectedHoldingInstance = data.instances?.find((instanceItem) =>
+		instanceItem['@id'].includes(selectedHolding)
+	);
 
 	$: instanceIdsByTypeLabel = data?.instances.reduce(
 		(acc, currentInstance) => ({
@@ -69,7 +72,12 @@
 			</div>
 			{#if data.images.length}
 				<div class="flex h-full max-h-72 w-full max-w-72 justify-center self-center md:self-start">
-					<ResourceImage resource={selectedHolding} alt={data.t('general.latestInstanceCover')} />
+					<ResourceImage
+						resource={data.instances.find((instanceItem) =>
+							data.images.find((imageItem) => imageItem.recordId.includes(instanceItem['@id']))
+						)}
+						alt={data.t('general.latestInstanceCover')}
+					/>
 				</div>
 			{/if}
 		</div>
@@ -92,10 +100,7 @@
 					{#if data.images.length}
 						<div class="flex h-full max-h-20 w-full max-w-20 self-center md:self-start">
 							<ResourceImage
-								resource={data.instances?.find(
-									(instanceItem) =>
-										instanceItem['@id'] === data.images[0].recordId.replace('#it', '')
-								)}
+								resource={selectedHoldingInstance}
 								alt={data.t('general.latestInstanceCover')}
 							/>
 						</div>
