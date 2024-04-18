@@ -1,9 +1,10 @@
 <svelte:options accessors />
 
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
+	import { browser } from '$app/environment';
 
 	export let dialog: HTMLDialogElement | undefined = undefined;
 	export let close: ((event: Event) => void) | undefined = undefined;
@@ -14,8 +15,13 @@
 		disableBodyScroll();
 	});
 
+	onDestroy(() => {
+		if (browser) {
+			enableBodyScroll();
+		}
+	});
+
 	function handleClose(event: MouseEvent | Event) {
-		enableBodyScroll();
 		// Use close method from prop if available
 		if (close) {
 			event.preventDefault();
