@@ -229,6 +229,10 @@
 		@apply hover:bg-pill/16 focus:bg-pill/16;
 	}
 
+	.text-large {
+		@apply text-lg;
+	}
+
 	.remainder {
 		@apply ml-2 rounded-full bg-pill/8 px-2 py-1 text-secondary;
 	}

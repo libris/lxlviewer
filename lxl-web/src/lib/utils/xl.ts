@@ -600,7 +600,7 @@ class Formatter {
 			}
 			return v;
 		},
-		'uriAsId()': (v) => {
+		'uriToId()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				// TODO doesn't translate type name
 

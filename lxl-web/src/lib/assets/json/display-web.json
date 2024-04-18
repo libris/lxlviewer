@@ -474,8 +474,14 @@
 		"MediaObject-format": {
 			"@id": "MediaObject-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Document", "MediaObject"],
-			"fresnel:resourceStyle": ["ext-link", "uriAsId()"]
+			"fresnel:classFormatDomain": ["MediaObject"],
+			"fresnel:resourceStyle": ["ext-link", "uriToId()", "text-large"]
+		},
+		"Document-format": {
+			"@id": "Document-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Document"],
+			"fresnel:resourceStyle": ["ext-link", "uriToId()"]
 		},
 		"MediaObject-publicNote-format": {
 			"FIXME": "this is just to hide the interpunct before",
