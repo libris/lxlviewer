@@ -14,7 +14,7 @@
 
 	let holdingsModal: SvelteComponent;
 
-	$: selectedHolding = $page.state.holdings || $page.url.searchParams.get('holdings') || null;
+	$: selectedHolding = $page.state.holdings || $page.url.searchParams.get('holdings') || null; // we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
 	$: if (selectedHolding) holdingsModal?.dialog.showModal();
 
 	$: instanceIdsByTypeLabel = data?.instances.reduce(
