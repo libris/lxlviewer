@@ -7,16 +7,18 @@
 	export let placeholder: string;
 	export let autofocus: boolean = false;
 
-	let q = $page.url.searchParams.get('_q')?.trim();
+	let q = $page.url.searchParams.get('_i')?.trim() || $page.url.searchParams.get('_q')?.trim();
 
 	let params = getSortedSearchParams(getDefaultSearchParams($page.url.searchParams));
 	params.set('_offset', '0'); // Always reset offset on new search
+	params.delete('_i'); // delete possibly old '_i' value on new search
 	const searchParams = Array.from(params);
 
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */
 		if (to?.url) {
-			q = new URL(to.url).searchParams.get('_q')?.trim();
+			let param = to.url.searchParams.has('_i') ? '_i' : '_q';
+			q = new URL(to.url).searchParams.get(param)?.trim();
 		}
 	});
 
