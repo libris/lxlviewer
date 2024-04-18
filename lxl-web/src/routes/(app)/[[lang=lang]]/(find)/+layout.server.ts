@@ -10,6 +10,7 @@ import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams.js';
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams.js';
 import { type apiError } from '$lib/types/API.js';
 import { asResult, type PartialCollectionView, type SearchResult } from './search.js';
+import getAtPath from '$lib/utils/getAtPath';
 
 export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	const displayUtil: DisplayUtil = locals.display;
@@ -34,16 +35,17 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		const resource = await resourceRes.json();
 		const mainEntity = centerOnWork(resource['mainEntity'] as FramedData);
-		resourceId = resource.mainEntity['@id'];
+		copyMediaLinksToWork(mainEntity);
 
+		resourceId = resource.mainEntity['@id'];
 		const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
-
 		// TODO: Replace with a custom getProperty method (similar to pickProperty)
 		const instances = jmespath.search(overview, '*[].hasInstance[]');
 		const sortedInstances = getSortedInstances([...instances]);
 		// set condition to perform search
+
 		shouldFindRelations = instances.length <= 1;
 
 		const images = getImageUris(getImageLinks(mainEntity));
@@ -175,4 +177,19 @@ function getHoldingsByInstanceId(mainEntity) {
 			[id]: sortedHoldings
 		};
 	}, {});
+}
+
+function copyMediaLinksToWork(mainEntity: FramedData) {
+	const cp = (thing: FramedData, fromPath: (string | number | object)[], toProp: string) => {
+		const v = getAtPath(thing, fromPath);
+		if (v) {
+			thing[toProp] = asArray(thing[toProp]).concat(v);
+		}
+	};
+	cp(mainEntity, ['@reverse', 'instanceOf', '*', 'associatedMedia', '*'], 'associatedMedia');
+	cp(mainEntity, ['@reverse', 'instanceOf', '*', 'isPrimaryTopicOf', '*'], 'isPrimaryTopicOf');
+}
+
+function asArray<V>(v: V | Array<V>): Array<V> | [] {
+	return Array.isArray(v) ? v : v === null || v === undefined ? [] : [v];
 }
