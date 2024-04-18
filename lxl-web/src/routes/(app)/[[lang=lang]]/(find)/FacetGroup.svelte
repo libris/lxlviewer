@@ -35,9 +35,9 @@
 		<span class="flex items-center gap-2">
 			<span>
 				{#if expanded}
-					<BiChevronRight />
+					<BiChevronRight class="text-icon-default" />
 				{:else}
-					<BiChevronDown />
+					<BiChevronDown class="text-icon-default" />
 				{/if}
 			</span>
 			<span>
