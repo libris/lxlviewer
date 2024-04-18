@@ -31,6 +31,7 @@
 	/* Base styles for elements */
 	html {
 		@apply bg-main font-sans text-base text-primary antialiased;
+		scrollbar-gutter: stable;
 	}
 
 	a {
