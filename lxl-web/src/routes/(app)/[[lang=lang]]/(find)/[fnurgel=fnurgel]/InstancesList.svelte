@@ -16,7 +16,6 @@
 	 */
 
 	let instancesList: HTMLUListElement;
-	let expandedInSearchParams = $page.url.searchParams.getAll('expanded') || [];
 
 	export let data: ResourceData;
 	export let columns: string[];
@@ -93,6 +92,7 @@
 		<div class="flex justify-end py-4">
 			<a
 				href={getCollapseAllUrl($page.url)}
+				data-sveltekit-preload-data="false"
 				class="close-all"
 				on:click={(event) => {
 					event.preventDefault();
@@ -112,14 +112,14 @@
 					<details
 						{...id && {
 							open:
-								(!$page.state.expandedInstances && expandedInSearchParams.includes(id)) ||
 								$page.state.expandedInstances?.includes(id) ||
+								$page.url.searchParams.getAll('expanded').includes(id) ||
 								data.length === 1
 						}}
 						on:toggle={() => handleToggleDetails($page.state)}
 					>
 						<summary
-							class="flex min-h-11 gap-2 px-2 align-middle hover:bg-pill/16"
+							class="flex min-h-11 gap-2 pl-2 align-middle hover:bg-pill/16"
 							on:keydown={handleSummaryKeydown}
 						>
 							{#each columns as columnItem}
@@ -131,7 +131,9 @@
 								{#if id && $page.data.holdingsByInstanceId[id]}
 									<a
 										href={getHoldingsLink($page.url, id)}
-										on:click={(event) => handleClickHoldings(event, $page.url, $page.state)}
+										class="flex items-center self-center px-2"
+										data-sveltekit-preload-data="false"
+										on:click={(event) => handleClickHoldings(event, $page.state, id)}
 									>
 										{$page.data.holdingsByInstanceId[id].length}
 										{$page.data.holdingsByInstanceId[id].length === 1
@@ -154,7 +156,8 @@
 									<div class="flex flex-col gap-2">
 										<a
 											href={getHoldingsLink($page.url, id)}
-											on:click={(event) => handleClickHoldings(event, $page.url, $page.state)}
+											data-sveltekit-preload-data="false"
+											on:click={(event) => handleClickHoldings(event, $page.state, id)}
 										>
 											{$page.data.t('holdings.availableAt')}
 											{$page.data.holdingsByInstanceId[id].length}
