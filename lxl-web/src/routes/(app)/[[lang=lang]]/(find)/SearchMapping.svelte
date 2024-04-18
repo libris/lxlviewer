@@ -44,7 +44,7 @@
 				</span>
 			{/if}
 			{#if 'up' in m}
-				<span class="inline-block align-sub">
+				<span class="pill-remove inline-block align-sub">
 					<a class="float-right pl-2" href={m.up?.['@id']}>
 						<BiXLg class="text-icon-inv-secondary" />
 					</a>
@@ -101,5 +101,7 @@
 	.pill-between-and,
 	.pill-between:last-of-type {
 		@apply hidden;
+	}
+	.pill-remove {
 	}
 </style>
