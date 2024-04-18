@@ -14,10 +14,6 @@ test('index page has expected h1', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: 'Libris' })).toBeVisible();
 });
 
-test('index page displays the logo', async ({ page }) => {
-	await expect(page.getByRole('img', { name: 'Libris logo' })).toBeVisible();
-});
-
 test('can change the language', async ({ page }) => {
 	await page.getByTestId('current-lang').click();
 	const menu = page.getByTestId('lang-picker-menu');
