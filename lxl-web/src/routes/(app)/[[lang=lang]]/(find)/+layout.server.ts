@@ -69,13 +69,8 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		let searchParams = new URLSearchParams(url.searchParams.toString());
 
 		if (shouldFindRelations && resourceId) {
-			searchParams.set('o', resourceId);
+			searchParams.set('_o', resourceId);
 			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
-
-			// _q and o can not be combined ATM,
-			// TODO: remove when we can use _q for this search
-			searchParams.delete('_q');
-			searchParams.set('@type', 'Work');
 		}
 
 		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
