@@ -2,7 +2,7 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { fly } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
 
 	export let dialog: HTMLDialogElement | undefined = undefined;
@@ -15,6 +15,7 @@
 	});
 
 	function handleClose(event: MouseEvent | Event) {
+		enableBodyScroll();
 		// Use close method from prop if available
 		if (close) {
 			event.preventDefault();
@@ -22,13 +23,12 @@
 		} else {
 			dialog?.close();
 		}
-		enableBodyScroll();
 	}
 
 	function handleBackdropClick(event: MouseEvent) {
 		/** Close dialog if backdrop is clicked */
 		if (event.target === event.currentTarget) {
-			dialog?.close();
+			handleClose(event);
 		}
 	}
 
@@ -42,6 +42,10 @@
 	}
 </script>
 
+<div
+	class="pointer-events-none fixed left-0 top-0 h-full w-full bg-backdrop"
+	transition:fade={{ duration: 300 }}
+></div>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <dialog
@@ -50,7 +54,7 @@
 	on:click|self={handleBackdropClick}
 	on:close={handleClose}
 	bind:this={dialog}
-	in:fly={{ x: 24, duration: 300, opacity: 0, easing: cubicInOut }}
+	transition:fly={{ x: 12, duration: 250, opacity: 0, easing: cubicInOut }}
 >
 	<div
 		class="absolute right-0 top-0 flex min-h-full w-full flex-col gap-4 bg-main pb-4 md:max-w-[480px]"
@@ -71,22 +75,7 @@
 	dialog {
 		background: none;
 	}
-	dialog::backdrop {
-		background-color: rgb(0 0 0 / 0%);
-		transition:
-			display 0.7s allow-discrete,
-			overlay 0.7s allow-discrete,
-			background-color 0.7s;
-		padding: 0;
-	}
-
-	dialog[open]::backdrop {
-		background-color: rgb(0 0 0 / 25%);
-	}
-
-	@starting-style {
-		dialog[open]::backdrop {
-			background-color: rgb(0 0 0 / 0%);
-		}
+	::backdrop {
+		background: none;
 	}
 </style>
