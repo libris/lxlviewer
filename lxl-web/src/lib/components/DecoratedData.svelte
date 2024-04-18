@@ -149,6 +149,7 @@
 				<svelte:element
 					this={getElementType(data)}
 					href={getLink(data)}
+					target={hasStyle(data, 'ext-link') ? '_blank' : null}
 					data-type={data['@type']}
 					class={getStyleClasses(data)}
 					use:conditionalResourcePopover={data}
