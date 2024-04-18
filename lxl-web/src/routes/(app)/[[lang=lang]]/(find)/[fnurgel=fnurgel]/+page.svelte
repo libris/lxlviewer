@@ -6,16 +6,12 @@
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import Modal from '$lib/components/Modal.svelte';
-	import type { SvelteComponent } from 'svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from './utils';
 
 	export let data;
 
-	let holdingsModal: SvelteComponent;
-
 	$: selectedHolding = $page.state.holdings || $page.url.searchParams.get('holdings') || null; // we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
-	$: if (selectedHolding) holdingsModal?.dialog.showModal();
 
 	$: instanceIdsByTypeLabel = data?.instances.reduce(
 		(acc, currentInstance) => ({
@@ -89,7 +85,7 @@
 		{/if}
 	</div>
 	{#if selectedHolding}
-		<Modal close={handleCloseHoldings} bind:this={holdingsModal}>
+		<Modal close={handleCloseHoldings}>
 			<div class="flex flex-col gap-4 px-4 text-sm">
 				<div class="flex gap-4">
 					{#if data.images.length}

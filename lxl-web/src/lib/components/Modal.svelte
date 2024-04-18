@@ -12,6 +12,7 @@
 	let prevBodyOverflow: string | undefined = undefined;
 
 	onMount(() => {
+		dialog?.showModal();
 		disableBodyScroll();
 	});
 
