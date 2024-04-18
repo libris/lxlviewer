@@ -86,6 +86,7 @@
 	</div>
 	{#if selectedHolding}
 		<Modal close={handleCloseHoldings}>
+			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
 			<div class="flex flex-col gap-4 px-4 text-sm">
 				<div class="flex gap-4">
 					{#if data.images.length}
