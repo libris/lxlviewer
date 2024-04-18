@@ -28,7 +28,8 @@ export default {
 			'positive-inv': 'rgb(var(--bg-positive-inv) / 1)',
 			negative: 'rgb(var(--bg-negative) / 1)',
 			cards: 'rgb(var(--bg-cards) / 1)',
-			pill: 'rgb(var(--bg-pill) / <alpha-value>)'
+			pill: 'rgb(var(--bg-pill) / <alpha-value>)',
+			backdrop: 'rgb(var(--color-black) / 0.25)'
 		},
 		opacity: {
 			80: '.80',

@@ -46,6 +46,7 @@ export default {
 	holdings: {
 		availableAt: 'Finns på',
 		library: 'bibliotek',
-		libraries: 'bibliotek'
+		libraries: 'bibliotek',
+		findAtYourNearestLibrary: 'Hitta på ditt närmaste bibliotek'
 	}
 };

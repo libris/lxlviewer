@@ -47,6 +47,7 @@ export default {
 	holdings: {
 		availableAt: 'Available at',
 		library: 'library',
-		libraries: 'libraries'
+		libraries: 'libraries',
+		findAtYourNearestLibrary: 'Find it at your nearest library'
 	}
 };

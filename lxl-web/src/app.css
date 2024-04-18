@@ -29,8 +29,13 @@
 	}
 
 	/* Base styles for elements */
-	html {
+	html,
+	dialog {
 		@apply bg-main font-sans text-base text-primary antialiased;
+	}
+
+	html {
+		scrollbar-gutter: stable;
 	}
 
 	a {

@@ -1,4 +1,4 @@
-import { goto } from '$app/navigation';
+import { pushState } from '$app/navigation';
 
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
@@ -8,14 +8,9 @@ export function getHoldingsLink(url: URL, value: string) {
 
 export function handleClickHoldings(
 	event: MouseEvent & { currentTarget: HTMLAnchorElement },
-	url: URL,
-	state: object
+	state: object,
+	id: string
 ) {
 	event.preventDefault();
-	if (url.href !== event.currentTarget.href) {
-		goto(event.currentTarget.href, {
-			state,
-			noScroll: true
-		});
-	}
+	pushState(event.currentTarget.href, { ...state, holdings: id });
 }
