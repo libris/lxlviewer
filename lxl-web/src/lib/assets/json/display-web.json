@@ -475,7 +475,7 @@
 			"@id": "MediaObject-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["MediaObject"],
-			"fresnel:resourceStyle": ["ext-link", "uriToId()", "text-large"]
+			"fresnel:resourceStyle": ["ext-link", "uriToId()", "text-large", "block"]
 		},
 		"Document-format": {
 			"@id": "Document-format",
@@ -484,7 +484,7 @@
 			"fresnel:resourceStyle": ["ext-link", "uriToId()"]
 		},
 		"MediaObject-publicNote-format": {
-			"FIXME": "this is just to hide the interpunct before",
+			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
 			"@id": "MediaObject-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Document", "MediaObject"],
@@ -494,10 +494,10 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"isPrimaryTopicOf-associatedMedia-format": {
-			"@id": "isPrimaryTopicOf-associatedMedia-format",
+		"associatedMedia-format": {
+			"@id": "associatedMedia-format",
 			"@type": "fresnel:Format",
-			"fresnel:propertyFormatDomain": ["isPrimaryTopicOf", "associatedMedia"],
+			"fresnel:propertyFormatDomain": ["associatedMedia"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""

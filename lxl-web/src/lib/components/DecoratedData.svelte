@@ -237,4 +237,8 @@
 	.remainder {
 		@apply ml-2 rounded-full bg-pill/8 px-2 py-1 text-secondary;
 	}
+
+	.block {
+		display: block;
+	}
 </style>
