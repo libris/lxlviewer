@@ -6,6 +6,12 @@
 	import Pagination from './Pagination.svelte';
 	import FacetGroup from './FacetGroup.svelte';
 
+	$: showEditButton = $page.url.searchParams.get('_q') !== $page.url.searchParams.get('_i');
+	$: editActive = $page.url.searchParams.get('_x') === 'advanced';
+	$: toggleEditLink = editActive
+		? $page.url.href.replace('&_x=advanced', '')
+		: `${$page.url.href}&_x=advanced`;
+
 	const sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
 		{ value: '', label: 'Relevans' },
@@ -33,8 +39,11 @@
 			{@const facets = searchResult.facetGroups}
 			{@const numHits = searchResult.totalItems}
 			<div class="find container-fluid">
-				<nav class="mapping" aria-label="Valda filter">
+				<nav class="mapping flex flex-wrap items-center gap-2" aria-label="Valda filter">
 					<SearchMapping mapping={searchResult.mapping} />
+					{#if showEditButton}
+						<a href={toggleEditLink}>Redigera {editActive ? '(aktiv)' : ''}</a>
+					{/if}
 				</nav>
 				<nav
 					class="lg:facets hidden lg:block"

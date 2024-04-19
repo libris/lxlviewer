@@ -7,7 +7,10 @@
 	export let placeholder: string;
 	export let autofocus: boolean = false;
 
-	let q = $page.url.searchParams.get('_i')?.trim() || $page.url.searchParams.get('_q')?.trim();
+	$: showAdvanced = $page.url.searchParams.get('_x') === 'advanced';
+	let q = showAdvanced
+		? $page.url.searchParams.get('_q')?.trim()
+		: $page.url.searchParams.get('_i')?.trim();
 
 	let params = getSortedSearchParams(getDefaultSearchParams($page.url.searchParams));
 	params.set('_offset', '0'); // Always reset offset on new search
@@ -17,7 +20,7 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */
 		if (to?.url) {
-			let param = to.url.searchParams.has('_i') ? '_i' : '_q';
+			let param = showAdvanced ? '_q' : '_i';
 			q = new URL(to.url).searchParams.get(param)?.trim();
 		}
 	});
