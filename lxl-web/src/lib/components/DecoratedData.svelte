@@ -13,6 +13,7 @@
 	export let allowPopovers = true; // used for preventing nested popovers
 	export let block = false;
 	export let truncate = false;
+	export let key: ResourceData | string = data;
 
 	// truncate option; use only first item as data and keep the rest for tooltip
 	let remainder: ResourceData[] | undefined;
@@ -126,7 +127,7 @@
   @component
 	Component used for rendering decorated data.
 -->
-{#key data}
+{#key key}
 	{#if data && typeof data === 'object'}
 		{#if Array.isArray(data)}
 			{#each data as arrayItem}
