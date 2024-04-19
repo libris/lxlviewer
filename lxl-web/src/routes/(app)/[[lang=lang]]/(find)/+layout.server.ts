@@ -182,7 +182,7 @@ function getHoldingsByInstanceId(mainEntity) {
 function copyMediaLinksToWork(mainEntity: FramedData) {
 	const cp = (thing: FramedData, fromPath: (string | number | object)[], toProp: string) => {
 		const v = getAtPath(thing, fromPath);
-		if (v) {
+		if (v.length > 0) {
 			thing[toProp] = asArray(thing[toProp]).concat(v);
 		}
 	};
