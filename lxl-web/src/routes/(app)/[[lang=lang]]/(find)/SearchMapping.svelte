@@ -12,15 +12,15 @@
 			case 'equals':
 				return '';
 			case 'notEquals':
-				return 'not';
+				return '≠';
 			case 'greaterThan':
-				return '>';
+				return '＞';
 			case 'greaterThanOrEquals':
-				return '>=';
+				return '⩾';
 			case 'lessThan':
-				return '<';
+				return '＜';
 			case 'lessThanOrEquals':
-				return '<=';
+				return '⩽';
 			default:
 				return '';
 		}
@@ -95,7 +95,7 @@
 
 	.pill-between,
 	.pill-relation {
-		@apply uppercase text-primary text-1-regular;
+		@apply uppercase text-primary text-2-regular;
 	}
 
 	.pill-between-and,
