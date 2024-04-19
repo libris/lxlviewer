@@ -117,16 +117,18 @@
 				<div>
 					<h2 class="font-bold">{data.t('holdings.availableAt')}</h2>
 					<table class="w-full table-auto border-collapse text-sm">
-						{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
-							<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
-								<td>
-									{holdingItem?.heldBy?.name}
-								</td>
-								<td class="text-right text-secondary">
-									{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
-								</td>
-							</tr>
-						{/each}
+						{#if data.holdingsByInstanceId[selectedHolding]}
+							{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
+								<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
+									<td>
+										{holdingItem?.heldBy?.name}
+									</td>
+									<td class="text-right text-secondary">
+										{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
+									</td>
+								</tr>
+							{/each}
+						{/if}
 					</table>
 				</div>
 			</div>
