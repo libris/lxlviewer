@@ -150,7 +150,11 @@
 						<div class="grid gap-2 px-2 pb-8 pt-4 md:grid-cols-3">
 							<div class="flex flex-col gap-4 text-sm">
 								<div class="flex h-full max-h-32 w-full max-w-32">
-									<ResourceImage resource={item} alt={$page.data.t('general.instanceCover')} />
+									<ResourceImage
+										resource={item}
+										alt={$page.data.t('general.instanceCover')}
+										linkToFull
+									/>
 								</div>
 								{#if id}
 									<div class="flex flex-col gap-2">

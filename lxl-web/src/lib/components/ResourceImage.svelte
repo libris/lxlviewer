@@ -6,6 +6,7 @@
 
 	export let resource: ResourceData;
 	export let alt: string | undefined;
+	export let linkToFull = false;
 
 	$: src = $page.data.images.find(
 		(uri) => uri.recordId?.replace(/#it/g, '') === getResourceId(resource)
@@ -13,7 +14,13 @@
 </script>
 
 {#if src}
-	<img {alt} {src} class="object-contain object-center" />
+	{#if linkToFull}
+		<a href={src} target="_blank" class="contents">
+			<img {alt} {src} class="object-contain object-center" />
+		</a>
+	{:else}
+		<img {alt} {src} class="object-contain object-center" />
+	{/if}
 {:else}
 	<img src={placeholderBook} alt="" class="object-contain object-center" />
 {/if}

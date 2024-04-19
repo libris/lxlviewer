@@ -77,6 +77,7 @@
 							data.images.find((imageItem) => imageItem.recordId.includes(instanceItem['@id']))
 						)}
 						alt={data.t('general.latestInstanceCover')}
+						linkToFull
 					/>
 				</div>
 			{/if}
@@ -102,6 +103,7 @@
 							<ResourceImage
 								resource={selectedHoldingInstance}
 								alt={data.t('general.latestInstanceCover')}
+								linkToFull
 							/>
 						</div>
 					{/if}
