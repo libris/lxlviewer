@@ -31,6 +31,8 @@
 						"dissertation",
 						"cartographicAttributes",
 						"isPartOf",
+						"associatedMedia",
+						"isPrimaryTopicOf",
 						{ "inverseOf": "instanceOf" }
 					]
 				},
@@ -81,6 +83,7 @@
 						"associatedMedia",
 						"usageAndAccessPolicy",
 						"accessMode",
+						"isPrimaryTopicOf",
 						"isIssueOf",
 						"relatedTo",
 						"issuanceType",
@@ -117,6 +120,18 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Classification",
 					"showProperties": ["code", "prefLabel"]
+				},
+				"Document": {
+					"@id": "Document-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Document",
+					"showProperties": ["uri", "marc:publicNote"]
+				},
+				"MediaObject": {
+					"@id": "MediaObject-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "MediaObject",
+					"showProperties": ["uri", "marc:publicNote"]
 				},
 				"Work": {
 					"@id": "Work-chips",
@@ -453,6 +468,38 @@
 			"fresnel:propertyFormatDomain": ["role"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"MediaObject-format": {
+			"@id": "MediaObject-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["MediaObject"],
+			"fresnel:resourceStyle": ["ext-link", "uriToId()", "text-large", "block"]
+		},
+		"Document-format": {
+			"@id": "Document-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Document"],
+			"fresnel:resourceStyle": ["ext-link", "uriToId()"]
+		},
+		"MediaObject-publicNote-format": {
+			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
+			"@id": "MediaObject-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Document", "MediaObject"],
+			"fresnel:propertyFormatDomain": ["marc:publicNote"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"associatedMedia-format": {
+			"@id": "associatedMedia-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["associatedMedia"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
 			}
 		},

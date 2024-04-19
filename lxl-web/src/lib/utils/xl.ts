@@ -599,6 +599,20 @@ class Formatter {
 				});
 			}
 			return v;
+		},
+		'uriToId()': (v) => {
+			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
+				const display = v[Fmt.DISPLAY] as Array<unknown>;
+				const ix = display.findIndex((d) => isObject(d) && 'uri' in d);
+
+				if (ix >= 0 && asArray(display[ix]['uri']).length > 0) {
+					const uri = asArray(display[ix]['uri'])[0];
+					v[JsonLd.ID] = uri;
+					display.splice(ix, 1);
+				}
+			}
+
+			return v;
 		}
 	};
 

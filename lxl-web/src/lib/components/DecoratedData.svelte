@@ -38,6 +38,12 @@
 				return relativizeUrl(id);
 			}
 		}
+		if (depth > 1 && hasStyle(data, 'ext-link')) {
+			const id = getResourceId(value);
+			if (id) {
+				return id;
+			}
+		}
 		return undefined;
 	}
 
@@ -143,6 +149,7 @@
 				<svelte:element
 					this={getElementType(data)}
 					href={getLink(data)}
+					target={hasStyle(data, 'ext-link') ? '_blank' : null}
 					data-type={data['@type']}
 					class={getStyleClasses(data)}
 					use:conditionalResourcePopover={data}
@@ -223,7 +230,15 @@
 		@apply hover:bg-pill/16 focus:bg-pill/16;
 	}
 
+	.text-large {
+		@apply text-lg;
+	}
+
 	.remainder {
 		@apply ml-2 rounded-full bg-pill/8 px-2 py-1 text-secondary;
+	}
+
+	.block {
+		display: block;
 	}
 </style>
