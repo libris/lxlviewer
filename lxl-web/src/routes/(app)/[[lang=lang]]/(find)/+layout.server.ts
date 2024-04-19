@@ -73,7 +73,10 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		let result;
 
-		if (cachedSearchResult && cachedSearchResult['@id'] === `/find${url.search}`) {
+		if (
+			cachedSearchResult &&
+			decodeURIComponent(cachedSearchResult['@id']) === decodeURIComponent(`/find${url.search}`)
+		) {
 			// we have a cached result with matching query
 			console.log('picking up from cache');
 			result = cachedSearchResult;
@@ -104,7 +107,10 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			result['@id'] === `/find${url.search}`
 		);
 
-		if (isFindRoute && `/find${url.search}` !== result['@id']) {
+		if (
+			isFindRoute &&
+			decodeURIComponent(`/find${url.search}`) !== decodeURIComponent(result['@id'])
+		) {
 			// recieved a redirected api response
 			// redirect and cache response for next load
 			cachedSearchResult = result;
