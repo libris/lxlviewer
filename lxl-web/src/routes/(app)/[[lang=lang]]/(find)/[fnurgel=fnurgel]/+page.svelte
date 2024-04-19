@@ -11,10 +11,14 @@
 
 	export let data;
 
-	$: selectedHolding = $page.state.holdings || $page.url.searchParams.get('holdings') || null; // we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
+	let selectedHolding: string | undefined;
+
 	$: selectedHoldingInstance = data.instances?.find((instanceItem) =>
 		instanceItem['@id'].includes(selectedHolding)
 	);
+
+	$: holdingUrl = $page.state.holdings || $page.url.searchParams.get('holdings') || null; // we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
+	$: if (holdingUrl) selectedHolding = holdingUrl;
 
 	$: instanceIdsByTypeLabel = data?.instances.reduce(
 		(acc, currentInstance) => ({
@@ -93,7 +97,7 @@
 			/>
 		{/if}
 	</div>
-	{#if selectedHolding}
+	{#if holdingUrl}
 		<Modal close={handleCloseHoldings}>
 			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
 			<div class="flex flex-col gap-4 px-4 text-sm">
@@ -108,12 +112,7 @@
 						</div>
 					{/if}
 					<div class="overview">
-						<DecoratedData
-							data={data.instances?.find((instanceItem) =>
-								instanceItem['@id'].includes(selectedHolding)
-							)}
-							block
-						/>
+						<DecoratedData data={selectedHoldingInstance} block />
 					</div>
 				</div>
 				<div>
