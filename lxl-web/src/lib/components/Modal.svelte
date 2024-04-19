@@ -5,6 +5,8 @@
 	import { fade, fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
 	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
+	import BiXLg from '~icons/bi/x-lg';
 
 	export let dialog: HTMLDialogElement | undefined = undefined;
 	export let close: ((event: Event) => void) | undefined = undefined;
@@ -70,8 +72,13 @@
 			>
 				<h1 class="text-3-cond-bold"><slot name="title" /></h1>
 				<!-- svelte-ignore a11y-autofocus -->
-				<button on:click={handleClose} autofocus class="flex h-11 w-11 items-center justify-center">
-					X
+				<button
+					on:click={handleClose}
+					autofocus
+					class="flex h-11 w-11 items-center justify-center"
+					aria-label={$page.data.t('general.close')}
+				>
+					<BiXLg />
 				</button>
 			</header>
 			<slot />
