@@ -33,7 +33,7 @@
 			{@const facets = searchResult.facetGroups}
 			{@const numHits = searchResult.totalItems}
 			<div class="find container-fluid">
-				<nav class="mapping flex flex-wrap items-center gap-2" aria-label="Valda filter">
+				<nav class="mapping" aria-label="Valda filter">
 					<SearchMapping mapping={searchResult.mapping} />
 				</nav>
 				<nav

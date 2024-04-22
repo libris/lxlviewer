@@ -12,8 +12,6 @@ import { type apiError } from '$lib/types/API.js';
 import { asResult, type PartialCollectionView, type SearchResult } from './search.js';
 import getAtPath from '$lib/utils/getAtPath';
 
-// let cachedSearchResult: null | PartialCollectionView = null;
-
 export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	const displayUtil: DisplayUtil = locals.display;
 	const locale = getSupportedLocale(params?.lang);
@@ -78,7 +76,6 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
 		}
 
-		console.log('fetching', searchParams.toString());
 		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`, {
 			redirect: 'manual'
 		});
