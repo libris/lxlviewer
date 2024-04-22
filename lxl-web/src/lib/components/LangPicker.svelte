@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import BiGlobeAmericas from '~icons/bi/globe-americas';
 	import { Locales, defaultLocale } from '$lib/i18n/locales';
 
 	function mapLocales(currentLocale: string) {
@@ -30,8 +31,11 @@
 		aria-controls="lang-picker-menu"
 		data-testid="current-lang"
 	>
-		{Locales[$page.data.locale]} ⌄</button
-	>
+		<span class="flex items-center gap-1.5">
+			<span><BiGlobeAmericas class="inline text-icon-default" /></span>
+			<span>{Locales[$page.data.locale]}</span>
+		</span>
+	</button>
 	<ul
 		id="lang-picker-menu"
 		class="absolute right-0 my-3 rounded-sm bg-cards p-3"
