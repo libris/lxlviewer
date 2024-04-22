@@ -213,9 +213,6 @@
 {/key}
 
 <style lang="postcss">
-	a {
-		color: inherit;
-	}
 	.definition {
 		@apply text-sm italic text-secondary underline decoration-dotted;
 	}

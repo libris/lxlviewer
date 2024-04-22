@@ -15,8 +15,9 @@ export default {
 			'primary-inv': 'rgb(var(--text-primary-inv) / 1)',
 			secondary: 'rgb(var(--text-primary) / 0.8)',
 			'secondary-inv': 'rgb(var(--text-primary-inv) / 0.8)',
-			link: 'rgb(var(--text-link) / 1)',
+			link: 'rgb(var(--text-link) / 0.8)',
 			disabled: 'rgb(var(--text-primary) / 0.6)',
+			hover: 'rgb(var(--text-link) / 1)',
 			'icon-default': 'rgb(var(--icon-default) / 0.4)',
 			'icon-inv-secondary': 'rgb(var(--icon-inv-secondary) / 0.64)'
 		},

@@ -56,10 +56,10 @@
 		</div>
 	</a>
 
-	<div class="flex flex-col gap-2">
+	<div class="flex flex-1 flex-col gap-2">
 		<a
 			href={relativizeUrl(item['@id'])}
-			class="search-card-heading line-clamp-2 text-ellipsis text-secondary no-underline text-4-regular"
+			class="search-card-heading line-clamp-2 text-ellipsis no-underline text-4-regular"
 			data-testid="search-card-heading"
 			><h2>
 				<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
@@ -86,16 +86,10 @@
 	</div>
 </li>
 
-<style>
+<style lang="postcss">
 	.search-card-heading {
 		& :global([data-property='mainTitle']) {
 			@apply text-4-cond-bold;
-		}
-
-		&:not(:visited) {
-			& :global([data-property='mainTitle']) {
-				@apply text-primary;
-			}
 		}
 	}
 

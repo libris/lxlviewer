@@ -39,7 +39,7 @@
 	}
 
 	a {
-		@apply text-link underline visited:text-[purple];
+		@apply text-link underline hover:text-hover;
 	}
 
 	input {
