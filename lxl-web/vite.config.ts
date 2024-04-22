@@ -7,7 +7,8 @@ export default defineConfig({
 		sveltekit(),
 		Icons({
 			compiler: 'svelte',
-			defaultClass: 'text-icon-default'
+			defaultClass: 'text-icon-default',
+			scale: 1
 		})
 	],
 	test: {

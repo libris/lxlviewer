@@ -12,10 +12,9 @@ import { type apiError } from '$lib/types/API.js';
 import { asResult, type PartialCollectionView, type SearchResult } from './search.js';
 import getAtPath from '$lib/utils/getAtPath';
 
-let cachedSearchResult: null | PartialCollectionView = null;
+// let cachedSearchResult: null | PartialCollectionView = null;
 
 export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
-	console.log('has cache', !!cachedSearchResult);
 	const displayUtil: DisplayUtil = locals.display;
 	const locale = getSupportedLocale(params?.lang);
 
@@ -71,52 +70,35 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			redirect(303, `/`); // redirect to home page if no search params are given
 		}
 
-		let result;
+		let searchParams = new URLSearchParams(url.searchParams.toString());
 
-		if (
-			cachedSearchResult &&
-			decodeURIComponent(cachedSearchResult['@id']) === decodeURIComponent(`/find${url.search}`)
-		) {
-			// we have a cached result with matching query
-			console.log('picking up from cache');
-			result = cachedSearchResult;
-			cachedSearchResult = null;
-		} else {
-			let searchParams = new URLSearchParams(url.searchParams.toString());
+		if (shouldFindRelations && resourceId) {
+			searchParams.set('_o', resourceId);
+			searchParams.set('_i', '*');
+			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
+		}
 
-			if (shouldFindRelations && resourceId) {
-				searchParams.set('_o', resourceId);
-				searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
-			}
+		console.log('fetching', searchParams.toString());
+		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`, {
+			redirect: 'manual'
+		});
 
-			console.log('fetching', searchParams.toString());
-			const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
-
-			if (!recordsRes.ok) {
+		if (!recordsRes.ok) {
+			if (recordsRes.status > 299 && recordsRes.status < 400) {
+				// redirect from api -> redirect in app
+				const location = recordsRes.headers.get('location');
+				const url = location && new URL(location);
+				if (url) {
+					console.log('redirecting to', `${url.pathname}${url.search}`);
+					redirect(recordsRes.status, `${url.pathname}${url.search}`);
+				}
+			} else {
 				const err = (await recordsRes.json()) as apiError;
 				throw error(err.status_code, err.status);
 			}
-
-			result = (await recordsRes.json()) as PartialCollectionView;
 		}
 
-		console.log(
-			'matching',
-			result['@id'],
-			`/find${url.search}`,
-			result['@id'] === `/find${url.search}`
-		);
-
-		if (
-			isFindRoute &&
-			decodeURIComponent(`/find${url.search}`) !== decodeURIComponent(result['@id'])
-		) {
-			// recieved a redirected api response
-			// redirect and cache response for next load
-			cachedSearchResult = result;
-			console.log('redirecting');
-			redirect(308, result['@id']);
-		}
+		const result = (await recordsRes.json()) as PartialCollectionView;
 
 		// Hide zero results from resource page
 		if (result.totalItems > 0 || isFindRoute) {

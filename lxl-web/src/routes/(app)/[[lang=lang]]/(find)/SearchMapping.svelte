@@ -1,11 +1,21 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import type { DisplayMapping, SearchOperators } from './search';
 	import BiXLg from '~icons/bi/x-lg';
+	import BiPencil from '~icons/bi/pencil';
 	export let mapping: DisplayMapping[];
 	export let parentOperator: keyof typeof SearchOperators | undefined = undefined;
 	export let depth = 0;
+
+	$: showEditButton =
+		$page.url.pathname === `${$page.data.base}find` &&
+		$page.url.searchParams.get('_q') !== $page.url.searchParams.get('_i');
+	$: editActive = $page.url.searchParams.get('_x') === 'advanced';
+	$: toggleEditUrl = editActive
+		? $page.url.href.replace('&_x=advanced', '')
+		: `${$page.url.href}&_x=advanced`;
 
 	function getRelationSymbol(operator: keyof typeof SearchOperators): string {
 		switch (operator) {
@@ -55,11 +65,17 @@
 			<li class="pill-between pill-between-{parentOperator}">{parentOperator}</li>
 		{/if}
 	{/each}
+	{#if showEditButton && depth === 0}
+		<a class="edit-btn" class:active={editActive} href={toggleEditUrl}>
+			<BiPencil class="text-icon-default" />
+			<span>Redigera</span>
+		</a>
+	{/if}
 </ul>
 
 <style lang="postcss">
 	.mapping-item {
-		@apply rounded-md py-2 pl-3 pr-3 brightness-100 text-3-cond-bold;
+		@apply rounded-md px-4 py-2 brightness-100 text-3-cond-bold;
 		transition: filter 0.1s ease;
 	}
 
@@ -103,5 +119,16 @@
 		@apply hidden;
 	}
 	.pill-remove {
+	}
+
+	/* TODO - move to button component/ghost */
+	.edit-btn {
+		@apply flex items-center gap-2 rounded-md bg-main px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold;
+		transition: filter 0.1s ease;
+
+		&:hover,
+		&.active {
+			@apply brightness-95;
+		}
 	}
 </style>

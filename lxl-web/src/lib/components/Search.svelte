@@ -48,6 +48,7 @@
 		{autofocus}
 		data-testid="main-search"
 	/>
+	<input type="hidden" name="_i" value={q} />
 	{#each searchParams as [name, value]}
 		{#if name !== '_q'}
 			<input type="hidden" {name} {value} />
