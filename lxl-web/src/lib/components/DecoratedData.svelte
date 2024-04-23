@@ -14,13 +14,7 @@
 	export let block = false;
 	export let truncate = false;
 	export let key: ResourceData | string = data;
-
-	// truncate option; use only first item as data and keep the rest for tooltip
-	let remainder: ResourceData[] | undefined;
-	if (truncate && Array.isArray(data) && data?.[0] && '@type' in data[0]) {
-		[data, ...remainder] = data;
-		truncate = false;
-	}
+	export let remainder: ResourceData | undefined = undefined;
 
 	const hiddenProperties = [
 		'@context',
@@ -130,16 +124,30 @@
 {#key key}
 	{#if data && typeof data === 'object'}
 		{#if Array.isArray(data)}
-			{#each data as arrayItem}
+			{#if truncate && depth === 1 && data.length > 1}
+				<!-- truncate option; use only first item as data and keep the remainder for tooltip -->
+				{@const [first, ...remainder] = data}
 				<svelte:self
-					data={arrayItem}
+					data={first}
 					depth={depth + 1}
 					{showLabels}
 					{block}
 					{allowPopovers}
-					{truncate}
+					truncate={false}
+					{remainder}
 				/>
-			{/each}
+			{:else}
+				{#each data as arrayItem}
+					<svelte:self
+						data={arrayItem}
+						depth={depth + 1}
+						{showLabels}
+						{block}
+						{allowPopovers}
+						{truncate}
+					/>
+				{/each}
+			{/if}
 		{:else}
 			{#if shouldShowContentBefore()}
 				<span class="_contentBefore">
@@ -163,7 +171,7 @@
 						{allowPopovers}
 						{truncate}
 					/>
-					{#if remainder}
+					{#if remainder && Array.isArray(remainder)}
 						<span
 							use:resourcePopover={{ data: remainder, lang: getSupportedLocale($page.params.lang) }}
 							class="remainder">+ {remainder.length}</span
