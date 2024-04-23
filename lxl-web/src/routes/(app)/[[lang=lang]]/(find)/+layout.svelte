@@ -22,6 +22,8 @@
 		}
 		goto(`${$page.url.pathname}?${searchParams.toString()}`, { invalidateAll: true });
 	}
+
+	let searchPhrase = '';
 </script>
 
 <slot />
@@ -43,9 +45,16 @@
 				>
 					{#if facets && facets.length > 0}
 						<header id="facet-sidebar-header" class="font-bold">Filter</header>
+						<input
+							bind:value={searchPhrase}
+							class="mt-2"
+							placeholder={$page.data.t('search.findFilter')}
+							title={$page.data.t('search.findFilter')}
+							type="search"
+						/>
 						<ol>
 							{#each facets as group (group.dimension)}
-								<FacetGroup {group} locale={$page.data.locale} />
+								<FacetGroup {group} locale={$page.data.locale} {searchPhrase} />
 							{/each}
 						</ol>
 					{/if}

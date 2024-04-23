@@ -34,7 +34,9 @@ export default {
 		yearPublished: 'Utgivningsår',
 		intendedAudience: 'Målgrupp'
 	},
-	search: {},
+	search: {
+		findFilter: 'Hitta filter'
+	},
 	errors: {},
 	general: {
 		collapseAll: 'Stäng alla',

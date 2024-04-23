@@ -35,7 +35,9 @@ export default {
 		yearPublished: 'Year published',
 		intendedAudience: 'Intended audience'
 	},
-	search: {},
+	search: {
+		findFilter: 'Find filter'
+	},
 	errors: {},
 	general: {
 		collapseAll: 'Collapse all',
