@@ -77,6 +77,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		}
 
 		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`, {
+			// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
 			redirect: 'manual'
 		});
 

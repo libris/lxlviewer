@@ -66,7 +66,7 @@
 		{/if}
 	{/each}
 	{#if showEditButton && depth === 0}
-		<a class="edit-btn" class:active={editActive} href={toggleEditUrl}>
+		<a class="edit-btn" data-sveltekit-replacestate class:active={editActive} href={toggleEditUrl}>
 			<BiPencil class="text-icon-default" />
 			<span>Redigera</span>
 		</a>
