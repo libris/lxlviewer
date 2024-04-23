@@ -67,9 +67,9 @@ export default {
       if (this.searchPerimeter === 'libris' || this.searchPerimeter === 'remote') {
         path = `/search/${this.searchPerimeter}?${this.composeQuery()}`;
       } else if (this.searchTool === 'changes') {
-        //Keep facets
+        // Keep facets
         if (!isEmpty(this.$route.query)) {
-          let queryObj = cloneDeep(this.$route.query);
+          const queryObj = cloneDeep(this.$route.query);
           queryObj.q = this.searchPhrase === '' ? '*' : this.searchPhrase;
           path = `${this.$route.path}?${buildQueryString(queryObj)}`;
         } else {
@@ -257,7 +257,7 @@ export default {
     },
     isChangeView() {
       return this.searchTool === 'changes' || this.$route.path === '/directory-care/changes';
-    }
+    },
   },
   components: {
     'remote-databases': RemoteDatabases,

@@ -16,7 +16,7 @@ export default {
 </script>
 
 <template>
-  <find></find>
+  <find />
 </template>
 
 <style lang="less">
