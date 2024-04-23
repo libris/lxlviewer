@@ -8,12 +8,12 @@
 
 	const sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
-		{ value: '', label: 'Relevans' },
-		{ value: `_sortKeyByLang.${$page.data.locale}`, label: 'A-Ö' },
-		{ value: `-_sortKeyByLang.${$page.data.locale}`, label: 'Ö-A' },
-		{ value: '-@reverse.instanceOf.publication.year', label: 'Utgivningsår (nyast först)' },
-		{ value: '@reverse.instanceOf.publication.year', label: 'Utgivningsår (äldst först)' },
-		{ value: '-reverseLinks.totalItems', label: 'Mest länkad' }
+		{ value: '', label: $page.data.t('sort.relevancy') },
+		{ value: `_sortKeyByLang.${$page.data.locale}`, label: $page.data.t('sort.alphaAsc') },
+		{ value: `-_sortKeyByLang.${$page.data.locale}`, label: $page.data.t('sort.alphaDesc') },
+		{ value: '-@reverse.instanceOf.publication.year', label: $page.data.t('sort.publicationDesc') },
+		{ value: '@reverse.instanceOf.publication.year', label: $page.data.t('sort.publicationAsc') },
+		{ value: '-reverseLinks.totalItems', label: $page.data.t('sort.linksDesc') }
 	];
 
 	function handleSortChange(e: Event) {
