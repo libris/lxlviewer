@@ -97,7 +97,7 @@
 			/>
 		{/if}
 	</div>
-	{#if holdingUrl}
+	{#if holdingUrl && selectedHoldingInstance}
 		<Modal close={handleCloseHoldings}>
 			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
 			<div class="flex flex-col gap-4 px-4 text-sm">
