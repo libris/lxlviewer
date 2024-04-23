@@ -278,6 +278,7 @@ export default {
     searchTool(newVal, oldVal) {
       if (newVal !== oldVal && newVal === 'changes') {
         this.clearInputs();
+        this.resetSearchParam();
         this.doSearch();
       }
     },
