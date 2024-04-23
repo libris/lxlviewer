@@ -5,13 +5,15 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--color-black: 0 0 0;
 	--color-white: 255 255 255;
 	--color-brown: 82 51 20;
+	--color-brown-light: 103 64 25;
 	--color-dark-green: 66 107 84;
 	--color-light-green: 213 229 220;
-	--color-beige: 248 246 241;
-	--color-pink: 236 214 192;
+	--color-beige: 247 246 242;
+	--color-pink: 239 214 189;
 
 	/* Fundament */
 	--color-primary: var(--color-brown);
+	--color-primary-light: var(--color-brown-light);
 	--color-accent-dark: var(--color-dark-green);
 	--color-accent-light: var(--color-light-green);
 	--color-subtle: var(--color-beige);
@@ -20,14 +22,16 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	/* Text colors */
 	--text-primary: var(--color-primary);
 	--text-primary-inv: var(--color-white);
-	--text-link: var(--color-accent-dark);
+	--text-link: var(--color-primary);
 
 	/* Bg colors */
 	--bg-main: var(--color-subtle);
 	--bg-head: var(--color-accent-light);
 	--bg-positive: var(--color-accent-light);
-	--bg-positive-inv: var(--color-primary);
+	--bg-positive-inv: var(--color-primary-light);
+	--bg-negative: var(--color-highlight);
 	--bg-cards: var(--color-white);
+	--bg-pill: var(--color-brown);
 }
 
 /* Dark mode */

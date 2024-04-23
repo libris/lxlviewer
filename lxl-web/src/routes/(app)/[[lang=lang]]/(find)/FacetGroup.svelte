@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { LocaleCode } from '$lib/i18n/locales';
+	import { relativizeUrl } from '$lib/utils/http';
 	import { type FacetGroup } from './search';
 
 	export let group: FacetGroup;
@@ -19,14 +20,15 @@
 	$: canShowLessFacets = !canShowMoreFacets && filteredFacets.length > defaultFacetsShown;
 </script>
 
-<li class="my-4 border-b-[1px] pb-2 text-2-regular">
+<li class="my-4 border-b-[1px] pb-2">
 	<button
 		id={'toggle-' + group.dimension}
 		type="button"
 		on:click={() => (expanded = !expanded)}
 		aria-expanded={!!expanded}
 		aria-controls={'group-' + group.dimension}
-		class="w-full text-left text-2-cond-bold"
+		class="w-full text-left font-bold"
+		data-testid="facet-toggle"
 	>
 		{expanded ? '⌃' : '⌄'} {group.label}</button
 	>
@@ -43,17 +45,15 @@
 				title="Sök {group.label.toLowerCase()}"
 			/>
 		{/if}
-		<ol class="mt-2">
+		<ol class="mt-2" data-testid="facet-list">
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li>
-					<a class="flex justify-between no-underline text-2-regular" href={facet.view['@id']}>
+					<a class="flex justify-between no-underline" href={relativizeUrl(facet.view['@id'])}>
 						<span class="flex items-baseline">
 							{#if 'selected' in facet}
 								<!-- howto A11y?! -->
 								<span class="sr-only">{facet.selected ? 'Valt filter' : ''}</span>
-								<span class="mr-1 text-3-regular" aria-hidden="true"
-									>{facet.selected ? '☑' : '☐'}</span
-								>
+								<span class="mr-1" aria-hidden="true">{facet.selected ? '☑' : '☐'}</span>
 							{/if}
 							<span>{facet.str}</span>
 						</span>

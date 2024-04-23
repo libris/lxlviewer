@@ -7,16 +7,16 @@
 	export let placeholder: string;
 	export let autofocus: boolean = false;
 
-	let q = $page.url.searchParams.get('q')?.trim();
+	let q = $page.url.searchParams.get('_q')?.trim();
 
-	const searchParams = Array.from(
-		getSortedSearchParams(getDefaultSearchParams($page.url.searchParams))
-	);
+	let params = getSortedSearchParams(getDefaultSearchParams($page.url.searchParams));
+	params.set('_offset', '0'); // Always reset offset on new search
+	const searchParams = Array.from(params);
 
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */
 		if (to?.url) {
-			q = new URL(to.url).searchParams.get('q')?.trim();
+			q = new URL(to.url).searchParams.get('_q')?.trim();
 		}
 	});
 
@@ -35,15 +35,16 @@
 		id="main-search"
 		class="h-12 w-full rounded-full text-secondary sm:h-14"
 		type="search"
-		name="q"
+		name="_q"
 		{placeholder}
 		aria-label="Sök"
 		spellcheck="false"
 		bind:value={q}
 		{autofocus}
+		data-testid="main-search"
 	/>
 	{#each searchParams as [name, value]}
-		{#if name !== 'q'}
+		{#if name !== '_q'}
 			<input type="hidden" {name} {value} />
 		{/if}
 	{/each}

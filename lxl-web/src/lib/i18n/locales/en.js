@@ -24,10 +24,29 @@ export default {
 		'meta.bibliography.@id': 'In bibliography',
 		'category.@id': 'Change category',
 		'concerning.@reverse.itemOf.heldBy.@id': 'Has holding',
+		'concerning.issuanceType': 'Issuance type',
 		'@reverse': 'Relation',
-		'meta.encodingLevel': 'Encoding level'
+		'meta.encodingLevel': 'Encoding level',
+		genreForm: 'Genre/form',
+		itemHeldBy: 'Library',
+		contributor: 'Contribution',
+		language: 'Language',
+		subject: 'Subject',
+		yearPublished: 'Year published',
+		intendedAudience: 'Intended audience'
 	},
 	search: {},
 	errors: {},
-	general: {}
+	general: {
+		collapseAll: 'Collapse all',
+		copyPermalinkToInstance: 'Copy link to edition',
+		latestInstanceCover: 'Cover of latest edition',
+		instanceCover: 'Cover of edition',
+		close: 'Close'
+	},
+	holdings: {
+		availableAt: 'Available at',
+		library: 'library',
+		libraries: 'libraries'
+	}
 };

@@ -24,7 +24,6 @@ npm run build
 and start it:
 
 ```bash
-npm install dotenv
 node -r dotenv/config build
 ```
 

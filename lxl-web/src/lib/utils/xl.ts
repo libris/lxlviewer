@@ -28,18 +28,22 @@ enum Fmt {
 	LABEL = '_label'
 }
 
+// https://github.com/libris/definitions/blob/develop/source/vocab/base.ttl
 enum Base {
 	StructuredValue = 'StructuredValue'
 }
 
+// https://github.com/libris/definitions/blob/develop/source/vocab/platform.ttl
 enum Platform {
-	integral = 'integral'
+	integral = 'integral',
+	meta = 'meta'
 }
 
 type ClassName = string;
 export type PropertyName = string;
 export type LangCode = string;
 
+// https://github.com/libris/definitions/blob/develop/source/vocab/display.jsonld
 interface DisplayJsonLd {
 	[JsonLd.CONTEXT]: Context;
 	[JsonLd.GRAPH]: unknown;
@@ -49,6 +53,7 @@ interface DisplayJsonLd {
 
 type LangContainer = Record<LangCode, string | string[]>;
 
+// https://www.w3.org/2005/04/fresnel-info/manual/
 enum Fresnel {
 	Format = 'fresnel:Format',
 	Group = 'fresnel:Group',
@@ -124,6 +129,7 @@ export enum LensType {
 	SearchChip = 'search-chips',
 	SearchCard = 'search-cards',
 	WebChip = 'web-chips',
+	WebCard = 'web-card',
 	None = null // FIXME
 }
 
@@ -133,8 +139,10 @@ export interface DerivedLensTypeDefinition {
 	name: DerivedLensType;
 	// use the first of these found as the base
 	base: LensType[];
+	// remove all showProperties from the first of these that is found
+	minusFirst: LensType[];
 	// remove all showProperties from these
-	minus: LensType[];
+	minusAll: LensType[];
 }
 
 type Context = Record<string, string | Record<JsonLd, string>>;
@@ -196,7 +204,7 @@ export class VocabUtil {
 	}
 
 	isSubClassOf(className: ClassName, baseClassName: ClassName) {
-		this.getBaseClasses(className).includes(baseClassName);
+		return this.getBaseClasses(className).includes(baseClassName);
 	}
 
 	isStructuredValue(className: ClassName) {
@@ -244,6 +252,11 @@ export class DisplayUtil {
 		lensType: LensType | DerivedLensType,
 		propertyName: PropertyName
 	) => {
+		// FIXME - hardcoded workaround to get title + language in translationOf - should we use sublenses?
+		if (this.isDerivedLens(lensType) && propertyName === 'translationOf') {
+			return LensType.Card;
+		}
+
 		if (this.vocabUtil.hasCategory(propertyName, Platform.integral)) {
 			return lensType;
 		}
@@ -262,6 +275,7 @@ export class DisplayUtil {
 				return LensType.Card;
 			case LensType.Card:
 			case LensType.SearchCard:
+			case LensType.WebCard:
 				return LensType.Chip;
 			case LensType.Chip:
 			case LensType.SearchChip:
@@ -341,7 +355,9 @@ export class DisplayUtil {
 	}
 
 	private deriveLens(type: ClassName, def: DerivedLensTypeDefinition): Lens {
-		const taken = def.minus
+		let taken = this.findLens(def.minusFirst, type).showProperties.map((s) => JSON.stringify(s));
+
+		taken += def.minusAll
 			.map((l) => this.findLens(l, type).showProperties)
 			.flat()
 			.map((s) => JSON.stringify(s));
@@ -408,7 +424,12 @@ export class DisplayUtil {
 		};
 
 		const pick = (src: Data, key: string) => {
-			if (key in src) {
+			if (key === JsonLd.ID && src[Platform.meta] && src[Platform.meta][JsonLd.ID]) {
+				// replace mainEntity id with record id.
+				// This is incorrect semantically but keeps links within the platform for display purposes
+				// TODO revisit when we want to be able to display the correct id as well...
+				accumulate(src[Platform.meta], JsonLd.ID);
+			} else if (key in src) {
 				accumulate(src, key);
 			}
 			if (key in this.langContainerAlias) {
@@ -467,7 +488,8 @@ export class DisplayUtil {
 	private _findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
 		for (const lens of asArray(lenses)) {
 			for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
-				if (cls in this.display.lensGroups[lens].lenses) {
+				if (this.display.lensGroups[lens] && cls in this.display.lensGroups[lens].lenses) {
+					// console.debug(`_findLens ${className} ${lenses} -> ${JSON.stringify(this.display.lensGroups[lens].lenses[cls], null, 2)}`)
 					return this.display.lensGroups[lens].lenses[cls];
 				}
 			}
@@ -483,10 +505,6 @@ export class DisplayUtil {
 		}
 
 		return this.DEFAULT_LENS;
-	}
-
-	_getFormatIndex() {
-		return this.formatIndex;
 	}
 
 	private buildLangContainerAliasMap() {
@@ -575,7 +593,10 @@ class Formatter {
 		'displayType()': (v) => {
 			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
 				// TODO doesn't translate type name
-				(v[Fmt.DISPLAY] as Array<unknown>).unshift({ [JsonLd.VALUE]: v[JsonLd.TYPE] });
+				(v[Fmt.DISPLAY] as Array<unknown>).unshift({
+					[JsonLd.VALUE]: v[JsonLd.TYPE],
+					[Fmt.CONTENT_AFTER]: ' '
+				});
 			}
 			return v;
 		}
@@ -672,6 +693,17 @@ class Formatter {
 
 		let result = {} as Record<string, unknown>;
 		result = this.styleProperty(result, className, propertyName);
+
+		if (Array.isArray(value) && asArray(result[Fmt.STYLE]).includes('sort()')) {
+			value.filter(isObject).forEach((v) => {
+				v._str = toString(this.formatValues(v, className, propertyName)).toLowerCase();
+			});
+			value.sort((a, b) => {
+				const cmp = (x) => (isObject(x) ? x._str : typeof x === 'string' ? x : `${x}`);
+				return cmp(a).localeCompare(cmp(b), this.locale);
+			});
+		}
+
 		this.addFormatDetail(result, this.findPropertyFormat(className, propertyName), isFirst, isLast);
 
 		result[propertyName] = this.formatValues(value, className, propertyName);
@@ -826,12 +858,12 @@ class Formatter {
 		for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 			const ix = `${cls}/${propertyName}`;
 			if (ix in this.formatIndex && hasFormat(this.formatIndex[ix])) {
-				console.debug(`${ix} -> ${this.formatIndex[ix]}`);
+				// console.debug(`${ix} -> ${JSON.stringify(this.formatIndex[ix], null, 2)}`);
 				return this.formatIndex[ix];
 			}
 		}
 		if (propertyName in this.formatIndex && hasFormat(this.formatIndex[propertyName])) {
-			console.debug(`${className} ${propertyName} ${key} -> ${this.formatIndex[propertyName]}`);
+			// console.debug(`${className} ${propertyName} ${key} -> ${JSON.stringify(this.formatIndex[propertyName], null, 2)}`);
 			return this.formatIndex[propertyName];
 		}
 		for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
@@ -985,4 +1017,30 @@ export function isObject(data: unknown): data is Data {
 
 function isLangContainerDefinition(dfn: Record<string, string>) {
 	return dfn[JsonLd.CONTAINER] == JsonLd.LANGUAGE;
+}
+
+export function pickProperty(
+	data: DisplayDecorated,
+	pickProperties: PropertyName[]
+): [DisplayDecorated | undefined, DisplayDecorated] {
+	if (!isTypedNode(data)) {
+		return [undefined, data];
+	}
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { [Fmt.DISPLAY]: _1, ...picked } = data;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { [Fmt.DISPLAY]: _2, ...rest } = data;
+
+	picked[Fmt.DISPLAY] = [];
+	rest[Fmt.DISPLAY] = [];
+
+	data[Fmt.DISPLAY].forEach((p) => {
+		if (isObject(p) && pickProperties.some((name) => name in p)) {
+			picked[Fmt.DISPLAY].push(p);
+		} else {
+			rest[Fmt.DISPLAY].push(p);
+		}
+	});
+
+	return [picked, rest];
 }

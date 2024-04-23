@@ -8,7 +8,6 @@ describe('addDefaultSearchParams', () => {
 				['q', '*'],
 				['@type', 'Work'],
 				['_limit', '10'],
-				['_offset', '0'],
 				['_sort', '']
 			])
 		);
@@ -19,7 +18,17 @@ describe('addDefaultSearchParams', () => {
 				['q', 'test'],
 				['@type', 'Work'],
 				['_limit', '10'],
+				['_sort', '']
+			])
+		);
+	});
+	it('resets the offset if set', () => {
+		expect(addDefaultSearchParams(new URLSearchParams([['_offset', '30']]))).toStrictEqual(
+			new URLSearchParams([
 				['_offset', '0'],
+				['q', '*'],
+				['@type', 'Work'],
+				['_limit', '10'],
 				['_sort', '']
 			])
 		);

@@ -1,6 +1,7 @@
 import type { Action } from 'svelte/action';
 import type { LocaleCode } from '$lib/i18n/locales';
 import ResourcePopover from './ResourcePopover.svelte';
+import type { ResourceData } from '$lib/types/ResourceData';
 
 /** Tests to do
  * - [] Attaches popover when user hovers over trigger node (after delay)
@@ -13,10 +14,10 @@ import ResourcePopover from './ResourcePopover.svelte';
  * - [] Closes popover immediately when the URL changes
  */
 
-export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode }> = (
-	node: HTMLElement,
-	options
-) => {
+export const resourcePopover: Action<
+	HTMLElement,
+	{ id?: string; data?: ResourceData[]; lang: LocaleCode }
+> = (node: HTMLElement, options) => {
 	const FETCH_DELAY = 250;
 	const ATTACH_DELAY = 500;
 	const REMOVE_DELAY = 200;
@@ -35,8 +36,10 @@ export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode
 
 	async function attachPopover() {
 		try {
+			cancelAttach?.(); // cancel earlier promises to ensure popovers doesn't appear after navigating
 			cancelRemove?.();
-			if (options.id && !attached) {
+			cancelFetch?.();
+			if ((options.id || options.data) && !attached) {
 				const [decoratedData] = await Promise.all([
 					getDecoratedData(),
 					new Promise((resolve, reject) => {
@@ -52,8 +55,7 @@ export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode
 						onMouseOver: startFloatingElementInteraction,
 						onFocus: startFloatingElementInteraction,
 						onMouseLeave: endFloatingElementInteraction,
-						onBlur: endFloatingElementInteraction,
-						closeImmediately: destroyPopover
+						onBlur: endFloatingElementInteraction
 					}
 				});
 				attached = true;
@@ -76,6 +78,9 @@ export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode
 	}
 
 	function destroyPopover() {
+		cancelAttach?.();
+		cancelFetch?.();
+		cancelRemove?.();
 		floatingElement?.$destroy();
 		attached = false;
 	}
@@ -94,8 +99,13 @@ export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode
 			setTimeout(resolve, FETCH_DELAY);
 		});
 		try {
-			const resourceRes = await fetch(`/api/${options.lang}/${options.id.split('/').pop()}`);
-			const resource = await resourceRes.json();
+			let resource;
+			if (options.data) {
+				resource = options.data;
+			} else if (options.id) {
+				const resourceRes = await fetch(`/api/${options.lang}/${options.id.split('/').pop()}`);
+				resource = await resourceRes.json();
+			}
 			return resource;
 		} catch (error) {
 			console.error(error);
@@ -105,6 +115,7 @@ export const resourcePopover: Action<HTMLElement, { id: string; lang: LocaleCode
 
 	return {
 		destroy() {
+			destroyPopover();
 			node.removeEventListener('mouseover', attachPopover);
 			node.removeEventListener('mouseout', removePopover);
 			node.removeEventListener('focus', attachPopover);

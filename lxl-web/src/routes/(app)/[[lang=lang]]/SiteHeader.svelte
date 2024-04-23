@@ -8,7 +8,7 @@
 </script>
 
 {#if isLandingPage}
-	<header class="container-fluid flex flex-col gap-8 py-10">
+	<header class="container-fluid flex flex-col gap-8 bg-head py-10 pb-20">
 		<nav class="flex justify-center sm:justify-end">
 			<ol class="flex items-center gap-6 text-secondary">
 				<li>Hjälp</li>
@@ -16,12 +16,12 @@
 				<li><LangPicker /></li>
 			</ol>
 		</nav>
-		<div class="flex flex-col items-center gap-6">
+		<div class="flex flex-col items-center">
 			<div class="flex items-baseline gap-3 sm:gap-6">
 				<img class="h-12 w-12 sm:h-24 sm:w-24" alt="Libris logo" src={logo} />
-				<h1 class="text-3xl font-bold leading-none text-primary sm:text-[5.5rem]">Libris</h1>
+				<h1 class="text-3xl font-bold text-primary sm:text-[5.5rem]">Libris</h1>
 			</div>
-			<label for="main-search" class="text-center text-[1.25rem] text-secondary"
+			<label for="main-search" class="mb-4 text-center text-secondary text-4-regular"
 				>Hitta och låna i hela Sveriges bibliotekskatalog</label
 			>
 			<div class="w-full max-w-3xl">
@@ -30,7 +30,7 @@
 		</div>
 	</header>
 {:else}
-	<header class="bg-head pb-4 pt-11 sm:py-6">
+	<header class="bg-head pb-4 pt-4 sm:py-6">
 		<div class="container-fluid flex flex-nowrap items-center justify-between gap-4 sm:gap-16">
 			<a class="flex items-baseline gap-2 no-underline" href={$page.data.base}>
 				<img class="h-10 w-10" alt="Libris logo" src={logo} />

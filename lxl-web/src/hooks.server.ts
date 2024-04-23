@@ -3,6 +3,7 @@ import { env } from '$env/dynamic/private';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import fs from 'fs';
 import { DERIVED_LENSES } from '$lib/utils/display.types';
+import displayWeb from '$lib/assets/json/display-web.json';
 
 let utilCache;
 
@@ -53,6 +54,19 @@ async function loadUtil() {
 		display = JSON.parse(displayJson);
 		console.warn(`USE_LOCAL_DISPLAY_JSONLD true. Using ${path}`);
 	}
+
+	// Merge display with lxl-web display stuff
+	// TODO later: move content back into definitions display.jsonld
+	display.formatters = { ...display.formatters, ...displayWeb.formatters };
+	Object.keys(displayWeb.lensGroups).forEach((g) => {
+		if (display.lensGroups[g]) {
+			Object.keys(displayWeb.lensGroups[g]['lenses']).forEach((l) => {
+				display.lensGroups[g]['lenses'][l] = displayWeb.lensGroups[g]['lenses'][l];
+			});
+		} else {
+			display.lensGroups[g] = displayWeb.lensGroups[g];
+		}
+	});
 
 	const vocabUtil = new VocabUtil(vocab, context);
 	const displayUtil = new DisplayUtil(display, vocabUtil);

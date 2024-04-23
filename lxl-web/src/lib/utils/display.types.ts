@@ -12,26 +12,31 @@ export const DERIVED_LENSES: DerivedLensTypeDefinition[] = [
 	{
 		name: LxlLens.PageHeading,
 		base: [LensType.WebChip, LensType.Chip],
-		minus: []
+		minusFirst: [],
+		minusAll: []
 	},
 	{
 		name: LxlLens.PageOverView,
 		base: [LensType.Card],
-		minus: [LensType.WebChip, LensType.Chip]
+		minusFirst: [LensType.WebChip, LensType.Chip],
+		minusAll: []
 	},
 	{
 		name: LxlLens.PageDetails,
 		base: [LensType.Full],
-		minus: [LensType.WebChip, LensType.Chip, LensType.Card]
+		minusFirst: [LensType.WebChip, LensType.Chip],
+		minusAll: [LensType.Card]
 	},
 	{
 		name: LxlLens.CardHeading,
 		base: [LensType.WebChip, LensType.Chip],
-		minus: []
+		minusFirst: [],
+		minusAll: []
 	},
 	{
 		name: LxlLens.CardBody,
-		base: [LensType.Card],
-		minus: [LensType.WebChip, LensType.Chip]
+		base: [LensType.WebCard, LensType.Card],
+		minusFirst: [LensType.WebChip, LensType.Chip],
+		minusAll: []
 	}
 ];
