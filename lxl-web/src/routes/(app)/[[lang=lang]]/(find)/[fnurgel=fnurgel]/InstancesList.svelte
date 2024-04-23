@@ -156,7 +156,7 @@
 										linkToFull
 									/>
 								</div>
-								{#if id}
+								{#if id && $page.data.holdingsByInstanceId[id]}
 									<div class="flex flex-col gap-2">
 										<a
 											href={getHoldingsLink($page.url, id)}
