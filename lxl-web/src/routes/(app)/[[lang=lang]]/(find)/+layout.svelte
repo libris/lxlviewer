@@ -10,7 +10,10 @@
 	const sortOptions = [
 		{ value: '', label: 'Relevans' },
 		{ value: `_sortKeyByLang.${$page.data.locale}`, label: 'A-Ö' },
-		{ value: `-_sortKeyByLang.${$page.data.locale}`, label: 'Ö-A' }
+		{ value: `-_sortKeyByLang.${$page.data.locale}`, label: 'Ö-A' },
+		{ value: '-@reverse.instanceOf.publication.year', label: 'Utgivningsår (nyast först)' },
+		{ value: '@reverse.instanceOf.publication.year', label: 'Utgivningsår (äldst först)' },
+		{ value: '-reverseLinks.totalItems', label: 'Mest länkad' }
 	];
 
 	function handleSortChange(e: Event) {
