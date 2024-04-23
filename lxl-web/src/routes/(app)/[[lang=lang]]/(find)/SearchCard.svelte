@@ -32,6 +32,7 @@
 					.filter((el, i, arr) => i === 0 || i === arr.length - 1)
 					.join('-');
 			}
+
 			return { count, years };
 		}
 		return null;
@@ -72,9 +73,13 @@
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances}
 							<span>
-								{instances?.count}
-								{instances.count > 1 ? 'utgåvor' : 'utgåva'}
-								{instances?.years && `(${instances.years})`}
+								{#if instances.count > 1}
+									{instances?.count}
+									{instances.count > 1 ? 'utgåvor' : 'utgåva'}
+									{instances?.years && `(${instances.years})`}
+								{:else}
+									{instances?.years && `${instances.years}`}
+								{/if}
 							</span>
 						{/if}
 					{:else}
