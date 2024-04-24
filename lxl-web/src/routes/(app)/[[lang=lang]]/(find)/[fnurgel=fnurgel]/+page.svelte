@@ -121,7 +121,13 @@
 					</div>
 				</div>
 				<div>
-					<h2 class="font-bold">{data.t('holdings.availableAt')}</h2>
+					<h2 class="font-bold">
+						{data.t('holdings.availableAt')}
+						{$page.data.holdingsByInstanceId[selectedHolding].length}
+						{$page.data.holdingsByInstanceId[selectedHolding].length === 1
+							? $page.data.t('holdings.library')
+							: $page.data.t('holdings.libraries')}
+					</h2>
 					<table class="w-full table-auto border-collapse text-sm">
 						{#if isFnurgel(latestHoldingUrl)}
 							{#if data.holdingsByInstanceId[selectedHolding]}
