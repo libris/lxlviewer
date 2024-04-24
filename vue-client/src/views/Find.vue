@@ -153,19 +153,19 @@ export default {
       return this.checkedCategoriesAndSigels.includes(id);
     },
     applyChangeFacets(stats) {
-      let query = cloneDeep(this.$route.query);
+      const query = cloneDeep(this.$route.query);
       Object.entries(stats.sliceByDimension).forEach(([key, value]) => {
         const facets = value.observation;
         facets.forEach((facet) => {
           const facetId = facet.object['@id'];
           if (this.selectedInSettings(facetId)) {
-            let currentFacetsForKey = query[key];
+            const currentFacetsForKey = query[key];
             if (currentFacetsForKey) {
               if (!currentFacetsForKey.includes(facetId)) {
                 currentFacetsForKey.push(facetId);
               }
             } else {
-              let obj = {};
+              const obj = {};
               obj[key] = [facetId];
               Object.assign(query, obj);
             }
