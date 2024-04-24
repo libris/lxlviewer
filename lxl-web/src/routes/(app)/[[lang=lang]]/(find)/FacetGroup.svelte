@@ -4,7 +4,6 @@
 	import { type FacetGroup } from './search';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiChevronDown from '~icons/bi/chevron-down';
-	import BiDiamond from '~icons/bi/diamond';
 
 	export let group: FacetGroup;
 	export let locale: LocaleCode;
@@ -43,8 +42,8 @@
 		<span class="flex items-center gap-2">
 			<span>
 				{#if searchPhrase}
-					<!-- FIXME -->
-					<BiDiamond class="text-icon-default" />
+					<!-- Currently groups can't be minimized while searching -->
+					<BiChevronDown class="text-icon-default" />
 				{:else if expanded}
 					<BiChevronDown class="text-icon-default" />
 				{:else}
