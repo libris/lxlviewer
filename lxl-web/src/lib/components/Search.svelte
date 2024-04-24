@@ -14,7 +14,6 @@
 
 	let params = getSortedSearchParams(getDefaultSearchParams($page.url.searchParams));
 	params.set('_offset', '0'); // Always reset offset on new search
-	params.delete('_i'); // delete possibly old '_i' value on new search
 	const searchParams = Array.from(params);
 
 	afterNavigate(({ to }) => {
@@ -48,10 +47,15 @@
 		{autofocus}
 		data-testid="main-search"
 	/>
-	<input type="hidden" name="_i" value={q} />
 	{#each searchParams as [name, value]}
 		{#if name !== '_q'}
 			<input type="hidden" {name} {value} />
 		{/if}
 	{/each}
+
+	<input type="hidden" name="_i" value={q} />
+	{#if $page.url.searchParams.get('_x') === 'advanced'}
+		<!-- keep 'edit' state on new search -->
+		<input type="hidden" name="_x" value="advanced" />
+	{/if}
 </form>
