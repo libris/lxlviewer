@@ -155,6 +155,7 @@
 									<ResourceImage
 										resource={item}
 										alt={$page.data.t('general.instanceCover')}
+										type={$page.data.type}
 										linkToFull
 									/>
 								</div>

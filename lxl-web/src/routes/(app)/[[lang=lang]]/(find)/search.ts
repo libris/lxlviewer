@@ -31,6 +31,7 @@ export async function asResult(
 		last: replacePath(view.last, usePath),
 		items: view.items.map((i) => ({
 			[JsonLd.ID]: i.meta[JsonLd.ID],
+			[JsonLd.TYPE]: i[JsonLd.TYPE],
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
 			imageUri: generateAuxdImageUri(calculateExpirationTime(), getFirstImageLink(i), auxdSecret)

@@ -5,10 +5,12 @@
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import { page } from '$app/stores';
-	import placeholderBook from '$lib/assets/img/placeholder-book.svg';
+	import placeholder from '$lib/assets/img/placeholder.svg';
+	import getTypeIcon from '$lib/utils/getTypeIcon';
 
 	export let item: {
 		'@id': string;
+		'@type': string;
 		'card-heading': ResourceData;
 		'card-body': ResourceData;
 		imageUri: string;
@@ -44,15 +46,31 @@
 	data-testid="search-card"
 >
 	<a href={relativizeUrl(item['@id'])}>
-		<div class="flex h-full max-h-20 w-full max-w-20">
+		<div class="relative flex h-full max-h-20 w-full max-w-20">
 			{#if item.imageUri}
 				<img
 					src={item.imageUri}
 					alt={$page.data.t('general.latestInstanceCover')}
 					class="h-auto w-full object-contain"
 				/>
+				{#if item['@type'] !== 'Text' && getTypeIcon(item['@type'])}
+					<div class="absolute left-0 top-0">
+						<div class="icon-bg relative bottom-2 left-2 rounded-md p-1">
+							<svelte:component this={getTypeIcon(item['@type'])} class="text-icon-default" />
+						</div>
+					</div>
+				{/if}
 			{:else}
-				<img src={placeholderBook} alt="" class="h-auto w-full object-contain" />
+				<div class="flex items-center justify-center">
+					<img src={placeholder} alt="" class="h-auto w-full object-contain" />
+
+					{#if getTypeIcon(item['@type'])}
+						<svelte:component
+							this={getTypeIcon(item['@type'])}
+							class="absolute text-2xl text-icon-default"
+						/>
+					{/if}
+				</div>
 			{/if}
 		</div>
 	</a>
@@ -111,5 +129,9 @@
 		:global([data-property='agent'] ._contentBefore) {
 			@apply inline;
 		}
+	}
+
+	.icon-bg {
+		background-color: #ffffff;
 	}
 </style>
