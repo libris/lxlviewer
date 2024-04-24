@@ -123,10 +123,17 @@
 				<div>
 					<h2 class="font-bold">
 						{data.t('holdings.availableAt')}
-						{$page.data.holdersByType[holdingUrl].length}
-						{$page.data.holdersByType[holdingUrl].length === 1
-							? $page.data.t('holdings.library')
-							: $page.data.t('holdings.libraries')}
+						{#if isFnurgel(holdingUrl)}
+							{data.holdingsByInstanceId[selectedHolding].length}
+							{data.holdingsByInstanceId[selectedHolding].length === 1
+								? data.t('holdings.library')
+								: data.t('holdings.libraries')}
+						{:else if data.holdersByType?.[latestHoldingUrl]}
+							{data.holdersByType[latestHoldingUrl].length}
+							{data.holdersByType[latestHoldingUrl].length === 1
+								? data.t('holdings.library')
+								: data.t('holdings.libraries')}
+						{/if}
 					</h2>
 					<table class="w-full table-auto border-collapse text-sm">
 						{#if isFnurgel(latestHoldingUrl)}
@@ -142,7 +149,7 @@
 									</tr>
 								{/each}
 							{/if}
-						{:else if data.holdersByType[latestHoldingUrl]}
+						{:else if data.holdersByType?.[latestHoldingUrl]}
 							{#each data.holdersByType[latestHoldingUrl] as holderItem}
 								<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
 									<td>
