@@ -35,6 +35,14 @@ export default {
 		intendedAudience: 'Målgrupp'
 	},
 	search: {},
+	sort: {
+		relevancy: 'Relevans',
+		alphaAsc: 'A-Ö',
+		alphaDesc: 'Ö-A',
+		publicationAsc: 'Utgivningsår (äldst först)',
+		publicationDesc: 'Utgivningsår (nyast först)',
+		linksDesc: 'Mest länkad'
+	},
 	errors: {},
 	general: {
 		collapseAll: 'Stäng alla',

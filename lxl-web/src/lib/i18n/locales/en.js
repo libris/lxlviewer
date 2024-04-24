@@ -36,6 +36,14 @@ export default {
 		intendedAudience: 'Intended audience'
 	},
 	search: {},
+	sort: {
+		relevancy: 'Relevancy',
+		alphaAsc: 'A-Z',
+		alphaDesc: 'Z-A',
+		publicationAsc: 'Publication year (oldest first)',
+		publicationDesc: 'Publication year (newest first)',
+		linksDesc: 'Most linked'
+	},
 	errors: {},
 	general: {
 		collapseAll: 'Collapse all',
