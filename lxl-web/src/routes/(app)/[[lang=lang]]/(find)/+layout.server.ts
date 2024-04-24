@@ -210,7 +210,7 @@ function getHoldingsByType(mainEntity: FramedData) {
 		const type = instanceOfItem['@type'];
 		return {
 			...acc,
-			[type]: [...(acc[type] || []), ...(instanceOfItem?.['@reverse'].itemOf || [])]
+			[type]: [...(acc[type] || []), ...(instanceOfItem?.['@reverse']?.itemOf || [])]
 		};
 	}, {});
 	if (!holdingsByType) {
