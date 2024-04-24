@@ -1,11 +1,22 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import type { DisplayMapping, SearchOperators } from './search';
 	import BiXLg from '~icons/bi/x-lg';
+	import BiPencil from '~icons/bi/pencil';
+	import BiTrash from '~icons/bi/trash';
 	export let mapping: DisplayMapping[];
 	export let parentOperator: keyof typeof SearchOperators | undefined = undefined;
 	export let depth = 0;
+
+	$: showEditButton =
+		$page.url.pathname === `${$page.data.base}find` &&
+		$page.url.searchParams.get('_q') !== $page.url.searchParams.get('_i');
+	$: editActive = $page.url.searchParams.get('_x') === 'advanced';
+	$: toggleEditUrl = editActive
+		? $page.url.href.replace('&_x=advanced', '')
+		: `${$page.url.href}&_x=advanced`;
 
 	function getRelationSymbol(operator: keyof typeof SearchOperators): string {
 		switch (operator) {
@@ -43,10 +54,10 @@
 					<DecoratedData data={m.display} showLabels={ShowLabelsOptions['Never']} />
 				</span>
 			{/if}
-			{#if 'up' in m}
+			{#if 'up' in m && (!m.children || depth > 0)}
 				<span class="pill-remove inline-block align-sub">
-					<a class="float-right pl-2" href={m.up?.['@id']}>
-						<BiXLg class="text-icon-inv-secondary" />
+					<a class="float-right pl-2 text-[inherit] hover:text-[inherit]" href={m.up?.['@id']}>
+						<BiXLg class="" fill="currentColor" fill-opacity="0.8" />
 					</a>
 				</span>
 			{/if}
@@ -54,17 +65,38 @@
 		{#if parentOperator}
 			<li class="pill-between pill-between-{parentOperator}">{parentOperator}</li>
 		{/if}
+		{#if 'up' in m && m.children && depth === 0}
+			<li class="pill-remove">
+				<a class="ghost-btn" href={m.up?.['@id']}>
+					<BiTrash class="text-icon-default" />
+					<span>Rensa</span>
+				</a>
+			</li>
+		{/if}
 	{/each}
+	{#if showEditButton && depth === 0}
+		<li>
+			<a
+				class="ghost-btn"
+				data-sveltekit-replacestate
+				class:active={editActive}
+				href={toggleEditUrl}
+			>
+				<BiPencil class="text-icon-default" />
+				<span>Redigera</span>
+			</a>
+		</li>
+	{/if}
 </ul>
 
 <style lang="postcss">
 	.mapping-item {
-		@apply rounded-md py-2 pl-3 pr-3 brightness-100 text-3-cond-bold;
+		@apply rounded-md px-4 py-2 brightness-100 text-3-cond-bold;
 		transition: filter 0.1s ease;
 	}
 
 	.mapping-item:has(> .pill-remove:hover) {
-		@apply brightness-75;
+		@apply brightness-[.85];
 	}
 
 	.pill {
@@ -103,5 +135,16 @@
 		@apply hidden;
 	}
 	.pill-remove {
+	}
+
+	/* TODO - move to button component/ghost */
+	.ghost-btn {
+		@apply flex items-center gap-2 rounded-md bg-main px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold;
+		transition: filter 0.1s ease;
+
+		&:hover,
+		&.active {
+			@apply brightness-95;
+		}
 	}
 </style>

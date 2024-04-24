@@ -7,17 +7,19 @@
 	export let placeholder: string;
 	export let autofocus: boolean = false;
 
-	let q = $page.url.searchParams.get('_i')?.trim() || $page.url.searchParams.get('_q')?.trim();
+	$: showAdvanced = $page.url.searchParams.get('_x') === 'advanced';
+	let q = showAdvanced
+		? $page.url.searchParams.get('_q')?.trim()
+		: $page.url.searchParams.get('_i')?.trim();
 
 	let params = getSortedSearchParams(getDefaultSearchParams($page.url.searchParams));
 	params.set('_offset', '0'); // Always reset offset on new search
-	params.delete('_i'); // delete possibly old '_i' value on new search
 	const searchParams = Array.from(params);
 
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */
 		if (to?.url) {
-			let param = to.url.searchParams.has('_i') ? '_i' : '_q';
+			let param = showAdvanced ? '_q' : '_i';
 			q = new URL(to.url).searchParams.get(param)?.trim();
 		}
 	});
@@ -50,4 +52,10 @@
 			<input type="hidden" {name} {value} />
 		{/if}
 	{/each}
+
+	<input type="hidden" name="_i" value={q} />
+	{#if $page.url.searchParams.get('_x') === 'advanced'}
+		<!-- keep 'edit' state on new search -->
+		<input type="hidden" name="_x" value="advanced" />
+	{/if}
 </form>

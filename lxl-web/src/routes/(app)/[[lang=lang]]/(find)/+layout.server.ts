@@ -72,14 +72,28 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		if (shouldFindRelations && resourceId) {
 			searchParams.set('_o', resourceId);
+			searchParams.set('_i', '*');
 			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
 		}
 
-		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`, {
+			// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
+			redirect: 'manual'
+		});
 
 		if (!recordsRes.ok) {
-			const err = (await recordsRes.json()) as apiError;
-			throw error(err.status_code, err.status);
+			if (recordsRes.status > 299 && recordsRes.status < 400) {
+				// redirect from api -> redirect in app
+				const location = recordsRes.headers.get('location');
+				const url = location && new URL(location);
+				if (url) {
+					console.log('redirecting to', `${url.pathname}${url.search}`);
+					redirect(recordsRes.status, `${url.pathname}${url.search}`);
+				}
+			} else {
+				const err = (await recordsRes.json()) as apiError;
+				throw error(err.status_code, err.status);
+			}
 		}
 
 		const result = (await recordsRes.json()) as PartialCollectionView;
