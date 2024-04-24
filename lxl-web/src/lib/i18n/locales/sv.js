@@ -26,8 +26,12 @@ export default {
 		'concerning.issuanceType': 'Utgivningssätt',
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Beskrivningsnivå',
+		'rdf:type': 'Typ',
+		workType: 'Typ',
+		instanceType: 'Bärartyp',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Bibliotek',
+		bibliography: 'Bibliografi',
 		contributor: 'Medverkan',
 		language: 'Språk',
 		subject: 'Ämne',
@@ -36,7 +40,7 @@ export default {
 	},
 	search: {
 		findFilter: 'Hitta filter'
-  },
+	},
 	sort: {
 		relevancy: 'Relevans',
 		alphaAsc: 'A-Ö',

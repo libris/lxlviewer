@@ -5,7 +5,6 @@ import {
 	JsonLd,
 	LensType,
 	type Link,
-	type PropertyName,
 	toString
 } from '$lib/utils/xl';
 import { LxlLens } from '$lib/utils/display.types';
@@ -103,8 +102,8 @@ export interface PartialCollectionView {
 }
 
 interface Slice {
+	alias: FacetGroupId;
 	dimension: FacetGroupId;
-	dimensionChain: PropertyName[];
 	observation: Observation[];
 }
 
@@ -157,14 +156,14 @@ function displayMappings(
 					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
 					label: m.property?.labelByLang?.[locale] || m.property?.['@id'] || 'no label', // lensandformat?
 					operator,
-					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
 			} else if (operator && operator in m && Array.isArray(m[operator])) {
 				const mappingArr = m[operator] as SearchMapping[];
 				return {
 					children: _iterateMapping(mappingArr),
 					operator,
-					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
 			} else {
 				return {
@@ -193,7 +192,7 @@ function displayFacetGroups(
 
 	return Object.values(slices).map((g) => {
 		return {
-			label: translate(`facet.${g.dimension}`),
+			label: translate(`facet.${g.alias || g.dimension}`),
 			dimension: g.dimension,
 			facets: g.observation.map((o) => {
 				return {
