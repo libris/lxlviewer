@@ -14,6 +14,7 @@
 
 	let params = getSortedSearchParams(getDefaultSearchParams($page.url.searchParams));
 	params.set('_offset', '0'); // Always reset offset on new search
+	params.delete('_i'); // reset '_i' param on new search
 	const searchParams = Array.from(params);
 
 	afterNavigate(({ to }) => {
