@@ -9,7 +9,7 @@ import TabMenu from '@/components/shared/tab-menu.vue';
 import HoldingMover from '@/components/care/holding-mover.vue';
 import CreateMessage from '@/components/care/create-message.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
-import AdminNotices from "./AdminNotices.vue";
+import AdminNotices from './AdminNotices.vue';
 
 export default {
   name: 'DirectoryCare',

@@ -36,6 +36,14 @@ export default {
 	},
 	search: {
 		findFilter: 'Hitta filter'
+  },
+	sort: {
+		relevancy: 'Relevans',
+		alphaAsc: 'A-Ö',
+		alphaDesc: 'Ö-A',
+		publicationAsc: 'Utgivningsår (äldst först)',
+		publicationDesc: 'Utgivningsår (nyast först)',
+		linksDesc: 'Mest länkad'
 	},
 	errors: {},
 	general: {

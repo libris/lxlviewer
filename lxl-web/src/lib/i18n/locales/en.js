@@ -37,6 +37,14 @@ export default {
 	},
 	search: {
 		findFilter: 'Find filter'
+  },
+	sort: {
+		relevancy: 'Relevancy',
+		alphaAsc: 'A-Z',
+		alphaDesc: 'Z-A',
+		publicationAsc: 'Publication year (oldest first)',
+		publicationDesc: 'Publication year (newest first)',
+		linksDesc: 'Most linked'
 	},
 	errors: {},
 	general: {
