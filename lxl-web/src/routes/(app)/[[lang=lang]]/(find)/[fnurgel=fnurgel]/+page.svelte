@@ -123,8 +123,8 @@
 				<div>
 					<h2 class="font-bold">
 						{data.t('holdings.availableAt')}
-						{$page.data.holdingsByInstanceId[selectedHolding].length}
-						{$page.data.holdingsByInstanceId[selectedHolding].length === 1
+						{$page.data.holdersByType[holdingUrl].length}
+						{$page.data.holdersByType[holdingUrl].length === 1
 							? $page.data.t('holdings.library')
 							: $page.data.t('holdings.libraries')}
 					</h2>
