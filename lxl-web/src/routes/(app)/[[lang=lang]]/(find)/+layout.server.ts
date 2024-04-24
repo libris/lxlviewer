@@ -227,7 +227,7 @@ function getHoldingsByType(mainEntity: FramedData) {
 
 function copyMediaLinksToWork(mainEntity: FramedData) {
 	const cp = (thing: FramedData, fromPath: (string | number | object)[], toProp: string) => {
-		const v = getAtPath(thing, fromPath);
+		const v = getAtPath(thing, fromPath).filter((v) => v['cataloguersNote'] != 'digipic');
 		if (v.length > 0) {
 			thing[toProp] = asArray(thing[toProp]).concat(v);
 		}
