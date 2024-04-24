@@ -6,44 +6,49 @@
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import Modal from '$lib/components/Modal.svelte';
+	import isFnurgel from '$lib/utils/isFnurgel';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from './utils';
+	import { getSelectedHolding } from './utils';
 
 	export let data;
 
 	let selectedHolding: string | undefined;
+	let latestHoldingUrl: string | undefined;
 
 	$: selectedHoldingInstance = data.instances?.find((instanceItem) =>
 		instanceItem['@id'].includes(selectedHolding)
 	);
 
-	$: holdingUrl = $page.state.holdings || $page.url.searchParams.get('holdings') || null; // we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
-	$: if (holdingUrl) selectedHolding = holdingUrl;
-
-	$: instanceIdsByTypeLabel = data?.instances.reduce(
+	$: instanceIdsByType = data?.instances.reduce(
 		(acc, currentInstance) => ({
 			...acc,
-			[currentInstance['_label']]: [
-				...(acc[currentInstance['_label']] || []),
+			[currentInstance['@type']]: [
+				...(acc[currentInstance['@type']] || []),
 				relativizeUrl(getResourceId(currentInstance))
 			]
 		}),
 		{}
 	);
 
-	function handleCloseHoldings() {
-		history.back();
+	$: localizedInstanceTypes = Object.values(data.instances).reduce((acc, instanceItem) => {
+		if (instanceItem['@type'] && instanceItem?._label) {
+			return {
+				...acc,
+				[instanceItem['@type']]: instanceItem._label
+			};
+		}
+		return acc;
+	}, {});
+
+	$: holdingUrl = $page.state.holdings || $page.url.searchParams.get('holdings') || null; // we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
+	$: if (holdingUrl) {
+		selectedHolding = getSelectedHolding(holdingUrl, instanceIdsByType);
+		latestHoldingUrl = holdingUrl;
 	}
 
-	function getAggregatedLibrariesCount(instanceIds: string[], holdingsByInstanceId) {
-		return instanceIds.reduce((acc, id) => {
-			return [
-				...new Set([
-					...acc,
-					...holdingsByInstanceId[id].map((holdingItem) => holdingItem?.heldBy?.['@id'])
-				])
-			];
-		}, []).length;
+	function handleCloseHoldings() {
+		history.back();
 	}
 </script>
 
@@ -58,16 +63,16 @@
 			<div class="overview flex-1">
 				<DecoratedData data={data.overview} block />
 				<ul>
-					{#each Object.entries(instanceIdsByTypeLabel) as [typeLabel, instanceIds]}
+					{#each Object.keys(data.holdersByType) as type}
 						<li>
 							<a
-								href={getHoldingsLink($page.url, instanceIds?.[0])}
+								href={getHoldingsLink($page.url, type)}
 								data-sveltekit-preload-data="false"
-								on:click={(event) => handleClickHoldings(event, $page.state, instanceIds?.[0])}
+								on:click={(event) => handleClickHoldings(event, $page.state, type)}
 							>
-								{typeLabel}
+								{localizedInstanceTypes[type]}
 								{`(${data.t('holdings.availableAt').toLowerCase()}`}
-								{getAggregatedLibrariesCount(instanceIds, data.holdingsByInstanceId)}
+								{data.holdersByType[type].length}
 								{`${data.t('holdings.libraries')})`}
 							</a>
 						</li>
@@ -118,14 +123,27 @@
 				<div>
 					<h2 class="font-bold">{data.t('holdings.availableAt')}</h2>
 					<table class="w-full table-auto border-collapse text-sm">
-						{#if data.holdingsByInstanceId[selectedHolding]}
-							{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
+						{#if isFnurgel(latestHoldingUrl)}
+							{#if data.holdingsByInstanceId[selectedHolding]}
+								{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
+									<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
+										<td>
+											{holdingItem?.heldBy?.name}
+										</td>
+										<td class="text-right text-secondary">
+											{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
+										</td>
+									</tr>
+								{/each}
+							{/if}
+						{:else if data.holdersByType[latestHoldingUrl]}
+							{#each data.holdersByType[latestHoldingUrl] as holderItem}
 								<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
 									<td>
-										{holdingItem?.heldBy?.name}
+										{holderItem?.name}
 									</td>
 									<td class="text-right text-secondary">
-										{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
+										{holderItem?.sigel ? `(${holderItem?.sigel})` : ''}
 									</td>
 								</tr>
 							{/each}

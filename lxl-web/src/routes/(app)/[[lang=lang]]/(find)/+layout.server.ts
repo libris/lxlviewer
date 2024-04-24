@@ -50,6 +50,14 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		const images = getImageUris(getImageLinks(mainEntity));
 		const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity);
+		const holdingsByType = getHoldingsByType(mainEntity);
+		const holdersByType = Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
+			const heldBys = holdings.map((holdingItem) => holdingItem.heldBy);
+			const uniqueHeldBys = [
+				...new Map(heldBys.map((heldByItem) => [heldByItem['@id'], heldByItem])).values()
+			];
+			return { ...acc, [type]: uniqueHeldBys };
+		}, {});
 
 		resourceParts = {
 			heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
@@ -57,6 +65,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
 			instances: sortedInstances,
 			holdingsByInstanceId,
+			holdersByType,
 			full: overview,
 			images
 		};
@@ -171,26 +180,49 @@ function getImageUris(imageLinks: { recordId: string; imageLink: string }[]) {
 		.filter((image) => image.imageUri !== '');
 }
 
+function sortHoldings(holdings) {
+	return [...holdings].sort((a, b) => {
+		if (a?.heldBy?.name < b?.heldBy?.name) {
+			return -1;
+		}
+		if (a?.heldBy?.name > b?.heldBy?.name) {
+			return 1;
+		}
+		return 0;
+	});
+}
+
 function getHoldingsByInstanceId(mainEntity) {
 	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
 		const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
 		if (!id) {
 			return acc;
 		}
-		const sortedHoldings = [...(instanceOfItem?.['@reverse']?.itemOf || [])].sort((a, b) => {
-			if (a?.heldBy?.name < b?.heldBy?.name) {
-				return -1;
-			}
-			if (a?.heldBy?.name > b?.heldBy?.name) {
-				return 1;
-			}
-			return 0;
-		});
 		return {
 			...acc,
-			[id]: sortedHoldings
+			[id]: sortHoldings(instanceOfItem?.['@reverse']?.itemOf || [])
 		};
 	}, {});
+}
+
+function getHoldingsByType(mainEntity: FramedData) {
+	const holdingsByType = mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
+		const type = instanceOfItem['@type'];
+		return {
+			...acc,
+			[type]: [...(acc[type] || []), ...(instanceOfItem?.['@reverse'].itemOf || [])]
+		};
+	}, {});
+	if (!holdingsByType) {
+		return {};
+	}
+	const sortedHoldingsByType = Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
+		return {
+			...acc,
+			[type]: sortHoldings(holdings)
+		};
+	}, {});
+	return sortedHoldingsByType;
 }
 
 function copyMediaLinksToWork(mainEntity: FramedData) {
