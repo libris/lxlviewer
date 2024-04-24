@@ -7,26 +7,33 @@
 
 	export let group: FacetGroup;
 	export let locale: LocaleCode;
+	export let searchPhrase = '';
 
 	const defaultFacetsShown = 5;
 	let facetsShown = defaultFacetsShown;
-	let expanded = false;
-	let searchPhrase = '';
+	let manuallyExpanded = false;
 
 	$: numfacets = group.facets.length;
+	$: hasHits = filteredFacets.length > 0;
+	$: expanded = (searchPhrase && hasHits) || (!searchPhrase && manuallyExpanded);
 	$: filteredFacets = group.facets.filter((facet) =>
-		facet.str.toLowerCase().startsWith(searchPhrase.toLowerCase())
+		facet.str
+			.toLowerCase()
+			.split(/\s|--/)
+			.find((s) => s.startsWith(searchPhrase.toLowerCase()))
 	);
 	$: shownFacets = filteredFacets.filter((facet, index) => index < facetsShown);
 	$: canShowMoreFacets = filteredFacets.length > facetsShown;
 	$: canShowLessFacets = !canShowMoreFacets && filteredFacets.length > defaultFacetsShown;
 </script>
 
-<li class="my-4 border-b-[2px] border-primary pb-2">
+<li class="my-4 border-b-[2px] border-primary pb-2" class:hidden={searchPhrase && !hasHits}>
 	<button
 		id={'toggle-' + group.dimension}
 		type="button"
-		on:click={() => (expanded = !expanded)}
+		on:click={() => {
+			manuallyExpanded = !manuallyExpanded;
+		}}
 		aria-expanded={!!expanded}
 		aria-controls={'group-' + group.dimension}
 		class="w-full text-left font-bold"
@@ -34,7 +41,10 @@
 	>
 		<span class="flex items-center gap-2">
 			<span>
-				{#if expanded}
+				{#if searchPhrase}
+					<!-- Currently groups can't be minimized while searching -->
+					<BiChevronDown class="text-icon-default" />
+				{:else if expanded}
 					<BiChevronDown class="text-icon-default" />
 				{:else}
 					<BiChevronRight class="text-icon-default" />
@@ -50,14 +60,6 @@
 		aria-labelledby={'toggle-' + group.dimension}
 		class:hidden={!expanded}
 	>
-		{#if numfacets > defaultFacetsShown}
-			<input
-				bind:value={searchPhrase}
-				class="mt-2"
-				placeholder="Sök {group.label.toLowerCase()}"
-				title="Sök {group.label.toLowerCase()}"
-			/>
-		{/if}
 		<ol class="mt-2" data-testid="facet-list">
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li>

@@ -35,7 +35,9 @@ export default {
 		yearPublished: 'Year published',
 		intendedAudience: 'Intended audience'
 	},
-	search: {},
+	search: {
+		findFilter: 'Find filter'
+  },
 	sort: {
 		relevancy: 'Relevancy',
 		alphaAsc: 'A-Z',
