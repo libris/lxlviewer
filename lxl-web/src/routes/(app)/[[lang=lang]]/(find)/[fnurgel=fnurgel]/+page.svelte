@@ -5,6 +5,7 @@
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
+	import getPageTitle from '$lib/utils/getPageTitle';
 	import Modal from '$lib/components/Modal.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from './utils';
@@ -47,6 +48,9 @@
 	}
 </script>
 
+<svelte:head>
+	<title>{getPageTitle(data.title)}</title>
+</svelte:head>
 <article class="resource grid">
 	<div class="content p-4">
 		<header>
