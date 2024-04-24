@@ -42,6 +42,7 @@
 	{#each mapping as m}
 		<li
 			class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}"
+			class:wildcard={m.display === '*'}
 			class:outer={depth === 0}
 		>
 			{#if 'children' in m}
@@ -115,6 +116,10 @@
 		.pill-relation {
 			@apply text-secondary;
 		}
+	}
+
+	.pill-equals.wildcard {
+		@apply hidden;
 	}
 
 	.pill-group {
