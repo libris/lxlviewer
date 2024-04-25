@@ -31,10 +31,8 @@
 		aria-controls="lang-picker-menu"
 		data-testid="current-lang"
 	>
-		<span class="flex items-center gap-1.5">
-			<span><BiGlobeAmericas class="inline text-icon-default" /></span>
-			<span>{Locales[$page.data.locale]}</span>
-		</span>
+		<span class="pr-1"><BiGlobeAmericas class="inline text-icon-default" /></span>
+		<span>{Locales[$page.data.locale]}</span>
 	</button>
 	<ul
 		id="lang-picker-menu"
