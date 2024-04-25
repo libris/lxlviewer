@@ -9,6 +9,8 @@
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from './utils';
+	import BiChevronRight from '~icons/bi/chevron-right';
+
 	/**
 	 * TODO:
 	 * - [] Replace jmespath (used for queriyng data for the columns) with something more home-baked (with smaller bundle-size). Another alternative could be querying and preparing the column data server-side?
@@ -110,18 +112,18 @@
 				{@const id = relativizeUrl(getResourceId(item))}
 				<li {id} class="border-t border-t-primary/16">
 					<details
-						{...id && {
-							open:
-								$page.state.expandedInstances?.includes(id) ||
-								$page.url.searchParams.getAll('expanded').includes(id) ||
-								data.length === 1
-						}}
+						open={$page.state.expandedInstances?.includes(id) ||
+							$page.url.searchParams.getAll('expanded').includes(id) ||
+							data.length === 1}
 						on:toggle={() => handleToggleDetails($page.state)}
 					>
 						<summary
-							class="flex min-h-11 gap-2 pl-2 align-middle hover:bg-pill/16"
+							class="flex min-h-11 items-center gap-2 pl-1 align-middle hover:bg-pill/16"
 							on:keydown={handleSummaryKeydown}
 						>
+							<span class="arrow">
+								<BiChevronRight />
+							</span>
 							{#each columns as columnItem}
 								<div class="flex flex-1 items-center">
 									<DecoratedData data={jmespath.search(item, columnItem)} />
@@ -211,5 +213,13 @@
 
 	details[open] > summary {
 		@apply bg-pill/8 hover:bg-pill/16;
+	}
+
+	details[open] .arrow {
+		@apply rotate-90;
+	}
+
+	.arrow {
+		@apply rotate-0 transition-transform;
 	}
 </style>
