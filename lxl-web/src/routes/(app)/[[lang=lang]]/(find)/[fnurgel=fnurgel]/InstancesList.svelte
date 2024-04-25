@@ -118,10 +118,10 @@
 						on:toggle={() => handleToggleDetails($page.state)}
 					>
 						<summary
-							class="flex min-h-11 gap-2 pl-1 align-middle hover:bg-pill/16"
+							class="flex min-h-11 items-center gap-2 pl-1 align-middle hover:bg-pill/16"
 							on:keydown={handleSummaryKeydown}
 						>
-							<span class="arrow flex items-center">
+							<span class="arrow">
 								<BiChevronRight />
 							</span>
 							{#each columns as columnItem}
