@@ -2,11 +2,8 @@ import { redirect, error } from '@sveltejs/kit';
 import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
-<<<<<<< HEAD
-import { type FramedData, DisplayUtil, pickProperty, toString } from '$lib/utils/xl.js';
-=======
-import { type FramedData, DisplayUtil, pickProperty, JsonLd } from '$lib/utils/xl.js';
->>>>>>> 747307bc5 (Use placeholder icons in ResourceImage)
+
+import { type FramedData, DisplayUtil, pickProperty, toString, JsonLd } from '$lib/utils/xl.js';
 import { LxlLens } from '$lib/utils/display.types.js';
 import { relativizeUrl } from '$lib/utils/http';
 import { calculateExpirationTime, generateAuxdImageUri, getImageLinks } from '$lib/utils/auxd';
