@@ -10,6 +10,7 @@
 
 	export let dialog: HTMLDialogElement | undefined = undefined;
 	export let close: ((event: Event) => void) | undefined = undefined;
+	export let position: 'left' | 'right' = 'right';
 
 	let prevBodyOverflow: string | undefined = undefined;
 
@@ -65,7 +66,11 @@
 	bind:this={dialog}
 	transition:fly={{ x: 12, duration: 250, opacity: 0, easing: cubicInOut }}
 >
-	<div class="absolute right-0 top-0 flex h-full w-full gap-4 bg-main shadow-2xl md:max-w-[480px]">
+	<div
+		class="absolute right-0 top-0 flex h-full w-full gap-4 bg-main shadow-2xl md:max-w-[480px]"
+		class:left-0={position === 'left'}
+		class:right-0={position === 'right'}
+	>
 		<div class="flex flex-1 flex-col gap-4 overflow-y-auto pb-4">
 			<header
 				class="sticky top-0 flex min-h-14 items-center justify-between border-b border-b-primary/8 bg-main py-2 pl-4 pr-2"
