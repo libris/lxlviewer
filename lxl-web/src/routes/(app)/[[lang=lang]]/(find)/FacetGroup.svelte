@@ -4,6 +4,7 @@
 	import { type FacetGroup } from './search';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiChevronDown from '~icons/bi/chevron-down';
+	import YearRange from './YearRange.svelte';
 
 	export let group: FacetGroup;
 	export let locale: LocaleCode;
@@ -25,6 +26,21 @@
 	$: shownFacets = filteredFacets.filter((facet, index) => index < facetsShown);
 	$: canShowMoreFacets = filteredFacets.length > facetsShown;
 	$: canShowLessFacets = !canShowMoreFacets && filteredFacets.length > defaultFacetsShown;
+
+	const facetComponents = () => {
+		// add 'special component' + props to a facet group
+		switch (group.dimension) {
+			case 'yearPublished':
+				return [
+					{
+						component: YearRange,
+						props: {}
+					}
+				];
+			default:
+				return [];
+		}
+	};
 </script>
 
 <li class="my-4 border-b-[2px] border-primary pb-2" class:hidden={searchPhrase && !hasHits}>
@@ -60,6 +76,11 @@
 		aria-labelledby={'toggle-' + group.dimension}
 		class:hidden={!expanded}
 	>
+		{#if !(searchPhrase && hasHits)}
+			{#each facetComponents() as c}
+				<svelte:component this={c.component} {...c.props} />
+			{/each}
+		{/if}
 		<ol class="max-h-437px mt-2 overflow-scroll" data-testid="facet-list">
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li>
