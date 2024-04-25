@@ -55,7 +55,7 @@
 				/>
 				{#if item['@type'] !== 'Text' && getTypeIcon(item['@type'])}
 					<div class="absolute left-0 top-0">
-						<div class="icon-bg relative bottom-2 left-2 rounded-md p-1">
+						<div class="relative bottom-2 left-2 rounded-md bg-cards p-1">
 							<svelte:component this={getTypeIcon(item['@type'])} class="text-icon-default" />
 						</div>
 					</div>
@@ -129,9 +129,5 @@
 		:global([data-property='agent'] ._contentBefore) {
 			@apply inline;
 		}
-	}
-
-	.icon-bg {
-		background-color: #ffffff;
 	}
 </style>
