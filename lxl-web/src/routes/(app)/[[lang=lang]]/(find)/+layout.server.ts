@@ -2,7 +2,7 @@ import { redirect, error } from '@sveltejs/kit';
 import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
-import { type FramedData, DisplayUtil, pickProperty } from '$lib/utils/xl.js';
+import { type FramedData, DisplayUtil, pickProperty, toString } from '$lib/utils/xl.js';
 import { LxlLens } from '$lib/utils/display.types.js';
 import { relativizeUrl } from '$lib/utils/http';
 import { calculateExpirationTime, generateAuxdImageUri, getImageLinks } from '$lib/utils/auxd';
@@ -38,6 +38,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		copyMediaLinksToWork(mainEntity);
 
 		resourceId = resource.mainEntity['@id'];
+		const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
 		const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
@@ -60,7 +61,8 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		}, {});
 
 		resourceParts = {
-			heading: displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale),
+			title: toString(heading),
+			heading,
 			overview: overviewWithoutHasInstance,
 			details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
 			instances: sortedInstances,
