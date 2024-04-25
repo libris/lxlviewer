@@ -6,16 +6,28 @@
 
 	$: searchParams = Array.from($page.url.searchParams);
 	$: _q = $page.url.searchParams.get('_q');
-	$: qValue = getQ(yearFrom, yearTo);
+	$: _qWithoutYear = (() =>
+		_q?.split(' ').filter((param, i, arr) => {
+			if (['or', 'not'].includes(param.toLowerCase()) && arr?.[i + 1].includes('yearPublished')) {
+				// remove operators preceding a year filter
+				return false;
+			}
+			if (param.includes('yearPublished')) {
+				// remove year filters
+				return false;
+			}
+			return true;
+		}))();
+
+	$: qOutput = getQ(yearFrom, yearTo);
 
 	function getQ(from: number | undefined, to: number | undefined) {
 		console.log('before', _q);
 		if (!from && !to) {
 			return _q;
 		} else {
-			let filterParams = _q?.split(' ').filter((param) => !param.startsWith('yearPublished'));
 			let addParams = [
-				...(filterParams ? filterParams : []),
+				...(_qWithoutYear ? _qWithoutYear : []),
 				...(from ? [`yearPublished>=${from}`] : []),
 				...(to ? [`yearPublished<=${to}`] : [])
 			];
@@ -70,5 +82,5 @@
 			<input type="hidden" {name} {value} />
 		{/if}
 	{/each}
-	<input type="hidden" name="_q" value={qValue} />
+	<input type="hidden" name="_q" value={qOutput} />
 </form>
