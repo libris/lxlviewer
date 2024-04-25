@@ -27,8 +27,12 @@ export default {
 		'concerning.issuanceType': 'Issuance type',
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Encoding level',
+		'rdf:type': 'Type',
+		workType: 'Type',
+		instanceType: 'Carrier type',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Library',
+		bibliography: 'Bibliography',
 		contributor: 'Contribution',
 		language: 'Language',
 		subject: 'Subject',
@@ -37,7 +41,7 @@ export default {
 	},
 	search: {
 		findFilter: 'Find filter'
-  },
+	},
 	sort: {
 		relevancy: 'Relevancy',
 		alphaAsc: 'A-Z',

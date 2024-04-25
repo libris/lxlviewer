@@ -5,7 +5,6 @@ import {
 	JsonLd,
 	LensType,
 	type Link,
-	type PropertyName,
 	toString
 } from '$lib/utils/xl';
 import { LxlLens } from '$lib/utils/display.types';
@@ -27,7 +26,7 @@ export async function asResult(
 		itemsPerPage: view.itemsPerPage,
 		totalItems: view.totalItems,
 		maxItems: view.maxItems,
-		mapping: displayMappings(view, displayUtil, locale, usePath),
+		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
 		items: view.items.map((i) => ({
@@ -103,8 +102,8 @@ export interface PartialCollectionView {
 }
 
 interface Slice {
+	alias: string;
 	dimension: FacetGroupId;
-	dimensionChain: PropertyName[];
 	observation: Observation[];
 }
 
@@ -130,6 +129,7 @@ export enum SearchOperators {
 type MappingObj = { [key in SearchOperators]: SearchMapping[] | string | FramedData };
 
 interface SearchMapping extends MappingObj {
+	alias: string;
 	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
 	up: { '@id': string };
 }
@@ -142,6 +142,7 @@ function displayMappings(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
+	translate: translateFn,
 	usePath: string
 ): DisplayMapping[] {
 	const mapping = view.search?.mapping || [];
@@ -155,16 +156,18 @@ function displayMappings(
 				const property = m[operator] as FramedData;
 				return {
 					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
-					label: m.property?.labelByLang?.[locale] || m.property?.['@id'] || 'no label', // lensandformat?
+					label: m.alias
+						? translate(`facet.${m.alias}`)
+						: m.property?.labelByLang?.[locale] || m.property?.['@id'] || 'no label', // lensandformat?
 					operator,
-					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
 			} else if (operator && operator in m && Array.isArray(m[operator])) {
 				const mappingArr = m[operator] as SearchMapping[];
 				return {
 					children: _iterateMapping(mappingArr),
 					operator,
-					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
 			} else {
 				return {
@@ -193,7 +196,7 @@ function displayFacetGroups(
 
 	return Object.values(slices).map((g) => {
 		return {
-			label: translate(`facet.${g.dimension}`),
+			label: translate(`facet.${g.alias || g.dimension}`),
 			dimension: g.dimension,
 			facets: g.observation.map((o) => {
 				return {
