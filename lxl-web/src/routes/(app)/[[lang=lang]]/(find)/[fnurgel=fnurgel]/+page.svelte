@@ -127,9 +127,9 @@
 				<div>
 					<h2 class="font-bold">
 						{data.t('holdings.availableAt')}
-						{#if isFnurgel(holdingUrl)}
-							{data.holdingsByInstanceId[selectedHolding].length}
-							{data.holdingsByInstanceId[selectedHolding].length === 1
+						{#if isFnurgel(latestHoldingUrl)}
+							{data.holdingsByInstanceId[latestHoldingUrl].length}
+							{data.holdingsByInstanceId[latestHoldingUrl].length === 1
 								? data.t('holdings.library')
 								: data.t('holdings.libraries')}
 						{:else if data.holdersByType?.[latestHoldingUrl]}
