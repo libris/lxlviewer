@@ -60,7 +60,7 @@
 		aria-labelledby={'toggle-' + group.dimension}
 		class:hidden={!expanded}
 	>
-		<ol class="mt-2" data-testid="facet-list">
+		<ol class="max-h-437px mt-2 overflow-scroll" data-testid="facet-list">
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li>
 					<a class="flex justify-between no-underline" href={relativizeUrl(facet.view['@id'])}>
@@ -91,3 +91,9 @@
 		{/if}
 	</div>
 </li>
+
+<style lang="postcss">
+	.max-h-437px {
+		max-height: 437px;
+	}
+</style>
