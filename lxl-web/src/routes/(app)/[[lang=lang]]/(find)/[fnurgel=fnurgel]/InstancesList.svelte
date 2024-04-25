@@ -121,7 +121,7 @@
 							class="flex min-h-11 gap-2 pl-1 align-middle hover:bg-pill/16"
 							on:keydown={handleSummaryKeydown}
 						>
-							<span class="arrow flex items-center pr-2">
+							<span class="arrow flex items-center">
 								<BiChevronRight />
 							</span>
 							{#each columns as columnItem}
@@ -215,7 +215,11 @@
 		@apply bg-pill/8 hover:bg-pill/16;
 	}
 
-	details[open] > summary .arrow {
-		@apply rotate-90 transition-transform;
+	details[open] .arrow {
+		@apply rotate-90;
+	}
+
+	.arrow {
+		@apply rotate-0 transition-transform;
 	}
 </style>
