@@ -27,7 +27,7 @@
 	<div class="flex items-center justify-center">
 		<img src={placeholder} alt="" class="h-auto w-full object-contain" />
 		{#if getTypeIcon(type)}
-			<svelte:component this={getTypeIcon(type)} class="absolute text-2xl text-icon-default" />
+			<svelte:component this={getTypeIcon(type)} class="absolute text-2xl text-icon" />
 		{/if}
 	</div>
 {/if}

@@ -43,11 +43,11 @@
 			<span>
 				{#if searchPhrase}
 					<!-- Currently groups can't be minimized while searching -->
-					<BiChevronDown class="text-icon-default" />
+					<BiChevronDown class="text-icon" />
 				{:else if expanded}
-					<BiChevronDown class="text-icon-default" />
+					<BiChevronDown class="text-icon" />
 				{:else}
-					<BiChevronRight class="text-icon-default" />
+					<BiChevronRight class="text-icon" />
 				{/if}
 			</span>
 			<span>
