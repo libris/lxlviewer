@@ -32,6 +32,10 @@
 				return '＜';
 			case 'lessThanOrEquals':
 				return '⩽';
+			case 'existence':
+				return '∃';
+			case 'notExistence':
+				return '∄';
 			default:
 				return '';
 		}
@@ -42,11 +46,15 @@
 	{#each mapping as m}
 		<li
 			class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}"
-			class:wildcard={m.display === '*'}
+			class:wildcard={m.operator === 'equals' && m.display === '*'}
 			class:outer={depth === 0}
 		>
 			{#if 'children' in m}
 				<svelte:self mapping={m.children} parentOperator={m.operator} depth={depth + 1} />
+			{:else if m.operator === 'existence' || m.operator === 'notExistence'}
+				{@const symbol = getRelationSymbol(m.operator)}
+				<span class="pill-relation">{symbol}</span>
+				<div class="pill-label inline-block text-2-regular first-letter:uppercase">{m.label}</div>
 			{:else if 'label' in m && 'display' in m}
 				{@const symbol = getRelationSymbol(m.operator)}
 				<div class="pill-label inline-block text-2-regular first-letter:uppercase">{m.label}</div>
@@ -109,7 +117,8 @@
 		}
 	}
 
-	.pill-notEquals {
+	.pill-notEquals,
+	.pill-notExistence {
 		@apply bg-negative text-primary;
 
 		& .pill-label,

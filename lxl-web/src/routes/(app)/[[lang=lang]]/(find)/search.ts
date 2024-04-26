@@ -2,6 +2,7 @@ import {
 	type DisplayDecorated,
 	DisplayUtil,
 	type FramedData,
+	isObject,
 	JsonLd,
 	LensType,
 	type Link,
@@ -124,7 +125,9 @@ export enum SearchOperators {
 	greaterThan = 'greaterThan',
 	greaterThanOrEquals = 'greaterThanOrEquals',
 	lessThan = 'lessThan',
-	lessThanOrEquals = 'lessThanOrEquals'
+	lessThanOrEquals = 'lessThanOrEquals',
+	existence = 'existence',
+	notExistence = 'notExistence'
 }
 
 type MappingObj = { [key in SearchOperators]: SearchMapping[] | string | FramedData };
@@ -137,7 +140,10 @@ interface SearchMapping extends MappingObj {
 
 interface ObjectProperty {}
 
-interface DatatypeProperty {}
+interface DatatypeProperty {
+	'@type': 'DataTypeProperty';
+	'@id': string;
+}
 
 function displayMappings(
 	view: PartialCollectionView,
@@ -182,8 +188,27 @@ function displayMappings(
 	}
 
 	function _hasOperator(obj: SearchMapping): keyof typeof SearchOperators | undefined {
-		return Object.values(SearchOperators).find((val) => val in obj);
+		const op = Object.values(SearchOperators).find((val) => val in obj);
+
+		if (!isFreeTextQuery(obj.property)) {
+			if (op === SearchOperators.equals && obj[op] === '*') {
+				return SearchOperators.existence;
+			}
+			if (op === SearchOperators.notEquals && obj[op] === '*') {
+				return SearchOperators.notExistence;
+			}
+		}
+
+		return op;
 	}
+}
+
+function isFreeTextQuery(property: unknown): boolean {
+	return isDatatypeProperty(property) && property['@id'] === 'https://id.kb.se/vocab/textQuery';
+}
+
+function isDatatypeProperty(data: unknown): data is DatatypeProperty {
+	return isObject(data) && data['@type'] === 'DatatypeProperty';
 }
 
 function displayFacetGroups(
