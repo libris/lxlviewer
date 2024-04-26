@@ -31,7 +31,7 @@
 		aria-controls="lang-picker-menu"
 		data-testid="current-lang"
 	>
-		<span class="pr-1"><BiGlobeAmericas class="inline text-icon-default" /></span>
+		<span class="pr-1"><BiGlobeAmericas class="inline text-icon" /></span>
 		<span>{Locales[$page.data.locale]}</span>
 	</button>
 	<ul

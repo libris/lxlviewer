@@ -69,7 +69,7 @@
 		{#if 'up' in m && m.children && depth === 0}
 			<li class="pill-remove">
 				<a class="ghost-btn" href={m.up?.['@id']}>
-					<BiTrash class="text-icon-default" />
+					<BiTrash class="text-icon" />
 					<span>Rensa</span>
 				</a>
 			</li>
@@ -83,7 +83,7 @@
 				class:active={editActive}
 				href={toggleEditUrl}
 			>
-				<BiPencil class="text-icon-default" />
+				<BiPencil class="text-icon" />
 				<span>Redigera</span>
 			</a>
 		</li>
