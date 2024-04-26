@@ -1,27 +1,43 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { afterNavigate } from '$app/navigation';
 
-	let yearFrom: number | undefined;
-	let yearTo: number | undefined;
+	let yearFrom: number | undefined = getQValue('yearPublished>=');
+	let yearTo: number | undefined = getQValue('yearPublished<=');
+
+	function getQValue(param: string) {
+		// extract current values from q to populate input on load
+		let found = $page.url.searchParams
+			.get('_q')
+			?.split(' ')
+			.find((p) => p.startsWith(param))
+			?.replace(param, '');
+		return found && !isNaN(parseInt(found)) ? parseInt(found) : undefined;
+	}
+
+	afterNavigate(() => {
+		yearFrom = getQValue('yearPublished>=');
+		yearTo = getQValue('yearPublished<=');
+	});
 
 	$: searchParams = Array.from($page.url.searchParams);
 	$: _q = $page.url.searchParams.get('_q');
 	$: _qWithoutYear = (() =>
 		_q?.split(' ').filter((param, i, arr) => {
 			if (['or', 'not'].includes(param.toLowerCase()) && arr?.[i + 1].includes('yearPublished')) {
-				// remove operators preceding a year filter
+				// remove operators preceding a yearPublished
 				return false;
 			}
 			if (param.includes('yearPublished')) {
-				// remove year filters
+				// remove yearPublished
 				return false;
 			}
 			return true;
 		}))();
 
-	$: qOutput = getQ(yearFrom, yearTo);
+	$: qOutput = getQOutput(yearFrom, yearTo);
 
-	function getQ(from: number | undefined, to: number | undefined) {
+	function getQOutput(from: number | undefined, to: number | undefined) {
 		console.log('before', _q);
 		if (!from && !to) {
 			return _q;
@@ -43,7 +59,7 @@
 	}
 </script>
 
-<form class="my-4 flex w-full items-end gap-4" action="find" on:submit={handleSubmit}>
+<form class="my-4 flex w-full items-end gap-4" action="" on:submit={handleSubmit}>
 	<div class="flex flex-1 gap-4">
 		<div class="flex flex-1 flex-col">
 			<label class="text-1-cond-bold" for="facet-year-from">Från</label>
