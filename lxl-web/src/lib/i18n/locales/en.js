@@ -43,6 +43,7 @@ export default {
 		findFilter: 'Find filter'
 	},
 	sort: {
+		sortBy: 'Sort by',
 		relevancy: 'Relevancy',
 		alphaAsc: 'A-Z',
 		alphaDesc: 'Z-A',

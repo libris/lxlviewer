@@ -6,7 +6,7 @@
 	import Pagination from './Pagination.svelte';
 	import FacetGroup from './FacetGroup.svelte';
 
-	const sortOrder = $page.url.searchParams.get('_sort');
+	$: sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
 		{ value: '', label: $page.data.t('sort.relevancy') },
 		{ value: `_sortKeyByLang.${$page.data.locale}`, label: $page.data.t('sort.alphaAsc') },
@@ -63,7 +63,7 @@
 					{/if}
 				</nav>
 				<section class="results">
-					<div class="mb-4 flex justify-between">
+					<div class="mb-4 flex items-baseline justify-between">
 						<p role="status" data-testid="result-info">
 							{#if numHits && numHits > 0}
 								{numHits.toLocaleString($page.data.locale)} träffar
@@ -72,8 +72,8 @@
 							{/if}
 						</p>
 						{#if numHits > 0}
-							<div data-testid="sort-select">
-								<label for="search-sort">Sortera efter</label>
+							<div class="flex items-baseline gap-2" data-testid="sort-select">
+								<label for="search-sort">{$page.data.t('sort.sortBy')}</label>
 								<select id="search-sort" form="main-search" on:change={handleSortChange}>
 									{#each sortOptions as option}
 										<option value={option.value} selected={option.value === sortOrder}

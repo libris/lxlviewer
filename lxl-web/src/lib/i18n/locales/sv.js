@@ -42,6 +42,7 @@ export default {
 		findFilter: 'Hitta filter'
 	},
 	sort: {
+		sortBy: 'Sortera efter',
 		relevancy: 'Relevans',
 		alphaAsc: 'A-Ö',
 		alphaDesc: 'Ö-A',

@@ -22,6 +22,7 @@ export default {
 			'icon-inv-secondary': 'rgb(var(--icon-inv-secondary) / 0.64)'
 		},
 		backgroundColor: {
+			white: 'rgb(var(--color-white) / <alpha-value>)',
 			transparent: 'transparent',
 			main: 'rgb(var(--bg-main) / 1)',
 			head: 'rgb(var(--bg-head) / 1)',
