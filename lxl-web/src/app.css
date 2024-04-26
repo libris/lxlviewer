@@ -46,6 +46,10 @@
 		@apply text-ellipsis rounded-md border-t border-t-primary/16 px-4 py-2 text-3-regular;
 	}
 
+	select {
+		@apply bg-transparent text-primary text-3-cond-bold;
+	}
+
 	.container-fluid {
 		@apply mx-auto px-4 sm:px-8;
 	}
