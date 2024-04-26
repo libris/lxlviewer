@@ -47,7 +47,7 @@
 	}
 
 	select {
-		@apply rounded-sm bg-white p-1;
+		@apply bg-transparent text-primary text-3-cond-bold;
 	}
 
 	.container-fluid {

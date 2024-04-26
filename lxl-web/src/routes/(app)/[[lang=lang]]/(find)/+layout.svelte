@@ -63,7 +63,7 @@
 					{/if}
 				</nav>
 				<section class="results">
-					<div class="mb-4 flex items-baseline justify-between">
+					<div class="mb-4 flex items-center justify-between">
 						<p role="status" data-testid="result-info">
 							{#if numHits && numHits > 0}
 								{numHits.toLocaleString($page.data.locale)} träffar
@@ -72,8 +72,10 @@
 							{/if}
 						</p>
 						{#if numHits > 0}
-							<div class="flex items-baseline gap-2" data-testid="sort-select">
-								<label for="search-sort">{$page.data.t('sort.sortBy')}</label>
+							<div class="flex flex-col items-baseline" data-testid="sort-select">
+								<label class="pl-1 text-secondary text-2-regular" for="search-sort"
+									>{$page.data.t('sort.sortBy')}</label
+								>
 								<select id="search-sort" form="main-search" on:change={handleSortChange}>
 									{#each sortOptions as option}
 										<option value={option.value} selected={option.value === sortOrder}
