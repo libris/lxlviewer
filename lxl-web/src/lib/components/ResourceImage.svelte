@@ -2,11 +2,13 @@
 	import { page } from '$app/stores';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import type { ResourceData } from '$lib/types/ResourceData';
-	import placeholderBook from '$lib/assets/img/placeholder-book.svg';
+	import placeholder from '$lib/assets/img/placeholder.svg';
+	import getTypeIcon from '$lib/utils/getTypeIcon';
 
 	export let resource: ResourceData;
 	export let alt: string | undefined;
 	export let linkToFull = false;
+	export let type = '';
 
 	$: src = $page.data.images.find(
 		(uri) => uri.recordId?.replace(/#it/g, '') === getResourceId(resource)
@@ -22,5 +24,10 @@
 		<img {alt} {src} class="object-contain object-center" />
 	{/if}
 {:else}
-	<img src={placeholderBook} alt="" class="object-contain object-center" />
+	<div class="flex items-center justify-center">
+		<img src={placeholder} alt="" class="h-20 w-20 rounded-sm object-cover" />
+		{#if getTypeIcon(type)}
+			<svelte:component this={getTypeIcon(type)} class="absolute text-2xl text-icon" />
+		{/if}
+	</div>
 {/if}
