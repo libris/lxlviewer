@@ -62,26 +62,26 @@
 <form class="my-4 flex w-full items-end gap-4" action="" on:submit={handleSubmit}>
 	<div class="flex flex-1 gap-4">
 		<div class="flex flex-1 flex-col">
-			<label class="text-1-cond-bold" for="facet-year-from">Från</label>
+			<label class="text-1-cond-bold" for="facet-year-from">{$page.data.t('general.from')}</label>
 			<input
 				id="facet-year-from"
 				type="number"
 				min="1000"
 				max="2099"
 				step="1"
-				placeholder="Årtal"
+				placeholder={$page.data.t('general.year')}
 				bind:value={yearFrom}
 			/>
 		</div>
 		<div class="flex flex-1 flex-col">
-			<label class="text-1-cond-bold" for="facet-year-to">Till</label>
+			<label class="text-1-cond-bold" for="facet-year-to">{$page.data.t('general.to')}</label>
 			<input
 				id="facet-year-to"
 				type="number"
 				min="1000"
 				max="2099"
 				step="1"
-				placeholder="Årtal"
+				placeholder={$page.data.t('general.year')}
 				bind:value={yearTo}
 			/>
 		</div>
@@ -90,7 +90,7 @@
 	<button
 		disabled={!yearFrom && !yearTo}
 		class="rounded-md px-4 py-2 text-primary-inv text-3-cond-bold gradient-primary hover:brightness-90 disabled:opacity-40 disabled:hover:brightness-100"
-		type="submit">Applicera</button
+		type="submit">{$page.data.t('general.apply')}</button
 	>
 
 	{#each searchParams as [name, value]}
