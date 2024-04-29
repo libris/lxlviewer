@@ -608,7 +608,10 @@ class Formatter {
 				if (ix >= 0 && asArray(display[ix]['uri']).length > 0) {
 					const uri = asArray(display[ix]['uri'])[0];
 					v[JsonLd.ID] = uri;
-					display.splice(ix, 1);
+					if (display.length > 1) {
+						// Is there anything else to display as link label?
+						display.splice(ix, 1);
+					}
 				}
 			}
 
