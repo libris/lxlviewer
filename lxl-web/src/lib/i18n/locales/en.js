@@ -1,6 +1,9 @@
 /** @type {typeof import('./sv.js').default} */
 export default {
 	home: {},
+	header: {
+		changeLang: 'På svenska'
+	},
 	facet: {
 		q: 'Free text search',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
