@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { goto, replaceState } from '$app/navigation';
-	//import SearchMapping from './SearchMapping.svelte';
+	import { goto, pushState } from '$app/navigation';
+	import SearchMapping from './SearchMapping.svelte';
 	import SearchCard from './SearchCard.svelte';
 	import Pagination from './Pagination.svelte';
-	import FacetGroup from './FacetGroup.svelte';
+	import Modal from '$lib/components/Modal.svelte';
+	import Filters from './Filters.svelte';
+	import IconSliders from '~icons/bi/sliders';
 
 	const sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
@@ -26,19 +28,25 @@
 		goto(`${$page.url.pathname}?${searchParams.toString()}`, { invalidateAll: true });
 	}
 
-	let searchPhrase = '';
+	let openFilters = false;
 
 	function handleShowFilters(event) {
 		event.preventDefault();
-		replaceState($page.url.href, { ...$page.state, showFilters: true });
+		pushState($page.url.href, { ...$page.state, openFilters: true });
+		openFilters = true;
 	}
 
-	function handleHideFilters(event) {
-		event.preventDefault();
-		replaceState($page.url.href.replace('#find', ''), { ...$page.state, showFilters: false });
+	function handleCloseFilters() {
+		pushState($page.url.href, { ...$page.state, openFilters: false });
+		openFilters = false;
+		history.back();
 	}
 
-	$: console.log('$page.filters', $page.state);
+	function getFilterCount(searchResult) {
+		if (searchResult) {
+			return searchResult.mapping?.find((mappingItem) => mappingItem.children).children.length;
+		}
+	}
 </script>
 
 <slot />
@@ -49,65 +57,39 @@
 		{#if searchResult}
 			{@const facets = searchResult.facetGroups}
 			{@const numHits = searchResult.totalItems}
-			<div
-				id="find"
-				class="find"
-				class:with-filters={$page.state.showFilters}
-				class:without-filters={Object.hasOwn($page.state, 'showFilters') &&
-					!$page.state.showFilters}
-			>
-				<!--
-				<div class="visible-with-filters">
-					<nav aria-label="Valda filter">
-						<SearchMapping mapping={searchResult.mapping} />
-					</nav>
+			<div class="find">
+				<nav class="mappings" aria-label="Valda filter">
+					<SearchMapping mapping={searchResult.mapping} />
+				</nav>
+				{#if openFilters}
+					<Modal position="left" close={handleCloseFilters}>
+						<span slot="title">Sökfilter ({getFilterCount(searchResult)} valda)</span>
+						<Filters {facets} />
+					</Modal>
+				{/if}
+				<div class="filters">
+					<Filters {facets} />
 				</div>
-				-->
-				<div class="filters visible-with-filters">
-					<div class="filters-content">
-						<a
-							class="hide-filter-button visible-with-filters"
-							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#`}
-							on:click={handleHideFilters}
-						>
-							Stäng
-						</a>
-						<nav class="facets" aria-labelledby="facet-sidebar-header" data-testid="facet-panel">
-							{#if facets && facets.length > 0}
-								<header id="facet-sidebar-header" class="font-bold">Filter</header>
-								<input
-									bind:value={searchPhrase}
-									class="mt-2"
-									placeholder={$page.data.t('search.findFilter')}
-									title={$page.data.t('search.findFilter')}
-									type="search"
-								/>
-								<ol>
-									{#each facets as group (group.dimension)}
-										<FacetGroup {group} locale={$page.data.locale} {searchPhrase} />
-									{/each}
-								</ol>
-							{/if}
-						</nav>
-					</div>
-				</div>
+
 				<div class="results">
 					<div class="toolbar mb-4 flex justify-between">
-						<div>
+						<div class="flex items-center">
 							<a
-								class="show-filter-button"
 								href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#find`}
+								class="md:none icon-link"
 								on:click={handleShowFilters}
+								aria-label="Sökfilter"
 							>
-								Sökfilter ({searchResult.mapping.length})
+								<IconSliders width={20} height={20} />
+								<div class="indicator">{getFilterCount(searchResult)}</div>
 							</a>
-							<p role="status" data-testid="result-info">
+							<span class="text-sm" role="status" data-testid="result-info">
 								{#if numHits && numHits > 0}
 									{numHits.toLocaleString($page.data.locale)} träffar
 								{:else}
 									Inga träffar
 								{/if}
-							</p>
+							</span>
 						</div>
 
 						{#if numHits > 0}
@@ -147,61 +129,39 @@
 		display: flex;
 		align-items: center;
 		min-height: 44px;
-		background: green;
 	}
 
 	.filters {
 		grid-area: filters;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.mapping {
-		grid-area: mapping;
-	}
-
-	.visible-with-filters {
 		display: none;
 	}
 
-	.with-filters .visible-with-filters,
-	#find:target .visible-with-filters {
-		display: flex;
+	.mappings {
+		grid-area: mappings;
+		display: none;
 	}
 
-	@media screen and (max-width: theme('screens.md')) {
-		.with-filters .filters {
-			position: fixed;
-			left: 0;
-			width: 100vw;
-			height: 100vh;
-			background: rgba(0, 0, 0, 0.5);
-		}
-
-		.filters-content {
-			height: 100%;
-			width: 80vw;
-			background: #fff;
-			@apply bg-main shadow-2xl;
-		}
-	}
 	@media screen and (min-width: theme('screens.md')) {
 		.find {
 			display: grid;
 			grid-template-columns: 320px 1fr;
 			grid-template-areas:
 				'toolbar toolbar'
+				'mappings mappings'
 				'filters results';
 
 			gap: 16px;
 		}
 
-		.visible-with-filters {
-			display: revert;
+		.filters {
+			display: block;
 		}
 
-		.show-filter-button,
-		.visible-with-filters .hide-filter-button {
+		.mappings {
+			display: block;
+		}
+
+		.show-filters-button {
 			display: none;
 		}
 	}
@@ -214,7 +174,6 @@
 
 	.toolbar {
 		min-height: 56px;
-		background: #ebebeb;
 	}
 
 	.results {

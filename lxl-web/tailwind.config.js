@@ -44,6 +44,7 @@ export default {
 			4: '.04'
 		},
 		fontSize: ({ theme }) => ({
+			xxs: ['0.625rem', theme('lineHeight.normal')],
 			xs: ['0.75rem', theme('lineHeight.normal')],
 			sm: ['0.875rem', theme('lineHeight.normal')],
 			base: ['1rem', theme('lineHeight.normal')],
@@ -155,6 +156,18 @@ export default {
 				// other utility classes
 				'.gradient-primary': {
 					'@apply bg-gradient-to-b from-[#7B4C1E] to-[#674019]': {}
+				},
+				'.icon-link': {
+					'@apply w-11 h-11 flex items-center justify-center rounded-full hover:bg-cards focus:bg-cards transition-colors relative':
+						{}
+				},
+				'.icon-button': {
+					'@apply w-11 h-11 flex items-center justify-center rounded-full hover:bg-cards focus:bg-cards transition-colors relative':
+						{}
+				},
+				'.indicator': {
+					'@apply w-4 h-4 flex items-center justify-center bg-pill text-primary-inv leading-none text-xxs font-bold rounded-full absolute top-1 right-1':
+						{}
 				}
 			});
 		}

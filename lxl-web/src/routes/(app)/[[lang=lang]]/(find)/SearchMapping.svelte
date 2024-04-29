@@ -38,10 +38,10 @@
 	}
 </script>
 
-<ul class="flex flex-wrap items-center gap-2">
+<ul class="search-mapping flex items-center gap-2 overflow-x-auto whitespace-nowrap">
 	{#each mapping as m}
 		<li
-			class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}"
+			class="mapping-item min-h-9 {m.children ? 'pill-group' : 'pill'} pill-{m.operator}"
 			class:wildcard={m.display === '*'}
 			class:outer={depth === 0}
 		>
@@ -49,18 +49,19 @@
 				<svelte:self mapping={m.children} parentOperator={m.operator} depth={depth + 1} />
 			{:else if 'label' in m && 'display' in m}
 				{@const symbol = getRelationSymbol(m.operator)}
-				<div class="pill-label inline-block text-2-regular first-letter:uppercase">{m.label}</div>
+				<span class="pill-label text-2-regular first-letter:uppercase">{m.label}</span>
 				<span class="pill-relation">{symbol}</span>
 				<span class="pill-value">
 					<DecoratedData data={m.display} showLabels={ShowLabelsOptions['Never']} />
 				</span>
 			{/if}
 			{#if 'up' in m && (!m.children || depth > 0)}
-				<span class="pill-remove inline-block align-sub">
-					<a class="float-right pl-2 text-[inherit] hover:text-[inherit]" href={m.up?.['@id']}>
-						<BiXLg class="" fill="currentColor" fill-opacity="0.8" />
-					</a>
-				</span>
+				<a
+					class="pill-remove flex h-9 w-9 items-center justify-center text-[inherit] hover:text-[inherit]"
+					href={m.up?.['@id']}
+				>
+					<BiXLg class="" fill="currentColor" fill-opacity="0.8" />
+				</a>
 			{/if}
 		</li>
 		{#if parentOperator}
@@ -91,8 +92,17 @@
 </ul>
 
 <style lang="postcss">
+	.search-mapping {
+		& {
+			::-webkit-scrollbar {
+				display: none;
+			}
+		}
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
 	.mapping-item {
-		@apply rounded-md px-4 py-2 brightness-100 text-3-cond-bold;
+		@apply inline-flex items-center gap-1 rounded-md pl-4 text-sm brightness-100 text-3-cond-bold;
 		transition: filter 0.1s ease;
 	}
 
@@ -101,7 +111,7 @@
 	}
 
 	.pill {
-		@apply bg-positive-inv text-primary-inv;
+		@apply bg-positive-inv text-sm text-primary-inv;
 
 		& .pill-label,
 		.pill-relation {
@@ -123,7 +133,7 @@
 	}
 
 	.pill-group {
-		@apply flex items-center gap-2 bg-pill/8 p-0 pr-4;
+		@apply flex items-center gap-2 bg-pill/8;
 
 		&.outer {
 			@apply bg-transparent;
@@ -144,7 +154,7 @@
 
 	/* TODO - move to button component/ghost */
 	.ghost-btn {
-		@apply flex items-center gap-2 rounded-md bg-main px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold;
+		@apply flex min-h-9 items-center gap-2 rounded-md bg-main px-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold;
 		transition: filter 0.1s ease;
 
 		&:hover,
