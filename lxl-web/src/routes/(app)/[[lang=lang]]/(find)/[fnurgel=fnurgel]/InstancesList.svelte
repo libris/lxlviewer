@@ -223,4 +223,9 @@
 	.arrow {
 		@apply rotate-0 transition-transform;
 	}
+
+	// hide default expand arrow/chevron in webkit
+	details summary::-webkit-details-marker {
+		display: none;
+	}
 </style>
