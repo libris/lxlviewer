@@ -1,9 +1,17 @@
-<script>
+<script lang="ts">
 	import Search from '$lib/components/Search.svelte';
-	import LangPicker from '$lib/components/LangPicker.svelte';
+	import BiGlobeAmericas from '~icons/bi/globe-americas';
+	import { Locales, defaultLocale } from '$lib/i18n/locales';
 	import { page } from '$app/stores';
 
 	$: isLandingPage = $page.route.id === '/(app)/[[lang=lang]]';
+
+	const otherLangCode = Object.keys(Locales).find((locale) => locale !== $page.data.locale);
+	const otherLangLabel = $page.data.t('header.changeLang');
+	$: otherLangUrl =
+		(otherLangCode === defaultLocale
+			? $page.url.pathname.replace(`/${$page.data.locale}`, isLandingPage ? '/' : '')
+			: `/${otherLangCode}${$page.url.pathname}`) + $page.url.search;
 </script>
 
 {#if isLandingPage}
@@ -11,8 +19,19 @@
 		<nav class="flex justify-center sm:justify-end">
 			<ol class="flex items-center gap-6 text-secondary">
 				<li>Hjälp</li>
-				<li>Inställningar</li>
-				<li><LangPicker /></li>
+				<li>
+					<!-- server hook (html lang) needs full page reload -->
+					<a
+						class="flex items-center gap-2 no-underline"
+						href={otherLangUrl}
+						hreflang={otherLangCode}
+						data-sveltekit-reload
+						data-testid="current-lang"
+					>
+						<BiGlobeAmericas class="inline text-icon" />
+						<span>{otherLangLabel}</span>
+					</a>
+				</li>
 			</ol>
 		</nav>
 		<div class="flex flex-col items-center">
@@ -42,8 +61,18 @@
 			<nav class="hidden md:flex">
 				<ol class="flex items-center gap-6 text-secondary">
 					<li>Hjälp</li>
-					<li>Inställningar</li>
-					<li><LangPicker /></li>
+					<li>
+						<a
+							class="flex items-center gap-2 no-underline"
+							href={otherLangUrl}
+							hreflang={otherLangCode}
+							data-sveltekit-reload
+							data-testid="current-lang"
+						>
+							<BiGlobeAmericas class="inline text-icon" />
+							<span>{otherLangLabel}</span>
+						</a>
+					</li>
 				</ol>
 			</nav>
 			<div class="block md:hidden">⚙️</div>

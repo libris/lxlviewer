@@ -1,5 +1,8 @@
 export default {
 	home: {},
+	header: {
+		changeLang: 'In English'
+	},
 	facet: {
 		q: 'Fritextsökning',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',

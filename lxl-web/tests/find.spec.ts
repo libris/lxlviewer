@@ -20,8 +20,6 @@ test('page has a search input', async ({ page }) => {
 
 test('can change the language', async ({ page }) => {
 	await page.getByTestId('current-lang').click();
-	const menu = page.getByTestId('lang-picker-menu');
-	await menu.getByRole('link', { name: 'English' }).click();
 	await expect(page).toHaveURL(/\/en\/find/);
 });
 
