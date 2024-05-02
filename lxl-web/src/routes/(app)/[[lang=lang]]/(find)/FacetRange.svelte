@@ -28,32 +28,30 @@
 	}
 </script>
 
-<form class="my-4 flex w-full items-end gap-4" action="" on:submit={handleSubmit}>
-	<div class="flex flex-1 gap-4">
-		<div class="flex flex-1 flex-col">
-			<label class="text-1-cond-bold" for="facet-range-from">{$page.data.t('general.from')}</label>
-			<input
-				id="facet-range-from"
-				type="number"
-				min="1000"
-				max="2099"
-				step="1"
-				placeholder={$page.data.t('general.year')}
-				bind:value={rangeFrom}
-			/>
-		</div>
-		<div class="flex flex-1 flex-col">
-			<label class="text-1-cond-bold" for="facet-range-to">{$page.data.t('general.to')}</label>
-			<input
-				id="facet-range-to"
-				type="number"
-				min="1000"
-				max="2099"
-				step="1"
-				placeholder={$page.data.t('general.year')}
-				bind:value={rangeTo}
-			/>
-		</div>
+<form class="my-4 grid grid-cols-3 items-end gap-2" action="" on:submit={handleSubmit}>
+	<div class="flex flex-col gap-1">
+		<label class="text-1-cond-bold" for="facet-range-from">{$page.data.t('general.from')}</label>
+		<input
+			id="facet-range-from"
+			type="number"
+			min="1000"
+			max="2099"
+			step="1"
+			placeholder={$page.data.t('general.year')}
+			bind:value={rangeFrom}
+		/>
+	</div>
+	<div class="flex flex-col gap-1">
+		<label class="text-1-cond-bold" for="facet-range-to">{$page.data.t('general.to')}</label>
+		<input
+			id="facet-range-to"
+			type="number"
+			min="1000"
+			max="2099"
+			step="1"
+			placeholder={$page.data.t('general.year')}
+			bind:value={rangeTo}
+		/>
 	</div>
 	<!-- todo: reusable button classes -->
 	<button
