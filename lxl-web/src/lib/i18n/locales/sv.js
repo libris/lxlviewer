@@ -60,7 +60,7 @@ export default {
 		latestInstanceCover: 'Senaste utgåvans omslag',
 		instanceCover: 'Utgåvans omslag',
 		close: 'Stäng',
-		apply: 'Applicera',
+		apply: 'Tillämpa',
 		from: 'Från',
 		to: 'Till',
 		year: 'Årtal'

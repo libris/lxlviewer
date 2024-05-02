@@ -5,6 +5,9 @@
 	import SearchCard from './SearchCard.svelte';
 	import Pagination from './Pagination.svelte';
 	import FacetGroup from './FacetGroup.svelte';
+	import type { SearchResult } from './search';
+
+	$: searchResult = $page.data.searchResult as SearchResult;
 
 	$: sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
@@ -30,8 +33,8 @@
 </script>
 
 <slot />
-{#if $page.data.searchResult}
-	{#await $page.data.searchResult}
+{#if searchResult}
+	{#await searchResult}
 		<p class="px-8">Laddar...</p>
 	{:then searchResult}
 		{#if searchResult}
