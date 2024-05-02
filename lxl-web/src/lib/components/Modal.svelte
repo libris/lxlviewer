@@ -7,12 +7,15 @@
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import IconClose from '~icons/bi/x-lg';
+	import { setModalContext } from '$lib/contexts/modal';
 
 	export let dialog: HTMLDialogElement | undefined = undefined;
 	export let close: ((event: Event) => void) | undefined = undefined;
 	export let position: 'left' | 'right' = 'right';
 
 	let prevBodyOverflow: string | undefined = undefined;
+
+	setModalContext();
 
 	onMount(() => {
 		dialog?.showModal();
