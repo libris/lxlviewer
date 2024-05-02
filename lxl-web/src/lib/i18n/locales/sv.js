@@ -42,7 +42,16 @@ export default {
 		intendedAudience: 'Målgrupp'
 	},
 	search: {
-		findFilter: 'Hitta filter'
+		loading: 'Laddar...',
+		findFilter: 'Hitta filter',
+		filters: 'Sökfilter',
+		clearFilters: 'Rensa',
+		editFilters: 'Redigera',
+		noResults: 'Inga resultat',
+		hits: 'träffar',
+		hitsOne: 'träff',
+		selected: 'valda',
+		selectedOne: 'vald'
 	},
 	sort: {
 		sortBy: 'Sortera efter',

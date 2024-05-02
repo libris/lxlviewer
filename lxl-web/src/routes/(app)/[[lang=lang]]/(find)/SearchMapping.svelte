@@ -81,7 +81,7 @@
 			<li class="pill-remove">
 				<a class="ghost-btn" href={m.up?.['@id']}>
 					<BiTrash class="text-icon" />
-					<span>Rensa</span>
+					{$page.data.t('search.clearFilters')}
 				</a>
 			</li>
 		{/if}
@@ -95,7 +95,7 @@
 				href={toggleEditUrl}
 			>
 				<BiPencil class="text-icon" />
-				<span>Redigera</span>
+				{$page.data.t('search.editFilters')}
 			</a>
 		</li>
 	{/if}

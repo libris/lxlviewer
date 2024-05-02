@@ -46,7 +46,7 @@
 <slot />
 {#if $page.data.searchResult}
 	{#await $page.data.searchResult}
-		<p class="px-8">Laddar...</p>
+		<p class="px-8">{$page.data.t('search.loading')}</p>
 	{:then searchResult}
 		{#if searchResult}
 			{@const facets = searchResult.facetGroups}
@@ -58,7 +58,10 @@
 				</nav>
 				{#if showFiltersModal}
 					<Modal position="left" close={toggleFiltersModal}>
-						<span slot="title">Sökfilter ({filterCount} valda)</span>
+						<span slot="title">
+							{$page.data.t('search.filters')} ({numHits.toLocaleString($page.data.locale)}
+							{numHits == 1 ? $page.data.t('search.hitsOne') : $page.data.t('search.hits')})
+						</span>
 						<Filters {facets} />
 					</Modal>
 				{/if}
@@ -75,7 +78,7 @@
 							on:click|preventDefault={toggleFiltersModal}
 						>
 							<IconSliders width={20} height={20} />
-							<span>Sökfilter</span>
+							{$page.data.t('search.filters')}
 							{#if filterCount}
 								<span
 									class="flex h-5 w-5 items-center justify-center rounded-full bg-pill text-xs font-bold leading-none text-primary-inv"
@@ -88,7 +91,7 @@
 							{#if numHits && numHits > 0}
 								{numHits.toLocaleString($page.data.locale)} träffar
 							{:else}
-								Inga träffar
+								{$page.data.t('search.noResults')}
 							{/if}
 						</div>
 						{#if numHits > 0}

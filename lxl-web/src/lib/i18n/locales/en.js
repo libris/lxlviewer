@@ -43,7 +43,16 @@ export default {
 		intendedAudience: 'Intended audience'
 	},
 	search: {
-		findFilter: 'Find filter'
+		loading: 'Loading...',
+		findFilter: 'Find filter',
+		filters: 'Filters',
+		clearFilters: 'Clear',
+		editFilters: 'Edit',
+		noResults: 'No results',
+		hits: 'hits',
+		hitsOne: 'hit',
+		selected: 'selected',
+		selectedOne: 'selected'
 	},
 	sort: {
 		sortBy: 'Sort by',

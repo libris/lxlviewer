@@ -4,6 +4,7 @@
 	import { type FacetGroup } from './search';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiChevronDown from '~icons/bi/chevron-down';
+	import { page } from '$app/stores';
 
 	export let group: FacetGroup;
 	export let locale: LocaleCode;
@@ -91,7 +92,7 @@
 			>
 		{/if}
 		{#if searchPhrase && filteredFacets.length === 0}
-			<span role="status" aria-atomic="true">Inget resultat</span>
+			<span role="status" aria-atomic="true">{$page.data.t('search.noResults')}</span>
 		{/if}
 	</div>
 </li>
