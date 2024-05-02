@@ -4,6 +4,7 @@
 	import { type FacetGroup } from './search';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiChevronDown from '~icons/bi/chevron-down';
+	import FacetRange from './FacetRange.svelte';
 
 	export let group: FacetGroup;
 	export let locale: LocaleCode;
@@ -60,6 +61,10 @@
 		aria-labelledby={'toggle-' + group.dimension}
 		class:hidden={!expanded}
 	>
+		{#if group.search && !(searchPhrase && hasHits)}
+			<!-- facet range inputs; hide in filter search results -->
+			<FacetRange search={group.search} />
+		{/if}
 		<ol class="max-h-437px mt-2 overflow-scroll" data-testid="facet-list">
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li>
