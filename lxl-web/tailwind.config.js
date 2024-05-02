@@ -158,6 +158,14 @@ export default {
 				// other utility classes
 				'.gradient-primary': {
 					'@apply bg-gradient-to-b from-[#7B4C1E] to-[#674019]': {}
+				},
+				'.icon-button': {
+					'@apply w-11 h-11 flex items-center justify-center rounded-full hover:bg-cards focus:bg-cards transition-colors relative':
+						{}
+				},
+				'.ghost-btn': {
+					'@apply flex items-center gap-2 rounded-md bg-main px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold hover:brightness-95 active:brightness-95':
+						{}
 				}
 			});
 		}

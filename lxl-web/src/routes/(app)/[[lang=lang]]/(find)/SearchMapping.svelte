@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
+	import { getModalContext } from '$lib/contexts/modal';
 	import type { DisplayMapping, SearchOperators } from './search';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiPencil from '~icons/bi/pencil';
@@ -9,6 +10,8 @@
 	export let mapping: DisplayMapping[];
 	export let parentOperator: keyof typeof SearchOperators | undefined = undefined;
 	export let depth = 0;
+
+	const inModal = getModalContext();
 
 	$: showEditButton =
 		$page.url.pathname === `${$page.data.base}find` &&
@@ -83,7 +86,7 @@
 			</li>
 		{/if}
 	{/each}
-	{#if showEditButton && depth === 0}
+	{#if !inModal && showEditButton && depth === 0}
 		<li>
 			<a
 				class="ghost-btn"

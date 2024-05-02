@@ -4,7 +4,12 @@
 	import SearchMapping from './SearchMapping.svelte';
 	import SearchCard from './SearchCard.svelte';
 	import Pagination from './Pagination.svelte';
-	import FacetGroup from './FacetGroup.svelte';
+	import Modal from '$lib/components/Modal.svelte';
+	import Filters from './Filters.svelte';
+	import IconSliders from '~icons/bi/sliders';
+	import type { SearchMapping as TypedSearchMapping } from './search';
+
+	let showFiltersModal = false;
 
 	$: sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
@@ -26,7 +31,16 @@
 		goto(`${$page.url.pathname}?${searchParams.toString()}`, { invalidateAll: true });
 	}
 
-	let searchPhrase = '';
+	function toggleFiltersModal() {
+		showFiltersModal = !showFiltersModal;
+	}
+
+	function getFiltersCount(mapping: TypedSearchMapping) {
+		if (Array.isArray(mapping)) {
+			return mapping.find((mappingItem) => mappingItem?.children)?.children.length || 1;
+		}
+		return 0;
+	}
 </script>
 
 <slot />
@@ -37,45 +51,54 @@
 		{#if searchResult}
 			{@const facets = searchResult.facetGroups}
 			{@const numHits = searchResult.totalItems}
-			<div class="find container-fluid">
-				<nav class="mapping" aria-label="Valda filter">
+			{@const filterCount = getFiltersCount(searchResult.mapping)}
+			<div class="find relative gap-y-4">
+				<nav class="mappings px-4" aria-label="Valda filter">
 					<SearchMapping mapping={searchResult.mapping} />
 				</nav>
-				<nav
-					class="lg:facets hidden lg:block"
-					aria-labelledby="facet-sidebar-header"
-					data-testid="facet-panel"
-				>
-					{#if facets && facets.length > 0}
-						<header id="facet-sidebar-header" class="font-bold">Filter</header>
-						<input
-							bind:value={searchPhrase}
-							class="mt-2"
-							placeholder={$page.data.t('search.findFilter')}
-							title={$page.data.t('search.findFilter')}
-							type="search"
-						/>
-						<ol>
-							{#each facets as group (group.dimension)}
-								<FacetGroup {group} locale={$page.data.locale} {searchPhrase} />
-							{/each}
-						</ol>
-					{/if}
-				</nav>
-				<section class="results">
-					<div class="mb-4 flex items-center justify-between">
-						<p role="status" data-testid="result-info">
+				{#if showFiltersModal}
+					<Modal position="left" close={toggleFiltersModal}>
+						<span slot="title">Sökfilter ({filterCount} valda)</span>
+						<Filters {facets} />
+					</Modal>
+				{/if}
+				<div class="filters" id="filters">
+					<Filters {facets} />
+				</div>
+
+				<div class="results">
+					<div class="toolbar flex min-h-14 items-center justify-between p-4 md:min-h-fit md:pt-0">
+						<a
+							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
+							class="filter-modal-toggle ghost-btn md:hidden"
+							aria-label="Sökfilter"
+							on:click|preventDefault={toggleFiltersModal}
+						>
+							<IconSliders width={20} height={20} />
+							<span>Sökfilter</span>
+							{#if filterCount}
+								<span
+									class="flex h-5 w-5 items-center justify-center rounded-full bg-pill text-xs font-bold leading-none text-primary-inv"
+								>
+									{filterCount}
+								</span>
+							{/if}
+						</a>
+						<div class="hits pt-4 text-secondary md:pt-0" role="status" data-testid="result-info">
 							{#if numHits && numHits > 0}
 								{numHits.toLocaleString($page.data.locale)} träffar
 							{:else}
 								Inga träffar
 							{/if}
-						</p>
+						</div>
 						{#if numHits > 0}
-							<div class="flex flex-col items-baseline" data-testid="sort-select">
-								<label class="pl-1 text-secondary text-2-regular" for="search-sort"
-									>{$page.data.t('sort.sortBy')}</label
-								>
+							<div
+								class="sort-select flex flex-col items-baseline justify-self-end"
+								data-testid="sort-select"
+							>
+								<label class="pl-1 text-secondary text-2-regular" for="search-sort">
+									{$page.data.t('sort.sortBy')}
+								</label>
 								<select id="search-sort" form="main-search" on:change={handleSortChange}>
 									{#each sortOptions as option}
 										<option value={option.value} selected={option.value === sortOrder}
@@ -86,13 +109,13 @@
 							</div>
 						{/if}
 					</div>
-					<ol class="flex flex-col gap-2">
+					<ol class="flex flex-col gap-2 px-4">
 						{#each searchResult.items as item (item['@id'])}
 							<SearchCard {item} />
 						{/each}
 					</ol>
 					<Pagination data={searchResult} />
-				</section>
+				</div>
 			</div>
 		{/if}
 	{:catch error}
@@ -101,29 +124,70 @@
 {/if}
 
 <style lang="postcss">
-	.find {
-		@apply grid gap-4 py-4;
+	.toolbar {
+		grid-area: toolbar;
+		display: grid;
 		grid-template-areas:
-			'mapping'
-			'results';
+			'filter-modal-toggle sort-select'
+			'hits hits';
+	}
 
-		@media screen and (min-width: theme('screens.lg')) {
-			grid-template-areas:
-				'mapping mapping'
-				'facets results';
-			grid-template-columns: 320px 1fr;
+	.filters {
+		grid-area: filters;
+		display: none;
+	}
+
+	#filters {
+		&:target {
+			display: block; /* TODO: fix better no-JS fallback styling */
 		}
 	}
 
-	.mapping {
-		grid-area: mapping;
-	}
-
-	.facets {
-		grid-area: facets;
+	.mappings {
+		grid-area: mappings;
+		display: none;
 	}
 
 	.results {
 		grid-area: results;
+	}
+
+	.filter-toggle {
+		grid-area: filter-toggle;
+	}
+
+	.sort-select {
+		grid-area: sort-select;
+	}
+
+	.hits {
+		grid-area: hits;
+	}
+
+	@media screen and (min-width: theme('screens.md')) {
+		.find {
+			display: grid;
+			grid-template-columns: 320px 1fr;
+			grid-template-areas:
+				'toolbar toolbar'
+				'mappings mappings'
+				'filters results';
+		}
+
+		.filters {
+			display: block;
+		}
+
+		.mappings {
+			display: block;
+		}
+
+		.filter-modal-toggle {
+			display: none;
+		}
+
+		.toolbar {
+			grid-template-areas: 'hits sort-select';
+		}
 	}
 </style>
