@@ -151,17 +151,4 @@
 	.pill-between:last-of-type {
 		@apply hidden;
 	}
-	.pill-remove {
-	}
-
-	/* TODO - move to button component/ghost */
-	.ghost-btn {
-		@apply flex items-center gap-2 rounded-md bg-main px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold;
-		transition: filter 0.1s ease;
-
-		&:hover,
-		&.active {
-			@apply brightness-95;
-		}
-	}
 </style>
