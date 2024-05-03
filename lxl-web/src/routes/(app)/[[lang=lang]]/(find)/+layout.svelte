@@ -38,10 +38,9 @@
 	}
 
 	function getFiltersCount(mapping: DisplayMapping[]) {
-		if (Array.isArray(mapping)) {
-			return mapping.find((mappingItem) => mappingItem?.children)?.children.length || 1;
-		}
-		return 0;
+		return (mapping[0].children || mapping).filter(
+			(filterItem) => !(filterItem.display === '*' && filterItem.operator === 'equals') // TODO: probably best to do wildcard-filtering in an earlier step (in search.ts)?
+		).length;
 	}
 </script>
 
