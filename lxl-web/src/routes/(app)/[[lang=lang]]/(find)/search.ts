@@ -11,7 +11,8 @@ import {
 import { LxlLens } from '$lib/utils/display.types';
 import { type translateFn, getTranslator } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
-import { calculateExpirationTime, generateAuxdImageUri, getFirstImageLink } from '$lib/utils/auxd';
+import { bestImage, bestSize, auxdAuth } from '$lib/utils/auxd';
+import { Widths } from '$lib/utils/auxd.types';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -31,11 +32,11 @@ export async function asResult(
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
 		items: view.items.map((i) => ({
-			[JsonLd.ID]: i.meta[JsonLd.ID],
-			[JsonLd.TYPE]: i[JsonLd.TYPE],
+			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
+			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
-			imageUri: generateAuxdImageUri(calculateExpirationTime(), getFirstImageLink(i), auxdSecret)
+			image: auxdAuth(bestSize(bestImage(i), Widths.SMALL), auxdSecret)
 		})),
 		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 	};
@@ -50,8 +51,16 @@ export interface SearchResult {
 	first: Link;
 	last: Link;
 	next?: Link;
-	items: DisplayDecorated[];
+	items: SearchResultItem[];
 	facetGroups: FacetGroup[];
+}
+
+export interface SearchResultItem {
+	[JsonLd.ID]: string;
+	[JsonLd.TYPE]: string;
+	[LxlLens.CardHeading]: DisplayDecorated;
+	[LxlLens.CardBody]: DisplayDecorated;
+	image: AuthImageResolution | undefined;
 }
 
 type FacetGroupId = string;

@@ -11,6 +11,7 @@
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from './utils';
 	import { getSelectedHolding } from './utils';
+	import { Widths } from '$lib/utils/auxd.types';
 
 	export let data;
 
@@ -86,10 +87,9 @@
 			{#if data.images.length}
 				<div class="flex h-full max-h-72 w-full max-w-72 justify-center self-center md:self-start">
 					<ResourceImage
-						resource={data.instances.find((instanceItem) =>
-							data.images.find((imageItem) => imageItem.recordId.includes(instanceItem['@id']))
-						)}
+						images={data.images}
 						alt={data.t('general.latestInstanceCover')}
+						thumbnailTargetWidth={Widths.MEDIUM}
 						linkToFull
 					/>
 				</div>

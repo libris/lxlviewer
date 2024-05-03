@@ -1,29 +1,47 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { getResourceId } from '$lib/utils/resourceData';
-	import type { ResourceData } from '$lib/types/ResourceData';
+	import { type Image, Widths } from '$lib/utils/auxd.types';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
+	import { bestSize } from '$lib/utils/auxd';
+	import { first } from '$lib/utils/xl';
 
-	export let resource: ResourceData;
+	export let images: Image[];
 	export let alt: string | undefined;
 	export let linkToFull = false;
 	export let type = '';
+	export let thumbnailTargetWidth: number = Widths.SMALL;
+	export let showPlaceholder = true;
+	export let loading: 'eager' | 'lazy' = 'eager';
 
-	$: src = $page.data.images.find(
-		(uri) => uri.recordId?.replace(/#it/g, '') === getResourceId(resource)
-	)?.imageUri;
+	$: image = first(images);
+
+	$: thumb = bestSize(image, thumbnailTargetWidth);
+	$: full = bestSize(image, Widths.FULL);
 </script>
 
-{#if src}
+{#if image}
 	{#if linkToFull}
-		<a href={src} target="_blank" class="contents">
-			<img {alt} {src} class="object-contain object-center" />
+		<a href={full.url} target="_blank" class="contents">
+			<img
+				{alt}
+				{loading}
+				src={thumb.url}
+				width={thumb.widthṔx}
+				height={thumb.heightPx}
+				class="object-contain object-center"
+			/>
 		</a>
 	{:else}
-		<img {alt} {src} class="object-contain object-center" />
+		<img
+			{alt}
+			{loading}
+			src={thumb.url}
+			width={thumb.widthṔx}
+			height={thumb.heightPx}
+			class="object-contain object-center"
+		/>
 	{/if}
-{:else}
+{:else if showPlaceholder}
 	<div class="flex items-center justify-center">
 		<img src={placeholder} alt="" class="h-20 w-20 rounded-sm object-cover" />
 		{#if getTypeIcon(type)}

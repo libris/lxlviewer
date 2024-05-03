@@ -6,7 +6,7 @@ import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { type FramedData, DisplayUtil, pickProperty, toString, JsonLd } from '$lib/utils/xl.js';
 import { LxlLens } from '$lib/utils/display.types.js';
 import { relativizeUrl } from '$lib/utils/http';
-import { calculateExpirationTime, generateAuxdImageUri, getImageLinks } from '$lib/utils/auxd';
+import { getImages, auxdAuth } from '$lib/utils/auxd';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams.js';
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams.js';
 import { type apiError } from '$lib/types/API.js';
@@ -50,7 +50,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		shouldFindRelations = instances.length <= 1;
 
-		const images = getImageUris(getImageLinks(mainEntity));
+		const images = getImages(mainEntity).map((i) => auxdAuth(i, env.AUXD_SECRET));
 		const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity);
 		const holdingsByType = getHoldingsByType(mainEntity);
 		const holdersByType = Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
@@ -167,21 +167,6 @@ function getSortedInstances(instances: Record<string, unknown>[]) {
 		}
 		return yearB - yearA;
 	});
-}
-
-function getImageUris(imageLinks: { recordId: string; imageLink: string }[]) {
-	return imageLinks
-		.map((idAndLink) => {
-			return {
-				recordId: idAndLink.recordId,
-				imageUri: generateAuxdImageUri(
-					calculateExpirationTime(),
-					idAndLink.imageLink,
-					env.AUXD_SECRET
-				)
-			};
-		})
-		.filter((image) => image.imageUri !== '');
 }
 
 function sortHoldings(holdings) {

@@ -1,51 +1,71 @@
 import crypto from 'crypto';
+import { first, type FramedData, JsonLd, Owl } from '$lib/utils/xl';
+import {
+	type AuthImage,
+	type AuthImageResolution,
+	type Image,
+	type KbvImageObject,
+	type ImageResolution,
+	isImage,
+	isImageResolution
+} from '$lib/utils/auxd.types';
+import getAtPath from '$lib/utils/getAtPath';
+import { relativizeUrl, stripAnchor } from '$lib/utils/http';
 
-export function getImageLinks(mainEntity) {
-	const instances = getInstances(mainEntity);
-	if (Object.hasOwn(mainEntity, 'image')) {
-		return [
-			{
-				recordId: mainEntity['@id'],
-				imageLink: asArray(mainEntity.image)[0]['@id']
-			}
-		];
-	} else if (instances?.length) {
-		const imageLinks = instances.map((i) => {
-			if (i.image) {
-				return {
-					recordId: i['@id'],
-					imageLink: asArray(i.image)[0]['@id']
-				};
-			} else {
-				return {
-					recordId: i['@id'],
-					imageLink: ''
-				};
-			}
-		});
-		return imageLinks;
-	} else {
-		return [];
+function toImage(imageObject: KbvImageObject, recordId: string): Image {
+	const map1 = (i: KbvImageObject) =>
+		({
+			url: i[JsonLd.ID] || i[Owl.SAME_AS][0][JsonLd.ID],
+			widthṔx: Number.parseInt(i.width || ''),
+			heightPx: Number.parseInt(i.height || '')
+		}) as ImageResolution;
+
+	const sizes = [...(imageObject.thumbnail?.map(map1) || []), map1(imageObject)];
+	sizes.sort((a, b) => a.widthṔx - b.widthṔx);
+	return { sizes: sizes, recordId: recordId };
+}
+
+export function bestSize(from: Image, minWidthPx: number): ImageResolution;
+export function bestSize(from: undefined, minWidthPx: number): undefined;
+export function bestSize(from: Image | undefined, minWidthPx: number): ImageResolution | undefined {
+	if (from === undefined) {
+		return undefined;
 	}
+	const sizes = from.sizes;
+	const result = sizes.find((i) => i.widthṔx >= minWidthPx);
+	return result || sizes[sizes.length - 1];
 }
 
-export function getFirstImageLink(mainEntity) {
-	const links = getImageLinks(mainEntity);
-	const nonEmptyLinks = links.filter((l) => l.imageLink !== '');
-	return nonEmptyLinks.length ? nonEmptyLinks[0].imageLink : '';
+export function getImages(thing: FramedData): Image[] {
+	return [
+		...asArray(thing.image).map((i) =>
+			toImage(i as KbvImageObject, stripAnchor(relativizeUrl(thing['@id']) as string))
+		),
+		...getInstances(thing).flatMap(getImages)
+	];
 }
 
-export function getFirstImageUri(uris) {
-	const nonEmptyUris = uris.filter((u) => u.imageUri !== '');
-	return nonEmptyUris.length ? nonEmptyUris[0].imageUri : '';
+export function bestImage(thing: FramedData): Image | undefined {
+	return first(getImages(thing));
 }
 
-function getInstances(mainEntity) {
-	if (mainEntity['@reverse'] && mainEntity['@reverse']['instanceOf']) {
-		return mainEntity['@reverse']['instanceOf'];
-	} else {
-		return [];
+function getInstances(thing: FramedData): FramedData[] {
+	return getAtPath(thing, ['@reverse', 'instanceOf', '*'], []);
+}
+
+export function auxdAuth(i: undefined, secret: string): undefined;
+export function auxdAuth(i: Image, secret: string): AuthImage;
+export function auxdAuth(i: ImageResolution, secret: string): AuthImageResolution;
+export function auxdAuth(
+	i: Image | ImageResolution | undefined,
+	secret: string
+): AuthImage | AuthImageResolution | undefined {
+	if (isImageResolution(i)) {
+		return { ...i, url: generateAuxdImageUri(calculateExpirationTime(), i.url, secret) };
+	} else if (isImage(i)) {
+		return { ...i, sizes: i.sizes.map((s) => auxdAuth(s, secret)) as AuthImageResolution[] };
 	}
+	return undefined;
 }
 
 export function calculateExpirationTime() {
@@ -70,6 +90,6 @@ function generateImageHash(expires, url, secret) {
 	return base64Value.replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 }
 
-function asArray(thing) {
-	return Array.isArray(thing) ? thing : Array.of(thing);
+function asArray<V>(v: V | Array<V>): Array<V> | [] {
+	return Array.isArray(v) ? v : v === null || v === undefined ? [] : [v];
 }
