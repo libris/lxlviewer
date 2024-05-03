@@ -51,7 +51,8 @@ export default {
 		hits: 'träffar',
 		hitsOne: 'träff',
 		selected: 'valda',
-		selectedOne: 'vald'
+		selectedOne: 'vald',
+		editions: 'utgåvor'
 	},
 	sort: {
 		sortBy: 'Sortera efter',
