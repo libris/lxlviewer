@@ -2,10 +2,11 @@
 	import { page } from '$app/stores';
 	import { getModalContext } from '$lib/contexts/modal';
 	import FacetGroup from './FacetGroup.svelte';
-	import type { FacetGroup as TypedFacetGroup } from './search';
+	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from './search';
 	import SearchMapping from './SearchMapping.svelte';
 
 	export let facets: TypedFacetGroup[];
+	export let mapping: DisplayMapping[];
 
 	const inModal = getModalContext();
 
@@ -16,7 +17,7 @@
 	{#if facets?.length}
 		{#if inModal}
 			<nav class="px-4" aria-label="Valda filter">
-				<SearchMapping mapping={$page.data.searchResult.mapping} />
+				<SearchMapping {mapping} />
 			</nav>
 		{/if}
 		{#if facets?.length}

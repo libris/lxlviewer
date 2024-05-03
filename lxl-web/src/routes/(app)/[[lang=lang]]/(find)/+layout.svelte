@@ -62,11 +62,11 @@
 							{$page.data.t('search.filters')} ({numHits.toLocaleString($page.data.locale)}
 							{numHits == 1 ? $page.data.t('search.hitsOne') : $page.data.t('search.hits')})
 						</span>
-						<Filters {facets} />
+						<Filters {facets} mapping={searchResult.mapping} />
 					</Modal>
 				{/if}
 				<div class="filters" id="filters">
-					<Filters {facets} />
+					<Filters {facets} mapping={searchResult.mapping} />
 				</div>
 
 				<div class="results">
