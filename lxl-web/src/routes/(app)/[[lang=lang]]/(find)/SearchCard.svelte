@@ -42,11 +42,11 @@
 </script>
 
 <li
-	class="flex gap-8 rounded-md border-b border-b-primary/16 bg-cards p-6"
+	class="flex gap-4 rounded-md border-b border-b-primary/16 bg-cards p-4 sm:gap-8 sm:p-6"
 	data-testid="search-card"
 >
 	<a href={relativizeUrl(item['@id'])}>
-		<div class="relative flex h-full max-h-28 w-full max-w-20">
+		<div class="relative flex h-full max-h-32 w-full max-w-20">
 			{#if item.imageUri}
 				<img
 					src={item.imageUri}
@@ -66,7 +66,6 @@
 			{:else}
 				<div class="flex items-center justify-center">
 					<img src={placeholder} alt="" class="h-20 w-20 rounded-sm object-cover" />
-
 					{#if getTypeIcon(item['@type'])}
 						<svelte:component
 							this={getTypeIcon(item['@type'])}
@@ -78,35 +77,41 @@
 		</div>
 	</a>
 
-	<div class="flex flex-1 flex-col gap-2">
+	<div class="flex flex-1 flex-col gap-1 sm:gap-2">
 		<a
 			href={relativizeUrl(item['@id'])}
-			class="search-card-heading line-clamp-2 text-ellipsis no-underline text-4-regular"
+			class="search-card-heading line-clamp-1 text-ellipsis no-underline text-4-regular sm:line-clamp-2"
 			data-testid="search-card-heading"
 			><h2>
 				<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 			</h2></a
 		>
-		<div class="search-card-body flex items-baseline gap-2">
+		<div class="search-card-body flex flex-col items-baseline gap-1 sm:flex-row sm:gap-2">
 			{#each item['card-body']?._display as obj}
-				<div class="rounded-md bg-pill/4 p-2">
-					{#if 'hasInstance' in obj}
-						{@const instances = getInstanceData(obj.hasInstance)}
-						{#if instances}
+				{#if 'hasInstance' in obj}
+					{@const instances = getInstanceData(obj.hasInstance)}
+					{#if instances?.years}
+						<div
+							class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2"
+						>
 							<span>
 								{#if instances.count > 1}
 									{instances?.count}
-									{instances.count > 1 ? 'utgåvor' : 'utgåva'}
-									{instances?.years && `(${instances.years})`}
+									{$page.data.t('search.editions')}
+									{`(${instances.years})`}
 								{:else}
-									{instances?.years && `${instances.years}`}
+									{instances.years}
 								{/if}
 							</span>
-						{/if}
-					{:else}
-						<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block truncate />
+						</div>
 					{/if}
-				</div>
+				{:else}
+					<div
+						class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2"
+					>
+						<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block truncate />
+					</div>
+				{/if}
 			{/each}
 		</div>
 	</div>
@@ -132,5 +137,10 @@
 		:global([data-property='agent'] ._contentBefore) {
 			@apply inline;
 		}
+	}
+
+	/* Hide lang on small screens */
+	.search-card-prop:has([data-property='language']) {
+		@apply hidden sm:inline;
 	}
 </style>

@@ -241,7 +241,7 @@
 	}
 
 	.remainder {
-		@apply ml-2 rounded-full bg-pill/8 px-2 py-1 text-secondary;
+		@apply ml-2 whitespace-nowrap rounded-full bg-pill/8 px-2 py-0.5 text-secondary;
 	}
 
 	.block {

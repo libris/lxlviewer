@@ -52,7 +52,8 @@ export default {
 		hits: 'hits',
 		hitsOne: 'hit',
 		selected: 'selected',
-		selectedOne: 'selected'
+		selectedOne: 'selected',
+		editions: 'editions'
 	},
 	sort: {
 		sortBy: 'Sort by',
