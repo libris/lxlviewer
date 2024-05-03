@@ -31,7 +31,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		if (!resourceRes.ok) {
 			const err = (await resourceRes.json()) as apiError;
-			throw error(err.status_code, err.status);
+			throw error(err.status_code, { message: err.message, status: err.status });
 		}
 
 		const resource = await resourceRes.json();
@@ -105,7 +105,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 				}
 			} else {
 				const err = (await recordsRes.json()) as apiError;
-				throw error(err.status_code, err.status);
+				throw error(err.status_code, { message: err.message, status: err.status });
 			}
 		}
 
