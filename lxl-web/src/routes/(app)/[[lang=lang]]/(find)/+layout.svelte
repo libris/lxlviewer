@@ -1,15 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
+	import Modal from '$lib/components/Modal.svelte';
 	import SearchMapping from './SearchMapping.svelte';
 	import SearchCard from './SearchCard.svelte';
 	import Pagination from './Pagination.svelte';
-	import Modal from '$lib/components/Modal.svelte';
 	import Filters from './Filters.svelte';
 	import IconSliders from '~icons/bi/sliders';
-	import type { SearchMapping as TypedSearchMapping } from './search';
+	import type { SearchResult, DisplayMapping } from './search';
 
 	let showFiltersModal = false;
+
+	$: searchResult = $page.data.searchResult as SearchResult;
 
 	$: sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
@@ -35,7 +37,7 @@
 		showFiltersModal = !showFiltersModal;
 	}
 
-	function getFiltersCount(mapping: TypedSearchMapping) {
+	function getFiltersCount(mapping: DisplayMapping[]) {
 		if (Array.isArray(mapping)) {
 			return mapping.find((mappingItem) => mappingItem?.children)?.children.length || 1;
 		}
@@ -44,8 +46,8 @@
 </script>
 
 <slot />
-{#if $page.data.searchResult}
-	{#await $page.data.searchResult}
+{#if searchResult}
+	{#await searchResult}
 		<p class="px-8">{$page.data.t('search.loading')}</p>
 	{:then searchResult}
 		{#if searchResult}

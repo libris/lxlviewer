@@ -69,7 +69,11 @@ export default {
 		copyPermalinkToInstance: 'Copy link to edition',
 		latestInstanceCover: 'Cover of latest edition',
 		instanceCover: 'Cover of edition',
-		close: 'Close'
+		close: 'Close',
+		apply: 'Apply',
+		from: 'From',
+		to: 'To',
+		year: 'Year'
 	},
 	holdings: {
 		availableAt: 'Available at',

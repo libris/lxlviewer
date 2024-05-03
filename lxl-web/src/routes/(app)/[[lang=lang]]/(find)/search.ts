@@ -56,9 +56,19 @@ export interface SearchResult {
 
 type FacetGroupId = string;
 
+export type FacetSearch = {
+	mapping: {
+		greaterThanOrEquals: string;
+		lessThanOrEquals: string;
+		variable: FacetGroupId;
+	};
+	template: string;
+};
+
 export interface FacetGroup {
 	label: string;
 	dimension: FacetGroupId;
+	search?: FacetSearch;
 	// TODO better to do this distinction on the group level?
 	facets: (Facet | MultiSelectFacet)[];
 }
@@ -107,6 +117,7 @@ interface Slice {
 	alias: string;
 	dimension: FacetGroupId;
 	observation: Observation[];
+	search?: FacetSearch;
 }
 
 interface Observation {
@@ -224,6 +235,7 @@ function displayFacetGroups(
 		return {
 			label: translate(`facet.${g.alias || g.dimension}`),
 			dimension: g.dimension,
+			...('search' in g && { search: g.search }),
 			facets: g.observation.map((o) => {
 				return {
 					...('_selected' in o && { selected: o._selected }),

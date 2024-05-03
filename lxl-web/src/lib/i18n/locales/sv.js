@@ -68,7 +68,11 @@ export default {
 		copyPermalinkToInstance: 'Kopiera länk till utgåva',
 		latestInstanceCover: 'Senaste utgåvans omslag',
 		instanceCover: 'Utgåvans omslag',
-		close: 'Stäng'
+		close: 'Stäng',
+		apply: 'Tillämpa',
+		from: 'Från',
+		to: 'Till',
+		year: 'Årtal'
 	},
 	holdings: {
 		availableAt: 'Finns på',
