@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
+	import { getModalContext } from '$lib/contexts/modal';
 	import type { DisplayMapping, SearchOperators } from './search';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiPencil from '~icons/bi/pencil';
@@ -9,6 +10,8 @@
 	export let mapping: DisplayMapping[];
 	export let parentOperator: keyof typeof SearchOperators | undefined = undefined;
 	export let depth = 0;
+
+	const inModal = getModalContext();
 
 	$: showEditButton =
 		$page.url.pathname === `${$page.data.base}find` &&
@@ -78,12 +81,12 @@
 			<li class="pill-remove">
 				<a class="ghost-btn" href={m.up?.['@id']}>
 					<BiTrash class="text-icon" />
-					<span>Rensa</span>
+					{$page.data.t('search.clearFilters')}
 				</a>
 			</li>
 		{/if}
 	{/each}
-	{#if showEditButton && depth === 0}
+	{#if !inModal && showEditButton && depth === 0}
 		<li>
 			<a
 				class="ghost-btn"
@@ -92,7 +95,7 @@
 				href={toggleEditUrl}
 			>
 				<BiPencil class="text-icon" />
-				<span>Redigera</span>
+				{$page.data.t('search.editFilters')}
 			</a>
 		</li>
 	{/if}
@@ -132,7 +135,7 @@
 	}
 
 	.pill-group {
-		@apply flex items-center gap-2 bg-pill/8 p-0 pr-4;
+		@apply flex items-center gap-2 bg-pill/8 p-0;
 
 		&.outer {
 			@apply bg-transparent;
@@ -147,18 +150,5 @@
 	.pill-between-and,
 	.pill-between:last-of-type {
 		@apply hidden;
-	}
-	.pill-remove {
-	}
-
-	/* TODO - move to button component/ghost */
-	.ghost-btn {
-		@apply flex items-center gap-2 rounded-md bg-main px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold;
-		transition: filter 0.1s ease;
-
-		&:hover,
-		&.active {
-			@apply brightness-95;
-		}
 	}
 </style>

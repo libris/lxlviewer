@@ -6,12 +6,16 @@
 	import { cubicInOut } from 'svelte/easing';
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
-	import BiXLg from '~icons/bi/x-lg';
+	import IconClose from '~icons/bi/x-lg';
+	import { setModalContext } from '$lib/contexts/modal';
 
 	export let dialog: HTMLDialogElement | undefined = undefined;
 	export let close: ((event: Event) => void) | undefined = undefined;
+	export let position: 'left' | 'right' = 'right';
 
 	let prevBodyOverflow: string | undefined = undefined;
+
+	setModalContext();
 
 	onMount(() => {
 		dialog?.showModal();
@@ -63,22 +67,31 @@
 	on:click|self={handleBackdropClick}
 	on:close={handleClose}
 	bind:this={dialog}
-	transition:fly={{ x: 12, duration: 250, opacity: 0, easing: cubicInOut }}
+	transition:fly={{
+		x: position === 'left' ? -12 : 12,
+		duration: 250,
+		opacity: 0,
+		easing: cubicInOut
+	}}
 >
-	<div class="absolute right-0 top-0 flex h-full w-full gap-4 bg-main shadow-2xl md:max-w-[480px]">
+	<div
+		class="absolute right-0 top-0 flex h-full w-full bg-main shadow-2xl md:max-w-[480px]"
+		class:left-0={position === 'left'}
+		class:right-0={position === 'right'}
+	>
 		<div class="flex flex-1 flex-col gap-4 overflow-y-auto pb-4">
 			<header
-				class="sticky top-0 flex min-h-14 items-center justify-between border-b border-b-primary/8 bg-main py-2 pl-4 pr-2"
+				class="sticky top-0 z-10 flex min-h-14 items-center justify-between border-b border-b-primary/16 bg-main pl-4 pr-1"
 			>
 				<h1 class="text-3-cond-bold"><slot name="title" /></h1>
 				<!-- svelte-ignore a11y-autofocus -->
 				<button
 					on:click={handleClose}
 					autofocus
-					class="flex h-11 w-11 items-center justify-center"
+					class="icon-button"
 					aria-label={$page.data.t('general.close')}
 				>
-					<BiXLg />
+					<IconClose />
 				</button>
 			</header>
 			<slot />

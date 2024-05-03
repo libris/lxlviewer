@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import { relativizeUrl } from '$lib/utils/http';
+	import { page } from '$app/stores';
 	import { type FacetGroup } from './search';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiChevronDown from '~icons/bi/chevron-down';
@@ -28,7 +29,7 @@
 	$: canShowLessFacets = !canShowMoreFacets && filteredFacets.length > defaultFacetsShown;
 </script>
 
-<li class="my-4 border-b-[2px] border-primary pb-2" class:hidden={searchPhrase && !hasHits}>
+<li class="border-b border-primary first:border-t" class:hidden={searchPhrase && !hasHits}>
 	<button
 		id={'toggle-' + group.dimension}
 		type="button"
@@ -37,7 +38,7 @@
 		}}
 		aria-expanded={!!expanded}
 		aria-controls={'group-' + group.dimension}
-		class="w-full text-left font-bold"
+		class="min-h-11 w-full text-left font-bold"
 		data-testid="facet-toggle"
 	>
 		<span class="flex items-center gap-2">
@@ -60,15 +61,19 @@
 		id={'group-' + group.dimension}
 		aria-labelledby={'toggle-' + group.dimension}
 		class:hidden={!expanded}
+		class="mb-4"
 	>
 		{#if group.search && !(searchPhrase && hasHits)}
 			<!-- facet range inputs; hide in filter search results -->
 			<FacetRange search={group.search} />
 		{/if}
-		<ol class="max-h-437px mt-2 overflow-scroll" data-testid="facet-list">
+		<ol class="max-h-437px mt-2 overflow-auto" data-testid="facet-list">
 			{#each shownFacets as facet (facet.view['@id'])}
-				<li>
-					<a class="flex justify-between no-underline" href={relativizeUrl(facet.view['@id'])}>
+				<li class="pl-6">
+					<a
+						class="flex items-center justify-between no-underline"
+						href={relativizeUrl(facet.view['@id'])}
+					>
 						<span class="flex items-baseline">
 							{#if 'selected' in facet}
 								<!-- howto A11y?! -->
@@ -77,14 +82,14 @@
 							{/if}
 							<span>{facet.str}</span>
 						</span>
-						<span>({facet.totalItems.toLocaleString(locale)})</span>
+						<span class="text-sm text-secondary">({facet.totalItems.toLocaleString(locale)})</span>
 					</a>
 				</li>
 			{/each}
 		</ol>
 		{#if canShowMoreFacets || canShowLessFacets}
 			<button
-				class="my-2"
+				class="mt-4 pl-6"
 				on:click={() =>
 					canShowMoreFacets ? (facetsShown = numfacets) : (facetsShown = defaultFacetsShown)}
 			>
@@ -92,7 +97,7 @@
 			>
 		{/if}
 		{#if searchPhrase && filteredFacets.length === 0}
-			<span role="status" aria-atomic="true">Inget resultat</span>
+			<span role="status" aria-atomic="true">{$page.data.t('search.noResults')}</span>
 		{/if}
 	</div>
 </li>

@@ -73,7 +73,7 @@ export interface FacetGroup {
 	facets: (Facet | MultiSelectFacet)[];
 }
 
-interface Facet {
+export interface Facet {
 	totalItems: number;
 	view: Link;
 	object: DisplayDecorated;
@@ -143,7 +143,7 @@ export enum SearchOperators {
 
 type MappingObj = { [key in SearchOperators]: SearchMapping[] | string | FramedData };
 
-interface SearchMapping extends MappingObj {
+export interface SearchMapping extends MappingObj {
 	alias: string;
 	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
 	up: { '@id': string };
