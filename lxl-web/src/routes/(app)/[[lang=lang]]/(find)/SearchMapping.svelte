@@ -135,7 +135,7 @@
 	}
 
 	.pill-group {
-		@apply flex items-center gap-2 bg-pill/8 p-0 pr-4;
+		@apply flex items-center gap-2 bg-pill/8 p-0;
 
 		&.outer {
 			@apply bg-transparent;
