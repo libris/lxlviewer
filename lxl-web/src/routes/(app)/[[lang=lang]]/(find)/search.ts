@@ -12,7 +12,7 @@ import { LxlLens } from '$lib/utils/display.types';
 import { type translateFn, getTranslator } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, auxdAuth } from '$lib/utils/auxd';
-import { Widths } from '$lib/utils/auxd.types';
+import { Width } from '$lib/utils/auxd.types';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -36,7 +36,7 @@ export async function asResult(
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
-			image: auxdAuth(bestSize(bestImage(i), Widths.SMALL), auxdSecret)
+			image: auxdAuth(bestSize(bestImage(i), Width.SMALL), auxdSecret)
 		})),
 		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 	};

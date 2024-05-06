@@ -12,7 +12,7 @@ export interface KbvImageObject {
 	thumbnail?: KbvImageObject[];
 }
 
-export enum Widths {
+export enum Width {
 	SMALL = 128,
 	MEDIUM = 256,
 	FULL = 99999

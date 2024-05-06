@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type Image, Widths } from '$lib/utils/auxd.types';
+	import { type Image, Width } from '$lib/utils/auxd.types';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { bestSize } from '$lib/utils/auxd';
@@ -9,14 +9,14 @@
 	export let alt: string | undefined;
 	export let linkToFull = false;
 	export let type = '';
-	export let thumbnailTargetWidth: number = Widths.SMALL;
+	export let thumbnailTargetWidth: number = Width.SMALL;
 	export let showPlaceholder = true;
 	export let loading: 'eager' | 'lazy' = 'eager';
 
 	$: image = first(images);
 
 	$: thumb = bestSize(image, thumbnailTargetWidth);
-	$: full = bestSize(image, Widths.FULL);
+	$: full = bestSize(image, Width.FULL);
 </script>
 
 {#if image}

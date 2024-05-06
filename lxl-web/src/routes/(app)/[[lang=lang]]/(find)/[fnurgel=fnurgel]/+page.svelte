@@ -11,7 +11,7 @@
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from './utils';
 	import { getSelectedHolding } from './utils';
-	import { Widths } from '$lib/utils/auxd.types';
+	import { Width } from '$lib/utils/auxd.types';
 
 	export let data;
 
@@ -89,7 +89,7 @@
 					<ResourceImage
 						images={data.images}
 						alt={data.t('general.latestInstanceCover')}
-						thumbnailTargetWidth={Widths.MEDIUM}
+						thumbnailTargetWidth={Width.MEDIUM}
 						linkToFull
 					/>
 				</div>
