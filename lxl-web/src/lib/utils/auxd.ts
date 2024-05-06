@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 import { first, type FramedData, JsonLd, Owl } from '$lib/utils/xl';
 import {
-	type AuthImage,
-	type AuthImageResolution,
+	type SecureImage,
+	type SecureImageResolution,
 	type Image,
 	type KbvImageObject,
 	type ImageResolution,
@@ -13,14 +13,14 @@ import getAtPath from '$lib/utils/getAtPath';
 import { relativizeUrl, stripAnchor } from '$lib/utils/http';
 
 function toImage(imageObject: KbvImageObject, recordId: string): Image {
-	const map1 = (i: KbvImageObject) =>
+	const mapOne = (i: KbvImageObject) =>
 		({
-			url: i[JsonLd.ID] || i[Owl.SAME_AS][0][JsonLd.ID],
+			url: i[JsonLd.ID] || getAtPath(i, [Owl.SAME_AS, 0, JsonLd.ID], undefined),
 			widthṔx: Number.parseInt(i.width || ''),
 			heightPx: Number.parseInt(i.height || '')
 		}) as ImageResolution;
 
-	const sizes = [...(imageObject.thumbnail?.map(map1) || []), map1(imageObject)];
+	const sizes = [...(imageObject.thumbnail?.map(mapOne) || []), mapOne(imageObject)];
 	sizes.sort((a, b) => a.widthṔx - b.widthṔx);
 	return { sizes: sizes, recordId: recordId };
 }
@@ -53,17 +53,17 @@ function getInstances(thing: FramedData): FramedData[] {
 	return getAtPath(thing, ['@reverse', 'instanceOf', '*'], []);
 }
 
-export function auxdAuth(i: undefined, secret: string): undefined;
-export function auxdAuth(i: Image, secret: string): AuthImage;
-export function auxdAuth(i: ImageResolution, secret: string): AuthImageResolution;
-export function auxdAuth(
+export function toSecure(i: undefined, secret: string): undefined;
+export function toSecure(i: Image, secret: string): SecureImage;
+export function toSecure(i: ImageResolution, secret: string): SecureImageResolution;
+export function toSecure(
 	i: Image | ImageResolution | undefined,
 	secret: string
-): AuthImage | AuthImageResolution | undefined {
+): SecureImage | SecureImageResolution | undefined {
 	if (isImageResolution(i)) {
-		return { ...i, url: generateAuxdImageUri(calculateExpirationTime(), i.url, secret) };
+		return { ...i, url: generateSecureLink(calculateExpirationTime(), i.url, secret) };
 	} else if (isImage(i)) {
-		return { ...i, sizes: i.sizes.map((s) => auxdAuth(s, secret)) as AuthImageResolution[] };
+		return { ...i, sizes: i.sizes.map((s) => toSecure(s, secret)) as SecureImageResolution[] };
 	}
 	return undefined;
 }
@@ -74,7 +74,8 @@ export function calculateExpirationTime() {
 	return Math.floor(startOfDay.valueOf() / 1000) + 3600 * 24 * 2; // start of day + 2 days
 }
 
-export function generateAuxdImageUri(expires, url, secret) {
+// https://www.nginx.com/blog/securing-urls-secure-link-module-nginx-plus/
+export function generateSecureLink(expires, url, secret) {
 	if (!url) {
 		return '';
 	}

@@ -2,7 +2,7 @@ import { isObject, JsonLd, type Link, Owl } from '$lib/utils/xl';
 
 type SizePx = `${number}px`;
 
-type AuxdUrl = string;
+type SecureLink = string;
 
 export interface KbvImageObject {
 	[JsonLd.ID]?: string;
@@ -24,8 +24,8 @@ export interface ImageResolution {
 	heightPx: number;
 }
 
-export interface AuthImageResolution extends ImageResolution {
-	url: AuxdUrl;
+export interface SecureImageResolution extends ImageResolution {
+	url: SecureLink;
 }
 
 export interface Image {
@@ -33,8 +33,8 @@ export interface Image {
 	recordId: string;
 }
 
-export interface AuthImage extends Image {
-	sizes: AuthImageResolution[];
+export interface SecureImage extends Image {
+	sizes: SecureImageResolution[];
 }
 
 export function isImage(v: unknown): v is Image {
