@@ -1,6 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 	import { getSupportedLocale } from '$lib/i18n/locales';
+	import getPageTitle from '$lib/utils/getPageTitle';
 	export let showLogo = false;
 
 	const locale = getSupportedLocale($page.url.pathname.split('/')[1]);
@@ -32,8 +33,18 @@
 	};
 
 	const localizedErrors = errorMessages[locale];
+
+	function getErrorPageTitle() {
+		if ($page.status === 404) {
+			return getPageTitle(localizedErrors.notFound);
+		}
+		return getPageTitle(localizedErrors.somethingWentWrong);
+	}
 </script>
 
+<svelte:head>
+	<title>{getErrorPageTitle()}</title>
+</svelte:head>
 <div class="m-auto flex flex-col p-8 text-center">
 	{#if showLogo}
 		<div class="pb-8">
@@ -59,6 +70,7 @@
 			<a href={locale === 'en' ? '/en' : '/'}>{localizedErrors.backToStartPage}</a>
 		</p>
 	{:else if $page.error?.message}
-		<p class="text-secondary">{$page.error.message}</p>
+		<h2 class="pb-4">{localizedErrors.somethingWentWrong}</h2>
+		<p>{$page.error.message}</p>
 	{/if}
 </div>
