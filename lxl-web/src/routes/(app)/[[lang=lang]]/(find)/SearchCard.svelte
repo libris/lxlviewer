@@ -7,7 +7,7 @@
 	import { page } from '$app/stores';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
-	import type { AuthImageResolution } from '$lib/utils/auxd';
+	import type { AuthImageResolution } from '$lib/utils/auxd.types';
 
 	export let item: {
 		'@id': string;
