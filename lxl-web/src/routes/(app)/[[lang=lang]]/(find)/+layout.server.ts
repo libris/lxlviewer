@@ -29,6 +29,10 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			headers: { Accept: 'application/ld+json' }
 		});
 
+		if (resourceRes.status === 404) {
+			throw error(resourceRes.status, { message: 'Not found' });
+		}
+
 		if (!resourceRes.ok) {
 			const err = (await resourceRes.json()) as apiError;
 			throw error(err.status_code, { message: err.message, status: err.status });
