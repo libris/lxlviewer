@@ -7,15 +7,9 @@
 	import { page } from '$app/stores';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
-	import type { AuthImageResolution } from '$lib/utils/auxd.types';
+	import type { SearchResultItem } from './search';
 
-	export let item: {
-		'@id': string;
-		'@type': string;
-		'card-heading': ResourceData;
-		'card-body': ResourceData;
-		image: AuthImageResolution | undefined;
-	};
+	export let item: SearchResultItem;
 
 	function getInstanceData(instances: ResourceData) {
 		if (typeof instances === 'object') {
