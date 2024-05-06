@@ -7,14 +7,10 @@
 	import { page } from '$app/stores';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
+	import type { SearchResultItem } from './search';
 
-	export let item: {
-		'@id': string;
-		'@type': string;
-		'card-heading': ResourceData;
-		'card-body': ResourceData;
-		imageUri: string;
-	};
+	export let item: SearchResultItem;
+
 	function getInstanceData(instances: ResourceData) {
 		if (typeof instances === 'object') {
 			let years: string = '';
@@ -47,9 +43,11 @@
 >
 	<a href={relativizeUrl(item['@id'])}>
 		<div class="relative flex h-full max-h-32 w-full max-w-20">
-			{#if item.imageUri}
+			{#if item.image}
 				<img
-					src={item.imageUri}
+					src={item.image.url}
+					width={item.image.widthṔx}
+					height={item.image.heightPx}
 					alt={$page.data.t('general.latestInstanceCover')}
 					class="h-auto w-full rounded-sm object-cover object-top"
 				/>

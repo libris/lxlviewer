@@ -19,6 +19,10 @@ export enum JsonLd {
 	VOCAB = '@vocab'
 }
 
+export enum Owl {
+	SAME_AS = 'sameAs'
+}
+
 enum Fmt {
 	DISPLAY = '_display',
 	PROPS = '_props',
@@ -1014,6 +1018,10 @@ function asArray<V>(v: V | Array<V>): Array<V> | [] {
 
 function unwrapSingle(v: unknown) {
 	return Array.isArray(v) ? (v.length == 1 ? v[0] : v) : v;
+}
+
+export function first<V>(v: Array<V>): V | undefined {
+	return Array.isArray(v) ? (v.length > 0 ? v[0] : undefined) : undefined;
 }
 
 function mapMaybeArray(v, fn) {

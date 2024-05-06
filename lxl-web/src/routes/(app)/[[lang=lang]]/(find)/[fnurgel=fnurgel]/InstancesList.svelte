@@ -153,9 +153,10 @@
 							<div class="flex flex-col gap-4 text-sm">
 								<div class="flex h-full max-h-32 w-full max-w-32">
 									<ResourceImage
-										resource={item}
+										images={$page.data.images.filter((i) => i.recordId === id)}
 										alt={$page.data.t('general.instanceCover')}
 										type={$page.data.type}
+										loading="lazy"
 										linkToFull
 									/>
 								</div>
