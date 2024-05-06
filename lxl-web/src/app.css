@@ -5,29 +5,7 @@
 @import 'tailwindcss/utilities';
 
 @layer base {
-	/* Subset of Roboto Flex variable font. Generated with
-
-		$ fonttools varLib.instancer -o RobotoFlex-reduced.ttf
-			RobotoFlex-VariableFont_GRAD,XTRA,YOPQ,YTAS,YTDE,YTFI,YTLC,YTUC,opsz,slnt,wdth,wght.ttf
-			"wght=400:800" "wdth=60:100" "slnt=drop"
-
-		(=> ~700kb ttf-file) followed by
-
-		$ pyftsubset RobotoFlex-reduced.ttf
-		--unicodes="U+0020-007F, U+00A0-00FF, U+0100-017F, U+2000-206F,
-		 			U+2070-209F, U+20A0-20CF, U+2100-214F, U+2200-22FF, U+FB00-FB4F"
-	 	--layout-features='*'
-	 	--flavor="woff2"
-	 	--output-file="RobotoFlex-VariableReduced.woff2"
-
-	 	(=> 195kb woff2-file)
-
-	 	For experimentation with the full variable font, use the ttf file (1.6mb):
-	 	RobotoFlex-VariableFont_GRAD,XTRA,YOPQ,YTAS,YTDE,YTFI,YTLC,YTUC,opsz,slnt,wdth,wght.ttf
-
-	 	See devops wiki for more info.
-	 	*/
-
+	/* Variable font */
 	@supports (font-variation-settings: normal) {
 		@font-face {
 			font-family: 'Roboto Flex';
