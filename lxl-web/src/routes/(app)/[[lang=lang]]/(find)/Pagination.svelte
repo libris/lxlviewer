@@ -2,6 +2,8 @@
 	import { page } from '$app/stores';
 	import { relativizeUrl } from '$lib/utils/http';
 	import type { SearchResult } from './search';
+	import BiChevronRight from '~icons/bi/chevron-right';
+	import BiChevronLeft from '~icons/bi/chevron-left';
 	export let data: SearchResult;
 
 	$: ({ first, last, next, totalItems, itemsPerPage, itemOffset } = data);
@@ -32,10 +34,14 @@
 			<!-- prev and first -->
 			{#if !isFirstPage || itemOffset > 0}
 				<li>
-					<a href={getOffsetLink(itemOffset - itemsPerPage)} aria-label="Föregående sida">←</a>
+					<a
+						class="button-ghost"
+						href={getOffsetLink(itemOffset - itemsPerPage)}
+						aria-label="Föregående sida"><BiChevronLeft class="text-icon" /></a
+					>
 				</li>
 				{#if sequenceStart > 1}
-					<li><a href={relativizeUrl(first['@id'])}>1</a></li>
+					<li><a class="button-ghost" href={relativizeUrl(first['@id'])}>1</a></li>
 				{/if}
 			{/if}
 			{#if sequenceStart > 2}
@@ -45,6 +51,7 @@
 			{#each pageSequence as p}
 				<li>
 					<a
+						class="button-ghost"
 						href={getOffsetLink(itemsPerPage * (p - 1))}
 						aria-label="Sida {p}"
 						aria-current={p === currentPage ? 'page' : false}>{p}</a
@@ -57,9 +64,13 @@
 			<!-- last and next -->
 			{#if !isLastPage}
 				{#if sequenceEnd !== lastPage}
-					<li><a href={relativizeUrl(last['@id'])}>{lastPage}</a></li>
+					<li><a class="button-ghost" href={relativizeUrl(last['@id'])}>{lastPage}</a></li>
 				{/if}
-				<li><a href={relativizeUrl(next?.['@id'])} aria-label="Nästa sida">→</a></li>
+				<li>
+					<a class="button-ghost" href={relativizeUrl(next?.['@id'])} aria-label="Nästa sida"
+						><BiChevronRight class="text-icon"></BiChevronRight></a
+					>
+				</li>
 			{/if}
 		</ul>
 	</nav>
@@ -67,6 +78,10 @@
 
 <style>
 	[aria-current='page'] {
-		@apply rounded-md border border-primary px-1 no-underline;
+		/* @apply rounded-md border border-primary px-1 no-underline; */
+		@apply button-primary;
+	}
+	a {
+		text-decoration: none;
 	}
 </style>
