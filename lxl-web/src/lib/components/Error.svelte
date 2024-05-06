@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 	import getPageTitle from '$lib/utils/getPageTitle';
-	export let showLogo = false;
+	export let showHeader = false;
 
 	const locale = getSupportedLocale($page.url.pathname.split('/')[1]);
 
@@ -45,14 +45,14 @@
 <svelte:head>
 	<title>{getErrorPageTitle()}</title>
 </svelte:head>
+{#if showHeader}
+	<header class="flex justify-center pt-8">
+		<a href="/" class="inline-block no-underline">
+			<h1 class="text-3xl font-bold text-primary">Libris</h1>
+		</a>
+	</header>
+{/if}
 <div class="m-auto flex flex-col p-8 text-center">
-	{#if showLogo}
-		<div class="pb-8">
-			<a href="/" class="inline-block no-underline">
-				<h1 class="text-3xl font-bold text-primary">Libris</h1>
-			</a>
-		</div>
-	{/if}
 	<h1 class="text-6-cond-extrabold">{$page.status}</h1>
 	{#if $page.status === 404}
 		<h2 class="pb-4">{localizedErrors.notFound}</h2>
@@ -71,6 +71,6 @@
 		</p>
 	{:else if $page.error?.message}
 		<h2 class="pb-4">{localizedErrors.somethingWentWrong}</h2>
-		<p>{$page.error.message}</p>
+		<p class="text-secondary">{$page.error.message}</p>
 	{/if}
 </div>

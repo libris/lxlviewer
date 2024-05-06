@@ -2,4 +2,6 @@
 	import Error from '$lib/components/Error.svelte';
 </script>
 
-<Error showLogo />
+<main>
+	<Error showHeader />
+</main>
