@@ -15,7 +15,7 @@ The full font can be subset by running the following command in a terminal
 
 where we have put limits on the `wght`, `wdth` and `slant` variable font axes (corresponding to the CSS properties
 `font-weight`, `font-stretch` and `font-style: oblique + angle` respectively). This approximately halves the size of
-the original ttf-file.
+the original `ttf`-file.
 
 ## Conversion
 
