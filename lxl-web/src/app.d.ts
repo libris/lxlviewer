@@ -5,7 +5,7 @@ import 'unplugin-icons/types/svelte';
 declare global {
 	namespace App {
 		interface Error {
-			status: string;
+			status?: string;
 		}
 		// interface Locals {}
 		interface PageData {
