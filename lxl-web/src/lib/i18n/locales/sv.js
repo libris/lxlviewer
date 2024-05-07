@@ -63,7 +63,17 @@ export default {
 		publicationDesc: 'Utgivningsår (nyast först)',
 		linksDesc: 'Mest länkad'
 	},
-	errors: {},
+	errors: {
+		somethingWentWrong: 'Något gick fel',
+		notFound: 'Sidan hittades inte',
+		wrongLink: 'Klickade du på en länk i Libris som inte fungerade?',
+		sendEmail: 'Skicka e-post till',
+		customerService: 'Libris kundservice',
+		followUp: ', så undersöker vi felet.',
+		backToStartPage: 'Tillbaka till startsidan',
+		mailSubject: 'Felaktig länk',
+		mailBody: 'Felaktig referens till sidan'
+	},
 	general: {
 		collapseAll: 'Stäng alla',
 		copyPermalinkToInstance: 'Kopiera länk till utgåva',

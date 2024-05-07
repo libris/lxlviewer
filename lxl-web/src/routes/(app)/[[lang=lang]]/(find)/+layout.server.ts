@@ -29,9 +29,13 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			headers: { Accept: 'application/ld+json' }
 		});
 
+		if (resourceRes.status === 404) {
+			throw error(resourceRes.status, { message: 'Not found' });
+		}
+
 		if (!resourceRes.ok) {
 			const err = (await resourceRes.json()) as apiError;
-			throw error(err.status_code, err.status);
+			throw error(err.status_code, { message: err.message, status: err.status });
 		}
 
 		const resource = await resourceRes.json();
@@ -98,14 +102,15 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			if (recordsRes.status > 299 && recordsRes.status < 400) {
 				// redirect from api -> redirect in app
 				const location = recordsRes.headers.get('location');
-				const url = location && new URL(location);
-				if (url) {
-					console.log('redirecting to', `${url.pathname}${url.search}`);
-					redirect(recordsRes.status, `${url.pathname}${url.search}`);
+
+				if (location) {
+					const apiSearch = new URL(location).search;
+					console.log('redirecting to', `${url.pathname}${apiSearch}`);
+					redirect(recordsRes.status, `${url.pathname}${apiSearch}`);
 				}
 			} else {
 				const err = (await recordsRes.json()) as apiError;
-				throw error(err.status_code, err.status);
+				throw error(err.status_code, { message: err.message, status: err.status });
 			}
 		}
 

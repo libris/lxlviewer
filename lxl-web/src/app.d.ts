@@ -4,7 +4,9 @@ import 'unplugin-icons/types/svelte';
 
 declare global {
 	namespace App {
-		// interface Error {}
+		interface Error {
+			status?: string;
+		}
 		// interface Locals {}
 		interface PageData {
 			locale: import('$lib/i18n/locales').LocaleCode;
