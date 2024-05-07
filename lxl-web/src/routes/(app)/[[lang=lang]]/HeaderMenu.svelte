@@ -13,7 +13,7 @@
 			: `/${otherLangCode}${$page.url.pathname}`) + $page.url.search;
 </script>
 
-<nav id="header-menu" class="py-8 md:py-0">
+<nav class="header-menu py-8 md:py-0">
 	<ol class="flex flex-col items-center gap-6 text-secondary md:flex-row">
 		<li><a data-sveltekit-reload href={$page.data.base}>{$page.data.t('header.help')}</a></li>
 		<li>
@@ -32,7 +32,7 @@
 </nav>
 
 <style>
-	#header-menu a {
+	.header-menu a {
 		@apply no-underline;
 	}
 </style>

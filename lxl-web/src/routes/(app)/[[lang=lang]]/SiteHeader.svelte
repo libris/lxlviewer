@@ -29,7 +29,7 @@
 				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
 			</div>
 		{/if}
-		<div class="hidden md:flex">
+		<div id="header-menu" class="hidden md:flex">
 			<HeaderMenu />
 		</div>
 		<div class="block pl-4 sm:p-0 md:hidden">
@@ -60,3 +60,9 @@
 		</div>
 	{/if}
 </header>
+
+<style>
+	#header-menu:target {
+		@apply /* TODO: fix better no-JS fallback styling */ absolute left-0 block w-full bg-main;
+	}
+</style>
