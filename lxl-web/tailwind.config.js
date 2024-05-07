@@ -80,9 +80,6 @@ export default {
 			normal: '0',
 			wide: '0.03rem'
 		},
-		borderColor: {
-			primary: 'rgb(var(--text-primary) / 0.16)'
-		},
 		borderRadius: {
 			none: '0px',
 			sm: '4px',
@@ -164,7 +161,7 @@ export default {
 						{}
 				},
 				'.ghost-btn': {
-					'@apply flex items-center gap-2 rounded-md bg-main px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold hover:brightness-95 active:brightness-95':
+					'@apply flex items-center gap-2 rounded-md bg-transparent px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold hover:brightness-95 active:brightness-95':
 						{}
 				}
 			});

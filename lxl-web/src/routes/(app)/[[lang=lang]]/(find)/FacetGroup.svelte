@@ -29,7 +29,7 @@
 	$: canShowLessFacets = !canShowMoreFacets && filteredFacets.length > defaultFacetsShown;
 </script>
 
-<li class="border-b border-primary first:border-t" class:hidden={searchPhrase && !hasHits}>
+<li class="border-b border-primary/16 first:border-t" class:hidden={searchPhrase && !hasHits}>
 	<button
 		id={'toggle-' + group.dimension}
 		type="button"
