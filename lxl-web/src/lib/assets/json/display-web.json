@@ -503,6 +503,12 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"UsageAndAccessPolicy-format": {
+			"@id": "UsageAndAccessPolicy-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["UsageAndAccessPolicy"],
+			"fresnel:resourceStyle": ["link"]
+		},
 		"Instance-self-x-format": {
 			"@id": "Instance-self-x-format",
 			"@type": "fresnel:Format",
