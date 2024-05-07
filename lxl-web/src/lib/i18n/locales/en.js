@@ -54,7 +54,17 @@ export default {
 		publicationDesc: 'Publication year (newest first)',
 		linksDesc: 'Most linked'
 	},
-	errors: {},
+	errors: {
+		somethingWentWrong: 'Somethingh went wrong',
+		notFound: 'Page not found',
+		wrongLink: "Did you click on a link that didn't work?",
+		sendEmail: 'Send an e-mail to',
+		customerService: 'Libris customer service',
+		followUp: ', and we will investigate the error.',
+		backToStartPage: 'Back to the home page',
+		mailSubject: 'Incorrect link',
+		mailBody: 'Incorrect reference to the page'
+	},
 	general: {
 		collapseAll: 'Collapse all',
 		copyPermalinkToInstance: 'Copy link to edition',
