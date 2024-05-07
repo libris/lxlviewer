@@ -29,10 +29,10 @@
 				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
 			</div>
 		{/if}
-		<div id="header-menu" class="hidden md:flex">
+		<div id="header-menu" class="ml-auto hidden md:flex">
 			<HeaderMenu />
 		</div>
-		<div class="block pl-4 sm:p-0 md:hidden">
+		<div class="ml-auto block pl-4 sm:p-0 md:hidden">
 			<a
 				aria-label={$page.data.t('header.openMenu')}
 				class="h-12 ghost-btn"
