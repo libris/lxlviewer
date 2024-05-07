@@ -67,7 +67,7 @@
 			<!-- facet range inputs; hide in filter search results -->
 			<FacetRange search={group.search} />
 		{/if}
-		<ol class="max-h-437px mt-2 overflow-auto" data-testid="facet-list">
+		<ol class="max-h-437px mt-2 overflow-y-auto" data-testid="facet-list">
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li class="pl-6">
 					<a
