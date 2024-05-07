@@ -11,11 +11,12 @@ The full font can be subset by running the following command in a terminal
 
     $ fonttools varLib.instancer -o RobotoFlex-reduced.ttf
         RobotoFlex-VariableFont_GRAD,XTRA,YOPQ,YTAS,YTDE,YTFI,YTLC,YTUC,opsz,slnt,wdth,wght.ttf
-        "wght=400:800" "wdth=60:100" "slnt=drop"
+        "XTRA=drop" "GRAD=drop" "YOPQ=drop" "YTAS=drop" "YTDE=drop" "YTFI=drop" "YTLC=drop" "YTUC=drop"
+        "wght=400:800" "wdth=60:100"
 
-where we have put limits on the `wght`, `wdth` and `slant` variable font axes (corresponding to the CSS properties
-`font-weight`, `font-stretch` and `font-style: oblique + angle` respectively). This approximately halves the size of
-the original `ttf`-file.
+where we have put limits on the `wght` and `wdth` variable font axes (corresponding to the CSS properties
+`font-weight` and `font-stretch` respectively) and fixed the rest. This approximately halves the size of the original
+`ttf`-file.
 
 ## Conversion
 
