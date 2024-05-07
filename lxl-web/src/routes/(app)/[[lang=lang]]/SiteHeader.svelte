@@ -26,7 +26,7 @@
 				>
 			</a>
 			<div class="max-w-content flex-1">
-				<Search placeholder="Sök i hela Sveriges bibliotekskatalog" />
+				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
 			</div>
 		{/if}
 		<div class="hidden md:flex">
@@ -34,11 +34,12 @@
 		</div>
 		<div class="block pl-4 sm:p-0 md:hidden">
 			<a
+				aria-label={$page.data.t('header.openMenu')}
 				class="h-12 ghost-btn"
 				href={`${$page.url.pathname}?${$page.url.search}#header-menu`}
 				on:click|preventDefault={toggleHeaderMenu}
 			>
-				<BiList width={20} height={20} />
+				<BiList width={20} height={20} aria-hidden="true" />
 			</a>
 			{#if showHeaderMenu}
 				<Modal close={toggleHeaderMenu} position="top">
@@ -51,10 +52,10 @@
 		<div class="flex flex-col items-center px-12 pb-[4.5rem] pt-6">
 			<h1 class="text-3xl font-extrabold text-primary sm:text-[5.5rem] sm:font-bold">Libris</h1>
 			<label for="main-search" class="mb-4 text-center text-secondary text-4-regular"
-				>Hitta i hela Sveriges bibliotekskatalog</label
+				>{$page.data.t('home.subtitle')}</label
 			>
 			<div class="w-full max-w-3xl">
-				<Search placeholder="Titel, författare, ämne, bokförlag m.m." autofocus />
+				<Search placeholder={$page.data.t('home.searchPlaceholder')} autofocus />
 			</div>
 		</div>
 	{/if}

@@ -1,7 +1,13 @@
 export default {
-	home: {},
+	home: {
+		subtitle: 'Hitta i hela Sveriges bibliotekskatalog',
+		searchPlaceholder: 'Titel, författare, ämne, bokförlag m.m.'
+	},
 	header: {
-		changeLang: 'In English'
+		help: 'Hjälp',
+		changeLang: 'In English',
+		searchPlaceholder: 'Sök i hela Sveriges bibliotekskatalog',
+		openMenu: 'Öppna huvudmeny'
 	},
 	facet: {
 		q: 'Fritextsökning',
