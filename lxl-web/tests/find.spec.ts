@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.beforeEach(async ({ page }) => {
-	await page.goto('/find?q=*&%40type=Work&_limit=10');
+	await page.goto('/find?_q=*&_limit=10&_offset=0&_sort=&_i=*');
 });
 
 test('should not have any detectable a11y issues', async ({ page }) => {
