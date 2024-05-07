@@ -7,7 +7,7 @@ export default {
 	header: {
 		help: 'Help',
 		changeLang: 'På svenska',
-		searchPlaceholder: 'Search in the Swedish library catalogue',
+		searchPlaceholder: 'Search the Swedish library catalogue',
 		openMenu: 'Open main menu'
 	},
 	facet: {
