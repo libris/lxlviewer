@@ -15,24 +15,22 @@
 </script>
 
 <header class="bg-head pb-4 pt-4 sm:py-6">
-	<div
-		class="container-fluid flex flex-nowrap items-center justify-start gap-0 sm:gap-16 md:min-h-14"
-	>
+	<div class="flex flex-nowrap items-center justify-start gap-0 md:min-h-14 md:gap-8 xl:gap-0">
 		{#if !isLandingPage}
-			<a class="no-underline" href={$page.data.base}>
+			<a class="px-0 no-underline sm:px-4 xl:w-80" href={$page.data.base}>
 				<span
 					class="sr-only text-[2.1rem] font-extrabold leading-tight text-primary sm:not-sr-only sm:inline"
 					>Libris</span
 				>
 			</a>
-			<div class="max-w-content flex-1">
+			<div class="max-w-content flex-1 px-4">
 				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
 			</div>
 		{/if}
-		<div id="header-menu" class="ml-auto hidden md:flex">
+		<div id="header-menu" class="ml-auto hidden px-4 md:flex">
 			<HeaderMenu />
 		</div>
-		<div class="ml-auto block pl-4 sm:p-0 md:hidden">
+		<div class="ml-auto block px-4 md:hidden">
 			<a
 				aria-label={$page.data.t('header.openMenu')}
 				class="h-12 ghost-btn"

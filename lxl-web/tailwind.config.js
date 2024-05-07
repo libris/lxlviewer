@@ -103,7 +103,7 @@ export default {
 			sm: '640px',
 			md: '1024px',
 			lg: '1440px',
-			xl: '1536px'
+			xl: '1760px'
 		},
 		extend: {
 			maxWidth: {
