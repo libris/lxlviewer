@@ -55,7 +55,7 @@ export default {
 		linksDesc: 'Most linked'
 	},
 	errors: {
-		somethingWentWrong: 'Somethingh went wrong',
+		somethingWentWrong: 'Something went wrong',
 		notFound: 'Page not found',
 		wrongLink: "Did you click on a link that didn't work?",
 		sendEmail: 'Send an e-mail to',
