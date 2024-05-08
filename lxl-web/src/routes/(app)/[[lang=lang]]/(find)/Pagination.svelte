@@ -45,7 +45,7 @@
 				{/if}
 			{/if}
 			{#if sequenceStart > 2}
-				<li><span>...</span></li>
+				<li class="flex items-end text-3-cond-bold"><span>...</span></li>
 			{/if}
 			<!-- page sequence -->
 			{#each pageSequence as p}
@@ -59,7 +59,7 @@
 				</li>
 			{/each}
 			{#if lastPage - sequenceEnd > 1}
-				<li><span>...</span></li>
+				<li class="flex items-end text-3-cond-bold"><span>...</span></li>
 			{/if}
 			<!-- last and next -->
 			{#if !isLastPage}
