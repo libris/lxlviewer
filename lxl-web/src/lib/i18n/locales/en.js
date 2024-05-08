@@ -1,8 +1,14 @@
 /** @type {typeof import('./sv.js').default} */
 export default {
-	home: {},
+	home: {
+		subtitle: 'Search the Swedish library catalogue',
+		searchPlaceholder: 'Title, author, subject, publisher etc.'
+	},
 	header: {
-		changeLang: 'På svenska'
+		help: 'Help',
+		changeLang: 'På svenska',
+		searchPlaceholder: 'Search the Swedish library catalogue',
+		openMenu: 'Open main menu'
 	},
 	facet: {
 		q: 'Free text search',

@@ -11,7 +11,7 @@
 
 	export let dialog: HTMLDialogElement | undefined = undefined;
 	export let close: ((event: Event) => void) | undefined = undefined;
-	export let position: 'left' | 'right' = 'right';
+	export let position: 'left' | 'right' | 'top' = 'right';
 
 	let prevBodyOverflow: string | undefined = undefined;
 
@@ -56,7 +56,7 @@
 </script>
 
 <div
-	class="pointer-events-none fixed left-0 top-0 h-full w-full bg-backdrop"
+	class="pointer-events-none fixed left-0 top-0 z-10 h-full w-full bg-backdrop"
 	transition:fade={{ duration: 300 }}
 ></div>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -75,13 +75,16 @@
 	}}
 >
 	<div
-		class="absolute right-0 top-0 flex h-full w-full bg-main shadow-2xl md:max-w-[480px]"
+		class="absolute right-0 top-0 flex w-full bg-main shadow-2xl md:max-w-[480px] {position ===
+		'top'
+			? 'h-auto'
+			: 'h-full'}"
 		class:left-0={position === 'left'}
 		class:right-0={position === 'right'}
 	>
 		<div class="flex flex-1 flex-col gap-4 overflow-y-auto pb-4">
 			<header
-				class="sticky top-0 z-10 flex min-h-14 items-center justify-between border-b border-b-primary/16 bg-main pl-4 pr-1"
+				class="sticky top-0 z-10 flex min-h-14 items-center justify-between border-b border-b-primary/16 bg-main px-4"
 			>
 				<h1 class="text-3-cond-bold"><slot name="title" /></h1>
 				<!-- svelte-ignore a11y-autofocus -->

@@ -70,7 +70,7 @@
 					<Filters {facets} mapping={searchResult.mapping} />
 				</div>
 
-				<div class="results">
+				<div class="results max-w-content">
 					<div class="toolbar flex min-h-14 items-center justify-between p-4 md:min-h-fit md:pt-0">
 						<a
 							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
