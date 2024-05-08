@@ -2,6 +2,8 @@
 	import { page } from '$app/stores';
 	import { relativizeUrl } from '$lib/utils/http';
 	import type { SearchResult } from './search';
+	import BiChevronRight from '~icons/bi/chevron-right';
+	import BiChevronLeft from '~icons/bi/chevron-left';
 	export let data: SearchResult;
 
 	$: ({ first, last, next, totalItems, itemsPerPage, itemOffset } = data);
@@ -32,41 +34,66 @@
 			<!-- prev and first -->
 			{#if !isFirstPage || itemOffset > 0}
 				<li>
-					<a href={getOffsetLink(itemOffset - itemsPerPage)} aria-label="Föregående sida">←</a>
+					<a
+						class="button-ghost"
+						href={getOffsetLink(itemOffset - itemsPerPage)}
+						aria-label={$page.data.t('search.previous')}
+						><BiChevronLeft aria-hidden="true" class="text-icon" /></a
+					>
 				</li>
 				{#if sequenceStart > 1}
-					<li><a href={relativizeUrl(first['@id'])}>1</a></li>
+					<li>
+						<a
+							aria-label="{$page.data.t('search.page')} 1"
+							class="button-ghost"
+							href={relativizeUrl(first['@id'])}>1</a
+						>
+					</li>
 				{/if}
 			{/if}
 			{#if sequenceStart > 2}
-				<li><span>...</span></li>
+				<li class="flex items-end text-3-cond-bold"><span>...</span></li>
 			{/if}
 			<!-- page sequence -->
 			{#each pageSequence as p}
 				<li>
 					<a
+						class={p === currentPage ? 'button-primary' : 'button-ghost'}
 						href={getOffsetLink(itemsPerPage * (p - 1))}
-						aria-label="Sida {p}"
+						aria-label="{$page.data.t('search.page')} {p}"
 						aria-current={p === currentPage ? 'page' : false}>{p}</a
 					>
 				</li>
 			{/each}
 			{#if lastPage - sequenceEnd > 1}
-				<li><span>...</span></li>
+				<li class="flex items-end text-3-cond-bold"><span>...</span></li>
 			{/if}
 			<!-- last and next -->
 			{#if !isLastPage}
 				{#if sequenceEnd !== lastPage}
-					<li><a href={relativizeUrl(last['@id'])}>{lastPage}</a></li>
+					<li>
+						<a
+							aria-label="{$page.data.t('search.page')} {lastPage}"
+							class="button-ghost"
+							href={relativizeUrl(last['@id'])}>{lastPage}</a
+						>
+					</li>
 				{/if}
-				<li><a href={relativizeUrl(next?.['@id'])} aria-label="Nästa sida">→</a></li>
+				<li>
+					<a
+						class="button-ghost"
+						href={relativizeUrl(next?.['@id'])}
+						aria-label={$page.data.t('search.next')}
+						><BiChevronRight aria-hidden="true" class="text-icon" /></a
+					>
+				</li>
 			{/if}
 		</ul>
 	</nav>
 {/if}
 
-<style>
-	[aria-current='page'] {
-		@apply rounded-md border border-primary px-1 no-underline;
+<style lang="postcss">
+	a {
+		@apply no-underline;
 	}
 </style>

@@ -51,4 +51,22 @@
 	.container-fluid {
 		@apply mx-auto px-4 sm:px-8;
 	}
+
+	.button-primary {
+		@apply flex h-10 items-center justify-center gap-2 rounded-md px-4  py-2 text-primary-inv text-3-cond-bold gradient-primary hover:text-primary-inv hover:gradient-secondary;
+		box-shadow:
+			0px 1px 0px 0px rgba(82, 51, 20, 0.16),
+			0px 1px 0px 0px,
+			rgba(239, 214, 189, 0.24) inset;
+	}
+	.button-ghost {
+		@apply flex h-10 items-center justify-center gap-2 rounded-md px-4 py-2 text-primary text-3-cond-bold;
+		border: 2px solid rgba(82, 51, 20, 0.16);
+		color: rgba(82, 51, 20, 0.8);
+	}
+	.button-ghost:hover {
+		border: 2px solid rgba(66, 107, 84, 0.32);
+		background-color: rgba(213, 229, 223, 0.4);
+		color: #426b54;
+	}
 }

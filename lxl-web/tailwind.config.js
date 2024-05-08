@@ -163,6 +163,9 @@ export default {
 				'.ghost-btn': {
 					'@apply flex items-center gap-2 rounded-md bg-transparent px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold hover:brightness-95 active:brightness-95':
 						{}
+				},
+				'.gradient-secondary': {
+					'@apply bg-gradient-to-b from-[#A36629] to-[#8F5924]': {}
 				}
 			});
 		}
