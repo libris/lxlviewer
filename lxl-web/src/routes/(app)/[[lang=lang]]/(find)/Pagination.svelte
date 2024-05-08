@@ -37,7 +37,7 @@
 					<a
 						class="button-ghost"
 						href={getOffsetLink(itemOffset - itemsPerPage)}
-						aria-label="Föregående sida"><BiChevronLeft class="text-icon" /></a
+						aria-label={$page.data.t('search.previous')}><BiChevronLeft class="text-icon" /></a
 					>
 				</li>
 				{#if sequenceStart > 1}
@@ -51,9 +51,9 @@
 			{#each pageSequence as p}
 				<li>
 					<a
-						class="button-ghost"
+						class={p === currentPage ? 'button-primary' : 'button-ghost'}
 						href={getOffsetLink(itemsPerPage * (p - 1))}
-						aria-label="Sida {p}"
+						aria-label="{$page.data.t('search.page')} {p}"
 						aria-current={p === currentPage ? 'page' : false}>{p}</a
 					>
 				</li>
@@ -67,7 +67,10 @@
 					<li><a class="button-ghost" href={relativizeUrl(last['@id'])}>{lastPage}</a></li>
 				{/if}
 				<li>
-					<a class="button-ghost" href={relativizeUrl(next?.['@id'])} aria-label="Nästa sida"
+					<a
+						class="button-ghost"
+						href={relativizeUrl(next?.['@id'])}
+						aria-label={$page.data.t('search.next')}
 						><BiChevronRight class="text-icon"></BiChevronRight></a
 					>
 				</li>
@@ -76,11 +79,7 @@
 	</nav>
 {/if}
 
-<style>
-	[aria-current='page'] {
-		/* @apply rounded-md border border-primary px-1 no-underline; */
-		@apply button-primary;
-	}
+<style lang="postcss">
 	a {
 		text-decoration: none;
 	}

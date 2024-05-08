@@ -59,7 +59,10 @@ export default {
 		hitsOne: 'hit',
 		selected: 'selected',
 		selectedOne: 'selected',
-		editions: 'editions'
+		editions: 'editions',
+		previous: 'Previous page',
+		page: 'Page',
+		next: 'Next page'
 	},
 	sort: {
 		sortBy: 'Sort by',
