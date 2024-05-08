@@ -63,8 +63,8 @@
 	class="resource grid gap-4 px-4 py-8 lg:px-0 lg:pb-12 lg:pt-8"
 	class:bg-header={showBackground}
 >
-	<div class="content">
-		<header class="mb-4 lg:mb-6">
+	<div class="content flex flex-col gap-4">
+		<header>
 			<h1 class="text-6-cond-extrabold">
 				<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 			</h1>
@@ -103,14 +103,16 @@
 			{/if}
 		</div>
 		{#if data.instances?.length}
-			<InstancesList
-				data={data.instances}
-				columns={[
-					'*[].publication[].*[][?year].year',
-					'*[].publication.*[][?agent].agent',
-					'_label'
-				]}
-			/>
+			<div class="mt-4">
+				<InstancesList
+					data={data.instances}
+					columns={[
+						'*[].publication[].*[][?year].year',
+						'*[].publication.*[][?agent].agent',
+						'_label'
+					]}
+				/>
+			</div>
 		{/if}
 	</div>
 	{#if holdingUrl && selectedHoldingInstance}

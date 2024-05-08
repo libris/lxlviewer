@@ -48,13 +48,16 @@
 <slot />
 {#if searchResult}
 	{#await searchResult}
-		<p class="px-8">{$page.data.t('search.loading')}</p>
+		<p class="p-4">{$page.data.t('search.loading')}</p>
 	{:then searchResult}
 		{#if searchResult}
 			{@const facets = searchResult.facetGroups}
 			{@const numHits = searchResult.totalItems}
 			{@const filterCount = getFiltersCount(searchResult.mapping)}
-			<div class="find relative gap-y-4">
+			<div
+				class="find relative gap-y-4"
+				class:with-mapping={shouldShowMapping(searchResult.mapping)}
+			>
 				{#if shouldShowMapping(searchResult.mapping)}
 					<nav class="mappings px-4" aria-label="Valda filter">
 						<SearchMapping mapping={searchResult.mapping} />
@@ -73,8 +76,8 @@
 					<Filters {facets} mapping={searchResult.mapping} />
 				</div>
 
-				<div class="results max-w-content">
-					<div class="toolbar flex min-h-14 items-center justify-between p-4 md:min-h-fit md:pt-0">
+				<div class="results max-w-content px-4">
+					<div class="toolbar flex min-h-14 items-center justify-between py-4 md:min-h-fit md:pt-0">
 						<a
 							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
 							class="filter-modal-toggle ghost-btn md:hidden"
@@ -121,7 +124,7 @@
 							</div>
 						{/if}
 					</div>
-					<ol class="flex flex-col gap-2 md:px-4">
+					<ol class="flex flex-col gap-2 md:px-0">
 						{#each searchResult.items as item (item['@id'])}
 							<SearchCard {item} />
 						{/each}
@@ -178,6 +181,12 @@
 		.find {
 			display: grid;
 			grid-template-columns: 320px 1fr;
+			grid-template-areas:
+				'toolbar toolbar'
+				'filters results';
+		}
+
+		.find.with-mapping {
 			grid-template-areas:
 				'toolbar toolbar'
 				'mappings mappings'
