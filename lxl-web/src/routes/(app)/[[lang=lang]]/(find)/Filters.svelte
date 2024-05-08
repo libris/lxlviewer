@@ -4,6 +4,7 @@
 	import FacetGroup from './FacetGroup.svelte';
 	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from './search';
 	import SearchMapping from './SearchMapping.svelte';
+	import { shouldShowMapping } from './utils';
 
 	export let facets: TypedFacetGroup[];
 	export let mapping: DisplayMapping[];
@@ -14,27 +15,25 @@
 </script>
 
 <div class="flex flex-col gap-4">
+	{#if inModal && shouldShowMapping(mapping)}
+		<nav class="px-4" aria-label="Valda filter">
+			<SearchMapping {mapping} />
+		</nav>
+	{/if}
 	{#if facets?.length}
-		{#if inModal}
-			<nav class="px-4" aria-label="Valda filter">
-				<SearchMapping {mapping} />
-			</nav>
-		{/if}
-		{#if facets?.length}
-			<nav class="flex flex-col gap-4 px-4">
-				<input
-					bind:value={searchPhrase}
-					placeholder={$page.data.t('search.findFilter')}
-					title={$page.data.t('search.findFilter')}
-					class="w-full"
-					type="search"
-				/>
-				<ol>
-					{#each facets as group (group.dimension)}
-						<FacetGroup {group} locale={$page.data.locale} {searchPhrase} />
-					{/each}
-				</ol>
-			</nav>
-		{/if}
+		<nav class="flex flex-col gap-4 px-4">
+			<input
+				bind:value={searchPhrase}
+				placeholder={$page.data.t('search.findFilter')}
+				title={$page.data.t('search.findFilter')}
+				class="w-full"
+				type="search"
+			/>
+			<ol>
+				{#each facets as group (group.dimension)}
+					<FacetGroup {group} locale={$page.data.locale} {searchPhrase} />
+				{/each}
+			</ol>
+		</nav>
 	{/if}
 </div>

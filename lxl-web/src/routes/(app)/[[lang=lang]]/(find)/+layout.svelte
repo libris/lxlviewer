@@ -8,6 +8,7 @@
 	import Filters from './Filters.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import type { SearchResult, DisplayMapping } from './search';
+	import { shouldShowMapping } from './utils';
 
 	let showFiltersModal = false;
 
@@ -54,9 +55,11 @@
 			{@const numHits = searchResult.totalItems}
 			{@const filterCount = getFiltersCount(searchResult.mapping)}
 			<div class="find relative gap-y-4">
-				<nav class="mappings px-4" aria-label="Valda filter">
-					<SearchMapping mapping={searchResult.mapping} />
-				</nav>
+				{#if shouldShowMapping(searchResult.mapping)}
+					<nav class="mappings px-4" aria-label="Valda filter">
+						<SearchMapping mapping={searchResult.mapping} />
+					</nav>
+				{/if}
 				{#if showFiltersModal}
 					<Modal position="left" close={toggleFiltersModal}>
 						<span slot="title">
