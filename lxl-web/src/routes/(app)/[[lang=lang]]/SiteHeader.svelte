@@ -14,7 +14,7 @@
 	}
 </script>
 
-<header class="bg-head pb-4 pt-4 sm:py-6">
+<header class="bg-site-header pb-4 pt-4 sm:py-6">
 	<div class="flex flex-nowrap items-center justify-start gap-0 md:min-h-14 md:gap-8 xl:gap-0">
 		{#if !isLandingPage}
 			<a class="px-0 no-underline sm:px-4 xl:w-80" href={$page.data.base}>

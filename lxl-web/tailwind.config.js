@@ -26,8 +26,9 @@ export default {
 		},
 		backgroundColor: {
 			transparent: 'transparent',
+			'site-header': 'rgb(var(--bg-site-header) / 1)',
+			header: 'rgb(var(--bg-header) / 1)',
 			main: 'rgb(var(--bg-main) / 1)',
-			head: 'rgb(var(--bg-head) / 1)',
 			positive: 'rgb(var(--bg-positive) / 1)',
 			'positive-inv': 'rgb(var(--bg-positive-inv) / 1)',
 			negative: 'rgb(var(--bg-negative) / 1)',
@@ -103,7 +104,8 @@ export default {
 			sm: '640px',
 			md: '1024px',
 			lg: '1440px',
-			xl: '1760px'
+			xl: '1760px',
+			'2xl': '1920px'
 		},
 		extend: {
 			maxWidth: {

@@ -49,6 +49,8 @@
 		latestHoldingUrl = holdingUrl;
 	}
 
+	$: showBackground = !$page.data.instances.length;
+
 	function handleCloseHoldings() {
 		history.back();
 	}
@@ -57,7 +59,7 @@
 <svelte:head>
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
-<article class="resource grid">
+<article class="resource grid" class:bg-header={showBackground}>
 	<div class="content p-4">
 		<header>
 			<h1 class="mb-6 text-6-cond-extrabold">
