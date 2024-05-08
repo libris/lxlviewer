@@ -59,32 +59,37 @@
 <svelte:head>
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
-<article class="resource grid" class:bg-header={showBackground}>
-	<div class="content p-4">
-		<header>
-			<h1 class="mb-6 text-6-cond-extrabold">
+<article
+	class="resource grid gap-4 px-4 py-8 lg:px-0 lg:pb-12 lg:pt-8"
+	class:bg-header={showBackground}
+>
+	<div class="content">
+		<header class="mb-4 lg:mb-6">
+			<h1 class="text-6-cond-extrabold">
 				<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
 			</h1>
 		</header>
-		<div class="mb-4 flex flex-col-reverse gap-4 md:flex-row">
+		<div class="flex flex-col-reverse gap-4 md:flex-row">
 			<div class="overview flex-1">
 				<DecoratedData data={data.overview} block />
-				<ul>
-					{#each Object.keys(data.holdersByType) as type}
-						<li>
-							<a
-								href={getHoldingsLink($page.url, type)}
-								data-sveltekit-preload-data="false"
-								on:click={(event) => handleClickHoldings(event, $page.state, type)}
-							>
-								{localizedInstanceTypes[type]}
-								{`(${data.t('holdings.availableAt').toLowerCase()}`}
-								{data.holdersByType[type].length}
-								{`${data.t('holdings.libraries')})`}
-							</a>
-						</li>
-					{/each}
-				</ul>
+				{#if data.holdersByType?.size}
+					<ul>
+						{#each Object.keys(data.holdersByType) as type}
+							<li>
+								<a
+									href={getHoldingsLink($page.url, type)}
+									data-sveltekit-preload-data="false"
+									on:click={(event) => handleClickHoldings(event, $page.state, type)}
+								>
+									{localizedInstanceTypes[type]}
+									{`(${data.t('holdings.availableAt').toLowerCase()}`}
+									{data.holdersByType[type].length}
+									{`${data.t('holdings.libraries')})`}
+								</a>
+							</li>
+						{/each}
+					</ul>
+				{/if}
 			</div>
 			{#if data.images.length}
 				<div class="flex h-full max-h-72 w-full max-w-72 justify-center self-center md:self-start">
@@ -176,8 +181,6 @@
 
 <style lang="postcss">
 	.resource {
-		@apply gap-4 p-4;
-		display: grid;
 		grid-template-areas: 'content';
 
 		@media screen and (min-width: theme('screens.lg')) {
@@ -200,7 +203,7 @@
 				text-transform: capitalize;
 			}
 		}
-		& :global(div[data-property]) {
+		& :global(div[data-property]:not(:last-child)) {
 			margin-bottom: 0.8rem;
 		}
 
