@@ -88,19 +88,24 @@
 								</span>
 							{/if}
 						</a>
-						<div class="hits pt-4 text-secondary md:pt-0" role="status" data-testid="result-info">
+						<span
+							class="hits pt-4 text-secondary text-3-cond-bold md:pt-0"
+							role="status"
+							data-testid="result-info"
+						>
 							{#if numHits && numHits > 0}
-								{numHits.toLocaleString($page.data.locale)} träffar
+								{numHits.toLocaleString($page.data.locale)}
+								{numHits == 1 ? $page.data.t('search.hitsOne') : $page.data.t('search.hits')}
 							{:else}
 								{$page.data.t('search.noResults')}
 							{/if}
-						</div>
+						</span>
 						{#if numHits > 0}
 							<div
 								class="sort-select flex flex-col items-baseline justify-self-end"
 								data-testid="sort-select"
 							>
-								<label class="pl-1 text-secondary text-2-regular" for="search-sort">
+								<label class="text-secondary text-2-regular" for="search-sort">
 									{$page.data.t('sort.sortBy')}
 								</label>
 								<select id="search-sort" form="main-search" on:change={handleSortChange}>
@@ -122,8 +127,6 @@
 				</div>
 			</div>
 		{/if}
-	{:catch error}
-		<p>error loading search: {error.message}</p>
 	{/await}
 {/if}
 
