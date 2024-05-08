@@ -37,11 +37,18 @@
 					<a
 						class="button-ghost"
 						href={getOffsetLink(itemOffset - itemsPerPage)}
-						aria-label={$page.data.t('search.previous')}><BiChevronLeft class="text-icon" /></a
+						aria-label={$page.data.t('search.previous')}
+						><BiChevronLeft aria-hidden="true" class="text-icon" /></a
 					>
 				</li>
 				{#if sequenceStart > 1}
-					<li><a class="button-ghost" href={relativizeUrl(first['@id'])}>1</a></li>
+					<li>
+						<a
+							aria-label="{$page.data.t('search.page')} 1"
+							class="button-ghost"
+							href={relativizeUrl(first['@id'])}>1</a
+						>
+					</li>
 				{/if}
 			{/if}
 			{#if sequenceStart > 2}
@@ -64,14 +71,20 @@
 			<!-- last and next -->
 			{#if !isLastPage}
 				{#if sequenceEnd !== lastPage}
-					<li><a class="button-ghost" href={relativizeUrl(last['@id'])}>{lastPage}</a></li>
+					<li>
+						<a
+							aria-label="{$page.data.t('search.page')} {lastPage}"
+							class="button-ghost"
+							href={relativizeUrl(last['@id'])}>{lastPage}</a
+						>
+					</li>
 				{/if}
 				<li>
 					<a
 						class="button-ghost"
 						href={relativizeUrl(next?.['@id'])}
 						aria-label={$page.data.t('search.next')}
-						><BiChevronRight class="text-icon"></BiChevronRight></a
+						><BiChevronRight aria-hidden="true" class="text-icon" /></a
 					>
 				</li>
 			{/if}
@@ -81,6 +94,6 @@
 
 <style lang="postcss">
 	a {
-		text-decoration: none;
+		@apply no-underline;
 	}
 </style>
