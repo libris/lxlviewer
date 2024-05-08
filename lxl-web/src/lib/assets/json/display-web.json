@@ -248,6 +248,16 @@
 				"fresnel:contentLast": ")"
 			}
 		},
+		"agent-no-separator-format": {
+			"@id": "agent-no-separator-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Agent"],
+			"fresnel:propertyFormatDomain": ["marc:subordinateUnit"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"ProvisionActivity-comma-format": {
 			"@id": "ProvisionActivity-comma-format",
 			"@type": "fresnel:Format",
