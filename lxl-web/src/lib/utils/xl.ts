@@ -359,10 +359,16 @@ export class DisplayUtil {
 	}
 
 	private deriveLens(type: ClassName, def: DerivedLensTypeDefinition): Lens {
-		let taken = this.findLens(def.minusFirst, type).showProperties.map((s) => JSON.stringify(s));
-
+		const empty = {
+			[JsonLd.TYPE]: Fresnel.Lens,
+			classLensDomain: type,
+			showProperties: []
+		};
+		let taken = this.findLens(def.minusFirst, type, empty).showProperties.map((s) =>
+			JSON.stringify(s)
+		);
 		taken += def.minusAll
-			.map((l) => this.findLens(l, type).showProperties)
+			.map((l) => this.findLens(l, type, empty).showProperties)
 			.flat()
 			.map((s) => JSON.stringify(s));
 
@@ -481,15 +487,23 @@ export class DisplayUtil {
 		return result;
 	}
 
-	private findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
+	private findLens(
+		lenses: LensType | LensType[] | DerivedLensType,
+		className: ClassName,
+		defaultTo: Lens = undefined
+	) {
 		if (!Array.isArray(lenses) && this.isDerivedLens(lenses)) {
 			return this.findDerivedLens(className, lenses);
 		} else {
-			return this._findLens(lenses, className);
+			return this._findLens(lenses, className, defaultTo);
 		}
 	}
 
-	private _findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
+	private _findLens(
+		lenses: LensType | LensType[] | DerivedLensType,
+		className: ClassName,
+		defaultTo: Lens = undefined
+	) {
 		for (const lens of asArray(lenses)) {
 			for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 				if (this.display.lensGroups[lens] && cls in this.display.lensGroups[lens].lenses) {
@@ -508,7 +522,7 @@ export class DisplayUtil {
 			}
 		}
 
-		return this.DEFAULT_LENS;
+		return defaultTo ? defaultTo : this.DEFAULT_LENS;
 	}
 
 	private buildLangContainerAliasMap() {
