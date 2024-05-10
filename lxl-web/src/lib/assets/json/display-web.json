@@ -519,6 +519,15 @@
 			"fresnel:classFormatDomain": ["UsageAndAccessPolicy"],
 			"fresnel:resourceStyle": ["link"]
 		},
+		"Transliteration-format": {
+			"@id": "Transliteration-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["_script"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ◦ ",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"Instance-self-x-format": {
 			"@id": "Instance-self-x-format",
 			"@type": "fresnel:Format",
