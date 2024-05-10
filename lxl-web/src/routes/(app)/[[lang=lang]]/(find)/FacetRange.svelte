@@ -54,10 +54,8 @@
 		/>
 	</div>
 	<!-- todo: reusable button classes -->
-	<button
-		disabled={!rangeFrom && !rangeTo}
-		class="rounded-md px-4 py-2 text-primary-inv text-3-cond-bold gradient-primary hover:brightness-90 disabled:opacity-40 disabled:hover:brightness-100"
-		type="submit">{$page.data.t('general.apply')}</button
+	<button disabled={!rangeFrom && !rangeTo} class="button-primary" type="submit"
+		>{$page.data.t('general.apply')}</button
 	>
 
 	{#each searchParams as [name, value]}

@@ -49,6 +49,7 @@ export default {
 		intendedAudience: 'Intended audience'
 	},
 	search: {
+		search: 'Search',
 		loading: 'Loading...',
 		findFilter: 'Find filter',
 		filters: 'Filters',

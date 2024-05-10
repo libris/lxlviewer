@@ -33,7 +33,7 @@
 		<div class="ml-auto block px-4 md:hidden">
 			<a
 				aria-label={$page.data.t('header.openMenu')}
-				class="h-12 ghost-btn"
+				class="button-ghost h-12"
 				href={`${$page.url.pathname}?${$page.url.search}#header-menu`}
 				on:click|preventDefault={toggleHeaderMenu}
 			>

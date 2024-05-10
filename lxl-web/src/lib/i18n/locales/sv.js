@@ -48,6 +48,7 @@ export default {
 		intendedAudience: 'Målgrupp'
 	},
 	search: {
+		search: 'Sök',
 		loading: 'Laddar...',
 		findFilter: 'Hitta filter',
 		filters: 'Sökfilter',

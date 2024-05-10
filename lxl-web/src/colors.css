@@ -23,8 +23,8 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--text-primary: var(--color-primary);
 	--text-primary-inv: var(--color-white);
 	--text-link: var(--color-primary);
+	--text-positive: var(--color-accent-dark);
 	--icon-default: var(--color-primary);
-	--icon-inv-secondary: var(--color-white);
 
 	/* Bg colors */
 	--bg-main: var(--color-subtle);
@@ -33,7 +33,7 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--bg-positive-inv: var(--color-primary-light);
 	--bg-negative: var(--color-highlight);
 	--bg-cards: var(--color-white);
-	--bg-pill: var(--color-brown);
+	--bg-pill: var(--color-primary);
 }
 
 /* Dark mode */

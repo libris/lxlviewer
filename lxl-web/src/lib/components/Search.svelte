@@ -3,6 +3,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import getDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
+	import BiSearch from '~icons/bi/search';
 
 	export let placeholder: string;
 	export let autofocus: boolean = false;
@@ -34,11 +35,11 @@
 	}
 </script>
 
-<form class="w-full" action="find" on:submit={handleSubmit}>
+<form class="relative w-full" action="find" on:submit={handleSubmit}>
 	<!-- svelte-ignore a11y-autofocus -->
 	<input
 		id="main-search"
-		class="h-12 w-full rounded-full border-t-accent-dark/32 text-secondary sm:h-14"
+		class="h-12 w-full rounded-full pr-12 text-secondary shadow-accent-dark/32 sm:h-14 sm:pr-28"
 		type="search"
 		name="_q"
 		{placeholder}
@@ -59,4 +60,12 @@
 		<!-- keep 'edit' state on new search -->
 		<input type="hidden" name="_x" value="advanced" />
 	{/if}
+
+	<button
+		type="submit"
+		class="button-primary absolute right-1 top-1 rounded-full px-3 sm:right-2 sm:top-2 sm:px-4"
+	>
+		<BiSearch fill="currentColor" aria-hidden="true" />
+		<span class="sr-only sm:not-sr-only">{$page.data.t('search.search')}</span>
+	</button>
 </form>
