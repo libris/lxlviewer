@@ -39,7 +39,9 @@
 	<!-- svelte-ignore a11y-autofocus -->
 	<input
 		id="main-search"
-		class="h-12 w-full rounded-full pr-12 text-secondary shadow-accent-dark/32 sm:h-14 sm:pr-28"
+		class="h-12 w-full rounded-full pr-12 text-secondary shadow-accent-dark/32 focus:shadow-search-focus focus:outline
+			focus:outline-8 focus:outline-accent-dark/8 sm:h-14
+			sm:pr-28"
 		type="search"
 		name="_q"
 		{placeholder}
