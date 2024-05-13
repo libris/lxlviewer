@@ -152,6 +152,12 @@
 					"classLensDomain": "MediaObject",
 					"showProperties": ["uri", "marc:publicNote"]
 				},
+				"Class": {
+					"@id": "Class-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Class",
+					"showProperties": ["label"]
+				},
 				"Work": {
 					"@id": "Work-chips",
 					"@type": "fresnel:Lens",
