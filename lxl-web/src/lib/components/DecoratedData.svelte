@@ -13,7 +13,6 @@
 	export let allowPopovers = true; // used for preventing nested popovers
 	export let block = false;
 	export let truncate = false;
-	export let key: ResourceData | string = data;
 	export let remainder: ResourceData | undefined = undefined;
 
 	const hiddenProperties = [
@@ -121,7 +120,7 @@
   @component
 	Component used for rendering decorated data.
 -->
-{#key key}
+{#key data}
 	{#if data && typeof data === 'object'}
 		{#if Array.isArray(data)}
 			{#if truncate && depth === 1 && data.length > 1}
