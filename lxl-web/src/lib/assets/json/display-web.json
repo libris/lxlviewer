@@ -92,6 +92,25 @@
 						{ "inverseOf": "reproductionOf" },
 						{ "inverseOf": "supplementTo" }
 					]
+				},
+				"Concept": {
+					"@type": "fresnel:Lens",
+					"@id": "Concept-cards",
+					"classLensDomain": "Concept",
+					"showProperties": [
+						"prefLabel",
+						"inScheme",
+						"altLabel",
+						"broader",
+						{ "inverseOf": "broader" },
+						"related",
+						"scopeNote",
+						"exactMatch",
+						"label",
+						"code",
+						"keyword",
+						"termComponentList"
+					]
 				}
 			}
 		},
@@ -422,10 +441,10 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"Topic-format": {
-			"@id": "Topic-format",
+		"Subject-format": {
+			"@id": "Subject-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Topic"],
+			"fresnel:classFormatDomain": ["Subject"],
 			"fresnel:resourceStyle": ["link"]
 		},
 		"Instance-format": {
