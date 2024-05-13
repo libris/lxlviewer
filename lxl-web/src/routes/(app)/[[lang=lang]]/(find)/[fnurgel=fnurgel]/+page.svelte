@@ -63,7 +63,7 @@
 	class="resource grid gap-4 px-4 py-8 lg:px-0 lg:pb-12 lg:pt-8"
 	class:bg-header={showBackground}
 >
-	<div class="content flex flex-col gap-4">
+	<div class="content flex max-w-content flex-col gap-4">
 		<header>
 			<h1 class="text-6-cond-extrabold">
 				<DecoratedData data={data.heading} showLabels={ShowLabelsOptions.Never} />
