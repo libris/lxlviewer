@@ -111,7 +111,9 @@
 					</div>
 				{/if}
 			{/each}
-			{item.typeStr}
+			<div class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2">
+				{item.typeStr}
+			</div>
 		</div>
 	</div>
 </li>
