@@ -67,6 +67,7 @@
 	on:click|self={handleBackdropClick}
 	on:close={handleClose}
 	bind:this={dialog}
+	data-testid="modal"
 	transition:fly={{
 		x: position === 'left' ? -12 : 12,
 		duration: 250,
