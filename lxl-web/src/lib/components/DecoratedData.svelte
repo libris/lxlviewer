@@ -16,7 +16,7 @@
 	export let remainder: ResourceData | undefined = undefined;
 	export let keyed = true;
 
-	$: key = keyed && data; // an ugly work-around to fix duplicate content on out transitions when closing modals (not entirely sure what is the root cause...)
+	$: key = keyed && data; // an ugly work-around to fix duplicate content on out transitions when closing modals (not entirely sure what the root cause is...) – we should try to remove the need for this when updating to Svelte 5.
 
 	const hiddenProperties = [
 		'@context',
