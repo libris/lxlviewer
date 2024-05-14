@@ -118,13 +118,12 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		// Hide zero results from resource page
 		if (result.totalItems > 0 || isFindRoute) {
-			const pathname = params.lang ? url.pathname.replace(`/${params.lang}`, '') : url.pathname;
 			return (await asResult(
 				result,
 				displayUtil,
 				locale,
 				env.AUXD_SECRET,
-				pathname
+				url.pathname
 			)) as SearchResult;
 		}
 		return null;
