@@ -73,6 +73,7 @@
 							<a
 								href={getHoldingsLink($page.url, type)}
 								data-sveltekit-preload-data="false"
+								data-testid="holding-link"
 								on:click={(event) => handleClickHoldings(event, $page.state, type)}
 							>
 								{localizedInstanceTypes[type]}
@@ -121,7 +122,7 @@
 						</div>
 					{/if}
 					<div class="overview">
-						<DecoratedData data={selectedHoldingInstance} block />
+						<DecoratedData data={selectedHoldingInstance} block keyed={false} />
 					</div>
 				</div>
 				<div>
