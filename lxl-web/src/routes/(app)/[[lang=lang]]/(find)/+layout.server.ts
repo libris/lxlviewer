@@ -3,7 +3,14 @@ import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 
-import { type FramedData, DisplayUtil, pickProperty, toString, JsonLd } from '$lib/utils/xl.js';
+import {
+	type FramedData,
+	DisplayUtil,
+	pickProperty,
+	toString,
+	JsonLd,
+	VocabUtil
+} from '$lib/utils/xl.js';
 import { LxlLens } from '$lib/utils/display.types.js';
 import { relativizeUrl } from '$lib/utils/http';
 import { getImages, toSecure } from '$lib/utils/auxd';
@@ -15,6 +22,7 @@ import getAtPath from '$lib/utils/getAtPath';
 
 export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	const displayUtil: DisplayUtil = locals.display;
+	const vocabUtil: VocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 
 	const isResourceRoute = !!params.fnurgel;
@@ -122,6 +130,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			return (await asResult(
 				result,
 				displayUtil,
+				vocabUtil,
 				locale,
 				env.AUXD_SECRET,
 				pathname

@@ -111,6 +111,7 @@
 					</div>
 				{/if}
 			{/each}
+			{item.typeStr}
 		</div>
 	</div>
 </li>
