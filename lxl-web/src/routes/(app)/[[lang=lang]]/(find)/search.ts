@@ -12,7 +12,7 @@ import { LxlLens } from '$lib/utils/display.types';
 import { type translateFn, getTranslator } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
-import { Width } from '$lib/utils/auxd.types';
+import { type SecureImageResolution, Width } from '$lib/utils/auxd.types';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -60,7 +60,7 @@ export interface SearchResultItem {
 	[JsonLd.TYPE]: string;
 	[LxlLens.CardHeading]: DisplayDecorated;
 	[LxlLens.CardBody]: DisplayDecorated;
-	image: AuthImageResolution | undefined;
+	image: SecureImageResolution | undefined;
 }
 
 type FacetGroupId = string;
