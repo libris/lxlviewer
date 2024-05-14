@@ -6,10 +6,11 @@ import {
 	JsonLd,
 	LensType,
 	type Link,
-	toString
+	toString,
+	VocabUtil
 } from '$lib/utils/xl';
 import { LxlLens } from '$lib/utils/display.types';
-import { type translateFn, getTranslator } from '$lib/i18n';
+import { getTranslator, type translateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import { type SecureImageResolution, Width } from '$lib/utils/auxd.types';
@@ -17,6 +18,7 @@ import { type SecureImageResolution, Width } from '$lib/utils/auxd.types';
 export async function asResult(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
+	vocabUtil: VocabUtil,
 	locale: LangCode,
 	auxdSecret: string,
 	usePath: string
@@ -36,7 +38,10 @@ export async function asResult(
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
 			[LxlLens.CardBody]: displayUtil.lensAndFormat(i, LxlLens.CardBody, locale),
-			image: toSecure(bestSize(bestImage(i), Width.SMALL), auxdSecret)
+			image: toSecure(bestSize(bestImage(i), Width.SMALL), auxdSecret),
+			typeStr: toString(
+				displayUtil.lensAndFormat(vocabUtil.getDefinition(i[JsonLd.TYPE]), LensType.Chip, locale)
+			)
 		})),
 		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
 	};
@@ -61,6 +66,7 @@ export interface SearchResultItem {
 	[LxlLens.CardHeading]: DisplayDecorated;
 	[LxlLens.CardBody]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
+	typeStr: string;
 }
 
 type FacetGroupId = string;
