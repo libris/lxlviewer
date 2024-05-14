@@ -91,9 +91,3 @@
 		</ul>
 	</nav>
 {/if}
-
-<style lang="postcss">
-	a {
-		@apply no-underline;
-	}
-</style>

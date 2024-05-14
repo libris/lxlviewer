@@ -6,6 +6,7 @@
 	import type { DisplayMapping, SearchOperators } from './search';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiPencil from '~icons/bi/pencil';
+	import BiPencilFill from '~icons/bi/pencil-fill';
 	import BiTrash from '~icons/bi/trash';
 	export let mapping: DisplayMapping[];
 	export let parentOperator: keyof typeof SearchOperators | undefined = undefined;
@@ -79,8 +80,8 @@
 		{/if}
 		{#if 'up' in m && m.children && depth === 0}
 			<li class="pill-remove">
-				<a class="ghost-btn" href={m.up?.['@id']}>
-					<BiTrash class="text-icon" />
+				<a class="button-ghost button-negative" href={m.up?.['@id']}>
+					<BiTrash aria-hidden="true" />
 					{$page.data.t('search.clearFilters')}
 				</a>
 			</li>
@@ -89,12 +90,16 @@
 	{#if !inModal && showEditButton && depth === 0}
 		<li>
 			<a
-				class="ghost-btn"
-				data-sveltekit-replacestate
+				class="button-ghost"
 				class:active={editActive}
+				data-sveltekit-replacestate
 				href={toggleEditUrl}
 			>
-				<BiPencil class="text-icon" />
+				{#if editActive}
+					<BiPencilFill aria-hidden="true" />
+				{:else}
+					<BiPencil aria-hidden="true" />
+				{/if}
 				{$page.data.t('search.editFilters')}
 			</a>
 		</li>
@@ -103,7 +108,7 @@
 
 <style lang="postcss">
 	.mapping-item {
-		@apply rounded-md px-4 py-2 brightness-100 text-3-cond-bold;
+		@apply h-10 rounded-md px-4 py-2 brightness-100 text-3-cond-bold;
 		transition: filter 0.1s ease;
 	}
 

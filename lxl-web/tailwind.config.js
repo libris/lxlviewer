@@ -17,10 +17,10 @@ export default {
 			'secondary-inv': 'rgb(var(--text-primary-inv) / 0.8)',
 			link: 'rgb(var(--text-link) / 0.8)',
 			disabled: 'rgb(var(--text-primary) / 0.6)',
+			positive: 'rgb(var(--text-positive) / 1)',
 			hover: 'rgb(var(--text-link) / 1)',
 			icon: {
 				DEFAULT: 'rgb(var(--icon-default) / 0.4)',
-				'inv-secondary': 'rgb(var(--icon-inv-secondary) / 0.64)',
 				strong: 'rgb(var(--icon-default) / 0.8)'
 			}
 		},
@@ -36,6 +36,7 @@ export default {
 			backdrop: 'rgb(var(--color-black) / 0.25)'
 		},
 		opacity: {
+			100: '1',
 			80: '.80',
 			64: '.64',
 			48: '.48',
@@ -44,7 +45,8 @@ export default {
 			24: '.24',
 			16: '.16',
 			8: '.08',
-			4: '.04'
+			4: '.04',
+			0: '0'
 		},
 		fontSize: ({ theme }) => ({
 			xs: ['0.75rem', theme('lineHeight.normal')],
@@ -108,6 +110,12 @@ export default {
 		extend: {
 			maxWidth: {
 				content: '78rem'
+			},
+			boxShadow: {
+				input: 'inset 0px 1px 0px 0px rgb(var(--color-primary) / 0.16)',
+				'search-focus': 'inset 0px 0px 0px 2px rgb(var(--color-accent-dark) / 0.48)',
+				'btn-primary':
+					'0px 1px 0px 0px rgb(var(--color-primary) / 0.16), inset 0px 1px 0px 0px rgb(var(--color-highlight) / 0.24)'
 			}
 		}
 	},
@@ -156,16 +164,12 @@ export default {
 				'.gradient-primary': {
 					'@apply bg-gradient-to-b from-[#7B4C1E] to-[#674019]': {}
 				},
+				'.gradient-secondary': {
+					'@apply bg-gradient-to-b from-[#A36629] to-[#8F5924]': {}
+				},
 				'.icon-button': {
 					'@apply w-11 h-11 flex items-center justify-center rounded-full hover:bg-cards focus:bg-cards transition-colors relative':
 						{}
-				},
-				'.ghost-btn': {
-					'@apply flex items-center gap-2 rounded-md bg-transparent px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold hover:brightness-95 active:brightness-95':
-						{}
-				},
-				'.gradient-secondary': {
-					'@apply bg-gradient-to-b from-[#A36629] to-[#8F5924]': {}
 				}
 			});
 		}
