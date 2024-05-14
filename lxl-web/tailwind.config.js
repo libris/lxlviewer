@@ -113,7 +113,7 @@ export default {
 			},
 			boxShadow: {
 				input: 'inset 0px 1px 0px 0px rgb(var(--color-primary) / 0.16)',
-				'search-focus': 'inset 0px 0px 0px 2px rgb(var(--color-accent-dark) / 0.32)',
+				'search-focus': 'inset 0px 0px 0px 2px rgb(var(--color-accent-dark) / 0.48)',
 				'btn-primary':
 					'0px 1px 0px 0px rgb(var(--color-primary) / 0.16), inset 0px 1px 0px 0px rgb(var(--color-highlight) / 0.24)'
 			}
