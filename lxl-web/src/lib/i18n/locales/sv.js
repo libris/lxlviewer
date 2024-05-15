@@ -8,6 +8,14 @@ export default {
 		searchPlaceholder: 'Titel, författare, ämne med mera',
 		openMenu: 'Öppna huvudmeny'
 	},
+	footer: {
+		logo: 'Kungliga bibliotekets logotyp',
+		information: 'Information',
+		faq: 'Vanliga frågor om betaversionen',
+		contact: 'Kontakt',
+		feedback: 'Lämna synpunkter',
+		customerSupport: 'Libris kundtjänst'
+	},
 	facet: {
 		q: 'Fritextsökning',
 		'@reverse.itemOf.heldBy.@id': 'Har bestånd',

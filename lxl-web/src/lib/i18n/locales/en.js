@@ -9,6 +9,14 @@ export default {
 		searchPlaceholder: 'Title, author, subject et cetera',
 		openMenu: 'Open main menu'
 	},
+	footer: {
+		logo: 'National Library of Sweden logotype',
+		information: 'Information',
+		faq: 'FAQ about this beta',
+		contact: 'Contact',
+		feedback: 'Give feedback',
+		customerSupport: 'Libris customer support'
+	},
 	facet: {
 		q: 'Free text search',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
