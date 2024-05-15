@@ -13,13 +13,19 @@
 	$: isLastPage = currentPage === lastPage;
 
 	// How many pages to display in a sequence (excl first & last)
-	const sequenceSize = 3;
-	const sequenceArr = [...Array(sequenceSize)];
+	let sequenceSize = 3;
+
+	$: if (sequenceSize > lastPage) {
+		sequenceSize = lastPage;
+	}
 	$: sequenceStart = (() => {
-		if (currentPage + (sequenceSize - 1) >= lastPage) return lastPage - (sequenceSize - 1);
-		else return currentPage;
+		if (currentPage + (sequenceSize - 1) >= lastPage) {
+			return lastPage - (sequenceSize - 1);
+		} else {
+			return currentPage;
+		}
 	})();
-	$: pageSequence = sequenceArr.map((el, i) => sequenceStart + i);
+	$: pageSequence = [...Array(sequenceSize)].map((el, i) => sequenceStart + i);
 	$: sequenceEnd = pageSequence[pageSequence.length - 1];
 
 	function getOffsetLink(offset: number) {
