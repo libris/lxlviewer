@@ -110,6 +110,9 @@ export default {
 		extend: {
 			maxWidth: {
 				content: '78rem'
+			},
+			gridTemplateColumns: {
+				find: 'minmax(240px, 1fr) 7fr'
 			}
 		}
 	},
@@ -163,8 +166,11 @@ export default {
 						{}
 				},
 				'.ghost-btn': {
-					'@apply flex items-center gap-2 rounded-md bg-transparent px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold hover:brightness-95 active:brightness-95':
+					'@apply flex items-center justify-center gap-2 rounded-md bg-transparent px-4 py-2 text-secondary no-underline outline outline-2 -outline-offset-2 outline-[#52331429] brightness-100 text-3-cond-bold hover:brightness-95 active:brightness-95':
 						{}
+				},
+				'.find-layout': {
+					'@apply flex flex-col gap-4 p-4 sm:p-6 md:gap-16 md:grid md:grid-cols-find': {}
 				}
 			});
 		}

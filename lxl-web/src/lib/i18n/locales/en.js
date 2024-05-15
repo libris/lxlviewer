@@ -54,12 +54,16 @@ export default {
 		filters: 'Filters',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
+		selectedFilters: 'Selected filters',
 		noResults: 'No results',
 		hits: 'hits',
 		hitsOne: 'hit',
 		selected: 'selected',
 		selectedOne: 'selected',
-		editions: 'editions'
+		editions: 'editions',
+		publicationYear: 'Publication year',
+		publisher: 'Publisher',
+		type: 'Type'
 	},
 	sort: {
 		sortBy: 'Sort by',

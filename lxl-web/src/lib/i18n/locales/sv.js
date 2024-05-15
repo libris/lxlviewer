@@ -53,12 +53,16 @@ export default {
 		filters: 'Sökfilter',
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
+		selectedFilters: 'Valda filter',
 		noResults: 'Inga resultat',
 		hits: 'träffar',
 		hitsOne: 'träff',
 		selected: 'valda',
 		selectedOne: 'vald',
-		editions: 'utgåvor'
+		editions: 'utgåvor',
+		publicationYear: 'Utgivningsår',
+		publisher: 'Utgivare',
+		type: 'Typ'
 	},
 	sort: {
 		sortBy: 'Sortera efter',

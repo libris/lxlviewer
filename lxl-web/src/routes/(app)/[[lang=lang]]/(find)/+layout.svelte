@@ -54,15 +54,12 @@
 			{@const facets = searchResult.facetGroups}
 			{@const numHits = searchResult.totalItems}
 			{@const filterCount = getFiltersCount(searchResult.mapping)}
-			<div
-				class="find relative gap-y-4"
-				class:with-mapping={shouldShowMapping(searchResult.mapping)}
-			>
-				{#if shouldShowMapping(searchResult.mapping)}
-					<nav class="mappings px-4" aria-label="Valda filter">
-						<SearchMapping mapping={searchResult.mapping} />
-					</nav>
-				{/if}
+			{#if shouldShowMapping(searchResult.mapping)}
+				<nav class="p-4 pb-0 md:p-6 md:pb-0" aria-label={$page.data.t('search.selectedFilters')}>
+					<SearchMapping mapping={searchResult.mapping} />
+				</nav>
+			{/if}
+			<div class="relative gap-y-4 find-layout">
 				{#if showFiltersModal}
 					<Modal position="left" close={toggleFiltersModal}>
 						<span slot="title">
@@ -72,16 +69,16 @@
 						<Filters {facets} mapping={searchResult.mapping} />
 					</Modal>
 				{/if}
-				<div class="filters" id="filters">
+				<div class="hidden md:block" id="filters">
 					<Filters {facets} mapping={searchResult.mapping} />
 				</div>
 
-				<div class="results max-w-content px-4">
-					<div class="toolbar flex min-h-14 items-center justify-between py-4 md:min-h-fit md:pt-0">
+				<div class="results max-w-content">
+					<div class="toolbar flex min-h-14 items-center justify-between pb-4 md:min-h-fit">
 						<a
 							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
 							class="filter-modal-toggle ghost-btn md:hidden"
-							aria-label="Sökfilter"
+							aria-label={$page.data.t('search.filters')}
 							on:click|preventDefault={toggleFiltersModal}
 						>
 							<IconSliders width={20} height={20} />
@@ -138,31 +135,16 @@
 
 <style lang="postcss">
 	.toolbar {
-		grid-area: toolbar;
 		display: grid;
 		grid-template-areas:
 			'filter-modal-toggle sort-select'
 			'hits hits';
 	}
 
-	.filters {
-		grid-area: filters;
-		display: none;
-	}
-
 	#filters {
 		&:target {
 			display: block; /* TODO: fix better no-JS fallback styling */
 		}
-	}
-
-	.mappings {
-		grid-area: mappings;
-		display: none;
-	}
-
-	.results {
-		grid-area: results;
 	}
 
 	.filter-toggle {
@@ -178,21 +160,6 @@
 	}
 
 	@media screen and (min-width: theme('screens.md')) {
-		.find {
-			display: grid;
-			grid-template-columns: 320px 1fr;
-			grid-template-areas:
-				'toolbar toolbar'
-				'filters results';
-		}
-
-		.find.with-mapping {
-			grid-template-areas:
-				'toolbar toolbar'
-				'mappings mappings'
-				'filters results';
-		}
-
 		.filters {
 			display: block;
 		}
