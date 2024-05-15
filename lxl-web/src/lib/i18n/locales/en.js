@@ -63,7 +63,9 @@ export default {
 		editions: 'editions',
 		publicationYear: 'Publication year',
 		publisher: 'Publisher',
-		type: 'Type'
+		type: 'Type',
+		related: 'related',
+		relatedOne: 'related'
 	},
 	sort: {
 		sortBy: 'Sort by',

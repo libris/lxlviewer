@@ -98,6 +98,11 @@
 						>
 							{#if numHits && numHits > 0}
 								{numHits.toLocaleString($page.data.locale)}
+								{#if $page.data.instances}
+									{numHits == 1
+										? $page.data.t('search.relatedOne')
+										: $page.data.t('search.related')}
+								{/if}
 								{numHits == 1 ? $page.data.t('search.hitsOne') : $page.data.t('search.hits')}
 							{:else}
 								{$page.data.t('search.noResults')}

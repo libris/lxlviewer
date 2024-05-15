@@ -62,7 +62,9 @@ export default {
 		editions: 'utgåvor',
 		publicationYear: 'Utgivningsår',
 		publisher: 'Utgivare',
-		type: 'Typ'
+		type: 'Typ',
+		related: 'relaterade',
+		relatedOne: 'relaterad'
 	},
 	sort: {
 		sortBy: 'Sortera efter',
