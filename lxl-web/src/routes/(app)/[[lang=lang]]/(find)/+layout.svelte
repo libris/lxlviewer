@@ -56,7 +56,7 @@
 			{@const filterCount = getFiltersCount(searchResult.mapping)}
 			<div class="find relative gap-y-4">
 				{#if shouldShowMapping(searchResult.mapping)}
-					<nav class="mappings px-4" aria-label="Valda filter">
+					<nav class="mappings px-4" aria-label={$page.data.t('search.activeFilters')}>
 						<SearchMapping mapping={searchResult.mapping} />
 					</nav>
 				{/if}
@@ -78,7 +78,6 @@
 						<a
 							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
 							class="filter-modal-toggle button-ghost md:hidden"
-							aria-label="Sökfilter"
 							on:click|preventDefault={toggleFiltersModal}
 						>
 							<IconSliders width={20} height={20} />

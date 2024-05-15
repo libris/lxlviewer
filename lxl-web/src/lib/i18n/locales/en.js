@@ -53,6 +53,8 @@ export default {
 		loading: 'Loading...',
 		findFilter: 'Find filter',
 		filters: 'Filters',
+		selectedFilter: 'Selected filter',
+		activeFilters: 'Active filters',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
 		noResults: 'No results',
@@ -63,7 +65,9 @@ export default {
 		editions: 'editions',
 		previous: 'Previous page',
 		page: 'Page',
-		next: 'Next page'
+		next: 'Next page',
+		showMore: 'Show more',
+		showFewer: 'Show fewer'
 	},
 	sort: {
 		sortBy: 'Sort by',
