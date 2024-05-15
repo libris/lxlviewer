@@ -75,7 +75,7 @@
 	}}
 >
 	<div
-		class="absolute right-0 top-0 flex w-full bg-main shadow-2xl md:max-w-[480px] {position ===
+		class="absolute right-0 top-0 flex w-full bg-main shadow-2xl md:max-w-[480px] xl:max-w-[640px] {position ===
 		'top'
 			? 'h-auto'
 			: 'h-full'}"
@@ -97,7 +97,9 @@
 					<IconClose />
 				</button>
 			</header>
-			<slot />
+			<div class="px-4">
+				<slot />
+			</div>
 		</div>
 	</div>
 </dialog>
