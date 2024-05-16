@@ -15,7 +15,8 @@
 </script>
 
 <header
-	class="flex gap-4 bg-site-header p-4 sm:p-6 md:grid md:find-layout"
+	class="flex gap-4 bg-site-header p-4 sm:px-6 md:grid md:find-layout"
+	class:md:find-layout={!isLandingPage}
 	class:md:grid-cols-find={!isLandingPage}
 >
 	{#if !isLandingPage}
@@ -36,7 +37,7 @@
 		<div id="header-menu" class="ml-auto hidden min-h-14 items-center pl-8 md:flex">
 			<HeaderMenu />
 		</div>
-		<div class="ml-auto block pl-4 md:hidden">
+		<div class="ml-auto block min-h-14 pl-4 md:hidden">
 			<a
 				aria-label={$page.data.t('header.openMenu')}
 				class="button-ghost h-11 w-11 !p-0"
