@@ -37,7 +37,7 @@
 		<div id="header-menu" class="ml-auto hidden min-h-14 items-center pl-8 md:flex">
 			<HeaderMenu />
 		</div>
-		<div class="ml-auto block min-h-14 pl-4 md:hidden">
+		<div class="ml-auto flex min-h-14 items-center pl-4 md:hidden">
 			<a
 				aria-label={$page.data.t('header.openMenu')}
 				class="button-ghost h-11 w-11 !p-0"
