@@ -55,7 +55,10 @@
 			{@const numHits = searchResult.totalItems}
 			{@const filterCount = getFiltersCount(searchResult.mapping)}
 			{#if shouldShowMapping(searchResult.mapping)}
-				<nav class="p-4 pb-0 md:px-6 md:pb-0" aria-label={$page.data.t('search.selectedFilters')}>
+				<nav
+					class="hidden md:flex md:px-6 md:pb-0 md:pt-4"
+					aria-label={$page.data.t('search.selectedFilters')}
+				>
 					<SearchMapping mapping={searchResult.mapping} />
 				</nav>
 			{/if}

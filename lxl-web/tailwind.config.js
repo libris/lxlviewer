@@ -177,8 +177,7 @@ export default {
 						{}
 				},
 				'.find-layout': {
-					'@apply flex flex-col gap-4 p-4 sm:px-6 md:grid md:grid-cols-find md:gap-8 lg:gap-12 xl:gap-16':
-						{}
+					'@apply flex flex-col gap-4 p-4 sm:px-6 md:grid md:grid-cols-find md:gap-8': {}
 				}
 			});
 		}
