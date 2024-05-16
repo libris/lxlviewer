@@ -71,7 +71,7 @@
 			{/if}
 		</div>
 	{/if}
-	<div class="instance-details col-span-3" class:columns={oneOfMany}>
+	<div class="instance-details columns col-span-3">
 		<DecoratedData {data} block showLabels={ShowLabelsOptions.Always} />
 	</div>
 </div>

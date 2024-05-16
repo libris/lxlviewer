@@ -58,9 +58,9 @@
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
 <article>
-	<div class="gap-8 bg-header find-layout">
+	<div class="resource gap-8 find-layout" class:bg-header={!data.instances?.length}>
 		<div
-			class="mb-2 mt-4 flex h-full max-h-64 w-full max-w-64 justify-center self-center md:ml-auto md:flex md:self-start"
+			class="mb-2 mt-4 flex max-h-64 max-w-64 justify-center self-center md:mx-auto md:justify-start md:self-start md:px-2 xl:px-0"
 			class:hidden={!$page.data.images?.length}
 		>
 			{#if data.images.length}
@@ -72,7 +72,7 @@
 				/>
 			{/if}
 		</div>
-		<div class="flex max-w-content flex-col gap-4 py-2 pb-4 md:flex-row">
+		<div class="content flex max-w-content flex-col gap-4 py-2 md:flex-row">
 			<div class="flex flex-col gap-4">
 				<header>
 					<h1 class="text-6-cond-extrabold">
@@ -114,8 +114,8 @@
 		</div>
 	</div>
 	{#if data.instances?.length}
-		<div class="instances mt-4 find-layout">
-			<div class="instances-list max-w-content">
+		<div class="instances !pt-2 find-layout">
+			<div class="instances-list max-w-content border-t border-t-primary/16 pt-6">
 				<InstancesList
 					data={data.instances}
 					columns={[
@@ -194,6 +194,16 @@
 </article>
 
 <style lang="postcss">
+	.resource {
+		grid-template-areas: 'image content';
+	}
+	.image {
+		grid-area: image;
+	}
+	.content {
+		grid-area: content;
+	}
+
 	.instances {
 		grid-template-areas: '. instances-list';
 	}

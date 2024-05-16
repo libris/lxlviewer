@@ -66,7 +66,7 @@
 
 <div>
 	{#if Array.isArray(data) && data.length > 1}
-		<div class="flex items-center justify-between py-4">
+		<div class="flex items-center justify-between pb-4">
 			<h2 class="capitalize text-4-cond-bold">{$page.data.t('search.editions')}</h2>
 			<a
 				href={getCollapseAllUrl($page.url)}
