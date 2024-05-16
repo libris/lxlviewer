@@ -54,6 +54,7 @@ export default {
 		findFilter: 'Find filter',
 		filters: 'Filters',
 		activeFilters: 'Active filters',
+		selectedFilters: 'Selected filters',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
 		noResults: 'No results',

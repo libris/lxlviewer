@@ -53,6 +53,7 @@ export default {
 		findFilter: 'Hitta filter',
 		filters: 'Sökfilter',
 		activeFilters: 'Aktiva filter',
+		selectedFilters: 'Valda filter',
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
 		noResults: 'Inga resultat',
