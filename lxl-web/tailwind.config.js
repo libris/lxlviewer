@@ -114,7 +114,7 @@ export default {
 				content: '78rem'
 			},
 			gridTemplateColumns: {
-				find: 'minmax(240px, 1fr) 7fr'
+				find: 'minmax(240px, 1fr) 5fr'
 			},
 			boxShadow: {
 				input: 'inset 0px 1px 0px 0px rgb(var(--color-primary) / 0.16)',
@@ -177,7 +177,8 @@ export default {
 						{}
 				},
 				'.find-layout': {
-					'@apply flex flex-col gap-4 p-4 sm:p-6 md:gap-16 md:grid md:grid-cols-find': {}
+					'@apply flex flex-col gap-4 p-4 sm:px-6 md:grid md:grid-cols-find md:gap-8 lg:gap-12 xl:gap-16':
+						{}
 				}
 			});
 		}
