@@ -52,6 +52,8 @@ export default {
 		loading: 'Laddar...',
 		findFilter: 'Hitta filter',
 		filters: 'Sökfilter',
+		selectedFilter: 'Valt filter',
+		activeFilters: 'Aktiva filter',
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
 		noResults: 'Inga resultat',
@@ -62,7 +64,9 @@ export default {
 		editions: 'utgåvor',
 		previous: 'Föregående sida',
 		page: 'Sida',
-		next: 'Nästa sida'
+		next: 'Nästa sida',
+		showMore: 'Visa fler',
+		showFewer: 'Visa färre'
 	},
 	sort: {
 		sortBy: 'Sortera efter',

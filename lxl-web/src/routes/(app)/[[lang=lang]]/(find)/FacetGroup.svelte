@@ -73,7 +73,9 @@
 						<span class="flex items-baseline">
 							{#if 'selected' in facet}
 								<!-- howto A11y?! -->
-								<span class="sr-only">{facet.selected ? 'Valt filter' : ''}</span>
+								<span class="sr-only"
+									>{facet.selected ? $page.data.t('search.selectedFilter') : ''}</span
+								>
 								<span class="mr-1" aria-hidden="true">{facet.selected ? '☑' : '☐'}</span>
 							{/if}
 							<span>{facet.str}</span>
@@ -89,7 +91,9 @@
 				on:click={() =>
 					canShowMoreFacets ? (facetsShown = numfacets) : (facetsShown = defaultFacetsShown)}
 			>
-				{canShowMoreFacets ? 'Visa fler' : 'Visa färre'}</button
+				{canShowMoreFacets
+					? $page.data.t('search.showMore')
+					: $page.data.t('search.showFewer')}</button
 			>
 		{/if}
 		{#if searchPhrase && filteredFacets.length === 0}
