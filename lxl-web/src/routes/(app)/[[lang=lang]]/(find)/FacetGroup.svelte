@@ -3,7 +3,6 @@
 	import { page } from '$app/stores';
 	import { type FacetGroup } from './search';
 	import BiChevronRight from '~icons/bi/chevron-right';
-	import BiChevronDown from '~icons/bi/chevron-down';
 	import FacetRange from './FacetRange.svelte';
 
 	export let group: FacetGroup;
@@ -41,15 +40,9 @@
 		data-testid="facet-toggle"
 	>
 		<span class="flex items-center gap-2">
-			<span>
-				{#if searchPhrase}
-					<!-- Currently groups can't be minimized while searching -->
-					<BiChevronDown class="text-icon" />
-				{:else if expanded}
-					<BiChevronDown class="text-icon" />
-				{:else}
-					<BiChevronRight class="text-icon" />
-				{/if}
+			<!-- Currently groups can't be minimized while searching -->
+			<span class:rotate-90={searchPhrase || expanded} class="transition-transform">
+				<BiChevronRight class="text-icon" />
 			</span>
 			<span>
 				{group.label}
@@ -66,10 +59,13 @@
 			<!-- facet range inputs; hide in filter search results -->
 			<FacetRange search={group.search} />
 		{/if}
-		<ol class="max-h-437px mt-2 overflow-y-auto" data-testid="facet-list">
+		<ol class="mt-2 max-h-[437px] overflow-y-auto" data-testid="facet-list">
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li class="pl-6">
-					<a class="flex items-center justify-between no-underline" href={facet.view['@id']}>
+					<a
+						class="facet-link flex items-end justify-between gap-2 py-px no-underline"
+						href={facet.view['@id']}
+					>
 						<span class="flex items-baseline">
 							{#if 'selected' in facet}
 								<!-- howto A11y?! -->
@@ -80,8 +76,9 @@
 							{/if}
 							<span>{facet.str}</span>
 						</span>
-						<span class="text-sm text-secondary md:text-xs lg:text-sm"
-							>({facet.totalItems.toLocaleString(locale)})</span
+						<span class="facet-total text-sm text-secondary md:text-xs lg:text-sm rounded-sm bg-pill/4 px-1 mb-px"
+							aria-label="{facet.totalItems} {$page.data.t('search.hits')}"
+							>{facet.totalItems.toLocaleString(locale)}</span
 						>
 					</a>
 				</li>
@@ -89,14 +86,19 @@
 		</ol>
 		{#if canShowMoreFacets || canShowLessFacets}
 			<button
-				class="mt-4 pl-6"
+				class="mt-2 flex text-3-regular w-full items-center gap-4 rounded-md bg-pill/4 p-2"
 				on:click={() =>
 					canShowMoreFacets ? (facetsShown = numfacets) : (facetsShown = defaultFacetsShown)}
 			>
-				{canShowMoreFacets
-					? $page.data.t('search.showMore')
-					: $page.data.t('search.showFewer')}</button
-			>
+				<span
+					class="button-ghost h-9 w-9 p-0"
+					class:rotate-90={canShowMoreFacets}
+					class:-rotate-90={canShowLessFacets}
+				>
+					<BiChevronRight class="text-icon" />
+				</span>
+				{canShowMoreFacets ? $page.data.t('search.showMore') : $page.data.t('search.showFewer')}
+			</button>
 		{/if}
 		{#if searchPhrase && filteredFacets.length === 0}
 			<span role="status" aria-atomic="true">{$page.data.t('search.noResults')}</span>
@@ -105,7 +107,10 @@
 </li>
 
 <style lang="postcss">
-	.max-h-437px {
-		max-height: 437px;
+	.facet-link:hover,
+	.facet-link:focus {
+		& .facet-total {
+			@apply bg-pill/8;
+		}
 	}
 </style>
