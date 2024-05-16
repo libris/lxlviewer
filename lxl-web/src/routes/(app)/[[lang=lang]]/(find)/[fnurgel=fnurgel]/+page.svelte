@@ -113,11 +113,8 @@
 		</div>
 	</div>
 	{#if data.instances?.length}
-		<div class="mt-4 find-layout">
-			<div
-				class="max-w-content md:col-start-2 md:col-end-3 lg:col-start-2 lg:col-end-3"
-				class:md:col-start-1={data.instances?.length > 1}
-			>
+		<div class="instances mt-4 find-layout">
+			<div class="instances-list max-w-content" class:md:col-start-1={data.instances?.length > 1}>
 				<InstancesList
 					data={data.instances}
 					columns={[
@@ -196,6 +193,14 @@
 </article>
 
 <style lang="postcss">
+	.instances {
+		grid-template-areas: '. instances-list';
+	}
+
+	.instances-list {
+		grid-area: instances-list;
+	}
+
 	.overview {
 		display: grid;
 

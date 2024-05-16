@@ -69,7 +69,7 @@
 						<Filters {facets} mapping={searchResult.mapping} />
 					</Modal>
 				{/if}
-				<div class="hidden md:block" id="filters">
+				<div class="filters hidden md:block" id="filters">
 					<Filters {facets} mapping={searchResult.mapping} />
 				</div>
 
@@ -146,10 +146,26 @@
 			'hits hits';
 	}
 
+	.find-layout {
+		grid-template-areas: 'filters results';
+	}
+
+	.filters {
+		grid-area: filters;
+	}
+
 	#filters {
 		&:target {
 			display: block; /* TODO: fix better no-JS fallback styling */
 		}
+	}
+
+	.mappings {
+		grid-area: mappings;
+	}
+
+	.results {
+		grid-area: results;
 	}
 
 	.filter-toggle {
