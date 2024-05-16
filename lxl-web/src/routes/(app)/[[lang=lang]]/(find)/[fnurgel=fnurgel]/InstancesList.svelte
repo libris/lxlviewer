@@ -116,7 +116,7 @@
 								{#if id && $page.data.holdingsByInstanceId[id]}
 									<a
 										href={getHoldingsLink($page.url, id)}
-										class="flex items-center self-center"
+										class="flex items-center self-center text-xs sm:text-sm"
 										data-sveltekit-preload-data="false"
 										on:click={(event) => handleClickHoldings(event, $page.state, id)}
 									>
