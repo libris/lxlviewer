@@ -49,6 +49,8 @@
 		latestHoldingUrl = holdingUrl;
 	}
 
+	$: shouldShowHeaderBackground = !data.instances?.length;
+
 	function handleCloseHoldings() {
 		history.back();
 	}
@@ -58,7 +60,7 @@
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
 <article>
-	<div class="resource gap-8 find-layout" class:bg-header={!data.instances?.length}>
+	<div class="resource gap-8 find-layout" class:bg-header={shouldShowHeaderBackground}>
 		<div
 			class="mb-2 mt-4 flex max-h-64 max-w-64 justify-center self-center md:mx-auto md:justify-start md:self-start md:px-2 xl:px-0"
 			class:hidden={!$page.data.images?.length}
@@ -72,7 +74,10 @@
 				/>
 			{/if}
 		</div>
-		<div class="content flex max-w-content flex-col gap-4 py-2 md:flex-row">
+		<div
+			class="content flex max-w-content flex-col gap-4 pt-2 md:flex-row"
+			class:pb-4={shouldShowHeaderBackground}
+		>
 			<div class="flex flex-col gap-4">
 				<header>
 					<h1 class="text-6-cond-extrabold">
