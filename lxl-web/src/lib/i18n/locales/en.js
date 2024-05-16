@@ -53,9 +53,9 @@ export default {
 		loading: 'Loading...',
 		findFilter: 'Find filter',
 		filters: 'Filters',
+		activeFilters: 'Active filters',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
-		selectedFilters: 'Selected filters',
 		noResults: 'No results',
 		hits: 'hits',
 		hitsOne: 'hit',
@@ -69,7 +69,9 @@ export default {
 		relatedOne: 'related',
 		previous: 'Previous page',
 		page: 'Page',
-		next: 'Next page'
+		next: 'Next page',
+		showMore: 'Show more',
+		showFewer: 'Show fewer'
 	},
 	sort: {
 		sortBy: 'Sort by',

@@ -16,7 +16,7 @@
 
 <div class="flex flex-col gap-4">
 	{#if inModal && shouldShowMapping(mapping)}
-		<nav aria-label={$page.data.t('search.selectedFilters')}>
+		<nav aria-label={$page.data.t('search.activeFilters')}>
 			<SearchMapping {mapping} />
 		</nav>
 	{/if}

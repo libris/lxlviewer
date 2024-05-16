@@ -52,9 +52,9 @@ export default {
 		loading: 'Laddar...',
 		findFilter: 'Hitta filter',
 		filters: 'Sökfilter',
+		activeFilters: 'Aktiva filter',
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
-		selectedFilters: 'Valda filter',
 		noResults: 'Inga resultat',
 		hits: 'träffar',
 		hitsOne: 'träff',
@@ -68,7 +68,9 @@ export default {
 		relatedOne: 'relaterad',
 		previous: 'Föregående sida',
 		page: 'Sida',
-		next: 'Nästa sida'
+		next: 'Nästa sida',
+		showMore: 'Visa fler',
+		showFewer: 'Visa färre'
 	},
 	sort: {
 		sortBy: 'Sortera efter',
