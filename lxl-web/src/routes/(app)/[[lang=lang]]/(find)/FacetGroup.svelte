@@ -60,7 +60,7 @@
 		id={'group-' + group.dimension}
 		aria-labelledby={'toggle-' + group.dimension}
 		class:hidden={!expanded}
-		class="mb-4"
+		class="mb-4 md:text-sm lg:text-base"
 	>
 		{#if group.search && !(searchPhrase && hasHits)}
 			<!-- facet range inputs; hide in filter search results -->
@@ -80,7 +80,9 @@
 							{/if}
 							<span>{facet.str}</span>
 						</span>
-						<span class="text-sm text-secondary">({facet.totalItems.toLocaleString(locale)})</span>
+						<span class="text-sm text-secondary md:text-xs lg:text-sm"
+							>({facet.totalItems.toLocaleString(locale)})</span
+						>
 					</a>
 				</li>
 			{/each}
