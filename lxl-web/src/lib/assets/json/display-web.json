@@ -92,6 +92,25 @@
 						{ "inverseOf": "reproductionOf" },
 						{ "inverseOf": "supplementTo" }
 					]
+				},
+				"Concept": {
+					"@type": "fresnel:Lens",
+					"@id": "Concept-cards",
+					"classLensDomain": "Concept",
+					"showProperties": [
+						"prefLabel",
+						"inScheme",
+						"altLabel",
+						"broader",
+						{ "inverseOf": "broader" },
+						"related",
+						"scopeNote",
+						"exactMatch",
+						"label",
+						"code",
+						"keyword",
+						"termComponentList"
+					]
 				}
 			}
 		},
@@ -132,6 +151,12 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "MediaObject",
 					"showProperties": ["uri", "marc:publicNote"]
+				},
+				"Class": {
+					"@id": "Class-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Class",
+					"showProperties": ["label"]
 				},
 				"Work": {
 					"@id": "Work-chips",
@@ -422,10 +447,10 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"Topic-format": {
-			"@id": "Topic-format",
+		"Subject-format": {
+			"@id": "Subject-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Topic"],
+			"fresnel:classFormatDomain": ["Subject"],
 			"fresnel:resourceStyle": ["link"]
 		},
 		"Instance-format": {
@@ -518,6 +543,15 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["UsageAndAccessPolicy"],
 			"fresnel:resourceStyle": ["link"]
+		},
+		"Transliteration-format": {
+			"@id": "Transliteration-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["_script"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ◦ ",
+				"fresnel:contentFirst": ""
+			}
 		},
 		"Instance-self-x-format": {
 			"@id": "Instance-self-x-format",

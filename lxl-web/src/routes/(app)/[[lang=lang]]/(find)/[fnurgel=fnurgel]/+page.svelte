@@ -88,8 +88,9 @@
 									<li>
 										<a
 											href={getHoldingsLink($page.url, type)}
-											class="ghost-btn"
+											class="button-ghost"
 											data-sveltekit-preload-data="false"
+											data-testid="holding-link"
 											on:click={(event) => handleClickHoldings(event, $page.state, type)}
 										>
 											{#if Object.keys(data.holdersByType).length == 1}
@@ -141,7 +142,7 @@
 						</div>
 					{/if}
 					<div class="overview">
-						<DecoratedData data={selectedHoldingInstance} block />
+						<DecoratedData data={selectedHoldingInstance} block keyed={false} />
 					</div>
 				</div>
 				<div>

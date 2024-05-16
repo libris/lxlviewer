@@ -13,8 +13,10 @@
 	export let allowPopovers = true; // used for preventing nested popovers
 	export let block = false;
 	export let truncate = false;
-	export let key: ResourceData | string = data;
 	export let remainder: ResourceData | undefined = undefined;
+	export let keyed = true;
+
+	$: key = keyed && data; // an ugly work-around to fix duplicate content on out transitions when closing modals (not entirely sure what the root cause is...) – we should try to remove the need for this when updating to Svelte 5.
 
 	const hiddenProperties = [
 		'@context',
@@ -135,6 +137,7 @@
 					{allowPopovers}
 					truncate={false}
 					{remainder}
+					{keyed}
 				/>
 			{:else}
 				{#each data as arrayItem}
@@ -145,6 +148,7 @@
 						{block}
 						{allowPopovers}
 						{truncate}
+						{keyed}
 					/>
 				{/each}
 			{/if}
@@ -170,6 +174,7 @@
 						{block}
 						{allowPopovers}
 						{truncate}
+						{keyed}
 					/>
 					{#if remainder && Array.isArray(remainder)}
 						<span
@@ -179,7 +184,14 @@
 					{/if}
 				</svelte:element>
 			{:else if data['@value']}
-				<svelte:self data={data['@value']} depth={depth + 1} {showLabels} {block} {allowPopovers} />
+				<svelte:self
+					data={data['@value']}
+					depth={depth + 1}
+					{showLabels}
+					{block}
+					{allowPopovers}
+					{keyed}
+				/>
 			{:else if data['_display']}
 				<svelte:self
 					data={data['_display']}
@@ -188,6 +200,7 @@
 					{block}
 					{allowPopovers}
 					{truncate}
+					{keyed}
 				/>
 			{:else}
 				{@const [propertyName, propertyData] = getProperty(data)}
@@ -205,6 +218,7 @@
 							{block}
 							{allowPopovers}
 							{truncate}
+							{keyed}
 						/>
 					</svelte:element>
 				{/if}

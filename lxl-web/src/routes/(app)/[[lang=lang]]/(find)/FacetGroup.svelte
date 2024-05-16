@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { LocaleCode } from '$lib/i18n/locales';
-	import { relativizeUrl } from '$lib/utils/http';
 	import { page } from '$app/stores';
 	import { type FacetGroup } from './search';
 	import BiChevronRight from '~icons/bi/chevron-right';
@@ -70,10 +69,7 @@
 		<ol class="max-h-437px mt-2 overflow-y-auto" data-testid="facet-list">
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li class="pl-6">
-					<a
-						class="flex items-center justify-between no-underline"
-						href={relativizeUrl(facet.view['@id'])}
-					>
+					<a class="flex items-center justify-between no-underline" href={facet.view['@id']}>
 						<span class="flex items-baseline">
 							{#if 'selected' in facet}
 								<!-- howto A11y?! -->

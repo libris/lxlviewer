@@ -48,6 +48,7 @@ export default {
 		intendedAudience: 'Målgrupp'
 	},
 	search: {
+		search: 'Sök',
 		loading: 'Laddar...',
 		findFilter: 'Hitta filter',
 		filters: 'Sökfilter',
@@ -64,7 +65,10 @@ export default {
 		publisher: 'Utgivare',
 		type: 'Typ',
 		related: 'relaterade',
-		relatedOne: 'relaterad'
+		relatedOne: 'relaterad',
+		previous: 'Föregående sida',
+		page: 'Sida',
+		next: 'Nästa sida'
 	},
 	sort: {
 		sortBy: 'Sortera efter',

@@ -49,6 +49,7 @@ export default {
 		intendedAudience: 'Intended audience'
 	},
 	search: {
+		search: 'Search',
 		loading: 'Loading...',
 		findFilter: 'Find filter',
 		filters: 'Filters',
@@ -65,7 +66,10 @@ export default {
 		publisher: 'Publisher',
 		type: 'Type',
 		related: 'related',
-		relatedOne: 'related'
+		relatedOne: 'related',
+		previous: 'Previous page',
+		page: 'Page',
+		next: 'Next page'
 	},
 	sort: {
 		sortBy: 'Sort by',

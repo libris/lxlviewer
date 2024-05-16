@@ -237,7 +237,6 @@ export class VocabUtil {
 
 type FormatIndex = Record<string, Format>;
 
-// TODO transliterated values in language containers
 // TODO handle not framed data, i.e. @graph
 // TODO type coercion (code, langCode, langCodeFull -> code^^ISO639-2, code^^ISO639-3 etc.)
 // TODO fresnel:allProperties?
@@ -298,7 +297,6 @@ export class DisplayUtil {
 	langContainerAlias: Record<PropertyName, PropertyName> = {};
 
 	// xByLang -> x
-
 	langContainerAliasInverted: Record<PropertyName, PropertyName> = {};
 
 	constructor(display: DisplayJsonLd, vocabUtil: VocabUtil) {
@@ -359,10 +357,16 @@ export class DisplayUtil {
 	}
 
 	private deriveLens(type: ClassName, def: DerivedLensTypeDefinition): Lens {
-		let taken = this.findLens(def.minusFirst, type).showProperties.map((s) => JSON.stringify(s));
-
+		const empty = {
+			[JsonLd.TYPE]: Fresnel.Lens,
+			classLensDomain: type,
+			showProperties: []
+		};
+		let taken = this.findLens(def.minusFirst, type, empty).showProperties.map((s) =>
+			JSON.stringify(s)
+		);
 		taken += def.minusAll
-			.map((l) => this.findLens(l, type).showProperties)
+			.map((l) => this.findLens(l, type, empty).showProperties)
 			.flat()
 			.map((s) => JSON.stringify(s));
 
@@ -405,10 +409,17 @@ export class DisplayUtil {
 		lensType: LensType | DerivedLensType,
 		subLensSelector: (lensType: LensType | DerivedLensType, propertyName: PropertyName) => LensType,
 		ack: (result: unknown, p: PropertyName, value: unknown) => void,
-		ackInit: () => unknown
+		ackInit: () => unknown,
+		langAndScript: string | undefined = undefined
 	) {
 		if (!isTypedNode(thing)) {
 			return thing;
+		}
+
+		// Main transliteration for structured value
+		const scripts = !langAndScript ? this.scriptAlternatives(thing) : [];
+		if (scripts.length > 0) {
+			langAndScript = scripts[0];
 		}
 
 		const lens = this.findLens(lensType, this.vocabUtil.getType(thing));
@@ -419,12 +430,39 @@ export class DisplayUtil {
 		};
 
 		const accumulate = (src: Data, key: string) => {
-			const value = Array.isArray(src[key])
-				? (src[key] as Array<unknown>).map((v) =>
-						this._applyLens(v, subLensSelector(lensType, key), subLensSelector, ack, ackInit)
-					)
-				: this._applyLens(src[key], subLensSelector(lensType, key), subLensSelector, ack, ackInit);
-			ack(result, key, value);
+			let value;
+			if (langAndScript && this.isLangContainer(key)) {
+				// transliterated value inside structured value
+				value = src[key][langAndScript];
+				ack(result, this.langContainerAliasInverted[key], value);
+			} else if (!langAndScript && this.isLangContainer(key) && isTransliterated(src[key])) {
+				// TODO mark these as different scripts in some way so that they can be formated
+				// transliterated value not inside structured value
+				const value = this.scriptAlternatives(src[key]).map((s) => src[key][s]);
+				ack(result, this.langContainerAliasInverted[key], value);
+			} else {
+				value = Array.isArray(src[key])
+					? (src[key] as Array<unknown>).map((v) =>
+							this._applyLens(
+								v,
+								subLensSelector(lensType, key),
+								subLensSelector,
+								ack,
+								ackInit,
+								langAndScript
+							)
+						)
+					: this._applyLens(
+							src[key],
+							subLensSelector(lensType, key),
+							subLensSelector,
+							ack,
+							ackInit,
+							langAndScript
+						);
+
+				ack(result, key, value);
+			}
 		};
 
 		const pick = (src: Data, key: string) => {
@@ -478,18 +516,47 @@ export class DisplayUtil {
 			}
 		}
 
+		// Alternate transliterations and original script for structured value
+		if (scripts.length > 1) {
+			// TODO what should be structure for these? they should not be in _script
+			const otherScripts = scripts.slice(1);
+			otherScripts.forEach((s) => {
+				if (isTransliteratedLatin(s)) {
+					ack(
+						result,
+						'_script',
+						this._applyLens(thing, lensType, subLensSelector, ack, ackInit, s)
+					);
+				} else {
+					ack(
+						result,
+						'_script',
+						this._applyLens(thing, lensType, subLensSelector, ack, ackInit, s)
+					);
+				}
+			});
+		}
+
 		return result;
 	}
 
-	private findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
+	private findLens(
+		lenses: LensType | LensType[] | DerivedLensType,
+		className: ClassName,
+		defaultTo: Lens = undefined
+	) {
 		if (!Array.isArray(lenses) && this.isDerivedLens(lenses)) {
 			return this.findDerivedLens(className, lenses);
 		} else {
-			return this._findLens(lenses, className);
+			return this._findLens(lenses, className, defaultTo);
 		}
 	}
 
-	private _findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
+	private _findLens(
+		lenses: LensType | LensType[] | DerivedLensType,
+		className: ClassName,
+		defaultTo: Lens = undefined
+	) {
 		for (const lens of asArray(lenses)) {
 			for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 				if (this.display.lensGroups[lens] && cls in this.display.lensGroups[lens].lenses) {
@@ -508,12 +575,12 @@ export class DisplayUtil {
 			}
 		}
 
-		return this.DEFAULT_LENS;
+		return defaultTo ? defaultTo : this.DEFAULT_LENS;
 	}
 
 	private buildLangContainerAliasMap() {
 		for (const [k, v] of Object.entries({
-			...this.vocabUtil.context,
+			...this.vocabUtil.context[1],
 			...this.display[JsonLd.CONTEXT]
 		})) {
 			// TODO why null check?
@@ -572,6 +639,35 @@ export class DisplayUtil {
 		for (const lens of lenses) {
 			fn(lens);
 		}
+	}
+
+	private isLangContainer(p: PropertyName) {
+		return p in this.langContainerAliasInverted;
+	}
+
+	private scriptAlternatives(thing: unknown): LangCode[] {
+		if (isTypedNode(thing) && this.vocabUtil.isStructuredValue(this.vocabUtil.getType(thing))) {
+			return this.orderScripts(
+				Object.entries(thing)
+					.filter(([k, v]) => this.isLangContainer(k) && isTransliterated(v as LangContainer))
+					.flatMap(([, v]) => Object.keys(v as LangContainer))
+			);
+		}
+		if (isObject(thing)) {
+			return isTransliterated(thing as LangContainer)
+				? this.orderScripts(Object.keys(thing as LangContainer))
+				: [];
+		}
+
+		return [];
+	}
+
+	private orderScripts(scripts: LangCode[]): LangCode[] {
+		return scripts.sort((a, b) => {
+			const aa = isTransliteratedLatin(a) ? a : '_' + a;
+			const bb = isTransliteratedLatin(a) ? b : '_' + b;
+			return bb.localeCompare(aa);
+		});
 	}
 }
 
@@ -994,6 +1090,14 @@ export function mapValuesOfObject<V, V2>(obj: Record<string, V>, fn: (v: V, k: s
 }
 
  */
+
+function isTransliterated(l: LangContainer) {
+	return Object.keys(l).some((langTag) => langTag.includes('-t-'));
+}
+
+function isTransliteratedLatin(langCode: LangCode) {
+	return langCode.includes('-t-Latn');
+}
 
 function isAlternateProperties(v: ShowProperty): v is AlternateProperties {
 	return isObject(v) && 'alternateProperties' in v;

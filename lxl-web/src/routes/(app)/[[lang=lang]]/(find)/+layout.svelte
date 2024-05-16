@@ -77,7 +77,7 @@
 					<div class="toolbar flex min-h-14 items-center justify-between pb-4 md:min-h-fit">
 						<a
 							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
-							class="filter-modal-toggle ghost-btn md:hidden"
+							class="filter-modal-toggle button-ghost md:hidden"
 							aria-label={$page.data.t('search.filters')}
 							on:click|preventDefault={toggleFiltersModal}
 						>
