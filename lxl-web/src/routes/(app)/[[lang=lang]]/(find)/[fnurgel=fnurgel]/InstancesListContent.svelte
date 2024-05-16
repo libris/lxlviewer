@@ -38,7 +38,7 @@
 
 <div class:oneOfMany>
 	{#if oneOfMany}
-		<div class="col-span-2 flex flex-col gap-4 text-sm">
+		<div class="col-span-2 flex flex-col gap-2 text-sm">
 			<div class="flex h-full max-h-32 w-full max-w-32">
 				<ResourceImage
 					images={$page.data.images.filter((i) => i.recordId === id)}
@@ -49,7 +49,7 @@
 				/>
 			</div>
 			{#if id && $page.data.holdingsByInstanceId[id]}
-				<div class="flex flex-col gap-4">
+				<div class="flex flex-col gap-2">
 					<a
 						href={getHoldingsLink($page.url, id)}
 						data-sveltekit-preload-data="false"

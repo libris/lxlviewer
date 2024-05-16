@@ -157,9 +157,6 @@
 		@apply gap-2;
 		grid-template-columns: 16px 1fr 2fr 1fr 1fr;
 
-		& > :first-child {
-			@apply pl-1;
-		}
 		& > :last-child {
 			@apply pr-1;
 		}
