@@ -115,7 +115,7 @@
 	</div>
 	{#if data.instances?.length}
 		<div class="instances mt-4 find-layout">
-			<div class="instances-list max-w-content" class:md:col-start-1={data.instances?.length > 1}>
+			<div class="instances-list max-w-content">
 				<InstancesList
 					data={data.instances}
 					columns={[
