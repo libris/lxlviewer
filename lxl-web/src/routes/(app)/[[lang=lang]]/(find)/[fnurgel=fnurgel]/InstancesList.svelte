@@ -71,7 +71,7 @@
 			<a
 				href={getCollapseAllUrl($page.url)}
 				data-sveltekit-preload-data="false"
-				class="close-all"
+				class="close-all text-disabled:text-disabled text-xs sm:text-sm"
 				on:click={(event) => {
 					event.preventDefault();
 					replaceState(getCollapseAllUrl($page.url), { ...$page.state, expandedInstances: [] });
@@ -145,13 +145,6 @@
 </div>
 
 <style lang="postcss">
-	.close-all {
-		@apply text-sm;
-		&[disabled] {
-			@apply text-disabled;
-		}
-	}
-
 	.column-headers,
 	summary {
 		@apply gap-2;
