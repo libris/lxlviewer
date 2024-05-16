@@ -63,7 +63,7 @@
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li class="pl-6">
 					<a
-						class="facet-link flex items-end justify-between gap-2 py-px no-underline"
+						class="facet-link flex items-end justify-between gap-2 no-underline"
 						href={facet.view['@id']}
 					>
 						<span class="flex items-baseline">
@@ -76,7 +76,8 @@
 							{/if}
 							<span>{facet.str}</span>
 						</span>
-						<span class="facet-total text-sm text-secondary md:text-xs lg:text-sm rounded-sm bg-pill/4 px-1 mb-px"
+						<span
+							class="facet-total mb-px rounded-sm bg-pill/4 px-1 text-sm text-secondary md:text-xs lg:text-sm"
 							aria-label="{facet.totalItems} {$page.data.t('search.hits')}"
 							>{facet.totalItems.toLocaleString(locale)}</span
 						>
@@ -86,7 +87,7 @@
 		</ol>
 		{#if canShowMoreFacets || canShowLessFacets}
 			<button
-				class="mt-2 flex text-3-regular w-full items-center gap-4 rounded-md bg-pill/4 p-2"
+				class="mt-2 flex w-full items-center gap-4 rounded-md bg-pill/4 p-2 text-3-regular"
 				on:click={() =>
 					canShowMoreFacets ? (facetsShown = numfacets) : (facetsShown = defaultFacetsShown)}
 			>
