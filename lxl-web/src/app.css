@@ -76,8 +76,8 @@
 
 	/* ghost btn */
 	.button-ghost {
-		@apply flex h-10 items-center justify-center gap-2 rounded-md border-2 border-primary/16 px-4
-		py-2 text-secondary no-underline transition-colors text-3-cond-bold;
+		@apply flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-md border-2 border-primary/16
+		px-4 py-2 text-secondary no-underline transition-colors text-3-cond-bold;
 
 		@apply hover:border-accent-dark/32 hover:bg-positive/32 hover:text-positive
 		hover:outline hover:outline-4 hover:outline-accent-dark/8

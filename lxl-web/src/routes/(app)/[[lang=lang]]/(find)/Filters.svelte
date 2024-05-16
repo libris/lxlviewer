@@ -16,12 +16,12 @@
 
 <div class="flex flex-col gap-4">
 	{#if inModal && shouldShowMapping(mapping)}
-		<nav class="px-4" aria-label={$page.data.t('search.activeFilters')}>
+		<nav aria-label={$page.data.t('search.selectedFilters')}>
 			<SearchMapping {mapping} />
 		</nav>
 	{/if}
 	{#if facets?.length}
-		<nav class="flex flex-col gap-4 px-4">
+		<nav class="flex flex-col gap-4">
 			<input
 				bind:value={searchPhrase}
 				placeholder={$page.data.t('search.findFilter')}

@@ -14,26 +14,33 @@
 	}
 </script>
 
-<header class="bg-head pb-4 pt-4 sm:py-6">
-	<div class="flex flex-nowrap items-center justify-start gap-0 md:min-h-14 md:gap-8 xl:gap-0">
-		{#if !isLandingPage}
-			<a class="px-0 no-underline sm:px-4 xl:w-80" href={$page.data.base}>
-				<span
-					class="sr-only text-[2.1rem] font-extrabold leading-tight text-primary sm:not-sr-only sm:inline"
-					>Libris</span
-				>
+<header
+	class="flex gap-4 bg-site-header p-4 sm:px-6 md:grid"
+	class:md:find-layout={!isLandingPage}
+	class:md:grid-cols-find={!isLandingPage}
+>
+	{#if !isLandingPage}
+		<div class="flex items-center">
+			<a
+				href={$page.data.base}
+				class="text-[1.4rem] font-extrabold leading-tight text-primary no-underline sm:text-[1.6rem] md:text-[2.1rem]"
+				>Libris
 			</a>
-			<div class="max-w-content flex-1 px-4">
+		</div>
+	{/if}
+	<div class="flex flex-1 items-center" class:flex-col={isLandingPage}>
+		{#if !isLandingPage}
+			<div class="max-w-content flex-1">
 				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
 			</div>
 		{/if}
-		<div id="header-menu" class="ml-auto hidden px-4 md:flex">
+		<div id="header-menu" class="ml-auto hidden min-h-14 items-center pl-8 md:flex">
 			<HeaderMenu />
 		</div>
-		<div class="ml-auto block px-4 md:hidden">
+		<div class="ml-auto flex min-h-14 items-center pl-4 md:hidden">
 			<a
 				aria-label={$page.data.t('header.openMenu')}
-				class="button-ghost h-12"
+				class="button-ghost h-11 w-11 !p-0"
 				href={`${$page.url.pathname}?${$page.url.search}#header-menu`}
 				on:click|preventDefault={toggleHeaderMenu}
 			>
@@ -45,18 +52,18 @@
 				</Modal>
 			{/if}
 		</div>
-	</div>
-	{#if isLandingPage}
-		<div class="flex flex-col items-center px-12 pb-[4.5rem] pt-6">
-			<h1 class="text-3xl font-extrabold text-primary sm:text-[5.5rem] sm:font-bold">Libris</h1>
-			<label for="main-search" class="mb-4 text-center text-secondary text-4-regular"
-				>{$page.data.t('home.subtitle')}</label
-			>
-			<div class="w-full max-w-3xl">
-				<Search placeholder={$page.data.t('home.searchPlaceholder')} autofocus />
+		{#if isLandingPage}
+			<div class="flex w-full flex-col items-center px-12 pb-[4.5rem] pt-6">
+				<h1 class="text-3xl font-extrabold text-primary sm:text-[5.5rem] sm:font-bold">Libris</h1>
+				<label for="main-search" class="mb-4 text-center text-secondary text-4-regular"
+					>{$page.data.t('home.subtitle')}</label
+				>
+				<div class="w-full max-w-3xl">
+					<Search placeholder={$page.data.t('home.searchPlaceholder')} autofocus />
+				</div>
 			</div>
-		</div>
-	{/if}
+		{/if}
+	</div>
 </header>
 
 <style>

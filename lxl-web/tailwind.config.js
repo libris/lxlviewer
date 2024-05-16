@@ -26,8 +26,9 @@ export default {
 		},
 		backgroundColor: {
 			transparent: 'transparent',
+			'site-header': 'rgb(var(--bg-site-header) / 1)',
+			header: 'rgb(var(--bg-header) / 1)',
 			main: 'rgb(var(--bg-main) / 1)',
-			head: 'rgb(var(--bg-head) / 1)',
 			positive: 'rgb(var(--bg-positive) / 1)',
 			'positive-inv': 'rgb(var(--bg-positive-inv) / 1)',
 			negative: 'rgb(var(--bg-negative) / 1)',
@@ -105,11 +106,15 @@ export default {
 			sm: '640px',
 			md: '1024px',
 			lg: '1440px',
-			xl: '1760px'
+			xl: '1760px',
+			'2xl': '1920px'
 		},
 		extend: {
 			maxWidth: {
 				content: '78rem'
+			},
+			gridTemplateColumns: {
+				find: 'minmax(240px, 1fr) 5fr'
 			},
 			boxShadow: {
 				input: 'inset 0px 1px 0px 0px rgb(var(--color-primary) / 0.16)',
@@ -170,6 +175,9 @@ export default {
 				'.icon-button': {
 					'@apply w-11 h-11 flex items-center justify-center rounded-full hover:bg-cards focus:bg-cards transition-colors relative':
 						{}
+				},
+				'.find-layout': {
+					'@apply flex flex-col gap-4 p-4 sm:px-6 md:grid md:grid-cols-find md:gap-8': {}
 				}
 			});
 		}

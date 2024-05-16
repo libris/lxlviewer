@@ -48,18 +48,21 @@
 <slot />
 {#if searchResult}
 	{#await searchResult}
-		<p class="px-8">{$page.data.t('search.loading')}</p>
+		<p class="p-4">{$page.data.t('search.loading')}</p>
 	{:then searchResult}
 		{#if searchResult}
 			{@const facets = searchResult.facetGroups}
 			{@const numHits = searchResult.totalItems}
 			{@const filterCount = getFiltersCount(searchResult.mapping)}
-			<div class="find relative gap-y-4">
-				{#if shouldShowMapping(searchResult.mapping)}
-					<nav class="mappings px-4" aria-label={$page.data.t('search.activeFilters')}>
-						<SearchMapping mapping={searchResult.mapping} />
-					</nav>
-				{/if}
+			{#if shouldShowMapping(searchResult.mapping)}
+				<nav
+					class="hidden md:flex md:px-6 md:pb-0 md:pt-4"
+					aria-label={$page.data.t('search.selectedFilters')}
+				>
+					<SearchMapping mapping={searchResult.mapping} />
+				</nav>
+			{/if}
+			<div class="relative gap-y-4 find-layout">
 				{#if showFiltersModal}
 					<Modal position="left" close={toggleFiltersModal}>
 						<span slot="title">
@@ -69,15 +72,16 @@
 						<Filters {facets} mapping={searchResult.mapping} />
 					</Modal>
 				{/if}
-				<div class="filters" id="filters">
+				<div class="filters hidden md:block" id="filters">
 					<Filters {facets} mapping={searchResult.mapping} />
 				</div>
 
 				<div class="results max-w-content">
-					<div class="toolbar flex min-h-14 items-center justify-between p-4 md:min-h-fit md:pt-0">
+					<div class="toolbar flex min-h-14 items-center justify-between pb-4 md:min-h-fit">
 						<a
 							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
 							class="filter-modal-toggle button-ghost md:hidden"
+							aria-label={$page.data.t('search.filters')}
 							on:click|preventDefault={toggleFiltersModal}
 						>
 							<IconSliders width={20} height={20} />
@@ -97,6 +101,11 @@
 						>
 							{#if numHits && numHits > 0}
 								{numHits.toLocaleString($page.data.locale)}
+								{#if $page.data.instances}
+									{numHits == 1
+										? $page.data.t('search.relatedOne')
+										: $page.data.t('search.related')}
+								{/if}
 								{numHits == 1 ? $page.data.t('search.hitsOne') : $page.data.t('search.hits')}
 							{:else}
 								{$page.data.t('search.noResults')}
@@ -120,7 +129,7 @@
 							</div>
 						{/if}
 					</div>
-					<ol class="flex flex-col gap-2 md:px-4">
+					<ol class="flex flex-col gap-2 md:px-0">
 						{#each searchResult.items as item (item['@id'])}
 							<SearchCard {item} />
 						{/each}
@@ -134,16 +143,18 @@
 
 <style lang="postcss">
 	.toolbar {
-		grid-area: toolbar;
 		display: grid;
 		grid-template-areas:
 			'filter-modal-toggle sort-select'
 			'hits hits';
 	}
 
+	.find-layout {
+		grid-template-areas: 'filters results';
+	}
+
 	.filters {
 		grid-area: filters;
-		display: none;
 	}
 
 	#filters {
@@ -154,7 +165,6 @@
 
 	.mappings {
 		grid-area: mappings;
-		display: none;
 	}
 
 	.results {
@@ -174,15 +184,6 @@
 	}
 
 	@media screen and (min-width: theme('screens.md')) {
-		.find {
-			display: grid;
-			grid-template-columns: 320px 1fr;
-			grid-template-areas:
-				'toolbar toolbar'
-				'mappings mappings'
-				'filters results';
-		}
-
 		.filters {
 			display: block;
 		}

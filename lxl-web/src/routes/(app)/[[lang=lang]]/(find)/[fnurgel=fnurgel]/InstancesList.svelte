@@ -1,15 +1,14 @@
 <script lang="ts">
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { page } from '$app/stores';
-	import { goto, replaceState } from '$app/navigation';
+	import { replaceState } from '$app/navigation';
 	import jmespath from 'jmespath';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
-	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from './utils';
 	import BiChevronRight from '~icons/bi/chevron-right';
+	import InstancesListContent from './InstancesListContent.svelte';
 
 	/**
 	 * TODO:
@@ -20,7 +19,7 @@
 	let instancesList: HTMLUListElement;
 
 	export let data: ResourceData;
-	export let columns: string[];
+	export let columns: { header: string; data: string }[];
 
 	function handleToggleDetails(state: { expandedInstances?: string[] }) {
 		let openIds: string[] = [];
@@ -49,30 +48,6 @@
 		return `${url.origin}${url.pathname}${newSearchParams.size ? '?' + newSearchParams.toString() : ''}`;
 	}
 
-	function getPermalink(url: URL, id: string) {
-		const newSearchParams = new URLSearchParams({ expanded: id });
-		return `${url.origin}${url.pathname}?${newSearchParams.toString()}#${id}`;
-	}
-
-	function handleCopyPermalink(
-		event: MouseEvent,
-		url: URL,
-		id: string,
-		state: {
-			expandedInstances?: string[];
-		}
-	) {
-		event.preventDefault();
-		const permalink = getPermalink(url, id);
-		navigator.clipboard.writeText(permalink.toString());
-		goto(permalink, {
-			state: {
-				...state,
-				expandedInstances: [id]
-			}
-		});
-	}
-
 	function handleSummaryKeydown(event: KeyboardEvent) {
 		if (event.key === 'ArrowUp') {
 			(event.target as HTMLElement)
@@ -91,11 +66,12 @@
 
 <div>
 	{#if Array.isArray(data) && data.length > 1}
-		<div class="flex justify-end py-4">
+		<div class="flex items-center justify-between pb-4">
+			<h2 class="capitalize text-4-cond-bold">{$page.data.t('search.editions')}</h2>
 			<a
 				href={getCollapseAllUrl($page.url)}
 				data-sveltekit-preload-data="false"
-				class="close-all"
+				class="close-all text-disabled:text-disabled text-xs sm:text-sm"
 				on:click={(event) => {
 					event.preventDefault();
 					replaceState(getCollapseAllUrl($page.url), { ...$page.state, expandedInstances: [] });
@@ -106,7 +82,14 @@
 		</div>
 	{/if}
 
-	{#if Array.isArray(data)}
+	{#if Array.isArray(data) && data.length > 1}
+		<div class="column-headers mb-2 grid gap-2 text-sm font-bold">
+			{#each columns as { header: columnHeader }}
+				<div class="flex flex-1 first:pl-0">
+					{columnHeader}
+				</div>
+			{/each}
+		</div>
 		<ul bind:this={instancesList}>
 			{#each data as item (item['@id'])}
 				{@const id = relativizeUrl(getResourceId(item))}
@@ -118,22 +101,22 @@
 						on:toggle={() => handleToggleDetails($page.state)}
 					>
 						<summary
-							class="flex min-h-11 items-center gap-2 pl-1 align-middle hover:bg-pill/16"
+							class="grid min-h-11 items-center gap-2 align-middle text-sm hover:bg-pill/16 md:text-base"
 							on:keydown={handleSummaryKeydown}
 						>
-							<span class="arrow">
+							<span class="arrow w-4">
 								<BiChevronRight />
 							</span>
-							{#each columns as columnItem}
+							{#each columns as { data: columnData }}
 								<div class="flex flex-1 items-center">
-									<DecoratedData data={jmespath.search(item, columnItem)} />
+									<DecoratedData data={jmespath.search(item, columnData)} />
 								</div>
 							{/each}
 							<div class="text flex flex-1 items-center justify-end text-sm">
 								{#if id && $page.data.holdingsByInstanceId[id]}
 									<a
 										href={getHoldingsLink($page.url, id)}
-										class="flex items-center self-center px-2"
+										class="flex items-center self-center text-xs sm:text-sm"
 										data-sveltekit-preload-data="false"
 										on:click={(event) => handleClickHoldings(event, $page.state, id)}
 									>
@@ -149,68 +132,31 @@
 								{/if}
 							</div>
 						</summary>
-						<div class="grid gap-2 px-2 pb-8 pt-4 md:grid-cols-3">
-							<div class="flex flex-col gap-4 text-sm">
-								<div class="flex h-full max-h-32 w-full max-w-32">
-									<ResourceImage
-										images={$page.data.images.filter((i) => i.recordId === id)}
-										alt={$page.data.t('general.instanceCover')}
-										type={$page.data.type}
-										loading="lazy"
-										linkToFull
-									/>
-								</div>
-								{#if id && $page.data.holdingsByInstanceId[id]}
-									<div class="flex flex-col gap-2">
-										<a
-											href={getHoldingsLink($page.url, id)}
-											data-sveltekit-preload-data="false"
-											on:click={(event) => handleClickHoldings(event, $page.state, id)}
-										>
-											{$page.data.t('holdings.availableAt')}
-											{$page.data.holdingsByInstanceId[id].length}
-											{$page.data.holdingsByInstanceId[id].length === 1
-												? $page.data.t('holdings.library')
-												: $page.data.t('holdings.libraries')}
-										</a>
-										<a
-											href={getPermalink($page.url, id)}
-											on:click={(event) => handleCopyPermalink(event, $page.url, id, $page.state)}
-										>
-											{$page.data.t('general.copyPermalinkToInstance')}
-										</a>
-									</div>
-								{/if}
-							</div>
-							<div class="instance-details col-span-2">
-								<DecoratedData data={item} block showLabels={ShowLabelsOptions.Always} />
-							</div>
-						</div>
+						<InstancesListContent data={item} {id} oneOfMany />
 					</details>
 				</li>
 			{/each}
 		</ul>
+	{:else}
+		<div class="max-w-content">
+			<InstancesListContent data={data[0]} id={relativizeUrl(getResourceId(data[0]))} />
+		</div>
 	{/if}
 </div>
 
 <style lang="postcss">
-	.close-all {
-		@apply text-sm;
-		&[disabled] {
-			@apply text-disabled;
+	.column-headers,
+	summary {
+		@apply gap-2;
+		grid-template-columns: 16px 1fr 2fr 1fr 1fr;
+
+		& > :last-child {
+			@apply pr-1;
 		}
 	}
 
-	:global(.instance-details > div) {
-		@apply gap-2 lg:columns-2;
-	}
-
-	:global(.instance-details > div div[data-property]) {
-		@apply mb-4;
-	}
-
-	:global(.instance-details > div > *) {
-		break-inside: avoid-column;
+	.column-headers > :first-child {
+		grid-column: span 2;
 	}
 
 	details[open] > summary {
@@ -222,6 +168,7 @@
 	}
 
 	.arrow {
+		transform-origin: center;
 		@apply rotate-0 transition-transform;
 	}
 
