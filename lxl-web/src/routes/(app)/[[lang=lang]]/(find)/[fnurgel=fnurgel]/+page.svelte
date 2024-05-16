@@ -83,7 +83,7 @@
 					<div class="overview flex-1 gap-6">
 						<DecoratedData data={data.overview} block />
 						{#if Object.keys(data.holdersByType).length}
-							<ul class="flex w-fit gap-2">
+							<ul class="flex w-fit flex-wrap gap-2">
 								{#each Object.keys(data.holdersByType) as type}
 									<li>
 										<a
