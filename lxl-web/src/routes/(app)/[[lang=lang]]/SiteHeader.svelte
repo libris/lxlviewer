@@ -15,7 +15,7 @@
 </script>
 
 <header
-	class="flex gap-4 bg-site-header p-4 sm:py-6 md:grid md:gap-16"
+	class="flex gap-4 bg-site-header p-4 sm:py-6 md:grid md:gap-12"
 	class:md:grid-cols-find={!isLandingPage}
 >
 	{#if !isLandingPage}
