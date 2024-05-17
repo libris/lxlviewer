@@ -59,11 +59,11 @@
 			<!-- facet range inputs; hide in filter search results -->
 			<FacetRange search={group.search} />
 		{/if}
-		<ol class="mt-2 max-h-[437px] overflow-y-auto" data-testid="facet-list">
+		<ol class="mt-2 max-h-[437px] overflow-y-auto overflow-x-clip" data-testid="facet-list">
 			{#each shownFacets as facet (facet.view['@id'])}
-				<li class="pl-6">
+				<li class="mb-[0.3rem]">
 					<a
-						class="facet-link flex items-end justify-between gap-2 no-underline"
+						class="facet-link flex items-end justify-between gap-2 pl-6 no-underline"
 						href={facet.view['@id']}
 					>
 						<span class="flex items-baseline">
@@ -87,17 +87,10 @@
 		</ol>
 		{#if canShowMoreFacets || canShowLessFacets}
 			<button
-				class="mt-2 flex w-full items-center gap-4 rounded-md bg-pill/4 p-2 text-3-regular"
+				class="mt-4 pl-6"
 				on:click={() =>
 					canShowMoreFacets ? (facetsShown = numfacets) : (facetsShown = defaultFacetsShown)}
 			>
-				<span
-					class="button-ghost h-9 w-9 p-0"
-					class:rotate-90={canShowMoreFacets}
-					class:-rotate-90={canShowLessFacets}
-				>
-					<BiChevronRight class="text-icon" />
-				</span>
 				{canShowMoreFacets ? $page.data.t('search.showMore') : $page.data.t('search.showFewer')}
 			</button>
 		{/if}
