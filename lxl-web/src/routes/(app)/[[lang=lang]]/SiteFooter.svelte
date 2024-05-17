@@ -26,7 +26,7 @@
 					>
 				</li>
 				<li>
-					<a href="/">{$page.data.t('footer.feedback')}</a>
+					<a href="https://survey.kb.se/librisbeta">{$page.data.t('footer.feedback')}</a>
 				</li>
 			</ul>
 		</nav>
