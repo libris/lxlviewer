@@ -43,7 +43,8 @@ export async function asResult(
 				displayUtil.lensAndFormat(vocabUtil.getDefinition(i[JsonLd.TYPE]), LensType.Chip, locale)
 			)
 		})),
-		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
+		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath),
+		predicates: displayPredicates(view, displayUtil, locale, usePath)
 	};
 }
 
@@ -58,6 +59,7 @@ export interface SearchResult {
 	next?: Link;
 	items: SearchResultItem[];
 	facetGroups: FacetGroup[];
+	predicates: MultiSelectFacet[];
 }
 
 export interface SearchResultItem {
@@ -125,6 +127,7 @@ export interface PartialCollectionView {
 	stats?: {
 		[JsonLd.ID]: '#stats';
 		sliceByDimension: Record<FacetGroupId, Slice>;
+		_predicates: Observation[];
 	};
 }
 
@@ -260,6 +263,25 @@ function displayFacetGroups(
 					str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || ''
 				};
 			})
+		};
+	});
+}
+
+function displayPredicates(
+	view: PartialCollectionView,
+	displayUtil: DisplayUtil,
+	locale: LangCode,
+	usePath: string
+): MultiSelectFacet[] {
+	const predicates = view.stats?._predicates || [];
+
+	return predicates.map((o) => {
+		return {
+			...('_selected' in o && { selected: o._selected }),
+			totalItems: o.totalItems,
+			view: replacePath(o.view, usePath),
+			object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
+			str: toString(displayUtil.lensAndFormat(o.object, LensType.WebChip, locale)) || ''
 		};
 	});
 }

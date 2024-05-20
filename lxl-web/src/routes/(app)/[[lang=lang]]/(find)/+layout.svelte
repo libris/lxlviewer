@@ -54,6 +54,29 @@
 			{@const facets = searchResult.facetGroups}
 			{@const numHits = searchResult.totalItems}
 			{@const filterCount = getFiltersCount(searchResult.mapping)}
+			{#if searchResult.predicates.length > 0}
+				<nav
+					class="border-b border-primary/16 px-4 md:flex lg:px-6"
+					aria-label={$page.data.t('search.selectedFilters')}
+				>
+					<ul class="flex flex-wrap items-center gap-2">
+						<li class="font-bold">{$page.data.title}</li>
+						{$page.data.t('search.occursAs')}
+
+						{#each searchResult.predicates as p}
+							<li>
+								<a
+									class="tab"
+									class:active={true}
+									class:tab-selected={p.selected}
+									data-sveltekit-replacestate
+									href={p.view['@id']}>{p.str}</a
+								>
+							</li>
+						{/each}
+					</ul>
+				</nav>
+			{/if}
 			{#if shouldShowMapping(searchResult.mapping)}
 				<nav
 					class="hidden md:flex md:px-6 md:pb-0 md:pt-4"
@@ -201,5 +224,14 @@
 		.toolbar {
 			grid-template-areas: 'hits sort-select';
 		}
+	}
+
+	.tab {
+		@apply block px-4 py-4 lowercase no-underline;
+		transition: filter 0.1s ease;
+	}
+
+	.tab-selected {
+		@apply border-b border-b-2 border-primary;
 	}
 </style>
