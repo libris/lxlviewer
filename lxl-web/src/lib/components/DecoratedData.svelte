@@ -230,10 +230,13 @@
 				</span>
 			{/if}
 			{#if hasStyle(data, 'ext-link')}
-				<a href={getLink(data)}>
+				<a href={getLink(data)} target="_blank">
 					<span class="ext-link inline-block pl-1">
 						<BiBoxArrowUpRight />
 					</span>
+					{#if data['@type'] === 'MediaObject'}
+						<span class="whitespace-pre after:content-['\a']"></span>
+					{/if}
 				</a>
 			{/if}
 		{/if}
