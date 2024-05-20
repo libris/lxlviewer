@@ -60,7 +60,7 @@
 					aria-label={$page.data.t('search.selectedFilters')}
 				>
 					<ul class="flex flex-wrap items-center gap-2">
-						<li class="font-bold">{$page.data.title}</li>
+						<li class="max-w-80 truncate font-bold">{$page.data.title}</li>
 						{$page.data.t('search.occursAs')}
 
 						{#each searchResult.predicates as p}
