@@ -228,6 +228,19 @@
 						{ "inverseOf": "instanceOf" },
 						"language"
 					]
+				},
+				"Agent": {
+					"@id": "Agent-web-card",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Agent",
+					"showProperties": [
+						"nationality",
+						"disambiguatingDescription",
+						"activityStartDate",
+						"activityEndDate",
+						"hasOccupation",
+						"fieldOfActivity"
+					]
 				}
 			}
 		}
