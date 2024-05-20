@@ -267,7 +267,7 @@ function displayFacetGroups(
 	});
 }
 
-function displayPredicates(
+export function displayPredicates(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,

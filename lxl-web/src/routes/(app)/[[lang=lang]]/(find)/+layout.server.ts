@@ -17,10 +17,15 @@ import { getImages, toSecure } from '$lib/utils/auxd';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams.js';
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams.js';
 import { type apiError } from '$lib/types/API.js';
-import { asResult, type PartialCollectionView, type SearchResult } from './search.js';
+import {
+	asResult,
+	displayPredicates,
+	type PartialCollectionView,
+	type SearchResult
+} from './search.js';
 import getAtPath from '$lib/utils/getAtPath';
 
-export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
+export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil: DisplayUtil = locals.display;
 	const vocabUtil: VocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
@@ -88,6 +93,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	}
 
 	const searchResult = isFindRoute || shouldFindRelations ? getSearchResult() : null;
+
 	async function getSearchResult() {
 		if (isFindRoute && !url.searchParams.size) {
 			redirect(303, `/`); // redirect to home page if no search params are given
@@ -124,6 +130,17 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		const result = (await recordsRes.json()) as PartialCollectionView;
 
+		if (searchParams.has('_o') && !searchParams.has('_p')) {
+			const predicates = displayPredicates(result, displayUtil, locale, url.pathname);
+			if (predicates.length > 0) {
+				const apiSearch = new URL(predicates[0].view['@id'], url).search;
+				console.log('redirecting to', `${url.pathname}${apiSearch}`);
+				redirect(302, `${url.pathname}${apiSearch}`);
+			} else {
+				return null;
+			}
+		}
+
 		// Hide zero results from resource page
 		if (result.totalItems > 0 || isFindRoute) {
 			return (await asResult(
@@ -141,7 +158,8 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	return {
 		...resourceParts,
 		// waits for data on initial page load, streams in on client side navigation
-		searchResult: isDataRequest && isResourceRoute ? searchResult : await searchResult
+		// searchResult: isDataRequest && isResourceRoute ? searchResult : await searchResult
+		searchResult: await searchResult
 	};
 };
 
