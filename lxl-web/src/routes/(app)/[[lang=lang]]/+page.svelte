@@ -31,7 +31,7 @@
 			</p>
 		{:else}
 			<h2 class="mb-2 text-5-cond-extrabold">
-				Välkommen till den första betaversionen av Libris nya söktjänst.
+				Välkommen till den första betaversionen av Libris nya söktjänst
 			</h2>
 			<p class="mb-2">Denna betaversion innehåller än så länge möjligheter till</p>
 			<ul class="mb-2 list-inside list-disc">
