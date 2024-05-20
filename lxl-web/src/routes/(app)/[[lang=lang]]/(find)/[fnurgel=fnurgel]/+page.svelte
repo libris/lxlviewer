@@ -3,35 +3,26 @@
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesList from './InstancesList.svelte';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-	import { getResourceId } from '$lib/utils/resourceData';
-	import { relativizeUrl } from '$lib/utils/http';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import Modal from '$lib/components/Modal.svelte';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from './utils';
-	import { getSelectedHolding } from './utils';
 	import { Width } from '$lib/utils/auxd.types';
 
 	export let data;
 
+	const ASIDE_SEARCH_CARD_MAX_HEIGHT = 140;
+
 	let selectedHolding: string | undefined;
 	let latestHoldingUrl: string | undefined;
+	let asideSearchCardElement: HTMLElement | null;
+	let expandedAsideSearchCard = false;
 
-	$: selectedHoldingInstance = data.instances?.find((instanceItem) =>
-		instanceItem['@id'].includes(selectedHolding)
-	);
-
-	$: instanceIdsByType = data?.instances.reduce(
-		(acc, currentInstance) => ({
-			...acc,
-			[currentInstance['@type']]: [
-				...(acc[currentInstance['@type']] || []),
-				relativizeUrl(getResourceId(currentInstance))
-			]
-		}),
-		{}
-	);
+	$: selectedHoldingInstance = selectedHolding
+		? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
+			data.overview
+		: undefined;
 
 	$: localizedInstanceTypes = Object.values(data.instances).reduce((acc, instanceItem) => {
 		if (instanceItem['@type'] && instanceItem?._label) {
@@ -45,7 +36,7 @@
 
 	$: holdingUrl = $page.state.holdings || $page.url.searchParams.get('holdings') || null; // we should preferably only rely on $page.url.searchParams.get('holdings') but a workaround is needed due to a SvelteKit bug causing $page.url not to be updated after pushState. See: https://github.com/sveltejs/kit/pull/11994
 	$: if (holdingUrl) {
-		selectedHolding = getSelectedHolding(holdingUrl, instanceIdsByType);
+		selectedHolding = isFnurgel(holdingUrl) ? holdingUrl : data.overview;
 		latestHoldingUrl = holdingUrl;
 	}
 
@@ -135,20 +126,42 @@
 	{#if holdingUrl && selectedHoldingInstance}
 		<Modal close={handleCloseHoldings}>
 			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
-			<div class="flex flex-col gap-8 text-sm">
-				<div class="flex gap-4">
-					{#if data.images.length}
-						<div class="flex h-full max-h-20 w-full max-w-24 self-start">
-							<ResourceImage
-								resource={selectedHoldingInstance}
-								alt={data.t('general.latestInstanceCover')}
-								linkToFull
-							/>
-						</div>
-					{/if}
-					<div class="overview">
-						<DecoratedData data={selectedHoldingInstance} block keyed={false} />
+			<div class="flex flex-col">
+				<div class="search-card mb-4 flex flex-col !gap-4 !p-4 text-sm">
+					<div
+						class="overview relative"
+						class:expanded={expandedAsideSearchCard}
+						style="--max-height:{ASIDE_SEARCH_CARD_MAX_HEIGHT}px"
+						bind:this={asideSearchCardElement}
+					>
+						<h2 class="mb-2">
+							<span class="font-bold">
+								<DecoratedData data={data.title} block keyed={false} allowPopovers={false} />
+							</span>
+							{#if selectedHolding}
+								<span> • </span>
+								{#if isFnurgel(selectedHolding)}
+									{selectedHoldingInstance['_label']}
+								{:else if localizedInstanceTypes?.[latestHoldingUrl]}
+									{localizedInstanceTypes[latestHoldingUrl]}
+								{/if}
+							{/if}
+						</h2>
+						<DecoratedData
+							data={selectedHoldingInstance}
+							block
+							keyed={false}
+							allowPopovers={false}
+						/>
 					</div>
+					<button
+						class="text-left underline"
+						on:click={() => (expandedAsideSearchCard = !expandedAsideSearchCard)}
+					>
+						{expandedAsideSearchCard
+							? $page.data.t('search.hideDetails')
+							: $page.data.t('search.showDetails')}</button
+					>
 				</div>
 				<div>
 					<h2 class="font-bold">
@@ -243,6 +256,26 @@
 		& :global([data-property='seeAlso'] > *) {
 			display: block;
 			white-space: nowrap;
+		}
+	}
+	:global(dialog) {
+		.overview {
+			max-height: var(--max-height);
+			overflow: hidden;
+		}
+
+		.overview:not(.expanded)::after {
+			@apply pointer-events-none absolute h-12 w-full overflow-hidden;
+			content: '';
+			bottom: 0;
+			left: 0;
+			pointer-events: none;
+			background: linear-gradient(to bottom, rgb(var(--bg-cards) / 0), rgb(var(--bg-cards) / 1));
+			overflow: hidden;
+		}
+
+		.expanded {
+			max-height: initial;
 		}
 	}
 </style>

@@ -72,7 +72,9 @@ export default {
 		page: 'Page',
 		next: 'Next page',
 		showMore: 'Show more',
-		showFewer: 'Show fewer'
+		showFewer: 'Show fewer',
+		showDetails: 'Show more',
+		hideDetails: 'Show less'
 	},
 	sort: {
 		sortBy: 'Sort by',

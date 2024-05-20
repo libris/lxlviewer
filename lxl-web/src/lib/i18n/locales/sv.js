@@ -71,7 +71,9 @@ export default {
 		page: 'Sida',
 		next: 'Nästa sida',
 		showMore: 'Visa fler',
-		showFewer: 'Visa färre'
+		showFewer: 'Visa färre',
+		showDetails: 'Visa mer',
+		hideDetails: 'Visa mindre'
 	},
 	sort: {
 		sortBy: 'Sortera efter',
