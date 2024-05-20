@@ -42,6 +42,9 @@
 
 	$: shouldShowHeaderBackground = !data.instances?.length;
 
+	$: expandableAsideSearchCard =
+		asideSearchCardElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT;
+
 	function handleCloseHoldings() {
 		history.back();
 	}
@@ -130,6 +133,7 @@
 				<div class="search-card mb-4 flex flex-col !gap-4 !p-4 text-sm">
 					<div
 						class="overview relative"
+						class:expandable={expandableAsideSearchCard}
 						class:expanded={expandedAsideSearchCard}
 						style="--max-height:{ASIDE_SEARCH_CARD_MAX_HEIGHT}px"
 						bind:this={asideSearchCardElement}
@@ -258,24 +262,23 @@
 			white-space: nowrap;
 		}
 	}
-	:global(dialog) {
-		.overview {
-			max-height: var(--max-height);
-			overflow: hidden;
-		}
 
-		.overview:not(.expanded)::after {
-			@apply pointer-events-none absolute h-12 w-full overflow-hidden;
-			content: '';
-			bottom: 0;
-			left: 0;
-			pointer-events: none;
-			background: linear-gradient(to bottom, rgb(var(--bg-cards) / 0), rgb(var(--bg-cards) / 1));
-			overflow: hidden;
-		}
+	.expandable {
+		max-height: var(--max-height);
+		overflow: hidden;
+	}
 
-		.expanded {
-			max-height: initial;
-		}
+	.expandable:not(.expanded)::after {
+		@apply pointer-events-none absolute h-12 w-full overflow-hidden;
+		content: '';
+		bottom: 0;
+		left: 0;
+		pointer-events: none;
+		background: linear-gradient(to bottom, rgb(var(--bg-cards) / 0), rgb(var(--bg-cards) / 1));
+		overflow: hidden;
+	}
+
+	.expanded {
+		max-height: initial;
 	}
 </style>
