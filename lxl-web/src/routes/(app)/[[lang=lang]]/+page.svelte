@@ -25,7 +25,7 @@
 			</p>
 			<p class="mb-2">
 				Your feedback is important to us; please leave it via <a
-					href="https://survey.kb.se/librisbeta">this survey</a
+					href="https://survey.kb.se/librisbeta">this form</a
 				>. Here you can find answers to
 				<a href="http://kb.se/libris">frequently asked questions</a>.
 			</p>
@@ -45,7 +45,7 @@
 			</p>
 			<p class="mb-2">
 				Dina synpunkter är viktiga för oss, lämna dem gärna via <a
-					href="https://survey.kb.se/librisbeta">denna enkät</a
+					href="https://survey.kb.se/librisbeta">detta formulär</a
 				>. Här hittar du svar på <a href="http://kb.se/libris">vanligt förekommande frågor</a>.
 			</p>
 		{/if}
