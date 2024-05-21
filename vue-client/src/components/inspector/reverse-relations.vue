@@ -71,19 +71,22 @@ export default {
           query['itemOf.@id'] = this.mainEntity['@id'];
           query['@type'] = 'Item';
 
-          // Check if my sigel has holding
-          const myHoldingQuery = Object.assign({}, query);
-          myHoldingQuery._limit = 1;
-          myHoldingQuery['heldBy.@id'] = this.user.getActiveLibraryUri();
-          HttpUtil.getRelatedRecords(myHoldingQuery, this.settings.apiPath)
-            .then((response) => {
-              if (response.totalItems > 0) {
-                this.myHolding = response.items[0]['@id'];
-              } else this.myHolding = null;
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          if (this.user.isLoggedIn) {
+            // Check if my sigel has holding
+            const myHoldingQuery = Object.assign({}, query);
+            myHoldingQuery._limit = 1;
+            myHoldingQuery['heldBy.@id'] = this.user.getActiveLibraryUri();
+
+            HttpUtil.getRelatedRecords(myHoldingQuery, this.settings.apiPath)
+              .then((response) => {
+                if (response.totalItems > 0) {
+                  this.myHolding = response.items[0]['@id'];
+                } else this.myHolding = null;
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
         } else {
           query.o = this.mainEntity['@id'];
         }
