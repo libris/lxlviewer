@@ -7,7 +7,7 @@
 	<title>{getPageTitle($page.data.t('header.help'))}</title>
 </svelte:head>
 
-<div class="container-fluid my-8 max-w-3xl">
+<article class="container-fluid my-8 max-w-3xl">
 	{#if $page.data.locale === 'en'}
 		<h1 class="text-6-cond-extrabold">Help</h1>
 		<h2 class="text-5-cond-extrabold">How the Search Works</h2>
@@ -257,7 +257,7 @@
 			direkt länk till utgåvan.
 		</p>
 	{/if}
-</div>
+</article>
 
 <style lang="postcss">
 	h2 {
