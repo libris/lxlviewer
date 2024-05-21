@@ -56,12 +56,12 @@
 			{@const filterCount = getFiltersCount(searchResult.mapping)}
 			{#if searchResult.predicates.length > 0}
 				<nav
-					class="border-b border-primary/16 px-4 pt-4 md:flex lg:px-6"
+					class="border-b border-primary/16 px-4 md:flex lg:px-6"
 					aria-label={$page.data.t('search.selectedFilters')}
 				>
 					<ul class="flex flex-wrap items-center gap-2">
-						<li class="max-w-80 truncate pb-4 font-bold">{$page.data.title}</li>
-						<span class="pb-4">{$page.data.t('search.occursAs')}</span>
+						<li class="tab-header max-w-80 truncate font-bold">{$page.data.title}</li>
+						<span class="tab-header">{$page.data.t('search.occursAs')}</span>
 
 						{#each searchResult.predicates as p}
 							<li>
@@ -226,12 +226,17 @@
 		}
 	}
 
+	.tab-header {
+		@apply block py-4;
+	}
+
 	.tab {
-		@apply block px-4 pb-4 lowercase no-underline;
+		@apply block px-4 py-4 lowercase no-underline;
 		transition: filter 0.1s ease;
 	}
 
 	.tab-selected {
-		@apply border-b border-b-2 border-primary;
+		@apply border-primary pb-3.5;
+		border-bottom-width: 0.125rem;
 	}
 </style>
