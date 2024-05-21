@@ -16,8 +16,8 @@
 
 	let selectedHolding: string | undefined;
 	let latestHoldingUrl: string | undefined;
-	let asideSearchCardElement: HTMLElement | null;
-	let expandedAsideSearchCard = false;
+	let holdingsInstanceElement: HTMLElement | null;
+	let expandedHoldingsInstance = false;
 
 	$: selectedHoldingInstance = selectedHolding
 		? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
@@ -42,8 +42,8 @@
 
 	$: shouldShowHeaderBackground = !data.instances?.length;
 
-	$: expandableAsideSearchCard =
-		asideSearchCardElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT;
+	$: expandableHoldingsInstance =
+		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT;
 
 	function handleCloseHoldings() {
 		history.back();
@@ -132,11 +132,12 @@
 			<div class="flex flex-col">
 				<div class="search-card mb-4 flex flex-col !gap-4 !p-4 text-sm">
 					<div
+						id="instance-details"
 						class="overview relative"
-						class:expandable={expandableAsideSearchCard}
-						class:expanded={expandedAsideSearchCard}
+						class:expandable={expandableHoldingsInstance}
+						class:expanded={expandedHoldingsInstance}
 						style="--max-height:{ASIDE_SEARCH_CARD_MAX_HEIGHT}px"
-						bind:this={asideSearchCardElement}
+						bind:this={holdingsInstanceElement}
 					>
 						<h2 class="mb-2">
 							<span class="font-bold">
@@ -167,9 +168,11 @@
 					</div>
 					<button
 						class="text-left underline"
-						on:click={() => (expandedAsideSearchCard = !expandedAsideSearchCard)}
+						on:click={() => (expandedHoldingsInstance = !expandedHoldingsInstance)}
+						aria-expanded={expandedHoldingsInstance}
+						aria-controls="instance-details"
 					>
-						{expandedAsideSearchCard
+						{expandedHoldingsInstance
 							? $page.data.t('search.hideDetails')
 							: $page.data.t('search.showDetails')}</button
 					>
