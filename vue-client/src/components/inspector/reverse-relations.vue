@@ -76,7 +76,6 @@ export default {
             const myHoldingQuery = Object.assign({}, query);
             myHoldingQuery._limit = 1;
             myHoldingQuery['heldBy.@id'] = this.user.getActiveLibraryUri();
-
             HttpUtil.getRelatedRecords(myHoldingQuery, this.settings.apiPath)
               .then((response) => {
                 if (response.totalItems > 0) {
