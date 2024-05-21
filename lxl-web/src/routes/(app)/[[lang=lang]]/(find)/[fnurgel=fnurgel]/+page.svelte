@@ -140,7 +140,13 @@
 					>
 						<h2 class="mb-2">
 							<span class="font-bold">
-								<DecoratedData data={data.title} block keyed={false} allowPopovers={false} />
+								<DecoratedData
+									data={data.title}
+									block
+									keyed={false}
+									allowPopovers={false}
+									allowLinks={false}
+								/>
 							</span>
 							{#if selectedHolding}
 								<span> • </span>
@@ -156,6 +162,7 @@
 							block
 							keyed={false}
 							allowPopovers={false}
+							allowLinks={false}
 						/>
 					</div>
 					<button
