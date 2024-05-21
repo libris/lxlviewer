@@ -15,6 +15,7 @@ export default {
 		faq: 'FAQ about this beta',
 		contact: 'Contact',
 		feedback: 'Give feedback',
+		feedbackLink: 'http://survey.kb.se/librisbeta/en',
 		customerSupport: 'Libris customer support'
 	},
 	facet: {

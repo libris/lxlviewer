@@ -14,6 +14,7 @@ export default {
 		faq: 'Vanliga frågor om betaversionen',
 		contact: 'Kontakt',
 		feedback: 'Lämna synpunkter',
+		feedbackLink: 'https://survey.kb.se/librisbeta',
 		customerSupport: 'Libris kundtjänst'
 	},
 	facet: {

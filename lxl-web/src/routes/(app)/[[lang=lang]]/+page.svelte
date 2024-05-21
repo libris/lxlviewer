@@ -25,7 +25,7 @@
 			</p>
 			<p class="mb-2">
 				Your feedback is important to us; please leave it via <a
-					href="https://survey.kb.se/librisbeta">this form</a
+					href="https://survey.kb.se/librisbeta/en">this form</a
 				>. Here you can find answers to
 				<a href="http://kb.se/libris">frequently asked questions</a>.
 			</p>
