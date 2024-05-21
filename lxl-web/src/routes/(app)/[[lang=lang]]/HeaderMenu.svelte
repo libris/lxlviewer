@@ -15,7 +15,7 @@
 
 <nav class="header-menu py-8 md:py-0">
 	<ol class="flex flex-col items-center gap-6 text-secondary md:flex-row">
-		<li><a data-sveltekit-reload href={$page.data.base}>{$page.data.t('header.help')}</a></li>
+		<li><a data-sveltekit-reload href="help">{$page.data.t('header.help')}</a></li>
 		<li>
 			<a
 				class="flex items-center gap-2"
