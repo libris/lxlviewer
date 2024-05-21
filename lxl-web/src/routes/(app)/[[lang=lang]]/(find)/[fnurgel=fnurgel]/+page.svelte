@@ -54,7 +54,7 @@
 	<title>{getPageTitle(data.title)}</title>
 </svelte:head>
 <article>
-	<div class="resource gap-8 find-layout" class:bg-header={shouldShowHeaderBackground}>
+	<div class="resource gap-8 find-layout find-padding" class:bg-header={shouldShowHeaderBackground}>
 		<div
 			class="mb-2 mt-4 flex max-h-64 max-w-64 justify-center self-center md:mx-auto md:justify-start md:self-start md:px-2 xl:px-0"
 			class:hidden={!$page.data.images?.length}
@@ -113,7 +113,7 @@
 		</div>
 	</div>
 	{#if data.instances?.length}
-		<div class="instances !pt-2 find-layout">
+		<div class="instances !pt-2 find-layout find-padding">
 			<div class="instances-list max-w-content border-t border-t-primary/16 pt-6">
 				<InstancesList
 					data={data.instances}
