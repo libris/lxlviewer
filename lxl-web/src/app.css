@@ -18,10 +18,13 @@
 }
 
 :root {
+	--font-fallback: BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+		'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+	--font-body: Inter, var(--font-fallback);
 	--padding-page: 16px;
 	--height-input: 44px;
 
-	font-family: Inter, sans-serif;
+	font-family: var(--font-body);
 	font-feature-settings:
 		'liga' 1,
 		'calt' 1; /* fix for Chrome */
