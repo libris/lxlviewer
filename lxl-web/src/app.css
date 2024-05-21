@@ -110,3 +110,9 @@
 		@apply hover:bg-negative hover:text-secondary focus:bg-negative focus:text-secondary;
 	}
 }
+
+@layer utilities {
+	.search-card {
+		@apply flex gap-4 overflow-hidden border-b border-b-primary/16 bg-cards p-4 sm:gap-8 md:rounded-md md:p-6;
+	}
+}

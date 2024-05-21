@@ -11,6 +11,7 @@
 	export let depth = 0;
 	export let showLabels: ShowLabelsOptions = ShowLabelsOptions.DefaultOn;
 	export let allowPopovers = true; // used for preventing nested popovers
+	export let allowLinks = true;
 	export let block = false;
 	export let truncate = false;
 	export let remainder: ResourceData | undefined = undefined;
@@ -29,23 +30,25 @@
 	];
 
 	function getLink(value: ResourceData) {
-		if (depth > 1 && hasStyle(data, 'link')) {
-			const id = getResourceId(value);
-			if (id) {
-				return relativizeUrl(id);
+		if (allowLinks) {
+			if (depth > 1 && hasStyle(data, 'link')) {
+				const id = getResourceId(value);
+				if (id) {
+					return relativizeUrl(id);
+				}
 			}
-		}
-		if (depth > 1 && hasStyle(data, 'ext-link')) {
-			const id = getResourceId(value);
-			if (id) {
-				return id;
+			if (depth > 1 && hasStyle(data, 'ext-link')) {
+				const id = getResourceId(value);
+				if (id) {
+					return id;
+				}
 			}
 		}
 		return undefined;
 	}
 
 	function getElementType(value: ResourceData) {
-		if (getLink(value)) {
+		if (allowLinks && getLink(value)) {
 			return 'a';
 		}
 		if (block && isTopLevel()) {
@@ -134,6 +137,7 @@
 					depth={depth + 1}
 					{showLabels}
 					{block}
+					{allowLinks}
 					{allowPopovers}
 					truncate={false}
 					{remainder}
@@ -146,6 +150,7 @@
 						depth={depth + 1}
 						{showLabels}
 						{block}
+						{allowLinks}
 						{allowPopovers}
 						{truncate}
 						{keyed}
@@ -172,6 +177,7 @@
 						depth={depth + 1}
 						{showLabels}
 						{block}
+						{allowLinks}
 						{allowPopovers}
 						{truncate}
 						{keyed}
@@ -189,6 +195,7 @@
 					depth={depth + 1}
 					{showLabels}
 					{block}
+					{allowLinks}
 					{allowPopovers}
 					{keyed}
 				/>
@@ -198,6 +205,7 @@
 					depth={depth + 1}
 					{showLabels}
 					{block}
+					{allowLinks}
 					{allowPopovers}
 					{truncate}
 					{keyed}
@@ -216,6 +224,7 @@
 							depth={depth + 1}
 							{showLabels}
 							{block}
+							{allowLinks}
 							{allowPopovers}
 							{truncate}
 							{keyed}
