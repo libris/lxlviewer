@@ -510,7 +510,7 @@
 			"@id": "MediaObject-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["MediaObject"],
-			"fresnel:resourceStyle": ["ext-link", "uriToId()", "text-large", "block"]
+			"fresnel:resourceStyle": ["ext-link", "uriToId()", "text-3-cond-bold"]
 		},
 		"Document-format": {
 			"@id": "Document-format",

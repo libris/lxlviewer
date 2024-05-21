@@ -6,6 +6,7 @@
 	import { hasStyle, getStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
+	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 
 	export let data: ResourceData;
 	export let depth = 0;
@@ -236,6 +237,17 @@
 				<span class="_contentAfter">
 					{data._contentAfter}
 				</span>
+			{/if}
+			{#if hasStyle(data, 'ext-link')}
+				<a href={getLink(data)} target="_blank">
+					<span class="ext-link inline-block pl-1">
+						<BiBoxArrowUpRight />
+					</span>
+					<!-- FIXME don't hardcode MediaObject -->
+					{#if data['@type'] === 'MediaObject'}
+						<span class="whitespace-pre after:content-['\a']"></span>
+					{/if}
+				</a>
 			{/if}
 		{/if}
 	{:else}
