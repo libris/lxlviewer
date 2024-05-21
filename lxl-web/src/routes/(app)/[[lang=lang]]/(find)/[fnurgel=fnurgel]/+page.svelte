@@ -148,7 +148,7 @@
 									allowLinks={false}
 								/>
 							</span>
-							{#if selectedHolding}
+							{#if selectedHolding && data.instances?.length !== 1}
 								<span> • </span>
 								{#if isFnurgel(selectedHolding)}
 									{selectedHoldingInstance['_label']}
