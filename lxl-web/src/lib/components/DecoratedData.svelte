@@ -234,6 +234,7 @@
 					<span class="ext-link inline-block pl-1">
 						<BiBoxArrowUpRight />
 					</span>
+					<!-- FIXME don't hardcode MediaObject -->
 					{#if data['@type'] === 'MediaObject'}
 						<span class="whitespace-pre after:content-['\a']"></span>
 					{/if}
