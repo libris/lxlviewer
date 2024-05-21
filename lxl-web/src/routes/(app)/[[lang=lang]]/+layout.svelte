@@ -1,6 +1,7 @@
 <script lang="ts">
 	import SiteHeader from './SiteHeader.svelte';
 	import getPageTitle from '$lib/utils/getPageTitle';
+	import SiteFooter from './SiteFooter.svelte';
 	export let data;
 </script>
 
@@ -12,4 +13,5 @@
 <main>
 	<slot />
 </main>
+<SiteFooter />
 <div id="floating-elements-container" />

@@ -25,11 +25,13 @@ export default {
 			}
 		},
 		backgroundColor: {
+			primary: 'rgb(var(--bg-pill) / <alpha-value>)',
 			transparent: 'transparent',
 			'site-header': 'rgb(var(--bg-site-header) / 1)',
 			header: 'rgb(var(--bg-header) / 1)',
 			main: 'rgb(var(--bg-main) / 1)',
 			positive: 'rgb(var(--bg-positive) / 1)',
+			'positive-dark': 'rgb(var(--color-accent-dark) / <alpha-value>)',
 			'positive-inv': 'rgb(var(--bg-positive-inv) / 1)',
 			negative: 'rgb(var(--bg-negative) / 1)',
 			cards: 'rgb(var(--bg-cards) / 1)',

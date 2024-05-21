@@ -21,10 +21,14 @@
 >
 	{#if !isLandingPage}
 		<div class="flex items-center">
-			<a
-				href={$page.data.base}
-				class="text-[1.4rem] font-extrabold leading-tight text-primary no-underline sm:text-[1.6rem] md:text-[2.1rem]"
-				>Libris
+			<a href={$page.data.base} class="flex flex-col text-primary no-underline sm:flex-row">
+				<span class="text-[1.4rem] font-extrabold leading-tight sm:text-[1.6rem] md:text-[2.1rem]">
+					Libris</span
+				>
+				<sup
+					class="top-0 -rotate-6 self-baseline rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold sm:rotate-0"
+					>Beta</sup
+				>
 			</a>
 		</div>
 	{/if}
@@ -53,11 +57,14 @@
 			{/if}
 		</div>
 		{#if isLandingPage}
-			<div class="flex w-full flex-col items-center px-12 pb-[4.5rem] pt-6">
-				<h1 class="text-3xl font-extrabold text-primary sm:text-[5.5rem] sm:font-bold">Libris</h1>
-				<label for="main-search" class="mb-4 text-center text-secondary text-4-regular"
-					>{$page.data.t('home.subtitle')}</label
-				>
+			<div class="flex w-full flex-col items-center gap-2 px-12 pb-[4.5rem] pt-6">
+				<h1 class="flex text-3xl font-extrabold text-primary sm:text-[5.5rem] sm:font-bold">
+					Libris
+					<sup
+						class="self-center rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold sm:text-3-cond-bold"
+						>Beta</sup
+					>
+				</h1>
 				<div class="w-full max-w-3xl">
 					<Search placeholder={$page.data.t('home.searchPlaceholder')} autofocus />
 				</div>

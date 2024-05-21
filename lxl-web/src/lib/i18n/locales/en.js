@@ -1,14 +1,22 @@
 /** @type {typeof import('./sv.js').default} */
 export default {
 	home: {
-		subtitle: 'Search the Swedish library catalogue',
-		searchPlaceholder: 'Title, author, subject, publisher etc.'
+		searchPlaceholder: 'Title, author, subject et cetera'
 	},
 	header: {
 		help: 'Help',
 		changeLang: 'På svenska',
-		searchPlaceholder: 'Search the Swedish library catalogue',
+		searchPlaceholder: 'Title, author, subject et cetera',
 		openMenu: 'Open main menu'
+	},
+	footer: {
+		logo: 'National Library of Sweden logotype',
+		information: 'Information',
+		faq: 'FAQ about this beta',
+		contact: 'Contact',
+		feedback: 'Give feedback',
+		feedbackLink: 'http://survey.kb.se/librisbeta/en',
+		customerSupport: 'Libris customer support'
 	},
 	facet: {
 		q: 'Free text search',

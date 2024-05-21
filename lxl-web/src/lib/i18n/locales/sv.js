@@ -1,13 +1,21 @@
 export default {
 	home: {
-		subtitle: 'Hitta i hela Sveriges bibliotekskatalog',
-		searchPlaceholder: 'Titel, författare, ämne, bokförlag m.m.'
+		searchPlaceholder: 'Titel, författare, ämne med mera'
 	},
 	header: {
 		help: 'Hjälp',
 		changeLang: 'In English',
-		searchPlaceholder: 'Sök i hela Sveriges bibliotekskatalog',
+		searchPlaceholder: 'Titel, författare, ämne med mera',
 		openMenu: 'Öppna huvudmeny'
+	},
+	footer: {
+		logo: 'Kungliga bibliotekets logotyp',
+		information: 'Information',
+		faq: 'Vanliga frågor om betaversionen',
+		contact: 'Kontakt',
+		feedback: 'Lämna synpunkter',
+		feedbackLink: 'https://survey.kb.se/librisbeta',
+		customerSupport: 'Libris kundtjänst'
 	},
 	facet: {
 		q: 'Fritextsökning',

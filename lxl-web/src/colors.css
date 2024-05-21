@@ -28,6 +28,7 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--icon-default: var(--color-primary);
 
 	/* Bg colors */
+	--bg-primary: var(--color-primary);
 	--bg-main: var(--color-subtle);
 	--bg-site-header: var(--color-accent-light);
 	--bg-header: var(--color-dark-beige);
