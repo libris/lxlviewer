@@ -68,6 +68,7 @@ export default {
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
 		noResults: 'Inga resultat',
+		hitsOf: 'av',
 		hits: 'träffar',
 		hitsOne: 'träff',
 		selected: 'valda',

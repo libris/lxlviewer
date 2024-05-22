@@ -96,13 +96,19 @@
 								</span>
 							{/if}
 						</a>
-						<span
-							class="hits pt-4 text-secondary text-3-cond-bold md:pt-0"
-							role="status"
-							data-testid="result-info"
-						>
+						<span class="hits pt-4 text-secondary md:pt-0" role="status" data-testid="result-info">
 							{#if numHits && numHits > 0}
-								{numHits.toLocaleString($page.data.locale)}
+								{#if numHits > searchResult.itemsPerPage}
+									<span class="text-3-cond-bold">
+										{searchResult.itemOffset + 1}
+										-
+										{Math.min(numHits, searchResult.itemOffset + searchResult.itemsPerPage)}
+									</span>
+									{$page.data.t('search.hitsOf')}
+								{/if}
+								<span class="text-3-cond-bold">
+									{numHits.toLocaleString($page.data.locale)}
+								</span>
 								{#if $page.data.instances}
 									{numHits == 1
 										? $page.data.t('search.relatedOne')

@@ -69,6 +69,7 @@ export default {
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
 		noResults: 'No results',
+		hitsOf: 'of',
 		hits: 'hits',
 		hitsOne: 'hit',
 		selected: 'selected',
