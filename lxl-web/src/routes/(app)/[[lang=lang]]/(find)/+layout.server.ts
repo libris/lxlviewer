@@ -25,7 +25,7 @@ import {
 } from './search.js';
 import getAtPath from '$lib/utils/getAtPath';
 
-export const load = async ({ params, url, locals, fetch }) => {
+export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	const displayUtil: DisplayUtil = locals.display;
 	const vocabUtil: VocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
@@ -92,20 +92,12 @@ export const load = async ({ params, url, locals, fetch }) => {
 		};
 	}
 
-	const searchResult = isFindRoute || shouldFindRelations ? getSearchResult() : null;
-
 	async function getSearchResult() {
 		if (isFindRoute && !url.searchParams.size) {
 			redirect(303, `/`); // redirect to home page if no search params are given
 		}
 
-		let searchParams = new URLSearchParams(url.searchParams.toString());
-
-		if (shouldFindRelations && resourceId) {
-			searchParams.set('_o', resourceId);
-			searchParams.set('_i', '*');
-			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
-		}
+		const searchParams = new URLSearchParams(url.searchParams.toString());
 
 		const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`, {
 			// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
@@ -130,19 +122,52 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 		const result = (await recordsRes.json()) as PartialCollectionView;
 
+		return (await asResult(
+			result,
+			displayUtil,
+			vocabUtil,
+			locale,
+			env.AUXD_SECRET,
+			url.pathname
+		)) as SearchResult;
+	}
+
+	async function fetchRelated(fetchUri: string) {
+		const recordsRes = await fetch(fetchUri);
+
+		if (!recordsRes.ok) {
+			const err = (await recordsRes.json()) as apiError;
+			throw error(err.status_code, { message: err.message, status: err.status });
+		}
+
+		return (await recordsRes.json()) as PartialCollectionView;
+	}
+
+	async function getRelated() {
+		let searchParams = new URLSearchParams(url.searchParams.toString());
+
+		if (resourceId) {
+			searchParams.set('_o', resourceId);
+			searchParams.set('_i', '*');
+			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
+		}
+
+		let result = await fetchRelated(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+
+		// Go to first tab (predicate) if none selected
 		if (searchParams.has('_o') && !searchParams.has('_p')) {
 			const predicates = displayPredicates(result, displayUtil, locale, url.pathname);
 			if (predicates.length > 0) {
-				const apiSearch = new URL(predicates[0].view['@id'], url).search;
-				console.log('redirecting to', `${url.pathname}${apiSearch}`);
-				redirect(302, `${url.pathname}${apiSearch}`);
+				const queryParams = new URL(predicates[0].view['@id'], url).search;
+				const fetchUrl = `${env.API_URL}/find.jsonld${queryParams}`;
+				result = await fetchRelated(fetchUrl);
 			} else {
 				return null;
 			}
 		}
 
 		// Hide zero results from resource page
-		if (result.totalItems > 0 || isFindRoute) {
+		if (result.totalItems > 0) {
 			return (await asResult(
 				result,
 				displayUtil,
@@ -157,9 +182,11 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	return {
 		...resourceParts,
-		// waits for data on initial page load, streams in on client side navigation
-		// searchResult: isDataRequest && isResourceRoute ? searchResult : await searchResult
-		searchResult: await searchResult
+		searchResult: isFindRoute
+			? await getSearchResult()
+			: isDataRequest && isResourceRoute && shouldFindRelations && resourceId
+				? getRelated() // stream results on resource page
+				: null
 	};
 };
 
