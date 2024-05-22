@@ -62,7 +62,7 @@
 					<SearchMapping mapping={searchResult.mapping} />
 				</nav>
 			{/if}
-			<div class="relative gap-y-4 find-layout">
+			<div class="relative gap-y-4 find-layout md:page-padding">
 				{#if showFiltersModal}
 					<Modal position="left" close={toggleFiltersModal}>
 						<span slot="title">
@@ -77,7 +77,9 @@
 				</div>
 
 				<div class="results max-w-content">
-					<div class="toolbar flex min-h-14 items-center justify-between pb-4 md:min-h-fit">
+					<div
+						class="toolbar flex min-h-14 items-center justify-between pb-4 page-padding md:min-h-fit"
+					>
 						<a
 							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
 							class="filter-modal-toggle button-ghost md:hidden"
