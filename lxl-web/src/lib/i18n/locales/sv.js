@@ -53,7 +53,10 @@ export default {
 		language: 'Språk',
 		subject: 'Ämne',
 		yearPublished: 'Utgivningsår',
-		intendedAudience: 'Målgrupp'
+		intendedAudience: 'Målgrupp',
+		nationality: 'Nationalitet/verksamhetsland',
+		hasOccupation: 'Har yrke eller sysselsättning',
+		fieldOfActivity: 'Verksamhetsområde'
 	},
 	search: {
 		search: 'Sök',
