@@ -38,7 +38,7 @@
 </script>
 
 <li
-	class="flex gap-4 border-b border-b-primary/16 bg-cards p-4 sm:gap-8 md:rounded-md md:p-6"
+	class="flex gap-4 border-b border-b-primary/16 bg-cards p-4 sm:gap-8 sm:p-6 md:rounded-md"
 	data-testid="search-card"
 >
 	<a href={relativizeUrl(item['@id'])}>
