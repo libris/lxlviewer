@@ -247,6 +247,12 @@
 						"hasOccupation",
 						"fieldOfActivity"
 					]
+				},
+				"Instance": {
+					"@id": "Instance-web-card",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
 				}
 			}
 		}
