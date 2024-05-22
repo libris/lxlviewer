@@ -39,7 +39,7 @@
 <div class:oneOfMany>
 	{#if oneOfMany}
 		<div class="col-span-2 flex flex-col gap-2 text-sm">
-			<div class="flex h-full max-h-32 w-full max-w-32">
+			<div class="flex h-full max-h-32 w-full max-w-32 object-left">
 				<ResourceImage
 					images={$page.data.images.filter((i) => i.recordId === id)}
 					alt={$page.data.t('general.instanceCover')}
@@ -49,7 +49,7 @@
 				/>
 			</div>
 			{#if id && $page.data.holdingsByInstanceId[id]}
-				<div class="flex flex-col gap-2">
+				<div class="flex flex-col gap-1">
 					<a
 						href={getHoldingsLink($page.url, id)}
 						data-sveltekit-preload-data="false"
@@ -90,7 +90,6 @@
 	}
 
 	.oneOfMany {
-		@apply grid gap-2 py-8 md:grid-cols-5;
-		grid-template-columns: 16px 1fr 2fr 1fr 1fr;
+		@apply grid grid-cols-1 gap-4 py-8 sm:grid-cols-instance-list sm:gap-2;
 	}
 </style>

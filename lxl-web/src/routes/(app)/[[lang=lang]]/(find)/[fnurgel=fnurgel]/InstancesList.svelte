@@ -147,8 +147,7 @@
 <style lang="postcss">
 	.column-headers,
 	summary {
-		@apply gap-2;
-		grid-template-columns: 16px 1fr 2fr 1fr 1fr;
+		@apply grid-cols-instance-list gap-2;
 
 		& > :last-child {
 			@apply pr-1;
