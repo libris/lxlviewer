@@ -181,7 +181,7 @@ export default {
 				'.find-layout': {
 					'@apply flex flex-col gap-4 md:grid md:grid-cols-find md:gap-8': {}
 				},
-				'.find-padding': {
+				'.page-padding': {
 					'@apply p-4 sm:px-6': {}
 				}
 			});
