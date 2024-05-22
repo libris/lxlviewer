@@ -70,8 +70,14 @@
 									class:active={true}
 									class:tab-selected={p.selected}
 									data-sveltekit-replacestate
-									href={p.view['@id']}>{p.str}</a
+									href={p.view['@id']}
 								>
+									{p.str}
+									<span
+										class="mb-px rounded-sm bg-pill/4 px-1 text-sm text-secondary md:text-xs lg:text-sm"
+										aria-label="{p.totalItems} {$page.data.t('search.hits')}">{p.totalItems}</span
+									>
+								</a>
 							</li>
 						{/each}
 					</ul>
