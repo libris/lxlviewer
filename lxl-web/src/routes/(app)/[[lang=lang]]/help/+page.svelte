@@ -11,7 +11,7 @@
 	<title>{getPageTitle($page.data.t('header.help'))}</title>
 </svelte:head>
 
-<article class="container-fluid max-w-3xl">
+<article class="container-fluid mb-12 mt-8 max-w-3xl page-padding">
 	{#if data.locale === 'en'}
 		<EnContent />
 	{:else}

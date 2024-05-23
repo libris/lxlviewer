@@ -5,7 +5,7 @@
 <style lang="postcss">
 	div {
 		& :global(h1) {
-			@apply mt-6 text-6-cond-extrabold;
+			@apply text-6-cond-extrabold;
 		}
 
 		& :global(h2) {
