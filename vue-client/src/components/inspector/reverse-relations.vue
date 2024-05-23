@@ -65,7 +65,7 @@ export default {
       }
 
       if (this.mode == 'items' && this.mainEntity.reverseLinks && this.mainEntity.reverseLinks.totalItemsByRelation) {
-        this.numberOfRelations = this.mainEntity.reverseLinks.totalItemsByRelation.itemOf;
+        this.numberOfRelations = this.mainEntity.reverseLinks.totalItemsByRelation.itemOf || 0;
         this.checkingRelations = false;
         query['itemOf.@id'] = this.mainEntity['@id'];
         query['@type'] = 'Item';
