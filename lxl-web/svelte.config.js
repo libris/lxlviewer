@@ -8,7 +8,7 @@ const config = {
 	extensions: ['.svelte', '.md'],
 	preprocess: [
 		vitePreprocess(),
-		mdsvex({ extensions: ['.md'] }),
+		mdsvex({ extensions: ['.md'], layout: '/src/lib/components/MarkdownContent.svelte' }),
 		trimSiblingWhitespaces({ filenames: ['DecoratedData.svelte'] })
 	],
 	kit: {

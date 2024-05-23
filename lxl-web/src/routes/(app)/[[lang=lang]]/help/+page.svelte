@@ -11,16 +11,10 @@
 	<title>{getPageTitle($page.data.t('header.help'))}</title>
 </svelte:head>
 
-<article class="content container-fluid max-w-3xl">
+<article class="container-fluid max-w-3xl">
 	{#if data.locale === 'en'}
 		<EnContent />
 	{:else}
 		<SvContent />
 	{/if}
 </article>
-
-<style lang="postcss">
-	.content :global(h1) {
-		@apply text-6-cond-extrabold;
-	}
-</style>
