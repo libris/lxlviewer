@@ -18,6 +18,7 @@
 	params.set('_offset', '0');
 	params.delete('_i');
 	params.delete('_o');
+	params.delete('_p');
 	const searchParams = Array.from(params);
 
 	afterNavigate(({ to }) => {
