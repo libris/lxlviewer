@@ -100,9 +100,12 @@
 							{#if numHits && numHits > 0}
 								{#if numHits > searchResult.itemsPerPage}
 									<span class="text-3-cond-bold">
-										{searchResult.itemOffset + 1}
+										{(searchResult.itemOffset + 1).toLocaleString($page.data.locale)}
 										-
-										{Math.min(numHits, searchResult.itemOffset + searchResult.itemsPerPage)}
+										{Math.min(
+											numHits,
+											searchResult.itemOffset + searchResult.itemsPerPage
+										).toLocaleString($page.data.locale)}
 									</span>
 									{$page.data.t('search.hitsOf')}
 								{/if}
