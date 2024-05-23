@@ -64,6 +64,16 @@ export default {
         return;
       }
 
+      if (this.mode == 'items' && this.mainEntity.reverseLinks && this.mainEntity.reverseLinks.totalItemsByRelation) {
+        this.numberOfRelations = this.mainEntity.reverseLinks.totalItemsByRelation.itemOf;
+        this.checkingRelations = false;
+        query['itemOf.@id'] = this.mainEntity['@id'];
+        query['@type'] = 'Item';
+        this.panelQuery = Object.assign({}, query);
+        this.$emit('numberOfRelations', this.numberOfRelations);
+        return;
+      }
+
       this.checkingRelations = true;
       const timeoutLength = 1100; // Needed so that the index has time to update
       setTimeout(() => { //
