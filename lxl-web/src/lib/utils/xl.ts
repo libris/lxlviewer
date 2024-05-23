@@ -663,11 +663,15 @@ export class DisplayUtil {
 	}
 
 	private orderScripts(scripts: LangCode[]): LangCode[] {
-		return scripts.sort((a, b) => {
-			const aa = isTransliteratedLatin(a) ? a : '_' + a;
-			const bb = isTransliteratedLatin(a) ? b : '_' + b;
-			return bb.localeCompare(aa);
-		});
+		return [
+			...new Set(
+				scripts.sort((a, b) => {
+					const aa = isTransliteratedLatin(a) ? a : '_' + a;
+					const bb = isTransliteratedLatin(a) ? b : '_' + b;
+					return bb.localeCompare(aa);
+				})
+			)
+		];
 	}
 }
 
