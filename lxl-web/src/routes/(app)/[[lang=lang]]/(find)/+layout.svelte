@@ -62,7 +62,7 @@
 					<SearchMapping mapping={searchResult.mapping} />
 				</nav>
 			{/if}
-			<div class="relative gap-y-4 find-layout">
+			<div class="relative gap-y-4 find-layout md:page-padding">
 				{#if showFiltersModal}
 					<Modal position="left" close={toggleFiltersModal}>
 						<span slot="title">
@@ -77,7 +77,9 @@
 				</div>
 
 				<div class="results max-w-content">
-					<div class="toolbar flex min-h-14 items-center justify-between pb-4 md:min-h-fit">
+					<div
+						class="toolbar flex min-h-14 items-center justify-between pb-4 page-padding md:min-h-fit"
+					>
 						<a
 							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
 							class="filter-modal-toggle button-ghost md:hidden"
@@ -94,13 +96,22 @@
 								</span>
 							{/if}
 						</a>
-						<span
-							class="hits pt-4 text-secondary text-3-cond-bold md:pt-0"
-							role="status"
-							data-testid="result-info"
-						>
+						<span class="hits pt-4 text-secondary md:pt-0" role="status" data-testid="result-info">
 							{#if numHits && numHits > 0}
-								{numHits.toLocaleString($page.data.locale)}
+								{#if numHits > searchResult.itemsPerPage}
+									<span class="text-3-cond-bold">
+										{(searchResult.itemOffset + 1).toLocaleString($page.data.locale)}
+										-
+										{Math.min(
+											numHits,
+											searchResult.itemOffset + searchResult.itemsPerPage
+										).toLocaleString($page.data.locale)}
+									</span>
+									{$page.data.t('search.hitsOf')}
+								{/if}
+								<span class="text-3-cond-bold">
+									{numHits.toLocaleString($page.data.locale)}
+								</span>
 								{#if $page.data.instances}
 									{numHits == 1
 										? $page.data.t('search.relatedOne')

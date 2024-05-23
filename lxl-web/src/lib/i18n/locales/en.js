@@ -54,7 +54,10 @@ export default {
 		language: 'Language',
 		subject: 'Subject',
 		yearPublished: 'Year published',
-		intendedAudience: 'Intended audience'
+		intendedAudience: 'Intended audience',
+		nationality: 'Nationality',
+		hasOccupation: 'Has Occupation',
+		fieldOfActivity: 'Field of Activity'
 	},
 	search: {
 		search: 'Search',
@@ -66,6 +69,7 @@ export default {
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
 		noResults: 'No results',
+		hitsOf: 'of',
 		hits: 'hits',
 		hitsOne: 'hit',
 		selected: 'selected',

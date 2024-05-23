@@ -118,6 +118,12 @@
 			"@id": "chips",
 			"@type": "fresnel:Group",
 			"lenses": {
+				"Cartographic": {
+					"@id": "Cartographic-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Cartographic",
+					"showProperties": ["scale", "coordinates"]
+				},
 				"Concept": {
 					"@id": "Concept-chips",
 					"@type": "fresnel:Lens",
@@ -241,6 +247,12 @@
 						"hasOccupation",
 						"fieldOfActivity"
 					]
+				},
+				"Instance": {
+					"@id": "Instance-web-card",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
 				}
 			}
 		}
@@ -565,6 +577,21 @@
 				"fresnel:contentBefore": " ◦ ",
 				"fresnel:contentFirst": ""
 			}
+		},
+		"cartographicAttributes-format": {
+			"@id": "cartographicAttributes-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["cartographicAttributes"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Cartographic-format": {
+			"@id": "MediaObject-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Cartographic"],
+			"fresnel:resourceStyle": ["block"]
 		},
 		"Instance-self-x-format": {
 			"@id": "Instance-self-x-format",
