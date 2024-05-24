@@ -237,7 +237,7 @@
 	}
 
 	.tab {
-		@apply block px-4 py-4 lowercase no-underline;
+		@apply block py-4 pl-4 pr-3.5 lowercase no-underline;
 		transition: filter 0.1s ease;
 	}
 
