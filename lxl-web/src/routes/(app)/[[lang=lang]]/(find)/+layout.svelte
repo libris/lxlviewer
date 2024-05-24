@@ -54,6 +54,35 @@
 			{@const facets = searchResult.facetGroups}
 			{@const numHits = searchResult.totalItems}
 			{@const filterCount = getFiltersCount(searchResult.mapping)}
+			{#if searchResult.predicates.length > 0}
+				<nav
+					class="border-b border-primary/16 px-4 md:flex lg:px-6"
+					aria-label={$page.data.t('search.selectedFilters')}
+				>
+					<ul class="flex flex-wrap items-center gap-2">
+						<li class="tab-header max-w-80 truncate font-bold">{$page.data.title}</li>
+						<span class="tab-header">{$page.data.t('search.occursAs')}</span>
+
+						{#each searchResult.predicates as p}
+							<li>
+								<a
+									class="tab"
+									class:active={true}
+									class:tab-selected={p.selected}
+									data-sveltekit-replacestate
+									href={p.view['@id']}
+								>
+									{p.str}
+									<span
+										class="mb-px rounded-sm bg-pill/4 px-1 text-sm text-secondary md:text-xs lg:text-sm"
+										aria-label="{p.totalItems} {$page.data.t('search.hits')}">{p.totalItems}</span
+									>
+								</a>
+							</li>
+						{/each}
+					</ul>
+				</nav>
+			{/if}
 			{#if shouldShowMapping(searchResult.mapping)}
 				<nav
 					class="hidden md:flex md:px-6 md:pb-0 md:pt-4"
@@ -210,5 +239,19 @@
 		.toolbar {
 			grid-template-areas: 'hits sort-select';
 		}
+	}
+
+	.tab-header {
+		@apply block py-4;
+	}
+
+	.tab {
+		@apply block py-4 pl-4 pr-3.5 lowercase no-underline;
+		transition: filter 0.1s ease;
+	}
+
+	.tab-selected {
+		@apply border-primary pb-3.5;
+		border-bottom-width: 0.125rem;
 	}
 </style>

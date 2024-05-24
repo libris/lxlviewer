@@ -85,7 +85,8 @@ export default {
 		showMore: 'Visa fler',
 		showFewer: 'Visa färre',
 		showDetails: 'Visa mer',
-		hideDetails: 'Visa mindre'
+		hideDetails: 'Visa mindre',
+		occursAs: 'förekommer som'
 	},
 	sort: {
 		sortBy: 'Sortera efter',
