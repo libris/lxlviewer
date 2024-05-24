@@ -142,7 +142,9 @@
 					</div>
 					<ol class="flex flex-col gap-2 md:px-0">
 						{#each searchResult.items as item (item['@id'])}
-							<SearchCard {item} />
+							<li>
+								<SearchCard {item} />
+							</li>
 						{/each}
 					</ol>
 					<Pagination data={searchResult} />

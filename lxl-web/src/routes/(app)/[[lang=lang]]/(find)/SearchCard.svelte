@@ -1,147 +1,71 @@
 <script lang="ts">
-	import jmespath from 'jmespath';
-	import { relativizeUrl } from '$lib/utils/http';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import type { ResourceData } from '$lib/types/ResourceData';
-	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-	import { page } from '$app/stores';
-	import placeholder from '$lib/assets/img/placeholder.svg';
-	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import type { SearchResultItem } from './search';
 
 	export let item: SearchResultItem;
 
-	function getInstanceData(instances: ResourceData) {
-		if (typeof instances === 'object') {
-			let years: string = '';
-			let count = 1;
-			let query = '_display[].publication[].*[][?year].year[]';
-
-			if (Array.isArray(instances)) {
-				count = instances.length;
-				query = '[]._display[].publication[].*[][?year].year[]';
-			}
-
-			let res = jmespath.search(instances, query) as string[] | null;
-			if (res) {
-				years = res
-					.filter((el, i, arr) => !isNaN(parseInt(el)) && arr.indexOf(el) === i)
-					.sort()
-					.filter((el, i, arr) => i === 0 || i === arr.length - 1)
-					.join('-');
-			}
-
-			return { count, years };
-		}
-		return null;
-	}
+	$: console.log('item', item);
 </script>
 
-<li
-	class="flex gap-4 border-b border-b-primary/16 bg-cards p-4 sm:gap-8 sm:p-6 md:rounded-md"
-	data-testid="search-card"
->
-	<a href={relativizeUrl(item['@id'])}>
-		<div class="relative flex h-full max-h-32 w-full max-w-20">
-			{#if item.image}
-				<img
-					src={item.image.url}
-					width={item.image.widthṔx}
-					height={item.image.heightPx}
-					alt={$page.data.t('general.latestInstanceCover')}
-					class="h-auto w-full rounded-sm object-cover object-top"
-				/>
-				{#if item['@type'] !== 'Text' && getTypeIcon(item['@type'])}
-					<div class="absolute -left-4 -top-4">
-						<div class="rounded-md bg-cards p-1.5">
-							<svelte:component
-								this={getTypeIcon(item['@type'])}
-								class="h-6 w-6 text-icon-strong"
-							/>
-						</div>
-					</div>
-				{/if}
-			{:else}
-				<div class="flex items-center justify-center">
-					<img src={placeholder} alt="" class="h-20 w-20 rounded-sm object-cover" />
-					{#if getTypeIcon(item['@type'])}
-						<svelte:component
-							this={getTypeIcon(item['@type'])}
-							class="absolute text-xl text-icon"
-						/>
-					{/if}
-				</div>
-			{/if}
-		</div>
-	</a>
-
-	<div class="flex flex-1 flex-col gap-1 sm:gap-2">
-		<a
-			href={relativizeUrl(item['@id'])}
-			class="search-card-heading line-clamp-1 text-ellipsis no-underline text-4-regular sm:line-clamp-2"
-			data-testid="search-card-heading"
-			><h2>
-				<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
-			</h2></a
-		>
-		<div class="search-card-body flex flex-col items-baseline gap-1 sm:flex-row sm:gap-2">
-			{#each item['card-body']?._display as obj}
-				{#if 'hasInstance' in obj}
-					{@const instances = getInstanceData(obj.hasInstance)}
-					{#if instances?.years}
-						<div
-							class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2"
-						>
-							<span>
-								{#if instances.count > 1}
-									{instances?.count}
-									{$page.data.t('search.editions')}
-									{`(${instances.years})`}
-								{:else}
-									{instances.years}
-								{/if}
-							</span>
-						</div>
-					{/if}
-				{:else}
-					<div
-						class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2"
-					>
-						<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block truncate />
-					</div>
-				{/if}
-			{/each}
-			<div class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2">
-				{item.typeStr}
-			</div>
-		</div>
-	</div>
-</li>
+<article class="search-card">
+	<!-- svelte-ignore a11y-missing-content -->
+	<!-- (content shouldn't be needed as we're using aria-labelledby, see: https://github.com/sveltejs/svelte/issues/8296) -->
+	<a
+		class="card-link"
+		href="/"
+		aria-labelledby="id-title-here"
+		aria-describedby="id-body-here id-footer-here"
+	></a>
+	<div class="card-image"></div>
+	<header class="card-header" id="id-title-here">
+		<hgroup>
+			<h1 class="text-4-cond-bold">title</h1>
+			<p>transliteration</p>
+		</hgroup>
+		<p><a href="/test">original title</a></p>
+	</header>
+	<div class="card-body" id="id-body-here">body</div>
+	<footer class="card-footer" id="id-footer-here">footer</footer>
+</article>
 
 <style lang="postcss">
-	.search-card-heading {
-		& :global([data-property='mainTitle']) {
-			@apply text-4-cond-bold;
+	.search-card {
+		display: grid;
+		position: relative;
+		grid-template-areas:
+			'image header'
+			'image body'
+			'image footer';
+		grid-template-columns: 128px 1fr;
+
+		&:has(a:hover) {
+			@apply shadow-xl;
 		}
 	}
 
-	.search-card-body {
-		/* hide formatting */
-		& :global([data-property='contribution'] ._contentBefore),
-		:global([data-property='contribution'] ._contentAfter),
-		:global([data-property='role']) {
-			@apply hidden;
-		}
-
-		/* ...except for agents */
-		& :global([data-property='agent'] ._contentBefore),
-		:global([data-property='agent'] ._contentBefore) {
-			@apply inline;
-		}
+	.card-link {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
 	}
 
-	/* Hide lang on small screens */
-	.search-card-prop:has([data-property='language']) {
-		@apply hidden sm:inline;
+	a:not(.card-link) {
+		position: relative; /* needed to allow mouse events on links above card-link */
+	}
+
+	.card-image {
+		grid-area: image;
+	}
+
+	.card-header {
+		grid-area: header;
+	}
+
+	.card-body {
+		grid-area: body;
+	}
+
+	.card-footer {
+		grid-area: footer;
 	}
 </style>
