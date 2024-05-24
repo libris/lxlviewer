@@ -3,28 +3,26 @@
 
 	export let item: SearchResultItem;
 
-	$: console.log('item', item);
+	$: titleId = `card-title-${item['@id']}`;
+	$: bodyId = `card-body-${item['@id']}`;
+	$: footerId = `card-footer-${item['@id']}`;
 </script>
 
 <article class="search-card">
 	<!-- svelte-ignore a11y-missing-content -->
 	<!-- (content shouldn't be needed as we're using aria-labelledby, see: https://github.com/sveltejs/svelte/issues/8296) -->
-	<a
-		class="card-link"
-		href="/"
-		aria-labelledby="id-title-here"
-		aria-describedby="id-body-here id-footer-here"
+	<a class="card-link" href="/" aria-labelledby={titleId} aria-describedby={`${bodyId} ${footerId}`}
 	></a>
 	<div class="card-image"></div>
-	<header class="card-header" id="id-title-here">
+	<header class="card-header" id={titleId}>
 		<hgroup>
 			<h1 class="text-4-cond-bold">title</h1>
 			<p>transliteration</p>
 		</hgroup>
 		<p><a href="/test">original title</a></p>
 	</header>
-	<div class="card-body" id="id-body-here">body</div>
-	<footer class="card-footer" id="id-footer-here">footer</footer>
+	<div class="card-body" id={bodyId}>body</div>
+	<footer class="card-footer" id={footerId}>footer</footer>
 </article>
 
 <style lang="postcss">
