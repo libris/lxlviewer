@@ -90,7 +90,7 @@ export default {
 		occursAs: 'as'
 	},
 	sort: {
-		sortBy: 'Sort by',
+		sort: 'Sort',
 		relevancy: 'Relevancy',
 		alphaAsc: 'A-Z',
 		alphaDesc: 'Z-A',

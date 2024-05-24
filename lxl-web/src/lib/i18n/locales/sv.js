@@ -89,7 +89,7 @@ export default {
 		occursAs: 'förekommer som'
 	},
 	sort: {
-		sortBy: 'Sortera efter',
+		sort: 'Sortera',
 		relevancy: 'Relevans',
 		alphaAsc: 'A-Ö',
 		alphaDesc: 'Ö-A',
