@@ -184,8 +184,12 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		...resourceParts,
 		searchResult: isFindRoute
 			? await getSearchResult()
-			: isDataRequest && isResourceRoute && shouldFindRelations && resourceId
-				? getRelated() // stream results on resource page
+			: isResourceRoute && shouldFindRelations && resourceId
+				? // stream results on resource page when doing client side navigation
+					// TODO: fix waterfall. fetch in parallel with rest of page data when SSR
+					isDataRequest
+					? getRelated()
+					: await getRelated()
 				: null
 	};
 };
