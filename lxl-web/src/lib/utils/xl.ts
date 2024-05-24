@@ -258,6 +258,11 @@ export class DisplayUtil {
 		propertyName: PropertyName
 	) => {
 		// FIXME - hardcoded workaround to get title + language in translationOf - should we use sublenses?
+		if (lensType == LensType.WebCardHeaderExtra && propertyName === 'translationOf') {
+			// return LensType.WebChip; // without language
+			return LensType.Card; // with language
+		}
+		// FIXME - hardcoded workaround to get title + language in translationOf - should we use sublenses?
 		if (this.isDerivedLens(lensType) && propertyName === 'translationOf') {
 			return LensType.Card;
 		}
