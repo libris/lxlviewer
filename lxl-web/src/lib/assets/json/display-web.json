@@ -255,6 +255,30 @@
 					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
 				}
 			}
+		},
+		"web-card-header-extra": {
+			"@id": "web-card-header-extra",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-card-header-extra",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["translationOf"]
+				}
+			}
+		},
+		"web-card-footer": {
+			"@id": "web-card-footer",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["language", { "inverseOf": "instanceOf" }]
+				}
+			}
 		}
 	},
 	"formatters": {

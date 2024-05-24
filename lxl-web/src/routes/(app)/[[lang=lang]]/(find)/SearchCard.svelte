@@ -8,6 +8,8 @@
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import type { SearchResultItem } from './search';
+	import { LxlLens } from '$lib/utils/display.types';
+	import { LensType } from '$lib/utils/xl';
 
 	export let item: SearchResultItem;
 
@@ -82,10 +84,34 @@
 			data-testid="search-card-heading"
 			><h2>
 				<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
-			</h2></a
-		>
+			</h2>
+		</a>
+		header-extra:
 		<div class="search-card-body flex flex-col items-baseline gap-1 sm:flex-row sm:gap-2">
-			{#each item['card-body']?._display as obj}
+			{#each item[LensType.WebCardHeaderExtra]?._display as obj}
+				<div
+					class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2"
+				>
+					<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block />
+				</div>
+			{/each}
+		</div>
+		body:
+		<div class="search-card-body flex flex-col items-baseline gap-1 sm:flex-row sm:gap-2">
+			{#each item[LxlLens.CardBody]?._display as obj}
+				<div
+					class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2"
+				>
+					<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block />
+				</div>
+			{/each}
+		</div>
+		footer:
+		<div class="search-card-body flex flex-col items-baseline gap-1 sm:flex-row sm:gap-2">
+			<div class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2">
+				{item.typeStr}
+			</div>
+			{#each item[LensType.WebCardFooter]?._display as obj}
 				{#if 'hasInstance' in obj}
 					{@const instances = getInstanceData(obj.hasInstance)}
 					{#if instances?.years}
@@ -111,9 +137,6 @@
 					</div>
 				{/if}
 			{/each}
-			<div class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2">
-				{item.typeStr}
-			</div>
 		</div>
 	</div>
 </li>

@@ -37,6 +37,6 @@ export const DERIVED_LENSES: DerivedLensTypeDefinition[] = [
 		name: LxlLens.CardBody,
 		base: [LensType.WebCard, LensType.Card],
 		minusFirst: [LensType.WebChip, LensType.Chip],
-		minusAll: []
+		minusAll: [LensType.WebCardHeaderExtra, LensType.WebCardFooter]
 	}
 ];
