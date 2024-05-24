@@ -22,7 +22,8 @@
 	--font-fallback: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Ubuntu', 'Cantarell',
 		'Noto Sans', sans-serif;
 	--font-body: Inter, var(--font-fallback);
-	--padding-page: 16px;
+	--padding-base: 16px;
+	--gap-base: 16px;
 	--height-input: 44px;
 
 	font-family: var(--font-body);
