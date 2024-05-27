@@ -54,7 +54,7 @@
 			aria-labelledby={titleId}
 			aria-describedby={`${bodyId} ${footerId}`}
 		></a>
-		<div class="card-image">
+		<div class="card-image mt-1">
 			<div class="pointer-events-none relative flex h-full max-h-20 w-full max-w-20">
 				{#if item.image}
 					<img
