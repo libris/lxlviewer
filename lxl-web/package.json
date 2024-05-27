@@ -44,6 +44,7 @@
 		"lint-staged": "^15.2.0",
 		"lxljs": "file:../lxljs",
 		"magic-string": "^0.30.7",
+		"mdsvex": "^0.11.0",
 		"postcss": "^8.4.32",
 		"postcss-import": "^16.0.0",
 		"prettier": "^3.0.0",
