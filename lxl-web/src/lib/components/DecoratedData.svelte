@@ -265,7 +265,7 @@
 
 <style lang="postcss">
 	.definition {
-		@apply text-sm italic text-secondary underline decoration-dotted;
+		@apply text-sm text-secondary underline decoration-dotted;
 	}
 
 	.pill {
