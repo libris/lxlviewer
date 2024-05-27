@@ -62,9 +62,10 @@
 						width={item.image.widthṔx}
 						height={item.image.heightPx}
 						alt={$page.data.t('general.latestInstanceCover')}
-						class="h-auto w-full rounded-sm object-contain object-top"
+						class:rounded-full={item['@type'] === 'Person'}
+						class="h-auto w-full object-contain object-top"
 					/>
-					{#if item['@type'] !== 'Text' && getTypeIcon(item['@type'])}
+					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 						<div class="absolute -left-4 -top-4">
 							<div class="rounded-md bg-cards p-1.5">
 								<svelte:component
@@ -76,7 +77,13 @@
 					{/if}
 				{:else}
 					<div class="flex items-center justify-center">
-						<img src={placeholder} alt="" class="h-20 w-20 rounded-sm object-contain object-top" />
+						<img
+							src={placeholder}
+							alt=""
+							class:rounded-full={item['@type'] === 'Person'}
+							class:rounded-sm={item['@type'] !== 'Person'}
+							class="h-20 w-20 object-contain object-top"
+						/>
 						{#if getTypeIcon(item['@type'])}
 							<svelte:component
 								this={getTypeIcon(item['@type'])}
