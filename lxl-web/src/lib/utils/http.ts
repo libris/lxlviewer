@@ -24,5 +24,8 @@ export function getUriSlug(url: string | undefined) {
 	if (!url) {
 		return '';
 	}
-	return new URL(url).pathname.split('/').pop();
+	const urlArray = new URL(url).pathname.split('/');
+	return urlArray.includes('term')
+		? urlArray.slice(urlArray.indexOf('term') + 1).join('/')
+		: urlArray.pop();
 }
