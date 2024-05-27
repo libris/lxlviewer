@@ -86,7 +86,8 @@ export default {
 		showMore: 'Show more',
 		showFewer: 'Show fewer',
 		showDetails: 'Show more',
-		hideDetails: 'Show less'
+		hideDetails: 'Show less',
+		occursAs: 'as'
 	},
 	sort: {
 		sortBy: 'Sort by',
