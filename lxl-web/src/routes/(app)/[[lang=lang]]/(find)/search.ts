@@ -44,8 +44,7 @@ export async function asResult(
 			)
 		})),
 		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath),
-		predicates: displayPredicates(view, displayUtil, locale, usePath),
-		boolFilters: displayBoolFilters(view, displayUtil, locale, usePath)
+		predicates: displayPredicates(view, displayUtil, locale, usePath)
 	};
 }
 
@@ -61,7 +60,6 @@ export interface SearchResult {
 	items: SearchResultItem[];
 	facetGroups: FacetGroup[];
 	predicates: MultiSelectFacet[];
-	boolFilters: MultiSelectFacet[];
 }
 
 export interface SearchResultItem {
@@ -261,7 +259,7 @@ function displayFacetGroups(
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
 
-	return Object.values(slices).map((g) => {
+	const result = Object.values(slices).map((g) => {
 		return {
 			label: translate(`facet.${g.alias || g.dimension}`),
 			dimension: g.dimension,
@@ -277,6 +275,10 @@ function displayFacetGroups(
 			})
 		};
 	});
+
+	result.push(displayBoolFilters(view, displayUtil, locale, translate, usePath));
+
+	return result;
 }
 
 export function displayPredicates(
@@ -302,11 +304,12 @@ function displayBoolFilters(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
+	translate: translateFn,
 	usePath: string
-): MultiSelectFacet[] {
+): FacetGroup {
 	const filters = view.stats?._boolFilters || [];
 
-	return filters.map((o) => {
+	const facets = filters.map((o) => {
 		return {
 			selected: o._selected || false,
 			totalItems: o.totalItems,
@@ -315,6 +318,12 @@ function displayBoolFilters(
 			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || ''
 		};
 	});
+
+	return {
+		label: translate('facet.boolFilters'),
+		dimension: 'boolFilters',
+		facets: facets
+	};
 }
 
 /**

@@ -57,7 +57,8 @@ export default {
 		intendedAudience: 'Intended audience',
 		nationality: 'Nationality',
 		hasOccupation: 'Has Occupation',
-		fieldOfActivity: 'Field of Activity'
+		fieldOfActivity: 'Field of Activity',
+		boolFilters: 'Other'
 	},
 	search: {
 		search: 'Search',

@@ -56,7 +56,8 @@ export default {
 		intendedAudience: 'Målgrupp',
 		nationality: 'Nationalitet/verksamhetsland',
 		hasOccupation: 'Har yrke eller sysselsättning',
-		fieldOfActivity: 'Verksamhetsområde'
+		fieldOfActivity: 'Verksamhetsområde',
+		boolFilters: 'Övrigt'
 	},
 	search: {
 		search: 'Sök',

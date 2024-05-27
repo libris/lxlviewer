@@ -2,13 +2,12 @@
 	import { page } from '$app/stores';
 	import { getModalContext } from '$lib/contexts/modal';
 	import FacetGroup from './FacetGroup.svelte';
-	import type { DisplayMapping, FacetGroup as TypedFacetGroup, MultiSelectFacet } from './search';
+	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from './search';
 	import SearchMapping from './SearchMapping.svelte';
 	import { shouldShowMapping } from './utils';
 
 	export let facets: TypedFacetGroup[];
 	export let mapping: DisplayMapping[];
-	export let boolFilters: MultiSelectFacet[];
 
 	const inModal = getModalContext();
 
@@ -35,27 +34,6 @@
 					<FacetGroup {group} locale={$page.data.locale} {searchPhrase} />
 				{/each}
 			</ol>
-			<ul class="list-none rounded-md bg-pill/4 py-2" id="booFilters">
-				{#each boolFilters as facet (facet.view['@id'])}
-					<li class="mb-[0.3rem]">
-						<a
-							class="facet-link flex items-end justify-between gap-2 pl-6 no-underline"
-							href={facet.view['@id']}
-						>
-							<span class="flex items-baseline">
-								{#if 'selected' in facet}
-									<!-- howto A11y?! -->
-									<span class="sr-only"
-										>{facet.selected ? $page.data.t('search.activeFilters') : ''}</span
-									>
-									<span class="mr-1" aria-hidden="true">{facet.selected ? '☑' : '☐'}</span>
-								{/if}
-								<span>{facet.str}</span>
-							</span>
-						</a>
-					</li>
-				{/each}
-			</ul>
 		</nav>
 	{/if}
 </div>
