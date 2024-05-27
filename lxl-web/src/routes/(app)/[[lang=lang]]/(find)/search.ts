@@ -159,7 +159,8 @@ export enum SearchOperators {
 	lessThan = 'lessThan',
 	lessThanOrEquals = 'lessThanOrEquals',
 	existence = 'existence',
-	notExistence = 'notExistence'
+	notExistence = 'notExistence',
+	none = 'none'
 }
 
 type MappingObj = { [key in SearchOperators]: SearchMapping[] | string | FramedData };
@@ -167,6 +168,7 @@ type MappingObj = { [key in SearchOperators]: SearchMapping[] | string | FramedD
 export interface SearchMapping extends MappingObj {
 	alias: string;
 	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
+	object?: FramedData;
 	up: { '@id': string };
 }
 
@@ -208,6 +210,13 @@ function displayMappings(
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
+			} else if (m.object) {
+				return {
+					display: displayUtil.lensAndFormat(m.object, LensType.Chip, locale),
+					label: '',
+					operator,
+					...('up' in m && { up: replacePath(m.up as Link, usePath) })
+				} as DisplayMapping;
 			} else {
 				return {
 					display: { [JsonLd.VALUE]: '<ERROR>' } as DisplayDecorated,
@@ -220,7 +229,7 @@ function displayMappings(
 	}
 
 	function _hasOperator(obj: SearchMapping): keyof typeof SearchOperators | undefined {
-		const op = Object.values(SearchOperators).find((val) => val in obj);
+		const op = Object.values(SearchOperators).find((val) => val in obj) || SearchOperators.none;
 
 		if (!isFreeTextQuery(obj.property)) {
 			if (op === SearchOperators.equals && obj[op] === '*') {

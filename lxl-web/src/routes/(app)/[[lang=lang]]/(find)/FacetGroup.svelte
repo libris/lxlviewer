@@ -76,11 +76,13 @@
 							{/if}
 							<span>{facet.str}</span>
 						</span>
-						<span
-							class="facet-total mb-px rounded-sm bg-pill/4 px-1 text-sm text-secondary md:text-xs lg:text-sm"
-							aria-label="{facet.totalItems} {$page.data.t('search.hits')}"
-							>{facet.totalItems.toLocaleString(locale)}</span
-						>
+						{#if facet.totalItems > 0}
+							<span
+								class="facet-total mb-px rounded-sm bg-pill/4 px-1 text-sm text-secondary md:text-xs lg:text-sm"
+								aria-label="{facet.totalItems} {$page.data.t('search.hits')}"
+								>{facet.totalItems.toLocaleString(locale)}</span
+							>
+						{/if}
 					</a>
 				</li>
 			{/each}
