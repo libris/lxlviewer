@@ -279,10 +279,16 @@
 					"showProperties": ["language", { "inverseOf": "instanceOf" }]
 				},
 				"Instance": {
-					"@id": "Instance-web-card",
+					"@id": "Instance-web-card-footer",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Instance",
 					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
+				},
+				"Person": {
+					"@id": "Person-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["nationality"]
 				}
 			}
 		}
