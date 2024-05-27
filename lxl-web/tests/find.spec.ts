@@ -27,8 +27,8 @@ test('displays 10 search cards on a page', async ({ page }) => {
 	await expect(page.getByTestId('search-card')).toHaveCount(10);
 });
 
-test('search card heading contains a link', async ({ page }) => {
-	await expect(page.getByTestId('search-card-heading').first()).toHaveAttribute('href');
+test('search card contains a link', async ({ page }) => {
+	await expect(page.getByTestId('search-card').first().getByRole('link')).toHaveAttribute('href');
 });
 
 test('has a facet panel', async ({ page }) => {

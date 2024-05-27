@@ -45,7 +45,7 @@
 </script>
 
 <div class="search-card-container">
-	<article class="search-card">
+	<article class="search-card" data-testid="search-card">
 		<!-- svelte-ignore a11y-missing-content -->
 		<!-- (content shouldn't be needed as we're using aria-labelledby, see: https://github.com/sveltejs/svelte/issues/8296) -->
 		<a
