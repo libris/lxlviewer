@@ -237,7 +237,4 @@
 	:global(.card-header [data-property='_script']) {
 		display: block;
 	}
-	:global(.card-header *:has(> [data-property='_script']) > ._contentBefore) {
-		display: none;
-	}
 </style>
