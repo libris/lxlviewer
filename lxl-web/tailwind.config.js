@@ -149,11 +149,17 @@ export default {
 				'.text-3-regular': {
 					'@apply text-base font-normal': {}
 				},
+				'.text-3-cond': {
+					'@apply text-base font-condensed': {}
+				},
 				'.text-3-cond-bold': {
 					'@apply text-base font-condensed font-bold': {}
 				},
 				'.text-4-regular': {
 					'@apply text-lg font-normal': {}
+				},
+				'.text-4-cond': {
+					'@apply text-lg font-condensed': {}
 				},
 				'.text-4-cond-bold': {
 					'@apply text-lg font-condensed font-bold': {}

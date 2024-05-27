@@ -169,7 +169,7 @@
 							</div>
 						{/if}
 					</div>
-					<ol class="flex flex-col gap-2 md:px-0">
+					<ol class="flex flex-col gap-0.5 md:px-0">
 						{#each searchResult.items as item (item['@id'])}
 							<li>
 								<SearchCard {item} />

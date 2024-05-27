@@ -216,9 +216,17 @@
 				{#if propertyName && propertyData}
 					<svelte:element this={getElementType(propertyData)} data-property={propertyName}>
 						{#if shouldShowLabels()}
-							<div class="label">
-								{data._label}
-							</div>
+							<svelte:element this={block ? 'div' : 'span'}>
+								<!-- Add inner span with inline-block to achieve first letter capitalization while still supporting inline whitespaces -->
+								<span
+									class="inline-block first-letter:capitalize"
+									class:text-sm={block}
+									class:text-secondary={block}
+								>
+									{data._label}
+								</span>
+								{' '}
+							</svelte:element>
 						{/if}
 						<svelte:self
 							data={propertyData}
@@ -258,10 +266,6 @@
 <style lang="postcss">
 	.definition {
 		@apply text-sm italic text-secondary underline decoration-dotted;
-	}
-
-	.label {
-		@apply text-sm text-secondary first-letter:uppercase;
 	}
 
 	.pill {
