@@ -44,7 +44,8 @@ export async function asResult(
 			)
 		})),
 		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath),
-		predicates: displayPredicates(view, displayUtil, locale, usePath)
+		predicates: displayPredicates(view, displayUtil, locale, usePath),
+		boolFilters: displayBoolFilters(view, displayUtil, locale, usePath)
 	};
 }
 
@@ -60,6 +61,7 @@ export interface SearchResult {
 	items: SearchResultItem[];
 	facetGroups: FacetGroup[];
 	predicates: MultiSelectFacet[];
+	boolFilters: MultiSelectFacet[];
 }
 
 export interface SearchResultItem {
@@ -97,7 +99,7 @@ export interface Facet {
 	str: string;
 }
 
-interface MultiSelectFacet extends Facet {
+export interface MultiSelectFacet extends Facet {
 	selected: boolean;
 }
 
@@ -128,6 +130,7 @@ export interface PartialCollectionView {
 		[JsonLd.ID]: '#stats';
 		sliceByDimension: Record<FacetGroupId, Slice>;
 		_predicates: Observation[];
+		_boolFilters?: Observation[];
 	};
 }
 
@@ -282,6 +285,25 @@ export function displayPredicates(
 			view: replacePath(o.view, usePath),
 			object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
 			str: toString(displayUtil.lensAndFormat(o.object, LensType.WebChip, locale)) || ''
+		};
+	});
+}
+
+function displayBoolFilters(
+	view: PartialCollectionView,
+	displayUtil: DisplayUtil,
+	locale: LangCode,
+	usePath: string
+): MultiSelectFacet[] {
+	const filters = view.stats?._boolFilters || [];
+
+	return filters.map((o) => {
+		return {
+			selected: o._selected || false,
+			totalItems: o.totalItems,
+			view: replacePath(o.view, usePath),
+			object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
+			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || ''
 		};
 	});
 }

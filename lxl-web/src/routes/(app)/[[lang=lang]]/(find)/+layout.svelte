@@ -98,11 +98,15 @@
 							{$page.data.t('search.filters')} ({numHits.toLocaleString($page.data.locale)}
 							{numHits == 1 ? $page.data.t('search.hitsOne') : $page.data.t('search.hits')})
 						</span>
-						<Filters {facets} mapping={searchResult.mapping} />
+						<Filters
+							{facets}
+							mapping={searchResult.mapping}
+							boolFilters={searchResult.boolFilters}
+						/>
 					</Modal>
 				{/if}
 				<div class="filters hidden md:block" id="filters">
-					<Filters {facets} mapping={searchResult.mapping} />
+					<Filters {facets} mapping={searchResult.mapping} boolFilters={searchResult.boolFilters} />
 				</div>
 
 				<div class="results max-w-content">
