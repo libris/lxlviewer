@@ -277,6 +277,12 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
 					"showProperties": ["language", { "inverseOf": "instanceOf" }]
+				},
+				"Instance": {
+					"@id": "Instance-web-card",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
 				}
 			}
 		}
