@@ -13,7 +13,10 @@
 			</p>
 			<ul>
 				<li>
-					<a href="http://kb.se/libris">{$page.data.t('footer.faq')}</a>
+					<a
+						href="https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-sok.html"
+						>{$page.data.t('footer.faq')}</a
+					>
 				</li>
 			</ul>
 		</nav>
