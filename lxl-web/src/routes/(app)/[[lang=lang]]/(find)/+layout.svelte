@@ -7,6 +7,7 @@
 	import Pagination from './Pagination.svelte';
 	import Filters from './Filters.svelte';
 	import IconSliders from '~icons/bi/sliders';
+	import BiChevronDown from '~icons/bi/chevron-down';
 	import type { SearchResult, DisplayMapping } from './search';
 	import { shouldShowMapping } from './utils';
 
@@ -107,7 +108,7 @@
 
 				<div class="results max-w-content">
 					<div
-						class="toolbar flex min-h-14 items-center justify-between pb-4 page-padding md:min-h-fit"
+						class="toolbar flex min-h-14 items-center justify-between page-padding md:min-h-fit md:p-0 md:pb-4"
 					>
 						<a
 							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
@@ -153,19 +154,24 @@
 						</span>
 						{#if numHits > 0}
 							<div
-								class="sort-select flex flex-col items-baseline justify-self-end"
+								class="sort-select flex flex-col items-end justify-self-end"
 								data-testid="sort-select"
 							>
-								<label class="text-secondary text-2-regular" for="search-sort">
-									{$page.data.t('sort.sortBy')}
+								<label class="pr-6 text-secondary text-2-regular" for="search-sort">
+									{$page.data.t('sort.sort')}
 								</label>
-								<select id="search-sort" form="main-search" on:change={handleSortChange}>
-									{#each sortOptions as option}
-										<option value={option.value} selected={option.value === sortOrder}
-											>{option.label}</option
-										>
-									{/each}
-								</select>
+								<div class="relative">
+									<select id="search-sort" form="main-search" on:change={handleSortChange}>
+										{#each sortOptions as option}
+											<option value={option.value} selected={option.value === sortOrder}
+												>{option.label}</option
+											>
+										{/each}
+									</select>
+									<span class="pointer-events-none absolute right-0 top-[5px]">
+										<BiChevronDown aria-hidden="true" class="text-icon" />
+									</span>
+								</div>
 							</div>
 						{/if}
 					</div>
@@ -217,6 +223,12 @@
 
 	.sort-select {
 		grid-area: sort-select;
+
+		& select {
+			@apply appearance-none pr-6 text-right;
+			/* Safari text-align fix */
+			text-align-last: right;
+		}
 	}
 
 	.hits {
