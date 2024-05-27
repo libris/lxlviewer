@@ -14,6 +14,8 @@ import { getTranslator, type translateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import { type SecureImageResolution, Width } from '$lib/utils/auxd.types';
+import getAtPath from '$lib/utils/getAtPath';
+import { getUriSlug } from '$lib/utils/http';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -95,6 +97,7 @@ export interface Facet {
 	view: Link;
 	object: DisplayDecorated;
 	str: string;
+	discriminator: string;
 }
 
 interface MultiSelectFacet extends Facet {
@@ -260,7 +263,8 @@ function displayFacetGroups(
 					totalItems: o.totalItems,
 					view: replacePath(o.view, usePath),
 					object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
-					str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || ''
+					str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
+					discriminator: getUriSlug(getAtPath(o.object, ['inScheme', JsonLd.ID], '')) || ''
 				};
 			})
 		};

@@ -19,3 +19,13 @@ export function stripAnchor(url: string | undefined) {
 	}
 	return url.split('#')[0];
 }
+
+export function getUriSlug(url: string | undefined) {
+	if (!url) {
+		return '';
+	}
+	const urlArray = new URL(url).pathname.split('/');
+	return urlArray.includes('term')
+		? urlArray.slice(urlArray.indexOf('term') + 1).join('/')
+		: urlArray.pop();
+}
