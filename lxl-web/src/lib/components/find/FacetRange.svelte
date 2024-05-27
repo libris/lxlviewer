@@ -53,7 +53,6 @@
 			bind:value={rangeTo}
 		/>
 	</div>
-	<!-- todo: reusable button classes -->
 	<button disabled={!rangeFrom && !rangeTo} class="button-primary" type="submit"
 		>{$page.data.t('general.apply')}</button
 	>

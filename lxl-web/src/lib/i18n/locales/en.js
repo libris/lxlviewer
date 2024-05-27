@@ -90,7 +90,8 @@ export default {
 		showFewer: 'Show fewer',
 		showDetails: 'Show more',
 		hideDetails: 'Show less',
-		occursAs: 'as'
+		occursAs: 'as',
+		RelatedSearchLabel: 'Search the results'
 	},
 	sort: {
 		sort: 'Sort',

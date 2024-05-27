@@ -10,6 +10,7 @@
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import type { SearchResult, DisplayMapping } from '$lib/types/search';
 	import { shouldShowMapping } from '$lib/utils/search';
+	import SearchRelated from './SearchRelated.svelte';
 
 	let showFiltersModal = false;
 	export let searchResult: SearchResult;
@@ -151,6 +152,9 @@
 								{$page.data.t('search.noResults')}
 							{/if}
 						</span>
+						{#if $page.params.fnurgel && numHits > 0}
+							<SearchRelated />
+						{/if}
 						{#if numHits > 0}
 							<div
 								class="sort-select flex flex-col items-end justify-self-end"
@@ -192,8 +196,8 @@
 	.toolbar {
 		display: grid;
 		grid-template-areas:
-			'filter-modal-toggle sort-select'
-			'hits hits';
+			'filter-modal-toggle search'
+			'hits sort-select';
 	}
 
 	.find-layout {
@@ -227,6 +231,10 @@
 		grid-area: hits;
 	}
 
+	.search {
+		grid-area: search;
+	}
+
 	@media screen and (min-width: theme('screens.md')) {
 		.filters {
 			display: block;
@@ -237,7 +245,7 @@
 		}
 
 		.toolbar {
-			grid-template-areas: 'hits sort-select';
+			grid-template-areas: 'hits search sort-select';
 		}
 	}
 	.tab-header {

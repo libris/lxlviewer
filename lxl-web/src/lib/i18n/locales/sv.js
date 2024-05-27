@@ -89,7 +89,8 @@ export default {
 		showFewer: 'Visa färre',
 		showDetails: 'Visa mer',
 		hideDetails: 'Visa mindre',
-		occursAs: 'förekommer som'
+		occursAs: 'förekommer som',
+		RelatedSearchLabel: 'Sök i resultaten'
 	},
 	sort: {
 		sort: 'Sortera',
