@@ -92,11 +92,6 @@
 				<h2 class="card-header-title">
 					<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 				</h2>
-				<!-- TODO: add transliteration here 
-				{#if item['_script']}
-					<p>transliteration</p>
-				{/if}
-				-->
 			</hgroup>
 			{#if item[LensType.WebCardHeaderExtra]?._display}
 				<p class="card-header-extra">
@@ -230,10 +225,19 @@
 	}
 
 	.card-header-extra,
-	.card-footer {
+	.card-footer,
+	.card-header :global([data-property='_script']) {
 		@apply text-xs text-secondary;
 		@container (min-width: 768px) {
 			@apply text-sm;
 		}
+	}
+
+	/** TODO: Set transliteration styling via display-web.json? */
+	:global(.card-header [data-property='_script']) {
+		display: block;
+	}
+	:global(.card-header *:has(> [data-property='_script']) > ._contentBefore) {
+		display: none;
 	}
 </style>
