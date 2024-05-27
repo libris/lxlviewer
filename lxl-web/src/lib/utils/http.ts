@@ -19,3 +19,10 @@ export function stripAnchor(url: string | undefined) {
 	}
 	return url.split('#')[0];
 }
+
+export function getUriSlug(url: string | undefined) {
+	if (!url) {
+		return '';
+	}
+	return new URL(url).pathname.split('/').pop();
+}

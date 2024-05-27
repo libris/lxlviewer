@@ -74,7 +74,10 @@
 								>
 								<span class="mr-1" aria-hidden="true">{facet.selected ? '☑' : '☐'}</span>
 							{/if}
-							<span>{facet.str}</span>
+							<span
+								>{facet.str}
+								<span class="ml-0.5 text-xs text-primary/40">{facet.discriminator}</span>
+							</span>
 						</span>
 						<span
 							class="facet-total mb-px rounded-sm bg-pill/4 px-1 text-sm text-secondary md:text-xs lg:text-sm"
