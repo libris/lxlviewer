@@ -100,7 +100,7 @@ export interface Facet {
 	discriminator: string;
 }
 
-interface MultiSelectFacet extends Facet {
+export interface MultiSelectFacet extends Facet {
 	selected: boolean;
 }
 
@@ -131,6 +131,7 @@ export interface PartialCollectionView {
 		[JsonLd.ID]: '#stats';
 		sliceByDimension: Record<FacetGroupId, Slice>;
 		_predicates: Observation[];
+		_boolFilters?: Observation[];
 	};
 }
 
@@ -159,7 +160,8 @@ export enum SearchOperators {
 	lessThan = 'lessThan',
 	lessThanOrEquals = 'lessThanOrEquals',
 	existence = 'existence',
-	notExistence = 'notExistence'
+	notExistence = 'notExistence',
+	none = 'none'
 }
 
 type MappingObj = { [key in SearchOperators]: SearchMapping[] | string | FramedData };
@@ -167,6 +169,7 @@ type MappingObj = { [key in SearchOperators]: SearchMapping[] | string | FramedD
 export interface SearchMapping extends MappingObj {
 	alias: string;
 	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
+	object?: FramedData;
 	up: { '@id': string };
 }
 
@@ -208,6 +211,13 @@ function displayMappings(
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
+			} else if (m.object) {
+				return {
+					display: displayUtil.lensAndFormat(m.object, LensType.Chip, locale),
+					label: '',
+					operator,
+					...('up' in m && { up: replacePath(m.up as Link, usePath) })
+				} as DisplayMapping;
 			} else {
 				return {
 					display: { [JsonLd.VALUE]: '<ERROR>' } as DisplayDecorated,
@@ -220,7 +230,7 @@ function displayMappings(
 	}
 
 	function _hasOperator(obj: SearchMapping): keyof typeof SearchOperators | undefined {
-		const op = Object.values(SearchOperators).find((val) => val in obj);
+		const op = Object.values(SearchOperators).find((val) => val in obj) || SearchOperators.none;
 
 		if (!isFreeTextQuery(obj.property)) {
 			if (op === SearchOperators.equals && obj[op] === '*') {
@@ -252,7 +262,7 @@ function displayFacetGroups(
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
 
-	return Object.values(slices).map((g) => {
+	const result = Object.values(slices).map((g) => {
 		return {
 			label: translate(`facet.${g.alias || g.dimension}`),
 			dimension: g.dimension,
@@ -269,6 +279,10 @@ function displayFacetGroups(
 			})
 		};
 	});
+
+	result.push(displayBoolFilters(view, displayUtil, locale, translate, usePath));
+
+	return result;
 }
 
 export function displayPredicates(
@@ -288,6 +302,32 @@ export function displayPredicates(
 			str: toString(displayUtil.lensAndFormat(o.object, LensType.WebChip, locale)) || ''
 		};
 	});
+}
+
+function displayBoolFilters(
+	view: PartialCollectionView,
+	displayUtil: DisplayUtil,
+	locale: LangCode,
+	translate: translateFn,
+	usePath: string
+): FacetGroup {
+	const filters = view.stats?._boolFilters || [];
+
+	const facets = filters.map((o) => {
+		return {
+			selected: o._selected || false,
+			totalItems: o.totalItems,
+			view: replacePath(o.view, usePath),
+			object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
+			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || ''
+		};
+	});
+
+	return {
+		label: translate('facet.boolFilters'),
+		dimension: 'boolFilters',
+		facets: facets
+	};
 }
 
 /**
