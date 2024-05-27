@@ -201,13 +201,17 @@
 		@apply text-sm;
 
 		@container (min-width: 768px) {
-			@apply text-base;
+			@apply mt-2 text-base;
 		}
 	}
 
 	.card-footer {
 		grid-area: footer;
 		@apply mt-1;
+
+		@container (min-width: 768px) {
+			@apply mt-3;
+		}
 	}
 
 	.card-header-title {
