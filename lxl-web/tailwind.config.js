@@ -116,7 +116,8 @@ export default {
 				content: '78rem'
 			},
 			gridTemplateColumns: {
-				find: 'minmax(240px, 1fr) 5fr'
+				find: 'minmax(240px, 1fr) 5fr',
+				'instance-list': '16px 1fr 2fr 1fr 1fr'
 			},
 			boxShadow: {
 				input: 'inset 0px 1px 0px 0px rgb(var(--color-primary) / 0.16)',

@@ -21,14 +21,14 @@
 
 {#if image}
 	{#if linkToFull}
-		<a href={full.url} target="_blank" class="contents">
+		<a href={full.url} target="_blank" class="contents object-[inherit]">
 			<img
 				{alt}
 				{loading}
 				src={thumb.url}
 				width={thumb.widthṔx}
 				height={thumb.heightPx}
-				class="object-contain object-center"
+				class="object-contain object-[inherit]"
 			/>
 		</a>
 	{:else}
@@ -38,7 +38,7 @@
 			src={thumb.url}
 			width={thumb.widthṔx}
 			height={thumb.heightPx}
-			class="object-contain object-center"
+			class="object-contain object-[inherit]"
 		/>
 	{/if}
 {:else if showPlaceholder}
