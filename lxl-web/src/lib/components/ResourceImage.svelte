@@ -11,6 +11,7 @@
 	export let type = '';
 	export let thumbnailTargetWidth: number = Width.SMALL;
 	export let showPlaceholder = true;
+	export let geometry: 'rectangle' | 'round' = 'round';
 	export let loading: 'eager' | 'lazy' = 'eager';
 
 	$: image = first(images);
@@ -29,6 +30,7 @@
 				width={thumb.widthṔx}
 				height={thumb.heightPx}
 				class="object-contain object-[inherit]"
+				class:rounded-full={geometry === 'round'}
 			/>
 		</a>
 	{:else}
@@ -39,11 +41,18 @@
 			width={thumb.widthṔx}
 			height={thumb.heightPx}
 			class="object-contain object-[inherit]"
+			class:rounded-full={geometry === 'round'}
 		/>
 	{/if}
 {:else if showPlaceholder}
 	<div class="flex items-center justify-center">
-		<img src={placeholder} alt="" class="h-20 w-20 rounded-sm object-cover" />
+		<img
+			src={placeholder}
+			alt=""
+			class="h-20 w-20 object-cover"
+			class:rounded-sm={geometry !== 'round'}
+			class:rounded-full={geometry === 'round'}
+		/>
 		{#if getTypeIcon(type)}
 			<svelte:component this={getTypeIcon(type)} class="absolute text-2xl text-icon" />
 		{/if}

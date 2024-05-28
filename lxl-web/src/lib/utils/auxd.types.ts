@@ -13,6 +13,7 @@ export interface KbvImageObject {
 }
 
 export enum Width {
+	X_SMALL = 64,
 	SMALL = 128,
 	MEDIUM = 256,
 	FULL = 99999

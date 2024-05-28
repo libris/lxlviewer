@@ -65,6 +65,7 @@
 					alt={data.t('general.latestInstanceCover')}
 					thumbnailTargetWidth={Width.MEDIUM}
 					linkToFull
+					geometry={data.type === 'Person' ? 'round' : 'rectangle'}
 				/>
 			{/if}
 		</div>
