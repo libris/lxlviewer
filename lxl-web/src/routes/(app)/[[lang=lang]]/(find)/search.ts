@@ -319,7 +319,8 @@ function displayBoolFilters(
 			totalItems: o.totalItems,
 			view: replacePath(o.view, usePath),
 			object: displayUtil.lensAndFormat(o.object, LensType.Chip, locale),
-			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || ''
+			str: toString(displayUtil.lensAndFormat(o.object, LensType.Chip, locale)) || '',
+			discriminator: ''
 		};
 	});
 
