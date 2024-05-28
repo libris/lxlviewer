@@ -54,7 +54,7 @@
 			aria-labelledby={titleId}
 			aria-describedby={`${bodyId} ${footerId}`}
 		></a>
-		<div class="card-image my-1 aspect-square">
+		<div class="card-image">
 			<div class="pointer-events-none relative flex">
 				{#if item.image}
 					<img
@@ -63,7 +63,7 @@
 						height={item.image.heightPx}
 						alt={$page.data.t('general.latestInstanceCover')}
 						class:rounded-full={item['@type'] === 'Person'}
-						class="aspect-square object-contain object-top"
+						class="aspect-[2/3] object-contain object-top"
 					/>
 					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 						<div class="absolute -left-4 -top-4">
@@ -94,57 +94,59 @@
 				{/if}
 			</div>
 		</div>
-		<header class="card-header" id={titleId}>
-			<hgroup>
-				<h2 class="card-header-title">
-					<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
-				</h2>
-			</hgroup>
-			{#if item[LensType.WebCardHeaderExtra]?._display}
-				<p class="card-header-extra">
-					{#each item[LensType.WebCardHeaderExtra]?._display as obj}
-						<span>
-							<DecoratedData data={obj} showLabels={ShowLabelsOptions.DefaultOn} />
-						</span>
+		<div class="card-content">
+			<header class="card-header" id={titleId}>
+				<hgroup>
+					<h2 class="card-header-title">
+						<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
+					</h2>
+				</hgroup>
+				{#if item[LensType.WebCardHeaderExtra]?._display}
+					<p class="card-header-extra">
+						{#each item[LensType.WebCardHeaderExtra]?._display as obj}
+							<span>
+								<DecoratedData data={obj} showLabels={ShowLabelsOptions.DefaultOn} />
+							</span>
+						{/each}
+					</p>
+				{/if}
+			</header>
+			{#if item[LxlLens.CardBody]?._display}
+				<div class="card-body" id={bodyId}>
+					{#each item[LxlLens.CardBody]?._display as obj}
+						<div>
+							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block />
+						</div>
 					{/each}
-				</p>
+				</div>
 			{/if}
-		</header>
-		{#if item[LxlLens.CardBody]?._display}
-			<div class="card-body" id={bodyId}>
-				{#each item[LxlLens.CardBody]?._display as obj}
-					<div>
-						<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block />
-					</div>
-				{/each}
-			</div>
-		{/if}
-		<footer class="card-footer" id={footerId}>
-			<span class="font-bold">
-				{item.typeStr}
-			</span>
-			{#each item[LensType.WebCardFooter]?._display as obj}
-				{' • '}
-				{#if 'hasInstance' in obj}
-					{@const instances = getInstanceData(obj.hasInstance)}
-					{#if instances?.years}
+			<footer class="card-footer" id={footerId}>
+				<span class="font-bold">
+					{item.typeStr}
+				</span>
+				{#each item[LensType.WebCardFooter]?._display as obj}
+					{' • '}
+					{#if 'hasInstance' in obj}
+						{@const instances = getInstanceData(obj.hasInstance)}
+						{#if instances?.years}
+							<span>
+								{#if instances.count > 1}
+									{instances?.count}
+									{$page.data.t('search.editions')}
+									{`(${instances.years})`}
+								{:else}
+									{instances.years}
+								{/if}
+							</span>
+						{/if}
+					{:else}
 						<span>
-							{#if instances.count > 1}
-								{instances?.count}
-								{$page.data.t('search.editions')}
-								{`(${instances.years})`}
-							{:else}
-								{instances.years}
-							{/if}
+							<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
 						</span>
 					{/if}
-				{:else}
-					<span>
-						<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
-					</span>
-				{/if}
-			{/each}
-		</footer>
+				{/each}
+			</footer>
+		</div>
 	</article>
 </div>
 
@@ -161,10 +163,7 @@
 		position: relative;
 		background: theme(backgroundColor.cards);
 		border-radius: theme(borderRadius.md);
-		grid-template-areas:
-			'image header'
-			'image body'
-			'image footer';
+		grid-template-areas: 'image content';
 		grid-template-columns: 64px 1fr;
 
 		&:hover,
@@ -177,7 +176,7 @@
 		}
 
 		@container (min-width: 768px) {
-			@apply gap-x-5 px-5 py-5 pb-5 pt-4;
+			@apply gap-x-6 px-6 pb-6 pt-4;
 			grid-template-columns: 72px 1fr;
 		}
 	}
@@ -199,12 +198,11 @@
 		grid-area: image;
 	}
 
-	.card-header {
-		grid-area: header;
+	.card-content {
+		grid-area: content;
 	}
 
 	.card-body {
-		grid-area: body;
 		@apply text-sm;
 
 		@container (min-width: 768px) {
@@ -213,11 +211,10 @@
 	}
 
 	.card-footer {
-		grid-area: footer;
-		@apply mt-1;
+		@apply mt-auto pt-1;
 
 		@container (min-width: 768px) {
-			@apply mt-3;
+			@apply pt-3;
 		}
 	}
 
