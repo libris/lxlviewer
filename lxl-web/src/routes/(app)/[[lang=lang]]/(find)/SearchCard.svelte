@@ -63,7 +63,7 @@
 						height={item.image.heightPx}
 						alt={$page.data.t('general.latestInstanceCover')}
 						class:rounded-full={item['@type'] === 'Person'}
-						class="aspect-[1/1] object-contain object-top"
+						class="aspect-square object-contain object-top"
 					/>
 					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 						<div class="absolute -left-4 -top-4">
@@ -177,7 +177,7 @@
 		}
 
 		@container (min-width: 768px) {
-			@apply gap-x-6 px-6;
+			@apply gap-x-5 px-5 py-5 pb-5 pt-4;
 			grid-template-columns: 72px 1fr;
 		}
 	}
