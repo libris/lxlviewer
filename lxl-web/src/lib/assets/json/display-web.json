@@ -610,7 +610,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["_script"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " ◦ ",
+				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
 			}
 		},
