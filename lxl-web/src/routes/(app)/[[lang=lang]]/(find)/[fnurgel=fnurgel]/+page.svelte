@@ -130,7 +130,9 @@
 		<Modal close={handleCloseHoldings}>
 			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
 			<div class="flex flex-col">
-				<div class="search-card mb-4 flex flex-col !gap-4 !p-4 text-sm">
+				<div
+					class="relative mb-4 flex w-full flex-col gap-x-4 rounded-md border-b border-b-primary/16 bg-cards p-5 text-sm transition-shadow"
+				>
 					<div
 						id="instance-details"
 						class="overview relative"
@@ -167,7 +169,7 @@
 						/>
 					</div>
 					<button
-						class="text-left underline"
+						class="mt-2 text-left underline"
 						on:click={() => (expandedHoldingsInstance = !expandedHoldingsInstance)}
 						aria-expanded={expandedHoldingsInstance}
 						aria-controls="instance-details"
@@ -290,5 +292,9 @@
 
 	.expanded {
 		max-height: initial;
+	}
+
+	:global([data-property='_script']) {
+		display: block;
 	}
 </style>

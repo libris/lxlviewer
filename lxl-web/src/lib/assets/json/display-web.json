@@ -255,6 +255,42 @@
 					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
 				}
 			}
+		},
+		"web-card-header-extra": {
+			"@id": "web-card-header-extra",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-card-header-extra",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["translationOf"]
+				}
+			}
+		},
+		"web-card-footer": {
+			"@id": "web-card-footer",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["language", { "inverseOf": "instanceOf" }]
+				},
+				"Instance": {
+					"@id": "Instance-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
+				},
+				"Person": {
+					"@id": "Person-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["nationality"]
+				}
+			}
 		}
 	},
 	"formatters": {
@@ -574,7 +610,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["_script"],
 			"fresnel:propertyFormat": {
-				"fresnel:contentBefore": " ◦ ",
+				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
 			}
 		},

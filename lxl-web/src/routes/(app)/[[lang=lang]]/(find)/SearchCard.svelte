@@ -1,15 +1,22 @@
 <script lang="ts">
 	import jmespath from 'jmespath';
-	import { relativizeUrl } from '$lib/utils/http';
+	import type { SearchResultItem } from './search';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-	import { page } from '$app/stores';
+	import { relativizeUrl } from '$lib/utils/http';
+	import { LensType } from '$lib/utils/xl';
+	import { LxlLens } from '$lib/utils/display.types';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
-	import type { SearchResultItem } from './search';
+	import { page } from '$app/stores';
 
 	export let item: SearchResultItem;
+
+	$: id = relativizeUrl(item['@id']);
+	$: titleId = `card-title-${id}`;
+	$: bodyId = `card-body-${id}`;
+	$: footerId = `card-footer-${id}`;
 
 	function getInstanceData(instances: ResourceData) {
 		if (typeof instances === 'object') {
@@ -37,111 +44,209 @@
 	}
 </script>
 
-<li
-	class="flex gap-4 border-b border-b-primary/16 bg-cards p-4 sm:gap-8 sm:p-6 md:rounded-md"
-	data-testid="search-card"
->
-	<a href={relativizeUrl(item['@id'])}>
-		<div class="relative flex h-full max-h-32 w-full max-w-20">
-			{#if item.image}
-				<img
-					src={item.image.url}
-					width={item.image.widthṔx}
-					height={item.image.heightPx}
-					alt={$page.data.t('general.latestInstanceCover')}
-					class="h-auto w-full rounded-sm object-cover object-top"
-				/>
-				{#if item['@type'] !== 'Text' && getTypeIcon(item['@type'])}
-					<div class="absolute -left-4 -top-4">
-						<div class="rounded-md bg-cards p-1.5">
-							<svelte:component
-								this={getTypeIcon(item['@type'])}
-								class="h-6 w-6 text-icon-strong"
-							/>
-						</div>
-					</div>
-				{/if}
-			{:else}
-				<div class="flex items-center justify-center">
-					<img src={placeholder} alt="" class="h-20 w-20 rounded-sm object-cover" />
-					{#if getTypeIcon(item['@type'])}
-						<svelte:component
-							this={getTypeIcon(item['@type'])}
-							class="absolute text-xl text-icon"
-						/>
-					{/if}
-				</div>
-			{/if}
-		</div>
-	</a>
-
-	<div class="flex flex-1 flex-col gap-1 sm:gap-2">
+<div class="search-card-container">
+	<article class="search-card" data-testid="search-card">
+		<!-- svelte-ignore a11y-missing-content -->
+		<!-- (content shouldn't be needed as we're using aria-labelledby, see: https://github.com/sveltejs/svelte/issues/8296) -->
 		<a
-			href={relativizeUrl(item['@id'])}
-			class="search-card-heading line-clamp-1 text-ellipsis no-underline text-4-regular sm:line-clamp-2"
-			data-testid="search-card-heading"
-			><h2>
-				<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
-			</h2></a
-		>
-		<div class="search-card-body flex flex-col items-baseline gap-1 sm:flex-row sm:gap-2">
-			{#each item['card-body']?._display as obj}
-				{#if 'hasInstance' in obj}
-					{@const instances = getInstanceData(obj.hasInstance)}
-					{#if instances?.years}
-						<div
-							class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2"
-						>
-							<span>
-								{#if instances.count > 1}
-									{instances?.count}
-									{$page.data.t('search.editions')}
-									{`(${instances.years})`}
-								{:else}
-									{instances.years}
-								{/if}
-							</span>
+			class="card-link"
+			href={id}
+			aria-labelledby={titleId}
+			aria-describedby={`${bodyId} ${footerId}`}
+		></a>
+		<div class="card-image my-1 aspect-square">
+			<div class="pointer-events-none relative flex">
+				{#if item.image}
+					<img
+						src={item.image.url}
+						width={item.image.widthṔx}
+						height={item.image.heightPx}
+						alt={$page.data.t('general.latestInstanceCover')}
+						class:rounded-full={item['@type'] === 'Person'}
+						class="aspect-square object-contain object-top"
+					/>
+					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
+						<div class="absolute -left-4 -top-4">
+							<div class="rounded-md bg-cards p-1.5">
+								<svelte:component
+									this={getTypeIcon(item['@type'])}
+									class="h-6 w-6 text-icon-strong"
+								/>
+							</div>
 						</div>
 					{/if}
 				{:else}
-					<div
-						class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2"
-					>
-						<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block truncate />
+					<div class="flex items-center justify-center">
+						<img
+							src={placeholder}
+							alt=""
+							class:rounded-full={item['@type'] === 'Person'}
+							class:rounded-sm={item['@type'] !== 'Person'}
+							class="object-contain object-top"
+						/>
+						{#if getTypeIcon(item['@type'])}
+							<svelte:component
+								this={getTypeIcon(item['@type'])}
+								class="absolute text-lg text-icon"
+							/>
+						{/if}
 					</div>
 				{/if}
-			{/each}
-			<div class="search-card-prop line-clamp-1 sm:line-clamp-2 sm:rounded-md sm:bg-pill/4 sm:p-2">
-				{item.typeStr}
 			</div>
 		</div>
-	</div>
-</li>
+		<header class="card-header" id={titleId}>
+			<hgroup>
+				<h2 class="card-header-title">
+					<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
+				</h2>
+			</hgroup>
+			{#if item[LensType.WebCardHeaderExtra]?._display}
+				<p class="card-header-extra">
+					{#each item[LensType.WebCardHeaderExtra]?._display as obj}
+						<span>
+							<DecoratedData data={obj} showLabels={ShowLabelsOptions.DefaultOn} />
+						</span>
+					{/each}
+				</p>
+			{/if}
+		</header>
+		{#if item[LxlLens.CardBody]?._display}
+			<div class="card-body" id={bodyId}>
+				{#each item[LxlLens.CardBody]?._display as obj}
+					<div>
+						<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} block />
+					</div>
+				{/each}
+			</div>
+		{/if}
+		<footer class="card-footer" id={footerId}>
+			<span class="font-bold">
+				{item.typeStr}
+			</span>
+			{#each item[LensType.WebCardFooter]?._display as obj}
+				{' • '}
+				{#if 'hasInstance' in obj}
+					{@const instances = getInstanceData(obj.hasInstance)}
+					{#if instances?.years}
+						<span>
+							{#if instances.count > 1}
+								{instances?.count}
+								{$page.data.t('search.editions')}
+								{`(${instances.years})`}
+							{:else}
+								{instances.years}
+							{/if}
+						</span>
+					{/if}
+				{:else}
+					<span>
+						<DecoratedData data={obj} showLabels={ShowLabelsOptions.Never} />
+					</span>
+				{/if}
+			{/each}
+		</footer>
+	</article>
+</div>
 
 <style lang="postcss">
-	.search-card-heading {
+	.search-card-container {
+		container-type: inline-size;
+	}
+
+	.search-card {
+		@apply gap-x-4 border-b border-b-primary/16 px-4 pb-3 pt-3 transition-shadow;
+
+		display: grid;
+		width: 100%;
+		position: relative;
+		background: theme(backgroundColor.cards);
+		border-radius: theme(borderRadius.md);
+		grid-template-areas:
+			'image header'
+			'image body'
+			'image footer';
+		grid-template-columns: 64px 1fr;
+
+		&:hover,
+		&:focus-within {
+			@apply shadow-lg;
+
+			& .card-header-title {
+				@apply text-hover;
+			}
+		}
+
+		@container (min-width: 768px) {
+			@apply gap-x-5 px-5 py-5 pb-5 pt-4;
+			grid-template-columns: 72px 1fr;
+		}
+	}
+
+	.card-link {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
+		cursor: pointer;
+	}
+
+	:global(a):not(.card-link),
+	:global(.definition) {
+		position: relative; /* needed for supporting mouse events on links and definitions above card-link */
+	}
+
+	.card-image {
+		grid-area: image;
+	}
+
+	.card-header {
+		grid-area: header;
+	}
+
+	.card-body {
+		grid-area: body;
+		@apply text-sm;
+
+		@container (min-width: 768px) {
+			@apply mt-2 text-base;
+		}
+	}
+
+	.card-footer {
+		grid-area: footer;
+		@apply mt-1;
+
+		@container (min-width: 768px) {
+			@apply mt-3;
+		}
+	}
+
+	.card-header-title {
+		@apply text-link text-3-cond;
 		& :global([data-property='mainTitle']) {
-			@apply text-4-cond-bold;
+			@apply font-bold;
+		}
+
+		@container (min-width: 768px) {
+			@apply text-4-cond;
+
+			& :global([data-property='mainTitle']) {
+				@apply font-bold;
+			}
 		}
 	}
 
-	.search-card-body {
-		/* hide formatting */
-		& :global([data-property='contribution'] ._contentBefore),
-		:global([data-property='contribution'] ._contentAfter),
-		:global([data-property='role']) {
-			@apply hidden;
-		}
-
-		/* ...except for agents */
-		& :global([data-property='agent'] ._contentBefore),
-		:global([data-property='agent'] ._contentBefore) {
-			@apply inline;
+	.card-header-extra,
+	.card-footer,
+	.card-header :global([data-property='_script']) {
+		@apply text-xs text-secondary;
+		@container (min-width: 768px) {
+			@apply text-sm;
 		}
 	}
 
-	/* Hide lang on small screens */
-	.search-card-prop:has([data-property='language']) {
-		@apply hidden sm:inline;
+	/** TODO: Set transliteration styling via display-web.json? */
+	:global(.card-header [data-property='_script']) {
+		display: block;
 	}
 </style>
