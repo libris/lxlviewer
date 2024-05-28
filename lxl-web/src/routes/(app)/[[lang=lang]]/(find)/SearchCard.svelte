@@ -63,7 +63,9 @@
 						height={item.image.heightPx}
 						alt={$page.data.t('general.latestInstanceCover')}
 						class:rounded-full={item['@type'] === 'Person'}
-						class="aspect-[2/3] object-contain object-top"
+						class="object-contain object-top {item['@type'] !== 'Person'
+							? 'aspect-[2/3]'
+							: 'aspect-square'}"
 					/>
 					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 						<div class="absolute -left-4 -top-4">
