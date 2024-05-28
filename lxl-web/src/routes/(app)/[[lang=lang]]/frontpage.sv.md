@@ -1,6 +1,6 @@
 ## Välkommen till öppen beta!
 
-Här kommer du att kunna följa arbetet med att utveckla nya Libris sök, bidra genom att testa funktionalitet och lämna feedback.
+Här kommer du att kunna följa arbetet med att utveckla nya Libris sök, bidra genom att prova funktionalitet och lämna feedback.
 
 För att läsa mer om vilka funktioner som finns att testa eller planeras se [versionsinformation](/help), fler funktioner kommer att läggas till allt eftersom de blir färdiga.
 
