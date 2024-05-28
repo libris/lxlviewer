@@ -9,31 +9,30 @@ title: 'Hjälp'
 Here we will continuously provide information about newly added features and planned developments:
 
 ### 2024-05-29
-- Standard free text search.
-- Filters to narrow down search results.
-- Result list with pagination and sorting options.
-- Pages for detailed information about materials, including which libraries hold them.
-- Pages for persons and subject terms listing related materials.
-- Boolean search logic in the search box.
-- Example: pippi SPRÅK:"lang" hasInstanceType itemHeldBy:"sigel S".
+- Standard free text search
+- Filters to narrow down search results
+- Result list with pagination and sorting options
+- Pages for detailed information about materials, including which libraries hold them
+- Pages for persons and subject terms listing related materials
+- Boolean search logic in the search box. Example: pippi SPRÅK:"lang" hasInstanceType itemHeldBy:"sigel S"
 
 ### Features to look forward to:
-- Improved layout and information content in the search result list.
-- Adjustments to the selection and presentation of information on detailed pages.
-- Basic search filtering that excludes upcoming titles (preliminary information) or electronically deposited resources, with the option to manually deactivate.
-- Support in the interface for advanced search functionality.
-- Enhanced connection to local library systems regarding loan status and links.
-- Improved material categorization (types) such as book, e-book, poster, newspaper, and so on.
-- Improved relevance ranking of search results.
-- Filtering for freely available material.
-- Libris interlibrary loan.
-- Libris borrower requests.
-- Lopac - Libris as a local library catalog.
-- Reference tools.
-- Ability to save searches and lists of materials.
-- Ability to export result lists.
-- Ability to set favorite libraries, etc.
-- In addition to planned developments, improvements to current functionality will be made, and possibly new features will be added based on feedback from you, our users.
+- Improved layout and information content in the search result list
+- Adjustments to the selection and presentation of information on detailed pages
+- Basic search filtering that excludes upcoming titles (preliminary information) or electronically deposited resources, with the option to manually deactivate
+- Support in the interface for advanced search functionality
+- Enhanced connection to local library systems regarding loan status and links
+- Improved material categorization (types) such as book, e-book, poster, newspaper, and so on
+- Improved relevance ranking of search results
+- Filtering for freely available material
+- Libris interlibrary loan
+- Libris borrower requests
+- Lopac - Libris as a local library catalog
+- Reference tools
+- Ability to save searches and lists of materials
+- Ability to export result lists
+- Ability to set favorite libraries, etc
+- In addition to planned developments, improvements to current functionality will be made, and possibly new features will be added based on feedback from you, our users
 
 ## Help and information
 
