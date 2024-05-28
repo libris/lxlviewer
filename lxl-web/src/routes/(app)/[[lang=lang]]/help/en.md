@@ -16,11 +16,11 @@ Here we will continuously provide information about newly added features and pla
 - Pages for persons and subject terms listing related materials.
 - Boolean search logic in the search box.
 - Example: pippi SPRÅK:"lang" hasInstanceType itemHeldBy:"sigel S".
+- Basic search filtering that excludes upcoming titles (preliminary information) or electronically deposited resources, with the option to manually deactivate.
 
 ### Features to look forward to:
 - Improved layout and information content in the search result list.
 - Adjustments to the selection and presentation of information on detailed pages.
-- Basic search filtering that excludes upcoming titles (preliminary information) or electronically deposited resources, with the option to manually deactivate.
 - Support in the interface for advanced search functionality.
 - Enhanced connection to local library systems regarding loan status and links.
 - Improved material categorization (types) such as book, e-book, poster, newspaper, and so on.
