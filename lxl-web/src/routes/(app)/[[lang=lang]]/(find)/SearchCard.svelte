@@ -170,6 +170,10 @@
 		&:hover,
 		&:focus-within {
 			@apply shadow-lg;
+
+			& .card-header-title {
+				@apply text-hover;
+			}
 		}
 
 		@container (min-width: 768px) {
@@ -217,7 +221,7 @@
 	}
 
 	.card-header-title {
-		@apply text-3-cond;
+		@apply text-link text-3-cond;
 		& :global([data-property='mainTitle']) {
 			@apply font-bold;
 		}
