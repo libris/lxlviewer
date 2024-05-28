@@ -90,7 +90,10 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		if (resourceId) {
 			searchParams.set('_o', resourceId);
-			searchParams.set('_i', '*');
+
+			if (!searchParams.has('_i')) {
+				searchParams.set('_i', '*');
+			}
 			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
 		}
 

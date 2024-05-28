@@ -48,7 +48,7 @@
 		type="search"
 		name="_q"
 		{placeholder}
-		aria-label="Sök"
+		aria-label={$page.data.t('search.search')}
 		spellcheck="false"
 		bind:value={q}
 		{autofocus}

@@ -153,7 +153,8 @@
 							{/if}
 						</span>
 						{#if $page.params.fnurgel && numHits > 0}
-							<SearchRelated />
+							{@const activePredicate = searchResult.predicates.filter((p) => p.selected)}
+							<SearchRelated predicate={activePredicate} />
 						{/if}
 						{#if numHits > 0}
 							<div
