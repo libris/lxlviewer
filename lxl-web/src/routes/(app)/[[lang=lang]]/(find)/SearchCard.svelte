@@ -54,8 +54,8 @@
 			aria-labelledby={titleId}
 			aria-describedby={`${bodyId} ${footerId}`}
 		></a>
-		<div class="card-image mt-1">
-			<div class="pointer-events-none relative flex h-full max-h-20 w-full max-w-20">
+		<div class="card-image my-1 aspect-square">
+			<div class="pointer-events-none relative flex">
 				{#if item.image}
 					<img
 						src={item.image.url}
@@ -63,7 +63,7 @@
 						height={item.image.heightPx}
 						alt={$page.data.t('general.latestInstanceCover')}
 						class:rounded-full={item['@type'] === 'Person'}
-						class="h-auto w-full object-contain object-top"
+						class="aspect-[1/1] object-contain object-top"
 					/>
 					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 						<div class="absolute -left-4 -top-4">
@@ -82,7 +82,7 @@
 							alt=""
 							class:rounded-full={item['@type'] === 'Person'}
 							class:rounded-sm={item['@type'] !== 'Person'}
-							class="h-20 w-20 object-contain object-top"
+							class="object-contain object-top"
 						/>
 						{#if getTypeIcon(item['@type'])}
 							<svelte:component
@@ -154,7 +154,7 @@
 	}
 
 	.search-card {
-		@apply gap-x-4 border-b border-b-primary/16 p-5 transition-shadow;
+		@apply gap-x-4 border-b border-b-primary/16 px-4 pb-3 pt-3 transition-shadow;
 
 		display: grid;
 		width: 100%;
@@ -177,7 +177,8 @@
 		}
 
 		@container (min-width: 768px) {
-			grid-template-columns: 96px 1fr;
+			@apply gap-x-6 px-6;
+			grid-template-columns: 72px 1fr;
 		}
 	}
 
