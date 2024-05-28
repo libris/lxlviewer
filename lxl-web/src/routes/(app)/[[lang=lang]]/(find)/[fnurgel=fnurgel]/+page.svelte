@@ -293,4 +293,8 @@
 	.expanded {
 		max-height: initial;
 	}
+
+	:global([data-property='_script']) {
+		display: block;
+	}
 </style>
