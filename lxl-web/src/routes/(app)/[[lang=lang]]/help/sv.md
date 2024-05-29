@@ -40,7 +40,10 @@ Utöver planerad utveckling kommer förbättringar av nuvarande funktionalitet a
 
 ### Om hur sökningen fungerar
 
-Utöver vanlig fritextsökning så går det även att skriva mer avancerade sökfrågor direkt i sökrutan, till exempel FÖRF:Rowling,  TITEL:Sockerormen eller ÅR:2000, och sökoperatorer, till exempel AND för att inkludera samtliga sökord eller NOT för att exkludera sökord.
+Utöver vanlig fritextsökning så går det även att skriva mer avancerade sökfrågor direkt i sökrutan, till exempel FÖRF:Rowling,  TITEL:Sockerormen eller ÅR>2000, och sökoperatorer, till exempel AND för att inkludera samtliga sökord eller NOT för att exkludera sökord.
+
+Exempel: `pippi språk:(engelska OR franska) NOT medverkande:"astrid lindgren"`
+Här får vi träff på engelska och franska verk, som “astrid lindgren” inte medverkar på och som matchar sökordet “pippi”.
 
 För att söka fraser eller ordkombinationer ska du sätta sökorden inom citationstecken, till exempel "sju sjösjuka sjömän". Observera att detta även tills vidare behöver göras för titlar eller söksträngar med kolon “:“ i sig då det tecknet idag tolkas som en operator för riktad sökning.
 
