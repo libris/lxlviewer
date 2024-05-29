@@ -6,4 +6,4 @@ Read more about current and coming features in the [version information](/help).
 
 The data in the current beta version is based on a copy of the Libris catalogue taken in March 2024. Hence some information may be out-dated or incomplete.
 
-You can find answers to frequently asked questions in the [FAQ](https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html)."
+You can find answers to frequently asked questions in the [FAQ](https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html).
