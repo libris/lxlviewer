@@ -1,9 +1,9 @@
-## Welcome to the first beta version of Libris' new search service
+## Welcome to open beta!
 
-Here you will be able to follow the work on developing the new Libri search, contribute by testing functionality and providing feedback.
-To read more about which functions are available to test or planned see releasenotes, more features will be added as they are completed.
+Here you can follow the development of the new Libris search site. Please submit any feedback using [this form](https://survey.kb.se/librisbeta/en). Your opinion matters!
 
-Your feedback is important to us; please leave it via [this form](https://survey.kb.se/librisbeta/en).<br>
-Here you can find answers to [frequently asked questions](https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html).
+Read more about current and coming features in the [version information](/help). Additional functionality will be added to the site continuously.
 
-It should be noted that the beta version is based on a copy of the Libris catalog, but this has not been updated since March. Incompleteness and inaccuracies may occur.
+The data in the current beta version is based on a copy of the Libris catalogue taken in March 2024. Hence some information may be out-dated or incomplete.
+
+You can find answers to frequently asked questions in the [FAQ](https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html)."
