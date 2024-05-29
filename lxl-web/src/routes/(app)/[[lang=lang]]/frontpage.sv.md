@@ -1,10 +1,7 @@
-## Välkommen till öppen beta!
+## Välkommen till öppen beta av Libris nya söktjänst!
 
-Här kommer du att kunna följa arbetet med att utveckla nya Libris sök, bidra genom att prova funktionalitet och lämna feedback.
+Här kommer du kunna följa arbetet med att utveckla nya Libris sök. Bidra gärna genom att lämna feedback via [detta formulär](https://survey.kb.se/librisbeta). Dina synpunkter är viktiga!
 
-För att läsa mer om vilka funktioner som finns att testa eller planeras se [versionsinformation](/help), fler funktioner kommer att läggas till allt eftersom de blir färdiga.
+Läs gärna [svar på vanligt förekommande frågor](https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html). För att läsa mer om vilka funktioner som finns att testa, eller planeras framöver, se [versionsinformationen](/help). Fler funktioner kommer att läggas till allt eftersom de blir färdiga.
 
-Dina synpunkter är viktiga, dessa kan du lämna via [detta formulär](https://survey.kb.se/librisbeta).<br>
-Här hittar du även svar på [vanligt förekommande frågor](https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html).
-
-Observeras bör att betaversionen utgår från en kopia av Libris-katalogen, denna är dock ej uppdaterad sedan mars. Ofullständigheter och felaktigheter kan förekomma.
+Observera att betaversionen innehåller en kopia av Libris-katalogen som togs i mars 2024. Ofullständig information och fel kan därför förekomma i innehållet.
