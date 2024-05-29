@@ -38,11 +38,7 @@ Utöver planerad utveckling kommer förbättringar av nuvarande funktionalitet a
 
 ## Hjälp och information
 
-### Allmänt om söktjänsten
-
-Det som är helt nytt i och med denna beta är att den läser data utan dröjsmål direkt från Libriskatalogen och bygger på de fördelar den nya informationsmodellen för med sig. Detta innebär bland annat att redigeringar i katalogiseringen syns direkt i söktjänsten.
-
-### Information om hur sökningen fungerar:
+### Om hur sökningen fungerar
 
 Utöver vanlig fritextsökning så går det även att skriva mer avancerade sökfrågor direkt i sökrutan, till exempel FÖRF:Rowling,  TITEL:Sockerormen eller ÅR:2000, och sökoperatorer, till exempel AND för att inkludera samtliga sökord eller NOT för att exkludera sökord.
 
@@ -67,7 +63,7 @@ När ett eller flera filter har valts visas knappen “Redigera“ som ger dig m
 
 Observera att allt innehåll i Libris inte är beskrivet med samtliga filtertyper. Hur material är beskrivet i Libris har varierat över tid. Du kan därför behöva göra flera kompletterande sökningar eller justera filtreringen för att fånga upp relevanta objekt. Filtren visar max 100 alternativ, du kan avgränsa sökningen ytterligare för att få fram färre.
 
-### Information om vad som visas i en detaljerad vy av objektet:
+### Om vad som visas i en detaljerad vy av objektet
 I detaljvyn visas detaljerad och beskrivande information om objektet samt information som är relaterat till det.<br>
 Tryck = en tryckt resurs<br>
 Elektronisk = en elektronisk resurs<br>
