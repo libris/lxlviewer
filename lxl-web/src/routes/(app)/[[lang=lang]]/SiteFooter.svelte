@@ -14,7 +14,7 @@
 			<ul>
 				<li>
 					<a
-						href="https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-sok.html"
+						href="https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html"
 						>{$page.data.t('footer.faq')}</a
 					>
 				</li>
