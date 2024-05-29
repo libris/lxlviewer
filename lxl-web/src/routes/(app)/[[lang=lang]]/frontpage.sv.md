@@ -1,4 +1,4 @@
-## Välkommen till öppen beta av Libris nya söktjänst!
+## Välkommen till öppen beta!
 
 Här kommer du kunna följa arbetet med att utveckla nya Libris sök. Bidra gärna genom att lämna feedback via [detta formulär](https://survey.kb.se/librisbeta). Dina synpunkter är viktiga!
 
