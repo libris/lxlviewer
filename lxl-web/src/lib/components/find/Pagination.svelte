@@ -36,63 +36,58 @@
 
 {#if data.items.length > 0 && totalItems > itemsPerPage}
 	<nav aria-label="paginering" data-testid="pagination">
-		<ul class="my-4 flex justify-center">
-			<!-- prev and first -->
+		<ul class="my-4 flex justify-center gap-1.5 sm:gap-2">
+			<!-- prev -->
 			{#if !isFirstPage || itemOffset > 0}
 				<li>
 					<a
-						class="button-ghost mx-2 w-11 p-0"
+						class="button-ghost"
 						href={getOffsetLink(itemOffset - itemsPerPage)}
 						aria-label={$page.data.t('search.previous')}
 						><BiChevronLeft aria-hidden="true" class="text-icon" /></a
 					>
 				</li>
-				{#if sequenceStart > 1}
-					<li>
-						<a
-							aria-label="{$page.data.t('search.page')} 1"
-							class="button-ghost mx-1"
-							href={first['@id']}>1</a
-						>
-					</li>
-				{/if}
 			{/if}
+			<!-- first -->
+			<li>
+				<a
+					aria-label="{$page.data.t('search.page')} 1"
+					class={isFirstPage ? 'button-primary' : 'button-ghost'}
+					href={first['@id']}>1</a
+				>
+			</li>
 			{#if sequenceStart > 2}
-				<li class="mx-1 flex items-end text-3-cond-bold"><span>...</span></li>
+				<li class="flex items-end text-3-cond-bold"><span>...</span></li>
 			{/if}
 			<!-- page sequence -->
 			{#each pageSequence as p}
-				<li>
-					<a
-						class="mx-1
-							{p === currentPage ? 'button-primary' : 'button-ghost'}
-							{p !== currentPage && p !== 2 ? 'hidden sm:flex' : ''}"
-						href={getOffsetLink(itemsPerPage * (p - 1))}
-						aria-label="{$page.data.t('search.page')} {p}"
-						aria-current={p === currentPage ? 'page' : null}
-						>{p.toLocaleString($page.data.locale)}</a
-					>
-				</li>
-			{/each}
-			{#if lastPage - sequenceEnd > 1}
-				<li class="mx-1 flex items-end text-3-cond-bold"><span>...</span></li>
-			{/if}
-			<!-- last and next -->
-			{#if !isLastPage}
-				{#if sequenceEnd !== lastPage}
+				{#if p !== 1 && p !== lastPage}
 					<li>
 						<a
-							aria-label="{$page.data.t('search.page')} {lastPage}"
-							class="button-ghost mx-1"
-							href={last['@id']}>{lastPage.toLocaleString($page.data.locale)}</a
+							class={p === currentPage ? 'button-primary' : 'button-ghost'}
+							href={getOffsetLink(itemsPerPage * (p - 1))}
+							aria-label="{$page.data.t('search.page')} {p}"
+							aria-current={p === currentPage ? 'page' : null}
+							>{p.toLocaleString($page.data.locale)}</a
 						>
 					</li>
 				{/if}
+			{/each}
+			{#if lastPage - sequenceEnd > 1}
+				<li class="flex items-end text-3-cond-bold"><span>...</span></li>
+			{/if}
+			<!-- last -->
+			<li>
+				<a
+					aria-label="{$page.data.t('search.page')} {lastPage}"
+					class={isLastPage ? 'button-primary' : 'button-ghost'}
+					href={last['@id']}>{lastPage.toLocaleString($page.data.locale)}</a
+				>
+			</li>
+			<!-- next -->
+			{#if next}
 				<li>
-					<a
-						class="button-ghost mx-2 w-11 p-0"
-						href={next?.['@id']}
-						aria-label={$page.data.t('search.next')}
+					<a class="button-ghost" href={next?.['@id']} aria-label={$page.data.t('search.next')}
 						><BiChevronRight aria-hidden="true" class="text-icon" /></a
 					>
 				</li>
@@ -100,3 +95,9 @@
 		</ul>
 	</nav>
 {/if}
+
+<style lang="postcss">
+	nav li > a {
+		@apply mobile-only:h-8 mobile-only:px-2.5;
+	}
+</style>
