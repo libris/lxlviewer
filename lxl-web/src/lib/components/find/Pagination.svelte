@@ -30,9 +30,7 @@
 
 	function getOffsetLink(offset: number) {
 		let o = offset < 0 ? 0 : offset;
-		const params = new URLSearchParams(first['@id']);
-		params.set('_offset', o.toString());
-		return `${$page.url.pathname}?${params.toString()}`;
+		return `${first['@id']}&_offset=${o}`;
 	}
 </script>
 
@@ -43,7 +41,7 @@
 			{#if !isFirstPage || itemOffset > 0}
 				<li>
 					<a
-						class="button-ghost mx-1 w-11 p-0"
+						class="button-ghost mx-2 w-11 p-0"
 						href={getOffsetLink(itemOffset - itemsPerPage)}
 						aria-label={$page.data.t('search.previous')}
 						><BiChevronLeft aria-hidden="true" class="text-icon" /></a
@@ -92,7 +90,7 @@
 				{/if}
 				<li>
 					<a
-						class="button-ghost mx-1 w-11 p-0"
+						class="button-ghost mx-2 w-11 p-0"
 						href={next?.['@id']}
 						aria-label={$page.data.t('search.next')}
 						><BiChevronRight aria-hidden="true" class="text-icon" /></a
