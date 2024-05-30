@@ -9,9 +9,11 @@
 	export let autofocus: boolean = false;
 
 	$: showAdvanced = $page.url.searchParams.get('_x') === 'advanced';
-	let q = showAdvanced
-		? $page.url.searchParams.get('_q')?.trim()
-		: $page.url.searchParams.get('_i')?.trim();
+	let q = $page.params.fnurgel
+		? '' //don't reflect related search on resource pages
+		: showAdvanced
+			? $page.url.searchParams.get('_q')?.trim()
+			: $page.url.searchParams.get('_i')?.trim();
 
 	let params = getSortedSearchParams(addDefaultSearchParams($page.url.searchParams));
 	// Always reset these params on new search
@@ -22,10 +24,10 @@
 	const searchParams = Array.from(params);
 
 	afterNavigate(({ to }) => {
-		/** Update input value after navigation */
+		/** Update input value after navigation on /find route */
 		if (to?.url) {
 			let param = showAdvanced ? '_q' : '_i';
-			q = new URL(to.url).searchParams.get(param)?.trim();
+			q = $page.params.fnurgel ? '' : new URL(to.url).searchParams.get(param)?.trim();
 		}
 	});
 

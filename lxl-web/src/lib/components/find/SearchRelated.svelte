@@ -1,16 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import getDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
-	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
+	import type { Link } from '$lib/utils/xl';
 
-	export let predicate;
+	export let view: Link;
 
-	let _i = $page.url.searchParams.get('_i')?.trim();
-	let searchParams = getSortedSearchParams(getDefaultSearchParams($page.url.searchParams));
+	let _i = $page.url.searchParams.get('_i')?.trim() || '';
 
-	searchParams.delete('_offset');
-	console.log(predicate);
-	// todo: iterate predicate
+	let url = new URL($page.url.origin + view['@id']);
+	let searchParams = new URLSearchParams(url.search);
+	searchParams.set('_sort', $page.url.searchParams.get('_sort')?.trim() || '');
 
 	function handleSubmit(e: SubmitEvent) {
 		if (!_i) {
@@ -27,7 +25,9 @@
 		placeholder={$page.data.t('search.RelatedSearchLabel')}
 		bind:value={_i}
 	/>
-	<button class="button-primary" type="submit">{$page.data.t('search.search')}</button>
+	<button disabled={!_i} class="button-primary" type="submit"
+		>{$page.data.t('search.search')}</button
+	>
 
 	{#each searchParams as [name, value]}
 		{#if name !== '_i' && name !== '_q'}
