@@ -129,7 +129,7 @@ export default {
 	},
 	plugins: [
 		/** @type {import('tailwindcss/types/config').PluginCreator} */
-		({ addUtilities, addVariant }) => {
+		({ addUtilities }) => {
 			addUtilities({
 				// typography 1-6 variants in design
 				'.text-1-regular': {
@@ -192,7 +192,6 @@ export default {
 					'@apply p-4 sm:px-6': {}
 				}
 			});
-			addVariant('mobile-only', "@media screen and (max-width: theme('screens.sm'))");
 		}
 	]
 };

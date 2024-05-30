@@ -34,7 +34,7 @@
 
 {#if data.items.length > 0 && totalItems > itemsPerPage}
 	<nav aria-label={$page.data.t('search.pagination')} data-testid="pagination">
-		<ul class="my-4 flex justify-center gap-1.5 sm:gap-2">
+		<ul class="flex flex-wrap justify-center gap-1.5 overflow-hidden page-padding sm:gap-2">
 			<!-- prev -->
 			{#if !isFirstPage || itemOffset > 0}
 				<li>
@@ -96,6 +96,6 @@
 
 <style lang="postcss">
 	nav li > a {
-		@apply mobile-only:h-8 mobile-only:px-2.5;
+		@apply min-h-11 min-w-11 !px-2;
 	}
 </style>
