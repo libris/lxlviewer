@@ -127,7 +127,7 @@
 					{item.typeStr}
 				</span>
 				{#each item[LensType.WebCardFooter]?._display as obj}
-					{' • '}
+					<span>{' • '}</span>
 					{#if 'hasInstance' in obj}
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
@@ -193,8 +193,8 @@
 
 	:global(a):not(.card-link),
 	.card-body :global(span:first-of-type),
-	.card-footer {
-		position: relative; /* needed for supporting mouse events on text, links and definitions above card-link */
+	.card-footer :global(> span) {
+		position: relative; /* needed for supporting mouse events on links and definitions above card-link */
 	}
 
 	.card-image {
