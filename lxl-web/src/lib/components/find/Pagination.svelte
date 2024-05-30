@@ -35,7 +35,7 @@
 </script>
 
 {#if data.items.length > 0 && totalItems > itemsPerPage}
-	<nav aria-label="paginering" data-testid="pagination">
+	<nav aria-label={$page.data.t('search.pagination')} data-testid="pagination">
 		<ul class="my-4 flex justify-center gap-1.5 sm:gap-2">
 			<!-- prev -->
 			{#if !isFirstPage || itemOffset > 0}
