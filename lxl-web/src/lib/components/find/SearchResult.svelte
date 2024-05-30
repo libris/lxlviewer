@@ -152,7 +152,7 @@
 								{$page.data.t('search.noResults')}
 							{/if}
 						</span>
-						{#if $page.params.fnurgel && numHits > 0}
+						{#if $page.params.fnurgel}
 							{@const activePredicate = searchResult.predicates.filter((p) => p.selected)}
 							<SearchRelated view={activePredicate[0].view} />
 						{/if}

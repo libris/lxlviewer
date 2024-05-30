@@ -111,8 +111,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			}
 		}
 
-		// Hide zero results from resource page
-		if (result.totalItems > 0) {
+		if (result) {
 			return (await asResult(
 				result,
 				displayUtil,
