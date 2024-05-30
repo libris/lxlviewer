@@ -10,9 +10,9 @@
 	let searchParams = new URLSearchParams(url.search);
 	searchParams.set('_sort', $page.url.searchParams.get('_sort')?.trim() || '');
 
-	function handleSubmit(e: SubmitEvent) {
+	function handleSubmit() {
 		if (!_i) {
-			e.preventDefault();
+			_i = '*';
 		}
 	}
 </script>
@@ -25,9 +25,7 @@
 		placeholder={$page.data.t('search.RelatedSearchLabel')}
 		bind:value={_i}
 	/>
-	<button disabled={!_i} class="button-primary" type="submit"
-		>{$page.data.t('search.search')}</button
-	>
+	<button class="button-primary" type="submit">{$page.data.t('search.search')}</button>
 
 	{#each searchParams as [name, value]}
 		{#if name !== '_i' && name !== '_q'}
