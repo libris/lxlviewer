@@ -38,6 +38,10 @@ Utöver planerad utveckling kommer förbättringar av nuvarande funktionalitet a
 
 ## Hjälp och information
 
+### Allmänt om söktjänsten
+
+Det som är helt nytt i och med denna beta är att den läser data utan dröjsmål direkt från Libriskatalogen och bygger på de fördelar den nya informationsmodellen för med sig. Detta innebär bland annat att redigeringar i katalogiseringsklienten (på QA) syns direkt i söktjänsten men också att viss text kan upplevas mer teknisk än tidigare, detta är något vi kommer att arbeta vidare med för att förbättra.
+
 ### Om hur sökningen fungerar
 
 Utöver vanlig fritextsökning så går det även att skriva mer avancerade sökfrågor direkt i sökrutan, till exempel FÖRF:Rowling,  TITEL:Sockerormen eller ÅR>2000, och sökoperatorer, till exempel AND för att inkludera samtliga sökord eller NOT för att exkludera sökord.
