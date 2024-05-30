@@ -109,6 +109,7 @@
 				<div class="results max-w-content">
 					<div
 						class="toolbar flex min-h-14 items-center justify-between page-padding md:min-h-fit md:p-0 md:pb-4"
+						class:has-search={$page.params.fnurgel}
 					>
 						<a
 							href={`${$page.url.pathname}?${$page.url.searchParams.toString()}#filters`}
@@ -152,10 +153,12 @@
 								{$page.data.t('search.noResults')}
 							{/if}
 						</span>
-						{#if $page.params.fnurgel}
-							{@const activePredicate = searchResult.predicates.filter((p) => p.selected)}
-							<SearchRelated view={activePredicate[0].view} />
-						{/if}
+						<div class="search-related flex justify-start">
+							{#if $page.params.fnurgel}
+								{@const activePredicate = searchResult.predicates.filter((p) => p.selected)}
+								<SearchRelated view={activePredicate[0].view} />
+							{/if}
+						</div>
 						{#if numHits > 0}
 							<div
 								class="sort-select flex flex-col items-end justify-self-end"
@@ -195,10 +198,15 @@
 
 <style lang="postcss">
 	.toolbar {
-		display: grid;
+		@apply grid;
 		grid-template-areas:
-			'filter-modal-toggle search'
-			'hits sort-select';
+			'search-related search-related'
+			'filter-modal-toggle sort-select'
+			'hits .';
+	}
+
+	.toolbar.has-search {
+		@apply gap-4;
 	}
 
 	.find-layout {
@@ -232,8 +240,17 @@
 		grid-area: hits;
 	}
 
-	.search {
-		grid-area: search;
+	.search-related {
+		grid-area: search-related;
+	}
+
+	@media screen and (min-width: theme('screens.sm')) {
+		.toolbar {
+			grid-template-areas:
+				'filter-modal-toggle search-related'
+				'hits sort-select';
+			grid-template-columns: auto 1fr;
+		}
 	}
 
 	@media screen and (min-width: theme('screens.md')) {
@@ -246,7 +263,9 @@
 		}
 
 		.toolbar {
-			grid-template-areas: 'hits search sort-select';
+			grid-template-areas:
+				'search-related search-related'
+				'hits sort-select';
 		}
 	}
 	.tab-header {
@@ -261,5 +280,12 @@
 	.tab-selected {
 		@apply border-primary pb-3.5;
 		border-bottom-width: 0.125rem;
+	}
+
+	@media screen and (min-width: theme('screens.lg')) {
+		.toolbar {
+			grid-template-areas: 'hits search-related sort-select';
+			grid-template-columns: auto minmax(auto, theme('screens.sm')) auto;
+		}
 	}
 </style>
