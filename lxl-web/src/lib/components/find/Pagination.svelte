@@ -13,11 +13,9 @@
 	$: isLastPage = currentPage === lastPage;
 
 	// How many pages to display in a sequence (excl first & last)
-	let sequenceSize = 3;
+	const MAX_SIZE = 8;
+	$: sequenceSize = MAX_SIZE > lastPage ? lastPage : MAX_SIZE;
 
-	$: if (sequenceSize > lastPage) {
-		sequenceSize = lastPage;
-	}
 	$: sequenceStart = (() => {
 		if (currentPage + (sequenceSize - 1) >= lastPage) {
 			return lastPage - (sequenceSize - 1);
@@ -35,6 +33,7 @@
 </script>
 
 {#if data.items.length > 0 && totalItems > itemsPerPage}
+	{console.log(pageSequence)}
 	<nav aria-label={$page.data.t('search.pagination')} data-testid="pagination">
 		<ul class="my-4 flex justify-center gap-1.5 sm:gap-2">
 			<!-- prev -->
