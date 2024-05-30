@@ -201,8 +201,8 @@
 		@apply grid;
 		grid-template-areas:
 			'search-related search-related'
-			'filter-modal-toggle sort-select'
-			'hits .';
+			'filter-modal-toggle .'
+			'hits sort-select';
 	}
 
 	.toolbar.has-search {
