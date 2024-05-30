@@ -34,7 +34,7 @@
 
 {#if data.items.length > 0 && totalItems > itemsPerPage}
 	<nav aria-label={$page.data.t('search.pagination')} data-testid="pagination">
-		<ul class="flex flex-wrap justify-center gap-1.5 overflow-hidden page-padding sm:gap-2">
+		<ul class="flex justify-center overflow-hidden page-padding">
 			<!-- prev -->
 			{#if !isFirstPage || itemOffset > 0}
 				<li>
@@ -55,14 +55,16 @@
 				>
 			</li>
 			{#if sequenceStart > 2}
-				<li class="flex items-end text-3-cond-bold"><span>...</span></li>
+				<li class="hidden items-end text-3-cond-bold sm:flex"><span>...</span></li>
 			{/if}
 			<!-- page sequence -->
 			{#each pageSequence as p}
 				{#if p !== 1 && p !== lastPage}
 					<li>
 						<a
-							class={p === currentPage ? 'button-primary' : 'button-ghost'}
+							class={p === currentPage
+								? 'button-primary !mx-4 sm:!mx-0.5'
+								: 'button-ghost hidden sm:flex'}
 							href={getOffsetLink(itemsPerPage * (p - 1))}
 							aria-label="{$page.data.t('search.page')} {p}"
 							aria-current={p === currentPage ? 'page' : null}
@@ -72,7 +74,7 @@
 				{/if}
 			{/each}
 			{#if lastPage - sequenceEnd > 1}
-				<li class="flex items-end text-3-cond-bold"><span>...</span></li>
+				<li class="hidden items-end text-3-cond-bold sm:flex"><span>...</span></li>
 			{/if}
 			<!-- last -->
 			<li>
@@ -95,6 +97,10 @@
 {/if}
 
 <style lang="postcss">
+	nav li > * {
+		@apply mx-0.5;
+	}
+
 	nav li > a {
 		@apply min-h-11 min-w-11 !px-2;
 	}
