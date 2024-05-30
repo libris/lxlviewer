@@ -36,9 +36,9 @@ Here we will continuously provide information about newly added features and pla
 
 ## Help and information
 
-### General about the search service
+### General Information about the Search Service
 
-What is entirely new with this beta is that it reads data directly from the Libris catalog without delay and builds on the advantages brought by the new information model. This means, among other things, that edits in the catalog are immediately visible in the search service.
+What is completely new with this beta version is that it reads data without delay directly from the Libris catalog and builds on the advantages brought by the new information model. This means, among other things, that edits in the cataloging client (on QA) are immediately visible in the search service, but also that some text may appear more technical than before. This is something we will continue to work on to improve.
 
 ### Information on how the search works:
 
