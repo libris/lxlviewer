@@ -192,8 +192,9 @@
 	}
 
 	:global(a):not(.card-link),
-	:global(.definition) {
-		position: relative; /* needed for supporting mouse events on links and definitions above card-link */
+	.card-body :global(span:first-of-type),
+	.card-footer :global(span:first-of-type) {
+		position: relative; /* needed for supporting mouse events on text, links and definitions above card-link */
 	}
 
 	.card-image {
