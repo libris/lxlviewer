@@ -29,7 +29,8 @@
 				src={thumb.url}
 				width={thumb.widthṔx}
 				height={thumb.heightPx}
-				class="object-contain object-[inherit]"
+				class="object-contain object-cover object-[inherit]"
+				class:object-cover={geometry === 'circle'}
 				class:rounded-full={geometry === 'circle'}
 			/>
 		</a>
