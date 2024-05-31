@@ -527,7 +527,7 @@
 			"fresnel:resourceStyle": ["link"]
 		},
 		"seeAlso-format": {
-			"@id": "genreForm-format",
+			"@id": "seeAlso-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
 			"fresnel:propertyFormatDomain": ["seeAlso"],
@@ -571,7 +571,7 @@
 			"@id": "MediaObject-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["MediaObject"],
-			"fresnel:resourceStyle": ["ext-link", "uriToId()", "text-3-cond-bold"]
+			"fresnel:resourceStyle": ["ext-link", "uriToId()", "text-3-cond-bold", "block"]
 		},
 		"Document-format": {
 			"@id": "Document-format",
