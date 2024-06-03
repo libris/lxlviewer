@@ -13,7 +13,7 @@ import { LxlLens } from '$lib/utils/display.types';
 import { getTranslator, type translateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
-import { type SecureImageResolution, Width } from '$lib/utils/auxd.types';
+import { type Width } from '$lib/types/Auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 
@@ -54,136 +54,6 @@ export async function asResult(
 		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath),
 		predicates: displayPredicates(view, displayUtil, locale, usePath)
 	};
-}
-
-export interface SearchResult {
-	itemOffset: number;
-	itemsPerPage: number;
-	totalItems: number;
-	maxItems: number;
-	mapping: DisplayMapping[];
-	first: Link;
-	last: Link;
-	next?: Link;
-	items: SearchResultItem[];
-	facetGroups: FacetGroup[];
-	predicates: MultiSelectFacet[];
-}
-
-export interface SearchResultItem {
-	[JsonLd.ID]: string;
-	[JsonLd.TYPE]: string;
-	[LxlLens.CardHeading]: DisplayDecorated;
-	[LxlLens.CardBody]: DisplayDecorated;
-	image: SecureImageResolution | undefined;
-	typeStr: string;
-}
-
-type FacetGroupId = string;
-
-export type FacetSearch = {
-	mapping: {
-		greaterThanOrEquals: string;
-		lessThanOrEquals: string;
-		variable: FacetGroupId;
-	};
-	template: string;
-};
-
-export interface FacetGroup {
-	label: string;
-	dimension: FacetGroupId;
-	search?: FacetSearch;
-	// TODO better to do this distinction on the group level?
-	facets: (Facet | MultiSelectFacet)[];
-}
-
-export interface Facet {
-	totalItems: number;
-	view: Link;
-	object: DisplayDecorated;
-	str: string;
-	discriminator: string;
-}
-
-export interface MultiSelectFacet extends Facet {
-	selected: boolean;
-}
-
-export interface DisplayMapping {
-	display?: DisplayDecorated;
-	up?: Link;
-	children?: DisplayMapping[];
-	label?: string;
-	operator: keyof typeof SearchOperators;
-}
-
-export interface PartialCollectionView {
-	[JsonLd.TYPE]: 'PartialCollectionView';
-	[JsonLd.ID]: string;
-	[JsonLd.CONTEXT]: string;
-	itemOffset: number;
-	itemsPerPage: number;
-	totalItems: number;
-	maxItems: number;
-	search: {
-		mapping: SearchMapping[];
-	};
-	first: Link;
-	last: Link;
-	next?: Link;
-	items: FramedData[];
-	stats?: {
-		[JsonLd.ID]: '#stats';
-		sliceByDimension: Record<FacetGroupId, Slice>;
-		_predicates: Observation[];
-		_boolFilters?: Observation[];
-	};
-}
-
-interface Slice {
-	alias: string;
-	dimension: FacetGroupId;
-	observation: Observation[];
-	search?: FacetSearch;
-}
-
-interface Observation {
-	totalItems: number;
-	view: Link;
-	object: FramedData;
-	_selected?: boolean;
-}
-
-export enum SearchOperators {
-	and = 'and',
-	or = 'or',
-	not = 'not',
-	equals = 'equals',
-	notEquals = 'notEquals',
-	greaterThan = 'greaterThan',
-	greaterThanOrEquals = 'greaterThanOrEquals',
-	lessThan = 'lessThan',
-	lessThanOrEquals = 'lessThanOrEquals',
-	existence = 'existence',
-	notExistence = 'notExistence',
-	none = 'none'
-}
-
-type MappingObj = { [key in SearchOperators]: SearchMapping[] | string | FramedData };
-
-export interface SearchMapping extends MappingObj {
-	alias: string;
-	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
-	object?: FramedData;
-	up: { '@id': string };
-}
-
-interface ObjectProperty {}
-
-interface DatatypeProperty {
-	'@type': 'DataTypeProperty';
-	'@id': string;
 }
 
 function displayMappings(
@@ -345,8 +215,15 @@ function replacePath(view: Link, usePath: string) {
 		'@id': view['@id'].replace('/find', usePath)
 	};
 }
-interface PropertyChainAxiom {
-	propertyChainAxiom: (ObjectProperty | DatatypeProperty)[];
-	label: string; // e.g. "instanceOf language"
-	_key: string; // e.g. "instanceOf.language"
+// interface PropertyChainAxiom {
+// 	propertyChainAxiom: (ObjectProperty | DatatypeProperty)[];
+// 	label: string; // e.g. "instanceOf language"
+// 	_key: string; // e.g. "instanceOf.language"
+// }
+
+export function shouldShowMapping(mapping: DisplayMapping[]) {
+	if (mapping.length === 1 && mapping[0].display === '*' && mapping[0].operator === 'equals') {
+		return false; // hide if only wildcard search
+	}
+	return true;
 }

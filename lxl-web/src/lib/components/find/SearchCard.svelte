@@ -1,6 +1,6 @@
 <script lang="ts">
 	import jmespath from 'jmespath';
-	import type { SearchResultItem } from './search';
+	import type { SearchResultItem } from '../(find)/search';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import type { ResourceData } from '$lib/types/ResourceData';
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';

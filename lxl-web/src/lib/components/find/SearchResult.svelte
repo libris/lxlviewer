@@ -8,8 +8,11 @@
 	import Filters from './Filters.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import BiChevronDown from '~icons/bi/chevron-down';
-	import type { SearchResult, DisplayMapping } from './search';
-	import { shouldShowMapping } from './utils';
+	import type {
+		SearchResult,
+		DisplayMapping
+	} from '../../../routes/(app)/[[lang=lang]]/(find)/search';
+	import { shouldShowMapping } from '../../../routes/(app)/[[lang=lang]]/(find)/utils';
 
 	let showFiltersModal = false;
 

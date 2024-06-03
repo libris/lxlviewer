@@ -8,7 +8,7 @@ import {
 	type ImageResolution,
 	isImage,
 	isImageResolution
-} from '$lib/utils/auxd.types';
+} from '$lib/types/auxd.types';
 import getAtPath from '$lib/utils/getAtPath';
 import { relativizeUrl, stripAnchor } from '$lib/utils/http';
 
