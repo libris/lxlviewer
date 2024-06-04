@@ -44,20 +44,11 @@ Det som är helt nytt i och med denna beta är att den läser data utan dröjsm�
 
 ### Förbättrad materialkategorisering
 
-I nuläget är en del typer och bärartyper inte tydliga nog. T.ex. säger inte "text" och "elektronisk" att det faktiskt handlar om en e-bok, ljudbok eller rent av ett tidningsnummer.
+De materialkategorier / typer som syns i betaversionen idag kommer på sikt att ersättas där de inte är tydliga nog. Begrepp som “Text, tryck”, “Instans“, “Monografisk resurs” och så vidare kommer att ersättas med tydligare begrepp i stil med “Tidskrift“, “Ljudbok“, “Affisch”, “Vykort“. Målet är begripliga och användbara typer som håller över tid.
 
-Parallellt med denna tjänst jobbar vi med att katalogens data och informationsmodell förbättras så att dessa uppgifter anges så direkt och enkelt som möjligt. Eftersom nya Libris Sök bygger direkt på denna katalogdata kommer dessa kommande förbättringar att ge effekt så fort de är utförda i katalogdatan.
+I dagens libris.kb.se räknas etiketter som “bok”, “e-bok”, “affisch” ut i söktjänsten på ett komplicerat sätt utifrån en mängd datapunkter, baserat på begränsningarna som fanns i katalogen då tjänsten togs fram. Parallellt med utvecklingen av den nya söktjänsten jobbar vi istället med att förbättra den underliggande katalogens data och informationsmodell. Då nya Libris Sök bygger mer direkt på dessa kommer kommande förbättringar att ge effekt så fort de är utförda. 
 
-Exempel:
-* När det står typ "Text" och bärartyp "Tryck" kan det betyda något av: "en skriven bok", "en avhandling" eller en hel "tidningsserie" i tryckt form.
-* "Stillbild, Elektronisk" kan vara något av: en "digitiserad affisch", ett "vykort" eller "en samling foton på CD-ROM".
-
-Dessa tydligare beteckningar går att ange direkt som typer på de beskrivna verken och instanserna. Vi jobbar även på att lyfta in "utgivningstyp" (ofta "monografi", "samling" eller "serie") så att de blir integrala i typbegreppet.
-
-Vi jobbar även på tumregler som preciserar den data som av historiska skäl eller begränsningar i maskinella importer inte är tydlig nog. T.ex. vill vi komma bort från termen "Instans" i möjligaste mån.
-
-(Idag gör Libris webbsök en stor mängd tester sådana tumregler, och plockar t.ex. att något är en affisch från en ren fritextanmärkning (som dessutom frångår dagens praxis). Vår nya tjänst kommer istället utnjyttja den moderna metadataplattform den bygger på för att fånga dessa uppgifter entydigt strukturerat, så att allt från importer, katalogisering och olika sorters användartjänster tar del av samma begrepsmodell.)
-
+Det kan fortfarande behövas olika begrepp och grad av precision i olika sammanhang. Men dessa skillnader kan i stor utsträckning fångas i den gemensamma katalogmodellen istället för att ligga i koden för olika tjänster. 
 
 ### Om hur sökningen fungerar
 
