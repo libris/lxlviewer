@@ -253,8 +253,8 @@
 
 <style lang="postcss">
 	.ext-link::after {
-		content: ' ↗';
-		@apply text-icon;
+		content: '\2009↗';
+		@apply align-[10%] text-icon;
 	}
 
 	.definition {
