@@ -5,26 +5,44 @@
 	import BiChevronLeft from '~icons/bi/chevron-left';
 	export let data: SearchResult;
 
-	$: ({ first, last, next, totalItems, itemsPerPage, itemOffset, maxItems } = data);
+	$: ({ first, last, next, previous, totalItems, itemsPerPage, itemOffset, maxItems } = data);
+	$: showPagination = data.items.length > 0 && totalItems > itemsPerPage;
+
 	$: currentPage = Math.floor(itemOffset / itemsPerPage) + 1;
-	$: isFirstPage = currentPage === 1;
 	$: lastItem = totalItems > maxItems ? maxItems : totalItems;
 	$: lastPage = Math.ceil(lastItem / itemsPerPage);
-	$: isLastPage = currentPage === lastPage;
 
 	// How many pages to display in a sequence (excl first & last)
-	const MAX_SIZE = 8;
-	$: sequenceSize = MAX_SIZE > lastPage ? lastPage : MAX_SIZE;
+	const numberOfPages = 7;
+	$: sequenceSize = numberOfPages > lastPage ? lastPage : numberOfPages;
 
-	$: sequenceStart = (() => {
-		if (currentPage + (sequenceSize - 1) >= lastPage) {
-			return lastPage - (sequenceSize - 1);
-		} else {
-			return currentPage;
+	$: pageSequence = (() => {
+		let pages = [];
+		let halfSequence = Math.floor(sequenceSize / 2);
+
+		// exclude first & last pages from sequence
+		let sequenceStart = currentPage - halfSequence < 2 ? 2 : currentPage - halfSequence;
+		let sequenceEnd =
+			currentPage + halfSequence > lastPage - 1 ? lastPage - 1 : currentPage + halfSequence;
+		if (sequenceStart > sequenceEnd) {
+			sequenceEnd = sequenceStart;
 		}
+
+		// add remaining pages to beginning or end
+		const remainder = sequenceSize - (sequenceEnd - sequenceStart + 1);
+		if (remainder && sequenceStart > 2) {
+			sequenceStart = sequenceStart - remainder < 2 ? 2 : sequenceStart - remainder;
+		}
+
+		if (remainder && sequenceEnd < lastPage - 1) {
+			sequenceEnd = sequenceEnd + remainder > lastPage - 1 ? lastPage - 1 : sequenceEnd + remainder;
+		}
+
+		for (let i = sequenceStart; i <= sequenceEnd; i++) {
+			pages.push({ page: i, link: getOffsetLink(itemsPerPage * (i - 1)) });
+		}
+		return pages;
 	})();
-	$: pageSequence = [...Array(sequenceSize)].map((el, i) => sequenceStart + i);
-	$: sequenceEnd = pageSequence[pageSequence.length - 1];
 
 	function getOffsetLink(offset: number) {
 		let o = offset < 0 ? 0 : offset;
@@ -32,15 +50,15 @@
 	}
 </script>
 
-{#if data.items.length > 0 && totalItems > itemsPerPage}
+{#if showPagination}
 	<nav aria-label={$page.data.t('search.pagination')} data-testid="pagination">
 		<ul class="flex justify-center overflow-hidden page-padding">
 			<!-- prev -->
-			{#if !isFirstPage || itemOffset > 0}
+			{#if previous}
 				<li>
 					<a
 						class="button-ghost"
-						href={getOffsetLink(itemOffset - itemsPerPage)}
+						href={previous['@id']}
 						aria-label={$page.data.t('search.previous')}
 						><BiChevronLeft aria-hidden="true" class="text-icon" /></a
 					>
@@ -50,44 +68,44 @@
 			<li>
 				<a
 					aria-label="{$page.data.t('search.page')} 1"
-					class={isFirstPage ? 'button-primary' : 'button-ghost'}
+					class={currentPage === 1 ? 'button-primary' : 'button-ghost'}
 					href={first['@id']}>1</a
 				>
 			</li>
-			{#if sequenceStart > 2}
+			{#if pageSequence[0].page > 2}
 				<li class="hidden items-end text-3-cond-bold sm:flex"><span>...</span></li>
 			{/if}
 			<!-- page sequence -->
 			{#each pageSequence as p}
-				{#if p !== 1 && p !== lastPage}
+				{#if p.page !== 1 && p.page !== lastPage}
 					<li>
 						<a
-							class={p === currentPage
+							class={p.page === currentPage
 								? 'button-primary !mx-4 sm:!mx-0.5'
 								: 'button-ghost hidden sm:flex'}
-							href={getOffsetLink(itemsPerPage * (p - 1))}
+							href={p.link}
 							aria-label="{$page.data.t('search.page')} {p}"
-							aria-current={p === currentPage ? 'page' : null}
-							>{p.toLocaleString($page.data.locale)}</a
+							aria-current={p.page === currentPage ? 'page' : null}
+							>{p.page.toLocaleString($page.data.locale)}</a
 						>
 					</li>
 				{/if}
 			{/each}
-			{#if lastPage - sequenceEnd > 1}
+			{#if lastPage - pageSequence[pageSequence.length - 1].page > 1}
 				<li class="hidden items-end text-3-cond-bold sm:flex"><span>...</span></li>
 			{/if}
 			<!-- last -->
 			<li>
 				<a
 					aria-label="{$page.data.t('search.page')} {lastPage}"
-					class={isLastPage ? 'button-primary' : 'button-ghost'}
+					class={currentPage === lastPage ? 'button-primary' : 'button-ghost'}
 					href={last['@id']}>{lastPage.toLocaleString($page.data.locale)}</a
 				>
 			</li>
 			<!-- next -->
 			{#if next}
 				<li>
-					<a class="button-ghost" href={next?.['@id']} aria-label={$page.data.t('search.next')}
+					<a class="button-ghost" href={next['@id']} aria-label={$page.data.t('search.next')}
 						><BiChevronRight aria-hidden="true" class="text-icon" /></a
 					>
 				</li>

@@ -32,6 +32,7 @@ export async function asResult(
 	const translate = await getTranslator(locale);
 	return {
 		...('next' in view && { next: replacePath(view.next as Link, usePath) }),
+		...('previous' in view && { previous: replacePath(view.previous as Link, usePath) }),
 		itemOffset: view.itemOffset,
 		itemsPerPage: view.itemsPerPage,
 		totalItems: view.totalItems,
