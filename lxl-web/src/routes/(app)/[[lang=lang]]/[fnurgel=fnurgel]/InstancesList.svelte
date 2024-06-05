@@ -1,14 +1,16 @@
 <script lang="ts">
-	import type { ResourceData } from '$lib/types/ResourceData';
-	import { page } from '$app/stores';
-	import { replaceState } from '$app/navigation';
 	import jmespath from 'jmespath';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
+	import { replaceState } from '$app/navigation';
+
+	import type { ResourceData } from '$lib/types/resourceData.types';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
+
 	import { getHoldingsLink, handleClickHoldings } from './utils';
 	import BiChevronRight from '~icons/bi/chevron-right';
+	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesListContent from './InstancesListContent.svelte';
+	import { page } from '$app/stores';
 
 	/**
 	 * TODO:

@@ -1,12 +1,14 @@
 <script lang="ts">
-	import type { ResourceData } from '$lib/types/ResourceData';
-	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-	import { page } from '$app/stores';
-	import resourcePopover from '$lib/actions/resourcePopover';
+	import type { ResourceData } from '$lib/types/resourceData.types';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData.types';
+
 	import { hasStyle, getStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
+
+	import resourcePopover from '$lib/actions/resourcePopover';
 	import { getSupportedLocale } from '$lib/i18n/locales';
 	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
+	import { page } from '$app/stores';
 
 	export let data: ResourceData;
 	export let depth = 0;

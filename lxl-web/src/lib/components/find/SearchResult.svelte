@@ -8,15 +8,11 @@
 	import Filters from './Filters.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import BiChevronDown from '~icons/bi/chevron-down';
-	import type {
-		SearchResult,
-		DisplayMapping
-	} from '../../../routes/(app)/[[lang=lang]]/(find)/search';
-	import { shouldShowMapping } from '../../../routes/(app)/[[lang=lang]]/(find)/utils';
+	import type { SearchResult, DisplayMapping } from '$lib/types/search.types';
+	import { shouldShowMapping } from '$lib/utils/search';
 
 	let showFiltersModal = false;
-
-	$: searchResult = $page.data.searchResult as SearchResult;
+	export let searchResult: SearchResult;
 
 	$: sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [

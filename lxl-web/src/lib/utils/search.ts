@@ -1,19 +1,29 @@
+import { DisplayUtil, isObject, toString, VocabUtil } from '$lib/utils/xl';
+
 import {
 	type DisplayDecorated,
-	DisplayUtil,
 	type FramedData,
-	isObject,
-	JsonLd,
-	LensType,
 	type Link,
-	toString,
-	VocabUtil
-} from '$lib/utils/xl';
-import { LxlLens } from '$lib/utils/display.types';
+	LensType,
+	JsonLd
+} from '$lib/types/xl.types';
+
+import {
+	type PartialCollectionView,
+	type SearchResult,
+	type DisplayMapping,
+	type SearchMapping,
+	SearchOperators,
+	type DatatypeProperty,
+	type MultiSelectFacet,
+	type FacetGroup
+} from '$lib/types/search.types';
+
+import { LxlLens } from '$lib/types/display.types';
+import { Width } from '$lib/types/auxd.types';
 import { getTranslator, type translateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
-import { type Width } from '$lib/types/Auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
 
@@ -215,11 +225,6 @@ function replacePath(view: Link, usePath: string) {
 		'@id': view['@id'].replace('/find', usePath)
 	};
 }
-// interface PropertyChainAxiom {
-// 	propertyChainAxiom: (ObjectProperty | DatatypeProperty)[];
-// 	label: string; // e.g. "instanceOf language"
-// 	_key: string; // e.g. "instanceOf.language"
-// }
 
 export function shouldShowMapping(mapping: DisplayMapping[]) {
 	if (mapping.length === 1 && mapping[0].display === '*' && mapping[0].operator === 'equals') {

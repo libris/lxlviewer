@@ -3,26 +3,16 @@ import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 
-import {
-	type FramedData,
-	DisplayUtil,
-	pickProperty,
-	toString,
-	JsonLd,
-	VocabUtil
-} from '$lib/utils/xl.js';
-import { LxlLens } from '$lib/utils/display.types.js';
+import { DisplayUtil, pickProperty, toString, VocabUtil } from '$lib/utils/xl.js';
+import { type FramedData, JsonLd } from '$lib/types/xl.types.js';
+import { LxlLens } from '$lib/types/display.types.js';
 import { relativizeUrl } from '$lib/utils/http';
 import { getImages, toSecure } from '$lib/utils/auxd';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams.js';
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams.js';
-import { type apiError } from '$lib/types/API.js';
-import {
-	asResult,
-	displayPredicates,
-	type PartialCollectionView,
-	type SearchResult
-} from '../(find)/search.js';
+import { type apiError } from '$lib/types/api.types.js';
+import type { PartialCollectionView, SearchResult } from '$lib/types/search.types.js';
+import { asResult, displayPredicates } from '$lib/utils/search';
 import getAtPath from '$lib/utils/getAtPath';
 
 export const load = async ({ params, url, locals, fetch, isDataRequest }) => {

@@ -1,4 +1,5 @@
-import { isObject, JsonLd, type Link, Owl } from '$lib/utils/xl';
+import { isObject } from '$lib/utils/xl';
+import { JsonLd, type Link, Owl } from './xl.types';
 
 type SizePx = `${number}px`;
 

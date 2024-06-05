@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-import { first, type FramedData, JsonLd, Owl } from '$lib/utils/xl';
 import {
 	type SecureImage,
 	type SecureImageResolution,
@@ -9,6 +8,9 @@ import {
 	isImage,
 	isImageResolution
 } from '$lib/types/auxd.types';
+
+import { type FramedData, JsonLd, Owl } from '$lib/types/xl.types';
+import { first } from '$lib/utils/xl';
 import getAtPath from '$lib/utils/getAtPath';
 import { relativizeUrl, stripAnchor } from '$lib/utils/http';
 

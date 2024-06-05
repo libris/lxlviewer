@@ -1,7 +1,7 @@
 import type { Action } from 'svelte/action';
 import type { LocaleCode } from '$lib/i18n/locales';
 import ResourcePopover from './ResourcePopover.svelte';
-import type { ResourceData } from '$lib/types/ResourceData';
+import type { ResourceData } from '$lib/types/resourceData.types';
 
 /** Tests to do
  * - [] Attaches popover when user hovers over trigger node (after delay)

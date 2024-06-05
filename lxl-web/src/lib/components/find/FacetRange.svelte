@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
-	import type { FacetSearch } from './search';
+	import type { FacetSearch } from '$lib/types/search.types';
 
 	export let search: FacetSearch;
 

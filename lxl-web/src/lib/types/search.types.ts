@@ -1,3 +1,8 @@
+import { JsonLd, type Link, type DisplayDecorated, type FramedData } from '$lib/types/xl.types';
+
+import { type SecureImageResolution } from '$lib/types/auxd.types';
+import { LxlLens } from '$lib/types/display.types';
+
 export interface SearchResult {
 	itemOffset: number;
 	itemsPerPage: number;
@@ -123,7 +128,13 @@ export interface SearchMapping extends MappingObj {
 
 interface ObjectProperty {}
 
-interface DatatypeProperty {
+export interface DatatypeProperty {
 	'@type': 'DataTypeProperty';
 	'@id': string;
+}
+
+interface PropertyChainAxiom {
+	propertyChainAxiom: (ObjectProperty | DatatypeProperty)[];
+	label: string; // e.g. "instanceOf language"
+	_key: string; // e.g. "instanceOf.language"
 }
