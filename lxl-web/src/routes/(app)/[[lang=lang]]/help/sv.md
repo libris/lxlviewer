@@ -65,7 +65,7 @@ För att inkludera flera ordformer trunkera med asterisk, till exempel ger sökn
 
 Avgränsa träffmängden med följande filter:<br>
 <b>Typ</b> för materialtyp<br>
-<b>Bärartyp</b> för typ för lagring eller uppspelning/visning<br>
+<b>Format</b> för typ för lagring eller uppspelning/visning<br>
 <b>Genre/form</b> för beskrivning av vad objektet är<br>
 <b>Språk</b> för det språk som används i objektet<br>
 <b>Utgivningsår</b> för årtalet då objektet gavs ut<br>
@@ -81,7 +81,6 @@ När ett eller flera filter har valts visas knappen “Redigera“ som ger dig m
 Observera att allt innehåll i Libris inte är beskrivet med samtliga filtertyper. Hur material är beskrivet i Libris har varierat över tid. Du kan därför behöva göra flera kompletterande sökningar eller justera filtreringen för att fånga upp relevanta objekt. Filtren visar max 100 alternativ, du kan avgränsa sökningen ytterligare för att få fram färre.
 
 ### Om vad som visas i en detaljerad vy av objektet
-
 I detaljvyn visas detaljerad och beskrivande information om objektet samt information som är relaterat till det. (Se ovan om detaljerna för materialtyper.)
 
 Om materialet finns utgivet i flera utgåvor, visas utgåvorna i en lista med nyast först. Genom att klicka på pilen för varje utgåva visas detaljerad information om respektive utgåva samt de bibliotek som har den specifika utgåvan.

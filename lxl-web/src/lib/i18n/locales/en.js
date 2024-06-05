@@ -46,7 +46,7 @@ export default {
 		'meta.encodingLevel': 'Encoding level',
 		'rdf:type': 'Type',
 		workType: 'Type',
-		instanceType: 'Carrier type',
+		instanceType: 'Format',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Library',
 		bibliography: 'Bibliography',
