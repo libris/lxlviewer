@@ -3,7 +3,7 @@
 	import { ShowLabelsOptions } from '$lib/types/decoratedData.types';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
-	import { getHoldingsLink, handleClickHoldings } from './utils';
+	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 

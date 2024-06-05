@@ -1,4 +1,3 @@
-import { isObject } from '$lib/utils/xl';
 import { JsonLd, type Link, Owl } from './xl.types';
 
 type SizePx = `${number}px`;
@@ -37,12 +36,4 @@ export interface Image {
 
 export interface SecureImage extends Image {
 	sizes: SecureImageResolution[];
-}
-
-export function isImage(v: unknown): v is Image {
-	return isObject(v) && 'sizes' in v && 'recordId' in v;
-}
-
-export function isImageResolution(v: unknown): v is ImageResolution {
-	return isObject(v) && 'url' in v && 'widthṔx' in v && 'heightPx' in v;
 }

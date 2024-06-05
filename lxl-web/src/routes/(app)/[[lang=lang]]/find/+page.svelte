@@ -7,4 +7,4 @@
 <svelte:head>
 	<title>{getPageTitle($page.url.searchParams.get('_q')?.trim())}</title>
 </svelte:head>
-<SearchResult />
+<SearchResult searchResult={$page.data.searchResult} />

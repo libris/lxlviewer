@@ -984,7 +984,7 @@ function isTypedNode(data: unknown): data is Data {
 	return isObject(data) && JsonLd.TYPE in data;
 }
 
-function asArray<V>(v: V | Array<V>): Array<V> | [] {
+export function asArray<V>(v: V | Array<V>): Array<V> | [] {
 	return Array.isArray(v) ? v : v === null || v === undefined ? [] : [v];
 }
 

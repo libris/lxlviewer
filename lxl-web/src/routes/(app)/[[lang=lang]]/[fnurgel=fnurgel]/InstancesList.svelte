@@ -5,8 +5,8 @@
 	import type { ResourceData } from '$lib/types/resourceData.types';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
+	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
 
-	import { getHoldingsLink, handleClickHoldings } from './utils';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesListContent from './InstancesListContent.svelte';

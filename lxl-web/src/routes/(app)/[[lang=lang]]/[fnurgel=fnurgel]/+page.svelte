@@ -7,7 +7,7 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
-	import { getHoldingsLink, handleClickHoldings } from './utils';
+	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
 	import { Width } from '$lib/types/auxd.types';
 	import SearchResult from '$lib/components/find/SearchResult.svelte';
 
