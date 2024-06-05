@@ -42,13 +42,19 @@ Utöver planerad utveckling kommer förbättringar av nuvarande funktionalitet a
 
 ### Allmänt om söktjänsten
 
-Det som är helt nytt i och med denna beta är att den läser data utan dröjsmål direkt från Libriskatalogen och bygger på de fördelar den nya informationsmodellen för med sig. Detta innebär bland annat att redigeringar i katalogiseringsklienten (på QA) syns direkt i söktjänsten men också att viss text kan upplevas mer teknisk än tidigare, detta är något vi kommer att arbeta vidare med för att förbättra.
+Libris nya söktjänst ska på sikt ersätta [libris.kb.se](https://www.libris.kb.se/). Den gamla tjänsten är tekniskt utdaterad och behöver bytas ut bl.a. för att möta de lagkrav som finns på tillgänglighet inom digital offentlig service.
+Den här betaversionen är ett första steg mot en tjänst som kommer medföra flera förbättringar för användarna.
+
+En grundsten i Libris är den informationsmodell baserad på länkade data som används för att beskriva materialet i katalogen. Den nya tjänsten är byggd med en mer direkt koppling till denna modell, vilket gör den både enklare och tekniskt mer robust. Det innebär också att ändringar som görs m.h.a. [Libris katalogiseringsverktyg](https://libris-qa.kb.se/katalogisering/) syns i söktjänsten utan fördröjning.
+
+Målet är också att bygga ett mer användarvänligt gränssnitt samtidigt som många av de funktioner som finns idag förbättras och byggs ut.
+Med en mer datanära design kan viss text till en början upplevas som mer teknisk än tidigare. Detta är något vi kommer att arbeta vidare med för att förbättra. Även tjänstens formspråk och grafiska uttryck kommer att förändras och förbättras under resans gång.
 
 ### Förbättrad materialkategorisering
 
 De materialkategorier (eller "typer") som syns i betaversionen idag kommer på sikt att ersättas där de inte är tydliga nog. Begrepp som “Text, tryck”, “Instans“, “Monografisk resurs” och så vidare kommer att bytas ut mot tydligare begrepp i stil med “Tidskrift“, “Ljudbok“, “Affisch” och “Vykort“. Målet är begripliga och användbara typer som håller över tid.
 
-I dagens libris.kb.se räknas etiketter som “bok”, “e-bok” och “affisch” ut i söktjänsten på ett komplicerat sätt utifrån en mängd datapunkter. Denna onödiga komplexitet beror bl.a. på begränsningarna som fanns i katalogen då tjänsten togs fram. Parallellt med utvecklingen av den nya söktjänsten jobbar vi nu med att förbättra katalogens data och informationsmodell. Eftersom nya Libris Sök på ett mer direkt sätt avspeglar katalogen kommer kommande förbättringar synas så fort de är utförda.
+I dagens libris.kb.se räknas etiketter som “bok”, “e-bok” och “affisch” ut i söktjänsten på ett komplicerat sätt, utifrån en mängd datapunkter. Denna onödiga komplexitet beror bl.a. på begränsningarna som fanns i katalogen då tjänsten togs fram. Parallellt med utvecklingen av den nya söktjänsten jobbar vi nu med att förbättra katalogens data och informationsmodell. Eftersom den nya söktjänsten på ett mer direkt sätt avspeglar katalogen kommer typförbättringar synas så fort de är utförda.
 
 Det kan fortfarande behövas olika begrepp och grad av precision i olika sammanhang. Men dessa skillnader kan i stor utsträckning fångas i den gemensamma katalogmodellen istället för att, som idag, ligga hårt knutna till olika tjänster.
 
@@ -81,6 +87,7 @@ När ett eller flera filter har valts visas knappen “Redigera“ som ger dig m
 Observera att allt innehåll i Libris inte är beskrivet med samtliga filtertyper. Hur material är beskrivet i Libris har varierat över tid. Du kan därför behöva göra flera kompletterande sökningar eller justera filtreringen för att fånga upp relevanta objekt. Filtren visar max 100 alternativ, du kan avgränsa sökningen ytterligare för att få fram färre.
 
 ### Om vad som visas i en detaljerad vy av objektet
+
 I detaljvyn visas detaljerad och beskrivande information om objektet samt information som är relaterat till det. (Se ovan om detaljerna för materialtyper.)
 
 Om materialet finns utgivet i flera utgåvor, visas utgåvorna i en lista med nyast först. Genom att klicka på pilen för varje utgåva visas detaljerad information om respektive utgåva samt de bibliotek som har den specifika utgåvan.
