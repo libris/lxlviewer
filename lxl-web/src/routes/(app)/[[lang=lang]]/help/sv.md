@@ -60,8 +60,9 @@ Det kan fortfarande behövas olika begrepp och grad av precision i olika sammanh
 
 ### Att använda sökfunktionen
 
-Utöver vanlig fritextsökning så finns också möjligheten att konstruera mer avancerade sökfrågor som innehåller filter och sökoperatorer.
-Ett enkelt sätt att utforska mer komplicerade sökfrågor är att klicka på de filter som finns i vänsterkolumnen. Aktiva filter visas direkt under sökrutan. Hela sökfrågan har även en textrepresentation som kan ändras fritt om man klickar på Redigera-knappen.
+Mycket material går att hitta med en enkel fritextsökning i sökrutan. Träffarna kan sorteras enligt de kategorier som finns i rullgardinsmenyn till höger på sidan.
+Utöver vanlig fritextsökning finns också möjligheten att konstruera mer avancerade sökfrågor som innehåller filter och sökoperatorer.
+Ett sätt att utforska mer komplicerade sökfrågor är att klicka på de filter som finns i vänsterkolumnen. Aktiva filter visas direkt under sökrutan. Hela sökfrågan har även en textrepresentation som kan ändras fritt om man klickar på Redigera-knappen.
 
 De filter som finns i vänsterkolumnen är:
 
@@ -80,7 +81,7 @@ De filter som finns i vänsterkolumnen är:
 Ytterligare egenskaper som går att filtrera på finns listade på [id.kb.se/vocab](https://id.kb.se/vocab/) (tryck på Egenskaper-knappen). Vissa vanliga egenskaper kommer ett få enklare etiketter för att det ska gå snabbt att skriva in vanliga sökfrågor för hand. Redan nu kan man använda kortformen `ÅR` för att söka på material med ett specificerat utgivningsår eller årsspann.
 I redigeringsläget finns också stöd för sökoperatorerna `AND`, `OR` och `NOT`.
 
-För att söka på fraser sätts sökorden inom citationstecken, till exempel "sju sjösjuka sjömän". Observera att detta även tills vidare behöver göras för titlar eller söksträngar med kolon “:“ i sig då det tecknet idag tolkas som en operator för riktad sökning.
+För att söka på fraser sätts sökorden inom citationstecken, till exempel "sju sjösjuka sjömän". Observera att detta även tills vidare behöver göras för titlar eller söksträngar som innehåller kolon “:“ eftersom det tecknet idag tolkas som en operator för riktad sökning.
 
 Asterisk används för trunkering då man vill inkludera fler ordformer. Till exempel ger sökning på kulturarv\* träffar där orden kulturarv, kulturarvet och kulturarvsinstitutioner ingår.
 
