@@ -58,18 +58,13 @@ I dagens libris.kb.se räknas etiketter som “bok”, “e-bok” och “affisc
 
 Det kan fortfarande behövas olika begrepp och grad av precision i olika sammanhang. Men dessa skillnader kan i stor utsträckning fångas i den gemensamma katalogmodellen istället för att, som idag, ligga hårt knutna till olika tjänster.
 
-### Om hur sökningen fungerar
+### Att använda sökfunktionen
 
-Utöver vanlig fritextsökning så går det även att skriva mer avancerade sökfrågor direkt i sökrutan, till exempel FÖRF:Rowling, TITEL:Sockerormen eller ÅR>2000, och sökoperatorer, till exempel AND för att inkludera samtliga sökord eller NOT för att exkludera sökord.
+Utöver vanlig fritextsökning så finns också möjligheten att konstruera mer avancerade sökfrågor som innehåller filter och sökoperatorer.
+Ett enkelt sätt att utforska mer komplicerade sökfrågor är att klicka på de filter som finns i vänsterkolumnen. Aktiva filter visas direkt under sökrutan. Hela sökfrågan har även en textrepresentation som kan ändras fritt om man klickar på Redigera-knappen.
 
-Exempel: `pippi språk:(engelska OR franska) NOT medverkande:"astrid lindgren"`
-Här får vi träff på engelska och franska verk, som “astrid lindgren” inte medverkar på och som matchar sökordet “pippi”.
+De filter som finns i vänsterkolumnen är:
 
-För att söka fraser eller ordkombinationer ska du sätta sökorden inom citationstecken, till exempel "sju sjösjuka sjömän". Observera att detta även tills vidare behöver göras för titlar eller söksträngar med kolon “:“ i sig då det tecknet idag tolkas som en operator för riktad sökning.
-
-För att inkludera flera ordformer trunkera med asterisk, till exempel ger sökning på kulturarv\* träffar där orden kulturarv, kulturarvet och kulturarvsinstitutioner ingår.
-
-Avgränsa träffmängden med följande filter:<br>
 <b>Typ</b> för materialtyp<br>
 <b>Format</b> för typ för lagring eller uppspelning/visning<br>
 <b>Genre/form</b> för beskrivning av vad objektet är<br>
@@ -82,9 +77,22 @@ Avgränsa träffmängden med följande filter:<br>
 <b>Målgrupp</b> för den tänkta målgruppen för objektet<br>
 <b>Övrigt</b> för inkludering av kommande titlar (förhandsinformation) eller elektroniska pliktlevererade resurser samt för avgränsning av resurser med bild
 
-När ett eller flera filter har valts visas knappen “Redigera“ som ger dig möjligheten att redigera söksträngen i med operatorer.
+Ytterligare egenskaper som går att filtrera på finns listade på [id.kb.se/vocab](https://id.kb.se/vocab/) (tryck på Egenskaper-knappen). Vissa vanliga egenskaper kommer ett få enklare etiketter för att det ska gå snabbt att skriva in vanliga sökfrågor för hand. Redan nu kan man använda kortformen `ÅR` för att söka på material med ett specificerat utgivningsår eller årsspann.
+I redigeringsläget finns också stöd för sökoperatorerna `AND`, `OR` och `NOT`.
 
-Observera att allt innehåll i Libris inte är beskrivet med samtliga filtertyper. Hur material är beskrivet i Libris har varierat över tid. Du kan därför behöva göra flera kompletterande sökningar eller justera filtreringen för att fånga upp relevanta objekt. Filtren visar max 100 alternativ, du kan avgränsa sökningen ytterligare för att få fram färre.
+För att söka på fraser sätts sökorden inom citationstecken, till exempel "sju sjösjuka sjömän". Observera att detta även tills vidare behöver göras för titlar eller söksträngar med kolon “:“ i sig då det tecknet idag tolkas som en operator för riktad sökning.
+
+Asterisk används för trunkering då man vill inkludera fler ordformer. Till exempel ger sökning på kulturarv\* träffar där orden kulturarv, kulturarvet och kulturarvsinstitutioner ingår.
+
+#### Exempelsökningar
+
+...
+
+`pippi långstrump språk:(engelska OR franska) ÅR>2002` ger träff på engelska och franska verk som matchar sökordet "pippi långstrump".
+
+`SPRÅK:svenska ÅR>2010 ÅR<=2024 subject:"sao:Drakar"` ger träff på material med utgivning mellan 2010 och 2024, som är på svenska och har [drakar](https://id.kb.se/term/sao/Drakar) som ämne.
+
+... NOT
 
 ### Om vad som visas i en detaljerad vy av objektet
 
