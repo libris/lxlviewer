@@ -1,13 +1,11 @@
 <script lang="ts">
 	import type { ResourceData } from '$lib/types/resourceData.types';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData.types';
-
+	import { page } from '$app/stores';
+	import resourcePopover from '$lib/actions/resourcePopover';
 	import { hasStyle, getStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
-
-	import resourcePopover from '$lib/actions/resourcePopover';
 	import { getSupportedLocale } from '$lib/i18n/locales';
-	import { page } from '$app/stores';
 
 	export let data: ResourceData;
 	export let depth = 0;
