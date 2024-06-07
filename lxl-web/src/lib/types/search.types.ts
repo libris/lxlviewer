@@ -1,5 +1,4 @@
 import { JsonLd, type Link, type DisplayDecorated, type FramedData } from '$lib/types/xl.types';
-
 import { type SecureImageResolution } from '$lib/types/auxd.types';
 import { LxlLens } from '$lib/types/display.types';
 

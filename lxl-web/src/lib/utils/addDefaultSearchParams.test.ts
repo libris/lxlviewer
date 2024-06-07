@@ -5,29 +5,28 @@ describe('addDefaultSearchParams', () => {
 	it('adds default search params if they are missing', () => {
 		expect(addDefaultSearchParams(new URLSearchParams())).toStrictEqual(
 			new URLSearchParams([
-				['q', '*'],
-				['@type', 'Work'],
+				['_q', '*'],
 				['_limit', '10'],
+				['_offset', '0'],
 				['_sort', '']
 			])
 		);
 	});
 	it("doesn't change initial params if they are already set", () => {
-		expect(addDefaultSearchParams(new URLSearchParams([['q', 'test']]))).toStrictEqual(
+		expect(addDefaultSearchParams(new URLSearchParams([['_q', 'test']]))).toStrictEqual(
 			new URLSearchParams([
-				['q', 'test'],
-				['@type', 'Work'],
+				['_q', 'test'],
 				['_limit', '10'],
+				['_offset', '0'],
 				['_sort', '']
 			])
 		);
 	});
-	it('resets the offset if set', () => {
+	it("don't reset the offset if set", () => {
 		expect(addDefaultSearchParams(new URLSearchParams([['_offset', '30']]))).toStrictEqual(
 			new URLSearchParams([
-				['_offset', '0'],
-				['q', '*'],
-				['@type', 'Work'],
+				['_offset', '30'],
+				['_q', '*'],
 				['_limit', '10'],
 				['_sort', '']
 			])

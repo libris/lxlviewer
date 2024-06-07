@@ -1,4 +1,4 @@
-import { JsonLd, type Link, Owl } from './xl.types';
+import { JsonLd, Owl, type Link } from './xl.types';
 
 type SizePx = `${number}px`;
 
