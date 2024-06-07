@@ -66,17 +66,17 @@ Ett sätt att utforska mer komplicerade sökfrågor är att klicka på de filter
 
 De filter som finns i vänsterkolumnen är:
 
-<b>Typ</b> för materialtyp<br>
-<b>Format</b> för typ för lagring eller uppspelning/visning<br>
-<b>Genre/form</b> för beskrivning av vad objektet är<br>
-<b>Språk</b> för det språk som används i objektet<br>
-<b>Utgivningsår</b> för årtalet då objektet gavs ut<br>
-<b>Bibliotek</b> för bibliotek som har objektet i sina samlingar<br>
-<b>Bibliografi</b> för förteckning över material inom ett specifikt område, exempelvis person, ämne eller geografiskt område<br>
-<b>Ämne</b> för ämnesord som objektet är beskrivet med<br>
-<b>Medverkan</b> för personer eller organisationer som skapat eller har bidragit till tillkomsten av objektet<br>
-<b>Målgrupp</b> för den tänkta målgruppen för objektet<br>
-<b>Övrigt</b> för inkludering av kommande titlar (förhandsinformation) eller elektroniska pliktlevererade resurser samt för avgränsning av resurser med bild
+<b>Typ</b> - materialtyp<br>
+<b>Format</b> - typ för lagring eller uppspelning/visning<br>
+<b>Genre/form</b> - beskrivning av vad objektet är<br>
+<b>Språk</b> - det språk som används i objektet<br>
+<b>Utgivningsår</b> - årtalet då objektet gavs ut<br>
+<b>Bibliotek</b> - bibliotek som har objektet i sina samlingar<br>
+<b>Bibliografi</b> - förteckning över material inom ett specifikt område, exempelvis person, ämne eller geografiskt område<br>
+<b>Ämne</b> - ämnesord som objektet är beskrivet med<br>
+<b>Medverkan</b> - personer eller organisationer som skapat eller har bidragit till tillkomsten av objektet<br>
+<b>Målgrupp</b> - den tänkta målgruppen för objektet<br>
+<b>Övrigt</b> - inkludering av kommande titlar (förhandsinformation) eller elektroniska pliktlevererade resurser samt för avgränsning av resurser med bild
 
 Ytterligare egenskaper som går att filtrera på finns listade på [id.kb.se/vocab](https://id.kb.se/vocab/) (tryck på Egenskaper-knappen). Vissa vanliga egenskaper kommer ett få enklare etiketter för att det ska gå snabbt att skriva in vanliga sökfrågor för hand. Redan nu kan man använda kortformen `ÅR` för att söka på material med ett specificerat utgivningsår eller årsspann.
 I redigeringsläget finns också stöd för sökoperatorerna `AND`, `OR` och `NOT`.
