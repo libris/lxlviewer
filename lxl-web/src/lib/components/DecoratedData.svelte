@@ -7,7 +7,6 @@
 
 	import resourcePopover from '$lib/actions/resourcePopover';
 	import { getSupportedLocale } from '$lib/i18n/locales';
-	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right';
 	import { page } from '$app/stores';
 
 	export let data: ResourceData;
@@ -248,17 +247,6 @@
 					{data._contentAfter}
 				</span>
 			{/if}
-			{#if hasStyle(data, 'ext-link')}
-				<a href={getLink(data)} target="_blank">
-					<span class="ext-link inline-block pl-1">
-						<BiBoxArrowUpRight />
-					</span>
-					<!-- FIXME don't hardcode MediaObject -->
-					{#if data['@type'] === 'MediaObject'}
-						<span class="whitespace-pre after:content-['\a']"></span>
-					{/if}
-				</a>
-			{/if}
 		{/if}
 	{:else}
 		{data}
@@ -266,6 +254,11 @@
 {/key}
 
 <style lang="postcss">
+	.ext-link::after {
+		content: '\2009↗';
+		@apply align-[10%] text-icon;
+	}
+
 	.definition {
 		@apply text-sm text-secondary underline decoration-dotted;
 	}
