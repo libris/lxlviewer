@@ -26,6 +26,9 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
+      env:
+        API_URL: ${{ secrets.API_URL }}
+        ID_URL: ${{ secrets.ID_URL }}
       run: npm run test:integration
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
