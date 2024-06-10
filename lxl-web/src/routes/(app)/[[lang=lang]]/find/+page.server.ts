@@ -2,7 +2,7 @@ import { redirect, error } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 
-import { type apiError } from '$lib/types/api.js';
+import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView } from '$lib/types/search.js';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl.js';
 import { asResult } from '$lib/utils/search';
@@ -33,7 +33,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 				redirect(recordsRes.status, `${url.pathname}${apiSearch}`);
 			}
 		} else {
-			const err = (await recordsRes.json()) as apiError;
+			const err = (await recordsRes.json()) as ApiError;
 			throw error(err.status_code, { message: err.message, status: err.status });
 		}
 	}
