@@ -2,7 +2,7 @@
 	import jmespath from 'jmespath';
 	import { replaceState } from '$app/navigation';
 
-	import type { ResourceData } from '$lib/types/resourceData.types';
+	import type { ResourceData } from '$lib/types/resourceData';
 	import { getResourceId } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';

@@ -1,12 +1,6 @@
 import { DisplayUtil, isObject, toString, VocabUtil } from '$lib/utils/xl';
 
-import {
-	type DisplayDecorated,
-	type FramedData,
-	type Link,
-	LensType,
-	JsonLd
-} from '$lib/types/xl.types';
+import { type DisplayDecorated, type FramedData, type Link, LensType, JsonLd } from '$lib/types/xl';
 
 import {
 	type PartialCollectionView,
@@ -17,10 +11,10 @@ import {
 	type DatatypeProperty,
 	type MultiSelectFacet,
 	type FacetGroup
-} from '$lib/types/search.types';
+} from '$lib/types/search';
 
-import { LxlLens } from '$lib/types/display.types';
-import { Width } from '$lib/types/auxd.types';
+import { LxlLens } from '$lib/types/display';
+import { Width } from '$lib/types/auxd';
 import { getTranslator, type translateFn } from '$lib/i18n';
 import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';

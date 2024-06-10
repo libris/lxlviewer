@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import Search from '$lib/components/Search.svelte';
 	import BiList from '~icons/bi/list';
+	import Search from '$lib/components/Search.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import HeaderMenu from './HeaderMenu.svelte';
 

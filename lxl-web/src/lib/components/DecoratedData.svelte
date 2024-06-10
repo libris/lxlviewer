@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { ResourceData } from '$lib/types/resourceData.types';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData.types';
+	import type { ResourceData } from '$lib/types/resourceData';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { page } from '$app/stores';
 	import resourcePopover from '$lib/actions/resourcePopover';
 	import { hasStyle, getStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
@@ -122,7 +122,7 @@
 	}
 </script>
 
-<!-- 
+<!--
   @component
 	Component used for rendering decorated data.
 -->

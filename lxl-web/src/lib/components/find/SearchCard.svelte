@@ -1,10 +1,10 @@
 <script lang="ts">
 	import jmespath from 'jmespath';
-	import type { SearchResultItem } from '$lib/types/search.types';
-	import type { ResourceData } from '$lib/types/resourceData.types';
-	import { LensType } from '$lib/types/xl.types';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData.types';
-	import { LxlLens } from '$lib/types/display.types';
+	import type { SearchResultItem } from '$lib/types/search';
+	import type { ResourceData } from '$lib/types/resourceData';
+	import { LensType } from '$lib/types/xl';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { LxlLens } from '$lib/types/display';
 
 	import { relativizeUrl } from '$lib/utils/http';
 	import getTypeIcon from '$lib/utils/getTypeIcon';

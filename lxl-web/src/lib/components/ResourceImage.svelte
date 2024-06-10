@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type Image, Width } from '$lib/types/auxd.types';
+	import { type Image, Width } from '$lib/types/auxd';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { bestSize } from '$lib/utils/auxd';

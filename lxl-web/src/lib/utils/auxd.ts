@@ -5,8 +5,8 @@ import type {
 	Image,
 	KbvImageObject,
 	ImageResolution
-} from '$lib/types/auxd.types';
-import { type FramedData, JsonLd, Owl } from '$lib/types/xl.types';
+} from '$lib/types/auxd';
+import { type FramedData, JsonLd, Owl } from '$lib/types/xl';
 
 import { first, isObject, asArray } from '$lib/utils/xl';
 import getAtPath from '$lib/utils/getAtPath';

@@ -28,7 +28,7 @@ import {
 	type RangeRestriction,
 	type AlternateProperties,
 	type LangContainer
-} from '$lib/types/xl.types';
+} from '$lib/types/xl';
 
 // TODO TESTS!
 

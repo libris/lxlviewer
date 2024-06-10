@@ -1,7 +1,7 @@
 import { pushState } from '$app/navigation';
 import isFnurgel from '$lib/utils/isFnurgel';
 import { relativizeUrl } from '$lib/utils/http';
-import { type FramedData } from '$lib/types/xl.types';
+import { type FramedData } from '$lib/types/xl';
 
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);

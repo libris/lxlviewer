@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { Width } from '$lib/types/auxd';
+	import getPageTitle from '$lib/utils/getPageTitle';
+	import isFnurgel from '$lib/utils/isFnurgel';
+	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
+
+	import Modal from '$lib/components/Modal.svelte';
+	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import InstancesList from './InstancesList.svelte';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData.types';
-	import getPageTitle from '$lib/utils/getPageTitle';
-	import Modal from '$lib/components/Modal.svelte';
-	import isFnurgel from '$lib/utils/isFnurgel';
-	import ResourceImage from '$lib/components/ResourceImage.svelte';
-	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
-	import { Width } from '$lib/types/auxd.types';
 	import SearchResult from '$lib/components/find/SearchResult.svelte';
 
 	export let data;

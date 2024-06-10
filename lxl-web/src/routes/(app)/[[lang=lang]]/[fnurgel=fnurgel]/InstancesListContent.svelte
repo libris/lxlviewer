@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { ResourceData } from '$lib/types/resourceData.types';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData.types';
+	import type { ResourceData } from '$lib/types/resourceData';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';

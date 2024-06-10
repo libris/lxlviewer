@@ -3,10 +3,10 @@ import jmespath from 'jmespath';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 
-import { type FramedData, JsonLd } from '$lib/types/xl.types.js';
-import { LxlLens } from '$lib/types/display.types.js';
-import { type apiError } from '$lib/types/api.types.js';
-import type { PartialCollectionView, SearchResult } from '$lib/types/search.types.js';
+import { type FramedData, JsonLd } from '$lib/types/xl.js';
+import { LxlLens } from '$lib/types/display';
+import { type apiError } from '$lib/types/api.js';
+import type { PartialCollectionView, SearchResult } from '$lib/types/search.js';
 
 import { DisplayUtil, pickProperty, toString, VocabUtil, asArray } from '$lib/utils/xl.js';
 import { getImages, toSecure } from '$lib/utils/auxd';

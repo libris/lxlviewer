@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { ShowLabelsOptions } from '$lib/types/decoratedData.types';
-	import type { DisplayMapping, SearchOperators } from '$lib/types/search.types';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import type { DisplayMapping, SearchOperators } from '$lib/types/search';
 
 	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';

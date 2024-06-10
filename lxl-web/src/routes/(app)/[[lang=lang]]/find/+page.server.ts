@@ -2,9 +2,9 @@ import { redirect, error } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 
+import { type apiError } from '$lib/types/api.js';
+import type { PartialCollectionView } from '$lib/types/search.js';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl.js';
-import { type apiError } from '$lib/types/api.types.js';
-import type { PartialCollectionView } from '$lib/types/search.types.js';
 import { asResult } from '$lib/utils/search';
 
 export const load = async ({ params, url, locals, fetch }) => {

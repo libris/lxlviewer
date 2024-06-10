@@ -1,7 +1,7 @@
 import { env } from '$env/dynamic/private';
 import { json } from '@sveltejs/kit';
 import { DisplayUtil } from '$lib/utils/xl';
-import { type FramedData, LensType } from '$lib/types/xl.types.js';
+import { type FramedData, LensType } from '$lib/types/xl.js';
 import { getSupportedLocale } from '$lib/i18n/locales';
 
 export async function GET({ params, locals }) {

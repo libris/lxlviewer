@@ -2,7 +2,7 @@ import { defaultLocale, Locales } from '$lib/i18n/locales';
 import { env } from '$env/dynamic/private';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import fs from 'fs';
-import { DERIVED_LENSES } from '$lib/types/display.types';
+import { DERIVED_LENSES } from '$lib/types/display';
 import displayWeb from '$lib/assets/json/display-web.json';
 
 let utilCache;
