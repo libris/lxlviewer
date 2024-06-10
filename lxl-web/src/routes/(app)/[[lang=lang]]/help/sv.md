@@ -87,13 +87,19 @@ Asterisk används för trunkering då man vill inkludera fler ordformer. Till ex
 
 #### Exempelsökningar
 
-...
+Här följer några exempel som går att skriva in som sökfrågor direkt i sökrutan. Klicka på de olika exemplen för att öppna dem i söktjänsten.
 
-`pippi långstrump språk:(engelska OR franska) ÅR>2002` ger träff på engelska och franska verk som matchar sökordet "pippi långstrump".
+Engelska och franska verk som matchar sökordet "pippi långstrump" som givits ut efter år 2002:
 
-`SPRÅK:svenska ÅR>2010 ÅR<=2024 subject:"sao:Drakar"` ger träff på material med utgivning mellan 2010 och 2024, som är på svenska och har [drakar](https://id.kb.se/term/sao/Drakar) som ämne.
+[`pippi långstrump språk:(engelska OR franska) ÅR>2002`](<https://beta.libris-qa.kb.se/find?_i=pippi+l%C3%A5ngstrump&_q=pippi+l%C3%A5ngstrump+SPR%C3%85K:(engelska%20OR%20franska)&_limit=10&_x=advanced>)
 
-... NOT
+Material med utgivning mellan 2010 och 2024, som är på svenska och har [drakar](https://id.kb.se/term/sao/Drakar) som ämne:
+
+[`språk:svenska ÅR>2010 ÅR<=2024 ämne:"sao:Drakar"`](https://beta.libris-qa.kb.se/find?_i=&_q=SPR%C3%85K:svenska+%C3%85R%3E2010+%C3%85R%3C%3D2024+subject:%22sao:Drakar%22&_limit=10&_x=advanced)
+
+Fritextsökning på träd\*, där alla träffar ingår i bibliografin Digitaliserat Svenskt Tryck men som inte har verkstyp "Text":
+
+[`träd* bibliografi:"sigel:DST" NOT "typ":Text`](https://beta.libris-qa.kb.se/find?_i=tr%C3%A4d*&_q=tr%C3%A4d*+bibliography:%22sigel:DST%22+NOT+%22rdf:type%22:Text&_limit=10&_x=advanced)
 
 ### Om vad som visas i en detaljerad vy av objektet
 
