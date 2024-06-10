@@ -54,7 +54,7 @@ Med en mer datanära design kan viss text till en början upplevas som mer tekni
 
 De materialkategorier (eller "typer") som syns i betaversionen idag kommer på sikt att ersättas där de inte är tydliga nog. Begrepp som “Text, tryck”, “Instans“, “Monografisk resurs” och så vidare kommer att bytas ut mot tydligare begrepp i stil med “Tidskrift“, “Ljudbok“, “Affisch” och “Vykort“. Målet är begripliga och användbara typer som håller över tid.
 
-I dagens libris.kb.se räknas etiketter som “bok”, “e-bok” och “affisch” ut i söktjänsten på ett komplicerat sätt, utifrån en mängd datapunkter. Denna onödiga komplexitet beror bl.a. på begränsningarna som fanns i katalogen då tjänsten togs fram. Parallellt med utvecklingen av den nya söktjänsten jobbar vi nu med att förbättra katalogens data och informationsmodell. Eftersom den nya söktjänsten på ett mer direkt sätt avspeglar katalogen kommer typförbättringar synas så fort de är utförda.
+I dagens libris.kb.se räknas etiketter som “bok”, “e-bok” och “affisch” ut i söktjänsten på ett komplicerat sätt, utifrån en mängd datapunkter. Denna onödiga komplexitet beror bl.a. på begränsningarna som fanns i katalogen då tjänsten togs fram. Parallellt med utvecklingen av den nya söktjänsten jobbar vi nu med att förbättra katalogens data och informationsmodell. Eftersom den nya söktjänsten på ett mer direkt sätt avspeglar katalogen kommer förbättringar synas så fort de är utförda.
 
 Det kan fortfarande behövas olika begrepp och grad av precision i olika sammanhang. Men dessa skillnader kan i stor utsträckning fångas i den gemensamma katalogmodellen istället för att, som idag, ligga hårt knutna till olika tjänster.
 
@@ -89,7 +89,7 @@ Asterisk används för trunkering då man vill inkludera fler ordformer. Till ex
 
 Här följer några exempel som går att skriva in som sökfrågor direkt i sökrutan. Klicka på de olika exemplen för att öppna dem i söktjänsten.
 
-Engelska och franska verk som matchar sökordet "pippi långstrump" som givits ut efter år 2002:
+Engelska och franska verk som matchar sökfrasen "pippi långstrump" som givits ut efter år 2002:
 
 [`pippi långstrump språk:(engelska OR franska) ÅR>2002`](<https://beta.libris-qa.kb.se/find?_i=pippi+l%C3%A5ngstrump&_q=pippi+l%C3%A5ngstrump+SPR%C3%85K:(engelska%20OR%20franska)&_limit=10&_x=advanced>)
 
@@ -107,8 +107,8 @@ Verk där Selma Lagerlöf är författare som har minst en upplaga som är en el
 
 ### Detaljvyn
 
-Varje objekt i katalogen kan nås genom att antingen klicka på det i träfflistan eller genom att mata in dess unika URL i webbläsarens adressfält. I detaljvyn visas en mer ingående beskrvning av objektet tillsammans med information som är relaterat till det.
+Varje objekt i katalogen kan nås genom att antingen klicka på det i träfflistan eller genom att mata in dess unika URL i webbläsarens adressfält. Här finns en mer ingående beskrvning av objektet tillsammans med information som är relaterat till det.
 
-Om materialet finns utgivet i flera utgåvor, visas utgåvorna i en lista sorterad efter utgivningsdatum. Genom att klicka på pilen för varje utgåva visas detaljerad information om respektive utgåva samt de bibliotek som har den specifika utgåvan. Här kan man också klicka på "Kopiera länk till utgåva" för att spara en direktlänk till den specifika utgåvan.
+Om materialet finns utgivet i flera utgåvor visas dessa i en lista sorterad efter utgivningsdatum. Genom att klicka på pilen för varje utgåva visas mer detaljerad information om denna, samt de bibliotek som har den specifika utgåvan.
 
 I vissa fall innehåller detaljvyn en eller flera länkar för att komma åt materialet online. En del material är fritt tillgängliga för alla, annat kräver att man är låntagare på ett bibliotek som har licens för att visa materialet.
