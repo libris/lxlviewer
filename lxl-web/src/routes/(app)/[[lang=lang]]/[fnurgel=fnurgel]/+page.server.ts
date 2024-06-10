@@ -5,7 +5,7 @@ import { getSupportedLocale } from '$lib/i18n/locales.js';
 
 import { type FramedData, JsonLd } from '$lib/types/xl.types.js';
 import { LxlLens } from '$lib/types/display.types.js';
-import { type apiError } from '$lib/types/api.types.js';
+import { type ApiError } from '$lib/types/api.types.js';
 import type { PartialCollectionView, SearchResult } from '$lib/types/search.types.js';
 
 import { DisplayUtil, pickProperty, toString, VocabUtil, asArray } from '$lib/utils/xl.js';
@@ -33,7 +33,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	}
 
 	if (!resourceRes.ok) {
-		const err = (await resourceRes.json()) as apiError;
+		const err = (await resourceRes.json()) as ApiError;
 		throw error(err.status_code, { message: err.message, status: err.status });
 	}
 
@@ -126,7 +126,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		const recordsRes = await fetch(fetchUri);
 
 		if (!recordsRes.ok) {
-			const err = (await recordsRes.json()) as apiError;
+			const err = (await recordsRes.json()) as ApiError;
 			throw error(err.status_code, { message: err.message, status: err.status });
 		}
 
