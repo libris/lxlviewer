@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ResourceData } from '$lib/types/ResourceData';
+	import type { ResourceData } from '$lib/types/resourceData';
 	import { onMount } from 'svelte';
 	import { computePosition, offset, shift, inline, flip, arrow } from '@floating-ui/dom';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';

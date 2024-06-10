@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { ResourceData } from '$lib/types/ResourceData';
+	import type { ResourceData } from '$lib/types/resourceData';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import DecoratedData from '$lib/components/DecoratedData.svelte';
+	import ResourceImage from '$lib/components/ResourceImage.svelte';
+	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
-	import ResourceImage from '$lib/components/ResourceImage.svelte';
-	import { getHoldingsLink, handleClickHoldings } from './utils';
 
 	export let id: string | undefined;
 	export let data: ResourceData;

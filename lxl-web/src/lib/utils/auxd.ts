@@ -1,14 +1,14 @@
 import crypto from 'crypto';
-import { first, type FramedData, JsonLd, Owl } from '$lib/utils/xl';
-import {
-	type SecureImage,
-	type SecureImageResolution,
-	type Image,
-	type KbvImageObject,
-	type ImageResolution,
-	isImage,
-	isImageResolution
-} from '$lib/utils/auxd.types';
+import type {
+	SecureImage,
+	SecureImageResolution,
+	Image,
+	KbvImageObject,
+	ImageResolution
+} from '$lib/types/auxd';
+import { type FramedData, JsonLd, Owl } from '$lib/types/xl';
+
+import { first, isObject, asArray } from '$lib/utils/xl';
 import getAtPath from '$lib/utils/getAtPath';
 import { relativizeUrl, stripAnchor } from '$lib/utils/http';
 
@@ -84,13 +84,17 @@ export function generateSecureLink(expires, url, secret) {
 	return `${parsedUrl.origin}${parsedUrl.pathname}?key=${key}&expires=${expires}`;
 }
 
+export function isImage(v: unknown): v is Image {
+	return isObject(v) && 'sizes' in v && 'recordId' in v;
+}
+
+export function isImageResolution(v: unknown): v is ImageResolution {
+	return isObject(v) && 'url' in v && 'widthṔx' in v && 'heightPx' in v;
+}
+
 function generateImageHash(expires, url, secret) {
 	const input = `${expires} ${url} ${secret}`;
 	const binaryHash = crypto.createHash('md5').update(input).digest();
 	const base64Value = Buffer.from(binaryHash).toString('base64');
 	return base64Value.replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-}
-
-function asArray<V>(v: V | Array<V>): Array<V> | [] {
-	return Array.isArray(v) ? v : v === null || v === undefined ? [] : [v];
 }

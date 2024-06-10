@@ -2,9 +2,9 @@
 	import { page } from '$app/stores';
 	import { getModalContext } from '$lib/contexts/modal';
 	import FacetGroup from './FacetGroup.svelte';
-	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from './search';
+	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from '$lib/types/search';
 	import SearchMapping from './SearchMapping.svelte';
-	import { shouldShowMapping } from './utils';
+	import { shouldShowMapping } from '$lib/utils/search';
 
 	export let facets: TypedFacetGroup[];
 	export let mapping: DisplayMapping[];
