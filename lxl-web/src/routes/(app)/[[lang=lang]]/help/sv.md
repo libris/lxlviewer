@@ -101,12 +101,14 @@ Fritextsökning på träd\*, där alla träffar ingår i bibliografin Digitalise
 
 [`träd* bibliografi:"sigel:DST" NOT "typ":Text`](https://beta.libris-qa.kb.se/find?_i=tr%C3%A4d*&_q=tr%C3%A4d*+bibliography:%22sigel:DST%22+NOT+%22rdf:type%22:Text&_limit=10&_x=advanced)
 
-### Om vad som visas i en detaljerad vy av objektet
+Verk där Selma Lagerlöf är författare som har minst en upplaga som är en elektronisk resurs:
 
-I detaljvyn visas detaljerad och beskrivande information om objektet samt information som är relaterat till det. (Se ovan om detaljerna för materialtyper.)
+[`författare:"selma lagerlöf" "hasInstanceType":Electronic`](https://beta.libris-qa.kb.se/find?_i=&_q=F%C3%96RF:%22selma+lagerl%C3%B6f%22+hasInstanceType:Electronic&_limit=10&_x=advanced)
 
-Om materialet finns utgivet i flera utgåvor, visas utgåvorna i en lista med nyast först. Genom att klicka på pilen för varje utgåva visas detaljerad information om respektive utgåva samt de bibliotek som har den specifika utgåvan.
+### Detaljvyn
 
-I vissa fall finns det en länk till materialet online. En del av dessa är fritt tillgängliga för alla, för en del krävs det att man är låntagare på ett bibliotek som har licens att visa materialet.
+Varje objekt i katalogen kan nås genom att antingen klicka på det i träfflistan eller genom att mata in dess unika URL i webbläsarens adressfält. I detaljvyn visas en mer ingående beskrvning av objektet tillsammans med information som är relaterat till det.
 
-Genom att använda funktionen Kopiera länk till utgåva, kan du kopiera och spara direkt länk till utgåvan.
+Om materialet finns utgivet i flera utgåvor, visas utgåvorna i en lista sorterad efter utgivningsdatum. Genom att klicka på pilen för varje utgåva visas detaljerad information om respektive utgåva samt de bibliotek som har den specifika utgåvan. Här kan man också klicka på "Kopiera länk till utgåva" för att spara en direktlänk till den specifika utgåvan.
+
+I vissa fall innehåller detaljvyn en eller flera länkar för att komma åt materialet online. En del material är fritt tillgängliga för alla, annat kräver att man är låntagare på ett bibliotek som har licens för att visa materialet.
