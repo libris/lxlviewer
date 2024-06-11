@@ -70,6 +70,7 @@ export default {
 		selectedFilters: 'Selected filters',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
+		removeFilter: 'Remove filter',
 		noResults: 'No results',
 		hitsOf: 'of',
 		hits: 'hits',

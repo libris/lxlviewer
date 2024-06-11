@@ -69,6 +69,7 @@ export default {
 		selectedFilters: 'Valda filter',
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
+		removeFilter: 'Ta bort filter',
 		noResults: 'Inga resultat',
 		hitsOf: 'av',
 		hits: 'träffar',
