@@ -61,6 +61,7 @@ export default {
 	},
 	search: {
 		search: 'Sök',
+		searchResults: 'Sökresultat',
 		loading: 'Laddar...',
 		findFilter: 'Hitta filter',
 		filters: 'Sökfilter',

@@ -62,6 +62,7 @@ export default {
 	},
 	search: {
 		search: 'Search',
+		searchResults: 'Search results',
 		loading: 'Loading...',
 		findFilter: 'Find filter',
 		filters: 'Filters',
