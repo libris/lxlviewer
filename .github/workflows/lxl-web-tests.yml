@@ -1,4 +1,4 @@
-name: LXL-web Playwright tests
+name: lxl-web
 on:
   push:
     branches: [ develop ]
@@ -29,7 +29,7 @@ jobs:
       env:
         API_URL: ${{ secrets.API_URL }}
         ID_URL: ${{ secrets.ID_URL }}
-      run: npm run test:integration
+      run: npm run test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
