@@ -25,7 +25,7 @@
 			<input
 				bind:value={searchPhrase}
 				placeholder={$page.data.t('search.findFilter')}
-				title={$page.data.t('search.findFilter')}
+				aria-label={$page.data.t('search.findFilter')}
 				class="w-full"
 				type="search"
 			/>
