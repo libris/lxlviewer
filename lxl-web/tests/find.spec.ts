@@ -28,7 +28,9 @@ test('displays 10 search cards on a page', async ({ page }) => {
 });
 
 test('search card contains a link', async ({ page }) => {
-	await expect(page.getByTestId('search-card').first().getByRole('link')).toHaveAttribute('href');
+	await expect(page.getByTestId('search-card').first().getByRole('link').first()).toHaveAttribute(
+		'href'
+	);
 });
 
 test('displays facets', async ({ page }) => {
