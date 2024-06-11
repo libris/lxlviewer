@@ -31,8 +31,8 @@ test('search card contains a link', async ({ page }) => {
 	await expect(page.getByTestId('search-card').first().getByRole('link')).toHaveAttribute('href');
 });
 
-test('has a facet panel', async ({ page }) => {
-	await expect(page.getByTestId('facet-panel')).toBeVisible();
+test('displays facets', async ({ page }) => {
+	await expect(page.getByTestId('facets')).toBeVisible();
 });
 
 test('facet groups can toggle', async ({ page }) => {
