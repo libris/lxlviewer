@@ -21,7 +21,11 @@
 		</nav>
 	{/if}
 	{#if facets?.length}
-		<nav class="flex flex-col gap-4" data-testid="facets">
+		<nav
+			class="flex flex-col gap-4"
+			aria-label={$page.data.t('search.filters')}
+			data-testid="facets"
+		>
 			<input
 				bind:value={searchPhrase}
 				placeholder={$page.data.t('search.findFilter')}
