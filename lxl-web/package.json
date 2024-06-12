@@ -15,7 +15,7 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"prepare": "cd .. && husky install lxl-web/.husky"
+		"prepare": "cd .. && husky lxl-web/.husky"
 	},
 	"lint-staged": {
 		"*.{js,ts,svelte,css,scss,postcss,md,json}": [
@@ -40,9 +40,9 @@
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-svelte": "^2.30.0",
-		"husky": "^8.0.3",
+		"husky": "^9.0.11",
 		"jmespath": "^0.16.0",
-		"lint-staged": "^15.2.0",
+		"lint-staged": "^15.2.6",
 		"lxljs": "file:../lxljs",
 		"magic-string": "^0.30.7",
 		"mdsvex": "^0.11.2",
