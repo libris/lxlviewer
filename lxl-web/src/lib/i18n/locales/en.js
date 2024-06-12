@@ -62,6 +62,7 @@ export default {
 	},
 	search: {
 		search: 'Search',
+		searchResults: 'Search results',
 		loading: 'Loading...',
 		findFilter: 'Find filter',
 		filters: 'Filters',
@@ -69,6 +70,7 @@ export default {
 		selectedFilters: 'Selected filters',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
+		removeFilter: 'Remove filter',
 		noResults: 'No results',
 		hitsOf: 'of',
 		hits: 'hits',

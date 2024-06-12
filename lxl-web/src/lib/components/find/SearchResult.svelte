@@ -209,17 +209,8 @@
 			display: block; /* TODO: fix better no-JS fallback styling */
 		}
 	}
-
-	.mappings {
-		grid-area: mappings;
-	}
-
 	.results {
 		grid-area: results;
-	}
-
-	.filter-toggle {
-		grid-area: filter-toggle;
 	}
 
 	.sort-select {
@@ -241,10 +232,6 @@
 			display: block;
 		}
 
-		.mappings {
-			display: block;
-		}
-
 		.filter-modal-toggle {
 			display: none;
 		}
@@ -253,7 +240,6 @@
 			grid-template-areas: 'hits sort-select';
 		}
 	}
-
 	.tab-header {
 		@apply block py-4;
 	}

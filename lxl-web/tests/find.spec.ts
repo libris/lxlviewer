@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.beforeEach(async ({ page }) => {
-	await page.goto('/find?_q=*&_limit=10&_offset=0&_sort=&_i=*');
+	await page.goto('/find?_q=d&_limit=10&_offset=0&_sort=&_i=d');
 });
 
 test('should not have any detectable a11y issues', async ({ page }) => {
@@ -28,11 +28,13 @@ test('displays 10 search cards on a page', async ({ page }) => {
 });
 
 test('search card contains a link', async ({ page }) => {
-	await expect(page.getByTestId('search-card').first().getByRole('link')).toHaveAttribute('href');
+	await expect(page.getByTestId('search-card').first().getByRole('link').first()).toHaveAttribute(
+		'href'
+	);
 });
 
-test('has a facet panel', async ({ page }) => {
-	await expect(page.getByTestId('facet-panel')).toBeVisible();
+test('displays facets', async ({ page }) => {
+	await expect(page.getByTestId('facets')).toBeVisible();
 });
 
 test('facet groups can toggle', async ({ page }) => {

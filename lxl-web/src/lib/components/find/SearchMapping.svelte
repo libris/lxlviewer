@@ -71,7 +71,11 @@
 			{/if}
 			{#if 'up' in m && (!m.children || depth > 0)}
 				<span class="pill-remove inline-block align-sub">
-					<a class="float-right pl-2 text-[inherit] hover:text-[inherit]" href={m.up?.['@id']}>
+					<a
+						class="float-right pl-2 text-[inherit] hover:text-[inherit]"
+						href={m.up?.['@id']}
+						aria-label={$page.data.t('search.removeFilter')}
+					>
 						<BiXLg class="" fill="currentColor" fill-opacity="0.8" />
 					</a>
 				</span>
