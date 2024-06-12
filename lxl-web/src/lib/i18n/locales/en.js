@@ -91,7 +91,7 @@ export default {
 		showDetails: 'Show more',
 		hideDetails: 'Show less',
 		occursAs: 'as',
-		RelatedSearchLabel: 'Search the results'
+		relatedSearchLabel: 'Search the results'
 	},
 	sort: {
 		sort: 'Sort',

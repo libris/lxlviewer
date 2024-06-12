@@ -19,12 +19,12 @@
 </script>
 
 <form action="" on:submit={handleSubmit} class="flex w-full max-w-xl gap-2">
-	<label for="search-related" class="sr-only">{$page.data.t('search.RelatedSearchLabel')}</label>
+	<label for="search-related" class="sr-only">{$page.data.t('search.relatedSearchLabel')}</label>
 	<input
 		class="flex-1"
 		id="search-related"
 		type="search"
-		placeholder={$page.data.t('search.RelatedSearchLabel')}
+		placeholder={$page.data.t('search.relatedSearchLabel')}
 		bind:value={_i}
 	/>
 	<button class="button-primary" type="submit">
