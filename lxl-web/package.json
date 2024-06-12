@@ -26,6 +26,7 @@
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.9.1",
+		"@floating-ui/dom": "^1.6.5",
 		"@iconify-json/bi": "^1.1.23",
 		"@playwright/test": "^1.44.1",
 		"@sveltejs/adapter-node": "^2.0.0",
@@ -60,7 +61,6 @@
 		"vitest": "^1.0.0"
 	},
 	"dependencies": {
-		"@floating-ui/dom": "^1.6.1",
 		"dotenv": "^16.4.5"
 	}
 }
