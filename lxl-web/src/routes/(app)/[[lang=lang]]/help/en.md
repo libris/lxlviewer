@@ -8,7 +8,12 @@ title: 'Hjälp'
 
 Here we will continuously provide information about newly added features and planned developments:
 
+### 2024-06-12
+
+- Selectable text in search results
+
 ### 2024-05-29
+
 - Standard free text search
 - Filters to narrow down search results
 - Result list with pagination and sorting options
@@ -17,6 +22,7 @@ Here we will continuously provide information about newly added features and pla
 - Boolean search logic in the search box. Example: pippi SPRÅK:"lang" hasInstanceType itemHeldBy:"sigel S"
 
 ### Features to look forward to:
+
 - Improved layout and information content in the search result list
 - Adjustments to the selection and presentation of information on detailed pages
 - Basic search filtering that excludes upcoming titles (preliminary information) or electronically deposited resources, with the option to manually deactivate
@@ -46,7 +52,7 @@ In addition to standard free text search, you can also write more advanced searc
 
 To search for phrases or word combinations, enclose the search terms in quotation marks, for example, "seven seasick sailors". Note that this also needs to be done for titles or search strings with a colon “:” in them, as this character is currently interpreted as an operator for targeted search.
 
-To include multiple word forms, truncate with an asterisk, for example, searching for cultur* will return hits where the words culture and cultural are included.
+To include multiple word forms, truncate with an asterisk, for example, searching for cultur\* will return hits where the words culture and cultural are included.
 
 ### Narrow down the search results with the following filters:
 

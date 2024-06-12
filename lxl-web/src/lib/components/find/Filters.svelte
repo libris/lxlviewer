@@ -2,9 +2,9 @@
 	import { page } from '$app/stores';
 	import { getModalContext } from '$lib/contexts/modal';
 	import FacetGroup from './FacetGroup.svelte';
-	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from './search';
+	import type { DisplayMapping, FacetGroup as TypedFacetGroup } from '$lib/types/search';
 	import SearchMapping from './SearchMapping.svelte';
-	import { shouldShowMapping } from './utils';
+	import { shouldShowMapping } from '$lib/utils/search';
 
 	export let facets: TypedFacetGroup[];
 	export let mapping: DisplayMapping[];
@@ -21,11 +21,15 @@
 		</nav>
 	{/if}
 	{#if facets?.length}
-		<nav class="flex flex-col gap-4">
+		<nav
+			class="flex flex-col gap-4"
+			aria-label={$page.data.t('search.filters')}
+			data-testid="facets"
+		>
 			<input
 				bind:value={searchPhrase}
 				placeholder={$page.data.t('search.findFilter')}
-				title={$page.data.t('search.findFilter')}
+				aria-label={$page.data.t('search.findFilter')}
 				class="w-full"
 				type="search"
 			/>

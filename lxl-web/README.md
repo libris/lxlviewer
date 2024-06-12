@@ -1,5 +1,7 @@
 # lxl-web
 
+[![lxl-web](https://github.com/libris/lxlviewer/actions/workflows/lxl-web-tests.yml/badge.svg)](https://github.com/libris/lxlviewer/actions/workflows/lxl-web-tests.yml)
+
 ## Developing
 
 Install dependencies with `npm install` (or `pnpm install` or `yarn`).

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { SearchResult } from './search';
+	import type { SearchResult } from '$lib/types/search';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiChevronLeft from '~icons/bi/chevron-left';
 	export let data: SearchResult;

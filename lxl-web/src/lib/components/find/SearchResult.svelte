@@ -8,12 +8,11 @@
 	import Filters from './Filters.svelte';
 	import IconSliders from '~icons/bi/sliders';
 	import BiChevronDown from '~icons/bi/chevron-down';
-	import type { SearchResult, DisplayMapping } from './search';
-	import { shouldShowMapping } from './utils';
+	import type { SearchResult, DisplayMapping } from '$lib/types/search';
+	import { shouldShowMapping } from '$lib/utils/search';
 
 	let showFiltersModal = false;
-
-	$: searchResult = $page.data.searchResult as SearchResult;
+	export let searchResult: SearchResult;
 
 	$: sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
@@ -210,17 +209,8 @@
 			display: block; /* TODO: fix better no-JS fallback styling */
 		}
 	}
-
-	.mappings {
-		grid-area: mappings;
-	}
-
 	.results {
 		grid-area: results;
-	}
-
-	.filter-toggle {
-		grid-area: filter-toggle;
 	}
 
 	.sort-select {
@@ -242,10 +232,6 @@
 			display: block;
 		}
 
-		.mappings {
-			display: block;
-		}
-
 		.filter-modal-toggle {
 			display: none;
 		}
@@ -254,7 +240,6 @@
 			grid-template-areas: 'hits sort-select';
 		}
 	}
-
 	.tab-header {
 		@apply block py-4;
 	}

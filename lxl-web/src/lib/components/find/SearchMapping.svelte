@@ -1,13 +1,15 @@
 <script lang="ts">
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import type { DisplayMapping, SearchOperators } from '$lib/types/search';
+
 	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 	import { getModalContext } from '$lib/contexts/modal';
-	import type { DisplayMapping, SearchOperators } from './search';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiPencil from '~icons/bi/pencil';
 	import BiPencilFill from '~icons/bi/pencil-fill';
 	import BiTrash from '~icons/bi/trash';
+
 	export let mapping: DisplayMapping[];
 	export let parentOperator: keyof typeof SearchOperators | undefined = undefined;
 	export let depth = 0;
@@ -69,7 +71,11 @@
 			{/if}
 			{#if 'up' in m && (!m.children || depth > 0)}
 				<span class="pill-remove inline-block align-sub">
-					<a class="float-right pl-2 text-[inherit] hover:text-[inherit]" href={m.up?.['@id']}>
+					<a
+						class="float-right pl-2 text-[inherit] hover:text-[inherit]"
+						href={m.up?.['@id']}
+						aria-label={$page.data.t('search.removeFilter')}
+					>
 						<BiXLg class="" fill="currentColor" fill-opacity="0.8" />
 					</a>
 				</span>

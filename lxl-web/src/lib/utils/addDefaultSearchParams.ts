@@ -7,9 +7,6 @@ function addDefaultSearchParams(searchParams: URLSearchParams): URLSearchParams 
 	if (!params.has('_q')) {
 		params.set('_q', '*');
 	}
-	// if (!params.has('@type')) {
-	// 	params.set('@type', 'Work');
-	// }
 	if (!params.has('_limit')) {
 		params.set('_limit', '10');
 	}

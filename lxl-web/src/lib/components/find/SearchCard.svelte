@@ -1,14 +1,15 @@
 <script lang="ts">
 	import jmespath from 'jmespath';
-	import type { SearchResultItem } from './search';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import type { ResourceData } from '$lib/types/ResourceData';
-	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
+	import type { SearchResultItem } from '$lib/types/search';
+	import type { ResourceData } from '$lib/types/resourceData';
+	import { LensType } from '$lib/types/xl';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { LxlLens } from '$lib/types/display';
+
 	import { relativizeUrl } from '$lib/utils/http';
-	import { LensType } from '$lib/utils/xl';
-	import { LxlLens } from '$lib/utils/display.types';
-	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
+	import placeholder from '$lib/assets/img/placeholder.svg';
+	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { page } from '$app/stores';
 
 	export let item: SearchResultItem;
@@ -127,7 +128,7 @@
 					{item.typeStr}
 				</span>
 				{#each item[LensType.WebCardFooter]?._display as obj}
-					{' • '}
+					<span>{' • '}</span>
 					{#if 'hasInstance' in obj}
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
@@ -192,8 +193,9 @@
 	}
 
 	:global(a):not(.card-link),
-	:global(.definition) {
-		position: relative; /* needed for supporting mouse events on links and definitions above card-link */
+	.card-body :global(span:first-of-type),
+	.card-footer :global(> span) {
+		position: relative; /* needed for supporting mouse events on text, links and definitions above card-link */
 	}
 
 	.card-image {

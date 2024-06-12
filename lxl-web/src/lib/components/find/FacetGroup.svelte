@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import { page } from '$app/stores';
-	import { type FacetGroup } from './search';
+	import { type FacetGroup } from '$lib/types/search';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import FacetRange from './FacetRange.svelte';
 

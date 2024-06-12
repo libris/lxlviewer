@@ -8,6 +8,10 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
+### 2024-06-12
+
+- Markerbar text i sökträffarna
+
 ### 2024-05-29
 
 - Vanlig fritextsökning
