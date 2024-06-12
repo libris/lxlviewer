@@ -25,9 +25,9 @@
 		"*.{js,ts,svelte}": "eslint"
 	},
 	"devDependencies": {
-		"@axe-core/playwright": "^4.8.5",
+		"@axe-core/playwright": "^4.9.1",
 		"@iconify-json/bi": "^1.1.23",
-		"@playwright/test": "^1.28.1",
+		"@playwright/test": "^1.44.1",
 		"@sveltejs/adapter-node": "^2.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
