@@ -10,6 +10,7 @@ Here we will continuously provide information about newly added features and pla
 
 ### 2024-06-12
 
+- Improve help text
 - Selectable text in search results
 
 ### 2024-05-29

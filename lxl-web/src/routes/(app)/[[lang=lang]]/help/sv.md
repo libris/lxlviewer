@@ -10,6 +10,7 @@ Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utv
 
 ### 2024-06-12
 
+- Förbättra hjälptext
 - Markerbar text i sökträffarna
 
 ### 2024-05-29
@@ -46,50 +47,73 @@ Utöver planerad utveckling kommer förbättringar av nuvarande funktionalitet a
 
 ### Allmänt om söktjänsten
 
-Det som är helt nytt i och med denna beta är att den läser data utan dröjsmål direkt från Libriskatalogen och bygger på de fördelar den nya informationsmodellen för med sig. Detta innebär bland annat att redigeringar i katalogiseringsklienten (på QA) syns direkt i söktjänsten men också att viss text kan upplevas mer teknisk än tidigare, detta är något vi kommer att arbeta vidare med för att förbättra.
+Libris nya söktjänst ska på sikt ersätta [libris.kb.se](https://www.libris.kb.se/). Den gamla tjänsten är tekniskt utdaterad och behöver bytas ut bl.a. för att möta de lagkrav som finns på tillgänglighet inom digital offentlig service.
+Den här betaversionen är ett första steg mot en tjänst som kommer medföra flera förbättringar för användarna.
+
+En grundsten i Libris är den informationsmodell baserad på länkade data som används för att beskriva materialet i katalogen. Den nya tjänsten är byggd med en mer direkt koppling till denna modell, vilket gör den både enklare och tekniskt mer robust. Det innebär också att ändringar som görs m.h.a. [Libris katalogiseringsverktyg](https://libris-qa.kb.se/katalogisering/) syns i söktjänsten utan fördröjning.
+
+Målet är också att bygga ett mer användarvänligt gränssnitt samtidigt som många av de funktioner som finns idag förbättras och byggs ut.
+Med en mer datanära design kan viss text till en början upplevas som mer teknisk än tidigare. Detta är något vi kommer att arbeta vidare med för att förbättra. Även tjänstens formspråk och grafiska uttryck kommer att förändras och förbättras under resans gång.
 
 ### Förbättrad materialkategorisering
 
 De materialkategorier (eller "typer") som syns i betaversionen idag kommer på sikt att ersättas där de inte är tydliga nog. Begrepp som “Text, tryck”, “Instans“, “Monografisk resurs” och så vidare kommer att bytas ut mot tydligare begrepp i stil med “Tidskrift“, “Ljudbok“, “Affisch” och “Vykort“. Målet är begripliga och användbara typer som håller över tid.
 
-I dagens libris.kb.se räknas etiketter som “bok”, “e-bok” och “affisch” ut i söktjänsten på ett komplicerat sätt utifrån en mängd datapunkter. Denna onödiga komplexitet beror bl.a. på begränsningarna som fanns i katalogen då tjänsten togs fram. Parallellt med utvecklingen av den nya söktjänsten jobbar vi nu med att förbättra katalogens data och informationsmodell. Eftersom nya Libris Sök på ett mer direkt sätt avspeglar katalogen kommer kommande förbättringar synas så fort de är utförda.
+I dagens libris.kb.se räknas etiketter som “bok”, “e-bok” och “affisch” ut i söktjänsten på ett komplicerat sätt, utifrån en mängd datapunkter. Denna onödiga komplexitet beror bl.a. på begränsningarna som fanns i katalogen då tjänsten togs fram. Parallellt med utvecklingen av den nya söktjänsten jobbar vi nu med att förbättra katalogens data och informationsmodell. Eftersom den nya söktjänsten på ett mer direkt sätt avspeglar katalogen kommer förbättringar synas så fort de är utförda.
 
 Det kan fortfarande behövas olika begrepp och grad av precision i olika sammanhang. Men dessa skillnader kan i stor utsträckning fångas i den gemensamma katalogmodellen istället för att, som idag, ligga hårt knutna till olika tjänster.
 
-### Om hur sökningen fungerar
+### Att använda sökfunktionen
 
-Utöver vanlig fritextsökning så går det även att skriva mer avancerade sökfrågor direkt i sökrutan, till exempel FÖRF:Rowling, TITEL:Sockerormen eller ÅR>2000, och sökoperatorer, till exempel AND för att inkludera samtliga sökord eller NOT för att exkludera sökord.
+Mycket material går att hitta med en enkel fritextsökning i sökrutan. Träffarna kan sorteras enligt de kategorier som finns i rullgardinsmenyn till höger på sidan.
+Utöver vanlig fritextsökning finns också möjligheten att konstruera mer avancerade sökfrågor som innehåller filter och sökoperatorer.
+Ett sätt att utforska mer komplicerade sökfrågor är att klicka på de filter som finns i vänsterkolumnen. Aktiva filter visas direkt under sökrutan. Hela sökfrågan har även en textrepresentation som kan ändras fritt om man klickar på Redigera-knappen.
 
-Exempel: `pippi språk:(engelska OR franska) NOT medverkande:"astrid lindgren"`
-Här får vi träff på engelska och franska verk, som “astrid lindgren” inte medverkar på och som matchar sökordet “pippi”.
+De filter som finns i vänsterkolumnen är:
 
-För att söka fraser eller ordkombinationer ska du sätta sökorden inom citationstecken, till exempel "sju sjösjuka sjömän". Observera att detta även tills vidare behöver göras för titlar eller söksträngar med kolon “:“ i sig då det tecknet idag tolkas som en operator för riktad sökning.
+<b>Typ</b> - materialtyp<br>
+<b>Format</b> - typ för lagring eller uppspelning/visning<br>
+<b>Genre/form</b> - beskrivning av vad objektet är<br>
+<b>Språk</b> - det språk som används i objektet<br>
+<b>Utgivningsår</b> - årtalet då objektet gavs ut<br>
+<b>Bibliotek</b> - bibliotek som har objektet i sina samlingar<br>
+<b>Bibliografi</b> - förteckning över material inom ett specifikt område, exempelvis person, ämne eller geografiskt område<br>
+<b>Ämne</b> - ämnesord som objektet är beskrivet med<br>
+<b>Medverkan</b> - personer eller organisationer som skapat eller har bidragit till tillkomsten av objektet<br>
+<b>Målgrupp</b> - den tänkta målgruppen för objektet<br>
+<b>Övrigt</b> - inkludering av kommande titlar (förhandsinformation) eller elektroniska pliktlevererade resurser samt för avgränsning av resurser med bild
 
-För att inkludera flera ordformer trunkera med asterisk, till exempel ger sökning på kulturarv\* träffar där orden kulturarv, kulturarvet och kulturarvsinstitutioner ingår.
+Ytterligare egenskaper som går att filtrera på finns listade på [id.kb.se/vocab](https://id.kb.se/vocab/) (tryck på Egenskaper-knappen). Vissa vanliga egenskaper kommer ett få enklare etiketter för att det ska gå snabbt att skriva in vanliga sökfrågor för hand. Redan nu kan man använda kortformen `ÅR` för att söka på material med ett specificerat utgivningsår eller årsspann.
+I redigeringsläget finns också stöd för sökoperatorerna `AND`, `OR` och `NOT`.
 
-Avgränsa träffmängden med följande filter:<br>
-<b>Typ</b> för materialtyp<br>
-<b>Format</b> för typ för lagring eller uppspelning/visning<br>
-<b>Genre/form</b> för beskrivning av vad objektet är<br>
-<b>Språk</b> för det språk som används i objektet<br>
-<b>Utgivningsår</b> för årtalet då objektet gavs ut<br>
-<b>Bibliotek</b> för bibliotek som har objektet i sina samlingar<br>
-<b>Bibliografi</b> för förteckning över material inom ett specifikt område, exempelvis person, ämne eller geografiskt område<br>
-<b>Ämne</b> för ämnesord som objektet är beskrivet med<br>
-<b>Medverkan</b> för personer eller organisationer som skapat eller har bidragit till tillkomsten av objektet<br>
-<b>Målgrupp</b> för den tänkta målgruppen för objektet<br>
-<b>Övrigt</b> för inkludering av kommande titlar (förhandsinformation) eller elektroniska pliktlevererade resurser samt för avgränsning av resurser med bild
+För att söka på fraser sätts sökorden inom citationstecken, till exempel "sju sjösjuka sjömän". Observera att detta även tills vidare behöver göras för titlar eller söksträngar som innehåller kolon “:“ eftersom det tecknet idag tolkas som en operator för riktad sökning.
 
-När ett eller flera filter har valts visas knappen “Redigera“ som ger dig möjligheten att redigera söksträngen i med operatorer.
+Asterisk används för trunkering då man vill inkludera fler ordformer. Till exempel ger sökning på kulturarv\* träffar där orden kulturarv, kulturarvet och kulturarvsinstitutioner ingår.
 
-Observera att allt innehåll i Libris inte är beskrivet med samtliga filtertyper. Hur material är beskrivet i Libris har varierat över tid. Du kan därför behöva göra flera kompletterande sökningar eller justera filtreringen för att fånga upp relevanta objekt. Filtren visar max 100 alternativ, du kan avgränsa sökningen ytterligare för att få fram färre.
+#### Exempelsökningar
 
-### Om vad som visas i en detaljerad vy av objektet
+Här följer några exempel som går att skriva in som sökfrågor direkt i sökrutan. Klicka på de olika exemplen för att öppna dem i söktjänsten.
 
-I detaljvyn visas detaljerad och beskrivande information om objektet samt information som är relaterat till det. (Se ovan om detaljerna för materialtyper.)
+Engelska och franska verk som matchar sökfrasen "pippi långstrump" som givits ut efter år 2002:
 
-Om materialet finns utgivet i flera utgåvor, visas utgåvorna i en lista med nyast först. Genom att klicka på pilen för varje utgåva visas detaljerad information om respektive utgåva samt de bibliotek som har den specifika utgåvan.
+[`pippi långstrump språk:(engelska OR franska) ÅR>2002`](<https://beta.libris-qa.kb.se/find?_i=pippi+l%C3%A5ngstrump&_q=pippi+l%C3%A5ngstrump+SPR%C3%85K:(engelska%20OR%20franska)&_limit=10&_x=advanced>)
 
-I vissa fall finns det en länk till materialet online. En del av dessa är fritt tillgängliga för alla, för en del krävs det att man är låntagare på ett bibliotek som har licens att visa materialet.
+Material med utgivning mellan 2010 och 2024, som är på svenska och har [drakar](https://id.kb.se/term/sao/Drakar) som ämne:
 
-Genom att använda funktionen Kopiera länk till utgåva, kan du kopiera och spara direkt länk till utgåvan.
+[`språk:svenska ÅR>2010 ÅR<=2024 ämne:"sao:Drakar"`](https://beta.libris-qa.kb.se/find?_i=&_q=SPR%C3%85K:svenska+%C3%85R%3E2010+%C3%85R%3C%3D2024+subject:%22sao:Drakar%22&_limit=10&_x=advanced)
+
+Fritextsökning på träd\*, där alla träffar ingår i bibliografin Digitaliserat Svenskt Tryck men som inte har verkstyp "Text":
+
+[`träd* bibliografi:"sigel:DST" NOT "typ":Text`](https://beta.libris-qa.kb.se/find?_i=tr%C3%A4d*&_q=tr%C3%A4d*+bibliography:%22sigel:DST%22+NOT+%22rdf:type%22:Text&_limit=10&_x=advanced)
+
+Verk där Selma Lagerlöf är författare som har minst en upplaga som är en elektronisk resurs:
+
+[`författare:"selma lagerlöf" "hasInstanceType":Electronic`](https://beta.libris-qa.kb.se/find?_i=&_q=F%C3%96RF:%22selma+lagerl%C3%B6f%22+hasInstanceType:Electronic&_limit=10&_x=advanced)
+
+### Detaljvyn
+
+Varje objekt i katalogen kan nås genom att antingen klicka på det i träfflistan eller genom att mata in dess unika URL i webbläsarens adressfält. Här finns en mer ingående beskrvning av objektet tillsammans med information som är relaterat till det.
+
+Om materialet finns utgivet i flera utgåvor visas dessa i en lista sorterad efter utgivningsdatum. Genom att klicka på pilen för varje utgåva visas mer detaljerad information om denna, samt de bibliotek som har den specifika utgåvan.
+
+I vissa fall innehåller detaljvyn en eller flera länkar för att komma åt materialet online. En del material är fritt tillgängliga för alla, annat kräver att man är låntagare på ett bibliotek som har licens för att visa materialet.
