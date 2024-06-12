@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
-	import getDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
+	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import BiSearch from '~icons/bi/search';
 
@@ -13,7 +13,7 @@
 		? $page.url.searchParams.get('_q')?.trim()
 		: $page.url.searchParams.get('_i')?.trim();
 
-	let params = getSortedSearchParams(getDefaultSearchParams($page.url.searchParams));
+	let params = getSortedSearchParams(addDefaultSearchParams($page.url.searchParams));
 	// Always reset these params on new search
 	params.set('_offset', '0');
 	params.delete('_i');

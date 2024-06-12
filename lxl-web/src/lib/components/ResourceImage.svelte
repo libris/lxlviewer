@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type Image, Width } from '$lib/utils/auxd.types';
+	import { type Image, Width } from '$lib/types/auxd';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { bestSize } from '$lib/utils/auxd';
@@ -29,7 +29,8 @@
 				src={thumb.url}
 				width={thumb.widthṔx}
 				height={thumb.heightPx}
-				class="object-contain object-[inherit]"
+				class="object-contain object-cover object-[inherit]"
+				class:object-cover={geometry === 'circle'}
 				class:rounded-full={geometry === 'circle'}
 			/>
 		</a>

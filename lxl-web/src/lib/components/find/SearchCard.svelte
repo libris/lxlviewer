@@ -1,14 +1,15 @@
 <script lang="ts">
 	import jmespath from 'jmespath';
-	import type { SearchResultItem } from './search';
-	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import type { ResourceData } from '$lib/types/ResourceData';
-	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
+	import type { SearchResultItem } from '$lib/types/search';
+	import type { ResourceData } from '$lib/types/resourceData';
+	import { LensType } from '$lib/types/xl';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { LxlLens } from '$lib/types/display';
+
 	import { relativizeUrl } from '$lib/utils/http';
-	import { LensType } from '$lib/utils/xl';
-	import { LxlLens } from '$lib/utils/display.types';
-	import placeholder from '$lib/assets/img/placeholder.svg';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
+	import placeholder from '$lib/assets/img/placeholder.svg';
+	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { page } from '$app/stores';
 
 	export let item: SearchResultItem;

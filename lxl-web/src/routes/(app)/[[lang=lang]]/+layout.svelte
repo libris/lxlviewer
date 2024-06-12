@@ -1,6 +1,6 @@
 <script lang="ts">
-	import SiteHeader from './SiteHeader.svelte';
 	import getPageTitle from '$lib/utils/getPageTitle';
+	import SiteHeader from './SiteHeader.svelte';
 	import SiteFooter from './SiteFooter.svelte';
 	export let data;
 </script>
