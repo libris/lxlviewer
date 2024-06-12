@@ -12,6 +12,7 @@ Here we will continuously provide information about newly added features and pla
 
 - Improve help text
 - Selectable text in search results
+- Improved pagination
 
 ### 2024-05-29
 
