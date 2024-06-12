@@ -8,6 +8,10 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
+### 2024-06-12
+
+- Markerbar text i sökträffarna
+
 ### 2024-05-29
 
 - Vanlig fritextsökning
@@ -81,6 +85,7 @@ När ett eller flera filter har valts visas knappen “Redigera“ som ger dig m
 Observera att allt innehåll i Libris inte är beskrivet med samtliga filtertyper. Hur material är beskrivet i Libris har varierat över tid. Du kan därför behöva göra flera kompletterande sökningar eller justera filtreringen för att fånga upp relevanta objekt. Filtren visar max 100 alternativ, du kan avgränsa sökningen ytterligare för att få fram färre.
 
 ### Om vad som visas i en detaljerad vy av objektet
+
 I detaljvyn visas detaljerad och beskrivande information om objektet samt information som är relaterat till det. (Se ovan om detaljerna för materialtyper.)
 
 Om materialet finns utgivet i flera utgåvor, visas utgåvorna i en lista med nyast först. Genom att klicka på pilen för varje utgåva visas detaljerad information om respektive utgåva samt de bibliotek som har den specifika utgåvan.
