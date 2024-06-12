@@ -1,5 +1,5 @@
 ## Checklist:
-- [ ] I have added relevant tests for new features.
+- [ ] I have added tests for new features.
 - [ ] I have updated the changelog.
 
 ## Description
