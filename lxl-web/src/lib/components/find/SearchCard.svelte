@@ -193,6 +193,7 @@
 	}
 
 	:global(a):not(.card-link),
+	.card-header-extra :global(> span),
 	.card-body :global(span:first-of-type),
 	.card-footer :global(> span) {
 		position: relative; /* needed for supporting mouse events on text, links and definitions above card-link */
