@@ -83,6 +83,7 @@ export default {
 		type: 'Type',
 		related: 'related',
 		relatedOne: 'related',
+		pagination: 'pagination',
 		previous: 'Previous page',
 		page: 'Page',
 		next: 'Next page',

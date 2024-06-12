@@ -11,6 +11,7 @@ export interface SearchResult {
 	first: Link;
 	last: Link;
 	next?: Link;
+	previous?: Link;
 	items: SearchResultItem[];
 	facetGroups: FacetGroup[];
 	predicates: MultiSelectFacet[];

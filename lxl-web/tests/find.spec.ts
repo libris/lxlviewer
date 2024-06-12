@@ -67,5 +67,5 @@ test('can paginate to next and previous', async ({ page }) => {
 	await page.getByTestId('pagination').getByLabel('Nästa sida').click();
 	await expect(page).toHaveURL(/_offset=10/);
 	await page.getByTestId('pagination').getByLabel('Föregående sida').click();
-	await expect(page).toHaveURL(/_offset=0/);
+	await expect(page).not.toHaveURL(/_offset=/);
 });

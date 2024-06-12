@@ -12,6 +12,7 @@ Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utv
 
 - Förbättra hjälptext
 - Markerbar text i sökträffarna
+- Förbättrad paginering
 
 ### 2024-05-29
 

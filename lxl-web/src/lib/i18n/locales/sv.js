@@ -82,6 +82,7 @@ export default {
 		type: 'Typ',
 		related: 'relaterade',
 		relatedOne: 'relaterad',
+		pagination: 'paginering',
 		previous: 'Föregående sida',
 		page: 'Sida',
 		next: 'Nästa sida',
