@@ -105,7 +105,7 @@ Material med utgivning mellan 2010 och 2024, som är på svenska och har [drakar
 
 Fritextsökning på träd\*, där alla träffar ingår i bibliografin Digitaliserat Svenskt Tryck men som inte har verkstyp "Text":
 
-[`träd* bibliografi:"sigel:DST" NOT "typ":Text`](https://beta.libris-qa.kb.se/find?_i=tr%C3%A4d*&_q=tr%C3%A4d*+bibliography:%22sigel:DST%22+NOT+%22rdf:type%22:Text&_limit=10&_x=advanced)
+[`träd* bibliografi:"sigel:DST" NOT typ:Text`](https://beta.libris-qa.kb.se/find?_i=tr%C3%A4d*&_q=tr%C3%A4d*+bibliography:%22sigel:DST%22+NOT+%22rdf:type%22:Text&_limit=10&_x=advanced)
 
 Verk där Selma Lagerlöf är författare som har minst en upplaga som är en elektronisk resurs:
 
