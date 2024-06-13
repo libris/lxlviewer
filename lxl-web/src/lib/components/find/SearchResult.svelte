@@ -200,8 +200,8 @@
 	.toolbar {
 		@apply grid;
 		grid-template-areas:
-			'search-related search-related'
 			'filter-modal-toggle .'
+			'search-related search-related'
 			'hits sort-select';
 	}
 
