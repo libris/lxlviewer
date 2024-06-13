@@ -147,6 +147,7 @@
 		</div>
 	{/if}
 	{#if holdingUrl && selectedHoldingInstance}
+		{@const selectedBibId = data.bibIdsByInstanceId[selectedHoldingInstance['@id']]}
 		<Modal close={handleCloseHoldings}>
 			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
 			<div class="flex flex-col">
@@ -219,16 +220,13 @@
 							{#if data.holdingsByInstanceId[selectedHolding]}
 								{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
 									<li class="contents h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
-										<HoldingStatus data={holdingItem}>
-											<details>
-												<summary>
-													{console.log(holdingItem)}
-													<span>{holdingItem?.heldBy?.name}</span>
-													<span class="text-right text-secondary">
-														{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
-													</span>
-												</summary>
-											</details>
+										<HoldingStatus data={holdingItem} bibId={selectedBibId}>
+											<summary>
+												<span>{holdingItem?.heldBy?.name}</span>
+												<span class="text-right text-secondary">
+													{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
+												</span>
+											</summary>
 										</HoldingStatus>
 									</li>
 								{/each}
@@ -243,7 +241,7 @@
 												>{holderItem?.sigel ? `(${holderItem?.sigel})` : ''}</span
 											>
 										</summary>
-										<!-- TODO -->
+										<!-- TODO, tricky when multiple instances -->
 										<!-- <HoldingStatus data={holderItem} /> -->
 									</details>
 								</li>
