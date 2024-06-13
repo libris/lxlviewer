@@ -18,7 +18,7 @@
 	}
 </script>
 
-<form action="" on:submit={handleSubmit} class="flex w-full max-w-xl gap-2">
+<form action="" on:submit={handleSubmit} class="flex w-full gap-2 lg:max-w-xl">
 	<label for="search-related" class="sr-only">{$page.data.t('search.relatedSearchLabel')}</label>
 	<input
 		class="flex-1"
