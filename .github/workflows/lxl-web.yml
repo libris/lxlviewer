@@ -36,3 +36,29 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+  lighthouseci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./lxl-web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Setup yarn
+        run: npm install -g yarn
+      - name: Install lxljs dependency
+        run: yarn install --frozen-lockfile
+        working-directory: ./lxlj s
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          ID_URL: ${{ secrets.ID_URL }}
+        run: npm run build
+      - name: run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@0.13.x
+          lhci autorun
