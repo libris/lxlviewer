@@ -50,7 +50,7 @@ jobs:
         run: npm install -g yarn
       - name: Install lxljs dependency
         run: yarn install --frozen-lockfile
-        working-directory: ./lxlj s
+        working-directory: ./lxljs
       - name: Install dependencies
         run: npm ci
       - name: Build
