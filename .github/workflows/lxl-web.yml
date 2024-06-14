@@ -53,11 +53,11 @@ jobs:
         working-directory: ./lxljs
       - name: Install dependencies
         run: npm ci
-      - name: Build and preview
+      - name: Build
         env:
           API_URL: ${{ secrets.API_URL }}
           ID_URL: ${{ secrets.ID_URL }}
-        run: npm run build && npm run preview
+        run: npm run build
       - name: Lighthouse CI Action
         uses: treosh/lighthouse-ci-action@11.4.0
         with:
