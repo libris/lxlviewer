@@ -62,9 +62,9 @@ jobs:
         uses: treosh/lighthouse-ci-action@11.4.0
         with:
           urls: |
-            https://localhost:4173
+            http://localhost:4173
             http://localhost:4173/find?_q=*&_limit=10&_offset=0&_sort=&_i=*
-            https://localhost:4173/h08ndxddfg5v2pjf
+            http://localhost:4173/h08ndxddfg5v2pjf
           # budgetPath: ./budget.json # test performance budgets
           uploadArtifacts: true # save results as an action artifacts
           temporaryPublicStorage: false # upload lighthouse report to the temporary storage
