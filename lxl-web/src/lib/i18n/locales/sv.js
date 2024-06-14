@@ -90,7 +90,8 @@ export default {
 		showFewer: 'Visa färre',
 		showDetails: 'Visa mer',
 		hideDetails: 'Visa mindre',
-		occursAs: 'förekommer som'
+		occursAs: 'förekommer som',
+		relatedSearchLabel: 'Sök i resultaten'
 	},
 	sort: {
 		sort: 'Sortera',

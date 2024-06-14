@@ -90,7 +90,10 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 		if (resourceId) {
 			searchParams.set('_o', resourceId);
-			searchParams.set('_i', '*');
+
+			if (!searchParams.has('_i')) {
+				searchParams.set('_i', '*');
+			}
 			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
 		}
 
@@ -108,8 +111,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 			}
 		}
 
-		// Hide zero results from resource page
-		if (result.totalItems > 0) {
+		if (result) {
 			return (await asResult(
 				result,
 				displayUtil,
