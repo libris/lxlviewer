@@ -58,13 +58,7 @@ jobs:
           API_URL: ${{ secrets.API_URL }}
           ID_URL: ${{ secrets.ID_URL }}
         run: npm run build
-      - name: Lighthouse CI Action
-        uses: treosh/lighthouse-ci-action@11.4.0
-        with:
-          urls: |
-            http://localhost:4173
-            http://localhost:4173/find?_q=*&_limit=10&_offset=0&_sort=&_i=*
-            http://localhost:4173/h08ndxddfg5v2pjf
-          # budgetPath: ./budget.json # test performance budgets
-          uploadArtifacts: true # save results as an action artifacts
-          temporaryPublicStorage: false # upload lighthouse report to the temporary storage
+      - name: Run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@0.3.x
+          lhci autorun
