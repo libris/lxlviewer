@@ -5,6 +5,7 @@
 	import { page } from '$app/stores';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { getModalContext } from '$lib/contexts/modal';
+	import { getMappingsWithoutFreeText } from '$lib/utils/search';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiPencil from '~icons/bi/pencil';
 	import BiPencilFill from '~icons/bi/pencil-fill';
@@ -23,6 +24,8 @@
 	$: toggleEditUrl = editActive
 		? $page.url.href.replace('&_x=advanced', '')
 		: `${$page.url.href}&_x=advanced`;
+
+	$: filteredMappings = getMappingsWithoutFreeText(mapping);
 
 	function getRelationSymbol(operator: keyof typeof SearchOperators): string {
 		switch (operator) {
@@ -49,7 +52,7 @@
 </script>
 
 <ul class="flex flex-wrap items-center gap-2">
-	{#each mapping as m}
+	{#each filteredMappings as m}
 		<li
 			class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}"
 			class:wildcard={m.operator === 'equals' && m.display === '*'}

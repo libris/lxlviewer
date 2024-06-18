@@ -40,9 +40,7 @@
 	}
 
 	function getFiltersCount(mapping: DisplayMapping[]) {
-		return (mapping[0].children || mapping).filter(
-			(filterItem) => !(filterItem.display === '*' && filterItem.operator === 'equals') // TODO: probably best to do wildcard-filtering in an earlier step (in search.ts)?
-		).length;
+		return (mapping[0].children || mapping).length - 1; //  TODO: probably best to do free text-filtering in an earlier step (in search.ts)?
 	}
 </script>
 

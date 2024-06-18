@@ -222,8 +222,23 @@ function replacePath(view: Link, usePath: string) {
 }
 
 export function shouldShowMapping(mapping: DisplayMapping[]) {
-	if (mapping.length === 1 && mapping[0].display === '*' && mapping[0].operator === 'equals') {
-		return false; // hide if only wildcard search
+	if (!getMappingsWithoutFreeText(mapping).length) {
+		return false;
 	}
+
 	return true;
+}
+
+export function getMappingsWithoutFreeText(mappings: DisplayMapping[]) {
+	return mappings.reduce((acc: DisplayMapping[], currentMapping) => {
+		if (
+			currentMapping.children?.length ||
+			(currentMapping?.up?.['@id'] &&
+				new RegExp(/(_i=)[^+&]+(?=&)?/).test(currentMapping.up['@id'])) // checks if there is an _i param value by matching any characters after _i except & (which indicates the end of an search param)
+		) {
+			return [...acc, currentMapping];
+		}
+
+		return acc;
+	}, []);
 }
