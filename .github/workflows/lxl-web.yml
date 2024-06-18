@@ -42,7 +42,9 @@ jobs:
       run:
         working-directory: ./lxl-web
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -53,12 +55,11 @@ jobs:
         working-directory: ./lxljs
       - name: Install dependencies
         run: npm ci
-      - name: Build
+      - name: Build and run Lighthouse CI
         env:
           API_URL: ${{ secrets.API_URL }}
           ID_URL: ${{ secrets.ID_URL }}
-        run: npm run build
-      - name: Run Lighthouse CI
         run: |
-          npm install -g @lhci/cli@0.3.x
+          npm run build
+          npm install -g @lhci/cli@0.13.x
           lhci autorun
