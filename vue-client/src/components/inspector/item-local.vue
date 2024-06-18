@@ -150,6 +150,12 @@ export default {
       }
       return false;
     },
+    canAddId() {
+      if (this.fieldKey === 'hasComponent' && this.isHolding && !this.item.hasOwnProperty('@id')) {
+        return true;
+      }
+      return false;
+    },
     getPath() {
       if (this.inArray) {
         return `${this.parentPath}[${this.index}]`;
@@ -351,6 +357,23 @@ export default {
           heading.classList.remove('is-stuck');
         }
       });
+    },
+    addId() {
+      if (this.canAddId) {
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [
+            {
+              path: `${this.path}.@id`,
+              value: '',
+            },
+          ],
+          addToHistory: true,
+        });
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'lastAdded',
+          value: `${this.path}.@id`,
+        });
+      }
     },
   },
   watch: {
@@ -606,6 +629,16 @@ export default {
                 @click="cloneThis(), closeManagerMenu()">
                 <i class="fa fa-fw fa-clone" aria-hidden="true" />
                 {{ translatePhrase("Duplicate entity") }}
+              </a>
+            </li>
+            <li class="ManagerMenu-menuItem" v-if="canAddId">
+              <a
+                tabindex="0"
+                class="ManagerMenu-menuLink"
+                @keyup.enter="addId(), closeManagerMenu()"
+                @click="addId(), closeManagerMenu()">
+                <i class="fa fa-fw fa-plus" aria-hidden="true" />
+                {{ translatePhrase("Create id for entity") }}
               </a>
             </li>
           </ul>
