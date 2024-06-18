@@ -1,11 +1,11 @@
 ## Checklist:
-- [ ] I have run the unit tests. `yarn test:unit`
-- [ ] I have run the linter. `yarn lint`
+- [ ] I have added tests for new features
+- [ ] I have updated the changelog
 
 ## Description
 
 ### Tickets involved
-[LXL-NNNN](https://jira.kb.se/browse/LXL-NNNN), [LXL-NNNN](https://jira.kb.se/browse/LXL-NNNN)
+[LWS-NNNN](https://kbse.atlassian.net/browse/LWS-NNNN), [LWS-NNNN](https://kbse.atlassian.net/browse/LWS-NNNN)
 
 ### Solves
 
