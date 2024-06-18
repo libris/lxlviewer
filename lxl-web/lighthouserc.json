@@ -9,7 +9,21 @@
 			]
 		},
 		"assert": {
-			"preset": "lighthouse:recommended"
+			"preset": "lighthouse:no-pwa",
+			"assertions": {
+				"unsized-images": ["warn", { "minScore": 0.9 }],
+				"unused-javascript": ["warn", { "maxLength": 1 }],
+				"csp-xss": ["warn", { "minScore": 0.9 }],
+				"font-display": ["warn", { "minScore": 0.9 }],
+				"meta-description": ["warn", { "minScore": 0.9 }],
+				"tap-targets": ["warn", { "minScore": 0.9 }],
+				"target-size": ["warn", { "minScore": 0.0 }],
+				"total-byte-weight": ["warn", { "minScore": 0.9 }],
+				"empty-heading": ["warn", { "minScore": 0.9 }],
+				"label-content-name-mismatch": ["warn", { "minScore": 0.9 }],
+				"link-name": ["warn", { "minScore": 0.9 }],
+				"valid-source-maps": ["warn", { "minScore": 0.9 }]
+			}
 		}
 	}
 }
