@@ -69,3 +69,9 @@ test('can paginate to next and previous', async ({ page }) => {
 	await page.getByTestId('pagination').getByLabel('Föregående sida').click();
 	await expect(page).not.toHaveURL(/_offset=/);
 });
+
+test('shows no selected facet for free text searches', async ({ page }) => {
+	await expect(page.getByTestId('search-mapping')).not.toBeVisible();
+	await page.goto('/find?_i=d&_q=d+%22rdf:type%22:Text&_limit=10');
+	await expect(page.getByTestId('search-mapping')).toBeVisible();
+});

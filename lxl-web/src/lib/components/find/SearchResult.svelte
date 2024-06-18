@@ -86,6 +86,7 @@
 				<nav
 					class="hidden md:flex md:px-6 md:pb-0 md:pt-4"
 					aria-label={$page.data.t('search.selectedFilters')}
+					data-testid="search-mapping"
 				>
 					<SearchMapping mapping={searchResult.mapping} />
 				</nav>
