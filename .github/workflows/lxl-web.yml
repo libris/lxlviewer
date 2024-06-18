@@ -59,6 +59,7 @@ jobs:
         env:
           API_URL: ${{ secrets.API_URL }}
           ID_URL: ${{ secrets.ID_URL }}
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         run: |
           npm run build
           npm install -g @lhci/cli@0.13.x
