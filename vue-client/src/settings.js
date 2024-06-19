@@ -38,9 +38,6 @@ export default {
     'CacheRecord',
     'ComplexSubject.termComponentList',
   ],
-  showIdsForProps: [
-    'hasComponent',
-  ],
   keysToClear: {
     duplication: [
       'record.bibliography',
@@ -78,12 +75,12 @@ export default {
     'unstable',
   ],
   hiddenProperties: [
+    '@id',
     'created',
     'modified',
     'mainEntity',
   ],
   lockedProperties: [
-    '@id',
     'sameAs',
     'controlNumber',
     'systemNumber',
