@@ -9,11 +9,11 @@ import * as LayoutUtil from '@/utils/layout';
 import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 import PropertyAdder from '@/components/inspector/property-adder.vue';
 import EntityAction from '@/components/inspector/entity-action.vue';
+import IdLabel from '@/components/shared/id-label.vue';
 import SearchWindow from './search-window.vue';
 import ItemMixin from '../mixins/item-mixin.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 import FormMixin from '../mixins/form-mixin.vue';
-import IdPill from "@/components/shared/id-pill.vue";
 
 export default {
   name: 'item-local',
@@ -479,10 +479,10 @@ export default {
   },
 
   components: {
-    IdPill,
     'property-adder': PropertyAdder,
     'search-window': SearchWindow,
     'entity-action': EntityAction,
+    'id-label': IdLabel,
   },
 };
 </script>
@@ -548,7 +548,7 @@ export default {
           <i class="fa fa-plus-circle icon--sm icon-added" />
         </div>
       </div>
-      <id-pill
+      <id-label
         v-if="this.hasId"
         :uri="this.recordId"
         :isLibrisResource="this.isLibrisResource"
@@ -913,7 +913,7 @@ export default {
   &.is-extracting {
     background-color: @form-extracting !important;
     border: 1px dashed @brand-primary;
-    
+
     &.highlight-mark {
       border-color: @brand-primary !important;
     }

@@ -4,7 +4,7 @@ import * as RecordUtil from '@/utils/record';
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'id-pill',
+  name: 'id-label',
   props: {
     uri: {
       type: String,
@@ -45,7 +45,6 @@ export default {
       if (this.uri) {
         const id = this.uri;
         const fnurgel = RecordUtil.extractFnurgel(id);
-        console.log('fnurgel', fnurgel);
         if (fnurgel && this.isLibrisResource) {
           return fnurgel;
         }
@@ -62,41 +61,37 @@ export default {
 </script>
 
 <template>
-  <div class="IdPill">
-    <div
-      v-if="idAsFnurgel"
-      class="IdPill-id"
-      :class="{'recently-copied': recentlyCopiedId }"
-      @mouseover="idHover = true"
-      @mouseout="idHover = false">
-      <i
-        v-tooltip.top="idTooltipText"
-        class="fa fa-copy IdPill-idCopyIcon"
-        :class="{ collapsedIcon: !idHover || recentlyCopiedId }"
-        @click.stop="copyFnurgel" />{{ idAsFnurgel }}
-    </div>
+  <div
+    v-if="idAsFnurgel"
+    class="IdPill"
+    :class="{ 'recently-copied': recentlyCopiedId }"
+    @mouseover="idHover = true"
+    @mouseout="idHover = false">
+    <i
+      v-tooltip.top="idTooltipText"
+      class="fa fa-copy IdPill-idCopyIcon"
+      :class="{ collapsedIcon: !idHover || recentlyCopiedId }"
+      @click.stop="copyFnurgel" />{{ idAsFnurgel }}
   </div>
 </template>
 
 <style lang="less">
 .IdPill {
-  &-id {
-    flex-grow: 0;
-    text-align: right;
-    text-transform: none;
-    color: @grey-very-dark-transparent;
-    background-color: @badge-color-transparent;
-    transition: background-color 0.5s ease;
-    letter-spacing: 0.5px;
-    font-size: 1.2rem;
-    font-weight: 400;
-    padding: 0 0.75em;
-    border-radius: 1em;
+  flex-grow: 0;
+  text-align: right;
+  text-transform: none;
+  color: @grey-very-dark-transparent;
+  background-color: @badge-color-transparent;
+  transition: background-color 0.5s ease;
+  letter-spacing: 0.5px;
+  font-size: 1.2rem;
+  font-weight: 400;
+  padding: 0 0.75em;
+  border-radius: 1em;
 
-    &.recently-copied {
-      background-color: @brand-success;
-      color: @white;
-    }
+  &.recently-copied {
+    background-color: @brand-success;
+    color: @white;
   }
   &-idCopyIcon {
     transition: all 0.25s ease;

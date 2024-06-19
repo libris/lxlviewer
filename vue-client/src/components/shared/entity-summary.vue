@@ -9,7 +9,7 @@ import OverflowMixin from '@/components/mixins/overflow-mixin.vue';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
 import TypeIcon from '@/components/shared/type-icon.vue';
 import SummaryNode from '@/components/shared/summary-node.vue';
-import IdPill from '@/components/shared/id-pill.vue';
+import IdPill from '@/components/shared/id-label.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 
 export default {
@@ -304,7 +304,7 @@ export default {
         {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
         <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
       </div>
-      <id-pill
+      <id-label
         v-if="!excludeComponents.includes('id')"
         :uri="this.recordId"
         :isLibrisResource="this.isLibrisResource"
