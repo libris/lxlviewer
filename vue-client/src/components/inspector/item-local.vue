@@ -13,6 +13,7 @@ import SearchWindow from './search-window.vue';
 import ItemMixin from '../mixins/item-mixin.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 import FormMixin from '../mixins/form-mixin.vue';
+import IdPill from "@/components/shared/id-pill.vue";
 
 export default {
   name: 'item-local',
@@ -151,10 +152,13 @@ export default {
       return false;
     },
     canAddId() {
-      if (this.fieldKey === 'hasComponent' && this.isHolding && !this.item.hasOwnProperty('@id')) {
+      if (this.fieldKey === 'hasComponent' && this.isHolding && !this.hasId) {
         return true;
       }
       return false;
+    },
+    hasId() {
+      return this.item.hasOwnProperty('@id');
     },
     getPath() {
       if (this.inArray) {
@@ -475,6 +479,7 @@ export default {
   },
 
   components: {
+    IdPill,
     'property-adder': PropertyAdder,
     'search-window': SearchWindow,
     'entity-action': EntityAction,
@@ -543,6 +548,11 @@ export default {
           <i class="fa fa-plus-circle icon--sm icon-added" />
         </div>
       </div>
+      <id-pill
+        v-if="this.hasId"
+        :uri="this.recordId"
+        :isLibrisResource="this.isLibrisResource"
+      />
 
       <div class="ItemLocal-actions">
         <entity-action
