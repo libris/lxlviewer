@@ -99,7 +99,11 @@ export default {
       if (this.showTypeChanger === false) {
         delete fItem['@type'];
       }
-      delete fItem['@id'];
+
+      const keepId = this.settings.showIdsForProps.includes(this.fieldKey);
+      if (!keepId) {
+        delete fItem['@id'];
+      }
       delete fItem['@reverse'];
       delete fItem._uid;
 
