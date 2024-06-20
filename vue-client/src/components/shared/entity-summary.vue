@@ -9,14 +9,14 @@ import OverflowMixin from '@/components/mixins/overflow-mixin.vue';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
 import TypeIcon from '@/components/shared/type-icon.vue';
 import SummaryNode from '@/components/shared/summary-node.vue';
-import IdPill from '@/components/shared/id-label.vue';
+import IdLabel from '@/components/shared/id-label.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 
 export default {
   mixins: [LensMixin, OverflowMixin],
   name: 'entity-summary',
   components: {
-    IdPill,
+    IdLabel,
     EncodingLevelIcon,
     SummaryNode,
     TypeIcon,
