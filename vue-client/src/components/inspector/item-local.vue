@@ -368,7 +368,7 @@ export default {
           changeList: [
             {
               path: `${this.path}.@id`,
-              value: '',
+              value: 'https://libris.kb.se/TEMPID',
             },
           ],
           addToHistory: true,
