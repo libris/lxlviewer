@@ -267,27 +267,7 @@ export default {
     overflow: hidden;
   }
 
-  &.is-diff-removed {
-    @base-color: @remove;
-    border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
-    margin-bottom: 2px;
-  }
-
-  &.is-diff-added {
-    @base-color: @form-add;
-    border: 1px solid;
-    border-color: @brand-primary;
-    background-color: @base-color;
-    margin-bottom: 2px
-  }
-
-  &.is-diff-modified {
-    @base-color: @brand-primary-orange;
-    border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-modified;
+  &.is-diff-removed, &.is-diff-added, &.is-diff-modified {
     margin-bottom: 2px;
   }
 

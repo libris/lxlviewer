@@ -211,8 +211,8 @@ export default {
             'is-cache': recordType === 'CacheRecord',
             'is-placeholder': recordType === 'PlaceholderRecord',
             'is-ext-link': !isLibrisResource,
-            'is-removed': diffRemoved,
-            'is-added': diffAdded,
+            'is-diff-removed': diffRemoved,
+            'is-diff-added': diffAdded,
           }">
           <span class="ItemEntity-history-icon" v-if="diffRemoved">
             <i class="fa fa-trash-o icon--sm icon-removed" />
@@ -344,18 +344,6 @@ export default {
     animation-fill-mode: both;
     -webkit-animation-name: pulse;
     animation-name: pulse;
-  }
-
-  &.is-removed {
-    @base-color: @remove;
-    border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
-  }
-
-  &.is-added {
-    @base-color: @form-add;
-    background-color: @base-color;
   }
 
   &.expanded {

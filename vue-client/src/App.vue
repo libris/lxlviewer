@@ -1138,4 +1138,24 @@ h1 {
   }
 }
 
+// ------------ HISTORY --------------
+
+.is-diff-added {
+  @base-color: @form-add;
+  background-color: @base-color !important;
+}
+
+.is-diff-removed {
+  @base-color: @remove;
+  border: 1px dashed !important;
+  border-color: @base-color !important;
+  background-color: @form-remove !important;
+}
+
+.is-diff-modified {
+  @base-color: @brand-primary-orange;
+  border: 1px dashed !important;
+  border-color: @base-color !important;
+  background-color: @form-modified !important;
+}
 </style>

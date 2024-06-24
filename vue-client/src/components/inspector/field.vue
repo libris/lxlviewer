@@ -1130,27 +1130,6 @@ export default {
     background-color: hsl(hue(@base-color), 50%, 95%);
   }
 
-  &.is-diff-added {
-    @base-color: @form-add;
-    border: 1px solid;
-    border-color: @brand-primary;
-    background-color: @base-color;
-  }
-
-  &.is-diff-removed {
-    @base-color: @remove;
-    border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
-  }
-
-  &.is-diff-modified {
-    @base-color: @brand-primary-orange;
-    border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-modified;
-  }
-
   .icon-removed {
     transform: translateY(-5%);
     color: @remove;

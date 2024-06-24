@@ -886,17 +886,6 @@ export default {
     box-shadow: 0 2px 5px rgba(0,0,0,.16);
     margin: 1rem 0 1rem 0;
   }
-  &.is-diff-removed {
-    @base-color: @remove;
-    border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
-  }
-
-  &.is-diff-added {
-    @base-color: @form-add;
-    background-color: @base-color;
-  }
 
   &.is-expanded >
   .ItemLocal-heading >
