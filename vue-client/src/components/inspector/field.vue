@@ -1130,16 +1130,6 @@ export default {
     background-color: hsl(hue(@base-color), 50%, 95%);
   }
 
-  .icon-removed {
-    transform: translateY(-5%);
-    color: @remove;
-  }
-
-  .icon-added {
-    position: relative;
-    color: #428BCAFF; // @brand-primary base.
-  }
-
   &.is-highlighted { // replace 'is-lastadded' & 'is-marked' with this class
     background-color: @form-highlight;
   }

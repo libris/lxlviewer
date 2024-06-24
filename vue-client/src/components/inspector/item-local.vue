@@ -191,6 +191,14 @@ export default {
       }
       return false;
     },
+    diffIdAdded() {
+      if (this.diff == null) return false;
+      return this.diff.added.includes(`${this.getPath}.@id`);
+    },
+    diffIdRemoved() {
+      if (this.diff == null) return false;
+      return this.diff.removed.includes(`${this.getPath}.@id`);
+    },
   },
   methods: {
     translatePhrase,
@@ -551,7 +559,9 @@ export default {
       <id-label
         v-if="this.hasId"
         :uri="this.recordId"
-        :isLibrisResource="this.isLibrisResource"
+        :is-libris-resource="this.isLibrisResource"
+        :diff-added="this.diffIdAdded"
+        :diff-removed="this.diffIdRemoved"
       />
 
       <div class="ItemLocal-actions">

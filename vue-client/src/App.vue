@@ -1158,4 +1158,14 @@ h1 {
   border-color: @base-color !important;
   background-color: @form-modified !important;
 }
+
+.icon-removed {
+  transform: translateY(-5%);
+  color: @remove;
+}
+
+.icon-added {
+  position: relative;
+  color: #428BCAFF; // @brand-primary base.
+}
 </style>

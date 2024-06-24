@@ -14,6 +14,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    diffAdded: {
+      type: Boolean,
+      default: false,
+    },
+    diffRemoved: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -64,7 +72,11 @@ export default {
   <div
     v-if="idAsFnurgel"
     class="IdPill"
-    :class="{ 'recently-copied': recentlyCopiedId }"
+    v-bind:class="{
+      'recently-copied': recentlyCopiedId,
+      'is-diff-added': diffAdded,
+      'is-diff-removed': diffRemoved,
+    }"
     @mouseover="idHover = true"
     @mouseout="idHover = false">
     <i
@@ -72,6 +84,12 @@ export default {
       class="fa fa-copy IdPill-idCopyIcon"
       :class="{ collapsedIcon: !idHover || recentlyCopiedId }"
       @click.stop="copyFnurgel" />{{ idAsFnurgel }}
+    <span v-if="diffRemoved">
+      <i class="fa fa-trash-o icon--sm icon-removed historyIcon" />
+    </span>
+    <span v-if="diffAdded">
+      <i class="fa fa-plus-circle icon--sm icon-added historyIcon" />
+    </span>
   </div>
 </template>
 
@@ -106,5 +124,8 @@ export default {
       opacity: 0;
     }
   }
+}
+.historyIcon {
+  padding-top: 3px;
 }
 </style>
