@@ -22,10 +22,28 @@
 	--font-fallback: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Ubuntu', 'Cantarell',
 		'Noto Sans', sans-serif;
 	--font-body: Inter, var(--font-fallback);
+	--font-size-base: 1rem; /* 16px */
+	--font-size-sm: 0.875rem; /* 14px */
+	--font-size-xs: 0.8125rem; /* 13px */
+	--font-size-2xs: 0.75rem; /* 12px */
+	--font-size-3xs: 0.6875rem; /* 11px */
+	--font-size-4xs: 0.625rem; /* 10px */
 	--padding-base: 16px;
 	--gap-base: 16px;
-	--height-input: 44px;
-
+	--gap-sm: 8px;
+	--gap-xs: 4px;
+	--gap-2xs: 2px;
+	--height-input-base: 44px;
+	--height-input-lg: 48px;
+	--color-base: #333;
+	--color-subtle: #666;
+	--background-header: #eaf2ed;
+	--background-aside: rgba(234, 242, 237, 0.125);
+	--border-color: #d5e4dd;
+	--box-shadow-border-right: inset -1px 0 var(--border-color);
+	--box-shadow-border-bottom: inset 0 -1px var(--border-color);
+	--box-shadow-border-all: inset 0 0 0 1px var(--border-color);
+	color: var(--color-base);
 	font-family: var(--font-body);
 	font-feature-settings:
 		'liga' 1,

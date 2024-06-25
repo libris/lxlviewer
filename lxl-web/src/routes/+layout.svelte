@@ -1,10 +1,10 @@
 <script lang="ts">
 	import '$lib/styles/app.css';
-	import SiteHeader from './SiteHeader.svelte';
+	import AppHeader from './AppHeader.svelte';
 </script>
 
 <div class="app">
-	<SiteHeader />
+	<AppHeader />
 	<main>
 		<slot />
 	</main>
