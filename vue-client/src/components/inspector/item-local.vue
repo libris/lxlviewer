@@ -9,6 +9,8 @@ import * as LayoutUtil from '@/utils/layout';
 import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 import PropertyAdder from '@/components/inspector/property-adder.vue';
 import EntityAction from '@/components/inspector/entity-action.vue';
+import IdLabel from '@/components/shared/id-label.vue';
+import CopyAttributes from '@/components/inspector/copy-attributes.vue';
 import SearchWindow from './search-window.vue';
 import ItemMixin from '../mixins/item-mixin.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
@@ -150,6 +152,15 @@ export default {
       }
       return false;
     },
+    canAddId() {
+      if (this.fieldKey === 'hasComponent' && this.isHolding && !this.hasId) {
+        return true;
+      }
+      return false;
+    },
+    hasId() {
+      return this.item.hasOwnProperty('@id');
+    },
     getPath() {
       if (this.inArray) {
         return `${this.parentPath}[${this.index}]`;
@@ -180,6 +191,14 @@ export default {
         return true;
       }
       return false;
+    },
+    diffIdAdded() {
+      if (this.diff == null) return false;
+      return this.diff.added.includes(`${this.getPath}.@id`);
+    },
+    diffIdRemoved() {
+      if (this.diff == null) return false;
+      return this.diff.removed.includes(`${this.getPath}.@id`);
     },
   },
   methods: {
@@ -352,6 +371,23 @@ export default {
         }
       });
     },
+    addId() {
+      if (this.canAddId) {
+        this.$store.dispatch('updateInspectorData', {
+          changeList: [
+            {
+              path: `${this.path}.@id`,
+              value: 'https://libris.kb.se/TEMPID',
+            },
+          ],
+          addToHistory: true,
+        });
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'lastAdded',
+          value: `${this.path}.@id`,
+        });
+      }
+    },
   },
   watch: {
     'inspector.status.editing'(val) {
@@ -452,6 +488,7 @@ export default {
   },
 
   components: {
+    'copy-attributes': CopyAttributes,
     'property-adder': PropertyAdder,
     'search-window': SearchWindow,
     'entity-action': EntityAction,
@@ -520,7 +557,14 @@ export default {
           <i class="fa fa-plus-circle icon--sm icon-added" />
         </div>
       </div>
-
+      <copy-attributes
+        v-if="this.hasId"
+        :uri="this.recordId"
+        :focus-data="this.focusData"
+        :is-libris-resource="this.isLibrisResource"
+        :diff-id-added="this.diffIdAdded"
+        :diff-id-removed="this.diffIdRemoved"
+      />
       <div class="ItemLocal-actions">
         <entity-action
           v-if="isExtracting"
@@ -606,6 +650,16 @@ export default {
                 @click="cloneThis(), closeManagerMenu()">
                 <i class="fa fa-fw fa-clone" aria-hidden="true" />
                 {{ translatePhrase("Duplicate entity") }}
+              </a>
+            </li>
+            <li class="ManagerMenu-menuItem" v-if="canAddId">
+              <a
+                tabindex="0"
+                class="ManagerMenu-menuLink"
+                @keyup.enter="addId(), closeManagerMenu()"
+                @click="addId(), closeManagerMenu()">
+                <i class="fa fa-fw fa-plus" aria-hidden="true" />
+                {{ translatePhrase("Create id for entity") }}
               </a>
             </li>
           </ul>
@@ -843,17 +897,6 @@ export default {
     box-shadow: 0 2px 5px rgba(0,0,0,.16);
     margin: 1rem 0 1rem 0;
   }
-  &.is-diff-removed {
-    @base-color: @remove;
-    border: 1px dashed;
-    border-color: @base-color;
-    background-color: @form-remove;
-  }
-
-  &.is-diff-added {
-    @base-color: @form-add;
-    background-color: @base-color;
-  }
 
   &.is-expanded >
   .ItemLocal-heading >
@@ -870,7 +913,7 @@ export default {
   &.is-extracting {
     background-color: @form-extracting !important;
     border: 1px dashed @brand-primary;
-    
+
     &.highlight-mark {
       border-color: @brand-primary !important;
     }

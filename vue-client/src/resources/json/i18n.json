@@ -426,6 +426,7 @@
     "Activate change message feature": "Aktivera funktion för ändringsmeddelanden",
     "Hide handled:": "Dölj hanterade:",
     "links": "länkningar",
-    "link": "länkning"
+    "link": "länkning",
+    "Create id for entity": "Skapa id för entitet"
   }
 }

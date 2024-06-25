@@ -284,51 +284,51 @@ export default {
     </div>
 
     <div
+      class="LanguageEntry-textcontainer"
       v-if="isLocked"
       v-bind:class="{
-        'LanguageEntry-is-diff-removed': diffRemoved && !diffAdded,
-        'LanguageEntry-is-diff-added': diffAdded && !diffRemoved,
-        'LanguageEntry-is-diff-modified': diffModified,
-      }">
-      <div class="LanguageEntry-textcontainer">
-        <div class="LanguageEntry-key">
-          <div class="LanguageEntry-text">
-            {{ modelValue }}
-          </div>
+        'is-diff-removed': diffRemoved && !diffAdded,
+        'is-diff-added': diffAdded && !diffRemoved,
+        'is-diff-modified': diffModified,
+      }"
+    >
+      <div class="LanguageEntry-key">
+        <div class="LanguageEntry-text">
+          {{ modelValue }}
         </div>
+      </div>
 
-        <span class="LanguageEntry-tags">
-          <span class="LanguageEntry-pill" v-if="tag !== 'none'">
-            <Menu
-              v-if="this.isLinked"
-              class="LanguageEntry-popover"
-              placement="bottom-start"
-              :delay="{ show: 200, hide: 0 }"
-              :popperHideTriggers="['hover']"
-              @apply-show="$refs.previewCard.populateData()">
-              <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
-                <router-link :to="routerPath">{{ this.label }}</router-link>
-              </span>
-
-              <template #popper>
-                <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId" />
-              </template>
-            </Menu>
-
-            <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
-              {{ this.label }}
+      <span class="LanguageEntry-tags">
+        <span class="LanguageEntry-pill" v-if="tag !== 'none'">
+          <Menu
+            v-if="this.isLinked"
+            class="LanguageEntry-popover"
+            placement="bottom-start"
+            :delay="{ show: 200, hide: 0 }"
+            :popperHideTriggers="['hover']"
+            @apply-show="$refs.previewCard.populateData()">
+            <span class="LanguageEntry-pill-label LanguageEntry-pill-link">
+              <router-link :to="routerPath">{{ this.label }}</router-link>
             </span>
-          </span>
 
-          <span class="LanguageEntry-tags-history-icon" v-if="diffRemoved && !diffAdded">
-            <i class="fa fa-trash-o icon--sm icon-removed" />
-          </span>
+            <template #popper>
+              <PreviewCard ref="previewCard" :focus-data="data" :record-id="this.recordId" />
+            </template>
+          </Menu>
 
-          <span class="LanguageEntry-tags-history-icon" v-if="diffAdded && !diffRemoved">
-            <i class="fa fa-plus-circle icon--sm icon-added" />
+          <span v-if="!this.isLinked" class="LanguageEntry-pill-label">
+            {{ this.label }}
           </span>
         </span>
-      </div>
+
+        <span class="LanguageEntry-tags-history-icon" v-if="diffRemoved && !diffAdded">
+          <i class="fa fa-trash-o icon--sm icon-removed" />
+        </span>
+
+        <span class="LanguageEntry-tags-history-icon" v-if="diffAdded && !diffRemoved">
+          <i class="fa fa-plus-circle icon--sm icon-added" />
+        </span>
+      </span>
     </div>
   </div>
 </template>
@@ -367,36 +367,6 @@ export default {
     width: 100%;
     margin-top: 7px;
     margin-bottom: 7px;
-  }
-
-  &-is-diff-added {
-    @base-color: @form-add;
-    border: 1px solid;
-    border-radius: 4px;
-    padding: 0px 5px 0 5px;
-    border-color: @brand-primary;
-    background-color: @base-color;
-    margin-bottom: 3px;
-  }
-
-  &-is-diff-removed {
-    @base-color: @remove;
-    border: 1px dashed;
-    border-radius: 4px;
-    padding: 0px 5px 0 5px;
-    border-color: @base-color;
-    background-color: @form-remove;
-    margin-bottom: 3px;
-  }
-
-  &-is-diff-modified {
-    @base-color: @brand-primary-orange;
-    border: 1px dashed;
-    border-radius: 4px;
-    padding: 0px 5px 0 5px;
-    border-color: @base-color;
-    background-color: @form-modified;
-    margin-bottom: 3px;
   }
 
   &-text {
