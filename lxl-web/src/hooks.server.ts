@@ -5,6 +5,7 @@ import fs from 'fs';
 import { DERIVED_LENSES } from '$lib/utils/display.types';
 import displayWeb from '$lib/assets/json/display-web.json';
 
+const preloadTypes = ['js', 'css', 'font'];
 let utilCache;
 
 export const handle = async ({ event, resolve }) => {
@@ -24,6 +25,7 @@ export const handle = async ({ event, resolve }) => {
 	});
 
 	return resolve(event, {
+		preload: ({ type }) => preloadTypes.includes(type),
 		transformPageChunk: ({ html }) => html.replace('%lang%', lang)
 	});
 };
