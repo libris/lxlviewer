@@ -2,6 +2,7 @@
 	<aside>
 		<header><h2>Filter</h2></header>
 	</aside>
+	<slot></slot>
 </div>
 
 <style>
