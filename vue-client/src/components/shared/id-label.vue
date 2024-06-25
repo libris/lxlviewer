@@ -126,6 +126,6 @@ export default {
   }
 }
 .historyIcon {
-  padding-top: 3px;
+  padding-top: 4px;
 }
 </style>

@@ -10,6 +10,7 @@ import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 import PropertyAdder from '@/components/inspector/property-adder.vue';
 import EntityAction from '@/components/inspector/entity-action.vue';
 import IdLabel from '@/components/shared/id-label.vue';
+import CopyAttributes from '@/components/inspector/copy-attributes.vue';
 import SearchWindow from './search-window.vue';
 import ItemMixin from '../mixins/item-mixin.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
@@ -487,10 +488,10 @@ export default {
   },
 
   components: {
+    'copy-attributes': CopyAttributes,
     'property-adder': PropertyAdder,
     'search-window': SearchWindow,
     'entity-action': EntityAction,
-    'id-label': IdLabel,
   },
 };
 </script>
@@ -556,14 +557,14 @@ export default {
           <i class="fa fa-plus-circle icon--sm icon-added" />
         </div>
       </div>
-      <id-label
+      <copy-attributes
         v-if="this.hasId"
         :uri="this.recordId"
+        :focus-data="this.focusData"
         :is-libris-resource="this.isLibrisResource"
-        :diff-added="this.diffIdAdded"
-        :diff-removed="this.diffIdRemoved"
+        :diff-id-added="this.diffIdAdded"
+        :diff-id-removed="this.diffIdRemoved"
       />
-
       <div class="ItemLocal-actions">
         <entity-action
           v-if="isExtracting"
