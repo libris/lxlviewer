@@ -54,6 +54,7 @@
 			class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}"
 			class:wildcard={m.operator === 'equals' && m.display === '*'}
 			class:outer={depth === 0}
+			class:free-text={m?.['@id'] === 'https://id.kb.se/vocab/textQuery'}
 		>
 			{#if 'children' in m}
 				<svelte:self mapping={m.children} parentOperator={m.operator} depth={depth + 1} />
@@ -161,5 +162,16 @@
 	.pill-between-and,
 	.pill-between:last-of-type {
 		@apply hidden;
+	}
+
+	.free-text {
+		& > .pill-label {
+			display: none;
+		}
+
+		& > .pill-value::before,
+		& > .pill-value::after {
+			content: '"';
+		}
 	}
 </style>

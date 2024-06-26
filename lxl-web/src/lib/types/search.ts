@@ -58,6 +58,7 @@ export interface MultiSelectFacet extends Facet {
 }
 
 export interface DisplayMapping {
+	'@id'?: string;
 	display?: DisplayDecorated;
 	up?: Link;
 	children?: DisplayMapping[];
@@ -126,7 +127,9 @@ export interface SearchMapping extends MappingObj {
 	up: { '@id': string };
 }
 
-interface ObjectProperty {}
+interface ObjectProperty {
+	'@id'?: string;
+}
 
 export interface DatatypeProperty {
 	'@type': 'DataTypeProperty';

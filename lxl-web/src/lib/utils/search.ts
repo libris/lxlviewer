@@ -78,6 +78,7 @@ function displayMappings(
 			if ('property' in m && operator) {
 				const property = m[operator] as FramedData;
 				return {
+					...(isObject(m.property) && { '@id': m.property['@id'] }),
 					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
 					label: m.alias
 						? translate(`facet.${m.alias}`)
