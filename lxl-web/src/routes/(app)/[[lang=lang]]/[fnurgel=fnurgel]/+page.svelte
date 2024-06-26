@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { afterNavigate, goto } from '$app/navigation';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { Width } from '$lib/types/auxd';
 	import getPageTitle from '$lib/utils/getPageTitle';
@@ -20,6 +21,7 @@
 	let latestHoldingUrl: string | undefined;
 	let holdingsInstanceElement: HTMLElement | null;
 	let expandedHoldingsInstance = false;
+	let previousPage: string;
 
 	$: selectedHoldingInstance = selectedHolding
 		? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
@@ -47,8 +49,22 @@
 	$: expandableHoldingsInstance =
 		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT;
 
+	afterNavigate(({ from }) => {
+		if (from) {
+			previousPage = from.url.pathname;
+		}
+	});
+
 	function handleCloseHoldings() {
-		history.back();
+		if (previousPage) {
+			history.back();
+		} else {
+			const newSearchParams = new URLSearchParams([
+				...Array.from($page.url.searchParams.entries())
+			]);
+			newSearchParams.delete('holdings');
+			goto($page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: false });
+		}
 	}
 </script>
 
