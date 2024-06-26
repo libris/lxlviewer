@@ -21,7 +21,7 @@
 	let latestHoldingUrl: string | undefined;
 	let holdingsInstanceElement: HTMLElement | null;
 	let expandedHoldingsInstance = false;
-	let previousPage: string;
+	let previousURL: URL;
 
 	$: selectedHoldingInstance = selectedHolding
 		? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
@@ -49,21 +49,21 @@
 	$: expandableHoldingsInstance =
 		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT;
 
-	afterNavigate(({ from }) => {
-		if (from) {
-			previousPage = from.url.pathname;
+	afterNavigate(({ to }) => {
+		if (to) {
+			previousURL = to.url;
 		}
 	});
 
 	function handleCloseHoldings() {
-		if (previousPage) {
+		if (!previousURL.searchParams.has('holdings')) {
 			history.back();
 		} else {
 			const newSearchParams = new URLSearchParams([
 				...Array.from($page.url.searchParams.entries())
 			]);
 			newSearchParams.delete('holdings');
-			goto($page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: false });
+			goto($page.url.pathname + `?${newSearchParams.toString()}`, { replaceState: true });
 		}
 	}
 </script>
