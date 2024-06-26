@@ -54,7 +54,7 @@
 			class="mapping-item {m.children ? 'pill-group' : 'pill'} pill-{m.operator}"
 			class:wildcard={m.operator === 'equals' && m.display === '*'}
 			class:outer={depth === 0}
-			class:free-text={!m.children && m?.['@id'] === 'https://id.kb.se/vocab/textQuery'}
+			class:free-text={m?.['@id'] === 'https://id.kb.se/vocab/textQuery'}
 		>
 			{#if 'children' in m}
 				<svelte:self mapping={m.children} parentOperator={m.operator} depth={depth + 1} />
