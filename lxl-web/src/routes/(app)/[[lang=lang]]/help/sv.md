@@ -11,6 +11,7 @@ Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utv
 ### 2024-06-26
 
 - Dölj etikett för fritext-sökningar och lägg till citattecken istället
+- Fixa bugg som förhindrade stängning av ursprungligt öppen beståndsmodal
 
 ### 2024-06-12
 

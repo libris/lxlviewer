@@ -11,6 +11,7 @@ Here we will continuously provide information about newly added features and pla
 ### 2024-06-26
 
 - Hide labels for free text queries and add quotes instead
+- Fix bug which prevented closing of initially opened holdings modal
 
 ### 2024-06-12
 
