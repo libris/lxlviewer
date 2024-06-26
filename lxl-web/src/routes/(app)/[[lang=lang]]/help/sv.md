@@ -8,6 +8,10 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
+### 2024-06-26
+
+- Dölj etikett för fritext-sökningar och lägg till citattecken istället
+
 ### 2024-06-12
 
 - Förbättrad hjälptext

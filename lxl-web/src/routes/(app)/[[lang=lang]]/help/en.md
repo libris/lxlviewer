@@ -8,6 +8,10 @@ title: 'Hjälp'
 
 Here we will continuously provide information about newly added features and planned developments:
 
+### 2024-06-26
+
+- Hide labels for free text queries and add quotes instead
+
 ### 2024-06-12
 
 - Improved help text
