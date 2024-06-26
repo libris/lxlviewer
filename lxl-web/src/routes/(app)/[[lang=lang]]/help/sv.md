@@ -10,6 +10,7 @@ Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utv
 
 ### 2024-06-26
 
+- Stöd för sök i träfflistan för personer och ämnen
 - Dölj etikett för fritext-sökningar och lägg till citattecken istället
 
 ### 2024-06-12
