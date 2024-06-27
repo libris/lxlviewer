@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.beforeEach(async ({ page }) => {
-	await page.goto('/find?_q=d&_limit=10&_offset=0&_sort=&_i=d');
+	await page.goto('/find?_q=f&_limit=20&_offset=0&_sort=&_i=f');
 });
 
 test('should not have any detectable a11y issues', async ({ page }) => {
@@ -23,8 +23,8 @@ test('can change the language', async ({ page }) => {
 	await expect(page).toHaveURL(/\/en\/find/);
 });
 
-test('displays 10 search cards on a page', async ({ page }) => {
-	await expect(page.getByTestId('search-card')).toHaveCount(10);
+test('displays 20 search cards on a page', async ({ page }) => {
+	await expect(page.getByTestId('search-card')).toHaveCount(20);
 });
 
 test('search card contains a link', async ({ page }) => {
@@ -63,9 +63,9 @@ test('has pagination', async ({ page }) => {
 });
 
 test('can paginate to next and previous', async ({ page }) => {
-	await expect(page).not.toHaveURL(/_offset=10/);
+	await expect(page).not.toHaveURL(/_offset=20/);
 	await page.getByTestId('pagination').getByLabel('Nästa sida').click();
-	await expect(page).toHaveURL(/_offset=10/);
+	await expect(page).toHaveURL(/_offset=20/);
 	await page.getByTestId('pagination').getByLabel('Föregående sida').click();
 	await expect(page).not.toHaveURL(/_offset=/);
 });

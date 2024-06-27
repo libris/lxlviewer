@@ -8,7 +8,7 @@ function addDefaultSearchParams(searchParams: URLSearchParams): URLSearchParams 
 		params.set('_q', '*');
 	}
 	if (!params.has('_limit')) {
-		params.set('_limit', '10');
+		params.set('_limit', '20');
 	}
 	if (!params.has('_offset')) {
 		params.set('_offset', '0');
