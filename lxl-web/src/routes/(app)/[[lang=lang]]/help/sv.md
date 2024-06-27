@@ -12,7 +12,7 @@ Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utv
 
 - Ändra antalet sökträffar per sida till 20
 - Dölj etikett för fritextsökningar och lägg till citattecken istället
-- Rätta bugg som förhindrade stängning av beståndsmodal
+- Buggrättningar
 - Stöd för sök i träfflistan för personer och ämnen
 
 ### 2024-06-12
