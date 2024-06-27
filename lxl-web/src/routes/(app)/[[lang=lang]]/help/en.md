@@ -8,8 +8,9 @@ title: 'Hjälp'
 
 Here we will continuously provide information about newly added features and planned developments:
 
-### 2024-06-26
+### 2024-06-27
 
+- Change default number of hits per page to 20
 - Added search on result list for people and subjects
 - Hide labels for free text queries and add quotes instead
 - Fix bug which prevented closing of initially opened holdings modal

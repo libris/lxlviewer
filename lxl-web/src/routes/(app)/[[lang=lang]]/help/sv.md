@@ -8,8 +8,9 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
-### 2024-06-26
+### 2024-06-27
 
+- Ändra antalet sökträffar per sida till 20
 - Dölj etikett för fritextsökningar och lägg till citattecken istället
 - Rätta bugg som förhindrade stängning av beståndsmodal
 - Stöd för sök i träfflistan för personer och ämnen
