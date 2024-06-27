@@ -10,8 +10,8 @@ Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utv
 
 ### 2024-06-27
 
-- Ändra antalet sökträffar per sida till 20
-- Dölj etikett för fritextsökningar och lägg till citattecken istället
+- Ändrat antal sökträffar per sida till 20
+- Ersätt etikett för fritextsökningar till citattecken
 - Buggrättningar
 - Stöd för sök i träfflistan för personer och ämnen
 

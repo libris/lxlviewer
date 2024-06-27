@@ -10,7 +10,7 @@ Here we will continuously provide information about newly added features and pla
 
 ### 2024-06-27
 
-- Change default number of hits per page to 20
+- Changed default number of hits per page to 20
 - Added search on result list for people and subjects
 - Hide labels for free text queries and add quotes instead
 - Bug fixes
