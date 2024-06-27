@@ -8,8 +8,8 @@ describe('relativize', () => {
 		);
 	});
 	it('removes the opening slash from a relative path', () => {
-		expect(relativizeUrl('/find?q=*&@type=Work&_limit=10')).toStrictEqual(
-			'find?q=*&@type=Work&_limit=10'
+		expect(relativizeUrl('/find?q=*&@type=Work&_limit=20')).toStrictEqual(
+			'find?q=*&@type=Work&_limit=20'
 		);
 	});
 });

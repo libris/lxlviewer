@@ -10,8 +10,9 @@ Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utv
 
 ### 2024-06-27
 
+- Ändra antalet sökträffar per sida till 20
 - Dölj etikett för fritextsökningar och lägg till citattecken istället
-- Rätta bugg som förhindrade stängning av beståndsmodal
+- Buggrättningar
 - Stöd för sök i träfflistan för personer och ämnen
 
 ### 2024-06-12
@@ -103,19 +104,19 @@ Här följer några exempel som går att skriva in som sökfrågor direkt i sök
 
 Engelska och franska verk som matchar sökfrasen "pippi långstrump" som givits ut efter år 2002:
 
-[`pippi långstrump språk:(engelska OR franska) ÅR>2002`](<https://beta.libris-qa.kb.se/find?_i=pippi+l%C3%A5ngstrump&_q=pippi+l%C3%A5ngstrump+SPR%C3%85K:(engelska%20OR%20franska)&_limit=10&_x=advanced>)
+[`pippi långstrump språk:(engelska OR franska) ÅR>2002`](<https://beta.libris-qa.kb.se/find?_i=pippi+l%C3%A5ngstrump&_q=pippi+l%C3%A5ngstrump+SPR%C3%85K:(engelska%20OR%20franska)&_limit=20&_x=advanced>)
 
 Material med utgivning mellan 2010 och 2024, som är på svenska och har [drakar](https://id.kb.se/term/sao/Drakar) som ämne:
 
-[`språk:svenska ÅR>2010 ÅR<=2024 ämne:"sao:Drakar"`](https://beta.libris-qa.kb.se/find?_i=&_q=SPR%C3%85K:svenska+%C3%85R%3E2010+%C3%85R%3C%3D2024+subject:%22sao:Drakar%22&_limit=10&_x=advanced)
+[`språk:svenska ÅR>2010 ÅR<=2024 ämne:"sao:Drakar"`](https://beta.libris-qa.kb.se/find?_i=&_q=SPR%C3%85K:svenska+%C3%85R%3E2010+%C3%85R%3C%3D2024+subject:%22sao:Drakar%22&_limit=20&_x=advanced)
 
 Fritextsökning på träd\*, där alla träffar ingår i bibliografin Digitaliserat Svenskt Tryck men som inte har verkstyp "Text":
 
-[`träd* bibliografi:"sigel:DST" NOT typ:Text`](https://beta.libris-qa.kb.se/find?_i=tr%C3%A4d*&_q=tr%C3%A4d*+bibliography:%22sigel:DST%22+NOT+%22rdf:type%22:Text&_limit=10&_x=advanced)
+[`träd* bibliografi:"sigel:DST" NOT typ:Text`](https://beta.libris-qa.kb.se/find?_i=tr%C3%A4d*&_q=tr%C3%A4d*+bibliography:%22sigel:DST%22+NOT+%22rdf:type%22:Text&_limit=20&_x=advanced)
 
 Verk där Selma Lagerlöf är författare som har minst en upplaga som är en elektronisk resurs:
 
-[`författare:"selma lagerlöf" "hasInstanceType":Electronic`](https://beta.libris-qa.kb.se/find?_i=&_q=F%C3%96RF:%22selma+lagerl%C3%B6f%22+hasInstanceType:Electronic&_limit=10&_x=advanced)
+[`författare:"selma lagerlöf" "hasInstanceType":Electronic`](https://beta.libris-qa.kb.se/find?_i=&_q=F%C3%96RF:%22selma+lagerl%C3%B6f%22+hasInstanceType:Electronic&_limit=20&_x=advanced)
 
 ### Detaljvyn
 
