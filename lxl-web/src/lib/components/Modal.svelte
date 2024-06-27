@@ -94,6 +94,7 @@
 					autofocus
 					class="icon-button"
 					aria-label={$page.data.t('general.close')}
+					data-testid="close-modal"
 				>
 					<IconClose />
 				</button>

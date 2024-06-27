@@ -8,6 +8,16 @@ test('decorated data label visibilty is correct after page navigations', async (
 	await expect(page.getByText('Språk')).toBeVisible();
 });
 
+test('initially opened holdings modals are closable', async ({ page }) => {
+	await page.goto('/h08ndxddfg5v2pjf?holdings=Electronic');
+	await page.getByTestId('close-modal').first().click();
+	await expect(page).toHaveURL('/h08ndxddfg5v2pjf');
+	await expect(page.getByTestId('modal')).toBeHidden();
+	await page.getByTestId('holding-link').first().click();
+	await expect(page.getByTestId('modal')).toBeVisible();
+	await expect(page).toHaveURL('/h08ndxddfg5v2pjf?holdings=Electronic');
+});
+
 test('decorated data in holdings modal is not duplicated while closing modal', async ({ page }) => {
 	await page.goto('/h08ndxddfg5v2pjf');
 	await page.getByTestId('holding-link').first().click();

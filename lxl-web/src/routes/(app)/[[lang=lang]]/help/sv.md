@@ -10,8 +10,9 @@ Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utv
 
 ### 2024-06-26
 
+- Dölj etikett för fritextsökningar och lägg till citattecken istället
+- Rätta bugg som förhindrade stängning av beståndsmodal
 - Stöd för sök i träfflistan för personer och ämnen
-- Dölj etikett för fritext-sökningar och lägg till citattecken istället
 
 ### 2024-06-12
 
