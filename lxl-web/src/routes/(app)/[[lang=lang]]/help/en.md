@@ -70,7 +70,7 @@ Different terms and degrees of precision may still be needed in different contex
 
 A lot of material can be found with a simple free-text search in the search box. The results can be sorted according to the categories available in the drop-down menu on the right side of the page. In addition to regular free-text search, there is also the option to construct more advanced search queries containing filters and search operators. One way to explore more complex search queries is to click on the filters in the left column. Active filters are displayed directly under the search box. The entire search query also has a text representation that can be freely edited by clicking the Edit button.
 
-De filter som finns i vänsterkolumnen är:
+The filters in the left column are:
 
 <b>Type</b> - material type<br>
 <b>Format</b> - type for storage or playback/display<br>
