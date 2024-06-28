@@ -22,7 +22,10 @@ function toImage(imageObject: KbvImageObject, recordId: string): Image {
 
 	const sizes = [...(imageObject.thumbnail?.map(mapOne) || []), mapOne(imageObject)];
 	sizes.sort((a, b) => a.widthṔx - b.widthṔx);
-	return { sizes: sizes, recordId: recordId };
+
+	const attribution = getAttribution(imageObject);
+	const usageAndAccessPolicy = getUsageAndAccessPolicy(imageObject);
+	return { sizes: sizes, recordId, attribution, usageAndAccessPolicy };
 }
 
 export function bestSize(from: Image, minWidthPx: number): ImageResolution;
@@ -68,6 +71,39 @@ export function toSecure(
 	return undefined;
 }
 
+function getAttribution(imageObject: KbvImageObject): string | undefined {
+	return (
+		(Array.isArray(imageObject.publisher) &&
+			imageObject.publisher.find((publisherItem) => publisherItem.name)?.name) ||
+		undefined
+	);
+}
+
+function getUsageAndAccessPolicy(imageObject: KbvImageObject) {
+	if (
+		Array.isArray(imageObject?.publisher) &&
+		imageObject.publisher.find((publisherItem) => publisherItem.name === 'Nielsen')
+	) {
+		return {
+			title:
+				'Copyright in any data cover images supplied by Nielsen Book Services Limited is held by Nielsen Book Services Limited or by the publishers or by their respective licensors: all rights reserved'
+		};
+	}
+
+	if (imageObject.usageAndAccessPolicy) {
+		const title = imageObject.usageAndAccessPolicy?.[0].titleByLang?.['sv'];
+		const link = imageObject.usageAndAccessPolicy?.[0]?.['@id'];
+		return {
+			title,
+			link
+		};
+	}
+
+	return {
+		title:
+			'Omslagsbilder och andra bilder som visas i LIBRIS är i regel skyddade enligt lag (1960:729) om upphovsrätt till litterära och konstnärliga verk. Den som nyttjar LIBRIS får inte ladda ner eller på något annat sätt förfoga över bilder som är skyddade av upphovsrätt. Det finns också bilder som inte är skyddade av upphovsrätt. Det är du som användare som ansvarar för att ta reda på om materialet är upphovsrättsligt skyddat eller inte.'
+	};
+}
 export function calculateExpirationTime() {
 	const startOfDay = new Date();
 	startOfDay.setHours(0, 0, 0, 0);

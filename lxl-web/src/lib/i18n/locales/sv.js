@@ -122,7 +122,8 @@ export default {
 		apply: 'Tillämpa',
 		from: 'Från',
 		to: 'Till',
-		year: 'Årtal'
+		year: 'Årtal',
+		usagePolicy: 'Licensvillkor'
 	},
 	holdings: {
 		availableAt: 'Finns på',
