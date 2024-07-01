@@ -14,7 +14,11 @@ import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams.js';
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams.js';
 import { asResult, displayPredicates } from '$lib/utils/search';
 import getAtPath from '$lib/utils/getAtPath';
-import { getHoldingsByInstanceId, getHoldingsByType } from '$lib/utils/holdings.js';
+import {
+	getHoldingsByInstanceId,
+	getHoldingsByType,
+	getBibIdsByInstanceId
+} from '$lib/utils/holdings.js';
 
 export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	const displayUtil: DisplayUtil = locals.display;
@@ -55,6 +59,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 	const images = getImages(mainEntity).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity);
+	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
 		const heldBys = holdings.map((holdingItem) => holdingItem.heldBy);
@@ -72,6 +77,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		details: displayUtil.lensAndFormat(mainEntity, LxlLens.PageDetails, locale),
 		instances: sortedInstances,
 		holdingsByInstanceId,
+		bibIdsByInstanceId,
 		holdersByType,
 		full: overview,
 		images,

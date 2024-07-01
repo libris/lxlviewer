@@ -10,8 +10,9 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import InstancesList from './InstancesList.svelte';
 	import SearchResult from '$lib/components/find/SearchResult.svelte';
+	import InstancesList from './InstancesList.svelte';
+	import HoldingStatus from './HoldingStatus.svelte';
 
 	export let data;
 
@@ -146,6 +147,7 @@
 		</div>
 	{/if}
 	{#if holdingUrl && selectedHoldingInstance}
+		{@const selectedBibId = data.bibIdsByInstanceId[selectedHoldingInstance['@id']]}
 		<Modal close={handleCloseHoldings}>
 			<span slot="title">{data.t('holdings.findAtYourNearestLibrary')}</span>
 			<div class="flex flex-col">
@@ -213,33 +215,39 @@
 								: data.t('holdings.libraries')}
 						{/if}
 					</h2>
-					<table class="w-full table-auto border-collapse text-sm">
+					<ul class="w-full text-sm">
 						{#if isFnurgel(latestHoldingUrl)}
 							{#if data.holdingsByInstanceId[selectedHolding]}
 								{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
-									<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
-										<td>
-											{holdingItem?.heldBy?.name}
-										</td>
-										<td class="text-right text-secondary">
-											{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
-										</td>
-									</tr>
+									<li class="contents h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
+										<HoldingStatus data={holdingItem} bibId={selectedBibId}>
+											<summary>
+												<span>{holdingItem?.heldBy?.name}</span>
+												<span class="text-right text-secondary">
+													{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
+												</span>
+											</summary>
+										</HoldingStatus>
+									</li>
 								{/each}
 							{/if}
 						{:else if data.holdersByType?.[latestHoldingUrl]}
 							{#each data.holdersByType[latestHoldingUrl] as holderItem}
-								<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
-									<td>
-										{holderItem?.name}
-									</td>
-									<td class="text-right text-secondary">
-										{holderItem?.sigel ? `(${holderItem?.sigel})` : ''}
-									</td>
-								</tr>
+								<li class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
+									<details>
+										<summary>
+											<span>{holderItem?.name}</span>
+											<span class="text-right text-secondary"
+												>{holderItem?.sigel ? `(${holderItem?.sigel})` : ''}</span
+											>
+										</summary>
+										<!-- TODO, tricky when multiple instances -->
+										<!-- <HoldingStatus data={holderItem} /> -->
+									</details>
+								</li>
 							{/each}
 						{/if}
-					</table>
+					</ul>
 				</div>
 			</div>
 		</Modal>

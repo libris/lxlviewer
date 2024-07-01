@@ -53,6 +53,20 @@ export function getHoldingsByInstanceId(mainEntity) {
 	}, {});
 }
 
+export function getBibIdsByInstanceId(mainEntity) {
+	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
+		const id = instanceOfItem['@id']?.replace('#it', '');
+		const bibId = instanceOfItem.sameAs?.[0]?.['@id'];
+		if (!id || !bibId) {
+			return acc;
+		}
+		return {
+			...acc,
+			[id]: bibId
+		};
+	}, {});
+}
+
 export function getHoldingsByType(mainEntity: FramedData) {
 	const holdingsByType = mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
 		const type = instanceOfItem['@type'];
