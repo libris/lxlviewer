@@ -164,7 +164,7 @@ export interface SearchMapping extends MappingObj {
 	up: { '@id': string };
 }
 
-interface ObjectProperty {}
+type ObjectProperty = unknown;
 
 interface DatatypeProperty {
 	'@type': 'DataTypeProperty';

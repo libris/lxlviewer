@@ -12,4 +12,4 @@
 <main>
 	<slot />
 </main>
-<div id="floating-elements-container" />
+<div id="floating-elements-container"></div>

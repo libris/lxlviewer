@@ -166,31 +166,33 @@
 						{/if}
 					</h2>
 					<table class="w-full table-auto border-collapse text-sm">
-						{#if isFnurgel(latestHoldingUrl)}
-							{#if data.holdingsByInstanceId[selectedHolding]}
-								{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
+						<tbody>
+							{#if isFnurgel(latestHoldingUrl)}
+								{#if data.holdingsByInstanceId[selectedHolding]}
+									{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
+										<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
+											<td>
+												{holdingItem?.heldBy?.name}
+											</td>
+											<td class="text-right text-secondary">
+												{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
+											</td>
+										</tr>
+									{/each}
+								{/if}
+							{:else if data.holdersByType?.[latestHoldingUrl]}
+								{#each data.holdersByType[latestHoldingUrl] as holderItem}
 									<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
 										<td>
-											{holdingItem?.heldBy?.name}
+											{holderItem?.name}
 										</td>
 										<td class="text-right text-secondary">
-											{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
+											{holderItem?.sigel ? `(${holderItem?.sigel})` : ''}
 										</td>
 									</tr>
 								{/each}
 							{/if}
-						{:else if data.holdersByType?.[latestHoldingUrl]}
-							{#each data.holdersByType[latestHoldingUrl] as holderItem}
-								<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
-									<td>
-										{holderItem?.name}
-									</td>
-									<td class="text-right text-secondary">
-										{holderItem?.sigel ? `(${holderItem?.sigel})` : ''}
-									</td>
-								</tr>
-							{/each}
-						{/if}
+						</tbody>
 					</table>
 				</div>
 			</div>
