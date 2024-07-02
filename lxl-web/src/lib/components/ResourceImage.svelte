@@ -24,7 +24,7 @@
 </script>
 
 {#if image && thumb}
-	<figure class="table">
+	<figure class="table aspect-square max-h-40 overflow-hidden">
 		{#if linkToFull && full}
 			<a href={full.url} target="_blank" class="object-[inherit]">
 				<img
@@ -51,7 +51,7 @@
 		{/if}
 		{#if image?.usageAndAccessPolicy}
 			<figcaption
-				class="mt-2 table-caption caption-bottom overflow-hidden text-[10px]"
+				class="mt-1 table-caption caption-bottom overflow-hidden text-[10px] text-tertiary"
 				class:text-center={geometry === 'circle'}
 			>
 				{#if image.attribution}
@@ -77,11 +77,11 @@
 		{/if}
 	</figure>
 {:else if showPlaceholder}
-	<div class="flex items-center justify-center">
+	<div class="flex items-center justify-center object-[inherit]">
 		<img
 			src={placeholder}
 			alt=""
-			class="h-20 w-20 object-cover"
+			class="h-20 w-20 object-cover object-[inherit]"
 			class:rounded-sm={geometry !== 'circle'}
 			class:rounded-full={geometry === 'circle'}
 		/>

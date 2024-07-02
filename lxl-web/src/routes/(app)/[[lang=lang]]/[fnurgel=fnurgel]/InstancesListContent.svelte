@@ -39,7 +39,7 @@
 <div class:oneOfMany>
 	{#if oneOfMany}
 		<div class="col-span-2 flex flex-col gap-2 text-sm">
-			<div class="object-left">
+			<div class="flex object-left">
 				<ResourceImage
 					images={$page.data.images.filter((i) => i.recordId === id)}
 					alt={$page.data.t('general.instanceCover')}
