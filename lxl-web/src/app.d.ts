@@ -1,5 +1,8 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
+
+import type { AvailableLanguageTag } from '../../lib/paraglide/runtime';
+import type { ParaglideLocals } from '@inlang/paraglide-sveltekit';
 import 'unplugin-icons/types/svelte';
 
 declare global {
@@ -7,7 +10,9 @@ declare global {
 		interface Error {
 			status?: string;
 		}
-		// interface Locals {}
+		interface Locals {
+			paraglide: ParaglideLocals<AvailableLanguageTag>;
+		}
 		interface PageData {
 			locale: import('$lib/i18n/locales').LocaleCode;
 			t: Awaited<ReturnType<typeof import('$lib/i18n').getTranslator>>;

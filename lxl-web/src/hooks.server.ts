@@ -1,4 +1,6 @@
-import { defaultLocale, Locales } from '$lib/i18n/locales';
+import type { Handle } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
+import { i18n } from '$lib/i18n';
 import { env } from '$env/dynamic/private';
 import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import fs from 'fs';
@@ -6,33 +8,21 @@ import { DERIVED_LENSES } from '$lib/utils/display.types';
 import displayWeb from '$lib/assets/json/display-web.json';
 
 const preloadTypes = ['js', 'css', 'font'];
-let utilCache;
+let utilCache: (VocabUtil | DisplayUtil)[];
 
-export const handle = async ({ event, resolve }) => {
+export const customHandle: Handle = async ({ event, resolve }) => {
 	const [vocabUtil, displayUtil] = await loadUtilCached();
 	event.locals.vocab = vocabUtil;
 	event.locals.display = displayUtil;
 
-	// set HTML lang
-	// https://github.com/sveltejs/kit/issues/3091#issuecomment-1112589090
-	const path = event.url.pathname;
-	let lang = defaultLocale;
-
-	Object.keys(Locales).forEach((locale) => {
-		if (path && (path.startsWith(`/${locale}/`) || path.endsWith(`/${locale}`))) {
-			lang = locale;
-		}
-	});
-
 	return resolve(event, {
-		preload: ({ type }) => preloadTypes.includes(type),
-		transformPageChunk: ({ html }) => html.replace('%lang%', lang)
+		preload: ({ type }) => preloadTypes.includes(type)
 	});
 };
 
 async function loadUtilCached() {
 	if (!utilCache) {
-		utilCache = loadUtil();
+		utilCache = await loadUtil();
 	}
 	return utilCache;
 }
@@ -77,3 +67,7 @@ async function loadUtil() {
 
 	return [vocabUtil, displayUtil];
 }
+
+const i18nHandle = i18n.handle();
+
+export const handle = sequence(i18nHandle, customHandle);

@@ -15,6 +15,6 @@
 		"explorer.compactFolders": false
 	},
 	"extensions": {
-		"recommendations": ["svelte.svelte-vscode"]
+		"recommendations": ["svelte.svelte-vscode", "inlang.vs-code-extension"]
 	}
 }
