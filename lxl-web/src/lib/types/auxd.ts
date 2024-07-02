@@ -10,6 +10,13 @@ export interface KbvImageObject {
 	width?: SizePx;
 	height?: SizePx;
 	thumbnail?: KbvImageObject[];
+	publisher?: unknown; // do we know the shape of the publisher beforehand? (e.g. { '@id': string } | { name: string, '@type': string, exactMatch: { '@id': string }}?);
+	usageAndAccessPolicy?: {
+		'@id': string;
+		'@type': string;
+		titleByLang: { [key: string]: string };
+		meta: unknown;
+	}[]; // and can we be sure of the the shape of usageAndAccessPolicy?
 }
 
 export enum Width {
@@ -32,6 +39,11 @@ export interface SecureImageResolution extends ImageResolution {
 export interface Image {
 	sizes: ImageResolution[]; // always ordered smallest to largest
 	recordId: string;
+	attribution?: string;
+	usageAndAccessPolicy: {
+		title: string;
+		link?: string;
+	};
 }
 
 export interface SecureImage extends Image {

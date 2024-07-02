@@ -1,9 +1,13 @@
 import type { Action } from 'svelte/action';
+import Popover from './Popover.svelte';
 import type { LocaleCode } from '$lib/i18n/locales';
-import ResourcePopover from './ResourcePopover.svelte';
 import type { ResourceData } from '$lib/types/resourceData';
 
-/** Tests to do
+/**
+ * Svelte action used for showing either a generic title or decorated data for a resource (by supplying the resource id or resource data).
+ * This action can be made much more flexible with Svelte 5 when we will be able to set slots when creating component instances (see: https://github.com/sveltejs/svelte/issues/2588)
+ *
+ * Tests to do:
  * - [] Attaches popover when user hovers over trigger node (after delay)
  * - [] Removes popover when user stops hovering over trigger node (after delay)
  * - [] Removes popover when user blurs trigger node
@@ -14,17 +18,20 @@ import type { ResourceData } from '$lib/types/resourceData';
  * - [] Closes popover immediately when the URL changes
  */
 
-export const resourcePopover: Action<
+export const popover: Action<
 	HTMLElement,
-	{ id?: string; data?: ResourceData[]; lang: LocaleCode }
-> = (node: HTMLElement, options) => {
+	{
+		title?: string;
+		resource?: { id: string; lang: LocaleCode } | { data: ResourceData[] };
+	}
+> = (node: HTMLElement, { title = undefined, resource = undefined }) => {
 	const FETCH_DELAY = 250;
 	const ATTACH_DELAY = 500;
 	const REMOVE_DELAY = 200;
 	const container = document.getElementById('floating-elements-container') || document.body; // See https://atfzl.com/articles/don-t-attach-tooltips-to-document-body
 
 	let attached = false;
-	let floatingElement: ResourcePopover | null = null;
+	let floatingElement: Popover | null = null;
 	let cancelAttach: (reason?: unknown) => void;
 	let cancelRemove: (reason?: unknown) => void;
 	let cancelFetch: (reason?: unknown) => void;
@@ -39,25 +46,28 @@ export const resourcePopover: Action<
 			cancelAttach?.(); // cancel earlier promises to ensure popovers doesn't appear after navigating
 			cancelRemove?.();
 			cancelFetch?.();
-			if ((options.id || options.data) && !attached) {
-				const [decoratedData] = await Promise.all([
-					getDecoratedData(),
+			if (!attached) {
+				const [resourceData] = await Promise.all([
+					getResourceData(),
 					new Promise((resolve, reject) => {
 						cancelAttach = reject; // allows promise rejection from outside the promise constructor scope
 						setTimeout(resolve, ATTACH_DELAY);
 					})
 				]);
-				floatingElement = new ResourcePopover({
+
+				floatingElement = new Popover({
 					target: container,
 					props: {
 						referenceElement: node,
-						data: decoratedData,
+						title,
+						resourceData,
 						onMouseOver: startFloatingElementInteraction,
 						onFocus: startFloatingElementInteraction,
 						onMouseLeave: endFloatingElementInteraction,
 						onBlur: endFloatingElementInteraction
 					}
 				});
+
 				attached = true;
 			}
 			// eslint-disable-next-line no-empty
@@ -93,20 +103,21 @@ export const resourcePopover: Action<
 		removePopover();
 	}
 
-	async function getDecoratedData() {
+	async function getResourceData() {
 		await new Promise((resolve, reject) => {
 			cancelFetch = reject;
 			setTimeout(resolve, FETCH_DELAY);
 		});
 		try {
-			let resource;
-			if (options.data) {
-				resource = options.data;
-			} else if (options.id) {
-				const resourceRes = await fetch(`/api/${options.lang}/${options.id.split('/').pop()}`);
-				resource = await resourceRes.json();
+			if (resource) {
+				if ('id' in resource) {
+					const resourceRes = await fetch(`/api/${resource.lang}/${resource.id.split('/').pop()}`);
+					return await resourceRes.json();
+				}
+				if ('data' in resource) {
+					return resource.data;
+				}
 			}
-			return resource;
 		} catch (error) {
 			console.error(error);
 			cancelAttach?.();
@@ -124,4 +135,4 @@ export const resourcePopover: Action<
 	};
 };
 
-export default resourcePopover;
+export default popover;

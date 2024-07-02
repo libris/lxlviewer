@@ -15,6 +15,8 @@ export default {
 			'primary-inv': 'rgb(var(--text-primary-inv) / 1)',
 			secondary: 'rgb(var(--text-primary) / 0.8)',
 			'secondary-inv': 'rgb(var(--text-primary-inv) / 0.8)',
+			tertiary: 'rgb(var(--text-primary) / 0.5)',
+			'tertiary-inv': 'rgb(var(--text-primary-inv) / 0.5)',
 			link: 'rgb(var(--text-link) / 0.8)',
 			disabled: 'rgb(var(--text-primary) / 0.6)',
 			positive: 'rgb(var(--text-positive) / 1)',

@@ -2,7 +2,7 @@
 	import type { ResourceData } from '$lib/types/resourceData';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { page } from '$app/stores';
-	import resourcePopover from '$lib/actions/resourcePopover';
+	import popover from '$lib/actions/popover';
 	import { hasStyle, getStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
@@ -58,13 +58,15 @@
 	}
 
 	/* Conditionally add popover action so it's only added when needed */
-	function conditionalResourcePopover(node: HTMLElement, data: ResourceData) {
+	function conditionalPopover(node: HTMLElement, data: ResourceData) {
 		if (allowPopovers && ((depth > 1 && hasStyle(data, 'link')) || hasStyle(data, 'definition'))) {
 			const id = getResourceId(data);
 			if (id) {
-				return resourcePopover(node, {
-					id,
-					lang: getSupportedLocale($page.params.lang)
+				return popover(node, {
+					resource: {
+						id,
+						lang: getSupportedLocale($page.params.lang)
+					}
 				});
 			}
 		}
@@ -170,7 +172,7 @@
 					target={hasStyle(data, 'ext-link') ? '_blank' : null}
 					data-type={data['@type']}
 					class={getStyleClasses(data)}
-					use:conditionalResourcePopover={data}
+					use:conditionalPopover={data}
 				>
 					<svelte:self
 						data={data['_display']}
@@ -184,7 +186,9 @@
 					/>
 					{#if remainder && Array.isArray(remainder)}
 						<span
-							use:resourcePopover={{ data: remainder, lang: getSupportedLocale($page.params.lang) }}
+							use:popover={{
+								resource: { data: remainder, lang: getSupportedLocale($page.params.lang) }
+							}}
 							class="remainder">+ {remainder.length}</span
 						>
 					{/if}
