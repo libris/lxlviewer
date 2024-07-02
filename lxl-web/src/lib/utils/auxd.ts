@@ -11,8 +11,9 @@ import { type FramedData, JsonLd, Owl } from '$lib/types/xl';
 import { first, isObject, asArray } from '$lib/utils/xl';
 import getAtPath from '$lib/utils/getAtPath';
 import { relativizeUrl, stripAnchor } from '$lib/utils/http';
+import type { LocaleCode } from '$lib/i18n/locales';
 
-function toImage(imageObject: KbvImageObject, recordId: string): Image {
+function toImage(imageObject: KbvImageObject, recordId: string, lang: LocaleCode): Image {
 	const mapOne = (i: KbvImageObject) =>
 		({
 			url: i[JsonLd.ID] || getAtPath(i, [Owl.SAME_AS, 0, JsonLd.ID], undefined),
@@ -24,7 +25,7 @@ function toImage(imageObject: KbvImageObject, recordId: string): Image {
 	sizes.sort((a, b) => a.widthṔx - b.widthṔx);
 
 	const attribution = getAttribution(imageObject);
-	const usageAndAccessPolicy = getUsageAndAccessPolicy(imageObject);
+	const usageAndAccessPolicy = getUsageAndAccessPolicy(imageObject, lang);
 	return { sizes: sizes, recordId, attribution, usageAndAccessPolicy };
 }
 
@@ -39,17 +40,17 @@ export function bestSize(from: Image | undefined, minWidthPx: number): ImageReso
 	return result || sizes[sizes.length - 1];
 }
 
-export function getImages(thing: FramedData): Image[] {
+export function getImages(thing: FramedData, lang: LocaleCode): Image[] {
 	return [
 		...asArray(thing.image).map((i) =>
-			toImage(i as KbvImageObject, stripAnchor(relativizeUrl(thing['@id']) as string))
+			toImage(i as KbvImageObject, stripAnchor(relativizeUrl(thing['@id']) as string), lang)
 		),
-		...getInstances(thing).flatMap(getImages)
+		...getInstances(thing).flatMap((instance) => getImages(instance, lang))
 	];
 }
 
-export function bestImage(thing: FramedData): Image | undefined {
-	return first(getImages(thing));
+export function bestImage(thing: FramedData, lang: LocaleCode): Image | undefined {
+	return first(getImages(thing, lang));
 }
 
 function getInstances(thing: FramedData): FramedData[] {
@@ -79,7 +80,7 @@ function getAttribution(imageObject: KbvImageObject): string | undefined {
 	);
 }
 
-function getUsageAndAccessPolicy(imageObject: KbvImageObject) {
+function getUsageAndAccessPolicy(imageObject: KbvImageObject, lang: LocaleCode) {
 	if (
 		Array.isArray(imageObject?.publisher) &&
 		imageObject.publisher.find((publisherItem) => publisherItem.name === 'Nielsen')
@@ -91,8 +92,9 @@ function getUsageAndAccessPolicy(imageObject: KbvImageObject) {
 	}
 
 	if (imageObject.usageAndAccessPolicy) {
-		const title = imageObject.usageAndAccessPolicy?.[0].titleByLang?.['sv'];
-		const link = imageObject.usageAndAccessPolicy?.[0]?.['@id'];
+		const title = imageObject.usageAndAccessPolicy?.[0]?.titleByLang?.[lang];
+		const link = imageObject.usageAndAccessPolicy?.[0]?.['@id'] as string | undefined;
+
 		return {
 			title,
 			link
@@ -101,7 +103,9 @@ function getUsageAndAccessPolicy(imageObject: KbvImageObject) {
 
 	return {
 		title:
-			'Omslagsbilder och andra bilder som visas i LIBRIS är i regel skyddade enligt lag (1960:729) om upphovsrätt till litterära och konstnärliga verk. Den som nyttjar LIBRIS får inte ladda ner eller på något annat sätt förfoga över bilder som är skyddade av upphovsrätt. Det finns också bilder som inte är skyddade av upphovsrätt. Det är du som användare som ansvarar för att ta reda på om materialet är upphovsrättsligt skyddat eller inte.'
+			lang === 'en'
+				? 'The cover pictures and other pictures that are shown in LIBRIS are protected according to the Swedish Act on Copyright for Literary and Artistic Works (1960:729). There are also pictures that are not copyrighted. Anyone using LIBRIS is therefore not permitted to download or in any other way have the pictures at their disposal. It is the users responsibility to check if the material is copyrighted.'
+				: 'Omslagsbilder och andra bilder som visas i LIBRIS är i regel skyddade enligt lag (1960:729) om upphovsrätt till litterära och konstnärliga verk. Den som nyttjar LIBRIS får inte ladda ner eller på något annat sätt förfoga över bilder som är skyddade av upphovsrätt. Det finns också bilder som inte är skyddade av upphovsrätt. Det är du som användare som ansvarar för att ta reda på om materialet är upphovsrättsligt skyddat eller inte.'
 	};
 }
 export function calculateExpirationTime() {

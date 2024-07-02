@@ -11,7 +11,12 @@ export interface KbvImageObject {
 	height?: SizePx;
 	thumbnail?: KbvImageObject[];
 	publisher?: unknown; // do we know the shape of the publisher beforehand? (e.g. { '@id': string } | { name: string, '@type': string, exactMatch: { '@id': string }}?);
-	usageAndAccessPolicy?: unknown; // and do we know the shape of usageAndAccessPolicy?
+	usageAndAccessPolicy?: {
+		'@id': string;
+		'@type': string;
+		titleByLang: { [key: string]: string };
+		meta: unknown;
+	}[]; // and can we be sure of the the shape of usageAndAccessPolicy?
 }
 
 export enum Width {

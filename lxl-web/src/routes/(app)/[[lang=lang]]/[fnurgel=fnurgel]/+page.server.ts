@@ -53,7 +53,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 
 	shouldFindRelations = instances.length <= 1;
 
-	const images = getImages(mainEntity).map((i) => toSecure(i, env.AUXD_SECRET));
+	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
