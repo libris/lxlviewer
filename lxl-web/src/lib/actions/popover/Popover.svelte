@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { computePosition, offset, shift, inline, flip, arrow } from '@floating-ui/dom';
+	import DecoratedData from '$lib/components/DecoratedData.svelte';
+	import type { ResourceData } from '$lib/types/resourceData';
 
-	export let data: string | undefined = undefined;
+	export let title: string | undefined = undefined;
+	export let resourceData: ResourceData | undefined = undefined;
 	export let referenceElement: HTMLElement;
 	export let onMouseOver: (event: MouseEvent) => void;
 	export let onMouseLeave: (event: MouseEvent) => void;
@@ -61,7 +64,7 @@
 <!-- 
   @component
 	Renders a popover.
-	Note that `Popover.svelte` isn't intended to be used directly in page templates – use the `use:popover` or the `use:resourcePopover` action instead (see `$lib/actions/popover` and `$lib/actions/resourcePopover`).
+	Note that `Popover.svelte` isn't intended to be used directly in page templates – use the `use:popover` instead (see `$lib/actions/popover`).
 -->
 <div
 	class="absolute left-0 top-0 z-50 max-w-sm rounded-md border border-primary/16 bg-cards text-sm shadow-xl"
@@ -73,8 +76,11 @@
 	on:blur={onBlur}
 >
 	<div class="p-2">
-		<slot />
-		{data}
+		{#if resourceData}
+			<DecoratedData data={resourceData} block allowPopovers={false} />
+		{:else if title}
+			{title}
+		{/if}
 	</div>
 	<div class="absolute" bind:this={arrowElement}>
 		<svg
