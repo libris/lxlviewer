@@ -1,0 +1,9 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"searchPlaceholder": "Search for title, author, subject",
+	"filter": "Filter",
+	"search": "Search",
+	"login": "Log in",
+	"help": "Help",
+	"menu": "Menu"
+}
