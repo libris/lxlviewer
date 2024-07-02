@@ -22,7 +22,7 @@ export const popover: Action<
 	HTMLElement,
 	{
 		title?: string;
-		resource: { id?: string; data?: ResourceData[]; lang: LocaleCode } | undefined;
+		resource?: { id: string; lang: LocaleCode } | { data: ResourceData[] };
 	}
 > = (node: HTMLElement, { title = undefined, resource = undefined }) => {
 	const FETCH_DELAY = 250;
@@ -109,14 +109,15 @@ export const popover: Action<
 			setTimeout(resolve, FETCH_DELAY);
 		});
 		try {
-			if (resource?.id) {
-				const resourceRes = await fetch(`/api/${resource.lang}/${resource.id.split('/').pop()}`);
-				return await resourceRes.json();
+			if (resource) {
+				if ('id' in resource) {
+					const resourceRes = await fetch(`/api/${resource.lang}/${resource.id.split('/').pop()}`);
+					return await resourceRes.json();
+				}
+				if ('data' in resource) {
+					return resource.data;
+				}
 			}
-			if (resource?.data) {
-				return resource.data;
-			}
-			return;
 		} catch (error) {
 			console.error(error);
 			cancelAttach?.();
