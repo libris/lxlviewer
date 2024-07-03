@@ -172,8 +172,4 @@
 		transform-origin: center;
 		@apply rotate-0 transition-transform;
 	}
-
-	details summary::-webkit-details-marker {
-		display: none;
-	}
 </style>

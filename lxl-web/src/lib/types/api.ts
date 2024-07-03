@@ -23,7 +23,7 @@ interface HoldingItem {
 	Location: string;
 	Call_No: string;
 	Status: string;
-	Status_Date_Description: string;
-	Status_Date: string;
+	Status_Date_Description?: string;
+	Status_Date?: string;
 	Loan_Policy: string;
 }

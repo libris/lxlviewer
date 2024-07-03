@@ -130,6 +130,15 @@ export default {
 		availableAt: 'Finns på',
 		library: 'bibliotek',
 		libraries: 'bibliotek',
-		findAtYourNearestLibrary: 'Hitta på ditt närmaste bibliotek'
+		findAtYourNearestLibrary: 'Hitta på ditt närmaste bibliotek',
+		location: 'Placering',
+		shelf: 'Hylla',
+		loanPolicy: 'Lånepolitik',
+		status: 'Status',
+		date: 'Datum',
+		loanStatusNotAvailable: 'Lånestatus är ej tillgänglig',
+		loanStatusFailed: 'Misslyckades att hämta lånestatus',
+		available: 'Tillgänglig',
+		unavailable: 'Utlånad'
 	}
 };

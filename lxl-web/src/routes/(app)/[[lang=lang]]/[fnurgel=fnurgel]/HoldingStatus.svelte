@@ -1,71 +1,167 @@
 <script lang="ts">
 	import { type HoldingStatus } from '$lib/types/api';
-	import { relativizeUrl } from '$lib/utils/http';
-	export let data;
-	export let bibId;
+	import { page } from '$app/stores';
+	export let sigel: string;
+	export let holdingUrl: string;
 
 	let loading = false;
-	let statusData: HoldingStatus | null = null;
+	let statusData: HoldingStatus[] | void[] | undefined;
 	let error: string | null = null;
-	const sigel = data?.heldBy?.sigel;
-	const instanceId = relativizeUrl(bibId)?.replace('resourcebib', ''); // TODO better! (is there an existing lxljs util for this?)
+
+	// if holdingUrl is an instance fnurgel, add its mapped bibId into arr,
+	// else add all ids of current type with holdings for current sigel
+	$: bibIds = $page.data.bibIdsByInstanceId[holdingUrl]
+		? [$page.data.bibIdsByInstanceId[holdingUrl].bibId]
+		: Object.keys($page.data.bibIdsByInstanceId)
+				.filter((i) => $page.data.bibIdsByInstanceId[i]['@type'] === holdingUrl)
+				.filter((i) => $page.data.bibIdsByInstanceId[i].holders.includes(sigel))
+				.map((i) => $page.data.bibIdsByInstanceId[i].bibId);
+
+	async function fetchHoldingStatus(ids: string[]) {
+		const promises = ids.map((id) => {
+			if (id) {
+				return fetch(`/api/holdingstatus?sigel=${sigel}&bib_id=${id}`);
+			}
+		});
+
+		const responses = await Promise.all(promises);
+		const data = await Promise.all(
+			responses.map((response) => {
+				if (response && response.ok) {
+					return response.json();
+				} else {
+					error = $page.data.t('holdings.loanStatusFailed');
+				}
+			})
+		);
+		return data;
+	}
 
 	async function getHoldingStatus() {
-		if (!sigel || !instanceId) {
-			error = 'could not retrieve data';
+		if (!sigel || !bibIds || bibIds.length < 1) {
+			error = $page.data.t('holdings.loanStatusNotAvailable');
 		} else if (!statusData) {
 			loading = true;
-			const res = await fetch(`/api/holdingstatus?sigel=${sigel}&bib_id=${instanceId}`);
-			const resJson = await res.json();
 
-			if (resJson.item_information.error) {
-				error = resJson.item_information.error;
-			} else {
-				statusData = resJson;
-			}
-			loading = false;
+			fetchHoldingStatus(bibIds)
+				.then((data) => {
+					statusData = data;
+					loading = false;
+				})
+				.catch((err) => {
+					error = `${$page.data.t('holdings.loanStatusFailed')}: ${err}`;
+					loading = false;
+				});
 		}
+	}
+
+	function getIndicator(status: string) {
+		if (status && typeof status === 'string') {
+			switch (status.toLowerCase()) {
+				case 'tillgänglig':
+				case 'ej utlånad':
+				case 'available':
+					return 'available';
+				case 'utlånad':
+				case 'not available':
+					return 'unavailable';
+				default:
+					return false;
+			}
+		}
+		return false;
 	}
 </script>
 
 <details on:toggle={getHoldingStatus}>
 	<slot />
-	<div class="my-4">
+	<div class="mb-4 flex flex-col gap-2">
 		{#if loading}
-			<span>Laddar....</span>
+			<p>{$page.data.t('search.loading')}</p>
 		{/if}
 		{#if error}
-			{error}
+			<div class="status-container">
+				<p class="error" role="alert">{error}</p>
+			</div>
 		{/if}
-		{#if statusData && statusData.item_information.items.length > 0}
-			<!-- TODO properly -->
-			<!-- ripped from https://github.com/libris/search4/blob/09180a39077619b2e4f4ba0887f9474679b40489/src/views/ProductPage/Work/Holding.vue#L124 -->
-			{#each statusData.item_information.items as item}
-				<table class="my-2">
-					<tbody>
-						<tr>
-							<th>Placering</th>
-							<td>{item.Location}</td>
-						</tr>
-						<tr>
-							<th>Hylla</th>
-							<td>{item.Call_No}</td>
-						</tr>
-						<tr>
-							<th>Lånepolitik</th>
-							<td>{item.Loan_Policy}</td>
-						</tr>
-						<tr>
-							<th>Status</th>
-							<td>{item.Status}</td>
-						</tr>
-						<tr>
-							<th>Datum</th>
-							<td>{item.Status_Date}</td>
-						</tr>
-					</tbody>
-				</table>
+		{#if statusData && statusData.length > 0}
+			{#each statusData as instance}
+				{#if instance && instance.item_information}
+					<div class="status-container flex flex-col gap-4">
+						{#if instance.item_information.error || instance.item_information.count === 0}
+							<p class="error" role="alert">{$page.data.t('holdings.loanStatusNotAvailable')}</p>
+						{/if}
+						{#each instance.item_information.items as item}
+							{@const indicator = getIndicator(item.Status)}
+							<table>
+								<tbody>
+									<tr>
+										<th>{$page.data.t('holdings.location')}</th>
+										<td>{item.Location}</td>
+									</tr>
+									<tr>
+										<th>{$page.data.t('holdings.shelf')}</th>
+										<td>{item.Call_No}</td>
+									</tr>
+									<tr>
+										<th>{$page.data.t('holdings.loanPolicy')}</th>
+										<td>{item.Loan_Policy}</td>
+									</tr>
+									<tr>
+										<th>{$page.data.t('holdings.status')}</th>
+										<td>
+											{#if indicator}
+												<span class={`indicator ${indicator}`}></span>
+												{$page.data.t(`holdings.${indicator}`)}
+											{:else}
+												{item.Status}
+											{/if}
+										</td>
+									</tr>
+									{#if item.Status_Date}
+										<tr>
+											<th>{$page.data.t('holdings.date')}</th>
+											<td>{item?.Status_Date_Description} {item.Status_Date}</td>
+										</tr>
+									{/if}
+								</tbody>
+							</table>
+						{/each}
+					</div>
+				{/if}
 			{/each}
 		{/if}
 	</div>
 </details>
+
+<style>
+	table th {
+		@apply w-24 pr-4;
+	}
+
+	table td {
+		@apply w-auto;
+	}
+
+	table {
+		table-layout: fixed;
+	}
+
+	.status-container {
+		@apply max-w-md rounded-sm border border-primary/16 p-2;
+
+		&:has(p.error) {
+			@apply bg-negative;
+		}
+	}
+
+	.indicator {
+		@apply mb-0.5 inline-block h-[10px] w-[10px] rounded-full align-middle;
+		&.unavailable {
+			@apply bg-[#dc110f];
+		}
+		&.available {
+			@apply bg-[#2ab061];
+		}
+	}
+</style>

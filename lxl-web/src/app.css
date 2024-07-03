@@ -48,19 +48,25 @@
 		@apply bg-transparent text-primary text-3-cond-bold;
 	}
 
+	summary {
+		@apply list-none;
+	}
+
+	summary::-webkit-details-marker {
+		display: none;
+	}
+
 	.container-fluid {
 		@apply mx-auto px-4 sm:px-8;
 	}
 
 	/* primary btn */
 	.button-primary {
-		@apply relative z-[1] flex h-10 items-center justify-center gap-2 rounded-md px-4 py-2 text-primary-inv
-		no-underline shadow-btn-primary text-3-cond-bold gradient-primary;
+		@apply relative z-[1] flex h-10 items-center justify-center gap-2 rounded-md px-4 py-2 text-primary-inv no-underline shadow-btn-primary text-3-cond-bold gradient-primary;
 		@apply hover:text-primary-inv hover:outline hover:outline-4 hover:outline-accent-dark/8;
 
 		/* enable transition to background gradient */
-		@apply before:absolute before:left-0 before:top-0 before:-z-[1] before:h-full before:w-full
-		before:rounded-[inherit] before:opacity-0 before:shadow-btn-primary before:transition-opacity before:content-[''] before:gradient-secondary;
+		@apply before:absolute before:left-0 before:top-0 before:-z-[1] before:h-full before:w-full before:rounded-[inherit] before:opacity-0 before:shadow-btn-primary before:transition-opacity before:content-[''] before:gradient-secondary;
 		@apply before:hover:opacity-100 before:focus:opacity-100;
 	}
 
@@ -76,12 +82,9 @@
 
 	/* ghost btn */
 	.button-ghost {
-		@apply flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-md border-2 border-primary/16
-		px-4 py-2 text-secondary no-underline transition-colors text-3-cond-bold;
+		@apply flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-md border-2 border-primary/16 px-4 py-2 text-secondary no-underline transition-colors text-3-cond-bold;
 
-		@apply hover:border-accent-dark/32 hover:bg-positive/32 hover:text-positive
-		hover:outline hover:outline-4 hover:outline-accent-dark/8
-		focus:border-accent-dark/32 focus:bg-positive/32 focus:text-positive;
+		@apply hover:border-accent-dark/32 hover:bg-positive/32 hover:text-positive hover:outline hover:outline-4 hover:outline-accent-dark/8 focus:border-accent-dark/32 focus:bg-positive/32 focus:text-positive;
 
 		&:not(:hover):not(:focus) svg {
 			@apply text-primary/40;
