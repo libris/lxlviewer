@@ -6,7 +6,6 @@
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import isFnurgel from '$lib/utils/isFnurgel';
 	import { getHoldingsLink, handleClickHoldings } from '$lib/utils/holdings';
-	import BiChevronRight from '~icons/bi/chevron-right';
 
 	import Modal from '$lib/components/Modal.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
@@ -220,38 +219,17 @@
 							<!-- holdings list by instance -->
 							{#if data.holdingsByInstanceId[selectedHolding]}
 								{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
-									<li class="border-b-primary/16 [&:not(:last-child)]:border-b">
-										<HoldingStatus sigel={holdingItem?.heldBy?.sigel} {holdingUrl}>
-											<summary class="flex h-11 items-center">
-												<span class="arrow mr-2">
-													<BiChevronRight />
-												</span>
-												<span class="flex-1">{holdingItem?.heldBy?.name}</span>
-												<span class="text-secondary">
-													{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
-												</span>
-											</summary>
-										</HoldingStatus>
-									</li>
+									<HoldingStatus sigel={holdingItem?.heldBy?.sigel} {holdingUrl}>
+										<span slot="name" class="flex-1">{holdingItem?.heldBy?.name}</span>
+									</HoldingStatus>
 								{/each}
 							{/if}
 							<!-- holdings list by type -->
 						{:else if data.holdersByType?.[latestHoldingUrl]}
 							{#each data.holdersByType[latestHoldingUrl] as holderItem}
-								<li class="border-b-primary/16 [&:not(:last-child)]:border-b">
-									<HoldingStatus sigel={holderItem?.sigel} {holdingUrl}>
-										<!-- todo: put me in component -->
-										<summary class="flex h-11 items-center">
-											<span class="arrow mr-2">
-												<BiChevronRight />
-											</span>
-											<span class="flex-1">{holderItem?.name}</span>
-											<span class="text-secondary"
-												>{holderItem?.sigel ? `(${holderItem?.sigel})` : ''}</span
-											>
-										</summary>
-									</HoldingStatus>
-								</li>
+								<HoldingStatus sigel={holderItem?.sigel} {holdingUrl}>
+									<span slot="name" class="flex-1">{holderItem?.name}</span>
+								</HoldingStatus>
 							{/each}
 						{/if}
 					</ul>
@@ -331,14 +309,5 @@
 
 	:global([data-property='_script']) {
 		display: block;
-	}
-
-	.arrow {
-		transform-origin: center;
-		@apply rotate-0 transition-transform;
-	}
-
-	:global(details[open] .arrow) {
-		@apply rotate-90;
 	}
 </style>

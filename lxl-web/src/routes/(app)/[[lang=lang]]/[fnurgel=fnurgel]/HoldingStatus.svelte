@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	export let sigel: string;
 	export let holdingUrl: string;
+	import BiChevronRight from '~icons/bi/chevron-right';
 
 	let loading = false;
 	let statusData: HoldingStatus[] | void[] | undefined;
@@ -73,78 +74,95 @@
 	}
 </script>
 
-<details on:toggle={getHoldingStatus}>
-	<slot />
-	<div class="mb-4 flex flex-col gap-2">
-		{#if loading}
-			<p>{$page.data.t('search.loading')}</p>
-		{/if}
-		{#if error}
-			<div class="status-container">
-				<p class="error" role="alert">{error}</p>
-			</div>
-		{/if}
-		{#if statusData && statusData.length > 0}
-			{#each statusData as instance}
-				{#if instance && instance.item_information}
-					<div class="status-container flex flex-col gap-4">
-						{#if instance.item_information.error || instance.item_information.count === 0}
-							<p class="error" role="alert">{$page.data.t('holdings.loanStatusNotAvailable')}</p>
-						{/if}
-						{#each instance.item_information.items as item}
-							{@const indicator = getIndicator(item.Status)}
-							<table>
-								<tbody>
-									<tr>
-										<th>{$page.data.t('holdings.location')}</th>
-										<td>{item.Location}</td>
-									</tr>
-									<tr>
-										<th>{$page.data.t('holdings.shelf')}</th>
-										<td>{item.Call_No}</td>
-									</tr>
-									<tr>
-										<th>{$page.data.t('holdings.loanPolicy')}</th>
-										<td>{item.Loan_Policy}</td>
-									</tr>
-									<tr>
-										<th>{$page.data.t('holdings.status')}</th>
-										<td>
-											{#if indicator}
-												<span class={`indicator ${indicator}`}></span>
-												{$page.data.t(`holdings.${indicator}`)}
-											{:else}
-												{item.Status}
-											{/if}
-										</td>
-									</tr>
-									{#if item.Status_Date}
+<li class="border-b-primary/16 [&:not(:last-child)]:border-b">
+	<details on:toggle={getHoldingStatus}>
+		<summary class="flex h-11 items-center">
+			<span class="arrow mr-2">
+				<BiChevronRight />
+			</span>
+			<slot name="name" />
+			<span class="text-secondary">{sigel ? `(${sigel})` : ''}</span>
+		</summary>
+		<div class="mb-4 flex flex-col gap-2">
+			{#if loading}
+				<p>{$page.data.t('search.loading')}</p>
+			{/if}
+			{#if error}
+				<div class="status-container">
+					<p class="error" role="alert">{error}</p>
+				</div>
+			{/if}
+			{#if statusData && statusData.length > 0}
+				{#each statusData as instance}
+					{#if instance && instance.item_information}
+						<div class="status-container flex flex-col gap-4">
+							{#if instance.item_information.error || instance.item_information.count === 0}
+								<p class="error" role="alert">{$page.data.t('holdings.loanStatusNotAvailable')}</p>
+							{/if}
+							{#each instance.item_information.items as item}
+								{@const indicator = getIndicator(item.Status)}
+								<table>
+									<tbody>
 										<tr>
-											<th>{$page.data.t('holdings.date')}</th>
-											<td>{item?.Status_Date_Description} {item.Status_Date}</td>
+											<th>{$page.data.t('holdings.location')}</th>
+											<td>{item.Location}</td>
 										</tr>
-									{/if}
-								</tbody>
-							</table>
-						{/each}
-					</div>
-				{/if}
-			{/each}
-		{/if}
-	</div>
-</details>
+										<tr>
+											<th>{$page.data.t('holdings.shelf')}</th>
+											<td>{item.Call_No}</td>
+										</tr>
+										<tr>
+											<th>{$page.data.t('holdings.loanPolicy')}</th>
+											<td>{item.Loan_Policy}</td>
+										</tr>
+										<tr>
+											<th>{$page.data.t('holdings.status')}</th>
+											<td>
+												{#if indicator}
+													<span class={`indicator ${indicator}`}></span>
+													{$page.data.t(`holdings.${indicator}`)}
+												{:else}
+													{item.Status}
+												{/if}
+											</td>
+										</tr>
+										{#if item.Status_Date}
+											<tr>
+												<th>{$page.data.t('holdings.date')}</th>
+												<td>{item?.Status_Date_Description} {item.Status_Date}</td>
+											</tr>
+										{/if}
+									</tbody>
+								</table>
+							{/each}
+						</div>
+					{/if}
+				{/each}
+			{/if}
+		</div>
+	</details>
+</li>
 
-<style>
-	table th {
-		@apply w-24 pr-4;
+<style lang="postcss">
+	.arrow {
+		transform-origin: center;
+		@apply rotate-0 transition-transform;
 	}
 
-	table td {
-		@apply w-auto;
+	details[open] .arrow {
+		@apply rotate-90;
 	}
 
 	table {
 		table-layout: fixed;
+
+		& th {
+			@apply w-24 pr-4;
+		}
+
+		& td {
+			@apply w-auto;
+		}
 	}
 
 	.status-container {
@@ -157,6 +175,7 @@
 
 	.indicator {
 		@apply mb-0.5 inline-block h-[10px] w-[10px] rounded-full align-middle;
+
 		&.unavailable {
 			@apply bg-[#dc110f];
 		}
