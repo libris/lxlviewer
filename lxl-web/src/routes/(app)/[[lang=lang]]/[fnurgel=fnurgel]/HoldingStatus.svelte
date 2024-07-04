@@ -6,8 +6,8 @@
 	import BiChevronRight from '~icons/bi/chevron-right';
 
 	let loading = false;
-	let statusData: HoldingStatus[] | void[] | undefined;
-	let error: string | null = null;
+	let statusData: HoldingStatus[] | undefined;
+	let error: string | undefined;
 
 	// if holdingUrl is an instance fnurgel, add its mapped bibId into arr,
 	// else add all ids of current type with holdings for current sigel
@@ -145,25 +145,13 @@
 </li>
 
 <style lang="postcss">
-	.arrow {
-		transform-origin: center;
-		@apply rotate-0 transition-transform;
-	}
-
 	details[open] .arrow {
 		@apply rotate-90;
 	}
 
-	table {
-		table-layout: fixed;
-
-		& th {
-			@apply w-24 pr-4;
-		}
-
-		& td {
-			@apply w-auto;
-		}
+	.arrow {
+		transform-origin: center;
+		@apply rotate-0 transition-transform;
 	}
 
 	.status-container {
@@ -174,8 +162,16 @@
 		}
 	}
 
+	table th {
+		@apply w-24 pr-4;
+	}
+
+	table td {
+		@apply w-auto;
+	}
+
 	.indicator {
-		@apply mb-0.5 inline-block h-[10px] w-[10px] rounded-full align-middle;
+		@apply mb-0.5 inline-block h-2.5 w-2.5 rounded-full align-middle;
 
 		&.unavailable {
 			@apply bg-[#dc110f];
