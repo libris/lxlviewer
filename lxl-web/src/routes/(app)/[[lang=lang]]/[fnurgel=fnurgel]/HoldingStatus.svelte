@@ -64,6 +64,7 @@
 				case 'available':
 					return 'available';
 				case 'utlånad':
+				case 'on loan':
 				case 'not available':
 					return 'unavailable';
 				default:
