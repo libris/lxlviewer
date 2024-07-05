@@ -15,6 +15,17 @@ const config = {
 		adapter: adapter(),
 		paths: {
 			relative: false
+		},
+		csp: {
+			directives: {
+				'default-src': ['self'],
+				'script-src': ['self', 'https://analytics.kb.se'],
+				'style-src': ['self', 'unsafe-inline'],
+				'base-uri': ['self'],
+				'form-action': ['self'],
+				'frame-ancestors': ['none'],
+				'img-src': ['self', 'kb.se', '*.kb.se', 'data:']
+			}
 		}
 	}
 };
