@@ -3,6 +3,7 @@
 	import IconUser from '~icons/bi/person';
 	import IconHelp from '~icons/bi/question-circle';
 	import IconMenu from '~icons/bi/list';
+	import * as m from '$lib/paraglide/messages.js';
 </script>
 
 <header>
@@ -11,13 +12,15 @@
 			<a href="/">Libris</a>
 		</div>
 		<form class="search" action="find">
-			<input type="search" placeholder="Sök på titel, författare, ämne" />
+			<input type="search" placeholder={m.searchPlaceholder()} />
 		</form>
 		<ul class="actions">
-			<li class="search-action"><a href="/"><IconSearch style="font-size: 20px" />Search</a></li>
-			<li class="user-action"><a href="/"><IconUser style="font-size: 20px" />Logga in</a></li>
-			<li class="help-action"><a href="/"><IconHelp style="font-size: 20px" />Help</a></li>
-			<li><a href="/"><IconMenu style="font-size: 20px" />Menu</a></li>
+			<li class="search-action">
+				<a href="/"><IconSearch style="font-size: 20px" />{m.search()}</a>
+			</li>
+			<li class="user-action"><a href="/"><IconUser style="font-size: 20px" />{m.login()}</a></li>
+			<li class="help-action"><a href="/"><IconHelp style="font-size: 20px" />{m.help()}</a></li>
+			<li><a href="/"><IconMenu style="font-size: 20px" />{m.menu()}</a></li>
 		</ul>
 	</nav>
 </header>

@@ -1,6 +1,10 @@
+<script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
+</script>
+
 <div class="find">
 	<aside>
-		<header><h2>Filter</h2></header>
+		<header><h2>{m.filter()}</h2></header>
 	</aside>
 	<slot></slot>
 </div>
