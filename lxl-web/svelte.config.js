@@ -9,10 +9,7 @@ const config = {
 	preprocess: [vitePreprocess(), trimSiblingWhitespaces({ filenames: ['DecoratedData.svelte'] })],
 
 	kit: {
-		adapter: adapter(),
-		paths: {
-			relative: false
-		}
+		adapter: adapter()
 	}
 };
 
