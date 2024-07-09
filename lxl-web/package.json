@@ -54,7 +54,7 @@
 		"prettier-plugin-css-order": "^2.1.2",
 		"prettier-plugin-svelte": "^3.2.4",
 		"sanitize.css": "^13.0.0",
-		"svelte": "^5.0.0-next.169",
+		"svelte": "^5.0.0-next.175",
 		"svelte-check": "^3.8.0",
 		"tslib": "^2.6.3",
 		"typescript": "^5.4.5",
