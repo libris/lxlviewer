@@ -4,6 +4,7 @@
 	import IconHelp from '~icons/bi/question-circle';
 	import IconMenu from '~icons/bi/list';
 	import * as m from '$lib/paraglide/messages.js';
+	import Search from '$lib/components/Search.svelte';
 </script>
 
 <header>
@@ -11,9 +12,9 @@
 		<div class="home">
 			<a href="/">Libris</a>
 		</div>
-		<form class="search" action="find">
-			<input type="search" placeholder={m.searchPlaceholder()} />
-		</form>
+		<div class="search">
+			<Search />
+		</div>
 		<ul class="actions">
 			<li class="search-action">
 				<a href="/"><IconSearch style="font-size: 20px" />{m.search()}</a>
@@ -57,19 +58,8 @@
 	.search {
 		display: none;
 		grid-area: search;
-
-		& > input {
-			box-shadow: var(--box-shadow-border-all);
-			border: none;
-			border-radius: 8px;
-			background: #fff;
-			width: 100%;
-			min-height: var(--height-input-lg);
-			overflow: hidden;
-		}
-
 		@media screen and (min-width: 810px) {
-			display: block;
+			display: contents;
 		}
 	}
 

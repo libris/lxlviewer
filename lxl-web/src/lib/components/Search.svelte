@@ -1,28 +1,21 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
-	import getDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
-	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
-	import BiSearch from '~icons/bi/search';
+	import getHiddenSearchParams from '$lib/utils/getHiddenSearchParams';
+	import * as m from '$lib/paraglide/messages.js';
 
-	export let placeholder: string;
-	export let autofocus: boolean = false;
+	/** Tests to do
+	 * - [] input value is updated after navigating between different find routes (e.g. using back)
+	 */
 
-	$: showAdvanced = $page.url.searchParams.get('_x') === 'advanced';
-	let q = showAdvanced
-		? $page.url.searchParams.get('_q')?.trim()
-		: $page.url.searchParams.get('_i')?.trim();
+	let q = $page.url.searchParams.get('_q')?.trim();
 
-	let params = getSortedSearchParams(getDefaultSearchParams($page.url.searchParams));
-	params.set('_offset', '0'); // Always reset offset on new search
-	params.delete('_i'); // reset '_i' param on new search
-	const searchParams = Array.from(params);
+	const hiddenSearchParams = getHiddenSearchParams($page.url.searchParams);
 
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */
 		if (to?.url) {
-			let param = showAdvanced ? '_q' : '_i';
-			q = new URL(to.url).searchParams.get(param)?.trim();
+			q = to.url.searchParams.get('_q')?.trim();
 		}
 	});
 
@@ -35,39 +28,28 @@
 	}
 </script>
 
-<form class="relative w-full" action="find" on:submit={handleSubmit}>
-	<!-- svelte-ignore a11y-autofocus -->
+<form class="search" action="find" on:submit={handleSubmit}>
 	<input
-		id="main-search"
-		class="h-12 w-full rounded-full pr-12 text-secondary shadow-accent-dark/32 focus:shadow-search-focus focus:outline
-			focus:outline-8 focus:outline-accent-dark/16 sm:h-14
-			sm:pr-28"
 		type="search"
 		name="_q"
-		{placeholder}
-		aria-label="Sök"
-		spellcheck="false"
 		bind:value={q}
-		{autofocus}
-		data-testid="main-search"
+		placeholder={m.searchPlaceholder()}
+		aria-label={m.search()}
+		spellcheck="false"
 	/>
-	{#each searchParams as [name, value]}
-		{#if name !== '_q'}
-			<input type="hidden" {name} {value} />
-		{/if}
+	{#each hiddenSearchParams as [name, value]}
+		<input type="hidden" {name} {value} />
 	{/each}
-
-	<input type="hidden" name="_i" value={q} />
-	{#if $page.url.searchParams.get('_x') === 'advanced'}
-		<!-- keep 'edit' state on new search -->
-		<input type="hidden" name="_x" value="advanced" />
-	{/if}
-
-	<button
-		type="submit"
-		class="button-primary absolute right-1 top-1 rounded-full px-3 sm:right-2 sm:top-2 sm:px-4"
-	>
-		<BiSearch fill="currentColor" aria-hidden="true" />
-		<span class="sr-only sm:not-sr-only">{$page.data.t('search.search')}</span>
-	</button>
 </form>
+
+<style>
+	input {
+		box-shadow: var(--box-shadow-border-all);
+		border: none;
+		border-radius: 8px;
+		background: #fff;
+		width: 100%;
+		min-height: var(--height-input-lg);
+		overflow: hidden;
+	}
+</style>
