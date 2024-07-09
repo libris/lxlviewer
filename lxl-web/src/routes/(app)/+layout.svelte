@@ -1,5 +1,5 @@
 <script lang="ts">
-	import AppHeader from './AppHeader.svelte';
+	import AppHeader from '$lib/components/AppHeader.svelte';
 	const { children } = $props();
 </script>
 

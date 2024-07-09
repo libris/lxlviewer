@@ -5,5 +5,7 @@
 	"search": "Search",
 	"login": "Log in",
 	"help": "Help",
-	"menu": "Menu"
+	"menu": "Menu",
+	"somethingWentWrong": "Something went wrong",
+	"pageNotFound": "Page not found"
 }

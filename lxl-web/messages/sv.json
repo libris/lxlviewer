@@ -5,5 +5,7 @@
 	"search": "Sök",
 	"login": "Logga in",
 	"help": "Hjälp",
-	"menu": "Meny"
+	"menu": "Meny",
+	"somethingWentWrong": "Något gick fel",
+	"pageNotFound": "Sidan hittades inte"
 }
