@@ -39,4 +39,9 @@
 		grid-template-rows: min-content 1fr;
 		min-height: 100vh;
 	}
+
+	main {
+		padding: var(--padding-base);
+		text-align: center;
+	}
 </style>
