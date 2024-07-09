@@ -7,7 +7,7 @@ import fs from 'fs';
 import { DERIVED_LENSES } from '$lib/utils/display.types';
 import displayWeb from '$lib/assets/json/display-web.json';
 
-const preloadTypes = ['js', 'css', 'font'];
+const preloadTypes = ['js', 'css']; // fonts are preloaded from the root +layout.svelte file to have better control over which fonts should be preloaded
 let utilCache: (VocabUtil | DisplayUtil)[];
 
 export const customHandle: Handle = async ({ event, resolve }) => {
