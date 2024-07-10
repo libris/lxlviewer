@@ -58,8 +58,11 @@
 	--color-base: #333;
 	--color-subtle: #666;
 	--background-header: #eaf2ed;
+	--background-main: #fff;
 	--background-aside: rgba(234, 242, 237, 0.125);
 	--border-color: #d5e4dd;
+	--border-radius-base: 8px;
+	--border-radius-lg: 12px;
 	--box-shadow-border-right: inset -1px 0 var(--border-color);
 	--box-shadow-border-bottom: inset 0 -1px var(--border-color);
 	--box-shadow-border-all: inset 0 0 0 1px var(--border-color);

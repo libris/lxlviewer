@@ -12,8 +12,9 @@
 	 * - [] input value is clearable
 	 */
 
-	let mounted = false;
-	let q = $page.url.searchParams.get('_q')?.trim() || '';
+	let searchContainer: HTMLElement | undefined = $state();
+	let mounted = $state(false);
+	let q = $state($page.url.searchParams.get('_q')?.trim() || '');
 
 	const hiddenSearchParams = getHiddenSearchParams($page.url.searchParams);
 
@@ -62,14 +63,19 @@
 	/>
 {/snippet}
 
-<form class="search" action="find" onsubmit={handleSubmit}>
+<form class="search" action="find" onsubmit={handleSubmit} bind:this={searchContainer}>
 	<div class="search-icon">
 		<IconSearch />
 	</div>
 	{#await import('./SuperSearch.svelte')}
 		{@render fallbackSearch()}
 	{:then { default: SuperSearch }}
-		<SuperSearch bind:value={q} placeholder={m.searchPlaceholder()} ariaLabel={m.search()} />
+		<SuperSearch
+			bind:value={q}
+			container={searchContainer}
+			placeholder={m.searchPlaceholder()}
+			ariaLabel={m.search()}
+		/>
 	{:catch}
 		{@render fallbackSearch()}
 	{/await}
@@ -114,7 +120,7 @@
 		position: absolute;
 		justify-content: center;
 		align-items: center;
-		z-index: 1;
+		z-index: 100;
 		width: var(--height-input-base);
 		height: var(--height-input-lg);
 		pointer-events: none;
@@ -128,7 +134,7 @@
 		right: 0;
 		justify-content: center;
 		align-items: center;
-		z-index: 1;
+		z-index: 100;
 		cursor: pointer;
 		border: none;
 		width: var(--height-input-base);
