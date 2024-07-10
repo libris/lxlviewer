@@ -2,4 +2,10 @@
 	import { page } from '$app/stores';
 </script>
 
-<p>{$page.url.searchParams.toString()}</p>
+<div><p>{$page.url.searchParams.toString()}</p></div>
+
+<style>
+	div {
+		overflow: hidden;
+	}
+</style>
