@@ -16,7 +16,12 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */
 		if (to?.url) {
-			q = to.url.searchParams.get('_q')?.trim() || '';
+			q =
+				to.url.searchParams
+					.get('_q')
+					?.trim()
+					.replace(/(\r\n|\n|\r)/gm, ' ') // replace line breaks with spaces
+					.replace(/\s+/g, ' ') || ''; // replace multiple whitespaces with one space
 		}
 	});
 

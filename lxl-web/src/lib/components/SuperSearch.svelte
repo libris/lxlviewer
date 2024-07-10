@@ -26,15 +26,18 @@
 		}
 	}
 
-	function handleTextareaFocus() {
+	function handleTextareaFocus(
+		event: Event & { currentTarget: EventTarget & HTMLTextAreaElement }
+	) {
 		textareaFocused = true;
+		mirrorElement.textContent = (event.currentTarget as HTMLTextAreaElement).value; // uses textContent instead of assigning value as an attribute to ensure right order of events
 		calculateTextareaHeight(); // calculate textarea height to account for window resizes while unfocused
 	}
 
 	function handleTextareaInput(
 		event: Event & { currentTarget: EventTarget & HTMLTextAreaElement }
 	) {
-		mirrorElement.textContent = (event.currentTarget as HTMLTextAreaElement).value; // uses textContent instead of assigning value as an attribute to ensure right order of events
+		mirrorElement.textContent = (event.currentTarget as HTMLTextAreaElement).value;
 		calculateTextareaHeight();
 	}
 
@@ -70,7 +73,7 @@
 		onblur={handleTextareaBlur}
 		style={textareaFocused && textareaHeight ? `height:${textareaHeight}px` : 'white-space:nowrap;'}
 	></textarea>
-	<textarea class="mirror" bind:this={mirrorElement}></textarea>
+	<textarea class="mirror" bind:this={mirrorElement} readonly></textarea>
 </div>
 
 <style>
