@@ -7,5 +7,6 @@
 	"help": "Hjälp",
 	"menu": "Meny",
 	"somethingWentWrong": "Något gick fel",
-	"pageNotFound": "Sidan hittades inte"
+	"pageNotFound": "Sidan hittades inte",
+	"clearSearch": "Rensa"
 }

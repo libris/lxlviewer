@@ -7,5 +7,6 @@
 	"help": "Help",
 	"menu": "Menu",
 	"somethingWentWrong": "Something went wrong",
-	"pageNotFound": "Page not found"
+	"pageNotFound": "Page not found",
+	"clearSearch": "Clear"
 }

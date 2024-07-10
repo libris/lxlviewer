@@ -1,17 +1,25 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import getHiddenSearchParams from '$lib/utils/getHiddenSearchParams';
 	import IconSearch from '~icons/bi/search';
+	import IconClear from '~icons/bi/x-lg';
 	import * as m from '$lib/paraglide/messages.js';
 
 	/** Tests to do
 	 * - [] input value is updated after navigating between different find routes (e.g. using back)
+	 * - [] input value is clearable
 	 */
 
+	let mounted = false;
 	let q = $page.url.searchParams.get('_q')?.trim() || '';
 
 	const hiddenSearchParams = getHiddenSearchParams($page.url.searchParams);
+
+	onMount(() => {
+		mounted = true;
+	});
 
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */
@@ -32,6 +40,11 @@
 			q = q.trim();
 		}
 	}
+
+	function clearSearch(event: MouseEvent) {
+		event.preventDefault();
+		q = '';
+	}
 </script>
 
 {#snippet fallbackSearch()}
@@ -49,7 +62,7 @@
 	/>
 {/snippet}
 
-<form class="search" action="find" on:submit={handleSubmit}>
+<form class="search" action="find" onsubmit={handleSubmit}>
 	<div class="search-icon">
 		<IconSearch />
 	</div>
@@ -63,16 +76,31 @@
 	{#each hiddenSearchParams as [name, value]}
 		<input type="hidden" {name} {value} />
 	{/each}
+	{#if q}
+		{#if mounted}
+			<button class="clear-action" aria-label={m.clearSearch()} onclick={clearSearch}>
+				<IconClear />
+			</button>
+		{:else}
+			<a href="/" class="clear-action" aria-label={m.clearSearch()} onclick={clearSearch}>
+				<IconClear />
+			</a>
+		{/if}
+	{/if}
 </form>
 
 <style>
+	form {
+		position: relative;
+	}
+
 	form :global(input),
 	form :global(textarea) {
 		box-shadow: var(--box-shadow-border-all);
 		border: none;
 		border-radius: 8px;
 		background: #fff;
-		padding-right: var(--padding-base);
+		padding-right: var(--height-input-base);
 		padding-left: var(--height-input-base);
 		width: 100%;
 		min-height: var(--height-input-lg);
@@ -90,5 +118,26 @@
 		width: var(--height-input-base);
 		height: var(--height-input-lg);
 		pointer-events: none;
+		color: var(--color-subtle);
+	}
+
+	.clear-action {
+		display: flex;
+		position: absolute;
+		top: 0;
+		right: 0;
+		justify-content: center;
+		align-items: center;
+		z-index: 1;
+		cursor: pointer;
+		border: none;
+		width: var(--height-input-base);
+		height: var(--height-input-lg);
+		color: var(--color-subtle);
+
+		&:hover,
+		&:focus {
+			color: var(--color-base);
+		}
 	}
 </style>
