@@ -12,18 +12,38 @@
 		value: string;
 		placeholder: string;
 		ariaLabel: string;
-		container: HTMLElement;
 	};
 
-	let { value = $bindable(), placeholder, ariaLabel, container }: SuperSearchProps = $props();
-	let activeElement: Element | undefined = $state();
-	let mirrorElement: HTMLTextAreaElement;
-	let textareaHeight: number | undefined = $state();
-	let focusedTextarea: boolean = $state(false);
-	let showPopover: boolean = $state(false);
+	let { value = $bindable(), placeholder, ariaLabel }: SuperSearchProps = $props();
 
-	function handleClickTextarea() {
-		showPopover = true;
+	let dialogElement: HTMLDialogElement | undefined = $state();
+	let dropdown = $state(false);
+
+	function handleClickTextarea(event: MouseEvent) {
+		showDropdown({ selectionStart: (event.target as HTMLTextAreaElement).selectionStart });
+	}
+
+	function showDropdown({ selectionStart }: { selectionStart: number }) {
+		console.log('selectionStart:', selectionStart);
+		if (!dialogElement?.open) {
+			dialogElement?.showModal();
+			dropdown = true;
+		}
+	}
+
+	function hideDropdown() {
+		if (dialogElement?.open) {
+			dialogElement.close();
+		}
+		dropdown = false;
+	}
+
+	function handleInput(event: InputEvent) {
+		if (!dialogElement?.open) {
+			showDropdown({
+				selectionStart: (event.target as HTMLTextAreaElement).selectionStart
+			});
+		}
 	}
 
 	function handleTextareaKeyPress(event: KeyboardEvent) {
@@ -31,76 +51,27 @@
 			const closestForm = event.target.closest('form');
 			if (closestForm) {
 				event.preventDefault();
-				if (showPopover) {
+				if (dialogElement?.open) {
 					closestForm.submit();
 				} else {
-					showPopover = true;
+					showDropdown({
+						selectionStart: (event.target as HTMLTextAreaElement).selectionStart
+					});
 				}
 			}
 		}
 	}
 
-	function handleTextareaKeyUp(event: KeyboardEvent) {
-		/** Use keyup event as keypress doesn't support arrow key events */
-		if (event.key !== 'Tab' && event.key !== 'Shift' && event.key !== 'Escape') {
-			showPopover = true;
-		}
-
-		if (event.key === 'Escape') {
-			showPopover = false;
+	function handleWindowClick(event: MouseEvent) {
+		/** Close dialog if click outside */
+		if (dialogElement?.open && (event.target as Node).contains(dialogElement)) {
+			dialogElement.close();
 		}
 	}
-
-	function handleTextareaFocus(
-		event: Event & { currentTarget: EventTarget & HTMLTextAreaElement }
-	) {
-		focusedTextarea = true;
-		mirrorElement.textContent = (event.currentTarget as HTMLTextAreaElement).value; // uses textContent instead of assigning value as an attribute to ensure right order of events
-		calculateTextareaHeight(); // calculate textarea height to account for window resizes while unfocused
-	}
-
-	function handleTextareaInput(
-		event: Event & { currentTarget: EventTarget & HTMLTextAreaElement }
-	) {
-		mirrorElement.textContent = (event.currentTarget as HTMLTextAreaElement).value;
-		calculateTextareaHeight();
-	}
-
-	function handleTextareaBlur() {
-		focusedTextarea = false;
-	}
-
-	function handleWindowResize() {
-		if (focusedTextarea) {
-			calculateTextareaHeight();
-		}
-	}
-
-	function handleClickDocument(event: MouseEvent & { target: EventTarget | null }) {
-		if (event.target && !container.contains(event.target as Node)) {
-			showPopover = false;
-		}
-	}
-
-	function calculateTextareaHeight() {
-		textareaHeight = mirrorElement.scrollHeight;
-	}
-
-	/*
-	let focusedSuperSearch = $derived(container?.contains(activeElement as Node));
-
-	$effect(() => {
-		if (!focusedSuperSearch) {
-			showPopover = false;
-		}
-	});
-	*/
 </script>
 
-<svelte:window onresize={handleWindowResize} />
-<svelte:document bind:activeElement onclick={handleClickDocument} />
-<section class="super-search">
-	<div class="search-input">
+{#snippet searchTextarea({ multiline = false, onclick, disabled = false })}
+	<div class="search-input" class:multiline data-replicated-value={multiline ? value : undefined}>
 		<textarea
 			name="_q"
 			bind:value
@@ -111,67 +82,78 @@
 			maxlength={2048}
 			rows={1}
 			onkeypress={handleTextareaKeyPress}
-			onclick={handleClickTextarea}
-			onkeyup={handleTextareaKeyUp}
-			oninput={handleTextareaInput}
-			onfocus={handleTextareaFocus}
-			onblur={handleTextareaBlur}
-			style={focusedTextarea && textareaHeight && textareaHeight > 50
-				? `height:${textareaHeight}px`
-				: 'white-space:nowrap;'}
+			oninput={handleInput}
+			{onclick}
+			{disabled}
+			aria-multiline={multiline ? undefined : 'false'}
 		></textarea>
-		<textarea class="mirror" bind:this={mirrorElement} readonly></textarea>
 	</div>
-	{#if showPopover}
-		<div class="popover" style="padding-top:{textareaHeight}px">
+{/snippet}
+
+<svelte:window onclick={handleWindowClick} />
+{@render searchTextarea({ onclick: handleClickTextarea, disabled: dropdown, autofocus: true })}
+<dialog bind:this={dialogElement} onclose={hideDropdown}>
+	<div class="dropdown">
+		<div class="dropdown-content">
+			{@render searchTextarea({ multiline: true })}
 			Bygg och förfina din sökfråga
 			<p>Hello</p>
 			<p>Hello</p>
 			<p>Hello</p>
 			<button onclick={() => console.log('ega')}>keke</button>
 		</div>
-	{/if}
-</section>
+	</div>
+</dialog>
 
 <style>
-	.super-search {
-		position: relative;
-	}
 	.search-input {
-		position: relative;
-		z-index: 10;
-		min-height: var(--height-input-lg);
+		display: grid;
 	}
 
-	textarea {
-		position: absolute;
-		padding-top: 0.875rem;
-		padding-bottom: 0.875rem;
-		resize: none;
-		&:not(.mirror) {
-			max-height: 75vh;
-			overflow-y: auto;
-		}
+	.search-input.multiline :global(textarea),
+	.search-input.multiline:global(::after) {
+		grid-area: 1 / 1 / 2 / 2;
+		height: inherit;
+		/* max-height: min(max(43vh, var(--height-input-lg) * 2), calc(2ex * 16)); /* set max lines to 16 */
+		overflow-y: auto;
+		white-space: pre-wrap;
+		word-break: break-word;
 	}
 
-	textarea.mirror {
+	.search-input.multiline::after {
 		visibility: hidden;
-		height: var(--height-input-lg);
-		overflow: auto;
-		-ms-overflow-style: none;
-		scrollbar-width: none;
-		&::-webkit-scrollbar {
-			display: none;
-		}
+		content: attr(data-replicated-value) ' ';
+		white-space: pre-wrap;
 	}
 
-	.popover {
-		position: absolute;
-		top: 0;
+	dialog {
+		margin: 0;
+		border: none;
+		background: none;
+		padding: 0;
+		width: 100%;
+		max-width: 100vw;
+		height: 100%;
+		max-height: 100vh;
+	}
+
+	.dropdown {
+		/** 
+			Dropdown grid should mirror AppHeaders grid layout to ensure correct overlay placement
+		*/
+		display: grid;
+		grid-template-columns: 1fr 4fr 1fr;
+		grid-template-areas: '. dropdown-content .';
+		padding: 0 calc(var(--gap-base) / 2);
+		pointer-events: none;
+	}
+
+	.dropdown-content {
+		grid-area: dropdown-content;
 		box-shadow: 0px 4px 32px 0px rgba(0, 0, 0, 0.15);
 		border-radius: var(--border-radius-lg);
 		background: var(--background-main);
-		padding: var(--padding-base);
-		width: 100%;
+		padding: var(--padding-small) var(--gap-base);
+		pointer-events: auto;
 	}
 </style>

@@ -12,7 +12,6 @@
 	 * - [] input value is clearable
 	 */
 
-	let searchContainer: HTMLElement | undefined = $state();
 	let mounted = $state(false);
 	let q = $state($page.url.searchParams.get('_q')?.trim() || '');
 
@@ -48,9 +47,8 @@
 	}
 </script>
 
-{#snippet fallbackSearch()}
+{#snippet fallbackInput()}
 	<input
-		class="app-search"
 		type="search"
 		name="_q"
 		bind:value={q}
@@ -63,21 +61,16 @@
 	/>
 {/snippet}
 
-<form class="search" action="find" onsubmit={handleSubmit} bind:this={searchContainer}>
+<form class="search" action="find" onsubmit={handleSubmit}>
 	<div class="search-icon">
 		<IconSearch />
 	</div>
 	{#await import('./SuperSearch.svelte')}
-		{@render fallbackSearch()}
+		{@render fallbackInput()}
 	{:then { default: SuperSearch }}
-		<SuperSearch
-			bind:value={q}
-			container={searchContainer}
-			placeholder={m.searchPlaceholder()}
-			ariaLabel={m.search()}
-		/>
+		<SuperSearch bind:value={q} placeholder={m.searchPlaceholder()} ariaLabel={m.search()} />
 	{:catch}
-		{@render fallbackSearch()}
+		{@render fallbackInput()}
 	{/await}
 	{#each hiddenSearchParams as [name, value]}
 		<input type="hidden" {name} {value} />
@@ -101,18 +94,24 @@
 	}
 
 	form :global(input),
-	form :global(textarea) {
+	form :global(textarea),
+	form :global(.multiline::after) {
 		box-shadow: var(--box-shadow-border-all);
 		border: none;
 		border-radius: 8px;
 		background: #fff;
-		padding-right: var(--height-input-base);
-		padding-left: var(--height-input-base);
+		padding: 0.875rem var(--height-input-base);
 		width: 100%;
 		min-height: var(--height-input-lg);
-		overflow: hidden;
+		resize: none;
 		font-size: var(--font-size-sm);
+	}
+
+	form :global(input),
+	form :global(:not(.multiline) textarea) {
+		overflow: hidden;
 		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.search-icon {
