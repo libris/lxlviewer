@@ -38,7 +38,7 @@
 		dropdown = false;
 	}
 
-	function handleInput(event: InputEvent) {
+	function handleInput(event: Event) {
 		if (!dialogElement?.open) {
 			showDropdown({
 				selectionStart: (event.target as HTMLTextAreaElement).selectionStart
