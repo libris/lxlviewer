@@ -1,4 +1,6 @@
 <script lang="ts">
+	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
+
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
 	 * - [] text area with adjusted height should revert to single line when blurred
@@ -82,10 +84,20 @@
 			dialogElement.close();
 		}
 	}
+
+	function clearSearch() {
+		value = '';
+		const textareaElement = dropdown
+			? superSearchContainerElement?.querySelector('dialog textarea')
+			: superSearchContainerElement?.querySelector('textarea');
+		if (textareaElement instanceof HTMLTextAreaElement) {
+			textareaElement.focus();
+		}
+	}
 </script>
 
 {#snippet searchTextarea({ multiline = false, onclick, disabled = false })}
-	<div class="search-input" class:multiline data-replicated-value={multiline ? value : undefined}>
+	<div class="search-resizer" class:multiline data-replicated-value={multiline ? value : undefined}>
 		<textarea
 			name="_q"
 			bind:value
@@ -106,11 +118,18 @@
 
 <svelte:window onclick={handleWindowClick} />
 <div class="super-search" bind:this={superSearchContainerElement}>
-	{@render searchTextarea({ onclick: handleClickTextarea, disabled: dropdown, autofocus: true })}
+	<SearchInputWrapper onclearsearch={clearSearch}
+		>{@render searchTextarea({
+			onclick: handleClickTextarea,
+			disabled: dropdown
+		})}</SearchInputWrapper
+	>
 	<dialog bind:this={dialogElement} onclose={hideDropdown}>
 		<div class="dropdown">
 			<div class="dropdown-content">
-				{@render searchTextarea({ multiline: true })}
+				<SearchInputWrapper onclearsearch={clearSearch}>
+					{@render searchTextarea({ multiline: true })}
+				</SearchInputWrapper>
 				Bygg och förfina din sökfråga
 				<p>Hello</p>
 				<p>Hello</p>
@@ -126,21 +145,35 @@
 		display: contents;
 	}
 
-	.search-input {
+	.search-resizer {
 		display: grid;
 	}
 
-	.search-input.multiline :global(textarea),
-	.search-input.multiline:global(::after) {
+	.search-resizer :global(textarea),
+	.search-resizer:global(::after) {
+		border: none;
+		background: none;
+		padding: 0.875rem 0;
+		width: 100%;
+		min-height: var(--height-input-lg);
+		resize: none;
+		font-size: var(--font-size-sm);
+	}
+
+	.search-resizer:not(.multiline) :global(textarea) {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.search-resizer.multiline :global(textarea),
+	.search-resizer.multiline:global(::after) {
 		grid-area: 1 / 1 / 2 / 2;
-		height: inherit;
-		/* max-height: min(max(43vh, var(--height-input-lg) * 2), calc(2ex * 16)); /* set max lines to 16 */
-		overflow-y: auto;
 		white-space: pre-wrap;
 		word-break: break-word;
 	}
 
-	.search-input.multiline::after {
+	.search-resizer.multiline::after {
 		visibility: hidden;
 		content: attr(data-replicated-value) ' ';
 		white-space: pre-wrap;
