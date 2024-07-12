@@ -146,7 +146,7 @@
 
 <svelte:window onclick={handleWindowClick} />
 <div class="super-search" bind:this={superSearchContainerElement}>
-	<SearchInputWrapper onclearsearch={clearSearch}
+	<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}
 		>{@render searchTextarea({
 			onclick: handleClickTextarea,
 			disabled: dropdown
@@ -155,7 +155,7 @@
 	<dialog bind:this={dialogElement} onclose={hideDropdown}>
 		<div class="dropdown">
 			<div class="dropdown-content">
-				<SearchInputWrapper onclearsearch={clearSearch}>
+				<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
 					{@render searchTextarea({ multiline: true })}
 				</SearchInputWrapper>
 				Bygg och förfina din sökfråga

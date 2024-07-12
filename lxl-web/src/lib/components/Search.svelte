@@ -28,7 +28,6 @@
 	});
 
 	function handleSubmit(event: SubmitEvent) {
-		console.log('asubmi');
 		if (!q || !q.trim()) {
 			event.preventDefault();
 		} else {
@@ -59,13 +58,13 @@
 
 <form action="find" bind:this={formElement} onsubmit={handleSubmit}>
 	{#await import('./SuperSearch.svelte')}
-		<SearchInputWrapper onclearsearch={clearSearch}>
+		<SearchInputWrapper showClearSearch={!!q} onclearsearch={clearSearch}>
 			{@render fallbackInput()}
 		</SearchInputWrapper>
 	{:then { default: SuperSearch }}
 		<SuperSearch bind:value={q} placeholder={m.searchPlaceholder()} ariaLabel={m.search()} />
 	{:catch}
-		<SearchInputWrapper onclearsearch={clearSearch}>
+		<SearchInputWrapper showClearSearch={!!q} onclearsearch={clearSearch}>
 			{@render fallbackInput()}
 		</SearchInputWrapper>
 	{/await}

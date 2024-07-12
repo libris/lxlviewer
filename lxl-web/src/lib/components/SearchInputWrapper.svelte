@@ -7,8 +7,9 @@
 	type SearchInputWrapperProps = {
 		children: Snippet;
 		onclearsearch: (event: MouseEvent) => void;
+		showClearSearch: boolean;
 	};
-	let { children, onclearsearch }: SearchInputWrapperProps = $props();
+	let { children, showClearSearch = false, onclearsearch }: SearchInputWrapperProps = $props();
 
 	function handleClickWrapper(event: MouseEvent) {
 		const inputElement = (event.target as HTMLElement)?.querySelector('textarea, input');
@@ -25,9 +26,11 @@
 		<IconSearch />
 	</div>
 	{@render children()}
-	<button type="button" class="clear-action" aria-label={m.clearSearch()} onclick={onclearsearch}>
-		<IconClear />
-	</button>
+	{#if showClearSearch}
+		<button type="button" class="clear-action" aria-label={m.clearSearch()} onclick={onclearsearch}>
+			<IconClear />
+		</button>
+	{/if}
 </div>
 
 <style>
