@@ -6,6 +6,7 @@
 	 * - [] popover is shown on click or key events other than tab or shift (which is needed for focus management).
 	 * - [] pressing enter on the textarea when the popover isn't visible should trigger the popover, otherwise the form should be submitted
 	 * - [] pressing escape when the popover is visible should hide it
+	 * - [] keep focus on textarea when closing dropdown
 	 */
 
 	type SuperSearchProps = {
@@ -16,8 +17,10 @@
 
 	let { value = $bindable(), placeholder, ariaLabel }: SuperSearchProps = $props();
 
+	let superSearchContainerElement: HTMLDivElement | undefined = $state();
 	let dialogElement: HTMLDialogElement | undefined = $state();
 	let dropdown = $state(false);
+	let prevDropdownValue = $state(false);
 
 	function handleClickTextarea(event: MouseEvent) {
 		showDropdown({ selectionStart: (event.target as HTMLTextAreaElement).selectionStart });
@@ -37,6 +40,17 @@
 		}
 		dropdown = false;
 	}
+
+	$effect(() => {
+		if (prevDropdownValue !== dropdown) {
+			/* Keep focus on textarea when closing dropdown */
+			if (!dropdown) {
+				superSearchContainerElement?.querySelector('textarea')?.focus();
+			}
+
+			prevDropdownValue = dropdown;
+		}
+	});
 
 	function handleInput(event: Event) {
 		if (!dialogElement?.open) {
@@ -91,21 +105,27 @@
 {/snippet}
 
 <svelte:window onclick={handleWindowClick} />
-{@render searchTextarea({ onclick: handleClickTextarea, disabled: dropdown, autofocus: true })}
-<dialog bind:this={dialogElement} onclose={hideDropdown}>
-	<div class="dropdown">
-		<div class="dropdown-content">
-			{@render searchTextarea({ multiline: true })}
-			Bygg och förfina din sökfråga
-			<p>Hello</p>
-			<p>Hello</p>
-			<p>Hello</p>
-			<button onclick={() => console.log('ega')}>keke</button>
+<div class="super-search" bind:this={superSearchContainerElement}>
+	{@render searchTextarea({ onclick: handleClickTextarea, disabled: dropdown, autofocus: true })}
+	<dialog bind:this={dialogElement} onclose={hideDropdown}>
+		<div class="dropdown">
+			<div class="dropdown-content">
+				{@render searchTextarea({ multiline: true })}
+				Bygg och förfina din sökfråga
+				<p>Hello</p>
+				<p>Hello</p>
+				<p>Hello</p>
+				<button onclick={() => console.log('ega')}>keke</button>
+			</div>
 		</div>
-	</div>
-</dialog>
+	</dialog>
+</div>
 
 <style>
+	.super-search {
+		display: contents;
+	}
+
 	.search-input {
 		display: grid;
 	}
