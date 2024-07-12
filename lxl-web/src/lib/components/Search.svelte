@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import getHiddenSearchParams from '$lib/utils/getHiddenSearchParams';
+	import cleanQSearchParamValue from '$lib/utils/cleanQSearchParamValue';
 	import * as m from '$lib/paraglide/messages.js';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 
@@ -18,12 +19,7 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */
 		if (to?.url) {
-			q =
-				to.url.searchParams
-					.get('_q')
-					?.trim()
-					.replace(/(\r\n|\n|\r)/gm, ' ') // replace line breaks with spaces
-					.replace(/\s+/g, ' ') || ''; // replace multiple whitespaces with one space
+			q = cleanQSearchParamValue(to.url.searchParams.get('_q'));
 		}
 	});
 

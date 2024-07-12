@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
+	import cleanQSearchParamValue from '$lib/utils/cleanQSearchParamValue';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -90,6 +92,11 @@
 		}
 	}
 
+	async function submitFormAfterTick(formElement: HTMLFormElement) {
+		await tick();
+		formElement.submit();
+	}
+
 	function handleTextareaKeyPress(event: KeyboardEvent) {
 		if (event.key === 'Enter' && !event.shiftKey && event.target instanceof HTMLElement) {
 			const closestForm = event.target.closest('form');
@@ -97,7 +104,8 @@
 				event.preventDefault();
 				if (dialogElement?.open) {
 					if (value && value.trim()) {
-						closestForm.submit();
+						value = cleanQSearchParamValue(value);
+						submitFormAfterTick(closestForm); // submit after tick to ensure cleaned value is set
 					}
 				} else {
 					showDropdown({
