@@ -9,6 +9,7 @@
 	 * - [] pressing enter on the textarea when the popover isn't visible should trigger the popover, otherwise the form should be submitted
 	 * - [] pressing escape when the popover is visible should hide it
 	 * - [] keep focus on textarea when closing dropdown
+	 * - [] retain selection start/end after showing/hiding dropdown
 	 */
 
 	type SuperSearchProps = {
@@ -25,18 +26,43 @@
 	let prevDropdownValue = $state(false);
 
 	function handleClickTextarea(event: MouseEvent) {
-		showDropdown({ selectionStart: (event.target as HTMLTextAreaElement).selectionStart });
+		showDropdown({
+			selectionStart: (event.target as HTMLTextAreaElement).selectionStart,
+			selectionEnd: (event.target as HTMLTextAreaElement).selectionEnd
+		});
 	}
 
-	function showDropdown({ selectionStart }: { selectionStart: number }) {
-		console.log('selectionStart:', selectionStart);
+	function showDropdown({
+		selectionStart,
+		selectionEnd
+	}: {
+		selectionStart: number;
+		selectionEnd: number;
+	}) {
 		if (!dialogElement?.open) {
 			dialogElement?.showModal();
 			dropdown = true;
+			const dialogTextareaElement = dialogElement?.querySelector('textarea');
+			if (dialogTextareaElement) {
+				dialogTextareaElement.selectionStart = selectionStart;
+				dialogTextareaElement.selectionEnd = selectionEnd;
+			}
 		}
 	}
 
 	function hideDropdown() {
+		const dialogTextareaElement = dialogElement?.querySelector('textarea');
+		const selectionStart = dialogTextareaElement?.selectionStart;
+		const selectionEnd = dialogTextareaElement?.selectionEnd;
+
+		const collapsedTextareaElement = superSearchContainerElement?.querySelector('textarea');
+		if (collapsedTextareaElement && selectionStart) {
+			collapsedTextareaElement.selectionStart = selectionStart;
+		}
+		if (collapsedTextareaElement && selectionEnd) {
+			collapsedTextareaElement.selectionEnd = selectionEnd;
+		}
+
 		if (dialogElement?.open) {
 			dialogElement.close();
 		}
@@ -57,7 +83,8 @@
 	function handleInput(event: Event) {
 		if (!dialogElement?.open) {
 			showDropdown({
-				selectionStart: (event.target as HTMLTextAreaElement).selectionStart
+				selectionStart: (event.target as HTMLTextAreaElement).selectionStart,
+				selectionEnd: (event.target as HTMLTextAreaElement).selectionEnd
 			});
 		}
 	}
@@ -71,7 +98,8 @@
 					closestForm.submit();
 				} else {
 					showDropdown({
-						selectionStart: (event.target as HTMLTextAreaElement).selectionStart
+						selectionStart: (event.target as HTMLTextAreaElement).selectionStart,
+						selectionEnd: (event.target as HTMLTextAreaElement).selectionEnd
 					});
 				}
 			}
