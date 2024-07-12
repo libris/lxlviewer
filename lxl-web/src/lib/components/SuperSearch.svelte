@@ -10,6 +10,7 @@
 	 * - [] pressing escape when the popover is visible should hide it
 	 * - [] keep focus on textarea when closing dropdown
 	 * - [] retain selection start/end after showing/hiding dropdown
+	 * - [] form is only submitted if there is a _q value
 	 */
 
 	type SuperSearchProps = {
@@ -95,7 +96,9 @@
 			if (closestForm) {
 				event.preventDefault();
 				if (dialogElement?.open) {
-					closestForm.submit();
+					if (value && value.trim()) {
+						closestForm.submit();
+					}
 				} else {
 					showDropdown({
 						selectionStart: (event.target as HTMLTextAreaElement).selectionStart,
