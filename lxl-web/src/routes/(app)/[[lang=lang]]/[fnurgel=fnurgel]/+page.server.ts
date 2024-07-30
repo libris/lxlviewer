@@ -16,13 +16,13 @@ import { asResult, displayPredicates } from '$lib/utils/search';
 import getAtPath from '$lib/utils/getAtPath';
 import { getHoldingsByInstanceId, getHoldingsByType } from '$lib/utils/holdings.js';
 
-export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
+export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil: DisplayUtil = locals.display;
 	const vocabUtil: VocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
 
-	let shouldFindRelations = false;
 	let resourceId: null | string = null;
+	let searchPromise: Promise<SearchResult | null> | null = null;
 
 	const resourceRes = await fetch(`${env.API_URL}/${params.fnurgel}?framed=true`, {
 		headers: { Accept: 'application/ld+json' }
@@ -44,14 +44,16 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 	resourceId = resource.mainEntity['@id'];
 	const heading = displayUtil.lensAndFormat(mainEntity, LxlLens.PageHeading, locale);
 	const overview = displayUtil.lensAndFormat(mainEntity, LxlLens.PageOverView, locale);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
 	// TODO: Replace with a custom getProperty method (similar to pickProperty)
 	const instances = jmespath.search(overview, '*[].hasInstance[]');
-	const sortedInstances = getSortedInstances([...instances]);
-	// set condition to perform search
 
-	shouldFindRelations = instances.length <= 1;
+	if (resourceId && instances.length <= 1) {
+		searchPromise = getRelated();
+	};
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
+	const sortedInstances = getSortedInstances([...instances]);
 
 	const images = getImages(mainEntity).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity);
@@ -75,14 +77,7 @@ export const load = async ({ params, url, locals, fetch, isDataRequest }) => {
 		holdersByType,
 		full: overview,
 		images,
-		searchResult:
-			shouldFindRelations && resourceId
-				? // stream results on resource page when doing client side navigation
-					// TODO: fix waterfall. fetch in parallel with rest of page data when SSR
-					isDataRequest
-					? getRelated()
-					: await getRelated()
-				: null
+		searchResult: searchPromise ? await searchPromise : null,
 	};
 
 	async function getRelated() {
