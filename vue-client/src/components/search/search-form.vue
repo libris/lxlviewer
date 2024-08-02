@@ -31,7 +31,7 @@ export default {
       },
       helpToggled: false,
       vocabUrl: 'https://id.kb.se/vocab/',
-      staticProps: { _limit: 20 },
+      staticProps: { _limit: 20, _spell: true },
       searchPhrase: '',
       searchParams: PropertyMappings,
       activeSearchParam: null,

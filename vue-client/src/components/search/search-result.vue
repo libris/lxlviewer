@@ -1,5 +1,5 @@
 <script>
-import { translatePhrase } from '@/utils/filters';
+import { asAppPath, translatePhrase } from '@/utils/filters';
 import ResultList from './result-list.vue';
 import ResultControls from './result-controls.vue';
 
@@ -21,6 +21,7 @@ export default {
   },
   methods: {
     translatePhrase,
+    asAppPath,
     doSort(newsort) {
       const newQuery = Object.assign({}, this.$route.query, { _sort: newsort, _offset: 0 });
       this.$router.push({ query: newQuery });
@@ -85,6 +86,19 @@ export default {
       <span v-if="!status.resultList.error" class="is-status">{{ translatePhrase("Fetching results") }}</span>
       <span v-if="status.resultList.error" class="is-error">{{status.resultList.info}}</span>
     </div>
+    <div
+      class="suggestions"
+      v-if="!status.resultList.loading && !status.resultList.error && result['_spell']"
+    >
+      <p :key="suggestion" v-for="suggestion in result['_spell']">
+        {{translatePhrase('Did you mean')}}
+        <router-link
+          :to="asAppPath(suggestion.view['@id'], this.$route.params.tool === 'changes')"
+        >
+          <span v-html="suggestion.labelHTML" />
+        </router-link>?
+      </p>
+    </div>
     <result-controls
       class="SearchResult-controls"
       v-if="!status.resultList.loading && !status.resultList.error"
@@ -100,7 +114,7 @@ export default {
       :import-data="importData"
       :compact="user.settings.resultListType === 'compact'"
       :isChangeView="isChangeView"
-    />  
+    />
     <result-controls
       class="SearchResult-controls"
       v-if="!status.resultList.loading && !status.resultList.error && hasPagination"
@@ -117,6 +131,10 @@ export default {
 
   @media (min-width: @screen-md) {
     padding: 0 0 2rem 0;
+  }
+
+  & .suggestions {
+    margin-top: 1em;
   }
 
   &-loadingText {
