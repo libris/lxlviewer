@@ -6,12 +6,18 @@ import ResultControls from './result-controls.vue';
 export default {
   name: 'search-result',
   props: {
-    result: null,
+    result: {
+      type: Object,
+      default: null,
+    },
     query: {
       type: String,
       default: '',
     },
-    importData: Array,
+    importData: {
+      type: Array,
+      default: null,
+    },
   },
   data() {
     return {
@@ -58,7 +64,7 @@ export default {
     },
     isChangeView() {
       return this.$route.params.tool === 'changes';
-    }
+    },
   },
   components: {
     'result-controls': ResultControls,
