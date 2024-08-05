@@ -58,7 +58,9 @@
 					<span class="oveflow-hidden mr-1 text-ellipsis whitespace-nowrap">
 						<span class="mr-0.5">©</span>
 						{#if image.attribution.link}
-							<a href={image.attribution.link}>{image.attribution.name}</a>
+							<a href={image.attribution.link} target="_blank" class="ext-link">
+								{image.attribution.name}
+							</a>
 						{:else}
 							{image.attribution.name}
 						{/if}
@@ -76,7 +78,7 @@
 					<InfoIcon style="display: inline; font-size: 13px" />
 					<span class="ml-0.5">
 						{#if image.usageAndAccessPolicy.link}
-							<a href={image.usageAndAccessPolicy.link}>
+							<a href={image.usageAndAccessPolicy.link} target="_blank" class="ext-link">
 								{#if image.usageAndAccessPolicy.identifier}
 									{image.usageAndAccessPolicy.identifier}
 								{:else}
@@ -105,3 +107,10 @@
 		{/if}
 	</div>
 {/if}
+
+<style lang="postcss">
+	.ext-link::after {
+		content: '\2009↗';
+		@apply align-[10%] text-icon;
+	}
+</style>
