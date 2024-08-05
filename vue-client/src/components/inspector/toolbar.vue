@@ -301,6 +301,15 @@ export default {
       ).map((id) => StringUtil.getCompactUri(id, this.resources.context));
       return baseClasses.indexOf(type) > -1;
     },
+    isInReadOnlyDataset(record) {
+      // TODO: get from backend
+      // TODO: implement proper access control mechanism in backend
+      return (record.inDataset || []).find((dataset) => {
+        const id = dataset['@id'] || '';
+        return id.startsWith('https://id.kb.se/dataset/')
+          || id.startsWith('https://libris.kb.se/dataset/');
+      });
+    },
     download(text) {
       let focusId = this.inspector.data.record['@id'];
       if (this.recordType === 'Item') {
@@ -416,6 +425,9 @@ export default {
           mainEntity,
           { '@id': this.user.getActiveLibraryUri() },
         ))) {
+        return false;
+      }
+      if (this.isInReadOnlyDataset(record)) {
         return false;
       }
       if (mainEntity['@type'] === 'ShelfMarkSequence') {
