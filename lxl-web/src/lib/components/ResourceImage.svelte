@@ -4,6 +4,9 @@
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import { bestSize } from '$lib/utils/auxd';
 	import { first } from '$lib/utils/xl';
+	import { page } from '$app/stores';
+	import { popover } from '$lib/actions/popover';
+	import InfoIcon from '~icons/bi/info-circle';
 
 	export let images: Image[];
 	export let alt: string | undefined;
@@ -16,41 +19,86 @@
 
 	$: image = first(images);
 
-	$: thumb = bestSize(image, thumbnailTargetWidth);
-	$: full = bestSize(image, Width.FULL);
+	$: thumb = (image && bestSize(image, thumbnailTargetWidth)) || undefined;
+	$: full = (image && bestSize(image, Width.FULL)) || undefined;
 </script>
 
-{#if image}
-	{#if linkToFull}
-		<a href={full.url} target="_blank" class="contents object-[inherit]">
+{#if image && thumb}
+	<figure class="table aspect-square max-h-40 overflow-hidden">
+		{#if linkToFull && full}
+			<a href={full.url} target="_blank" class="object-[inherit]">
+				<img
+					{alt}
+					{loading}
+					src={thumb.url}
+					width={thumb.widthṔx}
+					height={thumb.heightPx}
+					class="object-contain object-[inherit]"
+					class:object-cover={geometry === 'circle'}
+					class:rounded-full={geometry === 'circle'}
+				/>
+			</a>
+		{:else}
 			<img
 				{alt}
 				{loading}
 				src={thumb.url}
 				width={thumb.widthṔx}
 				height={thumb.heightPx}
-				class="object-contain object-cover object-[inherit]"
-				class:object-cover={geometry === 'circle'}
+				class="object-contain object-[inherit]"
 				class:rounded-full={geometry === 'circle'}
 			/>
-		</a>
-	{:else}
-		<img
-			{alt}
-			{loading}
-			src={thumb.url}
-			width={thumb.widthṔx}
-			height={thumb.heightPx}
-			class="object-contain object-[inherit]"
-			class:rounded-full={geometry === 'circle'}
-		/>
-	{/if}
+		{/if}
+		{#if image?.usageAndAccessPolicy}
+			<figcaption
+				class="mt-1 table-caption caption-bottom overflow-hidden text-[10px] text-tertiary"
+				class:text-center={geometry === 'circle'}
+			>
+				{#if image.attribution}
+					<span class="oveflow-hidden mr-1 text-ellipsis whitespace-nowrap">
+						<span class="mr-0.5">©</span>
+						{#if image.attribution.link}
+							<a href={image.attribution.link} target="_blank" class="ext-link">
+								{image.attribution.name}
+							</a>
+						{:else}
+							{image.attribution.name}
+						{/if}
+					</span>
+					<!-- This could be based on if attribution required by license.
+						 For now, display if there is any attribution info available -->
+					{#if geometry === 'circle'}
+						{$page.data.t('general.cropped')}
+					{/if}
+				{/if}
+				<span
+					class="overflow-hidden text-ellipsis whitespace-nowrap"
+					use:popover={{ title: image?.usageAndAccessPolicy.title }}
+				>
+					<InfoIcon style="display: inline; font-size: 13px" />
+					<span class="ml-0.5">
+						{#if image.usageAndAccessPolicy.link}
+							<a href={image.usageAndAccessPolicy.link} target="_blank" class="ext-link">
+								{#if image.usageAndAccessPolicy.identifier}
+									{image.usageAndAccessPolicy.identifier}
+								{:else}
+									{$page.data.t('general.usagePolicy')}
+								{/if}
+							</a>
+						{:else}
+							{$page.data.t('general.usagePolicy')}
+						{/if}
+					</span>
+				</span>
+			</figcaption>
+		{/if}
+	</figure>
 {:else if showPlaceholder}
-	<div class="flex items-center justify-center">
+	<div class="flex items-center justify-center object-[inherit]">
 		<img
 			src={placeholder}
 			alt=""
-			class="h-20 w-20 object-cover"
+			class="h-20 w-20 object-cover object-[inherit]"
 			class:rounded-sm={geometry !== 'circle'}
 			class:rounded-full={geometry === 'circle'}
 		/>
@@ -59,3 +107,10 @@
 		{/if}
 	</div>
 {/if}
+
+<style lang="postcss">
+	.ext-link::after {
+		content: '\2009↗';
+		@apply align-[10%] text-icon;
+	}
+</style>

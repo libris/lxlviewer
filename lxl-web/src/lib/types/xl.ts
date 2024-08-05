@@ -33,6 +33,11 @@ export enum Base {
 	StructuredValue = 'StructuredValue'
 }
 
+// https://github.com/libris/definitions/blob/develop/source/vocab/concepts.ttl
+export enum Concepts {
+	exactMatch = 'exactMatch'
+}
+
 // https://github.com/libris/definitions/blob/develop/source/vocab/platform.ttl
 export enum Platform {
 	integral = 'integral',

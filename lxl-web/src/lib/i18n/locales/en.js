@@ -123,7 +123,9 @@ export default {
 		apply: 'Apply',
 		from: 'From',
 		to: 'To',
-		year: 'Year'
+		year: 'Year',
+		usagePolicy: 'License terms',
+		cropped: 'Cropped'
 	},
 	holdings: {
 		availableAt: 'Available at',

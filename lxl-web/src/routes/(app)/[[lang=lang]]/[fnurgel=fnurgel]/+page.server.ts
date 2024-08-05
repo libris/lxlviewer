@@ -55,7 +55,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
 	const sortedInstances = getSortedInstances([...instances]);
 
-	const images = getImages(mainEntity).map((i) => toSecure(i, env.AUXD_SECRET));
+	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
