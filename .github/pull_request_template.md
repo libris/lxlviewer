@@ -5,7 +5,7 @@
 ## Description
 
 ### Tickets involved
-[LXL-NNNN](https://jira.kb.se/browse/LXL-NNNN), [LXL-NNNN](https://jira.kb.se/browse/LXL-NNNN)
+[LXL-NNNN](https://kbse.atlassian.net/browse/LXL-NNNN), [LXL-NNNN](https://kbse.atlassian.net/browse/LXL-NNNN)
 
 ### Solves
 
