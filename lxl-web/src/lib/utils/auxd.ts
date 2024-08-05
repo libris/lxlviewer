@@ -6,8 +6,7 @@ import type {
 	KbvImageObject,
 	ImageResolution
 } from '$lib/types/auxd';
-import { type FramedData, JsonLd, Owl } from '$lib/types/xl';
-
+import { Concepts, type FramedData, JsonLd, Owl } from '$lib/types/xl';
 import { first, isObject, asArray } from '$lib/utils/xl';
 import getAtPath from '$lib/utils/getAtPath';
 import { relativizeUrl, stripAnchor } from '$lib/utils/http';
@@ -72,12 +71,21 @@ export function toSecure(
 	return undefined;
 }
 
-function getAttribution(imageObject: KbvImageObject): string | undefined {
-	return (
-		(Array.isArray(imageObject.publisher) &&
-			imageObject.publisher.find((publisherItem) => publisherItem.name)?.name) ||
-		undefined
-	);
+function getAttribution(imageObject: KbvImageObject): { name: string; link?: string } | undefined {
+	if (!Array.isArray(imageObject.publisher)) {
+		return undefined;
+	}
+
+	const attribution = imageObject.publisher.find((publisherItem) => publisherItem.name);
+	if (attribution) {
+		const name = attribution.name;
+		const link = attribution?.[Concepts.exactMatch]?.[JsonLd.ID];
+		return {
+			name,
+			link
+		};
+	}
+	return undefined;
 }
 
 function getUsageAndAccessPolicy(imageObject: KbvImageObject, lang: LocaleCode) {
@@ -94,10 +102,12 @@ function getUsageAndAccessPolicy(imageObject: KbvImageObject, lang: LocaleCode) 
 	if (imageObject.usageAndAccessPolicy) {
 		const title = imageObject.usageAndAccessPolicy?.[0]?.titleByLang?.[lang];
 		const link = imageObject.usageAndAccessPolicy?.[0]?.['@id'] as string | undefined;
+		const identifier = imageObject.usageAndAccessPolicy?.[0]?.['identifier'] as string | undefined;
 
 		return {
 			title,
-			link
+			link,
+			identifier
 		};
 	}
 

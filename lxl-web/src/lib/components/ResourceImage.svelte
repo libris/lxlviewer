@@ -57,7 +57,11 @@
 				{#if image.attribution}
 					<span class="oveflow-hidden mr-1 text-ellipsis whitespace-nowrap">
 						<span class="mr-0.5">©</span>
-						{image.attribution}
+						{#if image.attribution.link}
+							<a href={image.attribution.link}>{image.attribution.name}</a>
+						{:else}
+							{image.attribution.name}
+						{/if}
 					</span>
 				{/if}
 				<span
@@ -67,7 +71,13 @@
 					<InfoIcon style="display: inline; font-size: 13px" />
 					<span class="ml-0.5">
 						{#if image.usageAndAccessPolicy.link}
-							<a href={image.usageAndAccessPolicy.link}>{$page.data.t('general.usagePolicy')}</a>
+							<a href={image.usageAndAccessPolicy.link}>
+								{#if image.usageAndAccessPolicy.identifier}
+									{image.usageAndAccessPolicy.identifier}
+								{:else}
+									{$page.data.t('general.usagePolicy')}
+								{/if}
+							</a>
 						{:else}
 							{$page.data.t('general.usagePolicy')}
 						{/if}

@@ -39,9 +39,14 @@ export interface SecureImageResolution extends ImageResolution {
 export interface Image {
 	sizes: ImageResolution[]; // always ordered smallest to largest
 	recordId: string;
-	attribution?: string;
+	attribution?: {
+		name: string;
+		link?: string;
+	};
+	attributionLink?: string;
 	usageAndAccessPolicy: {
 		title: string;
+		identifier?: string;
 		link?: string;
 	};
 }
