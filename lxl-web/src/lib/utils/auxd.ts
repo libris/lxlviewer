@@ -90,8 +90,7 @@ function getAttribution(imageObject: KbvImageObject): { name: string; link?: str
 
 function getUsageAndAccessPolicy(imageObject: KbvImageObject, lang: LocaleCode) {
 	if (
-		Array.isArray(imageObject?.publisher) &&
-		imageObject.publisher.find((publisherItem) => publisherItem.name === 'Nielsen')
+		asArray(imageObject.publisher).find((publisherItem) => publisherItem?.[JsonLd.ID] === 'nielsen')
 	) {
 		return {
 			title:
