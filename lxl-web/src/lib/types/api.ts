@@ -17,6 +17,7 @@ interface ItemInformation {
 	items: HoldingItem[] | [];
 }
 
+// https://www.kb.se/download/18.2705879d169b8ba882a43cc/1555822604043/lanestatus_11.pdf
 interface HoldingItem {
 	Item_No: string;
 	UniqueItemId: string;
