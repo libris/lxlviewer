@@ -124,7 +124,8 @@ export default {
 		from: 'From',
 		to: 'To',
 		year: 'Year',
-		usagePolicy: 'License terms'
+		usagePolicy: 'License terms',
+		cropped: 'Cropped'
 	},
 	holdings: {
 		availableAt: 'Available at',

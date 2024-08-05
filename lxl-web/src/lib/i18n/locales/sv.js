@@ -123,7 +123,8 @@ export default {
 		from: 'Från',
 		to: 'Till',
 		year: 'Årtal',
-		usagePolicy: 'Licensvillkor'
+		usagePolicy: 'Licensvillkor',
+		cropped: 'Beskuren'
 	},
 	holdings: {
 		availableAt: 'Finns på',
