@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { type HoldingStatus } from '$lib/types/api';
+	import { type bibIdObj } from '$lib/types/holdings';
 	import { page } from '$app/stores';
 	export let sigel: string;
 	export let holdingUrl: string;
@@ -9,7 +10,7 @@
 	let statusData: HoldingStatus[] | undefined;
 	let error: string | undefined;
 
-	// if holdingUrl is an instance fnurgel, add its mapped bibId into arr,
+	// if holdingUrl is an instance fnurgel, add its mapped bibId object into arr,
 	// else add all ids of current type with holdings for current sigel
 	$: bibIds = $page.data.bibIdsByInstanceId[holdingUrl]
 		? [$page.data.bibIdsByInstanceId[holdingUrl]]
@@ -18,7 +19,7 @@
 				.filter((i) => $page.data.bibIdsByInstanceId[i].holders.includes(sigel))
 				.map((i) => $page.data.bibIdsByInstanceId[i]);
 
-	async function fetchHoldingStatus(ids: Record<string, string>[]) {
+	async function fetchHoldingStatus(ids: bibIdObj[]) {
 		const promises = ids.map((id) => {
 			if (id) {
 				const searchParams = new URLSearchParams();
@@ -27,6 +28,12 @@
 				if (id.onr) {
 					searchParams.set('onr', id.onr);
 				}
+				id.isbn.forEach((i: string) => {
+					searchParams.set('isbn', i);
+				});
+				id.issn.forEach((i: string) => {
+					searchParams.set('issn', i);
+				});
 				return fetch(`/api/holdingstatus?${searchParams.toString()}`);
 			}
 		});

@@ -1,7 +1,8 @@
 import { pushState } from '$app/navigation';
 import isFnurgel from '$lib/utils/isFnurgel';
 import { relativizeUrl } from '$lib/utils/http';
-import { type FramedData } from '$lib/types/xl';
+import type { FramedData } from '$lib/types/xl';
+import type { bibIdObj } from '$lib/types/holdings';
 
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
@@ -53,7 +54,7 @@ export function getHoldingsByInstanceId(mainEntity) {
 	}, {});
 }
 
-export function getBibIdsByInstanceId(mainEntity, record) {
+export function getBibIdsByInstanceId(mainEntity, record): bibIdObj[] {
 	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
 		const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
 
@@ -69,6 +70,18 @@ export function getBibIdsByInstanceId(mainEntity, record) {
 			}
 		});
 
+		const isbn: string[] = [];
+		const issn: string[] = [];
+		instanceOfItem.identifiedBy?.forEach((el: { '@type': string; value: string }) => {
+			if (el['@type'] === 'ISBN') {
+				isbn.push(el.value);
+			}
+
+			if (el['@type'] === 'ISSN') {
+				issn.push(el.value);
+			}
+		});
+
 		if (!id) {
 			return acc;
 		}
@@ -78,7 +91,9 @@ export function getBibIdsByInstanceId(mainEntity, record) {
 				bibId,
 				'@type': type,
 				holders,
-				onr
+				onr,
+				isbn,
+				issn
 			}
 		};
 	}, {});
