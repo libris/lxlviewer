@@ -12,16 +12,22 @@
 	// if holdingUrl is an instance fnurgel, add its mapped bibId into arr,
 	// else add all ids of current type with holdings for current sigel
 	$: bibIds = $page.data.bibIdsByInstanceId[holdingUrl]
-		? [$page.data.bibIdsByInstanceId[holdingUrl].bibId]
+		? [$page.data.bibIdsByInstanceId[holdingUrl]]
 		: Object.keys($page.data.bibIdsByInstanceId)
 				.filter((i) => $page.data.bibIdsByInstanceId[i]['@type'] === holdingUrl)
 				.filter((i) => $page.data.bibIdsByInstanceId[i].holders.includes(sigel))
-				.map((i) => $page.data.bibIdsByInstanceId[i].bibId);
+				.map((i) => $page.data.bibIdsByInstanceId[i]);
 
-	async function fetchHoldingStatus(ids: string[]) {
+	async function fetchHoldingStatus(ids: Record<string, string>[]) {
 		const promises = ids.map((id) => {
 			if (id) {
-				return fetch(`/api/holdingstatus?sigel=${sigel}&bib_id=${id}`);
+				const searchParams = new URLSearchParams();
+				searchParams.set('bib_id', id.bibId);
+				searchParams.set('sigel', sigel);
+				if (id.onr) {
+					searchParams.set('onr', id.onr);
+				}
+				return fetch(`/api/holdingstatus?${searchParams.toString()}`);
 			}
 		});
 
@@ -63,6 +69,7 @@
 				case 'ej utlånad':
 				case 'available':
 					return 'available';
+				case 'ej tillgänglig':
 				case 'utlånad':
 				case 'on loan':
 				case 'not available':

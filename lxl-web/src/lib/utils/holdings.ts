@@ -60,6 +60,15 @@ export function getBibIdsByInstanceId(mainEntity, record) {
 		const bibId = instanceOfItem.meta?.controlNumber || record?.controlNumber;
 		const type = instanceOfItem['@type'];
 		const holders = instanceOfItem['@reverse']?.itemOf?.map((i) => i?.heldBy?.sigel);
+
+		// add Legacy Libris III system number for ONR param
+		let onr = null;
+		record?.identifiedBy?.forEach((el: { '@type': string; value: string }) => {
+			if (el['@type'] === 'LibrisIIINumber') {
+				onr = el.value;
+			}
+		});
+
 		if (!id) {
 			return acc;
 		}
@@ -68,7 +77,8 @@ export function getBibIdsByInstanceId(mainEntity, record) {
 			[id]: {
 				bibId,
 				'@type': type,
-				holders
+				holders,
+				onr
 			}
 		};
 	}, {});
