@@ -163,7 +163,7 @@
 	}
 
 	table th {
-		@apply w-24 pr-4;
+		@apply w-24 pr-4 align-baseline;
 	}
 
 	table td {

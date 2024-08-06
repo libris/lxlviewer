@@ -53,13 +53,11 @@ export function getHoldingsByInstanceId(mainEntity) {
 	}, {});
 }
 
-export function getBibIdsByInstanceId(mainEntity) {
+export function getBibIdsByInstanceId(mainEntity, record) {
 	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
 		const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
 
-		// TODO better (is there an existing lxljs util for getting bib-ids?)
-		const bibId =
-			relativizeUrl(instanceOfItem.sameAs?.[0]?.['@id'])?.replace('resourcebib', '') || id;
+		const bibId = instanceOfItem.meta?.controlNumber || record?.controlNumber;
 		const type = instanceOfItem['@type'];
 		const holders = instanceOfItem['@reverse']?.itemOf?.map((i) => i?.heldBy?.sigel);
 		if (!id) {

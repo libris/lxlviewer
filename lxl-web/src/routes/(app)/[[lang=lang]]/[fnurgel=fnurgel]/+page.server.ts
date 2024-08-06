@@ -53,7 +53,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	if (resourceId && instances.length <= 1) {
 		searchPromise = getRelated();
-	};
+	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [_, overviewWithoutHasInstance] = pickProperty(overview, ['hasInstance']);
@@ -61,7 +61,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
 	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity);
-	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity);
+	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, resource);
 	const holdingsByType = getHoldingsByType(mainEntity);
 	const holdersByType = Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
 		const heldBys = holdings.map((holdingItem) => holdingItem.heldBy);
@@ -83,7 +83,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 		holdersByType,
 		full: overview,
 		images,
-		searchResult: searchPromise ? await searchPromise : null,
+		searchResult: searchPromise ? await searchPromise : null
 	};
 
 	async function getRelated() {
