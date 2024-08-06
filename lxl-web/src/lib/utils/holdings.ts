@@ -54,7 +54,7 @@ export function getHoldingsByInstanceId(mainEntity) {
 	}, {});
 }
 
-export function getBibIdsByInstanceId(mainEntity, record): bibIdObj[] {
+export function getBibIdsByInstanceId(mainEntity, record): Record<string, bibIdObj> {
 	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
 		const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
 
