@@ -9,7 +9,8 @@ describe('getBibIdsByInstanceId', () => {
 			'0h96fs3b0c49qkt': {
 				bibId: '7654300',
 				'@type': 'Instance',
-				holders: ['S', 'H', 'U', 'Um', 'Umdp', 'La', 'Q', 'L', 'Sbi', 'NB']
+				holders: ['S', 'H', 'U', 'Um', 'Umdp', 'La', 'Q', 'L', 'Sbi', 'NB'],
+				onr: '9176423484'
 			}
 		});
 	});
