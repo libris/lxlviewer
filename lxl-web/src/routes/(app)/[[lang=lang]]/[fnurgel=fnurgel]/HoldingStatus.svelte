@@ -44,7 +44,7 @@
 				if (response && response.ok) {
 					return response.json();
 				} else {
-					error = $page.data.t('holdings.loanStatusFailed');
+					error = `${$page.data.t('holdings.loanStatusFailed')}: ${response?.status} ${response?.statusText}`;
 				}
 			})
 		);
@@ -53,7 +53,7 @@
 
 	async function getHoldingStatus() {
 		if (!sigel || !bibIds || bibIds.length < 1) {
-			error = $page.data.t('holdings.loanStatusNotAvailable');
+			error = $page.data.t('holdings.loanStatusFailed');
 		} else if (!statusData) {
 			loading = true;
 
@@ -87,6 +87,16 @@
 		}
 		return false;
 	}
+
+	function urlNotDefinedError(err: string | undefined) {
+		if (
+			err &&
+			err === `URL till lånestatus för ${sigel} ej definierad i LIBRIS biblioteksdatabas!`
+		) {
+			return true;
+		}
+		return false;
+	}
 </script>
 
 <li class="border-b-primary/16 [&:not(:last-child)]:border-b">
@@ -110,11 +120,16 @@
 			{#if statusData && statusData.length > 0}
 				{#each statusData as instance}
 					{#if instance && instance.item_information}
+						{@const items = instance.item_information}
 						<div class="status-container flex flex-col gap-4">
-							{#if instance.item_information.error || instance.item_information.count === 0}
-								<p class="error" role="alert">{$page.data.t('holdings.loanStatusNotAvailable')}</p>
+							{#if items.error || items.count === 0}
+								{#if urlNotDefinedError(items.error)}
+									<p class="library-unavailable">{$page.data.t('holdings.libraryUnvaliable')}</p>
+								{:else}
+									<p class="error" role="alert">{$page.data.t('holdings.loanStatusFailed')}</p>
+								{/if}
 							{/if}
-							{#each instance.item_information.items as item}
+							{#each items.items as item}
 								{@const indicator = getIndicator(item.Status)}
 								<table>
 									<tbody>
@@ -181,6 +196,11 @@
 
 		&:has(p.error) {
 			@apply bg-negative;
+		}
+
+		/* don't repeat the library-unavailable message for every instance */
+		&:has(p.library-unavailable):not(:first-of-type) {
+			@apply hidden;
 		}
 	}
 

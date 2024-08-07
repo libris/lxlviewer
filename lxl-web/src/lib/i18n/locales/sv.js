@@ -136,8 +136,8 @@ export default {
 		loanPolicy: 'Lånepolitik',
 		status: 'Status',
 		date: 'Datum',
-		loanStatusNotAvailable: 'Lånestatus är ej tillgänglig',
-		loanStatusFailed: 'Misslyckades att hämta lånestatus',
+		libraryUnvaliable: 'Lånestatus är inte tillgänglig för detta bibliotek',
+		loanStatusFailed: 'Lånestatus kunde inte hämtas',
 		available: 'Tillgänglig',
 		unavailable: 'Utlånad',
 		map: 'karta'

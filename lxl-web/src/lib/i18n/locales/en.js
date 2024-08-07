@@ -137,7 +137,7 @@ export default {
 		status: 'Status',
 		date: 'Date',
 		loanPolicy: 'Loan policy',
-		loanStatusNotAvailable: 'Loan status is not available',
+		libraryUnvaliable: 'Loan status is not available for this library',
 		loanStatusFailed: 'Failed to get loan status',
 		available: 'Available',
 		unavailable: 'Not available',
