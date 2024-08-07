@@ -124,7 +124,15 @@
 										</tr>
 										<tr>
 											<th>{$page.data.t('holdings.shelf')}</th>
-											<td>{item.Call_No}</td>
+											<td>
+												{item.Call_No}
+												<!-- show map link only if absolute url -->
+												{#if item.Map && (item.Map.startsWith('http://') || item.Map.startsWith('https://'))}
+													(<a href={item.Map} target="_blank" class="ext-link">
+														{$page.data.t('holdings.map')}</a
+													>)
+												{/if}
+											</td>
 										</tr>
 										<tr>
 											<th>{$page.data.t('holdings.loanPolicy')}</th>

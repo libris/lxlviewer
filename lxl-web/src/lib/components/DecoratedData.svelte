@@ -256,11 +256,6 @@
 {/key}
 
 <style lang="postcss">
-	.ext-link::after {
-		content: '\2009↗';
-		@apply align-[10%] text-icon;
-	}
-
 	.definition {
 		@apply text-sm text-secondary underline decoration-dotted;
 	}

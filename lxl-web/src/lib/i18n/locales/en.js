@@ -140,6 +140,7 @@ export default {
 		loanStatusNotAvailable: 'Loan status is not available',
 		loanStatusFailed: 'Failed to get loan status',
 		available: 'Available',
-		unavailable: 'Not available'
+		unavailable: 'Not available',
+		map: 'map'
 	}
 };

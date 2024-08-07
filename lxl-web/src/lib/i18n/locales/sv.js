@@ -139,6 +139,7 @@ export default {
 		loanStatusNotAvailable: 'Lånestatus är ej tillgänglig',
 		loanStatusFailed: 'Misslyckades att hämta lånestatus',
 		available: 'Tillgänglig',
-		unavailable: 'Utlånad'
+		unavailable: 'Utlånad',
+		map: 'karta'
 	}
 };

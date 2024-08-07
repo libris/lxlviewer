@@ -56,8 +56,15 @@
 		display: none;
 	}
 
+	/* Utility classes */
+
 	.container-fluid {
 		@apply mx-auto px-4 sm:px-8;
+	}
+
+	.ext-link::after {
+		content: '\2009↗';
+		@apply align-[10%] text-icon;
 	}
 
 	/* primary btn */
