@@ -139,7 +139,7 @@ export default {
 		libraryUnvaliable: 'Lånestatus är inte tillgänglig för detta bibliotek',
 		loanStatusFailed: 'Lånestatus kunde inte hämtas',
 		available: 'Tillgänglig',
-		unavailable: 'Utlånad',
+		unavailable: 'Ej tillgänglig',
 		map: 'karta'
 	}
 };
