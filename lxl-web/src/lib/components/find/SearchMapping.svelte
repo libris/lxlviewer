@@ -61,10 +61,10 @@
 			{:else if m.operator === 'existence' || m.operator === 'notExistence'}
 				{@const symbol = getRelationSymbol(m.operator)}
 				<span class="pill-relation">{symbol}</span>
-				<div class="pill-label inline-block text-2-regular first-letter:uppercase">{m.label}</div>
+				<div class="pill-label inline text-2-regular">{m.label}</div>
 			{:else if 'label' in m && 'display' in m}
 				{@const symbol = getRelationSymbol(m.operator)}
-				<div class="pill-label inline-block text-2-regular first-letter:uppercase">{m.label}</div>
+				<div class="pill-label inline text-2-regular">{m.label}</div>
 				<span class="pill-relation">{symbol}</span>
 				<span class="pill-value">
 					<DecoratedData data={m.display} showLabels={ShowLabelsOptions['Never']} />

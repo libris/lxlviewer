@@ -82,7 +82,7 @@ function displayMappings(
 					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
 					label: m.alias
 						? translate(`facet.${m.alias}`)
-						: m.property?.labelByLang?.[locale] || m.property?.['@id'] || 'no label', // lensandformat?
+						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) || m.property?.['@id'] || 'No label', // lensandformat?
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
@@ -220,6 +220,12 @@ function replacePath(view: Link, usePath: string) {
 	return {
 		'@id': view['@id'].replace('/find', usePath)
 	};
+}
+
+function capitalize(str: string | undefined) {
+	if (str && typeof str === 'string') {
+		return str[0].toUpperCase() + str.slice(1);
+	} return str;
 }
 
 export function shouldShowMapping(mapping: DisplayMapping[]) {
