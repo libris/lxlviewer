@@ -28,7 +28,7 @@
 		"@axe-core/playwright": "^4.9.1",
 		"@floating-ui/dom": "^1.6.5",
 		"@iconify-json/bi": "^1.1.23",
-		"@inlang/paraglide-js": "1.11.0",
+		"@inlang/paraglide-js": "^1.11.0",
 		"@playwright/test": "^1.44.1",
 		"@sveltejs/adapter-node": "^5.0.1",
 		"@sveltejs/kit": "^2.5.10",
