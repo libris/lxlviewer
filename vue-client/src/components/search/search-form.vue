@@ -234,8 +234,11 @@ export default {
       return { '@type': type };
     },
     prefSort() {
-      if (this.$route.query?._sort) {
-        return { _sort: this.$route.query?._sort }
+      if (
+        this.$route.query?._sort
+        && this.settings.sortOptions[this.activeSearchType]?.find((sortOption) => sortOption.query === this.$route.query._sort)
+      ) {
+        return { _sort: this.$route.query._sort };
       }
       if (this.user && this.user.settings.sort) {
         const availableSorts = this.settings.sortOptions[this.user.settings.searchType];
