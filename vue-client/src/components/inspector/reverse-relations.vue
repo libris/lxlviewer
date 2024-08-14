@@ -1,4 +1,5 @@
 <script>
+import { get } from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
@@ -24,7 +25,6 @@ export default {
     return {
       checkingRelations: true,
       relationPath: '',
-      myHolding: null,
       relationInfo: [],
       numberOfRelations: null,
       relationsListOpen: false,
@@ -80,22 +80,6 @@ export default {
         if (this.mode === 'items') {
           query['itemOf.@id'] = this.mainEntity['@id'];
           query['@type'] = 'Item';
-
-          if (this.user.isLoggedIn) {
-            // Check if my sigel has holding
-            const myHoldingQuery = Object.assign({}, query);
-            myHoldingQuery._limit = 1;
-            myHoldingQuery['heldBy.@id'] = this.user.getActiveLibraryUri();
-            HttpUtil.getRelatedRecords(myHoldingQuery, this.settings.apiPath)
-              .then((response) => {
-                if (response.totalItems > 0) {
-                  this.myHolding = response.items[0]['@id'];
-                } else this.myHolding = null;
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
         } else {
           query.o = this.mainEntity['@id'];
         }
@@ -112,11 +96,6 @@ export default {
           });
       }, timeoutLength);
     },
-    gotoHolding() {
-      const locationParts = this.myHolding.split('/');
-      const fnurgel = locationParts[locationParts.length - 1];
-      this.$router.push({ path: `/${fnurgel}` });
-    },
   },
   computed: {
     ...mapGetters([
@@ -131,6 +110,18 @@ export default {
     },
     hasRelation() {
       return this.myHolding !== null;
+    },
+    myHolding() {
+      if (this.user.isLoggedIn) {
+        // Check if my sigel has holding
+        const libraryUri = this.user.getActiveLibraryUri();
+        const holdings = get(this.mainEntity, ['@reverse', 'itemOf'], []);
+        const myHolding = holdings.find((h) => get(h, ['heldBy', '@id']) === libraryUri);
+        if (myHolding) {
+          return myHolding['@id'];
+        }
+      }
+      return null;
     },
     recordType() {
       return VocabUtil.getRecordType(
