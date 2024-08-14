@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import getHiddenSearchParams from '$lib/utils/getHiddenSearchParams';
-	import cleanQSearchParamValue from '$lib/utils/cleanQSearchParamValue';
+	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 	import * as m from '$lib/paraglide/messages.js';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 
@@ -19,7 +19,7 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */
 		if (to?.url) {
-			q = cleanQSearchParamValue(to.url.searchParams.get('_q'));
+			q = sanitizeQSearchParamValue(to.url.searchParams.get('_q'));
 		}
 	});
 
@@ -58,7 +58,7 @@
 			{@render fallbackInput()}
 		</SearchInputWrapper>
 	{:then { default: SuperSearch }}
-		<SuperSearch bind:value={q} placeholder={m.searchPlaceholder()} ariaLabel={m.search()} />
+		<SuperSearch bind:value={q} placeholder={m.searchPlaceholder()} />
 	{:catch}
 		<SearchInputWrapper showClearSearch={!!q} onclearsearch={clearSearch}>
 			{@render fallbackInput()}
@@ -73,7 +73,7 @@
 	form :global(.search-input) {
 		border: none;
 		background: none;
-		padding: 0.875rem 0;
+		padding: 0.875rem 1px;
 		width: 100%;
 		height: 100%;
 		min-height: var(--height-input-lg);

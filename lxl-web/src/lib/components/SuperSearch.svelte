@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { tick } from 'svelte';
+	import CodeMirror from './CodeMirror.svelte';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
-	import cleanQSearchParamValue from '$lib/utils/cleanQSearchParamValue';
+	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
+	import { submitClosestFormOnEnter } from '$lib/utils/codemirror';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -13,28 +14,24 @@
 	 * - [] keep focus on textarea when closing dropdown
 	 * - [] retain selection start/end after showing/hiding dropdown
 	 * - [] form is only submitted if there is a _q value
+	 * - [] max length for search params is enforced
 	 */
 
 	type SuperSearchProps = {
 		value: string;
 		placeholder: string;
-		ariaLabel: string;
 	};
 
-	let { value = $bindable(), placeholder, ariaLabel }: SuperSearchProps = $props();
+	let { value = $bindable(), placeholder }: SuperSearchProps = $props();
 
 	let superSearchContainerElement: HTMLDivElement | undefined = $state();
 	let dialogElement: HTMLDialogElement | undefined = $state();
 	let dropdown = $state(false);
 	let prevDropdownValue = $state(false);
 
-	function handleClickTextarea(event: MouseEvent) {
-		showDropdown({
-			selectionStart: (event.target as HTMLTextAreaElement).selectionStart,
-			selectionEnd: (event.target as HTMLTextAreaElement).selectionEnd
-		});
-	}
+	let cleanedValue = $derived(sanitizeQSearchParamValue(value));
 
+	/*
 	function showDropdown({
 		selectionStart,
 		selectionEnd
@@ -52,6 +49,7 @@
 			}
 		}
 	}
+	*/
 
 	function hideDropdown() {
 		const dialogTextareaElement = dialogElement?.querySelector('textarea');
@@ -83,40 +81,6 @@
 		}
 	});
 
-	function handleInput(event: Event) {
-		if (!dialogElement?.open) {
-			showDropdown({
-				selectionStart: (event.target as HTMLTextAreaElement).selectionStart,
-				selectionEnd: (event.target as HTMLTextAreaElement).selectionEnd
-			});
-		}
-	}
-
-	async function submitFormAfterTick(formElement: HTMLFormElement) {
-		await tick();
-		formElement.submit();
-	}
-
-	function handleTextareaKeyPress(event: KeyboardEvent) {
-		if (event.key === 'Enter' && !event.shiftKey && event.target instanceof HTMLElement) {
-			const closestForm = event.target.closest('form');
-			if (closestForm) {
-				event.preventDefault();
-				if (dialogElement?.open) {
-					if (value && value.trim()) {
-						value = cleanQSearchParamValue(value);
-						submitFormAfterTick(closestForm); // submit after tick to ensure cleaned value is set
-					}
-				} else {
-					showDropdown({
-						selectionStart: (event.target as HTMLTextAreaElement).selectionStart,
-						selectionEnd: (event.target as HTMLTextAreaElement).selectionEnd
-					});
-				}
-			}
-		}
-	}
-
 	function handleWindowClick(event: MouseEvent) {
 		/** Close dialog if click outside */
 		if (dialogElement?.open && (event.target as Node).contains(dialogElement)) {
@@ -135,40 +99,23 @@
 	}
 </script>
 
-{#snippet searchTextarea({ multiline = false, onclick, disabled = false })}
-	<div class="search-resizer" class:multiline data-replicated-value={multiline ? value : undefined}>
-		<textarea
-			name="_q"
-			bind:value
-			aria-label={ariaLabel}
-			{placeholder}
-			autocomplete="off"
-			spellcheck="false"
-			maxlength={2048}
-			rows={1}
-			onkeypress={handleTextareaKeyPress}
-			oninput={handleInput}
-			{onclick}
-			{disabled}
-			aria-multiline={multiline ? undefined : 'false'}
-		></textarea>
-	</div>
-{/snippet}
-
 <svelte:window onclick={handleWindowClick} />
 <div class="super-search" bind:this={superSearchContainerElement}>
-	<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}
-		>{@render searchTextarea({
-			onclick: handleClickTextarea,
-			disabled: dropdown
-		})}</SearchInputWrapper
-	>
+	<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
+		<CodeMirror
+			bind:value
+			{placeholder}
+			extensions={[submitClosestFormOnEnter]}
+			onfocus={({ selectionStart, selectionEnd }) =>
+				console.log('focus', selectionStart, selectionEnd)}
+			onblur={({ selectionStart, selectionEnd }) =>
+				console.log('blur', selectionStart, selectionEnd)}
+		/>
+		<textarea value={cleanedValue} hidden readonly name="_q" maxlength={2048}></textarea>
+	</SearchInputWrapper>
 	<dialog bind:this={dialogElement} onclose={hideDropdown}>
 		<div class="dropdown">
 			<div class="dropdown-content">
-				<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
-					{@render searchTextarea({ multiline: true })}
-				</SearchInputWrapper>
 				Bygg och förfina din sökfråga
 				<p>Hello</p>
 				<p>Hello</p>
@@ -180,44 +127,6 @@
 </div>
 
 <style>
-	.super-search {
-		display: contents;
-	}
-
-	.search-resizer {
-		display: grid;
-	}
-
-	.search-resizer :global(textarea),
-	.search-resizer:global(::after) {
-		border: none;
-		background: none;
-		padding: 0.875rem 0;
-		width: 100%;
-		min-height: var(--height-input-lg);
-		resize: none;
-		font-size: var(--font-size-sm);
-	}
-
-	.search-resizer:not(.multiline) :global(textarea) {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	.search-resizer.multiline :global(textarea),
-	.search-resizer.multiline:global(::after) {
-		grid-area: 1 / 1 / 2 / 2;
-		white-space: pre-wrap;
-		word-break: break-word;
-	}
-
-	.search-resizer.multiline::after {
-		visibility: hidden;
-		content: attr(data-replicated-value) ' ';
-		white-space: pre-wrap;
-	}
-
 	dialog {
 		margin: 0;
 		border: none;
