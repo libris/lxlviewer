@@ -19,7 +19,6 @@ import ItemLocal from './item-local.vue';
 import ItemError from './item-error.vue';
 import ItemVocab from './item-vocab.vue';
 import ItemType from './item-type.vue';
-import ItemSibling from './item-sibling.vue';
 import ItemBoolean from './item-boolean.vue';
 import ItemNumeric from './item-numeric.vue';
 import ItemGrouped from './item-grouped.vue';
@@ -141,7 +140,6 @@ export default {
     'item-entity': ItemEntity,
     'item-value': ItemValue,
     'item-local': ItemLocal,
-    'item-sibling': ItemSibling,
     'item-error': ItemError,
     'item-vocab': ItemVocab,
     'item-boolean': ItemBoolean,
@@ -563,9 +561,6 @@ export default {
       if (this.isPlainObject(o) && this.isLinked(o)) {
         return 'entity';
       }
-      if (this.isPlainObject(o) && o.hasOwnProperty('@id') && this.isInGraph(o)) {
-        return 'sibling';
-      }
       if (this.isPlainObject(o) && !this.isLinked(o)) {
         return 'local';
       }
@@ -967,24 +962,6 @@ export default {
           :in-array="valueIsArray"
           :diff="diff"
           :should-expand="expandChildren || embellished" />
-
-        <item-sibling
-          v-if="getDatatype(item) == 'sibling'"
-          :id="item['@id']"
-          :is-locked="locked"
-          :field-key="fieldKey"
-          :entity-type="entityType"
-          :is-compositional="isCompositional"
-          :all-values-from="allValuesFrom"
-          :some-values-from="someValuesFrom"
-          :all-search-types="allSearchTypes"
-          :range="range"
-          :range-full="rangeFull"
-          :index="index"
-          :in-array="valueIsArray"
-          :diff="diff"
-          :should-expand="expandChildren || embellished"
-          :parent-path="path" />
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
