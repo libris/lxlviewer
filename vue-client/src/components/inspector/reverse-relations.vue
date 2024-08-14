@@ -112,11 +112,19 @@ export default {
       return this.myHolding !== null;
     },
     myHolding() {
+      const isLink = (o) => Object.keys(o).length === 1 && Object.keys(o).includes('@id');
+
       if (this.user.isLoggedIn) {
         // Check if my sigel has holding
         const libraryUri = this.user.getActiveLibraryUri();
         const holdings = get(this.mainEntity, ['@reverse', 'itemOf'], []);
-        const myHolding = holdings.find((h) => get(h, ['heldBy', '@id']) === libraryUri);
+        const myHolding = holdings.find((h) => {
+          if (isLink(h)) {
+            return get(this.inspector?.data?.quoted || {}, [h['@id'], 'heldBy', '@id']) === libraryUri;
+          } else {
+            return get(h, ['heldBy', '@id']) === libraryUri;
+          }
+        });
         if (myHolding) {
           return myHolding['@id'];
         }
