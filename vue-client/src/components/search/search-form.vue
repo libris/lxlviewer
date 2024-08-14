@@ -236,7 +236,9 @@ export default {
     prefSort() {
       if (
         this.$route.query?._sort
-        && this.settings.sortOptions[this.activeSearchType]?.find((sortOption) => sortOption.query === this.$route.query._sort)
+        && this.settings.sortOptions[this.activeSearchType]
+          ?.find((sortOption) => this.$route.query._sort.includes(sortOption.query))
+          // use includes instead of strict equality check to allow localized _sortKeyByLang (e.g. _sortKeyByLang.sv)
       ) {
         return { _sort: this.$route.query._sort };
       }
