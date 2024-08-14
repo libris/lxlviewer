@@ -107,10 +107,3 @@
 		{/if}
 	</div>
 {/if}
-
-<style lang="postcss">
-	.ext-link::after {
-		content: '\2009↗';
-		@apply align-[10%] text-icon;
-	}
-</style>

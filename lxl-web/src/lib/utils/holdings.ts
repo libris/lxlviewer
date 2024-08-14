@@ -1,7 +1,8 @@
 import { pushState } from '$app/navigation';
 import isFnurgel from '$lib/utils/isFnurgel';
 import { relativizeUrl } from '$lib/utils/http';
-import { type FramedData } from '$lib/types/xl';
+import type { FramedData } from '$lib/types/xl';
+import type { bibIdObj } from '$lib/types/holdings';
 
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
@@ -49,6 +50,51 @@ export function getHoldingsByInstanceId(mainEntity) {
 		return {
 			...acc,
 			[id]: sortHoldings(instanceOfItem?.['@reverse']?.itemOf || [])
+		};
+	}, {});
+}
+
+export function getBibIdsByInstanceId(mainEntity, record): Record<string, bibIdObj> {
+	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
+		const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
+
+		const bibId = instanceOfItem.meta?.controlNumber || record?.controlNumber;
+		const type = instanceOfItem['@type'];
+		const holders = instanceOfItem['@reverse']?.itemOf?.map((i) => i?.heldBy?.sigel);
+
+		// add Legacy Libris III system number for ONR param
+		let onr = null;
+		record?.identifiedBy?.forEach((el: { '@type': string; value: string }) => {
+			if (el['@type'] === 'LibrisIIINumber') {
+				onr = el.value;
+			}
+		});
+
+		const isbn: string[] = [];
+		const issn: string[] = [];
+		instanceOfItem.identifiedBy?.forEach((el: { '@type': string; value: string }) => {
+			if (el['@type'] === 'ISBN') {
+				isbn.push(el.value);
+			}
+
+			if (el['@type'] === 'ISSN') {
+				issn.push(el.value);
+			}
+		});
+
+		if (!id) {
+			return acc;
+		}
+		return {
+			...acc,
+			[id]: {
+				bibId,
+				'@type': type,
+				holders,
+				onr,
+				isbn,
+				issn
+			}
 		};
 	}, {});
 }

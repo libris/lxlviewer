@@ -1,0 +1,1596 @@
+{
+	"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt",
+	"@type": "Record",
+	"sameAs": [
+		{
+			"@id": "http://libris.kb.se/bib/7654300"
+		}
+	],
+	"created": "2001-12-11T00:00:00+01:00",
+	"modified": "2016-09-01T12:28:00+02:00",
+	"mainEntity": {
+		"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt#it",
+		"@type": "Instance",
+		"extent": [
+			{
+				"@type": "Extent",
+				"label": ["237, [1] s."]
+			}
+		],
+		"sameAs": [
+			{
+				"@id": "http://libris.kb.se/resource/bib/7654300"
+			}
+		],
+		"hasNote": [
+			{
+				"@type": "Note",
+				"label": ["Tidigare utg. i separata vol."]
+			}
+		],
+		"hasTitle": [
+			{
+				"@type": "Title",
+				"mainTitle": "Ture Sventon i London och Paris"
+			}
+		],
+		"instanceOf": {
+			"@type": "Text",
+			"subject": [
+				{
+					"@id": "https://libris-qa.kb.se/b8nqs3mv22mlxpg#it",
+					"@type": "Person",
+					"sameAs": [
+						{
+							"@id": "http://libris.kb.se/resource/auth/223016"
+						}
+					],
+					"givenName": "Ture",
+					"familyName": "Sventon",
+					"hasVariant": [
+						{
+							"name": "Ture Sventon",
+							"@type": "Person",
+							"marc:titlesAndOtherWordsAssociatedWithAName": ["(fiktiv gestalt)"]
+						},
+						{
+							"@type": "Person",
+							"givenName": "Sture",
+							"familyName": "Svensson",
+							"marc:titlesAndOtherWordsAssociatedWithAName": ["(fiktiv gestalt)"]
+						}
+					],
+					"description": ["Privatdetektiv i en serie ungdomsböcker av Åke Holmberg"],
+					"hasOccupation": [
+						{
+							"@type": "Occupation",
+							"label": ["Detektiver (sao)"]
+						}
+					],
+					"marc:titlesAndOtherWordsAssociatedWithAName": ["(fiktiv gestalt)"],
+					"meta": {
+						"@id": "https://libris-qa.kb.se/b8nqs3mv22mlxpg",
+						"@type": "Record",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/auth/223016"
+							}
+						],
+						"created": "2003-09-05T16:03:37+02:00",
+						"modified": "2016-10-28T15:40:17+02:00",
+						"mainEntity": {
+							"@id": "https://libris-qa.kb.se/b8nqs3mv22mlxpg#it"
+						},
+						"recordStatus": "marc:CorrectedOrRevised",
+						"controlNumber": "223016",
+						"generationDate": "2020-10-29T17:42:03.371+01:00",
+						"cataloguersNote": [
+							"Uppdaterad 2016-10-28 S/NB/annbjo. Ändrad enligt RDA. Tidigare som allmänt ämnesord. 2015-01-13 S/NB/evaabr"
+						],
+						"sourceConsulted": [
+							{
+								"@type": "SourceData",
+								"label": "\"Använd bara pitolerna i nödfall!\" :",
+								"citationNote": "en bok om Ture Sventon / Karl G. & Lilian Fredriksson, 1999"
+							},
+							{
+								"@type": "SourceData",
+								"label": "Wikipedia (Svenska) (2014-01-13)",
+								"citationNote": "(\"Ture Sventon är en fiktiv privatdetektiv och huvudperson i Åke Holmbergs nio böcker utgivna 1948–1973\")"
+							}
+						],
+						"generationProcess": {
+							"@id": "https://libris.kb.se/sys/globalchanges/cleanups/2020/10/lxl-3391-remove-unhandled-375-and-377-from-auth.groovy"
+						},
+						"descriptionCreator": {
+							"@id": "https://libris.kb.se/library/NB",
+							"name": "Nationalbibliografin",
+							"@type": "Bibliography",
+							"sigel": "NB",
+							"sameAs": [
+								{
+									"@id": "http://bibdb.libris.kb.se/library/NB"
+								}
+							],
+							"meta": {
+								"@id": "https://libris-qa.kb.se/000n6qq312slvd3k"
+							}
+						},
+						"descriptionConventions": [
+							{
+								"code": "z"
+							},
+							{
+								"code": "rda",
+								"@type": "DescriptionConventions"
+							}
+						]
+					}
+				}
+			],
+			"language": [
+				{
+					"@id": "https://id.kb.se/language/swe",
+					"code": "swe",
+					"@type": "Language",
+					"sameAs": [
+						{
+							"@id": "https://id.kb.se/i18n/lang/sv"
+						}
+					],
+					"langTag": "sv",
+					"prefLabelByLang": {
+						"de": "Schwedisch",
+						"en": "Swedish",
+						"fr": "suédois",
+						"sv": "Svenska"
+					},
+					"meta": {
+						"@id": "https://libris-qa.kb.se/93lzl5lfc2l3hvc7",
+						"@type": "Record",
+						"created": "2022-12-07T16:26:42.1+01:00",
+						"modified": "2022-12-07T16:26:42.1+01:00",
+						"inDataset": [
+							{
+								"@id": "https://id.kb.se/dataset/common"
+							},
+							{
+								"@id": "https://id.kb.se/dataset/languages",
+								"@type": "Dataset",
+								"label": "languages",
+								"meta": {
+									"@id": "https://libris-qa.kb.se/nrb9xjzsq0rkbtnb"
+								}
+							}
+						],
+						"mainEntity": {
+							"@id": "https://id.kb.se/language/swe"
+						},
+						"recordStatus": "marc:New"
+					}
+				}
+			],
+			"genreForm": [
+				{
+					"@id": "https://id.kb.se/marc/FictionNotFurtherSpecified",
+					"code": "1",
+					"@type": "marc:BooksLiteraryFormType",
+					"sameAs": [
+						{
+							"@id": "https://id.kb.se/marc/BooksLiteraryFormType-1"
+						}
+					],
+					"inScheme": {
+						"@id": "https://id.kb.se/marc",
+						"@type": "ConceptScheme",
+						"titleByLang": {
+							"en": "MARC terms",
+							"sv": "MARC-termer"
+						},
+						"code": "marc",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/7k64qptb958dhb8s",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://id.kb.se/marc"
+							},
+							"inDataset": [
+								{
+									"@id": "https://id.kb.se/dataset/common"
+								},
+								{
+									"@id": "https://id.kb.se/dataset/schemes"
+								}
+							]
+						}
+					},
+					"exactMatch": [
+						{
+							"@id": "http://id.loc.gov/vocabulary/marcgt/fic"
+						}
+					],
+					"prefLabelByLang": {
+						"en": "Fiction",
+						"sv": "Skönlitteratur"
+					},
+					"meta": {
+						"@id": "https://libris-qa.kb.se/f9ftps0jh147dq45",
+						"@type": "Record",
+						"created": "2022-12-07T16:25:47.418+01:00",
+						"modified": "2022-12-07T16:25:47.418+01:00",
+						"inDataset": [
+							{
+								"@id": "https://id.kb.se/dataset/common"
+							},
+							{
+								"@id": "https://id.kb.se/dataset/enums",
+								"@type": "Dataset",
+								"label": "enums",
+								"meta": {
+									"@id": "https://libris-qa.kb.se/c0w0gqxgf0tn1p9q"
+								}
+							}
+						],
+						"mainEntity": {
+							"@id": "https://id.kb.se/marc/FictionNotFurtherSpecified"
+						},
+						"recordStatus": "marc:CorrectedOrRevised"
+					}
+				}
+			],
+			"contribution": [
+				{
+					"role": {
+						"@id": "https://id.kb.se/relator/author",
+						"code": "aut",
+						"@type": "Role",
+						"domain": [
+							{
+								"@id": "https://id.kb.se/vocab/Work"
+							}
+						],
+						"sameAs": [
+							{
+								"@id": "https://id.kb.se/relator/aut"
+							}
+						],
+						"prefLabelByLang": {
+							"de": "Verfasser",
+							"en": "Author",
+							"fi": "kirjoittaja",
+							"sv": "Författare"
+						},
+						"definitionByLang": {
+							"sv": "Agent som 1) skapar ett verk som huvudsakligen består av text, oavsett medietyp (t.ex. tryckt text, talade ord, elektronisk text, taktil text) eller genre, (t.ex. dikter, romaner, filmmanus, bloggar), eller 2) agent som skapar ett nytt verk genom att parafrasera, skriva om eller anpassa ett annat verk så att dess innehåll, natur eller uttrycksmedium väsentligen förändras."
+						},
+						"equivalentProperty": [
+							{
+								"@id": "http://id.loc.gov/vocabulary/relators/aut"
+							}
+						],
+						"meta": {
+							"@id": "https://libris-qa.kb.se/01671gl323zxzzhh",
+							"@type": "Record",
+							"created": "2022-12-07T16:26:30.182+01:00",
+							"modified": "2022-12-07T16:26:30.182+01:00",
+							"inDataset": [
+								{
+									"@id": "https://id.kb.se/dataset/common"
+								},
+								{
+									"@id": "https://id.kb.se/dataset/relators",
+									"@type": "Dataset",
+									"label": "relators",
+									"meta": {
+										"@id": "https://libris-qa.kb.se/lntjk16pn03qn9cv"
+									}
+								}
+							],
+							"mainEntity": {
+								"@id": "https://id.kb.se/relator/author"
+							},
+							"recordStatus": "marc:CorrectedOrRevised"
+						}
+					},
+					"@type": "PrimaryContribution",
+					"agent": {
+						"@id": "https://libris-qa.kb.se/jgvx12520l4lc2f#it",
+						"@type": "Person",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/resource/auth/243092"
+							}
+						],
+						"lifeSpan": "1907-1991",
+						"givenName": "Åke",
+						"familyName": "Holmberg",
+						"hasVariant": [
+							{
+								"@type": "Person",
+								"lifeSpan": "1907-1991",
+								"givenName": "Åke Robert",
+								"familyName": "Holmberg"
+							},
+							{
+								"@type": "Person",
+								"lifeSpan": "1907-1991",
+								"givenName": "Оке",
+								"familyName": "Гольмберг"
+							}
+						],
+						"nationality": [
+							{
+								"@id": "https://id.kb.se/nationality/e-sw---",
+								"@type": "Nationality",
+								"prefLabelByLang": {
+									"en": "Sweden",
+									"sv": "Sverige"
+								},
+								"code": "e-sw---",
+								"meta": {
+									"@id": "https://libris-qa.kb.se/z18rhdk212jqpf2s",
+									"@type": "Record",
+									"mainEntity": {
+										"@id": "https://id.kb.se/nationality/e-sw---"
+									},
+									"inDataset": [
+										{
+											"@id": "https://id.kb.se/dataset/common"
+										},
+										{
+											"@id": "https://id.kb.se/dataset/nationalities"
+										}
+									]
+								}
+							}
+						],
+						"identifiedBy": [
+							{
+								"@type": "ISNI",
+								"value": "0000000109049378"
+							}
+						],
+						"meta": {
+							"@id": "https://libris-qa.kb.se/jgvx12520l4lc2f",
+							"@type": "Record",
+							"sameAs": [
+								{
+									"@id": "http://libris.kb.se/auth/243092"
+								}
+							],
+							"created": "2004-09-14T12:49:17+02:00",
+							"modified": "2012-10-23T11:24:51+02:00",
+							"mainEntity": {
+								"@id": "https://libris-qa.kb.se/jgvx12520l4lc2f#it"
+							},
+							"recordStatus": "marc:CorrectedOrRevised",
+							"controlNumber": "243092",
+							"generationDate": "2021-09-30T10:29:16.828+02:00",
+							"sourceConsulted": [
+								{
+									"@type": "SourceData",
+									"label": "NE"
+								},
+								{
+									"@type": "SourceData",
+									"label": "Holmberg, Åke. Privatdetektiv Ture Sventon på nya äventyr, 1964"
+								}
+							],
+							"generationProcess": {
+								"@id": "https://libris.kb.se/sys/globalchanges/2021/06/lxl-3526-link-agents-to-wikidata.groovy"
+							},
+							"descriptionCreator": {
+								"@id": "https://libris.kb.se/library/S",
+								"@type": "Library",
+								"sameAs": [
+									{
+										"@id": "http://bibdb.libris.kb.se/library/S"
+									}
+								],
+								"name": "Kungliga biblioteket",
+								"sigel": "S",
+								"meta": {
+									"@id": "https://libris-qa.kb.se/000n6qq313f988g2"
+								}
+							},
+							"descriptionConventions": [
+								{
+									"@id": "https://id.kb.se/marc/CatalogingRulesType-c",
+									"@type": "marc:CatalogingRulesType",
+									"prefLabelByLang": {
+										"en": "AACR 2",
+										"sv": "AACR 2/KRS"
+									},
+									"code": "c",
+									"meta": {
+										"@id": "https://libris-qa.kb.se/l97jsz5pn2f8hvsq"
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"role": [
+						{
+							"@id": "https://id.kb.se/relator/illustrator",
+							"code": "ill",
+							"@type": "Role",
+							"domain": [
+								{
+									"@id": "https://id.kb.se/vocab/Creation"
+								}
+							],
+							"sameAs": [
+								{
+									"@id": "https://id.kb.se/relator/ill"
+								}
+							],
+							"prefLabelByLang": {
+								"en": "Illustrator",
+								"fi": "kuvittaja",
+								"sv": "Illustratör"
+							},
+							"scopeNoteByLang": {
+								"sv": "Om verket huvudsakligen är det konstnärliga innehåll som skapats av denna agent, använd Konstnär eller Fotograf."
+							},
+							"definitionByLang": {
+								"sv": "Agent som bidrar till en resurs med illustrationer, bilder, teckningar, diagram, fotografier etc."
+							},
+							"equivalentProperty": [
+								{
+									"@id": "http://id.loc.gov/vocabulary/relators/ill"
+								}
+							],
+							"meta": {
+								"@id": "https://libris-qa.kb.se/gtphjx2kj2qcwb7c",
+								"@type": "Record",
+								"created": "2022-12-07T16:26:32.217+01:00",
+								"modified": "2022-12-07T16:26:32.217+01:00",
+								"inDataset": [
+									{
+										"@id": "https://id.kb.se/dataset/common"
+									},
+									{
+										"@id": "https://id.kb.se/dataset/relators",
+										"@type": "Dataset",
+										"label": "relators",
+										"meta": {
+											"@id": "https://libris-qa.kb.se/lntjk16pn03qn9cv"
+										}
+									}
+								],
+								"mainEntity": {
+									"@id": "https://id.kb.se/relator/illustrator"
+								},
+								"recordStatus": "marc:CorrectedOrRevised"
+							}
+						}
+					],
+					"@type": "Contribution",
+					"agent": {
+						"@id": "https://libris-qa.kb.se/zw9dhvwh4qhlrx5#it",
+						"@type": "Person",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/resource/auth/280275"
+							}
+						],
+						"lifeSpan": "1906-1982",
+						"givenName": "Sven",
+						"familyName": "Hemmel",
+						"description": [
+							"Illustratör och författare, har bland annat illustrerat Åke Holmbergs böcker om Ture Sventon."
+						],
+						"identifiedBy": [
+							{
+								"@type": "VIAF",
+								"value": "482012"
+							},
+							{
+								"@type": "ISNI",
+								"value": "0000000057872652"
+							}
+						],
+						"meta": {
+							"@id": "https://libris-qa.kb.se/zw9dhvwh4qhlrx5",
+							"@type": "Record",
+							"sameAs": [
+								{
+									"@id": "http://libris.kb.se/auth/280275"
+								}
+							],
+							"created": "2006-10-20T08:49:37+02:00",
+							"modified": "2018-03-26T13:55:50+02:00",
+							"mainEntity": {
+								"@id": "https://libris-qa.kb.se/zw9dhvwh4qhlrx5#it"
+							},
+							"recordStatus": "marc:CorrectedOrRevised",
+							"controlNumber": "280275",
+							"generationDate": "2021-09-30T11:12:56.298+02:00",
+							"sourceConsulted": [
+								{
+									"@type": "SourceData",
+									"label": "NE (online), 2006-10-20"
+								}
+							],
+							"generationProcess": {
+								"@id": "https://libris.kb.se/sys/globalchanges/2021/06/lxl-3526-link-agents-to-wikidata.groovy"
+							},
+							"descriptionCreator": {
+								"@id": "https://libris.kb.se/library/Sbi",
+								"@type": "Library",
+								"sameAs": [
+									{
+										"@id": "http://bibdb.libris.kb.se/library/Sbi"
+									}
+								],
+								"name": "Svenska barnboksinstitutets bibliotek",
+								"sigel": "Sbi",
+								"meta": {
+									"@id": "https://libris-qa.kb.se/000n6qq314bhmpx3"
+								}
+							},
+							"descriptionConventions": [
+								{
+									"@id": "https://id.kb.se/marc/CatalogingRulesType-c",
+									"@type": "marc:CatalogingRulesType",
+									"prefLabelByLang": {
+										"en": "AACR 2",
+										"sv": "AACR 2/KRS"
+									},
+									"code": "c",
+									"meta": {
+										"@id": "https://libris-qa.kb.se/l97jsz5pn2f8hvsq"
+									}
+								}
+							]
+						}
+					}
+				}
+			],
+			"classification": [
+				{
+					"code": "Hc,u",
+					"@type": "Classification",
+					"inScheme": {
+						"code": "kssb",
+						"@type": "ConceptScheme",
+						"sameAs": [
+							{
+								"@id": "https://id.kb.se/term/kssb%2F6/"
+							}
+						],
+						"version": "6"
+					}
+				}
+			],
+			"intendedAudience": [
+				{
+					"@id": "https://id.kb.se/marc/Juvenile",
+					"code": "j",
+					"@type": "marc:AudienceType",
+					"sameAs": [
+						{
+							"@id": "https://id.kb.se/marc/AudienceType-j"
+						}
+					],
+					"inScheme": {
+						"@id": "https://id.kb.se/marc",
+						"@type": "ConceptScheme",
+						"titleByLang": {
+							"en": "MARC terms",
+							"sv": "MARC-termer"
+						},
+						"code": "marc",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/7k64qptb958dhb8s",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://id.kb.se/marc"
+							},
+							"inDataset": [
+								{
+									"@id": "https://id.kb.se/dataset/common"
+								},
+								{
+									"@id": "https://id.kb.se/dataset/schemes"
+								}
+							]
+						}
+					},
+					"prefLabelByLang": {
+						"en": "Juvenile",
+						"sv": "Barn och ungdom (0-16 år)"
+					},
+					"meta": {
+						"@id": "https://libris-qa.kb.se/21mt6fm54398jj1m",
+						"@type": "Record",
+						"created": "2022-12-07T16:26:02.617+01:00",
+						"modified": "2022-12-07T16:26:02.617+01:00",
+						"inDataset": [
+							{
+								"@id": "https://id.kb.se/dataset/common"
+							},
+							{
+								"@id": "https://id.kb.se/dataset/enums",
+								"@type": "Dataset",
+								"label": "enums",
+								"meta": {
+									"@id": "https://libris-qa.kb.se/c0w0gqxgf0tn1p9q"
+								}
+							}
+						],
+						"mainEntity": {
+							"@id": "https://id.kb.se/marc/Juvenile"
+						},
+						"recordStatus": "marc:New"
+					}
+				}
+			]
+		},
+		"manufacture": [
+			{
+				"@type": "Manufacture",
+				"place": [
+					{
+						"@type": "Place",
+						"label": ["Storbritannien"]
+					}
+				]
+			}
+		],
+		"publication": [
+			{
+				"year": "1987",
+				"@type": "PrimaryPublication",
+				"agent": {
+					"@type": "Agent",
+					"label": ["MånPocket"]
+				},
+				"place": [
+					{
+						"@type": "Place",
+						"label": ["Stockholm"]
+					}
+				],
+				"country": {
+					"@id": "https://id.kb.se/country/sw",
+					"code": "sw",
+					"@type": "Country",
+					"prefLabelByLang": {
+						"en": "Sweden",
+						"sv": "Sverige"
+					},
+					"meta": {
+						"@id": "https://libris-qa.kb.se/jf9xxz4ml0jrz74j",
+						"@type": "Record",
+						"created": "2022-12-07T16:26:48.628+01:00",
+						"modified": "2022-12-07T16:26:48.628+01:00",
+						"inDataset": [
+							{
+								"@id": "https://id.kb.se/dataset/common"
+							},
+							{
+								"@id": "https://id.kb.se/dataset/countries",
+								"@type": "Dataset",
+								"label": "countries",
+								"meta": {
+									"@id": "https://libris-qa.kb.se/xg3h9cj1054bmbdv"
+								}
+							}
+						],
+						"mainEntity": {
+							"@id": "https://id.kb.se/country/sw"
+						},
+						"recordStatus": "marc:New"
+					}
+				}
+			}
+		],
+		"identifiedBy": [
+			{
+				"@type": "ISBN",
+				"value": "9176423484",
+				"acquisitionTerms": ["29:50"]
+			}
+		],
+		"issuanceType": "Monograph",
+		"hasDimensions": {
+			"@type": "Dimensions",
+			"label": ["18 cm"]
+		},
+		"tableOfContents": [
+			{
+				"@type": "TableOfContents",
+				"label": ["Innehåll: Ture Sventon i London ; Ture Sventon i Paris"]
+			}
+		],
+		"seriesMembership": [
+			{
+				"@type": "SeriesMembership",
+				"inSeries": {
+					"@type": "Instance",
+					"instanceOf": {
+						"@type": "Work",
+						"hasTitle": [
+							{
+								"@type": "Title",
+								"mainTitle": "MånPocket"
+							}
+						]
+					},
+					"identifiedBy": [
+						{
+							"@type": "ISSN",
+							"value": "99-0184541-6"
+						}
+					]
+				}
+			}
+		],
+		"physicalDetailsNote": "ill.",
+		"responsibilityStatement": "Åke Holmberg ; illustrationer av Sven Hemmel",
+		"@reverse": {
+			"itemOf": [
+				{
+					"@id": "https://libris-qa.kb.se/48fnfh192zcnz48#it",
+					"@type": "Item",
+					"heldBy": {
+						"@id": "https://libris.kb.se/library/S",
+						"@type": "Library",
+						"sameAs": [
+							{
+								"@id": "http://bibdb.libris.kb.se/library/S"
+							}
+						],
+						"name": "Kungliga biblioteket",
+						"sigel": "S",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/000n6qq313f988g2",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://libris.kb.se/library/S"
+							},
+							"inDataset": [
+								{
+									"@id": "https://libris.kb.se/dataset/bibdb"
+								},
+								{
+									"@id": "https://libris.kb.se/dataset/libraries"
+								}
+							]
+						}
+					},
+					"itemOf": {
+						"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt#it"
+					},
+					"sameAs": [
+						{
+							"@id": "http://libris.kb.se/resource/hold/3624069"
+						}
+					],
+					"shelfMark": {
+						"@type": "ShelfMark",
+						"label": "hu87"
+					},
+					"shelfControlNumber": "225",
+					"meta": {
+						"@id": "https://libris-qa.kb.se/48fnfh192zcnz48",
+						"@type": "Record",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/hold/3624069"
+							}
+						],
+						"created": "2002-01-10T00:00:00+01:00",
+						"modified": "2018-06-05T12:06:48.741+02:00",
+						"mainEntity": {
+							"@id": "https://libris-qa.kb.se/48fnfh192zcnz48#it"
+						},
+						"identifiedBy": [
+							{
+								"@type": "LibrisIIINumber",
+								"value": "9176423484"
+							}
+						],
+						"recordStatus": "marc:CorrectedOrRevised",
+						"controlNumber": "3624069",
+						"generationDate": "2022-08-23T12:17:56.111+02:00",
+						"generationProcess": {
+							"@id": "https://libris.kb.se/sys/globalchanges/cleanups/2022/06/lxl-1653-remove-typeoflinkagenumber-from-hold.groovy"
+						}
+					}
+				},
+				{
+					"@id": "https://libris-qa.kb.se/x27g79t327f41ql#it",
+					"@type": "Item",
+					"heldBy": {
+						"@id": "https://libris.kb.se/library/H",
+						"@type": "Library",
+						"sameAs": [
+							{
+								"@id": "http://bibdb.libris.kb.se/library/H"
+							}
+						],
+						"name": "Stockholms universitet",
+						"qualifier": "Frescatibiblioteket",
+						"sigel": "H",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/000n6qq310pwxnn2",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://libris.kb.se/library/H"
+							},
+							"inDataset": [
+								{
+									"@id": "https://libris.kb.se/dataset/bibdb"
+								},
+								{
+									"@id": "https://libris.kb.se/dataset/libraries"
+								}
+							]
+						}
+					},
+					"itemOf": {
+						"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt#it"
+					},
+					"sameAs": [
+						{
+							"@id": "http://libris.kb.se/resource/hold/3624063"
+						}
+					],
+					"meta": {
+						"@id": "https://libris-qa.kb.se/x27g79t327f41ql",
+						"@type": "Record",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/hold/3624063"
+							}
+						],
+						"created": "2002-01-10T00:00:00+01:00",
+						"modified": "2017-02-16T13:21:50+01:00",
+						"mainEntity": {
+							"@id": "https://libris-qa.kb.se/x27g79t327f41ql#it"
+						},
+						"identifiedBy": [
+							{
+								"@type": "LibrisIIINumber",
+								"value": "9176423484"
+							}
+						],
+						"recordStatus": "marc:CorrectedOrRevised",
+						"controlNumber": "3624063",
+						"generationDate": "2022-08-23T13:01:59.737+02:00",
+						"generationProcess": {
+							"@id": "https://libris.kb.se/sys/globalchanges/cleanups/2022/06/lxl-1653-remove-typeoflinkagenumber-from-hold.groovy"
+						}
+					}
+				},
+				{
+					"@id": "https://libris-qa.kb.se/6bhqhk3c3g1sk03#it",
+					"@type": "Item",
+					"heldBy": {
+						"@id": "https://libris.kb.se/library/U",
+						"@type": "Library",
+						"sameAs": [
+							{
+								"@id": "http://bibdb.libris.kb.se/library/U"
+							}
+						],
+						"name": "Uppsala universitetsbibliotek",
+						"qualifier": "Carolinabiblioteket",
+						"sigel": "U",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/000n6qq312v42xvr",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://libris.kb.se/library/U"
+							},
+							"inDataset": [
+								{
+									"@id": "https://libris.kb.se/dataset/bibdb"
+								},
+								{
+									"@id": "https://libris.kb.se/dataset/libraries"
+								}
+							]
+						}
+					},
+					"itemOf": {
+						"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt#it"
+					},
+					"sameAs": [
+						{
+							"@id": "http://libris.kb.se/resource/hold/3624071"
+						}
+					],
+					"shelfMark": {
+						"@type": "ShelfMark",
+						"label": "H 1987-"
+					},
+					"physicalLocation": ["Sv"],
+					"shelfControlNumber": "906",
+					"meta": {
+						"@id": "https://libris-qa.kb.se/6bhqhk3c3g1sk03",
+						"@type": "Record",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/hold/3624071"
+							}
+						],
+						"created": "2002-01-10T00:00:00+01:00",
+						"modified": "2018-06-05T12:06:48.751+02:00",
+						"mainEntity": {
+							"@id": "https://libris-qa.kb.se/6bhqhk3c3g1sk03#it"
+						},
+						"identifiedBy": [
+							{
+								"@type": "LibrisIIINumber",
+								"value": "9176423484"
+							}
+						],
+						"recordStatus": "marc:CorrectedOrRevised",
+						"controlNumber": "3624071",
+						"generationDate": "2022-08-23T13:01:50.007+02:00",
+						"generationProcess": {
+							"@id": "https://libris.kb.se/sys/globalchanges/cleanups/2022/06/lxl-1653-remove-typeoflinkagenumber-from-hold.groovy"
+						}
+					}
+				},
+				{
+					"@id": "https://libris-qa.kb.se/7cjrjl4d0bt0qk7#it",
+					"@type": "Item",
+					"heldBy": {
+						"@id": "https://libris.kb.se/library/Um",
+						"@type": "Library",
+						"sameAs": [
+							{
+								"@id": "http://bibdb.libris.kb.se/library/Um"
+							}
+						],
+						"name": "Umeå stadsbibliotek",
+						"qualifier": ["(Lånecentralen)"],
+						"sigel": "Um",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/000nv6h612r4wvr6",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://libris.kb.se/library/Um"
+							},
+							"inDataset": [
+								{
+									"@id": "https://libris.kb.se/dataset/bibdb"
+								},
+								{
+									"@id": "https://libris.kb.se/dataset/libraries"
+								}
+							]
+						}
+					},
+					"itemOf": {
+						"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt#it"
+					},
+					"sameAs": [
+						{
+							"@id": "http://libris.kb.se/resource/hold/3624072"
+						}
+					],
+					"meta": {
+						"@id": "https://libris-qa.kb.se/7cjrjl4d0bt0qk7",
+						"@type": "Record",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/hold/3624072"
+							}
+						],
+						"created": "2002-01-10T00:00:00+01:00",
+						"modified": "2018-06-05T12:06:48.754+02:00",
+						"mainEntity": {
+							"@id": "https://libris-qa.kb.se/7cjrjl4d0bt0qk7#it"
+						},
+						"identifiedBy": [
+							{
+								"@type": "LibrisIIINumber",
+								"value": "9176423484"
+							}
+						],
+						"recordStatus": "marc:CorrectedOrRevised",
+						"controlNumber": "3624072",
+						"generationDate": "2022-08-23T12:05:31.926+02:00",
+						"generationProcess": {
+							"@id": "https://libris.kb.se/sys/globalchanges/cleanups/2022/06/lxl-1653-remove-typeoflinkagenumber-from-hold.groovy"
+						}
+					}
+				},
+				{
+					"@id": "https://libris-qa.kb.se/qv2z9b1w3kcxdnc#it",
+					"@type": "Item",
+					"heldBy": {
+						"@id": "https://libris.kb.se/library/Umdp",
+						"@type": "Library",
+						"sameAs": [
+							{
+								"@id": "http://bibdb.libris.kb.se/library/Umdp"
+							}
+						],
+						"name": "Sveriges depåbibliotek",
+						"sigel": "Umdp",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/000bfbt311qk8zjr",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://libris.kb.se/library/Umdp"
+							},
+							"inDataset": [
+								{
+									"@id": "https://libris.kb.se/dataset/bibdb"
+								},
+								{
+									"@id": "https://libris.kb.se/dataset/libraries"
+								}
+							]
+						}
+					},
+					"itemOf": {
+						"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt#it"
+					},
+					"sameAs": [
+						{
+							"@id": "http://libris.kb.se/resource/hold/20855847"
+						}
+					],
+					"shelfControlNumber": "198993*",
+					"meta": {
+						"@id": "https://libris-qa.kb.se/qv2z9b1w3kcxdnc",
+						"@type": "Record",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/hold/20855847"
+							}
+						],
+						"created": "2007-08-16T13:24:12+02:00",
+						"modified": "2007-08-16T13:25:36+02:00",
+						"mainEntity": {
+							"@id": "https://libris-qa.kb.se/qv2z9b1w3kcxdnc#it"
+						},
+						"recordStatus": "marc:CorrectedOrRevised",
+						"controlNumber": "20855847",
+						"generationDate": "2019-10-19T19:42:09.462+02:00",
+						"generationProcess": {
+							"@id": "https://libris.kb.se/sys/globalchanges/2019/10/remove-encodingLevels-from-holds/script.groovy"
+						}
+					}
+				},
+				{
+					"@id": "https://libris-qa.kb.se/049j9cw534flrt5#it",
+					"@type": "Item",
+					"heldBy": {
+						"@id": "https://libris.kb.se/library/La",
+						"@type": "Library",
+						"sameAs": [
+							{
+								"@id": "http://bibdb.libris.kb.se/library/La"
+							}
+						],
+						"name": "Universitetsbiblioteket vid Luleå tekniska universitet",
+						"sigel": "La",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/000nvd6j15d2gnht",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://libris.kb.se/library/La"
+							},
+							"inDataset": [
+								{
+									"@id": "https://libris.kb.se/dataset/bibdb"
+								},
+								{
+									"@id": "https://libris.kb.se/dataset/libraries"
+								}
+							]
+						}
+					},
+					"itemOf": {
+						"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt#it"
+					},
+					"sameAs": [
+						{
+							"@id": "http://libris.kb.se/resource/hold/3624065"
+						}
+					],
+					"shelfMark": {
+						"@type": "ShelfMark",
+						"label": "Hcg"
+					},
+					"classification": [
+						{
+							"code": "Hcg",
+							"@type": "Classification",
+							"inScheme": {
+								"code": "kssb",
+								"@type": "ConceptScheme",
+								"sameAs": [
+									{
+										"@id": "https://id.kb.se/term/kssb%2F6/"
+									}
+								]
+							}
+						}
+					],
+					"meta": {
+						"@id": "https://libris-qa.kb.se/049j9cw534flrt5",
+						"@type": "Record",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/hold/3624065"
+							}
+						],
+						"created": "2002-01-10T00:00:00+01:00",
+						"modified": "2018-06-05T12:06:48.729+02:00",
+						"mainEntity": {
+							"@id": "https://libris-qa.kb.se/049j9cw534flrt5#it"
+						},
+						"identifiedBy": [
+							{
+								"@type": "LibrisIIINumber",
+								"value": "9176423484"
+							}
+						],
+						"recordStatus": "marc:CorrectedOrRevised",
+						"controlNumber": "3624065",
+						"generationDate": "2022-08-23T13:01:47.635+02:00",
+						"generationProcess": {
+							"@id": "https://libris.kb.se/sys/globalchanges/cleanups/2022/06/lxl-1653-remove-typeoflinkagenumber-from-hold.groovy"
+						}
+					}
+				},
+				{
+					"@id": "https://libris-qa.kb.se/37dmdg085n5mnqq#it",
+					"@type": "Item",
+					"heldBy": {
+						"@id": "https://libris.kb.se/library/Q",
+						"@type": "Library",
+						"sameAs": [
+							{
+								"@id": "http://bibdb.libris.kb.se/library/Q"
+							}
+						],
+						"name": "Umeå universitetsbibliotek",
+						"sigel": "Q",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/000n6qq312tcv3c4",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://libris.kb.se/library/Q"
+							},
+							"inDataset": [
+								{
+									"@id": "https://libris.kb.se/dataset/bibdb"
+								},
+								{
+									"@id": "https://libris.kb.se/dataset/libraries"
+								}
+							]
+						}
+					},
+					"itemOf": {
+						"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt#it"
+					},
+					"sameAs": [
+						{
+							"@id": "http://libris.kb.se/resource/hold/3624068"
+						}
+					],
+					"shelfControlNumber": "92526",
+					"meta": {
+						"@id": "https://libris-qa.kb.se/37dmdg085n5mnqq",
+						"@type": "Record",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/hold/3624068"
+							}
+						],
+						"created": "2002-01-10T00:00:00+01:00",
+						"modified": "2018-06-05T12:06:48.739+02:00",
+						"mainEntity": {
+							"@id": "https://libris-qa.kb.se/37dmdg085n5mnqq#it"
+						},
+						"identifiedBy": [
+							{
+								"@type": "LibrisIIINumber",
+								"value": "9176423484"
+							}
+						],
+						"recordStatus": "marc:CorrectedOrRevised",
+						"controlNumber": "3624068",
+						"generationDate": "2022-08-23T13:01:50.413+02:00",
+						"generationProcess": {
+							"@id": "https://libris.kb.se/sys/globalchanges/cleanups/2022/06/lxl-1653-remove-typeoflinkagenumber-from-hold.groovy"
+						}
+					}
+				},
+				{
+					"@id": "https://libris-qa.kb.se/z38h8bv45vl14b5#it",
+					"@type": "Item",
+					"heldBy": {
+						"@id": "https://libris.kb.se/library/L",
+						"@type": "Library",
+						"sameAs": [
+							{
+								"@id": "http://bibdb.libris.kb.se/library/L"
+							}
+						],
+						"name": "Lunds universitets bibliotek",
+						"qualifier": ["Universitetsbiblioteket, UB"],
+						"sigel": "L",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/000n6qq310k0t8kf",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://libris.kb.se/library/L"
+							},
+							"inDataset": [
+								{
+									"@id": "https://libris.kb.se/dataset/bibdb"
+								},
+								{
+									"@id": "https://libris.kb.se/dataset/libraries"
+								}
+							]
+						}
+					},
+					"itemOf": {
+						"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt#it"
+					},
+					"sameAs": [
+						{
+							"@id": "http://libris.kb.se/resource/hold/3624064"
+						}
+					],
+					"shelfMark": {
+						"@type": "ShelfMark",
+						"label": "H"
+					},
+					"shelfControlNumber": "s87/751",
+					"meta": {
+						"@id": "https://libris-qa.kb.se/z38h8bv45vl14b5",
+						"@type": "Record",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/hold/3624064"
+							}
+						],
+						"created": "2002-01-10T00:00:00+01:00",
+						"modified": "2018-06-05T12:06:48.726+02:00",
+						"mainEntity": {
+							"@id": "https://libris-qa.kb.se/z38h8bv45vl14b5#it"
+						},
+						"identifiedBy": [
+							{
+								"@type": "LibrisIIINumber",
+								"value": "9176423484"
+							}
+						],
+						"recordStatus": "marc:CorrectedOrRevised",
+						"controlNumber": "3624064",
+						"generationDate": "2022-08-23T13:01:57.999+02:00",
+						"generationProcess": {
+							"@id": "https://libris.kb.se/sys/globalchanges/cleanups/2022/06/lxl-1653-remove-typeoflinkagenumber-from-hold.groovy"
+						}
+					}
+				},
+				{
+					"@id": "https://libris-qa.kb.se/59gpgj2b55tsghr#it",
+					"@type": "Item",
+					"heldBy": {
+						"@id": "https://libris.kb.se/library/Sbi",
+						"@type": "Library",
+						"sameAs": [
+							{
+								"@id": "http://bibdb.libris.kb.se/library/Sbi"
+							}
+						],
+						"name": "Svenska barnboksinstitutets bibliotek",
+						"sigel": "Sbi",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/000n6qq314bhmpx3",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://libris.kb.se/library/Sbi"
+							},
+							"inDataset": [
+								{
+									"@id": "https://libris.kb.se/dataset/bibdb"
+								},
+								{
+									"@id": "https://libris.kb.se/dataset/libraries"
+								}
+							]
+						}
+					},
+					"itemOf": {
+						"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt#it"
+					},
+					"sameAs": [
+						{
+							"@id": "http://libris.kb.se/resource/hold/3624070"
+						}
+					],
+					"shelfControlNumber": "Ref",
+					"meta": {
+						"@id": "https://libris-qa.kb.se/59gpgj2b55tsghr",
+						"@type": "Record",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/hold/3624070"
+							}
+						],
+						"created": "2002-01-10T00:00:00+01:00",
+						"modified": "2018-06-05T12:06:48.747+02:00",
+						"mainEntity": {
+							"@id": "https://libris-qa.kb.se/59gpgj2b55tsghr#it"
+						},
+						"identifiedBy": [
+							{
+								"@type": "LibrisIIINumber",
+								"value": "9176423484"
+							}
+						],
+						"recordStatus": "marc:CorrectedOrRevised",
+						"controlNumber": "3624070",
+						"generationDate": "2022-08-23T13:01:52.807+02:00",
+						"generationProcess": {
+							"@id": "https://libris.kb.se/sys/globalchanges/cleanups/2022/06/lxl-1653-remove-typeoflinkagenumber-from-hold.groovy"
+						}
+					}
+				},
+				{
+					"@id": "https://libris-qa.kb.se/26clcfz72bx8tgw#it",
+					"@type": "Item",
+					"heldBy": {
+						"@id": "https://libris.kb.se/library/NB",
+						"name": "Nationalbibliografin",
+						"@type": "Bibliography",
+						"sigel": "NB",
+						"sameAs": [
+							{
+								"@id": "http://bibdb.libris.kb.se/library/NB"
+							}
+						],
+						"meta": {
+							"@id": "https://libris-qa.kb.se/000n6qq312slvd3k",
+							"@type": "Record",
+							"created": "2021-06-16T18:41:46.123+02:00",
+							"modified": "2021-06-16T18:41:46.123+02:00",
+							"inDataset": [
+								{
+									"@id": "https://libris.kb.se/dataset/bibdb"
+								},
+								{
+									"@id": "https://libris.kb.se/dataset/bibliographies"
+								}
+							],
+							"mainEntity": {
+								"@id": "https://libris.kb.se/library/NB"
+							},
+							"recordStatus": "marc:CorrectedOrRevised"
+						}
+					},
+					"itemOf": {
+						"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt#it"
+					},
+					"sameAs": [
+						{
+							"@id": "http://libris.kb.se/resource/hold/3624067"
+						}
+					],
+					"shelfMark": {
+						"@type": "ShelfMark",
+						"label": "BI L"
+					},
+					"classification": [
+						{
+							"code": "uHc",
+							"@type": "Classification",
+							"inScheme": {
+								"code": "kssb",
+								"@type": "ConceptScheme"
+							}
+						}
+					],
+					"physicalLocation": ["87:15"],
+					"shelfControlNumber": "R, 870721",
+					"meta": {
+						"@id": "https://libris-qa.kb.se/26clcfz72bx8tgw",
+						"@type": "Record",
+						"sameAs": [
+							{
+								"@id": "http://libris.kb.se/hold/3624067"
+							}
+						],
+						"created": "2002-01-10T00:00:00+01:00",
+						"modified": "2018-06-05T12:06:48.734+02:00",
+						"mainEntity": {
+							"@id": "https://libris-qa.kb.se/26clcfz72bx8tgw#it"
+						},
+						"identifiedBy": [
+							{
+								"@type": "LibrisIIINumber",
+								"value": "9176423484"
+							}
+						],
+						"recordStatus": "marc:CorrectedOrRevised",
+						"controlNumber": "3624067",
+						"generationDate": "2022-08-23T13:01:48.899+02:00",
+						"generationProcess": {
+							"@id": "https://libris.kb.se/sys/globalchanges/cleanups/2022/06/lxl-1653-remove-typeoflinkagenumber-from-hold.groovy"
+						}
+					}
+				}
+			]
+		},
+		"meta": {
+			"@id": "https://libris-qa.kb.se/0h96fs3b0c49qkt"
+		}
+	},
+	"bibliography": [
+		{
+			"@id": "https://libris.kb.se/library/NB",
+			"name": "Nationalbibliografin",
+			"@type": "Bibliography",
+			"sigel": "NB",
+			"sameAs": [
+				{
+					"@id": "http://bibdb.libris.kb.se/library/NB"
+				}
+			],
+			"meta": {
+				"@id": "https://libris-qa.kb.se/000n6qq312slvd3k",
+				"@type": "Record",
+				"created": "2021-06-16T18:41:46.123+02:00",
+				"modified": "2021-06-16T18:41:46.123+02:00",
+				"inDataset": [
+					{
+						"@id": "https://libris.kb.se/dataset/bibdb"
+					},
+					{
+						"@id": "https://libris.kb.se/dataset/bibliographies",
+						"@type": "Dataset",
+						"label": "bibliographies",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/n6ttbdm0q41vzglk",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://libris.kb.se/dataset/bibliographies"
+							},
+							"inDataset": [
+								{
+									"@id": "https://libris.kb.se/dataset/bibdb"
+								},
+								{
+									"@id": "https://libris.kb.se/dataset/bibliographies"
+								}
+							]
+						}
+					}
+				],
+				"mainEntity": {
+					"@id": "https://libris.kb.se/library/NB"
+				},
+				"recordStatus": "marc:CorrectedOrRevised"
+			}
+		}
+	],
+	"identifiedBy": [
+		{
+			"@type": "LibrisIIINumber",
+			"value": "9176423484"
+		}
+	],
+	"recordStatus": "marc:CorrectedOrRevised",
+	"controlNumber": "7654300",
+	"encodingLevel": "marc:FullLevel",
+	"generationDate": "2021-06-16T21:54:56.446+02:00",
+	"generationProcess": {
+		"@id": "https://libris.kb.se/sys/globalchanges/cleanups/2021/02/lxl-2469-link-bibliographies.groovy"
+	},
+	"descriptionCreator": {
+		"@id": "https://libris.kb.se/library/NB",
+		"name": "Nationalbibliografin",
+		"@type": "Bibliography",
+		"sigel": "NB",
+		"sameAs": [
+			{
+				"@id": "http://bibdb.libris.kb.se/library/NB"
+			}
+		],
+		"meta": {
+			"@id": "https://libris-qa.kb.se/000n6qq312slvd3k",
+			"@type": "Record",
+			"created": "2021-06-16T18:41:46.123+02:00",
+			"modified": "2021-06-16T18:41:46.123+02:00",
+			"inDataset": [
+				{
+					"@id": "https://libris.kb.se/dataset/bibdb"
+				},
+				{
+					"@id": "https://libris.kb.se/dataset/bibliographies",
+					"@type": "Dataset",
+					"label": "bibliographies",
+					"meta": {
+						"@id": "https://libris-qa.kb.se/n6ttbdm0q41vzglk",
+						"@type": "Record",
+						"mainEntity": {
+							"@id": "https://libris.kb.se/dataset/bibliographies"
+						},
+						"inDataset": [
+							{
+								"@id": "https://libris.kb.se/dataset/bibdb"
+							},
+							{
+								"@id": "https://libris.kb.se/dataset/bibliographies"
+							}
+						]
+					}
+				}
+			],
+			"mainEntity": {
+				"@id": "https://libris.kb.se/library/NB"
+			},
+			"recordStatus": "marc:CorrectedOrRevised"
+		}
+	},
+	"descriptionConventions": [
+		{
+			"@id": "https://id.kb.se/marc/Aacr2",
+			"code": "a",
+			"@type": "marc:CatFormType",
+			"sameAs": [
+				{
+					"@id": "https://id.kb.se/marc/CatFormType-a"
+				}
+			],
+			"prefLabelByLang": {
+				"en": "AACR 2",
+				"sv": "AACR2/KRS"
+			},
+			"meta": {
+				"@id": "https://libris-qa.kb.se/v9b707fzx4wqz50j",
+				"@type": "Record",
+				"created": "2022-12-07T16:25:21.158+01:00",
+				"modified": "2022-12-07T16:25:21.158+01:00",
+				"inDataset": [
+					{
+						"@id": "https://id.kb.se/dataset/common"
+					},
+					{
+						"@id": "https://id.kb.se/dataset/enums",
+						"@type": "Dataset",
+						"label": "enums",
+						"meta": {
+							"@id": "https://libris-qa.kb.se/c0w0gqxgf0tn1p9q",
+							"@type": "Record",
+							"mainEntity": {
+								"@id": "https://id.kb.se/dataset/enums"
+							},
+							"inDataset": [
+								{
+									"@id": "https://id.kb.se/dataset/common"
+								},
+								{
+									"@id": "https://id.kb.se/dataset/enums"
+								}
+							]
+						}
+					}
+				],
+				"mainEntity": {
+					"@id": "https://id.kb.se/marc/Aacr2"
+				},
+				"recordStatus": "marc:New"
+			}
+		}
+	],
+	"@context": "/context.jsonld"
+}

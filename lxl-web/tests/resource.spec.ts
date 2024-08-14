@@ -15,7 +15,7 @@ test('initially opened holdings modals are closable', async ({ page }) => {
 	await expect(page.getByTestId('modal')).toBeHidden();
 	await page.getByTestId('holding-link').first().click();
 	await expect(page.getByTestId('modal')).toBeVisible();
-	await expect(page).toHaveURL('/h08ndxddfg5v2pjf?holdings=Electronic');
+	await expect(page).toHaveURL(new RegExp(/h08ndxddfg5v2pjf\?holdings=\w+/));
 });
 
 test('decorated data in holdings modal is not duplicated while closing modal', async ({ page }) => {

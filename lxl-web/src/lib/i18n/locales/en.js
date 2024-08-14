@@ -131,6 +131,16 @@ export default {
 		availableAt: 'Available at',
 		library: 'library',
 		libraries: 'libraries',
-		findAtYourNearestLibrary: 'Find it at your nearest library'
+		findAtYourNearestLibrary: 'Find it at your nearest library',
+		location: 'Location',
+		shelf: 'Shelf',
+		status: 'Status',
+		date: 'Date',
+		loanPolicy: 'Loan policy',
+		libraryUnvaliable: 'Loan status is not available for this library',
+		loanStatusFailed: 'Failed to get loan status',
+		available: 'Available',
+		unavailable: 'Not available',
+		map: 'map'
 	}
 };

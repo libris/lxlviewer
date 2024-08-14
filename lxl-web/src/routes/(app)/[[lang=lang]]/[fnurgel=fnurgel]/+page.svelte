@@ -10,8 +10,9 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import ResourceImage from '$lib/components/ResourceImage.svelte';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
-	import InstancesList from './InstancesList.svelte';
 	import SearchResult from '$lib/components/find/SearchResult.svelte';
+	import InstancesList from './InstancesList.svelte';
+	import HoldingStatus from './HoldingStatus.svelte';
 
 	export let data;
 
@@ -56,7 +57,7 @@
 	});
 
 	function handleCloseHoldings() {
-		if (!previousURL.searchParams.has('holdings')) {
+		if (!previousURL?.searchParams.has('holdings')) {
 			history.back();
 		} else {
 			const newSearchParams = new URLSearchParams([
@@ -213,33 +214,25 @@
 								: data.t('holdings.libraries')}
 						{/if}
 					</h2>
-					<table class="w-full table-auto border-collapse text-sm">
+					<ul class="w-full text-sm">
 						{#if isFnurgel(latestHoldingUrl)}
+							<!-- holdings list by instance -->
 							{#if data.holdingsByInstanceId[selectedHolding]}
 								{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
-									<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
-										<td>
-											{holdingItem?.heldBy?.name}
-										</td>
-										<td class="text-right text-secondary">
-											{holdingItem?.heldBy?.sigel ? `(${holdingItem?.heldBy?.sigel})` : ''}
-										</td>
-									</tr>
+									<HoldingStatus sigel={holdingItem?.heldBy?.sigel} {holdingUrl}>
+										<span slot="name" class="flex-1">{holdingItem?.heldBy?.name}</span>
+									</HoldingStatus>
 								{/each}
 							{/if}
+							<!-- holdings list by type -->
 						{:else if data.holdersByType?.[latestHoldingUrl]}
 							{#each data.holdersByType[latestHoldingUrl] as holderItem}
-								<tr class="h-11 border-b-primary/16 [&:not(:last-child)]:border-b">
-									<td>
-										{holderItem?.name}
-									</td>
-									<td class="text-right text-secondary">
-										{holderItem?.sigel ? `(${holderItem?.sigel})` : ''}
-									</td>
-								</tr>
+								<HoldingStatus sigel={holderItem?.sigel} {holdingUrl}>
+									<span slot="name" class="flex-1">{holderItem?.name}</span>
+								</HoldingStatus>
 							{/each}
 						{/if}
-					</table>
+					</ul>
 				</div>
 			</div>
 		</Modal>
