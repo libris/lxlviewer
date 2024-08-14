@@ -29,7 +29,7 @@
 	let dropdown = $state(false);
 	let prevDropdownValue = $state(false);
 
-	let cleanedValue = $derived(sanitizeQSearchParamValue(value));
+	let sanitizedValue = $derived(sanitizeQSearchParamValue(value));
 
 	/*
 	function showDropdown({
@@ -111,7 +111,7 @@
 			onblur={({ selectionStart, selectionEnd }) =>
 				console.log('blur', selectionStart, selectionEnd)}
 		/>
-		<textarea value={cleanedValue} hidden readonly name="_q" maxlength={2048}></textarea>
+		<textarea value={sanitizedValue} hidden readonly name="_q" maxlength={2048}></textarea>
 	</SearchInputWrapper>
 	<dialog bind:this={dialogElement} onclose={hideDropdown}>
 		<div class="dropdown">
