@@ -40,7 +40,7 @@
 		min-height: 72px;
 
 		@media screen and (min-width: 810px) {
-			grid-template-columns: 1fr 4fr 1fr;
+			grid-template-columns: 1fr minmax(0, 4fr) 1fr;
 			grid-template-areas: 'home search actions';
 		}
 	}

@@ -135,7 +135,7 @@
 			Dropdown grid should mirror AppHeaders grid layout to ensure correct overlay placement
 		*/
 		display: grid;
-		grid-template-columns: 1fr 4fr 1fr;
+		grid-template-columns: 1fr minmax(0, 4fr) 1fr;
 		grid-template-areas: '. dropdown-content .';
 		padding: 0 calc(var(--gap-base) / 2);
 		pointer-events: none;
@@ -154,9 +154,16 @@
 		padding-top: var(--padding-small);
 	}
 
-	.collapsed {
-		max-height: 48px;
-		overflow: hidden;
+	.collapsed :global(.cm-line) {
 		white-space: nowrap;
+	}
+
+	.collapsed :global(.cm-scroller) {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	.collapsed :global(.cm-scroller::-webkit-scrollbar) {
+		display: none;
 	}
 </style>
