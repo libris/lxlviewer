@@ -15,6 +15,7 @@
 		placeholder: string;
 		extensions?: Extension[];
 		readonly?: boolean;
+		tabindex?: string | number;
 		onchange?: (value: string) => void;
 		onclick?: (event: MouseEvent) => void;
 	};
@@ -29,6 +30,7 @@
 		placeholder,
 		extensions = [],
 		readonly = false,
+		tabindex,
 		onchange = () => {},
 		onclick = () => {}
 	}: CodeMirrorProps = $props();
@@ -55,6 +57,11 @@
 		placeholderExtension(placeholder),
 		EditorView.domEventHandlers({
 			click: (event: MouseEvent) => onclick(event)
+		}),
+		EditorView.contentAttributes.of({
+			...(tabindex?.toString() && {
+				tabindex: tabindex?.toString()
+			})
 		}),
 		...extensions
 	]);
