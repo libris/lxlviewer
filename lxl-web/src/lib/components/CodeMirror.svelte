@@ -118,6 +118,7 @@
 		if (value !== prevValue) {
 			editor?.setState(createEditorState(value));
 			prevValue = value;
+			// Should the cursor be placed one step before where the first diff between value and prev value occurs?
 		}
 	});
 
