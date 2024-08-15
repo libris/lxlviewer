@@ -109,10 +109,9 @@
 				</SearchInputWrapper>
 				<div class="dropdown-actions">
 					Bygg och förfina din sökfråga
-					<p>Hello</p>
-					<p>Hello</p>
-					<p>Hello</p>
-					<button onclick={() => console.log('Clicked test button')}>Test button</button>
+					<p>Alternativ 1</p>
+					<p>Alternativ 2</p>
+					<p>Alternativ 3</p>
 				</div>
 			</div>
 		</div>
