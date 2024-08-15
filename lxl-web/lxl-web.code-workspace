@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../lxljs"
+		},
+		{
+			"path": "../codemirror-lang-lxlquery"
 		}
 	],
 	"settings": {

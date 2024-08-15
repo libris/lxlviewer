@@ -38,6 +38,7 @@
 		"@types/eslint": "^8.56.10",
 		"@types/jmespath": "^0.15.2",
 		"autoprefixer": "^10.4.19",
+		"codemirror-lang-lxlquery": "file:../codemirror-lang-lxlquery",
 		"cssnano": "^7.0.2",
 		"eslint": "^9.4.0",
 		"eslint-config-prettier": "^9.0.0",

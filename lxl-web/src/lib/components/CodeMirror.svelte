@@ -3,7 +3,7 @@
 	import { minimalSetup } from 'codemirror';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
 	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
-
+	import { lxlQueryLanguage } from 'codemirror-lang-lxlquery';
 	/**
 	 * TODO:
 	 * - Add maxlength prop
@@ -62,6 +62,7 @@
 				tabindex: tabindex?.toString()
 			})
 		}),
+		lxlQueryLanguage,
 		...extensions
 	]);
 
