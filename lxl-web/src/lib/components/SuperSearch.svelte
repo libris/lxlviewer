@@ -30,6 +30,7 @@
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
 	let dropdownCodeMirror: CodeMirror | undefined = $state();
 	let dialogElement: HTMLDialogElement | undefined = $state();
+	let dropdown = $state(false);
 
 	let sanitizedValue = $derived(sanitizeQSearchParamValue(value));
 
@@ -41,16 +42,19 @@
 				dropdownCodeMirror?.select(selection);
 			}
 			dialogElement?.showModal();
+			dropdown = true;
 		}
 	}
 
 	function hideDropdown() {
+		value = sanitizedValue;
 		const selection = dropdownCodeMirror?.getMainSelection();
 
 		if (selection) {
 			collapsedCodeMirror?.select(selection);
 		}
 		dialogElement?.close();
+		dropdown = false;
 	}
 
 	function handleClickOutsideDialog(event: MouseEvent) {
@@ -84,7 +88,7 @@
 
 <div class="super-search" bind:this={superSearchContainerElement}>
 	<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
-		<div class="collapsed">
+		<div class="collapsed" class:hidden={dropdown}>
 			<CodeMirror
 				bind:value
 				bind:this={collapsedCodeMirror}
@@ -164,6 +168,10 @@
 	}
 
 	.collapsed :global(.cm-scroller::-webkit-scrollbar) {
+		display: none;
+	}
+
+	.hidden {
 		display: none;
 	}
 </style>
