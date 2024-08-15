@@ -7,7 +7,6 @@
 	/**
 	 * TODO:
 	 * - Add maxlength prop
-	 * - Add multiline prop
 	 */
 
 	type CodeMirrorProps = {
