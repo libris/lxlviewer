@@ -84,14 +84,16 @@
 
 <div class="super-search" bind:this={superSearchContainerElement}>
 	<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
-		<CodeMirror
-			bind:value
-			bind:this={collapsedCodeMirror}
-			{placeholder}
-			extensions={[submitClosestFormOnEnter]}
-			onclick={() => showDropdown()}
-			onchange={showDropdownOnCollapsedChange}
-		/>
+		<div class="collapsed">
+			<CodeMirror
+				bind:value
+				bind:this={collapsedCodeMirror}
+				{placeholder}
+				extensions={[submitClosestFormOnEnter]}
+				onclick={() => showDropdown()}
+				onchange={showDropdownOnCollapsedChange}
+			/>
+		</div>
 		<textarea value={sanitizedValue} hidden readonly name="_q" maxlength={2048}></textarea>
 	</SearchInputWrapper>
 	<dialog bind:this={dialogElement} onclose={hideDropdown}>
@@ -105,11 +107,13 @@
 						extensions={[submitClosestFormOnEnter]}
 					/>
 				</SearchInputWrapper>
-				Bygg och förfina din sökfråga
-				<p>Hello</p>
-				<p>Hello</p>
-				<p>Hello</p>
-				<button onclick={() => console.log('Clicked test button')}>Test button</button>
+				<div class="dropdown-actions">
+					Bygg och förfina din sökfråga
+					<p>Hello</p>
+					<p>Hello</p>
+					<p>Hello</p>
+					<button onclick={() => console.log('Clicked test button')}>Test button</button>
+				</div>
 			</div>
 		</div>
 	</dialog>
@@ -145,5 +149,15 @@
 		background: var(--background-main);
 		padding: var(--padding-small) var(--gap-base);
 		pointer-events: auto;
+	}
+
+	.dropdown-actions {
+		padding-top: var(--padding-small);
+	}
+
+	.collapsed {
+		max-height: 48px;
+		overflow: hidden;
+		white-space: nowrap;
 	}
 </style>
