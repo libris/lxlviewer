@@ -1,8 +1,10 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import CodeMirror from './CodeMirror.svelte';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 	import { submitClosestFormOnEnter } from '$lib/utils/codemirror';
+	import { onDestroy, onMount } from 'svelte';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -25,102 +27,89 @@
 	let { value = $bindable(), placeholder }: SuperSearchProps = $props();
 
 	let superSearchContainerElement: HTMLDivElement | undefined = $state();
+	let collapsedCodeMirror: CodeMirror | undefined = $state();
+	let dropdownCodeMirror: CodeMirror | undefined = $state();
 	let dialogElement: HTMLDialogElement | undefined = $state();
-	let dropdown = $state(false);
-	let prevDropdownValue = $state(false);
 
 	let sanitizedValue = $derived(sanitizeQSearchParamValue(value));
 
-	/*
-	function showDropdown({
-		selectionStart,
-		selectionEnd
-	}: {
-		selectionStart: number;
-		selectionEnd: number;
-	}) {
+	function showDropdown() {
 		if (!dialogElement?.open) {
-			dialogElement?.showModal();
-			dropdown = true;
-			const dialogTextareaElement = dialogElement?.querySelector('textarea');
-			if (dialogTextareaElement) {
-				dialogTextareaElement.selectionStart = selectionStart;
-				dialogTextareaElement.selectionEnd = selectionEnd;
+			const selection = collapsedCodeMirror?.getMainSelection();
+
+			if (selection) {
+				dropdownCodeMirror?.select(selection);
 			}
+			dialogElement?.showModal();
 		}
 	}
-	*/
 
 	function hideDropdown() {
-		const dialogTextareaElement = dialogElement?.querySelector('textarea');
-		const selectionStart = dialogTextareaElement?.selectionStart;
-		const selectionEnd = dialogTextareaElement?.selectionEnd;
+		const selection = dropdownCodeMirror?.getMainSelection();
 
-		const collapsedTextareaElement = superSearchContainerElement?.querySelector('textarea');
-		if (collapsedTextareaElement && selectionStart) {
-			collapsedTextareaElement.selectionStart = selectionStart;
+		if (selection) {
+			collapsedCodeMirror?.select(selection);
 		}
-		if (collapsedTextareaElement && selectionEnd) {
-			collapsedTextareaElement.selectionEnd = selectionEnd;
-		}
-
-		if (dialogElement?.open) {
-			dialogElement.close();
-		}
-		dropdown = false;
+		dialogElement?.close();
 	}
 
-	$effect(() => {
-		if (prevDropdownValue !== dropdown) {
-			/* Keep focus on textarea when closing dropdown */
-			if (!dropdown) {
-				superSearchContainerElement?.querySelector('textarea')?.focus();
-			}
-
-			prevDropdownValue = dropdown;
-		}
-	});
-
-	function handleWindowClick(event: MouseEvent) {
-		/** Close dialog if click outside */
-		if (dialogElement?.open && (event.target as Node).contains(dialogElement)) {
-			dialogElement.close();
+	function handleClickOutsideDialog(event: MouseEvent) {
+		if (event.target === dialogElement) {
+			hideDropdown();
 		}
 	}
 
 	function clearSearch() {
 		value = '';
-		const textareaElement = dropdown
-			? superSearchContainerElement?.querySelector('dialog textarea')
-			: superSearchContainerElement?.querySelector('textarea');
-		if (textareaElement instanceof HTMLTextAreaElement) {
-			textareaElement.focus();
+		if (dialogElement?.open) {
+			dropdownCodeMirror?.focus();
+		} else {
+			collapsedCodeMirror?.focus();
 		}
 	}
+
+	async function showDropdownOnCollapsedChange() {
+		await tick(); // await tick to prevent error when selection points outside of document (when typing at the end of the document)
+		showDropdown();
+	}
+
+	onMount(() => {
+		dialogElement?.addEventListener('click', handleClickOutsideDialog);
+	});
+
+	onDestroy(() => {
+		dialogElement?.removeEventListener('click', handleClickOutsideDialog);
+	});
 </script>
 
-<svelte:window onclick={handleWindowClick} />
 <div class="super-search" bind:this={superSearchContainerElement}>
 	<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
 		<CodeMirror
 			bind:value
+			bind:this={collapsedCodeMirror}
 			{placeholder}
 			extensions={[submitClosestFormOnEnter]}
-			onfocus={({ selectionStart, selectionEnd }) =>
-				console.log('focus', selectionStart, selectionEnd)}
-			onblur={({ selectionStart, selectionEnd }) =>
-				console.log('blur', selectionStart, selectionEnd)}
+			onclick={() => showDropdown()}
+			onchange={showDropdownOnCollapsedChange}
 		/>
 		<textarea value={sanitizedValue} hidden readonly name="_q" maxlength={2048}></textarea>
 	</SearchInputWrapper>
 	<dialog bind:this={dialogElement} onclose={hideDropdown}>
 		<div class="dropdown">
 			<div class="dropdown-content">
+				<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
+					<CodeMirror
+						bind:value
+						bind:this={dropdownCodeMirror}
+						{placeholder}
+						extensions={[submitClosestFormOnEnter]}
+					/>
+				</SearchInputWrapper>
 				Bygg och förfina din sökfråga
 				<p>Hello</p>
 				<p>Hello</p>
 				<p>Hello</p>
-				<button onclick={() => console.log('ega')}>keke</button>
+				<button onclick={() => console.log('Clicked test button')}>Test button</button>
 			</div>
 		</div>
 	</dialog>

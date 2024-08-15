@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { minimalSetup } from 'codemirror';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
-	import { EditorState, StateEffect, type Extension } from '@codemirror/state';
+	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
 
 	/**
 	 * TODO:
@@ -10,19 +10,18 @@
 	 * - Add multiline prop
 	 */
 
-	type Selection = {
-		selectionStart: number;
-		selectionEnd: number;
-	};
-
 	type CodeMirrorProps = {
 		value: string;
 		placeholder: string;
 		extensions?: Extension[];
 		readonly?: boolean;
-		onfocus?: ({ selectionStart, selectionEnd }: Selection) => void;
-		onSelectionEndAfterFocus?: ({ selectionStart, selectionEnd }: Selection) => void;
-		onblur?: ({ selectionStart, selectionEnd }: Selection) => void;
+		onchange?: (value: string) => void;
+		onclick?: (event: MouseEvent) => void;
+	};
+
+	type Selection = {
+		anchor: number;
+		head: number;
 	};
 
 	let {
@@ -30,8 +29,8 @@
 		placeholder,
 		extensions = [],
 		readonly = false,
-		onfocus = () => {},
-		onblur = () => {}
+		onchange = () => {},
+		onclick = () => {}
 	}: CodeMirrorProps = $props();
 
 	let codemirrorContainerElement: HTMLDivElement | undefined = $state();
@@ -43,28 +42,20 @@
 		if (e.docChanged) {
 			value = e.state.doc.toString();
 			prevValue = value;
+			onchange(value);
 		}
-	});
-
-	const focusHandler = EditorView.focusChangeEffect.of((editorState, focusing) => {
-		const { from: selectionStart, to: selectionEnd } =
-			editorState.selection.ranges[editorState.selection.mainIndex];
-		if (focusing) {
-			onfocus({ selectionStart, selectionEnd });
-		} else {
-			onblur({ selectionStart, selectionEnd });
-		}
-		return null;
 	});
 
 	let editorExtensions: Extension[] = $derived([
 		// preventNewLine,
 		minimalSetup,
 		updateHandler,
-		focusHandler,
 		EditorView.lineWrapping,
 		EditorState.readOnly.of(readonly),
 		placeholderExtension(placeholder),
+		EditorView.domEventHandlers({
+			click: (event: MouseEvent) => onclick(event)
+		}),
 		...extensions
 	]);
 
@@ -83,6 +74,28 @@
 		});
 	}
 
+	export function getMainSelection(): Selection | null {
+		const mainSelection = editor?.state.selection.main;
+
+		if (mainSelection) {
+			return { anchor: mainSelection.anchor, head: mainSelection.head };
+		}
+		return null;
+	}
+
+	export function select(newSelection: Selection) {
+		editor?.dispatch({
+			selection: EditorSelection.create(
+				[EditorSelection.range(newSelection.anchor, newSelection.head)],
+				0
+			)
+		});
+	}
+
+	export function focus() {
+		editor?.focus();
+	}
+
 	onMount(() => {
 		editor = new EditorView({
 			state: createEditorState(value),
@@ -96,7 +109,6 @@
 		 * We should use transactions where possible but then we need to know where to insert the changes (e.g. changes: { from: 0, to: XX, insert: 'hej'}`)
 		 */
 		if (value !== prevValue) {
-			console.log('changed value from outside');
 			editor?.setState(createEditorState(value));
 			prevValue = value;
 		}
