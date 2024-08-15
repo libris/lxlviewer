@@ -25,7 +25,9 @@
 	<div class="search-icon">
 		<IconSearch />
 	</div>
-	{@render children()}
+	<div class="search-input">
+		{@render children()}
+	</div>
 	{#if showClearSearch}
 		<button type="button" class="clear-action" aria-label={m.clearSearch()} onclick={onclearsearch}>
 			<IconClear />
@@ -46,7 +48,11 @@
 		min-height: var(--height-input-lg);
 	}
 
-	.search-input-wrapper:focus-within {
+	.search-input {
+		display: contents;
+	}
+
+	.search-input-wrapper:has(.search-input *:focus) {
 		outline: auto;
 	}
 
