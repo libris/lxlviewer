@@ -130,7 +130,6 @@ export default {
       activeModal: false,
       removeHover: false,
       pasteHover: false,
-      foundChip: false,
       removed: false,
       uniqueIds: [],
     };
@@ -374,15 +373,6 @@ export default {
       }
       return `${this.parentPath}.${this.fieldKey}`;
     },
-    isMarc() {
-      return this.fieldKey.startsWith('marc:');
-    },
-    isChild() {
-      if (this.parentPath !== 'mainEntity') {
-        return true;
-      }
-      return false;
-    },
     isLangMapWithPartner() {
       return this.isLangMap && this.hasProp;
     },
@@ -584,30 +574,12 @@ export default {
       }
       return false;
     },
-    isInGraph(o) {
-      const data = this.inspector.data;
-      for (const point in data) {
-        if (data[point] !== null) {
-          if (data[point]['@id'] === o['@id']) {
-            return true;
-          }
-        }
-      }
-      return false;
-    },
     isEmbedded(o) {
       const type = o['@type'];
       if (!type || typeof type === 'undefined') {
         return false;
       }
       return VocabUtil.isEmbedded(type, this.resources.vocab, this.settings);
-    },
-    isChip(item) {
-      if (this.getDatatype(item) === 'entity') {
-        this.foundChip = true;
-        return true;
-      }
-      return false;
     },
     highLightLastAdded() {
       if (this.isLastAdded === true) {

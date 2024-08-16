@@ -69,7 +69,6 @@ export default {
   },
   data() {
     return {
-      inEdit: false,
       showCardInfo: false,
       extractDialogActive: false,
       propertyAdderOpened: false,
@@ -225,9 +224,6 @@ export default {
         this.expand();
       }
     },
-    isHolding() {
-      return this.inspector.data.mainEntity['@type'] === 'Item';
-    },
     isHistoryView() {
       return this.diff !== null;
     },
@@ -248,12 +244,6 @@ export default {
     },
     closeExtractDialog() {
       this.extractDialogActive = false;
-    },
-    openForm() {
-      this.inEdit = true;
-    },
-    closeForm() {
-      this.inEdit = false;
     },
     addFocus() {
       this.focused = true;
