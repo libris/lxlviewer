@@ -2,7 +2,6 @@
 import { mapGetters } from 'vuex';
 import { sortBy, set, pick } from 'lodash-es';
 import CreationCard from '@/components/create/creation-card.vue';
-import { formatDate } from '@/utils/datetime';
 import * as RecordUtil from '@/utils/record';
 import * as StringUtil from 'lxljs/string';
 
@@ -49,16 +48,7 @@ export default {
       'templates',
     ]),
     messageTemplates() {
-      // Pre-fill comments with date & current sigel
-      const templatesWithComment = this.templates.combined.messages.map((template) => {
-        const temp = Object.assign({}, template);
-        if (temp.value && temp.value.mainEntity && Object.hasOwn(temp.value.mainEntity, 'comment')) {
-          temp.value.mainEntity.comment = `${formatDate(new Date())} ${this.user.settings.activeSigel}: `;
-        }
-        return temp;
-      });
-
-      const sorted = sortBy(templatesWithComment, (template) => template.label);
+      const sorted = sortBy(this.templates.combined.messages, (template) => template.label);
       return sorted;
     },
   },
