@@ -294,8 +294,10 @@ export default {
       this.showAdminInfoDetails = !this.showAdminInfoDetails;
     },
     isSubClassOf(type) {
+      const mainEntityType = this.inspector.data.mainEntity['@type'];
       const baseClasses = VocabUtil.getBaseClasses(
-        this.inspector.data.mainEntity['@type'],
+        // If more than one type, choose the first
+        Array.isArray(mainEntityType) ? mainEntityType[0] : mainEntityType,
         this.resources.vocab,
         this.resources.context,
       ).map((id) => StringUtil.getCompactUri(id, this.resources.context));
