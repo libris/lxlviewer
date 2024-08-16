@@ -22,7 +22,7 @@ export const preventNewLine = Prec.highest(
 	})
 );
 
-export const submitClosestFormOnEnter = Prec.highest(
+const submitClosestFormOnEnter = Prec.highest(
 	keymap.of([
 		{
 			key: 'Enter',
@@ -36,3 +36,5 @@ export const submitClosestFormOnEnter = Prec.highest(
 		}
 	])
 );
+
+export default submitClosestFormOnEnter;

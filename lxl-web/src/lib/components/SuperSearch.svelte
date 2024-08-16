@@ -3,7 +3,7 @@
 	import CodeMirror from './CodeMirror.svelte';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
-	import { submitClosestFormOnEnter } from '$lib/utils/codemirror';
+	import submitClosestFormOnEnter from '$lib/utils/codemirror/submitClosestFormOnEnter';
 	import { onDestroy, onMount } from 'svelte';
 
 	/** Tests to do
