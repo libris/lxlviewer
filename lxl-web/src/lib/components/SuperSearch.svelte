@@ -41,12 +41,13 @@
 				dropdownCodeMirror?.select(selection);
 			}
 			dialogElement?.showModal();
+			dropdownCodeMirror?.focus(); // manually focus to circumvent issue with Chrome focusing wrong element
 		}
 	}
 
 	function hideDropdown() {
 		value = sanitizedValue;
-		const selection = dropdownCodeMirror?.getMainSelection();
+		const selection = dropdownCodeMirror?.getMainSelection(); // TODO: normalize selection if value differs from sanitizedValue (e.g. selection on multiple rows should convert nicely to selection on a single row)
 
 		if (selection) {
 			collapsedCodeMirror?.select(selection);
