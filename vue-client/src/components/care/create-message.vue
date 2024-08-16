@@ -1,8 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import { sortBy, set, pick } from 'lodash-es';
-import CreationCard from "@/components/create/creation-card.vue";
-import * as RecordUtil from "@/utils/record";
+import CreationCard from '@/components/create/creation-card.vue';
+import * as RecordUtil from '@/utils/record';
 import * as StringUtil from 'lxljs/string';
 
 export default {
@@ -31,7 +31,7 @@ export default {
         set(preparedTemplate, ['@graph', 1, 'concerning'], []);
       }
       if (preparedTemplate['@graph'][1].hasOwnProperty('descriptionCreator')) {
-        set(preparedTemplate, ['@graph', 1, 'descriptionCreator'], {'@id': StringUtil.getLibraryUri(this.user.settings.activeSigel)});
+        set(preparedTemplate, ['@graph', 1, 'descriptionCreator'], { '@id': StringUtil.getLibraryUri(this.user.settings.activeSigel) });
       }
       this.thingData = preparedTemplate;
     },
@@ -45,10 +45,10 @@ export default {
       'userFlagged',
       'user',
       'resources',
-      'templates'
+      'templates',
     ]),
     messageTemplates() {
-      const sorted = sortBy(this.templates.combined['messages'], (template) => template.label);
+      const sorted = sortBy(this.templates.combined.messages, (template) => template.label);
       return sorted;
     },
   },
@@ -60,15 +60,15 @@ export default {
 <template>
   <div class="CreateMessage-cards">
     <creation-card
-        v-for="(template, index) in messageTemplates"
-        :key="index"
-        :is-base="false"
-        :is-allowed="true"
-        :template="template"
-        :index="index + 1"
-        :active-index="activeIndex"
-        @use-template="useTemplate"
-        @set-active-index="setActiveIndex" />
+      v-for="(template, index) in messageTemplates"
+      :key="index"
+      :is-base="false"
+      :is-allowed="true"
+      :template="template"
+      :index="index + 1"
+      :active-index="activeIndex"
+      @use-template="useTemplate"
+      @set-active-index="setActiveIndex" />
   </div>
 </template>
 
