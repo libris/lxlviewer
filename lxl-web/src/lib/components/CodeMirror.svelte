@@ -3,9 +3,10 @@
 	import { minimalSetup } from 'codemirror';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
 	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
-	import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
-	import { tags } from '@lezer/highlight';
 	import { lxlQueryLanguage } from 'codemirror-lang-lxlquery';
+	import { tags } from '@lezer/highlight';
+	import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
+	import propertyWidgets from '$lib/utils/codemirror/propertyWidgets';
 
 	/**
 	 * TODO:
@@ -71,6 +72,7 @@
 			})
 		}),
 		lxlQueryLanguage,
+		propertyWidgets,
 		syntaxHighlighting(lxlQueryHighlightStyle),
 		...extensions
 	]);
