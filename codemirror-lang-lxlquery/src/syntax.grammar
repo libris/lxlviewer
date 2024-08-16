@@ -1,11 +1,10 @@
 @top Program { expression* }
 
-@skip { space | LineComment }
+@skip { space }
 
 expression {
   Identifier |
   String |
-  Boolean |
   Application { "(" expression* ")" }
 }
 
@@ -14,9 +13,7 @@ expression {
 
   String { '"' (!["\\] | "\\" _)* '"' }
 
-  Boolean { "#t" | "#f" }
 
-  LineComment { ";" ![\n]* }
 
   space { $[ \t\n\r]+ }
 

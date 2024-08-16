@@ -3,10 +3,13 @@
 	import { minimalSetup } from 'codemirror';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
 	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
+	import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
+	import { tags } from '@lezer/highlight';
 	import { lxlQueryLanguage } from 'codemirror-lang-lxlquery';
+
 	/**
 	 * TODO:
-	 * - Add maxlength prop
+	 * - Add maxlength prop (query strings has a limit of 2048 characters)
 	 */
 
 	type CodeMirrorProps = {
@@ -39,6 +42,11 @@
 	let prevExtensions: Extension[] = extensions;
 	let prevReadOnly = $state(readonly);
 
+	const lxlQueryHighlightStyle = HighlightStyle.define([
+		{ tag: tags.string, color: '#a11' },
+		{ tag: tags.paren, color: '#999' }
+	]);
+
 	const updateHandler = EditorView.updateListener.of(function (e) {
 		if (e.docChanged) {
 			value = e.state.doc.toString();
@@ -63,6 +71,7 @@
 			})
 		}),
 		lxlQueryLanguage,
+		syntaxHighlighting(lxlQueryHighlightStyle),
 		...extensions
 	]);
 
