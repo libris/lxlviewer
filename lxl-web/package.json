@@ -40,7 +40,7 @@
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-svelte": "^2.43.0",
 		"globals": "^15.9.0",
-		"husky": "^9.0.11",
+		"husky": "^9.1.4",
 		"jmespath": "^0.16.0",
 		"lint-staged": "^15.2.9",
 		"lxljs": "file:../lxljs",
