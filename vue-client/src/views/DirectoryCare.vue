@@ -8,6 +8,7 @@ import { translatePhrase } from '@/utils/filters';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import HoldingMover from '@/components/care/holding-mover.vue';
 import CreateMessage from '@/components/care/create-message.vue';
+import MassChanges from '@/components/care/mass-changes.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import AdminNotices from './AdminNotices.vue';
 
@@ -19,6 +20,7 @@ export default {
     'holding-mover': HoldingMover,
     'modal-component': ModalComponent,
     'create-message': CreateMessage,
+    'mass-changes': MassChanges,
   },
   data() {
     return {
@@ -47,6 +49,7 @@ export default {
         { id: 'changes', text: 'CXZ messages' },
         { id: 'message', text: 'Create message' },
         { id: 'holdings', text: 'Move holdings' },
+        { id: 'masschanges', text: 'Mass changes' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
       ];
@@ -146,10 +149,11 @@ export default {
 <template>
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
-      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"/>
-      <admin-notices v-if="$route.params.tool === 'changes'"/>
-      <create-message v-if="$route.params.tool === 'message'"/>
+      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool" />
+      <admin-notices v-if="$route.params.tool === 'changes'" />
+      <create-message v-if="$route.params.tool === 'message'" />
       <holding-mover v-if="$route.params.tool === 'holdings'" :flaggedInstances="flaggedInstances" />
+      <mass-changes v-if="$route.params.tool === 'masschanges'" />
       <div class="" v-if="$route.params.tool === 'merge'">
         <h1>merge records</h1>
         <!-- replace this whole div with the component -->

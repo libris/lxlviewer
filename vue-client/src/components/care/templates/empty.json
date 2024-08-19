@@ -1,0 +1,14 @@
+{
+  "runTemplate" : {
+    "name": "",
+    "date": "",
+    "form": {},
+    "operations": []
+  },
+  "operationTemplate" : {
+    "path": [],
+    "property": "",
+    "delete": {},
+    "insert": {}
+  }
+}

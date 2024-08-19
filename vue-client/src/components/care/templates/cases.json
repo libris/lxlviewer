@@ -1,0 +1,31 @@
+{
+  "cases": [
+    {
+      "name": "Ersätt en länkad entitet med en annan",
+      "form": {
+        "@id": "TEMP_ID#it",
+        "instanceOf": {
+          "subject": [
+            {
+              "@id": "https://id.kb.se/term/sao/H%C3%A4star"
+            }
+          ]
+        }
+      },
+      "operations": [
+        {
+          "path": [
+            "instanceOf"
+          ],
+          "property": "subject",
+          "delete": {
+            "@id": "https://id.kb.se/term/sao/H%C3%A4star"
+          },
+          "insert": {
+            "@id": "https://id.kb.se/term/sao/%C3%85snor"
+          }
+        }
+      ]
+    }
+  ]
+}
