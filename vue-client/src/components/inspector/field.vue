@@ -266,7 +266,8 @@ export default {
         this.resources.context,
         this.resources.vocabClasses,
       ).map((item) => StringUtil.getCompactUri(item, this.resources.context));
-      return fetchedRange;
+      const unselectableTypes = Object.values(this.settings.extractableMappedTypes);
+      return fetchedRange.filter((t) => !unselectableTypes.includes(t));
     },
     allSearchTypes() {
       if (this.allValuesFrom.length > 0) {
@@ -387,12 +388,10 @@ export default {
       );
     },
     isCompositional() {
-      if (this.keyAsVocabProperty && this.keyAsVocabProperty.hasOwnProperty('category')) {
-        if (this.keyAsVocabProperty.category['@id'] === 'https://id.kb.se/vocab/compositional') {
-          return true;
-        }
-      }
-      return false;
+      return VocabUtil.hasCategory(this.keyAsVocabProperty, 'compositional', this.resources);
+    },
+    isHistoryView() {
+      return this.diff !== null;
     },
     hasSingleValue() {
       if (!isArray(this.fieldValue) || this.fieldValue.length === 1) {
@@ -548,11 +547,11 @@ export default {
       if (this.fieldKey === '@type' || VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab') {
         return 'vocab';
       }
+      if (this.isPlainObject(o) && (!this.isLinked(o) || this.isInlined(o))) {
+        return 'local';
+      }
       if (this.isPlainObject(o) && this.isLinked(o)) {
         return 'entity';
-      }
-      if (this.isPlainObject(o) && !this.isLinked(o)) {
-        return 'local';
       }
       if (this.range && this.range.length > 0 && this.range.every((r) => Object.keys(VocabUtil.XSD_NUMERIC_TYPES).includes(r))) {
         return 'numeric';
@@ -569,10 +568,11 @@ export default {
       if (typeof o === 'undefined') {
         throw new Error('Cannot check link status of undefined object.');
       }
-      if (o.hasOwnProperty('@id') && !o.hasOwnProperty('@type')) {
-        return true;
-      }
-      return false;
+      return o.hasOwnProperty('@id');
+    },
+    isInlined(o) {
+      // FIXME
+      return this.isLinked(o) && Object.keys(o).length > 1 && this.isCompositional && !this.isHistoryView;
     },
     isEmbedded(o) {
       const type = o['@type'];
@@ -915,7 +915,7 @@ export default {
           :diff="diff"
           :parent-path="path" />
 
-        <!-- Not linked, local child objects -->
+        <!-- Not linked, local child objects OR inlined linked objects-->
         <item-local
           :data-parent="path"
           v-if="getDatatype(item) == 'local'"

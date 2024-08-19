@@ -245,3 +245,7 @@ export function translateAliasedUri(uri) {
   }
   return translatedUri;
 }
+
+export function isLink(o) {
+  return Object.keys(o).length === 1 && Object.keys(o).includes('@id');
+}

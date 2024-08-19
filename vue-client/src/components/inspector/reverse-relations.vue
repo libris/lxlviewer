@@ -6,6 +6,7 @@ import * as StringUtil from 'lxljs/string';
 import * as MathUtil from '@/utils/math';
 import * as HttpUtil from '@/utils/http';
 import { translatePhrase } from '@/utils/filters';
+import { isLink } from '@/utils/data';
 import Spinner from '@/components/shared/spinner.vue';
 import RoundedButton from '@/components/shared/rounded-button.vue';
 import CreateItemButton from '@/components/inspector/create-item-button.vue';
@@ -112,8 +113,6 @@ export default {
       return this.myHolding !== null;
     },
     myHolding() {
-      const isLink = (o) => Object.keys(o).length === 1 && Object.keys(o).includes('@id');
-
       if (this.user.isLoggedIn) {
         // Check if my sigel has holding
         const libraryUri = this.user.getActiveLibraryUri();

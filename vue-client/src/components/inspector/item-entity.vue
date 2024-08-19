@@ -78,6 +78,9 @@ export default {
     isCardWithData() {
       return this.isCard && this.focusData && Object.keys(this.focusData).length > 1;
     },
+    isHistoryView() {
+      return this.diff != null;
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -128,9 +131,6 @@ export default {
     removeFocus() {
       this.focused = false;
     },
-    isHistoryView() {
-      return this.diff != null;
-    },
   },
   components: {
     Menu,
@@ -138,7 +138,7 @@ export default {
     ReverseRelations,
   },
   created() {
-    if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey)) {
+    if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey) && !this.isHistoryView) {
       this.expand();
     }
   },
@@ -151,7 +151,7 @@ export default {
           }
         }).catch((error) => console.error(error));
       }
-      if (this.isExpanded && !this.isHistoryView()) {
+      if (this.isExpanded && !this.isHistoryView) {
         this.expand();
       }
       if (this.isNewlyAdded) {

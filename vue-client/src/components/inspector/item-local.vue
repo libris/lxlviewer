@@ -6,6 +6,8 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
 import * as LayoutUtil from '@/utils/layout';
+import * as HttpUtil from "@/utils/http";
+import { DELETE_ON_SAVE } from '@/store';
 import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 import PropertyAdder from '@/components/inspector/property-adder.vue';
 import EntityAction from '@/components/inspector/entity-action.vue';
@@ -150,7 +152,18 @@ export default {
       }
       return false;
     },
-    hasId() {
+    canExtractMappedType() {
+      // TODO open up for all users at some point
+      if (this.user.getActiveLibraryUri() !== 'https://libris.kb.se/library/S') {
+        return false;
+      }
+
+      return this.extractableMappedType && !this.isInlinedRecord;
+    },
+    extractableMappedType() {
+      return this.settings.extractableMappedTypes[this.item['@type']];
+    },
+    isInlinedRecord() {
       return this.item.hasOwnProperty('@id');
     },
     getPath() {
@@ -290,7 +303,13 @@ export default {
     },
     cloneThis() {
       const parentData = cloneDeep(get(this.inspector.data, this.parentPath));
-      parentData.push(this.item);
+      if (this.isInlinedRecord) {
+        const o = cloneDeep(this.item);
+        delete o['@id'];
+        parentData.push(o);
+      } else {
+        parentData.push(this.item);
+      }
 
       this.$store.dispatch('setInspectorStatusValue', {
         property: 'lastAdded',
@@ -322,6 +341,13 @@ export default {
     copyThis() {
       const userStorage = cloneDeep(this.userStorage);
       userStorage.copyClipboard = this.item;
+      if (this.isInlinedRecord) {
+        const o = cloneDeep(this.item);
+        delete o['@id'];
+        userStorage.copyClipboard = o;
+      } else {
+        userStorage.copyClipboard = this.item;
+      }
       this.$store.dispatch('setUserStorage', userStorage);
       this.$store.dispatch(
         'pushNotification',
@@ -345,6 +371,24 @@ export default {
           heading.classList.remove('is-stuck');
         }
       });
+    },
+    removeThisAndDeleteLinked() {
+      HttpUtil.getRelatedRecords({ o: this.item['@id'], _limit: 0 }, this.settings.apiPath)
+        .then((response) => {
+          // Before queuing the deletion of the linked record, check if there are any other
+          // records linking to it. If there are other links we won't be able to delete it.
+          // We assume that if there is exactly one link it is our own link.
+          if (response.totalItems === 1) {
+            const extraChangeList = [{ path: DELETE_ON_SAVE, id: this.item['@id'], type: this.item['@type'] }];
+            this.removeThis(true, extraChangeList);
+          } else {
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${translatePhrase('Forbidden')} - ${translatePhrase('This entity may have active links')}` });
+          }
+        }, (error) => {
+          const msg = 'Error checking for relations';
+          this.$store.dispatch('pushNotification', { type: 'danger', message:`${translatePhrase(msg)} - ${error?.statusText || ''}` });
+          console.log(msg, error);
+        });
     },
   },
   watch: {
@@ -499,7 +543,7 @@ export default {
           :title="item['@type']">
           <span class="ItemLocal-extraction-label" v-if="isExtracting">
             <i class="fa fa-scissors" />
-            {{ translatePhrase("The work is extracted once the instance is saved") }}
+            {{ translatePhrase("Extracted when the record is saved") }}
           </span>
           <span v-if="!expanded || !isExtracting">
             {{ capitalize(labelByLang(item['@type'])) }}:
@@ -516,7 +560,7 @@ export default {
         </div>
       </div>
       <id-pill
-        v-if="this.hasId"
+        v-if="this.isInlinedRecord"
         :uri="this.recordId"
         :isLibrisResource="this.isLibrisResource"
       />
@@ -559,13 +603,37 @@ export default {
         />
 
         <entity-action
-          v-if="inspector.status.editing && !isLocked"
+          v-if="inspector.status.editing && !isLocked && !isInlinedRecord && !isExtracting"
           @action="removeThis(true)"
           @highlight="addHighlight('remove')"
           @dehighlight="removeHighlight('remove')"
           label="Remove"
           description="Remove"
           icon="trash-o"
+          :parent-hovered="isHovered"
+          :is-large="false"
+        />
+
+        <entity-action
+          v-if="inspector.status.editing && !isLocked && isInlinedRecord"
+          @action="removeThisAndDeleteLinked()"
+          @highlight="addHighlight('remove')"
+          @dehighlight="removeHighlight('remove')"
+          label="Remove entity"
+          :description="`${translatePhrase('Remove')} ${capitalize(labelByLang(item['@type']))}`"
+          icon="trash-o"
+          :parent-hovered="isHovered"
+          :is-large="false"
+        />
+
+        <entity-action
+          v-if="inspector.status.editing && !isLocked && isInlinedRecord"
+          @action="removeThis(true)"
+          @highlight="addHighlight('remove')"
+          @dehighlight="removeHighlight('remove')"
+          label="Remove link to"
+          :description="`${translatePhrase('Remove link to')} ${capitalize(labelByLang(item['@type']))}`"
+          icon="times-circle"
           :parent-hovered="isHovered"
           :is-large="false"
         />
@@ -606,6 +674,16 @@ export default {
                 @click="cloneThis(), closeManagerMenu()">
                 <i class="fa fa-fw fa-clone" aria-hidden="true" />
                 {{ translatePhrase("Duplicate entity") }}
+              </a>
+            </li>
+            <li class="ManagerMenu-menuItem" v-if="canExtractMappedType">
+              <a
+                tabindex="0"
+                class="ManagerMenu-menuLink"
+                @keyup.enter="extract(), closeManagerMenu()"
+                @click="extract(), closeManagerMenu()">
+                <i class="fa fa-fw fa-plus" aria-hidden="true" />
+                {{ translatePhrase("Extract") }} {{ capitalize(labelByLang(extractableMappedType)) }}
               </a>
             </li>
           </ul>
@@ -870,7 +948,7 @@ export default {
   &.is-extracting {
     background-color: @form-extracting !important;
     border: 1px dashed @brand-primary;
-    
+
     &.highlight-mark {
       border-color: @brand-primary !important;
     }

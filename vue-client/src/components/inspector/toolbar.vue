@@ -348,7 +348,7 @@ export default {
       'status',
     ]),
     isMyHolding() {
-      if (this.recordType !== 'Item') {
+      if (!VocabUtil.isSubClassOf(this.recordType, 'Item', this.resources.vocab, this.resources.context)) {
         return false;
       }
       if (this.inspector.data.mainEntity.heldBy && this.inspector.data.mainEntity.heldBy['@id'] === this.activeSigelId) {
@@ -366,7 +366,7 @@ export default {
     },
     compiledIsAvailable() {
       if (
-        (this.recordType === 'Instance' || this.isMyHolding)
+        (this.recordType === 'Instance' || (this.isMyHolding && this.inspector.data.mainEntity.itemOf))
         && this.hasSigel
         && !this.inspector.status.editing
         && this.user.email !== ''
@@ -408,11 +408,13 @@ export default {
       if (record['@type'] !== 'Record') {
         return false;
       }
-      if (mainEntity['@type'] === 'Item') {
-        if (this.isMyHolding || this.user.isGlobalRegistrant()) {
-          return true;
-        }
-        return false;
+      if (VocabUtil.isSubClassOf(
+        mainEntity['@type'],
+        'Item',
+        this.resources.vocab,
+        this.resources.context,
+      )) {
+        return this.isMyHolding || this.user.isGlobalRegistrant();
       }
       if (VocabUtil.isSubClassOf(
         mainEntity['@type'],

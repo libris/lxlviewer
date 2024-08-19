@@ -8,6 +8,7 @@ import * as User from '@/models/user';
 import settings from './settings';
 
 const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
+export const DELETE_ON_SAVE = '__DELETE_ON_SAVE__';
 
 const store = createStore({
   state: {
@@ -73,6 +74,7 @@ const store = createStore({
       changeHistory: [],
       event: [],
       magicShelfMarks: [],
+      otherRecordsToDeleteOnSave: [],
       extractItemsOnSave: [],
     },
     status: {
@@ -193,6 +195,12 @@ const store = createStore({
       if (payload.addToHistory) {
         const changes = [];
         each(payload.changeList, (node) => {
+          if (node.path === DELETE_ON_SAVE) {
+            state.inspector.otherRecordsToDeleteOnSave.push({ id: node.id, type: node.type });
+            changes.push(node);
+            return;
+          }
+
           let oldValue;
           if (node.path === '') {
             oldValue = inspectorData;
@@ -273,6 +281,7 @@ const store = createStore({
     },
     flushChangeHistory(state) {
       state.inspector.changeHistory = [];
+      state.inspector.otherRecordsToDeleteOnSave = [];
     },
     setChangeHistory(state, data) {
       state.inspector.changeHistory = data;
@@ -731,6 +740,12 @@ const store = createStore({
           dispatch('removeExtractItemOnSave', { path: node.path.replace(`.${EXTRACT_ON_SAVE}`, '') });
         }
 
+        if (node.path === DELETE_ON_SAVE) {
+          state.inspector.otherRecordsToDeleteOnSave = state.inspector.otherRecordsToDeleteOnSave
+            .filter((i) => i.id !== node.id);
+          return acc;
+        }
+
         // It had a value
         if (typeof node.value !== 'undefined') {
           return [...acc, node];
@@ -754,7 +769,7 @@ const store = createStore({
         }
 
         return acc;
-      }, [])
+      }, []);
 
       commit("updateInspectorData", {
         addToHistory: false,

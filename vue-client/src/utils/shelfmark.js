@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 import md5 from 'md5';
 import * as HttpUtil from './http';
+import { isSubClassOf } from "lxljs/vocab";
 
 export async function hasAutomaticShelfControlNumber(shelfMarkId) {
   return HttpUtil.get({
@@ -9,11 +10,12 @@ export async function hasAutomaticShelfControlNumber(shelfMarkId) {
   }).then((shelfMark) => Promise.resolve(shelfMark['@graph'][1].hasOwnProperty('nextShelfControlNumber')));
 }
 
-export async function checkAutoShelfControlNumber(obj, settings, user) {
+export async function checkAutoShelfControlNumber(obj, settings, user, resources) {
   const mainEntity = obj['@graph'][1];
+  const isItem = (type) => type && isSubClassOf(type, 'Item', resources.vocab, resources.context);
 
-  if (mainEntity['@type'] === 'Item') {
-    const items = (mainEntity.hasComponent || []).filter((c) => c['@type'] === 'Item');
+  if (isItem(mainEntity['@type'])) {
+    const items = (mainEntity.hasComponent || []).filter((c) => isItem(c['@type']));
     items.push(mainEntity);
     for (const item of items) {
       // we actually want to do these sequentially in case they link to the same shelf mark

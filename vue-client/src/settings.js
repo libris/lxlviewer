@@ -31,6 +31,9 @@ export default {
     // 'Concept', - Blocking this per request of MSS
     'Work',
   ],
+  extractableMappedTypes: {
+    Item: 'SingleItem',
+  },
   showTypeChangerFor: [
     'Instance',
     'Work',

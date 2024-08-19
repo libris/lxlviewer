@@ -172,6 +172,9 @@ export function getRecordType(mainEntityType, vocab, context) {
     // Mostly added as to not throw an error while the data is being picked up.
     return null;
   }
+  if (isSubClassOf(mainEntityType, 'SingleItem', vocab, context)) {
+    return 'SingleItem';
+  }
   if (isSubClassOf(mainEntityType, 'Item', vocab, context)) {
     return 'Item';
   }
