@@ -22,12 +22,27 @@ class PropertyWidget extends WidgetType {
 	}
 	toDOM() {
 		const elt = document.createElement('span');
-		elt.style.cssText = `
+		const name = document.createElement('span');
+		const value = document.createElement('span');
+
+		name.style.cssText = `
     border: 1px solid blue;
-    border-radius: 4px;
+		border-right: none;
+    border-radius: 4px 0 0 4px;
     padding: 0 2px;
     background: lightblue;`;
-		elt.textContent = `${this.property.name}:${this.property.value || ''}`;
+		name.textContent = this.property.name;
+		elt.appendChild(name);
+
+		value.style.cssText = `
+    border: 1px solid green;
+		border-left: none;
+    border-radius: 0 4px 4px 0;
+    padding: 0 2px;
+    background: lightgreen;`;
+		value.textContent = this.property.value || '';
+		elt.appendChild(value);
+
 		return elt;
 	}
 	ignoreEvent() {
