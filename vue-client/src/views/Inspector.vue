@@ -73,7 +73,6 @@ export default {
       etagMap: {},
       inlinedIds: [],
       documentTitle: null,
-      result: {},
       recordLoaded: false,
       modalOpen: false,
       removeInProgress: false,
@@ -209,8 +208,6 @@ export default {
         });
       }).then((result) => {
         if (typeof result !== 'undefined') {
-          // TODO dead store?
-          this.result = result;
           const splitFetched = LxlDataUtil.splitJson(result);
 
           this.inlinedIds = RecordUtil.getLinkedIdsToBeInlined(splitFetched, this.resources);
