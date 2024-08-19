@@ -873,7 +873,7 @@ export default {
           :is-locked="locked"
           :container-accepted-types="parentAcceptedTypes"
           :field-key="fieldKey"
-          :field-value="fieldValue"
+          :field-value="item"
           :entity-type="entityType"
           :parent-path="path" />
       </div>

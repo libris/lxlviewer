@@ -467,7 +467,7 @@ export function getDisplayObject(item, level, resources, quoted, settings) {
           settings.language,
           resources,
         );
-        result[property] = `{${StringUtil.getLabelByLang(trueItem['@type'], settings.language, resources)} ${StringUtil.getUiPhraseByLang('without', settings.language, resources.i18n)} ${expectedClassName.toLowerCase()}}`;
+        result[property] = `{${StringUtil.getLabelByLang(displayType, settings.language, resources)} ${StringUtil.getUiPhraseByLang('without', settings.language, resources.i18n)} ${expectedClassName.toLowerCase()}}`;
       }
     } else {
       // Property is object, lets calculate that
