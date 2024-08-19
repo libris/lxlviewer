@@ -9,6 +9,7 @@ import * as LayoutUtil from '@/utils/layout';
 import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 import PropertyAdder from '@/components/inspector/property-adder.vue';
 import EntityAction from '@/components/inspector/entity-action.vue';
+import IdPill from '@/components/shared/id-pill.vue';
 import SearchWindow from './search-window.vue';
 import ItemMixin from '../mixins/item-mixin.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
@@ -148,6 +149,9 @@ export default {
         return true;
       }
       return false;
+    },
+    hasId() {
+      return this.item.hasOwnProperty('@id');
     },
     getPath() {
       if (this.inArray) {
@@ -445,6 +449,7 @@ export default {
     'property-adder': PropertyAdder,
     'search-window': SearchWindow,
     'entity-action': EntityAction,
+    'id-pill': IdPill,
   },
 };
 </script>
@@ -510,6 +515,11 @@ export default {
           <i class="fa fa-plus-circle icon--sm icon-added" />
         </div>
       </div>
+      <id-pill
+        v-if="this.hasId"
+        :uri="this.recordId"
+        :isLibrisResource="this.isLibrisResource"
+      />
 
       <div class="ItemLocal-actions">
         <entity-action
