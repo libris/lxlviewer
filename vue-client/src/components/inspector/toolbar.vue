@@ -294,14 +294,12 @@ export default {
       this.showAdminInfoDetails = !this.showAdminInfoDetails;
     },
     isSubClassOf(type) {
-      const mainEntityType = this.inspector.data.mainEntity['@type'];
-      const baseClasses = VocabUtil.getBaseClasses(
-        // If more than one type, choose the first
-        Array.isArray(mainEntityType) ? mainEntityType[0] : mainEntityType,
+      return VocabUtil.isSubClassOf(
+        this.inspector.data.mainEntity['@type'],
+        type,
         this.resources.vocab,
         this.resources.context,
-      ).map((id) => StringUtil.getCompactUri(id, this.resources.context));
-      return baseClasses.indexOf(type) > -1;
+      );
     },
     isInReadOnlyDataset(record) {
       // TODO: get from backend
