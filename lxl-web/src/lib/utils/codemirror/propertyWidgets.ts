@@ -26,7 +26,7 @@ class PropertyWidget extends WidgetType {
 		const value = document.createElement('span');
 
 		name.style.cssText = `
-    border: 1px solid blue;
+    border: 1px solid #ccc;
 		border-right: none;
     border-radius: 4px 0 0 4px;
     padding: 0 2px;
@@ -35,7 +35,7 @@ class PropertyWidget extends WidgetType {
 		elt.appendChild(name);
 
 		value.style.cssText = `
-    border: 1px solid green;
+    border: 1px solid #ccc;
 		border-left: none;
     border-radius: 0 4px 4px 0;
     padding: 0 2px;
@@ -43,6 +43,7 @@ class PropertyWidget extends WidgetType {
 		value.textContent = this.property.value || '';
 		elt.appendChild(value);
 
+		elt.appendChild(document.createTextNode('\u00A0'));
 		return elt;
 	}
 	ignoreEvent() {
@@ -50,8 +51,9 @@ class PropertyWidget extends WidgetType {
 	}
 }
 
+// check in transaction filter if part of decoration. If it is, skip editing?
 const propertyMatcher = new MatchDecorator({
-	regexp: /([a-zA-ZäöåÄÖÅ]+):([0-9a-zA-ZäöåÄÖÅ]+)?/g,
+	regexp: /([a-zA-ZäöåÄÖÅ]+):([0-9a-zA-ZäöåÄÖÅ]+)?[\s]/g,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	decoration: ([_, name, value]) => {
 		return Decoration.replace({
