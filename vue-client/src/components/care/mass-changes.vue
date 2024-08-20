@@ -78,6 +78,9 @@ export default {
       });
       this.initRunSpecification('Specifikationsnamn');
     },
+    setFormForCurrentSpec() {
+      this.currentSpec.form = this.formObj;
+    },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
         property: 'editing',
@@ -96,6 +99,7 @@ export default {
 <template>
   <div class="MassChanges">
     <div class="MassChanges-form">
+      FORMBYGGAREN
       <div>
         <field-adder
           :entity-type="this.formData['@type']"
@@ -111,6 +115,13 @@ export default {
           :form-data="this.formObj"
           :locked="false" />
       </div>
+      <button
+        class="FieldAdder-add btn btn-default toolbar-button"
+        v-on:click="setFormForCurrentSpec()"
+        @keyup.enter="setFormForCurrentSpec()">
+        <span>Lägg till i form</span>
+      </button>
+
       <div>
         SPECIFICATION
         <pre>{{this.currentSpec}}</pre>
