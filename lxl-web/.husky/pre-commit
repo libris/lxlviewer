@@ -1,1 +1,1 @@
-cd ./lxl-web && npx lint-staged
+cd ./lxl-web && lint-staged
