@@ -5,6 +5,7 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DataUtil from '@/utils/data';
 import * as RecordUtil from '@/utils/record';
+import { DELETE_ON_SAVE } from "@/store";
 
 export default {
   props: {
@@ -36,35 +37,32 @@ export default {
     };
   },
   methods: {
-    removeThis(animate = false) {
+    removeThis(animate = false, extraChangeList = []) {
       let parentValue = cloneDeep(get(this.inspector.data, this.parentPath));
       if (isArray(parentValue)) {
         parentValue.splice(this.index, 1);
       } else {
         parentValue = null;
       }
+      const changeList = [
+        {
+          path: `${this.parentPath}`,
+          value: parentValue,
+        },
+      ];
+      changeList.push(...extraChangeList);
       if (animate) {
         this.$store.dispatch('setInspectorStatusValue', { property: 'removing', value: true });
         this.removed = true;
         setTimeout(() => {
           this.$store.dispatch('updateInspectorData', {
-            changeList: [
-              {
-                path: `${this.parentPath}`,
-                value: parentValue,
-              },
-            ],
+            changeList: changeList,
             addToHistory: true,
           });
         }, 500);
       } else {
         this.$store.dispatch('updateInspectorData', {
-          changeList: [
-            {
-              path: `${this.parentPath}`,
-              value: parentValue,
-            },
-          ],
+          changeList: changeList,
           addToHistory: true,
         });
       }
@@ -132,7 +130,7 @@ export default {
       return `${this.entityType}.${this.fieldKey}`;
     },
     extractedMainEntity() {
-      return RecordUtil.getCleanedExtractedData(this.focusData, this.inspector.data, this.resources);
+      return RecordUtil.getCleanedExtractedData(this.focusData, this.inspector.data, this.resources, this.settings);
     },
     isExtractable() {
       if (this.isCompositional === true) {

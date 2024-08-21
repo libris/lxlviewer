@@ -383,29 +383,6 @@ export default {
         addToHistory: true,
       });
     },
-    addSibling(obj) {
-      const linkObj = { '@id': `${this.inspector.data.record['@id']}#work` };
-      const workObj = obj;
-      workObj['@id'] = linkObj['@id'];
-
-      this.$store.dispatch('setInspectorStatusValue', {
-        property: 'lastAdded',
-        value: 'work',
-      });
-      this.$store.dispatch('updateInspectorData', {
-        changeList: [
-          {
-            path: `${this.path}`,
-            value: linkObj,
-          },
-          {
-            path: 'work',
-            value: workObj,
-          },
-        ],
-        addToHistory: true,
-      });
-    },
     addEmpty(typeId) {
       this.hide();
       const shortenedType = StringUtil.getCompactUri(typeId, this.resources.context);

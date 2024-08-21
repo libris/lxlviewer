@@ -847,7 +847,7 @@ body {
       }
     }
   }
-  input, textarea, img, select, .ItemEntity, .ItemLocal, .EntityAction, .ItemSibling, .icon, .icon i, li, i.fa, div {
+  input, textarea, img, select, .ItemEntity, .ItemLocal, .EntityAction, .icon, .icon i, li, i.fa, div {
     &:focus {
       .focus-mixin-border();
     }
