@@ -96,7 +96,6 @@ export default {
 <template>
   <div class="MassChanges">
     <div class="MassChanges-form">
-      FORMBYGGAREN
       <form-builder
         :form-data="this.dataObj"
         @updateForm="setFormForCurrentSpec"

@@ -10,6 +10,7 @@ export default {
   components: { FieldAdder, EntityForm },
   data() {
     return {
+      selected: true,
     };
   },
   props: {
@@ -38,16 +39,14 @@ export default {
 };
 </script>
 <template>
-  <div class="ForBuilder">
-    <div class="MassChanges-form">
+  <div class="FormBuilder">
+    <div
+      class="FormBuilder-label uppercaseHeading"
+      :class="{ 'has-selection': selected }">
+      formbyggaren
+    </div>
+    <div class="FormBuilder-body" :class="{ 'has-selection': selected }">
       <div>
-        <field-adder
-          :entity-type="this.formObj['@type']"
-          :inner="false"
-          :allowed="allowedProperties"
-          :path="'mainEntity'"
-          :editing-object="'mainEntity'"
-        />
         <entity-form
           :editing-object="'mainEntity'"
           :key="formTab.id"
@@ -55,6 +54,13 @@ export default {
           :form-data="this.formObj"
           :locked="false" />
       </div>
+      <field-adder
+        :entity-type="this.formObj['@type']"
+        :inner="false"
+        :allowed="allowedProperties"
+        :path="'mainEntity'"
+        :editing-object="'mainEntity'"
+      />
       <button
         class="FieldAdder-add btn btn-default toolbar-button"
         v-on:click="setForm()"
@@ -67,5 +73,32 @@ export default {
 
 <style scoped lang="less">
 .FormBuilder {
+
+  &-label {
+    padding: 5px 10px;
+    background-color: @grey-lighter;
+    display: table; // ie fallback
+    width: fit-content;
+    transition: background-color 0.3s ease;
+
+    &.has-selection {
+      background-color: #D9EBDC;
+      //background-color: @brand-faded;
+    }
+  }
+
+  &-body {
+    height: 100%;
+    background-color: @white;
+    border: 1px solid @grey-lighter;
+    padding:  20px;
+    transition: background-color 0.3s ease;
+
+    &.has-selection {
+      background-color: #D9EBDC;
+      border-color: transparent;
+    }
+  }
+
 }
 </style>
