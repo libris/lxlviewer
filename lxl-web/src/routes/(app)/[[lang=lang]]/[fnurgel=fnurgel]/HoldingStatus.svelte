@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { type HoldingStatus } from '$lib/types/api';
-	import { type bibIdObj } from '$lib/types/holdings';
+	import type { BibIdObj, DecoratedHolder } from '$lib/types/holdings';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { page } from '$app/stores';
-	export let sigel: string;
-	export let holdingUrl: string;
+	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 
+	export let holder: DecoratedHolder;
+	export let holdingUrl: string;
+
+	const sigel = holder?.sigel;
 	let loading = false;
 	let statusData: HoldingStatus[] | undefined;
 	let error: string | undefined;
@@ -19,7 +23,7 @@
 				.filter((i) => $page.data.bibIdsByInstanceId[i].holders.includes(sigel))
 				.map((i) => $page.data.bibIdsByInstanceId[i]);
 
-	async function fetchHoldingStatus(ids: bibIdObj[]) {
+	async function fetchHoldingStatus(ids: BibIdObj[]) {
 		const promises = ids.map((id) => {
 			if (id) {
 				const searchParams = new URLSearchParams();
@@ -101,12 +105,13 @@
 
 <li class="border-b-primary/16 [&:not(:last-child)]:border-b">
 	<details on:toggle={getHoldingStatus}>
-		<summary class="flex h-11 items-center">
-			<span class="arrow mr-2">
+		<summary class="my-3 flex items-baseline">
+			<span class="arrow mr-2 h-3">
 				<BiChevronRight />
 			</span>
-			<slot name="name" />
-			<span class="text-secondary">{sigel ? `(${sigel})` : ''}</span>
+			<span class="holder-label">
+				<DecoratedData data={holder.obj} showLabels={ShowLabelsOptions['Never']} />
+			</span>
 		</summary>
 		<div class="mb-4 flex flex-col gap-2">
 			{#if loading}
@@ -182,8 +187,18 @@
 </li>
 
 <style lang="postcss">
-	details[open] .arrow {
-		@apply rotate-90;
+	details[open] {
+		& .arrow {
+			@apply rotate-90;
+		}
+
+		& .holder-label {
+			@apply whitespace-normal;
+		}
+	}
+
+	.holder-label {
+		@apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap;
 	}
 
 	.arrow {

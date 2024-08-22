@@ -4,6 +4,8 @@
 	import { type FacetGroup } from '$lib/types/search';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import FacetRange from './FacetRange.svelte';
+	import DecoratedData from '../DecoratedData.svelte';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 
 	export let group: FacetGroup;
 	export let locale: LocaleCode;
@@ -74,8 +76,8 @@
 								>
 								<span class="mr-1" aria-hidden="true">{facet.selected ? '☑' : '☐'}</span>
 							{/if}
-							<span
-								>{facet.str}
+							<span>
+								<DecoratedData data={facet.object} showLabels={ShowLabelsOptions.Never} />
 								<span class="ml-0.5 text-xs text-primary/40">{facet.discriminator}</span>
 							</span>
 						</span>

@@ -17,6 +17,7 @@ import getAtPath from '$lib/utils/getAtPath';
 import {
 	getHoldingsByInstanceId,
 	getHoldingsByType,
+	getHoldersByType,
 	getBibIdsByInstanceId
 } from '$lib/utils/holdings.js';
 
@@ -60,16 +61,10 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const sortedInstances = getSortedInstances([...instances]);
 
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
-	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity);
+	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, resource);
 	const holdingsByType = getHoldingsByType(mainEntity);
-	const holdersByType = Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
-		const heldBys = holdings.map((holdingItem) => holdingItem.heldBy);
-		const uniqueHeldBys = [
-			...new Map(heldBys.map((heldByItem) => [heldByItem['@id'], heldByItem])).values()
-		];
-		return { ...acc, [type]: uniqueHeldBys };
-	}, {});
+	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
 
 	return {
 		type: mainEntity[JsonLd.TYPE],
