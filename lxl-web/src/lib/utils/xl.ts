@@ -1,5 +1,6 @@
 import * as lxljsVocab from 'lxljs/vocab';
 import * as lxljsString from 'lxljs/string';
+import LXLJS_SETTINGS from '$lib/constants/lxljsSettings';
 
 // TODO TESTS!
 // TODO type for JSON-LD structure
@@ -207,6 +208,10 @@ export class VocabUtil {
 		return inverseId ? lxljsString.getCompactUri(inverseId, this.context) : undefined;
 	}
 
+	getTermByType(type: string) {
+		return lxljsVocab.getTermByType(type, this.vocabIndex, this.context, LXLJS_SETTINGS);
+	}
+
 	isSubClassOf(className: ClassName, baseClassName: ClassName) {
 		return this.getBaseClasses(className).includes(baseClassName);
 	}
@@ -329,6 +334,7 @@ export class DisplayUtil {
 			lensType,
 			this.DEFAULT_SUBLENS_SELECTOR,
 			(result, p, value) => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 				[JsonLd.ID, JsonLd.TYPE].includes(p)
 					? ((result as Record<string, unknown>)[p] = value)
 					: (result as { _props: Array<Data> })._props.push({ [p]: value });
@@ -773,6 +779,7 @@ class Formatter {
 					this.displayUtil.applyLensOrdered(this.vocabUtil.getDefinition(vocabName), LensType.None)
 				)
 			);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (e) {
 			console.warn(`Error getting vocab label for: ${vocabName}`);
 		}

@@ -4,6 +4,7 @@
 import type { AvailableLanguageTag } from '../../lib/paraglide/runtime';
 import type { ParaglideLocals } from '@inlang/paraglide-sveltekit';
 import 'unplugin-icons/types/svelte';
+import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 
 declare global {
 	namespace App {
@@ -12,6 +13,8 @@ declare global {
 		}
 		interface Locals {
 			paraglide: ParaglideLocals<AvailableLanguageTag>;
+			display: DisplayUtil;
+			vocab: VocabUtil;
 		}
 		interface PageData {
 			locale: import('$lib/i18n/locales').LocaleCode;
