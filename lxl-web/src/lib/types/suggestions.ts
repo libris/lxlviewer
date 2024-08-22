@@ -1,5 +1,6 @@
 export type PropertySuggestion = {
 	'@id': string;
+	'@type': string;
 	key: string;
 	labelByLang: { [key: string]: string };
 };

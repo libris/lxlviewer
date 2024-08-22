@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { tick } from 'svelte';
-	import CodeMirror from './CodeMirror.svelte';
+	import { tick, onMount, onDestroy } from 'svelte';
+	import CodeMirror, { type EditedPart, type ChangeCodeMirrorEvent } from './CodeMirror.svelte';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 	import submitClosestFormOnEnter from '$lib/utils/codemirror/submitClosestFormOnEnter';
-	import { onDestroy, onMount } from 'svelte';
+	import getSuggestionTypeLabel from '$lib/utils/supersearch/getSuggestionsTypeLabel';
+	import debounce from '$lib/utils/debounce';
+	import { languageTag } from '$lib/paraglide/runtime.js';
+	import type { PartSuggestion } from '$lib/types/suggestions';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -26,12 +29,33 @@
 
 	let { value = $bindable(), placeholder }: SuperSearchProps = $props();
 
+	let editedPart: EditedPart | null | undefined = $state();
+	let partSuggestions: [] = $state([]);
+
 	let superSearchContainerElement: HTMLDivElement | undefined = $state();
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
 	let dropdownCodeMirror: CodeMirror | undefined = $state();
 	let dialogElement: HTMLDialogElement | undefined = $state();
 
 	let sanitizedValue = $derived(sanitizeQSearchParamValue(value));
+
+	const findQueryPartSuggestions = debounce(async (editedPart: EditedPart) => {
+		if (editedPart && editedPart.value.length > 0) {
+			/** TODO: add request cancellation if query changes before fetch has finished */
+
+			try {
+				const suggestionsRes = await fetch(
+					`/api/${languageTag()}/find/part-suggestions?q=${encodeURIComponent(editedPart.value)}`
+				);
+				const suggestions = await suggestionsRes.json();
+				partSuggestions = suggestions;
+			} catch (error) {
+				console.error('something went wrong?', error);
+			}
+		} else {
+			partSuggestions = [];
+		}
+	}, 250);
 
 	function showDropdown() {
 		if (!dialogElement?.open) {
@@ -63,6 +87,8 @@
 
 	function clearSearch() {
 		value = '';
+		editedPart = undefined;
+		partSuggestions = [];
 		if (dialogElement?.open) {
 			dropdownCodeMirror?.focus();
 		} else {
@@ -70,9 +96,20 @@
 		}
 	}
 
-	async function showDropdownOnCollapsedChange() {
-		await tick(); // await tick to prevent error when selection points outside of document (when typing at the end of the document)
-		showDropdown();
+	async function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
+		editedPart = event.editedPart;
+		findQueryPartSuggestions(editedPart);
+		if (!dialogElement?.open) {
+			await tick(); // await tick to prevent error when selection points outside of document (when typing at the end of the document)
+			showDropdown();
+		}
+	}
+
+	function handleClickSuggestionItem(suggestion: PartSuggestion) {
+		dropdownCodeMirror?.replaceEditedPart(
+			`${suggestion.keyByLang?.[languageTag() as keyof typeof suggestion.keyByLang] || suggestion.key}:`
+		);
+		dropdownCodeMirror?.focus();
 	}
 
 	onMount(() => {
@@ -93,7 +130,7 @@
 				{placeholder}
 				extensions={[submitClosestFormOnEnter]}
 				onclick={() => showDropdown()}
-				onchange={showDropdownOnCollapsedChange}
+				onchange={handleChangeCodeMirror}
 			/>
 		</div>
 		<textarea value={sanitizedValue} hidden readonly name="_q" maxlength={2048}></textarea>
@@ -101,20 +138,43 @@
 	<dialog bind:this={dialogElement} onclose={hideDropdown}>
 		<div class="dropdown">
 			<div class="dropdown-content">
-				<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
-					<CodeMirror
-						bind:value
-						bind:this={dropdownCodeMirror}
-						{placeholder}
-						extensions={[submitClosestFormOnEnter]}
-					/>
-				</SearchInputWrapper>
-				<div class="dropdown-actions">
-					Bygg och förfina din sökfråga
-					<p>Alternativ 1</p>
-					<p>Alternativ 2</p>
-					<p>Alternativ 3</p>
+				<div class="dropdown-search">
+					<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
+						<CodeMirror
+							bind:value
+							bind:this={dropdownCodeMirror}
+							{placeholder}
+							extensions={[submitClosestFormOnEnter]}
+							onchange={handleChangeCodeMirror}
+						/>
+					</SearchInputWrapper>
 				</div>
+				{#if partSuggestions?.length}
+					<section>
+						<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
+						<ul>
+							{#each partSuggestions as suggestion}
+								<li class="suggestion-item">
+									<button onclick={() => handleClickSuggestionItem(suggestion)}>
+										<span class="suggestion-label">{suggestion?.labelByLang?.[languageTag()]}</span>
+										{#if suggestion?.['@id']}
+											<span class="suggestion-id">— {suggestion?.['@id']}</span>
+										{/if}
+									</button>
+									<ul class="suggestion-actions">
+										<li>
+											+ Lägg till {getSuggestionTypeLabel(suggestion, languageTag()).toLowerCase()}
+										</li>
+									</ul>
+								</li>
+							{/each}
+						</ul>
+					</section>
+				{/if}
+				<footer class="dropdown-footer">
+					<a href="/">Visa fler träffar</a>
+					<a href="/">Hjälp</a>
+				</footer>
 			</div>
 		</div>
 	</dialog>
@@ -148,12 +208,42 @@
 		box-shadow: 0px 4px 32px 0px rgba(0, 0, 0, 0.15);
 		border-radius: var(--border-radius-lg);
 		background: var(--background-main);
-		padding: var(--padding-small) var(--gap-base);
+		padding: 0;
 		pointer-events: auto;
 	}
 
-	.dropdown-actions {
-		padding-top: var(--padding-small);
+	.dropdown-search {
+		padding: var(--padding-sm) var(--gap-base);
+	}
+
+	.dropdown :global(section > ul) {
+		margin: 0;
+	}
+
+	.dropdown-header {
+		margin: 0;
+		padding: 0 var(--gap-base) var(--padding-2xs) var(--gap-base);
+		color: var(--color-subtle);
+		font-weight: 500;
+		font-size: var(--font-size-sm);
+	}
+
+	.dropdown-footer {
+		display: flex;
+		justify-content: space-between;
+		box-shadow: var(--box-shadow-border-top);
+		padding: var(--padding-sm) var(--gap-base);
+		min-height: var(--height-input-xs);
+		font-size: var(--font-size-sm);
+	}
+
+	.dropdown-footer :global(a) {
+		color: var(--color-link);
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
 	}
 
 	.collapsed {
@@ -170,5 +260,58 @@
 
 	.collapsed :global(.cm-scroller::-webkit-scrollbar) {
 		display: none;
+	}
+
+	.suggestion-item {
+		display: flex;
+		gap: var(--gap-sm);
+		padding: 0 var(--gap-base);
+		width: 100%;
+		font-size: var(--font-size-sm);
+
+		&::before {
+			display: none;
+		}
+
+		&:hover,
+		&:focus-within {
+			background: rgb(234, 242, 237, 0.5);
+		}
+	}
+
+	.suggestion-item > :global(button) {
+		display: flex;
+		flex: 1;
+		align-items: center;
+		gap: var(--gap-sm);
+		cursor: pointer;
+		border: none;
+		padding: 0;
+		min-height: var(--height-input-sm);
+	}
+
+	.suggestion-id {
+		color: var(--color-super-subtle);
+		font-style: italic;
+		font-size: var(--font-size-2xs);
+	}
+
+	.suggestion-label {
+		border-radius: 4px;
+		background: rgba(14, 113, 128, 0.1);
+		padding: 2px 4px;
+		color: #0e7180;
+		font-weight: 500;
+	}
+
+	.suggestion-label:first-letter {
+		text-transform: uppercase;
+	}
+
+	.suggestion-actions {
+		display: flex;
+		align-items: center;
+		margin-left: auto;
+		color: var(--color-subtle);
 	}
 </style>

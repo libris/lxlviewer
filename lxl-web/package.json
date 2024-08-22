@@ -44,6 +44,7 @@
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-svelte": "^2.39.3",
 		"estree-walker": "^3.0.3",
+		"fuse.js": "^7.0.0",
 		"globals": "^15.4.0",
 		"husky": "^9.0.11",
 		"jmespath": "^0.16.0",
