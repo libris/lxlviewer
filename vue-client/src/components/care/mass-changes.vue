@@ -6,16 +6,13 @@ Q:
 
 -->
 <script>
-import EntityForm from '@/components/inspector/entity-form.vue';
-import FieldAdder from '@/components/inspector/field-adder.vue';
-import FormMixin from '@/components/mixins/form-mixin.vue';
+import FormBuilder from '@/components/care/form-builder.vue';
 import { mapGetters } from 'vuex';
 import emptyTemplate from './templates/empty.json';
 
 export default {
   name: 'mass-changes.vue',
-  mixins: [FormMixin],
-  components: { FieldAdder, EntityForm },
+  components: { FormBuilder },
   data() {
     return {
       showOverview: true,
@@ -32,11 +29,8 @@ export default {
     ...mapGetters([
       'inspector',
     ]),
-    formTab() {
-      return { id: 'form', text: 'test' };
-    },
-    formObj() {
-      console.log('updated formdata', JSON.stringify(this.inspector.data.mainEntity));
+    dataObj() {
+      // Try to keep shared between form builder and operations builder
       return this.inspector.data.mainEntity;
     },
   },
@@ -63,23 +57,26 @@ export default {
       return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     },
     init() {
-      this.$store.dispatch('updateInspectorData', {
-        changeList: [
-          {
-            path: 'mainEntity',
-            value: this.formData,
-          },
-        ],
-        addToHistory: true,
-      });
+      this.setDataObj(this.formData);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
         value: 'start-edit',
       });
       this.initRunSpecification('Specifikationsnamn');
     },
-    setFormForCurrentSpec() {
-      this.currentSpec.form = this.formObj;
+    setDataObj(formData) {
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: 'mainEntity',
+            value: formData,
+          },
+        ],
+        addToHistory: true,
+      });
+    },
+    setFormForCurrentSpec(obj) {
+      this.currentSpec.form = obj;
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
@@ -100,33 +97,16 @@ export default {
   <div class="MassChanges">
     <div class="MassChanges-form">
       FORMBYGGAREN
-      <div>
-        <field-adder
-          :entity-type="this.formData['@type']"
-          :inner="false"
-          :allowed="allowedProperties"
-          :path="'mainEntity'"
-          :editing-object="'mainEntity'"
-        />
-        <entity-form
-          :editing-object="'mainEntity'"
-          :key="formTab.id"
-          :is-active="true"
-          :form-data="this.formObj"
-          :locked="false" />
-      </div>
-      <button
-        class="FieldAdder-add btn btn-default toolbar-button"
-        v-on:click="setFormForCurrentSpec()"
-        @keyup.enter="setFormForCurrentSpec()">
-        <span>Lägg till i form</span>
-      </button>
-
+      <form-builder
+        :form-data="this.dataObj"
+        @updateForm="setFormForCurrentSpec"
+      />
+      OPERATIONSBYGGAREN
       <div>
         SPECIFICATION
         <pre>{{this.currentSpec}}</pre>
         ENTITY FORM
-        <pre>{{this.formObj}}</pre>
+        <pre>{{ this.dataObj }}</pre>
         OPERATIONS
         <pre>{{this.currentSpec.operations}}</pre>
       </div>
