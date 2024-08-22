@@ -26,20 +26,19 @@ class PropertyWidget extends WidgetType {
 		const value = document.createElement('span');
 
 		name.style.cssText = `
-    border: 1px solid #ccc;
-		border-right: none;
     border-radius: 4px 0 0 4px;
-    padding: 0 2px;
-    background: lightblue;`;
+    padding: 2px 2px 2px 4px;
+    background: rgba(14, 113, 128, 0.2);
+		color: #0E7180;
+		font-weight: 500;`;
 		name.textContent = this.property.name;
 		elt.appendChild(name);
 
 		value.style.cssText = `
-    border: 1px solid #ccc;
 		border-left: none;
     border-radius: 0 4px 4px 0;
-    padding: 0 2px;
-    background: lightgreen;`;
+    padding: 2px 4px 2px 2px;
+    background: rgba(14, 113, 128, 0.1);`;
 		value.textContent = this.property.value || '';
 		elt.appendChild(value);
 
@@ -53,7 +52,7 @@ class PropertyWidget extends WidgetType {
 
 // check in transaction filter if part of decoration. If it is, skip editing?
 const propertyMatcher = new MatchDecorator({
-	regexp: /([a-zA-ZäöåÄÖÅ]+):([0-9a-zA-ZäöåÄÖÅ]+)?[\s]/g,
+	regexp: /([a-zA-ZäöåÄÖÅ]+):([\S]+)?/g, // rewrite to only allow one-level encapsulated string
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	decoration: ([_, name, value]) => {
 		return Decoration.replace({
