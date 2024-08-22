@@ -1,3 +1,21 @@
+<script context="module" lang="ts">
+	export type Selection = {
+		anchor: number;
+		head: number;
+	};
+
+	export type EditedPart = {
+		value: string;
+		from: number;
+		to: number;
+	};
+
+	export type ChangeCodeMirrorEvent = {
+		value: string;
+		editedPart: EditedPart | null;
+	};
+</script>
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { minimalSetup } from 'codemirror';
@@ -7,6 +25,8 @@
 	import { tags } from '@lezer/highlight';
 	import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
 	import propertyWidgets from '$lib/utils/codemirror/propertyWidgets';
+	import getEditedPart from '$lib/utils/codemirror/getEditedPart';
+	import getMainSelectionUtil from '$lib/utils/codemirror/getMainSelection';
 
 	/**
 	 * TODO:
@@ -19,13 +39,8 @@
 		extensions?: Extension[];
 		readonly?: boolean;
 		tabindex?: string | number;
-		onchange?: (value: string) => void;
+		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		onclick?: (event: MouseEvent) => void;
-	};
-
-	type Selection = {
-		anchor: number;
-		head: number;
 	};
 
 	let {
@@ -52,7 +67,7 @@
 		if (e.docChanged) {
 			value = e.state.doc.toString();
 			prevValue = value;
-			onchange(value);
+			onchange({ value, editedPart: getEditedPart(e.state) });
 		}
 	});
 
@@ -93,10 +108,8 @@
 	}
 
 	export function getMainSelection(): Selection | null {
-		const mainSelection = editor?.state.selection.main;
-
-		if (mainSelection) {
-			return { anchor: mainSelection.anchor, head: mainSelection.head };
+		if (editor?.state) {
+			return getMainSelectionUtil(editor.state);
 		}
 		return null;
 	}
@@ -108,6 +121,24 @@
 				0
 			)
 		});
+	}
+
+	export function replaceEditedPart(replacement: string) {
+		if (editor) {
+			const editedPart = getEditedPart(editor.state);
+
+			if (editedPart) {
+				editor.dispatch({
+					changes: {
+						from: editedPart.from,
+						to: editedPart.to,
+						insert: replacement
+					},
+					selection: { anchor: editedPart.from + replacement.length },
+					scrollIntoView: true
+				});
+			}
+		}
 	}
 
 	export function focus() {
@@ -161,11 +192,12 @@
 	}
 
 	.codemirror-container :global(.cm-content) {
-		padding: 0.875rem 0;
+		padding: 0.75rem 0;
 	}
 
 	.codemirror-container :global(.cm-line) {
 		padding: 0 1px; /* using 0 on horizontal axis causes codemirror cursor to occasionally disappear on firefox */
+		line-height: 1.75;
 	}
 
 	.codemirror-container :global(.cm-editor.cm-focused) {
