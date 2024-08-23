@@ -67,7 +67,7 @@
     "happy-dom": "^15.0.0",
     "less": "^4.2.0",
     "start-server-and-test": "^2.0.5",
-    "vitest": "^0.34.6"
+    "vitest": "^2.0.5"
   },
   "packageManager": "yarn@1.22.19",
   "engines": {
