@@ -24,7 +24,7 @@
 	import { lxlQueryLanguage } from 'codemirror-lang-lxlquery';
 	import { tags } from '@lezer/highlight';
 	import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
-	import propertyWidgets from '$lib/utils/codemirror/propertyWidgets';
+	import qualifierDecoration from '$lib/utils/codemirror/qualifierDecoration';
 	import getEditedPart from '$lib/utils/codemirror/getEditedPart';
 	import getMainSelectionUtil from '$lib/utils/codemirror/getMainSelection';
 
@@ -87,7 +87,7 @@
 			})
 		}),
 		lxlQueryLanguage,
-		propertyWidgets,
+		qualifierDecoration,
 		syntaxHighlighting(lxlQueryHighlightStyle),
 		...extensions
 	]);
@@ -202,5 +202,11 @@
 
 	.codemirror-container :global(.cm-editor.cm-focused) {
 		outline: none;
+	}
+
+	.codemirror-container :global(.lxlquery-qualifier),
+	.codemirror-container :global(.lxlquery-qualifier *) {
+		color: var(--color-link); /* ensure highlighted styles are overwrided */
+		font-weight: 500;
 	}
 </style>
