@@ -11,6 +11,12 @@ export default {
   data() {
     return {
       selected: true,
+      emptyOperations: {
+        path: [],
+        property: '',
+        delete: {},
+        insert: {},
+      },
     };
   },
   props: {
@@ -33,23 +39,37 @@ export default {
     formObj() {
       return this.formData;
     },
+    operations() {
+      // get a hold of history object here.
+      const operations = this.emptyOperations;
+      return operations;
+    },
   },
-  emits: ['updateForm'],
+  emits: ['updateOperations'],
+
   methods: {
-    setForm() {
-      this.$emit('updateForm', this.formObj);
+    setOperations() {
+      console.log('this.inspector.changeHistory', JSON.stringify(this.inspector.changeHistory));
+      this.$emit('updateOperations', this.operations);
+    },
+  },
+  watch: {
+    isActive(newVal, oldVal) {
+      if (newVal === true && newVal !== oldVal) {
+        this.$store.dispatch('flushChangeHistory');
+      }
     },
   },
 };
 </script>
 <template>
-  <div class="FormBuilder">
+  <div class="OperationsBuilder">
     <div
-      class="FormBuilder-label uppercaseHeading"
+      class="OperationsBuilder-label uppercaseHeading"
       :class="{ 'has-selection': isActive }">
-      formbyggaren
+      operationsbyggaren
     </div>
-    <div class="FormBuilder-body" :class="{ 'has-selection': isActive }">
+    <div class="OperationsBuilder-body" :class="{ 'has-selection': isActive }">
       <div>
         <entity-form
           :editing-object="'mainEntity'"
@@ -67,16 +87,17 @@ export default {
       />
       <button
         class="btn btn-default"
-        v-on:click="setForm()"
-        @keyup.enter="setForm()">
-        <span>Lägg till i form</span>
+        v-on:click="setOperations()"
+        @keyup.enter="setOperations()">
+        <span>Lägg till operationer</span>
       </button>
     </div>
   </div>
 </template>
 
 <style scoped lang="less">
-.FormBuilder {
+.OperationsBuilder {
+  margin-top: 20px;
   &-label {
     padding: 5px 10px;
     background-color: @grey-lighter;

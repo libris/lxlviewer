@@ -7,12 +7,14 @@ Q:
 -->
 <script>
 import FormBuilder from '@/components/care/form-builder.vue';
+import OperationsBuilder from '@/components/care/operations-builder.vue';
 import { mapGetters } from 'vuex';
+import { isEmpty } from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
 
 export default {
   name: 'mass-changes.vue',
-  components: { FormBuilder },
+  components: { FormBuilder, OperationsBuilder },
   data() {
     return {
       showOverview: true,
@@ -20,6 +22,7 @@ export default {
         '@type': 'Instance',
         label: 'test',
       },
+      activeStep: '',
       runSpecifications: [],
       currentSpec: {},
       showSpec: false,
@@ -32,6 +35,14 @@ export default {
     dataObj() {
       // Try to keep shared between form builder and operations builder
       return this.inspector.data.mainEntity;
+    },
+    formObject() {
+      const f = isEmpty(this.currentSpec.form) ? this.formData : this.currentSpec.form;
+      return this.isActive('form') ? this.inspector.data.mainEntity : f;
+    },
+    opsObject() {
+      const f = isEmpty(this.currentSpec.form) ? this.formData : this.currentSpec.form;
+      return this.isActive('operations') ? this.inspector.data.mainEntity : f;
     },
   },
   methods: {
@@ -78,11 +89,20 @@ export default {
     setFormForCurrentSpec(obj) {
       this.currentSpec.form = obj;
     },
+    setOperations(obj) {
+      this.currentSpec.operations = obj;
+    },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
         property: 'editing',
         value: false,
       });
+    },
+    setActive(step) {
+      this.activeStep = step;
+    },
+    isActive(step) {
+      return this.activeStep === step;
     },
   },
   beforeMount() {
@@ -97,10 +117,21 @@ export default {
   <div class="MassChanges">
     <div class="MassChanges-form">
       <form-builder
-        :form-data="this.dataObj"
+        @click="setActive('form')"
+        @keyup.enter="setActive('form')"
+        tabindex="0"
+        :is-active="isActive('form')"
+        :form-data="formObject"
         @updateForm="setFormForCurrentSpec"
       />
-      OPERATIONSBYGGAREN
+      <operations-builder
+        @click="setActive('operations')"
+        @keyup.enter="setActive('operations')"
+        tabindex="0"
+        :is-active="isActive('operations')"
+        :form-data="opsObject"
+        @updateOperations="setOperations"
+      />
       <div>
         SPECIFICATION
         <pre>{{this.currentSpec}}</pre>
