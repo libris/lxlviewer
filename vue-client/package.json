@@ -20,7 +20,7 @@
     "@vue/eslint-config-airbnb": "^7.0.0",
     "@vueuse/components": "^10.5.0",
     "@vueuse/core": "^10.5.0",
-    "autoprefixer": "^10.4.16",
+    "autoprefixer": "^10.4.20",
     "autosize": "^4.0.2",
     "babel-core": "7.0.0-bridge.0",
     "bootstrap": "^3.4.1",
@@ -43,7 +43,7 @@
     "md5": "^2.2.1",
     "path": "^0.12.7",
     "portal-vue": "^3.0.0",
-    "postcss": "^8.4.31",
+    "postcss": "^8.4.41",
     "querystring-es3": "^0.2.1",
     "stream-browserify": "^3.0.0",
     "vite": "^5.4.2",
@@ -52,9 +52,9 @@
     "vue-meta": "^2.4.0",
     "vue-resize": "^2.0.0-alpha.1",
     "vue-router": "^4.2.4",
-    "vue-template-compiler": "^2.7.14",
+    "vue-template-compiler": "^2.7.16",
     "vuex": "^4.1.0",
-    "whatwg-fetch": "^3.0.0"
+    "whatwg-fetch": "^3.6.20"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.15",
