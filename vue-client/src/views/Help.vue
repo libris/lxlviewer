@@ -1,11 +1,11 @@
 <script>
 import { orderBy } from 'lodash-es';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import { translatePhrase } from '@/utils/filters';
 import { formatDate, getRelativeTime } from '@/utils/datetime';
-
 export default {
   name: 'help-component',
   data() {
@@ -53,7 +53,7 @@ export default {
       return htmlFixedImages;
     },
     transformMarkdownToHTML(markdown) {
-      const html = marked(markdown);
+      const html = DOMPurify.sanitize(marked.parse(markdown));
       return html;
     },
     getSectionUri(value) {
