@@ -417,6 +417,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Contribution"],
 			"fresnel:propertyFormatDomain": ["role"],
+			"fresnel:propertyStyle": ["secondary", "small"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",
@@ -473,7 +474,7 @@
 			"@id": "genreForm-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["genreForm"],
-			"fresnel:propertyStyle": ["pill", "nolabel"],
+			"fresnel:propertyStyle": ["nolabel"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
@@ -670,6 +671,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Collection"],
 			"fresnel:propertyFormatDomain": ["sigel"],
+			"fresnel:propertyStyle": ["secondary", "small"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",
