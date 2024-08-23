@@ -28,7 +28,7 @@
     "combokeys": "https://github.com/avocode/combokeys/archive/v3.1.0.tar.gz",
     "core-js": "^3.38.1",
     "crypto-browserify": "^3.12.0",
-    "eslint": "^8.52.0",
+    "eslint": "^9.9.0",
     "eslint-plugin-vue": "^9.27.0",
     "floating-vue": "^2.0.0-beta.24",
     "focus-trap": "^7.0.0",
