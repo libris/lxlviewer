@@ -75,7 +75,7 @@
 <article>
 	<div class="resource gap-8 find-layout page-padding" class:bg-header={shouldShowHeaderBackground}>
 		<div
-			class="w-full mb-2 mt-4 flex justify-center self-center object-center md:mx-auto md:justify-start md:self-start md:px-2 xl:px-0"
+			class="mb-2 mt-4 flex w-full justify-center self-center object-center md:mx-auto md:justify-start md:self-start md:px-2 xl:px-0"
 			class:hidden={!$page.data.images?.length}
 		>
 			{#if data.images.length}
@@ -202,12 +202,12 @@
 				<div>
 					<h2 class="font-bold">
 						{data.t('holdings.availableAt')}
-						{#if isFnurgel(latestHoldingUrl)}
+						{#if latestHoldingUrl && isFnurgel(latestHoldingUrl)}
 							{data.holdingsByInstanceId[latestHoldingUrl].length}
 							{data.holdingsByInstanceId[latestHoldingUrl].length === 1
 								? data.t('holdings.library')
 								: data.t('holdings.libraries')}
-						{:else if data.holdersByType?.[latestHoldingUrl]}
+						{:else if latestHoldingUrl && data.holdersByType?.[latestHoldingUrl]}
 							{data.holdersByType[latestHoldingUrl].length}
 							{data.holdersByType[latestHoldingUrl].length === 1
 								? data.t('holdings.library')
@@ -215,21 +215,17 @@
 						{/if}
 					</h2>
 					<ul class="w-full text-sm">
-						{#if isFnurgel(latestHoldingUrl)}
+						{#if latestHoldingUrl && isFnurgel(latestHoldingUrl)}
 							<!-- holdings list by instance -->
-							{#if data.holdingsByInstanceId[selectedHolding]}
+							{#if selectedHolding && data.holdingsByInstanceId[selectedHolding]}
 								{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
-									<HoldingStatus sigel={holdingItem?.heldBy?.sigel} {holdingUrl}>
-										<span slot="name" class="flex-1">{holdingItem?.heldBy?.name}</span>
-									</HoldingStatus>
+									<HoldingStatus holder={holdingItem?.heldBy} {holdingUrl} />
 								{/each}
 							{/if}
 							<!-- holdings list by type -->
-						{:else if data.holdersByType?.[latestHoldingUrl]}
+						{:else if latestHoldingUrl && data.holdersByType?.[latestHoldingUrl]}
 							{#each data.holdersByType[latestHoldingUrl] as holderItem}
-								<HoldingStatus sigel={holderItem?.sigel} {holdingUrl}>
-									<span slot="name" class="flex-1">{holderItem?.name}</span>
-								</HoldingStatus>
+								<HoldingStatus holder={holderItem} {holdingUrl} />
 							{/each}
 						{/if}
 					</ul>

@@ -653,6 +653,30 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Collection-qualifier-format": {
+			"@id": "Collection-qualifier-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Collection"],
+			"fresnel:propertyFormatDomain": ["qualifier"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": "",
+				"fresnel:contentAfter": "",
+				"fresnel:contentLast": ""
+			}
+		},
+		"Collection-sigel-format": {
+			"@id": "Collection-sigel-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Collection"],
+			"fresnel:propertyFormatDomain": ["sigel"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " (",
+				"fresnel:contentFirst": "(",
+				"fresnel:contentAfter": ")",
+				"fresnel:contentLast": ")"
+			}
+		},
 		"default-separators": {
 			"@id": "default-separators",
 			"@type": "fresnel:Format",
