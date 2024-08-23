@@ -8,6 +8,14 @@ title: 'Help'
 
 Here we will continuously provide information about newly added features and planned developments:
 
+### TBA
+
+- Loan status information now shown in the library holdings list
+- Library list now contains more detailed information
+- Access and usage policy for cover images
+- Loading indicator
+- Bug fixes
+
 ### 2024-06-27
 
 - Changed default number of hits per page to 20

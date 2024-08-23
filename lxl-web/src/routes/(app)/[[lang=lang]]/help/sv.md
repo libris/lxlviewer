@@ -8,6 +8,14 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
+### TBA
+
+- Lånestatus visas nu i listan över bibliotek som innehar en viss resurs
+- Särskiljande information visas i bibliotekslistan
+- Upphovsinformation för omslagsbilder
+- Laddningsindikator
+- Buggfixar
+
 ### 2024-06-27
 
 - Ändrat antal sökträffar per sida till 20
