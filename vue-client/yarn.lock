@@ -6198,11 +6198,6 @@ vitest@^0.34.6:
     vite-node "0.34.6"
     why-is-node-running "^2.2.2"
 
-vue-cli-plugin-style-resources-loader@^0.1.4:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/vue-cli-plugin-style-resources-loader/-/vue-cli-plugin-style-resources-loader-0.1.5.tgz#3e95f4df41f5408e1255664690698c0533648109"
-  integrity sha512-LluhjWTZmpGl3tiXg51EciF+T70IN/9t6UvfmgluJBqxbrb6OV9i7L5lTd+OKtcTeghDkhcBmYhtTxxU4w/8sQ==
-
 vue-clipboard2@^0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/vue-clipboard2/-/vue-clipboard2-0.3.3.tgz#331fec85f9d4f175eb0d4feaef4d77338562af36"
