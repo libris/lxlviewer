@@ -65,10 +65,6 @@ export default {
       type: String,
       default: '',
     },
-    key: {
-      type: String,
-      default: '',
-    },
   },
   data() {
     return {
@@ -147,7 +143,7 @@ export default {
       return failedValidations;
     },
     canCopyTitle() {
-      if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.key === 'instanceOf') {
+      if (this.isExtractable && !this.item.hasOwnProperty('hasTitle') && this.fieldKey === 'instanceOf') {
         return true;
       }
       return false;
