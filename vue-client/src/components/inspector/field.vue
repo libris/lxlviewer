@@ -132,6 +132,8 @@ export default {
       removeHover: false,
       pasteHover: false,
       removed: false,
+      markedForAdd: false,
+      markedForRemove: false,
       uniqueIds: [],
     };
   },
@@ -156,11 +158,11 @@ export default {
   computed: {
     diffAdded() {
       if (this.diff == null) return false;
-      return this.diff.added.includes(this.path);
+      return this.diff.added.includes(this.path) && !this.diff.removed.includes(this.path);
     },
     diffRemoved() {
       if (this.diff == null) return false;
-      return this.diff.removed.includes(this.path);
+      return this.diff.removed.includes(this.path) && !this.diff.added.includes(this.path);
     },
     diffModified() {
       if (this.diff == null) return false;
@@ -606,12 +608,13 @@ export default {
     },
     mark(operation) {
       if (operation === 'add') {
-        this.diff
-      } else if (operations === 'remove') {
-
+        this.markedForAdd = true;
+        this.markedForRemove = false;
+      } else if (operation === 'remove'){
+        this.markedForRemove = true;
+        this.markedForAdd = false;
       }
-      //set diff
-    }
+    },
   },
   beforeUnmount() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
@@ -637,8 +640,8 @@ export default {
       'Field--inner': isInner,
       'is-lastAdded': isLastAdded,
       'is-removed': removed,
-      'is-diff-added': diffAdded && !diffRemoved,
-      'is-diff-removed': diffRemoved && !diffAdded,
+      'is-diff-added': diffAdded || markedForAdd,
+      'is-diff-removed': diffRemoved || markedForRemove,
       'is-diff-modified': diffModified,
       'is-locked': locked,
       'is-diff': isFieldDiff,
@@ -655,7 +658,7 @@ export default {
       <div class="Field-labelWrapper" :class="{ sticky: !diff }">
         <div v-if="!isLocked" class="Field-actions">
           <field-marker
-            v-if="this.inOperations"
+            v-if="inOperations"
             @mark-for-add="mark('add')"
             @mark-for-remove="mark('remove')"
           />
@@ -722,10 +725,10 @@ export default {
               @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')" />
           </div>
         </div>
-        <div class="Field-label-history-icon" v-if="diffRemoved && !diffAdded">
+        <div class="Field-label-history-icon" v-if="diffRemoved">
           <i class="fa fa-trash-o icon--sm icon-removed" />
         </div>
-        <div class="Field-label-history-icon" v-if="diffAdded && !diffRemoved">
+        <div class="Field-label-history-icon" v-if="diffAdded">
           <i class="fa fa-plus-circle icon--sm icon-added" />
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
@@ -832,10 +835,10 @@ export default {
             @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')" />
         </div>
       </div>
-      <div class="Field-history-icon" v-if="diffRemoved && !diffAdded">
+      <div class="Field-history-icon" v-if="diffRemoved">
         <i class="fa fa-trash-o icon--sm icon-removed" />
       </div>
-      <div class="Field-history-icon" v-if="diffAdded && !diffRemoved">
+      <div class="Field-history-icon" v-if="diffAdded">
         <i class="fa fa-plus-circle icon--sm icon-added" />
       </div>
     </div>

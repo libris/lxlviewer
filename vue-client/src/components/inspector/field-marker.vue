@@ -7,14 +7,14 @@ export default {
       this.$emit('markForAdd');
     },
     markForRemove() {
-      this.$emit('markForAdd');
+      this.$emit('markForRemove');
     },
   },
 };
 </script>
 
 <template>
-  <div class="FieldAdder">
+  <div class="FieldMarker">
     <button
       class="FieldMarker-add"
       v-on:click="markForAdd"
@@ -33,7 +33,13 @@ export default {
 
 <style scoped lang="less">
 .FieldMarker {
+  display: flex;
   &-add {
+    font-size: 14px;
+    font-size: 1.4rem;
+    padding-right: 5px;
+  }
+  &-remove {
     font-size: 14px;
     font-size: 1.4rem;
     padding-right: 5px;

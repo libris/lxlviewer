@@ -49,7 +49,6 @@ export default {
 
   methods: {
     setOperations() {
-      console.log('this.inspector.changeHistory', JSON.stringify(this.inspector.changeHistory));
       this.$emit('updateOperations', this.operations);
     },
   },
