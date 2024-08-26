@@ -76,7 +76,9 @@ export default {
           :key="formTab.id"
           :is-active="true"
           :form-data="this.formObj"
-          :locked="false" />
+          :locked="false"
+          :in-operations="true"
+        />
       </div>
       <field-adder
         :entity-type="this.formObj['@type']"

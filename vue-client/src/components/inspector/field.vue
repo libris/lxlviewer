@@ -27,6 +27,7 @@ import ItemNextShelfControlNumber from './item-next-shelf-control-number.vue';
 import ItemBylang from './item-bylang.vue';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
 import LanguageMixin from '../mixins/language-mixin.vue';
+import FieldMarker from "@/components/inspector/field-marker.vue";
 
 export default {
   name: 'field',
@@ -69,6 +70,10 @@ export default {
       default: true,
     },
     inEnrichment: {
+      type: Boolean,
+      default: false,
+    },
+    inOperations: {
       type: Boolean,
       default: false,
     },
@@ -131,6 +136,7 @@ export default {
     };
   },
   components: {
+    FieldMarker,
     ItemType,
     'item-entity': ItemEntity,
     'item-value': ItemValue,
@@ -598,6 +604,14 @@ export default {
         });
       }
     },
+    mark(operation) {
+      if (operation === 'add') {
+        this.diff
+      } else if (operations === 'remove') {
+
+      }
+      //set diff
+    }
   },
   beforeUnmount() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
@@ -640,6 +654,11 @@ export default {
       v-if="showKey && !isInner">
       <div class="Field-labelWrapper" :class="{ sticky: !diff }">
         <div v-if="!isLocked" class="Field-actions">
+          <field-marker
+            v-if="this.inOperations"
+            @mark-for-add="mark('add')"
+            @mark-for-remove="mark('remove')"
+          />
           <div
             class="Field-action Field-remove"
             v-show="!locked && isRemovable"
