@@ -7,22 +7,22 @@ import {
 	type DecorationSet
 } from '@codemirror/view';
 
-const qualifierMatcher = new MatchDecorator({
-	regexp: /(?<!\S+)(")?([a-zA-ZäöåÄÖÅ:]+)\1:/g,
+const qualifierNameMatcher = new MatchDecorator({
+	regexp: /(?<!\S+)(")?([0-9a-zA-ZaåöAÅÖ]+):/g,
 	decoration: () =>
 		Decoration.mark({
-			class: 'lxlquery-qualifier'
+			class: 'lxlquery-qualifier-name'
 		})
 });
 
-const qualifierDecoration = ViewPlugin.fromClass(
+export const qualifierNameDecoration = ViewPlugin.fromClass(
 	class {
 		qualifiers: DecorationSet;
 		constructor(view: EditorView) {
-			this.qualifiers = qualifierMatcher.createDeco(view);
+			this.qualifiers = qualifierNameMatcher.createDeco(view);
 		}
 		update(update: ViewUpdate) {
-			this.qualifiers = qualifierMatcher.updateDeco(update, this.qualifiers);
+			this.qualifiers = qualifierNameMatcher.updateDeco(update, this.qualifiers);
 		}
 	},
 	{
@@ -30,4 +30,25 @@ const qualifierDecoration = ViewPlugin.fromClass(
 	}
 );
 
-export default qualifierDecoration;
+const qualifierValueMatcher = new MatchDecorator({
+	regexp: /(?<=(?<!\S+)(")?([0-9a-zA-ZaåöAÅÖ]+):)(\S+)/g,
+	decoration: () =>
+		Decoration.mark({
+			class: 'lxlquery-qualifier-value'
+		})
+});
+
+export const qualifierValueDecoration = ViewPlugin.fromClass(
+	class {
+		qualifiers: DecorationSet;
+		constructor(view: EditorView) {
+			this.qualifiers = qualifierValueMatcher.createDeco(view);
+		}
+		update(update: ViewUpdate) {
+			this.qualifiers = qualifierValueMatcher.updateDeco(update, this.qualifiers);
+		}
+	},
+	{
+		decorations: (instance) => instance.qualifiers
+	}
+);
