@@ -1,6 +1,7 @@
 <script>
 import { isEmpty, cloneDeep, isArray } from 'lodash-es';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import PropertyMappings from '@/resources/json/propertymappings.json';
@@ -49,7 +50,7 @@ export default {
       return regexHtml;
     },
     transformMarkdownToHTML(markdown) {
-      let html = marked(markdown);
+      let html = DOMPurify.sanitize(marked.parse(markdown));
       html = this.removeTags(html);
       return html;
     },

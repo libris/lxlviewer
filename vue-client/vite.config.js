@@ -1,7 +1,7 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { gitDescribeSync } from 'git-describe';
+import gitDescribe from 'git-describe';
 import vue from '@vitejs/plugin-vue';
 import autoprefixer from 'autoprefixer';
 
@@ -20,7 +20,7 @@ export default defineConfig({
     },
   },
   define: {
-    'import.meta.env.VITE_APP_GIT_DESCRIBE': JSON.stringify(gitDescribeSync({
+    'import.meta.env.VITE_APP_GIT_DESCRIBE': JSON.stringify(gitDescribe.gitDescribeSync({
       longSemver: true,
       dirtySemver: false,
       requireAnnotated: false,

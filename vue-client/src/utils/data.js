@@ -10,7 +10,11 @@ export function getDisplayDefinitions() {
     if (settings.mockDisplay === true) {
       window.lxlInfo('🎭 MOCKING DISPLAY FILE - Using file from local definitions repository');
       // eslint-disable-next-line import/no-extraneous-dependencies
-      const displayGlob = import.meta.glob('../../../../definitions/source/vocab/display.jsonld', { as: 'raw', eager: true });
+      const displayGlob = import.meta.glob('../../../../definitions/source/vocab/display.jsonld', {
+        query: '?raw',
+        import: 'default',
+        eager: true,
+      });
       const displayJson = JSON.parse(displayGlob['../../../../definitions/source/vocab/display.jsonld']);
       resolve(DisplayUtil.expandInherited(displayJson));
     } else {

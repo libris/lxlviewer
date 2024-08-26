@@ -48,10 +48,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    key: {
-      type: String,
-      default: '',
-    },
     fieldKey: {
       type: String,
       default: '',
@@ -336,7 +332,7 @@ export default {
       return ids;
     },
     keyAsVocabProperty() {
-      if (this.key === '_uid') {
+      if (this.fieldKey === '_uid') {
         return null;
       }
       return VocabUtil.getTermObject(this.fieldKey, this.resources.vocab, this.resources.context);
