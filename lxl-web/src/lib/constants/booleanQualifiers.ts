@@ -1,4 +1,4 @@
-const BOOLEAN_QUALIFIERS = [
+export const BOOLEAN_QUALIFIERS = [
 	{
 		keyByLang: {
 			en: 'LIB',
@@ -141,4 +141,4 @@ const BOOLEAN_QUALIFIERS = [
 	}
 ];
 
-export default BOOLEAN_QUALIFIERS;
+export const BOOLEAN_QUALIFIER_KEY_TYPE = 'BooleanQualifierKey';
