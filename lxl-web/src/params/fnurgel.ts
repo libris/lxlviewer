@@ -1,5 +1,6 @@
 import type { ParamMatcher } from '@sveltejs/kit';
+import isFnurgel from '$lib/utils/isFnurgel';
 
 export const match: ParamMatcher = (param: string) => {
-	return /^[a-z0-9]{15,}$/.test(param);
+	return isFnurgel(param);
 };

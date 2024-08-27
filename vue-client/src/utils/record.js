@@ -3,6 +3,7 @@ import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
+import { isLink } from './data';
 
 export function getRecordId(data, quoted) {
   const recordObj = recordObject(data, quoted);
@@ -282,12 +283,15 @@ export function getObjectAsRecord(mainEntity, record = {}) {
   return newObj;
 }
 
-export function getCleanedExtractedData(extractedData, inspectorData, resources) {
+export function getCleanedExtractedData(extractedData, inspectorData, resources, settings) {
   /**
    * Cleans extracted data and adds title from parent data if it is missing.
    */
   const cleanObj = DataUtil.removeNullValues(extractedData);
   if (cleanObj == null) return null; // Nothing left of this
+  if (settings.extractableMappedTypes[extractedData['@type']]) {
+    cleanObj['@type'] = settings.extractableMappedTypes[extractedData['@type']];
+  }
   if (VocabUtil.isSubClassOf(extractedData['@type'], 'Work', resources.vocabClasses, resources.context)) {
     // Entity is of type Work or derived type
     if (extractedData.hasOwnProperty('hasTitle') === false) {
@@ -393,4 +397,56 @@ export function getNewCopy(id) {
       reject('Error when getting record from', copyUrl, error);
     });
   });
+}
+
+// FIXME check in vocab. Need a precomputed category => members map?
+// eslint-disable-next-line no-unused-vars
+function compositionalProperties(resources) {
+  return ['hasComponent'];
+}
+
+export function moveFromQuotedToMain(splitData, ids, resources) {
+  // FIXME check whole doc
+  compositionalProperties(resources).forEach((p) => {
+    if (splitData.mainEntity[p]) {
+      splitData.mainEntity[p].forEach((o) => {
+        if (isLink(o) && ids.includes(o['@id'])) {
+          Object.assign(o, splitData.quoted[o['@id']]);
+          delete splitData.quoted[o['@id']];
+        }
+      });
+    }
+  });
+}
+
+export function extractInlinedData(data, ids, resources) {
+  // FIXME check whole doc
+  const result = {};
+  compositionalProperties(resources).forEach((p) => {
+    const v = data[p] || [];
+    v.forEach((o, ix) => {
+      if (o['@id'] && !isLink(o) && ids.includes(o['@id'])) {
+        result[o['@id']] = o;
+        v[ix] = { '@id': o['@id'] };
+      }
+    });
+  });
+
+  return result;
+}
+
+export function getLinkedIdsToBeInlined(splitData, resources) {
+  // FIXME check whole doc
+  const result = [];
+  compositionalProperties(resources).forEach((p) => {
+    if (splitData.mainEntity[p]) {
+      result.push(
+        ...splitData.mainEntity[p]
+          .filter((o) => isLink(o))
+          .map((o) => o['@id']),
+      );
+    }
+  });
+
+  return result;
 }

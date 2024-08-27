@@ -1,17 +1,31 @@
 <svelte:options accessors />
 
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { fly } from 'svelte/transition';
+	import { onDestroy, onMount } from 'svelte';
+	import { fade, fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
+	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
+	import IconClose from '~icons/bi/x-lg';
+	import { setModalContext } from '$lib/contexts/modal';
 
 	export let dialog: HTMLDialogElement | undefined = undefined;
 	export let close: ((event: Event) => void) | undefined = undefined;
+	export let position: 'left' | 'right' | 'top' = 'right';
 
 	let prevBodyOverflow: string | undefined = undefined;
 
+	setModalContext();
+
 	onMount(() => {
+		dialog?.showModal();
 		disableBodyScroll();
+	});
+
+	onDestroy(() => {
+		if (browser) {
+			enableBodyScroll();
+		}
 	});
 
 	function handleClose(event: MouseEvent | Event) {
@@ -22,13 +36,12 @@
 		} else {
 			dialog?.close();
 		}
-		enableBodyScroll();
 	}
 
 	function handleBackdropClick(event: MouseEvent) {
 		/** Close dialog if backdrop is clicked */
 		if (event.target === event.currentTarget) {
-			dialog?.close();
+			handleClose(event);
 		}
 	}
 
@@ -42,6 +55,10 @@
 	}
 </script>
 
+<div
+	class="pointer-events-none fixed left-0 top-0 z-10 h-full w-full bg-backdrop"
+	transition:fade={{ duration: 300 }}
+></div>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <dialog
@@ -50,20 +67,42 @@
 	on:click|self={handleBackdropClick}
 	on:close={handleClose}
 	bind:this={dialog}
-	in:fly={{ x: 24, duration: 300, opacity: 0, easing: cubicInOut }}
+	data-testid="modal"
+	transition:fly={{
+		x: position === 'left' ? -12 : 12,
+		duration: 250,
+		opacity: 0,
+		easing: cubicInOut
+	}}
 >
 	<div
-		class="absolute right-0 top-0 flex min-h-full w-full flex-col gap-4 bg-main pb-4 md:max-w-[480px]"
+		class="absolute right-0 top-0 flex w-full bg-main shadow-2xl md:max-w-[480px] xl:max-w-[640px] {position ===
+		'top'
+			? 'h-auto'
+			: 'h-full'}"
+		class:left-0={position === 'left'}
+		class:right-0={position === 'right'}
 	>
-		<header
-			class="sticky top-0 flex min-h-14 items-center justify-end border-b border-b-primary/8 bg-main py-2 pl-4 pr-2"
-		>
-			<!-- svelte-ignore a11y-autofocus -->
-			<button on:click={handleClose} autofocus class="flex h-11 w-11 items-center justify-center">
-				X
-			</button>
-		</header>
-		<slot />
+		<div class="flex flex-1 flex-col gap-4 overflow-y-auto pb-4">
+			<header
+				class="sticky top-0 z-10 flex min-h-14 items-center justify-between border-b border-b-primary/16 bg-main px-4"
+			>
+				<h1 class="text-3-cond-bold"><slot name="title" /></h1>
+				<!-- svelte-ignore a11y-autofocus -->
+				<button
+					on:click={handleClose}
+					autofocus
+					class="icon-button"
+					aria-label={$page.data.t('general.close')}
+					data-testid="close-modal"
+				>
+					<IconClose />
+				</button>
+			</header>
+			<div class="px-4">
+				<slot />
+			</div>
+		</div>
 	</div>
 </dialog>
 
@@ -71,22 +110,7 @@
 	dialog {
 		background: none;
 	}
-	dialog::backdrop {
-		background-color: rgb(0 0 0 / 0%);
-		transition:
-			display 0.7s allow-discrete,
-			overlay 0.7s allow-discrete,
-			background-color 0.7s;
-		padding: 0;
-	}
-
-	dialog[open]::backdrop {
-		background-color: rgb(0 0 0 / 25%);
-	}
-
-	@starting-style {
-		dialog[open]::backdrop {
-			background-color: rgb(0 0 0 / 0%);
-		}
+	::backdrop {
+		background: none;
 	}
 </style>

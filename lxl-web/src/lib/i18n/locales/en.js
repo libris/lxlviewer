@@ -1,6 +1,23 @@
 /** @type {typeof import('./sv.js').default} */
 export default {
-	home: {},
+	home: {
+		searchPlaceholder: 'Title, author, subject et cetera'
+	},
+	header: {
+		help: 'Help',
+		changeLang: 'På svenska',
+		searchPlaceholder: 'Title, author, subject et cetera',
+		openMenu: 'Open main menu'
+	},
+	footer: {
+		logo: 'National Library of Sweden logotype',
+		information: 'Information',
+		faq: 'FAQ about this beta',
+		contact: 'Contact',
+		feedback: 'Give feedback',
+		feedbackLink: 'http://survey.kb.se/librisbeta/en',
+		customerSupport: 'Libris customer support'
+	},
 	facet: {
 		q: 'Free text search',
 		'@reverse.itemOf.heldBy.@id': 'Has holding',
@@ -27,26 +44,103 @@ export default {
 		'concerning.issuanceType': 'Issuance type',
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Encoding level',
+		'rdf:type': 'Type',
+		workType: 'Type',
+		instanceType: 'Format',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Library',
+		bibliography: 'Bibliography',
 		contributor: 'Contribution',
 		language: 'Language',
 		subject: 'Subject',
 		yearPublished: 'Year published',
-		intendedAudience: 'Intended audience'
+		intendedAudience: 'Intended audience',
+		nationality: 'Nationality',
+		hasOccupation: 'Has Occupation',
+		fieldOfActivity: 'Field of Activity',
+		boolFilters: 'Other'
 	},
-	search: {},
-	errors: {},
+	search: {
+		search: 'Search',
+		searchResults: 'Search results',
+		loading: 'Loading...',
+		findFilter: 'Find filter',
+		filters: 'Filters',
+		activeFilters: 'Active filters',
+		selectedFilters: 'Selected filters',
+		clearFilters: 'Clear',
+		editFilters: 'Edit',
+		removeFilter: 'Remove filter',
+		noResults: 'No results',
+		hitsOf: 'of',
+		hits: 'hits',
+		hitsOne: 'hit',
+		selected: 'selected',
+		selectedOne: 'selected',
+		editions: 'editions',
+		publicationYear: 'Publication year',
+		publisher: 'Publisher',
+		type: 'Type',
+		related: 'related',
+		relatedOne: 'related',
+		pagination: 'pagination',
+		previous: 'Previous page',
+		page: 'Page',
+		next: 'Next page',
+		showMore: 'Show more',
+		showFewer: 'Show fewer',
+		showDetails: 'Show more',
+		hideDetails: 'Show less',
+		occursAs: 'as',
+		relatedSearchLabel: 'Search the results'
+	},
+	sort: {
+		sort: 'Sort',
+		relevancy: 'Relevancy',
+		alphaAsc: 'A-Z',
+		alphaDesc: 'Z-A',
+		publicationAsc: 'Publication year (oldest first)',
+		publicationDesc: 'Publication year (newest first)',
+		linksDesc: 'Most linked'
+	},
+	errors: {
+		somethingWentWrong: 'Something went wrong',
+		notFound: 'Page not found',
+		wrongLink: "Did you click on a link that didn't work?",
+		sendEmail: 'Send an e-mail to',
+		customerService: 'Libris customer service',
+		followUp: ', and we will investigate the error.',
+		backToStartPage: 'Back to the home page',
+		mailSubject: 'Incorrect link',
+		mailBody: 'Incorrect reference to the page'
+	},
 	general: {
 		collapseAll: 'Collapse all',
 		copyPermalinkToInstance: 'Copy link to edition',
 		latestInstanceCover: 'Cover of latest edition',
 		instanceCover: 'Cover of edition',
-		close: 'Close'
+		close: 'Close',
+		apply: 'Apply',
+		from: 'From',
+		to: 'To',
+		year: 'Year',
+		usagePolicy: 'License terms',
+		cropped: 'Cropped'
 	},
 	holdings: {
 		availableAt: 'Available at',
 		library: 'library',
-		libraries: 'libraries'
+		libraries: 'libraries',
+		findAtYourNearestLibrary: 'Find it at your nearest library',
+		location: 'Location',
+		shelf: 'Shelf',
+		status: 'Status',
+		date: 'Date',
+		loanPolicy: 'Loan policy',
+		libraryUnvaliable: 'Loan status is not available for this library',
+		loanStatusFailed: 'Failed to get loan status',
+		available: 'Available',
+		unavailable: 'Not available',
+		map: 'map'
 	}
 };

@@ -14,14 +14,8 @@ test('index page has expected h1', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: 'Libris' })).toBeVisible();
 });
 
-test('index page displays the logo', async ({ page }) => {
-	await expect(page.getByRole('img', { name: 'Libris logo' })).toBeVisible();
-});
-
 test('can change the language', async ({ page }) => {
 	await page.getByTestId('current-lang').click();
-	const menu = page.getByTestId('lang-picker-menu');
-	await menu.getByRole('link', { name: 'English' }).click();
 	await expect(page).toHaveURL('/en');
 });
 
@@ -40,5 +34,5 @@ test('url is populated with correct searchparams', async ({ page }) => {
 	await page.getByTestId('main-search').click();
 	await page.getByTestId('main-search').fill('somephrase');
 	await page.getByTestId('main-search').press('Enter');
-	await expect(page).toHaveURL(/q=somephrase&%40type=Work&_limit=10/);
+	await expect(page).toHaveURL(/_q=somephrase&_limit=20&_offset=0&_sort=&_i=somephrase/);
 });

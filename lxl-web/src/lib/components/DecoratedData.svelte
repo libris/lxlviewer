@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { ResourceData } from '$lib/types/ResourceData';
-	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
+	import type { ResourceData } from '$lib/types/resourceData';
+	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { page } from '$app/stores';
-	import resourcePopover from '$lib/actions/resourcePopover';
+	import popover from '$lib/actions/popover';
 	import { hasStyle, getStyle, getResourceId, getPropertyValue } from '$lib/utils/resourceData';
 	import { relativizeUrl } from '$lib/utils/http';
 	import { getSupportedLocale } from '$lib/i18n/locales';
@@ -11,15 +11,13 @@
 	export let depth = 0;
 	export let showLabels: ShowLabelsOptions = ShowLabelsOptions.DefaultOn;
 	export let allowPopovers = true; // used for preventing nested popovers
+	export let allowLinks = true;
 	export let block = false;
 	export let truncate = false;
+	export let remainder: ResourceData | undefined = undefined;
+	export let keyed = true;
 
-	// truncate option; use only first item as data and keep the rest for tooltip
-	let remainder: ResourceData[] | undefined;
-	if (truncate && Array.isArray(data) && data?.[0] && '@type' in data[0]) {
-		[data, ...remainder] = data;
-		truncate = false;
-	}
+	$: key = keyed && data; // an ugly work-around to fix duplicate content on out transitions when closing modals (not entirely sure what the root cause is...) – we should try to remove the need for this when updating to Svelte 5.
 
 	const hiddenProperties = [
 		'@context',
@@ -32,17 +30,25 @@
 	];
 
 	function getLink(value: ResourceData) {
-		if (depth > 1 && hasStyle(data, 'link')) {
-			const id = getResourceId(value);
-			if (id) {
-				return relativizeUrl(id);
+		if (allowLinks) {
+			if (depth > 1 && hasStyle(data, 'link')) {
+				const id = getResourceId(value);
+				if (id) {
+					return relativizeUrl(id);
+				}
+			}
+			if (depth > 1 && hasStyle(data, 'ext-link')) {
+				const id = getResourceId(value);
+				if (id) {
+					return id;
+				}
 			}
 		}
 		return undefined;
 	}
 
 	function getElementType(value: ResourceData) {
-		if (getLink(value)) {
+		if (allowLinks && getLink(value)) {
 			return 'a';
 		}
 		if (block && isTopLevel()) {
@@ -52,13 +58,15 @@
 	}
 
 	/* Conditionally add popover action so it's only added when needed */
-	function conditionalResourcePopover(node: HTMLElement, data: ResourceData) {
+	function conditionalPopover(node: HTMLElement, data: ResourceData) {
 		if (allowPopovers && ((depth > 1 && hasStyle(data, 'link')) || hasStyle(data, 'definition'))) {
 			const id = getResourceId(data);
 			if (id) {
-				return resourcePopover(node, {
-					id,
-					lang: getSupportedLocale($page.params.lang)
+				return popover(node, {
+					resource: {
+						id,
+						lang: getSupportedLocale($page.params.lang)
+					}
 				});
 			}
 		}
@@ -116,23 +124,41 @@
 	}
 </script>
 
-<!-- 
+<!--
   @component
 	Component used for rendering decorated data.
 -->
-{#key data}
+{#key key}
 	{#if data && typeof data === 'object'}
 		{#if Array.isArray(data)}
-			{#each data as arrayItem}
+			{#if truncate && depth === 1 && data.length > 1}
+				<!-- truncate option; use only first item as data and keep the remainder for tooltip -->
+				{@const [first, ...remainder] = data}
 				<svelte:self
-					data={arrayItem}
+					data={first}
 					depth={depth + 1}
 					{showLabels}
 					{block}
+					{allowLinks}
 					{allowPopovers}
-					{truncate}
+					truncate={false}
+					{remainder}
+					{keyed}
 				/>
-			{/each}
+			{:else}
+				{#each data as arrayItem}
+					<svelte:self
+						data={arrayItem}
+						depth={depth + 1}
+						{showLabels}
+						{block}
+						{allowLinks}
+						{allowPopovers}
+						{truncate}
+						{keyed}
+					/>
+				{/each}
+			{/if}
 		{:else}
 			{#if shouldShowContentBefore()}
 				<span class="_contentBefore">
@@ -143,52 +169,77 @@
 				<svelte:element
 					this={getElementType(data)}
 					href={getLink(data)}
+					target={hasStyle(data, 'ext-link') ? '_blank' : null}
 					data-type={data['@type']}
 					class={getStyleClasses(data)}
-					use:conditionalResourcePopover={data}
+					use:conditionalPopover={data}
 				>
 					<svelte:self
 						data={data['_display']}
 						depth={depth + 1}
 						{showLabels}
 						{block}
+						{allowLinks}
 						{allowPopovers}
 						{truncate}
+						{keyed}
 					/>
-					{#if remainder}
+					{#if remainder && Array.isArray(remainder)}
 						<span
-							use:resourcePopover={{ data: remainder, lang: getSupportedLocale($page.params.lang) }}
+							use:popover={{
+								resource: { data: remainder, lang: getSupportedLocale($page.params.lang) }
+							}}
 							class="remainder">+ {remainder.length}</span
 						>
 					{/if}
 				</svelte:element>
 			{:else if data['@value']}
-				<svelte:self data={data['@value']} depth={depth + 1} {showLabels} {block} {allowPopovers} />
+				<svelte:self
+					data={data['@value']}
+					depth={depth + 1}
+					{showLabels}
+					{block}
+					{allowLinks}
+					{allowPopovers}
+					{keyed}
+				/>
 			{:else if data['_display']}
 				<svelte:self
 					data={data['_display']}
 					depth={depth + 1}
 					{showLabels}
 					{block}
+					{allowLinks}
 					{allowPopovers}
 					{truncate}
+					{keyed}
 				/>
 			{:else}
 				{@const [propertyName, propertyData] = getProperty(data)}
 				{#if propertyName && propertyData}
 					<svelte:element this={getElementType(propertyData)} data-property={propertyName}>
 						{#if shouldShowLabels()}
-							<div class="label">
-								{data._label}
-							</div>
+							<svelte:element this={block ? 'div' : 'span'}>
+								<!-- Add inner span with inline-block to achieve first letter capitalization while still supporting inline whitespaces -->
+								<span
+									class="inline-block first-letter:capitalize"
+									class:text-sm={block}
+									class:text-secondary={block}
+								>
+									{data._label}
+								</span>
+								{' '}
+							</svelte:element>
 						{/if}
 						<svelte:self
 							data={propertyData}
 							depth={depth + 1}
 							{showLabels}
 							{block}
+							{allowLinks}
 							{allowPopovers}
 							{truncate}
+							{keyed}
 						/>
 					</svelte:element>
 				{/if}
@@ -205,15 +256,8 @@
 {/key}
 
 <style lang="postcss">
-	a {
-		color: inherit;
-	}
 	.definition {
-		@apply text-sm italic text-secondary underline decoration-dotted;
-	}
-
-	.label {
-		@apply text-sm text-secondary first-letter:uppercase;
+		@apply text-sm text-secondary underline decoration-dotted;
 	}
 
 	.pill {
@@ -223,7 +267,15 @@
 		@apply hover:bg-pill/16 focus:bg-pill/16;
 	}
 
+	.text-large {
+		@apply text-lg;
+	}
+
 	.remainder {
-		@apply ml-2 rounded-full bg-pill/8 px-2 py-1 text-secondary;
+		@apply ml-2 whitespace-nowrap rounded-full bg-pill/8 px-2 py-0.5 text-secondary;
+	}
+
+	.block {
+		display: block;
 	}
 </style>

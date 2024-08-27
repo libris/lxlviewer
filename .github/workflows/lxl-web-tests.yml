@@ -1,0 +1,38 @@
+name: lxl-web
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./lxl-web
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - name: Setup yarn
+      run: npm install -g yarn
+    - name: Install lxljs dependency
+      run: yarn install --frozen-lockfile
+      working-directory: ./lxljs
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      env:
+        API_URL: ${{ secrets.API_URL }}
+        ID_URL: ${{ secrets.ID_URL }}
+      run: npm run test
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30

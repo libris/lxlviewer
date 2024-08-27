@@ -31,6 +31,8 @@
 						"dissertation",
 						"cartographicAttributes",
 						"isPartOf",
+						"associatedMedia",
+						"isPrimaryTopicOf",
 						{ "inverseOf": "instanceOf" }
 					]
 				},
@@ -81,6 +83,7 @@
 						"associatedMedia",
 						"usageAndAccessPolicy",
 						"accessMode",
+						"isPrimaryTopicOf",
 						"isIssueOf",
 						"relatedTo",
 						"issuanceType",
@@ -89,6 +92,25 @@
 						{ "inverseOf": "reproductionOf" },
 						{ "inverseOf": "supplementTo" }
 					]
+				},
+				"Concept": {
+					"@type": "fresnel:Lens",
+					"@id": "Concept-cards",
+					"classLensDomain": "Concept",
+					"showProperties": [
+						"prefLabel",
+						"inScheme",
+						"altLabel",
+						"broader",
+						{ "inverseOf": "broader" },
+						"related",
+						"scopeNote",
+						"exactMatch",
+						"label",
+						"code",
+						"keyword",
+						"termComponentList"
+					]
 				}
 			}
 		},
@@ -96,6 +118,12 @@
 			"@id": "chips",
 			"@type": "fresnel:Group",
 			"lenses": {
+				"Cartographic": {
+					"@id": "Cartographic-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Cartographic",
+					"showProperties": ["scale", "coordinates"]
+				},
 				"Concept": {
 					"@id": "Concept-chips",
 					"@type": "fresnel:Lens",
@@ -117,6 +145,24 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Classification",
 					"showProperties": ["code", "prefLabel"]
+				},
+				"Document": {
+					"@id": "Document-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Document",
+					"showProperties": ["uri", "marc:publicNote"]
+				},
+				"MediaObject": {
+					"@id": "MediaObject-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "MediaObject",
+					"showProperties": ["uri", "marc:publicNote"]
+				},
+				"Class": {
+					"@id": "Class-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Class",
+					"showProperties": ["label"]
 				},
 				"Work": {
 					"@id": "Work-chips",
@@ -188,6 +234,61 @@
 						{ "inverseOf": "instanceOf" },
 						"language"
 					]
+				},
+				"Agent": {
+					"@id": "Agent-web-card",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Agent",
+					"showProperties": [
+						"nationality",
+						"disambiguatingDescription",
+						"activityStartDate",
+						"activityEndDate",
+						"hasOccupation",
+						"fieldOfActivity"
+					]
+				},
+				"Instance": {
+					"@id": "Instance-web-card",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
+				}
+			}
+		},
+		"web-card-header-extra": {
+			"@id": "web-card-header-extra",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-card-header-extra",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["translationOf"]
+				}
+			}
+		},
+		"web-card-footer": {
+			"@id": "web-card-footer",
+			"@type": "fresnel:Group",
+			"lenses": {
+				"Work": {
+					"@id": "Work-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Work",
+					"showProperties": ["language", { "inverseOf": "instanceOf" }]
+				},
+				"Instance": {
+					"@id": "Instance-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
+				},
+				"Person": {
+					"@id": "Person-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Instance",
+					"showProperties": ["nationality"]
 				}
 			}
 		}
@@ -231,6 +332,16 @@
 				"fresnel:contentFirst": "(",
 				"fresnel:contentAfter": ")",
 				"fresnel:contentLast": ")"
+			}
+		},
+		"agent-no-separator-format": {
+			"@id": "agent-no-separator-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Agent"],
+			"fresnel:propertyFormatDomain": ["marc:subordinateUnit"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
 			}
 		},
 		"ProvisionActivity-comma-format": {
@@ -397,10 +508,10 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"Topic-format": {
-			"@id": "Topic-format",
+		"Subject-format": {
+			"@id": "Subject-format",
 			"@type": "fresnel:Format",
-			"fresnel:classFormatDomain": ["Topic"],
+			"fresnel:classFormatDomain": ["Subject"],
 			"fresnel:resourceStyle": ["link"]
 		},
 		"Instance-format": {
@@ -416,7 +527,7 @@
 			"fresnel:resourceStyle": ["link"]
 		},
 		"seeAlso-format": {
-			"@id": "genreForm-format",
+			"@id": "seeAlso-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
 			"fresnel:propertyFormatDomain": ["seeAlso"],
@@ -455,6 +566,68 @@
 				"fresnel:contentBefore": ", ",
 				"fresnel:contentFirst": ""
 			}
+		},
+		"MediaObject-format": {
+			"@id": "MediaObject-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["MediaObject"],
+			"fresnel:resourceStyle": ["ext-link", "uriToId()", "text-3-cond-bold", "block"]
+		},
+		"Document-format": {
+			"@id": "Document-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Document"],
+			"fresnel:resourceStyle": ["ext-link", "uriToId()"]
+		},
+		"MediaObject-publicNote-format": {
+			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
+			"@id": "MediaObject-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Document", "MediaObject"],
+			"fresnel:propertyFormatDomain": ["marc:publicNote"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"associatedMedia-format": {
+			"@id": "associatedMedia-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["associatedMedia"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"UsageAndAccessPolicy-format": {
+			"@id": "UsageAndAccessPolicy-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["UsageAndAccessPolicy"],
+			"fresnel:resourceStyle": ["link"]
+		},
+		"Transliteration-format": {
+			"@id": "Transliteration-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["_script"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"cartographicAttributes-format": {
+			"@id": "cartographicAttributes-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["cartographicAttributes"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": "",
+				"fresnel:contentFirst": ""
+			}
+		},
+		"Cartographic-format": {
+			"@id": "MediaObject-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Cartographic"],
+			"fresnel:resourceStyle": ["block"]
 		},
 		"Instance-self-x-format": {
 			"@id": "Instance-self-x-format",

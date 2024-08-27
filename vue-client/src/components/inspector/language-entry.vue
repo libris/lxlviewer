@@ -3,7 +3,9 @@ import AutoSize from 'autosize';
 import { mapGetters } from 'vuex';
 import { Menu } from 'floating-vue';
 import { isEqual } from 'lodash-es';
+import * as VocabUtil from 'lxljs/vocab';
 import { translatePhrase } from '@/utils/filters';
+import { formatDate } from '@/utils/datetime';
 import PreviewCard from '@/components/shared/preview-card.vue';
 import LanguageMixin from '@/components/mixins/language-mixin.vue';
 import EntityAdder from './entity-adder.vue';
@@ -71,6 +73,7 @@ export default {
       'resources',
       'supportedTags',
       'status',
+      'user',
     ]),
     isByLang() {
       return this.itemPath.includes('ByLang');
@@ -120,6 +123,17 @@ export default {
       }
       return false;
     },
+    templateText() {
+      // comment template for CXZ messages
+      if (this.itemPath === 'mainEntity.comment' && VocabUtil.isSubClassOf(
+        this.inspector.data.mainEntity['@type'],
+        'AdministrativeAction',
+        this.resources.vocab,
+        this.resources.context,
+      )) {
+        return `${formatDate(new Date())} ${this.user.settings.activeSigel}: `;
+      } return false;
+    },
   },
   components: {
     Menu,
@@ -147,6 +161,9 @@ export default {
     initializeTextarea() {
       this.$nextTick(() => {
         const textarea = this.$refs.textarea;
+        if (this.templateText && !this.modelValue) {
+          this.$emit('update:model-value', this.templateText);
+        }
         AutoSize(textarea);
         AutoSize.update(textarea);
       });

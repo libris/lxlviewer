@@ -294,12 +294,21 @@ export default {
       this.showAdminInfoDetails = !this.showAdminInfoDetails;
     },
     isSubClassOf(type) {
-      const baseClasses = VocabUtil.getBaseClasses(
+      return VocabUtil.isSubClassOf(
         this.inspector.data.mainEntity['@type'],
+        type,
         this.resources.vocab,
         this.resources.context,
-      ).map((id) => StringUtil.getCompactUri(id, this.resources.context));
-      return baseClasses.indexOf(type) > -1;
+      );
+    },
+    isInReadOnlyDataset(record) {
+      // TODO: get from backend
+      // TODO: implement proper access control mechanism in backend
+      return (record.inDataset || []).find((dataset) => {
+        const id = dataset['@id'] || '';
+        return id.startsWith('https://id.kb.se/dataset/')
+          || id.startsWith('https://libris.kb.se/dataset/');
+      });
     },
     download(text) {
       let focusId = this.inspector.data.record['@id'];
@@ -339,7 +348,7 @@ export default {
       'status',
     ]),
     isMyHolding() {
-      if (this.recordType !== 'Item') {
+      if (!VocabUtil.isSubClassOf(this.recordType, 'Item', this.resources.vocab, this.resources.context)) {
         return false;
       }
       if (this.inspector.data.mainEntity.heldBy && this.inspector.data.mainEntity.heldBy['@id'] === this.activeSigelId) {
@@ -357,7 +366,7 @@ export default {
     },
     compiledIsAvailable() {
       if (
-        (this.recordType === 'Instance' || this.isMyHolding)
+        (this.recordType === 'Instance' || (this.isMyHolding && this.inspector.data.mainEntity.itemOf))
         && this.hasSigel
         && !this.inspector.status.editing
         && this.user.email !== ''
@@ -399,11 +408,13 @@ export default {
       if (record['@type'] !== 'Record') {
         return false;
       }
-      if (mainEntity['@type'] === 'Item') {
-        if (this.isMyHolding || this.user.isGlobalRegistrant()) {
-          return true;
-        }
-        return false;
+      if (VocabUtil.isSubClassOf(
+        mainEntity['@type'],
+        'Item',
+        this.resources.vocab,
+        this.resources.context,
+      )) {
+        return this.isMyHolding || this.user.isGlobalRegistrant();
       }
       if (VocabUtil.isSubClassOf(
         mainEntity['@type'],
@@ -416,6 +427,9 @@ export default {
           mainEntity,
           { '@id': this.user.getActiveLibraryUri() },
         ))) {
+        return false;
+      }
+      if (this.isInReadOnlyDataset(record)) {
         return false;
       }
       if (mainEntity['@type'] === 'ShelfMarkSequence') {

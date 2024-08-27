@@ -9,12 +9,14 @@ import OverflowMixin from '@/components/mixins/overflow-mixin.vue';
 import EncodingLevelIcon from '@/components/shared/encoding-level-icon.vue';
 import TypeIcon from '@/components/shared/type-icon.vue';
 import SummaryNode from '@/components/shared/summary-node.vue';
+import IdPill from '@/components/shared/id-pill.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 
 export default {
   mixins: [LensMixin, OverflowMixin],
   name: 'entity-summary',
   components: {
+    IdPill,
     EncodingLevelIcon,
     SummaryNode,
     TypeIcon,
@@ -109,9 +111,6 @@ export default {
   },
   data() {
     return {
-      idHover: false,
-      recentlyCopiedId: false,
-      failedCopyId: false,
       defaultSettings: {
         show: false,
         styling: 'grey',
@@ -145,23 +144,8 @@ export default {
       }
       return false;
     },
-    idAsFnurgel() {
-      if (this.uri) {
-        const id = this.uri;
-        const fnurgel = RecordUtil.extractFnurgel(id);
-        if (fnurgel && this.isLibrisResource) {
-          return fnurgel;
-        }
-        const cleaned = id.replace('https://', '').replace('http://', '');
-        return cleaned;
-      }
-      return null;
-    },
     hiddenDetailsNumber() {
       return this.getSummary.info.length - this.keyDisplayLimit;
-    },
-    idTooltipText() {
-      return StringUtil.getUiPhraseByLang('Copy ID', this.user.settings.language, this.resources.i18n);
     },
     isReplacedBy() {
       const info = this.getSummary.info;
@@ -285,18 +269,6 @@ export default {
     labelByLang,
     convertResourceLink,
     capitalize,
-    copyFnurgel() {
-      const self = this;
-      this.$copyText(this.uri).then(() => {
-        self.recentlyCopiedId = true;
-        setTimeout(() => {
-          self.recentlyCopiedId = false;
-        }, 1000);
-      }, (e) => {
-        self.failedCopyId = true;
-        console.warn(e);
-      });
-    },
     importThis() {
       this.$emit('import-this');
     },
@@ -332,18 +304,11 @@ export default {
         {{ topBarInformation }} {{ isLocal ? '{lokal entitet}' : '' }}
         <span class="EntitySummary-sourceLabel" v-if="database">{{ database }}</span>
       </div>
-      <div
-        v-if="idAsFnurgel && excludeComponents.indexOf('id') < 0"
-        class="EntitySummary-id"
-        :class="{ 'recently-copied': recentlyCopiedId }"
-        @mouseover="idHover = true"
-        @mouseout="idHover = false">
-        <i
-          v-tooltip.top="idTooltipText"
-          class="fa fa-copy EntitySummary-idCopyIcon"
-          :class="{ collapsedIcon: !idHover || recentlyCopiedId }"
-          @click.stop="copyFnurgel" />{{ idAsFnurgel }}
-      </div>
+      <id-pill
+        v-if="!excludeComponents.includes('id')"
+        :uri="this.uri"
+        :isLibrisResource="this.isLibrisResource"
+      />
     </div>
 
     <div class="EntitySummary-info">
@@ -442,7 +407,7 @@ export default {
     display: flex;
   }
 
-  &-type, &-id {
+  &-type {
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -460,37 +425,6 @@ export default {
     text-align: left;
     flex-grow: 2;
     flex-basis: 50%;
-  }
-  &-id {
-    flex-grow: 0;
-    text-align: right;
-    text-transform: none;
-    color: @grey-very-dark-transparent;
-    background-color: @badge-color-transparent;
-    transition: background-color 0.5s ease;
-    letter-spacing: 0.5px;
-    font-size: 1.2rem;
-    font-weight: 400;
-    padding: 0 0.75em;
-    border-radius: 1em;
-
-    &.recently-copied {
-      background-color: @brand-success;
-      color: @white;
-    }
-  }
-  &-idCopyIcon {
-    transition: all 0.25s ease;
-    margin: 0 0.25em 0 -0.25em;
-    overflow: hidden;
-    width: 1.2em;
-    opacity: 1;
-    cursor: pointer;
-    &.collapsedIcon {
-      margin: 0 0 0 0;
-      width: 0;
-      opacity: 0;
-    }
   }
 
   &-sourceLabel {

@@ -1,175 +1,36 @@
 import * as lxljsVocab from 'lxljs/vocab';
 import * as lxljsString from 'lxljs/string';
 
+import {
+	JsonLd,
+	Base,
+	LensType,
+	Fresnel,
+	Platform,
+	Fmt,
+	type VocabData,
+	type ContextData,
+	type DerivedLensType,
+	type Lens,
+	type ClassName,
+	type Data,
+	type FramedData,
+	type PropertyName,
+	type Format,
+	type FormatDetails,
+	type DisplayJsonLd,
+	type DerivedLensTypeDefinition,
+	type DisplayDecorated,
+	type LensedOrdered,
+	type LangCode,
+	type ShowProperty,
+	type ShowProperties,
+	type RangeRestriction,
+	type AlternateProperties,
+	type LangContainer
+} from '$lib/types/xl';
+
 // TODO TESTS!
-// TODO type for JSON-LD structure
-
-export enum JsonLd {
-	BASE = '@base',
-	CONTAINER = '@container',
-	CONTEXT = '@context',
-	GRAPH = '@graph',
-	ID = '@id',
-	LANGUAGE = '@language',
-	LIST = '@list',
-	REVERSE = '@reverse',
-	SET = '@set',
-	TYPE = '@type',
-	VALUE = '@value',
-	VOCAB = '@vocab'
-}
-
-enum Fmt {
-	DISPLAY = '_display',
-	PROPS = '_props',
-	CONTENT_AFTER = '_contentAfter',
-	CONTENT_BEFORE = '_contentBefore',
-	STYLE = '_style',
-	LABEL = '_label'
-}
-
-// https://github.com/libris/definitions/blob/develop/source/vocab/base.ttl
-enum Base {
-	StructuredValue = 'StructuredValue'
-}
-
-// https://github.com/libris/definitions/blob/develop/source/vocab/platform.ttl
-enum Platform {
-	integral = 'integral',
-	meta = 'meta'
-}
-
-type ClassName = string;
-export type PropertyName = string;
-export type LangCode = string;
-
-// https://github.com/libris/definitions/blob/develop/source/vocab/display.jsonld
-interface DisplayJsonLd {
-	[JsonLd.CONTEXT]: Context;
-	[JsonLd.GRAPH]: unknown;
-	lensGroups: Record<LensType, LensGroup>;
-	formatters: Record<ClassName, Format>;
-}
-
-type LangContainer = Record<LangCode, string | string[]>;
-
-// https://www.w3.org/2005/04/fresnel-info/manual/
-enum Fresnel {
-	Format = 'fresnel:Format',
-	Group = 'fresnel:Group',
-	Lens = 'fresnel:Lens',
-	classFormatDomain = 'fresnel:classFormatDomain',
-	contentAfter = 'fresnel:contentAfter',
-	contentBefore = 'fresnel:contentBefore',
-	contentFirst = 'fresnel:contentFirst',
-	contentLast = 'fresnel:contentLast',
-	extends = 'fresnel:extends',
-	group = 'fresnel:group',
-	propertyFormat = 'fresnel:propertyFormat',
-	propertyFormatDomain = 'fresnel:propertyFormatDomain',
-	propertyStyle = 'fresnel:propertyStyle',
-	resourceFormat = 'fresnel:resourceFormat',
-	resourceStyle = 'fresnel:resourceStyle',
-	super = 'fresnel:super',
-	valueFormat = 'fresnel:valueFormat',
-	valueStyle = 'fresnel:valueStyle'
-}
-
-interface Format {
-	[JsonLd.ID]?: string;
-	[JsonLd.TYPE]?: Fresnel.Format;
-	[Fresnel.group]?: string;
-	[Fresnel.classFormatDomain]?: [ClassName];
-	[Fresnel.propertyFormatDomain]?: [PropertyName];
-	[Fresnel.propertyFormat]?: FormatDetails;
-	[Fresnel.resourceFormat]: FormatDetails;
-	[Fresnel.valueFormat]?: FormatDetails;
-	[Fresnel.propertyStyle]?: string[];
-	[Fresnel.resourceStyle]?: string[];
-	[Fresnel.valueStyle]?: string[];
-}
-
-interface FormatDetails {
-	[Fresnel.contentBefore]?: string;
-	[Fresnel.contentAfter]?: string;
-	[Fresnel.contentFirst]?: string;
-	[Fresnel.contentLast]?: string;
-}
-
-interface LensGroup {
-	[JsonLd.ID]?: string;
-	[JsonLd.TYPE]: Fresnel.Group;
-	lenses: Record<ClassName, Lens>;
-	[Fresnel.classFormatDomain]?: [ClassName];
-}
-
-export interface Link {
-	'@id': string;
-}
-
-type RangeRestriction = { subPropertyOf: PropertyName; range: ClassName };
-type AlternateProperties = { alternateProperties: (PropertyName | RangeRestriction)[] };
-type ShowProperty = PropertyName | Fresnel.super | AlternateProperties | { inverse: PropertyName };
-type ShowProperties = ShowProperty[];
-
-interface Lens {
-	[JsonLd.ID]?: string;
-	[JsonLd.TYPE]: Fresnel.Lens;
-	classLensDomain?: ClassName;
-	[Fresnel.extends]?: Link;
-	[Fresnel.group]?: string;
-	showProperties: ShowProperties;
-}
-
-export enum LensType {
-	Token = 'tokens',
-	Chip = 'chips',
-	Card = 'cards',
-	Full = 'full',
-	SearchChip = 'search-chips',
-	SearchCard = 'search-cards',
-	WebChip = 'web-chips',
-	WebCard = 'web-card',
-	None = null // FIXME
-}
-
-export type DerivedLensType = string;
-
-export interface DerivedLensTypeDefinition {
-	name: DerivedLensType;
-	// use the first of these found as the base
-	base: LensType[];
-	// remove all showProperties from the first of these that is found
-	minusFirst: LensType[];
-	// remove all showProperties from these
-	minusAll: LensType[];
-}
-
-type Context = Record<string, string | Record<JsonLd, string>>;
-
-// TODO
-type Data = Record<string, unknown>;
-export type FramedData = Record<string, unknown>;
-
-export type PropertyDefinition = unknown;
-
-// TODO
-interface LensedOrdered {
-	[JsonLd.ID]?: Link;
-	[JsonLd.TYPE]: ClassName;
-	[Fmt.PROPS]: LensedOrdered[];
-}
-export type DisplayDecorated = unknown;
-
-interface VocabData {
-	'@context'?: string | Context;
-	'@graph': Record<string, unknown>[];
-}
-
-interface ContextData {
-	'@context': Context;
-	'@graph': Record<string, unknown>[];
-}
 
 export class VocabUtil {
 	//vocabId: string
@@ -233,7 +94,6 @@ export class VocabUtil {
 
 type FormatIndex = Record<string, Format>;
 
-// TODO transliterated values in language containers
 // TODO handle not framed data, i.e. @graph
 // TODO type coercion (code, langCode, langCodeFull -> code^^ISO639-2, code^^ISO639-3 etc.)
 // TODO fresnel:allProperties?
@@ -252,6 +112,11 @@ export class DisplayUtil {
 		lensType: LensType | DerivedLensType,
 		propertyName: PropertyName
 	) => {
+		// FIXME - hardcoded workaround to get title + language in translationOf - should we use sublenses?
+		if (lensType == LensType.WebCardHeaderExtra && propertyName === 'translationOf') {
+			// return LensType.WebChip; // without language
+			return LensType.Card; // with language
+		}
 		// FIXME - hardcoded workaround to get title + language in translationOf - should we use sublenses?
 		if (this.isDerivedLens(lensType) && propertyName === 'translationOf') {
 			return LensType.Card;
@@ -276,6 +141,8 @@ export class DisplayUtil {
 			case LensType.Card:
 			case LensType.SearchCard:
 			case LensType.WebCard:
+			case LensType.WebCardHeaderExtra:
+			case LensType.WebCardFooter:
 				return LensType.Chip;
 			case LensType.Chip:
 			case LensType.SearchChip:
@@ -294,7 +161,6 @@ export class DisplayUtil {
 	langContainerAlias: Record<PropertyName, PropertyName> = {};
 
 	// xByLang -> x
-
 	langContainerAliasInverted: Record<PropertyName, PropertyName> = {};
 
 	constructor(display: DisplayJsonLd, vocabUtil: VocabUtil) {
@@ -355,10 +221,16 @@ export class DisplayUtil {
 	}
 
 	private deriveLens(type: ClassName, def: DerivedLensTypeDefinition): Lens {
-		let taken = this.findLens(def.minusFirst, type).showProperties.map((s) => JSON.stringify(s));
-
+		const empty = {
+			[JsonLd.TYPE]: Fresnel.Lens,
+			classLensDomain: type,
+			showProperties: []
+		};
+		let taken = this.findLens(def.minusFirst, type, empty).showProperties.map((s) =>
+			JSON.stringify(s)
+		);
 		taken += def.minusAll
-			.map((l) => this.findLens(l, type).showProperties)
+			.map((l) => this.findLens(l, type, empty).showProperties)
 			.flat()
 			.map((s) => JSON.stringify(s));
 
@@ -401,10 +273,17 @@ export class DisplayUtil {
 		lensType: LensType | DerivedLensType,
 		subLensSelector: (lensType: LensType | DerivedLensType, propertyName: PropertyName) => LensType,
 		ack: (result: unknown, p: PropertyName, value: unknown) => void,
-		ackInit: () => unknown
+		ackInit: () => unknown,
+		langAndScript: string | undefined = undefined
 	) {
 		if (!isTypedNode(thing)) {
 			return thing;
+		}
+
+		// Main transliteration for structured value
+		const scripts = !langAndScript ? this.scriptAlternatives(thing) : [];
+		if (scripts.length > 0) {
+			langAndScript = scripts[0];
 		}
 
 		const lens = this.findLens(lensType, this.vocabUtil.getType(thing));
@@ -415,12 +294,39 @@ export class DisplayUtil {
 		};
 
 		const accumulate = (src: Data, key: string) => {
-			const value = Array.isArray(src[key])
-				? (src[key] as Array<unknown>).map((v) =>
-						this._applyLens(v, subLensSelector(lensType, key), subLensSelector, ack, ackInit)
-					)
-				: this._applyLens(src[key], subLensSelector(lensType, key), subLensSelector, ack, ackInit);
-			ack(result, key, value);
+			let value;
+			if (langAndScript && this.isLangContainer(key)) {
+				// transliterated value inside structured value
+				value = src[key][langAndScript];
+				ack(result, this.langContainerAliasInverted[key], value);
+			} else if (!langAndScript && this.isLangContainer(key) && isTransliterated(src[key])) {
+				// TODO mark these as different scripts in some way so that they can be formated
+				// transliterated value not inside structured value
+				const value = this.scriptAlternatives(src[key]).map((s) => src[key][s]);
+				ack(result, this.langContainerAliasInverted[key], value);
+			} else {
+				value = Array.isArray(src[key])
+					? (src[key] as Array<unknown>).map((v) =>
+							this._applyLens(
+								v,
+								subLensSelector(lensType, key),
+								subLensSelector,
+								ack,
+								ackInit,
+								langAndScript
+							)
+						)
+					: this._applyLens(
+							src[key],
+							subLensSelector(lensType, key),
+							subLensSelector,
+							ack,
+							ackInit,
+							langAndScript
+						);
+
+				ack(result, key, value);
+			}
 		};
 
 		const pick = (src: Data, key: string) => {
@@ -474,18 +380,47 @@ export class DisplayUtil {
 			}
 		}
 
+		// Alternate transliterations and original script for structured value
+		if (scripts.length > 1) {
+			// TODO what should be structure for these? they should not be in _script
+			const otherScripts = scripts.slice(1);
+			otherScripts.forEach((s) => {
+				if (isTransliteratedLatin(s)) {
+					ack(
+						result,
+						'_script',
+						this._applyLens(thing, lensType, subLensSelector, ack, ackInit, s)
+					);
+				} else {
+					ack(
+						result,
+						'_script',
+						this._applyLens(thing, lensType, subLensSelector, ack, ackInit, s)
+					);
+				}
+			});
+		}
+
 		return result;
 	}
 
-	private findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
+	private findLens(
+		lenses: LensType | LensType[] | DerivedLensType,
+		className: ClassName,
+		defaultTo: Lens = undefined
+	) {
 		if (!Array.isArray(lenses) && this.isDerivedLens(lenses)) {
 			return this.findDerivedLens(className, lenses);
 		} else {
-			return this._findLens(lenses, className);
+			return this._findLens(lenses, className, defaultTo);
 		}
 	}
 
-	private _findLens(lenses: LensType | LensType[] | DerivedLensType, className: ClassName) {
+	private _findLens(
+		lenses: LensType | LensType[] | DerivedLensType,
+		className: ClassName,
+		defaultTo: Lens = undefined
+	) {
 		for (const lens of asArray(lenses)) {
 			for (const cls of [className, ...this.vocabUtil.getBaseClasses(className)]) {
 				if (this.display.lensGroups[lens] && cls in this.display.lensGroups[lens].lenses) {
@@ -504,12 +439,12 @@ export class DisplayUtil {
 			}
 		}
 
-		return this.DEFAULT_LENS;
+		return defaultTo ? defaultTo : this.DEFAULT_LENS;
 	}
 
 	private buildLangContainerAliasMap() {
 		for (const [k, v] of Object.entries({
-			...this.vocabUtil.context,
+			...this.vocabUtil.context[1],
 			...this.display[JsonLd.CONTEXT]
 		})) {
 			// TODO why null check?
@@ -569,6 +504,39 @@ export class DisplayUtil {
 			fn(lens);
 		}
 	}
+
+	private isLangContainer(p: PropertyName) {
+		return p in this.langContainerAliasInverted;
+	}
+
+	private scriptAlternatives(thing: unknown): LangCode[] {
+		if (isTypedNode(thing) && this.vocabUtil.isStructuredValue(this.vocabUtil.getType(thing))) {
+			return this.orderScripts(
+				Object.entries(thing)
+					.filter(([k, v]) => this.isLangContainer(k) && isTransliterated(v as LangContainer))
+					.flatMap(([, v]) => Object.keys(v as LangContainer))
+			);
+		}
+		if (isObject(thing)) {
+			return isTransliterated(thing as LangContainer)
+				? this.orderScripts(Object.keys(thing as LangContainer))
+				: [];
+		}
+
+		return [];
+	}
+
+	private orderScripts(scripts: LangCode[]): LangCode[] {
+		return [
+			...new Set(
+				scripts.sort((a, b) => {
+					const aa = isTransliteratedLatin(a) ? a : '_' + a;
+					const bb = isTransliteratedLatin(a) ? b : '_' + b;
+					return bb.localeCompare(aa);
+				})
+			)
+		];
+	}
 }
 
 type Styler = (v: unknown) => unknown;
@@ -598,6 +566,23 @@ class Formatter {
 					[Fmt.CONTENT_AFTER]: ' '
 				});
 			}
+			return v;
+		},
+		'uriToId()': (v) => {
+			if (isObject(v) && JsonLd.TYPE in v && Fmt.DISPLAY in v) {
+				const display = v[Fmt.DISPLAY] as Array<unknown>;
+				const ix = display.findIndex((d) => isObject(d) && 'uri' in d);
+
+				if (ix >= 0 && asArray(display[ix]['uri']).length > 0) {
+					const uri = asArray(display[ix]['uri'])[0];
+					v[JsonLd.ID] = uri;
+					if (display.length > 1) {
+						// Is there anything else to display as link label?
+						display.splice(ix, 1);
+					}
+				}
+			}
+
 			return v;
 		}
 	};
@@ -974,6 +959,14 @@ export function mapValuesOfObject<V, V2>(obj: Record<string, V>, fn: (v: V, k: s
 
  */
 
+function isTransliterated(l: LangContainer) {
+	return Object.keys(l).some((langTag) => langTag.includes('-t-'));
+}
+
+function isTransliteratedLatin(langCode: LangCode) {
+	return langCode.includes('-t-Latn');
+}
+
 function isAlternateProperties(v: ShowProperty): v is AlternateProperties {
 	return isObject(v) && 'alternateProperties' in v;
 }
@@ -991,12 +984,16 @@ function isTypedNode(data: unknown): data is Data {
 	return isObject(data) && JsonLd.TYPE in data;
 }
 
-function asArray<V>(v: V | Array<V>): Array<V> | [] {
+export function asArray<V>(v: V | Array<V>): Array<V> | [] {
 	return Array.isArray(v) ? v : v === null || v === undefined ? [] : [v];
 }
 
 function unwrapSingle(v: unknown) {
 	return Array.isArray(v) ? (v.length == 1 ? v[0] : v) : v;
+}
+
+export function first<V>(v: Array<V>): V | undefined {
+	return Array.isArray(v) ? (v.length > 0 ? v[0] : undefined) : undefined;
 }
 
 function mapMaybeArray(v, fn) {

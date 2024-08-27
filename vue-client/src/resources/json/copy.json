@@ -56,5 +56,11 @@
     "text": "På Libris underwebb finns introduktionsmaterial för självstudier till dig som vill fördjupa dina kunskaper inom länkade data, format och vokabulär, med mera.",
     "linkUrl": "https://www.kb.se/libris/Om-LIBRIS/Introduktion-till-nya-Libris-och-XL/",
     "linkText": "Till Introduktion till Libris"
+  },
+  "metadatabyran": {
+    "header": "Praxis och anvisningar i Metadatabyrån",
+    "text": "I Metadatabyrån hittar du anvisningar för katalogisering i Libris, riktlinjer och praxis för auktoritetsarbete, klassifikation och ämnesord, exempel från Libris katalogisering med mera.",
+    "linkUrl": "https://metadatabyran.kb.se/",
+    "linkText": "Till Metadatabyrån"
   }
 }

@@ -135,6 +135,8 @@ export function getRelatedRecords(queryPairs, apiPath) {
 export async function getDocument(uri, contentType = 'application/ld+json', embellished = true) {
   let translatedUri = translateAliasedUri(uri);
 
+  translatedUri = translatedUri.split('#')[0];
+
   if (!uri.includes('embellished=')) {
     const query = `${uri.includes('?') ? '&' : '?'}embellished=${embellished}`;
     translatedUri = `${translatedUri}${query}`;
@@ -159,6 +161,7 @@ export async function getDocument(uri, contentType = 'application/ld+json', embe
   }
   responseObject.data = await response.json();
   responseObject.ETag = response.headers.get('ETag');
+  responseObject.uri = uri;
   return responseObject;
 }
 
@@ -205,4 +208,10 @@ export function getResourceFromCache(url) {
       reject(error);
     });
   });
+}
+
+export function fetchPlainEtags(ids) {
+  return Promise
+    .all(ids.map((id) => getDocument(id, undefined, false)))
+    .then((responses) => Object.fromEntries(responses.map((r) => [r.uri, r.ETag])));
 }

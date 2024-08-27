@@ -1,5 +1,7 @@
 # Libris XL UI Repository
 
+[![lxl-web](https://github.com/libris/lxlviewer/actions/workflows/lxl-web-tests.yml/badge.svg)](https://github.com/libris/lxlviewer/actions/workflows/lxl-web-tests.yml)
+
 ## Contents
 
 View the respective directory and their READMEs for more information.

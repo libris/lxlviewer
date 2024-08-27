@@ -70,8 +70,9 @@ export default {
     return {
       documentId: null,
       documentETag: null,
+      etagMap: {},
+      inlinedIds: [],
       documentTitle: null,
-      result: {},
       recordLoaded: false,
       modalOpen: false,
       removeInProgress: false,
@@ -207,8 +208,18 @@ export default {
         });
       }).then((result) => {
         if (typeof result !== 'undefined') {
-          this.result = result;
           const splitFetched = LxlDataUtil.splitJson(result);
+
+          this.inlinedIds = RecordUtil.getLinkedIdsToBeInlined(splitFetched, this.resources);
+          if (this.inlinedIds.length > 0) {
+            HttpUtil.fetchPlainEtags(this.inlinedIds).then((etagMap) => {
+              console.log('Inlined document etags:', etagMap);
+              this.etagMap = etagMap;
+            });
+
+            RecordUtil.moveFromQuotedToMain(splitFetched, this.inlinedIds, this.resources);
+          }
+
           this.$store.dispatch('setInspectorData', splitFetched);
           this.onRecordLoaded();
         }
@@ -216,6 +227,8 @@ export default {
     },
     initializeRecord() {
       this.documentETag = null; // Reset this
+      this.etagMap = {};
+      this.inlinedIds = [];
       this.marcPreview.active = false;
       this.$store.dispatch('pushLoadingIndicator', 'Loading document');
       this.recordLoaded = false;
@@ -421,6 +434,26 @@ export default {
         } else {
           this.$store.dispatch('pushNotification', { type: 'danger', message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.statusText}` });
         }
+      });
+    },
+    doRemoveOtherRecord(fnurgel, type) {
+      const url = `${this.settings.apiPath}/${fnurgel}`;
+      HttpUtil._delete({ url, activeSigel: this.user.settings.activeSigel, token: this.user.token }).then(() => {
+        this.$store.dispatch('pushNotification', {
+          type: 'success',
+          message: `${labelByLang(type)} ${translatePhrase('was deleted')}!`,
+        });
+      }, (error) => {
+        if (error.status === 403) {
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${translatePhrase('Forbidden')} - ${translatePhrase('This entity may have active links')} - ${error.statusText}` });
+        } else {
+          this.$store.dispatch('pushNotification', { type: 'danger', message: `${translatePhrase('Something went wrong')} - ${error.statusText}` });
+        }
+      });
+    },
+    removeOtherRecords() {
+      this.inspector.otherRecordsToDeleteOnSave.forEach((r) => {
+        this.doRemoveOtherRecord(RecordUtil.extractFnurgel(r.id), r.type);
       });
     },
     loadDocument() {
@@ -651,6 +684,7 @@ export default {
         await this.saveExtracted();
         this.saveQueued = () => this.saveItem(done);
       } catch (error) {
+        console.error(error);
         this.$store.dispatch('pushNotification', {
           type: 'danger',
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
@@ -661,18 +695,18 @@ export default {
     async saveExtracted() {
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
       for await (const path of this.inspector.extractItemsOnSave) {
-        const cleanedExtractedData = RecordUtil.getCleanedExtractedData(get(this.inspector.data, path), this.inspector.data, this.resources);
+        const cleanedExtractedData = RecordUtil.getCleanedExtractedData(get(this.inspector.data, path), this.inspector.data, this.resources, this.settings);
         const extractedRecord = RecordUtil.getObjectAsRecord(cleanedExtractedData, {
           descriptionCreator: { '@id': this.user.getActiveLibraryUri() },
           ...((this.inspector.data.record['@id'] !== 'https://id.kb.se/TEMPID') && {
             derivedFrom: { '@id': this.inspector.data.record['@id'] },
           }),
         });
-        const response = await HttpUtil.post({
+        const response = await this.preSaveHook(extractedRecord).then((r) => HttpUtil.post({
           url: `${this.settings.apiPath}/data`,
           token: this.user.token,
           activeSigel: this.user.settings.activeSigel,
-        }, extractedRecord);
+        }, r));
         const postUrl = `${response.getResponseHeader('Location')}`;
         const savedExtractedRecord = await HttpUtil.get({ url: `${postUrl}/data.jsonld`, contentType: 'text/plain' });
         const savedExtractedMainEntity = LxlDataUtil.splitJson({
@@ -737,10 +771,12 @@ export default {
           ? 'was sent'
           : (!this.documentId ? 'was created' : 'was saved');
 
+        const type = get(obj, ['@graph', 1, '@type'], '');
+
         setTimeout(() => {
           this.$store.dispatch('pushNotification', {
             type: 'success',
-            message: `${labelByLang(this.recordType)} ${StringUtil.getUiPhraseByLang(msgKey, this.user.settings.language, this.resources.i18n)}!`,
+            message: `${labelByLang(type)} ${StringUtil.getUiPhraseByLang(msgKey, this.user.settings.language, this.resources.i18n)}!`,
           });
         }, 10);
         if (!this.documentId) {
@@ -752,6 +788,7 @@ export default {
         } else {
           this.fetchDocument();
           this.warnOnSave();
+          this.removeOtherRecords();
           if (done) {
             this.stopEditing();
           } else {
@@ -790,6 +827,7 @@ export default {
               } });
             break;
           default:
+            console.error(error);
             errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
         }
@@ -821,8 +859,44 @@ export default {
       }, 5000);
     },
     async preSaveHook(obj) {
-      await checkAutoShelfControlNumber(obj, this.settings, this.user);
+      await checkAutoShelfControlNumber(obj, this.settings, this.user, this.resources);
+      await this.saveInlined(obj);
+
       return obj;
+    },
+    async saveInlined(obj) {
+      if (this.inlinedIds.includes(obj['@graph'][1]['@id'])) {
+        // we only handle one level of inlined docs so far
+        return;
+      }
+
+      const inlined = RecordUtil.extractInlinedData(obj['@graph'][1], this.inlinedIds, this.resources);
+      await Promise.all(Object.keys(inlined)
+        .map((id) => HttpUtil.getDocument(id, undefined, false)
+          .then((r) => {
+            if (!r.data) {
+              // TODO Fix HttpUtil.getDocument so that it errors instead
+              const e = new Error(`Could not fetch document ${id}`);
+              e.statusText = 'Try again';
+              throw e;
+            }
+            if (r.ETag !== this.etagMap[id]) {
+              const msg = 'The resource has been modified by another user';
+              const e = new Error(`${msg} ${id}`);
+              // FIXME smuggling the fnurgel inside status
+              e.status = RecordUtil.extractFnurgel(id);
+              e.statusText = msg;
+              throw e;
+            }
+            r.data['@graph'][1] = inlined[id];
+            return this.preSaveHook(r.data);
+          })
+          .then((data) => HttpUtil.put({
+            url: id,
+            ETag: this.etagMap[id],
+            activeSigel: this.user.settings.activeSigel,
+            token: this.user.token,
+          }, data))));
     },
   },
   watch: {

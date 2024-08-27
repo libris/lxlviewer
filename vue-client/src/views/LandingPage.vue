@@ -68,6 +68,12 @@ export default {
           :text="copy['instructional-videos'].text"
           :link-text="copy['instructional-videos'].linkText"
           :link-url="copy['instructional-videos'].linkUrl" />
+        <link-card
+          v-if="widgetShouldBeShown('metadatabyran')"
+          :header="copy['metadatabyran'].header"
+          :text="copy['metadatabyran'].text"
+          :link-text="copy['metadatabyran'].linkText"
+          :link-url="copy['metadatabyran'].linkUrl" />
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-import type { ResourceData } from '$lib/types/ResourceData';
+import type { ResourceData } from '$lib/types/resourceData';
 
 export function getPropertyValue(data: ResourceData, name: string) {
 	if (data && typeof data === 'object' && !Array.isArray(data) && name in data) {

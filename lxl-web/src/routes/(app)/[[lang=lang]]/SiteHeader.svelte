@@ -1,56 +1,80 @@
-<script>
-	import Search from '$lib/components/Search.svelte';
-	import LangPicker from '$lib/components/LangPicker.svelte';
-	import logo from '$lib/assets/img/logo-brown-flare.svg';
+<script lang="ts">
 	import { page } from '$app/stores';
+	import BiList from '~icons/bi/list';
+	import Search from '$lib/components/Search.svelte';
+	import Modal from '$lib/components/Modal.svelte';
+	import HeaderMenu from './HeaderMenu.svelte';
 
 	$: isLandingPage = $page.route.id === '/(app)/[[lang=lang]]';
+
+	let showHeaderMenu = false;
+
+	function toggleHeaderMenu() {
+		showHeaderMenu = !showHeaderMenu;
+	}
 </script>
 
-{#if isLandingPage}
-	<header class="container-fluid flex flex-col gap-8 bg-head py-10 pb-20">
-		<nav class="flex justify-center sm:justify-end">
-			<ol class="flex items-center gap-6 text-secondary">
-				<li>Hjälp</li>
-				<li>Inställningar</li>
-				<li><LangPicker /></li>
-			</ol>
-		</nav>
-		<div class="flex flex-col items-center">
-			<div class="flex items-baseline gap-3 sm:gap-6">
-				<img class="h-12 w-12 sm:h-24 sm:w-24" alt="Libris logo" src={logo} />
-				<h1 class="text-3xl font-bold text-primary sm:text-[5.5rem]">Libris</h1>
-			</div>
-			<label for="main-search" class="mb-4 text-center text-secondary text-4-regular"
-				>Hitta och låna i hela Sveriges bibliotekskatalog</label
-			>
-			<div class="w-full max-w-3xl">
-				<Search placeholder="Titel, författare, ämne, bokförlag m.m." autofocus />
-			</div>
-		</div>
-	</header>
-{:else}
-	<header class="bg-head pb-4 pt-4 sm:py-6">
-		<div class="container-fluid flex flex-nowrap items-center justify-between gap-4 sm:gap-16">
-			<a class="flex items-baseline gap-2 no-underline" href={$page.data.base}>
-				<img class="h-10 w-10" alt="Libris logo" src={logo} />
-				<span
-					class="sr-only text-[2.1rem] font-extrabold leading-tight text-primary sm:not-sr-only sm:inline"
-					>Libris</span
+<header
+	class="flex gap-4 bg-site-header page-padding md:grid"
+	class:md:find-layout={!isLandingPage}
+	class:md:grid-cols-find={!isLandingPage}
+>
+	{#if !isLandingPage}
+		<div class="flex items-center">
+			<a href={$page.data.base} class="flex flex-col text-primary no-underline sm:flex-row">
+				<span class="text-[1.4rem] font-extrabold leading-tight sm:text-[1.6rem] md:text-[2.1rem]">
+					Libris</span
+				>
+				<sup
+					class="top-0 -rotate-6 self-baseline rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold sm:rotate-0"
+					>Beta</sup
 				>
 			</a>
-			<div class="max-w-content flex-1">
-				<Search placeholder="Sök i hela Sveriges bibliotekskatalog" />
-			</div>
-			<nav class="hidden md:flex">
-				<ol class="flex items-center gap-6 text-secondary">
-					<li>Hjälp</li>
-					<li>Inställningar</li>
-					<li><LangPicker /></li>
-				</ol>
-			</nav>
-			<div class="block md:hidden">⚙️</div>
-			<!-- TODO menu -->
 		</div>
-	</header>
-{/if}
+	{/if}
+	<div class="flex flex-1 items-center" class:flex-col={isLandingPage}>
+		{#if !isLandingPage}
+			<div class="max-w-content flex-1">
+				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
+			</div>
+		{/if}
+		<div id="header-menu" class="ml-auto hidden min-h-14 items-center pl-8 md:flex">
+			<HeaderMenu />
+		</div>
+		<div class="ml-auto flex min-h-14 items-center pl-4 md:hidden">
+			<a
+				aria-label={$page.data.t('header.openMenu')}
+				class="button-ghost h-11 w-11 !p-0"
+				href={`${$page.url.pathname}?${$page.url.search}#header-menu`}
+				on:click|preventDefault={toggleHeaderMenu}
+			>
+				<BiList width={20} height={20} aria-hidden="true" />
+			</a>
+			{#if showHeaderMenu}
+				<Modal close={toggleHeaderMenu} position="top">
+					<HeaderMenu />
+				</Modal>
+			{/if}
+		</div>
+		{#if isLandingPage}
+			<div class="flex w-full flex-col items-center gap-2 px-12 pb-[4.5rem] pt-6">
+				<h1 class="flex text-3xl font-extrabold text-primary sm:text-[5.5rem] sm:font-bold">
+					Libris
+					<sup
+						class="self-center rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold sm:text-3-cond-bold"
+						>Beta</sup
+					>
+				</h1>
+				<div class="w-full max-w-3xl">
+					<Search placeholder={$page.data.t('home.searchPlaceholder')} autofocus />
+				</div>
+			</div>
+		{/if}
+	</div>
+</header>
+
+<style>
+	#header-menu:target {
+		@apply /* TODO: fix better no-JS fallback styling */ absolute left-0 block w-full bg-main;
+	}
+</style>

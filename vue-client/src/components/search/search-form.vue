@@ -31,7 +31,7 @@ export default {
       },
       helpToggled: false,
       vocabUrl: 'https://id.kb.se/vocab/',
-      staticProps: { _limit: 20 },
+      staticProps: { _limit: 20, _spell: true },
       searchPhrase: '',
       searchParams: PropertyMappings,
       activeSearchParam: null,
@@ -234,6 +234,14 @@ export default {
       return { '@type': type };
     },
     prefSort() {
+      if (
+        this.$route.query?._sort
+        && this.settings.sortOptions[this.activeSearchType]
+          ?.find((sortOption) => this.$route.query._sort.includes(sortOption.query))
+          // use includes instead of strict equality check to allow localized _sortKeyByLang (e.g. _sortKeyByLang.sv)
+      ) {
+        return { _sort: this.$route.query._sort };
+      }
       if (this.user && this.user.settings.sort) {
         const availableSorts = this.settings.sortOptions[this.user.settings.searchType];
 
