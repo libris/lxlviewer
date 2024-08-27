@@ -306,7 +306,7 @@ export default {
       </div>
       <id-pill
         v-if="!excludeComponents.includes('id')"
-        :uri="this.recordId"
+        :uri="this.uri"
         :isLibrisResource="this.isLibrisResource"
       />
     </div>
