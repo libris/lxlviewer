@@ -19,9 +19,7 @@ export const lxlQueryLanguage = LRLanguage.define({
       })
     ]
   }),
-  languageData: {
-    commentTokens: {line: ";"}
-  }
+  languageData: {}
 })
 
 export function lxlQuery() {
