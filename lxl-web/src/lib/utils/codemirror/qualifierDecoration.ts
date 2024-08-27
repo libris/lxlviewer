@@ -8,7 +8,7 @@ import {
 } from '@codemirror/view';
 
 const qualifierNameMatcher = new MatchDecorator({
-	regexp: /(?<!\S+)([0-9a-zA-ZaåöAÅÖ]+):/g,
+	regexp: /(?<!\S+)((")?([0-9a-zA-ZaåöAÅÖ:]+)\2):/g,
 	decoration: () =>
 		Decoration.mark({
 			class: 'lxlquery-qualifier-name'
@@ -31,7 +31,7 @@ export const qualifierNameDecoration = ViewPlugin.fromClass(
 );
 
 const qualifierValueMatcher = new MatchDecorator({
-	regexp: /(?<=(?<!\S+)([0-9a-zA-ZaåöAÅÖ]+):)((")?[0-9a-zA-ZaåöAÅÖ:]+\3)/g,
+	regexp: /(?<=(?<!\S+)([0-9a-zA-ZaåöAÅÖ:"]+):)((")?[0-9a-zA-ZaåöAÅÖ:]+\3)/g,
 	decoration: () =>
 		Decoration.mark({
 			class: 'lxlquery-qualifier-value'
