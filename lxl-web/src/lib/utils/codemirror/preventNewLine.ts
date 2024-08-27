@@ -1,8 +1,11 @@
 import { EditorState, Prec } from '@codemirror/state';
 
+/**
+ * CodeMirror extension which prevents inserted newlines
+ */
+
 const preventNewLine = Prec.highest(
 	EditorState.transactionFilter.of((tr) => {
-		console.log('tr', tr);
 		if (tr.newDoc.lines > 1) {
 			return [
 				tr,
