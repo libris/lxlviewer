@@ -31,7 +31,7 @@ export const qualifierNameDecoration = ViewPlugin.fromClass(
 );
 
 const qualifierValueMatcher = new MatchDecorator({
-	regexp: /(?<!\S+)([0-9a-zA-ZaåöAÅÖ]+):(")?[0-9a-zA-ZaåöAÅÖ:]+\2/g,
+	regexp: /(?<=(?<!\S+)([0-9a-zA-ZaåöAÅÖ]+):)((")?[0-9a-zA-ZaåöAÅÖ:]+\3)/g,
 	decoration: () =>
 		Decoration.mark({
 			class: 'lxlquery-qualifier-value'
