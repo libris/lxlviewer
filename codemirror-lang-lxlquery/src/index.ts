@@ -14,6 +14,7 @@ export const lxlQueryLanguage = LRLanguage.define({
       styleTags({
         Identifier: t.variableName,
         String: t.string,
+        CompareOperator: t.compareOperator,
         "( )": t.paren
       })
     ]

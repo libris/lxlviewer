@@ -5,13 +5,16 @@
 expression {
   Identifier |
   String |
+  CompareOperator |
   Application { "(" expression* ")" }
 }
 
 @tokens {
-  Identifier { $[a-zA-Z_\-0-9]+ }
+  Identifier { $[a-zA-ZåäöÅÄÖ0-9:]+ }
 
   String { '"' (!["\\] | "\\" _)* '"' }
+
+  CompareOperator { ">" | "<" | ">=" | "<=" }
 
   space { $[ \t\n\r]+ }
 
