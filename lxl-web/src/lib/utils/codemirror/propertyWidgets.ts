@@ -30,7 +30,7 @@ class PropertyWidget extends WidgetType {
     padding: 2px 2px 2px 4px;
     background: rgba(14, 113, 128, 0.2);
 		color: #0E7180;
-		font-weight: 500;`;
+		font-weight: 700;`;
 		name.textContent = this.property.name;
 		elt.appendChild(name);
 
@@ -52,7 +52,7 @@ class PropertyWidget extends WidgetType {
 
 // check in transaction filter if part of decoration. If it is, skip editing?
 const propertyMatcher = new MatchDecorator({
-	regexp: /([a-zA-ZäöåÄÖÅ]+):([\S]+)?/g, // rewrite to only allow one-level encapsulated string
+	regexp: /([a-zA-ZåäöÅÄÖ]+):([\S]+)?/g, // rewrite to only allow one-level encapsulated string
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	decoration: ([_, name, value]) => {
 		return Decoration.replace({
