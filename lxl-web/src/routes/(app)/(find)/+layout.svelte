@@ -1,10 +1,6 @@
-<script lang="ts">
-	import * as m from '$lib/paraglide/messages.js';
-</script>
-
 <div class="find">
 	<aside>
-		<header><h2>{m.filter()}</h2></header>
+		<header></header>
 	</aside>
 	<slot></slot>
 </div>
@@ -26,12 +22,6 @@
 			display: flex;
 			align-items: center;
 			min-height: var(--height-input-base);
-
-			& h2 {
-				margin: 0;
-				font-weight: inherit;
-				font-size: var(--font-size-sm);
-			}
 		}
 
 		@media screen and (min-width: 810px) {
