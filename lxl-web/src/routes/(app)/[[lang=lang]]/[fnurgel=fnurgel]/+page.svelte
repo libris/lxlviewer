@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import type { DecoratedHolder } from '$lib/types/holdings';
 	import { Width } from '$lib/types/auxd';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import isFnurgel from '$lib/utils/isFnurgel';
@@ -23,6 +24,7 @@
 	let holdingsInstanceElement: HTMLElement | null;
 	let expandedHoldingsInstance = false;
 	let previousURL: URL;
+	let searchPhrase = '';
 
 	$: selectedHoldingInstance = selectedHolding
 		? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
@@ -49,6 +51,27 @@
 
 	$: expandableHoldingsInstance =
 		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT;
+
+	let displayedHolders: DecoratedHolder[] = [];
+	$: if (latestHoldingUrl) {
+		if (
+			isFnurgel(latestHoldingUrl) &&
+			selectedHolding &&
+			data.holdingsByInstanceId[selectedHolding]
+		) {
+			// show holdings for an instance
+			displayedHolders = data.holdingsByInstanceId[selectedHolding].map(
+				(holding) => holding.heldBy
+			);
+		} else if (data.holdersByType?.[latestHoldingUrl]) {
+			// show holdings by type
+			displayedHolders = data.holdersByType[latestHoldingUrl];
+		}
+	}
+
+	$: filteredHolders = displayedHolders.filter((holder) => {
+		return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
+	});
 
 	afterNavigate(({ to }) => {
 		if (to) {
@@ -214,19 +237,21 @@
 								: data.t('holdings.libraries')}
 						{/if}
 					</h2>
+					<input
+						bind:value={searchPhrase}
+						placeholder={$page.data.t('holdings.findLibrary')}
+						aria-label={$page.data.t('holdings.findLibrary')}
+						class="my-2 w-full"
+						type="search"
+					/>
 					<ul class="w-full text-sm">
-						{#if latestHoldingUrl && isFnurgel(latestHoldingUrl)}
-							<!-- holdings list by instance -->
-							{#if selectedHolding && data.holdingsByInstanceId[selectedHolding]}
-								{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
-									<HoldingStatus holder={holdingItem?.heldBy} {holdingUrl} />
-								{/each}
-							{/if}
-							<!-- holdings list by type -->
-						{:else if latestHoldingUrl && data.holdersByType?.[latestHoldingUrl]}
-							{#each data.holdersByType[latestHoldingUrl] as holderItem}
-								<HoldingStatus holder={holderItem} {holdingUrl} />
-							{/each}
+						{#each filteredHolders as holder, i (holder.sigel || i)}
+							<HoldingStatus {holder} {holdingUrl} />
+						{/each}
+						{#if filteredHolders.length === 0}
+							<li class="m-3">
+								<span role="alert">{$page.data.t('search.noResults')}</span>
+							</li>
 						{/if}
 					</ul>
 				</div>
