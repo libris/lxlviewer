@@ -27,7 +27,7 @@
 		placeholder: string;
 	};
 
-	let { value = $bindable(), placeholder }: SuperSearchProps = $props(); // should we keep codemirror instances in sync using update listeners instead of binding to ensure history is kept as is (but will it work with when removing linebreaks?)?
+	let { value = $bindable(), placeholder }: SuperSearchProps = $props(); // should we keep codemirror instances in sync using update listeners instead of binding to ensure history is kept as is (but will it work with when removing linebreaks?)? See: https://codemirror.net/examples/split/
 
 	let editedRange: EditedRange | null | undefined = $state();
 	// let autocompletionItems: [] = $state([]);
