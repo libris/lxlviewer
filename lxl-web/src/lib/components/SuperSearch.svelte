@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { tick, onMount, onDestroy } from 'svelte';
-	import CodeMirror, { type EditedPart, type ChangeCodeMirrorEvent } from './CodeMirror.svelte';
+	import CodeMirror, { type EditedRange, type ChangeCodeMirrorEvent } from './CodeMirror.svelte';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 	import submitClosestFormOnEnter from '$lib/utils/codemirror/submitClosestFormOnEnter';
@@ -27,9 +27,11 @@
 		placeholder: string;
 	};
 
-	let { value = $bindable(), placeholder }: SuperSearchProps = $props();
+	let { value = $bindable(), placeholder }: SuperSearchProps = $props(); // should we keep codemirror instances in sync using update listeners instead of binding to ensure history is kept as is (but will it work with when removing linebreaks?)?
 
-	let editedPart: EditedPart | null | undefined = $state();
+	let editedRange: EditedRange | null | undefined = $state();
+	// let autocompletionItems: [] = $state([]);
+
 	let partSuggestions: [] = $state([]);
 
 	let superSearchContainerElement: HTMLDivElement | undefined = $state();
@@ -39,16 +41,18 @@
 
 	let sanitizedValue = $derived(sanitizeQSearchParamValue(value));
 
-	const findQueryPartSuggestions = debounce(async (editedPart: EditedPart) => {
-		if (editedPart && editedPart.value.length > 0) {
+	const findQueryPartSuggestions = debounce(async (editedRange: EditedRange) => {
+		if (editedRange) {
 			/** TODO: add request cancellation if query changes before fetch has finished */
 
 			try {
-				const suggestionsRes = await fetch(
-					`/api/${languageTag()}/find/part-suggestions?q=${encodeURIComponent(editedPart.value)}`
+				const autocompleteRes = await fetch(
+					`/api/${languageTag()}/autocomplete?_q=${encodeURIComponent(sanitizedValue)}&editedRange=${editedRange.from},${editedRange.to}`
 				);
-				const suggestions = await suggestionsRes.json();
-				partSuggestions = suggestions;
+
+				const autocompletions = await autocompleteRes.json();
+				console.log('autocompletions', autocompletions);
+				// autocompletionItems = autocompletions;
 			} catch (error) {
 				console.error('something went wrong?', error);
 			}
@@ -70,7 +74,7 @@
 	}
 
 	function hideDropdown() {
-		value = sanitizedValue;
+		value = sanitizedValue; // should this be here?
 		const selection = dropdownCodeMirror?.getMainSelection(); // TODO: normalize selection if value differs from sanitizedValue (e.g. selection on multiple rows should convert nicely to selection on a single row)
 
 		if (selection) {
@@ -87,7 +91,7 @@
 
 	function clearSearch() {
 		value = '';
-		editedPart = undefined;
+		editedRange = undefined;
 		partSuggestions = [];
 		if (dialogElement?.open) {
 			dropdownCodeMirror?.focus();
@@ -97,8 +101,8 @@
 	}
 
 	async function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		editedPart = event.editedPart;
-		findQueryPartSuggestions(editedPart);
+		editedRange = event.editedRange;
+		findQueryPartSuggestions(editedRange);
 		if (!dialogElement?.open) {
 			await tick(); // await tick to prevent error when selection points outside of document (when typing at the end of the document)
 			showDropdown();
@@ -156,14 +160,16 @@
 							{#each partSuggestions as suggestion}
 								<li class="suggestion-item">
 									<button onclick={() => handleClickSuggestionItem(suggestion)}>
-										<span class="suggestion-label">{suggestion?.labelByLang?.[languageTag()]}</span>
+										<span class="suggestion-label"
+											>{suggestion?.labelByLang?.[languageTag()] || suggestion?.key}</span
+										>
 										{#if suggestion?.['@id']}
 											<span class="suggestion-id">— {suggestion?.['@id']}</span>
 										{/if}
 									</button>
 									<ul class="suggestion-actions">
 										<li>
-											+ Lägg till {getSuggestionTypeLabel(suggestion, languageTag()).toLowerCase()}
+											Lägg till + {getSuggestionTypeLabel(suggestion, languageTag()).toLowerCase()}
 										</li>
 									</ul>
 								</li>
@@ -264,7 +270,7 @@
 
 	.suggestion-item {
 		display: flex;
-		gap: var(--gap-sm);
+		gap: var(--gap-2xs);
 		padding: 0 var(--gap-base);
 		width: 100%;
 		font-size: var(--font-size-sm);
@@ -313,5 +319,6 @@
 		align-items: center;
 		margin-left: auto;
 		color: var(--color-subtle);
+		font-size: var(--font-size-xs);
 	}
 </style>

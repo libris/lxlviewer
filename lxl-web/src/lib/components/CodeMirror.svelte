@@ -4,15 +4,14 @@
 		head: number;
 	};
 
-	export type EditedPart = {
-		value: string;
+	export type EditedRange = {
 		from: number;
 		to: number;
 	};
 
 	export type ChangeCodeMirrorEvent = {
 		value: string;
-		editedPart: EditedPart | null;
+		editedRange: EditedRange | null;
 	};
 </script>
 
@@ -29,7 +28,7 @@
 		qualifierValueDecoration
 	} from '$lib/utils/codemirror/qualifierDecoration';
 
-	import getEditedPart from '$lib/utils/codemirror/getEditedPart';
+	import getEditedRange from '$lib/utils/codemirror/getEditedRange';
 	import getMainSelectionUtil from '$lib/utils/codemirror/getMainSelection';
 
 	/**
@@ -63,15 +62,17 @@
 	let prevReadOnly = $state(readonly);
 
 	const lxlQueryHighlightStyle = HighlightStyle.define([
-		{ tag: tags.string, color: '#a11' },
-		{ tag: tags.paren, color: '#999' }
+		{ tag: tags.string, color: '#0e8043' },
+		{ tag: tags.paren, color: '#999' },
+		{ tag: tags.compareOperator, color: '#620e80' },
+		{ tag: tags.operator, color: '#620e80' }
 	]);
 
 	const updateHandler = EditorView.updateListener.of(function (e) {
 		if (e.docChanged) {
 			value = e.state.doc.toString();
 			prevValue = value;
-			onchange({ value, editedPart: getEditedPart(e.state) });
+			onchange({ value, editedRange: getEditedRange(e.state) });
 		}
 	});
 
@@ -130,19 +131,16 @@
 
 	export function replaceEditedPart(replacement: string) {
 		if (editor) {
-			const editedPart = getEditedPart(editor.state);
-
-			if (editedPart) {
-				editor.dispatch({
-					changes: {
-						from: editedPart.from,
-						to: editedPart.to,
-						insert: replacement
-					},
-					selection: { anchor: editedPart.from + replacement.length },
-					scrollIntoView: true
-				});
-			}
+			const editedRange = getEditedRange(editor.state);
+			editor.dispatch({
+				changes: {
+					from: editedRange.from,
+					to: editedRange.to,
+					insert: replacement
+				},
+				selection: { anchor: editedRange.from + replacement.length },
+				scrollIntoView: true
+			});
 		}
 	}
 
@@ -213,10 +211,5 @@
 	.codemirror-container :global(.lxlquery-qualifier-name *) {
 		color: var(--color-link); /* ensures highlighted styles are overwritten */
 		font-weight: 500;
-	}
-
-	.codemirror-container :global(.lxlquery-qualifier-value),
-	.codemirror-container :global(.lxlquery-qualifier-value *) {
-		color: var(--color-link); /* ensures highlighted styles are overwritten */
 	}
 </style>
