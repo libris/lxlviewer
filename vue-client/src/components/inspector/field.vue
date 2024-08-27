@@ -606,12 +606,12 @@ export default {
         });
       }
     },
-    mark(operation) {
+    toggleMark(operation) {
       if (operation === 'add') {
-        this.markedForAdd = true;
+        this.markedForAdd = !this.markedForAdd;
         this.markedForRemove = false;
       } else if (operation === 'remove'){
-        this.markedForRemove = true;
+        this.markedForRemove = !this.markedForRemove;
         this.markedForAdd = false;
       }
     },
@@ -659,8 +659,8 @@ export default {
         <div v-if="!isLocked" class="Field-actions">
           <field-marker
             v-if="inOperations"
-            @mark-for-add="mark('add')"
-            @mark-for-remove="mark('remove')"
+            @toggle-mark-for-add="toggleMark('add')"
+            @toggle-mark-for-remove="toggleMark('remove')"
           />
           <div
             class="Field-action Field-remove"

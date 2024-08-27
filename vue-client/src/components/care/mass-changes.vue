@@ -53,8 +53,6 @@ export default {
       runSpec.name = caseName;
       runSpec.date = this.getDateString();
 
-      // TODO: Try to make operations edithistory in the standard entity form (entity-form.vue)
-      // e.g. *delete* subject hästar, insert subject *åsnor*
       runSpec.operations = emptyTemplate.operationTemplate;
 
       if (!this.runSpecifications.some((run) => run.name === runSpec.name)) {
@@ -90,6 +88,7 @@ export default {
       this.currentSpec.form = obj;
     },
     setOperations(obj) {
+      console.log('obj', JSON.stringify(obj));
       this.currentSpec.operations = obj;
     },
     reset() {

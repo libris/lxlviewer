@@ -41,6 +41,9 @@ export default {
     },
     operations() {
       // get a hold of history object here.
+      // get marked object only
+      console.log('form data:', this.formObj());
+
       const operations = this.emptyOperations;
       return operations;
     },
@@ -66,7 +69,7 @@ export default {
     <div
       class="OperationsBuilder-label uppercaseHeading"
       :class="{ 'has-selection': isActive }">
-      operationsbyggaren
+      ändringar
     </div>
     <div class="OperationsBuilder-body" :class="{ 'has-selection': isActive }">
       <div>
@@ -90,7 +93,7 @@ export default {
         class="btn btn-default"
         v-on:click="setOperations()"
         @keyup.enter="setOperations()">
-        <span>Lägg till operationer</span>
+        <span>Lägg till ändringar</span>
       </button>
     </div>
   </div>

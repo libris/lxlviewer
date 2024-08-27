@@ -1,48 +1,53 @@
 <script>
 export default {
   name: 'field-marker',
-  emits: ['markForAdd', 'markForRemove'],
+  data() {
+    return {
+      activeAddButton: false,
+      activeRemoveButton: false,
+    };
+  },
+  emits: ['toggleMarkForAdd', 'toggleMarkForRemove'],
   methods: {
-    markForAdd() {
-      this.$emit('markForAdd');
+    toggleMarkForAdd() {
+      this.activeAddButton = !this.activeAddButton;
+      this.activeRemoveButton = false;
+      this.$emit('toggleMarkForAdd');
     },
-    markForRemove() {
-      this.$emit('markForRemove');
+    toggleMarkForRemove() {
+      this.activeRemoveButton = !this.activeRemoveButton;
+      this.activeAddButton = false;
+      this.$emit('toggleMarkForRemove');
     },
   },
 };
 </script>
-
 <template>
   <div class="FieldMarker">
     <button
-      class="FieldMarker-add"
-      v-on:click="markForAdd"
-    >
+      class="FieldMarker-add btn-primary"
+        v-bind:class="{ 'is-active': this.activeAddButton }"
+        v-on:click="toggleMarkForAdd">
       <i class="FieldMarker-icon fa fa-plus plus-icon" aria-hidden="true" />
     </button>
     <button
-      class="FieldMarker-remove"
-      v-on:click="markForRemove"
-    >
+      class="FieldMarker-add btn-primary"
+        v-bind:class="{ 'is-active': this.activeRemoveButton }"
+        v-on:click="toggleMarkForRemove">
       <i class="FieldMarker-remove fa fa-minus minus-icon" aria-hidden="true" />
     </button>
   </div>
-
 </template>
 
 <style scoped lang="less">
 .FieldMarker {
   display: flex;
   &-add {
-    font-size: 14px;
     font-size: 1.4rem;
-    padding-right: 5px;
-  }
-  &-remove {
-    font-size: 14px;
-    font-size: 1.4rem;
-    padding-right: 5px;
+    &.is-active {
+      background-color: @btn-primary--hover;
+      border: @btn-primary--hover;
+    }
   }
 }
 </style>
