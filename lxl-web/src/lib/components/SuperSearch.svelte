@@ -4,6 +4,7 @@
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 	import submitClosestFormOnEnter from '$lib/utils/codemirror/submitClosestFormOnEnter';
+	import qualifierLinter from '$lib/utils/codemirror/qualifierLinter';
 	import getSuggestionTypeLabel from '$lib/utils/supersearch/getSuggestionsTypeLabel';
 	import debounce from '$lib/utils/debounce';
 	import { languageTag } from '$lib/paraglide/runtime.js';
@@ -51,6 +52,7 @@
 				);
 
 				const autocompletions = await autocompleteRes.json();
+
 				console.log('autocompletions', autocompletions);
 				// autocompletionItems = autocompletions;
 			} catch (error) {
@@ -148,7 +150,7 @@
 							bind:value
 							bind:this={dropdownCodeMirror}
 							{placeholder}
-							extensions={[submitClosestFormOnEnter]}
+							extensions={[submitClosestFormOnEnter, qualifierLinter]}
 							onchange={handleChangeCodeMirror}
 						/>
 					</SearchInputWrapper>
