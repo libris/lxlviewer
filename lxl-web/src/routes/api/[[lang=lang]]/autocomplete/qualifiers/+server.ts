@@ -2,13 +2,16 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import type { Qualifier } from '$lib/types/qualifier';
 import { BOOLEAN_QUALIFIERS, BOOLEAN_QUALIFIER_KEY_TYPE } from '$lib/constants/booleanQualifiers';
-
+import { LxlLens } from '$lib/utils/display.types';
 /**
  * Returns processed properties used for super search suggestions
  */
 
-export const GET: RequestHandler = async ({ locals }) => {
+export const GET: RequestHandler = async ({ locals, params }) => {
 	const vocabUtil = locals.vocab;
+	const displayUtil = locals.display;
+
+	const lang = params?.lang || 'sv';
 
 	const properties = [
 		...vocabUtil.getTermByType('Property'),
@@ -22,6 +25,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 		.map((item) => {
 			return {
 				name: item?.['@id'].split('/').pop(),
+				label: displayUtil.lensAndFormat(item, LxlLens.CardHeading, lang),
 				'@type': item?.['@type'],
 				item
 			};
@@ -30,6 +34,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 	const booleanQualifiers = BOOLEAN_QUALIFIERS.map((item) => {
 		const langVariants = Object.keys(item.keyByLang).map((lang) => ({
 			name: item.keyByLang[lang as keyof typeof item.keyByLang],
+			label: item.labelByLang[lang as keyof typeof item.keyByLang],
 			'@type': BOOLEAN_QUALIFIER_KEY_TYPE,
 			lang
 		}));
