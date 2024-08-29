@@ -1,29 +1,20 @@
+import type { ValidateQualifiersResponse } from '$lib/types/autocomplete';
 import { linter, type Diagnostic } from '@codemirror/lint';
-import getValidQualifiers from './getValidQualifiers';
-import type { Qualifier } from '$lib/types/qualifier';
+import sanitizeQSearchParamValue from '../sanitizeQSearchParamValue';
 /**
  * CodeMirror extension which lints qualifiers
  */
 
 const qualifierLinter = linter(async (view) => {
 	const q = view.state.doc.toString();
+	const sanitizedQ = sanitizeQSearchParamValue(q);
+	const validateQualifiersRes = await fetch(
+		`/api/autocomplete/validate-qualifiers?_q=${sanitizedQ}`
+	);
+	const qualifiers = (await validateQualifiersRes.json()) as ValidateQualifiersResponse;
 
-	const qualifiersRes = await fetch('/api/autocomplete/qualifiers');
-	const qualifiers = (await qualifiersRes.json()) as Qualifier[];
-
-	const usedQualifierMatches = [
-		...q.matchAll(
-			/(?<!\S+)([0-9a-zA-ZaåöAÅÖ]+):((")?[0-9a-zA-ZaåöAÅÖ:]+\3?)?/g // regex probalby needs modification
-		)
-	];
-
-	const usedQualifiers = usedQualifierMatches.map((item) => {
-		const [match, name, value] = item;
-		return { name, value, range: { from: item.index, to: match.length + item.index } };
-	});
-
-	const { invalid: invalidQualifiers } = await getValidQualifiers(qualifiers, usedQualifiers);
-
+	// const { invalid: invalidQualifiers } = await getValidQualifiers(qualifiers, usedQualifiers);
+	const invalidQualifiers = qualifiers?.filter((item) => !item.valid);
 	const diagnostics: Diagnostic[] = [];
 
 	invalidQualifiers?.forEach((invalidQualifier) => {
@@ -31,7 +22,7 @@ const qualifierLinter = linter(async (view) => {
 			from: invalidQualifier.range.from,
 			to: invalidQualifier.range.to,
 			severity: 'error',
-			message: 'Okänd egenskap/sökkod'
+			message: 'Okänd egenskap'
 		});
 	});
 

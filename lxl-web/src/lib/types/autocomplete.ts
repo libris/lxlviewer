@@ -12,7 +12,7 @@ export type QualifiersResponse = {
 
 export type ValidateQualifiersResponse = ValidateQualifierItem[] | null;
 
-type ValidateQualifierItem = {
+export type ValidateQualifierItem = {
 	match: string;
 	name: string;
 	value: string | null;

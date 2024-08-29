@@ -4,11 +4,11 @@
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 	import submitClosestFormOnEnter from '$lib/utils/codemirror/submitClosestFormOnEnter';
-	import qualifierLinter from '$lib/utils/codemirror/qualifierLinter';
 	import getSuggestionTypeLabel from '$lib/utils/supersearch/getSuggestionsTypeLabel';
 	import debounce from '$lib/utils/debounce';
 	import { languageTag } from '$lib/paraglide/runtime.js';
 	import type { PartSuggestion } from '$lib/types/suggestions';
+	import type { AutocompleteResponse } from '$lib/types/autocomplete';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -51,7 +51,9 @@
 					`/api/${languageTag()}/autocomplete?_q=${encodeURIComponent(sanitizedValue)}&editedRange=${editedRange.from},${editedRange.to}`
 				);
 
-				const autocompletions = await autocompleteRes.json();
+				const autocompletions = (await autocompleteRes.json()) as AutocompleteResponse;
+
+				dropdownCodeMirror?.updateValidatedQualifiers(autocompletions.qualifiers);
 
 				console.log('autocompletions', autocompletions);
 				// autocompletionItems = autocompletions;
@@ -150,7 +152,7 @@
 							bind:value
 							bind:this={dropdownCodeMirror}
 							{placeholder}
-							extensions={[submitClosestFormOnEnter, qualifierLinter]}
+							extensions={[submitClosestFormOnEnter]}
 							onchange={handleChangeCodeMirror}
 						/>
 					</SearchInputWrapper>

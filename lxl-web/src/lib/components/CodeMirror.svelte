@@ -27,9 +27,10 @@
 		qualifierNameDecoration,
 		qualifierValueDecoration
 	} from '$lib/utils/codemirror/qualifierDecoration';
-
+	import qualifierLinter from '$lib/utils/codemirror/qualifierLinter';
 	import getEditedRange from '$lib/utils/codemirror/getEditedRange';
 	import getMainSelectionUtil from '$lib/utils/codemirror/getMainSelection';
+	import type { ValidateQualifierItem } from '$lib/types/autocomplete';
 
 	/**
 	 * TODO:
@@ -92,9 +93,10 @@
 			})
 		}),
 		lxlQueryLanguage,
+		syntaxHighlighting(lxlQueryHighlightStyle),
 		qualifierNameDecoration,
 		qualifierValueDecoration,
-		syntaxHighlighting(lxlQueryHighlightStyle),
+		qualifierLinter,
 		...extensions
 	]);
 
@@ -105,6 +107,11 @@
 			doc: value,
 			extensions: editorExtensions
 		});
+	}
+
+	export function updateValidatedQualifiers(validatedQualifiers: ValidateQualifierItem[] | null) {
+		console.log('updateValidatedQualifiers reconfigure now', validatedQualifiers);
+		// See https://codemirror.net/examples/config/#dynamic-configuration
 	}
 
 	function reconfigureEditorExtensions() {
