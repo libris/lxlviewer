@@ -1,8 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import type { Qualifier } from '$lib/types/qualifier';
 import { BOOLEAN_QUALIFIERS, BOOLEAN_QUALIFIER_KEY_TYPE } from '$lib/constants/booleanQualifiers';
 import { LxlLens } from '$lib/utils/display.types';
+import { type QualifiersResponse } from '$lib/types/autocomplete';
+
 /**
  * Returns processed properties used for super search suggestions
  */
@@ -43,7 +44,7 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 
 	const qualifiers = [...propertyQualifiers, ...booleanQualifiers];
 
-	return json(qualifiers as Qualifier[], {
+	return json(qualifiers as QualifiersResponse, {
 		headers: {
 			'cache-control': 'public, max-age=300' // Probably best with an short max-age?
 		}
