@@ -130,6 +130,7 @@ export default {
 		availableAt: 'Finns på',
 		library: 'bibliotek',
 		libraries: 'bibliotek',
+		findLibrary: 'Hitta bibliotek',
 		findAtYourNearestLibrary: 'Hitta på ditt närmaste bibliotek',
 		location: 'Placering',
 		shelf: 'Hylla',

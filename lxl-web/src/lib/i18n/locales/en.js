@@ -131,6 +131,7 @@ export default {
 		availableAt: 'Available at',
 		library: 'library',
 		libraries: 'libraries',
+		findLibrary: 'Find library',
 		findAtYourNearestLibrary: 'Find it at your nearest library',
 		location: 'Location',
 		shelf: 'Shelf',

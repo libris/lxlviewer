@@ -3,7 +3,7 @@ import isFnurgel from '$lib/utils/isFnurgel';
 import { relativizeUrl } from '$lib/utils/http';
 import { LensType, type FramedData } from '$lib/types/xl';
 import type { BibIdObj, HoldersByType, HoldingsByInstanceId } from '$lib/types/holdings';
-import { DisplayUtil } from '$lib/utils/xl.js';
+import { DisplayUtil, toString } from '$lib/utils/xl.js';
 import type { LocaleCode } from '$lib/i18n/locales';
 
 export function getHoldingsLink(url: URL, value: string) {
@@ -60,7 +60,8 @@ export function getHoldingsByInstanceId(
 					...holding,
 					heldBy: {
 						obj: displayUtil.lensAndFormat(holding.heldBy, LensType.Chip, locale),
-						sigel: holding.heldBy?.sigel
+						sigel: holding.heldBy?.sigel,
+						str: toString(displayUtil.lensAndFormat(holding.heldBy, LensType.Chip, locale)) || ''
 					}
 				};
 			})
@@ -142,7 +143,8 @@ export function getHoldersByType(
 		const heldBys = holdings.map((holdingItem) => {
 			return {
 				obj: displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale),
-				sigel: holdingItem.heldBy.sigel
+				sigel: holdingItem.heldBy.sigel,
+				str: toString(displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale)) || ''
 			};
 		});
 		const uniqueHeldBys = [
