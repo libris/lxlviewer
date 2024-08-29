@@ -2,7 +2,8 @@
   "runTemplate" : {
     "name": "",
     "date": "",
-    "form": {},
+    "beforeForm": {},
+    "afterForm": {},
     "operations": []
   },
   "operationTemplate" : {

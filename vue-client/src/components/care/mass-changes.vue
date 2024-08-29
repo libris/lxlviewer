@@ -11,6 +11,7 @@ import OperationsBuilder from '@/components/care/operations-builder.vue';
 import { mapGetters } from 'vuex';
 import { isEmpty } from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
+import setData from "lodash-es/_setData.js";
 
 export default {
   name: 'mass-changes.vue',
@@ -18,13 +19,21 @@ export default {
   data() {
     return {
       showOverview: true,
-      formData: {
+      initialData: {
         '@type': 'Instance',
         label: 'test',
       },
       activeStep: '',
       runSpecifications: [],
       currentSpec: {},
+      formObject: {
+        '@type': 'Instance',
+        label: 'test',
+      },
+      opsObject: {
+        '@type': 'Instance',
+        label: 'test',
+      },
       showSpec: false,
     };
   },
@@ -35,14 +44,6 @@ export default {
     dataObj() {
       // Try to keep shared between form builder and operations builder
       return this.inspector.data.mainEntity;
-    },
-    formObject() {
-      const f = isEmpty(this.currentSpec.form) ? this.formData : this.currentSpec.form;
-      return this.isActive('form') ? this.inspector.data.mainEntity : f;
-    },
-    opsObject() {
-      const f = isEmpty(this.currentSpec.form) ? this.formData : this.currentSpec.form;
-      return this.isActive('operations') ? this.inspector.data.mainEntity : f;
     },
   },
   methods: {
@@ -66,7 +67,7 @@ export default {
       return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     },
     init() {
-      this.setDataObj(this.formData);
+      this.setDataObj(this.initialData);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
         value: 'start-edit',
@@ -84,12 +85,20 @@ export default {
         addToHistory: true,
       });
     },
-    setFormForCurrentSpec(obj) {
-      this.currentSpec.form = obj;
+    onInactiveForm() {
+      this.currentSpec.beforeForm = this.dataObj;
+      this.formObject = this.currentSpec.beforeForm;
     },
-    setOperations(obj) {
-      console.log('obj', JSON.stringify(obj));
-      this.currentSpec.operations = obj;
+    onActiveForm() {
+      this.setDataObj(isEmpty(this.currentSpec.beforeForm) ? this.initialData : this.currentSpec.beforeForm);
+      this.formObject = this.inspector.data.mainEntity;
+    },
+    onInactiveOperations() {
+      this.currentSpec.afterForm = this.inspector.data.mainEntity;
+      this.opsObject = this.currentSpec.afterForm;
+    },
+    onActiveOperations() {
+      this.opsObject = this.inspector.data.mainEntity;
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
@@ -98,6 +107,12 @@ export default {
       });
     },
     setActive(step) {
+      if (step === 'form') {
+        this.onActiveForm();
+      }
+      if (step === 'operations') {
+        this.onActiveOperations();
+      }
       this.activeStep = step;
     },
     isActive(step) {
@@ -120,8 +135,9 @@ export default {
         @keyup.enter="setActive('form')"
         tabindex="0"
         :is-active="isActive('form')"
-        :form-data="formObject"
-        @updateForm="setFormForCurrentSpec"
+        :form-obj="formObject"
+        @onInactive="onInactiveForm"
+        @onActive="onActiveForm"
       />
       <operations-builder
         @click="setActive('operations')"
@@ -129,7 +145,8 @@ export default {
         tabindex="0"
         :is-active="isActive('operations')"
         :form-data="opsObject"
-        @updateOperations="setOperations"
+        @onInactive="onInactiveOperations"
+        @onActive="onActiveOperations"
       />
       <div>
         SPECIFICATION

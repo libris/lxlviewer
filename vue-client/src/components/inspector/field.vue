@@ -132,8 +132,6 @@ export default {
       removeHover: false,
       pasteHover: false,
       removed: false,
-      markedForAdd: false,
-      markedForRemove: false,
       uniqueIds: [],
     };
   },
@@ -606,15 +604,6 @@ export default {
         });
       }
     },
-    toggleMark(operation) {
-      if (operation === 'add') {
-        this.markedForAdd = !this.markedForAdd;
-        this.markedForRemove = false;
-      } else if (operation === 'remove'){
-        this.markedForRemove = !this.markedForRemove;
-        this.markedForAdd = false;
-      }
-    },
   },
   beforeUnmount() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
@@ -640,8 +629,8 @@ export default {
       'Field--inner': isInner,
       'is-lastAdded': isLastAdded,
       'is-removed': removed,
-      'is-diff-added': diffAdded || markedForAdd,
-      'is-diff-removed': diffRemoved || markedForRemove,
+      'is-diff-added': diffAdded,
+      'is-diff-removed': diffRemoved,
       'is-diff-modified': diffModified,
       'is-locked': locked,
       'is-diff': isFieldDiff,
@@ -657,11 +646,7 @@ export default {
       v-if="showKey && !isInner">
       <div class="Field-labelWrapper" :class="{ sticky: !diff }">
         <div v-if="!isLocked" class="Field-actions">
-          <field-marker
-            v-if="inOperations"
-            @toggle-mark-for-add="toggleMark('add')"
-            @toggle-mark-for-remove="toggleMark('remove')"
-          />
+
           <div
             class="Field-action Field-remove"
             v-show="!locked && isRemovable"

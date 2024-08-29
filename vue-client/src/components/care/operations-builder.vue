@@ -5,7 +5,7 @@ import FormMixin from '@/components/mixins/form-mixin.vue';
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'form-builder.vue',
+  name: 'operations-builder.vue',
   mixins: [FormMixin],
   components: { FieldAdder, EntityForm },
   data() {
@@ -48,19 +48,23 @@ export default {
       return operations;
     },
   },
-  emits: ['updateOperations'],
-
+  emits: ['onInactive', 'onActive'],
   methods: {
-    setOperations() {
-      this.$emit('updateOperations', this.operations);
+    onInactive() {
+      this.$emit('onInactive');
+    },
+    onActive() {
+      this.$emit('onActive');
     },
   },
   watch: {
-    isActive(newVal, oldVal) {
-      if (newVal === true && newVal !== oldVal) {
-        this.$store.dispatch('flushChangeHistory');
+    isActive(newValue, oldValue) {
+      if (newValue !== oldValue && oldValue) { // active -> inactive
+        this.onInactive();
+      } else if (newValue !== oldValue && newValue) { // inactive -> active
+        this.onActive();
       }
-    },
+    }
   },
 };
 </script>
@@ -91,8 +95,8 @@ export default {
       />
       <button
         class="btn btn-default"
-        v-on:click="setOperations()"
-        @keyup.enter="setOperations()">
+        v-on:click="onInactive()"
+        @keyup.enter="onInactive()">
         <span>Lägg till ändringar</span>
       </button>
     </div>

@@ -14,7 +14,7 @@ export default {
     };
   },
   props: {
-    formData: {
+    formObj: {
       type: Object,
       default: () => ({}),
     },
@@ -23,6 +23,15 @@ export default {
       default: false,
     },
   },
+  watch: {
+    isActive(newValue, oldValue) {
+      if (newValue !== oldValue && oldValue) { // active -> inactive
+        this.onInactive();
+      } else if (newValue !== oldValue && newValue) { // inactive -> active
+        this.onActive();
+      }
+    }
+    },
   computed: {
     ...mapGetters([
       'inspector',
@@ -30,14 +39,15 @@ export default {
     formTab() {
       return { id: 'form', text: 'test' };
     },
-    formObj() {
-      return this.formData;
-    },
+
   },
-  emits: ['updateForm'],
+  emits: ['onInactive', 'onActive'],
   methods: {
-    setForm() {
-      this.$emit('updateForm', this.formObj);
+    onInactive() {
+      this.$emit('onInactive');
+    },
+    onActive() {
+      this.$emit('onActive');
     },
   },
 };
@@ -55,22 +65,16 @@ export default {
           :editing-object="'mainEntity'"
           :key="formTab.id"
           :is-active="true"
-          :form-data="this.formObj"
+          :form-data="formObj"
           :locked="false" />
       </div>
       <field-adder
-        :entity-type="this.formObj['@type']"
+        :entity-type="formObj['@type']"
         :inner="false"
         :allowed="allowedProperties"
         :path="'mainEntity'"
         :editing-object="'mainEntity'"
       />
-      <button
-        class="btn btn-default"
-        v-on:click="setForm()"
-        @keyup.enter="setForm()">
-        <span>Lägg till i form</span>
-      </button>
     </div>
   </div>
 </template>
