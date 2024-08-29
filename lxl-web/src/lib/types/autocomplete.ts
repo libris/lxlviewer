@@ -1,9 +1,6 @@
-export type AutocompleteSuggestion = {
-	'@id': string;
-	'@type': string;
-	label: string;
-	description?: string;
-	replacement: string;
+export type AutocompleteResponse = {
+	items: unknown;
+	qualifiers: ValidateQualifiersResponse;
 };
 
 export type QualifiersResponse = {
@@ -13,6 +10,8 @@ export type QualifiersResponse = {
 	lang?: string;
 }[];
 
+export type ValidateQualifiersResponse = ValidateQualifierItem[] | null;
+
 type ValidateQualifierItem = {
 	match: string;
 	name: string;
@@ -21,9 +20,5 @@ type ValidateQualifierItem = {
 		from: number;
 		to: number;
 	};
-};
-
-export type ValidateQualifiersResponse = {
-	valid: ValidateQualifierItem[] | null;
-	invalid: ValidateQualifierItem[] | null;
+	valid: boolean;
 };

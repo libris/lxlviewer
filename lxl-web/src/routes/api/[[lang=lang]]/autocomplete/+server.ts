@@ -1,12 +1,12 @@
 import type { RequestHandler } from './$types';
 import { error, json } from '@sveltejs/kit';
-import type { AutocompleteSuggestion, ValidateQualifiersResponse } from '$lib/types/autocomplete';
 import { env } from '$env/dynamic/private';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 import { type PartialCollectionView } from '../../../../_tempRoutes/(app)/[[lang=lang]]/(find)/search';
 import { relativizeUrl } from '$lib/utils/http';
 import { LxlLens } from '$lib/utils/display.types';
+import type { AutocompleteResponse, ValidateQualifiersResponse } from '$lib/types/autocomplete';
 
 /** TODO:
  * Search by property key if exists in the beginning of the part
@@ -33,8 +33,7 @@ export const GET: RequestHandler = async ({ url, params, fetch, locals }) => {
 	}
 
 	const validateQualifiersRes = await fetch(`/api/autocomplete/validate-qualifiers?_q=${q}`);
-	const { valid: validQualifiers, invalid: invalidQualifiers } =
-		(await validateQualifiersRes.json()) as ValidateQualifiersResponse;
+	const qualifiers = (await validateQualifiersRes.json()) as ValidateQualifiersResponse;
 
 	const editedRangeValue = q.slice(editedRange[0], editedRange[1]);
 	const editedQualifier = editedRangeValue.match(
@@ -45,7 +44,9 @@ export const GET: RequestHandler = async ({ url, params, fetch, locals }) => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const [_, name, value] = editedQualifier;
 
-		const validEditedQualifier = validQualifiers?.find((validItem) => validItem.name === name);
+		const validEditedQualifier = qualifiers?.find(
+			(qualifierItem) => qualifierItem.name === name && qualifierItem.valid
+		);
 
 		if (validEditedQualifier) {
 			const relatedTypes = [
@@ -70,19 +71,17 @@ export const GET: RequestHandler = async ({ url, params, fetch, locals }) => {
 				`${env.API_URL}/find.jsonld?${qualifiedSearchParams.toString()}`
 			);
 			const qualifiedRecords = (await qualifiedRecordsRes.json()) as PartialCollectionView;
-			const processedQualifiedRecords: AutocompleteSuggestion[] = qualifiedRecords.items?.map(
-				(item) => {
-					const relativeId = relativizeUrl(item['@id'] as string)?.replace('#it', '');
+			const processedQualifiedRecords = qualifiedRecords.items?.map((item) => {
+				const relativeId = relativizeUrl(item['@id'] as string)?.replace('#it', '');
 
-					return {
-						'@id': item['@id'] as string,
-						'@type': item['@type'] as string,
-						label: displayUtil.lensAndFormat(item, LxlLens.CardHeading, lang),
-						description: 'description',
-						replacement: `${name}:${relativeId}`
-					};
-				}
-			);
+				return {
+					'@id': item['@id'] as string,
+					'@type': item['@type'] as string,
+					label: displayUtil.lensAndFormat(item, LxlLens.CardHeading, lang),
+					description: 'description',
+					replacement: `${name}:${relativeId}`
+				};
+			});
 
 			items = processedQualifiedRecords;
 		}
@@ -91,5 +90,5 @@ export const GET: RequestHandler = async ({ url, params, fetch, locals }) => {
 		// 3. BOOYAH!
 	}
 
-	return json({ items, validQualifiers, invalidQualifiers });
+	return json({ items, qualifiers } as AutocompleteResponse);
 };

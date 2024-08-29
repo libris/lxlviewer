@@ -18,33 +18,20 @@ export const GET: RequestHandler = async ({ url, params, fetch }) => {
 		...q.matchAll(/(?<!\S+)((")?[0-9a-zA-ZaåöAÅÖ:]+\2):((")?[0-9a-zA-ZaåöAÅÖ:]+\4?)?/g)
 	];
 
-	const validatedQualifiers = qualifierMatches.reduce(
-		(acc, currentRegExpExec) => {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const [match, name, _, value] = currentRegExpExec;
+	const validatedQualifiers = qualifierMatches.length
+		? qualifierMatches.map((regExpExecItem) => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const [match, name, _, value] = regExpExecItem;
 
-			const isValid = qualifiers.some((validQualifier) => validQualifier.name === name);
-
-			const qualifierItem = {
-				match,
-				name,
-				value: value || null,
-				range: { from: currentRegExpExec.index, to: match.length + currentRegExpExec.index }
-			};
-			if (isValid) {
 				return {
-					...acc,
-					valid: [...(acc.valid || []), qualifierItem]
+					match,
+					name,
+					value: value || null,
+					range: { from: regExpExecItem.index, to: match.length + regExpExecItem.index },
+					valid: qualifiers.some((validQualifier) => validQualifier.name === name)
 				};
-			} else {
-				return {
-					...acc,
-					invalid: [...(acc.invalid || []), qualifierItem]
-				};
-			}
-		},
-		<ValidateQualifiersResponse>{ valid: null, invalid: null }
-	);
+			})
+		: null;
 
 	return json(validatedQualifiers as ValidateQualifiersResponse);
 };
