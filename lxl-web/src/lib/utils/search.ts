@@ -57,7 +57,15 @@ export async function asResult(
 			)
 		})),
 		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath),
-		predicates: displayPredicates(view, displayUtil, locale, usePath)
+		predicates: displayPredicates(view, displayUtil, locale, usePath),
+		_spell: view._spell
+			? view._spell.map((el) => {
+					return {
+						...el,
+						...{ view: replacePath(el.view, usePath) }
+					};
+				})
+			: []
 	};
 }
 
@@ -82,7 +90,9 @@ function displayMappings(
 					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
 					label: m.alias
 						? translate(`facet.${m.alias}`)
-						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) || m.property?.['@id'] || 'No label', // lensandformat?
+						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) ||
+							m.property?.['@id'] ||
+							'No label', // lensandformat?
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
@@ -225,7 +235,8 @@ function replacePath(view: Link, usePath: string) {
 function capitalize(str: string | undefined) {
 	if (str && typeof str === 'string') {
 		return str[0].toUpperCase() + str.slice(1);
-	} return str;
+	}
+	return str;
 }
 
 export function shouldShowMapping(mapping: DisplayMapping[]) {

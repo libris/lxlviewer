@@ -92,7 +92,8 @@ export default {
 		showDetails: 'Show more',
 		hideDetails: 'Show less',
 		occursAs: 'as',
-		relatedSearchLabel: 'Search the results'
+		relatedSearchLabel: 'Search the results',
+		didYouMean: 'Did you mean'
 	},
 	sort: {
 		sort: 'Sort',

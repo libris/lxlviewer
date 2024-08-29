@@ -91,7 +91,8 @@ export default {
 		showDetails: 'Visa mer',
 		hideDetails: 'Visa mindre',
 		occursAs: 'förekommer som',
-		relatedSearchLabel: 'Sök i resultaten'
+		relatedSearchLabel: 'Sök i resultaten',
+		didYouMean: 'Menade du'
 	},
 	sort: {
 		sort: 'Sortera',

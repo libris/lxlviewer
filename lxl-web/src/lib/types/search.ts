@@ -15,6 +15,7 @@ export interface SearchResult {
 	items: SearchResultItem[];
 	facetGroups: FacetGroup[];
 	predicates: MultiSelectFacet[];
+	_spell: SpellingSuggestion[] | [];
 }
 
 export interface SearchResultItem {
@@ -57,6 +58,12 @@ export interface MultiSelectFacet extends Facet {
 	selected: boolean;
 }
 
+interface SpellingSuggestion {
+	label: string;
+	labelHtml: string;
+	view: Link;
+}
+
 export interface DisplayMapping {
 	'@id'?: string;
 	display?: DisplayDecorated;
@@ -87,6 +94,7 @@ export interface PartialCollectionView {
 		_predicates: Observation[];
 		_boolFilters?: Observation[];
 	};
+	_spell: SpellingSuggestion[] | [];
 }
 
 interface Slice {
