@@ -34,5 +34,7 @@ test('url is populated with correct searchparams', async ({ page }) => {
 	await page.getByTestId('main-search').click();
 	await page.getByTestId('main-search').fill('somephrase');
 	await page.getByTestId('main-search').press('Enter');
-	await expect(page).toHaveURL(/_q=somephrase&_limit=20&_offset=0&_sort=&_i=somephrase/);
+	await expect(page).toHaveURL(
+		/_q=somephrase&_limit=20&_offset=0&_sort=&_spell=true&_i=somephrase/
+	);
 });
