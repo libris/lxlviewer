@@ -9,7 +9,7 @@ Q:
 import FormBuilder from '@/components/care/form-builder.vue';
 import OperationsBuilder from '@/components/care/operations-builder.vue';
 import { mapGetters } from 'vuex';
-import { isEmpty } from 'lodash-es';
+import {cloneDeep, isEmpty} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
 import setData from "lodash-es/_setData.js";
 
@@ -26,14 +26,6 @@ export default {
       activeStep: '',
       runSpecifications: [],
       currentSpec: {},
-      formObject: {
-        '@type': 'Instance',
-        label: 'test',
-      },
-      opsObject: {
-        '@type': 'Instance',
-        label: 'test',
-      },
       showSpec: false,
     };
   },
@@ -45,6 +37,12 @@ export default {
       // Try to keep shared between form builder and operations builder
       return this.inspector.data.mainEntity;
     },
+    formObj() {
+      return this.isActive('form') ? this.inspector.data.mainEntity : this.currentSpec.beforeForm;
+    },
+    opsObj() {
+      return this.isActive('operations') ? this.inspector.data.mainEntity : this.currentSpec.afterForm;
+    }
   },
   methods: {
     initRunSpecification(caseName) {
@@ -86,16 +84,13 @@ export default {
       });
     },
     onInactiveForm() {
-      this.currentSpec.beforeForm = this.dataObj;
-      this.formObject = this.currentSpec.beforeForm;
+      this.currentSpec.beforeForm = cloneDeep(this.inspector.data.mainEntity);
     },
     onActiveForm() {
       this.setDataObj(isEmpty(this.currentSpec.beforeForm) ? this.initialData : this.currentSpec.beforeForm);
-      this.formObject = this.inspector.data.mainEntity;
     },
     onInactiveOperations() {
-      this.currentSpec.afterForm = this.inspector.data.mainEntity;
-      this.opsObject = this.currentSpec.afterForm;
+      this.currentSpec.afterForm = cloneDeep(this.inspector.data.mainEntity);
     },
     onActiveOperations() {
       this.opsObject = this.inspector.data.mainEntity;
@@ -107,12 +102,6 @@ export default {
       });
     },
     setActive(step) {
-      if (step === 'form') {
-        this.onActiveForm();
-      }
-      if (step === 'operations') {
-        this.onActiveOperations();
-      }
       this.activeStep = step;
     },
     isActive(step) {
@@ -135,7 +124,7 @@ export default {
         @keyup.enter="setActive('form')"
         tabindex="0"
         :is-active="isActive('form')"
-        :form-obj="formObject"
+        :form-obj="formObj"
         @onInactive="onInactiveForm"
         @onActive="onActiveForm"
       />
@@ -144,7 +133,7 @@ export default {
         @keyup.enter="setActive('operations')"
         tabindex="0"
         :is-active="isActive('operations')"
-        :form-data="opsObject"
+        :form-data="opsObj"
         @onInactive="onInactiveOperations"
         @onActive="onActiveOperations"
       />

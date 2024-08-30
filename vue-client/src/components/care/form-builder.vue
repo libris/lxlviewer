@@ -26,6 +26,7 @@ export default {
   watch: {
     isActive(newValue, oldValue) {
       if (newValue !== oldValue && oldValue) { // active -> inactive
+        console.log('formObj', JSON.stringify(this.formObj));
         this.onInactive();
       } else if (newValue !== oldValue && newValue) { // inactive -> active
         this.onActive();
