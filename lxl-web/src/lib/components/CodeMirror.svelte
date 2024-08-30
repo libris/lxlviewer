@@ -30,7 +30,7 @@
 	import qualifierLinter from '$lib/utils/codemirror/qualifierLinter';
 	import getEditedRange from '$lib/utils/codemirror/getEditedRange';
 	import getMainSelectionUtil from '$lib/utils/codemirror/getMainSelection';
-	import propertyWidgets from '$lib/utils/codemirror/propertyWidgets';
+	import qualifierWidgets from '$lib/utils/codemirror/qualifierWidgets';
 	import type { Qualifiers } from '$lib/types/qualifier';
 
 	/**
@@ -100,7 +100,7 @@
 		qualifierNameDecoration,
 		qualifierValueDecoration,
 		qualifierLinter(validQualifiers),
-		propertyWidgets,
+		qualifierWidgets,
 		...extensions
 	]);
 
