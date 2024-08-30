@@ -1,6 +1,8 @@
-export type Qualifier = {
-	name: string;
-	'@type': string;
-	item?: unknown;
-	lang?: string;
+export type Qualifiers = {
+	[key: string]: {
+		'@id': string;
+		'@type': string;
+		label?: string;
+		description?: string;
+	};
 };

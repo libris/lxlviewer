@@ -1,23 +1,18 @@
 import type { RequestHandler } from './$types';
 import { error, json } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
-import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
-import { type PartialCollectionView } from '../../../../_tempRoutes/(app)/[[lang=lang]]/(find)/search';
-import { relativizeUrl } from '$lib/utils/http';
-import { LxlLens } from '$lib/utils/display.types';
-import type { AutocompleteResponse, ValidateQualifiersResponse } from '$lib/types/autocomplete';
+import type { AutocompleteResponse } from '$lib/types/autocomplete';
 
 /** TODO:
  * Search by property key if exists in the beginning of the part
  */
 
-export const GET: RequestHandler = async ({ url, params, fetch, locals }) => {
-	let items = [];
+export const GET: RequestHandler = async ({ url }) => {
+	const items = [];
 
+	/*
 	const displayUtil = locals.display;
 	const lang = params.lang || 'sv';
-
+*/
 	const q = url.searchParams.get('_q');
 
 	if (!q) {
@@ -32,9 +27,6 @@ export const GET: RequestHandler = async ({ url, params, fetch, locals }) => {
 		return error(400, 'Invalid editedRange param value');
 	}
 
-	const validateQualifiersRes = await fetch(`/api/autocomplete/validate-qualifiers?_q=${q}`);
-	const qualifiers = (await validateQualifiersRes.json()) as ValidateQualifiersResponse;
-
 	const editedRangeValue = q.slice(editedRange[0], editedRange[1]);
 	const editedQualifier = editedRangeValue.match(
 		/^(?<!\S+)((")?([0-9a-zA-ZaåöAÅÖ:]+)\2):((")?[0-9a-zA-ZaåöAÅÖ:]+\3?)?$/ // find using range instead?
@@ -44,6 +36,7 @@ export const GET: RequestHandler = async ({ url, params, fetch, locals }) => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const [_, name, value] = editedQualifier;
 
+		/*
 		const validEditedQualifier = qualifiers?.find(
 			(qualifierItem) => qualifierItem.name === name && qualifierItem.valid
 		);
@@ -85,10 +78,11 @@ export const GET: RequestHandler = async ({ url, params, fetch, locals }) => {
 
 			items = processedQualifiedRecords;
 		}
+		*/
 
 		// 2. check range and/or rangesInclude and search on these as type! (kanske även domainIncludes)
 		// 3. BOOYAH!
 	}
 
-	return json({ items, qualifiers } as AutocompleteResponse);
+	return json({ items } as AutocompleteResponse);
 };

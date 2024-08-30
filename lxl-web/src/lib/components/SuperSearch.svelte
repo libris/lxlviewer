@@ -9,6 +9,7 @@
 	import { languageTag } from '$lib/paraglide/runtime.js';
 	import type { PartSuggestion } from '$lib/types/suggestions';
 	import type { AutocompleteResponse } from '$lib/types/autocomplete';
+	import type { Qualifiers } from '$lib/types/qualifier';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -26,9 +27,10 @@
 	type SuperSearchProps = {
 		value: string;
 		placeholder: string;
+		validQualifiers: Qualifiers;
 	};
 
-	let { value = $bindable(), placeholder }: SuperSearchProps = $props(); // should we keep codemirror instances in sync using update listeners instead of binding to ensure history is kept as is (but will it work with when removing linebreaks?)? See: https://codemirror.net/examples/split/
+	let { value = $bindable(), placeholder, validQualifiers }: SuperSearchProps = $props(); // should we keep codemirror instances in sync using update listeners instead of binding to ensure history is kept as is (but will it work with when removing linebreaks?)? See: https://codemirror.net/examples/split/
 
 	let editedRange: EditedRange | null | undefined = $state();
 	// let autocompletionItems: [] = $state([]);
@@ -53,7 +55,7 @@
 
 				const autocompletions = (await autocompleteRes.json()) as AutocompleteResponse;
 
-				dropdownCodeMirror?.updateValidatedQualifiers(autocompletions.qualifiers);
+				dropdownCodeMirror?.updateValidatedQualifiers();
 
 				console.log('autocompletions', autocompletions);
 				// autocompletionItems = autocompletions;
@@ -136,6 +138,7 @@
 				bind:value
 				bind:this={collapsedCodeMirror}
 				{placeholder}
+				{validQualifiers}
 				extensions={[submitClosestFormOnEnter]}
 				onclick={() => showDropdown()}
 				onchange={handleChangeCodeMirror}
@@ -152,6 +155,7 @@
 							bind:value
 							bind:this={dropdownCodeMirror}
 							{placeholder}
+							{validQualifiers}
 							extensions={[submitClosestFormOnEnter]}
 							onchange={handleChangeCodeMirror}
 						/>

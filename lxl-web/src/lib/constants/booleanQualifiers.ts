@@ -141,4 +141,4 @@ export const BOOLEAN_QUALIFIERS = [
 	}
 ];
 
-export const BOOLEAN_QUALIFIER_KEY_TYPE = 'BooleanQualifierKey';
+export const BOOLEAN_QUALIFIER_TYPE = 'BooleanQualifier';

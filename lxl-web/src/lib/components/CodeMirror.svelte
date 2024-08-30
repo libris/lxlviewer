@@ -30,7 +30,8 @@
 	import qualifierLinter from '$lib/utils/codemirror/qualifierLinter';
 	import getEditedRange from '$lib/utils/codemirror/getEditedRange';
 	import getMainSelectionUtil from '$lib/utils/codemirror/getMainSelection';
-	import type { ValidateQualifierItem } from '$lib/types/autocomplete';
+	import propertyWidgets from '$lib/utils/codemirror/propertyWidgets';
+	import type { Qualifiers } from '$lib/types/qualifier';
 
 	/**
 	 * TODO:
@@ -40,6 +41,7 @@
 	type CodeMirrorProps = {
 		value: string;
 		placeholder: string;
+		validQualifiers: Qualifiers;
 		extensions?: Extension[];
 		readonly?: boolean;
 		tabindex?: string | number;
@@ -51,6 +53,7 @@
 		value = $bindable(''),
 		placeholder,
 		extensions = [],
+		validQualifiers,
 		readonly = false,
 		tabindex,
 		onchange = () => {},
@@ -96,7 +99,8 @@
 		syntaxHighlighting(lxlQueryHighlightStyle),
 		qualifierNameDecoration,
 		qualifierValueDecoration,
-		qualifierLinter,
+		qualifierLinter(validQualifiers),
+		propertyWidgets,
 		...extensions
 	]);
 
@@ -109,8 +113,8 @@
 		});
 	}
 
-	export function updateValidatedQualifiers(validatedQualifiers: ValidateQualifierItem[] | null) {
-		console.log('updateValidatedQualifiers reconfigure now', validatedQualifiers);
+	export function updateValidatedQualifiers() {
+		console.log('updateValidatedQualifiers reconfigure now');
 		// See https://codemirror.net/examples/config/#dynamic-configuration
 	}
 
