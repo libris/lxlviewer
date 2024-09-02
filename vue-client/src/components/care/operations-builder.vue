@@ -70,7 +70,6 @@ export default {
           :is-active="true"
           :form-data="this.formObj"
           :locked="false"
-          :in-operations="true"
         />
       </div>
       <field-adder

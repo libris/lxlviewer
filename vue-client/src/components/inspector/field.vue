@@ -73,10 +73,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    inOperations: {
-      type: Boolean,
-      default: false,
-    },
     showDiffs: {
       type: Boolean,
       default: false,

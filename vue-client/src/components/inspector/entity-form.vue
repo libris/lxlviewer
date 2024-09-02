@@ -41,10 +41,6 @@ export default {
       type: String,
       default: '',
     },
-    inOperations: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -158,7 +154,6 @@ export default {
         :field-key="k"
         :field-value="v"
         :parent-path="editingObject"
-        :in-operations="inOperations"
       />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
