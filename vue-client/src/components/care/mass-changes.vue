@@ -65,12 +65,15 @@ export default {
       return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     },
     init() {
+      this.setActive('form');
       this.setDataObj(this.initialData);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
         value: 'start-edit',
       });
       this.initRunSpecification('Specifikationsnamn');
+      this.currentSpec.beforeForm = this.initialData;
+      this.currentSpec.afterForm = this.initialData;
     },
     setDataObj(formData) {
       this.$store.dispatch('updateInspectorData', {
@@ -91,9 +94,6 @@ export default {
     },
     onInactiveOperations() {
       this.currentSpec.afterForm = cloneDeep(this.inspector.data.mainEntity);
-    },
-    onActiveOperations() {
-      this.opsObject = this.inspector.data.mainEntity;
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
