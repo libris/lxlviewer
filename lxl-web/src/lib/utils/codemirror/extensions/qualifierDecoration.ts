@@ -3,7 +3,7 @@ import {
 	MatchDecorator,
 	Decoration,
 	ViewPlugin,
-	ViewUpdate,
+	type ViewUpdate,
 	type DecorationSet
 } from '@codemirror/view';
 
