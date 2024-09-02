@@ -153,7 +153,8 @@
 							{#each searchResult._spell as suggestion (suggestion.label)}
 								{$page.data.t('search.didYouMean')}
 								<a href={suggestion.view['@id'].replace('_spell=true', '_spell=false')}>
-									<em>{suggestion.label}</em></a
+									<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+									{@html suggestion.labelHtml}</a
 								>?
 							{/each}
 						</span>
