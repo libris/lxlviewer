@@ -177,7 +177,7 @@ const store = createStore({
       state.inspector.langTagSearch = data;
     },
     addToQuoted(state, data) {
-      const quoted = cloneDeep(state.inspector.data.quoted);
+      const quoted = state.inspector.data.quoted ? cloneDeep(state.inspector.data.quoted) : {};
       quoted[data['@id']] = data;
       (data.sameAs || []).forEach((sameAs) => {
         if (sameAs.hasOwnProperty('@id')) {
