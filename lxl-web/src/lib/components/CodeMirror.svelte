@@ -26,11 +26,11 @@
 	import {
 		qualifierNameDecoration,
 		qualifierValueDecoration
-	} from '$lib/utils/codemirror/qualifierDecoration';
-	import qualifierLinter from '$lib/utils/codemirror/qualifierLinter';
+	} from '$lib/utils/codemirror/extensions/qualifierDecoration';
+	import qualifierLinter from '$lib/utils/codemirror/extensions/qualifierLinter';
 	import getEditedRange from '$lib/utils/codemirror/getEditedRange';
 	import getMainSelectionUtil from '$lib/utils/codemirror/getMainSelection';
-	import qualifierWidgets from '$lib/utils/codemirror/qualifierWidgets';
+	import qualifierWidgets from '$lib/utils/codemirror/extensions/qualifierWidgets';
 	import type { Qualifiers } from '$lib/types/qualifier';
 
 	/**

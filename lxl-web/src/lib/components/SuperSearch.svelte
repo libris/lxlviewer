@@ -3,7 +3,7 @@
 	import CodeMirror, { type EditedRange, type ChangeCodeMirrorEvent } from './CodeMirror.svelte';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
-	import submitClosestFormOnEnter from '$lib/utils/codemirror/submitClosestFormOnEnter';
+	import submitClosestFormOnEnter from '$lib/utils/codemirror/extensions/submitClosestFormOnEnter';
 	import getSuggestionTypeLabel from '$lib/utils/supersearch/getSuggestionsTypeLabel';
 	import debounce from '$lib/utils/debounce';
 	import { languageTag } from '$lib/paraglide/runtime.js';

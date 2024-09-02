@@ -58,7 +58,6 @@ const qualifierMatcher = new MatchDecorator({
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	decoration: ([_1, name, _2, value]) => {
 		if (name && value) {
-			console.log('name', name, 'val', value);
 			return Decoration.replace({
 				widget: new QualifierWidget({ name, value })
 			});
