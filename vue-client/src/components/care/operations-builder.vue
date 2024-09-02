@@ -1,3 +1,4 @@
+<!-- TODO: currently this component probably can be replaced with the form-component -->
 <script>
 import EntityForm from '@/components/inspector/entity-form.vue';
 import FieldAdder from '@/components/inspector/field-adder.vue';
@@ -11,12 +12,6 @@ export default {
   data() {
     return {
       selected: true,
-      emptyOperations: {
-        path: [],
-        property: '',
-        delete: {},
-        insert: {},
-      },
     };
   },
   props: {
@@ -38,14 +33,6 @@ export default {
     },
     formObj() {
       return this.formData;
-    },
-    operations() {
-      // get a hold of history object here.
-      // get marked object only
-      console.log('form data:', this.formObj());
-
-      const operations = this.emptyOperations;
-      return operations;
     },
   },
   emits: ['onInactive', 'onActive'],
