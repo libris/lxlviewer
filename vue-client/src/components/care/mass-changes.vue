@@ -135,7 +135,6 @@ export default {
         :is-active="isActive('operations')"
         :form-data="opsObj"
         @onInactive="onInactiveOperations"
-        @onActive="onActiveOperations"
       />
       <div>
         SPECIFICATION
