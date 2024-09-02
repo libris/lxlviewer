@@ -80,12 +80,6 @@ export default {
         :path="'mainEntity'"
         :editing-object="'mainEntity'"
       />
-      <button
-        class="btn btn-default"
-        v-on:click="onInactive()"
-        @keyup.enter="onInactive()">
-        <span>Lägg till ändringar</span>
-      </button>
     </div>
   </div>
 </template>
