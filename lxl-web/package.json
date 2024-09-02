@@ -34,7 +34,7 @@
 		"@playwright/test": "^1.44.1",
 		"@sveltejs/adapter-node": "^5.0.1",
 		"@sveltejs/kit": "^2.5.10",
-		"@sveltejs/vite-plugin-svelte": "^3.1.1",
+		"@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
 		"@types/eslint": "^8.56.10",
 		"@types/jmespath": "^0.15.2",
 		"autoprefixer": "^10.4.19",
@@ -51,7 +51,7 @@
 		"lint-staged": "^15.2.6",
 		"lxljs": "file:../lxljs",
 		"magic-string": "^0.30.7",
-		"mdsvex": "^0.11.2",
+		"mdsvex": "^0.12.3",
 		"postcss": "^8.4.38",
 		"postcss-import": "^16.1.0",
 		"prettier": "^3.3.2",
@@ -68,7 +68,7 @@
 		"vitest": "^1.6.0"
 	},
 	"dependencies": {
-		"@inlang/paraglide-sveltekit": "0.10.8",
+		"@inlang/paraglide-sveltekit": "0.11.0",
 		"codemirror": "^6.0.1",
 		"dotenv": "^16.4.5"
 	}
