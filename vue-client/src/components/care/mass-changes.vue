@@ -92,9 +92,6 @@ export default {
     onInactiveOperations() {
       this.currentSpec.afterForm = cloneDeep(this.inspector.data.mainEntity);
     },
-    onActiveOperations() {
-      this.opsObject = this.inspector.data.mainEntity;
-    },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
         property: 'editing',
