@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { tick, onMount, onDestroy } from 'svelte';
-	import CodeMirror, { type EditedRange, type ChangeCodeMirrorEvent } from './CodeMirror.svelte';
+	import CodeMirror, { type ChangeCodeMirrorEvent } from './CodeMirror.svelte';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 	import submitClosestFormOnEnter from '$lib/utils/codemirror/extensions/submitClosestFormOnEnter';
-	import getSuggestionTypeLabel from '$lib/utils/supersearch/getSuggestionsTypeLabel';
+	// import getSuggestionTypeLabel from '$lib/utils/supersearch/getSuggestionsTypeLabel';
 	import debounce from '$lib/utils/debounce';
 	import { languageTag } from '$lib/paraglide/runtime.js';
 	import type { PartSuggestion } from '$lib/types/suggestions';
-	import type { AutocompleteResponse } from '$lib/types/autocomplete';
+	import type { AutocompleteItem } from '$lib/types/autocomplete';
 	import type { Qualifiers } from '$lib/types/qualifier';
 
 	/** Tests to do
@@ -32,10 +32,8 @@
 
 	let { value = $bindable(), placeholder, validQualifiers }: SuperSearchProps = $props(); // should we keep codemirror instances in sync using update listeners instead of binding to ensure history is kept as is (but will it work with when removing linebreaks?)? See: https://codemirror.net/examples/split/
 
-	let editedRange: EditedRange | null | undefined = $state();
-	// let autocompletionItems: [] = $state([]);
-
-	let partSuggestions: [] = $state([]);
+	let lastValue = $state();
+	let autocompleteItems: AutocompleteItem[] = $state([]);
 
 	let superSearchContainerElement: HTMLDivElement | undefined = $state();
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
@@ -44,28 +42,30 @@
 
 	let sanitizedValue = $derived(sanitizeQSearchParamValue(value));
 
-	const findQueryPartSuggestions = debounce(async (editedRange: EditedRange) => {
-		if (editedRange) {
-			/** TODO: add request cancellation if query changes before fetch has finished */
+	const findAutocompleteItems = debounce(
+		async ({ value, cursor }: { value: string; cursor: number }) => {
+			if (value.trim() !== lastValue) {
+				lastValue = value;
+				/** TODO: add request cancellation if query changes before fetch has finished */
 
-			try {
-				const autocompleteRes = await fetch(
-					`/api/${languageTag()}/autocomplete?_q=${encodeURIComponent(sanitizedValue)}&editedRange=${editedRange.from},${editedRange.to}`
-				);
+				try {
+					const autocompleteRes = await fetch(
+						`/api/${languageTag()}/autocomplete?q=${encodeURIComponent(value)}&c=${cursor}`
+					);
 
-				const autocompletions = (await autocompleteRes.json()) as AutocompleteResponse;
+					const autocompletions = (await autocompleteRes.json()) as AutocompleteItem[];
+					autocompleteItems = autocompletions?.items || [];
 
-				dropdownCodeMirror?.updateValidatedQualifiers();
+					dropdownCodeMirror?.updateValidatedQualifiers();
 
-				console.log('autocompletions', autocompletions);
-				// autocompletionItems = autocompletions;
-			} catch (error) {
-				console.error('something went wrong?', error);
+					// autocompletionItems = autocompletions;
+				} catch (error) {
+					console.error('something went wrong?', error);
+				}
 			}
-		} else {
-			partSuggestions = [];
-		}
-	}, 250);
+		},
+		250
+	);
 
 	function showDropdown() {
 		if (!dialogElement?.open) {
@@ -80,7 +80,7 @@
 	}
 
 	function hideDropdown() {
-		value = sanitizedValue; // should this be here?
+		// value = sanitizedValue; // should this be here?
 		const selection = dropdownCodeMirror?.getMainSelection(); // TODO: normalize selection if value differs from sanitizedValue (e.g. selection on multiple rows should convert nicely to selection on a single row)
 
 		if (selection) {
@@ -97,8 +97,7 @@
 
 	function clearSearch() {
 		value = '';
-		editedRange = undefined;
-		partSuggestions = [];
+		autocompleteItems = [];
 		if (dialogElement?.open) {
 			dropdownCodeMirror?.focus();
 		} else {
@@ -107,8 +106,7 @@
 	}
 
 	async function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		editedRange = event.editedRange;
-		findQueryPartSuggestions(editedRange);
+		findAutocompleteItems({ value: event.value, cursor: event.cursor });
 		if (!dialogElement?.open) {
 			await tick(); // await tick to prevent error when selection points outside of document (when typing at the end of the document)
 			showDropdown();
@@ -161,25 +159,17 @@
 						/>
 					</SearchInputWrapper>
 				</div>
-				{#if partSuggestions?.length}
+				{#if autocompleteItems?.length}
 					<section>
 						<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
 						<ul>
-							{#each partSuggestions as suggestion}
+							{#each autocompleteItems.filter((item) => !item['@id'].includes('id.kb.se/marc')) as item}
 								<li class="suggestion-item">
-									<button onclick={() => handleClickSuggestionItem(suggestion)}>
-										<span class="suggestion-label"
-											>{suggestion?.labelByLang?.[languageTag()] || suggestion?.key}</span
-										>
-										{#if suggestion?.['@id']}
-											<span class="suggestion-id">— {suggestion?.['@id']}</span>
-										{/if}
+									<button onclick={() => handleClickSuggestionItem(item)}>
+										{item.label}
+										{item?.['@id']}
+										{item?.['@type']}
 									</button>
-									<ul class="suggestion-actions">
-										<li>
-											Lägg till + {getSuggestionTypeLabel(suggestion, languageTag()).toLowerCase()}
-										</li>
-									</ul>
 								</li>
 							{/each}
 						</ul>
@@ -276,6 +266,8 @@
 		display: none;
 	}
 
+	/*
+
 	.suggestion-item {
 		display: flex;
 		gap: var(--gap-2xs);
@@ -329,4 +321,5 @@
 		color: var(--color-subtle);
 		font-size: var(--font-size-xs);
 	}
+	*/
 </style>

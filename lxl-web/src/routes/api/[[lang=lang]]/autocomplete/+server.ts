@@ -1,42 +1,65 @@
 import type { RequestHandler } from './$types';
 import { error, json } from '@sveltejs/kit';
-import type { AutocompleteResponse } from '$lib/types/autocomplete';
+import { toString, JsonLd } from '$lib/utils/xl';
+import { LxlLens } from '$lib/utils/display.types';
+import getEditedParts from '$lib/utils/codemirror/getEditedParts';
+import type { PartialCollectionView } from '$lib/utils/search';
 
 /** TODO:
  * Search by property key if exists in the beginning of the part
  */
 
-export const GET: RequestHandler = async ({ url }) => {
-	const items = [];
-
-	/*
+export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 	const displayUtil = locals.display;
 	const lang = params.lang || 'sv';
-*/
-	const q = url.searchParams.get('_q');
+	const q = url.searchParams.get('q');
+	const cursor = url.searchParams.get('c');
 
 	if (!q) {
 		return error(400, 'Missing _q param value');
 	}
-
-	const editedRange = url.searchParams
-		.get('editedRange')
-		?.split(',')
-		.map((n) => parseInt(n, 10));
-	if (!editedRange || editedRange.some(isNaN)) {
-		return error(400, 'Invalid editedRange param value');
+	if (!cursor) {
+		return error(400, 'Missing cursor param value');
+	}
+	if (isNaN(parseInt(cursor, 10))) {
+		return error(400, 'Invalid cursor param value (should be parseable as number)');
 	}
 
-	const editedRangeValue = q.slice(editedRange[0], editedRange[1]);
-	const editedQualifier = editedRangeValue.match(
-		/^(?<!\S+)((")?([0-9a-zA-ZaåöAÅÖ:]+)\2):((")?[0-9a-zA-ZaåöAÅÖ:]+\3?)?$/ // find using range instead?
+	const { word, phrase, qualifierLikeName, qualifierLikeValue } = getEditedParts({
+		q,
+		cursor: parseInt(cursor, 10)
+	});
+
+	if (qualifierLikeName) {
+		console.log('qualifierlike', qualifierLikeName, 'value', qualifierLikeValue);
+		return json({ items: [] });
+	}
+
+	console.log('word', word, 'phrase', phrase);
+	const aggregateRes = await fetch(
+		`/api/${lang ? `${lang}/` : ''}autocomplete/aggregate?q=${phrase}`
 	);
+	const aggregate = (await aggregateRes.json()) as PartialCollectionView;
 
-	if (editedQualifier) {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const [_, name, value] = editedQualifier;
+	const items =
+		aggregate.items?.map((item) => {
+			return {
+				[JsonLd.ID]: item?.['@id'],
+				[JsonLd.TYPE]: item?.['@type'],
+				label: toString(displayUtil.lensAndFormat(item, LxlLens.CardHeading, lang)),
+				totalReverseLinks: item?.reverseLinks?.totalItems || 0
+			};
+		}) || [];
 
-		/*
+	return json({ items });
+};
+
+/*
+
+
+		// 2. check range and/or rangesInclude and search on these as type! (kanske även domainIncludes)
+		// 3. BOOYAH!
+
 		const validEditedQualifier = qualifiers?.find(
 			(qualifierItem) => qualifierItem.name === name && qualifierItem.valid
 		);
@@ -79,10 +102,3 @@ export const GET: RequestHandler = async ({ url }) => {
 			items = processedQualifiedRecords;
 		}
 		*/
-
-		// 2. check range and/or rangesInclude and search on these as type! (kanske även domainIncludes)
-		// 3. BOOYAH!
-	}
-
-	return json({ items } as AutocompleteResponse);
-};

@@ -11,7 +11,7 @@
 
 	export type ChangeCodeMirrorEvent = {
 		value: string;
-		editedRange: EditedRange | null;
+		cursor: number;
 	};
 </script>
 
@@ -76,7 +76,10 @@
 		if (e.docChanged) {
 			value = e.state.doc.toString();
 			prevValue = value;
-			onchange({ value, editedRange: getEditedRange(e.state) });
+			onchange({
+				value,
+				cursor: e.state.selection.main.head
+			});
 		}
 	});
 
