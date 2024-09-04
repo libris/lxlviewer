@@ -12,6 +12,11 @@ export default {
   data() {
     return {
       selected: true,
+      diff: {
+        added: [],
+        removed: [],
+        modified: [],
+      },
     };
   },
   props: {
@@ -79,6 +84,20 @@ export default {
         :path="'mainEntity'"
         :editing-object="'mainEntity'"
       />
+      <div
+        class="OperationsBuilder-preview">
+        <div class="OperationsBuilder-preview heading uppercaseHeading">
+          Förhandsgranskning
+        </div>
+        <entity-form
+          :editing-object="'mainEntity'"
+          :key="formTab.id"
+          :is-active="true"
+          :diff="this.diff"
+          :form-data="this.formObj"
+          :locked="true"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -111,6 +130,13 @@ export default {
       //background-color: @brand-faded;
       border-color: @brand-faded;
       border-width: 3px;
+    }
+  }
+
+  &-preview {
+    padding-top: 20px;
+    &.heading {
+      padding-bottom: 10px;
     }
   }
 
