@@ -1,4 +1,3 @@
-<!-- TODO: currently this component probably can be replaced with the form-component -->
 <script>
 import EntityForm from '@/components/inspector/entity-form.vue';
 import FieldAdder from '@/components/inspector/field-adder.vue';
