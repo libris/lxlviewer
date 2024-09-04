@@ -102,6 +102,12 @@ export default {
       this.showUndo = false;
       this.$store.dispatch('undoInspectorChange');
     },
+    next() {
+      this.$emit('next');
+    },
+    previous() {
+      this.$emit('previous');
+    },
     isSubClassOf(type) {
       return VocabUtil.isSubClassOf(
         this.inspector.data.mainEntity['@type'],
@@ -165,7 +171,6 @@ export default {
       :editing-object="inspector.status.focus"
       :in-toolbar="true"
       :force-active="fieldAdderActive" />
-
     <button
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="inspector.changeHistory.length === 0"
@@ -175,6 +180,33 @@ export default {
       @mouseout="showUndo = false"
       :aria-label="translatePhrase('Undo')">
       <i class="fa fa-undo" aria-hidden="true" />
+    </button>
+    <button
+      class="Toolbar-btn btn btn-default toolbar-button"
+      v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
+      @click="previous"
+      @mouseover="showUndo = true"
+      @mouseout="showUndo = false"
+      :aria-label="translatePhrase('Previous')">
+      <i class="fa fa-arrow-up" aria-hidden="true" />
+    </button>
+    <button
+      class="Toolbar-btn btn btn-default toolbar-button"
+      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
+      @click="next"
+      @mouseover="showUndo = true"
+      @mouseout="showUndo = false"
+      :aria-label="translatePhrase('Next')">
+      <i class="fa fa-arrow-down" aria-hidden="true" />
+    </button>
+    <button
+      class="Toolbar-btn btn btn-default toolbar-button"
+      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
+      @click="next"
+      @mouseover="showUndo = true"
+      @mouseout="showUndo = false"
+      :aria-label="translatePhrase('Next')">
+      <i class="fa fa-eye" aria-hidden="true" />
     </button>
   </div>
 </template>
