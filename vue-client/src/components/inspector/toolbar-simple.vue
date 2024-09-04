@@ -4,10 +4,7 @@
 */
 import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
-import * as LxlDataUtil from 'lxljs/data';
 import * as VocabUtil from 'lxljs/vocab';
-import * as StringUtil from 'lxljs/string';
-import * as RecordUtil from '@/utils/record';
 import * as LayoutUtil from '@/utils/layout';
 import { translatePhrase, labelByLang, convertResourceLink } from '@/utils/filters';
 import FieldAdder from '@/components/inspector/field-adder.vue';
@@ -75,72 +72,6 @@ export default {
     getKeybindText(eventName) {
       return LayoutUtil.getKeybindingText(eventName);
     },
-    applyFileAsOverride(data) {
-      const splitData = LxlDataUtil.splitJson(data);
-      this.$refs.OverridePicker.value = ''; // Important: reset the picker
-      if (splitData.record['@id'] === this.inspector.data.record['@id']) {
-        this.$store.dispatch('pushInspectorEvent', {
-          name: 'apply-override',
-          value: splitData,
-        });
-      } else {
-        this.$store.dispatch('pushNotification', {
-          type: 'danger',
-          message: StringUtil.getUiPhraseByLang('New data @id does not match existing @id', this.user.settings.language, this.resources.i18n),
-        });
-      }
-    },
-    applyFileTemplate(data) {
-      this.hideToolsMenu();
-      const inspectorObj = LxlDataUtil.splitJson(data);
-      const preparedData = RecordUtil.prepareDuplicateFor(inspectorObj, this.user, this.settings.keysToClear.duplication);
-      const splitData = LxlDataUtil.splitJson(preparedData);
-      this.$refs.TemplatePicker.value = ''; // Important: reset the picker
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'apply-template',
-        value: splitData,
-      });
-    },
-    initOverridePicker() {
-      this.hideToolsMenu();
-      const self = this;
-      this.$refs.OverridePicker.addEventListener('change', (e) => {
-        const reader = new FileReader();
-        reader.onloadend = function onloadend() {
-          try {
-            const data = JSON.parse(this.result);
-            self.applyFileAsOverride(data);
-          } catch (error) {
-            const msg = [
-              StringUtil.getUiPhraseByLang('Something went wrong', self.settings.language, self.resources.i18n),
-              StringUtil.getUiPhraseByLang('Verify structure in template', self.settings.language, self.resources.i18n),
-            ];
-            self.$store.dispatch('pushNotification', { type: 'danger', message: msg.join() });
-          }
-        };
-        reader.readAsText(e.target.files[0]);
-      });
-    },
-    initTemplatePicker() {
-      this.hideToolsMenu();
-      const self = this;
-      this.$refs.TemplatePicker.addEventListener('change', (e) => {
-        const reader = new FileReader();
-        reader.onloadend = function onloadend() {
-          try {
-            const data = JSON.parse(this.result);
-            self.applyFileTemplate(data);
-          } catch (error) {
-            const msg = [
-              StringUtil.getUiPhraseByLang('Something went wrong', self.settings.language, self.resources.i18n),
-              StringUtil.getUiPhraseByLang('Verify structure in template', self.settings.language, self.resources.i18n),
-            ];
-            self.$store.dispatch('pushNotification', { type: 'danger', message: msg.join() });
-          }
-        };
-        reader.readAsText(e.target.files[0]);
-      });
-    },
     openFieldAdder() {
       if (!this.fieldAdderActive) {
         this.fieldAdderActive = true;
@@ -148,25 +79,11 @@ export default {
         this.fieldAdderActive = false;
       }
     },
-    hideToolsMenu() {
-      this.toolsMenuActive = false;
-      this.showEmbellishTemplateSubMenu = false;
-      this.showEmbellishFromRecordSubMenu = false;
-    },
     formControl(control) {
       this.$store.dispatch('pushInspectorEvent', {
         name: 'form-control',
         value: control,
       });
-    },
-    recordControl(control) {
-      // if (!this.inspector.status.updating) {
-      this.hideToolsMenu();
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'record-control',
-        value: control,
-      });
-      // }
     },
     toggleEditorFocus() {
       if (this.inspector.status.focus === 'record') {
@@ -181,22 +98,9 @@ export default {
         });
       }
     },
-    cancel() {
-      this.$store.dispatch('flushExtractItemsOnSave');
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'record-control',
-        value: 'cancel',
-      });
-    },
     undo() {
       this.showUndo = false;
       this.$store.dispatch('undoInspectorChange');
-    },
-    edit() {
-      this.$store.dispatch('pushInspectorEvent', {
-        name: 'record-control',
-        value: 'start-edit',
-      });
     },
     isSubClassOf(type) {
       return VocabUtil.isSubClassOf(
@@ -205,22 +109,6 @@ export default {
         this.resources.vocab,
         this.resources.context,
       );
-    },
-    download(text) {
-      let focusId = this.inspector.data.record['@id'];
-      if (this.recordType === 'Item') {
-        focusId = this.inspector.data.mainEntity.itemOf['@id'].split('#')[0];
-      }
-      const element = document.createElement('a');
-      const blob = new Blob([`${text}`], { type: 'application/marc' });
-      element.href = window.URL.createObjectURL(blob);
-      const splitIdParts = focusId.split('/');
-      const id = splitIdParts[splitIdParts.length - 1];
-      element.download = id;
-      element.style.display = 'none';
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
     },
   },
   computed: {
@@ -232,12 +120,6 @@ export default {
       'settings',
       'status',
     ]),
-    validTemplates() {
-      const type = this.inspector.data.mainEntity['@type'];
-      const baseType = VocabUtil.getRecordType(type, this.resources.vocab, this.resources.context);
-      const templates = VocabUtil.getValidTemplates(type, this.templates.combined[baseType.toLowerCase()], this.resources.vocabClasses, this.resources.context);
-      return templates.sort((a, b) => a.label.localeCompare(b.label));
-    },
     formObj() {
       return this.inspector.data[this.inspector.status.focus];
     },
@@ -267,8 +149,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.initTemplatePicker();
-      this.initOverridePicker();
     });
   },
 };
@@ -276,9 +156,6 @@ export default {
 
 <template>
   <div class="Toolbar" id="editor-container">
-    <input type="file" class="TemplatePicker" ref="TemplatePicker" accept=".jsonld,application/ld+json,text/*" tabindex="-1" aria-hidden="true" />
-    <input type="file" class="OverridePicker" ref="OverridePicker" accept=".jsonld,application/ld+json,text/*" tabindex="-1" aria-hidden="true" />
-
     <field-adder
       class="FieldAdder--inToolbar Toolbar-btn"
       :entity-type="inspector.data[inspector.status.focus]['@type']"
@@ -299,7 +176,6 @@ export default {
       :aria-label="translatePhrase('Undo')">
       <i class="fa fa-undo" aria-hidden="true" />
     </button>
-
   </div>
 </template>
 
