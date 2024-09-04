@@ -69,13 +69,6 @@ export default {
           :form-data="formObj"
           :locked="false" />
       </div>
-      <field-adder
-        :entity-type="formObj['@type']"
-        :inner="false"
-        :allowed="allowedProperties"
-        :path="'mainEntity'"
-        :editing-object="'mainEntity'"
-      />
     </div>
   </div>
 </template>

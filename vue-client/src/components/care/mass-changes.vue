@@ -1,21 +1,14 @@
-<!--
-Questions:
-Q: Where should the "runs"/"run specifications" be stored?
-A: They should be grouped by sigel. ...
-Q:
-
--->
 <script>
 import FormBuilder from '@/components/care/form-builder.vue';
 import OperationsBuilder from '@/components/care/operations-builder.vue';
 import { mapGetters } from 'vuex';
 import {cloneDeep, isEmpty} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
-import setData from "lodash-es/_setData.js";
+import toolbar from "@/components/inspector/toolbar-simple.vue";
 
 export default {
   name: 'mass-changes.vue',
-  components: { FormBuilder, OperationsBuilder },
+  components: {toolbar, FormBuilder, OperationsBuilder },
   data() {
     return {
       showOverview: true,
@@ -32,6 +25,7 @@ export default {
   computed: {
     ...mapGetters([
       'inspector',
+      'status'
     ]),
     dataObj() {
       // Try to keep shared between form builder and operations builder
@@ -117,7 +111,10 @@ export default {
 };
 </script>
 <template>
-  <div class="MassChanges">
+  <div class="MassChanges row">
+    <div
+      class="col-sm-12"
+      :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
     <div class="MassChanges-form">
       <form-builder
         @click="setActive('form')"
@@ -143,6 +140,13 @@ export default {
         <pre>{{ this.dataObj }}</pre>
         OPERATIONS
         <pre>{{this.currentSpec.operations}}</pre>
+      </div>
+    </div>
+    </div>
+    <div class="col-12 col-sm-12"
+      :class="{ 'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
+      <div class="Toolbar-container">
+        <toolbar />
       </div>
     </div>
   </div>

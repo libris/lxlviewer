@@ -76,13 +76,6 @@ export default {
           :locked="false"
         />
       </div>
-      <field-adder
-        :entity-type="this.formObj['@type']"
-        :inner="false"
-        :allowed="allowedProperties"
-        :path="'mainEntity'"
-        :editing-object="'mainEntity'"
-      />
       <div
         class="OperationsBuilder-preview">
         <div class="OperationsBuilder-preview heading uppercaseHeading">
