@@ -106,8 +106,8 @@ export default {
     transition: background-color 0.3s ease;
 
     &.has-selection {
-      background-color: #D9EBDC;
       background-color: @brand-faded;
+      color: @black;
     }
   }
 
@@ -119,8 +119,6 @@ export default {
     transition: background-color 0.3s ease;
 
     &.has-selection {
-      //background-color: #D9EBDC;
-      //background-color: @brand-faded;
       border-color: @brand-faded;
       border-width: 3px;
     }

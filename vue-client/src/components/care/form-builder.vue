@@ -86,6 +86,7 @@ export default {
     &.has-selection {
       background-color: #D9EBDC;
       background-color: @brand-faded;
+      color: @black;
     }
   }
 
