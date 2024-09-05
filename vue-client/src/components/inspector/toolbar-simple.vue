@@ -54,6 +54,12 @@ export default {
           case 'open-field-adder':
             this.openFieldAdder();
             break;
+          case 'next':
+            this.next();
+            break;
+          case 'previous':
+            this.previous();
+            break;
           case 'undo':
             this.undo();
             break;
@@ -198,6 +204,15 @@ export default {
       @mouseout="showUndo = false"
       :aria-label="translatePhrase('Next')">
       <i class="fa fa-arrow-down" aria-hidden="true" />
+    </button>
+    <button
+      class="Toolbar-btn btn btn-default toolbar-button"
+      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
+      @click="next"
+      @mouseover="showUndo = true"
+      @mouseout="showUndo = false"
+      :aria-label="translatePhrase('Next')">
+      <i class="fa fa-search" aria-hidden="true" />
     </button>
     <button
       class="Toolbar-btn btn btn-default toolbar-button"

@@ -5,6 +5,7 @@ import { mapGetters } from 'vuex';
 import {cloneDeep, isEmpty} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
 import toolbar from "@/components/inspector/toolbar-simple.vue";
+import {translatePhrase} from "@/utils/filters.js";
 
 export default {
   name: 'mass-changes.vue',
@@ -17,6 +18,10 @@ export default {
         label: 'test',
       },
       activeStep: '',
+      steps: [
+        'form',
+        'operations'
+      ],
       runSpecifications: [],
       currentSpec: {},
       showSpec: false,
@@ -36,9 +41,16 @@ export default {
     },
     opsObj() {
       return this.isActive('operations') ? this.inspector.data.mainEntity : this.currentSpec.afterForm;
+    },
+    formTitle() {
+      return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Form builder')}`
+    },
+    changesTitle() {
+      return `${this.steps.indexOf('operations') + 1}. ${translatePhrase('Changes')}`
     }
   },
   methods: {
+    translatePhrase,
     initRunSpecification(caseName) {
       const runSpec = emptyTemplate.runTemplate;
       // create a name (based on user input?)
@@ -59,7 +71,7 @@ export default {
       return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     },
     init() {
-      this.setActive('form');
+      this.setActive(this.steps[0]);
       this.setDataObj(this.initialData);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
@@ -95,7 +107,14 @@ export default {
         value: false,
       });
     },
+    nextStep() {
+      this.setActive(this.steps[this.steps.indexOf(this.activeStep) + 1]);
+    },
+    previousStep() {
+      this.setActive(this.steps[this.steps.indexOf(this.activeStep) - 1]);
+    },
     setActive(step) {
+      if (!step) return;
       this.activeStep = step;
     },
     isActive(step) {
@@ -117,6 +136,7 @@ export default {
       :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
     <div class="MassChanges-form">
       <form-builder
+        :title="formTitle"
         @click="setActive('form')"
         @keyup.enter="setActive('form')"
         tabindex="0"
@@ -126,6 +146,7 @@ export default {
         @onActive="onActiveForm"
       />
       <operations-builder
+        :title="changesTitle"
         @click="setActive('operations')"
         @keyup.enter="setActive('operations')"
         tabindex="0"
@@ -146,7 +167,10 @@ export default {
     <div class="col-12 col-sm-12"
       :class="{ 'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
       <div class="Toolbar-container">
-        <toolbar />
+        <toolbar
+        @next="nextStep"
+        @previous="previousStep"
+        />
       </div>
     </div>
   </div>

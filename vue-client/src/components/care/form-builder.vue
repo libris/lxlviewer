@@ -14,6 +14,7 @@ export default {
     };
   },
   props: {
+    title: '',
     formObj: {
       type: Object,
       default: () => ({}),
@@ -58,7 +59,7 @@ export default {
     <div
       class="FormBuilder-label uppercaseHeading"
       :class="{ 'has-selection': isActive }">
-      formbyggaren
+      {{ this.title }}
     </div>
     <div class="FormBuilder-body" :class="{ 'has-selection': isActive }">
       <div>

@@ -19,6 +19,7 @@ export default {
     };
   },
   props: {
+    title: '',
     formData: {
       type: Object,
       default: () => ({}),
@@ -64,7 +65,7 @@ export default {
     <div
       class="OperationsBuilder-label uppercaseHeading"
       :class="{ 'has-selection': isActive }">
-      ändringar
+      {{ this.title }}
     </div>
     <div class="OperationsBuilder-body" :class="{ 'has-selection': isActive }">
       <div>
