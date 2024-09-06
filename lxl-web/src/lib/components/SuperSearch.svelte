@@ -58,8 +58,8 @@
 					try {
 						const searchParams = new URLSearchParams({
 							q: value,
-							...(editedWord && editedWord !== value ? { editedWord } : {}), // only add editedWord if relevant (otherwise use value)
-							...(editedPhrase && editedPhrase !== value ? { editedPhrase } : {}) // only add editedPhrase if relevant (otherwise use value)
+							...(editedWord ? { editedWord } : {}),
+							...(editedPhrase ? { editedPhrase } : {})
 						});
 
 						const autocompleteRes = await fetch(
