@@ -7,6 +7,7 @@ import emptyTemplate from './templates/empty.json';
 import toolbar from "@/components/inspector/toolbar-simple.vue";
 import {translatePhrase} from "@/utils/filters.js";
 import * as DataUtil from "@/utils/data.js";
+import {addIds} from "@/utils/data.js";
 
 export default {
   name: 'mass-changes.vue',
@@ -39,7 +40,6 @@ export default {
       'status'
     ]),
     dataObj() {
-      // Try to keep shared between form builder and operations builder
       return this.inspector.data.mainEntity;
     },
     formObj() {
@@ -98,7 +98,8 @@ export default {
       });
     },
     onInactiveForm() {
-      this.currentSpec.form = cloneDeep(this.inspector.data.mainEntity);
+      let form = cloneDeep(this.inspector.data.mainEntity);
+      this.currentSpec.form = addIds(form);
     },
     onActiveForm() {
       this.setDataObj(isEmpty(this.currentSpec.form) ? this.initialData : this.currentSpec.form);
@@ -112,7 +113,7 @@ export default {
         value: false,
       });
     },
-    nextStep() {
+      nextStep() {
       this.setActive(this.steps[this.steps.indexOf(this.activeStep) + 1]);
     },
     previousStep() {
