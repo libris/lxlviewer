@@ -35,13 +35,15 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 		aggregate.items?.map((item) => {
 			return {
 				[JsonLd.ID]: item?.['@id'],
-				[JsonLd.TYPE]: item?.['@type'],
+				[JsonLd.TYPE]: Array.isArray(item?.['@type']) ? item['@type'][0] : item?.['@type'],
 				label: toString(displayUtil.lensAndFormat(item, LxlLens.CardHeading, lang)),
 				description: item?.description,
 				typeLabel: item?.['@type'] // TODO: probably best to cache this as it will be called often...
 					? toString(
 							displayUtil.lensAndFormat(
-								vocabUtil.getDefinition(item['@type']),
+								vocabUtil.getDefinition(
+									Array.isArray(item?.['@type']) ? item['@type'][0] : item?.['@type']
+								),
 								LxlLens.CardHeading,
 								lang
 							)
