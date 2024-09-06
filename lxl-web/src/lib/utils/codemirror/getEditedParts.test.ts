@@ -88,4 +88,22 @@ describe('getEditedParts', () => {
 			qualifierLikeValue: null
 		});
 	});
+	it('trims words and phrases', () => {
+		expect(getEditedParts({ value: ' astrid ', cursor: 7 })).toEqual({
+			word: 'astrid',
+			wordRange: { from: 1, to: 7 },
+			phrase: null,
+			phraseRange: null,
+			qualifierLikeName: null,
+			qualifierLikeValue: null
+		});
+		expect(getEditedParts({ value: ' astrid lindgren   ', cursor: 16 })).toEqual({
+			word: 'lindgren',
+			wordRange: { from: 8, to: 16 },
+			phrase: 'astrid lindgren',
+			phraseRange: { from: 1, to: 16 },
+			qualifierLikeName: null,
+			qualifierLikeValue: null
+		});
+	});
 });

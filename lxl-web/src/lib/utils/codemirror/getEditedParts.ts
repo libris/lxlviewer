@@ -37,8 +37,8 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 	} else {
 		const phraseBefore = value.slice(0, cursor).split(PHRASE_REGEX).pop() || ''; // get last string before cursor which isn't a qualifier
 		const phraseAfter = value.slice(cursor).split(PHRASE_REGEX)?.[0] || ''; // get first string after cursor which isn't a qualifier
-		const phrase = phraseBefore + phraseAfter;
-		const phraseFromIndex = value.slice(0, cursor).lastIndexOf(phraseBefore);
+		const phrase = (phraseBefore + phraseAfter).trim();
+		const phraseFromIndex = value.slice(0, cursor).lastIndexOf(phraseBefore.trim());
 		const phraseToIndex = phraseFromIndex + phrase.length;
 		const phraseRange = { from: phraseFromIndex, to: phraseToIndex };
 
