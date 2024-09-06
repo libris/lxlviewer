@@ -6,6 +6,7 @@ import {cloneDeep, isEmpty} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
 import toolbar from "@/components/inspector/toolbar-simple.vue";
 import {translatePhrase} from "@/utils/filters.js";
+import * as DataUtil from "@/utils/data.js";
 
 export default {
   name: 'mass-changes.vue',
@@ -16,6 +17,11 @@ export default {
       initialData: {
         '@type': 'Instance',
         label: 'test',
+        genreForm: [
+          {
+            '@id': 'https://id.kb.se/term/saogf/Technopop'
+          }
+        ]
       },
       activeStep: '',
       steps: [
@@ -37,10 +43,10 @@ export default {
       return this.inspector.data.mainEntity;
     },
     formObj() {
-      return this.isActive('form') ? this.inspector.data.mainEntity : this.currentSpec.beforeForm;
+      return this.isActive('form') ? this.inspector.data.mainEntity : this.currentSpec.form;
     },
     opsObj() {
-      return this.isActive('operations') ? this.inspector.data.mainEntity : this.currentSpec.afterForm;
+      return this.isActive('operations') ? this.inspector.data.mainEntity : this.currentSpec.targetForm;
     },
     formTitle() {
       return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Form builder')}`
@@ -57,8 +63,6 @@ export default {
       // default to caseName if from template. Demand the name to be unique and use it as identifier.
       runSpec.name = caseName;
       runSpec.date = this.getDateString();
-
-      runSpec.operations = emptyTemplate.operationTemplate;
 
       if (!this.runSpecifications.some((run) => run.name === runSpec.name)) {
         this.runSpecifications.push(runSpec);
@@ -78,8 +82,9 @@ export default {
         value: 'start-edit',
       });
       this.initRunSpecification('Specifikationsnamn');
-      this.currentSpec.beforeForm = this.initialData;
-      this.currentSpec.afterForm = this.initialData;
+      this.currentSpec.form = this.initialData;
+      this.currentSpec.targetForm = this.initialData;
+      DataUtil.fetchMissingLinkedToQuoted(this.dataObj, this.$store);
     },
     setDataObj(formData) {
       this.$store.dispatch('updateInspectorData', {
@@ -93,13 +98,13 @@ export default {
       });
     },
     onInactiveForm() {
-      this.currentSpec.beforeForm = cloneDeep(this.inspector.data.mainEntity);
+      this.currentSpec.form = cloneDeep(this.inspector.data.mainEntity);
     },
     onActiveForm() {
-      this.setDataObj(isEmpty(this.currentSpec.beforeForm) ? this.initialData : this.currentSpec.beforeForm);
+      this.setDataObj(isEmpty(this.currentSpec.form) ? this.initialData : this.currentSpec.form);
     },
     onInactiveOperations() {
-      this.currentSpec.afterForm = cloneDeep(this.inspector.data.mainEntity);
+      this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
@@ -141,7 +146,7 @@ export default {
         @keyup.enter="setActive('form')"
         tabindex="0"
         :is-active="isActive('form')"
-        :form-obj="formObj"
+        :form-data="formObj"
         @onInactive="onInactiveForm"
         @onActive="onActiveForm"
       />
@@ -159,8 +164,6 @@ export default {
         <pre>{{this.currentSpec}}</pre>
         ENTITY FORM
         <pre>{{ this.dataObj }}</pre>
-        OPERATIONS
-        <pre>{{this.currentSpec.operations}}</pre>
       </div>
     </div>
     </div>
@@ -178,9 +181,5 @@ export default {
 
 <style scoped lang="less">
 .MassChanges {
-  &-recordSelection {
-  }
-  &-caseButton {
-  }
 }
 </style>

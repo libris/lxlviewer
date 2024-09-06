@@ -2,14 +2,7 @@
   "runTemplate" : {
     "name": "",
     "date": "",
-    "beforeForm": {},
-    "afterForm": {},
-    "operations": []
-  },
-  "operationTemplate" : {
-    "path": [],
-    "property": "",
-    "delete": {},
-    "insert": {}
+    "form": {},
+    "targetForm": {}
   }
 }

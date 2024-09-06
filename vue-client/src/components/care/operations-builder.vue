@@ -1,12 +1,10 @@
 <script>
 import EntityForm from '@/components/inspector/entity-form.vue';
 import FieldAdder from '@/components/inspector/field-adder.vue';
-import FormMixin from '@/components/mixins/form-mixin.vue';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'operations-builder.vue',
-  mixins: [FormMixin],
   components: { FieldAdder, EntityForm },
   data() {
     return {

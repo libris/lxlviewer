@@ -1,12 +1,10 @@
 <script>
 import EntityForm from '@/components/inspector/entity-form.vue';
 import FieldAdder from '@/components/inspector/field-adder.vue';
-import FormMixin from '@/components/mixins/form-mixin.vue';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'form-builder.vue',
-  mixins: [FormMixin],
   components: { FieldAdder, EntityForm },
   data() {
     return {
@@ -15,7 +13,7 @@ export default {
   },
   props: {
     title: '',
-    formObj: {
+    formData: {
       type: Object,
       default: () => ({}),
     },
@@ -27,7 +25,6 @@ export default {
   watch: {
     isActive(newValue, oldValue) {
       if (newValue !== oldValue && oldValue) { // active -> inactive
-        console.log('formObj', JSON.stringify(this.formObj));
         this.onInactive();
       } else if (newValue !== oldValue && newValue) { // inactive -> active
         this.onActive();
@@ -67,7 +64,7 @@ export default {
           :editing-object="'mainEntity'"
           :key="formTab.id"
           :is-active="true"
-          :form-data="formObj"
+          :form-data="formData"
           :locked="false" />
       </div>
     </div>
