@@ -26,7 +26,7 @@ function getAutocompleteFindSearchParams(q: string): URLSearchParams {
 			['@type', 'Language'],
 			['not-@type', 'ComplexSubject'], // Should it be "unboosted" instead?
 			['not-inScheme.@id', 'https://id.kb.se/term/swepub'],
-			['not-inScheme.@id', 'https://id.kb.se/term/marc']
+			['not-inScheme.@id', 'https://id.kb.se/marc']
 			// ['@type', 'Work']
 		])
 	);
