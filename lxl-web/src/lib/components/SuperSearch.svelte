@@ -10,7 +10,7 @@
 	import type { AutocompleteItem } from '$lib/types/autocomplete';
 	import type { Qualifiers } from '$lib/types/qualifier';
 	import AutocompleteListItem from './AutocompleteListItem.svelte';
-	import getAutocompleteSearchParams from '$lib/utils/supersearch/getAutocompleteSearchParams';
+	import getEditedParts from '$lib/utils/codemirror/getEditedParts';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -51,8 +51,17 @@
 					/** TODO: add request cancellation if query changes before fetch has finished */
 
 					try {
+						const { word, phrase } = getEditedParts({
+							value,
+							cursor
+						});
+
 						const autocompleteRes = await fetch(
-							`/api/${languageTag()}/autocomplete?${getAutocompleteSearchParams({ value, cursor }).toString()}`
+							`/api/${languageTag()}/autocomplete?${new URLSearchParams({
+								full: value,
+								word, // should we skip word if it is equal to full?
+								...(phrase ? { phrase } : {}) // ditto, should we skip phrase if it is equal to full?
+							}).toString()}`
 						);
 						const autocompletions = (await autocompleteRes.json()) as AutocompleteItem[];
 
