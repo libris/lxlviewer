@@ -82,6 +82,7 @@ export default {
     'created',
     'modified',
     'mainEntity',
+    '_id',
   ],
   lockedProperties: [
     'sameAs',
