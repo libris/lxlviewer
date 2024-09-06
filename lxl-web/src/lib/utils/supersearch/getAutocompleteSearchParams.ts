@@ -17,9 +17,9 @@ function getAutocompleteSearchParams({
 	});
 
 	return new URLSearchParams({
-		full: encodeURIComponent(value),
-		...(word ? { word: encodeURIComponent(word) } : {}), // should we skip word if it is equal to full?
-		...(phrase ? { phrase: encodeURIComponent(phrase) } : {}) // ditto, should we skip phrase if it is equal to full?
+		full: value,
+		...(word ? { word } : {}), // should we skip word if it is equal to full?
+		...(phrase ? { phrase } : {}) // ditto, should we skip phrase if it is equal to full?
 	});
 }
 
