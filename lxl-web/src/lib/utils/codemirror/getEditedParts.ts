@@ -10,8 +10,8 @@ const PHRASE_REGEX = RegExp(/(^|\s)((")?[0-9a-zA-ZaåöAÅÖ:]+\3:(")?[0-9a-zA-Z
 function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 	word: string; // a single word/string (e.g. Astrid)
 	wordRange: EditedRange;
-	phrase?: string; // a group of words/strings (e.g. Astrid Lindgren)
-	phraseRange?: EditedRange;
+	phrase: string | null; // a group of words/strings (e.g. Astrid Lindgren)
+	phraseRange: EditedRange | null;
 	qualifierLikeName: string | null; // a string that could be a valid qualifier name
 	qualifierLikeValue: string | null; // a string that could be the value of a valid qualifier
 } {
@@ -29,6 +29,8 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 		return {
 			word,
 			wordRange,
+			phrase: null,
+			phraseRange: null,
 			qualifierLikeName: name,
 			qualifierLikeValue: value || null
 		};
@@ -43,8 +45,8 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 		return {
 			word,
 			wordRange,
-			phrase: (phrase !== word && phrase) || undefined,
-			phraseRange: (phrase !== word && phraseRange) || undefined,
+			phrase: (phrase !== word && phrase) || null,
+			phraseRange: (phrase !== word && phraseRange) || null,
 			qualifierLikeName: null,
 			qualifierLikeValue: null
 		};
