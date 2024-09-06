@@ -4,7 +4,7 @@ import { error, json } from '@sveltejs/kit';
 import { toString, JsonLd } from '$lib/utils/xl';
 import { LxlLens } from '$lib/utils/display.types';
 import type { PartialCollectionView } from '$lib/utils/search';
-import getAutocompleteFindSearchParams from '$lib/utils/supersearch/getAutocompleteFindSearchParams';
+import getAutocompleteFindSearchParams from '$lib/utils/supersearch/getAutocompleteFindSearchParams.server';
 
 /** TODO:
  * Search by property key if exists in the beginning of the part
@@ -16,18 +16,18 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 
 	const lang = params.lang || 'sv';
 
-	const q = url.searchParams.get('q');
-	const word = url.searchParams.get('editedWord');
-	const phrase = url.searchParams.get('editedPhrase');
+	const full = url.searchParams.get('full');
+	const word = url.searchParams.get('word');
+	const phrase = url.searchParams.get('phrase');
 
-	if (!q) {
-		return error(400, 'Missing _q param value');
+	if (!full) {
+		return error(400, 'Missing full param value');
 	}
 
 	/** Should check if qualifier-like here... */
 
 	const aggregateRes = await fetch(
-		`${env.API_URL}/find.jsonld?${getAutocompleteFindSearchParams(phrase || word || q).toString()}` // TODO: first fetch phrase or word in parallel with q (if phrase doesn't give any results fall back to word)
+		`${env.API_URL}/find.jsonld?${getAutocompleteFindSearchParams(phrase || word || full).toString()}` // TODO: first fetch phrase or word in parallel with q (if phrase doesn't give any results fall back to word)
 	);
 	const aggregate = (await aggregateRes.json()) as PartialCollectionView;
 

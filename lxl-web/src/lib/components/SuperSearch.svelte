@@ -6,11 +6,11 @@
 	import submitClosestFormOnEnter from '$lib/utils/codemirror/extensions/submitClosestFormOnEnter';
 	// import getSuggestionTypeLabel from '$lib/utils/supersearch/getSuggestionsTypeLabel';
 	import debounce from '$lib/utils/debounce';
-	import getEditedParts from '$lib/utils/codemirror/getEditedParts';
 	import { languageTag } from '$lib/paraglide/runtime.js';
 	import type { AutocompleteItem } from '$lib/types/autocomplete';
 	import type { Qualifiers } from '$lib/types/qualifier';
 	import AutocompleteListItem from './AutocompleteListItem.svelte';
+	import getAutocompleteSearchParams from '$lib/utils/supersearch/getAutocompleteSearchParams';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -50,23 +50,12 @@
 					lastValue = value;
 					/** TODO: add request cancellation if query changes before fetch has finished */
 
-					const { word: editedWord, phrase: editedPhrase } = getEditedParts({
-						value,
-						cursor
-					});
-
 					try {
-						const searchParams = new URLSearchParams({
-							q: value,
-							...(editedWord ? { editedWord } : {}),
-							...(editedPhrase ? { editedPhrase } : {})
-						});
-
 						const autocompleteRes = await fetch(
-							`/api/${languageTag()}/autocomplete?${searchParams.toString()}`
+							`/api/${languageTag()}/autocomplete?${getAutocompleteSearchParams({ value, cursor }).toString()}`
 						);
-
 						const autocompletions = (await autocompleteRes.json()) as AutocompleteItem[];
+
 						autocompleteItems = autocompletions?.items || [];
 
 						dropdownCodeMirror?.updateValidatedQualifiers();

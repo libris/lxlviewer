@@ -1,7 +1,7 @@
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 
 /**
- * Gets URL search params to be used for autocomplete fetches to the API /find endpoint
+ * Gets URL search params to be used for autocomplete fetches to the LibrisXL API /find endpoint (not to be confused with getAutocompleteSearchParams which can be used on the client)
  */
 
 function getAutocompleteFindSearchParams(q: string): URLSearchParams {
