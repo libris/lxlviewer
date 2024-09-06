@@ -1,9 +1,10 @@
 import type { RequestHandler } from './$types';
+import { env } from '$env/dynamic/private';
 import { error, json } from '@sveltejs/kit';
 import { toString, JsonLd } from '$lib/utils/xl';
 import { LxlLens } from '$lib/utils/display.types';
-import getEditedParts from '$lib/utils/codemirror/getEditedParts';
 import type { PartialCollectionView } from '$lib/utils/search';
+import getAutocompleteFindSearchParams from '$lib/utils/supersearch/getAutocompleteFindSearchParams';
 
 /** TODO:
  * Search by property key if exists in the beginning of the part
@@ -11,33 +12,22 @@ import type { PartialCollectionView } from '$lib/utils/search';
 
 export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 	const displayUtil = locals.display;
+	const vocabUtil = locals.vocab;
+
 	const lang = params.lang || 'sv';
+
 	const q = url.searchParams.get('q');
-	const cursor = url.searchParams.get('c');
+	const word = url.searchParams.get('editedWord');
+	const phrase = url.searchParams.get('editedPhrase');
 
 	if (!q) {
 		return error(400, 'Missing _q param value');
 	}
-	if (!cursor) {
-		return error(400, 'Missing cursor param value');
-	}
-	if (isNaN(parseInt(cursor, 10))) {
-		return error(400, 'Invalid cursor param value (should be parseable as number)');
-	}
 
-	const { word, phrase, qualifierLikeName, qualifierLikeValue } = getEditedParts({
-		q,
-		cursor: parseInt(cursor, 10)
-	});
+	/** Should check if qualifier-like here... */
 
-	if (qualifierLikeName) {
-		console.log('qualifierlike', qualifierLikeName, 'value', qualifierLikeValue);
-		return json({ items: [] });
-	}
-
-	console.log('word', word, 'phrase', phrase);
 	const aggregateRes = await fetch(
-		`/api/${lang ? `${lang}/` : ''}autocomplete/aggregate?q=${phrase}`
+		`${env.API_URL}/find.jsonld?${getAutocompleteFindSearchParams(phrase || word || q).toString()}` // TODO: first fetch phrase or word in parallel with q (if phrase doesn't give any results fall back to word)
 	);
 	const aggregate = (await aggregateRes.json()) as PartialCollectionView;
 
@@ -47,6 +37,16 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 				[JsonLd.ID]: item?.['@id'],
 				[JsonLd.TYPE]: item?.['@type'],
 				label: toString(displayUtil.lensAndFormat(item, LxlLens.CardHeading, lang)),
+				description: item?.description,
+				typeLabel: item?.['@type'] // TODO: probably best to cache this as it will be called often...
+					? toString(
+							displayUtil.lensAndFormat(
+								vocabUtil.getDefinition(item['@type']),
+								LxlLens.CardHeading,
+								lang
+							)
+						)
+					: item?.['@type'],
 				totalReverseLinks: item?.reverseLinks?.totalItems || 0
 			};
 		}) || [];

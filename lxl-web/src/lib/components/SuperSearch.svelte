@@ -6,10 +6,11 @@
 	import submitClosestFormOnEnter from '$lib/utils/codemirror/extensions/submitClosestFormOnEnter';
 	// import getSuggestionTypeLabel from '$lib/utils/supersearch/getSuggestionsTypeLabel';
 	import debounce from '$lib/utils/debounce';
+	import getEditedParts from '$lib/utils/codemirror/getEditedParts';
 	import { languageTag } from '$lib/paraglide/runtime.js';
-	import type { PartSuggestion } from '$lib/types/suggestions';
 	import type { AutocompleteItem } from '$lib/types/autocomplete';
 	import type { Qualifiers } from '$lib/types/qualifier';
+	import AutocompleteListItem from './AutocompleteListItem.svelte';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -44,24 +45,39 @@
 
 	const findAutocompleteItems = debounce(
 		async ({ value, cursor }: { value: string; cursor: number }) => {
-			if (value.trim() !== lastValue) {
-				lastValue = value;
-				/** TODO: add request cancellation if query changes before fetch has finished */
+			if (value.trim()) {
+				if (value !== lastValue) {
+					lastValue = value;
+					/** TODO: add request cancellation if query changes before fetch has finished */
 
-				try {
-					const autocompleteRes = await fetch(
-						`/api/${languageTag()}/autocomplete?q=${encodeURIComponent(value)}&c=${cursor}`
-					);
+					const { word: editedWord, phrase: editedPhrase } = getEditedParts({
+						value,
+						cursor
+					});
 
-					const autocompletions = (await autocompleteRes.json()) as AutocompleteItem[];
-					autocompleteItems = autocompletions?.items || [];
+					try {
+						const searchParams = new URLSearchParams({
+							q: value,
+							...(editedWord && editedWord !== value ? { editedWord } : {}), // only add editedWord if relevant (otherwise use value)
+							...(editedPhrase && editedPhrase !== value ? { editedPhrase } : {}) // only add editedPhrase if relevant (otherwise use value)
+						});
 
-					dropdownCodeMirror?.updateValidatedQualifiers();
+						const autocompleteRes = await fetch(
+							`/api/${languageTag()}/autocomplete?${searchParams.toString()}`
+						);
 
-					// autocompletionItems = autocompletions;
-				} catch (error) {
-					console.error('something went wrong?', error);
+						const autocompletions = (await autocompleteRes.json()) as AutocompleteItem[];
+						autocompleteItems = autocompletions?.items || [];
+
+						dropdownCodeMirror?.updateValidatedQualifiers();
+
+						// autocompletionItems = autocompletions;
+					} catch (error) {
+						console.error('something went wrong?', error);
+					}
 				}
+			} else {
+				autocompleteItems = [];
 			}
 		},
 		250
@@ -113,12 +129,14 @@
 		}
 	}
 
+	/*
 	function handleClickSuggestionItem(suggestion: PartSuggestion) {
 		dropdownCodeMirror?.replaceEditedPart(
 			`${suggestion.keyByLang?.[languageTag() as keyof typeof suggestion.keyByLang] || suggestion.key}:`
 		);
 		dropdownCodeMirror?.focus();
 	}
+	*/
 
 	onMount(() => {
 		dialogElement?.addEventListener('click', handleClickOutsideDialog);
@@ -159,22 +177,18 @@
 						/>
 					</SearchInputWrapper>
 				</div>
-				{#if autocompleteItems?.length}
-					<section>
-						<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
-						<ul>
-							{#each autocompleteItems.filter((item) => !item['@id'].includes('id.kb.se/marc')) as item}
-								<li class="suggestion-item">
-									<button onclick={() => handleClickSuggestionItem(item)}>
-										{item.label}
-										{item?.['@id']}
-										{item?.['@type']}
-									</button>
-								</li>
-							{/each}
-						</ul>
-					</section>
-				{/if}
+				<nav>
+					{#if autocompleteItems?.length}
+						<section>
+							<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
+							<ul>
+								{#each autocompleteItems as item (item['@id'])}
+									<AutocompleteListItem data={item} />
+								{/each}
+							</ul>
+						</section>
+					{/if}
+				</nav>
 				<footer class="dropdown-footer">
 					<a href="/">Visa fler träffar</a>
 					<a href="/">Hjälp</a>
