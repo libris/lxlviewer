@@ -34,7 +34,10 @@
 	let { value = $bindable(), placeholder, validQualifiers }: SuperSearchProps = $props(); // should we keep codemirror instances in sync using update listeners instead of binding to ensure history is kept as is (but will it work with when removing linebreaks?)? See: https://codemirror.net/examples/split/
 
 	let lastValue = $state();
-	let autocompleteItems: AutocompleteItem[] = $state([]);
+	let autocompleteItems: { qualifiers: AutocompleteItem[]; works: AutocompleteItem[] } = $state({
+		qualifiers: [],
+		works: []
+	});
 
 	let superSearchContainerElement: HTMLDivElement | undefined = $state();
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
@@ -56,16 +59,38 @@
 							cursor
 						});
 
-						const autocompleteRes = await fetch(
-							`/api/${languageTag()}/autocomplete?${new URLSearchParams({
-								full: value,
-								word, // should we skip word if it is equal to full?
-								...(phrase ? { phrase } : {}) // ditto, should we skip phrase if it is equal to full?
-							}).toString()}`
+						const qualifiersRes = await fetch(
+							`/api/${languageTag()}/autocomplete?${new URLSearchParams([
+								['@type', 'Person'],
+								['@type', 'Concept'],
+								['@type', 'Language'],
+								['full', value],
+								['word', word], // should we skip word if it is equal to full?
+								['phrase', phrase || ''] // ditto, should we skip phrase if it is equal to full?
+							])}`
 						);
-						const autocompletions = (await autocompleteRes.json()) as AutocompleteItem[];
+						if (!qualifiersRes.ok) {
+							throw { status: qualifiersRes.status, statusText: qualifiersRes.statusText };
+						}
 
-						autocompleteItems = autocompletions?.items || [];
+						const worksRes = await fetch(
+							`/api/${languageTag()}/autocomplete?${new URLSearchParams([
+								['@type', 'Work'],
+								['full', value]
+							])}`
+						);
+
+						if (!worksRes.ok) {
+							throw { status: worksRes.status, statusText: worksRes.statusText };
+						}
+
+						const qualifiers = (await qualifiersRes.json()) as AutocompleteItem[];
+						const works = (await worksRes.json()) as AutocompleteItem[];
+
+						autocompleteItems = {
+							qualifiers,
+							works
+						};
 
 						dropdownCodeMirror?.updateValidatedQualifiers();
 
@@ -75,7 +100,7 @@
 					}
 				}
 			} else {
-				autocompleteItems = [];
+				autocompleteItems = { qualifiers: [], works: [] };
 			}
 		},
 		250
@@ -111,7 +136,7 @@
 
 	function clearSearch() {
 		value = '';
-		autocompleteItems = [];
+		autocompleteItems = { qualifiers: [], works: [] };
 		if (dialogElement?.open) {
 			dropdownCodeMirror?.focus();
 		} else {
@@ -176,11 +201,21 @@
 					</SearchInputWrapper>
 				</div>
 				<nav>
-					{#if autocompleteItems?.length}
+					{#if autocompleteItems?.qualifiers.length}
 						<section>
 							<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
 							<ul>
-								{#each autocompleteItems as item (item['@id'])}
+								{#each autocompleteItems.qualifiers as item (item['@id'])}
+									<AutocompleteListItem data={item} />
+								{/each}
+							</ul>
+						</section>
+					{/if}
+					{#if autocompleteItems?.works.length}
+						<section>
+							<h2 class="dropdown-header">Sökförslag</h2>
+							<ul>
+								{#each autocompleteItems.works as item (item['@id'])}
 									<AutocompleteListItem data={item} />
 								{/each}
 							</ul>

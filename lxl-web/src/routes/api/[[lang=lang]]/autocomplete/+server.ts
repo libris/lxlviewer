@@ -16,44 +16,54 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 
 	const lang = params.lang || 'sv';
 
+	const types = url.searchParams.getAll('@type');
 	const full = url.searchParams.get('full');
 	const word = url.searchParams.get('word');
 	const phrase = url.searchParams.get('phrase');
 
+	if (!types) {
+		error(400, 'Missing @type param value');
+	}
+
 	if (!full) {
-		return error(400, 'Missing full param value');
+		error(400, 'Missing full param value');
 	}
 
 	/** Should check if qualifier-like here... */
 
-	const aggregateRes = await fetch(
-		`${env.API_URL}/find.jsonld?${getAutocompleteFindSearchParams(phrase || word || full).toString()}` // TODO: first fetch phrase or word in parallel with q (if phrase doesn't give any results fall back to word)
+	const findRes = await fetch(
+		`${env.API_URL}/find.jsonld?${getAutocompleteFindSearchParams({ types, q: phrase || word || full, lang }).toString()}` // TODO: first fetch phrase or word in parallel with q (if phrase doesn't give any results fall back to word)
 	);
-	const aggregate = (await aggregateRes.json()) as PartialCollectionView;
 
-	const items =
-		aggregate.items?.map((item) => {
-			return {
-				[JsonLd.ID]: item?.['@id'],
-				[JsonLd.TYPE]: Array.isArray(item?.['@type']) ? item['@type'][0] : item?.['@type'],
-				label: toString(displayUtil.lensAndFormat(item, LxlLens.CardHeading, lang)),
-				description: item?.description,
-				typeLabel: item?.['@type'] // TODO: probably best to cache this as it will be called often...
-					? toString(
-							displayUtil.lensAndFormat(
-								vocabUtil.getDefinition(
-									Array.isArray(item?.['@type']) ? item['@type'][0] : item?.['@type']
-								),
-								LxlLens.CardHeading,
-								lang
-							)
-						)
-					: item?.['@type'],
-				totalReverseLinks: item?.reverseLinks?.totalItems || 0
-			};
-		}) || [];
+	if (findRes.status !== 200) {
+		error(findRes.status, findRes.statusText);
+	}
 
-	return json({ items });
+	const findResult = (await findRes.json()) as PartialCollectionView;
+
+	const autocompleteItems = findResult.items?.map((item) => {
+		return {
+			[JsonLd.ID]: item?.['@id'],
+			[JsonLd.TYPE]: Array.isArray(item?.['@type']) ? item['@type'][0] : item?.['@type'],
+			label: toString(displayUtil.lensAndFormat(item, LxlLens.CardHeading, lang)),
+			typeLabel: toString(
+				displayUtil.lensAndFormat(
+					vocabUtil.getDefinition(
+						Array.isArray(item?.['@type']) ? item['@type'][0] : item?.['@type']
+					),
+					LxlLens.CardHeading,
+					lang
+				)
+			),
+			inSchemeLabel: item.inScheme
+				? toString(displayUtil.lensAndFormat(item.inScheme, LxlLens.CardHeading, lang))
+				: undefined,
+			inSchemeCode: item?.inScheme?.code,
+			totalReverseLinks: item?.reverseLinks?.totalItems || 0
+		};
+	});
+
+	return json(autocompleteItems);
 };
 
 /*
