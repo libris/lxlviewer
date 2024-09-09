@@ -98,7 +98,7 @@
 <article>
 	<div class="resource gap-8 find-layout page-padding" class:bg-header={shouldShowHeaderBackground}>
 		<div
-			class="mb-2 mt-4 flex w-full justify-center self-center object-center md:mx-auto md:justify-start md:self-start md:px-2 xl:px-0"
+			class="mb-2 mt-4 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
 			class:hidden={!$page.data.images?.length}
 		>
 			{#if data.images.length}

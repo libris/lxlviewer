@@ -24,7 +24,7 @@
 </script>
 
 {#if image && thumb}
-	<figure class="table aspect-square h-40 overflow-hidden">
+	<figure class="table aspect-square h-64 overflow-hidden md:h-56 xl:h-64">
 		{#if linkToFull && full}
 			<a href={full.url} target="_blank" class="object-[inherit]">
 				<img
