@@ -63,7 +63,15 @@ export async function asResult(
 			)
 		})),
 		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath),
-		predicates: displayPredicates(view, displayUtil, locale, usePath)
+		predicates: displayPredicates(view, displayUtil, locale, usePath),
+		_spell: view._spell
+			? view._spell.map((el) => {
+					return {
+						...el,
+						...{ view: replacePath(el.view, usePath) }
+					};
+				})
+			: []
 	};
 }
 
