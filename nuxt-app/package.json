@@ -22,7 +22,7 @@
     "kungbib-styles": "^2.1.0",
     "lodash-es": "^4.17.21",
     "lxljs": "file:../lxljs",
-    "nuxt": "^2.17.1",
+    "nuxt": "^3.12.4",
     "sass": "^1.35.1",
     "sass-loader": "^10"
   },
