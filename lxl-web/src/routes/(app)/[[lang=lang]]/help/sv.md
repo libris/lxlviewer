@@ -8,10 +8,11 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
-### TBA
+### 2024-09-09
 
 - Lånestatus visas nu i listan över bibliotek som innehar en viss resurs
-- Särskiljande information visas i bibliotekslistan
+- Mer detaljerad information om bibliotek och möjlighet att söka i bibliotekslistan
+- Stavningsförslag i anslutning till sökresultaten
 - Upphovsinformation för omslagsbilder
 - Laddningsindikator
 - Buggfixar

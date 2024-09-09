@@ -8,10 +8,11 @@ title: 'Help'
 
 Here we will continuously provide information about newly added features and planned developments:
 
-### TBA
+### 2024-09-09
 
 - Loan status information now shown in the library holdings list
-- Library list now contains more detailed information
+- Library list now contains more detailed information and search functionality
+- Spelling suggestions next to search result
 - Access and usage policy for cover images
 - Loading indicator
 - Bug fixes
