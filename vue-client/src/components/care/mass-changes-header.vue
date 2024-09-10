@@ -46,6 +46,7 @@ export default {
       @keyup.esc="stopEdit"
     >
     <span class="MassChanges-header" v-if="!editing"
+      :class="{ 'cursor-pointer': !editing }"
       @click="startEdit"
       @keyup.enter="startEdit"
       tabindex="0"
@@ -63,6 +64,9 @@ export default {
     width: 100%;
     padding-right: 1rem;
     padding-bottom: 10px;
+  }
+  &.cursor-pointer {
+    cursor: pointer;
   }
   font-size: 3rem;
   padding-bottom: 10px;
