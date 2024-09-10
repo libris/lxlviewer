@@ -67,6 +67,7 @@
 	--background-main: #fff;
 	--background-aside: rgba(234, 242, 237, 0.125);
 	--border-color: #d5e4dd;
+	--border-radius-sm: 4px;
 	--border-radius-base: 8px;
 	--border-radius-lg: 12px;
 	--box-shadow-border-top: inset 0 1px var(--border-color);

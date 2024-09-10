@@ -61,12 +61,19 @@
 
 						const qualifiersRes = await fetch(
 							`/api/${languageTag()}/autocomplete?${new URLSearchParams([
-								['@type', 'Person'],
-								['@type', 'Concept'],
-								['@type', 'Language'],
 								['full', value],
 								['word', word], // should we skip word if it is equal to full?
-								['phrase', phrase || ''] // ditto, should we skip phrase if it is equal to full?
+								['phrase', phrase || ''], // ditto, should we skip phrase if it is equal to full?
+								['@type', 'Agent'],
+								['@type', 'Concept'],
+								['@type', 'Language'],
+								['not-@type', 'ComplexSubject'], // Should it be "unboosted" instead?
+								['not-inScheme.@id', 'https://id.kb.se/term/swepub'],
+								['not-inScheme.@id', 'https://id.kb.se/marc'],
+								['min-reverseLinks.totalItems', '1'],
+								['_limit', '4'],
+								['_offset', '0'],
+								['_sort', '']
 							])}`
 						);
 						if (!qualifiersRes.ok) {
@@ -75,8 +82,13 @@
 
 						const worksRes = await fetch(
 							`/api/${languageTag()}/autocomplete?${new URLSearchParams([
+								['full', value],
+								['overview', 'true'],
+								['not-inCollection.@id', 'https://id.kb.se/term/uniformWorkTitle'],
 								['@type', 'Work'],
-								['full', value]
+								['_limit', '4'],
+								['_offset', '0'],
+								['_sort', '']
 							])}`
 						);
 
@@ -88,8 +100,10 @@
 						const works = (await worksRes.json()) as AutocompleteItem[];
 
 						autocompleteItems = {
-							qualifiers,
-							works
+							qualifiers: qualifiers.items,
+							qualifiersTotalItems: qualifiers.totalItems,
+							works: works.items,
+							worksTotalItems: works.totalItems
 						};
 
 						dropdownCodeMirror?.updateValidatedQualifiers();
@@ -202,23 +216,29 @@
 				</div>
 				<nav>
 					{#if autocompleteItems?.qualifiers.length}
-						<section>
+						<section class="suggestions">
 							<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
 							<ul>
 								{#each autocompleteItems.qualifiers as item (item['@id'])}
 									<AutocompleteListItem data={item} />
 								{/each}
 							</ul>
+							{#if autocompleteItems?.qualifiersTotalItems > 4}
+								<button class="show-more">Visa fler</button>
+							{/if}
 						</section>
 					{/if}
 					{#if autocompleteItems?.works.length}
-						<section>
+						<section class="suggestions">
 							<h2 class="dropdown-header">Sökförslag</h2>
 							<ul>
 								{#each autocompleteItems.works as item (item['@id'])}
 									<AutocompleteListItem data={item} />
 								{/each}
 							</ul>
+							{#if autocompleteItems?.worksTotalItems > 4}
+								<button class="show-more">Visa fler</button>
+							{/if}
 						</section>
 					{/if}
 				</nav>
@@ -264,7 +284,7 @@
 	}
 
 	.dropdown-search {
-		padding: var(--padding-sm) var(--gap-base);
+		padding: var(--padding-sm) var(--gap-base) var(--padding-base) var(--padding-base);
 	}
 
 	.dropdown :global(section > ul) {
@@ -274,7 +294,7 @@
 	.dropdown-header {
 		margin: 0;
 		padding: 0 var(--gap-base) var(--padding-2xs) var(--gap-base);
-		color: var(--color-subtle);
+		color: var(--color-super-subtle);
 		font-weight: 500;
 		font-size: var(--font-size-sm);
 	}
@@ -313,60 +333,22 @@
 		display: none;
 	}
 
-	/*
+	.suggestions {
+		padding: var(--padding-base) 0 var(--padding-sm) 0;
 
-	.suggestion-item {
-		display: flex;
-		gap: var(--gap-2xs);
-		padding: 0 var(--gap-base);
-		width: 100%;
-		font-size: var(--font-size-sm);
-
-		&::before {
-			display: none;
+		&:first-child {
+			padding-top: 0;
 		}
 
-		&:hover,
-		&:focus-within {
-			background: rgb(234, 242, 237, 0.5);
+		&:not(:first-child) {
+			box-shadow: var(--box-shadow-border-top);
 		}
 	}
 
-	.suggestion-item > :global(button) {
-		display: flex;
-		flex: 1;
-		align-items: center;
-		gap: var(--gap-sm);
-		cursor: pointer;
+	.show-more {
 		border: none;
-		padding: 0;
-		min-height: var(--height-input-sm);
-	}
-
-	.suggestion-id {
-		color: var(--color-super-subtle);
-		font-style: italic;
-		font-size: var(--font-size-2xs);
-	}
-
-	.suggestion-label {
-		border-radius: 4px;
-		background: rgba(14, 113, 128, 0.1);
-		padding: 2px 4px;
-		color: #0e7180;
-		font-weight: 500;
-	}
-
-	.suggestion-label:first-letter {
-		text-transform: uppercase;
-	}
-
-	.suggestion-actions {
-		display: flex;
-		align-items: center;
-		margin-left: auto;
+		padding: 0 var(--padding-base);
 		color: var(--color-subtle);
 		font-size: var(--font-size-xs);
 	}
-	*/
 </style>

@@ -2,6 +2,7 @@
 	import type { AutocompleteItem } from '$lib/types/autocomplete';
 	import IconAddQualifier from '~icons/mdi/arrow-top-left'; // ~icons/mdi/arrow-top-left
 	import IconGotoQualfier from '~icons/bi/arrow-right-circle';
+	import { relativizeUrl } from '$lib/utils/http';
 
 	type AutocompleteListItemProps = {
 		data: AutocompleteItem;
@@ -12,16 +13,29 @@
 
 <li class="list-item">
 	<hgroup>
-		<p class="type-label" title={data['@type']}>{data.typeLabel}</p>
-		<h3 class="item-label">{data.label}</h3>
-		{#if data.description}
-			<p class="item-description">{data.description}</p>
+		<p class="type" data-type={data['@type']}>
+			{data.typeLabel}
+			{#if data.inSchemeCode}
+				<span class="inScheme">
+					<abbr title={data.inSchemeLabel}>{data.inSchemeCode}</abbr>
+				</span>
+			{/if}
+		</p>
+		<h3 class="heading">
+			{data.heading}
+		</h3>
+		{#if data.overview}
+			<p class="overview">
+				{data.overview}
+			</p>
 		{/if}
 	</hgroup>
 	<nav class="actions">
 		<ul>
-			<li><IconAddQualifier /></li>
-			<li><IconGotoQualfier /></li>
+			{#if data.isQualifiable}
+				<li><IconAddQualifier /></li>
+			{/if}
+			<li><a href={relativizeUrl(data['@id'].replace('#it', ''))}><IconGotoQualfier /></a></li>
 		</ul>
 	</nav>
 </li>
@@ -44,13 +58,17 @@
 		gap: var(--gap-sm);
 		min-height: var(--height-input-sm);
 		overflow: hidden;
+		font-size: var(--font-size-sm);
+
+		& :global(> *) {
+			margin: 0;
+		}
 	}
 
-	.item-label {
+	.heading {
 		flex-grow: 1;
-		margin: 0;
 		font-weight: 500;
-		font-size: var(--font-size-sm);
+		font-size: inherit;
 		white-space: nowrap;
 
 		&:first-letter {
@@ -58,25 +76,43 @@
 		}
 	}
 
-	.item-description {
-		margin: 0;
+	.overview {
 		overflow: hidden;
-		color: var(--color-super-subtle);
-		font-style: italic;
-		font-size: var(--font-size-2xs);
+		color: var(--color-subtle);
+		font-weight: normal;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 
-	.type-label {
-		margin: 0;
+	.inScheme {
+		font-weight: normal;
+		&::before {
+			content: ' • ';
+		}
+	}
+
+	.type {
+		border-radius: var(--border-radius-sm);
+		background: #ebebeb;
+		padding: var(--gap-2xs) var(--gap-xs);
 		color: var(--color-subtle);
+		font-weight: 500;
 		font-size: var(--font-size-2xs);
 		white-space: nowrap;
 
 		&:first-letter {
 			text-transform: uppercase;
 		}
+	}
+
+	.type[data-type='Topic'] {
+		background: #d4e3ef;
+		color: #205999;
+	}
+
+	.type[data-type='Person'] {
+		background: #d9ebdc;
+		color: #196f25;
 	}
 
 	.actions ul {
