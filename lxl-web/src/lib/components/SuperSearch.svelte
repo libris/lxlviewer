@@ -7,7 +7,7 @@
 	// import getSuggestionTypeLabel from '$lib/utils/supersearch/getSuggestionsTypeLabel';
 	import debounce from '$lib/utils/debounce';
 	import { languageTag } from '$lib/paraglide/runtime.js';
-	import type { AutocompleteItem } from '$lib/types/autocomplete';
+	import type { AutocompleteItem, AutocompleteResponse } from '$lib/types/autocomplete';
 	import type { Qualifiers } from '$lib/types/qualifier';
 	import AutocompleteListItem from './AutocompleteListItem.svelte';
 	import getEditedParts from '$lib/utils/codemirror/getEditedParts';
@@ -34,10 +34,8 @@
 	let { value = $bindable(), placeholder, validQualifiers }: SuperSearchProps = $props(); // should we keep codemirror instances in sync using update listeners instead of binding to ensure history is kept as is (but will it work with when removing linebreaks?)? See: https://codemirror.net/examples/split/
 
 	let lastValue = $state();
-	let autocompleteItems: { qualifiers: AutocompleteItem[]; works: AutocompleteItem[] } = $state({
-		qualifiers: [],
-		works: []
-	});
+	let qualifierItems: AutocompleteItem[] = $state([]);
+	let workItems: AutocompleteItem[] = $state([]);
 
 	let superSearchContainerElement: HTMLDivElement | undefined = $state();
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
@@ -96,25 +94,20 @@
 							throw { status: worksRes.status, statusText: worksRes.statusText };
 						}
 
-						const qualifiers = (await qualifiersRes.json()) as AutocompleteItem[];
-						const works = (await worksRes.json()) as AutocompleteItem[];
+						const qualifiers = (await qualifiersRes.json()) as AutocompleteResponse;
+						const works = (await worksRes.json()) as AutocompleteResponse;
 
-						autocompleteItems = {
-							qualifiers: qualifiers.items,
-							qualifiersTotalItems: qualifiers.totalItems,
-							works: works.items,
-							worksTotalItems: works.totalItems
-						};
+						qualifierItems = qualifiers.items;
+						workItems = works.items;
 
 						dropdownCodeMirror?.updateValidatedQualifiers();
-
-						// autocompletionItems = autocompletions;
 					} catch (error) {
 						console.error('something went wrong?', error);
 					}
 				}
 			} else {
-				autocompleteItems = { qualifiers: [], works: [] };
+				qualifierItems = [];
+				workItems = [];
 			}
 		},
 		250
@@ -150,7 +143,8 @@
 
 	function clearSearch() {
 		value = '';
-		autocompleteItems = { qualifiers: [], works: [] };
+		qualifierItems = [];
+		workItems = [];
 		if (dialogElement?.open) {
 			dropdownCodeMirror?.focus();
 		} else {
@@ -215,30 +209,26 @@
 					</SearchInputWrapper>
 				</div>
 				<nav>
-					{#if autocompleteItems?.qualifiers.length}
+					{#if qualifierItems.length}
 						<section class="suggestions">
 							<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
 							<ul>
-								{#each autocompleteItems.qualifiers as item (item['@id'])}
+								{#each qualifierItems as item (item['@id'])}
 									<AutocompleteListItem data={item} />
 								{/each}
 							</ul>
-							{#if autocompleteItems?.qualifiersTotalItems > 4}
-								<button class="show-more">Visa fler</button>
-							{/if}
+							<button class="show-more">Visa fler</button>
 						</section>
 					{/if}
-					{#if autocompleteItems?.works.length}
+					{#if workItems.length}
 						<section class="suggestions">
 							<h2 class="dropdown-header">Sökförslag</h2>
 							<ul>
-								{#each autocompleteItems.works as item (item['@id'])}
+								{#each workItems as item (item['@id'])}
 									<AutocompleteListItem data={item} />
 								{/each}
 							</ul>
-							{#if autocompleteItems?.worksTotalItems > 4}
-								<button class="show-more">Visa fler</button>
-							{/if}
+							<button class="show-more">Visa fler</button>
 						</section>
 					{/if}
 				</nav>
