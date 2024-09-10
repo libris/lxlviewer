@@ -1,7 +1,7 @@
 {
   "runTemplate" : {
-    "name": "",
-    "date": "",
+    "label": "",
+    "comment": "",
     "form": {},
     "targetForm": {}
   }

@@ -1,6 +1,7 @@
 <script>
 import FormBuilder from '@/components/care/form-builder.vue';
 import OperationsBuilder from '@/components/care/operations-builder.vue';
+import MassChangesHeader from "@/components/care/mass-changes-header.vue";
 import { mapGetters } from 'vuex';
 import {cloneDeep, isEmpty} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
@@ -11,7 +12,7 @@ import {addIds} from "@/utils/data.js";
 
 export default {
   name: 'mass-changes.vue',
-  components: {toolbar, FormBuilder, OperationsBuilder },
+  components: {toolbar, FormBuilder, OperationsBuilder, MassChangesHeader },
   data() {
     return {
       showOverview: true,
@@ -53,6 +54,9 @@ export default {
     },
     changesTitle() {
       return `${this.steps.indexOf('operations') + 1}. ${translatePhrase('Changes')}`
+    },
+    specName() {
+      return this.currentSpec.label;
     }
   },
   methods: {
@@ -61,8 +65,7 @@ export default {
       const runSpec = emptyTemplate.runTemplate;
       // create a name (based on user input?)
       // default to caseName if from template. Demand the name to be unique and use it as identifier.
-      runSpec.name = caseName;
-      runSpec.date = this.getDateString();
+      runSpec.label = caseName + this.getDateString();
 
       if (!this.runSpecifications.some((run) => run.name === runSpec.name)) {
         this.runSpecifications.push(runSpec);
@@ -81,7 +84,7 @@ export default {
         name: 'record-control',
         value: 'start-edit',
       });
-      this.initRunSpecification('Specifikationsnamn');
+      this.initRunSpecification('Namn-');
       this.currentSpec.form = this.initialData;
       this.currentSpec.targetForm = this.initialData;
       DataUtil.fetchMissingLinkedToQuoted(this.dataObj, this.$store);
@@ -141,11 +144,9 @@ export default {
       class="col-sm-12"
       :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
     <div class="MassChanges-new">
-      <h1>
-        <span class="MassChanges-header">Namn</span>
-        <span class="badge badge-accent2">{{ translatePhrase("New run specification") }}</span>
-      <!-- Visa id om det är en körning som redan finns -->
-      </h1>
+      <mass-changes-header
+        :currentSpec="this.currentSpec"
+      />
       <form-builder
         :title="formTitle"
         @click="setActive('form')"
@@ -190,11 +191,6 @@ export default {
   &-new {
 
   }
-  &-header {
-    font-size: 3rem;
-    text-transform: uppercase;
-    padding-bottom: 10px;
-    padding-right: 1rem;
-  }
+
 }
 </style>
