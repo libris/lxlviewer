@@ -140,7 +140,12 @@ export default {
     <div
       class="col-sm-12"
       :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
-    <div class="MassChanges-form">
+    <div class="MassChanges-new">
+      <h1>
+        <span class="MassChanges-header">Namn</span>
+        <span class="badge badge-accent2">{{ translatePhrase("New run specification") }}</span>
+      <!-- Visa id om det är en körning som redan finns -->
+      </h1>
       <form-builder
         :title="formTitle"
         @click="setActive('form')"
@@ -182,5 +187,14 @@ export default {
 
 <style scoped lang="less">
 .MassChanges {
+  &-new {
+
+  }
+  &-header {
+    font-size: 3rem;
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    padding-right: 1rem;
+  }
 }
 </style>
