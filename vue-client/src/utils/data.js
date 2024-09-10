@@ -132,7 +132,7 @@ export function rewriteValueOfKey(obj, key, newValue, deep = false) {
   return newObj;
 }
 
-export function addIds(obj) {
+export function appendIds(obj) {
   if (!isArray(obj) && !isObject(obj)) {
     return obj;
   }

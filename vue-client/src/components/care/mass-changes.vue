@@ -8,7 +8,7 @@ import emptyTemplate from './templates/empty.json';
 import toolbar from "@/components/inspector/toolbar-simple.vue";
 import {translatePhrase} from "@/utils/filters.js";
 import * as DataUtil from "@/utils/data.js";
-import {addIds} from "@/utils/data.js";
+import {appendIds} from "@/utils/data.js";
 
 export default {
   name: 'mass-changes.vue',
@@ -31,6 +31,7 @@ export default {
         'operations'
       ],
       runSpecifications: [],
+      currentBulkChange: {},
       currentSpec: {},
       showSpec: false,
     };
@@ -44,7 +45,7 @@ export default {
       return this.inspector.data.mainEntity;
     },
     formObj() {
-      return this.isActive('form') ? this.inspector.data.mainEntity : this.currentSpec.form;
+      return this.isActive('form') ? this.inspector.data.mainEntity : this.currentSpec.matchForm;
     },
     opsObj() {
       return this.isActive('operations') ? this.inspector.data.mainEntity : this.currentSpec.targetForm;
@@ -55,22 +56,18 @@ export default {
     changesTitle() {
       return `${this.steps.indexOf('operations') + 1}. ${translatePhrase('Changes')}`
     },
-    specName() {
-      return this.currentSpec.label;
-    }
   },
   methods: {
     translatePhrase,
-    initRunSpecification(caseName) {
-      const runSpec = emptyTemplate.runTemplate;
-      // create a name (based on user input?)
-      // default to caseName if from template. Demand the name to be unique and use it as identifier.
-      runSpec.label = caseName + this.getDateString();
+    initRunSpecification(defaultName) {
+      const bulkChange = emptyTemplate;
+      bulkChange.label = defaultName + this.getDateString();
 
-      if (!this.runSpecifications.some((run) => run.name === runSpec.name)) {
-        this.runSpecifications.push(runSpec);
+      if (!this.runSpecifications.some((run) => run.label === bulkChange.label)) {
+        this.runSpecifications.push(bulkChange);
       }
-      this.currentSpec = runSpec;
+      this.currentBulkChange = bulkChange;
+      this.currentSpec = bulkChange.bulkChangeSpecification;
       this.showSpec = true;
     },
     getDateString() {
@@ -85,7 +82,7 @@ export default {
         value: 'start-edit',
       });
       this.initRunSpecification('Namn-');
-      this.currentSpec.form = this.initialData;
+      this.currentSpec.matchForm = this.initialData;
       this.currentSpec.targetForm = this.initialData;
       DataUtil.fetchMissingLinkedToQuoted(this.dataObj, this.$store);
     },
@@ -102,10 +99,10 @@ export default {
     },
     onInactiveForm() {
       let form = cloneDeep(this.inspector.data.mainEntity);
-      this.currentSpec.form = addIds(form);
+      this.currentSpec.matchForm = appendIds(form);
     },
     onActiveForm() {
-      this.setDataObj(isEmpty(this.currentSpec.form) ? this.initialData : this.currentSpec.form);
+      this.setDataObj(isEmpty(this.currentSpec.matchForm) ? this.initialData : this.currentSpec.matchForm);
     },
     onInactiveOperations() {
       this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
@@ -145,7 +142,7 @@ export default {
       :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
     <div class="MassChanges-new">
       <mass-changes-header
-        :currentSpec="this.currentSpec"
+        :currentBulkChange="this.currentBulkChange"
       />
       <form-builder
         :title="formTitle"
@@ -168,7 +165,7 @@ export default {
       />
       <div>
         SPECIFICATION
-        <pre>{{this.currentSpec}}</pre>
+        <pre>{{this.currentBulkChange}}</pre>
         ENTITY FORM
         <pre>{{ this.dataObj }}</pre>
       </div>

@@ -11,12 +11,17 @@ export default {
     };
   },
   props: {
-    currentSpec: {}
+    currentBulkChange: {},
   },
   computed: {
-    specName() {
-      return this.currentSpec.label;
-    }
+    name() {
+      return this.currentBulkChange.label;
+    },
+    status() {
+      if (this.currentBulkChange.bulkChangeStatus === 'DraftBulkChange') {
+        return 'Draft';
+      }
+    },
   },
   methods: {
     translatePhrase,
@@ -40,7 +45,7 @@ export default {
     <input class="MassChanges-header-inputField"
       ref="heading"
       v-if="editing"
-      v-model="currentSpec.label"
+      v-model="currentBulkChange.label"
       @blur="stopEdit"
       @keyup.enter="stopEdit"
       @keyup.esc="stopEdit"
@@ -51,25 +56,27 @@ export default {
       @keyup.enter="startEdit"
       tabindex="0"
     >
-      {{this.specName}}
+      {{this.name}}
     </span>
-    <span class="badge badge-accent2">{{ translatePhrase("New run specification") }}</span>
+    <span class="badge badge-accent2">{{ translatePhrase(this.status) }}</span>
     <!-- Visa id om det är en körning som redan finns -->
   </h1>
 </template>
 
 <style scoped lang="less">
-.MassChanges-header {
-  &-inputField {
-    width: 100%;
-    padding-right: 1rem;
+.MassChanges {
+  &-header {
+    font-size: 3rem;
     padding-bottom: 10px;
+    padding-right: 1rem;
+
+    &-inputField {
+      width: 100%;
+    }
+
+    &.cursor-pointer {
+      cursor: pointer;
+    }
   }
-  &.cursor-pointer {
-    cursor: pointer;
-  }
-  font-size: 3rem;
-  padding-bottom: 10px;
-  padding-right: 1rem;
 }
 </style>

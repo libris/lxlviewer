@@ -1,8 +1,11 @@
 {
-  "runTemplate" : {
-    "label": "",
-    "comment": "",
-    "form": {},
+  "@type": "BulkChange",
+  "label": "",
+  "comment": "",
+  "bulkChangeStatus": "DraftBulkChange",
+  "bulkChangeSpecification": {
+    "@type": "FormSpecification",
+    "matchForm": {},
     "targetForm": {}
   }
 }
