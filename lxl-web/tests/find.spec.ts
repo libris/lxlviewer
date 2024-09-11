@@ -45,6 +45,15 @@ test('facet groups can toggle', async ({ page }) => {
 	await expect(page.getByTestId('facet-list').first()).toBeHidden();
 });
 
+test('expanded filters have no detectable a11y issues', async ({ page }) => {
+	const facetGroups = await page.getByTestId('facet-toggle');
+	for (const el of await facetGroups.elementHandles()) {
+		await el.click();
+	}
+	const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+	expect.soft(accessibilityScanResults.violations).toEqual([]);
+});
+
 test('displays hits info', async ({ page }) => {
 	await expect(page.getByTestId('result-info')).toBeVisible();
 });

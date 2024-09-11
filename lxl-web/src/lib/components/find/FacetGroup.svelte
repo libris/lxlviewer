@@ -72,7 +72,9 @@
 								{/if}
 								<span>
 									<DecoratedData data={facet.object} showLabels={ShowLabelsOptions.Never} />
-									<span class="ml-0.5 text-xs text-primary/40">{facet.discriminator}</span>
+									{#if facet.discriminator}
+										<span class="text-sm text-secondary">({facet.discriminator})</span>
+									{/if}
 								</span>
 							</span>
 							{#if facet.totalItems > 0}
