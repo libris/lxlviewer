@@ -2,7 +2,6 @@
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import getHiddenSearchParams from '$lib/utils/getHiddenSearchParams';
-	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 	import * as m from '$lib/paraglide/messages.js';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 	import { languageTag } from '$lib/paraglide/runtime.js';
@@ -21,7 +20,7 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */
 		if (to?.url) {
-			q = sanitizeQSearchParamValue(to.url.searchParams.get('_q'));
+			q = to.url.searchParams.get('_q') || '';
 		}
 	});
 

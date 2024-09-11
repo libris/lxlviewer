@@ -5,6 +5,7 @@ import { toString, JsonLd } from '$lib/utils/xl';
 import { LxlLens } from '$lib/utils/display.types';
 import type { PartialCollectionView } from '$lib/utils/search';
 import getDisplayType from '$lib/utils/getDisplayType';
+import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 
 /** TODO:
  * Search by property key if exists in the beginning of the part
@@ -35,7 +36,7 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 
 	/** Should check if qualifier-like here... */
 
-	searchParams.set('q', (phrase || word || full) as string);
+	searchParams.set('q', sanitizeQSearchParamValue(phrase || word || full));
 	const findRes = await fetch(
 		`${env.API_URL}/find.jsonld?${searchParams.toString()}` // TODO: first fetch phrase or word in parallel with q (if phrase doesn't give any results fall back to word)
 	);
