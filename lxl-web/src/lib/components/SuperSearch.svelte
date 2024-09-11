@@ -2,7 +2,6 @@
 	import { tick, onMount, onDestroy } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from './CodeMirror.svelte';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
-	import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 	import submitClosestFormOnEnter from '$lib/utils/codemirror/extensions/submitClosestFormOnEnter';
 	// import getSuggestionTypeLabel from '$lib/utils/supersearch/getSuggestionsTypeLabel';
 	import debounce from '$lib/utils/debounce';
@@ -41,8 +40,6 @@
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
 	let dropdownCodeMirror: CodeMirror | undefined = $state();
 	let dialogElement: HTMLDialogElement | undefined = $state();
-
-	let sanitizedValue = $derived(sanitizeQSearchParamValue(value));
 
 	const findAutocompleteItems = debounce(
 		async ({ value, cursor }: { value: string; cursor: number }) => {
@@ -126,7 +123,6 @@
 	}
 
 	function hideDropdown() {
-		// value = sanitizedValue; // should this be here?
 		const selection = dropdownCodeMirror?.getMainSelection(); // TODO: normalize selection if value differs from sanitizedValue (e.g. selection on multiple rows should convert nicely to selection on a single row)
 
 		if (selection) {
@@ -153,6 +149,8 @@
 	}
 
 	async function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
+		console.log('handleChangeCode', event);
+		value = event.value;
 		findAutocompleteItems({ value: event.value, cursor: event.cursor });
 		if (!dialogElement?.open) {
 			await tick(); // await tick to prevent error when selection points outside of document (when typing at the end of the document)
@@ -184,6 +182,8 @@
 			<CodeMirror
 				bind:value
 				bind:this={collapsedCodeMirror}
+				syncedCodeMirrorComponent={dropdownCodeMirror}
+				leads={true}
 				{placeholder}
 				{validQualifiers}
 				extensions={[submitClosestFormOnEnter]}
@@ -191,7 +191,7 @@
 				onchange={handleChangeCodeMirror}
 			/>
 		</div>
-		<textarea value={sanitizedValue} hidden readonly name="_q" maxlength={2048}></textarea>
+		<textarea {value} hidden readonly name="_q" maxlength={2048}></textarea>
 	</SearchInputWrapper>
 	<dialog bind:this={dialogElement} onclose={hideDropdown}>
 		<div class="dropdown">
@@ -199,12 +199,12 @@
 				<div class="dropdown-search">
 					<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
 						<CodeMirror
-							bind:value
 							bind:this={dropdownCodeMirror}
+							syncedCodeMirrorComponent={collapsedCodeMirror}
+							follows={true}
 							{placeholder}
 							{validQualifiers}
 							extensions={[submitClosestFormOnEnter]}
-							onchange={handleChangeCodeMirror}
 						/>
 					</SearchInputWrapper>
 				</div>

@@ -16,10 +16,23 @@
 </script>
 
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { minimalSetup } from 'codemirror';
-	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
-	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
+	import { onMount, type SvelteComponent } from 'svelte';
+	import { defaultKeymap, historyKeymap, history } from '@codemirror/commands';
+	import {
+		drawSelection,
+		keymap,
+		EditorView,
+		placeholder as placeholderExtension
+	} from '@codemirror/view';
+	import {
+		EditorSelection,
+		EditorState,
+		StateEffect,
+		// Transaction,
+		// Annotation,
+		type Text,
+		type Extension
+	} from '@codemirror/state';
 	import { lxlQueryLanguage } from 'codemirror-lang-lxlquery';
 	import { tags } from '@lezer/highlight';
 	import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
@@ -39,12 +52,17 @@
 	 */
 
 	type CodeMirrorProps = {
-		value: string;
+		value?: string;
 		placeholder: string;
 		validQualifiers: Qualifiers;
 		extensions?: Extension[];
 		readonly?: boolean;
 		tabindex?: string | number;
+		editor?: EditorView;
+		syncedCodeMirrorComponent?: SvelteComponent;
+		follows?: boolean;
+		leads?: boolean;
+		editorState?: EditorState;
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		onclick?: (event: MouseEvent) => void;
 	};
@@ -56,6 +74,11 @@
 		validQualifiers,
 		readonly = false,
 		tabindex,
+		editor = $bindable(),
+		syncedCodeMirrorComponent,
+		leads,
+		follows = false,
+		editorState = $bindable(),
 		onchange = () => {},
 		onclick = () => {}
 	}: CodeMirrorProps = $props();
@@ -64,6 +87,7 @@
 	let prevValue: string = $state(value);
 	let prevExtensions: Extension[] = extensions;
 	let prevReadOnly = $state(readonly);
+	let mounted = $state(false);
 
 	const lxlQueryHighlightStyle = HighlightStyle.define([
 		{ tag: tags.string, color: '#0e8043' },
@@ -85,7 +109,17 @@
 
 	let editorExtensions: Extension[] = $derived([
 		// preventNewLine,
-		minimalSetup,
+		...(follows ? [] : [history()]), // make sure there's only one undo history if external editor state is used
+		drawSelection(),
+		keymap.of([
+			...defaultKeymap,
+			...(follows
+				? [
+						// { key: 'Mod-z', run: () => undo(externalEditorState) }, // bind history-related keys to perform undo/redo in the external editor state
+						// { key: 'Mod-y', mac: 'Mod-Shift-z', run: () => redo(externalEditorState) }
+					]
+				: historyKeymap)
+		]),
 		updateHandler,
 		EditorView.lineWrapping,
 		EditorState.readOnly.of(readonly),
@@ -107,14 +141,40 @@
 		...extensions
 	]);
 
-	let editor: EditorView | undefined = $state();
+	function createEditor(doc: string | Text) {
+		const syncedEditorView = syncedCodeMirrorComponent?.getEditorView();
+		console.log('syncedEditorView in createEditor', syncedEditorView); // TODO: MAIN ALSO NEEDS SYNCED EDITOR VIEW
+		const editorView = new EditorView({
+			state: createEditorState(doc),
+			parent: codemirrorContainerElement
+			// dispatch: tr => syncDispatch(tr, mainView, otherView) or dispatch: tr => syncDispatch(tr, otherView, mainView) depending on if follows
+		});
+		mounted = true;
+		return editorView;
+	}
 
-	function createEditorState(value: string) {
-		return EditorState.create({
-			doc: value,
+	function createEditorState(doc: string | Text) {
+		const state = EditorState.create({
+			doc,
 			extensions: editorExtensions
 		});
+		editorState = state;
+		return state;
 	}
+
+	/*
+	let syncAnnotation = Annotation.define<boolean>();
+
+	function syncDispatch(tr: Transaction, view: EditorView, other: EditorView) {
+		view.update([tr]);
+		if (!tr.changes.empty && !tr.annotation(syncAnnotation)) {
+			let annotations: Annotation<any>[] = [syncAnnotation.of(true)];
+			let userEvent = tr.annotation(Transaction.userEvent);
+			if (userEvent) annotations.push(Transaction.userEvent.of(userEvent));
+			other.dispatch({ changes: tr.changes, annotations });
+		}
+	}
+	*/
 
 	export function updateValidatedQualifiers() {
 		console.log('updateValidatedQualifiers reconfigure now');
@@ -162,11 +222,37 @@
 		editor?.focus();
 	}
 
+	export function getEditorView() {
+		return editor;
+	}
+
+	export function getEditorState() {
+		return editor?.state;
+	}
+
 	onMount(() => {
-		editor = new EditorView({
-			state: createEditorState(value),
-			parent: codemirrorContainerElement
-		});
+		/** Create editor from value if not following external editor */
+		if (!follows && !leads) {
+			console.log('create main editor in on mount');
+			editor = createEditor(value);
+		}
+	});
+
+	$effect(() => {
+		/** Use effect if editors should be synceds */
+		if (!mounted) {
+			if (follows) {
+				const syncedEditorState = syncedCodeMirrorComponent?.getEditorState();
+				console.log(
+					'create following editor in effect with synced value:',
+					syncedEditorState.doc.toString()
+				);
+				editor = createEditor(syncedEditorState.doc.toString());
+			} else {
+				console.log('create main editor in effect');
+				editor = createEditor(value);
+			}
+		}
 	});
 
 	$effect(() => {
@@ -175,6 +261,7 @@
 		 * We should use transactions where possible but then we need to know where to insert the changes (e.g. changes: { from: 0, to: XX, insert: 'hej'}`)
 		 */
 		if (value !== prevValue) {
+			console.log('create new state as value has changed');
 			editor?.setState(createEditorState(value));
 			prevValue = value;
 			// Should the cursor be placed one step before where the first diff between value and prev value occurs?
