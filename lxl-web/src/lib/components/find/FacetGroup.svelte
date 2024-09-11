@@ -3,6 +3,8 @@
 	import { page } from '$app/stores';
 	import { type FacetGroup } from '$lib/types/search';
 	import BiChevronRight from '~icons/bi/chevron-right';
+	import CheckSquareFill from '~icons/bi/check-square-fill';
+	import Square from '~icons/bi/square';
 	import FacetRange from './FacetRange.svelte';
 	import DecoratedData from '../DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
@@ -65,16 +67,21 @@
 			{#each shownFacets as facet (facet.view['@id'])}
 				<li class="mb-[0.3rem]">
 					<a
-						class="facet-link flex items-end justify-between gap-2 pl-6 no-underline"
+						class="facet-link ml-6 flex items-end justify-between gap-2 no-underline"
 						href={facet.view['@id']}
 					>
 						<span class="flex items-baseline">
 							{#if 'selected' in facet}
-								<!-- howto A11y?! -->
 								<span class="sr-only"
-									>{facet.selected ? $page.data.t('search.activeFilters') : ''}</span
+									>{facet.selected ? $page.data.t('search.activeFilter') : ''}</span
 								>
-								<span class="mr-1" aria-hidden="true">{facet.selected ? '☑' : '☐'}</span>
+								<div class="mr-1 flex h-[13px] w-[13px] rounded-sm bg-[white]" aria-hidden="true">
+									{#if facet.selected}
+										<CheckSquareFill height="13px" />
+									{:else}
+										<Square height="13px" />
+									{/if}
+								</div>
 							{/if}
 							<span>
 								<DecoratedData data={facet.object} showLabels={ShowLabelsOptions.Never} />
@@ -94,7 +101,7 @@
 		</ol>
 		{#if canShowMoreFacets || canShowLessFacets}
 			<button
-				class="mt-4 pl-6"
+				class="ml-6 mt-4"
 				on:click={() =>
 					canShowMoreFacets ? (facetsShown = numfacets) : (facetsShown = defaultFacetsShown)}
 			>

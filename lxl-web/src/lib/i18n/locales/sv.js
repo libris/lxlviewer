@@ -65,7 +65,7 @@ export default {
 		loading: 'Laddar...',
 		findFilter: 'Hitta filter',
 		filters: 'Sökfilter',
-		activeFilters: 'Aktiva filter',
+		activeFilter: 'Aktivt filter',
 		selectedFilters: 'Valda filter',
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',

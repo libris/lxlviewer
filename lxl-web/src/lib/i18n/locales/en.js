@@ -66,7 +66,7 @@ export default {
 		loading: 'Loading...',
 		findFilter: 'Find filter',
 		filters: 'Filters',
-		activeFilters: 'Active filters',
+		activeFilter: 'Active filter',
 		selectedFilters: 'Selected filters',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
