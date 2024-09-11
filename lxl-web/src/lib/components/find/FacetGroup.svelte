@@ -58,10 +58,11 @@
 						>
 							<span class="flex items-baseline">
 								{#if 'selected' in facet}
+									<!-- checkboxes -->
 									<span class="sr-only"
 										>{facet.selected ? $page.data.t('search.activeFilter') : ''}</span
 									>
-									<div class="mr-1 flex h-[13px] w-[13px] rounded-sm bg-[white]" aria-hidden="true">
+									<div class="mr-2 flex h-[13px] w-[13px] rounded-sm bg-[white]" aria-hidden="true">
 										{#if facet.selected}
 											<CheckSquareFill height="13px" />
 										{:else}

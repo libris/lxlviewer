@@ -14,6 +14,7 @@
 	import SearchResult from '$lib/components/find/SearchResult.svelte';
 	import InstancesList from './InstancesList.svelte';
 	import HoldingStatus from './HoldingStatus.svelte';
+	import BiSearch from '~icons/bi/search';
 
 	export let data;
 
@@ -237,13 +238,16 @@
 								: data.t('holdings.libraries')}
 						{/if}
 					</h2>
-					<input
-						bind:value={searchPhrase}
-						placeholder={$page.data.t('holdings.findLibrary')}
-						aria-label={$page.data.t('holdings.findLibrary')}
-						class="my-2 w-full"
-						type="search"
-					/>
+					<div class="relative mb-4 mt-2">
+						<input
+							bind:value={searchPhrase}
+							placeholder={$page.data.t('holdings.findLibrary')}
+							aria-label={$page.data.t('holdings.findLibrary')}
+							class="w-full pl-8"
+							type="search"
+						/>
+						<BiSearch class="absolute left-2.5 top-3 text-sm text-icon" />
+					</div>
 					<ul class="w-full text-sm">
 						{#each filteredHolders as holder, i (holder.sigel || i)}
 							<HoldingStatus {holder} {holdingUrl} />
