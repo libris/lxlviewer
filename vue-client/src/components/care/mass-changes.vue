@@ -20,7 +20,6 @@ export default {
   data() {
     return {
       showOverview: true,
-      documentId: null,
       inlinedIds: [],
       initialData: {
         '@type': 'Instance',
@@ -50,6 +49,12 @@ export default {
       'resources',
       'settings'
     ]),
+    documentId() {
+      return this.$route.params.fnurgel;
+    },
+    isNew() {
+      return typeof this.documentId === 'undefined';
+    },
     dataObj() {
       return this.inspector.data.mainEntity;
     },
@@ -95,8 +100,8 @@ export default {
       this.currentSpec.targetForm = this.initialData;
       DataUtil.fetchMissingLinkedToQuoted(this.dataObj, this.$store);
     },
-    initFromRecord(fnurgel) {
-      this.fetchRecord(fnurgel);
+    initFromRecord() {
+      this.fetchRecord(this.documentId);
       this.setActive(this.steps[0]);
       this.setFormData(this.currentSpec.matchForm);
     },
@@ -104,6 +109,7 @@ export default {
       const fetchUrl = `${this.settings.apiPath}/${fnurgel}/data.jsonld`;
       fetch(fetchUrl).then((response) => {
         if (response.status === 200) {
+          this.documentETag = response.headers.get('ETag');
           return response.json();
         } if (response.status === 404 || response.status === 410) {
           this.$store.dispatch('pushNotification', {
@@ -129,8 +135,6 @@ export default {
           this.currentBulkChange = bulkChange.mainEntity;
           this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
           this.record = bulkChange.record;
-          console.log('this.currentSpec', JSON.stringify(this.currentSpec));
-          console.log('this.record', JSON.stringify(this.record));
         }
       });
     },
@@ -176,6 +180,7 @@ export default {
     },
     save() {
       this.setActive('none');
+      this.onInactiveOperations();
       this.saveBulkChange();
     },
     async saveBulkChange() {
@@ -187,14 +192,11 @@ export default {
           type: 'danger',
           message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
         });
-        // Set locally instead
         this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
       }
       this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
     },
     async doSaveBulkChange(done = false) {
-      console.log('Inside doSaveBulkChange')
-
       let obj = DataUtil.getMergedItems(
         DataUtil.removeNullValues(this.record),
         DataUtil.removeNullValues(this.currentBulkChange),
@@ -202,8 +204,7 @@ export default {
       console.log('obj to save', JSON.stringify(obj));
       const ETag = this.documentETag;
 
-      const RecordId = record['@id'];
-      console.log('Inside doSaveBulkChange')
+      const RecordId = this.record['@id'];
       if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
         this.create(obj, done);
       } else { // ID exists -> update
@@ -228,7 +229,6 @@ export default {
       }, obj2)).then((result) => {
         // eslint-disable-next-line no-nested-ternary
         const msgKey = !this.documentId ? 'was created' : 'was saved';
-
         const type = get(obj, ['@graph', 1, '@type'], '');
 
         setTimeout(() => {
@@ -242,10 +242,9 @@ export default {
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
           this.warnOnSave();
-          this.$router.push({ path: `/${fnurgel}` });
-          console.log('fnurgel for created record', fnurgel);
+          this.$router.push({ path: `/${fnurgel}` }); //push current path + fnurgel instead?
         } else {
-          this.fetchDocument();
+          this.fetchRecord(this.documentId);
           this.warnOnSave();
         }
         this.$nextTick(() => {
@@ -290,50 +289,6 @@ export default {
       await this.saveInlined(obj);
 
       return obj;
-    },
-    fetchDocument() {
-      const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
-
-      fetch(fetchUrl).then((response) => {
-        if (response.status === 200) {
-          this.documentETag = response.headers.get('ETag');
-          return response.json();
-        } if (response.status === 404 || response.status === 410) {
-          this.loadFailure = {
-            status: response.status,
-          };
-          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
-        } else {
-          this.$store.dispatch('pushNotification', {
-            type: 'danger',
-            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
-          });
-          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
-        }
-        return null;
-      }, (error) => {
-        this.$store.dispatch('pushNotification', {
-          type: 'danger',
-          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
-        });
-      }).then((result) => {
-        if (typeof result !== 'undefined') {
-          const splitFetched = LxlDataUtil.splitJson(result);
-
-          this.inlinedIds = RecordUtil.getLinkedIdsToBeInlined(splitFetched, this.resources);
-          if (this.inlinedIds.length > 0) {
-            HttpUtil.fetchPlainEtags(this.inlinedIds).then((etagMap) => {
-              console.log('Inlined document etags:', etagMap);
-              this.etagMap = etagMap;
-            });
-
-            RecordUtil.moveFromQuotedToMain(splitFetched, this.inlinedIds, this.resources);
-          }
-
-          this.$store.dispatch('setInspectorData', splitFetched);
-          this.onRecordLoaded();
-        }
-      });
     },
     async saveInlined(obj) {
       if (this.inlinedIds.includes(obj['@graph'][1]['@id'])) {
@@ -385,9 +340,8 @@ export default {
     },
   },
   beforeMount() {
-    const fnurgel = this.$route.params.fnurgel;
-    if (fnurgel) {
-      this.initFromRecord(fnurgel);
+    if (this.documentId) {
+      this.initFromRecord();
     }
     this.initNew();
   },
@@ -404,6 +358,8 @@ export default {
     <div class="MassChanges-new">
       <mass-changes-header
         :currentBulkChange="this.currentBulkChange"
+        :documentId="this.documentId"
+        :is-new="this.isNew"
       />
       <form-builder
         :title="formTitle"
@@ -429,8 +385,8 @@ export default {
         <pre>{{this.currentBulkChange}}</pre>
         ENTITY FORM
         <pre>{{ this.dataObj }}</pre>
-        BULK CHANGE IN STORE
-        <pre>{{ this.inspector.bulkChange }}</pre>
+        RECORD
+        <pre>{{ this.record }}</pre>
       </div>
     </div>
     </div>
