@@ -98,12 +98,13 @@ export default {
       this.initRunSpecification('Namn-');
       this.currentSpec.matchForm = this.initialData;
       this.currentSpec.targetForm = this.initialData;
-      DataUtil.fetchMissingLinkedToQuoted(this.dataObj, this.$store);
+      DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
     },
     initFromRecord() {
       this.fetchRecord(this.documentId);
       this.setActive(this.steps[0]);
       this.setFormData(this.currentSpec.matchForm);
+      DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
     },
     fetchRecord(fnurgel) {
       const fetchUrl = `${this.settings.apiPath}/${fnurgel}/data.jsonld`;
@@ -130,7 +131,6 @@ export default {
         });
       }).then((result) => {
         if (typeof result !== 'undefined') {
-          console.log('result', LxlDataUtil.splitJson(result));
           const bulkChange = LxlDataUtil.splitJson(result);
           this.currentBulkChange = bulkChange.mainEntity;
           this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
@@ -219,8 +219,6 @@ export default {
       this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
     },
     doSaveRequest(requestMethod, obj, opts, done) {
-      console.log('this.user.token', this.user.token);
-      console.log('this.user.settings.activeSigel', this.user.settings.activeSigel);
       this.preSaveHook(obj).then((obj2) => requestMethod({
         url: opts.url,
         ETag: opts.ETag,
@@ -342,8 +340,9 @@ export default {
   beforeMount() {
     if (this.documentId) {
       this.initFromRecord();
+    } else {
+      this.initNew();
     }
-    this.initNew();
   },
   unmounted() {
     this.reset();
