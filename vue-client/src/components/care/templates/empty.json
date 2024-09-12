@@ -1,11 +1,22 @@
 {
-  "@type": "BulkChange",
-  "label": "",
-  "comment": "",
-  "bulkChangeStatus": "DraftBulkChange",
-  "bulkChangeSpecification": {
-    "@type": "FormSpecification",
-    "matchForm": {},
-    "targetForm": {}
+  "mainEntity": {
+    "@type": "BulkChange",
+    "@id": "https://id.kb.se/TEMPID#it",
+    "label": "",
+    "comment": "",
+    "bulkChangeStatus": "DraftBulkChange",
+    "bulkChangeSpecification": {
+      "@type": "FormSpecification",
+      "matchForm": {},
+      "targetForm": {}
+    }
+  },
+  "quoted" : {},
+  "record" : {
+    "@type" : "Record",
+    "@id": "https://id.kb.se/TEMPID",
+    "mainEntity": {
+      "@id": "https://id.kb.se/TEMPID#it"
+    }
   }
 }

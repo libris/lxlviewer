@@ -3,19 +3,25 @@ import FormBuilder from '@/components/care/form-builder.vue';
 import OperationsBuilder from '@/components/care/operations-builder.vue';
 import MassChangesHeader from "@/components/care/mass-changes-header.vue";
 import { mapGetters } from 'vuex';
-import {cloneDeep, isEmpty} from 'lodash-es';
+import {cloneDeep, get, isEmpty} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
 import toolbar from "@/components/inspector/toolbar-simple.vue";
-import {translatePhrase} from "@/utils/filters.js";
+import {labelByLang, translatePhrase} from "@/utils/filters.js";
+import Inspector from "@/views/Inspector.vue";
 import * as DataUtil from "@/utils/data.js";
-import {appendIds} from "@/utils/data.js";
+import * as StringUtil from 'lxljs/string.js';
+import * as HttpUtil from "@/utils/http.js";
+import * as RecordUtil from "@/utils/record.js";
+import * as LxlDataUtil from "lxljs/data.js";
 
 export default {
   name: 'mass-changes.vue',
-  components: {toolbar, FormBuilder, OperationsBuilder, MassChangesHeader },
+  components: { Inspector, toolbar, FormBuilder, OperationsBuilder, MassChangesHeader },
   data() {
     return {
       showOverview: true,
+      documentId: null,
+      inlinedIds: [],
       initialData: {
         '@type': 'Instance',
         label: 'test',
@@ -33,13 +39,16 @@ export default {
       runSpecifications: [],
       currentBulkChange: {},
       currentSpec: {},
-      showSpec: false,
+      record: {},
     };
   },
   computed: {
     ...mapGetters([
       'inspector',
-      'status'
+      'status',
+      'user',
+      'resources',
+      'settings'
     ]),
     dataObj() {
       return this.inspector.data.mainEntity;
@@ -60,7 +69,7 @@ export default {
   methods: {
     translatePhrase,
     initRunSpecification(defaultName) {
-      const bulkChange = emptyTemplate;
+      const bulkChange = emptyTemplate.mainEntity;
       bulkChange.label = defaultName + this.getDateString();
 
       if (!this.runSpecifications.some((run) => run.label === bulkChange.label)) {
@@ -68,15 +77,15 @@ export default {
       }
       this.currentBulkChange = bulkChange;
       this.currentSpec = bulkChange.bulkChangeSpecification;
-      this.showSpec = true;
+      this.record = emptyTemplate.record;
     },
     getDateString() {
       const date = new Date();
       return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     },
-    init() {
+    initNew() {
       this.setActive(this.steps[0]);
-      this.setDataObj(this.initialData);
+      this.setFormData(this.initialData);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
         value: 'start-edit',
@@ -86,7 +95,46 @@ export default {
       this.currentSpec.targetForm = this.initialData;
       DataUtil.fetchMissingLinkedToQuoted(this.dataObj, this.$store);
     },
-    setDataObj(formData) {
+    initFromRecord(fnurgel) {
+      this.fetchRecord(fnurgel);
+      this.setActive(this.steps[0]);
+      this.setFormData(this.currentSpec.matchForm);
+    },
+    fetchRecord(fnurgel) {
+      const fetchUrl = `${this.settings.apiPath}/${fnurgel}/data.jsonld`;
+      fetch(fetchUrl).then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } if (response.status === 404 || response.status === 410) {
+          this.$store.dispatch('pushNotification', {
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('The record was not found', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
+          });
+        } else {
+          this.$store.dispatch('pushNotification', {
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
+          });
+        }
+        return false;
+      }, (error) => {
+        this.$store.dispatch('pushNotification', {
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
+        });
+      }).then((result) => {
+        if (typeof result !== 'undefined') {
+          console.log('result', LxlDataUtil.splitJson(result));
+          const bulkChange = LxlDataUtil.splitJson(result);
+          this.currentBulkChange = bulkChange.mainEntity;
+          this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
+          this.record = bulkChange.record;
+          console.log('this.currentSpec', JSON.stringify(this.currentSpec));
+          console.log('this.record', JSON.stringify(this.record));
+        }
+      });
+    },
+    setFormData(formData) {
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -99,10 +147,10 @@ export default {
     },
     onInactiveForm() {
       let form = cloneDeep(this.inspector.data.mainEntity);
-      this.currentSpec.matchForm = appendIds(form);
+      this.currentSpec.matchForm = DataUtil.appendIds(form);
     },
     onActiveForm() {
-      this.setDataObj(isEmpty(this.currentSpec.matchForm) ? this.initialData : this.currentSpec.matchForm);
+      this.setFormData(isEmpty(this.currentSpec.matchForm) ? this.initialData : this.currentSpec.matchForm);
     },
     onInactiveOperations() {
       this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
@@ -126,9 +174,222 @@ export default {
     isActive(step) {
       return this.activeStep === step;
     },
+    save() {
+      this.setActive('none');
+      this.saveBulkChange();
+    },
+    async saveBulkChange() {
+      try {
+        await this.doSaveBulkChange();
+      } catch (error) {
+        console.error(error);
+        this.$store.dispatch('pushNotification', {
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error}`,
+        });
+        // Set locally instead
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+      }
+      this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: true });
+    },
+    async doSaveBulkChange(done = false) {
+      console.log('Inside doSaveBulkChange')
+
+      let obj = DataUtil.getMergedItems(
+        DataUtil.removeNullValues(this.record),
+        DataUtil.removeNullValues(this.currentBulkChange),
+      );
+      console.log('obj to save', JSON.stringify(obj));
+      const ETag = this.documentETag;
+
+      const RecordId = record['@id'];
+      console.log('Inside doSaveBulkChange')
+      if (!RecordId || RecordId === 'https://id.kb.se/TEMPID') { // No ID -> create new
+        this.create(obj, done);
+      } else { // ID exists -> update
+        console.log('ETag ', ETag);
+        this.update(RecordId, obj, ETag, done);
+      }
+    },
+    update(url, obj, ETag, done) {
+      this.doSaveRequest(HttpUtil.put, obj, { url, ETag }, done);
+    },
+    create(obj, done) {
+      this.doSaveRequest(HttpUtil.post, obj, { url: `${this.settings.apiPath}/data` }, done);
+    },
+    doSaveRequest(requestMethod, obj, opts, done) {
+      console.log('this.user.token', this.user.token);
+      console.log('this.user.settings.activeSigel', this.user.settings.activeSigel);
+      this.preSaveHook(obj).then((obj2) => requestMethod({
+        url: opts.url,
+        ETag: opts.ETag,
+        activeSigel: this.user.settings.activeSigel,
+        token: this.user.token,
+      }, obj2)).then((result) => {
+        // eslint-disable-next-line no-nested-ternary
+        const msgKey = !this.documentId ? 'was created' : 'was saved';
+
+        const type = get(obj, ['@graph', 1, '@type'], '');
+
+        setTimeout(() => {
+          this.$store.dispatch('pushNotification', {
+            type: 'success',
+            message: `${labelByLang(type)} ${StringUtil.getUiPhraseByLang(msgKey, this.user.settings.language, this.resources.i18n)}!`,
+          });
+        }, 10);
+        if (!this.documentId) {
+          const location = `${result.getResponseHeader('Location')}`;
+          const locationParts = location.split('/');
+          const fnurgel = locationParts[locationParts.length - 1];
+          this.warnOnSave();
+          this.$router.push({ path: `/${fnurgel}` });
+          console.log('fnurgel for created record', fnurgel);
+        } else {
+          this.fetchDocument();
+          this.warnOnSave();
+        }
+        this.$nextTick(() => {
+          this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+          this.$store.dispatch('setInspectorStatusValue', { property: 'isNew', value: false });
+        });
+      }, (error) => {
+        this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
+        const errorBase = StringUtil.getUiPhraseByLang('Save failed', this.user.settings.language, this.resources.i18n);
+        let errorMessage = '';
+        switch (error.status) {
+          case 412:
+            errorMessage = `${StringUtil.getUiPhraseByLang('The resource has been modified by another user', this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+            break;
+          case 409:
+            errorMessage = `${StringUtil.getUiPhraseByLang('The resource already exists', this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+            break;
+          case 401:
+            localStorage.removeItem('lastPath');
+            errorMessage = `${StringUtil.getUiPhraseByLang('Your login has expired', this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger',
+              message: `${errorBase}. ${errorMessage}.`,
+              sticky: true,
+              link: {
+                to: this.$store.getters.oauth2Client.token.getUri(),
+                title: `${StringUtil.getUiPhraseByLang('Log in', this.user.settings.language, this.resources.i18n)}`,
+                newTab: true,
+                external: true,
+              } });
+            break;
+          default:
+            console.error(error);
+            errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
+            this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+        }
+      });
+    },
+    async preSaveHook(obj) {
+      // await checkAutoShelfControlNumber(obj, this.settings, this.user, this.resources);
+      await this.saveInlined(obj);
+
+      return obj;
+    },
+    fetchDocument() {
+      const fetchUrl = `${this.settings.apiPath}/${this.documentId}/data.jsonld`;
+
+      fetch(fetchUrl).then((response) => {
+        if (response.status === 200) {
+          this.documentETag = response.headers.get('ETag');
+          return response.json();
+        } if (response.status === 404 || response.status === 410) {
+          this.loadFailure = {
+            status: response.status,
+          };
+          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+        } else {
+          this.$store.dispatch('pushNotification', {
+            type: 'danger',
+            message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
+          });
+          this.$store.dispatch('removeLoadingIndicator', 'Loading document');
+        }
+        return null;
+      }, (error) => {
+        this.$store.dispatch('pushNotification', {
+          type: 'danger',
+          message: `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)}. ${error}`,
+        });
+      }).then((result) => {
+        if (typeof result !== 'undefined') {
+          const splitFetched = LxlDataUtil.splitJson(result);
+
+          this.inlinedIds = RecordUtil.getLinkedIdsToBeInlined(splitFetched, this.resources);
+          if (this.inlinedIds.length > 0) {
+            HttpUtil.fetchPlainEtags(this.inlinedIds).then((etagMap) => {
+              console.log('Inlined document etags:', etagMap);
+              this.etagMap = etagMap;
+            });
+
+            RecordUtil.moveFromQuotedToMain(splitFetched, this.inlinedIds, this.resources);
+          }
+
+          this.$store.dispatch('setInspectorData', splitFetched);
+          this.onRecordLoaded();
+        }
+      });
+    },
+    async saveInlined(obj) {
+      if (this.inlinedIds.includes(obj['@graph'][1]['@id'])) {
+        // we only handle one level of inlined docs so far
+        return;
+      }
+
+      const inlined = RecordUtil.extractInlinedData(obj['@graph'][1], this.inlinedIds, this.resources);
+      await Promise.all(Object.keys(inlined)
+        .map((id) => HttpUtil.getDocument(id, undefined, false)
+          .then((r) => {
+            if (!r.data) {
+              // TODO Fix HttpUtil.getDocument so that it errors instead
+              const e = new Error(`Could not fetch document ${id}`);
+              e.statusText = 'Try again';
+              throw e;
+            }
+            if (r.ETag !== this.etagMap[id]) {
+              const msg = 'The resource has been modified by another user';
+              const e = new Error(`${msg} ${id}`);
+              // FIXME smuggling the fnurgel inside status
+              e.status = RecordUtil.extractFnurgel(id);
+              e.statusText = msg;
+              throw e;
+            }
+            r.data['@graph'][1] = inlined[id];
+            return this.preSaveHook(r.data);
+          })
+          .then((data) => HttpUtil.put({
+            url: id,
+            ETag: this.etagMap[id],
+            activeSigel: this.user.settings.activeSigel,
+            token: this.user.token,
+          }, data))));
+    },
+    warnOnSave() {
+      const warnArr = Object.keys(this.settings.warnOnSave);
+      warnArr.forEach((element) => {
+        const keys = element.split('.');
+        const value = get(this.inspector.data, element);
+        const warning = this.settings.warnOnSave[element].some((el) => el === value);
+        if (warning) {
+          this.$store.dispatch('pushNotification', {
+            type: 'warning',
+            message: `${StringUtil.getUiPhraseByLang('Attention', this.user.settings.language, this.resources.i18n)}! ${StringUtil.getLabelByLang(keys[keys.length - 1], this.user.settings.language, this.resources)}: ${StringUtil.getLabelByLang(value, this.user.settings.language, this.resources)}`,
+          });
+        }
+      });
+    },
   },
   beforeMount() {
-    this.init();
+    const fnurgel = this.$route.params.fnurgel;
+    if (fnurgel) {
+      this.initFromRecord(fnurgel);
+    }
+    this.initNew();
   },
   unmounted() {
     this.reset();
@@ -168,6 +429,8 @@ export default {
         <pre>{{this.currentBulkChange}}</pre>
         ENTITY FORM
         <pre>{{ this.dataObj }}</pre>
+        BULK CHANGE IN STORE
+        <pre>{{ this.inspector.bulkChange }}</pre>
       </div>
     </div>
     </div>
@@ -177,6 +440,7 @@ export default {
         <toolbar
         @next="nextStep"
         @previous="previousStep"
+        @save="save"
         />
       </div>
     </div>

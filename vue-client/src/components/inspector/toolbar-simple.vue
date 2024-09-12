@@ -122,6 +122,9 @@ export default {
         this.resources.context,
       );
     },
+    handleSave() {
+      this.$emit('save');
+    },
   },
   computed: {
     ...mapGetters([
@@ -222,6 +225,16 @@ export default {
       @mouseout="showUndo = false"
       :aria-label="translatePhrase('Next')">
       <i class="fa fa-eye" aria-hidden="true" />
+    </button>
+    <button
+      class="Toolbar-btn btn btn-primary"
+      id="saveDoneButton"
+      @click="handleSave"
+      @mouseover="showClarifySave = true"
+      @mouseout="showClarifySave = false"
+      :aria-label="translatePhrase('Save and stop editing')">
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving" />
+      <i class="fa fa-fw fa-check" v-show="!inspector.status.saving" />
     </button>
   </div>
 </template>
