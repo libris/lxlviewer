@@ -197,6 +197,12 @@ export default {
       this.onInactiveOperations();
       this.saveBulkChange();
     },
+    run() {
+      this.setRunStatus();
+    },
+    setRunStatus() {
+      this.currentBulkChange.bulkChangeStatus === 'ReadyBulkChange';
+    },
     async saveBulkChange() {
       try {
         await this.doSaveBulkChange();
@@ -411,6 +417,7 @@ export default {
         @next="nextStep"
         @previous="previousStep"
         @save="save"
+        @run="run"
         />
       </div>
     </div>

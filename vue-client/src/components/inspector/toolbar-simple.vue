@@ -126,6 +126,9 @@ export default {
     handleSave() {
       this.$emit('save');
     },
+    handleRun() {
+      this.$emit('run');
+    },
   },
   computed: {
     ...mapGetters([
@@ -214,31 +217,32 @@ export default {
     </button>
     <button
       class="Toolbar-btn btn btn-default toolbar-button"
-      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
+      v-tooltip.left="`${translatePhrase('Förhandsgranska')}`"
       @click="next"
       @mouseover="showUndo = true"
       @mouseout="showUndo = false"
-      :aria-label="translatePhrase('Next')">
-      <i class="fa fa-search" aria-hidden="true" />
-    </button>
-    <button
-      class="Toolbar-btn btn btn-default toolbar-button"
-      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
-      @click="next"
-      @mouseover="showUndo = true"
-      @mouseout="showUndo = false"
-      :aria-label="translatePhrase('Next')">
+      :aria-label="translatePhrase('Förhandsgranska')">
       <i class="fa fa-eye" aria-hidden="true" />
     </button>
     <button
       class="Toolbar-btn btn btn-primary"
+      v-tooltip.left="`${translatePhrase('Save')}`"
       id="saveDoneButton"
       @click="handleSave"
       @mouseover="showClarifySave = true"
       @mouseout="showClarifySave = false"
-      :aria-label="translatePhrase('Save and stop editing')">
+      :aria-label="translatePhrase('Save')">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving" />
-      <i class="fa fa-fw fa-check" v-show="!inspector.status.saving" />
+      <i class="fa fa-fw fa-save" v-show="!inspector.status.saving" />
+    </button>
+    <button
+      class="Toolbar-btn btn btn-primary"
+      v-tooltip.left="`${translatePhrase('Markera som redo att köra')}`"
+      id="runButton"
+      @click="handleRun"
+      @mouseover="showClarifySave = true"
+      @mouseout="showClarifySave = false">
+      <i class="fa fa-fw fa-play" />
     </button>
   </div>
 </template>
