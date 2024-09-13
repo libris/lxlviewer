@@ -22,6 +22,7 @@ export default {
       default: false,
     },
     formObj: {},
+    isSetToReady: false,
   },
   data() {
     return {
@@ -128,6 +129,9 @@ export default {
     },
     handleRun() {
       this.$emit('run');
+    },
+    cancel() {
+      this.$emit('setAsDraft');
     },
   },
   computed: {
@@ -236,13 +240,24 @@ export default {
       <i class="fa fa-fw fa-save" v-show="!inspector.status.saving" />
     </button>
     <button
+      v-if="!this.isSetToReady"
       class="Toolbar-btn btn btn-primary"
       v-tooltip.left="`${translatePhrase('Markera som redo att köra')}`"
       id="runButton"
       @click="handleRun"
       @mouseover="showClarifySave = true"
       @mouseout="showClarifySave = false">
-      <i class="fa fa-fw fa-play" />
+      <i class="fa fa-play" />
+    </button>
+    <button
+      v-if="this.isSetToReady"
+      class="Toolbar-btn btn btn-primary"
+      v-tooltip.left="`${translatePhrase('Markera som redo att köra')}`"
+      id="runButton"
+      @click="cancel"
+      @mouseover="showClarifySave = true"
+      @mouseout="showClarifySave = false">
+      <i class="fa fa-close" />
     </button>
   </div>
 </template>

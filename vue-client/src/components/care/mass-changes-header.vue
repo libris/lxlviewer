@@ -2,6 +2,8 @@
 import {translatePhrase} from "@/utils/filters.js";
 import FormBuilder from "@/components/care/form-builder.vue";
 import IdPill from "@/components/shared/id-pill.vue";
+import * as StringUtil from 'lxljs/string.js';
+import {mapGetters} from "vuex";
 
 export default {
   name: 'mass-changes-header.vue',
@@ -17,6 +19,10 @@ export default {
     isNew: false,
   },
   computed: {
+    ...mapGetters([
+      'user',
+      'resources',
+    ]),
     name() {
       return this.currentBulkChange.label;
     },
@@ -24,9 +30,7 @@ export default {
       return this.currentBulkChange['@id'];
     },
     status() {
-      if (this.currentBulkChange.bulkChangeStatus === 'DraftBulkChange') {
-        return 'Draft';
-      }
+      return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeStatus, this.user.settings.language, this.resources);
     },
   },
   methods: {
@@ -65,7 +69,7 @@ export default {
     >
       {{this.name}}
     </span>
-  <span class="badge badge-accent2">{{ translatePhrase(this.status) }}</span>
+  <span class="badge badge-accent2">{{ this.status }}</span>
   </h1>
     <span class="MassChanges-id">
       <id-pill

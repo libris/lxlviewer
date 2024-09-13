@@ -73,6 +73,9 @@ export default {
     changesTitle() {
       return `${this.steps.indexOf('operations') + 1}. ${translatePhrase('Changes')}`
     },
+    isReady() {
+      return this.currentBulkChange.bulkChangeStatus === 'ReadyBulkChange';
+    },
   },
   methods: {
     translatePhrase,
@@ -198,10 +201,13 @@ export default {
       this.saveBulkChange();
     },
     run() {
-      this.setRunStatus();
+      this.setRunStatus('ReadyBulkChange');
     },
-    setRunStatus() {
-      this.currentBulkChange.bulkChangeStatus === 'ReadyBulkChange';
+    setAsDraft() {
+      this.setRunStatus('DraftBulkChange');
+    },
+    setRunStatus(status) {
+      this.currentBulkChange.bulkChangeStatus = status;
     },
     async saveBulkChange() {
       try {
@@ -221,7 +227,6 @@ export default {
         DataUtil.removeNullValues(this.record),
         DataUtil.removeNullValues(this.currentBulkChange),
       );
-      console.log('obj to save', JSON.stringify(obj));
       const ETag = this.documentETag;
 
       const RecordId = this.record['@id'];
@@ -414,10 +419,12 @@ export default {
       <div class="Toolbar-container">
         <toolbar
           :form-obj="dataObj"
-        @next="nextStep"
-        @previous="previousStep"
-        @save="save"
-        @run="run"
+          :is-set-to-ready="isReady"
+          @next="nextStep"
+          @previous="previousStep"
+          @save="save"
+          @run="run"
+          @setAsDraft="setAsDraft"
         />
       </div>
     </div>
