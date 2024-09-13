@@ -34,7 +34,7 @@ export default {
     formTab() {
       return { id: 'form', text: 'test' };
     },
-    formObj() {
+    data() {
       return this.formData;
     },
   },
@@ -71,7 +71,7 @@ export default {
           :editing-object="'mainEntity'"
           :key="formTab.id"
           :is-active="true"
-          :form-data="this.formObj"
+          :form-data="this.data"
           :locked="false"
         />
       </div>
@@ -85,7 +85,7 @@ export default {
           :key="formTab.id"
           :is-active="true"
           :diff="this.diff"
-          :form-data="this.formObj"
+          :form-data="this.data"
           :locked="true"
         />
       </div>

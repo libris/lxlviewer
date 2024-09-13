@@ -66,9 +66,17 @@ const router = createRouter({
     },
     {
       path: '/directory-care/masschanges/:fnurgel',
-      name: 'Mass changes',
-      component: () => import('@/components/care/mass-changes.vue'),
+      name: 'Masschanges',
+      component: () => import('@/views/DirectoryCare.vue'),
+      meta: {
+        requiresAuth: true,
+      },
     },
+    // {
+    //   path: '/directory-care/masschanges/:fnurgel',
+    //   name: 'Mass changes',
+    //   component: () => import('@/components/care/mass-changes.vue'),
+    // },
     {
       path: '/user',
       name: 'User settings',

@@ -17,6 +17,9 @@ import * as LxlDataUtil from "lxljs/data.js";
 export default {
   name: 'mass-changes.vue',
   components: { Inspector, toolbar, FormBuilder, OperationsBuilder, MassChangesHeader },
+  props: {
+    fnurgel: ''
+  },
   data() {
     return {
       showOverview: true,
@@ -50,7 +53,7 @@ export default {
       'settings'
     ]),
     documentId() {
-      return this.$route.params.fnurgel;
+      return this.fnurgel;
     },
     isNew() {
       return typeof this.documentId === 'undefined';
@@ -101,10 +104,11 @@ export default {
       DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
     },
     initFromRecord() {
-      this.fetchRecord(this.documentId);
       this.setActive(this.steps[0]);
-      this.setFormData(this.currentSpec.matchForm);
-      DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
+      this.setFormData(this.initialData);
+      this.currentSpec.matchForm = this.initialData;
+      this.currentSpec.targetForm = this.initialData; //FIXME: to avoid undefined on init
+      this.fetchRecord(this.documentId);
     },
     fetchRecord(fnurgel) {
       const fetchUrl = `${this.settings.apiPath}/${fnurgel}/data.jsonld`;
@@ -135,10 +139,19 @@ export default {
           this.currentBulkChange = bulkChange.mainEntity;
           this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
           this.record = bulkChange.record;
+          this.setFormData(this.currentSpec.matchForm);
+          this.$store.dispatch('pushInspectorEvent', {
+            name: 'record-control',
+            value: 'start-edit',
+          });
+          DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
         }
       });
     },
     setFormData(formData) {
+      if (typeof formData === 'undefined') {
+        return
+      }
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -146,7 +159,7 @@ export default {
             value: formData,
           },
         ],
-        addToHistory: true,
+        addToHistory: false,
       });
     },
     onInactiveForm() {
@@ -164,6 +177,7 @@ export default {
         property: 'editing',
         value: false,
       });
+
     },
       nextStep() {
       this.setActive(this.steps[this.steps.indexOf(this.activeStep) + 1]);
@@ -393,6 +407,7 @@ export default {
       :class="{ 'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
       <div class="Toolbar-container">
         <toolbar
+          :form-obj="dataObj"
         @next="nextStep"
         @previous="previousStep"
         @save="save"

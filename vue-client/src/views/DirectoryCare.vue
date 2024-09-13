@@ -153,7 +153,7 @@ export default {
       <admin-notices v-if="$route.params.tool === 'changes'" />
       <create-message v-if="$route.params.tool === 'message'" />
       <holding-mover v-if="$route.params.tool === 'holdings'" :flaggedInstances="flaggedInstances" />
-      <mass-changes v-if="$route.params.tool === 'masschanges'" />
+      <mass-changes v-if="$route.params.tool === 'masschanges' || $route.name === 'Masschanges'" :fnurgel="$route.params.fnurgel" />
       <div class="" v-if="$route.params.tool === 'merge'">
         <h1>merge records</h1>
         <!-- replace this whole div with the component -->

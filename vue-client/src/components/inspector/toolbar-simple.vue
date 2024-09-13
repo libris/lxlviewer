@@ -21,6 +21,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    formObj: {},
   },
   data() {
     return {
@@ -135,9 +136,12 @@ export default {
       'settings',
       'status',
     ]),
-    formObj() {
-      return this.inspector.data[this.inspector.status.focus];
-    },
+    // formObj() {
+    //   return this.inspector.data.mainEntity;
+    // },
+    // formObj() {
+    //   return this.inspector.data[this.inspector.status.focus];
+    // },
     allowed() {
       return VocabUtil.getPropertiesFromArray(
         this.formObj['@type'],
