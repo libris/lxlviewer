@@ -116,6 +116,9 @@ export default {
     previous() {
       this.$emit('previous');
     },
+    preview() {
+      this.$emit('preview');
+    },
     isSubClassOf(type) {
       return VocabUtil.isSubClassOf(
         this.inspector.data.mainEntity['@type'],
@@ -222,7 +225,7 @@ export default {
     <button
       class="Toolbar-btn btn btn-default toolbar-button"
       v-tooltip.left="`${translatePhrase('Förhandsgranska')}`"
-      @click="next"
+      @click="preview"
       @mouseover="showUndo = true"
       @mouseout="showUndo = false"
       :aria-label="translatePhrase('Förhandsgranska')">
@@ -252,7 +255,7 @@ export default {
     <button
       v-if="this.isSetToReady"
       class="Toolbar-btn btn btn-primary"
-      v-tooltip.left="`${translatePhrase('Markera som redo att köra')}`"
+      v-tooltip.left="`${translatePhrase('Markera som utkast')}`"
       id="runButton"
       @click="cancel"
       @mouseover="showClarifySave = true"

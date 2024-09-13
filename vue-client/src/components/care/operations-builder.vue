@@ -2,6 +2,7 @@
 import EntityForm from '@/components/inspector/entity-form.vue';
 import FieldAdder from '@/components/inspector/field-adder.vue';
 import { mapGetters } from 'vuex';
+import {isEmpty} from 'lodash-es';
 
 export default {
   name: 'operations-builder.vue',
@@ -22,6 +23,14 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    previewData: {
+      type: Object,
+      default: () => ({}),
+    },
+    previewDiff: {
+      type: Object,
+      default: () => ({}),
+    },
     isActive: {
       type: Boolean,
       default: false,
@@ -37,6 +46,9 @@ export default {
     data() {
       return this.formData;
     },
+    hasPreviewData() {
+      return !isEmpty(this.previewData) && !isEmpty(this.previewDiff);
+    }
   },
   emits: ['onInactive', 'onActive'],
   methods: {
@@ -76,7 +88,8 @@ export default {
         />
       </div>
       <div
-        class="OperationsBuilder-preview">
+        class="OperationsBuilder-preview"
+      v-if="hasPreviewData">
         <div class="OperationsBuilder-preview heading uppercaseHeading">
           Förhandsgranskning
         </div>
@@ -84,8 +97,8 @@ export default {
           :editing-object="'mainEntity'"
           :key="formTab.id"
           :is-active="true"
-          :diff="this.diff"
-          :form-data="this.data"
+          :diff="previewDiff"
+          :form-data="previewData"
           :locked="true"
         />
       </div>

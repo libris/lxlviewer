@@ -13,6 +13,7 @@ import * as StringUtil from 'lxljs/string.js';
 import * as HttpUtil from "@/utils/http.js";
 import * as RecordUtil from "@/utils/record.js";
 import * as LxlDataUtil from "lxljs/data.js";
+import * as HistoryUtil from "@/utils/history.js";
 
 export default {
   name: 'mass-changes.vue',
@@ -42,6 +43,9 @@ export default {
       currentBulkChange: {},
       currentSpec: {},
       record: {},
+      preview: {},
+      previewData: {'@type': 'Instance'},
+      previewDiff: {}
     };
   },
   computed: {
@@ -199,6 +203,35 @@ export default {
       this.setActive('none');
       this.onInactiveOperations();
       this.saveBulkChange();
+    },
+    getPreview() {
+      const baseUri = this.settings.dataPath;
+      const testBase = "http://localhost:8180";
+      const fetchUrl = `${testBase}/_bulk-change/preview?@id=${baseUri}/${this.documentId}&_limit=1&_offset=1`;
+      console.log('fetchUrl', JSON.stringify(fetchUrl));
+
+      fetch(fetchUrl).then((response) => response.json()).then((result) => {
+        console.log('result', result);
+
+        // const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
+        // DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
+
+        const changeset = result.changeSets[1];
+        const [displayData, displayPaths] = HistoryUtil.buildDisplayData(
+          this.currentSpec.matchForm,
+          this.currentSpec.targetForm,
+          changeset.addedPaths,
+          changeset.removedPaths,
+          (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
+        );
+        this.previewData= displayData;
+        console.log('displayPaths', JSON.stringify(displayPaths));
+        this.previewDiff.removed = displayPaths.removed.map(path => `mainEntity.${path}`);
+        this.previewDiff.added = displayPaths.added.map(path => `mainEntity.${path}`);
+        this.previewDiff.modified = displayPaths.modified.map(path => `mainEntity.${path}`);
+        console.log('this.previewDiff', JSON.stringify(this.previewDiff));
+      });
+
     },
     run() {
       this.setRunStatus('ReadyBulkChange');
@@ -402,6 +435,8 @@ export default {
         tabindex="0"
         :is-active="isActive('operations')"
         :form-data="opsObj"
+        :preview-data="previewData"
+        :preview-diff="previewDiff"
         @onInactive="onInactiveOperations"
       />
       <div>
@@ -422,6 +457,7 @@ export default {
           :is-set-to-ready="isReady"
           @next="nextStep"
           @previous="previousStep"
+          @preview="getPreview"
           @save="save"
           @run="run"
           @setAsDraft="setAsDraft"
