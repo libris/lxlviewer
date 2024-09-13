@@ -4,13 +4,13 @@ import { getSupportedLocale } from '$lib/i18n/locales.js';
 
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView } from '$lib/types/search.js';
-import { DisplayUtil, VocabUtil } from '$lib/utils/xl.js';
 import { asResult } from '$lib/utils/search';
 
 export const load = async ({ params, url, locals, fetch }) => {
-	const displayUtil: DisplayUtil = locals.display;
-	const vocabUtil: VocabUtil = locals.vocab;
+	const displayUtil = locals.display;
+	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
+	const userSettings = locals.userSettings;
 
 	if (!url.searchParams.size) {
 		redirect(303, `/`); // redirect to home page if no search params are given
@@ -49,5 +49,5 @@ export const load = async ({ params, url, locals, fetch }) => {
 		url.pathname
 	);
 
-	return { searchResult };
+	return { searchResult, userSettings };
 };
