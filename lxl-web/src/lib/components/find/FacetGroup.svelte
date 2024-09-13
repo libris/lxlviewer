@@ -1,25 +1,63 @@
 <script lang="ts">
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import { page } from '$app/stores';
-	import { type FacetGroup } from '$lib/types/search';
+	import type { FacetGroup, Facet, MultiSelectFacet } from '$lib/types/search';
 	import BiChevronRight from '~icons/bi/chevron-right';
+	import BiSortDown from '~icons/bi/sort-down';
 	import CheckSquareFill from '~icons/bi/check-square-fill';
 	import Square from '~icons/bi/square';
 	import FacetRange from './FacetRange.svelte';
 	import DecoratedData from '../DecoratedData.svelte';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import { DEFAULT_FACET_SORT, DEFAULT_FACETS_SHOWN } from '$lib/constants/facets';
+	import { saveUserSetting } from '$lib/utils/userSettings';
 
 	export let group: FacetGroup;
 	export let locale: LocaleCode;
 	export let searchPhrase = '';
 
-	const defaultFacetsShown = 5;
-	let facetsShown = defaultFacetsShown;
+	let facetsShown = DEFAULT_FACETS_SHOWN;
+	const userSort = $page.data.userSettings?.facetSort?.[group.dimension];
+
+	let currentSort = userSort || DEFAULT_FACET_SORT;
+
+	const sortOptions = [
+		{ value: 'hits.desc', label: $page.data.t('sort.hitsDesc') },
+		{ value: 'hits.asc', label: $page.data.t('sort.hitsAsc') },
+		{ value: 'alpha.asc', label: getAlphaLabel('Asc') },
+		{ value: 'alpha.desc', label: getAlphaLabel('Desc') }
+	];
+
+	function getAlphaLabel(dir: 'Asc' | 'Desc' = 'Desc'): string {
+		let key = group.dimension === 'yearPublished' ? `sort.year${dir}` : `sort.alpha${dir}`;
+		return $page.data.t(key);
+	}
+
+	$: sortFn = (a: Facet | MultiSelectFacet, b: Facet | MultiSelectFacet): number => {
+		let l = $page.data.locale;
+		switch (currentSort) {
+			case 'hits.asc':
+				return b.totalItems > a.totalItems ? -1 : 1;
+			case 'alpha.desc':
+				return b.str.localeCompare(a.str, l);
+			case 'alpha.asc':
+				return a.str.localeCompare(b.str, l);
+			default:
+				// hits.desc
+				return b.totalItems < a.totalItems ? -1 : 1;
+		}
+	};
+
+	function saveUserSort(e: Event): void {
+		const target = e.target as HTMLSelectElement;
+		saveUserSetting('facetSort', { [group.dimension]: target.value });
+	}
 
 	$: numfacets = group.facets.length;
 	$: hasHits = filteredFacets.length > 0;
 	$: expanded = searchPhrase && hasHits;
-	$: filteredFacets = group.facets.filter((facet) =>
+	$: sortedFacets = group.facets.sort(sortFn);
+	$: filteredFacets = sortedFacets.filter((facet) =>
 		facet.str
 			.toLowerCase()
 			.split(/\s|--/)
@@ -27,10 +65,14 @@
 	);
 	$: shownFacets = filteredFacets.filter((facet, index) => index < facetsShown);
 	$: canShowMoreFacets = filteredFacets.length > facetsShown;
-	$: canShowLessFacets = !canShowMoreFacets && filteredFacets.length > defaultFacetsShown;
+	$: canShowLessFacets = !canShowMoreFacets && filteredFacets.length > DEFAULT_FACETS_SHOWN;
 </script>
 
-<li class="border-b border-primary/16 first:border-t" class:hidden={searchPhrase && !hasHits}>
+<li
+	class="border-b border-primary/16 first:border-t"
+	class:hidden={searchPhrase && !hasHits}
+	data-dimension={group.dimension}
+>
 	<details open={!!expanded}>
 		<summary
 			class="flex min-h-11 w-full cursor-pointer items-center gap-2 font-bold"
@@ -39,7 +81,21 @@
 			<span class="arrow transition-transform">
 				<BiChevronRight class="text-icon" />
 			</span>
-			<span>{group.label}</span>
+			<span class="flex-1 whitespace-nowrap">{group.label}</span>
+			<!-- sorting -->
+			<div class="facet-sort relative hidden">
+				<select
+					bind:value={currentSort}
+					on:change={saveUserSort}
+					class="rounded-sm border border-primary/8 px-2 py-1 pl-5 text-2-regular"
+					aria-label={$page.data.t('sort.sort') + ' ' + $page.data.t('search.filters')}
+				>
+					{#each sortOptions as option}
+						<option value={option.value}>{option.label}</option>
+					{/each}
+				</select>
+				<BiSortDown class="absolute top-0 m-1.5 text-icon-strong" />
+			</div>
 		</summary>
 		<div class="mb-4 md:text-sm lg:text-base">
 			{#if group.search && !(searchPhrase && hasHits)}
@@ -92,7 +148,7 @@
 				<button
 					class="ml-6 mt-4 underline"
 					on:click={() =>
-						canShowMoreFacets ? (facetsShown = numfacets) : (facetsShown = defaultFacetsShown)}
+						canShowMoreFacets ? (facetsShown = numfacets) : (facetsShown = DEFAULT_FACETS_SHOWN)}
 				>
 					{canShowMoreFacets ? $page.data.t('search.showMore') : $page.data.t('search.showFewer')}
 				</button>
@@ -105,8 +161,18 @@
 </li>
 
 <style lang="postcss">
-	details[open] .arrow {
-		@apply rotate-90;
+	details[open] {
+		& .arrow {
+			@apply rotate-90;
+		}
+		& .facet-sort {
+			@apply block;
+		}
+	}
+
+	/* hide sorting for bool filters */
+	li[data-dimension='boolFilters'] details[open] .facet-sort {
+		@apply hidden;
 	}
 
 	.facet-link:hover,
@@ -114,5 +180,11 @@
 		& .facet-total {
 			@apply bg-pill/8;
 		}
+	}
+
+	select {
+		@apply text-right;
+		/* Safari text-align fix */
+		text-align-last: right;
 	}
 </style>

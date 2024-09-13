@@ -102,7 +102,11 @@ export default {
 		alphaDesc: 'Z-A',
 		publicationAsc: 'Publication year (oldest first)',
 		publicationDesc: 'Publication year (newest first)',
-		linksDesc: 'Most linked'
+		linksDesc: 'Most linked',
+		hitsAsc: 'Hits asc.',
+		hitsDesc: 'Hits desc.',
+		yearAsc: 'Oldest first',
+		yearDesc: 'Newest first'
 	},
 	errors: {
 		somethingWentWrong: 'Something went wrong',

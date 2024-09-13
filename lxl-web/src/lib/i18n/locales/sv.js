@@ -101,7 +101,11 @@ export default {
 		alphaDesc: 'Ö-A',
 		publicationAsc: 'Utgivningsår (äldst först)',
 		publicationDesc: 'Utgivningsår (nyast först)',
-		linksDesc: 'Mest länkad'
+		linksDesc: 'Mest länkad',
+		hitsAsc: 'Minst träffar',
+		hitsDesc: 'Flest träffar',
+		yearAsc: 'Äldst först',
+		yearDesc: 'Nyast först'
 	},
 	errors: {
 		somethingWentWrong: 'Något gick fel',
