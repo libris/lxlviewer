@@ -1,6 +1,6 @@
 <script>
 import FormBuilder from '@/components/care/form-builder.vue';
-import OperationsBuilder from '@/components/care/operations-builder.vue';
+import TargetFormBuilder from '@/components/care/target-form-builder.vue';
 import MassChangesHeader from "@/components/care/mass-changes-header.vue";
 import { mapGetters } from 'vuex';
 import {cloneDeep, get, isEmpty} from 'lodash-es';
@@ -17,7 +17,7 @@ import * as HistoryUtil from "@/utils/history.js";
 
 export default {
   name: 'mass-changes.vue',
-  components: { Inspector, toolbar, FormBuilder, OperationsBuilder, MassChangesHeader },
+  components: { Inspector, toolbar, FormBuilder, TargetFormBuilder, MassChangesHeader },
   props: {
     fnurgel: ''
   },
@@ -37,7 +37,7 @@ export default {
       activeStep: '',
       steps: [
         'form',
-        'operations'
+        'targetForm'
       ],
       runSpecifications: [],
       currentBulkChange: {},
@@ -68,14 +68,14 @@ export default {
     formObj() {
       return this.isActive('form') ? this.inspector.data.mainEntity : this.currentSpec.matchForm;
     },
-    opsObj() {
-      return this.isActive('operations') ? this.inspector.data.mainEntity : this.currentSpec.targetForm;
+    targetFormObj() {
+      return this.isActive('targetForm') ? this.inspector.data.mainEntity : this.currentSpec.targetForm;
     },
     formTitle() {
       return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Form builder')}`
     },
     changesTitle() {
-      return `${this.steps.indexOf('operations') + 1}. ${translatePhrase('Changes')}`
+      return `${this.steps.indexOf('targetForm') + 1}. ${translatePhrase('Changes')}`
     },
     isReady() {
       return this.currentBulkChange.bulkChangeStatus === 'ReadyBulkChange';
@@ -152,6 +152,7 @@ export default {
             value: 'start-edit',
           });
           DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
+          this.getPreview();
         }
       });
     },
@@ -176,7 +177,7 @@ export default {
     onActiveForm() {
       this.setFormData(isEmpty(this.currentSpec.matchForm) ? this.initialData : this.currentSpec.matchForm);
     },
-    onInactiveOperations() {
+    onInactiveTargetForm() {
       this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
     },
     reset() {
@@ -200,8 +201,7 @@ export default {
       return this.activeStep === step;
     },
     save() {
-      this.setActive('none');
-      this.onInactiveOperations();
+      this.onInactiveTargetForm();
       this.saveBulkChange();
     },
     getPreview() {
@@ -428,24 +428,24 @@ export default {
         @onInactive="onInactiveForm"
         @onActive="onActiveForm"
       />
-      <operations-builder
+      <target-form-builder
         :title="changesTitle"
-        @click="setActive('operations')"
-        @keyup.enter="setActive('operations')"
+        @click="setActive('targetForm')"
+        @keyup.enter="setActive('targetForm')"
         tabindex="0"
-        :is-active="isActive('operations')"
-        :form-data="opsObj"
+        :is-active="isActive('targetForm')"
+        :form-data="targetFormObj"
         :preview-data="previewData"
         :preview-diff="previewDiff"
-        @onInactive="onInactiveOperations"
+        @onInactive="onInactiveTargetForm"
       />
       <div>
         SPECIFICATION
         <pre>{{this.currentBulkChange}}</pre>
         ENTITY FORM
         <pre>{{ this.dataObj }}</pre>
-        RECORD
-        <pre>{{ this.record }}</pre>
+<!--        RECORD-->
+<!--        <pre>{{ this.record }}</pre>-->
       </div>
     </div>
     </div>

@@ -5,7 +5,7 @@ import { mapGetters } from 'vuex';
 import {isEmpty} from 'lodash-es';
 
 export default {
-  name: 'operations-builder.vue',
+  name: 'target-form-builder.vue',
   components: { FieldAdder, EntityForm },
   data() {
     return {
@@ -71,13 +71,13 @@ export default {
 };
 </script>
 <template>
-  <div class="OperationsBuilder">
+  <div class="TargetFormBuilder">
     <div
-      class="OperationsBuilder-label uppercaseHeading"
+      class="TargetFormBuilder-label uppercaseHeading"
       :class="{ 'has-selection': isActive }">
       {{ this.title }}
     </div>
-    <div class="OperationsBuilder-body" :class="{ 'has-selection': isActive }">
+    <div class="TargetFormBuilder-body" :class="{ 'has-selection': isActive }">
       <div>
         <entity-form
           :editing-object="'mainEntity'"
@@ -88,9 +88,9 @@ export default {
         />
       </div>
       <div
-        class="OperationsBuilder-preview"
+        class="TargetFormBuilder-preview"
       v-if="hasPreviewData">
-        <div class="OperationsBuilder-preview heading uppercaseHeading">
+        <div class="TargetFormBuilder-preview heading uppercaseHeading">
           Förhandsgranskning
         </div>
         <entity-form
@@ -107,7 +107,7 @@ export default {
 </template>
 
 <style scoped lang="less">
-.OperationsBuilder {
+.TargetFormBuilder {
   margin-top: 20px;
   &-label {
     padding: 5px 10px;
