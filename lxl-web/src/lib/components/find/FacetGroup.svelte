@@ -87,14 +87,17 @@
 				<select
 					bind:value={currentSort}
 					on:change={saveUserSort}
-					class="rounded-sm border border-primary/8 px-2 py-1 pl-5 text-2-regular"
+					class="appearance-none px-6 py-1 text-2-regular"
 					aria-label={$page.data.t('sort.sort') + ' ' + $page.data.t('search.filters')}
 				>
 					{#each sortOptions as option}
 						<option value={option.value}>{option.label}</option>
 					{/each}
 				</select>
-				<BiSortDown class="absolute top-0 m-1.5 text-icon-strong" />
+				<BiSortDown class="pointer-events-none absolute top-0 m-1.5 text-icon-strong" />
+				<BiChevronRight
+					class="pointer-events-none absolute right-0 top-0 m-1.5 w-3 rotate-90 text-icon-strong"
+				/>
 			</div>
 		</summary>
 		<div class="mb-4 md:text-sm lg:text-base">
@@ -180,11 +183,5 @@
 		& .facet-total {
 			@apply bg-pill/8;
 		}
-	}
-
-	select {
-		@apply text-right;
-		/* Safari text-align fix */
-		text-align-last: right;
 	}
 </style>
