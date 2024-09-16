@@ -3,7 +3,7 @@ import FormBuilder from '@/components/care/form-builder.vue';
 import TargetFormBuilder from '@/components/care/target-form-builder.vue';
 import MassChangesHeader from "@/components/care/mass-changes-header.vue";
 import { mapGetters } from 'vuex';
-import {cloneDeep, get, isEmpty} from 'lodash-es';
+import {cloneDeep, get, isEqual} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
 import toolbar from "@/components/inspector/toolbar-simple.vue";
 import {labelByLang, translatePhrase} from "@/utils/filters.js";
@@ -100,7 +100,7 @@ export default {
     },
     initNew() {
       this.setActive(this.steps[0]);
-      this.setFormData(this.initialData);
+      this.setInspectorData(this.initialData);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
         value: 'start-edit',
@@ -112,7 +112,7 @@ export default {
     },
     initFromRecord() {
       this.setActive(this.steps[0]);
-      this.setFormData(this.initialData);
+      this.setInspectorData(this.initialData);
       this.currentSpec.matchForm = this.initialData;
       this.currentSpec.targetForm = this.initialData; //FIXME: to avoid undefined on init
       this.fetchRecord(this.documentId);
@@ -146,7 +146,11 @@ export default {
           this.currentBulkChange = bulkChange.mainEntity;
           this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
           this.record = bulkChange.record;
-          this.setFormData(this.currentSpec.matchForm);
+          if (this.isActive('form')) {
+            this.setInspectorData(this.currentSpec.matchForm);
+          } else if (this.isActive('targetForm')){
+            this.setInspectorData(this.currentSpec.targetForm)
+          }
           this.$store.dispatch('pushInspectorEvent', {
             name: 'record-control',
             value: 'start-edit',
@@ -156,7 +160,8 @@ export default {
         }
       });
     },
-    setFormData(formData) {
+    setInspectorData(formData) {
+      // Piggy-backing on inspector.data for direct use of entity adder etc
       if (typeof formData === 'undefined') {
         return
       }
@@ -172,13 +177,18 @@ export default {
     },
     onInactiveForm() {
       let form = cloneDeep(this.inspector.data.mainEntity);
+      if (isEqual(form, this.currentSpec.matchForm)) {
+        this.setInspectorData(this.currentSpec.targetForm);
+      } else {
+        //TODO: warn the user
+        console.log("WARNING, overwriting target form because search form changed!")
+      }
       this.currentSpec.matchForm = DataUtil.appendIds(form);
     },
-    onActiveForm() {
-      this.setFormData(isEmpty(this.currentSpec.matchForm) ? this.initialData : this.currentSpec.matchForm);
-    },
     onInactiveTargetForm() {
+      // Only for targetForm --> matchForm
       this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
+      this.setInspectorData(this.currentSpec.matchForm);
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
@@ -201,8 +211,15 @@ export default {
       return this.activeStep === step;
     },
     save() {
-      this.onInactiveTargetForm();
+      this.dataOnSave();
       this.saveBulkChange();
+    },
+    dataOnSave() {
+      if (this.isActive('targetForm')) {
+        this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
+      } else if (this.isActive('form')) {
+        this.currentSpec.matchForm = cloneDeep(this.inspector.data.mainEntity);
+      }
     },
     getPreview() {
       const baseUri = this.settings.dataPath;
@@ -426,7 +443,6 @@ export default {
         :is-active="isActive('form')"
         :form-data="formObj"
         @onInactive="onInactiveForm"
-        @onActive="onActiveForm"
       />
       <target-form-builder
         :title="changesTitle"

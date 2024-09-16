@@ -81,7 +81,6 @@ export default {
 <!--        >Ny</span>-->
     </span>
   </div>
-    <!-- Visa id om det är en körning som redan finns -->
 </template>
 
 <style scoped lang="less">
