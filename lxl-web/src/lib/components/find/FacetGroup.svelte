@@ -73,7 +73,7 @@
 	class:hidden={searchPhrase && !hasHits}
 	data-dimension={group.dimension}
 >
-	<details open={!!expanded}>
+	<details class="relative" open={!!expanded}>
 		<summary
 			class="flex min-h-11 w-full cursor-pointer items-center gap-2 font-bold"
 			data-testid="facet-toggle"
@@ -82,24 +82,24 @@
 				<BiChevronRight class="text-icon" />
 			</span>
 			<span class="flex-1 whitespace-nowrap">{group.label}</span>
-			<!-- sorting -->
-			<div class="facet-sort relative hidden">
-				<select
-					bind:value={currentSort}
-					on:change={saveUserSort}
-					class="appearance-none px-6 py-1 text-2-regular"
-					aria-label={$page.data.t('sort.sort') + ' ' + $page.data.t('search.filters')}
-				>
-					{#each sortOptions as option}
-						<option value={option.value}>{option.label}</option>
-					{/each}
-				</select>
-				<BiSortDown class="pointer-events-none absolute top-0 m-1.5 text-icon-strong" />
-				<BiChevronRight
-					class="pointer-events-none absolute right-0 top-0 m-1.5 w-3 rotate-90 text-icon-strong"
-				/>
-			</div>
 		</summary>
+		<!-- sorting -->
+		<div class="facet-sort absolute right-0 top-2 hidden">
+			<select
+				bind:value={currentSort}
+				on:change={saveUserSort}
+				class="appearance-none px-6 py-1 text-2-regular"
+				aria-label={$page.data.t('sort.sort') + ' ' + $page.data.t('search.filters')}
+			>
+				{#each sortOptions as option}
+					<option value={option.value}>{option.label}</option>
+				{/each}
+			</select>
+			<BiSortDown class="pointer-events-none absolute top-0 m-1.5 text-icon-strong" />
+			<BiChevronRight
+				class="pointer-events-none absolute right-0 top-0 m-1.5 w-3 rotate-90 text-icon-strong"
+			/>
+		</div>
 		<div class="mb-4 md:text-sm lg:text-base">
 			{#if group.search && !(searchPhrase && hasHits)}
 				<!-- facet range inputs; hide in filter search results -->
