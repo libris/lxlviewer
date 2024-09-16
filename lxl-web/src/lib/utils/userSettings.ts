@@ -25,6 +25,10 @@ export function saveUserSetting(namespace: 'facetSort', value: { [dimension: str
 		} else {
 			newSettings = { [namespace]: value };
 		}
-		Cookies.set('userSettings', JSON.stringify(newSettings));
+		Cookies.set('userSettings', JSON.stringify(newSettings), {
+			expires: 365,
+			secure: true,
+			sameSite: 'strict'
+		});
 	}
 }
