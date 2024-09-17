@@ -1,12 +1,13 @@
 <script>
 import EntityForm from '@/components/inspector/entity-form.vue';
-import FieldAdder from '@/components/inspector/field-adder.vue';
 import { mapGetters } from 'vuex';
 import {isEmpty} from 'lodash-es';
+import ItemEntity from "@/components/inspector/item-entity.vue";
+import EntitySummary from "@/components/shared/entity-summary.vue";
 
 export default {
   name: 'preview',
-  components: { EntityForm },
+  components: {EntitySummary, ItemEntity, EntityForm },
   data() {
     return {
       selected: true,
@@ -73,10 +74,11 @@ export default {
       {{ this.title }}
     </div>
     <div class="Preview-body" :class="{ 'has-selection': isActive }">
-      <div
-        class="Preview-preview" v-if="hasPreviewData">
-        <div class="Preview-preview heading uppercaseHeading">
-        </div>
+      <div class="Preview-preview" v-if="hasPreviewData">
+        <entity-summary
+          :focus-data="previewData"
+          :should-link="false"
+          :exclude-components="['details']" />
         <entity-form
           :editing-object="'mainEntity'"
           :key="formTab.id"
@@ -110,17 +112,18 @@ export default {
     height: 100%;
     background-color: @white;
     border: 1px solid @grey-lighter;
-    padding:  20px;
+    padding: 20px;
     transition: background-color 0.3s ease;
 
     &.has-selection {
       border-color: @brand-faded;
-      border-width: 3px;
+      border-width: 5px;
     }
   }
 
   &-preview {
-    padding-top: 20px;
+    padding-top: 5px;
+    padding-bottom: 10px;
     &.heading {
       padding-bottom: 10px;
     }

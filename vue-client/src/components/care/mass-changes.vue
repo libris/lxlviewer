@@ -273,6 +273,7 @@ export default {
         this.fullPreviewDiff.removed = displayPaths.removed.map(path => `mainEntity.${path}`);
         this.fullPreviewDiff.added = displayPaths.added.map(path => `mainEntity.${path}`);
         this.fullPreviewDiff.modified = displayPaths.modified.map(path => `mainEntity.${path}`);
+        DataUtil.fetchMissingLinkedToQuoted(this.fullPreviewData, this.$store);
       });
 
     },

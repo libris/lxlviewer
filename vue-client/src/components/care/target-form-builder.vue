@@ -126,7 +126,7 @@ export default {
 
     &.has-selection {
       border-color: @brand-faded;
-      border-width: 3px;
+      border-width: 5px;
     }
   }
 

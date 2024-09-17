@@ -97,7 +97,7 @@ export default {
       //background-color: #D9EBDC;
       //background-color: @brand-faded;
       border-color: @brand-faded;
-      border-width: 3px;
+      border-width: 5px;
     }
   }
 
