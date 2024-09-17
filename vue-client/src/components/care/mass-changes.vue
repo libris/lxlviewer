@@ -1,6 +1,7 @@
 <script>
 import FormBuilder from '@/components/care/form-builder.vue';
 import TargetFormBuilder from '@/components/care/target-form-builder.vue';
+import Preview from '@/components/care/preview.vue';
 import MassChangesHeader from "@/components/care/mass-changes-header.vue";
 import { mapGetters } from 'vuex';
 import {cloneDeep, get, isEqual} from 'lodash-es';
@@ -17,7 +18,7 @@ import * as HistoryUtil from "@/utils/history.js";
 
 export default {
   name: 'mass-changes.vue',
-  components: { Inspector, toolbar, FormBuilder, TargetFormBuilder, MassChangesHeader },
+  components: { Inspector, toolbar, FormBuilder, TargetFormBuilder, Preview, MassChangesHeader },
   props: {
     fnurgel: ''
   },
@@ -37,15 +38,19 @@ export default {
       activeStep: '',
       steps: [
         'form',
-        'targetForm'
+        'targetForm',
+        'preview'
       ],
       runSpecifications: [],
       currentBulkChange: {},
       currentSpec: {},
       record: {},
-      preview: {},
-      previewData: {'@type': 'Instance'},
-      previewDiff: {}
+      formPreview: {},
+      formPreviewData: {'@type': 'Instance'},
+      formPreviewDiff: {},
+      fullPreview: {},
+      fullPreviewData: {'@type': 'Instance'},
+      fullPreviewDiff: {}
     };
   },
   computed: {
@@ -77,6 +82,9 @@ export default {
     changesTitle() {
       return `${this.steps.indexOf('targetForm') + 1}. ${translatePhrase('Changes')}`
     },
+    previewTitle() {
+      return `${this.steps.indexOf('preview') + 1}. ${translatePhrase('Preview')}`
+    },
     isReady() {
       return this.currentBulkChange.bulkChangeStatus === 'ReadyBulkChange';
     },
@@ -105,7 +113,7 @@ export default {
         name: 'record-control',
         value: 'start-edit',
       });
-      this.initRunSpecification('Namn-');
+      this.initRunSpecification('<namn>-');
       this.currentSpec.matchForm = this.initialData;
       this.currentSpec.targetForm = this.initialData;
       DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
@@ -223,30 +231,48 @@ export default {
     },
     getPreview() {
       const baseUri = this.settings.dataPath;
+      const offset = 0;
+      const limit = 1;
       const testBase = "http://localhost:8180";
-      const fetchUrl = `${testBase}/_bulk-change/preview?@id=${baseUri}/${this.documentId}&_limit=1&_offset=1`;
-      console.log('fetchUrl', JSON.stringify(fetchUrl));
+      const fetchUrl = `${testBase}/_bulk-change/preview?@id=${baseUri}/${this.documentId}&_limit=${limit}&_offset=${offset}`;
 
       fetch(fetchUrl).then((response) => response.json()).then((result) => {
-        console.log('result', result);
-
         // const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
         // DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
 
-        const changeset = result.changeSets[1];
-        const [displayData, displayPaths] = HistoryUtil.buildDisplayData(
+        // Form preview
+        const formChangeset = result.changeSets[1];
+
+        const [formDisplayData, formDisplayPaths] = HistoryUtil.buildDisplayData(
           this.currentSpec.matchForm,
           this.currentSpec.targetForm,
-          changeset.addedPaths,
-          changeset.removedPaths,
+          formChangeset.addedPaths,
+          formChangeset.removedPaths,
           (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
         );
-        this.previewData= displayData;
-        console.log('displayPaths', JSON.stringify(displayPaths));
-        this.previewDiff.removed = displayPaths.removed.map(path => `mainEntity.${path}`);
-        this.previewDiff.added = displayPaths.added.map(path => `mainEntity.${path}`);
-        this.previewDiff.modified = displayPaths.modified.map(path => `mainEntity.${path}`);
-        console.log('this.previewDiff', JSON.stringify(this.previewDiff));
+        this.formPreviewData= formDisplayData;
+        this.formPreviewDiff.removed = formDisplayPaths.removed.map(path => `mainEntity.${path}`);
+        this.formPreviewDiff.added = formDisplayPaths.added.map(path => `mainEntity.${path}`);
+        this.formPreviewDiff.modified = formDisplayPaths.modified.map(path => `mainEntity.${path}`);
+
+        // Full record preview
+        //TODO: Save data and delegate calculation to components?
+        let before = result.items[0].changeSets[0].version;
+        let after = result.items[0].changeSets[1].version;
+        const changeset = result.items[0].changeSets[1];
+
+        const [displayData, displayPaths] = HistoryUtil.buildDisplayData(
+          before,
+          after,
+          changeset.addedPaths.map(el => el.slice(2)), //temporary hack to remove [@graph, 1, ...
+          changeset.removedPaths.map(el => el.slice(2)),
+          (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
+        );
+
+        this.fullPreviewData= displayData;
+        this.fullPreviewDiff.removed = displayPaths.removed.map(path => `mainEntity.${path}`);
+        this.fullPreviewDiff.added = displayPaths.added.map(path => `mainEntity.${path}`);
+        this.fullPreviewDiff.modified = displayPaths.modified.map(path => `mainEntity.${path}`);
       });
 
     },
@@ -314,8 +340,8 @@ export default {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
+          this.$router.push({ path: `${this.$route.path}/${fnurgel}` });
           this.warnOnSave();
-          this.$router.push({ path: `/${fnurgel}` }); //push current path + fnurgel instead?
         } else {
           this.fetchRecord(this.documentId);
           this.warnOnSave();
@@ -451,15 +477,25 @@ export default {
         tabindex="0"
         :is-active="isActive('targetForm')"
         :form-data="targetFormObj"
-        :preview-data="previewData"
-        :preview-diff="previewDiff"
+        :preview-data="formPreviewData"
+        :preview-diff="formPreviewDiff"
         @onInactive="onInactiveTargetForm"
       />
+      <preview
+        :title="previewTitle"
+        @click="setActive('preview')"
+        @keyup.enter="setActive('preview')"
+        tabindex="0"
+        :is-active="isActive('preview')"
+        :form-data="fullPreview"
+        :preview-data="fullPreviewData"
+        :preview-diff="fullPreviewDiff"
+      />
       <div>
-        SPECIFICATION
-        <pre>{{this.currentBulkChange}}</pre>
-        ENTITY FORM
-        <pre>{{ this.dataObj }}</pre>
+<!--        SPECIFICATION-->
+<!--        <pre>{{this.currentBulkChange}}</pre>-->
+<!--        ENTITY FORM-->
+<!--        <pre>{{ this.dataObj }}</pre>-->
 <!--        RECORD-->
 <!--        <pre>{{ this.record }}</pre>-->
       </div>

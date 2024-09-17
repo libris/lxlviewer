@@ -5,8 +5,8 @@ import { mapGetters } from 'vuex';
 import {isEmpty} from 'lodash-es';
 
 export default {
-  name: 'target-form-builder.vue',
-  components: { FieldAdder, EntityForm },
+  name: 'preview',
+  components: { EntityForm },
   data() {
     return {
       selected: true,
@@ -66,27 +66,16 @@ export default {
 };
 </script>
 <template>
-  <div class="TargetFormBuilder">
+  <div class="Preview">
     <div
-      class="TargetFormBuilder-label uppercaseHeading"
+      class="Preview-label uppercaseHeading"
       :class="{ 'has-selection': isActive }">
       {{ this.title }}
     </div>
-    <div class="TargetFormBuilder-body" :class="{ 'has-selection': isActive }">
-      <div>
-        <entity-form
-          :editing-object="'mainEntity'"
-          :key="formTab.id"
-          :is-active="true"
-          :form-data="this.data"
-          :locked="false"
-        />
-      </div>
+    <div class="Preview-body" :class="{ 'has-selection': isActive }">
       <div
-        class="TargetFormBuilder-preview"
-      v-if="hasPreviewData">
-        <div class="TargetFormBuilder-preview heading uppercaseHeading">
-          Dessa ändringar kommer att genomföras:
+        class="Preview-preview" v-if="hasPreviewData">
+        <div class="Preview-preview heading uppercaseHeading">
         </div>
         <entity-form
           :editing-object="'mainEntity'"
@@ -102,7 +91,7 @@ export default {
 </template>
 
 <style scoped lang="less">
-.TargetFormBuilder {
+.Preview {
   margin-top: 20px;
   &-label {
     padding: 5px 10px;
