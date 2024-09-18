@@ -78,8 +78,8 @@ export default {
           :editing-object="'mainEntity'"
           :key="formTab.id"
           :is-active="true"
-          :form-data="this.data"
-          :locked="false"
+          :form-data="data"
+          :locked="!isActive"
         />
       </div>
       <div

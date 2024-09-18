@@ -65,7 +65,7 @@ export default {
           :key="formTab.id"
           :is-active="true"
           :form-data="formData"
-          :locked="false" />
+          :locked="!isActive" />
       </div>
     </div>
   </div>
