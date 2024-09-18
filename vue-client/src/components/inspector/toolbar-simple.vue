@@ -23,26 +23,22 @@ export default {
     },
     formObj: {},
     isSetToReady: false,
-  },
-  data() {
-    return {
-      showAdminInfoDetails: false,
-      otherFormatMenuActive: false,
-      toolsMenuActive: false,
-      loadingEdit: false,
-      showEdit: false,
-      showTools: false,
-      showDisplayAs: false,
-      showUndo: false,
-      showSave: false,
-      showCancel: false,
-      showFieldAdderTooltip: false,
-      showClarifySave: false,
-      showMarcPreview: false,
-      showEmbellishTemplateSubMenu: false,
-      showEmbellishFromRecordSubMenu: false,
-      fieldAdderActive: false,
-    };
+    showFieldAdder: {
+      type: Boolean,
+      default: false,
+    },
+    showUndo: {
+      type: Boolean,
+      default: false,
+    },
+    lastItemActive: {
+      type: Boolean,
+      default: false,
+    },
+    firstItemActive: {
+      type: Boolean,
+      default: false,
+    }
   },
   watch: {
     'inspector.status.editing'(state) {
@@ -186,17 +182,18 @@ export default {
 <template>
   <div class="Toolbar" id="editor-container">
     <field-adder
+      v-if="this.showFieldAdder"
       class="FieldAdder--inToolbar Toolbar-btn"
       :entity-type="inspector.data[inspector.status.focus]['@type']"
       :inner="false"
       :allowed="allowedProperties"
       :path="inspector.status.focus"
       :editing-object="inspector.status.focus"
-      :in-toolbar="true"
-      :force-active="fieldAdderActive" />
+      :in-toolbar="true"/>
     <button
+      v-if="this.showUndo"
       class="Toolbar-btn btn btn-default toolbar-button"
-      :disabled="inspector.changeHistory.length === 0"
+      :disabled="inspector.changeHistory.length === 0 || !this.showUndo"
       v-tooltip.left="`${translatePhrase('Undo')} (${getKeybindText('undo')})`"
       @click="undo"
       @mouseover="showUndo = true"
@@ -206,6 +203,7 @@ export default {
     </button>
     <button
       class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="firstItemActive"
       v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
       @click="previous"
       @mouseover="showUndo = true"
@@ -215,6 +213,7 @@ export default {
     </button>
     <button
       class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="lastItemActive"
       v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
       @click="next"
       @mouseover="showUndo = true"

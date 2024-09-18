@@ -169,7 +169,7 @@ export default {
       });
     },
     setInspectorData(formData) {
-      // Piggy-backing on inspector.data for direct use of entity adder etc
+      // Piggy-backing on inspector.data for direct use of entity adder, undo history etc.
       if (typeof formData === 'undefined') {
         return
       }
@@ -204,6 +204,15 @@ export default {
         value: false,
       });
 
+    },
+    focusPreview() {
+      this.$refs.preview.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
+    },
+    focusMatchForm() {
+      this.$refs.matchForm.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
+    },
+    focusTargetForm() {
+      this.$refs.targetForm.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
     },
       nextStep() {
       this.setActive(this.steps[this.steps.indexOf(this.activeStep) + 1]);
@@ -462,36 +471,39 @@ export default {
         :documentId="this.documentId"
         :is-new="this.isNew"
       />
-      <form-builder
-        :title="formTitle"
-        @click="setActive('form')"
-        @keyup.enter="setActive('form')"
-        tabindex="0"
-        :is-active="isActive('form')"
-        :form-data="formObj"
-        @onInactive="onInactiveForm"
-      />
-      <target-form-builder
-        :title="changesTitle"
-        @click="setActive('targetForm')"
-        @keyup.enter="setActive('targetForm')"
-        tabindex="0"
-        :is-active="isActive('targetForm')"
-        :form-data="targetFormObj"
-        :preview-data="formPreviewData"
-        :preview-diff="formPreviewDiff"
-        @onInactive="onInactiveTargetForm"
-      />
-      <preview
-        :title="previewTitle"
-        @click="setActive('preview')"
-        @keyup.enter="setActive('preview')"
-        tabindex="0"
-        :is-active="isActive('preview')"
-        :form-data="fullPreview"
-        :preview-data="fullPreviewData"
-        :preview-diff="fullPreviewDiff"
-      />
+      <div ref="matchForm">
+        <form-builder
+          :title="formTitle"
+          tabindex="0"
+          :is-active="isActive('form')"
+          :form-data="formObj"
+          @onInactive="onInactiveForm"
+          @onActive="focusMatchForm"
+        />
+      </div>
+      <div ref="targetForm">
+        <target-form-builder
+          :title="changesTitle"
+          tabindex="0"
+          :is-active="isActive('targetForm')"
+          :form-data="targetFormObj"
+          :preview-data="formPreviewData"
+          :preview-diff="formPreviewDiff"
+          @onInactive="onInactiveTargetForm"
+          @onActive="focusTargetForm"
+        />
+      </div>
+      <div ref="preview">
+        <preview
+          :title="previewTitle"
+          tabindex="0"
+          :is-active="isActive('preview')"
+          :form-data="fullPreview"
+          :preview-data="fullPreviewData"
+          :preview-diff="fullPreviewDiff"
+          @onActive="focusPreview"
+        />
+      </div>
       <div>
 <!--        SPECIFICATION-->
 <!--        <pre>{{this.currentBulkChange}}</pre>-->
@@ -506,8 +518,12 @@ export default {
       :class="{ 'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
       <div class="Toolbar-container">
         <toolbar
+          :show-field-adder="!isActive('preview')"
+          :show-undo="!isActive('preview')"
           :form-obj="dataObj"
           :is-set-to-ready="isReady"
+          :last-item-active="isActive('preview')"
+          :first-item-active="isActive('form')"
           @next="nextStep"
           @previous="previousStep"
           @preview="getPreview"
