@@ -195,8 +195,10 @@ export default {
     },
     onInactiveTargetForm() {
       // Only for targetForm --> matchForm
-      this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
-      this.setInspectorData(this.currentSpec.matchForm);
+      if (this.activeStep === 'form') {
+        this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
+        this.setInspectorData(this.currentSpec.matchForm);
+      }
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
@@ -505,10 +507,10 @@ export default {
         />
       </div>
       <div>
-<!--        SPECIFICATION-->
-<!--        <pre>{{this.currentBulkChange}}</pre>-->
-<!--        ENTITY FORM-->
-<!--        <pre>{{ this.dataObj }}</pre>-->
+        SPECIFICATION
+        <pre>{{this.currentBulkChange}}</pre>
+        ENTITY FORM
+        <pre>{{ this.dataObj }}</pre>
 <!--        RECORD-->
 <!--        <pre>{{ this.record }}</pre>-->
       </div>
