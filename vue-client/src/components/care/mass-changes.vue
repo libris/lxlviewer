@@ -15,7 +15,6 @@ import * as HttpUtil from "@/utils/http.js";
 import * as RecordUtil from "@/utils/record.js";
 import * as LxlDataUtil from "lxljs/data.js";
 import * as HistoryUtil from "@/utils/history.js";
-import {appendIds} from "@/utils/data.js";
 
 export default {
   name: 'mass-changes.vue',
@@ -480,6 +479,7 @@ export default {
     } else {
       this.initNew();
     }
+    this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: true });
   },
   unmounted() {
     this.reset();
