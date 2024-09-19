@@ -106,13 +106,13 @@
 				class="pointer-events-none absolute right-0 top-0 m-1.5 w-3 rotate-90 text-icon-strong"
 			/>
 		</div>
-		<div class="mb-4 text-sm">
+		<div class="text-md mb-4 md:text-sm">
 			{#if group.search && !(searchPhrase && hasHits)}
 				<!-- facet range inputs; hide in filter search results -->
 				<FacetRange search={group.search} />
 			{/if}
 			<ol
-				class="flex max-h-[437px] flex-col gap-1 overflow-y-auto overflow-x-clip pl-6 pr-0.5"
+				class="flex max-h-72 flex-col gap-1 overflow-y-auto overflow-x-clip pl-6 pr-0.5 sm:max-h-[437px]"
 				data-testid="facet-list"
 			>
 				{#each shownFacets as facet (facet.view['@id'])}
@@ -144,7 +144,7 @@
 							</span>
 							{#if facet.totalItems > 0}
 								<span
-									class="facet-total mb-px rounded-sm bg-pill/4 px-1 text-xs text-secondary"
+									class="facet-total mb-px rounded-sm bg-pill/4 px-1 text-sm text-secondary md:text-xs"
 									aria-label="{facet.totalItems} {$page.data.t('search.hits')}"
 									>{facet.totalItems.toLocaleString(locale)}</span
 								>
