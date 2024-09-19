@@ -181,6 +181,18 @@
 						"marc:arrangedStatementForMusic",
 						"originDate"
 					]
+				},
+				"Library": {
+					"@id": "Library-chips",
+					"@type": "fresnel:Lens",
+					"showProperties": ["name", "qualifier"],
+					"classLensDomain": "Library"
+				},
+				"Bibliography": {
+					"@id": "Bibliography-chips",
+					"@type": "fresnel:Lens",
+					"showProperties": ["name", "qualifier"],
+					"classLensDomain": "Bibliography"
 				}
 			}
 		},
