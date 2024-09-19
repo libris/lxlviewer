@@ -8,7 +8,7 @@ import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, SearchResult } from '$lib/types/search.js';
 
-import { DisplayUtil, pickProperty, toString, VocabUtil, asArray } from '$lib/utils/xl.js';
+import { pickProperty, toString, asArray } from '$lib/utils/xl.js';
 import { getImages, toSecure } from '$lib/utils/auxd';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams.js';
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams.js';
@@ -22,9 +22,10 @@ import {
 } from '$lib/utils/holdings.js';
 
 export const load = async ({ params, url, locals, fetch }) => {
-	const displayUtil: DisplayUtil = locals.display;
-	const vocabUtil: VocabUtil = locals.vocab;
+	const displayUtil = locals.display;
+	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
+	const userSettings = locals.userSettings;
 
 	let resourceId: null | string = null;
 	let searchPromise: Promise<SearchResult | null> | null = null;
@@ -78,7 +79,8 @@ export const load = async ({ params, url, locals, fetch }) => {
 		holdersByType,
 		full: overview,
 		images,
-		searchResult: searchPromise ? await searchPromise : null
+		searchResult: searchPromise ? await searchPromise : null,
+		userSettings
 	};
 
 	async function getRelated() {

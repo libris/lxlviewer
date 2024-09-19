@@ -417,7 +417,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Contribution"],
 			"fresnel:propertyFormatDomain": ["role"],
-			"fresnel:propertyStyle": ["secondary", "small"],
+			"fresnel:propertyStyle": ["text-secondary", "text-sm"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",
@@ -671,7 +671,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Collection"],
 			"fresnel:propertyFormatDomain": ["sigel"],
-			"fresnel:propertyStyle": ["secondary", "small"],
+			"fresnel:propertyStyle": ["text-secondary", "text-sm"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",

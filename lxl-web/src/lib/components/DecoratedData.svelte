@@ -264,14 +264,6 @@
 		@apply underline decoration-dotted;
 	}
 
-	.small {
-		@apply text-sm;
-	}
-
-	.secondary {
-		@apply text-secondary;
-	}
-
 	.pill {
 		@apply mb-1 mr-1 inline-block rounded-full bg-pill/8 px-3 py-1 no-underline;
 	}

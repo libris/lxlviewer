@@ -66,7 +66,7 @@ export default {
 		loading: 'Loading...',
 		findFilter: 'Find filter',
 		filters: 'Filters',
-		activeFilters: 'Active filters',
+		activeFilter: 'Active filter',
 		selectedFilters: 'Selected filters',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
@@ -102,7 +102,11 @@ export default {
 		alphaDesc: 'Z-A',
 		publicationAsc: 'Publication year (oldest first)',
 		publicationDesc: 'Publication year (newest first)',
-		linksDesc: 'Most linked'
+		linksDesc: 'Most linked',
+		hitsAsc: 'Hits asc.',
+		hitsDesc: 'Hits desc.',
+		yearAsc: 'Oldest first',
+		yearDesc: 'Newest first'
 	},
 	errors: {
 		somethingWentWrong: 'Something went wrong',
