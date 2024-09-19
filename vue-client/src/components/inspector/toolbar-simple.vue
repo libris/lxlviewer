@@ -38,7 +38,19 @@ export default {
     firstItemActive: {
       type: Boolean,
       default: false,
-    }
+    },
+    hasUnsaved: {
+      type: Boolean,
+      default: false,
+    },
+    hasNext: {
+      type: Boolean,
+      default: false,
+    },
+    hasPrevious: {
+      type: Boolean,
+      default: false,
+    },
   },
   watch: {
     'inspector.status.editing'(state) {
@@ -103,7 +115,6 @@ export default {
       }
     },
     undo() {
-      this.showUndo = false;
       this.$store.dispatch('undoInspectorChange');
     },
     next() {
@@ -114,6 +125,12 @@ export default {
     },
     preview() {
       this.$emit('preview');
+    },
+    nextPreview() {
+      this.$emit('nextPreview');
+    },
+    previousPreview() {
+      this.$emit('previousPreview');
     },
     isSubClassOf(type) {
       return VocabUtil.isSubClassOf(
@@ -168,6 +185,7 @@ export default {
     editing() {
       return this.inspector.status.editing;
     },
+
   },
   components: {
     'field-adder': FieldAdder,
@@ -181,6 +199,22 @@ export default {
 
 <template>
   <div class="Toolbar" id="editor-container">
+    <button
+      class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="firstItemActive"
+      v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
+      @click="previous"
+      :aria-label="translatePhrase('Previous')">
+      <i class="fa fa-arrow-up" aria-hidden="true" />
+    </button>
+    <button
+      class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="lastItemActive"
+      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
+      @click="next"
+      :aria-label="translatePhrase('Next')">
+      <i class="fa fa-arrow-down" aria-hidden="true" />
+    </button>
     <field-adder
       v-if="this.showFieldAdder"
       class="FieldAdder--inToolbar Toolbar-btn"
@@ -196,39 +230,33 @@ export default {
       :disabled="inspector.changeHistory.length === 0 || !this.showUndo"
       v-tooltip.left="`${translatePhrase('Undo')} (${getKeybindText('undo')})`"
       @click="undo"
-      @mouseover="showUndo = true"
-      @mouseout="showUndo = false"
       :aria-label="translatePhrase('Undo')">
       <i class="fa fa-undo" aria-hidden="true" />
     </button>
     <button
       class="Toolbar-btn btn btn-default toolbar-button"
-      :disabled="firstItemActive"
-      v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
-      @click="previous"
-      @mouseover="showUndo = true"
-      @mouseout="showUndo = false"
-      :aria-label="translatePhrase('Previous')">
-      <i class="fa fa-arrow-up" aria-hidden="true" />
-    </button>
-    <button
-      class="Toolbar-btn btn btn-default toolbar-button"
-      :disabled="lastItemActive"
-      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
-      @click="next"
-      @mouseover="showUndo = true"
-      @mouseout="showUndo = false"
-      :aria-label="translatePhrase('Next')">
-      <i class="fa fa-arrow-down" aria-hidden="true" />
-    </button>
-    <button
-      class="Toolbar-btn btn btn-default toolbar-button"
       v-tooltip.left="`${translatePhrase('Förhandsgranska')}`"
       @click="preview"
-      @mouseover="showUndo = true"
-      @mouseout="showUndo = false"
       :aria-label="translatePhrase('Förhandsgranska')">
       <i class="fa fa-eye" aria-hidden="true" />
+    </button>
+    <button
+      v-if="lastItemActive"
+      class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="!hasNext"
+      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
+      @click="nextPreview"
+      :aria-label="translatePhrase('Next')">
+      <i class="fa fa-arrow-right" aria-hidden="true" />
+    </button>
+    <button
+      v-if="lastItemActive"
+      class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="!hasPrevious"
+      v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
+      @click="previousPreview"
+      :aria-label="translatePhrase('Previous')">
+      <i class="fa fa-arrow-left" aria-hidden="true" />
     </button>
     <button
       class="Toolbar-btn btn btn-primary"
@@ -246,9 +274,7 @@ export default {
       class="Toolbar-btn btn btn-primary"
       v-tooltip.left="`${translatePhrase('Markera som redo att köra')}`"
       id="runButton"
-      @click="handleRun"
-      @mouseover="showClarifySave = true"
-      @mouseout="showClarifySave = false">
+      @click="handleRun">
       <i class="fa fa-play" />
     </button>
     <button
@@ -256,9 +282,7 @@ export default {
       class="Toolbar-btn btn btn-primary"
       v-tooltip.left="`${translatePhrase('Markera som utkast')}`"
       id="runButton"
-      @click="cancel"
-      @mouseover="showClarifySave = true"
-      @mouseout="showClarifySave = false">
+      @click="cancel">
       <i class="fa fa-close" />
     </button>
   </div>

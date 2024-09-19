@@ -4,7 +4,7 @@ import TargetFormBuilder from '@/components/care/target-form-builder.vue';
 import Preview from '@/components/care/preview.vue';
 import MassChangesHeader from "@/components/care/mass-changes-header.vue";
 import { mapGetters } from 'vuex';
-import {cloneDeep, get, isEqual} from 'lodash-es';
+import {cloneDeep, get, isEmpty, isEqual} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
 import toolbar from "@/components/inspector/toolbar-simple.vue";
 import {labelByLang, translatePhrase} from "@/utils/filters.js";
@@ -15,6 +15,7 @@ import * as HttpUtil from "@/utils/http.js";
 import * as RecordUtil from "@/utils/record.js";
 import * as LxlDataUtil from "lxljs/data.js";
 import * as HistoryUtil from "@/utils/history.js";
+import {appendIds} from "@/utils/data.js";
 
 export default {
   name: 'mass-changes.vue',
@@ -44,10 +45,13 @@ export default {
       runSpecifications: [],
       currentBulkChange: {},
       currentSpec: {},
+      specCopy: {},
       record: {},
       formPreview: {},
       formPreviewData: {'@type': 'Instance'},
       formPreviewDiff: {},
+      nextPreviewLink: {},
+      previousPreviewLink: {},
       fullPreview: {},
       fullPreviewData: {'@type': 'Instance'},
       fullPreviewDiff: {}
@@ -88,6 +92,15 @@ export default {
     isReady() {
       return this.currentBulkChange.bulkChangeStatus === 'ReadyBulkChange';
     },
+    hasNext() {
+      return !isEmpty(this.nextPreviewLink);
+    },
+    hasPrevious() {
+      return !isEmpty(this.previousPreviewLink);
+    }
+    // hasUnsavedChanges() {
+    //   return !isEqual(this.specCopy, this.currentSpec);
+    // },
   },
   methods: {
     translatePhrase,
@@ -153,6 +166,7 @@ export default {
           const bulkChange = LxlDataUtil.splitJson(result);
           this.currentBulkChange = bulkChange.mainEntity;
           this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
+          this.specCopy = cloneDeep(this.currentSpec);
           this.record = bulkChange.record;
           if (this.isActive('form')) {
             this.setInspectorData(this.currentSpec.matchForm);
@@ -216,7 +230,7 @@ export default {
     focusTargetForm() {
       this.$refs.targetForm.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
     },
-      nextStep() {
+    nextStep() {
       this.setActive(this.steps[this.steps.indexOf(this.activeStep) + 1]);
     },
     previousStep() {
@@ -246,7 +260,9 @@ export default {
       const limit = 1;
       const testBase = "http://localhost:8180";
       const fetchUrl = `${testBase}/_bulk-change/preview?@id=${baseUri}/${this.documentId}&_limit=${limit}&_offset=${offset}`;
-
+      this.getPreviewFromUrl(fetchUrl);
+    },
+    getPreviewFromUrl(fetchUrl) {
       fetch(fetchUrl).then((response) => response.json()).then((result) => {
         // const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
         // DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
@@ -267,6 +283,8 @@ export default {
         this.formPreviewDiff.modified = formDisplayPaths.modified.map(path => `mainEntity.${path}`);
 
         // Full record preview
+        this.nextPreviewLink = result.next;
+        this.previousPreviewLink = result.prev;
         //TODO: Save data and delegate calculation to components?
         let before = result.items[0].changeSets[0].version;
         let after = result.items[0].changeSets[1].version;
@@ -293,6 +311,12 @@ export default {
     },
     setAsDraft() {
       this.setRunStatus('DraftBulkChange');
+    },
+    nextPreview() {
+      this.getPreviewFromUrl(`http://localhost:8180${this.nextPreviewLink['@id']}`);
+    },
+    previousPreview() {
+      this.getPreviewFromUrl(`http://localhost:8180${this.previousPreviewLink['@id']}`);
     },
     setRunStatus(status) {
       this.currentBulkChange.bulkChangeStatus = status;
@@ -507,10 +531,12 @@ export default {
         />
       </div>
       <div>
+        <!--
         SPECIFICATION
         <pre>{{this.currentBulkChange}}</pre>
         ENTITY FORM
         <pre>{{ this.dataObj }}</pre>
+        -->
 <!--        RECORD-->
 <!--        <pre>{{ this.record }}</pre>-->
       </div>
@@ -526,8 +552,12 @@ export default {
           :is-set-to-ready="isReady"
           :last-item-active="isActive('preview')"
           :first-item-active="isActive('form')"
+          :has-next="hasNext"
+          :has-previous="hasPrevious"
           @next="nextStep"
           @previous="previousStep"
+          @nextPreview="nextPreview"
+          @previousPreview="previousPreview"
           @preview="getPreview"
           @save="save"
           @run="run"

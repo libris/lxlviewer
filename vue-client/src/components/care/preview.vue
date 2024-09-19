@@ -4,6 +4,7 @@ import { mapGetters } from 'vuex';
 import {isEmpty} from 'lodash-es';
 import ItemEntity from "@/components/inspector/item-entity.vue";
 import EntitySummary from "@/components/shared/entity-summary.vue";
+import {asFnurgelLink} from "@/utils/filters.js";
 
 export default {
   name: 'preview',
@@ -54,6 +55,12 @@ export default {
     onActive() {
       this.$emit('onActive');
     },
+    prev() {
+      this.$emit('prevPreviewItem');
+    },
+    next() {
+      this.$emit('nextPreviewItem');
+    },
   },
   watch: {
     isActive(newValue, oldValue) {
@@ -75,10 +82,12 @@ export default {
     </div>
     <div class="Preview-body" :class="{ 'has-selection': isActive }">
       <div class="Preview-preview" v-if="hasPreviewData">
+        <div class="Preview-preview-heading">
         <entity-summary
           :focus-data="previewData"
           :should-link="false"
           :exclude-components="['details']" />
+        </div>
         <entity-form
           :editing-object="'mainEntity'"
           :key="formTab.id"
@@ -122,10 +131,10 @@ export default {
   }
 
   &-preview {
-    padding-top: 5px;
     padding-bottom: 10px;
-    &.heading {
-      padding-bottom: 10px;
+    &-heading {
+      border-bottom: solid 2px @grey-lighter;
+      margin-bottom: 20px;
     }
   }
 
