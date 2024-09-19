@@ -57,7 +57,10 @@ export default {
 		nationality: 'Nationalitet/verksamhetsland',
 		hasOccupation: 'Har yrke eller sysselsättning',
 		fieldOfActivity: 'Verksamhetsområde',
-		boolFilters: 'Övrigt'
+		boolFilters: 'Övrigt',
+		limitInfo: 'Alla val kan ej visas',
+		limitText:
+			'Listan visar ett begränsat antal alternativ, de mest förekommande kopplade till din sökning. Prova att avgränsa din sökning för att få andra, mer relevanta alternativ.'
 	},
 	search: {
 		search: 'Sök',

@@ -66,7 +66,7 @@
 						{/if}
 					</span>
 					<!-- This could be based on if attribution required by license.
-						 For now, display if there is any attribution info available -->
+						For now, display if there is any attribution info available -->
 					{#if geometry === 'circle'}
 						{$page.data.t('general.cropped')}
 					{/if}
