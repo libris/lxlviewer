@@ -51,6 +51,8 @@ export default {
       formPreviewDiff: {},
       nextPreviewLink: {},
       previousPreviewLink: {},
+      totalItems: {},
+      itemOffset: '',
       fullPreview: {},
       fullPreviewData: {'@type': 'Instance'},
       fullPreviewDiff: {}
@@ -284,6 +286,9 @@ export default {
         // Full record preview
         this.nextPreviewLink = result.next;
         this.previousPreviewLink = result.prev;
+        this.totalItems = result.totalItems;
+        this.itemOffset = result.itemOffset;
+
         //TODO: Save data and delegate calculation to components?
         let before = result.items[0].changeSets[0].version;
         let after = result.items[0].changeSets[1].version;
@@ -496,6 +501,7 @@ export default {
         :currentBulkChange="this.currentBulkChange"
         :documentId="this.documentId"
         :is-new="this.isNew"
+        :noAffected="this.totalItems"
       />
       <div ref="matchForm">
         <form-builder
@@ -527,6 +533,8 @@ export default {
           :form-data="fullPreview"
           :preview-data="fullPreviewData"
           :preview-diff="fullPreviewDiff"
+          :offset="itemOffset"
+          :no-affected="this.totalItems"
           @onActive="focusPreview"
         />
       </div>

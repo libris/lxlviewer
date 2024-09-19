@@ -4,7 +4,8 @@ import { mapGetters } from 'vuex';
 import {isEmpty} from 'lodash-es';
 import ItemEntity from "@/components/inspector/item-entity.vue";
 import EntitySummary from "@/components/shared/entity-summary.vue";
-import {asFnurgelLink} from "@/utils/filters.js";
+import {asFnurgelLink, translatePhrase} from "@/utils/filters.js";
+import {offset} from "@floating-ui/dom";
 
 export default {
   name: 'preview',
@@ -32,6 +33,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    noAffected: {
+      type: String,
+      default: '',
+    },
+    offset: {
+      type: String,
+      default: '',
+    }
   },
   computed: {
     ...mapGetters([
@@ -49,6 +58,7 @@ export default {
   },
   emits: ['onInactive', 'onActive'],
   methods: {
+    translatePhrase,
     onInactive() {
       this.$emit('onInactive');
     },
@@ -82,6 +92,7 @@ export default {
     </div>
     <div class="Preview-body" :class="{ 'has-selection': isActive }">
       <div class="Preview-preview" v-if="hasPreviewData">
+        <span class="Preview-affected Breadcrumb-recordNumbers">{{ offset + 1 }} {{ translatePhrase('of') }} {{ noAffected }}</span>
         <div class="Preview-preview-heading">
         <entity-summary
           :focus-data="previewData"
@@ -132,10 +143,18 @@ export default {
 
   &-preview {
     padding-bottom: 10px;
+
     &-heading {
-      border-bottom: solid 2px @grey-lighter;
+      padding-top: 5px;
+      margin-top: 10px;
+      border-bottom: solid 1px @grey-lighter;
+      border-top: solid 1px @grey-lighter;
       margin-bottom: 20px;
     }
+  }
+
+  &-affected {
+    padding-left: 12px;
   }
 
 }

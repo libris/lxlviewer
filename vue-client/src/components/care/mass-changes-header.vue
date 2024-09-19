@@ -17,6 +17,7 @@ export default {
     currentBulkChange: {},
     documentId: '',
     isNew: false,
+    noAffected: '',
   },
   computed: {
     ...mapGetters([
@@ -32,6 +33,9 @@ export default {
     status() {
       return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeStatus, this.user.settings.language, this.resources);
     },
+    noAffectedLabel() {
+      return `${this.noAffected} påverkade poster`
+    }
   },
   methods: {
     translatePhrase,
@@ -70,6 +74,9 @@ export default {
       {{this.name}}
     </span>
   <span class="badge badge-accent2">{{ this.status }}</span>
+<!--  <span class="MassChanges-noItems badge badge-accent-2"-->
+<!--    v-if="this.noAffected"> {{this.noAffectedLabel}}-->
+<!--  </span>-->
   </h1>
     <span class="MassChanges-id">
       <id-pill
@@ -105,6 +112,9 @@ export default {
   &-id {
     margin-left: auto;
     text-align:right;
+  }
+  &-noItems {
+    margin-left: 5px;
   }
 }
 </style>
