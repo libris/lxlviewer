@@ -169,6 +169,7 @@ function displayFacetGroups(
 		return {
 			label: translate(`facet.${g.alias || g.dimension}`),
 			dimension: g.dimension,
+			maxItems: g.maxItems,
 			...('search' in g && { search: g.search }),
 			facets: g.observation.map((o) => {
 				return {

@@ -3,7 +3,7 @@
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import type { FacetGroup, Facet, MultiSelectFacet } from '$lib/types/search';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import { DEFAULT_FACET_SORT, DEFAULT_FACETS_SHOWN, FACET_LIMITS } from '$lib/constants/facets';
+	import { DEFAULT_FACET_SORT, DEFAULT_FACETS_SHOWN } from '$lib/constants/facets';
 	import { saveUserSetting } from '$lib/utils/userSettings';
 	import { popover } from '$lib/actions/popover';
 	import FacetRange from './FacetRange.svelte';
@@ -19,8 +19,7 @@
 	export let searchPhrase = '';
 
 	let facetsShown = DEFAULT_FACETS_SHOWN;
-	const facetLimit: number | undefined =
-		FACET_LIMITS[group.dimension as keyof typeof FACET_LIMITS]?.itemLimit;
+	const maxFacets = group.maxItems;
 
 	const userSort = $page.data.userSettings?.facetSort?.[group.dimension];
 	let currentSort = userSort || DEFAULT_FACET_SORT;
@@ -70,7 +69,7 @@
 	$: shownFacets = filteredFacets.filter((facet, index) => index < facetsShown);
 	$: canShowMoreFacets = filteredFacets.length > facetsShown;
 	$: canShowLessFacets = !canShowMoreFacets && filteredFacets.length > DEFAULT_FACETS_SHOWN;
-	$: facetLimitReached = numFacets === facetLimit;
+	$: maxFacetsReached = numFacets === maxFacets;
 </script>
 
 <li
@@ -165,7 +164,7 @@
 					</button>
 				{/if}
 				<!-- limit reached info -->
-				{#if facetLimitReached && canShowLessFacets && !searchPhrase}
+				{#if maxFacetsReached && canShowLessFacets}
 					<div
 						role="alert"
 						aria-live="polite"

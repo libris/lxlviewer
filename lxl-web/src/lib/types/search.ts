@@ -42,6 +42,7 @@ export interface FacetGroup {
 	label: string;
 	dimension: FacetGroupId;
 	search?: FacetSearch;
+	maxItems?: number;
 	// TODO better to do this distinction on the group level?
 	facets: (Facet | MultiSelectFacet)[];
 }
@@ -102,6 +103,7 @@ interface Slice {
 	dimension: FacetGroupId;
 	observation: Observation[];
 	search?: FacetSearch;
+	maxItems: number;
 }
 
 interface Observation {
