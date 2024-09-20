@@ -17,7 +17,7 @@
 
 <script lang="ts">
 	import { onMount, type SvelteComponent } from 'svelte';
-	import { defaultKeymap, historyKeymap, history } from '@codemirror/commands';
+	import { defaultKeymap, historyKeymap, history, undo, redo } from '@codemirror/commands';
 	import {
 		drawSelection,
 		keymap,
@@ -92,14 +92,20 @@
 	]);
 
 	const updateHandler = EditorView.updateListener.of(function (e) {
-		if (e.docChanged) {
-			if (isViewUpdateFromUserInput(e)) {
-				syncedCodeMirrorComponent?.getEditorView().dispatch({ changes: e.changes });
-			}
+		const userEvent = isViewUpdateFromUserInput(e);
 
+		if (userEvent) {
+			syncedCodeMirrorComponent
+				?.getEditorView()
+				.dispatch({ changes: e.changes, selection: e.state.selection });
+		}
+
+		if (e.docChanged) {
 			onchange({
 				value: e.state.doc.toString(),
-				cursor: e.state.selection.main.head
+				cursor: userEvent
+					? e.state.selection
+					: syncedCodeMirrorComponent?.getEditorView().state.selection.main.head
 			});
 		}
 	});
@@ -112,8 +118,12 @@
 			...defaultKeymap,
 			...(follows
 				? [
-						// { key: 'Mod-z', run: () => undo(externalEditorState) }, // bind history-related keys to perform undo/redo in the external editor state
-						// { key: 'Mod-y', mac: 'Mod-Shift-z', run: () => redo(externalEditorState) }
+						{ key: 'Mod-z', run: () => undo(syncedCodeMirrorComponent?.getEditorView()) }, // bind history-related keys to perform undo/redo in the external editor state
+						{
+							key: 'Mod-y',
+							mac: 'Mod-Shift-z',
+							run: () => redo(syncedCodeMirrorComponent?.getEditorView())
+						}
 					]
 				: historyKeymap)
 		]),

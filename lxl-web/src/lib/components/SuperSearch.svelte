@@ -148,7 +148,10 @@
 	}
 
 	async function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		console.log('handleChangeCode', event);
+		if (event.value !== value) {
+			value = event.value;
+		}
+
 		findAutocompleteItems({ value: event.value, cursor: event.cursor });
 		if (!dialogElement?.open) {
 			await tick(); // await tick to prevent error when selection points outside of document (when typing at the end of the document)
