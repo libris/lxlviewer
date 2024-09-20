@@ -97,8 +97,8 @@
 						workItems = works.items;
 
 						dropdownCodeMirror?.updateValidatedQualifiers();
-					} catch (error) {
-						console.error('something went wrong?', error);
+					} catch (err) {
+						console.error('something went wrong?', err);
 					}
 				}
 			} else {
@@ -149,7 +149,6 @@
 
 	async function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
 		console.log('handleChangeCode', event);
-		value = event.value; // this should be removed if binded?
 		findAutocompleteItems({ value: event.value, cursor: event.cursor });
 		if (!dialogElement?.open) {
 			await tick(); // await tick to prevent error when selection points outside of document (when typing at the end of the document)
@@ -179,10 +178,9 @@
 	<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
 		<div class="collapsed">
 			<CodeMirror
-				{value}
+				bind:value
 				bind:this={collapsedCodeMirror}
 				syncedCodeMirrorComponent={dropdownCodeMirror}
-				leads={true}
 				{placeholder}
 				{validQualifiers}
 				extensions={[submitClosestFormOnEnter]}

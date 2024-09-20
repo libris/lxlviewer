@@ -28,8 +28,6 @@
 		EditorSelection,
 		EditorState,
 		StateEffect,
-		Transaction,
-		Annotation,
 		type Text,
 		type Extension
 	} from '@codemirror/state';
@@ -43,6 +41,7 @@
 	import qualifierLinter from '$lib/utils/codemirror/extensions/qualifierLinter';
 	import getEditedRange from '$lib/utils/codemirror/getEditedRange';
 	import getMainSelectionUtil from '$lib/utils/codemirror/getMainSelection';
+	import isViewUpdateFromUserInput from '$lib/utils/codemirror/isViewUpdateFromUserInput';
 	import qualifierWidgets from '$lib/utils/codemirror/extensions/qualifierWidgets';
 	import type { Qualifiers } from '$lib/types/qualifier';
 
@@ -60,7 +59,6 @@
 		tabindex?: string | number;
 		syncedCodeMirrorComponent?: SvelteComponent;
 		follows?: boolean;
-		leads?: boolean;
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		onclick?: (event: MouseEvent) => void;
 	};
@@ -73,7 +71,6 @@
 		readonly = false,
 		tabindex,
 		syncedCodeMirrorComponent,
-		leads,
 		follows = false,
 		onchange = () => {},
 		onclick = () => {}
@@ -96,8 +93,10 @@
 
 	const updateHandler = EditorView.updateListener.of(function (e) {
 		if (e.docChanged) {
-			// value = e.state.doc.toString();
-			// prevValue = value;
+			if (isViewUpdateFromUserInput(e)) {
+				syncedCodeMirrorComponent?.getEditorView().dispatch({ changes: e.changes });
+			}
+
 			onchange({
 				value: e.state.doc.toString(),
 				cursor: e.state.selection.main.head
@@ -144,22 +143,6 @@
 			doc,
 			extensions: editorExtensions
 		});
-	}
-
-	let syncAnnotation = Annotation.define<boolean>();
-
-	function syncDispatch(tr: Transaction) {
-		editor!.update([tr]);
-		if (!tr.changes.empty && !tr.annotation(syncAnnotation)) {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			let annotations: Annotation<any>[] = [syncAnnotation.of(true)];
-			let userEvent = tr.annotation(Transaction.userEvent);
-			if (userEvent) annotations.push(Transaction.userEvent.of(userEvent));
-			if (follows) {
-				// is follows needed?
-				syncedCodeMirrorComponent?.getEditorView().dispatch({ changes: tr.changes, annotations });
-			}
-		}
 	}
 
 	export function updateValidatedQualifiers() {
@@ -215,8 +198,7 @@
 	onMount(() => {
 		editor = new EditorView({
 			state: createEditorState(initialValue),
-			parent: codemirrorContainerElement,
-			...((leads || follows) && { dispatch: (tr) => syncDispatch(tr) })
+			parent: codemirrorContainerElement
 		});
 	});
 
