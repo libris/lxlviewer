@@ -8,3 +8,10 @@ export type AutocompleteItem = {
 	typeLabel: string;
 	totalReverseLinks: number;
 };
+
+export type AutocompleteResponse = {
+	items: AutocompleteItem[];
+	totalItems: number;
+	itemOffset: number;
+	itemsPerPage: number;
+};

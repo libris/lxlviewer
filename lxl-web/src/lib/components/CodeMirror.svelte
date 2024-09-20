@@ -28,8 +28,8 @@
 		EditorSelection,
 		EditorState,
 		StateEffect,
-		// Transaction,
-		// Annotation,
+		Transaction,
+		Annotation,
 		type Text,
 		type Extension
 	} from '@codemirror/state';
@@ -58,11 +58,9 @@
 		extensions?: Extension[];
 		readonly?: boolean;
 		tabindex?: string | number;
-		editor?: EditorView;
 		syncedCodeMirrorComponent?: SvelteComponent;
 		follows?: boolean;
 		leads?: boolean;
-		editorState?: EditorState;
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		onclick?: (event: MouseEvent) => void;
 	};
@@ -74,20 +72,20 @@
 		validQualifiers,
 		readonly = false,
 		tabindex,
-		editor = $bindable(),
 		syncedCodeMirrorComponent,
 		leads,
 		follows = false,
-		editorState = $bindable(),
 		onchange = () => {},
 		onclick = () => {}
 	}: CodeMirrorProps = $props();
 
+	let editor: EditorView | undefined = $state();
 	let codemirrorContainerElement: HTMLDivElement | undefined = $state();
-	let prevValue: string = $state(value);
+	// let prevValue: string = $state(value);
 	let prevExtensions: Extension[] = extensions;
 	let prevReadOnly = $state(readonly);
-	let mounted = $state(false);
+
+	const initialValue = value;
 
 	const lxlQueryHighlightStyle = HighlightStyle.define([
 		{ tag: tags.string, color: '#0e8043' },
@@ -98,10 +96,10 @@
 
 	const updateHandler = EditorView.updateListener.of(function (e) {
 		if (e.docChanged) {
-			value = e.state.doc.toString();
-			prevValue = value;
+			// value = e.state.doc.toString();
+			// prevValue = value;
 			onchange({
-				value,
+				value: e.state.doc.toString(),
 				cursor: e.state.selection.main.head
 			});
 		}
@@ -141,40 +139,28 @@
 		...extensions
 	]);
 
-	function createEditor(doc: string | Text) {
-		const syncedEditorView = syncedCodeMirrorComponent?.getEditorView();
-		console.log('syncedEditorView in createEditor', syncedEditorView); // TODO: MAIN ALSO NEEDS SYNCED EDITOR VIEW
-		const editorView = new EditorView({
-			state: createEditorState(doc),
-			parent: codemirrorContainerElement
-			// dispatch: tr => syncDispatch(tr, mainView, otherView) or dispatch: tr => syncDispatch(tr, otherView, mainView) depending on if follows
-		});
-		mounted = true;
-		return editorView;
-	}
-
 	function createEditorState(doc: string | Text) {
-		const state = EditorState.create({
+		return EditorState.create({
 			doc,
 			extensions: editorExtensions
 		});
-		editorState = state;
-		return state;
 	}
 
-	/*
 	let syncAnnotation = Annotation.define<boolean>();
 
-	function syncDispatch(tr: Transaction, view: EditorView, other: EditorView) {
-		view.update([tr]);
+	function syncDispatch(tr: Transaction) {
+		editor!.update([tr]);
 		if (!tr.changes.empty && !tr.annotation(syncAnnotation)) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			let annotations: Annotation<any>[] = [syncAnnotation.of(true)];
 			let userEvent = tr.annotation(Transaction.userEvent);
 			if (userEvent) annotations.push(Transaction.userEvent.of(userEvent));
-			other.dispatch({ changes: tr.changes, annotations });
+			if (follows) {
+				// is follows needed?
+				syncedCodeMirrorComponent?.getEditorView().dispatch({ changes: tr.changes, annotations });
+			}
 		}
 	}
-	*/
 
 	export function updateValidatedQualifiers() {
 		console.log('updateValidatedQualifiers reconfigure now');
@@ -226,40 +212,19 @@
 		return editor;
 	}
 
-	export function getEditorState() {
-		return editor?.state;
-	}
-
 	onMount(() => {
-		/** Create editor from value if not following external editor */
-		if (!follows && !leads) {
-			console.log('create main editor in on mount');
-			editor = createEditor(value);
-		}
+		editor = new EditorView({
+			state: createEditorState(initialValue),
+			parent: codemirrorContainerElement,
+			...((leads || follows) && { dispatch: (tr) => syncDispatch(tr) })
+		});
 	});
 
+	/**	
+	 * Replace the entire editor state if value is changed from outside (using props).
+	 * We should use transactions where possible but then we need to know where to insert the changes (e.g. changes: { from: 0, to: XX, insert: 'hej'}`)
 	$effect(() => {
-		/** Use effect if editors should be synceds */
-		if (!mounted) {
-			if (follows) {
-				const syncedEditorState = syncedCodeMirrorComponent?.getEditorState();
-				console.log(
-					'create following editor in effect with synced value:',
-					syncedEditorState.doc.toString()
-				);
-				editor = createEditor(syncedEditorState.doc.toString());
-			} else {
-				console.log('create main editor in effect');
-				editor = createEditor(value);
-			}
-		}
-	});
 
-	$effect(() => {
-		/**
-		 * Replace the entire editor state if value is changed from outside (using props).
-		 * We should use transactions where possible but then we need to know where to insert the changes (e.g. changes: { from: 0, to: XX, insert: 'hej'}`)
-		 */
 		if (value !== prevValue) {
 			console.log('create new state as value has changed');
 			editor?.setState(createEditorState(value));
@@ -267,6 +232,7 @@
 			// Should the cursor be placed one step before where the first diff between value and prev value occurs?
 		}
 	});
+	*/
 
 	$effect(() => {
 		if (readonly !== prevReadOnly) {

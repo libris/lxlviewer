@@ -36,7 +36,6 @@
 	let qualifierItems: AutocompleteItem[] = $state([]);
 	let workItems: AutocompleteItem[] = $state([]);
 
-	let superSearchContainerElement: HTMLDivElement | undefined = $state();
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
 	let dropdownCodeMirror: CodeMirror | undefined = $state();
 	let dialogElement: HTMLDialogElement | undefined = $state();
@@ -150,7 +149,7 @@
 
 	async function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
 		console.log('handleChangeCode', event);
-		value = event.value;
+		value = event.value; // this should be removed if binded?
 		findAutocompleteItems({ value: event.value, cursor: event.cursor });
 		if (!dialogElement?.open) {
 			await tick(); // await tick to prevent error when selection points outside of document (when typing at the end of the document)
@@ -176,11 +175,11 @@
 	});
 </script>
 
-<div class="super-search" bind:this={superSearchContainerElement}>
+<div class="super-search">
 	<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
 		<div class="collapsed">
 			<CodeMirror
-				bind:value
+				{value}
 				bind:this={collapsedCodeMirror}
 				syncedCodeMirrorComponent={dropdownCodeMirror}
 				leads={true}
@@ -199,6 +198,7 @@
 				<div class="dropdown-search">
 					<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
 						<CodeMirror
+							{value}
 							bind:this={dropdownCodeMirror}
 							syncedCodeMirrorComponent={collapsedCodeMirror}
 							follows={true}
