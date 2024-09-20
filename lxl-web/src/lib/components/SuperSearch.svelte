@@ -45,7 +45,7 @@
 			if (value.trim()) {
 				if (value !== lastValue) {
 					lastValue = value;
-					/** TODO: add request cancellation if query changes before fetch has finished */
+					/** TODO: add request cancellation if query changes before fetch has finished (or if component is destroyed) */
 
 					try {
 						const { word, phrase } = getEditedParts({
