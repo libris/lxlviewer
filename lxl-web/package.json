@@ -26,8 +26,11 @@
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.9.1",
+		"@codemirror/commands": "^6.6.2",
+		"@codemirror/language": "^6.10.3",
+		"@codemirror/lint": "^6.8.1",
 		"@codemirror/state": "^6.4.1",
-		"@codemirror/view": "^6.32.0",
+		"@codemirror/view": "^6.33.0",
 		"@floating-ui/dom": "^1.6.5",
 		"@iconify-json/bi": "^1.1.23",
 		"@iconify-json/mdi": "^1.2.0",
@@ -39,6 +42,7 @@
 		"@types/eslint": "^8.56.10",
 		"@types/jmespath": "^0.15.2",
 		"autoprefixer": "^10.4.19",
+		"codemirror": "^6.0.1",
 		"codemirror-lang-lxlquery": "file:../codemirror-lang-lxlquery",
 		"cssnano": "^7.0.2",
 		"eslint": "^9.4.0",
@@ -70,7 +74,6 @@
 	},
 	"dependencies": {
 		"@inlang/paraglide-sveltekit": "0.11.0",
-		"codemirror": "^6.0.1",
 		"dotenv": "^16.4.5"
 	}
 }
