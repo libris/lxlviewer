@@ -42,72 +42,70 @@
 
 	const findAutocompleteItems = debounce(
 		async ({ value, cursor }: { value: string; cursor: number }) => {
-			if (value.trim()) {
-				if (value !== lastValue) {
-					lastValue = value;
-					/** TODO: add request cancellation if query changes before fetch has finished (or if component is destroyed) */
+			/** TODO: add request cancellation if query changes before fetch has finished (or if component is destroyed) */
 
-					try {
-						const { word, phrase } = getEditedParts({
-							value,
-							cursor
-						});
+			try {
+				const { word, phrase } = getEditedParts({
+					value,
+					cursor
+				});
 
-						const qualifiersRes = await fetch(
-							`/api/${languageTag()}/autocomplete?${new URLSearchParams([
-								['full', value],
-								['word', word], // should we skip word if it is equal to full?
-								['phrase', phrase || ''], // ditto, should we skip phrase if it is equal to full?
-								['@type', 'Agent'],
-								['@type', 'Concept'],
-								['@type', 'Language'],
-								['not-@type', 'ComplexSubject'], // Should it be "unboosted" instead?
-								['not-inScheme.@id', 'https://id.kb.se/term/swepub'],
-								['not-inScheme.@id', 'https://id.kb.se/marc'],
-								['min-reverseLinks.totalItems', '1'],
-								['_limit', '4'],
-								['_offset', '0'],
-								['_sort', '']
-							])}`
-						);
-						if (!qualifiersRes.ok) {
-							throw { status: qualifiersRes.status, statusText: qualifiersRes.statusText };
-						}
+				const qualifiersRes = await fetch(
+					`/api/${languageTag()}/autocomplete?${new URLSearchParams([
+						['full', value],
+						['word', word], // should we skip word if it is equal to full?
+						['phrase', phrase || ''], // ditto, should we skip phrase if it is equal to full?
+						['@type', 'Agent'],
+						['@type', 'Concept'],
+						['@type', 'Language'],
+						['not-@type', 'ComplexSubject'], // Should it be "unboosted" instead?
+						['not-inScheme.@id', 'https://id.kb.se/term/swepub'],
+						['not-inScheme.@id', 'https://id.kb.se/marc'],
+						['min-reverseLinks.totalItems', '1'],
+						['_limit', '4'],
+						['_offset', '0'],
+						['_sort', '']
+					])}`
+				);
 
-						const worksRes = await fetch(
-							`/api/${languageTag()}/autocomplete?${new URLSearchParams([
-								['full', value],
-								['overview', 'true'],
-								['not-inCollection.@id', 'https://id.kb.se/term/uniformWorkTitle'],
-								['@type', 'Work'],
-								['_limit', '4'],
-								['_offset', '0'],
-								['_sort', '']
-							])}`
-						);
-
-						if (!worksRes.ok) {
-							throw { status: worksRes.status, statusText: worksRes.statusText };
-						}
-
-						const qualifiers = (await qualifiersRes.json()) as AutocompleteResponse;
-						const works = (await worksRes.json()) as AutocompleteResponse;
-
-						qualifierItems = qualifiers.items;
-						workItems = works.items;
-
-						dropdownCodeMirror?.updateValidatedQualifiers();
-					} catch (err) {
-						console.error('something went wrong?', err);
-					}
+				if (!qualifiersRes.ok) {
+					throw { status: qualifiersRes.status, statusText: qualifiersRes.statusText };
 				}
-			} else {
-				qualifierItems = [];
-				workItems = [];
+
+				const worksRes = await fetch(
+					`/api/${languageTag()}/autocomplete?${new URLSearchParams([
+						['full', value],
+						['overview', 'true'],
+						['not-inCollection.@id', 'https://id.kb.se/term/uniformWorkTitle'],
+						['@type', 'Work'],
+						['_limit', '4'],
+						['_offset', '0'],
+						['_sort', '']
+					])}`
+				);
+
+				if (!worksRes.ok) {
+					throw { status: worksRes.status, statusText: worksRes.statusText };
+				}
+
+				const qualifiers = (await qualifiersRes.json()) as AutocompleteResponse;
+				const works = (await worksRes.json()) as AutocompleteResponse;
+
+				qualifierItems = qualifiers.items;
+				workItems = works.items;
+
+				dropdownCodeMirror?.updateValidatedQualifiers();
+			} catch (err) {
+				console.error('something went wrong?', err);
 			}
 		},
 		250
 	);
+
+	function clearAutocompleteItems() {
+		qualifierItems = [];
+		workItems = [];
+	}
 
 	function showDropdown() {
 		if (!dialogElement?.open) {
@@ -148,11 +146,18 @@
 	}
 
 	async function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		if (event.value !== value) {
-			value = event.value;
+		value = event.value;
+		const trimmedValue = value.trim();
+
+		if (trimmedValue !== lastValue) {
+			lastValue = trimmedValue;
+			if (trimmedValue) {
+				findAutocompleteItems({ value: trimmedValue, cursor: event.cursor });
+			} else {
+				clearAutocompleteItems();
+			}
 		}
 
-		findAutocompleteItems({ value: event.value, cursor: event.cursor });
 		if (!dialogElement?.open) {
 			await tick(); // await tick to prevent error when selection points outside of document (when typing at the end of the document)
 			showDropdown();
