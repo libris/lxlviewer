@@ -23,12 +23,17 @@ export const popover: Action<
 	{
 		title?: string;
 		resource?: { id: string; lang: LocaleCode } | { data: ResourceData[] };
+		placeAsSibling?: boolean; // place popover next to node in the DOM (to force it on top of modal, for example)
 	}
-> = (node: HTMLElement, { title = undefined, resource = undefined }) => {
+> = (node: HTMLElement, { title = undefined, resource = undefined, placeAsSibling = false }) => {
 	const FETCH_DELAY = 250;
 	const ATTACH_DELAY = 500;
 	const REMOVE_DELAY = 200;
-	const container = document.getElementById('floating-elements-container') || document.body; // See https://atfzl.com/articles/don-t-attach-tooltips-to-document-body
+	let container = document.getElementById('floating-elements-container') || document.body; // See https://atfzl.com/articles/don-t-attach-tooltips-to-document-body
+
+	if (placeAsSibling && node.parentElement) {
+		container = node.parentElement;
+	}
 
 	let attached = false;
 	let floatingElement: Popover | null = null;

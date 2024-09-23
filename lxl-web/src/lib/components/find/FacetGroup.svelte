@@ -165,14 +165,17 @@
 				{/if}
 				<!-- limit reached info -->
 				{#if maxFacetsReached && canShowLessFacets}
-					<div
-						role="alert"
-						aria-live="polite"
-						class="ml-auto mt-4 flex gap-1 rounded-sm bg-pill/4 px-2 py-1 text-error"
-						use:popover={{ title: $page.data.t('facet.limitText') }}
-					>
-						<p class="text-xs">{$page.data.t('facet.limitInfo')}</p>
-						<BiInfo />
+					<div class="ml-auto mt-4 flex gap-1 rounded-sm bg-pill/4 px-2 py-1">
+						<p role="status" class="text-xs text-error">{$page.data.t('facet.limitInfo')}</p>
+						<button
+							aria-label={$page.data.t('facet.limitInfo')}
+							use:popover={{
+								title: $page.data.t('facet.limitText'),
+								placeAsSibling: true
+							}}
+						>
+							<BiInfo aria-hidden="true" class="text-error" />
+						</button>
 					</div>
 				{/if}
 			</div>

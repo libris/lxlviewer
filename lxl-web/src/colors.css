@@ -11,7 +11,7 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--color-beige: 247 246 242;
 	--color-pink: 239 214 189;
 	--color-dark-beige: 240 238 233;
-	--color-red: 202 85 85;
+	--color-red: 187 54 54;
 
 	/* Fundament */
 	--color-primary: var(--color-brown);
