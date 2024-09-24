@@ -21,6 +21,7 @@ export default {
     compact: { type: Boolean, default: false },
     forceLoad: { type: Boolean, default: false }, // FIXME: on-record-loaded didn't work in item-entity
     mode: { type: String, default: 'default' }, // "default" or "items"
+    showLabel: { type: Boolean, default: true },
   },
   data() {
     return {
@@ -214,9 +215,11 @@ export default {
 <template>
   <div class="ReverseRelations-container">
     <div class="ReverseRelations" v-if="recordType !== 'Item'">
-      <div class="ReverseRelations-header uppercaseHeading--light">
-        <span v-if="mode === 'items'">{{ translatePhrase("Holding") }}</span>
-        <span v-else>{{ translatePhrase("Used in") }}</span>
+      <div v-if="showLabel">
+        <div class="ReverseRelations-header uppercaseHeading--light">
+            <span v-if="mode === 'items'">{{ translatePhrase("Holding") }}</span>
+            <span v-else>{{ translatePhrase("Used in") }}</span>
+        </div>
       </div>
       <div class="ReverseRelations-btnContainer">
         <Spinner v-if="checkingRelations" size="sm" />

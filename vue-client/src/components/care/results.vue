@@ -72,12 +72,7 @@ export default {
         <div>{{ translatePhrase('Results are shown when bulk change has status')}} </div>
         <div>&nbsp<span class="badge badge-accent2">{{ completedLabel }}</span>.</div>
       </div>
-      <div class="Results-padding" v-if="completed">
-        <reverse-relations
-          :main-entity="data"
-          :compact="true"
-          :force-load="true"/>
-      </div>
+
     </div>
   </div>
 </template>

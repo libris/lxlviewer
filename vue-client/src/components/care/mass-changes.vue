@@ -16,10 +16,11 @@ import * as HttpUtil from "@/utils/http.js";
 import * as RecordUtil from "@/utils/record.js";
 import * as LxlDataUtil from "lxljs/data.js";
 import * as HistoryUtil from "@/utils/history.js";
+import ReverseRelations from "../inspector/reverse-relations.vue";
 
 export default {
   name: 'mass-changes.vue',
-  components: { Inspector, toolbar, FormBuilder, TargetFormBuilder, Preview, MassChangesHeader, Results },
+  components: {ReverseRelations, Inspector, toolbar, FormBuilder, TargetFormBuilder, Preview, MassChangesHeader, Results },
   props: {
     fnurgel: ''
   },
@@ -41,7 +42,6 @@ export default {
         'form',
         'targetForm',
         'preview',
-        'results'
       ],
       runSpecifications: [],
       currentBulkChange: {},
@@ -92,12 +92,6 @@ export default {
     previewTitle() {
       return `${this.steps.indexOf('preview') + 1}. ${translatePhrase('Preview')}`
     },
-    resultsTitle() {
-      return `${this.steps.indexOf('results') + 1}. ${translatePhrase('Results')}`
-    },
-    isReady() {
-      return this.currentBulkChange.bulkChangeStatus === 'ReadyBulkChange';
-    },
     hasNext() {
       return !isEmpty(this.nextPreviewLink);
     },
@@ -110,8 +104,17 @@ export default {
     isFirstActive() {
       return this.activeStep === this.steps[0];
     },
+    isDraft() {
+      return this.currentBulkChange.bulkChangeStatus === 'DraftBulkChange';
+    },
+    isReady() {
+      return this.currentBulkChange.bulkChangeStatus === 'ReadyBulkChange';
+    },
     isCompleted() {
       return this.currentBulkChange.bulkChangeStatus === 'CompletedBulkChange';
+    },
+    completedLabel() {
+      return StringUtil.getLabelByLang('CompletedBulkChange', this.user.settings.language, this.resources)
     }
     // hasUnsavedChanges() {
     //   return !isEqual(this.specCopy, this.currentSpec);
@@ -235,9 +238,6 @@ export default {
         value: false,
       });
     },
-    focusResults() {
-      this.$refs.results.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
-    },
     focusPreview() {
       this.$refs.preview.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
     },
@@ -329,7 +329,8 @@ export default {
       });
 
     },
-    run() {
+    ready() {
+      this.setActive('preview')
       this.setRunStatus('ReadyBulkChange');
     },
     setAsDraft() {
@@ -530,7 +531,7 @@ export default {
         <form-builder
           :title="formTitle"
           tabindex="0"
-          :is-active="isActive('form')"
+          :is-active="isActive('form') && isDraft"
           :form-data="formObj"
           @onInactive="onInactiveForm"
           @onActive="focusMatchForm"
@@ -540,7 +541,7 @@ export default {
         <target-form-builder
           :title="changesTitle"
           tabindex="0"
-          :is-active="isActive('targetForm')"
+          :is-active="isActive('targetForm') && isDraft"
           :form-data="targetFormObj"
           :preview-data="formPreviewData"
           :preview-diff="formPreviewDiff"
@@ -548,7 +549,7 @@ export default {
           @onActive="focusTargetForm"
         />
       </div>
-      <div ref="preview">
+      <div v-if="!isCompleted" ref="preview">
         <preview
           :title="previewTitle"
           tabindex="0"
@@ -562,14 +563,25 @@ export default {
           @onActive="focusPreview"
         />
       </div>
-      <div ref="results">
-        <results
-          :title="resultsTitle"
-          tabindex="0"
-          :is-active="isActive('results')"
-          :data="currentBulkChange"
-          :completed="isCompleted"
-          @onActive="focusResults"
+<!--      <div ref="results">-->
+<!--        <results-->
+<!--          :title="resultsTitle"-->
+<!--          tabindex="0"-->
+<!--          :is-active="isActive('results')"-->
+<!--          :data="currentBulkChange"-->
+<!--          :completed="isCompleted"-->
+<!--          @onActive="focusResults"-->
+<!--        />-->
+<!--      </div>-->
+      <div class="MassChanges-completed" v-if="isCompleted">
+        <div>{{ translatePhrase('Bulk change is')}} </div>
+        <div>&nbsp<span class="badge badge-accent2">{{ completedLabel }}</span>.</div>
+        <div>&nbsp{{ translatePhrase('See affected records')}}:</div>
+        <reverse-relations
+          :main-entity="this.currentBulkChange"
+          :compact="true"
+          :force-load="true"
+          :show-label="false"
         />
       </div>
       <div>
@@ -596,13 +608,15 @@ export default {
           :first-item-active="isFirstActive"
           :has-next="hasNext"
           :has-previous="hasPrevious"
+          :completed="isCompleted"
+          :isDraft="isDraft"
+          @ready="ready"
           @next="nextStep"
           @previous="previousStep"
           @nextPreview="nextPreview"
           @previousPreview="previousPreview"
           @preview="getPreview"
           @save="save"
-          @run="run"
           @setAsDraft="setAsDraft"
         />
       </div>
@@ -614,6 +628,14 @@ export default {
 .MassChanges {
   &-new {
 
+  }
+  &-completed {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    background-color: @white;
+    border: 1px solid @grey-lighter;
+    padding:  20px;
   }
 
 }

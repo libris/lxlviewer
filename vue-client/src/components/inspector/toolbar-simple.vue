@@ -51,6 +51,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    completed: {
+      type: Boolean,
+      default: false,
+    },
+    isDraft: {
+      type: Boolean,
+      default: false,
+    }
   },
   watch: {
     'inspector.status.editing'(state) {
@@ -143,8 +151,9 @@ export default {
     handleSave() {
       this.$emit('save');
     },
-    handleRun() {
-      this.$emit('run');
+    handleReady() {
+      this.$emit('ready');
+      this.handleSave();
     },
     cancel() {
       this.$emit('setAsDraft');
@@ -200,6 +209,7 @@ export default {
 <template>
   <div class="Toolbar" id="editor-container">
     <button
+      v-if="isDraft"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="firstItemActive"
       v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
@@ -208,6 +218,7 @@ export default {
       <i class="fa fa-arrow-up" aria-hidden="true" />
     </button>
     <button
+      v-if="isDraft"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="lastItemActive"
       v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
@@ -216,7 +227,7 @@ export default {
       <i class="fa fa-arrow-down" aria-hidden="true" />
     </button>
     <field-adder
-      v-if="this.showFieldAdder"
+      v-if="showFieldAdder && !completed"
       class="FieldAdder--inToolbar Toolbar-btn"
       :entity-type="inspector.data[inspector.status.focus]['@type']"
       :inner="false"
@@ -225,23 +236,24 @@ export default {
       :editing-object="inspector.status.focus"
       :in-toolbar="true"/>
     <button
-      v-if="this.showUndo"
+      v-if="showUndo && !completed"
       class="Toolbar-btn btn btn-default toolbar-button"
-      :disabled="inspector.changeHistory.length === 0 || !this.showUndo"
+      :disabled="inspector.changeHistory.length === 0 || !showUndo"
       v-tooltip.left="`${translatePhrase('Undo')} (${getKeybindText('undo')})`"
       @click="undo"
       :aria-label="translatePhrase('Undo')">
       <i class="fa fa-undo" aria-hidden="true" />
     </button>
+<!--    <button-->
+<!--      v-if="!completed"-->
+<!--      class="Toolbar-btn btn btn-default toolbar-button"-->
+<!--      v-tooltip.left="`${translatePhrase('Förhandsgranska')}`"-->
+<!--      @click="preview"-->
+<!--      :aria-label="translatePhrase('Förhandsgranska')">-->
+<!--      <i class="fa fa-eye" aria-hidden="true" />-->
+<!--    </button>-->
     <button
-      class="Toolbar-btn btn btn-default toolbar-button"
-      v-tooltip.left="`${translatePhrase('Förhandsgranska')}`"
-      @click="preview"
-      :aria-label="translatePhrase('Förhandsgranska')">
-      <i class="fa fa-eye" aria-hidden="true" />
-    </button>
-    <button
-      v-if="lastItemActive"
+      v-if="lastItemActive && !completed"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="!hasNext"
       v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
@@ -250,7 +262,7 @@ export default {
       <i class="fa fa-arrow-right" aria-hidden="true" />
     </button>
     <button
-      v-if="lastItemActive"
+      v-if="lastItemActive && !completed"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="!hasPrevious"
       v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
@@ -259,6 +271,7 @@ export default {
       <i class="fa fa-arrow-left" aria-hidden="true" />
     </button>
     <button
+      v-if="isDraft"
       class="Toolbar-btn btn btn-primary"
       v-tooltip.left="`${translatePhrase('Save')}`"
       id="saveDoneButton"
@@ -270,21 +283,21 @@ export default {
       <i class="fa fa-fw fa-save" v-show="!inspector.status.saving" />
     </button>
     <button
-      v-if="!this.isSetToReady"
+      v-if="!this.isSetToReady || completed"
       class="Toolbar-btn btn btn-primary"
       v-tooltip.left="`${translatePhrase('Markera som redo att köra')}`"
       id="runButton"
-      @click="handleRun">
-      <i class="fa fa-play" />
+      @click="handleReady">
+      <i class="fa fa-fw fa-check" />
     </button>
-    <button
-      v-if="this.isSetToReady"
-      class="Toolbar-btn btn btn-primary"
-      v-tooltip.left="`${translatePhrase('Markera som utkast')}`"
-      id="runButton"
-      @click="cancel">
-      <i class="fa fa-close" />
-    </button>
+<!--    <button-->
+<!--      v-if="this.isSetToReady && !completed"-->
+<!--      class="Toolbar-btn btn btn-primary"-->
+<!--      v-tooltip.left="`${translatePhrase('Markera som utkast')}`"-->
+<!--      id="runButton"-->
+<!--      @click="cancel">-->
+<!--      <i class="fa fa-close" />-->
+<!--    </button>-->
   </div>
 </template>
 
