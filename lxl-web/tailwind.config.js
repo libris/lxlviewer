@@ -21,6 +21,7 @@ export default {
 			disabled: 'rgb(var(--text-primary) / 0.6)',
 			positive: 'rgb(var(--text-positive) / 1)',
 			hover: 'rgb(var(--text-link) / 1)',
+			error: 'rgb(var(--text-error) / 1)',
 			icon: {
 				DEFAULT: 'rgb(var(--icon-default) / 0.4)',
 				strong: 'rgb(var(--icon-default) / 0.8)'
