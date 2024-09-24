@@ -32,7 +32,7 @@
 	</hgroup>
 	<nav class="actions">
 		<ul>
-			{#if data.isQualifiable}
+			{#if data.qualifierType}
 				<li><IconAddQualifier /></li>
 			{/if}
 			<li><a href={relativizeUrl(data['@id'].replace('#it', ''))}><IconGotoQualfier /></a></li>
