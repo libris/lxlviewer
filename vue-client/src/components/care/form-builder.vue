@@ -65,7 +65,9 @@ export default {
           :key="formTab.id"
           :is-active="true"
           :form-data="formData"
-          :locked="!isActive" />
+          :locked="!isActive"
+          :in-bulk-change-view="true"
+        />
       </div>
     </div>
   </div>

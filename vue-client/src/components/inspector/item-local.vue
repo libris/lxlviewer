@@ -65,6 +65,10 @@ export default {
       type: String,
       default: '',
     },
+    showPinned: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
@@ -413,25 +417,7 @@ export default {
         addToHistory: true,
       });
     },
-    setPinnedTest(del) {
-      let update = cloneDeep(get(this.inspector.data, this.path))
-      if (del) {
-        delete update['_match'];
-      } else {
-        update['@type'] = [update['@type'], 'Text'];
-      }
-      this.$store.dispatch('updateInspectorData', {
-        changeList: [
-          {
-            path: `${this.path}`,
-            value: update,
-          },
-        ],
-        addToHistory: true,
-      });
-    }
   },
-
   watch: {
     'inspector.status.editing'(val) {
       if (!val) {
@@ -692,9 +678,9 @@ export default {
         />
 
         <entity-action
-          v-if="inspector.status.editing && !isEmbedded && !isLocked || (isLocked && isPinned)"
+          v-if="inspector.status.editing && showPinned && !isEmbedded && !isLocked || (isLocked && isPinned)"
           @action="togglePinned"
-          label="Remove link to"
+          label="Exact match"
           :description="`${translatePhrase('Matcha exakt')} ${capitalize(labelByLang(item['@type']))}`"
           icon="thumb-tack"
           :parent-hovered="isHovered"

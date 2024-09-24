@@ -121,6 +121,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    inBulkChangeView: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
@@ -932,7 +936,9 @@ export default {
           :parent-path="path"
           :in-array="valueIsArray"
           :diff="diff"
-          :should-expand="expandChildren || embellished" />
+          :should-expand="expandChildren || embellished"
+          :show-pinned="inBulkChangeView"
+        />
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
