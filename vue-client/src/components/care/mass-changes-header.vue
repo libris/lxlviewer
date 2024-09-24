@@ -17,7 +17,6 @@ export default {
     currentBulkChange: {},
     documentId: '',
     isNew: false,
-    noAffected: '',
   },
   computed: {
     ...mapGetters([
@@ -33,9 +32,6 @@ export default {
     status() {
       return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeStatus, this.user.settings.language, this.resources);
     },
-    noAffectedLabel() {
-      return `${this.noAffected} påverkade poster`
-    }
   },
   methods: {
     translatePhrase,

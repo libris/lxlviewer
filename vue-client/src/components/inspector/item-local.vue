@@ -193,6 +193,9 @@ export default {
       }
       return false;
     },
+    isPinned() {
+      return typeof this.item['_match'] !== 'undefined';
+    }
   },
   methods: {
     translatePhrase,
@@ -386,7 +389,49 @@ export default {
           console.log(msg, error);
         });
     },
+    togglePinned() {
+      if (this.isPinned) {
+        this.setPinned(true);
+      } else {
+        this.setPinned(false);
+      }
+    },
+    setPinned(del) {
+      let update = cloneDeep(get(this.inspector.data, this.path))
+      if (del) {
+        delete update['_match'];
+      } else {
+        update['_match'] = 'exact';
+      }
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: update,
+          },
+        ],
+        addToHistory: true,
+      });
+    },
+    setPinnedTest(del) {
+      let update = cloneDeep(get(this.inspector.data, this.path))
+      if (del) {
+        delete update['_match'];
+      } else {
+        update['@type'] = [update['@type'], 'Text'];
+      }
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: `${this.path}`,
+            value: update,
+          },
+        ],
+        addToHistory: true,
+      });
+    }
   },
+
   watch: {
     'inspector.status.editing'(val) {
       if (!val) {
@@ -645,6 +690,18 @@ export default {
           :parent-hovered="isHovered"
           :is-large="false"
         />
+
+        <entity-action
+          v-if="inspector.status.editing && !isEmbedded && !isLocked || (isLocked && isPinned)"
+          @action="togglePinned"
+          label="Remove link to"
+          :description="`${translatePhrase('Matcha exakt')} ${capitalize(labelByLang(item['@type']))}`"
+          icon="thumb-tack"
+          :parent-hovered="isHovered"
+          :is-large="false"
+          :is-marked="isPinned"
+        />
+
         <div
           class="dropdown ManagerMenu"
           v-on-click-outside="closeManagerMenu"
@@ -831,6 +888,10 @@ export default {
     margin-left: auto;
     margin-right: 0;
     display: block;
+  }
+
+  .icon-pinned {
+    color: @brand-accent;
   }
 
   &-collapsedText {

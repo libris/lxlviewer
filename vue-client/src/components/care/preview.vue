@@ -6,6 +6,7 @@ import ItemEntity from "@/components/inspector/item-entity.vue";
 import EntitySummary from "@/components/shared/entity-summary.vue";
 import {asFnurgelLink, translatePhrase} from "@/utils/filters.js";
 import {offset} from "@floating-ui/dom";
+import * as StringUtil from "../../../../lxljs/string.js";
 
 export default {
   name: 'preview',
@@ -33,18 +34,24 @@ export default {
       type: Boolean,
       default: false,
     },
-    noAffected: {
-      type: String,
-      default: '',
+    totalItems: {
+      type: Number,
+      default: 0,
     },
     offset: {
-      type: String,
-      default: '',
+      type: Number,
+      default: 0,
+    },
+    completed: {
+      type: Boolean,
+      default: false,
     }
   },
   computed: {
     ...mapGetters([
       'inspector',
+      'user',
+      'resources'
     ]),
     formTab() {
       return { id: 'form', text: 'test' };
@@ -54,6 +61,16 @@ export default {
     },
     hasPreviewData() {
       return !isEmpty(this.previewData) && !isEmpty(this.previewDiff);
+    },
+    noHitsLabel() {
+      if (this.totalItems !== 0) {
+        return `${this.offset + 1} ${translatePhrase('of')} ${this.totalItems}`
+      } else {
+        return 'Inga matchande poster'
+      }
+    },
+    completedLabel() {
+      return StringUtil.getLabelByLang('CompletedBulkChange', this.user.settings.language, this.resources)
     }
   },
   emits: ['onInactive', 'onActive'],
@@ -91,22 +108,31 @@ export default {
       {{ this.title }}
     </div>
     <div class="Preview-body" :class="{ 'has-selection': isActive }">
-      <div class="Preview-preview" v-if="hasPreviewData">
-        <span class="Preview-affected Breadcrumb-recordNumbers">{{ offset + 1 }} {{ translatePhrase('of') }} {{ noAffected }}</span>
-        <div class="Preview-preview-heading">
-        <entity-summary
-          :focus-data="previewData"
-          :should-link="false"
-          :exclude-components="['details']" />
+      <div v-if="completed">
+        <div class="Preview-completed">
+          <div>{{ translatePhrase('No preview available.')}}</div>
+          <div>&nbsp{{ translatePhrase('Bulk change is')}}</div>
+          <div>&nbsp<span class="badge badge-accent2">{{ completedLabel }}</span>.</div>
         </div>
-        <entity-form
-          :editing-object="'mainEntity'"
-          :key="formTab.id"
-          :is-active="true"
-          :diff="previewDiff"
-          :form-data="previewData"
-          :locked="true"
-        />
+      </div>
+      <div v-if="!completed">
+      <span class="Preview-affected Breadcrumb-recordNumbers">{{ this.noHitsLabel }} </span>
+        <div class="Preview-preview" v-if="hasPreviewData">
+          <div class="Preview-preview-heading">
+          <entity-summary
+            :focus-data="previewData"
+            :should-link="false"
+            :exclude-components="['details']" />
+          </div>
+          <entity-form
+            :editing-object="'mainEntity'"
+            :key="formTab.id"
+            :is-active="true"
+            :diff="previewDiff"
+            :form-data="previewData"
+            :locked="true"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -154,6 +180,11 @@ export default {
   }
 
   &-affected {
+    padding-left: 12px;
+  }
+
+  &-completed {
+    display: flex;
     padding-left: 12px;
   }
 

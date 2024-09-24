@@ -2,6 +2,7 @@
 import FormBuilder from '@/components/care/form-builder.vue';
 import TargetFormBuilder from '@/components/care/target-form-builder.vue';
 import Preview from '@/components/care/preview.vue';
+import Results from '@/components/care/results.vue';
 import MassChangesHeader from "@/components/care/mass-changes-header.vue";
 import { mapGetters } from 'vuex';
 import {cloneDeep, get, isEmpty, isEqual} from 'lodash-es';
@@ -18,7 +19,7 @@ import * as HistoryUtil from "@/utils/history.js";
 
 export default {
   name: 'mass-changes.vue',
-  components: { Inspector, toolbar, FormBuilder, TargetFormBuilder, Preview, MassChangesHeader },
+  components: { Inspector, toolbar, FormBuilder, TargetFormBuilder, Preview, MassChangesHeader, Results },
   props: {
     fnurgel: ''
   },
@@ -39,7 +40,8 @@ export default {
       steps: [
         'form',
         'targetForm',
-        'preview'
+        'preview',
+        'results'
       ],
       runSpecifications: [],
       currentBulkChange: {},
@@ -51,8 +53,8 @@ export default {
       formPreviewDiff: {},
       nextPreviewLink: {},
       previousPreviewLink: {},
-      totalItems: {},
-      itemOffset: '',
+      totalItems: 0,
+      itemOffset: 0,
       fullPreview: {},
       fullPreviewData: {'@type': 'Instance'},
       fullPreviewDiff: {}
@@ -90,6 +92,9 @@ export default {
     previewTitle() {
       return `${this.steps.indexOf('preview') + 1}. ${translatePhrase('Preview')}`
     },
+    resultsTitle() {
+      return `${this.steps.indexOf('results') + 1}. ${translatePhrase('Results')}`
+    },
     isReady() {
       return this.currentBulkChange.bulkChangeStatus === 'ReadyBulkChange';
     },
@@ -98,6 +103,15 @@ export default {
     },
     hasPrevious() {
       return !isEmpty(this.previousPreviewLink);
+    },
+    isLastActive() {
+      return this.activeStep === this.steps.slice(-1)[0];
+    },
+    isFirstActive() {
+      return this.activeStep === this.steps[0];
+    },
+    isCompleted() {
+      return this.currentBulkChange.bulkChangeStatus === 'CompletedBulkChange';
     }
     // hasUnsavedChanges() {
     //   return !isEqual(this.specCopy, this.currentSpec);
@@ -220,7 +234,9 @@ export default {
         property: 'editing',
         value: false,
       });
-
+    },
+    focusResults() {
+      this.$refs.results.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
     },
     focusPreview() {
       this.$refs.preview.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
@@ -267,7 +283,11 @@ export default {
       fetch(fetchUrl).then((response) => response.json()).then((result) => {
         // const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
         // DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
-
+        this.totalItems = result.totalItems;
+        if (this.totalItems === 0 || typeof result.changeSets === 'undefined') {
+          this.resetPreviewData();
+          return;
+        }
         // Form preview
         const formChangeset = result.changeSets[1];
 
@@ -286,7 +306,6 @@ export default {
         // Full record preview
         this.nextPreviewLink = result.next;
         this.previousPreviewLink = result.prev;
-        this.totalItems = result.totalItems;
         this.itemOffset = result.itemOffset;
 
         //TODO: Save data and delegate calculation to components?
@@ -324,6 +343,11 @@ export default {
     },
     setRunStatus(status) {
       this.currentBulkChange.bulkChangeStatus = status;
+    },
+    resetPreviewData() {
+      this.fullPreview = {};
+      this.fullPreviewData = {};
+      this.fullPreviewDiff = {};
     },
     async saveBulkChange() {
       try {
@@ -501,7 +525,6 @@ export default {
         :currentBulkChange="this.currentBulkChange"
         :documentId="this.documentId"
         :is-new="this.isNew"
-        :noAffected="this.totalItems"
       />
       <div ref="matchForm">
         <form-builder
@@ -534,17 +557,28 @@ export default {
           :preview-data="fullPreviewData"
           :preview-diff="fullPreviewDiff"
           :offset="itemOffset"
-          :no-affected="this.totalItems"
+          :total-items="totalItems"
+          :completed="isCompleted"
           @onActive="focusPreview"
         />
       </div>
+      <div ref="results">
+        <results
+          :title="resultsTitle"
+          tabindex="0"
+          :is-active="isActive('results')"
+          :data="currentBulkChange"
+          :completed="isCompleted"
+          @onActive="focusResults"
+        />
+      </div>
       <div>
-        <!--
-        SPECIFICATION
-        <pre>{{this.currentBulkChange}}</pre>
-        ENTITY FORM
-        <pre>{{ this.dataObj }}</pre>
-        -->
+
+<!--        SPECIFICATION-->
+<!--        <pre>{{this.currentBulkChange}}</pre>-->
+<!--        ENTITY FORM-->
+<!--        <pre>{{ this.dataObj }}</pre>-->
+
 <!--        RECORD-->
 <!--        <pre>{{ this.record }}</pre>-->
       </div>
@@ -558,8 +592,8 @@ export default {
           :show-undo="!isActive('preview')"
           :form-obj="dataObj"
           :is-set-to-ready="isReady"
-          :last-item-active="isActive('preview')"
-          :first-item-active="isActive('form')"
+          :last-item-active="isLastActive"
+          :first-item-active="isFirstActive"
           :has-next="hasNext"
           :has-previous="hasPrevious"
           @next="nextStep"

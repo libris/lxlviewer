@@ -434,6 +434,10 @@
     "Mass changes": "Massändringar",
     "Form builder": "Sökform",
     "Changes": "Ändringar",
-    "Draft": "Utkast"
+    "Draft": "Utkast",
+    "Results": "Resultat",
+    "Results are shown when bulk change has status": "Resultat visas när massändringen har status",
+    "No preview available.": "Ingen förhandsgranskning tillgänglig.",
+    "Bulk change is": "Massändring är"
   }
 }
