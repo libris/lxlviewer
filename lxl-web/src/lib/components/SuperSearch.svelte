@@ -45,7 +45,7 @@
 			/** TODO: add request cancellation if query changes before fetch has finished (or if component is destroyed) */
 
 			try {
-				const { word, phrase } = getEditedParts({
+				const { wordRange, phraseRange } = getEditedParts({
 					value,
 					cursor
 				});
@@ -53,8 +53,8 @@
 				const qualifiersRes = await fetch(
 					`/api/${languageTag()}/autocomplete?${new URLSearchParams([
 						['full', value],
-						['word', word], // should we skip word if it is equal to full?
-						['phrase', phrase || ''], // ditto, should we skip phrase if it is equal to full?
+						['wordRange', `${wordRange.from},${wordRange.to}`],
+						['phraseRange', phraseRange ? `${phraseRange.from},${phraseRange.to}` : ''],
 						['@type', 'Agent'],
 						['@type', 'Concept'],
 						['@type', 'Language'],

@@ -8,6 +8,8 @@ import getDisplayType from '$lib/utils/getDisplayType';
 import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 import QUALIFIER_TYPES_BY_BASE_CLASS from '$lib/assets/json/qualifierTypeByBaseClass.json';
 import getQualifierValue from '$lib/utils/supersearch/getQualifierValue.server';
+import { relativizeUrl } from '$lib/utils/http';
+import getQualifierLink from '$lib/utils/supersearch/getQualifierLink';
 
 /** TODO:
  * Search by property key if exists in the beginning of the part
@@ -23,18 +25,45 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 
 	/** Get endpoint specific query values then delete them from the search params as the LibrisXL API doesn't support them... */
 	const full = searchParams.get('full');
-	const word = searchParams.get('word');
-	const phrase = searchParams.get('phrase');
+	const wordRangeArray = searchParams
+		.get('wordRange')
+		?.split(',')
+		.map((value) => parseInt(value, 10));
+	const phraseRangeArray = searchParams
+		.get('phraseRange')
+		?.split(',')
+		.map((value) => parseInt(value, 10));
 	const overview = searchParams.get('overview');
 
 	searchParams.delete('full');
-	searchParams.delete('word');
-	searchParams.delete('phrase');
+	searchParams.delete('wordRange');
+	searchParams.delete('phraseRange');
 	searchParams.delete('overview');
 
 	if (!full) {
 		error(400, 'Missing full param value');
 	}
+
+	const wordRange =
+		wordRangeArray?.length == 2 && wordRangeArray.every((value) => typeof value === 'number')
+			? {
+					from: wordRangeArray[0],
+					to: wordRangeArray[1]
+				}
+			: null;
+
+	const phraseRange =
+		phraseRangeArray?.length == 2 && phraseRangeArray.every((value) => typeof value === 'number')
+			? {
+					from: phraseRangeArray[0],
+					to: phraseRangeArray[1]
+				}
+			: null;
+
+	const editedRange = phraseRange || wordRange;
+
+	const word = wordRange ? full.slice(wordRange.from, wordRange.to) : null;
+	const phrase = phraseRange ? full.slice(phraseRange.from, phraseRange.to) : null;
 
 	/** Should check if qualifier-like here... */
 
@@ -59,6 +88,19 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 
 		const qualifierValue = getQualifierValue(item);
 
+		const qualifierTypeLink = getQualifierLink({
+			initialQuery: full,
+			editedRange,
+			insert: `${qualifierType}:`,
+			appendEditedRange: true
+		});
+
+		const qualifierLink = getQualifierLink({
+			initialQuery: full,
+			editedRange,
+			insert: `${qualifierType}:${qualifierValue}`
+		});
+
 		return {
 			[JsonLd.ID]: item?.['@id'],
 			[JsonLd.TYPE]: displayType,
@@ -74,8 +116,13 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 				: undefined,
 			inSchemeCode: item?.inScheme?.code,
 			totalReverseLinks: item?.reverseLinks?.totalItems || 0,
+			editedWordRange: wordRange,
+			editedPhraseRange: phraseRange,
 			qualifierType,
-			qualifierValue
+			qualifierValue,
+			resourceLink: relativizeUrl(item?.meta?.['@id']),
+			qualifierLink,
+			qualifierTypeLink
 		};
 	});
 

@@ -2,8 +2,6 @@
 	import type { AutocompleteItem } from '$lib/types/autocomplete';
 	import IconAddQualifier from '~icons/mdi/arrow-top-left'; // ~icons/mdi/arrow-top-left
 	import IconGotoQualfier from '~icons/bi/arrow-right-circle';
-	import { relativizeUrl } from '$lib/utils/http';
-
 	type AutocompleteListItemProps = {
 		data: AutocompleteItem;
 	};
@@ -14,15 +12,19 @@
 <li class="list-item">
 	<hgroup>
 		<p class="type" data-type={data['@type']}>
-			{data.typeLabel}
-			{#if data.inSchemeCode}
-				<span class="inScheme">
-					<abbr title={data.inSchemeLabel}>{data.inSchemeCode}</abbr>
-				</span>
-			{/if}
+			<a href={data.qualifierTypeLink}>
+				{data.typeLabel}
+				{#if data.inSchemeCode}
+					<span class="inScheme">
+						<abbr title={data.inSchemeLabel}>{data.inSchemeCode}</abbr>
+					</span>
+				{/if}
+			</a>
 		</p>
 		<h3 class="heading">
-			{data.heading}
+			<a href={data.qualifierLink}>
+				{data.heading}
+			</a>
 		</h3>
 		{#if data.overview}
 			<p class="overview">
@@ -35,7 +37,7 @@
 			{#if data.qualifierType}
 				<li><IconAddQualifier /></li>
 			{/if}
-			<li><a href={relativizeUrl(data['@id'].replace('#it', ''))}><IconGotoQualfier /></a></li>
+			<li><a href={data.resourceLink}><IconGotoQualfier /></a></li>
 		</ul>
 	</nav>
 </li>
