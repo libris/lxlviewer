@@ -17,6 +17,7 @@ import * as RecordUtil from "@/utils/record.js";
 import * as LxlDataUtil from "lxljs/data.js";
 import * as HistoryUtil from "@/utils/history.js";
 import ReverseRelations from "../inspector/reverse-relations.vue";
+import {appendIds} from "../../utils/data.js";
 
 export default {
   name: 'mass-changes.vue',
@@ -118,7 +119,8 @@ export default {
     },
     initNew() {
       this.setActive(this.steps[0]);
-      this.setInspectorData(emptyTemplate.mainEntity.bulkChangeSpecification.matchForm);
+      const initialForm = appendIds(emptyTemplate.mainEntity.bulkChangeSpecification.matchForm);
+      this.setInspectorData(initialForm);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
         value: 'start-edit',
@@ -126,6 +128,9 @@ export default {
       this.currentBulkChange = emptyTemplate.mainEntity;
       this.currentBulkChange.label = '<namn>-' + this.getDateString();
       this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
+      this.currentSpec.matchForm = initialForm;
+      this.currentSpec.targetForm = initialForm;
+      //TODO: Allow differing initial match and target forms. + Make it work with appended _ids.
       this.record = emptyTemplate.record;
       DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
     },
@@ -165,12 +170,13 @@ export default {
           const bulkChange = LxlDataUtil.splitJson(result);
           this.currentBulkChange = bulkChange.mainEntity;
           this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
-          this.specCopy = cloneDeep(this.currentSpec);
           this.record = bulkChange.record;
           if (this.isActive('form')) {
             this.setInspectorData(this.currentSpec.matchForm);
           } else if (this.isActive('targetForm')){
             this.setInspectorData(this.currentSpec.targetForm)
+          } else {
+            this.setInspectorData(this.currentSpec.matchForm)
           }
           this.$store.dispatch('pushInspectorEvent', {
             name: 'record-control',
