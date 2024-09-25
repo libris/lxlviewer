@@ -262,8 +262,7 @@ export default {
       const baseUri = this.settings.dataPath;
       const offset = 0;
       const limit = 1;
-      const testBase = "http://localhost:8180";
-      const fetchUrl = `${testBase}/_bulk-change/preview?@id=${baseUri}/${this.documentId}&_limit=${limit}&_offset=${offset}`;
+      const fetchUrl = `${this.settings.apiPath}/_bulk-change/preview?@id=${baseUri}/${this.documentId}&_limit=${limit}&_offset=${offset}`;
       this.getPreviewFromUrl(fetchUrl);
     },
     getPreviewFromUrl(fetchUrl) {
@@ -324,10 +323,10 @@ export default {
       this.setRunStatus('DraftBulkChange');
     },
     nextPreview() {
-      this.getPreviewFromUrl(`http://localhost:8180${this.nextPreviewLink['@id']}`);
+      this.getPreviewFromUrl(`${this.settings.apiPath}${this.nextPreviewLink['@id']}`);
     },
     previousPreview() {
-      this.getPreviewFromUrl(`http://localhost:8180${this.previousPreviewLink['@id']}`);
+      this.getPreviewFromUrl(`${this.settings.apiPath}${this.previousPreviewLink['@id']}`);
     },
     setRunStatus(status) {
       this.currentBulkChange.bulkChangeStatus = status;
