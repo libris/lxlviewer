@@ -7,8 +7,12 @@
     "bulkChangeStatus": "DraftBulkChange",
     "bulkChangeSpecification": {
       "@type": "FormSpecification",
-      "matchForm": {},
-      "targetForm": {}
+      "matchForm": {
+        "@type": "Instance"
+      },
+      "targetForm": {
+        "@type": "Instance"
+      }
     }
   },
   "quoted" : {},

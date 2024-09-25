@@ -28,22 +28,12 @@ export default {
     return {
       showOverview: true,
       inlinedIds: [],
-      initialData: {
-        '@type': 'Instance',
-        label: 'test',
-        genreForm: [
-          {
-            '@id': 'https://id.kb.se/term/saogf/Technopop'
-          }
-        ]
-      },
       activeStep: '',
       steps: [
         'form',
         'targetForm',
         'preview',
       ],
-      runSpecifications: [],
       currentBulkChange: {},
       currentSpec: {},
       specCopy: {},
@@ -122,38 +112,29 @@ export default {
   },
   methods: {
     translatePhrase,
-    initRunSpecification(defaultName) {
-      const bulkChange = emptyTemplate.mainEntity;
-      bulkChange.label = defaultName + this.getDateString();
-
-      if (!this.runSpecifications.some((run) => run.label === bulkChange.label)) {
-        this.runSpecifications.push(bulkChange);
-      }
-      this.currentBulkChange = bulkChange;
-      this.currentSpec = bulkChange.bulkChangeSpecification;
-      this.record = emptyTemplate.record;
-    },
     getDateString() {
       const date = new Date();
       return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     },
     initNew() {
       this.setActive(this.steps[0]);
-      this.setInspectorData(this.initialData);
+      this.setInspectorData(emptyTemplate.mainEntity.bulkChangeSpecification.matchForm);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
         value: 'start-edit',
       });
-      this.initRunSpecification('<namn>-');
-      this.currentSpec.matchForm = this.initialData;
-      this.currentSpec.targetForm = this.initialData;
+      this.currentBulkChange = emptyTemplate.mainEntity;
+      this.currentBulkChange.label = '<namn>-' + this.getDateString();
+      this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
+      this.record = emptyTemplate.record;
       DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
     },
     initFromRecord() {
       this.setActive(this.steps[0]);
-      this.setInspectorData(this.initialData);
-      this.currentSpec.matchForm = this.initialData;
-      this.currentSpec.targetForm = this.initialData; //FIXME: to avoid undefined on init
+      const initial = emptyTemplate.mainEntity.bulkChangeSpecification.matchForm;
+      this.setInspectorData(initial);
+      this.currentSpec.matchForm = initial;
+      this.currentSpec.targetForm = initial; //FIXME: to avoid undefined on init
       this.fetchRecord(this.documentId);
     },
     fetchRecord(fnurgel) {
