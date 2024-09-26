@@ -8,7 +8,7 @@ import { translatePhrase } from '@/utils/filters';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import HoldingMover from '@/components/care/holding-mover.vue';
 import CreateMessage from '@/components/care/create-message.vue';
-import MassChanges from '@/components/care/mass-changes.vue';
+import BulkChanges from '@/components/care/bulk-changes.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import AdminNotices from './AdminNotices.vue';
 
@@ -20,7 +20,7 @@ export default {
     'holding-mover': HoldingMover,
     'modal-component': ModalComponent,
     'create-message': CreateMessage,
-    'mass-changes': MassChanges,
+    'bulk-changes': BulkChanges,
   },
   data() {
     return {
@@ -53,7 +53,7 @@ export default {
         // { 'id': 'remove', 'text': 'Batch remove' },
       ];
       if (this.userIsAllowedToBulkChange) {
-        tabs.push({ id: 'masschanges', text: 'Mass changes' })
+        tabs.push({ id: 'bulkchanges', text: 'Bulk changes' })
       }
       return tabs;
     },
@@ -162,7 +162,7 @@ export default {
       <admin-notices v-if="$route.params.tool === 'changes'" />
       <create-message v-if="$route.params.tool === 'message'" />
       <holding-mover v-if="$route.params.tool === 'holdings'" :flaggedInstances="flaggedInstances" />
-      <mass-changes v-if="($route.params.tool === 'masschanges' || $route.name === 'Masschanges') && this.userIsAllowedToBulkChange" :fnurgel="$route.params.fnurgel" />
+      <bulk-changes v-if="($route.params.tool === 'bulkchanges' || $route.name === 'Bulkchanges') && this.userIsAllowedToBulkChange" :fnurgel="$route.params.fnurgel" />
       <div class="" v-if="$route.params.tool === 'merge'">
         <h1>merge records</h1>
         <!-- replace this whole div with the component -->

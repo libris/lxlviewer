@@ -3,7 +3,7 @@ import FormBuilder from '@/components/care/form-builder.vue';
 import TargetFormBuilder from '@/components/care/target-form-builder.vue';
 import Preview from '@/components/care/preview.vue';
 import Results from '@/components/care/results.vue';
-import MassChangesHeader from "@/components/care/mass-changes-header.vue";
+import BulkChangesHeader from "@/components/care/bulk-changes-header.vue";
 import { mapGetters } from 'vuex';
 import {cloneDeep, get, isEmpty, isEqual} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
@@ -20,8 +20,8 @@ import ReverseRelations from "../inspector/reverse-relations.vue";
 import {appendIds} from "../../utils/data.js";
 
 export default {
-  name: 'mass-changes.vue',
-  components: {ReverseRelations, Inspector, toolbar, FormBuilder, TargetFormBuilder, Preview, MassChangesHeader, Results },
+  name: 'bulk-changes.vue',
+  components: {ReverseRelations, Inspector, toolbar, FormBuilder, TargetFormBuilder, Preview, BulkChangesHeader, Results },
   props: {
     fnurgel: ''
   },
@@ -503,12 +503,12 @@ export default {
 };
 </script>
 <template>
-  <div class="MassChanges row">
+  <div class="BulkChanges row">
     <div
       class="col-sm-12"
       :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
-    <div class="MassChanges-new">
-      <mass-changes-header
+    <div class="BulkChanges-new">
+      <bulk-changes-header
         :currentBulkChange="this.currentBulkChange"
         :documentId="this.documentId"
         :is-new="this.isNew"
@@ -559,7 +559,7 @@ export default {
 <!--          @onActive="focusResults"-->
 <!--        />-->
 <!--      </div>-->
-      <div class="MassChanges-completed" v-if="isCompleted">
+      <div class="BulkChanges-completed" v-if="isCompleted">
         <div>{{ translatePhrase('Bulk change is')}} </div>
         <div>&nbsp<span class="badge badge-accent2">{{ completedLabel }}</span>.</div>
         <div>&nbsp{{ translatePhrase('See affected records')}}:</div>
@@ -611,7 +611,7 @@ export default {
 </template>
 
 <style scoped lang="less">
-.MassChanges {
+.BulkChanges {
   &-new {
 
   }

@@ -6,7 +6,7 @@ import * as StringUtil from 'lxljs/string.js';
 import {mapGetters} from "vuex";
 
 export default {
-  name: 'mass-changes-header.vue',
+  name: 'bulk-changes-header.vue',
   components: {IdPill, FormBuilder},
   data() {
     return {
@@ -51,9 +51,9 @@ export default {
 };
 </script>
 <template>
-  <div class="MassChanges">
+  <div class="BulkChanges">
   <h1>
-    <input class="MassChanges-inputField"
+    <input class="BulkChanges-inputField"
       ref="heading"
       v-if="editing"
       v-model="currentBulkChange.label"
@@ -61,7 +61,7 @@ export default {
       @keyup.enter="stopEdit"
       @keyup.esc="stopEdit"
     >
-    <span class="MassChanges-header" v-if="!editing"
+    <span class="BulkChanges-header" v-if="!editing"
       :class="{ 'cursor-pointer': !editing }"
       @click="startEdit"
       @keyup.enter="startEdit"
@@ -70,11 +70,11 @@ export default {
       {{this.name}}
     </span>
   <span class="badge badge-accent2">{{ this.status }}</span>
-<!--  <span class="MassChanges-noItems badge badge-accent-2"-->
+<!--  <span class="BulkChanges-noItems badge badge-accent-2"-->
 <!--    v-if="this.noAffected"> {{this.noAffectedLabel}}-->
 <!--  </span>-->
   </h1>
-    <span class="MassChanges-id">
+    <span class="BulkChanges-id">
       <id-pill
         v-if="!isNew"
         :uri="documentId"
@@ -87,7 +87,7 @@ export default {
 </template>
 
 <style scoped lang="less">
-.MassChanges {
+.BulkChanges {
   display: flex;
   flex-direction: row;
   align-items: center;
