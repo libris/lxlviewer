@@ -13,7 +13,7 @@ No action required here, this is just information.
 
 #### Coding Standard
 * [SUIT CSS](https://suitcss.github.io/)
-* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`.eslintrc.js`](/cat/.eslintrc.js))
+* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`.eslintrc.js`](/cataloging/.eslintrc.js))
 
 #### Requirements
 * [node.js](http://nodejs.org/) >= 18

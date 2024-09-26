@@ -6,7 +6,7 @@
 
 View the respective directory and their READMEs for more information.
 
-* `cat` -  Libris cataloging
+* `cataloging` -  Libris cataloging
 * `idkbse` - id.kb.se
 * `lxljs` - Utility library
 * `lxl-web` - New Libris search
