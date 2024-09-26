@@ -42,7 +42,7 @@ export default {
       type: Number,
       default: 0,
     },
-    completed: {
+    finished: {
       type: Boolean,
       default: false,
     },

@@ -51,7 +51,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    completed: {
+    finished: {
       type: Boolean,
       default: false,
     },
@@ -226,7 +226,7 @@ export default {
       <i class="fa fa-arrow-down" aria-hidden="true" />
     </button>
     <field-adder
-      v-if="showFieldAdder && !completed"
+      v-if="showFieldAdder && !finished"
       class="FieldAdder--inToolbar Toolbar-btn"
       :entity-type="inspector.data[inspector.status.focus]['@type']"
       :inner="false"
@@ -235,7 +235,7 @@ export default {
       :editing-object="inspector.status.focus"
       :in-toolbar="true"/>
     <button
-      v-if="showUndo && !completed"
+      v-if="showUndo && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="inspector.changeHistory.length === 0 || !showUndo"
       v-tooltip.left="`${translatePhrase('Undo')} (${getKeybindText('undo')})`"
@@ -252,7 +252,7 @@ export default {
 <!--      <i class="fa fa-eye" aria-hidden="true" />-->
 <!--    </button>-->
     <button
-      v-if="lastItemActive && !completed"
+      v-if="lastItemActive && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="!hasNext"
       v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
@@ -261,7 +261,7 @@ export default {
       <i class="fa fa-arrow-right" aria-hidden="true" />
     </button>
     <button
-      v-if="lastItemActive && !completed"
+      v-if="lastItemActive && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="!hasPrevious"
       v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
@@ -282,7 +282,7 @@ export default {
       <i class="fa fa-fw fa-save" v-show="!inspector.status.saving" />
     </button>
     <button
-      v-if="!this.isSetToReady || completed"
+      v-if="!this.isSetToReady || finished"
       class="Toolbar-btn btn btn-primary"
       v-tooltip.left="`${translatePhrase('Markera som redo att köra')}`"
       id="runButton"

@@ -101,11 +101,16 @@ export default {
     isReady() {
       return this.currentBulkChange.bulkChangeStatus === 'ReadyBulkChange';
     },
-    isCompleted() {
-      return this.currentBulkChange.bulkChangeStatus === 'CompletedBulkChange';
+    isFinished() {
+      return this.currentBulkChange.bulkChangeStatus === 'CompletedBulkChange'
+        || this.currentBulkChange.bulkChangeStatus === 'FailedBulkChange';
     },
-    completedLabel() {
-      return StringUtil.getLabelByLang('CompletedBulkChange', this.user.settings.language, this.resources)
+    isRunningOrFinished() {
+      return this.isFinished
+        || this.currentBulkChange.bulkChangeStatus === 'RunningBulkChange';
+    },
+    statusLabel() {
+      return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeStatus, this.user.settings.language, this.resources);
     },
     hasUnsavedChanges() {
       if (this.lastFetchedSpec && this.isDraft) {
@@ -558,7 +563,7 @@ export default {
           @onActive="focusTargetForm"
         />
       </div>
-      <div v-if="!isCompleted" ref="preview">
+      <div v-if="!isRunningOrFinished" ref="preview">
         <preview
           :title="previewTitle"
           tabindex="0"
@@ -568,7 +573,7 @@ export default {
           :preview-diff="fullPreviewDiff"
           :offset="itemOffset"
           :total-items="totalItems"
-          :completed="isCompleted"
+          :finished="isFinished"
           :has-unsaved="hasUnsavedChanges"
           @onActive="focusPreview"
         />
@@ -583,9 +588,9 @@ export default {
 <!--          @onActive="focusResults"-->
 <!--        />-->
 <!--      </div>-->
-      <div class="BulkChanges-completed" v-if="isCompleted">
-        <div>{{ translatePhrase('Bulk change is')}} </div>
-        <div>&nbsp<span class="badge badge-accent2">{{ completedLabel }}</span>.</div>
+      <div class="BulkChanges-result" v-if="isRunningOrFinished">
+        <div>{{ translatePhrase('Bulk change')}} </div>
+        <div>&nbsp<span class="badge badge-accent2">{{ statusLabel }}</span>.</div>
         <div>&nbsp{{ translatePhrase('See affected records')}}:</div>
         <reverse-relations
           :main-entity="this.currentBulkChange"
@@ -618,7 +623,7 @@ export default {
           :first-item-active="isFirstActive"
           :has-next="hasNext"
           :has-previous="hasPrevious"
-          :completed="isCompleted"
+          :finished="isFinished"
           :isDraft="isDraft"
           @ready="ready"
           @next="nextStep"
@@ -639,7 +644,7 @@ export default {
   &-new {
 
   }
-  &-completed {
+  &-result {
     margin-top: 20px;
     display: flex;
     align-items: center;
