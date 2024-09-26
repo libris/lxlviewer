@@ -27,6 +27,7 @@ import ItemNextShelfControlNumber from './item-next-shelf-control-number.vue';
 import ItemBylang from './item-bylang.vue';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
 import LanguageMixin from '../mixins/language-mixin.vue';
+import FieldMarker from "@/components/inspector/field-marker.vue";
 
 export default {
   name: 'field',
@@ -120,6 +121,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    inBulkChangeView: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
@@ -131,6 +136,7 @@ export default {
     };
   },
   components: {
+    FieldMarker,
     ItemType,
     'item-entity': ItemEntity,
     'item-value': ItemValue,
@@ -150,11 +156,11 @@ export default {
   computed: {
     diffAdded() {
       if (this.diff == null) return false;
-      return this.diff.added.includes(this.path);
+      return this.diff.added.includes(this.path) && !this.diff.removed.includes(this.path);
     },
     diffRemoved() {
       if (this.diff == null) return false;
-      return this.diff.removed.includes(this.path);
+      return this.diff.removed.includes(this.path) && !this.diff.added.includes(this.path);
     },
     diffModified() {
       if (this.diff == null) return false;
@@ -623,8 +629,8 @@ export default {
       'Field--inner': isInner,
       'is-lastAdded': isLastAdded,
       'is-removed': removed,
-      'is-diff-added': diffAdded && !diffRemoved,
-      'is-diff-removed': diffRemoved && !diffAdded,
+      'is-diff-added': diffAdded,
+      'is-diff-removed': diffRemoved,
       'is-diff-modified': diffModified,
       'is-locked': locked,
       'is-diff': isFieldDiff,
@@ -640,6 +646,7 @@ export default {
       v-if="showKey && !isInner">
       <div class="Field-labelWrapper" :class="{ sticky: !diff }">
         <div v-if="!isLocked" class="Field-actions">
+
           <div
             class="Field-action Field-remove"
             v-show="!locked && isRemovable"
@@ -703,10 +710,10 @@ export default {
               @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')" />
           </div>
         </div>
-        <div class="Field-label-history-icon" v-if="diffRemoved && !diffAdded">
+        <div class="Field-label-history-icon" v-if="diffRemoved">
           <i class="fa fa-trash-o icon--sm icon-removed" />
         </div>
-        <div class="Field-label-history-icon" v-if="diffAdded && !diffRemoved">
+        <div class="Field-label-history-icon" v-if="diffAdded">
           <i class="fa fa-plus-circle icon--sm icon-added" />
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
@@ -813,10 +820,10 @@ export default {
             @mouseout="pasteHover = false, highlight(false, $event, 'is-marked')" />
         </div>
       </div>
-      <div class="Field-history-icon" v-if="diffRemoved && !diffAdded">
+      <div class="Field-history-icon" v-if="diffRemoved">
         <i class="fa fa-trash-o icon--sm icon-removed" />
       </div>
-      <div class="Field-history-icon" v-if="diffAdded && !diffRemoved">
+      <div class="Field-history-icon" v-if="diffAdded">
         <i class="fa fa-plus-circle icon--sm icon-added" />
       </div>
     </div>
@@ -929,7 +936,9 @@ export default {
           :parent-path="path"
           :in-array="valueIsArray"
           :diff="diff"
-          :should-expand="expandChildren || embellished" />
+          :should-expand="expandChildren || embellished"
+          :show-pinned="inBulkChangeView"
+        />
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>

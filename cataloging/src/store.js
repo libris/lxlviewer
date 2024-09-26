@@ -177,7 +177,7 @@ const store = createStore({
       state.inspector.langTagSearch = data;
     },
     addToQuoted(state, data) {
-      const quoted = cloneDeep(state.inspector.data.quoted);
+      const quoted = state.inspector.data.quoted ? cloneDeep(state.inspector.data.quoted) : {};
       quoted[data['@id']] = data;
       (data.sameAs || []).forEach((sameAs) => {
         if (sameAs.hasOwnProperty('@id')) {
@@ -224,7 +224,7 @@ const store = createStore({
         }
       });
       // Check if we should remove work node (if it went from local to being linked)
-      if (inspectorData.mainEntity.hasOwnProperty('instanceOf') && (inspectorData.mainEntity.instanceOf === null || (inspectorData.mainEntity.instanceOf.hasOwnProperty('@id') && inspectorData.mainEntity.instanceOf['@id'].indexOf('#work') === -1))) {
+      if (inspectorData.mainEntity && inspectorData.mainEntity.hasOwnProperty('instanceOf') && (inspectorData.mainEntity.instanceOf === null || (inspectorData.mainEntity.instanceOf.hasOwnProperty('@id') && inspectorData.mainEntity.instanceOf['@id'].indexOf('#work') === -1))) {
         if (state.inspector.data.hasOwnProperty('work')) {
           delete inspectorData.work;
         }

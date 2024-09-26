@@ -65,6 +65,14 @@ const router = createRouter({
       },
     },
     {
+      path: '/directory-care/bulkchanges/:fnurgel',
+      name: 'Bulkchanges',
+      component: () => import('@/views/DirectoryCare.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/user',
       name: 'User settings',
       component: () => import('@/views/UserPage.vue'),

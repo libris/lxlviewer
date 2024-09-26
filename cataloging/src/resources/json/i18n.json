@@ -430,6 +430,14 @@
     "Activate change message feature": "Aktivera funktion för ändringsmeddelanden",
     "Hide handled:": "Dölj hanterade:",
     "links": "länkningar",
-    "link": "länkning"
+    "link": "länkning",
+    "Bulk changes": "Massändringar",
+    "Form builder": "Sökform",
+    "Changes": "Ändringar",
+    "Draft": "Utkast",
+    "Results": "Resultat",
+    "See affected records": "Se påverkade poster",
+    "No preview available.": "Ingen förhandsgranskning tillgänglig.",
+    "Bulk change is": "Massändring är"
   }
 }

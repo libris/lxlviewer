@@ -132,6 +132,27 @@ export function rewriteValueOfKey(obj, key, newValue, deep = false) {
   return newObj;
 }
 
+export function appendIds(obj) {
+  if (!isArray(obj) && !isObject(obj)) {
+    return obj;
+  }
+  let idCount = 1;
+  const stack = [];
+  stack.push(obj);
+  let o;
+  while (o = stack.pop()) {
+    if (isObject(o) && !isArray(o)) {
+      o['_id'] = `#${idCount++}`;
+    }
+    forEach(o, (child) => {
+      if (isArray(child) || isObject(child)) {
+        stack.push(child);
+      }
+    });
+  }
+  return obj;
+}
+
 export function getExternalLinks(obj) {
   if (!isArray(obj) && !isObject(obj)) {
     return [];

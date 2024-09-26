@@ -41,6 +41,10 @@ export default {
       type: String,
       default: '',
     },
+    inBulkChangeView: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
@@ -104,6 +108,7 @@ export default {
     showIncomingLinksSection() {
       return Object.keys(this.reverseItemStandalone).length > 0;
     },
+
     formObj() {
       return this.formData;
     },
@@ -152,7 +157,9 @@ export default {
         :diff="diff"
         :field-key="k"
         :field-value="v"
-        :parent-path="editingObject" />
+        :parent-path="editingObject"
+        :in-bulk-change-view="inBulkChangeView"
+      />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
           {{ formObj }}

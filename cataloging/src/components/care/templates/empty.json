@@ -1,0 +1,26 @@
+{
+  "mainEntity": {
+    "@type": "BulkChange",
+    "@id": "https://id.kb.se/TEMPID#it",
+    "label": "",
+    "comment": "",
+    "bulkChangeStatus": "DraftBulkChange",
+    "bulkChangeSpecification": {
+      "@type": "FormSpecification",
+      "matchForm": {
+        "@type": "Instance"
+      },
+      "targetForm": {
+        "@type": "Instance"
+      }
+    }
+  },
+  "quoted" : {},
+  "record" : {
+    "@type" : "Record",
+    "@id": "https://id.kb.se/TEMPID",
+    "mainEntity": {
+      "@id": "https://id.kb.se/TEMPID#it"
+    }
+  }
+}

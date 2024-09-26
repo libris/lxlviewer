@@ -1,0 +1,448 @@
+<script>
+/*
+  Simplified toolbar
+*/
+import { vOnClickOutside } from '@vueuse/components';
+import { mapGetters } from 'vuex';
+import * as VocabUtil from 'lxljs/vocab';
+import * as LayoutUtil from '@/utils/layout';
+import { translatePhrase, labelByLang, convertResourceLink } from '@/utils/filters';
+import FieldAdder from '@/components/inspector/field-adder.vue';
+import LensMixin from '@/components/mixins/lens-mixin.vue';
+import FormMixin from '@/components/mixins/form-mixin.vue';
+
+export default {
+  mixins: [LensMixin, FormMixin],
+  directives: {
+    'on-click-outside': vOnClickOutside,
+  },
+  props: {
+    fieldAdderOpen: {
+      type: Boolean,
+      default: false,
+    },
+    formObj: {},
+    isSetToReady: false,
+    showFieldAdder: {
+      type: Boolean,
+      default: false,
+    },
+    showUndo: {
+      type: Boolean,
+      default: false,
+    },
+    lastItemActive: {
+      type: Boolean,
+      default: false,
+    },
+    firstItemActive: {
+      type: Boolean,
+      default: false,
+    },
+    hasUnsaved: {
+      type: Boolean,
+      default: false,
+    },
+    hasNext: {
+      type: Boolean,
+      default: false,
+    },
+    hasPrevious: {
+      type: Boolean,
+      default: false,
+    },
+    completed: {
+      type: Boolean,
+      default: false,
+    },
+    isDraft: {
+      type: Boolean,
+      default: false,
+    }
+  },
+  watch: {
+    'inspector.status.editing'(state) {
+      if (state) {
+        this.loadingEdit = false;
+      }
+    },
+    'inspector.event'(val) {
+      if (val.name === 'form-control') {
+        switch (val.value) {
+          case 'open-field-adder':
+            this.openFieldAdder();
+            break;
+          case 'next':
+            this.next();
+            break;
+          case 'previous':
+            this.previous();
+            break;
+          case 'undo':
+            this.undo();
+            break;
+          default:
+        }
+      }
+    },
+    'status.keyActions'(value) {
+      this.formControl(value[value.length - 1]);
+    },
+  },
+  methods: {
+    translatePhrase,
+    labelByLang,
+    convertResourceLink,
+    getKeybindText(eventName) {
+      return LayoutUtil.getKeybindingText(eventName);
+    },
+    openFieldAdder() {
+      if (!this.fieldAdderActive) {
+        this.fieldAdderActive = true;
+      } else {
+        this.fieldAdderActive = false;
+      }
+    },
+    formControl(control) {
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'form-control',
+        value: control,
+      });
+    },
+    toggleEditorFocus() {
+      if (this.inspector.status.focus === 'record') {
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'focus',
+          value: 'mainEntity',
+        });
+      } else {
+        this.$store.dispatch('setInspectorStatusValue', {
+          property: 'focus',
+          value: 'record',
+        });
+      }
+    },
+    undo() {
+      this.$store.dispatch('undoInspectorChange');
+    },
+    next() {
+      this.$emit('next');
+    },
+    previous() {
+      this.$emit('previous');
+    },
+    preview() {
+      this.$emit('preview');
+    },
+    nextPreview() {
+      this.$emit('nextPreview');
+    },
+    previousPreview() {
+      this.$emit('previousPreview');
+    },
+    isSubClassOf(type) {
+      return VocabUtil.isSubClassOf(
+        this.inspector.data.mainEntity['@type'],
+        type,
+        this.resources.vocab,
+        this.resources.context,
+      );
+    },
+    handleSave() {
+      this.$emit('save');
+    },
+    handleReady() {
+      this.$emit('ready');
+    },
+    cancel() {
+      this.$emit('setAsDraft');
+    },
+  },
+  computed: {
+    ...mapGetters([
+      'inspector',
+      'resources',
+      'templates',
+      'user',
+      'settings',
+      'status',
+    ]),
+    // formObj() {
+    //   return this.inspector.data.mainEntity;
+    // },
+    // formObj() {
+    //   return this.inspector.data[this.inspector.status.focus];
+    // },
+    allowed() {
+      return VocabUtil.getPropertiesFromArray(
+        this.formObj['@type'],
+        this.resources.vocabClasses,
+        this.resources.vocabProperties,
+        this.resources.context,
+      );
+    },
+    showRecord() {
+      return this.status.showRecord;
+    },
+    activeSigelId() {
+      return this.user.getActiveLibraryUri();
+    },
+    focusData() {
+      return this.inspector.data;
+    },
+    editing() {
+      return this.inspector.status.editing;
+    },
+
+  },
+  components: {
+    'field-adder': FieldAdder,
+  },
+  mounted() {
+    this.$nextTick(() => {
+    });
+  },
+};
+</script>
+
+<template>
+  <div class="Toolbar" id="editor-container">
+    <button
+      v-if="isDraft"
+      class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="firstItemActive"
+      v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
+      @click="previous"
+      :aria-label="translatePhrase('Previous')">
+      <i class="fa fa-arrow-up" aria-hidden="true" />
+    </button>
+    <button
+      v-if="isDraft"
+      class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="lastItemActive"
+      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
+      @click="next"
+      :aria-label="translatePhrase('Next')">
+      <i class="fa fa-arrow-down" aria-hidden="true" />
+    </button>
+    <field-adder
+      v-if="showFieldAdder && !completed"
+      class="FieldAdder--inToolbar Toolbar-btn"
+      :entity-type="inspector.data[inspector.status.focus]['@type']"
+      :inner="false"
+      :allowed="allowedProperties"
+      :path="inspector.status.focus"
+      :editing-object="inspector.status.focus"
+      :in-toolbar="true"/>
+    <button
+      v-if="showUndo && !completed"
+      class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="inspector.changeHistory.length === 0 || !showUndo"
+      v-tooltip.left="`${translatePhrase('Undo')} (${getKeybindText('undo')})`"
+      @click="undo"
+      :aria-label="translatePhrase('Undo')">
+      <i class="fa fa-undo" aria-hidden="true" />
+    </button>
+<!--    <button-->
+<!--      v-if="!completed"-->
+<!--      class="Toolbar-btn btn btn-default toolbar-button"-->
+<!--      v-tooltip.left="`${translatePhrase('Förhandsgranska')}`"-->
+<!--      @click="preview"-->
+<!--      :aria-label="translatePhrase('Förhandsgranska')">-->
+<!--      <i class="fa fa-eye" aria-hidden="true" />-->
+<!--    </button>-->
+    <button
+      v-if="lastItemActive && !completed"
+      class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="!hasNext"
+      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
+      @click="nextPreview"
+      :aria-label="translatePhrase('Next')">
+      <i class="fa fa-arrow-right" aria-hidden="true" />
+    </button>
+    <button
+      v-if="lastItemActive && !completed"
+      class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="!hasPrevious"
+      v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
+      @click="previousPreview"
+      :aria-label="translatePhrase('Previous')">
+      <i class="fa fa-arrow-left" aria-hidden="true" />
+    </button>
+    <button
+      v-if="isDraft"
+      class="Toolbar-btn btn btn-primary"
+      v-tooltip.left="`${translatePhrase('Save')}`"
+      id="saveDoneButton"
+      @click="handleSave"
+      @mouseover="showClarifySave = true"
+      @mouseout="showClarifySave = false"
+      :aria-label="translatePhrase('Save')">
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="inspector.status.saving" />
+      <i class="fa fa-fw fa-save" v-show="!inspector.status.saving" />
+    </button>
+    <button
+      v-if="!this.isSetToReady || completed"
+      class="Toolbar-btn btn btn-primary"
+      v-tooltip.left="`${translatePhrase('Markera som redo att köra')}`"
+      id="runButton"
+      @click="handleReady">
+      <i class="fa fa-fw fa-play" />
+    </button>
+<!--    <button-->
+<!--      v-if="this.isSetToReady && !completed"-->
+<!--      class="Toolbar-btn btn btn-primary"-->
+<!--      v-tooltip.left="`${translatePhrase('Markera som utkast')}`"-->
+<!--      id="runButton"-->
+<!--      @click="cancel">-->
+<!--      <i class="fa fa-close" />-->
+<!--    </button>-->
+  </div>
+</template>
+
+<style lang="less">
+
+.Toolbar {
+  &-placeholder {
+    width: 100%;
+  }
+
+  &-container {
+    bottom: 10px;
+    min-width: 65px;
+    position: fixed;
+    border: 1px solid #cccccc;
+    border: 1px solid #cccccc75;
+    background-color: #ececec;
+    background-color: #ecececd1;
+    padding: 6px;
+    border-radius: 0.5em;
+    box-shadow: 0px 0px 15px 0px @grey;
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.2);
+
+    @media (min-width: 992px) {
+      top: 11em;
+      bottom: auto;
+      width: 65px;
+    }
+    @media (min-width: 1200px) {
+      padding: 8px;
+    }
+    @media print {
+      display: none;
+    }
+  }
+
+  &-container {
+    z-index: 3;
+  }
+
+  &-menu {
+    display: inline-block;
+  }
+
+  &-btn {
+    border-radius: 100%;
+    font-size: 20px;
+    font-size: 2rem;
+    margin: 4px 0;
+    width: 50px;
+    height: 50px;
+    position: relative;
+
+    &:disabled {
+      opacity: 0.65;
+    }
+  }
+
+  &-menuLink {
+    & i {
+      margin-right: 5px;
+    }
+  }
+
+  &-caret {
+    position: absolute;
+    right: 8px;
+    bottom: 12px;
+  }
+
+  &-menuList {
+    display: block;
+    top: auto;
+    left: 50px;
+    bottom: 0;
+    padding: 10px 0;
+    min-height: 52px;
+    max-height: 300px;
+    overflow: hidden;
+    overflow-y: auto;
+
+    & .Toolbar-menuItem {
+      &.is-active {
+        font-weight: bold;
+      }
+      &.inSubMenu {
+        background-color: @grey-lighter;
+        & a:hover {
+          background-color: darken(@grey-lighter, 5%);
+        }
+      }
+      & .Toolbar-menuLink {
+        display: flex;
+        align-items: center;
+        padding: 5px 15px;
+        color: @grey-darker;
+      }
+
+      & .submenuControl {
+        display: flex;
+        flex: 1;
+        justify-content: flex-end;
+        align-items: center;
+      }
+    }
+
+    @media (min-width: 992px) {
+      top: auto;
+      left: auto;
+      bottom: auto;
+      right: 0;
+    }
+
+    @media (min-height: 650px) {
+      max-height: 400px;
+    }
+
+    @media (min-height: 850px) {
+      max-height: 550px;
+    }
+
+    @media (min-height: 1000px) {
+      max-height: none;
+    }
+  }
+  .TemplatePicker, .OverridePicker {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+}
+
+.dropdown.tools,
+.dropdown.other-format {
+  li > a {
+    cursor: pointer;
+    padding: 3px 5px;
+  }
+  .remove-option {
+    a {
+      &:hover {
+        color: @white;
+        background-color: #c55252;
+      }
+    }
+  }
+}
+
+</style>

@@ -14,6 +14,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isMarked: {
+      type: Boolean,
+      default: false,
+    },
     description: {
       type: String,
       default: '',
@@ -75,7 +79,7 @@ export default {
 <template>
   <div
     class="EntityAction"
-    :class="{ 'action-larger': isLarge, 'has-parent-hovered': parentHovered, 'is-placeholder': placeholder }"
+    :class="{ 'action-larger': isLarge,'has-parent-hovered': parentHovered, 'is-placeholder': placeholder, 'is-marked': isMarked }"
     role="button"
     :aria-label="translatePhrase(label)"
     tabindex="0"
@@ -122,6 +126,9 @@ export default {
       display: inline-block;
       font-weight: bold;
     }
+  }
+  &.is-marked {
+    color: @brand-accent;
   }
 }
 

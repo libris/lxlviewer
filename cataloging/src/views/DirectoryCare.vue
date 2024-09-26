@@ -8,6 +8,7 @@ import { translatePhrase } from '@/utils/filters';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import HoldingMover from '@/components/care/holding-mover.vue';
 import CreateMessage from '@/components/care/create-message.vue';
+import BulkChanges from '@/components/care/bulk-changes.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import AdminNotices from './AdminNotices.vue';
 
@@ -19,6 +20,7 @@ export default {
     'holding-mover': HoldingMover,
     'modal-component': ModalComponent,
     'create-message': CreateMessage,
+    'bulk-changes': BulkChanges,
   },
   data() {
     return {
@@ -43,14 +45,24 @@ export default {
       return filter(this.fetchedItems, (o) => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
     },
     tabs() {
-      return [
+      const tabs = [
         { id: 'changes', text: 'CXZ messages' },
         { id: 'message', text: 'Create message' },
         { id: 'holdings', text: 'Move holdings' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
       ];
+      if (this.userIsAllowedToBulkChange) {
+        tabs.push({ id: 'bulkchanges', text: 'Bulk changes' })
+      }
+      return tabs;
     },
+    userIsAllowedToBulkChange() {
+      if (this.user.isLoggedIn === false) {
+        return false;
+      }
+      return this.user.settings.activeSigel === 'SEK';
+    }
   },
   watch: {
     userFlagged(newValue, oldValue) {
@@ -146,10 +158,11 @@ export default {
 <template>
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
-      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool"/>
-      <admin-notices v-if="$route.params.tool === 'changes'"/>
-      <create-message v-if="$route.params.tool === 'message'"/>
+      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool" />
+      <admin-notices v-if="$route.params.tool === 'changes'" />
+      <create-message v-if="$route.params.tool === 'message'" />
       <holding-mover v-if="$route.params.tool === 'holdings'" :flaggedInstances="flaggedInstances" />
+      <bulk-changes v-if="($route.params.tool === 'bulkchanges' || $route.name === 'Bulkchanges') && this.userIsAllowedToBulkChange" :fnurgel="$route.params.fnurgel" />
       <div class="" v-if="$route.params.tool === 'merge'">
         <h1>merge records</h1>
         <!-- replace this whole div with the component -->
