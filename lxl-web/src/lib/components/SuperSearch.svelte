@@ -218,7 +218,7 @@
 					</SearchInputWrapper>
 				</div>
 				<nav>
-					{#if qualifierItems.length}
+					{#if value && qualifierItems.length}
 						<section class="suggestions">
 							<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
 							<ul>
@@ -234,7 +234,7 @@
 							<button class="show-more">Visa fler</button>
 						</section>
 					{/if}
-					{#if workItems.length}
+					{#if value && workItems.length}
 						<section class="suggestions">
 							<h2 class="dropdown-header">Sökförslag</h2>
 							<ul>
