@@ -30,6 +30,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hasUnsaved: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters([
@@ -43,6 +47,9 @@ export default {
     },
     hasPreviewData() {
       return !isEmpty(this.previewData) && !isEmpty(this.previewDiff);
+    },
+    showPreview() {
+      return this.hasPreviewData && !this.hasUnsaved;
     }
   },
   emits: ['onInactive', 'onActive'],
@@ -85,7 +92,7 @@ export default {
       </div>
       <div
         class="TargetFormBuilder-preview"
-      v-if="hasPreviewData">
+      v-if="showPreview">
 Ändringar
         <entity-form
           :editing-object="'mainEntity'"

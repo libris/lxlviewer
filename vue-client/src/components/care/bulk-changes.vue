@@ -37,7 +37,7 @@ export default {
       ],
       currentBulkChange: {},
       currentSpec: {},
-      specCopy: {},
+      lastFetchedSpec: {},
       record: {},
       formPreview: {},
       formPreviewData: {'@type': 'Instance'},
@@ -106,10 +106,15 @@ export default {
     },
     completedLabel() {
       return StringUtil.getLabelByLang('CompletedBulkChange', this.user.settings.language, this.resources)
-    }
-    // hasUnsavedChanges() {
-    //   return !isEqual(this.specCopy, this.currentSpec);
-    // },
+    },
+    hasUnsavedChanges() {
+      if (this.lastFetchedSpec) {
+        const matchFormEqual = isEqual(this.formObj, this.lastFetchedSpec.matchForm);
+        const targetFormEqual = isEqual(this.targetFormObj, this.lastFetchedSpec.targetForm);
+        return !matchFormEqual || !targetFormEqual;
+      }
+      return false;
+    },
   },
   methods: {
     translatePhrase,
@@ -132,6 +137,7 @@ export default {
       this.currentSpec.targetForm = initialForm;
       //TODO: Allow differing initial match and target forms. + Make it work with appended _ids.
       this.record = emptyTemplate.record;
+      this.lastFetchedSpec = this.currentSpec;
       DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
     },
     initFromRecord() {
@@ -171,6 +177,8 @@ export default {
           this.currentBulkChange = bulkChange.mainEntity;
           this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
           this.record = bulkChange.record;
+          this.lastFetchedSpec = cloneDeep(this.currentSpec);
+
           if (this.isActive('form')) {
             this.setInspectorData(this.currentSpec.matchForm);
           } else if (this.isActive('targetForm')){
@@ -213,10 +221,11 @@ export default {
       this.currentSpec.matchForm = DataUtil.appendIds(form);
     },
     onInactiveTargetForm() {
-      // Only for targetForm --> matchForm
       if (this.activeStep === 'form') {
         this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
         this.setInspectorData(this.currentSpec.matchForm);
+      } else if (this.activeStep === 'preview') {
+        this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity)
       }
     },
     reset() {
@@ -531,6 +540,7 @@ export default {
           :form-data="targetFormObj"
           :preview-data="formPreviewData"
           :preview-diff="formPreviewDiff"
+          :has-unsaved="hasUnsavedChanges"
           @onInactive="onInactiveTargetForm"
           @onActive="focusTargetForm"
         />
@@ -546,6 +556,7 @@ export default {
           :offset="itemOffset"
           :total-items="totalItems"
           :completed="isCompleted"
+          :has-unsaved="hasUnsavedChanges"
           @onActive="focusPreview"
         />
       </div>

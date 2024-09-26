@@ -45,7 +45,11 @@ export default {
     completed: {
       type: Boolean,
       default: false,
-    }
+    },
+    hasUnsaved: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters([
@@ -62,10 +66,15 @@ export default {
     hasPreviewData() {
       return !isEmpty(this.previewData) && !isEmpty(this.previewDiff);
     },
+    showPreview() {
+      return this.hasPreviewData && !this.hasUnsaved;
+    },
     noHitsLabel() {
-      if (this.totalItems !== 0) {
+      if (this.hasUnsaved)  {
+        return 'Spara massändring för att förhandsgranska'
+      } else if (this.totalItems !== 0 ) {
         return `${this.offset + 1} ${translatePhrase('of')} ${this.totalItems}`
-      } else {
+      } else if (this.totalItems === 0) {
         return 'Inga matchande poster'
       }
     },
@@ -108,31 +117,22 @@ export default {
       {{ this.title }}
     </div>
     <div class="Preview-body" :class="{ 'has-selection': isActive }">
-      <div v-if="completed">
-        <div class="Preview-completed">
-          <div>{{ translatePhrase('No preview available.')}}</div>
-          <div>&nbsp{{ translatePhrase('Bulk change is')}}</div>
-          <div>&nbsp<span class="badge badge-accent2">{{ completedLabel }}</span>.</div>
-        </div>
-      </div>
-      <div v-if="!completed">
       <span class="Preview-affected Breadcrumb-recordNumbers">{{ this.noHitsLabel }} </span>
-        <div class="Preview-preview" v-if="hasPreviewData">
-          <div class="Preview-preview-heading">
+      <div class="Preview-preview" v-if="showPreview">
+        <div class="Preview-preview-heading">
           <entity-summary
             :focus-data="previewData"
             :should-link="false"
-            :exclude-components="['details']" />
-          </div>
-          <entity-form
-            :editing-object="'mainEntity'"
-            :key="formTab.id"
-            :is-active="true"
-            :diff="previewDiff"
-            :form-data="previewData"
-            :locked="true"
-          />
+            :exclude-components="['details']"/>
         </div>
+        <entity-form
+          :editing-object="'mainEntity'"
+          :key="formTab.id"
+          :is-active="true"
+          :diff="previewDiff"
+          :form-data="previewData"
+          :locked="true"
+        />
       </div>
     </div>
   </div>
