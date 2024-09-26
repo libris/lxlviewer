@@ -146,7 +146,7 @@
 	}
 
 	async function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		value = encodeURIComponent(event.value); // encode value to escape line break character (which should be present in the URL)
+		value = event.value;
 		const trimmedValue = value.trim();
 
 		if (trimmedValue !== lastValue) {
@@ -208,7 +208,8 @@
 				onchange={handleChangeCodeMirror}
 			/>
 		</div>
-		<textarea {value} hidden readonly name="_q" maxlength={2048}></textarea>
+		<textarea value={encodeURIComponent(value)} hidden readonly name="_q" maxlength={2048}
+		></textarea>
 	</SearchInputWrapper>
 	<dialog bind:this={dialogElement} onclose={hideDropdown}>
 		<div class="dropdown">
