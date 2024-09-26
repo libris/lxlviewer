@@ -8,7 +8,7 @@
 	import { languageTag } from '$lib/paraglide/runtime.js';
 	import type { AutocompleteItem, AutocompleteResponse } from '$lib/types/autocomplete';
 	import type { Qualifiers } from '$lib/types/qualifier';
-	import AutocompleteListItem from './AutocompleteListItem.svelte';
+	import AutocompleteListItem, { type QualifierEvent } from './AutocompleteListItem.svelte';
 	import getEditedParts from '$lib/utils/codemirror/getEditedParts';
 
 	/** Tests to do
@@ -164,6 +164,18 @@
 		}
 	}
 
+	function handleAddQualifier(event: QualifierEvent) {
+		console.log('handleAddQualifier', event);
+	}
+
+	function handlePreviewQualifierStart(event: QualifierEvent) {
+		console.log('handlePreviewQualifierStart', event);
+	}
+
+	function handlePreviewQualifierEnd(event: QualifierEvent) {
+		console.log('handlePreviewQualifierEnd', event);
+	}
+
 	/*
 	function handleClickSuggestionItem(suggestion: PartSuggestion) {
 		dropdownCodeMirror?.replaceEditedPart(
@@ -220,7 +232,12 @@
 							<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
 							<ul>
 								{#each qualifierItems as item (item['@id'])}
-									<AutocompleteListItem data={item} />
+									<AutocompleteListItem
+										data={item}
+										onaddqualifier={handleAddQualifier}
+										onpreviewqualifierstart={handlePreviewQualifierStart}
+										onpreviewqualifierend={handlePreviewQualifierEnd}
+									/>
 								{/each}
 							</ul>
 							<button class="show-more">Visa fler</button>
