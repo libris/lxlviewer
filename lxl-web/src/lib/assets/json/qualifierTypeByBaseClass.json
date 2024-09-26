@@ -2,6 +2,7 @@
 	"Library": "itemHeldBy",
 	"Agent": "contributor",
 	"Topic": "subject",
+	"Subject": "subject",
 	"Language": "SPRÅK",
 	"GenreForm": "genreForm"
 }
