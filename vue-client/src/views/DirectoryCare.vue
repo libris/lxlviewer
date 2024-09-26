@@ -45,15 +45,24 @@ export default {
       return filter(this.fetchedItems, (o) => VocabUtil.getRecordType(o['@type'], this.resources.vocab, this.resources.context) === 'Instance');
     },
     tabs() {
-      return [
+      const tabs = [
         { id: 'changes', text: 'CXZ messages' },
         { id: 'message', text: 'Create message' },
         { id: 'holdings', text: 'Move holdings' },
-        { id: 'masschanges', text: 'Mass changes' },
         // { 'id': 'merge', 'text': 'Merge records' },
         // { 'id': 'remove', 'text': 'Batch remove' },
       ];
+      if (this.userIsAllowedToBulkChange) {
+        tabs.push({ id: 'masschanges', text: 'Mass changes' })
+      }
+      return tabs;
     },
+    userIsAllowedToBulkChange() {
+      if (this.user.isLoggedIn === false) {
+        return false;
+      }
+      return this.user.settings.activeSigel === 'S';
+    }
   },
   watch: {
     userFlagged(newValue, oldValue) {
@@ -153,7 +162,7 @@ export default {
       <admin-notices v-if="$route.params.tool === 'changes'" />
       <create-message v-if="$route.params.tool === 'message'" />
       <holding-mover v-if="$route.params.tool === 'holdings'" :flaggedInstances="flaggedInstances" />
-      <mass-changes v-if="$route.params.tool === 'masschanges' || $route.name === 'Masschanges'" :fnurgel="$route.params.fnurgel" />
+      <mass-changes v-if="($route.params.tool === 'masschanges' || $route.name === 'Masschanges') && this.userIsAllowedToBulkChange" :fnurgel="$route.params.fnurgel" />
       <div class="" v-if="$route.params.tool === 'merge'">
         <h1>merge records</h1>
         <!-- replace this whole div with the component -->
