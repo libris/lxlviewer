@@ -405,7 +405,7 @@ export default {
       if (del) {
         delete update['_match'];
       } else {
-        update['_match'] = 'exact';
+        update['_match'] = 'Exact';
       }
       this.$store.dispatch('updateInspectorData', {
         changeList: [
