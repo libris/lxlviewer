@@ -15,6 +15,7 @@ export interface SearchResult {
 	items: SearchResultItem[];
 	facetGroups: FacetGroup[];
 	predicates: MultiSelectFacet[];
+	_spell: SpellingSuggestion[] | [];
 }
 
 export interface SearchResultItem {
@@ -41,6 +42,7 @@ export interface FacetGroup {
 	label: string;
 	dimension: FacetGroupId;
 	search?: FacetSearch;
+	maxItems?: number;
 	// TODO better to do this distinction on the group level?
 	facets: (Facet | MultiSelectFacet)[];
 }
@@ -55,6 +57,12 @@ export interface Facet {
 
 export interface MultiSelectFacet extends Facet {
 	selected: boolean;
+}
+
+interface SpellingSuggestion {
+	label: string;
+	labelHtml: string;
+	view: Link;
 }
 
 export interface DisplayMapping {
@@ -87,6 +95,7 @@ export interface PartialCollectionView {
 		_predicates: Observation[];
 		_boolFilters?: Observation[];
 	};
+	_spell: SpellingSuggestion[] | [];
 }
 
 interface Slice {
@@ -94,6 +103,7 @@ interface Slice {
 	dimension: FacetGroupId;
 	observation: Observation[];
 	search?: FacetSearch;
+	maxItems: number;
 }
 
 interface Observation {

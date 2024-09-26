@@ -24,7 +24,7 @@
 </script>
 
 {#if image && thumb}
-	<figure class="table aspect-square h-40 overflow-hidden">
+	<figure class="table aspect-square h-64 overflow-hidden md:h-56 xl:h-64">
 		{#if linkToFull && full}
 			<a href={full.url} target="_blank" class="object-[inherit]">
 				<img
@@ -66,7 +66,7 @@
 						{/if}
 					</span>
 					<!-- This could be based on if attribution required by license.
-						 For now, display if there is any attribution info available -->
+						For now, display if there is any attribution info available -->
 					{#if geometry === 'circle'}
 						{$page.data.t('general.cropped')}
 					{/if}

@@ -27,4 +27,5 @@ export type HoldersByType = {
 export type DecoratedHolder = {
 	obj: DisplayDecorated;
 	sigel: string;
+	str: string;
 };

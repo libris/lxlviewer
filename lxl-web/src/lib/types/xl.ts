@@ -30,6 +30,7 @@ export enum Fmt {
 
 // https://github.com/libris/definitions/blob/develop/source/vocab/base.ttl
 export enum Base {
+	Resource = 'Resource',
 	StructuredValue = 'StructuredValue'
 }
 

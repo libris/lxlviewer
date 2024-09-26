@@ -16,6 +16,9 @@ function addDefaultSearchParams(searchParams: URLSearchParams): URLSearchParams 
 	if (!params.has('_sort')) {
 		params.set('_sort', '');
 	}
+	if (!params.has('_spell')) {
+		params.set('_spell', 'true');
+	}
 
 	return params;
 }

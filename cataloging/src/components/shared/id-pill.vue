@@ -23,7 +23,7 @@ export default {
     };
   },
   methods: {
-    copyFnurgel() {
+    copyId() {
       const self = this;
       this.$copyText(this.uri).then(() => {
         self.recentlyCopiedId = true;
@@ -41,15 +41,17 @@ export default {
       'user',
       'resources',
     ]),
-    idAsFnurgel() {
+    displayedId() {
       if (this.uri) {
         const id = this.uri;
         const fnurgel = RecordUtil.extractFnurgel(id);
         if (fnurgel && this.isLibrisResource) {
           return fnurgel;
         }
-        const cleaned = id.replace('https://', '').replace('http://', '');
-        return cleaned;
+        return id
+          .replace('https://', '')
+          .replace('http://', '');
+          // TODO? uridecode for display?
       }
       return null;
     },
@@ -62,7 +64,7 @@ export default {
 
 <template>
   <div
-    v-if="idAsFnurgel"
+    v-if="displayedId"
     class="IdPill"
     :class="{ 'recently-copied': recentlyCopiedId }"
     @mouseover="idHover = true"
@@ -71,7 +73,7 @@ export default {
       v-tooltip.top="idTooltipText"
       class="fa fa-copy IdPill-idCopyIcon"
       :class="{ collapsedIcon: !idHover || recentlyCopiedId }"
-      @click.stop="copyFnurgel" />{{ idAsFnurgel }}
+      @click.stop="copyId" />{{ displayedId }}
   </div>
 </template>
 
@@ -89,6 +91,11 @@ export default {
   padding: 0 0.75em;
   border-radius: 1em;
 
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
   &.recently-copied {
     background-color: @brand-success;
     color: @white;
@@ -96,7 +103,7 @@ export default {
   &-idCopyIcon {
     transition: all 0.25s ease;
     margin: 0 0.25em 0 -0.25em;
-    overflow: hidden;
+    overflow: visible;
     width: 1.2em;
     opacity: 1;
     cursor: pointer;

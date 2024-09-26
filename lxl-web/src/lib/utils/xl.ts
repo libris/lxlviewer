@@ -193,9 +193,11 @@ export class DisplayUtil {
 			lensType,
 			this.DEFAULT_SUBLENS_SELECTOR,
 			(result, p, value) => {
-				[JsonLd.ID, JsonLd.TYPE].includes(p)
-					? ((result as Record<string, unknown>)[p] = value)
-					: (result as { _props: Array<Data> })._props.push({ [p]: value });
+				if ([JsonLd.ID, JsonLd.TYPE].includes(p)) {
+					(result as Record<string, unknown>)[p] = value;
+				} else {
+					(result as { _props: Array<Data> })._props.push({ [p]: value });
+				}
 			},
 			() => {
 				return { _props: [] };
@@ -277,6 +279,7 @@ export class DisplayUtil {
 		langAndScript: string | undefined = undefined
 	) {
 		if (!isTypedNode(thing)) {
+			// TODO: should we apply the default lens instead?
 			return thing;
 		}
 
@@ -641,7 +644,8 @@ class Formatter {
 					this.displayUtil.applyLensOrdered(this.vocabUtil.getDefinition(vocabName), LensType.None)
 				)
 			);
-		} catch (e) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (ignored) {
 			console.warn(`Error getting vocab label for: ${vocabName}`);
 		}
 	}

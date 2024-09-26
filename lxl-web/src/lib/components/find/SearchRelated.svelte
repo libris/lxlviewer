@@ -1,7 +1,8 @@
 <script lang="ts">
-	import BiSearch from '~icons/bi/search';
+	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import type { Link } from '$lib/utils/xl';
+	import type { Link } from '$lib/types/xl';
+	import BiSearch from '~icons/bi/search';
 
 	export let view: Link;
 
@@ -16,9 +17,15 @@
 			_i = '*';
 		}
 	}
+
+	afterNavigate(({ to }) => {
+		if (to?.url) {
+			_i = new URL(to.url).searchParams.get('_i')?.trim() || '';
+		}
+	});
 </script>
 
-<form action="" on:submit={handleSubmit} class="flex w-full gap-2 lg:max-w-xl">
+<form action="" on:submit={handleSubmit} class="flex w-full gap-2 md:max-w-2xl">
 	<label for="search-related" class="sr-only">{$page.data.t('search.relatedSearchLabel')}</label>
 	<input
 		class="flex-1"

@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
+	import type { DecoratedHolder } from '$lib/types/holdings';
 	import { Width } from '$lib/types/auxd';
 	import getPageTitle from '$lib/utils/getPageTitle';
 	import isFnurgel from '$lib/utils/isFnurgel';
@@ -13,6 +14,7 @@
 	import SearchResult from '$lib/components/find/SearchResult.svelte';
 	import InstancesList from './InstancesList.svelte';
 	import HoldingStatus from './HoldingStatus.svelte';
+	import BiSearch from '~icons/bi/search';
 
 	export let data;
 
@@ -23,6 +25,7 @@
 	let holdingsInstanceElement: HTMLElement | null;
 	let expandedHoldingsInstance = false;
 	let previousURL: URL;
+	let searchPhrase = '';
 
 	$: selectedHoldingInstance = selectedHolding
 		? data.instances?.find((instanceItem) => instanceItem['@id'].includes(selectedHolding)) ||
@@ -50,6 +53,27 @@
 	$: expandableHoldingsInstance =
 		holdingsInstanceElement?.scrollHeight > ASIDE_SEARCH_CARD_MAX_HEIGHT;
 
+	let displayedHolders: DecoratedHolder[] = [];
+	$: if (latestHoldingUrl) {
+		if (
+			isFnurgel(latestHoldingUrl) &&
+			selectedHolding &&
+			data.holdingsByInstanceId[selectedHolding]
+		) {
+			// show holdings for an instance
+			displayedHolders = data.holdingsByInstanceId[selectedHolding].map(
+				(holding) => holding.heldBy
+			);
+		} else if (data.holdersByType?.[latestHoldingUrl]) {
+			// show holdings by type
+			displayedHolders = data.holdersByType[latestHoldingUrl];
+		}
+	}
+
+	$: filteredHolders = displayedHolders.filter((holder) => {
+		return holder.str?.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1;
+	});
+
 	afterNavigate(({ to }) => {
 		if (to) {
 			previousURL = to.url;
@@ -75,7 +99,7 @@
 <article>
 	<div class="resource gap-8 find-layout page-padding" class:bg-header={shouldShowHeaderBackground}>
 		<div
-			class="mb-2 mt-4 flex w-full justify-center self-center object-center md:mx-auto md:justify-start md:self-start md:px-2 xl:px-0"
+			class="mb-2 mt-4 flex w-full justify-center self-center object-center md:mx-auto md:self-start md:px-2 xl:px-0"
 			class:hidden={!$page.data.images?.length}
 		>
 			{#if data.images.length}
@@ -214,19 +238,24 @@
 								: data.t('holdings.libraries')}
 						{/if}
 					</h2>
+					<div class="relative mb-4 mt-2">
+						<input
+							bind:value={searchPhrase}
+							placeholder={$page.data.t('holdings.findLibrary')}
+							aria-label={$page.data.t('holdings.findLibrary')}
+							class="w-full pl-8"
+							type="search"
+						/>
+						<BiSearch class="absolute left-2.5 top-3 text-sm text-icon" />
+					</div>
 					<ul class="w-full text-sm">
-						{#if latestHoldingUrl && isFnurgel(latestHoldingUrl)}
-							<!-- holdings list by instance -->
-							{#if selectedHolding && data.holdingsByInstanceId[selectedHolding]}
-								{#each data.holdingsByInstanceId[selectedHolding] as holdingItem}
-									<HoldingStatus holder={holdingItem?.heldBy} {holdingUrl} />
-								{/each}
-							{/if}
-							<!-- holdings list by type -->
-						{:else if latestHoldingUrl && data.holdersByType?.[latestHoldingUrl]}
-							{#each data.holdersByType[latestHoldingUrl] as holderItem}
-								<HoldingStatus holder={holderItem} {holdingUrl} />
-							{/each}
+						{#each filteredHolders as holder, i (holder.sigel || i)}
+							<HoldingStatus {holder} {holdingUrl} />
+						{/each}
+						{#if filteredHolders.length === 0}
+							<li class="m-3">
+								<span role="alert">{$page.data.t('search.noResults')}</span>
+							</li>
 						{/if}
 					</ul>
 				</div>

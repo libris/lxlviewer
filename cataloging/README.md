@@ -13,7 +13,7 @@ No action required here, this is just information.
 
 #### Coding Standard
 * [SUIT CSS](https://suitcss.github.io/)
-* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`.eslintrc.js`](/vue-client/.eslintrc.js) in `./vue-client`)
+* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript/) (with our own modifications, see [`.eslintrc.js`](/cataloging/.eslintrc.js))
 
 #### Requirements
 * [node.js](http://nodejs.org/) >= 18
@@ -21,7 +21,7 @@ No action required here, this is just information.
 
 #### Setup
 
-    $ cd vue-client && yarn install
+    $ yarn install
 
     # To only run frontend stuff locally, and use libris-dev as backend:
     $ cp .env.development.in .env.development
@@ -78,7 +78,7 @@ yarn lint
 
 ##### Local displayfile
 
-If you can't load the display file or want to use a local version for any other reason, it's possible to mock it by adding `VUE_APP_MOCK_DISPLAY_BOOL=true` as a row in `.env.development` (in the `vue-client`-folder) and it will use the display file in your local definitions repository. If you want to use the live version, remove the row or set it to `false`.
+If you can't load the display file or want to use a local version for any other reason, it's possible to mock it by adding `VUE_APP_MOCK_DISPLAY_BOOL=true` as a row in `.env.development` and it will use the display file in your local definitions repository. If you want to use the live version, remove the row or set it to `false`.
 
 ##### Local help documentation
 
