@@ -27,7 +27,8 @@ export function encodeSpecialChars(path) {
   return path
     .replace(/\(/g, '%28')
     .replace(/\)/g, '%29')
-    .replace(/&/g, '%26');
+    .replace(/&/g, '%26')
+    .replace(/,/g, '%2C');
 }
 
 export function activeSite(xForwardedHost, siteAlias, siteConfig, defaultSite) {
