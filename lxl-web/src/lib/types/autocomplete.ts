@@ -7,6 +7,12 @@ export type AutocompleteItem = {
 	description?: string;
 	typeLabel: string;
 	totalReverseLinks: number;
+	editedRange: { from: number; to: number };
+	qualifierType?: string;
+	qualifierValue?: string;
+	resourceLink?: string;
+	qualifierLink?: string;
+	qualifierTypeLink?: string;
 };
 
 export type AutocompleteResponse = {

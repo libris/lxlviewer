@@ -2,6 +2,7 @@
 	import type { AutocompleteItem } from '$lib/types/autocomplete';
 	import IconAddQualifier from '~icons/mdi/arrow-top-left'; // ~icons/mdi/arrow-top-left
 	import IconGotoQualfier from '~icons/bi/arrow-right-circle';
+
 	type AutocompleteListItemProps = {
 		data: AutocompleteItem;
 	};
@@ -52,6 +53,11 @@
 		&::before {
 			display: none;
 		}
+	}
+
+	a {
+		color: inherit;
+		text-decoration: none;
 	}
 
 	hgroup {

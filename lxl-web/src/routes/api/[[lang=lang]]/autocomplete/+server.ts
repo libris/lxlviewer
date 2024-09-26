@@ -91,16 +91,16 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 		const qualifierTypeLink = getQualifierLink({
 			initialQuery: full,
 			editedRange,
-			insert: `${qualifierType}:`,
+			qualifierType,
 			appendEditedRange: true
 		});
 
 		const qualifierLink = getQualifierLink({
 			initialQuery: full,
 			editedRange,
-			insert: `${qualifierType}:${qualifierValue}`
+			qualifierType,
+			qualifierValue
 		});
-
 		return {
 			[JsonLd.ID]: item?.['@id'],
 			[JsonLd.TYPE]: displayType,
@@ -109,15 +109,19 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 				? toString(displayUtil.lensAndFormat(item, LxlLens.PageOverView, lang))
 				: null,
 			typeLabel: toString(
-				displayUtil.lensAndFormat(vocabUtil.getDefinition(displayType), LxlLens.CardHeading, lang)
+				displayUtil.lensAndFormat(
+					(qualifierType && vocabUtil.getDefinition(qualifierType)) ||
+						vocabUtil.getDefinition(displayType),
+					LxlLens.CardHeading,
+					lang
+				)
 			),
 			inSchemeLabel: item.inScheme
 				? toString(displayUtil.lensAndFormat(item.inScheme, LxlLens.CardHeading, lang))
 				: undefined,
 			inSchemeCode: item?.inScheme?.code,
 			totalReverseLinks: item?.reverseLinks?.totalItems || 0,
-			editedWordRange: wordRange,
-			editedPhraseRange: phraseRange,
+			editedRange: phraseRange || wordRange,
 			qualifierType,
 			qualifierValue,
 			resourceLink: relativizeUrl(item?.meta?.['@id']),

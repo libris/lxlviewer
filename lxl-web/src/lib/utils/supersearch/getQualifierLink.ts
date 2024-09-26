@@ -3,7 +3,8 @@ import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 function getQualifierLink({
 	initialQuery,
 	editedRange,
-	insert,
+	qualifierType,
+	qualifierValue,
 	appendEditedRange = false
 }: {
 	initialQuery: string;
@@ -11,10 +12,11 @@ function getQualifierLink({
 		from: number;
 		to: number;
 	} | null;
-	insert?: string;
+	qualifierType?: string;
+	qualifierValue?: string;
 	appendEditedRange?: boolean;
 }) {
-	if (!editedRange || !insert) {
+	if (!editedRange || !qualifierType) {
 		return null;
 	}
 	const before = initialQuery
@@ -26,7 +28,10 @@ function getQualifierLink({
 		'/find?' +
 		addDefaultSearchParams(
 			new URLSearchParams({
-				_q: (before ? `${before} ` : '') + insert + (after ? ` ${after}` : '')
+				_q:
+					(before ? `${before} ` : '') +
+					`${qualifierType}:${qualifierValue || ''}` +
+					(after ? ` ${after}` : '')
 			})
 		)
 	);
