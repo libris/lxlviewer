@@ -61,7 +61,7 @@ export default {
       if (this.user.isLoggedIn === false) {
         return false;
       }
-      return this.user.settings.activeSigel === 'S';
+      return this.user.settings.activeSigel === 'SEK';
     }
   },
   watch: {
