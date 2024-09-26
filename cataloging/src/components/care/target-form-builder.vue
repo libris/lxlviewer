@@ -87,7 +87,6 @@ export default {
           :is-active="true"
           :form-data="data"
           :locked="!isActive"
-          :in-bulk-change-view="true"
         />
       </div>
       <div

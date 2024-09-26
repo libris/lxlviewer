@@ -394,7 +394,7 @@ export default {
         });
     },
     togglePinned() {
-      if (this.isPinned) {
+      if (this.showPinned && this.isPinned) {
         this.setPinned(true);
       } else {
         this.setPinned(false);
@@ -678,7 +678,7 @@ export default {
         />
 
         <entity-action
-          v-if="inspector.status.editing && showPinned && !isEmbedded && !isLocked || (isLocked && isPinned)"
+          v-if="inspector.status.editing && showPinned && !isEmbedded && !isLocked || isPinned"
           @action="togglePinned"
           label="Exact match"
           :description="`${translatePhrase('Matcha exakt')} ${capitalize(labelByLang(item['@type']))}`"
@@ -748,7 +748,9 @@ export default {
         :key="k"
         :diff="diff"
         :expand-children="expandChildren"
-        :is-expanded="expanded" />
+        :is-expanded="expanded"
+        :in-bulk-change-view="showPinned"
+      />
     </ul>
 
     <property-adder
