@@ -1,20 +1,21 @@
 <script module lang="ts">
-	export type QualifierEvent = {
-		editedRange: { from: number; to: number };
+	export type QualifierChangeEvent = {
+		from: number;
+		to?: number;
 		insert: string;
 	};
 </script>
 
 <script lang="ts">
-	import type { AutocompleteItem } from '$lib/types/autocomplete';
+	import type { SuggestItem } from '$lib/types/suggest';
 	import IconAddQualifier from '~icons/mdi/arrow-top-left'; // ~icons/mdi/arrow-top-left
 	import IconGotoQualfier from '~icons/bi/arrow-right-circle';
 
 	type AutocompleteListItemProps = {
-		data: AutocompleteItem;
-		onaddqualifier?: (event: QualifierEvent) => void;
-		onpreviewqualifierstart?: (event: QualifierEvent) => void;
-		onpreviewqualifierend?: (event: QualifierEvent) => void;
+		data: SuggestItem;
+		onaddqualifier?: (event: QualifierChangeEvent) => void;
+		onpreviewqualifierstart?: (event: QualifierChangeEvent) => void;
+		onpreviewqualifierend?: (event: QualifierChangeEvent) => void;
 	};
 
 	let {
@@ -26,6 +27,8 @@
 
 	const qualifierData = $derived({
 		editedRange: data.editedRange,
+		from: data.qualifiers.full.change.from,
+		to: data.qualifiers.full.change.to,
 		insert: `${data.qualifierType}:${data.qualifierValue}`
 	});
 
@@ -33,6 +36,8 @@
 		editedRange: data.editedRange,
 		insert: `${data.qualifierType}:`
 	});
+
+	$inspect(data);
 </script>
 
 <li class="list-item">

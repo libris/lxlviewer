@@ -6,10 +6,13 @@
 	// import getSuggestionTypeLabel from '$lib/utils/supersearch/getSuggestionsTypeLabel';
 	import debounce from '$lib/utils/debounce';
 	import { languageTag } from '$lib/paraglide/runtime.js';
-	import type { AutocompleteItem, AutocompleteResponse } from '$lib/types/autocomplete';
 	import type { Qualifiers } from '$lib/types/qualifier';
-	import AutocompleteListItem, { type QualifierEvent } from './AutocompleteListItem.svelte';
+	import AutocompleteListItem, { type QualifierChangeEvent } from './AutocompleteListItem.svelte';
 	import getEditedParts from '$lib/utils/codemirror/getEditedParts';
+	import type {
+		SuggestResponse,
+		SuggestItem
+	} from '../../routes/api/[[lang=lang]]/suggest/+server';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -33,8 +36,8 @@
 	let { value = $bindable(), placeholder, validQualifiers }: SuperSearchProps = $props(); // should we keep codemirror instances in sync using update listeners instead of binding to ensure history is kept as is (but will it work with when removing linebreaks?)? See: https://codemirror.net/examples/split/
 
 	let lastValue = $state();
-	let qualifierItems: AutocompleteItem[] = $state([]);
-	let workItems: AutocompleteItem[] = $state([]);
+	let qualifierItems: SuggestItem[] = $state([]);
+	let workItems: SuggestItem[] = $state([]);
 
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
 	let dropdownCodeMirror: CodeMirror | undefined = $state();
@@ -50,46 +53,33 @@
 					cursor
 				});
 
-				const qualifiersRes = await fetch(
-					`/api/${languageTag()}/autocomplete?${new URLSearchParams([
-						['full', value],
-						['wordRange', `${wordRange.from},${wordRange.to}`],
-						['phraseRange', phraseRange ? `${phraseRange.from},${phraseRange.to}` : ''],
-						['@type', 'Agent'],
-						['@type', 'Concept'],
-						['@type', 'Language'],
-						['not-@type', 'ComplexSubject'], // Should it be "unboosted" instead?
-						['not-inScheme.@id', 'https://id.kb.se/term/swepub'],
-						['not-inScheme.@id', 'https://id.kb.se/marc'],
-						['min-reverseLinks.totalItems', '1'],
-						['_limit', '4'],
-						['_offset', '0'],
-						['_sort', '']
-					])}`
-				);
+				const [qualifiersRes, worksRes] = await Promise.all([
+					fetch(
+						`/api/${languageTag()}/suggest?${new URLSearchParams({
+							q: value,
+							type: 'qualifier',
+							wordRange: `${wordRange.from},${wordRange.to}`,
+							...(phraseRange && { phraseRange: `${phraseRange.from},${phraseRange.to}` })
+						})}`
+					),
+					fetch(
+						`/api/${languageTag()}/suggest?${new URLSearchParams({
+							q: value,
+							type: 'work'
+						})}`
+					)
+				]);
 
 				if (!qualifiersRes.ok) {
 					throw { status: qualifiersRes.status, statusText: qualifiersRes.statusText };
 				}
 
-				const worksRes = await fetch(
-					`/api/${languageTag()}/autocomplete?${new URLSearchParams([
-						['full', value],
-						['overview', 'true'],
-						['not-inCollection.@id', 'https://id.kb.se/term/uniformWorkTitle'],
-						['@type', 'Work'],
-						['_limit', '4'],
-						['_offset', '0'],
-						['_sort', '']
-					])}`
-				);
-
 				if (!worksRes.ok) {
 					throw { status: worksRes.status, statusText: worksRes.statusText };
 				}
 
-				const qualifiers = (await qualifiersRes.json()) as AutocompleteResponse;
-				const works = (await worksRes.json()) as AutocompleteResponse;
+				const qualifiers = (await qualifiersRes.json()) as SuggestResponse;
+				const works = (await worksRes.json()) as SuggestResponse;
 
 				qualifierItems = qualifiers.items;
 				workItems = works.items;
@@ -164,15 +154,15 @@
 		}
 	}
 
-	function handleAddQualifier(event: QualifierEvent) {
+	function handleAddQualifier(event: QualifierChangeEvent) {
 		console.log('handleAddQualifier', event);
 	}
 
-	function handlePreviewQualifierStart(event: QualifierEvent) {
+	function handlePreviewQualifierStart(event: QualifierChangeEvent) {
 		console.log('handlePreviewQualifierStart', event);
 	}
 
-	function handlePreviewQualifierEnd(event: QualifierEvent) {
+	function handlePreviewQualifierEnd(event: QualifierChangeEvent) {
 		console.log('handlePreviewQualifierEnd', event);
 	}
 
