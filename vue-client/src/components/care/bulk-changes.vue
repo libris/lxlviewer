@@ -257,14 +257,11 @@ export default {
       return this.activeStep === step;
     },
     save() {
-      this.dataOnSave();
-      this.saveBulkChange();
-    },
-    dataOnSave() {
-      if (this.isActive('targetForm')) {
+      if (this.isActive('form')) {
+        this.setActive('targetForm');
+      } else {
         this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
-      } else if (this.isActive('form')) {
-        this.currentSpec.matchForm = cloneDeep(this.inspector.data.mainEntity);
+        this.saveBulkChange();
       }
     },
     getPreview() {
