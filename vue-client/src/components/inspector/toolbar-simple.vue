@@ -153,7 +153,6 @@ export default {
     },
     handleReady() {
       this.$emit('ready');
-      this.handleSave();
     },
     cancel() {
       this.$emit('setAsDraft');

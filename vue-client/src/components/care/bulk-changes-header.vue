@@ -17,6 +17,7 @@ export default {
     currentBulkChange: {},
     documentId: '',
     isNew: false,
+    isDraft: false,
   },
   computed: {
     ...mapGetters([
@@ -36,8 +37,10 @@ export default {
   methods: {
     translatePhrase,
     startEdit() {
-      this.editing = true;
-      this.focusInput()
+      if (this.isDraft) {
+        this.editing = true;
+        this.focusInput()
+      }
     },
     stopEdit() {
       this.editing = false;
@@ -62,7 +65,7 @@ export default {
       @keyup.esc="stopEdit"
     >
     <span class="BulkChanges-header" v-if="!editing"
-      :class="{ 'cursor-pointer': !editing }"
+      :class="{ 'cursor-pointer': !editing && isDraft }"
       @click="startEdit"
       @keyup.enter="startEdit"
       tabindex="0"

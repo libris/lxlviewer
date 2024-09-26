@@ -108,7 +108,7 @@ export default {
       return StringUtil.getLabelByLang('CompletedBulkChange', this.user.settings.language, this.resources)
     },
     hasUnsavedChanges() {
-      if (this.lastFetchedSpec) {
+      if (this.lastFetchedSpec && this.isDraft) {
         const matchFormEqual = isEqual(this.formObj, this.lastFetchedSpec.matchForm);
         const targetFormEqual = isEqual(this.targetFormObj, this.lastFetchedSpec.targetForm);
         return !matchFormEqual || !targetFormEqual;
@@ -186,10 +186,15 @@ export default {
           } else {
             this.setInspectorData(this.currentSpec.matchForm)
           }
-          this.$store.dispatch('pushInspectorEvent', {
-            name: 'record-control',
-            value: 'start-edit',
-          });
+          if (this.isDraft) {
+            this.$store.dispatch('pushInspectorEvent', {
+              name: 'record-control',
+              value: 'start-edit',
+            });
+          }
+          if (this.isReady) {
+            this.setActive('preview');
+          }
           DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
           this.getPreview();
         }
@@ -322,8 +327,9 @@ export default {
 
     },
     ready() {
-      this.setActive('preview')
       this.setRunStatus('ReadyBulkChange');
+      this.save();
+      this.setActive('preview');
     },
     setAsDraft() {
       this.setRunStatus('DraftBulkChange');
@@ -515,9 +521,10 @@ export default {
       :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
     <div class="BulkChanges-new">
       <bulk-changes-header
-        :currentBulkChange="this.currentBulkChange"
-        :documentId="this.documentId"
-        :is-new="this.isNew"
+        :currentBulkChange="currentBulkChange"
+        :documentId="documentId"
+        :is-new="isNew"
+        :is-draft="isDraft"
       />
       <div ref="matchForm">
         <form-builder
