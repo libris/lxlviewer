@@ -20,7 +20,7 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation */
 		if (to?.url) {
-			q = to.url.searchParams.get('_q') || '';
+			q = decodeURIComponent(to.url.searchParams.get('_q') || '') || ''; // decode query value to convert escaped line-breaks
 		}
 	});
 

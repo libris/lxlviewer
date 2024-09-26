@@ -146,7 +146,7 @@
 	}
 
 	async function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		value = event.value;
+		value = encodeURIComponent(event.value); // encode value to escape line break character
 		const trimmedValue = value.trim();
 
 		if (trimmedValue !== lastValue) {
