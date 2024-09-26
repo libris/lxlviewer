@@ -194,6 +194,10 @@ export default {
           }
           if (this.isReady) {
             this.setActive('preview');
+            this.triggerRunBulkChange();
+            setTimeout(() => {
+              this.triggerRunBulkChange();
+            }, 5000);
           }
           DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
           this.getPreview();
@@ -324,7 +328,12 @@ export default {
         this.fullPreviewDiff.modified = displayPaths.modified.map(path => `mainEntity.${path}`);
         DataUtil.fetchMissingLinkedToQuoted(this.fullPreviewData, this.$store);
       });
-
+    },
+    async triggerRunBulkChange() {
+      const nonEmpty = {'a' : 'b'};
+      await HttpUtil.post({
+        url: `${this.settings.apiPath}/_bulk-change/poll-ready`
+      }, nonEmpty);
     },
     ready() {
       this.setRunStatus('ReadyBulkChange');
