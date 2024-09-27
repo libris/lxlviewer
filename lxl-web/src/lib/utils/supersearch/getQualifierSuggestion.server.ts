@@ -3,6 +3,12 @@ import type { FramedData } from '../xl';
 import { env } from '$env/dynamic/private';
 import { JsonLd } from '$lib/utils/xl';
 import QUALIFIER_TYPES_BY_BASE_CLASS from '$lib/assets/json/qualifierTypeByBaseClass.json';
+import {
+	globalVocabUtil as vocabUtil,
+	globalDisplayUtil as displayUtil
+} from '../../../hooks.server';
+import { toString } from '$lib/utils/xl';
+import { LxlLens } from '$lib/utils/display.types';
 
 export type QualifierSuggestion =
 	| {
@@ -25,38 +31,43 @@ export type QualifierSuggestion =
 function getQualifierSuggestion({
 	query,
 	item,
-	itemBaseClasses, // it's a little unfortunate that we have to pass along itemBaseClasses but we currently cannot access vocabUtils without access to locals (is locals really needed? We should be able to export a server only class without locals...)
-	editedRange
+	editedRange,
+	lang
 }: {
 	query: string;
 	item: FramedData;
-	itemBaseClasses: string[];
 	editedRange: { from: number; to: number };
+	lang: string;
 }): QualifierSuggestion {
-	const qualifierType = Object.entries(QUALIFIER_TYPES_BY_BASE_CLASS).find(([qualifiedBaseClass]) =>
-		itemBaseClasses.includes(qualifiedBaseClass)
-	)?.[1];
+	const qualifierMatch = Object.entries(QUALIFIER_TYPES_BY_BASE_CLASS).find(
+		([qualifiedBaseClass]) =>
+			vocabUtil.getBaseClasses(item?.['@type'] as string).includes(qualifiedBaseClass)
+	);
 
-	const qualifierValue = getQualifierValue(item);
-
-	if (!qualifierType || !qualifierValue) {
+	if (!qualifierMatch) {
 		return undefined;
 	}
 
+	const [baseClass, type] = qualifierMatch;
+	const value = getQualifierValue(item);
+
 	return {
-		label: qualifierType,
+		label: toString(
+			displayUtil.lensAndFormat(vocabUtil.getDefinition(type), LxlLens.CardHeading, lang) ||
+				displayUtil.lensAndFormat(vocabUtil.getDefinition(baseClass), LxlLens.CardHeading, lang)
+		),
 		changes: {
 			full: {
 				...editedRange,
 				insert:
 					(!/^[\s]/.test(query.slice(0, editedRange.from)) && editedRange.from !== 0 ? ' ' : '') + // add whitespace before if content before insert doesn't start with a whitespace or is first index
-					`${qualifierType}:${qualifierValue}` +
+					`${type}:${value}` +
 					(!/^[\s]/.test(query.slice(editedRange.to)) ? ' ' : '') // add whitespace after if content after insert doesn't start with a whitespace
 			},
 			type: {
 				from: editedRange.to,
 				to: editedRange.to,
-				insert: ` ${qualifierType}:`
+				insert: ` ${type}:`
 			}
 		}
 	};

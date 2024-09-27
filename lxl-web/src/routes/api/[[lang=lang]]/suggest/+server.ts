@@ -136,8 +136,8 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 					? getQualifierSuggestion({
 							query: q,
 							item,
-							itemBaseClasses: vocabUtil.getBaseClasses(item?.['@type'] as string),
-							editedRange
+							editedRange,
+							lang
 						})
 					: undefined
 		};
