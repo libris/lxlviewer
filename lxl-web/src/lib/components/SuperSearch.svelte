@@ -7,12 +7,9 @@
 	import debounce from '$lib/utils/debounce';
 	import { languageTag } from '$lib/paraglide/runtime.js';
 	import type { Qualifiers } from '$lib/types/qualifier';
-	import AutocompleteListItem, { type QualifierChangeEvent } from './AutocompleteListItem.svelte';
+	import SuggestionListItem, { type QualifierEvent } from './SuggestionListItem.svelte';
 	import getEditedParts from '$lib/utils/codemirror/getEditedParts';
-	import type {
-		SuggestResponse,
-		SuggestItem
-	} from '../../routes/api/[[lang=lang]]/suggest/+server';
+	import type { SuggestResponse, Suggestion } from '../../routes/api/[[lang=lang]]/suggest/+server';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -36,14 +33,15 @@
 	let { value = $bindable(), placeholder, validQualifiers }: SuperSearchProps = $props(); // should we keep codemirror instances in sync using update listeners instead of binding to ensure history is kept as is (but will it work with when removing linebreaks?)? See: https://codemirror.net/examples/split/
 
 	let lastValue = $state();
-	let qualifierItems: SuggestItem[] = $state([]);
-	let workItems: SuggestItem[] = $state([]);
+	let fetchedValue: string | undefined = $state();
+	let qualifierItems: Suggestion[] = $state([]);
+	let workItems: Suggestion[] = $state([]);
 
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
 	let dropdownCodeMirror: CodeMirror | undefined = $state();
 	let dialogElement: HTMLDialogElement | undefined = $state();
 
-	const findAutocompleteItems = debounce(
+	const findSuggestionItems = debounce(
 		async ({ value, cursor }: { value: string; cursor: number }) => {
 			/** TODO: add request cancellation if query changes before fetch has finished (or if component is destroyed) */
 
@@ -84,6 +82,7 @@
 				qualifierItems = qualifiers.items;
 				workItems = works.items;
 
+				fetchedValue = value;
 				dropdownCodeMirror?.updateValidatedQualifiers();
 			} catch (err) {
 				console.error('something went wrong?', err);
@@ -92,9 +91,10 @@
 		250
 	);
 
-	function clearAutocompleteItems() {
+	function clearSuggestionItems() {
 		qualifierItems = [];
 		workItems = [];
+		fetchedValue = undefined;
 	}
 
 	function showDropdown() {
@@ -142,9 +142,9 @@
 		if (trimmedValue !== lastValue) {
 			lastValue = trimmedValue;
 			if (trimmedValue) {
-				findAutocompleteItems({ value: trimmedValue, cursor: event.cursor });
+				findSuggestionItems({ value: trimmedValue, cursor: event.cursor });
 			} else {
-				clearAutocompleteItems();
+				clearSuggestionItems();
 			}
 		}
 
@@ -154,15 +154,15 @@
 		}
 	}
 
-	function handleAddQualifier(event: QualifierChangeEvent) {
+	function handleAddQualifier(event: QualifierEvent) {
 		console.log('handleAddQualifier', event);
 	}
 
-	function handlePreviewQualifierStart(event: QualifierChangeEvent) {
+	function handlePreviewQualifierStart(event: QualifierEvent) {
 		console.log('handlePreviewQualifierStart', event);
 	}
 
-	function handlePreviewQualifierEnd(event: QualifierChangeEvent) {
+	function handlePreviewQualifierEnd(event: QualifierEvent) {
 		console.log('handlePreviewQualifierEnd', event);
 	}
 
@@ -218,13 +218,14 @@
 					</SearchInputWrapper>
 				</div>
 				<nav>
-					{#if value && qualifierItems.length}
+					{#if value && fetchedValue && qualifierItems.length}
 						<section class="suggestions">
 							<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
 							<ul>
 								{#each qualifierItems as item (item['@id'])}
-									<AutocompleteListItem
+									<SuggestionListItem
 										data={item}
+										initialQuery={fetchedValue}
 										onaddqualifier={handleAddQualifier}
 										onpreviewqualifierstart={handlePreviewQualifierStart}
 										onpreviewqualifierend={handlePreviewQualifierEnd}
@@ -234,12 +235,12 @@
 							<button class="show-more">Visa fler</button>
 						</section>
 					{/if}
-					{#if value && workItems.length}
+					{#if value && fetchedValue && workItems.length}
 						<section class="suggestions">
 							<h2 class="dropdown-header">Sökförslag</h2>
 							<ul>
 								{#each workItems as item (item['@id'])}
-									<AutocompleteListItem data={item} />
+									<SuggestionListItem data={item} initialQuery={fetchedValue} />
 								{/each}
 							</ul>
 							<button class="show-more">Visa fler</button>

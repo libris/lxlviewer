@@ -3,7 +3,6 @@ import type { FramedData } from '../xl';
 import { env } from '$env/dynamic/private';
 import { JsonLd } from '$lib/utils/xl';
 import QUALIFIER_TYPES_BY_BASE_CLASS from '$lib/assets/json/qualifierTypeByBaseClass.json';
-import addWrappingSpaces from './addWrappingSpaces';
 
 export type QualifierSuggestion =
 	| {
@@ -49,15 +48,15 @@ function getQualifierSuggestion({
 		changes: {
 			full: {
 				...editedRange,
-				insert: addWrappingSpaces({
-					insert: `${qualifierType}:${qualifierValue}`,
-					query,
-					editedRange
-				})
+				insert:
+					(!/^[\s]/.test(query.slice(0, editedRange.from)) && editedRange.from !== 0 ? ' ' : '') + // add whitespace before if content before insert doesn't start with a whitespace or is first index
+					`${qualifierType}:${qualifierValue}` +
+					(!/^[\s]/.test(query.slice(editedRange.to)) ? ' ' : '') // add whitespace after if content after insert doesn't start with a whitespace
 			},
 			type: {
-				from: editedRange.to, // append when only adding type
-				insert: addWrappingSpaces({ insert: `${qualifierType}:`, query, editedRange })
+				from: editedRange.to,
+				to: editedRange.to,
+				insert: ` ${qualifierType}:`
 			}
 		}
 	};

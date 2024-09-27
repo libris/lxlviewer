@@ -36,7 +36,7 @@ const SearchParamsSchema = z.object({
 
 export type SuggestSearchParamsSchema = z.input<typeof SearchParamsSchema>;
 
-export type SuggestItem = {
+export type Suggestion = {
 	[JsonLd.ID]: string;
 	[JsonLd.TYPE]: string;
 	typeLabel: string;
@@ -49,7 +49,7 @@ export type SuggestItem = {
 };
 
 export type SuggestResponse = {
-	items: SuggestItem[];
+	items: Suggestion[];
 	totalItems: number;
 	itemOffset: number;
 	itemsPerPage: number;
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 
 	const findResult = (await findRes.json()) as PartialCollectionView;
 
-	const suggestItems = findResult.items?.map((item): SuggestItem => {
+	const suggestions = findResult.items?.map((item): Suggestion => {
 		return {
 			[JsonLd.ID]: item?.[JsonLd.ID] as string,
 			[JsonLd.TYPE]: item?.[JsonLd.TYPE] as string,
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 	});
 
 	return json({
-		items: suggestItems,
+		items: suggestions,
 		totalItems: findResult.totalItems,
 		itemOffset: findResult.itemOffset,
 		itemsPerPage: findResult.itemsPerPage
