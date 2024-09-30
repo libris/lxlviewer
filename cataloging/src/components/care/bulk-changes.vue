@@ -225,14 +225,15 @@ export default {
       });
     },
     onInactiveForm() {
-      let form = cloneDeep(this.inspector.data.mainEntity);
+      let form = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
       if (isEqual(form, this.currentSpec.matchForm)) {
         this.setInspectorData(this.currentSpec.targetForm);
       } else {
+        this.setInspectorData(form);
+        this.currentSpec.matchForm = form;
         //TODO: warn the user
         console.log("WARNING, overwriting target form because search form changed!")
       }
-      this.currentSpec.matchForm = DataUtil.appendIds(form);
     },
     onInactiveTargetForm() {
       if (this.activeStep === 'form') {
@@ -289,11 +290,7 @@ export default {
       fetch(fetchUrl).then((response) => response.json()).then((result) => {
         // const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
         // DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
-        this.totalItems = result.totalItems;
-        if (this.totalItems === 0 || typeof result.changeSets === 'undefined') {
-          this.resetPreviewData();
-          return;
-        }
+
         // Form preview
         const formChangeset = result.changeSets[1];
 
@@ -309,6 +306,11 @@ export default {
         this.formPreviewDiff.added = formDisplayPaths.added.map(path => `mainEntity.${path}`);
         this.formPreviewDiff.modified = formDisplayPaths.modified.map(path => `mainEntity.${path}`);
 
+        this.totalItems = result.totalItems;
+        if (this.totalItems === 0 || typeof result.changeSets === 'undefined') {
+          this.resetPreviewData();
+          return;
+        }
         // Full record preview
         this.nextPreviewLink = result.next;
         this.previousPreviewLink = result.prev;
