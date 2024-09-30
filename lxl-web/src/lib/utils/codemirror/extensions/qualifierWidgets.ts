@@ -54,7 +54,7 @@ class QualifierWidget extends WidgetType {
 
 // check in transaction filter if part of decoration. If it is, skip editing?
 const qualifierMatcher = new MatchDecorator({
-	regexp: /(?<!\S+)((")?[0-9a-zA-ZaåöAÅÖ:]+\2):((")?[0-9a-zA-ZaåöAÅÖ:]+\4?)?\s/g,
+	regexp: /(?<!\S+)((")?[0-9a-zA-ZaåöAÅÖ:]+\2):((")?[0-9a-zA-ZaåöAÅÖ:%-]+\4?)?\s/g,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	decoration: ([_1, name, _2, value]) => {
 		if (name && value) {

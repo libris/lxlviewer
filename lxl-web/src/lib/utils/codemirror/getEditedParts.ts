@@ -1,7 +1,9 @@
 import type { EditedRange } from '$lib/components/CodeMirror.svelte';
 
-const QUALIFIER_REGEX = RegExp(/((")?[0-9a-zA-ZaåöAÅÖ:]+\2):((")?[0-9a-zA-ZaåöAÅÖ:]+\4?)?/);
-const PHRASE_REGEX = RegExp(/(^|\s)((")?[0-9a-zA-ZaåöAÅÖ:]+\3:(")?[0-9a-zA-ZaåöAÅÖ:]+\4?)(\s?|$)/);
+const QUALIFIER_REGEX = RegExp(/((")?[0-9a-zA-ZaåöAÅÖ:]+\2):((")?[0-9a-zA-ZaåöAÅÖ%:%-]+\4?)?/);
+const PHRASE_REGEX = RegExp(
+	/(^|\s)((")?[0-9a-zA-ZaåöAÅÖ:]+\3:(")?[0-9a-zA-ZaåöAÅÖ:%-]+\4?)(\s?|$)/
+);
 
 /**
  * Gets the edited parts of a query the cursor position.
