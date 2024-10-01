@@ -9,6 +9,7 @@
 	import SuggestionListItem, { type QualifierEvent } from './SuggestionListItem.svelte';
 	import getEditedParts from '$lib/utils/codemirror/getEditedParts';
 	import type { SuggestResponse, Suggestion } from '../../routes/api/[[lang=lang]]/suggest/+server';
+	import { afterNavigate, goto } from '$app/navigation';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -154,15 +155,18 @@
 	}
 
 	function handleAddQualifier(event: QualifierEvent) {
-		console.log('handleAddQualifier', event);
+		collapsedCodeMirror?.dispatchChange(event.change);
+		hideDropdown();
+		clearSuggestionItems();
+		goto(event.href);
 	}
 
-	function handlePreviewQualifierStart(event: QualifierEvent) {
-		console.log('handlePreviewQualifierStart', event);
+	function handlePreviewQualifierStart() {
+		// console.log('handlePreviewQualifierStart', event);
 	}
 
-	function handlePreviewQualifierEnd(event: QualifierEvent) {
-		console.log('handlePreviewQualifierEnd', event);
+	function handlePreviewQualifierEnd() {
+		// console.log('handlePreviewQualifierEnd', event);
 	}
 
 	/*
@@ -180,6 +184,15 @@
 
 	onDestroy(() => {
 		dialogElement?.removeEventListener('click', handleClickOutsideDialog);
+	});
+
+	afterNavigate(({ to }) => {
+		const valueFromSearchParams = decodeURIComponent(to?.url.searchParams.get('_q') || '') || '';
+		if (value !== valueFromSearchParams) {
+			collapsedCodeMirror?.reset(valueFromSearchParams);
+			expandedCodeMirror?.reset(valueFromSearchParams);
+			hideDropdown();
+		}
 	});
 </script>
 

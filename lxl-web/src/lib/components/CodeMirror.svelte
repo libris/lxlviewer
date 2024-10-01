@@ -78,7 +78,6 @@
 
 	let editor: EditorView | undefined = $state();
 	let codemirrorContainerElement: HTMLDivElement | undefined = $state();
-	// let prevValue: string = $state(value);
 	let prevExtensions: Extension[] = extensions;
 	let prevReadOnly = $state(readonly);
 
@@ -95,17 +94,19 @@
 		const userEvent = isViewUpdateFromUserInput(e);
 
 		if (userEvent) {
-			syncedCodeMirrorComponent
-				?.getEditorView()
-				.dispatch({ changes: e.changes, selection: e.state.selection });
+			syncedCodeMirrorComponent?.getEditorView().dispatch({
+				changes: e.changes,
+				selection: e.state.selection,
+				scrollIntoView: e.transactions?.[0].scrollIntoView
+			});
 		}
 
 		if (e.docChanged) {
 			onchange({
 				value: e.state.doc.toString(),
 				cursor: userEvent
-					? e.state.selection
-					: syncedCodeMirrorComponent?.getEditorView().state.selection.main.head
+					? e.state.selection.main.anchor
+					: syncedCodeMirrorComponent?.getEditorView().state.selection.main.anchor
 			});
 		}
 	});
@@ -156,7 +157,7 @@
 	}
 
 	export function updateValidatedQualifiers() {
-		console.log('updateValidatedQualifiers reconfigure now');
+		// console.log('updateValidatedQualifiers reconfigure now');
 		// See https://codemirror.net/examples/config/#dynamic-configuration
 	}
 
@@ -182,6 +183,22 @@
 		});
 	}
 
+	export function dispatchChange(change: { from: number; to?: number; insert: string }) {
+		if (editor) {
+			const { from, to, insert } = change;
+			editor.dispatch({
+				changes: {
+					from,
+					to,
+					insert
+				},
+				selection: { anchor: from + insert.length, head: from + insert.length },
+				scrollIntoView: true,
+				userEvent: 'input.autocomplete'
+			});
+		}
+	}
+
 	export function replaceEditedPart(replacement: string) {
 		if (editor) {
 			const editedRange = getEditedRange(editor.state);
@@ -195,6 +212,10 @@
 				scrollIntoView: true
 			});
 		}
+	}
+
+	export function reset(value: string) {
+		editor?.setState(createEditorState(value));
 	}
 
 	export function focus() {
@@ -211,20 +232,6 @@
 			parent: codemirrorContainerElement
 		});
 	});
-
-	/**	
-	 * Replace the entire editor state if value is changed from outside (using props).
-	 * We should use transactions where possible but then we need to know where to insert the changes (e.g. changes: { from: 0, to: XX, insert: 'hej'}`)
-	$effect(() => {
-
-		if (value !== prevValue) {
-			console.log('create new state as value has changed');
-			editor?.setState(createEditorState(value));
-			prevValue = value;
-			// Should the cursor be placed one step before where the first diff between value and prev value occurs?
-		}
-	});
-	*/
 
 	$effect(() => {
 		if (readonly !== prevReadOnly) {
@@ -249,12 +256,14 @@
 	}
 
 	.codemirror-container :global(.cm-scroller) {
+		min-height: var(--height-input-lg);
 		font-size: var(--font-size-sm);
 		font-family: var(--font-body);
 	}
 
 	.codemirror-container :global(.cm-content) {
-		padding: 0.75rem 0;
+		padding-top: 0.75rem;
+		padding-bottom: 0.75rem;
 	}
 
 	.codemirror-container :global(.cm-line) {
