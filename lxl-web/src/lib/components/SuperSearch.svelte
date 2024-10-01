@@ -97,7 +97,7 @@
 		fetchedValue = undefined;
 	}
 
-	function showDropdown() {
+	function showExpandedSearch() {
 		if (!dialogElement?.open) {
 			const selection = collapsedCodeMirror?.getMainSelection();
 
@@ -109,7 +109,7 @@
 		}
 	}
 
-	function hideDropdown() {
+	function hideExpandedSearch() {
 		const selection = expandedCodeMirror?.getMainSelection(); // TODO: normalize selection if value differs from sanitizedValue (e.g. selection on multiple rows should convert nicely to selection on a single row)
 
 		if (selection) {
@@ -120,7 +120,7 @@
 
 	function handleClickOutsideDialog(event: MouseEvent) {
 		if (event.target === dialogElement) {
-			hideDropdown();
+			hideExpandedSearch();
 		}
 	}
 
@@ -150,13 +150,13 @@
 
 		if (!dialogElement?.open) {
 			await tick(); // await tick to prevent error when selection points outside of document (when typing at the end of the document)
-			showDropdown();
+			showExpandedSearch();
 		}
 	}
 
 	function handleAddQualifier(event: QualifierEvent) {
 		collapsedCodeMirror?.dispatchChange(event.change);
-		hideDropdown();
+		hideExpandedSearch();
 		clearSuggestionItems();
 		goto(event.href);
 	}
@@ -191,7 +191,7 @@
 		if (value !== valueFromSearchParams) {
 			collapsedCodeMirror?.reset(valueFromSearchParams);
 			expandedCodeMirror?.reset(valueFromSearchParams);
-			hideDropdown();
+			hideExpandedSearch();
 		}
 	});
 </script>
@@ -199,7 +199,7 @@
 <div class="super-search">
 	<SearchInputWrapper
 		showClearSearch={!!value}
-		onclickwrapper={showDropdown}
+		onclickwrapper={showExpandedSearch}
 		onclearsearch={clearSearch}
 	>
 		<div class="collapsed">
@@ -210,14 +210,14 @@
 				{placeholder}
 				{validQualifiers}
 				extensions={[submitClosestFormOnEnter]}
-				onclick={() => showDropdown()}
+				onclick={showExpandedSearch}
 				onchange={handleChangeCodeMirror}
 			/>
 		</div>
 		<textarea value={encodeURIComponent(value)} hidden readonly name="_q" maxlength={2048}
 		></textarea>
 	</SearchInputWrapper>
-	<dialog bind:this={dialogElement} onclose={hideDropdown}>
+	<dialog bind:this={dialogElement} onclose={hideExpandedSearch}>
 		<div class="dropdown">
 			<div class="dropdown-content">
 				<div class="dropdown-search">
