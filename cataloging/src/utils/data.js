@@ -141,7 +141,8 @@ export function appendIds(obj) {
   stack.push(obj);
   let o;
   while (o = stack.pop()) {
-    if (isObject(o) && !isArray(o)) {
+    console.log('!o[@id]', !o['@id']);
+    if (isObject(o) && !isArray(o) && !o['@id']) {
       o['_id'] = `#${idCount++}`;
     }
     forEach(o, (child) => {
