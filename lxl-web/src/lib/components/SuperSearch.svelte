@@ -191,11 +191,12 @@
 	});
 
 	afterNavigate(({ to }) => {
-		const valueFromSearchParams = decodeURIComponent(to?.url.searchParams.get('_q') || '') || '';
+		const valueFromSearchParams = to?.url.searchParams.get('_q') || '';
 		if (value !== valueFromSearchParams) {
 			collapsedCodeMirror?.reset(valueFromSearchParams);
 			expandedCodeMirror?.reset(valueFromSearchParams);
 			hideExpandedSearch();
+			value = valueFromSearchParams; // ensures textarea is updated after navigation
 		}
 	});
 </script>
