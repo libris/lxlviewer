@@ -6,10 +6,16 @@
 
 	type SearchInputWrapperProps = {
 		children: Snippet;
+		onclickwrapper?: (event: MouseEvent) => void;
 		onclearsearch: (event: MouseEvent) => void;
 		showClearSearch: boolean;
 	};
-	let { children, showClearSearch = false, onclearsearch }: SearchInputWrapperProps = $props();
+	let {
+		children,
+		showClearSearch = false,
+		onclickwrapper,
+		onclearsearch
+	}: SearchInputWrapperProps = $props();
 
 	function handleClickWrapper(event: MouseEvent) {
 		const inputElement = (event.target as HTMLElement)?.querySelector('textarea, input');
@@ -21,7 +27,7 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
-<div class="search-input-wrapper" onclick={handleClickWrapper}>
+<div class="search-input-wrapper" onclick={onclickwrapper || handleClickWrapper}>
 	<div class="search-icon">
 		<IconSearch />
 	</div>
@@ -50,6 +56,19 @@
 
 	.search-input {
 		display: contents;
+	}
+
+	.search-input :global(input) {
+		border: none;
+		background: none;
+		padding: 0.875rem 1px;
+		width: 100%;
+		height: 100%;
+		min-height: var(--height-input-lg);
+		overflow: hidden;
+		font-size: var(--font-size-sm);
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.search-input-wrapper:has(.search-input *:focus) {

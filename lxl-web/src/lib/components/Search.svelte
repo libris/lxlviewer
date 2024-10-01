@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { afterNavigate } from '$app/navigation';
 	import getHiddenSearchParams from '$lib/utils/getHiddenSearchParams';
 	import * as m from '$lib/paraglide/messages.js';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
@@ -12,17 +11,10 @@
 	 * - [] input value is clearable
 	 */
 
-	let q = $state($page.url.searchParams.get('_q')?.trim() || '');
+	let q = $state(decodeURIComponent($page.url.searchParams.get('_q') || ''));
 	let formElement: HTMLFormElement | undefined = $state();
 
 	const hiddenSearchParams = getHiddenSearchParams($page.url.searchParams);
-
-	afterNavigate(({ to }) => {
-		/** Update input value after navigation */
-		if (to?.url) {
-			q = decodeURIComponent(to.url.searchParams.get('_q') || '') || ''; // decode query value to convert escaped line-breaks
-		}
-	});
 
 	function handleSubmit(event: SubmitEvent) {
 		if (!q || !q.trim()) {
@@ -77,18 +69,3 @@
 		<input type="hidden" {name} {value} />
 	{/each}
 </form>
-
-<style>
-	form :global(.search-input) {
-		border: none;
-		background: none;
-		padding: 0.875rem 1px;
-		width: 100%;
-		height: 100%;
-		min-height: var(--height-input-lg);
-		overflow: hidden;
-		font-size: var(--font-size-sm);
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-</style>

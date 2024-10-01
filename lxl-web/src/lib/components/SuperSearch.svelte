@@ -37,7 +37,7 @@
 	let workItems: Suggestion[] = $state([]);
 
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
-	let dropdownCodeMirror: CodeMirror | undefined = $state();
+	let expandedCodeMirror: CodeMirror | undefined = $state();
 	let dialogElement: HTMLDialogElement | undefined = $state();
 
 	const findSuggestionItems = debounce(
@@ -82,7 +82,7 @@
 				workItems = works.items;
 
 				fetchedValue = value;
-				dropdownCodeMirror?.updateValidatedQualifiers();
+				expandedCodeMirror?.updateValidatedQualifiers();
 			} catch (err) {
 				console.error('something went wrong?', err);
 			}
@@ -101,15 +101,15 @@
 			const selection = collapsedCodeMirror?.getMainSelection();
 
 			if (selection) {
-				dropdownCodeMirror?.select(selection);
+				expandedCodeMirror?.select(selection);
 			}
 			dialogElement?.showModal();
-			dropdownCodeMirror?.focus(); // manually focus to circumvent issue with Chrome focusing wrong element
+			expandedCodeMirror?.focus(); // manually focus to circumvent issue with Chrome focusing wrong element
 		}
 	}
 
 	function hideDropdown() {
-		const selection = dropdownCodeMirror?.getMainSelection(); // TODO: normalize selection if value differs from sanitizedValue (e.g. selection on multiple rows should convert nicely to selection on a single row)
+		const selection = expandedCodeMirror?.getMainSelection(); // TODO: normalize selection if value differs from sanitizedValue (e.g. selection on multiple rows should convert nicely to selection on a single row)
 
 		if (selection) {
 			collapsedCodeMirror?.select(selection);
@@ -128,7 +128,7 @@
 		qualifierItems = [];
 		workItems = [];
 		if (dialogElement?.open) {
-			dropdownCodeMirror?.focus();
+			expandedCodeMirror?.focus();
 		} else {
 			collapsedCodeMirror?.focus();
 		}
@@ -184,12 +184,16 @@
 </script>
 
 <div class="super-search">
-	<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
+	<SearchInputWrapper
+		showClearSearch={!!value}
+		onclickwrapper={showDropdown}
+		onclearsearch={clearSearch}
+	>
 		<div class="collapsed">
 			<CodeMirror
 				bind:value
 				bind:this={collapsedCodeMirror}
-				syncedCodeMirrorComponent={dropdownCodeMirror}
+				syncedCodeMirrorComponent={expandedCodeMirror}
 				{placeholder}
 				{validQualifiers}
 				extensions={[submitClosestFormOnEnter]}
@@ -204,10 +208,14 @@
 		<div class="dropdown">
 			<div class="dropdown-content">
 				<div class="dropdown-search">
-					<SearchInputWrapper showClearSearch={!!value} onclearsearch={clearSearch}>
+					<SearchInputWrapper
+						showClearSearch={!!value}
+						onclickwrapper={expandedCodeMirror?.focus}
+						onclearsearch={clearSearch}
+					>
 						<CodeMirror
 							{value}
-							bind:this={dropdownCodeMirror}
+							bind:this={expandedCodeMirror}
 							syncedCodeMirrorComponent={collapsedCodeMirror}
 							follows={true}
 							{placeholder}
@@ -298,9 +306,9 @@
 	.dropdown-header {
 		margin: 0;
 		padding: 0 var(--gap-base) var(--padding-2xs) var(--gap-base);
-		color: var(--color-super-subtle);
+		color: var(--color-subtle);
 		font-weight: 500;
-		font-size: var(--font-size-sm);
+		font-size: var(--font-size-xs);
 	}
 
 	.dropdown-footer {
