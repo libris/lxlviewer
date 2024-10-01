@@ -175,12 +175,17 @@
 	}
 
 	export function select(newSelection: Selection) {
-		editor?.dispatch({
-			selection: EditorSelection.create(
-				[EditorSelection.range(newSelection.anchor, newSelection.head)],
-				0
-			)
-		});
+		try {
+			editor?.dispatch({
+				selection: EditorSelection.create(
+					[EditorSelection.range(newSelection.anchor, newSelection.head)],
+					0
+				)
+			});
+		} catch (err) {
+			console.warn(err);
+			selectEnd();
+		}
 	}
 
 	export function selectEnd() {
@@ -229,6 +234,10 @@
 
 	export function focus() {
 		editor?.focus();
+	}
+
+	export function blur() {
+		editor?.contentDOM.blur();
 	}
 
 	export function getEditorView() {

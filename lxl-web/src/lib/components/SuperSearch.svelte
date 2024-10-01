@@ -2,7 +2,7 @@
 	import { tick, onMount, onDestroy } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from './CodeMirror.svelte';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
-	import submitClosestFormOnEnter from '$lib/utils/codemirror/extensions/submitClosestFormOnEnter';
+	import findOnEnter from '$lib/utils/codemirror/extensions/findOnEnter';
 	import debounce from '$lib/utils/debounce';
 	import { languageTag } from '$lib/paraglide/runtime.js';
 	import type { Qualifiers } from '$lib/types/qualifier';
@@ -40,6 +40,7 @@
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
 	let expandedCodeMirror: CodeMirror | undefined = $state();
 	let dialogElement: HTMLDialogElement | undefined = $state();
+	let selectionBeforeClose: { anchor: number; head: number } | undefined = $state();
 
 	const findSuggestionItems = debounce(
 		async ({ value, cursor }: { value: string; cursor: number }) => {
@@ -114,12 +115,18 @@
 	}
 
 	function hideExpandedSearch() {
-		const selection = expandedCodeMirror?.getMainSelection(); // TODO: normalize selection if value differs from sanitizedValue (e.g. selection on multiple rows should convert nicely to selection on a single row)
-
-		if (selection) {
-			collapsedCodeMirror?.select(selection);
-		}
+		selectionBeforeClose = expandedCodeMirror?.getMainSelection();
 		dialogElement?.close();
+	}
+
+	function handleOnCloseDialog() {
+		if (selectionBeforeClose) {
+			collapsedCodeMirror?.select(selectionBeforeClose);
+			selectionBeforeClose = undefined;
+		} else {
+			collapsedCodeMirror?.select(expandedCodeMirror?.getMainSelection());
+		}
+		collapsedCodeMirror?.focus();
 	}
 
 	function handleClickOutsideDialog(event: MouseEvent) {
@@ -190,12 +197,12 @@
 		dialogElement?.removeEventListener('click', handleClickOutsideDialog);
 	});
 
-	afterNavigate(({ to }) => {
-		const valueFromSearchParams = to?.url.searchParams.get('_q') || '';
-		if (value !== valueFromSearchParams) {
+	afterNavigate(({ to, type }) => {
+		if (type !== 'enter') {
+			const valueFromSearchParams = to?.url.searchParams.get('_q') || '';
+			hideExpandedSearch();
 			collapsedCodeMirror?.reset(valueFromSearchParams);
 			expandedCodeMirror?.reset(valueFromSearchParams);
-			hideExpandedSearch();
 			value = valueFromSearchParams; // ensures textarea is updated after navigation
 		}
 	});
@@ -214,15 +221,14 @@
 				syncedCodeMirrorComponent={expandedCodeMirror}
 				{placeholder}
 				{validQualifiers}
-				extensions={[submitClosestFormOnEnter]}
+				extensions={[findOnEnter]}
 				onclick={() => showExpandedSearch()}
 				onchange={handleChangeCodeMirror}
 			/>
 		</div>
-		<textarea value={encodeURIComponent(value)} hidden readonly name="_q" maxlength={2048}
-		></textarea>
+		<textarea {value} hidden readonly name="_q" maxlength={2048}></textarea>
 	</SearchInputWrapper>
-	<dialog bind:this={dialogElement} onclose={hideExpandedSearch}>
+	<dialog bind:this={dialogElement} onclose={handleOnCloseDialog}>
 		<div class="dropdown">
 			<div class="dropdown-content">
 				<div class="dropdown-search">
@@ -238,7 +244,7 @@
 							follows={true}
 							{placeholder}
 							{validQualifiers}
-							extensions={[submitClosestFormOnEnter]}
+							extensions={[findOnEnter]}
 						/>
 					</SearchInputWrapper>
 				</div>
