@@ -11,18 +11,10 @@
 	 * - [] input value is clearable
 	 */
 
-	let q = $state(decodeURIComponent($page.url.searchParams.get('_q') || ''));
+	let q = $state($page.url.searchParams.get('_q') || '');
 	let formElement: HTMLFormElement | undefined = $state();
 
 	const hiddenSearchParams = getHiddenSearchParams($page.url.searchParams);
-
-	function handleSubmit(event: SubmitEvent) {
-		if (!q || !q.trim()) {
-			event.preventDefault();
-		} else {
-			q = q.trim();
-		}
-	}
 
 	const lazyLoadedComponent = Promise.all([import('./SuperSearch.svelte'), getValidQualifiers()]);
 
@@ -53,7 +45,7 @@
 	/>
 {/snippet}
 
-<form action="find" bind:this={formElement} onsubmit={handleSubmit}>
+<form action="find" bind:this={formElement}>
 	{#await lazyLoadedComponent}
 		<SearchInputWrapper showClearSearch={!!q} onclearsearch={clearSearch}>
 			{@render fallbackInput()}

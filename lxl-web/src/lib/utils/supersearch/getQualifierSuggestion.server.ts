@@ -85,7 +85,7 @@ function getQualifierValue(item: FramedData) {
 	const id = (item?.['@id'] as string).split('/').pop();
 
 	if (prefix && id) {
-		return '"' + prefix + encodeURIComponent(id) + '"';
+		return '"' + prefix + id + '"';
 	}
 }
 
