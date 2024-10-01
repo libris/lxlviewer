@@ -97,13 +97,17 @@
 		fetchedValue = undefined;
 	}
 
-	function showExpandedSearch() {
+	function showExpandedSearch(options: { selectEnd?: boolean } = {}) {
 		if (!dialogElement?.open) {
-			const selection = collapsedCodeMirror?.getMainSelection();
-
-			if (selection) {
-				expandedCodeMirror?.select(selection);
+			if (options.selectEnd) {
+				expandedCodeMirror?.selectEnd();
+			} else {
+				const selection = collapsedCodeMirror?.getMainSelection();
+				if (selection) {
+					expandedCodeMirror?.select(selection);
+				}
 			}
+
 			dialogElement?.showModal();
 			expandedCodeMirror?.focus(); // manually focus to circumvent issue with Chrome focusing wrong element
 		}
@@ -199,7 +203,7 @@
 <div class="super-search">
 	<SearchInputWrapper
 		showClearSearch={!!value}
-		onclickwrapper={showExpandedSearch}
+		onclickwrapper={() => showExpandedSearch({ selectEnd: true })}
 		onclearsearch={clearSearch}
 	>
 		<div class="collapsed">
@@ -210,7 +214,7 @@
 				{placeholder}
 				{validQualifiers}
 				extensions={[submitClosestFormOnEnter]}
-				onclick={showExpandedSearch}
+				onclick={() => showExpandedSearch()}
 				onchange={handleChangeCodeMirror}
 			/>
 		</div>

@@ -183,6 +183,15 @@
 		});
 	}
 
+	export function selectEnd() {
+		editor?.dispatch({
+			selection: EditorSelection.create(
+				[EditorSelection.range(editor.state.doc.length, editor.state.doc.length)],
+				0
+			)
+		});
+	}
+
 	export function dispatchChange(change: { from: number; to?: number; insert: string }) {
 		if (editor) {
 			const { from, to, insert } = change;
