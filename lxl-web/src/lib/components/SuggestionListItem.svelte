@@ -6,6 +6,7 @@
 			to?: number;
 			insert: string;
 		};
+		href: string;
 	};
 </script>
 
@@ -35,52 +36,68 @@
 	}: SuggestionListItemProps = $props();
 </script>
 
+{#snippet label(label: string)}
+	<span class="label">{label}</span>&nbsp;
+{/snippet}
+
+{#snippet heading()}
+	{data.heading}
+	{#if data.inSchemeCode}
+		<span class="inScheme">
+			•
+			<abbr title={`${data.typeLabel} • ${data.inSchemeLabel}`}>{data.inSchemeCode}</abbr>
+		</span>
+	{/if}
+{/snippet}
+
 <li class="list-item">
 	<hgroup>
 		<p class="type" data-type={data['@type']}>
 			{#if data.qualifier?.changes.type}
-				{@const qualifierData = {
+				{@const typeQualifierData = {
 					change: data.qualifier.changes.type,
-					initialQuery
+					initialQuery,
+					href: getTypeQualifierLink({ initialQuery, change: data.qualifier.changes.type })
 				}}
 				<a
-					href={getTypeQualifierLink({ initialQuery, change: qualifierData.change })}
+					href={typeQualifierData.href}
 					onclick={(event) => {
 						event.preventDefault();
-						onaddqualifier?.(qualifierData);
+						onaddqualifier?.(typeQualifierData);
 					}}
-					onmouseover={() => onpreviewqualifierstart?.(qualifierData)}
-					onmouseleave={() => onpreviewqualifierend?.(qualifierData)}
-					onfocus={() => onpreviewqualifierstart?.(qualifierData)}
-					onblur={() => onpreviewqualifierend?.(qualifierData)}
+					onmouseover={() => onpreviewqualifierstart?.(typeQualifierData)}
+					onmouseleave={() => onpreviewqualifierend?.(typeQualifierData)}
+					onfocus={() => onpreviewqualifierstart?.(typeQualifierData)}
+					onblur={() => onpreviewqualifierend?.(typeQualifierData)}
 				>
-					{data.qualifier?.label}
+					{@render label(`${data.qualifier.label}:`)}
 				</a>
 			{:else}
-				{data.typeLabel}
+				{@render label(data.typeLabel)}
 			{/if}
 		</p>
 		<h3 class="heading">
 			{#if data.qualifier?.changes.full}
-				{@const qualifierData = {
+				{@const fullQualifierData = {
 					change: data.qualifier.changes.full,
-					initialQuery
+					initialQuery,
+					href: getFullQualifierLink({ initialQuery, change: data.qualifier.changes.full })
 				}}
 				<a
-					href={getFullQualifierLink({ initialQuery, change: qualifierData.change })}
+					href={fullQualifierData.href}
 					onclick={(event) => {
 						event.preventDefault();
-						onaddqualifier?.(qualifierData);
+						onaddqualifier?.(fullQualifierData);
 					}}
-					onmouseover={() => onpreviewqualifierstart?.(qualifierData)}
-					onmouseleave={() => onpreviewqualifierend?.(qualifierData)}
-					onfocus={() => onpreviewqualifierstart?.(qualifierData)}
-					onblur={() => onpreviewqualifierend?.(qualifierData)}
+					onmouseover={() => onpreviewqualifierstart?.(fullQualifierData)}
+					onmouseleave={() => onpreviewqualifierend?.(fullQualifierData)}
+					onfocus={() => onpreviewqualifierstart?.(fullQualifierData)}
+					onblur={() => onpreviewqualifierend?.(fullQualifierData)}
 				>
-					{data.heading}
+					{@render heading()}
 				</a>
 			{:else}
-				{data.heading}
+				{@render heading()}
 			{/if}
 		</h3>
 	</hgroup>
@@ -97,10 +114,12 @@
 <style>
 	.list-item {
 		display: flex;
-		justify-content: space-between;
 		gap: var(--gap-sm);
 		padding: 0 var(--padding-base);
-
+		&:focus-within,
+		&:hover {
+			background: #f3f3f3;
+		}
 		&::before {
 			display: none;
 		}
@@ -113,14 +132,25 @@
 
 	hgroup {
 		display: flex;
-		align-items: center;
-		gap: var(--gap-sm);
+		align-items: stretch;
+		width: 100%;
 		min-height: var(--height-input-sm);
 		overflow: hidden;
 		font-size: var(--font-size-sm);
 
 		& :global(> *) {
+			display: flex;
+			align-items: center;
 			margin: 0;
+			height: 100%;
+		}
+
+		& :global(a) {
+			display: flex;
+			flex: 1;
+			align-items: center;
+			margin: 0;
+			height: 100%;
 		}
 	}
 
@@ -129,34 +159,28 @@
 		font-weight: 500;
 		font-size: inherit;
 		white-space: nowrap;
-
-		&:first-letter {
-			text-transform: uppercase;
-		}
 	}
 
 	.type {
-		border-radius: var(--border-radius-sm);
-		background: #ebebeb;
-		padding: var(--gap-2xs) var(--gap-xs);
-		color: var(--color-subtle);
-		font-weight: 500;
-		font-size: var(--font-size-2xs);
-		white-space: nowrap;
+		color: var(--color-super-subtle);
+		font-weight: 400;
 
 		&:first-letter {
 			text-transform: uppercase;
 		}
 	}
 
-	.type[data-type='Topic'] {
-		background: #d4e3ef;
-		color: #205999;
+	.label {
+		&:first-letter {
+			text-transform: uppercase;
+		}
 	}
 
-	.type[data-type='Person'] {
-		background: #d9ebdc;
-		color: #196f25;
+	.inScheme {
+		margin-left: var(--gap-xs);
+		color: var(--color-super-subtle);
+		font-weight: normal;
+		font-size: var(--font-size-2xs);
 	}
 
 	.actions ul {
