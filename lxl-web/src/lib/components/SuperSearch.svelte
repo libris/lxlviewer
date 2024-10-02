@@ -170,12 +170,12 @@
 		event: QualifierEvent,
 		options: { updateUrl: boolean } = { updateUrl: true }
 	) {
+		clearSuggestionItems();
 		if (options.updateUrl) {
 			selectionBeforeNavigation = { anchor: event.change.from + event.change.insert.length };
 			goto(event.href);
 		} else {
 			collapsedCodeMirror?.dispatchChange(event.change);
-			clearSuggestionItems();
 		}
 	}
 
