@@ -11,6 +11,7 @@ import toolbar from "@/components/inspector/bulkchange-toolbar.vue";
 import {labelByLang, translatePhrase} from "@/utils/filters.js";
 import * as LayoutUtil from '@/utils/layout';
 import Inspector from "@/views/Inspector.vue";
+import ModalComponent from '@/components/shared/modal-component.vue';
 import * as DataUtil from "@/utils/data.js";
 import * as StringUtil from 'lxljs/string.js';
 import * as HttpUtil from "@/utils/http.js";
@@ -22,7 +23,17 @@ import {appendIds} from "../../utils/data.js";
 
 export default {
   name: 'bulk-changes.vue',
-  components: {ReverseRelations, Inspector, toolbar, FormBuilder, TargetFormBuilder, Preview, BulkChangesHeader, Results },
+  components: {
+    ReverseRelations,
+    Inspector,
+    toolbar,
+    FormBuilder,
+    TargetFormBuilder,
+    Preview,
+    BulkChangesHeader,
+    Results,
+    'modal-component': ModalComponent,
+  },
   props: {
     fnurgel: ''
   },
@@ -49,7 +60,8 @@ export default {
       itemOffset: 0,
       fullPreview: {},
       fullPreviewData: {'@type': 'Instance'},
-      fullPreviewDiff: {}
+      fullPreviewDiff: {},
+      showOverwriteWarning: false,
     };
   },
   computed: {
@@ -266,6 +278,9 @@ export default {
       this.setActive(this.steps[this.steps.indexOf(this.activeStep) + 1]);
     },
     previousStep() {
+      if (this.isActive('targetForm')) {
+        this.openOverwriteModal();
+      }
       this.closeSidePanel();
       this.resetLastAdded();
       this.clearUndoState();
@@ -289,6 +304,12 @@ export default {
     },
     isActive(step) {
       return this.activeStep === step;
+    },
+    closeOverwriteModal() {
+      this.showOverwriteWarning = false;
+    },
+    openOverwriteModal() {
+      this.showOverwriteWarning = true;
     },
     save() {
       if (this.isActive('form')) {
@@ -650,6 +671,37 @@ export default {
         />
       </div>
     </div>
+    <modal-component
+      title="Error"
+      modal-type="danger"
+      @close="closeOverwriteModal"
+      class="RemoveRecordModal"
+      v-if="showOverwriteWarning">
+      <template #modal-header>
+        <div class="RemoveRecordModal-header">
+          <header>
+            {{ translatePhrase('Note') }}
+          </header>
+        </div>
+      </template>
+      <template #modal-body>
+        <div class="RemoveRecordModal-body">
+          <p>
+             {{ translatePhrase('Changes in') }}
+            <i>
+              {{this.formTitle}}
+            </i>
+            {{ translatePhrase('will reset') }}
+            <i>
+              {{this.changesTitle}}.
+            </i>
+          </p>
+          <div class="RemoveRecordModal-buttonContainer">
+            <button class="btn btn-info btn--md" @click="closeOverwriteModal()">{{ translatePhrase('Ok') }}</button>
+          </div>
+        </div>
+      </template>
+    </modal-component>
   </div>
 </template>
 
@@ -667,5 +719,27 @@ export default {
     padding:  20px;
   }
 
+}
+.RemoveRecordModal .ModalComponent-container {
+  width: 600px;
+}
+
+.RemoveRecordModal {
+  &-body {
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 15px 45px;
+  }
+  &-buttonContainer {
+    display: grid;
+    justify-content: center;
+
+    margin: 10px 0;
+    & > * {
+      margin-right: 15px;
+    }
+  }
 }
 </style>

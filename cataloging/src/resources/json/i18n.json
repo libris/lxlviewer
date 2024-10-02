@@ -438,6 +438,9 @@
     "Draft": "Utkast",
     "Results": "Resultat",
     "See affected records": "Se påverkade poster",
-    "No preview available.": "Ingen förhandsgranskning tillgänglig."
+    "No preview available.": "Ingen förhandsgranskning tillgänglig.",
+    "Changes in" : "Ändringar i",
+    "will reset" : "kommer nollställa",
+    "Note" : "OBS!"
   }
 }
