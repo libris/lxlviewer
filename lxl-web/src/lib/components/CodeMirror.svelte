@@ -1,7 +1,7 @@
 <script module lang="ts">
 	export type Selection = {
 		anchor: number;
-		head: number;
+		head?: number;
 	};
 
 	export type EditedRange = {
@@ -142,10 +142,31 @@
 		...extensions
 	]);
 
-	function createEditorState({ doc }: { doc: string }) {
+	function createEditorState({
+		doc,
+		selection
+	}: {
+		doc: string;
+		selection: Selection | undefined;
+	}) {
 		return EditorState.create({
 			doc,
-			extensions: editorExtensions
+			extensions: editorExtensions,
+
+			...(selection
+				? {
+						selection: EditorSelection.create([
+							EditorSelection.range(
+								Math.min(doc.length, selection.anchor),
+								Math.min(doc.length, selection?.head || selection.anchor)
+							)
+						])
+					}
+				: {
+						selection: EditorSelection.create([
+							EditorSelection.range(Math.min(doc.length), Math.min(doc.length))
+						])
+					})
 		});
 	}
 
@@ -206,8 +227,8 @@
 		}
 	}
 
-	export function reset({ doc }: { doc: string }) {
-		editor?.setState(createEditorState({ doc }));
+	export function reset({ doc, selection }: { doc: string; selection: Selection | undefined }) {
+		editor?.setState(createEditorState({ doc, selection }));
 	}
 
 	export function focus() {

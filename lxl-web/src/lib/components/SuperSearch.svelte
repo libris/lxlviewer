@@ -41,6 +41,7 @@
 	let expandedCodeMirror: CodeMirror | undefined = $state();
 	let dialogElement: HTMLDialogElement | undefined = $state();
 	let selectionBeforeClose: { anchor: number; head: number } | undefined = $state();
+	let selectionBeforeNavigation: { anchor: number; head?: number } | undefined = $state();
 
 	const findSuggestionItems = debounce(
 		async ({ value, cursor }: { value: string; cursor: number }) => {
@@ -169,9 +170,12 @@
 		event: QualifierEvent,
 		options: { updateUrl: boolean } = { updateUrl: true }
 	) {
-		collapsedCodeMirror?.dispatchChange(event.change);
 		if (options.updateUrl) {
+			selectionBeforeNavigation = { anchor: event.change.from + event.change.insert.length };
 			goto(event.href);
+		} else {
+			collapsedCodeMirror?.dispatchChange(event.change);
+			clearSuggestionItems();
 		}
 	}
 
@@ -188,7 +192,7 @@
 		selection
 	}: {
 		doc: string;
-		selection?: { anchor: number; head: number };
+		selection?: { anchor: number; head?: number };
 	}) {
 		collapsedCodeMirror?.reset({ doc, selection });
 		expandedCodeMirror?.reset({ doc, selection });
@@ -205,7 +209,11 @@
 	afterNavigate(({ to, type }) => {
 		if (type !== 'enter') {
 			const valueFromSearchParams = to?.url.searchParams.get('_q') || '';
-			resetEditors({ doc: valueFromSearchParams });
+			resetEditors({
+				doc: valueFromSearchParams,
+				selection: selectionBeforeNavigation
+			});
+			selectionBeforeNavigation = undefined;
 			hideExpandedSearch();
 			value = valueFromSearchParams; // ensures textarea is updated after navigation
 		}
