@@ -260,10 +260,14 @@ export default {
     },
     nextStep() {
       this.closeSidePanel();
+      this.resetLastAdded();
+      this.clearUndoState();
       this.setActive(this.steps[this.steps.indexOf(this.activeStep) + 1]);
     },
     previousStep() {
       this.closeSidePanel();
+      this.resetLastAdded();
+      this.clearUndoState();
       this.setActive(this.steps[this.steps.indexOf(this.activeStep) - 1]);
     },
     closeSidePanel() {
@@ -271,6 +275,12 @@ export default {
         name: 'form-control',
         value: 'close-modals',
       })
+    },
+    resetLastAdded() {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+    },
+    clearUndoState() {
+      this.$store.dispatch('flushChangeHistory');
     },
     setActive(step) {
       if (!step) return;
