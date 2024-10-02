@@ -527,6 +527,12 @@
 			"fresnel:classFormatDomain": ["Subject"],
 			"fresnel:resourceStyle": ["link"]
 		},
+		"Subdivision-format": {
+			"@id": "Subdivision-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Subdivision"],
+			"fresnel:resourceStyle": ["link"]
+		},
 		"Instance-format": {
 			"@id": "Instance-format",
 			"@type": "fresnel:Format",
