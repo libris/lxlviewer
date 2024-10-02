@@ -3,7 +3,11 @@
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import type { FacetGroup, Facet, MultiSelectFacet } from '$lib/types/search';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
-	import { DEFAULT_FACET_SORT, DEFAULT_FACETS_SHOWN } from '$lib/constants/facets';
+	import {
+		DEFAULT_FACETS_SHOWN,
+		DEFAULT_FACET_SORT,
+		CUSTOM_FACET_SORT
+	} from '$lib/constants/facets';
 	import { saveUserSetting } from '$lib/utils/userSettings';
 	import { popover } from '$lib/actions/popover';
 	import FacetRange from './FacetRange.svelte';
@@ -22,7 +26,10 @@
 	const maxFacets = group.maxItems;
 
 	const userSort = $page.data.userSettings?.facetSort?.[group.dimension];
-	let currentSort = userSort || DEFAULT_FACET_SORT;
+	let currentSort =
+		userSort ||
+		CUSTOM_FACET_SORT[group.dimension as keyof typeof CUSTOM_FACET_SORT] ||
+		DEFAULT_FACET_SORT;
 
 	const sortOptions = [
 		{ value: 'hits.desc', label: $page.data.t('sort.hitsDesc') },
@@ -164,17 +171,18 @@
 					</button>
 				{/if}
 				<!-- limit reached info -->
-				{#if maxFacetsReached && canShowLessFacets}
-					<div class="ml-auto mt-4 flex gap-1 rounded-sm bg-pill/4 px-2 py-1">
-						<p role="status" class="text-xs text-error">{$page.data.t('facet.limitInfo')}</p>
+				{#if maxFacetsReached && (canShowLessFacets || (!canShowMoreFacets && searchPhrase))}
+					<div class="ml-auto mt-4">
 						<button
-							aria-label={$page.data.t('facet.limitInfo')}
+							class="flex items-center gap-1 rounded-sm bg-pill/4 px-2 py-1 text-xs text-error"
 							use:popover={{
 								title: $page.data.t('facet.limitText'),
 								placeAsSibling: true
 							}}
 						>
-							<BiInfo aria-hidden="true" class="text-error" />
+							<span>{$page.data.t('facet.limitInfo')}</span>
+							<span class="sr-only">{$page.data.t('facet.limitText')}</span>
+							<BiInfo aria-hidden="true" />
 						</button>
 					</div>
 				{/if}

@@ -8,6 +8,11 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
+### TBA
+
+- Generella förbättringar i filterpanelen, t.ex möjlighet att sortera innehållet.
+- Buggfixar
+
 ### 2024-09-09
 
 - Lånestatus visas nu i listan över bibliotek som innehar en viss resurs
