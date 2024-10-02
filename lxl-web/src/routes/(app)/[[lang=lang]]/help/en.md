@@ -8,6 +8,11 @@ title: 'Help'
 
 Here we will continuously provide information about newly added features and planned developments:
 
+### TBA
+
+- Improvements in the filter panel, filter items can now be sorted by preference.
+- Bug fixes
+
 ### 2024-09-09
 
 - Loan status information now shown in the library holdings list
