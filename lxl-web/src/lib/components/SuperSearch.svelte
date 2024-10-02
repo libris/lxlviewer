@@ -136,9 +136,9 @@
 	}
 
 	function clearSearch() {
+		resetEditors({ doc: '' });
 		value = '';
-		qualifierItems = [];
-		workItems = [];
+		clearSuggestionItems();
 		if (dialogElement?.open) {
 			expandedCodeMirror?.focus();
 		} else {
@@ -165,11 +165,14 @@
 		}
 	}
 
-	function handleAddQualifier(event: QualifierEvent) {
+	function handleAddQualifier(
+		event: QualifierEvent,
+		options: { updateUrl: boolean } = { updateUrl: true }
+	) {
 		collapsedCodeMirror?.dispatchChange(event.change);
-		hideExpandedSearch();
-		clearSuggestionItems();
-		goto(event.href);
+		if (options.updateUrl) {
+			goto(event.href);
+		}
 	}
 
 	function handlePreviewQualifierStart() {
@@ -180,14 +183,16 @@
 		// console.log('handlePreviewQualifierEnd', event);
 	}
 
-	/*
-	function handleClickSuggestionItem(suggestion: PartSuggestion) {
-		dropdownCodeMirror?.replaceEditedPart(
-			`${suggestion.keyByLang?.[languageTag() as keyof typeof suggestion.keyByLang] || suggestion.key}:`
-		);
-		dropdownCodeMirror?.focus();
+	function resetEditors({
+		doc,
+		selection
+	}: {
+		doc: string;
+		selection?: { anchor: number; head: number };
+	}) {
+		collapsedCodeMirror?.reset({ doc, selection });
+		expandedCodeMirror?.reset({ doc, selection });
 	}
-	*/
 
 	onMount(() => {
 		dialogElement?.addEventListener('click', handleClickOutsideDialog);
@@ -200,9 +205,8 @@
 	afterNavigate(({ to, type }) => {
 		if (type !== 'enter') {
 			const valueFromSearchParams = to?.url.searchParams.get('_q') || '';
+			resetEditors({ doc: valueFromSearchParams });
 			hideExpandedSearch();
-			collapsedCodeMirror?.reset(valueFromSearchParams);
-			expandedCodeMirror?.reset(valueFromSearchParams);
 			value = valueFromSearchParams; // ensures textarea is updated after navigation
 		}
 	});
@@ -353,9 +357,14 @@
 		}
 	}
 
+	/**
+	* Temporarily remove collapsed styling as it casues last whitespace not to be rendered
+	*/
+	/*
 	.collapsed {
 		max-height: 48px;
 	}
+
 	.collapsed :global(.cm-line) {
 		white-space: nowrap;
 	}
@@ -368,6 +377,7 @@
 	.collapsed :global(.cm-scroller::-webkit-scrollbar) {
 		display: none;
 	}
+	*/
 
 	.suggestions {
 		padding: var(--padding-base) 0 var(--padding-sm) 0;

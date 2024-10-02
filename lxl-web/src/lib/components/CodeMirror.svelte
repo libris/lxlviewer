@@ -24,13 +24,7 @@
 		EditorView,
 		placeholder as placeholderExtension
 	} from '@codemirror/view';
-	import {
-		EditorSelection,
-		EditorState,
-		StateEffect,
-		type Text,
-		type Extension
-	} from '@codemirror/state';
+	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
 	import { lxlQueryLanguage } from 'codemirror-lang-lxlquery';
 	import { tags } from '@lezer/highlight';
 	import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
@@ -39,7 +33,6 @@
 		qualifierValueDecoration
 	} from '$lib/utils/codemirror/extensions/qualifierDecoration';
 	import qualifierLinter from '$lib/utils/codemirror/extensions/qualifierLinter';
-	import getEditedRange from '$lib/utils/codemirror/getEditedRange';
 	import getMainSelectionUtil from '$lib/utils/codemirror/getMainSelection';
 	import isViewUpdateFromUserInput from '$lib/utils/codemirror/isViewUpdateFromUserInput';
 	import qualifierWidgets from '$lib/utils/codemirror/extensions/qualifierWidgets';
@@ -149,7 +142,7 @@
 		...extensions
 	]);
 
-	function createEditorState(doc: string | Text) {
+	function createEditorState({ doc }: { doc: string }) {
 		return EditorState.create({
 			doc,
 			extensions: editorExtensions
@@ -213,23 +206,8 @@
 		}
 	}
 
-	export function replaceEditedPart(replacement: string) {
-		if (editor) {
-			const editedRange = getEditedRange(editor.state);
-			editor.dispatch({
-				changes: {
-					from: editedRange.from,
-					to: editedRange.to,
-					insert: replacement
-				},
-				selection: { anchor: editedRange.from + replacement.length },
-				scrollIntoView: true
-			});
-		}
-	}
-
-	export function reset(value: string) {
-		editor?.setState(createEditorState(value));
+	export function reset({ doc }: { doc: string }) {
+		editor?.setState(createEditorState({ doc }));
 	}
 
 	export function focus() {
@@ -246,7 +224,7 @@
 
 	onMount(() => {
 		editor = new EditorView({
-			state: createEditorState(initialValue),
+			state: createEditorState({ doc: initialValue }),
 			parent: codemirrorContainerElement
 		});
 	});

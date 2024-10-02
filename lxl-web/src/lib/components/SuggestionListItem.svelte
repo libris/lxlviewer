@@ -22,7 +22,7 @@
 	type SuggestionListItemProps = {
 		data: Suggestion;
 		initialQuery: string;
-		onaddqualifier?: (event: QualifierEvent) => void;
+		onaddqualifier?: (event: QualifierEvent, options?: { updateUrl: boolean }) => void;
 		onpreviewqualifierstart?: (event: QualifierEvent) => void;
 		onpreviewqualifierend?: (event: QualifierEvent) => void;
 	};
@@ -63,7 +63,7 @@
 					href={typeQualifierData.href}
 					onclick={(event) => {
 						event.preventDefault();
-						onaddqualifier?.(typeQualifierData);
+						onaddqualifier?.(typeQualifierData, { updateUrl: false });
 					}}
 					onmouseover={() => onpreviewqualifierstart?.(typeQualifierData)}
 					onmouseleave={() => onpreviewqualifierend?.(typeQualifierData)}
