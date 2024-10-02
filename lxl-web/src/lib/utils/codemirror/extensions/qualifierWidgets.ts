@@ -28,19 +28,20 @@ class QualifierWidget extends WidgetType {
 		const value = document.createElement('span');
 
 		name.style.cssText = `
-    border-radius: 4px 0 0 4px;
-    padding: 2px 4px 2px 4px;
+    border-radius: 3px 0 0 3px;
+    padding: 2px 2px 2px 2px;
     background: rgba(14, 113, 128, 0.2);
 		color: #0E7180;
-		font-weight: 500;`;
+		font-size: var(--font-size-xs);`;
 		name.textContent = this.qualifier.name;
 		elt.appendChild(name);
 
 		value.style.cssText = `
 		border-left: none;
-    border-radius: 0 4px 4px 0;
-    padding: 2px 4px 2px 2px;
-    background: rgba(14, 113, 128, 0.1);`;
+    border-radius: 0 3px 3px 0;
+    padding: 2px 3px 2px 2px;
+    background: rgba(14, 113, 128, 0.1);
+		font-size: var(--font-size-xs);`;
 		value.textContent = this.qualifier.value || '';
 		elt.appendChild(value);
 
