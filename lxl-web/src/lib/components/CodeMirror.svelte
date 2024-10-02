@@ -122,7 +122,6 @@
 				: historyKeymap)
 		]),
 		updateHandler,
-		EditorView.lineWrapping,
 		EditorState.readOnly.of(readonly),
 		placeholderExtension(placeholder),
 		EditorView.domEventHandlers({
@@ -192,7 +191,7 @@
 		try {
 			editor?.dispatch({
 				selection: EditorSelection.create(
-					[EditorSelection.range(newSelection.anchor, newSelection.head)],
+					[EditorSelection.range(newSelection.anchor, newSelection?.head || newSelection.anchor)],
 					0
 				)
 			});

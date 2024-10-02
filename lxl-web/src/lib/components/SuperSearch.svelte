@@ -10,6 +10,8 @@
 	import getEditedParts from '$lib/utils/codemirror/getEditedParts';
 	import type { SuggestResponse, Suggestion } from '../../routes/api/[[lang=lang]]/suggest/+server';
 	import { afterNavigate, goto } from '$app/navigation';
+	import preventNewLine from '$lib/utils/codemirror/extensions/preventNewLine';
+	import { EditorView } from '@codemirror/view';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -234,10 +236,9 @@
 				syncedCodeMirrorComponent={expandedCodeMirror}
 				{placeholder}
 				{validQualifiers}
-				extensions={[findOnEnter]}
+				extensions={[findOnEnter, preventNewLine]}
 				onclick={() => showExpandedSearch()}
 				onchange={handleChangeCodeMirror}
-				lineWrapping={false}
 			/>
 		</div>
 		<textarea {value} hidden readonly name="_q" maxlength={2048}></textarea>
@@ -258,7 +259,7 @@
 							follows={true}
 							{placeholder}
 							{validQualifiers}
-							extensions={[findOnEnter]}
+							extensions={[findOnEnter, EditorView.lineWrapping, preventNewLine]}
 						/>
 					</SearchInputWrapper>
 				</div>
@@ -369,10 +370,6 @@
 
 	.collapsed {
 		max-height: 48px;
-	}
-
-	.collapsed :global(.cm-line) {
-		white-space: nowrap;
 	}
 
 	.collapsed :global(.cm-scroller) {

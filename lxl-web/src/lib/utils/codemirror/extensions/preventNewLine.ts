@@ -19,7 +19,7 @@ const preventNewLine = Prec.highest(
 				}
 			];
 		} else {
-			return tr;
+			return [tr];
 		}
 	})
 );
