@@ -111,6 +111,10 @@
 						"keyword",
 						"termComponentList"
 					]
+				},
+				"Subdivision": {
+					"fresnel:extends": { "@id": "Subdivision-chips" },
+					"showProperties": ["fresnel:super", "inScheme", "inCollection", "scopeNote"]
 				}
 			}
 		},
@@ -131,6 +135,15 @@
 					"showProperties": [
 						{
 							"alternateProperties": ["prefLabel", "label", "termComponentList", "code"]
+						}
+					]
+				},
+				"Subdivision": {
+					"@id": "Subdivision-chips",
+					"@type": "fresnel:Lens",
+					"showProperties": [
+						{
+							"alternateProperties": ["prefLabel", "code"]
 						}
 					]
 				},
