@@ -330,6 +330,8 @@ export default {
         if (this.totalItems === 0 || typeof result.changeSets === 'undefined') {
           this.resetPreviewData();
           return;
+        } else {
+          this.setActive('preview');
         }
         // Full record preview
         this.nextPreviewLink = result.next;
@@ -600,16 +602,6 @@ export default {
           @onActive="focusPreview"
         />
       </div>
-<!--      <div ref="results">-->
-<!--        <results-->
-<!--          :title="resultsTitle"-->
-<!--          tabindex="0"-->
-<!--          :is-active="isActive('results')"-->
-<!--          :data="currentBulkChange"-->
-<!--          :completed="isCompleted"-->
-<!--          @onActive="focusResults"-->
-<!--        />-->
-<!--      </div>-->
       <div class="BulkChanges-result" v-if="isRunningOrFinished">
         <div>{{ translatePhrase('Bulk change')}} </div>
         <div>&nbsp<span class="badge badge-accent2">{{ statusLabel }}</span>.</div>
