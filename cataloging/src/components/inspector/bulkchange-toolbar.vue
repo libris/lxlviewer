@@ -60,6 +60,11 @@ export default {
       default: false,
     }
   },
+  data() {
+    return {
+      fieldAdderActive: false,
+    };
+  },
   watch: {
     'inspector.status.editing'(state) {
       if (state) {
@@ -233,7 +238,9 @@ export default {
       :allowed="allowedProperties"
       :path="inspector.status.focus"
       :editing-object="inspector.status.focus"
-      :in-toolbar="true"/>
+      :in-toolbar="true"
+      :force-active="fieldAdderActive"
+    />
     <button
       v-if="showUndo && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
