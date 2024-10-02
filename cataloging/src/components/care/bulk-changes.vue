@@ -9,6 +9,7 @@ import {cloneDeep, get, isEmpty, isEqual} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
 import toolbar from "@/components/inspector/bulkchange-toolbar.vue";
 import {labelByLang, translatePhrase} from "@/utils/filters.js";
+import * as LayoutUtil from '@/utils/layout';
 import Inspector from "@/views/Inspector.vue";
 import * as DataUtil from "@/utils/data.js";
 import * as StringUtil from 'lxljs/string.js';
@@ -250,13 +251,13 @@ export default {
       });
     },
     focusPreview() {
-      this.$refs.preview.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
+      LayoutUtil.ensureInViewport(this.$refs.preview);
     },
     focusMatchForm() {
-      this.$refs.matchForm.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
+      LayoutUtil.ensureInViewport(this.$refs.matchForm);
     },
     focusTargetForm() {
-      this.$refs.targetForm.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
+      LayoutUtil.ensureInViewport(this.$refs.targetForm);
     },
     nextStep() {
       this.closeSidePanel();
@@ -291,8 +292,9 @@ export default {
     },
     save() {
       if (this.isActive('form')) {
-        this.setActive('targetForm');
+        this.nextStep();
       } else {
+        this.resetLastAdded();
         this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
         this.saveBulkChange();
       }
