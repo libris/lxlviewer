@@ -78,7 +78,7 @@ export default {
     isCardWithData() {
       return this.isCard && this.focusData && Object.keys(this.focusData).length > 1;
     },
-    isHistoryView() {
+    isDiffView() {
       return this.diff != null;
     },
   },
@@ -138,7 +138,7 @@ export default {
     ReverseRelations,
   },
   created() {
-    if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey) && !this.isHistoryView) {
+    if (this.$store.state.settings.defaultExpandedProperties.includes(this.fieldKey) && !this.isDiffView) {
       this.expand();
     }
   },
@@ -151,10 +151,10 @@ export default {
           }
         }).catch((error) => console.error(error));
       }
-      if (this.isExpanded && !this.isHistoryView) {
+      if (this.isExpanded && !this.isDiffView) {
         this.expand();
       }
-      if (this.isNewlyAdded) {
+      if (this.isNewlyAdded && !this.isDiffView) {
         setTimeout(() => {
           const element = this.$el;
           LayoutUtil.ensureInViewport(element).then(() => {

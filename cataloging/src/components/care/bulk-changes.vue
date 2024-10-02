@@ -7,7 +7,7 @@ import BulkChangesHeader from "@/components/care/bulk-changes-header.vue";
 import { mapGetters } from 'vuex';
 import {cloneDeep, get, isEmpty, isEqual} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
-import toolbar from "@/components/inspector/toolbar-simple.vue";
+import toolbar from "@/components/inspector/bulkchange-toolbar.vue";
 import {labelByLang, translatePhrase} from "@/utils/filters.js";
 import Inspector from "@/views/Inspector.vue";
 import * as DataUtil from "@/utils/data.js";
@@ -259,10 +259,18 @@ export default {
       this.$refs.targetForm.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
     },
     nextStep() {
+      this.closeSidePanel();
       this.setActive(this.steps[this.steps.indexOf(this.activeStep) + 1]);
     },
     previousStep() {
+      this.closeSidePanel();
       this.setActive(this.steps[this.steps.indexOf(this.activeStep) - 1]);
+    },
+    closeSidePanel() {
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'form-control',
+        value: 'close-modals',
+      })
     },
     setActive(step) {
       if (!step) return;
@@ -626,7 +634,7 @@ export default {
           :has-next="hasNext"
           :has-previous="hasPrevious"
           :finished="isFinished"
-          :isDraft="isDraft"
+          :is-draft="isDraft"
           @ready="ready"
           @next="nextStep"
           @previous="previousStep"

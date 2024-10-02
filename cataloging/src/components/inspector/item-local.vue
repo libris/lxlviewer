@@ -199,6 +199,9 @@ export default {
     },
     isPinned() {
       return typeof this.item['_match'] !== 'undefined';
+    },
+    isBulkChangeView() {
+      return this.$route.path.includes('bulkchanges');
     }
   },
   methods: {
@@ -216,7 +219,7 @@ export default {
       LayoutUtil.ensureInViewport(element);
     },
     addHoverHightlight() {
-      if (!this.isHistoryView() && !this.isLocked) {
+      if (!this.isDiffView() && !this.isLocked) {
         this.addHighlight('mark');
       }
     },
@@ -224,7 +227,7 @@ export default {
       this.highlights.push(type);
     },
     removeHoverHightlight() {
-      if (!this.isHistoryView() && !this.isLocked) {
+      if (!this.isDiffView() && !this.isLocked) {
         this.removeHighlight('mark');
       }
     },
@@ -244,7 +247,7 @@ export default {
         this.expand();
       }
     },
-    isHistoryView() {
+    isDiffView() {
       return this.diff !== null;
     },
     openPropertyAdder() {
@@ -451,7 +454,7 @@ export default {
       }
     },
     diff() {
-      if (this.isHistoryView()) {
+      if (this.isDiffView()) {
         if (this.diffChangedChildren) {
           this.expand();
         } else {
@@ -504,12 +507,14 @@ export default {
       this.expand();
       this.expandChildren = true;
     }
-    if (this.isHistoryView()) {
+    if (this.isDiffView()) {
       if (this.diffChangedChildren) {
         this.expand();
       } else {
         this.collapse();
       }
+    } else if (this.isBulkChangeView) {
+      this.expand();
     }
     if (this.inspector.status.isNew) {
       this.expand();
@@ -749,7 +754,7 @@ export default {
         :diff="diff"
         :expand-children="expandChildren"
         :is-expanded="expanded"
-        :in-bulk-change-view="showPinned"
+        :showPinned="showPinned"
       />
     </ul>
 
