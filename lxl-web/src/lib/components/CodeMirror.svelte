@@ -211,7 +211,10 @@
 		});
 	}
 
-	export function dispatchChange(change: { from: number; to?: number; insert: string }) {
+	export function dispatchChange(
+		change: { from: number; to?: number; insert: string },
+		options: { userEvent?: string } | undefined = {}
+	) {
 		if (editor) {
 			const { from, to, insert } = change;
 			editor.dispatch({
@@ -221,8 +224,7 @@
 					insert
 				},
 				selection: { anchor: from + insert.length, head: from + insert.length },
-				scrollIntoView: true,
-				userEvent: 'input.autocomplete'
+				...(options?.userEvent && { userEvent: options.userEvent })
 			});
 		}
 	}

@@ -176,6 +176,7 @@
 			goto(event.href);
 		} else {
 			collapsedCodeMirror?.dispatchChange(event.change);
+			expandedCodeMirror?.dispatchChange(event.change);
 		}
 	}
 
@@ -236,6 +237,7 @@
 				extensions={[findOnEnter]}
 				onclick={() => showExpandedSearch()}
 				onchange={handleChangeCodeMirror}
+				lineWrapping={false}
 			/>
 		</div>
 		<textarea {value} hidden readonly name="_q" maxlength={2048}></textarea>
@@ -365,10 +367,6 @@
 		}
 	}
 
-	/**
-	* Temporarily remove collapsed styling as it casues last whitespace not to be rendered
-	*/
-	/*
 	.collapsed {
 		max-height: 48px;
 	}
@@ -385,7 +383,6 @@
 	.collapsed :global(.cm-scroller::-webkit-scrollbar) {
 		display: none;
 	}
-	*/
 
 	.suggestions {
 		padding: var(--padding-base) 0 var(--padding-sm) 0;
