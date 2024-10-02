@@ -125,7 +125,7 @@ export default {
     translatePhrase,
     getDateString() {
       const date = new Date();
-      return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
     initNew() {
       this.setActive(this.steps[0]);
