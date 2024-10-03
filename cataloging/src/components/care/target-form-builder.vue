@@ -34,6 +34,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isDraft: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters([
@@ -80,7 +84,7 @@ export default {
       {{ this.title }}
     </div>
     <div class="TargetFormBuilder-body" :class="{ 'has-selection': isActive }">
-      <div>
+      <div v-if="isDraft">
         <entity-form
           :editing-object="'mainEntity'"
           :key="formTab.id"

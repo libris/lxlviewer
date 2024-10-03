@@ -2,7 +2,6 @@
 import FormBuilder from '@/components/care/form-builder.vue';
 import TargetFormBuilder from '@/components/care/target-form-builder.vue';
 import Preview from '@/components/care/preview.vue';
-import Results from '@/components/care/results.vue';
 import BulkChangesHeader from "@/components/care/bulk-changes-header.vue";
 import { mapGetters } from 'vuex';
 import {cloneDeep, get, isEmpty, isEqual} from 'lodash-es';
@@ -31,7 +30,6 @@ export default {
     TargetFormBuilder,
     Preview,
     BulkChangesHeader,
-    Results,
     'modal-component': ModalComponent,
   },
   props: {
@@ -125,6 +123,9 @@ export default {
     },
     statusLabel() {
       return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeStatus, this.user.settings.language, this.resources);
+    },
+    loudOrSilentLabel() {
+      return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeMetaChanges, this.user.settings.language, this.resources);
     },
     hasUnsavedChanges() {
       if (this.lastFetchedSpec && this.isDraft) {
@@ -326,6 +327,9 @@ export default {
       }
     },
     shouldExportAffected() {
+      return this.isLoud();
+    },
+    isLoud() {
       return this.currentBulkChange.bulkChangeMetaChanges === "LoudBulkChange";
     },
     save() {
@@ -625,6 +629,7 @@ export default {
           :preview-data="formPreviewData"
           :preview-diff="formPreviewDiff"
           :has-unsaved="hasUnsavedChanges"
+          :is-draft="isDraft"
           @onInactive="onInactiveTargetForm"
           @onActive="focusTargetForm"
         />
@@ -645,15 +650,23 @@ export default {
         />
       </div>
       <div class="BulkChanges-result" v-if="isRunningOrFinished">
-        <div>{{ translatePhrase('Bulk change')}} </div>
-        <div>&nbsp<span class="badge badge-accent2">{{ statusLabel }}</span>.</div>
-        <div>&nbsp{{ translatePhrase('See affected records')}}:</div>
-        <reverse-relations
-          :main-entity="this.currentBulkChange"
-          :compact="true"
-          :force-load="true"
-          :show-label="false"
-        />
+        <div>
+          <p>{{ translatePhrase('Bulk change') }}
+            <span class="badge badge-accent2">{{ statusLabel }}</span>.
+            &nbsp{{ translatePhrase('See affected records') }}:
+          </p>
+        </div>
+        <div>
+          <reverse-relations
+            :main-entity="this.currentBulkChange"
+            :compact="true"
+            :force-load="true"
+            :show-label="false"
+          />
+        </div>
+        <div class="BulkChanges-loudOrSilentLabel">
+          <span class="badge badge-accent">{{ loudOrSilentLabel}}</span>
+        </div>
       </div>
       <div>
 
@@ -741,6 +754,7 @@ export default {
             <input
               :checked="shouldExportAffected"
               type="checkbox"
+              :disabled="!isDraft"
               @change="toggleExportAffected()"/>
           </p>
           <div class="Modal-buttonContainer">
@@ -763,6 +777,10 @@ export default {
     background-color: @white;
     border: 1px solid @grey-lighter;
     padding:  20px;
+  }
+  &-loudOrSilentLabel {
+    margin-left: auto;
+    text-align: right;
   }
 }
 
