@@ -12,6 +12,7 @@
 	import { afterNavigate, goto } from '$app/navigation';
 	import preventNewLine from '$lib/utils/codemirror/extensions/preventNewLine';
 	import { EditorView } from '@codemirror/view';
+	import preventInsertBeforeQualifier from '$lib/utils/codemirror/extensions/preventInsertBeforeQualifier';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -236,7 +237,7 @@
 				syncedCodeMirrorComponent={expandedCodeMirror}
 				{placeholder}
 				{validQualifiers}
-				extensions={[findOnEnter, preventNewLine]}
+				extensions={[findOnEnter, preventNewLine, preventInsertBeforeQualifier]}
 				onclick={() => showExpandedSearch()}
 				onchange={handleChangeCodeMirror}
 			/>
@@ -259,7 +260,12 @@
 							follows={true}
 							{placeholder}
 							{validQualifiers}
-							extensions={[findOnEnter, EditorView.lineWrapping, preventNewLine]}
+							extensions={[
+								findOnEnter,
+								EditorView.lineWrapping,
+								preventNewLine,
+								preventInsertBeforeQualifier
+							]}
 						/>
 					</SearchInputWrapper>
 				</div>
