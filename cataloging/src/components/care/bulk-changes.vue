@@ -672,20 +672,19 @@ export default {
       </div>
     </div>
     <modal-component
-      title="Error"
-      modal-type="danger"
+      :title="'Overwrite warning'"
+      :width="'600px'"
       @close="closeOverwriteModal"
-      class="RemoveRecordModal"
       v-if="showOverwriteWarning">
       <template #modal-header>
-        <div class="RemoveRecordModal-header">
+        <div class="OverwriteWarnModal-header">
           <header>
             {{ translatePhrase('Note') }}
           </header>
         </div>
       </template>
       <template #modal-body>
-        <div class="RemoveRecordModal-body">
+        <div class="OverwriteWarnModal-body">
           <p>
              {{ translatePhrase('Changes in') }}
             <i>
@@ -696,7 +695,7 @@ export default {
               {{this.changesTitle}}.
             </i>
           </p>
-          <div class="RemoveRecordModal-buttonContainer">
+          <div class="OverwriteWarnModal-buttonContainer">
             <button class="btn btn-info btn--md" @click="closeOverwriteModal()">{{ translatePhrase('Ok') }}</button>
           </div>
         </div>
@@ -707,9 +706,6 @@ export default {
 
 <style scoped lang="less">
 .BulkChanges {
-  &-new {
-
-  }
   &-result {
     margin-top: 20px;
     display: flex;
@@ -718,13 +714,9 @@ export default {
     border: 1px solid @grey-lighter;
     padding:  20px;
   }
-
-}
-.RemoveRecordModal .ModalComponent-container {
-  width: 600px;
 }
 
-.RemoveRecordModal {
+.OverwriteWarnModal {
   &-body {
     height: 80%;
     display: flex;
