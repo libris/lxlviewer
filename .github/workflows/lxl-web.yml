@@ -66,5 +66,5 @@ jobs:
           LHCI_SERVER_PASSWORD: ${{ secrets.LHCI_SERVER_PASSWORD }}
         run: |
           npm run build
-          npm install -g @lhci/cli@0.14.x
+          npm install -g @lhci/cli@0.13.x
           lhci autorun --upload.target=lhci --serverBaseUrl="$LHCI_SERVER_BASE_URL" --token="$LHCI_TOKEN" --upload.githubToken="$LHCI_GITHUB_APP_TOKEN" --upload.basicAuth.username="$LHCI_SERVER_USERNAME" --upload.basicAuth.password="$LHCI_SERVER_PASSWORD" || echo "LHCI failed!"
