@@ -1,4 +1,5 @@
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
+import sanitizeQSearchParamValue from '../sanitizeQSearchParamValue';
 
 export function getTypeQualifierLink({
 	initialQuery,
@@ -11,10 +12,11 @@ export function getTypeQualifierLink({
 		'/find?' +
 		addDefaultSearchParams(
 			new URLSearchParams({
-				_q:
+				_q: sanitizeQSearchParamValue(
 					(initialQuery?.slice(0, change.to) || '') +
-					change.insert +
-					(initialQuery?.slice(change.to) || '')
+						change.insert +
+						(initialQuery?.slice(change.to) || '')
+				)
 			})
 		).toString()
 	);
@@ -31,10 +33,11 @@ export function getFullQualifierLink({
 		'/find?' +
 		addDefaultSearchParams(
 			new URLSearchParams({
-				_q:
+				_q: sanitizeQSearchParamValue(
 					(initialQuery?.slice(0, change.from).trimEnd() || '') +
-					change.insert +
-					(initialQuery?.slice(change.to).trimStart() || '')
+						change.insert +
+						(initialQuery?.slice(change.to) || '')
+				)
 			})
 		).toString()
 	);
