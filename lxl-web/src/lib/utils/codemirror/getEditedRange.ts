@@ -17,8 +17,10 @@ function getEditedRange(editorState: EditorState) {
 	const doc = editorState.doc.toString();
 
 	return {
-		from: doc.lastIndexOf(doc.slice(0, mainSelection.anchor).split(/\s+/).pop()!),
-		to: mainSelection.anchor + (doc.slice(mainSelection.anchor).split(/\s+/)[0].length || 0)
+		from: doc.lastIndexOf(editorState.sliceDoc(0, mainSelection.anchor).split(/\s+/).pop()!),
+		to:
+			mainSelection.anchor +
+			(editorState.sliceDoc(0, mainSelection.anchor).split(/\s+/)[0].length || 0)
 	};
 }
 
