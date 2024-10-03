@@ -265,10 +265,11 @@
 	}
 
 	.pill {
-		@apply mb-1 mr-1 inline-block rounded-full bg-pill/8 px-3 py-1 no-underline;
+		@apply mb-1 mr-1 inline-block rounded-full border border-primary/8 px-3 py-1 no-underline;
 	}
+
 	a.pill {
-		@apply hover:bg-pill/16 focus:bg-pill/16;
+		@apply border-primary/0 bg-pill/8 hover:bg-pill/16 focus:bg-pill/16;
 	}
 
 	.remainder {
