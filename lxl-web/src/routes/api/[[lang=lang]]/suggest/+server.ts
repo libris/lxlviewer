@@ -9,11 +9,14 @@ import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
 import getQualifierSuggestion, {
 	type QualifierSuggestion
 } from '$lib/utils/supersearch/getQualifierSuggestion.server';
+import QUALIFIER_TYPES_BY_BASE_CLASS from '$lib/assets/json/qualifierTypeByBaseClass.json';
 import { relativizeUrl } from '$lib/utils/http';
+
+const FindType = z.enum(['qualifier', 'work']);
 
 const SearchParamsSchema = z.object({
 	q: z.string(),
-	type: z.enum(['qualifier', 'work']),
+	type: FindType,
 	wordRange: z
 		.string()
 		.transform((value) => value.split(',').map((value) => parseInt(value, 10)))
@@ -31,7 +34,9 @@ const SearchParamsSchema = z.object({
 			from,
 			to
 		}))
-		.or(z.null())
+		.or(z.null()),
+	qualifierType: z.string().or(z.null()),
+	qualifierValue: z.string().or(z.null())
 });
 
 export type SuggestSearchParamsSchema = z.input<typeof SearchParamsSchema>;
@@ -65,45 +70,31 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 		q: url.searchParams.get('q'),
 		type: url.searchParams.get('type'),
 		wordRange: url.searchParams.get('wordRange'),
-		phraseRange: url.searchParams.get('phraseRange')
+		phraseRange: url.searchParams.get('phraseRange'),
+		qualifierType: url.searchParams.get('qualifierType'),
+		qualifierValue: url.searchParams.get('qualifierValue')
 	});
 
 	if (searchParamsError) {
 		error(400, searchParamsError.message); // TODO: format zod error messages
 	}
 
-	const { q, type, wordRange, phraseRange } = dataFromSearchParams;
+	const { q, type, wordRange, phraseRange, qualifierType, qualifierValue } = dataFromSearchParams;
 
 	const editedRange = phraseRange || wordRange;
 	const word = wordRange ? q.slice(wordRange.from, wordRange.to) : null;
 	const phrase = phraseRange ? q.slice(phraseRange.from, phraseRange.to) : null;
 
-	const findRes = await fetch(
-		`${env.API_URL}/find.jsonld?${new URLSearchParams(
-			type === 'qualifier'
-				? [
-						['q', sanitizeQSearchParamValue(phrase || word)], // TODO: fetch phrase or word in parallel (if phrase doesn't give any results fall back to word). If both gives the same result use word (so only the last occurrence of Astrid Astrid has qualifier changes)
-						['@type', 'Agent'],
-						['@type', 'Concept'],
-						['@type', 'Language'],
-						['not-@type', 'ComplexSubject'], // Should it be "unboosted" instead?
-						['not-inScheme.@id', 'https://id.kb.se/term/swepub'],
-						['not-inScheme.@id', 'https://id.kb.se/marc'],
-						['min-reverseLinks.totalItems', '1'],
-						['_limit', '4'],
-						['_offset', '0'],
-						['_sort', '']
-					]
-				: [
-						['q', sanitizeQSearchParamValue(q)],
-						['not-inCollection.@id', 'https://id.kb.se/term/uniformWorkTitle'],
-						['@type', 'Work'],
-						['_limit', '4'],
-						['_offset', '0'],
-						['_sort', '']
-					]
-		).toString()}`
-	);
+	const findResSearchParams = getFindResSearchParams({
+		q,
+		type,
+		word,
+		phrase,
+		qualifierType,
+		qualifierValue
+	});
+
+	const findRes = await fetch(`${env.API_URL}/find.jsonld?${findResSearchParams.toString()}`);
 
 	if (findRes.status !== 200) {
 		error(findRes.status, findRes.statusText);
@@ -150,3 +141,61 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 		itemsPerPage: findResult.itemsPerPage
 	} satisfies SuggestResponse);
 };
+
+function getFindResSearchParams({
+	q,
+	type,
+	word,
+	phrase,
+	qualifierType,
+	qualifierValue
+}: {
+	q: string;
+	type: z.infer<typeof FindType>;
+	word: string | null;
+	phrase: string | null;
+	qualifierType: string | null;
+	qualifierValue: string | null;
+}) {
+	if (type === 'work') {
+		return new URLSearchParams([
+			['_q', sanitizeQSearchParamValue(q)],
+			['_limit', '3'],
+			['_offset', '0'],
+			['_sort', '']
+		]);
+	}
+
+	if (qualifierType && qualifierValue) {
+		const baseClass = Object.entries(QUALIFIER_TYPES_BY_BASE_CLASS).find(
+			([, type]) => type === qualifierType
+		)?.[0];
+
+		if (baseClass) {
+			return new URLSearchParams([
+				['q', qualifierValue], // TODO: fetch phrase or word in parallel (if phrase doesn't give any results fall back to word). If both gives the same result use word (so only the last occurrence of Astrid Astrid has qualifier changes)
+				['@type', baseClass || ''],
+				['min-reverseLinks.totalItems', '1'],
+				['_limit', '4'],
+				['_offset', '0'],
+				['_sort', '']
+			]);
+		} else {
+			console.error('could not find base class');
+		}
+	}
+
+	return new URLSearchParams([
+		['q', sanitizeQSearchParamValue(phrase || word)], // TODO: fetch phrase or word in parallel (if phrase doesn't give any results fall back to word). If both gives the same result use word (so only the last occurrence of Astrid Astrid has qualifier changes)
+		['@type', 'Agent'],
+		['@type', 'Concept'],
+		['@type', 'Language'],
+		['not-@type', 'ComplexSubject'], // Should it be "unboosted" instead?
+		['not-inScheme.@id', 'https://id.kb.se/term/swepub'],
+		['not-inScheme.@id', 'https://id.kb.se/marc'],
+		['min-reverseLinks.totalItems', '1'],
+		['_limit', '4'],
+		['_offset', '0'],
+		['_sort', '']
+	]);
+}

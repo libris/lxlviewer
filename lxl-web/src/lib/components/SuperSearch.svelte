@@ -51,10 +51,14 @@
 			/** TODO: add request cancellation if query changes before fetch has finished (or if component is destroyed) */
 
 			try {
-				const { wordRange, phraseRange } = getEditedParts({
+				const { wordRange, phraseRange, qualifierType, qualifierValue } = getEditedParts({
 					value,
 					cursor
 				});
+
+				if (qualifierType && !qualifierValue) {
+					return;
+				}
 
 				const [qualifiersRes, worksRes] = await Promise.all([
 					fetch(
@@ -62,7 +66,9 @@
 							q: value,
 							type: 'qualifier',
 							wordRange: `${wordRange.from},${wordRange.to}`,
-							...(phraseRange && { phraseRange: `${phraseRange.from},${phraseRange.to}` })
+							...(phraseRange && { phraseRange: `${phraseRange.from},${phraseRange.to}` }),
+							...(qualifierType && { qualifierType }),
+							...(qualifierValue && { qualifierValue })
 						})}`
 					),
 					fetch(
@@ -180,6 +186,7 @@
 		} else {
 			collapsedCodeMirror?.dispatchChange(event.change);
 			expandedCodeMirror?.dispatchChange(event.change);
+			expandedCodeMirror?.focus();
 		}
 	}
 

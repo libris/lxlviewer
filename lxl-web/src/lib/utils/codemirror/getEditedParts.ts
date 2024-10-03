@@ -12,6 +12,8 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 	wordRange: EditedRange;
 	phrase: string | null; // a group of words/strings (e.g. Astrid Lindgren)
 	phraseRange: EditedRange | null;
+	qualifierType: string | null;
+	qualifierValue: string | null;
 } {
 	const wordFromIndex = value.lastIndexOf(value.slice(0, cursor).split(/\s+/).pop()!);
 	const wordToIndex = cursor + value.slice(cursor).split(/\s+/)[0].length || 0;
@@ -22,13 +24,15 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 
 	if (qualifierMatch) {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const [match, name, delimiter, value] = qualifierMatch;
+		const [match, qualifierType, delimiter, qualifierValue] = qualifierMatch;
 
 		return {
 			word,
 			wordRange,
 			phrase: null,
-			phraseRange: null
+			phraseRange: null,
+			qualifierType,
+			qualifierValue
 		};
 	} else {
 		const phraseBefore = value.slice(0, cursor).split(PHRASE_REGEX).pop() || ''; // get last string before cursor which isn't a qualifier
@@ -42,7 +46,9 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 			word,
 			wordRange,
 			phrase: (phrase !== word && phrase) || null,
-			phraseRange: (phrase !== word && phraseRange) || null
+			phraseRange: (phrase !== word && phraseRange) || null,
+			qualifierType: null,
+			qualifierValue: null
 		};
 	}
 }

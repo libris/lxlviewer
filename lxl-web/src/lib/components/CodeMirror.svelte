@@ -97,9 +97,7 @@
 		if (e.docChanged) {
 			onchange({
 				value: e.state.doc.toString(),
-				cursor: userEvent
-					? e.state.selection.main.anchor
-					: syncedCodeMirrorComponent?.getEditorView().state.selection.main.anchor
+				cursor: e.state.selection.main.anchor
 			});
 		}
 	});
@@ -216,6 +214,8 @@
 	) {
 		if (editor) {
 			const { from, to, insert } = change;
+			const selection = { anchor: from + insert.length, head: from + insert.length };
+			console.log('selection', selection);
 			editor.dispatch({
 				changes: {
 					from,
