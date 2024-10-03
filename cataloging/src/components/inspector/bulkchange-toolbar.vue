@@ -259,7 +259,7 @@ export default {
 <!--      <i class="fa fa-eye" aria-hidden="true" />-->
 <!--    </button>-->
     <button
-      v-if="lastItemActive && isDraft"
+      v-if="lastItemActive && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="!hasNext"
       v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
@@ -268,7 +268,7 @@ export default {
       <i class="fa fa-arrow-right" aria-hidden="true" />
     </button>
     <button
-      v-if="lastItemActive && isDraft"
+      v-if="lastItemActive && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="!hasPrevious"
       v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
