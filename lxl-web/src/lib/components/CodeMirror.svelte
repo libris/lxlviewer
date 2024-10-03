@@ -146,7 +146,7 @@
 		selection
 	}: {
 		doc: string;
-		selection: Selection | undefined;
+		selection?: Selection | undefined;
 	}) {
 		return EditorState.create({
 			doc,
