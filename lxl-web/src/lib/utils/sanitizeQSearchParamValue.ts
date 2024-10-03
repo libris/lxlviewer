@@ -5,7 +5,7 @@
 function sanitizeQSearchParamValue(q: string | null): string {
 	return (
 		q
-			?.trim()
+			?.trimStart()
 			.replace(/(\r\n|\n|\r)/gm, ' ') // replace line breaks with spaces
 			.replace(/\s+/g, ' ') || '' // replace multiple whitespaces with one space
 	);
