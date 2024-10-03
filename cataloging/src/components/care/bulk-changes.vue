@@ -62,6 +62,7 @@ export default {
       fullPreviewData: {'@type': 'Instance'},
       fullPreviewDiff: {},
       showOverwriteWarning: false,
+      showConfirmRunModal: false,
     };
   },
   computed: {
@@ -311,6 +312,22 @@ export default {
     openOverwriteModal() {
       this.showOverwriteWarning = true;
     },
+    closeConfirmRunModal() {
+      this.showConfirmRunModal = false;
+    },
+    openConfirmRunModal() {
+      this.showConfirmRunModal = true;
+    },
+    toggleExportAffected() {
+      if (this.shouldExportAffected) {
+        this.currentBulkChange.bulkChangeMetaChanges = "SilentBulkChange";
+      } else {
+        this.currentBulkChange.bulkChangeMetaChanges = "LoudBulkChange";
+      }
+    },
+    shouldExportAffected() {
+      return this.currentBulkChange.bulkChangeMetaChanges === "LoudBulkChange";
+    },
     save() {
       if (this.isActive('form')) {
         this.nextStep();
@@ -385,7 +402,11 @@ export default {
         url: `${this.settings.apiPath}/_bulk-change/poll-ready`
       }, nonEmpty);
     },
-    ready() {
+    run() {
+      this.openConfirmRunModal();
+    },
+    doRun() {
+      this.closeConfirmRunModal();
       this.setRunStatus('ReadyBulkChange');
       this.save();
       this.setActive('preview');
@@ -660,7 +681,7 @@ export default {
           :has-previous="hasPrevious"
           :finished="isFinished"
           :is-draft="isDraft"
-          @ready="ready"
+          @ready="run"
           @next="nextStep"
           @previous="previousStep"
           @nextPreview="nextPreview"
@@ -677,14 +698,14 @@ export default {
       @close="closeOverwriteModal"
       v-if="showOverwriteWarning">
       <template #modal-header>
-        <div class="OverwriteWarnModal-header">
+        <div class="Modal-header">
           <header>
             {{ translatePhrase('Note') }}
           </header>
         </div>
       </template>
       <template #modal-body>
-        <div class="OverwriteWarnModal-body">
+        <div class="Modal-body">
           <p>
              {{ translatePhrase('Changes in') }}
             <i>
@@ -695,8 +716,37 @@ export default {
               {{this.changesTitle}}.
             </i>
           </p>
-          <div class="OverwriteWarnModal-buttonContainer">
+          <div class="Modal-buttonContainerCol">
             <button class="btn btn-info btn--md" @click="closeOverwriteModal()">{{ translatePhrase('Ok') }}</button>
+          </div>
+        </div>
+      </template>
+    </modal-component>
+    <modal-component
+      :title="'Confirm run'"
+      :width="'600px'"
+      @close="closeConfirmRunModal"
+      v-if="showConfirmRunModal">
+      <template #modal-header>
+        <div class="Modal-header">
+          <header>
+            {{ translatePhrase('Confirm run') }}
+          </header>
+        </div>
+      </template>
+      <template #modal-body>
+        <div class="Modal-body">
+          <p>
+            {{ translatePhrase('Exportera ändrade poster (uppdatera ändringsdatum)') }}&nbsp
+            <input
+              :checked="shouldExportAffected"
+              type="checkbox"
+              @change="toggleExportAffected()"/>
+          </p>
+          <div class="Modal-buttonContainer">
+            <button class="btn btn-primary btn--md" @click="doRun()">
+              {{ translatePhrase('Kör') }}</button>
+            <button class="btn btn-info btn--md" @click="closeConfirmRunModal()">{{ translatePhrase('Cancel') }}</button>
           </div>
         </div>
       </template>
@@ -716,7 +766,7 @@ export default {
   }
 }
 
-.OverwriteWarnModal {
+.Modal {
   &-body {
     height: 80%;
     display: flex;
@@ -724,10 +774,17 @@ export default {
     justify-content: center;
     padding: 15px 45px;
   }
-  &-buttonContainer {
+  &-buttonContainerCol {
     display: grid;
     justify-content: center;
 
+    margin: 10px 0;
+    & > * {
+      margin-right: 15px;
+    }
+  }
+
+  &-buttonContainer {
     margin: 10px 0;
     & > * {
       margin-right: 15px;

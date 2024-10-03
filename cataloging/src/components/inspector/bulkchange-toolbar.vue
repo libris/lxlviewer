@@ -291,7 +291,7 @@ export default {
     <button
       v-if="!this.isSetToReady || finished"
       class="Toolbar-btn btn btn-primary"
-      v-tooltip.left="`${translatePhrase('Markera som redo att köra')}`"
+      v-tooltip.left="`${translatePhrase('Run')}`"
       id="runButton"
       @click="handleReady">
       <i class="fa fa-fw fa-play" />

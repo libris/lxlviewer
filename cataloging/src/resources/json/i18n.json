@@ -441,6 +441,8 @@
     "No preview available.": "Ingen förhandsgranskning tillgänglig.",
     "Changes in" : "Ändringar i",
     "will reset" : "kommer nollställa",
-    "Note" : "OBS!"
+    "Note" : "OBS!",
+    "Run" : "Kör",
+    "Confirm run" : "Bekräfta körning"
   }
 }
