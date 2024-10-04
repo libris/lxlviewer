@@ -27,11 +27,7 @@
 
 {#snippet heading()}
 	<hgroup>
-		{#if data.qualifier}
-			<p class="action"><span class="action-label">Lägg till</span></p>
-		{:else}
-			<p class="action"><span class="action-label">Gå till</span></p>
-		{/if}
+		<p class="action">{@render actionLabel(data.qualifier ? 'Lägg till' : 'Gå till')}</p>
 		<p class="type">{data.qualifier?.label || data.typeLabel}</p>
 		<h3>
 			{data.heading}
@@ -45,8 +41,12 @@
 	</hgroup>
 {/snippet}
 
+{#snippet actionLabel(label: string)}
+	<span class="action-label">{label}</span>
+{/snippet}
+
 <li class="list-item">
-	{#if data.qualifier?.changes}
+	{#if data.qualifier}
 		{@const qualifierData = {
 			change: data.qualifier.changes,
 			initialQuery,
@@ -62,11 +62,13 @@
 			{@render heading()}
 		</a>
 	{:else}
-		{@render heading()}
+		<a href={data.fnurgel}>
+			{@render heading()}
+		</a>
 	{/if}
 	{#if data.qualifier}
 		<a class="action" href={data.fnurgel}>
-			<span class="action-label">Gå till</span>
+			{@render actionLabel('Gå till')}
 		</a>
 	{/if}
 </li>
@@ -81,17 +83,10 @@
 		&:hover {
 			background: #f3f3f3;
 		}
-		&::before {
-			display: none;
-		}
 	}
 
 	.list-item > * {
 		padding: 0 var(--padding-base);
-	}
-
-	.list-item > *:first-child {
-		padding-right: 0;
 	}
 
 	a {
@@ -135,13 +130,12 @@
 	}
 
 	.action-label {
-		margin-left: var(--gap-xs);
 		color: var(--color-super-subtle);
 		font-size: var(--font-size-xs);
 	}
 
-	a:hover .action-label,
-	a:focus .action-label {
+	a:hover :global(.action-label),
+	a:focus :global(.action-label) {
 		color: var(--color-base);
 	}
 

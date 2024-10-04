@@ -306,10 +306,6 @@
 						</section>
 					{/if}
 				</nav>
-				<footer class="dropdown-footer">
-					<a href="/">Visa fler träffar</a>
-					<a href="/">Hjälp</a>
-				</footer>
 			</div>
 		</div>
 	</dialog>
@@ -344,6 +340,7 @@
 		border-radius: var(--border-radius-lg);
 		background: var(--background-main);
 		padding: 0;
+		overflow: hidden;
 		pointer-events: auto;
 	}
 
@@ -357,28 +354,10 @@
 
 	.dropdown-header {
 		margin: 0;
-		padding: 0 var(--gap-base) var(--padding-2xs) var(--gap-base);
+		padding: 0 var(--gap-base) var(--padding-xs) var(--gap-base);
 		color: var(--color-subtle);
 		font-weight: 500;
 		font-size: var(--font-size-xs);
-	}
-
-	.dropdown-footer {
-		display: flex;
-		justify-content: space-between;
-		box-shadow: var(--box-shadow-border-top);
-		padding: var(--padding-sm) var(--gap-base);
-		min-height: var(--height-input-xs);
-		font-size: var(--font-size-sm);
-	}
-
-	.dropdown-footer :global(a) {
-		color: var(--color-link);
-		text-decoration: none;
-
-		&:hover {
-			text-decoration: underline;
-		}
 	}
 
 	.collapsed {
@@ -395,7 +374,7 @@
 	}
 
 	.suggestions {
-		padding: var(--padding-base) 0 var(--padding-sm) 0;
+		padding: var(--padding-base) 0 0 0;
 
 		&:first-child {
 			padding-top: 0;
@@ -406,10 +385,23 @@
 		}
 	}
 
+	.suggestions button {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		width: 100%;
+		min-height: var(--height-input-sm);
+
+		&:focus,
+		&:hover {
+			background: #f3f3f3;
+		}
+	}
+
 	.show-more {
 		border: none;
 		padding: 0 var(--padding-base);
-		color: var(--color-subtle);
+		color: var(--color-link);
 		font-size: var(--font-size-xs);
 	}
 </style>
