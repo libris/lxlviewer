@@ -14,16 +14,9 @@ export type QualifierSuggestion =
 	| {
 			label: string;
 			changes: {
-				full: {
-					from: number;
-					to?: number;
-					insert: string;
-				};
-				type: {
-					from: number;
-					to?: number;
-					insert: string;
-				};
+				from: number;
+				to?: number;
+				insert: string;
 			};
 	  }
 	| undefined;
@@ -57,18 +50,11 @@ function getQualifierSuggestion({
 				displayUtil.lensAndFormat(vocabUtil.getDefinition(baseClass), LxlLens.CardHeading, lang)
 		),
 		changes: {
-			full: {
-				...editedRange,
-				insert:
-					(!/^[\s]/.test(query.slice(0, editedRange.from)) && editedRange.from !== 0 ? ' ' : '') + // add whitespace before if content before insert doesn't start with a whitespace or is first index
-					`${type}:${value}` +
-					(!/^[\s]/.test(query.slice(editedRange.to)) ? ' ' : '') // add whitespace after if content after insert doesn't start with a whitespace
-			},
-			type: {
-				from: editedRange.to,
-				to: editedRange.to,
-				insert: ` ${type}:`
-			}
+			...editedRange,
+			insert:
+				(!/^[\s]/.test(query.slice(0, editedRange.from)) && editedRange.from !== 0 ? ' ' : '') + // add whitespace before if content before insert doesn't start with a whitespace or is first index
+				`${type}:${value}` +
+				(!/^[\s]/.test(query.slice(editedRange.to)) ? ' ' : '') // add whitespace after if content after insert doesn't start with a whitespace
 		}
 	};
 }

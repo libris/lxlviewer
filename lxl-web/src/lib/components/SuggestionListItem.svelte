@@ -12,12 +12,7 @@
 
 <script lang="ts">
 	import type { Suggestion } from '../../routes/api/[[lang=lang]]/suggest/+server';
-	import {
-		getTypeQualifierLink,
-		getFullQualifierLink
-	} from '$lib/utils/supersearch/qualifierLinks';
-	import IconAddQualifier from '~icons/mdi/arrow-top-left';
-	import IconGotoQualfier from '~icons/bi/arrow-right-circle';
+	import { getFullQualifierLink } from '$lib/utils/supersearch/qualifierLinks';
 
 	type SuggestionListItemProps = {
 		data: Suggestion;
@@ -27,95 +22,61 @@
 		onpreviewqualifierend?: (event: QualifierEvent) => void;
 	};
 
-	let {
-		data,
-		initialQuery,
-		onaddqualifier,
-		onpreviewqualifierstart,
-		onpreviewqualifierend
-	}: SuggestionListItemProps = $props();
+	let { data, initialQuery, onaddqualifier }: SuggestionListItemProps = $props();
 </script>
 
-{#snippet label(label: string)}
-	<span class="label">{label}</span>&nbsp;
-{/snippet}
-
 {#snippet heading()}
-	{data.heading}
-	{#if data.inSchemeCode}
-		<span class="inScheme">
-			•
-			<abbr title={`${data.typeLabel} • ${data.inSchemeLabel}`}>{data.inSchemeCode}</abbr>
-		</span>
-	{/if}
-{/snippet}
-
-<li class="list-item">
 	<hgroup>
-		<p class="type" data-type={data['@type']}>
-			{#if data.qualifier?.changes.type}
-				{@const typeQualifierData = {
-					change: data.qualifier.changes.type,
-					initialQuery,
-					href: getTypeQualifierLink({ initialQuery, change: data.qualifier.changes.type })
-				}}
-				<a
-					href={typeQualifierData.href}
-					onclick={(event) => {
-						event.preventDefault();
-						onaddqualifier?.(typeQualifierData, { updateUrl: false });
-					}}
-					onmouseover={() => onpreviewqualifierstart?.(typeQualifierData)}
-					onmouseleave={() => onpreviewqualifierend?.(typeQualifierData)}
-					onfocus={() => onpreviewqualifierstart?.(typeQualifierData)}
-					onblur={() => onpreviewqualifierend?.(typeQualifierData)}
-				>
-					{@render label(`${data.qualifier.label}:`)}
-				</a>
-			{:else}
-				{@render label(data.typeLabel)}
-			{/if}
-		</p>
-		<h3 class="heading">
-			{#if data.qualifier?.changes.full}
-				{@const fullQualifierData = {
-					change: data.qualifier.changes.full,
-					initialQuery,
-					href: getFullQualifierLink({ initialQuery, change: data.qualifier.changes.full })
-				}}
-				<a
-					href={fullQualifierData.href}
-					onclick={(event) => {
-						event.preventDefault();
-						onaddqualifier?.(fullQualifierData);
-					}}
-					onmouseover={() => onpreviewqualifierstart?.(fullQualifierData)}
-					onmouseleave={() => onpreviewqualifierend?.(fullQualifierData)}
-					onfocus={() => onpreviewqualifierstart?.(fullQualifierData)}
-					onblur={() => onpreviewqualifierend?.(fullQualifierData)}
-				>
-					{@render heading()}
-				</a>
-			{:else}
-				{@render heading()}
+		{#if data.qualifier}
+			<p class="action"><span class="action-label">Lägg till</span></p>
+		{:else}
+			<p class="action"><span class="action-label">Gå till</span></p>
+		{/if}
+		<p class="type">{data.qualifier?.label || data.typeLabel}</p>
+		<h3>
+			{data.heading}
+			{#if data.inSchemeCode}
+				<span class="inScheme">
+					•
+					<abbr title={`${data.typeLabel} • ${data.inSchemeLabel}`}>{data.inSchemeCode}</abbr>
+				</span>
 			{/if}
 		</h3>
 	</hgroup>
-	<nav class="actions">
-		<ul>
-			{#if data.qualifier}
-				<li><IconAddQualifier /></li>
-			{/if}
-			<li><a href={data.fnurgel}><IconGotoQualfier /></a></li>
-		</ul>
-	</nav>
+{/snippet}
+
+<li class="list-item">
+	{#if data.qualifier?.changes}
+		{@const qualifierData = {
+			change: data.qualifier.changes,
+			initialQuery,
+			href: getFullQualifierLink({ initialQuery, change: data.qualifier.changes })
+		}}
+		<a
+			href={qualifierData.href}
+			onclick={(event) => {
+				event.preventDefault();
+				onaddqualifier?.(qualifierData);
+			}}
+		>
+			{@render heading()}
+		</a>
+	{:else}
+		{@render heading()}
+	{/if}
+	{#if data.qualifier}
+		<a class="action" href={data.fnurgel}>
+			<span class="action-label">Gå till</span>
+		</a>
+	{/if}
 </li>
 
 <style>
 	.list-item {
 		display: flex;
-		gap: var(--gap-sm);
-		padding: 0 var(--padding-base);
+		font-size: var(--font-size-sm);
+		white-space: nowrap;
+
 		&:focus-within,
 		&:hover {
 			background: #f3f3f3;
@@ -125,40 +86,63 @@
 		}
 	}
 
+	.list-item > * {
+		padding: 0 var(--padding-base);
+	}
+
+	.list-item > *:first-child {
+		padding-right: 0;
+	}
+
 	a {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-width: var(--height-input-base);
+		min-height: var(--height-input-base);
 		color: inherit;
 		text-decoration: none;
+
+		&:first-child {
+			flex-grow: 1;
+		}
 	}
 
 	hgroup {
 		display: flex;
-		align-items: stretch;
+		flex-grow: 1;
+		align-items: center;
+		gap: var(--gap-sm);
 		width: 100%;
-		min-height: var(--height-input-sm);
 		overflow: hidden;
-		font-size: var(--font-size-sm);
-
-		& :global(> *) {
-			display: flex;
-			align-items: center;
-			margin: 0;
-			height: 100%;
-		}
-
-		& :global(a) {
-			display: flex;
-			flex: 1;
-			align-items: center;
-			margin: 0;
-			height: 100%;
-		}
 	}
 
-	.heading {
+	hgroup > * {
+		margin: 0;
+	}
+
+	h3 {
 		flex-grow: 1;
 		font-weight: 500;
 		font-size: inherit;
 		white-space: nowrap;
+	}
+
+	.action {
+		display: flex;
+		order: 1;
+		gap: var(--gap-xs);
+	}
+
+	.action-label {
+		margin-left: var(--gap-xs);
+		color: var(--color-super-subtle);
+		font-size: var(--font-size-xs);
+	}
+
+	a:hover .action-label,
+	a:focus .action-label {
+		color: var(--color-base);
 	}
 
 	.type {
@@ -170,42 +154,9 @@
 		}
 	}
 
-	.label {
-		&:first-letter {
-			text-transform: uppercase;
-		}
-	}
-
 	.inScheme {
-		margin-left: var(--gap-xs);
 		color: var(--color-super-subtle);
 		font-weight: normal;
 		font-size: var(--font-size-2xs);
-	}
-
-	.actions ul {
-		display: flex;
-		gap: var(--gap-base);
-		padding: var(--gap-sm) 0;
-		height: 100%;
-	}
-
-	.actions li {
-		display: flex;
-		align-items: center;
-		color: var(--color-subtle);
-		font-size: var(--font-size-xs);
-		white-space: nowrap;
-	}
-
-	.actions li:not(:first-child) {
-		border-left: 1px dotted #999;
-		padding-left: var(--gap-base);
-	}
-
-	.actions :global(svg) {
-		margin-left: var(--padding-2xs);
-		color: var(--color-super-subtle);
-		font-size: 18px;
 	}
 </style>
