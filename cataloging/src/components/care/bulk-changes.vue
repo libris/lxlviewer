@@ -127,6 +127,12 @@ export default {
     loudOrSilentLabel() {
       return translatePhrase('Export changed records (update change date)');
     },
+    isLoud() {
+      return this.currentBulkChange.bulkChangeMetaChanges === "LoudBulkChange";
+    },
+    shouldExportAffected() {
+      return this.isLoud;
+    },
     hasUnsavedChanges() {
       if (this.lastFetchedSpec && this.isDraft) {
         const matchFormEqual = isEqual(this.formObj, this.lastFetchedSpec.matchForm);
@@ -325,12 +331,6 @@ export default {
       } else {
         this.currentBulkChange.bulkChangeMetaChanges = "LoudBulkChange";
       }
-    },
-    shouldExportAffected() {
-      return this.isLoud();
-    },
-    isLoud() {
-      return this.currentBulkChange.bulkChangeMetaChanges === "LoudBulkChange";
     },
     save() {
       if (this.isActive('form')) {
