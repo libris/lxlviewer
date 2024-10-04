@@ -122,6 +122,11 @@ export class DisplayUtil {
 			return LensType.Card;
 		}
 
+		// FIXME - hardcoded workaround to get the instance chip in these cases
+		if (propertyName === 'reproductionOf' || propertyName === 'hasReproduction') {
+			return LensType.Chip;
+		}
+
 		if (this.vocabUtil.hasCategory(propertyName, Platform.integral)) {
 			return lensType;
 		}
@@ -954,11 +959,11 @@ function invertRecord<K extends string | number | symbol, V extends string | num
 
 /*
 export function mapValuesOfObject<V, V2>(obj: Record<string, V>, fn: (v: V, k: string, i: number) => V2): Record<string, V2> {
-    return Object.fromEntries(
-        Object.entries(obj).map(
-            ([k, v], i) => [k, fn(v, k, i)]
-        )
-    )
+		return Object.fromEntries(
+				Object.entries(obj).map(
+						([k, v], i) => [k, fn(v, k, i)]
+				)
+		)
 }
 
  */

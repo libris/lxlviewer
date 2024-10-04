@@ -716,6 +716,15 @@
 				"fresnel:contentLast": ")"
 			}
 		},
+		"hasReproduction-format": {
+			"@id": "hasReproduction-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["hasReproduction", "hasTitle"],
+			"fresnel:propertyStyle": ["block"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
+			}
+		},
 		"default-separators": {
 			"@id": "default-separators",
 			"@type": "fresnel:Format",
