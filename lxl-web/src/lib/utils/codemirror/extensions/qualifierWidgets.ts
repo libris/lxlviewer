@@ -9,7 +9,7 @@ import {
 } from '@codemirror/view';
 
 export const QUALIFIER_REGEXP = new RegExp(
-	/(?<!\S+)((")?[0-9a-zA-ZaåöAÅÖ:]+\2):((")?[0-9a-zA-ZaåöAÅÖ:%#-.]+\4?)?(\s|$)/g
+	/(?<!\S+)((")?[0-9a-zA-ZaåöAÅÖ:]+\2):((")?[0-9a-zA-ZaåöAÅÖ:%#-]+\4?)?(\s|$)/g
 );
 
 class QualifierWidget extends WidgetType {
@@ -38,7 +38,7 @@ class QualifierWidget extends WidgetType {
 		color: #0E7180;
 		font-size: var(--font-size-2xs);
 		font-weight:500;`;
-		name.textContent = this.qualifier.name;
+		name.textContent = `${this.qualifier.name}:`;
 		elt.appendChild(name);
 
 		value.style.cssText = `
@@ -63,7 +63,7 @@ const qualifierMatcher = new MatchDecorator({
 	regexp: QUALIFIER_REGEXP,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	decoration: ([_1, name, _2, value]) => {
-		if (name && value) {
+		if (name) {
 			return Decoration.replace({
 				widget: new QualifierWidget({ name, value })
 			});
