@@ -60,6 +60,11 @@ export default {
       default: false,
     }
   },
+  data() {
+    return {
+      fieldAdderActive: false,
+    };
+  },
   watch: {
     'inspector.status.editing'(state) {
       if (state) {
@@ -233,7 +238,9 @@ export default {
       :allowed="allowedProperties"
       :path="inspector.status.focus"
       :editing-object="inspector.status.focus"
-      :in-toolbar="true"/>
+      :in-toolbar="true"
+      :force-active="fieldAdderActive"
+    />
     <button
       v-if="showUndo && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
@@ -252,7 +259,7 @@ export default {
 <!--      <i class="fa fa-eye" aria-hidden="true" />-->
 <!--    </button>-->
     <button
-      v-if="lastItemActive && isDraft"
+      v-if="lastItemActive && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="!hasNext"
       v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
@@ -261,7 +268,7 @@ export default {
       <i class="fa fa-arrow-right" aria-hidden="true" />
     </button>
     <button
-      v-if="lastItemActive && isDraft"
+      v-if="lastItemActive && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="!hasPrevious"
       v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
@@ -284,7 +291,7 @@ export default {
     <button
       v-if="!this.isSetToReady || finished"
       class="Toolbar-btn btn btn-primary"
-      v-tooltip.left="`${translatePhrase('Markera som redo att köra')}`"
+      v-tooltip.left="`${translatePhrase('Run')}`"
       id="runButton"
       @click="handleReady">
       <i class="fa fa-fw fa-play" />

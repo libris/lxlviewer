@@ -34,6 +34,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isDraft: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters([
@@ -80,7 +84,7 @@ export default {
       {{ this.title }}
     </div>
     <div class="TargetFormBuilder-body" :class="{ 'has-selection': isActive }">
-      <div>
+      <div v-if="isDraft">
         <entity-form
           :editing-object="'mainEntity'"
           :key="formTab.id"
@@ -90,9 +94,10 @@ export default {
         />
       </div>
       <div
-        class="TargetFormBuilder-preview"
-      v-if="showPreview">
-Ändringar
+        v-if="showPreview" v-bind:class="{'TargetFormBuilder-gap': isDraft}">
+      <div v-if="isDraft">
+        Ändringar
+      </div>
         <entity-form
           :editing-object="'mainEntity'"
           :key="formTab.id"
@@ -135,11 +140,8 @@ export default {
     }
   }
 
-  &-preview {
+  &-gap {
     padding-top: 20px;
-    &.heading {
-      padding-bottom: 10px;
-    }
   }
 
 }

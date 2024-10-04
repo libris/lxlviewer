@@ -2,14 +2,15 @@
 import FormBuilder from '@/components/care/form-builder.vue';
 import TargetFormBuilder from '@/components/care/target-form-builder.vue';
 import Preview from '@/components/care/preview.vue';
-import Results from '@/components/care/results.vue';
 import BulkChangesHeader from "@/components/care/bulk-changes-header.vue";
 import { mapGetters } from 'vuex';
 import {cloneDeep, get, isEmpty, isEqual} from 'lodash-es';
 import emptyTemplate from './templates/empty.json';
 import toolbar from "@/components/inspector/bulkchange-toolbar.vue";
 import {labelByLang, translatePhrase} from "@/utils/filters.js";
+import * as LayoutUtil from '@/utils/layout';
 import Inspector from "@/views/Inspector.vue";
+import ModalComponent from '@/components/shared/modal-component.vue';
 import * as DataUtil from "@/utils/data.js";
 import * as StringUtil from 'lxljs/string.js';
 import * as HttpUtil from "@/utils/http.js";
@@ -21,7 +22,16 @@ import {appendIds} from "../../utils/data.js";
 
 export default {
   name: 'bulk-changes.vue',
-  components: {ReverseRelations, Inspector, toolbar, FormBuilder, TargetFormBuilder, Preview, BulkChangesHeader, Results },
+  components: {
+    ReverseRelations,
+    Inspector,
+    toolbar,
+    FormBuilder,
+    TargetFormBuilder,
+    Preview,
+    BulkChangesHeader,
+    'modal-component': ModalComponent,
+  },
   props: {
     fnurgel: ''
   },
@@ -48,7 +58,9 @@ export default {
       itemOffset: 0,
       fullPreview: {},
       fullPreviewData: {'@type': 'Instance'},
-      fullPreviewDiff: {}
+      fullPreviewDiff: {},
+      showOverwriteWarning: false,
+      showConfirmRunModal: false,
     };
   },
   computed: {
@@ -111,6 +123,15 @@ export default {
     },
     statusLabel() {
       return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeStatus, this.user.settings.language, this.resources);
+    },
+    loudOrSilentLabel() {
+      return translatePhrase('Export changed records (update change date)');
+    },
+    isLoud() {
+      return this.currentBulkChange.bulkChangeMetaChanges === "LoudBulkChange";
+    },
+    shouldExportAffected() {
+      return this.isLoud;
     },
     hasUnsavedChanges() {
       if (this.lastFetchedSpec && this.isDraft) {
@@ -250,20 +271,27 @@ export default {
       });
     },
     focusPreview() {
-      this.$refs.preview.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
+      LayoutUtil.ensureInViewport(this.$refs.preview);
     },
     focusMatchForm() {
-      this.$refs.matchForm.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
+      LayoutUtil.ensureInViewport(this.$refs.matchForm);
     },
     focusTargetForm() {
-      this.$refs.targetForm.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'start' });
+      LayoutUtil.ensureInViewport(this.$refs.targetForm);
     },
     nextStep() {
       this.closeSidePanel();
+      this.resetLastAdded();
+      this.clearUndoState();
       this.setActive(this.steps[this.steps.indexOf(this.activeStep) + 1]);
     },
     previousStep() {
+      if (this.isActive('targetForm')) {
+        this.openOverwriteModal();
+      }
       this.closeSidePanel();
+      this.resetLastAdded();
+      this.clearUndoState();
       this.setActive(this.steps[this.steps.indexOf(this.activeStep) - 1]);
     },
     closeSidePanel() {
@@ -272,6 +300,12 @@ export default {
         value: 'close-modals',
       })
     },
+    resetLastAdded() {
+      this.$store.dispatch('setInspectorStatusValue', { property: 'lastAdded', value: '' });
+    },
+    clearUndoState() {
+      this.$store.dispatch('flushChangeHistory');
+    },
     setActive(step) {
       if (!step) return;
       this.activeStep = step;
@@ -279,10 +313,30 @@ export default {
     isActive(step) {
       return this.activeStep === step;
     },
+    closeOverwriteModal() {
+      this.showOverwriteWarning = false;
+    },
+    openOverwriteModal() {
+      this.showOverwriteWarning = true;
+    },
+    closeConfirmRunModal() {
+      this.showConfirmRunModal = false;
+    },
+    openConfirmRunModal() {
+      this.showConfirmRunModal = true;
+    },
+    toggleExportAffected() {
+      if (this.shouldExportAffected) {
+        this.currentBulkChange.bulkChangeMetaChanges = "SilentBulkChange";
+      } else {
+        this.currentBulkChange.bulkChangeMetaChanges = "LoudBulkChange";
+      }
+    },
     save() {
       if (this.isActive('form')) {
-        this.setActive('targetForm');
+        this.nextStep();
       } else {
+        this.resetLastAdded();
         this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
         this.saveBulkChange();
       }
@@ -318,6 +372,8 @@ export default {
         if (this.totalItems === 0 || typeof result.changeSets === 'undefined') {
           this.resetPreviewData();
           return;
+        } else {
+          this.setActive('preview');
         }
         // Full record preview
         this.nextPreviewLink = result.next;
@@ -350,7 +406,11 @@ export default {
         url: `${this.settings.apiPath}/_bulk-change/poll-ready`
       }, nonEmpty);
     },
-    ready() {
+    run() {
+      this.openConfirmRunModal();
+    },
+    doRun() {
+      this.closeConfirmRunModal();
       this.setRunStatus('ReadyBulkChange');
       this.save();
       this.setActive('preview');
@@ -569,6 +629,7 @@ export default {
           :preview-data="formPreviewData"
           :preview-diff="formPreviewDiff"
           :has-unsaved="hasUnsavedChanges"
+          :is-draft="isDraft"
           @onInactive="onInactiveTargetForm"
           @onActive="focusTargetForm"
         />
@@ -588,28 +649,34 @@ export default {
           @onActive="focusPreview"
         />
       </div>
-<!--      <div ref="results">-->
-<!--        <results-->
-<!--          :title="resultsTitle"-->
-<!--          tabindex="0"-->
-<!--          :is-active="isActive('results')"-->
-<!--          :data="currentBulkChange"-->
-<!--          :completed="isCompleted"-->
-<!--          @onActive="focusResults"-->
-<!--        />-->
-<!--      </div>-->
       <div class="BulkChanges-result" v-if="isRunningOrFinished">
-        <div>{{ translatePhrase('Bulk change')}} </div>
-        <div>&nbsp<span class="badge badge-accent2">{{ statusLabel }}</span>.</div>
-        <div>&nbsp{{ translatePhrase('See affected records')}}:</div>
-        <reverse-relations
-          :main-entity="this.currentBulkChange"
-          :compact="true"
-          :force-load="true"
-          :show-label="false"
-        />
+        <div>
+         {{ translatePhrase('Bulk change') }}
+            <span class="badge badge-accent2">{{ statusLabel }}</span>
+        </div>
+        <div class="break"></div>
+        <div>
+        {{ translatePhrase('See affected records') }}:
+        </div>
+        <div>
+          <reverse-relations
+            :main-entity="this.currentBulkChange"
+            :compact="true"
+            :force-load="true"
+            :show-label="false"
+          />
+        </div>
+        <div class="break"></div>
+        <div>
+        {{ loudOrSilentLabel }}&nbsp
+          <input
+            :checked="shouldExportAffected"
+            type="checkbox"
+            :disabled="true"/>
+        </div>
       </div>
       <div>
+
 
 <!--        SPECIFICATION-->
 <!--        <pre>{{this.currentBulkChange}}</pre>-->
@@ -635,7 +702,7 @@ export default {
           :has-previous="hasPrevious"
           :finished="isFinished"
           :is-draft="isDraft"
-          @ready="ready"
+          @ready="run"
           @next="nextStep"
           @previous="previousStep"
           @nextPreview="nextPreview"
@@ -646,22 +713,114 @@ export default {
         />
       </div>
     </div>
+    <modal-component
+      :title="'Overwrite warning'"
+      :width="'600px'"
+      @close="closeOverwriteModal"
+      v-if="showOverwriteWarning">
+      <template #modal-header>
+        <div class="Modal-header">
+          <header>
+            {{ translatePhrase('Note') }}
+          </header>
+        </div>
+      </template>
+      <template #modal-body>
+        <div class="Modal-body">
+          <p>
+             {{ translatePhrase('Changes in') }}
+            <i>
+              {{this.formTitle}}
+            </i>
+            {{ translatePhrase('will reset') }}
+            <i>
+              {{this.changesTitle}}.
+            </i>
+          </p>
+          <div class="Modal-buttonContainerCol">
+            <button class="btn btn-info btn--md" @click="closeOverwriteModal()">{{ translatePhrase('Ok') }}</button>
+          </div>
+        </div>
+      </template>
+    </modal-component>
+    <modal-component
+      :title="'Confirm run'"
+      :width="'600px'"
+      @close="closeConfirmRunModal"
+      v-if="showConfirmRunModal">
+      <template #modal-header>
+        <div class="Modal-header">
+          <header>
+            {{ translatePhrase('Confirm run') }}
+          </header>
+        </div>
+      </template>
+      <template #modal-body>
+        <div class="Modal-body">
+          <p>
+            {{ loudOrSilentLabel }}&nbsp
+            <input
+              :checked="shouldExportAffected"
+              type="checkbox"
+              :disabled="!isDraft"
+              @change="toggleExportAffected()"/>
+          </p>
+          <div class="Modal-buttonContainer">
+            <button class="btn btn-primary btn--md" @click="doRun()">
+              {{ translatePhrase('Run') }}</button>
+            <button class="btn btn-info btn--md" @click="closeConfirmRunModal()">{{ translatePhrase('Cancel') }}</button>
+          </div>
+        </div>
+      </template>
+    </modal-component>
   </div>
 </template>
 
 <style scoped lang="less">
 .BulkChanges {
-  &-new {
-
-  }
   &-result {
     margin-top: 20px;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     background-color: @white;
     border: 1px solid @grey-lighter;
     padding:  20px;
   }
+  &-loudOrSilentLabel {
+    margin-left: auto;
+    text-align: right;
+  }
+  .break {
+    flex-basis: 100%;
+    padding: 4px;
+    height: 0;
+  }
+}
 
+.Modal {
+  &-body {
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 15px 45px;
+  }
+  &-buttonContainerCol {
+    display: grid;
+    justify-content: center;
+
+    margin: 10px 0;
+    & > * {
+      margin-right: 15px;
+    }
+  }
+
+  &-buttonContainer {
+    margin: 10px 0;
+    & > * {
+      margin-right: 15px;
+    }
+  }
 }
 </style>

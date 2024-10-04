@@ -5,6 +5,7 @@
     "label": "",
     "comment": "",
     "bulkChangeStatus": "DraftBulkChange",
+    "bulkChangeMetaChanges": "SilentBulkChange",
     "bulkChangeSpecification": {
       "@type": "FormSpecification",
       "matchForm": {
