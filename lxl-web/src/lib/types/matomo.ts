@@ -22,6 +22,12 @@ export interface MatomoTracker {
 	/** Override the page's reported URL */
 	setCustomUrl: (url: string) => void;
 
+	/** Override the detected Http-Referer.
+	 * We recommend you call this method early in your tracking code
+	 * before you call trackPageView if it should be applied to all tracking requests.
+	 * */
+	setReferrerUrl: (url: string) => void;
+
 	// Managing Consent
 
 	/** By default, the Matomo tracker assumes consent to tracking. To change this
@@ -56,4 +62,9 @@ export interface MatomoTracker {
 	 * If you call this method, you do not need to call setConsentGiven
 	 */
 	rememberConsentGiven: (hoursToExpire: number) => void;
+
+	// Manage cookies
+	/** Disable all first party cookies. Existing Matomo cookies for this website will be deleted on the next page view.
+	 * Cookies will be even disabled if the user has given cookie consent using the method */
+	disableCookies: () => void;
 }

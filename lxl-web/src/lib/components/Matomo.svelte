@@ -1,39 +1,39 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { env } from '$env/dynamic/public';
-	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import { matomoTracker } from '$lib/stores/matomo-tracker';
 
-	export const requireConsent = true;
+	const URL: string = env.PUBLIC_MATOMO_URL;
+	const MATOMO_ID: number = +env.PUBLIC_MATOMO_ID;
 
-	const URL = env.PUBLIC_MATOMO_URL;
-	const MATOMO_ID = env.PUBLIC_MATOMO_ID;
-
-	onMount(() => {
-		initMatomo();
-	});
-
-	function initMatomo() {
+	async function initMatomo() {
 		const matomo = window.Matomo;
 
 		if (matomo && MATOMO_ID) {
-			// add to store
-			matomoTracker.set(matomo.getTracker(`${URL}/matomo.php`, MATOMO_ID));
+			const track = matomo.getTracker(`${URL}/matomo.php`, MATOMO_ID);
 
-			if ($matomoTracker) {
-				if (requireConsent) {
-					$matomoTracker.requireConsent();
-				}
-				$matomoTracker.enableLinkTracking();
-				$matomoTracker.trackPageView($page.url.href);
+			if (track) {
+				track.disableCookies(); // TODO - remove when cookie consent implemented
+				track.enableLinkTracking();
+
+				// add to store
+				matomoTracker.set(track);
+				track.trackPageView();
 			}
 		}
 	}
 
-	afterNavigate(async ({ to }) => {
-		if (to?.url.href && $matomoTracker) {
-			$matomoTracker.trackPageView(to.url.href);
+	afterNavigate(async ({ to, from, type }) => {
+		if (type === 'enter' || !$matomoTracker) {
+			await initMatomo();
+		} else {
+			if (from?.url.href) {
+				$matomoTracker.setReferrerUrl(from.url.href);
+			}
+			if (to?.url.href) {
+				$matomoTracker.setCustomUrl(to.url.href);
+			}
+			$matomoTracker.trackPageView(document.title);
 		}
 	});
 </script>
