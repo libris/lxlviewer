@@ -125,7 +125,7 @@ export default {
       return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeStatus, this.user.settings.language, this.resources);
     },
     loudOrSilentLabel() {
-      return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeMetaChanges, this.user.settings.language, this.resources);
+      return translatePhrase('Export changed records (update change date)');
     },
     hasUnsavedChanges() {
       if (this.lastFetchedSpec && this.isDraft) {
@@ -651,10 +651,12 @@ export default {
       </div>
       <div class="BulkChanges-result" v-if="isRunningOrFinished">
         <div>
-          <p>{{ translatePhrase('Bulk change') }}
-            <span class="badge badge-accent2">{{ statusLabel }}</span>.
-            &nbsp{{ translatePhrase('See affected records') }}:
-          </p>
+         {{ translatePhrase('Bulk change') }}
+            <span class="badge badge-accent2">{{ statusLabel }}</span>
+        </div>
+        <div class="break"></div>
+        <div>
+        {{ translatePhrase('See affected records') }}:
         </div>
         <div>
           <reverse-relations
@@ -664,11 +666,17 @@ export default {
             :show-label="false"
           />
         </div>
-        <div class="BulkChanges-loudOrSilentLabel">
-          <span class="badge badge-accent">{{ loudOrSilentLabel}}</span>
+        <div class="break"></div>
+        <div>
+        {{ loudOrSilentLabel }}&nbsp
+          <input
+            :checked="shouldExportAffected"
+            type="checkbox"
+            :disabled="true"/>
         </div>
       </div>
       <div>
+
 
 <!--        SPECIFICATION-->
 <!--        <pre>{{this.currentBulkChange}}</pre>-->
@@ -750,7 +758,7 @@ export default {
       <template #modal-body>
         <div class="Modal-body">
           <p>
-            {{ translatePhrase('Exportera ändrade poster (uppdatera ändringsdatum)') }}&nbsp
+            {{ loudOrSilentLabel }}&nbsp
             <input
               :checked="shouldExportAffected"
               type="checkbox"
@@ -759,7 +767,7 @@ export default {
           </p>
           <div class="Modal-buttonContainer">
             <button class="btn btn-primary btn--md" @click="doRun()">
-              {{ translatePhrase('Kör') }}</button>
+              {{ translatePhrase('Run') }}</button>
             <button class="btn btn-info btn--md" @click="closeConfirmRunModal()">{{ translatePhrase('Cancel') }}</button>
           </div>
         </div>
@@ -773,6 +781,7 @@ export default {
   &-result {
     margin-top: 20px;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     background-color: @white;
     border: 1px solid @grey-lighter;
@@ -781,6 +790,11 @@ export default {
   &-loudOrSilentLabel {
     margin-left: auto;
     text-align: right;
+  }
+  .break {
+    flex-basis: 100%;
+    padding: 4px;
+    height: 0;
   }
 }
 

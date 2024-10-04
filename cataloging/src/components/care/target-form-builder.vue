@@ -94,9 +94,10 @@ export default {
         />
       </div>
       <div
-        class="TargetFormBuilder-preview"
-      v-if="showPreview">
-Ändringar
+        v-if="showPreview" v-bind:class="{'TargetFormBuilder-gap': isDraft}">
+      <div v-if="isDraft">
+        Ändringar
+      </div>
         <entity-form
           :editing-object="'mainEntity'"
           :key="formTab.id"
@@ -139,11 +140,8 @@ export default {
     }
   }
 
-  &-preview {
+  &-gap {
     padding-top: 20px;
-    &.heading {
-      padding-bottom: 10px;
-    }
   }
 
 }

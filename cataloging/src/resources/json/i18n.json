@@ -443,6 +443,7 @@
     "will reset" : "kommer nollställa",
     "Note" : "OBS!",
     "Run" : "Kör",
-    "Confirm run" : "Bekräfta körning"
+    "Confirm run" : "Bekräfta körning",
+    "Export changed records (update change date)" : "Exportera ändrade poster (uppdatera ändringsdatum)"
   }
 }
