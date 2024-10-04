@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	ci: {
 		collect: {
 			startServerCommand: 'npm run preview',
