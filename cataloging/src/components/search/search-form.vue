@@ -198,7 +198,12 @@ export default {
       'user',
     ]),
     dataSetFilters() {
-      return this.settings.dataSetFilters.libris;
+      if (this.user.settings.activeSigel === 'SEK') {
+        const extraFilter = { value: 'BulkChange', label: 'Bulk change' };
+        return [...this.settings.dataSetFilters.libris, extraFilter];
+      } else {
+        return this.settings.dataSetFilters.libris;
+      }
     },
     hasInput() {
       return this.searchPhrase.length > 0;
@@ -563,7 +568,7 @@ export default {
 
   &-selectWrapper {
     @media (min-width: @screen-sm) {
-      flex-basis: 30%;
+      flex-basis: 32%;
     }
     border: solid @grey-lighter;
     border-width: 0px 1px 0px 1px;
@@ -603,10 +608,10 @@ export default {
       }
     }
     @media (min-width: @screen-md) {
-      right: 28.5%;
+      right: 29.5%;
     }
     @media (min-width: @screen-lg) {
-      right: 27%;
+      right: 28%;
     }
     height: 2em;
     background-color: transparent;
