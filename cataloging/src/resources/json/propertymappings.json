@@ -10,7 +10,8 @@
       "Agent",
       "Concept",
       "Work",
-      "Resource"
+      "Resource",
+      "BulkChange"
     ]
   },
   {
