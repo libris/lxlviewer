@@ -185,6 +185,11 @@ export default {
     routerPath() {
       const uriParts = this.recordId.split('/');
       const fnurgel = uriParts[uriParts.length - 1];
+
+      if (this.recordType === 'BulkChange') {
+        return `/directory-care/bulkchanges/${fnurgel}`;
+      }
+
       return `/${fnurgel}`;
     },
     totalInfo() {
