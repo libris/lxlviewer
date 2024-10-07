@@ -66,16 +66,17 @@ export default {
   computed: {
     ...mapGetters([
       'inspector',
+      'directoryCare',
       'status',
       'user',
       'resources',
-      'settings'
+      'settings',
     ]),
     documentId() {
       return this.fnurgel;
     },
     isNew() {
-      return typeof this.documentId === 'undefined';
+      return !this.documentId || this.documentId === 'new';
     },
     dataObj() {
       return this.inspector.data.mainEntity;
@@ -149,22 +150,29 @@ export default {
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
     initNew() {
+      const initData = this.directoryCare.bulkChange.initData;
+
+      const record = initData['@graph'][0];
+      const mainEntity = initData['@graph'][1];
+
+      this.currentBulkChange = mainEntity;
+      this.currentBulkChange.label = '<namn>-' + this.getDateString();
+      this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
+
+      //TODO: Allow differing initial match and target forms. + Make it work with appended _ids.
+      this.record = record;
+      this.lastFetchedSpec = this.currentSpec;
+      DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
+
       this.setActive(this.steps[0]);
-      const initialForm = appendIds(emptyTemplate.mainEntity.bulkChangeSpecification.matchForm);
+      const initialForm = appendIds(mainEntity.bulkChangeSpecification.matchForm);
+      this.currentSpec.matchForm = initialForm;
+      this.currentSpec.targetForm = initialForm;
       this.setInspectorData(initialForm);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
         value: 'start-edit',
       });
-      this.currentBulkChange = emptyTemplate.mainEntity;
-      this.currentBulkChange.label = '<namn>-' + this.getDateString();
-      this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
-      this.currentSpec.matchForm = initialForm;
-      this.currentSpec.targetForm = initialForm;
-      //TODO: Allow differing initial match and target forms. + Make it work with appended _ids.
-      this.record = emptyTemplate.record;
-      this.lastFetchedSpec = this.currentSpec;
-      DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
     },
     initFromRecord() {
       this.setActive(this.steps[0]);
@@ -586,12 +594,12 @@ export default {
     },
   },
   beforeMount() {
-    if (this.documentId) {
-      this.initFromRecord();
-    } else {
+    if (this.isNew) {
       this.initNew();
+    } else {
+      this.initFromRecord();
     }
-    this.$store.dispatch('setInspectorStatusValue', { property: 'editing', value: true });
+    this.$store.dispatch('setInspectorStatusValue', {property: 'editing', value: true});
   },
   unmounted() {
     this.reset();

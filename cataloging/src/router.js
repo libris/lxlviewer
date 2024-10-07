@@ -153,4 +153,14 @@ router.beforeEach((to, from, next) => {
   }
 });
 
+router.beforeEach((to, from, next) => {
+  if (to.fullPath === '/directory-care/bulkchanges/new' && from?.fullPath !== ('/directory-care/bulkchanges')) {
+    next({
+      path: '/directory-care/bulkchanges',
+    });
+  } else {
+    next();
+  }
+});
+
 export default router;
