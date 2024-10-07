@@ -13,6 +13,7 @@
 	import preventNewLine from '$lib/utils/codemirror/extensions/preventNewLine';
 	import { EditorView } from '@codemirror/view';
 	import preventInsertBeforeQualifier from '$lib/utils/codemirror/extensions/preventInsertBeforeQualifier';
+	import preventArrowDownKey from '$lib/utils/codemirror/extensions/preventArrowDownKey';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -198,6 +199,39 @@
 		// console.log('handlePreviewQualifierEnd', event);
 	}
 
+	function handleKeyDown(event: KeyboardEvent) {
+		/** Handle keyboard navigation in dialog */
+		if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+			const focusableElements = Array.from(
+				(event.target as HTMLElement)
+					.closest('dialog')
+					?.querySelectorAll(
+						`.cm-content, .suggestions ${document.activeElement?.classList?.contains('alt-action') ? '.alt-action' : '.main-action'}, .suggestions button`
+					) || []
+			);
+
+			const index = document.activeElement
+				? focusableElements?.indexOf(document.activeElement)
+				: -1;
+
+			if (index > -1) {
+				(
+					focusableElements[event.key === 'ArrowUp' ? index - 1 : index + 1] as HTMLElement
+				)?.focus();
+			}
+		} else if (
+			event.key === 'ArrowLeft' &&
+			document.activeElement?.classList?.contains('alt-action')
+		) {
+			(document.activeElement.previousElementSibling as HTMLElement)?.focus();
+		} else if (
+			event.key === 'ArrowRight' &&
+			document.activeElement?.classList?.contains('main-action')
+		) {
+			(document.activeElement.nextElementSibling as HTMLElement)?.focus();
+		}
+	}
+
 	function resetEditors({
 		doc,
 		selection
@@ -244,7 +278,12 @@
 				syncedCodeMirrorComponent={expandedCodeMirror}
 				{placeholder}
 				{validQualifiers}
-				extensions={[findOnEnter, preventNewLine, preventInsertBeforeQualifier]}
+				extensions={[
+					findOnEnter,
+					preventNewLine,
+					preventInsertBeforeQualifier,
+					preventArrowDownKey
+				]}
 				onclick={() => showExpandedSearch()}
 				onchange={handleChangeCodeMirror}
 			/>
@@ -252,7 +291,7 @@
 		<textarea {value} hidden readonly name="_q" maxlength={2048}></textarea>
 	</SearchInputWrapper>
 	<dialog bind:this={dialogElement} onclose={handleOnCloseDialog}>
-		<div class="dropdown">
+		<div class="dropdown" role="presentation" onkeydown={handleKeyDown}>
 			<div class="dropdown-content">
 				<div class="dropdown-search">
 					<SearchInputWrapper
@@ -271,7 +310,8 @@
 								findOnEnter,
 								EditorView.lineWrapping,
 								preventNewLine,
-								preventInsertBeforeQualifier
+								preventInsertBeforeQualifier,
+								preventArrowDownKey
 							]}
 						/>
 					</SearchInputWrapper>

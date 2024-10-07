@@ -27,7 +27,7 @@
 
 {#snippet heading()}
 	<hgroup>
-		<p class="action">{@render actionLabel(data.qualifier ? 'Lägg till' : 'Gå till')}</p>
+		<p class="action-label">{data.qualifier ? 'Lägg till' : 'Gå till'}</p>
 		<p class="type">{data.qualifier?.label || data.typeLabel}</p>
 		<h3>
 			{data.heading}
@@ -41,10 +41,6 @@
 	</hgroup>
 {/snippet}
 
-{#snippet actionLabel(label: string)}
-	<span class="action-label">{label}</span>
-{/snippet}
-
 <li class="list-item">
 	{#if data.qualifier}
 		{@const qualifierData = {
@@ -53,6 +49,7 @@
 			href: getFullQualifierLink({ initialQuery, change: data.qualifier.changes })
 		}}
 		<a
+			class="main-action"
 			href={qualifierData.href}
 			onclick={(event) => {
 				event.preventDefault();
@@ -62,14 +59,12 @@
 			{@render heading()}
 		</a>
 	{:else}
-		<a href={data.fnurgel}>
+		<a class="main-action" href={data.fnurgel}>
 			{@render heading()}
 		</a>
 	{/if}
 	{#if data.qualifier}
-		<a class="action" href={data.fnurgel}>
-			{@render actionLabel('Gå till')}
-		</a>
+		<a class="alt-action" href={data.fnurgel}><span class="action-label">Gå till</span></a>
 	{/if}
 </li>
 
@@ -109,7 +104,6 @@
 		align-items: center;
 		gap: var(--gap-sm);
 		width: 100%;
-		overflow: hidden;
 	}
 
 	hgroup > * {
@@ -118,20 +112,24 @@
 
 	h3 {
 		flex-grow: 1;
+		min-width: 0;
+		overflow: hidden;
 		font-weight: 500;
 		font-size: inherit;
+		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 
-	.action {
-		display: flex;
-		order: 1;
-		gap: var(--gap-xs);
+	.action-label {
+		flex-grow: 0;
+		color: var(--color-super-subtle);
+		font-size: var(--font-size-xs);
 	}
 
 	.action-label {
-		color: var(--color-super-subtle);
-		font-size: var(--font-size-xs);
+		display: flex;
+		order: 1;
+		gap: var(--gap-xs);
 	}
 
 	a:hover :global(.action-label),
