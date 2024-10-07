@@ -146,7 +146,7 @@ export default {
     translatePhrase,
     getDateString() {
       const date = new Date();
-      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+      return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
     },
     initNew() {
       this.setActive(this.steps[0]);
