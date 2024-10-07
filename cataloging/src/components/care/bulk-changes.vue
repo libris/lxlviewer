@@ -492,11 +492,13 @@ export default {
             message: `${labelByLang(type)} ${StringUtil.getUiPhraseByLang(msgKey, this.user.settings.language, this.resources.i18n)}!`,
           });
         }, 10);
-        if (!this.documentId) {
+        if (this.isNew) {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
-          this.$router.push({ path: `${this.$route.path}/${fnurgel}` });
+          const path = this.$route.path;
+          // Strip 'new' from path
+          this.$router.push({ path: `${path.substr(0, path.lastIndexOf('/'))}/${fnurgel}` });
           this.warnOnSave();
         } else {
           this.fetchRecord(this.documentId);
