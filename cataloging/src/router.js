@@ -153,6 +153,7 @@ router.beforeEach((to, from, next) => {
   }
 });
 
+// Avoid going to bulkchanges/new with no template data loaded
 router.beforeEach((to, from, next) => {
   if (to.fullPath === '/directory-care/bulkchanges/new' && from?.fullPath !== ('/directory-care/bulkchanges')) {
     next({
