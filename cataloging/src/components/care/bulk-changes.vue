@@ -176,6 +176,7 @@ export default {
     },
     initFromRecord() {
       this.setActive(this.steps[0]);
+      // FIXME: remove emptyTemplate
       const initial = emptyTemplate.mainEntity.bulkChangeSpecification.matchForm;
       this.setInspectorData(initial);
       this.currentSpec.matchForm = initial;
