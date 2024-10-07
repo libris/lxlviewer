@@ -31,6 +31,9 @@ const store = createStore({
       recieverHoldings: [],
       selectedHoldings: [],
       holdingsMoved: [],
+      bulkChange: {
+        initData: null
+      }
     },
     enrichment: {
       data: {
@@ -162,6 +165,9 @@ const store = createStore({
     },
     setInsertData(state, data) {
       state.inspector.insertData = data;
+    },
+    setBulkChangeInitData(state, data) {
+      state.directoryCare.bulkChange.initData = data;
     },
     setCompositeHistoryData(state, data) {
       state.inspector.compositeHistoryData = data;
@@ -831,6 +837,9 @@ const store = createStore({
     },
     setInsertData({ commit }, data) {
       commit('setInsertData', data);
+    },
+    setBulkChangeInitData({ commit }, data) {
+      commit('setBulkChangeInitData', data);
     },
     setCompositeHistoryData({ commit }, data) {
       commit('setCompositeHistoryData', data);

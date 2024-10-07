@@ -4195,5 +4195,167 @@
         }
       }
     }
+  },
+  "bulk": {
+    "instance": {
+      "label": "Instans",
+      "description": "Ändra instanser",
+      "@id": "instance",
+      "value": {
+        "mainEntity": {
+          "@type": "BulkChange",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulkChangeStatus": "DraftBulkChange",
+          "bulkChangeMetaChanges": "SilentBulkChange",
+          "bulkChangeSpecification": {
+            "@type": "FormSpecification",
+            "matchForm": {
+              "@type": "Instance"
+            },
+            "targetForm": {
+              "@type": "Instance"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "work": {
+      "label": "Verk",
+      "description": "Ändra verk",
+      "@id": "work",
+      "value": {
+        "mainEntity": {
+          "@type": "BulkChange",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulkChangeStatus": "DraftBulkChange",
+          "bulkChangeMetaChanges": "SilentBulkChange",
+          "bulkChangeSpecification": {
+            "@type": "FormSpecification",
+            "matchForm": {
+              "@type": "Work"
+            },
+            "targetForm": {
+              "@type": "Work"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "agent": {
+      "label": "Agent",
+      "description": "Ändra agenter",
+      "@id": "agent",
+      "value": {
+        "mainEntity": {
+          "@type": "BulkChange",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulkChangeStatus": "DraftBulkChange",
+          "bulkChangeMetaChanges": "SilentBulkChange",
+          "bulkChangeSpecification": {
+            "@type": "FormSpecification",
+            "matchForm": {
+              "@type": "Agent"
+            },
+            "targetForm": {
+              "@type": "Agent"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "concept": {
+      "label": "Koncept",
+      "description": "Ändra koncept",
+      "@id": "concept",
+      "value": {
+        "mainEntity": {
+          "@type": "BulkChange",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulkChangeStatus": "DraftBulkChange",
+          "bulkChangeMetaChanges": "SilentBulkChange",
+          "bulkChangeSpecification": {
+            "@type": "FormSpecification",
+            "matchForm": {
+              "@type": "Concept"
+            },
+            "targetForm": {
+              "@type": "Concept"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "resource": {
+      "label": "Resurs",
+      "description": "Ändra resurs",
+      "@id": "resource",
+      "value": {
+        "mainEntity": {
+          "@type": "BulkChange",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulkChangeStatus": "DraftBulkChange",
+          "bulkChangeMetaChanges": "SilentBulkChange",
+          "bulkChangeSpecification": {
+            "@type": "FormSpecification",
+            "matchForm": {
+              "@type": "Resource"
+            },
+            "targetForm": {
+              "@type": "Resource"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    }
   }
 }

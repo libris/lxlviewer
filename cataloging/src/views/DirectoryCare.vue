@@ -8,6 +8,7 @@ import { translatePhrase } from '@/utils/filters';
 import TabMenu from '@/components/shared/tab-menu.vue';
 import HoldingMover from '@/components/care/holding-mover.vue';
 import CreateMessage from '@/components/care/create-message.vue';
+import CreateBulkChange from '@/components/care/create-bulk-change.vue';
 import BulkChanges from '@/components/care/bulk-changes.vue';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import AdminNotices from './AdminNotices.vue';
@@ -20,6 +21,7 @@ export default {
     'holding-mover': HoldingMover,
     'modal-component': ModalComponent,
     'create-message': CreateMessage,
+    'create-bulk-change': CreateBulkChange,
     'bulk-changes': BulkChanges,
   },
   data() {
@@ -53,7 +55,7 @@ export default {
         // { 'id': 'remove', 'text': 'Batch remove' },
       ];
       if (this.userIsAllowedToBulkChange) {
-        tabs.push({ id: 'bulkchanges', text: 'Bulk changes' })
+        tabs.push({ id: 'bulkchanges', text: 'Create bulk change' })
       }
       return tabs;
     },
@@ -62,6 +64,9 @@ export default {
         return false;
       }
       return this.user.settings.activeSigel === 'SEK';
+    },
+    isBulkChangeOne() {
+      return (this.$route.params.tool === 'bulkchanges' || this.$route.name === 'Bulkchanges') && this.$route.params.fnurgel;
     }
   },
   watch: {
@@ -158,11 +163,12 @@ export default {
 <template>
   <div class="DirectoryCare">
     <div v-if="fetchComplete">
-      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool" />
+      <tab-menu @go="switchTool" :tabs="tabs" :active="$route.params.tool" v-if="!isBulkChangeOne"/>
       <admin-notices v-if="$route.params.tool === 'changes'" />
       <create-message v-if="$route.params.tool === 'message'" />
       <holding-mover v-if="$route.params.tool === 'holdings'" :flaggedInstances="flaggedInstances" />
-      <bulk-changes v-if="($route.params.tool === 'bulkchanges' || $route.name === 'Bulkchanges') && this.userIsAllowedToBulkChange" :fnurgel="$route.params.fnurgel" />
+      <create-bulk-change v-if="($route.params.tool === 'bulkchanges' || $route.name === 'Bulkchanges') && this.userIsAllowedToBulkChange && !$route.params.fnurgel" />
+      <bulk-changes v-if="isBulkChangeOne && this.userIsAllowedToBulkChange" :fnurgel="$route.params.fnurgel" />
       <div class="" v-if="$route.params.tool === 'merge'">
         <h1>merge records</h1>
         <!-- replace this whole div with the component -->
