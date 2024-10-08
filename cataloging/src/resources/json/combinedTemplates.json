@@ -4325,6 +4325,38 @@
         }
       }
     },
+    "item": {
+      "label": "Bestånd",
+      "description": "Ändra bestånd",
+      "@id": "item",
+      "value": {
+        "mainEntity": {
+          "@type": "BulkChange",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulkChangeStatus": "DraftBulkChange",
+          "bulkChangeMetaChanges": "SilentBulkChange",
+          "bulkChangeSpecification": {
+            "@type": "FormSpecification",
+            "matchForm": {
+              "@type": "Item"
+            },
+            "targetForm": {
+              "@type": "Item"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
     "resource": {
       "label": "Resurs",
       "description": "Ändra resurs",
