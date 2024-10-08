@@ -4,11 +4,14 @@ import { error, json } from '@sveltejs/kit';
 import { z } from 'zod';
 import { toString, JsonLd } from '$lib/utils/xl';
 import { LxlLens } from '$lib/utils/display.types';
-import type { PartialCollectionView } from '$lib/utils/search';
+import type { PartialCollectionView, SearchMapping } from '$lib/utils/search';
 import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
-import getQualifierSuggestion, {
-	type QualifierSuggestion
-} from '$lib/utils/supersearch/getQualifierSuggestion.server';
+import {
+	getQualifier,
+	getQualifierChanges,
+	type QualifierChanges,
+	type Qualifier
+} from '$lib/utils/supersearch/qualifiers';
 import QUALIFIER_TYPES_BY_BASE_CLASS from '$lib/assets/json/qualifierTypeByBaseClass.json';
 import { relativizeUrl } from '$lib/utils/http';
 
@@ -50,7 +53,8 @@ export type Suggestion = {
 	heading: string;
 	fnurgel: string;
 	totalReverseLinks: number;
-	qualifier?: QualifierSuggestion;
+	qualifier?: Qualifier;
+	changes?: QualifierChanges;
 };
 
 export type SuggestResponse = {
@@ -58,6 +62,7 @@ export type SuggestResponse = {
 	totalItems: number;
 	itemOffset: number;
 	itemsPerPage: number;
+	searchMappings: SearchMapping[];
 };
 
 export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
@@ -103,6 +108,7 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 	const findResult = (await findRes.json()) as PartialCollectionView;
 
 	const suggestions = findResult.items?.map((item): Suggestion => {
+		const qualifier = getQualifier({ item, lang });
 		return {
 			[JsonLd.ID]: item?.[JsonLd.ID] as string,
 			[JsonLd.TYPE]: item?.[JsonLd.TYPE] as string,
@@ -122,15 +128,11 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 			heading: toString(displayUtil.lensAndFormat(item, LxlLens.PageHeading, lang)),
 			fnurgel: relativizeUrl(item?.meta?.['@id']) as string,
 			totalReverseLinks: item?.reverseLinks?.totalItems || 0,
-			qualifier:
-				type === 'qualifier' && editedRange
-					? getQualifierSuggestion({
-							query: q,
-							item,
-							editedRange,
-							lang
-						})
-					: undefined
+			...(qualifier &&
+				editedRange && {
+					qualifier,
+					changes: getQualifierChanges({ qualifier, query: q, editedRange })
+				})
 		};
 	});
 
@@ -138,7 +140,8 @@ export const GET: RequestHandler = async ({ url, params, locals, fetch }) => {
 		items: suggestions,
 		totalItems: findResult.totalItems,
 		itemOffset: findResult.itemOffset,
-		itemsPerPage: findResult.itemsPerPage
+		itemsPerPage: findResult.itemsPerPage,
+		searchMappings: findResult.search.mapping
 	} satisfies SuggestResponse);
 };
 

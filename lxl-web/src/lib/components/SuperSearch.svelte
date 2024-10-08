@@ -14,6 +14,8 @@
 	import { EditorView } from '@codemirror/view';
 	import preventInsertBeforeQualifier from '$lib/utils/codemirror/extensions/preventInsertBeforeQualifier';
 	import preventArrowDownKey from '$lib/utils/codemirror/extensions/preventArrowDownKey';
+	import { createQualifierWidgets } from '$lib/utils/codemirror/extensions/qualifierWidgets';
+	import type { SearchMapping } from '$lib/utils/search';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -40,6 +42,7 @@
 	let fetchedValue: string | undefined = $state();
 	let qualifierItems: Suggestion[] = $state([]);
 	let workItems: Suggestion[] = $state([]);
+	let searchMappings: SearchMapping[] = $state([]);
 
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
 	let expandedCodeMirror: CodeMirror | undefined = $state();
@@ -93,6 +96,7 @@
 
 				qualifierItems = qualifiers.items;
 				workItems = works.items;
+				searchMappings = works.searchMappings;
 
 				fetchedValue = value;
 				expandedCodeMirror?.updateValidatedQualifiers();
@@ -263,6 +267,8 @@
 			value = valueFromSearchParams; // ensures textarea is updated after navigation
 		}
 	});
+
+	const qualifierWidgetsWithMappings = $derived(createQualifierWidgets(searchMappings));
 </script>
 
 <div class="super-search">
@@ -282,7 +288,8 @@
 					findOnEnter,
 					preventNewLine,
 					preventInsertBeforeQualifier,
-					preventArrowDownKey
+					preventArrowDownKey,
+					qualifierWidgetsWithMappings
 				]}
 				onclick={() => showExpandedSearch()}
 				onchange={handleChangeCodeMirror}
@@ -311,7 +318,8 @@
 								EditorView.lineWrapping,
 								preventNewLine,
 								preventInsertBeforeQualifier,
-								preventArrowDownKey
+								preventArrowDownKey,
+								qualifierWidgetsWithMappings
 							]}
 						/>
 					</SearchInputWrapper>

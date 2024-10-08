@@ -28,7 +28,7 @@
 {#snippet heading()}
 	<hgroup>
 		<p class="action-label">{data.qualifier ? 'Lägg till' : 'Gå till'}</p>
-		<p class="type">{data.qualifier?.label || data.typeLabel}</p>
+		<p class="type">{data.qualifier?.typeLabel || data.typeLabel}</p>
 		<h3>
 			{data.heading}
 			{#if data.inSchemeCode}
@@ -42,11 +42,11 @@
 {/snippet}
 
 <li class="list-item">
-	{#if data.qualifier}
+	{#if data.qualifier && data.changes}
 		{@const qualifierData = {
-			change: data.qualifier.changes,
+			change: data.changes,
 			initialQuery,
-			href: getFullQualifierLink({ initialQuery, change: data.qualifier.changes })
+			href: getFullQualifierLink({ initialQuery, change: data.changes })
 		}}
 		<a
 			class="main-action"

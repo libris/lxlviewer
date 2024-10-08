@@ -32,11 +32,8 @@
 		qualifierNameDecoration,
 		qualifierValueDecoration
 	} from '$lib/utils/codemirror/extensions/qualifierDecoration';
-	import qualifierLinter from '$lib/utils/codemirror/extensions/qualifierLinter';
 	import getMainSelectionUtil from '$lib/utils/codemirror/getMainSelection';
 	import isViewUpdateFromUserInput from '$lib/utils/codemirror/isViewUpdateFromUserInput';
-	import qualifierWidgets from '$lib/utils/codemirror/extensions/qualifierWidgets';
-	import type { Qualifiers } from '$lib/types/qualifier';
 
 	/**
 	 * TODO:
@@ -46,7 +43,6 @@
 	type CodeMirrorProps = {
 		value?: string;
 		placeholder: string;
-		validQualifiers: Qualifiers;
 		extensions?: Extension[];
 		readonly?: boolean;
 		tabindex?: string | number;
@@ -60,7 +56,6 @@
 		value = $bindable(''),
 		placeholder,
 		extensions = [],
-		validQualifiers,
 		readonly = false,
 		tabindex,
 		syncedCodeMirrorComponent,
@@ -134,8 +129,8 @@
 		syntaxHighlighting(lxlQueryHighlightStyle),
 		qualifierNameDecoration,
 		qualifierValueDecoration,
-		qualifierLinter(validQualifiers),
-		qualifierWidgets,
+		//qualifierLinter(validQualifiers),
+		//qualifierWidgets,
 		...extensions
 	]);
 
@@ -260,6 +255,7 @@
 
 	$effect(() => {
 		if (extensions !== prevExtensions) {
+			console.log('reconfigureEditorExtensions!');
 			reconfigureEditorExtensions();
 			prevExtensions = extensions;
 		}

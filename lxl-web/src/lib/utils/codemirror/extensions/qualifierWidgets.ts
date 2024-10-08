@@ -1,3 +1,4 @@
+import type { SearchMapping } from '$lib/utils/search';
 import {
 	EditorView,
 	MatchDecorator,
@@ -7,6 +8,8 @@ import {
 	type ViewUpdate,
 	type DecorationSet
 } from '@codemirror/view';
+import { mount } from 'svelte';
+import QualifierWidgetComponent from '$lib/components/QualifierWidget.svelte';
 
 export const QUALIFIER_REGEXP = new RegExp(
 	/(?<!\S+)((")?[0-9a-zA-ZaåöAÅÖ:]+\2):((")?[0-9a-zA-ZaåöAÅÖ:%#-.]+\4?)?(\s|$)/g
@@ -15,80 +18,140 @@ export const QUALIFIER_REGEXP = new RegExp(
 class QualifierWidget extends WidgetType {
 	constructor(
 		readonly qualifier: {
-			name: string;
+			type: string;
 			value: string;
-		}
+		},
+		readonly searchMappings: SearchMapping[]
 	) {
 		super();
 	}
 	eq(other: QualifierWidget) {
 		return (
-			this.qualifier.name == other.qualifier.name && this.qualifier.value == other.qualifier.value
+			this.qualifier.type == other.qualifier.type &&
+			this.qualifier.value == other.qualifier.value &&
+			this.searchMappings == other.searchMappings // should we filter out freetext querys?
 		);
 	}
 	toDOM() {
-		const elt = document.createElement('span');
-		const name = document.createElement('span');
-		const value = document.createElement('span');
-
-		name.style.cssText = `
-    border-radius: 3px 0 0 3px;
-    padding: 2px 3px 2px 3px;
-    background: rgba(14, 113, 128, 0.2);
-		color: #0E7180;
-		font-size: var(--font-size-2xs);
-		font-weight:500;`;
-		name.textContent = `${this.qualifier.name}:`;
-		elt.appendChild(name);
-
-		value.style.cssText = `
-		border-left: none;
-    border-radius: 0 3px 3px 0;
-    padding: 2px 3px 2px 3px;
-    background: rgba(14, 113, 128, 0.1);
-		font-size: var(--font-size-2xs);`;
-		value.textContent = this.qualifier.value || '';
-		elt.appendChild(value);
-
-		elt.appendChild(document.createTextNode('\u00A0'));
-		return elt;
+		const container = document.createElement('span');
+		container.style.cssText = `position: relative;`;
+		mount(QualifierWidgetComponent, {
+			target: container,
+			props: {
+				type: this.qualifier.type,
+				value: this.qualifier.value,
+				searchMappings: this.searchMappings || []
+			}
+		});
+		return container;
 	}
 	ignoreEvent() {
 		return false;
 	}
 }
 
-// check in transaction filter if part of decoration. If it is, skip editing?
-const qualifierMatcher = new MatchDecorator({
-	regexp: QUALIFIER_REGEXP,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	decoration: ([_1, name, _2, value]) => {
-		if (name) {
-			return Decoration.replace({
-				widget: new QualifierWidget({ name, value })
-			});
+const createQualifierMatcher = (searchMappings: SearchMapping[]) =>
+	new MatchDecorator({
+		regexp: QUALIFIER_REGEXP,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		decoration: ([_1, type, _2, value]) => {
+			if (type) {
+				return Decoration.replace({
+					widget: new QualifierWidget({ type, value }, searchMappings)
+				});
+			}
+			return null;
 		}
-		return null;
+	});
+
+export const createQualifierWidgets = (searchMappings: SearchMapping[]) => {
+	const qualifierMatcher = createQualifierMatcher(searchMappings);
+	return ViewPlugin.fromClass(
+		class {
+			qualifiers: DecorationSet;
+			constructor(view: EditorView) {
+				this.qualifiers = qualifierMatcher.createDeco(view);
+			}
+			update(update: ViewUpdate) {
+				this.qualifiers = qualifierMatcher.updateDeco(update, this.qualifiers);
+			}
+		},
+		{
+			decorations: (instance) => instance.qualifiers,
+			provide: (plugin) =>
+				EditorView.atomicRanges.of((view) => {
+					return view.plugin(plugin)?.qualifiers || Decoration.none;
+				})
+		}
+	);
+};
+
+// export default qualifierWidgets;
+
+/*
+import {
+	EditorView,
+	MatchDecorator,
+	Decoration,
+	ViewPlugin,
+	ViewUpdate,
+	WidgetType,
+	type DecorationSet
+} from '@codemirror/view';
+import { mount } from 'svelte';
+import PropertyWidgetComponent from '$lib/components/CodeMirror.PropertyWidget.svelte';
+
+class PropertyWidget extends WidgetType {
+	constructor(
+		readonly property: {
+			name: string;
+			value: string;
+		}
+	) {
+		super();
+	}
+	eq(other: PropertyWidget) {
+		return this.property.name == other.property.name && this.property.value == other.property.value;
+	}
+	toDOM() {
+		const container = document.createElement('span');
+		container.style.cssText = `position: relative;`;
+		mount(PropertyWidgetComponent, { target: container, props: this.property });
+		return container;
+	}
+	ignoreEvent() {
+		return false;
+	}
+}
+
+const propertyMatcher = new MatchDecorator({
+	regexp: /([a-zA-ZäöåÄÖÅ]+):([0-9a-zA-ZäöåÄÖÅ]+)?/g,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	decoration: ([_, name, value]) => {
+		return Decoration.replace({
+			widget: new PropertyWidget({ name, value })
+		});
 	}
 });
 
-const qualifierWidgets = ViewPlugin.fromClass(
+const propertyWidgets = ViewPlugin.fromClass(
 	class {
-		qualifiers: DecorationSet;
+		properties: DecorationSet;
 		constructor(view: EditorView) {
-			this.qualifiers = qualifierMatcher.createDeco(view);
+			this.properties = propertyMatcher.createDeco(view);
 		}
 		update(update: ViewUpdate) {
-			this.qualifiers = qualifierMatcher.updateDeco(update, this.qualifiers);
+			this.properties = propertyMatcher.updateDeco(update, this.properties);
 		}
 	},
 	{
-		decorations: (instance) => instance.qualifiers,
+		decorations: (instance) => instance.properties,
 		provide: (plugin) =>
 			EditorView.atomicRanges.of((view) => {
-				return view.plugin(plugin)?.qualifiers || Decoration.none;
+				return view.plugin(plugin)?.properties || Decoration.none;
 			})
 	}
 );
 
-export default qualifierWidgets;
+export default propertyWidgets;
+*/
