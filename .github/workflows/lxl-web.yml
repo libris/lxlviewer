@@ -59,7 +59,7 @@ jobs:
         run: |
           npm run build
           npm install -g @lhci/cli@0.14.0
-          lhci autorun || echo "LHCI failed!"
+          lhci autorun --upload.basicAuth.username="$LHCI_SERVER_USERNAME" --upload.basicAuth.password="$LHCI_SERVER_PASSWORD" || echo "LHCI failed!"
         env:
           API_URL: ${{ secrets.API_URL }}
           ID_URL: ${{ secrets.ID_URL }}
