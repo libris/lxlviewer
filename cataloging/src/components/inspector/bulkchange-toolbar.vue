@@ -296,14 +296,6 @@ export default {
       @click="handleReady">
       <i class="fa fa-fw fa-play" />
     </button>
-<!--    <button-->
-<!--      v-if="this.isSetToReady && !completed"-->
-<!--      class="Toolbar-btn btn btn-primary"-->
-<!--      v-tooltip.left="`${translatePhrase('Markera som utkast')}`"-->
-<!--      id="runButton"-->
-<!--      @click="cancel">-->
-<!--      <i class="fa fa-close" />-->
-<!--    </button>-->
   </div>
 </template>
 

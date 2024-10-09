@@ -227,15 +227,8 @@ export default {
               value: 'start-edit',
             });
           }
-          if (this.isReady) {
-            this.setActive('preview');
-            this.triggerRunBulkChange();
-            setTimeout(() => {
-              this.triggerRunBulkChange();
-            }, 5000);
-          }
           DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
-          this.getPreview();
+          this.getPreview(fnurgel);
         }
       });
     },
@@ -261,17 +254,13 @@ export default {
       } else {
         this.setInspectorData(form);
         this.currentSpec.matchForm = form;
-        //TODO: warn the user
-        console.log("WARNING, overwriting target form because search form changed!")
       }
     },
     onInactiveTargetForm() {
       if (this.activeStep === 'form') {
-        this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
         this.setInspectorData(this.currentSpec.matchForm);
-      } else if (this.activeStep === 'preview') {
-        this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity)
       }
+      this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
@@ -342,19 +331,20 @@ export default {
       }
     },
     save() {
+      this.resetLastAdded();
       if (this.isActive('form')) {
-        this.nextStep();
-      } else {
-        this.resetLastAdded();
-        this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
-        this.saveBulkChange();
+        this.onInactiveForm();
+        this.onInactiveTargetForm();
+      } else if (this.isActive('targetForm')) {
+        this.onInactiveTargetForm();
       }
+      this.saveBulkChange();
     },
-    getPreview() {
+    getPreview(fnurgel) {
       const baseUri = this.settings.dataPath;
       const offset = 0;
       const limit = 1;
-      const fetchUrl = `${this.settings.apiPath}/_bulk-change/preview?@id=${baseUri}/${this.documentId}&_limit=${limit}&_offset=${offset}`;
+      const fetchUrl = `${this.settings.apiPath}/_bulk-change/preview?@id=${baseUri}/${fnurgel}&_limit=${limit}&_offset=${offset}`;
       this.getPreviewFromUrl(fetchUrl);
     },
     getPreviewFromUrl(fetchUrl) {
@@ -496,6 +486,7 @@ export default {
           const location = `${result.getResponseHeader('Location')}`;
           const locationParts = location.split('/');
           const fnurgel = locationParts[locationParts.length - 1];
+          this.fetchRecord(fnurgel);
           const path = this.$route.path;
           // Strip 'new' from path
           this.$router.push({ path: `${path.substr(0, path.lastIndexOf('/'))}/${fnurgel}` });
@@ -503,6 +494,13 @@ export default {
         } else {
           this.fetchRecord(this.documentId);
           this.warnOnSave();
+        }
+        if (this.isReady) {
+          this.setActive('preview');
+          this.triggerRunBulkChange();
+          setTimeout(() => {
+            this.triggerRunBulkChange();
+          }, 5000);
         }
         this.$nextTick(() => {
           this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
@@ -718,7 +716,6 @@ export default {
           @previous="previousStep"
           @nextPreview="nextPreview"
           @previousPreview="previousPreview"
-          @preview="getPreview"
           @save="save"
           @setAsDraft="setAsDraft"
         />
