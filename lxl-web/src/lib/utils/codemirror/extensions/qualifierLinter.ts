@@ -12,7 +12,7 @@ const qualifierLinter = (validQualifiers: QualifiersResponse) =>
 
 		const usedQualifierRegExpExecs = [
 			...q.matchAll(
-				/(?<!\S+)((")?[0-9a-zA-ZaåöAÅÖ:]+\2):/g // regex probalby needs modification
+				/(?<!\S+)((")?[0-9a-zA-ZåäöÅÄÖ:]+\2):/g // regex probalby needs modification
 			)
 		];
 

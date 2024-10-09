@@ -12,7 +12,7 @@ import { mount } from 'svelte';
 import QualifierWidgetComponent from '$lib/components/QualifierWidget.svelte';
 
 export const QUALIFIER_REGEXP = new RegExp(
-	/(?<!\S+)((")?[0-9a-zA-ZaåöAÅÖ:]+\2):((")?[0-9a-zA-ZaåöAÅÖ:%#-.]+\4?)?(\s|$)/g
+	/(?<!\S+)((")?[0-9a-zA-ZåäöÅÄÖ:]+\2):((")?[0-9a-zA-ZåäöÅÄÖ:%#-.]+\4?)?(\s|$)/g
 );
 
 class QualifierWidget extends WidgetType {
