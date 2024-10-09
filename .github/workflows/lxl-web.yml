@@ -60,7 +60,7 @@ jobs:
         env:
           API_URL: ${{ secrets.API_URL }}
           ID_URL: ${{ secrets.ID_URL }}
-          LHCI_SERVER_BASE_URL: ${{ vars.LHCI_SERVER_BASE_URL }}
+          LHCI_SERVER_BASE_URL: ${{ secrets.LHCI_SERVER_BASE_URL }}
           LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
           LHCI_SERVER_USERNAME: ${{ secrets.LHCI_SERVER_USERNAME }}
