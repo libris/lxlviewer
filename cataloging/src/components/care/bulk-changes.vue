@@ -61,6 +61,10 @@ export default {
       fullPreviewDiff: {},
       showOverwriteWarning: false,
       showConfirmRunModal: false,
+      loadingPreview: {
+        'next': false,
+        'previous': false
+      },
     };
   },
   computed: {
@@ -379,7 +383,6 @@ export default {
         this.previousPreviewLink = result.prev;
         this.itemOffset = result.itemOffset;
 
-        //TODO: Save data and delegate calculation to components?
         let before = result.items[0].changeSets[0].version;
         let after = result.items[0].changeSets[1].version;
         const changeset = result.items[0].changeSets[1];
@@ -397,6 +400,8 @@ export default {
         this.fullPreviewDiff.added = displayPaths.added.map(path => `mainEntity.${path}`);
         this.fullPreviewDiff.modified = displayPaths.modified.map(path => `mainEntity.${path}`);
         DataUtil.fetchMissingLinkedToQuoted(this.fullPreviewData, this.$store);
+        this.loadingPreview.next = false;
+        this.loadingPreview.previous = false;
       });
     },
     async triggerRunBulkChange() {
@@ -418,9 +423,11 @@ export default {
       this.setRunStatus('DraftBulkChange');
     },
     nextPreview() {
+      this.loadingPreview.next = true;
       this.getPreviewFromUrl(`${this.settings.apiPath}${this.nextPreviewLink['@id']}`);
     },
     previousPreview() {
+      this.loadingPreview.previous = true;
       this.getPreviewFromUrl(`${this.settings.apiPath}${this.previousPreviewLink['@id']}`);
     },
     setRunStatus(status) {
@@ -711,6 +718,7 @@ export default {
           :has-previous="hasPrevious"
           :finished="isFinished"
           :is-draft="isDraft"
+          :loading-preview="this.loadingPreview"
           @ready="run"
           @next="nextStep"
           @previous="previousStep"

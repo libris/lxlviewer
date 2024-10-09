@@ -1,7 +1,4 @@
 <script>
-/*
-  Simplified toolbar
-*/
 import { vOnClickOutside } from '@vueuse/components';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
@@ -58,7 +55,11 @@ export default {
     isDraft: {
       type: Boolean,
       default: false,
-    }
+    },
+    loadingPreview: {
+      type: Object,
+      default: () => ({'next' : false, 'previous' : false}),
+    },
   },
   data() {
     return {
@@ -172,12 +173,6 @@ export default {
       'settings',
       'status',
     ]),
-    // formObj() {
-    //   return this.inspector.data.mainEntity;
-    // },
-    // formObj() {
-    //   return this.inspector.data[this.inspector.status.focus];
-    // },
     allowed() {
       return VocabUtil.getPropertiesFromArray(
         this.formObj['@type'],
@@ -188,9 +183,6 @@ export default {
     },
     showRecord() {
       return this.status.showRecord;
-    },
-    activeSigelId() {
-      return this.user.getActiveLibraryUri();
     },
     focusData() {
       return this.inspector.data;
@@ -250,14 +242,6 @@ export default {
       :aria-label="translatePhrase('Undo')">
       <i class="fa fa-undo" aria-hidden="true" />
     </button>
-<!--    <button-->
-<!--      v-if="!completed"-->
-<!--      class="Toolbar-btn btn btn-default toolbar-button"-->
-<!--      v-tooltip.left="`${translatePhrase('Förhandsgranska')}`"-->
-<!--      @click="preview"-->
-<!--      :aria-label="translatePhrase('Förhandsgranska')">-->
-<!--      <i class="fa fa-eye" aria-hidden="true" />-->
-<!--    </button>-->
     <button
       v-if="lastItemActive && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
@@ -265,7 +249,8 @@ export default {
       v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
       @click="nextPreview"
       :aria-label="translatePhrase('Next')">
-      <i class="fa fa-arrow-right" aria-hidden="true" />
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingPreview.next" />
+      <i class="fa fa-arrow-right" v-show="!loadingPreview.next" />
     </button>
     <button
       v-if="lastItemActive && !finished"
@@ -274,7 +259,8 @@ export default {
       v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
       @click="previousPreview"
       :aria-label="translatePhrase('Previous')">
-      <i class="fa fa-arrow-left" aria-hidden="true" />
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingPreview.previous" />
+      <i class="fa fa-arrow-left" v-show="!loadingPreview.previous" />
     </button>
     <button
       v-if="isDraft"
