@@ -63,10 +63,10 @@ jobs:
           LHCI_SERVER_BASE_URL: ${{ secrets.LHCI_SERVER_BASE_URL }}
           LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-          LHCI_BASICAUTH__USERNAME: ${{ secrets.LHCI_SERVER_BASIC_AUTH_USERNAME }}
-          LHCI_BASICAUTH__PASSWORD: ${{ secrets.LHCI_SERVER_BASIC_AUTH_PASSWORD }}
+          LHCI_SERVER_USERNAME: ${{ secrets.LHCI_SERVER_USERNAME }}
+          LHCI_SERVER_PASSWORD: ${{ secrets.LHCI_SERVER_PASSWORD }}
         run: |
           npm run build
           npm install -g @lhci/cli@0.14.0
           echo "serverBaseUrl: $LHCI_SERVER_BASE_URL"
-          lhci autorun --upload.target=lhci --upload.serverBaseUrl="$LHCI_SERVER_BASE_URL" --upload.token="$LHCI_TOKEN" --upload.githubToken="$LHCI_GITHUB_APP_TOKEN" || echo "LHCI failed!"
+          lhci autorun --upload.target=lhci --upload.serverBaseUrl="$LHCI_SERVER_BASE_URL" --upload.token="$LHCI_TOKEN" --upload.githubToken="$LHCI_GITHUB_APP_TOKEN" --upload.basicAuth.username="$LHCI_SERVER_USERNAME" --upload.basicAuth.password="$LHCI_SERVER_PASSWORD" || echo "LHCI failed!"
