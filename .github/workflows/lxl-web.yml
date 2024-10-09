@@ -63,8 +63,6 @@ jobs:
           LHCI_SERVER_BASE_URL: ${{ secrets.LHCI_SERVER_BASE_URL }}
           LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-          LHCI_BASICAUTH__USERNAME: ${{ secrets.LHCI_SERVER_BASIC_AUTH_USERNAME }}
-          LHCI_BASICAUTH__PASSWORD: ${{ secrets.LHCI_SERVER_BASIC_AUTH_PASSWORD }}
           LHCI_SERVER_USERNAME: ${{ secrets.LHCI_SERVER_USERNAME }}
           LHCI_SERVER_PASSWORD: ${{ secrets.LHCI_SERVER_PASSWORD }}
         run: |
