@@ -10,6 +10,7 @@
 	} from '$lib/constants/facets';
 	import { saveUserSetting } from '$lib/utils/userSettings';
 	import { popover } from '$lib/actions/popover';
+	import { matomoTracker } from '$lib/stores/matomo-tracker';
 	import FacetRange from './FacetRange.svelte';
 	import DecoratedData from '../DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
@@ -61,6 +62,9 @@
 	function saveUserSort(e: Event): void {
 		const target = e.target as HTMLSelectElement;
 		saveUserSetting('facetSort', { [group.dimension]: target.value });
+
+		// experimental analytics action tracker
+		$matomoTracker.trackEvent('Facet sort', group.dimension, target.value);
 	}
 
 	$: numFacets = group.facets.length;

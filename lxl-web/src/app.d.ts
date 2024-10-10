@@ -25,6 +25,12 @@ declare global {
 		}
 		// interface Platform {}
 	}
+	interface Window {
+		// Matomo
+		Matomo?: {
+			getTracker: (trackerUrl: string, siteId: number) => Tracker | undefined;
+		};
+	}
 }
 
 export {};
