@@ -1,10 +1,15 @@
 <script lang="ts">
 	import { env } from '$env/dynamic/public';
 	import { afterNavigate } from '$app/navigation';
-	import { matomoTracker } from '$lib/stores/matomo-tracker';
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { type MatomoTracker } from '$lib/types/matomo';
 
 	const URL: string = env.PUBLIC_MATOMO_URL;
 	const MATOMO_ID: number = +env.PUBLIC_MATOMO_ID;
+
+	const tracker = writable<MatomoTracker>();
+	setContext('matomo', tracker);
 
 	async function initMatomo() {
 		const matomo = window.Matomo;
@@ -16,24 +21,24 @@
 				track.disableCookies(); // TODO - remove when cookie consent implemented
 				track.enableLinkTracking();
 
-				// add to store
-				matomoTracker.set(track);
+				// add to matomo context store
+				tracker.set(track);
 				track.trackPageView();
 			}
 		}
 	}
 
 	afterNavigate(async ({ to, from, type }) => {
-		if (type === 'enter' || !$matomoTracker) {
+		if (type === 'enter' || !$tracker) {
 			await initMatomo();
 		} else {
 			if (from?.url.href) {
-				$matomoTracker.setReferrerUrl(from.url.href);
+				$tracker.setReferrerUrl(from.url.href);
 			}
 			if (to?.url.href) {
-				$matomoTracker.setCustomUrl(to.url.href);
+				$tracker.setCustomUrl(to.url.href);
 			}
-			$matomoTracker.trackPageView(document.title);
+			$tracker.trackPageView(document.title);
 		}
 	});
 </script>
@@ -43,3 +48,4 @@
 		<script async defer src={`${URL}/matomo.js`}></script>
 	{/if}
 </svelte:head>
+<slot />

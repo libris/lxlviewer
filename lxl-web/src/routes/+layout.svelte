@@ -27,6 +27,7 @@
 </script>
 
 <div class="flex min-h-screen flex-col">
-	<slot />
-	<Matomo />
+	<Matomo>
+		<slot />
+	</Matomo>
 </div>
