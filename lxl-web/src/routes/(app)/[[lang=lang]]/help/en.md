@@ -8,7 +8,7 @@ title: 'Help'
 
 Here we will continuously provide information about newly added features and planned developments:
 
-### TBA
+### 2024-10-14
 
 - Improvements in the filter panel, filter items can now be sorted by preference.
 - Bug fixes
