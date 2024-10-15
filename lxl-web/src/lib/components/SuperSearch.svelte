@@ -1,11 +1,11 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { tick, onMount, onDestroy } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from './CodeMirror.svelte';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
 	import findOnEnter from '$lib/utils/codemirror/extensions/findOnEnter';
 	import debounce from '$lib/utils/debounce';
 	import { languageTag } from '$lib/paraglide/runtime.js';
-	import type { Qualifiers } from '$lib/types/qualifier';
 	import SuggestionListItem, { type QualifierEvent } from './SuggestionListItem.svelte';
 	import getEditedParts from '$lib/utils/codemirror/getEditedParts';
 	import type { SuggestResponse, Suggestion } from '../../routes/api/[[lang=lang]]/suggest/+server';
@@ -15,7 +15,6 @@
 	import preventInsertBeforeQualifier from '$lib/utils/codemirror/extensions/preventInsertBeforeQualifier';
 	import preventArrowDownKey from '$lib/utils/codemirror/extensions/preventArrowDownKey';
 	import { createQualifierWidgets } from '$lib/utils/codemirror/extensions/qualifierWidgets';
-	import type { SearchMapping } from '$lib/utils/search';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -33,16 +32,14 @@
 	type SuperSearchProps = {
 		value: string;
 		placeholder: string;
-		validQualifiers: Qualifiers;
 	};
 
-	let { value = $bindable(), placeholder, validQualifiers }: SuperSearchProps = $props(); // should we keep codemirror instances in sync using update listeners instead of binding to ensure history is kept as is (but will it work with when removing linebreaks?)? See: https://codemirror.net/examples/split/
+	let { value = $bindable(), placeholder }: SuperSearchProps = $props();
 
 	let lastValue = $state();
 	let fetchedValue: string | undefined = $state();
 	let qualifierItems: Suggestion[] = $state([]);
 	let workItems: Suggestion[] = $state([]);
-	let searchMappings: SearchMapping[] = $state([]);
 
 	let collapsedCodeMirror: CodeMirror | undefined = $state();
 	let expandedCodeMirror: CodeMirror | undefined = $state();
@@ -96,7 +93,6 @@
 
 				qualifierItems = qualifiers.items;
 				workItems = works.items;
-				searchMappings = works.searchMappings;
 
 				fetchedValue = value;
 				expandedCodeMirror?.updateValidatedQualifiers();
@@ -268,7 +264,9 @@
 		}
 	});
 
-	const qualifierWidgetsWithMappings = $derived(createQualifierWidgets(searchMappings));
+	const qualifierWidgets = $derived(
+		createQualifierWidgets($page.data?.qualifiers?.qualifiersByPrefixedValue || {})
+	);
 </script>
 
 <div class="super-search">
@@ -283,13 +281,12 @@
 				bind:this={collapsedCodeMirror}
 				syncedCodeMirrorComponent={expandedCodeMirror}
 				{placeholder}
-				{validQualifiers}
 				extensions={[
 					findOnEnter,
 					preventNewLine,
 					preventInsertBeforeQualifier,
 					preventArrowDownKey,
-					qualifierWidgetsWithMappings
+					qualifierWidgets
 				]}
 				onclick={() => showExpandedSearch()}
 				onchange={handleChangeCodeMirror}
@@ -312,14 +309,13 @@
 							syncedCodeMirrorComponent={collapsedCodeMirror}
 							follows={true}
 							{placeholder}
-							{validQualifiers}
 							extensions={[
 								findOnEnter,
 								EditorView.lineWrapping,
 								preventNewLine,
 								preventInsertBeforeQualifier,
 								preventArrowDownKey,
-								qualifierWidgetsWithMappings
+								qualifierWidgets
 							]}
 						/>
 					</SearchInputWrapper>

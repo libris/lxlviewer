@@ -4,7 +4,6 @@
 
 <div>
 	<p>{$page.url.searchParams.toString()}</p>
-	<pre>{JSON.stringify($page.data.searchMappings, null, 2)}</pre>
 </div>
 
 <style>

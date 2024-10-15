@@ -1,4 +1,3 @@
-import type { SearchMapping } from '$lib/utils/search';
 import {
 	EditorView,
 	MatchDecorator,
@@ -10,26 +9,19 @@ import {
 } from '@codemirror/view';
 import { mount } from 'svelte';
 import QualifierWidgetComponent from '$lib/components/QualifierWidget.svelte';
+import type { Qualifier } from '$lib/utils/supersearch/qualifiers';
 
 export const QUALIFIER_REGEXP = new RegExp(
 	/(?<!\S+)((")?[0-9a-zA-ZåäöÅÄÖ:]+\2):((")?[0-9a-zA-ZåäöÅÄÖ:%#-.]+\4?)?(\s|$)/g
 );
 
 class QualifierWidget extends WidgetType {
-	constructor(
-		readonly qualifier: {
-			type: string;
-			value: string;
-		},
-		readonly searchMappings: SearchMapping[]
-	) {
+	constructor(readonly qualifier: Qualifier) {
 		super();
 	}
 	eq(other: QualifierWidget) {
 		return (
-			this.qualifier.type == other.qualifier.type &&
-			this.qualifier.value == other.qualifier.value &&
-			this.searchMappings == other.searchMappings // should we filter out freetext querys?
+			this.qualifier.type == other.qualifier.type && this.qualifier.value == other.qualifier.value
 		);
 	}
 	toDOM() {
@@ -38,9 +30,7 @@ class QualifierWidget extends WidgetType {
 		mount(QualifierWidgetComponent, {
 			target: container,
 			props: {
-				type: this.qualifier.type,
-				value: this.qualifier.value,
-				searchMappings: this.searchMappings || []
+				qualifier: this.qualifier
 			}
 		});
 		return container;
@@ -50,22 +40,27 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
-const createQualifierMatcher = (searchMappings: SearchMapping[]) =>
+const createQualifierMatcher = (qualifiersByPrefixedValue: { [key: string]: Qualifier }) =>
 	new MatchDecorator({
 		regexp: QUALIFIER_REGEXP,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		decoration: ([_1, type, _2, value]) => {
-			if (type) {
+			const qualifier = Object.entries(qualifiersByPrefixedValue).find(([prefixedValue]) => {
+				if (prefixedValue === value) {
+					return true;
+				}
+			})?.[1];
+			if (qualifier) {
 				return Decoration.replace({
-					widget: new QualifierWidget({ type, value }, searchMappings)
+					widget: new QualifierWidget(qualifier)
 				});
 			}
 			return null;
 		}
 	});
 
-export const createQualifierWidgets = (searchMappings: SearchMapping[]) => {
-	const qualifierMatcher = createQualifierMatcher(searchMappings);
+export const createQualifierWidgets = (qualifiersByPrefixedValue: { [key: string]: Qualifier }) => {
+	const qualifierMatcher = createQualifierMatcher(qualifiersByPrefixedValue);
 	return ViewPlugin.fromClass(
 		class {
 			qualifiers: DecorationSet;
@@ -85,73 +80,3 @@ export const createQualifierWidgets = (searchMappings: SearchMapping[]) => {
 		}
 	);
 };
-
-// export default qualifierWidgets;
-
-/*
-import {
-	EditorView,
-	MatchDecorator,
-	Decoration,
-	ViewPlugin,
-	ViewUpdate,
-	WidgetType,
-	type DecorationSet
-} from '@codemirror/view';
-import { mount } from 'svelte';
-import PropertyWidgetComponent from '$lib/components/CodeMirror.PropertyWidget.svelte';
-
-class PropertyWidget extends WidgetType {
-	constructor(
-		readonly property: {
-			name: string;
-			value: string;
-		}
-	) {
-		super();
-	}
-	eq(other: PropertyWidget) {
-		return this.property.name == other.property.name && this.property.value == other.property.value;
-	}
-	toDOM() {
-		const container = document.createElement('span');
-		container.style.cssText = `position: relative;`;
-		mount(PropertyWidgetComponent, { target: container, props: this.property });
-		return container;
-	}
-	ignoreEvent() {
-		return false;
-	}
-}
-
-const propertyMatcher = new MatchDecorator({
-	regexp: /([a-zA-ZäöåÄÖÅ]+):([0-9a-zA-ZäöåÄÖÅ]+)?/g,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	decoration: ([_, name, value]) => {
-		return Decoration.replace({
-			widget: new PropertyWidget({ name, value })
-		});
-	}
-});
-
-const propertyWidgets = ViewPlugin.fromClass(
-	class {
-		properties: DecorationSet;
-		constructor(view: EditorView) {
-			this.properties = propertyMatcher.createDeco(view);
-		}
-		update(update: ViewUpdate) {
-			this.properties = propertyMatcher.updateDeco(update, this.properties);
-		}
-	},
-	{
-		decorations: (instance) => instance.properties,
-		provide: (plugin) =>
-			EditorView.atomicRanges.of((view) => {
-				return view.plugin(plugin)?.properties || Decoration.none;
-			})
-	}
-);
-
-export default propertyWidgets;
-*/

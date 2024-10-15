@@ -3,8 +3,6 @@
 	import getHiddenSearchParams from '$lib/utils/getHiddenSearchParams';
 	import * as m from '$lib/paraglide/messages.js';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
-	import { languageTag } from '$lib/paraglide/runtime.js';
-	import type { Qualifiers } from '$lib/types/qualifier';
 
 	/** Tests to do
 	 * - [] input value is updated after navigating between different find routes (e.g. using back)
@@ -16,13 +14,7 @@
 
 	const hiddenSearchParams = getHiddenSearchParams($page.url.searchParams);
 
-	const lazyLoadedComponent = Promise.all([import('./SuperSearch.svelte'), getValidQualifiers()]);
-
-	async function getValidQualifiers() {
-		const qualifiersRes = await fetch(`/api/${languageTag() || 'sv'}/qualifiers`);
-		const qualifiers = (await qualifiersRes.json()) as Qualifiers;
-		return qualifiers;
-	}
+	const lazyLoadSuperSearch = import('./SuperSearch.svelte');
 
 	function clearSearch() {
 		q = '';
@@ -46,12 +38,12 @@
 {/snippet}
 
 <form action="find" bind:this={formElement}>
-	{#await lazyLoadedComponent}
+	{#await lazyLoadSuperSearch}
 		<SearchInputWrapper showClearSearch={!!q} onclearsearch={clearSearch}>
 			{@render fallbackInput()}
 		</SearchInputWrapper>
-	{:then [{ default: SuperSearch }, validQualifiers]}
-		<SuperSearch bind:value={q} placeholder={m.searchPlaceholder()} {validQualifiers} />
+	{:then { default: SuperSearch }}
+		<SuperSearch bind:value={q} placeholder={m.searchPlaceholder()} />
 	{:catch}
 		<SearchInputWrapper showClearSearch={!!q} onclearsearch={clearSearch}>
 			{@render fallbackInput()}

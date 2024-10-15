@@ -1,40 +1,57 @@
 <script lang="ts">
-	import type { SearchMapping } from '$lib/utils/search';
-	import { onDestroy } from 'svelte';
-	type QualifierWidget = {
-		type: string;
-		value: string;
-		searchMappings: SearchMapping[] | undefined;
+	import type { Qualifier } from '$lib/utils/supersearch/qualifiers';
+	import IconPerson from '~icons/mdi/person-circle';
+
+	type QualifierWidgetProps = {
+		qualifier: Qualifier;
 	};
-	let { type, value, searchMappings }: QualifierWidget = $props();
 
-	onDestroy(() => {
-		console.log('destgroy');
-	});
-
-	$inspect(searchMappings);
+	let { qualifier }: QualifierWidgetProps = $props();
 </script>
 
-<span><span class="type">{type}:</span><span class="value"><a href="/">{value}</a></span></span>
+<span class="qualifier">
+	<span class="type">{qualifier.typeLabel}:</span><span class="value">
+		{#if qualifier?.type === 'Person'}
+			<IconPerson />
+		{/if}
+		{qualifier.valueLabel || qualifier.value}
+	</span>
+</span>&nbsp;
 
 <style>
+	.qualifier {
+		display: inline-flex;
+		gap: var(--gap-xs);
+		border: 1px solid var(--border-color);
+		border-radius: 3px;
+		background: rgba(14, 113, 128, 0.15);
+		padding: var(--padding-2xs);
+		max-width: 50vw;
+		overflow: hidden;
+		overflow: hidden;
+		font-weight: 500;
+		line-height: 1;
+		white-space: nowrap;
+	}
+
 	.type {
-		border: 1px solid blue;
-		border-right: none;
-		border-radius: 4px 0 0 4px;
-		background: #90ee90;
-		padding: 0 2px;
+		display: inline-block;
+		font-size: var(--font-size-2xs);
+		&::first-letter {
+			text-transform: capitalize;
+		}
 	}
 
 	.value {
-		border: 1px solid blue;
-		border-left: none;
-		border-radius: 0 4px 4px 0;
-		background: #cceecc;
-		padding: 0 2px;
+		min-width: 0;
+		overflow: hidden;
+		color: #0e7180;
+		font-size: var(--font-size-2xs);
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
-
-	.value a {
-		color: inherit;
+	.value :global(svg) {
+		color: var(--color-link);
+		font-size: var(--font-size-sm);
 	}
 </style>

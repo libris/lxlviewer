@@ -14,15 +14,14 @@ export const load = (async ({ url, fetch }) => {
 	}
 
 	if (_q) {
-		const searchMappingsRes = await fetch(
-			`/api/${languageTag()}/search-mapping?${new URLSearchParams({
-				q: _q
+		const qualifierRes = await fetch(
+			`/api/${languageTag()}/qualifier?${new URLSearchParams({
+				_q
 			})}`
 		);
 
-		const searchMappings = await searchMappingsRes.json();
-		return { searchMappings };
-	}
+		const qualifiers = await qualifierRes.json();
 
-	return {};
+		return { qualifiers };
+	}
 }) satisfies PageServerLoad;
