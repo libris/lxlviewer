@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { env } from '$env/dynamic/public';
 	import { afterNavigate } from '$app/navigation';
-	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { type MatomoTracker } from '$lib/types/matomo';
+	import { setMatomoTracker } from '$lib/contexts/matomo';
 
 	const URL: string = env.PUBLIC_MATOMO_URL;
 	const MATOMO_ID: number = +env.PUBLIC_MATOMO_ID;
 
 	const tracker = writable<MatomoTracker>();
-	setContext('matomo', tracker);
+	setMatomoTracker(tracker);
 
 	async function initMatomo() {
 		const matomo = window.Matomo;

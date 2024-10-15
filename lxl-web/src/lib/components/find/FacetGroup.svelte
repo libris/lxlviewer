@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { getContext } from 'svelte';
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import type { FacetGroup, Facet, MultiSelectFacet } from '$lib/types/search';
-	import type { MatomoTracker } from '$lib/types/matomo';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import {
 		DEFAULT_FACETS_SHOWN,
@@ -11,6 +9,7 @@
 		CUSTOM_FACET_SORT
 	} from '$lib/constants/facets';
 	import { saveUserSetting } from '$lib/utils/userSettings';
+	import { getMatomoTracker } from '$lib/contexts/matomo';
 	import { popover } from '$lib/actions/popover';
 	import FacetRange from './FacetRange.svelte';
 	import DecoratedData from '../DecoratedData.svelte';
@@ -19,9 +18,8 @@
 	import BiCheckSquareFill from '~icons/bi/check-square-fill';
 	import BiSquare from '~icons/bi/square';
 	import BiInfo from '~icons/bi/info-circle';
-	import type { Writable } from 'svelte/store';
 
-	const matomoTracker: Writable<MatomoTracker> = getContext('matomo');
+	const matomoTracker = getMatomoTracker();
 
 	export let group: FacetGroup;
 	export let locale: LocaleCode;
