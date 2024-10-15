@@ -31,15 +31,6 @@ export default {
     ...mapGetters([
       'resources',
     ]),
-    range() {
-      const docType = VocabUtil.getRecordType(this.entityType, this.resources.vocab, this.resources.context);
-      const combined = [docType].concat(VocabUtil.getAllSubClasses(docType, this.resources.vocabClasses, this.resources.context));
-      const filtered = filter(combined, (o) => {
-        const term = VocabUtil.getTermObject(o, this.resources.vocab, this.resources.context);
-        return term.abstract !== true;
-      });
-      return filtered;
-    },
     onMainEntity() {
       return this.path === 'mainEntity.@type';
     },
@@ -56,7 +47,11 @@ export default {
     translatePhrase,
     labelByLang,
     getLabelWithTreeDepth(term) {
-      return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
+      if (term?.id === 'Any') {
+        return translatePhrase('Unspecified');
+      } else {
+        return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
+      }
     },
     unlockEdit() {
       this.unlockedByUser = true;
