@@ -163,7 +163,7 @@ function getFindResSearchParams({
 	if (type === 'work') {
 		return new URLSearchParams([
 			['_q', sanitizeQSearchParamValue(q)],
-			['_limit', '3'],
+			['_limit', '5'],
 			['_offset', '0'],
 			['_sort', '']
 		]);
@@ -179,7 +179,7 @@ function getFindResSearchParams({
 				['q', qualifierValue], // TODO: fetch phrase or word in parallel (if phrase doesn't give any results fall back to word). If both gives the same result use word (so only the last occurrence of Astrid Astrid has qualifier changes)
 				['@type', baseClass || ''],
 				['min-reverseLinks.totalItems', '1'],
-				['_limit', '4'],
+				['_limit', '5'],
 				['_offset', '0'],
 				['_sort', '']
 			]);
@@ -197,7 +197,7 @@ function getFindResSearchParams({
 		['not-inScheme.@id', 'https://id.kb.se/term/swepub'],
 		['not-inScheme.@id', 'https://id.kb.se/marc'],
 		['min-reverseLinks.totalItems', '1'],
-		['_limit', '4'],
+		['_limit', '5'],
 		['_offset', '0'],
 		['_sort', '']
 	]);
