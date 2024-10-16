@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Qualifier } from '$lib/utils/supersearch/qualifiers';
 	import IconPerson from '~icons/mdi/person-circle';
-	import IconRemove from '~icons/mdi/remove';
+	import IconMenu from '~icons/mdi/dots-horizontal';
 
 	type QualifierWidgetProps = {
 		qualifier: Qualifier;
@@ -18,7 +18,7 @@
 		{/if}
 		{qualifier.valueLabel || qualifier.value}
 	</span>
-	<button onclick={onremove} tabindex="-1"><IconRemove style="font-size:14px;" /></button>
+	<button onclick={onremove} tabindex="-1"><IconMenu style="font-size:14px;" /></button>
 </span>&nbsp;
 
 <style>
@@ -26,10 +26,10 @@
 		display: inline-flex;
 		align-items: center;
 		border: 1px solid var(--border-color);
-		border-radius: 3px;
+		border-radius: 4px;
 		background: rgba(14, 113, 128, 0.15);
 		padding: 0;
-		max-width: 50vw;
+		max-width: 25vw;
 		overflow: hidden;
 		font-weight: 500;
 		line-height: 1;
@@ -47,9 +47,8 @@
 	}
 
 	.value {
-		display: inline-flex;
+		display: inline-block;
 		align-items: center;
-		align-self: stretch;
 		min-width: 0;
 		overflow: hidden;
 		color: #0e7180;
@@ -72,5 +71,9 @@
 		min-width: 24px;
 		min-height: 24px;
 		color: var(--color-link);
+
+		&:hover {
+			background: rgba(0, 0, 0, 0.05);
+		}
 	}
 </style>
