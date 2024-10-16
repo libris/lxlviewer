@@ -47,9 +47,14 @@ export function getQualifier({
 
 	return {
 		type,
-		typeLabel: toString(
-			displayUtil.lensAndFormat(vocabUtil.getDefinition(type), LxlLens.CardHeading, lang)
-		),
+		typeLabel:
+			toString(
+				displayUtil.lensAndFormat(vocabUtil.getDefinition(type), LxlLens.CardHeading, lang)
+			) ||
+			toString(
+				displayUtil.lensAndFormat(vocabUtil.getDefinition(baseClass), LxlLens.CardHeading, lang)
+			) ||
+			type,
 		value,
 		valueLabel: value
 			? toString(displayUtil.lensAndFormat(item, LxlLens.PageHeading, lang))
