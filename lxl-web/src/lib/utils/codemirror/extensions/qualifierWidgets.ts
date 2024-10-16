@@ -16,27 +16,40 @@ export const QUALIFIER_REGEXP = new RegExp(
 );
 
 class QualifierWidget extends WidgetType {
-	constructor(readonly qualifier: Qualifier) {
+	constructor(
+		readonly qualifier: Qualifier,
+		readonly range: { from: number; to: number }
+	) {
 		super();
 	}
 	eq(other: QualifierWidget) {
 		return (
-			this.qualifier.type == other.qualifier.type && this.qualifier.value == other.qualifier.value
+			this.qualifier.type == other.qualifier.type &&
+			this.qualifier.value == other.qualifier.value &&
+			this.range == other.range
 		);
 	}
-	toDOM() {
+	removeWidget(range: { from: number; to: number }, view: EditorView) {
+		view.dispatch({
+			changes: {
+				from: range.from,
+				to: range.to,
+				insert: ''
+			},
+			userEvent: 'delete'
+		});
+	}
+	toDOM(view: EditorView) {
 		const container = document.createElement('span');
 		container.style.cssText = `position: relative;`;
 		mount(QualifierWidgetComponent, {
 			target: container,
 			props: {
-				qualifier: this.qualifier
+				qualifier: this.qualifier,
+				onremove: () => this.removeWidget(this.range, view) // is this really the smartest way to remove widgets from inside?
 			}
 		});
 		return container;
-	}
-	ignoreEvent() {
-		return false;
 	}
 }
 
@@ -44,7 +57,7 @@ const createQualifierMatcher = (qualifiersByPrefixedValue: { [key: string]: Qual
 	new MatchDecorator({
 		regexp: QUALIFIER_REGEXP,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		decoration: ([_1, type, _2, value]) => {
+		decoration: ([match, type, _2, value], view, pos) => {
 			const qualifier = Object.entries(qualifiersByPrefixedValue).find(([prefixedValue]) => {
 				if (prefixedValue === value) {
 					return true;
@@ -52,7 +65,7 @@ const createQualifierMatcher = (qualifiersByPrefixedValue: { [key: string]: Qual
 			})?.[1];
 			if (qualifier) {
 				return Decoration.replace({
-					widget: new QualifierWidget(qualifier)
+					widget: new QualifierWidget(qualifier, { from: pos, to: pos + match.length }) // There is probably some smarter way to do the removal of the widgets  – we could for example use the [decorate](https://codemirror.net/docs/ref/#view.MatchDecorator.constructor^config.decorate) instead of decoration as the former has from and to assigned
 				});
 			}
 			return null;
