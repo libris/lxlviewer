@@ -204,7 +204,7 @@ export default {
       return this.$route.path.includes('bulkchanges');
     },
     typeLabel() {
-      return this.item['@type'] === 'Any' ? translatePhrase('Unspecified') : labelByLang(item['@type']);
+      return this.item['@type'] === 'Any' ? translatePhrase('Unspecified') : labelByLang(this.item['@type']);
     }
   },
   methods: {
