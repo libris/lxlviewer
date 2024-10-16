@@ -42,6 +42,9 @@ export default {
     isDisabled() {
       return this.onMainEntity && this.numberOfRelations !== 0 && this.unlockedByUser === false;
     },
+    typeLabel() {
+      return this.fieldValue === 'Any' ? translatePhrase('Unspecified') : labelByLang(this.fieldValue);
+    }
   },
   methods: {
     translatePhrase,
@@ -143,7 +146,7 @@ export default {
     </div>
     <span
       class="ItemType-text"
-      v-if="isLocked">{{ labelByLang(fieldValue) }}
+      v-if="isLocked">{{ typeLabel }}
     </span>
     <modal-component
       title="Byte av typ"
