@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Qualifier } from '$lib/utils/supersearch/qualifiers';
 	import IconPerson from '~icons/mdi/person-circle';
-	import IconMenu from '~icons/mdi/dots-horizontal';
+	import IconMenu from '~icons/mdi/dots-vertical';
 
 	type QualifierWidgetProps = {
 		qualifier: Qualifier;
