@@ -7,7 +7,7 @@
 	import { page } from '$app/stores';
 	import { getMatomoTracker } from '$lib/contexts/matomo';
 
-	const matomo = getMatomoTracker();
+	const matomoTracker = getMatomoTracker();
 
 	const config: CookieConsent.CookieConsentConfig = {
 		guiOptions: {
@@ -36,14 +36,14 @@
 		},
 		onConsent: ({ cookie }) => {
 			if (cookie.categories.includes('analytics')) {
-				$matomo.rememberConsentGiven(24 * 356 * 5); // 5 years?
+				$matomoTracker.rememberConsentGiven(24 * 356 * 5); // 5 years?
 			}
 		},
 		onChange: ({ cookie }) => {
 			if (cookie.categories.includes('analytics')) {
-				$matomo.rememberConsentGiven(24 * 356 * 5);
+				$matomoTracker.rememberConsentGiven(24 * 356 * 5);
 			} else {
-				$matomo.forgetConsentGiven();
+				$matomoTracker.forgetConsentGiven();
 			}
 		},
 		language: {
