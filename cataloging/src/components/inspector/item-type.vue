@@ -1,5 +1,5 @@
 <script>
-import { filter } from 'lodash-es';
+import {filter, isEmpty} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
@@ -50,6 +50,9 @@ export default {
     translatePhrase,
     labelByLang,
     getLabelWithTreeDepth(term) {
+      if (isEmpty(term)) {
+        return;
+      }
       if (term?.id === 'Any') {
         return translatePhrase('Unspecified');
       } else {
