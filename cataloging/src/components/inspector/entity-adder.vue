@@ -138,6 +138,9 @@ export default {
     hasSingleCreatable() {
       return this.rangeCreatable.length === 1;
     },
+    hasCreateable() {
+      return this.rangeCreatable.length > 0;
+    },
     isVocabField() {
       return VocabUtil.getContextValue(this.fieldKey, '@type', this.resources.context) === '@vocab';
     },
@@ -189,6 +192,9 @@ export default {
         }
       }
       return false;
+    },
+    inBulkChangeView() {
+      return this.$route.path.includes('bulkchanges');
     },
   },
   mounted() {
@@ -611,11 +617,16 @@ export default {
           <div class="EntityAdder-create">
             <button
               class="EntityAdder-createBtn btn btn-primary btn--sm"
-              v-if="hasSingleCreatable && allowLocal"
+              v-if="hasSingleCreatable && allowLocal && !inBulkChangeView"
               v-on:click="addEmpty(rangeCreatable[0])">{{ translatePhrase("Create local entity") }}
             </button>
+            <button
+              class="EntityAdder-createBtn btn btn-primary btn--sm"
+              v-if="inBulkChangeView && hasCreateable && allowLocal"
+              v-on:click="addEmpty('Any')">{{ translatePhrase("Create local entity") }}
+            </button>
             <filter-select
-              v-if="!hasSingleCreatable"
+              v-if="!hasSingleCreatable && !inBulkChangeView"
               :input-id="'createselectInput'"
               :class-name="'js-createSelect'"
               :options="{ tree: selectOptions, priority: priorityOptions }"

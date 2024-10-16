@@ -202,6 +202,9 @@ export default {
     },
     isBulkChangeView() {
       return this.$route.path.includes('bulkchanges');
+    },
+    typeLabel() {
+      return this.item['@type'] === 'Any' ? translatePhrase('Unspecified') : labelByLang(this.item['@type']);
     }
   },
   methods: {
@@ -578,7 +581,7 @@ export default {
             {{ translatePhrase("Extracted when the record is saved") }}
           </span>
           <span v-if="!expanded || !isExtracting">
-            {{ capitalize(labelByLang(item['@type'])) }}:
+            {{ capitalize(typeLabel) }}:
           </span>
         </span>
         <span class="ItemLocal-collapsedLabel" v-show="!expanded || isEmpty">

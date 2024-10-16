@@ -692,10 +692,8 @@ export default {
         </div>
       </div>
       <div>
-
-
 <!--        SPECIFICATION-->
-<!--        <pre>{{this.currentBulkChange}}</pre>-->
+<!--        <pre>{{ this.currentBulkChange }}</pre>-->
 <!--        ENTITY FORM-->
 <!--        <pre>{{ this.dataObj }}</pre>-->
 

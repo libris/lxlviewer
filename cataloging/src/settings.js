@@ -40,6 +40,7 @@ export default {
     'PlaceholderRecord',
     'CacheRecord',
     'ComplexSubject.termComponentList',
+    'Any'
   ],
   keysToClear: {
     duplication: [
