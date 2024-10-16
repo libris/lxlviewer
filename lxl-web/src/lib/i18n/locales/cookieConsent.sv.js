@@ -16,9 +16,9 @@ export default {
 		closeIconLabel: 'Stäng',
 		sections: [
 			{
-				title: 'Cookie-användning',
+				title: 'Om användning av kakor',
 				description:
-					'Webbplatsen Libris använder kakor (cookies). En kaka är en liten textfil som lagras i besökarens dator. KB:s tjänster är designade för att minska risken för spridning av uppgifter om vad du söker efter och tittar på till andra. Informationen som lagras via kakor kan inte användas av tredje part i marknadsföringssyfte.'
+					'Webbplatsen Libris använder kakor (cookies). En kaka är en liten textfil som lagras i besökarens dator. KB:s tjänster är designade för att minska risken för spridning av dina uppgifter. Informationen som lagras via kakor kan aldrig användas av tredje part i marknadsföringssyfte.'
 			},
 			{
 				title: 'Nödvändiga kakor',

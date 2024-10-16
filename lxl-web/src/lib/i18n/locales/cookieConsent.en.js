@@ -2,25 +2,25 @@ export default {
 	consentModal: {
 		title: 'We use cookies',
 		description:
-			'Tjänsten Libris använder olika typer av kakor (cookies). Dessa är till för att förbättra användarupplevelsen samt för att tjänsten och dess funktioner ska fungera som de ska. Nedan kan du välja dina inställningar för vilka kakor du ger ditt samtycke till. Du kan alltid ändra dina val senare genom att klicka på “Hantera cookies” längst ner på sidan.',
+			'The Libris service uses various types of cookies. These are intended to enhance the user experience and ensure that the service and its functions work as they should. Below, you can choose your preferences for which cookies you consent to. You can always change your choices later by clicking on "Manage cookies" at the bottom of the page.',
 		acceptAllBtn: 'Accept all cookies',
 		acceptNecessaryBtn: 'Accept only necessary',
-		showPreferencesBtn: 'Manage Individual preferences'
+		showPreferencesBtn: 'Cookie settings'
 	},
 	preferencesModal: {
 		title: 'Cookie settings',
 		acceptAllBtn: 'Accept all cookies',
 		acceptNecessaryBtn: 'Accept only necessary',
-		savePreferencesBtn: 'Manage individual preferences',
+		savePreferencesBtn: 'Save and close',
 		closeIconLabel: 'Close',
 		sections: [
 			{
-				title: 'Your Privacy Choices',
+				title: 'About the use of cookies',
 				description:
-					'Webbplatsen Libris använder kakor (cookies). En kaka är en liten textfil som lagras i besökarens dator. KB:s tjänster är designade för att minska risken för spridning av uppgifter om vad du söker efter och tittar på till andra. Informationen som lagras via kakor kan inte användas av tredje part i marknadsföringssyfte.'
+					"The Libris website uses cookies. A cookie is a small text file that is stored on the visitor's computer. The National Library's services are designed to reduce the risk of your information being disseminated. The information stored via cookies can never be used by third parties for marketing purposes."
 			},
 			{
-				title: 'Strictly Necessary cookies',
+				title: 'Necessary cookies',
 				description:
 					'These cookies are essential for the proper functioning of the website and cannot be disabled.',
 				linkedCategory: 'necessary'
@@ -28,13 +28,13 @@ export default {
 			{
 				title: 'Analytical cookies',
 				description:
-					'These cookies collect information about how you use our website, allowing us to improve the user experience.',
+					'Cookies that provide us with information about how the website is used, allowing us to maintain, operate, and improve the user experience.',
 				linkedCategory: 'analytics'
 			},
 			{
 				title: 'More information',
 				description:
-					'You can always review your choices by clicking "Manage cookies" in the site footer.'
+					'You can always change your choices by clicking on "Manage cookies" at the bottom of the page in the footer.'
 			}
 		]
 	}
