@@ -1,5 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
+import type { MatomoTracker } from '$lib/types/matomo';
 import type { UserSettings } from '$lib/types/userSettings';
 import type { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import 'unplugin-icons/types/svelte';
@@ -24,6 +25,12 @@ declare global {
 			holdings?: string;
 		}
 		// interface Platform {}
+	}
+	interface Window {
+		// Matomo
+		Matomo?: {
+			getTracker: (trackerUrl: string, siteId: number) => MatomoTracker | undefined;
+		};
 	}
 }
 

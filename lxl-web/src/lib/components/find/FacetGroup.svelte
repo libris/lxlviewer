@@ -9,6 +9,7 @@
 		CUSTOM_FACET_SORT
 	} from '$lib/constants/facets';
 	import { saveUserSetting } from '$lib/utils/userSettings';
+	import { getMatomoTracker } from '$lib/contexts/matomo';
 	import { popover } from '$lib/actions/popover';
 	import FacetRange from './FacetRange.svelte';
 	import DecoratedData from '../DecoratedData.svelte';
@@ -17,6 +18,8 @@
 	import BiCheckSquareFill from '~icons/bi/check-square-fill';
 	import BiSquare from '~icons/bi/square';
 	import BiInfo from '~icons/bi/info-circle';
+
+	const matomoTracker = getMatomoTracker();
 
 	export let group: FacetGroup;
 	export let locale: LocaleCode;
@@ -61,6 +64,11 @@
 	function saveUserSort(e: Event): void {
 		const target = e.target as HTMLSelectElement;
 		saveUserSetting('facetSort', { [group.dimension]: target.value });
+
+		// testing analytics event tracker
+		if ($matomoTracker) {
+			$matomoTracker.trackEvent('Facet sort', group.dimension, target.value);
+		}
 	}
 
 	$: numFacets = group.facets.length;

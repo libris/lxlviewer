@@ -20,6 +20,7 @@ const config = {
 			directives: {
 				'default-src': ['self'],
 				'script-src': ['self', 'https://analytics.kb.se'],
+				'connect-src': ['self', 'https://analytics.kb.se'],
 				'style-src': ['self', 'unsafe-inline'],
 				'base-uri': ['self'],
 				'form-action': ['self'],
