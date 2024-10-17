@@ -16,13 +16,13 @@
 
 	type SuggestionListItemProps = {
 		data: Suggestion;
-		initialQuery: string;
+		initialQuery?: string;
 		onaddqualifier?: (event: QualifierEvent, options?: { updateUrl: boolean }) => void;
 		onpreviewqualifierstart?: (event: QualifierEvent) => void;
 		onpreviewqualifierend?: (event: QualifierEvent) => void;
 	};
 
-	let { data, initialQuery, onaddqualifier }: SuggestionListItemProps = $props();
+	let { data, initialQuery = '', onaddqualifier }: SuggestionListItemProps = $props();
 </script>
 
 {#snippet heading()}
