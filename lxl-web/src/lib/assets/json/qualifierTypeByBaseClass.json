@@ -4,5 +4,7 @@
 	"Topic": "subject",
 	"Subject": "subject",
 	"Language": "SPRÅK",
-	"GenreForm": "genreForm"
+	"GenreForm": "genreForm",
+	"Person": "person",
+	"Work": "titel"
 }
