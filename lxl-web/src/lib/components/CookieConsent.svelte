@@ -36,12 +36,12 @@
 		},
 		onConsent: ({ cookie }) => {
 			if (cookie.categories.includes('analytics')) {
-				$matomoTracker.rememberConsentGiven(24 * 356 * 5); // 5 years?
+				$matomoTracker.rememberConsentGiven();
 			}
 		},
 		onChange: ({ cookie }) => {
 			if (cookie.categories.includes('analytics')) {
-				$matomoTracker.rememberConsentGiven(24 * 356 * 5);
+				$matomoTracker.rememberConsentGiven();
 			} else {
 				$matomoTracker.forgetConsentGiven();
 			}
