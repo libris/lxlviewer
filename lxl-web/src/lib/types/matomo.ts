@@ -61,7 +61,7 @@ export interface MatomoTracker {
 	 * The next time the user visits the site, Matomo will remember that they consented, and track them.
 	 * If you call this method, you do not need to call setConsentGiven
 	 */
-	rememberConsentGiven: (hoursToExpire: number) => void;
+	rememberConsentGiven: (hoursToExpire?: number) => void;
 
 	// Manage cookies
 	/** Disable all first party cookies. Existing Matomo cookies for this website will be deleted on the next page view.

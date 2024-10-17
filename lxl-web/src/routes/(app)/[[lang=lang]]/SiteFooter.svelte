@@ -1,6 +1,7 @@
 <script lang="ts">
 	import KbLogo from '$lib/assets/img/kb_logo_text_black.svg';
 	import { page } from '$app/stores';
+	import * as CookieConsent from 'vanilla-cookieconsent';
 </script>
 
 <footer
@@ -16,6 +17,11 @@
 					<a
 						href="https://www.kb.se/samverkan-och-utveckling/libris/fragor-och-svar-om-libris-nya-soktjanst.html"
 						>{$page.data.t('footer.faq')}</a
+					>
+				</li>
+				<li>
+					<button class="underline" on:click={CookieConsent.showPreferences}
+						>{$page.data.t('footer.cookies')}</button
 					>
 				</li>
 			</ul>

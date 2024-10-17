@@ -15,7 +15,8 @@ export default {
 		contact: 'Kontakt',
 		feedback: 'Lämna synpunkter',
 		feedbackLink: 'https://survey.kb.se/librisbeta',
-		customerSupport: 'Libris kundtjänst'
+		customerSupport: 'Libris kundtjänst',
+		cookies: 'Hantera cookies'
 	},
 	facet: {
 		q: 'Fritextsökning',
