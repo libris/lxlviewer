@@ -10,7 +10,6 @@ import {
 import { mount } from 'svelte';
 import QualifierWidgetComponent from '$lib/components/QualifierWidget.svelte';
 import type { Qualifier } from '$lib/utils/supersearch/qualifiers';
-
 export const QUALIFIER_REGEXP = new RegExp(
 	/(?<!\S+)((")?[0-9a-zA-ZåäöÅÄÖ:]+\2):((")?[0-9a-zA-ZåäöÅÄÖ:%#-.]+\4?)?(\s|$)/g
 );
@@ -29,24 +28,14 @@ class QualifierWidget extends WidgetType {
 			this.range == other.range
 		);
 	}
-	removeWidget(range: { from: number; to: number }, view: EditorView) {
-		view.dispatch({
-			changes: {
-				from: range.from,
-				to: range.to,
-				insert: ''
-			},
-			userEvent: 'delete'
-		});
-	}
-	toDOM(view: EditorView) {
+	toDOM() {
 		const container = document.createElement('span');
 		container.style.cssText = `position: relative;`;
 		mount(QualifierWidgetComponent, {
 			target: container,
 			props: {
 				qualifier: this.qualifier,
-				onremove: () => this.removeWidget(this.range, view) // is this really the smartest way to remove widgets from inside?
+				range: this.range
 			}
 		});
 		return container;
