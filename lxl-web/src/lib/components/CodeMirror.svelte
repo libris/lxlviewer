@@ -255,7 +255,7 @@
 
 	$effect(() => {
 		if (extensions !== prevExtensions) {
-			console.log('reconfigureEditorExtensions!');
+			// console.log('reconfigureEditorExtensions!');
 			reconfigureEditorExtensions();
 			prevExtensions = extensions;
 		}
@@ -276,13 +276,13 @@
 	}
 
 	.codemirror-container :global(.cm-content) {
-		padding-top: 0.75rem;
-		padding-bottom: 0.75rem;
+		padding-top: 0.6125rem;
+		padding-bottom: 0.6125rem;
 	}
 
 	.codemirror-container :global(.cm-line) {
 		padding: 0 1px; /* using 0 on horizontal axis causes codemirror cursor to occasionally disappear on firefox */
-		line-height: 1.75;
+		line-height: 2;
 	}
 
 	.codemirror-container :global(.cm-editor.cm-focused) {
