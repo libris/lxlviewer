@@ -48,7 +48,7 @@
 	let selectionBeforeClose: { anchor: number; head: number } | undefined = $state();
 	let selectionBeforeNavigation: { anchor: number; head?: number } | undefined = $state();
 
-	const editiedParts = $derived(getEditedParts({ value, cursor }));
+	const editedParts = $derived(getEditedParts({ value, cursor }));
 
 	const findSuggestionItems = debounce(
 		async ({ value, cursor }: { value: string; cursor: number }) => {
@@ -263,6 +263,8 @@
 
 	afterNavigate(({ to, type }) => {
 		if (type !== 'enter') {
+			qualifierItems = [];
+			workItems = [];
 			const valueFromSearchParams = to?.url.searchParams.get('_q') || '';
 			if (selectionBeforeNavigation) {
 				cursor = selectionBeforeNavigation?.anchor;
@@ -345,39 +347,45 @@
 					</SearchInputWrapper>
 				</div>
 				<nav>
-					{#if editiedParts.word}
-						{#if qualifierItems.length}
-							<section class="suggestions">
-								<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
-								<ul>
-									{#each qualifierItems as item (item['@id'])}
-										<SuggestionListItem
-											data={item}
-											initialQuery={fetchedValue}
-											onaddqualifier={handleAddQualifier}
-											onpreviewqualifierstart={handlePreviewQualifierStart}
-											onpreviewqualifierend={handlePreviewQualifierEnd}
-										/>
-									{/each}
-								</ul>
-								<button class="show-more">Visa fler</button>
-							</section>
-						{/if}
-						{#if workItems.length}
-							<section class="suggestions">
-								<h2 class="dropdown-header">Sökförslag</h2>
-								<ul>
-									{#each workItems as item (item['@id'])}
-										<SuggestionListItem data={item} initialQuery={fetchedValue} />
-									{/each}
-								</ul>
-								<button class="show-more">Visa fler</button>
-							</section>
+					{#if editedParts.word}
+						{#if fetchedValue !== value && !qualifierItems.length && !workItems.length}
+							<div class="loading">Laddar...</div>
+						{:else if fetchedValue === value && !qualifierItems.length && !workItems.length}
+							<div class="no-results">Inga träffar</div>
+						{:else}
+							{#if qualifierItems.length}
+								<section class="suggestions">
+									<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
+									<ul>
+										{#each qualifierItems as item (item['@id'])}
+											<SuggestionListItem
+												data={item}
+												initialQuery={fetchedValue}
+												onaddqualifier={handleAddQualifier}
+												onpreviewqualifierstart={handlePreviewQualifierStart}
+												onpreviewqualifierend={handlePreviewQualifierEnd}
+											/>
+										{/each}
+									</ul>
+									<button class="show-more">Visa fler</button>
+								</section>
+							{/if}
+							{#if workItems.length}
+								<section class="suggestions">
+									<h2 class="dropdown-header">Sökförslag</h2>
+									<ul>
+										{#each workItems as item (item['@id'])}
+											<SuggestionListItem data={item} initialQuery={fetchedValue} />
+										{/each}
+									</ul>
+									<button class="show-more">Visa fler</button>
+								</section>
+							{/if}
 						{/if}
 					{:else}
 						<section>
 							<ul>
-								<h2 class="dropdown-header">Välj kategori att söka inom</h2>
+								<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
 								<li>
 									<button type="button" onclick={() => handleAddQualiferType('titel')}
 										>Titel: <span>boktitel, filmtitel, etc.</span></button
@@ -499,5 +507,19 @@
 		padding: 0 var(--padding-base);
 		color: var(--color-link);
 		font-size: var(--font-size-xs);
+	}
+	.loading,
+	.no-results {
+		padding: 0 var(--padding-base);
+		min-height: var(--height-input-base);
+		font-size: var(--font-size-sm);
+	}
+
+	.loading {
+		color: var(--color-super-subtle);
+	}
+
+	.no-results {
+		color: var(--color-subtle);
 	}
 </style>
