@@ -15,7 +15,7 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 	qualifierType: string | null;
 	qualifierValue: string | null;
 } {
-	const wordFromIndex = value.lastIndexOf(value.slice(0, cursor).split(/\s+/).pop()!);
+	const wordFromIndex = value.slice(0, cursor).lastIndexOf(' ') + 1;
 	const wordToIndex = cursor + value.slice(cursor).split(/\s+/)[0].length || 0;
 	const word = value.slice(wordFromIndex, wordToIndex);
 	const wordRange = { from: wordFromIndex, to: wordToIndex };
