@@ -9,7 +9,7 @@
 	import SuggestionListItem, { type QualifierEvent } from './SuggestionListItem.svelte';
 	import getEditedParts from '$lib/utils/codemirror/getEditedParts';
 	import type { SuggestResponse, Suggestion } from '../../routes/api/[[lang=lang]]/suggest/+server';
-	import { afterNavigate, goto } from '$app/navigation';
+	import { afterNavigate, goto, replaceState } from '$app/navigation';
 	import preventNewLine from '$lib/utils/codemirror/extensions/preventNewLine';
 	import { EditorView } from '@codemirror/view';
 	import preventInsertBeforeQualifier from '$lib/utils/codemirror/extensions/preventInsertBeforeQualifier';
@@ -36,6 +36,7 @@
 
 	let { value = $bindable(), placeholder }: SuperSearchProps = $props();
 
+	let cursor: number = $state(value.length);
 	let lastValue = $state();
 	let fetchedValue: string | undefined = $state();
 	let qualifierItems: Suggestion[] = $state([]);
@@ -47,8 +48,11 @@
 	let selectionBeforeClose: { anchor: number; head: number } | undefined = $state();
 	let selectionBeforeNavigation: { anchor: number; head?: number } | undefined = $state();
 
+	const editiedParts = $derived(getEditedParts({ value, cursor }));
+
 	const findSuggestionItems = debounce(
 		async ({ value, cursor }: { value: string; cursor: number }) => {
+			fetchedValue = undefined;
 			/** TODO: add request cancellation if query changes before fetch has finished (or if component is destroyed) */
 
 			try {
@@ -84,15 +88,15 @@
 					throw { status: qualifiersRes.status, statusText: qualifiersRes.statusText };
 				}
 
-				if (!worksRes.ok) {
-					throw { status: worksRes.status, statusText: worksRes.statusText };
+				if (qualifiersRes.ok) {
+					const qualifiers = (await qualifiersRes.json()) as SuggestResponse;
+					qualifierItems = qualifiers.items;
 				}
 
-				const qualifiers = (await qualifiersRes.json()) as SuggestResponse;
-				const works = (await worksRes.json()) as SuggestResponse;
-
-				qualifierItems = qualifiers.items;
-				workItems = works.items;
+				if (worksRes.ok) {
+					const works = (await worksRes.json()) as SuggestResponse;
+					workItems = works.items;
+				}
 
 				fetchedValue = value;
 				expandedCodeMirror?.updateValidatedQualifiers();
@@ -147,6 +151,11 @@
 	}
 
 	function clearSearch() {
+		if ($page.url.pathname === '/find') {
+			const newUrl = new URL($page.url);
+			newUrl.searchParams.set('_q', '');
+			replaceState(newUrl, $page.state);
+		}
 		resetEditors({ doc: '' });
 		value = '';
 		clearSuggestionItems();
@@ -159,6 +168,7 @@
 
 	async function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
 		value = event.value;
+		cursor = event.cursor;
 		const trimmedValue = value.trim();
 
 		if (trimmedValue !== lastValue) {
@@ -254,6 +264,9 @@
 	afterNavigate(({ to, type }) => {
 		if (type !== 'enter') {
 			const valueFromSearchParams = to?.url.searchParams.get('_q') || '';
+			if (selectionBeforeNavigation) {
+				cursor = selectionBeforeNavigation?.anchor;
+			}
 			resetEditors({
 				doc: valueFromSearchParams,
 				selection: selectionBeforeNavigation
@@ -267,6 +280,17 @@
 	const qualifierWidgets = $derived(
 		createQualifierWidgets($page.data?.qualifiers?.qualifiersByPrefixedValue || {})
 	);
+
+	function handleAddQualiferType(type: string) {
+		const currentSelection = collapsedCodeMirror.getMainSelection();
+		collapsedCodeMirror.dispatchChange(
+			{ from: currentSelection.anchor, to: currentSelection.head, insert: `${type}:` },
+			{ userEvent: 'input' }
+		);
+
+		hideExpandedSearch();
+		collapsedCodeMirror?.focus();
+	}
 </script>
 
 <div class="super-search">
@@ -321,32 +345,60 @@
 					</SearchInputWrapper>
 				</div>
 				<nav>
-					{#if value && fetchedValue && qualifierItems.length}
-						<section class="suggestions">
-							<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
+					{#if editiedParts.word}
+						{#if qualifierItems.length}
+							<section class="suggestions">
+								<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
+								<ul>
+									{#each qualifierItems as item (item['@id'])}
+										<SuggestionListItem
+											data={item}
+											initialQuery={fetchedValue}
+											onaddqualifier={handleAddQualifier}
+											onpreviewqualifierstart={handlePreviewQualifierStart}
+											onpreviewqualifierend={handlePreviewQualifierEnd}
+										/>
+									{/each}
+								</ul>
+								<button class="show-more">Visa fler</button>
+							</section>
+						{/if}
+						{#if workItems.length}
+							<section class="suggestions">
+								<h2 class="dropdown-header">Sökförslag</h2>
+								<ul>
+									{#each workItems as item (item['@id'])}
+										<SuggestionListItem data={item} initialQuery={fetchedValue} />
+									{/each}
+								</ul>
+								<button class="show-more">Visa fler</button>
+							</section>
+						{/if}
+					{:else}
+						<section>
 							<ul>
-								{#each qualifierItems as item (item['@id'])}
-									<SuggestionListItem
-										data={item}
-										initialQuery={fetchedValue}
-										onaddqualifier={handleAddQualifier}
-										onpreviewqualifierstart={handlePreviewQualifierStart}
-										onpreviewqualifierend={handlePreviewQualifierEnd}
-									/>
-								{/each}
+								<h2 class="dropdown-header">Välj kategori att söka inom</h2>
+								<li>
+									<button type="button" onclick={() => handleAddQualiferType('titel')}
+										>Titel: <span>boktitel, filmtitel, etc.</span></button
+									>
+								</li>
+								<li>
+									<button type="button" onclick={() => handleAddQualiferType('person')}
+										>Person: <span>författare, kompositör, etc.</span></button
+									>
+								</li>
+								<li>
+									<button type="button" onclick={() => handleAddQualiferType('subject')}
+										>Ämne: <span>plats, period, person, etc.</span></button
+									>
+								</li>
+								<li>
+									<button type="button" onclick={() => handleAddQualiferType('SPRÅK')}
+										>Språk: <span>svenska, engelska, etc.</span></button
+									>
+								</li>
 							</ul>
-							<button class="show-more">Visa fler</button>
-						</section>
-					{/if}
-					{#if value && fetchedValue && workItems.length}
-						<section class="suggestions">
-							<h2 class="dropdown-header">Sökförslag</h2>
-							<ul>
-								{#each workItems as item (item['@id'])}
-									<SuggestionListItem data={item} initialQuery={fetchedValue} />
-								{/each}
-							</ul>
-							<button class="show-more">Visa fler</button>
 						</section>
 					{/if}
 				</nav>
