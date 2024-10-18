@@ -15,6 +15,7 @@
 	import preventInsertBeforeQualifier from '$lib/utils/codemirror/extensions/preventInsertBeforeQualifier';
 	import preventArrowDownKey from '$lib/utils/codemirror/extensions/preventArrowDownKey';
 	import { createQualifierWidgets } from '$lib/utils/codemirror/extensions/qualifierWidgets';
+	import TypeSuggestionListItem from './TypeSuggestionListItem.svelte';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -65,7 +66,7 @@
 					return;
 				}
 
-				const [qualifiersRes, worksRes] = await Promise.all([
+				const [qualifiersRes] = await Promise.all([
 					fetch(
 						`/api/${languageTag()}/suggest?${new URLSearchParams({
 							q: value,
@@ -75,13 +76,15 @@
 							...(qualifierType && { qualifierType }),
 							...(qualifierValue && { qualifierValue })
 						})}`
-					),
+					)
+					/*
 					fetch(
 						`/api/${languageTag()}/suggest?${new URLSearchParams({
 							q: value,
 							type: 'work'
 						})}`
 					)
+					*/
 				]);
 
 				if (!qualifiersRes.ok) {
@@ -93,10 +96,12 @@
 					qualifierItems = qualifiers.items;
 				}
 
+				/*
 				if (worksRes.ok) {
 					const works = (await worksRes.json()) as SuggestResponse;
 					workItems = works.items;
 				}
+				*/
 
 				fetchedValue = value;
 				expandedCodeMirror?.updateValidatedQualifiers();
@@ -212,6 +217,7 @@
 	function handleKeyDown(event: KeyboardEvent) {
 		/** Handle keyboard navigation in dialog */
 		if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+			event.preventDefault();
 			const focusableElements = Array.from(
 				(event.target as HTMLElement)
 					.closest('dialog')
@@ -283,7 +289,7 @@
 		createQualifierWidgets($page.data?.qualifiers?.qualifiersByPrefixedValue || {})
 	);
 
-	function handleAddQualiferType(type: string) {
+	function handleAddQualifierType(type: string) {
 		const currentSelection = collapsedCodeMirror.getMainSelection();
 		collapsedCodeMirror.dispatchChange(
 			{ from: currentSelection.anchor, to: currentSelection.head, insert: `${type}:` },
@@ -347,10 +353,8 @@
 					</SearchInputWrapper>
 				</div>
 				<nav>
-					{#if editedParts.word}
-						{#if fetchedValue !== value && !qualifierItems.length && !workItems.length}
-							<div class="loading">Laddar...</div>
-						{:else if fetchedValue === value && !qualifierItems.length && !workItems.length}
+					{#if editedParts.word || editedParts.phrase}
+						{#if fetchedValue === value && !qualifierItems.length && !workItems.length}
 							<div class="no-results">Inga träffar</div>
 						{:else}
 							{#if qualifierItems.length}
@@ -370,6 +374,7 @@
 									<button class="show-more">Visa fler</button>
 								</section>
 							{/if}
+							<!--
 							{#if workItems.length}
 								<section class="suggestions">
 									<h2 class="dropdown-header">Sökförslag</h2>
@@ -381,31 +386,37 @@
 									<button class="show-more">Visa fler</button>
 								</section>
 							{/if}
+							-->
 						{/if}
 					{:else}
-						<section>
-							<ul>
-								<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
-								<li>
-									<button type="button" onclick={() => handleAddQualiferType('titel')}
-										>Titel: <span>boktitel, filmtitel, etc.</span></button
-									>
-								</li>
-								<li>
-									<button type="button" onclick={() => handleAddQualiferType('person')}
-										>Person: <span>författare, kompositör, etc.</span></button
-									>
-								</li>
-								<li>
-									<button type="button" onclick={() => handleAddQualiferType('subject')}
-										>Ämne: <span>plats, period, person, etc.</span></button
-									>
-								</li>
-								<li>
-									<button type="button" onclick={() => handleAddQualiferType('SPRÅK')}
-										>Språk: <span>svenska, engelska, etc.</span></button
-									>
-								</li>
+						<section class="suggestions">
+							<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
+							<ul class="qualifier-types">
+								<TypeSuggestionListItem
+									heading="Titel:"
+									hint="boktitel, filmtitel, etc."
+									onclick={() => handleAddQualifierType('titel')}
+								/>
+								<TypeSuggestionListItem
+									heading="Person:"
+									hint="författare, kompositör, etc."
+									onclick={() => handleAddQualifierType('person')}
+								/>
+								<TypeSuggestionListItem
+									heading="Ämne:"
+									hint="plats, period, person, etc."
+									onclick={() => handleAddQualifierType('subject')}
+								/>
+								<TypeSuggestionListItem
+									heading="Språk:"
+									hint="svenska, engelska, tyska, etc."
+									onclick={() => handleAddQualifierType('SPRÅK')}
+								/>
+								<TypeSuggestionListItem
+									heading="År:"
+									hint="utgivningsår, etc."
+									onclick={() => handleAddQualifierType('ÅR')}
+								/>
 							</ul>
 						</section>
 					{/if}
@@ -501,6 +512,12 @@
 			background: #f3f3f3;
 		}
 	}
+	.qualifier-types {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--gap-sm);
+		padding: 0 var(--padding-base) var(--padding-base) var(--padding-base);
+	}
 
 	.show-more {
 		border: none;
@@ -508,15 +525,11 @@
 		color: var(--color-link);
 		font-size: var(--font-size-xs);
 	}
-	.loading,
+
 	.no-results {
 		padding: 0 var(--padding-base);
 		min-height: var(--height-input-base);
 		font-size: var(--font-size-sm);
-	}
-
-	.loading {
-		color: var(--color-super-subtle);
 	}
 
 	.no-results {

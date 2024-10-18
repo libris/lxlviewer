@@ -2,6 +2,10 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { QUALIFIER_REGEXP } from '$lib/utils/codemirror/extensions/qualifierWidgets';
 import { languageTag } from '$lib/paraglide/runtime';
+import { env } from '$env/dynamic/private';
+import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
+import { globalDisplayUtil as displayUtil } from '../../../../hooks.server';
+import { LxlLens } from '$lib/utils/display.types';
 
 export const load = (async ({ url, fetch }) => {
 	const _q = url.searchParams.get('_q');
@@ -22,6 +26,29 @@ export const load = (async ({ url, fetch }) => {
 
 		const qualifiers = await qualifierRes.json();
 
-		return { qualifiers };
+		const findResSearchParams = new URLSearchParams([
+			['_q', sanitizeQSearchParamValue(_q).trim()],
+			['_i', ''],
+			['_limit', '10'],
+			['_offset', '0'],
+			['_sort', '']
+		]);
+
+		const recordsRes = await fetch(`${env.API_URL}/find?${findResSearchParams.toString()}`);
+		const records = await recordsRes.json();
+
+		const items = records.items.map((item) => {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { ['@reverse']: reverse, ...restItem } = item;
+			const heading = displayUtil.lensAndFormat(restItem, LxlLens.CardHeading, languageTag());
+			const body = displayUtil.lensAndFormat(restItem, LxlLens.CardBody, languageTag());
+
+			return {
+				heading,
+				body
+			};
+		});
+
+		return { qualifiers, records: items };
 	}
 }) satisfies PageServerLoad;

@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
 		['_sort', '']
 	]);
 
-	const findRes = await fetch(`${env.API_URL}/find.jsonld?${findResSearchParams.toString()}`);
+	const findRes = await fetch(`${env.API_URL}/find?${findResSearchParams.toString()}`);
 
 	if (findRes.status !== 200) {
 		error(findRes.status, findRes.statusText);
