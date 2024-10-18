@@ -7,6 +7,8 @@ import { setContext, getContext } from 'svelte';
 
 const MATOMO_ID: number = +env.PUBLIC_MATOMO_ID;
 
+const tracker = writable<MatomoTracker>();
+
 function initMatomo() {
 	if (browser) {
 		const matomo = window.Matomo;
@@ -16,6 +18,7 @@ function initMatomo() {
 			if (tracker) {
 				tracker.disableCookies(); // TODO - remove when cookie consent implemented
 				tracker.enableLinkTracking();
+				tracker.trackPageView();
 				return tracker;
 			}
 		}
@@ -25,9 +28,14 @@ function initMatomo() {
 export function setMatomoTracker() {
 	const initializedMatomoTracker = initMatomo();
 	if (initializedMatomoTracker) {
-		const tracker = writable<MatomoTracker>(initializedMatomoTracker);
-		setContext('matomo', tracker);
+		tracker.set(initializedMatomoTracker);
+		console.info('Matomo tracker set');
 	}
+}
+
+export function setMatomoContext() {
+	setMatomoTracker();
+	setContext('matomo', tracker);
 }
 
 export function getMatomoTracker() {
