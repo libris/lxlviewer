@@ -65,6 +65,8 @@ export default {
         'next': false,
         'previous': false
       },
+      showIdListModal: false,
+      idListUri: '',
     };
   },
   computed: {
@@ -92,13 +94,13 @@ export default {
       return this.isActive('targetForm') ? this.inspector.data.mainEntity : this.currentSpec.targetForm;
     },
     formTitle() {
-      return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Form builder')}`
+      return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Selection')}`
     },
     changesTitle() {
       return `${this.steps.indexOf('targetForm') + 1}. ${translatePhrase('Changes')}`
     },
     previewTitle() {
-      return `${this.steps.indexOf('preview') + 1}. ${translatePhrase('Preview')}`
+      return `${this.steps.indexOf('preview') + 1}. ${translatePhrase('Preview ')}`
     },
     hasNext() {
       return !isEmpty(this.nextPreviewLink);
@@ -231,6 +233,7 @@ export default {
               value: 'start-edit',
             });
           }
+          this.initIdListUri();
           DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
           this.getPreview(fnurgel);
         }
@@ -239,7 +242,7 @@ export default {
     setInspectorData(formData) {
       // Piggy-backing on inspector.data for direct use of entity adder, undo history etc.
       if (typeof formData === 'undefined') {
-        return
+        return;
       }
       this.$store.dispatch('updateInspectorData', {
         changeList: [
@@ -421,6 +424,30 @@ export default {
     },
     setAsDraft() {
       this.setRunStatus('DraftBulkChange');
+    },
+    openIdListModal() {
+      this.showIdListModal = true;
+    },
+    setIdListUri() {
+      this.showIdListModal = false;
+      const matchForm = cloneDeep(this.inspector.data.mainEntity);
+      //on top level if added from toolbar
+      matchForm._idList = {
+        '@type': 'AnyOf',
+        'valuesFrom': { '@id': this.idListUri }
+      };
+      this.setInspectorData(matchForm);
+    },
+    removeIdList() {
+      const matchForm = cloneDeep(this.inspector.data.mainEntity);
+      delete matchForm['_idList'];
+      this.idListUri = '';
+      this.setInspectorData(matchForm);
+    },
+    initIdListUri() {
+      if (this.currentSpec.matchForm._idList) {
+        this.idListUri = this.currentSpec.matchForm._idList.valuesFrom['@id'];
+      }
     },
     nextPreview() {
       this.loadingPreview.next = true;
@@ -632,8 +659,11 @@ export default {
           tabindex="0"
           :is-active="isActive('form') && isDraft"
           :form-data="formObj"
+          :id-list-link="idListUri"
+          :first-item-active="isFirstActive"
           @onInactive="onInactiveForm"
           @onActive="focusMatchForm"
+          @removeIdList="removeIdList"
         />
       </div>
       <div ref="targetForm">
@@ -726,9 +756,38 @@ export default {
           @previousPreview="previousPreview"
           @save="save"
           @setAsDraft="setAsDraft"
+          @openIdListModal="openIdListModal"
         />
       </div>
     </div>
+    <modal-component
+      class="ImportFromIdListModal"
+      :title="'Import selection from ID list'"
+      v-if="showIdListModal"
+      @close="showIdListModal = false">
+      <template #modal-body>
+        <div class="ImportFromIdListModal-body">
+          <div class="ImportFromIdListModal-infoText">
+            Ange en länk till en lista med Libris-ID:n (ett ID per rad).
+          </div>
+          <div class="input-group ImportFromIdListModal-form">
+            <label class="input-group-addon ImportFromIdListModal-label" for="id">{{ translatePhrase('URL') }}/{{ translatePhrase('Link') }}</label>
+            <input
+              name="id"
+              class="ImportFromIdListModal-input form-control"
+              ref="ImportFromIdListModalInput"
+              v-model="idListUri"
+              @keyup.enter="setIdListUri" />
+            <span class="input-group-btn">
+              <button
+                class="btn btn-primary btn--md ImportFromIdListModal-confirmButton"
+                @click="setIdListUri"
+                @keyup.enter="setIdListUri">{{ translatePhrase('Continue') }}</button>
+            </span>
+          </div>
+        </div>
+      </template>
+    </modal-component>
     <modal-component
       :title="'Overwrite warning'"
       :width="'600px'"
@@ -814,6 +873,42 @@ export default {
   }
 }
 
+.ImportFromIdListModal {
+  .ModalComponent-container {
+    width: 650px;
+    top: 40%;
+  }
+  &-body {
+    padding: 1em;
+    width: 100%;
+  }
+  &-form {
+  }
+
+  &-label {
+    color: @black;
+  }
+  &-infoText {
+    margin-bottom: 1em;
+  }
+  &-input {
+    //width: 50%;
+    color: @black;
+  }
+  &-reference {
+    margin-top: 1em;
+    border: 1px solid @grey;
+    border-radius: 0.5em;
+    padding: 1em;
+  }
+  &-referenceTitle {
+    display: block;
+    font-weight: bold;
+  }
+  &-confirmButton {
+    box-shadow: none;
+  }
+}
 .Modal {
   &-body {
     height: 80%;

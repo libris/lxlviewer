@@ -71,11 +71,11 @@ export default {
     },
     noHitsLabel() {
       if (this.hasUnsaved)  {
-        return 'Spara massändring för att förhandsgranska'
+        return translatePhrase('Save bulk change to preview');
       } else if (this.totalItems !== 0 ) {
         return `${this.offset + 1} ${translatePhrase('of')} ${this.totalItems}`
       } else if (this.totalItems === 0) {
-        return 'Inga matchande poster'
+        return translatePhrase('No matching records');
       }
     },
     completedLabel() {
