@@ -431,7 +431,6 @@ export default {
     setIdListUri() {
       this.showIdListModal = false;
       const matchForm = cloneDeep(this.inspector.data.mainEntity);
-      //on top level if added from toolbar
       matchForm._idList = {
         '@type': 'AnyOf',
         'valuesFrom': { '@id': this.idListUri }
@@ -882,9 +881,6 @@ export default {
     padding: 1em;
     width: 100%;
   }
-  &-form {
-  }
-
   &-label {
     color: @black;
   }
@@ -894,16 +890,6 @@ export default {
   &-input {
     //width: 50%;
     color: @black;
-  }
-  &-reference {
-    margin-top: 1em;
-    border: 1px solid @grey;
-    border-radius: 0.5em;
-    padding: 1em;
-  }
-  &-referenceTitle {
-    display: block;
-    font-weight: bold;
   }
   &-confirmButton {
     box-shadow: none;
