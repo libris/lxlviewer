@@ -5,6 +5,7 @@ import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import DisplayGroups from '@/resources/json/displayGroups.json';
+import {getAllVocabProperties, getProperties, getRangeFull, getSubClassChain} from "lxljs/vocab.js";
 
 export default {
   props: {
@@ -76,10 +77,22 @@ export default {
         const docType = VocabUtil.getRecordType(this.formType, this.resources.vocab, this.resources.context);
         tree = [docType].map((type) => VocabUtil.getTree(type, this.resources.vocab, this.resources.context));
       }
-      return VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
+      const flattenedTree = VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
+
+      if (this.isBulkChange) {
+        return [this.anyType, ...flattenedTree];
+      } else {
+        return flattenedTree;
+      }
     },
     isMainEntityForm() {
       return this.editingObject === 'mainEntity';
+    },
+    anyType() {
+      return { id: 'Any', sub: [], abstract : false, depth: 0, parentChainString: 'Any'};
+    },
+    isBulkChange() {
+      return this.$route.path.includes('bulkchanges');
     },
     formType() {
       return this.formObj['@type'];
@@ -180,12 +193,19 @@ export default {
       return propertyList;
     },
     allowed() {
-      return VocabUtil.getPropertiesFromArray(
-        this.formObj['@type'],
-        this.resources.vocabClasses,
-        this.resources.vocabProperties,
-        this.resources.context,
-      );
+      if (this.formType === 'Any') {
+        return this.allVocabProperties;
+      } else {
+        return VocabUtil.getPropertiesFromArray(
+          this.formObj['@type'],
+          this.resources.vocabClasses,
+          this.resources.vocabProperties,
+          this.resources.context,
+        );
+      }
+    },
+    allVocabProperties() {
+      return VocabUtil.getAllVocabProperties(this.resources.vocabProperties);
     },
     allowedProperties() {
       const formObj = this.formObj;

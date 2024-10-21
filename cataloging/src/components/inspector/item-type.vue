@@ -1,5 +1,5 @@
 <script>
-import { filter } from 'lodash-es';
+import {filter, isEmpty} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
@@ -31,15 +31,6 @@ export default {
     ...mapGetters([
       'resources',
     ]),
-    range() {
-      const docType = VocabUtil.getRecordType(this.entityType, this.resources.vocab, this.resources.context);
-      const combined = [docType].concat(VocabUtil.getAllSubClasses(docType, this.resources.vocabClasses, this.resources.context));
-      const filtered = filter(combined, (o) => {
-        const term = VocabUtil.getTermObject(o, this.resources.vocab, this.resources.context);
-        return term.abstract !== true;
-      });
-      return filtered;
-    },
     onMainEntity() {
       return this.path === 'mainEntity.@type';
     },
@@ -51,12 +42,22 @@ export default {
     isDisabled() {
       return this.onMainEntity && this.numberOfRelations !== 0 && this.unlockedByUser === false;
     },
+    typeLabel() {
+      return this.fieldValue === 'Any' ? translatePhrase('Unspecified') : labelByLang(this.fieldValue);
+    }
   },
   methods: {
     translatePhrase,
     labelByLang,
     getLabelWithTreeDepth(term) {
-      return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
+      if (isEmpty(term)) {
+        return;
+      }
+      if (term?.id === 'Any') {
+        return translatePhrase('Unspecified');
+      } else {
+        return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
+      }
     },
     unlockEdit() {
       this.unlockedByUser = true;
@@ -148,7 +149,7 @@ export default {
     </div>
     <span
       class="ItemType-text"
-      v-if="isLocked">{{ labelByLang(fieldValue) }}
+      v-if="isLocked">{{ typeLabel }}
     </span>
     <modal-component
       title="Byte av typ"
