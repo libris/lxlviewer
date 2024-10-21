@@ -235,6 +235,7 @@
 {/key}
 
 <style lang="postcss">
+	/*
 	.definition {
 		@apply text-sm italic text-secondary underline decoration-dotted;
 	}
@@ -261,4 +262,5 @@
 	.block {
 		display: block;
 	}
+	*/
 </style>
