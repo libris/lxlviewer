@@ -1,0 +1,10 @@
+{
+  "name": "lxlviewer",
+  "version": "1.0.0",
+  "private": "true",
+  "workspaces": [
+    "packages/*",
+    "lxl-web",
+    "lxljs"
+  ]
+}
