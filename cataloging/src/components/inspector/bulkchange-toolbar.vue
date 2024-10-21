@@ -64,6 +64,8 @@ export default {
   data() {
     return {
       fieldAdderActive: false,
+      toolsMenuActive: false,
+      showTools: false,
     };
   },
   watch: {
@@ -108,6 +110,12 @@ export default {
       } else {
         this.fieldAdderActive = false;
       }
+    },
+    hideToolsMenu() {
+      this.toolsMenuActive = false;
+    },
+    showToolsMenu() {
+      this.toolsMenuActive = !this.toolsMenuActive;
     },
     formControl(control) {
       this.$store.dispatch('pushInspectorEvent', {
@@ -163,6 +171,10 @@ export default {
     cancel() {
       this.$emit('setAsDraft');
     },
+    importFromIdList() {
+      this.hideToolsMenu();
+      this.$emit('openIdListModal');
+    },
   },
   computed: {
     ...mapGetters([
@@ -204,6 +216,44 @@ export default {
 
 <template>
   <div class="Toolbar" id="editor-container">
+    <div
+      class="dropdown Toolbar-menu ToolsMenu"
+      v-on-click-outside="hideToolsMenu">
+      <button
+        class="Toolbar-btn btn btn-default ToolsMenu-button"
+        @click="showToolsMenu"
+        aria-haspopup="true"
+        aria-expanded="true"
+        v-tooltip.left="translatePhrase('Tools')"
+        @mouseover="showTools = true"
+        @mouseout="showTools = false"
+        :aria-label="translatePhrase('Tools')">
+        <i class="fa fa-fw fa-wrench" aria-hidden="true"/>
+        <span class="Toolbar-caret caret"/>
+      </button>
+      <ul
+        class="dropdown-menu Toolbar-menuList ToolsMenu-menu"
+        v-show="toolsMenuActive">
+        <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" @click="formControl('expand-item'), hideToolsMenu()">
+            <i class="fa fa-fw fa-expand" aria-hidden="true" />
+            {{ translatePhrase("Expand all") }}{{ getKeybindText('expand-item') ? ` (${getKeybindText('expand-item')})` : ''}}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" @click="formControl('collapse-item'), hideToolsMenu()">
+            <i class="fa fa-fw fa-compress" aria-hidden="true" />
+            {{ translatePhrase("Collapse all") }}{{ getKeybindText('collapse-item') ? ` (${getKeybindText('collapse-item')})` : ''}}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" @click="importFromIdList" v-if="firstItemActive">
+            <i class="fa fa-fw fa-chain" />
+            {{ translatePhrase('Import selection from ID list') }}
+          </a>
+        </li>
+      </ul>
+    </div>
     <button
       v-if="isDraft"
       class="Toolbar-btn btn btn-default toolbar-button"

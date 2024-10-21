@@ -446,6 +446,14 @@
     "Run" : "Kör",
     "Run again" : "Kör igen",
     "Confirm run" : "Bekräfta körning",
-    "Export changed records (update change date)" : "Exportera ändrade poster (uppdatera ändringsdatum)"
+    "Export changed records (update change date)" : "Exportera ändrade poster (uppdatera ändringsdatum)",
+    "Import selection from ID list" : "Importera urval från ID-lista",
+    "Match with ID list" : "Matcha mot ID-lista",
+    "Selection" :  "Urval",
+    "Preview " :  "Förhandsgranskning",
+    "Save bulk change to preview" : "Spara massändring för att förhandsgranska",
+    "No matching records" : "Inga matchande poster",
+    "Selection from ID list" : "Urval från ID-lista"
+
   }
 }

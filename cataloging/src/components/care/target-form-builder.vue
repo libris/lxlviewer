@@ -3,6 +3,7 @@ import EntityForm from '@/components/inspector/entity-form.vue';
 import FieldAdder from '@/components/inspector/field-adder.vue';
 import { mapGetters } from 'vuex';
 import {isEmpty} from 'lodash-es';
+import {translatePhrase} from "../../utils/filters.js";
 
 export default {
   name: 'target-form-builder.vue',
@@ -58,6 +59,7 @@ export default {
   },
   emits: ['onInactive', 'onActive'],
   methods: {
+    translatePhrase,
     onInactive() {
       this.$emit('onInactive');
     },
@@ -95,8 +97,8 @@ export default {
       </div>
       <div
         v-if="showPreview" v-bind:class="{'TargetFormBuilder-gap': isDraft}">
-      <div v-if="isDraft">
-        Ändringar
+      <div class="TargetFormBuilder-idLabel" v-if="isDraft">
+        {{ translatePhrase('Preview ')}}
       </div>
         <entity-form
           :editing-object="'mainEntity'"
@@ -125,6 +127,12 @@ export default {
       background-color: @brand-faded;
       color: @black;
     }
+  }
+
+  &-idLabel {
+    width: fit-content;
+    font-size: 12px;
+    padding-bottom: 4px;
   }
 
   &-body {

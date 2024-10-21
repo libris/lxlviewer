@@ -2,6 +2,7 @@
 import EntityForm from '@/components/inspector/entity-form.vue';
 import FieldAdder from '@/components/inspector/field-adder.vue';
 import { mapGetters } from 'vuex';
+import {convertResourceLink, translatePhrase} from "../../utils/filters.js";
 
 export default {
   name: 'form-builder.vue',
@@ -9,6 +10,7 @@ export default {
   data() {
     return {
       selected: true,
+      showIdListLink: false,
     };
   },
   props: {
@@ -18,6 +20,14 @@ export default {
       default: () => ({}),
     },
     isActive: {
+      type: Boolean,
+      default: false,
+    },
+    idListLink: {
+      type: String,
+      default: ''
+    },
+    firstItemActive: {
       type: Boolean,
       default: false,
     },
@@ -38,16 +48,23 @@ export default {
     formTab() {
       return { id: 'form', text: 'test' };
     },
-
+    showIdList() {
+      return this.idListLink !== '';
+    }
   },
-  emits: ['onInactive', 'onActive'],
+  emits: ['onInactive', 'onActive', 'removeIdList'],
   methods: {
+    convertResourceLink,
+    translatePhrase,
     onInactive() {
       this.$emit('onInactive');
     },
     onActive() {
       this.$emit('onActive');
     },
+    removeIdList() {
+      this.$emit('removeIdList');
+    }
   },
 };
 </script>
@@ -59,6 +76,17 @@ export default {
       {{ this.title }}
     </div>
     <div class="FormBuilder-body" :class="{ 'has-selection': isActive }">
+      <div class="FormBuilder-idLabel" v-if="showIdList">
+        {{translatePhrase("Selection from ID list")}}
+      </div>
+      <div class="FormBuilder-idList" v-if="showIdList">
+        <a class="FormBuilder-link" :href="convertResourceLink(this.idListLink)" target="_blank">{{this.idListLink}}</a>
+        <i v-if="firstItemActive"
+          @click="removeIdList"
+          role="button"
+          tabindex="0"
+          class="FormBuilder-closeButton fa fa-close icon--md" />
+      </div>
       <div>
         <entity-form
           :editing-object="'mainEntity'"
@@ -85,6 +113,32 @@ export default {
       background-color: @brand-faded;
       color: @black;
     }
+  }
+
+  &-idList {
+    align-items: center;
+    display: flex;
+    border: 1px solid @grey-lighter;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+  &-idLabel {
+    width: fit-content;
+    font-size: 12px;
+    padding-bottom: 4px;
+  }
+
+  &-link {
+    padding: 10px 20px;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &-closeButton {
+    padding-right: 20px;
   }
 
   &-body {
