@@ -433,7 +433,7 @@ export default {
       const matchForm = cloneDeep(this.inspector.data.mainEntity);
       matchForm._idList = {
         '@type': 'AnyOf',
-        'valuesFrom': { '@id': this.idListUri }
+        'valueFrom': { '@id': this.idListUri }
       };
       this.setInspectorData(matchForm);
     },
@@ -445,7 +445,7 @@ export default {
     },
     initIdListUri() {
       if (this.currentSpec.matchForm._idList) {
-        this.idListUri = this.currentSpec.matchForm._idList.valuesFrom['@id'];
+        this.idListUri = this.currentSpec.matchForm._idList.valueFrom['@id'];
       }
     },
     nextPreview() {
