@@ -13,7 +13,15 @@
 		"test": "npm run test:e2e && npm run test:unit -- --run",
 		"test:unit": "vitest",
 		"lint": "eslint . && prettier --check .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"prepare": "husky"
+	},
+	"lint-staged": {
+		"*.{js,ts,svelte,css,scss,postcss,md,json}": [
+			"prettier --write --plugin-search-dir=.",
+			"prettier --check --plugin-search-dir=."
+		],
+		"*.{js,ts,svelte}": "eslint"
 	},
 	"files": [
 		"dist",
@@ -46,6 +54,8 @@
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.36.0",
 		"globals": "^15.0.0",
+		"husky": "^9.1.6",
+		"lint-staged": "^15.2.10",
 		"prettier": "^3.3.2",
 		"prettier-plugin-svelte": "^3.2.6",
 		"publint": "^0.2.0",
