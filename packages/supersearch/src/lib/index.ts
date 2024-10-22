@@ -1,1 +1,3 @@
-// Reexport your entry components here
+import SuperSearch from './SuperSearch.svelte';
+
+export { SuperSearch }

@@ -4,6 +4,7 @@
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import BiSearch from '~icons/bi/search';
+	import { SuperSearch } from 'supersearch';
 
 	export let placeholder: string;
 	export let autofocus: boolean = false;
@@ -75,4 +76,5 @@
 		<BiSearch fill="currentColor" aria-hidden="true" />
 		<span class="sr-only sm:not-sr-only">{$page.data.t('search.search')}</span>
 	</button>
+	<SuperSearch />
 </form>
