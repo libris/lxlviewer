@@ -79,7 +79,7 @@ export default {
       }
       const flattenedTree = VocabUtil.flattenTree(tree, this.resources.vocab, this.resources.context, this.settings.language);
 
-      if (this.isBulkChange) {
+      if (!this.isMainEntityForm && this.isBulkChange) {
         return [this.anyType, ...flattenedTree];
       } else {
         return flattenedTree;

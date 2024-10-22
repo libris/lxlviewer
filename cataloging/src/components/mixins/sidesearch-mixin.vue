@@ -1,8 +1,9 @@
 <script>
-import { get } from 'lodash-es';
+import {get, isEmpty} from 'lodash-es';
 import { mapGetters } from 'vuex';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
+import {translatePhrase} from "../../utils/filters.js";
 
 export default {
   data() {
@@ -55,12 +56,13 @@ export default {
     },
   },
   methods: {
+    translatePhrase,
     getLabelWithTreeDepth(term) {
-      return DisplayUtil.getLabelWithTreeDepth(
-        term,
-        this.settings,
-        this.resources,
-      );
+      if (term?.id === 'Any') {
+        return translatePhrase('Unspecified');
+      } else {
+        return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
+      }
     },
     setParam($event) {
       this.currentSearchParam = $event;
@@ -244,6 +246,7 @@ export default {
         term.key = `${classTree[i].id}-${i}`;
         options.push(term);
       }
+
       return options;
     },
     priorityOptions() {
@@ -260,12 +263,24 @@ export default {
         this.resources.vocab,
         this.resources.context,
       ));
-      return VocabUtil.flattenTree(
+      const flattenedTree = VocabUtil.flattenTree(
         tree,
         this.resources.vocab,
         this.resources.context,
         this.user.settings.language,
       );
+
+      if (this.isBulkChange) {
+        return [this.anyType, ...flattenedTree];
+      } else {
+        return flattenedTree;
+      }
+    },
+    anyType() {
+      return { id: 'Any', sub: [], abstract : false, depth: 0, parentChainString: 'Any'};
+    },
+    isBulkChange() {
+      return this.$route.path.includes('bulkchanges');
     },
   },
   watch: {

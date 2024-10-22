@@ -1,7 +1,6 @@
 <script>
-import {filter, isEmpty} from 'lodash-es';
+import {isEmpty} from 'lodash-es';
 import { mapGetters } from 'vuex';
-import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import * as StringUtil from 'lxljs/string';
 import * as HttpUtil from '@/utils/http';
