@@ -172,6 +172,9 @@ export function getRecordType(mainEntityType, vocab, context) {
     // Mostly added as to not throw an error while the data is being picked up.
     return null;
   }
+  if (isSubClassOf(mainEntityType, 'SingleItem', vocab, context)) {
+    return 'SingleItem';
+  }
   if (isSubClassOf(mainEntityType, 'Item', vocab, context)) {
     return 'Item';
   }
@@ -535,6 +538,12 @@ export function getPropertiesFromArray(typeArray, vocabClasses, vocabProperties,
   }
   props = uniqBy(props, 'item.@id');
   return props;
+}
+
+export function getAllVocabProperties(vocabProperties) {
+  return [...vocabProperties].map( (prop) => {
+    return {'item' : prop[1] };
+  });
 }
 
 export function isEmbedded(classId, vocab, settings, context) {

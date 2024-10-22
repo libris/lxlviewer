@@ -1,5 +1,5 @@
 # Local App Config
-vue-client/.env.development*
+cataloging/.env.development*
 
 # Common OS, Tool and Editor Files
 .vscode/*

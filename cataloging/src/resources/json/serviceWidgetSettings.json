@@ -1,0 +1,34 @@
+{
+  "libris.kb.se": {
+    "gdpr": {
+      "forced": true
+    },
+    "about-xl": {
+      "forced": true
+    },
+    "link-blog": {
+      "forced": true
+    },
+    "link-instructional-videos": {
+      "forced": true
+    },
+    "link-studies": {
+      "forced": true
+    },
+    "intro-component": {
+      "forced": true
+    },
+    "metadatabyran": {
+      "forced": true
+    }
+  },
+  "id.kb.se": {
+    "intro-component": {
+      "forced": false,
+      "standard": false
+    },
+    "dataset-observations": {
+      "forced": true
+    }
+  }
+}
