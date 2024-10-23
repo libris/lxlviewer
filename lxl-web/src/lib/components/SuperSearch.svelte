@@ -398,9 +398,9 @@
 									onclick={() => handleAddQualifierType('titel')}
 								/>
 								<TypeSuggestionListItem
-									heading="Person:"
-									hint="författare, kompositör, etc."
-									onclick={() => handleAddQualifierType('person')}
+									heading="Medverkan:"
+									hint="författare, organisation, översättare, etc."
+									onclick={() => handleAddQualifierType('contributor')}
 								/>
 								<TypeSuggestionListItem
 									heading="Ämne:"
