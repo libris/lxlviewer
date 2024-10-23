@@ -57,6 +57,7 @@
 		"husky": "^9.1.6",
 		"lint-staged": "^15.2.10",
 		"prettier": "^3.3.2",
+		"prettier-plugin-css-order": "^2.1.2",
 		"prettier-plugin-svelte": "^3.2.6",
 		"publint": "^0.2.0",
 		"supersearch": "^0.0.1",
