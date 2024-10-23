@@ -8,3 +8,9 @@ cataloging/.env.development*
 npm-debug.log
 selenium-debug.log
 .idea
+node_modules
+
+# Environment variables
+.env
+.env.*
+!.env.example
