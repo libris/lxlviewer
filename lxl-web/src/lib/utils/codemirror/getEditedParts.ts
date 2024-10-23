@@ -1,8 +1,9 @@
 import type { EditedRange } from '$lib/components/CodeMirror.svelte';
 
-// const QUALIFIER_REGEX = RegExp(/((")?[0-9a-zA-ZåäöÅÄÖ:]+\2):((")?[0-9a-zA-ZåäöÅÄÖ:%#-.]+\4?)?/);
-
-const QUALIFIER_REGEX = RegExp(/^([0-9a-zA-ZåäöÅÄÖ:]*?):(.*?)$/);
+// qualifierType = allowed chars in quotes or no quotes : qualifierValue = anything (but something)
+const QUALIFIER_REGEX = RegExp(
+	/^(?<qualifierType>"[0-9a-zA-ZåäöÅÄÖ:]+?"|[0-9a-zA-ZåäöÅÄÖ:]+):(?<qualifierValue>.+)$/
+);
 const PHRASE_REGEX = RegExp(/(^|\s)((")?[0-9a-zA-ZåäöÅÄÖ:]+\3:(")?[0-9a-zA-ZåäöÅÄÖ:%#-.]+\4?)/);
 
 /**
@@ -14,8 +15,8 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 	wordRange: EditedRange;
 	phrase: string | null; // a group of words/strings (e.g. Astrid Lindgren)
 	phraseRange: EditedRange | null;
-	qualifierType: string | null;
-	qualifierValue: string | null;
+	qualifierType: string | undefined | null;
+	qualifierValue: string | undefined | null;
 } {
 	// word start = last blankspace not in quote from start to cursor
 	const wordFromIndex = blankSpacesOutsideOfQuotes(value.slice(0, cursor)).pop() || 0;
@@ -31,8 +32,7 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 	const qualifierMatch = word.match(QUALIFIER_REGEX);
 
 	if (qualifierMatch) {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const [match, qualifierType, qualifierValue] = qualifierMatch;
+		const { qualifierType, qualifierValue } = qualifierMatch.groups || {};
 
 		return {
 			word,
