@@ -2,9 +2,7 @@ import type { EditedRange } from '$lib/components/CodeMirror.svelte';
 
 // const QUALIFIER_REGEX = RegExp(/((")?[0-9a-zA-ZåäöÅÄÖ:]+\2):((")?[0-9a-zA-ZåäöÅÄÖ:%#-.]+\4?)?/);
 
-const QUALIFIER_REGEX = RegExp(
-	/^([0-9a-zA-ZåäöÅÄÖ:]*?):\s*(".*?"|[^"\s]+)(?:\s+[0-9a-zA-ZåäöÅÄÖ:%#-.]*)?$/
-);
+const QUALIFIER_REGEX = RegExp(/^([0-9a-zA-ZåäöÅÄÖ:]*?):(.*?)$/);
 const PHRASE_REGEX = RegExp(/(^|\s)((")?[0-9a-zA-ZåäöÅÄÖ:]+\3:(")?[0-9a-zA-ZåäöÅÄÖ:%#-.]+\4?)/);
 
 /**
