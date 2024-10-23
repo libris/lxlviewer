@@ -65,6 +65,7 @@
 		"vitest": "^2.0.5"
 	},
 	"dependencies": {
-		"dotenv": "^16.4.5"
+		"dotenv": "^16.4.5",
+		"vanilla-cookieconsent": "^3.0.1"
 	}
 }

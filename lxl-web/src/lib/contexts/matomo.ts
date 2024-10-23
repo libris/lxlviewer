@@ -16,7 +16,7 @@ function initMatomo() {
 			const tracker = matomo.getTracker(`${env.PUBLIC_MATOMO_URL}/matomo.php`, MATOMO_ID);
 
 			if (tracker) {
-				tracker.disableCookies(); // TODO - remove when cookie consent implemented
+				tracker.requireConsent();
 				tracker.enableLinkTracking();
 				tracker.trackPageView();
 				return tracker;

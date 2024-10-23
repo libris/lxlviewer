@@ -2,8 +2,9 @@
 	import '../app.css';
 	import NProgress from 'nprogress';
 	import '../nprogress.css';
-	import Matomo from '$lib/components/Matomo.svelte';
 	import { navigating } from '$app/stores';
+	import Matomo from '$lib/components/Matomo.svelte';
+	import CookieConsent from '$lib/components/CookieConsent.svelte';
 
 	NProgress.configure({
 		//https://github.com/rstacruz/nprogress#configuration
@@ -29,5 +30,6 @@
 <div class="flex min-h-screen flex-col">
 	<Matomo>
 		<slot />
+		<CookieConsent />
 	</Matomo>
 </div>
