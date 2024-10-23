@@ -354,7 +354,6 @@
 				</div>
 				<nav>
 					{#if editedParts.word || editedParts.phrase}
-						{console.log('WORD: ', editedParts.word, 'PHRASE: ', editedParts.phrase)}
 						{#if fetchedValue === value && !qualifierItems.length && !workItems.length}
 							<div class="no-results">Inga träffar</div>
 						{:else}
