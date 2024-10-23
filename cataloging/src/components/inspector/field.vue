@@ -121,7 +121,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    showPinned: {
+    showBulkchangeActions: {
       type: Boolean,
       default: false,
     }
@@ -444,6 +444,9 @@ export default {
     translatePhrase,
     labelByLang,
     capitalize,
+    matchSubClasses(item) {
+      return typeof item['_match'] !== 'undefined' && item['_match'].includes('Subclasses');
+    },
     onLabelClick() {
       this.$store.dispatch('pushInspectorEvent', {
         name: 'field-label-clicked',
@@ -603,6 +606,23 @@ export default {
           }, 1000);
         });
       }
+    },
+    toggleMatchSubClasses() {
+      let update = cloneDeep(get(this.inspector.data, this.parentPath))
+      if (typeof update['_match'] !== 'undefined') {
+        delete update['_match'];
+      } else {
+        update['_match'] = ['Subtypes'];
+      }
+      this.$store.dispatch('updateInspectorData', {
+        changeList: [
+          {
+            path: `${this.parentPath}`,
+            value: update,
+          },
+        ],
+        addToHistory: true,
+      });
     },
   },
   beforeUnmount() {
@@ -845,7 +865,17 @@ export default {
           :field-key="fieldKey"
           :field-value="item"
           :entity-type="entityType"
-          :parent-path="path" />
+          :parent-path="path"/>
+        <div class="Field-matchSubClasses" v-if="this.parentPath === 'mainEntity' && showBulkchangeActions">
+        <span class="Field-matchSubClassesLabel">
+          {{ translatePhrase('Match subclasses') }}
+        </span>
+          <input
+            :checked="matchSubClasses(item)"
+            type="checkbox"
+            :disabled="isLocked"
+            @change="toggleMatchSubClasses()"/>
+        </div>
       </div>
     </div>
 
@@ -937,7 +967,7 @@ export default {
           :in-array="valueIsArray"
           :diff="diff"
           :should-expand="expandChildren || embellished"
-          :show-pinned="showPinned"
+          :show-pinned="showBulkchangeActions"
         />
       </div>
       <portal-target :name="`typeSelect-${path}`" />
@@ -1396,6 +1426,16 @@ export default {
         margin-right: 0.5em;
       }
     }
+  }
+
+  &-matchSubClasses {
+    display: flex;
+    font-size: 12px;
+    align-items: center;
+  }
+
+  &-matchSubClassesLabel {
+    margin-right: 4px;
   }
 
   &-actions {

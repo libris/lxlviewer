@@ -94,7 +94,7 @@ export default {
           :is-active="true"
           :form-data="formData"
           :locked="!isActive"
-          :show-pinned="true"
+          :show-bulkchange-actions="true"
         />
       </div>
     </div>

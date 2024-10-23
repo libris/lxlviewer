@@ -453,7 +453,7 @@
     "Preview " :  "Förhandsgranskning",
     "Save bulk change to preview" : "Spara massändring för att förhandsgranska",
     "No matching records" : "Inga matchande poster",
-    "Selection from ID list" : "Urval från ID-lista"
-
+    "Selection from ID list" : "Urval från ID-lista",
+    "Match subclasses" : "Matcha subklasser"
   }
 }

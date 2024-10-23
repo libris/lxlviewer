@@ -41,7 +41,7 @@ export default {
       type: String,
       default: '',
     },
-    showPinned: {
+    showBulkchangeActions: {
       type: Boolean,
       default: false,
     }
@@ -158,7 +158,7 @@ export default {
         :field-key="k"
         :field-value="v"
         :parent-path="editingObject"
-        :showPinned="showPinned"
+        :showBulkchangeActions="showBulkchangeActions"
       />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">

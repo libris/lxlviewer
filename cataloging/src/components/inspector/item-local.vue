@@ -198,8 +198,8 @@ export default {
       return false;
     },
     isPinned() {
-      return typeof this.item['_match'] !== 'undefined';
-    },
+      return typeof this.item['_match'] !== 'undefined' && this.item['_match'].includes('Exact');
+      },
     isBulkChangeView() {
       return this.$route.path.includes('bulkchanges');
     },
@@ -411,7 +411,7 @@ export default {
       if (del) {
         delete update['_match'];
       } else {
-        update['_match'] = 'Exact';
+        update['_match'] = ['Exact'];
       }
       this.$store.dispatch('updateInspectorData', {
         changeList: [
