@@ -1018,7 +1018,14 @@ export function toString(data: DisplayDecorated) {
 			v.push(data[Fmt.CONTENT_BEFORE]);
 		}
 		if (Fmt.DISPLAY in data) {
-			v.push(...data[Fmt.DISPLAY].map(toString));
+			v.push(
+				...data[Fmt.DISPLAY].map(toString).filter((item) => {
+					if (item === ' • ') {
+						return false;
+					}
+					return true;
+				})
+			);
 		}
 		v.push(
 			...Object.entries(data)
