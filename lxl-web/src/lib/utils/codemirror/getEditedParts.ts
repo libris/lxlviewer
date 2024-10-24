@@ -20,12 +20,12 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 	qualifierValue: string | undefined | null;
 } {
 	// word start = last whitespace not in quote from start to cursor
-	const wordFromIndex = whiteSpacesOutsideOfQuotes(value.slice(0, cursor)).pop() || 0;
+	const wordFromIndex = whitespacesOutsideOfQuotes(value.slice(0, cursor)).pop() || 0;
 
 	// word end = first whitespace not in quote from word start to end
 	const wordToIndex =
 		wordFromIndex +
-		(whiteSpacesOutsideOfQuotes(value.slice(wordFromIndex)).shift() || value.length);
+		(whitespacesOutsideOfQuotes(value.slice(wordFromIndex)).shift() || value.length);
 
 	const word = value.slice(wordFromIndex, wordToIndex).trim();
 	const wordRange = { from: wordFromIndex, to: wordToIndex };
@@ -73,7 +73,7 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 /**
  * Returns the index positions of whitespace outside of quotes in a string
  */
-function whiteSpacesOutsideOfQuotes(str: string) {
+function whitespacesOutsideOfQuotes(str: string) {
 	const resultArr = [];
 	let inQuotes = false;
 
