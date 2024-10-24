@@ -102,6 +102,10 @@ export default {
     'generationProcess',
     'recordStatus',
   ],
+  unlockableProperties: [
+    'itemOf',
+    'heldBy',
+  ],
   defaultExpandedProperties: [
     'hasComponent',
     '@reverse/reproductionOf',
