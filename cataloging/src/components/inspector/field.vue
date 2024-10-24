@@ -317,6 +317,11 @@ export default {
       return isArray(this.fieldValue);
     },
     locked() {
+      if (this.inBulkChangeView && !this.isLocked) {
+        if (this.settings.unlockableProperties.includes(this.fieldKey)) {
+          return false;
+        }
+      }
       if (this.settings.lockedProperties.indexOf(this.fieldKey) !== -1) {
         return true;
       }
@@ -446,7 +451,10 @@ export default {
       } else {
         return false;
       }
-    }
+    },
+    inBulkChangeView() {
+      return this.$route.path.includes('bulkchanges');
+    },
   },
   methods: {
     translatePhrase,
