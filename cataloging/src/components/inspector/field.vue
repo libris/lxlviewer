@@ -439,14 +439,19 @@ export default {
     fieldRdfType() {
       return DisplayUtil.rdfDisplayType(this.fieldKey, this.resources);
     },
+    matchSubTypes() {
+      if (this.showBulkchangeActions) {
+        const data = get(this.inspector.data, this.parentPath);
+        return typeof data['_match'] !== 'undefined' && data['_match'].includes('Subtypes');
+      } else {
+        return false;
+      }
+    }
   },
   methods: {
     translatePhrase,
     labelByLang,
     capitalize,
-    matchSubClasses(item) {
-      return typeof item['_match'] !== 'undefined' && item['_match'].includes('Subclasses');
-    },
     onLabelClick() {
       this.$store.dispatch('pushInspectorEvent', {
         name: 'field-label-clicked',
@@ -607,7 +612,7 @@ export default {
         });
       }
     },
-    toggleMatchSubClasses() {
+    toggleMatchSubtypes() {
       let update = cloneDeep(get(this.inspector.data, this.parentPath))
       if (typeof update['_match'] !== 'undefined') {
         delete update['_match'];
@@ -868,13 +873,13 @@ export default {
           :parent-path="path"/>
         <div class="Field-matchSubClasses" v-if="this.parentPath === 'mainEntity' && showBulkchangeActions">
         <span class="Field-matchSubClassesLabel">
-          {{ translatePhrase('Match subclasses') }}
+          {{ translatePhrase('Match subtypes') }}
         </span>
           <input
-            :checked="matchSubClasses(item)"
+            :checked="matchSubTypes"
             type="checkbox"
             :disabled="isLocked"
-            @change="toggleMatchSubClasses()"/>
+            @change="toggleMatchSubtypes()"/>
         </div>
       </div>
     </div>
