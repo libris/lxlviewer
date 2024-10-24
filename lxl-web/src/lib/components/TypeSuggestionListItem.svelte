@@ -12,9 +12,9 @@
 
 <li class="list-item">
 	<button type="button" {onclick}>
-		<IconAdd
-			style="font-size:24px; color:var(--color-super-subtle); margin-right:var(--padding-2xs);"
-		/>
+		<span class="icon">
+			<IconAdd />
+		</span>
 		<hgroup>
 			<h3>{heading}</h3>
 			<p class="hint">{hint}</p>
@@ -47,8 +47,24 @@
 		}
 	}
 
+	.icon {
+		display: flex;
+		margin-right: var(--padding-2xs);
+		width: 24px;
+		height: 24px;
+		color: var(--color-super-subtle);
+		font-size: 24px;
+	}
+
+	hgroup {
+		overflow: hidden;
+		color: var(--color-super-subtle);
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 	hgroup > * {
-		display: inline-block;
+		display: inline;
+		overflow: hidden;
 	}
 
 	h3,
@@ -58,11 +74,11 @@
 	}
 
 	h3 {
+		color: var(--color-base);
 		font-weight: 500;
 	}
 
 	.hint {
-		color: var(--color-super-subtle);
 		font-style: italic;
 		font-size: var(--font-size-xs);
 	}
