@@ -1,7 +1,7 @@
 import type { EditedRange } from '$lib/components/CodeMirror.svelte';
 
 /**
- * qualifierType = preceded by a blankspace or beginning; allowed chars in quotes or no quotes :
+ * qualifierType = preceded by a whitespace or beginning; allowed chars in quotes or no quotes :
  * qualifierValue = captures up until blankspace or end quote
  */
 const QUALIFIER_REGEX =
@@ -19,13 +19,13 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 	qualifierType: string | undefined | null;
 	qualifierValue: string | undefined | null;
 } {
-	// word start = last blankspace not in quote from start to cursor
-	const wordFromIndex = blankSpacesOutsideOfQuotes(value.slice(0, cursor)).pop() || 0;
+	// word start = last whitespace not in quote from start to cursor
+	const wordFromIndex = whiteSpacesOutsideOfQuotes(value.slice(0, cursor)).pop() || 0;
 
-	// word end = first blankspace not in quote from word start to end
+	// word end = first whitespace not in quote from word start to end
 	const wordToIndex =
 		wordFromIndex +
-		(blankSpacesOutsideOfQuotes(value.slice(wordFromIndex)).shift() || value.length);
+		(whiteSpacesOutsideOfQuotes(value.slice(wordFromIndex)).shift() || value.length);
 
 	const word = value.slice(wordFromIndex, wordToIndex).trim();
 	const wordRange = { from: wordFromIndex, to: wordToIndex };
@@ -71,9 +71,9 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 }
 
 /**
- * Returns the index positions of blank spaces outside of quotes in a string
+ * Returns the index positions of whitespace outside of quotes in a string
  */
-function blankSpacesOutsideOfQuotes(str: string) {
+function whiteSpacesOutsideOfQuotes(str: string) {
 	const resultArr = [];
 	let inQuotes = false;
 
@@ -81,7 +81,7 @@ function blankSpacesOutsideOfQuotes(str: string) {
 		const char = str[i];
 		if (char === '"') {
 			inQuotes = !inQuotes;
-		} else if (char === ' ' && !inQuotes) {
+		} else if (/\s/.test(char) && !inQuotes) {
 			if (i > 0) {
 				// ignore opening whitespace
 				resultArr.push(i);
