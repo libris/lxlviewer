@@ -1,10 +1,11 @@
 import type { EditedRange } from '$lib/components/CodeMirror.svelte';
 
-// qualifierType = allowed chars in quotes or no quotes : qualifierValue = anything (but something)
-const QUALIFIER_REGEX = RegExp(
-	/^(?<qualifierType>"[0-9a-zA-ZåäöÅÄÖ:]+?"|[0-9a-zA-ZåäöÅÄÖ:]+):(?<qualifierValue>.+)$/
-);
-const PHRASE_REGEX = RegExp(/(^|\s)((")?[0-9a-zA-ZåäöÅÄÖ:]+\3:(")?[0-9a-zA-ZåäöÅÄÖ:%#-.]+\4?)/);
+/**
+ * qualifierType = preceded by a blankspace or beginning; allowed chars in quotes or no quotes :
+ * qualifierValue = captures up until blankspace or end quote
+ */
+const QUALIFIER_REGEX =
+	/(?<=^|\s)(?<qualifierType>("[0-9a-zA-ZåäöÅÄÖ:]+")|([0-9a-zA-ZåäöÅÄÖ:]+)):(?<qualifierValue>("[^"]*"|[0-9a-zA-ZåäöÅÄÖ:%#".-]+))/;
 
 /**
  * Gets the edited parts of a query the cursor position.
@@ -29,7 +30,7 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 	const word = value.slice(wordFromIndex, wordToIndex).trim();
 	const wordRange = { from: wordFromIndex, to: wordToIndex };
 
-	const qualifierMatch = word.match(QUALIFIER_REGEX);
+	const qualifierMatch = word.match(RegExp(QUALIFIER_REGEX));
 
 	if (qualifierMatch) {
 		const { qualifierType, qualifierValue } = qualifierMatch.groups || {};
@@ -43,11 +44,18 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 			qualifierValue
 		};
 	} else {
-		// todo: phrases does not yet take quotations in qualifiers into account
-		const phraseBefore = value.slice(0, cursor).split(PHRASE_REGEX).pop() || ''; // get last string before cursor which isn't a qualifier
-		const phraseAfter = value.slice(cursor).split(PHRASE_REGEX)?.[0] || ''; // get first string after cursor which isn't a qualifier
+		const valueBefore = value.slice(0, cursor);
+		const allQualifiersBefore = valueBefore.matchAll(RegExp(QUALIFIER_REGEX, 'g'));
+		let qualifierBefore = null;
+		[...allQualifiersBefore].forEach((q) => (qualifierBefore = q[0]));
+		const phraseBefore = valueBefore.split(qualifierBefore).pop() || valueBefore;
+
+		const valueAfter = value.slice(cursor);
+		const qualifierAfter = valueAfter.match(RegExp(QUALIFIER_REGEX))?.[0] || null;
+		const phraseAfter = valueAfter.split(qualifierAfter).shift() || valueAfter;
+
 		const phrase = (phraseBefore + phraseAfter).trim();
-		const phraseFromIndex = value.slice(0, cursor).lastIndexOf(phraseBefore.trim());
+		const phraseFromIndex = valueBefore.lastIndexOf(phraseBefore.trim());
 		const phraseToIndex = phraseFromIndex + phrase.length;
 		const phraseRange = { from: phraseFromIndex, to: phraseToIndex };
 
