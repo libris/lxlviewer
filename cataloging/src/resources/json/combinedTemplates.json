@@ -4212,7 +4212,8 @@
           "bulkChangeSpecification": {
             "@type": "FormSpecification",
             "matchForm": {
-              "@type": "Instance"
+              "@type": "Instance",
+              "_match": ["Subtypes"]
             },
             "targetForm": {
               "@type": "Instance"
@@ -4244,7 +4245,8 @@
           "bulkChangeSpecification": {
             "@type": "FormSpecification",
             "matchForm": {
-              "@type": "Work"
+              "@type": "Work",
+              "_match": ["Subtypes"]
             },
             "targetForm": {
               "@type": "Work"
@@ -4276,7 +4278,8 @@
           "bulkChangeSpecification": {
             "@type": "FormSpecification",
             "matchForm": {
-              "@type": "Agent"
+              "@type": "Agent",
+              "_match": ["Subtypes"]
             },
             "targetForm": {
               "@type": "Agent"
@@ -4308,7 +4311,8 @@
           "bulkChangeSpecification": {
             "@type": "FormSpecification",
             "matchForm": {
-              "@type": "Concept"
+              "@type": "Concept",
+              "_match": ["Subtypes"]
             },
             "targetForm": {
               "@type": "Concept"
@@ -4340,7 +4344,8 @@
           "bulkChangeSpecification": {
             "@type": "FormSpecification",
             "matchForm": {
-              "@type": "Item"
+              "@type": "Item",
+              "_match": ["Subtypes"]
             },
             "targetForm": {
               "@type": "Item"
@@ -4372,7 +4377,8 @@
           "bulkChangeSpecification": {
             "@type": "FormSpecification",
             "matchForm": {
-              "@type": "Resource"
+              "@type": "Resource",
+              "_match": ["Subtypes"]
             },
             "targetForm": {
               "@type": "Resource"
