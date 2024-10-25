@@ -5,7 +5,10 @@ import jmespath from 'jmespath';
 import { QUALIFIER_REGEXP } from '$lib/utils/codemirror/extensions/qualifierWidgets';
 import PREFIXES_BY_NAMESPACE from '$lib/assets/json/prefixesByNamespace.json';
 import { env } from '$env/dynamic/private';
-import { getQualifier, type Qualifier } from '$lib/utils/supersearch/qualifiers';
+import { type Qualifier } from '$lib/utils/supersearch/qualifiers';
+import { JsonLd, toString } from '$lib/utils/xl';
+import { globalDisplayUtil as displayUtil } from '../../../../hooks.server';
+import { LxlLens } from '$lib/utils/display.types';
 
 export const GET: RequestHandler = async ({ url, params, fetch }) => {
 	const _q = url.searchParams.get('_q');
@@ -30,9 +33,11 @@ export const GET: RequestHandler = async ({ url, params, fetch }) => {
 	];
 
 	/** TODO: the qualifier widgets should probably be able to parse the search mappings to ensure the search operators are working as intended */
-	const qualifiersByPrefixedValue: { [key: string]: Qualifier } = qualifierMatches.reduce(
+	const mappingsByPrefixedValue: { [key: string]: Qualifier } = qualifierMatches.reduce(
 		(acc, currentMatch) => {
 			const [, , , prefixedQualifierValue] = currentMatch;
+
+			console.log('prefix', prefixedQualifierValue);
 
 			if (!Object.keys(acc).includes(prefixedQualifierValue)) {
 				const namespacedQualifierValue = getNamespacedValue(prefixedQualifierValue);
@@ -44,7 +49,13 @@ export const GET: RequestHandler = async ({ url, params, fetch }) => {
 					if (item) {
 						return {
 							...acc,
-							[prefixedQualifierValue]: getQualifier({ item, lang })
+							[prefixedQualifierValue]: {
+								label: toString(displayUtil.lensAndFormat(item, LxlLens.PageHeading, lang)),
+								resource: {
+									[JsonLd.ID]: item[JsonLd.ID],
+									[JsonLd.TYPE]: item[JsonLd.TYPE]
+								}
+							}
 						};
 					}
 				}
@@ -54,8 +65,9 @@ export const GET: RequestHandler = async ({ url, params, fetch }) => {
 		{}
 	);
 
+	console.log('mappings', mappingsByPrefixedValue);
 	return json({
-		qualifiersByPrefixedValue
+		mappingsByPrefixedValue
 	});
 };
 

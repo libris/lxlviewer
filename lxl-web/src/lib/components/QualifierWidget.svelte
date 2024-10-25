@@ -1,15 +1,18 @@
 <script lang="ts">
-	import type { Qualifier } from '$lib/utils/supersearch/qualifiers';
+	import type { JsonLd } from '$lib/utils/xl';
 	import IconPerson from '~icons/mdi/person-circle';
+	import IconLanguage from '~icons/mdi/language';
 	import IconClose from '~icons/mdi/remove';
 	import { page } from '$app/stores';
 
 	type QualifierWidgetProps = {
-		qualifier: Qualifier;
+		type: string;
+		value: string;
+		resource: { [JsonLd.ID]: string; [JsonLd.TYPE]: string };
 		range: { from: number; to: number };
 	};
 
-	let { qualifier, range }: QualifierWidgetProps = $props();
+	let { type, value, resource, range }: QualifierWidgetProps = $props();
 
 	let removeUrl = $derived.by(() => {
 		const url = new URL($page.url);
@@ -21,43 +24,53 @@
 	});
 </script>
 
-<span class="qualifier">
-	<span class="type"> <span>{qualifier.typeLabel}:</span></span>
+<span class="qualifier" class:resource>
+	<span class="type">{type}</span>
 	<span class="value">
-		<span>
-			{#if qualifier?.type === 'Person'}
+		{#if resource?.['@type'] === 'Person'}
+			<span class="type-icon">
 				<IconPerson />
-			{/if}
-			{qualifier.valueLabel || qualifier.value}
-		</span>
+			</span>
+		{/if}
+		{#if resource?.['@type'] === 'Language'}
+			<span class="type-icon">
+				<IconLanguage />
+			</span>
+		{/if}
+		{value}
 	</span>
-	<a href={removeUrl.toString()} tabindex="-1"><IconClose style="font-size:14px;" /></a>
-</span>&nbsp;
+	{#if resource}
+		<a href={removeUrl.toString()} tabindex="-1" class="remove">
+			<IconClose style="font-size:14px;" />
+		</a>
+	{/if}
+</span><span class="nbsp">&nbsp;</span>
 
 <style>
 	.qualifier {
 		display: inline-flex;
-		align-items: stretch;
-		border: 1px solid var(--border-color);
-		border-radius: 4px;
+		position: relative;
+		align-items: center;
+		border-radius: var(--border-radius-base);
 		background: rgba(14, 113, 128, 0.15);
-		padding: 0;
-		max-width: 25vw;
+		padding: 0 var(--padding-2xs);
+		max-width: 15vw;
+		min-height: 24px;
 		overflow: hidden;
-		font-weight: 500;
-		line-height: 1;
+		font-size: var(--font-size-2xs);
 		white-space: nowrap;
 	}
 
-	.type {
-		display: inline-flex;
-		align-items: center;
-		padding-right: var(--padding-2xs);
-		padding-left: var(--padding-2xs);
+	.qualifier > * {
 		font-size: var(--font-size-2xs);
 	}
 
-	.type > span {
+	.type {
+		margin-right: var(--padding-3xs);
+		border-right: 1px solid rgba(14, 113, 128, 0.15);
+		padding-right: var(--padding-3xs);
+		font-weight: var(--font-weight-medium);
+		font-size: var(--font-size-3xs);
 		&::first-letter {
 			text-transform: capitalize;
 		}
@@ -65,37 +78,37 @@
 
 	.value {
 		display: inline-flex;
-		align-items: center;
 		min-width: 0;
 		overflow: hidden;
-		color: #0e7180;
-		font-size: var(--font-size-2xs);
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 
-	.value > span {
-		align-self: center;
+	.resource {
+		padding-right: 0;
+		font-weight: var(--font-weight-normal);
 	}
 
-	.value :global(svg) {
+	.resource .value {
 		color: var(--color-link);
-		font-size: var(--font-size-sm);
 	}
 
-	a {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		cursor: pointer;
-		border: none;
-		padding: 1px;
-		min-width: 24px;
-		min-height: 24px;
-		color: var(--color-link);
+	.remove {
+		display: inline-flex;
+		padding: 0 var(--padding-2xs) 0 var(--padding-3xs);
+		color: var(--color-subtle);
 
 		&:hover {
-			background: rgba(0, 0, 0, 0.05);
+			color: var(--color-base);
 		}
+	}
+
+	.type-icon {
+		display: inline-flex;
+		align-self: center;
+		margin-right: 2px;
+		color: var(--color-link);
+		font-size: inherit;
+		font-size: var(--font-size-xs);
 	}
 </style>

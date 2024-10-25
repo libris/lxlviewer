@@ -18,13 +18,13 @@ export const load = (async ({ url, fetch }) => {
 	}
 
 	if (_q) {
-		const qualifierRes = await fetch(
-			`/api/${languageTag()}/qualifier?${new URLSearchParams({
+		const qualifierMappingsRes = await fetch(
+			`/api/${languageTag()}/qualifier-mapping?${new URLSearchParams({
 				_q
 			})}`
 		);
 
-		const qualifiers = await qualifierRes.json();
+		const qualifierMappings = await qualifierMappingsRes.json();
 
 		const findResSearchParams = new URLSearchParams([
 			['_q', sanitizeQSearchParamValue(_q).trim()],
@@ -49,6 +49,6 @@ export const load = (async ({ url, fetch }) => {
 			};
 		});
 
-		return { qualifiers, records: items };
+		return { qualifierMappings, records: items };
 	}
 }) satisfies PageServerLoad;

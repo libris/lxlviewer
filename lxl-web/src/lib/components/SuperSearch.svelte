@@ -16,6 +16,7 @@
 	import preventArrowDownKey from '$lib/utils/codemirror/extensions/preventArrowDownKey';
 	import { createQualifierWidgets } from '$lib/utils/codemirror/extensions/qualifierWidgets';
 	import TypeSuggestionListItem from './TypeSuggestionListItem.svelte';
+	import type { QualifierTypeResponse } from '../../routes/api/[[lang=lang]]/qualifier-type/+server';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -33,9 +34,10 @@
 	type SuperSearchProps = {
 		value: string;
 		placeholder: string;
+		validQualifierTypes: QualifierTypeResponse;
 	};
 
-	let { value = $bindable(), placeholder }: SuperSearchProps = $props();
+	let { value = $bindable(), placeholder, validQualifierTypes }: SuperSearchProps = $props();
 
 	let cursor: number = $state(value.length);
 	let lastValue = $state();
@@ -286,7 +288,10 @@
 	});
 
 	const qualifierWidgets = $derived(
-		createQualifierWidgets($page.data?.qualifiers?.qualifiersByPrefixedValue || {})
+		createQualifierWidgets({
+			validQualifierTypes,
+			mappingsByPrefixedValue: $page.data?.qualifierMappings?.mappingsByPrefixedValue || {}
+		})
 	);
 
 	function handleAddQualifierType(type: string) {

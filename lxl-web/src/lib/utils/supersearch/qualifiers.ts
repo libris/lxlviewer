@@ -82,10 +82,17 @@ export function getQualifierChanges({
 }
 
 export function getPrefix(id: string) {
+	const prefixFromNamespace = Object.entries(PREFIXES_BY_NAMESPACE).find(([ns]) =>
+		id.includes(ns)
+	)?.[1];
+
+	if (prefixFromNamespace) {
+		return prefixFromNamespace;
+	}
 	if (id.includes(env.API_URL)) {
 		return 'libris:';
 	}
-	return Object.entries(PREFIXES_BY_NAMESPACE).find(([ns]) => id.includes(ns))?.[1];
+	return '';
 }
 
 function getQualifierValue(item: FramedData) {
@@ -95,4 +102,5 @@ function getQualifierValue(item: FramedData) {
 	if (prefix && id) {
 		return '"' + prefix + id + '"';
 	}
+	return id;
 }
