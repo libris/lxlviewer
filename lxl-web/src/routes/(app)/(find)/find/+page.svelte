@@ -4,8 +4,8 @@
 	import { ShowLabelsOptions } from '$lib/types/DecoratedData';
 </script>
 
-<div>
-	{#if $page.data.records}
+<div class="find-page">
+	{#if $page.data.records.length}
 		<ul>
 			{#each $page.data.records as recordItem}
 				<li>
@@ -18,17 +18,19 @@
 				</li>
 			{/each}
 		</ul>
+	{:else}
+		<p>Inga träffar</p>
 	{/if}
 </div>
 
 <style>
-	div {
+	.find-page {
+		padding: 0 var(--padding-base);
 		overflow: hidden;
 	}
-
 	ul {
 		margin: 0;
-		padding: 0 var(--padding-base);
+		padding: 0;
 		max-width: 60vw;
 		list-style-type: none;
 	}
