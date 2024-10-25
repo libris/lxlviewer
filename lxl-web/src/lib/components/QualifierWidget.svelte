@@ -26,17 +26,16 @@
 
 <span class="qualifier" class:resource>
 	<span class="type">{type}</span>
+	{#if resource?.['@type'] === 'Language'}
+		<span class="type-icon">
+			<IconLanguage />
+		</span>
+	{:else if resource?.['@type'] === 'Person'}
+		<span class="type-icon">
+			<IconPerson />
+		</span>
+	{/if}
 	<span class="value">
-		{#if resource?.['@type'] === 'Person'}
-			<span class="type-icon">
-				<IconPerson />
-			</span>
-		{/if}
-		{#if resource?.['@type'] === 'Language'}
-			<span class="type-icon">
-				<IconLanguage />
-			</span>
-		{/if}
 		{value}
 	</span>
 	{#if resource}
@@ -77,7 +76,6 @@
 	}
 
 	.value {
-		display: inline-flex;
 		min-width: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
