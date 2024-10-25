@@ -260,7 +260,7 @@
 	}
 
 	onMount(() => {
-		dialogElement?.addEventListener('click', handleClickOutsideDialog);
+		dialogElement?.addEventListener('mousedown', handleClickOutsideDialog);
 	});
 
 	onDestroy(() => {

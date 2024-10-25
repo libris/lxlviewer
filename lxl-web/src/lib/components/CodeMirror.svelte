@@ -29,6 +29,7 @@
 	import { tags } from '@lezer/highlight';
 	import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
 	import {
+		qualifierDecoration,
 		qualifierNameDecoration,
 		qualifierValueDecoration
 	} from '$lib/utils/codemirror/extensions/qualifierDecoration';
@@ -129,6 +130,7 @@
 		syntaxHighlighting(lxlQueryHighlightStyle),
 		qualifierNameDecoration,
 		qualifierValueDecoration,
+		qualifierDecoration,
 		//qualifierLinter(validQualifiers),
 		//qualifierWidgets,
 		...extensions
@@ -292,6 +294,10 @@
 	.codemirror-container :global(.lxlquery-qualifier-name),
 	.codemirror-container :global(.lxlquery-qualifier-name *) {
 		color: var(--color-link); /* ensures highlighted styles are overwritten */
-		font-weight: 500;
+		/* font-weight: 500; */
+	}
+
+	.codemirror-container :global(.lxlquery-qualifier-unlinked) {
+		border-bottom: 2px solid var(--border-color);
 	}
 </style>
