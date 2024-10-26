@@ -1,0 +1,18 @@
+# Identifiers
+
+contributor:
+språk:
+itemHeldBy:
+
+==>
+
+Program(Identifier, Identifier, Identifier)
+
+# Strings
+
+"hello"
+"one\"\\two"
+
+==>
+
+Program(String, String)

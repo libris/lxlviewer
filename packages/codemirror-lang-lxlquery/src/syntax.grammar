@@ -1,0 +1,24 @@
+@top Program { expression* }
+
+@skip { space }
+
+expression {
+  Identifier |
+  String |
+  CompareOperator |
+  Application { "(" expression* ")" }
+}
+
+@tokens {
+  Identifier { $[a-zA-ZåäöÅÄÖ0-9:]+ }
+
+  String { '"' (!["\\] | "\\" _)* '"' }
+
+  CompareOperator { ">" | "<" | ">=" | "<=" }
+
+  space { $[ \t\n\r]+ }
+
+  "(" ")"
+}
+
+@detectDelim
