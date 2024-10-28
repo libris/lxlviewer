@@ -1,10 +1,10 @@
 # Qualifiers
 
-contributor:astrid
-contributor:"Astrid Lindgren"
-contributor:astrid*
-År:2025
-image:*
+[[contributor:astrid]]
+[[contributor:"Astrid Lindgren"]]
+[[contributor:astrid*]]
+[[År:2025]]
+[[image:*]]
 
 ==>
 
@@ -18,7 +18,7 @@ Query(
 
 # Groups
 
-(contributor:astrid) (contributor:"Astrid Lindgren")
+([[contributor:astrid]]) ([[contributor:"Astrid Lindgren"]])
 
 ==>
 

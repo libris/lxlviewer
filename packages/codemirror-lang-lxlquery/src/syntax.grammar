@@ -10,7 +10,7 @@ term {
 }
 
 Qualifier {
- Identifier EqualOperator (Identifier | String | Number | prefix) prefix*
+ "[[" Identifier EqualOperator (Identifier | String | Number)? prefix* "]]"
 }
 
 @tokens {
@@ -29,6 +29,8 @@ Qualifier {
   space { @whitespace+ }
 
   "(" ")"
+
+  "[[" "]]"
 }
 
 @detectDelim
