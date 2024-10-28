@@ -206,6 +206,17 @@
 					"@type": "fresnel:Lens",
 					"showProperties": ["name", "qualifier"],
 					"classLensDomain": "Bibliography"
+				},
+				"Identifier": {
+					"@id": "Identifier-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Identifier",
+					"showProperties": [
+						{ "alternateProperties": ["value", "marc:hiddenValue"] },
+						"typeNote",
+						"hasNote",
+						"uri"
+					]
 				}
 			}
 		},
@@ -487,7 +498,7 @@
 			"@id": "Identifier-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Identifier"],
-			"fresnel:resourceStyle": ["displayType()"]
+			"fresnel:resourceStyle": ["ext-link", "displayType()", "uriToId()"]
 		},
 		"contribution-format": {
 			"@id": "contribution-format",
