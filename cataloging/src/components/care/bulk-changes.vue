@@ -67,6 +67,7 @@ export default {
       },
       showIdListModal: false,
       idListUri: '',
+      idListTempPath: ''
     };
   },
   computed: {
@@ -233,13 +234,12 @@ export default {
               value: 'start-edit',
             });
           }
-          this.initIdListUri();
           DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
           this.getPreview(fnurgel);
         }
       });
     },
-    setInspectorData(formData) {
+    setInspectorData(formData, path='mainEntity') {
       // Piggy-backing on inspector.data for direct use of entity adder, undo history etc.
       if (typeof formData === 'undefined') {
         return;
@@ -247,7 +247,7 @@ export default {
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
-            path: 'mainEntity',
+            path: path,
             value: formData,
           },
         ],
@@ -359,6 +359,10 @@ export default {
         // const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
         // DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
 
+        if (typeof result.changeSets === 'undefined') {
+          this.resetPreviewData();
+          return;
+        }
         // Form preview
         const formChangeset = result.changeSets[1];
 
@@ -426,27 +430,29 @@ export default {
       this.setRunStatus('DraftBulkChange');
     },
     openIdListModal() {
+      this.idListUri = '';
       this.showIdListModal = true;
     },
     setIdListUri() {
       this.showIdListModal = false;
-      const matchForm = cloneDeep(this.inspector.data.mainEntity);
-      matchForm._idList = {
+      const idList = {
         '@type': 'AnyOf',
-        'valueFrom': { '@id': this.idListUri }
-      };
-      this.setInspectorData(matchForm);
+        'valueFrom': {'@id': this.idListUri}
+      }
+      if (this.idListTempPath) {
+        this.setInspectorData({ '_idList': idList }, this.idListTempPath);
+      } else {
+        const mainEntity = cloneDeep(this.inspector.data.mainEntity);
+        mainEntity['_idList'] = idList;
+        this.setInspectorData(mainEntity, 'mainEntity');
+      }
+      this.idListTempPath = '';
     },
     removeIdList() {
       const matchForm = cloneDeep(this.inspector.data.mainEntity);
       delete matchForm['_idList'];
       this.idListUri = '';
       this.setInspectorData(matchForm);
-    },
-    initIdListUri() {
-      if (this.currentSpec.matchForm._idList) {
-        this.idListUri = this.currentSpec.matchForm._idList.valueFrom['@id'];
-      }
     },
     nextPreview() {
       this.loadingPreview.next = true;
@@ -627,7 +633,15 @@ export default {
       });
     },
   },
-  beforeMount() {
+  watch: {
+    'inspector.event'(val) {
+      if (val.name === 'open-id-list-modal') {
+        this.idListTempPath = val.path;
+        this.openIdListModal();
+      }
+    }
+  },
+    beforeMount() {
     if (this.isNew) {
       this.initNew();
     } else {
@@ -658,7 +672,6 @@ export default {
           tabindex="0"
           :is-active="isActive('form') && isDraft"
           :form-data="formObj"
-          :id-list-link="idListUri"
           :first-item-active="isFirstActive"
           @onInactive="onInactiveForm"
           @onActive="focusMatchForm"

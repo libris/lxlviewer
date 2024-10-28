@@ -24,10 +24,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    idListLink: {
-      type: String,
-      default: ''
-    },
     firstItemActive: {
       type: Boolean,
       default: false,
@@ -50,7 +46,10 @@ export default {
       return { id: 'form', text: 'test' };
     },
     showIdList() {
-      return this.idListLink !== '';
+      return typeof this.formData._idList !== 'undefined';
+    },
+    idListLink() {
+      return this.formData._idList.valueFrom['@id'];
     }
   },
   emits: ['onInactive', 'onActive', 'removeIdList'],

@@ -49,14 +49,15 @@ export default {
     align-items: center;
     display: flex;
     border: 1px solid @grey-lighter;
-    margin-bottom: 20px;
+    margin-top: 6px;
+    margin-bottom: 6px;
     width: 100%;
   }
 
   &-idLabel {
     width: fit-content;
     font-size: 12px;
-    padding-bottom: 4px;
+    margin-top: 4px;
   }
 
   &-link {

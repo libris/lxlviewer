@@ -28,6 +28,7 @@ import ItemBylang from './item-bylang.vue';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
 import LanguageMixin from '../mixins/language-mixin.vue';
 import FieldMarker from "@/components/inspector/field-marker.vue";
+import IdList from '@/components/care/id-list.vue';
 
 export default {
   name: 'field',
@@ -137,6 +138,7 @@ export default {
   },
   components: {
     FieldMarker,
+    IdList,
     ItemType,
     'item-entity': ItemEntity,
     'item-value': ItemValue,
@@ -547,6 +549,9 @@ export default {
       if (this.isPlainObject(o) && o.hasOwnProperty('isGrouped')) {
         return 'grouped';
       }
+      if (this.isIdList(o)) {
+        return 'idList';
+      }
       if (this.isPlainObject(o) && !o.hasOwnProperty('@id') && !o.hasOwnProperty('@type') && !this.isLangMap) {
         return 'error';
       }
@@ -587,6 +592,9 @@ export default {
         throw new Error('Cannot check link status of undefined object.');
       }
       return o.hasOwnProperty('@id');
+    },
+    isIdList(o) {
+      return o.hasOwnProperty('_idList');
     },
     isInlined(o) {
       // FIXME
@@ -924,6 +932,12 @@ export default {
           :index="index"
           :diff="diff"
           :item="item" />
+
+        <id-list v-if="getDatatype(item) == 'idList'"
+          :show-remove-button="showBulkchangeActions && !isLocked"
+          :id-list-link="item._idList.valueFrom['@id']"
+          @remove-id-list="removeThis"
+        />
 
         <item-grouped
           v-if="getDatatype(item) == 'grouped'"
