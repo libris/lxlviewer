@@ -498,7 +498,7 @@
 			"@id": "Identifier-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Identifier"],
-			"fresnel:resourceStyle": ["displayType()", "uriToId()"]
+			"fresnel:resourceStyle": ["ext-link", "displayType()", "uriToId()"]
 		},
 		"contribution-format": {
 			"@id": "contribution-format",
@@ -620,13 +620,13 @@
 			"@id": "MediaObject-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["MediaObject"],
-			"fresnel:resourceStyle": ["uriToId()", "text-3-cond-bold", "block"]
+			"fresnel:resourceStyle": ["ext-link", "uriToId()", "text-3-cond-bold", "block"]
 		},
 		"Document-format": {
 			"@id": "Document-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Document"],
-			"fresnel:resourceStyle": ["uriToId()"]
+			"fresnel:resourceStyle": ["ext-link", "uriToId()"]
 		},
 		"MediaObject-publicNote-format": {
 			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
