@@ -24,7 +24,7 @@ Qualifier {
 
   CompareOperator { ">" | "<" | ">=" | "<=" }
 
-  Prefix { "*" }
+  Prefix { "*"+ }
 
   space { @whitespace+ }
 

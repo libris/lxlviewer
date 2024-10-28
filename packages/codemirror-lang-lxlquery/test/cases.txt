@@ -6,6 +6,7 @@
 [[contributor:astrid*]]
 [[År:2025]]
 [[image:*]]
+[[image:***]]
 
 ==>
 
@@ -15,6 +16,7 @@ Query(
   Qualifier(Identifier, EqualOperator, String),
   Qualifier(Identifier, EqualOperator, Identifier, Prefix)
   Qualifier(Identifier, EqualOperator, Number),
+  Qualifier(Identifier, EqualOperator, Prefix)
   Qualifier(Identifier, EqualOperator, Prefix)
 )
 
