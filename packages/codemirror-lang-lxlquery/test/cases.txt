@@ -1,5 +1,6 @@
 # Qualifiers
 
+[[contributor:]]
 [[contributor:astrid]]
 [[contributor:"Astrid Lindgren"]]
 [[contributor:astrid*]]
@@ -9,11 +10,12 @@
 ==>
 
 Query(
+  Qualifier(Identifier, EqualOperator),
   Qualifier(Identifier, EqualOperator, Identifier),
   Qualifier(Identifier, EqualOperator, String),
-  Qualifier(Identifier, EqualOperator, Identifier)
+  Qualifier(Identifier, EqualOperator, Identifier, Prefix)
   Qualifier(Identifier, EqualOperator, Number),
-  Qualifier(Identifier, EqualOperator)
+  Qualifier(Identifier, EqualOperator, Prefix)
 )
 
 # Groups
