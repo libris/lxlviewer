@@ -3,7 +3,7 @@ export default {
 	consentModal: {
 		title: 'Vi använder kakor',
 		description:
-			'Tjänsten Libris använder olika typer av kakor (cookies). Dessa är till för att förbättra användarupplevelsen samt för att tjänsten och dess funktioner ska fungera som de ska. Nedan kan du välja dina inställningar för vilka kakor du ger ditt samtycke till. Du kan alltid ändra dina val senare genom att klicka på “Hantera cookies” längst ner på sidan.',
+			'Tjänsten Libris använder olika typer av kakor (cookies). Dessa är till för att förbättra användarupplevelsen samt för att tjänsten och dess funktioner ska fungera som de ska. Nedan kan du välja dina inställningar för vilka kakor du ger ditt samtycke till. Du kan alltid ändra dina val senare genom att klicka på “Hantera kakor” längst ner på sidan.',
 		acceptAllBtn: 'Tillåt alla kakor',
 		acceptNecessaryBtn: 'Tillåt bara nödvändiga kakor',
 		showPreferencesBtn: 'Inställningar'
@@ -35,7 +35,7 @@ export default {
 			{
 				title: 'Mer information',
 				description:
-					'Du kan alltid ändra dina val genom att klicka på “Hantera cookies” längst ner på sidan i sidfoten.'
+					'Du kan alltid ändra dina val genom att klicka på “Hantera kakor” längst ner på sidan i sidfoten.'
 			}
 		]
 	}

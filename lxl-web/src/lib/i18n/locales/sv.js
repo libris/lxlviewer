@@ -16,7 +16,7 @@ export default {
 		feedback: 'Lämna synpunkter',
 		feedbackLink: 'https://survey.kb.se/librisbeta',
 		customerSupport: 'Libris kundtjänst',
-		cookies: 'Hantera cookies'
+		cookies: 'Hantera kakor'
 	},
 	facet: {
 		q: 'Fritextsökning',
