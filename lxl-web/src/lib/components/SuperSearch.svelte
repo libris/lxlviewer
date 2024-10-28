@@ -539,20 +539,18 @@
 	}
 
 	.no-results {
+		display: flex;
+		align-items: center;
 		padding: 0 var(--padding-base);
-		min-height: var(--height-input-base);
-		font-size: var(--font-size-sm);
-	}
-
-	.no-results {
+		min-height: var(--height-input-sm);
 		color: var(--color-subtle);
+		font-size: var(--font-size-sm);
 	}
 
 	.fullsearch-link {
 		display: flex;
 		align-items: center;
 		gap: var(--gap-sm);
-		margin-top: -10px;
 		padding: 0 var(--padding-base);
 		min-height: var(--height-input-sm);
 		color: var(--color-link);
