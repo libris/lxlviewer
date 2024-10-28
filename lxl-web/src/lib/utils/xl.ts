@@ -588,6 +588,7 @@ class Formatter {
 						// Is there anything else to display as link label?
 						display.splice(ix, 1);
 					}
+					v[Fmt.STYLE] = (v[Fmt.STYLE] || []).concat(['ext-link']);
 				}
 			}
 
