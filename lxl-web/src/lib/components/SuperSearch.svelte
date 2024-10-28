@@ -16,6 +16,8 @@
 	import preventArrowDownKey from '$lib/utils/codemirror/extensions/preventArrowDownKey';
 	import { createQualifierWidgets } from '$lib/utils/codemirror/extensions/qualifierWidgets';
 	import TypeSuggestionListItem from './TypeSuggestionListItem.svelte';
+	import { getFullSearchLink } from '$lib/utils/supersearch/getFullSearchLink';
+	import IconArrowReturnLeft from '~icons/bi/arrow-return-left';
 
 	/** Tests to do
 	 * - [] text area adjusts height to content automatically when focused
@@ -222,7 +224,7 @@
 				(event.target as HTMLElement)
 					.closest('dialog')
 					?.querySelectorAll(
-						`.cm-content, .suggestions ${document.activeElement?.classList?.contains('alt-action') ? '.alt-action' : '.main-action'}, .suggestions button`
+						`.cm-content, .fullsearch-link, .suggestions ${document.activeElement?.classList?.contains('alt-action') ? '.alt-action' : '.main-action'}, .suggestions button`
 					) || []
 			);
 
@@ -352,11 +354,20 @@
 						/>
 					</SearchInputWrapper>
 				</div>
+				{#snippet searchAll()}
+					{#if value}
+						<a class="fullsearch-link" href={getFullSearchLink(value)}>
+							<IconArrowReturnLeft width={20} height={20} />
+							<span>Sök i hela Libris</span>
+						</a>
+					{/if}
+				{/snippet}
 				<nav>
 					{#if editedParts.word || editedParts.phrase}
 						{#if fetchedValue === value && !qualifierItems.length && !workItems.length}
 							<div class="no-results">Inga träffar</div>
 						{:else}
+							{@render searchAll()}
 							{#if qualifierItems.length}
 								<section class="suggestions">
 									<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
@@ -389,6 +400,7 @@
 							-->
 						{/if}
 					{:else}
+						{@render searchAll()}
 						<section class="suggestions">
 							<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
 							<ul class="qualifier-types">
@@ -460,7 +472,7 @@
 	}
 
 	.dropdown-search {
-		padding: var(--padding-sm) var(--gap-base) var(--padding-base) var(--padding-base);
+		padding: var(--padding-sm) var(--gap-base);
 	}
 
 	.dropdown :global(section > ul) {
@@ -534,5 +546,22 @@
 
 	.no-results {
 		color: var(--color-subtle);
+	}
+
+	.fullsearch-link {
+		display: flex;
+		align-items: center;
+		gap: var(--gap-sm);
+		margin-top: -10px;
+		padding: 0 var(--padding-base);
+		min-height: var(--height-input-sm);
+		color: var(--color-link);
+		font-size: var(--font-size-xs);
+		text-decoration: none;
+
+		&:focus,
+		&:hover {
+			background: #f3f3f3;
+		}
 	}
 </style>

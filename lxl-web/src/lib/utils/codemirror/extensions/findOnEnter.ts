@@ -1,9 +1,7 @@
 import { Prec } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
 import { goto } from '$app/navigation';
-import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
-import sanitizeQSearchParamValue from '$lib/utils/sanitizeQSearchParamValue';
-import { QUALIFIER_REGEXP } from './qualifierWidgets';
+import { getFullSearchLink } from '$lib/utils/supersearch/getFullSearchLink';
 /**
  * CodeMirror extension which submits the closest form element on enter keypresses
  */
@@ -11,16 +9,9 @@ import { QUALIFIER_REGEXP } from './qualifierWidgets';
 function find(editorView: EditorView) {
 	const closestForm = editorView.dom?.closest('form');
 	if (closestForm) {
-		const _q = sanitizeQSearchParamValue(new FormData(closestForm).get('_q')?.toString() || '');
-		if (_q) {
-			goto(
-				'/find?' +
-					addDefaultSearchParams(
-						new URLSearchParams({
-							_q: _q + (QUALIFIER_REGEXP.test(_q.split(' ').pop() || '') ? ' ' : '') // add extra space at end if ending with qualifier without space after
-						})
-					).toString()
-			);
+		const link = getFullSearchLink(new FormData(closestForm).get('_q')?.toString() || '');
+		if (link) {
+			goto(link);
 		}
 		return true; // return true to prevent further to be tried
 	}
