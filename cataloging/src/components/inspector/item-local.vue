@@ -65,7 +65,7 @@ export default {
       type: String,
       default: '',
     },
-    showPinned: {
+    showBulkchangeActions: {
       type: Boolean,
       default: false,
     }
@@ -400,7 +400,7 @@ export default {
         });
     },
     togglePinned() {
-      if (this.showPinned && this.isPinned) {
+      if (this.showBulkchangeActions && this.isPinned) {
         this.setPinned(true);
       } else {
         this.setPinned(false);
@@ -686,10 +686,10 @@ export default {
         />
 
         <entity-action
-          v-if="inspector.status.editing && showPinned && !isEmbedded && !isLocked || isPinned"
+          v-if="inspector.status.editing && showBulkchangeActions && !isLocked || isPinned"
           @action="togglePinned"
-          label="Exact match"
-          :description="`${translatePhrase('Matcha exakt')} ${capitalize(labelByLang(item['@type']))}`"
+          label="Exact match" 
+          :description="translatePhrase('Matcha exakt')"
           icon="thumb-tack"
           :parent-hovered="isHovered"
           :is-large="false"
@@ -757,7 +757,7 @@ export default {
         :diff="diff"
         :expand-children="expandChildren"
         :is-expanded="expanded"
-        :showPinned="showPinned"
+        :show-bulkchange-actions="showBulkchangeActions"
       />
     </ul>
 

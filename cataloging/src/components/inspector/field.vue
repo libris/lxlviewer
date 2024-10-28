@@ -980,7 +980,7 @@ export default {
           :in-array="valueIsArray"
           :diff="diff"
           :should-expand="expandChildren || embellished"
-          :show-pinned="showBulkchangeActions"
+          :show-bulkchange-actions="showBulkchangeActions"
         />
       </div>
       <portal-target :name="`typeSelect-${path}`" />
