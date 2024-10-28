@@ -1,22 +1,30 @@
-@top Program { expression* }
+@top Query { term* }
 
 @skip { space }
 
-expression {
-  Identifier |
+term {
+  Qualifier |
   String |
   CompareOperator |
-  Application { "(" expression* ")" }
+  Group { "(" term* ")" }
+}
+
+Qualifier {
+ Identifier EqualOperator (Identifier | String | Number)
 }
 
 @tokens {
-  Identifier { $[a-zA-ZåäöÅÄÖ0-9:]+ }
+  Identifier { ($[a-zA-ZåäöÅÄÖ*])+ }
 
   String { '"' (!["\\] | "\\" _)* '"' }
 
+  Number { @digit+ }
+
+  EqualOperator { ":" | "=" }
+
   CompareOperator { ">" | "<" | ">=" | "<=" }
 
-  space { $[ \t\n\r]+ }
+  space { @whitespace+ }
 
   "(" ")"
 }

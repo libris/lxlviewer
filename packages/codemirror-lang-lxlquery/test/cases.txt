@@ -1,12 +1,36 @@
-# Identifiers
+# Qualifiers
 
-contributor:
-språk:
-itemHeldBy:
+contributor:astrid
+contributor:"Astrid Lindgren"
+contributor:astrid*
+År:2025
+image:*
 
 ==>
 
-Program(Identifier, Identifier, Identifier)
+Query(
+  Qualifier(Identifier, EqualOperator, Identifier),
+  Qualifier(Identifier, EqualOperator, String),
+  Qualifier(Identifier, EqualOperator, Identifier)
+  Qualifier(Identifier, EqualOperator, Number),
+  Qualifier(Identifier, EqualOperator, Identifier)
+)
+
+# Groups
+
+(contributor:astrid) (contributor:"Astrid Lindgren")
+
+==>
+
+Query(
+  Group(
+    "(",Qualifier(Identifier, EqualOperator, Identifier)")"
+  ),
+  Group(
+    "(",Qualifier(Identifier, EqualOperator, String)")"
+  )
+)
+
 
 # Strings
 
@@ -15,4 +39,4 @@ Program(Identifier, Identifier, Identifier)
 
 ==>
 
-Program(String, String)
+Query(String, String)
