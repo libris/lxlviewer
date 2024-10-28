@@ -169,23 +169,25 @@ export default {
 
           const fieldParentPath = this.path.split('.').slice(0, -2).join('.');
           const fieldParentType = get(this.inspector.data, fieldParentPath)['@type']; // e.g. Text
-          const fieldParentBaseClasses = VocabUtil.getBaseClasses(
-            VocabUtil.getTermObject(fieldParentType, this.resources.vocab, this.resources.context)['@id'],
-            this.resources.vocab,
-            this.resources.context,
-          );
+          const parentObj = VocabUtil.getTermObject(fieldParentType, this.resources.vocab, this.resources.context);
+          if (parentObj) {
+            const fieldParentBaseClasses = VocabUtil.getBaseClasses(
+              parentObj['@id'],
+              this.resources.vocab,
+              this.resources.context,
+            );
 
-          const linkableDomainIds = fieldParentBaseClasses
-            .filter((baseClassName) => subClassesOfRanges.includes(baseClassName))
-            .map(((className) => VocabUtil.getTermObject(className, this.resources.vocab, this.resources.context)['@id']));
+            const linkableDomainIds = fieldParentBaseClasses
+              .filter((baseClassName) => subClassesOfRanges.includes(baseClassName))
+              .map(((className) => VocabUtil.getTermObject(className, this.resources.vocab, this.resources.context)['@id']));
 
-          // Append urlSearchParams with linkable domain ids
-          linkableDomainIds.forEach((className) => urlSearchParams.append('or-domain.@id', className));
+            // Append urlSearchParams with linkable domain ids
+            linkableDomainIds.forEach((className) => urlSearchParams.append('or-domain.@id', className));
+          }
         }
       }
 
       const searchUrl = `${this.settings.apiPath}/find.jsonld?${urlSearchParams.toString()}`;
-
       return new Promise((resolve, reject) => {
         // Check if abortcontroller is available
         // ie11 doesn't have it atm so they don't get cancellable fetches...
