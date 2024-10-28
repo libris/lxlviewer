@@ -13,7 +13,7 @@ Query(
   Qualifier(Identifier, EqualOperator, String),
   Qualifier(Identifier, EqualOperator, Identifier)
   Qualifier(Identifier, EqualOperator, Number),
-  Qualifier(Identifier, EqualOperator, Identifier)
+  Qualifier(Identifier, EqualOperator)
 )
 
 # Groups

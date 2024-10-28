@@ -10,11 +10,11 @@ term {
 }
 
 Qualifier {
- Identifier EqualOperator (Identifier | String | Number)
+ Identifier EqualOperator (Identifier | String | Number | prefix) prefix*
 }
 
 @tokens {
-  Identifier { ($[a-zA-ZåäöÅÄÖ*])+ }
+  Identifier { ($[a-zA-ZåäöÅÄÖ])+ }
 
   String { '"' (!["\\] | "\\" _)* '"' }
 
@@ -23,6 +23,8 @@ Qualifier {
   EqualOperator { ":" | "=" }
 
   CompareOperator { ">" | "<" | ">=" | "<=" }
+
+  prefix { "*" }
 
   space { @whitespace+ }
 
