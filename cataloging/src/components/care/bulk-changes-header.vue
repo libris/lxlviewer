@@ -31,7 +31,7 @@ export default {
       return this.currentBulkChange['@id'];
     },
     status() {
-      return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeStatus, this.user.settings.language, this.resources);
+      return StringUtil.getLabelByLang(this.currentBulkChange['bulk:status'], this.user.settings.language, this.resources);
     },
   },
   methods: {

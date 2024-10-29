@@ -89,10 +89,10 @@ export default {
       return this.inspector.data.mainEntity;
     },
     formObj() {
-      return this.isActive('form') ? this.inspector.data.mainEntity : this.currentSpec.matchForm;
+      return this.isActive('form') ? this.inspector.data.mainEntity : this.currentSpec['bulk:matchForm'];
     },
     targetFormObj() {
-      return this.isActive('targetForm') ? this.inspector.data.mainEntity : this.currentSpec.targetForm;
+      return this.isActive('targetForm') ? this.inspector.data.mainEntity : this.currentSpec['bulk:targetForm'];
     },
     formTitle() {
       return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Selection')}`
@@ -116,35 +116,35 @@ export default {
       return this.activeStep === this.steps[0];
     },
     isDraft() {
-      return this.currentBulkChange.bulkChangeStatus === 'DraftBulkChange';
+      return this.currentBulkChange['bulk:status'] === 'bulk:Draft';
     },
     isReady() {
-      return this.currentBulkChange.bulkChangeStatus === 'ReadyBulkChange';
+      return this.currentBulkChange['bulk:status'] === 'bulk:Ready';
     },
     isFinished() {
-      return this.currentBulkChange.bulkChangeStatus === 'CompletedBulkChange'
-        || this.currentBulkChange.bulkChangeStatus === 'FailedBulkChange';
+      return this.currentBulkChange['bulk:status'] === 'bulk:Completed'
+        || this.currentBulkChange['bulk:status'] === 'bulk:Failed';
     },
     isRunningOrFinished() {
       return this.isFinished
-        || this.currentBulkChange.bulkChangeStatus === 'RunningBulkChange';
+        || this.currentBulkChange['bulk:status'] === 'bulk:Running';
     },
     statusLabel() {
-      return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeStatus, this.user.settings.language, this.resources);
+      return StringUtil.getLabelByLang(this.currentBulkChange['bulk:status'], this.user.settings.language, this.resources);
     },
     loudOrSilentLabel() {
       return translatePhrase('Export changed records (update change date)');
     },
     isLoud() {
-      return this.currentBulkChange.bulkChangeMetaChanges === "LoudBulkChange";
+      return this.currentBulkChange['bulk:shouldUpdateModifiedTimestamp'] === true;
     },
     shouldExportAffected() {
       return this.isLoud;
     },
     hasUnsavedChanges() {
       if (this.lastFetchedSpec && this.isDraft) {
-        const matchFormEqual = isEqual(this.formObj, this.lastFetchedSpec.matchForm);
-        const targetFormEqual = isEqual(this.targetFormObj, this.lastFetchedSpec.targetForm);
+        const matchFormEqual = isEqual(this.formObj, this.lastFetchedSpec['bulk:matchForm']);
+        const targetFormEqual = isEqual(this.targetFormObj, this.lastFetchedSpec['bulk:matchForm']);
         return !matchFormEqual || !targetFormEqual;
       }
       return false;
@@ -164,7 +164,7 @@ export default {
 
       this.currentBulkChange = mainEntity;
       this.currentBulkChange.label = '<namn>-' + this.getDateString();
-      this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
+      this.currentSpec = this.currentBulkChange['bulk:changeSpec'];
 
       //TODO: Allow differing initial match and target forms. + Make it work with appended _ids.
       this.record = record;
@@ -172,7 +172,7 @@ export default {
       DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
 
       this.setActive(this.steps[0]);
-      const initialForm = appendIds(mainEntity.bulkChangeSpecification.matchForm);
+      const initialForm = appendIds(mainEntity['bulk:changeSpec']['bulk:matchForm']);
       this.currentSpec.matchForm = initialForm;
       this.currentSpec.targetForm = initialForm;
       this.setInspectorData(initialForm);
@@ -184,10 +184,10 @@ export default {
     initFromRecord() {
       this.setActive(this.steps[0]);
       // FIXME: remove emptyTemplate
-      const initial = emptyTemplate.mainEntity.bulkChangeSpecification.matchForm;
+      const initial = emptyTemplate.mainEntity['bulk:changeSpec']['bulk:matchForm'];
       this.setInspectorData(initial);
-      this.currentSpec.matchForm = initial;
-      this.currentSpec.targetForm = initial; //FIXME: to avoid undefined on init
+      this.currentSpec['bulk:matchForm'] = initial;
+      this.currentSpec['bulk:targetForm'] = initial; //FIXME: to avoid undefined on init
       this.fetchRecord(this.documentId);
     },
     fetchRecord(fnurgel) {
@@ -217,7 +217,7 @@ export default {
         if (typeof result !== 'undefined') {
           const bulkChange = LxlDataUtil.splitJson(result);
           this.currentBulkChange = bulkChange.mainEntity;
-          this.currentSpec = this.currentBulkChange.bulkChangeSpecification;
+          this.currentSpec = this.currentBulkChange['bulk:changeSpec'];
           this.record = bulkChange.record;
           this.lastFetchedSpec = cloneDeep(this.currentSpec);
 
@@ -331,11 +331,7 @@ export default {
       this.showConfirmRunModal = true;
     },
     toggleExportAffected() {
-      if (this.shouldExportAffected) {
-        this.currentBulkChange.bulkChangeMetaChanges = "SilentBulkChange";
-      } else {
-        this.currentBulkChange.bulkChangeMetaChanges = "LoudBulkChange";
-      }
+      this.currentBulkChange['bulk:shouldUpdateModifiedTimestamp'] = !!this.shouldExportAffected;
     },
     save() {
       this.resetLastAdded();
@@ -422,12 +418,12 @@ export default {
     },
     doRun() {
       this.closeConfirmRunModal();
-      this.setRunStatus('ReadyBulkChange');
+      this.setRunStatus('bulk:Ready');
       this.save();
       this.setActive('preview');
     },
     setAsDraft() {
-      this.setRunStatus('DraftBulkChange');
+      this.setRunStatus('bulk:Draft');
     },
     openIdListModal() {
       this.idListUri = '';
@@ -463,7 +459,7 @@ export default {
       this.getPreviewFromUrl(`${this.settings.apiPath}${this.previousPreviewLink['@id']}`);
     },
     setRunStatus(status) {
-      this.currentBulkChange.bulkChangeStatus = status;
+      this.currentBulkChange['bulk:status'] = status;
     },
     resetPreviewData() {
       this.fullPreview = {};

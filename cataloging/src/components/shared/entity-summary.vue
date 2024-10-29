@@ -186,7 +186,7 @@ export default {
       const uriParts = this.recordId.split('/');
       const fnurgel = uriParts[uriParts.length - 1];
 
-      if (this.recordType === 'BulkChange') {
+      if (this.recordType === 'bulk:Job') {
         return `/directory-care/bulkchanges/${fnurgel}`;
       }
 

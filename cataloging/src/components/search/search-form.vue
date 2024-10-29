@@ -199,7 +199,7 @@ export default {
     ]),
     dataSetFilters() {
       if (this.user.settings.activeSigel === 'SEK') {
-        const extraFilter = { value: 'BulkChange', label: 'Bulk change' };
+        const extraFilter = { value: 'bulk:Job', label: 'Bulk change' };
         return [...this.settings.dataSetFilters.libris, extraFilter];
       } else {
         return this.settings.dataSetFilters.libris;

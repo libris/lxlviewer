@@ -79,7 +79,7 @@ export default {
       }
     },
     completedLabel() {
-      return StringUtil.getLabelByLang('CompletedBulkChange', this.user.settings.language, this.resources)
+      return StringUtil.getLabelByLang('bulk:Completed', this.user.settings.language, this.resources)
     }
   },
   emits: ['onInactive', 'onActive'],
