@@ -3,10 +3,11 @@ import EntityForm from '@/components/inspector/entity-form.vue';
 import FieldAdder from '@/components/inspector/field-adder.vue';
 import { mapGetters } from 'vuex';
 import {convertResourceLink, translatePhrase} from "../../utils/filters.js";
+import IdList from '@/components/care/id-list.vue';
 
 export default {
   name: 'form-builder.vue',
-  components: { FieldAdder, EntityForm },
+  components: {IdList, FieldAdder, EntityForm},
   data() {
     return {
       selected: true,
@@ -22,10 +23,6 @@ export default {
     isActive: {
       type: Boolean,
       default: false,
-    },
-    idListLink: {
-      type: String,
-      default: ''
     },
     firstItemActive: {
       type: Boolean,
@@ -49,7 +46,10 @@ export default {
       return { id: 'form', text: 'test' };
     },
     showIdList() {
-      return this.idListLink !== '';
+      return typeof this.formData._idList !== 'undefined';
+    },
+    idListLink() {
+      return this.formData._idList.valueFrom['@id'];
     }
   },
   emits: ['onInactive', 'onActive', 'removeIdList'],
@@ -76,17 +76,11 @@ export default {
       {{ this.title }}
     </div>
     <div class="FormBuilder-body" :class="{ 'has-selection': isActive }">
-      <div class="FormBuilder-idLabel" v-if="showIdList">
-        {{translatePhrase("Selection from ID list")}}
-      </div>
-      <div class="FormBuilder-idList" v-if="showIdList">
-        <a class="FormBuilder-link" :href="convertResourceLink(this.idListLink)" target="_blank">{{this.idListLink}}</a>
-        <i v-if="firstItemActive"
-          @click="removeIdList"
-          role="button"
-          tabindex="0"
-          class="FormBuilder-closeButton fa fa-close icon--md" />
-      </div>
+      <id-list
+        :id-list-link="this.idListLink"
+        :show-remove-button="firstItemActive"
+        v-if="showIdList"
+        @removeIdList="removeIdList"/>
       <div>
         <entity-form
           :editing-object="'mainEntity'"

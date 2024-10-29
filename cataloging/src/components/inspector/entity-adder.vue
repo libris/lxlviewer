@@ -404,6 +404,12 @@ export default {
       }
       this.addItem(obj);
     },
+    addIdList() {
+      this.$store.dispatch('pushInspectorEvent', {
+        name: 'open-id-list-modal',
+        path: this.path
+      });
+    },
     addType(typeId) {
       const shortenedType = StringUtil.convertToPrefix(typeId, this.resources.context);
       this.addEmpty(shortenedType);
@@ -625,6 +631,11 @@ export default {
               v-if="inBulkChangeView && hasCreateable && allowLocal"
               v-on:click="addEmpty('Any')">{{ translatePhrase("Create local entity") }}
             </button>
+            <button
+              class="EntityAdder-idListBtn btn btn-primary btn--sm"
+              v-if="inBulkChangeView && hasCreateable && allowLocal"
+              v-on:click="addIdList">{{ translatePhrase("Match with ID list") }}
+            </button>
             <filter-select
               v-if="!hasSingleCreatable && !inBulkChangeView"
               :input-id="'createselectInput'"
@@ -771,6 +782,10 @@ export default {
   }
 
   &-createBtn {
+  }
+
+  &-idListBtn {
+    margin-left: 5px;
   }
 
   &-createSelect {
