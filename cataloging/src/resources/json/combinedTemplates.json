@@ -4203,19 +4203,19 @@
       "@id": "instance",
       "value": {
         "mainEntity": {
-          "@type": "BulkChange",
+          "@type": "bulk:Job",
           "@id": "https://id.kb.se/TEMPID#it",
           "label": "",
           "comment": "",
-          "bulkChangeStatus": "DraftBulkChange",
-          "bulkChangeMetaChanges": "SilentBulkChange",
-          "bulkChangeSpecification": {
-            "@type": "FormSpecification",
-            "matchForm": {
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
               "@type": "Instance",
               "_match": ["Subtypes"]
             },
-            "targetForm": {
+            "bulk:targetForm": {
               "@type": "Instance"
             }
           }
@@ -4236,19 +4236,19 @@
       "@id": "work",
       "value": {
         "mainEntity": {
-          "@type": "BulkChange",
+          "@type": "bulk:Job",
           "@id": "https://id.kb.se/TEMPID#it",
           "label": "",
           "comment": "",
-          "bulkChangeStatus": "DraftBulkChange",
-          "bulkChangeMetaChanges": "SilentBulkChange",
-          "bulkChangeSpecification": {
-            "@type": "FormSpecification",
-            "matchForm": {
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
               "@type": "Work",
               "_match": ["Subtypes"]
             },
-            "targetForm": {
+            "bulk:targetForm": {
               "@type": "Work"
             }
           }
@@ -4269,19 +4269,19 @@
       "@id": "agent",
       "value": {
         "mainEntity": {
-          "@type": "BulkChange",
+          "@type": "bulk:Job",
           "@id": "https://id.kb.se/TEMPID#it",
           "label": "",
           "comment": "",
-          "bulkChangeStatus": "DraftBulkChange",
-          "bulkChangeMetaChanges": "SilentBulkChange",
-          "bulkChangeSpecification": {
-            "@type": "FormSpecification",
-            "matchForm": {
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
               "@type": "Agent",
               "_match": ["Subtypes"]
             },
-            "targetForm": {
+            "bulk:targetForm": {
               "@type": "Agent"
             }
           }
@@ -4302,19 +4302,19 @@
       "@id": "concept",
       "value": {
         "mainEntity": {
-          "@type": "BulkChange",
+          "@type": "bulk:Job",
           "@id": "https://id.kb.se/TEMPID#it",
           "label": "",
           "comment": "",
-          "bulkChangeStatus": "DraftBulkChange",
-          "bulkChangeMetaChanges": "SilentBulkChange",
-          "bulkChangeSpecification": {
-            "@type": "FormSpecification",
-            "matchForm": {
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
               "@type": "Concept",
               "_match": ["Subtypes"]
             },
-            "targetForm": {
+            "bulk:targetForm": {
               "@type": "Concept"
             }
           }
@@ -4335,19 +4335,19 @@
       "@id": "item",
       "value": {
         "mainEntity": {
-          "@type": "BulkChange",
+          "@type": "bulk:Job",
           "@id": "https://id.kb.se/TEMPID#it",
           "label": "",
           "comment": "",
-          "bulkChangeStatus": "DraftBulkChange",
-          "bulkChangeMetaChanges": "SilentBulkChange",
-          "bulkChangeSpecification": {
-            "@type": "FormSpecification",
-            "matchForm": {
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
               "@type": "Item",
               "_match": ["Subtypes"]
             },
-            "targetForm": {
+            "bulk:targetForm": {
               "@type": "Item"
             }
           }
@@ -4368,19 +4368,19 @@
       "@id": "resource",
       "value": {
         "mainEntity": {
-          "@type": "BulkChange",
+          "@type": "bulk:Job",
           "@id": "https://id.kb.se/TEMPID#it",
           "label": "",
           "comment": "",
-          "bulkChangeStatus": "DraftBulkChange",
-          "bulkChangeMetaChanges": "SilentBulkChange",
-          "bulkChangeSpecification": {
-            "@type": "FormSpecification",
-            "matchForm": {
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
               "@type": "Resource",
               "_match": ["Subtypes"]
             },
-            "targetForm": {
+            "bulk:targetForm": {
               "@type": "Resource"
             }
           }

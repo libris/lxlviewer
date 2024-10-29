@@ -11,6 +11,7 @@ import TypeIcon from '@/components/shared/type-icon.vue';
 import SummaryNode from '@/components/shared/summary-node.vue';
 import IdPill from '@/components/shared/id-pill.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
+import { JOB_TYPE } from "@/utils/bulk.js";
 
 export default {
   mixins: [LensMixin, OverflowMixin],
@@ -186,7 +187,7 @@ export default {
       const uriParts = this.recordId.split('/');
       const fnurgel = uriParts[uriParts.length - 1];
 
-      if (this.recordType === 'BulkChange') {
+      if (this.recordType === JOB_TYPE) {
         return `/directory-care/bulkchanges/${fnurgel}`;
       }
 

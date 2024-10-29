@@ -1,17 +1,17 @@
 {
   "mainEntity": {
-    "@type": "BulkChange",
+    "@type": "bulk:Job",
     "@id": "https://id.kb.se/TEMPID#it",
     "label": "",
     "comment": "",
-    "bulkChangeStatus": "DraftBulkChange",
-    "bulkChangeMetaChanges": "SilentBulkChange",
-    "bulkChangeSpecification": {
-      "@type": "FormSpecification",
-      "matchForm": {
+    "bulk:status": "bulk:Draft",
+    "bulk:shouldUpdateModifiedTimestamp": false,
+    "bulk:changeSpec": {
+      "@type": "bulk:Update",
+      "bulk:matchForm": {
         "@type": "Instance"
       },
-      "targetForm": {
+      "bulk:targetForm": {
         "@type": "Instance"
       }
     }

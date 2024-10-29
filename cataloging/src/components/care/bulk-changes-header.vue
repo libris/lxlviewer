@@ -4,6 +4,9 @@ import FormBuilder from "@/components/care/form-builder.vue";
 import IdPill from "@/components/shared/id-pill.vue";
 import * as StringUtil from 'lxljs/string.js';
 import {mapGetters} from "vuex";
+import {
+  STATUS_KEY,
+} from "@/utils/bulk.js";
 
 export default {
   name: 'bulk-changes-header.vue',
@@ -31,7 +34,7 @@ export default {
       return this.currentBulkChange['@id'];
     },
     status() {
-      return StringUtil.getLabelByLang(this.currentBulkChange.bulkChangeStatus, this.user.settings.language, this.resources);
+      return StringUtil.getLabelByLang(this.currentBulkChange[STATUS_KEY], this.user.settings.language, this.resources);
     },
   },
   methods: {
