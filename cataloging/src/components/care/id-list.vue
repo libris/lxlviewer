@@ -30,28 +30,34 @@ export default {
 };
 </script>
 <template>
-  <div class="IdList-idLabel">
-    {{translatePhrase("Selection from ID list")}}
-  </div>
-  <div class="IdList-idList">
-    <a class="IdList-link" :href="convertResourceLink(this.idListLink)" target="_blank">{{this.idListLink}}</a>
-    <i v-if="showRemoveButton"
-      @click="removeIdList"
-      role="button"
-      tabindex="0"
-      class="IdList-closeButton fa fa-close icon--md" />
+  <div class="IdList-container">
+    <div class="IdList-idLabel">
+      {{ translatePhrase("Selection from ID list") }}
+    </div>
+    <div class="IdList-idList">
+      <a class="IdList-link" :href="convertResourceLink(this.idListLink)"
+        target="_blank">{{ this.idListLink }}</a>
+      <i v-if="showRemoveButton"
+        @click="removeIdList"
+        role="button"
+        tabindex="0"
+        class="IdList-closeButton fa fa-close icon--md"/>
+    </div>
   </div>
 </template>
 
 <style scoped lang="less">
 .IdList {
+  &-container {
+    max-width: 100%;
+  }
+
   &-idList {
     align-items: center;
     display: flex;
     border: 1px solid @grey-lighter;
     margin-top: 6px;
     margin-bottom: 6px;
-    width: 100%;
   }
 
   &-idLabel {
