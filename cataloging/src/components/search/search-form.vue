@@ -8,6 +8,7 @@ import PropertyMappings from '@/resources/json/propertymappings.json';
 import { buildQueryString } from '@/utils/http';
 import { translatePhrase } from '@/utils/filters';
 import RemoteDatabases from '@/components/search/remote-databases.vue';
+import { JOB_TYPE } from "@/utils/bulk.js";
 
 export default {
   name: 'search-form',
@@ -199,7 +200,7 @@ export default {
     ]),
     dataSetFilters() {
       if (this.user.settings.activeSigel === 'SEK') {
-        const extraFilter = { value: 'bulk:Job', label: 'Bulk change' };
+        const extraFilter = { value: JOB_TYPE, label: 'Bulk change' };
         return [...this.settings.dataSetFilters.libris, extraFilter];
       } else {
         return this.settings.dataSetFilters.libris;

@@ -5,7 +5,7 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import * as DataUtil from '@/utils/data';
 import * as RecordUtil from '@/utils/record';
-import { DELETE_ON_SAVE } from "@/store";
+import { JOB_TYPE } from "@/utils/bulk.js";
 
 export default {
   props: {
@@ -184,7 +184,7 @@ export default {
       const uriParts = this.recordId.split('/');
       const fnurgel = uriParts[uriParts.length - 1];
 
-      if (this.recordType === 'bulk:Job') {
+      if (this.recordType === JOB_TYPE) {
         return `/directory-care/bulkchanges/${fnurgel}`;
       }
 

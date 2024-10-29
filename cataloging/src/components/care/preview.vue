@@ -7,6 +7,7 @@ import EntitySummary from "@/components/shared/entity-summary.vue";
 import {asFnurgelLink, translatePhrase} from "@/utils/filters.js";
 import {offset} from "@floating-ui/dom";
 import * as StringUtil from "../../../../lxljs/string.js";
+import { Status } from "@/utils/bulk.js";
 
 export default {
   name: 'preview',
@@ -79,7 +80,7 @@ export default {
       }
     },
     completedLabel() {
-      return StringUtil.getLabelByLang('bulk:Completed', this.user.settings.language, this.resources)
+      return StringUtil.getLabelByLang(Status.Completed, this.user.settings.language, this.resources)
     }
   },
   emits: ['onInactive', 'onActive'],
