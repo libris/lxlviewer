@@ -10,7 +10,7 @@ term {
 }
 
 Qualifier {
- Identifier EqualOperator (Identifier | String | Number | Prefix) Prefix*
+ Identifier EqualOperator (Identifier | String | Number | prefix) prefix*
 }
 
 @tokens {
@@ -24,7 +24,7 @@ Qualifier {
 
   CompareOperator { ">" | "<" | ">=" | "<=" }
 
-  Prefix { "*"+ }
+  prefix { "*"+ }
 
   space { @whitespace+ }
 

@@ -12,10 +12,10 @@ image:***
 Query(
   Qualifier(Identifier, EqualOperator, Identifier),
   Qualifier(Identifier, EqualOperator, String),
-  Qualifier(Identifier, EqualOperator, Identifier, Prefix)
+  Qualifier(Identifier, EqualOperator, Identifier),
   Qualifier(Identifier, EqualOperator, Number),
-  Qualifier(Identifier, EqualOperator, Prefix),
-  Qualifier(Identifier, EqualOperator, Prefix)
+  Qualifier(Identifier, EqualOperator),
+  Qualifier(Identifier, EqualOperator)
 )
 
 # Groups
