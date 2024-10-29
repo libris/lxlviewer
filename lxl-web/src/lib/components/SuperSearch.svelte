@@ -429,6 +429,11 @@
 									hint="utgivningsår, etc."
 									onclick={() => handleAddQualifierType('ÅR')}
 								/>
+								<TypeSuggestionListItem
+									heading="Genre:"
+									hint="Skönlitteratur, deckare, biografier etc."
+									onclick={() => handleAddQualifierType('genreForm')}
+								/>
 							</ul>
 						</section>
 					{/if}
