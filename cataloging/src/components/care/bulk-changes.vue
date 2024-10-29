@@ -173,8 +173,8 @@ export default {
 
       this.setActive(this.steps[0]);
       const initialForm = appendIds(mainEntity['bulk:changeSpec']['bulk:matchForm']);
-      this.currentSpec.matchForm = initialForm;
-      this.currentSpec.targetForm = initialForm;
+      this.currentSpec['bulk:matchForm'] = initialForm;
+      this.currentSpec['bulk:targetForm'] = initialForm;
       this.setInspectorData(initialForm);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
@@ -222,11 +222,11 @@ export default {
           this.lastFetchedSpec = cloneDeep(this.currentSpec);
 
           if (this.isActive('form')) {
-            this.setInspectorData(this.currentSpec.matchForm);
+            this.setInspectorData(this.currentSpec['bulk:matchForm']);
           } else if (this.isActive('targetForm')){
-            this.setInspectorData(this.currentSpec.targetForm)
+            this.setInspectorData(this.currentSpec['bulk:targetForm'])
           } else {
-            this.setInspectorData(this.currentSpec.matchForm)
+            this.setInspectorData(this.currentSpec['bulk:matchForm'])
           }
           if (this.isDraft) {
             this.$store.dispatch('pushInspectorEvent', {
@@ -256,18 +256,18 @@ export default {
     },
     onInactiveForm() {
       let form = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
-      if (isEqual(form, this.currentSpec.matchForm)) {
-        this.setInspectorData(this.currentSpec.targetForm);
+      if (isEqual(form, this.currentSpec['bulk:matchForm'])) {
+        this.setInspectorData(this.currentSpec['bulk:targetForm']);
       } else {
         this.setInspectorData(form);
-        this.currentSpec.matchForm = form;
+        this.currentSpec['bulk:matchForm'] = form;
       }
     },
     onInactiveTargetForm() {
       if (this.activeStep === 'form') {
-        this.setInspectorData(this.currentSpec.matchForm);
+        this.setInspectorData(this.currentSpec['bulk:matchForm']);
       }
-      this.currentSpec.targetForm = cloneDeep(this.inspector.data.mainEntity);
+      this.currentSpec['bulk:targetForm'] = cloneDeep(this.inspector.data.mainEntity);
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
@@ -363,8 +363,8 @@ export default {
         const formChangeset = result.changeSets[1];
 
         const [formDisplayData, formDisplayPaths] = HistoryUtil.buildDisplayData(
-          this.currentSpec.matchForm,
-          this.currentSpec.targetForm,
+          this.currentSpec['bulk:matchForm'],
+          this.currentSpec['bulk:targetForm'],
           formChangeset.addedPaths,
           formChangeset.removedPaths,
           (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
