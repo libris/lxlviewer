@@ -1,3 +1,3 @@
-import SuperSearch from './SuperSearch.svelte';
+import SuperSearch from '$lib/components/SuperSearch.svelte';
 
 export { SuperSearch }
