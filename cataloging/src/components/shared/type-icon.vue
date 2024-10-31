@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-
+import { Type } from '@/utils/bulk.js';
 export default {
   name: 'type-icon',
   props: {
@@ -37,7 +37,9 @@ export default {
         ManuscriptNotatedMusic: 'music',
         InquiryAction: 'question',
         ChangeNotice: 'exclamation',
-        ChangeObservation: 'exchange',
+        [Type.Update]: 'edit',
+        [Type.Delete]: 'trash-o',
+        [Type.Create]: 'plus',
         // Place: 'map-marker',
       },
       forcedUnspecified: [

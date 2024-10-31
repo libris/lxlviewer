@@ -4198,7 +4198,7 @@
   },
   "bulk": {
     "instance": {
-      "label": "Instans",
+      "label": "✎ Instans",
       "description": "Ändra instanser",
       "@id": "instance",
       "value": {
@@ -4231,7 +4231,7 @@
       }
     },
     "work": {
-      "label": "Verk",
+      "label": "✎ Verk",
       "description": "Ändra verk",
       "@id": "work",
       "value": {
@@ -4264,7 +4264,7 @@
       }
     },
     "agent": {
-      "label": "Agent",
+      "label": "✎ Agent",
       "description": "Ändra agenter",
       "@id": "agent",
       "value": {
@@ -4297,7 +4297,7 @@
       }
     },
     "concept": {
-      "label": "Koncept",
+      "label": "✎ Koncept",
       "description": "Ändra koncept",
       "@id": "concept",
       "value": {
@@ -4330,7 +4330,7 @@
       }
     },
     "item": {
-      "label": "Bestånd",
+      "label": "✎ Bestånd",
       "description": "Ändra bestånd",
       "@id": "item",
       "value": {
@@ -4363,7 +4363,7 @@
       }
     },
     "resource": {
-      "label": "Resurs",
+      "label": "✎ Resurs",
       "description": "Ändra resurs",
       "@id": "resource",
       "value": {
@@ -4411,6 +4411,217 @@
             "@type": "bulk:Merge",
             "bulk:deprecate": [],
             "bulk:keep": null
+          }
+        },
+        "quoted": {},
+        "record": {
+          "@type": "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeResource": {
+      "label": "\uD83D\uDDD1 Resurs",
+      "description": "Radera resurs",
+      "@id": "removeResource",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "Resource",
+              "bulk:matchingMode": [
+                "Subtypes"
+              ]
+            }
+          }
+        },
+        "quoted": {},
+        "record": {
+          "@type": "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeAgent": {
+      "label": "\uD83D\uDDD1 Agent",
+      "description": "Radera agenter",
+      "@id": "removeAgent",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "Agent",
+              "bulk:matchingMode": ["Subtypes"]
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeItem": {
+      "label": "\uD83D\uDDD1 Bestånd",
+      "description": "Radera bestånd",
+      "@id": "removeItem",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "Item",
+              "bulk:matchingMode": ["Subtypes"]
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeInstance": {
+      "label": "\uD83D\uDDD1 Instans",
+      "description": "Radera instanser",
+      "@id": "removeInstance",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "Instance",
+              "bulk:matchingMode": ["Subtypes"]
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeConcept": {
+      "label": "\uD83D\uDDD1 Koncept",
+      "description": "Radera koncept",
+      "@id": "removeConcept",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "Concept",
+              "bulk:matchingMode": ["Subtypes"]
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeWork": {
+      "label": "\uD83D\uDDD1 Verk",
+      "description": "Radera verk",
+      "@id": "removeWork",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "Work",
+              "bulk:matchingMode": ["Subtypes"]
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "createItem": {
+      "label": "+ Bestånd",
+      "description": "Skapa bestånd",
+      "@id": "createItem",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Create",
+            "bulk:targetForm": {
+              "@type": "Item"
+            }
           }
         },
         "quoted" : {},
