@@ -771,10 +771,10 @@ export default {
         </div>
       </div>
       <div>
-        SPECIFICATION
-        <pre>{{ this.currentBulkChange }}</pre>
-        ENTITY FORM
-        <pre>{{ this.dataObj }}</pre>
+<!--        SPECIFICATION-->
+<!--        <pre>{{ this.currentBulkChange }}</pre>-->
+<!--        ENTITY FORM-->
+<!--        <pre>{{ this.dataObj }}</pre>-->
 
 <!--        RECORD-->
 <!--        <pre>{{ this.record }}</pre>-->
