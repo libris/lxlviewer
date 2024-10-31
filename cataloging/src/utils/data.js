@@ -3,6 +3,7 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as DisplayUtil from 'lxljs/display';
 import * as HttpUtil from '@/utils/http';
 import settings from '../settings';
+import { BNODE_ID_KEY } from "@/utils/bulk.js";
 
 export function getDisplayDefinitions() {
   const baseUri = settings.idPath;
@@ -142,7 +143,7 @@ export function appendIds(obj) {
   let o;
   while (o = stack.pop()) {
     if (isObject(o) && !isArray(o) && !o['@id']) {
-      o['_id'] = `#${idCount++}`;
+      o[BNODE_ID_KEY] = `#${idCount++}`;
     }
     forEach(o, (child) => {
       if (isArray(child) || isObject(child)) {

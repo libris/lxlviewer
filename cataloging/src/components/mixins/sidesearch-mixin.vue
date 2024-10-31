@@ -4,6 +4,7 @@ import { mapGetters } from 'vuex';
 import * as DisplayUtil from 'lxljs/display';
 import * as VocabUtil from 'lxljs/vocab';
 import {translatePhrase} from "../../utils/filters.js";
+import { ANY_TYPE } from "@/utils/bulk.js";
 
 export default {
   data() {
@@ -58,7 +59,7 @@ export default {
   methods: {
     translatePhrase,
     getLabelWithTreeDepth(term) {
-      if (term?.id === 'Any') {
+      if (term?.id === ANY_TYPE) {
         return translatePhrase('Unspecified');
       } else {
         return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
@@ -279,7 +280,7 @@ export default {
       }
     },
     anyType() {
-      return { id: 'Any', sub: [], abstract : false, depth: 0, parentChainString: 'Any'};
+      return { id: ANY_TYPE, sub: [], abstract : false, depth: 0, parentChainString: ANY_TYPE};
     },
     isBulkChange() {
       return this.$route.path.includes('bulkchanges');

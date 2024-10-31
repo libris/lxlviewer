@@ -1,3 +1,5 @@
+import { ANY_TYPE, BNODE_ID_KEY, HAS_ID_KEY, MATCHING_MODE_KEY } from "@/utils/bulk.js";
+
 export default {
   title: 'Libris katalogisering',
   language: 'sv',
@@ -40,7 +42,7 @@ export default {
     'PlaceholderRecord',
     'CacheRecord',
     'ComplexSubject.termComponentList',
-    'Any'
+    ANY_TYPE
   ],
   keysToClear: {
     duplication: [
@@ -83,9 +85,9 @@ export default {
     'created',
     'modified',
     'mainEntity',
-    '_id',
-    '_match',
-    '_idList'
+    BNODE_ID_KEY,
+    MATCHING_MODE_KEY,
+    HAS_ID_KEY
   ],
   lockedProperties: [
     'sameAs',
