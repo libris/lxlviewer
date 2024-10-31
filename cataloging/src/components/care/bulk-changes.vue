@@ -27,7 +27,9 @@ import {
   SHOULD_UPDATE_TIMESTAMP_KEY,
   STATUS_KEY,
   Status,
-  TARGET_FORM_KEY, VALUE_FROM_KEY,
+  TARGET_FORM_KEY,
+  VALUE_FROM_KEY,
+  Type
 } from "@/utils/bulk.js";
 
 export default {
@@ -50,7 +52,7 @@ export default {
       showOverview: true,
       inlinedIds: [],
       activeStep: '',
-      steps: [
+      allSteps: [
         'form',
         'targetForm',
         'preview',
@@ -105,9 +107,15 @@ export default {
       return this.isActive('targetForm') ? this.inspector.data.mainEntity : this.currentSpec[TARGET_FORM_KEY];
     },
     formTitle() {
+      if (this.specType === Type.Delete) {
+        return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Remove records')}`
+      }
       return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Selection')}`
     },
     changesTitle() {
+      if (this.specType === Type.Create) {
+        return `${this.steps.indexOf('targetForm') + 1}. ${translatePhrase('Create records')}`
+      }
       return `${this.steps.indexOf('targetForm') + 1}. ${translatePhrase('Changes')}`
     },
     previewTitle() {
@@ -151,6 +159,15 @@ export default {
     shouldExportAffected() {
       return this.isLoud;
     },
+    steps() {
+      if (!this.hasTargetForm) {
+        return this.allSteps.filter(step => step !== 'targetForm');
+      } else if(!this.hasMatchForm) {
+        return this.allSteps.filter(step => step !== 'form')
+      } else {
+        return this.allSteps;
+      }
+    },
     hasUnsavedChanges() {
       if (this.lastFetchedSpec && this.isDraft) {
         const matchFormEqual = isEqual(this.formObj, this.lastFetchedSpec[MATCH_FORM_KEY]);
@@ -159,6 +176,15 @@ export default {
       }
       return false;
     },
+    hasTargetForm() {
+      return this.specType !== Type.Delete;
+    },
+    hasMatchForm() {
+      return this.specType !== Type.Create;
+    },
+    specType() {
+      return this.currentSpec['@type'];
+    }
   },
   methods: {
     translatePhrase,
@@ -171,7 +197,6 @@ export default {
 
       const record = initData['@graph'][0];
       const mainEntity = initData['@graph'][1];
-
       this.currentBulkChange = mainEntity;
       this.currentBulkChange.label = '<namn>-' + this.getDateString();
       this.currentSpec = this.currentBulkChange[CHANGE_SPEC_KEY];
@@ -196,8 +221,7 @@ export default {
       // FIXME: remove emptyTemplate
       const initial = emptyTemplate.mainEntity[CHANGE_SPEC_KEY][MATCH_FORM_KEY];
       this.setInspectorData(initial);
-      this.currentSpec[MATCH_FORM_KEY] = initial;
-      this.currentSpec[TARGET_FORM_KEY] = initial; //FIXME: to avoid undefined on init
+      this.currentSpec = emptyTemplate.mainEntity[CHANGE_SPEC_KEY]; //FIXME: to avoid undefined on init
       this.fetchRecord(this.documentId);
     },
     fetchRecord(fnurgel) {
@@ -365,27 +389,25 @@ export default {
         // const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
         // DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
 
-        if (typeof result.changeSets === 'undefined') {
-          this.resetPreviewData();
-          return;
-        }
         // Form preview
-        const formChangeset = result.changeSets[1];
+        if (typeof result.changeSets !== 'undefined') {
+          const formChangeset = result.changeSets[1];
 
-        const [formDisplayData, formDisplayPaths] = HistoryUtil.buildDisplayData(
-          this.currentSpec[MATCH_FORM_KEY],
-          this.currentSpec[TARGET_FORM_KEY],
-          formChangeset.addedPaths,
-          formChangeset.removedPaths,
-          (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
-        );
-        this.formPreviewData= formDisplayData;
-        this.formPreviewDiff.removed = formDisplayPaths.removed.map(path => `mainEntity.${path}`);
-        this.formPreviewDiff.added = formDisplayPaths.added.map(path => `mainEntity.${path}`);
-        this.formPreviewDiff.modified = formDisplayPaths.modified.map(path => `mainEntity.${path}`);
+          const [formDisplayData, formDisplayPaths] = HistoryUtil.buildDisplayData(
+            this.currentSpec[MATCH_FORM_KEY],
+            this.currentSpec[TARGET_FORM_KEY],
+            formChangeset.addedPaths,
+            formChangeset.removedPaths,
+            (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
+          );
+          this.formPreviewData = formDisplayData;
+          this.formPreviewDiff.removed = formDisplayPaths.removed.map(path => `mainEntity.${path}`);
+          this.formPreviewDiff.added = formDisplayPaths.added.map(path => `mainEntity.${path}`);
+          this.formPreviewDiff.modified = formDisplayPaths.modified.map(path => `mainEntity.${path}`);
+        }
 
         this.totalItems = result.totalItems;
-        if (this.totalItems === 0 || typeof result.changeSets === 'undefined') {
+        if (this.totalItems === 0) {
           this.resetPreviewData();
           return;
         } else {
@@ -396,22 +418,29 @@ export default {
         this.previousPreviewLink = result.prev;
         this.itemOffset = result.itemOffset;
 
-        let before = result.items[0].changeSets[0].version;
-        let after = result.items[0].changeSets[1].version;
-        const changeset = result.items[0].changeSets[1];
+        if (this.specType === Type.Update) {
+          let before = result.items[0].changeSets[0].version;
+          let after = result.items[0].changeSets[1].version;
+          const changeset = result.items[0].changeSets[1];
 
-        const [displayData, displayPaths] = HistoryUtil.buildDisplayData(
-          before,
-          after,
-          changeset.addedPaths.map(el => el.slice(2)), //temporary hack to remove [@graph, 1, ...
-          changeset.removedPaths.map(el => el.slice(2)),
-          (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
-        );
+          const [displayData, displayPaths] = HistoryUtil.buildDisplayData(
+            before,
+            after,
+            changeset.addedPaths.map(el => el.slice(2)), //temporary hack to remove [@graph, 1, ...
+            changeset.removedPaths.map(el => el.slice(2)),
+            (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
+          );
 
-        this.fullPreviewData= displayData;
-        this.fullPreviewDiff.removed = displayPaths.removed.map(path => `mainEntity.${path}`);
-        this.fullPreviewDiff.added = displayPaths.added.map(path => `mainEntity.${path}`);
-        this.fullPreviewDiff.modified = displayPaths.modified.map(path => `mainEntity.${path}`);
+          this.fullPreviewData = displayData;
+          this.fullPreviewDiff.removed = displayPaths.removed.map(path => `mainEntity.${path}`);
+          this.fullPreviewDiff.added = displayPaths.added.map(path => `mainEntity.${path}`);
+          this.fullPreviewDiff.modified = displayPaths.modified.map(path => `mainEntity.${path}`);
+        } else if (this.specType === Type.Delete) {
+          this.fullPreviewDiff.removed = [];
+          this.fullPreviewDiff.added = [];
+          this.fullPreviewDiff.modifed = [];
+          this.fullPreviewData = result.items[0].changeSets[0].version;
+        }
         DataUtil.fetchMissingLinkedToQuoted(this.fullPreviewData, this.$store);
         this.loadingPreview.next = false;
         this.loadingPreview.previous = false;
@@ -671,8 +700,9 @@ export default {
         :documentId="documentId"
         :is-new="isNew"
         :is-draft="isDraft"
+        :spec-type="specType"
       />
-      <div ref="matchForm">
+      <div ref="matchForm" v-if="hasMatchForm">
         <form-builder
           :title="formTitle"
           tabindex="0"
@@ -684,7 +714,7 @@ export default {
           @removeIdList="removeIdList"
         />
       </div>
-      <div ref="targetForm">
+      <div ref="targetForm" v-if="hasTargetForm">
         <target-form-builder
           :title="changesTitle"
           tabindex="0"
@@ -710,6 +740,7 @@ export default {
           :total-items="totalItems"
           :finished="isFinished"
           :has-unsaved="hasUnsavedChanges"
+          :spec-type="specType"
           @onActive="focusPreview"
         />
       </div>
@@ -740,10 +771,10 @@ export default {
         </div>
       </div>
       <div>
-<!--        SPECIFICATION-->
-<!--        <pre>{{ this.currentBulkChange }}</pre>-->
-<!--        ENTITY FORM-->
-<!--        <pre>{{ this.dataObj }}</pre>-->
+        SPECIFICATION
+        <pre>{{ this.currentBulkChange }}</pre>
+        ENTITY FORM
+        <pre>{{ this.dataObj }}</pre>
 
 <!--        RECORD-->
 <!--        <pre>{{ this.record }}</pre>-->

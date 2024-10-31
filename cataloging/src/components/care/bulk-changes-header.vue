@@ -7,10 +7,11 @@ import {mapGetters} from "vuex";
 import {
   STATUS_KEY,
 } from "@/utils/bulk.js";
+import TypeIcon from "../shared/type-icon.vue";
 
 export default {
   name: 'bulk-changes-header.vue',
-  components: {IdPill, FormBuilder},
+  components: {TypeIcon, IdPill, FormBuilder},
   data() {
     return {
       editing: false,
@@ -21,6 +22,7 @@ export default {
     documentId: '',
     isNew: false,
     isDraft: false,
+    specType: ''
   },
   computed: {
     ...mapGetters([
@@ -35,6 +37,9 @@ export default {
     },
     status() {
       return StringUtil.getLabelByLang(this.currentBulkChange[STATUS_KEY], this.user.settings.language, this.resources);
+    },
+    typeLabel() {
+      return StringUtil.getLabelByLang(this.specType, this.user.settings.language, this.resources);
     },
   },
   methods: {
@@ -58,7 +63,6 @@ export default {
 </script>
 <template>
   <div class="BulkChanges">
-  <h1>
     <input class="BulkChanges-inputField"
       ref="heading"
       v-if="editing"
@@ -75,19 +79,15 @@ export default {
     >
       {{this.name}}
     </span>
-  <span class="badge badge-accent2">{{ this.status }}</span>
-<!--  <span class="BulkChanges-noItems badge badge-accent-2"-->
-<!--    v-if="this.noAffected"> {{this.noAffectedLabel}}-->
-<!--  </span>-->
-  </h1>
+    <span class="badge badge-accent2">{{ this.status }}</span>
+    <span class="BulkChanges-type" v-tooltip.right="typeLabel">
+      <type-icon :type="specType"/>
+    </span>
     <span class="BulkChanges-id">
       <id-pill
         v-if="!isNew"
         :uri="documentId"
       />
-<!--        <span class="badge badge-accent"-->
-<!--          v-if="isNew"-->
-<!--        >Ny</span>-->
     </span>
   </div>
 </template>
@@ -101,6 +101,7 @@ export default {
     font-size: 3rem;
     padding-bottom: 10px;
     padding-right: 1rem;
+    font-weight: 600;
     &.cursor-pointer {
       cursor: pointer;
     }
@@ -115,8 +116,15 @@ export default {
     margin-left: auto;
     text-align:right;
   }
-  &-noItems {
-    margin-left: 5px;
+  &-typeHeader {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  &-type{
+    margin-left: 3px;
+    display: flex;
+    font-size: 12px;
   }
 }
 </style>

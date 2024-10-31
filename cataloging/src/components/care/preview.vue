@@ -4,10 +4,9 @@ import { mapGetters } from 'vuex';
 import {isEmpty} from 'lodash-es';
 import ItemEntity from "@/components/inspector/item-entity.vue";
 import EntitySummary from "@/components/shared/entity-summary.vue";
-import {asFnurgelLink, translatePhrase} from "@/utils/filters.js";
-import {offset} from "@floating-ui/dom";
+import {translatePhrase} from "@/utils/filters.js";
 import * as StringUtil from "../../../../lxljs/string.js";
-import { Status } from "@/utils/bulk.js";
+import { Status, Type } from "@/utils/bulk.js";
 
 export default {
   name: 'preview',
@@ -51,6 +50,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    specType: {
+      type: String,
+      default: '',
+    }
   },
   computed: {
     ...mapGetters([
@@ -68,7 +71,7 @@ export default {
       return !isEmpty(this.previewData) && !isEmpty(this.previewDiff);
     },
     showPreview() {
-      return this.hasPreviewData && !this.hasUnsaved;
+      return this.hasPreviewData;
     },
     noHitsLabel() {
       if (this.hasUnsaved)  {
@@ -79,8 +82,17 @@ export default {
         return translatePhrase('No matching records');
       }
     },
+    deleteSpecLabel() {
+      return translatePhrase('Delete record');
+    },
     completedLabel() {
       return StringUtil.getLabelByLang(Status.Completed, this.user.settings.language, this.resources)
+    },
+    isDeleteSpec() {
+      return this.specType === Type.Delete;
+    },
+    isUpdateSpec() {
+      return this.specType === Type.Update;
     }
   },
   emits: ['onInactive', 'onActive'],
@@ -126,11 +138,18 @@ export default {
             :should-link="false"
             :exclude-components="['details']"/>
         </div>
-        <entity-form
+        <entity-form v-if="isUpdateSpec"
           :editing-object="'mainEntity'"
           :key="formTab.id"
           :is-active="true"
           :diff="previewDiff"
+          :form-data="previewData"
+          :locked="true"
+        />
+        <entity-form v-if="isDeleteSpec"
+          :editing-object="'mainEntity'"
+          :key="formTab.id"
+          :is-active="true"
           :form-data="previewData"
           :locked="true"
         />

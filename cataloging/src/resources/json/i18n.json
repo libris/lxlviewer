@@ -454,6 +454,8 @@
     "Save bulk change to preview" : "Spara massändring för att förhandsgranska",
     "No matching records" : "Inga matchande poster",
     "Selection from ID list" : "Urval från ID-lista",
-    "Match subtypes" : "Matcha subtyper"
+    "Match subtypes" : "Matcha subtyper",
+    "Remove records" : "Ta bort poster",
+    "Create records" : "Skapa poster"
   }
 }

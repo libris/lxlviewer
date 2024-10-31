@@ -22,3 +22,9 @@ export const ANY_TYPE = "bulk:Any"
 export const SUBTYPES_TYPE = "bulk:Subtypes"
 export const EXACT_TYPE = 'bulk:Exact'
 export const ANY_OF_TYPE = 'bulk:AnyOf'
+
+export class Type {
+  static Update = 'bulk:Update';
+  static Delete = 'bulk:Delete';
+  static Create = 'bulk:Create';
+}
