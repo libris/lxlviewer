@@ -4,6 +4,8 @@ import FieldAdder from '@/components/inspector/field-adder.vue';
 import { mapGetters } from 'vuex';
 import {convertResourceLink, translatePhrase} from "../../utils/filters.js";
 import IdList from '@/components/care/id-list.vue';
+import { HAS_ID_KEY, VALUE_FROM_KEY } from "@/utils/bulk.js";
+import { get } from "lodash-es";
 
 export default {
   name: 'form-builder.vue',
@@ -46,10 +48,10 @@ export default {
       return { id: 'form', text: 'test' };
     },
     showIdList() {
-      return typeof this.formData._idList !== 'undefined';
+      return typeof get(this.formData,[HAS_ID_KEY, VALUE_FROM_KEY]) !== 'undefined';
     },
     idListLink() {
-      return this.formData._idList.valueFrom['@id'];
+      return this.formData[HAS_ID_KEY][VALUE_FROM_KEY]['@id'];
     }
   },
   emits: ['onInactive', 'onActive', 'removeIdList'],

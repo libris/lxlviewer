@@ -6,6 +6,7 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as StringUtil from 'lxljs/string';
 import DisplayGroups from '@/resources/json/displayGroups.json';
 import {getAllVocabProperties, getProperties, getRangeFull, getSubClassChain} from "lxljs/vocab.js";
+import { ANY_TYPE } from "@/utils/bulk.js";
 
 export default {
   props: {
@@ -89,7 +90,7 @@ export default {
       return this.editingObject === 'mainEntity';
     },
     anyType() {
-      return { id: 'Any', sub: [], abstract : false, depth: 0, parentChainString: 'Any'};
+      return { id: ANY_TYPE, sub: [], abstract : false, depth: 0, parentChainString: ANY_TYPE};
     },
     isBulkChange() {
       return this.$route.path.includes('bulkchanges');

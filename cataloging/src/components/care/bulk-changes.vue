@@ -20,12 +20,14 @@ import * as HistoryUtil from "@/utils/history.js";
 import ReverseRelations from "../inspector/reverse-relations.vue";
 import { appendIds } from "../../utils/data.js";
 import {
+  ANY_OF_TYPE,
   CHANGE_SPEC_KEY,
+  HAS_ID_KEY,
   MATCH_FORM_KEY,
   SHOULD_UPDATE_TIMESTAMP_KEY,
   STATUS_KEY,
-  TARGET_FORM_KEY,
   Status,
+  TARGET_FORM_KEY, VALUE_FROM_KEY,
 } from "@/utils/bulk.js";
 
 export default {
@@ -440,21 +442,21 @@ export default {
     setIdListUri() {
       this.showIdListModal = false;
       const idList = {
-        '@type': 'AnyOf',
-        'valueFrom': {'@id': this.idListUri}
+        '@type': ANY_OF_TYPE,
+        [VALUE_FROM_KEY]: {'@id': this.idListUri}
       }
       if (this.idListTempPath) {
-        this.setInspectorData({ '_idList': idList }, this.idListTempPath);
+        this.setInspectorData({ [HAS_ID_KEY]: idList }, this.idListTempPath);
       } else {
         const mainEntity = cloneDeep(this.inspector.data.mainEntity);
-        mainEntity['_idList'] = idList;
+        mainEntity[HAS_ID_KEY] = idList;
         this.setInspectorData(mainEntity, 'mainEntity');
       }
       this.idListTempPath = '';
     },
     removeIdList() {
       const matchForm = cloneDeep(this.inspector.data.mainEntity);
-      delete matchForm['_idList'];
+      delete matchForm[HAS_ID_KEY];
       this.idListUri = '';
       this.setInspectorData(matchForm);
     },

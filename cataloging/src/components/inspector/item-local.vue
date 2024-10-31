@@ -16,6 +16,7 @@ import SearchWindow from './search-window.vue';
 import ItemMixin from '../mixins/item-mixin.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 import FormMixin from '../mixins/form-mixin.vue';
+import { ANY_TYPE, EXACT_TYPE, MATCHING_MODE_KEY } from "@/utils/bulk.js";
 
 export default {
   name: 'item-local',
@@ -198,13 +199,13 @@ export default {
       return false;
     },
     isPinned() {
-      return typeof this.item['_match'] !== 'undefined' && this.item['_match'].includes('Exact');
+      return typeof this.item[MATCHING_MODE_KEY] !== 'undefined' && this.item[MATCHING_MODE_KEY].includes(EXACT_TYPE);
       },
     isBulkChangeView() {
       return this.$route.path.includes('bulkchanges');
     },
     typeLabel() {
-      return this.item['@type'] === 'Any' ? translatePhrase('Unspecified') : labelByLang(this.item['@type']);
+      return this.item['@type'] === ANY_TYPE ? translatePhrase('Unspecified') : labelByLang(this.item['@type']);
     }
   },
   methods: {
@@ -409,9 +410,9 @@ export default {
     setPinned(del) {
       let update = cloneDeep(get(this.inspector.data, this.path))
       if (del) {
-        delete update['_match'];
+        delete update[MATCHING_MODE_KEY];
       } else {
-        update['_match'] = ['Exact'];
+        update[MATCHING_MODE_KEY] = [EXACT_TYPE];
       }
       this.$store.dispatch('updateInspectorData', {
         changeList: [

@@ -19,6 +19,7 @@ import templates from '@/resources/json/structuredValueTemplates.json';
 import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 import Sort from '@/components/search/sort.vue';
 import PanelSearchList from '../search/panel-search-list.vue';
+import { ANY_TYPE } from "@/utils/bulk.js";
 
 export default {
   mixins: [LensMixin, SideSearchMixin],
@@ -201,6 +202,9 @@ export default {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1);
   },
   methods: {
+    ANY_TYPE() {
+      return ANY_TYPE
+    },
     translatePhrase,
     labelByLang,
     capitalize,
@@ -629,7 +633,7 @@ export default {
             <button
               class="EntityAdder-createBtn btn btn-primary btn--sm"
               v-if="inBulkChangeView && hasCreateable && allowLocal"
-              v-on:click="addEmpty('Any')">{{ translatePhrase("Create local entity") }}
+              v-on:click="addEmpty(ANY_TYPE())">{{ translatePhrase("Create local entity") }}
             </button>
             <button
               class="EntityAdder-idListBtn btn btn-primary btn--sm"

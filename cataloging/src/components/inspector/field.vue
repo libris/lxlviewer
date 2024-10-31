@@ -29,6 +29,7 @@ import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
 import LanguageMixin from '../mixins/language-mixin.vue';
 import FieldMarker from "@/components/inspector/field-marker.vue";
 import IdList from '@/components/care/id-list.vue';
+import { HAS_ID_KEY, MATCHING_MODE_KEY, SUBTYPES_TYPE, VALUE_FROM_KEY } from "@/utils/bulk.js";
 
 export default {
   name: 'field',
@@ -449,7 +450,7 @@ export default {
     matchSubTypes() {
       if (this.showBulkchangeActions) {
         const data = get(this.inspector.data, this.parentPath);
-        return typeof data['_match'] !== 'undefined' && data['_match'].includes('Subtypes');
+        return typeof data[MATCHING_MODE_KEY] !== 'undefined' && data[MATCHING_MODE_KEY].includes(SUBTYPES_TYPE);
       } else {
         return false;
       }
@@ -459,6 +460,12 @@ export default {
     },
   },
   methods: {
+    HAS_ID_KEY() {
+      return HAS_ID_KEY
+    },
+    VALUE_FROM_KEY() {
+      return VALUE_FROM_KEY
+    },
     translatePhrase,
     labelByLang,
     capitalize,
@@ -594,7 +601,7 @@ export default {
       return o.hasOwnProperty('@id');
     },
     isIdList(o) {
-      return o.hasOwnProperty('_idList');
+      return o.hasOwnProperty(HAS_ID_KEY);
     },
     isInlined(o) {
       // FIXME
@@ -630,10 +637,10 @@ export default {
     },
     toggleMatchSubtypes() {
       let update = cloneDeep(get(this.inspector.data, this.parentPath))
-      if (typeof update['_match'] !== 'undefined') {
-        delete update['_match'];
+      if (typeof update[MATCHING_MODE_KEY] !== 'undefined') {
+        delete update[MATCHING_MODE_KEY];
       } else {
-        update['_match'] = ['Subtypes'];
+        update[MATCHING_MODE_KEY] = [SUBTYPES_TYPE];
       }
       this.$store.dispatch('updateInspectorData', {
         changeList: [
@@ -935,7 +942,7 @@ export default {
 
         <id-list v-if="getDatatype(item) == 'idList'"
           :show-remove-button="showBulkchangeActions && !isLocked"
-          :id-list-link="item._idList.valueFrom['@id']"
+          :id-list-link="item[HAS_ID_KEY()][VALUE_FROM_KEY()]['@id']"
           @remove-id-list="removeThis"
         />
 

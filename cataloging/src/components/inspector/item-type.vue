@@ -8,6 +8,7 @@ import ItemVocab from '@/components/inspector/item-vocab.vue';
 import { translatePhrase, labelByLang } from '@/utils/filters';
 import ModalComponent from '@/components/shared/modal-component.vue';
 import Spinner from '@/components/shared/spinner.vue';
+import { ANY_TYPE } from "@/utils/bulk.js";
 
 export default {
   name: 'item-type',
@@ -42,7 +43,7 @@ export default {
       return this.onMainEntity && this.numberOfRelations !== 0 && this.unlockedByUser === false;
     },
     typeLabel() {
-      return this.fieldValue === 'Any' ? translatePhrase('Unspecified') : labelByLang(this.fieldValue);
+      return this.fieldValue === ANY_TYPE ? translatePhrase('Unspecified') : labelByLang(this.fieldValue);
     }
   },
   methods: {
