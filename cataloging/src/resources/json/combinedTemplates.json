@@ -4394,6 +4394,34 @@
           }
         }
       }
+    },
+    "merge": {
+      "label": "Slå ihop",
+      "description": "Slå ihop entiteter",
+      "@id": "merge",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Merge",
+            "bulk:deprecate": [],
+            "bulk:keep": null
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
     }
   }
 }
