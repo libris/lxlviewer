@@ -10,21 +10,28 @@ import {
 import { mount } from 'svelte';
 import QualifierWidgetComponent from '$lib/components/QualifierWidget.svelte';
 import type { Qualifier } from '$lib/utils/supersearch/qualifiers';
+import type { QualifierTypeResponse } from '../../../../routes/api/[[lang=lang]]/qualifier-type/+server';
+import type { JsonLd } from '$lib/utils/xl';
+
 export const QUALIFIER_REGEXP = new RegExp(
 	/(?<!\S+)((")?[0-9a-zA-ZåäöÅÄÖ:]+\2):((")?[0-9a-zA-ZåäöÅÄÖ:%#-.]+\4?)?(\s|$)/g
 );
 
 class QualifierWidget extends WidgetType {
 	constructor(
-		readonly qualifier: Qualifier,
+		// readonly qualifier: Qualifier,
+		readonly type: string,
+		readonly value: string,
+		readonly resource: { [JsonLd.ID]: string; [JsonLd.TYPE]: string },
 		readonly range: { from: number; to: number }
 	) {
 		super();
 	}
 	eq(other: QualifierWidget) {
 		return (
-			this.qualifier.type == other.qualifier.type &&
-			this.qualifier.value == other.qualifier.value &&
+			this.type == other.type &&
+			this.value == other.value &&
+			this.resource == other.resource &&
 			this.range == other.range
 		);
 	}
@@ -34,7 +41,9 @@ class QualifierWidget extends WidgetType {
 		mount(QualifierWidgetComponent, {
 			target: container,
 			props: {
-				qualifier: this.qualifier,
+				type: this.type,
+				value: this.value,
+				resource: this.resource,
 				range: this.range
 			}
 		});
@@ -42,27 +51,51 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
-const createQualifierMatcher = (qualifiersByPrefixedValue: { [key: string]: Qualifier }) =>
+const createQualifierMatcher = ({
+	validQualifierTypes,
+	mappingsByPrefixedValue
+}: {
+	validQualifierTypes: QualifierTypeResponse;
+	mappingsByPrefixedValue: { [key: string]: Qualifier };
+}) =>
 	new MatchDecorator({
 		regexp: QUALIFIER_REGEXP,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		decoration: ([match, type, _2, value], view, pos) => {
-			const qualifier = Object.entries(qualifiersByPrefixedValue).find(([prefixedValue]) => {
+			const qualifierType = validQualifierTypes.find(
+				(item) => item.type.toLowerCase() === type.toLowerCase()
+			); // temporarily use toLowerCase to allow ÅR, år, År etc.
+			const valueMapping = Object.entries(mappingsByPrefixedValue).find(([prefixedValue]) => {
 				if (prefixedValue === value) {
 					return true;
 				}
 			})?.[1];
-			if (qualifier) {
+
+			if (qualifierType) {
 				return Decoration.replace({
-					widget: new QualifierWidget(qualifier, { from: pos, to: pos + match.length }) // There is probably some smarter way to do the removal of the widgets  – we could for example use the [decorate](https://codemirror.net/docs/ref/#view.MatchDecorator.constructor^config.decorate) instead of decoration as the former has from and to assigned
+					widget: new QualifierWidget(
+						qualifierType.label,
+						valueMapping?.label || value,
+						valueMapping?.resource,
+						{ from: pos, to: pos + match.length }
+					) // There is probably some smarter way to do the removal of the widgets  – we could for example use the [decorate](https://codemirror.net/docs/ref/#view.MatchDecorator.constructor^config.decorate) instead of decoration as the former has from and to assigned
 				});
 			}
 			return null;
 		}
 	});
 
-export const createQualifierWidgets = (qualifiersByPrefixedValue: { [key: string]: Qualifier }) => {
-	const qualifierMatcher = createQualifierMatcher(qualifiersByPrefixedValue);
+export const createQualifierWidgets = ({
+	validQualifierTypes,
+	mappingsByPrefixedValue
+}: {
+	validQualifierTypes: QualifierTypeResponse;
+	mappingsByPrefixedValue: { [key: string]: Qualifier };
+}) => {
+	const qualifierMatcher = createQualifierMatcher({
+		validQualifierTypes,
+		mappingsByPrefixedValue
+	});
 	return ViewPlugin.fromClass(
 		class {
 			qualifiers: DecorationSet;

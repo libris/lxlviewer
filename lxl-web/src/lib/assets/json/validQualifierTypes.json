@@ -1,0 +1,42 @@
+[
+	{
+		"type": "itemHeldBy",
+		"baseClass": "Library",
+		"preferLinks": true
+	},
+	{
+		"type": "contributor",
+		"baseClass": "Contribution",
+		"preferLinks": true
+	},
+	{
+		"type": "språk",
+		"baseClass": "Language",
+		"preferLinks": true
+	},
+	{
+		"type": "subject",
+		"baseClass": "Subject",
+		"preferLinks": true
+	},
+	{
+		"type": "genreForm",
+		"baseClass": "GenreForm",
+		"preferLinks": true
+	},
+	{
+		"type": "person",
+		"baseClass": "Person",
+		"preferLinks": true
+	},
+	{
+		"type": "titel",
+		"baseClass": "Title",
+		"preferLinks": false
+	},
+	{
+		"type": "år",
+		"property": "year",
+		"preferLinks": false
+	}
+]

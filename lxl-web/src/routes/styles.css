@@ -48,10 +48,15 @@
 	--font-size-2xs: 0.75rem; /* 12px */
 	--font-size-3xs: 0.6875rem; /* 11px */
 	--font-size-4xs: 0.625rem; /* 10px */
+	--font-weight-normal: 500;
+	--font-weight-medium: 500;
+	--font-weight-semibold: 600;
+	--font-weight-bold: 700;
 	--padding-base: 16px;
 	--padding-sm: 12px;
 	--padding-xs: 8px;
-	--padding-2xs: 4px;
+	--padding-2xs: 6px;
+	--padding-3xs: 4px;
 	--gap-base: 16px;
 	--gap-sm: 8px;
 	--gap-xs: 4px;

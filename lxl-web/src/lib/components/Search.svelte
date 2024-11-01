@@ -3,7 +3,8 @@
 	import getHiddenSearchParams from '$lib/utils/getHiddenSearchParams';
 	import * as m from '$lib/paraglide/messages.js';
 	import SearchInputWrapper from '$lib/components/SearchInputWrapper.svelte';
-
+	import { languageTag } from '$lib/paraglide/runtime.js';
+	import type { QualifierTypeResponse } from '../../routes/api/[[lang=lang]]/qualifier-type/+server';
 	/** Tests to do
 	 * - [] input value is updated after navigating between different find routes (e.g. using back)
 	 * - [] input value is clearable
@@ -14,7 +15,16 @@
 
 	const hiddenSearchParams = getHiddenSearchParams($page.url.searchParams);
 
-	const lazyLoadSuperSearch = import('./SuperSearch.svelte');
+	const lazyLoadSuperSearch = Promise.all([
+		import('./SuperSearch.svelte'),
+		getValidQualifierTypes()
+	]);
+
+	async function getValidQualifierTypes() {
+		const qualifierTypeRes = await fetch(`/api/${languageTag() || 'sv'}/qualifier-type`);
+		const qualifiers = (await qualifierTypeRes.json()) as QualifierTypeResponse;
+		return qualifiers;
+	}
 
 	function clearSearch() {
 		q = '';
@@ -42,8 +52,8 @@
 		<SearchInputWrapper showClearSearch={!!q} onclearsearch={clearSearch}>
 			{@render fallbackInput()}
 		</SearchInputWrapper>
-	{:then { default: SuperSearch }}
-		<SuperSearch bind:value={q} placeholder={m.searchPlaceholder()} />
+	{:then [{ default: SuperSearch }, validQualifierTypes]}
+		<SuperSearch bind:value={q} placeholder={m.searchPlaceholder()} {validQualifierTypes} />
 	{:catch}
 		<SearchInputWrapper showClearSearch={!!q} onclearsearch={clearSearch}>
 			{@render fallbackInput()}
