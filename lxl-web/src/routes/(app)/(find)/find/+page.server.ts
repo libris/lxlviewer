@@ -29,7 +29,7 @@ export const load = (async ({ url, fetch }) => {
 		const findResSearchParams = new URLSearchParams([
 			['_q', sanitizeQSearchParamValue(_q).trim()],
 			['_i', ''],
-			['_limit', '10'],
+			['_limit', '20'],
 			['_offset', '0'],
 			['_sort', '']
 		]);
