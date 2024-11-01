@@ -362,17 +362,17 @@
 				{#snippet searchAll()}
 					{#if value}
 						<a class="fullsearch-link" href={getFullSearchLink(value)}>
-							<IconArrowReturnLeft width={20} height={20} />
+							<IconArrowReturnLeft width={18} height={18} />
 							<span>Sök i hela Libris</span>
 						</a>
 					{/if}
 				{/snippet}
 				<nav>
+					{@render searchAll()}
 					{#if editedParts.word || editedParts.phrase}
 						{#if fetchedValue === value && !qualifierItems.length && !workItems.length}
 							<div class="no-results">Inga träffar</div>
 						{:else}
-							{@render searchAll()}
 							{#if qualifierItems.length}
 								<section class="suggestions">
 									<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
@@ -405,7 +405,6 @@
 							-->
 						{/if}
 					{:else}
-						{@render searchAll()}
 						<section class="suggestions">
 							<h2 class="dropdown-header">Bygg och förfina din sökfråga</h2>
 							<ul class="qualifier-types">
@@ -482,7 +481,8 @@
 	}
 
 	.dropdown-search {
-		padding: var(--padding-sm) var(--gap-base);
+		margin-bottom: 2px;
+		padding: var(--padding-sm) var(--gap-base) 0 var(--gap-base);
 	}
 
 	.dropdown :global(section > ul) {
@@ -491,7 +491,7 @@
 
 	.dropdown-header {
 		margin: 0;
-		padding: 0 var(--gap-base) var(--padding-xs) var(--gap-base);
+		padding: var(--gap-base) var(--gap-base) var(--padding-xs) var(--gap-base);
 		color: var(--color-subtle);
 		font-weight: 500;
 		font-size: var(--font-size-xs);
@@ -511,14 +511,8 @@
 	}
 
 	.suggestions {
-		padding: var(--padding-base) 0 0 0;
-
 		&:first-child {
 			padding-top: 0;
-		}
-
-		&:not(:first-child) {
-			box-shadow: var(--box-shadow-border-top);
 		}
 	}
 
@@ -551,7 +545,7 @@
 	.no-results {
 		display: flex;
 		align-items: center;
-		padding: 0 var(--padding-base);
+		padding: var(--padding-sm) var(--padding-base);
 		min-height: var(--height-input-sm);
 		color: var(--color-subtle);
 		font-size: var(--font-size-sm);
@@ -561,7 +555,8 @@
 		display: flex;
 		align-items: center;
 		gap: var(--gap-sm);
-		padding: 0 var(--padding-base);
+		box-shadow: var(--box-shadow-border-bottom);
+		padding: var(--padding-sm) var(--padding-base) var(--padding-sm) var(--padding-base);
 		min-height: var(--height-input-sm);
 		color: var(--color-link);
 		font-size: var(--font-size-xs);
