@@ -67,7 +67,7 @@ export default {
   }
 
   &-link {
-    padding: 10px 20px;
+    padding: 8px 20px;
     display: block;
     white-space: nowrap;
     overflow: hidden;

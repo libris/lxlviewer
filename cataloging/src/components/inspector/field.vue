@@ -898,11 +898,15 @@ export default {
         <span class="Field-matchSubClassesLabel">
           {{ translatePhrase('Match subtypes') }}
         </span>
-          <input
-            :checked="matchSubTypes"
-            type="checkbox"
-            :disabled="isLocked"
-            @change="toggleMatchSubtypes()"/>
+          <span>
+            <input
+              type="checkbox"
+              class="customCheckbox-input"
+              :disabled="isLocked"
+              :checked="matchSubTypes"
+              @change="toggleMatchSubtypes"/>
+            <span class="customCheckbox-icon"/>
+          </span>
         </div>
       </div>
     </div>
