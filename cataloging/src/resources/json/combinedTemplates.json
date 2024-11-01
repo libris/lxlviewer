@@ -4440,7 +4440,7 @@
             "bulk:matchForm": {
               "@type": "Resource",
               "bulk:matchingMode": [
-                "Subtypes"
+                "bulk:Subtypes"
               ]
             }
           }
@@ -4471,7 +4471,7 @@
             "@type": "bulk:Delete",
             "bulk:matchForm": {
               "@type": "Agent",
-              "bulk:matchingMode": ["Subtypes"]
+              "bulk:matchingMode": ["bulk:Subtypes"]
             }
           }
         },
@@ -4501,7 +4501,7 @@
             "@type": "bulk:Delete",
             "bulk:matchForm": {
               "@type": "Item",
-              "bulk:matchingMode": ["Subtypes"]
+              "bulk:matchingMode": ["bulk:Subtypes"]
             }
           }
         },
@@ -4531,7 +4531,7 @@
             "@type": "bulk:Delete",
             "bulk:matchForm": {
               "@type": "Instance",
-              "bulk:matchingMode": ["Subtypes"]
+              "bulk:matchingMode": ["bulk:Subtypes"]
             }
           }
         },
@@ -4561,7 +4561,7 @@
             "@type": "bulk:Delete",
             "bulk:matchForm": {
               "@type": "Concept",
-              "bulk:matchingMode": ["Subtypes"]
+              "bulk:matchingMode": ["bulk:Subtypes"]
             }
           }
         },
@@ -4591,7 +4591,7 @@
             "@type": "bulk:Delete",
             "bulk:matchForm": {
               "@type": "Work",
-              "bulk:matchingMode": ["Subtypes"]
+              "bulk:matchingMode": ["bulk:Subtypes"]
             }
           }
         },
