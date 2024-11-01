@@ -53,15 +53,11 @@
 		border-radius: var(--border-radius-base);
 		background: rgba(14, 113, 128, 0.15);
 		padding: 0 var(--padding-2xs);
-		max-width: 15vw;
+		max-width: 20vw;
 		min-height: 24px;
 		overflow: hidden;
-		font-size: var(--font-size-2xs);
+		font-size: var(--font-size-xs);
 		white-space: nowrap;
-	}
-
-	.qualifier > * {
-		font-size: var(--font-size-2xs);
 	}
 
 	.type {
@@ -69,7 +65,7 @@
 		border-right: 1px solid rgba(14, 113, 128, 0.15);
 		padding-right: var(--padding-3xs);
 		font-weight: var(--font-weight-medium);
-		font-size: var(--font-size-3xs);
+		font-size: var(--font-size-2xs);
 		&::first-letter {
 			text-transform: capitalize;
 		}
