@@ -6,15 +6,20 @@ import * as StringUtil from 'lxljs/string.js';
 import {mapGetters} from "vuex";
 import {
   STATUS_KEY,
+  Type
 } from "@/utils/bulk.js";
-import TypeIcon from "../shared/type-icon.vue";
 
 export default {
   name: 'bulk-changes-header.vue',
-  components: {TypeIcon, IdPill, FormBuilder},
+  components: {IdPill, FormBuilder},
   data() {
     return {
       editing: false,
+      iconMap: {
+        [Type.Update]: 'edit',
+        [Type.Delete]: 'trash-o',
+        [Type.Create]: 'plus',
+      },
     };
   },
   props: {
@@ -29,6 +34,18 @@ export default {
       'user',
       'resources',
     ]),
+    convertedType() {
+      return this.specType.replace('https://id.kb.se/vocab/', '');
+    },
+    iconClass() {
+      let iconName = '';
+      if (this.iconMap.hasOwnProperty(this.convertedType)) {
+        iconName = this.iconMap[this.convertedType];
+      } else {
+        return '';
+      }
+      return `fa fa-fw fa-${iconName}`;
+    },
     name() {
       return this.currentBulkChange.label;
     },
@@ -81,7 +98,7 @@ export default {
     </span>
     <span class="badge badge-accent2">{{ this.status }}</span>
     <span class="BulkChanges-type" v-tooltip.right="typeLabel">
-      <type-icon :type="specType"/>
+      <i :class="iconClass"/>
     </span>
     <span class="BulkChanges-id">
       <id-pill
@@ -108,6 +125,7 @@ export default {
   }
   &-inputField {
     font-size: 3rem;
+    font-weight: 600;
     padding-bottom: 10px;
     margin-right: 1rem;
     padding-right: 1rem;
@@ -124,7 +142,14 @@ export default {
   &-type{
     margin-left: 3px;
     display: flex;
-    font-size: 12px;
+    font-size: 16px;
+    background-color: @grey-lightest;
+    color: @brand-primary;
+    justify-content: center;
+    align-items: center;
+    min-width: 25px;
+    height: 25px;
+    border-radius: 0.25rem;
   }
 }
 </style>
