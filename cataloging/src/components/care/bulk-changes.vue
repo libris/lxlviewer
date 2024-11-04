@@ -1,6 +1,7 @@
 <script>
 import FormBuilder from '@/components/care/form-builder.vue';
 import TargetFormBuilder from '@/components/care/target-form-builder.vue';
+import MergeSpec from '@/components/care/merge-spec.vue';
 import Preview from '@/components/care/preview.vue';
 import BulkChangesHeader from "@/components/care/bulk-changes-header.vue";
 import { mapGetters } from 'vuex';
@@ -40,6 +41,7 @@ export default {
     toolbar,
     FormBuilder,
     TargetFormBuilder,
+    MergeSpec,
     Preview,
     BulkChangesHeader,
     'modal-component': ModalComponent,
@@ -53,6 +55,7 @@ export default {
       inlinedIds: [],
       activeStep: '',
       allSteps: [
+        'mergeSpec',
         'form',
         'targetForm',
         'preview',
@@ -106,11 +109,22 @@ export default {
     targetFormObj() {
       return this.isActive('targetForm') ? this.inspector.data.mainEntity : this.currentSpec[TARGET_FORM_KEY];
     },
+    mergeObj() {
+      const mergeObj = this.isActive('mergeSpec') ? this.inspector.data.mainEntity : this.currentSpec;
+      if (typeof mergeObj === 'undefined') {
+        return {};
+      } else {
+        return mergeObj;
+      }
+    },
     formTitle() {
       if (this.specType === Type.Delete) {
-        return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Remove records')}`
+        return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Remove records')}`;
       }
-      return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Selection')}`
+      return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Selection')}`;
+    },
+    mergeTitle() {
+      return `${this.steps.indexOf('form') + 1}. ${translatePhrase('test')}`;
     },
     changesTitle() {
       if (this.specType === Type.Create) {
@@ -163,7 +177,9 @@ export default {
       if (!this.hasTargetForm) {
         return this.allSteps.filter(step => step !== 'targetForm');
       } else if(!this.hasMatchForm) {
-        return this.allSteps.filter(step => step !== 'form')
+        return this.allSteps.filter(step => step !== 'form');
+      } else if(!this.hasMergeSpec) {
+          return this.allSteps.filter(step => step !== 'mergeSpec')
       } else {
         return this.allSteps;
       }
@@ -180,7 +196,10 @@ export default {
       return this.specType !== Type.Delete;
     },
     hasMatchForm() {
-      return this.specType !== Type.Create;
+      return this.specType !== Type.Create || this.specType !== Type.Merge;
+    },
+    hasMergeSpec() {
+      return this.specType === Type.Merge;
     },
     isCreateSpec() {
       return this.specType === Type.Create;
@@ -211,8 +230,9 @@ export default {
 
       this.setActive(this.steps[0]);
       const initialForm = appendIds(mainEntity[CHANGE_SPEC_KEY][MATCH_FORM_KEY]);
-      this.currentSpec[MATCH_FORM_KEY] = initialForm;
-      this.currentSpec[TARGET_FORM_KEY] = initialForm;
+      // this.currentSpec[MATCH_FORM_KEY] = initialForm;
+      // this.currentSpec[TARGET_FORM_KEY] = initialForm;
+      console.log('this.currentSpec', JSON.stringify(this.currentSpec));
       this.setInspectorData(initialForm);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
@@ -262,8 +282,9 @@ export default {
             this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
           } else if (this.isActive('targetForm')){
             this.setInspectorData(this.currentSpec[TARGET_FORM_KEY])
-          } else {
-            this.setInspectorData(this.currentSpec[MATCH_FORM_KEY])
+          } else if (this.isActive('mergeSpec')) {
+            console.log('hej')
+            this.setInspectorData(this.currentSpec);
           }
           if (this.isDraft) {
             this.$store.dispatch('pushInspectorEvent', {
@@ -321,6 +342,9 @@ export default {
     },
     focusMatchForm() {
       LayoutUtil.ensureInViewport(this.$refs.matchForm);
+    },
+    focusMergeSpec() {
+      LayoutUtil.ensureInViewport(this.$refs.mergeSpec);
     },
     focusTargetForm() {
       LayoutUtil.ensureInViewport(this.$refs.targetForm);
@@ -709,6 +733,16 @@ export default {
         :is-draft="isDraft"
         :spec-type="specType"
       />
+      <div ref="mergeSpec" v-if="hasMergeSpec">
+        <merge-spec
+          :title="mergeTitle"
+          tabindex="0"
+          :is-active="isActive('mergeSpec') && isDraft"
+          :form-data="mergeObj"
+          :first-item-active="isFirstActive"
+          @onActive="focusMergeSpec"
+        />
+      </div>
       <div ref="matchForm" v-if="hasMatchForm">
         <form-builder
           :title="formTitle"
