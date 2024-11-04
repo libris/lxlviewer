@@ -4623,7 +4623,7 @@
           "label": "",
           "comment": "",
           "bulk:status": "bulk:Draft",
-          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:shouldUpdateModifiedTimestamp": true,
           "bulk:changeSpec": {
             "@type": "bulk:Create",
             "bulk:targetForm": {

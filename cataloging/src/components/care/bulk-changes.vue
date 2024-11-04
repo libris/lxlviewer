@@ -182,6 +182,9 @@ export default {
     hasMatchForm() {
       return this.specType !== Type.Create;
     },
+    isCreateSpec() {
+      return this.specType === Type.Create;
+    },
     specType() {
       return this.currentSpec['@type'];
     }
@@ -885,7 +888,7 @@ export default {
             <input
               :checked="shouldExportAffected"
               type="checkbox"
-              :disabled="!isDraft"
+              :disabled="!isDraft || isCreateSpec"
               @change="toggleExportAffected()"/>
           </p>
           <div class="Modal-buttonContainer">
