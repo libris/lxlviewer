@@ -14,4 +14,4 @@
 	<slot />
 </main>
 <SiteFooter />
-<div id="floating-elements-container" />
+<div id="floating-elements-container"></div>
