@@ -30,6 +30,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isDraft: {
+      type: Boolean,
+      default: false,
+    },
   },
   watch: {
     isActive(newValue, oldValue) {
@@ -80,7 +84,7 @@ export default {
     <div class="FormBuilder-body" :class="{ 'has-selection': isActive }">
       <id-list
         :id-list-link="this.idListLink"
-        :show-remove-button="firstItemActive"
+        :show-remove-button="firstItemActive && isDraft"
         v-if="showIdList"
         @removeIdList="removeIdList"/>
       <div>

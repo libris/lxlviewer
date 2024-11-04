@@ -712,6 +712,7 @@ export default {
           :is-active="isActive('form') && isDraft"
           :form-data="formObj"
           :first-item-active="isFirstActive"
+          :is-draft="isDraft"
           @onInactive="onInactiveForm"
           @onActive="focusMatchForm"
           @removeIdList="removeIdList"
