@@ -2,6 +2,7 @@ import type { Action } from 'svelte/action';
 import Popover from './Popover.svelte';
 import type { LocaleCode } from '$lib/i18n/locales';
 import type { ResourceData } from '$lib/types/resourceData';
+import { mount, unmount } from 'svelte';
 
 /**
  * Svelte action used for showing either a generic title or decorated data for a resource (by supplying the resource id or resource data).
@@ -18,14 +19,20 @@ import type { ResourceData } from '$lib/types/resourceData';
  * - [] Closes popover immediately when the URL changes
  */
 
-export const popover: Action<
-	HTMLElement,
-	{
-		title?: string;
-		resource?: { id: string; lang: LocaleCode } | { data: ResourceData[] };
-		placeAsSibling?: boolean; // place popover next to node in the DOM (to force it on top of modal, for example)
+type Parameter = {
+	title?: string;
+	resource?: { id: string; lang: LocaleCode } | { data: ResourceData[] };
+	placeAsSibling?: boolean; // place popover next to node in the DOM (to force it on top of modal, for example)
+};
+
+export const popover: Action<HTMLElement, Parameter> = (
+	node,
+	{ title, resource, placeAsSibling }: Parameter = {
+		title: undefined,
+		resource: undefined,
+		placeAsSibling: false
 	}
-> = (node: HTMLElement, { title = undefined, resource = undefined, placeAsSibling = false }) => {
+) => {
 	const FETCH_DELAY = 250;
 	const ATTACH_DELAY = 500;
 	const REMOVE_DELAY = 200;
@@ -36,7 +43,7 @@ export const popover: Action<
 	}
 
 	let attached = false;
-	let floatingElement: Popover | null = null;
+	let floatingElement: typeof Popover;
 	let cancelAttach: (reason?: unknown) => void;
 	let cancelRemove: (reason?: unknown) => void;
 	let cancelFetch: (reason?: unknown) => void;
@@ -60,7 +67,7 @@ export const popover: Action<
 					})
 				]);
 
-				floatingElement = new Popover({
+				floatingElement = mount(Popover, {
 					target: container,
 					props: {
 						referenceElement: node,
@@ -96,7 +103,9 @@ export const popover: Action<
 		cancelAttach?.();
 		cancelFetch?.();
 		cancelRemove?.();
-		floatingElement?.$destroy();
+		if (floatingElement) {
+			unmount(floatingElement);
+		}
 		attached = false;
 	}
 
