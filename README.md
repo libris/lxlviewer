@@ -10,4 +10,5 @@ View the respective directory and their READMEs for more information.
 * `idkbse` - id.kb.se
 * `lxljs` - Utility library
 * `lxl-web` - New Libris search
+* `packages/supersearch` - Supersearch component library
 
