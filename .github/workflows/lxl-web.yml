@@ -22,7 +22,7 @@ jobs:
         run: yarn install --frozen-lockfile
         working-directory: ./lxljs
       - name: Install dependencies
-        run: npm ci --omit=optional
+        run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
@@ -54,7 +54,7 @@ jobs:
         run: yarn install --frozen-lockfile
         working-directory: ./lxljs
       - name: Install dependencies
-        run: npm ci --omit=optional
+        run: npm ci
       - name: Build and run Lighthouse CI
         env:
           API_URL: ${{ secrets.API_URL }}
