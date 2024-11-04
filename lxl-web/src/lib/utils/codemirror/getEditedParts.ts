@@ -20,12 +20,15 @@ function getEditedParts({ value, cursor }: { value: string; cursor: number }): {
 	qualifierValue: string | undefined | null;
 } {
 	// word start = last whitespace not in quote from start to cursor
-	const wordFromIndex = whitespacesOutsideOfQuotes(value.slice(0, cursor)).pop() || 0;
+	const lastWhitespacePosition = whitespacesOutsideOfQuotes(value.slice(0, cursor)).pop();
+	const wordFromIndex =
+		typeof lastWhitespacePosition !== 'undefined' ? lastWhitespacePosition + 1 : 0;
 
 	// word end = first whitespace not in quote from word start to end
 	const wordToIndex =
 		wordFromIndex +
-		(whitespacesOutsideOfQuotes(value.slice(wordFromIndex)).shift() || value.length);
+		(whitespacesOutsideOfQuotes(value.slice(wordFromIndex)).shift() ||
+			value.slice(wordFromIndex).length);
 
 	const word = value.slice(wordFromIndex, wordToIndex).trim();
 	const wordRange = { from: wordFromIndex, to: wordToIndex };
@@ -82,10 +85,7 @@ function whitespacesOutsideOfQuotes(str: string) {
 		if (char === '"') {
 			inQuotes = !inQuotes;
 		} else if (/\s/.test(char) && !inQuotes) {
-			if (i > 0) {
-				// ignore opening whitespace
-				resultArr.push(i);
-			}
+			resultArr.push(i);
 		}
 	}
 	return resultArr;

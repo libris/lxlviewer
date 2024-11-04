@@ -2,6 +2,7 @@ import { EditorState, Prec } from '@codemirror/state';
 import { QUALIFIER_REGEXP } from '$lib/utils/codemirror/extensions/qualifierWidgets';
 
 const ENDS_WITH_WHITESPACE = new RegExp(/\s$/);
+const BEGINS_WITH_WHITESPACE = new RegExp(/^\s/);
 
 /**
  * Prevents existing qualifier widgets to be edited if inserting a character before them (by adding an extra whitespace after the inserted character)
@@ -22,7 +23,8 @@ const preventInsertBeforeQualifier = Prec.highest(
 				inserted.length &&
 				(fromA === 0 || ENDS_WITH_WHITESPACE.test(contentBefore)) && // test if editing the beginning of the string or if there is a whitespace before the inserted characters
 				!ENDS_WITH_WHITESPACE.test(inserted.toString()) && // only proceed if inserted content doesn't end with a whitespace
-				QUALIFIER_REGEXP.test(contentAfter) // test if inserted character is followed by a qualifier
+				QUALIFIER_REGEXP.test(contentAfter) && // test if inserted character is followed by a qualifier
+				!BEGINS_WITH_WHITESPACE.test(contentAfter) // if we already inserted whitespace, we don't want to keep doing it
 			) {
 				insertSpacePos = toB;
 			}
