@@ -40,6 +40,7 @@
 		"eslint": "^9.9.0",
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-svelte": "^2.43.0",
+		"estree-walker": "^3.0.3",
 		"globals": "^15.9.0",
 		"husky": "^9.1.4",
 		"jmespath": "^0.16.0",
