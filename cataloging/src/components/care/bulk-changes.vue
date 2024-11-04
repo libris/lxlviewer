@@ -724,6 +724,7 @@ export default {
           :preview-diff="formPreviewDiff"
           :has-unsaved="hasUnsavedChanges"
           :is-draft="isDraft"
+          :spec-type="specType"
           @onInactive="onInactiveTargetForm"
           @onActive="focusTargetForm"
         />

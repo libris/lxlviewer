@@ -4,7 +4,7 @@ import FieldAdder from '@/components/inspector/field-adder.vue';
 import { mapGetters } from 'vuex';
 import {isEmpty} from 'lodash-es';
 import {translatePhrase} from "../../utils/filters.js";
-
+import {Type} from "@/utils/bulk.js";
 export default {
   name: 'target-form-builder.vue',
   components: { FieldAdder, EntityForm },
@@ -39,6 +39,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    specType: {
+      type: String,
+      default: '',
+    }
   },
   computed: {
     ...mapGetters([
@@ -55,6 +59,9 @@ export default {
     },
     showPreview() {
       return this.hasPreviewData && !this.hasUnsaved;
+    },
+    showTargetForm() {
+      return this.isDraft || this.specType === Type.Create;
     }
   },
   emits: ['onInactive', 'onActive'],
@@ -86,7 +93,7 @@ export default {
       {{ this.title }}
     </div>
     <div class="TargetFormBuilder-body" :class="{ 'has-selection': isActive }">
-      <div v-if="isDraft">
+      <div v-if="showTargetForm">
         <entity-form
           :editing-object="'mainEntity'"
           :key="formTab.id"
