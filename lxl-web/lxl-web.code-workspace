@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../lxljs"
+		},
+		{
+			"path": "../packages"
 		}
 	],
 	"settings": {
