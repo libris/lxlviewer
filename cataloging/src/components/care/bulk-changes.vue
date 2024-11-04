@@ -365,7 +365,7 @@ export default {
       this.showConfirmRunModal = true;
     },
     toggleExportAffected() {
-      this.currentBulkChange[SHOULD_UPDATE_TIMESTAMP_KEY] = !!this.shouldExportAffected;
+      this.currentBulkChange[SHOULD_UPDATE_TIMESTAMP_KEY] = !this.shouldExportAffected;
     },
     save() {
       this.resetLastAdded();
