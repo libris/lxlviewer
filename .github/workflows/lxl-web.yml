@@ -16,11 +16,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Setup yarn
-        run: npm install -g yarn
-      - name: Install lxljs dependency
-        run: yarn install --frozen-lockfile
-        working-directory: ./lxljs
       - name: Install dependencies
         run: npm ci
       - name: Install Playwright Browsers
@@ -48,11 +43,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Setup yarn
-        run: npm install -g yarn
-      - name: Install lxljs dependency
-        run: yarn install --frozen-lockfile
-        working-directory: ./lxljs
       - name: Install dependencies
         run: npm ci
       - name: Build and run Lighthouse CI
