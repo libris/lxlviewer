@@ -868,7 +868,14 @@
               }
             ],
             "subject": []
-          }
+            },
+           "contribution": [
+        {
+          "@type": "Contribution",
+          "agent": null,      
+          "role": []
+        }
+      ]
         }
       }
     },
