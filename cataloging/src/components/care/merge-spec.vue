@@ -3,13 +3,10 @@ import EntityForm from '@/components/inspector/entity-form.vue';
 import FieldAdder from '@/components/inspector/field-adder.vue';
 import { mapGetters } from 'vuex';
 import {convertResourceLink, translatePhrase} from "../../utils/filters.js";
-import IdList from '@/components/care/id-list.vue';
-import { HAS_ID_KEY, VALUE_FROM_KEY } from "@/utils/bulk.js";
-import { get } from "lodash-es";
 
 export default {
   name: 'merge-spec.vue',
-  components: {IdList, FieldAdder, EntityForm},
+  components: {FieldAdder, EntityForm},
   data() {
     return {
       selected: true,
@@ -47,14 +44,8 @@ export default {
     formTab() {
       return { id: 'form', text: 'test' };
     },
-    showIdList() {
-      return typeof get(this.formData,[HAS_ID_KEY, VALUE_FROM_KEY]) !== 'undefined';
-    },
-    idListLink() {
-      return this.formData[HAS_ID_KEY][VALUE_FROM_KEY]['@id'];
-    },
   },
-  emits: ['onInactive', 'onActive', 'removeIdList'],
+  emits: ['onInactive', 'onActive'],
   methods: {
     convertResourceLink,
     translatePhrase,
@@ -64,9 +55,6 @@ export default {
     onActive() {
       this.$emit('onActive');
     },
-    removeIdList() {
-      this.$emit('removeIdList');
-    }
   },
 };
 </script>
@@ -78,11 +66,6 @@ export default {
       {{ this.title }}
     </div>
     <div class="MergeSpec-body" :class="{ 'has-selection': isActive }">
-      <id-list
-        :id-list-link="this.idListLink"
-        :show-remove-button="firstItemActive"
-        v-if="showIdList"
-        @removeIdList="removeIdList"/>
       <div>
         <entity-form
           :editing-object="'mainEntity'"
@@ -109,28 +92,6 @@ export default {
       background-color: @brand-faded;
       color: @black;
     }
-  }
-
-  &-idList {
-    align-items: center;
-    display: flex;
-    border: 1px solid @grey-lighter;
-    margin-bottom: 20px;
-    width: 100%;
-  }
-
-  &-idLabel {
-    width: fit-content;
-    font-size: 12px;
-    padding-bottom: 4px;
-  }
-
-  &-link {
-    padding: 10px 20px;
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   &-closeButton {
