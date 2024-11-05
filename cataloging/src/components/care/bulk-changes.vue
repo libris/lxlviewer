@@ -103,7 +103,7 @@ export default {
       return this.isActive('targetForm') ? this.inspector.data.mainEntity : this.currentSpec[TARGET_FORM_KEY];
     },
     mergeObj() {
-      return this.isActive('mergeSpec') ? this.inspector.data.mainEntity : this.currentSpec;
+      return this.isActive('mergeSpec') ? this.inspector.data.mainEntity : this.currentBulkChange[CHANGE_SPEC_KEY];
     },
     formTitle() {
       if (this.specType === Type.Delete) {
