@@ -304,7 +304,11 @@ export default {
       if (this.activeStep === 'form') {
         this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
       }
-      this.currentSpec[TARGET_FORM_KEY] = cloneDeep(this.inspector.data.mainEntity);
+      if (this.isCreateSpec) {
+        this.currentSpec[TARGET_FORM_KEY] = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
+      } else {
+        this.currentSpec[TARGET_FORM_KEY] = cloneDeep(this.inspector.data.mainEntity);
+      }
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
