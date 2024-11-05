@@ -6,7 +6,6 @@ import Preview from '@/components/care/preview.vue';
 import BulkChangesHeader from "@/components/care/bulk-changes-header.vue";
 import { mapGetters } from 'vuex';
 import { cloneDeep, get, isEmpty, isEqual } from 'lodash-es';
-import emptyTemplate from './templates/empty.json';
 import toolbar from "@/components/inspector/bulkchange-toolbar.vue";
 import { labelByLang, translatePhrase } from "@/utils/filters.js";
 import * as LayoutUtil from '@/utils/layout';
@@ -19,7 +18,7 @@ import * as RecordUtil from "@/utils/record.js";
 import * as LxlDataUtil from "lxljs/data.js";
 import * as HistoryUtil from "@/utils/history.js";
 import ReverseRelations from "../inspector/reverse-relations.vue";
-import { appendIds } from "../../utils/data.js";
+
 import {
   ANY_OF_TYPE,
   CHANGE_SPEC_KEY,
@@ -54,12 +53,6 @@ export default {
       showOverview: true,
       inlinedIds: [],
       activeStep: '',
-      allSteps: [
-        'mergeSpec',
-        'form',
-        'targetForm',
-        'preview',
-      ],
       currentBulkChange: {},
       currentSpec: {},
       lastFetchedSpec: {},
@@ -169,7 +162,6 @@ export default {
       return this.isLoud;
     },
     steps() {
-      // Just return the steps needed for each type
       if (this.isUpdateSpec) {
         return ['form', 'targetForm', 'preview'];
       } else if (this.isMergeSpec) {
@@ -178,6 +170,8 @@ export default {
         return ['targetForm', 'preview'];
       } else if (this.isDeleteSpec) {
         return ['form', 'preview'];
+      } else {
+        return ['form', 'targetForm', 'preview'];
       }
     },
     hasUnsavedChanges() {
@@ -209,8 +203,10 @@ export default {
       return this.specType === Type.Delete;
     },
     specType() {
-      console.log('this.currentSpec.type', JSON.stringify(this.currentSpec['@type']));
       return this.currentSpec['@type'];
+    },
+    isInitialized() {
+      return !isEmpty(this.currentSpec) && typeof this.currentSpec !== 'undefined';
     }
   },
   methods: {
@@ -221,7 +217,6 @@ export default {
     },
     initNew() {
       const initData = this.directoryCare.bulkChange.initData;
-      console.log('initData', JSON.stringify(this.directoryCare.bulkChange.initData));
       const record = initData['@graph'][0];
       const mainEntity = initData['@graph'][1];
       this.currentBulkChange = mainEntity;
@@ -252,11 +247,6 @@ export default {
       });
     },
     initFromRecord() {
-      this.setActive(this.steps[0]);
-      // FIXME: remove emptyTemplate
-      const initial = emptyTemplate.mainEntity[CHANGE_SPEC_KEY][MATCH_FORM_KEY];
-      this.setInspectorData(initial);
-      this.currentSpec = emptyTemplate.mainEntity[CHANGE_SPEC_KEY]; //FIXME: to avoid undefined on init
       this.fetchRecord(this.documentId);
     },
     fetchRecord(fnurgel) {
@@ -290,12 +280,12 @@ export default {
           this.record = bulkChange.record;
           this.lastFetchedSpec = cloneDeep(this.currentSpec);
 
+          this.setActive(this.steps[0]);
           if (this.isActive('form')) {
             this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
           } else if (this.isActive('targetForm')){
             this.setInspectorData(this.currentSpec[TARGET_FORM_KEY])
           } else if (this.isActive('mergeSpec')) {
-            console.log('hej')
             this.setInspectorData(this.currentSpec);
           }
           if (this.isDraft) {
@@ -342,6 +332,9 @@ export default {
       } else {
         this.currentSpec[TARGET_FORM_KEY] = cloneDeep(this.inspector.data.mainEntity);
       }
+    },
+    onInactiveMergeSpec() {
+      this.currentBulkChange[CHANGE_SPEC_KEY] = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
@@ -417,6 +410,8 @@ export default {
         this.onInactiveTargetForm();
       } else if (this.isActive('targetForm')) {
         this.onInactiveTargetForm();
+      } else if (this.isActive('mergeSpec')) {
+        this.onInactiveMergeSpec();
       }
       this.saveBulkChange();
     },
@@ -448,9 +443,8 @@ export default {
           this.formPreviewDiff.added = formDisplayPaths.added.map(path => `mainEntity.${path}`);
           this.formPreviewDiff.modified = formDisplayPaths.modified.map(path => `mainEntity.${path}`);
         }
-
         this.totalItems = result.totalItems;
-        if (this.totalItems === 0) {
+        if (this.totalItems === 0 || typeof totalItems === 'undefined') {
           this.resetPreviewData();
           return;
         } else {
@@ -719,7 +713,7 @@ export default {
       }
     }
   },
-    beforeMount() {
+  mounted() {
     if (this.isNew) {
       this.initNew();
     } else {
@@ -733,7 +727,7 @@ export default {
 };
 </script>
 <template>
-  <div class="BulkChanges row">
+  <div class="BulkChanges row" v-if="isInitialized">
     <div
       class="col-sm-12"
       :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
@@ -752,6 +746,7 @@ export default {
           :is-active="isActive('mergeSpec') && isDraft"
           :form-data="mergeObj"
           :first-item-active="isFirstActive"
+          @onInactive="onInactiveMergeSpec"
           @onActive="focusMergeSpec"
         />
       </div>

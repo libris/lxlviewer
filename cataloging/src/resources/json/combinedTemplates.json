@@ -4628,9 +4628,6 @@
             "@type": "bulk:Create",
             "bulk:targetForm": {
               "@type": "Item"
-            },
-            "bulk:matchForm": {
-              "@type": "Item"
             }
           }
         },
