@@ -110,12 +110,7 @@ export default {
       return this.isActive('targetForm') ? this.inspector.data.mainEntity : this.currentSpec[TARGET_FORM_KEY];
     },
     mergeObj() {
-      const mergeObj = this.isActive('mergeSpec') ? this.inspector.data.mainEntity : this.currentSpec;
-      if (typeof mergeObj === 'undefined') {
-        return {};
-      } else {
-        return mergeObj;
-      }
+      return this.isActive('mergeSpec') ? this.inspector.data.mainEntity : this.currentSpec;
     },
     formTitle() {
       if (this.specType === Type.Delete) {
@@ -124,7 +119,7 @@ export default {
       return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Selection')}`;
     },
     mergeTitle() {
-      return `${this.steps.indexOf('form') + 1}. ${translatePhrase('test')}`;
+      return `${this.steps.indexOf('mergeSpec') + 1}. ${translatePhrase('Merge')}`;
     },
     changesTitle() {
       if (this.specType === Type.Create) {
@@ -174,14 +169,15 @@ export default {
       return this.isLoud;
     },
     steps() {
-      if (!this.hasTargetForm) {
-        return this.allSteps.filter(step => step !== 'targetForm');
-      } else if(!this.hasMatchForm) {
-        return this.allSteps.filter(step => step !== 'form');
-      } else if(!this.hasMergeSpec) {
-          return this.allSteps.filter(step => step !== 'mergeSpec')
-      } else {
-        return this.allSteps;
+      // Just return the steps needed for each type
+      if (this.isUpdateSpec) {
+        return ['form', 'targetForm', 'preview'];
+      } else if (this.isMergeSpec) {
+        return ['mergeSpec', 'preview'];
+      } else if (this.isCreateSpec) {
+        return ['targetForm', 'preview'];
+      } else if (this.isDeleteSpec) {
+        return ['form', 'preview'];
       }
     },
     hasUnsavedChanges() {
@@ -193,18 +189,27 @@ export default {
       return false;
     },
     hasTargetForm() {
-      return this.specType !== Type.Delete;
+      return this.specType !== Type.Delete && this.specType !== Type.Merge;
     },
     hasMatchForm() {
-      return this.specType !== Type.Create || this.specType !== Type.Merge;
+      // console.log('hasMatchForm', JSON.stringify(this.specType !== Type.Create && this.specType !== Type.Merge));
+      // console.log('specType', JSON.stringify(this.specType));
+      return this.specType !== Type.Create && this.specType !== Type.Merge;
     },
-    hasMergeSpec() {
+    isUpdateSpec() {
+      return this.specType === Type.Update;
+    },
+    isMergeSpec() {
       return this.specType === Type.Merge;
     },
     isCreateSpec() {
       return this.specType === Type.Create;
     },
+    isDeleteSpec() {
+      return this.specType === Type.Delete;
+    },
     specType() {
+      console.log('this.currentSpec.type', JSON.stringify(this.currentSpec['@type']));
       return this.currentSpec['@type'];
     }
   },
@@ -216,7 +221,7 @@ export default {
     },
     initNew() {
       const initData = this.directoryCare.bulkChange.initData;
-
+      console.log('initData', JSON.stringify(this.directoryCare.bulkChange.initData));
       const record = initData['@graph'][0];
       const mainEntity = initData['@graph'][1];
       this.currentBulkChange = mainEntity;
@@ -229,10 +234,17 @@ export default {
       DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
 
       this.setActive(this.steps[0]);
-      const initialForm = appendIds(mainEntity[CHANGE_SPEC_KEY][MATCH_FORM_KEY]);
-      // this.currentSpec[MATCH_FORM_KEY] = initialForm;
-      // this.currentSpec[TARGET_FORM_KEY] = initialForm;
-      console.log('this.currentSpec', JSON.stringify(this.currentSpec));
+      let initialForm;
+      if (this.isUpdateSpec) {
+        initialForm = mainEntity[CHANGE_SPEC_KEY][MATCH_FORM_KEY];
+      } else if (this.isMergeSpec) {
+        initialForm = mainEntity[CHANGE_SPEC_KEY];
+      } else if (this.isCreateSpec) {
+        initialForm = mainEntity[CHANGE_SPEC_KEY][TARGET_FORM_KEY];
+      } else if (this.isDeleteSpec) {
+        initialForm = mainEntity[CHANGE_SPEC_KEY][MATCH_FORM_KEY];
+      }
+
       this.setInspectorData(initialForm);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
@@ -733,7 +745,7 @@ export default {
         :is-draft="isDraft"
         :spec-type="specType"
       />
-      <div ref="mergeSpec" v-if="hasMergeSpec">
+      <div ref="mergeSpec" v-if="isMergeSpec">
         <merge-spec
           :title="mergeTitle"
           tabindex="0"
