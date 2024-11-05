@@ -103,7 +103,7 @@ export const popover: Action<HTMLElement, Parameter> = (
 		cancelAttach?.();
 		cancelFetch?.();
 		cancelRemove?.();
-		if (floatingElement) {
+		if (attached && floatingElement) {
 			unmount(floatingElement);
 		}
 		attached = false;
