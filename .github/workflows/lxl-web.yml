@@ -46,11 +46,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build and run Lighthouse CI
+        shell: bash
         env:
           API_URL: ${{ secrets.API_URL }}
           ID_URL: ${{ secrets.ID_URL }}
+          LHCI_SERVER_BASE_URL: ${{ secrets.LHCI_SERVER_BASE_URL }}
+          LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          LHCI_SERVER_USERNAME: ${{ secrets.LHCI_SERVER_USERNAME }}
+          LHCI_SERVER_PASSWORD: ${{ secrets.LHCI_SERVER_PASSWORD }}
         run: |
           npm run build
-          npm install -g @lhci/cli@0.13.x
-          lhci autorun --upload.githubToken="$LHCI_GITHUB_TOKEN" || echo "LHCI failed!"
+          npm install -g @lhci/cli@0.14.0
+          lhci autorun --upload.target=lhci --upload.serverBaseUrl="$LHCI_SERVER_BASE_URL" --upload.token="$LHCI_TOKEN" --upload.githubToken="$LHCI_GITHUB_APP_TOKEN" --upload.basicAuth.username="$LHCI_SERVER_USERNAME" --upload.basicAuth.password="$LHCI_SERVER_PASSWORD" || echo "LHCI failed!"
