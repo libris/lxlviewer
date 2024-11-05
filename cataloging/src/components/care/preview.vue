@@ -93,6 +93,9 @@ export default {
     },
     isUpdateSpec() {
       return this.specType === Type.Update;
+    },
+    isMergeSpec() {
+      return this.specType === Type.Merge;
     }
   },
   emits: ['onInactive', 'onActive'],
@@ -146,7 +149,7 @@ export default {
           :form-data="previewData"
           :locked="true"
         />
-        <entity-form v-if="isDeleteSpec"
+        <entity-form v-if="isDeleteSpec || isMergeSpec"
           :editing-object="'mainEntity'"
           :key="formTab.id"
           :is-active="true"
