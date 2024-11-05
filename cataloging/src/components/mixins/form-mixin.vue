@@ -194,7 +194,7 @@ export default {
       return propertyList;
     },
     allowed() {
-      if (this.formType === 'Any') {
+      if (this.formType === ANY_TYPE) {
         return this.allVocabProperties;
       } else {
         return VocabUtil.getPropertiesFromArray(

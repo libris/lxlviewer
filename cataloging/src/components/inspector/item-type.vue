@@ -53,7 +53,7 @@ export default {
       if (isEmpty(term)) {
         return;
       }
-      if (term?.id === 'Any') {
+      if (term?.id === ANY_TYPE) {
         return translatePhrase('Unspecified');
       } else {
         return DisplayUtil.getLabelWithTreeDepth(term, this.settings, this.resources);
