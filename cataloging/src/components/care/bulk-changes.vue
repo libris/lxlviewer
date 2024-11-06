@@ -444,7 +444,7 @@ export default {
           this.formPreviewDiff.modified = formDisplayPaths.modified.map(path => `mainEntity.${path}`);
         }
         this.totalItems = result.totalItems;
-        if (this.totalItems === 0 || typeof totalItems === 'undefined') {
+        if (this.totalItems === 0 || typeof this.totalItems === 'undefined') {
           this.resetPreviewData();
           return;
         } else {
