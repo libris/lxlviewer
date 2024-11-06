@@ -388,8 +388,7 @@ export default {
       return this.isLangMap && this.hasProp;
     },
     isHidden() {
-      return (this.isLangMapWithPartner && this.diff == null)
-        ;
+      return this.isLangMapWithPartner && this.diff == null;
     },
     propertyTypes() {
       return VocabUtil.getPropertyTypes(
