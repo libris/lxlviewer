@@ -97,13 +97,22 @@ export default {
       return this.inspector.data.mainEntity;
     },
     formObj() {
-      return this.isActive('form') ? this.inspector.data.mainEntity : this.currentSpec[MATCH_FORM_KEY];
+      return this.matchFormActive ? this.inspector.data.mainEntity : this.currentSpec[MATCH_FORM_KEY];
     },
     targetFormObj() {
-      return this.isActive('targetForm') ? this.inspector.data.mainEntity : this.currentSpec[TARGET_FORM_KEY];
+      return this.targetFormActive ? this.inspector.data.mainEntity : this.currentSpec[TARGET_FORM_KEY];
     },
     mergeObj() {
-      return this.isActive('mergeSpec') ? this.inspector.data.mainEntity : this.currentBulkChange[CHANGE_SPEC_KEY];
+      return this.mergeSpecActive ? this.inspector.data.mainEntity : this.currentBulkChange[CHANGE_SPEC_KEY];
+    },
+    matchFormActive() {
+      return this.isActive('form');
+    },
+    targetFormActive() {
+      return this.isActive('targetForm');
+    },
+    mergeSpecActive() {
+      return this.isActive('mergeSpec');
     },
     formTitle() {
       if (this.specType === Type.Delete) {
