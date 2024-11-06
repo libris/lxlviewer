@@ -71,7 +71,7 @@ export default {
       return !isEmpty(this.previewData) && !isEmpty(this.previewDiff);
     },
     showPreview() {
-      return this.hasPreviewData;
+      return this.hasPreviewData && !this.hasUnsaved;
     },
     noHitsLabel() {
       if (this.hasUnsaved)  {

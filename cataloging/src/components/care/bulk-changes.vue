@@ -176,9 +176,8 @@ export default {
     },
     hasUnsavedChanges() {
       if (this.lastFetchedSpec && this.isDraft) {
-        const matchFormEqual = isEqual(this.formObj, this.lastFetchedSpec[MATCH_FORM_KEY]);
-        const targetFormEqual = isEqual(this.targetFormObj, this.lastFetchedSpec[MATCH_FORM_KEY]);
-        return !matchFormEqual || !targetFormEqual;
+        const specIsEqual = isEqual(this.currentSpec, this.lastFetchedSpec);
+        return !specIsEqual;
       }
       return false;
     },
@@ -186,8 +185,6 @@ export default {
       return this.specType !== Type.Delete && this.specType !== Type.Merge;
     },
     hasMatchForm() {
-      // console.log('hasMatchForm', JSON.stringify(this.specType !== Type.Create && this.specType !== Type.Merge));
-      // console.log('specType', JSON.stringify(this.specType));
       return this.specType !== Type.Create && this.specType !== Type.Merge;
     },
     isUpdateSpec() {
@@ -247,6 +244,7 @@ export default {
       });
     },
     initFromRecord() {
+      this.setActive(this.steps[0]);
       this.fetchRecord(this.documentId);
     },
     fetchRecord(fnurgel) {
@@ -280,11 +278,10 @@ export default {
           this.record = bulkChange.record;
           this.lastFetchedSpec = cloneDeep(this.currentSpec);
 
-          this.setActive(this.steps[0]);
           if (this.isActive('form')) {
             this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
           } else if (this.isActive('targetForm')){
-            this.setInspectorData(this.currentSpec[TARGET_FORM_KEY])
+            this.setInspectorData(this.currentSpec[TARGET_FORM_KEY]);
           } else if (this.isActive('mergeSpec')) {
             this.setInspectorData(this.currentSpec);
           }
@@ -304,6 +301,7 @@ export default {
       if (typeof formData === 'undefined') {
         return;
       }
+
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -324,13 +322,13 @@ export default {
       }
     },
     onInactiveTargetForm() {
-      if (this.activeStep === 'form') {
-        this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
-      }
       if (this.isCreateSpec) {
         this.currentSpec[TARGET_FORM_KEY] = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
       } else {
         this.currentSpec[TARGET_FORM_KEY] = cloneDeep(this.inspector.data.mainEntity);
+      }
+      if (this.activeStep === 'form') {
+        this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
       }
     },
     onInactiveMergeSpec() {
