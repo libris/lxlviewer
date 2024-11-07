@@ -1,20 +1,22 @@
 @top Program { expression* }
 
-@skip { space }
+@skip { space | LineComment }
 
 expression {
   Identifier |
   String |
-  CompareOperator |
+  Boolean |
   Application { "(" expression* ")" }
 }
 
 @tokens {
-  Identifier { $[a-zA-ZåäöÅÄÖ0-9:]+ }
+  Identifier { $[a-zA-Z_\-0-9]+ }
 
   String { '"' (!["\\] | "\\" _)* '"' }
 
-  CompareOperator { ">" | "<" | ">=" | "<=" }
+  Boolean { "#t" | "#f" }
+
+  LineComment { ";" ![\n]* }
 
   space { $[ \t\n\r]+ }
 
