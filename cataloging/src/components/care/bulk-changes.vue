@@ -69,6 +69,7 @@ export default {
       fullPreviewDiff: {},
       showOverwriteWarning: false,
       showConfirmRunModal: false,
+      completePreview: true,
       loadingPreview: {
         'next': false,
         'previous': false
@@ -461,6 +462,14 @@ export default {
           this.formPreviewDiff.modified = formDisplayPaths.modified.map(path => `mainEntity.${path}`);
         }
         this.totalItems = result.totalItems;
+
+        if (result['_complete'] === false) {
+          this.completePreview = false;
+          setTimeout(() => { this.getPreviewFromUrl(fetchUrl); }, 250);
+        } else {
+          this.completePreview = true;
+        }
+
         if (this.totalItems === 0 || typeof this.totalItems === 'undefined') {
           this.resetPreviewData();
           return;
@@ -803,6 +812,7 @@ export default {
           :form-data="fullPreview"
           :preview-data="fullPreviewData"
           :preview-diff="fullPreviewDiff"
+          :complete="completePreview"
           :offset="itemOffset"
           :total-items="totalItems"
           :finished="isFinished"
