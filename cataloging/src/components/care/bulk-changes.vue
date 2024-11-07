@@ -1,11 +1,11 @@
 <script>
 import FormBuilder from '@/components/care/form-builder.vue';
 import TargetFormBuilder from '@/components/care/target-form-builder.vue';
+import MergeSpec from '@/components/care/merge-spec.vue';
 import Preview from '@/components/care/preview.vue';
 import BulkChangesHeader from "@/components/care/bulk-changes-header.vue";
 import { mapGetters } from 'vuex';
 import { cloneDeep, get, isEmpty, isEqual } from 'lodash-es';
-import emptyTemplate from './templates/empty.json';
 import toolbar from "@/components/inspector/bulkchange-toolbar.vue";
 import { labelByLang, translatePhrase } from "@/utils/filters.js";
 import * as LayoutUtil from '@/utils/layout';
@@ -18,7 +18,7 @@ import * as RecordUtil from "@/utils/record.js";
 import * as LxlDataUtil from "lxljs/data.js";
 import * as HistoryUtil from "@/utils/history.js";
 import ReverseRelations from "../inspector/reverse-relations.vue";
-import { appendIds } from "../../utils/data.js";
+
 import {
   ANY_OF_TYPE,
   CHANGE_SPEC_KEY,
@@ -40,6 +40,7 @@ export default {
     toolbar,
     FormBuilder,
     TargetFormBuilder,
+    MergeSpec,
     Preview,
     BulkChangesHeader,
     'modal-component': ModalComponent,
@@ -52,11 +53,6 @@ export default {
       showOverview: true,
       inlinedIds: [],
       activeStep: '',
-      allSteps: [
-        'form',
-        'targetForm',
-        'preview',
-      ],
       currentBulkChange: {},
       currentSpec: {},
       lastFetchedSpec: {},
@@ -101,16 +97,31 @@ export default {
       return this.inspector.data.mainEntity;
     },
     formObj() {
-      return this.isActive('form') ? this.inspector.data.mainEntity : this.currentSpec[MATCH_FORM_KEY];
+      return this.matchFormActive ? this.inspector.data.mainEntity : this.currentSpec[MATCH_FORM_KEY];
     },
     targetFormObj() {
-      return this.isActive('targetForm') ? this.inspector.data.mainEntity : this.currentSpec[TARGET_FORM_KEY];
+      return this.targetFormActive ? this.inspector.data.mainEntity : this.currentSpec[TARGET_FORM_KEY];
+    },
+    mergeObj() {
+      return this.mergeSpecActive ? this.inspector.data.mainEntity : this.currentBulkChange[CHANGE_SPEC_KEY];
+    },
+    matchFormActive() {
+      return this.isActive('form');
+    },
+    targetFormActive() {
+      return this.isActive('targetForm');
+    },
+    mergeSpecActive() {
+      return this.isActive('mergeSpec');
     },
     formTitle() {
       if (this.specType === Type.Delete) {
-        return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Remove records')}`
+        return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Remove records')}`;
       }
-      return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Selection')}`
+      return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Selection')}`;
+    },
+    mergeTitle() {
+      return `${this.steps.indexOf('mergeSpec') + 1}. ${translatePhrase('Merge')}`;
     },
     changesTitle() {
       if (this.specType === Type.Create) {
@@ -160,33 +171,48 @@ export default {
       return this.isLoud;
     },
     steps() {
-      if (!this.hasTargetForm) {
-        return this.allSteps.filter(step => step !== 'targetForm');
-      } else if(!this.hasMatchForm) {
-        return this.allSteps.filter(step => step !== 'form')
+      if (this.isUpdateSpec) {
+        return ['form', 'targetForm', 'preview'];
+      } else if (this.isMergeSpec) {
+        return ['mergeSpec', 'preview'];
+      } else if (this.isCreateSpec) {
+        return ['targetForm', 'preview'];
+      } else if (this.isDeleteSpec) {
+        return ['form', 'preview'];
       } else {
-        return this.allSteps;
+        return ['form', 'targetForm', 'preview'];
       }
     },
     hasUnsavedChanges() {
       if (this.lastFetchedSpec && this.isDraft) {
-        const matchFormEqual = isEqual(this.formObj, this.lastFetchedSpec[MATCH_FORM_KEY]);
-        const targetFormEqual = isEqual(this.targetFormObj, this.lastFetchedSpec[MATCH_FORM_KEY]);
-        return !matchFormEqual || !targetFormEqual;
+        const specIsEqual = isEqual(this.currentSpec, this.lastFetchedSpec);
+        return !specIsEqual;
       }
       return false;
     },
     hasTargetForm() {
-      return this.specType !== Type.Delete;
+      return this.specType !== Type.Delete && this.specType !== Type.Merge;
     },
     hasMatchForm() {
-      return this.specType !== Type.Create;
+      return this.specType !== Type.Create && this.specType !== Type.Merge;
+    },
+    isUpdateSpec() {
+      return this.specType === Type.Update;
+    },
+    isMergeSpec() {
+      return this.specType === Type.Merge;
     },
     isCreateSpec() {
       return this.specType === Type.Create;
     },
+    isDeleteSpec() {
+      return this.specType === Type.Delete;
+    },
     specType() {
       return this.currentSpec['@type'];
+    },
+    isInitialized() {
+      return !isEmpty(this.currentSpec) && typeof this.currentSpec !== 'undefined';
     }
   },
   methods: {
@@ -197,7 +223,6 @@ export default {
     },
     initNew() {
       const initData = this.directoryCare.bulkChange.initData;
-
       const record = initData['@graph'][0];
       const mainEntity = initData['@graph'][1];
       this.currentBulkChange = mainEntity;
@@ -210,9 +235,17 @@ export default {
       DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
 
       this.setActive(this.steps[0]);
-      const initialForm = appendIds(mainEntity[CHANGE_SPEC_KEY][MATCH_FORM_KEY]);
-      this.currentSpec[MATCH_FORM_KEY] = initialForm;
-      this.currentSpec[TARGET_FORM_KEY] = initialForm;
+      let initialForm;
+      if (this.isUpdateSpec) {
+        initialForm = mainEntity[CHANGE_SPEC_KEY][MATCH_FORM_KEY];
+      } else if (this.isMergeSpec) {
+        initialForm = mainEntity[CHANGE_SPEC_KEY];
+      } else if (this.isCreateSpec) {
+        initialForm = mainEntity[CHANGE_SPEC_KEY][TARGET_FORM_KEY];
+      } else if (this.isDeleteSpec) {
+        initialForm = mainEntity[CHANGE_SPEC_KEY][MATCH_FORM_KEY];
+      }
+
       this.setInspectorData(initialForm);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
@@ -221,10 +254,6 @@ export default {
     },
     initFromRecord() {
       this.setActive(this.steps[0]);
-      // FIXME: remove emptyTemplate
-      const initial = emptyTemplate.mainEntity[CHANGE_SPEC_KEY][MATCH_FORM_KEY];
-      this.setInspectorData(initial);
-      this.currentSpec = emptyTemplate.mainEntity[CHANGE_SPEC_KEY]; //FIXME: to avoid undefined on init
       this.fetchRecord(this.documentId);
     },
     fetchRecord(fnurgel) {
@@ -261,9 +290,9 @@ export default {
           if (this.isActive('form')) {
             this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
           } else if (this.isActive('targetForm')){
-            this.setInspectorData(this.currentSpec[TARGET_FORM_KEY])
-          } else {
-            this.setInspectorData(this.currentSpec[MATCH_FORM_KEY])
+            this.setInspectorData(this.currentSpec[TARGET_FORM_KEY]);
+          } else if (this.isActive('mergeSpec')) {
+            this.setInspectorData(this.currentSpec);
           }
           if (this.isDraft) {
             this.$store.dispatch('pushInspectorEvent', {
@@ -281,6 +310,7 @@ export default {
       if (typeof formData === 'undefined') {
         return;
       }
+
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -301,14 +331,17 @@ export default {
       }
     },
     onInactiveTargetForm() {
-      if (this.activeStep === 'form') {
-        this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
-      }
       if (this.isCreateSpec) {
         this.currentSpec[TARGET_FORM_KEY] = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
       } else {
         this.currentSpec[TARGET_FORM_KEY] = cloneDeep(this.inspector.data.mainEntity);
       }
+      if (this.activeStep === 'form') {
+        this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
+      }
+    },
+    onInactiveMergeSpec() {
+      this.currentBulkChange[CHANGE_SPEC_KEY] = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
@@ -321,6 +354,9 @@ export default {
     },
     focusMatchForm() {
       LayoutUtil.ensureInViewport(this.$refs.matchForm);
+    },
+    focusMergeSpec() {
+      LayoutUtil.ensureInViewport(this.$refs.mergeSpec);
     },
     focusTargetForm() {
       LayoutUtil.ensureInViewport(this.$refs.targetForm);
@@ -381,6 +417,8 @@ export default {
         this.onInactiveTargetForm();
       } else if (this.isActive('targetForm')) {
         this.onInactiveTargetForm();
+      } else if (this.isActive('mergeSpec')) {
+        this.onInactiveMergeSpec();
       }
       this.saveBulkChange();
     },
@@ -412,9 +450,8 @@ export default {
           this.formPreviewDiff.added = formDisplayPaths.added.map(path => `mainEntity.${path}`);
           this.formPreviewDiff.modified = formDisplayPaths.modified.map(path => `mainEntity.${path}`);
         }
-
         this.totalItems = result.totalItems;
-        if (this.totalItems === 0) {
+        if (this.totalItems === 0 || typeof this.totalItems === 'undefined') {
           this.resetPreviewData();
           return;
         } else {
@@ -683,7 +720,7 @@ export default {
       }
     }
   },
-    beforeMount() {
+  mounted() {
     if (this.isNew) {
       this.initNew();
     } else {
@@ -697,7 +734,7 @@ export default {
 };
 </script>
 <template>
-  <div class="BulkChanges row">
+  <div class="BulkChanges row" v-if="isInitialized">
     <div
       class="col-sm-12"
       :class="{ 'col-md-11': !status.panelOpen, 'col-md-7': status.panelOpen }">
@@ -709,6 +746,17 @@ export default {
         :is-draft="isDraft"
         :spec-type="specType"
       />
+      <div ref="mergeSpec" v-if="isMergeSpec">
+        <merge-spec
+          :title="mergeTitle"
+          tabindex="0"
+          :is-active="isActive('mergeSpec') && isDraft"
+          :form-data="mergeObj"
+          :first-item-active="isFirstActive"
+          @onInactive="onInactiveMergeSpec"
+          @onActive="focusMergeSpec"
+        />
+      </div>
       <div ref="matchForm" v-if="hasMatchForm">
         <form-builder
           :title="formTitle"
