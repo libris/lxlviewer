@@ -8,6 +8,10 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
+### 2024-11-07
+
+- Inställningar för kakor
+
 ### 2024-10-14
 
 - Generella förbättringar i filterpanelen, t.ex möjlighet att sortera innehållet.
