@@ -19,6 +19,7 @@ export default {
         [Type.Update]: 'edit',
         [Type.Delete]: 'trash-o',
         [Type.Create]: 'plus',
+        [Type.Merge]: 'compress',
       },
     };
   },

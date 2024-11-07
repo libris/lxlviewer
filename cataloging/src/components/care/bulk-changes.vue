@@ -73,6 +73,7 @@ export default {
         'next': false,
         'previous': false
       },
+      isSaving: false,
       showIdListModal: false,
       idListUri: '',
       idListTempPath: ''
@@ -180,7 +181,7 @@ export default {
       } else if (this.isDeleteSpec) {
         return ['form', 'preview'];
       } else {
-        return ['form', 'targetForm', 'preview'];
+        return ['preview'];
       }
     },
     hasUnsavedChanges() {
@@ -191,10 +192,13 @@ export default {
       return false;
     },
     hasTargetForm() {
-      return this.specType !== Type.Delete && this.specType !== Type.Merge;
+      return this.specType !== Type.Delete && this.specType !== Type.Merge && typeof this.targetFormObj !== 'undefined';
     },
     hasMatchForm() {
-      return this.specType !== Type.Create && this.specType !== Type.Merge;
+      return this.specType !== Type.Create && this.specType !== Type.Merge && typeof this.formObj !== 'undefined';
+    },
+    hasMergeSpec() {
+      return this.isMergeSpec && typeof this.mergeObj !== 'undefined';
     },
     isUpdateSpec() {
       return this.specType === Type.Update;
@@ -245,7 +249,6 @@ export default {
       } else if (this.isDeleteSpec) {
         initialForm = mainEntity[CHANGE_SPEC_KEY][MATCH_FORM_KEY];
       }
-
       this.setInspectorData(initialForm);
       this.$store.dispatch('pushInspectorEvent', {
         name: 'record-control',
@@ -253,7 +256,6 @@ export default {
       });
     },
     initFromRecord() {
-      this.setActive(this.steps[0]);
       this.fetchRecord(this.documentId);
     },
     fetchRecord(fnurgel) {
@@ -286,13 +288,20 @@ export default {
           this.currentSpec = this.currentBulkChange[CHANGE_SPEC_KEY];
           this.record = bulkChange.record;
           this.lastFetchedSpec = cloneDeep(this.currentSpec);
-
-          if (this.isActive('form')) {
-            this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
-          } else if (this.isActive('targetForm')){
-            this.setInspectorData(this.currentSpec[TARGET_FORM_KEY]);
-          } else if (this.isActive('mergeSpec')) {
-            this.setInspectorData(this.currentSpec);
+          if (!this.isSaving) {
+            // When initializing from record
+            if (this.isUpdateSpec || this.isDeleteSpec) {
+              this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
+            } else if (this.isCreateSpec){
+              this.setInspectorData(this.currentSpec[TARGET_FORM_KEY]);
+            } else if (this.isMergeSpec) {
+              this.setInspectorData(this.currentSpec);
+            }
+            if (this.isDraft) {
+              this.setActive(this.steps[0]);
+            } else if (this.isReady) {
+              this.setActive('preview')
+            }
           }
           if (this.isDraft) {
             this.$store.dispatch('pushInspectorEvent', {
@@ -302,6 +311,7 @@ export default {
           }
           DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
           this.getPreview(fnurgel);
+          this.isSaving = false;
         }
       });
     },
@@ -310,7 +320,6 @@ export default {
       if (typeof formData === 'undefined') {
         return;
       }
-
       this.$store.dispatch('updateInspectorData', {
         changeList: [
           {
@@ -411,6 +420,7 @@ export default {
       this.currentBulkChange[SHOULD_UPDATE_TIMESTAMP_KEY] = !this.shouldExportAffected;
     },
     save() {
+      this.isSaving = true;
       this.resetLastAdded();
       if (this.isActive('form')) {
         this.onInactiveForm();
@@ -746,7 +756,7 @@ export default {
         :is-draft="isDraft"
         :spec-type="specType"
       />
-      <div ref="mergeSpec" v-if="isMergeSpec">
+      <div ref="mergeSpec" v-if="hasMergeSpec">
         <merge-spec
           :title="mergeTitle"
           tabindex="0"
@@ -841,7 +851,7 @@ export default {
     <div class="col-12 col-sm-12"
       :class="{ 'col-md-1 col-md-offset-11': !status.panelOpen, 'col-md-5 col-md-offset-7': status.panelOpen }">
       <div class="Toolbar-container">
-        <toolbar
+        <toolbar v-if="dataObj"
           :show-field-adder="!isActive('preview')"
           :show-undo="!isActive('preview')"
           :form-obj="dataObj"
