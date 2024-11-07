@@ -50,10 +50,10 @@ export default {
       type: Boolean,
       default: false,
     },
-    specType: {
-      type: String,
-      default: '',
-    }
+    complete: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     ...mapGetters([
@@ -82,21 +82,6 @@ export default {
         return translatePhrase('No matching records');
       }
     },
-    deleteSpecLabel() {
-      return translatePhrase('Delete record');
-    },
-    completedLabel() {
-      return StringUtil.getLabelByLang(Status.Completed, this.user.settings.language, this.resources)
-    },
-    isDeleteSpec() {
-      return this.specType === Type.Delete;
-    },
-    isUpdateSpec() {
-      return this.specType === Type.Update;
-    },
-    isMergeSpec() {
-      return this.specType === Type.Merge;
-    }
   },
   emits: ['onInactive', 'onActive'],
   methods: {
@@ -141,18 +126,11 @@ export default {
             :should-link="false"
             :exclude-components="['details']"/>
         </div>
-        <entity-form v-if="isUpdateSpec"
+        <entity-form
           :editing-object="'mainEntity'"
           :key="formTab.id"
           :is-active="true"
           :diff="previewDiff"
-          :form-data="previewData"
-          :locked="true"
-        />
-        <entity-form v-if="isDeleteSpec || isMergeSpec"
-          :editing-object="'mainEntity'"
-          :key="formTab.id"
-          :is-active="true"
           :form-data="previewData"
           :locked="true"
         />
