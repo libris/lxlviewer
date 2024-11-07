@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_USE_SUPERSEARCH } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import { SuperSearch } from 'supersearch';
@@ -43,7 +43,7 @@
 </script>
 
 <form class="relative w-full" action="find" on:submit={handleSubmit}>
-	{#if PUBLIC_USE_SUPERSEARCH === 'true'}
+	{#if env?.PUBLIC_USE_SUPERSEARCH === 'true'}
 		<SuperSearch />
 	{:else}
 		<!-- svelte-ignore a11y-autofocus -->
