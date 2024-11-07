@@ -6,6 +6,7 @@
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import BiSearch from '~icons/bi/search';
+	import { lxlQueryLanguage } from 'codemirror-lang-lxlquery';
 
 	export let placeholder: string;
 	export let autofocus: boolean = false;
@@ -44,7 +45,7 @@
 
 <form class="relative w-full" action="find" on:submit={handleSubmit}>
 	{#if env?.PUBLIC_USE_SUPERSEARCH === 'true'}
-		<SuperSearch />
+		<SuperSearch language={lxlQueryLanguage} />
 	{:else}
 		<!-- svelte-ignore a11y-autofocus -->
 		<input

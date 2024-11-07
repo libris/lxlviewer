@@ -36,6 +36,7 @@
 		"@types/jmespath": "^0.15.2",
 		"@types/js-cookie": "^3.0.6",
 		"autoprefixer": "^10.4.20",
+		"codemirror-lang-lxlquery": "^0.1.0",
 		"cssnano": "^7.0.5",
 		"eslint": "^9.9.0",
 		"eslint-config-prettier": "^9.0.0",
