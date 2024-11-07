@@ -69,6 +69,7 @@ export default {
       fullPreviewDiff: {},
       showOverwriteWarning: false,
       showConfirmRunModal: false,
+      completePreview: true,
       loadingPreview: {
         'next': false,
         'previous': false
@@ -76,7 +77,8 @@ export default {
       isSaving: false,
       showIdListModal: false,
       idListUri: '',
-      idListTempPath: ''
+      idListTempPath: '',
+      currentPreviewUrl: null,
     };
   },
   computed: {
@@ -440,6 +442,7 @@ export default {
       this.getPreviewFromUrl(fetchUrl);
     },
     getPreviewFromUrl(fetchUrl) {
+      this.currentPreviewUrl = fetchUrl;
       fetch(fetchUrl).then((response) => response.json()).then((result) => {
         // const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
         // DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
@@ -461,6 +464,18 @@ export default {
           this.formPreviewDiff.modified = formDisplayPaths.modified.map(path => `mainEntity.${path}`);
         }
         this.totalItems = result.totalItems;
+
+        if (result['_complete'] === false) {
+          this.completePreview = false;
+          setTimeout(() => {
+            if (this.currentPreviewUrl === fetchUrl && !this.completePreview) {
+              this.getPreviewFromUrl(fetchUrl);
+            }
+          }, 250);
+        } else {
+          this.completePreview = true;
+        }
+
         if (this.totalItems === 0 || typeof this.totalItems === 'undefined') {
           this.resetPreviewData();
           return;
@@ -803,6 +818,7 @@ export default {
           :form-data="fullPreview"
           :preview-data="fullPreviewData"
           :preview-diff="fullPreviewDiff"
+          :complete="completePreview"
           :offset="itemOffset"
           :total-items="totalItems"
           :finished="isFinished"

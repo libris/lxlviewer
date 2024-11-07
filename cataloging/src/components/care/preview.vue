@@ -50,6 +50,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    complete: {
+      type: Boolean,
+      default: true,
+    },
     specType: {
       type: String,
       default: '',
@@ -133,7 +137,7 @@ export default {
       {{ this.title }}
     </div>
     <div class="Preview-body" :class="{ 'has-selection': isActive }">
-      <span class="Preview-affected Breadcrumb-recordNumbers">{{ this.noHitsLabel }} </span>
+      <span class="Preview-affected Breadcrumb-recordNumbers">{{ this.noHitsLabel }} <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="!complete" /></span>
       <div class="Preview-preview" v-if="showPreview">
         <div class="Preview-preview-heading">
           <entity-summary
