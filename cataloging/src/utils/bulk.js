@@ -28,4 +28,5 @@ export class Type {
   static Delete = 'bulk:Delete';
   static Create = 'bulk:Create';
   static Merge = 'bulk:Merge';
+  static Other = 'bulk:Other';
 }

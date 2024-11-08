@@ -204,7 +204,7 @@ export default {
       return this.specType === Type.Update;
     },
     isMergeSpec() {
-      return this.specType === Type.Merge;
+      return this.specType === Type.Merge || this.specType === Type.Other;
     },
     isCreateSpec() {
       return this.specType === Type.Create;
