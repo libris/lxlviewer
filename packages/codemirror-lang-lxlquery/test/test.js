@@ -1,5 +1,6 @@
-import {lxlQueryLanguage} from "../dist/index.js"
-import {fileTests} from "@lezer/generator/dist/test"
+import { lxlQueryLanguage } from "../dist/index.js"
+import { fileTests } from "@lezer/generator/dist/test"
+import { describe, it } from 'vitest';
 
 import * as fs from "fs"
 import * as path from "path"

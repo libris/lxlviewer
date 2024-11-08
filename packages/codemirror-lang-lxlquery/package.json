@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "LXL query language support for CodeMirror",
   "scripts": {
-    "test": "mocha test/test.js",
+    "test": "vitest",
     "prepare": "rollup -c"
   },
   "type": "module",
@@ -22,11 +22,11 @@
   },
   "devDependencies": {
     "@lezer/generator": "^1.0.0",
-    "mocha": "^9.0.1",
     "rollup": "^2.60.2",
     "rollup-plugin-dts": "^4.0.1",
     "rollup-plugin-ts": "^3.0.2",
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.4",
+    "vitest": "^2.1.4"
   },
   "license": "MIT"
 }
