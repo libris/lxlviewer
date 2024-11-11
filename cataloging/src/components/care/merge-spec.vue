@@ -73,6 +73,7 @@ export default {
           :is-active="true"
           :form-data="formData"
           :locked="!isActive"
+          :hide-top-level-properties="['@type', 'bulk:script']"
         />
       </div>
     </div>
