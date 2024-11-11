@@ -1,7 +1,7 @@
 {
   "name": "codemirror-lang-lxlquery",
   "version": "0.1.0",
-  "description": "LXL query language support for CodeMirror",
+  "description": "Libris XL query language support for CodeMirror",
   "scripts": {
     "test": "vitest",
     "prepare": "rollup -c"

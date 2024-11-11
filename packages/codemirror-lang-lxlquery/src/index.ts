@@ -3,7 +3,7 @@ import { LRLanguage, LanguageSupport } from "@codemirror/language"
 import { styleTags, tags as t } from "@lezer/highlight"
 
 export const lxlQueryLanguage = LRLanguage.define({
-  name: "LXL query",
+  name: "Libris XL query",
   parser: parser.configure({
     props: [
       styleTags({
