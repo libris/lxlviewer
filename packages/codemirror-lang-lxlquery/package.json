@@ -4,7 +4,9 @@
 	"description": "Libris XL query language support for CodeMirror",
 	"scripts": {
 		"test": "vitest",
-		"prepare": "rollup -c"
+		"prepare": "husky && rollup -c",
+    "lint": "eslint . && prettier --check .",
+		"format": "prettier --write ."
 	},
 	"lint-staged": {
 		"*.{js,ts,md,json}": [
