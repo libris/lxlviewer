@@ -6,10 +6,7 @@
 	let value = $state('');
 	let { language }: { language?: LRLanguage } = $props();
 
-	const extensions = [placeholder('Search')];
-	if (language) {
-		extensions.push(language);
-	}
+	const extensions = [placeholder('Search'), ...(language ? [language] : [])];
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
 		value = event.value;
