@@ -1,0 +1,1 @@
+cd ./packages/codemirror-lang-lxlquery && npx lint-staged
