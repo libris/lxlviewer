@@ -69,6 +69,7 @@ export default {
       fullPreviewDiff: {},
       showOverwriteWarning: false,
       showConfirmRunModal: false,
+      completePreview: true,
       loadingPreview: {
         'next': false,
         'previous': false
@@ -76,7 +77,8 @@ export default {
       isSaving: false,
       showIdListModal: false,
       idListUri: '',
-      idListTempPath: ''
+      idListTempPath: '',
+      currentPreviewUrl: null,
     };
   },
   computed: {
@@ -440,6 +442,7 @@ export default {
       this.getPreviewFromUrl(fetchUrl);
     },
     getPreviewFromUrl(fetchUrl) {
+      this.currentPreviewUrl = fetchUrl;
       fetch(fetchUrl).then((response) => response.json()).then((result) => {
         // const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
         // DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
@@ -461,6 +464,18 @@ export default {
           this.formPreviewDiff.modified = formDisplayPaths.modified.map(path => `mainEntity.${path}`);
         }
         this.totalItems = result.totalItems;
+
+        if (result['_complete'] === false) {
+          this.completePreview = false;
+          setTimeout(() => {
+            if (this.currentPreviewUrl === fetchUrl && !this.completePreview) {
+              this.getPreviewFromUrl(fetchUrl);
+            }
+          }, 250);
+        } else {
+          this.completePreview = true;
+        }
+
         if (this.totalItems === 0 || typeof this.totalItems === 'undefined') {
           this.resetPreviewData();
           return;
@@ -472,29 +487,24 @@ export default {
         this.previousPreviewLink = result.prev;
         this.itemOffset = result.itemOffset;
 
-        if (this.specType === Type.Update) {
-          let before = result.items[0].changeSets[0].version;
-          let after = result.items[0].changeSets[1].version;
-          const changeset = result.items[0].changeSets[1];
 
-          const [displayData, displayPaths] = HistoryUtil.buildDisplayData(
-            before,
-            after,
-            changeset.addedPaths.map(el => el.slice(2)), //temporary hack to remove [@graph, 1, ...
-            changeset.removedPaths.map(el => el.slice(2)),
-            (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
-          );
+        let before = result.items[0].changeSets[0].version;
+        let after = result.items[0].changeSets[1].version;
+        const changeset = result.items[0].changeSets[1];
 
-          this.fullPreviewData = displayData;
-          this.fullPreviewDiff.removed = displayPaths.removed.map(path => `mainEntity.${path}`);
-          this.fullPreviewDiff.added = displayPaths.added.map(path => `mainEntity.${path}`);
-          this.fullPreviewDiff.modified = displayPaths.modified.map(path => `mainEntity.${path}`);
-        } else if (this.specType === Type.Delete) {
-          this.fullPreviewDiff.removed = [];
-          this.fullPreviewDiff.added = [];
-          this.fullPreviewDiff.modifed = [];
-          this.fullPreviewData = result.items[0].changeSets[0].version;
-        }
+        const [displayData, displayPaths] = HistoryUtil.buildDisplayData(
+          before,
+          after,
+          changeset.addedPaths.map(el => el.slice(2)), //temporary hack to remove [@graph, 1, ...
+          changeset.removedPaths.map(el => el.slice(2)),
+          (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
+        );
+
+        this.fullPreviewData = displayData;
+        this.fullPreviewDiff.removed = displayPaths.removed.map(path => `mainEntity.${path}`);
+        this.fullPreviewDiff.added = displayPaths.added.map(path => `mainEntity.${path}`);
+        this.fullPreviewDiff.modified = displayPaths.modified.map(path => `mainEntity.${path}`);
+
         DataUtil.fetchMissingLinkedToQuoted(this.fullPreviewData, this.$store);
         this.loadingPreview.next = false;
         this.loadingPreview.previous = false;
@@ -803,11 +813,11 @@ export default {
           :form-data="fullPreview"
           :preview-data="fullPreviewData"
           :preview-diff="fullPreviewDiff"
+          :complete="completePreview"
           :offset="itemOffset"
           :total-items="totalItems"
           :finished="isFinished"
           :has-unsaved="hasUnsavedChanges"
-          :spec-type="specType"
           @onActive="focusPreview"
         />
       </div>
