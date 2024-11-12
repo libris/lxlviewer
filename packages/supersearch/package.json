@@ -14,7 +14,7 @@
 		"test:unit": "vitest",
 		"lint": "eslint . && prettier --check .",
 		"format": "prettier --write .",
-		"prepare": "husky && npm run package"
+		"prepare": "cd ../../ husky && cd ./packages/supersearch && npm run package"
 	},
 	"lint-staged": {
 		"*.{js,ts,svelte,css,scss,postcss,md,json}": [
