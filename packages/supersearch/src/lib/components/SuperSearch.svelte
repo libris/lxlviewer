@@ -4,6 +4,7 @@
 	import { Compartment } from '@codemirror/state';
 	import { type LRLanguage } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
+	import preventNewLine from '$lib/extensions/preventNewLine.js';
 
 	interface Props {
 		value?: string;
@@ -20,6 +21,7 @@
 
 	const extensions = [
 		submitFormOnEnterKey,
+		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder))
 	];
