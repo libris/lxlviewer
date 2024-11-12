@@ -1,41 +1,146 @@
-# Booleans
+# Freetext words
 
-#t
-#f
-
-==>
-
-Program(Boolean, Boolean)
-
-# Identifiers
-
-one
-Two_Three
+Astrid lindgren
 
 ==>
 
-Program(Identifier, Identifier)
+Query(Freetext, Freetext)
 
-# Strings
 
-"hello"
-"one\"\\two"
+# Freetext string
 
-==>
-
-Program(String, String)
-
-# Applications
-
-(begin
-  (when #t
-    (print (concat "hello" " " "world")))
-  (print "DONE"))
+"2001: A Space Odyssey"
 
 ==>
 
-Program(Application(
-  Identifier,
-  Application(Identifier, Boolean, Application(
-    Identifier, Application(Identifier, String, String, String)))
-  Application(Identifier, String)))
+Query(Freetext)
+
+
+# Freetext with Wildcard
+
+Astrid lind*
+
+==>
+
+Query(Freetext,Freetext(Wildcard))
+
+
+# Qualifier with EqualOperator
+
+ÅR:2024
+
+==>
+
+Query(Qualifier(QualifierKey,EqualOperator,QualifierValue(...)))
+
+
+# Qualifier with CompareOperator
+
+ÅR>2024
+ÅR<=2024
+
+==>
+
+Query(
+  Qualifier(QualifierKey,CompareOperator,QualifierValue(...))
+  Qualifier(QualifierKey,CompareOperator,QualifierValue(...))
+)
+
+
+# Qualifier with string key
+
+"rdf:type":Text
+
+==>
+
+Query(Qualifier(QualifierKey,EqualOperator,QualifierValue(...)))
+
+
+# Qualifier with string value
+
+contributor:"Astrid Lindgren"
+
+==>
+
+Query(Qualifier(QualifierKey,EqualOperator,QualifierValue(...)))
+
+
+# Qualifier linked
+
+contributor:"libris:fcrtpljz1qp2bdv#it"
+
+==>
+
+Query(Qualifier(QualifierKey,EqualOperator,QualifierValue(...)))
+
+
+# BooleanQuery
+
+sommar OR vinter NOT vår
+
+==>
+
+Query(BooleanQuery(...))
+
+
+# BooleanQuery - erroneous
+
+OR AND sommar
+
+==>
+
+Query(⚠(BooleanOperator),⚠(BooleanOperator),Freetext)
+
+
+# Combined: Qualifier and Freetext
+
+contributor:"Astrid Lindgren" Pippi Långstrump
+
+==>
+
+Query(Qualifier(QualifierKey,EqualOperator,QualifierValue(...)),Freetext,Freetext)
+
+
+# Combined: Freetext BooleanQuery (Qualifier NOT Qualifier)
+
+träd* bibliografi:"sigel:DST" NOT typ:Text
+
+==>
+
+Query(Freetext(Wildcard),BooleanQuery(Qualifier(...),BooleanOperator,Qualifier(...)))
+
+
+# Combined: Freetext Qualifier (Group with BooleanQuery) Qualifier
+
+pippi långstrump språk:(engelska OR franska) ÅR>2002
+
+==>
+
+Query(Freetext,Freetext,Qualifier(QualifierKey,EqualOperator,QualifierValue(Group(BooleanQuery(...)))),Qualifier(...))
+
+
+# Other filters: cover image
+
+image:*
+
+==>
+
+Query(Qualifier(...))
+
+
+# Other filters: include E-plikt
+
+Pippi includeEplikt
+
+==>
+
+Query(Freetext,Qualifier(Reserved))
+
+
+# Other filters: include preliminary
+
+includePreliminary Pippi
+
+==>
+
+Query(Qualifier(Reserved),Freetext)
