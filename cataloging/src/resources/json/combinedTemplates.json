@@ -4662,8 +4662,14 @@
           "bulk:changeSpec": {
             "@type": "bulk:Other",
             "bulk:script": "removeTopicSubdivision",
-            "bulk:deprecate": [],
-            "bulk:keep": null
+            "bulk:deprecate": {
+              "@type": "URI",
+              "value": ""
+            },
+            "bulk:keep": {
+              "@type": "URI",
+              "value": ""
+            }
           }
         },
         "quoted": {},
