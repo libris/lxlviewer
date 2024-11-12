@@ -19,6 +19,8 @@
     "alt+b": "add-holding",
     "alt+s": "focus-main-search",
     "alt+down": "next",
-    "alt+up": "previous"
+    "alt+up": "previous",
+    "alt+right": "next-preview",
+    "alt+left": "previous-preview"
   }
 }

@@ -86,6 +86,12 @@ export default {
           case 'previous':
             this.previous();
             break;
+          case 'next-preview':
+            this.nextPreview();
+            break;
+          case 'previous-preview':
+            this.previousPreview();
+            break;
           case 'undo':
             this.undo();
             break;
@@ -296,8 +302,8 @@ export default {
       v-if="lastItemActive && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="!hasNext"
-      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next')})`"
-      @click="nextPreview"
+      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next-preview')})`"
+      @click="formControl('next-preview')"
       :aria-label="translatePhrase('Next')">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingPreview.next" />
       <i class="fa fa-arrow-right" v-show="!loadingPreview.next" />
@@ -306,8 +312,8 @@ export default {
       v-if="lastItemActive && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="!hasPrevious"
-      v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous')})`"
-      @click="previousPreview"
+      v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous-preview')})`"
+      @click="formControl('previous-preview')"
       :aria-label="translatePhrase('Previous')">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingPreview.previous" />
       <i class="fa fa-arrow-left" v-show="!loadingPreview.previous" />
