@@ -4,7 +4,7 @@
 	"description": "Libris XL query language support for CodeMirror",
 	"scripts": {
 		"test": "vitest",
-		"prepare": "cd ../../ husky && cd ./packages/codemirror-lang-lxlquery && rollup -c",
+		"prepare": "cd ../../ && husky && cd ./packages/codemirror-lang-lxlquery && rollup -c",
     "lint": "eslint . && prettier --check .",
 		"format": "prettier --write ."
 	},
