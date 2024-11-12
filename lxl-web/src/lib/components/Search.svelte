@@ -45,7 +45,7 @@
 
 <form class="relative w-full" action="find" on:submit={handleSubmit}>
 	{#if env?.PUBLIC_USE_SUPERSEARCH === 'true'}
-		<SuperSearch language={lxlQueryLanguage} />
+		<SuperSearch language={lxlQueryLanguage} placeholder={$page.data.t('search.search')} />
 	{:else}
 		<!-- svelte-ignore a11y-autofocus -->
 		<input

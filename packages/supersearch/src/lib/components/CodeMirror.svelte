@@ -15,12 +15,14 @@
 		value?: string;
 		extensions?: Extension[];
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
+		editorView?: EditorView | undefined;
 	};
 
 	let {
 		value = '', // value isn't bindable as it can easily cause undo/redo history issues when changing the value from outside – it's preferable to dispatch changes instead
 		extensions = [],
-		onchange = () => {}
+		onchange = () => {},
+		editorView = $bindable()
 	}: CodeMirrorProps = $props();
 
 	const updateHandler = EditorView.updateListener.of((update) => {
@@ -33,7 +35,6 @@
 		}
 	});
 
-	let editorView: EditorView | undefined = $state();
 	let codemirrorContainerElement: HTMLDivElement | undefined = $state();
 	let extensionsWithBaseHandlers: Extension[] = $derived([updateHandler, ...extensions]);
 	let prevExtensions: Extension[] = extensions;
