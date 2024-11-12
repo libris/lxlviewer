@@ -124,7 +124,11 @@ export default {
       return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Selection')}`;
     },
     mergeTitle() {
-      return `${this.steps.indexOf('mergeSpec') + 1}. ${translatePhrase('Merge')}`;
+      const title = this.isOtherSpec
+        ? translatePhrase('Change')
+        : translatePhrase('Merge');
+
+      return `${this.steps.indexOf('mergeSpec') + 1}. ${title}`;
     },
     changesTitle() {
       if (this.specType === Type.Create) {
@@ -206,7 +210,10 @@ export default {
       return this.specType === Type.Update;
     },
     isMergeSpec() {
-      return this.specType === Type.Merge;
+      return this.specType === Type.Merge || this.specType === Type.Other;
+    },
+    isOtherSpec() {
+      return this.specType === Type.Other;
     },
     isCreateSpec() {
       return this.specType === Type.Create;

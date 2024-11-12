@@ -4640,6 +4640,35 @@
           }
         }
       }
+    },
+    "removeTopicSubdivision": {
+      "label": "Underindelning",
+      "description": "Radera underindelning för ämnesord",
+      "@id": "removeTopicSubdivision",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Other",
+            "bulk:script": "removeTopicSubdivision",
+            "bulk:deprecate": [],
+            "bulk:keep": null
+          }
+        },
+        "quoted": {},
+        "record": {
+          "@type": "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
     }
   }
 }

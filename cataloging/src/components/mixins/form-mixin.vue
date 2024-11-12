@@ -14,6 +14,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    hideTopLevelProperties: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -116,6 +120,8 @@ export default {
       delete fItem['@id'];
       delete fItem['@reverse'];
       delete fItem._uid;
+
+      this.hideTopLevelProperties.forEach(property => { delete fItem[property]; });
 
       return fItem;
     },
