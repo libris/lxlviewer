@@ -3,21 +3,23 @@
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
 	import { Compartment } from '@codemirror/state';
 	import { type LRLanguage } from '@codemirror/language';
+	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 
 	interface Props {
+		value?: string;
 		language?: LRLanguage;
 		placeholder?: string;
 	}
 
-	let { language, placeholder = '' }: Props = $props();
+	let { value = $bindable(''), language, placeholder = '' }: Props = $props();
 
-	let value = $state('');
 	let editorView: EditorView | undefined = $state();
 
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
 
 	const extensions = [
+		submitFormOnEnterKey,
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder))
 	];
