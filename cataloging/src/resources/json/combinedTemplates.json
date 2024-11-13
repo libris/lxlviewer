@@ -4370,8 +4370,8 @@
       }
     },
     "resource": {
-      "label": "✎ Resurs",
-      "description": "Ändra resurs",
+      "label": "✎ Ospecificerad typ",
+      "description": "Ändra ospecificerad typ",
       "@id": "resource",
       "value": {
         "mainEntity": {
@@ -4384,11 +4384,11 @@
           "bulk:changeSpec": {
             "@type": "bulk:Update",
             "bulk:matchForm": {
-              "@type": "Resource",
+              "@type": "bulk:Any",
               "bulk:matchingMode": ["bulk:Subtypes"]
             },
             "bulk:targetForm": {
-              "@type": "Resource"
+              "@type": "bulk:Any"
             }
           }
         },
@@ -4437,8 +4437,8 @@
       }
     },
     "removeResource": {
-      "label": "\uD83D\uDDD1 Resurs",
-      "description": "Radera resurs",
+      "label": "\uD83D\uDDD1 Ospecificerad typ",
+      "description": "Radera ospecificerad typ",
       "@id": "removeResource",
       "value": {
         "mainEntity": {
@@ -4451,7 +4451,7 @@
           "bulk:changeSpec": {
             "@type": "bulk:Delete",
             "bulk:matchForm": {
-              "@type": "Resource",
+              "@type": "bulk:Any",
               "bulk:matchingMode": [
                 "bulk:Subtypes"
               ]

@@ -191,14 +191,6 @@ export default {
       'settings',
       'status',
     ]),
-    allowed() {
-      return VocabUtil.getPropertiesFromArray(
-        this.formObj['@type'],
-        this.resources.vocabClasses,
-        this.resources.vocabProperties,
-        this.resources.context,
-      );
-    },
     showRecord() {
       return this.status.showRecord;
     },
