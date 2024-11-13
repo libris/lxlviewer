@@ -5,7 +5,7 @@ import MergeSpec from '@/components/care/merge-spec.vue';
 import Preview from '@/components/care/preview.vue';
 import BulkChangesHeader from "@/components/care/bulk-changes-header.vue";
 import { mapGetters } from 'vuex';
-import { cloneDeep, get, isEmpty, isEqual } from 'lodash-es';
+import { cloneDeep, get, isEmpty, isEqual, pickBy } from 'lodash-es';
 import toolbar from "@/components/inspector/bulkchange-toolbar.vue";
 import { labelByLang, translatePhrase } from "@/utils/filters.js";
 import * as LayoutUtil from '@/utils/layout';
@@ -29,12 +29,14 @@ import {
   Status,
   TARGET_FORM_KEY,
   VALUE_FROM_KEY,
-  Type
+  Type, EXECUTION_KEY
 } from "@/utils/bulk.js";
+import EntityForm from "@/components/inspector/entity-form.vue";
 
 export default {
   name: 'bulk-changes.vue',
   components: {
+    EntityForm,
     ReverseRelations,
     Inspector,
     toolbar,
@@ -223,6 +225,13 @@ export default {
     },
     specType() {
       return this.currentSpec['@type'];
+    },
+    executionData() {
+      return pickBy(
+        this.currentBulkChange || {}, function (_, key) {
+          return ['@type', EXECUTION_KEY].includes(key);
+        }
+      );
     },
     isInitialized() {
       return !isEmpty(this.currentSpec) && typeof this.currentSpec !== 'undefined';
@@ -852,6 +861,16 @@ export default {
             type="checkbox"
             :disabled="true"/>
         </div>
+      </div>
+      <div>
+        <entity-form
+          :editing-object="'mainEntity'"
+          :is-active="true"
+          :form-data="executionData"
+          :locked="true"
+          :hide-top-level-properties="['@type']"
+          :hide-top-level-field-names="true"
+        />
       </div>
       <div>
 <!--        SPECIFICATION-->
