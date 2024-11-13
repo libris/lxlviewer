@@ -319,6 +319,12 @@ export default {
               value: 'start-edit',
             });
           }
+          if (this.isReady) {
+            this.setActive('preview');
+            setTimeout(() => {
+              this.triggerRunBulkChange();
+            }, 1000);
+          }
           DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
           this.getPreview(fnurgel);
           this.isSaving = false;
@@ -643,12 +649,6 @@ export default {
         } else {
           this.fetchRecord(this.documentId);
           this.warnOnSave();
-        }
-        if (this.isReady) {
-          this.setActive('preview');
-          setTimeout(() => {
-            this.triggerRunBulkChange();
-          }, 1000);
         }
         this.$nextTick(() => {
           this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
