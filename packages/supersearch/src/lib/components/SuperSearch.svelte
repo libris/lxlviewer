@@ -7,12 +7,14 @@
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
 
 	interface Props {
+		name: string;
 		value?: string;
+		form?: string;
 		language?: LRLanguage;
 		placeholder?: string;
 	}
 
-	let { value = $bindable(''), language, placeholder = '' }: Props = $props();
+	let { name, value = $bindable(''), form, language, placeholder = '' }: Props = $props();
 
 	let editorView: EditorView | undefined = $state();
 
@@ -20,7 +22,7 @@
 	let prevPlaceholder = placeholder;
 
 	const extensions = [
-		submitFormOnEnterKey,
+		submitFormOnEnterKey(form),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder))
@@ -41,3 +43,4 @@
 </script>
 
 <CodeMirror {value} {extensions} onchange={handleChangeCodeMirror} bind:editorView />
+<textarea {value} {name} {form} hidden readonly></textarea>
