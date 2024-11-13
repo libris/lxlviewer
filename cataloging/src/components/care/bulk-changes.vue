@@ -642,10 +642,9 @@ export default {
         }
         if (this.isReady) {
           this.setActive('preview');
-          this.triggerRunBulkChange();
           setTimeout(() => {
             this.triggerRunBulkChange();
-          }, 5000);
+          }, 1000);
         }
         this.$nextTick(() => {
           this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
