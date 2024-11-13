@@ -7,11 +7,12 @@
 
 	interface Props {
 		value?: string;
+		form?: string;
 		language?: LRLanguage;
 		placeholder?: string;
 	}
 
-	let { value = $bindable(''), language, placeholder = '' }: Props = $props();
+	let { value = $bindable(''), form, language, placeholder = '' }: Props = $props();
 
 	let editorView: EditorView | undefined = $state();
 
@@ -19,7 +20,7 @@
 	let prevPlaceholder = placeholder;
 
 	const extensions = [
-		submitFormOnEnterKey,
+		submitFormOnEnterKey(form),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder))
 	];
