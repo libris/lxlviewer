@@ -79,6 +79,7 @@ export default {
       idListUri: '',
       idListTempPath: '',
       currentPreviewUrl: null,
+      initializingPreview: false,
     };
   },
   computed: {
@@ -442,6 +443,7 @@ export default {
       this.saveBulkChange();
     },
     getPreview(fnurgel) {
+      this.initializingPreview = true;
       const baseUri = this.settings.dataPath;
       const offset = 0;
       const limit = 1;
@@ -451,8 +453,6 @@ export default {
     getPreviewFromUrl(fetchUrl) {
       this.currentPreviewUrl = fetchUrl;
       fetch(fetchUrl).then((response) => response.json()).then((result) => {
-        // const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
-        // DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
 
         // Form preview
         if (typeof result.changeSets !== 'undefined') {
@@ -482,7 +482,6 @@ export default {
         } else {
           this.completePreview = true;
         }
-
         if (this.totalItems === 0 || typeof this.totalItems === 'undefined') {
           this.resetPreviewData();
           return;
@@ -515,6 +514,10 @@ export default {
         DataUtil.fetchMissingLinkedToQuoted(this.fullPreviewData, this.$store);
         this.loadingPreview.next = false;
         this.loadingPreview.previous = false;
+        this.initializingPreview = false;
+      }, (error) => {
+        this.initializingPreview = false;
+        console.error('Failed to fetch preview', error);
       });
     },
     async triggerRunBulkChange() {
@@ -575,6 +578,7 @@ export default {
       this.fullPreview = {};
       this.fullPreviewData = {};
       this.fullPreviewDiff = {};
+      this.initializingPreview = false;
     },
     async saveBulkChange() {
       try {
@@ -824,6 +828,7 @@ export default {
           :total-items="totalItems"
           :finished="isFinished"
           :has-unsaved="hasUnsavedChanges"
+          :initializing-preview="initializingPreview"
           @onActive="focusPreview"
         />
       </div>
