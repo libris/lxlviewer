@@ -3,7 +3,7 @@
 @skip { space }
 
 term {
-  Freetext |
+  freetext |
   Qualifier |
   Group |
   BooleanQuery
@@ -12,12 +12,12 @@ term {
 Group { "(" term* ")" } 
 
 BooleanQuery { 
-  (Freetext | Qualifier) BooleanOperator (Freetext | Qualifier) 
-  (BooleanOperator (Freetext | Qualifier))+?
+  (freetext | Qualifier) BooleanOperator (freetext | Qualifier) 
+  (BooleanOperator (freetext | Qualifier))+?
 }
 
 Qualifier {
-  (QualifierKey (EqualOperator | CompareOperator) QualifierValue) | Reserved
+  (QualifierKey (EqualOperator | CompareOperator) QualifierValue) | reserved
 }
 
 QualifierKey {
@@ -25,11 +25,11 @@ QualifierKey {
 }
 
 QualifierValue {
-  Freetext | Group
+  freetext | Group
 }
 
-Freetext {
-  (identifier | string | Number) Wildcard?
+freetext {
+  (identifier | string | number) Wildcard?
 }
 
 @tokens {
@@ -37,7 +37,7 @@ Freetext {
 
   string { '"' (!["\\] | "\\" _)* '"' }
 
-  Number { @digit+ }
+  number { @digit+ }
 
   EqualOperator { ":" | "=" }
 
@@ -47,11 +47,11 @@ Freetext {
 
   Wildcard { "*"+ }
 
-  Reserved { "includeEplikt" | "includePreliminary" }
+  reserved { "includeEplikt" | "includePreliminary" }
 
   space { @whitespace+ }
 
-  @precedence {BooleanOperator, Reserved, identifier}
+  @precedence {BooleanOperator, reserved, identifier}
 }
 
 @detectDelim

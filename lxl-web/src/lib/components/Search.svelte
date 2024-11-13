@@ -7,9 +7,13 @@
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import BiSearch from '~icons/bi/search';
 	import { lxlQueryLanguage } from 'codemirror-lang-lxlquery';
+	import { highlightExtension } from '$lib/utils/LxlQueryHighlight';
+	import '$lib/styles/lxlquery.css';
 
 	export let placeholder: string;
 	export let autofocus: boolean = false;
+
+	const supersearchExtensions = [highlightExtension];
 
 	$: showAdvanced = $page.url.searchParams.get('_x') === 'advanced';
 	let q = $page.params.fnurgel
@@ -49,6 +53,7 @@
 			name="_q"
 			bind:value={q}
 			language={lxlQueryLanguage}
+			extensions={supersearchExtensions}
 			placeholder={$page.data.t('search.search')}
 		/>
 	{:else}
