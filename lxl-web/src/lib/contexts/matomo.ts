@@ -5,7 +5,7 @@ import { type Writable } from 'svelte/store';
 import { type MatomoTracker } from '$lib/types/matomo';
 import { setContext, getContext } from 'svelte';
 
-const MATOMO_ID: number = +env.PUBLIC_MATOMO_ID;
+const MATOMO_ID = env.PUBLIC_MATOMO_ID && +env.PUBLIC_MATOMO_ID;
 
 const tracker = writable<MatomoTracker>();
 
@@ -30,6 +30,8 @@ export function setMatomoTracker() {
 	if (initializedMatomoTracker) {
 		tracker.set(initializedMatomoTracker);
 		console.info('Matomo tracker set');
+	} else {
+		console.info('Matomo is disabled');
 	}
 }
 
