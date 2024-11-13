@@ -6,13 +6,14 @@
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 
 	interface Props {
+		name: string;
 		value?: string;
 		form?: string;
 		language?: LRLanguage;
 		placeholder?: string;
 	}
 
-	let { value = $bindable(''), form, language, placeholder = '' }: Props = $props();
+	let { name, value = $bindable(''), form, language, placeholder = '' }: Props = $props();
 
 	let editorView: EditorView | undefined = $state();
 
@@ -40,3 +41,4 @@
 </script>
 
 <CodeMirror {value} {extensions} onchange={handleChangeCodeMirror} bind:editorView />
+<textarea {value} {name} {form} hidden readonly></textarea>

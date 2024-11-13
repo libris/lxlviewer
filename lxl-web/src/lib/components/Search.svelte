@@ -46,11 +46,11 @@
 <form class="relative w-full" action="find" on:submit={handleSubmit}>
 	{#if env?.PUBLIC_USE_SUPERSEARCH === 'true'}
 		<SuperSearch
+			name="_q"
 			bind:value={q}
 			language={lxlQueryLanguage}
 			placeholder={$page.data.t('search.search')}
 		/>
-		<textarea value={q} hidden readonly name="_q" maxlength={2048}></textarea>
 	{:else}
 		<!-- svelte-ignore a11y-autofocus -->
 		<input
