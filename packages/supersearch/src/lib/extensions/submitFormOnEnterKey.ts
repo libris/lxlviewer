@@ -13,7 +13,7 @@ const submitFormOnEnterKey = (form?: string) => {
 		const formElement = form ? document.getElementById(form) : editorView.dom?.closest('form');
 
 		if (formElement && formElement instanceof HTMLFormElement) {
-			formElement.submit();
+			formElement.requestSubmit();
 			return true; // return true to prevent further commands to be tried
 		}
 
