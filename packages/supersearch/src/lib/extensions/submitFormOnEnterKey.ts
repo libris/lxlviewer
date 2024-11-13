@@ -2,11 +2,10 @@ import { Prec } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
 
 /**
- * CodeMirror extension that submits the closest (inclusive ancestor) form element on enter keypresses
+ * CodeMirror extension that submits form elements (either the closest or associated form using the `form` attribute) on enter keypresses
  * 
- * @param {string} form Optional id of the `<form>` element with which the input should be associated with (equivalent with
- * the [form attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#form) on HTML Input elements.
- * If omitted, the closest (inclusive ancestor) form element will be submitted.
+ * @param {string} form Optional id of the `<form>` element with which the form control should be associated with (equivalent with
+ * the [form attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#form) on HTML Input elements).
  */
 
 const submitFormOnEnterKey = (form?: string) => {
