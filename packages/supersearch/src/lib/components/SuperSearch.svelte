@@ -3,21 +3,25 @@
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
 	import { Compartment } from '@codemirror/state';
 	import { type LRLanguage } from '@codemirror/language';
+	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 
 	interface Props {
+		name: string;
+		value?: string;
+		form?: string;
 		language?: LRLanguage;
 		placeholder?: string;
 	}
 
-	let { language, placeholder = '' }: Props = $props();
+	let { name, value = $bindable(''), form, language, placeholder = '' }: Props = $props();
 
-	let value = $state('');
 	let editorView: EditorView | undefined = $state();
 
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
 
 	const extensions = [
+		submitFormOnEnterKey(form),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder))
 	];
@@ -37,3 +41,4 @@
 </script>
 
 <CodeMirror {value} {extensions} onchange={handleChangeCodeMirror} bind:editorView />
+<textarea {value} {name} {form} hidden readonly></textarea>

@@ -15,8 +15,8 @@
 	let q = $page.params.fnurgel
 		? '' //don't reflect related search on resource pages
 		: showAdvanced
-			? $page.url.searchParams.get('_q')?.trim()
-			: $page.url.searchParams.get('_i')?.trim();
+			? $page.url.searchParams.get('_q')?.trim() || ''
+			: $page.url.searchParams.get('_i')?.trim() || '';
 
 	let params = getSortedSearchParams(addDefaultSearchParams($page.url.searchParams));
 	// Always reset these params on new search
@@ -30,7 +30,7 @@
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
 			let param = showAdvanced ? '_q' : '_i';
-			q = $page.params.fnurgel ? '' : new URL(to.url).searchParams.get(param)?.trim();
+			q = $page.params.fnurgel ? '' : new URL(to.url).searchParams.get(param)?.trim() || '';
 		}
 	});
 
@@ -45,7 +45,12 @@
 
 <form class="relative w-full" action="find" on:submit={handleSubmit}>
 	{#if env?.PUBLIC_USE_SUPERSEARCH === 'true'}
-		<SuperSearch language={lxlQueryLanguage} placeholder={$page.data.t('search.search')} />
+		<SuperSearch
+			name="_q"
+			bind:value={q}
+			language={lxlQueryLanguage}
+			placeholder={$page.data.t('search.search')}
+		/>
 	{:else}
 		<!-- svelte-ignore a11y-autofocus -->
 		<input
