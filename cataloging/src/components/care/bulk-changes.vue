@@ -5,7 +5,7 @@ import MergeSpec from '@/components/care/merge-spec.vue';
 import Preview from '@/components/care/preview.vue';
 import BulkChangesHeader from "@/components/care/bulk-changes-header.vue";
 import { mapGetters } from 'vuex';
-import { cloneDeep, get, isEmpty, isEqual } from 'lodash-es';
+import { cloneDeep, get, isEmpty, isEqual, pickBy } from 'lodash-es';
 import toolbar from "@/components/inspector/bulkchange-toolbar.vue";
 import { labelByLang, translatePhrase } from "@/utils/filters.js";
 import * as LayoutUtil from '@/utils/layout';
@@ -29,12 +29,14 @@ import {
   Status,
   TARGET_FORM_KEY,
   VALUE_FROM_KEY,
-  Type
+  Type, EXECUTION_KEY
 } from "@/utils/bulk.js";
+import EntityForm from "@/components/inspector/entity-form.vue";
 
 export default {
   name: 'bulk-changes.vue',
   components: {
+    EntityForm,
     ReverseRelations,
     Inspector,
     toolbar,
@@ -79,6 +81,7 @@ export default {
       idListUri: '',
       idListTempPath: '',
       currentPreviewUrl: null,
+      initializingPreview: false,
     };
   },
   computed: {
@@ -224,6 +227,13 @@ export default {
     specType() {
       return this.currentSpec['@type'];
     },
+    executionData() {
+      return pickBy(
+        this.currentBulkChange || {}, function (_, key) {
+          return ['@type', EXECUTION_KEY].includes(key);
+        }
+      );
+    },
     isInitialized() {
       return !isEmpty(this.currentSpec) && typeof this.currentSpec !== 'undefined';
     }
@@ -317,6 +327,12 @@ export default {
               name: 'record-control',
               value: 'start-edit',
             });
+          }
+          if (this.isReady) {
+            this.setActive('preview');
+            setTimeout(() => {
+              this.triggerRunBulkChange();
+            }, 1000);
           }
           DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
           this.getPreview(fnurgel);
@@ -442,6 +458,7 @@ export default {
       this.saveBulkChange();
     },
     getPreview(fnurgel) {
+      this.initializingPreview = true;
       const baseUri = this.settings.dataPath;
       const offset = 0;
       const limit = 1;
@@ -451,8 +468,6 @@ export default {
     getPreviewFromUrl(fetchUrl) {
       this.currentPreviewUrl = fetchUrl;
       fetch(fetchUrl).then((response) => response.json()).then((result) => {
-        // const agents = (this.changeSets || []).map((c) => c.agent).filter((a) => a);
-        // DataUtil.fetchMissingLinkedToQuoted(agents, this.$store);
 
         // Form preview
         if (typeof result.changeSets !== 'undefined') {
@@ -482,7 +497,6 @@ export default {
         } else {
           this.completePreview = true;
         }
-
         if (this.totalItems === 0 || typeof this.totalItems === 'undefined') {
           this.resetPreviewData();
           return;
@@ -515,6 +529,10 @@ export default {
         DataUtil.fetchMissingLinkedToQuoted(this.fullPreviewData, this.$store);
         this.loadingPreview.next = false;
         this.loadingPreview.previous = false;
+        this.initializingPreview = false;
+      }, (error) => {
+        this.initializingPreview = false;
+        console.error('Failed to fetch preview', error);
       });
     },
     async triggerRunBulkChange() {
@@ -575,6 +593,7 @@ export default {
       this.fullPreview = {};
       this.fullPreviewData = {};
       this.fullPreviewDiff = {};
+      this.initializingPreview = false;
     },
     async saveBulkChange() {
       try {
@@ -639,13 +658,6 @@ export default {
         } else {
           this.fetchRecord(this.documentId);
           this.warnOnSave();
-        }
-        if (this.isReady) {
-          this.setActive('preview');
-          this.triggerRunBulkChange();
-          setTimeout(() => {
-            this.triggerRunBulkChange();
-          }, 5000);
         }
         this.$nextTick(() => {
           this.$store.dispatch('setInspectorStatusValue', { property: 'saving', value: false });
@@ -825,6 +837,7 @@ export default {
           :total-items="totalItems"
           :finished="isFinished"
           :has-unsaved="hasUnsavedChanges"
+          :initializing-preview="initializingPreview"
           @onActive="focusPreview"
         />
       </div>
@@ -853,6 +866,16 @@ export default {
             type="checkbox"
             :disabled="true"/>
         </div>
+      </div>
+      <div>
+        <entity-form
+          :editing-object="'mainEntity'"
+          :is-active="true"
+          :form-data="executionData"
+          :locked="true"
+          :hide-top-level-properties="['@type']"
+          :hide-top-level-field-names="true"
+        />
       </div>
       <div>
 <!--        SPECIFICATION-->

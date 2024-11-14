@@ -5,12 +5,11 @@ import {isEmpty} from 'lodash-es';
 import ItemEntity from "@/components/inspector/item-entity.vue";
 import EntitySummary from "@/components/shared/entity-summary.vue";
 import {translatePhrase} from "@/utils/filters.js";
-import * as StringUtil from "../../../../lxljs/string.js";
-import { Status, Type } from "@/utils/bulk.js";
+import Spinner from "../shared/spinner.vue";
 
 export default {
   name: 'preview',
-  components: {EntitySummary, ItemEntity, EntityForm },
+  components: {Spinner, EntitySummary, ItemEntity, EntityForm },
   data() {
     return {
       selected: true,
@@ -54,6 +53,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    initializingPreview: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     ...mapGetters([
@@ -118,22 +121,28 @@ export default {
       {{ this.title }}
     </div>
     <div class="Preview-body" :class="{ 'has-selection': isActive }">
-      <span class="Preview-affected Breadcrumb-recordNumbers">{{ this.noHitsLabel }} <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="!complete" /></span>
-      <div class="Preview-preview" v-if="showPreview">
-        <div class="Preview-preview-heading">
-          <entity-summary
-            :focus-data="previewData"
-            :should-link="false"
-            :exclude-components="['details']"/>
+      <div class="PanelComponent-searchStatus" v-show="initializingPreview">
+        <Spinner :message="translatePhrase('Fetching preview')" />
+      </div>
+      <div v-if="!this.initializingPreview">
+        <span class="Preview-affected Breadcrumb-recordNumbers">{{ this.noHitsLabel }} <i
+          class="fa fa-fw fa-circle-o-notch fa-spin" v-show="!complete"/></span>
+        <div class="Preview-preview" v-if="showPreview">
+          <div class="Preview-preview-heading">
+            <entity-summary
+              :focus-data="previewData"
+              :should-link="false"
+              :exclude-components="['details']"/>
+          </div>
+          <entity-form
+            :editing-object="'mainEntity'"
+            :key="formTab.id"
+            :is-active="true"
+            :diff="previewDiff"
+            :form-data="previewData"
+            :locked="true"
+          />
         </div>
-        <entity-form
-          :editing-object="'mainEntity'"
-          :key="formTab.id"
-          :is-active="true"
-          :diff="previewDiff"
-          :form-data="previewData"
-          :locked="true"
-        />
       </div>
     </div>
   </div>
