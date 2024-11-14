@@ -1,24 +1,32 @@
-# create-svelte
+# supersearch
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+A [Svelte](https://svelte.dev) search component powered by [CodeMirror](https://codemirror.net/).
 
-Read more about creating a library [in the docs](https://svelte.dev/docs/kit/packaging).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+## Installation
 
 ```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+npm install supersearch
 ```
+
+## Usage
+
+To use `supersearch` in a Svelte project ...
+
+To use `supersearch` in a non-Svelte project ...
+
+## Properties
+
+| Property      | Type              | Description                                                       | Default value |
+| ------------- | ----------------- | ----------------------------------------------------------------- | ------------- |
+| `name`        | `string`          | A string specifying a name for the form control.                  | `undefined`   |
+| `value`       | `string`          | The value that will be displayed and edited inside the component. | `""`          |
+| `form`        | `string`          | A string matching the `id` of a `<form>` element.                 | `undefined`   |
+| `language`    | `LanguageSupport` | The language extension that will parse and highlight the value.   | `undefined`   |
+| `placeholder` | `string`          | A brief hint which is shown when value is empty.                  | `""`          |
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Install dependencies with `npm install` and start a development server:
 
 ```bash
 npm run dev
@@ -27,17 +35,17 @@ npm run dev
 npm run dev -- --open
 ```
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
+Everything inside `src/lib` is part of the library, everything inside `src/routes` can be used as a showcase or preview app.
 
 ## Building
 
-To build your library:
+To build the library:
 
 ```bash
 npm run package
 ```
 
-To create a production version of your showcase app:
+To create a production version of the showcase app:
 
 ```bash
 npm run build
@@ -49,9 +57,9 @@ You can preview the production build with `npm run preview`.
 
 ## Publishing
 
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
+Consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
 
-To publish your library to [npm](https://www.npmjs.com):
+To publish the library to [npm](https://www.npmjs.com):
 
 ```bash
 npm publish
