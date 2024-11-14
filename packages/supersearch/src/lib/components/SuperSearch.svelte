@@ -11,7 +11,7 @@
 		form?: string;
 		language?: LRLanguage;
 		placeholder?: string;
-		extensions?: Extension[];
+		highlighter?: Extension;
 	}
 
 	let {
@@ -19,8 +19,8 @@
 		value = $bindable(''),
 		form,
 		language,
-		extensions,
-		placeholder = ''
+		placeholder = '',
+		highlighter
 	}: Props = $props();
 
 	let editorView: EditorView | undefined = $state();
@@ -28,12 +28,11 @@
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
 
-	const useExtensions = [
+	const extensions = [
 		submitFormOnEnterKey(form),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder)),
-		// compartmentalize rest of extensions?
-		...(extensions ? extensions : [])
+		...(highlighter ? [highlighter] : [])
 	];
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
@@ -50,5 +49,5 @@
 	});
 </script>
 
-<CodeMirror {value} extensions={useExtensions} onchange={handleChangeCodeMirror} bind:editorView />
+<CodeMirror {value} {extensions} onchange={handleChangeCodeMirror} bind:editorView />
 <textarea {value} {name} {form} hidden readonly></textarea>

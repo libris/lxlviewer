@@ -1,9 +1,9 @@
 import { parser } from './syntax.grammar';
-import { LRLanguage, LanguageSupport } from '@codemirror/language';
-import { styleTags, Tag } from '@lezer/highlight';
+import { LRLanguage, LanguageSupport, syntaxHighlighting } from '@codemirror/language';
+import { styleTags, Tag, tagHighlighter } from '@lezer/highlight';
 
-// Turn these grammar nodes into stylable tags
-export const customTags = {
+// custom tags that is attached to the language parser
+const customTags = {
 	Qualifier: Tag.define('Qualifier'),
 	QualifierKey: Tag.define('QualifierKey'),
 	QualifierValue: Tag.define('QualifierValue'),
@@ -27,3 +27,21 @@ export const lxlQueryLanguage = LRLanguage.define({
 export function lxlQuery() {
 	return new LanguageSupport(lxlQueryLanguage);
 }
+
+const highlighter = tagHighlighter([
+	{ tag: customTags.Qualifier, class: 'qualifier' },
+	{ tag: customTags.QualifierKey, class: 'qualifier-key' },
+	{ tag: customTags.QualifierValue, class: 'qualifier-value' },
+	{ tag: customTags.EqualOperator, class: 'equal-operator' },
+	{ tag: customTags.CompareOperator, class: 'compare-operator' },
+	{ tag: customTags.BooleanOperator, class: 'boolean-operator' },
+	{ tag: customTags.BooleanQuery, class: 'boolean-query' },
+	{ tag: customTags.Wildcard, class: 'wildcard' }
+], {
+	all: 'lxlq',
+})
+
+/**
+ * CM editor extension that adds CSS classes for lxlquery nodes
+ */
+export const highlighterExtension = syntaxHighlighting(highlighter)
