@@ -35,7 +35,7 @@ test('prevents new line characters (e.g. when pasting multi-lined text', async (
       two
       three`)
 	);
-	await page.keyboard.press('Meta+v');
+	await page.keyboard.press(`ControlOrMeta+v`);
 	await expect(page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div')).toHaveText(
 		'One two three'
 	);
