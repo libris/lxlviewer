@@ -4416,16 +4416,8 @@
           "bulk:shouldUpdateModifiedTimestamp": false,
           "bulk:changeSpec": {
             "@type": "bulk:Merge",
-            "bulk:deprecate": [
-              {
-                "@type": "URI",
-                "value": ""
-              }
-            ],
-            "bulk:keep": {
-              "@type": "URI",
-              "value": ""
-            }
+            "bulk:deprecate": null,
+            "bulk:keep": null
           }
         },
         "quoted": {},
@@ -4664,16 +4656,8 @@
           "bulk:changeSpec": {
             "@type": "bulk:Other",
             "bulk:script": "removeTopicSubdivision",
-            "bulk:deprecate": [
-              {
-                "@type": "URI",
-                "value": ""
-              }
-            ],
-            "bulk:keep": {
-              "@type": "URI",
-              "value": ""
-            }
+            "bulk:deprecate": null,
+            "bulk:add": null
           }
         },
         "quoted": {},
