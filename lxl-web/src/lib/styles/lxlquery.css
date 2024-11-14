@@ -2,24 +2,24 @@
 	color: green;
 }
 
-.lxlq.qualifierkey {
+.lxlq.qualifier-key {
 	color: green;
 }
 
-.lxlq.qualifiervalue {
+.lxlq.qualifier-value {
 	color: green;
 }
 
-.lxlq.equaloperator,
-.lxlq.compareoperator {
+.lxlq.equal-operator,
+.lxlq.compare-operator {
 	color: darkolivegreen;
 }
 
-.lxlq.booleanoperator {
+.lxlq.boolean-operator {
 	color: #935493;
 }
 
-.lxlq.booleanquery {
+.lxlq.boolean-query {
 	color: purple;
 }
 
