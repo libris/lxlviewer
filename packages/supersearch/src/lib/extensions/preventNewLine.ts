@@ -2,7 +2,7 @@ import { EditorState, Prec } from '@codemirror/state';
 
 /**
  * CodeMirror extension thats prevents inserted newlines (either by typing or pasting).
- * 
+ *
  * @param {boolean} replaceWithSpace Controls if newline characters should be replaced with spaces.
  */
 
