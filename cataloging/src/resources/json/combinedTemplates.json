@@ -4416,10 +4416,12 @@
           "bulk:shouldUpdateModifiedTimestamp": false,
           "bulk:changeSpec": {
             "@type": "bulk:Merge",
-            "bulk:deprecate": {
-              "@type": "URI",
-              "value": ""
-            },
+            "bulk:deprecate": [
+              {
+                "@type": "URI",
+                "value": ""
+              }
+            ],
             "bulk:keep": {
               "@type": "URI",
               "value": ""
