@@ -35,17 +35,15 @@
 			}
 		},
 		onConsent: ({ cookie }) => {
-			if ($matomoTracker && cookie.categories.includes('analytics')) {
-				$matomoTracker.rememberConsentGiven();
+			if (cookie.categories.includes('analytics')) {
+				$matomoTracker?.rememberConsentGiven();
 			}
 		},
 		onChange: ({ cookie }) => {
-			if ($matomoTracker) {
-				if (cookie.categories.includes('analytics')) {
-					$matomoTracker.rememberConsentGiven();
-				} else {
-					$matomoTracker.forgetConsentGiven();
-				}
+			if (cookie.categories.includes('analytics')) {
+				$matomoTracker?.rememberConsentGiven();
+			} else {
+				$matomoTracker?.forgetConsentGiven();
 			}
 		},
 		language: {
