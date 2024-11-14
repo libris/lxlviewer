@@ -5,6 +5,7 @@ export const MATCH_FORM_KEY = 'bulk:matchForm';
 export const SHOULD_UPDATE_TIMESTAMP_KEY = 'bulk:shouldUpdateModifiedTimestamp';
 export const CHANGE_SPEC_KEY = 'bulk:changeSpec';
 export const TARGET_FORM_KEY = 'bulk:targetForm';
+export const EXECUTION_KEY = 'bulk:execution';
 
 export class Status {
   static Draft = 'bulk:Draft';

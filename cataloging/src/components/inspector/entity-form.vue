@@ -45,6 +45,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideTopLevelFieldNames: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -159,6 +163,7 @@ export default {
         :field-value="v"
         :parent-path="editingObject"
         :showBulkchangeActions="showBulkchangeActions"
+        :show-key="!hideTopLevelFieldNames"
       />
       <div id="result" v-if="user.settings.appTech && !isLocked">
         <pre class="col-md-12">
