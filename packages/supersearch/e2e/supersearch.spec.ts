@@ -23,3 +23,20 @@ test('submits form identified by form attribute on enter key press', async ({ pa
 	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL('/test2?q=hello+world');
 });
+
+test('prevents new line characters (e.g. when pasting multi-lined text', async ({
+	page,
+	context
+}) => {
+	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await page.evaluate(() =>
+		navigator.clipboard.writeText(`One
+      two
+      three`)
+	);
+	await page.keyboard.press(`ControlOrMeta+v`);
+	await expect(page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div')).toHaveText(
+		'One two three'
+	);
+});
