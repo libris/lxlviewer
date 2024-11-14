@@ -13,7 +13,10 @@ for (const file of fs.readdirSync(caseDir)) {
 	const name = /^[^.]*/.exec(file)?.[0];
 	if (name) {
 		describe(name, () => {
-			for (const { name, run } of fileTests(fs.readFileSync(path.join(caseDir, file), 'utf8'), file))
+			for (const { name, run } of fileTests(
+				fs.readFileSync(path.join(caseDir, file), 'utf8'),
+				file
+			))
 				it(name, () => run(lxlQueryLanguage.parser));
 		});
 	}

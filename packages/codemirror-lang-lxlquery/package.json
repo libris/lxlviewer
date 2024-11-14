@@ -5,7 +5,7 @@
 	"scripts": {
 		"test": "vitest",
 		"prepare": "cd ../../ && husky && cd ./packages/codemirror-lang-lxlquery && rollup -c",
-    "lint": "eslint . && prettier --check .",
+		"lint": "eslint . && prettier --check .",
 		"format": "prettier --write ."
 	},
 	"lint-staged": {
