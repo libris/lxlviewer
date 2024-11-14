@@ -456,7 +456,9 @@
     "Selection from ID list" : "Urval från ID-lista",
     "Match subtypes" : "Matcha subtyper",
     "Remove records" : "Ta bort poster",
+    "Remove record" : "Radera post",
     "Create records" : "Skapa poster",
+    "Create record" : "Skapa post",
     "Merge" : "Slå ihop",
     "Change" : "Ändring",
     "Fetching preview" : "Hämtar förhandsgranskning"

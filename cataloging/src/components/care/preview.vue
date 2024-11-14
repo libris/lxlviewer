@@ -4,7 +4,7 @@ import { mapGetters } from 'vuex';
 import {isEmpty} from 'lodash-es';
 import ItemEntity from "@/components/inspector/item-entity.vue";
 import EntitySummary from "@/components/shared/entity-summary.vue";
-import {translatePhrase} from "@/utils/filters.js";
+import { translatePhrase } from "@/utils/filters.js";
 import Spinner from "../shared/spinner.vue";
 
 export default {
@@ -85,6 +85,16 @@ export default {
         return translatePhrase('No matching records');
       }
     },
+    removeMainEntity() {
+      if (this.hasPreviewData) {
+        return this.previewDiff.removed[0] === 'mainEntity.'
+      }
+    },
+    addedMainEntity() {
+      if (this.hasPreviewData) {
+        return this.previewDiff.added[0] === 'mainEntity.'
+      }
+    },
   },
   emits: ['onInactive', 'onActive'],
   methods: {
@@ -127,6 +137,8 @@ export default {
       <div v-if="!this.initializingPreview">
         <span class="Preview-affected Breadcrumb-recordNumbers">{{ this.noHitsLabel }} <i
           class="fa fa-fw fa-circle-o-notch fa-spin" v-show="!complete"/></span>
+        <div class="Preview-remove" v-if="removeMainEntity"><i class="Preview-remove-icon fa fa-trash-o icon icon--sm"/>{{ translatePhrase('Remove record')}}</div>
+        <div class="Preview-create" v-if="addedMainEntity"><i class="Preview-create-icon fa fa-plus-circle icon--sm"/>{{ translatePhrase('Create record')}}</div>
         <div class="Preview-preview" v-if="showPreview">
           <div class="Preview-preview-heading">
             <entity-summary
@@ -170,11 +182,32 @@ export default {
     border: 1px solid @grey-lighter;
     padding: 20px;
     transition: background-color 0.3s ease;
-
     &.has-selection {
       border-color: @brand-faded;
       border-width: 5px;
     }
+  }
+
+  &-remove {
+    padding-top: 5px;
+    color: @remove;
+  }
+
+  &-remove-icon {
+    padding-left: 12px;
+    padding-right: 5px;
+    color: @remove;
+  }
+
+  &-create {
+    padding-top: 5px;
+    color: #428BCAFF;
+  }
+
+  &-create-icon {
+    padding-left: 12px;
+    padding-right: 5px;
+    color: #428BCAFF;
   }
 
   &-preview {
