@@ -3,7 +3,7 @@ import { EditorView, keymap } from '@codemirror/view';
 
 /**
  * CodeMirror extension that submits form elements (either the closest or by specified id using the `form` attribute) on enter keypresses.
- * 
+ *
  * @param {string} form Optional id of the `<form>` element with which the form control should be associated with (equivalent with
  * the [form attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#form) on HTML Input elements).
  */

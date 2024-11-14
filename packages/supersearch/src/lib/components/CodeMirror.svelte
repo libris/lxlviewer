@@ -19,7 +19,7 @@
 	};
 
 	let {
-		value = '', // value isn't bindable as it can easily cause undo/redo history issues when changing the value from outside – it's preferable to dispatch changes instead
+		value = '', // value isn't bindable as it can easily cause undo/redo history issues when changing the value from outside – it's preferable to dispatch changes instead
 		extensions = [],
 		onchange = () => {},
 		editorView = $bindable()
