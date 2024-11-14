@@ -36,14 +36,14 @@
 		},
 		onConsent: ({ cookie }) => {
 			if (cookie.categories.includes('analytics')) {
-				$matomoTracker.rememberConsentGiven();
+				$matomoTracker?.rememberConsentGiven();
 			}
 		},
 		onChange: ({ cookie }) => {
 			if (cookie.categories.includes('analytics')) {
-				$matomoTracker.rememberConsentGiven();
+				$matomoTracker?.rememberConsentGiven();
 			} else {
-				$matomoTracker.forgetConsentGiven();
+				$matomoTracker?.forgetConsentGiven();
 			}
 		},
 		language: {
