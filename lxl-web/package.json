@@ -14,15 +14,7 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest",
-		"prepare": "cd .. && husky lxl-web/.husky"
-	},
-	"lint-staged": {
-		"*.{js,ts,svelte,css,scss,postcss,md,json}": [
-			"prettier --write --plugin-search-dir=.",
-			"prettier --check --plugin-search-dir=."
-		],
-		"*.{js,ts,svelte}": "eslint"
+		"test:unit": "vitest"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.9.1",
@@ -43,10 +35,8 @@
 		"eslint-plugin-svelte": "^2.43.0",
 		"estree-walker": "^3.0.3",
 		"globals": "^15.9.0",
-		"husky": "^9.1.4",
 		"jmespath": "^0.16.0",
 		"js-cookie": "^3.0.5",
-		"lint-staged": "^15.2.9",
 		"lxljs": "^1.1.0",
 		"magic-string": "^0.30.11",
 		"mdsvex": "^0.12.3",
