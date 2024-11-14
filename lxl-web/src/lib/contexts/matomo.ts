@@ -29,9 +29,6 @@ export function setMatomoTracker() {
 	const initializedMatomoTracker = initMatomo();
 	if (initializedMatomoTracker) {
 		tracker.set(initializedMatomoTracker);
-		console.info('Matomo tracker set');
-	} else {
-		console.info('Matomo is disabled');
 	}
 }
 
