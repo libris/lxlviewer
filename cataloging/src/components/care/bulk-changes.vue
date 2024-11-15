@@ -375,7 +375,7 @@ export default {
       }
     },
     onInactiveMergeSpec() {
-      this.currentBulkChange[CHANGE_SPEC_KEY] = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
+      this.currentBulkChange[CHANGE_SPEC_KEY] = cloneDeep(this.inspector.data.mainEntity);
     },
     reset() {
       this.$store.dispatch('setInspectorStatusValue', {
