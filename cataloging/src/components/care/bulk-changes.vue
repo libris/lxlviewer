@@ -521,7 +521,12 @@ export default {
           (s) => StringUtil.getLabelByLang(s, this.user.settings.language, this.resources),
         );
 
-        this.fullPreviewData = displayData;
+        if (isEmpty(before)) {
+          // Create new
+          this.fullPreviewData = after;
+        } else {
+          this.fullPreviewData = displayData;
+        }
         this.fullPreviewDiff.removed = displayPaths.removed.map(path => `mainEntity.${path}`);
         this.fullPreviewDiff.added = displayPaths.added.map(path => `mainEntity.${path}`);
         this.fullPreviewDiff.modified = displayPaths.modified.map(path => `mainEntity.${path}`);
