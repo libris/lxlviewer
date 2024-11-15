@@ -1,26 +1,57 @@
-@top Program { expression* }
+@top Query { term* }
 
-@skip { space | LineComment }
+@skip { space }
 
-expression {
-  Identifier |
-  String |
-  Boolean |
-  Application { "(" expression* ")" }
+term {
+  freetext |
+  Qualifier |
+  Group |
+  BooleanQuery
+}
+
+Group { "(" term* ")" } 
+
+BooleanQuery { 
+  (freetext | Qualifier) BooleanOperator (freetext | Qualifier) 
+  (BooleanOperator (freetext | Qualifier))+?
+}
+
+Qualifier {
+  (QualifierKey (EqualOperator | CompareOperator) QualifierValue) | reserved
+}
+
+QualifierKey {
+  identifier | string
+}
+
+QualifierValue {
+  freetext | Group
+}
+
+freetext {
+  (identifier | string | number) Wildcard?
 }
 
 @tokens {
-  Identifier { $[a-zA-Z_\-0-9]+ }
+  identifier { $[a-zA-ZåäöÅÄÖ]+ }
 
-  String { '"' (!["\\] | "\\" _)* '"' }
+  string { '"' (!["\\] | "\\" _)* '"' }
 
-  Boolean { "#t" | "#f" }
+  number { @digit+ }
 
-  LineComment { ";" ![\n]* }
+  EqualOperator { ":" | "=" }
 
-  space { $[ \t\n\r]+ }
+  CompareOperator { ">" | "<" | ">=" | "<=" }
 
-  "(" ")"
+  BooleanOperator { "AND" | "OR" | "NOT" }
+
+  Wildcard { "*"+ }
+
+  reserved { "includeEplikt" | "includePreliminary" }
+
+  space { @whitespace+ }
+
+  @precedence {BooleanOperator, reserved, identifier}
 }
 
 @detectDelim

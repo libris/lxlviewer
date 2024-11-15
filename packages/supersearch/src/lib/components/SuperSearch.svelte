@@ -1,8 +1,8 @@
 <script lang="ts">
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
-	import { Compartment } from '@codemirror/state';
-	import { type LRLanguage } from '@codemirror/language';
+	import { Compartment, type Extension } from '@codemirror/state';
+	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
 
@@ -10,11 +10,19 @@
 		name: string;
 		value?: string;
 		form?: string;
-		language?: LRLanguage;
+		language?: LanguageSupport;
 		placeholder?: string;
+		highlighter?: Extension;
 	}
 
-	let { name, value = $bindable(''), form, language, placeholder = '' }: Props = $props();
+	let {
+		name,
+		value = $bindable(''),
+		form,
+		language,
+		placeholder = '',
+		highlighter
+	}: Props = $props();
 
 	let editorView: EditorView | undefined = $state();
 
@@ -25,7 +33,7 @@
 		submitFormOnEnterKey(form),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
-		placeholderCompartment.of(placeholderExtension(placeholder))
+		placeholderCompartment.of(placeholderExtension(placeholder)),
 	];
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {

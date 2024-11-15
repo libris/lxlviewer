@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import NProgress from 'nprogress';
-	import '../nprogress.css';
+	import '$lib/styles/nprogress.css';
 	import { navigating } from '$app/stores';
 	import Matomo from '$lib/components/Matomo.svelte';
 	import CookieConsent from '$lib/components/CookieConsent.svelte';
