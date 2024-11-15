@@ -181,6 +181,10 @@ export default {
       this.hideToolsMenu();
       this.$emit('openIdListModal');
     },
+    showAsRecord() {
+      this.hideToolsMenu();
+      this.$emit('showAsRecord');
+    },
   },
   computed: {
     ...mapGetters([
@@ -248,6 +252,12 @@ export default {
           <a class="Toolbar-menuLink" @click="importFromIdList" v-if="firstItemActive">
             <i class="fa fa-fw fa-chain" />
             {{ translatePhrase('Import selection from ID list') }}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem">
+          <a class="Toolbar-menuLink" @click="showAsRecord">
+            <i class="fa fa-fw fa-eye" />
+            {{ translatePhrase('Show as record') }}
           </a>
         </li>
       </ul>

@@ -562,6 +562,10 @@ export default {
       this.idListUri = '';
       this.showIdListModal = true;
     },
+    showAsRecord() {
+      const fnurgel = this.$route.params.fnurgel;
+      this.$router.push({ path: `/${fnurgel}` });
+    },
     setIdListUri() {
       this.showIdListModal = false;
       const idList = {
@@ -916,6 +920,7 @@ export default {
           @save="save"
           @setAsDraft="setAsDraft"
           @openIdListModal="openIdListModal"
+          @showAsRecord="showAsRecord"
         />
       </div>
     </div>

@@ -461,6 +461,7 @@
     "Create record" : "Skapa post",
     "Merge" : "Slå ihop",
     "Change" : "Ändring",
-    "Fetching preview" : "Hämtar förhandsgranskning"
+    "Fetching preview" : "Hämtar förhandsgranskning",
+    "Show as record" : "Visa som post"
   }
 }
