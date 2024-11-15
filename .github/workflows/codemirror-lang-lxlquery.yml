@@ -21,6 +21,8 @@ jobs:
         with:
           node-version: 22
       - name: Install dependencies
+        env:
+          HUSKY: ${{ env.HUSKY }}
         run: npm ci
       - name: Run tests
         run: npm run test

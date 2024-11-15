@@ -14,14 +14,7 @@
 		"test:unit": "vitest",
 		"lint": "eslint . && prettier --check .",
 		"format": "prettier --write .",
-		"prepare": "cd ../../ && husky && cd ./packages/supersearch && npm run package"
-	},
-	"lint-staged": {
-		"*.{js,ts,svelte,css,scss,postcss,md,json}": [
-			"prettier --write --plugin-search-dir=.",
-			"prettier --check --plugin-search-dir=."
-		],
-		"*.{js,ts,svelte}": "eslint"
+		"prepare": "npm run package"
 	},
 	"files": [
 		"dist",
@@ -59,8 +52,6 @@
 		"eslint-plugin-svelte": "^2.36.0",
 		"esm-env": "^1.1.4",
 		"globals": "^15.0.0",
-		"husky": "^9.1.6",
-		"lint-staged": "^15.2.10",
 		"prettier": "^3.3.2",
 		"prettier-plugin-css-order": "^2.1.2",
 		"prettier-plugin-svelte": "^3.2.6",
