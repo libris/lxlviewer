@@ -303,22 +303,22 @@ export default {
     <button
       v-if="lastItemActive && !finished"
       class="Toolbar-btn btn btn-default toolbar-button"
-      :disabled="!hasNext"
-      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next-preview')})`"
-      @click="formControl('next-preview')"
-      :aria-label="translatePhrase('Next')">
-      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingPreview.next" />
-      <i class="fa fa-arrow-right" v-show="!loadingPreview.next" />
-    </button>
-    <button
-      v-if="lastItemActive && !finished"
-      class="Toolbar-btn btn btn-default toolbar-button"
       :disabled="!hasPrevious"
       v-tooltip.left="`${translatePhrase('Previous')} (${getKeybindText('previous-preview')})`"
       @click="formControl('previous-preview')"
       :aria-label="translatePhrase('Previous')">
       <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingPreview.previous" />
       <i class="fa fa-arrow-left" v-show="!loadingPreview.previous" />
+    </button>
+    <button
+      v-if="lastItemActive && !finished"
+      class="Toolbar-btn btn btn-default toolbar-button"
+      :disabled="!hasNext"
+      v-tooltip.left="`${translatePhrase('Next')} (${getKeybindText('next-preview')})`"
+      @click="formControl('next-preview')"
+      :aria-label="translatePhrase('Next')">
+      <i class="fa fa-fw fa-circle-o-notch fa-spin" v-show="loadingPreview.next" />
+      <i class="fa fa-arrow-right" v-show="!loadingPreview.next" />
     </button>
     <button
       v-if="isDraft"
