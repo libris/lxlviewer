@@ -12,7 +12,6 @@
 		form?: string;
 		language?: LanguageSupport;
 		placeholder?: string;
-		highlighter?: Extension;
 	}
 
 	let {
@@ -21,7 +20,6 @@
 		form,
 		language,
 		placeholder = '',
-		highlighter
 	}: Props = $props();
 
 	let editorView: EditorView | undefined = $state();
