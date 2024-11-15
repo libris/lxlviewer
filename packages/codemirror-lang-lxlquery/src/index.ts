@@ -14,7 +14,7 @@ const customTags = {
 	Wildcard: Tag.define('Wildcard')
 };
 
-const lxlQuery = LRLanguage.define({
+export const lxlQueryLanguage = LRLanguage.define({
 	name: 'Libris XL query',
 	parser: parser.configure({
 		props: [styleTags(customTags)]
@@ -44,4 +44,4 @@ const highlighterExtension = syntaxHighlighting(highlighter);
  * Libris XL query language together with a highlighter extension 
  * that adds CSS classes for certain nodes
  */
-export const lxlQueryLanguage = new LanguageSupport(lxlQuery, highlighterExtension)
+export const lxlQuery = new LanguageSupport(lxlQueryLanguage, highlighterExtension)
