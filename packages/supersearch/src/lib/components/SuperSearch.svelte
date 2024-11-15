@@ -2,14 +2,14 @@
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
 	import { Compartment, type Extension } from '@codemirror/state';
-	import { type LRLanguage } from '@codemirror/language';
+	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 
 	interface Props {
 		name: string;
 		value?: string;
 		form?: string;
-		language?: LRLanguage;
+		language?: LanguageSupport;
 		placeholder?: string;
 		highlighter?: Extension;
 	}
@@ -32,7 +32,6 @@
 		submitFormOnEnterKey(form),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder)),
-		...(highlighter ? [highlighter] : [])
 	];
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {

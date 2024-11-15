@@ -6,7 +6,7 @@
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import BiSearch from '~icons/bi/search';
-	import { lxlQueryLanguage, highlighterExtension } from 'codemirror-lang-lxlquery';
+	import { lxlQueryLanguage } from 'codemirror-lang-lxlquery';
 	import '$lib/styles/lxlquery.css';
 
 	export let placeholder: string;
@@ -50,7 +50,6 @@
 			name="_q"
 			bind:value={q}
 			language={lxlQueryLanguage}
-			highlighter={highlighterExtension}
 			placeholder={$page.data.t('search.search')}
 		/>
 	{:else}

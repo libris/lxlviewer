@@ -2,7 +2,7 @@ import { parser } from './syntax.grammar';
 import { LRLanguage, LanguageSupport, syntaxHighlighting } from '@codemirror/language';
 import { styleTags, Tag, tagHighlighter } from '@lezer/highlight';
 
-// custom tags that is attached to the language parser
+// custom tags attached to the language parser
 const customTags = {
 	Qualifier: Tag.define('Qualifier'),
 	QualifierKey: Tag.define('QualifierKey'),
@@ -14,17 +14,13 @@ const customTags = {
 	Wildcard: Tag.define('Wildcard')
 };
 
-export const lxlQueryLanguage = LRLanguage.define({
+const lxlQuery = LRLanguage.define({
 	name: 'Libris XL query',
 	parser: parser.configure({
 		props: [styleTags(customTags)]
 	}),
 	languageData: {}
 });
-
-export function lxlQuery() {
-	return new LanguageSupport(lxlQueryLanguage);
-}
 
 const highlighter = tagHighlighter(
 	[
@@ -42,7 +38,10 @@ const highlighter = tagHighlighter(
 	}
 );
 
+const highlighterExtension = syntaxHighlighting(highlighter);
+
 /**
- * CM editor extension that adds CSS classes for lxlquery nodes
+ * Libris XL query language together with a highlighter extension 
+ * that adds CSS classes for certain nodes
  */
-export const highlighterExtension = syntaxHighlighting(highlighter);
+export const lxlQueryLanguage = new LanguageSupport(lxlQuery, highlighterExtension)
