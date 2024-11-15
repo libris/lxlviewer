@@ -11,4 +11,5 @@ View the respective directory and their READMEs for more information.
 * `lxljs` - Utility library
 * `lxl-web` - New Libris search
 * `packages/supersearch` - Supersearch component library
+* `packages/codemirror-lang-lxlquery` - CodeMirror language support package for Libris XL queries
 
