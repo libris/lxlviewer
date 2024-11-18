@@ -30,6 +30,12 @@
 		placeholderCompartment.of(placeholderExtension(placeholder))
 	];
 
+	function handleClickCollapsedEditorView() {
+		setTimeout(() => {
+			if (!dialog?.open) showExpandedSearch(); // use timeout to allow word-selection by double-clicking
+		}, 200);
+	}
+
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
 		if (!dialog?.open) {
 			showExpandedSearch();
@@ -75,9 +81,7 @@
 <CodeMirror
 	{value}
 	{extensions}
-	onclick={() => {
-		if (!dialog?.open) showExpandedSearch(); // we should maybe wait for potential double-clicks to allow the user to select whole words by double-clicking...
-	}}
+	onclick={handleClickCollapsedEditorView}
 	onchange={handleChangeCodeMirror}
 	bind:editorView={collapsedEditorView}
 	syncedEditorView={expandedEditorView}

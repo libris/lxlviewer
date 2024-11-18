@@ -48,7 +48,7 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 		.getByRole('dialog')
 		.getByRole('textbox')
 		.locator('div')
-		.fill('Hello world!');
+		.fill('Hello world');
 	await page
 		.locator('[data-test-id="test1"]')
 		.getByRole('dialog')
@@ -62,9 +62,14 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 	await expect(
 		await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div'),
 		'contents should be synced'
-	).toHaveText('Hello world!');
+	).toHaveText('Hello world');
 	expect(
 		await page.evaluate(() => window.getSelection()?.toString()),
 		'text selection should be synced'
-	).toBe('Hello world!');
+	).toBe('Hello world');
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').dblclick();
+	expect(
+		await page.evaluate(() => window.getSelection()?.toString()),
+		'collapsed editor view allows double-clicking to select words'
+	).toBe('world');
 });
