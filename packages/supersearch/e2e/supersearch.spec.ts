@@ -40,3 +40,31 @@ three`)
 		page.locator('[data-test-id="test1"]').getByRole('textbox').first().locator('div')
 	).toHaveText('One two three');
 });
+
+test('syncs collapsed and expanded editor views', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('textbox')
+		.locator('div')
+		.fill('Hello world!');
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('textbox')
+		.selectText();
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('textbox')
+		.press('Escape');
+	await expect(
+		await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div'),
+		'contents should be synced'
+	).toHaveText('Hello world!');
+	expect(
+		await page.evaluate(() => window.getSelection()?.toString()),
+		'text selection should be synced'
+	).toBe('Hello world!');
+});
