@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
-	import { Compartment, type Extension } from '@codemirror/state';
+	import { Compartment } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
@@ -14,29 +14,42 @@
 		placeholder?: string;
 	}
 
-	let {
-		name,
-		value = $bindable(''),
-		form,
-		language,
-		placeholder = '',
-	}: Props = $props();
+	let { name, value = $bindable(''), form, language, placeholder = '' }: Props = $props();
 
 	let editorView: EditorView | undefined = $state();
 
-	let placeholderCompartment = new Compartment();
+	let prevValue = value;
 	let prevPlaceholder = placeholder;
+
+	let placeholderCompartment = new Compartment();
 
 	const extensions = [
 		submitFormOnEnterKey(form),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
-		placeholderCompartment.of(placeholderExtension(placeholder)),
+		placeholderCompartment.of(placeholderExtension(placeholder))
 	];
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		value = event.value;
+		prevValue = value = event.value;
 	}
+
+	$effect(() => {
+		/**
+		 * Prefer changing the value using dispatched changes (if it should be changed from the outside) to prevent
+		 * history issues. The following effect is however kept as a fallback:
+		 * */
+		if (value !== prevValue) {
+			editorView?.dispatch({
+				changes: {
+					from: 0,
+					to: editorView.state.doc.length,
+					insert: value
+				}
+			});
+			prevValue = value;
+		}
+	});
 
 	$effect(() => {
 		if (placeholder !== prevPlaceholder) {
