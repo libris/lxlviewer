@@ -29,7 +29,13 @@ import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
 import LanguageMixin from '../mixins/language-mixin.vue';
 import FieldMarker from "@/components/inspector/field-marker.vue";
 import IdList from '@/components/care/id-list.vue';
-import { HAS_ID_KEY, MATCHING_MODE_KEY, SUBTYPES_TYPE, VALUE_FROM_KEY } from "@/utils/bulk.js";
+import {
+  BulkContext,
+  HAS_ID_KEY,
+  MATCHING_MODE_KEY,
+  SUBTYPES_TYPE,
+  VALUE_FROM_KEY
+} from "@/utils/bulk.js";
 
 export default {
   name: 'field',
@@ -123,10 +129,10 @@ export default {
       type: Boolean,
       default: false,
     },
-    showBulkchangeActions: {
-      type: Boolean,
-      default: false,
-    }
+    bulkContext: {
+      type: String,
+      default: BulkContext.None,
+    },
   },
   data() {
     return {
@@ -448,7 +454,7 @@ export default {
       return DisplayUtil.rdfDisplayType(this.fieldKey, this.resources);
     },
     matchSubTypes() {
-      if (this.showBulkchangeActions) {
+      if (this.bulkContext === BulkContext.MatchForm) {
         const data = get(this.inspector.data, this.parentPath);
         return typeof data[MATCHING_MODE_KEY] !== 'undefined' && data[MATCHING_MODE_KEY].includes(SUBTYPES_TYPE);
       } else {
@@ -458,6 +464,9 @@ export default {
     inBulkChangeView() {
       return this.$route.path.includes('bulkchanges');
     },
+    isBulkChangeMatchForm() {
+      return this.bulkContext === BulkContext.MatchForm;
+    }
   },
   methods: {
     HAS_ID_KEY() {
@@ -731,7 +740,9 @@ export default {
             :is-placeholder="false"
             :is-language="this.isLangMap || this.isLangTaggable"
             @addEmptyLanguageItem="addEmpty()"
-            :value-list="valueAsArray" />
+            :value-list="valueAsArray"
+            :bulk-context="bulkContext"
+          />
           <div v-else class="Field-action placeholder" />
 
           <div class="Field-comment" v-if="propertyComment && !locked">
@@ -830,7 +841,9 @@ export default {
           :is-placeholder="true"
           :is-language="this.isLangMap || this.isLangTaggable"
           @addEmptyLanguageItem="addEmpty()"
-          :value-list="valueAsArray" />
+          :value-list="valueAsArray"
+          :bulk-context="bulkContext"
+        />
 
         <div
           class="Field-action Field-remove"
@@ -894,7 +907,7 @@ export default {
           :field-value="item"
           :entity-type="entityType"
           :parent-path="path"/>
-        <div class="Field-matchSubClasses" v-if="this.parentPath === 'mainEntity' && showBulkchangeActions">
+        <div class="Field-matchSubClasses" v-if="this.parentPath === 'mainEntity' && isBulkChangeMatchForm">
         <span class="Field-matchSubClassesLabel">
           {{ translatePhrase('Match subtypes') }}
         </span>
@@ -945,7 +958,7 @@ export default {
           :item="item" />
 
         <id-list v-if="getDatatype(item) == 'idList'"
-          :show-remove-button="showBulkchangeActions && !isLocked"
+          :show-remove-button="isBulkChangeMatchForm && !isLocked"
           :id-list-link="item[HAS_ID_KEY()][VALUE_FROM_KEY()]['@id']"
           @remove-id-list="removeThis"
         />
@@ -1005,7 +1018,7 @@ export default {
           :in-array="valueIsArray"
           :diff="diff"
           :should-expand="expandChildren || embellished"
-          :show-bulkchange-actions="showBulkchangeActions"
+          :bulk-context="bulkContext"
         />
       </div>
       <portal-target :name="`typeSelect-${path}`" />

@@ -252,6 +252,21 @@ export default {
 
       return options;
     },
+    optionsWithAny() {
+      const classTree = this.classTreeWithAny;
+      const options = [];
+
+      for (let i = 0; i < classTree.length; i++) {
+        const term = {};
+        term.depth = classTree[i].depth;
+        term.abstract = classTree[i].abstract || null;
+        term.label = this.getLabelWithTreeDepth(classTree[i]);
+        term.value = classTree[i].id;
+        term.key = `${classTree[i].id}-${i}`;
+        options.push(term);
+      }
+      return options;
+    },
     priorityOptions() {
       const list = this.allValuesFrom.length > 1 ? this.allValuesFrom : this.someValuesFrom;
       return list;
@@ -266,24 +281,18 @@ export default {
         this.resources.vocab,
         this.resources.context,
       ));
-      const flattenedTree = VocabUtil.flattenTree(
+      return VocabUtil.flattenTree(
         tree,
         this.resources.vocab,
         this.resources.context,
         this.user.settings.language,
       );
-
-      if (this.isBulkChange) {
-        return [this.anyType, ...flattenedTree];
-      } else {
-        return flattenedTree;
-      }
+    },
+    classTreeWithAny() {
+      return [this.anyType, ...this.getClassTree];
     },
     anyType() {
       return { id: ANY_TYPE, sub: [], abstract : false, depth: 0, parentChainString: ANY_TYPE};
-    },
-    isBulkChange() {
-      return this.$route.path.includes('bulkchanges');
     },
   },
   watch: {

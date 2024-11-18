@@ -16,7 +16,7 @@ import SearchWindow from './search-window.vue';
 import ItemMixin from '../mixins/item-mixin.vue';
 import LensMixin from '../mixins/lens-mixin.vue';
 import FormMixin from '../mixins/form-mixin.vue';
-import { ANY_TYPE, EXACT_TYPE, MATCHING_MODE_KEY } from "@/utils/bulk.js";
+import {ANY_TYPE, BulkContext, EXACT_TYPE, MATCHING_MODE_KEY} from "@/utils/bulk.js";
 
 export default {
   name: 'item-local',
@@ -66,10 +66,10 @@ export default {
       type: String,
       default: '',
     },
-    showBulkchangeActions: {
-      type: Boolean,
-      default: false,
-    }
+    bulkContext: {
+      type: String,
+      default: BulkContext.None,
+    },
   },
   data() {
     return {
@@ -401,7 +401,7 @@ export default {
         });
     },
     togglePinned() {
-      if (this.showBulkchangeActions && this.isPinned) {
+      if (this.bulkContext === BulkContext.MatchForm && this.isPinned) {
         this.setPinned(true);
       } else {
         this.setPinned(false);
@@ -758,7 +758,7 @@ export default {
         :diff="diff"
         :expand-children="expandChildren"
         :is-expanded="expanded"
-        :show-bulkchange-actions="showBulkchangeActions"
+        :bulk-context="bulkContext"
       />
     </ul>
 

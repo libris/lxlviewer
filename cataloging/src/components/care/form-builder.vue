@@ -4,7 +4,7 @@ import FieldAdder from '@/components/inspector/field-adder.vue';
 import { mapGetters } from 'vuex';
 import {convertResourceLink, translatePhrase} from "../../utils/filters.js";
 import IdList from '@/components/care/id-list.vue';
-import { HAS_ID_KEY, VALUE_FROM_KEY } from "@/utils/bulk.js";
+import { BulkContext, HAS_ID_KEY, VALUE_FROM_KEY } from "@/utils/bulk.js";
 import { get } from "lodash-es";
 
 export default {
@@ -45,6 +45,9 @@ export default {
     }
     },
   computed: {
+    context() {
+      return BulkContext.MatchForm;
+    },
     ...mapGetters([
       'inspector',
     ]),
@@ -94,7 +97,7 @@ export default {
           :is-active="true"
           :form-data="formData"
           :locked="!isActive"
-          :show-bulkchange-actions="true"
+          :bulkContext="context"
         />
       </div>
     </div>

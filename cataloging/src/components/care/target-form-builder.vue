@@ -4,7 +4,7 @@ import FieldAdder from '@/components/inspector/field-adder.vue';
 import { mapGetters } from 'vuex';
 import {isEmpty} from 'lodash-es';
 import {translatePhrase} from "../../utils/filters.js";
-import {Type} from "@/utils/bulk.js";
+import {BulkContext, Type} from "@/utils/bulk.js";
 export default {
   name: 'target-form-builder.vue',
   components: { FieldAdder, EntityForm },
@@ -62,6 +62,9 @@ export default {
     },
     showTargetForm() {
       return this.isDraft || this.specType === Type.Create;
+    },
+    context() {
+      return BulkContext.TargetForm;
     }
   },
   emits: ['onInactive', 'onActive'],
@@ -100,6 +103,7 @@ export default {
           :is-active="true"
           :form-data="data"
           :locked="!isActive"
+          :bulk-context="context"
         />
       </div>
       <div

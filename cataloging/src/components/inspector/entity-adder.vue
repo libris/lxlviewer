@@ -19,7 +19,7 @@ import templates from '@/resources/json/structuredValueTemplates.json';
 import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
 import Sort from '@/components/search/sort.vue';
 import PanelSearchList from '../search/panel-search-list.vue';
-import { ANY_TYPE } from "@/utils/bulk.js";
+import {ANY_TYPE, BulkContext } from '@/utils/bulk.js';
 
 export default {
   mixins: [LensMixin, SideSearchMixin],
@@ -79,6 +79,10 @@ export default {
     iconAdd: {
       type: String,
       default: 'fa-plus-circle',
+    },
+    bulkContext: {
+      type: String,
+      default: BulkContext.None,
     },
   },
   emits: ['langTaggerEvent', 'addEmptyLanguageItem'],
@@ -197,6 +201,15 @@ export default {
     inBulkChangeView() {
       return this.$route.path.includes('bulkchanges');
     },
+    isBulkChangeMatchForm() {
+      return this.bulkContext === BulkContext.MatchForm;
+    },
+    isBulkChangeTargetForm() {
+      return this.bulkContext === BulkContext.TargetForm;
+    },
+    isBulkChangeForm() {
+      return this.isBulkChangeMatchForm || this.isBulkChangeTargetForm;
+    }
   },
   mounted() {
     this.addEmbedded = (this.valueList.length === 0 && this.onlyEmbedded && this.rangeFull.length > 1);
@@ -491,7 +504,14 @@ export default {
     </div>
     <portal :to="`typeSelect-${path}`">
       <type-select
-        v-if="addEmbedded"
+        v-if="addEmbedded && isBulkChangeMatchForm"
+        :classTree="classTreeWithAny"
+        :options="optionsWithAny"
+        :removeable="valueList.length > 0"
+        @selected="addType($event)"
+        @dismiss="dismissTypeChooser()" />
+      <type-select
+        v-if="addEmbedded && !isBulkChangeMatchForm"
         :classTree="getClassTree"
         :options="selectOptions"
         :removeable="valueList.length > 0"
@@ -627,21 +647,16 @@ export default {
           <div class="EntityAdder-create">
             <button
               class="EntityAdder-createBtn btn btn-primary btn--sm"
-              v-if="hasSingleCreatable && allowLocal && !inBulkChangeView"
+              v-if="hasSingleCreatable && allowLocal && !isBulkChangeMatchForm"
               v-on:click="addEmpty(rangeCreatable[0])">{{ translatePhrase("Create local entity") }}
             </button>
             <button
               class="EntityAdder-createBtn btn btn-primary btn--sm"
-              v-if="inBulkChangeView && hasCreateable && allowLocal"
+              v-if="isBulkChangeMatchForm && hasCreateable && allowLocal"
               v-on:click="addEmpty(ANY_TYPE())">{{ translatePhrase("Create local entity") }}
             </button>
-            <button
-              class="EntityAdder-idListBtn btn btn-primary btn--sm"
-              v-if="inBulkChangeView && hasCreateable && allowLocal"
-              v-on:click="addIdList">{{ translatePhrase("Match with ID list") }}
-            </button>
             <filter-select
-              v-if="!hasSingleCreatable && !inBulkChangeView"
+              v-if="!hasSingleCreatable && !isBulkChangeMatchForm"
               :input-id="'createselectInput'"
               :class-name="'js-createSelect'"
               :options="{ tree: selectOptions, priority: priorityOptions }"
@@ -650,6 +665,11 @@ export default {
               :is-filter="false"
               :custom-placeholder="'Create local entity:'"
               v-on:filter-selected="addType($event.value)" />
+            <button
+              class="EntityAdder-idListBtn btn btn-primary btn--sm"
+              v-if="isBulkChangeForm && hasCreateable && allowLocal"
+              v-on:click="addIdList">{{ translatePhrase("Match with ID list") }}
+            </button>
           </div>
         </template>
       </panel-component>

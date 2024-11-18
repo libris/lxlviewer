@@ -31,3 +31,9 @@ export class Type {
   static Merge = 'bulk:Merge';
   static Other = 'bulk:Other';
 }
+
+export class BulkContext {
+  static MatchForm = 'matchForm';
+  static TargetForm = 'targetForm';
+  static None = 'none';
+}

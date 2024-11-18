@@ -9,6 +9,7 @@ import * as VocabUtil from 'lxljs/vocab';
 import { translatePhrase } from '@/utils/filters';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import FormMixin from '@/components/mixins/form-mixin.vue';
+import {BulkContext} from "@/utils/bulk.js";
 
 export default {
   mixins: [FormMixin, LensMixin],
@@ -41,9 +42,9 @@ export default {
       type: String,
       default: '',
     },
-    showBulkchangeActions: {
-      type: Boolean,
-      default: false,
+    bulkContext: {
+      type: String,
+      default: BulkContext.None,
     },
     hideTopLevelFieldNames: {
       type: Boolean,
@@ -162,7 +163,7 @@ export default {
         :field-key="k"
         :field-value="v"
         :parent-path="editingObject"
-        :showBulkchangeActions="showBulkchangeActions"
+        :bulk-context="bulkContext"
         :show-key="!hideTopLevelFieldNames"
       />
       <div id="result" v-if="user.settings.appTech && !isLocked">
