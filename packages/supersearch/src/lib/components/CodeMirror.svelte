@@ -14,6 +14,7 @@
 	type CodeMirrorProps = {
 		value?: string;
 		extensions?: Extension[];
+		onclick?: (event: MouseEvent) => void;
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		editorView?: EditorView | undefined;
 	};
@@ -21,6 +22,7 @@
 	let {
 		value = '', // value isn't bindable as it can easily cause undo/redo history issues when changing the value from outside – it's preferable to dispatch changes instead
 		extensions = [],
+		onclick = () => {},
 		onchange = () => {},
 		editorView = $bindable()
 	}: CodeMirrorProps = $props();
@@ -35,8 +37,16 @@
 		}
 	});
 
+	const domEventHandler = EditorView.domEventHandlers({
+		click: (event: MouseEvent) => onclick(event)
+	});
+
 	let codemirrorContainerElement: HTMLDivElement | undefined = $state();
-	let extensionsWithBaseHandlers: Extension[] = $derived([updateHandler, ...extensions]);
+	let extensionsWithBaseHandlers: Extension[] = $derived([
+		updateHandler,
+		domEventHandler,
+		...extensions
+	]);
 	let prevExtensions: Extension[] = extensions;
 
 	function createEditorState({ doc, selection }: { doc?: string; selection?: SelectionRange }) {
