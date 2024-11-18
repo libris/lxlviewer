@@ -74,6 +74,7 @@
 	}}
 	onchange={handleChangeCodeMirror}
 	bind:editorView={collapsedEditorView}
+	syncedEditorView={expandedEditorView}
 />
 <textarea {value} {name} {form} hidden readonly></textarea>
 <dialog bind:this={dialog} onclose={hideExpandedSearch} onkeydowncapture={handleKeyDown}>
@@ -82,5 +83,6 @@
 		{extensions}
 		onchange={handleChangeCodeMirror}
 		bind:editorView={expandedEditorView}
+		syncedEditorView={collapsedEditorView}
 	/>
 </dialog>

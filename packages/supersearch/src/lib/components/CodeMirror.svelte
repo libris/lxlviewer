@@ -10,6 +10,7 @@
 	import { onMount } from 'svelte';
 	import { EditorView } from '@codemirror/view';
 	import { EditorState, StateEffect, type Extension, type SelectionRange } from '@codemirror/state';
+	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
 
 	type CodeMirrorProps = {
 		value?: string;
@@ -17,6 +18,7 @@
 		onclick?: (event: MouseEvent) => void;
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		editorView?: EditorView | undefined;
+		syncedEditorView?: EditorView | undefined;
 	};
 
 	let {
@@ -24,10 +26,19 @@
 		extensions = [],
 		onclick = () => {},
 		onchange = () => {},
-		editorView = $bindable()
+		editorView = $bindable(),
+		syncedEditorView
 	}: CodeMirrorProps = $props();
 
 	const updateHandler = EditorView.updateListener.of((update) => {
+		if (isViewUpdateFromUserInput(update)) {
+			syncedEditorView?.dispatch({
+				changes: update.changes,
+				selection: update.state.selection,
+				scrollIntoView: update.transactions?.[0].scrollIntoView
+			});
+		}
+
 		if (update.docChanged) {
 			value = update.state.doc.toString();
 			onchange({
