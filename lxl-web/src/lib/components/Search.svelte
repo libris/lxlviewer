@@ -49,7 +49,7 @@
 		<SuperSearch
 			name="_q"
 			bind:value={q}
-			language={lxlQuery()}
+			language={lxlQuery}
 			placeholder={$page.data.t('search.search')}
 		/>
 	{:else}
