@@ -29,14 +29,14 @@ test('prevents new line characters (e.g. when pasting multi-lined text', async (
 	context
 }) => {
 	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').first().locator('div').click();
 	await page.evaluate(() =>
 		navigator.clipboard.writeText(`One
-      two
-      three`)
+two
+three`)
 	);
 	await page.keyboard.press(`ControlOrMeta+v`);
-	await expect(page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div')).toHaveText(
-		'One two three'
-	);
+	await expect(
+		page.locator('[data-test-id="test1"]').getByRole('textbox').first().locator('div')
+	).toHaveText('One two three');
 });
