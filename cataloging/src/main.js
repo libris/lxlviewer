@@ -4,6 +4,7 @@ import { VTooltip } from 'floating-vue';
 import { FocusTrap } from 'focus-trap-vue';
 import 'floating-vue/dist/style.css';
 import VueClipboard from 'vue-clipboard2';
+import VueMatomo from 'vue-matomo'
 import store from './store';
 import router from './router';
 import App from './App.vue';
@@ -19,6 +20,11 @@ app.component('FocusTrap', FocusTrap);
 app.use(router);
 router.app = app;
 app.use(VueClipboard);
+app.use(VueMatomo, {
+  host: 'https://analytics.kb.se',
+  siteId: runtimeConfig.MATOMO_ID || import.meta.env.VITE_APP_MATOMO_ID,
+  router: router
+})
 
 app.component('entity-summary', EntitySummary).component('field', Field);
 

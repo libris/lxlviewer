@@ -231,17 +231,6 @@ export default {
         }
       }
     },
-    injectAnalytics() {
-      // eslint-disable-next-line vue/max-len
-      const analyticsString = 'var _paq=_paq||[];_paq.push(["trackPageView"]),_paq.push(["enableLinkTracking"]),function(){var e="//analytics.kb.se/";_paq.push(["setTrackerUrl",e+"matomo.php"]),_paq.push(["setSiteId","****"]);var a=document,p=a.createElement("script"),t=a.getElementsByTagName("script")[0];p.type="text/javascript",p.async=!0,p.defer=!0,p.src=e+"matomo.js",t.parentNode.insertBefore(p,t)}();';
-      const scriptWithMatomoId = analyticsString.replace('****', this.settings.matomoId);
-      const scriptTag = document.createElement('script');
-
-      scriptTag.setAttribute('type', 'text/javascript');
-      scriptTag.text = scriptWithMatomoId;
-
-      document.head.appendChild(scriptTag);
-    },
     verifyConfig() {
       if (!this.settings.apiPath || typeof this.settings.apiPath === 'undefined') {
         throw new Error('Missing API path in app-config');
@@ -420,7 +409,6 @@ export default {
 
       window.addEventListener('keydown', LayoutUtil.handleFirstTab);
       this.updateTitle();
-      this.injectAnalytics();
     });
 
     window.addEventListener('scroll', (e) => {
