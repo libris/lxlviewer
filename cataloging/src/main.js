@@ -20,9 +20,11 @@ app.component('FocusTrap', FocusTrap);
 app.use(router);
 router.app = app;
 app.use(VueClipboard);
-app.use(VueMatomo, {
+
+const matomoId = runtimeConfig.MATOMO_ID || import.meta.env.VITE_APP_MATOMO_ID;
+matomoId && app.use(VueMatomo, {
   host: 'https://analytics.kb.se',
-  siteId: runtimeConfig.MATOMO_ID || import.meta.env.VITE_APP_MATOMO_ID,
+  siteId: matomoId,
   router: router
 })
 
