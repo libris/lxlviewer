@@ -18,10 +18,8 @@
 
 	let editorView: EditorView | undefined = $state();
 
-	let prevValue = value;
-	let prevPlaceholder = placeholder;
-
 	let placeholderCompartment = new Compartment();
+	let prevPlaceholder = placeholder;
 
 	const extensions = [
 		submitFormOnEnterKey(form),
@@ -31,25 +29,8 @@
 	];
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		prevValue = value = event.value;
+		value = event.value;
 	}
-
-	$effect(() => {
-		/**
-		 * Prefer changing the value using dispatched changes (if it should be changed from the outside) to prevent
-		 * history issues. The following effect is however kept as a fallback:
-		 * */
-		if (value !== prevValue) {
-			editorView?.dispatch({
-				changes: {
-					from: 0,
-					to: editorView.state.doc.length,
-					insert: value
-				}
-			});
-			prevValue = value;
-		}
-	});
 
 	$effect(() => {
 		if (placeholder !== prevPlaceholder) {
