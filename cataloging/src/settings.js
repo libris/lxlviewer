@@ -18,7 +18,6 @@ export default {
   mockDisplay: import.meta.env.VITE_APP_MOCK_DISPLAY_BOOL === 'true',
   mockHelp: import.meta.env.VITE_APP_MOCK_HELP_BOOL === 'true',
   scopes: 'read write',
-  matomoId: 23,
   appPaths: {
     '/find?': '/search/libris?',
   },
