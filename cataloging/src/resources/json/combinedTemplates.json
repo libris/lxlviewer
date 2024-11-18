@@ -4656,7 +4656,7 @@
           "bulk:changeSpec": {
             "@type": "bulk:Other",
             "bulk:script": "removeSubdivision",
-            "bulk:removeSubdivision": null,
+            "bulk:removeSubdivision": [],
             "bulk:addSubject": null
           }
         },
