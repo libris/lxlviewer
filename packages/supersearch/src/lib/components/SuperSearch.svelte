@@ -38,11 +38,17 @@
 	}
 
 	function showExpandedSearch() {
+		expandedEditorView?.dispatch({
+			selection: collapsedEditorView?.state.selection.main
+		});
 		dialog?.showModal();
 		expandedEditorView?.focus();
 	}
 
 	function hideExpandedSearch() {
+		collapsedEditorView?.dispatch({
+			selection: expandedEditorView?.state.selection.main
+		});
 		dialog?.close();
 		collapsedEditorView?.focus();
 	}
@@ -70,7 +76,7 @@
 	{value}
 	{extensions}
 	onclick={() => {
-		if (!dialog?.open) showExpandedSearch();
+		if (!dialog?.open) showExpandedSearch(); // we should maybe wait for potential double-clicks to allow the user to select whole words by double-clicking...
 	}}
 	onchange={handleChangeCodeMirror}
 	bind:editorView={collapsedEditorView}
