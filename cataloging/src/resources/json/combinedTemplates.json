@@ -4641,10 +4641,10 @@
         }
       }
     },
-    "removeTopicSubdivision": {
+    "removeSubdivision": {
       "label": "Underindelning",
       "description": "Radera underindelning för ämnesord",
-      "@id": "removeTopicSubdivision",
+      "@id": "removeSubdivision",
       "value": {
         "mainEntity": {
           "@type": "bulk:Job",
@@ -4655,9 +4655,9 @@
           "bulk:shouldUpdateModifiedTimestamp": false,
           "bulk:changeSpec": {
             "@type": "bulk:Other",
-            "bulk:script": "removeTopicSubdivision",
-            "bulk:deprecate": null,
-            "bulk:add": null
+            "bulk:script": "removeSubdivision",
+            "bulk:removeSubdivision": null,
+            "bulk:addSubject": null
           }
         },
         "quoted": {},
