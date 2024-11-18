@@ -18,7 +18,7 @@ export default {
   mockDisplay: import.meta.env.VITE_APP_MOCK_DISPLAY_BOOL === 'true',
   mockHelp: import.meta.env.VITE_APP_MOCK_HELP_BOOL === 'true',
   scopes: 'read write',
-  matomoId: runtimeConfig.MATOMO_ID || import.meta.env.MATOMO_ID,
+  matomoId: runtimeConfig.MATOMO_ID || import.meta.env.VITE_APP_MATOMO_ID,
   appPaths: {
     '/find?': '/search/libris?',
   },
