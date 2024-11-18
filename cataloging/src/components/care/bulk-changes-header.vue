@@ -43,7 +43,7 @@ export default {
       if (this.iconMap.hasOwnProperty(this.convertedType)) {
         iconName = this.iconMap[this.convertedType];
       } else {
-        return '';
+        iconName = 'file-text-o';
       }
       return `fa fa-fw fa-${iconName}`;
     },
