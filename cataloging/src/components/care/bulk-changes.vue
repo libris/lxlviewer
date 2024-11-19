@@ -487,8 +487,10 @@ export default {
         }
         this.totalItems = result.totalItems;
 
-        this.getMinimalPreviewFromUrl(fetchUrl);
-
+        if (result['_complete'] === false) {
+          this.getMinimalPreviewFromUrl(fetchUrl);
+        }
+        
         if (this.totalItems === 0 || typeof this.totalItems === 'undefined') {
           this.resetPreviewData();
           return;
