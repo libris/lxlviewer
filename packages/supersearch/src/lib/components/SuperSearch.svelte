@@ -5,6 +5,7 @@
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
+	import { qualifierPlugin } from '$lib/extensions/qualifier.js';
 
 	interface Props {
 		name: string;
@@ -32,6 +33,7 @@
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder)),
+		qualifierPlugin
 	];
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
