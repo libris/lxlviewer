@@ -29,14 +29,47 @@ test('prevents new line characters (e.g. when pasting multi-lined text', async (
 	context
 }) => {
 	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').first().locator('div').click();
 	await page.evaluate(() =>
 		navigator.clipboard.writeText(`One
-      two
-      three`)
+two
+three`)
 	);
 	await page.keyboard.press(`ControlOrMeta+v`);
-	await expect(page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div')).toHaveText(
-		'One two three'
-	);
+	await expect(
+		page.locator('[data-test-id="test1"]').getByRole('textbox').first().locator('div')
+	).toHaveText('One two three');
+});
+
+test('syncs collapsed and expanded editor views', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('textbox')
+		.locator('div')
+		.fill('Hello world');
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('textbox')
+		.selectText();
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('textbox')
+		.press('Escape');
+	await expect(
+		await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div'),
+		'contents should be synced'
+	).toHaveText('Hello world');
+	expect(
+		await page.evaluate(() => window.getSelection()?.toString()),
+		'text selection should be synced'
+	).toBe('Hello world');
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').dblclick();
+	expect(
+		await page.evaluate(() => window.getSelection()?.toString()),
+		'collapsed editor view allows double-clicking to select words'
+	).toBe('world');
 });

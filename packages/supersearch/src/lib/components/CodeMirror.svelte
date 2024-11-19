@@ -10,22 +10,35 @@
 	import { onMount } from 'svelte';
 	import { EditorView } from '@codemirror/view';
 	import { EditorState, StateEffect, type Extension, type SelectionRange } from '@codemirror/state';
+	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
 
 	type CodeMirrorProps = {
 		value?: string;
 		extensions?: Extension[];
+		onclick?: (event: MouseEvent) => void;
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		editorView?: EditorView | undefined;
+		syncedEditorView?: EditorView | undefined;
 	};
 
 	let {
 		value = '', // value isn't bindable as it can easily cause undo/redo history issues when changing the value from outside – it's preferable to dispatch changes instead
 		extensions = [],
+		onclick = () => {},
 		onchange = () => {},
-		editorView = $bindable()
+		editorView = $bindable(),
+		syncedEditorView
 	}: CodeMirrorProps = $props();
 
 	const updateHandler = EditorView.updateListener.of((update) => {
+		if (isViewUpdateFromUserInput(update)) {
+			syncedEditorView?.dispatch({
+				changes: update.changes,
+				selection: update.state.selection,
+				scrollIntoView: update.transactions?.[0].scrollIntoView
+			});
+		}
+
 		if (update.docChanged) {
 			value = update.state.doc.toString();
 			onchange({
@@ -35,8 +48,16 @@
 		}
 	});
 
+	const domEventHandler = EditorView.domEventHandlers({
+		click: (event: MouseEvent) => onclick(event)
+	});
+
 	let codemirrorContainerElement: HTMLDivElement | undefined = $state();
-	let extensionsWithBaseHandlers: Extension[] = $derived([updateHandler, ...extensions]);
+	let extensionsWithBaseHandlers: Extension[] = $derived([
+		updateHandler,
+		domEventHandler,
+		...extensions
+	]);
 	let prevExtensions: Extension[] = extensions;
 
 	function createEditorState({ doc, selection }: { doc?: string; selection?: SelectionRange }) {
