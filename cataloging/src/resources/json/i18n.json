@@ -464,6 +464,7 @@
     "Fetching preview" : "Hämtar förhandsgranskning",
     "Show as bulk change" : "Visa som körning",
     "Show as record" : "Visa som post",
-    "To see bulk changes you need to switch to a sigel with access.": "För att se körningar behöver du växla till ett sigel med rättigheter."
+    "To see bulk changes you need to switch to a sigel with access.": "För att se körningar behöver du växla till ett sigel med rättigheter.",
+    "Back to create bulk change": "Tillbaka till skapa massändring"
   }
 }

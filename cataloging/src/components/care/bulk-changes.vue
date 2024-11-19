@@ -58,6 +58,7 @@ export default {
       currentBulkChange: {},
       currentSpec: {},
       lastFetchedSpec: {},
+      loadFailure: null,
       record: {},
       formPreview: {},
       formPreviewData: {'@type': 'Instance'},
@@ -284,10 +285,9 @@ export default {
           this.documentETag = response.headers.get('ETag');
           return response.json();
         } if (response.status === 404 || response.status === 410) {
-          this.$store.dispatch('pushNotification', {
-            type: 'danger',
-            message: `${StringUtil.getUiPhraseByLang('The record was not found', this.user.settings.language, this.resources.i18n)}. ${response.status} ${response.statusText}`,
-          });
+          this.loadFailure = {
+            status: response.status,
+          };
         } else {
           this.$store.dispatch('pushNotification', {
             type: 'danger',
@@ -782,6 +782,18 @@ export default {
 };
 </script>
 <template>
+  <div v-if="loadFailure">
+    <h2>{{loadFailure.status}}</h2>
+    <p v-if="loadFailure.status === 404">
+      {{ translatePhrase('The resource') }} <code>{{documentId}}</code> {{ translatePhrase('could not be found') }}.
+    </p>
+    <p v-if="loadFailure.status === 410">
+      {{ translatePhrase('The resource') }} <code>{{documentId}}</code> {{ translatePhrase('has been removed')}}.
+    </p>
+    <router-link to="/directory-care/bulkchanges">
+      {{ translatePhrase('Back to create bulk change') }}
+    </router-link>
+  </div>
   <div class="BulkChanges row" v-if="isInitialized">
     <div
       class="col-sm-12"
