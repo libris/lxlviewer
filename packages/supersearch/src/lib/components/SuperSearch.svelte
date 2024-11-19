@@ -30,10 +30,8 @@
 		placeholderCompartment.of(placeholderExtension(placeholder))
 	];
 
-	function handleClickCollapsedEditorView() {
-		setTimeout(() => {
-			if (!dialog?.open) showExpandedSearch(); // use timeout to allow word-selection by double-clicking
-		}, 200);
+	function handleClickCollapsed() {
+		if (!dialog?.open) showExpandedSearch();
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
@@ -81,7 +79,7 @@
 <CodeMirror
 	{value}
 	{extensions}
-	onclick={handleClickCollapsedEditorView}
+	onclick={handleClickCollapsed}
 	onchange={handleChangeCodeMirror}
 	bind:editorView={collapsedEditorView}
 	syncedEditorView={expandedEditorView}

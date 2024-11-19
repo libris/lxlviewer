@@ -67,9 +67,4 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 		await page.evaluate(() => window.getSelection()?.toString()),
 		'text selection should be synced'
 	).toBe('Hello world');
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').dblclick();
-	expect(
-		await page.evaluate(() => window.getSelection()?.toString()),
-		'collapsed editor view allows double-clicking to select words'
-	).toBe('world');
 });
