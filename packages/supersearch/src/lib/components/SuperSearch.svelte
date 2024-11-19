@@ -13,6 +13,7 @@
 		TransformFunction,
 		ResultItem
 	} from '$lib/types/superSearch.js';
+	import { qualifierPlugin } from '$lib/extensions/qualifier.js';
 
 	interface Props {
 		name: string;
@@ -64,7 +65,8 @@
 		submitFormOnEnterKey(form),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
-		placeholderCompartment.of(placeholderExtension(placeholder))
+		placeholderCompartment.of(placeholderExtension(placeholder)),
+		qualifierPlugin
 	];
 
 	function handleClickCollapsed() {
