@@ -50,6 +50,10 @@ export default {
     name() {
       return this.currentBulkChange.label;
     },
+    comments() {
+      const c = this.currentBulkChange['comment'] || []
+      return Array.isArray(c) ? c : [c];
+    },
     id() {
       return this.currentBulkChange['@id'];
     },
@@ -108,6 +112,11 @@ export default {
       />
     </span>
   </div>
+  <div v-if="comments.length > 0" class="BulkChanges-comments">
+    <div v-for="(comment) in comments" class="BulkChanges-comment">
+      <span>{{comment}}</span>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="less">
@@ -117,7 +126,6 @@ export default {
   align-items: center;
   &-header {
     font-size: 3rem;
-    padding-bottom: 10px;
     padding-right: 1rem;
     font-weight: 600;
     &.cursor-pointer {
@@ -152,5 +160,12 @@ export default {
     height: 25px;
     border-radius: 0.25rem;
   }
+  &-comments {
+    padding-bottom: 20px;
+  }
+  &-comment {
+    padding-left: 1px;
+  }
 }
+
 </style>
