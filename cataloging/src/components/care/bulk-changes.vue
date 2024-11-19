@@ -488,15 +488,9 @@ export default {
         this.totalItems = result.totalItems;
 
         if (result['_complete'] === false) {
-          this.completePreview = false;
-          setTimeout(() => {
-            if (this.currentPreviewUrl === fetchUrl && !this.completePreview) {
-              this.getPreviewFromUrl(fetchUrl);
-            }
-          }, 250);
-        } else {
-          this.completePreview = true;
+          this.getMinimalPreviewFromUrl(fetchUrl);
         }
+        
         if (this.totalItems === 0 || typeof this.totalItems === 'undefined') {
           this.resetPreviewData();
           return;
@@ -535,6 +529,24 @@ export default {
         this.loadingPreview.next = false;
         this.loadingPreview.previous = false;
         this.initializingPreview = false;
+      }, (error) => {
+        this.initializingPreview = false;
+        console.error('Failed to fetch preview', error);
+      });
+    },
+    getMinimalPreviewFromUrl(fetchUrl) {
+      fetch(fetchUrl).then((response) => response.json()).then((result) => {
+        this.totalItems = result.totalItems;
+        if (result['_complete'] === false) {
+          this.completePreview = false;
+          setTimeout(() => {
+            if (this.currentPreviewUrl === fetchUrl && !this.completePreview) {
+              this.getMinimalPreviewFromUrl(fetchUrl);
+            }
+          }, 250);
+        } else {
+          this.completePreview = true;
+        }
       }, (error) => {
         this.initializingPreview = false;
         console.error('Failed to fetch preview', error);
