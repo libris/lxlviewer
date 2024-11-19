@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
+	import { browser } from '$app/environment';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
-	import { Compartment } from '@codemirror/state';
+	import { Compartment, type SelectionRange } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
@@ -22,6 +24,9 @@
 
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
+	let wordSelectionAtClickStart: SelectionRange | null | undefined;
+	let doubleClickTimer: ReturnType<typeof setTimeout>;
+	let tripleClickTimer: ReturnType<typeof setTimeout>;
 
 	const extensions = [
 		submitFormOnEnterKey(form),
@@ -30,10 +35,54 @@
 		placeholderCompartment.of(placeholderExtension(placeholder))
 	];
 
-	function handleClickCollapsedEditorView() {
-		setTimeout(() => {
-			if (!dialog?.open) showExpandedSearch(); // use timeout to allow word-selection by double-clicking
-		}, 200);
+	function handleClickCollapsed(event: MouseEvent) {
+		if (!dialog?.open) {
+			showExpandedSearch();
+			if (event.detail === 1) {
+				wordSelectionAtClickStart = collapsedEditorView?.state.wordAt(
+					collapsedEditorView?.state.selection.main.from
+				);
+				doubleClickTimer = setTimeout(
+					() => window.removeEventListener('dblclick', handleDoubleClickCollapsed),
+					200
+				);
+				tripleClickTimer = setTimeout(
+					() => window.removeEventListener('click', handleTripleClickCollapsed), // we need to use the click event as there is no native event for triple-clicks
+					400
+				);
+				window.addEventListener('dblclick', handleDoubleClickCollapsed);
+				window.addEventListener('click', handleTripleClickCollapsed);
+			}
+		}
+	}
+
+	function handleDoubleClickCollapsed() {
+		clearTimeout(doubleClickTimer);
+		window.removeEventListener('dblclick', handleDoubleClickCollapsed);
+		if (wordSelectionAtClickStart) {
+			expandedEditorView?.dispatch({
+				selection: wordSelectionAtClickStart
+			});
+		}
+		expandedEditorView?.focus();
+	}
+
+	function handleTripleClickCollapsed(event: MouseEvent) {
+		if (event.detail === 3) {
+			clearTimeout(tripleClickTimer);
+			window.removeEventListener('click', handleTripleClickCollapsed);
+			if (wordSelectionAtClickStart) {
+				const lineAt = expandedEditorView?.state.doc.lineAt(wordSelectionAtClickStart.head);
+				expandedEditorView?.dispatch({
+					selection: lineAt
+						? { anchor: lineAt.from, head: lineAt.to }
+						: {
+								anchor: expandedEditorView.state.doc.length
+							}
+				});
+				expandedEditorView?.focus();
+			}
+		}
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
@@ -76,12 +125,21 @@
 			prevPlaceholder = placeholder;
 		}
 	});
+
+	onDestroy(() => {
+		clearTimeout(doubleClickTimer);
+		clearTimeout(tripleClickTimer);
+		if (browser) {
+			window.removeEventListener('dblclick', handleDoubleClickCollapsed);
+			window.removeEventListener('click', handleTripleClickCollapsed);
+		}
+	});
 </script>
 
 <CodeMirror
 	{value}
 	{extensions}
-	onclick={handleClickCollapsedEditorView}
+	onclick={handleClickCollapsed}
 	onchange={handleChangeCodeMirror}
 	bind:editorView={collapsedEditorView}
 	syncedEditorView={expandedEditorView}

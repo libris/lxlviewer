@@ -72,4 +72,18 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 		await page.evaluate(() => window.getSelection()?.toString()),
 		'collapsed editor view allows double-clicking to select words'
 	).toBe('world');
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('textbox')
+		.press('Escape');
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('textbox')
+		.locator('div')
+		.click({ clickCount: 3 });
+	expect(
+		await page.evaluate(() => window.getSelection()?.toString()),
+		'collapsed editor view allows triple-clicking to select entire lines'
+	).toBe('Hello world');
 });
