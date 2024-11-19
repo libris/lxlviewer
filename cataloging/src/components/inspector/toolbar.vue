@@ -15,6 +15,7 @@ import { translatePhrase, labelByLang, convertResourceLink } from '@/utils/filte
 import FieldAdder from '@/components/inspector/field-adder.vue';
 import LensMixin from '@/components/mixins/lens-mixin.vue';
 import FormMixin from '@/components/mixins/form-mixin.vue';
+import { JOB_TYPE } from "@/utils/bulk.js";
 
 export default {
   mixins: [LensMixin, FormMixin],
@@ -95,6 +96,9 @@ export default {
     },
   },
   methods: {
+    JOB_TYPE() {
+      return JOB_TYPE
+    },
     translatePhrase,
     labelByLang,
     convertResourceLink,
@@ -259,6 +263,10 @@ export default {
           value: 'open-marc-preview',
         });
       }
+    },
+    gotoBulkChange() {
+      const fnurgel = this.$route.params.fnurgel;
+      this.$router.push({ path: `/directory-care/bulkchanges/${fnurgel}` });
     },
     applyTemplate(template) {
       this.hideToolsMenu();
@@ -663,6 +671,12 @@ export default {
           <a class="Toolbar-menuLink" @click="openMarc()">
             <i class="fa fa-fw fa-eye" aria-hidden="true" />
             {{ translatePhrase("Preview MARC21") }}  {{ getKeybindText('preview-marc') ? ` (${getKeybindText('preview-marc')})` : ''}}
+          </a>
+        </li>
+        <li class="Toolbar-menuItem" v-if="formType === JOB_TYPE()">
+          <a class="Toolbar-menuLink" @click="gotoBulkChange()">
+            <i class="fa fa-fw fa-eye" aria-hidden="true" />
+            {{ translatePhrase("Show as bulk change") }}
           </a>
         </li>
         <li class="Toolbar-menuItem remove-option" v-if="user.isLoggedIn && !inspector.status.isNew && userIsPermittedToRemove">

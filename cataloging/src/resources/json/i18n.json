@@ -462,6 +462,8 @@
     "Merge" : "Slå ihop",
     "Change" : "Ändring",
     "Fetching preview" : "Hämtar förhandsgranskning",
-    "Show as record" : "Visa som post"
+    "Show as bulk change" : "Visa som körning",
+    "Show as record" : "Visa som post",
+    "To see bulk changes you need to switch to a sigel with access.": "För att se körningar behöver du växla till ett sigel med rättigheter."
   }
 }

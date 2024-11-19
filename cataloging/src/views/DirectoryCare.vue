@@ -169,6 +169,10 @@ export default {
       <holding-mover v-if="$route.params.tool === 'holdings'" :flaggedInstances="flaggedInstances" />
       <create-bulk-change v-if="($route.params.tool === 'bulkchanges' || $route.name === 'Bulkchanges') && this.userIsAllowedToBulkChange && !$route.params.fnurgel" />
       <bulk-changes v-if="isBulkChangeOne && this.userIsAllowedToBulkChange" :fnurgel="$route.params.fnurgel" />
+      <div v-if="!this.userIsAllowedToBulkChange && ($route.params.tool === 'bulkchanges' || $route.name === 'Bulkchanges')">
+        <h1></h1>
+        {{ translatePhrase("To see bulk changes you need to switch to a sigel with access.") }}
+      </div>
       <div class="" v-if="$route.params.tool === 'merge'">
         <h1>merge records</h1>
         <!-- replace this whole div with the component -->
