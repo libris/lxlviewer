@@ -189,11 +189,12 @@ export async function fetchMissingLinkedToQuoted(obj, store) {
   return Promise
     .allSettled(missingLinks.map((l) => HttpUtil.getDocument(l, undefined, embellished)))
     .then((results) => {
-      results.filter((r) => r.status === 'fulfilled').map((r) => r.value.data).forEach((doc) => {
-        if (doc) {
-          doc['@graph'].forEach((o) => store.commit('addToQuoted', o));
-        }
-      });
+      const things = results.filter((r) => r.status === 'fulfilled')
+        .map((r) => r.value.data)
+        .filter(doc => doc)
+        .flatMap(doc => doc['@graph']);
+
+      store.commit('addToQuoted', things);
     })
     .catch((e) => console.log(e));
 }

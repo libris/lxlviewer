@@ -184,12 +184,16 @@ const store = createStore({
     },
     addToQuoted(state, data) {
       const quoted = state.inspector.data.quoted ? cloneDeep(state.inspector.data.quoted) : {};
-      quoted[data['@id']] = data;
-      (data.sameAs || []).forEach((sameAs) => {
-        if (sameAs.hasOwnProperty('@id')) {
-          quoted[sameAs['@id']] = data;
-        }
-      });
+
+      const things = Array.isArray(data) ? data : [data];
+      things.forEach(thing => {
+        quoted[thing['@id']] = thing;
+        (thing.sameAs || []).forEach((sameAs) => {
+          if (sameAs.hasOwnProperty('@id')) {
+            quoted[sameAs['@id']] = thing;
+          }
+        });
+      })
 
       state.inspector.data.quoted = quoted;
     },
