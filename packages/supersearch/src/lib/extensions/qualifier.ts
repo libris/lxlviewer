@@ -13,7 +13,7 @@ import QualifierComponent from '$lib/components/QualifierComponent.svelte';
 export type Qualifier = {
 	key: string;
 	keyLabel?: string;
-	value: string;
+	value: string | undefined;
 	valueLabel?: string;
 	operator: string;
 };
@@ -21,7 +21,8 @@ export type Qualifier = {
 class QualifierWidget extends WidgetType {
 	constructor(
 		readonly qualifier: Qualifier,
-		readonly range: { from: number; to: number }
+		readonly range: { from: number; to: number },
+		readonly update: (e: { range: { from: number, to: number }, text: string}) => void
 	) {
 		super();
 	}
@@ -41,7 +42,8 @@ class QualifierWidget extends WidgetType {
 			target: container,
 			props: {
 				qualifier: this.qualifier,
-				range: this.range
+				range: this.range,
+				update: this.update,
 			}
 		});
 		return container;
@@ -57,20 +59,27 @@ function qualifiers(view: EditorView) {
 				const qKeyNode = node.node.getChild('QualifierKey');
 				const qOperatorNode = qKeyNode?.nextSibling;
 				const qValueNode = node.node.getChild('QualifierValue');
-
 				const doc = view.state.doc.toString();
 
-				const qKeyText = doc.slice(qKeyNode?.from, qKeyNode?.to);
-				const qOperatorText = doc.slice(qOperatorNode?.from, qOperatorNode?.to);
-				const qValueText = doc.slice(qValueNode?.from, qValueNode?.to);
-
-				const qualifier = { key: qKeyText, value: qValueText, operator: qOperatorText };
+				const qualifier = {
+					key: doc.slice(qKeyNode?.from, qKeyNode?.to),
+					value: qValueNode ? doc.slice(qValueNode?.from, qValueNode?.to) : undefined,
+					operator: doc.slice(qOperatorNode?.from, qOperatorNode?.to)
+				}
 				const range = { from: node.from, to: node.to };
+
+				// todo move
+				function onUpdate(e) {
+					console.log('recieved!', e)
+					view?.dispatch({
+						changes: { from: e.range.from, to: e.range.to, insert: e.text }
+					})
+				}
 
 				const decoration = Decoration.replace({
 					inclusiveStart: true,
 					inclusiveEnd: true,
-					widget: new QualifierWidget(qualifier, range)
+					widget: new QualifierWidget(qualifier, range, onUpdate)
 				});
 				widgets.push(decoration.range(node.from, node.to));
 			}
@@ -98,9 +107,9 @@ export const qualifierPlugin = ViewPlugin.fromClass(
 	},
 	{
 		decorations: (instance) => instance.decorations,
-		provide: (plugin) =>
-			EditorView.atomicRanges.of((view) => {
-				return view.plugin(plugin)?.decorations || Decoration.none;
-			})
+		// provide: (plugin) =>
+		// 	EditorView.atomicRanges.of((view) => {
+		// 		return view.plugin(plugin)?.decorations || Decoration.none;
+		// 	})
 	}
 );

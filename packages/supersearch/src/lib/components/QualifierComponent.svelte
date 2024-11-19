@@ -4,14 +4,58 @@
 	// import IconClose from '~icons/mdi/remove';
 	import { page } from '$app/stores';
 	import type { Qualifier } from '$lib/extensions/qualifier.js';
+	import { onDestroy, onMount } from 'svelte';
 
 	type QualifierWidgetProps = {
 		qualifier: Qualifier;
 		range: { from: number; to: number };
+		update: any
 	};
 
-	let { qualifier, range }: QualifierWidgetProps = $props();
+	let { qualifier, range, update }: QualifierWidgetProps = $props();
 
+	// can't edit the value if we show the label, i.e 'Astrid Lindgren'
+	const isEditable = !qualifier.valueLabel;
+	let editableElem : HTMLElement | undefined;
+	let prevValue = qualifier.value
+	
+	onMount(() => {
+		console.log('mounted component')
+		if (isEditable && !qualifier.value) {
+			if (editableElem) {
+				editableElem && focusValueInput(editableElem);
+				editableElem.addEventListener('focusout', syncValue)
+			}
+		}
+	})
+
+	onDestroy(() => {
+		// remove event listeners?
+		console.log('destroying')
+	})
+	
+	// take over cursor, input from codemirror
+	function focusValueInput(elem: HTMLElement) {
+		elem?.focus();
+		elem && window.getSelection()?.selectAllChildren(elem);
+		window.getSelection()?.collapseToStart();
+	}
+
+	function syncValue() {
+		console.log('syncing...')
+		let value = editableElem?.innerText;
+		if (prevValue !== value) {
+			console.log('emitting', value)
+			update({
+				range,
+				text: `${qualifier.key}${qualifier.operator}"${value}"`
+			})
+			prevValue = value;
+		}
+
+	}
+
+	// FIX: no hardcoded _q
 	let removeUrl = $derived.by(() => {
 		const url = new URL($page.url);
 		const _q = $page.url.searchParams.get('_q');
@@ -29,7 +73,7 @@
 	<span class="qualifier-operator">
 		{qualifier.operator}
 	</span>
-	<span class="qualifier-value" contenteditable="true">
+	<span bind:this={editableElem} class="qualifier-value" contenteditable={isEditable ? 'true' : 'false'}>
 		{qualifier.valueLabel || qualifier.value}
 	</span>
 	<a href={removeUrl.toString()} tabindex="-1">
@@ -41,8 +85,7 @@
 <style>
 	.qualifier {
 		display: inline-flex;
-		align-items: stretch;
-		border: 1px solid var(--border-color);
+		align-items: baseline;
 		border-radius: 4px;
 		background: rgba(14, 113, 128, 0.15);
 		padding: 0;
@@ -56,9 +99,6 @@
 	.qualifier-key {
 		display: inline-flex;
 		align-items: center;
-		padding-right: var(--padding-2xs);
-		padding-left: var(--padding-2xs);
-		font-size: var(--font-size-2xs);
 	}
 
 	/* .type > span {
@@ -68,24 +108,23 @@
   } */
 
 	.qualifier-value {
-		display: inline-flex;
+		/* display: inline-flex;
 		align-items: center;
-		min-width: 0;
+		 */
 		overflow: hidden;
+		min-width: 5px;
 		color: #0e7180;
-		font-size: var(--font-size-2xs);
-		text-overflow: ellipsis;
-		white-space: nowrap;
+		/* text-overflow: ellipsis;
+		white-space: nowrap; */
+	}
+
+	.qualifier-value:focus-visible {
+		outline: 0;
 	}
 
 	/* .value > span {
     align-self: center;
   } */
-
-	.qualifier-value :global(svg) {
-		color: var(--color-link);
-		font-size: var(--font-size-sm);
-	}
 
 	a {
 		display: flex;
