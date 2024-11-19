@@ -204,6 +204,9 @@ export default {
     isBulkChangeView() {
       return this.$route.path.includes('bulkchanges');
     },
+    isBulkChangeMatchForm() {
+      return this.bulkContext === BulkContext.MatchForm;
+    },
     typeLabel() {
       return this.item['@type'] === ANY_TYPE ? translatePhrase('Unspecified') : labelByLang(this.item['@type']);
     }
@@ -401,7 +404,7 @@ export default {
         });
     },
     togglePinned() {
-      if (this.bulkContext === BulkContext.MatchForm && this.isPinned) {
+      if (this.isBulkChangeMatchForm && this.isPinned) {
         this.setPinned(true);
       } else {
         this.setPinned(false);
@@ -687,7 +690,7 @@ export default {
         />
 
         <entity-action
-          v-if="inspector.status.editing && showBulkchangeActions && !isLocked || isPinned"
+          v-if="inspector.status.editing && this.isBulkChangeMatchForm && !isLocked || isPinned"
           @action="togglePinned"
           label="Exact match" 
           :description="translatePhrase('Matcha exakt')"
