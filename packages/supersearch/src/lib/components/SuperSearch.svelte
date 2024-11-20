@@ -5,6 +5,7 @@
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
+	import debounce from '$lib/utils/debounce.js';
 	import useFetch from '$lib/utils/useFetch.svelte.js';
 
 	interface Props {
@@ -26,10 +27,11 @@
 	let prevPlaceholder = placeholder;
 
 	let response = useFetch();
+	const debouncedSearch = debounce((url: URL) => response.fetchData(url), 300);
 
 	$effect(() => {
 		if (value)
-			response.fetchData(
+			debouncedSearch(
 				new URL(
 					`${endpoint}?${new URLSearchParams([
 						['_q', value],
