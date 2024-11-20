@@ -12,9 +12,7 @@ import QualifierComponent from '$lib/components/QualifierComponent.svelte';
 
 export type Qualifier = {
 	key: string;
-	keyLabel?: string;
 	value: string | undefined;
-	valueLabel?: string;
 	operator: string;
 };
 
@@ -107,9 +105,9 @@ export const qualifierPlugin = ViewPlugin.fromClass(
 	},
 	{
 		decorations: (instance) => instance.decorations,
-		// provide: (plugin) =>
-		// 	EditorView.atomicRanges.of((view) => {
-		// 		return view.plugin(plugin)?.decorations || Decoration.none;
-		// 	})
+		provide: (plugin) =>
+			EditorView.atomicRanges.of((view) => {
+				return view.plugin(plugin)?.decorations || Decoration.none;
+			})
 	}
 );
