@@ -6,7 +6,10 @@
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
 	import debounce from '$lib/utils/debounce.js';
-	import useFetch from '$lib/utils/useFetch.svelte.js';
+	import useSearchRequest, {
+		type Params,
+		type MappedParamsKeys
+	} from '$lib/utils/useSearchRequest.svelte.js';
 
 	interface Props {
 		name: string;
@@ -14,10 +17,19 @@
 		form?: string;
 		language?: LanguageSupport;
 		placeholder?: string;
-		endpoint: string;
+		endpoint: URL;
+		mappedParamsKeys?: MappedParamsKeys;
 	}
 
-	let { name, value = $bindable(''), form, language, placeholder = '', endpoint }: Props = $props();
+	let {
+		name,
+		value = $bindable(''),
+		form,
+		language,
+		placeholder = '',
+		endpoint,
+		mappedParamsKeys
+	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
 	let expandedEditorView: EditorView | undefined = $state();
@@ -26,21 +38,11 @@
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
 
-	let response = useFetch();
-	const debouncedSearch = debounce((url: URL) => response.fetchData(url), 300);
+	let response = useSearchRequest({ endpoint, mappedParamsKeys });
+	const debouncedSearch = debounce((params: Params) => response.fetchData(params), 300);
 
 	$effect(() => {
-		if (value)
-			debouncedSearch(
-				new URL(
-					`${endpoint}?${new URLSearchParams([
-						['_q', value],
-						['_limit', '0'],
-						['_offset', '0'],
-						['_sort', '']
-					]).toString()}`
-				)
-			);
+		if (value) debouncedSearch({ query: value });
 	});
 
 	const extensions = [

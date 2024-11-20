@@ -10,7 +10,12 @@
 <form action="test1">
 	<fieldset data-test-id="test1">
 		<legend>Supersearch inside <code>&lt;form&gt;</code> element</legend>
-		<SuperSearch name="q" bind:value={value1} {placeholder} endpoint={PUBLIC_ENDPOINT_URL} />
+		<SuperSearch
+			name="q"
+			bind:value={value1}
+			{placeholder}
+			endpoint={new URL(PUBLIC_ENDPOINT_URL)}
+		/>
 	</fieldset>
 </form>
 
@@ -22,7 +27,7 @@
 			bind:value={value2}
 			{placeholder}
 			form="form-outside"
-			endpoint={PUBLIC_ENDPOINT_URL}
+			endpoint={new URL(PUBLIC_ENDPOINT_URL)}
 		/>
 	</fieldset>
 </form>
