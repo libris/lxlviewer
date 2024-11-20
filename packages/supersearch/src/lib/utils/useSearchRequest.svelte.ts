@@ -1,3 +1,5 @@
+import debounce from '$lib/utils/debounce.js';
+
 export type Params = {
 	query: string;
 	limit: number;
@@ -14,14 +16,18 @@ export type MappedParamsKeys = {
 
 export function useSearchRequest({
 	endpoint,
-	mappedParamsKeys = { query: '_q', limit: '_limit', offset: '_offset', sort: '_sort' }
+	mappedParamsKeys = { query: '_q', limit: '_limit', offset: '_offset', sort: '_sort' },
+	debouncedWait = 300
 }: {
 	endpoint: URL;
 	mappedParamsKeys?: MappedParamsKeys;
+	debouncedWait?: number;
 }) {
 	let isLoading = $state(false);
 	let error: string | undefined = $state();
 	let data = $state();
+
+	const debouncedFetchData = debounce((params: Params) => fetchData(params), debouncedWait);
 
 	async function fetchData({ query, limit = 10, offset = 0, sort = '' }: Params) {
 		try {
@@ -49,6 +55,7 @@ export function useSearchRequest({
 
 	return {
 		fetchData,
+		debouncedFetchData,
 		get isLoading() {
 			return isLoading;
 		},

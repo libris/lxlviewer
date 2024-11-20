@@ -5,11 +5,7 @@
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
-	import debounce from '$lib/utils/debounce.js';
-	import useSearchRequest, {
-		type Params,
-		type MappedParamsKeys
-	} from '$lib/utils/useSearchRequest.svelte.js';
+	import useSearchRequest, { type MappedParamsKeys } from '$lib/utils/useSearchRequest.svelte.js';
 
 	interface Props {
 		name: string;
@@ -38,11 +34,10 @@
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
 
-	let response = useSearchRequest({ endpoint, mappedParamsKeys });
-	const debouncedSearch = debounce((params: Params) => response.fetchData(params), 300);
+	let search = useSearchRequest({ endpoint, mappedParamsKeys });
 
 	$effect(() => {
-		if (value) debouncedSearch({ query: value });
+		if (value) search.debouncedFetchData({ query: value });
 	});
 
 	const extensions = [
@@ -115,5 +110,5 @@
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
-	<nav>{JSON.stringify(response.data)}</nav>
+	<nav>{JSON.stringify(search.data)}</nav>
 </dialog>
