@@ -7,7 +7,7 @@ export type Params = {
 	sort: string;
 };
 
-export type MappedParamsKeys = {
+export type SearchParamKeyMappings = {
 	query: string;
 	limit: string;
 	offset: string;
@@ -16,11 +16,11 @@ export type MappedParamsKeys = {
 
 export function useSearchRequest({
 	endpoint,
-	mappedParamsKeys = { query: '_q', limit: '_limit', offset: '_offset', sort: '_sort' },
+	searchParamKeyMappings = { query: '_q', limit: '_limit', offset: '_offset', sort: '_sort' },
 	debouncedWait = 300
 }: {
 	endpoint: URL;
-	mappedParamsKeys?: MappedParamsKeys;
+	searchParamKeyMappings?: SearchParamKeyMappings;
 	debouncedWait?: number;
 }) {
 	let isLoading = $state(false);
@@ -35,10 +35,10 @@ export function useSearchRequest({
 			error = undefined;
 			const response = await fetch(
 				`${endpoint}?${new URLSearchParams([
-					[mappedParamsKeys.query, query],
-					[mappedParamsKeys.limit, limit.toString()],
-					[mappedParamsKeys.offset, offset.toString()],
-					[mappedParamsKeys.sort, sort]
+					[searchParamKeyMappings.query, query],
+					[searchParamKeyMappings.limit, limit.toString()],
+					[searchParamKeyMappings.offset, offset.toString()],
+					[searchParamKeyMappings.sort, sort]
 				]).toString()}`
 			);
 			data = await response.json();

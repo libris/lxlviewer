@@ -5,7 +5,9 @@
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
-	import useSearchRequest, { type MappedParamsKeys } from '$lib/utils/useSearchRequest.svelte.js';
+	import useSearchRequest, {
+		type SearchParamKeyMappings
+	} from '$lib/utils/useSearchRequest.svelte.js';
 
 	interface Props {
 		name: string;
@@ -14,7 +16,7 @@
 		language?: LanguageSupport;
 		placeholder?: string;
 		endpoint: URL;
-		mappedParamsKeys?: MappedParamsKeys;
+		searchParamKeyMappings?: SearchParamKeyMappings;
 	}
 
 	let {
@@ -24,7 +26,7 @@
 		language,
 		placeholder = '',
 		endpoint,
-		mappedParamsKeys
+		searchParamKeyMappings
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -34,7 +36,7 @@
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
 
-	let search = useSearchRequest({ endpoint, mappedParamsKeys });
+	let search = useSearchRequest({ endpoint, searchParamKeyMappings });
 
 	$effect(() => {
 		if (value) search.debouncedFetchData({ query: value });
