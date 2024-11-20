@@ -5,6 +5,7 @@
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
+	import useFetch from '$lib/utils/useFetch.svelte.js';
 
 	interface Props {
 		name: string;
@@ -12,9 +13,10 @@
 		form?: string;
 		language?: LanguageSupport;
 		placeholder?: string;
+		endpoint: string;
 	}
 
-	let { name, value = $bindable(''), form, language, placeholder = '' }: Props = $props();
+	let { name, value = $bindable(''), form, language, placeholder = '', endpoint }: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
 	let expandedEditorView: EditorView | undefined = $state();
@@ -22,6 +24,22 @@
 
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
+
+	let response = useFetch();
+
+	$effect(() => {
+		if (value)
+			response.fetchData(
+				new URL(
+					`${endpoint}?${new URLSearchParams([
+						['_q', value],
+						['_limit', '0'],
+						['_offset', '0'],
+						['_sort', '']
+					]).toString()}`
+				)
+			);
+	});
 
 	const extensions = [
 		submitFormOnEnterKey(form),
@@ -93,4 +111,5 @@
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
+	<nav>{JSON.stringify(response.data)}</nav>
 </dialog>
