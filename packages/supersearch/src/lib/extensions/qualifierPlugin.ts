@@ -6,6 +6,7 @@ import {
 	WidgetType,
 	type DecorationSet
 } from '@codemirror/view';
+import type { Range } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount } from 'svelte';
 import QualifierComponent from '$lib/components/QualifierComponent.svelte';
@@ -16,22 +17,27 @@ export type Qualifier = {
 	operator: string;
 };
 
+type Update = {
+	range: { from: number, to: number }, 
+	text: string
+}
+
 class QualifierWidget extends WidgetType {
 	constructor(
 		readonly qualifier: Qualifier,
 		readonly range: { from: number; to: number },
-		readonly update: (e: { range: { from: number, to: number }, text: string}) => void
+		readonly update: (e: Update) => void
 	) {
 		super();
 	}
 
-	// eq(other: QualifierWidget) {
-	//   return (
-	//     this.qualifier.type == other.qualifier.type &&
-	//     this.qualifier.value == other.qualifier.value &&
-	//     this.range == other.range
-	//   );
-	// }
+	// prevent re-mounting component if qualifier unchanged
+	eq(other: QualifierWidget) {
+		return (
+			JSON.stringify(this.qualifier) == JSON.stringify(other.qualifier) &&
+			JSON.stringify(this.range) === JSON.stringify(other.range)
+		);
+	}
 
 	toDOM() {
 		const container = document.createElement('span');
@@ -48,8 +54,8 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
-function qualifiers(view: EditorView) {
-	const widgets = [];
+function getQualifiers(view: EditorView) {
+	const widgets : Range<Decoration>[] = [];
 
 	syntaxTree(view.state).iterate({
 		enter: (node) => {
@@ -66,31 +72,33 @@ function qualifiers(view: EditorView) {
 				}
 				const range = { from: node.from, to: node.to };
 
-				// todo move
-				function onUpdate(e) {
-					console.log('recieved!', e)
-					view?.dispatch({
-						changes: { from: e.range.from, to: e.range.to, insert: e.text }
-					})
-				}
-
 				const decoration = Decoration.replace({
 					inclusiveStart: true,
 					inclusiveEnd: true,
-					widget: new QualifierWidget(qualifier, range, onUpdate)
+					widget: new QualifierWidget(qualifier, range, onUpdateQualifierValue(view))
 				});
-				widgets.push(decoration.range(node.from, node.to));
+				/// range ??
+				widgets.push(decoration.range(range.from, range.to));
 			}
 		}
 	});
 	return Decoration.set(widgets);
 }
 
+function onUpdateQualifierValue(view: EditorView) {
+	return (e: Update) => {
+		console.log('recieved!', e)
+		view?.dispatch({
+			changes: { from: e.range.from, to: e.range.to, insert: e.text }
+		})
+	}
+}
+
 export const qualifierPlugin = ViewPlugin.fromClass(
 	class {
-		decorations: DecorationSet;
+		qualifiers: DecorationSet;
 		constructor(view: EditorView) {
-			this.decorations = qualifiers(view);
+			this.qualifiers = getQualifiers(view);
 		}
 
 		update(update: ViewUpdate) {
@@ -99,15 +107,16 @@ export const qualifierPlugin = ViewPlugin.fromClass(
 				update.viewportChanged ||
 				syntaxTree(update.startState) != syntaxTree(update.state)
 			) {
-				this.decorations = qualifiers(update.view);
+				// placeholderMatcher.updateDeco equiv?
+				this.qualifiers = getQualifiers(update.view);
 			}
 		}
 	},
 	{
-		decorations: (instance) => instance.decorations,
+		decorations: (instance) => instance.qualifiers,
 		provide: (plugin) =>
 			EditorView.atomicRanges.of((view) => {
-				return view.plugin(plugin)?.decorations || Decoration.none;
+				return view.plugin(plugin)?.qualifiers || Decoration.none;
 			})
 	}
 );

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
-	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
-	import { Compartment } from '@codemirror/state';
+	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
+	import { Compartment, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
@@ -13,7 +13,8 @@
 		TransformFunction,
 		ResultItem
 	} from '$lib/types/superSearch.js';
-	import { qualifierPlugin } from '$lib/extensions/qualifier.js';
+	import { qualifierPlugin } from '$lib/extensions/qualifierPlugin.js';
+	import { defaultKeymap } from "@codemirror/commands";
 
 	interface Props {
 		name: string;
@@ -62,6 +63,8 @@
 	});
 
 	const extensions = [
+		// For atomic ranges to work. TODO customize
+		keymap.of(defaultKeymap),
 		submitFormOnEnterKey(form),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),

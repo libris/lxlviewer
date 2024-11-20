@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { Qualifier } from '$lib/extensions/qualifier.js';
+	import type { Qualifier } from '$lib/extensions/qualifierPlugin.js';
 	import { onMount } from 'svelte';
 
 	type QualifierWidgetProps = {
@@ -47,7 +47,7 @@
 		editableElem?.removeEventListener('focusout', onFocusout)
 	}
 	
-	// take over cursor, input from codemirror
+	// take over cursor & input from codemirror
 	function focusValueInput(elem: HTMLElement) {
 		elem?.focus();
 		elem && window.getSelection()?.selectAllChildren(elem);
@@ -112,12 +112,6 @@
 		align-items: center;
 	}
 
-	/* .type > span {
-    &::first-letter {
-      text-transform: capitalize;
-    }
-  } */
-
 	.qualifier-value {
 		/* display: inline-flex;
 		align-items: center;
@@ -132,10 +126,6 @@
 	.qualifier-value:focus-visible {
 		outline: 0;
 	}
-
-	/* .value > span {
-    align-self: center;
-  } */
 
 	a {
 		display: flex;
