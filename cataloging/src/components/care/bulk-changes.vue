@@ -250,7 +250,7 @@ export default {
       const record = initData['@graph'][0];
       const mainEntity = initData['@graph'][1];
       this.currentBulkChange = mainEntity;
-      this.currentBulkChange.label = '<namn>-' + this.getDateString();
+      this.currentBulkChange.label = 'namn ' + this.getDateString();
       this.currentSpec = this.currentBulkChange[CHANGE_SPEC_KEY];
 
       //TODO: Allow differing initial match and target forms. + Make it work with appended _ids.

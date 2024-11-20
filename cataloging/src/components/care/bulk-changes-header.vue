@@ -75,12 +75,26 @@ export default {
     stopEdit() {
       this.editing = false;
     },
+    setCursor() {
+      this.$nextTick(() => {
+        const labelLength = this.currentBulkChange.label.length;
+        this.$refs.heading.setSelectionRange(0, labelLength);
+      });
+    },
     focusInput() {
       this.$nextTick(() => {
         this.$refs.heading.focus();
       });
     }
   },
+  mounted() {
+    if (this.isNew) {
+      this.$nextTick(() => {
+        this.startEdit();
+        this.setCursor();
+      });
+    }
+  }
 };
 </script>
 <template>
@@ -135,9 +149,10 @@ export default {
   &-inputField {
     font-size: 3rem;
     font-weight: 600;
-    padding-bottom: 10px;
+    padding-bottom: 4px;
     margin-right: 1rem;
     padding-right: 1rem;
+    margin-bottom: 1rem;
   }
   &-id {
     margin-left: auto;
