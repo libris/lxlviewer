@@ -1,10 +1,7 @@
 <script lang="ts">
-	// import type { Qualifier } from '$lib/utils/supersearch/qualifiers';
-	// import IconPerson from '~icons/mdi/person-circle';
-	// import IconClose from '~icons/mdi/remove';
 	import { page } from '$app/stores';
 	import type { Qualifier } from '$lib/extensions/qualifier.js';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
 	type QualifierWidgetProps = {
 		qualifier: Qualifier;
@@ -14,25 +11,41 @@
 
 	let { qualifier, range, update }: QualifierWidgetProps = $props();
 
+	// todo from search.mappings
+	let keyLabel : string | undefined;
+	let valueLabel : string | undefined;
+	
+	let keyDisplay : string | undefined = keyLabel || qualifier.key.replace(/['"]+/g, '');
+	let valueDisplay : string | undefined = valueLabel || qualifier.value?.replace(/['"]+/g, '');
+
 	// can't edit the value if we show the label, i.e 'Astrid Lindgren'
-	const isEditable = !qualifier.valueLabel;
+	const isEditable = !valueLabel;
+
 	let editableElem : HTMLElement | undefined;
-	let prevValue = qualifier.value
+	let prevValue: undefined | string = valueDisplay;
 	
 	onMount(() => {
-		console.log('mounted component')
-		if (isEditable && !qualifier.value) {
-			if (editableElem) {
-				editableElem && focusValueInput(editableElem);
-				editableElem.addEventListener('focusout', syncValue)
-			}
+		console.log('mounted qualifier component')
+		if (isEditable) {
+			editableElem?.addEventListener('focus', onfocus)
+		}
+		if (!qualifier.value) {
+			editableElem && focusValueInput(editableElem);
 		}
 	})
 
-	onDestroy(() => {
-		// remove event listeners?
-		console.log('destroying')
-	})
+	function onfocus(){
+		console.log('focus')
+		editableElem?.removeEventListener('focus', onfocus)
+		editableElem?.addEventListener('focusout', onFocusout)
+	}
+	
+	function onFocusout() {		
+		console.log('focusout')
+		syncValue();
+		editableElem?.addEventListener('focus', onfocus);
+		editableElem?.removeEventListener('focusout', onFocusout)
+	}
 	
 	// take over cursor, input from codemirror
 	function focusValueInput(elem: HTMLElement) {
@@ -44,15 +57,12 @@
 	function syncValue() {
 		console.log('syncing...')
 		let value = editableElem?.innerText;
-		if (prevValue !== value) {
-			console.log('emitting', value)
-			update({
-				range,
-				text: `${qualifier.key}${qualifier.operator}"${value}"`
-			})
+		if (value !== prevValue) {
 			prevValue = value;
+			const text = `"${keyDisplay}"${qualifier.operator}"${value}"`;
+			update({ range, text })
+			console.log('emitted ', range, text)
 		}
-
 	}
 
 	// FIX: no hardcoded _q
@@ -68,19 +78,20 @@
 
 <span class="qualifier">
 	<span class="qualifier-key">
-		{qualifier.keyLabel || qualifier.key}
+		{keyDisplay}
 	</span>
 	<span class="qualifier-operator">
 		{qualifier.operator}
 	</span>
 	<span bind:this={editableElem} class="qualifier-value" contenteditable={isEditable ? 'true' : 'false'}>
-		{qualifier.valueLabel || qualifier.value}
+		{valueDisplay}
 	</span>
 	<a href={removeUrl.toString()} tabindex="-1">
 		<!-- <IconClose style="font-size:14px;" /> -->
 		X
 	</a>
-</span>&nbsp;
+</span>
+<!-- &nbsp; -->
 
 <style>
 	.qualifier {
