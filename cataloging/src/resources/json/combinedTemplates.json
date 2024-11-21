@@ -4384,8 +4384,7 @@
           "bulk:changeSpec": {
             "@type": "bulk:Update",
             "bulk:matchForm": {
-              "@type": "bulk:Any",
-              "bulk:matchingMode": ["bulk:Subtypes"]
+              "@type": "bulk:Any"
             },
             "bulk:targetForm": {
               "@type": "bulk:Any"
@@ -4445,10 +4444,7 @@
           "bulk:changeSpec": {
             "@type": "bulk:Delete",
             "bulk:matchForm": {
-              "@type": "bulk:Any",
-              "bulk:matchingMode": [
-                "bulk:Subtypes"
-              ]
+              "@type": "bulk:Any"
             }
           }
         },
