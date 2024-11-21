@@ -34,7 +34,8 @@ import {
   HAS_ID_KEY,
   MATCHING_MODE_KEY,
   SUBTYPES_TYPE,
-  VALUE_FROM_KEY
+  VALUE_FROM_KEY,
+  ANY_TYPE
 } from "@/utils/bulk.js";
 
 export default {
@@ -466,6 +467,9 @@ export default {
     },
     isBulkChangeMatchForm() {
       return this.bulkContext === BulkContext.MatchForm;
+    },
+    isAnyType() {
+      return this.entityType === ANY_TYPE;
     }
   },
   methods: {
@@ -907,7 +911,8 @@ export default {
           :field-value="item"
           :entity-type="entityType"
           :parent-path="path"/>
-        <div class="Field-matchSubClasses" v-if="this.parentPath === 'mainEntity' && isBulkChangeMatchForm">
+        <div class="Field-matchSubClasses" v-if="this.parentPath === 'mainEntity'
+        && isBulkChangeMatchForm && !isAnyType">
         <span class="Field-matchSubClassesLabel">
           {{ translatePhrase('Match subtypes') }}
         </span>
