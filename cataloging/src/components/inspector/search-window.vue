@@ -219,14 +219,6 @@ export default {
         </template>
         <template #panel-header-extra>
           <div class="SearchWindow-header search-header">
-            <div class="SearchWindow-extractControls">
-              <div class="copy-title" v-if="canCopyTitle">
-                <label>
-                  <input v-bind="copyTitle" type="checkbox" name="copyTitle" @change="$emit('update:copyTitle', $event.target.value)" />
-                  {{ translatePhrase("Copy title from") }} {{ labelByLang(this.entityType) }}
-                </label>
-              </div>
-            </div>
             <div class="SearchWindow-search search">
               <div class="SearchWindow-filterSearchContainer">
                 <div class="SearchWindow-filterSearchContainerItem">
