@@ -25,7 +25,8 @@ export function useSearchRequest({
 }) {
 	let isLoading = $state(false);
 	let error: string | undefined = $state();
-	let data = $state();
+	let data = $state([]);
+	let paginatedParams: Params;
 
 	const debouncedFetchData = debounce((params: Params) => fetchData(params), debouncedWait);
 
@@ -41,7 +42,13 @@ export function useSearchRequest({
 					[searchParamKeyMappings.sort, sort]
 				]).toString()}`
 			);
-			data = await response.json();
+			const fetchedData = await response.json();
+			if (paginatedParams?.query === query) {
+				data = [...data, ...fetchedData];
+			} else {
+				data = fetchedData;
+			}
+			paginatedParams = { query, limit, offset, sort };
 		} catch (err) {
 			if (err instanceof Error) {
 				error = 'Failed to fetch data: ' + err.message;
@@ -53,9 +60,17 @@ export function useSearchRequest({
 		}
 	}
 
+	async function fetchMoreData() {
+		await fetchData({
+			...paginatedParams,
+			offset: paginatedParams.offset + paginatedParams.limit
+		});
+	}
+
 	return {
 		fetchData,
 		debouncedFetchData,
+		fetchMoreData,
 		get isLoading() {
 			return isLoading;
 		},

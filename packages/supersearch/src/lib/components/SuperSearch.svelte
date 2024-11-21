@@ -112,5 +112,12 @@
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
-	<pre><code>{JSON.stringify(search.data, null, 2)}</code></pre>
+	<nav>
+		<ul>
+			{#each search.data as item (item.id)}
+				<li>{item.heading}</li>
+			{/each}
+		</ul>
+	</nav>
+	<button type="button" onclick={search.fetchMoreData}>Load more</button>
 </dialog>
