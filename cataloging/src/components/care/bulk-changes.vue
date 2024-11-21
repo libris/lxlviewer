@@ -935,6 +935,7 @@ export default {
           :has-previous="hasPrevious"
           :finished="isFinished"
           :is-draft="isDraft"
+          :is-new="isNew"
           :loading-preview="this.loadingPreview"
           @ready="run"
           @next="nextStep"
