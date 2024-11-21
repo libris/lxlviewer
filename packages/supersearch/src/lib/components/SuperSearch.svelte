@@ -15,7 +15,7 @@
 		form?: string;
 		language?: LanguageSupport;
 		placeholder?: string;
-		endpoint: URL;
+		endpoint: string;
 		searchParamKeyMappings?: SearchParamKeyMappings;
 	}
 
@@ -112,5 +112,5 @@
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
-	<nav>{JSON.stringify(search.data)}</nav>
+	<pre><code>{JSON.stringify(search.data, null, 2)}</code></pre>
 </dialog>

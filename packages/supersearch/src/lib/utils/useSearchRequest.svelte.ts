@@ -16,10 +16,10 @@ export type SearchParamKeyMappings = {
 
 export function useSearchRequest({
 	endpoint,
-	searchParamKeyMappings = { query: '_q', limit: '_limit', offset: '_offset', sort: '_sort' },
+	searchParamKeyMappings = { query: 'q', limit: 'limit', offset: 'offset', sort: 'sort' },
 	debouncedWait = 300
 }: {
-	endpoint: URL;
+	endpoint: string;
 	searchParamKeyMappings?: SearchParamKeyMappings;
 	debouncedWait?: number;
 }) {
