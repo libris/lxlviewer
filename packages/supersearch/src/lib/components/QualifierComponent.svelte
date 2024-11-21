@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import type { Qualifier } from '$lib/extensions/qualifierPlugin.js';
 	import { onMount } from 'svelte';
 
@@ -65,31 +64,18 @@
 		}
 	}
 
-	// FIX: no hardcoded _q
-	let removeUrl = $derived.by(() => {
-		const url = new URL($page.url);
-		const _q = $page.url.searchParams.get('_q');
-		if (_q) {
-			url.searchParams.set('_q', _q.slice(0, range.from) + _q.slice(range.to)); // remove qualifier part
-		}
-		return url;
-	});
 </script>
 
 <span class="qualifier">
-	<span class="qualifier-key">
+	<!-- <span class="qualifier-key">
 		{keyDisplay}
-	</span>
+	</span> -->
 	<span class="qualifier-operator">
 		{qualifier.operator}
 	</span>
 	<span bind:this={editableElem} class="qualifier-value" contenteditable={isEditable ? 'true' : 'false'}>
 		{valueDisplay}
 	</span>
-	<a href={removeUrl.toString()} tabindex="-1">
-		<!-- <IconClose style="font-size:14px;" /> -->
-		X
-	</a>
 </span>
 <!-- &nbsp; -->
 
