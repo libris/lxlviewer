@@ -223,7 +223,7 @@ export default {
               <div class="copy-title" v-if="canCopyTitle">
                 <label>
                   <input v-bind="copyTitle" type="checkbox" name="copyTitle" @change="$emit('update:copyTitle', $event.target.value)" />
-                  {{ translatePhrase("Copy title from") }} {{ labelByLang(this.editorData.mainEntity['@type']) }}
+                  {{ translatePhrase("Copy title from") }} {{ labelByLang(this.entityType) }}
                 </label>
               </div>
             </div>
