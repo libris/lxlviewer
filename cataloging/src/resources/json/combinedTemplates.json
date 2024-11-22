@@ -4653,7 +4653,7 @@
             "@type": "bulk:Other",
             "bulk:script": "removeSubdivision",
             "bulk:removeSubdivision": [],
-            "bulk:addSubject": null
+            "bulk:addTerm": null
           }
         },
         "quoted": {},
