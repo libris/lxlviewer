@@ -70,8 +70,6 @@
 
 <style>
 	.result-item {
-		border: none;
-		background: none;
 		min-width: 480px;
 		min-height: 44px;
 		text-align: left;

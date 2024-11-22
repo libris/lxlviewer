@@ -17,9 +17,7 @@ export function useSearchRequest({
 	let isLoading = $state(false);
 	let error: string | undefined = $state();
 	let data = $state();
-
 	let prevSearchParams: URLSearchParams;
-	const debouncedFetchData = debounce((query: string) => fetchData(query), debouncedWait);
 
 	async function _fetchData(searchParams: URLSearchParams) {
 		try {
@@ -46,6 +44,8 @@ export function useSearchRequest({
 		data = await _fetchData(searchParams);
 		prevSearchParams = searchParams;
 	}
+
+	const debouncedFetchData = debounce((query: string) => fetchData(query), debouncedWait);
 
 	async function fetchMoreData() {
 		const paginatedSearchParams = paginateQueryFn?.(prevSearchParams);
