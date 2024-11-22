@@ -3,45 +3,33 @@ import type { ResultItem } from '$lib/types/index.js';
 
 export function useSearchRequest({
 	endpoint,
-	queryFunction,
-	transformerFunction,
-	paginateFunction,
+	queryFn,
+	transformerFn,
+	paginateQueryFn,
 	debouncedWait = 300
 }: {
 	endpoint: string;
-	queryFunction: (query: string) => URLSearchParams;
-	transformerFunction?: (data: unknown) => ResultItem[];
-	paginateFunction?: (prevSearchParams: URLSearchParams) => URLSearchParams;
+	queryFn: (query: string) => URLSearchParams;
+	paginateQueryFn?: (searchParams: URLSearchParams) => URLSearchParams;
+	transformerFn?: (data: unknown) => ResultItem[];
 	debouncedWait?: number;
 }) {
 	let isLoading = $state(false);
 	let error: string | undefined = $state();
 	let data = $state();
-	let prevQuery: string | undefined = $state();
-	let prevSearchParams: URLSearchParams | undefined = $state();
 
+	let prevSearchParams: URLSearchParams;
 	const debouncedFetchData = debounce((query: string) => fetchData(query), debouncedWait);
 
-	async function fetchData(query: string) {
+	async function _fetchData(searchParams: URLSearchParams) {
 		try {
 			isLoading = true;
 			error = undefined;
-			const searchParams =
-				paginateFunction && query === prevQuery && prevSearchParams
-					? paginateFunction(prevSearchParams)
-					: queryFunction(query);
 
-			prevSearchParams = searchParams;
 			const response = await fetch(`${endpoint}?${searchParams.toString()}`);
 			const jsonResponse = await response.json();
-			const responseData = transformerFunction?.(jsonResponse) || jsonResponse;
-			if (query === prevQuery) {
-				data = [...$state.snapshot(data), ...responseData];
-			} else {
-				data = responseData;
-			}
-			prevQuery = query;
-			prevSearchParams = searchParams;
+
+			return transformerFn?.(jsonResponse) || jsonResponse;
 		} catch (err) {
 			if (err instanceof Error) {
 				error = 'Failed to fetch data: ' + err.message;
@@ -53,9 +41,21 @@ export function useSearchRequest({
 		}
 	}
 
+	async function fetchData(query: string) {
+		const searchParams = queryFn(query);
+		data = await _fetchData(searchParams);
+		prevSearchParams = searchParams;
+	}
+
 	async function fetchMoreData() {
-		if (prevQuery) {
-			await fetchData?.(prevQuery);
+		const paginatedSearchParams = paginateQueryFn?.(prevSearchParams);
+		if (paginatedSearchParams) {
+			const moreData = await _fetchData(paginatedSearchParams);
+			data = [
+				...(Array.isArray(data) ? data : [data]),
+				...(Array.isArray(moreData) ? moreData : [moreData])
+			];
+			prevSearchParams = paginatedSearchParams;
 		}
 	}
 

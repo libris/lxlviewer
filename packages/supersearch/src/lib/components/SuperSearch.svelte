@@ -16,9 +16,9 @@
 		language?: LanguageSupport;
 		placeholder?: string;
 		endpoint: string;
-		queryFunction?: (value: string) => URLSearchParams;
-		transformerFunction?: (data: unknown) => ResultItem[];
-		paginateFunction?: (prevSearchParams: URLSearchParams) => URLSearchParams;
+		queryFn?: (value: string) => URLSearchParams;
+		paginateQueryFn?: (searchParams: URLSearchParams) => URLSearchParams;
+		transformerFn?: (data: unknown) => ResultItem[];
 		resultItem?: Snippet;
 	}
 
@@ -29,9 +29,9 @@
 		language,
 		placeholder = '',
 		endpoint,
-		queryFunction = (value) => new URLSearchParams({ q: value }),
-		transformerFunction,
-		paginateFunction,
+		queryFn = (value) => new URLSearchParams({ q: value }),
+		paginateQueryFn,
+		transformerFn,
 		resultItem = fallbackResultItem
 	}: Props = $props();
 
@@ -42,7 +42,7 @@
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
 
-	let search = useSearchRequest({ endpoint, queryFunction, transformerFunction, paginateFunction });
+	let search = useSearchRequest({ endpoint, queryFn, paginateQueryFn, transformerFn });
 
 	$effect(() => {
 		if (value) {
@@ -130,7 +130,9 @@
 				<li>{@render resultItem?.(item)}</li>
 			{/each}
 		</ul>
-		<button type="button" onclick={search.fetchMoreData}>Fetch more</button>
+		{#if search.data}
+			<button type="button" onclick={search.fetchMoreData}>Load more</button>
+		{/if}
 	</nav>
 </dialog>
 

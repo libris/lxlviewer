@@ -4,6 +4,24 @@
 	let value1 = $state('');
 	let value2 = $state('');
 	let placeholder = $state('Search');
+
+	function handlePaginateQuery(searchParams: URLSearchParams) {
+		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
+		paginatedSearchParams.set(
+			'_offset',
+			(
+				parseInt(searchParams.get('_limit')!, 10) + parseInt(searchParams.get('_offset')!, 10)
+			).toString()
+		);
+		return paginatedSearchParams;
+	}
+
+	function handleTransform(data) {
+		return data.items.map((item) => ({
+			id: item?.['@id'],
+			heading: `${item?.hasTitle?.[0]?.mainTitle}`
+		}));
+	}
 </script>
 
 <form action="test1">
@@ -14,29 +32,15 @@
 			bind:value={value1}
 			{placeholder}
 			endpoint={PUBLIC_ENDPOINT_URL}
-			queryFunction={(query) =>
+			queryFn={(query) =>
 				new URLSearchParams({
 					_q: query,
 					_limit: '10',
 					_offset: '0',
 					_sort: ''
 				})}
-			transformerFunction={(data) =>
-				data.items.map((item) => ({
-					id: item?.['@id'],
-					heading: `${item?.hasTitle?.[0]?.mainTitle}`
-				}))}
-			paginateFunction={(prevSearchParams) => {
-				const newSearchParams = new URLSearchParams(Array.from(prevSearchParams.entries()));
-				newSearchParams.set(
-					'_offset',
-					(
-						parseInt(prevSearchParams.get('_limit')!, 10) +
-						parseInt(prevSearchParams.get('_offset')!, 10)
-					).toString()
-				);
-				return newSearchParams;
-			}}
+			paginateQueryFn={handlePaginateQuery}
+			transformerFn={handleTransform}
 		>
 			{#snippet resultItem(item)}
 				<button type="button" class="result-item">
@@ -75,9 +79,5 @@
 			font-weight: inherit;
 			font-size: inherit;
 		}
-	}
-
-	.result-item:not:last-child {
-		border-bottom: 1px solid #ccc;
 	}
 </style>
