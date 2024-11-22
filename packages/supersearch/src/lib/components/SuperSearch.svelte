@@ -1,13 +1,13 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
 	import { Compartment } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
-	import useSearchRequest, {
-		type SearchParamKeyMappings
-	} from '$lib/utils/useSearchRequest.svelte.js';
+	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
+	import type { ResultItem } from '$lib/types/index.js';
 
 	interface Props {
 		name: string;
@@ -16,7 +16,10 @@
 		language?: LanguageSupport;
 		placeholder?: string;
 		endpoint: string;
-		searchParamKeyMappings?: SearchParamKeyMappings;
+		queryFunction?: (value: string) => URLSearchParams;
+		transformerFunction?: (data: unknown) => ResultItem[];
+		paginateFunction?: (prevSearchParams: URLSearchParams) => URLSearchParams;
+		resultItem?: Snippet;
 	}
 
 	let {
@@ -26,7 +29,10 @@
 		language,
 		placeholder = '',
 		endpoint,
-		searchParamKeyMappings
+		queryFunction = (value) => new URLSearchParams({ q: value }),
+		transformerFunction,
+		paginateFunction,
+		resultItem = fallbackResultItem
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -36,10 +42,12 @@
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
 
-	let search = useSearchRequest({ endpoint, searchParamKeyMappings });
+	let search = useSearchRequest({ endpoint, queryFunction, transformerFunction, paginateFunction });
 
 	$effect(() => {
-		if (value) search.debouncedFetchData({ query: value });
+		if (value) {
+			search.debouncedFetchData(value);
+		}
 	});
 
 	const extensions = [
@@ -95,6 +103,10 @@
 	});
 </script>
 
+{#snippet fallbackResultItem(item)}
+	{JSON.stringify(item)}
+{/snippet}
+
 <CodeMirror
 	{value}
 	{extensions}
@@ -114,10 +126,18 @@
 	/>
 	<nav>
 		<ul>
-			{#each search.data as item (item.id)}
-				<li>{item.heading}</li>
+			{#each search.data as item}
+				<li>{@render resultItem?.(item)}</li>
 			{/each}
 		</ul>
+		<button type="button" onclick={search.fetchMoreData}>Fetch more</button>
 	</nav>
-	<button type="button" onclick={search.fetchMoreData}>Load more</button>
 </dialog>
+
+<style>
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+</style>

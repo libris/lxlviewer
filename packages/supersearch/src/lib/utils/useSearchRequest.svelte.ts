@@ -1,54 +1,47 @@
 import debounce from '$lib/utils/debounce.js';
-
-export type Params = {
-	query: string;
-	limit: number;
-	offset: number;
-	sort: string;
-};
-
-export type SearchParamKeyMappings = {
-	query: string;
-	limit: string;
-	offset: string;
-	sort: string;
-};
+import type { ResultItem } from '$lib/types/index.js';
 
 export function useSearchRequest({
 	endpoint,
-	searchParamKeyMappings = { query: 'q', limit: 'limit', offset: 'offset', sort: 'sort' },
+	queryFunction,
+	transformerFunction,
+	paginateFunction,
 	debouncedWait = 300
 }: {
 	endpoint: string;
-	searchParamKeyMappings?: SearchParamKeyMappings;
+	queryFunction: (query: string) => URLSearchParams;
+	transformerFunction?: (data: unknown) => ResultItem[];
+	paginateFunction?: (prevSearchParams: URLSearchParams) => URLSearchParams;
 	debouncedWait?: number;
 }) {
 	let isLoading = $state(false);
 	let error: string | undefined = $state();
-	let data = $state([]);
-	let paginatedParams: Params;
+	let data = $state();
+	let prevQuery: string | undefined = $state();
+	let prevSearchParams: URLSearchParams | undefined = $state();
 
-	const debouncedFetchData = debounce((params: Params) => fetchData(params), debouncedWait);
+	const debouncedFetchData = debounce((query: string) => fetchData(query), debouncedWait);
 
-	async function fetchData({ query, limit = 10, offset = 0, sort = '' }: Params) {
+	async function fetchData(query: string) {
 		try {
 			isLoading = true;
 			error = undefined;
-			const response = await fetch(
-				`${endpoint}?${new URLSearchParams([
-					[searchParamKeyMappings.query, query],
-					[searchParamKeyMappings.limit, limit.toString()],
-					[searchParamKeyMappings.offset, offset.toString()],
-					[searchParamKeyMappings.sort, sort]
-				]).toString()}`
-			);
-			const fetchedData = await response.json();
-			if (paginatedParams?.query === query) {
-				data = [...data, ...fetchedData];
+			const searchParams =
+				paginateFunction && query === prevQuery && prevSearchParams
+					? paginateFunction(prevSearchParams)
+					: queryFunction(query);
+
+			prevSearchParams = searchParams;
+			const response = await fetch(`${endpoint}?${searchParams.toString()}`);
+			const jsonResponse = await response.json();
+			const responseData = transformerFunction?.(jsonResponse) || jsonResponse;
+			if (query === prevQuery) {
+				data = [...$state.snapshot(data), ...responseData];
 			} else {
-				data = fetchedData;
+				data = responseData;
 			}
-			paginatedParams = { query, limit, offset, sort };
+			prevQuery = query;
+			prevSearchParams = searchParams;
 		} catch (err) {
 			if (err instanceof Error) {
 				error = 'Failed to fetch data: ' + err.message;
@@ -61,10 +54,9 @@ export function useSearchRequest({
 	}
 
 	async function fetchMoreData() {
-		await fetchData({
-			...paginatedParams,
-			offset: paginatedParams.offset + paginatedParams.limit
-		});
+		if (prevQuery) {
+			await fetchData?.(prevQuery);
+		}
 	}
 
 	return {
