@@ -7,10 +7,8 @@ const customTags = {
 	Qualifier: Tag.define('Qualifier'),
 	QualifierKey: Tag.define('QualifierKey'),
 	QualifierValue: Tag.define('QualifierValue'),
-	EqualOperator: Tag.define('EqualOperator'),
-	CompareOperator: Tag.define('CompareOperator'),
+	QualifierOperator: Tag.define('QualifierOperator'),
 	BooleanQuery: Tag.define('BooleanQuery'),
-	BooleanOperator: Tag.define('BooleanOperator'),
 	Wildcard: Tag.define('Wildcard')
 };
 
@@ -27,9 +25,7 @@ const highlighter = tagHighlighter(
 		{ tag: customTags.Qualifier, class: 'qualifier' },
 		{ tag: customTags.QualifierKey, class: 'qualifier-key' },
 		{ tag: customTags.QualifierValue, class: 'qualifier-value' },
-		{ tag: customTags.EqualOperator, class: 'equal-operator' },
-		{ tag: customTags.CompareOperator, class: 'compare-operator' },
-		{ tag: customTags.BooleanOperator, class: 'boolean-operator' },
+		{ tag: customTags.QualifierOperator, class: 'qualifier-operator' },
 		{ tag: customTags.BooleanQuery, class: 'boolean-query' },
 		{ tag: customTags.Wildcard, class: 'wildcard' }
 	],

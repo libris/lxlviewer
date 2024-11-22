@@ -6,7 +6,7 @@ import {
 	WidgetType,
 	type DecorationSet
 } from '@codemirror/view';
-import { Annotation, EditorState, Transaction, type Range } from '@codemirror/state';
+import { type Range } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount } from 'svelte';
 import QualifierRemove from '$lib/components/QualifierRemove.svelte';
@@ -18,18 +18,14 @@ export type Qualifier = {
 	operator: string;
 };
 
-// type Update = {
-// 	range: { from: number, to: number }, 
-// 	text: string
-// }
-
-// const ANNOTATION_VALUE = 'qualifierSync';
-// const qualifierAnnotation = Annotation.define();
-
-class ButtonWidget extends WidgetType {
+class RemoveWidget extends WidgetType {
 	constructor(readonly range: { from: number; to: number }, readonly atomic: boolean) {
 		super();
 	}
+	eq(other: RemoveWidget) {
+		return (this.range.from === other.range.from && this.range.to === other.range.to)
+	}
+	// is there a way to pass new props to component instead of re-mounting every time range changes?
 	toDOM(): HTMLElement {
 		const container = document.createElement('span');
 		container.style.cssText = `position: relative;`;
@@ -47,8 +43,8 @@ class QualifierKeyWidget extends WidgetType {
 	constructor(readonly key: string, readonly operator: string, readonly atomic: boolean ) {
 		super();
 	}
-	eq(widget: WidgetType): boolean {
-		// todo
+	eq(other: QualifierKeyWidget): boolean {
+		return (this.key === other.key && this.operator === other.operator);
 	}
 	toDOM(): HTMLElement {
 		const container = document.createElement('span');
@@ -115,43 +111,25 @@ function getQualifiers(view: EditorView) {
 				})
 				widgets.push(qualifierMark.range(node.from, node.to))
 
-				// Button widget - atomic
-				const removeBtnDecoration = Decoration.widget({
-					widget: new ButtonWidget({ from: node.from, to: node.to }, true),
+				// Remove decoration (x-button) widget - atomic
+				const removeDecoration = Decoration.widget({
+					widget: new RemoveWidget({ from: node.from, to: node.to }, true),
 					side: 1
 				})
-				widgets.push(removeBtnDecoration.range(node.to))
+				widgets.push(removeDecoration.range(node.to))
 
 				// Qualifier key + operator widget - atomic
 				const qKeyNode = node.node.getChild('QualifierKey');
-				const qOperatorNode = qKeyNode?.nextSibling;
-				const operator = doc.slice(qOperatorNode?.from, qOperatorNode?.to)
+				const qOperatorNode = node.node.getChild('QualifierOperator');
+				const operator = doc.slice(qOperatorNode?.from, qOperatorNode?.to);
 				const qKey = doc.slice(qKeyNode?.from, qKeyNode?.to);
 
 				const qualifierKeyecoration = Decoration.replace({
 					widget: new QualifierKeyWidget(qKey, operator, true)
 				})
-				widgets.push(qualifierKeyecoration.range(qKeyNode?.from, qOperatorNode?.to))
-
-				// const qKeyNode = node.node.getChild('QualifierKey');
-				// const qOperatorNode = qKeyNode?.nextSibling;
-				// const qValueNode = node.node.getChild('QualifierValue');
-				// const doc = view.state.doc.toString();
-
-				// const qualifier = {
-				// 	key: doc.slice(qKeyNode?.from, qKeyNode?.to),
-				// 	value: qValueNode ? doc.slice(qValueNode?.from, qValueNode?.to) : undefined,
-				// 	operator: doc.slice(qOperatorNode?.from, qOperatorNode?.to)
-				// }
-				// const range = { from: node.from, to: node.to };
-
-				// const decoration = Decoration.replace({
-				// 	inclusiveStart: true,
-				// 	inclusiveEnd: true,
-				// 	widget: new QualifierWidget(qualifier, range, onUpdateQualifierValue(view))
-				// });
-				// /// range ??
-				// widgets.push(decoration.range(range.from, range.to));
+				if (qKeyNode) {
+					widgets.push(qualifierKeyecoration.range(qKeyNode?.from, qOperatorNode?.to))
+				}
 			}
 		}
 	});

@@ -17,7 +17,7 @@ BooleanQuery {
 }
 
 Qualifier {
-  (QualifierKey (EqualOperator | CompareOperator) QualifierValue) | reserved
+  (QualifierKey QualifierOperator QualifierValue) | reserved
 }
 
 QualifierKey {
@@ -26,6 +26,10 @@ QualifierKey {
 
 QualifierValue {
   freetext | Group
+}
+
+QualifierOperator {
+  equalOperator | compareOperator
 }
 
 freetext {
@@ -39,9 +43,9 @@ freetext {
 
   number { @digit+ }
 
-  EqualOperator { ":" | "=" }
+  equalOperator { ":" | "=" }
 
-  CompareOperator { ">" | "<" | ">=" | "<=" }
+  compareOperator { ">" | "<" | ">=" | "<=" }
 
   booleanOperator { "AND" | "OR" | "NOT" }
 
