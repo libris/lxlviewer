@@ -1,17 +1,22 @@
 import debounce from '$lib/utils/debounce.js';
-import type { ResultItem } from '$lib/types/index.js';
+import type {
+	QueryFunction,
+	PaginateQueryFunction,
+	TransformerFunction
+} from '$lib/types/index.js';
 
 export function useSearchRequest({
 	endpoint,
 	queryFn,
-	transformerFn,
 	paginateQueryFn,
+
+	transformerFn,
 	debouncedWait = 300
 }: {
 	endpoint: string;
-	queryFn: (query: string) => URLSearchParams;
-	paginateQueryFn?: (searchParams: URLSearchParams) => URLSearchParams;
-	transformerFn?: (data: unknown) => ResultItem[];
+	queryFn: QueryFunction;
+	paginateQueryFn?: PaginateQueryFunction;
+	transformerFn?: TransformerFunction;
 	debouncedWait?: number;
 }) {
 	let isLoading = $state(false);

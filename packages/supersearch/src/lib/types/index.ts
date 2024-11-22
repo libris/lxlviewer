@@ -10,3 +10,7 @@ type Action = {
 	title: string;
 	onselect: () => void;
 };
+
+export type QueryFunction = (value: string) => URLSearchParams;
+export type PaginateQueryFunction = (searchParams: URLSearchParams) => URLSearchParams;
+export type TransformerFunction = (data: unknown) => ResultItem[];

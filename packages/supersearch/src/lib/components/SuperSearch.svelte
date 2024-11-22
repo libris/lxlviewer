@@ -7,8 +7,12 @@
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
 	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
-	import type { ResultItem } from '$lib/types/index.js';
-
+	import type {
+		QueryFunction,
+		PaginateQueryFunction,
+		TransformerFunction,
+		ResultItem
+	} from '$lib/types/index.js';
 	interface Props {
 		name: string;
 		value?: string;
@@ -16,10 +20,10 @@
 		language?: LanguageSupport;
 		placeholder?: string;
 		endpoint: string;
-		queryFn?: (value: string) => URLSearchParams;
-		paginateQueryFn?: (searchParams: URLSearchParams) => URLSearchParams;
-		transformerFn?: (data: unknown) => ResultItem[];
-		resultItem?: Snippet;
+		queryFn?: QueryFunction;
+		paginateQueryFn?: PaginateQueryFunction;
+		transformerFn?: TransformerFunction;
+		resultItem?: (item: ResultItem) => ReturnType<Snippet>;
 	}
 
 	let {
@@ -103,7 +107,7 @@
 	});
 </script>
 
-{#snippet fallbackResultItem(item)}
+{#snippet fallbackResultItem(item: ResultItem)}
 	{JSON.stringify(item)}
 {/snippet}
 
