@@ -2,15 +2,17 @@
   const {key, operator} = $props();
 </script>
 
-<span class="qualifier-key">
-  {key}
-</span>
-<span class="qualifier-operator">
-  {operator}
+<span class="qualifier-key-container">
+  <span class="qualifier-key">
+    {key}
+  </span>
+  <span class="qualifier-operator">
+    {operator}
+  </span>
 </span>
 
 <style>
-  .qualifier-key, .qualifier-operator {
-    background: rgba(14, 113, 128, 0.15);
+  .qualifier-key-container {
+    display: inline-flex;
   }
 </style>

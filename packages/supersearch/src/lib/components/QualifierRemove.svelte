@@ -13,8 +13,17 @@
 	});
 
 </script>
+<span class="qualifier-remove">
+	<a href={removeUrl.toString()} tabindex="-1">
+		<!-- <IconClose style="font-size:14px;" /> -->
+		X
+	</a>
+</span>
 
-<a href={removeUrl.toString()} tabindex="-1">
-  <!-- <IconClose style="font-size:14px;" /> -->
-  X
-</a>
+
+<style>
+	.qualifier-remove {
+		padding: 0 5px;
+		display: inline-flex;
+	}
+</style>

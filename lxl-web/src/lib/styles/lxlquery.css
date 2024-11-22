@@ -1,5 +1,7 @@
-.lxlq.qualifier {
-	color: green;
+
+.qualifier {
+	background: rgba(14, 113, 128, 0.15);
+	padding: 2px 5px;
 }
 
 .lxlq.qualifier-key {

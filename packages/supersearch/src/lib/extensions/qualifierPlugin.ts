@@ -27,7 +27,7 @@ export type Qualifier = {
 // const qualifierAnnotation = Annotation.define();
 
 class ButtonWidget extends WidgetType {
-	constructor(readonly range: { from: number; to: number }) {
+	constructor(readonly range: { from: number; to: number }, readonly atomic: boolean) {
 		super();
 	}
 	toDOM(): HTMLElement {
@@ -44,7 +44,7 @@ class ButtonWidget extends WidgetType {
 }
 
 class QualifierKeyWidget extends WidgetType {
-	constructor(readonly key: string, readonly operator: string) {
+	constructor(readonly key: string, readonly operator: string, readonly atomic: boolean ) {
 		super();
 	}
 	eq(widget: WidgetType): boolean {
@@ -107,20 +107,29 @@ function getQualifiers(view: EditorView) {
 	syntaxTree(view.state).iterate({
 		enter: (node) => {
 			if (node.name === 'Qualifier') {
-				// create button widget
+				// Mark decoration to create wrapper element, non-atomic
+				const qualifierMark = Decoration.mark({
+					class: 'qualifier', 
+					inclusive: true,  
+					atomic: false // invented!
+				})
+				widgets.push(qualifierMark.range(node.from, node.to))
+
+				// Button widget - atomic
 				const removeBtnDecoration = Decoration.widget({
-					widget: new ButtonWidget({ from: node.from, to: node.to }),
+					widget: new ButtonWidget({ from: node.from, to: node.to }, true),
 					side: 1
 				})
 				widgets.push(removeBtnDecoration.range(node.to))
 
-				//create qualifier key widget
+				// Qualifier key + operator widget - atomic
 				const qKeyNode = node.node.getChild('QualifierKey');
 				const qOperatorNode = qKeyNode?.nextSibling;
 				const operator = doc.slice(qOperatorNode?.from, qOperatorNode?.to)
 				const qKey = doc.slice(qKeyNode?.from, qKeyNode?.to);
+
 				const qualifierKeyecoration = Decoration.replace({
-					widget: new QualifierKeyWidget(qKey, operator)
+					widget: new QualifierKeyWidget(qKey, operator, true)
 				})
 				widgets.push(qualifierKeyecoration.range(qKeyNode?.from, qOperatorNode?.to))
 
@@ -146,18 +155,8 @@ function getQualifiers(view: EditorView) {
 			}
 		}
 	});
-	return Decoration.set(widgets);
+	return Decoration.set(widgets, true); // true = sort
 }
-
-// function onUpdateQualifierValue(view: EditorView) {
-// 	return (e: Update) => {
-// 		console.log('recieved!', e)
-// 		view?.dispatch({
-// 			changes: { from: e.range.from, to: e.range.to, insert: e.text },
-// 			annotations: qualifierAnnotation.of(ANNOTATION_VALUE)
-// 		})
-// 	}
-// }
 
 export const qualifierPlugin = ViewPlugin.fromClass(
 	class {
@@ -167,7 +166,6 @@ export const qualifierPlugin = ViewPlugin.fromClass(
 		}
 
 		update(update: ViewUpdate) {
-			// console.log(isSvelteUpdate(update)) // check if update caused by svelte dispatch
 			if (update.docChanged || syntaxTree(update.startState) != syntaxTree(update.state)) {
 				this.qualifiers = getQualifiers(update.view);
 			}
@@ -180,17 +178,29 @@ export const qualifierPlugin = ViewPlugin.fromClass(
 		},
 		provide: (plugin) =>
 			EditorView.atomicRanges.of((view) => {
-				console.log('atomic ranges', view.plugin(plugin)?.qualifiers)
-				return view.plugin(plugin)?.qualifiers || Decoration.none;
+				const filteredRanges = view.plugin(plugin)?.qualifiers.update({ filter: filterOutAtomic })
+				return filteredRanges || Decoration.none;
 			})
 	}
 );
 
-// function isSvelteUpdate(update: ViewUpdate): boolean {
-// 	for (const transaction of update.transactions) {
-// 		if (transaction.annotation(qualifierAnnotation) === ANNOTATION_VALUE) {
-// 			return true;
+// function insertQuotes(view: EditorView) {
+// 	syntaxTree(view.state).iterate({
+// 		enter: (node) => {
+// 			if (node.name === 'Qualifier') {
+// 				const value = node.node.getChild('QualifierValue')
+// 				if (!value) {
+// 					console.log('yes!')
+// 						view.dispatch({
+// 							changes: { from: node.to, to: node.to, insert: '""' }
+// 						})
+// 				}
+// 			}
 // 		}
-// 	}
-// 	return false;
+// 	})
 // }
+
+// filter out non-atomics using custom property 'atomic'
+function filterOutAtomic(from: number, to: number, decoration: Decoration) {
+	return decoration.spec?.atomic || decoration.spec?.widget?.atomic;
+}
