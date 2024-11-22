@@ -254,7 +254,7 @@ export default {
         }
       } else if (route.name === 'NewDocument') {
         title += StringUtil.getUiPhraseByLang('New record', this.user.settings.language, this.resources.i18n);
-      } else if (route.name === 'Inspector') {
+      } else if (route.name === 'Inspector' || route.name === 'Bulkchanges') {
         if (this.inspector.title && this.inspector.title.length > 0) {
           title += this.inspector.title;
         } else {

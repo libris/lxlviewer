@@ -256,6 +256,7 @@ export default {
       //TODO: Allow differing initial match and target forms. + Make it work with appended _ids.
       this.record = record;
       this.lastFetchedSpec = this.currentSpec;
+      this.$store.dispatch('setInspectorTitle', this.currentBulkChange.label);
       DataUtil.fetchMissingLinkedToQuoted(this.currentBulkChange, this.$store);
 
       this.setActive(this.steps[0]);
@@ -307,6 +308,7 @@ export default {
           this.currentSpec = this.currentBulkChange[CHANGE_SPEC_KEY];
           this.record = bulkChange.record;
           this.lastFetchedSpec = cloneDeep(this.currentSpec);
+          this.$store.dispatch('setInspectorTitle', this.currentBulkChange.label);
           if (!this.isSaving) {
             // When initializing from record
             if (this.isUpdateSpec || this.isDeleteSpec) {
