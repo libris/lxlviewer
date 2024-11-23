@@ -10,7 +10,7 @@
 		paginatedSearchParams.set(
 			'_offset',
 			(
-				parseInt(searchParams.get('_limit')!, 10) + parseInt(searchParams.get('_offset')!, 10)
+				parseInt(searchParams.get('_limit')!, 10) + parseInt(searchParams.get('_offset') || '0', 10)
 			).toString()
 		);
 		return paginatedSearchParams;
@@ -35,9 +35,7 @@
 			queryFn={(query) =>
 				new URLSearchParams({
 					_q: query,
-					_limit: '10',
-					_offset: '0',
-					_sort: ''
+					_limit: '10'
 				})}
 			paginateQueryFn={handlePaginateQuery}
 			transformFn={handleTransform}
