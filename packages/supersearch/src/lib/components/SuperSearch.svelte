@@ -10,7 +10,7 @@
 	import type {
 		QueryFunction,
 		PaginateQueryFunction,
-		TransformerFunction,
+		TransformFunction,
 		ResultItem
 	} from '$lib/types/index.js';
 	interface Props {
@@ -22,7 +22,7 @@
 		endpoint: string;
 		queryFn?: QueryFunction;
 		paginateQueryFn?: PaginateQueryFunction;
-		transformerFn?: TransformerFunction;
+		transformFn?: TransformFunction;
 		resultItem?: (item: ResultItem) => ReturnType<Snippet>;
 	}
 
@@ -35,7 +35,7 @@
 		endpoint,
 		queryFn = (value) => new URLSearchParams({ q: value }),
 		paginateQueryFn,
-		transformerFn,
+		transformFn,
 		resultItem = fallbackResultItem
 	}: Props = $props();
 
@@ -46,7 +46,7 @@
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
 
-	let search = useSearchRequest({ endpoint, queryFn, paginateQueryFn, transformerFn });
+	let search = useSearchRequest({ endpoint, queryFn, paginateQueryFn, transformFn });
 
 	$effect(() => {
 		if (value) {

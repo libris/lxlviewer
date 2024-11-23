@@ -2,21 +2,20 @@ import debounce from '$lib/utils/debounce.js';
 import type {
 	QueryFunction,
 	PaginateQueryFunction,
-	TransformerFunction
+	TransformFunction
 } from '$lib/types/superSearch.js';
 
 export function useSearchRequest({
 	endpoint,
 	queryFn,
 	paginateQueryFn,
-
-	transformerFn,
+	transformFn,
 	debouncedWait = 300
 }: {
 	endpoint: string;
 	queryFn: QueryFunction;
 	paginateQueryFn?: PaginateQueryFunction;
-	transformerFn?: TransformerFunction;
+	transformFn?: TransformFunction;
 	debouncedWait?: number;
 }) {
 	let isLoading = $state(false);
@@ -32,7 +31,7 @@ export function useSearchRequest({
 			const response = await fetch(`${endpoint}?${searchParams.toString()}`);
 			const jsonResponse = await response.json();
 
-			return transformerFn?.(jsonResponse) || jsonResponse;
+			return transformFn?.(jsonResponse) || jsonResponse;
 		} catch (err) {
 			if (err instanceof Error) {
 				error = 'Failed to fetch data: ' + err.message;

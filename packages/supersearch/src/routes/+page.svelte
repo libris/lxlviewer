@@ -40,7 +40,7 @@
 					_sort: ''
 				})}
 			paginateQueryFn={handlePaginateQuery}
-			transformerFn={handleTransform}
+			transformFn={handleTransform}
 		>
 			{#snippet resultItem(item)}
 				<button type="button" class="result-item">
