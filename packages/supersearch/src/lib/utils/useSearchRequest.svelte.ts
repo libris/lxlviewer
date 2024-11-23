@@ -3,7 +3,7 @@ import type {
 	QueryFunction,
 	PaginateQueryFunction,
 	TransformerFunction
-} from '$lib/types/index.js';
+} from '$lib/types/superSearch.js';
 
 export function useSearchRequest({
 	endpoint,
