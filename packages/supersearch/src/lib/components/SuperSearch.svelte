@@ -12,7 +12,8 @@
 		PaginateQueryFunction,
 		TransformFunction,
 		ResultItem
-	} from '$lib/types/index.js';
+	} from '$lib/types/superSearch.js';
+
 	interface Props {
 		name: string;
 		value?: string;
