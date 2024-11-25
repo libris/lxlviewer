@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
-	import { Compartment, type Extension } from '@codemirror/state';
+	import { Compartment } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
