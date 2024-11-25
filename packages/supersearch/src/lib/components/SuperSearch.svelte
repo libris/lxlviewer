@@ -5,6 +5,8 @@
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
+	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
+	import type { QueryFunction } from '$lib/types/superSearch.js';
 
 	interface Props {
 		name: string;
@@ -12,9 +14,19 @@
 		form?: string;
 		language?: LanguageSupport;
 		placeholder?: string;
+		endpoint: string;
+		queryFn?: QueryFunction;
 	}
 
-	let { name, value = $bindable(''), form, language, placeholder = '' }: Props = $props();
+	let {
+		name,
+		value = $bindable(''),
+		form,
+		language,
+		placeholder = '',
+		endpoint,
+		queryFn = (value) => new URLSearchParams({ q: value })
+	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
 	let expandedEditorView: EditorView | undefined = $state();
@@ -22,6 +34,17 @@
 
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
+
+	let search = useSearchRequest({
+		endpoint,
+		queryFn
+	});
+
+	$effect(() => {
+		if (value) {
+			search.fetchData(value);
+		}
+	});
 
 	const extensions = [
 		submitFormOnEnterKey(form),
@@ -93,4 +116,5 @@
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
+	<pre>{JSON.stringify(search.data, null, 2)}</pre>
 </dialog>
