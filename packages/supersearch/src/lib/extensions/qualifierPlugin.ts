@@ -9,7 +9,6 @@ import {
 import {
 	EditorState,
 	Transaction,
-	type ChangeSpec,
 	type Range,
 	type TransactionSpec
 } from '@codemirror/state';
