@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
 	import { Compartment } from '@codemirror/state';
@@ -9,7 +10,8 @@
 	import type {
 		QueryFunction,
 		PaginationQueryFunction,
-		TransformFunction
+		TransformFunction,
+		ResultItem
 	} from '$lib/types/superSearch.js';
 
 	interface Props {
@@ -22,6 +24,7 @@
 		queryFn?: QueryFunction;
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
+		resultItem?: Snippet<[ResultItem]>;
 	}
 
 	let {
@@ -33,7 +36,8 @@
 		endpoint,
 		queryFn = (value) => new URLSearchParams({ q: value }),
 		paginationQueryFn,
-		transformFn
+		transformFn,
+		resultItem = fallbackResultItem
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -109,6 +113,10 @@
 	});
 </script>
 
+{#snippet fallbackResultItem(item: ResultItem)}
+	{JSON.stringify(item)}
+{/snippet}
+
 <CodeMirror
 	{value}
 	{extensions}
@@ -126,8 +134,32 @@
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
-	<pre>{JSON.stringify(search.paginatedData || search.data, null, 2)}</pre>
-	{#if search.hasMorePaginatedData}
-		<button type="button" onclick={search.fetchMoreData}>Load more</button>
-	{/if}
+	<nav>
+		{#if search.data}
+			{@const resultItems =
+				(Array.isArray(search.paginatedData) &&
+					search.paginatedData.map((page) => page.items).flat()) ||
+				search.data?.items}
+			<ul>
+				{#each resultItems as item}
+					<li>
+						{@render resultItem?.(item)}
+					</li>
+				{/each}
+			</ul>
+		{/if}
+		{#if search.isLoading}
+			Loading...
+		{:else if search.hasMorePaginatedData}
+			<button type="button" onclick={search.fetchMoreData}>Load more</button>
+		{/if}
+	</nav>
 </dialog>
+
+<style>
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+</style>
