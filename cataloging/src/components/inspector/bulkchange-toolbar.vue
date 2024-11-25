@@ -56,6 +56,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isNew: {
+      type: Boolean,
+      default: false,
+    },
     loadingPreview: {
       type: Object,
       default: () => ({'next' : false, 'previous' : false}),
@@ -254,7 +258,7 @@ export default {
             {{ translatePhrase('Import selection from ID list') }}
           </a>
         </li>
-        <li class="Toolbar-menuItem">
+        <li class="Toolbar-menuItem" v-if="!isNew">
           <a class="Toolbar-menuLink" @click="showAsRecord">
             <i class="fa fa-fw fa-eye" />
             {{ translatePhrase('Show as record') }}
