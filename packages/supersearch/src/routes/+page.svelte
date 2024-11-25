@@ -10,7 +10,7 @@
 		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
 		const limit = parseInt(searchParams.get('_limit')!, 10);
 		const offset = limit + parseInt(searchParams.get('_offset') || '0', 10);
-		if (offset + limit < prevData?.totalItems) {
+		if (offset < prevData?.totalItems) {
 			paginatedSearchParams.set('_offset', offset.toString());
 			return paginatedSearchParams;
 		}
@@ -63,14 +63,20 @@
 			bind:value={value2}
 			{placeholder}
 			form="form-outside"
-			endpoint={PUBLIC_ENDPOINT_URL}
+			endpoint={'/api/find'}
 			queryFn={(query) =>
 				new URLSearchParams({
 					_q: query,
 					_limit: '10'
 				})}
-			transformFn={handleTransform}
-		/>
+			paginationQueryFn={handlePaginationQuery}
+		>
+			{#snippet resultItem(item)}
+				<button type="button" class="result-item">
+					<h2>{item.heading}</h2>
+				</button>
+			{/snippet}
+		</SuperSearch>
 	</fieldset>
 </form>
 
