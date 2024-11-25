@@ -1,27 +1,29 @@
 import debounce from '$lib/utils/debounce.js';
 import type {
 	QueryFunction,
-	PaginateQueryFunction,
+	PaginationQueryFunction,
 	TransformFunction
 } from '$lib/types/superSearch.js';
 
 export function useSearchRequest({
 	endpoint,
 	queryFn,
-	paginateQueryFn,
+	paginationQueryFn,
 	transformFn,
 	debouncedWait = 300
 }: {
 	endpoint: string;
 	queryFn: QueryFunction;
-	paginateQueryFn?: PaginateQueryFunction;
+	paginationQueryFn?: PaginationQueryFunction;
 	transformFn?: TransformFunction;
 	debouncedWait?: number;
 }) {
 	let isLoading = $state(false);
 	let error: string | undefined = $state();
 	let data = $state();
-	let prevSearchParams: URLSearchParams;
+	let paginatedData = $state();
+	let moreSearchParams: URLSearchParams | undefined = $state();
+	const hasMorePaginatedData = $derived(!!moreSearchParams);
 
 	async function _fetchData(searchParams: URLSearchParams) {
 		try {
@@ -46,20 +48,16 @@ export function useSearchRequest({
 	async function fetchData(query: string) {
 		const searchParams = queryFn(query);
 		data = await _fetchData(searchParams);
-		prevSearchParams = searchParams;
+		moreSearchParams = paginationQueryFn?.(searchParams, data);
 	}
 
 	const debouncedFetchData = debounce((query: string) => fetchData(query), debouncedWait);
 
 	async function fetchMoreData() {
-		const paginatedSearchParams = paginateQueryFn?.(prevSearchParams);
-		if (paginatedSearchParams) {
-			const moreData = await _fetchData(paginatedSearchParams);
-			data = [
-				...(Array.isArray(data) ? data : [data]),
-				...(Array.isArray(moreData) ? moreData : [moreData])
-			];
-			prevSearchParams = paginatedSearchParams;
+		if (data && moreSearchParams) {
+			const moreData = await _fetchData(moreSearchParams);
+			paginatedData = [...((Array.isArray(paginatedData) && paginatedData) || [data]), moreData];
+			moreSearchParams = paginationQueryFn?.(moreSearchParams, data);
 		}
 	}
 
@@ -75,6 +73,12 @@ export function useSearchRequest({
 		},
 		get data() {
 			return data;
+		},
+		get paginatedData() {
+			return paginatedData;
+		},
+		get hasMorePaginatedData() {
+			return hasMorePaginatedData;
 		}
 	};
 }

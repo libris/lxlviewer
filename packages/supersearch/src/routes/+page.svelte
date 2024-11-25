@@ -5,22 +5,27 @@
 	let value2 = $state('');
 	let placeholder = $state('Search');
 
-	function handlePaginateQuery(searchParams: URLSearchParams) {
+	function handlePaginationQuery(searchParams: URLSearchParams, prevData: unknown) {
 		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
-		paginatedSearchParams.set(
-			'_offset',
-			(
-				parseInt(searchParams.get('_limit')!, 10) + parseInt(searchParams.get('_offset') || '0', 10)
-			).toString()
-		);
-		return paginatedSearchParams;
+		const limit = parseInt(searchParams.get('_limit')!, 10);
+		const offset = limit + parseInt(searchParams.get('_offset') || '0', 10);
+		if (offset + limit < prevData?.totalItems) {
+			paginatedSearchParams.set('_offset', offset.toString());
+			return paginatedSearchParams;
+		}
+		return undefined;
 	}
 
-	function handleTransform(data) {
-		return data.items.map((item) => ({
-			id: item?.['@id'],
-			heading: `${item?.hasTitle?.[0]?.mainTitle}`
-		}));
+	function handleTransform(data: unknown) {
+		return {
+			'@id': data['@id'],
+			totalItems: data.totalItems,
+			items: data.items.map((item) => ({
+				id: item?.['@id'],
+				heading: `${item?.hasTitle?.[0]?.mainTitle}`
+			})),
+			'@context': data['@context']
+		};
 	}
 </script>
 
@@ -37,7 +42,7 @@
 					_q: query,
 					_limit: '10'
 				})}
-			paginateQueryFn={handlePaginateQuery}
+			paginationQueryFn={handlePaginationQuery}
 			transformFn={handleTransform}
 		>
 			{#snippet resultItem(item)}

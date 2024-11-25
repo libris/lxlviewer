@@ -9,7 +9,7 @@
 	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
 	import type {
 		QueryFunction,
-		PaginateQueryFunction,
+		PaginationQueryFunction,
 		TransformFunction,
 		ResultItem
 	} from '$lib/types/superSearch.js';
@@ -22,7 +22,7 @@
 		placeholder?: string;
 		endpoint: string;
 		queryFn?: QueryFunction;
-		paginateQueryFn?: PaginateQueryFunction;
+		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
 		resultItem?: (item: ResultItem) => ReturnType<Snippet>;
 	}
@@ -35,7 +35,7 @@
 		placeholder = '',
 		endpoint,
 		queryFn = (value) => new URLSearchParams({ q: value }),
-		paginateQueryFn,
+		paginationQueryFn,
 		transformFn,
 		resultItem = fallbackResultItem
 	}: Props = $props();
@@ -47,7 +47,12 @@
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
 
-	let search = useSearchRequest({ endpoint, queryFn, paginateQueryFn, transformFn });
+	let search = useSearchRequest({
+		endpoint,
+		queryFn,
+		paginationQueryFn,
+		transformFn
+	});
 
 	$effect(() => {
 		if (value) {
@@ -130,12 +135,18 @@
 		syncedEditorView={collapsedEditorView}
 	/>
 	<nav>
-		<ul>
-			{#each search.data as item}
-				<li>{@render resultItem?.(item)}</li>
-			{/each}
-		</ul>
 		{#if search.data}
+			{@const resultItems =
+				(Array.isArray(search.paginatedData) &&
+					search.paginatedData.map((page) => page.items).flat()) ||
+				search.data?.items}
+			<ul>
+				{#each resultItems as item}
+					<li>{@render resultItem?.(item)}</li>
+				{/each}
+			</ul>
+		{/if}
+		{#if search.hasMorePaginatedData}
 			<button type="button" onclick={search.fetchMoreData}>Load more</button>
 		{/if}
 	</nav>

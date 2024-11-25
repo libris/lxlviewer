@@ -12,5 +12,8 @@ type Action = {
 };
 
 export type QueryFunction = (value: string) => URLSearchParams;
-export type PaginateQueryFunction = (searchParams: URLSearchParams) => URLSearchParams;
-export type TransformFunction = (data: unknown) => ResultItem[];
+export type PaginationQueryFunction = (
+	searchParams?: URLSearchParams,
+	data?: unknown
+) => URLSearchParams;
+export type TransformFunction = (data: unknown) => unknown;
