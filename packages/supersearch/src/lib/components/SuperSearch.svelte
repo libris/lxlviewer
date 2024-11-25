@@ -6,7 +6,11 @@
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
 	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
-	import type { QueryFunction, TransformFunction } from '$lib/types/superSearch.js';
+	import type {
+		QueryFunction,
+		PaginationQueryFunction,
+		TransformFunction
+	} from '$lib/types/superSearch.js';
 
 	interface Props {
 		name: string;
@@ -16,8 +20,8 @@
 		placeholder?: string;
 		endpoint: string;
 		queryFn?: QueryFunction;
+		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
-		debouncedWait?: number;
 	}
 
 	let {
@@ -28,7 +32,7 @@
 		placeholder = '',
 		endpoint,
 		queryFn = (value) => new URLSearchParams({ q: value }),
-		debouncedWait,
+		paginationQueryFn,
 		transformFn
 	}: Props = $props();
 
@@ -42,8 +46,8 @@
 	let search = useSearchRequest({
 		endpoint,
 		queryFn,
-		transformFn,
-		debouncedWait
+		paginationQueryFn,
+		transformFn
 	});
 
 	$effect(() => {
@@ -122,5 +126,8 @@
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
-	<pre>{JSON.stringify(search.data, null, 2)}</pre>
+	<pre>{JSON.stringify(search.paginatedData || search.data, null, 2)}</pre>
+	{#if search.hasMorePaginatedData}
+		<button type="button" onclick={search.fetchMoreData}>Load more</button>
+	{/if}
 </dialog>

@@ -5,6 +5,17 @@
 	let value2 = $state('');
 	let placeholder = $state('Search');
 
+	function handlePaginationQuery(searchParams: URLSearchParams, prevData: unknown) {
+		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
+		const limit = parseInt(searchParams.get('_limit')!, 10);
+		const offset = limit + parseInt(searchParams.get('_offset') || '0', 10);
+		if (offset + limit < prevData?.totalItems) {
+			paginatedSearchParams.set('_offset', offset.toString());
+			return paginatedSearchParams;
+		}
+		return undefined;
+	}
+
 	function handleTransform(data: unknown) {
 		return {
 			'@id': data['@id'],
@@ -31,6 +42,7 @@
 					_q: query,
 					_limit: '10'
 				})}
+			paginationQueryFn={handlePaginationQuery}
 			transformFn={handleTransform}
 		/>
 	</fieldset>
