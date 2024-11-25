@@ -16,7 +16,8 @@ export default {
 		contact: 'Contact',
 		feedback: 'Give feedback',
 		feedbackLink: 'http://survey.kb.se/librisbeta/en',
-		customerSupport: 'Libris customer support'
+		customerSupport: 'Libris customer support',
+		cookies: 'Manage cookies'
 	},
 	facet: {
 		q: 'Free text search',
@@ -58,7 +59,10 @@ export default {
 		nationality: 'Nationality',
 		hasOccupation: 'Has Occupation',
 		fieldOfActivity: 'Field of Activity',
-		boolFilters: 'Other'
+		boolFilters: 'Other',
+		limitInfo: 'Some options are not displayed',
+		limitText:
+			'The list shows a limited number of options, the most common ones related to your search. Try narrowing your search to get other, more relevant options.'
 	},
 	search: {
 		search: 'Search',
@@ -66,7 +70,7 @@ export default {
 		loading: 'Loading...',
 		findFilter: 'Find filter',
 		filters: 'Filters',
-		activeFilters: 'Active filters',
+		activeFilter: 'Active filter',
 		selectedFilters: 'Selected filters',
 		clearFilters: 'Clear',
 		editFilters: 'Edit',
@@ -92,7 +96,8 @@ export default {
 		showDetails: 'Show more',
 		hideDetails: 'Show less',
 		occursAs: 'as',
-		relatedSearchLabel: 'Search the results'
+		relatedSearchLabel: 'Search the results',
+		didYouMean: 'Did you mean'
 	},
 	sort: {
 		sort: 'Sort',
@@ -101,7 +106,11 @@ export default {
 		alphaDesc: 'Z-A',
 		publicationAsc: 'Publication year (oldest first)',
 		publicationDesc: 'Publication year (newest first)',
-		linksDesc: 'Most linked'
+		linksDesc: 'Most linked',
+		hitsAsc: 'Hits asc.',
+		hitsDesc: 'Hits desc.',
+		yearAsc: 'Oldest first',
+		yearDesc: 'Newest first'
 	},
 	errors: {
 		somethingWentWrong: 'Something went wrong',
@@ -131,6 +140,7 @@ export default {
 		availableAt: 'Available at',
 		library: 'library',
 		libraries: 'libraries',
+		findLibrary: 'Find library',
 		findAtYourNearestLibrary: 'Find it at your nearest library',
 		location: 'Location',
 		shelf: 'Shelf',

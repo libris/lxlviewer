@@ -1,0 +1,4670 @@
+{
+  "instance": {
+    "audiobookDisc": {
+      "label": "Ljudbok (fysisk bärare)",
+      "description": "Ljudinspelning - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "SoundRecording",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [
+            {
+              "@type": "AudioIssueNumber",
+              "value": "",
+              "agent": {
+                "@type": "Organization",
+                "name": ""
+              }
+            },
+            {
+              "@type": "ISBN",
+              "value": "",
+              "qualifier": ""
+            }
+          ],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": ""
+            }
+          ],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/AudioDisc"
+            },
+            {
+              "@id": "https://id.kb.se/marc/SoundDisc"
+            }
+          ],
+          "mediaType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Audio"
+            }
+          ],
+          "physicalDetailsNote": "",
+          "digitalCharacteristic": [
+            {
+              "@type": "EncodingFormat",
+              "label": ""
+            }
+          ],
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Audio",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [{
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/author"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/nrt"
+                }]
+              }
+            ],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/SpokenWord"
+              }
+            ],
+            "genreForm": [
+              {
+                "@id": "https://id.kb.se/term/saogf/Ljudb%C3%B6cker"
+              }
+            ],
+            "subject": [],
+            "hasNote": [
+              {
+                "@type": "marc:ParticipantOrPerformerNote",
+                "label": ""
+              }
+            ]
+          }
+        }
+      }
+    },
+    "audiobookStreaming": {
+      "label": "Ljudbok (strömmande)",
+      "description": "Elektronisk - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Electronic",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [
+            {
+              "@type": "ISBN",
+              "value": "",
+              "qualifier": ""
+            }
+          ],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": ""
+            }
+          ],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/OnlineResource"
+            },
+            {
+              "@id": "https://id.kb.se/marc/Online"
+            },
+            {
+              "@id": "https://id.kb.se/marc/OnlineResource"
+            }
+          ],
+          "mediaType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Computer"
+            }
+          ],
+          "physicalDetailsNote": "",
+          "digitalCharacteristic": [
+            {
+              "@type": "EncodingFormat",
+              "label": ""
+            }
+          ],
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Audio",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [{
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/author"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/nrt"
+                }]
+              }
+            ],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/SpokenWord"
+              }
+            ],
+            "genreForm": [
+              {
+                "@id": "https://id.kb.se/term/saogf/Ljudb%C3%B6cker"
+              }
+            ],
+            "subject": [],
+            "hasNote": [
+              {
+                "@type": "marc:ParticipantOrPerformerNote",
+                "label": ""
+              }
+            ]
+          }
+        }
+      }
+    },
+    "digitizedMonographText": {
+      "label": "Digital reproduktion - bok",
+      "description": "Digitalt reproducerad monografi - RDA",
+      "key": "digitizedMonographText",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [
+            {
+              "@id": "https://libris.kb.se/library/DIGI"
+            }
+          ],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "digitalCharacteristic": [
+            {
+              "@type": "EncodingFormat",
+              "label": ""
+            }
+          ],
+          "encodingLevel": "marc:MinimalLevel",
+          "hasNote": [
+            {
+              "@type": "marc:SourceOfDescriptionNote",
+              "label": ""
+            }
+          ],
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Electronic",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "identifiedBy": [],
+          "production": [
+            {
+              "@type": "Reproduction",
+              "date": "",
+              "place": [
+                {
+                  "@type": "Place",
+                  "label": ""
+                }
+              ],
+              "agent": [
+                {
+                  "@type": "Agent",
+                  "label": ""
+                }
+              ]
+            }
+          ],
+          "copyright": [{
+            "@type": "Copyright",
+            "date": ""
+          }],
+          "carrierType": [
+            {"@id": "https://id.kb.se/term/rda/OnlineResource"}
+          ],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "associatedMedia": [
+            {
+              "@type": "MediaObject",
+              "marc:publicNote": [""],
+              "cataloguersNote": [""],
+              "publisher": [],
+              "uri": [""],
+              "usageAndAccessPolicy": []
+            }
+          ],
+          "reproductionOf": [],
+          "isPrimaryTopicOf": [
+            {
+              "@type": "Document",
+              "cataloguersNote": [""],
+              "marc:publicNote": [""],
+              "uri": [""]
+            }
+          ],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "genreForm": [],
+            "classification": [
+              {
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [
+              {
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/author"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "hasNote": [
+              {
+                "@type": "marc:LanguageNote",
+                "label": ""
+              }
+            ],
+            "subject": []
+          }
+        }
+      }
+    },
+    "electronicComponentPartText": {
+      "label": "Elektroniskt bidrag",
+      "description": "RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Electronic",
+          "isPartOf": [
+            {
+              "@type": "Instance",
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": ""
+                }
+              ],
+              "provisionActivityStatement": "",
+              "instanceOf": {
+                "@type": "Work",
+                "contribution": [
+                  {
+                    "@type": "PrimaryContribution",
+                    "agent": {
+                      "@type": "Agent",
+                      "label": ""
+                    }
+                  }
+                ]
+              },
+              "identifiedBy": [
+                {
+                  "@type": "ISBN",
+                  "value": ""
+                },
+                {
+                  "@type": "ISSN",
+                  "value": ""
+                }
+              ]
+            }
+          ],
+          "issuanceType": "ComponentPart",
+          "mediaType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Computer"
+            }
+          ],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/OnlineResource"
+            },
+            {
+              "@id": "https://id.kb.se/marc/Online"
+            },
+            {
+              "@id": "https://id.kb.se/marc/OnlineResource"
+            }
+          ],
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "part": [ "" ],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "country": null,
+              "year": ""
+            }
+          ],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Text",
+            "classification": [
+              {
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [
+              {
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": []
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "genreForm": [],
+            "language": [],
+            "subject": [],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/Text"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "electronicMonographText": {
+      "label": "E-bok",
+      "description": "Elektroniskt utgiven monografi - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Electronic",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [
+            {
+              "@type": "ISBN",
+              "value": "",
+              "qualifier": ""
+            }
+          ],
+          "editionStatement": [""],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": ""
+            }
+          ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Computer"}],
+          "carrierType": [
+            {"@id": "https://id.kb.se/term/rda/OnlineResource"},
+            {"@id": "https://id.kb.se/marc/Online"},
+            {"@id": "https://id.kb.se/marc/OnlineResource"}
+          ],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
+          "physicalDetailsNote": "",
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "associatedMedia": [
+            {
+              "@type": "MediaObject",
+              "uri": [
+                ""
+              ],
+              "marc:publicNote": [
+                ""
+              ]
+            }
+          ],
+          "digitalCharacteristic": [
+            {
+              "@type": "EncodingFormat",
+              "label": ""
+            }
+          ],
+          "otherPhysicalFormat": [],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "genreForm": [],
+            "classification": [
+              {
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [
+              {
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/author"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "hasNote": [
+              {
+                "@type": "marc:LanguageNote",
+                "label": ""
+              }
+            ],
+            "subject": []
+            },
+           "contribution": [
+        {
+          "@type": "Contribution",
+          "agent": null,      
+          "role": []
+        }
+      ]
+        }
+      }
+    },
+    "electronicPeriodicalText": {
+      "label": "Elektronisk seriell resurs",
+      "description": "RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Electronic",
+          "issuanceType": "Serial",
+          "frequency": [],
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            },
+            {
+              "@type": "VariantTitle",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "marc:alphabet": {
+            "@id": "https://id.kb.se/marc/SerialsAlphabetType-b"
+          },
+          "marc:typeOfEntry": {
+            "@id": "https://id.kb.se/marc/SerialsTypeOfEntryType-0"
+          },
+          "identifiedBy": [{
+            "@type": "ISSN",
+            "value": ""
+          }],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "date": "",
+              "startYear": "",
+              "endYear": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Computer"}],
+          "carrierType": [
+            {"@id": "https://id.kb.se/term/rda/OnlineResource"},
+            {"@id": "https://id.kb.se/marc/Online"},
+            {"@id": "https://id.kb.se/marc/OnlineResource"}
+          ],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "hasNumberingOfSerials": [
+            {
+              "@type": "NumberingOfSerials",
+              "label": ""
+            }
+          ],
+          "associatedMedia": [
+            {
+              "@type": "MediaObject",
+              "uri": [
+                ""
+              ],
+              "marc:publicNote": [
+                ""
+              ]
+            }
+          ],
+          "otherPhysicalFormat": [],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "contribution": [
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "genreForm": [{
+              "@id": "https://id.kb.se/marc/Periodical"
+            }],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "subject": []
+          }
+        }
+      }
+    },
+    "electronicIntegratingText": {
+      "label": "Databas / Webbplats",
+      "description": "Elektronisk integrerande resurs - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Electronic",
+          "issuanceType": "Integrating",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            },
+            {
+              "@type": "VariantTitle",
+              "mainTitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [
+            {
+              "@type": "ISSN",
+              "value": ""
+            }
+          ],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "startYear": "",
+              "endYear": "",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "mediaType": [
+            {"@id": "https://id.kb.se/term/rda/Computer"}
+          ],
+          "carrierType": [
+            {"@id": "https://id.kb.se/term/rda/OnlineResource"},
+            {"@id": "https://id.kb.se/marc/Online"},
+            {"@id": "https://id.kb.se/marc/OnlineResource"}
+          ],
+          "frequency": [
+            {
+              "@id": "https://id.kb.se/marc/ContinuouslyUpdated"
+            }
+          ],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "associatedMedia": [
+            {
+              "@type": "MediaObject",
+              "uri": [
+                ""
+              ],
+              "marc:publicNote": [
+                ""
+              ]
+            }
+          ],
+          "marc:alphabet": {
+            "@id": "https://id.kb.se/marc/ExtendedRoman"
+          },
+          "marc:typeOfEntry": {
+            "@id": "https://id.kb.se/marc/IntegratingEntry"
+          },
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "genreForm": [],
+            "classification": [
+              {
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "subject": [],
+            "summary": [
+              {
+                "@type": "Summary",
+                "label": ""
+              }
+            ]
+          }
+        }
+      }
+    },
+    "manuscriptMonographText": {
+      "label": "Handskrift",
+      "description": "Handskrift monografi - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:AbbreviatedLevel",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Manuscript",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "marc:primaryProvisionActivity": {
+            "@type": "PrimaryProduction",
+            "country": {
+              "@id": "https://id.kb.se/country/sw"
+            },
+            "marc:publicationStatus": "marc:QuestionableDate",
+            "otherYear": "",
+            "year": ""
+          },
+          "production": [
+            {
+              "@type": "Production",
+              "agent": {
+                "@type": "Agent",
+                "label": [
+                  ""
+                ]
+              },
+              "date": [
+                ""
+              ],
+              "place": [
+                {
+                  "@type": "Place",
+                  "label": [
+                    ""
+                  ]
+                }
+              ]
+            }
+          ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
+          "physicalDetailsNote": "illustrationer",
+          "productionMethod": [
+            {
+              "@type": "ProductionMethod",
+              "label": [
+                "handskrift"
+              ]
+            }
+          ],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": [
+                ""
+              ]
+            },
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": [""]
+            }
+          ],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [
+              {
+                "@id": "https://id.kb.se/language/swe"
+              }
+            ],
+            "genreForm": [
+              {
+                "@id": "https://id.kb.se/term/saogf/Handskrifter"
+              }
+            ],
+            "contribution": [
+              {
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [
+                  {
+                    "@id": "https://id.kb.se/relator/author"
+                  }
+                ]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/Text"
+              }
+            ],
+            "hasNote": [
+              {
+                "@type": "marc:LanguageNote",
+                "label": ""
+              }
+            ],
+            "subject": [
+              {
+                "@type": "Person",
+                "familyName": "",
+                "givenName": "",
+                "lifeSpan": ""
+              },
+              {
+                "@type": "ComplexSubject",
+                "inScheme": {
+                  "@id": "https://id.kb.se/term/sao"
+                },
+                "termComponentList": [
+                  {
+                    "@type": "Geographic",
+                    "prefLabel": ""
+                  },
+                  {
+                    "@type": "GeographicSubdivision",
+                    "prefLabel": ""
+                  },
+                  {
+                    "@type": "GeographicSubdivision",
+                    "prefLabel": ""
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "movie": {
+      "label": "Film",
+      "description": "Videoinspelning - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "VideoRecording",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            },
+            {
+              "@type": "ParallelTitle",
+              "mainTitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [
+            {
+              "@type": "EAN",
+              "value": ""
+            },
+            {
+              "@type": "VideoRecordingNumber",
+              "value": "",
+              "agent": {
+                "@type": "Organization",
+                "name": ""
+              }
+            }
+          ],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": ""
+            }
+          ],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
+          "physicalDetailsNote": "",
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Videodisc"
+            }
+          ],
+          "mediaType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Video"
+            }
+          ],
+          "videoCharacteristic": [],
+          "accompaniedBy": [
+            {
+              "@type": "Instance",
+              "label": ""
+            }
+          ],
+          "tableOfContents": [
+            {
+              "@type": "TableOfContents",
+              "label": ""
+            }
+          ],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "MovingImage",
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "intendedAudience": [
+              {
+                "@type": "IntendedAudience",
+                "label": ""
+              }
+            ],
+            "language": [],
+            "marc:subtitlesOrCaptions": {
+              "@type": "marc:SubtitlesOrCaptions",
+              "language": [
+                {
+                  "@id": "https://id.kb.se/language/swe"
+                }
+              ]
+            },
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/TwoDimensionalMovingImage"
+              }
+            ],
+            "genreForm": [],
+            "capture": [
+              {
+                "@type": "Capture",
+                "label": ""
+              }
+            ],
+            "hasNote": [{
+              "@type": "marc:LanguageNote",
+              "label": ""
+            },{
+              "@type": "marc:ParticipantOrPerformerNote",
+              "label": ""
+            }],
+            "subject": [],
+            "summary": [
+              {
+                "@type": "Summary",
+                "label": ""
+              }
+            ]
+          }
+        }
+      }
+    },
+    "music-cd": {
+      "label": "Musik-CD",
+      "description": "Ljudinspelning - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "SoundRecording",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [
+            {
+              "@type": "AudioIssueNumber",
+              "value": "",
+              "agent": {
+                "@type": "Organization",
+                "name": ""
+              }
+            },
+            {
+              "@type": "EAN",
+              "value": ""
+            }
+          ],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": ""
+            }
+          ],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/AudioDisc"
+            },
+            {
+              "@id": "https://id.kb.se/marc/SoundDisc"
+            }
+          ],
+          "mediaType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Audio"
+            }
+          ],
+          "physicalDetailsNote": "",
+          "editionStatement": [""],
+          "accompaniedBy": [
+            {
+              "@type": "Instance",
+              "label": ""
+            }
+          ],
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "tableOfContents": [
+            {
+              "@type": "TableOfContents",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Music",
+             "hasTitle": [
+              {
+                "@type": "Title",
+                "mainTitle": "",
+                "partName": [
+                ""
+                ],
+                "partNumber": [
+                  ""
+                ]
+              }
+            ],
+          "musicKey": "",
+          "musicMedium": [{
+            "@type": "MusicMedium",
+            "label": ""
+          }],
+          "marc:arrangedStatementForMusic": "",
+            "language": [],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [{
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": []
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/PerformedMusic"
+              }
+            ],
+            "genreForm": [
+              {
+                "@id": "https://id.kb.se/term/saogf/Musikinspelningar"
+              }
+            ],
+            "capture": [
+              {
+                "@type": "Capture",
+                "label": ""
+              }
+            ],
+            "hasNote": [{
+              "@type": "marc:ParticipantOrPerformerNote",
+              "label": ""
+            }]
+          }
+        }
+      }
+    },
+    "handPrintedMonographText": {
+      "label": "Äldre tryck",
+      "description": "",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "hasNote": [
+            {
+              "@type": "marc:SourceOfDescriptionNote",
+              "label": ""
+            }
+          ],
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Print",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "editionStatement": [""],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "physicalDetailsNote": "",
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "indexedIn": [
+            {
+              "@type": "Instance",
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "label": ""
+                }
+              ],
+              "hasNote": [
+                {
+                  "@type": "Note",
+                  "label": ""
+                }
+              ]
+            }
+          ],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "marc:hasAddedEntryHierarchicalPlaceName": [
+            {
+              "@type": "marc:AddedEntryHierarchicalPlaceName",
+              "marc:countryOrLargerEntity": [
+                ""
+              ],
+              "marc:city": ""
+
+            }
+          ],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": ""
+            }
+          ],
+          "tableOfContents": [
+            {
+              "@type": "TableOfContents",
+              "hasPart": [
+                {
+                  "@type": "ToCEntry",
+                  "comment": "",
+                  "label": "",
+                  "responsibilityStatement": ""
+                }
+              ]
+            }
+          ],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "genreForm": [],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [
+              {
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/author"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "hasNote": [
+              {
+                "@type": "marc:LanguageNote",
+                "label": ""
+              }
+            ],
+            "subject": []
+          }
+        }
+      }
+    },
+    "printedCartograph": {
+      "label": "Karta",
+      "description": "Tryckt kartmaterial - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Map",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [
+            {
+              "@type": "ISBN",
+              "value": "",
+              "qualifier": ""
+            }
+          ],
+          "editionStatement": [""],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              },
+              "date": "",
+              "year": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              }
+            }
+          ],
+          "manufacture": [
+            {
+              "@type": "Manufacture",
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              },
+              "date": "",
+              "place": {
+                "@type": "Place",
+                "label": ""
+              }
+            }
+          ],
+          "marc:relief": [],
+          "productionMethod": [
+            {
+              "@type": "ProductionMethod",
+              "label": ""
+            }
+          ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Sheet"}],
+          "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
+          "colorContent": [
+            {
+              "@id": "https://id.kb.se/marc/Multicolored"
+            }
+          ],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": "1 karta"
+            }
+          ],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/MapATwoDimensionalMap"
+            },
+            {
+              "@id": "https://id.kb.se/marc/SingleMap"
+            }
+          ],
+          "physicalDetailsNote": "",
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "tableOfContents": [
+            {
+              "@type": "TableOfContents",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Cartography",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "cartographicAttributes": [
+              {
+                "@type": "Cartographic",
+                "marc:easternmostLongitudeCoordinates": "e0",
+                "marc:northernmostLatitudeCoordinates": "n0",
+                "marc:southernmostLatitudeCoordinates": "n0",
+                "marc:westernmostLongitudeCoordinates": "e0",
+                "scale": {
+                  "@type": "marc:LinearScale",
+                  "marc:constantRatioLinearHorizontalScale": ""
+                },
+                "projection": null
+              },
+              {
+                "@type": "Cartographic",
+                "coordinates": "(Ö °-Ö °/N °-N °)",
+                "scale": {
+                  "@type": "Scale",
+                  "label": "Skala 1:  ; Skalstock:"
+                }
+              },
+              {
+                "@type": "Cartographic",
+                "coordinates": "Måttenhet för koordinaterna: grader, minuter och sekunder (0-360°)"
+              }
+            ],
+            "genreForm": [
+              {
+                "@id": "https://id.kb.se/term/gmgpc/swe/Kartor"
+              }
+            ],
+            "contribution": [{
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/cartographer"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/CartographicImage"}],
+            "subject": [
+              {
+                "@type": "ComplexSubject",
+                "inScheme": {
+                  "@id": "https://id.kb.se/term/sao"
+                },
+                "termComponentList": [
+                  {
+                    "@type": "Geographic",
+                    "prefLabel": ""
+                  },
+                  {
+                    "@type": "GeographicSubdivision",
+                    "prefLabel": ""
+                  }
+                ]
+              }
+            ],
+            "summary": [
+              {
+                "@type": "Summary",
+                "label": ""
+              }
+            ],
+            "supplementaryContent": null,
+            "hasNote": [{
+              "@type": "marc:LanguageNote",
+              "label": ""
+            }]
+          }
+        }
+      }
+    },
+    "printedComponentPartText": {
+      "label": "Tryckt bidrag",
+      "description": "RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Print",
+          "isPartOf": [
+            {
+              "@type": "Instance",
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": ""
+                }
+              ],
+              "provisionActivityStatement": "",
+              "instanceOf": {
+                "@type": "Work",
+                "contribution": [
+                  {
+                    "@type": "PrimaryContribution",
+                    "agent": {
+                      "@type": "Agent",
+                      "label": ""
+                    }
+                  }
+                ]
+              },
+              "identifiedBy": [
+                {
+                  "@type": "ISBN",
+                  "value": ""
+                },
+                {
+                  "@type": "ISSN",
+                  "value": ""
+                }
+              ]
+            }
+          ],
+          "issuanceType": "ComponentPart",
+          "mediaType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Unmediated"
+            }
+          ],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Volume"
+            }
+          ],
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "part": [ "" ],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "country": null,
+              "year": ""
+            }
+          ],
+          "summary": [
+            {
+              "@type": "Summary",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Text",
+            "classification": [
+              {
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [
+              {
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": []
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "genreForm": [],
+            "language": [],
+            "subject": [],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/Text"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "printedMonographText": {
+      "label": "Bok",
+      "description": "Tryckt monografi - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Print",
+          "issuanceType": "Monograph",
+          "hasTitle": [{
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [{
+            "@type": "ISBN",
+            "value": "",
+            "qualifier": ""
+          }],
+          "editionStatement": [""],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "manufacture": [{
+            "@type": "Manufacture",
+            "agent": [{
+              "@type": "Agent",
+              "label": ""
+            }],
+            "date": "",
+            "place": [{
+              "@type": "Place",
+              "label": ""
+            }]
+          }],
+          "copyright": [{
+            "@type": "Copyright",
+            "date": ""
+          }],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "physicalDetailsNote": "",
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "genreForm": [],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [{
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/author"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "hasNote": [
+              {
+                "@type": "marc:LanguageNote",
+                "label": ""
+              }
+            ],
+            "subject": [],
+            "intendedAudience": []
+          },
+           "contribution": [
+        {
+          "@type": "Contribution",
+          "agent": null,      
+          "role": []
+        }
+      ]
+        }
+      }
+    },
+    "printedPeriodicalText": {
+      "label": "Tryckt seriell resurs",
+      "description": "RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Print",
+          "issuanceType": "Serial",
+          "frequency": [],
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            },
+            {
+             "@type": "VariantTitle",
+             "mainTitle": "",
+             "subtitle": ""
+           }
+          ],
+          "marc:alphabet": {
+            "@id": "https://id.kb.se/marc/SerialsAlphabetType-b"
+          },
+          "marc:typeOfEntry": {
+            "@id": "https://id.kb.se/marc/SerialsTypeOfEntryType-0"
+          },
+          "identifiedBy": [{
+            "@type": "ISSN",
+            "value": ""
+          }],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "date": "",
+              "startYear": "",
+              "endYear": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "hasNumberingOfSerials": [
+            {
+              "@type": "NumberingOfSerials",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Text",
+            "language": [{
+              "@id": "https://id.kb.se/language/swe"
+            }],
+            "contribution": [
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+            "genreForm": [{
+              "@id": "https://id.kb.se/marc/Periodical"
+            }],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "subject": []
+          }
+        }
+      }
+    },
+    "printedNotatedMusic": {
+      "label": "Noterad musik",
+      "description": "Musiktryck - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Print",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "identifiedBy": [
+            {
+              "@type": "ISBN",
+              "value": "",
+              "qualifier": ""
+            },
+            {
+              "@type": "ISMN",
+              "value": "",
+              "qualifier": ""
+            },
+            {
+              "@type": "MusicPlate",
+              "value": ""
+            },
+            {
+              "@type": "MusicPublisherNumber",
+              "value": "",
+              "agent": {
+                  "@type": "Organization",
+                  "name": ""
+              }
+            }
+          ],
+          "editionStatement": [""],
+          "editionStatementRemainder": [""],
+          "physicalDetailsNote": "",
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": "",
+              "country": [ {"@id": "https://id.kb.se/country/sw"} ],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "manufacture": [
+            {
+            "@type": "Manufacture",
+            "agent": [{
+              "@type": "Agent",
+              "label": ""
+            }],
+            "date": "",
+            "place": [{
+              "@type": "Place",
+              "label": ""
+            }]
+          }
+        ],
+          "copyright": [
+            {
+            "@type": "Copyright",
+            "date": ""
+          }
+        ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Volume"}],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
+          "hasDuration": [
+            {
+              "@type": "Duration",
+              "value": ""
+            }
+          ],
+          "accompaniedBy": [
+            {
+              "@type": "Instance",
+              "label": ""
+            }
+          ],
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "seriesMembership": [
+            {
+              "@type": "SeriesMembership",
+              "inSeries": {
+                "@type": "Instance",
+                "identifiedBy": [
+                  {
+                    "@type": "ISSN",
+                    "value": ""
+                  }
+                ],
+                "instanceOf": {
+                  "@type": "Work",
+                  "hasTitle": [
+                    {
+                      "@type": "Title",
+                      "mainTitle": ""
+                    }
+                  ]
+                }
+              },
+              "marc:seriesTracingPolicy": "",
+              "seriesEnumeration": "",
+              "seriesStatement": [""]
+            }
+          ],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "musicFormat": [
+            {
+              "@type": "MusicFormat",
+              "label": [""],
+              "source": {
+                "@type": "Source",
+                "code": ""
+              }
+            }
+          ],
+          "tableOfContents": [
+            {
+              "@type": "TableOfContents",
+              "label": ""
+            },
+            {
+              "@type": "TableOfContents",
+              "hasPart": [
+                {
+                  "@type": "ToCEntry",
+                  "label": "",
+                  "responsibilityStatement": ""
+                },
+                {
+                  "@type": "ToCEntry",
+                  "label": "",
+                  "responsibilityStatement": ""
+                }
+              ]
+            }
+          ],
+          "instanceOf": {
+            "@type": "NotatedMusic",
+            "hasTitle": [
+              {
+                "@type": "Title",
+                "mainTitle": "",
+                "partName": [
+                ""
+                ],
+                "partNumber": [
+                  ""
+                ]
+              }
+            ],
+            "musicKey": "",
+            "musicMedium": [{
+              "@type": "MusicMedium",
+              "label": ""
+            }],
+            "marc:arrangedStatementForMusic": "",
+            "language": [{
+              "@id": "https://id.kb.se/language/zxx"
+            }],
+            "genreForm": [],
+            "hasNotation": [
+              {"@id": "https://id.kb.se/term/rda/musnotation/StaffNotation"}
+            ],
+            "hasNote": [
+              {
+                "@type": "marc:LanguageNote",
+                "label": ""
+              }
+            ],
+            "intendedAudience": [],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "additionalClassificationDdc": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+            }],
+            "contribution": [
+              {
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/composer"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [{"@id": "https://id.kb.se/term/rda/NotatedMusic"}],
+            "hasPart": [
+              {
+                "@type": "Work",
+                "contribution": [
+                  {
+                    "@type": "PrimaryContribution",
+                    "agent": null
+                  }
+                ],
+                "hasTitle": [
+                  {
+                    "@type": "Title",
+                    "mainTitle": "",
+                    "partNumber": [
+                      ""
+                    ],
+                    "partName": [
+                    ""
+                    ]
+                  }
+                ],
+                "musicKey": "",
+                "marc:arrangedStatementForMusic": "",
+                "musicMedium": [{
+                  "@type": "MusicMedium",
+                  "label": ""
+                }]
+              },
+              {
+                "@type": "Work",
+                "contribution": [
+                  {
+                    "@type": "PrimaryContribution",
+                    "agent": null
+                  }
+                ],
+                "hasTitle": [
+                  {
+                    "@type": "Title",
+                    "mainTitle": "",
+                    "partNumber": [
+                      ""
+                    ],
+                    "partName": [
+                    ""
+                    ]
+                  }
+                ],
+                "musicKey": "",
+                "marc:arrangedStatementForMusic": "",
+                "musicMedium": [{
+                  "@type": "MusicMedium",
+                  "label": ""
+                }]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "printedStillImage": {
+      "label": "Stillbild",
+      "description": "Tryckt stillbild - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Instance",
+          "issuanceType": "Monograph",
+          "hasTitle": [{
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "responsibilityStatement": "",
+          "publication": [
+            {
+              "@type": "Publication",
+              "place": [
+                {
+                  "@type": "Place",
+                  "label": ""
+                }
+              ],
+              "agent": [
+                {
+                  "@type": "Agent",
+                  "label": ""
+                }
+              ],
+              "date": ""
+            }
+          ],
+          "marc:primaryProvisionActivity": {
+            "@type": "PrimaryPublication",
+            "country": null,
+            "marc:publicationStatus": null,
+            "otherYear": "",
+            "year": ""
+          },
+          "manufacture": [{
+            "@type": "Manufacture",
+            "agent": {
+              "@type": "Agent",
+              "label": ""
+            },
+            "date": "",
+            "place": {
+              "@type": "Place",
+              "label": ""
+            }
+          }],
+          "production": [{
+            "@type": "Production",
+            "date": ""
+          }],
+          "productionMethod": [
+            {
+              "@type": "ProductionMethod",
+              "label": ""
+            }
+          ],
+          "mediaType": [{"@id": "https://id.kb.se/term/rda/Unmediated"}],
+          "carrierType": [{"@id": "https://id.kb.se/term/rda/Sheet"}],
+          "appliedMaterial": [],
+          "baseMaterial": [{"@id": "https://id.kb.se/material/Paper"}],
+          "colorContent": [
+            {
+              "@id": "https://id.kb.se/marc/BlackAndWhite"
+            }
+          ],
+          "extent": [{
+            "@type": "Extent",
+            "label": ""
+          }],
+          "physicalDetailsNote": "",
+          "hasDimensions": {
+            "@type": "Dimensions",
+            "label": ""
+          },
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/Picture"
+            }
+          ],
+          "polarity": [
+            {
+              "@type": "Polarity",
+              "label": "positiv"
+            }
+          ],
+          "hasNote": [{
+            "@type": "Note",
+            "label": ""
+          }],
+          "tableOfContents": [
+            {
+              "@type": "TableOfContents",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "StillImage",
+            "language": [{
+              "@id": "https://id.kb.se/language/zxx"
+            }],
+            "genreForm": [
+              {
+                "@id": "https://id.kb.se/marc/Picture"
+              },
+              {
+                "@id": "https://id.kb.se/term/gmgpc/swe/Bilder"
+              }
+            ],
+            "contribution": [{
+                "@type": "PrimaryContribution",
+                "agent": null,
+                "role": [{
+                  "@id": "https://id.kb.se/relator/artist"
+                }]
+              },
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/StillImage"
+              }
+            ],
+            "subject": [
+              {
+                "@type": "ComplexSubject",
+                "inScheme": {
+                  "@id": "https://id.kb.se/term/sao"
+                },
+                "termComponentList": [
+                  {
+                    "@type": "Geographic",
+                    "prefLabel": ""
+                  },
+                  {
+                    "@type": "GeographicSubdivision",
+                    "prefLabel": ""
+                  }
+                ]
+              }
+            ],
+            "summary": [
+              {
+                "@type": "Summary",
+                "label": ""
+              }
+            ]
+          }
+        }
+      }
+    },
+    "videogame": {
+      "label": "Datorspel",
+      "description": "Multimedia - RDA",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "bibliography": [],
+          "descriptionConventions": [
+            {
+              "@id": "https://id.kb.se/marc/Isbd"
+            },
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "encodingLevel": "marc:MinimalLevel",
+          "recordStatus": "",
+          "marc:catalogingSource": {
+            "@id": "https://id.kb.se/marc/CooperativeCatalogingProgram"
+          }
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Electronic",
+          "issuanceType": "Monograph",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": "",
+              "subtitle": ""
+            }
+          ],
+          "identifiedBy": [
+            {
+              "@type": "EAN",
+              "value": ""
+            },
+            {
+              "@type": "PublisherNumber",
+              "value": "",
+              "agent": {
+                "@type": "Organization",
+                "name": ""
+              }
+            }
+          ],
+          "publication": [
+            {
+              "@type": "PrimaryPublication",
+              "year": "",
+              "date": "",
+              "country": [],
+              "place": {
+                "@type": "Place",
+                "label": ""
+              },
+              "agent": {
+                "@type": "Agent",
+                "label": ""
+              }
+            }
+          ],
+          "copyright": [
+            {
+              "@type": "Copyright",
+              "date": ""
+            }
+          ],
+          "extent": [
+            {
+              "@type": "Extent",
+              "label": ""
+            }
+          ],
+          "carrierType": [
+            {
+              "@id": "https://id.kb.se/term/rda/ComputerDisc"
+            }
+          ],
+          "mediaType": [
+            {
+              "@id": "https://id.kb.se/term/rda/Computer"
+            }
+          ],
+          "accompaniedBy": [
+            {
+              "@type": "Instance",
+              "label": ""
+            }
+          ],
+          "physicalDetailsNote": "",
+          "systemRequirement": [
+            {
+              "@type": "MachineModel",
+              "label": [
+                ""
+              ]
+            }
+          ],
+          "hasNote": [
+            {
+              "@type": "Note",
+              "label": ""
+            }
+          ],
+          "instanceOf": {
+            "@type": "Multimedia",
+            "language": [],
+            "classification": [{
+                "@type": "ClassificationDdc",
+                "code": "",
+                "edition": "full",
+                "editionEnumeration": "23/swe"
+              },
+              {
+                "@type": "Classification",
+                "code": "",
+                "inScheme": {
+                  "@type": "ConceptScheme",
+                  "@id": "https://id.kb.se/term/kssb/8",
+                  "code": "kssb",
+                  "version": "8"
+                }
+              }
+            ],
+            "contribution": [
+              {
+                "@type": "Contribution",
+                "agent": null,
+                "role": []
+              }
+            ],
+            "intendedAudience": [
+              {
+                "@type": "IntendedAudience",
+                "marc:audienceType": "marc:InterestAgeLevel",
+                "label": ""
+              }
+            ],
+            "contentType": [
+              {
+                "@id": "https://id.kb.se/term/rda/ComputerProgram"
+              }
+            ],
+            "genreForm": [
+              {
+                "@id": "https://id.kb.se/term/saogf/Datorspel"
+              },
+              {
+                "@id": "https://id.kb.se/marc/ComputerTypeOfFileType-g"
+              }
+            ],
+            "hasNote": [{
+              "@type": "marc:LanguageNote",
+              "label": ""
+            }],
+            "subject": [],
+            "summary": [
+              {
+                "@type": "Summary",
+                "label": ""
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "work": {
+    "SVSK": {
+      "label": "Svensk skönlitteratur",
+      "description": "Verkstyp Text",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "cataloguersNote": [""]
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Text",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ],
+          "contribution": [
+            {
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [{
+                "@id": "https://id.kb.se/relator/author"
+              }]
+            }
+          ],
+          "language": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/FictionNotFurtherSpecified"
+            }
+          ],
+          "classification": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
+            {
+              "@type": "Classification",
+              "code": "Hc",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb",
+                "version": "8"
+              }
+            }
+          ],
+          "subject": [],
+          "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}]
+        }
+      }
+    },
+    "TranslationToSVSK": {
+      "label": "Utländsk skönlitteratur i svensk översättning ",
+      "description": "Verkstyp Text",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "cataloguersNote": [""]
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Text",
+          "hasTitle": [
+            {
+              "@type": "Title",
+              "mainTitle": ""
+            }
+          ],
+          "contribution": [
+            {
+              "@type": "PrimaryContribution",
+              "agent": null,
+              "role": [
+                {
+                  "@id": "https://id.kb.se/relator/author"
+                }
+              ]
+            },
+            {
+              "@type": "Contribution",
+              "agent": null,
+              "role": [
+                {
+                  "@id": "https://id.kb.se/relator/translator"
+                }
+              ]
+            }
+          ],
+          "language": [
+            {
+              "@id": "https://id.kb.se/language/swe"
+            }
+          ],
+          "genreForm": [
+            {
+              "@id": "https://id.kb.se/marc/FictionNotFurtherSpecified"
+            }
+          ],
+          "classification": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "full",
+              "editionEnumeration": "23/swe"
+            },
+            {
+              "@type": "Classification",
+              "code": "Hce",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "https://id.kb.se/term/kssb/8",
+                "code": "kssb",
+                "version": "8"
+              }
+            }
+          ],
+          "subject": [],
+          "contentType": [{"@id": "https://id.kb.se/term/rda/Text"}],
+          "hasNote": [
+            {
+              "@type": "marc:LanguageNote",
+              "label": ""
+            }
+          ],
+          "translationOf": [
+            {
+              "@type": "Work",
+              "hasTitle": [
+                {
+                  "@type": "Title",
+                  "mainTitle": ""
+                }
+              ],
+              "language": []
+            }
+          ]
+        }
+      }
+    }
+  },
+  "agent": {
+    "jurisdiction": {
+      "label": "Jurisdiktion",
+      "description": "Agent",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionConventions": [
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "cataloguersNote": [""],
+          "sourceConsulted": []
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Jurisdiction",
+          "name": "",
+          "isPartOf": {
+            "@type": "Jurisdiction",
+            "name": ""
+          },
+          "marc:subordinateUnit": [ "" ],
+          "activityStartDate": "",
+          "activityEndDate": "",
+          "description": "",
+          "hasVariant": [
+            {
+              "@type": "Jurisdiction",
+              "name": ""
+            },
+            {
+              "@type": "Jurisdiction",
+              "isPartOf": {
+                "@type": "Jurisdiction",
+                "name": ""
+              },
+              "marc:subordinateUnit": [ "" ]
+            }
+          ],
+          "seeAlso": [],
+          "identifiedBy": [{
+            "@type": "ISNI",
+            "value": ""
+          }],
+          "nationality": [{
+            "@id": "https://id.kb.se/nationality/e-sw---",
+            "code": "e-sw---"
+          }]
+        }
+      }
+    },
+    "organization": {
+      "label": "Organisation",
+      "description": "Agent",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionConventions": [
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "cataloguersNote": [""],
+          "sourceConsulted": []
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Organization",
+          "name": "",
+          "isPartOf": {
+            "@type": "Organization",
+            "name": ""
+          },
+          "marc:subordinateUnit": [ "" ],
+          "activityStartDate": "",
+          "activityEndDate": "",
+          "description": "",
+          "hasVariant": [
+            {
+            "@type": "Organization",
+            "name": ""
+          },
+          {
+          "@type": "Organization",
+          "isPartOf": {
+            "@type": "Organization",
+            "name": ""
+          },
+          "marc:subordinateUnit": [ "" ]
+        }
+        ],
+          "seeAlso": [],
+          "identifiedBy": [{
+            "@type": "ISNI",
+            "value": ""
+          }],
+          "nationality": [{
+            "@id": "https://id.kb.se/nationality/e-sw---",
+            "code": "e-sw---"
+          }]
+        }
+      }
+    },
+    "person": {
+      "label": "Person",
+      "description": "Agent",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionConventions": [
+            {
+              "@type": "DescriptionConventions",
+              "code": "rda"
+            }
+          ],
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "cataloguersNote": [""],
+          "sourceConsulted": []
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Person",
+          "familyName": "",
+          "givenName": "",
+          "lifeSpan": "",
+          "birthDate": "",
+          "deathDate": "",
+          "hasVariant": [{
+            "@type": "Person",
+            "familyName": "",
+            "givenName": "",
+            "name": "",
+            "lifeSpan": ""
+          }],
+          "seeAlso": [],
+          "fieldOfActivity": [],
+          "hasOccupation": [],
+          "description": "",
+          "identifiedBy": [{
+            "@type": "ISNI",
+            "value": ""
+          }],
+          "nationality": [{
+            "@id": "https://id.kb.se/nationality/e-sw---"
+          }]
+        }
+      }
+    }
+  },
+  "concept": {
+    "complexSubject": {
+      "label": "Sammansatt term",
+      "description": "sao",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@type": "ComplexSubject",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao"
+          },
+          "inCollection": [{
+            "@id": "https://id.kb.se/term/fack"
+          }],
+          "prefLabel": "",
+          "termComponentList": [
+            {
+              "@type": "Topic",
+              "prefLabel": ""
+            },
+            {
+              "@type": "TopicSubdivision",
+              "prefLabel": ""
+            }
+          ],
+          "broadMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "",
+              "marc:explanatoryTerm": ""
+            }
+          ],
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "",
+              "marc:explanatoryTerm": ""
+            },
+            {
+              "@type": "ComplexSubject",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/lcsh"
+              },
+              "prefLabel": "",
+              "termComponentList": [
+                {
+                  "@type": "Topic",
+                  "prefLabel": ""
+                },
+                {
+                  "@type": "TopicSubdivision",
+                  "prefLabel": ""
+                }
+              ]
+            }
+          ],
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "related": [],
+          "scopeNote": [""],
+          "historyNote": [""]
+        }
+      }
+    },
+    "complexSubjectGeographic": {
+      "label": "Sammansatt geografisk term",
+      "description": "sao",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@type": "ComplexSubject",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao"
+          },
+          "inCollection": [{
+            "@id": "https://id.kb.se/term/fack"
+          }],
+          "prefLabel": "",
+          "termComponentList": [
+            {
+              "@type": "Geographic",
+              "prefLabel": ""
+            },
+            {
+              "@type": "GeographicSubdivision",
+              "prefLabel": ""
+            }
+          ],
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "23/swe",
+              "marc:explanatoryTerm": ""
+            },
+            {
+              "@type": "Geographic",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/lcsh"
+              },
+              "prefLabel": ""
+            }
+          ],
+          "scopeNote": [""],
+          "historyNote": [""]
+        }
+      }
+    },
+    "genreForm": {
+      "label": "Genre/formterm",
+      "description": "saogf",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "GenreForm",
+          "closeMatch": [{
+            "@type": "GenreForm",
+            "inScheme": {
+              "@id": "https://id.kb.se/term/lcgft"
+            },
+            "prefLabel": ""
+          }],
+          "inScheme": {
+            "@id": "https://id.kb.se/term/saogf"
+          },
+          "inCollection": [],
+          "prefLabel": "",
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "scopeNote": [""]
+        }
+      }
+    },
+    "graphic-genreForm": {
+      "label": "TGM - Genre/formterm",
+      "description": "gmgpc/swe",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "GenreForm",
+          "closeMatch": [{
+            "@type": "GenreForm",
+            "inScheme": {
+              "@id": "https://id.kb.se/term/gmgpc"
+            },
+            "prefLabel": ""
+          }],
+          "inScheme": {
+            "@id": "https://id.kb.se/term/gmgpc/swe"
+          },
+          "prefLabel": "",
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "scopeNote": [""]
+        }
+      }
+    },
+    "geographic": {
+      "label": "Geografiskt ämnesord",
+      "description": "sao",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Geographic",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao"
+          },
+          "prefLabel": "",
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "",
+              "marc:explanatoryTerm": ""
+            }
+          ],
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "related": [],
+          "scopeNote": [
+            ""
+          ],
+          "historyNote": [
+            ""
+          ]
+        }
+      }
+    },
+    "topic": {
+      "label": "Allmänt ämnesord",
+      "description": "sao",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@type": "Topic",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao"
+          },
+          "inCollection": [{
+            "@id": "https://id.kb.se/term/fack"
+          }],
+          "prefLabel": "",
+          "broadMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "23/swe",
+              "marc:explanatoryTerm": ""
+            }
+          ],
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "edition": "23/swe",
+              "marc:explanatoryTerm": ""
+            },
+            {
+              "@type": "Topic",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/lcsh"
+              },
+              "prefLabel": ""
+            }
+          ],
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "related": [],
+          "scopeNote": [
+            ""
+          ],
+          "historyNote": [
+            ""
+          ]
+        }
+      }
+    },
+    "chronologicalTerm": {
+      "label": "Kronologiskt ämnesord",
+      "description": "sao",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "Temporal",
+          "prefLabel": "",
+          "altLabel": [
+            ""
+          ],
+          "broadMatch": [],
+          "closeMatch": [
+            {
+              "@type": "ClassificationDdc",
+              "code": "",
+              "inScheme": {
+                "@type": "ConceptScheme",
+                "@id": "http://dewey.info/scheme/edition/e23/swe/",
+                "version": "23",
+                "language": "swe"
+              },
+              "marc:explanatoryTerm": ""
+            },
+            {
+              "@type": "Topic",
+              "inScheme": {
+                "@id": "https://id.kb.se/term/lcsh"
+              },
+              "prefLabel": ""
+            }
+          ],
+          "inScheme": {
+            "@id": "https://id.kb.se/term/sao"
+          },
+          "historyNote": [
+            ""
+          ],
+          "scopeNote": [""]
+        }
+      }
+    },
+    "children-GenreForm": {
+      "label": "Barn - Genre/formterm",
+      "description": "barngf",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@id": "https://id.kb.se/TEMPID#it",
+          "@type": "GenreForm",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/barngf"
+          },
+          "prefLabel": "",
+          "altLabel": [
+            ""
+          ],
+          "historyNote": [
+            ""
+          ],
+          "scopeNote": [""]
+        }
+      }
+    },
+    "children-Topic": {
+      "label": "Barnämnesord",
+      "description": "barn",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          },
+          "descriptionLanguage": {
+            "@id": "https://id.kb.se/language/swe"
+          },
+          "sourceConsulted": [
+            {
+              "@type": "SourceData",
+              "label": "",
+              "citationNote": ""
+            }
+          ]
+        },
+        "mainEntity": {
+          "@type": "Topic",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "inScheme": {
+            "@id": "https://id.kb.se/term/barn"
+          },
+          "prefLabel": "",
+          "altLabel": [
+            ""
+          ],
+          "broader": [],
+          "related": [],
+          "scopeNote": [
+            ""
+          ],
+          "historyNote": [
+            ""
+          ]
+        }
+      }
+    }
+  },
+  "other": {
+    "shelfMarkSequence": {
+      "label": "Signumsvit",
+      "description": "Signumsvit med automatiskt löpnummer",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        },
+        "mainEntity": {
+          "@type": "ShelfMarkSequence",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "description": "",
+          "shelfMarkStatus": "ActiveShelfMark",
+          "nextShelfControlNumber": 1,
+          "qualifier": ""
+        }
+      }
+    }
+  },
+  "messages": {
+    "inquiry": {
+      "label": "Förfrågan",
+      "description": "Länka till poster",
+      "@id": "inquiry",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        },
+        "mainEntity": {
+          "@type": "InquiryAction",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "descriptionCreator": null,
+          "comment": ""
+        }
+      }
+    },
+    "changeNotice": {
+      "label": "Ändringsmeddelande",
+      "description": "Länka till poster",
+      "@id": "changeNotice",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        },
+        "mainEntity": {
+          "@type": "ChangeNotice",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "descriptionCreator": null,
+          "comment": ""
+        }
+      }
+    },
+    "inquiryFlagged": {
+      "label": "Förfrågan",
+      "description": "Utgå från flaggade poster",
+      "@id": "inquiryFlagged",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        },
+        "mainEntity": {
+          "@type": "InquiryAction",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "descriptionCreator": null,
+          "concerning": [],
+          "comment": ""
+        }
+      }
+    },
+    "changeNoticeFlagged": {
+      "label": "Ändringsmeddelande",
+      "description": "Utgå från flaggade poster",
+      "@id": "changeNoticeFlagged",
+      "value": {
+        "record": {
+          "@id": "https://id.kb.se/TEMPID",
+          "@type": "Record",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        },
+        "mainEntity": {
+          "@type": "ChangeNotice",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "descriptionCreator": null,
+          "concerning": [],
+          "comment": ""
+        }
+      }
+    }
+  },
+  "bulk": {
+    "instance": {
+      "label": "✎ Instans",
+      "description": "Ändra instanser",
+      "@id": "instance",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
+              "@type": "Instance",
+              "bulk:matchingMode": ["bulk:Subtypes"]
+            },
+            "bulk:targetForm": {
+              "@type": "Instance"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "work": {
+      "label": "✎ Verk",
+      "description": "Ändra verk",
+      "@id": "work",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
+              "@type": "Work",
+              "bulk:matchingMode": ["bulk:Subtypes"]
+            },
+            "bulk:targetForm": {
+              "@type": "Work"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "agent": {
+      "label": "✎ Agent",
+      "description": "Ändra agenter",
+      "@id": "agent",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
+              "@type": "Agent",
+              "bulk:matchingMode": ["bulk:Subtypes"]
+            },
+            "bulk:targetForm": {
+              "@type": "Agent"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "concept": {
+      "label": "✎ Koncept",
+      "description": "Ändra koncept",
+      "@id": "concept",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
+              "@type": "Concept",
+              "bulk:matchingMode": ["bulk:Subtypes"]
+            },
+            "bulk:targetForm": {
+              "@type": "Concept"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "item": {
+      "label": "✎ Bestånd",
+      "description": "Ändra bestånd",
+      "@id": "item",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
+              "@type": "Item",
+              "bulk:matchingMode": ["bulk:Subtypes"]
+            },
+            "bulk:targetForm": {
+              "@type": "Item"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "resource": {
+      "label": "✎ Ospecificerad typ",
+      "description": "Ändra ospecificerad typ",
+      "@id": "resource",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Update",
+            "bulk:matchForm": {
+              "@type": "bulk:Any"
+            },
+            "bulk:targetForm": {
+              "@type": "bulk:Any"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "merge": {
+      "label": "Slå ihop",
+      "description": "Slå ihop entiteter",
+      "@id": "merge",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Merge",
+            "bulk:deprecate": null,
+            "bulk:keep": null
+          }
+        },
+        "quoted": {},
+        "record": {
+          "@type": "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeResource": {
+      "label": "\uD83D\uDDD1 Ospecificerad typ",
+      "description": "Radera ospecificerad typ",
+      "@id": "removeResource",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "bulk:Any"
+            }
+          }
+        },
+        "quoted": {},
+        "record": {
+          "@type": "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeAgent": {
+      "label": "\uD83D\uDDD1 Agent",
+      "description": "Radera agenter",
+      "@id": "removeAgent",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "Agent",
+              "bulk:matchingMode": ["bulk:Subtypes"]
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeItem": {
+      "label": "\uD83D\uDDD1 Bestånd",
+      "description": "Radera bestånd",
+      "@id": "removeItem",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "Item",
+              "bulk:matchingMode": ["bulk:Subtypes"]
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeInstance": {
+      "label": "\uD83D\uDDD1 Instans",
+      "description": "Radera instanser",
+      "@id": "removeInstance",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "Instance",
+              "bulk:matchingMode": ["bulk:Subtypes"]
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeConcept": {
+      "label": "\uD83D\uDDD1 Koncept",
+      "description": "Radera koncept",
+      "@id": "removeConcept",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "Concept",
+              "bulk:matchingMode": ["bulk:Subtypes"]
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeWork": {
+      "label": "\uD83D\uDDD1 Verk",
+      "description": "Radera verk",
+      "@id": "removeWork",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Delete",
+            "bulk:matchForm": {
+              "@type": "Work",
+              "bulk:matchingMode": ["bulk:Subtypes"]
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "createItem": {
+      "label": "+ Bestånd",
+      "description": "Skapa bestånd",
+      "@id": "createItem",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": true,
+          "bulk:changeSpec": {
+            "@type": "bulk:Create",
+            "bulk:targetForm": {
+              "@type": "Item"
+            }
+          }
+        },
+        "quoted" : {},
+        "record" : {
+          "@type" : "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    },
+    "removeSubdivision": {
+      "label": "Underindelning",
+      "description": "Radera underindelning för ämnesord",
+      "@id": "removeSubdivision",
+      "value": {
+        "mainEntity": {
+          "@type": "bulk:Job",
+          "@id": "https://id.kb.se/TEMPID#it",
+          "label": "",
+          "comment": "",
+          "bulk:status": "bulk:Draft",
+          "bulk:shouldUpdateModifiedTimestamp": false,
+          "bulk:changeSpec": {
+            "@type": "bulk:Other",
+            "bulk:script": "removeSubdivision",
+            "bulk:removeSubdivision": [],
+            "bulk:addTerm": null
+          }
+        },
+        "quoted": {},
+        "record": {
+          "@type": "Record",
+          "@id": "https://id.kb.se/TEMPID",
+          "mainEntity": {
+            "@id": "https://id.kb.se/TEMPID#it"
+          }
+        }
+      }
+    }
+  }
+}

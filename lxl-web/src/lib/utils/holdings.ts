@@ -1,8 +1,10 @@
 import { pushState } from '$app/navigation';
 import isFnurgel from '$lib/utils/isFnurgel';
 import { relativizeUrl } from '$lib/utils/http';
-import type { FramedData } from '$lib/types/xl';
-import type { bibIdObj } from '$lib/types/holdings';
+import { LensType, type FramedData } from '$lib/types/xl';
+import type { BibIdObj, HoldersByType, HoldingsByInstanceId } from '$lib/types/holdings';
+import { DisplayUtil, toString } from '$lib/utils/xl.js';
+import type { LocaleCode } from '$lib/i18n/locales';
 
 export function getHoldingsLink(url: URL, value: string) {
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
@@ -41,7 +43,11 @@ function sortHoldings(holdings) {
 	});
 }
 
-export function getHoldingsByInstanceId(mainEntity) {
+export function getHoldingsByInstanceId(
+	mainEntity,
+	displayUtil: DisplayUtil,
+	locale: LocaleCode
+): HoldingsByInstanceId {
 	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
 		const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
 		if (!id) {
@@ -49,12 +55,21 @@ export function getHoldingsByInstanceId(mainEntity) {
 		}
 		return {
 			...acc,
-			[id]: sortHoldings(instanceOfItem?.['@reverse']?.itemOf || [])
+			[id]: sortHoldings(instanceOfItem?.['@reverse']?.itemOf || []).map((holding) => {
+				return {
+					...holding,
+					heldBy: {
+						obj: displayUtil.lensAndFormat(holding.heldBy, LensType.Chip, locale),
+						sigel: holding.heldBy?.sigel,
+						str: toString(displayUtil.lensAndFormat(holding.heldBy, LensType.Chip, locale)) || ''
+					}
+				};
+			})
 		};
 	}, {});
 }
 
-export function getBibIdsByInstanceId(mainEntity, record): Record<string, bibIdObj> {
+export function getBibIdsByInstanceId(mainEntity, record): Record<string, BibIdObj> {
 	return mainEntity['@reverse']?.instanceOf?.reduce((acc, instanceOfItem) => {
 		const id = relativizeUrl(instanceOfItem['@id'])?.replace('#it', '');
 
@@ -117,4 +132,24 @@ export function getHoldingsByType(mainEntity: FramedData) {
 		};
 	}, {});
 	return sortedHoldingsByType;
+}
+
+export function getHoldersByType(
+	holdingsByType,
+	displayUtil: DisplayUtil,
+	locale: LocaleCode
+): HoldersByType {
+	return Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
+		const heldBys = holdings.map((holdingItem) => {
+			return {
+				obj: displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale),
+				sigel: holdingItem.heldBy.sigel,
+				str: toString(displayUtil.lensAndFormat(holdingItem.heldBy, LensType.Chip, locale)) || ''
+			};
+		});
+		const uniqueHeldBys = [
+			...new Map(heldBys.map((heldByItem) => [heldByItem.obj['@id'], heldByItem])).values()
+		];
+		return { ...acc, [type]: uniqueHeldBys };
+	}, {});
 }

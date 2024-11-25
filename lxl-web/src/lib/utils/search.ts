@@ -1,6 +1,12 @@
 import { DisplayUtil, isObject, toString, VocabUtil } from '$lib/utils/xl';
-
-import { type DisplayDecorated, type FramedData, type Link, LensType, JsonLd } from '$lib/types/xl';
+import {
+	type DisplayDecorated,
+	type FramedData,
+	type Link,
+	LensType,
+	JsonLd,
+	Base
+} from '$lib/types/xl';
 
 import {
 	type PartialCollectionView,
@@ -57,7 +63,15 @@ export async function asResult(
 			)
 		})),
 		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath),
-		predicates: displayPredicates(view, displayUtil, locale, usePath)
+		predicates: displayPredicates(view, displayUtil, locale, usePath),
+		_spell: view._spell
+			? view._spell.map((el) => {
+					return {
+						...el,
+						...{ view: replacePath(el.view, usePath) }
+					};
+				})
+			: []
 	};
 }
 
@@ -82,7 +96,9 @@ function displayMappings(
 					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
 					label: m.alias
 						? translate(`facet.${m.alias}`)
-						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) || m.property?.['@id'] || 'No label', // lensandformat?
+						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) ||
+							m.property?.['@id'] ||
+							'No label', // lensandformat?
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
@@ -94,8 +110,13 @@ function displayMappings(
 					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
 			} else if (m.object) {
+				const defaultType = { [JsonLd.TYPE]: Base.Resource };
 				return {
-					display: displayUtil.lensAndFormat(m.object, LensType.Chip, locale),
+					display: displayUtil.lensAndFormat(
+						{ ...defaultType, ...m.object },
+						LensType.Chip,
+						locale
+					),
 					label: '',
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) })
@@ -148,6 +169,7 @@ function displayFacetGroups(
 		return {
 			label: translate(`facet.${g.alias || g.dimension}`),
 			dimension: g.dimension,
+			maxItems: g.maxItems,
 			...('search' in g && { search: g.search }),
 			facets: g.observation.map((o) => {
 				return {
@@ -225,7 +247,8 @@ function replacePath(view: Link, usePath: string) {
 function capitalize(str: string | undefined) {
 	if (str && typeof str === 'string') {
 		return str[0].toUpperCase() + str.slice(1);
-	} return str;
+	}
+	return str;
 }
 
 export function shouldShowMapping(mapping: DisplayMapping[]) {

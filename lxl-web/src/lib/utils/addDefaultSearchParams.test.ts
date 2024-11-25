@@ -8,7 +8,8 @@ describe('addDefaultSearchParams', () => {
 				['_q', '*'],
 				['_limit', '20'],
 				['_offset', '0'],
-				['_sort', '']
+				['_sort', ''],
+				['_spell', 'true']
 			])
 		);
 	});
@@ -18,7 +19,8 @@ describe('addDefaultSearchParams', () => {
 				['_q', 'test'],
 				['_limit', '20'],
 				['_offset', '0'],
-				['_sort', '']
+				['_sort', ''],
+				['_spell', 'true']
 			])
 		);
 	});
@@ -28,7 +30,8 @@ describe('addDefaultSearchParams', () => {
 				['_offset', '30'],
 				['_q', '*'],
 				['_limit', '20'],
-				['_sort', '']
+				['_sort', ''],
+				['_spell', 'true']
 			])
 		);
 	});

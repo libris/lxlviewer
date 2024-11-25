@@ -161,7 +161,7 @@
 			{/if}
 		{:else}
 			{#if shouldShowContentBefore()}
-				<span class="_contentBefore">
+				<span class={`_contentBefore ${getStyleClasses(data)}`}>
 					{data._contentBefore}
 				</span>
 			{/if}
@@ -217,8 +217,12 @@
 			{:else}
 				{@const [propertyName, propertyData] = getProperty(data)}
 				{#if propertyName && propertyData}
-					<svelte:element this={getElementType(propertyData)} data-property={propertyName}>
-						{#if shouldShowLabels()}
+					<svelte:element
+						this={getElementType(propertyData)}
+						data-property={propertyName}
+						class={getStyleClasses(data)}
+					>
+						{#if shouldShowLabels() && typeof data._label === 'string'}
 							<svelte:element this={block ? 'div' : 'span'}>
 								<!-- Add inner span with inline-block to achieve first letter capitalization while still supporting inline whitespaces -->
 								<span
@@ -245,7 +249,7 @@
 				{/if}
 			{/if}
 			{#if shouldShowContentAfter()}
-				<span class="_contentAfter">
+				<span class={`_contentAfter ${getStyleClasses(data)}`}>
 					{data._contentAfter}
 				</span>
 			{/if}
@@ -257,18 +261,15 @@
 
 <style lang="postcss">
 	.definition {
-		@apply text-sm text-secondary underline decoration-dotted;
+		@apply underline decoration-dotted;
 	}
 
 	.pill {
-		@apply mb-1 mr-1 inline-block rounded-full bg-pill/8 px-3 py-1 no-underline;
-	}
-	a.pill {
-		@apply hover:bg-pill/16 focus:bg-pill/16;
+		@apply mb-1 mr-1 inline-block rounded-full border border-primary/8 px-3 py-1 no-underline;
 	}
 
-	.text-large {
-		@apply text-lg;
+	a.pill {
+		@apply border-primary/0 bg-pill/8 hover:bg-pill/16 focus:bg-pill/16;
 	}
 
 	.remainder {

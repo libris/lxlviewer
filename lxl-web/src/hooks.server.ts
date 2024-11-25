@@ -4,6 +4,7 @@ import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import fs from 'fs';
 import { DERIVED_LENSES } from '$lib/types/display';
 import displayWeb from '$lib/assets/json/display-web.json';
+import type { UserSettings } from '$lib/types/userSettings';
 
 let utilCache;
 
@@ -11,6 +12,18 @@ export const handle = async ({ event, resolve }) => {
 	const [vocabUtil, displayUtil] = await loadUtilCached();
 	event.locals.vocab = vocabUtil;
 	event.locals.display = displayUtil;
+
+	// Get the settings cookie
+	let userSettings: UserSettings;
+	const settingsCookie = event.cookies.get('userSettings');
+	if (settingsCookie) {
+		try {
+			userSettings = JSON.parse(settingsCookie);
+		} catch (e) {
+			console.warn('Failed to parse user settings', e);
+		}
+	}
+	event.locals.userSettings = userSettings;
 
 	// set HTML lang
 	// https://github.com/sveltejs/kit/issues/3091#issuecomment-1112589090

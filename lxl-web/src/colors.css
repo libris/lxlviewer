@@ -11,6 +11,7 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--color-beige: 247 246 242;
 	--color-pink: 239 214 189;
 	--color-dark-beige: 240 238 233;
+	--color-red: 187 54 54;
 
 	/* Fundament */
 	--color-primary: var(--color-brown);
@@ -19,6 +20,7 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--color-accent-light: var(--color-light-green);
 	--color-subtle: var(--color-beige);
 	--color-highlight: var(--color-pink);
+	--color-error: var(--color-red);
 
 	/* Text colors */
 	--text-primary: var(--color-primary);
@@ -26,6 +28,7 @@ see https://tailwindcss.com/docs/customizing-colors#using-css-variables */
 	--text-link: var(--color-primary);
 	--text-positive: var(--color-accent-dark);
 	--icon-default: var(--color-primary);
+	--text-error: var(--color-error);
 
 	/* Bg colors */
 	--bg-primary: var(--color-primary);

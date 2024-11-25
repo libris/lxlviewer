@@ -125,28 +125,39 @@
 				</a>
 				<span class="hits pt-4 text-secondary md:pt-0" role="status" data-testid="result-info">
 					{#if numHits && numHits > 0}
-						{#if numHits > searchResult.itemsPerPage}
+						<span class="hits-count">
+							{#if numHits > searchResult.itemsPerPage}
+								<span class="text-3-cond-bold">
+									{(searchResult.itemOffset + 1).toLocaleString($page.data.locale)}
+									-
+									{Math.min(
+										numHits,
+										searchResult.itemOffset + searchResult.itemsPerPage
+									).toLocaleString($page.data.locale)}
+								</span>
+								{$page.data.t('search.hitsOf')}
+							{/if}
 							<span class="text-3-cond-bold">
-								{(searchResult.itemOffset + 1).toLocaleString($page.data.locale)}
-								-
-								{Math.min(
-									numHits,
-									searchResult.itemOffset + searchResult.itemsPerPage
-								).toLocaleString($page.data.locale)}
+								{numHits.toLocaleString($page.data.locale)}
 							</span>
-							{$page.data.t('search.hitsOf')}
-						{/if}
-						<span class="text-3-cond-bold">
-							{numHits.toLocaleString($page.data.locale)}
+							{#if $page.data.instances}
+								{numHits == 1 ? $page.data.t('search.relatedOne') : $page.data.t('search.related')}
+							{/if}
+							{numHits == 1 ? $page.data.t('search.hitsOne') : $page.data.t('search.hits')}
 						</span>
-						{#if $page.data.instances}
-							{numHits == 1
-								? $page.data.t('search.relatedOne')
-								: $page.data.t('search.related')}
-						{/if}
-						{numHits == 1 ? $page.data.t('search.hitsOne') : $page.data.t('search.hits')}
 					{:else}
-						{$page.data.t('search.noResults')}
+						<span class="hits-count">{$page.data.t('search.noResults')}</span>
+					{/if}
+					{#if searchResult._spell.length > 0}
+						<span class="suggest">
+							{#each searchResult._spell as suggestion (suggestion.label)}
+								{$page.data.t('search.didYouMean')}
+								<a href={suggestion.view['@id'].replace('_spell=true', '_spell=false')}>
+									<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+									{@html suggestion.labelHtml}</a
+								>?
+							{/each}
+						</span>
 					{/if}
 				</span>
 				<div class="search-related flex justify-start">
@@ -190,7 +201,6 @@
 	</div>
 {/if}
 
-
 <style lang="postcss">
 	.toolbar {
 		@apply grid;
@@ -202,6 +212,12 @@
 
 	.toolbar.has-search {
 		@apply gap-4;
+	}
+
+	.toolbar:has(.suggest) {
+		& .hits-count::after {
+			content: '.';
+		}
 	}
 
 	.find-layout {
@@ -275,12 +291,5 @@
 	.tab-selected {
 		@apply border-primary pb-3.5;
 		border-bottom-width: 0.125rem;
-	}
-
-	@media screen and (min-width: theme('screens.lg')) {
-		.toolbar {
-			grid-template-areas: 'hits search-related sort-select';
-			grid-template-columns: auto minmax(auto, theme('screens.sm')) auto;
-		}
 	}
 </style>

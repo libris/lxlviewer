@@ -1,0 +1,17 @@
+{
+  "name": "lxlviewer",
+  "version": "1.0.0",
+  "private": "true",
+  "workspaces": [
+    "packages/*",
+    "lxl-web",
+    "lxljs"
+  ],
+  "devDependencies": {
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10"
+  },
+  "scripts": {
+    "prepare": "node .husky/install.mjs"
+  }
+}

@@ -8,6 +8,24 @@ title: 'Help'
 
 Here we will continuously provide information about newly added features and planned developments:
 
+### 2024-11-07
+
+- Cookie settings
+
+### 2024-10-14
+
+- Improvements in the filter panel, filter items can now be sorted by preference.
+- Bug fixes
+
+### 2024-09-09
+
+- Loan status information now shown in the library holdings list
+- Library list now contains more detailed information and search functionality
+- Spelling suggestions next to search result
+- Access and usage policy for cover images
+- Loading indicator
+- Bug fixes
+
 ### 2024-06-27
 
 - Changed default number of hits per page to 20

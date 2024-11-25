@@ -8,6 +8,24 @@ title: 'Hjälp'
 
 Här kommer vi kontinuerligt berätta om nytillkomna funktioner och planerad utveckling:
 
+### 2024-11-07
+
+- Inställningar för kakor
+
+### 2024-10-14
+
+- Generella förbättringar i filterpanelen, t.ex möjlighet att sortera innehållet.
+- Buggfixar
+
+### 2024-09-09
+
+- Lånestatus visas nu i listan över bibliotek som innehar en viss resurs
+- Mer detaljerad information om bibliotek och möjlighet att söka i bibliotekslistan
+- Stavningsförslag i anslutning till sökresultaten
+- Upphovsinformation för omslagsbilder
+- Laddningsindikator
+- Buggfixar
+
 ### 2024-06-27
 
 - Ändrat antal sökträffar per sida till 20

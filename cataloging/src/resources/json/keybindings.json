@@ -1,0 +1,26 @@
+{
+  "default": {
+    "mod+s": "save-item",
+    "mod+d": "save-item-done",
+    "mod+e": "edit-item",
+    "alt+q": "cancel-edit",
+    "alt+z": "undo",
+    "alt+plus": "expand-item",
+    "alt+p": "preview-marc",
+    "alt+h": "open-help",
+    "alt+i": "open-instances-window",
+    "±": "expand-item", 
+    "alt+minus": "collapse-item",
+    "alt+f": "open-field-adder",
+    "mod+shift+c": "duplicate-item",
+    "alt+shift+right": "admin-data-on",
+    "alt+shift+left": "admin-data-off",
+    "esc": "close-modals",
+    "alt+b": "add-holding",
+    "alt+s": "focus-main-search",
+    "alt+down": "next",
+    "alt+up": "previous",
+    "alt+right": "next-preview",
+    "alt+left": "previous-preview"
+  }
+}

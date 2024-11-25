@@ -1,0 +1,171 @@
+# Freetext words
+
+Astrid lindgren
+
+==>
+
+Query()
+
+
+# Freetext string
+
+"2001: A Space Odyssey"
+
+==>
+
+Query()
+
+
+# Freetext with Wildcard
+
+Astrid lind*
+
+==>
+
+Query(Wildcard)
+
+
+# Qualifier with EqualOperator
+
+ÅR:2024
+
+==>
+
+Query(
+  Qualifier(QualifierKey,EqualOperator,QualifierValue)
+)
+
+
+# Qualifier with CompareOperator
+
+ÅR>2024
+ÅR<=2024
+
+==>
+
+Query(
+  Qualifier(QualifierKey,CompareOperator,QualifierValue)
+  Qualifier(QualifierKey,CompareOperator,QualifierValue)
+)
+
+
+# Qualifier with string key
+
+"rdf:type":Text
+
+==>
+
+Query(
+  Qualifier(QualifierKey,EqualOperator,QualifierValue)
+)
+
+
+# Qualifier with string value
+
+contributor:"Astrid Lindgren"
+
+==>
+
+Query(
+  Qualifier(QualifierKey,EqualOperator,QualifierValue)
+)
+
+
+# Qualifier linked
+
+contributor:"libris:fcrtpljz1qp2bdv#it"
+
+==>
+
+Query(
+  Qualifier(QualifierKey,EqualOperator,QualifierValue)
+)
+
+
+# BooleanQuery
+
+sommar OR vinter NOT vår
+
+==>
+
+Query(
+  BooleanQuery(BooleanOperator,BooleanOperator)
+)
+
+
+# BooleanQuery - erroneous
+
+OR AND sommar
+
+==>
+
+Query(
+  ⚠(BooleanOperator),⚠(BooleanOperator)
+)
+
+
+# Combined: Qualifier and Freetext
+
+contributor:"Astrid Lindgren" Pippi Långstrump
+
+==>
+
+Query(
+  Qualifier(QualifierKey,EqualOperator,QualifierValue)
+)
+
+
+# Combined: Freetext BooleanQuery (Qualifier NOT Qualifier)
+
+träd* bibliografi:"sigel:DST" NOT typ:Text
+
+==>
+
+Query(
+  Wildcard,BooleanQuery(Qualifier(...),BooleanOperator,Qualifier(...))
+)
+
+
+# Combined: Freetext Qualifier (Group with BooleanQuery) Qualifier
+
+pippi långstrump språk:(engelska OR franska) ÅR>2002
+
+==>
+
+Query(
+  Qualifier(
+    QualifierKey,EqualOperator,QualifierValue(
+      Group(
+        BooleanQuery(BooleanOperator)
+      )
+    )
+  ),
+  Qualifier(...)
+)
+
+
+# Other filters: cover image
+
+image:*
+
+==>
+
+Query(Qualifier(...))
+
+
+# Other filters: include E-plikt
+
+Pippi includeEplikt
+
+==>
+
+Query(Qualifier)
+
+
+# Other filters: include preliminary
+
+includePreliminary Pippi
+
+==>
+
+Query(Qualifier)

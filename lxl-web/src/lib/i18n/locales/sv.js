@@ -15,7 +15,8 @@ export default {
 		contact: 'Kontakt',
 		feedback: 'Lämna synpunkter',
 		feedbackLink: 'https://survey.kb.se/librisbeta',
-		customerSupport: 'Libris kundtjänst'
+		customerSupport: 'Libris kundtjänst',
+		cookies: 'Hantera kakor'
 	},
 	facet: {
 		q: 'Fritextsökning',
@@ -57,7 +58,10 @@ export default {
 		nationality: 'Nationalitet/verksamhetsland',
 		hasOccupation: 'Har yrke eller sysselsättning',
 		fieldOfActivity: 'Verksamhetsområde',
-		boolFilters: 'Övrigt'
+		boolFilters: 'Övrigt',
+		limitInfo: 'Alla val kan ej visas',
+		limitText:
+			'Listan visar ett begränsat antal alternativ, de mest förekommande kopplade till din sökning. Prova att avgränsa din sökning för att få andra, mer relevanta alternativ.'
 	},
 	search: {
 		search: 'Sök',
@@ -65,7 +69,7 @@ export default {
 		loading: 'Laddar...',
 		findFilter: 'Hitta filter',
 		filters: 'Sökfilter',
-		activeFilters: 'Aktiva filter',
+		activeFilter: 'Aktivt filter',
 		selectedFilters: 'Valda filter',
 		clearFilters: 'Rensa',
 		editFilters: 'Redigera',
@@ -91,7 +95,8 @@ export default {
 		showDetails: 'Visa mer',
 		hideDetails: 'Visa mindre',
 		occursAs: 'förekommer som',
-		relatedSearchLabel: 'Sök i resultaten'
+		relatedSearchLabel: 'Sök i resultaten',
+		didYouMean: 'Menade du'
 	},
 	sort: {
 		sort: 'Sortera',
@@ -100,7 +105,11 @@ export default {
 		alphaDesc: 'Ö-A',
 		publicationAsc: 'Utgivningsår (äldst först)',
 		publicationDesc: 'Utgivningsår (nyast först)',
-		linksDesc: 'Mest länkad'
+		linksDesc: 'Mest länkad',
+		hitsAsc: 'Minst träffar',
+		hitsDesc: 'Flest träffar',
+		yearAsc: 'Äldst först',
+		yearDesc: 'Nyast först'
 	},
 	errors: {
 		somethingWentWrong: 'Något gick fel',
@@ -130,6 +139,7 @@ export default {
 		availableAt: 'Finns på',
 		library: 'bibliotek',
 		libraries: 'bibliotek',
+		findLibrary: 'Hitta bibliotek',
 		findAtYourNearestLibrary: 'Hitta på ditt närmaste bibliotek',
 		location: 'Placering',
 		shelf: 'Hylla',

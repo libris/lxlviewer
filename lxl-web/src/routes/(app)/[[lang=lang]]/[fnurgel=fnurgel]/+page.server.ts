@@ -8,7 +8,7 @@ import { LxlLens } from '$lib/types/display';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView, SearchResult } from '$lib/types/search.js';
 
-import { DisplayUtil, pickProperty, toString, VocabUtil, asArray } from '$lib/utils/xl.js';
+import { pickProperty, toString, asArray } from '$lib/utils/xl.js';
 import { getImages, toSecure } from '$lib/utils/auxd';
 import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams.js';
 import getSortedSearchParams from '$lib/utils/getSortedSearchParams.js';
@@ -17,13 +17,15 @@ import getAtPath from '$lib/utils/getAtPath';
 import {
 	getHoldingsByInstanceId,
 	getHoldingsByType,
+	getHoldersByType,
 	getBibIdsByInstanceId
 } from '$lib/utils/holdings.js';
 
 export const load = async ({ params, url, locals, fetch }) => {
-	const displayUtil: DisplayUtil = locals.display;
-	const vocabUtil: VocabUtil = locals.vocab;
+	const displayUtil = locals.display;
+	const vocabUtil = locals.vocab;
 	const locale = getSupportedLocale(params?.lang);
+	const userSettings = locals.userSettings;
 
 	let resourceId: null | string = null;
 	let searchPromise: Promise<SearchResult | null> | null = null;
@@ -60,16 +62,10 @@ export const load = async ({ params, url, locals, fetch }) => {
 	const sortedInstances = getSortedInstances([...instances]);
 
 	const images = getImages(mainEntity, locale).map((i) => toSecure(i, env.AUXD_SECRET));
-	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity);
+	const holdingsByInstanceId = getHoldingsByInstanceId(mainEntity, displayUtil, locale);
 	const bibIdsByInstanceId = getBibIdsByInstanceId(mainEntity, resource);
 	const holdingsByType = getHoldingsByType(mainEntity);
-	const holdersByType = Object.entries(holdingsByType).reduce((acc, [type, holdings]) => {
-		const heldBys = holdings.map((holdingItem) => holdingItem.heldBy);
-		const uniqueHeldBys = [
-			...new Map(heldBys.map((heldByItem) => [heldByItem['@id'], heldByItem])).values()
-		];
-		return { ...acc, [type]: uniqueHeldBys };
-	}, {});
+	const holdersByType = getHoldersByType(holdingsByType, displayUtil, locale);
 
 	return {
 		type: mainEntity[JsonLd.TYPE],
@@ -83,7 +79,8 @@ export const load = async ({ params, url, locals, fetch }) => {
 		holdersByType,
 		full: overview,
 		images,
-		searchResult: searchPromise ? await searchPromise : null
+		searchResult: searchPromise ? await searchPromise : null,
+		userSettings
 	};
 
 	async function getRelated() {

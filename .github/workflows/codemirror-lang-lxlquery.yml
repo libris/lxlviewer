@@ -1,0 +1,28 @@
+name: codemirror-lang-lxlquery
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'packages/codemirror-lang-lxlquery/**'
+  pull_request:
+    branches: [develop]
+    paths:
+      - 'packages/codemirror-lang-lxlquery/**'
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/codemirror-lang-lxlquery
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        env:
+          HUSKY: ${{ env.HUSKY }}
+        run: npm ci
+      - name: Run tests
+        run: npm run test

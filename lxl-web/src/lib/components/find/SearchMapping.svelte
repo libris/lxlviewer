@@ -132,6 +132,12 @@
 		}
 	}
 
+	.pill-equals {
+		:global(.text-secondary) {
+			@apply text-secondary-inv;
+		}
+	}
+
 	.pill-notEquals,
 	.pill-notExistence {
 		@apply bg-negative text-primary;

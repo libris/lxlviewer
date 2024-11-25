@@ -1,0 +1,28 @@
+.lxlq.qualifier {
+	color: green;
+}
+
+.lxlq.qualifier-key {
+	color: green;
+}
+
+.lxlq.qualifier-value {
+	color: green;
+}
+
+.lxlq.equal-operator,
+.lxlq.compare-operator {
+	color: darkolivegreen;
+}
+
+.lxlq.boolean-operator {
+	color: #935493;
+}
+
+.lxlq.boolean-query {
+	color: purple;
+}
+
+.lxlq.wildcard {
+	color: orange;
+}

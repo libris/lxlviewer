@@ -111,6 +111,10 @@
 						"keyword",
 						"termComponentList"
 					]
+				},
+				"Subdivision": {
+					"fresnel:extends": { "@id": "Subdivision-chips" },
+					"showProperties": ["fresnel:super", "inScheme", "inCollection", "scopeNote"]
 				}
 			}
 		},
@@ -131,6 +135,15 @@
 					"showProperties": [
 						{
 							"alternateProperties": ["prefLabel", "label", "termComponentList", "code"]
+						}
+					]
+				},
+				"Subdivision": {
+					"@id": "Subdivision-chips",
+					"@type": "fresnel:Lens",
+					"showProperties": [
+						{
+							"alternateProperties": ["prefLabel", "code"]
 						}
 					]
 				},
@@ -180,6 +193,29 @@
 						"version",
 						"marc:arrangedStatementForMusic",
 						"originDate"
+					]
+				},
+				"Library": {
+					"@id": "Library-chips",
+					"@type": "fresnel:Lens",
+					"showProperties": ["name", "qualifier"],
+					"classLensDomain": "Library"
+				},
+				"Bibliography": {
+					"@id": "Bibliography-chips",
+					"@type": "fresnel:Lens",
+					"showProperties": ["name", "qualifier"],
+					"classLensDomain": "Bibliography"
+				},
+				"Identifier": {
+					"@id": "Identifier-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Identifier",
+					"showProperties": [
+						{ "alternateProperties": ["value", "marc:hiddenValue"] },
+						"typeNote",
+						"hasNote",
+						"uri"
 					]
 				}
 			}
@@ -417,6 +453,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Contribution"],
 			"fresnel:propertyFormatDomain": ["role"],
+			"fresnel:propertyStyle": ["text-secondary", "text-sm"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",
@@ -461,7 +498,7 @@
 			"@id": "Identifier-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Identifier"],
-			"fresnel:resourceStyle": ["displayType()"]
+			"fresnel:resourceStyle": ["ext-link", "displayType()", "uriToId()"]
 		},
 		"contribution-format": {
 			"@id": "contribution-format",
@@ -473,7 +510,7 @@
 			"@id": "genreForm-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": ["genreForm"],
-			"fresnel:propertyStyle": ["pill", "nolabel"],
+			"fresnel:propertyStyle": ["nolabel"],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
@@ -502,7 +539,13 @@
 			"@id": "GenreForm-relations-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["GenreForm"],
-			"fresnel:propertyFormatDomain": ["narrower", "closeMatch", "broader", "hasVariant"],
+			"fresnel:propertyFormatDomain": [
+				"narrower",
+				"closeMatch",
+				"broader",
+				"hasVariant",
+				"related"
+			],
 			"fresnel:valueFormat": {
 				"fresnel:contentBefore": "",
 				"fresnel:contentFirst": ""
@@ -512,6 +555,12 @@
 			"@id": "Subject-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Subject"],
+			"fresnel:resourceStyle": ["link"]
+		},
+		"Subdivision-format": {
+			"@id": "Subdivision-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Subdivision"],
 			"fresnel:resourceStyle": ["link"]
 		},
 		"Instance-format": {
@@ -651,6 +700,40 @@
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": ". — ",
 				"fresnel:contentFirst": ""
+			}
+		},
+		"Collection-qualifier-format": {
+			"@id": "Collection-qualifier-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Collection"],
+			"fresnel:propertyFormatDomain": ["qualifier"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": ", ",
+				"fresnel:contentFirst": "",
+				"fresnel:contentAfter": "",
+				"fresnel:contentLast": ""
+			}
+		},
+		"Collection-sigel-format": {
+			"@id": "Collection-sigel-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Collection"],
+			"fresnel:propertyFormatDomain": ["sigel"],
+			"fresnel:propertyStyle": ["text-secondary", "text-sm"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " (",
+				"fresnel:contentFirst": "(",
+				"fresnel:contentAfter": ")",
+				"fresnel:contentLast": ")"
+			}
+		},
+		"hasReproduction-format": {
+			"@id": "hasReproduction-format",
+			"@type": "fresnel:Format",
+			"fresnel:propertyFormatDomain": ["hasReproduction", "hasTitle"],
+			"fresnel:propertyStyle": ["block"],
+			"fresnel:valueFormat": {
+				"fresnel:contentBefore": ""
 			}
 		},
 		"default-separators": {

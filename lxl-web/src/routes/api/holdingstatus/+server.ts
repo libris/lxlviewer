@@ -20,6 +20,7 @@ function replaceChars(data: Response) {
 		.replaceAll('Ã\\?', 'Ö')
 		.replaceAll('Ã„', 'Ä')
 		.replaceAll('Ã¶', 'ö')
+		.replaceAll('&quot;', '\\"')
 		.replaceAll('Ã©', 'é');
 
 	return JSON.parse(d);

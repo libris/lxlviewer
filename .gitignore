@@ -1,5 +1,5 @@
 # Local App Config
-vue-client/.env.development*
+cataloging/.env.development*
 
 # Common OS, Tool and Editor Files
 .vscode/*
@@ -8,3 +8,9 @@ vue-client/.env.development*
 npm-debug.log
 selenium-debug.log
 .idea
+node_modules
+
+# Environment variables
+.env
+.env.*
+!.env.example
