@@ -42,6 +42,18 @@
 			q = q.trim();
 		}
 	}
+
+	function handlePaginationQuery(searchParams: URLSearchParams, prevData: unknown) {
+		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
+		const limit = parseInt(searchParams.get('_limit')!, 10);
+		const offset = limit + parseInt(searchParams.get('_offset') || '0', 10);
+
+		if (prevData && offset < prevData.totalItems) {
+			paginatedSearchParams.set('_offset', offset.toString());
+			return paginatedSearchParams;
+		}
+		return undefined;
+	}
 </script>
 
 <form class="relative w-full" action="find" on:submit={handleSubmit}>
@@ -51,7 +63,20 @@
 			bind:value={q}
 			language={lxlQuery}
 			placeholder={$page.data.t('search.search')}
-		/>
+			endpoint={'/api/supersearch'}
+			queryFn={(query) =>
+				new URLSearchParams({
+					_q: query,
+					_limit: '10'
+				})}
+			paginationQueryFn={handlePaginationQuery}
+		>
+			{#snippet resultItem(item)}
+				<button type="button">
+					<h2>{item.heading}</h2>
+				</button>
+			{/snippet}
+		</SuperSearch>
 	{:else}
 		<!-- svelte-ignore a11y-autofocus -->
 		<input
