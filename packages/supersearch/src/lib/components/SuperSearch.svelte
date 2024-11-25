@@ -16,6 +16,7 @@
 		placeholder?: string;
 		endpoint: string;
 		queryFn?: QueryFunction;
+		debouncedWait?: number;
 	}
 
 	let {
@@ -25,7 +26,8 @@
 		language,
 		placeholder = '',
 		endpoint,
-		queryFn = (value) => new URLSearchParams({ q: value })
+		queryFn = (value) => new URLSearchParams({ q: value }),
+		debouncedWait
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -37,12 +39,13 @@
 
 	let search = useSearchRequest({
 		endpoint,
-		queryFn
+		queryFn,
+		debouncedWait
 	});
 
 	$effect(() => {
 		if (value) {
-			search.fetchData(value);
+			search.debouncedFetchData(value);
 		}
 	});
 

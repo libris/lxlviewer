@@ -1,11 +1,14 @@
 import type { QueryFunction } from '$lib/types/superSearch.js';
+import debounce from '$lib/utils/debounce.js';
 
 export function useSearchRequest({
 	endpoint,
-	queryFn
+	queryFn,
+	debouncedWait
 }: {
 	endpoint: string;
 	queryFn: QueryFunction;
+	debouncedWait?: number;
 }) {
 	let isLoading = $state(false);
 	let error: string | undefined = $state();
@@ -29,8 +32,11 @@ export function useSearchRequest({
 		}
 	}
 
+	const debouncedFetchData = debounce((query: string) => fetchData(query), debouncedWait);
+
 	return {
 		fetchData,
+		debouncedFetchData,
 		get isLoading() {
 			return isLoading;
 		},
