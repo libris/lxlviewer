@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 
-	let range = $props();
+	let { range } = $props();
 	// FIX: no hardcoded _q
 	let removeUrl = $derived.by(() => {
 		const url = new URL($page.url);
