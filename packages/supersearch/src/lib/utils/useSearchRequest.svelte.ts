@@ -25,12 +25,19 @@ export function useSearchRequest({
 	let moreSearchParams: URLSearchParams | undefined = $state();
 	const hasMorePaginatedData = $derived(!!moreSearchParams);
 
+	let controller: AbortController;
+
 	async function _fetchData(searchParams: URLSearchParams) {
 		try {
 			isLoading = true;
 			error = undefined;
 
-			const response = await fetch(`${endpoint}?${searchParams.toString()}`);
+			controller?.abort();
+			controller = new AbortController();
+
+			const response = await fetch(`${endpoint}?${searchParams.toString()}`, {
+				signal: controller.signal
+			});
 			const jsonResponse = await response.json();
 
 			const _data = transformFn?.(jsonResponse) || jsonResponse;
