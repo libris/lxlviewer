@@ -37,7 +37,7 @@
 			name="q"
 			bind:value={value1}
 			{placeholder}
-			endpoint={PUBLIC_ENDPOINT_URL}
+			endpoint={new URL(PUBLIC_ENDPOINT_URL)}
 			queryFn={(query) =>
 				new URLSearchParams({
 					_q: query,

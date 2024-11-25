@@ -12,7 +12,7 @@ export function useSearchRequest({
 	transformFn,
 	debouncedWait
 }: {
-	endpoint: string;
+	endpoint: string | URL;
 	queryFn: QueryFunction;
 	paginationQueryFn?: PaginationQueryFunction;
 	transformFn?: TransformFunction;

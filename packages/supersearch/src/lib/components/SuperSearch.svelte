@@ -20,7 +20,7 @@
 		form?: string;
 		language?: LanguageSupport;
 		placeholder?: string;
-		endpoint: string;
+		endpoint: string | URL;
 		queryFn?: QueryFunction;
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
