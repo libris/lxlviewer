@@ -24,16 +24,24 @@ export function useSearchRequest({
 	let paginatedData = $state();
 	let moreSearchParams: URLSearchParams | undefined = $state();
 	const hasMorePaginatedData = $derived(!!moreSearchParams);
+	let controller: AbortController;
 
 	async function _fetchData(searchParams: URLSearchParams) {
 		try {
 			isLoading = true;
 			error = undefined;
 
-			const response = await fetch(`${endpoint}?${searchParams.toString()}`);
-			const jsonResponse = await response.json();
+			controller?.abort();
+			controller = new AbortController();
 
-			return transformFn?.(jsonResponse) || jsonResponse;
+			const response = await fetch(`${endpoint}?${searchParams.toString()}`, {
+				signal: controller.signal
+			});
+			const jsonResponse = await response.json();
+			const _data = transformFn?.(jsonResponse) || jsonResponse;
+			moreSearchParams = paginationQueryFn?.(searchParams, _data);
+
+			return _data;
 		} catch (err) {
 			if (err instanceof Error) {
 				error = 'Failed to fetch data: ' + err.message;
@@ -48,16 +56,17 @@ export function useSearchRequest({
 	async function fetchData(query: string) {
 		const searchParams = queryFn(query);
 		data = await _fetchData(searchParams);
-		moreSearchParams = paginationQueryFn?.(searchParams, data);
+		if (paginationQueryFn) {
+			paginatedData = [data];
+		}
 	}
 
 	const debouncedFetchData = debounce((query: string) => fetchData(query), debouncedWait);
 
 	async function fetchMoreData() {
-		if (data && moreSearchParams) {
-			const moreData = await _fetchData(moreSearchParams);
-			paginatedData = [...((Array.isArray(paginatedData) && paginatedData) || [data]), moreData];
-			moreSearchParams = paginationQueryFn?.(moreSearchParams, data);
+		if (moreSearchParams) {
+			const fetchedData = await _fetchData(moreSearchParams);
+			paginatedData = [...((Array.isArray(paginatedData) && paginatedData) || []), fetchedData];
 		}
 	}
 
