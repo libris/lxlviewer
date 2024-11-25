@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+	import { page } from '$app/stores';
 
-  let range = $props();
-  	// FIX: no hardcoded _q
+	let range = $props();
+	// FIX: no hardcoded _q
 	let removeUrl = $derived.by(() => {
 		const url = new URL($page.url);
 		const _q = $page.url.searchParams.get('_q');
@@ -11,8 +11,8 @@
 		}
 		return url;
 	});
-
 </script>
+
 <span class="qualifier-remove">
 	<a href={removeUrl.toString()} tabindex="-1">
 		<!-- <IconClose style="font-size:14px;" /> -->
@@ -20,10 +20,9 @@
 	</a>
 </span>
 
-
 <style>
 	.qualifier-remove {
-		padding: 0 5px;
 		display: inline-flex;
+		padding: 0 5px;
 	}
 </style>

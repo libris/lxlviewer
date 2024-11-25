@@ -14,7 +14,7 @@
 		ResultItem
 	} from '$lib/types/superSearch.js';
 	import { qualifierPlugin } from '$lib/extensions/qualifierPlugin.js';
-	import { defaultKeymap } from "@codemirror/commands";
+	import { defaultKeymap } from '@codemirror/commands';
 
 	interface Props {
 		name: string;
@@ -63,8 +63,7 @@
 	});
 
 	const extensions = [
-		// For atomic ranges to work. TODO customize
-		keymap.of(defaultKeymap),
+		keymap.of(defaultKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		submitFormOnEnterKey(form),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
