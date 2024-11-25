@@ -4,6 +4,18 @@
 	let value1 = $state('');
 	let value2 = $state('');
 	let placeholder = $state('Search');
+
+	function handleTransform(data: unknown) {
+		return {
+			'@id': data['@id'],
+			totalItems: data.totalItems,
+			items: data.items.map((item) => ({
+				'@id': item?.['@id'],
+				heading: `${item?.hasTitle?.[0]?.mainTitle}`
+			})),
+			'@context': data['@context']
+		};
+	}
 </script>
 
 <form action="test1">
@@ -19,6 +31,7 @@
 					_q: query,
 					_limit: '10'
 				})}
+			transformFn={handleTransform}
 		/>
 	</fieldset>
 </form>

@@ -1,13 +1,15 @@
-import type { QueryFunction } from '$lib/types/superSearch.js';
+import type { QueryFunction, TransformFunction } from '$lib/types/superSearch.js';
 import debounce from '$lib/utils/debounce.js';
 
 export function useSearchRequest({
 	endpoint,
 	queryFn,
+	transformFn,
 	debouncedWait
 }: {
 	endpoint: string;
 	queryFn: QueryFunction;
+	transformFn?: TransformFunction;
 	debouncedWait?: number;
 }) {
 	let isLoading = $state(false);
@@ -20,7 +22,9 @@ export function useSearchRequest({
 			error = undefined;
 
 			const response = await fetch(`${endpoint}?${queryFn(query).toString()}`);
-			data = await response.json();
+			const jsonResponse = await response.json();
+
+			data = transformFn?.(jsonResponse) || jsonResponse;
 		} catch (err) {
 			if (err instanceof Error) {
 				error = 'Failed to fetch data: ' + err.message;

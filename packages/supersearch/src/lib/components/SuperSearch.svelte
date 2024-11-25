@@ -6,7 +6,7 @@
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
 	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
-	import type { QueryFunction } from '$lib/types/superSearch.js';
+	import type { QueryFunction, TransformFunction } from '$lib/types/superSearch.js';
 
 	interface Props {
 		name: string;
@@ -16,6 +16,7 @@
 		placeholder?: string;
 		endpoint: string;
 		queryFn?: QueryFunction;
+		transformFn?: TransformFunction;
 		debouncedWait?: number;
 	}
 
@@ -27,7 +28,8 @@
 		placeholder = '',
 		endpoint,
 		queryFn = (value) => new URLSearchParams({ q: value }),
-		debouncedWait
+		debouncedWait,
+		transformFn
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -40,6 +42,7 @@
 	let search = useSearchRequest({
 		endpoint,
 		queryFn,
+		transformFn,
 		debouncedWait
 	});
 
