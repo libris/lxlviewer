@@ -34,7 +34,7 @@
 			paginationQueryFn={handlePaginationQuery}
 		>
 			{#snippet resultItem(item)}
-				<button type="button" class="result-item">
+				<button type="button" data-test-id="result-item">
 					<h2>{item.heading}</h2>
 				</button>
 			{/snippet}
@@ -59,7 +59,7 @@
 			paginationQueryFn={handlePaginationQuery}
 		>
 			{#snippet resultItem(item)}
-				<button type="button" class="result-item">
+				<button type="button" class="result-item" data-test-id="result-item">
 					<h2>{item.heading}</h2>
 				</button>
 			{/snippet}

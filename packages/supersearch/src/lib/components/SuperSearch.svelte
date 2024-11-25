@@ -151,7 +151,9 @@
 		{#if search.isLoading}
 			Loading...
 		{:else if search.hasMorePaginatedData}
-			<button type="button" onclick={search.fetchMoreData}>Load more</button>
+			<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+				Load more
+			</button>
 		{/if}
 	</nav>
 </dialog>
