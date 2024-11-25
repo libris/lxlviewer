@@ -3,15 +3,16 @@ export type PaginationQueryFunction = (
 	searchParams: URLSearchParams,
 	data?: unknown
 ) => URLSearchParams | undefined;
-export type TransformFunction = (data: unknown) => SearchQueryResult;
+export type TransformFunction = (data: unknown) => unknown;
 
 export interface ResultItem {
-	id: string;
+	'@id'?: string;
 	heading: string;
 }
 
-export interface SearchQueryResult {
+export interface QueryResponse {
 	'@id'?: string;
 	context?: string;
 	items: ResultItem[];
+	totalItems: number;
 }
