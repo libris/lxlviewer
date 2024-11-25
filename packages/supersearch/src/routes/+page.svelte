@@ -1,32 +1,20 @@
 <script lang="ts">
 	import SuperSearch from '$lib/components/SuperSearch.svelte';
-	import { PUBLIC_ENDPOINT_URL } from '$env/static/public';
+	import type { MockQueryResponse } from './api/find/+server.js';
 
 	let value1 = $state('');
 	let value2 = $state('');
 	let placeholder = $state('Search');
 
-	function handlePaginationQuery(searchParams: URLSearchParams, prevData: unknown) {
+	function handlePaginationQuery(searchParams: URLSearchParams, prevData: MockQueryResponse) {
 		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
 		const limit = parseInt(searchParams.get('_limit')!, 10);
 		const offset = limit + parseInt(searchParams.get('_offset') || '0', 10);
-		if (offset < prevData?.totalItems) {
+		if (prevData && offset < prevData.totalItems) {
 			paginatedSearchParams.set('_offset', offset.toString());
 			return paginatedSearchParams;
 		}
 		return undefined;
-	}
-
-	function handleTransform(data: unknown) {
-		return {
-			'@id': data['@id'],
-			totalItems: data.totalItems,
-			items: data.items.map((item) => ({
-				'@id': item?.['@id'],
-				heading: `${item?.hasTitle?.[0]?.mainTitle}`
-			})),
-			'@context': data['@context']
-		};
 	}
 </script>
 
@@ -37,14 +25,13 @@
 			name="q"
 			bind:value={value1}
 			{placeholder}
-			endpoint={new URL(PUBLIC_ENDPOINT_URL)}
+			endpoint="/api/find"
 			queryFn={(query) =>
 				new URLSearchParams({
 					_q: query,
 					_limit: '10'
 				})}
 			paginationQueryFn={handlePaginationQuery}
-			transformFn={handleTransform}
 		>
 			{#snippet resultItem(item)}
 				<button type="button" class="result-item">
@@ -63,7 +50,7 @@
 			bind:value={value2}
 			{placeholder}
 			form="form-outside"
-			endpoint={'/api/find'}
+			endpoint="/api/find"
 			queryFn={(query) =>
 				new URLSearchParams({
 					_q: query,

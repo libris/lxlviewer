@@ -1,3 +1,4 @@
+import type { QueryResponse, ResultItem } from '$lib/types/superSearch.js';
 import type { RequestHandler } from './$types.ts';
 import { json } from '@sveltejs/kit';
 
@@ -22,3 +23,9 @@ export const GET: RequestHandler = async ({ url }) => {
 		totalItems: MAX_ITEMS
 	});
 };
+
+export interface MockQueryResponse extends QueryResponse {
+	'@id'?: string;
+	items: ResultItem[];
+	totalItems: number;
+}
