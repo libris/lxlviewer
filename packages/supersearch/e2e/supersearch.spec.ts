@@ -84,4 +84,8 @@ test('fetches and displays paginated results', async ({ page }) => {
 	await page.locator('.supersearch-show-more').click();
 	await expect(page.locator('[data-test-id="result-item"]')).toHaveCount(30);
 	await expect(page.locator('.supersearch-show-more')).not.toBeAttached();
+	await expect(
+		page.locator('[data-test-id="result-item"]').first(),
+		'to tranform data using transformFn if available'
+	).toHaveText('Heading 1 for "Hello"');
 });

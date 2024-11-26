@@ -24,7 +24,7 @@
 			...rest,
 			items: items.map((item) => ({
 				...item,
-				heading: `${item.heading} for ${value1}`
+				heading: `${item.heading} for "${value1}"`
 			}))
 		};
 	}
