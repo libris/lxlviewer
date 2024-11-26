@@ -12,6 +12,8 @@ export const GET: RequestHandler = async ({ url }) => {
 	const limit = parseInt(url.searchParams.get('_limit')!, 10);
 	const offset = parseInt(url.searchParams.get('_offset') || '0', 10);
 
+	await new Promise((resolve) => setTimeout(resolve, 200));
+
 	return json({
 		'@id': `/api/find?${url.searchParams.toString()}`,
 		items: MOCK_ITEMS_DATA.slice(offset, offset + limit).map((item) => ({
