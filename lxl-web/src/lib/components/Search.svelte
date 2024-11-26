@@ -73,7 +73,7 @@
 		>
 			{#snippet resultItem(item)}
 				<button type="button">
-					<h2>{item.heading}</h2>
+					<h2>{item?.heading}</h2>
 				</button>
 			{/snippet}
 		</SuperSearch>
