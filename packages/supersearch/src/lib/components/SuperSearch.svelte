@@ -1,10 +1,18 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
 	import { Compartment } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
+	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
+	import type {
+		QueryFunction,
+		PaginationQueryFunction,
+		TransformFunction,
+		ResultItem
+	} from '$lib/types/superSearch.js';
 
 	interface Props {
 		name: string;
@@ -12,9 +20,25 @@
 		form?: string;
 		language?: LanguageSupport;
 		placeholder?: string;
+		endpoint: string | URL;
+		queryFn?: QueryFunction;
+		paginationQueryFn?: PaginationQueryFunction;
+		transformFn?: TransformFunction;
+		resultItem?: Snippet<[ResultItem]>;
 	}
 
-	let { name, value = $bindable(''), form, language, placeholder = '' }: Props = $props();
+	let {
+		name,
+		value = $bindable(''),
+		form,
+		language,
+		placeholder = '',
+		endpoint,
+		queryFn = (value) => new URLSearchParams({ q: value }),
+		paginationQueryFn,
+		transformFn,
+		resultItem = fallbackResultItem
+	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
 	let expandedEditorView: EditorView | undefined = $state();
@@ -22,6 +46,19 @@
 
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
+
+	let search = useSearchRequest({
+		endpoint,
+		queryFn,
+		paginationQueryFn,
+		transformFn
+	});
+
+	$effect(() => {
+		if (value) {
+			search.debouncedFetchData(value);
+		}
+	});
 
 	const extensions = [
 		submitFormOnEnterKey(form),
@@ -76,6 +113,10 @@
 	});
 </script>
 
+{#snippet fallbackResultItem(item: ResultItem)}
+	{JSON.stringify(item)}
+{/snippet}
+
 <CodeMirror
 	{value}
 	{extensions}
@@ -93,4 +134,34 @@
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
+	<nav>
+		{#if search.data}
+			{@const resultItems =
+				(Array.isArray(search.paginatedData) &&
+					search.paginatedData.map((page) => page.items).flat()) ||
+				search.data?.items}
+			<ul>
+				{#each resultItems as item}
+					<li>
+						{@render resultItem?.(item)}
+					</li>
+				{/each}
+			</ul>
+		{/if}
+		{#if search.isLoading}
+			Loading...
+		{:else if search.hasMorePaginatedData}
+			<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+				Load more
+			</button>
+		{/if}
+	</nav>
 </dialog>
+
+<style>
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+</style>

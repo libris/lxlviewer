@@ -68,3 +68,24 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 		'text selection should be synced'
 	).toBe('Hello world');
 });
+
+test('fetches and displays paginated results', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('textbox')
+		.locator('div')
+		.fill('Hello');
+	await expect(page.locator('[data-test-id="result-item"]').first()).toContainText('Heading 1');
+	await expect(page.locator('[data-test-id="result-item"]')).toHaveCount(10);
+	await page.locator('.supersearch-show-more').click(); // show more button will probably be removed in favour of automatic fetching when the user scrolls to the end
+	await expect(page.locator('[data-test-id="result-item"]')).toHaveCount(20);
+	await page.locator('.supersearch-show-more').click();
+	await expect(page.locator('[data-test-id="result-item"]')).toHaveCount(30);
+	await expect(page.locator('.supersearch-show-more')).not.toBeAttached();
+	await expect(
+		page.locator('[data-test-id="result-item"]').first(),
+		'to tranform data using transformFn if available'
+	).toHaveText('Heading 1 for "Hello"');
+});

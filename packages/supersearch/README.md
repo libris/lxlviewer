@@ -16,13 +16,19 @@ To use `supersearch` in a non-Svelte project ...
 
 ## Properties
 
-| Property      | Type              | Description                                                       | Default value |
-| ------------- | ----------------- | ----------------------------------------------------------------- | ------------- |
-| `name`        | `string`          | A string specifying a name for the form control.                  | `undefined`   |
-| `value`       | `string`          | The value that will be displayed and edited inside the component. | `""`          |
-| `form`        | `string`          | A string matching the `id` of a `<form>` element.                 | `undefined`   |
-| `language`    | `LanguageSupport` | The language extension that will parse and highlight the value.   | `undefined`   |
-| `placeholder` | `string`          | A brief hint which is shown when value is empty.                  | `""`          |
+| Property            | Type                      | Description                                                                                           | Default value |
+| ------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------- | ------------- |
+| `name`              | `string`                  | A string specifying a name for the form control.                                                      | `undefined`   |
+| `value`             | `string`                  | The value that will be displayed and edited inside the component.                                     | `""`          |
+| `form`              | `string`                  | A string matching the `id` of a `<form>` element.                                                     | `undefined`   |
+| `language`          | `LanguageSupport`         | The language extension that will parse and highlight the value.                                       | `undefined`   |
+| `placeholder`       | `string`                  | A brief hint which is shown when value is empty.                                                      | `""`          |
+| `endpoint`          | `string` or `URL`         | The endpoint from which the component should fetch data from (used together with `queryFn`).          | `undefined`   |
+| `queryFn`           | `QueryFunction`           | A function that converts `value` to `URLSearchParams` (which will be appended to the endpoint).       | `undefined`   |
+| `paginationQueryFn` | `PaginationQueryFunction` | A function which should return `URLSearchParams` used for querying more paginated data (if available) | `undefined`   |
+| `transformFn`       | `TransformFunction`       | A generic helper function which can be used to transform data fetched from the endpoint.              | `undefined`   |
+| `resultItem`        | `Snippet<[ResultItem]>`   | A [Snippet](https://svelte.dev/docs/svelte/snippet) used for customized rendering of result items.    | `undefined`   |
+| `debouncedWait`     | `number`                  | The wait time, in milliseconds that debounce function should wait between invocated search queries.   | `300`         |
 
 ## Developing
 
