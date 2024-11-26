@@ -3,6 +3,7 @@ import type {
 	PaginationQueryFunction,
 	TransformFunction
 } from '$lib/types/superSearch.js';
+import type { JSONValue } from '$lib/types/json.js';
 import debounce from '$lib/utils/debounce.js';
 
 export function useSearchRequest({
@@ -38,7 +39,7 @@ export function useSearchRequest({
 			const response = await fetch(`${endpoint}?${searchParams.toString()}`, {
 				signal: controller.signal
 			});
-			const jsonResponse = await response.json();
+			const jsonResponse = (await response.json()) as JSONValue;
 
 			const _data = transformFn?.(jsonResponse) || jsonResponse;
 			moreSearchParams = paginationQueryFn?.(searchParams, _data);

@@ -1,20 +1,32 @@
 <script lang="ts">
 	import SuperSearch from '$lib/components/SuperSearch.svelte';
+	import type { JSONValue } from '$lib/types/json.js';
 	import type { MockQueryResponse } from './api/find/+server.js';
 
 	let value1 = $state('');
 	let value2 = $state('');
 	let placeholder = $state('Search');
 
-	function handlePaginationQuery(searchParams: URLSearchParams, prevData: MockQueryResponse) {
+	function handlePaginationQuery(searchParams: URLSearchParams, prevData: JSONValue) {
 		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
 		const limit = parseInt(searchParams.get('_limit')!, 10);
 		const offset = limit + parseInt(searchParams.get('_offset') || '0', 10);
-		if (prevData && offset < prevData.totalItems) {
+		if (prevData && offset < (prevData as unknown as MockQueryResponse).totalItems) {
 			paginatedSearchParams.set('_offset', offset.toString());
 			return paginatedSearchParams;
 		}
 		return undefined;
+	}
+
+	function handleTransform(data: JSONValue) {
+		const { items, ...rest } = data as unknown as MockQueryResponse;
+		return {
+			...rest,
+			items: items.map((item) => ({
+				...item,
+				heading: `${item.heading} for ${value1}`
+			}))
+		};
 	}
 </script>
 
@@ -32,6 +44,7 @@
 					_limit: '10'
 				})}
 			paginationQueryFn={handlePaginationQuery}
+			transformFn={handleTransform}
 		>
 			{#snippet resultItem(item)}
 				<button type="button" data-test-id="result-item">
