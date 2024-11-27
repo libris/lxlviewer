@@ -34,7 +34,8 @@ class RemoveWidget extends WidgetType {
 		container.style.cssText = `position: relative;`;
 		mount(QualifierRemove, {
 			props: {
-				range: this.range
+				range: this.range,
+				url: new URL(window?.location.href)
 			},
 			target: container
 		});

@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	interface Props {
+		range: { from: number; to: number };
+		url: URL;
+	}
 
-	let { range } = $props();
+	let { range, url }: Props = $props();
 	// FIX: no hardcoded _q
 	let removeUrl = $derived.by(() => {
-		const url = new URL($page.url);
-		const _q = $page.url.searchParams.get('_q');
+		const _q = url.searchParams.get('_q');
 		if (_q) {
 			url.searchParams.set('_q', _q.slice(0, range.from) + _q.slice(range.to));
 		}
