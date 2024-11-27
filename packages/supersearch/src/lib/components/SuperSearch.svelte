@@ -13,7 +13,7 @@
 		TransformFunction,
 		ResultItem
 	} from '$lib/types/superSearch.js';
-	import { qualifierPlugin } from '$lib/extensions/qualifierPlugin.js';
+	import { qualifierPlugin } from '$lib/extensions/qualifierPlugin/index.js';
 	import { standardKeymap } from '@codemirror/commands';
 
 	interface Props {

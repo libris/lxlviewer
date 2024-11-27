@@ -6,16 +6,11 @@ import {
 	WidgetType,
 	type DecorationSet
 } from '@codemirror/view';
-import {
-	EditorState,
-	Transaction,
-	type Range,
-	type TransactionSpec
-} from '@codemirror/state';
+import { EditorState, Transaction, type Range, type TransactionSpec } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount } from 'svelte';
-import QualifierRemove from '$lib/components/QualifierRemove.svelte';
-import QualifierKey from '$lib/components/QualifierKey.svelte';
+import QualifierRemove from './QualifierRemove.svelte';
+import QualifierKey from './QualifierKey.svelte';
 
 export type Qualifier = {
 	key: string;
