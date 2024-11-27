@@ -2,7 +2,7 @@
 	import { env } from '$env/dynamic/public';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
-	import { SuperSearch } from 'supersearch';
+	import { SuperSearch, qualifierPlugin } from 'supersearch';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import BiSearch from '~icons/bi/search';
@@ -70,6 +70,7 @@
 					_limit: '10'
 				})}
 			paginationQueryFn={handlePaginationQuery}
+			extensions={[qualifierPlugin]}
 		>
 			{#snippet resultItem(item)}
 				<button type="button">

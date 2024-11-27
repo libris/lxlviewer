@@ -167,3 +167,5 @@ export const qualifierPlugin = ViewPlugin.fromClass(
 		]
 	}
 );
+
+export default qualifierPlugin;
