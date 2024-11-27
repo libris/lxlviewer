@@ -100,4 +100,20 @@
 			font-size: inherit;
 		}
 	}
+
+	:global(.qualifier) {
+		background: #ccc;
+	}
+
+	:global(.qualifier-key) {
+		background: lightgreen;
+	}
+
+	:global(.qualifier-operator) {
+		background: orange;
+	}
+
+	:global(.qualifier-value) {
+		background: lightcyan;
+	}
 </style>
