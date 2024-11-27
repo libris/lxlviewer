@@ -25,7 +25,7 @@
 		queryFn?: QueryFunction;
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
-		extensions: Extension[];
+		extensions?: Extension[];
 		resultItem?: Snippet<[ResultItem]>;
 	}
 
