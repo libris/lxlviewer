@@ -3,6 +3,8 @@
 		key: string;
 		operator: string;
 		label?: string;
+		keyType?: string;
+		operatorType?: string;
 	}
 
 	const { key, operator, label }: Props = $props();

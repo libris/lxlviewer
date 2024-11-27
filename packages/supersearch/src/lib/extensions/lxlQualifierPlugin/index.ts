@@ -49,6 +49,8 @@ class QualifierKeyWidget extends WidgetType {
 		readonly key: string,
 		readonly operator: string,
 		readonly label: string | undefined,
+		readonly keyType: string | undefined,
+		readonly operatorType: string | undefined,
 		readonly atomic: boolean
 	) {
 		super();
@@ -63,7 +65,9 @@ class QualifierKeyWidget extends WidgetType {
 			props: {
 				key: this.key,
 				operator: this.operator,
-				label: this.label
+				label: this.label,
+				keyType: this.keyType,
+				operatorType: this.operatorType
 			},
 			target: container
 		});
@@ -94,16 +98,21 @@ function getQualifiers(view: EditorView) {
 				widgets.push(removeDecoration.range(node.to));
 
 				// Qualifier key + operator widget - atomic
-				const qKeyNode = node.node.getChild('QualifierKey');
-				const qOperatorNode = node.node.getChild('QualifierOperator');
-				const operator = doc.slice(qOperatorNode?.from, qOperatorNode?.to);
-				const qKey = doc.slice(qKeyNode?.from, qKeyNode?.to);
+				const keyNode = node.node.getChild('QualifierKey');
+				const operatorNode = node.node.getChild('QualifierOperator');
 
-				const qualifierKeyecoration = Decoration.replace({
-					widget: new QualifierKeyWidget(qKey, operator, qKey, true)
-				});
-				if (qKeyNode) {
-					widgets.push(qualifierKeyecoration.range(qKeyNode?.from, qOperatorNode?.to));
+				if (keyNode && operatorNode) {
+					const keyDecoration = Decoration.replace({
+						widget: new QualifierKeyWidget(
+							doc.slice(keyNode?.from, keyNode?.to),
+							doc.slice(operatorNode?.from, operatorNode?.to),
+							doc.slice(keyNode?.from, keyNode?.to), // label should be found using vocab
+							keyNode.firstChild?.type.name,
+							operatorNode.firstChild?.type.name,
+							true
+						)
+					});
+					widgets.push(keyDecoration.range(keyNode?.from, operatorNode?.to));
 				}
 			}
 		}

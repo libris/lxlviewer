@@ -21,31 +21,31 @@ Qualifier {
 }
 
 QualifierKey {
-  identifier | string
+  Identifier | String
 }
 
 QualifierValue {
-  freetext | Group
+  Identifier | String | Number | Group
 }
 
 QualifierOperator {
-  equalOperator | compareOperator
+  EqualOperator | CompareOperator
 }
 
 freetext {
-  (identifier | string | number) Wildcard?
+  (Identifier | String | Number) Wildcard?
 }
 
 @tokens {
-  identifier { $[a-zA-ZåäöÅÄÖ]+ }
+  Identifier { $[a-zA-ZåäöÅÄÖ]+ }
 
-  string { '"' (!["\\] | "\\" _)* '"' }
+  String { '"' (!["\\] | "\\" _)* '"' }
 
-  number { @digit+ }
+  Number { @digit+ }
 
-  equalOperator { ":" | "=" }
+  EqualOperator { ":" | "=" }
 
-  compareOperator { ">" | "<" | ">=" | "<=" }
+  CompareOperator { ">" | "<" | ">=" | "<=" }
 
   booleanOperator { "AND" | "OR" | "NOT" }
 
@@ -55,7 +55,7 @@ freetext {
 
   space { @whitespace+ }
 
-  @precedence {booleanOperator, reserved, identifier}
+  @precedence { booleanOperator, reserved, Identifier }
 }
 
 @detectDelim
