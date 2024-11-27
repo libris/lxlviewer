@@ -6,11 +6,12 @@ import {
 	WidgetType,
 	type DecorationSet
 } from '@codemirror/view';
-import { EditorState, Transaction, type Range, type TransactionSpec } from '@codemirror/state';
+import { EditorState, type Range } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount } from 'svelte';
 import QualifierRemove from './QualifierRemove.svelte';
 import QualifierKey from './QualifierKey.svelte';
+import insertQuotes from './insertQuotes.js';
 
 export type Qualifier = {
 	key: string;
@@ -107,34 +108,6 @@ function getQualifiers(view: EditorView) {
 	});
 	return Decoration.set(widgets, true); // true = sort
 }
-
-/**
- * Moves cursor into an empty quote on falsy qualifier value
- */
-const insertQuotes = (tr: Transaction) => {
-	let foundEmptyQValue = false;
-	const changes: TransactionSpec = {
-		changes: {
-			from: tr.state.selection.main.head,
-			to: tr.state.selection.main.head,
-			insert: '""'
-		},
-		sequential: true,
-		selection: { anchor: tr.state.selection.main.head + 1 }
-	};
-	syntaxTree(tr.state).iterate({
-		enter: (node) => {
-			if (node.name === 'Qualifier') {
-				const qValue = node.node.getChild('QualifierValue');
-				if (!qValue) {
-					foundEmptyQValue = true;
-					return true;
-				}
-			}
-		}
-	});
-	return foundEmptyQValue ? [tr, changes] : tr;
-};
 
 /**
  * filter out non-atomics using custom property 'atomic'
