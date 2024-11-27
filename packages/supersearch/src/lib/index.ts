@@ -1,4 +1,4 @@
 import SuperSearch from '$lib/components/SuperSearch.svelte';
-import qualifierPlugin from '$lib/extensions/qualifierPlugin/index.js';
+import lxlQualifierPlugin from '$lib/extensions/lxlQualifierPlugin/index.js';
 
-export { SuperSearch, qualifierPlugin };
+export { SuperSearch, lxlQualifierPlugin };

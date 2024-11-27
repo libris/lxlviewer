@@ -142,7 +142,7 @@ const filterAtomic = (from: number, to: number, decoration: Decoration) => {
 	return decoration.spec?.atomic || decoration.spec?.widget?.atomic;
 };
 
-export const qualifierPlugin = ViewPlugin.fromClass(
+export const lxlQualifierPlugin = ViewPlugin.fromClass(
 	class {
 		qualifiers: DecorationSet;
 		constructor(view: EditorView) {
@@ -168,4 +168,4 @@ export const qualifierPlugin = ViewPlugin.fromClass(
 	}
 );
 
-export default qualifierPlugin;
+export default lxlQualifierPlugin;
