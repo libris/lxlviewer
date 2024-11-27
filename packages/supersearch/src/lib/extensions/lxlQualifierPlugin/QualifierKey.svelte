@@ -2,22 +2,18 @@
 	interface Props {
 		key: string;
 		operator: string;
+		label?: string;
 	}
 
-	const { key, operator }: Props = $props();
+	const { key, operator, label }: Props = $props();
 </script>
 
-<span class="qualifier-key-container">
-	<span class="qualifier-key">
-		{key}
-	</span>
-	<span class="qualifier-operator">
-		{operator}
-	</span>
+<span class="qualifier-key" data-qualifier-key={key}>
+	{label || key}{operator}
 </span>
 
 <style>
-	.qualifier-key-container {
-		display: inline-flex;
+	.qualifier-key {
+		user-select: none;
 	}
 </style>

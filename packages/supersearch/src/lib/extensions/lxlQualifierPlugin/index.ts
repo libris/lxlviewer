@@ -48,6 +48,7 @@ class QualifierKeyWidget extends WidgetType {
 	constructor(
 		readonly key: string,
 		readonly operator: string,
+		readonly label: string | undefined,
 		readonly atomic: boolean
 	) {
 		super();
@@ -61,7 +62,8 @@ class QualifierKeyWidget extends WidgetType {
 		mount(QualifierKey, {
 			props: {
 				key: this.key,
-				operator: this.operator
+				operator: this.operator,
+				label: this.label
 			},
 			target: container
 		});
@@ -98,7 +100,7 @@ function getQualifiers(view: EditorView) {
 				const qKey = doc.slice(qKeyNode?.from, qKeyNode?.to);
 
 				const qualifierKeyecoration = Decoration.replace({
-					widget: new QualifierKeyWidget(qKey, operator, true)
+					widget: new QualifierKeyWidget(qKey, operator, qKey, true)
 				});
 				if (qKeyNode) {
 					widgets.push(qualifierKeyecoration.range(qKeyNode?.from, qOperatorNode?.to));
