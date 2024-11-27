@@ -87,7 +87,7 @@ function getQualifiers(view: EditorView) {
 				if (node.name === 'Qualifier') {
 					// Mark decoration to create wrapper element, non-atomic
 					const qualifierMark = Decoration.mark({
-						class: 'qualifier',
+						class: 'lxl-qualifier',
 						inclusive: true,
 						atomic: false // invented!
 					});

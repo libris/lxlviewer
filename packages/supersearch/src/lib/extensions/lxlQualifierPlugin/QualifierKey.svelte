@@ -10,12 +10,12 @@
 	const { key, operator, label }: Props = $props();
 </script>
 
-<span class="qualifier-key" data-qualifier-key={key}>
+<span class="lxl-qualifier-key" data-qualifier-key={key}>
 	{label || key}{operator}
 </span>
 
 <style>
-	.qualifier-key {
+	.lxl-qualifier-key {
 		user-select: none;
 	}
 </style>

@@ -15,7 +15,7 @@
 	});
 </script>
 
-<span class="qualifier-remove">
+<span class="lxl-qualifier-remove">
 	<a href={removeUrl.toString()} tabindex="-1">
 		<!-- <IconClose style="font-size:14px;" /> -->
 		X
@@ -23,7 +23,7 @@
 </span>
 
 <style>
-	.qualifier-remove {
+	.lxl-qualifier-remove {
 		display: inline-flex;
 		padding: 0 5px;
 	}

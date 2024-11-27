@@ -101,19 +101,15 @@
 		}
 	}
 
-	:global(.qualifier) {
+	:global(.lxl-qualifier) {
 		background: #ccc;
 	}
 
-	:global(.qualifier-key) {
+	:global(.lxl-qualifier-key) {
 		background: lightgreen;
 	}
 
-	:global(.qualifier-operator) {
-		background: orange;
-	}
-
-	:global(.qualifier-value) {
+	:global(.lxl-qualifier-value) {
 		background: lightcyan;
 	}
 </style>
