@@ -1,5 +1,10 @@
 <script lang="ts">
-	const { key, operator } = $props();
+	interface Props {
+		key: string;
+		operator: string;
+	}
+
+	const { key, operator }: Props = $props();
 </script>
 
 <span class="qualifier-key-container">
