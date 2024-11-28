@@ -9,7 +9,7 @@ import {
 import { EditorState, type Range } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount } from 'svelte';
-import QualifierRemove from './QualifierRemove.svelte';
+// import QualifierRemove from './QualifierRemove.svelte';
 import QualifierKey from './QualifierKey.svelte';
 import insertQuotes from './insertQuotes.js';
 
@@ -19,6 +19,7 @@ export type Qualifier = {
 	operator: string;
 };
 
+/*
 class RemoveWidget extends WidgetType {
 	constructor(
 		readonly range: { from: number; to: number },
@@ -43,6 +44,7 @@ class RemoveWidget extends WidgetType {
 		return container;
 	}
 }
+*/
 
 class QualifierKeyWidget extends WidgetType {
 	constructor(
@@ -94,15 +96,27 @@ function getQualifiers(view: EditorView) {
 					widgets.push(qualifierMark.range(node.from, node.to));
 
 					// Remove decoration (x-button) widget - atomic
+					/* // Temporarily disable removedecorations
 					const removeDecoration = Decoration.widget({
 						widget: new RemoveWidget({ from: node.from, to: node.to }, true),
 						side: 1
 					});
 					widgets.push(removeDecoration.range(node.to));
+					*/
 
 					// Qualifier key + operator widget - atomic
 					const keyNode = node.node.getChild('QualifierKey');
 					const operatorNode = node.node.getChild('QualifierOperator');
+					const valueNode = node.node.getChild('QualifierValue');
+
+					if (valueNode) {
+						const valueMark = Decoration.mark({
+							class: 'lxl-qualifier-value',
+							inclusive: true,
+							atomic: false
+						});
+						widgets.push(valueMark.range(valueNode.from, valueNode.to));
+					}
 
 					if (keyNode && operatorNode) {
 						const keyDecoration = Decoration.replace({

@@ -17,7 +17,7 @@ BooleanQuery {
 }
 
 Qualifier {
-  (QualifierKey QualifierOperator QualifierValue) | reserved
+  ((QualifierKey QualifierOperator QualifierValue) | reserved) qualifierEnd
 }
 
 QualifierKey {
@@ -55,7 +55,9 @@ freetext {
 
   space { @whitespace+ }
 
-  @precedence { booleanOperator, reserved, Identifier }
+  qualifierEnd { @whitespace | @eof }
+
+  @precedence { booleanOperator, reserved, Identifier, qualifierEnd, space }
 }
 
 @detectDelim

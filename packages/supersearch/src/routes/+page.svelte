@@ -102,7 +102,7 @@
 	}
 
 	:global(.lxl-qualifier) {
-		background: #ccc;
+		background: #f3f3f3;
 	}
 
 	:global(.lxl-qualifier-key) {
@@ -110,6 +110,6 @@
 	}
 
 	:global(.lxl-qualifier-value) {
-		background: lightcyan;
+		background: lightblue;
 	}
 </style>
