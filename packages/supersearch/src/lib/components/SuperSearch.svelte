@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
 	import { Compartment } from '@codemirror/state';
@@ -100,6 +100,20 @@
 		}
 	}
 
+	function handleClickOutsideDialog(event: MouseEvent) {
+		if (event.target === dialog) {
+			hideExpandedSearch();
+		}
+	}
+
+	onMount(() => {
+		dialog?.addEventListener('click', handleClickOutsideDialog);
+	});
+
+	onDestroy(() => {
+		dialog?.removeEventListener('click', handleClickOutsideDialog);
+	});
+
 	$effect(() => {
 		if (placeholder !== prevPlaceholder) {
 			collapsedEditorView?.dispatch({
@@ -163,5 +177,9 @@
 		margin: 0;
 		padding: 0;
 		list-style-type: none;
+	}
+
+	dialog {
+		padding: 0;
 	}
 </style>
