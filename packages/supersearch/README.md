@@ -27,6 +27,7 @@ To use `supersearch` in a non-Svelte project ...
 | `queryFn`           | `QueryFunction`           | A function that converts `value` to `URLSearchParams` (which will be appended to the endpoint).       | `undefined`   |
 | `paginationQueryFn` | `PaginationQueryFunction` | A function which should return `URLSearchParams` used for querying more paginated data (if available) | `undefined`   |
 | `transformFn`       | `TransformFunction`       | A generic helper function which can be used to transform data fetched from the endpoint.              | `undefined`   |
+| `extensions`        | `Extension[]`             | A list of extensions which should extend the default extensions.                                      | `[]`          |
 | `resultItem`        | `Snippet<[ResultItem]>`   | A [Snippet](https://svelte.dev/docs/svelte/snippet) used for customized rendering of result items.    | `undefined`   |
 | `debouncedWait`     | `number`                  | The wait time, in milliseconds that debounce function should wait between invocated search queries.   | `300`         |
 

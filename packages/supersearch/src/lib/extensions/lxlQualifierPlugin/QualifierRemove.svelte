@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	interface Props {
+		range: { from: number; to: number };
+		url: URL;
+	}
 
-	let { range } = $props();
+	let { range, url }: Props = $props();
 	// FIX: no hardcoded _q
 	let removeUrl = $derived.by(() => {
-		const url = new URL($page.url);
-		const _q = $page.url.searchParams.get('_q');
+		const _q = url.searchParams.get('_q');
 		if (_q) {
 			url.searchParams.set('_q', _q.slice(0, range.from) + _q.slice(range.to));
 		}
@@ -13,16 +15,9 @@
 	});
 </script>
 
-<span class="qualifier-remove">
+<span class="lxl-qualifier-remove">
 	<a href={removeUrl.toString()} tabindex="-1">
 		<!-- <IconClose style="font-size:14px;" /> -->
 		X
 	</a>
 </span>
-
-<style>
-	.qualifier-remove {
-		display: inline-flex;
-		padding: 0 5px;
-	}
-</style>
