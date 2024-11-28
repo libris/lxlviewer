@@ -4,7 +4,7 @@ Astrid lindgren
 
 ==>
 
-Query()
+Query(Identifier Identifier)
 
 
 # Freetext string
@@ -13,7 +13,7 @@ Query()
 
 ==>
 
-Query()
+Query(String)
 
 
 # Freetext with Wildcard
@@ -22,7 +22,7 @@ Astrid lind*
 
 ==>
 
-Query(Wildcard)
+Query(Identifier Identifier Wildcard)
 
 
 # Qualifier with EqualOperator
@@ -32,7 +32,7 @@ Query(Wildcard)
 ==>
 
 Query(
-  Qualifier(QualifierKey,QualifierOperator,QualifierValue)
+  Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(Number))
 )
 
 
@@ -44,8 +44,8 @@ Query(
 ==>
 
 Query(
-  Qualifier(QualifierKey,QualifierOperator,QualifierValue)
-  Qualifier(QualifierKey,QualifierOperator,QualifierValue)
+  Qualifier(QualifierKey(Identifier), QualifierOperator(CompareOperator), QualifierValue(Number))
+  Qualifier(QualifierKey(Identifier), QualifierOperator(CompareOperator), QualifierValue(Number))
 )
 
 
@@ -56,7 +56,7 @@ Query(
 ==>
 
 Query(
-  Qualifier(QualifierKey,QualifierOperator,QualifierValue)
+  Qualifier(QualifierKey(String),QualifierOperator(EqualOperator),QualifierValue(Identifier))
 )
 
 
@@ -67,7 +67,7 @@ contributor:"Astrid Lindgren"
 ==>
 
 Query(
-  Qualifier(QualifierKey,QualifierOperator,QualifierValue)
+  Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(String))
 )
 
 
@@ -78,7 +78,7 @@ contributor:"libris:fcrtpljz1qp2bdv#it"
 ==>
 
 Query(
-  Qualifier(QualifierKey,QualifierOperator,QualifierValue)
+  Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(String))
 )
 
 
@@ -89,7 +89,7 @@ sommar OR vinter NOT vår
 ==>
 
 Query(
-  BooleanQuery
+  BooleanQuery(Identifier, Identifier, Identifier)
 )
 
 
@@ -99,7 +99,7 @@ OR AND sommar
 
 ==>
 
-Query(⚠)
+Query(⚠, ⚠, Identifier)
 
 
 # Combined: Qualifier and Freetext
@@ -109,7 +109,7 @@ contributor:"Astrid Lindgren" Pippi Långstrump
 ==>
 
 Query(
-  Qualifier(QualifierKey,QualifierOperator,QualifierValue)
+  Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(String)) Identifier Identifier
 )
 
 
@@ -120,7 +120,7 @@ träd* bibliografi:"sigel:DST" NOT typ:Text
 ==>
 
 Query(
-  Wildcard,BooleanQuery(Qualifier(...),Qualifier(...))
+  Identifier, Wildcard, BooleanQuery(Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(String)), Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(Identifier)))
 )
 
 
@@ -131,14 +131,19 @@ pippi långstrump språk:(engelska OR franska) ÅR>2002
 ==>
 
 Query(
+  Identifier,
+  Identifier,
   Qualifier(
-    QualifierKey,QualifierOperator,QualifierValue(
+    QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(
       Group(
-        BooleanQuery
+        BooleanQuery(
+          Identifier,
+          Identifier
+        )
       )
     )
   ),
-  Qualifier(...)
+  Qualifier(QualifierKey(Identifier), QualifierOperator(CompareOperator), QualifierValue(Number))
 )
 
 
@@ -157,7 +162,7 @@ Pippi includeEplikt
 
 ==>
 
-Query(Qualifier)
+Query(Identifier, Qualifier)
 
 
 # Other filters: include preliminary
@@ -166,4 +171,4 @@ includePreliminary Pippi
 
 ==>
 
-Query(Qualifier)
+Query(Qualifier, Identifier)
