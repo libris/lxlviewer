@@ -21,10 +21,3 @@
 		X
 	</a>
 </span>
-
-<style>
-	.lxl-qualifier-remove {
-		display: inline-flex;
-		padding: 0 5px;
-	}
-</style>

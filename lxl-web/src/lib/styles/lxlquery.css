@@ -1,24 +1,17 @@
-.qualifier {
+.lxl-qualifier,
+.lxl-qualifier-remove {
 	background: rgba(14, 113, 128, 0.15);
 	padding: 2px 5px;
 }
 
-.lxlq.qualifier-key {
+.lxl-qualifier-key {
 	color: green;
 }
 
-.lxlq.qualifier-value {
-	color: green;
-}
-
-.lxlq.qualifier-operator {
-	color: darkolivegreen;
-}
-
-.lxlq.boolean-query {
+.lxl-boolean-query {
 	color: purple;
 }
 
-.lxlq.wildcard {
-	color: orange;
+.lxl-wildcard {
+	color: purple;
 }

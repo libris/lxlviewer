@@ -112,4 +112,8 @@
 	:global(.lxl-qualifier-value) {
 		background: lightcyan;
 	}
+
+	:global(.lxl-boolean-query, .lxl-wildcard) {
+		color: purple;
+	}
 </style>
