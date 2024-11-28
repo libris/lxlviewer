@@ -1,11 +1,15 @@
 <script>
 import { orderBy } from 'lodash-es';
 import { marked } from 'marked';
+import { gfmHeadingId } from 'marked-gfm-heading-id';
 import DOMPurify from 'dompurify';
 import { mapGetters } from 'vuex';
 import * as StringUtil from 'lxljs/string';
 import { translatePhrase } from '@/utils/filters';
 import { formatDate, getRelativeTime } from '@/utils/datetime';
+
+marked.use(gfmHeadingId());
+
 export default {
   name: 'help-component',
   data() {
