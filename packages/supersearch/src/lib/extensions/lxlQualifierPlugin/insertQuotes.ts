@@ -4,7 +4,6 @@ import { syntaxTree } from '@codemirror/language';
 /**
  * Moves cursor into an empty quote on falsy qualifier value
  */
-
 const insertQuotes = (tr: Transaction) => {
 	let foundEmptyQValue = false;
 	const changes: TransactionSpec = {
@@ -20,7 +19,7 @@ const insertQuotes = (tr: Transaction) => {
 		enter: (node) => {
 			if (node.name === 'Qualifier') {
 				const qValue = node.node.getChild('QualifierValue');
-				if (!qValue) {
+				if (!qValue && tr.isUserEvent('input')) {
 					foundEmptyQValue = true;
 					return true;
 				}
