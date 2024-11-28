@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
-	import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
-	import { Compartment } from '@codemirror/state';
+	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
+	import { Compartment, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
@@ -13,6 +13,7 @@
 		TransformFunction,
 		ResultItem
 	} from '$lib/types/superSearch.js';
+	import { standardKeymap } from '@codemirror/commands';
 
 	interface Props {
 		name: string;
@@ -24,6 +25,7 @@
 		queryFn?: QueryFunction;
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
+		extensions?: Extension[];
 		resultItem?: Snippet<[ResultItem]>;
 	}
 
@@ -37,6 +39,7 @@
 		queryFn = (value) => new URLSearchParams({ q: value }),
 		paginationQueryFn,
 		transformFn,
+		extensions = [],
 		resultItem = fallbackResultItem
 	}: Props = $props();
 
@@ -60,11 +63,13 @@
 		}
 	});
 
-	const extensions = [
+	const extensionsWithDefaults = [
+		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		submitFormOnEnterKey(form),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
-		placeholderCompartment.of(placeholderExtension(placeholder))
+		placeholderCompartment.of(placeholderExtension(placeholder)),
+		...extensions
 	];
 
 	function handleClickCollapsed() {
@@ -119,7 +124,7 @@
 
 <CodeMirror
 	{value}
-	{extensions}
+	extensions={extensionsWithDefaults}
 	onclick={handleClickCollapsed}
 	onchange={handleChangeCodeMirror}
 	bind:editorView={collapsedEditorView}
@@ -129,7 +134,7 @@
 <dialog bind:this={dialog} onclose={hideExpandedSearch} onkeydowncapture={handleKeyDown}>
 	<CodeMirror
 		{value}
-		{extensions}
+		extensions={extensionsWithDefaults}
 		onchange={handleChangeCodeMirror}
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}

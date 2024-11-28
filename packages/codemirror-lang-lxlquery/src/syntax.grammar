@@ -12,38 +12,42 @@ term {
 Group { "(" term* ")" } 
 
 BooleanQuery { 
-  (freetext | Qualifier) BooleanOperator (freetext | Qualifier) 
-  (BooleanOperator (freetext | Qualifier))+?
+  (freetext | Qualifier) booleanOperator (freetext | Qualifier) 
+  (booleanOperator (freetext | Qualifier))+?
 }
 
 Qualifier {
-  (QualifierKey (EqualOperator | CompareOperator) QualifierValue) | reserved
+  (QualifierKey QualifierOperator QualifierValue) | reserved
 }
 
 QualifierKey {
-  identifier | string
+  Identifier | String
 }
 
 QualifierValue {
-  freetext | Group
+  Identifier | String | Number | Group
+}
+
+QualifierOperator {
+  EqualOperator | CompareOperator
 }
 
 freetext {
-  (identifier | string | number) Wildcard?
+  (Identifier | String | Number) Wildcard?
 }
 
 @tokens {
-  identifier { $[a-zA-ZåäöÅÄÖ]+ }
+  Identifier { $[a-zA-ZåäöÅÄÖ]+ }
 
-  string { '"' (!["\\] | "\\" _)* '"' }
+  String { '"' (!["\\] | "\\" _)* '"' }
 
-  number { @digit+ }
+  Number { @digit+ }
 
   EqualOperator { ":" | "=" }
 
   CompareOperator { ">" | "<" | ">=" | "<=" }
 
-  BooleanOperator { "AND" | "OR" | "NOT" }
+  booleanOperator { "AND" | "OR" | "NOT" }
 
   Wildcard { "*"+ }
 
@@ -51,7 +55,7 @@ freetext {
 
   space { @whitespace+ }
 
-  @precedence {BooleanOperator, reserved, identifier}
+  @precedence { booleanOperator, reserved, Identifier }
 }
 
 @detectDelim

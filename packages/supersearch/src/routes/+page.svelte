@@ -1,5 +1,7 @@
 <script lang="ts">
 	import SuperSearch from '$lib/components/SuperSearch.svelte';
+	import { lxlQualifierPlugin } from '$lib/index.js';
+	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import type { JSONValue } from '$lib/types/json.js';
 	import type { MockQueryResponse } from './api/find/+server.js';
 
@@ -45,6 +47,8 @@
 				})}
 			paginationQueryFn={handlePaginationQuery}
 			transformFn={handleTransform}
+			language={lxlQuery}
+			extensions={[lxlQualifierPlugin]}
 		>
 			{#snippet resultItem(item)}
 				<button type="button" class="result-item" data-test-id="result-item">
@@ -70,6 +74,8 @@
 					_limit: '10'
 				})}
 			paginationQueryFn={handlePaginationQuery}
+			language={lxlQuery}
+			extensions={[lxlQualifierPlugin]}
 		>
 			{#snippet resultItem(item)}
 				<button type="button" class="result-item" data-test-id="result-item">
@@ -93,5 +99,21 @@
 			font-weight: inherit;
 			font-size: inherit;
 		}
+	}
+
+	:global(.lxl-qualifier) {
+		background: #ccc;
+	}
+
+	:global(.lxl-qualifier-key) {
+		background: lightgreen;
+	}
+
+	:global(.lxl-qualifier-value) {
+		background: lightcyan;
+	}
+
+	:global(.lxl-boolean-query, .lxl-wildcard) {
+		color: purple;
 	}
 </style>
