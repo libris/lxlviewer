@@ -106,6 +106,28 @@
 		if (event.key === 'Escape') {
 			hideExpandedSearch();
 		}
+
+		/**
+		 * Handle keyboard navigation between focusable elements in expanded search
+		 */
+		if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+			const focusableElements = Array.from(
+				(event.target as HTMLElement)
+					.closest('dialog')
+					?.querySelectorAll(`.cm-content, nav button`) || []
+			);
+			const activeIndex = document.activeElement
+				? focusableElements?.indexOf(document.activeElement)
+				: -1;
+			if (activeIndex > -1) {
+				event.preventDefault();
+				(
+					focusableElements[
+						event.key === 'ArrowUp' ? activeIndex - 1 : activeIndex + 1
+					] as HTMLElement
+				)?.focus();
+			}
+		}
 	}
 
 	function handleClickOutsideDialog(event: MouseEvent) {
@@ -165,36 +187,38 @@
 	syncedEditorView={expandedEditorView}
 />
 <textarea {value} {name} {form} hidden readonly></textarea>
-<dialog bind:this={dialog} onclose={hideExpandedSearch} onkeydowncapture={handleKeyDown}>
-	<CodeMirror
-		{value}
-		extensions={extensionsWithDefaults}
-		onchange={handleChangeCodeMirror}
-		bind:editorView={expandedEditorView}
-		syncedEditorView={collapsedEditorView}
-	/>
-	<nav>
-		{#if search.data}
-			{@const resultItems =
-				(Array.isArray(search.paginatedData) &&
-					search.paginatedData.map((page) => page.items).flat()) ||
-				search.data?.items}
-			<ul>
-				{#each resultItems as item}
-					<li>
-						{@render resultItem?.(item)}
-					</li>
-				{/each}
-			</ul>
-		{/if}
-		{#if search.isLoading}
-			Loading...
-		{:else if search.hasMorePaginatedData}
-			<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-				Load more
-			</button>
-		{/if}
-	</nav>
+<dialog bind:this={dialog} onclose={hideExpandedSearch}>
+	<div role="presentation" onkeydown={handleKeyDown}>
+		<CodeMirror
+			{value}
+			extensions={extensionsWithDefaults}
+			onchange={handleChangeCodeMirror}
+			bind:editorView={expandedEditorView}
+			syncedEditorView={collapsedEditorView}
+		/>
+		<nav>
+			{#if search.data}
+				{@const resultItems =
+					(Array.isArray(search.paginatedData) &&
+						search.paginatedData.map((page) => page.items).flat()) ||
+					search.data?.items}
+				<ul>
+					{#each resultItems as item}
+						<li>
+							{@render resultItem?.(item)}
+						</li>
+					{/each}
+				</ul>
+			{/if}
+			{#if search.isLoading}
+				Loading...
+			{:else if search.hasMorePaginatedData}
+				<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+					Load more
+				</button>
+			{/if}
+		</nav>
+	</div>
 </dialog>
 
 <style>
