@@ -120,3 +120,25 @@ test('fetches and displays paginated results', async ({ page }) => {
 		'to tranform data using transformFn if available'
 	).toHaveText('Heading 1 for "Hello"');
 });
+
+test('handles keyboard navigation between focusable items', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').click();
+	await page.getByRole('dialog').getByRole('textbox').fill('hello world');
+	await page.waitForTimeout(500); // timeout is needed for some reason...
+	await page.keyboard.press('ArrowDown');
+	await expect(
+		await page.getByRole('dialog').locator('nav ul').getByRole('button').nth(0)
+	).toBeFocused();
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await expect(
+		await page.getByRole('dialog').locator('nav ul').getByRole('button').nth(2)
+	).toBeFocused();
+	await page.keyboard.press('ArrowUp');
+	await expect(
+		await page.getByRole('dialog').locator('nav ul').getByRole('button').nth(1)
+	).toBeFocused();
+	await page.keyboard.press('ArrowUp');
+	await page.keyboard.press('ArrowUp');
+	await expect(await page.getByRole('dialog').getByRole('textbox')).toBeFocused();
+});
