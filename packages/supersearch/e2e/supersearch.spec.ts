@@ -41,6 +41,26 @@ three`)
 	).toHaveText('One two three');
 });
 
+test('expanded search is closable', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await expect(page.locator('[data-test-id="test1"]').getByRole('dialog').first()).toBeVisible();
+	await page.keyboard.press('Escape');
+	await expect(
+		page.locator('[data-test-id="test1"]').getByRole('dialog').first(),
+		'by pressing the Escape key'
+	).not.toBeVisible();
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.first()
+		.click({ position: { x: 0, y: 0 } });
+	await expect(
+		page.locator('[data-test-id="test1"]').getByRole('dialog').first(),
+		'by clicking outside'
+	).not.toBeVisible();
+});
+
 test('syncs collapsed and expanded editor views', async ({ page }) => {
 	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
 	await page
