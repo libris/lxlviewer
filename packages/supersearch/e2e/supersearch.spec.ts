@@ -61,6 +61,17 @@ test('expanded search is closable', async ({ page }) => {
 	).not.toBeVisible();
 });
 
+test('expanded search is togglable using keyboard shortcut', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').press('Tab');
+	await expect(page.locator('[data-test-id="test2"]').getByRole('textbox')).toBeFocused();
+	await page.keyboard.press('ControlOrMeta+k');
+	await expect(page.locator('[data-test-id="test1"]').getByRole('dialog').first()).toBeVisible();
+	await page.keyboard.press('ControlOrMeta+k');
+	await expect(
+		page.locator('[data-test-id="test1"]').getByRole('dialog').first()
+	).not.toBeVisible();
+});
+
 test('syncs collapsed and expanded editor views', async ({ page }) => {
 	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
 	await page

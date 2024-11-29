@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
+	import { browser } from '$app/environment';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, type Extension } from '@codemirror/state';
@@ -27,6 +28,7 @@
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
 		resultItem?: Snippet<[ResultItem]>;
+		toggleWithKeyboardShortcut?: boolean;
 	}
 
 	let {
@@ -40,7 +42,8 @@
 		paginationQueryFn,
 		transformFn,
 		extensions = [],
-		resultItem = fallbackResultItem
+		resultItem = fallbackResultItem,
+		toggleWithKeyboardShortcut = false
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -111,11 +114,28 @@
 		}
 	}
 
+	function handleKeyboardShortcut(event: KeyboardEvent) {
+		if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+			event.preventDefault();
+			if (dialog?.open) {
+				hideExpandedSearch();
+			} else {
+				showExpandedSearch();
+			}
+		}
+	}
+
 	onMount(() => {
+		if (toggleWithKeyboardShortcut && browser) {
+			document.addEventListener('keydown', handleKeyboardShortcut);
+		}
 		dialog?.addEventListener('click', handleClickOutsideDialog);
 	});
 
 	onDestroy(() => {
+		if (browser) {
+			document.removeEventListener('keydown', handleKeyboardShortcut);
+		}
 		dialog?.removeEventListener('click', handleClickOutsideDialog);
 	});
 
