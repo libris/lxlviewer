@@ -49,6 +49,7 @@
 			transformFn={handleTransform}
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin]}
+			toggleWithKeyboardShortcut
 		>
 			{#snippet resultItem(item)}
 				<button type="button" class="result-item" data-test-id="result-item">
