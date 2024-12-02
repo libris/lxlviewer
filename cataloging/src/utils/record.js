@@ -4,6 +4,7 @@ import * as VocabUtil from 'lxljs/vocab';
 import * as httpUtil from './http';
 import * as DataUtil from './data';
 import { isLink } from './data';
+import { JOB_TYPE, Status, STATUS_KEY } from "@/utils/bulk.js";
 
 export function getRecordId(data, quoted) {
   const recordObj = recordObject(data, quoted);
@@ -349,8 +350,17 @@ export function prepareDuplicateFor(inspectorData, user, keysToClear) {
   // Update descriptionCreator to this organization
   newData.record.descriptionCreator = userSigelObj;
 
+  const isBulkJob = newData.mainEntity && newData.mainEntity['@type'] === JOB_TYPE;
+
   // Update any heldBy keys to this organization
-  newData = DataUtil.rewriteValueOfKey(newData, 'heldBy', userSigelObj, true);
+  if (!isBulkJob) {
+    newData = DataUtil.rewriteValueOfKey(newData, 'heldBy', userSigelObj, true);
+  }
+
+  // Set bulk Job status
+  if (isBulkJob) {
+    newData.mainEntity[STATUS_KEY] = Status.Draft;
+  }
 
   // Remove properties that should not be included in the duplicate
   each(keysToClear, (property) => {
