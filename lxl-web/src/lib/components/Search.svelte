@@ -2,22 +2,32 @@
 	import { env } from '$env/dynamic/public';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
-	import { SuperSearch, lxlQualifierPlugin } from 'supersearch';
+	import { SuperSearch, lxlQualifierPlugin, getData } from 'supersearch';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import BiSearch from '~icons/bi/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
+
 	import '$lib/styles/lxlquery.css';
 
-	export let placeholder: string;
-	export let autofocus: boolean = false;
 
-	$: showAdvanced = $page.url.searchParams.get('_x') === 'advanced';
-	let q = $page.params.fnurgel
+	let search = getData();
+
+	$inspect(search)
+
+	interface Props {
+		placeholder: string;
+		autofocus?: boolean;
+	}
+
+	let { placeholder, autofocus = false }: Props = $props();
+
+	let showAdvanced = $derived($page.url.searchParams.get('_x') === 'advanced');
+	let q = $state($page.params.fnurgel
 		? '' //don't reflect related search on resource pages
 		: showAdvanced
 			? $page.url.searchParams.get('_q')?.trim() || ''
-			: $page.url.searchParams.get('_i')?.trim() || '';
+			: $page.url.searchParams.get('_i')?.trim() || '');
 
 	let params = getSortedSearchParams(addDefaultSearchParams($page.url.searchParams));
 	// Always reset these params on new search
@@ -56,7 +66,7 @@
 	}
 </script>
 
-<form class="relative w-full" action="find" on:submit={handleSubmit}>
+<form class="relative w-full" action="find" onsubmit={handleSubmit}>
 	{#if env?.PUBLIC_USE_SUPERSEARCH === 'true'}
 		<SuperSearch
 			name="_q"
@@ -80,7 +90,7 @@
 			{/snippet}
 		</SuperSearch>
 	{:else}
-		<!-- svelte-ignore a11y-autofocus -->
+		<!-- svelte-ignore a11y_autofocus -->
 		<input
 			id="main-search"
 			class="h-12 w-full rounded-full pr-12 text-secondary shadow-accent-dark/32 focus:shadow-search-focus focus:outline

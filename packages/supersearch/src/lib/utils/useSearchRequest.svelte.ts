@@ -6,6 +6,15 @@ import type {
 import type { JSONValue } from '$lib/types/json.js';
 import debounce from '$lib/utils/debounce.js';
 
+let data = $state();
+
+export function getData() {
+	return {
+		get data() {
+			return data;
+		},
+	}
+}
 export function useSearchRequest({
 	endpoint,
 	queryFn,
@@ -21,7 +30,6 @@ export function useSearchRequest({
 }) {
 	let isLoading = $state(false);
 	let error: string | undefined = $state();
-	let data = $state();
 	let paginatedData = $state();
 	let moreSearchParams: URLSearchParams | undefined = $state();
 	const hasMorePaginatedData = $derived(!!moreSearchParams);
