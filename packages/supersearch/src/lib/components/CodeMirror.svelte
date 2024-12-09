@@ -7,7 +7,8 @@
 
 <script lang="ts">
 	import { DEV } from 'esm-env';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
 	import { EditorView } from '@codemirror/view';
 	import { EditorState, StateEffect, type Extension, type SelectionRange } from '@codemirror/state';
 	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
@@ -37,14 +38,13 @@
 				selection: update.state.selection,
 				scrollIntoView: update.transactions?.[0].scrollIntoView
 			});
-		}
-
-		if (update.docChanged) {
-			value = update.state.doc.toString();
-			onchange({
-				value,
-				cursor: update.state.selection.main.anchor
-			});
+			if (update.docChanged) {
+				value = update.state.doc.toString();
+				onchange({
+					value,
+					cursor: update.state.selection.main.anchor
+				});
+			}
 		}
 	});
 
@@ -92,6 +92,18 @@
 		editorView = new EditorView({
 			state: createEditorState({ doc: value }),
 			parent: codemirrorContainerElement
+		});
+	});
+
+	afterNavigate(() => {
+		tick().then(() => {
+			editorView?.dispatch({
+				changes: {
+					from: 0,
+					to: editorView.state.doc.length,
+					insert: value
+				}
+			});
 		});
 	});
 
