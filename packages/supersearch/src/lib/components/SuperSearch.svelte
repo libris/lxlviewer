@@ -27,7 +27,7 @@
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
-		resultItem?: Snippet<[ResultItem]>;
+		resultItem?: Snippet<[ResultItem, number?]>;
 		toggleWithKeyboardShortcut?: boolean;
 	}
 
@@ -110,7 +110,12 @@
 		/**
 		 * Handle keyboard navigation between focusable elements in expanded search
 		 */
-		if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+		if (
+			event.key === 'ArrowUp' ||
+			event.key === 'ArrowRight' ||
+			event.key === 'ArrowDown' ||
+			event.key === 'ArrowLeft'
+		) {
 			const focusableElements = Array.from(
 				(event.target as HTMLElement)
 					.closest('dialog')
@@ -119,13 +124,52 @@
 			const activeIndex = document.activeElement
 				? focusableElements?.indexOf(document.activeElement)
 				: -1;
-			if (activeIndex > -1) {
-				event.preventDefault();
+			const listItem = document.activeElement?.closest('dialog nav li');
+			const focusableElementsInListItem = listItem
+				? Array.from(listItem.querySelectorAll('button'))
+				: [];
+			const columnIndex = focusableElementsInListItem?.indexOf(
+				document.activeElement as HTMLButtonElement
+			);
+
+			if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
 				(
-					focusableElements[
-						event.key === 'ArrowUp' ? activeIndex - 1 : activeIndex + 1
+					focusableElementsInListItem[
+						event.key === 'ArrowLeft' ? columnIndex - 1 : columnIndex + 1
 					] as HTMLElement
 				)?.focus();
+			}
+
+			if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+				const siblingListItem =
+					event.key === 'ArrowUp' ? listItem?.previousElementSibling : listItem?.nextElementSibling;
+				if (siblingListItem) {
+					(
+						(
+							Array.from(
+								siblingListItem.querySelectorAll(`button:nth-of-type(-n + ${columnIndex + 1})`) // get closest available column in adjecent list item
+							) || []
+						).pop() as HTMLButtonElement
+					)?.focus();
+				} else {
+					if (listItem) {
+						(
+							focusableElements[
+								event.key === 'ArrowUp'
+									? focusableElements.indexOf(focusableElementsInListItem[0]) - 1
+									: focusableElements.indexOf(
+											focusableElementsInListItem[focusableElementsInListItem.length - 1]
+										) + 1
+							] as HTMLElement
+						).focus();
+					} else {
+						(
+							focusableElements[
+								event.key === 'ArrowUp' ? activeIndex - 1 : activeIndex + 1
+							] as HTMLElement
+						)?.focus();
+					}
+				}
 			}
 		}
 	}
@@ -203,9 +247,9 @@
 						search.paginatedData.map((page) => page.items).flat()) ||
 					search.data?.items}
 				<ul>
-					{#each resultItems as item}
+					{#each resultItems as item, index}
 						<li>
-							{@render resultItem?.(item)}
+							{@render resultItem?.(item, index)}
 						</li>
 					{/each}
 				</ul>
