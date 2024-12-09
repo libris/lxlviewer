@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
+	import { browser } from '$app/environment';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, type Extension } from '@codemirror/state';
@@ -26,7 +27,8 @@
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
-		resultItem?: Snippet<[ResultItem]>;
+		resultItem?: Snippet<[ResultItem, number?]>;
+		toggleWithKeyboardShortcut?: boolean;
 	}
 
 	let {
@@ -40,7 +42,8 @@
 		paginationQueryFn,
 		transformFn,
 		extensions = [],
-		resultItem = fallbackResultItem
+		resultItem = fallbackResultItem,
+		toggleWithKeyboardShortcut = false
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -103,6 +106,72 @@
 		if (event.key === 'Escape') {
 			hideExpandedSearch();
 		}
+
+		/**
+		 * Handle keyboard navigation between focusable elements in expanded search
+		 */
+		if (
+			event.key === 'ArrowUp' ||
+			event.key === 'ArrowRight' ||
+			event.key === 'ArrowDown' ||
+			event.key === 'ArrowLeft'
+		) {
+			const focusableElements = Array.from(
+				(event.target as HTMLElement)
+					.closest('dialog')
+					?.querySelectorAll(`.cm-content, nav button`) || []
+			);
+			const activeIndex = document.activeElement
+				? focusableElements?.indexOf(document.activeElement)
+				: -1;
+			const listItem = document.activeElement?.closest('dialog nav li');
+			const focusableElementsInListItem = listItem
+				? Array.from(listItem.querySelectorAll('button'))
+				: [];
+			const columnIndex = focusableElementsInListItem?.indexOf(
+				document.activeElement as HTMLButtonElement
+			);
+
+			if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+				(
+					focusableElementsInListItem[
+						event.key === 'ArrowLeft' ? columnIndex - 1 : columnIndex + 1
+					] as HTMLElement
+				)?.focus();
+			}
+
+			if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+				const siblingListItem =
+					event.key === 'ArrowUp' ? listItem?.previousElementSibling : listItem?.nextElementSibling;
+				if (siblingListItem) {
+					(
+						(
+							Array.from(
+								siblingListItem.querySelectorAll(`button:nth-of-type(-n + ${columnIndex + 1})`) // get closest available column in adjecent list item
+							) || []
+						).pop() as HTMLButtonElement
+					)?.focus();
+				} else {
+					if (listItem) {
+						(
+							focusableElements[
+								event.key === 'ArrowUp'
+									? focusableElements.indexOf(focusableElementsInListItem[0]) - 1
+									: focusableElements.indexOf(
+											focusableElementsInListItem[focusableElementsInListItem.length - 1]
+										) + 1
+							] as HTMLElement
+						).focus();
+					} else {
+						(
+							focusableElements[
+								event.key === 'ArrowUp' ? activeIndex - 1 : activeIndex + 1
+							] as HTMLElement
+						)?.focus();
+					}
+				}
+			}
+		}
 	}
 
 	function handleClickOutsideDialog(event: MouseEvent) {
@@ -111,11 +180,28 @@
 		}
 	}
 
+	function handleKeyboardShortcut(event: KeyboardEvent) {
+		if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+			event.preventDefault();
+			if (dialog?.open) {
+				hideExpandedSearch();
+			} else {
+				showExpandedSearch();
+			}
+		}
+	}
+
 	onMount(() => {
+		if (toggleWithKeyboardShortcut && browser) {
+			document.addEventListener('keydown', handleKeyboardShortcut);
+		}
 		dialog?.addEventListener('click', handleClickOutsideDialog);
 	});
 
 	onDestroy(() => {
+		if (browser) {
+			document.removeEventListener('keydown', handleKeyboardShortcut);
+		}
 		dialog?.removeEventListener('click', handleClickOutsideDialog);
 	});
 
@@ -145,36 +231,38 @@
 	syncedEditorView={expandedEditorView}
 />
 <textarea {value} {name} {form} hidden readonly></textarea>
-<dialog bind:this={dialog} onclose={hideExpandedSearch} onkeydowncapture={handleKeyDown}>
-	<CodeMirror
-		{value}
-		extensions={extensionsWithDefaults}
-		onchange={handleChangeCodeMirror}
-		bind:editorView={expandedEditorView}
-		syncedEditorView={collapsedEditorView}
-	/>
-	<nav>
-		{#if search.data}
-			{@const resultItems =
-				(Array.isArray(search.paginatedData) &&
-					search.paginatedData.map((page) => page.items).flat()) ||
-				search.data?.items}
-			<ul>
-				{#each resultItems as item}
-					<li>
-						{@render resultItem?.(item)}
-					</li>
-				{/each}
-			</ul>
-		{/if}
-		{#if search.isLoading}
-			Loading...
-		{:else if search.hasMorePaginatedData}
-			<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-				Load more
-			</button>
-		{/if}
-	</nav>
+<dialog bind:this={dialog} onclose={hideExpandedSearch}>
+	<div role="presentation" onkeydown={handleKeyDown}>
+		<CodeMirror
+			{value}
+			extensions={extensionsWithDefaults}
+			onchange={handleChangeCodeMirror}
+			bind:editorView={expandedEditorView}
+			syncedEditorView={collapsedEditorView}
+		/>
+		<nav>
+			{#if search.data}
+				{@const resultItems =
+					(Array.isArray(search.paginatedData) &&
+						search.paginatedData.map((page) => page.items).flat()) ||
+					search.data?.items}
+				<ul>
+					{#each resultItems as item, index}
+						<li>
+							{@render resultItem?.(item, index)}
+						</li>
+					{/each}
+				</ul>
+			{/if}
+			{#if search.isLoading}
+				Loading...
+			{:else if search.hasMorePaginatedData}
+				<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+					Load more
+				</button>
+			{/if}
+		</nav>
+	</div>
 </dialog>
 
 <style>

@@ -49,11 +49,20 @@
 			transformFn={handleTransform}
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin]}
+			toggleWithKeyboardShortcut
 		>
-			{#snippet resultItem(item)}
-				<button type="button" class="result-item" data-test-id="result-item">
-					<h2>{item.heading}</h2>
-				</button>
+			{#snippet resultItem(item, index)}
+				<div class="result-item" data-test-id="result-item">
+					<button type="button">
+						<h2>{item.heading}</h2>
+					</button>
+					{#if index! <= 4}
+						<button type="button">B</button>
+					{/if}
+					{#if index! < 3 || index! == 9 || index! === 4}
+						<button type="button">C</button>
+					{/if}
+				</div>
 			{/snippet}
 		</SuperSearch>
 	</fieldset>
@@ -78,9 +87,11 @@
 			extensions={[lxlQualifierPlugin]}
 		>
 			{#snippet resultItem(item)}
-				<button type="button" class="result-item" data-test-id="result-item">
-					<h2>{item.heading}</h2>
-				</button>
+				<div class="result-item" data-test-id="result-item">
+					<button type="button">
+						<h2>{item.heading}</h2>
+					</button>
+				</div>
 			{/snippet}
 		</SuperSearch>
 	</fieldset>
@@ -92,9 +103,20 @@
 
 <style>
 	.result-item {
+		display: flex;
+		align-items: flex-start;
 		min-width: 480px;
-		min-height: 44px;
-		text-align: left;
+
+		& button {
+			min-width: 44px;
+			min-height: 44px;
+		}
+
+		& button:first-child {
+			flex: 1;
+			text-align: left;
+		}
+
 		& h2 {
 			font-weight: inherit;
 			font-size: inherit;

@@ -61,6 +61,17 @@ test('expanded search is closable', async ({ page }) => {
 	).not.toBeVisible();
 });
 
+test('expanded search is togglable using keyboard shortcut', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').press('Tab');
+	await expect(page.locator('[data-test-id="test2"]').getByRole('textbox')).toBeFocused();
+	await page.keyboard.press('ControlOrMeta+k');
+	await expect(page.locator('[data-test-id="test1"]').getByRole('dialog').first()).toBeVisible();
+	await page.keyboard.press('ControlOrMeta+k');
+	await expect(
+		page.locator('[data-test-id="test1"]').getByRole('dialog').first()
+	).not.toBeVisible();
+});
+
 test('syncs collapsed and expanded editor views', async ({ page }) => {
 	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
 	await page
@@ -108,4 +119,26 @@ test('fetches and displays paginated results', async ({ page }) => {
 		page.locator('[data-test-id="result-item"]').first(),
 		'to tranform data using transformFn if available'
 	).toHaveText('Heading 1 for "Hello"');
+});
+
+test('handles keyboard navigation between focusable items', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').click();
+	await page.getByRole('dialog').getByRole('textbox').fill('hello world');
+	await page.waitForTimeout(500); // timeout is needed for some reason...
+	await page.keyboard.press('ArrowDown');
+	await expect(
+		await page.getByRole('dialog').locator('nav ul').getByRole('button').nth(0)
+	).toBeFocused();
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await expect(
+		await page.getByRole('dialog').locator('nav ul').getByRole('button').nth(2)
+	).toBeFocused();
+	await page.keyboard.press('ArrowUp');
+	await expect(
+		await page.getByRole('dialog').locator('nav ul').getByRole('button').nth(1)
+	).toBeFocused();
+	await page.keyboard.press('ArrowUp');
+	await page.keyboard.press('ArrowUp');
+	await expect(await page.getByRole('dialog').getByRole('textbox')).toBeFocused();
 });
