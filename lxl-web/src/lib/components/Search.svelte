@@ -42,7 +42,7 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
-			let param = $page.url.searchParams.get('_x') === 'advanced' ? '_q' : '_i';
+			let param = $page.url.searchParams.get('_x') === 'advanced' || useSuperSearch ? '_q' : '_i';
 			q = $page.params.fnurgel ? '' : new URL(to.url).searchParams.get(param)?.trim() || '';
 		}
 	});
