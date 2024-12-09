@@ -1,11 +1,39 @@
-.lxl-qualifier,
-.lxl-qualifier-remove {
-	background: rgba(14, 113, 128, 0.15);
-	padding: 2px 5px;
+.lxl-qualifier-key,
+.lxl-qualifier-value {
+	color: green;
 }
 
-.lxl-qualifier-key {
-	color: green;
+.lxl-qualifier-key.atomic {
+	padding: 3px 0 3px 5px;
+	border-top-left-radius: 5px;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	background: rgba(14, 113, 128, 0.15);
+}
+
+.lxl-qualifier-value.atomic {
+	padding: 3px 0 3px 5px;
+	background: rgba(14, 113, 128, 0.15);
+}
+
+.lxl-qualifier-value.unlinked {
+	display: inline-flex;
+	padding: 3px 5px 3px 5px;
+	background: rgba(14, 113, 128, 0.05);
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+.lxl-qualifier-remove {
+	background: rgba(14, 113, 128, 0.15);
+	padding: 3px 5px 3px 10px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+.lxl-qualifier-key.invalid {
+	text-decoration: underline 2px solid;
+	text-decoration-color: rgba(255, 0, 0, 0.326);
 }
 
 .lxl-boolean-query {
