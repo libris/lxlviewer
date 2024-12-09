@@ -75,12 +75,12 @@ export async function asResult(
 	};
 }
 
-function displayMappings(
+export function displayMappings(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: translateFn,
-	usePath: string
+	usePath?: string
 ): DisplayMapping[] {
 	const mapping = view.search?.mapping || [];
 	return _iterateMapping(mapping);
@@ -94,11 +94,16 @@ function displayMappings(
 				return {
 					...(isObject(m.property) && { '@id': m.property['@id'] }),
 					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
+					displayStr: toString(displayUtil.lensAndFormat(property, LensType.Chip, locale)) || '',
 					label: m.alias
 						? translate(`facet.${m.alias}`)
 						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) ||
 							m.property?.['@id'] ||
 							'No label', // lensandformat?
+					property:
+						m.property?.librisQueryCode ||
+						m.property?.['@id'].replace('https://id.kb.se/vocab/', '') ||
+						'', //TODO replace with something better
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
@@ -238,10 +243,13 @@ function displayBoolFilters(
 /**
  * prevent links on resource page from pointing to /find
  */
-function replacePath(view: Link, usePath: string) {
-	return {
-		'@id': view['@id'].replace('/find', usePath)
-	};
+function replacePath(view: Link, usePath: string | undefined) {
+	if (usePath) {
+		return {
+			'@id': view['@id'].replace('/find', usePath)
+		};
+	}
+	return view;
 }
 
 function capitalize(str: string | undefined) {
