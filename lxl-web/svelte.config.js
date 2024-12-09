@@ -23,8 +23,15 @@ const config = {
 		csp: {
 			directives: {
 				'default-src': ['self'],
-				'script-src': ['self', 'https://analytics.kb.se'],
-				'connect-src': ['self', 'https://analytics.kb.se'],
+				// FIXME !!!!!!
+				'script-src': ['unsafe-eval', 'self', 'https://analytics.kb.se'],
+				// FIXME !!!!!!
+				'connect-src': [
+					'self',
+					'https://analytics.kb.se',
+					'https://libris-qa.kb.se/sparql',
+					'http://prefix.cc'
+				],
 				'style-src': ['self', 'unsafe-inline'],
 				'base-uri': ['self'],
 				'form-action': ['self'],
