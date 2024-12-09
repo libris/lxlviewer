@@ -16,3 +16,9 @@
 </script>
 
 <div id="yasgui"></div>
+
+<style>
+	:global(.yasgui .controlbar) {
+		display: none !important;
+	}
+</style>
