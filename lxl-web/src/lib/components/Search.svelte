@@ -122,12 +122,6 @@
 			{autofocus}
 			data-testid="main-search"
 		/>
-		<input type="hidden" name="_i" value={q} />
-		{#if $page.url.searchParams.get('_x') === 'advanced'}
-			<!-- keep 'edit' state on new search -->
-			<input type="hidden" name="_x" value="advanced" />
-		{/if}
-
 		<button
 			type="submit"
 			class="button-primary absolute right-1 top-1 rounded-full px-3 sm:right-2 sm:top-2 sm:px-4"
@@ -135,7 +129,13 @@
 			<BiSearch fill="currentColor" aria-hidden="true" />
 			<span class="sr-only sm:not-sr-only">{$page.data.t('search.search')}</span>
 		</button>
+		<input type="hidden" name="_i" value={q} />
+		{#if $page.url.searchParams.get('_x') === 'advanced'}
+			<!-- keep 'edit' state on new search -->
+			<input type="hidden" name="_x" value="advanced" />
+		{/if}
 	{/if}
+	<!-- params used by all search modes -->
 	{#each searchParams as [name, value]}
 		{#if name !== '_q'}
 			<input type="hidden" {name} {value} />
