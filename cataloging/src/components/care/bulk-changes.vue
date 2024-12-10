@@ -495,6 +495,7 @@ export default {
         this.completePreview = !(result['_complete'] === false);
         if (!this.completePreview) {
           if (isEmptyResult) {
+            this.previewError = translatePhrase('This might take a while...')
             setTimeout(() => {
               if (this.currentPreviewUrl === fetchUrl && !this.completePreview) {
                 this.getPreviewFromUrl(fetchUrl);
