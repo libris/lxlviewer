@@ -60,7 +60,7 @@
 						<button type="button">B</button>
 					{/if}
 					{#if index! < 3 || index! == 9 || index! === 4}
-						<button type="button">C</button>
+						<a href="#id">C</a>
 					{/if}
 				</div>
 			{/snippet}
@@ -115,6 +115,18 @@
 		& button:first-child {
 			flex: 1;
 			text-align: left;
+		}
+
+		& a {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-width: 44px;
+			min-height: 44px;
+		}
+
+		& button:first-child {
+			flex: 1;
 		}
 
 		& h2 {

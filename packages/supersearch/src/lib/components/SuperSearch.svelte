@@ -117,16 +117,16 @@
 			event.key === 'ArrowLeft'
 		) {
 			const focusableElements = Array.from(
-				(event.target as HTMLElement)
-					.closest('dialog')
-					?.querySelectorAll(`.cm-content, nav button`) || []
+				dialog?.querySelectorAll(':scope .cm-content, :scope button, :scope a') || []
 			);
 			const activeIndex = document.activeElement
 				? focusableElements?.indexOf(document.activeElement)
 				: -1;
-			const listItem = document.activeElement?.closest('dialog nav li');
+			const listItem = Array.from(
+				dialog?.querySelectorAll(':scope nav:first-of-type li') || []
+			).find((item) => item.contains(document.activeElement));
 			const focusableElementsInListItem = listItem
-				? Array.from(listItem.querySelectorAll('button'))
+				? Array.from(listItem.querySelectorAll(':scope button, :scope a'))
 				: [];
 			const columnIndex = focusableElementsInListItem?.indexOf(
 				document.activeElement as HTMLButtonElement
@@ -143,13 +143,13 @@
 			if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
 				const siblingListItem =
 					event.key === 'ArrowUp' ? listItem?.previousElementSibling : listItem?.nextElementSibling;
-				if (siblingListItem) {
+				if (siblingListItem instanceof HTMLLIElement) {
+					const focusableElementsInSibling =
+						Array.from(siblingListItem.querySelectorAll(':scope button, :scope a')) || [];
 					(
-						(
-							Array.from(
-								siblingListItem.querySelectorAll(`button:nth-of-type(-n + ${columnIndex + 1})`) // get closest available column in adjecent list item
-							) || []
-						).pop() as HTMLButtonElement
+						(focusableElementsInSibling[columnIndex] || focusableElementsInSibling.pop()) as
+							| HTMLButtonElement
+							| HTMLAnchorElement
 					)?.focus();
 				} else {
 					if (listItem) {
@@ -161,10 +161,10 @@
 											focusableElementsInListItem[focusableElementsInListItem.length - 1]
 										) + 1
 							] as HTMLElement
-						).focus();
+						)?.focus();
 					} else {
 						(
-							focusableElements[
+							focusableElements?.[
 								event.key === 'ArrowUp' ? activeIndex - 1 : activeIndex + 1
 							] as HTMLElement
 						)?.focus();
@@ -257,9 +257,11 @@
 			{#if search.isLoading}
 				Loading...
 			{:else if search.hasMorePaginatedData}
-				<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-					Load more
-				</button>
+				<li>
+					<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+						Load more
+					</button>
+				</li>
 			{/if}
 		</nav>
 	</div>
