@@ -7,8 +7,7 @@
 
 <script lang="ts">
 	import { DEV } from 'esm-env';
-	import { onMount, tick } from 'svelte';
-	import { afterNavigate } from '$app/navigation';
+	import { onMount } from 'svelte';
 	import { EditorView } from '@codemirror/view';
 	import { EditorState, StateEffect, type Extension, type SelectionRange } from '@codemirror/state';
 	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
@@ -95,16 +94,11 @@
 		});
 	});
 
-	afterNavigate(() => {
-		tick().then(() => {
-			editorView?.dispatch({
-				changes: {
-					from: 0,
-					to: editorView.state.doc.length,
-					insert: value
-				}
-			});
-		});
+	$effect(() => {
+		if (value !== editorView?.state.doc.toString()) {
+			// Reset editor when value changes from outside (= user navigating)
+			reset({ doc: value });
+		}
 	});
 
 	$effect(() => {
