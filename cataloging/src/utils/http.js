@@ -215,3 +215,11 @@ export function fetchPlainEtags(ids) {
     .all(ids.map((id) => getDocument(id, undefined, false)))
     .then((responses) => Object.fromEntries(responses.map((r) => [r.uri, r.ETag])));
 }
+
+export async function fetchJson (url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return await response.json();
+}
