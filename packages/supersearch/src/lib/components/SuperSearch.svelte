@@ -46,6 +46,7 @@
 	let collapsedEditorView: EditorView | undefined = $state();
 	let expandedEditorView: EditorView | undefined = $state();
 	let dialog: HTMLDialogElement | undefined = $state();
+	let cursor: number = $state(0);
 
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
@@ -59,7 +60,7 @@
 
 	$effect(() => {
 		if (value) {
-			search.debouncedFetchData(value);
+			search.debouncedFetchData(value, cursor);
 		}
 	});
 
@@ -81,6 +82,7 @@
 			showExpandedSearch();
 		}
 		value = event.value;
+		cursor = event.cursor;
 	}
 
 	function showExpandedSearch() {
