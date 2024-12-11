@@ -59,7 +59,7 @@
 	});
 
 	$effect(() => {
-		if (value) {
+		if (value && value.trim()) {
 			search.debouncedFetchData(value, cursor);
 		}
 	});
