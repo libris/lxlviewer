@@ -2,7 +2,7 @@
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
-	import { Compartment, type Extension } from '@codemirror/state';
+	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
@@ -60,6 +60,16 @@
 	$effect(() => {
 		if (value) {
 			search.debouncedFetchData(value);
+		}
+	});
+
+	const onDataUpdateEffect = StateEffect.define<{ message: string }>({});
+
+	$effect(() => {
+		if (search.data) {
+			const effects = { effects: onDataUpdateEffect.of({ message: 'new_data' }) };
+			expandedEditorView?.dispatch(effects);
+			collapsedEditorView?.dispatch(effects);
 		}
 	});
 

@@ -155,6 +155,14 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 			update(update: ViewUpdate) {
 				if (update.docChanged || syntaxTree(update.startState) != syntaxTree(update.state)) {
 					this.qualifiers = getQualifiers(update.view);
+				} else {
+					for (const tr of update.transactions) {
+						for (const e of tr.effects) {
+							if (e.value.message === 'new_data') {
+								this.qualifiers = getQualifiers(update.view);
+							}
+						}
+					}
 				}
 			}
 		},
