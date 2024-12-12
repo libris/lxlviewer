@@ -100,7 +100,7 @@ Query(
 ==>
 
 Query(
-  BooleanQuery(Group(...),Group(...))
+  BooleanQuery(Group(...),BooleanOperator,Group(...))
 )
 
 
