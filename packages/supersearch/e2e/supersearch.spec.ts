@@ -50,11 +50,7 @@ test('expanded search is closable', async ({ page }) => {
 		'by pressing the Escape key'
 	).not.toBeVisible();
 	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
-	await page
-		.locator('[data-test-id="test1"]')
-		.getByRole('dialog')
-		.first()
-		.click({ position: { x: 0, y: 0 } });
+	await page.mouse.click(0, 0);
 	await expect(
 		page.locator('[data-test-id="test1"]').getByRole('dialog').first(),
 		'by clicking outside'
