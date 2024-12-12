@@ -12,8 +12,8 @@ term {
 Group { "(" term* ")" } 
 
 BooleanQuery { 
-  (freetext | Qualifier) BooleanOperator (freetext | Qualifier) 
-  (BooleanOperator (freetext | Qualifier))+?
+  (freetext | Qualifier | Group ) BooleanOperator (freetext | Qualifier | Group ) 
+  (BooleanOperator (freetext | Qualifier | Group ))+?
 }
 
 Qualifier {
