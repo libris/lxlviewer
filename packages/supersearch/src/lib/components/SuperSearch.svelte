@@ -64,11 +64,11 @@
 		}
 	});
 
-	const onDataUpdateEffect = StateEffect.define<{ message: string }>({});
+	const searchStatus = StateEffect.define<{ message: string }>({});
 
 	$effect(() => {
 		if (search.data) {
-			const effects = { effects: onDataUpdateEffect.of({ message: 'new_data' }) };
+			const effects = { effects: searchStatus.of({ message: 'new_data' }) };
 			expandedEditorView?.dispatch(effects);
 			collapsedEditorView?.dispatch(effects);
 		}
