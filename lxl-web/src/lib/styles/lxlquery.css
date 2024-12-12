@@ -28,7 +28,7 @@
 	border-radius: 0;
 }
 
-.invalid {
+.invalid > .lxl-qualifier-key {
 	text-decoration: underline 2px solid;
 	text-decoration-color: rgba(255, 0, 0, 0.326);
 }
