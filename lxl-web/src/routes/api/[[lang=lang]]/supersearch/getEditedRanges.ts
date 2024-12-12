@@ -51,7 +51,7 @@ function getEditedRanges(
 		from: 0,
 		to: cursor,
 		enter(node) {
-			if (node.type.is('Qualifier') || node.type.is('Group')) {
+			if (node.type.is('Qualifier') || node.type.is('Group') || node.type.is('BooleanOperator')) {
 				if (node.to > cursor) {
 					from = node.from;
 					to = node.to;
@@ -70,7 +70,7 @@ function getEditedRanges(
 		to,
 		enter(node) {
 			if (
-				(node.type.is('Qualifier') || node.type.is('Group')) &&
+				(node.type.is('Qualifier') || node.type.is('Group') || node.type.is('BooleanOperator')) &&
 				node.from > cursor &&
 				node.from < to
 			) {

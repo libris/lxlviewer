@@ -102,4 +102,18 @@ describe('getEditedRanges', () => {
 			to: 11
 		});
 	});
+
+	it('calculates the edited range when editing a part before a boolean operator', () => {
+		expect(getEditedRanges('hello AND world', 5)).toEqual({
+			from: 0,
+			to: 6
+		});
+	});
+
+	it('calculates the edited range when editing a part after a boolean operator', () => {
+		expect(getEditedRanges('hello AND world', 12)).toEqual({
+			from: 9,
+			to: 15
+		});
+	});
 });
