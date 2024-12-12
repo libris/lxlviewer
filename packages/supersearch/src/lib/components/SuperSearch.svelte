@@ -2,7 +2,7 @@
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
-	import { Compartment, type Extension } from '@codemirror/state';
+	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
@@ -63,6 +63,16 @@
 		}
 	});
 
+	const searchStatus = StateEffect.define<{ message: string }>({});
+
+	$effect(() => {
+		if (search.data) {
+			const effects = { effects: searchStatus.of({ message: 'new_data' }) };
+			expandedEditorView?.dispatch(effects);
+			collapsedEditorView?.dispatch(effects);
+		}
+	});
+
 	const extensionsWithDefaults = [
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		submitFormOnEnterKey(form),
@@ -77,7 +87,7 @@
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		if (!dialog?.open) {
+		if (!dialog?.open && value !== event.value) {
 			showExpandedSearch();
 		}
 		value = event.value;

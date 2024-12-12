@@ -48,7 +48,7 @@
 			paginationQueryFn={handlePaginationQuery}
 			transformFn={handleTransform}
 			language={lxlQuery}
-			extensions={[lxlQualifierPlugin]}
+			extensions={[lxlQualifierPlugin()]}
 		>
 			{#snippet resultItem(item)}
 				<button type="button" class="result-item" data-test-id="result-item">
@@ -75,7 +75,7 @@
 				})}
 			paginationQueryFn={handlePaginationQuery}
 			language={lxlQuery}
-			extensions={[lxlQualifierPlugin]}
+			extensions={[lxlQualifierPlugin()]}
 		>
 			{#snippet resultItem(item)}
 				<button type="button" class="result-item" data-test-id="result-item">
