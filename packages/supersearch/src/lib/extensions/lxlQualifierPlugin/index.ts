@@ -52,7 +52,7 @@ class QualifierWidget extends WidgetType {
 	}
 	toDOM(): HTMLElement {
 		const container = document.createElement('span');
-		container.style.cssText = `position: relative; display:inline-flex`;
+		container.style.cssText = `position: relative; display:inline-table`;
 		mount(QualifierComponent, {
 			props: {
 				key: this.key,
@@ -109,27 +109,20 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 									true // atomic
 								)
 							});
-							const rangeFrom = node.from;
-							const rangeTo = valueLabel ? node.to : operatorNode?.to;
-							widgets.push(qualifierDecoration.range(rangeFrom, rangeTo));
+							const decorationRangeFrom = node.from;
+							const decorationRangeTo = valueLabel ? node.to : operatorNode?.to;
+							widgets.push(qualifierDecoration.range(decorationRangeFrom, decorationRangeTo));
 						} else {
 							// Add invalid key mark decoration
 							const qualifierMark = Decoration.mark({
-								class: 'lxl-qualifier-key invalid',
+								class: 'invalid',
 								inclusive: true,
 								atomic: false
 							});
-							widgets.push(qualifierMark.range(node.from, operatorNode?.to));
-						}
+							const invalidRangeFrom = keyNode ? keyNode.from : node.from;
+							const invalidRangeTo = keyNode ? keyNode.to : operatorNode?.from;
 
-						// add mark decoration for qualifier value if not included in widget
-						if (valueNode && value && !valueLabel) {
-							const qualifierMark = Decoration.mark({
-								class: keyLabel ? 'lxl-qualifier-value unlinked' : 'lxl-qualifier-value',
-								inclusive: true,
-								atomic: false
-							});
-							widgets.push(qualifierMark.range(valueNode.from, valueNode.to));
+							widgets.push(qualifierMark.range(invalidRangeFrom, invalidRangeTo));
 						}
 					}
 				}
@@ -154,7 +147,9 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 
 			update(update: ViewUpdate) {
 				if (update.docChanged || syntaxTree(update.startState) != syntaxTree(update.state)) {
-					this.qualifiers = getQualifiers(update.view);
+					// let's see how it works to run getQualifiers only on new data and not on input
+					// should be much better for performande...
+					// this.qualifiers = getQualifiers(update.view);
 				} else {
 					for (const tr of update.transactions) {
 						for (const e of tr.effects) {
