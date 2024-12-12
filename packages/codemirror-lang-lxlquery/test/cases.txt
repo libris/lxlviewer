@@ -89,7 +89,7 @@ sommar OR vinter NOT vår
 ==>
 
 Query(
-  BooleanQuery(Identifier, Identifier, Identifier)
+  BooleanQuery(Identifier, BooleanOperator, Identifier, BooleanOperator, Identifier)
 )
 
 
@@ -100,7 +100,7 @@ Query(
 ==>
 
 Query(
-  BooleanQuery(Group(...),Group(...))
+  BooleanQuery(Group(...),BooleanOperator,Group(...))
 )
 
 
@@ -110,7 +110,7 @@ OR AND sommar
 
 ==>
 
-Query(⚠, ⚠, Identifier)
+Query(⚠(BooleanOperator), ⚠(BooleanOperator), Identifier)
 
 
 # Combined: Qualifier and Freetext
@@ -131,7 +131,7 @@ träd* bibliografi:"sigel:DST" NOT typ:Text
 ==>
 
 Query(
-  Identifier, Wildcard, BooleanQuery(Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(String)), Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(Identifier)))
+  Identifier, Wildcard, BooleanQuery(Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(String)), BooleanOperator, Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(Identifier)))
 )
 
 
@@ -149,6 +149,7 @@ Query(
       Group(
         BooleanQuery(
           Identifier,
+          BooleanOperator,
           Identifier
         )
       )

@@ -56,14 +56,17 @@ export function useSearchRequest({
 		}
 	}
 
-	async function fetchData(query: string) {
-		data = await _fetchData(queryFn(query));
+	async function fetchData(query: string, cursor: number) {
+		data = await _fetchData(queryFn(query, cursor));
 		if (paginationQueryFn) {
 			paginatedData = [data];
 		}
 	}
 
-	const debouncedFetchData = debounce((query: string) => fetchData(query), debouncedWait);
+	const debouncedFetchData = debounce(
+		(query: string, cursor: number) => fetchData(query, cursor),
+		debouncedWait
+	);
 
 	async function fetchMoreData() {
 		if (moreSearchParams) {

@@ -64,11 +64,13 @@
 			language={lxlQuery}
 			placeholder={$page.data.t('search.search')}
 			endpoint={'/api/supersearch'}
-			queryFn={(query) =>
-				new URLSearchParams({
+			queryFn={(query, cursor) => {
+				return new URLSearchParams({
 					_q: query,
-					_limit: '10'
-				})}
+					_limit: '10',
+					cursor: cursor.toString()
+				});
+			}}
 			paginationQueryFn={handlePaginationQuery}
 			extensions={[lxlQualifierPlugin]}
 		>

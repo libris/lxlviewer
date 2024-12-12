@@ -12,8 +12,8 @@ term {
 Group { "(" term* ")" } 
 
 BooleanQuery { 
-  (freetext | Qualifier | Group ) booleanOperator (freetext | Qualifier | Group ) 
-  (booleanOperator (freetext | Qualifier | Group ))+?
+  (freetext | Qualifier | Group ) BooleanOperator (freetext | Qualifier | Group ) 
+  (BooleanOperator (freetext | Qualifier | Group ))+?
 }
 
 Qualifier {
@@ -47,7 +47,7 @@ freetext {
 
   CompareOperator { ">" | "<" | ">=" | "<=" }
 
-  booleanOperator { "AND" | "OR" | "NOT" }
+  BooleanOperator { "AND" | "OR" | "NOT" }
 
   Wildcard { "*"+ }
 
@@ -55,7 +55,7 @@ freetext {
 
   space { @whitespace+ }
 
-  @precedence { booleanOperator, reserved, Identifier }
+  @precedence { BooleanOperator, reserved, Identifier }
 }
 
 @detectDelim
