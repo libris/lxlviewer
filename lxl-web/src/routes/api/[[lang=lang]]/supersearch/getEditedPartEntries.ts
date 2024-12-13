@@ -17,7 +17,11 @@ const QUALIFIER_KEY_BY_BASE_CLASS = {
 
 const SKIP_QUALIFIERS = ['år'];
 
-function getEditedPartQuery(query: string, cursor: number): string {
+/**
+ * Gets the URLSearchParams entries which should be appended/replaced with new values when editing a part of a query.
+ */
+
+function getEditedPartEntries(query: string, cursor: number): [string, string][] {
 	const editedRanges = getEditedRanges(query, cursor);
 
 	/**
@@ -35,7 +39,7 @@ function getEditedPartQuery(query: string, cursor: number): string {
 		);
 
 		if (SKIP_QUALIFIERS.includes(qualifierKey.toLowerCase())) {
-			return query; // Keep query as is when editing year qualifiers
+			return []; // Keep query as is when editing year qualifiers
 		}
 
 		const baseClass = Object.entries(QUALIFIER_KEY_BY_BASE_CLASS).find(
@@ -43,16 +47,19 @@ function getEditedPartQuery(query: string, cursor: number): string {
 		)?.[0];
 
 		if (baseClass) {
-			return qualifierValue + `"rdf:type":${baseClass}`;
+			return [
+				['_q', qualifierValue + ` "rdf:type":${baseClass}`],
+				['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once
+			];
 		}
 
-		return qualifierKey + qualifierOperator + qualifierValue;
+		return [['_q', qualifierKey + qualifierOperator + qualifierValue]];
 	}
 
 	/**
-	 * Otherwise keep query as is...
+	 * Otherwise keep query entries as is
 	 */
-	return query;
+	return [];
 }
 
-export default getEditedPartQuery;
+export default getEditedPartEntries;
