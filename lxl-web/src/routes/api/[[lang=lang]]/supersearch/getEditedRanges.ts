@@ -5,14 +5,13 @@ type Range = {
 	to: number;
 };
 
-function getEditedRanges(
-	query: string,
-	cursor: number
-): Range & {
+export type EditedRanges = Range & {
 	qualifierKey?: Range;
 	qualifierOperator?: Range;
 	qualifierValue?: Range;
-} {
+};
+
+function getEditedRanges(query: string, cursor: number): EditedRanges {
 	const tree = lxlQuery.language.parser.parse(query);
 	const innerNode = tree.resolveInner(cursor);
 
