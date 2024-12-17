@@ -68,9 +68,6 @@
 	}
 
 	function handleTransform(data) {
-		// hijacking this function to set get autosuggest labels
-		// to not hardcode lxl-needs into useSearchRequest
-		// could also be new separate callback
 		suggestMapping = data?.mapping;
 		return data;
 	}
