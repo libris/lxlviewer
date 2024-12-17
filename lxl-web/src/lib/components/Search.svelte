@@ -71,6 +71,7 @@
 				})}
 			paginationQueryFn={handlePaginationQuery}
 			extensions={[lxlQualifierPlugin]}
+			toggleWithKeyboardShortcut
 		>
 			{#snippet resultItem(item)}
 				<button type="button">

@@ -49,11 +49,22 @@
 			transformFn={handleTransform}
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin]}
+			toggleWithKeyboardShortcut
 		>
-			{#snippet resultItem(item)}
-				<button type="button" class="result-item" data-test-id="result-item">
-					<h2>{item.heading}</h2>
-				</button>
+			{#snippet resultItem(item, index, focusedCellIndex)}
+				<div class="result-item" data-test-id="result-item">
+					<button type="button" role="gridcell" class:focused-cell={focusedCellIndex === 0}>
+						<h2>{item.heading}</h2>
+					</button>
+					{#if index! <= 4 || index == 9}
+						<button type="button" role="gridcell" class:focused-cell={focusedCellIndex === 1}
+							>B</button
+						>
+					{/if}
+					{#if index! < 3 || index! == 9 || index! === 4}
+						<a href="#id" role="gridcell" class:focused-cell={focusedCellIndex === 2}>C</a>
+					{/if}
+				</div>
 			{/snippet}
 		</SuperSearch>
 	</fieldset>
@@ -77,10 +88,12 @@
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin]}
 		>
-			{#snippet resultItem(item)}
-				<button type="button" class="result-item" data-test-id="result-item">
-					<h2>{item.heading}</h2>
-				</button>
+			{#snippet resultItem(item, index, focusedCellIndex)}
+				<div class="result-item" data-test-id="result-item" role="gridcell">
+					<button type="button" class:focused-cell={focusedCellIndex === 0}>
+						<h2>{item.heading} {index}</h2>
+					</button>
+				</div>
 			{/snippet}
 		</SuperSearch>
 	</fieldset>
@@ -92,9 +105,32 @@
 
 <style>
 	.result-item {
+		display: flex;
+		align-items: flex-start;
 		min-width: 480px;
-		min-height: 44px;
-		text-align: left;
+
+		& button {
+			min-width: 44px;
+			min-height: 44px;
+		}
+
+		& button:first-child {
+			flex: 1;
+			text-align: left;
+		}
+
+		& a {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-width: 44px;
+			min-height: 44px;
+		}
+
+		& button:first-child {
+			flex: 1;
+		}
+
 		& h2 {
 			font-weight: inherit;
 			font-size: inherit;
@@ -115,5 +151,9 @@
 
 	:global(.lxl-boolean-query, .lxl-wildcard) {
 		color: purple;
+	}
+
+	:global(button) {
+		background: none;
 	}
 </style>
