@@ -72,10 +72,13 @@
 		return data;
 	}
 
-	function getLabels(key: string, value?: string) {
-		let pageMapping = $page.data.searchResult?.mapping;
-		return getLabelFromMappings(key, value, pageMapping, suggestMapping);
-	}
+	let derivedLxlQualifierPlugin = $derived.by(() => {
+		function getLabels(key: string, value?: string) {
+			let pageMapping = $page.data.searchResult?.mapping;
+			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
+		}
+		return lxlQualifierPlugin(getLabels);
+	});
 </script>
 
 <form class="relative w-full" action="find" onsubmit={handleSubmit}>
@@ -95,7 +98,7 @@
 			}}
 			transformFn={handleTransform}
 			paginationQueryFn={handlePaginationQuery}
-			extensions={[lxlQualifierPlugin(getLabels)]}
+			extensions={[derivedLxlQualifierPlugin]}
 		>
 			{#snippet resultItem(item)}
 				<button type="button">
