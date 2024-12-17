@@ -51,16 +51,18 @@
 			extensions={[lxlQualifierPlugin]}
 			toggleWithKeyboardShortcut
 		>
-			{#snippet resultItem(item, index)}
+			{#snippet resultItem(item, index, focusedCellIndex)}
 				<div class="result-item" data-test-id="result-item">
-					<button type="button">
+					<button type="button" role="gridcell" class:focused-cell={focusedCellIndex === 0}>
 						<h2>{item.heading}</h2>
 					</button>
-					{#if index! <= 4}
-						<button type="button">B</button>
+					{#if index! <= 4 || index == 9}
+						<button type="button" role="gridcell" class:focused-cell={focusedCellIndex === 1}
+							>B</button
+						>
 					{/if}
 					{#if index! < 3 || index! == 9 || index! === 4}
-						<a href="#id">C</a>
+						<a href="#id" role="gridcell" class:focused-cell={focusedCellIndex === 2}>C</a>
 					{/if}
 				</div>
 			{/snippet}
@@ -86,10 +88,10 @@
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin]}
 		>
-			{#snippet resultItem(item)}
-				<div class="result-item" data-test-id="result-item">
-					<button type="button">
-						<h2>{item.heading}</h2>
+			{#snippet resultItem(item, index, focusedCellIndex)}
+				<div class="result-item" data-test-id="result-item" role="gridcell">
+					<button type="button" class:focused-cell={focusedCellIndex === 0}>
+						<h2>{item.heading} {index}</h2>
 					</button>
 				</div>
 			{/snippet}
@@ -149,5 +151,9 @@
 
 	:global(.lxl-boolean-query, .lxl-wildcard) {
 		color: purple;
+	}
+
+	:global(button) {
+		background: none;
 	}
 </style>

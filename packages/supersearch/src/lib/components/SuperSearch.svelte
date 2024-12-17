@@ -27,8 +27,9 @@
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
-		resultItem?: Snippet<[ResultItem, number?]>;
+		resultItem?: Snippet<[ResultItem, number?, number?]>;
 		toggleWithKeyboardShortcut?: boolean;
+		id?: string;
 	}
 
 	let {
@@ -43,12 +44,15 @@
 		transformFn,
 		extensions = [],
 		resultItem = fallbackResultItem,
-		toggleWithKeyboardShortcut = false
+		toggleWithKeyboardShortcut = false,
+		id = 'supersearch'
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
 	let expandedEditorView: EditorView | undefined = $state();
 	let dialog: HTMLDialogElement | undefined = $state();
+	let activeRowIndex: number = $state(0);
+	let activeColIndex: number = $state(0);
 
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
@@ -84,6 +88,10 @@
 			showExpandedSearch();
 		}
 		value = event.value;
+		activeRowIndex = -1;
+		activeColIndex = 0;
+
+		console.log('actievCollaa', activeColIndex);
 	}
 
 	function showExpandedSearch() {
@@ -112,65 +120,76 @@
 		 */
 		if (
 			event.key === 'ArrowUp' ||
-			event.key === 'ArrowRight' ||
 			event.key === 'ArrowDown' ||
-			event.key === 'ArrowLeft'
+			event.key === 'ArrowLeft' ||
+			event.key === 'ArrowRight' ||
+			event.key === 'Tab'
 		) {
-			const focusableElements = Array.from(
-				dialog?.querySelectorAll(':scope .cm-content, :scope button, :scope a') || []
-			);
-			const activeIndex = document.activeElement
-				? focusableElements?.indexOf(document.activeElement)
-				: -1;
-			const listItem = Array.from(
-				dialog?.querySelectorAll(':scope nav:first-of-type li') || []
-			).find((item) => item.contains(document.activeElement));
-			const focusableElementsInListItem = listItem
-				? Array.from(listItem.querySelectorAll(':scope button, :scope a'))
-				: [];
-			const columnIndex = focusableElementsInListItem?.indexOf(
-				document.activeElement as HTMLButtonElement
+			const rows = Array.from(
+				dialog?.querySelectorAll(':scope nav:first-of-type [role=row]') || []
 			);
 
-			if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-				(
-					focusableElementsInListItem[
-						event.key === 'ArrowLeft' ? columnIndex - 1 : columnIndex + 1
-					] as HTMLElement
-				)?.focus();
+			console.log('rows.length', rows.length);
+
+			if (event.key === 'ArrowUp' && activeRowIndex > 0) {
+				activeRowIndex = activeRowIndex - 1;
+				const colsInActiveRow = rows[activeRowIndex].querySelectorAll(':scope button, :scope a');
+				activeColIndex = Math.min(activeColIndex, colsInActiveRow.length - 1);
+			}
+			if (event.key === 'ArrowDown' && activeRowIndex < rows.length - 1) {
+				activeRowIndex = activeRowIndex + 1;
+				const colsInActiveRow = rows[activeRowIndex].querySelectorAll(':scope button, :scope a');
+				activeColIndex = Math.min(activeColIndex, colsInActiveRow.length - 1);
 			}
 
-			if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-				const siblingListItem =
-					event.key === 'ArrowUp' ? listItem?.previousElementSibling : listItem?.nextElementSibling;
-				if (siblingListItem instanceof HTMLLIElement) {
-					const focusableElementsInSibling =
-						Array.from(siblingListItem.querySelectorAll(':scope button, :scope a')) || [];
-					(
-						(focusableElementsInSibling[columnIndex] || focusableElementsInSibling.pop()) as
-							| HTMLButtonElement
-							| HTMLAnchorElement
-					)?.focus();
-				} else {
-					if (listItem) {
-						(
-							focusableElements[
-								event.key === 'ArrowUp'
-									? focusableElements.indexOf(focusableElementsInListItem[0]) - 1
-									: focusableElements.indexOf(
-											focusableElementsInListItem[focusableElementsInListItem.length - 1]
-										) + 1
-							] as HTMLElement
-						)?.focus();
+			if (event.key === 'ArrowLeft' && activeColIndex > 0) {
+				activeColIndex--;
+			}
+
+			if (event.key === 'ArrowRight') {
+				const colsInActiveRow = rows[activeRowIndex].querySelectorAll(':scope button, :scope a');
+				if (activeColIndex < colsInActiveRow.length - 1) {
+					activeColIndex++;
+				}
+			}
+
+			const activedescendant = `result-item-${activeRowIndex}x${activeColIndex}`;
+			console.log('activedescendant', activedescendant);
+
+			/*
+			  // ensure the input is in view
+					if (!this.isElementInView(this.input)) {
+						this.input.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+					}
+				};
+			*/
+			if (event.key === 'Tab') {
+				event.preventDefault();
+				// const activeCol = dialog!.querySelector('.focused-cell');
+				const colsInActiveRow = rows[activeRowIndex].querySelectorAll(':scope button, :scope a');
+
+				if (event.shiftKey) {
+					if (activeColIndex == 0) {
+						activeRowIndex--;
+						const colsInActiveRow =
+							rows[activeRowIndex].querySelectorAll(':scope button, :scope a');
+						activeColIndex = colsInActiveRow.length - 1;
 					} else {
-						(
-							focusableElements?.[
-								event.key === 'ArrowUp' ? activeIndex - 1 : activeIndex + 1
-							] as HTMLElement
-						)?.focus();
+						activeColIndex--;
+					}
+				} else {
+					if (activeColIndex < colsInActiveRow.length - 1) {
+						activeColIndex++;
+					} else {
+						activeRowIndex++;
+						activeColIndex = 0;
 					}
 				}
 			}
+		}
+
+		if (event.key === 'Enter') {
+			console.log('ENTER!');
 		}
 	}
 
@@ -216,6 +235,7 @@
 			prevPlaceholder = placeholder;
 		}
 	});
+	// aria-haspopup="grid" aria-expanded="false" aria-autocomplete="list" aria-controls="ex1-grid"
 </script>
 
 {#snippet fallbackResultItem(item: ResultItem)}
@@ -239,6 +259,17 @@
 			onchange={handleChangeCodeMirror}
 			bind:editorView={expandedEditorView}
 			syncedEditorView={collapsedEditorView}
+			contentAttributes={{
+				id: `${id}-content`,
+				role: 'combobox',
+				'aria-haspopup': 'grid',
+				'aria-expanded': 'true',
+				'aria-autocomplete': 'list',
+				'aria-controls': `${id}-grid`,
+				...(activeRowIndex >= 0 && {
+					'aria-activedescendant': `${id}-resultitem-${activeRowIndex}x${activeColIndex}`
+				})
+			}}
 		/>
 		<nav>
 			{#if search.data}
@@ -246,13 +277,13 @@
 					(Array.isArray(search.paginatedData) &&
 						search.paginatedData.map((page) => page.items).flat()) ||
 					search.data?.items}
-				<ul>
+				<div id={`${id}-grid`} role="grid">
 					{#each resultItems as item, index}
-						<li>
-							{@render resultItem?.(item, index)}
-						</li>
+						<div role="row" class:focused={activeRowIndex === index}>
+							{@render resultItem?.(item, index, activeRowIndex === index ? activeColIndex : -1)}
+						</div>
 					{/each}
-				</ul>
+				</div>
 			{/if}
 			{#if search.isLoading}
 				Loading...
@@ -260,6 +291,7 @@
 				<li>
 					<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
 						Load more
+						{activeRowIndex}x{activeColIndex}
 					</button>
 				</li>
 			{/if}
@@ -268,13 +300,15 @@
 </dialog>
 
 <style>
-	ul {
-		margin: 0;
-		padding: 0;
-		list-style-type: none;
-	}
-
 	dialog {
 		padding: 0;
+	}
+
+	.focused {
+		background: #ebebeb;
+
+		& :global(.focused-cell) {
+			background: lightgreen;
+		}
 	}
 </style>

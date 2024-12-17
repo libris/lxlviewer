@@ -19,6 +19,7 @@
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		editorView?: EditorView | undefined;
 		syncedEditorView?: EditorView | undefined;
+		contentAttributes?: { [name: string]: string };
 	};
 
 	let {
@@ -27,7 +28,8 @@
 		onclick = () => {},
 		onchange = () => {},
 		editorView = $bindable(),
-		syncedEditorView
+		syncedEditorView,
+		contentAttributes
 	}: CodeMirrorProps = $props();
 
 	const updateHandler = EditorView.updateListener.of((update) => {
@@ -56,9 +58,11 @@
 	let extensionsWithBaseHandlers: Extension[] = $derived([
 		updateHandler,
 		domEventHandler,
+		...(contentAttributes ? [EditorView.contentAttributes.of(contentAttributes)] : []),
 		...extensions
 	]);
 	let prevExtensions: Extension[] = extensions;
+	let prevContentAttributes: { [name: string]: string } = contentAttributes;
 
 	function createEditorState({ doc, selection }: { doc?: string; selection?: SelectionRange }) {
 		return EditorState.create({
@@ -96,7 +100,16 @@
 	});
 
 	$effect(() => {
+		if (contentAttributes !== prevContentAttributes) {
+			console.log('contentAttributes', contentAttributes);
+			reconfigureAllExtensions();
+			// we should use compartments here
+		}
+	});
+
+	$effect(() => {
 		if (extensions !== prevExtensions) {
+			console.log('reconfigureexternsns');
 			reconfigureAllExtensions();
 			prevExtensions = extensions;
 		}
