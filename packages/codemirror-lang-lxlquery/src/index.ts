@@ -34,7 +34,6 @@ export const lxlQueryLanguage = LRLanguage.define({
 });
 
 const highlighter = tagHighlighter([
-	// adding qualifier classes handled by sypersearch/lxlQualifier plugin
 	{ tag: tags.BooleanQuery, class: 'lxl-boolean-query' },
 	{ tag: tags.Wildcard, class: 'lxl-wildcard' },
 	{ tag: tags.Qualifier, class: 'lxl-qualifier' },

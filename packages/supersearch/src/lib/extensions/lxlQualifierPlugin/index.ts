@@ -11,6 +11,7 @@ import { syntaxTree } from '@codemirror/language';
 import { mount } from 'svelte';
 import QualifierComponent from './QualifierComponent.svelte';
 import insertQuotes from './insertQuotes.js';
+import { messages } from '$lib/constants/messages.js';
 
 export type Qualifier = {
 	key: string;
@@ -153,7 +154,7 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 				} else {
 					for (const tr of update.transactions) {
 						for (const e of tr.effects) {
-							if (e.value.message === 'new_data') {
+							if (e.value.message === messages.NEW_DATA) {
 								this.qualifiers = getQualifiers(update.view);
 							}
 						}

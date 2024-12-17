@@ -7,6 +7,7 @@
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
 	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
+	import { messages } from '$lib/constants/messages.js';
 	import type {
 		QueryFunction,
 		PaginationQueryFunction,
@@ -58,19 +59,19 @@
 		transformFn
 	});
 
-	$effect(() => {
-		if (value && value.trim()) {
-			search.debouncedFetchData(value, cursor);
-		}
-	});
-
-	const searchStatus = StateEffect.define<{ message: string }>({});
+	const sendMessage = StateEffect.define<{ message: string }>({});
+	const newDataMessage = { effects: sendMessage.of({ message: messages.NEW_DATA }) };
 
 	$effect(() => {
 		if (search.data) {
-			const effects = { effects: searchStatus.of({ message: 'new_data' }) };
-			expandedEditorView?.dispatch(effects);
-			collapsedEditorView?.dispatch(effects);
+			expandedEditorView?.dispatch(newDataMessage);
+			collapsedEditorView?.dispatch(newDataMessage);
+		}
+	});
+
+	$effect(() => {
+		if (value && value.trim()) {
+			search.debouncedFetchData(value, cursor);
 		}
 	});
 
