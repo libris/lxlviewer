@@ -4,13 +4,13 @@ import type { DisplayMapping } from '$lib/types/search';
 
 describe('getLabelsFromMapping', () => {
 	it('it returns labels when supplied with page mappings', () => {
-		const labels = getLabelsFromMapping('genreForm', 'saogf:Romaner', pageMapping, null);
+		const labels = getLabelsFromMapping('genreForm', 'saogf:Romaner', pageMapping, undefined);
 		expect(labels.keyLabel).toBe('Genre/form');
 		expect(labels.valueLabel).toBe('Romaner');
 	});
 
 	it('it returns labels when supplied with suggest mappings', () => {
-		const labels = getLabelsFromMapping('genreForm', 'saogf:Romaner', null, suggestMapping);
+		const labels = getLabelsFromMapping('genreForm', 'saogf:Romaner', undefined, suggestMapping);
 		expect(labels.keyLabel).toBe('Genre/form');
 		expect(labels.valueLabel).toBe('Romaner');
 	});
@@ -46,12 +46,12 @@ describe('getLabelsFromMapping', () => {
 	});
 
 	it('does not return a removelink when using suggest mappings', () => {
-		const labels = getLabelsFromMapping('genreForm', 'saogf:Romaner', null, suggestMapping);
+		const labels = getLabelsFromMapping('genreForm', 'saogf:Romaner', undefined, suggestMapping);
 		expect(labels.removeLink).toBe(undefined);
 	});
 
 	it('returns a removelink when using page mappings', () => {
-		const labels = getLabelsFromMapping('genreForm', 'saogf:Romaner', pageMapping, null);
+		const labels = getLabelsFromMapping('genreForm', 'saogf:Romaner', pageMapping, undefined);
 		expect(labels.removeLink).toBe('/find?_i=sommar&_q=sommar+%C3%85R:2023&_limit=20&_spell=true');
 	});
 });
