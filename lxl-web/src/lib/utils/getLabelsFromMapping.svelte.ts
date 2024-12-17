@@ -44,11 +44,14 @@ function iterateMapping(
 				} else if (el.property === key) {
 					keyLabel = el.label;
 					const isLinked = !!el.display?.['@id'];
-					// only use atomic ranges for linked values
-					if (isLinked && el.displayStr) {
-						valueLabel = el.displayStr;
+					if (isLinked) {
+						if (el.displayStr) {
+							// only use atomic ranges for linked values
+							valueLabel = el.displayStr;
+						}
+						// only show remove btn for pills that can't be edited
+						removeLink = el.up?.['@id'];
 					}
-					removeLink = el.up?.['@id'];
 				}
 			});
 		}
