@@ -48,12 +48,12 @@ function getEditedPartEntries(query: string, cursor: number): [string, string][]
 
 		if (baseClass) {
 			return [
-				['_q', `"rdf:type":${baseClass} ${qualifierValue}`],
+				['_qualifier', `"rdf:type":${baseClass} ${qualifierValue}`],
 				['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once
 			];
 		}
 
-		return [['_q', qualifierKey + qualifierOperator + qualifierValue]];
+		return [['_qualifier', qualifierKey + qualifierOperator + qualifierValue]];
 	}
 
 	/**
