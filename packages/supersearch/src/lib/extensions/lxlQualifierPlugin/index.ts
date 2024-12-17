@@ -18,7 +18,7 @@ export type Qualifier = {
 	operator: string;
 };
 
-type GetLabelFunction = (
+export type GetLabelFunction = (
 	key: string,
 	value?: string
 ) => {

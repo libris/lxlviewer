@@ -31,6 +31,12 @@ To use `supersearch` in a non-Svelte project ...
 | `resultItem`        | `Snippet<[ResultItem]>`   | A [Snippet](https://svelte.dev/docs/svelte/snippet) used for customized rendering of result items.    | `undefined`   |
 | `debouncedWait`     | `number`                  | The wait time, in milliseconds that debounce function should wait between invocated search queries.   | `300`         |
 
+&nbsp;
+Supersearch also exports a `lxlQualifierPlugin` that can be used (passed to the extensions prop) if you want atomic, stylable, removable, labeled pills from some key-value pairs in your editor. This requires:
+
+- Your language exporting `Qualifier` nodes consisting of `QualifierKey`, `QualifierOperator` and `QualifierValue` (i.e `key:value`).
+- Your pass a function of type `GetLabelFunction`, returning labels to be displayed and an optional remove link.
+
 ## Developing
 
 Install dependencies with `npm install` and start a development server:
