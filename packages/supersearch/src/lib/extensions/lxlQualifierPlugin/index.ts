@@ -148,9 +148,10 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 
 			update(update: ViewUpdate) {
 				if (update.docChanged || syntaxTree(update.startState) != syntaxTree(update.state)) {
-					// let's see how it works to run getQualifiers only on new data and not on input
-					// should be much better for performande...
-					// this.qualifiers = getQualifiers(update.view);
+					// TODO: Calling getQualifiers on every document change is probably not good for performance
+					// Try optimizing; either run the function only on certain kinds of input, or split getQualifiers;
+					// one that updates the widgets (on input) and one that looks for labels (on data update)
+					this.qualifiers = getQualifiers(update.view);
 				} else {
 					for (const tr of update.transactions) {
 						for (const e of tr.effects) {
