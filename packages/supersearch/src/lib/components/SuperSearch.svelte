@@ -59,13 +59,15 @@
 		transformFn
 	});
 
+	let prevSearchDataId: string | undefined;
 	const sendMessage = StateEffect.define<{ message: string }>({});
 	const newDataMessage = { effects: sendMessage.of({ message: messages.NEW_DATA }) };
 
 	$effect(() => {
-		if (search.data) {
+		if (search.data && search.data?.['@id'] !== prevSearchDataId) {
 			expandedEditorView?.dispatch(newDataMessage);
 			collapsedEditorView?.dispatch(newDataMessage);
+			prevSearchDataId = search.data?.['@id'];
 		}
 	});
 
