@@ -68,10 +68,12 @@ interface SpellingSuggestion {
 export interface DisplayMapping {
 	'@id'?: string;
 	display?: DisplayDecorated;
+	displayStr?: string;
 	up?: Link;
 	children?: DisplayMapping[];
 	label?: string;
 	operator: keyof typeof SearchOperators;
+	property?: string;
 }
 
 export interface PartialCollectionView {

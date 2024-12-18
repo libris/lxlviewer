@@ -37,14 +37,13 @@
 				selection: update.state.selection,
 				scrollIntoView: update.transactions?.[0].scrollIntoView
 			});
-		}
-
-		if (update.docChanged) {
-			value = update.state.doc.toString();
-			onchange({
-				value,
-				cursor: update.state.selection.main.anchor
-			});
+			if (update.docChanged) {
+				value = update.state.doc.toString();
+				onchange({
+					value,
+					cursor: update.state.selection.main.anchor
+				});
+			}
 		}
 	});
 
@@ -93,6 +92,13 @@
 			state: createEditorState({ doc: value }),
 			parent: codemirrorContainerElement
 		});
+	});
+
+	$effect(() => {
+		if (value !== editorView?.state.doc.toString()) {
+			// Reset editor when value changes from outside (= user navigating)
+			reset({ doc: value });
+		}
 	});
 
 	$effect(() => {

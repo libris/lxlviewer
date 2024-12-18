@@ -4,6 +4,8 @@ import type { RequestHandler } from './$types.ts';
 import { LxlLens } from '$lib/types/display';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { toString } from '$lib/utils/xl.js';
+import { displayMappings } from '$lib/utils/search.js';
+import { getTranslator } from '$lib/i18n/index.js';
 import getEditedPartEntries from './getEditedPartEntries.js';
 
 /**
@@ -15,6 +17,7 @@ import getEditedPartEntries from './getEditedPartEntries.js';
 export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const displayUtil = locals.display;
 	const locale = getSupportedLocale(params?.lang);
+	const translate = await getTranslator(locale);
 
 	const _q = url.searchParams.get('_q');
 	const cursor = parseInt(url.searchParams.get('cursor') || '0', 10);
@@ -42,6 +45,9 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 			'@type': item['@type'],
 			heading: toString(displayUtil.lensAndFormat(item, LxlLens.CardHeading, locale))
 		})),
+		...(data?.search?.mapping && {
+			mapping: displayMappings(data, displayUtil, locale, translate)
+		}),
 		totalItems: data.totalItems,
 		'@context': data['@context']
 	});

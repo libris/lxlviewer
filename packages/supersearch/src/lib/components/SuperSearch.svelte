@@ -2,11 +2,12 @@
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
-	import { Compartment, type Extension } from '@codemirror/state';
+	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
 	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
+	import { messages } from '$lib/constants/messages.js';
 	import type {
 		QueryFunction,
 		PaginationQueryFunction,
@@ -58,6 +59,18 @@
 		transformFn
 	});
 
+	let prevSearchDataId: string | undefined;
+	const sendMessage = StateEffect.define<{ message: string }>({});
+	const newDataMessage = { effects: sendMessage.of({ message: messages.NEW_DATA }) };
+
+	$effect(() => {
+		if (search.data && search.data?.['@id'] !== prevSearchDataId) {
+			expandedEditorView?.dispatch(newDataMessage);
+			collapsedEditorView?.dispatch(newDataMessage);
+			prevSearchDataId = search.data?.['@id'];
+		}
+	});
+
 	$effect(() => {
 		if (value && value.trim()) {
 			search.debouncedFetchData(value, cursor);
@@ -78,7 +91,7 @@
 	}
 
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
-		if (!dialog?.open) {
+		if (!dialog?.open && value !== event.value) {
 			showExpandedSearch();
 		}
 		value = event.value;
