@@ -50,6 +50,12 @@ npm run dev -- --open
 
 Everything inside `src/lib` is part of the library, everything inside `src/routes` can be used as a showcase or preview app.
 
+To watch `src/lib` and rebuild when it changes:
+
+```bash
+npm run watch
+```
+
 ## Building
 
 To build the library:
