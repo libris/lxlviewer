@@ -25,7 +25,7 @@ QualifierKey {
 }
 
 QualifierValue {
-  Identifier Wildcard? | String | Number | Group | Wildcard
+  Identifier Wildcard? | String | Number Wildcard? | Group | Wildcard
 }
 
 QualifierOperator {
