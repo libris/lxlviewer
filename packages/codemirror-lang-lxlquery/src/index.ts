@@ -8,7 +8,7 @@ import { styleTags, Tag, tagHighlighter } from '@lezer/highlight';
  * for the matching syntax
  */
 const tags = {
-	BooleanQuery: Tag.define('BooleanQuery'),
+	BooleanOperator: Tag.define('BooleanOperator'),
 	Wildcard: Tag.define('Wildcard'),
 	Qualifier: Tag.define('Qualifier'),
 	QualifierKey: Tag.define('QualifierKey'),
@@ -17,12 +17,12 @@ const tags = {
 };
 
 const tagMatcher = {
-	BooleanQuery: tags.BooleanQuery,
-	Wildcard: tags.Wildcard,
+	'BooleanQuery/BooleanOperator': tags.BooleanOperator, // only highlight operator within valid query
+	'Query/Wildcard': tags.Wildcard,
 	'Qualifier/...': tags.Qualifier,
-	'QualifierKey/...': tags.QualifierKey,
-	'QualifierOperator/...': tags.QualifierOperator,
-	'QualifierValue/...': tags.QualifierValue
+	'QualifierKey!': tags.QualifierKey,
+	'QualifierOperator!': tags.QualifierOperator,
+	'QualifierValue!': tags.QualifierValue
 };
 
 export const lxlQueryLanguage = LRLanguage.define({
@@ -34,7 +34,7 @@ export const lxlQueryLanguage = LRLanguage.define({
 });
 
 const highlighter = tagHighlighter([
-	{ tag: tags.BooleanQuery, class: 'lxl-boolean-query' },
+	{ tag: tags.BooleanOperator, class: 'lxl-boolean-operator' },
 	{ tag: tags.Wildcard, class: 'lxl-wildcard' },
 	{ tag: tags.Qualifier, class: 'lxl-qualifier' },
 	{ tag: tags.QualifierKey, class: 'lxl-qualifier-key' },
