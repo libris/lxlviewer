@@ -25,7 +25,7 @@ QualifierKey {
 }
 
 QualifierValue {
-  Identifier | String | Number | Group
+  Identifier Wildcard? | String | Number | Group | Wildcard
 }
 
 QualifierOperator {
@@ -49,7 +49,7 @@ freetext {
 
   BooleanOperator { "AND" | "OR" | "NOT" }
 
-  Wildcard { "*"+ }
+  Wildcard { "*" }
 
   reserved { "includeEplikt" | "includePreliminary" }
 

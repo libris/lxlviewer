@@ -82,6 +82,30 @@ Query(
 )
 
 
+# Qualifier with wildcard
+
+titel:kulturarv*
+
+==>
+
+Query(
+  Qualifier(QualifierKey(...), QualifierOperator(...), QualifierValue(Identifier, Wildcard))
+)
+
+# Qualifier with wildcard (invalid)
+
+subject*:vinter
+
+==>
+
+Query(
+  Identifier,
+  Wildcard,
+  ⚠(...),
+  Identifier
+)
+
+
 # BooleanQuery
 
 sommar OR vinter NOT vår
@@ -104,7 +128,7 @@ Query(
 )
 
 
-# BooleanQuery - erroneous
+# BooleanQuery (invalid)
 
 OR AND sommar
 
@@ -131,7 +155,12 @@ träd* bibliografi:"sigel:DST" NOT typ:Text
 ==>
 
 Query(
-  Identifier, Wildcard, BooleanQuery(Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(String)), BooleanOperator, Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(Identifier)))
+  Identifier, 
+  Wildcard, 
+  BooleanQuery(
+    Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(String)), 
+    BooleanOperator, 
+    Qualifier(QualifierKey(Identifier), QualifierOperator(EqualOperator), QualifierValue(Identifier)))
 )
 
 
@@ -165,7 +194,11 @@ image:*
 
 ==>
 
-Query(Qualifier(...))
+Query(
+  Qualifier(
+    QualifierKey(...), QualifierOperator(...), QualifierValue(Wildcard)
+  )
+)
 
 
 # Other filters: include E-plikt
