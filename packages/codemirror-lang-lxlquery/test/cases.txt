@@ -93,6 +93,17 @@ Query(
 )
 
 
+# BooleanQuery with groups
+
+(rummet röda) OR (rummet vita)
+
+==>
+
+Query(
+  BooleanQuery(Group(...),Group(...))
+)
+
+
 # BooleanQuery - erroneous
 
 OR AND sommar

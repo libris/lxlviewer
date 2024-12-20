@@ -54,6 +54,7 @@ export default {
       'record.inDataset',
       'record.sameAs',
       'mainEntity.sameAs',
+      'mainEntity.bulk:execution',
       'work.sameAs',
       "record['@reverse']", // prevent visual bugs
       "mainEntity['@reverse']", // prevent visual bugs
