@@ -134,7 +134,7 @@ type MappingObj = { [key in SearchOperators]: SearchMapping[] | string | FramedD
 
 export interface SearchMapping extends MappingObj {
 	alias: string;
-	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
+	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom | InvalidProperty;
 	object?: FramedData;
 	up: { '@id': string };
 }
@@ -146,6 +146,11 @@ interface ObjectProperty {
 export interface DatatypeProperty {
 	'@type': 'DataTypeProperty';
 	'@id': string;
+}
+
+interface InvalidProperty {
+	'@type': '_Invalid';
+	label: string;
 }
 
 interface PropertyChainAxiom {

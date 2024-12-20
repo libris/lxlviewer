@@ -26,6 +26,8 @@ import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
+import { error } from '@sveltejs/kit';
+import { env } from '$env/dynamic/public';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -90,6 +92,17 @@ export function displayMappings(
 			const operator = _hasOperator(m);
 
 			if ('property' in m && operator) {
+				// Mock old behaviour for 'classic' search GUI, i.e show error page
+				// when encountering an invalid property in order to provide feedback.
+				// TODO remove this when Supersearch is fully implemented.
+				const useSuperSearch = env?.PUBLIC_USE_SUPERSEARCH === 'true';
+				const _propertyType = m.property?.['@type'];
+				if (!useSuperSearch && _propertyType === '_Invalid') {
+					error(400, {
+						message: `Invalid query, please check the documentation. Unrecognized property alias: ${m.property?.label ?? ''}`
+					});
+				}
+
 				const property = m[operator] as FramedData;
 				return {
 					...(isObject(m.property) && { '@id': m.property['@id'] }),
@@ -102,7 +115,7 @@ export function displayMappings(
 							'No label', // lensandformat?
 					property:
 						m.property?.librisQueryCode ||
-						m.property?.['@id'].replace('https://id.kb.se/vocab/', '') ||
+						m.property?.['@id']?.replace('https://id.kb.se/vocab/', '') ||
 						'', //TODO replace with something better
 					operator,
 					...('up' in m && { up: replacePath(m.up as Link, usePath) })
