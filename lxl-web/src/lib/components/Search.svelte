@@ -88,7 +88,7 @@
 			bind:value={q}
 			language={lxlQuery}
 			placeholder={$page.data.t('search.search')}
-			endpoint={'/api/supersearch'}
+			endpoint={`/api/${$page.data.locale}/supersearch`}
 			queryFn={(query, cursor) => {
 				return new URLSearchParams({
 					_q: query,
