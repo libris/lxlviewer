@@ -13,6 +13,7 @@ function getLabelFromMappings(
 
 	const keyLabel = suggestLabels.keyLabel || pageLabels.keyLabel;
 	const valueLabel = suggestLabels.valueLabel || pageLabels.valueLabel;
+	const invalid = suggestLabels.invalid || pageLabels.invalid;
 	// only page data have 'up' links we can use
 	const removeLink = pageLabels.keyLabel ? pageLabels.removeLink : undefined;
 
@@ -22,7 +23,7 @@ function getLabelFromMappings(
 		prevSuggestMapping = suggestMapping;
 	}
 
-	return { keyLabel, valueLabel, removeLink };
+	return { keyLabel, valueLabel, removeLink, invalid };
 }
 
 function iterateMapping(
@@ -33,6 +34,7 @@ function iterateMapping(
 	let keyLabel: string | undefined;
 	let valueLabel: string | undefined;
 	let removeLink: string | undefined;
+	let invalid: boolean = false;
 
 	if (mapping && Array.isArray(mapping)) {
 		_iterate(mapping);
@@ -52,11 +54,13 @@ function iterateMapping(
 						// only show remove btn for pills that can't be edited
 						removeLink = el.up?.['@id'];
 					}
+				} else if (el.invalid === key) {
+					invalid = true;
 				}
 			});
 		}
 	}
-	return { keyLabel, valueLabel, removeLink };
+	return { keyLabel, valueLabel, removeLink, invalid };
 }
 
 export default getLabelFromMappings;

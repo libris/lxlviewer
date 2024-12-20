@@ -26,6 +26,7 @@ export type GetLabelFunction = (
 	keyLabel?: string;
 	valueLabel?: string;
 	removeLink?: string;
+	invalid?: boolean;
 };
 
 class QualifierWidget extends WidgetType {
@@ -93,7 +94,7 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 						const valueNode = node.node.getChild('QualifierValue');
 						const value = valueNode ? doc.slice(valueNode?.from, valueNode?.to) : undefined;
 
-						const { keyLabel, valueLabel, removeLink } = getLabelFn?.(key, value) || {};
+						const { keyLabel, valueLabel, removeLink, invalid } = getLabelFn?.(key, value) || {};
 
 						// Add qualifier widget
 						if (keyLabel) {
@@ -113,7 +114,7 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 							const decorationRangeFrom = node.from;
 							const decorationRangeTo = valueLabel ? node.to : operatorNode?.to;
 							widgets.push(qualifierDecoration.range(decorationRangeFrom, decorationRangeTo));
-						} else {
+						} else if (invalid) {
 							// Add invalid key mark decoration
 							const qualifierMark = Decoration.mark({
 								class: 'invalid',

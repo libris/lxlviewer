@@ -35,7 +35,7 @@ To use `supersearch` in a non-Svelte project ...
 Supersearch also exports a `lxlQualifierPlugin` that can be used (passed to the extensions prop) if you want atomic, stylable, removable, labeled pills from some key-value pairs in your editor. This requires:
 
 - Your language exporting `Qualifier` nodes consisting of `QualifierKey`, `QualifierOperator` and `QualifierValue` (i.e `key:value`).
-- Your pass a function of type `GetLabelFunction`, returning labels to be displayed and an optional remove link.
+- Passing a function of type `GetLabelFunction`, returning labels to be displayed, an optional remove link and an optional `invalid` flag, which enables styling of invalid queries.
 
 ## Developing
 

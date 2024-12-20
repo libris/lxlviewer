@@ -117,6 +117,7 @@ export function displayMappings(
 						m.property?.['@id']?.replace('https://id.kb.se/vocab/', '') ||
 						'', //TODO replace with something better
 					operator,
+					...(m.property?.['@type'] === '_Invalid' && { invalid: m.property?.label }),
 					...('up' in m && { up: replacePath(m.up as Link, usePath) })
 				} as DisplayMapping;
 			} else if (operator && operator in m && Array.isArray(m[operator])) {
