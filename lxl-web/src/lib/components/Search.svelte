@@ -99,6 +99,7 @@
 			transformFn={handleTransform}
 			paginationQueryFn={handlePaginationQuery}
 			extensions={[derivedLxlQualifierPlugin]}
+			toggleWithKeyboardShortcut
 		>
 			{#snippet resultItem(item)}
 				<button type="button">

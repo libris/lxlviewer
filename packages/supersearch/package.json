@@ -52,7 +52,7 @@
 		"eslint": "^9.7.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.36.0",
-		"esm-env": "^1.1.4",
+		"esm-env": "^1.2.1",
 		"globals": "^15.0.0",
 		"prettier": "^3.3.2",
 		"prettier-plugin-css-order": "^2.1.2",
