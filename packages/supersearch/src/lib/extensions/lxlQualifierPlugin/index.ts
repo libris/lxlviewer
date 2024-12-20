@@ -139,19 +139,26 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 		return decoration.spec?.atomic || decoration.spec?.widget?.atomic;
 	};
 
+	// let _v = null;
+
 	const qualifierPlugin = ViewPlugin.fromClass(
 		class {
 			qualifiers: DecorationSet;
+			// atoms: readonly RangeSet<any>[]
 			constructor(view: EditorView) {
 				this.qualifiers = getQualifiers(view);
+				// this.atoms = null;
 			}
 
 			update(update: ViewUpdate) {
+				// console.log(this.qualifiers);
 				if (update.docChanged || syntaxTree(update.startState) != syntaxTree(update.state)) {
 					// TODO: Calling getQualifiers on every document change is probably not good for performance
 					// Try optimizing; either run the function only on certain kinds of input, or split getQualifiers;
 					// one that updates the widgets (on input) and one that looks for labels (on data update)
 					this.qualifiers = getQualifiers(update.view);
+					// this.atoms = update.view.state.facet(EditorView.atomicRanges).map(f => f(update.view))
+					// console.log(this.qualifiers);
 				} else {
 					for (const tr of update.transactions) {
 						for (const e of tr.effects) {
@@ -168,10 +175,49 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 			eventHandlers: {},
 			provide: (plugin) => [
 				EditorView.atomicRanges.of((view) => {
+					// _v = view;
 					const filteredRanges = view.plugin(plugin)?.qualifiers.update({ filter: filterAtomic });
 					return filteredRanges || Decoration.none;
 				}),
+				EditorView.inputHandler.of((view, from, to, text, insert) => {
+					console.log(from, to, text, view, insert);
+					return false;
+				}),
+				// EditorView.updatelistener.of
 				EditorState.transactionFilter.of(insertQuotes)
+				// EditorState.transactionFilter.of((tr) => {
+				// 	if (!tr.docChanged || (tr.isUserEvent('delete') && tr.state.selection.main.head === 0)) {
+				// 		return tr;
+				// 	} else {
+				// 		// console.log(tr.isUserEvent('input'))
+				// 		let found = false;
+				// 		const changes =
+				// 			{
+				// 				changes: {
+				// 					from: tr.state.selection.main.head,
+				// 					to: tr.state.selection.main.head,
+				// 					insert: ' '
+				// 				},
+				// 				sequential: true,
+				// 				selection: { anchor: tr.state.selection.main.head }
+				// 			};
+				// 		const atoms = tr.state.facet(EditorView.atomicRanges).map(f => f(_v))
+				// 		for (const set of atoms) {
+				// 			set.between(0, tr.state.doc.length, (from, to, value) => {
+				// 				// console.log(from, to, value)
+				// 				// console.log(tr.startState.selection.main.head)
+				// 				if (tr.startState.selection.main.head === from) {
+				// 					// console.log('eureka!')
+				// 					found = true;
+				// 					return false;
+
+				// 				}
+				// 				// return true;
+				// 			})
+				// 		}
+				// 		return found ? [tr, changes] : tr;
+				// 	}
+				// })
 			]
 		}
 	);
