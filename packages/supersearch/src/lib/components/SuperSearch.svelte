@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
-	import { browser } from '$app/environment';
+	import { BROWSER } from 'esm-env';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
@@ -141,14 +141,14 @@
 	}
 
 	onMount(() => {
-		if (browser && toggleWithKeyboardShortcut) {
+		if (BROWSER && toggleWithKeyboardShortcut) {
 			document.addEventListener('keydown', handleKeyboardShortcut);
 		}
 		dialog?.addEventListener('click', handleClickOutsideDialog);
 	});
 
 	onDestroy(() => {
-		if (browser) {
+		if (BROWSER) {
 			document.removeEventListener('keydown', handleKeyboardShortcut);
 		}
 		dialog?.removeEventListener('click', handleClickOutsideDialog);
