@@ -96,8 +96,7 @@ export function displayMappings(
 				// when encountering an invalid property in order to provide feedback.
 				// TODO remove this when Supersearch is fully implemented.
 				const useSuperSearch = env?.PUBLIC_USE_SUPERSEARCH === 'true';
-				const _propertyType = m.property?.['@type'];
-				if (!useSuperSearch && _propertyType === '_Invalid') {
+				if (!useSuperSearch && m.property?.['@type'] === '_Invalid') {
 					error(400, {
 						message: `Invalid query, please check the documentation. Unrecognized property alias: ${m.property?.label ?? ''}`
 					});
