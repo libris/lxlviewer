@@ -84,6 +84,7 @@
 	<fieldset data-test-id="test2">
 		<legend>Supersearch using <code>form</code> attribute</legend>
 		<SuperSearch
+			id="supersearch-using-form-attribute"
 			name="q"
 			bind:value={value2}
 			{placeholder}

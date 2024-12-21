@@ -73,18 +73,20 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 	await page
 		.locator('[data-test-id="test1"]')
 		.getByRole('dialog')
-		.getByRole('textbox')
+		.getByRole('combobox')
 		.locator('div')
 		.fill('Hello world');
 	await page
 		.locator('[data-test-id="test1"]')
 		.getByRole('dialog')
-		.getByRole('textbox')
+		.getByRole('combobox')
+		.locator('div')
 		.selectText();
 	await page
 		.locator('[data-test-id="test1"]')
 		.getByRole('dialog')
-		.getByRole('textbox')
+		.getByRole('combobox')
+		.locator('div')
 		.press('Escape');
 	await expect(
 		await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div'),
@@ -101,7 +103,7 @@ test('fetches and displays paginated results', async ({ page }) => {
 	await page
 		.locator('[data-test-id="test1"]')
 		.getByRole('dialog')
-		.getByRole('textbox')
+		.getByRole('combobox')
 		.locator('div')
 		.fill('Hello');
 	await expect(page.locator('[data-test-id="result-item"]').first()).toContainText('Heading 1');
