@@ -6,12 +6,13 @@ import {
 	WidgetType,
 	type DecorationSet
 } from '@codemirror/view';
-import { EditorState, type Range } from '@codemirror/state';
+import { EditorState, Range, RangeSet, RangeSetBuilder, RangeValue } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount } from 'svelte';
 import QualifierComponent from './QualifierComponent.svelte';
 import insertQuotes from './insertQuotes.js';
 import { messages } from '$lib/constants/messages.js';
+import insertSpace from './insertSpace.js';
 
 export type Qualifier = {
 	key: string;
@@ -37,8 +38,7 @@ class QualifierWidget extends WidgetType {
 		readonly valueLabel: string | undefined,
 		readonly operator: string,
 		readonly operatorType: string | undefined,
-		readonly removeLink: string | undefined,
-		readonly atomic: boolean
+		readonly removeLink: string | undefined
 	) {
 		super();
 	}
@@ -72,8 +72,11 @@ class QualifierWidget extends WidgetType {
 }
 
 function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
+	let atomicRangeSet: RangeSet<RangeValue> = RangeSet.empty;
+
 	function getQualifiers(view: EditorView) {
 		const widgets: Range<Decoration>[] = [];
+		const ranges = new RangeSetBuilder();
 		const doc = view.state.doc.toString();
 
 		for (const { from, to } of view.visibleRanges) {
@@ -106,19 +109,19 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 									valueLabel,
 									operator,
 									operatorType,
-									removeLink,
-									true // atomic
+									removeLink
 								)
 							});
 							const decorationRangeFrom = node.from;
 							const decorationRangeTo = valueLabel ? node.to : operatorNode?.to;
+
+							ranges.add(decorationRangeFrom, decorationRangeTo || node.to, qualifierDecoration);
 							widgets.push(qualifierDecoration.range(decorationRangeFrom, decorationRangeTo));
 						} else {
 							// Add invalid key mark decoration
 							const qualifierMark = Decoration.mark({
 								class: 'invalid',
-								inclusive: true,
-								atomic: false
+								inclusive: true
 							});
 							const invalidRangeFrom = keyNode ? keyNode.from : node.from;
 							const invalidRangeTo = keyNode ? keyNode.to : operatorNode?.from;
@@ -129,36 +132,23 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 				}
 			});
 		}
-		return Decoration.set(widgets, true); // true = sort
+		atomicRangeSet = ranges.finish();
+		return Decoration.set(widgets, true);
 	}
-
-	/**
-	 * filter out non-atomics using custom property 'atomic'
-	 */
-	const filterAtomic = (from: number, to: number, decoration: Decoration) => {
-		return decoration.spec?.atomic || decoration.spec?.widget?.atomic;
-	};
-
-	// let _v = null;
 
 	const qualifierPlugin = ViewPlugin.fromClass(
 		class {
 			qualifiers: DecorationSet;
-			// atoms: readonly RangeSet<any>[]
 			constructor(view: EditorView) {
 				this.qualifiers = getQualifiers(view);
-				// this.atoms = null;
 			}
 
 			update(update: ViewUpdate) {
-				// console.log(this.qualifiers);
 				if (update.docChanged || syntaxTree(update.startState) != syntaxTree(update.state)) {
 					// TODO: Calling getQualifiers on every document change is probably not good for performance
 					// Try optimizing; either run the function only on certain kinds of input, or split getQualifiers;
 					// one that updates the widgets (on input) and one that looks for labels (on data update)
 					this.qualifiers = getQualifiers(update.view);
-					// this.atoms = update.view.state.facet(EditorView.atomicRanges).map(f => f(update.view))
-					// console.log(this.qualifiers);
 				} else {
 					for (const tr of update.transactions) {
 						for (const e of tr.effects) {
@@ -172,52 +162,10 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 		},
 		{
 			decorations: (instance) => instance.qualifiers,
-			eventHandlers: {},
-			provide: (plugin) => [
-				EditorView.atomicRanges.of((view) => {
-					// _v = view;
-					const filteredRanges = view.plugin(plugin)?.qualifiers.update({ filter: filterAtomic });
-					return filteredRanges || Decoration.none;
-				}),
-				EditorView.inputHandler.of((view, from, to, text, insert) => {
-					console.log(from, to, text, view, insert);
-					return false;
-				}),
-				// EditorView.updatelistener.of
-				EditorState.transactionFilter.of(insertQuotes)
-				// EditorState.transactionFilter.of((tr) => {
-				// 	if (!tr.docChanged || (tr.isUserEvent('delete') && tr.state.selection.main.head === 0)) {
-				// 		return tr;
-				// 	} else {
-				// 		// console.log(tr.isUserEvent('input'))
-				// 		let found = false;
-				// 		const changes =
-				// 			{
-				// 				changes: {
-				// 					from: tr.state.selection.main.head,
-				// 					to: tr.state.selection.main.head,
-				// 					insert: ' '
-				// 				},
-				// 				sequential: true,
-				// 				selection: { anchor: tr.state.selection.main.head }
-				// 			};
-				// 		const atoms = tr.state.facet(EditorView.atomicRanges).map(f => f(_v))
-				// 		for (const set of atoms) {
-				// 			set.between(0, tr.state.doc.length, (from, to, value) => {
-				// 				// console.log(from, to, value)
-				// 				// console.log(tr.startState.selection.main.head)
-				// 				if (tr.startState.selection.main.head === from) {
-				// 					// console.log('eureka!')
-				// 					found = true;
-				// 					return false;
-
-				// 				}
-				// 				// return true;
-				// 			})
-				// 		}
-				// 		return found ? [tr, changes] : tr;
-				// 	}
-				// })
+			provide: () => [
+				EditorView.atomicRanges.of(() => atomicRangeSet),
+				EditorState.transactionFilter.of(insertQuotes),
+				insertSpace(() => atomicRangeSet)
 			]
 		}
 	);
@@ -225,3 +173,24 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 }
 
 export default lxlQualifierPlugin;
+
+// elegant
+// Plugin Class
+// class WhitespacePlugin {
+// 	constructor(view) {
+// 			this.whitespace = spaceMatcher.createDeco(view);
+// 	}
+// 	update(update) {
+// 			this.whitespace = spaceMatcher.updateDeco(
+// 				update, this.whitespace);
+// 	}
+// }
+
+// // Plugin
+// const displayWhitespace = ViewPlugin.fromClass(
+// WhitespacePlugin, {
+// 	provide: plugin =>
+// 		EditorView.atomicRanges.of(
+// 			view => view.plugin(plugin).whitespace),
+// 	decorations: instance => instance.whitespace
+// });
