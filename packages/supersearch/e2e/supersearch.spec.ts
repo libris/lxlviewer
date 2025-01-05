@@ -5,21 +5,13 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('submits closest form on enter key press', async ({ page }) => {
-	await page
-		.locator('[data-test-id="test1"]')
-		.getByRole('textbox')
-		.locator('div')
-		.fill('hello world');
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').fill('hello world');
 	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL('/test1?q=hello+world');
 });
 
 test('submits form identified by form attribute on enter key press', async ({ page }) => {
-	await page
-		.locator('[data-test-id="test2"]')
-		.getByRole('textbox')
-		.locator('div')
-		.fill('hello world');
+	await page.locator('[data-test-id="test2"]').getByRole('textbox').fill('hello world');
 	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL('/test2?q=hello+world');
 });
@@ -29,27 +21,27 @@ test('prevents new line characters (e.g. when pasting multi-lined text', async (
 	context
 }) => {
 	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').first().locator('div').click();
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').first().click();
 	await page.evaluate(() =>
 		navigator.clipboard.writeText(`One
 two
 three`)
 	);
 	await page.keyboard.press(`ControlOrMeta+v`);
-	await expect(
-		page.locator('[data-test-id="test1"]').getByRole('textbox').first().locator('div')
-	).toHaveText('One two three');
+	await expect(page.locator('[data-test-id="test1"]').getByRole('textbox').first()).toHaveText(
+		'One two three'
+	);
 });
 
 test('expanded search is closable', async ({ page }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').click();
 	await expect(page.locator('[data-test-id="test1"]').getByRole('dialog').first()).toBeVisible();
 	await page.keyboard.press('Escape');
 	await expect(
 		page.locator('[data-test-id="test1"]').getByRole('dialog').first(),
 		'by pressing the Escape key'
 	).not.toBeVisible();
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').click();
 	await page.mouse.click(0, 0);
 	await expect(
 		page.locator('[data-test-id="test1"]').getByRole('dialog').first(),
@@ -69,27 +61,24 @@ test('expanded search is togglable using keyboard shortcut', async ({ page }) =>
 });
 
 test('syncs collapsed and expanded editor views', async ({ page }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').click();
 	await page
 		.locator('[data-test-id="test1"]')
 		.getByRole('dialog')
 		.getByRole('combobox')
-		.locator('div')
 		.fill('Hello world');
 	await page
 		.locator('[data-test-id="test1"]')
 		.getByRole('dialog')
 		.getByRole('combobox')
-		.locator('div')
 		.selectText();
 	await page
 		.locator('[data-test-id="test1"]')
 		.getByRole('dialog')
 		.getByRole('combobox')
-		.locator('div')
 		.press('Escape');
 	await expect(
-		await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div'),
+		await page.locator('[data-test-id="test1"]').getByRole('textbox'),
 		'contents should be synced'
 	).toHaveText('Hello world');
 	expect(
@@ -99,12 +88,11 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 });
 
 test('fetches and displays paginated results', async ({ page }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').locator('div').click();
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').click();
 	await page
 		.locator('[data-test-id="test1"]')
 		.getByRole('dialog')
 		.getByRole('combobox')
-		.locator('div')
 		.fill('Hello');
 	await expect(page.locator('[data-test-id="result-item"]').first()).toContainText('Heading 1');
 	await expect(page.locator('[data-test-id="result-item"]')).toHaveCount(10);
