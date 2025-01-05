@@ -60,6 +60,43 @@ test('expanded search is togglable using keyboard shortcut', async ({ page }) =>
 	).not.toBeVisible();
 });
 
+test('supports keyboard navigation', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').fill('a');
+	const comboboxElement = page.locator('[data-test-id="test1"]').getByRole('combobox');
+	await expect(comboboxElement).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-result-item-0x0'
+	);
+	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
+	await page.keyboard.press('ArrowDown');
+	await expect(comboboxElement).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-result-item-1x0'
+	);
+	await expect(page.locator('#supersearch-result-item-1x0')).toHaveClass(/focused-cell/);
+	await page.keyboard.press('ArrowRight');
+	await expect(comboboxElement).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-result-item-1x1'
+	);
+	await page.keyboard.press('ArrowRight');
+	await expect(comboboxElement).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-result-item-1x2'
+	);
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await expect(comboboxElement).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-result-item-3x1'
+	);
+	await page.keyboard.press('ArrowUp');
+	await expect(comboboxElement).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-result-item-2x1'
+	);
+});
+
 test('syncs collapsed and expanded editor views', async ({ page }) => {
 	await page.locator('[data-test-id="test1"]').getByRole('textbox').click();
 	await page
