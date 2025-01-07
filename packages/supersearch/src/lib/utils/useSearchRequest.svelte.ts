@@ -11,7 +11,7 @@ export function useSearchRequest({
 	queryFn,
 	paginationQueryFn,
 	transformFn,
-	debouncedWait
+	debouncedWait = 300
 }: {
 	endpoint: string | URL;
 	queryFn: QueryFunction;

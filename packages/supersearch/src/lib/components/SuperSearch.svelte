@@ -34,6 +34,7 @@
 		>;
 		defaultRow?: number;
 		toggleWithKeyboardShortcut?: boolean;
+		debouncedWait?: number;
 	}
 
 	let {
@@ -50,7 +51,8 @@
 		extensions = [],
 		resultItem = fallbackResultItem,
 		toggleWithKeyboardShortcut = false,
-		defaultRow = 0
+		defaultRow = 0,
+		debouncedWait = 300
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -71,7 +73,8 @@
 		endpoint,
 		queryFn,
 		paginationQueryFn,
-		transformFn
+		transformFn,
+		debouncedWait
 	});
 
 	let prevSearchDataId: string | undefined;
