@@ -255,7 +255,10 @@
 								activeColIndex--;
 							}
 						} else {
-							if (activeColIndex < getColsInActiveRow(activeRowIndex).length - 1) {
+							if (
+								activeRowIndex >= 0 &&
+								activeColIndex < getColsInActiveRow(activeRowIndex).length - 1
+							) {
 								activeColIndex++;
 							} else if (activeRowIndex < rows.length - 1) {
 								activeRowIndex++;
