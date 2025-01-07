@@ -95,6 +95,11 @@ test('supports keyboard navigation', async ({ page }) => {
 		'aria-activedescendant',
 		'supersearch-result-item-2x1'
 	);
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').fill('ab');
+	await expect(comboboxElement).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-result-item-0x0'
+	);
 });
 
 test('syncs collapsed and expanded editor views', async ({ page }) => {
