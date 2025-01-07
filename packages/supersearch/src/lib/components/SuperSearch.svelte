@@ -5,7 +5,7 @@
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
-	import submitFormOnEnterKey from '$lib/extensions/submitFormOnEnterKey.js';
+	import preventEnterKeyHandling from '$lib/extensions/preventEnterKeyHandling.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
 	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
 	import { messages } from '$lib/constants/messages.js';
@@ -94,7 +94,7 @@
 
 	const extensionsWithDefaults = [
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
-		submitFormOnEnterKey(form),
+		preventEnterKeyHandling(),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder)),
@@ -173,6 +173,23 @@
 	function handleKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
 			hideExpandedSearch();
+		}
+
+		if (event.key === 'Enter') {
+			/* Fire click event if result item cell is focused */
+			if (activeRowIndex >= 0) {
+				document?.getElementById(`${id}-result-item-${activeRowIndex}x${activeColIndex}`)?.click();
+				hideExpandedSearch();
+			} else {
+				/* Otherwise submit closest form */
+				const formElement = form
+					? document.getElementById(form)
+					: collapsedEditorView?.dom?.closest('form');
+				if (formElement && formElement instanceof HTMLFormElement) {
+					formElement.requestSubmit();
+					hideExpandedSearch();
+				}
+			}
 		}
 
 		/**

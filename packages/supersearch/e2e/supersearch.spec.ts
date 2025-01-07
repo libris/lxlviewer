@@ -4,19 +4,7 @@ test.beforeEach(async ({ page }) => {
 	await page.goto('/');
 });
 
-test('submits closest form on enter key press', async ({ page }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').fill('hello world');
-	await page.keyboard.press('Enter');
-	await expect(page).toHaveURL('/test1?q=hello+world');
-});
-
-test('submits form identified by form attribute on enter key press', async ({ page }) => {
-	await page.locator('[data-test-id="test2"]').getByRole('textbox').fill('hello world');
-	await page.keyboard.press('Enter');
-	await expect(page).toHaveURL('/test2?q=hello+world');
-});
-
-test('prevents new line characters (e.g. when pasting multi-lined text', async ({
+test('prevents new line characters (e.g. when pasting multi-lined text)', async ({
 	page,
 	context
 }) => {
@@ -128,6 +116,14 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 		await page.evaluate(() => window.getSelection()?.toString()),
 		'text selection should be synced'
 	).toBe('Hello world');
+});
+
+test('fires click events on focused cells', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').fill('a');
+	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('Enter');
+	await expect(page).toHaveURL('/test1#supersearch-result-item-1x0');
 });
 
 test('fetches and displays paginated results', async ({ page }) => {

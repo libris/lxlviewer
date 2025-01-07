@@ -53,14 +53,14 @@
 		>
 			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
 				<div class="result-item" data-test-id="result-item">
-					<button
-						type="button"
+					<a
+						href={`/test1#${getCellId(0)}`}
 						role="gridcell"
 						id={getCellId(0)}
 						class:focused-cell={isFocusedCell(0)}
 					>
 						<h2>{item.heading}</h2>
-					</button>
+					</a>
 					{#if (rowIndex! > 0 && rowIndex! <= 4) || rowIndex == 9}
 						<button
 							type="button"
@@ -70,9 +70,14 @@
 						>
 					{/if}
 					{#if (rowIndex! > 0 && rowIndex! < 3) || rowIndex! == 9 || rowIndex! === 4}
-						<a href="#id" role="gridcell" id={getCellId(2)} class:focused-cell={isFocusedCell(2)}
-							>C</a
+						<button
+							type="button"
+							role="gridcell"
+							id={getCellId(2)}
+							class:focused-cell={isFocusedCell(2)}
 						>
+							C
+						</button>
 					{/if}
 				</div>
 			{/snippet}
@@ -120,14 +125,15 @@
 		align-items: flex-start;
 		min-width: 480px;
 
-		& button {
+		& button,
+		& a {
 			min-width: 44px;
 			min-height: 44px;
 		}
 
-		& button:first-child {
+		& a:first-child {
 			flex: 1;
-			text-align: left;
+			justify-content: flex-start;
 		}
 
 		& a {
