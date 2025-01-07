@@ -60,13 +60,13 @@ test('expanded search is togglable using keyboard shortcut', async ({ page }) =>
 	).not.toBeVisible();
 });
 
-test('supports keyboard navigation', async ({ page }) => {
+test('supports keyboard navigation between rows and columns/cells', async ({ page }) => {
 	await page.locator('[data-test-id="test1"]').getByRole('textbox').fill('a');
 	const comboboxElement = page.locator('[data-test-id="test1"]').getByRole('combobox');
-	await expect(comboboxElement).toHaveAttribute(
-		'aria-activedescendant',
-		'supersearch-result-item-0x0'
-	);
+	await expect(
+		comboboxElement,
+		'first row and cell is selected by default (if defaultRow is set to 0)'
+	).toHaveAttribute('aria-activedescendant', 'supersearch-result-item-0x0');
 	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('ArrowDown');
 	await expect(comboboxElement).toHaveAttribute(
@@ -79,6 +79,12 @@ test('supports keyboard navigation', async ({ page }) => {
 		'aria-activedescendant',
 		'supersearch-result-item-1x1'
 	);
+	await page.keyboard.press('ArrowLeft');
+	await expect(comboboxElement).toHaveAttribute(
+		'aria-activedescendant',
+		'supersearch-result-item-1x0'
+	);
+	await page.keyboard.press('ArrowRight');
 	await page.keyboard.press('ArrowRight');
 	await expect(comboboxElement).toHaveAttribute(
 		'aria-activedescendant',
@@ -86,20 +92,15 @@ test('supports keyboard navigation', async ({ page }) => {
 	);
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
-	await expect(comboboxElement).toHaveAttribute(
-		'aria-activedescendant',
-		'supersearch-result-item-3x1'
-	);
-	await page.keyboard.press('ArrowUp');
-	await expect(comboboxElement).toHaveAttribute(
-		'aria-activedescendant',
-		'supersearch-result-item-2x1'
-	);
+	await expect(
+		comboboxElement,
+		`selects closest cell if latest column isn't available on new row`
+	).toHaveAttribute('aria-activedescendant', 'supersearch-result-item-3x1');
 	await page.locator('[data-test-id="test1"]').getByRole('textbox').fill('ab');
-	await expect(comboboxElement).toHaveAttribute(
-		'aria-activedescendant',
-		'supersearch-result-item-0x0'
-	);
+	await expect(
+		comboboxElement,
+		'focused cell is reset if user updates value in combobox'
+	).toHaveAttribute('aria-activedescendant', 'supersearch-result-item-0x0');
 });
 
 test('syncs collapsed and expanded editor views', async ({ page }) => {
