@@ -117,6 +117,13 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		page.locator('#supersearch-result-item-9x2'),
 		'ensure focus is kept inside result items when tabbing on last row'
 	).toHaveClass(/focused-cell/);
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('combobox')
+		.press('Escape');
+	await page.locator('[data-test-id="test1"]').getByRole('textbox').first().click();
+	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
 });
 
 test('syncs collapsed and expanded editor views', async ({ page }) => {

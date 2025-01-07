@@ -174,6 +174,8 @@
 		dialog?.close();
 		collapsedEditorView?.focus();
 		expanded = false;
+		activeRowIndex = defaultRow;
+		activeColIndex = 0;
 	}
 
 	function handleKeyDown(event: KeyboardEvent) {
