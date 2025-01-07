@@ -6,6 +6,7 @@
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
+	import { relativizeUrl } from '$lib/utils/http';
 	import type { DisplayMapping } from '$lib/types/search';
 	import BiSearch from '~icons/bi/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
@@ -100,11 +101,17 @@
 			paginationQueryFn={handlePaginationQuery}
 			extensions={[derivedLxlQualifierPlugin]}
 			toggleWithKeyboardShortcut
+			defaultRow={-1}
 		>
-			{#snippet resultItem(item)}
-				<button type="button">
+			{#snippet resultItem(item, getCellId, isFocusedCell)}
+				<a
+					href={relativizeUrl(item['@id'])}
+					role="gridcell"
+					id={getCellId(0)}
+					class:focused-cell={isFocusedCell(0)}
+				>
 					<h2>{item?.heading}</h2>
-				</button>
+				</a>
 			{/snippet}
 		</SuperSearch>
 	{:else}
