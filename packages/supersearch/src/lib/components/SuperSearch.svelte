@@ -246,9 +246,10 @@
 						}
 						break;
 					case 'Tab':
+						event.preventDefault();
 						if (event.shiftKey) {
 							if (activeColIndex == 0) {
-								activeRowIndex--;
+								activeRowIndex = Math.max(activeRowIndex - 1, 0);
 								activeColIndex = getColsInActiveRow(activeRowIndex).length - 1;
 							} else {
 								activeColIndex--;
@@ -256,7 +257,7 @@
 						} else {
 							if (activeColIndex < getColsInActiveRow(activeRowIndex).length - 1) {
 								activeColIndex++;
-							} else {
+							} else if (activeRowIndex < rows.length - 1) {
 								activeRowIndex++;
 								activeColIndex = 0;
 							}
