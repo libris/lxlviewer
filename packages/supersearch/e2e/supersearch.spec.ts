@@ -89,6 +89,34 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		comboboxElement,
 		'focused cell is reset if user updates value in combobox'
 	).toHaveAttribute('aria-activedescendant', 'supersearch-result-item-0x0');
+	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
+	await page.keyboard.press('Tab');
+	await expect(page.locator('#supersearch-result-item-1x0')).toHaveClass(/focused-cell/);
+	await page.keyboard.press('Tab');
+	await expect(page.locator('#supersearch-result-item-1x1')).toHaveClass(/focused-cell/);
+	await page.keyboard.press('Shift+Tab');
+	await page.keyboard.press('Shift+Tab');
+	await page.keyboard.press('Shift+Tab');
+	await expect(
+		page.locator('#supersearch-result-item-0x0'),
+		'ensure focus is kept inside result items when shift-tabbing on first row'
+	).toHaveClass(/focused-cell/);
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('Tab');
+	await page.keyboard.press('Tab');
+	await page.keyboard.press('Tab');
+	await expect(
+		page.locator('#supersearch-result-item-9x2'),
+		'ensure focus is kept inside result items when tabbing on last row'
+	).toHaveClass(/focused-cell/);
 });
 
 test('syncs collapsed and expanded editor views', async ({ page }) => {
