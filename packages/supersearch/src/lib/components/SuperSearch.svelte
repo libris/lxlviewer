@@ -62,6 +62,7 @@
 	let cursor: number = $state(0);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(0);
+	let prevValue: string = value;
 
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
@@ -90,7 +91,9 @@
 	});
 
 	$effect(() => {
-		if (value && value.trim()) {
+		if (value && value.trim() && value.trim() !== prevValue.trim()) {
+			search.resetData();
+			prevValue = value;
 			search.debouncedFetchData(value, cursor);
 		}
 	});

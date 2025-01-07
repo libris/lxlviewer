@@ -75,10 +75,16 @@ export function useSearchRequest({
 		}
 	}
 
+	function resetData() {
+		data = undefined;
+		paginatedData = undefined;
+	}
+
 	return {
 		fetchData,
 		debouncedFetchData,
 		fetchMoreData,
+		resetData,
 		get isLoading() {
 			return isLoading;
 		},
