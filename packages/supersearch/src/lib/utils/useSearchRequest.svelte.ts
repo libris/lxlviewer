@@ -78,6 +78,7 @@ export function useSearchRequest({
 	function resetData() {
 		data = undefined;
 		paginatedData = undefined;
+		moreSearchParams = undefined;
 	}
 
 	return {
