@@ -382,11 +382,9 @@
 			{#if search.isLoading}
 				Loading...
 			{:else if search.hasMorePaginatedData}
-				<li>
-					<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-						Load more
-					</button>
-				</li>
+				<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+					Load more
+				</button>
 			{/if}
 		</nav>
 	</div>
