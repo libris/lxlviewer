@@ -74,6 +74,7 @@ export interface DisplayMapping {
 	label?: string;
 	operator: keyof typeof SearchOperators;
 	property?: string;
+	invalid?: string;
 }
 
 export interface PartialCollectionView {

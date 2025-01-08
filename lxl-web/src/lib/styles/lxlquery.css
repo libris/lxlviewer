@@ -29,8 +29,9 @@
 }
 
 .invalid > .lxl-qualifier-key {
-	text-decoration: underline 2px solid;
-	text-decoration-color: rgba(255, 0, 0, 0.326);
+	text-decoration: underline 1px solid;
+	text-decoration-color: rgba(255, 0, 0, 0.75);
+	text-decoration-style: wavy;
 }
 
 .atomic {
