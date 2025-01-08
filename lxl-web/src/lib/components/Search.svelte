@@ -101,6 +101,7 @@
 			paginationQueryFn={handlePaginationQuery}
 			extensions={[derivedLxlQualifierPlugin]}
 			toggleWithKeyboardShortcut
+			comboboxAriaLabel={$page.data.t('search.search')}
 			defaultRow={-1}
 		>
 			{#snippet resultItem(item, getCellId, isFocusedCell)}

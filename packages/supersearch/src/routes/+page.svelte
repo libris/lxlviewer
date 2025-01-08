@@ -50,17 +50,19 @@
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin()]}
 			toggleWithKeyboardShortcut
+			comboboxAriaLabel="Search"
 		>
 			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
 				<div class="result-item" data-test-id="result-item">
-					<a
-						href={`/test1#${getCellId(0)}`}
-						role="gridcell"
-						id={getCellId(0)}
-						class:focused-cell={isFocusedCell(0)}
-					>
-						<h2>{item.heading}</h2>
-					</a>
+					<div role="gridcell">
+						<a
+							href={`/test1#${getCellId(0)}`}
+							id={getCellId(0)}
+							class:focused-cell={isFocusedCell(0)}
+						>
+							<h2>{item.heading}</h2>
+						</a>
+					</div>
 					{#if (rowIndex! > 0 && rowIndex! <= 4) || rowIndex == 9}
 						<button
 							type="button"
@@ -103,6 +105,7 @@
 			paginationQueryFn={handlePaginationQuery}
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin()]}
+			comboboxAriaLabel="Search"
 			defaultRow={-1}
 		>
 			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
@@ -127,14 +130,17 @@
 		min-width: 480px;
 
 		& button,
-		& a {
+		& [role='gridcell'] {
 			min-width: 44px;
 			min-height: 44px;
 		}
 
-		& a:first-child {
+		& [role='gridcell']:first-child {
 			flex: 1;
-			justify-content: flex-start;
+
+			& a {
+				justify-content: flex-start;
+			}
 		}
 
 		& a {

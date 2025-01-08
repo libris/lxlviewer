@@ -29,6 +29,7 @@
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
+		comboboxAriaLabel?: string;
 		resultItem?: Snippet<
 			[ResultItem, (cellIndex: number) => string, (cellIndex: number) => boolean, number]
 		>;
@@ -49,6 +50,7 @@
 		paginationQueryFn,
 		transformFn,
 		extensions = [],
+		comboboxAriaLabel,
 		resultItem = fallbackResultItem,
 		toggleWithKeyboardShortcut = false,
 		defaultRow = 0,
@@ -109,21 +111,31 @@
 
 	let collapsedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
+			role: 'combobox',
+			...(comboboxAriaLabel && {
+				'aria-label': comboboxAriaLabel
+			}),
 			'aria-haspopup': 'dialog', // indicates the availability and type of interactive popup element that can be triggered by the element
 			'aria-controls': `${id}-dialog`, // identifies the popup element
-			'aria-expanded': expanded.toString() // indicates if the popup element is open
+			'aria-expanded': expanded.toString(), // indicates if the popup element is open
+			'aria-multiline': 'false' // aria-multineline isn't allowed inside elements with role=combobox
 		})
 	);
 
+	let includeAriaActiveDescendant = $derived(activeRowIndex >= 0 && !!search?.data); // ensures aria-activedecendant is only shown if the element exists in the DOM
 	let expandedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
 			id: `${id}-content`,
 			role: 'combobox', // identifies the element as a combobox
+			...(comboboxAriaLabel && {
+				'aria-label': comboboxAriaLabel
+			}),
 			'aria-haspopup': 'grid', // indicates that the combobox can popup a grid to suggest values
 			'aria-expanded': 'true', // indicates that the popup element is displayed
 			'aria-autocomplete': 'list', // indicates that the autocomplete behavior of the input is to suggest a list of possible values in a popup
 			'aria-controls': `${id}-grid`, // identifies the popup element that lists suggested values
-			...(activeRowIndex >= 0 && {
+			'aria-multiline': 'false',
+			...(includeAriaActiveDescendant && {
 				'aria-activedescendant': `${id}-result-item-${activeRowIndex}x${activeColIndex}` // enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element
 			})
 		})
