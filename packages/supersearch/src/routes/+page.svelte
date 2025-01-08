@@ -103,6 +103,7 @@
 			paginationQueryFn={handlePaginationQuery}
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin()]}
+			defaultRow={-1}
 		>
 			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
 				<div class="result-item" data-test-id="result-item" role="gridcell">

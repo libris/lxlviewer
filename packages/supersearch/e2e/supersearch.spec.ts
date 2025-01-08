@@ -180,3 +180,15 @@ test('fetches and displays paginated results', async ({ page }) => {
 		'to tranform data using transformFn if available'
 	).toHaveText('Heading 1 for "Hello"');
 });
+
+test('submits form identified by form attribute on enter key press (if no result item is selected)', async ({
+	page
+}) => {
+	await page
+		.locator('[data-test-id="test2"]')
+		.getByRole('textbox')
+		.locator('div')
+		.fill('hello world');
+	await page.keyboard.press('Enter');
+	await expect(page).toHaveURL('/test2?q=hello+world');
+});
