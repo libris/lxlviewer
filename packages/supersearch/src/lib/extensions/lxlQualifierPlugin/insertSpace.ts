@@ -1,42 +1,30 @@
 import { EditorState, RangeSet, RangeValue } from '@codemirror/state';
 
-const insertSpace = (getRanges: () => RangeSet<RangeValue>) => {
+const insertSpaceBeforeQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 	return EditorState.transactionFilter.of((tr) => {
 		if (!tr.docChanged || (tr.isUserEvent('delete') && tr.state.selection.main.head === 0)) {
 			return tr;
 		} else {
-			let found = false;
-			const insert = {
-				changes: {
-					from: tr.state.selection.main.head,
-					to: tr.state.selection.main.head,
-					insert: ' '
-				},
-				sequential: true,
-				selection: { anchor: tr.state.selection.main.head }
-			};
-
-			// OLD
-			// const field = tr.state.field(ranges, false)?.ranges;
-			// const atoms = tr.state.facet(EditorView.atomicRanges).map(f => f(_editorView))
-			// for (const set of atoms) {
-			// 	set.between(0, tr.state.doc.length, (from, to, value) => {
-			// 		if (tr.startState.selection.main.head === from) {
-			// 			found = true;
-			// 			return false;
-			// 		}
-			// 	})
-			// }
-
+			let insert = {};
 			const atomicRanges = getRanges();
 			const oldCursorPos = tr.startState.selection.main.head;
+			const newCursorPos = tr.state.selection.main.head;
+
 			atomicRanges.between(oldCursorPos, oldCursorPos, () => {
-				found = true;
+				insert = {
+					changes: {
+						from: newCursorPos,
+						to: newCursorPos,
+						insert: ' '
+					},
+					sequential: true,
+					selection: { anchor: newCursorPos }
+				};
 				return false;
 			});
-			return found ? [tr, insert] : tr;
+			return [tr, insert];
 		}
 	});
 };
 
-export default insertSpace;
+export default insertSpaceBeforeQualifier;

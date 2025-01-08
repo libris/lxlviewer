@@ -12,7 +12,7 @@ import { mount } from 'svelte';
 import QualifierComponent from './QualifierComponent.svelte';
 import insertQuotes from './insertQuotes.js';
 import { messages } from '$lib/constants/messages.js';
-import insertSpace from './insertSpace.js';
+import insertSpaceBeforeQualifier from './insertSpace.js';
 
 export type Qualifier = {
 	key: string;
@@ -136,61 +136,39 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 		return Decoration.set(widgets, true);
 	}
 
-	const qualifierPlugin = ViewPlugin.fromClass(
-		class {
-			qualifiers: DecorationSet;
-			constructor(view: EditorView) {
-				this.qualifiers = getQualifiers(view);
-			}
-
-			update(update: ViewUpdate) {
-				if (update.docChanged || syntaxTree(update.startState) != syntaxTree(update.state)) {
-					// TODO: Calling getQualifiers on every document change is probably not good for performance
-					// Try optimizing; either run the function only on certain kinds of input, or split getQualifiers;
-					// one that updates the widgets (on input) and one that looks for labels (on data update)
-					this.qualifiers = getQualifiers(update.view);
-				} else {
-					for (const tr of update.transactions) {
-						for (const e of tr.effects) {
-							if (e.value.message === messages.NEW_DATA) {
-								this.qualifiers = getQualifiers(update.view);
-							}
+	class LxlQualifier {
+		qualifiers: DecorationSet;
+		constructor(view: EditorView) {
+			this.qualifiers = getQualifiers(view);
+		}
+		update(update: ViewUpdate) {
+			if (update.docChanged || syntaxTree(update.startState) != syntaxTree(update.state)) {
+				// TODO: Calling getQualifiers on every document change is probably not good for performance
+				// Try optimizing; either run the function only on certain kinds of input, or split getQualifiers;
+				// one that updates the widgets (on input) and one that looks for labels (on data update)
+				this.qualifiers = getQualifiers(update.view);
+			} else {
+				for (const tr of update.transactions) {
+					for (const e of tr.effects) {
+						if (e.value.message === messages.NEW_DATA) {
+							this.qualifiers = getQualifiers(update.view);
 						}
 					}
 				}
 			}
-		},
-		{
-			decorations: (instance) => instance.qualifiers,
-			provide: () => [
-				EditorView.atomicRanges.of(() => atomicRangeSet),
-				EditorState.transactionFilter.of(insertQuotes),
-				insertSpace(() => atomicRangeSet)
-			]
 		}
-	);
-	return qualifierPlugin;
+	}
+
+	const plugin = ViewPlugin.fromClass(LxlQualifier, {
+		decorations: (instance) => instance.qualifiers,
+		provide: () => [
+			EditorView.atomicRanges.of(() => atomicRangeSet),
+			EditorState.transactionFilter.of(insertQuotes),
+			insertSpaceBeforeQualifier(() => atomicRangeSet)
+		]
+	});
+
+	return plugin;
 }
 
 export default lxlQualifierPlugin;
-
-// elegant
-// Plugin Class
-// class WhitespacePlugin {
-// 	constructor(view) {
-// 			this.whitespace = spaceMatcher.createDeco(view);
-// 	}
-// 	update(update) {
-// 			this.whitespace = spaceMatcher.updateDeco(
-// 				update, this.whitespace);
-// 	}
-// }
-
-// // Plugin
-// const displayWhitespace = ViewPlugin.fromClass(
-// WhitespacePlugin, {
-// 	provide: plugin =>
-// 		EditorView.atomicRanges.of(
-// 			view => view.plugin(plugin).whitespace),
-// 	decorations: instance => instance.whitespace
-// });
