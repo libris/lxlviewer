@@ -1,6 +1,7 @@
 import { parser } from './syntax.grammar';
 import { LRLanguage, LanguageSupport, syntaxHighlighting } from '@codemirror/language';
 import { styleTags, Tag, tagHighlighter } from '@lezer/highlight';
+import lxlLinter from './lxlLinter';
 
 /**
  * Custom tags attached to the language parser
@@ -17,7 +18,7 @@ const tags = {
 };
 
 const tagMatcher = {
-	'BooleanQuery/BooleanOperator': tags.BooleanOperator, // only highlight operator within valid query
+	'NotOperator BooleanQuery/BooleanOperator': tags.BooleanOperator, // only highlight operator within valid query
 	'Query/Wildcard': tags.Wildcard,
 	'Qualifier/...': tags.Qualifier,
 	'QualifierKey!': tags.QualifierKey,
@@ -42,10 +43,10 @@ const highlighter = tagHighlighter([
 	{ tag: tags.QualifierValue, class: 'lxl-qualifier-value' }
 ]);
 
-const highlighterExtension = syntaxHighlighting(highlighter);
+const highlighterExtensions = [syntaxHighlighting(highlighter), lxlLinter];
 
 /**
- * Libris XL query language together with a highlighter extension
+ * Libris XL query language together with highlighter extensions
  * that adds CSS classes for certain nodes
  */
-export const lxlQuery = new LanguageSupport(lxlQueryLanguage, highlighterExtension);
+export const lxlQuery = new LanguageSupport(lxlQueryLanguage, highlighterExtensions);

@@ -28,6 +28,7 @@
 	border-radius: 0;
 }
 
+.invalid,
 .invalid > .lxl-qualifier-key {
 	text-decoration: underline 1px solid;
 	text-decoration-color: rgba(255, 0, 0, 0.75);
@@ -43,6 +44,23 @@
 	color: rgb(128, 0, 128);
 }
 
+.invalid .lxl-boolean-operator {
+	color: inherit;
+}
+
 .lxl-wildcard {
 	color: rgb(128, 0, 128);
+}
+
+.lxl-negative .lxl-qualifier {
+	background-color: rgba(230, 172, 172, 0.5);
+	color: #523314;
+}
+
+.lxl-negative .atomic {
+	background-color: rgba(230, 172, 172, 1);
+}
+
+.lxl-negative {
+	color: #cf5a5a;
 }

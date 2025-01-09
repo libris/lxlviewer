@@ -6,15 +6,23 @@ term {
   freetext |
   Qualifier |
   Group |
-  BooleanQuery
+  BooleanQuery |
+  NegativeQuery |
+  DoubleNegative
 }
 
 Group { "(" term* ")" } 
 
 BooleanQuery { 
-  (freetext | Qualifier | Group ) BooleanOperator (freetext | Qualifier | Group ) 
-  (BooleanOperator (freetext | Qualifier | Group ))+?
+  (freetext | Qualifier | Group | NegativeQuery) BooleanOperator (freetext | Qualifier | Group | NegativeQuery) 
+  (BooleanOperator (freetext | Qualifier | Group | NegativeQuery))+?
 }
+
+NegativeQuery { 
+  NotOperator (freetext | Qualifier | Group) 
+}
+
+DoubleNegative { NotOperator NotOperator }
 
 Qualifier {
   (QualifierKey QualifierOperator QualifierValue) | reserved
@@ -47,7 +55,9 @@ freetext {
 
   CompareOperator { ">" | "<" | ">=" | "<=" }
 
-  BooleanOperator { "AND" | "OR" | "NOT" }
+  BooleanOperator { "AND" | "OR" }
+
+  NotOperator { "NOT" }
 
   Wildcard { "*" }
 
@@ -55,7 +65,7 @@ freetext {
 
   space { @whitespace+ }
 
-  @precedence { BooleanOperator, reserved, Identifier }
+  @precedence { BooleanOperator, NotOperator, reserved, Identifier }
 }
 
 @detectDelim
