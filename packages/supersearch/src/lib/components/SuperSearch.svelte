@@ -118,7 +118,7 @@
 			'aria-haspopup': 'dialog', // indicates the availability and type of interactive popup element that can be triggered by the element
 			'aria-controls': `${id}-dialog`, // identifies the popup element
 			'aria-expanded': expanded.toString(), // indicates if the popup element is open
-			'aria-multiline': 'false' // aria-multineline isn't allowed inside elements with role=combobox
+			'aria-multiline': 'false' // aria-multiline isn't allowed inside elements with role=combobox
 		})
 	);
 
