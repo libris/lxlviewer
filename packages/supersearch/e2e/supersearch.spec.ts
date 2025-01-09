@@ -9,27 +9,27 @@ test('prevents new line characters (e.g. when pasting multi-lined text)', async 
 	context
 }) => {
 	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').first().click();
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().click();
 	await page.evaluate(() =>
 		navigator.clipboard.writeText(`One
 two
 three`)
 	);
 	await page.keyboard.press(`ControlOrMeta+v`);
-	await expect(page.locator('[data-test-id="test1"]').getByRole('textbox').first()).toHaveText(
+	await expect(page.locator('[data-test-id="test1"]').getByRole('combobox').first()).toHaveText(
 		'One two three'
 	);
 });
 
 test('expanded search is closable', async ({ page }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').click();
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').click();
 	await expect(page.locator('[data-test-id="test1"]').getByRole('dialog').first()).toBeVisible();
 	await page.keyboard.press('Escape');
 	await expect(
 		page.locator('[data-test-id="test1"]').getByRole('dialog').first(),
 		'by pressing the Escape key'
 	).not.toBeVisible();
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').click();
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').click();
 	await page.mouse.click(0, 0);
 	await expect(
 		page.locator('[data-test-id="test1"]').getByRole('dialog').first(),
@@ -38,8 +38,8 @@ test('expanded search is closable', async ({ page }) => {
 });
 
 test('expanded search is togglable using keyboard shortcut', async ({ page }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').press('Tab');
-	await expect(page.locator('[data-test-id="test2"]').getByRole('textbox')).toBeFocused();
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().press('Tab');
+	await expect(page.locator('[data-test-id="test2"]').getByRole('combobox').first()).toBeFocused();
 	await page.keyboard.press('ControlOrMeta+k');
 	await expect(page.locator('[data-test-id="test1"]').getByRole('dialog').first()).toBeVisible();
 	await page.keyboard.press('ControlOrMeta+k');
@@ -49,8 +49,11 @@ test('expanded search is togglable using keyboard shortcut', async ({ page }) =>
 });
 
 test('supports keyboard navigation between rows and columns/cells', async ({ page }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').fill('a');
-	const comboboxElement = page.locator('[data-test-id="test1"]').getByRole('combobox');
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('a');
+	const comboboxElement = page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('combobox');
 	await expect(
 		comboboxElement,
 		'first row and cell is selected by default (if defaultRow is set to 0)'
@@ -84,7 +87,7 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		comboboxElement,
 		`selects closest cell if latest column isn't available on new row`
 	).toHaveAttribute('aria-activedescendant', 'supersearch-result-item-3x1');
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').fill('ab');
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('ab');
 	await expect(
 		comboboxElement,
 		'focused cell is reset if user updates value in combobox'
@@ -122,12 +125,12 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 		.getByRole('dialog')
 		.getByRole('combobox')
 		.press('Escape');
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').first().click();
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().click();
 	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
 });
 
 test('syncs collapsed and expanded editor views', async ({ page }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').click();
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().click();
 	await page
 		.locator('[data-test-id="test1"]')
 		.getByRole('dialog')
@@ -144,7 +147,7 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 		.getByRole('combobox')
 		.press('Escape');
 	await expect(
-		await page.locator('[data-test-id="test1"]').getByRole('textbox'),
+		await page.locator('[data-test-id="test1"]').getByRole('combobox').first(),
 		'contents should be synced'
 	).toHaveText('Hello world');
 	expect(
@@ -154,7 +157,7 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 });
 
 test('fires click events on focused cells', async ({ page }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').fill('a');
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('a');
 	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
@@ -162,7 +165,7 @@ test('fires click events on focused cells', async ({ page }) => {
 });
 
 test('fetches and displays paginated results', async ({ page }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('textbox').click();
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().click();
 	await page
 		.locator('[data-test-id="test1"]')
 		.getByRole('dialog')
@@ -184,11 +187,7 @@ test('fetches and displays paginated results', async ({ page }) => {
 test('submits form identified by form attribute on enter key press (if no result item is selected)', async ({
 	page
 }) => {
-	await page
-		.locator('[data-test-id="test2"]')
-		.getByRole('textbox')
-		.locator('div')
-		.fill('hello world');
+	await page.locator('[data-test-id="test2"]').getByRole('combobox').first().fill('hello world');
 	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL('/test2?q=hello+world');
 });
