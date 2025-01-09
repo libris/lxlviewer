@@ -49,11 +49,39 @@
 			transformFn={handleTransform}
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin()]}
+			toggleWithKeyboardShortcut
+			comboboxAriaLabel="Search"
 		>
-			{#snippet resultItem(item)}
-				<button type="button" class="result-item" data-test-id="result-item">
-					<h2>{item.heading}</h2>
-				</button>
+			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
+				<div class="result-item" data-test-id="result-item">
+					<div role="gridcell">
+						<a
+							href={`/test1#${getCellId(0)}`}
+							id={getCellId(0)}
+							class:focused-cell={isFocusedCell(0)}
+						>
+							<h2>{item.heading}</h2>
+						</a>
+					</div>
+					{#if (rowIndex! > 0 && rowIndex! <= 4) || rowIndex == 9}
+						<button
+							type="button"
+							role="gridcell"
+							id={getCellId(1)}
+							class:focused-cell={isFocusedCell(1)}>B</button
+						>
+					{/if}
+					{#if (rowIndex! > 0 && rowIndex! < 3) || rowIndex! == 9 || rowIndex! === 4}
+						<button
+							type="button"
+							role="gridcell"
+							id={getCellId(2)}
+							class:focused-cell={isFocusedCell(2)}
+						>
+							C
+						</button>
+					{/if}
+				</div>
 			{/snippet}
 		</SuperSearch>
 	</fieldset>
@@ -63,6 +91,7 @@
 	<fieldset data-test-id="test2">
 		<legend>Supersearch using <code>form</code> attribute</legend>
 		<SuperSearch
+			id="supersearch-using-form-attribute"
 			name="q"
 			bind:value={value2}
 			{placeholder}
@@ -76,11 +105,15 @@
 			paginationQueryFn={handlePaginationQuery}
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin()]}
+			comboboxAriaLabel="Search"
+			defaultRow={-1}
 		>
-			{#snippet resultItem(item)}
-				<button type="button" class="result-item" data-test-id="result-item">
-					<h2>{item.heading}</h2>
-				</button>
+			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
+				<div class="result-item" data-test-id="result-item" role="gridcell">
+					<button type="button" id={getCellId(0)} class:focused-cell={isFocusedCell(0)}>
+						<h2>{item.heading} {rowIndex}</h2>
+					</button>
+				</div>
 			{/snippet}
 		</SuperSearch>
 	</fieldset>
@@ -92,9 +125,36 @@
 
 <style>
 	.result-item {
+		display: flex;
+		align-items: flex-start;
 		min-width: 480px;
-		min-height: 44px;
-		text-align: left;
+
+		& button,
+		& [role='gridcell'] {
+			min-width: 44px;
+			min-height: 44px;
+		}
+
+		& [role='gridcell']:first-child {
+			flex: 1;
+
+			& a {
+				justify-content: flex-start;
+			}
+		}
+
+		& a {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-width: 44px;
+			min-height: 44px;
+		}
+
+		& button:first-child {
+			flex: 1;
+		}
+
 		& h2 {
 			font-weight: inherit;
 			font-size: inherit;
@@ -115,5 +175,9 @@
 
 	:global(.lxl-boolean-query, .lxl-wildcard) {
 		color: purple;
+	}
+
+	:global(button) {
+		background: none;
 	}
 </style>

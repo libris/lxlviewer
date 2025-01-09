@@ -11,7 +11,7 @@ export function useSearchRequest({
 	queryFn,
 	paginationQueryFn,
 	transformFn,
-	debouncedWait
+	debouncedWait = 300
 }: {
 	endpoint: string | URL;
 	queryFn: QueryFunction;
@@ -75,10 +75,17 @@ export function useSearchRequest({
 		}
 	}
 
+	function resetData() {
+		data = undefined;
+		paginatedData = undefined;
+		moreSearchParams = undefined;
+	}
+
 	return {
 		fetchData,
 		debouncedFetchData,
 		fetchMoreData,
+		resetData,
 		get isLoading() {
 			return isLoading;
 		},
