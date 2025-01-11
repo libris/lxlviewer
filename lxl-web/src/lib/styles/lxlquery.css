@@ -1,5 +1,5 @@
 .lxl-qualifier {
-	display: inline-flex;
+	display: inline-block;
 	color: rgb(0, 128, 0);
 	background: rgba(14, 113, 128, 0.1);
 	padding-top: 3px;
@@ -12,8 +12,8 @@
 	border-bottom-left-radius: 5px;
 }
 
-.lxl-qualifier-value,
-.lxl-qualifier-remove {
+.lxl-qualifier-remove,
+.lxl-qualifier-value:last-of-type {
 	padding-right: 5px;
 	border-top-right-radius: 5px;
 	border-bottom-right-radius: 5px;
@@ -28,39 +28,35 @@
 	border-radius: 0;
 }
 
-.invalid,
-.invalid > .lxl-qualifier-key {
-	text-decoration: underline 1px solid;
-	text-decoration-color: rgba(255, 0, 0, 0.75);
-	text-decoration-style: wavy;
-}
-
 .atomic {
 	background: rgba(14, 113, 128, 0.2);
 	user-select: none;
 }
 
-.lxl-boolean-operator {
-	color: rgb(128, 0, 128);
+.invalid,
+.invalid > .lxl-qualifier {
+	text-decoration: underline 1px solid;
+	text-decoration-color: rgba(255, 0, 0, 0.75);
+	text-decoration-style: wavy;
 }
 
-.invalid .lxl-boolean-operator {
+/* .invalid .lxl-boolean-operator {
 	color: inherit;
-}
+} */
 
-.lxl-wildcard {
-	color: rgb(128, 0, 128);
-}
-
-.lxl-negative .lxl-qualifier {
-	background-color: rgba(230, 172, 172, 0.5);
-	color: #523314;
-}
-
-.lxl-negative .atomic {
-	background-color: rgba(230, 172, 172, 1);
-}
-
-.lxl-negative {
+.lxl-uquery {
 	color: #cf5a5a;
+}
+
+/* .lxl-qualifier.lxl-uquery {
+	background-color: rgba(213, 0, 0, 0.15);
+	color: #523314;
+} */
+
+/* .atomic.lxl-uquery {
+	background-color: rgba(213, 0, 0, 0.3);
+} */
+
+.lxl-boolean-operator {
+	color: #5955ff;
 }

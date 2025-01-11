@@ -7,22 +7,9 @@ term {
   Qualifier |
   Group |
   BooleanQuery |
-  NegativeQuery |
-  DoubleNegative
+  UQuery |
+  doubleNegative
 }
-
-Group { "(" term* ")" } 
-
-BooleanQuery { 
-  (freetext | Qualifier | Group | NegativeQuery) BooleanOperator (freetext | Qualifier | Group | NegativeQuery) 
-  (BooleanOperator (freetext | Qualifier | Group | NegativeQuery))+?
-}
-
-NegativeQuery { 
-  NotOperator (freetext | Qualifier | Group) 
-}
-
-DoubleNegative { NotOperator NotOperator }
 
 Qualifier {
   (QualifierKey QualifierOperator QualifierValue) | reserved
@@ -33,23 +20,44 @@ QualifierKey {
 }
 
 QualifierValue {
-  Identifier Wildcard? | String | Number Wildcard? | Group | Wildcard
+  Identifier | String | GroupInQualifier
 }
 
 QualifierOperator {
   EqualOperator | CompareOperator
 }
 
-freetext {
-  (Identifier | String | Number) Wildcard?
+Group {
+  "(" (freetext | Group | Qualifier | BooleanQuery | UQuery)+ ")"
 }
 
+BooleanQuery { 
+  (freetext | Qualifier | Group | UQuery) BooleanOperator (freetext | Qualifier | Group | UQuery) 
+  (BooleanOperator (freetext | Qualifier | Group | UQuery))+?
+}
+
+GroupInQualifier {
+  "(" (freetext | booleanQueryInQualifier | GroupInQualifier | UQuery)+ ")"
+}
+
+booleanQueryInQualifier { 
+  (freetext | GroupInQualifier | UQuery) BooleanOperator (freetext | GroupInQualifier | UQuery) 
+  (BooleanOperator (freetext | GroupInQualifier | UQuery))+?
+}
+
+UQuery { 
+  uOperator (freetext | Qualifier | Group) 
+}
+
+freetext {
+  (Identifier | String )
+}
+
+doubleNegative { uOperator uOperator (freetext | Qualifier | Group)  }
+
 @tokens {
-  Identifier { $[a-zA-ZåäöÅÄÖ]+ }
 
   String { '"' (!["\\] | "\\" _)* '"' }
-
-  Number { @digit+ }
 
   EqualOperator { ":" | "=" }
 
@@ -57,15 +65,15 @@ freetext {
 
   BooleanOperator { "AND" | "OR" }
 
-  NotOperator { "NOT" }
-
-  Wildcard { "*" }
+  uOperator { "NOT" | "!" }
 
   reserved { "includeEplikt" | "includePreliminary" }
 
   space { @whitespace+ }
 
-  @precedence { BooleanOperator, NotOperator, reserved, Identifier }
+  Identifier { ![:><=()!"\ ]+ }
+
+  @precedence { BooleanOperator, uOperator, reserved, Identifier, space }
 }
 
 @detectDelim

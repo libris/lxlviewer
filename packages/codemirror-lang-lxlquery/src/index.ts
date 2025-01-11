@@ -9,21 +9,21 @@ import lxlLinter from './lxlLinter';
  * for the matching syntax
  */
 const tags = {
-	BooleanOperator: Tag.define('BooleanOperator'),
-	Wildcard: Tag.define('Wildcard'),
 	Qualifier: Tag.define('Qualifier'),
 	QualifierKey: Tag.define('QualifierKey'),
 	QualifierOperator: Tag.define('QualifierOperator'),
-	QualifierValue: Tag.define('QualifierValue')
+	QualifierValue: Tag.define('QualifierValue'),
+	BooleanOperator: Tag.define('BooleanOperator'),
+	UQuery: Tag.define('UQuery')
 };
 
 const tagMatcher = {
-	'NotOperator BooleanQuery/BooleanOperator': tags.BooleanOperator, // only highlight operator within valid query
-	'Query/Wildcard': tags.Wildcard,
 	'Qualifier/...': tags.Qualifier,
 	'QualifierKey!': tags.QualifierKey,
 	'QualifierOperator!': tags.QualifierOperator,
-	'QualifierValue!': tags.QualifierValue
+	'QualifierValue/...': tags.QualifierValue,
+	BooleanOperator: tags.BooleanOperator,
+	'UQuery/...': tags.UQuery
 };
 
 export const lxlQueryLanguage = LRLanguage.define({
@@ -35,12 +35,12 @@ export const lxlQueryLanguage = LRLanguage.define({
 });
 
 const highlighter = tagHighlighter([
-	{ tag: tags.BooleanOperator, class: 'lxl-boolean-operator' },
-	{ tag: tags.Wildcard, class: 'lxl-wildcard' },
 	{ tag: tags.Qualifier, class: 'lxl-qualifier' },
 	{ tag: tags.QualifierKey, class: 'lxl-qualifier-key' },
 	{ tag: tags.QualifierOperator, class: 'lxl-qualifier-operator' },
-	{ tag: tags.QualifierValue, class: 'lxl-qualifier-value' }
+	{ tag: tags.QualifierValue, class: 'lxl-qualifier-value' },
+	{ tag: tags.BooleanOperator, class: 'lxl-boolean-operator' },
+	{ tag: tags.UQuery, class: 'lxl-uquery' }
 ]);
 
 const highlighterExtensions = [syntaxHighlighting(highlighter), lxlLinter];

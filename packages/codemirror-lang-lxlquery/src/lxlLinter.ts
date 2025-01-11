@@ -10,7 +10,7 @@ import { syntaxTree } from '@codemirror/language';
 import { Prec } from '@codemirror/state';
 
 /**
- * Adds css classes for non-qualifier stuff (error nodes, NOT operator)
+ * Adds mark decoration for error nodes or their parent if zero length
  */
 function addHighlights(view: EditorView) {
 	const widgets: Range<Decoration>[] = [];
@@ -30,15 +30,15 @@ function addHighlights(view: EditorView) {
 					widgets.push(invalidMark.range(from, to));
 				}
 
-				if (node.name === 'NegativeQuery') {
-					const operator = node.node.getChild('NotOperator');
-					const phrase = operator?.nextSibling;
+				// if (node.name === 'UQuery') {
+				// 	// const operator = node.node.getChild('UOperator');
+				// 	// const phrase = operator?.nextSibling;
 
-					if (phrase && phrase.node.from < phrase.node.to) {
-						const invalidMark = Decoration.mark({ class: 'lxl-negative', inclusive: true });
-						widgets.push(invalidMark.range(phrase.node.from, phrase.node.to)); // Add the mark to the thing following the operator
-					}
-				}
+				// 	if (node.from < node.to) {
+				// 		const invalidMark = Decoration.mark({ class: 'lxl-negative', inclusive: true });
+				// 		widgets.push(invalidMark.range(node.from, node.to)); // Add the mark to the thing following the operator
+				// 	}
+				// }
 			}
 		});
 	}
