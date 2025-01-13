@@ -12,7 +12,7 @@ import { mount } from 'svelte';
 import QualifierComponent from './QualifierComponent.svelte';
 import insertQuotes from './insertQuotes.js';
 import { messages } from '$lib/constants/messages.js';
-import insertSpaceBeforeQualifier from './insertSpace.js';
+import insertSpaceBeforeQualifier from './insertSpaceBeforeQualifier.js';
 
 export type Qualifier = {
 	key: string;
