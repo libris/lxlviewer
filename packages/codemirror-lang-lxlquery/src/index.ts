@@ -14,7 +14,7 @@ const tags = {
 	QualifierOperator: Tag.define('QualifierOperator'),
 	QualifierValue: Tag.define('QualifierValue'),
 	BooleanOperator: Tag.define('BooleanOperator'),
-	UQuery: Tag.define('UQuery')
+	UTerm: Tag.define('UTerm')
 };
 
 const tagMatcher = {
@@ -22,17 +22,9 @@ const tagMatcher = {
 	'QualifierKey!': tags.QualifierKey,
 	'QualifierOperator!': tags.QualifierOperator,
 	'QualifierValue/...': tags.QualifierValue,
-	BooleanOperator: tags.BooleanOperator,
-	'UQuery/...': tags.UQuery
+	'AndOperator OrOperator': tags.BooleanOperator,
+	'UTerm/...': tags.UTerm
 };
-
-export const lxlQueryLanguage = LRLanguage.define({
-	name: 'Libris XL query',
-	parser: parser.configure({
-		props: [styleTags(tagMatcher)]
-	}),
-	languageData: {}
-});
 
 const highlighter = tagHighlighter([
 	{ tag: tags.Qualifier, class: 'lxl-qualifier' },
@@ -40,13 +32,20 @@ const highlighter = tagHighlighter([
 	{ tag: tags.QualifierOperator, class: 'lxl-qualifier-operator' },
 	{ tag: tags.QualifierValue, class: 'lxl-qualifier-value' },
 	{ tag: tags.BooleanOperator, class: 'lxl-boolean-operator' },
-	{ tag: tags.UQuery, class: 'lxl-uquery' }
+	{ tag: tags.UTerm, class: 'lxl-not-term' }
 ]);
 
-const highlighterExtensions = [syntaxHighlighting(highlighter), lxlLinter];
+export const lxlQueryLanguage = LRLanguage.define({
+	name: 'Libris XL query',
+	parser: parser.configure({
+		props: [styleTags(tagMatcher)]
+	})
+});
+
+const extensions = [syntaxHighlighting(highlighter), lxlLinter];
 
 /**
  * Libris XL query language together with highlighter extensions
  * that adds CSS classes for certain nodes
  */
-export const lxlQuery = new LanguageSupport(lxlQueryLanguage, highlighterExtensions);
+export const lxlQuery = new LanguageSupport(lxlQueryLanguage, extensions);

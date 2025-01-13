@@ -1,79 +1,31 @@
-@top Query { term* }
+@top Program { orcomb }
 
 @skip { space }
 
-term {
-  freetext |
-  Qualifier |
-  Group |
-  BooleanQuery |
-  UQuery |
-  doubleNegative
+orcomb { andcomb ( OrOperator andcomb )* }
+andcomb { term ( AndOperator term | term )* }
+term { String | Group | UTerm | Qualifier }
+Group { "(" orcomb ")" }
+UTerm { UOperator term }
+String { strliteral | str }
+Qualifier { 
+  ( QualifierKey { String } QualifierOperator { bOperator } QualifierValue { String } ) | 
+  ( QualifierKey { String } QualifierOperator { bOperatorEq } QualifierValue { term } ) |
+  filterAliases 
 }
-
-Qualifier {
-  (QualifierKey QualifierOperator QualifierValue) | reserved
-}
-
-QualifierKey {
-  Identifier | String
-}
-
-QualifierValue {
-  Identifier | String | GroupInQualifier
-}
-
-QualifierOperator {
-  EqualOperator | CompareOperator
-}
-
-Group {
-  "(" (freetext | Group | Qualifier | BooleanQuery | UQuery)+ ")"
-}
-
-BooleanQuery { 
-  (freetext | Qualifier | Group | UQuery) BooleanOperator (freetext | Qualifier | Group | UQuery) 
-  (BooleanOperator (freetext | Qualifier | Group | UQuery))+?
-}
-
-GroupInQualifier {
-  "(" (freetext | booleanQueryInQualifier | GroupInQualifier | UQuery)+ ")"
-}
-
-booleanQueryInQualifier { 
-  (freetext | GroupInQualifier | UQuery) BooleanOperator (freetext | GroupInQualifier | UQuery) 
-  (BooleanOperator (freetext | GroupInQualifier | UQuery))+?
-}
-
-UQuery { 
-  uOperator (freetext | Qualifier | Group) 
-}
-
-freetext {
-  (Identifier | String )
-}
-
-doubleNegative { uOperator uOperator (freetext | Qualifier | Group)  }
 
 @tokens {
-
-  String { '"' (!["\\] | "\\" _)* '"' }
-
-  EqualOperator { ":" | "=" }
-
-  CompareOperator { ">" | "<" | ">=" | "<=" }
-
-  BooleanOperator { "AND" | "OR" }
-
-  uOperator { "NOT" | "!" }
-
-  reserved { "includeEplikt" | "includePreliminary" }
-
+  OrOperator { "OR" }
+  AndOperator { "AND" }
+  UOperator { "!" | "NOT" }
+  bOperator {"<" | ">" | "<=" | ">=" }
+  bOperatorEq { ":" | "=" }
+  strliteral { '"' (!["\\] | "\\" _)* '"' }
+  str { ![:><=()!"\ ]+ }
+  filterAliases { "includeEplikt" | "includePreliminary" }
   space { @whitespace+ }
 
-  Identifier { ![:><=()!"\ ]+ }
-
-  @precedence { BooleanOperator, uOperator, reserved, Identifier, space }
+  @precedence { OrOperator, AndOperator, UOperator, bOperator, bOperatorEq, reserved, str, space}
 }
 
 @detectDelim

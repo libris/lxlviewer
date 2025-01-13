@@ -20,25 +20,15 @@ function addHighlights(view: EditorView) {
 			from,
 			to,
 			enter: (node) => {
-				if (node.name === '⚠') {
+				if (node.type.isError) {
 					let { from, to } = node;
 					if (node.from === node.to && node.node.parent) {
 						from = node.node.parent.from;
 						to = node.node.parent.to;
 					}
-					const invalidMark = Decoration.mark({ class: 'invalid', inclusive: true });
+					const invalidMark = Decoration.mark({ class: 'lxl-invalid', inclusive: true });
 					widgets.push(invalidMark.range(from, to));
 				}
-
-				// if (node.name === 'UQuery') {
-				// 	// const operator = node.node.getChild('UOperator');
-				// 	// const phrase = operator?.nextSibling;
-
-				// 	if (node.from < node.to) {
-				// 		const invalidMark = Decoration.mark({ class: 'lxl-negative', inclusive: true });
-				// 		widgets.push(invalidMark.range(node.from, node.to)); // Add the mark to the thing following the operator
-				// 	}
-				// }
 			}
 		});
 	}
