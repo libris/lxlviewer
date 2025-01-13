@@ -25,7 +25,7 @@ Qualifier {
   filterAliases { "includeEplikt" | "includePreliminary" }
   space { @whitespace+ }
 
-  @precedence { OrOperator, AndOperator, UOperator, bOperator, bOperatorEq, reserved, str, space}
+  @precedence { OrOperator, AndOperator, UOperator, bOperator, bOperatorEq, filterAliases, str, space}
 }
 
 @detectDelim
