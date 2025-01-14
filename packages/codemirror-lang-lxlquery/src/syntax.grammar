@@ -1,4 +1,4 @@
-@top Program { orcomb }
+@top Query { orcomb }
 
 @skip { space }
 
@@ -21,7 +21,7 @@ Qualifier {
   bOperator {"<" | ">" | "<=" | ">=" }
   bOperatorEq { ":" | "=" }
   strliteral { '"' (!["\\] | "\\" _)* '"' }
-  str { ![:><=()!"\ ]+ }
+  str { ![:><=()~!"\ ]+ }
   filterAliases { "includeEplikt" | "includePreliminary" }
   space { @whitespace+ }
 
