@@ -121,6 +121,10 @@ export default {
       delete fItem['@reverse'];
       delete fItem._uid;
 
+      if (this.user.settings.activeSigel !== 'SEK') {
+        delete fItem['image'];
+      }
+
       this.hideTopLevelProperties.forEach(property => { delete fItem[property]; });
 
       return fItem;
