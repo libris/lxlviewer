@@ -26,8 +26,8 @@ import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
-import { error } from '@sveltejs/kit';
-import { env } from '$env/dynamic/public';
+// import { error } from '@sveltejs/kit';
+// import { env } from '$env/dynamic/public';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -95,12 +95,12 @@ export function displayMappings(
 				// Mock old behaviour for 'classic' search GUI, i.e show error page
 				// when encountering an invalid property in order to provide feedback.
 				// TODO remove this when Supersearch is fully implemented.
-				const useSuperSearch = env?.PUBLIC_USE_SUPERSEARCH === 'true';
-				if (!useSuperSearch && m.property?.['@type'] === '_Invalid') {
-					error(400, {
-						message: `Invalid query, please check the documentation. Unrecognized property alias: ${m.property?.label ?? ''}`
-					});
-				}
+				// const useSuperSearch = env?.PUBLIC_USE_SUPERSEARCH === 'true';
+				// if (!useSuperSearch && m.property?.['@type'] === '_Invalid') {
+				// 	error(400, {
+				// 		message: `Invalid query, please check the documentation. Unrecognized property alias: ${m.property?.label ?? ''}`
+				// 	});
+				// }
 
 				const property = m[operator] as FramedData;
 				return {

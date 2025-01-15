@@ -19,7 +19,8 @@
 
 	let { placeholder, autofocus = false }: Props = $props();
 
-	const useSuperSearch = env?.PUBLIC_USE_SUPERSEARCH === 'true';
+	let useSuperSearch =
+		env?.PUBLIC_USE_SUPERSEARCH === 'true' || $page.url.searchParams.get('_x') === 'supersearch';
 	const showAdvanced = $page.url.searchParams.get('_x') === 'advanced' || useSuperSearch;
 
 	let q = $state(
