@@ -34,9 +34,7 @@
 }
 
 .lxl-invalid,
-.lxl-invalid .lxl-qualifier,
-/* todo rename/remove */
-.invalid > .lxl-qualifier {
+.lxl-invalid .lxl-qualifier {
 	text-decoration: underline 1px solid;
 	text-decoration-color: rgba(255, 0, 0, 0.75);
 	text-decoration-style: wavy;
