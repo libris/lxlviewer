@@ -55,6 +55,7 @@ export default {
       'record.sameAs',
       'mainEntity.sameAs',
       'mainEntity.bulk:execution',
+      'mainEntity.image',
       'work.sameAs',
       "record['@reverse']", // prevent visual bugs
       "mainEntity['@reverse']", // prevent visual bugs
