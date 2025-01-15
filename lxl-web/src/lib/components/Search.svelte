@@ -106,7 +106,7 @@
 		>
 			{#snippet resultItem(item, getCellId, isFocusedCell)}
 				<a
-					href={relativizeUrl(item['@id'])}
+					href={relativizeUrl(item?.['@id'])}
 					role="gridcell"
 					id={getCellId(0)}
 					class:focused-cell={isFocusedCell(0)}

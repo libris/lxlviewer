@@ -250,12 +250,15 @@
 						}
 						break;
 					case 'ArrowLeft':
-						if (activeColIndex > 0) {
+						if (activeRowIndex >= 0 && activeColIndex > 0) {
 							activeColIndex--;
 						}
 						break;
 					case 'ArrowRight':
-						if (activeColIndex < getColsInActiveRow(activeRowIndex).length - 1) {
+						if (
+							activeRowIndex >= 0 &&
+							activeColIndex < getColsInActiveRow(activeRowIndex).length - 1
+						) {
 							activeColIndex++;
 						}
 						break;
