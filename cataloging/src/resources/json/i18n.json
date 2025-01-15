@@ -431,9 +431,9 @@
     "Hide handled:": "Dölj hanterade:",
     "links": "länkningar",
     "link": "länkning",
-    "Bulk changes": "Massändringar",
-    "Bulk change": "Massändring",
-    "Create bulk change": "Skapa massändring",
+    "Bulk changes": "Körningar",
+    "Bulk change": "Körning",
+    "Create bulk change": "Skapa körning",
     "Form builder": "Sökform",
     "Changes": "Ändringar",
     "Draft": "Utkast",
@@ -451,7 +451,7 @@
     "Match with ID list" : "Matcha mot ID-lista",
     "Selection" :  "Urval",
     "Preview " :  "Förhandsgranskning",
-    "Save bulk change to preview" : "Spara massändring för att förhandsgranska",
+    "Save bulk change to preview" : "Spara körning för att förhandsgranska",
     "No matching records" : "Inga matchande poster",
     "Selection from ID list" : "Urval från ID-lista",
     "Match subtypes" : "Matcha subtyper",
@@ -465,7 +465,7 @@
     "Show as bulk change" : "Visa som körning",
     "Show as record" : "Visa som post",
     "To see bulk changes you need to switch to a sigel with access.": "För att se körningar behöver du växla till ett sigel med rättigheter.",
-    "Back to create bulk change": "Tillbaka till skapa massändring",
+    "Back to create bulk change": "Tillbaka till skapa körning",
     "This might take a while...": "Det här verkar ta lite tid..."
   }
 }
