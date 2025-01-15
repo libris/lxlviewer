@@ -6,12 +6,13 @@ import {
 	WidgetType,
 	type DecorationSet
 } from '@codemirror/view';
-import { EditorState, type Range } from '@codemirror/state';
+import { EditorState, Range, RangeSet, RangeSetBuilder, RangeValue } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 import { mount } from 'svelte';
 import QualifierComponent from './QualifierComponent.svelte';
 import insertQuotes from './insertQuotes.js';
 import { messages } from '$lib/constants/messages.js';
+import insertSpaceBeforeQualifier from './insertSpaceBeforeQualifier.js';
 
 export type Qualifier = {
 	key: string;
@@ -38,8 +39,7 @@ class QualifierWidget extends WidgetType {
 		readonly valueLabel: string | undefined,
 		readonly operator: string,
 		readonly operatorType: string | undefined,
-		readonly removeLink: string | undefined,
-		readonly atomic: boolean
+		readonly removeLink: string | undefined
 	) {
 		super();
 	}
@@ -73,8 +73,11 @@ class QualifierWidget extends WidgetType {
 }
 
 function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
+	let atomicRangeSet: RangeSet<RangeValue> = RangeSet.empty;
+
 	function getQualifiers(view: EditorView) {
 		const widgets: Range<Decoration>[] = [];
+		const ranges = new RangeSetBuilder();
 		const doc = view.state.doc.toString();
 
 		for (const { from, to } of view.visibleRanges) {
@@ -107,19 +110,19 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 									valueLabel,
 									operator,
 									operatorType,
-									removeLink,
-									true // atomic
+									removeLink
 								)
 							});
 							const decorationRangeFrom = node.from;
 							const decorationRangeTo = valueLabel ? node.to : operatorNode?.to;
+
+							ranges.add(decorationRangeFrom, decorationRangeTo || node.to, qualifierDecoration);
 							widgets.push(qualifierDecoration.range(decorationRangeFrom, decorationRangeTo));
 						} else if (invalid) {
 							// Add invalid key mark decoration
 							const qualifierMark = Decoration.mark({
 								class: 'invalid',
-								inclusive: true,
-								atomic: false
+								inclusive: true
 							});
 							const invalidRangeFrom = keyNode ? keyNode.from : node.from;
 							const invalidRangeTo = keyNode ? keyNode.to : operatorNode?.from;
@@ -130,53 +133,43 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 				}
 			});
 		}
-		return Decoration.set(widgets, true); // true = sort
+		atomicRangeSet = ranges.finish();
+		return Decoration.set(widgets, true);
 	}
 
-	/**
-	 * filter out non-atomics using custom property 'atomic'
-	 */
-	const filterAtomic = (from: number, to: number, decoration: Decoration) => {
-		return decoration.spec?.atomic || decoration.spec?.widget?.atomic;
-	};
-
-	const qualifierPlugin = ViewPlugin.fromClass(
-		class {
-			qualifiers: DecorationSet;
-			constructor(view: EditorView) {
-				this.qualifiers = getQualifiers(view);
-			}
-
-			update(update: ViewUpdate) {
-				if (update.docChanged || syntaxTree(update.startState) != syntaxTree(update.state)) {
-					// TODO: Calling getQualifiers on every document change is probably not good for performance
-					// Try optimizing; either run the function only on certain kinds of input, or split getQualifiers;
-					// one that updates the widgets (on input) and one that looks for labels (on data update)
-					this.qualifiers = getQualifiers(update.view);
-				} else {
-					for (const tr of update.transactions) {
-						for (const e of tr.effects) {
-							if (e.value.message === messages.NEW_DATA) {
-								this.qualifiers = getQualifiers(update.view);
-							}
+	class LxlQualifier {
+		qualifiers: DecorationSet;
+		constructor(view: EditorView) {
+			this.qualifiers = getQualifiers(view);
+		}
+		update(update: ViewUpdate) {
+			if (update.docChanged || syntaxTree(update.startState) != syntaxTree(update.state)) {
+				// TODO: Calling getQualifiers on every document change is probably not good for performance
+				// Try optimizing; either run the function only on certain kinds of input, or split getQualifiers;
+				// one that updates the widgets (on input) and one that looks for labels (on data update)
+				this.qualifiers = getQualifiers(update.view);
+			} else {
+				for (const tr of update.transactions) {
+					for (const e of tr.effects) {
+						if (e.value.message === messages.NEW_DATA) {
+							this.qualifiers = getQualifiers(update.view);
 						}
 					}
 				}
 			}
-		},
-		{
-			decorations: (instance) => instance.qualifiers,
-			eventHandlers: {},
-			provide: (plugin) => [
-				EditorView.atomicRanges.of((view) => {
-					const filteredRanges = view.plugin(plugin)?.qualifiers.update({ filter: filterAtomic });
-					return filteredRanges || Decoration.none;
-				}),
-				EditorState.transactionFilter.of(insertQuotes)
-			]
 		}
-	);
-	return qualifierPlugin;
+	}
+
+	const plugin = ViewPlugin.fromClass(LxlQualifier, {
+		decorations: (instance) => instance.qualifiers,
+		provide: () => [
+			EditorView.atomicRanges.of(() => atomicRangeSet),
+			EditorState.transactionFilter.of(insertQuotes),
+			insertSpaceBeforeQualifier(() => atomicRangeSet)
+		]
+	});
+
+	return plugin;
 }
 
 export default lxlQualifierPlugin;
