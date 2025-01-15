@@ -569,7 +569,7 @@ export default {
 
   &-selectWrapper {
     @media (min-width: @screen-sm) {
-      flex-basis: 32%;
+      flex-basis: 25%;
     }
     border: solid @grey-lighter;
     border-width: 0px 1px 0px 1px;
