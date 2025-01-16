@@ -104,6 +104,9 @@
 			comboboxAriaLabel={$page.data.t('search.search')}
 			defaultRow={-1}
 		>
+			{#snippet loadingIndicator()}
+				<div>{$page.data.t('search.loading')}</div>
+			{/snippet}
 			{#snippet resultItem(item, getCellId, isFocusedCell)}
 				<a
 					href={relativizeUrl(item?.['@id'])}

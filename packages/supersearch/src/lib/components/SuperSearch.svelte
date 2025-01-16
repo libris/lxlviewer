@@ -33,6 +33,7 @@
 		resultItem?: Snippet<
 			[ResultItem, (cellIndex: number) => string, (cellIndex: number) => boolean, number]
 		>;
+		loadingIndicator?: Snippet;
 		defaultRow?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
@@ -52,6 +53,7 @@
 		extensions = [],
 		comboboxAriaLabel,
 		resultItem = fallbackResultItem,
+		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		defaultRow = 0,
 		debouncedWait = 300
@@ -395,7 +397,7 @@
 				</div>
 			{/if}
 			{#if search.isLoading}
-				Loading...
+				{@render loadingIndicator?.()}
 			{:else if search.hasMorePaginatedData}
 				<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
 					Load more

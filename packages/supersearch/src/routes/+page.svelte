@@ -83,6 +83,9 @@
 					{/if}
 				</div>
 			{/snippet}
+			{#snippet loadingIndicator()}
+				Loading...
+			{/snippet}
 		</SuperSearch>
 	</fieldset>
 </form>
