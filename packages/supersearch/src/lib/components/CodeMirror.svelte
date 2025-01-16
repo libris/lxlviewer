@@ -67,12 +67,12 @@
 		});
 	}
 
-	export function reset({ doc, selection }: { doc: string; selection?: SelectionRange }) {
-		editorView?.setState(createEditorState({ doc, selection }));
-		value = doc;
+	export function reset(options?: { doc: string; selection?: SelectionRange }) {
+		editorView?.setState(createEditorState({ doc: options?.doc, selection: options?.selection }));
+		value = options?.doc || '';
 		onchange({
 			value,
-			cursor: selection?.anchor || 0
+			cursor: options?.selection?.anchor || 0
 		});
 	}
 
