@@ -16,8 +16,10 @@ export const load = async ({ params, url, locals, fetch }) => {
 		redirect(303, `/`); // redirect to home page if no search params are given
 	}
 
+	const debug = locals.userSettings?.debug === true ? '&_debug=esScore' : '';
+
 	const searchParams = new URLSearchParams(url.searchParams.toString());
-	const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}`, {
+	const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}${debug}`, {
 		// intercept 3xx redirects to sync back the correct _i/_q combination provided by api
 		redirect: 'manual'
 	});

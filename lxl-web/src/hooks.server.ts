@@ -23,6 +23,16 @@ export const handle = async ({ event, resolve }) => {
 			console.warn('Failed to parse user settings', e);
 		}
 	}
+	if (['true', 'false'].includes(event.url.searchParams.get('__debug') || '')) {
+		userSettings = userSettings || ({} as UserSettings);
+		userSettings.debug = event.url.searchParams.get('__debug') === 'true';
+		event.cookies.set('userSettings', JSON.stringify(userSettings), {
+			maxAge: 365,
+			secure: true,
+			sameSite: 'strict',
+			path: '/' // ???
+		});
+	}
 	event.locals.userSettings = userSettings;
 
 	// set HTML lang

@@ -5,12 +5,13 @@
 	import { LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
-
 	import { relativizeUrl } from '$lib/utils/http';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { page } from '$app/stores';
+	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
+	import EsExplain from '$lib/components/find/EsExplain.svelte';
 
 	export let item: SearchResultItem;
 
@@ -18,6 +19,8 @@
 	$: titleId = `card-title-${id}`;
 	$: bodyId = `card-body-${id}`;
 	$: footerId = `card-footer-${id}`;
+
+	let showDebugExplain = false;
 
 	function getInstanceData(instances: ResourceData) {
 		if (typeof instances === 'object') {
@@ -47,8 +50,6 @@
 
 <div class="search-card-container">
 	<article class="search-card" data-testid="search-card">
-		<!-- svelte-ignore a11y-missing-content -->
-		<!-- (content shouldn't be needed as we're using aria-labelledby, see: https://github.com/sveltejs/svelte/issues/8296) -->
 		<a
 			class="card-link"
 			href={id}
@@ -150,6 +151,21 @@
 				{/each}
 			</footer>
 		</div>
+		{#if item._debug}
+			<button
+				class="card-debug z-20 cursor-crosshair text-left"
+				on:click={() => {
+					showDebugExplain = !showDebugExplain;
+				}}
+			>
+				<SearchItemDebug itemDebug={item._debug} />
+			</button>
+			{#if showDebugExplain}
+				<div class="z-20 col-span-full row-start-2 cursor-crosshair pt-4">
+					<EsExplain explain={item._debug.score.explain} id="explain" />
+				</div>
+			{/if}
+		{/if}
 	</article>
 </div>
 
@@ -166,8 +182,8 @@
 		position: relative;
 		background: theme(backgroundColor.cards);
 		border-radius: theme(borderRadius.md);
-		grid-template-areas: 'image content';
-		grid-template-columns: 64px 1fr;
+		grid-template-areas: 'image content debug';
+		grid-template-columns: 64px 1fr 1fr;
 
 		&:hover,
 		&:focus-within {
@@ -205,6 +221,10 @@
 
 	.card-content {
 		grid-area: content;
+	}
+
+	.card-debug {
+		grid-area: debug;
 	}
 
 	.card-body {

@@ -4,4 +4,5 @@ interface SettingsObj {
 	facetSort: {
 		[dimension: string]: string;
 	};
+	debug: boolean;
 }
