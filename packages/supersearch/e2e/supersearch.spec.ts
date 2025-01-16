@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, devices } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
 	await page.goto('/');
@@ -34,6 +34,13 @@ test('expanded search is closable', async ({ page }) => {
 	await expect(
 		page.locator('[data-test-id="test1"]').getByRole('dialog').first(),
 		'by clicking outside'
+	).not.toBeVisible();
+	await page.setViewportSize(devices['iPhone X'].viewport);
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').click();
+	await page.locator('[aria-label="Close"]').click();
+	await expect(
+		page.locator('[data-test-id="test1"]').getByRole('dialog').first(),
+		'by pressing close action'
 	).not.toBeVisible();
 });
 
@@ -189,4 +196,36 @@ test('submits form identified by form attribute on enter key press (if no result
 	await page.locator('[data-test-id="test2"]').getByRole('combobox').first().fill('hello world');
 	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL('/test2?q=hello+world');
+});
+
+test('submits form when pressing submit action', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').locator('[type=submit]').first().click();
+	await expect(page, 'submit action should only be triggered if there is a value').toHaveURL('/');
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('hello world');
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.first()
+		.locator('[type=submit]')
+		.click();
+	await expect(page).toHaveURL('/test1?q=hello+world');
+});
+
+test('clears input form when pressing clear action', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().click();
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('combobox')
+		.fill('Hello world');
+	await expect(
+		await page.locator('[data-test-id="test1"]').getByRole('combobox').first()
+	).toHaveText('Hello world');
+	await page.locator('[data-test-id="test1"]').getByRole('dialog').locator('[type=reset]').click();
+	await expect(
+		page.locator('[data-test-id="test1"]').getByRole('dialog').locator('[type=reset]')
+	).not.toBeVisible();
+	await expect(
+		await page.locator('[data-test-id="test1"]').getByRole('combobox').first()
+	).toHaveText('Search');
 });
