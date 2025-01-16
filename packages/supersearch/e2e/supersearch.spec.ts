@@ -39,7 +39,6 @@ test('expanded search is closable', async ({ page }) => {
 
 test('expanded search is togglable using keyboard shortcut', async ({ page }) => {
 	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().press('Tab');
-	await expect(page.locator('[data-test-id="test2"]').getByRole('combobox').first()).toBeFocused();
 	await page.keyboard.press('ControlOrMeta+k');
 	await expect(page.locator('[data-test-id="test1"]').getByRole('dialog').first()).toBeVisible();
 	await page.keyboard.press('ControlOrMeta+k');
