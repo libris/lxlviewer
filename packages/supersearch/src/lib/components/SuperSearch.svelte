@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
+	import { MediaQuery } from 'svelte/reactivity';
 	import { BROWSER } from 'esm-env';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
@@ -30,6 +31,9 @@
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
 		comboboxAriaLabel?: string;
+		clearAction?: Snippet<[() => void]>;
+		closeAction?: Snippet<[() => void]>;
+		closeActionMediaQueryString?: string;
 		resultItem?: Snippet<
 			[ResultItem, (cellIndex: number) => string, (cellIndex: number) => boolean, number]
 		>;
@@ -51,6 +55,9 @@
 		transformFn,
 		extensions = [],
 		comboboxAriaLabel,
+		clearAction: clearActionSnippet,
+		closeAction: closeActionSnippet,
+		closeActionMediaQueryString = 'max-width: 640px', // defines when the back/close action should be visible (only shown when expanded)
 		resultItem = fallbackResultItem,
 		toggleWithKeyboardShortcut = false,
 		defaultRow = 0,
@@ -83,6 +90,7 @@
 	let prevSearchDataId: string | undefined;
 	const sendMessage = StateEffect.define<{ message: string }>({});
 	const newDataMessage = { effects: sendMessage.of({ message: messages.NEW_DATA }) };
+	const closeActionMediaQuery = new MediaQuery(closeActionMediaQueryString);
 
 	$effect(() => {
 		if (search.data && search.data?.['@id'] !== prevSearchDataId) {
@@ -318,6 +326,12 @@
 		}
 	}
 
+	function handleReset() {
+		value = '';
+		search.resetData();
+		showExpandedSearch();
+	}
+
 	onMount(() => {
 		if (BROWSER && toggleWithKeyboardShortcut) {
 			document.addEventListener('keydown', handleKeyboardShortcut);
@@ -361,25 +375,53 @@
 	{JSON.stringify(item)}
 {/snippet}
 
-<CodeMirror
-	{value}
-	extensions={collapsedExtensions}
-	onclick={handleClickCollapsed}
-	onchange={handleChangeCodeMirror}
-	bind:editorView={collapsedEditorView}
-	syncedEditorView={expandedEditorView}
-/>
-<textarea {value} {name} {form} hidden readonly></textarea>
-<dialog id={`${id}-dialog`} bind:this={dialog} onclose={hideExpandedSearch}>
-	<div role="presentation" onkeydown={handleKeyDown}>
+{#snippet clearAction()}
+	{#if value.length}
+		<div class="supersearch-clear-action">
+			{@render clearActionSnippet?.(handleReset)}
+		</div>
+	{/if}
+{/snippet}
+
+<div class="supersearch-combobox">
+	<div class="supersearch-input">
 		<CodeMirror
 			{value}
-			extensions={expandedExtensions}
+			extensions={collapsedExtensions}
+			onclick={handleClickCollapsed}
 			onchange={handleChangeCodeMirror}
-			bind:editorView={expandedEditorView}
-			syncedEditorView={collapsedEditorView}
+			bind:editorView={collapsedEditorView}
+			syncedEditorView={expandedEditorView}
 		/>
-		<nav>
+		<textarea {value} {name} {form} hidden readonly></textarea>
+	</div>
+	{@render clearAction()}
+</div>
+<dialog
+	class="supersearch-dialog"
+	id={`${id}-dialog`}
+	bind:this={dialog}
+	onclose={hideExpandedSearch}
+>
+	<div role="presentation" onkeydown={handleKeyDown}>
+		<div class="supersearch-combobox">
+			{#if closeActionMediaQuery && expanded}
+				<div class="supersearch-close-action">
+					{@render closeActionSnippet?.(hideExpandedSearch)}
+				</div>
+			{/if}
+			<div class="supersearch-input">
+				<CodeMirror
+					{value}
+					extensions={expandedExtensions}
+					onchange={handleChangeCodeMirror}
+					bind:editorView={expandedEditorView}
+					syncedEditorView={collapsedEditorView}
+				/>
+			</div>
+			{@render clearAction()}
+		</div>
+		<nav class="supersearch-suggestions">
 			{#if search.data}
 				{@const resultItems =
 					(Array.isArray(search.paginatedData) &&
@@ -398,13 +440,6 @@
 					{/each}
 				</div>
 			{/if}
-			{#if search.isLoading}
-				Loading...
-			{:else if search.hasMorePaginatedData}
-				<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-					Load more
-				</button>
-			{/if}
 		</nav>
 	</div>
 </dialog>
@@ -414,11 +449,23 @@
 		padding: 0;
 	}
 
-	.focused {
-		background: #ebebeb;
+	.supersearch-combobox {
+		display: flex;
+	}
 
-		& :global(.focused-cell) {
-			background: lightgreen;
+	.supersearch-input {
+		display: flex;
+		flex: 1;
+		overflow: hidden;
+
+		& :global(.codemirror-container) {
+			display: block;
+			flex: 1;
+			overflow: hidden;
 		}
+	}
+
+	.supersearch-suggestions {
+		overflow: hidden;
 	}
 </style>

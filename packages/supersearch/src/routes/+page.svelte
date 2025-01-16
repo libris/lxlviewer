@@ -4,6 +4,8 @@
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import type { JSONValue } from '$lib/types/json.js';
 	import type { MockQueryResponse } from './api/find/+server.js';
+	import clearIconSvg from './icon-clear.svg';
+	import backIconSvg from './icon-arrow-left.svg';
 
 	let value1 = $state('');
 	let value2 = $state('');
@@ -50,8 +52,17 @@
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin()]}
 			toggleWithKeyboardShortcut
-			comboboxAriaLabel="Search"
 		>
+			{#snippet closeAction(onclick)}
+				<button type="button" aria-label="Close" class="close-action" {onclick}>
+					<img src={backIconSvg} width={16} height={16} alt="" />
+				</button>
+			{/snippet}
+			{#snippet clearAction(onclick)}
+				<button type="reset" aria-label="Clear" class="clear-action" {onclick}>
+					<img src={clearIconSvg} width={16} height={16} alt="" />
+				</button>
+			{/snippet}
 			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
 				<div class="result-item" data-test-id="result-item">
 					<div role="gridcell">
@@ -124,6 +135,56 @@
 <label>Placeholder:<input type="text" bind:value={placeholder} /></label>
 
 <style>
+	:global(.supersearch-input) {
+		& :global(.cm-content) {
+			padding: 0;
+		}
+		& :global(.cm-line) {
+			min-height: 44px;
+			line-height: 44px;
+		}
+
+		& :global(.cm-focused) {
+			outline: none;
+		}
+	}
+
+	:global(.supersearch-dialog) {
+		width: 100%;
+		max-width: 640px;
+	}
+
+	.close-action,
+	.clear-action {
+		cursor: pointer;
+		min-width: 44px;
+		height: 44px;
+	}
+
+	:global(.supersearch-dialog) {
+		& :global(a:hover),
+		& :global(button:hover) {
+			background: #ddffdd;
+		}
+	}
+
+	:global(.supersearch-dialog .focused) {
+		background: #ebebeb;
+
+		& :global(.focused-cell) {
+			background: lightgreen;
+		}
+
+		& :global(.focused-cell) {
+			background: lightgreen;
+		}
+	}
+
+	:global(.cm-content[aria-haspopup='dialog']) {
+		background: url(./icon-search.svg) 16px center no-repeat;
+		padding-left: 44px;
+	}
+
 	.result-item {
 		display: flex;
 		align-items: flex-start;
