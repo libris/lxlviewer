@@ -92,14 +92,6 @@
 		}
 	});
 
-	$effect(() => {
-		if (value && value.trim() && value.trim() !== prevValue.trim()) {
-			search.resetData();
-			prevValue = value;
-			search.debouncedFetchData(value, cursor);
-		}
-	});
-
 	const extensionsWithDefaults = [
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		preventEnterKeyHandling(),
@@ -170,6 +162,16 @@
 		cursor = event.cursor;
 		activeRowIndex = defaultRow;
 		activeColIndex = 0;
+
+		if (value.trim() && value.trim() !== prevValue.trim()) {
+			prevValue = value;
+			search.debouncedFetchData(value, cursor);
+		}
+
+		if (!value.trim()) {
+			prevValue = value;
+			if (search.data) search.resetData();
+		}
 	}
 
 	function showExpandedSearch() {
