@@ -432,7 +432,7 @@
 >
 	<div role="presentation" onkeydown={handleExpandedKeyDown}>
 		<div class="supersearch-combobox">
-			{#if closeActionMediaQuery && expanded}
+			{#if closeActionMediaQuery.current && expanded}
 				<div class="supersearch-close-action">
 					{@render closeActionSnippet?.(hideExpandedSearch)}
 				</div>
