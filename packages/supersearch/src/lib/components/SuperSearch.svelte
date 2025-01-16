@@ -112,6 +112,7 @@
 	let collapsedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
 			role: 'combobox',
+			inputmode: 'search',
 			...(comboboxAriaLabel && {
 				'aria-label': comboboxAriaLabel
 			}),
@@ -127,6 +128,7 @@
 		EditorView.contentAttributes.of({
 			id: `${id}-content`,
 			role: 'combobox', // identifies the element as a combobox
+			inputmode: 'search',
 			...(comboboxAriaLabel && {
 				'aria-label': comboboxAriaLabel
 			}),
