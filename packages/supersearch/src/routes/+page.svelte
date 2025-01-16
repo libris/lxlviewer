@@ -53,6 +53,11 @@
 			extensions={[lxlQualifierPlugin()]}
 			toggleWithKeyboardShortcut
 		>
+			{#snippet submitAction(onclick)}
+				<button type="submit" class="submit-action" enterkeyhint="search" {onclick}>
+					Search
+				</button>
+			{/snippet}
 			{#snippet closeAction(onclick)}
 				<button type="button" aria-label="Close" class="close-action" {onclick}>
 					<img src={backIconSvg} width={16} height={16} alt="" />
@@ -154,6 +159,7 @@
 		max-width: 640px;
 	}
 
+	.submit-action,
 	.close-action,
 	.clear-action {
 		cursor: pointer;

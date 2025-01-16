@@ -31,6 +31,7 @@
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
 		comboboxAriaLabel?: string;
+		submitAction?: Snippet<[(event: MouseEvent) => void]>;
 		clearAction?: Snippet<[() => void]>;
 		closeAction?: Snippet<[() => void]>;
 		closeActionMediaQueryString?: string;
@@ -55,6 +56,7 @@
 		transformFn,
 		extensions = [],
 		comboboxAriaLabel,
+		submitAction: submitActionSnippet,
 		clearAction: clearActionSnippet,
 		closeAction: closeActionSnippet,
 		closeActionMediaQueryString = 'max-width: 640px', // defines when the back/close action should be visible (only shown when expanded)
@@ -202,25 +204,35 @@
 		activeColIndex = 0;
 	}
 
-	function handleKeyDown(event: KeyboardEvent) {
+	function submitClosestForm() {
+		const formElement = form
+			? document.getElementById(form)
+			: collapsedEditorView?.dom?.closest('form');
+
+		if (formElement && formElement instanceof HTMLFormElement) {
+			formElement.requestSubmit();
+			hideExpandedSearch();
+		}
+	}
+
+	function handleCollapsedKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' && value.length) {
+			submitClosestForm();
+		}
+	}
+
+	function handleExpandedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
 			hideExpandedSearch();
 		}
 
 		if (event.key === 'Enter') {
 			/* Fire click event if result item cell is focused */
-			if (activeRowIndex >= 0) {
+			if (activeRowIndex >= 0 && search.data) {
 				document?.getElementById(`${id}-result-item-${activeRowIndex}x${activeColIndex}`)?.click();
 				hideExpandedSearch();
-			} else {
-				/* Otherwise submit closest form */
-				const formElement = form
-					? document.getElementById(form)
-					: collapsedEditorView?.dom?.closest('form');
-				if (formElement && formElement instanceof HTMLFormElement) {
-					formElement.requestSubmit();
-					hideExpandedSearch();
-				}
+			} else if (value.length) {
+				submitClosestForm();
 			}
 		}
 
@@ -326,6 +338,12 @@
 		}
 	}
 
+	function handleClickSubmit(event: MouseEvent) {
+		if (!value.length) {
+			event.preventDefault();
+		}
+	}
+
 	function handleReset() {
 		value = '';
 		search.resetData();
@@ -383,19 +401,28 @@
 	{/if}
 {/snippet}
 
-<div class="supersearch-combobox">
-	<div class="supersearch-input">
-		<CodeMirror
-			{value}
-			extensions={collapsedExtensions}
-			onclick={handleClickCollapsed}
-			onchange={handleChangeCodeMirror}
-			bind:editorView={collapsedEditorView}
-			syncedEditorView={expandedEditorView}
-		/>
-		<textarea {value} {name} {form} hidden readonly></textarea>
+{#snippet submitAction()}
+	<div class="supersearch-submit-action">
+		{@render submitActionSnippet?.(handleClickSubmit)}
 	</div>
-	{@render clearAction()}
+{/snippet}
+
+<div role="presentation" onkeydown={handleCollapsedKeyDown}>
+	<div class="supersearch-combobox">
+		<div class="supersearch-input">
+			<CodeMirror
+				{value}
+				extensions={collapsedExtensions}
+				onclick={handleClickCollapsed}
+				onchange={handleChangeCodeMirror}
+				bind:editorView={collapsedEditorView}
+				syncedEditorView={expandedEditorView}
+			/>
+			<textarea {value} {name} {form} hidden readonly></textarea>
+			{@render clearAction()}
+		</div>
+		{@render submitAction()}
+	</div>
 </div>
 <dialog
 	class="supersearch-dialog"
@@ -403,7 +430,7 @@
 	bind:this={dialog}
 	onclose={hideExpandedSearch}
 >
-	<div role="presentation" onkeydown={handleKeyDown}>
+	<div role="presentation" onkeydown={handleExpandedKeyDown}>
 		<div class="supersearch-combobox">
 			{#if closeActionMediaQuery && expanded}
 				<div class="supersearch-close-action">
@@ -418,8 +445,9 @@
 					bind:editorView={expandedEditorView}
 					syncedEditorView={collapsedEditorView}
 				/>
+				{@render clearAction()}
 			</div>
-			{@render clearAction()}
+			{@render submitAction()}
 		</div>
 		<nav class="supersearch-suggestions">
 			{#if search.data}
