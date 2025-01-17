@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
+	import { MediaQuery } from 'svelte/reactivity';
 	import { BROWSER } from 'esm-env';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
@@ -30,6 +31,10 @@
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
 		comboboxAriaLabel?: string;
+		submitAction?: Snippet<[(event: MouseEvent) => void]>;
+		clearAction?: Snippet<[() => void]>;
+		closeAction?: Snippet<[() => void]>;
+		closeActionMediaQueryString?: string;
 		resultItem?: Snippet<
 			[ResultItem, (cellIndex: number) => string, (cellIndex: number) => boolean, number]
 		>;
@@ -51,6 +56,10 @@
 		transformFn,
 		extensions = [],
 		comboboxAriaLabel,
+		submitAction: submitActionSnippet,
+		clearAction: clearActionSnippet,
+		closeAction: closeActionSnippet,
+		closeActionMediaQueryString = 'max-width: 640px', // defines when the back/close action should be visible (only shown when expanded)
 		resultItem = fallbackResultItem,
 		toggleWithKeyboardShortcut = false,
 		defaultRow = 0,
@@ -83,20 +92,13 @@
 	let prevSearchDataId: string | undefined;
 	const sendMessage = StateEffect.define<{ message: string }>({});
 	const newDataMessage = { effects: sendMessage.of({ message: messages.NEW_DATA }) };
+	const closeActionMediaQuery = new MediaQuery(closeActionMediaQueryString);
 
 	$effect(() => {
 		if (search.data && search.data?.['@id'] !== prevSearchDataId) {
 			expandedEditorView?.dispatch(newDataMessage);
 			collapsedEditorView?.dispatch(newDataMessage);
 			prevSearchDataId = search.data?.['@id'];
-		}
-	});
-
-	$effect(() => {
-		if (value && value.trim() && value.trim() !== prevValue.trim()) {
-			search.resetData();
-			prevValue = value;
-			search.debouncedFetchData(value, cursor);
 		}
 	});
 
@@ -112,6 +114,7 @@
 	let collapsedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
 			role: 'combobox',
+			inputmode: 'search',
 			...(comboboxAriaLabel && {
 				'aria-label': comboboxAriaLabel
 			}),
@@ -127,6 +130,7 @@
 		EditorView.contentAttributes.of({
 			id: `${id}-content`,
 			role: 'combobox', // identifies the element as a combobox
+			inputmode: 'search',
 			...(comboboxAriaLabel && {
 				'aria-label': comboboxAriaLabel
 			}),
@@ -168,6 +172,16 @@
 		cursor = event.cursor;
 		activeRowIndex = defaultRow;
 		activeColIndex = 0;
+
+		if (value.trim() && value.trim() !== prevValue.trim()) {
+			prevValue = value;
+			search.debouncedFetchData(value, cursor);
+		}
+
+		if (!value.trim()) {
+			prevValue = value;
+			if (search.data) search.resetData();
+		}
 	}
 
 	function showExpandedSearch() {
@@ -190,25 +204,35 @@
 		activeColIndex = 0;
 	}
 
-	function handleKeyDown(event: KeyboardEvent) {
+	function submitClosestForm() {
+		const formElement = form
+			? document.getElementById(form)
+			: collapsedEditorView?.dom?.closest('form');
+
+		if (formElement && formElement instanceof HTMLFormElement) {
+			formElement.requestSubmit();
+			hideExpandedSearch();
+		}
+	}
+
+	function handleCollapsedKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' && value.length) {
+			submitClosestForm();
+		}
+	}
+
+	function handleExpandedKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
 			hideExpandedSearch();
 		}
 
 		if (event.key === 'Enter') {
 			/* Fire click event if result item cell is focused */
-			if (activeRowIndex >= 0) {
+			if (activeRowIndex >= 0 && search.data) {
 				document?.getElementById(`${id}-result-item-${activeRowIndex}x${activeColIndex}`)?.click();
 				hideExpandedSearch();
-			} else {
-				/* Otherwise submit closest form */
-				const formElement = form
-					? document.getElementById(form)
-					: collapsedEditorView?.dom?.closest('form');
-				if (formElement && formElement instanceof HTMLFormElement) {
-					formElement.requestSubmit();
-					hideExpandedSearch();
-				}
+			} else if (value.length) {
+				submitClosestForm();
 			}
 		}
 
@@ -314,6 +338,18 @@
 		}
 	}
 
+	function handleClickSubmit(event: MouseEvent) {
+		if (!value.length) {
+			event.preventDefault();
+		}
+	}
+
+	function handleReset() {
+		value = '';
+		search.resetData();
+		showExpandedSearch();
+	}
+
 	onMount(() => {
 		if (BROWSER && toggleWithKeyboardShortcut) {
 			document.addEventListener('keydown', handleKeyboardShortcut);
@@ -357,25 +393,63 @@
 	{JSON.stringify(item)}
 {/snippet}
 
-<CodeMirror
-	{value}
-	extensions={collapsedExtensions}
-	onclick={handleClickCollapsed}
-	onchange={handleChangeCodeMirror}
-	bind:editorView={collapsedEditorView}
-	syncedEditorView={expandedEditorView}
-/>
-<textarea {value} {name} {form} hidden readonly></textarea>
-<dialog id={`${id}-dialog`} bind:this={dialog} onclose={hideExpandedSearch}>
-	<div role="presentation" onkeydown={handleKeyDown}>
-		<CodeMirror
-			{value}
-			extensions={expandedExtensions}
-			onchange={handleChangeCodeMirror}
-			bind:editorView={expandedEditorView}
-			syncedEditorView={collapsedEditorView}
-		/>
-		<nav>
+{#snippet clearAction()}
+	{#if value.length}
+		<div class="supersearch-clear-action">
+			{@render clearActionSnippet?.(handleReset)}
+		</div>
+	{/if}
+{/snippet}
+
+{#snippet submitAction()}
+	<div class="supersearch-submit-action">
+		{@render submitActionSnippet?.(handleClickSubmit)}
+	</div>
+{/snippet}
+
+<div role="presentation" onkeydown={handleCollapsedKeyDown}>
+	<div class="supersearch-combobox">
+		<div class="supersearch-input">
+			<CodeMirror
+				{value}
+				extensions={collapsedExtensions}
+				onclick={handleClickCollapsed}
+				onchange={handleChangeCodeMirror}
+				bind:editorView={collapsedEditorView}
+				syncedEditorView={expandedEditorView}
+			/>
+			<textarea {value} {name} {form} hidden readonly></textarea>
+			{@render clearAction()}
+		</div>
+		{@render submitAction()}
+	</div>
+</div>
+<dialog
+	class="supersearch-dialog"
+	id={`${id}-dialog`}
+	bind:this={dialog}
+	onclose={hideExpandedSearch}
+>
+	<div role="presentation" onkeydown={handleExpandedKeyDown}>
+		<div class="supersearch-combobox">
+			{#if closeActionMediaQuery.current && expanded}
+				<div class="supersearch-close-action">
+					{@render closeActionSnippet?.(hideExpandedSearch)}
+				</div>
+			{/if}
+			<div class="supersearch-input">
+				<CodeMirror
+					{value}
+					extensions={expandedExtensions}
+					onchange={handleChangeCodeMirror}
+					bind:editorView={expandedEditorView}
+					syncedEditorView={collapsedEditorView}
+				/>
+				{@render clearAction()}
+			</div>
+			{@render submitAction()}
+		</div>
+		<nav class="supersearch-suggestions">
 			{#if search.data}
 				{@const resultItems =
 					(Array.isArray(search.paginatedData) &&
@@ -410,11 +484,23 @@
 		padding: 0;
 	}
 
-	.focused {
-		background: #ebebeb;
+	.supersearch-combobox {
+		display: flex;
+	}
 
-		& :global(.focused-cell) {
-			background: lightgreen;
+	.supersearch-input {
+		display: flex;
+		flex: 1;
+		overflow: hidden;
+
+		& :global(.codemirror-container) {
+			display: block;
+			flex: 1;
+			overflow: hidden;
 		}
+	}
+
+	.supersearch-suggestions {
+		overflow: hidden;
 	}
 </style>
