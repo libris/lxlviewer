@@ -89,7 +89,7 @@
 							<h2>{item.heading}</h2>
 						</a>
 					</div>
-					{#if (rowIndex! > 0 && rowIndex! <= 4) || rowIndex == 9}
+					{#if (rowIndex! > 1 && rowIndex! <= 5) || rowIndex == 10}
 						<button
 							type="button"
 							role="gridcell"
@@ -97,7 +97,7 @@
 							class:focused-cell={isFocusedCell(1)}>B</button
 						>
 					{/if}
-					{#if (rowIndex! > 0 && rowIndex! < 3) || rowIndex! == 9 || rowIndex! === 4}
+					{#if (rowIndex! > 1 && rowIndex! < 4) || rowIndex! == 10 || rowIndex! === 5}
 						<button
 							type="button"
 							role="gridcell"

@@ -66,33 +66,34 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	).toHaveAttribute('aria-activedescendant', 'supersearch-result-item-0x0');
 	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
 	await expect(comboboxElement).toHaveAttribute(
 		'aria-activedescendant',
-		'supersearch-result-item-1x0'
+		'supersearch-result-item-2x0'
 	);
-	await expect(page.locator('#supersearch-result-item-1x0')).toHaveClass(/focused-cell/);
+	await expect(page.locator('#supersearch-result-item-2x0')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('ArrowRight');
 	await expect(comboboxElement).toHaveAttribute(
 		'aria-activedescendant',
-		'supersearch-result-item-1x1'
+		'supersearch-result-item-2x1'
 	);
 	await page.keyboard.press('ArrowLeft');
 	await expect(comboboxElement).toHaveAttribute(
 		'aria-activedescendant',
-		'supersearch-result-item-1x0'
+		'supersearch-result-item-2x0'
 	);
 	await page.keyboard.press('ArrowRight');
 	await page.keyboard.press('ArrowRight');
 	await expect(comboboxElement).toHaveAttribute(
 		'aria-activedescendant',
-		'supersearch-result-item-1x2'
+		'supersearch-result-item-2x2'
 	);
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await expect(
 		comboboxElement,
 		`selects closest cell if latest column isn't available on new row`
-	).toHaveAttribute('aria-activedescendant', 'supersearch-result-item-3x1');
+	).toHaveAttribute('aria-activedescendant', 'supersearch-result-item-4x1');
 	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('ab');
 	await expect(
 		comboboxElement,
@@ -102,7 +103,9 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await page.keyboard.press('Tab');
 	await expect(page.locator('#supersearch-result-item-1x0')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('Tab');
-	await expect(page.locator('#supersearch-result-item-1x1')).toHaveClass(/focused-cell/);
+	await page.keyboard.press('Tab');
+	await expect(page.locator('#supersearch-result-item-2x1')).toHaveClass(/focused-cell/);
+	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
@@ -119,11 +122,12 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
+	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Tab');
 	await page.keyboard.press('Tab');
 	await page.keyboard.press('Tab');
 	await expect(
-		page.locator('#supersearch-result-item-9x2'),
+		page.locator('#supersearch-result-item-10x2'),
 		'ensure focus is kept inside result items when tabbing on last row'
 	).toHaveClass(/focused-cell/);
 	await page
@@ -164,7 +168,7 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 
 test('fires click events on focused cells', async ({ page }) => {
 	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('a');
-	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
+	await expect(page.locator('#supersearch-result-item-1x0')).toBeVisible();
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL('/test1#supersearch-result-item-1x0');
@@ -228,4 +232,15 @@ test('clears input form when pressing clear action', async ({ page }) => {
 	await expect(
 		await page.locator('[data-test-id="test1"]').getByRole('combobox').first()
 	).toHaveText('Search');
+});
+
+test('has support for persistent items', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().click();
+	await expect(page.getByTestId('persistent-item')).toBeVisible();
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('combobox')
+		.fill('Hello world');
+	await expect(page.getByTestId('persistent-item')).toBeVisible();
 });
