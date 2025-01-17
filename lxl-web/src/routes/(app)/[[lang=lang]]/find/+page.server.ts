@@ -5,6 +5,7 @@ import { getSupportedLocale } from '$lib/i18n/locales.js';
 import { type ApiError } from '$lib/types/api.js';
 import type { PartialCollectionView } from '$lib/types/search.js';
 import { asResult } from '$lib/utils/search';
+import { DebugFlags } from '$lib/types/userSettings';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
@@ -16,7 +17,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 		redirect(303, `/`); // redirect to home page if no search params are given
 	}
 
-	const debug = locals.userSettings?.debug === true ? '&_debug=esScore' : '';
+	const debug = locals.userSettings?.debug.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
 
 	const searchParams = new URLSearchParams(url.searchParams.toString());
 	const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}${debug}`, {

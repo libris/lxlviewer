@@ -4,7 +4,7 @@ import { DisplayUtil, VocabUtil } from '$lib/utils/xl';
 import fs from 'fs';
 import { DERIVED_LENSES } from '$lib/types/display';
 import displayWeb from '$lib/assets/json/display-web.json';
-import type { UserSettings } from '$lib/types/userSettings';
+import { DebugFlags, type UserSettings } from '$lib/types/userSettings';
 
 let utilCache;
 
@@ -23,9 +23,17 @@ export const handle = async ({ event, resolve }) => {
 			console.warn('Failed to parse user settings', e);
 		}
 	}
-	if (['true', 'false'].includes(event.url.searchParams.get('__debug') || '')) {
+	if (event.url.searchParams.has('_debug')) {
+		let flags = event.url.searchParams
+			.getAll('_debug')
+			.filter((s) => Object.values(DebugFlags).includes(s as DebugFlags)) as DebugFlags[];
+
+		if (event.url.searchParams.getAll('_debug').includes('false')) {
+			flags = [];
+		}
+
 		userSettings = userSettings || ({} as UserSettings);
-		userSettings.debug = event.url.searchParams.get('__debug') === 'true';
+		userSettings.debug = flags;
 		event.cookies.set('userSettings', JSON.stringify(userSettings), {
 			maxAge: 365,
 			secure: true,

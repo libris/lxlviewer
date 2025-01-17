@@ -4,5 +4,9 @@ interface SettingsObj {
 	facetSort: {
 		[dimension: string]: string;
 	};
-	debug: boolean;
+	debug: DebugFlags[];
+}
+
+export enum DebugFlags {
+	ES_SCORE = 'esScore'
 }
