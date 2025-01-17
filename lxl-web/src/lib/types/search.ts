@@ -25,7 +25,7 @@ export interface SearchResultItem {
 	[LxlLens.CardBody]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
 	typeStr: string;
-	_debug?: SearchResultItemDebug;
+	_debug?: ItemDebugInfo;
 }
 
 type FacetGroupId = string;
@@ -161,7 +161,7 @@ interface PropertyChainAxiom {
 	_key: string; // e.g. "instanceOf.language"
 }
 
-export interface ItemDebug {
+export interface ApiItemDebugInfo {
 	_score: {
 		_total: number;
 		_perField: Record<string, number>;
@@ -169,7 +169,7 @@ export interface ItemDebug {
 	};
 }
 
-export interface SearchResultItemDebug {
+export interface ItemDebugInfo {
 	score: {
 		total: number;
 		totalPercent: number;

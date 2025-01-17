@@ -17,8 +17,8 @@ import {
 	type DatatypeProperty,
 	type MultiSelectFacet,
 	type FacetGroup,
-	type ItemDebug,
-	type SearchResultItemDebug
+	type ApiItemDebugInfo,
+	type ItemDebugInfo
 } from '$lib/types/search';
 
 import { LxlLens } from '$lib/types/display';
@@ -42,7 +42,9 @@ export async function asResult(
 	const translate = await getTranslator(locale);
 
 	const hasDebug = view.items.length > 0 && view.items[0]._debug;
-	const maxScores = hasDebug ? getMaxScores(view.items.map((i) => i._debug as ItemDebug)) : {};
+	const maxScores = hasDebug
+		? getMaxScores(view.items.map((i) => i._debug as ApiItemDebugInfo))
+		: {};
 
 	return {
 		...('next' in view && { next: replacePath(view.next as Link, usePath) }),
@@ -55,7 +57,7 @@ export async function asResult(
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
 		items: view.items.map((i) => ({
-			...('_debug' in i && { _debug: asItemDebug(i['_debug'] as ItemDebug, maxScores) }),
+			...('_debug' in i && { _debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores) }),
 			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
@@ -173,7 +175,7 @@ export function displayMappings(
 	}
 }
 
-function getMaxScores(itemDebugs: ItemDebug[]) {
+function getMaxScores(itemDebugs: ApiItemDebugInfo[]) {
 	const scores = itemDebugs.map((i) => {
 		return {
 			...i._score._perField,
@@ -189,7 +191,7 @@ function getMaxScores(itemDebugs: ItemDebug[]) {
 	}, {});
 }
 
-function asItemDebug(i: ItemDebug, maxScores: Record<string, number>): SearchResultItemDebug {
+function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>): ItemDebugInfo {
 	return {
 		score: {
 			total: i._score._total,

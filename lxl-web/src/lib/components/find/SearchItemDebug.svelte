@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { SearchResultItemDebug } from '$lib/types/search';
+	import type { ItemDebugInfo } from '$lib/types/search';
 	import { page } from '$app/stores';
 
-	export let debugInfo: SearchResultItemDebug;
+	export let debugInfo: ItemDebugInfo;
 	let score = debugInfo.score;
 
 	function fmt(x: number) {
