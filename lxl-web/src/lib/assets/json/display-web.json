@@ -448,6 +448,16 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Title-qualifier-format": {
+			"@id": "Title-qualifier-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Title"],
+			"fresnel:propertyFormatDomain": ["qualifier"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"Contribution-role-format": {
 			"@id": "Contribution-role-format",
 			"@type": "fresnel:Format",
