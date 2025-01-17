@@ -56,54 +56,42 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await expect(
 		comboboxElement,
 		'first row and cell is selected by default (if defaultRow is set to 0)'
-	).toHaveAttribute('aria-activedescendant', 'supersearch-result-item-0x0');
-	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
+	).toHaveAttribute('aria-activedescendant', 'supersearch-item-0x0');
+	await expect(page.locator('#supersearch-item-0x0')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
-	await expect(comboboxElement).toHaveAttribute(
-		'aria-activedescendant',
-		'supersearch-result-item-2x0'
-	);
-	await expect(page.locator('#supersearch-result-item-2x0')).toHaveClass(/focused-cell/);
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x0');
+	await expect(page.locator('#supersearch-item-2x0')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('ArrowRight');
-	await expect(comboboxElement).toHaveAttribute(
-		'aria-activedescendant',
-		'supersearch-result-item-2x1'
-	);
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x1');
 	await page.keyboard.press('ArrowLeft');
-	await expect(comboboxElement).toHaveAttribute(
-		'aria-activedescendant',
-		'supersearch-result-item-2x0'
-	);
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x0');
 	await page.keyboard.press('ArrowRight');
 	await page.keyboard.press('ArrowRight');
-	await expect(comboboxElement).toHaveAttribute(
-		'aria-activedescendant',
-		'supersearch-result-item-2x2'
-	);
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x2');
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await expect(
 		comboboxElement,
 		`selects closest cell if latest column isn't available on new row`
-	).toHaveAttribute('aria-activedescendant', 'supersearch-result-item-4x1');
+	).toHaveAttribute('aria-activedescendant', 'supersearch-item-4x1');
 	await page.getByTestId('test1').getByRole('combobox').first().fill('ab');
 	await expect(
 		comboboxElement,
 		'focused cell is reset if user updates value in combobox'
-	).toHaveAttribute('aria-activedescendant', 'supersearch-result-item-0x0');
-	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
+	).toHaveAttribute('aria-activedescendant', 'supersearch-item-0x0');
+	await expect(page.locator('#supersearch-item-0x0')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('Tab');
-	await expect(page.locator('#supersearch-result-item-1x0')).toHaveClass(/focused-cell/);
+	await expect(page.locator('#supersearch-item-1x0')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('Tab');
 	await page.keyboard.press('Tab');
-	await expect(page.locator('#supersearch-result-item-2x1')).toHaveClass(/focused-cell/);
+	await expect(page.locator('#supersearch-item-2x1')).toHaveClass(/focused-cell/);
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
 	await expect(
-		page.locator('#supersearch-result-item-0x0'),
+		page.locator('#supersearch-item-0x0'),
 		'ensure focus is kept inside result items when shift-tabbing on first row'
 	).toHaveClass(/focused-cell/);
 	await page.keyboard.press('ArrowDown');
@@ -120,12 +108,12 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await page.keyboard.press('Tab');
 	await page.keyboard.press('Tab');
 	await expect(
-		page.locator('#supersearch-result-item-10x2'),
+		page.locator('#supersearch-item-10x2'),
 		'ensure focus is kept inside result items when tabbing on last row'
 	).toHaveClass(/focused-cell/);
 	await page.getByTestId('test1').getByRole('dialog').getByRole('combobox').press('Escape');
 	await page.getByTestId('test1').getByRole('combobox').first().click();
-	await expect(page.locator('#supersearch-result-item-0x0')).toHaveClass(/focused-cell/);
+	await expect(page.locator('#supersearch-item-0x0')).toHaveClass(/focused-cell/);
 });
 
 test('syncs collapsed and expanded editor views', async ({ page }) => {
@@ -145,10 +133,10 @@ test('syncs collapsed and expanded editor views', async ({ page }) => {
 
 test('fires click events on focused cells', async ({ page }) => {
 	await page.getByTestId('test1').getByRole('combobox').first().fill('a');
-	await expect(page.locator('#supersearch-result-item-1x0')).toBeVisible();
+	await expect(page.locator('#supersearch-item-1x0')).toBeVisible();
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
-	await expect(page).toHaveURL('/test1#supersearch-result-item-1x0');
+	await expect(page).toHaveURL('/test1#supersearch-item-1x0');
 });
 
 test('fetches and displays paginated results', async ({ page }) => {

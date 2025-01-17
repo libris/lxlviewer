@@ -142,7 +142,7 @@
 			'aria-controls': `${id}-grid`, // identifies the popup element that lists suggested values
 			'aria-multiline': 'false',
 			...(includeAriaActiveDescendant && {
-				'aria-activedescendant': `${id}-result-item-${activeRowIndex}x${activeColIndex}` // enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element
+				'aria-activedescendant': `${id}-item-${activeRowIndex}x${activeColIndex}` // enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element
 			})
 		})
 	);
@@ -229,9 +229,9 @@
 		}
 
 		if (event.key === 'Enter') {
-			/* Fire click event if result item cell is focused */
+			/* Fire click event if item cell is focused */
 			if (activeRowIndex >= 0 && search.data) {
-				document?.getElementById(`${id}-result-item-${activeRowIndex}x${activeColIndex}`)?.click();
+				document?.getElementById(`${id}-item-${activeRowIndex}x${activeColIndex}`)?.click();
 				hideExpandedSearch();
 			} else if (value.length) {
 				submitClosestForm();
@@ -313,7 +313,7 @@
 
 				/**
 				 * TODO: Ensure the input is in view
-				 * const activeCellElement = document.getElementById(`${id}-result-item-${activeRowIndex}x${activeColIndex}`);
+				 * const activeCellElement = document.getElementById(`${id}-item-${activeRowIndex}x${activeColIndex}`);
 				 *
 				 * if (!isElementInView(activeCellElement)) {
 				 *		activeCellElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -456,7 +456,7 @@
 				{#if persistentItem}
 					<div role="row" class:focused={activeRowIndex === 0}>
 						{@render persistentItem(
-							(colIndex: number) => `${id}-result-item-0x${colIndex}`,
+							(colIndex: number) => `${id}-item-0x${colIndex}`,
 							(colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex
 						)}
 					</div>
@@ -471,7 +471,7 @@
 						<div role="row" class:focused={activeRowIndex === rowIndex}>
 							{@render resultItem?.(
 								item,
-								(colIndex: number) => `${id}-result-item-${rowIndex}x${colIndex}`,
+								(colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 								(colIndex: number) => activeRowIndex === rowIndex && colIndex === activeColIndex,
 								rowIndex
 							)}
