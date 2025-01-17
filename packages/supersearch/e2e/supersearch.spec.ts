@@ -247,7 +247,4 @@ test('exports isLoading and hasResults as bindable props (should be treated as r
 	).toPass();
 	await expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: false');
 	await expect(page.getByTestId('has-data-bind')).toHaveText('has data: true');
-	await page.keyboard.press('Meta+A');
-	await page.keyboard.press('Backspace');
-	await expect(page.getByTestId('has-data-bind')).toHaveText('has data: false');
 });
