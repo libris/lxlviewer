@@ -19,9 +19,9 @@
 	$: showEditButton =
 		$page.url.pathname === `${$page.data.base}find` &&
 		$page.url.searchParams.get('_q') !== $page.url.searchParams.get('_i');
-	$: editActive = $page.url.searchParams.get('_x') === 'advanced';
+	$: editActive = $page.url.searchParams.has('_x');
 	$: toggleEditUrl = editActive
-		? $page.url.href.replace('&_x=advanced', '')
+		? $page.url.href.replace(`&_x=${$page.url.searchParams.get('_x')}`, '')
 		: `${$page.url.href}&_x=advanced`;
 
 	function getRelationSymbol(operator: keyof typeof SearchOperators): string {
