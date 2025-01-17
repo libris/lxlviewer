@@ -68,7 +68,7 @@
 					<img src={clearIconSvg} width={16} height={16} alt="" />
 				</button>
 			{/snippet}
-			{#snippet leadingPersistentRow(getCellId, isFocusedCell)}
+			{#snippet persistentItem(getCellId, isFocusedCell)}
 				<div class="persistent-item" data-testid="persistent-item">
 					<a
 						href={`/test1#${getCellId(0)}`}

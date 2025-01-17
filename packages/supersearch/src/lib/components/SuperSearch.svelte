@@ -38,7 +38,7 @@
 		resultItem?: Snippet<
 			[ResultItem, (cellIndex: number) => string, (cellIndex: number) => boolean, number]
 		>;
-		leadingPersistentRow?: Snippet<[(cellIndex: number) => string, (cellIndex: number) => boolean]>;
+		persistentItem?: Snippet<[(cellIndex: number) => string, (cellIndex: number) => boolean]>;
 		defaultRow?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
@@ -62,7 +62,7 @@
 		closeAction: closeActionSnippet,
 		closeActionMediaQueryString = 'max-width: 640px', // defines when the back/close action should be visible (only shown when expanded)
 		resultItem = fallbackResultItem,
-		leadingPersistentRow,
+		persistentItem,
 		toggleWithKeyboardShortcut = false,
 		defaultRow = 0,
 		debouncedWait = 300
@@ -453,9 +453,9 @@
 		</div>
 		<nav class="supersearch-suggestions">
 			<div id={`${id}-grid`} role="grid">
-				{#if leadingPersistentRow}
+				{#if persistentItem}
 					<div role="row" class:focused={activeRowIndex === 0}>
-						{@render leadingPersistentRow(
+						{@render persistentItem(
 							(colIndex: number) => `${id}-result-item-0x${colIndex}`,
 							(colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex
 						)}
@@ -467,7 +467,7 @@
 							search.paginatedData.map((page) => page.items).flat()) ||
 						search.data?.items}
 					{#each resultItems as item, index}
-						{@const rowIndex = index + (leadingPersistentRow ? 1 : 0)}
+						{@const rowIndex = persistentItem ? index + 1 : index}
 						<div role="row" class:focused={activeRowIndex === rowIndex}>
 							{@render resultItem?.(
 								item,
