@@ -72,6 +72,10 @@ export class VocabUtil {
 		return this.isSubClassOf(className, Base.StructuredValue);
 	}
 
+	isIdentity(className: ClassName) {
+		return this.isSubClassOf(className, Base.Identity);
+	}
+
 	isKeyword(propertyName: PropertyName) {
 		return (
 			propertyName in this.contextTerms() &&
@@ -518,7 +522,12 @@ export class DisplayUtil {
 	}
 
 	private scriptAlternatives(thing: unknown): LangCode[] {
-		if (isTypedNode(thing) && this.vocabUtil.isStructuredValue(this.vocabUtil.getType(thing))) {
+		const shouldBeGrouped =
+			isTypedNode(thing) &&
+			(this.vocabUtil.isStructuredValue(this.vocabUtil.getType(thing)) ||
+				this.vocabUtil.isIdentity(this.vocabUtil.getType(thing)));
+
+		if (shouldBeGrouped) {
 			return this.orderScripts(
 				Object.entries(thing)
 					.filter(([k, v]) => this.isLangContainer(k) && isTransliterated(v as LangContainer))
