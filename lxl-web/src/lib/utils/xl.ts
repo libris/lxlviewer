@@ -547,8 +547,8 @@ export class DisplayUtil {
 		return [
 			...new Set(
 				scripts.sort((a, b) => {
-					const aa = isTransliteratedLatin(a) ? a : '_' + a;
-					const bb = isTransliteratedLatin(a) ? b : '_' + b;
+					const aa = isTransliteratedLatin(a) ? '_' + a : a;
+					const bb = isTransliteratedLatin(b) ? '_' + b : b;
 					return bb.localeCompare(aa);
 				})
 			)
@@ -982,7 +982,7 @@ function isTransliterated(l: LangContainer) {
 }
 
 function isTransliteratedLatin(langCode: LangCode) {
-	return langCode.includes('-t-Latn');
+	return langCode.includes('Latn-t-');
 }
 
 function isAlternateProperties(v: ShowProperty): v is AlternateProperties {
