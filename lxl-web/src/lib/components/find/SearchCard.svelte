@@ -153,12 +153,12 @@
 		</div>
 		{#if item._debug}
 			<button
-				class="card-debug z-20 cursor-crosshair self-start text-left"
+				class="card-debug z-20 cursor-crosshair select-text self-start text-left"
 				on:click={() => {
 					showDebugExplain = !showDebugExplain;
 				}}
 			>
-				<SearchItemDebug itemDebug={item._debug} />
+				<SearchItemDebug debugInfo={item._debug} />
 			</button>
 			{#if showDebugExplain}
 				<div class="z-20 col-span-full row-start-2 cursor-crosshair pt-4">

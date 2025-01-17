@@ -2,8 +2,8 @@
 	import type { SearchResultItemDebug } from '$lib/types/search';
 	import { page } from '$app/stores';
 
-	export let itemDebug: SearchResultItemDebug;
-	let score = itemDebug.score;
+	export let debugInfo: SearchResultItemDebug;
+	let score = debugInfo.score;
 
 	function fmt(x: number) {
 		return x.toLocaleString($page.data.locale, { maximumFractionDigits: 2 });
@@ -38,10 +38,6 @@
 </div>
 
 <style lang="postcss">
-	.search-card-container {
-		container-type: inline-size;
-	}
-
 	td {
 		@apply pl-2;
 	}
