@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, devices } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
 	await page.goto('/');
@@ -35,11 +35,17 @@ test('expanded search is closable', async ({ page }) => {
 		page.locator('[data-test-id="test1"]').getByRole('dialog').first(),
 		'by clicking outside'
 	).not.toBeVisible();
+	await page.setViewportSize(devices['iPhone X'].viewport);
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').click();
+	await page.locator('[aria-label="Close"]').click();
+	await expect(
+		page.locator('[data-test-id="test1"]').getByRole('dialog').first(),
+		'by pressing close action'
+	).not.toBeVisible();
 });
 
 test('expanded search is togglable using keyboard shortcut', async ({ page }) => {
 	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().press('Tab');
-	await expect(page.locator('[data-test-id="test2"]').getByRole('combobox').first()).toBeFocused();
 	await page.keyboard.press('ControlOrMeta+k');
 	await expect(page.locator('[data-test-id="test1"]').getByRole('dialog').first()).toBeVisible();
 	await page.keyboard.press('ControlOrMeta+k');
@@ -192,6 +198,38 @@ test('submits form identified by form attribute on enter key press (if no result
 	await expect(page).toHaveURL('/test2?q=hello+world');
 });
 
+test('submits form when pressing submit action', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').locator('[type=submit]').first().click();
+	await expect(page, 'submit action should only be triggered if there is a value').toHaveURL('/');
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('hello world');
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.first()
+		.locator('[type=submit]')
+		.click();
+	await expect(page).toHaveURL('/test1?q=hello+world');
+});
+
+test('clears input form when pressing clear action', async ({ page }) => {
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().click();
+	await page
+		.locator('[data-test-id="test1"]')
+		.getByRole('dialog')
+		.getByRole('combobox')
+		.fill('Hello world');
+	await expect(
+		await page.locator('[data-test-id="test1"]').getByRole('combobox').first()
+	).toHaveText('Hello world');
+	await page.locator('[data-test-id="test1"]').getByRole('dialog').locator('[type=reset]').click();
+	await expect(
+		page.locator('[data-test-id="test1"]').getByRole('dialog').locator('[type=reset]')
+	).not.toBeVisible();
+	await expect(
+		await page.locator('[data-test-id="test1"]').getByRole('combobox').first()
+	).toHaveText('Search');
+});
+
 test('supports custom loading indicator snippet', async ({ page }) => {
 	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('hello world');
 	await expect(async () =>
@@ -212,3 +250,4 @@ test('exports isLoading and hasResults as bindable props (should be treated as r
 	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('');
 	await expect(page.getByTestId('has-data-bind')).toHaveText('has data: false');
 });
+
