@@ -68,6 +68,16 @@
 					<img src={clearIconSvg} width={16} height={16} alt="" />
 				</button>
 			{/snippet}
+			{#snippet leadingPersistentRow(getCellId, isFocusedCell)}
+				<div class="persistent-item" data-testid="persistent-item">
+					<a
+						href={`/test1#${getCellId(0)}`}
+						role="gridcell"
+						id={getCellId(0)}
+						class:focused-cell={isFocusedCell(0)}>Show all results</a
+					>
+				</div>
+			{/snippet}
 			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
 				<div class="result-item" data-test-id="result-item">
 					<div role="gridcell">
@@ -189,6 +199,19 @@
 	:global(.cm-content[aria-haspopup='dialog']) {
 		background: url(./icon-search.svg) 16px center no-repeat;
 		padding-left: 44px;
+	}
+
+	.persistent-item {
+		display: flex;
+		min-width: 480px;
+
+		& a {
+			display: flex;
+			flex: 1;
+			align-items: center;
+			min-height: 44px;
+			text-align: left;
+		}
 	}
 
 	.result-item {
