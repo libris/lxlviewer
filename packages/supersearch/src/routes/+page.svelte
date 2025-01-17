@@ -35,7 +35,7 @@
 </script>
 
 <form action="test1">
-	<fieldset data-test-id="test1">
+	<fieldset data-testid="test1">
 		<legend>Supersearch inside <code>&lt;form&gt;</code> element</legend>
 		<SuperSearch
 			name="q"
@@ -79,7 +79,7 @@
 				</div>
 			{/snippet}
 			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
-				<div class="result-item" data-test-id="result-item">
+				<div class="result-item" data-testid="result-item">
 					<div role="gridcell">
 						<a
 							href={`/test1#${getCellId(0)}`}
@@ -114,7 +114,7 @@
 </form>
 
 <form>
-	<fieldset data-test-id="test2">
+	<fieldset data-testid="test2">
 		<legend>Supersearch using <code>form</code> attribute</legend>
 		<SuperSearch
 			id="supersearch-using-form-attribute"
@@ -135,7 +135,7 @@
 			defaultRow={-1}
 		>
 			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
-				<div class="result-item" data-test-id="result-item" role="gridcell">
+				<div class="result-item" data-testid="result-item" role="gridcell">
 					<button type="button" id={getCellId(0)} class:focused-cell={isFocusedCell(0)}>
 						<h2>{item.heading} {rowIndex}</h2>
 					</button>
