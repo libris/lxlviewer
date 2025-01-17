@@ -640,7 +640,7 @@
 		},
 		"MediaObject-publicNote-format": {
 			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
-			"@id": "MediaObject-format",
+			"@id": "MediaObject-publicNote-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Document", "MediaObject"],
 			"fresnel:propertyFormatDomain": ["marc:publicNote"],
@@ -683,7 +683,7 @@
 			}
 		},
 		"Cartographic-format": {
-			"@id": "MediaObject-format",
+			"@id": "Cartographic-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Cartographic"],
 			"fresnel:resourceStyle": ["block"]
