@@ -191,3 +191,16 @@ test('submits form identified by form attribute on enter key press (if no result
 	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL('/test2?q=hello+world');
 });
+
+test('exports isLoading and hasResults as bindable props (should be treated as readonly)', async ({
+	page
+}) => {
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('hello world');
+	await expect(async () =>
+		expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: true')
+	).toPass();
+	await expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: false');
+	await expect(page.getByTestId('has-data-bind')).toHaveText('has data: true');
+	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('');
+	await expect(page.getByTestId('has-data-bind')).toHaveText('has data: false');
+});

@@ -34,6 +34,8 @@ To use `supersearch` in a non-Svelte project ...
 | `defaultFocusedRow`          | `number`                                                    | An integer defining which result item row should be focused by default (use `-1` if no row should be focused).                               | `0`             |
 | `toggleWithKeyboardShortcut` | `boolean`                                                   | Controls if expanded search should be togglable using `cmd+k`(macOS) and `ctrl+k` (Linux/Windows)                                            | `false`         |
 | `debouncedWait`              | `number`                                                    | The wait time, in milliseconds that debounce function should wait between invocated search queries.                                          | `300`           |
+| `isLoading`                  | `boolean`                                                   | A bindable prop telling if the component is currently loading data (the prop should be treated as readonly)                                  | `undefined`     |
+| `hasData`                    | `boolean`                                                   | A bindable prop telling if the component has data (the prop should be treated as readonly)                                                   | `undefined`     |
 
 &nbsp;
 Supersearch also exports a `lxlQualifierPlugin` that can be used (passed to the extensions prop) if you want atomic, stylable, removable, labeled pills from some key-value pairs in your editor. This requires:

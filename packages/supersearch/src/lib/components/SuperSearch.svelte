@@ -37,6 +37,8 @@
 		defaultRow?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
+		isLoading?: boolean;
+		hasData?: boolean;
 	}
 
 	let {
@@ -56,7 +58,9 @@
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		defaultRow = 0,
-		debouncedWait = 300
+		debouncedWait = 300,
+		isLoading = $bindable(), // should be treated as readonly
+		hasData = $bindable() // should be treated as readonly
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -328,6 +332,14 @@
 			document.removeEventListener('keydown', handleKeyboardShortcut);
 		}
 		dialog?.removeEventListener('click', handleClickOutsideDialog);
+	});
+
+	$effect(() => {
+		isLoading = search?.isLoading;
+	});
+
+	$effect(() => {
+		hasData = !!search?.data;
 	});
 
 	$effect(() => {
