@@ -1,11 +1,16 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
 	import { page } from '$app/stores';
 	import BiList from '~icons/bi/list';
 	import Search from '$lib/components/Search.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import HeaderMenu from './HeaderMenu.svelte';
+	import SuperSearchWrapper from '$lib/components/SuperSearchWrapper.svelte';
 
 	$: isLandingPage = $page.route.id === '/(app)/[[lang=lang]]';
+
+	let useSuperSearch =
+		env?.PUBLIC_USE_SUPERSEARCH === 'true' || $page.url.searchParams.get('_x') === 'supersearch';
 
 	let showHeaderMenu = false;
 
@@ -15,12 +20,11 @@
 </script>
 
 <header
-	class="flex gap-4 bg-site-header page-padding md:grid"
-	class:md:find-layout={!isLandingPage}
-	class:md:grid-cols-find={!isLandingPage}
+	class="grid items-center gap-x-8 bg-site-header page-padding"
+	class:is-landing={isLandingPage}
 >
-	{#if !isLandingPage}
-		<div class="flex items-center">
+	<div class="home">
+		{#if !isLandingPage}
 			<a href={$page.data.base} class="flex flex-col text-primary no-underline sm:flex-row">
 				<span class="text-[1.4rem] font-extrabold leading-tight sm:text-[1.6rem] md:text-[2.1rem]">
 					Libris</span
@@ -30,18 +34,20 @@
 					>Beta</sup
 				>
 			</a>
-		</div>
-	{/if}
-	<div class="flex flex-1 items-center" class:flex-col={isLandingPage}>
-		{#if !isLandingPage}
-			<div class="max-w-content flex-1">
-				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
-			</div>
 		{/if}
-		<div id="header-menu" class="ml-auto hidden min-h-14 items-center pl-8 md:flex">
+	</div>
+	<div class="search">
+		{#if useSuperSearch}
+			<SuperSearchWrapper />
+		{:else}
+			<Search placeholder={$page.data.t('header.searchPlaceholder')} />
+		{/if}
+	</div>
+	<div class="actions flex justify-end">
+		<div id="header-menu" class="hidden items-center md:flex">
 			<HeaderMenu />
 		</div>
-		<div class="ml-auto flex min-h-14 items-center pl-4 md:hidden">
+		<div class="md:hidden">
 			<a
 				aria-label={$page.data.t('header.openMenu')}
 				class="button-ghost h-11 w-11 !p-0"
@@ -56,24 +62,72 @@
 				</Modal>
 			{/if}
 		</div>
-		{#if isLandingPage}
-			<div class="flex w-full flex-col items-center gap-2 px-12 pb-[4.5rem] pt-6">
-				<h1 class="flex text-3xl font-extrabold text-primary sm:text-[5.5rem] sm:font-bold">
-					Libris
-					<sup
-						class="self-center rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold sm:text-3-cond-bold"
-						>Beta</sup
-					>
-				</h1>
-				<div class="w-full max-w-3xl">
-					<Search placeholder={$page.data.t('home.searchPlaceholder')} autofocus />
-				</div>
-			</div>
-		{/if}
 	</div>
+	{#if isLandingPage}
+		<div class="landing flex flex-col items-center gap-2 pb-6">
+			<h1 class="flex text-3xl font-extrabold text-primary sm:text-[5.5rem] sm:font-bold">
+				Libris
+				<sup
+					class="self-center rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold sm:text-3-cond-bold"
+					>Beta</sup
+				>
+			</h1>
+			<!-- <div class="w-full max-w-3xl">
+				<Search placeholder={$page.data.t('home.searchPlaceholder')} autofocus />
+			</div> -->
+		</div>
+	{/if}
 </header>
 
-<style>
+<style lang="postcss">
+	header {
+		/* display: grid; */
+		grid-template-areas: 'home search actions';
+		grid-template-columns: 1fr minmax(0, 4fr) 1fr;
+
+		@media screen and (min-width: theme('screens.md')) {
+			grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(240px, 1fr);
+		}
+		/* align-items: center; */
+		/* gap: var(--gap-base); */
+		/* min-height: 72px; */
+		/* gap: 2rem; */
+
+		/* @media screen and (min-width: 810px) { */
+		/* grid-template-columns: 1fr minmax(0, 4fr) 1fr; */
+		/* grid-template-areas: 'home search actions'; */
+		/* } */
+	}
+
+	header.is-landing {
+		@apply pb-16;
+		grid-template-areas:
+			'home . actions'
+			'. landing .'
+			'. search .';
+	}
+
+	.home {
+		grid-area: home;
+	}
+
+	.search {
+		grid-area: search;
+	}
+
+	.actions {
+		/* display: flex; */
+		grid-area: actions;
+		/* justify-content: flex-end;
+    align-items: center;
+    gap: var(--gap-2xs);
+    margin: 0; */
+	}
+
+	.landing {
+		grid-area: landing;
+	}
+
 	#header-menu:target {
 		@apply /* TODO: fix better no-JS fallback styling */ absolute left-0 block w-full bg-main;
 	}
