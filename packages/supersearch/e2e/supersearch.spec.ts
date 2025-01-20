@@ -192,7 +192,7 @@ test('has support for persistent items', async ({ page }) => {
 });
 
 test('supports custom loading indicator snippet', async ({ page }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('hello world');
+	await page.getByTestId('test1').getByRole('combobox').first().fill('hello world');
 	await expect(async () =>
 		expect(page.getByTestId('loading-indicator')).toHaveText('Loading...')
 	).toPass();
@@ -202,7 +202,7 @@ test('supports custom loading indicator snippet', async ({ page }) => {
 test('exports isLoading and hasResults as bindable props (should be treated as readonly)', async ({
 	page
 }) => {
-	await page.locator('[data-test-id="test1"]').getByRole('combobox').first().fill('hello world');
+	await page.getByTestId('test1').getByRole('combobox').first().fill('hello world');
 	await expect(async () =>
 		expect(page.getByTestId('is-loading-bind')).toHaveText('is loading: true')
 	).toPass();
