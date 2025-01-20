@@ -446,61 +446,63 @@
 	bind:this={dialog}
 	onclose={hideExpandedSearch}
 >
-	<div role="presentation" onkeydown={handleExpandedKeyDown}>
-		<div class="supersearch-combobox">
-			{#if closeActionMediaQuery.current && expanded}
-				<div class="supersearch-close-action">
-					{@render closeActionSnippet?.(hideExpandedSearch)}
-				</div>
-			{/if}
-			<div class="supersearch-input">
-				<CodeMirror
-					{value}
-					extensions={expandedExtensions}
-					onchange={handleChangeCodeMirror}
-					bind:editorView={expandedEditorView}
-					syncedEditorView={collapsedEditorView}
-				/>
-				{@render clearAction()}
-			</div>
-			{@render submitAction()}
-		</div>
-		<nav class="supersearch-suggestions">
-			<div id={`${id}-grid`} role="grid">
-				{#if persistentItem}
-					<div role="row" class:focused={activeRowIndex === 0}>
-						{@render persistentItem(
-							(colIndex: number) => `${id}-item-0x${colIndex}`,
-							(colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex
-						)}
+	<div class="supersearch-wrapper" role="presentation" onkeydown={handleExpandedKeyDown}>
+		<div class="supersearch-content">
+			<div class="supersearch-combobox">
+				{#if closeActionMediaQuery.current && expanded}
+					<div class="supersearch-close-action">
+						{@render closeActionSnippet?.(hideExpandedSearch)}
 					</div>
 				{/if}
-				{#if search.data}
-					{@const resultItems =
-						(Array.isArray(search.paginatedData) &&
-							search.paginatedData.map((page) => page.items).flat()) ||
-						search.data?.items}
-					{#each resultItems as item, index}
-						{@const rowIndex = persistentItem ? index + 1 : index}
-						<div role="row" class:focused={activeRowIndex === rowIndex}>
-							{@render resultItem?.(
-								item,
-								(colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-								(colIndex: number) => activeRowIndex === rowIndex && colIndex === activeColIndex,
-								rowIndex
+				<div class="supersearch-input">
+					<CodeMirror
+						{value}
+						extensions={expandedExtensions}
+						onchange={handleChangeCodeMirror}
+						bind:editorView={expandedEditorView}
+						syncedEditorView={collapsedEditorView}
+					/>
+					{@render clearAction()}
+				</div>
+				{@render submitAction()}
+			</div>
+			<nav class="supersearch-suggestions">
+				<div id={`${id}-grid`} role="grid">
+					{#if persistentItem}
+						<div role="row" class:focused={activeRowIndex === 0}>
+							{@render persistentItem(
+								(colIndex: number) => `${id}-item-0x${colIndex}`,
+								(colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex
 							)}
 						</div>
-					{/each}
+					{/if}
+					{#if search.data}
+						{@const resultItems =
+							(Array.isArray(search.paginatedData) &&
+								search.paginatedData.map((page) => page.items).flat()) ||
+							search.data?.items}
+						{#each resultItems as item, index}
+							{@const rowIndex = persistentItem ? index + 1 : index}
+							<div role="row" class:focused={activeRowIndex === rowIndex}>
+								{@render resultItem?.(
+									item,
+									(colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+									(colIndex: number) => activeRowIndex === rowIndex && colIndex === activeColIndex,
+									rowIndex
+								)}
+							</div>
+						{/each}
+					{/if}
+				</div>
+				{#if search.isLoading}
+					{@render loadingIndicator?.()}
+				{:else if search.hasMorePaginatedData}
+					<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+						Load more
+					</button>
 				{/if}
-			</div>
-			{#if search.isLoading}
-				{@render loadingIndicator?.()}
-			{:else if search.hasMorePaginatedData}
-				<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-					Load more
-				</button>
-			{/if}
-		</nav>
+			</nav>
+		</div>
 	</div>
 </dialog>
 

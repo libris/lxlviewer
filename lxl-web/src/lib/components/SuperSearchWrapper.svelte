@@ -163,9 +163,9 @@
 		max-height: 100vh;
 	}
 
-	:global(.supersearch-dialog > div) {
+	:global(.supersearch-wrapper) {
 		/* @apply w-screen page-padding gap-x-8 bg-transparent !important; */
-		@apply grid gap-x-8 page-padding;
+		@apply pointer-events-none grid gap-x-8 page-padding;
 		grid-template-areas: '. supersearch-content .';
 		/* grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(240px, 1fr); */
 		/* padding: 0 calc(var(--gap-base) / 2); */
@@ -178,6 +178,7 @@
 	}
 
 	:global(.supersearch-content) {
+		@apply pointer-events-auto;
 		grid-area: supersearch-content;
 	}
 </style>
