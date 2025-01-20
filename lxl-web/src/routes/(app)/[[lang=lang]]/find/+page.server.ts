@@ -17,7 +17,7 @@ export const load = async ({ params, url, locals, fetch }) => {
 		redirect(303, `/`); // redirect to home page if no search params are given
 	}
 
-	const debug = locals.userSettings?.debug.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
+	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
 
 	const searchParams = new URLSearchParams(url.searchParams.toString());
 	const recordsRes = await fetch(`${env.API_URL}/find.jsonld?${searchParams.toString()}${debug}`, {
