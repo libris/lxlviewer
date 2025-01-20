@@ -7,6 +7,8 @@
 	import clearIconSvg from './icon-clear.svg';
 	import backIconSvg from './icon-arrow-left.svg';
 
+	let isLoading: boolean | undefined = $state();
+	let hasData: boolean | undefined = $state();
 	let value1 = $state('');
 	let value2 = $state('');
 	let placeholder = $state('Search');
@@ -40,6 +42,8 @@
 		<SuperSearch
 			name="q"
 			bind:value={value1}
+			bind:isLoading
+			bind:hasData
 			{placeholder}
 			endpoint="/api/find"
 			queryFn={(query) =>
@@ -109,7 +113,16 @@
 					{/if}
 				</div>
 			{/snippet}
+			{#snippet loadingIndicator()}
+				<div data-testid="loading-indicator">Loading...</div>
+			{/snippet}
 		</SuperSearch>
+		<div data-testid="is-loading-bind">
+			is loading: {isLoading}
+		</div>
+		<div data-testid="has-data-bind">
+			has data: {hasData}
+		</div>
 	</fieldset>
 </form>
 

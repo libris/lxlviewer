@@ -39,9 +39,12 @@
 			[ResultItem, (cellIndex: number) => string, (cellIndex: number) => boolean, number]
 		>;
 		persistentItem?: Snippet<[(cellIndex: number) => string, (cellIndex: number) => boolean]>;
+		loadingIndicator?: Snippet;
 		defaultRow?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
+		isLoading?: boolean;
+		hasData?: boolean;
 	}
 
 	let {
@@ -63,9 +66,12 @@
 		closeActionMediaQueryString = 'max-width: 640px', // defines when the back/close action should be visible (only shown when expanded)
 		resultItem = fallbackResultItem,
 		persistentItem,
+		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		defaultRow = 0,
-		debouncedWait = 300
+		debouncedWait = 300,
+		isLoading = $bindable(), // should be treated as readonly
+		hasData = $bindable() // should be treated as readonly
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -367,6 +373,14 @@
 	});
 
 	$effect(() => {
+		isLoading = search?.isLoading;
+	});
+
+	$effect(() => {
+		hasData = !!search?.data;
+	});
+
+	$effect(() => {
 		if (placeholder !== prevPlaceholder) {
 			collapsedEditorView?.dispatch({
 				effects: placeholderCompartment.reconfigure(placeholderExtension(placeholder))
@@ -480,7 +494,7 @@
 				{/if}
 			</div>
 			{#if search.isLoading}
-				Loading...
+				{@render loadingIndicator?.()}
 			{:else if search.hasMorePaginatedData}
 				<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
 					Load more
