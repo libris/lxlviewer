@@ -1,5 +1,5 @@
 .lxl-qualifier {
-	display: inline-flex;
+	display: inline-block;
 	color: rgb(0, 128, 0);
 	background: rgba(14, 113, 128, 0.1);
 	padding-top: 3px;
@@ -12,8 +12,8 @@
 	border-bottom-left-radius: 5px;
 }
 
-.lxl-qualifier-value,
-.lxl-qualifier-remove {
+.lxl-qualifier-remove,
+.lxl-qualifier-value:last-of-type {
 	padding-right: 5px;
 	border-top-right-radius: 5px;
 	border-bottom-right-radius: 5px;
@@ -28,21 +28,23 @@
 	border-radius: 0;
 }
 
-.invalid > .lxl-qualifier-key {
-	text-decoration: underline 1px solid;
-	text-decoration-color: rgba(255, 0, 0, 0.75);
-	text-decoration-style: wavy;
-}
-
 .atomic {
 	background: rgba(14, 113, 128, 0.2);
 	user-select: none;
 }
 
-.lxl-boolean-operator {
-	color: rgb(128, 0, 128);
+.lxl-invalid,
+.lxl-invalid .lxl-qualifier {
+	text-decoration: underline 1px solid;
+	text-decoration-color: rgba(255, 0, 0, 0.75);
+	text-decoration-style: wavy;
+	text-underline-offset: 2px;
 }
 
-.lxl-wildcard {
-	color: rgb(128, 0, 128);
+.lxl-not-term {
+	color: #b53a3a;
+}
+
+.lxl-boolean-operator {
+	color: #5955ff;
 }

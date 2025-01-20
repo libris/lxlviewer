@@ -448,6 +448,16 @@
 				"fresnel:contentFirst": ""
 			}
 		},
+		"Title-qualifier-format": {
+			"@id": "Title-qualifier-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Title"],
+			"fresnel:propertyFormatDomain": ["qualifier"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": " ",
+				"fresnel:contentFirst": ""
+			}
+		},
 		"Contribution-role-format": {
 			"@id": "Contribution-role-format",
 			"@type": "fresnel:Format",
@@ -630,7 +640,7 @@
 		},
 		"MediaObject-publicNote-format": {
 			"FIXME": "this is just to hide the interpunct before caused by uriToId() not fixing contentBefore",
-			"@id": "MediaObject-format",
+			"@id": "MediaObject-publicNote-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Document", "MediaObject"],
 			"fresnel:propertyFormatDomain": ["marc:publicNote"],
@@ -673,7 +683,7 @@
 			}
 		},
 		"Cartographic-format": {
-			"@id": "MediaObject-format",
+			"@id": "Cartographic-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Cartographic"],
 			"fresnel:resourceStyle": ["block"]

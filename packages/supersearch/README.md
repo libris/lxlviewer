@@ -31,6 +31,7 @@ To use `supersearch` in a non-Svelte project ...
 | `extensions`                  | `Extension[]`                                               | A list of extensions which should extend the default extensions.                                                                             | `[]`               |
 | `comboboxAriaLabel`           | `string`                                                    | A string defining an optional aria label for the combobox                                                                                    | `undefined`        |
 | `resultItem`                  | `Snippet<[ResultItem, getCellId, isFocusedCell, rowIndex]>` | A [Snippet](https://svelte.dev/docs/svelte/snippet) used for customized rendering of result items. See [Custom result items](#result-items). | `undefined`        |
+| `persistentItem`              | `Snippet<[getCellId, isFocusedCell]>`                       | An optional Snippet used for adding persitent items (placed before result items).                                                            | `undefined`        |
 | `loadingIndicator`            | `Snippet`                                                   | A Snippet used for rendering a loading indicator.                                                                                            | `undefined`        |
 | `submitAction`                | `Snippet<[onclick]>`                                        | An optional Snippet for adding a custom submit button                                                                                        | `undefined`        |
 | `clearAction`                 | `Snippet<[onclick]>`                                        | An optional Snippet for adding a clear button (used for clearing the input)                                                                  | `undefined`        |
@@ -60,7 +61,7 @@ The follwing snippet params are available (in order):
 
 1. `ResultItem`- An individual item of the resulting data from `queryFn` and `transformFn`. The data inside can be of arbitary shape so they can be rendered in any shape you want.
 
-2. `getCellId<[cellIndex: number]>` - A helper function to get a calculated ID for the cell (e.g. `#supersearch-result-item-0x0`) by passing a cell/column index value. This enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element.
+2. `getCellId<[cellIndex: number]>` - A helper function to get a calculated ID for the cell (e.g. `#supersearch-item-0x0`) by passing a cell/column index value. This enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element.
 
 3. `isFocusedCell[cellIndex: number]` - A helper function which returns a boolean value if the cell is focused (useful for styling).
 

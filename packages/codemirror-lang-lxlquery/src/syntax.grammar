@@ -1,61 +1,31 @@
-@top Query { term* }
+@top Query { orcomb }
 
 @skip { space }
 
-term {
-  freetext |
-  Qualifier |
-  Group |
-  BooleanQuery
-}
-
-Group { "(" term* ")" } 
-
-BooleanQuery { 
-  (freetext | Qualifier | Group ) BooleanOperator (freetext | Qualifier | Group ) 
-  (BooleanOperator (freetext | Qualifier | Group ))+?
-}
-
-Qualifier {
-  (QualifierKey QualifierOperator QualifierValue) | reserved
-}
-
-QualifierKey {
-  Identifier | String
-}
-
-QualifierValue {
-  Identifier Wildcard? | String | Number Wildcard? | Group | Wildcard
-}
-
-QualifierOperator {
-  EqualOperator | CompareOperator
-}
-
-freetext {
-  (Identifier | String | Number) Wildcard?
+orcomb { andcomb ( OrOperator andcomb )* }
+andcomb { term ( AndOperator term | term )* }
+term { String | Group | UTerm | Qualifier }
+Group { "(" orcomb ")" }
+UTerm { UOperator term }
+String { strliteral | str }
+Qualifier { 
+  ( QualifierKey { String } QualifierOperator { bOperator } QualifierValue { String } ) | 
+  ( QualifierKey { String } QualifierOperator { bOperatorEq } QualifierValue { term } ) |
+  filterAliases 
 }
 
 @tokens {
-  Identifier { $[a-zA-ZåäöÅÄÖ]+ }
-
-  String { '"' (!["\\] | "\\" _)* '"' }
-
-  Number { @digit+ }
-
-  EqualOperator { ":" | "=" }
-
-  CompareOperator { ">" | "<" | ">=" | "<=" }
-
-  BooleanOperator { "AND" | "OR" | "NOT" }
-
-  Wildcard { "*" }
-
-  reserved { "includeEplikt" | "includePreliminary" }
-
+  OrOperator { "OR" }
+  AndOperator { "AND" }
+  UOperator { "!" | "NOT" }
+  bOperator {"<" | ">" | "<=" | ">=" }
+  bOperatorEq { ":" | "=" }
+  strliteral { '"' (!["\\] | "\\" _)* '"' }
+  str { ![:><=()~!"\ ]+ }
+  filterAliases { "includeEplikt" | "includePreliminary" }
   space { @whitespace+ }
 
-  @precedence { BooleanOperator, reserved, Identifier }
+  @precedence { OrOperator, AndOperator, UOperator, bOperator, bOperatorEq, filterAliases, str, space}
 }
 
 @detectDelim
