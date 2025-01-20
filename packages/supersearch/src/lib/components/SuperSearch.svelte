@@ -39,7 +39,7 @@
 			[ResultItem, (cellIndex: number) => string, (cellIndex: number) => boolean, number]
 		>;
 		persistentItem?: Snippet<[(cellIndex: number) => string, (cellIndex: number) => boolean]>;
-    loadingIndicator?: Snippet;
+		loadingIndicator?: Snippet;
 		defaultRow?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
@@ -65,9 +65,8 @@
 		closeAction: closeActionSnippet,
 		closeActionMediaQueryString = 'max-width: 640px', // defines when the back/close action should be visible (only shown when expanded)
 		resultItem = fallbackResultItem,
-    persistentItem,
-		loadingIndicator,
 		persistentItem,
+		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		defaultRow = 0,
 		debouncedWait = 300,
