@@ -154,6 +154,7 @@
 		{#if item._debug}
 			{#key item._debug}
 				<button
+					type="button"
 					class="card-debug z-20 cursor-crosshair select-text self-start text-left"
 					on:click={() => {
 						showDebugExplain = !showDebugExplain;
