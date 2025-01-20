@@ -121,7 +121,7 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 						} else if (invalid) {
 							// Add invalid key mark decoration
 							const qualifierMark = Decoration.mark({
-								class: 'invalid',
+								class: 'lxl-invalid',
 								inclusive: true
 							});
 							const invalidRangeFrom = keyNode ? keyNode.from : node.from;
