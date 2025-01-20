@@ -35,7 +35,7 @@
 </script>
 
 <form action="test1">
-	<fieldset data-test-id="test1">
+	<fieldset data-testid="test1">
 		<legend>Supersearch inside <code>&lt;form&gt;</code> element</legend>
 		<SuperSearch
 			name="q"
@@ -68,8 +68,18 @@
 					<img src={clearIconSvg} width={16} height={16} alt="" />
 				</button>
 			{/snippet}
+			{#snippet persistentItem(getCellId, isFocusedCell)}
+				<div class="persistent-item" data-testid="persistent-item">
+					<a
+						href={`/test1#${getCellId(0)}`}
+						role="gridcell"
+						id={getCellId(0)}
+						class:focused-cell={isFocusedCell(0)}>Show all results</a
+					>
+				</div>
+			{/snippet}
 			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
-				<div class="result-item" data-test-id="result-item">
+				<div class="result-item" data-testid="result-item">
 					<div role="gridcell">
 						<a
 							href={`/test1#${getCellId(0)}`}
@@ -79,7 +89,7 @@
 							<h2>{item.heading}</h2>
 						</a>
 					</div>
-					{#if (rowIndex! > 0 && rowIndex! <= 4) || rowIndex == 9}
+					{#if (rowIndex! > 1 && rowIndex! <= 5) || rowIndex == 10}
 						<button
 							type="button"
 							role="gridcell"
@@ -87,7 +97,7 @@
 							class:focused-cell={isFocusedCell(1)}>B</button
 						>
 					{/if}
-					{#if (rowIndex! > 0 && rowIndex! < 3) || rowIndex! == 9 || rowIndex! === 4}
+					{#if (rowIndex! > 1 && rowIndex! < 4) || rowIndex! == 10 || rowIndex! === 5}
 						<button
 							type="button"
 							role="gridcell"
@@ -104,7 +114,7 @@
 </form>
 
 <form>
-	<fieldset data-test-id="test2">
+	<fieldset data-testid="test2">
 		<legend>Supersearch using <code>form</code> attribute</legend>
 		<SuperSearch
 			id="supersearch-using-form-attribute"
@@ -125,7 +135,7 @@
 			defaultRow={-1}
 		>
 			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
-				<div class="result-item" data-test-id="result-item" role="gridcell">
+				<div class="result-item" data-testid="result-item" role="gridcell">
 					<button type="button" id={getCellId(0)} class:focused-cell={isFocusedCell(0)}>
 						<h2>{item.heading} {rowIndex}</h2>
 					</button>
@@ -189,6 +199,19 @@
 	:global(.cm-content[aria-haspopup='dialog']) {
 		background: url(./icon-search.svg) 16px center no-repeat;
 		padding-left: 44px;
+	}
+
+	.persistent-item {
+		display: flex;
+		min-width: 480px;
+
+		& a {
+			display: flex;
+			flex: 1;
+			align-items: center;
+			min-height: 44px;
+			text-align: left;
+		}
 	}
 
 	.result-item {
