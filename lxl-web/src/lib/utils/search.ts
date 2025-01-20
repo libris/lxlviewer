@@ -16,7 +16,9 @@ import {
 	SearchOperators,
 	type DatatypeProperty,
 	type MultiSelectFacet,
-	type FacetGroup
+	type FacetGroup,
+	type ApiItemDebugInfo,
+	type ItemDebugInfo
 } from '$lib/types/search';
 
 import { LxlLens } from '$lib/types/display';
@@ -38,6 +40,12 @@ export async function asResult(
 	usePath: string
 ): Promise<SearchResult> {
 	const translate = await getTranslator(locale);
+
+	const hasDebug = view.items.length > 0 && view.items[0]._debug;
+	const maxScores = hasDebug
+		? getMaxScores(view.items.map((i) => i._debug as ApiItemDebugInfo))
+		: {};
+
 	return {
 		...('next' in view && { next: replacePath(view.next as Link, usePath) }),
 		...('previous' in view && { previous: replacePath(view.previous as Link, usePath) }),
@@ -49,6 +57,7 @@ export async function asResult(
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
 		items: view.items.map((i) => ({
+			...('_debug' in i && { _debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores) }),
 			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
@@ -164,6 +173,41 @@ export function displayMappings(
 
 		return op;
 	}
+}
+
+function getMaxScores(itemDebugs: ApiItemDebugInfo[]) {
+	const scores = itemDebugs.map((i) => {
+		return {
+			...i._score._perField,
+			_total: i._score._total
+		};
+	}) as Record<string, number>[];
+
+	return scores.reduce((result, current) => {
+		for (const key of Object.keys(current)) {
+			result[key] = Math.max(result[key] || 0, current[key]);
+		}
+		return result;
+	}, {});
+}
+
+function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>): ItemDebugInfo {
+	return {
+		score: {
+			total: i._score._total,
+			totalPercent: i._score._total / maxScores._total,
+			perField: Object.entries(i._score._perField).map(([k, v]) => {
+				const fs = k.split(':');
+				return {
+					name: fs.slice(0, -1).join(':'),
+					searchString: fs.at(-1) || '',
+					score: v,
+					scorePercent: v / maxScores[k]
+				};
+			}),
+			explain: i._score._explain
+		}
+	};
 }
 
 function isFreeTextQuery(property: unknown): boolean {

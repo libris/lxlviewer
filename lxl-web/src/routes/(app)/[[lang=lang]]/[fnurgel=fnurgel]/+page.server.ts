@@ -20,6 +20,7 @@ import {
 	getHoldersByType,
 	getBibIdsByInstanceId
 } from '$lib/utils/holdings.js';
+import { DebugFlags } from '$lib/types/userSettings';
 
 export const load = async ({ params, url, locals, fetch }) => {
 	const displayUtil = locals.display;
@@ -95,14 +96,20 @@ export const load = async ({ params, url, locals, fetch }) => {
 			searchParams = getSortedSearchParams(addDefaultSearchParams(searchParams));
 		}
 
-		let result = await fetchRelated(`${env.API_URL}/find.jsonld?${searchParams.toString()}`);
+		const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE)
+			? '&_debug=esScore'
+			: '';
+
+		let result = await fetchRelated(
+			`${env.API_URL}/find.jsonld?${searchParams.toString()}${debug}`
+		);
 
 		// Go to first tab (predicate) if none selected
 		if (searchParams.has('_o') && !searchParams.has('_p')) {
 			const predicates = displayPredicates(result, displayUtil, locale, url.pathname);
 			if (predicates.length > 0) {
 				const queryParams = new URL(predicates[0].view['@id'], url).search;
-				const fetchUrl = `${env.API_URL}/find.jsonld${queryParams}`;
+				const fetchUrl = `${env.API_URL}/find.jsonld${queryParams}${debug}`;
 				result = await fetchRelated(fetchUrl);
 			} else {
 				return null;
