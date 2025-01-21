@@ -98,14 +98,16 @@
 		defaultRow={-1}
 	>
 		{#snippet resultItem(item, getCellId, isFocusedCell)}
-			<a
-				href={relativizeUrl(item?.['@id'])}
-				role="gridcell"
-				id={getCellId(0)}
-				class:focused-cell={isFocusedCell(0)}
-			>
-				<h2>{item?.heading}</h2>
-			</a>
+			<div class="py-2">
+				<a
+					href={relativizeUrl(item?.['@id'])}
+					role="gridcell"
+					id={getCellId(0)}
+					class:focused-cell={isFocusedCell(0)}
+				>
+					<h2>{item?.heading}</h2>
+				</a>
+			</div>
 		{/snippet}
 	</SuperSearch>
 	{#each searchParams as [name, value]}
@@ -117,8 +119,7 @@
 
 <style lang="postcss">
 	:global(.supersearch-input) {
-		@apply relative min-h-12 w-full cursor-text rounded-md border-0 bg-[white] px-2 shadow-input;
-		@apply shadow-input;
+		@apply relative min-h-12 w-full cursor-text rounded-md border-0 bg-cards px-2 shadow-input;
 	}
 
 	:global(.supersearch-dialog .supersearch-input) {
@@ -134,15 +135,15 @@
 
 	:global(.supersearch-dialog-wrapper) {
 		@apply pointer-events-none grid grid-cols-header gap-x-8 md:grid-cols-header-md md:pl-2;
-		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
 
+		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
 		@media screen and (min-width: 810px) {
 			grid-template-areas: '. supersearch-content .';
 		}
 	}
 
 	:global(.supersearch-dialog-content) {
-		@apply pointer-events-auto overflow-hidden rounded-md bg-[white] px-4 shadow-md;
+		@apply pointer-events-auto overflow-hidden rounded-md bg-cards px-4 drop-shadow-md;
 		grid-area: supersearch-content;
 	}
 
@@ -159,6 +160,18 @@
 	:global(.codemirror-container .cm-content) {
 		padding-top: 0.6125rem;
 		padding-bottom: 0.6125rem;
+	}
+
+	:global(.supersearch-suggestions) {
+		@apply pb-4;
+	}
+
+	:global(.supersearch-show-more) {
+		@apply py-4;
+	}
+
+	:global(.supersearch-dialog .focused) {
+		@apply bg-main;
 	}
 
 	/* :global(.codemirror-container .cm-line) {

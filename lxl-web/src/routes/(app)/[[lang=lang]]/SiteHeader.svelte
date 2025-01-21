@@ -91,7 +91,14 @@
 		grid-template-areas:
 			'home . actions'
 			'. landing .'
-			'. search .';
+			'search search search';
+
+		@media screen and (min-width: theme('screens.sm')) {
+			grid-template-areas:
+				'home . actions'
+				'. landing .'
+				'. search .';
+		}
 	}
 
 	.home {
