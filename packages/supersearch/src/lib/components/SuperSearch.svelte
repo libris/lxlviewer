@@ -446,8 +446,8 @@
 	bind:this={dialog}
 	onclose={hideExpandedSearch}
 >
-	<div class="supersearch-wrapper" role="presentation" onkeydown={handleExpandedKeyDown}>
-		<div class="supersearch-content">
+	<div class="supersearch-dialog-wrapper" role="presentation" onkeydown={handleExpandedKeyDown}>
+		<div class="supersearch-dialog-content">
 			<div class="supersearch-combobox">
 				{#if closeActionMediaQuery.current && expanded}
 					<div class="supersearch-close-action">

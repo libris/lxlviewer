@@ -13,7 +13,7 @@
 			: `/${otherLangCode}${$page.url.pathname}`) + $page.url.search;
 </script>
 
-<nav class="header-menu py-8 md:py-0">
+<div class="header-menu py-8 md:py-0">
 	<ol class="flex flex-col items-center gap-6 text-secondary md:flex-row">
 		<li><a data-sveltekit-reload href="help">{$page.data.t('header.help')}</a></li>
 		<li>
@@ -29,7 +29,7 @@
 			</a>
 		</li>
 	</ol>
-</nav>
+</div>
 
 <style>
 	.header-menu a {

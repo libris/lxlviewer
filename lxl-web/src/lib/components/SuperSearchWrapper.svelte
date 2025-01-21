@@ -116,35 +116,50 @@
 </form>
 
 <style lang="postcss">
-	/* :global(.supersearch-input) {
-    position: relative;
-    cursor: text;
-    box-shadow: var(--box-shadow-border-all);
-    border: none;
-    border-radius: 8px;
-    background: #fff;
-    padding: 0 var(--height-input-base);
-    width: 100%;
-    @apply p-1;
-    @apply pl-2 py-1;
-    min-height: var(--height-input-lg);
-  } */
+	:global(.supersearch-input) {
+		@apply relative min-h-12 w-full cursor-text rounded-md border-0 bg-[white] px-2 shadow-input;
+		@apply shadow-input;
+	}
 
-	/* :global(.codemirror-container .cm-scroller) {
-    @apply font-sans text-base text-primary min-h-12 !important;
-    
-    @apply min-h-12;
+	:global(.supersearch-dialog .supersearch-input) {
+		box-shadow: inset 0 0 0 1px #d5e4dd;
+	}
 
-    min-height: var(--height-input-lg);
-    font-size: var(--font-size-sm);
-    font-family: var(--font-body);
-  } */
+	:global(.supersearch-dialog) {
+		@apply m-0 h-full w-full border-none p-0;
+		background: none;
+		max-width: 100vw;
+		max-height: 100vh;
+	}
 
-	/* :global(.codemirror-container .cm-content) {
-    @apply py-3;
-    padding-top: 0.6125rem;
-    padding-bottom: 0.6125rem;
-  } */
+	:global(.supersearch-dialog-wrapper) {
+		@apply pointer-events-none grid grid-cols-header gap-x-8 md:grid-cols-header-md md:pl-2;
+		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
+
+		@media screen and (min-width: 810px) {
+			grid-template-areas: '. supersearch-content .';
+		}
+	}
+
+	:global(.supersearch-dialog-content) {
+		@apply pointer-events-auto overflow-hidden rounded-md bg-[white] px-4 shadow-md;
+		grid-area: supersearch-content;
+	}
+
+	:global(.supersearch-dialog .supersearch-combobox) {
+		@apply py-4;
+	}
+
+	:global(.codemirror-container .cm-scroller) {
+		@apply min-h-12;
+		/* font size & family here */
+		scrollbar-width: none;
+	}
+
+	:global(.codemirror-container .cm-content) {
+		padding-top: 0.6125rem;
+		padding-bottom: 0.6125rem;
+	}
 
 	/* :global(.codemirror-container .cm-line) {
     padding: 0 1px; using 0 on horizontal axis causes codemirror cursor to occasionally disappear on firefox
@@ -154,31 +169,4 @@
 	/* :global(.codemirror-container .cm-editor.cm-focused) {
     outline: none;
   } */
-
-	:global(.supersearch-dialog) {
-		/* @apply m-0 w-screen h-screen bg-transparent; */
-		@apply m-0 h-full w-full border-none p-0;
-		background: none;
-		max-width: 100vw;
-		max-height: 100vh;
-	}
-
-	:global(.supersearch-wrapper) {
-		/* @apply w-screen page-padding gap-x-8 bg-transparent !important; */
-		@apply pointer-events-none grid gap-x-8 page-padding;
-		grid-template-areas: '. supersearch-content .';
-		/* grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(240px, 1fr); */
-		/* padding: 0 calc(var(--gap-base) / 2); */
-		/* pointer-events: none; */
-		grid-template-columns: 1fr minmax(0, 4fr) 1fr;
-
-		@media screen and (min-width: theme('screens.md')) {
-			grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr) minmax(240px, 1fr);
-		}
-	}
-
-	:global(.supersearch-content) {
-		@apply pointer-events-auto;
-		grid-area: supersearch-content;
-	}
 </style>

@@ -120,7 +120,9 @@ export default {
 			},
 			gridTemplateColumns: {
 				find: 'minmax(240px, 1fr) 5fr',
-				'instance-list': '16px 1fr 2fr 1fr 1fr'
+				'instance-list': '16px 1fr 2fr 1fr 1fr',
+				header: '1fr minmax(0, 4fr) 1fr',
+				'header-md': 'minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr)'
 			},
 			boxShadow: {
 				input: 'inset 0px 1px 0px 0px rgb(var(--color-primary) / 0.16)',
