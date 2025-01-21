@@ -87,7 +87,7 @@
 	}
 
 	.is-landing .header-nav {
-		@apply pb-16;
+		@apply pb-16 md:grid-cols-header-landing-md;
 		grid-template-areas:
 			'home . actions'
 			'. landing .'
@@ -115,6 +115,10 @@
 
 	.landing {
 		grid-area: landing;
+	}
+
+	.is-landing .search {
+		@apply w-full max-w-3xl justify-self-center;
 	}
 
 	#header-menu:target {
