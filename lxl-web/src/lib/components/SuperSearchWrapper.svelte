@@ -127,7 +127,7 @@
 	}
 
 	:global(.supersearch-dialog) {
-		@apply m-0 h-full w-full border-none p-0;
+		@apply static m-0 h-full w-full border-none p-0;
 		background: none;
 		max-width: 100vw;
 		max-height: 100vh;
@@ -143,7 +143,7 @@
 	}
 
 	:global(.supersearch-dialog-content) {
-		@apply pointer-events-auto overflow-hidden rounded-md bg-cards px-4 drop-shadow-md;
+		@apply pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md bg-cards px-4 drop-shadow-md;
 		grid-area: supersearch-content;
 	}
 
@@ -152,18 +152,18 @@
 	}
 
 	:global(.codemirror-container .cm-scroller) {
-		@apply min-h-12;
-		/* font size & family here */
+		@apply min-h-12 font-sans text-3-regular;
 		scrollbar-width: none;
+	}
+
+	:global(.supersearch-input .cm-line) {
+		min-height: 28px;
+		line-height: 28px;
 	}
 
 	:global(.codemirror-container .cm-content) {
 		padding-top: 0.6125rem;
 		padding-bottom: 0.6125rem;
-	}
-
-	:global(.supersearch-suggestions) {
-		@apply pb-4;
 	}
 
 	:global(.supersearch-show-more) {
@@ -173,13 +173,4 @@
 	:global(.supersearch-dialog .focused) {
 		@apply bg-main;
 	}
-
-	/* :global(.codemirror-container .cm-line) {
-    padding: 0 1px; using 0 on horizontal axis causes codemirror cursor to occasionally disappear on firefox
-    line-height: 2;
-  } */
-
-	/* :global(.codemirror-container .cm-editor.cm-focused) {
-    outline: none;
-  } */
 </style>

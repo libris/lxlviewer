@@ -1,19 +1,18 @@
 .lxl-qualifier {
 	display: inline-block;
-	color: rgb(0, 128, 0);
+	color: rgb(0, 68, 0);
 	background: rgba(14, 113, 128, 0.1);
-	padding-top: 3px;
-	padding-bottom: 3px;
 }
 
 .lxl-qualifier-key {
 	padding-left: 5px;
+	font-weight: 500;
 	border-top-left-radius: 5px;
 	border-bottom-left-radius: 5px;
 }
 
 .lxl-qualifier-remove,
-.lxl-qualifier-value:last-of-type {
+.lxl-qualifier-value:not(:has(+ .lxl-qualifier-value)) {
 	padding-right: 5px;
 	border-top-right-radius: 5px;
 	border-bottom-right-radius: 5px;
@@ -38,7 +37,7 @@
 	text-decoration: underline 1px solid;
 	text-decoration-color: rgba(255, 0, 0, 0.75);
 	text-decoration-style: wavy;
-	text-underline-offset: 2px;
+	text-underline-offset: 4px;
 }
 
 .lxl-not-term {
