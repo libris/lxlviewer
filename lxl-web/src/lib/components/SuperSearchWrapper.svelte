@@ -1,5 +1,4 @@
 <script lang="ts">
-	// import { env } from '$env/dynamic/public';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import { SuperSearch, lxlQualifierPlugin } from 'supersearch';
@@ -8,20 +7,14 @@
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
 	import { relativizeUrl } from '$lib/utils/http';
 	import type { DisplayMapping } from '$lib/types/search';
-	// import BiSearch from '~icons/bi/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import '$lib/styles/lxlquery.css';
 
-	// interface Props {
-	// 	placeholder: string;
-	// 	autofocus?: boolean;
-	// }
+	interface Props {
+		placeholder: string;
+	}
 
-	// let { placeholder, autofocus = false }: Props = $props();
-
-	// let useSuperSearch =
-	// 	env?.PUBLIC_USE_SUPERSEARCH === 'true' || $page.url.searchParams.get('_x') === 'supersearch';
-	// const showAdvanced = $page.url.searchParams.get('_x') === 'advanced' || useSuperSearch;
+	let { placeholder = '' }: Props = $props();
 
 	let q = $state($page.params.fnurgel ? '' : $page.url.searchParams.get('_q')?.trim() || '');
 
@@ -81,7 +74,7 @@
 		name="_q"
 		bind:value={q}
 		language={lxlQuery}
-		placeholder={$page.data.t('search.search')}
+		{placeholder}
 		endpoint={`/api/${$page.data.locale}/supersearch`}
 		queryFn={(query, cursor) => {
 			return new URLSearchParams({

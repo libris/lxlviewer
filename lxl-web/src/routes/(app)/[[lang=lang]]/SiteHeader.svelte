@@ -38,7 +38,7 @@
 		</div>
 		<div class="search">
 			{#if useSuperSearch}
-				<SuperSearchWrapper />
+				<SuperSearchWrapper placeholder={$page.data.t('header.searchPlaceholder')} />
 			{:else}
 				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
 			{/if}
