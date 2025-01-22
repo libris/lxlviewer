@@ -90,6 +90,9 @@
 		comboboxAriaLabel={$page.data.t('search.search')}
 		defaultRow={-1}
 	>
+		{#snippet loadingIndicator()}
+			<div class="py-2">{$page.data.t('search.loading')}</div>
+		{/snippet}
 		{#snippet resultItem(item, getCellId, isFocusedCell)}
 			<div class="py-2">
 				<a
@@ -127,10 +130,10 @@
 	}
 
 	:global(.supersearch-dialog-wrapper) {
-		@apply pointer-events-none grid grid-cols-header gap-x-8 md:grid-cols-header-md md:pl-2;
+		@apply pointer-events-none header-layout;
 
 		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
-		@media screen and (min-width: 810px) {
+		@media screen and (min-width: 950px) {
 			grid-template-areas: '. supersearch-content .';
 		}
 	}
@@ -138,10 +141,11 @@
 	:global(.supersearch-dialog-content) {
 		@apply pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md bg-cards px-4 drop-shadow-md;
 		grid-area: supersearch-content;
+		scrollbar-width: none;
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply py-4;
+		@apply sticky top-0 z-10 bg-cards py-4;
 	}
 
 	:global(.codemirror-container .cm-scroller) {
