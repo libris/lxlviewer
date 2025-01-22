@@ -18,7 +18,14 @@
 }
 
 .lxl-qualifier-remove {
+	color: inherit;
+	display: flex;
+	align-items: center;
 	padding-left: 5px;
+}
+
+.lxl-qualifier-remove:hover {
+	background: rgba(14, 113, 128, 0.3);
 }
 
 .lxl-qualifier-value:has(~ .lxl-qualifier-remove) {
