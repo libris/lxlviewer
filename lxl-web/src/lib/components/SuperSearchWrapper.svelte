@@ -93,7 +93,9 @@
 		defaultRow={-1}
 	>
 		{#snippet loadingIndicator()}
-			<div class="py-2">{$page.data.t('search.loading')}</div>
+			<div class="flex min-h-11 w-full items-center px-4 text-left">
+				{$page.data.t('search.loading')}
+			</div>
 		{/snippet}
 		{#snippet submitAction(onclick)}
 			<button
@@ -126,7 +128,7 @@
 			</button>
 		{/snippet}
 		{#snippet resultItem(item, getCellId, isFocusedCell)}
-			<div class="py-2">
+			<div class="flex min-h-11 items-stretch">
 				<a
 					href={relativizeUrl(item?.['@id'])}
 					role="gridcell"
@@ -170,7 +172,7 @@
 	}
 
 	:global(.supersearch-dialog-content) {
-		@apply pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md bg-cards px-4 drop-shadow-md;
+		@apply pointer-events-auto max-h-screen overflow-hidden overflow-y-scroll rounded-md bg-cards drop-shadow-md;
 		grid-area: supersearch-content;
 		scrollbar-width: none;
 	}
@@ -180,16 +182,37 @@
 		box-shadow: inset 0 0 0 1px rgba(105, 65, 25, 0.24);
 	}
 
+	:global(.supersearch-dialog-content),
+	:global(.supersearch-combobox) {
+		@apply mx-4;
+	}
+
 	/* suggestions */
 
-	:global(.supersearch-suggestions .focused) {
+	:global(.supersearch-suggestions) {
+		border-top: 1px solid rgb(var(--color-primary) / 0.12);
+	}
+
+	:global(.supersearch-suggestions [role='row']:last-child) {
+		border-bottom: 1px solid rgb(var(--color-primary) / 0.12);
+	}
+	:global(.supersearch-suggestions a:hover) {
 		@apply bg-main;
+	}
+
+	:global(.supersearch-suggestions .focused a) {
+		background: rgb(var(--bg-site-header) / 0.375);
+		@apply underline;
+	}
+
+	:global(.supersearch-suggestions a) {
+		@apply flex flex-1 items-center px-4 no-underline hover:underline;
 	}
 
 	/* snippets elements */
 
 	:global(.supersearch-show-more) {
-		@apply py-4;
+		@apply flex min-h-11 w-full items-center px-4 text-left hover:bg-main;
 	}
 
 	:global(.supersearch-clear-action) {
