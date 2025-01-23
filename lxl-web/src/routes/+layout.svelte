@@ -27,9 +27,15 @@
 	}
 </script>
 
-<div class="flex min-h-screen flex-col">
+<div class="body-layout grid min-h-screen">
 	<Matomo>
 		<slot />
 		<CookieConsent />
 	</Matomo>
 </div>
+
+<style lang="postcss">
+	.body-layout {
+		grid-template-rows: min-content 1fr min-content;
+	}
+</style>

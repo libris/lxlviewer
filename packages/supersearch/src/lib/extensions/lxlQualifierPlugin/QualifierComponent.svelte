@@ -1,4 +1,6 @@
 <script lang="ts">
+	import IconClear from './IconClear.svelte';
+
 	interface Props {
 		key: string;
 		keyLabel?: string;
@@ -25,7 +27,7 @@
 	</span>
 {/if}
 {#if valueLabel && removeLink}
-	<span class="lxl-qualifier lxl-qualifier-remove atomic">
-		<a href={removeLink} tabindex="-1"> X </a>
-	</span>
+	<a href={removeLink} class="lxl-qualifier lxl-qualifier-remove atomic" aria-label="clear">
+		<IconClear />
+	</a>
 {/if}
