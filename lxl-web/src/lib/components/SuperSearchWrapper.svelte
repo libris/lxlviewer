@@ -8,6 +8,8 @@
 	import { relativizeUrl } from '$lib/utils/http';
 	import type { DisplayMapping } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
+	import BiXLg from '~icons/bi/x-lg';
+	import BiArrowLeft from '~icons/bi/arrow-left';
 	import '$lib/styles/lxlquery.css';
 
 	interface Props {
@@ -93,6 +95,36 @@
 		{#snippet loadingIndicator()}
 			<div class="py-2">{$page.data.t('search.loading')}</div>
 		{/snippet}
+		{#snippet submitAction(onclick)}
+			<button
+				type="submit"
+				class="submit-action button-primary h-full w-full rounded-s-none"
+				enterkeyhint="search"
+				{onclick}
+			>
+				{$page.data.t('search.search')}
+			</button>
+		{/snippet}
+		{#snippet closeAction(onclick)}
+			<button
+				type="button"
+				aria-label={$page.data.t('general.close')}
+				class="button-ghost h-full rounded-e-none"
+				{onclick}
+			>
+				<BiArrowLeft />
+			</button>
+		{/snippet}
+		{#snippet clearAction(onclick)}
+			<button
+				type="reset"
+				aria-label={$page.data.t('search.clearFilters')}
+				class="icon-button hover:bg-main"
+				{onclick}
+			>
+				<BiXLg />
+			</button>
+		{/snippet}
 		{#snippet resultItem(item, getCellId, isFocusedCell)}
 			<div class="py-2">
 				<a
@@ -114,26 +146,25 @@
 </form>
 
 <style lang="postcss">
-	:global(.supersearch-input) {
-		@apply relative min-h-12 w-full cursor-text rounded-md border-0 bg-cards px-2 shadow-input;
+	:global(.supersearch-combobox) {
+		@apply rounded-md border-0 bg-cards;
 	}
 
-	:global(.supersearch-dialog .supersearch-input) {
-		box-shadow: inset 0 0 0 1px #d5e4dd;
+	:global(.supersearch-input) {
+		@apply relative min-h-12 w-full cursor-text px-2;
 	}
+
+	/* dialog */
 
 	:global(.supersearch-dialog) {
-		@apply static m-0 h-full w-full border-none p-0;
-		background: none;
-		max-width: 100vw;
-		max-height: 100vh;
+		@apply static m-0 h-full max-h-screen w-full max-w-full border-none bg-transparent p-0;
 	}
 
 	:global(.supersearch-dialog-wrapper) {
 		@apply pointer-events-none header-layout;
-
 		grid-template-areas: 'supersearch-content supersearch-content supersearch-content';
-		@media screen and (min-width: 950px) {
+
+		@media screen and (min-width: theme('screens.sm')) {
 			grid-template-areas: '. supersearch-content .';
 		}
 	}
@@ -145,8 +176,25 @@
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply sticky top-0 z-10 bg-cards py-4;
+		@apply sticky top-0 z-10 my-4 bg-cards;
+		box-shadow: inset 0 0 0 1px rgba(105, 65, 25, 0.24);
 	}
+
+	/* snippets elements */
+
+	:global(.supersearch-show-more) {
+		@apply py-4;
+	}
+
+	:global(.supersearch-clear-action) {
+		@apply ml-1 flex items-center;
+
+		& button {
+			@apply h-6 w-6;
+		}
+	}
+
+	/* codemirror elements */
 
 	:global(.codemirror-container .cm-scroller) {
 		@apply min-h-12 font-sans text-3-regular;
@@ -161,13 +209,5 @@
 	:global(.codemirror-container .cm-content) {
 		padding-top: 0.6125rem;
 		padding-bottom: 0.6125rem;
-	}
-
-	:global(.supersearch-show-more) {
-		@apply py-4;
-	}
-
-	:global(.supersearch-dialog .focused) {
-		@apply bg-main;
 	}
 </style>
