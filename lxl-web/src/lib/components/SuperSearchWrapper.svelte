@@ -180,6 +180,12 @@
 		box-shadow: inset 0 0 0 1px rgba(105, 65, 25, 0.24);
 	}
 
+	/* suggestions */
+
+	:global(.supersearch-suggestions .focused) {
+		@apply bg-main;
+	}
+
 	/* snippets elements */
 
 	:global(.supersearch-show-more) {
