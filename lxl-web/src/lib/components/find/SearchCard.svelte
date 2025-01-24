@@ -186,7 +186,7 @@
 		background: theme(backgroundColor.cards);
 		border-radius: theme(borderRadius.md);
 		grid-template-areas: 'image content debug';
-		grid-template-columns: 64px 1fr 1fr;
+		grid-template-columns: 64px 1fr auto;
 
 		&:hover,
 		&:focus-within {
