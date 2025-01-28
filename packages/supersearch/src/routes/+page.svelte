@@ -56,23 +56,58 @@
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin()]}
 			toggleWithKeyboardShortcut
+			defaultRow={1}
+			defaultInputCol={-1}
+			defaultResultItemCol={0}
 		>
-			{#snippet submitAction(onclick)}
-				<button type="submit" class="submit-action" enterkeyhint="search" {onclick}>
+			{#snippet inputRow(
+				expanded,
+				input,
+				getCellId,
+				isFocusedCell,
+				onclickSubmit,
+				onclickClear,
+				onclickClose
+			)}
+				{#if expanded}
+					<button
+						type="button"
+						aria-label="Close"
+						class="close-action"
+						id={getCellId(0)}
+						class:focused-cell={isFocusedCell(0)}
+						onclick={onclickClose}
+					>
+						<img src={backIconSvg} width={16} height={16} alt="" />
+					</button>
+				{/if}
+				<div class="supersearch-input">
+					{@render input()}
+				</div>
+				{#if value1}
+					<button
+						type="reset"
+						aria-label="Clear"
+						class="clear-action"
+						id={getCellId(1)}
+						class:focused-cell={isFocusedCell(1)}
+						onclick={onclickClear}
+					>
+						<img src={clearIconSvg} width={16} height={16} alt="" />
+					</button>
+				{/if}
+				<button
+					type="submit"
+					class="submit-action"
+					enterkeyhint="search"
+					id={getCellId(2)}
+					class:focused-cell={isFocusedCell(2)}
+					onclick={onclickSubmit}
+				>
 					Search
 				</button>
 			{/snippet}
-			{#snippet closeAction(onclick)}
-				<button type="button" aria-label="Close" class="close-action" {onclick}>
-					<img src={backIconSvg} width={16} height={16} alt="" />
-				</button>
-			{/snippet}
-			{#snippet clearAction(onclick)}
-				<button type="reset" aria-label="Clear" class="clear-action" {onclick}>
-					<img src={clearIconSvg} width={16} height={16} alt="" />
-				</button>
-			{/snippet}
-			{#snippet persistentItem(getCellId, isFocusedCell)}
+			{#snippet persistentItemRow(getCellId, isFocusedCell)}
 				<div class="persistent-item" data-testid="persistent-item">
 					<a
 						href={`/test1#${getCellId(0)}`}
@@ -82,7 +117,7 @@
 					>
 				</div>
 			{/snippet}
-			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
+			{#snippet resultItemRow(item, getCellId, isFocusedCell, rowIndex)}
 				<div class="result-item" data-testid="result-item">
 					<div role="gridcell">
 						<a
@@ -145,9 +180,9 @@
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin()]}
 			comboboxAriaLabel="Search"
-			defaultRow={-1}
+			defaultRow={1}
 		>
-			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
+			{#snippet resultItemRow(item, getCellId, isFocusedCell, rowIndex)}
 				<div class="result-item" data-testid="result-item" role="gridcell">
 					<button type="button" id={getCellId(0)} class:focused-cell={isFocusedCell(0)}>
 						<h2>{item.heading} {rowIndex}</h2>
@@ -199,7 +234,9 @@
 
 	:global(.supersearch-dialog .focused) {
 		background: #ebebeb;
+	}
 
+	:global(.supersearch-dialog) {
 		& :global(.focused-cell) {
 			background: lightgreen;
 		}
@@ -282,5 +319,27 @@
 
 	:global(button) {
 		background: none;
+	}
+
+	.supersearch-input {
+		display: flex;
+		flex: 1;
+		overflow: hidden;
+
+		& :global(.codemirror-container) {
+			display: block;
+			flex: 1;
+			overflow: hidden;
+		}
+	}
+
+	.close-action {
+		@media screen and (min-width: 640px) {
+			display: none;
+		}
+	}
+
+	.submit-action {
+		display: none;
 	}
 </style>
