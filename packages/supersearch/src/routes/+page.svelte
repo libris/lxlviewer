@@ -335,8 +335,4 @@
 			display: none;
 		}
 	}
-
-	.submit-action {
-		display: none;
-	}
 </style>
