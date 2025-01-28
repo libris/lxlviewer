@@ -290,13 +290,19 @@
 			};
 
 			const getColIndexBefore = (rowIndex: number, colIndex: number) => {
-				const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
-				return colIndeces[colIndeces.indexOf(colIndex) - 1];
+				if (rowIndex < rows.length) {
+					const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
+					return colIndeces[colIndeces.indexOf(colIndex) - 1];
+				}
+				return -1;
 			};
 
 			const getColIndexAfter = (rowIndex: number, colIndex: number) => {
-				const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
-				return colIndeces[colIndeces.indexOf(colIndex) + 1];
+				if (rowIndex < rows.length) {
+					const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
+					return colIndeces[colIndeces.indexOf(colIndex) + 1];
+				}
+				return -1;
 			};
 
 			if (rows.length) {
@@ -537,6 +543,8 @@
 							Load more
 						</button>
 					{/if}
+				{:else}
+					<div>Start content here</div>
 				{/if}
 			</nav>
 		</div>
