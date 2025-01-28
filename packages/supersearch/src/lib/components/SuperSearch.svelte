@@ -504,37 +504,39 @@
 				)}
 			</div>
 			<nav class="supersearch-suggestions">
-				{#if persistentItemRow}
-					<div role="row" class:focused={activeRowIndex === 1}>
-						{@render persistentItemRow(
-							(colIndex: number) => `${id}-item-1x${colIndex}`,
-							(colIndex: number) => activeRowIndex === 1 && colIndex === activeColIndex
-						)}
-					</div>
-				{/if}
-				{#if search.data}
-					{@const resultItemRows =
-						(Array.isArray(search.paginatedData) &&
-							search.paginatedData.map((page) => page.items).flat()) ||
-						search.data?.items}
-					{#each resultItemRows as item, index}
-						{@const rowIndex = persistentItemRow ? index + 2 : index + 1}
-						<div role="row" class:focused={activeRowIndex === rowIndex}>
-							{@render resultItemRow?.(
-								item,
-								(colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-								(colIndex: number) => activeRowIndex === rowIndex && colIndex === activeColIndex,
-								rowIndex
+				{#if value.length}
+					{#if persistentItemRow}
+						<div role="row" class:focused={activeRowIndex === 1}>
+							{@render persistentItemRow(
+								(colIndex: number) => `${id}-item-1x${colIndex}`,
+								(colIndex: number) => activeRowIndex === 1 && colIndex === activeColIndex
 							)}
 						</div>
-					{/each}
-				{/if}
-				{#if search.isLoading}
-					{@render loadingIndicator?.()}
-				{:else if search.hasMorePaginatedData}
-					<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-						Load more
-					</button>
+					{/if}
+					{#if search.data}
+						{@const resultItemRows =
+							(Array.isArray(search.paginatedData) &&
+								search.paginatedData.map((page) => page.items).flat()) ||
+							search.data?.items}
+						{#each resultItemRows as item, index}
+							{@const rowIndex = persistentItemRow ? index + 2 : index + 1}
+							<div role="row" class:focused={activeRowIndex === rowIndex}>
+								{@render resultItemRow?.(
+									item,
+									(colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+									(colIndex: number) => activeRowIndex === rowIndex && colIndex === activeColIndex,
+									rowIndex
+								)}
+							</div>
+						{/each}
+					{/if}
+					{#if search.isLoading}
+						{@render loadingIndicator?.()}
+					{:else if search.hasMorePaginatedData}
+						<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+							Load more
+						</button>
+					{/if}
 				{/if}
 			</nav>
 		</div>
