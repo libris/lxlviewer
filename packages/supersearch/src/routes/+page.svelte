@@ -226,8 +226,8 @@
 	}
 
 	:global(.supersearch-dialog) {
-		& :global(a:hover),
-		& :global(button:hover) {
+		& :global(a:not(.focused-cell):hover),
+		& :global(button:not(.focused-cell):hover) {
 			background: #ddffdd;
 		}
 	}
@@ -237,10 +237,6 @@
 	}
 
 	:global(.supersearch-dialog) {
-		& :global(.focused-cell) {
-			background: lightgreen;
-		}
-
 		& :global(.focused-cell) {
 			background: lightgreen;
 		}
@@ -271,6 +267,7 @@
 
 		& button,
 		& [role='gridcell'] {
+			cursor: pointer;
 			min-width: 44px;
 			min-height: 44px;
 		}
