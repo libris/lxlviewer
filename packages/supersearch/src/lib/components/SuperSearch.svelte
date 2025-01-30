@@ -308,10 +308,7 @@
 			if (rows.length) {
 				switch (event.key) {
 					case 'ArrowUp':
-						if (activeRowIndex === 1) {
-							activeRowIndex--;
-							activeColIndex = defaultInputCol; // special case for first row
-						} else if (activeRowIndex > 1) {
+						if (activeRowIndex > 1) {
 							activeRowIndex--;
 							activeColIndex = Math.min(activeColIndex, getColsInRow(activeRowIndex).length - 1);
 						}
@@ -339,9 +336,11 @@
 						event.preventDefault();
 						if (event.shiftKey) {
 							const closestBefore = getColIndexBefore(activeRowIndex, activeColIndex);
+							/*
 							if (typeof closestBefore !== 'number' && activeRowIndex == 0) {
 								activeColIndex = -1;
 							}
+								*/
 							if (typeof closestBefore !== 'number' && activeRowIndex > 0) {
 								activeRowIndex = Math.max(0, activeRowIndex - 1);
 								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex).at(-1)!.id);
