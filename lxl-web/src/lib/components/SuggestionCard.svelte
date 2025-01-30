@@ -73,13 +73,15 @@
 						width={item.image.widthṔx}
 						height={item.image.heightPx}
 						alt={$page.data.t('general.latestInstanceCover')}
-						class:rounded-full={item['@type'] === 'Person'}
-						class="aspect-square object-contain object-top"
+						class={[
+							'aspect-square object-contain object-top',
+							item['@type'] === 'Person' && 'rounded-full'
+						]}
 					/>
 					{#if item['@type'] !== 'Text' && item['@type'] !== 'Person' && getTypeIcon(item['@type'])}
 						{@const SvelteComponent = getTypeIcon(item['@type'])}
 						<div class="absolute -left-2 -top-2">
-							<div class="rounded-md bg-cards p-1.5">
+							<div class="rounded-md bg-main/80 p-1.5">
 								<SvelteComponent class="h-3 w-3 text-icon-strong" />
 							</div>
 						</div>
@@ -89,9 +91,10 @@
 						<img
 							src={placeholder}
 							alt=""
-							class:rounded-full={item['@type'] === 'Person'}
-							class:rounded-sm={item['@type'] !== 'Person'}
-							class="object-contain object-top"
+							class={[
+								'object-contain object-top',
+								item['@type'] === 'Person' ? 'rounded-full' : 'rounded-sm'
+							]}
 						/>
 						{#if getTypeIcon(item['@type'])}
 							{@const SvelteComponent_1 = getTypeIcon(item['@type'])}
