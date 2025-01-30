@@ -1,12 +1,11 @@
 <script lang="ts">
-	import jmespath from 'jmespath';
 	import type { SearchResultItem } from '$lib/types/search';
-	import type { ResourceData } from '$lib/types/resourceData';
 	import { LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
 	import { relativizeUrl } from '$lib/utils/http';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
+	import getInstanceData from '$lib/utils/getInstanceData';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { page } from '$app/stores';
@@ -21,31 +20,6 @@
 	$: footerId = `card-footer-${id}`;
 
 	let showDebugExplain = false;
-
-	function getInstanceData(instances: ResourceData) {
-		if (typeof instances === 'object') {
-			let years: string = '';
-			let count = 1;
-			let query = '_display[].publication[].*[][?year].year[]';
-
-			if (Array.isArray(instances)) {
-				count = instances.length;
-				query = '[]._display[].publication[].*[][?year].year[]';
-			}
-
-			let res = jmespath.search(instances, query) as string[] | null;
-			if (res) {
-				years = res
-					.filter((el, i, arr) => !isNaN(parseInt(el)) && arr.indexOf(el) === i)
-					.sort()
-					.filter((el, i, arr) => i === 0 || i === arr.length - 1)
-					.join('-');
-			}
-
-			return { count, years };
-		}
-		return null;
-	}
 </script>
 
 <div class="search-card-container">
