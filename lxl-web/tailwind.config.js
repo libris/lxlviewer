@@ -195,7 +195,7 @@ export default {
 					'@apply flex flex-col gap-4 md:grid md:grid-cols-find md:gap-8': {}
 				},
 				'.header-layout': {
-					'@apply grid grid-cols-header gap-x-8 md:grid-cols-header-md px-2': {}
+					'@apply grid grid-cols-header gap-x-8 md:grid-cols-header-md md:px-2': {}
 				},
 				'.landing-layout': {
 					'@apply pb-16 md:grid-cols-landing': {}
