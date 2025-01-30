@@ -37,7 +37,7 @@ export async function asResult(
 	vocabUtil: VocabUtil,
 	locale: LangCode,
 	auxdSecret: string,
-	usePath: string
+	usePath?: string
 ): Promise<SearchResult> {
 	const translate = await getTranslator(locale);
 
