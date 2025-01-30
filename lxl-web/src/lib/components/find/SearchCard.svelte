@@ -128,9 +128,10 @@
 				<span class="font-bold">
 					{item.typeStr}
 				</span>
+				<span class="divider">{' • '}</span>
 				{#each item[LensType.WebCardFooter]?._display as obj}
-					<span>{' • '}</span>
 					{#if 'hasInstance' in obj}
+						<span class="divider">{' • '}</span>
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
 							<span>
@@ -178,13 +179,8 @@
 	}
 
 	.search-card {
-		@apply gap-x-4 border-b border-b-primary/16 px-4 pb-3 pt-3 transition-shadow;
+		@apply relative grid w-full gap-x-4 rounded-md border-b border-b-primary/16 bg-cards px-4 pb-3 pt-3 font-normal transition-shadow;
 
-		display: grid;
-		width: 100%;
-		position: relative;
-		background: theme(backgroundColor.cards);
-		border-radius: theme(borderRadius.md);
 		grid-template-areas: 'image content debug';
 		grid-template-columns: 64px 1fr auto;
 
@@ -239,25 +235,26 @@
 	}
 
 	.card-footer {
-		@apply mt-auto pt-1;
+		@apply mt-1;
 
 		@container (min-width: 768px) {
-			@apply pt-3;
+			@apply mt-3;
+		}
+
+		/* hide dangling divider • */
+		& .divider {
+			@apply hidden;
+		}
+		& :global(.divider:has(+ span)) {
+			@apply inline;
 		}
 	}
 
 	.card-header-title {
-		@apply text-link text-3-cond;
-		& :global([data-property='mainTitle']) {
-			@apply font-bold;
-		}
+		@apply text-link text-3-cond-bold;
 
 		@container (min-width: 768px) {
-			@apply text-4-cond;
-
-			& :global([data-property='mainTitle']) {
-				@apply font-bold;
-			}
+			@apply text-4-cond-bold;
 		}
 	}
 
