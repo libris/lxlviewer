@@ -135,7 +135,7 @@
 			{#key item._debug}
 				<button
 					type="button"
-					class="card-debug z-20 cursor-crosshair select-text self-start text-left"
+					class="card-debug z-10 cursor-crosshair select-text self-start text-left"
 					onclick={() => {
 						showDebugExplain = !showDebugExplain;
 					}}
@@ -143,7 +143,7 @@
 					<SearchItemDebug debugInfo={item._debug} />
 				</button>
 				{#if showDebugExplain}
-					<div id="explain" class="z-20 col-span-full row-start-2 cursor-crosshair pt-4">
+					<div id="explain" class="z-10 col-span-full row-start-2 cursor-crosshair pt-4">
 						<EsExplain explain={item._debug.score.explain} />
 					</div>
 				{/if}

@@ -4,6 +4,7 @@ import type { RequestHandler } from './$types.ts';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import getEditedPartEntries from './getEditedPartEntries.js';
 import { asResult } from '$lib/utils/search.js';
+import { DebugFlags } from '$lib/types/userSettings.js';
 
 /**
  * TODO:
@@ -39,8 +40,9 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 		console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
 		console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
 	}
+	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
 
-	const findResponse = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`);
+	const findResponse = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}${debug}`);
 	const data = await findResponse.json();
 
 	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
