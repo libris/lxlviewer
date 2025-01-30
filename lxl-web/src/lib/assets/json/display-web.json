@@ -275,14 +275,19 @@
 					"@id": "Agent-web-card",
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Agent",
-					"showProperties": [
-						"nationality",
-						"disambiguatingDescription",
-						"activityStartDate",
-						"activityEndDate",
-						"hasOccupation",
-						"fieldOfActivity"
-					]
+					"showProperties": []
+				},
+				"Concept": {
+					"@id": "Concept-web-card",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Concept",
+					"showProperties": []
+				},
+				"Language": {
+					"@id": "Language-web-card",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Language",
+					"showProperties": []
 				},
 				"Instance": {
 					"@id": "Instance-web-card",
@@ -301,6 +306,18 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Work",
 					"showProperties": ["translationOf"]
+				},
+				"Agent": {
+					"@id": "Agent-web-card-header-extra",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Agent",
+					"showProperties": []
+				},
+				"Concept": {
+					"@id": "Concept-web-card-header-extra",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Concept",
+					"showProperties": []
 				}
 			}
 		},
@@ -320,11 +337,34 @@
 					"classLensDomain": "Instance",
 					"showProperties": ["hasTitle", "responsibilityStatement", "identifier", "publication"]
 				},
+				"Agent": {
+					"@id": "Agent-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Agent",
+					"showProperties": [
+						"disambiguatingDescription",
+						"activityStartDate",
+						"activityEndDate",
+						"nationality"
+					]
+				},
 				"Person": {
 					"@id": "Person-web-card-footer",
 					"@type": "fresnel:Lens",
-					"classLensDomain": "Instance",
-					"showProperties": ["nationality"]
+					"classLensDomain": "Person",
+					"showProperties": ["hasOccupation", "nationality"]
+				},
+				"Concept": {
+					"@id": "Concept-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Concept",
+					"showProperties": ["inScheme"]
+				},
+				"Language": {
+					"@id": "Language-web-card-footer",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Language",
+					"showProperties": []
 				}
 			}
 		}
@@ -407,6 +447,16 @@
 				"fresnel:contentFirst": "-"
 			}
 		},
+		"Agent-activityEndDate-format": {
+			"@id": "Agent-activityEndDate-format",
+			"@type": "fresnel:Format",
+			"fresnel:classFormatDomain": ["Agent"],
+			"fresnel:propertyFormatDomain": ["activityEndDate"],
+			"fresnel:propertyFormat": {
+				"fresnel:contentBefore": "-",
+				"fresnel:contentFirst": "-"
+			}
+		},
 		"ProvisionActivity-colon-before-agent-format": {
 			"@id": "ProvisionActivity-colon-before-agent-format",
 			"@type": "fresnel:Format",
@@ -443,6 +493,7 @@
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Title"],
 			"fresnel:propertyFormatDomain": ["subtitle", "titleRemainder"],
+			"fresnel:propertyStyle": ["font-normal"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " : ",
 				"fresnel:contentFirst": ""
