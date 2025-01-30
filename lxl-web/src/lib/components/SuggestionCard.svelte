@@ -224,7 +224,7 @@
 
 	.card-footer {
 		@apply mt-auto pt-1;
-		/* only show • with something after */
+		/* hide dangling divider • */
 		& .divider {
 			@apply hidden;
 		}
