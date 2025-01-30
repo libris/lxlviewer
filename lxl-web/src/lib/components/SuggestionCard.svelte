@@ -54,11 +54,13 @@
 </script>
 
 <div class="suggestion-card-container">
-	<article class="suggestion-card">
+	<article
+		class="suggestion-card relative grid w-full gap-x-4 border-b border-b-primary/16 px-4 pb-3 pt-3 font-normal"
+	>
 		<a
 			id={cellId}
 			role="gridcell"
-			class={['card-link', isFocused && 'bg-site-header/40']}
+			class={['card-link absolute h-full w-full hover:bg-main', isFocused && 'bg-site-header/40']}
 			href={itemId}
 			aria-labelledby={titleId}
 			aria-describedby={`${footerId}`}
@@ -102,14 +104,16 @@
 		<div class="card-content pointer-events-none z-10 overflow-hidden">
 			<header class="card-header" id={titleId}>
 				<hgroup class="flex">
-					<h2 class="card-header-title">
-						<span class="header-title">
+					<h2
+						class="card-header-title flex items-baseline overflow-hidden whitespace-nowrap text-link"
+					>
+						<span class="overflow-hidden text-ellipsis text-3-cond-bold">
 							<DecoratedData data={item['card-heading']} showLabels={ShowLabelsOptions.Never} />
 						</span>
 						<!-- first contributor -->
 						{#if item[LxlLens.CardBody]?._display?.[0]?.contribution}
-							<span class="divider">&nbsp;{'•'}&nbsp;</span>
-							<span class="header-contributor">
+							<span class="divider text-2-regular">&nbsp;{'•'}&nbsp;</span>
+							<span class="flex-shrink-0 text-2-regular">
 								<DecoratedData
 									data={item[LxlLens.CardBody]?._display[0]}
 									showLabels={ShowLabelsOptions.Never}
@@ -122,7 +126,7 @@
 				</hgroup>
 				<!-- header extra skipped -->
 			</header>
-			<footer class="card-footer" id={footerId}>
+			<footer class="card-footer mt-auto pt-1 text-xs text-secondary" id={footerId}>
 				<span class="font-bold">
 					{item.typeStr}
 				</span>
@@ -171,20 +175,14 @@
 	</article>
 </div>
 
-<style lang="postcss">
+<style scoped lang="postcss">
 	.suggestion-card-container {
 		container-type: inline-size;
 	}
 
 	.suggestion-card {
-		@apply relative grid w-full gap-x-4 border-b border-b-primary/16 px-4 pb-3 pt-3 font-normal;
-
 		grid-template-areas: 'image content debug';
 		grid-template-columns: 48px 1fr auto;
-	}
-
-	.card-link {
-		@apply absolute h-full w-full hover:bg-main;
 	}
 
 	.card-image {
@@ -200,18 +198,9 @@
 	}
 
 	.card-header-title {
-		@apply flex overflow-hidden whitespace-nowrap font-bold text-link text-3-cond;
-
-		& .header-title {
-			@apply overflow-hidden text-ellipsis;
-		}
-
 		/* hide contributor remainder */
-		& .header-contributor {
-			@apply flex-shrink-0 font-normal;
-			& :global(.remainder) {
-				@apply hidden;
-			}
+		& :global(.remainder) {
+			@apply hidden;
 		}
 
 		/* hide role */
@@ -223,7 +212,6 @@
 	}
 
 	.card-footer {
-		@apply mt-auto pt-1;
 		/* hide dangling divider • */
 		& .divider {
 			@apply hidden;
@@ -231,18 +219,9 @@
 		& :global(.divider:has(+ span)) {
 			@apply inline;
 		}
-	}
 
-	.card-footer,
-	.card-header :global([data-property='_script']) {
-		@apply text-xs text-secondary;
 		@container (min-width: 768px) {
 			@apply text-sm;
 		}
-	}
-
-	/** TODO: Set transliteration styling via display-web.json? */
-	:global(.card-header [data-property='_script']) {
-		@apply block;
 	}
 </style>
