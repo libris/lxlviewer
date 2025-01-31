@@ -318,6 +318,12 @@
 					"@type": "fresnel:Lens",
 					"classLensDomain": "Concept",
 					"showProperties": []
+				},
+				"Language": {
+					"@id": "Language-web-card-header-extra",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Language",
+					"showProperties": []
 				}
 			}
 		},
