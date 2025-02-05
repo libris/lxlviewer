@@ -2,10 +2,10 @@
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import { SuperSearch, lxlQualifierPlugin } from 'supersearch';
+	import SuggestionCard from './SuggestionCard.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
-	import { relativizeUrl } from '$lib/utils/http';
 	import type { DisplayMapping } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
@@ -81,7 +81,7 @@
 		queryFn={(query, cursor) => {
 			return new URLSearchParams({
 				_q: query,
-				_limit: '10',
+				_limit: '8',
 				cursor: cursor.toString()
 			});
 		}}
@@ -128,16 +128,9 @@
 			</button>
 		{/snippet}
 		{#snippet resultItem(item, getCellId, isFocusedCell)}
-			<div class="flex min-h-11 items-stretch">
-				<a
-					href={relativizeUrl(item?.['@id'])}
-					role="gridcell"
-					id={getCellId(0)}
-					class:focused-cell={isFocusedCell(0)}
-				>
-					<h2>{item?.heading}</h2>
-				</a>
-			</div>
+			{#if item}
+				<SuggestionCard {item} cellId={getCellId(0)} isFocused={isFocusedCell(0)} />
+			{/if}
 		{/snippet}
 	</SuperSearch>
 	{#each searchParams as [name, value]}
@@ -149,11 +142,11 @@
 
 <style lang="postcss">
 	:global(.supersearch-combobox) {
-		@apply rounded-md border-0 bg-cards;
+		@apply border-0;
 	}
 
 	:global(.supersearch-input) {
-		@apply relative min-h-12 w-full cursor-text px-2;
+		@apply relative min-h-12 w-full cursor-text rounded-md rounded-e-none bg-cards px-2;
 	}
 
 	/* dialog */
@@ -178,35 +171,19 @@
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply sticky top-0 z-10 my-4 bg-cards;
-		box-shadow: inset 0 0 0 1px rgba(105, 65, 25, 0.24);
+		@apply sticky top-0 z-20 border-b border-b-primary/16 bg-cards p-4;
 	}
 
-	:global(.supersearch-dialog-content),
-	:global(.supersearch-combobox) {
-		@apply mx-4;
+	:global(.supersearch-dialog .supersearch-input) {
+		@apply rounded-none sm:rounded-s-md;
+		box-shadow: inset 0 0 0 1px rgba(105, 65, 25, 0.24);
 	}
 
 	/* suggestions */
 
-	:global(.supersearch-suggestions) {
-		border-top: 1px solid rgb(var(--color-primary) / 0.12);
-	}
-
 	:global(.supersearch-suggestions [role='row']:last-child) {
-		border-bottom: 1px solid rgb(var(--color-primary) / 0.12);
-	}
-	:global(.supersearch-suggestions a:hover) {
-		@apply bg-main;
-	}
-
-	:global(.supersearch-suggestions .focused a) {
-		background: rgb(var(--bg-site-header) / 0.375);
-		@apply underline;
-	}
-
-	:global(.supersearch-suggestions a) {
-		@apply flex flex-1 items-center px-4 no-underline hover:underline;
+		/* border-bottom: 1px solid rgb(var(--color-primary) / 0.12); */
+		@apply border-b border-b-primary/16;
 	}
 
 	/* snippets elements */
