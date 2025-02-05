@@ -28,9 +28,7 @@
 </script>
 
 <div class="suggestion-card-container">
-	<article
-		class="suggestion-card relative grid w-full gap-x-4 border-b border-b-primary/16 px-4 pb-3 pt-3 font-normal"
-	>
+	<article class="suggestion-card relative grid w-full gap-x-4 px-4 pb-2 pt-2 font-normal">
 		<a
 			id={cellId}
 			role="gridcell"
@@ -103,7 +101,7 @@
 				</hgroup>
 				<!-- header extra skipped -->
 			</header>
-			<footer class="card-footer mt-auto pt-1 text-xs text-secondary" id={footerId}>
+			<footer class="card-footer mt-auto text-xs text-secondary" id={footerId}>
 				<span class="font-bold">
 					{item.typeStr}
 				</span>
@@ -159,7 +157,7 @@
 
 	.suggestion-card {
 		grid-template-areas: 'image content debug';
-		grid-template-columns: 48px 1fr auto;
+		grid-template-columns: 40px 1fr auto;
 	}
 
 	.card-image {
