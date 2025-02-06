@@ -3,6 +3,12 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import getEditedPartEntries from './getEditedPartEntries.js';
+import getEditedRanges from './getEditedRanges.js';
+import {
+	DEFAULT_SUPERSEARCH_TYPES,
+	getTypeQualifier,
+	queryIncludesType
+} from './qualifierTypes.js';
 import { asResult } from '$lib/utils/search.js';
 import { DebugFlags } from '$lib/types/userSettings.js';
 
@@ -22,28 +28,44 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const cursor = parseInt(url.searchParams.get('cursor') || '0', 10);
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
+	newSearchParams.delete('cursor');
 
-	if (_q && Number.isInteger(cursor)) {
-		const editedPartEntries = getEditedPartEntries(_q, cursor);
+	const editedRanges = _q && Number.isInteger(cursor) && getEditedRanges(_q, cursor);
+	let getFullQuery = false;
+
+	// user is editing a qualifier
+	if (editedRanges && editedRanges?.qualifierKey) {
+		getFullQuery = true;
+		// add 'corresponding' types
+		const editedPartEntries = getEditedPartEntries(_q, cursor, editedRanges);
 
 		editedPartEntries.forEach(([key, value]) => {
 			newSearchParams.set(key, value);
 		});
-		newSearchParams.delete('cursor');
-
-		if (!_q.toString().includes('"rdf:type":') && !_q.toString().includes('"rdf:type"=')) {
-			// Add types to suggest
-			const types =
-				'"rdf:type":(Agent OR Concept OR Language OR Work) "rdf:type":(NOT ComplexSubject) ';
-			newSearchParams.set('_q', types + _q.toString());
+	} else {
+		// ...or add default types
+		const newQ = newSearchParams.get('_q')?.toString();
+		if (!queryIncludesType(newQ)) {
+			newSearchParams.set('_q', `${newQ} ${getTypeQualifier(DEFAULT_SUPERSEARCH_TYPES)}`);
 		}
-		console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
-		console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
 	}
-	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
 
-	const findResponse = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}${debug}`);
+	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
+	console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
+
+	if (locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE)) {
+		newSearchParams.set('_debug', 'esScore');
+	}
+
+	const findResponse = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`);
 	const data = await findResponse.json();
+
+	if (getFullQuery) {
+		// send full query in order to get mapping labels, really only needed when a qualifier is added...
+		const fullQueryResponse = await fetch(`${env.API_URL}/find?_q=${_q?.toString()}&_limit=0`);
+		const fullQueryData = await fullQueryResponse.json();
+		data.search.mapping = [...fullQueryData.search.mapping];
+	}
 
 	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
 

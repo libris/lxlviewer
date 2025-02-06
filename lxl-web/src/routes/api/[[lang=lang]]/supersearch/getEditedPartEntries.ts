@@ -1,19 +1,9 @@
-import getEditedRanges from './getEditedRanges.js';
-
-/**
- * TODO: How should we handle translated query codes and qualifier keys?
- */
-
-const QUALIFIER_KEY_BY_BASE_CLASS = {
-	Library: 'itemHeldBy',
-	Agent: 'contributor',
-	Topic: 'subject',
-	Subject: 'subject',
-	Language: 'SPRÅK',
-	GenreForm: 'genreForm',
-	Person: 'person',
-	Work: 'titel'
-};
+import getEditedRanges, { type EditedRanges } from './getEditedRanges.js';
+import {
+	qualifierKeyFromAlias,
+	qualifierSearchTypeFromKey,
+	getTypeQualifier
+} from './qualifierTypes.js';
 
 const SKIP_QUALIFIERS = ['år'];
 
@@ -21,8 +11,12 @@ const SKIP_QUALIFIERS = ['år'];
  * Gets the URLSearchParams entries which should be appended/replaced with new values when editing a part of a query.
  */
 
-function getEditedPartEntries(query: string, cursor: number): [string, string][] {
-	const editedRanges = getEditedRanges(query, cursor);
+function getEditedPartEntries(
+	query: string,
+	cursor: number,
+	ranges?: EditedRanges
+): [string, string][] {
+	const editedRanges = ranges || getEditedRanges(query, cursor);
 
 	/**
 	 * Narrow down search query when editing qualifier parts
@@ -42,18 +36,19 @@ function getEditedPartEntries(query: string, cursor: number): [string, string][]
 			return []; // Keep query as is when editing year qualifiers
 		}
 
-		const baseClass = Object.entries(QUALIFIER_KEY_BY_BASE_CLASS).find(
-			([, key]) => key === qualifierKey
-		)?.[0];
+		const keyFromAlias = qualifierKeyFromAlias(qualifierKey);
+		const baseClass = qualifierSearchTypeFromKey(keyFromAlias || qualifierKey);
+
+		console.log('baseclass', baseClass, 'from alias', keyFromAlias, 'key', qualifierKey);
 
 		if (baseClass) {
 			return [
-				['_qualifier', `"rdf:type":${baseClass} ${qualifierValue}`],
+				['_q', `${getTypeQualifier(baseClass)} ${qualifierValue}`],
 				['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once
 			];
 		}
 
-		return [['_qualifier', qualifierKey + qualifierOperator + qualifierValue]];
+		return [['_q', qualifierKey + qualifierOperator + qualifierValue]]; // does this make sense??
 	}
 
 	/**
