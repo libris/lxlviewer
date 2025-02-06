@@ -1,8 +1,10 @@
 import getEditedRanges, { type EditedRanges } from './getEditedRanges.js';
 import {
+	DEFAULT_SUPERSEARCH_TYPES,
 	qualifierKeyFromAlias,
 	qualifierSearchTypeFromKey,
-	getTypeQualifier
+	getTypeQualifier,
+	queryIncludesType
 } from './qualifierTypes.js';
 
 const SKIP_QUALIFIERS = ['år'];
@@ -18,9 +20,7 @@ function getEditedPartEntries(
 ): [string, string][] {
 	const editedRanges = ranges || getEditedRanges(query, cursor);
 
-	/**
-	 * Narrow down search query when editing qualifier parts
-	 */
+	// Narrow down search query when editing qualifier parts
 	if (editedRanges.qualifierKey && editedRanges.qualifierOperator && editedRanges.qualifierValue) {
 		const qualifierKey = query.slice(editedRanges.qualifierKey.from, editedRanges.qualifierKey.to);
 		const qualifierOperator = query.slice(
@@ -39,7 +39,7 @@ function getEditedPartEntries(
 		const keyFromAlias = qualifierKeyFromAlias(qualifierKey);
 		const baseClass = qualifierSearchTypeFromKey(keyFromAlias || qualifierKey);
 
-		console.log('baseclass', baseClass, 'from alias', keyFromAlias, 'key', qualifierKey);
+		// console.log('baseclass:', baseClass, 'from alias:', keyFromAlias, 'key:', qualifierKey);
 
 		if (baseClass) {
 			return [
@@ -51,9 +51,12 @@ function getEditedPartEntries(
 		return [['_q', qualifierKey + qualifierOperator + qualifierValue]]; // does this make sense??
 	}
 
-	/**
-	 * Otherwise keep query entries as is
-	 */
+	if (!queryIncludesType(query)) {
+		// Else add default search types to _q
+		return [['_q', `${query} ${getTypeQualifier(DEFAULT_SUPERSEARCH_TYPES)}`]];
+	}
+
+	// Otherwise keep query entries as is
 	return [];
 }
 

@@ -4,11 +4,6 @@ import type { RequestHandler } from './$types.ts';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import getEditedPartEntries from './getEditedPartEntries.js';
 import getEditedRanges from './getEditedRanges.js';
-import {
-	DEFAULT_SUPERSEARCH_TYPES,
-	getTypeQualifier,
-	queryIncludesType
-} from './qualifierTypes.js';
 import { asResult } from '$lib/utils/search.js';
 import { DebugFlags } from '$lib/types/userSettings.js';
 
@@ -31,37 +26,24 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	newSearchParams.delete('cursor');
 
 	const editedRanges = _q && Number.isInteger(cursor) && getEditedRanges(_q, cursor);
-	let getFullQuery = false;
 
-	// user is editing a qualifier
-	if (editedRanges && editedRanges?.qualifierKey) {
-		getFullQuery = true;
-		// add 'corresponding' types
-		const editedPartEntries = getEditedPartEntries(_q, cursor, editedRanges);
-
-		editedPartEntries.forEach(([key, value]) => {
-			newSearchParams.set(key, value);
-		});
-	} else {
-		// ...or add default types
-		const newQ = newSearchParams.get('_q')?.toString();
-		if (!queryIncludesType(newQ)) {
-			newSearchParams.set('_q', `${newQ} ${getTypeQualifier(DEFAULT_SUPERSEARCH_TYPES)}`);
-		}
-	}
-
-	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
-	console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
+	// alter query based on edited part
+	const editedPartEntries = getEditedPartEntries(_q, cursor, editedRanges);
+	editedPartEntries.forEach(([key, value]) => newSearchParams.set(key, value));
 
 	if (locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE)) {
 		newSearchParams.set('_debug', 'esScore');
 	}
 
+	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
+	console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
+
 	const findResponse = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`);
 	const data = await findResponse.json();
 
-	if (getFullQuery) {
-		// send full query in order to get mapping labels, really only needed when a qualifier is added...
+	if (editedRanges && editedRanges?.qualifierKey) {
+		// when getting narrowed results for qualifier,
+		// we also need to send the full query to not lose all mapping labels :(
 		const fullQueryResponse = await fetch(`${env.API_URL}/find?_q=${_q?.toString()}&_limit=0`);
 		const fullQueryData = await fullQueryResponse.json();
 		data.search.mapping = [...fullQueryData.search.mapping];
