@@ -16,24 +16,27 @@ import { DebugFlags } from '$lib/types/userSettings.js';
 export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
-
 	const locale = getSupportedLocale(params?.lang);
+	let editedRanges;
 
 	const _q = url.searchParams.get('_q');
 	const cursor = parseInt(url.searchParams.get('cursor') || '0', 10);
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
-	newSearchParams.delete('cursor');
 
-	const editedRanges = _q && Number.isInteger(cursor) && getEditedRanges(_q, cursor);
+	if (_q && Number.isInteger(cursor)) {
+		editedRanges = getEditedRanges(_q, cursor);
 
-	// alter query based on edited part
-	const editedPartEntries = getEditedPartEntries(_q, cursor, editedRanges);
-	editedPartEntries.forEach(([key, value]) => newSearchParams.set(key, value));
+		// alter query based on edited part
+		const editedPartEntries = getEditedPartEntries(_q, cursor, editedRanges);
+		editedPartEntries.forEach(([key, value]) => newSearchParams.set(key, value));
+	}
 
 	if (locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE)) {
 		newSearchParams.set('_debug', 'esScore');
 	}
+
+	newSearchParams.delete('cursor');
 
 	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
 	console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));

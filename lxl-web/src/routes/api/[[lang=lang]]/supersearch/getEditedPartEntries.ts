@@ -1,18 +1,28 @@
 import getEditedRanges, { type EditedRanges } from './getEditedRanges.js';
-import {
-	DEFAULT_SUPERSEARCH_TYPES,
-	qualifierKeyFromAlias,
-	qualifierSearchTypeFromKey,
-	getTypeQualifier,
-	queryIncludesType
-} from './qualifierTypes.js';
+
+const DEFAULT_SUPERSEARCH_TYPES = ['Agent', 'Concept', 'Language', 'Work'];
+
+const QUALIFIER_KEY_FROM_ALIAS = {
+	Contributor: ['medverkande'],
+	Language: ['språk'],
+	Subject: ['ämne'],
+	Bibliography: ['bibliografi']
+};
+
+const BASE_CLASS_FROM_QUALIFIER_KEY = {
+	Agent: ['contributor'], // + subject? I.e should we also search for agents when typing 'subject:'?
+	Subject: ['subject'],
+	GenreForm: ['genreForm'],
+	Language: ['language', 'translationOf.language'],
+	Library: ['itemHeldBy'], // library??
+	Bibliography: ['bibliography']
+};
 
 const SKIP_QUALIFIERS = ['år'];
 
 /**
  * Gets the URLSearchParams entries which should be appended/replaced with new values when editing a part of a query.
  */
-
 function getEditedPartEntries(
 	query: string,
 	cursor: number,
@@ -36,14 +46,13 @@ function getEditedPartEntries(
 			return []; // Keep query as is when editing year qualifiers
 		}
 
-		const keyFromAlias = qualifierKeyFromAlias(qualifierKey);
-		const baseClass = qualifierSearchTypeFromKey(keyFromAlias || qualifierKey);
-
-		// console.log('baseclass:', baseClass, 'from alias:', keyFromAlias, 'key:', qualifierKey);
+		// Get the normalized property from a translated key/alternative query code
+		const keyFromAlias = findInMap(QUALIFIER_KEY_FROM_ALIAS, qualifierKey);
+		const baseClass = findInMap(BASE_CLASS_FROM_QUALIFIER_KEY, keyFromAlias || qualifierKey);
 
 		if (baseClass) {
 			return [
-				['_q', `${getTypeQualifier(baseClass)} ${qualifierValue}`],
+				['_q', `${qualifierValue} "rdf:type":${baseClass}`],
 				['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once
 			];
 		}
@@ -53,11 +62,28 @@ function getEditedPartEntries(
 
 	if (!queryIncludesType(query)) {
 		// Else add default search types to _q
-		return [['_q', `${query} ${getTypeQualifier(DEFAULT_SUPERSEARCH_TYPES)}`]];
+		return [['_q', `${query} "rdf:type":(${DEFAULT_SUPERSEARCH_TYPES.join(' OR ')})`]];
 	}
 
 	// Otherwise keep query entries as is
 	return [];
+}
+
+function queryIncludesType(q: string | undefined) {
+	if (q && typeof q === 'string') {
+		return !!q.match(/"rdf:type"[:=]/g);
+	}
+	return false;
+}
+
+function findInMap(map: Record<string, string[]>, k: string) {
+	if (k && typeof k === 'string') {
+		for (const [key, value] of Object.entries(map)) {
+			if (Array.isArray(value) && value.some((el) => el.toLowerCase() === k.toLowerCase())) {
+				return key;
+			}
+		}
+	}
 }
 
 export default getEditedPartEntries;
