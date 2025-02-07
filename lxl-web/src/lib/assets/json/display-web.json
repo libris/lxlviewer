@@ -404,6 +404,7 @@
 			"@id": "commaBeforeProperty-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
+				"lifeSpan",
 				"name",
 				"marc:numeration",
 				"marc:titlesAndOtherWordsAssociatedWithAName",
@@ -414,11 +415,11 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"agent-parentheses-format": {
-			"@id": "agent-parentheses-format",
+		"agent-place-format": {
+			"@id": "agent-place-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
-			"fresnel:propertyFormatDomain": ["place", "lifeSpan"],
+			"fresnel:propertyFormatDomain": ["place"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",
