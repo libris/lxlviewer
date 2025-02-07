@@ -20,8 +20,8 @@
 </script>
 
 <header class="bg-site-header" class:is-landing={isLandingPage}>
-	<nav class="header-nav grid min-h-20 items-center gap-x-8 px-4 py-0 sm:px-6">
-		<div class="home pl-4">
+	<nav class="header-nav min-h-20 items-center px-4 py-0">
+		<div class="home md:pl-4">
 			{#if !isLandingPage}
 				<a href={$page.data.base} class="flex flex-col text-primary no-underline md:flex-row">
 					<span class="text-[1.6rem] font-extrabold leading-tight md:text-[2.1rem]"> Libris</span>
@@ -39,7 +39,7 @@
 				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
 			{/if}
 		</div>
-		<div class="actions flex min-h-20 items-center justify-end pr-4">
+		<div class="actions flex min-h-20 items-center justify-end md:pr-4">
 			<div id="header-menu" class="hidden items-center md:flex">
 				<HeaderMenu />
 			</div>

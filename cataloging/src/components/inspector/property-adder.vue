@@ -282,6 +282,7 @@ export default {
               id="field-adder-input"
               type="text"
               ref="input"
+              autocomplete="off"
               class="PropertyAdderPanel-filterInput customInput mousetrap"
               :placeholder="translatePhrase('Filter by')"
               :aria-label="translatePhrase('Filter by')"

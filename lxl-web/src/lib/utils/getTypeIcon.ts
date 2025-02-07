@@ -14,6 +14,13 @@ import BiPerson from '~icons/bi/person';
 import BiSlashLg from '~icons/bi/slash-lg';
 import BiSoundWave from '~icons/bi/soundwave';
 import BiVectorPen from '~icons/bi/vector-pen';
+import BiTag from '~icons/bi/tag';
+import BiGlobe from '~icons/bi/globe';
+import BiHouseHeart from '~icons/bi/house-heart';
+import BiAlphabet from '~icons/bi/alphabet-uppercase';
+import BiGeoAlt from '~icons/bi/geo-alt';
+import BiClockHistory from '~icons/bi/clock-history';
+import BiBank from '~icons/bi/bank';
 
 const ICONS: Record<string, ConstructorOfATypedSvelteComponent> = {
 	Audio: BiSoundWave,
@@ -32,7 +39,15 @@ const ICONS: Record<string, ConstructorOfATypedSvelteComponent> = {
 	Person: BiPerson,
 	StillImage: BiCardImage,
 	Text: BiBook,
-	Work: BiSlashLg
+	Work: BiSlashLg,
+	GenreForm: BiTag,
+	Topic: BiAlphabet,
+	Geographic: BiGeoAlt,
+	Temporal: BiClockHistory,
+	Language: BiGlobe,
+	Country: BiGeoAlt,
+	Organization: BiBank,
+	Library: BiHouseHeart
 };
 
 function getTypeIcon(type: string): ConstructorOfATypedSvelteComponent | undefined {

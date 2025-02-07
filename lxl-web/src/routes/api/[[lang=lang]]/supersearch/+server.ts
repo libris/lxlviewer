@@ -1,12 +1,10 @@
 import { env } from '$env/dynamic/private';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
-import { LxlLens } from '$lib/types/display';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
-import { toString } from '$lib/utils/xl.js';
-import { displayMappings } from '$lib/utils/search.js';
-import { getTranslator } from '$lib/i18n/index.js';
 import getEditedPartEntries from './getEditedPartEntries.js';
+import { asResult } from '$lib/utils/search.js';
+import { DebugFlags } from '$lib/types/userSettings.js';
 
 /**
  * TODO:
@@ -16,8 +14,9 @@ import getEditedPartEntries from './getEditedPartEntries.js';
 
 export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const displayUtil = locals.display;
+	const vocabUtil = locals.vocab;
+
 	const locale = getSupportedLocale(params?.lang);
-	const translate = await getTranslator(locale);
 
 	const _q = url.searchParams.get('_q');
 	const cursor = parseInt(url.searchParams.get('cursor') || '0', 10);
@@ -31,24 +30,26 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 			newSearchParams.set(key, value);
 		});
 		newSearchParams.delete('cursor');
+
+		if (!_q.toString().includes('"rdf:type":') && !_q.toString().includes('"rdf:type"=')) {
+			// Add types to suggest
+			const types =
+				'"rdf:type":(Agent OR Concept OR Language OR Work) "rdf:type":(NOT ComplexSubject) ';
+			newSearchParams.set('_q', types + _q.toString());
+		}
 		console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
 		console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
 	}
+	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
 
-	const findResponse = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}`);
+	const findResponse = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}${debug}`);
 	const data = await findResponse.json();
+
+	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
 
 	return json({
 		'@id': data['@id'],
-		items: data.items?.map((item) => ({
-			'@id': item['@id'],
-			'@type': item['@type'],
-			heading: toString(displayUtil.lensAndFormat(item, LxlLens.CardHeading, locale))
-		})),
-		...(data?.search?.mapping && {
-			mapping: displayMappings(data, displayUtil, locale, translate)
-		}),
-		totalItems: data.totalItems,
-		'@context': data['@context']
+		'@context': data['@context'],
+		...searchResult
 	});
 };
