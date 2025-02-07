@@ -34,7 +34,7 @@
 			[
 				boolean, // expanded
 				Snippet, // inputRowSnippet
-				(cellIndex: number) => string, // getCellId
+				(cellIndex: number) => string | undefined, // getCellId
 				(cellIndex: number) => boolean, // isFocusedCell
 				(event: MouseEvent) => void, // onclickSubmit
 				(event: MouseEvent) => void, // onclickClear
@@ -256,7 +256,6 @@
 				`${id}-item-${activeRowIndex}x${activeColIndex}`
 			);
 
-			console.log('acitivevev', activeDecendant);
 			/* Fire click event if item cell is focused */
 			if (activeDecendant) {
 				activeDecendant.click();
@@ -336,11 +335,6 @@
 						event.preventDefault();
 						if (event.shiftKey) {
 							const closestBefore = getColIndexBefore(activeRowIndex, activeColIndex);
-							/*
-							if (typeof closestBefore !== 'number' && activeRowIndex == 0) {
-								activeColIndex = -1;
-							}
-								*/
 							if (typeof closestBefore !== 'number' && activeRowIndex > 0) {
 								activeRowIndex = Math.max(0, activeRowIndex - 1);
 								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex).at(-1)!.id);
@@ -480,8 +474,8 @@
 		{@render inputRow?.(
 			false,
 			collapsedInputSnippet,
-			(colIndex: number) => `${id}-item-0x${colIndex}`,
-			(colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex,
+			() => undefined,
+			() => false,
 			handleClickSubmit,
 			handleReset,
 			hideExpandedSearch

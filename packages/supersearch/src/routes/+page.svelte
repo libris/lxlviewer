@@ -9,9 +9,9 @@
 
 	let isLoading: boolean | undefined = $state();
 	let hasData: boolean | undefined = $state();
-	let value1 = $state('');
-	let value2 = $state('');
+	let value = $state('');
 	let placeholder = $state('Search');
+	let useFormAttribute = $state(false);
 
 	function handlePaginationQuery(searchParams: URLSearchParams, prevData: JSONValue) {
 		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
@@ -30,18 +30,18 @@
 			...rest,
 			items: items.map((item) => ({
 				...item,
-				heading: `${item.heading} for "${value1}"`
+				heading: `${item.heading} for "${value}"`
 			}))
 		};
 	}
 </script>
 
 <form action="test1">
-	<fieldset data-testid="test1">
-		<legend>Supersearch inside <code>&lt;form&gt;</code> element</legend>
+	<fieldset>
+		<legend>Supersearch component</legend>
 		<SuperSearch
 			name="q"
-			bind:value={value1}
+			bind:value
 			bind:isLoading
 			bind:hasData
 			{placeholder}
@@ -59,6 +59,7 @@
 			defaultRow={1}
 			defaultInputCol={-1}
 			defaultResultItemCol={0}
+			form={useFormAttribute ? 'form-outside' : undefined}
 		>
 			{#snippet inputRow(
 				expanded,
@@ -84,7 +85,7 @@
 				<div class="supersearch-input">
 					{@render input()}
 				</div>
-				{#if value1}
+				{#if value}
 					<button
 						type="reset"
 						aria-label="Clear"
@@ -161,41 +162,16 @@
 	</fieldset>
 </form>
 
-<form>
-	<fieldset data-testid="test2">
-		<legend>Supersearch using <code>form</code> attribute</legend>
-		<SuperSearch
-			id="supersearch-using-form-attribute"
-			name="q"
-			bind:value={value2}
-			{placeholder}
-			form="form-outside"
-			endpoint="/api/find"
-			queryFn={(query) =>
-				new URLSearchParams({
-					_q: query,
-					_limit: '10'
-				})}
-			paginationQueryFn={handlePaginationQuery}
-			language={lxlQuery}
-			extensions={[lxlQualifierPlugin()]}
-			comboboxAriaLabel="Search"
-			defaultRow={1}
-		>
-			{#snippet resultItemRow(item, getCellId, isFocusedCell, rowIndex)}
-				<div class="result-item" data-testid="result-item" role="gridcell">
-					<button type="button" id={getCellId(0)} class:focused-cell={isFocusedCell(0)}>
-						<h2>{item.heading} {rowIndex}</h2>
-					</button>
-				</div>
-			{/snippet}
-		</SuperSearch>
-	</fieldset>
-</form>
-
 <form action="test2" id="form-outside"></form>
 
-<label>Placeholder:<input type="text" bind:value={placeholder} /></label>
+<fieldset>
+	<legend>Options</legend>
+	<label>Placeholder:<input type="text" bind:value={placeholder} /></label>
+	<label
+		><input type="checkbox" bind:checked={useFormAttribute} data-testid="use-form-attribute" />
+		Use form attribute
+	</label>
+</fieldset>
 
 <style>
 	:global(.supersearch-input) {
