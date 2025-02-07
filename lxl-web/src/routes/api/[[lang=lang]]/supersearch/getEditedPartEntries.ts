@@ -18,7 +18,7 @@ const BASE_CLASS_FROM_QUALIFIER_KEY = {
 	Bibliography: ['bibliography']
 };
 
-const SKIP_QUALIFIERS = ['år'];
+const SKIP_QUALIFIERS = ['yearPublished', 'år'];
 
 /**
  * Gets the URLSearchParams entries which should be appended/replaced with new values when editing a part of a query.
@@ -42,22 +42,22 @@ function getEditedPartEntries(
 			editedRanges.qualifierValue.to
 		);
 
-		if (SKIP_QUALIFIERS.includes(qualifierKey.toLowerCase())) {
-			return []; // Keep query as is when editing year qualifiers
+		// Don't narrow down year qualifiers
+		const skipQualifier = SKIP_QUALIFIERS.includes(qualifierKey.toLowerCase());
+		if (!skipQualifier) {
+			// Get the normalized property from a translated key/alternative query code
+			const keyFromAlias = findInMap(QUALIFIER_KEY_FROM_ALIAS, qualifierKey);
+			const baseClass = findInMap(BASE_CLASS_FROM_QUALIFIER_KEY, keyFromAlias || qualifierKey);
+
+			if (baseClass) {
+				return [
+					['_q', `${qualifierValue} "rdf:type":${baseClass}`],
+					['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once
+				];
+			}
+
+			return [['_q', qualifierKey + qualifierOperator + qualifierValue]]; // does this make sense??
 		}
-
-		// Get the normalized property from a translated key/alternative query code
-		const keyFromAlias = findInMap(QUALIFIER_KEY_FROM_ALIAS, qualifierKey);
-		const baseClass = findInMap(BASE_CLASS_FROM_QUALIFIER_KEY, keyFromAlias || qualifierKey);
-
-		if (baseClass) {
-			return [
-				['_q', `${qualifierValue} "rdf:type":${baseClass}`],
-				['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once
-			];
-		}
-
-		return [['_q', qualifierKey + qualifierOperator + qualifierValue]]; // does this make sense??
 	}
 
 	if (!queryIncludesType(query)) {
