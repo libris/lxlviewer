@@ -217,6 +217,20 @@
 						"hasNote",
 						"uri"
 					]
+				},
+				"Person": {
+					"@id": "Person-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Person",
+					"showProperties": [
+						"givenName",
+						"familyName",
+						"name",
+						"marc:numeration",
+						"lifeSpan",
+						"marc:titlesAndOtherWordsAssociatedWithAName",
+						"fullerFormOfName"
+					]
 				}
 			}
 		},
@@ -390,12 +404,8 @@
 			"@id": "commaBeforeProperty-format",
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
-				"lifeSpan",
-				"familyName",
-				"givenName",
 				"name",
 				"marc:numeration",
-				"lifeSpan",
 				"marc:titlesAndOtherWordsAssociatedWithAName",
 				"fullerFormOfName"
 			],
@@ -404,11 +414,11 @@
 				"fresnel:contentFirst": ""
 			}
 		},
-		"agent-place-format": {
-			"@id": "agent-place-format",
+		"agent-parentheses-format": {
+			"@id": "agent-parentheses-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
-			"fresnel:propertyFormatDomain": ["place"],
+			"fresnel:propertyFormatDomain": ["place", "lifeSpan"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " (",
 				"fresnel:contentFirst": "(",
@@ -420,7 +430,7 @@
 			"@id": "agent-no-separator-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
-			"fresnel:propertyFormatDomain": ["marc:subordinateUnit"],
+			"fresnel:propertyFormatDomain": ["familyName", "givenName", "marc:subordinateUnit"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
