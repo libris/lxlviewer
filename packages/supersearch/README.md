@@ -93,7 +93,7 @@ Each interactable cell element (button or links) should have the `role="gridcell
 
 ### Persistent result item
 
-A custom persistent result item can be defined as [Snippet](https://svelte.dev/docs/svelte/snippet) passed as a `persistentItemRow` prop. The persistent result item is shown over the result item as soon as the user enters a value in the input field (in contrast to the result items which are shown after the search request has finished).
+A custom persistent result item can be defined as [Snippet](https://svelte.dev/docs/svelte/snippet) passed as a `persistentItemRow` prop. The persistent result item is placed before the result items and is shown directly after the user enters a value in the input field (in contrast to the result items which are shown after the search request has finished).
 
 The follwing named snippet params are available:
 
