@@ -554,7 +554,7 @@
 						</button>
 					{/if}
 				{:else}
-					<div>Start content here</div>
+					<div><!-- Start content here --></div>
 				{/if}
 			</nav>
 		</div>
