@@ -55,7 +55,9 @@ export class VocabUtil {
 	}
 
 	getDefinition(name: ClassName | PropertyName): FramedData {
-		return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
+		if (typeof name === 'string') {
+			return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
+		}
 	}
 
 	getInverseProperty(name: PropertyName): PropertyName | undefined {
