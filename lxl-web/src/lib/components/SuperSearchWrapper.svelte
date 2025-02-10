@@ -148,14 +148,16 @@
 			</div>
 		{/snippet}
 		{#snippet persistentItemRow({ getCellId, isFocusedCell })}
-			<div class="flex min-h-11 w-full items-stretch">
-				<a
-					href={`/test1#${getCellId(0)}`}
+			<div class="flex min-h-12 w-full items-stretch border-b border-b-primary/16">
+				<button
+					type="submit"
 					role="gridcell"
 					id={getCellId(0)}
 					class="flex flex-1 items-center px-4 no-underline text-3-cond-bold hover:bg-main"
-					class:focused-cell={isFocusedCell(0)}>{$page.data.t('search.showAllResults')}</a
-				>
+					class:focused-cell={isFocusedCell(0)}
+					enterkeyhint="search"
+					>{$page.data.t('search.showAllResults')}
+				</button>
 			</div>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
