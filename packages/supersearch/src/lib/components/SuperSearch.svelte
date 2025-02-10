@@ -218,7 +218,7 @@
 		}
 	}
 
-	function showExpandedSearch() {
+	export function showExpandedSearch() {
 		expandedEditorView?.dispatch({
 			selection: collapsedEditorView?.state.selection.main
 		});
@@ -228,16 +228,16 @@
 		expanded = true;
 	}
 
+	export function hideExpandedSearch() {
+		dialog?.close();
+	}
+
 	function handleCloseExpandedSearch() {
 		collapsedEditorView?.dispatch({
 			selection: expandedEditorView?.state.selection.main
 		});
 		collapsedEditorView?.focus();
 		expanded = false;
-	}
-
-	function hideExpandedSearch() {
-		dialog?.close();
 	}
 
 	function submitClosestForm() {

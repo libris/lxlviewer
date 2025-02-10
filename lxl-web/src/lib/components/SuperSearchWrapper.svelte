@@ -19,6 +19,7 @@
 	let { placeholder = '' }: Props = $props();
 
 	let q = $state($page.params.fnurgel ? '' : $page.url.searchParams.get('_q')?.trim() || '');
+	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 
 	let params = getSortedSearchParams(addDefaultSearchParams($page.url.searchParams));
 	// Always reset these params on new search
@@ -34,6 +35,7 @@
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
 			q = $page.params.fnurgel ? '' : new URL(to.url).searchParams.get('_q')?.trim() || '';
+			superSearch?.hideExpandedSearch();
 		}
 	});
 
@@ -74,6 +76,7 @@
 <form class="relative w-full" action="find" onsubmit={handleSubmit}>
 	<SuperSearch
 		name="_q"
+		bind:this={superSearch}
 		bind:value={q}
 		language={lxlQuery}
 		{placeholder}
