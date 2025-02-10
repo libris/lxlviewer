@@ -123,9 +123,9 @@ test('syncs collapsed and expanded editor views', async ({ context, page }) => {
 	await page.getByRole('dialog').getByRole('combobox').selectText();
 	await page.getByRole('dialog').getByRole('combobox').press('Escape');
 	await expect(page.getByRole('dialog')).not.toBeVisible();
-	await page.keyboard.press('ControlOrMeta+c');
-	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
-	expect(clipboardContent, 'text selection should be synced').toBe('Hello world');
+	await expect
+		.poll(() => page.evaluate(() => window.getSelection()?.toString()))
+		.toBe('Hello world');
 });
 
 test('fires click events on focused cells', async ({ page }) => {
