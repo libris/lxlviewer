@@ -95,7 +95,8 @@ export default {
 		hideDetails: 'Visa mindre',
 		occursAs: 'förekommer som',
 		relatedSearchLabel: 'Sök i resultaten',
-		didYouMean: 'Menade du'
+		didYouMean: 'Menade du',
+		showAllResults: 'Visa alla resultat'
 	},
 	sort: {
 		sort: 'Sortera',
