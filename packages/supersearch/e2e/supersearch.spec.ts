@@ -115,19 +115,17 @@ test('supports keyboard navigation between rows and columns/cells', async ({ pag
 	await expect(page.locator('#supersearch-item-1x0')).toHaveClass(/focused-cell/);
 });
 
-test('syncs collapsed and expanded editor views', async ({ page }) => {
+test('syncs collapsed and expanded editor views', async ({ context, page }) => {
+	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
 	await page.getByRole('combobox').click();
-	await page.getByRole('dialog').getByRole('combobox').fill('world');
-	await expect(await page.getByRole('dialog').getByRole('combobox')).toHaveText('world');
+	await page.getByRole('dialog').getByRole('combobox').fill('Hello world');
+	await expect(await page.getByRole('dialog').getByRole('combobox')).toHaveText('Hello world');
 	await page.getByRole('dialog').getByRole('combobox').selectText();
 	await page.getByRole('dialog').getByRole('combobox').press('Escape');
 	await expect(page.getByRole('dialog')).not.toBeVisible();
-	await page.getByRole('combobox').press('ArrowLeft');
-	await page.getByRole('combobox').pressSequentially('Hello ');
-	await expect(
-		page.getByRole('dialog').getByRole('combobox'),
-		'text selection should be synced'
-	).toHaveText('Hello world');
+	await page.keyboard.press('ControlOrMeta+c');
+	const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
+	expect(clipboardContent, 'text selection should be synced').toBe('Hello world');
 });
 
 test('fires click events on focused cells', async ({ page }) => {

@@ -61,15 +61,15 @@
 			defaultResultItemCol={0}
 			form={useFormAttribute ? 'form-outside' : undefined}
 		>
-			{#snippet inputRow(
+			{#snippet inputRow({
 				expanded,
-				input,
+				inputField,
 				getCellId,
 				isFocusedCell,
 				onclickSubmit,
 				onclickClear,
 				onclickClose
-			)}
+			})}
 				{#if expanded}
 					<button
 						type="button"
@@ -83,7 +83,7 @@
 					</button>
 				{/if}
 				<div class="supersearch-input">
-					{@render input()}
+					{@render inputField()}
 				</div>
 				{#if value}
 					<button
@@ -108,7 +108,7 @@
 					Search
 				</button>
 			{/snippet}
-			{#snippet persistentItemRow(getCellId, isFocusedCell)}
+			{#snippet persistentItemRow({ getCellId, isFocusedCell })}
 				<div class="persistent-item" data-testid="persistent-item">
 					<a
 						href={`/test1#${getCellId(0)}`}
@@ -118,7 +118,7 @@
 					>
 				</div>
 			{/snippet}
-			{#snippet resultItemRow(item, getCellId, isFocusedCell, rowIndex)}
+			{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell, rowIndex })}
 				<div class="result-item" data-testid="result-item">
 					<div role="gridcell">
 						<a
@@ -126,7 +126,7 @@
 							id={getCellId(0)}
 							class:focused-cell={isFocusedCell(0)}
 						>
-							<h2>{item.heading}</h2>
+							<h2>{resultItem.heading}</h2>
 						</a>
 					</div>
 					{#if (rowIndex! > 1 && rowIndex! <= 5) || rowIndex == 10}

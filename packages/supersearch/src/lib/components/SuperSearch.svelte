@@ -32,19 +32,30 @@
 		comboboxAriaLabel?: string;
 		inputRow?: Snippet<
 			[
-				boolean, // expanded
-				Snippet, // inputRowSnippet
-				(cellIndex: number) => string | undefined, // getCellId
-				(cellIndex: number) => boolean, // isFocusedCell
-				(event: MouseEvent) => void, // onclickSubmit
-				(event: MouseEvent) => void, // onclickClear
-				(event: MouseEvent) => void // onclickClose
+				{
+					expanded: boolean;
+					inputField: Snippet;
+					getCellId: (cellIndex: number) => string | undefined;
+					isFocusedCell: (cellIndex: number) => boolean;
+					onclickSubmit: (event: MouseEvent) => void;
+					onclickClear: (event: MouseEvent) => void;
+					onclickClose: (event: MouseEvent) => void;
+				}
 			]
 		>;
 		resultItemRow?: Snippet<
-			[ResultItem, (cellIndex: number) => string, (cellIndex: number) => boolean, number]
+			[
+				{
+					resultItem: ResultItem;
+					getCellId: (cellIndex: number) => string;
+					isFocusedCell: (cellIndex: number) => boolean;
+					rowIndex: number;
+				}
+			]
 		>;
-		persistentItemRow?: Snippet<[(cellIndex: number) => string, (cellIndex: number) => boolean]>;
+		persistentItemRow?: Snippet<
+			[{ getCellId: (cellIndex: number) => string; isFocusedCell: (cellIndex: number) => boolean }]
+		>;
 		loadingIndicator?: Snippet;
 		defaultRow?: number;
 		defaultInputCol?: number;
@@ -68,7 +79,7 @@
 		transformFn,
 		extensions = [],
 		comboboxAriaLabel,
-		inputRow,
+		inputRow = fallbackInputRow,
 		resultItemRow = fallbackResultItemRow,
 		persistentItemRow,
 		loadingIndicator,
@@ -444,8 +455,12 @@
 	});
 </script>
 
-{#snippet fallbackResultItemRow(item: ResultItem)}
-	{JSON.stringify(item)}
+{#snippet fallbackResultItemRow({ resultItem }: { resultItem: ResultItem })}
+	{JSON.stringify(resultItem)}
+{/snippet}
+
+{#snippet fallbackInputRow({ inputField }: { inputField: Snippet<[]> })}
+	{@render inputField()}
 {/snippet}
 
 {#snippet collapsedInputSnippet()}
@@ -471,15 +486,15 @@
 
 <div role="presentation" onkeydown={handleCollapsedKeyDown}>
 	<div class="supersearch-combobox">
-		{@render inputRow?.(
-			false,
-			collapsedInputSnippet,
-			() => undefined,
-			() => false,
-			handleClickSubmit,
-			handleReset,
-			hideExpandedSearch
-		)}
+		{@render inputRow?.({
+			expanded: false,
+			inputField: collapsedInputSnippet,
+			getCellId: () => undefined,
+			isFocusedCell: () => false,
+			onclickSubmit: handleClickSubmit,
+			onclickClear: handleReset,
+			onclickClose: hideExpandedSearch
+		})}
 		<textarea {value} {name} {form} hidden readonly></textarea>
 	</div>
 </div>
@@ -492,24 +507,25 @@
 	<div class="supersearch-dialog-wrapper" role="presentation" onkeydown={handleExpandedKeyDown}>
 		<div class="supersearch-dialog-content" role="grid">
 			<div class="supersearch-combobox" role="row">
-				{@render inputRow?.(
-					true,
-					expandedInputSnippet,
-					(colIndex: number) => `${id}-item-0x${colIndex}`,
-					(colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex,
-					handleClickSubmit,
-					handleReset,
-					hideExpandedSearch
-				)}
+				{@render inputRow?.({
+					expanded: true,
+					inputField: expandedInputSnippet,
+					getCellId: (colIndex: number) => `${id}-item-0x${colIndex}`,
+					isFocusedCell: (colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex,
+					onclickSubmit: handleClickSubmit,
+					onclickClear: handleReset,
+					onclickClose: hideExpandedSearch
+				})}
 			</div>
 			<nav class="supersearch-suggestions">
 				{#if value.length}
 					{#if persistentItemRow}
 						<div role="row" class:focused={activeRowIndex === 1}>
-							{@render persistentItemRow(
-								(colIndex: number) => `${id}-item-1x${colIndex}`,
-								(colIndex: number) => activeRowIndex === 1 && colIndex === activeColIndex
-							)}
+							{@render persistentItemRow({
+								getCellId: (colIndex: number) => `${id}-item-1x${colIndex}`,
+								isFocusedCell: (colIndex: number) =>
+									activeRowIndex === 1 && colIndex === activeColIndex
+							})}
 						</div>
 					{/if}
 					{#if search.data}
@@ -517,15 +533,16 @@
 							(Array.isArray(search.paginatedData) &&
 								search.paginatedData.map((page) => page.items).flat()) ||
 							search.data?.items}
-						{#each resultItemRows as item, index}
+						{#each resultItemRows as resultItem, index}
 							{@const rowIndex = persistentItemRow ? index + 2 : index + 1}
 							<div role="row" class:focused={activeRowIndex === rowIndex}>
-								{@render resultItemRow?.(
-									item,
-									(colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-									(colIndex: number) => activeRowIndex === rowIndex && colIndex === activeColIndex,
+								{@render resultItemRow?.({
+									resultItem,
+									getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+									isFocusedCell: (colIndex: number) =>
+										activeRowIndex === rowIndex && colIndex === activeColIndex,
 									rowIndex
-								)}
+								})}
 							</div>
 						{/each}
 					{/if}
