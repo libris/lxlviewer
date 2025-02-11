@@ -157,7 +157,7 @@ test('fetches and displays paginated results', async ({ page }) => {
 });
 
 test('submits form when pressing submit action', async ({ page }) => {
-	await page.getByRole('button', { name: /search/i }).click();
+	await page.locator('[type=submit]').first().click();
 	await expect(page, 'submit action should only be triggered if there is a value').toHaveURL('/');
 	await page.getByRole('combobox').fill('hello world');
 	await page.getByRole('dialog').locator('[type=submit]').click();
