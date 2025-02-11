@@ -19,6 +19,7 @@
 	let { placeholder = '' }: Props = $props();
 
 	let q = $state($page.params.fnurgel ? '' : $page.url.searchParams.get('_q')?.trim() || '');
+	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 
 	let params = getSortedSearchParams(addDefaultSearchParams($page.url.searchParams));
 	// Always reset these params on new search
@@ -34,6 +35,7 @@
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
 			q = $page.params.fnurgel ? '' : new URL(to.url).searchParams.get('_q')?.trim() || '';
+			superSearch?.hideExpandedSearch();
 		}
 	});
 
@@ -74,6 +76,7 @@
 <form class="relative w-full" action="find" onsubmit={handleSubmit}>
 	<SuperSearch
 		name="_q"
+		bind:this={superSearch}
 		bind:value={q}
 		language={lxlQuery}
 		{placeholder}
@@ -90,46 +93,79 @@
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
 		comboboxAriaLabel={$page.data.t('search.search')}
-		defaultRow={-1}
+		defaultRow={1}
+		defaultInputCol={2}
 	>
 		{#snippet loadingIndicator()}
 			<div class="flex min-h-11 w-full items-center px-4 text-left">
 				{$page.data.t('search.loading')}
 			</div>
 		{/snippet}
-		{#snippet submitAction(onclick)}
-			<button
-				type="submit"
-				class="submit-action button-primary h-full w-full rounded-s-none"
-				enterkeyhint="search"
-				{onclick}
-			>
-				{$page.data.t('search.search')}
-			</button>
+		{#snippet inputRow({
+			expanded,
+			inputField,
+			getCellId,
+			isFocusedCell,
+			onclickSubmit,
+			onclickClear,
+			onclickClose
+		})}
+			<div class="supersearch-input">
+				{#if expanded}
+					<button
+						type="button"
+						id={getCellId(0)}
+						class:focused-cell={isFocusedCell(0)}
+						aria-label={$page.data.t('general.close')}
+						class="button-ghost min-h-12 min-w-11 rounded-none border-none hover:bg-main sm:hidden"
+						onclick={onclickClose}
+					>
+						<BiArrowLeft />
+					</button>
+				{/if}
+				<div class="flex-1">
+					{@render inputField()}
+				</div>
+				{#if q}
+					<button
+						type="reset"
+						id={getCellId(1)}
+						class:focused-cell={isFocusedCell(1)}
+						class="button-ghost min-h-12 rounded-none border-none hover:bg-main"
+						aria-label={$page.data.t('search.clearFilters')}
+						onclick={onclickClear}
+					>
+						<BiXLg />
+					</button>
+				{/if}
+				<button
+					type="submit"
+					id={getCellId(2)}
+					class:focused-cell={isFocusedCell(2)}
+					class="submit-action button-primary min-h-12 rounded-none"
+					enterkeyhint="search"
+					onclick={onclickSubmit}
+				>
+					{$page.data.t('search.search')}
+				</button>
+			</div>
 		{/snippet}
-		{#snippet closeAction(onclick)}
-			<button
-				type="button"
-				aria-label={$page.data.t('general.close')}
-				class="button-ghost h-full rounded-e-none"
-				{onclick}
-			>
-				<BiArrowLeft />
-			</button>
+		{#snippet persistentItemRow({ getCellId, isFocusedCell })}
+			<div class="flex min-h-12 w-full items-stretch border-b border-b-primary/16">
+				<button
+					type="submit"
+					role="gridcell"
+					id={getCellId(0)}
+					class="flex flex-1 items-center px-4 no-underline text-3-cond-bold hover:bg-main"
+					class:focused-cell={isFocusedCell(0)}
+					enterkeyhint="search"
+					>{$page.data.t('search.showAllResults')}
+				</button>
+			</div>
 		{/snippet}
-		{#snippet clearAction(onclick)}
-			<button
-				type="reset"
-				aria-label={$page.data.t('search.clearFilters')}
-				class="icon-button hover:bg-main"
-				{onclick}
-			>
-				<BiXLg />
-			</button>
-		{/snippet}
-		{#snippet resultItem(item, getCellId, isFocusedCell)}
-			{#if item}
-				<SuggestionCard {item} cellId={getCellId(0)} isFocused={isFocusedCell(0)} />
+		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
+			{#if resultItem}
+				<SuggestionCard item={resultItem} cellId={getCellId(0)} isFocused={isFocusedCell(0)} />
 			{/if}
 		{/snippet}
 	</SuperSearch>
@@ -141,12 +177,8 @@
 </form>
 
 <style lang="postcss">
-	:global(.supersearch-combobox) {
-		@apply border-0;
-	}
-
-	:global(.supersearch-input) {
-		@apply relative min-h-12 w-full cursor-text rounded-md rounded-e-none bg-cards px-2;
+	.supersearch-input {
+		@apply relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md bg-cards focus-within:outline focus-within:outline-2 focus-within:outline-accent-dark/32;
 	}
 
 	/* dialog */
@@ -171,11 +203,11 @@
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply sticky top-0 z-20 border-b border-b-primary/16 bg-cards p-4;
+		@apply sticky top-0 z-20 items-stretch border-b border-b-primary/16 bg-cards p-4;
 	}
 
 	:global(.supersearch-dialog .supersearch-input) {
-		@apply rounded-none sm:rounded-s-md;
+		@apply overflow-hidden rounded-md sm:px-0;
 		box-shadow: inset 0 0 0 1px rgba(105, 65, 25, 0.24);
 	}
 
@@ -192,28 +224,38 @@
 		@apply flex min-h-11 w-full items-center px-4 text-left hover:bg-main;
 	}
 
-	:global(.supersearch-clear-action) {
-		@apply ml-1 flex items-center;
-
-		& button {
-			@apply h-6 w-6;
-		}
-	}
-
 	/* codemirror elements */
 
+	:global(.codemirror-container) {
+		@apply block flex-1;
+	}
+
 	:global(.codemirror-container .cm-scroller) {
-		@apply min-h-12 font-sans text-3-regular;
+		@apply min-h-12 font-sans outline-none text-3-regular;
 		scrollbar-width: none;
 	}
 
 	:global(.supersearch-input .cm-line) {
+		@apply px-4;
 		min-height: 28px;
 		line-height: 28px;
+	}
+
+	:global(.supersearch-input .cm-focused) {
+		outline: none;
 	}
 
 	:global(.codemirror-container .cm-content) {
 		padding-top: 0.6125rem;
 		padding-bottom: 0.6125rem;
+		outline: none;
+	}
+
+	.focused-cell {
+		@apply bg-site-header/40;
+	}
+
+	:global(.button-primary.focused-cell) {
+		@apply before:opacity-100;
 	}
 </style>

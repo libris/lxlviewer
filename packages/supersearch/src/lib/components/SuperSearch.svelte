@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
-	import { MediaQuery } from 'svelte/reactivity';
 	import { BROWSER } from 'esm-env';
 	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
@@ -31,16 +30,36 @@
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
 		comboboxAriaLabel?: string;
-		submitAction?: Snippet<[(event: MouseEvent) => void]>;
-		clearAction?: Snippet<[() => void]>;
-		closeAction?: Snippet<[() => void]>;
-		closeActionMediaQueryString?: string;
-		resultItem?: Snippet<
-			[ResultItem, (cellIndex: number) => string, (cellIndex: number) => boolean, number]
+		inputRow?: Snippet<
+			[
+				{
+					expanded: boolean;
+					inputField: Snippet;
+					getCellId: (cellIndex: number) => string | undefined;
+					isFocusedCell: (cellIndex: number) => boolean;
+					onclickSubmit: (event: MouseEvent) => void;
+					onclickClear: (event: MouseEvent) => void;
+					onclickClose: (event: MouseEvent) => void;
+				}
+			]
 		>;
-		persistentItem?: Snippet<[(cellIndex: number) => string, (cellIndex: number) => boolean]>;
+		resultItemRow?: Snippet<
+			[
+				{
+					resultItem: ResultItem;
+					getCellId: (cellIndex: number) => string;
+					isFocusedCell: (cellIndex: number) => boolean;
+					rowIndex: number;
+				}
+			]
+		>;
+		persistentItemRow?: Snippet<
+			[{ getCellId: (cellIndex: number) => string; isFocusedCell: (cellIndex: number) => boolean }]
+		>;
 		loadingIndicator?: Snippet;
 		defaultRow?: number;
+		defaultInputCol?: number;
+		defaultResultItemCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
 		isLoading?: boolean;
@@ -60,15 +79,14 @@
 		transformFn,
 		extensions = [],
 		comboboxAriaLabel,
-		submitAction: submitActionSnippet,
-		clearAction: clearActionSnippet,
-		closeAction: closeActionSnippet,
-		closeActionMediaQueryString = 'max-width: 640px', // defines when the back/close action should be visible (only shown when expanded)
-		resultItem = fallbackResultItem,
-		persistentItem,
+		inputRow = fallbackInputRow,
+		resultItemRow = fallbackResultItemRow,
+		persistentItemRow,
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		defaultRow = 0,
+		defaultInputCol = -1,
+		defaultResultItemCol = 0,
 		debouncedWait = 300,
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable() // should be treated as readonly
@@ -100,7 +118,6 @@
 	let prevSearchDataId: string | undefined;
 	const sendMessage = StateEffect.define<{ message: string }>({});
 	const newDataMessage = { effects: sendMessage.of({ message: messages.NEW_DATA }) };
-	const closeActionMediaQuery = new MediaQuery(closeActionMediaQueryString);
 
 	$effect(() => {
 		if (search.data && search.data?.['@id'] !== prevSearchDataId) {
@@ -172,14 +189,23 @@
 		if (!dialog?.open) showExpandedSearch();
 	}
 
+	function setDefaultRowAndCols() {
+		activeRowIndex = defaultRow;
+
+		if (activeRowIndex > 0) {
+			activeColIndex = defaultResultItemCol;
+		} else {
+			activeColIndex = defaultInputCol;
+		}
+	}
+
 	function handleChangeCodeMirror(event: ChangeCodeMirrorEvent) {
 		if (!dialog?.open && value !== event.value) {
 			showExpandedSearch();
 		}
 		value = event.value;
 		cursor = event.cursor;
-		activeRowIndex = defaultRow;
-		activeColIndex = 0;
+		setDefaultRowAndCols();
 
 		if (value.trim() && value.trim() !== prevValue.trim()) {
 			prevValue = value;
@@ -192,24 +218,26 @@
 		}
 	}
 
-	function showExpandedSearch() {
+	export function showExpandedSearch() {
 		expandedEditorView?.dispatch({
 			selection: collapsedEditorView?.state.selection.main
 		});
 		dialog?.showModal();
 		expandedEditorView?.focus();
+		setDefaultRowAndCols();
 		expanded = true;
 	}
 
-	function hideExpandedSearch() {
+	export function hideExpandedSearch() {
+		dialog?.close();
+	}
+
+	function handleCloseExpandedSearch() {
 		collapsedEditorView?.dispatch({
 			selection: expandedEditorView?.state.selection.main
 		});
-		dialog?.close();
 		collapsedEditorView?.focus();
 		expanded = false;
-		activeRowIndex = defaultRow;
-		activeColIndex = 0;
 	}
 
 	function submitClosestForm() {
@@ -235,10 +263,13 @@
 		}
 
 		if (event.key === 'Enter') {
+			const activeDecendant = document?.getElementById(
+				`${id}-item-${activeRowIndex}x${activeColIndex}`
+			);
+
 			/* Fire click event if item cell is focused */
-			if (activeRowIndex >= 0 && search.data) {
-				document?.getElementById(`${id}-item-${activeRowIndex}x${activeColIndex}`)?.click();
-				hideExpandedSearch();
+			if (activeDecendant) {
+				activeDecendant.click();
 			} else if (value.length) {
 				submitClosestForm();
 			}
@@ -254,64 +285,83 @@
 			event.key === 'ArrowRight' ||
 			event.key === 'Tab'
 		) {
-			const rows = Array.from(
-				dialog?.querySelectorAll(':scope nav:first-of-type [role=row]') || []
-			);
+			const rows = Array.from(dialog?.querySelectorAll(':scope [role=row]') || []);
+			const getColsInRow = (rowIndex: number) =>
+				Array.from(rows[rowIndex].querySelectorAll(':scope button, :scope a')).filter((colItem) => {
+					if (typeof colItem?.checkVisibility === 'function') {
+						return colItem.checkVisibility();
+					}
+					return true; // always return true as a fallback if checkVisiblity isn't available
+				});
 
-			const getColsInActiveRow = (activeRowIndex: number) =>
-				rows[activeRowIndex].querySelectorAll(':scope button, :scope a');
+			const getColIndexFromId = (itemId: string) => {
+				const colRegex = new RegExp(`${id}-item-\\d+x(\\d+)`);
+				return Number(itemId.match(colRegex)?.[1]);
+			};
+
+			const getColIndexBefore = (rowIndex: number, colIndex: number) => {
+				if (rowIndex < rows.length) {
+					const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
+					return colIndeces[colIndeces.indexOf(colIndex) - 1];
+				}
+				return -1;
+			};
+
+			const getColIndexAfter = (rowIndex: number, colIndex: number) => {
+				if (rowIndex < rows.length) {
+					const colIndeces = getColsInRow(rowIndex).map((colItem) => getColIndexFromId(colItem.id));
+					return colIndeces[colIndeces.indexOf(colIndex) + 1];
+				}
+				return -1;
+			};
 
 			if (rows.length) {
 				switch (event.key) {
 					case 'ArrowUp':
-						if (activeRowIndex > 0) {
+						if (activeRowIndex > 1) {
 							activeRowIndex--;
-							activeColIndex = Math.min(
-								activeColIndex,
-								getColsInActiveRow(activeRowIndex).length - 1
-							);
+							activeColIndex = Math.min(activeColIndex, getColsInRow(activeRowIndex).length - 1);
 						}
 						break;
 					case 'ArrowDown':
-						if (activeRowIndex < rows.length - 1) {
+						if (activeRowIndex === 0) {
 							activeRowIndex++;
-							activeColIndex = Math.min(
-								activeColIndex,
-								getColsInActiveRow(activeRowIndex).length - 1
-							);
+							activeColIndex = 0;
+						} else if (activeRowIndex < rows.length - 1) {
+							activeRowIndex++;
+							activeColIndex = Math.min(activeColIndex, getColsInRow(activeRowIndex).length - 1);
 						}
 						break;
 					case 'ArrowLeft':
-						if (activeRowIndex >= 0 && activeColIndex > 0) {
-							activeColIndex--;
+						if (activeRowIndex >= 1 && activeColIndex > 0) {
+							activeColIndex = getColIndexBefore(activeRowIndex, activeColIndex);
 						}
 						break;
 					case 'ArrowRight':
-						if (
-							activeRowIndex >= 0 &&
-							activeColIndex < getColsInActiveRow(activeRowIndex).length - 1
-						) {
-							activeColIndex++;
+						if (activeRowIndex >= 1 && activeColIndex < getColsInRow(activeRowIndex).length - 1) {
+							activeColIndex = getColIndexAfter(activeRowIndex, activeColIndex);
 						}
 						break;
 					case 'Tab':
 						event.preventDefault();
 						if (event.shiftKey) {
-							if (activeColIndex == 0) {
-								activeRowIndex = Math.max(activeRowIndex - 1, 0);
-								activeColIndex = getColsInActiveRow(activeRowIndex).length - 1;
-							} else {
-								activeColIndex--;
+							const closestBefore = getColIndexBefore(activeRowIndex, activeColIndex);
+							if (typeof closestBefore !== 'number' && activeRowIndex > 0) {
+								activeRowIndex = Math.max(0, activeRowIndex - 1);
+								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex).at(-1)!.id);
+							}
+							if (typeof closestBefore === 'number') {
+								activeColIndex = getColIndexBefore(activeRowIndex, activeColIndex);
 							}
 						} else {
-							if (
-								activeRowIndex >= 0 &&
-								activeColIndex < getColsInActiveRow(activeRowIndex).length - 1
-							) {
-								activeColIndex++;
-							} else if (activeRowIndex < rows.length - 1) {
+							const closestAfter = getColIndexAfter(activeRowIndex, activeColIndex);
+
+							if (typeof closestAfter !== 'number' && activeRowIndex < rows.length - 1) {
 								activeRowIndex++;
-								activeColIndex = 0;
+								activeColIndex = getColIndexFromId(getColsInRow(activeRowIndex)[0].id);
+							}
+							if (typeof closestAfter === 'number') {
+								activeColIndex = closestAfter;
 							}
 						}
 						break;
@@ -405,101 +455,106 @@
 	});
 </script>
 
-{#snippet fallbackResultItem(item: ResultItem)}
-	{JSON.stringify(item)}
+{#snippet fallbackResultItemRow({ resultItem }: { resultItem: ResultItem })}
+	{JSON.stringify(resultItem)}
 {/snippet}
 
-{#snippet clearAction()}
-	{#if value.length}
-		<div class="supersearch-clear-action">
-			{@render clearActionSnippet?.(handleReset)}
-		</div>
-	{/if}
+{#snippet fallbackInputRow({ inputField }: { inputField: Snippet<[]> })}
+	{@render inputField()}
 {/snippet}
 
-{#snippet submitAction()}
-	<div class="supersearch-submit-action">
-		{@render submitActionSnippet?.(handleClickSubmit)}
-	</div>
+{#snippet collapsedInputSnippet()}
+	<CodeMirror
+		{value}
+		extensions={collapsedExtensions}
+		onclick={handleClickCollapsed}
+		onchange={handleChangeCodeMirror}
+		bind:editorView={collapsedEditorView}
+		syncedEditorView={expandedEditorView}
+	/>
+{/snippet}
+
+{#snippet expandedInputSnippet()}
+	<CodeMirror
+		{value}
+		extensions={expandedExtensions}
+		onchange={handleChangeCodeMirror}
+		bind:editorView={expandedEditorView}
+		syncedEditorView={collapsedEditorView}
+	/>
 {/snippet}
 
 <div role="presentation" onkeydown={handleCollapsedKeyDown}>
 	<div class="supersearch-combobox">
-		<div class="supersearch-input">
-			<CodeMirror
-				{value}
-				extensions={collapsedExtensions}
-				onclick={handleClickCollapsed}
-				onchange={handleChangeCodeMirror}
-				bind:editorView={collapsedEditorView}
-				syncedEditorView={expandedEditorView}
-			/>
-			<textarea {value} {name} {form} hidden readonly></textarea>
-			{@render clearAction()}
-		</div>
-		{@render submitAction()}
+		{@render inputRow?.({
+			expanded: false,
+			inputField: collapsedInputSnippet,
+			getCellId: () => undefined,
+			isFocusedCell: () => false,
+			onclickSubmit: handleClickSubmit,
+			onclickClear: handleReset,
+			onclickClose: hideExpandedSearch
+		})}
+		<textarea {value} {name} {form} hidden readonly></textarea>
 	</div>
 </div>
 <dialog
 	class="supersearch-dialog"
 	id={`${id}-dialog`}
 	bind:this={dialog}
-	onclose={hideExpandedSearch}
+	onclose={handleCloseExpandedSearch}
 >
 	<div class="supersearch-dialog-wrapper" role="presentation" onkeydown={handleExpandedKeyDown}>
-		<div class="supersearch-dialog-content">
-			<div class="supersearch-combobox">
-				{#if closeActionMediaQuery.current && expanded}
-					<div class="supersearch-close-action">
-						{@render closeActionSnippet?.(hideExpandedSearch)}
-					</div>
-				{/if}
-				<div class="supersearch-input">
-					<CodeMirror
-						{value}
-						extensions={expandedExtensions}
-						onchange={handleChangeCodeMirror}
-						bind:editorView={expandedEditorView}
-						syncedEditorView={collapsedEditorView}
-					/>
-					{@render clearAction()}
-				</div>
-				{@render submitAction()}
+		<div class="supersearch-dialog-content" role="grid">
+			<div class="supersearch-combobox" role="row">
+				{@render inputRow?.({
+					expanded: true,
+					inputField: expandedInputSnippet,
+					getCellId: (colIndex: number) => `${id}-item-0x${colIndex}`,
+					isFocusedCell: (colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex,
+					onclickSubmit: handleClickSubmit,
+					onclickClear: handleReset,
+					onclickClose: hideExpandedSearch
+				})}
 			</div>
-			<nav class="supersearch-suggestions">
-				<div id={`${id}-grid`} role="grid">
-					{#if persistentItem}
-						<div role="row" class:focused={activeRowIndex === 0}>
-							{@render persistentItem(
-								(colIndex: number) => `${id}-item-0x${colIndex}`,
-								(colIndex: number) => activeRowIndex === 0 && colIndex === activeColIndex
-							)}
+			<nav class="supersearch-suggestions" role="rowgroup">
+				{#if value.length}
+					{#if persistentItemRow}
+						<div role="row" class:focused={activeRowIndex === 1}>
+							{@render persistentItemRow({
+								getCellId: (colIndex: number) => `${id}-item-1x${colIndex}`,
+								isFocusedCell: (colIndex: number) =>
+									activeRowIndex === 1 && colIndex === activeColIndex
+							})}
 						</div>
 					{/if}
 					{#if search.data}
-						{@const resultItems =
+						{@const resultItemRows =
 							(Array.isArray(search.paginatedData) &&
 								search.paginatedData.map((page) => page.items).flat()) ||
 							search.data?.items}
-						{#each resultItems as item, index}
-							{@const rowIndex = persistentItem ? index + 1 : index}
+						{#each resultItemRows as resultItem, index}
+							{@const rowIndex = persistentItemRow ? index + 2 : index + 1}
 							<div role="row" class:focused={activeRowIndex === rowIndex}>
-								{@render resultItem?.(
-									item,
-									(colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-									(colIndex: number) => activeRowIndex === rowIndex && colIndex === activeColIndex,
+								{@render resultItemRow?.({
+									resultItem,
+									getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+									isFocusedCell: (colIndex: number) =>
+										activeRowIndex === rowIndex && colIndex === activeColIndex,
 									rowIndex
-								)}
+								})}
 							</div>
 						{/each}
 					{/if}
-				</div>
-				{#if search.isLoading}
-					{@render loadingIndicator?.()}
-				{:else if search.hasMorePaginatedData}
-					<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-						Load more
-					</button>
+					{#if search.isLoading}
+						{@render loadingIndicator?.()}
+					{:else if search.hasMorePaginatedData}
+						<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+							Load more
+						</button>
+					{/if}
+				{:else}
+					<div><!-- Start content here --></div>
 				{/if}
 			</nav>
 		</div>
@@ -513,18 +568,6 @@
 
 	.supersearch-combobox {
 		display: flex;
-	}
-
-	.supersearch-input {
-		display: flex;
-		flex: 1;
-		overflow: hidden;
-
-		& :global(.codemirror-container) {
-			display: block;
-			flex: 1;
-			overflow: hidden;
-		}
 	}
 
 	.supersearch-suggestions {

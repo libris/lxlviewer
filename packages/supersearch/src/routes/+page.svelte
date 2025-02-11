@@ -9,9 +9,9 @@
 
 	let isLoading: boolean | undefined = $state();
 	let hasData: boolean | undefined = $state();
-	let value1 = $state('');
-	let value2 = $state('');
+	let value = $state('');
 	let placeholder = $state('Search');
+	let useFormAttribute = $state(false);
 
 	function handlePaginationQuery(searchParams: URLSearchParams, prevData: JSONValue) {
 		const paginatedSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
@@ -30,18 +30,18 @@
 			...rest,
 			items: items.map((item) => ({
 				...item,
-				heading: `${item.heading} for "${value1}"`
+				heading: `${item.heading} for "${value}"`
 			}))
 		};
 	}
 </script>
 
 <form action="test1">
-	<fieldset data-testid="test1">
-		<legend>Supersearch inside <code>&lt;form&gt;</code> element</legend>
+	<fieldset>
+		<legend>Supersearch component</legend>
 		<SuperSearch
 			name="q"
-			bind:value={value1}
+			bind:value
 			bind:isLoading
 			bind:hasData
 			{placeholder}
@@ -56,23 +56,59 @@
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin()]}
 			toggleWithKeyboardShortcut
+			defaultRow={1}
+			defaultInputCol={-1}
+			defaultResultItemCol={0}
+			form={useFormAttribute ? 'form-outside' : undefined}
 		>
-			{#snippet submitAction(onclick)}
-				<button type="submit" class="submit-action" enterkeyhint="search" {onclick}>
+			{#snippet inputRow({
+				expanded,
+				inputField,
+				getCellId,
+				isFocusedCell,
+				onclickSubmit,
+				onclickClear,
+				onclickClose
+			})}
+				{#if expanded}
+					<button
+						type="button"
+						aria-label="Close"
+						class="close-action"
+						id={getCellId(0)}
+						class:focused-cell={isFocusedCell(0)}
+						onclick={onclickClose}
+					>
+						<img src={backIconSvg} width={16} height={16} alt="" />
+					</button>
+				{/if}
+				<div class="supersearch-input">
+					{@render inputField()}
+				</div>
+				{#if value}
+					<button
+						type="reset"
+						aria-label="Clear"
+						class="clear-action"
+						id={getCellId(1)}
+						class:focused-cell={isFocusedCell(1)}
+						onclick={onclickClear}
+					>
+						<img src={clearIconSvg} width={16} height={16} alt="" />
+					</button>
+				{/if}
+				<button
+					type="submit"
+					class="submit-action"
+					enterkeyhint="search"
+					id={getCellId(2)}
+					class:focused-cell={isFocusedCell(2)}
+					onclick={onclickSubmit}
+				>
 					Search
 				</button>
 			{/snippet}
-			{#snippet closeAction(onclick)}
-				<button type="button" aria-label="Close" class="close-action" {onclick}>
-					<img src={backIconSvg} width={16} height={16} alt="" />
-				</button>
-			{/snippet}
-			{#snippet clearAction(onclick)}
-				<button type="reset" aria-label="Clear" class="clear-action" {onclick}>
-					<img src={clearIconSvg} width={16} height={16} alt="" />
-				</button>
-			{/snippet}
-			{#snippet persistentItem(getCellId, isFocusedCell)}
+			{#snippet persistentItemRow({ getCellId, isFocusedCell })}
 				<div class="persistent-item" data-testid="persistent-item">
 					<a
 						href={`/test1#${getCellId(0)}`}
@@ -82,7 +118,7 @@
 					>
 				</div>
 			{/snippet}
-			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
+			{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell, rowIndex })}
 				<div class="result-item" data-testid="result-item">
 					<div role="gridcell">
 						<a
@@ -90,7 +126,7 @@
 							id={getCellId(0)}
 							class:focused-cell={isFocusedCell(0)}
 						>
-							<h2>{item.heading}</h2>
+							<h2>{resultItem.heading}</h2>
 						</a>
 					</div>
 					{#if (rowIndex! > 1 && rowIndex! <= 5) || rowIndex == 10}
@@ -126,41 +162,16 @@
 	</fieldset>
 </form>
 
-<form>
-	<fieldset data-testid="test2">
-		<legend>Supersearch using <code>form</code> attribute</legend>
-		<SuperSearch
-			id="supersearch-using-form-attribute"
-			name="q"
-			bind:value={value2}
-			{placeholder}
-			form="form-outside"
-			endpoint="/api/find"
-			queryFn={(query) =>
-				new URLSearchParams({
-					_q: query,
-					_limit: '10'
-				})}
-			paginationQueryFn={handlePaginationQuery}
-			language={lxlQuery}
-			extensions={[lxlQualifierPlugin()]}
-			comboboxAriaLabel="Search"
-			defaultRow={-1}
-		>
-			{#snippet resultItem(item, getCellId, isFocusedCell, rowIndex)}
-				<div class="result-item" data-testid="result-item" role="gridcell">
-					<button type="button" id={getCellId(0)} class:focused-cell={isFocusedCell(0)}>
-						<h2>{item.heading} {rowIndex}</h2>
-					</button>
-				</div>
-			{/snippet}
-		</SuperSearch>
-	</fieldset>
-</form>
-
 <form action="test2" id="form-outside"></form>
 
-<label>Placeholder:<input type="text" bind:value={placeholder} /></label>
+<fieldset>
+	<legend>Options</legend>
+	<label>Placeholder:<input type="text" bind:value={placeholder} /></label>
+	<label
+		><input type="checkbox" bind:checked={useFormAttribute} data-testid="use-form-attribute" />
+		Use form attribute
+	</label>
+</fieldset>
 
 <style>
 	:global(.supersearch-input) {
@@ -191,19 +202,17 @@
 	}
 
 	:global(.supersearch-dialog) {
-		& :global(a:hover),
-		& :global(button:hover) {
+		& :global(a:not(.focused-cell):hover),
+		& :global(button:not(.focused-cell):hover) {
 			background: #ddffdd;
 		}
 	}
 
 	:global(.supersearch-dialog .focused) {
 		background: #ebebeb;
+	}
 
-		& :global(.focused-cell) {
-			background: lightgreen;
-		}
-
+	:global(.supersearch-dialog) {
 		& :global(.focused-cell) {
 			background: lightgreen;
 		}
@@ -234,6 +243,7 @@
 
 		& button,
 		& [role='gridcell'] {
+			cursor: pointer;
 			min-width: 44px;
 			min-height: 44px;
 		}
@@ -282,5 +292,23 @@
 
 	:global(button) {
 		background: none;
+	}
+
+	.supersearch-input {
+		display: flex;
+		flex: 1;
+		overflow: hidden;
+
+		& :global(.codemirror-container) {
+			display: block;
+			flex: 1;
+			overflow: hidden;
+		}
+	}
+
+	.close-action {
+		@media screen and (min-width: 640px) {
+			display: none;
+		}
 	}
 </style>
