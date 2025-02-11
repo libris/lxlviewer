@@ -56,11 +56,29 @@
 			language={lxlQuery}
 			extensions={[lxlQualifierPlugin()]}
 			toggleWithKeyboardShortcut
-			defaultRow={1}
 			defaultInputCol={-1}
-			defaultResultItemCol={0}
+			defaultResultRow={1}
+			defaultResultCol={0}
 			form={useFormAttribute ? 'form-outside' : undefined}
 		>
+			{#snippet startItems({ getCellId, isFocusedCell, isFocusedRow })}
+				<div role="rowgroup">
+					<div>Header for start items</div>
+					{#each { length: 3 } as _item, index}
+						{@const rowIndex = index + 1}
+						<div role="row" class="start-item" class:focused={isFocusedRow(rowIndex)}>
+							<button
+								type="button"
+								role="gridcell"
+								id={getCellId(rowIndex, 0)}
+								class:focused-cell={isFocusedCell(rowIndex, 0)}
+							>
+								Start item {rowIndex}{_item}
+							</button>
+						</div>
+					{/each}
+				</div>
+			{/snippet}
 			{#snippet inputRow({
 				expanded,
 				inputField,
@@ -73,6 +91,7 @@
 				{#if expanded}
 					<button
 						type="button"
+						role="gridcell"
 						aria-label="Close"
 						class="close-action"
 						id={getCellId(0)}
@@ -88,6 +107,7 @@
 				{#if value}
 					<button
 						type="reset"
+						role="gridcell"
 						aria-label="Clear"
 						class="clear-action"
 						id={getCellId(1)}
@@ -99,6 +119,7 @@
 				{/if}
 				<button
 					type="submit"
+					role="gridcell"
 					class="submit-action"
 					enterkeyhint="search"
 					id={getCellId(2)}
@@ -236,6 +257,7 @@
 		}
 	}
 
+	.start-item,
 	.result-item {
 		display: flex;
 		align-items: flex-start;
@@ -265,7 +287,9 @@
 		}
 
 		& button:first-child {
+			display: flex;
 			flex: 1;
+			align-items: center;
 		}
 
 		& h2 {

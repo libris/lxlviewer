@@ -30,6 +30,15 @@
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
 		comboboxAriaLabel?: string;
+		startItems?: Snippet<
+			[
+				{
+					getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
+					isFocusedCell: (rowIndex: number, cellIndex: number) => boolean;
+					isFocusedRow: (rowIndex: number) => boolean;
+				}
+			]
+		>;
 		inputRow?: Snippet<
 			[
 				{
@@ -57,9 +66,9 @@
 			[{ getCellId: (cellIndex: number) => string; isFocusedCell: (cellIndex: number) => boolean }]
 		>;
 		loadingIndicator?: Snippet;
-		defaultRow?: number;
 		defaultInputCol?: number;
-		defaultResultItemCol?: number;
+		defaultResultRow?: number;
+		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
 		isLoading?: boolean;
@@ -79,14 +88,15 @@
 		transformFn,
 		extensions = [],
 		comboboxAriaLabel,
+		startItems,
 		inputRow = fallbackInputRow,
 		resultItemRow = fallbackResultItemRow,
 		persistentResultItemRow,
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
-		defaultRow = 0,
 		defaultInputCol = -1,
-		defaultResultItemCol = 0,
+		defaultResultRow = 0,
+		defaultResultCol = 0,
 		debouncedWait = 300,
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable() // should be treated as readonly
@@ -190,11 +200,15 @@
 	}
 
 	function setDefaultRowAndCols() {
-		activeRowIndex = defaultRow;
-
-		if (activeRowIndex > 0) {
-			activeColIndex = defaultResultItemCol;
+		if (value.trim().length) {
+			activeRowIndex = defaultResultRow;
+			if (activeRowIndex > 0) {
+				activeColIndex = defaultResultCol;
+			} else {
+				activeColIndex = defaultInputCol;
+			}
 		} else {
+			activeRowIndex = 0;
 			activeColIndex = defaultInputCol;
 		}
 	}
@@ -318,9 +332,13 @@
 			if (rows.length) {
 				switch (event.key) {
 					case 'ArrowUp':
-						if (activeRowIndex > 1) {
+						if (activeRowIndex >= 1) {
 							activeRowIndex--;
-							activeColIndex = Math.min(activeColIndex, getColsInRow(activeRowIndex).length - 1);
+							if (activeRowIndex < 1) {
+								activeColIndex = defaultInputCol;
+							} else {
+								activeColIndex = Math.min(activeColIndex, getColsInRow(activeRowIndex).length - 1);
+							}
 						}
 						break;
 					case 'ArrowDown':
@@ -518,7 +536,7 @@
 				})}
 			</div>
 			<nav class="supersearch-suggestions" role="rowgroup">
-				{#if value.length}
+				{#if value.trim().length}
 					{#if persistentResultItemRow}
 						<div role="row" class:focused={activeRowIndex === 1}>
 							{@render persistentResultItemRow({
@@ -554,7 +572,12 @@
 						</button>
 					{/if}
 				{:else}
-					<div><!-- Start content here --></div>
+					{@render startItems?.({
+						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+						isFocusedCell: (rowIndex: number, colIndex: number) =>
+							activeRowIndex === rowIndex && colIndex === activeColIndex,
+						isFocusedRow: (rowIndex: number) => activeRowIndex === rowIndex
+					})}
 				{/if}
 			</nav>
 		</div>
