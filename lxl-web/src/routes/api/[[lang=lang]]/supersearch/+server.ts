@@ -3,6 +3,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import { getSupportedLocale } from '$lib/i18n/locales.js';
 import getEditedPartEntries from './getEditedPartEntries.js';
+import getEditedRanges from './getEditedRanges.js';
 import { asResult } from '$lib/utils/search.js';
 import { DebugFlags } from '$lib/types/userSettings.js';
 
@@ -15,35 +16,38 @@ import { DebugFlags } from '$lib/types/userSettings.js';
 export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const displayUtil = locals.display;
 	const vocabUtil = locals.vocab;
-
 	const locale = getSupportedLocale(params?.lang);
 
-	const _q = url.searchParams.get('_q');
+	const _q = url.searchParams.get('_q') || '';
 	const cursor = parseInt(url.searchParams.get('cursor') || '0', 10);
+	const editedRanges = getEditedRanges(_q, cursor);
 
 	const newSearchParams = new URLSearchParams([...Array.from(url.searchParams.entries())]);
 
-	if (_q && Number.isInteger(cursor)) {
-		const editedPartEntries = getEditedPartEntries(_q, cursor);
+	// alter query based on edited part
+	const editedPartEntries = getEditedPartEntries(_q, cursor, editedRanges);
+	editedPartEntries.forEach(([key, value]) => newSearchParams.set(key, value));
 
-		editedPartEntries.forEach(([key, value]) => {
-			newSearchParams.set(key, value);
-		});
-		newSearchParams.delete('cursor');
-
-		if (!_q.toString().includes('"rdf:type":') && !_q.toString().includes('"rdf:type"=')) {
-			// Add types to suggest
-			const types =
-				'"rdf:type":(Agent OR Concept OR Language OR Work) "rdf:type":(NOT ComplexSubject) ';
-			newSearchParams.set('_q', types + _q.toString());
-		}
-		console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
-		console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
+	if (locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE)) {
+		newSearchParams.set('_debug', 'esScore');
 	}
-	const debug = locals.userSettings?.debug?.includes(DebugFlags.ES_SCORE) ? '&_debug=esScore' : '';
 
-	const findResponse = await fetch(`${env.API_URL}/find?${newSearchParams.toString()}${debug}`);
-	const data = await findResponse.json();
+	newSearchParams.delete('cursor');
+
+	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
+	console.log('Search params sent to /find:', decodeURIComponent(newSearchParams.toString()));
+
+	const [findRes, mappingRes] = await Promise.all([
+		fetch(`${env.API_URL}/find?${newSearchParams.toString()}`),
+		editedRanges?.qualifierKey && fetch(`${env.API_URL}/find?_q=${_q?.toString()}&_limit=0`) // when getting narrowed results for qualifier, we also need to send the full query to not lose all mapping labels :(
+	]);
+
+	const data = await findRes.json();
+
+	if (mappingRes) {
+		const mappingData = await mappingRes.json();
+		data.search.mapping = [...mappingData.search.mapping];
+	}
 
 	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
 

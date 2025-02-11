@@ -199,4 +199,9 @@
 			@apply text-sm;
 		}
 	}
+
+	/* override global block for transliterated titles */
+	:global(.suggestion-card .card-header [data-property='_script']) {
+		@apply inline;
+	}
 </style>

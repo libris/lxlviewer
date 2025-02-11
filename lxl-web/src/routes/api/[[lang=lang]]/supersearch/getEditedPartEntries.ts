@@ -1,32 +1,36 @@
-import getEditedRanges from './getEditedRanges.js';
+import getEditedRanges, { type EditedRanges } from './getEditedRanges.js';
 
-/**
- * TODO: How should we handle translated query codes and qualifier keys?
- */
+const DEFAULT_SUPERSEARCH_TYPES = ['Agent', 'Concept', 'Language', 'Work'];
 
-const QUALIFIER_KEY_BY_BASE_CLASS = {
-	Library: 'itemHeldBy',
-	Agent: 'contributor',
-	Topic: 'subject',
-	Subject: 'subject',
-	Language: 'SPRÅK',
-	GenreForm: 'genreForm',
-	Person: 'person',
-	Work: 'titel'
+const QUALIFIER_KEY_FROM_ALIAS = {
+	Contributor: ['medverkande'],
+	Language: ['språk'],
+	Subject: ['ämne'],
+	Bibliography: ['bibliografi']
 };
 
-const SKIP_QUALIFIERS = ['år'];
+const BASE_CLASS_FROM_QUALIFIER_KEY = {
+	Agent: ['contributor'], // + subject? I.e should we also search for agents when typing 'subject:'?
+	Subject: ['subject'],
+	GenreForm: ['genreForm'],
+	Language: ['language', 'translationOf.language'],
+	Library: ['itemHeldBy'], // library??
+	Bibliography: ['bibliography']
+};
+
+const SKIP_QUALIFIERS = ['yearPublished', 'år'];
 
 /**
  * Gets the URLSearchParams entries which should be appended/replaced with new values when editing a part of a query.
  */
+function getEditedPartEntries(
+	query: string,
+	cursor: number,
+	ranges?: EditedRanges
+): [string, string][] {
+	const editedRanges = ranges || getEditedRanges(query, cursor);
 
-function getEditedPartEntries(query: string, cursor: number): [string, string][] {
-	const editedRanges = getEditedRanges(query, cursor);
-
-	/**
-	 * Narrow down search query when editing qualifier parts
-	 */
+	// Narrow down search query when editing qualifier parts
 	if (editedRanges.qualifierKey && editedRanges.qualifierOperator && editedRanges.qualifierValue) {
 		const qualifierKey = query.slice(editedRanges.qualifierKey.from, editedRanges.qualifierKey.to);
 		const qualifierOperator = query.slice(
@@ -38,28 +42,48 @@ function getEditedPartEntries(query: string, cursor: number): [string, string][]
 			editedRanges.qualifierValue.to
 		);
 
-		if (SKIP_QUALIFIERS.includes(qualifierKey.toLowerCase())) {
-			return []; // Keep query as is when editing year qualifiers
+		// Don't narrow down year qualifiers
+		const skipQualifier = SKIP_QUALIFIERS.includes(qualifierKey.toLowerCase());
+		if (!skipQualifier) {
+			// Get the normalized property from a translated key/alternative query code
+			const keyFromAlias = findInMap(QUALIFIER_KEY_FROM_ALIAS, qualifierKey);
+			const baseClass = findInMap(BASE_CLASS_FROM_QUALIFIER_KEY, keyFromAlias || qualifierKey);
+
+			if (baseClass) {
+				return [
+					['_q', `${qualifierValue} "rdf:type":${baseClass}`],
+					['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once
+				];
+			}
+
+			return [['_q', qualifierKey + qualifierOperator + qualifierValue]]; // does this make sense??
 		}
-
-		const baseClass = Object.entries(QUALIFIER_KEY_BY_BASE_CLASS).find(
-			([, key]) => key === qualifierKey
-		)?.[0];
-
-		if (baseClass) {
-			return [
-				['_qualifier', `"rdf:type":${baseClass} ${qualifierValue}`],
-				['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once
-			];
-		}
-
-		return [['_qualifier', qualifierKey + qualifierOperator + qualifierValue]];
 	}
 
-	/**
-	 * Otherwise keep query entries as is
-	 */
+	if (!queryIncludesType(query)) {
+		// Else add default search types to _q
+		return [['_q', `${query} "rdf:type":(${DEFAULT_SUPERSEARCH_TYPES.join(' OR ')})`]];
+	}
+
+	// Otherwise keep query entries as is
 	return [];
+}
+
+function queryIncludesType(q: string | undefined) {
+	if (q && typeof q === 'string') {
+		return !!q.match(/"rdf:type"[:=]/g);
+	}
+	return false;
+}
+
+function findInMap(map: Record<string, string[]>, k: string) {
+	if (k && typeof k === 'string') {
+		for (const [key, value] of Object.entries(map)) {
+			if (Array.isArray(value) && value.some((el) => el.toLowerCase() === k.toLowerCase())) {
+				return key;
+			}
+		}
+	}
 }
 
 export default getEditedPartEntries;

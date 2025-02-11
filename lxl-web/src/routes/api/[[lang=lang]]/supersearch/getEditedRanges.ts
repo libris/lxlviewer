@@ -13,7 +13,7 @@ export type EditedRanges = Range & {
 
 function getEditedRanges(query: string, cursor: number): EditedRanges {
 	const tree = lxlQuery.language.parser.parse(query);
-	const innerNode = tree.resolveInner(cursor);
+	const innerNode = tree.resolveInner(cursor, -1);
 
 	/**
 	 * Return `from` and `to` from qualifier parts if editing qualifier value
