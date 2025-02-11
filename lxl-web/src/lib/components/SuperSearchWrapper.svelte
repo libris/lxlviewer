@@ -254,4 +254,8 @@
 	.focused-cell {
 		@apply bg-site-header/40;
 	}
+
+	:global(.button-primary.focused-cell) {
+		@apply before:opacity-100;
+	}
 </style>
