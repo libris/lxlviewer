@@ -517,7 +517,7 @@
 					onclickClose: hideExpandedSearch
 				})}
 			</div>
-			<nav class="supersearch-suggestions">
+			<nav class="supersearch-suggestions" role="rowgroup">
 				{#if value.length}
 					{#if persistentItemRow}
 						<div role="row" class:focused={activeRowIndex === 1}>
