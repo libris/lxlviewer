@@ -29,6 +29,7 @@ import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
 import LanguageMixin from '../mixins/language-mixin.vue';
 import FieldMarker from "@/components/inspector/field-marker.vue";
 import IdList from '@/components/care/id-list.vue';
+import ModalComponent from "@/components/shared/modal-component.vue";
 import {
   BulkContext,
   HAS_ID_KEY,
@@ -142,6 +143,8 @@ export default {
       pasteHover: false,
       removed: false,
       uniqueIds: [],
+      unlockedByUser: false,
+      unlockModalOpen: false,
     };
   },
   components: {
@@ -160,6 +163,7 @@ export default {
     'item-next-shelf-control-number': ItemNextShelfControlNumber,
     'item-bylang': ItemBylang,
     'entity-adder': EntityAdder,
+    'modal-component': ModalComponent,
   },
   watch: {
   },
@@ -320,6 +324,11 @@ export default {
     warnBeforeRemove() {
       return this.inspector.status.focus === 'record';
     },
+    protected() {
+      if (this.settings.protectedProperties.indexOf(this.fieldKey) !== -1) {
+        return true;
+      }
+    },
     arrayLength() {
       return this.valueAsArray.length;
     },
@@ -331,6 +340,9 @@ export default {
         if (this.settings.unlockableProperties.includes(this.fieldKey)) {
           return false;
         }
+      }
+      if (this.settings.protectedProperties.indexOf(this.fieldKey) !== -1 && !this.unlockedByUser) {
+        return true;
       }
       if (this.settings.lockedProperties.indexOf(this.fieldKey) !== -1) {
         return true;
@@ -438,6 +450,7 @@ export default {
     },
     isLastAdded() {
       if (this.inspector.status.lastAdded === this.path) {
+        this.unlockedByUser = true;
         return true;
       }
       return false;
@@ -537,6 +550,22 @@ export default {
         while ((item = item.parentElement) && !item.classList.contains('js-field'));
         item.classList.remove(cssClass);
       }
+    },
+    openUnlockModal() {
+      this.unlockModalOpen = true;
+      setTimeout(() => {
+        this.$refs.unlockButton.focus();
+      }, 200);
+    },
+    unlockEdit() {
+      this.unlockedByUser = true;
+      this.closeUnlockModal();
+    },
+    closeUnlockModal() {
+      this.unlockModalOpen = false;
+    },
+    lockProtected() {
+      this.unlockedByUser = false;
     },
     removeThis() {
       let approved = true;
@@ -755,6 +784,27 @@ export default {
           </div>
           <div v-else class="Field-action placeholder" />
 
+          <div class="Field-action" v-if="protected && !unlockedByUser && !isLocked">
+            <i class="fa fa-lock fa-fw icon icon--sm"
+               tabindex="0"
+               role="button"
+               :aria-label="translatePhrase('Unlock property')"
+               v-on:click="openUnlockModal()"
+               v-tooltip.top="translatePhrase('Unlock property')"
+               @keyup.enter="openUnlockModal()"
+            />
+          </div>
+          <div class="Field-action" v-if="protected && unlockedByUser && !isLocked">
+            <i class="fa fa-unlock-alt fa-fw icon icon--sm"
+               tabindex="0"
+               role="button"
+               :aria-label="translatePhrase('Lock property')"
+               v-on:click="lockProtected()"
+               v-tooltip.top="translatePhrase('Lock property')"
+               @keyup.enter="lockProtected()"
+               />
+          </div>
+
           <div
             class="Field-action Field-clipboardPaster"
             v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject"
@@ -865,6 +915,27 @@ export default {
             @blur="removeHover = false, highlight(false, $event, 'is-removeable')"
             @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')"
             @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')" />
+        </div>
+
+        <div class="Field-action" v-if="protected && !unlockedByUser && !isLocked">
+          <i class="fa fa-lock fa-fw icon icon--sm"
+             tabindex="0"
+             role="button"
+             :aria-label="translatePhrase('Unlock property')"
+             v-on:click="openUnlockModal()"
+             v-tooltip.top="translatePhrase('Unlock property')"
+             @keyup.enter="openUnlockModal()"
+            />
+        </div>
+        <div class="Field-action" v-if="protected && unlockedByUser && !isLocked">
+          <i class="fa fa-unlock-alt fa-fw icon icon--sm"
+             tabindex="0"
+             role="button"
+             :aria-label="translatePhrase('Lock property')"
+             v-on:click="lockProtected()"
+             v-tooltip.top="translatePhrase('Lock property')"
+             @keyup.enter="lockProtected()"
+          />
         </div>
 
         <div
@@ -1124,6 +1195,33 @@ export default {
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
+    <modal-component
+      :title="translatePhrase('Unlock property')"
+      modal-type="warning"
+      class="ChangeTypeWarningModal"
+      :width="'570px'"
+      @close="closeUnlockModal()"
+      v-if="unlockModalOpen"
+    >
+      <template #modal-body>
+        <div class="ChangeTypeWarningModal-body">
+          <p>
+            {{translatePhrase('The property is locked for editing. Are you sure you want to unlock it?')}}
+          </p>
+
+          <div class="ChangeTypeWarningModal-buttonContainer">
+            <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">
+              {{ translatePhrase('Cancel') }}
+            </button>
+
+            <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
+              <i class="icon icon--white fa fa-unlock-alt" />
+              {{ translatePhrase('Unlock') }}
+            </button>
+          </div>
+        </div>
+      </template>
+    </modal-component>
   </li>
 </template>
 
