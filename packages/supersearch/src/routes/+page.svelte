@@ -108,7 +108,7 @@
 					Search
 				</button>
 			{/snippet}
-			{#snippet persistentItemRow({ getCellId, isFocusedCell })}
+			{#snippet persistentResultItemRow({ getCellId, isFocusedCell })}
 				<div class="persistent-item" data-testid="persistent-item">
 					<a
 						href={`/test1#${getCellId(0)}`}

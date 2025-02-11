@@ -53,7 +53,7 @@
 				}
 			]
 		>;
-		persistentItemRow?: Snippet<
+		persistentResultItemRow?: Snippet<
 			[{ getCellId: (cellIndex: number) => string; isFocusedCell: (cellIndex: number) => boolean }]
 		>;
 		loadingIndicator?: Snippet;
@@ -81,7 +81,7 @@
 		comboboxAriaLabel,
 		inputRow = fallbackInputRow,
 		resultItemRow = fallbackResultItemRow,
-		persistentItemRow,
+		persistentResultItemRow,
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
 		defaultRow = 0,
@@ -519,9 +519,9 @@
 			</div>
 			<nav class="supersearch-suggestions" role="rowgroup">
 				{#if value.length}
-					{#if persistentItemRow}
+					{#if persistentResultItemRow}
 						<div role="row" class:focused={activeRowIndex === 1}>
-							{@render persistentItemRow({
+							{@render persistentResultItemRow({
 								getCellId: (colIndex: number) => `${id}-item-1x${colIndex}`,
 								isFocusedCell: (colIndex: number) =>
 									activeRowIndex === 1 && colIndex === activeColIndex
@@ -534,7 +534,7 @@
 								search.paginatedData.map((page) => page.items).flat()) ||
 							search.data?.items}
 						{#each resultItemRows as resultItem, index}
-							{@const rowIndex = persistentItemRow ? index + 2 : index + 1}
+							{@const rowIndex = persistentResultItemRow ? index + 2 : index + 1}
 							<div role="row" class:focused={activeRowIndex === rowIndex}>
 								{@render resultItemRow?.({
 									resultItem,

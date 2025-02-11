@@ -150,7 +150,7 @@
 				</button>
 			</div>
 		{/snippet}
-		{#snippet persistentItemRow({ getCellId, isFocusedCell })}
+		{#snippet persistentResultItemRow({ getCellId, isFocusedCell })}
 			<div class="flex min-h-12 w-full items-stretch border-b border-b-primary/16">
 				<button
 					type="submit"
