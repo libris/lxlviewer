@@ -160,7 +160,7 @@
 		})
 	);
 
-	let includeAriaActiveDescendant = $derived(activeRowIndex >= 0 && !!search?.data); // ensures aria-activedecendant is only shown if the element exists in the DOM
+	let includeAriaActiveDescendant = $derived(activeRowIndex >= 0 && activeColIndex >= 0); // ensures aria-activedecendant is only shown if the element exists in the DOM
 	let expandedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
 			id: `${id}-content`,
