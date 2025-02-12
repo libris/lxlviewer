@@ -232,6 +232,29 @@
 		}
 	}
 
+	export function dispatchChange({
+		change
+	}: {
+		change: {
+			from?: number;
+			to?: number;
+			insert: string;
+		};
+	}) {
+		collapsedEditorView?.dispatch({
+			changes: {
+				from: change.from || cursor,
+				to: change.to || cursor,
+				insert: change.insert
+			},
+			selection: {
+				anchor: (change.from || cursor) + change.insert.length,
+				head: (change.from || cursor) + change.insert.length
+			},
+			userEvent: 'input'
+		});
+	}
+
 	export function showExpandedSearch() {
 		expandedEditorView?.dispatch({
 			selection: collapsedEditorView?.state.selection.main

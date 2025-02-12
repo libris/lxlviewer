@@ -103,7 +103,7 @@
 			id={getCellId(rowIndex, 0)}
 			class="flex min-h-12 w-full items-center px-4 hover:bg-main"
 			class:focused-cell={isFocusedCell(rowIndex, 0)}
-			onclick={() => console.log(`clicked on start filter item: ${qualifierKey}`)}
+			onclick={() => superSearch?.dispatchChange({ insert: `${qualifierKey}:""` })}
 		>
 			<span class="overflow-hidden text-ellipsis whitespace-nowrap">
 				<strong class="text-3-cond-bold">{qualifierLabel}:</strong>
