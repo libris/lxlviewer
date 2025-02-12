@@ -85,6 +85,8 @@ Custom start content (shown when there is no query value) can be defined as a [S
 
 - `isFocusedRow<[rowIndex: number]>` - A helper function which returns a boolean value if a cell in the row is focused (useful for styling).
 
+See the example route for an example on how to implement keyboard navigation handling between the start contents items.
+
 ### Custom Result items
 
 Custom result items can be defined as a [Snippet](https://svelte.dev/docs/svelte/snippet) passed as a `resultItemRow` prop.
