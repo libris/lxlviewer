@@ -24,7 +24,6 @@
 	let q = $state($page.params.fnurgel ? '' : $page.url.searchParams.get('_q')?.trim() || '');
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 	let showMoreFilters = $state(false);
-	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);
 
 	let params = getSortedSearchParams(addDefaultSearchParams($page.url.searchParams));
 	// Always reset these params on new search
@@ -76,6 +75,8 @@
 		}
 		return lxlQualifierPlugin(getLabels);
 	});
+
+	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);
 </script>
 
 {#snippet startFilterItem({
