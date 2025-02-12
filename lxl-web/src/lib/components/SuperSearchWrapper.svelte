@@ -10,6 +10,9 @@
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiArrowLeft from '~icons/bi/arrow-left';
+	import BiArrowUpLeft from '~icons/bi/arrow-up-left';
+	import BiChevronDown from '~icons/bi/chevron-down';
+	import BiChevronUp from '~icons/bi/chevron-up';
 	import '$lib/styles/lxlquery.css';
 
 	interface Props {
@@ -20,6 +23,8 @@
 
 	let q = $state($page.params.fnurgel ? '' : $page.url.searchParams.get('_q')?.trim() || '');
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
+	let showMoreFilters = $state(false);
+	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);
 
 	let params = getSortedSearchParams(addDefaultSearchParams($page.url.searchParams));
 	// Always reset these params on new search
@@ -73,6 +78,41 @@
 	});
 </script>
 
+{#snippet startFilterItem({
+	qualifierKey,
+	qualifierLabel,
+	qualifierPlaceholder,
+	getCellId,
+	isFocusedCell,
+	isFocusedRow,
+	rowIndex
+}: {
+	qualifierKey: string;
+	qualifierLabel: string;
+	qualifierPlaceholder: string;
+	getCellId: (rowIndex: number, colIndex: number) => string | undefined;
+	isFocusedCell: (rowIndex: number, colIndex: number) => boolean;
+	isFocusedRow: (rowIndex: number) => boolean;
+	rowIndex: number;
+})}
+	<div role="row" class="start-item" class:focused={isFocusedRow(rowIndex)}>
+		<button
+			type="button"
+			role="gridcell"
+			id={getCellId(rowIndex, 0)}
+			class="flex min-h-12 w-full items-center px-4 hover:bg-main"
+			class:focused-cell={isFocusedCell(rowIndex, 0)}
+			onclick={() => console.log(`clicked on start filter item: ${qualifierKey}`)}
+		>
+			<span class="overflow-hidden text-ellipsis whitespace-nowrap">
+				<strong class="text-3-cond-bold">{qualifierLabel}:</strong>
+				<span class="text-sm italic text-tertiary">{qualifierPlaceholder}</span>
+			</span>
+			<BiArrowUpLeft class="ml-auto inline-block" />
+		</button>
+	</div>
+{/snippet}
+
 <form class="relative w-full" action="find" onsubmit={handleSubmit}>
 	<SuperSearch
 		name="_q"
@@ -93,7 +133,7 @@
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
 		comboboxAriaLabel={$page.data.t('search.search')}
-		defaultRow={1}
+		defaultResultRow={1}
 		defaultInputCol={2}
 	>
 		{#snippet loadingIndicator()}
@@ -148,6 +188,87 @@
 				>
 					{$page.data.t('search.search')}
 				</button>
+			</div>
+		{/snippet}
+		{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
+			<div role="rowgroup">
+				<div class="flex min-h-11 w-full items-center px-4 text-3-cond-bold">
+					{$page.data.t('search.supersearchStartHeader')}
+				</div>
+				{@render startFilterItem({
+					qualifierKey: 'medverkan',
+					qualifierLabel: 'Medverkan',
+					qualifierPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
+					getCellId,
+					isFocusedCell,
+					isFocusedRow,
+					rowIndex: 1
+				})}
+				{@render startFilterItem({
+					qualifierKey: 'titel',
+					qualifierLabel: 'Titel',
+					qualifierPlaceholder: 'Röda rummet, Casablanca',
+					getCellId,
+					isFocusedCell,
+					isFocusedRow,
+					rowIndex: 2
+				})}
+				{@render startFilterItem({
+					qualifierKey: 'språk',
+					qualifierLabel: 'Språk',
+					qualifierPlaceholder: 'Svenska, Engelska, Arabiska',
+					getCellId,
+					isFocusedCell,
+					isFocusedRow,
+					rowIndex: 3
+				})}
+				{#if showMoreFilters}
+					{@render startFilterItem({
+						qualifierKey: 'subject',
+						qualifierLabel: 'Ämne',
+						qualifierPlaceholder: 'Sommar, Romarriket',
+						getCellId,
+						isFocusedCell,
+						isFocusedRow,
+						rowIndex: 4
+					})}
+					{@render startFilterItem({
+						qualifierKey: 'år',
+						qualifierLabel: 'År',
+						qualifierPlaceholder: '2002, 1987-1994',
+						getCellId,
+						isFocusedCell,
+						isFocusedRow,
+						rowIndex: 5
+					})}
+					{@render startFilterItem({
+						qualifierKey: 'genreForm',
+						qualifierLabel: 'Genre/form',
+						qualifierPlaceholder: 'Skönlitteratur, Tidsskrift',
+						getCellId,
+						isFocusedCell,
+						isFocusedRow,
+						rowIndex: 6
+					})}
+				{/if}
+				<div role="row" class="start-item" class:focused={isFocusedRow(moreFiltersRowIndex)}>
+					<button
+						type="button"
+						role="gridcell"
+						id={getCellId(moreFiltersRowIndex, 0)}
+						class="flex min-h-11 w-full items-center px-4 hover:bg-main"
+						class:focused-cell={isFocusedCell(moreFiltersRowIndex, 0)}
+						onclick={() => (showMoreFilters = !showMoreFilters)}
+					>
+						{#if showMoreFilters}
+							<BiChevronUp class="mr-2" />
+							{$page.data.t('search.showFewer')}
+						{:else}
+							<BiChevronDown class="mr-2" />
+							{$page.data.t('search.showMore')}
+						{/if}
+					</button>
+				</div>
 			</div>
 		{/snippet}
 		{#snippet persistentResultItemRow({ getCellId, isFocusedCell })}
