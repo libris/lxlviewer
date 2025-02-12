@@ -325,9 +325,8 @@ export default {
       return this.inspector.status.focus === 'record';
     },
     protected() {
-      if (this.settings.protectedProperties.indexOf(this.fieldKey) !== -1) {
-        return true;
-      }
+      return this.settings.protectedProperties.indexOf(this.fieldKey) !== -1 ||
+        this.settings.protectedProperties.some((p) => isEqual(p, this.path));
     },
     arrayLength() {
       return this.valueAsArray.length;
@@ -341,7 +340,7 @@ export default {
           return false;
         }
       }
-      if (this.settings.protectedProperties.indexOf(this.fieldKey) !== -1 && !this.unlockedByUser) {
+      if (this.protected && !this.unlockedByUser) {
         return true;
       }
       if (this.settings.lockedProperties.indexOf(this.fieldKey) !== -1) {
