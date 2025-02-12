@@ -14,15 +14,26 @@ export type EditedRanges = Range & {
 function getEditedRanges(query: string, cursor: number): EditedRanges {
 	const tree = lxlQuery.language.parser.parse(query);
 	const innerNode = tree.resolveInner(cursor, -1);
+	let qualifierValueNode = null;
+
+	// check if innerNode is located somewhere within a QualifierValue
+	let n: typeof innerNode.parent = innerNode;
+	while (n) {
+		if (n.type.is('QualifierValue')) {
+			qualifierValueNode = n;
+			break;
+		} else {
+			n = n?.parent;
+		}
+	}
 
 	/**
 	 * Return `from` and `to` from qualifier parts if editing qualifier value
 	 */
-	if (innerNode.parent?.type.is('QualifierValue')) {
-		const qualifierNode = innerNode.parent.parent;
+	if (qualifierValueNode) {
+		const qualifierNode = qualifierValueNode.parent;
 		const qualifierKeyNode = qualifierNode?.getChild('QualifierKey');
 		const qualifierOperatorNode = qualifierNode?.getChild('QualifierOperator');
-		const qualiferValueNode = qualifierNode?.getChild('QualifierValue');
 		if (qualifierNode) {
 			return {
 				from: qualifierNode.from,
@@ -33,8 +44,8 @@ function getEditedRanges(query: string, cursor: number): EditedRanges {
 				...(qualifierOperatorNode && {
 					qualifierOperator: { from: qualifierOperatorNode.from, to: qualifierOperatorNode.to }
 				}),
-				...(qualiferValueNode && {
-					qualifierValue: { from: qualiferValueNode.from, to: qualiferValueNode.to }
+				...(qualifierValueNode && {
+					qualifierValue: { from: qualifierValueNode.from, to: qualifierValueNode.to }
 				})
 			};
 		}
