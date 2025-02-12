@@ -324,7 +324,7 @@ export default {
     warnBeforeRemove() {
       return this.inspector.status.focus === 'record';
     },
-    protected() {
+    isProtected() {
       return this.settings.protectedProperties.indexOf(this.fieldKey) !== -1 ||
         this.settings.protectedProperties.some((p) => isEqual(p, this.path));
     },
@@ -340,7 +340,7 @@ export default {
           return false;
         }
       }
-      if (this.protected && !this.unlockedByUser) {
+      if (this.isProtected && !this.unlockedByUser) {
         return true;
       }
       if (this.settings.lockedProperties.indexOf(this.fieldKey) !== -1) {
@@ -783,7 +783,7 @@ export default {
           </div>
           <div v-else class="Field-action placeholder" />
 
-          <div class="Field-action" v-if="protected && !unlockedByUser && !isLocked">
+          <div class="Field-action" v-if="isProtected && !unlockedByUser && !isLocked">
             <i class="fa fa-lock fa-fw icon icon--sm"
                tabindex="0"
                role="button"
@@ -793,7 +793,7 @@ export default {
                @keyup.enter="openUnlockModal()"
             />
           </div>
-          <div class="Field-action" v-if="protected && unlockedByUser && !isLocked">
+          <div class="Field-action" v-if="isProtected && unlockedByUser && !isLocked">
             <i class="fa fa-unlock-alt fa-fw icon icon--sm"
                tabindex="0"
                role="button"
@@ -916,7 +916,7 @@ export default {
             @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')" />
         </div>
 
-        <div class="Field-action" v-if="protected && !unlockedByUser && !isLocked">
+        <div class="Field-action" v-if="isProtected && !unlockedByUser && !isLocked">
           <i class="fa fa-lock fa-fw icon icon--sm"
              tabindex="0"
              role="button"
@@ -926,7 +926,7 @@ export default {
              @keyup.enter="openUnlockModal()"
             />
         </div>
-        <div class="Field-action" v-if="protected && unlockedByUser && !isLocked">
+        <div class="Field-action" v-if="isProtected && unlockedByUser && !isLocked">
           <i class="fa fa-unlock-alt fa-fw icon icon--sm"
              tabindex="0"
              role="button"
