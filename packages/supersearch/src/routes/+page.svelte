@@ -61,7 +61,7 @@
 			defaultResultCol={0}
 			form={useFormAttribute ? 'form-outside' : undefined}
 		>
-			{#snippet startItems({ getCellId, isFocusedCell, isFocusedRow })}
+			{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
 				<div role="rowgroup">
 					<div>Header for start items</div>
 					{#each { length: 3 } as _item, index}

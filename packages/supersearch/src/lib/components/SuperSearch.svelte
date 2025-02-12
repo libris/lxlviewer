@@ -30,7 +30,7 @@
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
 		comboboxAriaLabel?: string;
-		startItems?: Snippet<
+		startContent?: Snippet<
 			[
 				{
 					getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
@@ -88,7 +88,7 @@
 		transformFn,
 		extensions = [],
 		comboboxAriaLabel,
-		startItems,
+		startContent,
 		inputRow = fallbackInputRow,
 		resultItemRow = fallbackResultItemRow,
 		persistentResultItemRow,
@@ -572,7 +572,7 @@
 						</button>
 					{/if}
 				{:else}
-					{@render startItems?.({
+					{@render startContent?.({
 						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 						isFocusedCell: (rowIndex: number, colIndex: number) =>
 							activeRowIndex === rowIndex && colIndex === activeColIndex,
