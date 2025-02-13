@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	const data = await findRes.json();
 
-	if (mappingRes) {
+	if (mappingRes && mappingRes.ok) {
 		const mappingData = await mappingRes.json();
 		data.search.mapping = [...mappingData.search.mapping];
 	}
