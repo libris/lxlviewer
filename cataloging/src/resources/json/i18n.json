@@ -466,6 +466,9 @@
     "Show as record" : "Visa som post",
     "To see bulk changes you need to switch to a sigel with access.": "För att se körningar behöver du växla till ett sigel med rättigheter.",
     "Back to create bulk change": "Tillbaka till skapa körning",
-    "This might take a while...": "Det här verkar ta lite tid..."
+    "This might take a while...": "Det här verkar ta lite tid...",
+    "Lock property": "Lås egenskap",
+    "Unlock property": "Lås upp egenskap",
+    "The property is locked for editing. Are you sure you want to unlock it?" : "Egenskapen är låst för redigering. Är du säker på att du vill låsa upp?"
   }
 }

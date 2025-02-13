@@ -138,6 +138,9 @@ export default {
       },
     ],
   },
+  protectedProperties: [
+    'usageAndAccessPolicy',
+  ],
   warnOnSave: {
     'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],
   },
