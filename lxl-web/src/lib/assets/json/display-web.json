@@ -217,6 +217,20 @@
 						"hasNote",
 						"uri"
 					]
+				},
+				"Person": {
+					"@id": "Person-chips",
+					"@type": "fresnel:Lens",
+					"classLensDomain": "Person",
+					"showProperties": [
+						"givenName",
+						"familyName",
+						"name",
+						"marc:numeration",
+						"lifeSpan",
+						"marc:titlesAndOtherWordsAssociatedWithAName",
+						"fullerFormOfName"
+					]
 				}
 			}
 		},
@@ -391,11 +405,8 @@
 			"@type": "fresnel:Format",
 			"fresnel:propertyFormatDomain": [
 				"lifeSpan",
-				"familyName",
-				"givenName",
 				"name",
 				"marc:numeration",
-				"lifeSpan",
 				"marc:titlesAndOtherWordsAssociatedWithAName",
 				"fullerFormOfName"
 			],
@@ -420,7 +431,7 @@
 			"@id": "agent-no-separator-format",
 			"@type": "fresnel:Format",
 			"fresnel:classFormatDomain": ["Agent"],
-			"fresnel:propertyFormatDomain": ["marc:subordinateUnit"],
+			"fresnel:propertyFormatDomain": ["familyName", "givenName", "marc:subordinateUnit"],
 			"fresnel:propertyFormat": {
 				"fresnel:contentBefore": " ",
 				"fresnel:contentFirst": ""
