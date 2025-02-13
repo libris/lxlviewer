@@ -41,7 +41,7 @@ export async function asResult(
 ): Promise<SearchResult> {
 	const translate = await getTranslator(locale);
 
-	const hasDebug = view.items.length > 0 && view.items[0]._debug;
+	const hasDebug = view.items?.length > 0 && view.items?.[0]._debug;
 	const maxScores = hasDebug
 		? getMaxScores(view.items.map((i) => i._debug as ApiItemDebugInfo))
 		: {};
@@ -56,7 +56,7 @@ export async function asResult(
 		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
-		items: view.items.map((i) => ({
+		items: view.items?.map((i) => ({
 			...('_debug' in i && { _debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores) }),
 			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,

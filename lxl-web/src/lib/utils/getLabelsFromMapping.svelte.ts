@@ -1,3 +1,5 @@
+let prevSuggestMapping: DisplayMapping[] | undefined;
+
 import type { DisplayMapping } from '$lib/types/search';
 function getLabelFromMappings(
 	key: string,
@@ -5,11 +7,16 @@ function getLabelFromMappings(
 	pageMapping?: DisplayMapping[],
 	suggestMapping?: DisplayMapping[]
 ) {
+	if (suggestMapping && suggestMapping.length) {
+		// save latest ok labels if we should get an (empty) error response
+		prevSuggestMapping = suggestMapping;
+	}
+	const bestSuggestMapping = $derived(suggestMapping?.length ? suggestMapping : prevSuggestMapping);
 	const nonQuotedKey = key.replace(/^"(.*)"$/, '$1');
 	const nonQuotedValue = value && value.replace(/^"(.*)"$/, '$1');
 
 	const pageLabels = iterateMapping(nonQuotedKey, nonQuotedValue, pageMapping);
-	const suggestLabels = iterateMapping(nonQuotedKey, nonQuotedValue, suggestMapping);
+	const suggestLabels = iterateMapping(nonQuotedKey, nonQuotedValue, bestSuggestMapping);
 
 	const keyLabel = suggestLabels.keyLabel || pageLabels.keyLabel;
 	const valueLabel = suggestLabels.valueLabel || pageLabels.valueLabel;
@@ -44,11 +51,9 @@ function iterateMapping(
 						keyLabel = el.label;
 					}
 					const isLinked = !!el.display?.['@id'];
-					if (isLinked) {
-						if (value === el?._value && el.displayStr) {
-							// only use atomic ranges for linked values
-							valueLabel = el.displayStr;
-						}
+					if (isLinked && value === el?._value && el?.displayStr) {
+						// only use atomic ranges for linked values
+						valueLabel = el.displayStr;
 						// only show remove btn for pills that can't be edited
 						removeLink = el.up?.['@id'];
 					}
