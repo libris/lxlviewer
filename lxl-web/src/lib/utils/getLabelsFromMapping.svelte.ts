@@ -8,13 +8,9 @@ function getLabelFromMappings(
 	pageMapping?: DisplayMapping[],
 	suggestMapping?: DisplayMapping[]
 ) {
-	if (suggestMapping && suggestMapping.length) {
-		// save latest ok labels if we should get an (empty) error response
-		prevSuggestMapping = suggestMapping;
-	}
-	const bestSuggestMapping = $derived(suggestMapping?.length ? suggestMapping : prevSuggestMapping);
 	const nonQuotedKey = key.replace(/^"(.*)"$/, '$1');
 	const nonQuotedValue = value && value.replace(/^"(.*)"$/, '$1');
+	const bestSuggestMapping = $derived(suggestMapping?.length ? suggestMapping : prevSuggestMapping);
 
 	const pageLabels = iterateMapping(nonQuotedKey, nonQuotedValue, pageMapping);
 	const suggestLabels = iterateMapping(nonQuotedKey, nonQuotedValue, bestSuggestMapping);
@@ -24,6 +20,11 @@ function getLabelFromMappings(
 	const invalid = suggestLabels.invalid || pageLabels.invalid;
 	// only page data have 'up' links we can use
 	const removeLink = pageLabels.keyLabel ? pageLabels.removeLink : undefined;
+
+	if (suggestMapping?.length) {
+		// save latest ok labels if we should get an (empty) error response
+		prevSuggestMapping = suggestMapping;
+	}
 
 	return { keyLabel, valueLabel, removeLink, invalid };
 }
