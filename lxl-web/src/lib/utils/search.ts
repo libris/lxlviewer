@@ -101,33 +101,21 @@ export function displayMappings(
 			const operator = _hasOperator(m);
 
 			if ('property' in m && operator) {
-				// Mock old behaviour for 'classic' search GUI, i.e show error page
-				// when encountering an invalid property in order to provide feedback.
-				// TODO remove this when Supersearch is fully implemented.
-				// const useSuperSearch = env?.PUBLIC_USE_SUPERSEARCH === 'true';
-				// if (!useSuperSearch && m.property?.['@type'] === '_Invalid') {
-				// 	error(400, {
-				// 		message: `Invalid query, please check the documentation. Unrecognized property alias: ${m.property?.label ?? ''}`
-				// 	});
-				// }
-
 				const property = m[operator] as FramedData;
 				return {
-					...(isObject(m.property) && { '@id': m.property['@id'] }),
+					...(isObject(m.property) && { [JsonLd.ID]: m.property[JsonLd.ID] }),
 					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
 					displayStr: toString(displayUtil.lensAndFormat(property, LensType.Chip, locale)) || '',
 					label: m.alias
 						? translate(`facet.${m.alias}`)
 						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) ||
-							m.property?.['@id'] ||
+							m.property?.[JsonLd.ID] ||
 							'No label', // lensandformat?
-					property:
-						m.property?.librisQueryCode ||
-						m.property?.['@id']?.replace('https://id.kb.se/vocab/', '') ||
-						'', //TODO replace with something better
 					operator,
-					...(m.property?.['@type'] === '_Invalid' && { invalid: m.property?.label }),
-					...('up' in m && { up: replacePath(m.up as Link, usePath) })
+					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
+					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					_key: m._key,
+					_value: m._value
 				} as DisplayMapping;
 			} else if (operator && operator in m && Array.isArray(m[operator])) {
 				const mappingArr = m[operator] as SearchMapping[];

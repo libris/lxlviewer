@@ -65,10 +65,9 @@ const pageMapping: DisplayMapping[] = [
 				display: 'sommar',
 				displayStr: 'sommar',
 				label: 'Fritextsökning',
-				property: 'textQuery',
 				operator: 'equals',
 				up: {
-					'@id': '/find?_i=&_q=genreForm:%22saogf:Romaner%22+%C3%85R:2023&_limit=20&_spell=true'
+					'@id': '/find?_i=&_q=genreForm:%22saogf:Romaner%22&_limit=20&_spell=true'
 				}
 			},
 			{
@@ -87,22 +86,12 @@ const pageMapping: DisplayMapping[] = [
 				},
 				displayStr: 'Romaner',
 				label: 'Genre/form',
-				property: 'genreForm',
 				operator: 'equals',
 				up: {
 					'@id': '/find?_i=sommar&_q=sommar+%C3%85R:2023&_limit=20&_spell=true'
-				}
-			},
-			{
-				'@id': 'https://id.kb.se/vocab/yearPublished',
-				display: '2023',
-				displayStr: '2023',
-				label: 'Utgivningsår',
-				property: 'ÅR',
-				operator: 'equals',
-				up: {
-					'@id': '/find?_i=sommar&_q=sommar+genreForm:%22saogf:Romaner%22&_limit=20&_spell=true'
-				}
+				},
+				_key: 'genreForm',
+				_value: 'saogf:Romaner'
 			}
 		],
 		operator: 'and',
@@ -121,11 +110,10 @@ const suggestMapping: DisplayMapping[] = [
 				display: 'sommar',
 				displayStr: 'sommar',
 				label: 'Fritextsökning',
-				property: 'textQuery',
 				operator: 'equals',
 				up: {
 					'@id':
-						'/find?_i=&_q=genreForm:%22saogf:Romaner%22+%C3%85R:2023+SPR%C3%85K:%22lang:swe%22&_limit=10'
+						'/find?_i=&_q=genreForm:%22saogf:Romaner%22+%C3%85R:2023+SPR%C3%85K:%22lang:swe%22&_limit=0'
 				}
 			},
 			{
@@ -144,23 +132,25 @@ const suggestMapping: DisplayMapping[] = [
 				},
 				displayStr: 'Romaner',
 				label: 'Genre/form',
-				property: 'genreForm',
 				operator: 'equals',
 				up: {
-					'@id': '/find?_i=sommar&_q=sommar+%C3%85R:2023+SPR%C3%85K:%22lang:swe%22&_limit=10'
-				}
+					'@id': '/find?_i=sommar&_q=sommar+%C3%85R:2023+SPR%C3%85K:%22lang:swe%22&_limit=0'
+				},
+				_key: 'genreForm',
+				_value: 'saogf:Romaner'
 			},
 			{
 				'@id': 'https://id.kb.se/vocab/yearPublished',
 				display: '2023',
 				displayStr: '2023',
 				label: 'Utgivningsår',
-				property: 'ÅR',
 				operator: 'equals',
 				up: {
 					'@id':
-						'/find?_i=sommar&_q=sommar+genreForm:%22saogf:Romaner%22+SPR%C3%85K:%22lang:swe%22&_limit=10'
-				}
+						'/find?_i=sommar&_q=sommar+genreForm:%22saogf:Romaner%22+SPR%C3%85K:%22lang:swe%22&_limit=0'
+				},
+				_key: 'ÅR',
+				_value: '2023'
 			},
 			{
 				'@id': 'https://id.kb.se/vocab/language',
@@ -177,16 +167,17 @@ const suggestMapping: DisplayMapping[] = [
 				},
 				displayStr: 'Svenska',
 				label: 'Språk',
-				property: 'SPRÅK',
 				operator: 'equals',
 				up: {
-					'@id': '/find?_i=sommar&_q=sommar+genreForm:%22saogf:Romaner%22+%C3%85R:2023&_limit=10'
-				}
+					'@id': '/find?_i=sommar&_q=sommar+genreForm:%22saogf:Romaner%22+%C3%85R:2023&_limit=0'
+				},
+				_key: 'SPRÅK',
+				_value: 'lang:swe'
 			}
 		],
 		operator: 'and',
 		up: {
-			'@id': '/find?_i=&_q=*&_limit=10'
+			'@id': '/find?_i=&_q=*&_limit=0'
 		}
 	}
 ];

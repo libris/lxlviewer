@@ -74,8 +74,9 @@ export interface DisplayMapping {
 	children?: DisplayMapping[];
 	label?: string;
 	operator: keyof typeof SearchOperators;
-	property?: string;
 	invalid?: string;
+	_key?: string;
+	_value?: string;
 }
 
 export interface PartialCollectionView {
@@ -139,6 +140,8 @@ export interface SearchMapping extends MappingObj {
 	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom | InvalidProperty;
 	object?: FramedData;
 	up: { '@id': string };
+	_key?: string;
+	_value?: string;
 }
 
 interface ObjectProperty {
