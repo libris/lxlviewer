@@ -123,7 +123,7 @@
 						<BiArrowLeft />
 					</button>
 				{/if}
-				<div class="flex-1">
+				<div class="flex-1 overflow-hidden">
 					{@render inputField()}
 				</div>
 				{#if q}
