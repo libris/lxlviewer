@@ -1,6 +1,7 @@
+import type { DisplayMapping } from '$lib/types/search';
+
 let prevSuggestMapping: DisplayMapping[] | undefined;
 
-import type { DisplayMapping } from '$lib/types/search';
 function getLabelFromMappings(
 	key: string,
 	value?: string,
