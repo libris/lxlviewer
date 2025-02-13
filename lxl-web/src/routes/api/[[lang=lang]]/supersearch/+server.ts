@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	const [findRes, mappingRes] = await Promise.all([
 		fetch(`${env.API_URL}/find?${newSearchParams.toString()}`),
-		editedRanges?.qualifierKey && fetch(`${env.API_URL}/find?_q=${_q?.toString()}&_limit=0`) // when getting narrowed results for qualifier, we also need to send the full query to not lose all mapping labels :(
+		editedRanges?.qualifierKey && fetch(`${env.API_URL}/find?_q=${encodeURIComponent(_q)}&_limit=0`) // when getting narrowed results for qualifier, we also need to send the full query to not lose all mapping labels :(
 	]);
 
 	const data = await findRes.json();
