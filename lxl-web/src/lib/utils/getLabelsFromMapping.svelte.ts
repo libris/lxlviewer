@@ -22,7 +22,7 @@ function getLabelFromMappings(
 	const removeLink = pageLabels.keyLabel ? pageLabels.removeLink : undefined;
 
 	if (suggestMapping?.length) {
-		// save latest ok labels if we should get an (empty) error response
+		// save latest mapping as fallback for error responses etc
 		prevSuggestMapping = suggestMapping;
 	}
 
