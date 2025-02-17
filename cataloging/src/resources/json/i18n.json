@@ -469,6 +469,7 @@
     "This might take a while...": "Det här verkar ta lite tid...",
     "Lock property": "Lås egenskap",
     "Unlock property": "Lås upp egenskap",
-    "The property is locked for editing. Are you sure you want to unlock it?" : "Egenskapen är låst för redigering. Är du säker på att du vill låsa upp?"
+    "The property is locked for editing. Are you sure you want to unlock it?" : "Egenskapen är låst för redigering. Är du säker på att du vill låsa upp?",
+    "Manage cookies": "Hantera kakor"
   }
 }

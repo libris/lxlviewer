@@ -17,6 +17,7 @@
   "dependencies": {
     "@babel/core": "^7.25.2",
     "@babel/polyfill": "^7.8.3",
+    "@kungbib/cookie-consent": "^0.9.1",
     "@vitejs/plugin-vue": "^5.1.2",
     "@vue/eslint-config-airbnb": "^8.0.0",
     "@vueuse/components": "^11.0.1",

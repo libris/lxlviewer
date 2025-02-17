@@ -62,6 +62,9 @@ export default {
               <li>
                 <a href="https://www.kb.se/digital-tillganglighet" class="Footer-link">{{ translatePhrase("Accessibility statement") }}</a>
               </li>
+              <li>
+                <a data-cc="show-preferencesModal" href="#" aria-haspopup="dialog">{{ translatePhrase("Manage cookies") }}</a>
+              </li>
             </ul>
             <ul class="Footer-navList">
               <li>
