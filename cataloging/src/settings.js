@@ -480,4 +480,56 @@ export default {
       },
     ],
   },
+  cookieConsent: {
+    categories: {
+      analytics: {
+        autoClear: {
+          cookies: [
+            {
+              // Matomo cookies
+              name: /^_pk.*/
+            }
+          ]
+        }
+      }
+    },
+    language: {
+      translations: {
+        sv: {
+          preferencesModal: {
+            sections: [
+              {
+                title: "Om användning av kakor",
+                description: "Den här tjänsten använder kakor (cookies). En kaka är en liten textfil som lagras i besökarens dator. KB:s tjänster är designade för att minska risken för spridning av dina uppgifter. Informationen som lagras via kakor kan aldrig användas av tredje part i marknadsföringssyfte."
+              },
+              {
+                title: "Analytiska kakor",
+                description:
+                  "Kakor som ger oss information om hur webbplatsen används som gör att vi kan underhålla, driva och förbättra användarupplevelsen.",
+                linkedCategory: "analytics"
+              },
+              {
+                title: "Mer information",
+                description: "Du kan alltid ändra dina val genom att klicka på “Hantera cookies” längst ner på sidan i sidfoten."
+              }
+            ]
+          }
+        }
+      }
+    },
+    onConsent: ({ cookie }) => {
+      if (cookie.categories.includes('analytics')) {
+        window._paq = window._paq || [];
+        window._paq.push(['rememberConsentGiven']);
+      }
+    },
+    onChange: ({ cookie }) => {
+      if (cookie.categories.includes('analytics')) {
+        window._paq = window._paq || [];
+        window._paq.push(['rememberConsentGiven']);
+      } else {
+        window._paq.push(['forgetConsentGiven']);
+      }
+    }
+  }
 };
