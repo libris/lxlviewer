@@ -542,7 +542,7 @@ export default {
                     {
                       name: "_pk_id",
                       description: "Används för att komma ihåg besökaren genom ett unikt och slumpmässigt utformat ID.",
-                      duration: "1 år"
+                      duration: "13 månader"
                     },
                     {
                       name: "_pk_ses",
