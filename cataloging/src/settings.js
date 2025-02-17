@@ -140,6 +140,7 @@ export default {
   },
   protectedProperties: [
     'usageAndAccessPolicy',
+    'nextShelfControlNumber'
   ],
   warnOnSave: {
     'record.encodingLevel': ['marc:PrepublicationLevel', 'marc:PartialPreliminaryLevel'],

@@ -1,0 +1,10 @@
+{
+  "default": {
+    "title": "Unlock property",
+    "infoText": "The property is locked for editing. Are you sure you want to unlock it?"
+  },
+  "nextShelfControlNumber": {
+    "title": "Byte av löpnummer",
+    "infoText": "Observera att byte av löpnummer kan påverka övrigt bestånd i signumsviten. Är du säker på att du vill fortsätta?"
+  }
+}

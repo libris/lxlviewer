@@ -12,6 +12,7 @@ import { getContextValue } from 'lxljs/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
+import protectedProps from '@/resources/json/protectedProperties.json';
 import EntityAdder from './entity-adder.vue';
 import ItemEntity from './item-entity.vue';
 import ItemValue from './item-value.vue';
@@ -23,7 +24,6 @@ import ItemBoolean from './item-boolean.vue';
 import ItemNumeric from './item-numeric.vue';
 import ItemGrouped from './item-grouped.vue';
 import ItemShelfControlNumber from './item-shelf-control-number.vue';
-import ItemNextShelfControlNumber from './item-next-shelf-control-number.vue';
 import ItemBylang from './item-bylang.vue';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
 import LanguageMixin from '../mixins/language-mixin.vue';
@@ -145,6 +145,7 @@ export default {
       uniqueIds: [],
       unlockedByUser: false,
       unlockModalOpen: false,
+      protectedProps
     };
   },
   components: {
@@ -160,7 +161,6 @@ export default {
     'item-numeric': ItemNumeric,
     'item-grouped': ItemGrouped,
     'item-shelf-control-number': ItemShelfControlNumber,
-    'item-next-shelf-control-number': ItemNextShelfControlNumber,
     'item-bylang': ItemBylang,
     'entity-adder': EntityAdder,
     'modal-component': ModalComponent,
@@ -606,9 +606,6 @@ export default {
       if (typeof o === 'boolean') {
         return 'boolean';
       }
-      if (this.fieldKey === 'nextShelfControlNumber') {
-        return 'nextShelfControlNumber';
-      }
       if (this.fieldKey === 'shelfControlNumber') {
         return 'shelfControlNumber';
       }
@@ -693,6 +690,12 @@ export default {
         addToHistory: true,
       });
     },
+    getModalTitle() {
+      return protectedProps[this.fieldKey] ? protectedProps[this.fieldKey].title : protectedProps['default'].title;
+    },
+    getModalInfoText() {
+      return protectedProps[this.fieldKey] ? protectedProps[this.fieldKey].infoText : protectedProps['default'].infoText;
+    }
   },
   beforeUnmount() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
@@ -1180,22 +1183,11 @@ export default {
           :parent-path="path"
           :is-expanded="isExpanded" />
 
-        <!-- nextShelfControlNumber -->
-        <item-next-shelf-control-number
-          v-if="getDatatype(item) == 'nextShelfControlNumber'"
-          :is-locked="locked"
-          :field-value="item"
-          :field-key="fieldKey"
-          :index="index"
-          :diff="diff"
-          :parent-path="path"
-          :is-expanded="isExpanded"
-        />
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
     <modal-component
-      :title="translatePhrase('Unlock property')"
+      :title="translatePhrase(this.getModalTitle())"
       modal-type="warning"
       class="ChangeTypeWarningModal"
       :width="'570px'"
@@ -1205,7 +1197,7 @@ export default {
       <template #modal-body>
         <div class="ChangeTypeWarningModal-body">
           <p>
-            {{translatePhrase('The property is locked for editing. Are you sure you want to unlock it?')}}
+            {{translatePhrase(this.getModalInfoText())}}
           </p>
 
           <div class="ChangeTypeWarningModal-buttonContainer">
