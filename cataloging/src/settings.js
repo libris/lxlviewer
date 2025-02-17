@@ -482,6 +482,10 @@ export default {
   },
   cookieConsent: {
     categories: {
+      necessary: {
+        readOnly: true,
+        enabled: true
+      },
       analytics: {
         autoClear: {
           cookies: [
@@ -503,10 +507,60 @@ export default {
                 description: "Den här tjänsten använder kakor (cookies). En kaka är en liten textfil som lagras i besökarens dator. KB:s tjänster är designade för att minska risken för spridning av dina uppgifter. Informationen som lagras via kakor kan aldrig användas av tredje part i marknadsföringssyfte."
               },
               {
+                title: "Nödvändiga kakor",
+                description: "Dessa kakor krävs för att tjänsten ska vara säker och fungera som den ska. Därför går de inte att inaktivera.",
+                linkedCategory: "necessary",
+                cookieTable: {
+                  title: "Lista över kakor",
+                  headers: {
+                    name: "Namn",
+                    description: "Beskrivning",
+                    duration: "Varaktighet"
+                  },
+                  body: [
+                    {
+                      name: "cc_cookie",
+                      description: "Används för att spara dina kakinställningar.",
+                      duration: "6 månader"
+                    }
+                  ]
+                }
+              },
+              {
                 title: "Analytiska kakor",
                 description:
                   "Kakor som ger oss information om hur webbplatsen används som gör att vi kan underhålla, driva och förbättra användarupplevelsen.",
-                linkedCategory: "analytics"
+                linkedCategory: "analytics",
+                cookieTable: {
+                  title: "Lista över kakor",
+                  headers: {
+                    name: "Namn",
+                    description: "Beskrivning",
+                    duration: "Varaktighet"
+                  },
+                  body: [
+                    {
+                      name: "_pk_id",
+                      description: "Används för att komma ihåg besökaren genom ett unikt och slumpmässigt utformat ID.",
+                      duration: "1 år"
+                    },
+                    {
+                      name: "_pk_ses",
+                      description: "Används för att spara tillfällig data om besöket.",
+                      duration: "30 minuter"
+                    },
+                    {
+                      name: "mtm_consent",
+                      description: "Används för att spara samtycke till analytiska kakor.",
+                      duration: "400 dagar"
+                    },
+                    {
+                      name: "mtm_consent_removed",
+                      description: "Används för att spara nekat samtycke till analytiska kakor.",
+                      duration: "400 dagar"
+                    }
+                  ]
+                }
               },
               {
                 title: "Mer information",
