@@ -40,6 +40,31 @@ describe('getEditedRanges', () => {
 		);
 	});
 
+	it('calculates the edited range when editing a qualifier value in a group', () => {
+		const query = 'hasTitle:((a))';
+		const editedRanges = getEditedRanges(query, 11);
+		expect(editedRanges).toEqual({
+			from: 0,
+			to: 14,
+			qualifierKey: {
+				from: 0,
+				to: 8
+			},
+			qualifierOperator: {
+				from: 8,
+				to: 9
+			},
+			qualifierValue: {
+				from: 9,
+				to: 14
+			}
+		});
+		expect(query.slice(editedRanges.from, editedRanges.to)).toBe('hasTitle:((a))');
+		expect(query.slice(editedRanges.qualifierValue?.from, editedRanges.qualifierValue?.to)).toBe(
+			'((a))'
+		);
+	});
+
 	it('calculates the edited range when editing a string', () => {
 		expect(getEditedRanges('"hello"', 6)).toEqual({
 			from: 0,
