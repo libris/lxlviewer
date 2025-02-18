@@ -3,9 +3,9 @@ import { JsonLd, type FramedData } from '$lib/types/xl';
 import { VocabUtil } from '$lib/utils/xl';
 import {
 	BASE_CLASS_FROM_QUALIFIER_KEY,
-	findInMap,
-	QUALIFIER_KEY_FROM_ALIAS
-} from './getEditedPartEntries';
+	QUALIFIER_KEY_FROM_ALIAS,
+	findInMap
+} from './qualifierMappings';
 import { env } from '$env/dynamic/private';
 import type { EditedRanges } from './getEditedRanges';
 import type { LocaleCode } from '$lib/i18n/locales';
@@ -34,35 +34,39 @@ export function itemAsQualifiers(
 	const itemType = item[JsonLd.TYPE] as string | string[];
 	const itemTypeBaseClasses = vocabUtil.getBaseClasses(itemType);
 	const qualifierBaseClasses = Object.keys(BASE_CLASS_FROM_QUALIFIER_KEY);
-	const itemBaseClass = itemTypeBaseClasses
-		.filter((c) => qualifierBaseClasses.includes(c))
-		.join() as keyof typeof BASE_CLASS_FROM_QUALIFIER_KEY;
+	const sharedBaseClasses = itemTypeBaseClasses.filter((c) =>
+		qualifierBaseClasses.includes(c)
+	) as (keyof typeof BASE_CLASS_FROM_QUALIFIER_KEY)[];
+	let predicates: string[] = [];
 
-	let predicates = BASE_CLASS_FROM_QUALIFIER_KEY?.[itemBaseClass];
+	sharedBaseClasses.forEach((cl) => {
+		const p = BASE_CLASS_FROM_QUALIFIER_KEY[cl];
+		if (p) {
+			predicates = [...predicates, ...p];
+		}
+	});
 
 	// if user explicitly requested a relation ('contributor:'), only show that one
 	if (editedRanges.qualifierKey) {
 		const qualifierKey = _q.substring(editedRanges.qualifierKey.from, editedRanges.qualifierKey.to);
 		const keyFromAlias = findInMap(QUALIFIER_KEY_FROM_ALIAS, qualifierKey).join();
-		predicates = predicates.filter(
-			(p) => p === (keyFromAlias.toLowerCase() || qualifierKey.toLowerCase())
+		predicates = predicates?.filter(
+			(p: string) => p.toLowerCase() === (keyFromAlias.toLowerCase() || qualifierKey.toLowerCase())
 		);
 	}
 	const qualifierValue = getQualifierValue(item[JsonLd.ID] as string);
 
-	if (predicates && Array.isArray(predicates)) {
-		return predicates.map((p) => {
-			const qualifier = `${p}:${qualifierValue}`;
-			const qWithQualifier = _q.slice(0, editedRanges.from) + qualifier + _q.slice(editedRanges.to);
-			const label: string = vocabUtil.getLabelByLang(p, locale);
-			return {
-				label: label || p,
-				_q: qWithQualifier,
-				from: editedRanges.from,
-				to: editedRanges.to
-			};
-		});
-	} else return [];
+	return predicates.map((p) => {
+		const qualifier = `${p}:${qualifierValue}`;
+		const qWithQualifier = _q.slice(0, editedRanges.from) + qualifier + _q.slice(editedRanges.to);
+		const label: string = vocabUtil.getLabelByLang(p, locale);
+		return {
+			label: label || p,
+			_q: qWithQualifier,
+			from: editedRanges.from,
+			to: editedRanges.to
+		};
+	});
 }
 
 function getQualifierValue(id: string) {

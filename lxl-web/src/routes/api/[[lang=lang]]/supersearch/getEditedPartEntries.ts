@@ -1,23 +1,11 @@
 import getEditedRanges, { type EditedRanges } from './getEditedRanges.js';
+import {
+	BASE_CLASS_FROM_QUALIFIER_KEY,
+	QUALIFIER_KEY_FROM_ALIAS,
+	findInMap
+} from './qualifierMappings.js';
 
 const DEFAULT_SUPERSEARCH_TYPES = ['Agent', 'Concept', 'Language', 'Work'];
-
-export const QUALIFIER_KEY_FROM_ALIAS = {
-	Contributor: ['medverkande'],
-	Language: ['språk'],
-	Subject: ['ämne'],
-	Bibliography: ['bibliografi']
-};
-
-export const BASE_CLASS_FROM_QUALIFIER_KEY = {
-	Agent: ['contributor', 'subject'], // find agents when typing 'subject:'
-	Subject: ['subject'],
-	GenreForm: ['genreForm'],
-	Language: ['language', 'translationOf.language'],
-	Library: ['itemHeldBy'],
-	Bibliography: ['bibliography']
-};
-
 const SKIP_QUALIFIERS = ['yearPublished', 'år'];
 
 /**
@@ -74,18 +62,6 @@ function queryIncludesType(q: string | undefined) {
 		return !!q.match(/"rdf:type"[:=]/g);
 	}
 	return false;
-}
-
-export function findInMap(map: Record<string, string[]>, k: string) {
-	const found = [];
-	if (k && typeof k === 'string') {
-		for (const [key, value] of Object.entries(map)) {
-			if (Array.isArray(value) && value.some((el) => el.toLowerCase() === k.toLowerCase())) {
-				found.push(key);
-			}
-		}
-	}
-	return found;
 }
 
 export default getEditedPartEntries;
