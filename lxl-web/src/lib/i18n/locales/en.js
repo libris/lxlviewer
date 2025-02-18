@@ -98,7 +98,8 @@ export default {
 		relatedSearchLabel: 'Search the results',
 		didYouMean: 'Did you mean',
 		showAllResults: 'Show all results',
-		supersearchStartHeader: 'Build and refine your search query'
+		supersearchStartHeader: 'Build and refine your search query',
+		addAs: 'Lägg till som'
 	},
 	sort: {
 		sort: 'Sort',

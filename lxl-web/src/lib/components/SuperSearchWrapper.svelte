@@ -333,7 +333,11 @@
 									href={getFullQualifierLink(qualifier._q)}
 								>
 									<span class="lxl-qualifier atomic add-qualifier">
-										<BiPlusLg class="" fill="currentColor" />
+										<BiPlusLg
+											class=""
+											fill="currentColor"
+											aria-label={$page.data.t('search.addAs')}
+										/>
 										<span class="first-letter:capitalize">{qualifier.label}</span>
 									</span>
 								</a>
