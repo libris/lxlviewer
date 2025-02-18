@@ -9,12 +9,12 @@ const QUALIFIER_KEY_FROM_ALIAS = {
 	Bibliography: ['bibliografi']
 };
 
-const BASE_CLASS_FROM_QUALIFIER_KEY = {
-	Agent: ['contributor'], // + subject? I.e should we also search for agents when typing 'subject:'?
+export const BASE_CLASS_FROM_QUALIFIER_KEY = {
+	Agent: ['contributor', 'subject'], // find agents when typing 'subject:'
 	Subject: ['subject'],
 	GenreForm: ['genreForm'],
 	Language: ['language', 'translationOf.language'],
-	Library: ['itemHeldBy'], // library??
+	Library: ['itemHeldBy'],
 	Bibliography: ['bibliography']
 };
 
@@ -46,12 +46,12 @@ function getEditedPartEntries(
 		const skipQualifier = SKIP_QUALIFIERS.includes(qualifierKey.toLowerCase());
 		if (!skipQualifier) {
 			// Get the normalized property from a translated key/alternative query code
-			const keyFromAlias = findInMap(QUALIFIER_KEY_FROM_ALIAS, qualifierKey);
-			const baseClass = findInMap(BASE_CLASS_FROM_QUALIFIER_KEY, keyFromAlias || qualifierKey);
+			const keyFromAlias = findInMap(QUALIFIER_KEY_FROM_ALIAS, qualifierKey).join();
+			const baseClasses = findInMap(BASE_CLASS_FROM_QUALIFIER_KEY, keyFromAlias || qualifierKey);
 
-			if (baseClass) {
+			if (baseClasses.length > 0) {
 				return [
-					['_q', `${qualifierValue} "rdf:type":${baseClass}`],
+					['_q', `${qualifierValue} "rdf:type":(${baseClasses.join(' OR ')})`],
 					['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once
 				];
 			}
@@ -77,13 +77,15 @@ function queryIncludesType(q: string | undefined) {
 }
 
 function findInMap(map: Record<string, string[]>, k: string) {
+	const found = [];
 	if (k && typeof k === 'string') {
 		for (const [key, value] of Object.entries(map)) {
 			if (Array.isArray(value) && value.some((el) => el.toLowerCase() === k.toLowerCase())) {
-				return key;
+				found.push(key);
 			}
 		}
 	}
+	return found;
 }
 
 export default getEditedPartEntries;
