@@ -13,6 +13,7 @@
 	import BiArrowUpLeft from '~icons/bi/arrow-up-left';
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import BiChevronUp from '~icons/bi/chevron-up';
+	import BiPlusLg from '~icons/bi/plus-lg';
 	import '$lib/styles/lxlquery.css';
 
 	interface Props {
@@ -93,6 +94,19 @@
 	});
 
 	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);
+	
+	function getFullQualifierLink(q: string) {
+		const params = new URLSearchParams($page.url.searchParams.toString());
+		params.set('_q', q);
+		params.delete('_i');
+		params.set('_offset', '0');
+		return `/find?${params.toString()}`;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	function onClickAddQualifier(to: string) {
+		// TODO set cursor position
+	}
 </script>
 
 {#snippet startFilterItem({
@@ -304,7 +318,29 @@
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
 			{#if resultItem}
-				<SuggestionCard item={resultItem} cellId={getCellId(0)} isFocused={isFocusedCell(0)} />
+				<div class="suggestion-card-container flex">
+					<SuggestionCard item={resultItem} cellId={getCellId(0)} isFocused={isFocusedCell(0)} />
+					{#if resultItem.qualifiers.length > 0}
+						<div class="flex">
+							{#each resultItem.qualifiers as qualifier, index}
+								<!-- pills -->
+								<a
+									id={getCellId(index + 1)}
+									role="gridcell"
+									class:focused-cell={isFocusedCell(index + 1)}
+									class="flex items-center p-2 no-underline last-of-type:pr-4 hover:bg-main"
+									onclick={() => onClickAddQualifier(qualifier.to)}
+									href={getFullQualifierLink(qualifier._q)}
+								>
+									<span class="lxl-qualifier atomic add-qualifier">
+										<BiPlusLg class="" fill="currentColor" />
+										<span class="first-letter:capitalize">{qualifier.label}</span>
+									</span>
+								</a>
+							{/each}
+						</div>
+					{/if}
+				</div>
 			{/if}
 		{/snippet}
 	</SuperSearch>
@@ -318,6 +354,14 @@
 <style lang="postcss">
 	.supersearch-input {
 		@apply relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md bg-cards focus-within:outline focus-within:outline-2 focus-within:outline-accent-dark/32;
+	}
+
+	.suggestion-card-container {
+		container-type: inline-size;
+	}
+
+	.add-qualifier {
+		@apply flex items-center gap-1 rounded-sm px-2 py-1;
 	}
 
 	/* dialog */
