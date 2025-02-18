@@ -22,6 +22,7 @@
 	let { placeholder = '' }: Props = $props();
 
 	let q = $state($page.params.fnurgel ? '' : $page.url.searchParams.get('_q')?.trim() || '');
+	let cursor: number = $state(0);
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 	let showMoreFilters = $state(false);
 
@@ -68,6 +69,21 @@
 		return data;
 	}
 
+	function addQualifierKey(qualifierKey: string) {
+		superSearch?.dispatchChange({
+			change: {
+				from: cursor,
+				to: cursor,
+				insert: `${qualifierKey}:""`
+			},
+			selection: {
+				anchor: cursor + qualifierKey?.length + 2,
+				head: cursor + qualifierKey?.length + 2
+			}
+		});
+		superSearch?.hideExpandedSearch();
+	}
+
 	let derivedLxlQualifierPlugin = $derived.by(() => {
 		function getLabels(key: string, value?: string) {
 			let pageMapping = $page.data.searchResult?.mapping;
@@ -103,7 +119,7 @@
 			id={getCellId(rowIndex, 0)}
 			class="flex min-h-12 w-full items-center px-4 hover:bg-main"
 			class:focused-cell={isFocusedCell(rowIndex, 0)}
-			onclick={() => superSearch?.dispatchChange({ insert: `${qualifierKey}:""` })}
+			onclick={() => addQualifierKey(qualifierKey)}
 		>
 			<span class="overflow-hidden text-ellipsis whitespace-nowrap">
 				<strong class="text-3-cond-bold">{qualifierLabel}:</strong>
@@ -119,6 +135,7 @@
 		name="_q"
 		bind:this={superSearch}
 		bind:value={q}
+		bind:cursor
 		language={lxlQuery}
 		{placeholder}
 		endpoint={`/api/${$page.data.locale}/supersearch`}
@@ -197,7 +214,7 @@
 					{$page.data.t('search.supersearchStartHeader')}
 				</div>
 				{@render startFilterItem({
-					qualifierKey: 'medverkan',
+					qualifierKey: 'contributor',
 					qualifierLabel: 'Medverkan',
 					qualifierPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
 					getCellId,
@@ -206,7 +223,7 @@
 					rowIndex: 1
 				})}
 				{@render startFilterItem({
-					qualifierKey: 'titel',
+					qualifierKey: 'hasTitle',
 					qualifierLabel: 'Titel',
 					qualifierPlaceholder: 'Röda rummet, Casablanca',
 					getCellId,
@@ -215,7 +232,7 @@
 					rowIndex: 2
 				})}
 				{@render startFilterItem({
-					qualifierKey: 'språk',
+					qualifierKey: 'language',
 					qualifierLabel: 'Språk',
 					qualifierPlaceholder: 'Svenska, Engelska, Arabiska',
 					getCellId,

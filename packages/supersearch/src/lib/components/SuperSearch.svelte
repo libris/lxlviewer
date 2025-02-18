@@ -71,6 +71,7 @@
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
+		cursor?: number;
 		isLoading?: boolean;
 		hasData?: boolean;
 	}
@@ -98,6 +99,7 @@
 		defaultResultRow = 0,
 		defaultResultCol = 0,
 		debouncedWait = 300,
+		cursor = $bindable(0), // should be treated as readonly
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable() // should be treated as readonly
 	}: Props = $props();
@@ -106,7 +108,6 @@
 	let expandedEditorView: EditorView | undefined = $state();
 	let dialog: HTMLDialogElement | undefined = $state();
 	let expanded = $state(false);
-	let cursor: number = $state(0);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(0);
 	let prevValue: string = value;
@@ -233,25 +234,41 @@
 	}
 
 	export function dispatchChange({
-		change
+		change,
+		selection,
+		userEvent = 'input'
 	}: {
 		change: {
-			from?: number;
-			to?: number;
+			from: number;
+			to: number;
 			insert: string;
 		};
+		selection?: {
+			anchor: number;
+			head: number;
+		};
+		userEvent:
+			| 'input'
+			| 'input.type'
+			| 'input.paste'
+			| 'input.drop'
+			| 'input.complete'
+			| 'delete'
+			| 'delete.selection'
+			| 'delete.forward'
+			| 'delete.backward'
+			| 'delete.cut'
+			| 'move'
+			| 'move.drop'
+			| 'select'
+			| 'select.pointer'
+			| 'undo'
+			| 'redo'; // see: https://codemirror.net/docs/ref/#state.Transaction%5EuserEvent
 	}) {
 		collapsedEditorView?.dispatch({
-			changes: {
-				from: change.from || cursor,
-				to: change.to || cursor,
-				insert: change.insert
-			},
-			selection: {
-				anchor: (change.from || cursor) + change.insert.length,
-				head: (change.from || cursor) + change.insert.length
-			},
-			userEvent: 'input'
+			changes: change,
+			selection,
+			userEvent
 		});
 	}
 
