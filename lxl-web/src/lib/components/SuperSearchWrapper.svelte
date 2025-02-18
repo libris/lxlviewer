@@ -327,8 +327,10 @@
 								<a
 									id={getCellId(index + 1)}
 									role="gridcell"
-									class:focused-cell={isFocusedCell(index + 1)}
-									class="flex items-center p-2 no-underline last-of-type:pr-4 hover:bg-main"
+									class={[
+										'flex items-center p-2 no-underline last-of-type:pr-4 hover:bg-main',
+										isFocusedCell(index + 1) && 'focused-cell'
+									]}
 									onclick={() => onClickAddQualifier(qualifier.to)}
 									href={getFullQualifierLink(qualifier._q)}
 								>
