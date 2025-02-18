@@ -1,7 +1,11 @@
 import type { addQualifier } from '$lib/types/search';
 import { JsonLd, type FramedData } from '$lib/types/xl';
 import { VocabUtil } from '$lib/utils/xl';
-import { BASE_CLASS_FROM_QUALIFIER_KEY } from './getEditedPartEntries';
+import {
+	BASE_CLASS_FROM_QUALIFIER_KEY,
+	findInMap,
+	QUALIFIER_KEY_FROM_ALIAS
+} from './getEditedPartEntries';
 import { env } from '$env/dynamic/private';
 import type { EditedRanges } from './getEditedRanges';
 import type { LocaleCode } from '$lib/i18n/locales';
@@ -34,7 +38,16 @@ export function itemAsQualifiers(
 		.filter((c) => qualifierBaseClasses.includes(c))
 		.join() as keyof typeof BASE_CLASS_FROM_QUALIFIER_KEY;
 
-	const predicates = BASE_CLASS_FROM_QUALIFIER_KEY?.[itemBaseClass];
+	let predicates = BASE_CLASS_FROM_QUALIFIER_KEY?.[itemBaseClass];
+
+	// if user explicitly requested a relation ('contributor:'), only show that one
+	if (editedRanges.qualifierKey) {
+		const qualifierKey = _q.substring(editedRanges.qualifierKey.from, editedRanges.qualifierKey.to);
+		const keyFromAlias = findInMap(QUALIFIER_KEY_FROM_ALIAS, qualifierKey).join();
+		predicates = predicates.filter(
+			(p) => p === (keyFromAlias.toLowerCase() || qualifierKey.toLowerCase())
+		);
+	}
 	const qualifierValue = getQualifierValue(item[JsonLd.ID] as string);
 
 	if (predicates && Array.isArray(predicates)) {

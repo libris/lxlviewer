@@ -2,7 +2,7 @@ import getEditedRanges, { type EditedRanges } from './getEditedRanges.js';
 
 const DEFAULT_SUPERSEARCH_TYPES = ['Agent', 'Concept', 'Language', 'Work'];
 
-const QUALIFIER_KEY_FROM_ALIAS = {
+export const QUALIFIER_KEY_FROM_ALIAS = {
 	Contributor: ['medverkande'],
 	Language: ['språk'],
 	Subject: ['ämne'],
@@ -76,7 +76,7 @@ function queryIncludesType(q: string | undefined) {
 	return false;
 }
 
-function findInMap(map: Record<string, string[]>, k: string) {
+export function findInMap(map: Record<string, string[]>, k: string) {
 	const found = [];
 	if (k && typeof k === 'string') {
 		for (const [key, value] of Object.entries(map)) {
