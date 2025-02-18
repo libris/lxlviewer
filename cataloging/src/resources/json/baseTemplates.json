@@ -11,8 +11,7 @@
           "@id": "https://id.kb.se/marc/Isbd"
         },
         {
-          "@type": "DescriptionConventions",
-          "code": "rda"
+          "@id": "https://id.kb.se/term/enum/Rda"
         }
       ],
       "descriptionLanguage": [{
