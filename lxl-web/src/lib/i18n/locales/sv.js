@@ -96,7 +96,8 @@ export default {
 		occursAs: 'förekommer som',
 		relatedSearchLabel: 'Sök i resultaten',
 		didYouMean: 'Menade du',
-		showAllResults: 'Visa alla sökresultat'
+		showAllResults: 'Visa alla sökresultat',
+		supersearchStartHeader: 'Bygg och förfina din sökning'
 	},
 	sort: {
 		sort: 'Sortera',

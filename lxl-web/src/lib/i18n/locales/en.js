@@ -97,7 +97,8 @@ export default {
 		occursAs: 'as',
 		relatedSearchLabel: 'Search the results',
 		didYouMean: 'Did you mean',
-		showAllResults: 'Show all results'
+		showAllResults: 'Show all results',
+		supersearchStartHeader: 'Build and refine your search query'
 	},
 	sort: {
 		sort: 'Sort',

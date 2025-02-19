@@ -42,13 +42,44 @@ test('expanded search is togglable using keyboard shortcut', async ({ page }) =>
 });
 
 test('supports keyboard navigation between rows and columns/cells', async ({ page }) => {
-	await page.getByRole('combobox').fill('a');
+	await page.getByRole('combobox').click();
 	const comboboxElement = page.getByRole('dialog').getByRole('combobox');
-	await expect(comboboxElement, 'default row and cell is selected initially').toHaveAttribute(
+	await expect(comboboxElement, 'no start item cell is focused initially').not.toHaveAttribute(
+		'aria-activedescendant',
+		/.+/
+	);
+	await page.keyboard.press('ArrowDown');
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');
+	await expect(page.locator('#supersearch-item-1x0')).toHaveClass(/focused-cell/);
+	await page.keyboard.press('ArrowDown');
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-2x0');
+	await page.keyboard.press('ArrowDown');
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-3x0');
+	await page.keyboard.press('ArrowDown');
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-3x0');
+	await expect(
+		page.locator('#supersearch-item-3x0'),
+		'focus is kept on last item when reaching the end of the grid'
+	).toHaveClass(/focused-cell/);
+	await page.keyboard.press('ArrowUp');
+	await page.keyboard.press('ArrowUp');
+	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-1x0');
+	await page.keyboard.press('ArrowUp');
+	await expect(comboboxElement).not.toHaveAttribute('aria-activedescendant', /.+/);
+	await page.keyboard.press('Tab');
+	await expect(
+		page.getByRole('dialog').getByRole('combobox'),
+		'items on input row are focusable using tab'
+	).toHaveAttribute('aria-activedescendant', 'supersearch-item-0x2');
+	await page.keyboard.press('Escape');
+
+	await page.getByRole('combobox').fill('a');
+	await expect(comboboxElement, 'default result item cell is focused initially').toHaveAttribute(
 		'aria-activedescendant',
 		'supersearch-item-1x0'
 	);
 	await expect(page.locator('#supersearch-item-1x0')).toHaveClass(/focused-cell/);
+	await expect(page.getByTestId('result-item')).toHaveCount(10);
 	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('ArrowDown');
 	await expect(comboboxElement).toHaveAttribute('aria-activedescendant', 'supersearch-item-3x0');
@@ -157,7 +188,7 @@ test('fetches and displays paginated results', async ({ page }) => {
 });
 
 test('submits form when pressing submit action', async ({ page }) => {
-	await page.getByRole('button', { name: /search/i }).click();
+	await page.locator('[type=submit]').first().click();
 	await expect(page, 'submit action should only be triggered if there is a value').toHaveURL('/');
 	await page.getByRole('combobox').fill('hello world');
 	await page.getByRole('dialog').locator('[type=submit]').click();

@@ -30,6 +30,15 @@
 		transformFn?: TransformFunction;
 		extensions?: Extension[];
 		comboboxAriaLabel?: string;
+		startContent?: Snippet<
+			[
+				{
+					getCellId: (rowIndex: number, cellIndex: number) => string | undefined;
+					isFocusedCell: (rowIndex: number, cellIndex: number) => boolean;
+					isFocusedRow: (rowIndex: number) => boolean;
+				}
+			]
+		>;
 		inputRow?: Snippet<
 			[
 				{
@@ -53,15 +62,16 @@
 				}
 			]
 		>;
-		persistentItemRow?: Snippet<
+		persistentResultItemRow?: Snippet<
 			[{ getCellId: (cellIndex: number) => string; isFocusedCell: (cellIndex: number) => boolean }]
 		>;
 		loadingIndicator?: Snippet;
-		defaultRow?: number;
 		defaultInputCol?: number;
-		defaultResultItemCol?: number;
+		defaultResultRow?: number;
+		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
+		cursor?: number;
 		isLoading?: boolean;
 		hasData?: boolean;
 	}
@@ -79,15 +89,17 @@
 		transformFn,
 		extensions = [],
 		comboboxAriaLabel,
+		startContent,
 		inputRow = fallbackInputRow,
 		resultItemRow = fallbackResultItemRow,
-		persistentItemRow,
+		persistentResultItemRow,
 		loadingIndicator,
 		toggleWithKeyboardShortcut = false,
-		defaultRow = 0,
 		defaultInputCol = -1,
-		defaultResultItemCol = 0,
+		defaultResultRow = 0,
+		defaultResultCol = 0,
 		debouncedWait = 300,
+		cursor = $bindable(0), // should be treated as readonly
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable() // should be treated as readonly
 	}: Props = $props();
@@ -96,7 +108,6 @@
 	let expandedEditorView: EditorView | undefined = $state();
 	let dialog: HTMLDialogElement | undefined = $state();
 	let expanded = $state(false);
-	let cursor: number = $state(0);
 	let activeRowIndex: number = $state(0);
 	let activeColIndex: number = $state(0);
 	let prevValue: string = value;
@@ -150,7 +161,7 @@
 		})
 	);
 
-	let includeAriaActiveDescendant = $derived(activeRowIndex >= 0 && !!search?.data); // ensures aria-activedecendant is only shown if the element exists in the DOM
+	let includeAriaActiveDescendant = $derived(activeRowIndex >= 0 && activeColIndex >= 0); // ensures aria-activedecendant is only shown if the element exists in the DOM
 	let expandedContentAttributes = $derived(
 		EditorView.contentAttributes.of({
 			id: `${id}-content`,
@@ -190,11 +201,15 @@
 	}
 
 	function setDefaultRowAndCols() {
-		activeRowIndex = defaultRow;
-
-		if (activeRowIndex > 0) {
-			activeColIndex = defaultResultItemCol;
+		if (value.trim().length) {
+			activeRowIndex = defaultResultRow;
+			if (activeRowIndex > 0) {
+				activeColIndex = defaultResultCol;
+			} else {
+				activeColIndex = defaultInputCol;
+			}
 		} else {
+			activeRowIndex = 0;
 			activeColIndex = defaultInputCol;
 		}
 	}
@@ -216,6 +231,45 @@
 			prevValue = value;
 			if (search.data) search.resetData();
 		}
+	}
+
+	export function dispatchChange({
+		change,
+		selection,
+		userEvent = 'input'
+	}: {
+		change: {
+			from: number;
+			to: number;
+			insert: string;
+		};
+		selection?: {
+			anchor: number;
+			head: number;
+		};
+		userEvent?:
+			| 'input'
+			| 'input.type'
+			| 'input.paste'
+			| 'input.drop'
+			| 'input.complete'
+			| 'delete'
+			| 'delete.selection'
+			| 'delete.forward'
+			| 'delete.backward'
+			| 'delete.cut'
+			| 'move'
+			| 'move.drop'
+			| 'select'
+			| 'select.pointer'
+			| 'undo'
+			| 'redo'; // see: https://codemirror.net/docs/ref/#state.Transaction%5EuserEvent
+	}) {
+		collapsedEditorView?.dispatch({
+			changes: change,
+			selection,
+			userEvent
+		});
 	}
 
 	export function showExpandedSearch() {
@@ -318,9 +372,13 @@
 			if (rows.length) {
 				switch (event.key) {
 					case 'ArrowUp':
-						if (activeRowIndex > 1) {
+						if (activeRowIndex >= 1) {
 							activeRowIndex--;
-							activeColIndex = Math.min(activeColIndex, getColsInRow(activeRowIndex).length - 1);
+							if (activeRowIndex < 1) {
+								activeColIndex = defaultInputCol;
+							} else {
+								activeColIndex = Math.min(activeColIndex, getColsInRow(activeRowIndex).length - 1);
+							}
 						}
 						break;
 					case 'ArrowDown':
@@ -518,10 +576,10 @@
 				})}
 			</div>
 			<nav class="supersearch-suggestions" role="rowgroup">
-				{#if value.length}
-					{#if persistentItemRow}
+				{#if value.trim().length}
+					{#if persistentResultItemRow}
 						<div role="row" class:focused={activeRowIndex === 1}>
-							{@render persistentItemRow({
+							{@render persistentResultItemRow({
 								getCellId: (colIndex: number) => `${id}-item-1x${colIndex}`,
 								isFocusedCell: (colIndex: number) =>
 									activeRowIndex === 1 && colIndex === activeColIndex
@@ -534,7 +592,7 @@
 								search.paginatedData.map((page) => page.items).flat()) ||
 							search.data?.items}
 						{#each resultItemRows as resultItem, index}
-							{@const rowIndex = persistentItemRow ? index + 2 : index + 1}
+							{@const rowIndex = persistentResultItemRow ? index + 2 : index + 1}
 							<div role="row" class:focused={activeRowIndex === rowIndex}>
 								{@render resultItemRow?.({
 									resultItem,
@@ -554,7 +612,12 @@
 						</button>
 					{/if}
 				{:else}
-					<div><!-- Start content here --></div>
+					{@render startContent?.({
+						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+						isFocusedCell: (rowIndex: number, colIndex: number) =>
+							activeRowIndex === rowIndex && colIndex === activeColIndex,
+						isFocusedRow: (rowIndex: number) => activeRowIndex === rowIndex
+					})}
 				{/if}
 			</nav>
 		</div>
