@@ -54,11 +54,13 @@ export function itemAsQualifiers(
 			(p: string) => p.toLowerCase() === (keyFromAlias.toLowerCase() || qualifierKey.toLowerCase())
 		);
 	}
+
 	const qualifierValue = getQualifierValue(item[JsonLd.ID] as string);
 
 	return predicates.map((p) => {
-		const qualifier = `${p}:${qualifierValue}`;
-		const qWithQualifier = _q.slice(0, editedRanges.from) + qualifier + _q.slice(editedRanges.to);
+		const qualifier = ` ${p}:${qualifierValue} `;
+		const qWithQualifier =
+			_q.slice(0, editedRanges.from).trim() + qualifier + _q.slice(editedRanges.to).trim();
 		const label: string = vocabUtil.getLabelByLang(p, locale);
 		return {
 			label: label || p,
