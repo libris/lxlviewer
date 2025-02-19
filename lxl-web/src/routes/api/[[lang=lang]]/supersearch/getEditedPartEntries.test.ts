@@ -7,7 +7,7 @@ describe('getEditedPartEntries', () => {
 	});
 	it('narrows down search query by base class for query codes', () => {
 		expect(getEditedPartEntries('astrid lindgren subject:"winter"', 27)).toEqual([
-			['_q', `"winter" "rdf:type":Subject`],
+			['_q', `"winter" "rdf:type":(Agent OR Subject)`],
 			['min-reverseLinks.totalItems', '1']
 		]);
 	});
