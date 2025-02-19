@@ -247,7 +247,7 @@
 			anchor: number;
 			head: number;
 		};
-		userEvent:
+		userEvent?:
 			| 'input'
 			| 'input.type'
 			| 'input.paste'
