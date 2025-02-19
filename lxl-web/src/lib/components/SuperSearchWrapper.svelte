@@ -13,7 +13,6 @@
 	import BiArrowUpLeft from '~icons/bi/arrow-up-left';
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import BiChevronUp from '~icons/bi/chevron-up';
-	import BiPlusLg from '~icons/bi/plus-lg';
 	import '$lib/styles/lxlquery.css';
 
 	interface Props {
@@ -318,24 +317,24 @@
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
 			{#if resultItem}
-				<div class="suggestion-card-container flex">
+				<div class="suggestion-card-container flex text-xs md:text-sm">
 					<SuggestionCard item={resultItem} cellId={getCellId(0)} isFocused={isFocusedCell(0)} />
 					{#if resultItem.qualifiers.length > 0}
-						<div class="flex">
+						<div class="flex pr-2">
 							{#each resultItem.qualifiers as qualifier, index}
 								<!-- pills -->
 								<a
 									id={getCellId(index + 1)}
 									role="gridcell"
 									class={[
-										'flex items-center p-2 no-underline last-of-type:pr-4 hover:bg-main',
+										'flex items-center p-1 no-underline hover:bg-main sm:p-1.5',
 										isFocusedCell(index + 1) && 'focused-cell'
 									]}
 									onclick={() => onClickAddQualifier(qualifier.to)}
 									href={getFullQualifierLink(qualifier._q)}
 								>
 									<span class="lxl-qualifier atomic add-qualifier">
-										<BiPlusLg
+										<BiArrowUpLeft
 											class=""
 											fill="currentColor"
 											aria-label={$page.data.t('search.addAs')}
@@ -400,6 +399,18 @@
 		box-shadow: inset 0 0 0 1px rgba(105, 65, 25, 0.24);
 	}
 
+	:global(.supersearch-dialog .focused) {
+		@apply bg-site-header/24;
+	}
+
+	:global(.focused-cell) {
+		@apply bg-site-header/40;
+	}
+
+	:global(.button-primary.focused-cell) {
+		@apply before:opacity-100;
+	}
+
 	/* suggestions */
 
 	:global(.supersearch-suggestions [role='row']:last-child) {
@@ -438,13 +449,5 @@
 		padding-top: 0.6125rem;
 		padding-bottom: 0.6125rem;
 		outline: none;
-	}
-
-	.focused-cell {
-		@apply bg-site-header/40;
-	}
-
-	:global(.button-primary.focused-cell) {
-		@apply before:opacity-100;
 	}
 </style>

@@ -27,11 +27,11 @@
 	let showDebugExplain = $state(false);
 </script>
 
-<article class="suggestion-card relative grid w-full gap-x-4 px-4 pb-2 pt-2 font-normal">
+<article class="suggestion-card relative grid w-full gap-x-4 px-4 py-2 font-normal">
 	<a
 		id={cellId}
 		role="gridcell"
-		class={['card-link absolute h-full w-full hover:bg-main', isFocused && 'bg-site-header/40']}
+		class={['card-link absolute h-full w-full hover:bg-main', isFocused && 'focused-cell']}
 		href={itemId}
 		aria-labelledby={titleId}
 		aria-describedby={`${footerId}`}
