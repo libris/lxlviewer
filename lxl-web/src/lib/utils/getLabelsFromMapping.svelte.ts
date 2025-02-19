@@ -8,8 +8,12 @@ function getLabelFromMappings(
 	pageMapping?: DisplayMapping[],
 	suggestMapping?: DisplayMapping[]
 ) {
-	const pageLabels = iterateMapping(key, value, pageMapping);
-	const suggestLabels = iterateMapping(key, value, suggestMapping || prevSuggestMapping);
+	const nonQuotedKey = key.replace(/^"(.*)"$/, '$1');
+	const nonQuotedValue = value && value.replace(/^"(.*)"$/, '$1');
+	const bestSuggestMapping = $derived(suggestMapping?.length ? suggestMapping : prevSuggestMapping);
+
+	const pageLabels = iterateMapping(nonQuotedKey, nonQuotedValue, pageMapping);
+	const suggestLabels = iterateMapping(nonQuotedKey, nonQuotedValue, bestSuggestMapping);
 
 	const keyLabel = suggestLabels.keyLabel || pageLabels.keyLabel;
 	const valueLabel = suggestLabels.valueLabel || pageLabels.valueLabel;
@@ -17,9 +21,8 @@ function getLabelFromMappings(
 	// only page data have 'up' links we can use
 	const removeLink = pageLabels.keyLabel ? pageLabels.removeLink : undefined;
 
-	if (suggestMapping) {
-		// TODO remove when invalid qualifier no longer result in empty error response
-		// until when we need to save latest 'successful' suggest mapping
+	if (suggestMapping?.length) {
+		// save latest mapping as fallback for error responses etc
 		prevSuggestMapping = suggestMapping;
 	}
 
@@ -43,19 +46,19 @@ function iterateMapping(
 			m.forEach((el) => {
 				if (el.children) {
 					_iterate(el.children);
-				} else if (el.property === key) {
-					keyLabel = el.label;
+				} else if (el?._key === key) {
+					if (el?.invalid === el?._key) {
+						invalid = true;
+					} else {
+						keyLabel = el.label;
+					}
 					const isLinked = !!el.display?.['@id'];
-					if (isLinked) {
-						if (el.displayStr) {
-							// only use atomic ranges for linked values
-							valueLabel = el.displayStr;
-						}
+					if (isLinked && value === el?._value && el?.displayStr) {
+						// only use atomic ranges for linked values
+						valueLabel = el.displayStr;
 						// only show remove btn for pills that can't be edited
 						removeLink = el.up?.['@id'];
 					}
-				} else if (el.invalid === key) {
-					invalid = true;
 				}
 			});
 		}
