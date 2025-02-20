@@ -24,7 +24,7 @@ const PREFIXES_BY_NAMESPACE = {
 	'https://id.kb.se/language/': 'lang:'
 };
 
-export function itemAsQualifiers(
+function itemAsQualifiers(
 	item: FramedData,
 	editedRanges: EditedRanges,
 	_q: string,
@@ -97,3 +97,5 @@ function getPrefix(id: string) {
 	}
 	return '';
 }
+
+export default itemAsQualifiers;

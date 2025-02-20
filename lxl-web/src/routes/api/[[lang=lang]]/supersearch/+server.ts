@@ -7,7 +7,7 @@ import getEditedRanges from './getEditedRanges.js';
 import { asResult } from '$lib/utils/search.js';
 import { DebugFlags } from '$lib/types/userSettings.js';
 import type { SuperSearchResult } from '$lib/types/search.js';
-import { itemAsQualifiers } from './itemAsQualifiers.js';
+import itemAsQualifiers from './itemAsQualifiers.js';
 
 /**
  * TODO:
