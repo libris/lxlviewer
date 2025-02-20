@@ -37,7 +37,7 @@ function getEditedPartEntries(
 			const keyFromAlias = findInMap(QUALIFIER_KEY_FROM_ALIAS, qualifierKey).join();
 			const baseClasses = findInMap(BASE_CLASS_FROM_QUALIFIER_KEY, keyFromAlias || qualifierKey);
 
-			if (baseClasses.length > 0) {
+			if (baseClasses.length) {
 				return [
 					['_q', `${qualifierValue} "rdf:type":(${baseClasses.join(' OR ')})`],
 					['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once

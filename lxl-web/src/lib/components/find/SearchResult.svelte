@@ -51,7 +51,7 @@
 	{@const facets = searchResult.facetGroups}
 	{@const numHits = searchResult.totalItems}
 	{@const filterCount = getFiltersCount(searchResult.mapping)}
-	{#if searchResult.predicates.length > 0}
+	{#if searchResult.predicates.length}
 		<nav
 			class="border-b border-primary/16 px-4 md:flex lg:px-6"
 			aria-label={$page.data.t('search.selectedFilters')}
@@ -148,7 +148,7 @@
 					{:else}
 						<span class="hits-count">{$page.data.t('search.noResults')}</span>
 					{/if}
-					{#if searchResult._spell.length > 0}
+					{#if searchResult._spell.length}
 						<span class="suggest">
 							{#each searchResult._spell as suggestion (suggestion.label)}
 								{$page.data.t('search.didYouMean')}

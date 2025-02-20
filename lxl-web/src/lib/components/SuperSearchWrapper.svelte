@@ -319,7 +319,7 @@
 			{#if resultItem}
 				<div class="suggestion-card-container flex text-xs md:text-sm">
 					<SuggestionCard item={resultItem} cellId={getCellId(0)} isFocused={isFocusedCell(0)} />
-					{#if resultItem.qualifiers.length > 0}
+					{#if resultItem.qualifiers.length}
 						<div class="flex pr-2">
 							{#each resultItem.qualifiers as qualifier, index}
 								<!-- pills -->
