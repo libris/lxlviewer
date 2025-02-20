@@ -339,7 +339,7 @@
 											fill="currentColor"
 											aria-label={$page.data.t('search.addAs')}
 										/>
-										<span class="first-letter:capitalize">{qualifier.label}</span>
+										<span class="whitespace-nowrap first-letter:capitalize">{qualifier.label}</span>
 									</span>
 								</a>
 							{/each}
