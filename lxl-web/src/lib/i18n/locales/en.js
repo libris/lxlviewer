@@ -99,7 +99,7 @@ export default {
 		didYouMean: 'Did you mean',
 		showAllResults: 'Show all results',
 		supersearchStartHeader: 'Build and refine your search query',
-		addAs: 'Lägg till som'
+		addAs: 'Add as'
 	},
 	sort: {
 		sort: 'Sort',
