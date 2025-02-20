@@ -57,7 +57,7 @@ describe('itemAsQualifiers', () => {
 
 	it('returns all qualifiers in its range when not editing a qualifier', () => {
 		const _q = 'Astrid';
-		const item = { '@type': 'Person', '@id': 'https://libris-qa.kb.se/fcrtpljz1qp2bdv' };
+		const item = { '@type': 'Person', '@id': '"libris:fcrtpljz1qp2bdv"' };
 		const vocabUtil = {
 			getLabelByLang: () => 'test label',
 			getBaseClasses: () => ['Person', 'Agent']
