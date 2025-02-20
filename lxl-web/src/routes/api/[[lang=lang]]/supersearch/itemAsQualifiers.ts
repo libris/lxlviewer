@@ -1,4 +1,4 @@
-import type { addQualifier } from '$lib/types/search';
+import type { QualifierSuggestion } from '$lib/types/search';
 import { JsonLd, type FramedData } from '$lib/types/xl';
 import { VocabUtil } from '$lib/utils/xl';
 import {
@@ -30,7 +30,7 @@ function itemAsQualifiers(
 	_q: string,
 	locale: LocaleCode,
 	vocabUtil: VocabUtil
-): addQualifier[] {
+): QualifierSuggestion[] {
 	const itemType = item[JsonLd.TYPE] as string | string[];
 	const itemTypeBaseClasses = vocabUtil.getBaseClasses(itemType);
 	const qualifierBaseClasses = Object.keys(BASE_CLASS_FROM_QUALIFIER_KEY);

@@ -200,10 +200,10 @@ export interface SuperSearchResult extends SearchResult {
 }
 
 export interface SuperSearchResultItem extends SearchResultItem {
-	qualifiers: addQualifier[];
+	qualifiers: QualifierSuggestion[];
 }
 
-export interface addQualifier {
+export interface QualifierSuggestion {
 	label: string;
 	_q: string;
 	cursor: number;
