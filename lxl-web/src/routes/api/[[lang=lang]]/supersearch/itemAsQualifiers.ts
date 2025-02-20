@@ -59,12 +59,13 @@ function itemAsQualifiers(
 
 	return predicates.map((p) => {
 		const qualifier = `${p}:${qualifierValue}`;
-		const qWithQualifier =
+		const qWithQualifier = (
 			_q.slice(0, editedRanges.from).trim() +
 			' ' +
 			qualifier +
 			' ' +
-			_q.slice(editedRanges.to).trim();
+			_q.slice(editedRanges.to).trim()
+		).trim();
 		const label: string = vocabUtil.getLabelByLang(p, locale);
 		return {
 			label: label || p,

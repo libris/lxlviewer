@@ -21,8 +21,8 @@ describe('itemAsQualifiers', () => {
 		const qualifiers = itemAsQualifiers(item, editedRanges, _q, 'sv', vocabUtil);
 		const result = [
 			{
-				_q: ' subject:"barn:Vintern" ',
-				cursor: 23,
+				_q: 'subject:"barn:Vintern"',
+				cursor: 22,
 				label: 'test label'
 			}
 		];
@@ -67,13 +67,13 @@ describe('itemAsQualifiers', () => {
 		const qualifiers = itemAsQualifiers(item, editedRanges, _q, 'sv', vocabUtil);
 		const result = [
 			{
-				_q: ' contributor:"libris:fcrtpljz1qp2bdv" ',
-				cursor: 37,
+				_q: 'contributor:"libris:fcrtpljz1qp2bdv"',
+				cursor: 36,
 				label: 'test label'
 			},
 			{
-				_q: ' subject:"libris:fcrtpljz1qp2bdv" ',
-				cursor: 33,
+				_q: 'subject:"libris:fcrtpljz1qp2bdv"',
+				cursor: 32,
 				label: 'test label'
 			}
 		];
