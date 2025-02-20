@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 	const superSearchResult: SuperSearchResult = {
 		'@id': data['@id'],
 		...searchResult,
-		items: searchResult.items.map((item, index) => {
+		items: searchResult.items?.map((item, index) => {
 			return {
 				...item,
 				qualifiers: itemAsQualifiers(data.items[index], editedRanges, _q, locale, vocabUtil)

@@ -93,7 +93,7 @@
 	});
 
 	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);
-	
+
 	function getFullQualifierLink(q: string) {
 		const params = new URLSearchParams($page.url.searchParams.toString());
 		params.set('_q', q);
@@ -103,7 +103,7 @@
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	function onClickAddQualifier(to: string) {
+	function onClickAddQualifier(cursor: string) {
 		// TODO set cursor position
 	}
 </script>
@@ -330,7 +330,7 @@
 										'flex items-center p-1 no-underline hover:bg-main sm:p-1.5',
 										isFocusedCell(index + 1) && 'focused-cell'
 									]}
-									onclick={() => onClickAddQualifier(qualifier.to)}
+									onclick={() => onClickAddQualifier(qualifier.cursor)}
 									href={getFullQualifierLink(qualifier._q)}
 								>
 									<span class="lxl-qualifier atomic add-qualifier">

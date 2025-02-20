@@ -58,15 +58,18 @@ export function itemAsQualifiers(
 	const qualifierValue = getQualifierValue(item[JsonLd.ID] as string);
 
 	return predicates.map((p) => {
-		const qualifier = ` ${p}:${qualifierValue} `;
+		const qualifier = `${p}:${qualifierValue}`;
 		const qWithQualifier =
-			_q.slice(0, editedRanges.from).trim() + qualifier + _q.slice(editedRanges.to).trim();
+			_q.slice(0, editedRanges.from).trim() +
+			' ' +
+			qualifier +
+			' ' +
+			_q.slice(editedRanges.to).trim();
 		const label: string = vocabUtil.getLabelByLang(p, locale);
 		return {
 			label: label || p,
 			_q: qWithQualifier,
-			from: editedRanges.from,
-			to: editedRanges.to
+			cursor: qWithQualifier.lastIndexOf(qualifier) + qualifier.length
 		};
 	});
 }

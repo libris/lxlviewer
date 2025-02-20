@@ -206,6 +206,5 @@ export interface SuperSearchResultItem extends SearchResultItem {
 export interface addQualifier {
 	label: string;
 	_q: string;
-	from: number;
-	to: number;
+	cursor: number;
 }
