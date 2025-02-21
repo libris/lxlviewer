@@ -38,11 +38,11 @@ test('displays facets', async ({ page }) => {
 });
 
 test('facet groups can toggle', async ({ page }) => {
-	await expect(page.getByTestId('facet-list').first()).toBeVisible();
-	await page.getByTestId('facet-toggle').first().click();
 	await expect(page.getByTestId('facet-list').first()).toBeHidden();
 	await page.getByTestId('facet-toggle').first().click();
 	await expect(page.getByTestId('facet-list').first()).toBeVisible();
+	await page.getByTestId('facet-toggle').first().click();
+	await expect(page.getByTestId('facet-list').first()).toBeHidden();
 });
 
 test('expanded filters have no detectable a11y issues', async ({ page }) => {
@@ -57,19 +57,22 @@ test('expanded filters have no detectable a11y issues', async ({ page }) => {
 test('sorting the facet sets a cookie', async ({ page, context }) => {
 	const beforeCookies = await context.cookies();
 	expect(beforeCookies).toEqual([]);
-	await page.getByTestId('facets').getByRole('combobox').first().selectOption('alpha.asc');
+	await page.getByTestId('facet-toggle').first().click();
+	await page.getByTestId('facets').getByRole('combobox').selectOption('alpha.asc');
 	const afterCookies = await context.cookies();
 	expect(afterCookies[0].name).toEqual('userSettings');
 	expect(afterCookies[0].value).toEqual('{%22facetSort%22:{%22rdf:type%22:%22alpha.asc%22}}');
 });
 
 test('user sorting is persisted after navigating', async ({ page }) => {
-	const selectValue = await page.getByTestId('facets').getByRole('combobox').first().inputValue();
+	await page.getByTestId('facet-toggle').first().click();
+	const selectValue = await page.getByTestId('facets').getByRole('combobox').inputValue();
 	expect(selectValue).toBe('hits.desc');
-	await page.getByTestId('facets').getByRole('combobox').first().selectOption('alpha.asc');
+	await page.getByTestId('facets').getByRole('combobox').selectOption('alpha.asc');
 	await page.goto('/find?_q=a&_limit=20&_offset=0&_sort=&_i=f');
-	const newSelect = page.getByTestId('facets').getByRole('combobox').first();
-	await expect(newSelect).toHaveValue('alpha.asc');
+	await page.getByTestId('facet-toggle').first().click();
+	const newSelectValue = await page.getByTestId('facets').getByRole('combobox').inputValue();
+	expect(newSelectValue).toBe('alpha.asc');
 });
 
 test('displays hits info', async ({ page }) => {
