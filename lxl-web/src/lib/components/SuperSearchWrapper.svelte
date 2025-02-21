@@ -227,27 +227,27 @@
 					{$page.data.t('search.supersearchStartHeader')}
 				</div>
 				{@render startFilterItem({
-					qualifierKey: 'contributor',
-					qualifierLabel: 'Medverkan',
-					qualifierPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
+					qualifierKey: $page.data.t('qualifiers.contributorKey'),
+					qualifierLabel: $page.data.t('qualifiers.contributorLabel'),
+					qualifierPlaceholder: $page.data.t('qualifiers.contributorPlaceholder'),
 					getCellId,
 					isFocusedCell,
 					isFocusedRow,
 					rowIndex: 1
 				})}
 				{@render startFilterItem({
-					qualifierKey: 'hasTitle',
-					qualifierLabel: 'Titel',
-					qualifierPlaceholder: 'Röda rummet, Casablanca',
+					qualifierKey: $page.data.t('qualifiers.titleKey'),
+					qualifierLabel: $page.data.t('qualifiers.titleLabel'),
+					qualifierPlaceholder: $page.data.t('qualifiers.titlePlaceholder'),
 					getCellId,
 					isFocusedCell,
 					isFocusedRow,
 					rowIndex: 2
 				})}
 				{@render startFilterItem({
-					qualifierKey: 'language',
-					qualifierLabel: 'Språk',
-					qualifierPlaceholder: 'Svenska, Engelska, Arabiska',
+					qualifierKey: $page.data.t('qualifiers.languageKey'),
+					qualifierLabel: $page.data.t('qualifiers.languageLabel'),
+					qualifierPlaceholder: $page.data.t('qualifiers.languagePlaceholder'),
 					getCellId,
 					isFocusedCell,
 					isFocusedRow,
@@ -255,27 +255,27 @@
 				})}
 				{#if showMoreFilters}
 					{@render startFilterItem({
-						qualifierKey: 'subject',
-						qualifierLabel: 'Ämne',
-						qualifierPlaceholder: 'Sommar, Romarriket',
+						qualifierKey: $page.data.t('qualifiers.subjectKey'),
+						qualifierLabel: $page.data.t('qualifiers.subjectLabel'),
+						qualifierPlaceholder: $page.data.t('qualifiers.subjectPlaceholder'),
 						getCellId,
 						isFocusedCell,
 						isFocusedRow,
 						rowIndex: 4
 					})}
 					{@render startFilterItem({
-						qualifierKey: 'år',
-						qualifierLabel: 'År',
-						qualifierPlaceholder: '2002, 1987-1994',
+						qualifierKey: $page.data.t('qualifiers.yearKey'),
+						qualifierLabel: $page.data.t('qualifiers.yearLabel'),
+						qualifierPlaceholder: $page.data.t('qualifiers.yearPlaceholder'),
 						getCellId,
 						isFocusedCell,
 						isFocusedRow,
 						rowIndex: 5
 					})}
 					{@render startFilterItem({
-						qualifierKey: 'genreForm',
-						qualifierLabel: 'Genre/form',
-						qualifierPlaceholder: 'Skönlitteratur, Tidsskrift',
+						qualifierKey: $page.data.t('qualifiers.genreFormKey'),
+						qualifierLabel: $page.data.t('qualifiers.genreFormLabel'),
+						qualifierPlaceholder: $page.data.t('qualifiers.genreFormPlaceholder'),
 						getCellId,
 						isFocusedCell,
 						isFocusedRow,

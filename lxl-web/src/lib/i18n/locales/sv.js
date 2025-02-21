@@ -100,6 +100,26 @@ export default {
 		supersearchStartHeader: 'Bygg och förfina din sökning',
 		addAs: 'Lägg till som'
 	},
+	qualifiers: {
+		contributorKey: 'contributor',
+		contributorLabel: 'Medverkan',
+		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
+		titleKey: 'titel',
+		titleLabel: 'Titel',
+		titlePlaceholder: 'Röda rummet, Casablanca',
+		languageKey: 'språk',
+		languageLabel: 'Språk',
+		languagePlaceholder: 'Svenska, Engelska, Arabiska',
+		subjectKey: 'ämne',
+		subjectLabel: 'Ämne',
+		subjectPlaceholder: 'Sommaren, Romerska riket',
+		yearKey: 'år',
+		yearLabel: 'År',
+		yearPlaceholder: '2002, 1987-1994',
+		genreFormKey: 'genreForm',
+		genreFormLabel: 'Genre/form',
+		genreFormPlaceholder: 'Skönlitteratur, Tidsskrift'
+	},
 	sort: {
 		sort: 'Sortera',
 		relevancy: 'Relevans',
