@@ -1,12 +1,12 @@
 /** @type {typeof import('./sv.js').default} */
 export default {
 	home: {
-		searchPlaceholder: 'Title, author, subject et cetera'
+		searchPlaceholder: 'Title, author, subject etc'
 	},
 	header: {
 		help: 'Help',
 		changeLang: 'På svenska',
-		searchPlaceholder: 'Title, author, subject et cetera',
+		searchPlaceholder: 'Title, author, subject etc.',
 		openMenu: 'Open main menu'
 	},
 	footer: {
@@ -99,6 +99,26 @@ export default {
 		didYouMean: 'Did you mean',
 		showAllResults: 'Show all results',
 		supersearchStartHeader: 'Build and refine your search query'
+	},
+	qualifiers: {
+		contributorKey: 'contributor',
+		contributorLabel: 'Contributor',
+		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
+		titleKey: 'title',
+		titleLabel: 'Title',
+		titlePlaceholder: 'The Serious Game, Casablanca',
+		languageKey: 'language',
+		languageLabel: 'Language',
+		languagePlaceholder: 'Swedish, English, Arabic',
+		subjectKey: 'subject',
+		subjectLabel: 'Subject',
+		subjectPlaceholder: 'Sommaren, Romerska riket',
+		yearKey: 'year',
+		yearLabel: 'Year',
+		yearPlaceholder: '2002, 1987-1994',
+		genreFormKey: 'genreForm',
+		genreFormLabel: 'Genre/form',
+		genreFormPlaceholder: 'Fiction'
 	},
 	sort: {
 		sort: 'Sort',
