@@ -68,7 +68,7 @@ export async function asResult(
 				locale
 			),
 			[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
-			image: toSecure(bestSize(bestImage(i), Width.SMALL), auxdSecret),
+			image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
 			typeStr: toString(
 				displayUtil.lensAndFormat(vocabUtil.getDefinition(i[JsonLd.TYPE]), LensType.Chip, locale)
 			)

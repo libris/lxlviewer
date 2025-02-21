@@ -7,6 +7,7 @@ export type PaginationQueryFunction = (
 ) => URLSearchParams | undefined;
 export type TransformFunction = (data: JSONValue) => JSONValue;
 
+// TODO update me
 export interface ResultItem {
 	'@id'?: string;
 	heading: string;

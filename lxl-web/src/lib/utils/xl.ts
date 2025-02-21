@@ -91,6 +91,13 @@ export class VocabUtil {
 		});
 	}
 
+	getLabelByLang(label: string, lang: string) {
+		return lxljsString.getLabelByLang(label, lang, {
+			vocab: this.vocabIndex,
+			context: this.context
+		});
+	}
+
 	private contextTerms() {
 		return this.context[1];
 	}

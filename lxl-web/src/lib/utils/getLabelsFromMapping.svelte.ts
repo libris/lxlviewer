@@ -10,7 +10,7 @@ function getLabelFromMappings(
 ) {
 	const nonQuotedKey = key.replace(/^"(.*)"$/, '$1');
 	const nonQuotedValue = value && value.replace(/^"(.*)"$/, '$1');
-	const bestSuggestMapping = $derived(suggestMapping?.length ? suggestMapping : prevSuggestMapping);
+	const bestSuggestMapping = suggestMapping?.length ? suggestMapping : prevSuggestMapping;
 
 	const pageLabels = iterateMapping(nonQuotedKey, nonQuotedValue, pageMapping);
 	const suggestLabels = iterateMapping(nonQuotedKey, nonQuotedValue, bestSuggestMapping);

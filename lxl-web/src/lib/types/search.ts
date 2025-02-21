@@ -1,4 +1,4 @@
-import { JsonLd, type Link, type DisplayDecorated, type FramedData } from '$lib/types/xl';
+import { JsonLd, type Link, type DisplayDecorated, type FramedData, LensType } from '$lib/types/xl';
 import { type SecureImageResolution } from '$lib/types/auxd';
 import { LxlLens } from '$lib/types/display';
 
@@ -23,6 +23,8 @@ export interface SearchResultItem {
 	[JsonLd.TYPE]: string;
 	[LxlLens.CardHeading]: DisplayDecorated;
 	[LxlLens.CardBody]: DisplayDecorated;
+	[LensType.WebCardHeaderExtra]: DisplayDecorated;
+	[LensType.WebCardFooter]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
 	typeStr: string;
 	_debug?: ItemDebugInfo;
@@ -190,4 +192,19 @@ export interface EsExplain {
 	description: string;
 	value: number;
 	details: EsExplain[];
+}
+
+export interface SuperSearchResult extends SearchResult {
+	[JsonLd.ID]: string;
+	items: SuperSearchResultItem[];
+}
+
+export interface SuperSearchResultItem extends SearchResultItem {
+	qualifiers: QualifierSuggestion[];
+}
+
+export interface QualifierSuggestion {
+	label: string;
+	_q: string;
+	cursor: number;
 }

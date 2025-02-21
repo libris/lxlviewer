@@ -6,6 +6,8 @@ import getEditedPartEntries from './getEditedPartEntries.js';
 import getEditedRanges from './getEditedRanges.js';
 import { asResult } from '$lib/utils/search.js';
 import { DebugFlags } from '$lib/types/userSettings.js';
+import type { SuperSearchResult } from '$lib/types/search.js';
+import itemAsQualifiers from './itemAsQualifiers.js';
 
 /**
  * TODO:
@@ -51,9 +53,16 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 
 	const searchResult = await asResult(data, displayUtil, vocabUtil, locale, env.AUXD_SECRET);
 
-	return json({
+	const superSearchResult: SuperSearchResult = {
 		'@id': data['@id'],
-		'@context': data['@context'],
-		...searchResult
-	});
+		...searchResult,
+		items: searchResult.items?.map((item, index) => {
+			return {
+				...item,
+				qualifiers: itemAsQualifiers(data.items[index], editedRanges, _q, locale, vocabUtil)
+			};
+		})
+	};
+
+	return json(superSearchResult);
 };

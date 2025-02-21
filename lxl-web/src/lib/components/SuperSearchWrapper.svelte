@@ -93,6 +93,19 @@
 	});
 
 	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);
+
+	function getFullQualifierLink(q: string) {
+		const params = new URLSearchParams($page.url.searchParams.toString());
+		params.set('_q', q);
+		params.delete('_i');
+		params.set('_offset', '0');
+		return `/find?${params.toString()}`;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	function onClickAddQualifier(cursor: string) {
+		// TODO set cursor position
+	}
 </script>
 
 {#snippet startFilterItem({
@@ -304,7 +317,35 @@
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
 			{#if resultItem}
-				<SuggestionCard item={resultItem} cellId={getCellId(0)} isFocused={isFocusedCell(0)} />
+				<div class="suggestion-card-container flex text-xs md:text-sm">
+					<SuggestionCard item={resultItem} cellId={getCellId(0)} isFocused={isFocusedCell(0)} />
+					{#if resultItem.qualifiers.length}
+						<div class="flex pr-2">
+							{#each resultItem.qualifiers as qualifier, index}
+								<!-- pills -->
+								<a
+									id={getCellId(index + 1)}
+									role="gridcell"
+									class={[
+										'flex items-center p-1 no-underline hover:bg-main sm:p-1.5',
+										isFocusedCell(index + 1) && 'focused-cell'
+									]}
+									onclick={() => onClickAddQualifier(qualifier.cursor)}
+									href={getFullQualifierLink(qualifier._q)}
+								>
+									<span class="lxl-qualifier atomic add-qualifier">
+										<BiArrowUpLeft
+											class=""
+											fill="currentColor"
+											aria-label={$page.data.t('search.addAs')}
+										/>
+										<span class="whitespace-nowrap first-letter:capitalize">{qualifier.label}</span>
+									</span>
+								</a>
+							{/each}
+						</div>
+					{/if}
+				</div>
 			{/if}
 		{/snippet}
 	</SuperSearch>
@@ -318,6 +359,14 @@
 <style lang="postcss">
 	.supersearch-input {
 		@apply relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md bg-cards focus-within:outline focus-within:outline-2 focus-within:outline-accent-dark/32;
+	}
+
+	.suggestion-card-container {
+		container-type: inline-size;
+	}
+
+	.add-qualifier {
+		@apply flex items-center gap-1 rounded-sm px-2 py-1;
 	}
 
 	/* dialog */
@@ -348,6 +397,18 @@
 	:global(.supersearch-dialog .supersearch-input) {
 		@apply overflow-hidden rounded-md sm:px-0;
 		box-shadow: inset 0 0 0 1px rgba(105, 65, 25, 0.24);
+	}
+
+	:global(.supersearch-dialog .focused) {
+		@apply bg-site-header/24;
+	}
+
+	:global(.focused-cell) {
+		@apply bg-site-header/40;
+	}
+
+	:global(.button-primary.focused-cell) {
+		@apply before:opacity-100;
 	}
 
 	/* suggestions */
@@ -388,13 +449,5 @@
 		padding-top: 0.6125rem;
 		padding-bottom: 0.6125rem;
 		outline: none;
-	}
-
-	.focused-cell {
-		@apply bg-site-header/40;
-	}
-
-	:global(.button-primary.focused-cell) {
-		@apply before:opacity-100;
 	}
 </style>

@@ -97,7 +97,8 @@ export default {
 		relatedSearchLabel: 'Sök i resultaten',
 		didYouMean: 'Menade du',
 		showAllResults: 'Visa alla sökresultat',
-		supersearchStartHeader: 'Bygg och förfina din sökning'
+		supersearchStartHeader: 'Bygg och förfina din sökning',
+		addAs: 'Lägg till som'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',

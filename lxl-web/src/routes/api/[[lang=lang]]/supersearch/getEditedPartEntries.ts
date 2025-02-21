@@ -1,23 +1,11 @@
 import getEditedRanges, { type EditedRanges } from './getEditedRanges.js';
+import {
+	BASE_CLASS_FROM_QUALIFIER_KEY,
+	QUALIFIER_KEY_FROM_ALIAS,
+	findInMap
+} from './qualifierMappings.js';
 
 const DEFAULT_SUPERSEARCH_TYPES = ['Agent', 'Concept', 'Language', 'Work'];
-
-const QUALIFIER_KEY_FROM_ALIAS = {
-	Contributor: ['medverkande'],
-	Language: ['språk'],
-	Subject: ['ämne'],
-	Bibliography: ['bibliografi']
-};
-
-const BASE_CLASS_FROM_QUALIFIER_KEY = {
-	Agent: ['contributor'], // + subject? I.e should we also search for agents when typing 'subject:'?
-	Subject: ['subject'],
-	GenreForm: ['genreForm'],
-	Language: ['language', 'translationOf.language'],
-	Library: ['itemHeldBy'], // library??
-	Bibliography: ['bibliography']
-};
-
 const SKIP_QUALIFIERS = ['yearPublished', 'år'];
 
 /**
@@ -46,12 +34,12 @@ function getEditedPartEntries(
 		const skipQualifier = SKIP_QUALIFIERS.includes(qualifierKey.toLowerCase());
 		if (!skipQualifier) {
 			// Get the normalized property from a translated key/alternative query code
-			const keyFromAlias = findInMap(QUALIFIER_KEY_FROM_ALIAS, qualifierKey);
-			const baseClass = findInMap(BASE_CLASS_FROM_QUALIFIER_KEY, keyFromAlias || qualifierKey);
+			const keyFromAlias = findInMap(QUALIFIER_KEY_FROM_ALIAS, qualifierKey).join();
+			const baseClasses = findInMap(BASE_CLASS_FROM_QUALIFIER_KEY, keyFromAlias || qualifierKey);
 
-			if (baseClass) {
+			if (baseClasses.length) {
 				return [
-					['_q', `${qualifierValue} "rdf:type":${baseClass}`],
+					['_q', `${qualifierValue} "rdf:type":(${baseClasses.join(' OR ')})`],
 					['min-reverseLinks.totalItems', '1'] // ensure results are linked/used atleast once
 				];
 			}
@@ -74,16 +62,6 @@ function queryIncludesType(q: string | undefined) {
 		return !!q.match(/"rdf:type"[:=]/g);
 	}
 	return false;
-}
-
-function findInMap(map: Record<string, string[]>, k: string) {
-	if (k && typeof k === 'string') {
-		for (const [key, value] of Object.entries(map)) {
-			if (Array.isArray(value) && value.some((el) => el.toLowerCase() === k.toLowerCase())) {
-				return key;
-			}
-		}
-	}
 }
 
 export default getEditedPartEntries;
