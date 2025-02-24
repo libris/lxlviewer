@@ -128,7 +128,7 @@ export default {
 		alphaDesc: 'Z-A',
 		publicationAsc: 'Oldest first (publication year)',
 		publicationDesc: 'Newest first (publication year)',
-		linksDesc: 'Most linked',
+		holdingsDesc: 'Number of libraries',
 		hitsAsc: 'Hits asc.',
 		hitsDesc: 'Hits desc.',
 		yearAsc: 'Oldest first',

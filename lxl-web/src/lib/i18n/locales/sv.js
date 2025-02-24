@@ -127,7 +127,7 @@ export default {
 		alphaDesc: 'Ö-A',
 		publicationAsc: 'Äldst först (utgivningsår)',
 		publicationDesc: 'Nyast först (utgivningsår)',
-		linksDesc: 'Mest länkad',
+		holdingsDesc: 'Antal bibliotek',
 		hitsAsc: 'Minst träffar',
 		hitsDesc: 'Flest träffar',
 		yearAsc: 'Äldst först',
