@@ -358,6 +358,15 @@ export default {
         addToHistory: false,
       });
     },
+    onSaveFromActiveMatchForm() {
+      let form = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
+      if (isEqual(form, this.currentSpec[MATCH_FORM_KEY])) {
+        // NOP
+      } else {
+        this.currentSpec[MATCH_FORM_KEY] = form;
+        this.currentSpec[TARGET_FORM_KEY] = form;
+      }
+    },
     onInactiveForm() {
       let form = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
       if (isEqual(form, this.currentSpec[MATCH_FORM_KEY])) {
@@ -451,8 +460,7 @@ export default {
       this.isSaving = true;
       this.resetLastAdded();
       if (this.isActive('form')) {
-        this.onInactiveForm();
-        this.onInactiveTargetForm();
+        this.onSaveFromActiveMatchForm();
       } else if (this.isActive('targetForm')) {
         this.onInactiveTargetForm();
       } else if (this.isActive('mergeSpec')) {
