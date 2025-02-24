@@ -364,7 +364,9 @@ export default {
         // NOP
       } else {
         this.currentSpec[MATCH_FORM_KEY] = form;
-        this.currentSpec[TARGET_FORM_KEY] = form;
+        if (this.hasTargetForm) {
+          this.currentSpec[TARGET_FORM_KEY] = form;
+        }
       }
     },
     onInactiveForm() {
