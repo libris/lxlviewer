@@ -369,7 +369,7 @@ export default {
         }
       }
     },
-    onInactiveForm() {
+    onInactiveMatchForm() {
       let form = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
       if (isEqual(form, this.currentSpec[MATCH_FORM_KEY])) {
         this.setInspectorData(this.currentSpec[TARGET_FORM_KEY]);
@@ -874,7 +874,7 @@ export default {
           :form-data="formObj"
           :first-item-active="isFirstActive"
           :is-draft="isDraft"
-          @onInactive="onInactiveForm"
+          @onInactive="onInactiveMatchForm"
           @onActive="focusMatchForm"
           @removeIdList="removeIdList"
         />
