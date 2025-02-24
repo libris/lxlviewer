@@ -22,7 +22,10 @@
 		{ value: `-_sortKeyByLang.${$page.data.locale}`, label: $page.data.t('sort.alphaDesc') },
 		{ value: '-@reverse.instanceOf.publication.year', label: $page.data.t('sort.publicationDesc') },
 		{ value: '@reverse.instanceOf.publication.year', label: $page.data.t('sort.publicationAsc') },
-		{ value: '-reverseLinks.totalItems', label: $page.data.t('sort.linksDesc') }
+		{
+			value: '-reverseLinks.totalItemsByRelation.itemOf.instanceOf',
+			label: $page.data.t('sort.holdingsDesc')
+		}
 	];
 
 	function handleSortChange(e: Event) {
