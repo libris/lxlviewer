@@ -13,6 +13,7 @@
 		QueryFunction,
 		PaginationQueryFunction,
 		TransformFunction,
+		ShouldShowStartContentFunction,
 		ResultItem
 	} from '$lib/types/superSearch.js';
 	import { standardKeymap } from '@codemirror/commands';
@@ -28,6 +29,7 @@
 		queryFn?: QueryFunction;
 		paginationQueryFn?: PaginationQueryFunction;
 		transformFn?: TransformFunction;
+		shouldShowStartContentFn?: ShouldShowStartContentFunction;
 		extensions?: Extension[];
 		comboboxAriaLabel?: string;
 		startContent?: Snippet<
@@ -87,6 +89,7 @@
 		queryFn = (value) => new URLSearchParams({ q: value }),
 		paginationQueryFn,
 		transformFn,
+		shouldShowStartContentFn = (value) => !value.trim().length,
 		extensions = [],
 		comboboxAriaLabel,
 		startContent,
@@ -576,7 +579,14 @@
 				})}
 			</div>
 			<nav class="supersearch-suggestions" role="rowgroup">
-				{#if value.trim().length}
+				{#if startContent && shouldShowStartContentFn(value, cursor)}
+					{@render startContent({
+						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+						isFocusedCell: (rowIndex: number, colIndex: number) =>
+							activeRowIndex === rowIndex && colIndex === activeColIndex,
+						isFocusedRow: (rowIndex: number) => activeRowIndex === rowIndex
+					})}
+				{:else}
 					{#if persistentResultItemRow}
 						<div role="row" class:focused={activeRowIndex === 1}>
 							{@render persistentResultItemRow({
@@ -611,13 +621,6 @@
 							Load more
 						</button>
 					{/if}
-				{:else}
-					{@render startContent?.({
-						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-						isFocusedCell: (rowIndex: number, colIndex: number) =>
-							activeRowIndex === rowIndex && colIndex === activeColIndex,
-						isFocusedRow: (rowIndex: number) => activeRowIndex === rowIndex
-					})}
 				{/if}
 			</nav>
 		</div>
