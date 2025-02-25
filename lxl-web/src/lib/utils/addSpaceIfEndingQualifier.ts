@@ -1,5 +1,9 @@
 import { lxlQuery } from 'codemirror-lang-lxlquery';
 
+/**
+ * Adds an ending space after the query string if it ends with a qualifier (to mitigate the problem with unintentionally edited qualifiers when they don't end with a quote character).
+ */
+
 function addSpaceIfEndingQualifier(q: string) {
 	const tree = lxlQuery.language.parser.parse(q);
 	const lastNode = tree.resolveInner(q.length, -1);
