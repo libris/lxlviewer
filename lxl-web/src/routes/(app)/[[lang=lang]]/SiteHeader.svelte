@@ -5,8 +5,6 @@
 	import HeaderMenu from './HeaderMenu.svelte';
 	import SuperSearchWrapper from '$lib/components/SuperSearchWrapper.svelte';
 
-	$: isLandingPage = $page.route.id === '/(app)/[[lang=lang]]';
-
 	let showHeaderMenu = false;
 
 	function toggleHeaderMenu() {
@@ -14,18 +12,16 @@
 	}
 </script>
 
-<header class="bg-site-header" class:is-landing={isLandingPage}>
+<header class="bg-site-header">
 	<nav class="header-nav min-h-20 items-center px-4 py-0">
 		<div class="home md:pl-4">
-			{#if !isLandingPage}
-				<a href={$page.data.base} class="flex flex-col text-primary no-underline md:flex-row">
-					<span class="text-[1.6rem] font-extrabold leading-tight md:text-[2.1rem]"> Libris</span>
-					<sup
-						class="top-0 -rotate-6 self-baseline rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold md:rotate-0"
-						>Beta</sup
-					>
-				</a>
-			{/if}
+			<a href={$page.data.base} class="flex flex-col text-primary no-underline md:flex-row">
+				<span class="text-[1.6rem] font-extrabold leading-tight md:text-[2.1rem]"> Libris</span>
+				<sup
+					class="top-0 -rotate-6 self-baseline rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold md:rotate-0"
+					>Beta</sup
+				>
+			</a>
 		</div>
 		<div class="search px-4">
 			<SuperSearchWrapper placeholder={$page.data.t('header.searchPlaceholder')} />
@@ -50,17 +46,6 @@
 				{/if}
 			</div>
 		</div>
-		{#if isLandingPage}
-			<div class="landing flex flex-col items-center gap-2 pb-3">
-				<h1 class="flex text-3xl font-extrabold text-primary sm:text-[5.5rem] sm:font-bold">
-					Libris
-					<sup
-						class="self-center rounded-sm bg-positive-dark/16 px-2 uppercase text-2-cond-bold sm:text-3-cond-bold"
-						>Beta</sup
-					>
-				</h1>
-			</div>
-		{/if}
 	</nav>
 </header>
 
@@ -68,21 +53,6 @@
 	.header-nav {
 		@apply header-layout;
 		grid-template-areas: 'home search actions';
-	}
-
-	.is-landing .header-nav {
-		@apply landing-layout;
-		grid-template-areas:
-			'home . actions'
-			'. landing .'
-			'search search search';
-
-		@media screen and (min-width: theme('screens.sm')) {
-			grid-template-areas:
-				'home . actions'
-				'. landing .'
-				'. search .';
-		}
 	}
 
 	.home {
@@ -95,14 +65,6 @@
 
 	.actions {
 		grid-area: actions;
-	}
-
-	.landing {
-		grid-area: landing;
-	}
-
-	.is-landing .search {
-		@apply w-full max-w-3xl justify-self-center;
 	}
 
 	#header-menu:target {
