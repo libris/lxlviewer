@@ -5,7 +5,7 @@ test('decorated data label visibilty is correct after page navigations', async (
 	await page.goto('/h08ndxddfg5v2pjf');
 	await expect(page.getByText('Medverkan och funktion')).toBeHidden();
 	await page.getByText('Jonas Hassen Khemiri, 1978-').first().click();
-	await expect(page.getByText('Språk')).toBeVisible();
+	await expect(page.getByRole('article').getByText('Språk')).toBeVisible();
 });
 
 test('initially opened holdings modals are closable', async ({ page }) => {
