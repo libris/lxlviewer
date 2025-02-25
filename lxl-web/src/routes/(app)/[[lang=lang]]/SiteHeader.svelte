@@ -1,16 +1,11 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
 	import { page } from '$app/stores';
 	import BiList from '~icons/bi/list';
-	import Search from '$lib/components/Search.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import HeaderMenu from './HeaderMenu.svelte';
 	import SuperSearchWrapper from '$lib/components/SuperSearchWrapper.svelte';
 
 	$: isLandingPage = $page.route.id === '/(app)/[[lang=lang]]';
-
-	let useSuperSearch =
-		env?.PUBLIC_USE_SUPERSEARCH === 'true' || $page.url.searchParams.get('_x') === 'supersearch';
 
 	let showHeaderMenu = false;
 
@@ -33,11 +28,7 @@
 			{/if}
 		</div>
 		<div class="search px-4">
-			{#if useSuperSearch}
-				<SuperSearchWrapper placeholder={$page.data.t('header.searchPlaceholder')} />
-			{:else}
-				<Search placeholder={$page.data.t('header.searchPlaceholder')} />
-			{/if}
+			<SuperSearchWrapper placeholder={$page.data.t('header.searchPlaceholder')} />
 		</div>
 		<div class="actions flex min-h-20 items-center justify-end md:pr-4">
 			<div id="header-menu" class="hidden items-center md:flex">
@@ -68,9 +59,6 @@
 						>Beta</sup
 					>
 				</h1>
-				<!-- <div class="w-full max-w-3xl">
-					<Search placeholder={$page.data.t('home.searchPlaceholder')} autofocus />
-				</div> -->
 			</div>
 		{/if}
 	</nav>
