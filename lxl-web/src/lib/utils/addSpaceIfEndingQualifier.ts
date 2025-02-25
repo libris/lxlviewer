@@ -1,16 +1,13 @@
-/**
- * qualifierType = preceded by a whitespace or beginning; allowed chars in quotes or no quotes :
- * qualifierOperator = either : = > < >= <=
- * qualifierValue = captures up until blankspace or end quote
- */
-
-const QUALIFIER_REGEX =
-	/(?<=^|\s)(?<qualifierType>("[0-9a-zA-ZåäöÅÄÖ:]+")|([0-9a-zA-ZåäöÅÄÖ:]+))(?<qualifierOperator>([:=<>]|>=|<=))(?<qualifierValue>("[^"]*"|[0-9a-zA-ZåäöÅÄÖ:%#".-]+))$/;
+import { lxlQuery } from 'codemirror-lang-lxlquery';
 
 function addSpaceIfEndingQualifier(q: string) {
-	if (QUALIFIER_REGEX.test(q)) {
+	const tree = lxlQuery.language.parser.parse(q);
+	const lastNode = tree.resolveInner(q.length, -1);
+
+	if (lastNode.parent?.name === 'QualifierValue') {
 		return q + ' ';
 	}
+
 	return q;
 }
 
