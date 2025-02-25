@@ -20,21 +20,17 @@ test('can change the language', async ({ page }) => {
 });
 
 test('index page has a search input', async ({ page }) => {
-	await expect(page.getByTestId('main-search')).toBeVisible();
+	await expect(page.getByTestId('main-search').getByRole('combobox')).toBeVisible();
 });
 
 test('can perform a search', async ({ page }) => {
-	await page.getByTestId('main-search').click();
-	await page.getByTestId('main-search').fill('*');
-	await page.getByTestId('main-search').press('Enter');
+	await page.getByTestId('main-search').getByRole('combobox').fill('*');
+	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL(/\/find/);
 });
 
 test('url is populated with correct searchparams', async ({ page }) => {
-	await page.getByTestId('main-search').click();
-	await page.getByTestId('main-search').fill('somephrase');
-	await page.getByTestId('main-search').press('Enter');
-	await expect(page).toHaveURL(
-		/_q=somephrase&_i=somephrase&_limit=20&_offset=0&_sort=&_spell=true/
-	);
+	await page.getByTestId('main-search').getByRole('combobox').fill('somephrase');
+	await page.keyboard.press('Enter');
+	await expect(page).toHaveURL(/_q=somephrase&_limit=20&_offset=0&_sort=&_spell=true/);
 });
