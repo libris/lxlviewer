@@ -263,7 +263,7 @@
 		</Modal>
 	{/if}
 </article>
-<SearchResult searchResult={$page.data.searchResult} />
+<SearchResult searchResult={$page.data.searchResult} showMapping />
 
 <style lang="postcss">
 	.resource {
