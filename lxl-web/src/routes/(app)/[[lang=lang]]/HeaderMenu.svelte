@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import BiGlobeAmericas from '~icons/bi/globe-americas';
+	import BiPerson from '~icons/bi/person';
 	import { Locales, defaultLocale } from '$lib/i18n/locales';
 
 	$: isLandingPage = $page.route.id === '/(app)/[[lang=lang]]';
@@ -16,6 +17,12 @@
 <div class="header-menu py-8 md:py-0">
 	<ol class="flex flex-col items-center gap-6 text-secondary md:flex-row">
 		<li><a data-sveltekit-reload href="help">{$page.data.t('header.help')}</a></li>
+		<li>
+			<a class="flex items-center gap-2" data-sveltekit-reload href="my-pages">
+				<BiPerson class="inline text-icon" />
+				{$page.data.t('header.myPages')}
+			</a>
+		</li>
 		<li>
 			<a
 				class="flex items-center gap-2 whitespace-nowrap"
