@@ -1,7 +1,7 @@
 import { lxlQuery } from 'codemirror-lang-lxlquery';
 
 /**
- * Adds an ending space after the query string if it ends with a qualifier (to mitigate the problem with unintentionally edited qualifiers when they don't end with a quote character).
+ * Adds an ending space after the query string if it ends with a qualifier (to mitigate the problem with unintentionally edited qualifiers without ending quote characters).
  */
 
 function addSpaceIfEndingQualifier(q: string) {
