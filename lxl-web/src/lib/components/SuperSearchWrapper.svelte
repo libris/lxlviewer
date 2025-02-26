@@ -6,6 +6,7 @@
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
+	import addSpaceIfEndingQualifier from '$lib/utils/addSpaceIfEndingQualifier';
 	import type { DisplayMapping, QualifierSuggestion } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
@@ -20,8 +21,11 @@
 	}
 
 	let { placeholder = '' }: Props = $props();
-
-	let q = $state($page.params.fnurgel ? '' : $page.url.searchParams.get('_q')?.trim() || '');
+	let q = $state(
+		$page.params.fnurgel
+			? ''
+			: addSpaceIfEndingQualifier($page.url.searchParams.get('_q')?.trim() || '')
+	);
 	let cursor: number = $state(0);
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 	let showMoreFilters = $state(false);
@@ -39,7 +43,9 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
-			q = $page.params.fnurgel ? '' : new URL(to.url).searchParams.get('_q')?.trim() || '';
+			q = $page.params.fnurgel
+				? ''
+				: addSpaceIfEndingQualifier(new URL(to.url).searchParams.get('_q')?.trim() || '');
 			superSearch?.hideExpandedSearch();
 		}
 	});
@@ -48,7 +54,7 @@
 		if (!q || !q.trim()) {
 			event.preventDefault();
 		} else {
-			q = q.trim();
+			q = addSpaceIfEndingQualifier(q.trim());
 		}
 	}
 
@@ -87,8 +93,8 @@
 
 	function addQualifier(qualifier: QualifierSuggestion) {
 		superSearch?.dispatchChange({
-			change: { from: 0, to: q.length, insert: qualifier._q },
-			selection: { anchor: qualifier.cursor, head: qualifier.cursor },
+			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(qualifier._q) },
+			selection: { anchor: qualifier.cursor + 1, head: qualifier.cursor + 1 },
 			userEvent: 'input.complete'
 		});
 	}
