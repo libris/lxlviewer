@@ -243,6 +243,7 @@
 
 	/** TODO: Set transliteration styling via display-web.json? */
 	:global(.card-header [data-property='_script']) {
+		@apply italic;
 		display: block;
 	}
 </style>
