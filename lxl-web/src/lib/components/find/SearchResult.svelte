@@ -10,10 +10,10 @@
 	import IconSliders from '~icons/bi/sliders';
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import type { SearchResult, DisplayMapping } from '$lib/types/search';
-	import { shouldShowMapping } from '$lib/utils/search';
 
 	let showFiltersModal = false;
 	export let searchResult: SearchResult;
+	export let showMapping: boolean = false;
 
 	$: sortOrder = $page.url.searchParams.get('_sort');
 	const sortOptions = [
@@ -83,7 +83,7 @@
 			</ul>
 		</nav>
 	{/if}
-	{#if shouldShowMapping(searchResult.mapping)}
+	{#if showMapping}
 		<nav
 			class="hidden md:flex md:px-6 md:pb-0 md:pt-4"
 			aria-label={$page.data.t('search.selectedFilters')}
