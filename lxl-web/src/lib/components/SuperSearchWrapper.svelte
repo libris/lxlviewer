@@ -70,6 +70,18 @@
 		return undefined;
 	}
 
+	function handleShouldShowStartContent(value: string, cursor: number) {
+		const tree = lxlQuery.language.parser.parse(value);
+		const node = tree.resolveInner(cursor, -1);
+
+		/** Start content should be shown when the cursor isn't placed inside a qualifier or edited string part */
+		if (!node.parent?.name) {
+			return true;
+		}
+
+		return false;
+	}
+
 	function handleTransform(data) {
 		suggestMapping = data?.mapping;
 		return data;
@@ -171,6 +183,7 @@
 		}}
 		transformFn={handleTransform}
 		paginationQueryFn={handlePaginationQuery}
+		shouldShowStartContentFn={handleShouldShowStartContent}
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
 		comboboxAriaLabel={$page.data.t('search.search')}

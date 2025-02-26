@@ -6,6 +6,7 @@ export type PaginationQueryFunction = (
 	data: JSONValue
 ) => URLSearchParams | undefined;
 export type TransformFunction = (data: JSONValue) => JSONValue;
+export type ShouldShowStartContentFunction = (value: string, cursor: number) => boolean;
 
 // TODO update me
 export interface ResultItem {
