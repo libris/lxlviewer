@@ -9,7 +9,7 @@
 	import { DEV } from 'esm-env';
 	import { onMount } from 'svelte';
 	import { EditorView } from '@codemirror/view';
-	import { EditorState, StateEffect, type Extension, type SelectionRange } from '@codemirror/state';
+	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
 	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
 
 	type CodeMirrorProps = {
@@ -59,7 +59,7 @@
 	]);
 	let prevExtensions: Extension[] = extensions;
 
-	function createEditorState({ doc, selection }: { doc?: string; selection?: SelectionRange }) {
+	function createEditorState({ doc, selection }: { doc?: string; selection?: EditorSelection }) {
 		return EditorState.create({
 			doc,
 			selection,
@@ -67,8 +67,20 @@
 		});
 	}
 
-	export function reset(options?: { doc: string; selection?: SelectionRange }) {
-		editorView?.setState(createEditorState({ doc: options?.doc, selection: options?.selection }));
+	export function reset(options?: { doc: string; selection?: { anchor: number; head?: number } }) {
+		editorView?.setState(
+			createEditorState({
+				doc: options?.doc,
+				selection: EditorSelection.create([
+					value && options?.selection
+						? EditorSelection.range(
+								options.selection.anchor,
+								options.selection?.head || options.selection.anchor
+							)
+						: EditorSelection.range(0, 0)
+				])
+			})
+		);
 		value = options?.doc || '';
 		onchange({
 			value,

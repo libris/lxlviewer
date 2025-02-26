@@ -238,7 +238,7 @@
 		selection,
 		userEvent = 'input'
 	}: {
-		change: {
+		change?: {
 			from: number;
 			to: number;
 			insert: string;

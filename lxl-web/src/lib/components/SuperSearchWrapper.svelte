@@ -6,7 +6,7 @@
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
-	import type { DisplayMapping } from '$lib/types/search';
+	import type { DisplayMapping, QualifierSuggestion } from '$lib/types/search';
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiArrowLeft from '~icons/bi/arrow-left';
@@ -79,9 +79,18 @@
 			selection: {
 				anchor: cursor + qualifierKey?.length + 2,
 				head: cursor + qualifierKey?.length + 2
-			}
+			},
+			userEvent: 'input.complete'
 		});
 		superSearch?.hideExpandedSearch();
+	}
+
+	function addQualifier(qualifier: QualifierSuggestion) {
+		superSearch?.dispatchChange({
+			change: { from: 0, to: q.length, insert: qualifier._q },
+			selection: { anchor: qualifier.cursor, head: qualifier.cursor },
+			userEvent: 'input.complete'
+		});
 	}
 
 	let derivedLxlQualifierPlugin = $derived.by(() => {
@@ -100,11 +109,6 @@
 		params.delete('_i');
 		params.set('_offset', '0');
 		return `/find?${params.toString()}`;
-	}
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	function onClickAddQualifier(cursor: string) {
-		// TODO set cursor position
 	}
 </script>
 
@@ -330,7 +334,7 @@
 										'flex items-center p-1 no-underline hover:bg-main sm:p-1.5',
 										isFocusedCell(index + 1) && 'focused-cell'
 									]}
-									onclick={() => onClickAddQualifier(qualifier.cursor)}
+									onclick={() => addQualifier(qualifier)}
 									href={getFullQualifierLink(qualifier._q)}
 								>
 									<span class="lxl-qualifier atomic add-qualifier">
