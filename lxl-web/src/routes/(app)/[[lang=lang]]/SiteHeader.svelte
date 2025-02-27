@@ -28,7 +28,7 @@
 				>
 			</a>
 		</div>
-		<div class="search px-4">
+		<div class="search pb-4 md:px-4 md:pb-0">
 			{#if useSuperSearch}
 				<SuperSearchWrapper placeholder={$page.data.t('header.searchPlaceholder')} />
 			{:else}
@@ -61,7 +61,13 @@
 <style lang="postcss">
 	.header-nav {
 		@apply header-layout;
-		grid-template-areas: 'home search actions';
+		grid-template-areas:
+			'home . actions'
+			'search search search';
+
+		@media screen and (min-width: theme('screens.md')) {
+			grid-template-areas: 'home search actions';
+		}
 	}
 
 	.home {
