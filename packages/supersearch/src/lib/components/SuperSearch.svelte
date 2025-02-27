@@ -204,7 +204,7 @@
 	}
 
 	function setDefaultRowAndCols() {
-		if (value.trim().length) {
+		if (!shouldShowStartContentFn(value, cursor)) {
 			activeRowIndex = defaultResultRow;
 			if (activeRowIndex > 0) {
 				activeColIndex = defaultResultCol;
