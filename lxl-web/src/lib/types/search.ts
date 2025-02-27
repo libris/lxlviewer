@@ -170,6 +170,7 @@ export interface ApiItemDebugInfo {
 	_score: {
 		_total: number;
 		_perField: Record<string, number>;
+		_matchedFields?: Record<string, string[]>;
 		_explain: EsExplain;
 	};
 }
@@ -180,9 +181,10 @@ export interface ItemDebugInfo {
 		totalPercent: number;
 		perField: {
 			name: string;
-			searchString: string;
+			needle: string;
 			score: number;
 			scorePercent: number;
+			haystack: string[];
 		}[];
 		explain: EsExplain;
 	};

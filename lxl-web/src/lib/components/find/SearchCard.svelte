@@ -11,6 +11,7 @@
 	import { page } from '$app/stores';
 	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
 	import EsExplain from '$lib/components/find/EsExplain.svelte';
+	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
 
 	export let item: SearchResultItem;
 
@@ -20,6 +21,7 @@
 	$: footerId = `card-footer-${id}`;
 
 	let showDebugExplain = false;
+	let showDebugHaystack = false;
 </script>
 
 <div class="search-card-container">
@@ -128,18 +130,35 @@
 		</div>
 		{#if item._debug}
 			{#key item._debug}
-				<button
-					type="button"
-					class="card-debug z-20 cursor-crosshair select-text self-start text-left"
-					on:click={() => {
-						showDebugExplain = !showDebugExplain;
-					}}
-				>
+				<div class="card-debug z-20 select-text self-start text-left">
 					<SearchItemDebug debugInfo={item._debug} />
-				</button>
+					<button
+						type="button"
+						class="text-xs"
+						on:click={() => {
+							showDebugHaystack = !showDebugHaystack;
+						}}
+					>
+						Haystack
+					</button>
+					<button
+						type="button"
+						class="text-xs"
+						on:click={() => {
+							showDebugExplain = !showDebugExplain;
+						}}
+					>
+						Explain
+					</button>
+				</div>
+				{#if showDebugHaystack}
+					<div class="z-20 col-span-full row-start-2 pt-4">
+						<SearchItemDebugHaystack debugInfo={item._debug} />
+					</div>
+				{/if}
 				{#if showDebugExplain}
-					<div class="z-20 col-span-full row-start-2 cursor-crosshair pt-4">
-						<EsExplain explain={item._debug.score.explain} id="explain" />
+					<div class="z-20 col-span-full row-start-2 pt-4">
+						<EsExplain explain={item._debug.score.explain} />
 					</div>
 				{/if}
 			{/key}

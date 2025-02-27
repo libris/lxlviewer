@@ -180,17 +180,20 @@ function getMaxScores(itemDebugs: ApiItemDebugInfo[]) {
 }
 
 function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>): ItemDebugInfo {
+	const matchedFields = i._score._matchedFields || {};
 	return {
 		score: {
 			total: i._score._total,
 			totalPercent: i._score._total / maxScores._total,
 			perField: Object.entries(i._score._perField).map(([k, v]) => {
 				const fs = k.split(':');
+				const name = fs.slice(0, -1).join(':');
 				return {
-					name: fs.slice(0, -1).join(':'),
-					searchString: fs.at(-1) || '',
+					name: name,
+					needle: fs.at(-1) || '',
 					score: v,
-					scorePercent: v / maxScores[k]
+					scorePercent: v / maxScores[k],
+					haystack: (matchedFields[name] || []).toSorted()
 				};
 			}),
 			explain: i._score._explain
