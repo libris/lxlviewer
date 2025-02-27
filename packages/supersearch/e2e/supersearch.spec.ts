@@ -216,7 +216,8 @@ test('arrow key cursor handling (depending on supersearch state)', async ({ page
 	).toHaveText('Hola!!');
 	await page.keyboard.press('Escape');
 	await expect(page.getByRole('dialog')).not.toBeVisible();
-	await page.keyboard.press('ArrowUp');
+	await page.getByRole('combobox').press('ArrowRight');
+	await page.getByRole('combobox').press('ArrowUp');
 	await page.getByRole('combobox').pressSequentially('¡');
 	await expect(
 		await page.getByRole('dialog').getByRole('combobox'),
