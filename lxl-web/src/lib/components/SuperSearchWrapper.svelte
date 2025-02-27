@@ -54,7 +54,24 @@
 		if (!q || !q.trim()) {
 			event.preventDefault();
 		} else {
-			q = addSpaceIfEndingQualifier(q.trim());
+			const newQ = addSpaceIfEndingQualifier(q.trim());
+			superSearch?.dispatchChange({
+				change: {
+					from: 0,
+					to: q.length,
+					insert: newQ
+				},
+				selection:
+					newQ !== q.trim() // move cursor to end if space was added after ending qualifier
+						? {
+								anchor: newQ.length,
+								head: newQ.length
+							}
+						: {
+								anchor: cursor,
+								head: cursor
+							}
+			});
 		}
 	}
 
@@ -87,7 +104,7 @@
 		return data;
 	}
 
-	function addQualifierKey(qualifierKey: string) {
+	function addQualifierKey(qualifierKey: string, cursor: number) {
 		superSearch?.dispatchChange({
 			change: {
 				from: cursor,
@@ -154,7 +171,7 @@
 			id={getCellId(rowIndex, 0)}
 			class="flex min-h-12 w-full items-center px-4 hover:bg-main"
 			class:focused-cell={isFocusedCell(rowIndex, 0)}
-			onclick={() => addQualifierKey(qualifierKey)}
+			onclick={() => addQualifierKey(qualifierKey, cursor)}
 		>
 			<span class="overflow-hidden text-ellipsis whitespace-nowrap">
 				<strong class="text-3-cond-bold">{qualifierLabel}:</strong>
