@@ -6,6 +6,7 @@
 	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
 	import preventEnterKeyHandling from '$lib/extensions/preventEnterKeyHandling.js';
+	import arrowKeyCursorHandling from '$lib/extensions/arrowKeyCursorHandling.js';
 	import preventNewLine from '$lib/extensions/preventNewLine.js';
 	import useSearchRequest from '$lib/utils/useSearchRequest.svelte.js';
 	import { messages } from '$lib/constants/messages.js';
@@ -115,6 +116,13 @@
 	let activeColIndex: number = $state(0);
 	let prevValue: string = value;
 
+	let allowArrowKeyCursorHandling: { vertical: boolean; horizontal: boolean } = $state({
+		vertical: true,
+		horizontal: true
+	});
+	let prevArrowKeyCursorHandling = { vertical: true, horizontal: true };
+	let cursorHandlingCompartment = new Compartment();
+
 	let placeholderCompartment = new Compartment();
 	let prevPlaceholder = placeholder;
 
@@ -144,6 +152,7 @@
 	const extensionsWithDefaults = [
 		keymap.of(standardKeymap), // Needed for atomic ranges to work. Maybe we can use a subset?
 		preventEnterKeyHandling(),
+		cursorHandlingCompartment.of(arrowKeyCursorHandling({ vertical: true, horizontal: true })),
 		preventNewLine({ replaceWithSpace: true }),
 		...(language ? [language] : []),
 		placeholderCompartment.of(placeholderExtension(placeholder)),
@@ -283,6 +292,7 @@
 		expandedEditorView?.focus();
 		setDefaultRowAndCols();
 		expanded = true;
+		allowArrowKeyCursorHandling = { ...allowArrowKeyCursorHandling, vertical: false };
 	}
 
 	export function hideExpandedSearch() {
@@ -295,6 +305,7 @@
 		});
 		collapsedEditorView?.focus();
 		expanded = false;
+		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
 	}
 
 	function submitClosestForm() {
@@ -343,13 +354,21 @@
 			event.key === 'Tab'
 		) {
 			const rows = Array.from(dialog?.querySelectorAll(':scope [role=row]') || []);
-			const getColsInRow = (rowIndex: number) =>
-				Array.from(rows[rowIndex].querySelectorAll(':scope button, :scope a')).filter((colItem) => {
-					if (typeof colItem?.checkVisibility === 'function') {
-						return colItem.checkVisibility();
+			const getColsInRow = (rowIndex: number) => {
+				const cols = Array.from(rows[rowIndex].querySelectorAll(':scope button, :scope a')).filter(
+					(colItem) => {
+						if (typeof colItem?.checkVisibility === 'function') {
+							return colItem.checkVisibility();
+						}
+						return true; // always return true as a fallback if checkVisiblity isn't available
 					}
-					return true; // always return true as a fallback if checkVisiblity isn't available
-				});
+				);
+				allowArrowKeyCursorHandling = {
+					...allowArrowKeyCursorHandling,
+					horizontal: rowIndex === 0 || cols.length <= 1
+				};
+				return cols;
+			};
 
 			const getColIndexFromId = (itemId: string) => {
 				const colRegex = new RegExp(`${id}-item-\\d+x(\\d+)`);
@@ -500,6 +519,25 @@
 				effects: placeholderCompartment.reconfigure(placeholderExtension(placeholder))
 			});
 			prevPlaceholder = placeholder;
+		}
+	});
+
+	$effect(() => {
+		if (
+			allowArrowKeyCursorHandling.vertical !== prevArrowKeyCursorHandling.vertical ||
+			allowArrowKeyCursorHandling.horizontal !== prevArrowKeyCursorHandling.horizontal
+		) {
+			collapsedEditorView?.dispatch({
+				effects: cursorHandlingCompartment.reconfigure(
+					arrowKeyCursorHandling(allowArrowKeyCursorHandling)
+				)
+			});
+			expandedEditorView?.dispatch({
+				effects: cursorHandlingCompartment.reconfigure(
+					arrowKeyCursorHandling(allowArrowKeyCursorHandling)
+				)
+			});
+			prevArrowKeyCursorHandling = allowArrowKeyCursorHandling;
 		}
 	});
 
