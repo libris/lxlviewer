@@ -13,8 +13,8 @@ export interface SearchResult {
 	next?: Link;
 	previous?: Link;
 	items: SearchResultItem[];
-	facetGroups: FacetGroup[];
-	predicates: MultiSelectFacet[];
+	facetGroups?: FacetGroup[];
+	predicates?: MultiSelectFacet[];
 	_spell: SpellingSuggestion[] | [];
 }
 
