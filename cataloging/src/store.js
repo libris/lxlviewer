@@ -6,6 +6,7 @@ import * as StringUtil from 'lxljs/string';
 import * as httpUtil from '@/utils/http';
 import * as User from '@/models/user';
 import settings from './settings';
+import { arrayPathToString } from "lxljs/string.js";
 
 const EXTRACT_ON_SAVE = '__EXTRACT_ON_SAVE__';
 export const DELETE_ON_SAVE = '__DELETE_ON_SAVE__';
@@ -73,6 +74,10 @@ const store = createStore({
         numberOfViolations: 0,
         violations: {},
       },
+      backendValidation: {
+        numberOfErrors: 0,
+        errors: {},
+      },
       clipboard: null,
       changeHistory: [],
       event: [],
@@ -137,6 +142,15 @@ const store = createStore({
         state.inspector.validation.violations[payload.path] = payload.reasons;
       }
       state.inspector.validation.numberOfViolations = Object.keys(state.inspector.validation.violations).length;
+    },
+    setBackendValidationErrors(state, errors) {
+      state.inspector.backendValidation.errors = {};
+      // TODO handle multiple errors at same path?
+      for (const error of errors) {
+        const pathStr = StringUtil.arrayPathToString(error.path);
+        state.inspector.backendValidation.errors[pathStr] = error;
+      }
+      state.inspector.backendValidation.numberOfErrors = errors.length;
     },
     pushKeyAction(state, keyAction) {
       state.status.keyActions = [...state.status.keyActions, keyAction];
@@ -738,6 +752,9 @@ const store = createStore({
     },
     setValidation({ commit }, payload) {
       commit('setValidation', payload);
+    },
+    setBackendValidationErrors({ commit }, errors) {
+      commit('setBackendValidationErrors', errors);
     },
     flushChangeHistory({ commit }) {
       commit('flushChangeHistory');

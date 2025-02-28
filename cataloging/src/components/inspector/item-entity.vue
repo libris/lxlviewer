@@ -81,6 +81,22 @@ export default {
     isDiffView() {
       return this.diff != null;
     },
+    hasBackendValidationError() {
+      return this.backendValidationError != null;
+    },
+    backendValidationError() {
+      if (this.inspector.backendValidation.numberOfErrors > 0) {
+        // single value in property
+        if (this.inspector.backendValidation.errors[this.path + ".@id"]) {
+          return this.inspector.backendValidation.errors[this.path + ".@id"];
+        }
+        // inside array in property
+        if (this.inspector.backendValidation.errors[this.myPath + ".@id"]) {
+          return this.inspector.backendValidation.errors[this.myPath + ".@id"];
+        }
+      }
+      return null;
+    },
   },
   watch: {
     'inspector.event'(val) {
@@ -214,6 +230,13 @@ export default {
             'is-removed': diffRemoved,
             'is-added': diffAdded,
           }">
+          <span v-if="!isLocked && hasBackendValidationError">
+            <i class="fa fa-warning fa-fw icon--warn icon--sm"
+               tabindex="0"
+               :aria-label="translatePhrase(backendValidationError.description)"
+               v-tooltip.top="translatePhrase(backendValidationError.description)"
+            />
+          </span>
           <span class="ItemEntity-history-icon" v-if="diffRemoved">
             <i class="fa fa-trash-o icon--sm icon-removed" />
           </span>

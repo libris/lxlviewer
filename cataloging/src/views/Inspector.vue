@@ -561,6 +561,7 @@ export default {
       // Restore record
       this.$store.dispatch('setInspectorData', this.inspector.originalData);
       this.$store.dispatch('flushChangeHistory');
+      this.clearBackendValidationErrors();
     },
     cancelEditing(callback) {
       if (this.inspector.status.editing) {
@@ -789,6 +790,7 @@ export default {
           this.fetchDocument();
           this.warnOnSave();
           this.removeOtherRecords();
+          this.clearBackendValidationErrors();
           if (done) {
             this.stopEditing();
           } else {
@@ -812,6 +814,26 @@ export default {
           case 409:
             errorMessage = `${StringUtil.getUiPhraseByLang('The resource already exists', this.user.settings.language, this.resources.i18n)}`;
             this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+            break;
+          case 400:
+            let errorJson = null;
+            const responseHeader = error.getResponseHeader('Content-Type');
+            if (responseHeader && responseHeader.indexOf('application/json') !== -1) {
+              try {
+                errorJson = JSON.parse(error.responseText);
+              } catch (e) {
+                console.error('Failed to parse with Content-Type application/json as JSON', e, error);
+              }
+            }
+            if (errorJson && errorJson['message'] === 'Invalid JSON-LD' && errorJson['errors']) {
+              errorMessage = `${StringUtil.getUiPhraseByLang('The record contains invalid data', this.user.settings.language, this.resources.i18n)}`;
+              this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+              this.$store.dispatch('setBackendValidationErrors', errorJson['errors']);
+              this.$store.dispatch('pushInspectorEvent', { name: 'form-control', value: 'expand-item' });
+            } else {
+              errorMessage = `${StringUtil.getUiPhraseByLang('Something went wrong', this.user.settings.language, this.resources.i18n)} - ${error.status}: ${StringUtil.getUiPhraseByLang(error.statusText, this.user.settings.language, this.resources.i18n)}`;
+              this.$store.dispatch('pushNotification', { type: 'danger', message: `${errorBase}. ${errorMessage}.` });
+            }
             break;
           case 401:
             localStorage.removeItem('lastPath');
@@ -898,6 +920,9 @@ export default {
             token: this.user.token,
           }, data))));
     },
+    clearBackendValidationErrors() {
+      this.$store.dispatch('setBackendValidationErrors', []);
+    }
   },
   watch: {
     'inspector.data'(val, oldVal) {
