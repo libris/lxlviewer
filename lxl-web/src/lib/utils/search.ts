@@ -73,8 +73,10 @@ export async function asResult(
 				displayUtil.lensAndFormat(vocabUtil.getDefinition(i[JsonLd.TYPE]), LensType.Chip, locale)
 			)
 		})),
-		facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath),
-		predicates: displayPredicates(view, displayUtil, locale, usePath),
+		...('stats' in view && {
+			facetGroups: displayFacetGroups(view, displayUtil, locale, translate, usePath)
+		}),
+		...('stats' in view && { predicates: displayPredicates(view, displayUtil, locale, usePath) }),
 		_spell: view._spell
 			? view._spell.map((el) => {
 					return {
@@ -214,7 +216,7 @@ function displayFacetGroups(
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: translateFn,
-	usePath: string
+	usePath?: string
 ): FacetGroup[] {
 	const slices = view.stats?.sliceByDimension || {};
 
@@ -246,7 +248,7 @@ export function displayPredicates(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
-	usePath: string
+	usePath?: string
 ): MultiSelectFacet[] {
 	const predicates = view.stats?._predicates || [];
 
@@ -266,7 +268,7 @@ function displayBoolFilters(
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: translateFn,
-	usePath: string
+	usePath?: string
 ): FacetGroup {
 	const filters = view.stats?._boolFilters || [];
 

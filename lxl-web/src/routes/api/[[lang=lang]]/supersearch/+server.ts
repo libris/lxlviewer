@@ -34,6 +34,7 @@ export const GET: RequestHandler = async ({ url, params, locals }) => {
 		newSearchParams.set('_debug', 'esScore');
 	}
 
+	newSearchParams.set('_stats', 'false');
 	newSearchParams.delete('cursor');
 
 	console.log('Initial search params:', decodeURIComponent(url.searchParams.toString()));
