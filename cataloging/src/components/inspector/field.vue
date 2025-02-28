@@ -328,6 +328,15 @@ export default {
       return this.settings.protectedProperties.indexOf(this.fieldKey) !== -1 ||
         this.settings.protectedProperties.some((p) => isEqual(p, this.path));
     },
+    hasBackendValidationError() {
+      return this.backendValidationError != null;
+    },
+    backendValidationError() {
+      if (this.inspector.backendValidation.numberOfErrors > 0) {
+        return this.inspector.backendValidation.errors[this.path];
+      }
+      return null;
+    },
     arrayLength() {
       return this.valueAsArray.length;
     },
@@ -832,6 +841,13 @@ export default {
           <i class="fa fa-plus-circle icon--sm icon-added" />
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
+          <span v-if="!isLocked && hasBackendValidationError">
+            <i class="fa fa-warning fa-fw icon--warn icon--sm"
+               tabindex="0"
+               :aria-label="translatePhrase(backendValidationError.description)"
+               v-tooltip.top="translatePhrase(backendValidationError.description)"
+            />
+          </span>
           <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
           <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
           <span
@@ -862,6 +878,13 @@ export default {
       <code class="path-code" v-show="user.settings.appTech && !isInner">{{path}}</code>
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
+      <span v-if="!isLocked && hasBackendValidationError">
+        <i class="fa fa-warning fa-fw icon--warn icon--sm"
+           tabindex="0"
+           :aria-label="translatePhrase(backendValidationError.description)"
+           v-tooltip.top="translatePhrase(backendValidationError.description)"
+        />
+      </span>
       <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
       <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ capitalize(labelByLang(fieldKey)) }}</span>

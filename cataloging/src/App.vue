@@ -893,6 +893,13 @@ body {
       }
     }
 
+    &--warn {
+      color: @brand-danger;
+      &:hover {
+        color: @brand-danger;
+      }
+    }
+
     &--xs {
       font-size: 12px;
     }
