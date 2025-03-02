@@ -20,7 +20,6 @@ const insertSpaceBeforeQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 				Math.min(oldCursorPos, newCursorPos),
 				Math.max(oldCursorPos, newCursorPos),
 				(from, to) => {
-					console.log('has range');
 					if (newCursorPos === from + inputLength) {
 						// overlap is at atomic range start
 
@@ -45,18 +44,26 @@ const insertSpaceBeforeQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 						const node = syntaxTree(tr.state).resolveInner(oldCursorPos, 0);
 						if (node.parent?.name == 'QualifierValue') {
 							console.log('trapped', newCursorPos, to + inputLength);
-							console.log('input', input);
 							insert = [
-								// tr,
+								// we need to pass the original transaction, or we get a sync error for some reason
+								tr,
+								// undo the changes of the original transaction
 								{
 									changes: {
-										from: newCursorPos,
-										insert: ` `
+										from: oldCursorPos,
+										to: newCursorPos,
+										insert: ''
 									},
-									sequential: true,
-									selection: { anchor: to }
+									sequential: true
 								},
-								tr
+								// move cursor out of the atomic range and apply the input
+								{
+									changes: {
+										from: to,
+										insert: ` ${input}`
+									},
+									selection: { anchor: to + inputLength + 1 }
+								}
 							];
 						}
 					}
