@@ -164,8 +164,8 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 		decorations: (instance) => instance.qualifiers,
 		provide: () => [
 			EditorView.atomicRanges.of(() => atomicRangeSet),
-			EditorState.transactionFilter.of(insertQuotes),
-			insertSpaceBeforeQualifier(() => atomicRangeSet)
+			insertSpaceBeforeQualifier(() => atomicRangeSet),
+			EditorState.transactionFilter.of(insertQuotes)
 		]
 	});
 
