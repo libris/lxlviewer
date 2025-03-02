@@ -106,7 +106,7 @@
 	function addQualifier(qualifier: QualifierSuggestion) {
 		superSearch?.dispatchChange({
 			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(qualifier._q) },
-			selection: { anchor: qualifier.cursor, head: qualifier.cursor },
+			selection: { anchor: qualifier.cursor + 1, head: qualifier.cursor + 1 },
 			userEvent: 'input.complete'
 		});
 	}

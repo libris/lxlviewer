@@ -9,7 +9,7 @@ function addSpaceIfEndingQualifier(q: string) {
 	const lastNode = tree.resolveInner(q.length, -1);
 
 	if (lastNode.parent?.name === 'QualifierValue') {
-		return q;
+		return q + ' ';
 	}
 
 	return q;
