@@ -1,21 +1,23 @@
-# CodeMirror 6 language package template
+# LXLQuery language package
 
-This is an example repository containing a minimal [CodeMirror](https://codemirror.net/6/) language support package. The idea is to clone it, rename it, and edit it to create support for a new language.
+A [CodeMirror](https://codemirror.net/6/) language support package for the Libris XL Query language.
 
-Things you'll need to do (see the [language support example](https://codemirror.net/6/examples/lang-package/) for a more detailed tutorial):
+- `src/syntax.grammar` contains the grammar covering the language. See the [Lezer system guide](https://lezer.codemirror.net/docs/guide/#writing-a-grammar) for information on this file format.
 
-- `git grep EXAMPLE` and replace all instances with your language name.
+- `src/index.ts` adds metadata to the language parser.
 
-- Rewrite the grammar in `src/syntax.grammar` to cover your language. See the [Lezer system guide](https://lezer.codemirror.net/docs/guide/#writing-a-grammar) for information on this file format.
+- `test/cases.txt` contains the grammar tests.
 
-- Adjust the metadata in `src/index.ts` to work with your new grammar.
+## Develop
 
-- Adjust the grammar tests in `test/cases.txt`.
+`npm run watch` watches for changes in `/src` and builds the language.
 
-- Build (`npm run prepare`) and test (`npm test`).
+See the [language support example](https://codemirror.net/6/examples/lang-package/) for a detailed tutorial on development.
 
-- Rewrite this readme file.
+## Build
 
-- Optionally add a license.
+`npm run prepare`
 
-- Publish. Put your package on npm under a name like `codemirror-lang-EXAMPLE`.
+## Test
+
+`npm run test`

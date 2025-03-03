@@ -333,6 +333,7 @@
 	}
 
 	:global([data-property='_script']) {
+		@apply italic;
 		display: block;
 	}
 </style>

@@ -49,6 +49,16 @@
     "The resource has been modified by another user": "Resursen har ändrats av en annan användare",
     "The resource already exists": "Resursen finns redan",
     "Your login has expired": "Din inloggning har löpt ut",
+    "The record contains invalid data": "Posten innehåller ogiltig data",
+    "Expected value type to be a vocab string": "Värdet förväntas vara en sträng som är definierad i vokabuläret",
+    "Unexpected array. Key is not declared as repeatable in context": "Förväntas inte vara array. Egenskapen är inte repeterbar",
+    "Expected term to be an array. Key is declared as repeatable in context": "Förväntas vara array. Egenskapen är repeterbar",
+    "Expected value type of key to be object": "Förväntas vara objekt/entitet",
+    "Unknown vocab value": "Värdet existerar inte i vokabuläret",
+    "Unknown term. Missing definition": "Egenskapen existerar inte i vokabuläret",
+    "Unexpected value of key": "Ogiligt värde för egenskap/nyckel",
+    "Invalid key": "Ogiltig egenskap/nyckel",
+    "Invalid IRI": "Ogiltig IRI (URI)",
     "Renew": "Förnya",
     "New search": "Ny sökning",
     "Bring to main search": "Ta med till huvudträfflistan",
@@ -466,6 +476,10 @@
     "Show as record" : "Visa som post",
     "To see bulk changes you need to switch to a sigel with access.": "För att se körningar behöver du växla till ett sigel med rättigheter.",
     "Back to create bulk change": "Tillbaka till skapa körning",
-    "This might take a while...": "Det här verkar ta lite tid..."
+    "This might take a while...": "Det här verkar ta lite tid...",
+    "Lock property": "Lås egenskap",
+    "Unlock property": "Lås upp egenskap",
+    "The property is locked for editing. Are you sure you want to unlock it?" : "Egenskapen är låst för redigering. Är du säker på att du vill låsa upp?",
+    "Manage cookies": "Hantera kakor"
   }
 }

@@ -1,4 +1,4 @@
-import { JsonLd, type Link, type DisplayDecorated, type FramedData } from '$lib/types/xl';
+import { JsonLd, type Link, type DisplayDecorated, type FramedData, LensType } from '$lib/types/xl';
 import { type SecureImageResolution } from '$lib/types/auxd';
 import { LxlLens } from '$lib/types/display';
 
@@ -23,8 +23,11 @@ export interface SearchResultItem {
 	[JsonLd.TYPE]: string;
 	[LxlLens.CardHeading]: DisplayDecorated;
 	[LxlLens.CardBody]: DisplayDecorated;
+	[LensType.WebCardHeaderExtra]: DisplayDecorated;
+	[LensType.WebCardFooter]: DisplayDecorated;
 	image: SecureImageResolution | undefined;
 	typeStr: string;
+	_debug?: ItemDebugInfo;
 }
 
 type FacetGroupId = string;
@@ -68,10 +71,14 @@ interface SpellingSuggestion {
 export interface DisplayMapping {
 	'@id'?: string;
 	display?: DisplayDecorated;
+	displayStr?: string;
 	up?: Link;
 	children?: DisplayMapping[];
 	label?: string;
 	operator: keyof typeof SearchOperators;
+	invalid?: string;
+	_key?: string;
+	_value?: string;
 }
 
 export interface PartialCollectionView {
@@ -132,9 +139,11 @@ type MappingObj = { [key in SearchOperators]: SearchMapping[] | string | FramedD
 
 export interface SearchMapping extends MappingObj {
 	alias: string;
-	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom;
+	property?: ObjectProperty | DatatypeProperty | PropertyChainAxiom | InvalidProperty;
 	object?: FramedData;
 	up: { '@id': string };
+	_key?: string;
+	_value?: string;
 }
 
 interface ObjectProperty {
@@ -146,8 +155,58 @@ export interface DatatypeProperty {
 	'@id': string;
 }
 
+interface InvalidProperty {
+	'@type': '_Invalid';
+	label: string;
+}
+
 interface PropertyChainAxiom {
 	propertyChainAxiom: (ObjectProperty | DatatypeProperty)[];
 	label: string; // e.g. "instanceOf language"
 	_key: string; // e.g. "instanceOf.language"
+}
+
+export interface ApiItemDebugInfo {
+	_score: {
+		_total: number;
+		_perField: Record<string, number>;
+		_matchedFields?: Record<string, string[]>;
+		_explain: EsExplain;
+	};
+}
+
+export interface ItemDebugInfo {
+	score: {
+		total: number;
+		totalPercent: number;
+		perField: {
+			name: string;
+			needle: string;
+			score: number;
+			scorePercent: number;
+			haystack: string[];
+		}[];
+		explain: EsExplain;
+	};
+}
+
+export interface EsExplain {
+	description: string;
+	value: number;
+	details: EsExplain[];
+}
+
+export interface SuperSearchResult extends SearchResult {
+	[JsonLd.ID]: string;
+	items: SuperSearchResultItem[];
+}
+
+export interface SuperSearchResultItem extends SearchResultItem {
+	qualifiers: QualifierSuggestion[];
+}
+
+export interface QualifierSuggestion {
+	label: string;
+	_q: string;
+	cursor: number;
 }

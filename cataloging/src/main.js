@@ -10,6 +10,8 @@ import router from './router';
 import App from './App.vue';
 import EntitySummary from './components/shared/entity-summary.vue';
 import Field from './components/inspector/field.vue';
+import CookieConsent from './plugins/cookie-consent.js'
+import settings from './settings';
 
 const app = createApp(App);
 
@@ -25,8 +27,10 @@ const matomoId = runtimeConfig.MATOMO_ID || import.meta.env.VITE_APP_MATOMO_ID;
 matomoId && app.use(VueMatomo, {
   host: 'https://analytics.kb.se',
   siteId: matomoId,
-  router: router
+  router: router,
+  requireConsent: true
 })
+app.use(CookieConsent, settings.cookieConsent);
 
 app.component('entity-summary', EntitySummary).component('field', Field);
 

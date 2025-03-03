@@ -16,7 +16,9 @@ import {
 	SearchOperators,
 	type DatatypeProperty,
 	type MultiSelectFacet,
-	type FacetGroup
+	type FacetGroup,
+	type ApiItemDebugInfo,
+	type ItemDebugInfo
 } from '$lib/types/search';
 
 import { LxlLens } from '$lib/types/display';
@@ -26,6 +28,8 @@ import { type LocaleCode as LangCode } from '$lib/i18n/locales';
 import { bestImage, bestSize, toSecure } from '$lib/utils/auxd';
 import getAtPath from '$lib/utils/getAtPath';
 import { getUriSlug } from '$lib/utils/http';
+// import { error } from '@sveltejs/kit';
+// import { env } from '$env/dynamic/public';
 
 export async function asResult(
 	view: PartialCollectionView,
@@ -33,9 +37,15 @@ export async function asResult(
 	vocabUtil: VocabUtil,
 	locale: LangCode,
 	auxdSecret: string,
-	usePath: string
+	usePath?: string
 ): Promise<SearchResult> {
 	const translate = await getTranslator(locale);
+
+	const hasDebug = view.items?.length > 0 && view.items?.[0]._debug;
+	const maxScores = hasDebug
+		? getMaxScores(view.items.map((i) => i._debug as ApiItemDebugInfo))
+		: {};
+
 	return {
 		...('next' in view && { next: replacePath(view.next as Link, usePath) }),
 		...('previous' in view && { previous: replacePath(view.previous as Link, usePath) }),
@@ -46,7 +56,8 @@ export async function asResult(
 		mapping: displayMappings(view, displayUtil, locale, translate, usePath),
 		first: replacePath(view.first, usePath),
 		last: replacePath(view.last, usePath),
-		items: view.items.map((i) => ({
+		items: view.items?.map((i) => ({
+			...('_debug' in i && { _debug: asItemDebugInfo(i['_debug'] as ApiItemDebugInfo, maxScores) }),
 			[JsonLd.ID]: i.meta[JsonLd.ID] as string,
 			[JsonLd.TYPE]: i[JsonLd.TYPE] as string,
 			[LxlLens.CardHeading]: displayUtil.lensAndFormat(i, LxlLens.CardHeading, locale),
@@ -57,7 +68,7 @@ export async function asResult(
 				locale
 			),
 			[LensType.WebCardFooter]: displayUtil.lensAndFormat(i, LensType.WebCardFooter, locale),
-			image: toSecure(bestSize(bestImage(i), Width.SMALL), auxdSecret),
+			image: toSecure(bestSize(bestImage(i, locale), Width.SMALL), auxdSecret),
 			typeStr: toString(
 				displayUtil.lensAndFormat(vocabUtil.getDefinition(i[JsonLd.TYPE]), LensType.Chip, locale)
 			)
@@ -75,12 +86,12 @@ export async function asResult(
 	};
 }
 
-function displayMappings(
+export function displayMappings(
 	view: PartialCollectionView,
 	displayUtil: DisplayUtil,
 	locale: LangCode,
 	translate: translateFn,
-	usePath: string
+	usePath?: string
 ): DisplayMapping[] {
 	const mapping = view.search?.mapping || [];
 	return _iterateMapping(mapping);
@@ -92,15 +103,19 @@ function displayMappings(
 			if ('property' in m && operator) {
 				const property = m[operator] as FramedData;
 				return {
-					...(isObject(m.property) && { '@id': m.property['@id'] }),
+					...(isObject(m.property) && { [JsonLd.ID]: m.property[JsonLd.ID] }),
 					display: displayUtil.lensAndFormat(property, LensType.Chip, locale),
+					displayStr: toString(displayUtil.lensAndFormat(property, LensType.Chip, locale)) || '',
 					label: m.alias
 						? translate(`facet.${m.alias}`)
 						: capitalize(m.property?.labelByLang?.[locale] || m.property?.label) ||
-							m.property?.['@id'] ||
+							m.property?.[JsonLd.ID] ||
 							'No label', // lensandformat?
 					operator,
-					...('up' in m && { up: replacePath(m.up as Link, usePath) })
+					...(m.property?.[JsonLd.TYPE] === '_Invalid' && { invalid: m.property?.label }),
+					...('up' in m && { up: replacePath(m.up as Link, usePath) }),
+					_key: m._key,
+					_value: m._value
 				} as DisplayMapping;
 			} else if (operator && operator in m && Array.isArray(m[operator])) {
 				const mappingArr = m[operator] as SearchMapping[];
@@ -146,6 +161,44 @@ function displayMappings(
 
 		return op;
 	}
+}
+
+function getMaxScores(itemDebugs: ApiItemDebugInfo[]) {
+	const scores = itemDebugs.map((i) => {
+		return {
+			...i._score._perField,
+			_total: i._score._total
+		};
+	}) as Record<string, number>[];
+
+	return scores.reduce((result, current) => {
+		for (const key of Object.keys(current)) {
+			result[key] = Math.max(result[key] || 0, current[key]);
+		}
+		return result;
+	}, {});
+}
+
+function asItemDebugInfo(i: ApiItemDebugInfo, maxScores: Record<string, number>): ItemDebugInfo {
+	const matchedFields = i._score._matchedFields || {};
+	return {
+		score: {
+			total: i._score._total,
+			totalPercent: i._score._total / maxScores._total,
+			perField: Object.entries(i._score._perField).map(([k, v]) => {
+				const fs = k.split(':');
+				const name = fs.slice(0, -1).join(':');
+				return {
+					name: name,
+					needle: fs.at(-1) || '',
+					score: v,
+					scorePercent: v / maxScores[k],
+					haystack: (matchedFields[name] || []).toSorted()
+				};
+			}),
+			explain: i._score._explain
+		}
+	};
 }
 
 function isFreeTextQuery(property: unknown): boolean {
@@ -238,10 +291,13 @@ function displayBoolFilters(
 /**
  * prevent links on resource page from pointing to /find
  */
-function replacePath(view: Link, usePath: string) {
-	return {
-		'@id': view['@id'].replace('/find', usePath)
-	};
+function replacePath(view: Link, usePath: string | undefined) {
+	if (usePath) {
+		return {
+			'@id': view['@id'].replace('/find', usePath)
+		};
+	}
+	return view;
 }
 
 function capitalize(str: string | undefined) {

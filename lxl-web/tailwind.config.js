@@ -120,7 +120,10 @@ export default {
 			},
 			gridTemplateColumns: {
 				find: 'minmax(240px, 1fr) 5fr',
-				'instance-list': '16px 1fr 2fr 1fr 1fr'
+				'instance-list': '16px 1fr 2fr 1fr 1fr',
+				header: '70px minmax(0, 8fr) 1fr',
+				'header-md': 'minmax(240px, 1fr) minmax(0, 4fr) minmax(160px, 1fr)',
+				landing: 'minmax(240px, 1fr) 4fr minmax(240px, 1fr)'
 			},
 			boxShadow: {
 				input: 'inset 0px 1px 0px 0px rgb(var(--color-primary) / 0.16)',
@@ -190,6 +193,12 @@ export default {
 				},
 				'.find-layout': {
 					'@apply flex flex-col gap-4 md:grid md:grid-cols-find md:gap-8': {}
+				},
+				'.header-layout': {
+					'@apply grid grid-cols-header gap-x-8 md:grid-cols-header-md md:px-2 sm:px-6': {}
+				},
+				'.landing-layout': {
+					'@apply pb-16 md:grid-cols-landing': {}
 				},
 				'.page-padding': {
 					'@apply p-4 sm:px-6': {}

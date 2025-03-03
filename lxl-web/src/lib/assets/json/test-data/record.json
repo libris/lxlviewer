@@ -121,8 +121,7 @@
 								"code": "z"
 							},
 							{
-								"code": "rda",
-								"@type": "DescriptionConventions"
+								"@id": "https://id.kb.se/term/enum/Rda"
 							}
 						]
 					}

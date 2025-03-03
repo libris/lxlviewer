@@ -73,7 +73,7 @@
 
 	$: numFacets = group.facets.length;
 	$: hasHits = filteredFacets.length > 0;
-	$: expanded = searchPhrase && hasHits;
+	$: expanded = true;
 	$: sortedFacets = group.facets.sort(sortFn);
 	$: filteredFacets = sortedFacets.filter((facet) =>
 		facet.str
