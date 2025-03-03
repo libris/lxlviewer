@@ -55,7 +55,9 @@ export class VocabUtil {
 	}
 
 	getDefinition(name: ClassName | PropertyName): FramedData {
-		return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
+		if (typeof name === 'string') {
+			return lxljsVocab.getTermObject(name, this.vocabIndex, this.context);
+		}
 	}
 
 	getInverseProperty(name: PropertyName): PropertyName | undefined {
@@ -72,6 +74,10 @@ export class VocabUtil {
 		return this.isSubClassOf(className, Base.StructuredValue);
 	}
 
+	isIdentity(className: ClassName) {
+		return this.isSubClassOf(className, Base.Identity);
+	}
+
 	isKeyword(propertyName: PropertyName) {
 		return (
 			propertyName in this.contextTerms() &&
@@ -82,6 +88,13 @@ export class VocabUtil {
 	// TODO? reimplement?
 	hasCategory(propertyName: PropertyName, category: string) {
 		return lxljsVocab.hasCategory(propertyName, category, {
+			vocab: this.vocabIndex,
+			context: this.context
+		});
+	}
+
+	getLabelByLang(label: string, lang: string) {
+		return lxljsString.getLabelByLang(label, lang, {
 			vocab: this.vocabIndex,
 			context: this.context
 		});
@@ -518,7 +531,12 @@ export class DisplayUtil {
 	}
 
 	private scriptAlternatives(thing: unknown): LangCode[] {
-		if (isTypedNode(thing) && this.vocabUtil.isStructuredValue(this.vocabUtil.getType(thing))) {
+		const shouldBeGrouped =
+			isTypedNode(thing) &&
+			(this.vocabUtil.isStructuredValue(this.vocabUtil.getType(thing)) ||
+				this.vocabUtil.isIdentity(this.vocabUtil.getType(thing)));
+
+		if (shouldBeGrouped) {
 			return this.orderScripts(
 				Object.entries(thing)
 					.filter(([k, v]) => this.isLangContainer(k) && isTransliterated(v as LangContainer))
@@ -538,8 +556,8 @@ export class DisplayUtil {
 		return [
 			...new Set(
 				scripts.sort((a, b) => {
-					const aa = isTransliteratedLatin(a) ? a : '_' + a;
-					const bb = isTransliteratedLatin(a) ? b : '_' + b;
+					const aa = isTransliteratedLatin(a) ? '_' + a : a;
+					const bb = isTransliteratedLatin(b) ? '_' + b : b;
 					return bb.localeCompare(aa);
 				})
 			)
@@ -973,7 +991,7 @@ function isTransliterated(l: LangContainer) {
 }
 
 function isTransliteratedLatin(langCode: LangCode) {
-	return langCode.includes('-t-Latn');
+	return langCode.includes('Latn-t-');
 }
 
 function isAlternateProperties(v: ShowProperty): v is AlternateProperties {

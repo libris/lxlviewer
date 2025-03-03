@@ -12,6 +12,7 @@ import { getContextValue } from 'lxljs/vocab';
 import * as LayoutUtil from '@/utils/layout';
 import * as DataUtil from '@/utils/data';
 import { translatePhrase, labelByLang, capitalize } from '@/utils/filters';
+import protectedProps from '@/resources/json/protectedProperties.json';
 import EntityAdder from './entity-adder.vue';
 import ItemEntity from './item-entity.vue';
 import ItemValue from './item-value.vue';
@@ -23,12 +24,12 @@ import ItemBoolean from './item-boolean.vue';
 import ItemNumeric from './item-numeric.vue';
 import ItemGrouped from './item-grouped.vue';
 import ItemShelfControlNumber from './item-shelf-control-number.vue';
-import ItemNextShelfControlNumber from './item-next-shelf-control-number.vue';
 import ItemBylang from './item-bylang.vue';
 import LodashProxiesMixin from '../mixins/lodash-proxies-mixin.vue';
 import LanguageMixin from '../mixins/language-mixin.vue';
 import FieldMarker from "@/components/inspector/field-marker.vue";
 import IdList from '@/components/care/id-list.vue';
+import ModalComponent from "@/components/shared/modal-component.vue";
 import {
   BulkContext,
   HAS_ID_KEY,
@@ -142,6 +143,9 @@ export default {
       pasteHover: false,
       removed: false,
       uniqueIds: [],
+      unlockedByUser: false,
+      unlockModalOpen: false,
+      protectedProps
     };
   },
   components: {
@@ -157,9 +161,9 @@ export default {
     'item-numeric': ItemNumeric,
     'item-grouped': ItemGrouped,
     'item-shelf-control-number': ItemShelfControlNumber,
-    'item-next-shelf-control-number': ItemNextShelfControlNumber,
     'item-bylang': ItemBylang,
     'entity-adder': EntityAdder,
+    'modal-component': ModalComponent,
   },
   watch: {
   },
@@ -320,6 +324,19 @@ export default {
     warnBeforeRemove() {
       return this.inspector.status.focus === 'record';
     },
+    isProtected() {
+      return this.settings.protectedProperties.indexOf(this.fieldKey) !== -1 ||
+        this.settings.protectedProperties.some((p) => isEqual(p, this.path));
+    },
+    hasBackendValidationError() {
+      return this.backendValidationError != null;
+    },
+    backendValidationError() {
+      if (this.inspector.backendValidation.numberOfErrors > 0) {
+        return this.inspector.backendValidation.errors[this.path];
+      }
+      return null;
+    },
     arrayLength() {
       return this.valueAsArray.length;
     },
@@ -331,6 +348,9 @@ export default {
         if (this.settings.unlockableProperties.includes(this.fieldKey)) {
           return false;
         }
+      }
+      if (this.isProtected && !this.unlockedByUser) {
+        return true;
       }
       if (this.settings.lockedProperties.indexOf(this.fieldKey) !== -1) {
         return true;
@@ -438,6 +458,7 @@ export default {
     },
     isLastAdded() {
       if (this.inspector.status.lastAdded === this.path) {
+        this.unlockedByUser = true;
         return true;
       }
       return false;
@@ -538,6 +559,22 @@ export default {
         item.classList.remove(cssClass);
       }
     },
+    openUnlockModal() {
+      this.unlockModalOpen = true;
+      setTimeout(() => {
+        this.$refs.unlockButton.focus();
+      }, 200);
+    },
+    unlockEdit() {
+      this.unlockedByUser = true;
+      this.closeUnlockModal();
+    },
+    closeUnlockModal() {
+      this.unlockModalOpen = false;
+    },
+    lockProtected() {
+      this.unlockedByUser = false;
+    },
     removeThis() {
       let approved = true;
       if (this.warnBeforeRemove) {
@@ -577,9 +614,6 @@ export default {
       }
       if (typeof o === 'boolean') {
         return 'boolean';
-      }
-      if (this.fieldKey === 'nextShelfControlNumber') {
-        return 'nextShelfControlNumber';
       }
       if (this.fieldKey === 'shelfControlNumber') {
         return 'shelfControlNumber';
@@ -665,6 +699,12 @@ export default {
         addToHistory: true,
       });
     },
+    getModalTitle() {
+      return protectedProps[this.fieldKey] ? protectedProps[this.fieldKey].title : protectedProps['default'].title;
+    },
+    getModalInfoText() {
+      return protectedProps[this.fieldKey] ? protectedProps[this.fieldKey].infoText : protectedProps['default'].infoText;
+    }
   },
   beforeUnmount() {
     this.$store.dispatch('setValidation', { path: this.path, validates: true });
@@ -755,6 +795,27 @@ export default {
           </div>
           <div v-else class="Field-action placeholder" />
 
+          <div class="Field-action" v-if="isProtected && !unlockedByUser && !isLocked">
+            <i class="fa fa-lock fa-fw icon icon--sm"
+               tabindex="0"
+               role="button"
+               :aria-label="translatePhrase('Unlock property')"
+               v-on:click="openUnlockModal()"
+               v-tooltip.top="translatePhrase('Unlock property')"
+               @keyup.enter="openUnlockModal()"
+            />
+          </div>
+          <div class="Field-action" v-if="isProtected && unlockedByUser && !isLocked">
+            <i class="fa fa-unlock-alt fa-fw icon icon--sm"
+               tabindex="0"
+               role="button"
+               :aria-label="translatePhrase('Lock property')"
+               v-on:click="lockProtected()"
+               v-tooltip.top="translatePhrase('Lock property')"
+               @keyup.enter="lockProtected()"
+               />
+          </div>
+
           <div
             class="Field-action Field-clipboardPaster"
             v-if="!locked && (isRepeatable || isEmptyObject) && clipboardHasValidObject"
@@ -780,6 +841,13 @@ export default {
           <i class="fa fa-plus-circle icon--sm icon-added" />
         </div>
         <div class="Field-label uppercaseHeading" v-bind:class="{ 'is-locked': locked }">
+          <span v-if="!isLocked && hasBackendValidationError">
+            <i class="fa fa-warning fa-fw icon--warn icon--sm"
+               tabindex="0"
+               :aria-label="translatePhrase(backendValidationError.description)"
+               v-tooltip.top="translatePhrase(backendValidationError.description)"
+            />
+          </span>
           <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
           <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
           <span
@@ -810,6 +878,13 @@ export default {
       <code class="path-code" v-show="user.settings.appTech && !isInner">{{path}}</code>
     </div>
     <div class="Field-label uppercaseHeading" v-if="isInner" v-bind:class="{ 'is-locked': locked }">
+      <span v-if="!isLocked && hasBackendValidationError">
+        <i class="fa fa-warning fa-fw icon--warn icon--sm"
+           tabindex="0"
+           :aria-label="translatePhrase(backendValidationError.description)"
+           v-tooltip.top="translatePhrase(backendValidationError.description)"
+        />
+      </span>
       <span v-show="fieldKey === '@id'">{{ capitalize(translatePhrase('ID')) }}</span>
       <span v-show="fieldKey === '@type'">{{ capitalize(translatePhrase(entityTypeArchLabel)) }}</span>
       <span v-show="fieldKey !== '@id' && fieldKey !== '@type' && !diff" :title="fieldKey" @click="onLabelClick">{{ capitalize(labelByLang(fieldKey)) }}</span>
@@ -865,6 +940,27 @@ export default {
             @blur="removeHover = false, highlight(false, $event, 'is-removeable')"
             @mouseover="removeHover = true, highlight(true, $event, 'is-removeable')"
             @mouseout="removeHover = false, highlight(false, $event, 'is-removeable')" />
+        </div>
+
+        <div class="Field-action" v-if="isProtected && !unlockedByUser && !isLocked">
+          <i class="fa fa-lock fa-fw icon icon--sm"
+             tabindex="0"
+             role="button"
+             :aria-label="translatePhrase('Unlock property')"
+             v-on:click="openUnlockModal()"
+             v-tooltip.top="translatePhrase('Unlock property')"
+             @keyup.enter="openUnlockModal()"
+            />
+        </div>
+        <div class="Field-action" v-if="isProtected && unlockedByUser && !isLocked">
+          <i class="fa fa-unlock-alt fa-fw icon icon--sm"
+             tabindex="0"
+             role="button"
+             :aria-label="translatePhrase('Lock property')"
+             v-on:click="lockProtected()"
+             v-tooltip.top="translatePhrase('Lock property')"
+             @keyup.enter="lockProtected()"
+          />
         </div>
 
         <div
@@ -1110,20 +1206,36 @@ export default {
           :parent-path="path"
           :is-expanded="isExpanded" />
 
-        <!-- nextShelfControlNumber -->
-        <item-next-shelf-control-number
-          v-if="getDatatype(item) == 'nextShelfControlNumber'"
-          :is-locked="locked"
-          :field-value="item"
-          :field-key="fieldKey"
-          :index="index"
-          :diff="diff"
-          :parent-path="path"
-          :is-expanded="isExpanded"
-        />
       </div>
       <portal-target :name="`typeSelect-${path}`" />
     </div>
+    <modal-component
+      :title="translatePhrase(this.getModalTitle())"
+      modal-type="warning"
+      class="ChangeTypeWarningModal"
+      :width="'570px'"
+      @close="closeUnlockModal()"
+      v-if="unlockModalOpen"
+    >
+      <template #modal-body>
+        <div class="ChangeTypeWarningModal-body">
+          <p>
+            {{translatePhrase(this.getModalInfoText())}}
+          </p>
+
+          <div class="ChangeTypeWarningModal-buttonContainer">
+            <button class="btn btn-hollow btn--auto btn--md" @click="closeUnlockModal()">
+              {{ translatePhrase('Cancel') }}
+            </button>
+
+            <button class="btn btn-warning btn--md" ref="unlockButton" @click="unlockEdit()">
+              <i class="icon icon--white fa fa-unlock-alt" />
+              {{ translatePhrase('Unlock') }}
+            </button>
+          </div>
+        </div>
+      </template>
+    </modal-component>
   </li>
 </template>
 

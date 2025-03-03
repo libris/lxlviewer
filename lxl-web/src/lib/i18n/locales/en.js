@@ -1,12 +1,12 @@
 /** @type {typeof import('./sv.js').default} */
 export default {
 	home: {
-		searchPlaceholder: 'Title, author, subject et cetera'
+		searchPlaceholder: 'Title, author, subject etc'
 	},
 	header: {
 		help: 'Help',
 		changeLang: 'På svenska',
-		searchPlaceholder: 'Title, author, subject et cetera',
+		searchPlaceholder: 'Title, author, subject etc.',
 		openMenu: 'Open main menu'
 	},
 	footer: {
@@ -46,8 +46,7 @@ export default {
 		'@reverse': 'Relation',
 		'meta.encodingLevel': 'Encoding level',
 		'rdf:type': 'Type',
-		workType: 'Type',
-		instanceType: 'Format',
+		hasInstanceType: 'Format',
 		genreForm: 'Genre/form',
 		itemHeldBy: 'Library',
 		bibliography: 'Bibliography',
@@ -97,16 +96,39 @@ export default {
 		hideDetails: 'Show less',
 		occursAs: 'as',
 		relatedSearchLabel: 'Search the results',
-		didYouMean: 'Did you mean'
+		didYouMean: 'Did you mean',
+		showAllResults: 'Show all results',
+		supersearchStartHeader: 'Build and refine your search query',
+		addAs: 'Add as'
+	},
+	qualifiers: {
+		contributorKey: 'contributor',
+		contributorLabel: 'Contributor',
+		contributorPlaceholder: 'Selma Lagerlöf, Astrid Lindgren',
+		titleKey: 'title',
+		titleLabel: 'Title',
+		titlePlaceholder: 'The Serious Game, Casablanca',
+		languageKey: 'language',
+		languageLabel: 'Language',
+		languagePlaceholder: 'Swedish, English, Arabic',
+		subjectKey: 'subject',
+		subjectLabel: 'Subject',
+		subjectPlaceholder: 'Sommaren, Romerska riket',
+		yearKey: 'year',
+		yearLabel: 'Year',
+		yearPlaceholder: '2002, 1987-1994',
+		genreFormKey: 'genreForm',
+		genreFormLabel: 'Genre/form',
+		genreFormPlaceholder: 'Fiction'
 	},
 	sort: {
 		sort: 'Sort',
 		relevancy: 'Relevancy',
 		alphaAsc: 'A-Z',
 		alphaDesc: 'Z-A',
-		publicationAsc: 'Publication year (oldest first)',
-		publicationDesc: 'Publication year (newest first)',
-		linksDesc: 'Most linked',
+		publicationAsc: 'Oldest first (publication year)',
+		publicationDesc: 'Newest first (publication year)',
+		holdingsDesc: 'Number of libraries',
 		hitsAsc: 'Hits asc.',
 		hitsDesc: 'Hits desc.',
 		yearAsc: 'Oldest first',

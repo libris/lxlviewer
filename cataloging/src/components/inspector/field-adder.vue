@@ -323,9 +323,10 @@ export default {
           <div class="FieldAdderPanel-filterContainer form-group">
             <input
               id="field-adder-input"
-              type="text"
+              type="search"
               ref="input"
               class="FieldAdderPanel-filterInput customInput mousetrap"
+              autocomplete="off"
               :placeholder="translatePhrase('Filter by')"
               :aria-label="translatePhrase('Filter by')"
               v-model="filterKey">

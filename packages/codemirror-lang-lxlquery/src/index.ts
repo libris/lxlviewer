@@ -1,47 +1,51 @@
 import { parser } from './syntax.grammar';
 import { LRLanguage, LanguageSupport, syntaxHighlighting } from '@codemirror/language';
 import { styleTags, Tag, tagHighlighter } from '@lezer/highlight';
+import lxlLinter from './lxlLinter';
 
-// custom tags attached to the language parser
-const customTags = {
+/**
+ * Custom tags attached to the language parser
+ * see https://lezer.codemirror.net/docs/ref/#highlight.styleTags
+ * for the matching syntax
+ */
+const tags = {
 	Qualifier: Tag.define('Qualifier'),
 	QualifierKey: Tag.define('QualifierKey'),
+	QualifierOperator: Tag.define('QualifierOperator'),
 	QualifierValue: Tag.define('QualifierValue'),
-	EqualOperator: Tag.define('EqualOperator'),
-	CompareOperator: Tag.define('CompareOperator'),
-	BooleanQuery: Tag.define('BooleanQuery'),
 	BooleanOperator: Tag.define('BooleanOperator'),
-	Wildcard: Tag.define('Wildcard')
+	UTerm: Tag.define('UTerm')
 };
+
+const tagMatcher = {
+	'Qualifier/...': tags.Qualifier,
+	'QualifierKey!': tags.QualifierKey,
+	'QualifierOperator!': tags.QualifierOperator,
+	'QualifierValue/...': tags.QualifierValue,
+	'AndOperator OrOperator': tags.BooleanOperator,
+	'UTerm/...': tags.UTerm
+};
+
+const highlighter = tagHighlighter([
+	{ tag: tags.Qualifier, class: 'lxl-qualifier' },
+	{ tag: tags.QualifierKey, class: 'lxl-qualifier-key' },
+	{ tag: tags.QualifierOperator, class: 'lxl-qualifier-operator' },
+	{ tag: tags.QualifierValue, class: 'lxl-qualifier-value' },
+	{ tag: tags.BooleanOperator, class: 'lxl-boolean-operator' },
+	{ tag: tags.UTerm, class: 'lxl-not-term' }
+]);
 
 export const lxlQueryLanguage = LRLanguage.define({
 	name: 'Libris XL query',
 	parser: parser.configure({
-		props: [styleTags(customTags)]
-	}),
-	languageData: {}
+		props: [styleTags(tagMatcher)]
+	})
 });
 
-const highlighter = tagHighlighter(
-	[
-		{ tag: customTags.Qualifier, class: 'qualifier' },
-		{ tag: customTags.QualifierKey, class: 'qualifier-key' },
-		{ tag: customTags.QualifierValue, class: 'qualifier-value' },
-		{ tag: customTags.EqualOperator, class: 'equal-operator' },
-		{ tag: customTags.CompareOperator, class: 'compare-operator' },
-		{ tag: customTags.BooleanOperator, class: 'boolean-operator' },
-		{ tag: customTags.BooleanQuery, class: 'boolean-query' },
-		{ tag: customTags.Wildcard, class: 'wildcard' }
-	],
-	{
-		all: 'lxlq'
-	}
-);
-
-const highlighterExtension = syntaxHighlighting(highlighter);
+const extensions = [syntaxHighlighting(highlighter), lxlLinter];
 
 /**
- * Libris XL query language together with a highlighter extension 
+ * Libris XL query language together with highlighter extensions
  * that adds CSS classes for certain nodes
  */
-export const lxlQuery = new LanguageSupport(lxlQueryLanguage, highlighterExtension)
+export const lxlQuery = new LanguageSupport(lxlQueryLanguage, extensions);

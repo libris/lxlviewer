@@ -1,171 +1,432 @@
-# Freetext words
+# PARSE - normal parse
 
-Astrid lindgren
-
-==>
-
-Query()
-
-
-# Freetext string
-
-"2001: A Space Odyssey"
+AAA BBB AND (CCC OR DDD)
 
 ==>
 
-Query()
+Query(String String AndOperator Group(String OrOperator String))
 
 
-# Freetext with Wildcard
+# implicit and group
 
-Astrid lind*
-
-==>
-
-Query(Wildcard)
-
-
-# Qualifier with EqualOperator
-
-ÅR:2024
+AAA BBB (CCC OR DDD)
 
 ==>
 
-Query(
-  Qualifier(QualifierKey,EqualOperator,QualifierValue)
-)
+Query(String String Group(String OrOperator String))
 
 
-# Qualifier with CompareOperator
+# parse negative
 
-ÅR>2024
-ÅR<=2024
+!AAA
 
 ==>
 
-Query(
-  Qualifier(QualifierKey,CompareOperator,QualifierValue)
-  Qualifier(QualifierKey,CompareOperator,QualifierValue)
-)
+Query(UTerm (UOperator String))
 
 
-# Qualifier with string key
+# parse negative 2
 
-"rdf:type":Text
+NOT AAA
+
+==>
+
+Query(UTerm (UOperator String))
+
+
+# parse negative 3
+
+NOT (AAA)
+
+==>
+
+Query(UTerm (UOperator Group (String)))
+
+
+# crazy grouping
+
+AAA BBB AND (CCC OR DDD OR (EEE) AND (FFF OR GGG))
 
 ==>
 
 Query(
-  Qualifier(QualifierKey,EqualOperator,QualifierValue)
+  String,
+  String,
+  AndOperator,
+  Group(
+    String,
+    OrOperator,
+    String,
+    OrOperator,
+    Group(
+      String
+    ),
+    AndOperator,
+    Group(
+      String,
+      OrOperator,
+      String
+    )
+  )
 )
 
 
-# Qualifier with string value
+# fail crazy grouping with bad parens
 
-contributor:"Astrid Lindgren"
+AAA BBB AND (CCC OR DDD OR (EEE) AND (FFF OR GGG)
 
 ==>
 
 Query(
-  Qualifier(QualifierKey,EqualOperator,QualifierValue)
+  String,
+  String,
+  AndOperator,
+  Group(
+    String,
+    OrOperator,
+    String,
+    OrOperator,
+    Group(
+      String
+    ),
+    AndOperator,
+    Group(
+      String,
+      OrOperator,
+      String
+    ),
+    ⚠
+  )
 )
 
 
-# Qualifier linked
+# super basic parse
 
-contributor:"libris:fcrtpljz1qp2bdv#it"
+AAA
 
 ==>
 
-Query(
-  Qualifier(QualifierKey,EqualOperator,QualifierValue)
-)
+Query(String)
 
 
-# BooleanQuery
+# super basic parse 2
 
-sommar OR vinter NOT vår
+AAA BBB
 
 ==>
 
-Query(
-  BooleanQuery(BooleanOperator,BooleanOperator)
-)
+Query(String String)
 
 
-# BooleanQuery - erroneous
+# basic code
 
-OR AND sommar
+förf:AAA
 
 ==>
 
-Query(
-  ⚠(BooleanOperator),⚠(BooleanOperator)
-)
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
 
 
-# Combined: Qualifier and Freetext
+# basic code 2
 
-contributor:"Astrid Lindgren" Pippi Långstrump
+förf=AAA
 
 ==>
 
-Query(
-  Qualifier(QualifierKey,EqualOperator,QualifierValue)
-)
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
 
 
-# Combined: Freetext BooleanQuery (Qualifier NOT Qualifier)
+# quoted code
 
-träd* bibliografi:"sigel:DST" NOT typ:Text
+förf:"AAA"
 
 ==>
 
-Query(
-  Wildcard,BooleanQuery(Qualifier(...),BooleanOperator,Qualifier(...))
-)
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
 
 
-# Combined: Freetext Qualifier (Group with BooleanQuery) Qualifier
+# quoted code 2
 
-pippi långstrump språk:(engelska OR franska) ÅR>2002
+förf:"förf:"
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
+
+
+# quoted code 3
+
+"förf:":"AAA"
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
+
+
+# quoted code 4
+
+"Kod: författare och annat:":("AAA" OR BBB)
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(Group(String OrOperator String))))
+
+
+# code group
+
+förf:(AAA)
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(Group(String))))
+
+
+# code group 2
+
+förf:(AAA OR BBB AND CCC)
 
 ==>
 
 Query(
   Qualifier(
-    QualifierKey,EqualOperator,QualifierValue(
+    QualifierKey(
+      String
+    ),
+    QualifierOperator,
+    QualifierValue(
       Group(
-        BooleanQuery(BooleanOperator)
+        String,
+        OrOperator,
+        String,
+        AndOperator,
+        String
       )
     )
-  ),
-  Qualifier(...)
+  )
 )
 
 
-# Other filters: cover image
+# bad use of code
 
-image:*
+förf:
 
 ==>
 
-Query(Qualifier(...))
+Query(Qualifier(QualifierKey(String) QualifierOperator ⚠))
 
 
-# Other filters: include E-plikt
+# bad use of code 2
+
+AAA OR förf:
+
+==>
+
+Query(String OrOperator Qualifier(QualifierKey(String) QualifierOperator ⚠))
+
+
+# don't parse missing or-tail
+
+AAA BBB AND (CCC OR)
+
+==>
+
+Query(String String AndOperator Group(String OrOperator ⚠))
+
+
+# don't parse missing and-tail
+
+AAA BBB AND
+
+==>
+
+Query(String String AndOperator ⚠)
+
+
+# code binop
+
+published: 2022
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
+
+
+# code binop 2
+
+published:2022
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
+
+
+# code binop 3
+
+published=2022
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
+
+
+# code binop 4
+
+published<2022
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
+
+
+# code binop 5
+
+published>=2022
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)))
+
+
+# fail compare with group
+
+AAA < (CCC)
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator ⚠ ) Group(String))
+
+
+# fail compare with not
+
+AAA < ! CCC
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator ⚠ ) UTerm(...))
+
+
+# fail compare with not 2
+
+AAA < NOT CCC
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator ⚠ ) UTerm(...))
+
+
+# fail compare with like
+
+AAA < ~ CCC
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator ⚠ QualifierValue(String)))
+
+
+# codes and quotes
+
+"bf:subject":"lcsh:Physics" AND "bf:subject"
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String)) AndOperator String)
+
+
+
+# ----- freetext string
+
+"2001: A Space Odyssey"
+
+==>
+
+Query(String)
+
+
+# negative group
+
+!(AAAA OR BBBB)
+
+==>
+
+Query(UTerm(UOperator Group(String OrOperator String)))
+
+
+# fail boolean query
+
+OR AND sommar
+
+==>
+
+Query(⚠(OrOperator) ⚠(AndOperator) String)
+
+
+# fail boolean query 2
+
+NOT sommar NOT OR vinter
+
+==>
+
+Query(UTerm(UOperator String) UTerm(UOperator ⚠) OrOperator String)
+
+
+# fail boolean query 3
+
+NOT
+
+==>
+
+Query(UTerm(UOperator ⚠))
+
+
+# fail unclosed quote
+
+"Astrid Lind
+
+==>
+
+Query(⚠ String String)
+
+
+# fail empty paren
+
+()
+
+==>
+
+Query(Group(String(⚠)))
+
+
+# uterm code
+
+NOT key:value
+
+==>
+
+Query(UTerm(UOperator Qualifier(QualifierKey(String) QualifierOperator QualifierValue(String))))
+
+
+# uterm code 2
+
+key:(NOT value)
+
+==>
+
+Query(Qualifier(QualifierKey(String) QualifierOperator QualifierValue(Group(UTerm(UOperator String)))))
+
+
+# other filters: include E-plikt
 
 Pippi includeEplikt
 
 ==>
 
-Query(Qualifier)
+Query(String Qualifier)
 
 
-# Other filters: include preliminary
+# other filters: include preliminary
 
 includePreliminary Pippi
 
 ==>
 
-Query(Qualifier)
+Query(Qualifier String)

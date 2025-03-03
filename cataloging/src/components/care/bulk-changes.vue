@@ -114,7 +114,7 @@ export default {
       return this.mergeSpecActive ? this.inspector.data.mainEntity : this.currentBulkChange[CHANGE_SPEC_KEY];
     },
     matchFormActive() {
-      return this.isActive('form');
+      return this.isActive('matchForm');
     },
     targetFormActive() {
       return this.isActive('targetForm');
@@ -124,9 +124,9 @@ export default {
     },
     formTitle() {
       if (this.specType === Type.Delete) {
-        return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Remove records')}`;
+        return `${this.steps.indexOf('matchForm') + 1}. ${translatePhrase('Remove records')}`;
       }
-      return `${this.steps.indexOf('form') + 1}. ${translatePhrase('Selection')}`;
+      return `${this.steps.indexOf('matchForm') + 1}. ${translatePhrase('Selection')}`;
     },
     mergeTitle() {
       const title = this.isOtherSpec
@@ -184,13 +184,13 @@ export default {
     },
     steps() {
       if (this.isUpdateSpec) {
-        return ['form', 'targetForm', 'preview'];
+        return ['matchForm', 'targetForm', 'preview'];
       } else if (this.isMergeSpec) {
         return ['mergeSpec', 'preview'];
       } else if (this.isCreateSpec) {
         return ['targetForm', 'preview'];
       } else if (this.isDeleteSpec) {
-        return ['form', 'preview'];
+        return ['matchForm', 'preview'];
       } else {
         return ['preview'];
       }
@@ -358,7 +358,18 @@ export default {
         addToHistory: false,
       });
     },
-    onInactiveForm() {
+    onSaveFromActiveMatchForm() {
+      let form = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
+      if (isEqual(form, this.currentSpec[MATCH_FORM_KEY])) {
+        // NOP
+      } else {
+        this.currentSpec[MATCH_FORM_KEY] = form;
+        if (this.hasTargetForm) {
+          this.currentSpec[TARGET_FORM_KEY] = form;
+        }
+      }
+    },
+    onInactiveMatchForm() {
       let form = DataUtil.appendIds(cloneDeep(this.inspector.data.mainEntity));
       if (isEqual(form, this.currentSpec[MATCH_FORM_KEY])) {
         this.setInspectorData(this.currentSpec[TARGET_FORM_KEY]);
@@ -373,7 +384,7 @@ export default {
       } else {
         this.currentSpec[TARGET_FORM_KEY] = cloneDeep(this.inspector.data.mainEntity);
       }
-      if (this.activeStep === 'form') {
+      if (this.activeStep === 'matchForm') {
         this.setInspectorData(this.currentSpec[MATCH_FORM_KEY]);
       }
     },
@@ -450,9 +461,8 @@ export default {
     save() {
       this.isSaving = true;
       this.resetLastAdded();
-      if (this.isActive('form')) {
-        this.onInactiveForm();
-        this.onInactiveTargetForm();
+      if (this.isActive('matchForm')) {
+        this.onSaveFromActiveMatchForm();
       } else if (this.isActive('targetForm')) {
         this.onInactiveTargetForm();
       } else if (this.isActive('mergeSpec')) {
@@ -860,11 +870,11 @@ export default {
         <form-builder
           :title="formTitle"
           tabindex="0"
-          :is-active="isActive('form') && isDraft"
+          :is-active="isActive('matchForm') && isDraft"
           :form-data="formObj"
           :first-item-active="isFirstActive"
           :is-draft="isDraft"
-          @onInactive="onInactiveForm"
+          @onInactive="onInactiveMatchForm"
           @onActive="focusMatchForm"
           @removeIdList="removeIdList"
         />

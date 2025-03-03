@@ -280,8 +280,9 @@ export default {
           <div class="PropertyAdderPanel-filterContainer form-group">
             <input
               id="field-adder-input"
-              type="text"
+              type="search"
               ref="input"
+              autocomplete="off"
               class="PropertyAdderPanel-filterInput customInput mousetrap"
               :placeholder="translatePhrase('Filter by')"
               :aria-label="translatePhrase('Filter by')"

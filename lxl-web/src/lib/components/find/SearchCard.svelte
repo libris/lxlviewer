@@ -1,16 +1,17 @@
 <script lang="ts">
-	import jmespath from 'jmespath';
 	import type { SearchResultItem } from '$lib/types/search';
-	import type { ResourceData } from '$lib/types/resourceData';
 	import { LensType } from '$lib/types/xl';
 	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import { LxlLens } from '$lib/types/display';
-
 	import { relativizeUrl } from '$lib/utils/http';
 	import getTypeIcon from '$lib/utils/getTypeIcon';
+	import getInstanceData from '$lib/utils/getInstanceData';
 	import placeholder from '$lib/assets/img/placeholder.svg';
 	import DecoratedData from '$lib/components/DecoratedData.svelte';
 	import { page } from '$app/stores';
+	import SearchItemDebug from '$lib/components/find/SearchItemDebug.svelte';
+	import EsExplain from '$lib/components/find/EsExplain.svelte';
+	import SearchItemDebugHaystack from '$lib/components/find/SearchItemDebugHaystack.svelte';
 
 	export let item: SearchResultItem;
 
@@ -19,36 +20,12 @@
 	$: bodyId = `card-body-${id}`;
 	$: footerId = `card-footer-${id}`;
 
-	function getInstanceData(instances: ResourceData) {
-		if (typeof instances === 'object') {
-			let years: string = '';
-			let count = 1;
-			let query = '_display[].publication[].*[][?year].year[]';
-
-			if (Array.isArray(instances)) {
-				count = instances.length;
-				query = '[]._display[].publication[].*[][?year].year[]';
-			}
-
-			let res = jmespath.search(instances, query) as string[] | null;
-			if (res) {
-				years = res
-					.filter((el, i, arr) => !isNaN(parseInt(el)) && arr.indexOf(el) === i)
-					.sort()
-					.filter((el, i, arr) => i === 0 || i === arr.length - 1)
-					.join('-');
-			}
-
-			return { count, years };
-		}
-		return null;
-	}
+	let showDebugExplain = false;
+	let showDebugHaystack = false;
 </script>
 
 <div class="search-card-container">
 	<article class="search-card" data-testid="search-card">
-		<!-- svelte-ignore a11y-missing-content -->
-		<!-- (content shouldn't be needed as we're using aria-labelledby, see: https://github.com/sveltejs/svelte/issues/8296) -->
 		<a
 			class="card-link"
 			href={id}
@@ -127,9 +104,10 @@
 				<span class="font-bold">
 					{item.typeStr}
 				</span>
+				<span class="divider">{' • '}</span>
 				{#each item[LensType.WebCardFooter]?._display as obj}
-					<span>{' • '}</span>
 					{#if 'hasInstance' in obj}
+						<span class="divider">{' • '}</span>
 						{@const instances = getInstanceData(obj.hasInstance)}
 						{#if instances?.years}
 							<span>
@@ -150,6 +128,41 @@
 				{/each}
 			</footer>
 		</div>
+		{#if item._debug}
+			{#key item._debug}
+				<div class="card-debug z-20 select-text self-start text-left">
+					<SearchItemDebug debugInfo={item._debug} />
+					<button
+						type="button"
+						class="text-xs"
+						on:click={() => {
+							showDebugHaystack = !showDebugHaystack;
+						}}
+					>
+						Haystack
+					</button>
+					<button
+						type="button"
+						class="text-xs"
+						on:click={() => {
+							showDebugExplain = !showDebugExplain;
+						}}
+					>
+						Explain
+					</button>
+				</div>
+				{#if showDebugHaystack}
+					<div class="z-20 col-span-full row-start-2 pt-4">
+						<SearchItemDebugHaystack debugInfo={item._debug} />
+					</div>
+				{/if}
+				{#if showDebugExplain}
+					<div class="z-20 col-span-full row-start-2 pt-4">
+						<EsExplain explain={item._debug.score.explain} />
+					</div>
+				{/if}
+			{/key}
+		{/if}
 	</article>
 </div>
 
@@ -159,15 +172,10 @@
 	}
 
 	.search-card {
-		@apply gap-x-4 border-b border-b-primary/16 px-4 pb-3 pt-3 transition-shadow;
+		@apply relative grid w-full gap-x-4 rounded-md border-b border-b-primary/16 bg-cards px-4 pb-3 pt-3 font-normal transition-shadow;
 
-		display: grid;
-		width: 100%;
-		position: relative;
-		background: theme(backgroundColor.cards);
-		border-radius: theme(borderRadius.md);
-		grid-template-areas: 'image content';
-		grid-template-columns: 64px 1fr;
+		grid-template-areas: 'image content debug';
+		grid-template-columns: 64px 1fr auto;
 
 		&:hover,
 		&:focus-within {
@@ -207,6 +215,10 @@
 		grid-area: content;
 	}
 
+	.card-debug {
+		grid-area: debug;
+	}
+
 	.card-body {
 		@apply text-sm;
 
@@ -216,25 +228,26 @@
 	}
 
 	.card-footer {
-		@apply mt-auto pt-1;
+		@apply mt-1;
 
 		@container (min-width: 768px) {
-			@apply pt-3;
+			@apply mt-3;
+		}
+
+		/* hide dangling divider • */
+		& .divider {
+			@apply hidden;
+		}
+		& :global(.divider:has(+ span)) {
+			@apply inline;
 		}
 	}
 
 	.card-header-title {
-		@apply text-link text-3-cond;
-		& :global([data-property='mainTitle']) {
-			@apply font-bold;
-		}
+		@apply text-link text-3-cond-bold;
 
 		@container (min-width: 768px) {
-			@apply text-4-cond;
-
-			& :global([data-property='mainTitle']) {
-				@apply font-bold;
-			}
+			@apply text-4-cond-bold;
 		}
 	}
 
@@ -249,6 +262,7 @@
 
 	/** TODO: Set transliteration styling via display-web.json? */
 	:global(.card-header [data-property='_script']) {
+		@apply italic;
 		display: block;
 	}
 </style>

@@ -9,7 +9,7 @@
 	import { DEV } from 'esm-env';
 	import { onMount } from 'svelte';
 	import { EditorView } from '@codemirror/view';
-	import { EditorState, StateEffect, type Extension, type SelectionRange } from '@codemirror/state';
+	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
 	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
 
 	type CodeMirrorProps = {
@@ -37,14 +37,13 @@
 				selection: update.state.selection,
 				scrollIntoView: update.transactions?.[0].scrollIntoView
 			});
-		}
-
-		if (update.docChanged) {
-			value = update.state.doc.toString();
-			onchange({
-				value,
-				cursor: update.state.selection.main.anchor
-			});
+			if (update.docChanged) {
+				value = update.state.doc.toString();
+				onchange({
+					value,
+					cursor: update.state.selection.main.anchor
+				});
+			}
 		}
 	});
 
@@ -60,7 +59,7 @@
 	]);
 	let prevExtensions: Extension[] = extensions;
 
-	function createEditorState({ doc, selection }: { doc?: string; selection?: SelectionRange }) {
+	function createEditorState({ doc, selection }: { doc?: string; selection?: EditorSelection }) {
 		return EditorState.create({
 			doc,
 			selection,
@@ -68,12 +67,24 @@
 		});
 	}
 
-	export function reset({ doc, selection }: { doc: string; selection?: SelectionRange }) {
-		editorView?.setState(createEditorState({ doc, selection }));
-		value = doc;
+	export function reset(options?: { doc: string; selection?: { anchor: number; head?: number } }) {
+		editorView?.setState(
+			createEditorState({
+				doc: options?.doc,
+				selection: EditorSelection.create([
+					value && options?.selection
+						? EditorSelection.range(
+								options.selection.anchor,
+								options.selection?.head || options.selection.anchor
+							)
+						: EditorSelection.range(0, 0)
+				])
+			})
+		);
+		value = options?.doc || '';
 		onchange({
 			value,
-			cursor: selection?.anchor || 0
+			cursor: options?.selection?.anchor || 0
 		});
 	}
 
@@ -93,6 +104,13 @@
 			state: createEditorState({ doc: value }),
 			parent: codemirrorContainerElement
 		});
+	});
+
+	$effect(() => {
+		if (value !== editorView?.state.doc.toString()) {
+			// Reset editor when value changes from outside (= user navigating)
+			reset({ doc: value });
+		}
 	});
 
 	$effect(() => {
