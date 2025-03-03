@@ -5,7 +5,7 @@ import { syntaxTree } from '@codemirror/language';
  * Moves cursor into an empty quote after typing the QualifierOperator
  */
 const insertQuotes = (tr: Transaction) => {
-	if (!tr.isUserEvent('input') || tr.isUserEvent('input.complete')) {
+	if (!tr.isUserEvent('input')) {
 		return tr;
 	}
 	let changes = null;
