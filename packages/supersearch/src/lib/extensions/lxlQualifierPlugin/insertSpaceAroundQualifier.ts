@@ -1,7 +1,11 @@
 import { EditorState, RangeSet, RangeValue, type TransactionSpec } from '@codemirror/state';
 import { syntaxTree } from '@codemirror/language';
 
-const insertSpaceBeforeQualifier = (getRanges: () => RangeSet<RangeValue>) => {
+/**
+ * Prevent an atomic qualifier from breaking by inserting a space when typing before it,
+ * or a space after when typing after it. Also move the cursor out when trapped inside of it.
+ */
+const insertSpaceAroundQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 	return EditorState.transactionFilter.of((tr) => {
 		const newCursorPos = tr.state.selection.main.head;
 
@@ -11,25 +15,23 @@ const insertSpaceBeforeQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 			let insert: TransactionSpec | TransactionSpec[] = [tr];
 			const atomicRanges = getRanges();
 			const inputLength = tr.changes.desc.newLength - tr.changes.desc.length;
-
-			// don't use startState.selection because cursor changes are not aways synced
+			// startState.selection can't be trusted because selection changes are not synced
 			const oldCursorPos = newCursorPos - inputLength;
-			const input = tr.newDoc.slice(oldCursorPos, newCursorPos).toString().trim();
 
 			atomicRanges.between(
 				Math.min(oldCursorPos, newCursorPos),
 				Math.max(oldCursorPos, newCursorPos),
-				(from, to) => {
-					if (newCursorPos === from + inputLength) {
-						// overlap is at atomic range start
+				(atomicStart, atomicEnd) => {
+					const input = tr.newDoc.slice(oldCursorPos, newCursorPos).toString().trim();
 
+					if (oldCursorPos === atomicStart) {
+						// input touches atomic range start
 						const isDelete = tr.isUserEvent('delete');
-						// don't add space if input is space
-						// instead, move cursor back to old pos
 						insert = [
 							tr,
 							{
 								...((!!input || isDelete) && {
+									// don't insert space if input is space
 									changes: {
 										from: newCursorPos,
 										to: newCursorPos,
@@ -40,14 +42,14 @@ const insertSpaceBeforeQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 								selection: { anchor: !!input || isDelete ? newCursorPos : oldCursorPos }
 							}
 						];
-					} else if (newCursorPos === to + inputLength || newCursorPos === to + inputLength - 1) {
+					} else if (oldCursorPos === atomicEnd || oldCursorPos === atomicEnd - 1) {
+						// input touches atomic range end
 						const node = syntaxTree(tr.state).resolveInner(oldCursorPos, 0);
 						if (node.parent?.name == 'QualifierValue') {
-							console.log('trapped', newCursorPos, to + inputLength);
 							insert = [
-								// we need to pass the original transaction, or we get a sync error for some reason
+								// we need to pass the original transaction, or we get a sync error for some reason.
+								// Undo the changes, move cursor out and apply changes.
 								tr,
-								// undo the changes of the original transaction
 								{
 									changes: {
 										from: oldCursorPos,
@@ -56,13 +58,12 @@ const insertSpaceBeforeQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 									},
 									sequential: true
 								},
-								// move cursor out of the atomic range and apply the input
 								{
 									changes: {
-										from: to,
+										from: atomicEnd,
 										insert: ` ${input}`
 									},
-									selection: { anchor: to + inputLength + 1 }
+									selection: { anchor: atomicEnd + inputLength + 1 }
 								}
 							];
 						}
@@ -75,4 +76,4 @@ const insertSpaceBeforeQualifier = (getRanges: () => RangeSet<RangeValue>) => {
 	});
 };
 
-export default insertSpaceBeforeQualifier;
+export default insertSpaceAroundQualifier;
