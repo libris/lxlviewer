@@ -49,7 +49,7 @@
     "The resource has been modified by another user": "Resursen har ändrats av en annan användare",
     "The resource already exists": "Resursen finns redan",
     "Your login has expired": "Din inloggning har löpt ut",
-    "The record contains invalid data": "Posten innehåller felaktig data",
+    "The record contains invalid data": "Posten innehåller ogiltig data",
     "Expected value type to be a vocab string": "Värdet förväntas vara en sträng som är definierad i vokabuläret",
     "Unexpected array. Key is not declared as repeatable in context": "Förväntas inte vara array. Egenskapen är inte repeterbar",
     "Expected term to be an array. Key is declared as repeatable in context": "Förväntas vara array. Egenskapen är repeterbar",

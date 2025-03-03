@@ -18,6 +18,7 @@
 		<tbody>
 			{#each uniqueFields as field}
 				<tr
+					class="align-top"
 					title="haystack: {field.haystack.slice(0, 1)}{field.haystack.length > 1
 						? ` + ${field.haystack.length - 1}`
 						: ''}"
