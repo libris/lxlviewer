@@ -108,7 +108,6 @@
 
 	$effect(() => {
 		if (value !== editorView?.state.doc.toString()) {
-			console.log('reset because', value, editorView?.state.doc.toString());
 			// Reset editor when value changes from outside (= user navigating)
 			reset({ doc: value });
 		}
