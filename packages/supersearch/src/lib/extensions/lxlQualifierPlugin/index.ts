@@ -12,7 +12,7 @@ import { mount } from 'svelte';
 import QualifierComponent from './QualifierComponent.svelte';
 import insertQuotes from './insertQuotes.js';
 import { messages } from '$lib/constants/messages.js';
-import insertSpaceBeforeQualifier from './insertSpaceBeforeQualifier.js';
+import insertSpaceAroundQualifier from './insertSpaceAroundQualifier.js';
 
 export type Qualifier = {
 	key: string;
@@ -165,7 +165,7 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 		provide: () => [
 			EditorView.atomicRanges.of(() => atomicRangeSet),
 			EditorState.transactionFilter.of(insertQuotes),
-			insertSpaceBeforeQualifier(() => atomicRangeSet)
+			insertSpaceAroundQualifier(() => atomicRangeSet)
 		]
 	});
 

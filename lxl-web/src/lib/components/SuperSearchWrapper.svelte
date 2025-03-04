@@ -92,11 +92,11 @@
 			change: {
 				from: cursor,
 				to: cursor,
-				insert: `${qualifierKey}:""`
+				insert: `${qualifierKey}:`
 			},
 			selection: {
-				anchor: cursor + qualifierKey?.length + 2,
-				head: cursor + qualifierKey?.length + 2
+				anchor: cursor + qualifierKey?.length + 1,
+				head: cursor + qualifierKey?.length + 1
 			},
 			userEvent: 'input.complete'
 		});

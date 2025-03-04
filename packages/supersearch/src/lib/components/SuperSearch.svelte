@@ -288,6 +288,7 @@
 		expandedEditorView?.dispatch({
 			selection: collapsedEditorView?.state.selection.main
 		});
+		cursor = collapsedEditorView?.state.selection.main.anchor || cursor;
 		dialog?.showModal();
 		expandedEditorView?.focus();
 		setDefaultRowAndCols();
