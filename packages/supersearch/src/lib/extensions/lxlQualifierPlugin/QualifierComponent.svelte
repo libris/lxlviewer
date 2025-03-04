@@ -34,6 +34,7 @@
 {/if}
 {#if keyLabel && operator && valueLabel && handleRemoveFn}
 	<button
+		type="button"
 		onclick={onClickRemove}
 		class="lxl-qualifier lxl-qualifier-remove atomic"
 		aria-label="clear"
