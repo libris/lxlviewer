@@ -1,6 +1,6 @@
 {
   "default": {
-    "title": "Unlock property",
+    "title": "Edit locked property",
     "infoText": "The property is locked for editing. Are you sure you want to unlock it?"
   },
   "nextShelfControlNumber": {
