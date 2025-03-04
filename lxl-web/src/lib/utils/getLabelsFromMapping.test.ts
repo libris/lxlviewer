@@ -27,32 +27,16 @@ describe('getLabelsFromMapping', () => {
 		expect(labels.valueLabel).toBe(undefined);
 	});
 
-	// TODO run test when value matching is done properly
-	// it('it returns no value label when value does not match', () => {
-	//   const labels = getLabelsFromMapping('genreForm', 'saogf:SomeInvalidTerm', pageMapping, null);
-	//   expect(labels.keyLabel).toBe('Genre/form');
-	//   expect(labels.valueLabel).toBe(undefined);
-	// });
+	it('it returns no value label when value does not match', () => {
+		const labels = getLabelsFromMapping('genreForm', 'saogf:SomeInvalidTerm', pageMapping);
+		expect(labels.keyLabel).toBe('Genre/form');
+		expect(labels.valueLabel).toBe(undefined);
+	});
 
 	it('does not return value labels for unlinked items', () => {
 		const labels = getLabelsFromMapping('ÅR', '2023', pageMapping, suggestMapping);
 		expect(labels.keyLabel).toBe('Utgivningsår');
 		expect(labels.valueLabel).toBe(undefined);
-	});
-
-	it('does not return a removelink for unlinked items', () => {
-		const labels = getLabelsFromMapping('ÅR', '2023', pageMapping, suggestMapping);
-		expect(labels.removeLink).toBe(undefined);
-	});
-
-	it('does not return a removelink when using suggest mappings', () => {
-		const labels = getLabelsFromMapping('genreForm', 'saogf:Romaner', undefined, suggestMapping);
-		expect(labels.removeLink).toBe(undefined);
-	});
-
-	it('returns a removelink when using page mappings', () => {
-		const labels = getLabelsFromMapping('genreForm', 'saogf:Romaner', pageMapping, undefined);
-		expect(labels.removeLink).toBe('/find?_i=sommar&_q=sommar+%C3%85R:2023&_limit=20&_spell=true');
 	});
 });
 

@@ -26,9 +26,10 @@ export type GetLabelFunction = (
 ) => {
 	keyLabel?: string;
 	valueLabel?: string;
-	removeLink?: string;
 	invalid?: boolean;
 };
+
+export type HandleRemoveFunction = (qualifier: string) => void;
 
 class QualifierWidget extends WidgetType {
 	constructor(
@@ -39,7 +40,7 @@ class QualifierWidget extends WidgetType {
 		readonly valueLabel: string | undefined,
 		readonly operator: string,
 		readonly operatorType: string | undefined,
-		readonly removeLink: string | undefined
+		readonly handleRemoveFn: HandleRemoveFunction | undefined
 	) {
 		super();
 	}
@@ -64,7 +65,7 @@ class QualifierWidget extends WidgetType {
 				valueLabel: this.valueLabel,
 				operator: this.operator,
 				operatorType: this.operatorType,
-				removeLink: this.removeLink
+				handleRemoveFn: this.handleRemoveFn
 			},
 			target: container
 		});
@@ -72,7 +73,7 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
-function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
+function lxlQualifierPlugin(getLabelFn?: GetLabelFunction, handleRemoveFn?: HandleRemoveFunction) {
 	let atomicRangeSet: RangeSet<RangeValue> = RangeSet.empty;
 
 	function getQualifiers(view: EditorView) {
@@ -97,7 +98,7 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 						const valueNode = node.node.getChild('QualifierValue');
 						const value = valueNode ? doc.slice(valueNode?.from, valueNode?.to) : undefined;
 
-						const { keyLabel, valueLabel, removeLink, invalid } = getLabelFn?.(key, value) || {};
+						const { keyLabel, valueLabel, invalid } = getLabelFn?.(key, value) || {};
 
 						// Add qualifier widget
 						if (keyLabel) {
@@ -110,7 +111,7 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction) {
 									valueLabel,
 									operator,
 									operatorType,
-									removeLink
+									handleRemoveFn
 								)
 							});
 							const decorationRangeFrom = node.from;
