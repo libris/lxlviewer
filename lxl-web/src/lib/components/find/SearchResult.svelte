@@ -51,10 +51,11 @@
 
 <slot />
 {#if searchResult}
-	{@const facets = searchResult.facetGroups}
+	{@const facets = searchResult.facetGroups || []}
+	{@const predicates = searchResult.predicates || []}
 	{@const numHits = searchResult.totalItems}
 	{@const filterCount = getFiltersCount(searchResult.mapping)}
-	{#if searchResult.predicates.length}
+	{#if predicates.length}
 		<nav
 			class="border-b border-primary/16 px-4 md:flex lg:px-6"
 			aria-label={$page.data.t('search.selectedFilters')}
@@ -63,7 +64,7 @@
 				<li class="tab-header max-w-80 truncate font-bold">{$page.data.title}</li>
 				<span class="tab-header">{$page.data.t('search.occursAs')}</span>
 
-				{#each searchResult.predicates as p}
+				{#each predicates as p}
 					<li>
 						<a
 							class="tab"
@@ -165,7 +166,7 @@
 				</span>
 				<div class="search-related flex justify-start">
 					{#if $page.params.fnurgel}
-						{@const activePredicate = searchResult.predicates.filter((p) => p.selected)}
+						{@const activePredicate = predicates.filter((p) => p.selected)}
 						<SearchRelated view={activePredicate[0].view} />
 					{/if}
 				</div>
