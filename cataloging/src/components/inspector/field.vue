@@ -166,6 +166,13 @@ export default {
     'modal-component': ModalComponent,
   },
   watch: {
+    'inspector.event'(val) {
+      if (val.name === 'record-control') {
+        if (val.value === 'save-record' || val.value === 'save-record-done' || val.value === 'cancel') {
+          this.unlockedByUser = false;
+        }
+      }
+    },
   },
   computed: {
     diffAdded() {
@@ -563,9 +570,6 @@ export default {
     closeUnlockModal() {
       this.unlockModalOpen = false;
     },
-    lockProtected() {
-      this.unlockedByUser = false;
-    },
     removeThis() {
       let approved = true;
       if (this.warnBeforeRemove) {
@@ -790,21 +794,16 @@ export default {
             <i class="fa fa-lock fa-fw icon icon--sm"
                tabindex="0"
                role="button"
-               :aria-label="translatePhrase('Unlock property')"
+               :aria-label="translatePhrase('Edit locked property')"
                v-on:click="openUnlockModal()"
-               v-tooltip.top="translatePhrase('Unlock property')"
+               v-tooltip.top="translatePhrase('Edit locked property')"
                @keyup.enter="openUnlockModal()"
             />
           </div>
           <div class="Field-action" v-if="isProtected && unlockedByUser && !isLocked">
             <i class="fa fa-unlock-alt fa-fw icon icon--sm"
                tabindex="0"
-               role="button"
-               :aria-label="translatePhrase('Lock property')"
-               v-on:click="lockProtected()"
-               v-tooltip.top="translatePhrase('Lock property')"
-               @keyup.enter="lockProtected()"
-               />
+            />
           </div>
 
           <div
@@ -923,20 +922,15 @@ export default {
           <i class="fa fa-lock fa-fw icon icon--sm"
              tabindex="0"
              role="button"
-             :aria-label="translatePhrase('Unlock property')"
+             :aria-label="translatePhrase('Edit locked property')"
              v-on:click="openUnlockModal()"
-             v-tooltip.top="translatePhrase('Unlock property')"
+             v-tooltip.top="translatePhrase('Edit locked property')"
              @keyup.enter="openUnlockModal()"
             />
         </div>
         <div class="Field-action" v-if="isProtected && unlockedByUser && !isLocked">
           <i class="fa fa-unlock-alt fa-fw icon icon--sm"
              tabindex="0"
-             role="button"
-             :aria-label="translatePhrase('Lock property')"
-             v-on:click="lockProtected()"
-             v-tooltip.top="translatePhrase('Lock property')"
-             @keyup.enter="lockProtected()"
           />
         </div>
 
