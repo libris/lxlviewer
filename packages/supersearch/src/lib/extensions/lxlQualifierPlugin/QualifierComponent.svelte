@@ -1,6 +1,6 @@
 <script lang="ts">
 	import IconClear from './IconClear.svelte';
-	import type { HandleRemoveFunction } from './index.js';
+	import type { RemoveQualifierFunction } from './index.js';
 
 	interface Props {
 		key: string;
@@ -10,14 +10,14 @@
 		valueLabel?: string;
 		operator: string;
 		operatorType?: string;
-		handleRemoveFn?: HandleRemoveFunction;
+		removeQualifierFn?: RemoveQualifierFunction;
 	}
 
-	const { key, keyLabel, operator, value, valueLabel, handleRemoveFn }: Props = $props();
+	const { key, keyLabel, operator, value, valueLabel, removeQualifierFn }: Props = $props();
 
 	function onClickRemove(e: MouseEvent) {
 		e.preventDefault();
-		handleRemoveFn?.(key + operator + value);
+		removeQualifierFn?.(key + operator + value);
 	}
 </script>
 
@@ -32,7 +32,7 @@
 		{valueLabel}
 	</span>
 {/if}
-{#if keyLabel && operator && valueLabel && handleRemoveFn}
+{#if keyLabel && operator && valueLabel && removeQualifierFn}
 	<button
 		type="button"
 		onclick={onClickRemove}

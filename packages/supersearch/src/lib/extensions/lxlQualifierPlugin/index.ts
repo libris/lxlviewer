@@ -29,7 +29,7 @@ export type GetLabelFunction = (
 	invalid?: boolean;
 };
 
-export type HandleRemoveFunction = (qualifier: string) => void;
+export type RemoveQualifierFunction = (qualifier: string) => void;
 
 class QualifierWidget extends WidgetType {
 	constructor(
@@ -40,7 +40,7 @@ class QualifierWidget extends WidgetType {
 		readonly valueLabel: string | undefined,
 		readonly operator: string,
 		readonly operatorType: string | undefined,
-		readonly handleRemoveFn: HandleRemoveFunction | undefined
+		readonly removeQualifierFn: RemoveQualifierFunction | undefined
 	) {
 		super();
 	}
@@ -65,7 +65,7 @@ class QualifierWidget extends WidgetType {
 				valueLabel: this.valueLabel,
 				operator: this.operator,
 				operatorType: this.operatorType,
-				handleRemoveFn: this.handleRemoveFn
+				removeQualifierFn: this.removeQualifierFn
 			},
 			target: container
 		});
@@ -73,7 +73,10 @@ class QualifierWidget extends WidgetType {
 	}
 }
 
-function lxlQualifierPlugin(getLabelFn?: GetLabelFunction, handleRemoveFn?: HandleRemoveFunction) {
+function lxlQualifierPlugin(
+	getLabelFn?: GetLabelFunction,
+	removeQualifierFn?: RemoveQualifierFunction
+) {
 	let atomicRangeSet: RangeSet<RangeValue> = RangeSet.empty;
 
 	function getQualifiers(view: EditorView) {
@@ -111,7 +114,7 @@ function lxlQualifierPlugin(getLabelFn?: GetLabelFunction, handleRemoveFn?: Hand
 									valueLabel,
 									operator,
 									operatorType,
-									handleRemoveFn
+									removeQualifierFn
 								)
 							});
 							const decorationRangeFrom = node.from;
