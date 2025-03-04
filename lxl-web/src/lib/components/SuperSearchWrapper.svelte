@@ -112,8 +112,14 @@
 	}
 
 	function removeQualifier(qualifier: string) {
+		const newQ = q.replace(qualifier, '').trim() || '*';
 		const newUrl = new URLSearchParams(params);
-		newUrl.set('_q', q.replace(qualifier, ''));
+		newUrl.set('_q', newQ);
+
+		superSearch?.dispatchChange({
+			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(newQ) },
+			userEvent: 'input.complete'
+		});
 		goto('/find?' + newUrl.toString());
 	}
 
