@@ -3,7 +3,8 @@
 	import { BROWSER } from 'esm-env';
 	import CodeMirror, {
 		type ChangeCodeMirrorEvent,
-		type SelectCodeMirrorEvent
+		type SelectCodeMirrorEvent,
+		type Selection
 	} from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
@@ -77,7 +78,7 @@
 		defaultResultCol?: number;
 		toggleWithKeyboardShortcut?: boolean;
 		debouncedWait?: number;
-		cursor?: number;
+		selection?: Selection;
 		isLoading?: boolean;
 		hasData?: boolean;
 	}
@@ -106,7 +107,7 @@
 		defaultResultRow = 0,
 		defaultResultCol = 0,
 		debouncedWait = 300,
-		cursor = $bindable(0), // should be treated as readonly
+		selection = $bindable(),
 		isLoading = $bindable(), // should be treated as readonly
 		hasData = $bindable() // should be treated as readonly
 	}: Props = $props();
@@ -234,12 +235,12 @@
 			showExpandedSearch();
 		}
 		value = event.value;
-		cursor = event.selection.head;
+		selection = event.selection;
 		setDefaultRowAndCols();
 
 		if (value.trim() && value.trim() !== prevValue.trim()) {
 			prevValue = value;
-			search.debouncedFetchData(value, cursor);
+			search.debouncedFetchData(value, selection.head);
 		}
 
 		if (!value.trim()) {
@@ -249,8 +250,7 @@
 	}
 
 	function handleSelectCodeMirror(event: SelectCodeMirrorEvent) {
-		console.log('select event:', event);
-		cursor = event.head;
+		selection = event;
 	}
 
 	export function dispatchChange({
@@ -296,7 +296,6 @@
 		expandedEditorView?.dispatch({
 			selection: collapsedEditorView?.state.selection.main
 		});
-		cursor = collapsedEditorView?.state.selection.main.head || cursor;
 		dialog?.showModal();
 		expandedEditorView?.focus();
 		setDefaultRowAndCols();
@@ -628,7 +627,7 @@
 				})}
 			</div>
 			<nav class="supersearch-suggestions" role="rowgroup">
-				{#if startContent && shouldShowStartContentFn(value, cursor)}
+				{#if startContent && shouldShowStartContentFn(value, selection?.head || 0)}
 					{@render startContent({
 						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 						isFocusedCell: (rowIndex: number, colIndex: number) =>

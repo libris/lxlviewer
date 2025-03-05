@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { afterNavigate, goto } from '$app/navigation';
-	import { SuperSearch, lxlQualifierPlugin } from 'supersearch';
+	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
 	import SuggestionCard from './SuggestionCard.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
@@ -26,7 +26,9 @@
 			? ''
 			: addSpaceIfEndingQualifier($page.url.searchParams.get('_q')?.trim() || '')
 	);
-	let cursor: number = $state(0);
+	let selection: Selection | undefined = $state();
+	let cursor = $derived(selection?.head || 0);
+
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 	let showMoreFilters = $state(false);
 
@@ -140,6 +142,8 @@
 		params.set('_offset', '0');
 		return `/find?${params.toString()}`;
 	}
+
+	$inspect(selection);
 </script>
 
 {#snippet startFilterItem({
@@ -182,7 +186,7 @@
 		name="_q"
 		bind:this={superSearch}
 		bind:value={q}
-		bind:cursor
+		bind:selection
 		language={lxlQuery}
 		{placeholder}
 		endpoint={`/api/${$page.data.locale}/supersearch`}
