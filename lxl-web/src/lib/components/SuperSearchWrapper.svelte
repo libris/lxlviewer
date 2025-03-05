@@ -111,13 +111,15 @@
 	}
 
 	function removeQualifier(qualifier: string) {
-		const newQ = q.replace(qualifier, '').trim();
+		const newQ = addSpaceIfEndingQualifier(q.replace(qualifier, '').trim());
+		const insertCursor = Math.min(q.indexOf(qualifier), newQ.length);
 		const newUrl = new URLSearchParams(params);
-		newUrl.set('_q', newQ || '*');
+		newUrl.set('_q', newQ.trim() ? newQ : '*');
 
 		superSearch?.dispatchChange({
-			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(newQ) },
-			userEvent: 'input.complete'
+			change: { from: 0, to: q.length, insert: newQ },
+			selection: { anchor: insertCursor, head: insertCursor },
+			userEvent: 'delete'
 		});
 		goto('/find?' + newUrl.toString());
 	}
