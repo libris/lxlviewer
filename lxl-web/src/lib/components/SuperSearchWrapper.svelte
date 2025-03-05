@@ -144,8 +144,6 @@
 		params.set('_offset', '0');
 		return `/find?${params.toString()}`;
 	}
-
-	$inspect(selection);
 </script>
 
 {#snippet startFilterItem({
