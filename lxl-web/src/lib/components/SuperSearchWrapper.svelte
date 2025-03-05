@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { afterNavigate } from '$app/navigation';
+	import { afterNavigate, goto } from '$app/navigation';
 	import { SuperSearch, lxlQualifierPlugin } from 'supersearch';
 	import SuggestionCard from './SuggestionCard.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
@@ -111,12 +111,24 @@
 		});
 	}
 
+	function removeQualifier(qualifier: string) {
+		const newQ = q.replace(qualifier, '').trim() || '*';
+		const newUrl = new URLSearchParams(params);
+		newUrl.set('_q', newQ);
+
+		superSearch?.dispatchChange({
+			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(newQ) },
+			userEvent: 'input.complete'
+		});
+		goto('/find?' + newUrl.toString());
+	}
+
 	let derivedLxlQualifierPlugin = $derived.by(() => {
 		function getLabels(key: string, value?: string) {
 			let pageMapping = $page.data.searchResult?.mapping;
 			return getLabelFromMappings(key, value, pageMapping, suggestMapping);
 		}
-		return lxlQualifierPlugin(getLabels);
+		return lxlQualifierPlugin(getLabels, removeQualifier);
 	});
 
 	let moreFiltersRowIndex = $derived(showMoreFilters ? 7 : 4);
