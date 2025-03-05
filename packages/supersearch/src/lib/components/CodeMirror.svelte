@@ -8,7 +8,6 @@
 
 	export type ChangeCodeMirrorEvent = {
 		value: string;
-		cursor: number;
 		selection: Selection;
 	};
 
@@ -54,7 +53,6 @@
 				value = update.state.doc.toString();
 				onchange({
 					value,
-					cursor: update.state.selection.main.anchor,
 					selection: {
 						from: update.state.selection.main.from,
 						to: update.state.selection.main.to,
@@ -113,7 +111,6 @@
 		value = options?.doc || '';
 		onchange({
 			value,
-			cursor: options?.selection?.anchor || 0,
 			selection: {
 				from: selection.main.from,
 				to: selection.main.to,
