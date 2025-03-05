@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { onMount, onDestroy, type Snippet } from 'svelte';
 	import { BROWSER } from 'esm-env';
-	import CodeMirror, { type ChangeCodeMirrorEvent } from '$lib/components/CodeMirror.svelte';
+	import CodeMirror, {
+		type ChangeCodeMirrorEvent,
+		type SelectCodeMirrorEvent
+	} from '$lib/components/CodeMirror.svelte';
 	import { EditorView, placeholder as placeholderExtension, keymap } from '@codemirror/view';
 	import { Compartment, StateEffect, type Extension } from '@codemirror/state';
 	import { type LanguageSupport } from '@codemirror/language';
@@ -243,6 +246,10 @@
 			prevValue = value;
 			if (search.data) search.resetData();
 		}
+	}
+
+	function handleSelectCodeMirror(event: SelectCodeMirrorEvent) {
+		console.log('select event:', event);
 	}
 
 	export function dispatchChange({
@@ -569,6 +576,7 @@
 		extensions={collapsedExtensions}
 		onclick={handleClickCollapsed}
 		onchange={handleChangeCodeMirror}
+		onselect={handleSelectCodeMirror}
 		bind:editorView={collapsedEditorView}
 		syncedEditorView={expandedEditorView}
 	/>
@@ -579,6 +587,7 @@
 		{value}
 		extensions={expandedExtensions}
 		onchange={handleChangeCodeMirror}
+		onselect={handleSelectCodeMirror}
 		bind:editorView={expandedEditorView}
 		syncedEditorView={collapsedEditorView}
 	/>
