@@ -656,9 +656,11 @@
 					{#if search.isLoading}
 						{@render loadingIndicator?.()}
 					{:else if search.hasMorePaginatedData}
+						<!--
 						<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
 							Load more
 						</button>
+						-->
 					{/if}
 				{/if}
 			</nav>
