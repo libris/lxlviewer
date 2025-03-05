@@ -308,9 +308,6 @@
 	}
 
 	function handleCloseExpandedSearch() {
-		collapsedEditorView?.dispatch({
-			selection: expandedEditorView?.state.selection.main
-		});
 		collapsedEditorView?.focus();
 		expanded = false;
 		allowArrowKeyCursorHandling = { vertical: true, horizontal: true };
@@ -627,7 +624,7 @@
 				})}
 			</div>
 			<nav class="supersearch-suggestions" role="rowgroup">
-				{#if startContent && shouldShowStartContentFn(value, selection?.head || 0)}
+				{#if startContent && shouldShowStartContentFn(value, selection)}
 					{@render startContent({
 						getCellId: (rowIndex: number, colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
 						isFocusedCell: (rowIndex: number, colIndex: number) =>
