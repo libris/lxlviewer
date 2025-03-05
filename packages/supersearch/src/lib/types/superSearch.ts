@@ -1,4 +1,5 @@
 import type { JSONValue } from './json.js';
+import type { Selection } from '$lib/components/CodeMirror.svelte';
 
 export type QueryFunction = (value: string, cursor: number) => URLSearchParams;
 export type PaginationQueryFunction = (
@@ -6,7 +7,7 @@ export type PaginationQueryFunction = (
 	data: JSONValue
 ) => URLSearchParams | undefined;
 export type TransformFunction = (data: JSONValue) => JSONValue;
-export type ShouldShowStartContentFunction = (value: string, cursor: number) => boolean;
+export type ShouldShowStartContentFunction = (value: string, selection?: Selection) => boolean;
 
 // TODO update me
 export interface ResultItem {

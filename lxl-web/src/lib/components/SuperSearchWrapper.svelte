@@ -72,13 +72,15 @@
 		return undefined;
 	}
 
-	function handleShouldShowStartContent(value: string, cursor: number) {
-		const tree = lxlQuery.language.parser.parse(value);
-		const node = tree.resolveInner(cursor, -1);
+	function handleShouldShowStartContent(value: string, selection?: Selection) {
+		if (selection && selection.anchor == selection.head) {
+			const tree = lxlQuery.language.parser.parse(value);
+			const node = tree.resolveInner(selection.head, -1);
 
-		/** Start content should be shown when the cursor isn't placed inside a qualifier or edited string part */
-		if (!node.parent?.name) {
-			return true;
+			/** Start content should be shown when the cursor isn't placed inside a qualifier or edited string part */
+			if (!node.parent?.name) {
+				return true;
+			}
 		}
 
 		return false;
