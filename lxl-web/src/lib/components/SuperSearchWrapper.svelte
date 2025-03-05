@@ -43,9 +43,8 @@
 	afterNavigate(({ to }) => {
 		/** Update input value after navigation on /find route */
 		if (to?.url) {
-			q = $page.params.fnurgel
-				? ''
-				: addSpaceIfEndingQualifier(new URL(to.url).searchParams.get('_q')?.trim() || '');
+			const toQ = addSpaceIfEndingQualifier(new URL(to.url).searchParams.get('_q')?.trim() || '');
+			q = $page.params.fnurgel ? '' : toQ !== '*' ? toQ : ''; // hide wildcard in input field
 			superSearch?.hideExpandedSearch();
 		}
 	});
@@ -112,9 +111,9 @@
 	}
 
 	function removeQualifier(qualifier: string) {
-		const newQ = q.replace(qualifier, '').trim() || '*';
+		const newQ = q.replace(qualifier, '').trim();
 		const newUrl = new URLSearchParams(params);
-		newUrl.set('_q', newQ);
+		newUrl.set('_q', newQ || '*');
 
 		superSearch?.dispatchChange({
 			change: { from: 0, to: q.length, insert: addSpaceIfEndingQualifier(newQ) },
