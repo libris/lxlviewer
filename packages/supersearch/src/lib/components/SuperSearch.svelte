@@ -236,7 +236,7 @@
 			showExpandedSearch();
 		}
 		value = event.value;
-		cursor = event.cursor;
+		cursor = event.selection.head;
 		setDefaultRowAndCols();
 
 		if (value.trim() && value.trim() !== prevValue.trim()) {
@@ -252,6 +252,7 @@
 
 	function handleSelectCodeMirror(event: SelectCodeMirrorEvent) {
 		console.log('select event:', event);
+		cursor = event.head;
 	}
 
 	export function dispatchChange({
@@ -297,7 +298,7 @@
 		expandedEditorView?.dispatch({
 			selection: collapsedEditorView?.state.selection.main
 		});
-		cursor = collapsedEditorView?.state.selection.main.anchor || cursor;
+		cursor = collapsedEditorView?.state.selection.main.head || cursor;
 		dialog?.showModal();
 		expandedEditorView?.focus();
 		setDefaultRowAndCols();
