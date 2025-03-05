@@ -650,30 +650,32 @@
 							})}
 						</div>
 					{/if}
-					{#if search.data}
-						{@const resultItemRows =
-							(Array.isArray(search.paginatedData) &&
-								search.paginatedData.map((page) => page.items).flat()) ||
-							search.data?.items}
-						{#each resultItemRows as resultItem, index (index)}
-							{@const rowIndex = persistentResultItemRow ? index + 2 : index + 1}
-							<div role="row" class:focused={activeRowIndex === rowIndex}>
-								{@render resultItemRow?.({
-									resultItem,
-									getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
-									isFocusedCell: (colIndex: number) =>
-										activeRowIndex === rowIndex && colIndex === activeColIndex,
-									rowIndex
-								})}
-							</div>
-						{/each}
-					{/if}
-					{#if search.isLoading}
-						{@render loadingIndicator?.()}
-					{:else if search.hasMorePaginatedData}
-						<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-							{loadMoreLabel}
-						</button>
+					{#if selection?.anchor === selection?.head}
+						{#if search.data}
+							{@const resultItemRows =
+								(Array.isArray(search.paginatedData) &&
+									search.paginatedData.map((page) => page.items).flat()) ||
+								search.data?.items}
+							{#each resultItemRows as resultItem, index (index)}
+								{@const rowIndex = persistentResultItemRow ? index + 2 : index + 1}
+								<div role="row" class:focused={activeRowIndex === rowIndex}>
+									{@render resultItemRow?.({
+										resultItem,
+										getCellId: (colIndex: number) => `${id}-item-${rowIndex}x${colIndex}`,
+										isFocusedCell: (colIndex: number) =>
+											activeRowIndex === rowIndex && colIndex === activeColIndex,
+										rowIndex
+									})}
+								</div>
+							{/each}
+						{/if}
+						{#if search.isLoading}
+							{@render loadingIndicator?.()}
+						{:else if search.hasMorePaginatedData}
+							<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
+								{loadMoreLabel}
+							</button>
+						{/if}
 					{/if}
 				{/if}
 			</nav>
