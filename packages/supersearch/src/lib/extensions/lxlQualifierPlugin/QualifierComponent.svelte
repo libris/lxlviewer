@@ -14,11 +14,6 @@
 	}
 
 	const { key, keyLabel, operator, value, valueLabel, removeQualifierFn }: Props = $props();
-
-	function onClickRemove(e: MouseEvent) {
-		e.preventDefault();
-		removeQualifierFn?.(key + operator + value);
-	}
 </script>
 
 <span class="lxl-qualifier lxl-qualifier-key atomic" data-qualifier-key={key}>
@@ -35,7 +30,7 @@
 {#if keyLabel && operator && valueLabel && removeQualifierFn}
 	<button
 		type="button"
-		onclick={onClickRemove}
+		onclick={() => removeQualifierFn?.(key + operator + value)}
 		class="lxl-qualifier lxl-qualifier-remove atomic"
 		aria-label="clear"
 	>
