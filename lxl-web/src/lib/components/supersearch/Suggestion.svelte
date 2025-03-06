@@ -239,6 +239,15 @@
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
+
+		/* hide dangling divider • */
+		& .divider {
+			@apply hidden;
+		}
+
+		& :global(.divider:has(+ span)) {
+			@apply inline;
+		}
 	}
 
 	.resource-heading > * {
