@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { afterNavigate, goto } from '$app/navigation';
-	import { SuperSearch, lxlQualifierPlugin } from 'supersearch';
+	import { SuperSearch, lxlQualifierPlugin, type Selection } from 'supersearch';
 	import SuggestionCard from './SuggestionCard.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
@@ -26,7 +26,9 @@
 			? ''
 			: addSpaceIfEndingQualifier($page.url.searchParams.get('_q')?.trim() || '')
 	);
-	let cursor: number = $state(0);
+	let selection: Selection | undefined = $state();
+	let cursor = $derived(selection?.head || 0);
+
 	let superSearch = $state<ReturnType<typeof SuperSearch>>();
 	let showMoreFilters = $state(false);
 
@@ -69,13 +71,15 @@
 		return undefined;
 	}
 
-	function handleShouldShowStartContent(value: string, cursor: number) {
-		const tree = lxlQuery.language.parser.parse(value);
-		const node = tree.resolveInner(cursor, -1);
+	function handleShouldShowStartContent(value: string, selection?: Selection) {
+		if (selection && selection.anchor == selection.head) {
+			const tree = lxlQuery.language.parser.parse(value);
+			const node = tree.resolveInner(selection.head, -1);
 
-		/** Start content should be shown when the cursor isn't placed inside a qualifier or edited string part */
-		if (!node.parent?.name) {
-			return true;
+			/** Start content should be shown when the cursor isn't placed inside a qualifier or edited string part */
+			if (!node.parent?.name) {
+				return true;
+			}
 		}
 
 		return false;
@@ -183,7 +187,7 @@
 		name="_q"
 		bind:this={superSearch}
 		bind:value={q}
-		bind:cursor
+		bind:selection
 		language={lxlQuery}
 		{placeholder}
 		endpoint={`/api/${$page.data.locale}/supersearch`}

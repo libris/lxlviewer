@@ -1,8 +1,17 @@
 <script lang="ts" module>
+	export type Selection = {
+		from: number;
+		to: number;
+		anchor: number;
+		head: number;
+	};
+
 	export type ChangeCodeMirrorEvent = {
 		value: string;
-		cursor: number;
+		selection: Selection;
 	};
+
+	export type SelectCodeMirrorEvent = Selection;
 </script>
 
 <script lang="ts">
@@ -11,11 +20,13 @@
 	import { EditorView } from '@codemirror/view';
 	import { EditorSelection, EditorState, StateEffect, type Extension } from '@codemirror/state';
 	import isViewUpdateFromUserInput from '$lib/utils/isViewUpdateFromUserInput.js';
+	import isViewUpdateOfUserEvent from '$lib/utils/isViewUpdateOfUserEvent.js';
 
 	type CodeMirrorProps = {
 		value?: string;
 		extensions?: Extension[];
 		onclick?: (event: MouseEvent) => void;
+		onselect?: (event: SelectCodeMirrorEvent) => void;
 		onchange?: (event: ChangeCodeMirrorEvent) => void;
 		editorView?: EditorView | undefined;
 		syncedEditorView?: EditorView | undefined;
@@ -25,6 +36,7 @@
 		value = '', // value isn't bindable as it can easily cause undo/redo history issues when changing the value from outside – it's preferable to dispatch changes instead
 		extensions = [],
 		onclick = () => {},
+		onselect = () => {},
 		onchange = () => {},
 		editorView = $bindable(),
 		syncedEditorView
@@ -41,9 +53,26 @@
 				value = update.state.doc.toString();
 				onchange({
 					value,
-					cursor: update.state.selection.main.anchor
+					selection: {
+						from: update.state.selection.main.from,
+						to: update.state.selection.main.to,
+						anchor: update.state.selection.main.anchor,
+						head: update.state.selection.main.head
+					}
 				});
 			}
+		}
+
+		if (isViewUpdateOfUserEvent(update, 'select')) {
+			syncedEditorView?.dispatch({
+				selection: update.state.selection
+			});
+			onselect({
+				from: update.state.selection.main.from,
+				to: update.state.selection.main.to,
+				anchor: update.state.selection.main.anchor,
+				head: update.state.selection.main.head
+			});
 		}
 	});
 
@@ -67,24 +96,27 @@
 		});
 	}
 
-	export function reset(options?: { doc: string; selection?: { anchor: number; head?: number } }) {
+	export function reset(options?: { doc: string; selection?: { anchor: number; head: number } }) {
+		const selection = EditorSelection.create([
+			options?.selection
+				? EditorSelection.range(options.selection.anchor, options.selection.head)
+				: EditorSelection.range(0, 0)
+		]);
 		editorView?.setState(
 			createEditorState({
 				doc: options?.doc,
-				selection: EditorSelection.create([
-					value && options?.selection
-						? EditorSelection.range(
-								options.selection.anchor,
-								options.selection?.head || options.selection.anchor
-							)
-						: EditorSelection.range(0, 0)
-				])
+				selection
 			})
 		);
 		value = options?.doc || '';
 		onchange({
 			value,
-			cursor: options?.selection?.anchor || 0
+			selection: {
+				from: selection.main.from,
+				to: selection.main.to,
+				anchor: selection.main.anchor,
+				head: selection.main.head
+			}
 		});
 	}
 
