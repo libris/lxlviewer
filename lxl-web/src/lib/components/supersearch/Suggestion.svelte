@@ -42,16 +42,14 @@
 			<div class="action-type">
 				{#if item.qualifiers.length}
 					{$page.data.t('search.add')}
-					{#if item.qualifiers.length}
-						{#if item.qualifiers.length === 1}
-							<span class="qualifier-key">
-								{item.qualifiers[0].label}
-							</span>
-						{:else}
-							<span class="badge">
-								{item.qualifiers.length}
-							</span>
-						{/if}
+					{#if item.qualifiers.length === 1}
+						<span class="qualifier-key">
+							{item.qualifiers[0].label}
+						</span>
+					{:else}
+						<span class="badge">
+							{item.qualifiers.length}
+						</span>
 					{/if}
 				{:else}
 					{$page.data.t('search.goTo')}
