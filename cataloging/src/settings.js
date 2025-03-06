@@ -157,158 +157,165 @@ export default {
       sv: 'Länkar till',
       en: 'Links to',
     },
+    '@type': {
+      sv: 'Typ',
+      en: 'Type',
+      facet: {
+        order: 0,
+      },
+    },
+    'category.@id': {
+      sv: 'Kategori',
+      en: 'Category',
+      facet: {
+        order: 1,
+      },
+    },
     'instanceOf.@type': {
       sv: 'Verkstyp',
       en: 'Type of work',
       facet: {
-        order: 0,
+        order: 2,
       },
     },
     issuanceType: {
       sv: 'Utgivningssätt',
       en: 'Issuance type',
       facet: {
-        order: 1,
+        order: 3,
       },
     },
     'meta.encodingLevel': {
       sv: 'Beskrivningsnivå',
       en: 'Encoding level',
       facet: {
-        order: 2,
+        order: 4,
       },
     },
     'publication.year': {
       sv: 'Utgivningsår',
       en: 'Publication year',
       facet: {
-        order: 3,
+        order: 5,
       },
     },
     'instanceOf.language.@id': {
       sv: 'Verksspråk',
       en: 'Language of work',
       facet: {
-        order: 4,
-      },
-    },
-    '@type': {
-      sv: 'Typ',
-      en: 'Type',
-      facet: {
-        order: 5,
+        order: 6,
       },
     },
     'inScheme.@id': {
       sv: 'Termsystem',
       en: 'Term System',
       facet: {
-        order: 6,
+        order: 7,
       },
     },
     'inCollection.@id': {
       sv: 'Termsamling',
       en: 'Term Collection',
       facet: {
-        order: 7,
+        order: 8,
       },
     },
     'nationality.@id': {
       sv: 'Nationalitet',
       en: 'Nationality',
       facet: {
-        order: 8,
+        order: 9,
       },
     },
     'language.@id': {
       sv: 'Språk',
       en: 'Language',
       facet: {
-        order: 9,
+        order: 10,
       },
     },
     'genreForm.@id': {
       sv: 'Genre/form',
       en: 'Genre/form',
       facet: {
-        order: 10,
+        order: 11,
       },
     },
     'instanceOf.genreForm.@id': {
       sv: 'Genre/form på verket',
       en: 'Genre/form of work',
       facet: {
-        order: 11,
+        order: 12,
+      },
+    },
+    'instanceOf.category.@id': {
+      sv: 'Kategori på verket',
+      en: 'Category of work',
+      facet: {
+        order: 13,
       },
     },
     'contribution.agent.@id': {
       sv: 'Medverkan eller primär medverkan',
       en: 'Contribution or primary contribution',
       facet: {
-        order: 12,
+        order: 14,
       },
     },
     'contentType.@id': {
       sv: 'Innehållstyp',
       en: 'Content type',
       facet: {
-        order: 13,
+        order: 15,
       },
     },
     'carrierType.@id': {
       sv: 'Bärartyp',
       en: 'Carrier type',
       facet: {
-        order: 14,
+        order: 16,
       },
     },
     'instanceOf.subject.@id': {
       sv: 'Ämne',
       en: 'Subject',
       facet: {
-        order: 15,
+        order: 17,
       },
     },
     'subject.@id': {
       sv: 'Ämne',
       en: 'Subject',
       facet: {
-        order: 16,
+        order: 18,
       },
     },
     'intendedAudience.@id': {
       sv: 'Målgrupp',
       en: 'Intended audience',
       facet: {
-        order: 17,
+        order: 19,
       },
     },
     'meta.bibliography.@id': {
       sv: 'Ingår i bibliografi',
       en: 'In bibliography',
       facet: {
-        order: 18,
-      },
-    },
-    'category.@id': {
-      sv: 'Ändringskategori',
-      en: 'Change category',
-      facet: {
-        order: 19,
+        order: 20,
       },
     },
     'concerning.@reverse.itemOf.heldBy.@id': {
       sv: 'Har bestånd',
       en: 'Has holding',
       facet: {
-        order: 20,
+        order: 22,
       },
     },
     'concerning.issuanceType': {
       sv: 'Utgivningssätt',
       en: 'Issuance type',
       facet: {
-        order: 21,
+        order: 23,
       },
     },
     '@reverse': {
