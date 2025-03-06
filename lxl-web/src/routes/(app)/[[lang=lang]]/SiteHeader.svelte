@@ -5,7 +5,7 @@
 	import Search from '$lib/components/Search.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import HeaderMenu from './HeaderMenu.svelte';
-	import SuperSearchWrapper from '$lib/components/SuperSearchWrapper.svelte';
+	import SuperSearchWrapper from '$lib/components/supersearch/SuperSearchWrapper.svelte';
 
 	let useSuperSearch =
 		env?.PUBLIC_USE_SUPERSEARCH === 'true' || $page.url.searchParams.get('_x') === 'supersearch';

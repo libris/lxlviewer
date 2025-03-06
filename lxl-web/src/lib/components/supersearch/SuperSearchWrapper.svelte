@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { SuperSearch, lxlQualifierPlugin } from 'supersearch';
-	import Suggestion from './supersearch/Suggestion.svelte';
+	import Suggestion from './Suggestion.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
