@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { afterNavigate, goto } from '$app/navigation';
 	import { SuperSearch, lxlQualifierPlugin } from 'supersearch';
-	import SuggestionCard from './SuggestionCard.svelte';
+	import Suggestion from './supersearch/Suggestion.svelte';
 	import addDefaultSearchParams from '$lib/utils/addDefaultSearchParams';
 	import getSortedSearchParams from '$lib/utils/getSortedSearchParams';
 	import getLabelFromMappings from '$lib/utils/getLabelsFromMapping.svelte';
@@ -11,7 +11,6 @@
 	import { lxlQuery } from 'codemirror-lang-lxlquery';
 	import BiXLg from '~icons/bi/x-lg';
 	import BiArrowLeft from '~icons/bi/arrow-left';
-	import BiArrowUpLeft from '~icons/bi/arrow-up-left';
 	import BiChevronDown from '~icons/bi/chevron-down';
 	import BiChevronUp from '~icons/bi/chevron-up';
 	import '$lib/styles/lxlquery.css';
@@ -109,6 +108,7 @@
 			selection: { anchor: qualifier.cursor + 1, head: qualifier.cursor + 1 },
 			userEvent: 'input.complete'
 		});
+		goto(getFullQualifierLink(qualifier._q));
 	}
 
 	function removeQualifier(qualifier: string) {
@@ -159,7 +159,7 @@
 	isFocusedRow: (rowIndex: number) => boolean;
 	rowIndex: number;
 })}
-	<div role="row" class="start-item" class:focused={isFocusedRow(rowIndex)}>
+	<div role="row" class="suggestion" class:focused={isFocusedRow(rowIndex)}>
 		<button
 			type="button"
 			role="gridcell"
@@ -169,10 +169,9 @@
 			onclick={() => addQualifierKey(qualifierKey)}
 		>
 			<span class="overflow-hidden text-ellipsis whitespace-nowrap">
-				<strong class="text-3-cond-bold">{qualifierLabel}:</strong>
+				<strong class="text-secondary text-3-cond-bold">{qualifierLabel}:</strong>
 				<span class="text-sm italic text-tertiary">{qualifierPlaceholder}</span>
 			</span>
-			<BiArrowUpLeft class="ml-auto inline-block" />
 		</button>
 	</div>
 {/snippet}
@@ -199,7 +198,6 @@
 		extensions={[derivedLxlQualifierPlugin]}
 		toggleWithKeyboardShortcut
 		comboboxAriaLabel={$page.data.t('search.search')}
-		defaultResultRow={1}
 		defaultInputCol={2}
 	>
 		{#snippet loadingIndicator()}
@@ -258,7 +256,7 @@
 		{/snippet}
 		{#snippet startContent({ getCellId, isFocusedCell, isFocusedRow })}
 			<div role="rowgroup">
-				<div class="flex min-h-11 w-full items-center px-4 text-3-cond-bold">
+				<div class="flex w-full items-center px-4 py-2 text-2-cond-bold">
 					{$page.data.t('search.supersearchStartHeader')}
 				</div>
 				{@render startFilterItem({
@@ -322,7 +320,7 @@
 						type="button"
 						role="gridcell"
 						id={getCellId(moreFiltersRowIndex, 0)}
-						class="flex min-h-11 w-full items-center px-4 hover:bg-main"
+						class="flex min-h-11 w-full items-center px-4 text-secondary hover:bg-main"
 						class:focused-cell={isFocusedCell(moreFiltersRowIndex, 0)}
 						onclick={() => (showMoreFilters = !showMoreFilters)}
 					>
@@ -351,37 +349,7 @@
 			</div>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
-			{#if resultItem}
-				<div class="suggestion-card-container flex text-xs md:text-sm">
-					<SuggestionCard item={resultItem} cellId={getCellId(0)} isFocused={isFocusedCell(0)} />
-					{#if resultItem.qualifiers.length}
-						<div class="flex pr-2">
-							{#each resultItem.qualifiers as qualifier, index}
-								<!-- pills -->
-								<a
-									id={getCellId(index + 1)}
-									role="gridcell"
-									class={[
-										'flex items-center p-1 no-underline hover:bg-main sm:p-1.5',
-										isFocusedCell(index + 1) && 'focused-cell'
-									]}
-									onclick={() => addQualifier(qualifier)}
-									href={getFullQualifierLink(qualifier._q)}
-								>
-									<span class="lxl-qualifier atomic add-qualifier">
-										<BiArrowUpLeft
-											class=""
-											fill="currentColor"
-											aria-label={$page.data.t('search.addAs')}
-										/>
-										<span class="whitespace-nowrap first-letter:capitalize">{qualifier.label}</span>
-									</span>
-								</a>
-							{/each}
-						</div>
-					{/if}
-				</div>
-			{/if}
+			<Suggestion item={resultItem} {getCellId} {isFocusedCell} {addQualifier} />
 		{/snippet}
 	</SuperSearch>
 	{#each searchParams as [name, value]}
@@ -394,14 +362,6 @@
 <style lang="postcss">
 	.supersearch-input {
 		@apply relative flex min-h-12 w-full cursor-text overflow-hidden rounded-md bg-cards focus-within:outline focus-within:outline-2 focus-within:outline-accent-dark/32;
-	}
-
-	.suggestion-card-container {
-		container-type: inline-size;
-	}
-
-	.add-qualifier {
-		@apply flex items-center gap-1 rounded-sm px-2 py-1;
 	}
 
 	/* dialog */
@@ -426,7 +386,11 @@
 	}
 
 	:global(.supersearch-dialog .supersearch-combobox) {
-		@apply sticky top-0 z-20 items-stretch border-b border-b-primary/16 bg-cards p-4;
+		@apply sticky top-0 z-20 items-stretch bg-cards px-4 pb-2 pt-4;
+	}
+
+	:global(.supersearch-suggestions) {
+		@apply min-h-2;
 	}
 
 	:global(.supersearch-dialog .supersearch-input) {
@@ -435,11 +399,11 @@
 	}
 
 	:global(.supersearch-dialog .focused) {
-		@apply bg-site-header/24;
+		@apply bg-site-header/48;
 	}
 
 	:global(.focused-cell) {
-		@apply bg-site-header/40;
+		/* @apply bg-site-header/64; */
 	}
 
 	:global(.button-primary.focused-cell) {

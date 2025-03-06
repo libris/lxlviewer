@@ -99,7 +99,9 @@ export default {
 		didYouMean: 'Did you mean',
 		showAllResults: 'Show all results',
 		supersearchStartHeader: 'Build and refine your search query',
-		addAs: 'Add as'
+		add: 'Add',
+		addAs: 'Add as',
+		goTo: 'Go to'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
