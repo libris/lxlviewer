@@ -8,12 +8,11 @@
 	import { LxlLens } from '$lib/types/display';
 	import { LensType } from '$lib/types/xl';
 	import getInstanceData from '$lib/utils/getInstanceData';
-
 	import SuggestionImage from './SuggestionImage.svelte';
 	import MoreIcon from '~icons/bi/three-dots';
 
 	type Props = {
-		item?: SuperSearchResultItem;
+		item: SuperSearchResultItem;
 		getCellId: (cellIndex: number) => string;
 		isFocusedCell: (cellIndex: number) => boolean;
 		addQualifier: (qualifier: QualifierSuggestion) => void;
@@ -31,99 +30,106 @@
 	}
 </script>
 
-<div class="suggestion" class:qualifier={item?.qualifiers.length}>
-	<button
-		type="button"
-		id={getCellId(0)}
-		class:focused-cell={isFocusedCell(0)}
-		onclick={handleClickPrimaryAction}
-	>
-		{#if item}
-			<div class="action-type">
-				{#if item.qualifiers.length}
-					{$page.data.t('search.add')}
-					{#if item.qualifiers.length === 1}
-						<span class="qualifier-key">
-							{item.qualifiers[0].label}
-						</span>
-					{:else}
-						<span class="badge">
-							{item.qualifiers.length}
-						</span>
-					{/if}
-				{:else}
-					{$page.data.t('search.goTo')}
+{#snippet resourceSnippet(item: SuperSearchResultItem)}
+	<div class="action-type">
+		{#if item.qualifiers.length}
+			{$page.data.t('search.add')}
+			{#if item.qualifiers.length === 1}
+				<span class="qualifier-key">
+					{item.qualifiers[0].label}
+				</span>
+			{:else}
+				<span class="badge">
+					{item.qualifiers.length}
+				</span>
+			{/if}
+		{:else}
+			{$page.data.t('search.goTo')}
+		{/if}
+	</div>
+	<div class="resource">
+		<SuggestionImage {item} />
+		<div class="resource-content">
+			<hgroup class="resource-heading">
+				<h2 class="inline overflow-hidden text-ellipsis text-secondary text-3-cond-bold">
+					<DecoratedData
+						data={item[LxlLens.CardHeading]}
+						showLabels={ShowLabelsOptions.Never}
+						allowPopovers={false}
+						allowLinks={false}
+					/>
+				</h2>
+				{#if item[LxlLens.CardBody]?._display?.[0]}
+					<p class="inline overflow-hidden text-ellipsis text-sm text-secondary">
+						<span class="divider">{' • '}</span>
+						<DecoratedData
+							data={item[LxlLens.CardBody]?._display[0]}
+							showLabels={ShowLabelsOptions.Never}
+							allowLinks={false}
+							allowPopovers={false}
+						/>
+					</p>
 				{/if}
-			</div>
-			<div class="resource">
-				<SuggestionImage {item} />
-				<div class="resource-content">
-					<hgroup class="resource-heading">
-						<h2 class="inline overflow-hidden text-ellipsis text-secondary text-3-cond-bold">
-							<DecoratedData
-								data={item[LxlLens.CardHeading]}
-								showLabels={ShowLabelsOptions.Never}
-								allowPopovers={false}
-								allowLinks={false}
-							/>
-						</h2>
-						{#if item[LxlLens.CardBody]?._display?.[0]}
-							<p class="inline overflow-hidden text-ellipsis text-sm text-secondary">
+			</hgroup>
+			<div class="resource-footer">
+				<strong class="text-xs text-secondary">
+					{item.typeStr}
+				</strong>
+				<span class="text-xs">
+					{#if item.typeStr.length}
+						<span class="divider">{' • '}</span>
+					{/if}
+					{#each item?.[LensType.WebCardFooter]?._display as obj}
+						{#if 'hasInstance' in obj}
+							{@const instances = getInstanceData(obj.hasInstance)}
+							{#if instances?.years}
 								<span class="divider">{' • '}</span>
+								<span>
+									{#if instances.count > 1}
+										{instances?.count}
+										{$page.data.t('search.editions')}
+										{`(${instances.years})`}
+									{:else}
+										{instances.years}
+									{/if}
+								</span>
+							{/if}
+						{:else}
+							<span class="text-xs">
 								<DecoratedData
-									data={item[LxlLens.CardBody]?._display[0]}
+									data={obj}
 									showLabels={ShowLabelsOptions.Never}
 									allowLinks={false}
 									allowPopovers={false}
 								/>
-							</p>
+							</span>
 						{/if}
-					</hgroup>
-					<div class="resource-footer">
-						<strong class="text-xs text-secondary">
-							{item.typeStr}
-						</strong>
-						<span class="text-xs">
-							{#if item.typeStr.length}
-								<span class="divider">{' • '}</span>
-							{/if}
-							{#each item?.[LensType.WebCardFooter]?._display as obj}
-								{#if 'hasInstance' in obj}
-									{@const instances = getInstanceData(obj.hasInstance)}
-									{#if instances?.years}
-										<span class="divider">{' • '}</span>
-										<span>
-											{#if instances.count > 1}
-												{instances?.count}
-												{$page.data.t('search.editions')}
-												{`(${instances.years})`}
-											{:else}
-												{instances.years}
-											{/if}
-										</span>
-									{/if}
-								{:else}
-									<span class="text-xs">
-										<DecoratedData
-											data={obj}
-											showLabels={ShowLabelsOptions.Never}
-											allowLinks={false}
-										/>
-									</span>
-								{/if}
-							{/each}
-						</span>
-					</div>
-				</div>
+					{/each}
+				</span>
 			</div>
-		{/if}
-	</button>
-	{#if item?.qualifiers.length}
+		</div>
+	</div>
+{/snippet}
+
+<div class="suggestion" class:qualifier={item.qualifiers.length}>
+	{#if item.qualifiers.length}
+		<button
+			type="button"
+			id={getCellId(0)}
+			class:focused-cell={isFocusedCell(0)}
+			onclick={handleClickPrimaryAction}
+		>
+			{@render resourceSnippet(item)}
+		</button>
 		<button type="button" class="more" id={getCellId(1)} class:focused-cell={isFocusedCell(1)}>
 			<span class="more-icon-container">
 				<MoreIcon />
 			</span>
 		</button>
+	{:else}
+		<a href={resourceId}>
+			{@render resourceSnippet(item)}
+		</a>
 	{/if}
 </div>
 
@@ -149,22 +155,27 @@
 		background: theme(backgroundColor.main);
 	}
 
-	.suggestion button {
+	.suggestion button,
+	.suggestion a {
 		display: flex;
 		align-items: center;
+		text-decoration: none;
 	}
 
-	.suggestion button:first-child {
+	.suggestion button:first-child,
+	.suggestion a:first-child {
 		flex: 1;
 		padding: 0 theme(padding.4);
 		text-align: left;
 	}
 
-	.qualifier.suggestion button:first-child {
+	.qualifier.suggestion button:first-child,
+	.qualifier.suggestion a:first-child {
 		padding-right: 0;
 	}
 
-	.suggestion button:not(:first-child):last-child {
+	.suggestion button:not(:first-child):last-child,
+	.suggestion a:not(:first-child):last-child {
 		text-align: right;
 	}
 
