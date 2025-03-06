@@ -141,6 +141,9 @@ export default {
 				'.text-1-regular': {
 					'@apply text-xs font-normal': {}
 				},
+				'.text-1-cond': {
+					'@apply text-xs font-condensed': {}
+				},
 				'.text-1-cond-bold': {
 					'@apply text-xs font-condensed font-bold': {}
 				},
@@ -149,6 +152,9 @@ export default {
 				},
 				'.text-2-regular': {
 					'@apply text-sm font-normal': {}
+				},
+				'.text-2-cond': {
+					'@apply text-sm font-condensed': {}
 				},
 				'.text-2-cond-bold': {
 					'@apply text-sm font-condensed font-bold': {}

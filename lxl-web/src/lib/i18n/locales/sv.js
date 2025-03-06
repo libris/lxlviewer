@@ -98,7 +98,10 @@ export default {
 		didYouMean: 'Menade du',
 		showAllResults: 'Visa alla sökresultat',
 		supersearchStartHeader: 'Bygg och förfina din sökning',
-		addAs: 'Lägg till som'
+		add: 'Lägg till',
+		addAs: 'Lägg till som',
+		goTo: 'Gå till',
+		goToResource: 'Gå till resursen'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',
