@@ -100,7 +100,8 @@ export default {
 		supersearchStartHeader: 'Bygg och förfina din sökning',
 		add: 'Lägg till',
 		addAs: 'Lägg till som',
-		goTo: 'Gå till'
+		goTo: 'Gå till',
+		goToResource: 'Gå till resursen'
 	},
 	qualifiers: {
 		contributorKey: 'contributor',

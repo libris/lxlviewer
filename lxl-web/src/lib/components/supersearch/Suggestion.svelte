@@ -10,6 +10,7 @@
 	import getInstanceData from '$lib/utils/getInstanceData';
 	import SuggestionImage from './SuggestionImage.svelte';
 	import MoreIcon from '~icons/bi/three-dots';
+	import dropdownMenu from '$lib/actions/dropDownMenu/index.svelte.js';
 
 	type Props = {
 		item: SuperSearchResultItem;
@@ -122,7 +123,22 @@
 			{@render resourceSnippet(item)}
 		</button>
 		<button type="button" class="more" id={getCellId(1)} class:focused-cell={isFocusedCell(1)}>
-			<span class="more-icon-container">
+			<span
+				class="more-icon-container"
+				use:dropdownMenu={{
+					menuItems: [
+						...item.qualifiers.map((qualifier) => ({
+							label: `${$page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
+							action: () => addQualifier(qualifier)
+						})),
+						{
+							label: `${$page.data.t('search.goToResource')}`,
+							action: () => goto(resourceId as string)
+						}
+					],
+					placeAsSibling: true
+				}}
+			>
 				<MoreIcon />
 			</span>
 		</button>
@@ -189,7 +205,7 @@
 	}
 
 	.badge {
-		background: theme(backgroundColor.main);
+		background: theme(backgroundColor.positive);
 		border-radius: theme(borderRadius.full);
 		padding: theme(padding[0.5]) theme(padding.2);
 		font-size: theme(fontSize.xs);
