@@ -178,9 +178,9 @@ export default {
         order: 2,
       },
     },
-    issuanceType: {
-      sv: 'Utgivningssätt',
-      en: 'Issuance type',
+    'instanceOf.category.@id': {
+      sv: 'Kategori på verket',
+      en: 'Category of work',
       facet: {
         order: 3,
       },
@@ -248,30 +248,30 @@ export default {
         order: 12,
       },
     },
-    'instanceOf.category.@id': {
-      sv: 'Kategori på verket',
-      en: 'Category of work',
-      facet: {
-        order: 13,
-      },
-    },
     'contribution.agent.@id': {
       sv: 'Medverkan eller primär medverkan',
       en: 'Contribution or primary contribution',
       facet: {
-        order: 14,
+        order: 13,
       },
     },
     'contentType.@id': {
       sv: 'Innehållstyp',
       en: 'Content type',
       facet: {
-        order: 15,
+        order: 14,
       },
     },
     'carrierType.@id': {
       sv: 'Bärartyp',
       en: 'Carrier type',
+      facet: {
+        order: 15,
+      },
+    },
+    issuanceType: {
+      sv: 'Utgivningssätt',
+      en: 'Issuance type',
       facet: {
         order: 16,
       },
