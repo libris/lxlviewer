@@ -178,7 +178,7 @@
 	</div>
 {/snippet}
 
-<form class="relative w-full" action="find" onsubmit={handleSubmit}>
+<form class="relative w-full" action="find" onsubmit={handleSubmit} data-testid="main-search">
 	<SuperSearch
 		name="_q"
 		bind:this={superSearch}
@@ -485,5 +485,9 @@
 		padding-top: 0.6125rem;
 		padding-bottom: 0.6125rem;
 		outline: none;
+	}
+
+	:global(.codemirror-container .cm-placeholder) {
+		color: #757575;
 	}
 </style>
