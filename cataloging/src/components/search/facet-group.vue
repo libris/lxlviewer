@@ -185,7 +185,7 @@ export default {
       return !this.revealLevels[this.currentLevel] && this.isExpanded;
     },
     isChangeFacetGroup() {
-      return (this.group.dimension === 'category.@id' || this.group.dimension === 'concerning.@reverse.itemOf.heldBy.@id');
+      return this.group.dimension === 'concerning.@reverse.itemOf.heldBy.@id';
     },
     checkedCategoriesAndSigels() {
       return [...this.changeCollections];
