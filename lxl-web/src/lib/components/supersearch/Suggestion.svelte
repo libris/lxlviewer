@@ -33,12 +33,12 @@
 
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
 	{#if item.qualifiers.length}
-		<div class="action-type">
+		<span class="action-type">
 			{$page.data.t('search.add')}
-			<span class="qualifier-key">
-				{item.qualifiers[0].label}
-			</span>
-		</div>
+		</span>
+		<span class="qualifier-key first-letter:capitalize">
+			{item.qualifiers[0].label}
+		</span>
 	{:else}
 		<div class="sr-only">{$page.data.t('search.goTo')}</div>
 	{/if}
@@ -192,14 +192,30 @@
 	}
 
 	.action-type {
-		font-size: theme(fontSize.sm);
-		margin-left: auto;
-		padding: theme(padding[0.5]) theme(padding.[2]);
+		font-size: theme(fontSize.xs);
 		color: theme(textColor.positive);
-		background: theme(backgroundColor.positive);
-		border-radius: theme(borderRadius.sm);
-		order: 1;
-		white-space: nowrap;
+		margin-right: theme(spacing.2);
+
+		@media screen and (min-width: theme('screens.md')) {
+			font-size: theme(fontSize.sm);
+		}
+	}
+
+	.qualifier-key {
+		display: none;
+
+		@media screen and (min-width: theme('screens.lg')) {
+			display: inline;
+			font-size: theme(fontSize.sm);
+			margin-left: auto;
+			padding: theme(padding[0.5]) theme(padding.[2]);
+			color: theme(textColor.positive);
+			background: theme(backgroundColor.positive);
+			border-radius: theme(borderRadius.sm);
+			order: 1;
+			white-space: nowrap;
+			text-transform: lowercase;
+		}
 	}
 
 	.qualifier-key {
