@@ -34,7 +34,7 @@
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
 	{#if item.qualifiers.length}
 		<span
-			class="order-1 ml-auto hidden whitespace-nowrap pl-1 text-xs text-positive sm:inline md:text-sm"
+			class="order-1 ml-auto hidden whitespace-nowrap rounded-sm bg-positive px-1.5 py-0.5 text-xs text-positive sm:inline md:text-sm"
 		>
 			{$page.data.t('search.add')}
 
