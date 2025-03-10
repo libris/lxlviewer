@@ -200,6 +200,7 @@
 		toggleWithKeyboardShortcut
 		comboboxAriaLabel={$page.data.t('search.search')}
 		defaultInputCol={2}
+		loadMoreLabel={$page.data.t('search.showMore')}
 	>
 		{#snippet loadingIndicator()}
 			<div class="flex min-h-11 w-full items-center px-4 text-left">

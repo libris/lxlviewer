@@ -77,6 +77,7 @@
 		cursor?: number;
 		isLoading?: boolean;
 		hasData?: boolean;
+		loadMoreLabel?: string;
 	}
 
 	let {
@@ -105,7 +106,8 @@
 		debouncedWait = 300,
 		cursor = $bindable(0), // should be treated as readonly
 		isLoading = $bindable(), // should be treated as readonly
-		hasData = $bindable() // should be treated as readonly
+		hasData = $bindable(), // should be treated as readonly
+		loadMoreLabel = 'Load more'
 	}: Props = $props();
 
 	let collapsedEditorView: EditorView | undefined = $state();
@@ -664,7 +666,7 @@
 						{@render loadingIndicator?.()}
 					{:else if search.hasMorePaginatedData}
 						<button type="button" class="supersearch-show-more" onclick={search.fetchMoreData}>
-							Load more
+							{loadMoreLabel}
 						</button>
 					{/if}
 				{/if}
