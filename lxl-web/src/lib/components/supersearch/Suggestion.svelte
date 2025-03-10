@@ -32,14 +32,16 @@
 </script>
 
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
-	<div class="action-type">
-		{#if item.qualifiers.length}
+	{#if item.qualifiers.length}
+		<div class="action-type">
 			{$page.data.t('search.add')}
 			<span class="qualifier-key">
 				{item.qualifiers[0].label}
 			</span>
-		{/if}
-	</div>
+		</div>
+	{:else}
+		<div class="sr-only">{$page.data.t('search.goTo')}</div>
+	{/if}
 	<div class="resource">
 		<SuggestionImage {item} />
 		<div class="resource-content">
@@ -192,8 +194,10 @@
 	.action-type {
 		font-size: theme(fontSize.sm);
 		margin-left: auto;
-		padding-left: theme(padding.2);
-		color: theme(textColor.tertiary);
+		padding: theme(padding[0.5]) theme(padding.[2]);
+		color: theme(textColor.positive);
+		background: theme(backgroundColor.positive);
+		border-radius: theme(borderRadius.sm);
 		order: 1;
 		white-space: nowrap;
 	}
