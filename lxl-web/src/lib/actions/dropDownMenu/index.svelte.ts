@@ -27,20 +27,24 @@ export const dropdownMenu: Action<HTMLElement, Parameter> = (
 		let cancelAttach: ((reason?: unknown) => void) | undefined;
 		let cancelRemove: ((reason?: unknown) => void) | undefined;
 
+		node.addEventListener('click', attachDropDownMenu);
 		node.addEventListener('mouseover', attachDropDownMenu);
 		node.addEventListener('mouseout', removeDropDownMenu);
 		node.addEventListener('focus', attachDropDownMenu);
 		node.addEventListener('blur', removeDropDownMenu);
 
-		async function attachDropDownMenu() {
+		async function attachDropDownMenu(event: MouseEvent | FocusEvent) {
 			try {
-				console.log('menuItems', menuItems);
 				cancelAttach?.(); // cancel earlier promises to ensure DropDownMenus doesn't appear after navigating
 				cancelRemove?.();
 				if (!attached) {
 					await new Promise((resolve, reject) => {
 						cancelAttach = reject; // allows promise rejection from outside the promise constructor scope
-						setTimeout(resolve, ATTACH_DELAY);
+						if (event.type === 'click') {
+							resolve(undefined);
+						} else {
+							setTimeout(resolve, ATTACH_DELAY);
+						}
 					});
 
 					floatingElement = mount(DropDownMenu, {
@@ -92,6 +96,7 @@ export const dropdownMenu: Action<HTMLElement, Parameter> = (
 
 		return () => {
 			destroyDropDownMenu();
+			node.removeEventListener('click', attachDropDownMenu);
 			node.removeEventListener('mouseover', attachDropDownMenu);
 			node.removeEventListener('mouseout', removeDropDownMenu);
 			node.removeEventListener('focus', attachDropDownMenu);
