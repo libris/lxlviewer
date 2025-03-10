@@ -101,7 +101,7 @@ export default {
 		supersearchStartHeader: 'Build and refine your search query',
 		add: 'Add',
 		addAs: 'Add as',
-		goTo: 'Go to the resource',
+		goTo: 'Go to',
 		goToResource: 'Go to the resource'
 	},
 	qualifiers: {

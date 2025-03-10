@@ -44,8 +44,6 @@
 					{item.qualifiers.length}
 				</span>
 			{/if}
-		{:else}
-			{$page.data.t('search.goTo')}
 		{/if}
 	</div>
 	<div class="resource">
