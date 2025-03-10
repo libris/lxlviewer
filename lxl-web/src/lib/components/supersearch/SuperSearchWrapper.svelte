@@ -337,7 +337,9 @@
 			</div>
 		{/snippet}
 		{#snippet resultItemRow({ resultItem, getCellId, isFocusedCell })}
-			<Suggestion item={resultItem} {getCellId} {isFocusedCell} {addQualifier} />
+			{#if resultItem}
+				<Suggestion item={resultItem} {getCellId} {isFocusedCell} {addQualifier} />
+			{/if}
 		{/snippet}
 	</SuperSearch>
 	{#each searchParams as [name, value]}
