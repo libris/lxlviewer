@@ -33,11 +33,14 @@
 
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
 	{#if item.qualifiers.length}
-		<span class="sr-only">
+		<span
+			class="order-1 ml-auto hidden whitespace-nowrap pl-1 text-xs text-positive sm:inline md:text-sm"
+		>
 			{$page.data.t('search.add')}
-		</span>
-		<span class="qualifier-key first-letter:capitalize">
-			{item.qualifiers[0].label}
+
+			<span class="hidden first-letter:capitalize md:inline">
+				{item.qualifiers[0].label}
+			</span>
 		</span>
 	{:else}
 		<div class="sr-only">{$page.data.t('search.goTo')}</div>
@@ -190,43 +193,6 @@
 	.suggestion a:not(:first-child):last-child {
 		text-align: right;
 	}
-
-	.action-type {
-		font-size: theme(fontSize.xs);
-		color: theme(textColor.positive);
-		margin-right: theme(spacing.2);
-
-		@media screen and (min-width: theme('screens.md')) {
-			font-size: theme(fontSize.sm);
-		}
-	}
-
-	.qualifier-key {
-		display: none;
-
-		@media screen and (min-width: theme('screens.lg')) {
-			display: inline;
-			font-size: theme(fontSize.sm);
-			margin-left: auto;
-			padding: theme(padding[0.5]) theme(padding.[2]);
-			color: theme(textColor.positive);
-			background: theme(backgroundColor.positive);
-			border-radius: theme(borderRadius.sm);
-			order: 1;
-			white-space: nowrap;
-			text-transform: lowercase;
-		}
-	}
-
-	.qualifier-key {
-		display: none;
-
-		@media screen and (min-width: theme('screens.lg')) {
-			display: inline;
-			text-transform: lowercase;
-		}
-	}
-
 	.resource {
 		display: grid;
 		grid-template-columns: 40px minmax(0, 1fr);
