@@ -355,21 +355,13 @@
 			event.key === 'Tab'
 		) {
 			const rows = Array.from(dialog?.querySelectorAll(':scope [role=row]') || []);
-			const getColsInRow = (rowIndex: number) => {
-				const cols = Array.from(rows[rowIndex].querySelectorAll(':scope button, :scope a')).filter(
-					(colItem) => {
-						if (typeof colItem?.checkVisibility === 'function') {
-							return colItem.checkVisibility();
-						}
-						return true; // always return true as a fallback if checkVisiblity isn't available
+			const getColsInRow = (rowIndex: number) =>
+				Array.from(rows[rowIndex].querySelectorAll(':scope button, :scope a')).filter((colItem) => {
+					if (typeof colItem?.checkVisibility === 'function') {
+						return colItem.checkVisibility();
 					}
-				);
-				allowArrowKeyCursorHandling = {
-					...allowArrowKeyCursorHandling,
-					horizontal: rowIndex === 0 || cols.length <= 1
-				};
-				return cols;
-			};
+					return true; // always return true as a fallback if checkVisiblity isn't available
+				});
 
 			const getColIndexFromId = (itemId: string) => {
 				const colRegex = new RegExp(`${id}-item-\\d+x(\\d+)`);
@@ -399,18 +391,33 @@
 							activeRowIndex--;
 							if (activeRowIndex < 1) {
 								activeColIndex = defaultInputCol;
+								allowArrowKeyCursorHandling = {
+									...allowArrowKeyCursorHandling,
+									horizontal: true
+								};
 							} else {
-								activeColIndex = Math.min(activeColIndex, getColsInRow(activeRowIndex).length - 1);
+								const cols = getColsInRow(activeRowIndex);
+								activeColIndex = Math.min(activeColIndex, cols.length - 1);
+								allowArrowKeyCursorHandling = {
+									...allowArrowKeyCursorHandling,
+									horizontal: cols.length <= 1
+								};
 							}
 						}
 						break;
 					case 'ArrowDown':
-						if (activeRowIndex === 0) {
+						if (activeRowIndex < rows.length - 1) {
 							activeRowIndex++;
-							activeColIndex = 0;
-						} else if (activeRowIndex < rows.length - 1) {
-							activeRowIndex++;
-							activeColIndex = Math.min(activeColIndex, getColsInRow(activeRowIndex).length - 1);
+							const cols = getColsInRow(activeRowIndex);
+							if (activeRowIndex === 1) {
+								activeColIndex = 0;
+							} else {
+								activeColIndex = Math.min(activeColIndex, cols.length - 1);
+							}
+							allowArrowKeyCursorHandling = {
+								...allowArrowKeyCursorHandling,
+								horizontal: cols.length <= 1
+							};
 						}
 						break;
 					case 'ArrowLeft':
