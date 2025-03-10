@@ -123,24 +123,26 @@
 			{@render resourceSnippet(item)}
 		</button>
 		<button type="button" class="more" id={getCellId(1)} class:focused-cell={isFocusedCell(1)}>
-			<span
-				class="more-icon-container"
-				use:dropdownMenu={{
-					menuItems: [
-						...item.qualifiers.map((qualifier) => ({
-							label: `${$page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
-							action: () => addQualifier(qualifier)
-						})),
-						{
-							label: `${$page.data.t('search.goToResource')}`,
-							action: () => goto(resourceId as string)
-						}
-					],
-					placeAsSibling: true
-				}}
-			>
-				<MoreIcon />
-			</span>
+			{#key item.qualifiers}
+				<span
+					class="more-icon-container"
+					use:dropdownMenu={{
+						menuItems: [
+							...item.qualifiers.map((qualifier) => ({
+								label: `${$page.data.t('search.addAs')} ${qualifier.label.toLocaleLowerCase()}`,
+								action: () => addQualifier(qualifier)
+							})),
+							{
+								label: `${$page.data.t('search.goToResource')}`,
+								action: () => goto(resourceId as string)
+							}
+						],
+						placeAsSibling: true
+					}}
+				>
+					<MoreIcon />
+				</span>
+			{/key}
 		</button>
 	{:else}
 		<a href={resourceId}>
