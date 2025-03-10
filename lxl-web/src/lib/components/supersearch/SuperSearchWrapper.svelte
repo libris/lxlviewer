@@ -201,11 +201,12 @@
 		comboboxAriaLabel={$page.data.t('search.search')}
 		defaultInputCol={2}
 		loadMoreLabel={$page.data.t('search.showMore')}
+		debouncedWait={100}
 	>
 		{#snippet loadingIndicator()}
-			<div class="flex min-h-11 w-full items-center px-4 text-left">
+			<!-- <div class="flex min-h-11 w-full items-center px-4 text-left">
 				{$page.data.t('search.loading')}
-			</div>
+			</div> -->
 		{/snippet}
 		{#snippet inputRow({
 			expanded,
