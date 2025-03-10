@@ -157,30 +157,30 @@ export default {
       sv: 'Länkar till',
       en: 'Links to',
     },
-    '@type': {
-      sv: 'Typ',
-      en: 'Type',
-      facet: {
-        order: 0,
-      },
-    },
-    'category.@id': {
-      sv: 'Kategori',
-      en: 'Category',
-      facet: {
-        order: 1,
-      },
-    },
     'instanceOf.@type': {
       sv: 'Verkstyp',
       en: 'Type of work',
       facet: {
-        order: 2,
+        order: 0,
       },
     },
     'instanceOf.category.@id': {
       sv: 'Kategori på verket',
       en: 'Category of work',
+      facet: {
+        order: 1,
+      },
+    },
+    '@type': {
+      sv: 'Typ',
+      en: 'Type',
+      facet: {
+        order: 2,
+      },
+    },
+    'category.@id': {
+      sv: 'Kategori',
+      en: 'Category',
       facet: {
         order: 3,
       },
