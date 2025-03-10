@@ -8,6 +8,10 @@ title: 'Help'
 
 Here we will continuously provide information about newly added features and planned developments:
 
+### 2025-03-11
+
+- Add advanced search functionality
+
 ### 2024-11-07
 
 - Cookie settings
