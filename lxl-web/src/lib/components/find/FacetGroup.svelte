@@ -2,7 +2,6 @@
 	import { page } from '$app/stores';
 	import type { LocaleCode } from '$lib/i18n/locales';
 	import type { FacetGroup, Facet, MultiSelectFacet } from '$lib/types/search';
-	import { ShowLabelsOptions } from '$lib/types/decoratedData';
 	import {
 		DEFAULT_FACETS_SHOWN,
 		DEFAULT_FACET_SORT,
@@ -12,12 +11,10 @@
 	import { getMatomoTracker } from '$lib/contexts/matomo';
 	import { popover } from '$lib/actions/popover';
 	import FacetRange from './FacetRange.svelte';
-	import DecoratedData from '../DecoratedData.svelte';
 	import BiChevronRight from '~icons/bi/chevron-right';
 	import BiSortDown from '~icons/bi/sort-down';
-	import BiCheckSquareFill from '~icons/bi/check-square-fill';
-	import BiSquare from '~icons/bi/square';
 	import BiInfo from '~icons/bi/info-circle';
+	import Node from '$lib/components/find/Node.svelte';
 
 	const matomoTracker = getMatomoTracker();
 
@@ -131,39 +128,7 @@
 			>
 				{#each shownFacets as facet (facet.view['@id'])}
 					<li>
-						<a
-							class="facet-link flex items-end justify-between gap-2 no-underline"
-							href={facet.view['@id']}
-						>
-							<span class="overflow-hidden text-ellipsis whitespace-nowrap" title={facet.str}>
-								{#if 'selected' in facet}
-									<!-- checkboxes -->
-									<span class="sr-only"
-										>{facet.selected ? $page.data.t('search.activeFilter') : ''}</span
-									>
-									<div class="mr-1 inline-block h-[13px] w-[13px]" aria-hidden="true">
-										{#if facet.selected}
-											<BiCheckSquareFill height="13px" />
-										{:else}
-											<BiSquare height="13px" />
-										{/if}
-									</div>
-								{/if}
-								<span>
-									<DecoratedData data={facet.object} showLabels={ShowLabelsOptions.Never} />
-									{#if facet.discriminator}
-										<span class="text-sm text-secondary">({facet.discriminator})</span>
-									{/if}
-								</span>
-							</span>
-							{#if facet.totalItems > 0}
-								<span
-									class="facet-total mb-px rounded-sm bg-pill/4 px-1 text-sm text-secondary md:text-xs"
-									aria-label="{facet.totalItems} {$page.data.t('search.hits')}"
-									>{facet.totalItems.toLocaleString(locale)}</span
-								>
-							{/if}
-						</a>
+						<Node root={facet} {locale} />
 					</li>
 				{/each}
 			</ol>
@@ -212,12 +177,5 @@
 	/* hide sorting for bool filters */
 	li[data-dimension='boolFilters'] details[open] .facet-sort {
 		@apply hidden;
-	}
-
-	.facet-link:hover,
-	.facet-link:focus {
-		& .facet-total {
-			@apply bg-pill/8;
-		}
 	}
 </style>
