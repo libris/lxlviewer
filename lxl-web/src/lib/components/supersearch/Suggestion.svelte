@@ -35,15 +35,9 @@
 	<div class="action-type">
 		{#if item.qualifiers.length}
 			{$page.data.t('search.add')}
-			{#if item.qualifiers.length === 1}
-				<span class="qualifier-key">
-					{item.qualifiers[0].label}
-				</span>
-			{:else}
-				<span class="badge">
-					{item.qualifiers.length}
-				</span>
-			{/if}
+			<span class="qualifier-key">
+				{item.qualifiers[0].label}
+			</span>
 		{/if}
 	</div>
 	<div class="resource">
@@ -202,14 +196,6 @@
 		color: theme(textColor.tertiary);
 		order: 1;
 		white-space: nowrap;
-	}
-
-	.badge {
-		background: theme(backgroundColor.positive);
-		border-radius: theme(borderRadius.full);
-		padding: theme(padding[0.5]) theme(padding.2);
-		font-size: theme(fontSize.xs);
-		margin-left: theme(margin.1);
 	}
 
 	.qualifier-key {
