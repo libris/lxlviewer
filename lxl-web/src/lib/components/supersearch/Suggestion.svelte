@@ -33,7 +33,7 @@
 
 {#snippet resourceSnippet(item: SuperSearchResultItem)}
 	{#if item.qualifiers.length}
-		<span class="action-type">
+		<span class="sr-only">
 			{$page.data.t('search.add')}
 		</span>
 		<span class="qualifier-key first-letter:capitalize">
